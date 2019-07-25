@@ -155,7 +155,7 @@ define([
             text = text.replace(bogusCheckPtn, '');
         }
         return '<li>' + text + '</li>\n';
-    }
+    };
 
     renderer.image = function (href, title, text) {
         if (href.slice(0,6) === '/file/') {
