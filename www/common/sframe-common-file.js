@@ -42,16 +42,19 @@ define([
             return 'cp-fileupload-element-' + String(Math.random()).substring(2);
         };
 
+        var tableHeader = h('div.cp-fileupload-header', [
+            h('div.cp-fileupload-header-title', h('span', Messages.fileuploadHeader || 'Uploaded files')),
+            h('div.cp-fileupload-header-close', h('span.fa.fa-times')),
+        ]);
+
+
         var $table = File.$table = $('<table>', { id: 'cp-fileupload-table' });
-        var $thead = $('<tr>').appendTo($table);
-        $('<td>').text(Messages.upload_type).appendTo($thead);
-        $('<td>').text(Messages.upload_name).appendTo($thead);
-        $('<td>').text(Messages.upload_size).appendTo($thead);
-        $('<td>').text(Messages.upload_progress).appendTo($thead);
-        $('<td>').text(Messages.cancel).appendTo($thead);
 
         var createTableContainer = function ($body) {
-            File.$container = $('<div>', { id: 'cp-fileupload' }).append($table).appendTo($body);
+            File.$container = $('<div>', { id: 'cp-fileupload' }).append(tableHeader).append($table).appendTo($body);
+            $('.cp-fileupload-header-close').click(function () {
+                File.$container.fadeOut();
+            });
             return File.$container;
         };
 
@@ -100,10 +103,9 @@ define([
 
             var $row = $table.find('tr[id="'+id+'"]');
 
-            $row.find('.cp-fileupload-table-cancel').html('-');
+            $row.find('.cp-fileupload-table-cancel').addClass('success').html('').append(h('span.fa.fa-check'));
             var $pv = $row.find('.cp-fileupload-table-progress-value');
-            var $pb = $row.find('.cp-fileupload-table-progress-container');
-            var $pc = $row.find('.cp-fileupload-table-progress');
+            var $pb = $row.find('.cp-fileupload-table-progressbar');
             var $link = $row.find('.cp-fileupload-table-link');
 
             /**
@@ -190,7 +192,7 @@ define([
                     else {
                         File.$container.fadeOut();
                     }
-                }, 20000);
+                }, 60000);
                 return;
             }
             if (queue.inProgress) { return; }
@@ -209,8 +211,9 @@ define([
             window.setTimeout(function () { $table.show(); });
             var estimate = obj.dl ? obj.size : FileCrypto.computeEncryptedSize(obj.blob.byteLength, obj.metadata);
 
-            var $progressBar = $('<div>', {'class':'cp-fileupload-table-progress-container'});
-            var $progressValue = $('<span>', {'class':'cp-fileupload-table-progress-value'}).text(Messages.upload_pending);
+            var $progressContainer = $('<div>', {'class':'cp-fileupload-table-progress-container'});
+            $('<div>', {'class':'cp-fileupload-table-progressbar'}).appendTo($progressContainer);
+            $('<span>', {'class':'cp-fileupload-table-progress-value'}).text(Messages.upload_pending).appendTo($progressContainer);
 
             var $tr = $('<tr>', {id: id}).appendTo($table);
             var $lines = $table.find('tr[id]');
@@ -221,19 +224,28 @@ define([
             var $cancel = $('<span>', {'class': 'cp-fileupload-table-cancel-button fa fa-times'}).click(function () {
                 queue.queue = queue.queue.filter(function (el) { return el.id !== id; });
                 $cancel.remove();
-                $tr.find('.cp-fileupload-table-cancel').text('-');
+                $tr.find('.cp-fileupload-table-cancel').addClass('cancelled').html('').append(h('span.fa.fa-minus'));
                 $tr.find('.cp-fileupload-table-progress-value').text(Messages.upload_cancelled);
             });
 
             var $link = $('<a>', {
                 'class': 'cp-fileupload-table-link',
                 'rel': 'noopener noreferrer'
-            }).text(obj.dl ? obj.name : obj.metadata.name);
+            }).append(h('span.cp-fileupload-table-name', obj.dl ? obj.name : obj.metadata.name));
 
-            $('<td>').text(obj.dl ? Messages.download_dl : Messages.upload_up).appendTo($tr);
+            var typeIcon;
+            if (obj.dl) { typeIcon = h('span.fa.fa-arrow-down', { title: Messages.download_dl }); }
+            else { typeIcon = h('span.fa.fa-arrow-up', { title: Messages.upload_up }); }
+
+            // type (download / upload)
+            $('<td>', {'class': 'cp-fileupload-table-type'}).append(typeIcon).appendTo($tr);
+            // name
             $('<td>').append($link).appendTo($tr);
+            // size
             $('<td>').text(prettySize(estimate)).appendTo($tr);
-            $('<td>', {'class': 'cp-fileupload-table-progress'}).append($progressBar).append($progressValue).appendTo($tr);
+            // progress
+            $('<td>', {'class': 'cp-fileupload-table-progress'}).append($progressContainer).appendTo($tr);
+            // cancel
             $('<td>', {'class': 'cp-fileupload-table-cancel'}).append($cancel).appendTo($tr);
 
             queue.next();
@@ -264,10 +276,9 @@ define([
                 input: initialDisabled
             });
             return manualStore;
-        }
+        };
         var fileUploadModal = function (defaultFileName, cb) {
             var parsedName = /^(\.?.+?)(\.[^.]+)?$/.exec(defaultFileName) || [];
-            var name = parsedName[1] || defaultFileName;
             var ext = parsedName[2] || "";
 
             var manualStore = createManualStore();
@@ -325,7 +336,7 @@ define([
             });
         };
 
-        var showFolderUploadModal = File.showFolderUploadModal = function (foldername, cb) {
+        File.showFolderUploadModal = function (foldername, cb) {
             var manualStore = createManualStore();
 
             // Ask for name, password and owner
@@ -374,7 +385,7 @@ define([
                     forceSave: forceSave
                 });
             });
-        }
+        };
 
         var handleFileState = {
             queue: [],
@@ -537,12 +548,16 @@ define([
 
                     var $row = $table.find('tr[id="'+id+'"]');
                     var $pv = $row.find('.cp-fileupload-table-progress-value');
-                    var $pb = $row.find('.cp-fileupload-table-progress-container');
-                    var $pc = $row.find('.cp-fileupload-table-progress');
+                    var $pb = $row.find('.cp-fileupload-table-progressbar');
                     var $link = $row.find('.cp-fileupload-table-link');
 
                     var done = function () {
-                        $row.find('.cp-fileupload-table-cancel').text('-');
+                        $row.find('.cp-fileupload-table-cancel').addClass('success').html('').append(h('span.fa.fa-check'));
+                        queue.inProgress = false;
+                        queue.next();
+                    };
+                    var cancelled = function () {
+                        $row.find('.cp-fileupload-table-cancel').addClass('cancelled').html('').append(h('span.fa.fa-minus'));
                         queue.inProgress = false;
                         queue.next();
                     };
@@ -594,9 +609,11 @@ define([
                         dl.cancel();
                         $cancel.remove();
                         $row.find('.cp-fileupload-table-progress-value').text(Messages.upload_cancelled);
-                        done();
+                        cancelled();
                     });
-                    $row.find('.cp-fileupload-table-cancel').html('').append($cancel);
+                    $row.find('.cp-fileupload-table-cancel')
+                        .html('')
+                        .append($cancel);
                 };
                 queue.push({
                     dl: todo,
