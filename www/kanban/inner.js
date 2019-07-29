@@ -367,7 +367,7 @@ define([
             });
         }
 
-        framework.setFileExporter('json', function () {
+        framework.setFileExporter('.json', function () {
             return new Blob([JSON.stringify(kanban.getBoardsJSON(), 0, 2)], {
                 type: 'application/json',
             });

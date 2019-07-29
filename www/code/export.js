@@ -8,7 +8,7 @@ define([
     module.main = function (userDoc, cb) {
         var mode = userDoc.highlightMode || 'gfm';
         var content = userDoc.content;
-        module.type = SFCodeMirror.getContentExtension(mode);
+        module.ext = SFCodeMirror.getContentExtension(mode);
         cb(SFCodeMirror.fileExporter(content));
     };
 

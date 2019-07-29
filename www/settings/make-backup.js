@@ -34,7 +34,7 @@ define([
         var path = '/' + type + '/export.js';
         require([path], function (Exporter) {
             Exporter.main(json, function (data) {
-                result.ext = '.' + Exporter.type;
+                result.ext = Exporter.ext || '';
                 result.data = data;
                 cb(result);
             });

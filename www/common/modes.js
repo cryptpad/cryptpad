@@ -14,7 +14,7 @@ define([
         "C text/x-c++src .cpp",
         "C-like clike .c",
         "Clojure clojure .clj",
-        "CMake cmake", /* no extension */
+        "CMake cmake _", /* no extension */
         "COBOL cobol .cbl",
         "CoffeeScript coffeescript .coffee",
         "Common_Lisp commonlisp .lisp",
@@ -25,7 +25,7 @@ define([
         "Dart dart .dart",
         "Diff diff .diff",
         "Django django .py",
-        "Dockerfile dockerfile", /* no extension */
+        "Dockerfile dockerfile _", /* no extension */
         "DTD dtd .dtd",
         "Dylan dylan .dylan",
         "EBNF ebnf .ebnf",
@@ -47,7 +47,7 @@ define([
         "Haskell-Literate haskell-literate .lhs",
         "Haxe haxe .hx",
         "HTML htmlmixed .html",
-        "HTTP http", /* no extension */
+        "HTTP http _", /* no extension */
         "IDL idl .idl",
         "JADE jade .jade",
         "Java text/x-java .java",
@@ -61,7 +61,7 @@ define([
         //"markdown markdown .md",
         "Mathematica mathematica .nb",
         "mIRC mirc .irc",
-        "ML mllike", /* no extension */
+        "ML mllike _", /* no extension */
         "Modelica modelica .mo",
         "MscGen mscgen .mscgen",
         "MUMPS mumps .m",
@@ -93,9 +93,9 @@ define([
         "Shell shell .sh",
         "Sieve sieve .sieve",
         "Slim slim .slim",
-        "Smalltalk smalltalk", /* no extension */
-        "Smarty smarty", /* no extension */
-        "Solr solr", /* no extension */
+        "Smalltalk smalltalk _", /* no extension */
+        "Smarty smarty _", /* no extension */
+        "Solr solr _", /* no extension */
         "Soy soy .soy",
         "SPARQL sparql .rq",
         "Spreadsheet spreadsheet .xls",
@@ -107,7 +107,7 @@ define([
         "Text text .txt",
         "Textile textile .textile",
         "TiddlyWiki tiddlywiki .tw",
-        "Tiki tiki", /* no extension */
+        "Tiki tiki _", /* no extension */
         "TOML toml .toml",
         "Tornado tornado .tornado",
         "troff troff .troff",
@@ -125,22 +125,22 @@ define([
         //"xwiki xwiki21",
         "XQuery xquery .xquery",
         "YAML yaml .yaml",
-        "YAML_Frontmatter yaml-frontmatter", /* no extension */
+        "YAML_Frontmatter yaml-frontmatter _", /* no extension */
         "Z80 z80 .z80"
     ].map(function (line) {
         var kv = line.split(/\s/);
         return {
             language: kv[0].replace(/_/g, ' '),
             mode: kv[1],
-            ext: kv[2],
+            ext: kv[2] === '_' ? '' : kv[2],
         };
     });
 
     Modes.extensionOf = function (mode) {
-        var ext = '';
+        var ext;
         list.some(function (o) {
             if (o.mode !== mode) { return; }
-            ext = o.ext || '';
+            ext = o.ext;
             return true;
         });
         return ext;
