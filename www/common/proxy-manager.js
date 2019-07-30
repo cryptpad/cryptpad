@@ -501,7 +501,7 @@ define([
                 newPath: newPath,
                 copy: false,
             }, waitFor());
-        }).nThen(function (waitFor) {
+        }).nThen(function () {
             // migrate metadata
             var metadata = Env.user.userObject.getFolderData(folderElement);
             for (var key in metadata) {
@@ -515,7 +515,7 @@ define([
             // call callback
             cb();
         });
-    }
+    };
 
     // Delete permanently some pads or folders
     var _delete = function (Env, data, cb) {

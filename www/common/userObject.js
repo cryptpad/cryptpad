@@ -170,7 +170,7 @@ define([
                 }
             }
             return false;
-        }
+        };
 
         // Get data from AllFiles (Cryptpad_RECENTPADS)
         var getFileData = exp.getFileData = function (file) {
