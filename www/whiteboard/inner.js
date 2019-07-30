@@ -419,7 +419,7 @@ define([
             $canvas[0].toBlob(function (blob) {
                 cb(blob);
             });
-        });
+        }, true);
 
         framework.setNormalizer(function (c) {
             return {
