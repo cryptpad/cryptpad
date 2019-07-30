@@ -996,6 +996,7 @@ define([
                         // Can't rename or delete root elements
                         hide.push('delete');
                         hide.push('rename');
+                        hide.push('share');
                         hide.push('color');
                     }
                     if (!$element.is('.cp-app-drive-element-owned')) {
@@ -1022,8 +1023,9 @@ define([
                         }
                     } else if ($element.is('.cp-app-drive-element-sharedf')) {
                         if (containsFolder) {
-                            // More than 1 folder selected: cannot create a new subfolder
+                            // More than 1 shared folder selected: cannot create a new subfolder
                             hide.push('newfolder');
+                            hide.push('share');
                             hide.push('expandall');
                             hide.push('collapseall');
                         }
@@ -1036,13 +1038,13 @@ define([
                         if (containsFolder) {
                             // More than 1 folder selected: cannot create a new subfolder
                             hide.push('newfolder');
+                            hide.push('share');
                             hide.push('expandall');
                             hide.push('collapseall');
                         }
                         containsFolder = true;
                         hide.push('openro');
                         hide.push('properties');
-                        hide.push('share');
                         hide.push('hashtag');
                     }
                     // If we're in the trash, hide restore and properties for non-root elements
@@ -3568,7 +3570,7 @@ define([
                 var parsed, modal;
                 var friends = common.getFriends();
 
-                if (manager.isSharedFolder(el)) {
+                if (manager.isSharedFolder(el)) { // Shared Folder
                     data = manager.getSharedFolderData(el);
                     parsed = Hash.parsePadUrl(data.href);
                     modal = UIElements.createSFShareModal({
@@ -3582,7 +3584,27 @@ define([
                             editHash: parsed.hash
                         }
                     });
-                } else {
+                    UI.openCustomModal(modal, {
+                        wide: Object.keys(friends).length !== 0
+                    });
+                } else if (manager.isFolder(el)) { // Folder
+                    // if folder already contains SF
+                    if (manager.isInSharedFolder(paths[0].path)) {
+                        UI.alert(Messages.convertFolderToSF_SFParent || "Sharing this folder can't be done because it already in a Shared Folder. Please, move this folder elsewhere in order to continue", undefined, true);
+                    }
+                    // if folder is inside SF
+                    else if (manager.hasSubSharedFolder(el)) {
+                        UI.alert(Messages.convertFolderToSF_SFChildren || "Sharing this folder can't be done because it already contains one ore more Shared Folders. Please, remove those from this folder in order to continue.", undefined, true);
+                    }
+                    // if folder does not contains SF
+                    else {
+                        UI.confirm(Messages.convertFolderToSF_confirm || "In order to be shared, this folder must be converted into a shared folder. Proceed ?", function(res) {
+                            if (!res) { return; }
+                            if (paths[0].path.length <= 1) { return; } // if root
+                            // convert folder to Shared Folder
+                        });
+                    }
+                } else { // File
                     data = manager.getFileData(el);
                     parsed = Hash.parsePadUrl(data.href);
                     var roParsed = Hash.parsePadUrl(data.roHref);
@@ -3608,10 +3630,10 @@ define([
                     modal = padType === 'file' ? UIElements.createFileShareModal(padData)
                                             : UIElements.createShareModal(padData);
                     modal = UI.dialog.tabs(modal);
+                    UI.openCustomModal(modal, {
+                        wide: Object.keys(friends).length !== 0
+                    });
                 }
-                UI.openCustomModal(modal, {
-                    wide: Object.keys(friends).length !== 0
-                });
             }
             else if ($(this).hasClass('cp-app-drive-context-newfolder')) {
                 if (paths.length !== 1) { return; }

@@ -1071,6 +1071,13 @@ define([
         }
         return Env.user.userObject.hasSubfolder(el, trashRoot);
     };
+    var hasSubSharedFolder = function (Env, el, trashRoot) {
+        if (Env.folders[el]) {
+            var uo = Env.folders[el].userObject;
+            return uo.hasSubSharedFolder(uo.find[uo.ROOT]);
+        }
+        return Env.user.userObject.hasSubSharedFolder(el, trashRoot);
+    };
     var hasFile = function (Env, el, trashRoot) {
         if (Env.folders[el]) {
             var uo = Env.folders[el].userObject;
@@ -1140,6 +1147,7 @@ define([
             isInTrashRoot: callWithEnv(isInTrashRoot),
             comparePath: callWithEnv(comparePath),
             hasSubfolder: callWithEnv(hasSubfolder),
+            hasSubSharedFolder: callWithEnv(hasSubSharedFolder),
             hasFile: callWithEnv(hasFile),
             // Data
             user: Env.user,

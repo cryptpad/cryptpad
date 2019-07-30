@@ -156,6 +156,20 @@ define([
             }
         };
 
+        exp.hasSubSharedFolder = function (folder) {
+            for (var el in folder) {
+                if (isSharedFolder(folder[el])) {
+                    return true;
+                }
+                else if (isFolder(folder[el])) {
+                    if (exp.hasSubSharedFolder(folder[el])) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         // Get data from AllFiles (Cryptpad_RECENTPADS)
         var getFileData = exp.getFileData = function (file) {
             if (!file) { return; }
