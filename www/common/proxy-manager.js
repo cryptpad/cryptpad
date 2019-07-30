@@ -461,6 +461,62 @@ define([
             cb(id);
         });
     };
+
+    // convert a folder to a Shared Folder
+    var _convertFolderToSharedFolder = function (Env, data, cb) {
+        var path = data.path;
+        var folderElement = Env.user.userObject.find(path);
+        if (data.path.length <= 1) { return; }
+        if (_isInSharedFolder(Env, path)) { return; }
+        if (Env.user.userObject.hasSubSharedFolder(folderElement)) { return; }
+        var parentPath = path.slice(0, -1);
+        var parentFolder = Env.user.userObject.find(parentPath);
+        var folderName = path[path.length - 1];
+        var SFId;
+        var sharedFolderElement;
+        nThen(function (waitFor) {
+            // create shared folder
+            _addSharedFolder(Env, {
+                path: parentPath,
+                name: folderName,
+                owned: true,
+                password: '',
+            }, waitFor(function (id) { SFId = id; }));
+        }).nThen(function (waitFor) {
+            // move everything from folder to SF
+            if (!SFId) { return void cb(); }
+            var paths = [];
+            for (var el in folderElement) {
+                if (Env.user.userObject.isFolder(folderElement[el]) || Env.user.userObject.isFile(folderElement[el])) {
+                    paths.push(path.concat(el));
+                }
+            }
+            var SFKey = Object.keys(parentFolder).find(function (el) {
+                return parentFolder[el] === SFId;
+            });
+            var newPath = parentPath.concat(SFKey).concat(UserObject.ROOT);
+            sharedFolderElement = Env.user.proxy[UserObject.SHARED_FOLDERS][SFId];
+            _move(Env, {
+                paths: paths,
+                newPath: newPath,
+                copy: false,
+            }, waitFor());
+        }).nThen(function (waitFor) {
+            // migrate metadata
+            var metadata = Env.user.userObject.getFolderData(folderElement);
+            for (var key in metadata) {
+                if (key === "metadata") { continue; }
+                sharedFolderElement[key] = metadata[key];
+            }
+        }).nThen(function (waitFor) {
+            // remove folder
+            Env.user.userObject.delete([path], waitFor());
+        }).nThen(function () {
+            // call callback
+            cb();
+        });
+    }
+
     // Delete permanently some pads or folders
     var _delete = function (Env, data, cb) {
         data = data || {};
@@ -598,6 +654,8 @@ define([
                 _addFolder(Env, data, cb); break;
             case 'addSharedFolder':
                 _addSharedFolder(Env, data, cb); break;
+            case 'convertFolderToSharedFolder':
+                _convertFolderToSharedFolder(Env, data, cb); break;
             case 'delete':
                 _delete(Env, data, cb); break;
             case 'emptyTrash':
@@ -914,6 +972,14 @@ define([
             }
         }, cb);
     };
+    var convertFolderToSharedFolderInner = function (Env, path, cb) {
+        return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
+            cmd: "convertFolderToSharedFolder",
+            data: {
+                path: path
+            }
+        }, cb);
+    };
     var deleteInner = function (Env, paths, cb) {
         return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
             cmd: "delete",
@@ -1117,6 +1183,7 @@ define([
             emptyTrash: callWithEnv(emptyTrashInner),
             addFolder: callWithEnv(addFolderInner),
             addSharedFolder: callWithEnv(addSharedFolderInner),
+            convertFolderToSharedFolder: callWithEnv(convertFolderToSharedFolderInner),
             delete: callWithEnv(deleteInner),
             restore: callWithEnv(restoreInner),
             setFolderData: callWithEnv(setFolderDataInner),

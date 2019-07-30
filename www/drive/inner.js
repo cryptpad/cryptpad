@@ -3601,7 +3601,7 @@ define([
                         UI.confirm(Messages.convertFolderToSF_confirm || "In order to be shared, this folder must be converted into a shared folder. Proceed ?", function(res) {
                             if (!res) { return; }
                             if (paths[0].path.length <= 1) { return; } // if root
-                            // convert folder to Shared Folder
+                            manager.convertFolderToSharedFolder(paths[0].path, refresh);
                         });
                     }
                 } else { // File

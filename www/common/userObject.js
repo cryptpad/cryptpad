@@ -158,13 +158,13 @@ define([
             }
         };
 
-        exp.hasSubSharedFolder = function (folder) {
+        var hasSubSharedFolder = exp.hasSubSharedFolder = function (folder) {
             for (var el in folder) {
                 if (isSharedFolder(folder[el])) {
                     return true;
                 }
                 else if (isFolder(folder[el])) {
-                    if (exp.hasSubSharedFolder(folder[el])) {
+                    if (hasSubSharedFolder(folder[el])) {
                         return true;
                     }
                 }
