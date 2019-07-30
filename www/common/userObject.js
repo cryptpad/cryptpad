@@ -109,7 +109,9 @@ define([
         };
         exp.isFolderEmpty = function (element) {
             if (!isFolder(element)) { return false; }
-            return Object.keys(element).length === 0;
+            if (Object.keys(element).length === 0) { return true; }
+            if (Object.keys(element).length === 1 && isFolderData(element[Object.keys(element)[0]])) { return true; }
+            return false;
         };
 
         exp.hasSubfolder = function (element, trashRoot) {
