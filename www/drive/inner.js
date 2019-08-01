@@ -1530,7 +1530,13 @@ define([
 
         var findDropPath = function (target) {
             var $target = $(target);
-            var $el = findDataHolder($target);
+            var $el;
+            if ($target.is(".cp-app-drive-path-element")) {
+                $el = $target;
+            }
+            else {
+                $el = findDataHolder($target);
+            }
             var newPath = $el.data('path');
             var dropEl = newPath && manager.find(newPath);
             if (newPath && manager.isSharedFolder(dropEl)) {
@@ -1975,6 +1981,8 @@ define([
                 } else if (idx > 0 && manager.isFile(el)) {
                     name = getElementName(path);
                 }
+                $span.data("path", path.slice(0, idx + 1));
+                addDragAndDropHandlers($span, path.slice(0, idx), true, true);
 
                 if (idx === 0) { name = p === SHARED_FOLDER ? name : getPrettyName(p); }
                 else {
