@@ -230,9 +230,20 @@ define([
         if (!Visible.currently()) { to = window.setTimeout(interval, Thumb.UPDATE_FIRST); }
     };
 
+    var stringToBlobToUrl = function (b64) {
+        var byteString = atob(b64.split(',')[1]);
+        var ab = new ArrayBuffer(byteString.length);
+        var ia = new Uint8Array(ab);
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        var blob = new Blob([ab], {type: "image/png"});
+        var url = URL.createObjectURL(blob);
+        return url;
+    };
     var addThumbnail = function (err, thumb, $span, cb) {
         var img = new Image();
-        img.src = thumb.slice(0,5) === 'data:' ? thumb : 'data:image/png;base64,'+thumb;
+        img.src = stringToBlobToUrl(thumb);
         $span.find('.cp-icon').hide();
         $span.prepend(img);
         cb($(img));

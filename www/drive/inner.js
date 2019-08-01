@@ -1658,7 +1658,8 @@ define([
                 $owner.attr('title', Messages.fm_padIsOwnedOther);
             }
         };
-        var addFileData = function (element, $span) {
+        var thumbsUrls = {};
+        var addFileData = function (element, $element) {
             if (!manager.isFile(element)) { return; }
 
             var data = manager.getFileData(element);
@@ -1667,7 +1668,7 @@ define([
 
             var hrefData = Hash.parsePadUrl(href);
             if (hrefData.type) {
-                $span.addClass('cp-border-color-'+hrefData.type);
+                $element.addClass('cp-border-color-'+hrefData.type);
             }
 
             var $state = $('<span>', {'class': 'cp-app-drive-element-state'});
@@ -1687,25 +1688,36 @@ define([
                 var $expire = $expirableIcon.clone().appendTo($state);
                 $expire.attr('title', Messages._getKey('fm_expirablePad', [new Date(data.expire).toLocaleString()]));
             }
-            _addOwnership($span, $state, data);
+            _addOwnership($element, $state, data);
 
             var name = manager.getTitle(element);
 
             // The element with the class '.name' is underlined when the 'li' is hovered
             var $name = $('<span>', {'class': 'cp-app-drive-element-name'}).text(name);
-            $span.append($name);
-            $span.append($state);
-            $span.attr('title', name);
+            $element.append($name);
+            $element.append($state);
+            $element.attr('title', name);
+
+            // display the thumbnail
+            // if the thumbnail has already been displayed once, do not reload it, keep the same url
+            if (thumbsUrls[element]) {
+                var img = new Image();
+                img.src = thumbsUrls[element];
+                $element.find('.cp-icon').addClass('cp-app-drive-element-list');
+                $element.prepend(img);
+                $(img).addClass('cp-app-drive-element-grid cp-app-drive-element-thumbnail');
+            }
+            else {
+                common.displayThumbnail(href || data.roHref, data.channel, data.password, $element, function ($thumb) {
+                    // Called only if the thumbnail exists
+                    // Remove the .hide() added by displayThumnail() because it hides the icon in list mode too
+                    $element.find('.cp-icon').removeAttr('style').addClass('cp-app-drive-element-list');
+                    $thumb.addClass('cp-app-drive-element-grid cp-app-drive-element-thumbnail');
+                    thumbsUrls[element] = $thumb[0].src;
+                });
+            }
 
             var type = Messages.type[hrefData.type] || hrefData.type;
-            common.displayThumbnail(href || data.roHref, data.channel, data.password, $span, function ($thumb) {
-                // Called only if the thumbnail exists
-                // Remove the .hide() added by displayThumnail() because it hides the icon in
-                // list mode too
-                $span.find('.cp-icon').removeAttr('style').addClass('cp-app-drive-element-list');
-                $thumb.addClass('cp-app-drive-element-grid')
-                    .addClass('cp-app-drive-element-thumbnail');
-            });
             var $type = $('<span>', {
                 'class': 'cp-app-drive-element-type cp-app-drive-element-list'
             }).text(type);
@@ -1715,7 +1727,7 @@ define([
             var $cdate = $('<span>', {
                 'class': 'cp-app-drive-element-ctime cp-app-drive-element-list'
             }).text(getDate(data.ctime));
-            $span.append($type).append($adate).append($cdate);
+            $element.append($type).append($adate).append($cdate);
         };
 
         var addFolderData = function (element, key, $span) {
