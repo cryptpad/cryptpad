@@ -12,7 +12,7 @@ define([
     '/customize/credential.js',
     '/customize/application_config.js',
     '/api/config',
-    '/settings/make-backup.js',
+    '/common/make-backup.js',
     '/common/common-feedback.js',
 
     '/bower_components/file-saver/FileSaver.min.js',
