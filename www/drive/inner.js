@@ -43,7 +43,7 @@ define([
 {
     var APP = window.APP = {
         editable: false,
-        mobile: function () { return $('body').width() <= 600; }, // Menu and content area are not inline-block anymore for mobiles
+        mobile: $('body').width() <= 600, // Menu and content area are not inline-block anymore for mobiles
         isMac: navigator.platform === "MacIntel",
     };
 
@@ -1339,7 +1339,14 @@ define([
                 });
             });
             $menu.css({ display: "block" });
-            if (APP.mobile()) { return; }
+            if (APP.mobile) {
+                $menu.css({
+                    top: ($("#cp-app-drive-toolbar-context-mobile").offset().top + 32) + 'px',
+                    right: '0px',
+                    left: ''
+                });
+                return;
+            }
             var h = $menu.outerHeight();
             var w = $menu.outerWidth();
             var wH = window.innerHeight;
@@ -1945,7 +1952,7 @@ define([
         var createTitle = function ($container, path, noStyle) {
             if (!path || path.length === 0) { return; }
             var isTrash = manager.isPathIn(path, [TRASH]);
-            if (APP.mobile() && !noStyle) { // noStyle means title in search result
+            if (APP.mobile && !noStyle) { // noStyle means title in search result
                 return $container;
             }
             var isVirtual = virtualCategories.indexOf(path[0]) !== -1;
@@ -3023,7 +3030,7 @@ define([
             APP.resetTree();
             if (displayedCategories.indexOf(SEARCH) !== -1 && $tree.find('#cp-app-drive-tree-search-input').length) {
                 // in history mode we want to focus the version number input
-                if (!history.isHistoryMode && !APP.mobile()) {
+                if (!history.isHistoryMode && !APP.mobile) {
                     var st = $tree.scrollTop() || 0;
                     $tree.find('#cp-app-drive-tree-search-input').focus();
                     $tree.scrollTop(st);
@@ -3066,7 +3073,7 @@ define([
 
             createTitle($toolbar.find('.cp-app-drive-path'), path);
 
-            if (APP.mobile()) {
+            if (APP.mobile) {
                 var $context = $('<button>', {
                     id: 'cp-app-drive-toolbar-context-mobile'
                 });
@@ -3085,11 +3092,6 @@ define([
                         return;
                     }
                     // Open the menu
-                    $('.cp-contextmenu').css({
-                        top: ($context.offset().top + 32) + 'px',
-                        right: '0px',
-                        left: ''
-                    });
                     $li.contextmenu();
                 });
             } else {
@@ -3362,7 +3364,7 @@ define([
                 } else {
                     $input.removeClass('cp-app-drive-search-active');
                 }
-                if (APP.mobile()) { return; }
+                if (APP.mobile) { return; }
                 search.to = window.setTimeout(function () {
                     if (!isInSearchTmp) { search.oldLocation = currentPath.slice(); }
                     var newLocation = [SEARCH, $input.val()];
