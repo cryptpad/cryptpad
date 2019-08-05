@@ -8,6 +8,7 @@ define([
     '/common/common-interface.js',
     '/common/common-constants.js',
     '/common/common-feedback.js',
+    '/common/make-backup.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-realtime.js',
@@ -32,6 +33,7 @@ define([
     UI,
     Constants,
     Feedback,
+    Backup,
     nThen,
     SFCommon,
     CommonRealtime,
@@ -90,7 +92,7 @@ define([
     var faEmpty = 'fa-trash-o';
     var faRestore = 'fa-repeat';
     var faShowParent = 'fa-location-arrow';
-    var faDownload = 'cptools-file';
+    var faDownload = 'fa-download';
     var $folderIcon = $('<span>', {
         "class": faFolder + " cptools cp-app-drive-icon-folder cp-app-drive-content-icon"
     });
@@ -325,22 +327,20 @@ define([
                     'data-icon': faCollapseAll,
                 }, Messages.fc_collapseAll)),
                 $separator.clone()[0],
-                h('li', h('a.cp-app-drive-context-color.dropdown-item.cp-app-drive-context-editable', {
-                    'tabindex': '-1',
-                    'data-icon': faColor,
-                }, Messages.fc_color)),
-                h('li', h('a.cp-app-drive-context-download.dropdown-item', {
-                    'tabindex': '-1',
-                    'data-icon': faDownload,
-                }, Messages.download_mt_button)),
-                h('li', h('a.cp-app-drive-context-share.dropdown-item', {
-                    'tabindex': '-1',
-                    'data-icon': 'fa-shhare-alt',
-                }, Messages.shareButton)),
                 h('li', h('a.cp-app-drive-context-openparent.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faShowParent,
                 }, Messages.fm_openParent)),
+                $separator.clone()[0],
+                h('li', h('a.cp-app-drive-context-share.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': 'fa-shhare-alt',
+                }, Messages.shareButton)),
+                h('li', h('a.cp-app-drive-context-download.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': faDownload,
+                }, Messages.download_mt_button)),
+                $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-newfolder.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faFolder,
@@ -349,10 +349,6 @@ define([
                     'tabindex': '-1',
                     'data-icon': faSharedFolder,
                 }, Messages.fc_newsharedfolder)),
-                h('li', h('a.cp-app-drive-context-hashtag.dropdown-item.cp-app-drive-context-editable', {
-                    'tabindex': '-1',
-                    'data-icon': faTags,
-                }, Messages.fc_hashtag)),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
@@ -393,6 +389,19 @@ define([
                     'tabindex': '-1',
                     'data-icon': faRename,
                 }, Messages.fc_rename)),
+                h('li', h('a.cp-app-drive-context-color.dropdown-item.cp-app-drive-context-editable', {
+                    'tabindex': '-1',
+                    'data-icon': faColor,
+                }, Messages.fc_color)),
+                h('li', h('a.cp-app-drive-context-hashtag.dropdown-item.cp-app-drive-context-editable', {
+                    'tabindex': '-1',
+                    'data-icon': faTags,
+                }, Messages.fc_hashtag)),
+                h('li', h('a.cp-app-drive-context-properties.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': faProperties,
+                }, Messages.fc_prop)),
+                $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-delete.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faTrash,
@@ -409,10 +418,6 @@ define([
                     'tabindex': '-1',
                     'data-icon': faDelete,
                 }, Messages.fc_remove_sharedfolder)),
-                h('li', h('a.cp-app-drive-context-properties.dropdown-item', {
-                    'tabindex': '-1',
-                    'data-icon': faProperties,
-                }, Messages.fc_prop)),
             ])
         ]);
         $(menu).find("li a.dropdown-item").each(function (i, el) {
@@ -1007,9 +1012,6 @@ define([
                     } else {
                         // We can only open parent in virtual categories
                         hide.push('openparent');
-                    }
-                    if (!$element.is('.cp-border-color-file')) {
-                        hide.push('download');
                     }
                     if ($element.is('.cp-app-drive-element-file')) {
                         // No folder in files
@@ -3554,13 +3556,38 @@ define([
             }
             else if ($(this).hasClass('cp-app-drive-context-download')) {
                 if (paths.length !== 1) { return; }
-                el = manager.find(paths[0].path);
-                if (!manager.isFile(el)) { return; }
-                data = manager.getFileData(el);
-                APP.FM.downloadFile(data, function (err, obj) {
-                    console.log(err, obj);
-                    console.log('DONE');
-                });
+                var path = paths[0];
+                el = manager.find(path.path);
+                console.log("paths", paths);
+                console.log("el", el);
+
+                // folder
+                if (manager.isFolder(el)) {
+                    // folder
+                    if (!manager.isSharedFolder(el)) {
+                        console.log("--isFolder--");
+                    }
+                    // shared folder
+                    else {
+                        console.log("--isSharedFolder--");
+                    }
+                }
+                // file
+                else if (manager.isFile(el)) {
+                    // imported file
+                    if (path.element.is(".cp-border-color-file")) {
+                        console.log("--isFile--");
+                        data = manager.getFileData(el);
+                        APP.FM.downloadFile(data, function (err, obj) {
+                            console.log(err, obj);
+                            console.log('DONE');
+                        });
+                    }
+                    // pad
+                    else {
+                        console.log("--isPad--");
+                    }
+                }
             }
             else if ($(this).hasClass('cp-app-drive-context-share')) {
                 if (paths.length !== 1) { return; }
