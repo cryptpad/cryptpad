@@ -2104,6 +2104,9 @@ define([
     };
 
     UIElements.createNewPadModal = function (common) {
+        // if in drive, show new pad modal instead
+        if ($("body.cp-app-drive").length !== 0) { return void $(".cp-app-drive-element-row.cp-app-drive-new-ghost").click(); }
+
         var $modal = UIElements.createModal({
             id: 'cp-app-toolbar-creation-dialog',
             $body: $('body')
