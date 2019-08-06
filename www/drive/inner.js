@@ -1719,6 +1719,7 @@ define([
                 $element.find('.cp-icon').addClass('cp-app-drive-element-list');
                 $element.prepend(img);
                 $(img).addClass('cp-app-drive-element-grid cp-app-drive-element-thumbnail');
+                $(img).attr("draggable", false);
             }
             else {
                 common.displayThumbnail(href || data.roHref, data.channel, data.password, $element, function ($thumb) {
@@ -1726,6 +1727,7 @@ define([
                     // Remove the .hide() added by displayThumnail() because it hides the icon in list mode too
                     $element.find('.cp-icon').removeAttr('style').addClass('cp-app-drive-element-list');
                     $thumb.addClass('cp-app-drive-element-grid cp-app-drive-element-thumbnail');
+                    $thumb.attr("draggable", false);
                     thumbsUrls[element] = $thumb[0].src;
                 });
             }
