@@ -63,6 +63,31 @@ define([
                 Utils.LocalStore.clearThumbnail();
                 window.location.reload();
             });
+            sframeChan.on('Q_SETTINGS_DRIVE_GET', function (d, cb) {
+                Cryptpad.getUserObject(function (obj) {
+                    if (obj.error) { return void cb(obj); }
+                    if (d === "full") {
+                        // We want shared folders too
+                        var result = {
+                            uo: obj,
+                            sf: {}
+                        };
+                        if (!obj.drive || !obj.drive.sharedFolders) { return void cb(result); }
+                        Utils.nThen(function (waitFor) {
+                            Object.keys(obj.drive.sharedFolders).forEach(function (id) {
+                                Cryptpad.getSharedFolder(id, waitFor(function (obj) {
+                                    result.sf[id] = obj;
+                                }));
+                            });
+                        }).nThen(function () {
+                            cb(result);
+                        });
+                        return;
+                    }
+                    // We want only the user object
+                    cb(obj);
+                });
+            });
             sframeChan.on('Q_DRIVE_USEROBJECT', function (data, cb) {
                 Cryptpad.userObjectCommand(data, cb);
             });

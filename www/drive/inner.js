@@ -3467,6 +3467,41 @@ define([
                 });
             });
         };
+
+
+        var downloadFolder = function (folderElement, folderName) {
+            console.warn("downloadFolder");
+            var todo = function (data) {
+                var getPad = function (data, cb) {
+                    sframeChan.query("Q_CRYPTGET", data, function (err, obj) {
+                        if (err) { return void cb(err); }
+                        if (obj.error) { return void cb(obj.error); }
+                        cb(null, obj.data);
+                    }, { timeout: 60000 });
+                };
+
+                data.folder = folderElement;
+                folderName = Util.fixFileName(folderName) + '.zip';
+                console.log("data", data);
+                console.log("folderName", folderName);
+
+                Backup.create(data, getPad, function (blob, errors) {
+                    console.log("blob", blob);
+                    window.saveAs(blob, folderName);
+                    console.error(errors);
+                }, function () {});
+            };
+            sframeChan.query("Q_SETTINGS_DRIVE_GET", "full", function (err, data) {
+                console.warn("sframeChan.query Q_SETTINGS_DRIVE_GET callback");
+                console.log("err", err);
+                console.log("data", data);
+                if (err) { return void console.error(err); }
+                if (data.error) { return void console.error(data.error); }
+                todo(data);
+            });
+        };
+
+
         $contextMenu.on("click", "a", function(e) {
             e.stopPropagation();
             var paths = $contextMenu.data('paths');
@@ -3563,16 +3598,27 @@ define([
                 console.log("el", el);
                 console.log('path', path);
                 console.log("APP", APP);
-
                 // folder
                 if (manager.isFolder(el)) {
                     // folder
+                    var name, folderEl;
                     if (!manager.isSharedFolder(el)) {
                         console.log("--isFolder--");
+                        name = path.path[path.path.length - 1];
+                        console.log('name', name);
+                        folderEl = el;
+                        downloadFolder(folderEl, name);
                     }
                     // shared folder
                     else {
                         console.log("--isSharedFolder--");
+                        data = manager.getSharedFolderData(el);
+                        name = data.title;
+                        folderEl = manager.find(path.path.concat("root"));
+                        console.log("folderEl", folderEl);
+                        console.log("data:", data);
+                        console.log('name', name);
+                        downloadFolder(folderEl, name);
                     }
                 }
                 // file

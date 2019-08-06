@@ -21,16 +21,22 @@ define([
     };
 
     var transform = function (ctx, type, sjson, cb) {
+        console.error("backup - transform");
+        console.log('type', type);
+        console.log('sjson', sjson);
+
         var result = {
             data: sjson,
             ext: '.json',
         };
+        console.log('result', result);
         var json;
         try {
             json = JSON.parse(sjson);
         } catch (e) {
             return void cb(result);
         }
+        console.log('json', json);
         var path = '/' + type + '/export.js';
         require([path], function (Exporter) {
             Exporter.main(json, function (data) {
@@ -46,6 +52,8 @@ define([
     // Add a file to the zip. We have to cryptget&transform it if it's a pad
     // or fetch&decrypt it if it's a file.
     var addFile = function (ctx, zip, fData, existingNames) {
+        console.error('backup - addFile');
+        console.log('fData', fData);
         if (!fData.href && !fData.roHref) {
             return void ctx.errors.push({
                 error: 'EINVAL',
@@ -54,6 +62,7 @@ define([
         }
 
         var parsed = Hash.parsePadUrl(fData.href || fData.roHref);
+        console.log('parsed', parsed);
         if (['pad', 'file'].indexOf(parsed.hashData.type) === -1) { return; }
 
         // waitFor is used to make sure all the pads and files are process before downloading the zip.
@@ -189,6 +198,7 @@ define([
         var ctx = {
             get: getPad,
             data: data.uo.drive,
+            folder: data.folder || ctx.data.root,
             sf: data.sf,
             zip: new JsZip(),
             errors: [],
@@ -201,7 +211,7 @@ define([
         nThen(function (waitFor) {
             ctx.waitFor = waitFor;
             var zipRoot = ctx.zip.folder('Root');
-            makeFolder(ctx, ctx.data.root, zipRoot, ctx.data.filesData);
+            makeFolder(ctx, ctx.folder, zipRoot, ctx.data.filesData);
             progress('download', {});
         }).nThen(function () {
             console.log(ctx.zip);
