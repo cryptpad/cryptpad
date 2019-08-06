@@ -3555,11 +3555,14 @@ define([
                 refresh();
             }
             else if ($(this).hasClass('cp-app-drive-context-download')) {
+                console.error('DOWNLOAD');
                 if (paths.length !== 1) { return; }
                 var path = paths[0];
                 el = manager.find(path.path);
                 console.log("paths", paths);
                 console.log("el", el);
+                console.log('path', path);
+                console.log("APP", APP);
 
                 // folder
                 if (manager.isFolder(el)) {
@@ -3586,6 +3589,12 @@ define([
                     // pad
                     else {
                         console.log("--isPad--");
+                        data = manager.getFileData(el);
+                        console.log("data:", data);
+                        APP.FM.downloadPad(data, function (err, obj) {
+                            console.log(err, obj);
+                            console.log('DONE');
+                        });
                     }
                 }
             }
