@@ -471,6 +471,7 @@ define([
                 }, Messages.fc_prop)),
             ])
         ]);
+        // add icons to the contextmenu options
         $(menu).find("li a.dropdown-item").each(function (i, el) {
             var $icon = $("<span>");
             if ($(el).attr('data-icon')) {
@@ -481,6 +482,7 @@ define([
             }
             $(el).prepend($icon);
         });
+        // add events handlers for the contextmenu submenus
         $(menu).find(".dropdown-submenu").each(function (i, el) {
             var $el = $(el);
             var $a = $el.children().filter("a");
@@ -501,15 +503,16 @@ define([
             }, function () {
                 hideSubmenu();
             });
+            // handle click event
             $el.click(function (e) {
-                e.stopPropagation();
+                var targetItem = $(e.target).closest(".dropdown-item")[0]; // don't close contextmenu if open submenu
+                var elTarget = $el.children(".dropdown-item")[0];
+                if (targetItem === elTarget) { e.stopPropagation(); }
                 if ($el.children().filter(".dropdown-menu:visible").length !== 0) {
-                    console.log("leave", $a[0]);
                     $el.find(".dropdown-menu").hide();
                     hideSubmenu();
                 }
                 else {
-                    console.log("enter", $a[0]);
                     $el.siblings().find(".dropdown-menu").hide();
                     showSubmenu();
                 }
@@ -1361,21 +1364,26 @@ define([
             });
             if (!showSep && $lastVisibleSep) { $lastVisibleSep.css("display", "none"); } // remove last divider if no options after
         };
+
+        // prepare and display contextmenu
         var displayMenu = function (e) {
             var $menu = $contextMenu;
-            $menu.find(".dropdown-menu").each(function (i, menu) {
-                hideSeparators($(menu));
-            });
             // show / hide submenus
             $menu.find(".dropdown-submenu").each(function (i, el) {
                 var $el = $(el);
+                $el.children(".dropdown-menu").css("display", "none");
                 $el.find("li").each(function (i, li) {
                     if ($(li).css("display") !== "none") {
-                        $(el).css("display", "block");
+                        $el.css("display", "block");
                         return;
                     }
                 });
             });
+            // show / hide separators
+            $menu.find(".dropdown-menu").each(function (i, menu) {
+                hideSeparators($(menu));
+            });
+            // show contextmenu at cursor position
             $menu.css({ display: "block" });
             if (APP.mobile()) { return; }
             var h = $menu.outerHeight();
@@ -3448,7 +3456,6 @@ define([
         };
 
         APP.hideMenu = function (e) {
-            console.error("HIDEMENU", e ? e.target : "e is undefined");
             $contextMenu.hide();
             $trashTreeContextMenu.hide();
             $trashContextMenu.hide();
