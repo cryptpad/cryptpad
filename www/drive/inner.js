@@ -327,56 +327,6 @@ define([
                     'tabindex': '-1',
                     'data-icon': faColor,
                 }, Messages.fc_color)),
-                h('li.dropdown-submenu', [
-                    h('a.cp-app-drive-context-test1.dropdown-item', {
-                        'tabindex': '-1',
-                        'data-icon': faFolderOpen,
-                    }, "TEST"),
-                    h("ul.dropdown-menu", [
-                        h('li', h('a.cp-app-drive-context-subtest1.dropdown-item', {
-                            'tabindex': '-1',
-                            'data-icon': faFolderOpen,
-                        }, "Sub test 1")),
-                        h('li.dropdown-submenu', [
-                            h('a.cp-app-drive-context-test2.dropdown-item', {
-                                'tabindex': '-1',
-                                'data-icon': faFolderOpen,
-                            }, "TEST"),
-                            h("ul.dropdown-menu", [
-                                h('li', h('a.cp-app-drive-context-subtest2.dropdown-item', {
-                                    'tabindex': '-1',
-                                    'data-icon': faFolderOpen,
-                                }, "Sub test 2")),
-                                h('li', h('a.cp-app-drive-context-subtest3.dropdown-item', {
-                                    'tabindex': '-1',
-                                    'data-icon': faFolderOpen,
-                                }, "Sub test 3")),
-                            ]),
-                        ]),
-                        $separator.clone()[0],
-                        h('li', h('a.cp-app-drive-context-subtest4.dropdown-item', {
-                            'tabindex': '-1',
-                            'data-icon': faFolderOpen,
-                        }, "Sub test 4")),
-                        $separator.clone()[0],
-                        h('li.dropdown-submenu', [
-                            h('a.cp-app-drive-context-test3.dropdown-item', {
-                                'tabindex': '-1',
-                                'data-icon': faFolderOpen,
-                            }, "TEST"),
-                            h("ul.dropdown-menu", [
-                                h('li', h('a.cp-app-drive-context-subtest5.dropdown-item', {
-                                    'tabindex': '-1',
-                                    'data-icon': faFolderOpen,
-                                }, "Sub test 5")),
-                                h('li', h('a.cp-app-drive-context-subtest6.dropdown-item', {
-                                    'tabindex': '-1',
-                                    'data-icon': faFolderOpen,
-                                }, "Sub test 6")),
-                            ]),
-                        ]),
-                    ]),
-                ]),
                 h('li', h('a.cp-app-drive-context-download.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faDownload,
@@ -1170,7 +1120,7 @@ define([
                     show = ['newfolder', 'newsharedfolder', 'newdoc'];
                     break;
                 case 'tree':
-                    show = ['open', 'openro', 'expandall', 'collapseall', 'color', 'download', 'share', 'rename', 'delete', 'deleteowned', 'removesf', 'properties', 'hashtag', 'subtest1', 'subtest2', 'subtest3', 'subtest4', 'subtest5', 'subtest6'];
+                    show = ['open', 'openro', 'expandall', 'collapseall', 'color', 'download', 'share', 'rename', 'delete', 'deleteowned', 'removesf', 'properties', 'hashtag'];
                     break;
                 case 'default':
                     show = ['open', 'openro', 'share', 'openparent', 'delete', 'deleteowned', 'properties', 'hashtag'];
