@@ -487,7 +487,9 @@ define([
             var $el = $(el);
             var $a = $el.children().filter("a");
             var $sub = $el.find(".dropdown-menu").first();
+            var timeoutId;
             var showSubmenu = function () {
+                clearTimeout(timeoutId);
                 $sub.toggleClass("left", $el.offset().left + $el.outerWidth() + $sub.outerWidth() > $(window).width());
                 $sub.show();
             };
@@ -495,13 +497,16 @@ define([
                 $sub.hide();
                 $sub.removeClass("left");
             };
+            var mouseOutSubmenu = function () {
+                timeoutId = setTimeout(hideSubmenu, 100);
+            }
             // Add submenu expand icon
             $a.append(h("span.dropdown-toggle"));
             // Show / hide submenu
             $el.hover(function () {
                 showSubmenu();
             }, function () {
-                hideSubmenu();
+                mouseOutSubmenu();
             });
             // handle click event
             $el.click(function (e) {
