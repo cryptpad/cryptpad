@@ -107,7 +107,7 @@
 
     .cp-app-drive-container {
         flex: 1;
-        overflow: auto;
+        overflow-x: auto;
         width: 100%;
         display: flex;
         flex-flow: row;
@@ -121,6 +121,7 @@
             #cp-app-drive-tree {
                 resize: none;
                 width: 100% !important;
+                min-width: unset;
                 max-width: unset;
                 max-height: unset;
                 border-bottom: 1px solid @drive_mobile-tree-border-col;
@@ -239,7 +240,6 @@
         max-height: 100%;
         .cp-app-drive-tree-categories-container {
             flex: 1;
-            max-width: 500px;
             overflow: auto;
         }
         img.cp-app-drive-icon {
@@ -438,13 +438,13 @@
         flex: 1;
         // Needed to avoid the folder's path to overflows
         // https://stackoverflow.com/questions/38223879/white-space-nowrap-breaks-flexbox-layout
-        min-width: 0;
+        // min-width: 0;
     }
     #cp-app-drive-content {
         box-sizing: border-box;
         background: @drive_content-bg;
         color: @drive_content-fg;
-        overflow: auto;
+        overflow-y: auto;
         flex: 1;
         display: flex;
         flex-flow: column;
