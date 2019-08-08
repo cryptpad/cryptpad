@@ -151,7 +151,7 @@ define([
             });
             try {
                 var $d = $(d);
-                DiffMd.apply(DiffMd.render(md || '', true), $d, common);
+                DiffMd.apply(DiffMd.render(md || '', true, true), $d, common);
                 $d.addClass("cp-app-contacts-content");
 
                 // override link clicking, because we're in an iframe
@@ -197,7 +197,7 @@ define([
         var getChat = function (id) {
             return $messages.find(dataQuery(id));
         };
-        
+
         var scrollChatToBottom = function () {
             var $messagebox = $('.cp-app-contacts-messages');
             $messagebox.scrollTop($messagebox[0].scrollHeight);
