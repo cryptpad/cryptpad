@@ -63,8 +63,6 @@ define([
     };
 
     DiffMd.render = function (md, sanitize, restrictedMd) {
-        console.error("DIFFMD RENDER", restrictedMd);
-        console.log("md:\n", md);
         Marked.setOptions({
             renderer: restrictedMd ? restrictedRenderer : renderer,
         });
@@ -183,14 +181,17 @@ define([
     };
     restrictedRenderer.image = renderer.image;
 
+    var renderParagraph = function (p) {
+        return /<media\-tag[\s\S]*>/i.test(p)? p + '\n': '<p>' + p + '</p>\n';
+    };
     renderer.paragraph = function (p) {
         if (p === '[TOC]') {
             return '<p><div class="cp-md-toc"></div></p>';
         }
-        return /<media\-tag[\s\S]*>/i.test(p)? p + '\n': '<p>' + p + '</p>\n';
+        return renderParagraph(p);
     };
     restrictedRenderer.paragraph = function (p) {
-        return /<media\-tag[\s\S]*>/i.test(p)? p + '\n': '<p>' + p + '</p>\n';
+        return renderParagraph(p);
     };
 
     var MutationObserver = window.MutationObserver;
