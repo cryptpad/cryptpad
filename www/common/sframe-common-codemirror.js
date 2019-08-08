@@ -103,12 +103,12 @@ define([
                 // test for link inside the title, and set text just to the name of the link
                 if (hashAndLink.test(line)) {
                     line.replace(hashAndLink, function (a, one) {
-                        text = one;
+                        text = Util.stripTags(one);
                     });
                     return true;
                 }
                 line.replace(hash, function (a, one) {
-                    text = one;
+                    text = Util.stripTags(one);
                 });
                 return true;
             }
