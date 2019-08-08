@@ -786,7 +786,7 @@ define([
             });
         }, true);
 
-        framework.setFileExporter(Exporter.type, function (cb) {
+        framework.setFileExporter(Exporter.ext, function (cb) {
             Exporter.main(inner, cb);
         }, true);
 

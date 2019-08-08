@@ -415,11 +415,11 @@ define([
             setEditable(!locked);
         });
 
-        framework.setFileExporter('png', function (cb) {
+        framework.setFileExporter('.png', function (cb) {
             $canvas[0].toBlob(function (blob) {
                 cb(blob);
             });
-        });
+        }, true);
 
         framework.setNormalizer(function (c) {
             return {

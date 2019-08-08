@@ -39,7 +39,8 @@ define([
     };
 
     module.getContentExtension = function (mode) {
-        return (Modes.extensionOf(mode) || '.txt').slice(1);
+        var ext = Modes.extensionOf(mode);
+        return ext !== undefined ? ext : '.txt';
     };
     module.fileExporter = function (content) {
         return new Blob([ content ], { type: 'text/plain;charset=utf-8' });
