@@ -1206,7 +1206,6 @@ define([
                 $spinner.hide();
                 $ok.show();
             });
-            $colorPicker.css('bakcground-color', val);
         };
 
         // jscolor picker
@@ -1219,7 +1218,6 @@ define([
         common.getAttribute(['general', 'cursor', 'color'], function (e, val) {
             if (e) { return void console.error(e); }
             val = val || "#000";
-            $colorPicker.css('bakcground-color', val);
             jscolorL.fromString(val);
         });
 
