@@ -2766,7 +2766,7 @@ define([
             UIElements.displayCrowdfunding(common);
             modal.delete();
         });
-        var waitingForStoringCb = true;
+        var waitingForStoringCb = false;
         $(store).click(function () {
             if (waitingForStoringCb) { return; }
             waitingForStoringCb = true;
