@@ -43,7 +43,10 @@ define([
 {
     var APP = window.APP = {
         editable: false,
-        mobile: $('body').width() <= 600, // Menu and content area are not inline-block anymore for mobiles
+        mobile: function () {
+            if (window.matchMedia) { return !window.matchMedia('(any-pointer:fine)').matches; }
+            else { return $('body').width() <= 600; }
+        },
         isMac: navigator.platform === "MacIntel",
     };
 
@@ -1154,7 +1157,7 @@ define([
 
         var getSelectedPaths = function ($element) {
             var paths = [];
-            if ($element.length === 0) { return paths; }
+            if (!$element || $element.length === 0) { return paths; }
             if (findSelectedElements().length > 1) {
                 var $selected = findSelectedElements();
                 $selected.each(function (idx, elmt) {
@@ -1339,7 +1342,7 @@ define([
                 });
             });
             $menu.css({ display: "block" });
-            if (APP.mobile) {
+            if (APP.mobile()) {
                 $menu.css({
                     top: ($("#cp-app-drive-toolbar-context-mobile").offset().top + 32) + 'px',
                     right: '0px',
@@ -1456,7 +1459,6 @@ define([
             var newCb = function () {
                 paths.forEach(function (path) {
                     moveFoldersOpened(path, newPath);
-                    // removeSelected();
                 });
                 cb();
             };
@@ -1954,7 +1956,7 @@ define([
         var createTitle = function ($container, path, noStyle) {
             if (!path || path.length === 0) { return; }
             var isTrash = manager.isPathIn(path, [TRASH]);
-            if (APP.mobile && !noStyle) { // noStyle means title in search result
+            if (APP.mobile() && !noStyle) { // noStyle means title in search result
                 return $container;
             }
             var isVirtual = virtualCategories.indexOf(path[0]) !== -1;
@@ -3032,7 +3034,7 @@ define([
             APP.resetTree();
             if (displayedCategories.indexOf(SEARCH) !== -1 && $tree.find('#cp-app-drive-tree-search-input').length) {
                 // in history mode we want to focus the version number input
-                if (!history.isHistoryMode && !APP.mobile) {
+                if (!history.isHistoryMode && !APP.mobile()) {
                     var st = $tree.scrollTop() || 0;
                     $tree.find('#cp-app-drive-tree-search-input').focus();
                     $tree.scrollTop(st);
@@ -3075,7 +3077,7 @@ define([
 
             createTitle($toolbar.find('.cp-app-drive-path'), path);
 
-            if (APP.mobile) {
+            if (APP.mobile()) {
                 var $context = $('<button>', {
                     id: 'cp-app-drive-toolbar-context-mobile'
                 });
@@ -3366,7 +3368,7 @@ define([
                 } else {
                     $input.removeClass('cp-app-drive-search-active');
                 }
-                if (APP.mobile) { return; }
+                if (APP.mobile()) { return; }
                 search.to = window.setTimeout(function () {
                     if (!isInSearchTmp) { search.oldLocation = currentPath.slice(); }
                     var newLocation = [SEARCH, $input.val()];
@@ -3788,10 +3790,8 @@ define([
             e.preventDefault();
         });
         $appContainer.on('mouseup', function (e) {
-            //if (sel.down) { return; }
             if (e.which !== 1) { return ; }
             APP.hideMenu(e);
-            //removeSelected(e);
         });
         $appContainer.on('click', function (e) {
             if (e.which !== 1) { return ; }
