@@ -2766,8 +2766,12 @@ define([
             UIElements.displayCrowdfunding(common);
             modal.delete();
         });
-        $(store).one("click", function () {
+        var waitingForStoringCb = true;
+        $(store).click(function () {
+            if (waitingForStoringCb) { return; }
+            waitingForStoringCb = true;
             common.getSframeChannel().query("Q_AUTOSTORE_STORE", null, function (err, obj) {
+                waitingForStoringCb = false;
                 var error = err || (obj && obj.error);
                 if (error) {
                     if (error === 'E_OVER_LIMIT') {
