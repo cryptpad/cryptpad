@@ -2856,7 +2856,7 @@ define([
             }, [
                 h('li', h('a.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': "cptools-file",
+                    'data-icon': "fa-cloud-upload",
                 }, Messages.pad_mediatagImport))
             ])
         ]);
