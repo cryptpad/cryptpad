@@ -8,7 +8,6 @@ define([
     '/common/common-interface.js',
     '/common/common-constants.js',
     '/common/common-feedback.js',
-    '/common/make-backup.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-realtime.js',
@@ -33,7 +32,6 @@ define([
     UI,
     Constants,
     Feedback,
-    Backup,
     nThen,
     SFCommon,
     CommonRealtime,
@@ -1012,6 +1010,9 @@ define([
                     } else {
                         // We can only open parent in virtual categories
                         hide.push('openparent');
+                    }
+                    if (!$element.is('.cp-border-color-file')) {
+                        hide.push('download');
                     }
                     if ($element.is('.cp-app-drive-element-file')) {
                         // No folder in files
@@ -3556,38 +3557,12 @@ define([
             }
             else if ($(this).hasClass('cp-app-drive-context-download')) {
                 if (paths.length !== 1) { return; }
-                var path = paths[0];
-                el = manager.find(path.path);
-                console.log("paths", paths);
-                console.log("el", el);
-
-                // folder
-                if (manager.isFolder(el)) {
-                    // folder
-                    if (!manager.isSharedFolder(el)) {
-                        console.log("--isFolder--");
-                    }
-                    // shared folder
-                    else {
-                        console.log("--isSharedFolder--");
-                    }
-                }
-                // file
-                else if (manager.isFile(el)) {
-                    // imported file
-                    if (path.element.is(".cp-border-color-file")) {
-                        console.log("--isFile--");
-                        data = manager.getFileData(el);
-                        APP.FM.downloadFile(data, function (err, obj) {
-                            console.log(err, obj);
-                            console.log('DONE');
-                        });
-                    }
-                    // pad
-                    else {
-                        console.log("--isPad--");
-                    }
-                }
+                el = manager.find(paths[0].path);
+                data = manager.getFileData(el);
+                APP.FM.downloadFile(data, function (err, obj) {
+                    console.log(err, obj);
+                    console.log('DONE');
+                });
             }
             else if ($(this).hasClass('cp-app-drive-context-share')) {
                 if (paths.length !== 1) { return; }
