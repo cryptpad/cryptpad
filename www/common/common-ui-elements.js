@@ -573,9 +573,9 @@ define([
         onFriendShare.reg(saveValue);
         var getLinkValue = function (initValue) {
             var val = initValue || {};
-            var edit = initValue ? val.edit : Util.isChecked($(link).find('#cp-share-editable-true'));
-            var embed = initValue ? val.embed : Util.isChecked($(link).find('#cp-share-embed'));
-            var present = initValue ? val.present : Util.isChecked($(link).find('#cp-share-present'));
+            var edit = val.edit !== undefined ? val.edit : Util.isChecked($(link).find('#cp-share-editable-true'));
+            var embed = val.embed !== undefined ? val.embed : Util.isChecked($(link).find('#cp-share-embed'));
+            var present = val.present !== undefined ? val.present : Util.isChecked($(link).find('#cp-share-present'));
 
             var hash = (!hashes.viewHash || (edit && hashes.editHash)) ? hashes.editHash : hashes.viewHash;
             var href = origin + pathname + '#' + hash;
