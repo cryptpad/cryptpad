@@ -254,12 +254,6 @@ define([
 
         updateLocalPalette(palette);
 
-        metadataMgr.onChange(function () {
-            var md = metadataMgr.getMetadata();
-            if (md.palette) {
-                updateLocalPalette(md.palette);
-            }
-        });
 
         return {
             palette: palette,
