@@ -491,7 +491,7 @@ define([
             var mouseOutSubmenu = function () {
                 // don't hide immediately the submenu
                 timeoutId = setTimeout(hideSubmenu, 100);
-            }
+            };
             // Add submenu expand icon
             $a.append(h("span.dropdown-toggle"));
             // Show / hide submenu
