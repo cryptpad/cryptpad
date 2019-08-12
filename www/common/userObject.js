@@ -72,8 +72,22 @@ define([
             a[TRASH] = {};
             a[FILES_DATA] = {};
             a[TEMPLATE] = [];
+            a[SHARED_FOLDERS] = {};
             return a;
         };
+
+        var type = function (dat) {
+            return dat === null?  'null': Array.isArray(dat)?'array': typeof(dat);
+        };
+        exp.isValidDrive = function (obj) {
+            var base = exp.getStructure();
+            return typeof (obj) === "object" &&
+                    Object.keys(base).every(function (key) {
+                        console.log(key, obj[key], type(obj[key]));
+                        return obj[key] && type(base[key]) === type(obj[key]);
+                    });
+        };
+
         var getHrefArray = function () {
             return [TEMPLATE];
         };

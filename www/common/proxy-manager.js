@@ -1036,6 +1036,9 @@ define([
     var isInSharedFolder = _isInSharedFolder;
 
     /* Generic: doesn't need access to a proxy */
+    var isValidDrive = function (Env, obj) {
+        return Env.user.userObject.isValidDrive(obj);
+    };
     var isFile = function (Env, el, allowStr) {
         return Env.user.userObject.isFile(el, allowStr);
     };
@@ -1131,6 +1134,7 @@ define([
             getUserObjectPath: callWithEnv(getUserObjectPath),
             isDuplicateOwned: callWithEnv(isDuplicateOwned),
             // Generic
+            isValidDrive: callWithEnv(isValidDrive),
             isFile: callWithEnv(isFile),
             isFolder: callWithEnv(isFolder),
             isSharedFolder: callWithEnv(isSharedFolder),
