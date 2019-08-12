@@ -2860,6 +2860,7 @@ define([
                 }, Messages.pad_mediatagImport))
             ])
         ]);
+        // create the icon for each contextmenu option
         $(menu).find("li a.dropdown-item").each(function (i, el) {
             var $icon = $("<span>");
             if ($(el).attr('data-icon')) {
