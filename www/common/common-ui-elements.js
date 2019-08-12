@@ -2854,11 +2854,11 @@ define([
                 'aria-labelledBy': 'dropdownMenu',
                 'style': 'display:block;position:static;margin-bottom:5px;'
             }, [
-                h('li', h('a.cp-app-drive-context-saveindrive.dropdown-item', {
+                h('li', h('a.cp-app-code-context-saveindrive.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': "fa-cloud-upload",
                 }, Messages.pad_mediatagImport)),
-                h('li', h('a.cp-app-drive-context-download.dropdown-item', {
+                h('li', h('a.cp-app-code-context-download.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': "fa-download",
                 }, Messages.download_mt_button)),
@@ -2883,10 +2883,10 @@ define([
             e.stopPropagation();
             m.hide();
             var $mt = $menu.data('mediatag');
-            if ($(this).hasClass("cp-app-drive-context-saveindrive")) {
+            if ($(this).hasClass("cp-app-code-context-saveindrive")) {
                 common.importMediaTag($mt);
             }
-            else if ($(this).hasClass("cp-app-drive-context-download")) {
+            else if ($(this).hasClass("cp-app-code-context-download")) {
                 var media = $mt[0]._mediaObject;
                 window.saveAs(media._blob.content, media.name);
             }
