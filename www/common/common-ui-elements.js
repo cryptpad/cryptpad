@@ -2861,10 +2861,14 @@ define([
                 'aria-labelledBy': 'dropdownMenu',
                 'style': 'display:block;position:static;margin-bottom:5px;'
             }, [
-                h('li', h('a.dropdown-item', {
+                h('li', h('a.cp-app-code-context-saveindrive.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': "fa-cloud-upload",
-                }, Messages.pad_mediatagImport))
+                }, Messages.pad_mediatagImport)),
+                h('li', h('a.cp-app-code-context-download.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': "fa-download",
+                }, Messages.download_mt_button)),
             ])
         ]);
         // create the icon for each contextmenu option
@@ -2887,7 +2891,13 @@ define([
             e.stopPropagation();
             m.hide();
             var $mt = $menu.data('mediatag');
-            common.importMediaTag($mt);
+            if ($(this).hasClass("cp-app-code-context-saveindrive")) {
+                common.importMediaTag($mt);
+            }
+            else if ($(this).hasClass("cp-app-code-context-download")) {
+                var media = $mt[0]._mediaObject;
+                window.saveAs(media._blob.content, media.name);
+            }
         });
 
         return m;
