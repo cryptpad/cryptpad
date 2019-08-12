@@ -382,37 +382,47 @@ define([
                     'data-icon': faTags,
                 }, Messages.fc_hashtag)),
                 $separator.clone()[0],
+                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                    'tabindex': '-1',
+                    'data-icon': AppConfig.applicationsIcon.pad,
+                    'data-type': 'pad'
+                }, Messages.button_newpad)),
+                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                    'tabindex': '-1',
+                    'data-icon': AppConfig.applicationsIcon.code,
+                    'data-type': 'code'
+                }, Messages.button_newcode)),
+                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                    'tabindex': '-1',
+                    'data-icon': AppConfig.applicationsIcon.slide,
+                    'data-type': 'slide'
+                }, Messages.button_newslide)),
                 h('li.dropdown-submenu', [
                     h('a.cp-app-drive-context-newdocmenu.dropdown-item', {
                         'tabindex': '-1',
                         'data-icon': "fa-plus",
-                    }, Messages.fm_newFile),
+                    }, Messages.fm_otherPads || "Other pads"), //XXX
                     h("ul.dropdown-menu", [
                         h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                             'tabindex': '-1',
-                            'data-icon': AppConfig.applicationsIcon.pad,
-                            'data-type': 'pad'
-                        }, Messages.button_newpad)),
-                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
-                            'tabindex': '-1',
-                            'data-icon': AppConfig.applicationsIcon.code,
-                            'data-type': 'code'
-                        }, Messages.button_newcode)),
-                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
-                            'tabindex': '-1',
-                            'data-icon': AppConfig.applicationsIcon.slide,
-                            'data-type': 'slide'
-                        }, Messages.button_newslide)),
-                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
-                            'tabindex': '-1',
-                            'data-icon': AppConfig.applicationsIcon.poll,
-                            'data-type': 'poll'
-                        }, Messages.button_newpoll)),
+                            'data-icon': AppConfig.applicationsIcon.sheet,
+                            'data-type': 'sheet'
+                        }, Messages.button_newsheet)),
                         h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                             'tabindex': '-1',
                             'data-icon': AppConfig.applicationsIcon.whiteboard,
                             'data-type': 'whiteboard'
                         }, Messages.button_newwhiteboard)),
+                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                            'tabindex': '-1',
+                            'data-icon': AppConfig.applicationsIcon.kanban,
+                            'data-type': 'kanban'
+                        }, Messages.button_newkanban)),
+                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                            'tabindex': '-1',
+                            'data-icon': AppConfig.applicationsIcon.poll,
+                            'data-type': 'poll'
+                        }, Messages.button_newpoll)),
                     ]),
                 ]),
                 $separator.clone()[0],
