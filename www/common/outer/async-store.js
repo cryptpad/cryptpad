@@ -244,7 +244,7 @@ define([
             // data.force tells us we can safely remove the drive ID
             var channel = data;
             var force = false;
-            if (typeof(data) === "object") {
+            if (data && typeof(data) === "object") {
                 channel = data.channel;
                 force = data.force;
             }
