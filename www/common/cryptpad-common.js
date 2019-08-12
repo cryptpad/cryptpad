@@ -138,7 +138,7 @@ define([
         }
         postMessage("SET", {
             key:['drive'],
-            value: data
+            value: data.drive
         }, function (obj) {
             cb(obj);
         }, {
