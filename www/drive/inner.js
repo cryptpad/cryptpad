@@ -397,16 +397,34 @@ define([
                     'data-icon': AppConfig.applicationsIcon.slide,
                     'data-type': 'slide'
                 }, Messages.button_newslide)),
-                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
-                    'tabindex': '-1',
-                    'data-icon': AppConfig.applicationsIcon.poll,
-                    'data-type': 'poll'
-                }, Messages.button_newpoll)),
-                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
-                    'tabindex': '-1',
-                    'data-icon': AppConfig.applicationsIcon.whiteboard,
-                    'data-type': 'whiteboard'
-                }, Messages.button_newwhiteboard)),
+                h('li.dropdown-submenu', [
+                    h('a.cp-app-drive-context-newdocmenu.dropdown-item', {
+                        'tabindex': '-1',
+                        'data-icon': "fa-plus",
+                    }, Messages.fm_morePads || "More pads"), //XXX
+                    h("ul.dropdown-menu", [
+                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                            'tabindex': '-1',
+                            'data-icon': AppConfig.applicationsIcon.sheet,
+                            'data-type': 'sheet'
+                        }, Messages.button_newsheet)),
+                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                            'tabindex': '-1',
+                            'data-icon': AppConfig.applicationsIcon.whiteboard,
+                            'data-type': 'whiteboard'
+                        }, Messages.button_newwhiteboard)),
+                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                            'tabindex': '-1',
+                            'data-icon': AppConfig.applicationsIcon.kanban,
+                            'data-type': 'kanban'
+                        }, Messages.button_newkanban)),
+                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                            'tabindex': '-1',
+                            'data-icon': AppConfig.applicationsIcon.poll,
+                            'data-type': 'poll'
+                        }, Messages.button_newpoll)),
+                    ]),
+                ]),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-empty.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
@@ -443,6 +461,7 @@ define([
                 }, Messages.fc_prop)),
             ])
         ]);
+        // add icons to the contextmenu options
         $(menu).find("li a.dropdown-item").each(function (i, el) {
             var $icon = $("<span>");
             if ($(el).attr('data-icon')) {
@@ -453,21 +472,46 @@ define([
             }
             $(el).prepend($icon);
         });
+        // add events handlers for the contextmenu submenus
         $(menu).find(".dropdown-submenu").each(function (i, el) {
             var $el = $(el);
             var $a = $el.children().filter("a");
             var $sub = $el.find(".dropdown-menu").first();
+            var timeoutId;
+            var showSubmenu = function () {
+                clearTimeout(timeoutId);
+                $sub.toggleClass("left", $el.offset().left + $el.outerWidth() + $sub.outerWidth() > $(window).width());
+                $el.siblings().find(".dropdown-menu").hide();
+                $sub.show();
+            };
+            var hideSubmenu = function () {
+                $sub.hide();
+                $sub.removeClass("left");
+            };
+            var mouseOutSubmenu = function () {
+                // don't hide immediately the submenu
+                timeoutId = setTimeout(hideSubmenu, 100);
+            };
             // Add submenu expand icon
             $a.append(h("span.dropdown-toggle"));
             // Show / hide submenu
             $el.hover(function () {
-                setTimeout(function () { // wait for dom to update
-                    $sub.toggleClass("left", $el.offset().left + $el.outerWidth() + $sub.outerWidth() > $(window).width());
-                    $sub.show();
-                });
+                showSubmenu();
             }, function () {
-                $sub.hide();
-                $sub.removeClass("left");
+                mouseOutSubmenu();
+            });
+            // handle click event
+            $el.click(function (e) {
+                var targetItem = $(e.target).closest(".dropdown-item")[0]; // don't close contextmenu if open submenu
+                var elTarget = $el.children(".dropdown-item")[0];
+                if (targetItem === elTarget) { e.stopPropagation(); }
+                if ($el.children().filter(".dropdown-menu:visible").length !== 0) {
+                    $el.find(".dropdown-menu").hide();
+                    hideSubmenu();
+                }
+                else {
+                    showSubmenu();
+                }
             });
         });
         return $(menu);
@@ -1313,12 +1357,11 @@ define([
             updateContextButton();
         };
 
-        var displayMenu = function (e) {
-            var $menu = $contextMenu;
+        // show / hide dropdown separators
+        var hideSeparators = function ($menu) {
             var showSep = false;
             var $lastVisibleSep = null;
-            // show / hide drop-down divider
-            $menu.find(".dropdown-menu").children().each(function (i, el) {
+            $menu.children().each(function (i, el) {
                 var $el = $(el);
                 if ($el.is(".dropdown-divider")) {
                     $el.css("display", showSep ? "list-item" : "none");
@@ -1330,16 +1373,27 @@ define([
                 }
             });
             if (!showSep && $lastVisibleSep) { $lastVisibleSep.css("display", "none"); } // remove last divider if no options after
+        };
+
+        // prepare and display contextmenu
+        var displayMenu = function (e) {
+            var $menu = $contextMenu;
             // show / hide submenus
             $menu.find(".dropdown-submenu").each(function (i, el) {
                 var $el = $(el);
+                $el.children(".dropdown-menu").css("display", "none");
                 $el.find("li").each(function (i, li) {
                     if ($(li).css("display") !== "none") {
-                        $(el).css("display", "block");
+                        $el.css("display", "block");
                         return;
                     }
                 });
             });
+            // show / hide separators
+            $menu.find(".dropdown-menu").each(function (i, menu) {
+                hideSeparators($(menu));
+            });
+            // show contextmenu at cursor position
             $menu.css({ display: "block" });
             if (APP.mobile()) {
                 $menu.css({
@@ -3556,7 +3610,7 @@ define([
                 if (paths.length !== 1) { return; }
                 displayRenameInput(paths[0].element, paths[0].path);
             }
-            if ($(this).hasClass("cp-app-drive-context-color")) {
+            else if ($(this).hasClass("cp-app-drive-context-color")) {
                 var currentColor = getFolderColor(paths[0].path);
                 pickFolderColor(paths[0].element, currentColor, function (color) {
                     paths.forEach(function (p) {
@@ -3802,6 +3856,7 @@ define([
         });
         $appContainer.on('mouseup', function (e) {
             if (e.which !== 1) { return ; }
+            if ($(e.target).is(".dropdown-submenu a, .dropdown-submenu a span")) { return; } // if we click on dropdown-submenu, don't close menu
             APP.hideMenu(e);
         });
         $appContainer.on('click', function (e) {
