@@ -3598,6 +3598,7 @@ define([
             var paths = $contextMenu.data('paths');
             var pathsList = [];
             var type = $contextMenu.attr('data-menu-type');
+            var $this = $(this);
 
             var el, data;
             if (paths.length === 0) {
@@ -3606,11 +3607,11 @@ define([
                 return;
             }
 
-            if ($(this).hasClass("cp-app-drive-context-rename")) {
+            if ($this.hasClass("cp-app-drive-context-rename")) {
                 if (paths.length !== 1) { return; }
                 displayRenameInput(paths[0].element, paths[0].path);
             }
-            else if ($(this).hasClass("cp-app-drive-context-color")) {
+            else if ($this.hasClass("cp-app-drive-context-color")) {
                 var currentColor = getFolderColor(paths[0].path);
                 pickFolderColor(paths[0].element, currentColor, function (color) {
                     paths.forEach(function (p) {
@@ -3619,24 +3620,24 @@ define([
                     refresh();
                 });
             }
-            else if($(this).hasClass("cp-app-drive-context-delete")) {
+            else if($this.hasClass("cp-app-drive-context-delete")) {
                 if (!APP.loggedIn) {
                     return void deletePaths(paths);
                 }
                 paths.forEach(function (p) { pathsList.push(p.path); });
                 moveElements(pathsList, [TRASH], false, refresh);
             }
-            else if ($(this).hasClass('cp-app-drive-context-deleteowned')) {
+            else if ($this.hasClass('cp-app-drive-context-deleteowned')) {
                 deleteOwnedPaths(paths);
             }
-            else if ($(this).hasClass('cp-app-drive-context-open')) {
+            else if ($this.hasClass('cp-app-drive-context-open')) {
                 paths.forEach(function (p) {
                     var $element = p.element;
                     $element.click();
                     $element.dblclick();
                 });
             }
-            else if ($(this).hasClass('cp-app-drive-context-openro')) {
+            else if ($this.hasClass('cp-app-drive-context-openro')) {
                 paths.forEach(function (p) {
                     var el = manager.find(p.path);
                     if (paths[0].path[0] === SHARED_FOLDER && APP.newSharedFolder) {
@@ -3654,10 +3655,10 @@ define([
                     openFile(null, href);
                 });
             }
-            else if ($(this).hasClass('cp-app-drive-context-expandall') ||
-                     $(this).hasClass('cp-app-drive-context-collapseall')) {
+            else if ($this.hasClass('cp-app-drive-context-expandall') ||
+                     $this.hasClass('cp-app-drive-context-collapseall')) {
                 if (paths.length !== 1) { return; }
-                var opened = $(this).hasClass('cp-app-drive-context-expandall');
+                var opened = $this.hasClass('cp-app-drive-context-expandall');
                 var openRecursive = function (path) {
                     setFolderOpened(path, opened);
                     var folderContent = manager.find(path);
@@ -3680,7 +3681,7 @@ define([
                 openRecursive(paths[0].path);
                 refresh();
             }
-            else if ($(this).hasClass('cp-app-drive-context-download')) {
+            else if ($this.hasClass('cp-app-drive-context-download')) {
                 if (paths.length !== 1) { return; }
                 el = manager.find(paths[0].path);
                 if (!manager.isFile(el)) { return; }
@@ -3690,7 +3691,7 @@ define([
                     console.log('DONE');
                 });
             }
-            else if ($(this).hasClass('cp-app-drive-context-share')) {
+            else if ($this.hasClass('cp-app-drive-context-share')) {
                 if (paths.length !== 1) { return; }
                 el = manager.find(paths[0].path);
                 var parsed, modal;
@@ -3741,7 +3742,7 @@ define([
                     wide: Object.keys(friends).length !== 0
                 });
             }
-            else if ($(this).hasClass('cp-app-drive-context-newfolder')) {
+            else if ($this.hasClass('cp-app-drive-context-newfolder')) {
                 if (paths.length !== 1) { return; }
                 var onFolderCreated = function (err, info) {
                     if (err) { return void logError(err); }
@@ -3754,21 +3755,21 @@ define([
                 }
                 manager.addFolder(paths[0].path, null, onFolderCreated);
             }
-            else if ($(this).hasClass('cp-app-drive-context-newsharedfolder')) {
+            else if ($this.hasClass('cp-app-drive-context-newsharedfolder')) {
                 if (paths.length !== 1) { return; }
                 addSharedFolderModal(function (obj) {
                     if (!obj) { return; }
                     manager.addSharedFolder(paths[0].path, obj, refresh);
                 });
             }
-            else if ($(this).hasClass("cp-app-drive-context-newdoc")) {
-                var ntype = $(this).data('type') || 'pad';
+            else if ($this.hasClass("cp-app-drive-context-newdoc")) {
+                var ntype = $this.data('type') || 'pad';
                 var path2 = manager.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
                 common.sessionStorage.put(Constants.newPadPathKey, path2, function () {
                     common.openURL('/' + ntype + '/');
                 });
             }
-            else if ($(this).hasClass("cp-app-drive-context-properties")) {
+            else if ($this.hasClass("cp-app-drive-context-properties")) {
                 if (type === 'trash') {
                     var pPath = paths[0].path;
                     if (paths.length !== 1 || pPath.length !== 4) { return; }
@@ -3788,7 +3789,7 @@ define([
                     UI.alert($prop[0], undefined, true);
                 });
             }
-            else if ($(this).hasClass("cp-app-drive-context-hashtag")) {
+            else if ($this.hasClass("cp-app-drive-context-hashtag")) {
                 if (paths.length !== 1) { return; }
                 el = manager.find(paths[0].path);
                 data = manager.getFileData(el);
@@ -3796,7 +3797,7 @@ define([
                 var href = data.href || data.roHref;
                 common.updateTags(href);
             }
-            else if ($(this).hasClass("cp-app-drive-context-empty")) {
+            else if ($this.hasClass("cp-app-drive-context-empty")) {
                 if (paths.length !== 1 || !paths[0].element
                     || !manager.comparePath(paths[0].path, [TRASH])) {
                     log(Messages.fm_forbidden);
@@ -3807,13 +3808,13 @@ define([
                     manager.emptyTrash(refresh);
                 });
             }
-            else if ($(this).hasClass("cp-app-drive-context-remove")) {
+            else if ($this.hasClass("cp-app-drive-context-remove")) {
                 return void deletePaths(paths);
             }
-            else if ($(this).hasClass("cp-app-drive-context-removesf")) {
+            else if ($this.hasClass("cp-app-drive-context-removesf")) {
                 return void deletePaths(paths);
             }
-            else if ($(this).hasClass("cp-app-drive-context-restore")) {
+            else if ($this.hasClass("cp-app-drive-context-restore")) {
                 if (paths.length !== 1) { return; }
                 var restorePath = paths[0].path;
                 var restoreName = paths[0].path[paths[0].path.length - 1];
@@ -3830,7 +3831,7 @@ define([
                     manager.restore(restorePath, refresh);
                 });
             }
-            else if ($(this).hasClass("cp-app-drive-context-openparent")) {
+            else if ($this.hasClass("cp-app-drive-context-openparent")) {
                 if (paths.length !== 1) { return; }
                 var parentPath = paths[0].path.slice();
                 if (manager.isInTrashRoot(parentPath)) { parentPath = [TRASH]; }
