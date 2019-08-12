@@ -401,7 +401,7 @@ define([
                     h('a.cp-app-drive-context-newdocmenu.dropdown-item', {
                         'tabindex': '-1',
                         'data-icon': "fa-plus",
-                    }, Messages.fm_otherPads || "Other pads"), //XXX
+                    }, Messages.fm_morePads || "More pads"), //XXX
                     h("ul.dropdown-menu", [
                         h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                             'tabindex': '-1',
