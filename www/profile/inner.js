@@ -559,7 +559,7 @@ define([
         lm.proxy.on('ready', function () {
             updateValues(lm.proxy);
             UI.removeLoadingScreen();
-            common.mailbox.subscribe({
+            common.mailbox.subscribe(["notifications"], {
                 onMessage: function () {
                     refreshFriendRequest(lm.proxy);
                 },

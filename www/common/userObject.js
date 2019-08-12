@@ -311,12 +311,12 @@ define([
         _getFiles[FILES_DATA] = function () {
             var ret = [];
             if (!files[FILES_DATA]) { return ret; }
-            return Object.keys(files[FILES_DATA]).map(Number);
+            return Object.keys(files[FILES_DATA]).map(Number).filter(Boolean);
         };
         _getFiles[SHARED_FOLDERS] = function () {
             var ret = [];
             if (!files[SHARED_FOLDERS]) { return ret; }
-            return Object.keys(files[SHARED_FOLDERS]).map(Number);
+            return Object.keys(files[SHARED_FOLDERS]).map(Number).filter(Boolean);
         };
         var getFiles = exp.getFiles = function (categories) {
             var ret = [];
@@ -519,26 +519,17 @@ define([
             var resFolders = [];
             var findFoldersRec = function (folder, path) {
                 for (var key in folder) {
-                    if (isFolder(folder[key])) {
-                        if (isSharedFolder(folder[key])) {
-//                            var name = getSharedFolderData(folder[key]).title || "";
-//                            if (name.toLowerCase().indexOf(lValue) !== -1) {
-//                                resFolders.push(path.concat([key, ROOT]));
-//                            }
-                            findFoldersRec(folder[key], path.concat([key, ROOT]));
+                    if (isFolder(folder[key]) && !isSharedFolder(folder[key])) {
+                        if (key.toLowerCase().indexOf(lValue) !== -1) {
+                            resFolders.push({
+                                id: null,
+                                paths: [path.concat(key)],
+                                data: {
+                                    title: key
+                                }
+                            });
                         }
-                        else {
-                            if (key.toLowerCase().indexOf(lValue) !== -1) {
-                                resFolders.push({
-                                    id: null,
-                                    paths: [path.concat(key)],
-                                    data: {
-                                        title: key
-                                    }
-                                });
-                            }
-                            findFoldersRec(folder[key], path.concat(key));
-                        }
+                        findFoldersRec(folder[key], path.concat(key));
                     }
                 }
             };

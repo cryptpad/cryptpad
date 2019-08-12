@@ -39,7 +39,8 @@ define([
     };
 
     module.getContentExtension = function (mode) {
-        return (Modes.extensionOf(mode) || '.txt').slice(1);
+        var ext = Modes.extensionOf(mode);
+        return ext !== undefined ? ext : '.txt';
     };
     module.fileExporter = function (content) {
         return new Blob([ content ], { type: 'text/plain;charset=utf-8' });
@@ -98,9 +99,17 @@ define([
             // lines beginning with a hash are potentially valuable
             // works for markdown, python, bash, etc.
             var hash = /^#+(.*?)$/;
+            var hashAndLink = /^#+\s*\[(.*?)\]\(.*\)\s*$/;
             if (hash.test(line)) {
+                // test for link inside the title, and set text just to the name of the link
+                if (hashAndLink.test(line)) {
+                    line.replace(hashAndLink, function (a, one) {
+                        text = Util.stripTags(one);
+                    });
+                    return true;
+                }
                 line.replace(hash, function (a, one) {
-                    text = one;
+                    text = Util.stripTags(one);
                 });
                 return true;
             }
@@ -231,7 +240,7 @@ define([
             };
             var $block = exp.$language = UIElements.createDropdown(dropdownConfig);
             $block.find('button').attr('title', Messages.languageButtonTitle);
-            
+
             var isHovering = false;
             var $aLanguages = $block.find('a');
             $aLanguages.mouseenter(function () {
@@ -304,7 +313,7 @@ define([
                     setTheme(theme, $block);
                     Common.setAttribute(themeKey, theme);
                 });
-                
+
                 if ($drawer) { $drawer.append($block); }
                 if (cb) { cb(); }
             };
@@ -323,7 +332,7 @@ define([
             var mode;
             if (!mime) {
                 var ext = /.+\.([^.]+)$/.exec(file.name);
-                if (ext[1]) {
+                if (ext && ext[1]) {
                     mode = CMeditor.findModeByExtension(ext[1]);
                     mode = mode && mode.mode || null;
                 }
@@ -339,7 +348,8 @@ define([
                 exp.setMode('text');
                 $toolbarContainer.find('#language-mode').val('text');
             }
-            return { content: content };
+            // return the mode so that the code editor can decide how to display the new content
+            return { content: content, mode: mode };
         };
 
         exp.setValueAndCursor = function (oldDoc, remoteDoc) {
@@ -385,21 +395,32 @@ define([
         exp.mkIndentSettings = function (metadataMgr) {
             var setIndentation = function (units, useTabs, fontSize, spellcheck) {
                 if (typeof(units) !== 'number') { return; }
+                var doc = editor.getDoc();
                 editor.setOption('indentUnit', units);
                 editor.setOption('tabSize', units);
                 editor.setOption('indentWithTabs', useTabs);
                 editor.setOption('spellcheck', spellcheck);
-                if (!useTabs) {
-                    editor.setOption("extraKeys", {
-                        Tab: function() {
-                            editor.replaceSelection(Array(units + 1).join(" "));
+                editor.setOption("extraKeys", {
+                    Tab: function() {
+                        if (doc.somethingSelected()) {
+                            editor.execCommand("indentMore");
                         }
-                    });
-                } else {
-                    editor.setOption("extraKeys", {
-                        Tab: undefined,
-                    });
-                }
+                        else {
+                            if (!useTabs) { editor.execCommand("insertSoftTab"); }
+                            else { editor.execCommand("insertTab"); }
+                        }
+                    },
+                    "Shift-Tab": function () {
+                        editor.execCommand("indentLess");
+                    },
+                    "Backspace": function () {
+                        var cursor = doc.getCursor();
+                        var line = doc.getLine(cursor.line);
+                        if (line.substring(0, cursor.ch).trim() === "") { editor.execCommand("indentLess"); }
+                        else { editor.execCommand("delCharBefore"); }
+
+                    },
+                });
                 $('.CodeMirror').css('font-size', fontSize+'px');
             };
 

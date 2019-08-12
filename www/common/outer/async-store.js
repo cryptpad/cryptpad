@@ -478,7 +478,9 @@ define([
                     settings: store.proxy.settings,
                     thumbnails: disableThumbnails === false,
                     isDriveOwned: Boolean(Util.find(store, ['driveMetadata', 'owners'])),
-                    pendingFriends: store.proxy.friends_pending || {}
+                    support: Util.find(store.proxy, ['mailboxes', 'support', 'channel']),
+                    pendingFriends: store.proxy.friends_pending || {},
+                    supportPrivateKey: Util.find(store.proxy, ['mailboxes', 'supportadmin', 'keys', 'curvePrivate'])
                 }
             };
             cb(JSON.parse(JSON.stringify(metadata)));
@@ -1059,6 +1061,27 @@ define([
                 cb(res);
             });
         };
+        Store.addAdminMailbox = function (clientId, data, cb) {
+            var priv = data;
+            var pub = Hash.getBoxPublicFromSecret(priv);
+            if (!priv || !pub) { return void cb({error: 'EINVAL'}); }
+            var channel = Hash.getChannelIdFromKey(pub);
+            var mailboxes = store.proxy.mailboxes = store.proxy.mailboxes || {};
+            var box = mailboxes.supportadmin = {
+                channel: channel,
+                viewed: [],
+                lastKnownHash: '',
+                keys: {
+                    curvePublic: pub,
+                    curvePrivate: priv
+                }
+            };
+            Store.pinPads(null, [channel], function () {});
+            store.mailbox.open('supportadmin', box, function () {
+                console.log('ready');
+            });
+            onSync(cb);
+        };
 
         //////////////////////////////////////////////////////////////////
         /////////////////////// PAD //////////////////////////////////////
@@ -1067,6 +1090,7 @@ define([
         var channels = Store.channels = store.channels = {};
 
         Store.joinPad = function (clientId, data) {
+            console.log('joining', data.channel);
             var isNew = typeof channels[data.channel] === "undefined";
             var channel = channels[data.channel] = channels[data.channel] || {
                 queue: [],
@@ -1218,6 +1242,97 @@ define([
                 return void cb();
             }
             channel.sendMessage(msg, clientId, cb);
+        };
+
+        Store.requestPadAccess = function (clientId, data, cb) {
+            // Get owners from pad metadata
+            // Try to find an owner in our friend list
+            // Mailbox...
+            var channel = channels[data.channel];
+            if (!data.send && channel && (!channel.data || !channel.data.channel)) {
+                var i = 0;
+                var it = setInterval(function () {
+                    if (channel.data && channel.data.channel) {
+                        clearInterval(it);
+                        Store.requestPadAccess(clientId, data, cb);
+                        return;
+                    }
+                    if (i >= 300) { // One minute timeout
+                        clearInterval(it);
+                    }
+                    i++;
+                }, 200);
+                return;
+            }
+            var fData = channel.data || {};
+            if (fData.owners) {
+                var friends = store.proxy.friends || {};
+                if (Object.keys(friends).length > 1) {
+                    var owner;
+                    fData.owners.some(function (edPublic) {
+                        return Object.keys(friends).some(function (curve) {
+                            if (curve === "me") { return; }
+                            if (edPublic === friends[curve].edPublic &&
+                                friends[curve].notifications) {
+                                owner = friends[curve];
+                                return true;
+                            }
+                        });
+                    });
+                    if (owner) {
+                        if (data.send) {
+                            var myData = Messaging.createData(store.proxy);
+                            delete myData.channel;
+                            store.mailbox.sendTo('REQUEST_PAD_ACCESS', {
+                                channel: data.channel,
+                                user: myData
+                            }, {
+                                channel: owner.notifications,
+                                curvePublic: owner.curvePublic
+                            }, function () {
+                                cb({state: true});
+                            });
+                            return;
+                        }
+                        return void cb({state: true});
+                    }
+                }
+            }
+            cb({sent: false});
+        };
+        Store.givePadAccess = function (clientId, data, cb) {
+            var edPublic = store.proxy.edPublic;
+            var channel = data.channel;
+            var res = store.manager.findChannel(channel);
+
+            if (!data.user || !data.user.notifications || !data.user.curvePublic) {
+                return void cb({error: 'EINVAL'});
+            }
+
+            var href, title;
+
+            if (!res.some(function (obj) {
+                if (obj.data &&
+                    Array.isArray(obj.data.owners) && obj.data.owners.indexOf(edPublic) !== -1 &&
+                    obj.data.href) {
+                        href = obj.data.href;
+                        title = obj.data.title;
+                        return true;
+                }
+            })) { return void cb({error: 'ENOTFOUND'}); }
+
+            var myData = Messaging.createData(store.proxy);
+            delete myData.channel;
+            store.mailbox.sendTo("GIVE_PAD_ACCESS", {
+                channel: channel,
+                href: href,
+                title: title,
+                user: myData
+            }, {
+                channel: data.user.notifications,
+                curvePublic: data.user.curvePublic
+            });
+            cb();
         };
 
         // GET_FULL_HISTORY from sframe-common-outer
@@ -1683,7 +1798,7 @@ define([
                         state: (2 + (version / 10)),
                         progress: progress
                     });
-                });
+                }, store);
             }).nThen(function (waitFor) {
                 postMessage(clientId, 'LOADING_DRIVE', {
                     state: 3

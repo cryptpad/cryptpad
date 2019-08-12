@@ -363,7 +363,15 @@ define([
         });
 
         framework.setFileExporter(CodeMirror.getContentExtension, CodeMirror.fileExporter);
-        framework.setFileImporter({}, CodeMirror.fileImporter);
+        framework.setFileImporter({}, function () {
+            /*  setFileImporter currently takes a function with the following signature:
+                (content, file) => {}
+                I used 'apply' with 'arguments' to avoid breaking things if this API ever changes.
+            */
+            var ret = CodeMirror.fileImporter.apply(null, Array.prototype.slice.call(arguments));
+            previewPane.modeChange(ret.mode);
+            return ret;
+        });
 
         framework.setNormalizer(function (c) {
             return {

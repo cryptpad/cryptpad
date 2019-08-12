@@ -1,0 +1,86 @@
+@import (reference) "./colortheme-all.less";
+.support_main () {
+    @ticket-bg: #F7F7F7;
+    @msg-bg: #eee;
+    @fromme-bg: #ddd;
+    .cp-support-form-container {
+        [type="text"] {
+            width: @sidebar_button-width;
+            margin-bottom: 10px;
+        }
+        textarea {
+            width: 2*@sidebar_button-width;
+            max-width: 90%;
+            padding: 10px 15px;
+            height: 300px;
+        }
+    }
+    .cp-support-container {
+        .cp-support-list-ticket {
+            display: flex;
+            flex-flow: column;
+            background-color: @ticket-bg;
+            padding: 10px;
+            width: 1200px;
+            max-width: 90%;
+            margin: 5px auto;
+            .cp-support-list-message {
+                background-color: @msg-bg;
+                margin: 2px;
+                padding: 2px 5px;
+                .cp-support-fromme {
+                    background-color: @fromme-bg;
+                }
+                .cp-support-showdata {
+                    cursor: pointer;
+                    background-color: @fromme-bg;
+                    .cp-support-message-data {
+                        display: none;
+                        cursor: default;
+                    }
+                }
+                .cp-support-message-time {
+                    float: right;
+                }
+                pre {
+                    margin-bottom: 0;
+                    white-space: pre-wrap;
+                    &.cp-support-message-content {
+                        margin-top: 10px;
+                        margin-bottom: 10px;
+                    }
+                }
+            }
+            .cp-support-list-actions {
+                order: 3;
+                .cp-support-hide {
+                    display: none;
+                }
+            }
+            .cp-support-form-container {
+                order: 2;
+            }
+            &.cp-support-list-closed {
+                .cp-support-list-actions {
+                    display: block !important;
+                    .cp-support-answer, .cp-support-close {
+                        display: none;
+                    }
+                    .cp-support-hide {
+                        display: inline;
+                    }
+                }
+                .cp-support-form-container {
+                    display: none !important;
+                }
+            }
+            button {
+                margin-left: 2px;
+                margin-right: 5px;
+            }
+        }
+    }
+}
+
+
+

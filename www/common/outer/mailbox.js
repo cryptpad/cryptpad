@@ -10,6 +10,8 @@ define([
 
     var TYPES = [
         'notifications',
+        'supportadmin',
+        'support'
     ];
     var BLOCKING_TYPES = [
     ];
@@ -22,6 +24,16 @@ define([
                 viewed: []
             };
             ctx.pinPads([mailboxes.notifications.channel], function (res) {
+                if (res.error) { console.error(res); }
+            });
+        }
+        if (!mailboxes['support']) {
+            mailboxes.support = {
+                channel: Hash.createChannelId(),
+                lastKnownHash: '',
+                viewed: []
+            };
+            ctx.pinPads([mailboxes.support.channel], function (res) {
                 if (res.error) { console.error(res); }
             });
         }
@@ -76,15 +88,32 @@ proxy.mailboxes = {
         var crypto = Crypto.Mailbox.createEncryptor(keys);
         var network = ctx.store.network;
 
-        var ciphertext = crypto.encrypt(JSON.stringify({
+        var text = JSON.stringify({
             type: type,
             content: msg
-        }), user.curvePublic);
+        });
+        var ciphertext = crypto.encrypt(text, user.curvePublic);
 
         network.join(user.channel).then(function (wc) {
             wc.bcast(ciphertext).then(function () {
                 cb();
-                wc.leave();
+
+                // If we've just sent a message to one of our mailboxes, we have to trigger the handler manually
+                // (the server won't send back our message to us)
+                // If it isn't one of our mailboxes, we can close it now
+                var box;
+                if (Object.keys(ctx.boxes).some(function (t) {
+                    var _box = ctx.boxes[t];
+                    if (_box.channel === user.channel) {
+                        box = _box;
+                        return true;
+                    }
+                })) {
+                    var hash = ciphertext.slice(0, 64);
+                    box.onMessage(text, null, null, null, hash, user.curvePublic);
+                } else {
+                    wc.leave();
+                }
             });
         }, function (err) {
             cb({error: err});
@@ -157,6 +186,8 @@ proxy.mailboxes = {
 
     var openChannel = function (ctx, type, m, onReady) {
         var box = ctx.boxes[type] = {
+            channel: m.channel,
+            type: type,
             queue: [], // Store the messages to send when the channel is ready
             history: [], // All the hashes loaded from the server in corretc order
             content: {}, // Content of the messages that should be displayed
@@ -173,9 +204,10 @@ proxy.mailboxes = {
         if (!Crypto.Mailbox) {
             return void console.error("chainpad-crypto is outdated and doesn't support mailboxes.");
         }
-        var keys = getMyKeys(ctx);
+        var keys = m.keys || getMyKeys(ctx);
         if (!keys) { return void console.error("missing asymmetric encryption keys"); }
         var crypto = Crypto.Mailbox.createEncryptor(keys);
+        box.encryptor = crypto;
         var cfg = {
             network: ctx.store.network,
             channel: m.channel,
@@ -213,8 +245,11 @@ proxy.mailboxes = {
             });
             box.queue = [];
         };
-        cfg.onMessage = function (msg, user, vKey, isCp, hash, author) {
+        var lastReceivedHash; // Don't send a duplicate of the last known hash on reconnect
+        box.onMessage = cfg.onMessage = function (msg, user, vKey, isCp, hash, author) {
             if (hash === m.lastKnownHash) { return; }
+            if (hash === lastReceivedHash) { return; }
+            lastReceivedHash = hash;
             try {
                 msg = JSON.parse(msg);
             } catch (e) {
@@ -228,8 +263,8 @@ proxy.mailboxes = {
                     msg: msg,
                     hash: hash
                 };
-                Handlers.add(ctx, box, message, function (toDismiss) {
-                    if (toDismiss) {
+                Handlers.add(ctx, box, message, function (dismissed, toDismiss) {
+                    if (dismissed) { // This message should be removed
                         dismiss(ctx, {
                             type: type,
                             hash: hash
@@ -237,6 +272,11 @@ proxy.mailboxes = {
                             console.log('Notification handled automatically');
                         });
                         return;
+                    }
+                    if (toDismiss) { // List of other messages to remove
+                        dismiss(ctx, toDismiss, '', function () {
+                            console.log('Notification handled automatically');
+                        });
                     }
                     box.content[hash] = msg;
                     showMessage(ctx, type, message);
@@ -293,6 +333,63 @@ proxy.mailboxes = {
         CpNetflux.start(cfg);
     };
 
+    var initializeHistory = function (ctx) {
+        var network = ctx.store.network;
+        network.on('message', function (msg, sender) {
+            if (sender !== network.historyKeeper) { return; }
+            var parsed = JSON.parse(msg);
+            if (!/HISTORY_RANGE/.test(parsed[0])) { return; }
+
+            var txid = parsed[1];
+            var req = ctx.req[txid];
+            if (!req) { return; }
+            var type = parsed[0];
+            var _msg = parsed[2];
+            var box = req.box;
+
+            if (type === 'HISTORY_RANGE') {
+                if (!Array.isArray(_msg)) { return; }
+                var message;
+                try {
+                    var decrypted = box.encryptor.decrypt(_msg[4]);
+                    message = JSON.parse(decrypted.content);
+                } catch (e) {
+                    console.log(e);
+                }
+                ctx.emit('HISTORY', {
+                    txid: txid,
+                    time: _msg[5],
+                    message: message,
+                    hash: _msg[4].slice(0,64)
+                }, [req.cId]);
+            } else if (type === 'HISTORY_RANGE_END') {
+                ctx.emit('HISTORY', {
+                    txid: txid,
+                    complete: true
+                }, [req.cId]);
+                delete ctx.req[txid];
+            }
+        });
+    };
+    var loadHistory = function (ctx, clientId, data, cb) {
+        var box = ctx.boxes[data.type];
+        if (!box) { return void cb({error: 'ENOENT'}); }
+        var msg = [ 'GET_HISTORY_RANGE', box.channel, {
+                from: data.lastKnownHash,
+                count: data.count,
+                txid: data.txid
+            }
+        ];
+        ctx.req[data.txid] = {
+            cId: clientId,
+            box: box
+        };
+        var network = ctx.store.network;
+        network.sendto(network.historyKeeper, JSON.stringify(msg)).then(function () {
+        }, function (err) {
+            console.error(err);
+        });
+    };
 
     var subscribe = function (ctx, data, cId, cb) {
         // Get existing notifications
@@ -327,12 +424,14 @@ proxy.mailboxes = {
             updateMetadata: cfg.updateMetadata,
             emit: emit,
             clients: [],
-            boxes: {}
+            boxes: {},
+            req: {}
         };
 
         var mailboxes = store.proxy.mailboxes = store.proxy.mailboxes || {};
 
         initializeMailboxes(ctx, mailboxes);
+        initializeHistory(ctx);
 
         Object.keys(mailboxes).forEach(function (key) {
             if (TYPES.indexOf(key) === -1) { return; }
@@ -359,6 +458,11 @@ proxy.mailboxes = {
             });
         };
 
+        mailbox.open = function (key, m, cb) {
+            if (TYPES.indexOf(key) === -1) { return; }
+            openChannel(ctx, key, m, cb);
+        };
+
         mailbox.dismiss = function (data, cb) {
             dismiss(ctx, data, '', cb);
         };
@@ -381,6 +485,9 @@ proxy.mailboxes = {
             }
             if (cmd === 'SENDTO') {
                 return void sendTo(ctx, data.type, data.msg, data.user, cb);
+            }
+            if (cmd === 'LOAD_HISTORY') {
+                return void loadHistory(ctx, clientId, data, cb);
             }
         };
 

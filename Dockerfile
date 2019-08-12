@@ -33,6 +33,7 @@ VOLUME /cryptpad/tasks
 VOLUME /cryptpad/block
 VOLUME /cryptpad/blob
 VOLUME /cryptpad/blobstage
+VOLUME /cryptpad/data
 
 # Copy cryptpad and tini from the build container
 COPY --from=build /sbin/tini /sbin/tini

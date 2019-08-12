@@ -17,7 +17,11 @@ define([
 {
     var APP = window.APP = {};
 
+    var init = false;
     var andThen = function (common) {
+        if (init) { return; }
+        init = true;
+
         var metadataMgr = common.getMetadataMgr();
         var sframeChan = common.getSframeChannel();
 
@@ -38,6 +42,8 @@ define([
             var modal = f({
                 origin: origin,
                 pathname: pathname,
+                password: priv.password,
+                isTemplate: priv.isTemplate,
                 hashes: hashes,
                 common: common,
                 title: data.title,
@@ -50,7 +56,7 @@ define([
                     password: priv.password
                 }
             });
-            UI.findCancelButton().click();
+            $('button.cancel').click(); // Close any existing alertify
             UI.openCustomModal(UI.dialog.tabs(modal), {
                 wide: Object.keys(friends).length !== 0
             });

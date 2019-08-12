@@ -78,12 +78,15 @@ define([
             GET_FULL_HISTORY: Store.getFullHistory,
             GET_HISTORY_RANGE: Store.getHistoryRange,
             IS_NEW_CHANNEL: Store.isNewChannel,
+            REQUEST_PAD_ACCESS: Store.requestPadAccess,
+            GIVE_PAD_ACCESS: Store.givePadAccess,
             // Drive
             DRIVE_USEROBJECT: Store.userObjectCommand,
             // Settings,
             DELETE_ACCOUNT: Store.deleteAccount,
             // Admin
             ADMIN_RPC: Store.adminRpc,
+            ADMIN_ADD_MAILBOX: Store.addAdminMailbox,
         };
 
         Rpc.query = function (cmd, data, cb) {

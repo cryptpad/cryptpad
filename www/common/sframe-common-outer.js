@@ -223,6 +223,11 @@ define([
                             sframeChan.event("EV_PAD_PASSWORD");
                         };
 
+                        if (!val && sessionStorage.newPadPassword) {
+                            val = sessionStorage.newPadPassword;
+                            delete sessionStorage.newPadPassword;
+                        }
+
                         if (val) {
                             password = val;
                             Cryptpad.getFileSize(window.location.href, password, waitFor(function (e, size) {
@@ -267,23 +272,25 @@ define([
             var parsed = Utils.Hash.parsePadUrl(window.location.href);
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Utils.Hash.getDefaultName(parsed);
-            var edPublic;
+            var edPublic, isTemplate;
             var forceCreationScreen = cfg.useCreationScreen &&
                                       sessionStorage[Utils.Constants.displayPadCreationScreen];
             delete sessionStorage[Utils.Constants.displayPadCreationScreen];
             var updateMeta = function () {
                 //console.log('EV_METADATA_UPDATE');
-                var metaObj, isTemplate;
+                var metaObj;
                 nThen(function (waitFor) {
                     Cryptpad.getMetadata(waitFor(function (err, m) {
                         if (err) { console.log(err); }
                         metaObj = m;
                         edPublic = metaObj.priv.edPublic; // needed to create an owned pad
                     }));
-                    Cryptpad.isTemplate(window.location.href, waitFor(function (err, t) {
-                        if (err) { console.log(err); }
-                        isTemplate = t;
-                    }));
+                    if (typeof(isTemplate) === "undefined") {
+                        Cryptpad.isTemplate(window.location.href, waitFor(function (err, t) {
+                            if (err) { console.log(err); }
+                            isTemplate = t;
+                        }));
+                    }
                 }).nThen(function (/*waitFor*/) {
                     metaObj.doc = {
                         defaultTitle: defaultTitle,
@@ -730,6 +737,7 @@ define([
             var initShareModal = function (cfg) {
                 cfg.hashes = hashes;
                 cfg.password = password;
+                cfg.isTemplate = isTemplate;
                 // cfg.hidden means pre-loading the filepicker while keeping it hidden.
                 // if cfg.hidden is true and the iframe already exists, do nothing
                 if (!ShareModal.$iframe) {
@@ -934,6 +942,19 @@ define([
 
             Cryptpad.onTimeoutEvent.reg(function () {
                 sframeChan.event('EV_WORKER_TIMEOUT');
+            });
+
+            sframeChan.on('EV_GIVE_ACCESS', function (data, cb) {
+                Cryptpad.padRpc.giveAccess(data, cb);
+            });
+            sframeChan.on('Q_REQUEST_ACCESS', function (data, cb) {
+                if (readOnly && hashes.editHash) {
+                    return void cb({error: 'ALREADYKNOWN'});
+                }
+                Cryptpad.padRpc.requestAccess({
+                    send: data,
+                    channel: secret.channel
+                }, cb);
             });
 
             if (cfg.messaging) {

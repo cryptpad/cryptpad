@@ -401,7 +401,7 @@ define([
                 var ext = (typeof(extension) === 'function') ? extension() : extension;
                 var suggestion = title.suggestTitle('cryptpad-document');
                 UI.prompt(Messages.exportPrompt,
-                    Util.fixFileName(suggestion) + '.' + ext, function (filename)
+                    Util.fixFileName(suggestion) + ext, function (filename)
                 {
                     if (!(typeof(filename) === 'string' && filename)) { return; }
                     if (async) {
@@ -454,7 +454,7 @@ define([
                         return;
                     }
                     if (!mediaTagEmbedder) { console.log('mediaTagEmbedder missing'); return; }
-                    if (data.type !== 'file') { console.log('unhandled embed type ' + data.type); return; } 
+                    if (data.type !== 'file') { console.log('unhandled embed type ' + data.type); return; }
                     var privateDat = cpNfInner.metadataMgr.getPrivateData();
                     var origin = privateDat.fileHost || privateDat.origin;
                     var src = data.src = origin + data.src;
@@ -603,6 +603,7 @@ define([
                     'newpad',
                     'share',
                     'limit',
+                    'request',
                     'unpinnedWarning',
                     'notifications'
                 ],

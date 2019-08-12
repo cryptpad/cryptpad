@@ -119,15 +119,32 @@ define([
         $('<label>', {'for': 'cp-app-prop-owners'}).text(Messages.creation_owners)
             .appendTo($d);
         var owners = Messages.creation_noOwner;
-        var edPublic = common.getMetadataMgr().getPrivateData().edPublic;
+        var priv = common.getMetadataMgr().getPrivateData();
+        var edPublic = priv.edPublic;
         var owned = false;
         if (data.owners && data.owners.length) {
             if (data.owners.indexOf(edPublic) !== -1) {
-                owners = Messages.yourself;
                 owned = true;
-            } else {
-                owners = Messages.creation_ownedByOther;
             }
+            var names = [];
+            var strangers = 0;
+            data.owners.forEach(function (ed) {
+                // If a friend is an owner, add their name to the list
+                // otherwise, increment the list of strangers
+                if (!Object.keys(priv.friends || {}).some(function (c) {
+                    var friend = priv.friends[c] || {};
+                    if (friend.edPublic !== ed) { return; }
+                    var name = c === 'me' ? Messages.yourself : friend.displayName;
+                    names.push(name);
+                    return true;
+                })) {
+                    strangers++;
+                }
+            });
+            if (strangers) {
+                names.push(Messages._getKey('properties_unknownUser', [strangers]));
+            }
+            owners = names.join(', ');
         }
         $d.append(UI.dialog.selectable(owners, {
             id: 'cp-app-prop-owners',
@@ -162,7 +179,7 @@ define([
             }
 
             var parsed = Hash.parsePadUrl(data.href || data.roHref);
-            if (!data.noEditPassword && owned && parsed.hashData.type === 'pad') {
+            if (!data.noEditPassword && owned && parsed.hashData.type === 'pad' && parsed.type !== "sheet") { // FIXME SHEET fix password change for sheets
                 var sframeChan = common.getSframeChannel();
                 var changePwTitle = Messages.properties_changePassword;
                 var changePwConfirm = Messages.properties_confirmChange;
@@ -289,7 +306,7 @@ define([
                     id: 'cp-app-prop-size',
                 }));
 
-        if (data.sharedFolder) { // XXX debug
+        if (data.sharedFolder) {
             $('<label>', {'for': 'cp-app-prop-channel'}).text('Channel ID').appendTo($d);
             if (AppConfig.pinBugRecovery) { $d.append(h('p', AppConfig.pinBugRecovery)); }
             $d.append(UI.dialog.selectable(data.channel, {
@@ -325,7 +342,7 @@ define([
         });
     };
 
-    var getFriendsList = function (config) {
+    var getFriendsList = function (config, onShare) {
         var common = config.common;
         var title = config.title;
         var friends = config.friends;
@@ -412,6 +429,8 @@ define([
                         if (!friend.notifications || !friend.curvePublic) { return; }
                         common.mailbox.sendTo("SHARE_PAD", {
                             href: href,
+                            password: config.password,
+                            isTemplate: config.isTemplate,
                             name: myName,
                             title: title
                         }, {
@@ -435,6 +454,9 @@ define([
                         return smallCurves.indexOf(curve) !== -1;
                     });
                     common.setAttribute(['general', 'share-friends'], order);
+                    if (onShare) {
+                        onShare.fire();
+                    }
                 });
                 $nav.append(button);
             }
@@ -511,8 +533,10 @@ define([
 
         // Share link tab
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
-        var friendsList = hasFriends ? getFriendsList(config) : undefined;
+        var onFriendShare = Util.mkEvent();
+        var friendsList = hasFriends ? getFriendsList(config, onFriendShare) : undefined;
         var friendsUIClass = hasFriends ? '.cp-share-columns' : '';
+
         var link = h('div.cp-share-modal' + friendsUIClass, [
             h('div.cp-share-column', [
                 hasFriends ? h('p', Messages.share_description) : undefined,
@@ -546,11 +570,12 @@ define([
                 present: present
             });
         };
+        onFriendShare.reg(saveValue);
         var getLinkValue = function (initValue) {
             var val = initValue || {};
-            var edit = initValue ? val.edit : Util.isChecked($(link).find('#cp-share-editable-true'));
-            var embed = initValue ? val.embed : Util.isChecked($(link).find('#cp-share-embed'));
-            var present = initValue ? val.present : Util.isChecked($(link).find('#cp-share-present'));
+            var edit = val.edit !== undefined ? val.edit : Util.isChecked($(link).find('#cp-share-editable-true'));
+            var embed = val.embed !== undefined ? val.embed : Util.isChecked($(link).find('#cp-share-embed'));
+            var present = val.present !== undefined ? val.present : Util.isChecked($(link).find('#cp-share-present'));
 
             var hash = (!hashes.viewHash || (edit && hashes.editHash)) ? hashes.editHash : hashes.viewHash;
             var href = origin + pathname + '#' + hash;
@@ -700,7 +725,10 @@ define([
             },
             keys: [13]
         }];
-        var frameLink = UI.dialog.customModal(link, {buttons: linkButtons});
+        var frameLink = UI.dialog.customModal(link, {
+            buttons: linkButtons,
+            onClose: config.onClose,
+        });
 
         // Embed tab
         var embed = h('div.cp-share-modal', [
@@ -727,7 +755,10 @@ define([
             },
             keys: [13]
         }];
-        var frameEmbed = UI.dialog.customModal(embed, { buttons: embedButtons});
+        var frameEmbed = UI.dialog.customModal(embed, {
+            buttons: embedButtons,
+            onClose: config.onClose,
+        });
 
         // Create modal
         var tabs = [{
@@ -1737,16 +1768,20 @@ define([
             var pressed = '';
             var to;
             $container.keydown(function (e) {
-                var $value = $innerblock.find('[data-value].cp-dropdown-element-active');
+                var $value = $innerblock.find('[data-value].cp-dropdown-element-active:visible');
                 if (e.which === 38) { // Up
                     if ($value.length) {
+                        $value.mouseleave();
                         var $prev = $value.prev();
+                        $prev.mouseenter();
                         setActive($prev);
                     }
                 }
                 if (e.which === 40) { // Down
                     if ($value.length) {
+                        $value.mouseleave();
                         var $next = $value.next();
+                        $next.mouseenter();
                         setActive($next);
                     }
                 }
@@ -1757,6 +1792,7 @@ define([
                     }
                 }
                 if (e.which === 27) { // Esc
+                    $value.mouseleave();
                     hide();
                 }
             });
@@ -1861,6 +1897,13 @@ define([
                 content: h('span', Messages.adminPage || 'Admin')
             });
         }
+        if (padType !== 'support' && accountName && Config.supportMailbox) {
+            options.push({
+                tag: 'a',
+                attributes: {'class': 'cp-toolbar-menu-support fa fa-life-ring'},
+                content: h('span', Messages.supportPage || 'Support')
+            });
+        }
         // Add login or logout button depending on the current status
         if (accountName) {
             options.push({
@@ -1954,6 +1997,13 @@ define([
                 window.open(origin+'/settings/');
             } else {
                 window.parent.location = origin+'/settings/';
+            }
+        });
+        $userAdmin.find('a.cp-toolbar-menu-support').click(function () {
+            if (padType) {
+                window.open(origin+'/support/');
+            } else {
+                window.parent.location = origin+'/support/';
             }
         });
         $userAdmin.find('a.cp-toolbar-menu-admin').click(function () {
@@ -2054,6 +2104,9 @@ define([
     };
 
     UIElements.createNewPadModal = function (common) {
+        // if in drive, show new pad modal instead
+        if ($("body.cp-app-drive").length !== 0) { return void $(".cp-app-drive-element-row.cp-app-drive-new-ghost").click(); }
+
         var $modal = UIElements.createModal({
             id: 'cp-app-toolbar-creation-dialog',
             $body: $('body')
@@ -2716,8 +2769,12 @@ define([
             UIElements.displayCrowdfunding(common);
             modal.delete();
         });
+        var waitingForStoringCb = false;
         $(store).click(function () {
+            if (waitingForStoringCb) { return; }
+            waitingForStoringCb = true;
             common.getSframeChannel().query("Q_AUTOSTORE_STORE", null, function (err, obj) {
+                waitingForStoringCb = false;
                 var error = err || (obj && obj.error);
                 if (error) {
                     if (error === 'E_OVER_LIMIT') {
@@ -2804,11 +2861,27 @@ define([
                 'aria-labelledBy': 'dropdownMenu',
                 'style': 'display:block;position:static;margin-bottom:5px;'
             }, [
-                h('li', h('a.dropdown-item', {
+                h('li', h('a.cp-app-code-context-saveindrive.dropdown-item', {
                     'tabindex': '-1',
-                }, Messages.pad_mediatagImport))
+                    'data-icon': "fa-cloud-upload",
+                }, Messages.pad_mediatagImport)),
+                h('li', h('a.cp-app-code-context-download.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': "fa-download",
+                }, Messages.download_mt_button)),
             ])
         ]);
+        // create the icon for each contextmenu option
+        $(menu).find("li a.dropdown-item").each(function (i, el) {
+            var $icon = $("<span>");
+            if ($(el).attr('data-icon')) {
+                var font = $(el).attr('data-icon').indexOf('cptools') === 0 ? 'cptools' : 'fa';
+                $icon.addClass(font).addClass($(el).attr('data-icon'));
+            } else {
+                $icon.text($(el).text());
+            }
+            $(el).prepend($icon);
+        });
         var m = createContextMenu(menu);
 
         mediatagContextMenu = m;
@@ -2818,7 +2891,13 @@ define([
             e.stopPropagation();
             m.hide();
             var $mt = $menu.data('mediatag');
-            common.importMediaTag($mt);
+            if ($(this).hasClass("cp-app-code-context-saveindrive")) {
+                common.importMediaTag($mt);
+            }
+            else if ($(this).hasClass("cp-app-code-context-download")) {
+                var media = $mt[0]._mediaObject;
+                window.saveAs(media._blob.content, media.name);
+            }
         });
 
         return m;

@@ -15,6 +15,7 @@ define([
     '/settings/make-backup.js',
     '/common/common-feedback.js',
 
+    '/common/jscolor.js',
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -1191,13 +1192,13 @@ define([
 
         var $inputBlock = $('<div>').appendTo($div);
 
+        var $colorPicker = $("<div>", { class: "cp-settings-cursor-color-picker"});
         var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
         var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
 
-        var $input = $('<input>', {
-            type: 'color',
-        }).on('change', function () {
-            var val = $input.val();
+        // when jscolor picker value change
+        var onchange = function (colorL) {
+            var val = "#" + colorL.toString();
             if (!/^#[0-9a-fA-F]{6}$/.test(val)) { return; }
             $spinner.show();
             $ok.hide();
@@ -1205,15 +1206,25 @@ define([
                 $spinner.hide();
                 $ok.show();
             });
-        }).appendTo($inputBlock);
+        };
 
+        // jscolor picker
+        var jscolorL = new window.jscolor($colorPicker[0],{showOnClick: false, onFineChange: onchange, valueElement:undefined});
+        $colorPicker.click(function () {
+            jscolorL.show();
+        });
+
+        // set default color
+        common.getAttribute(['general', 'cursor', 'color'], function (e, val) {
+            if (e) { return void console.error(e); }
+            val = val || "#000";
+            jscolorL.fromString(val);
+        });
+
+        $colorPicker.appendTo($inputBlock);
         $ok.hide().appendTo($inputBlock);
         $spinner.hide().appendTo($inputBlock);
 
-        common.getAttribute(['general', 'cursor', 'color'], function (e, val) {
-            if (e) { return void console.error(e); }
-            $input.val(val || '');
-        });
         return $div;
     };
 

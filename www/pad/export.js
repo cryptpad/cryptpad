@@ -5,7 +5,7 @@ define([
     '/bower_components/nthen/index.js',
 ], function ($, Util, Hyperjson, nThen) {
     var module = {
-        type: 'html'
+        ext: '.html'
     };
 
     var exportMediaTags = function (inner, cb) {

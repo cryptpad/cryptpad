@@ -9,6 +9,8 @@ define([
     '/customize/messages.js',
     '/common/common-interface.js',
     '/common/common-util.js',
+    '/common/common-hash.js',
+    '/support/ui.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -23,7 +25,9 @@ define([
     h,
     Messages,
     UI,
-    Util
+    Util,
+    Hash,
+    Support
     )
 {
     var APP = {};
@@ -41,6 +45,10 @@ define([
             'cp-admin-active-pads',
             'cp-admin-registered',
             'cp-admin-disk-usage',
+        ],
+        'support': [
+            'cp-admin-support-list',
+            'cp-admin-support-init'
         ]
     };
 
@@ -94,7 +102,6 @@ define([
         sFrameChan.query('Q_ADMIN_RPC', {
             cmd: 'ACTIVE_SESSIONS',
         }, function (e, data) {
-            console.log(e, data);
             var total = data[0];
             var ips = data[1];
             $div.append(h('pre', total + ' (' + ips + ')'));
@@ -160,6 +167,108 @@ define([
         return $div;
     };
 
+    var supportKey = ApiConfig.supportMailbox;
+    create['support-list'] = function () {
+        if (!supportKey || !APP.privateKey) { return; }
+        var $div = makeBlock('support-list');
+        $div.addClass('cp-support-container');
+        var hashesById = {};
+
+        // Register to the "support" mailbox
+        common.mailbox.subscribe(['supportadmin'], {
+            onMessage: function (data) {
+                /*
+                    Get ID of the ticket
+                    If we already have a div for this ID
+                        Push the message to the end of the ticket
+                    If it's a new ticket ID
+                        Make a new div for this ID
+                */
+                var msg = data.content.msg;
+                var hash = data.content.hash;
+                var content = msg.content;
+                var id = content.id;
+                var $ticket = $div.find('.cp-support-list-ticket[data-id="'+id+'"]');
+
+                hashesById[id] = hashesById[id] || [];
+                if (hashesById[id].indexOf(hash) === -1) {
+                    hashesById[id].push(data);
+                }
+
+                if (msg.type === 'CLOSE') {
+                    // A ticket has been closed by the admins...
+                    if (!$ticket.length) { return; }
+                    $ticket.addClass('cp-support-list-closed');
+                    $ticket.append(APP.support.makeCloseMessage(content, hash));
+                    return;
+                }
+                if (msg.type !== 'TICKET') { return; }
+
+                if (!$ticket.length) {
+                    $ticket = APP.support.makeTicket($div, content, function () {
+                        var error = false;
+                        hashesById[id].forEach(function (d) {
+                            common.mailbox.dismiss(d, function (err) {
+                                if (err) {
+                                    error = true;
+                                    console.error(err);
+                                }
+                            });
+                        });
+                        if (!error) { $ticket.remove(); }
+                    });
+                }
+                $ticket.append(APP.support.makeMessage(content, hash));
+            }
+        });
+        return $div;
+    };
+
+    var checkAdminKey = function (priv) {
+        if (!supportKey) { return; }
+        return Hash.checkBoxKeyPair(priv, supportKey);
+    };
+
+    create['support-init'] = function () {
+        var $div = makeBlock('support-init');
+        if (!supportKey) {
+            $div.append(h('p', Messages.admin_supportInitHelp));
+            return $div;
+        }
+        if (!APP.privateKey || !checkAdminKey(APP.privateKey)) {
+            $div.append(h('p', Messages.admin_supportInitPrivate));
+
+            var error = h('div.cp-admin-support-error');
+            var input = h('input.cp-admin-add-private-key');
+            var button = h('button.btn.btn-primary', Messages.admin_supportAddKey);
+
+            if (APP.privateKey && !checkAdminKey(APP.privateKey)) {
+                $(error).text(Messages.admin_supportAddError);
+            }
+
+            $div.append(h('div', [
+                error,
+                input,
+                button
+            ]));
+
+            $(button).click(function () {
+                var key = $(input).val();
+                if (!checkAdminKey(key)) {
+                    $(input).val('');
+                    return void $(error).text(Messages.admin_supportAddError);
+                }
+                sFrameChan.query("Q_ADMIN_MAILBOX", key, function () {
+                    APP.privateKey = key;
+                    $('.cp-admin-support-init').hide();
+                    APP.$rightside.append(create['support-list']());
+                });
+            });
+            return $div;
+        }
+        return;
+    };
+
     var hideCategories = function () {
         APP.$rightside.find('> div').hide();
     };
@@ -180,6 +289,7 @@ define([
             var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
             if (key === 'general') { $category.append($('<span>', {'class': 'fa fa-user-o'})); }
             if (key === 'stats') { $category.append($('<span>', {'class': 'fa fa-hdd-o'})); }
+            if (key === 'support') { $category.append($('<span>', {'class': 'fa fa-life-ring'})); }
 
             if (key === active) {
                 $category.addClass('cp-leftside-active');
@@ -236,8 +346,10 @@ define([
             return void UI.errorLoadingScreen(Messages.admin_authError || '403 Forbidden');
         }
 
+        APP.privateKey = privateData.supportPrivateKey;
         APP.origin = privateData.origin;
         APP.readOnly = privateData.readOnly;
+        APP.support = Support.create(common, true);
 
         // Content
         var $rightside = APP.$rightside;

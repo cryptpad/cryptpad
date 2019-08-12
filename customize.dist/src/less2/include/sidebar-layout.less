@@ -90,11 +90,20 @@
             button.btn {
                 @button-bg: @colortheme_sidebar-button-bg;
                 @button-red-bg: @colortheme_sidebar-button-red-bg;
+                @button-alt-bg: @colortheme_sidebar-button-alt-bg;
                 background-color: @button-bg;
                 border-color: darken(@button-bg, 10%);
                 color: white;
                 &:hover {
                     background-color: darken(@button-bg, 10%);
+                }
+                &.btn-secondary {
+                    background-color: @button-alt-bg;
+                    border-color: darken(@button-alt-bg, 10%);
+                    color: black;
+                    &:hover {
+                        background-color: darken(@button-alt-bg, 10%);
+                    }
                 }
                 &.btn-danger {
                     background-color: @button-red-bg;

@@ -91,6 +91,7 @@ define([
                             feedbackAllowed: Utils.Feedback.state,
                             hashes: config.data.hashes,
                             password: config.data.password,
+                            isTemplate: config.data.isTemplate,
                             file: config.data.file,
                         };
                         for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }

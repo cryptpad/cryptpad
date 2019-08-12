@@ -15,6 +15,7 @@ define([
 
     var DiffDOM = window.diffDOM;
     var renderer = new Marked.Renderer();
+    var restrictedRenderer = new Marked.Renderer();
 
     var Mermaid = {
         init: function () {}
@@ -61,13 +62,18 @@ define([
         return h('div.cp-md-toc', content).outerHTML;
     };
 
-    DiffMd.render = function (md, sanitize) {
+    DiffMd.render = function (md, sanitize, restrictedMd) {
+        Marked.setOptions({
+            renderer: restrictedMd ? restrictedRenderer : renderer,
+        });
         var r = Marked(md, {
             sanitize: sanitize
         });
 
         // Add Table of Content
-        r = r.replace(/<div class="cp-md-toc"><\/div>/g, getTOC());
+        if (!restrictedMd) {
+            r = r.replace(/<div class="cp-md-toc"><\/div>/g, getTOC());
+        }
         toc = [];
 
         return r;
@@ -83,6 +89,7 @@ define([
             return defaultCode.apply(renderer, arguments);
         }
     };
+    restrictedRenderer.code = renderer.code;
 
     renderer.heading = function (text, level) {
         var i = 0;
@@ -99,9 +106,12 @@ define([
         toc.push({
             level: level,
             id: id,
-            title: text
+            title: Util.stripTags(text)
         });
         return "<h" + level + " id=\"" + id + "\"><a href=\"#" + id + "\" class=\"anchor\"></a>" + text + "</h" + level + ">";
+    };
+    restrictedRenderer.heading = function (text) {
+        return text;
     };
 
     // Tasks list
@@ -122,16 +132,23 @@ define([
         }
         if (!isCheckedTaskItem && !isUncheckedTaskItem && hasBogusInput) {
             if (/checked/.test(text)) {
-                text = text.replace(bogusCheckPtn, 
+                text = text.replace(bogusCheckPtn,
                 '<i class="fa fa-check-square" aria-hidden="true"></i>') + '\n';
             } else if (/disabled/.test(text)) {
-                text = text.replace(bogusCheckPtn, 
+                text = text.replace(bogusCheckPtn,
                 '<i class="fa fa-square-o" aria-hidden="true"></i>') + '\n';
             }
         }
         var cls = (isCheckedTaskItem || isUncheckedTaskItem || hasBogusInput) ? ' class="todo-list-item"' : '';
         return '<li'+ cls + '>' + text + '</li>\n';
     };
+    restrictedRenderer.listitem = function (text) {
+        if (bogusCheckPtn.test(text)) {
+            text = text.replace(bogusCheckPtn, '');
+        }
+        return '<li>' + text + '</li>\n';
+    };
+
     renderer.image = function (href, title, text) {
         if (href.slice(0,6) === '/file/') {
             // DEPRECATED
@@ -156,12 +173,19 @@ define([
         out += this.options.xhtml ? '/>' : '>';
         return out;
     };
+    restrictedRenderer.image = renderer.image;
 
+    var renderParagraph = function (p) {
+        return /<media\-tag[\s\S]*>/i.test(p)? p + '\n': '<p>' + p + '</p>\n';
+    };
     renderer.paragraph = function (p) {
         if (p === '[TOC]') {
             return '<p><div class="cp-md-toc"></div></p>';
         }
-        return /<media\-tag[\s\S]*>/i.test(p)? p + '\n': '<p>' + p + '</p>\n';
+        return renderParagraph(p);
+    };
+    restrictedRenderer.paragraph = function (p) {
+        return renderParagraph(p);
     };
 
     var MutationObserver = window.MutationObserver;
