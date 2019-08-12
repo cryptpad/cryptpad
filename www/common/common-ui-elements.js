@@ -2863,9 +2863,21 @@ define([
             }, [
                 h('li', h('a.dropdown-item', {
                     'tabindex': '-1',
+                    'data-icon': "fa-cloud-upload",
                 }, Messages.pad_mediatagImport))
             ])
         ]);
+        // create the icon for each contextmenu option
+        $(menu).find("li a.dropdown-item").each(function (i, el) {
+            var $icon = $("<span>");
+            if ($(el).attr('data-icon')) {
+                var font = $(el).attr('data-icon').indexOf('cptools') === 0 ? 'cptools' : 'fa';
+                $icon.addClass(font).addClass($(el).attr('data-icon'));
+            } else {
+                $icon.text($(el).text());
+            }
+            $(el).prepend($icon);
+        });
         var m = createContextMenu(menu);
 
         mediatagContextMenu = m;
