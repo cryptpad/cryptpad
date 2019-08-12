@@ -103,7 +103,7 @@ define([
 
             var $row = $table.find('tr[id="'+id+'"]');
 
-            $row.find('.cp-fileupload-table-cancel').addClass('success').html('').append(h('span.fa.fa-check'));
+            $row.find('.cp-fileupload-table-cancel').addClass('success').html('').append(h('span.fa.fa-minus'));
             var $pv = $row.find('.cp-fileupload-table-progress-value');
             var $pb = $row.find('.cp-fileupload-table-progressbar');
             var $link = $row.find('.cp-fileupload-table-link');
@@ -301,7 +301,7 @@ define([
             ]);
 
             $(content).find('#cp-upload-owned').on('change', function () {
-                var val = $(content).find('#cp-upload-owned').is(':checked');
+                var val = Util.isCheked($(content).find('#cp-upload-owned'));
                 if (val) {
                     $(content).find('#cp-upload-store').prop('checked', true).prop('disabled', true);
                 } else {
@@ -315,8 +315,8 @@ define([
                 // Get the values
                 var newName = $(content).find('#cp-upload-name').val();
                 var password = $(content).find('#cp-upload-password').val() || undefined;
-                var owned = $(content).find('#cp-upload-owned').is(':checked');
-                var forceSave = owned || $(content).find('#cp-upload-store').is(':checked');
+                var owned = Util.isChecked($(content).find('#cp-upload-owned'));
+                var forceSave = owned || Util.isChecked($(content).find('#cp-upload-store'));
 
                 modalState.owned = owned;
                 modalState.store = forceSave;
@@ -356,7 +356,7 @@ define([
             ]);
 
             $(content).find('#cp-upload-owned').on('change', function () {
-                var val = $(content).find('#cp-upload-owned').is(':checked');
+                var val = Util.isChecked($(content).find('#cp-upload-owned'));
                 if (val) {
                     $(content).find('#cp-upload-store').prop('checked', true).prop('disabled', true);
                 } else {
@@ -370,8 +370,8 @@ define([
                 // Get the values
                 var newName = $(content).find('#cp-upload-foldername').val();
                 var password = $(content).find('#cp-upload-password').val() || undefined;
-                var owned = $(content).find('#cp-upload-owned').is(':checked');
-                var forceSave = owned || $(content).find('#cp-upload-store').is(':checked');
+                var owned = Util.isChecked($(content).find('#cp-upload-owned'));
+                var forceSave = owned || Util.isChecked($(content).find('#cp-upload-store'));
 
                 modalState.owned = owned;
                 modalState.store = forceSave;
@@ -436,7 +436,7 @@ define([
                     password = defaultOptions.password || undefined;
                     owned = !!defaultOptions.owned;
                     forceSave = !!defaultOptions.forceSave;
-                    finish();
+                    return void finish();
                 }
                 // if no default options were passed, ask the user
                 else {

@@ -2210,7 +2210,6 @@ define([
             });
         };
         var showUploadFolderModal = function () {
-            console.log("%cIMPORT FOLDER", "color: red");
             var $input = $('<input>', {
                 'type': 'file',
                 'style': 'display: none;',
