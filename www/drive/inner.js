@@ -481,6 +481,7 @@ define([
             var showSubmenu = function () {
                 clearTimeout(timeoutId);
                 $sub.toggleClass("left", $el.offset().left + $el.outerWidth() + $sub.outerWidth() > $(window).width());
+                $el.siblings().find(".dropdown-menu").hide();
                 $sub.show();
             };
             var hideSubmenu = function () {
@@ -488,6 +489,7 @@ define([
                 $sub.removeClass("left");
             };
             var mouseOutSubmenu = function () {
+                // don't hide immediately the submenu
                 timeoutId = setTimeout(hideSubmenu, 100);
             }
             // Add submenu expand icon
@@ -508,7 +510,6 @@ define([
                     hideSubmenu();
                 }
                 else {
-                    $el.siblings().find(".dropdown-menu").hide();
                     showSubmenu();
                 }
             });
