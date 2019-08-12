@@ -538,7 +538,7 @@ define([
 
         editor.on('change', framework.localChange);
 
-        framework.setFileExporter(CodeMirror.getContentExtension, CodeMirror.fileExporter);
+        framework.setFileExporter(".md", CodeMirror.fileExporter);
         framework.setFileImporter({}, CodeMirror.fileImporter);
 
         framework.start();

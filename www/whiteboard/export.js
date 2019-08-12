@@ -14,7 +14,7 @@ define([
         var canvas = new Fabric.Canvas(canvas_node);
         var content = userDoc.content;
         canvas.loadFromJSON(content, function () {
-            module.type = 'svg';
+            module.ext = '.svg';
             cb(canvas.toSVG());
         });
     };

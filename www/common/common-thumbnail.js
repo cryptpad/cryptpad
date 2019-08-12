@@ -230,9 +230,15 @@ define([
         if (!Visible.currently()) { to = window.setTimeout(interval, Thumb.UPDATE_FIRST); }
     };
 
+
     var addThumbnail = function (err, thumb, $span, cb) {
+        var u8 = Nacl.util.decodeBase64(thumb.split(',')[1]);
+        var blob = new Blob([u8], {
+            type: 'image/png'
+        });
+        var url = URL.createObjectURL(blob);
         var img = new Image();
-        img.src = thumb.slice(0,5) === 'data:' ? thumb : 'data:image/png;base64,'+thumb;
+        img.src = url;
         $span.find('.cp-icon').hide();
         $span.prepend(img);
         cb($(img));
