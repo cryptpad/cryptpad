@@ -221,8 +221,8 @@ How to proceed
 };
 
 var writeMetadata = function (env, channelId, data, cb) {
-    cb = cb;
     // XXX
+    cb("NOT_IMPLEMENTED");
 };
 
 const NEWLINE_CHR = ('\n').charCodeAt(0);
