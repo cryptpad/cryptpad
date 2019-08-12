@@ -34,7 +34,7 @@ define([
         var sendDriveEvent = function () {};
         var registerProxyEvents = function () {};
 
-        var storeHash;
+        var storeHash, storeChannel;
 
         var store = window.CryptPad_AsyncStore = {
             modules: {}
@@ -239,6 +239,20 @@ define([
 
         Store.removeOwnedChannel = function (clientId, data, cb) {
             if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+
+            // "data" used to be a string (channelID), now it can also be an object
+            // data.force tells us we can safely remove the drive ID
+            var channel = data;
+            var force = false;
+            if (typeof(data) === "object") {
+                channel = data.channel;
+                force = data.force;
+            }
+
+            if (channel === storeChannel && !force) {
+                return void cb({error: 'User drive removal blocked!'});
+            }
+
             store.rpc.removeOwnedChannel(data, function (err) {
                 cb({error:err});
             });
@@ -786,6 +800,7 @@ define([
             var h = p.hashData;
 
             if (AppConfig.disableAnonymousStore && !store.loggedIn) { return void cb(); }
+            if (p.type === "debug") { return void cb(); }
 
             var channelData = Store.channels && Store.channels[channel];
 
@@ -1915,6 +1930,7 @@ define([
             }
             // No password for drive
             var secret = Hash.getSecrets('drive', hash);
+            storeChannel = secret.channel;
             var listmapConfig = {
                 data: {},
                 websocketURL: NetConfig.getWebsocketURL(),

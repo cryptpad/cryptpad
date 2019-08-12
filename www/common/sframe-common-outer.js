@@ -838,13 +838,6 @@ define([
                 Cryptpad.setLanguage(data, cb);
             });
 
-            sframeChan.on('Q_CLEAR_OWNED_CHANNEL', function (channel, cb) {
-                Cryptpad.clearOwnedChannel(channel, cb);
-            });
-            sframeChan.on('Q_REMOVE_OWNED_CHANNEL', function (channel, cb) {
-                Cryptpad.removeOwnedChannel(channel, cb);
-            });
-
             sframeChan.on('Q_GET_ALL_TAGS', function (data, cb) {
                 Cryptpad.listAllTags(function (err, tags) {
                     cb({
