@@ -587,7 +587,10 @@ define([
                         }));
                     }).nThen(function (waitFor) {
                         // Delete Drive
-                        Store.removeOwnedChannel(clientId, secret.channel, waitFor());
+                        Store.removeOwnedChannel(clientId, {
+                            channel: secret.channel
+                            force: true
+                        }, waitFor());
                     }).nThen(function () {
                         store.network.disconnect();
                         cb({
