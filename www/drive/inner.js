@@ -1025,10 +1025,15 @@ define([
                             hide.push('openro'); // Remove open 'view' mode
                         }
                         // if it's not a plain text file
+                        var isPlainTextFile = false;
                         var metadata = manager.getFileData(manager.find(path));
-                        if (!metadata || !Util.isPlainTextFile(metadata)) {
-                            hide.push('openincode');
+                        if (metadata) {
+                            var href = metadata.roHref || metadata.href;
+                            if (href && Hash.parsePadUrl(href).type === "file") {
+                                isPlainTextFile = Util.isPlainTextFile(metadata.fileType, metadata.title);
+                            }
                         }
+                        if (!isPlainTextFile) { hide.push('openincode'); }
                     } else if ($element.is('.cp-app-drive-element-sharedf')) {
                         if (containsFolder) {
                             // More than 1 folder selected: cannot create a new subfolder
@@ -3539,11 +3544,20 @@ define([
             }
             else if ($(this).hasClass('cp-app-drive-context-openincode')) {
                 paths.forEach(function (p) {
-                    console.info("p", p);
                     var el = manager.find(p.path);
                     var metadata = manager.getFileData(el);
-                    console.log(el);
-                    // open code from template
+                    var simpleData = {
+                        title: metadata.filename || metadata.title,
+                        href: metadata.href,
+                        password: metadata.password,
+                        channel: metadata.channel,
+                    };
+                    nThen(function (waitFor) {
+                        common.sessionStorage.put(Constants.newPadFileData, JSON.stringify(simpleData), waitFor());
+                        common.sessionStorage.put(Constants.newPadPathKey, currentPath, waitFor());
+                    }).nThen(function () {
+                        common.openURL('/code/');
+                    });
                 });
             }
             else if ($(this).hasClass('cp-app-drive-context-expandall') ||

@@ -317,6 +317,9 @@ define([
                         channel: secret.channel,
                         enableSF: localStorage.CryptPad_SF === "1", // TODO to remove when enabled by default
                         devMode: localStorage.CryptPad_dev === "1",
+                        fromFileData: Cryptpad.fromFileData ? {
+                            title: Cryptpad.fromFileData.title
+                        } : undefined,
                     };
                     if (window.CryptPad_newSharedFolder) {
                         additionalPriv.newSharedFolder = window.CryptPad_newSharedFolder;
@@ -356,6 +359,8 @@ define([
             Cryptpad.onNewVersionReconnect.reg(function () {
                 sframeChan.event("EV_NEW_VERSION");
             });
+
+
 
             // Put in the following function the RPC queries that should also work in filepicker
             var addCommonRpc = function (sframeChan) {
@@ -808,6 +813,22 @@ define([
                 });
             });
 
+            sframeChan.on('Q_GET_FILE_THUMBNAIL', function (data, cb) {
+                if (!Cryptpad.fromFileData.href) {
+                    return void cb({
+                        error: "EINVAL",
+                    });
+                }
+                var key = getKey(Cryptpad.fromFileData.href, Cryptpad.fromFileData.channel);
+                Utils.LocalStore.getThumbnail(key, function (e, data) {
+                    if (data === "EMPTY") { data = null; }
+                    cb({
+                        error: e,
+                        data: data
+                    });
+                });
+            });
+
             sframeChan.on('EV_GOTO_URL', function (url) {
                 if (url) {
                     window.location.href = url;
@@ -1080,14 +1101,22 @@ define([
                         }));
                     }
                 }).nThen(function () {
+                    var cryptputCfg = $.extend(true, {}, rtConfig, {password: password});
                     if (data.template) {
                         // Pass rtConfig to useTemplate because Cryptput will create the file and
                         // we need to have the owners and expiration time in the first line on the
                         // server
-                        var cryptputCfg = $.extend(true, {}, rtConfig, {password: password});
                         Cryptpad.useTemplate({
                             href: data.template
                         }, Cryptget, function () {
+                            startRealtime();
+                            cb();
+                        }, cryptputCfg);
+                        return;
+                    }
+                    // if we open a new code from a file
+                    if (Cryptpad.fromFileData) {
+                        Cryptpad.useFile(Cryptget, function () {
                             startRealtime();
                             cb();
                         }, cryptputCfg);

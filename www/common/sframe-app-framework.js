@@ -454,7 +454,7 @@ define([
                         return;
                     }
                     if (!mediaTagEmbedder) { console.log('mediaTagEmbedder missing'); return; }
-                    if (data.type !== 'file') { console.log('unhandled embed type ' + data.type); return; } 
+                    if (data.type !== 'file') { console.log('unhandled embed type ' + data.type); return; }
                     var privateDat = cpNfInner.metadataMgr.getPrivateData();
                     var origin = privateDat.fileHost || privateDat.origin;
                     var src = data.src = origin + data.src;

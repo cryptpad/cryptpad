@@ -319,21 +319,26 @@ define([], function () {
         return window.innerHeight < 800 || window.innerWidth < 800;
     };
 
-    Util.isPlainTextFile = function (metadata) {
-        if (!metadata || !metadata.href) { return; }
-        console.log("%c" + metadata.title + " : " + metadata.fileType, "color: #3a7");
-        console.log(metadata);
-        var href = metadata.roHref || metadata.href;
-        // is it a file ?
-        if (!href || href.indexOf("/file/") === -1) { return false; }
+    // return an
+    Util.parseFilename = function (filename) {
+        if (!filename || !filename.trim()) { return {}; }
+        var parsedName =  /^(\.?.+?)(\.[^.]+)?$/.exec(filename) || [];
+        return {
+            name: parsedName[1],
+            ext: parsedName[2],
+        }
+    }
+
+    // Tell if a file is plain text from its metadata={title, fileType}
+    Util.isPlainTextFile = function (type, name) {
         // does its type begins with "text/"
-        if (metadata.fileType.indexOf("text/") === 0) { return true; }
+        if (type && type.indexOf("text/") === 0) { return true; }
         // no type and no file extension -> let's guess it's plain text
-        var parsedName = /^(\.?.+?)(\.[^.]+)?$/.exec(metadata.title) || [];
-        if (!metadata.fileType && !parsedName[2]) { return true; }
+        var parsedName = Util.parseFilename(name);
+        if (!type && name && !parsedName.ext) { return true; }
         // other exceptions
-        if (metadata.fileType === 'application/x-javascript') { return true; }
-        if (metadata.fileType === 'application/xml') { return true; }
+        if (type === 'application/x-javascript') { return true; }
+        if (type === 'application/xml') { return true; }
         return false;
     };
 

@@ -367,7 +367,7 @@ define([
             blobToArrayBuffer(file, function (e, buffer) {
                 if (e) { console.error(e); }
                 file_arraybuffer = buffer;
-                if (!Thumb.isSupportedType(file.type)) { return getName(); }
+                if (!Thumb.isSupportedType(file)) { return getName(); }
                 // make a resized thumbnail from the image..
                 Thumb.fromBlob(file, function (e, thumb64) {
                     if (e) { console.error(e); }
