@@ -189,7 +189,9 @@ module.exports.create = function (cfg) {
             }));
         }).nThen(function () {
             // when all is done, cache the metadata in memory
-            metadata = metadata_cache[channelName] = ref.meta;
+            if (ref.index) { // but don't bother if no metadata was found...
+                metadata = metadata_cache[channelName] = ref.meta;
+            }
             // and return the computed index
             CB(null, {
                 // Only keep the checkpoints included in the last 100 messages
@@ -305,7 +307,6 @@ module.exports.create = function (cfg) {
         if (!channel.id || channel.id.length === EPHEMERAL_CHANNEL_LENGTH) { return; }
 
         const isCp = /^cp\|/.test(msgStruct[4]);
-        // FIXME METADATA
         if (metadata_cache[channel.id] && metadata_cache[channel.id].expire &&
                 metadata_cache[channel.id].expire < +new Date()) {
             return; // Don't store messages on expired channel
@@ -323,7 +324,7 @@ module.exports.create = function (cfg) {
             /*::if (typeof(msgStruct[4]) !== 'string') { throw new Error(); }*/
             let signedMsg = (isCp) ? msgStruct[4].replace(CHECKPOINT_PATTERN, '') : msgStruct[4];
             signedMsg = Nacl.util.decodeBase64(signedMsg);
-            // FIXME performance: cache the decoded key instead of decoding it every time
+            // FIXME PERFORMANCE: cache the decoded key instead of decoding it every time
             const validateKey = Nacl.util.decodeBase64(metadata_cache[channel.id].validateKey);
             const validated = Nacl.sign.open(signedMsg, validateKey);
             if (!validated) {
@@ -389,10 +390,6 @@ module.exports.create = function (cfg) {
             getIndex(ctx, channelName, waitFor((err, index) => {
                 if (err) { waitFor.abort(); return void cb(err); }
 
-                // Check last known hash, this guards against NaN and other invalid offsets
-                // the offset is *the end of the message*, so if they passed a valid lkh
-                // it cannot be zero, so it will get past this guard
-                // XXX
                 const lkh = index.offsetByHash[lastKnownHash];
                 if (lastKnownHash && typeof(lkh) !== "number") {
                     waitFor.abort();
@@ -657,16 +654,18 @@ module.exports.create = function (cfg) {
                         so, let's just fall through...
                     */
                     if (err) { return w(); }
-                    if (!index || !index.metadata) { return void w(); } // FIXME METADATA READ
-                    // Store the metadata if we don't have it in memory
-                    if (!metadata_cache[channelName]) {
-                        metadata_cache[channelName] = index.metadata; // FIXME METADATA STORE
-                    }
+
+
+                    // it's possible that the channel doesn't have metadata
+                    // but in that case there's no point in checking if the channel expired
+                    // or in trying to send metadata, so just skip this block
+                    if (!index || !index.metadata) { return void w(); }
                     // And then check if the channel is expired. If it is, send the error and abort
+                    // FIXME this is hard to read because 'checkExpired' has side effects
                     if (checkExpired(ctx, channelName)) { return void waitFor.abort(); }
                     // Send the metadata to the user
                     if (!lastKnownHash && index.cpIndex.length > 1) {
-                        sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(index.metadata)], w); // FIXME METADATA SEND
+                        sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(index.metadata)], w);
                         return;
                     }
                     w();
@@ -723,7 +722,13 @@ module.exports.create = function (cfg) {
                             metadata.expire = expire;
                         }
                         metadata_cache[channelName] = metadata;
-                        storeMessage(ctx, chan, JSON.stringify(metadata), false, undefined); // FIXME METADATA WRITE
+
+                        store.writeMetadata(channelName, JSON.stringify(metadata), function (err) {
+                            if (err) {
+                                // XXX handle errors
+                            }
+                        });
+                        //storeMessage(ctx, chan, JSON.stringify(metadata), false, undefined); // FIXME METADATA WRITE
                         sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(metadata)]); // FIXME METADATA SEND
                     }
 
