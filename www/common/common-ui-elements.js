@@ -573,9 +573,9 @@ define([
         onFriendShare.reg(saveValue);
         var getLinkValue = function (initValue) {
             var val = initValue || {};
-            var edit = initValue ? val.edit : Util.isChecked($(link).find('#cp-share-editable-true'));
-            var embed = initValue ? val.embed : Util.isChecked($(link).find('#cp-share-embed'));
-            var present = initValue ? val.present : Util.isChecked($(link).find('#cp-share-present'));
+            var edit = val.edit !== undefined ? val.edit : Util.isChecked($(link).find('#cp-share-editable-true'));
+            var embed = val.embed !== undefined ? val.embed : Util.isChecked($(link).find('#cp-share-embed'));
+            var present = val.present !== undefined ? val.present : Util.isChecked($(link).find('#cp-share-present'));
 
             var hash = (!hashes.viewHash || (edit && hashes.editHash)) ? hashes.editHash : hashes.viewHash;
             var href = origin + pathname + '#' + hash;
@@ -2104,6 +2104,9 @@ define([
     };
 
     UIElements.createNewPadModal = function (common) {
+        // if in drive, show new pad modal instead
+        if ($("body.cp-app-drive").length !== 0) { return void $(".cp-app-drive-element-row.cp-app-drive-new-ghost").click(); }
+
         var $modal = UIElements.createModal({
             id: 'cp-app-toolbar-creation-dialog',
             $body: $('body')
@@ -2766,8 +2769,12 @@ define([
             UIElements.displayCrowdfunding(common);
             modal.delete();
         });
+        var waitingForStoringCb = false;
         $(store).click(function () {
+            if (waitingForStoringCb) { return; }
+            waitingForStoringCb = true;
             common.getSframeChannel().query("Q_AUTOSTORE_STORE", null, function (err, obj) {
+                waitingForStoringCb = false;
                 var error = err || (obj && obj.error);
                 if (error) {
                     if (error === 'E_OVER_LIMIT') {
@@ -2854,11 +2861,27 @@ define([
                 'aria-labelledBy': 'dropdownMenu',
                 'style': 'display:block;position:static;margin-bottom:5px;'
             }, [
-                h('li', h('a.dropdown-item', {
+                h('li', h('a.cp-app-code-context-saveindrive.dropdown-item', {
                     'tabindex': '-1',
-                }, Messages.pad_mediatagImport))
+                    'data-icon': "fa-cloud-upload",
+                }, Messages.pad_mediatagImport)),
+                h('li', h('a.cp-app-code-context-download.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': "fa-download",
+                }, Messages.download_mt_button)),
             ])
         ]);
+        // create the icon for each contextmenu option
+        $(menu).find("li a.dropdown-item").each(function (i, el) {
+            var $icon = $("<span>");
+            if ($(el).attr('data-icon')) {
+                var font = $(el).attr('data-icon').indexOf('cptools') === 0 ? 'cptools' : 'fa';
+                $icon.addClass(font).addClass($(el).attr('data-icon'));
+            } else {
+                $icon.text($(el).text());
+            }
+            $(el).prepend($icon);
+        });
         var m = createContextMenu(menu);
 
         mediatagContextMenu = m;
@@ -2868,7 +2891,13 @@ define([
             e.stopPropagation();
             m.hide();
             var $mt = $menu.data('mediatag');
-            common.importMediaTag($mt);
+            if ($(this).hasClass("cp-app-code-context-saveindrive")) {
+                common.importMediaTag($mt);
+            }
+            else if ($(this).hasClass("cp-app-code-context-download")) {
+                var media = $mt[0]._mediaObject;
+                window.saveAs(media._blob.content, media.name);
+            }
         });
 
         return m;

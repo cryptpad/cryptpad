@@ -2,7 +2,9 @@
 // Pads from the code app will be exported using this format instead of plain text.
 define([
 ], function () {
-    var module = {};
+    var module = {
+        ext: '.json'
+    };
 
     module.main = function (userDoc, cb) {
         var content = userDoc.content;

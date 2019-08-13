@@ -17,8 +17,6 @@ define([
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/customize/messages.js',
 
-    '/common/jscolor.js',
-
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/drive/app-drive.less',
@@ -43,7 +41,10 @@ define([
 {
     var APP = window.APP = {
         editable: false,
-        mobile: function () { return $('body').width() <= 600; }, // Menu and content area are not inline-block anymore for mobiles
+        mobile: function () {
+            if (window.matchMedia) { return !window.matchMedia('(any-pointer:fine)').matches; }
+            else { return $('body').width() <= 600; }
+        },
         isMac: navigator.platform === "MacIntel",
     };
 
@@ -299,6 +300,33 @@ define([
         });
     };
 
+
+    APP.selectedFiles = [];
+
+    var isElementSelected = function ($element) {
+        var elementId = $element.data("path").slice(-1)[0];
+        return APP.selectedFiles.indexOf(elementId) !== -1;
+    };
+    var selectElement = function ($element) {
+        var elementId = $element.data("path").slice(-1)[0];
+        if (APP.selectedFiles.indexOf(elementId) === -1) {
+            APP.selectedFiles.push(elementId);
+        }
+        $element.addClass("cp-app-drive-element-selected");
+    };
+    var unselectElement = function ($element) {
+        var elementId = $element.data("path").slice(-1)[0];
+        var index = APP.selectedFiles.indexOf(elementId);
+        if (index !== -1) {
+            APP.selectedFiles.splice(index, 1);
+        }
+        $element.removeClass("cp-app-drive-element-selected");
+    };
+    var findSelectedElements = function () {
+        return $(".cp-app-drive-element-selected");
+    };
+
+
     var createContextMenu = function () {
         var menu = h('div.cp-contextmenu.dropdown.cp-unselectable', [
             h('ul.dropdown-menu', {
@@ -369,16 +397,34 @@ define([
                     'data-icon': AppConfig.applicationsIcon.slide,
                     'data-type': 'slide'
                 }, Messages.button_newslide)),
-                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
-                    'tabindex': '-1',
-                    'data-icon': AppConfig.applicationsIcon.poll,
-                    'data-type': 'poll'
-                }, Messages.button_newpoll)),
-                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
-                    'tabindex': '-1',
-                    'data-icon': AppConfig.applicationsIcon.whiteboard,
-                    'data-type': 'whiteboard'
-                }, Messages.button_newwhiteboard)),
+                h('li.dropdown-submenu', [
+                    h('a.cp-app-drive-context-newdocmenu.dropdown-item', {
+                        'tabindex': '-1',
+                        'data-icon': "fa-plus",
+                    }, Messages.fm_morePads || "More pads"), //XXX
+                    h("ul.dropdown-menu", [
+                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                            'tabindex': '-1',
+                            'data-icon': AppConfig.applicationsIcon.sheet,
+                            'data-type': 'sheet'
+                        }, Messages.button_newsheet)),
+                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                            'tabindex': '-1',
+                            'data-icon': AppConfig.applicationsIcon.whiteboard,
+                            'data-type': 'whiteboard'
+                        }, Messages.button_newwhiteboard)),
+                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                            'tabindex': '-1',
+                            'data-icon': AppConfig.applicationsIcon.kanban,
+                            'data-type': 'kanban'
+                        }, Messages.button_newkanban)),
+                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                            'tabindex': '-1',
+                            'data-icon': AppConfig.applicationsIcon.poll,
+                            'data-type': 'poll'
+                        }, Messages.button_newpoll)),
+                    ]),
+                ]),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-empty.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
@@ -415,6 +461,7 @@ define([
                 }, Messages.fc_prop)),
             ])
         ]);
+        // add icons to the contextmenu options
         $(menu).find("li a.dropdown-item").each(function (i, el) {
             var $icon = $("<span>");
             if ($(el).attr('data-icon')) {
@@ -425,21 +472,46 @@ define([
             }
             $(el).prepend($icon);
         });
+        // add events handlers for the contextmenu submenus
         $(menu).find(".dropdown-submenu").each(function (i, el) {
             var $el = $(el);
             var $a = $el.children().filter("a");
             var $sub = $el.find(".dropdown-menu").first();
+            var timeoutId;
+            var showSubmenu = function () {
+                clearTimeout(timeoutId);
+                $sub.toggleClass("left", $el.offset().left + $el.outerWidth() + $sub.outerWidth() > $(window).width());
+                $el.siblings().find(".dropdown-menu").hide();
+                $sub.show();
+            };
+            var hideSubmenu = function () {
+                $sub.hide();
+                $sub.removeClass("left");
+            };
+            var mouseOutSubmenu = function () {
+                // don't hide immediately the submenu
+                timeoutId = setTimeout(hideSubmenu, 100);
+            };
             // Add submenu expand icon
             $a.append(h("span.dropdown-toggle"));
             // Show / hide submenu
             $el.hover(function () {
-                setTimeout(function () { // wait for dom to update
-                    $sub.toggleClass("left", $el.offset().left + $el.outerWidth() + $sub.outerWidth() > $(window).width());
-                    $sub.show();
-                });
+                showSubmenu();
             }, function () {
-                $sub.hide();
-                $sub.removeClass("left");
+                mouseOutSubmenu();
+            });
+            // handle click event
+            $el.click(function (e) {
+                var targetItem = $(e.target).closest(".dropdown-item")[0]; // don't close contextmenu if open submenu
+                var elTarget = $el.children(".dropdown-item")[0];
+                if (targetItem === elTarget) { e.stopPropagation(); }
+                if ($el.children().filter(".dropdown-menu:visible").length !== 0) {
+                    $el.find(".dropdown-menu").hide();
+                    hideSubmenu();
+                }
+                else {
+                    showSubmenu();
+                }
             });
         });
         return $(menu);
@@ -565,7 +637,8 @@ define([
         var sel = {};
 
         var removeSelected =  function (keepObj) {
-            $('.cp-app-drive-element-selected').removeClass("cp-app-drive-element-selected");
+            APP.selectedFiles = [];
+            findSelectedElements().removeClass("cp-app-drive-element-selected");
             var $container = $driveToolbar.find('#cp-app-drive-toolbar-contextbuttons');
             if (!$container.length) { return; }
             $container.html('');
@@ -675,7 +748,9 @@ define([
             delete sel.move;
             $content.find('.cp-app-drive-element-selected-tmp')
                 .removeClass('cp-app-drive-element-selected-tmp')
-                .addClass('cp-app-drive-element-selected');
+                .each(function (idx, element) {
+                    selectElement($(element));
+            });
             e.stopPropagation();
         });
 
@@ -710,7 +785,9 @@ define([
             // Ctrl+A select all
             if (e.which === 65 && (e.ctrlKey || (e.metaKey && APP.isMac))) {
                 $content.find('.cp-app-drive-element:not(.cp-app-drive-element-selected)')
-                    .addClass('cp-app-drive-element-selected');
+                    .each(function (idx, element) {
+                        selectElement($(element));
+                });
                 return;
             }
 
@@ -723,7 +800,7 @@ define([
                 APP.onElementClick(ev, $(el));
             };
 
-            var $selection = $content.find('.cp-app-drive-element.cp-app-drive-element-selected');
+            var $selection = findSelectedElements();
             if ($selection.length === 0) { return void click($elements.first()[0]); }
 
             var lastIndex = typeof sel.endSelected === "number" ? sel.endSelected :
@@ -842,12 +919,12 @@ define([
                     return;
                 }
                 removeInput();
-                removeSelected();
                 var $name = $element.find('.cp-app-drive-element-name');
                 if (!$name.length) {
                     $name = $element.find('> .cp-app-drive-element');
                 }
                 $name.hide();
+                var isFolder = $element.is(".cp-app-drive-element-folder:not(.cp-app-drive-element-sharedf)");
                 var el = manager.find(path);
                 var name = manager.isFile(el) ? manager.getTitle(el)  : path[path.length - 1];
                 if (manager.isSharedFolder(el)) {
@@ -869,14 +946,21 @@ define([
                         var newName = $input.val();
                         if (JSON.stringify(path) === JSON.stringify(currentPath)) {
                             manager.rename(path, $input.val(), function () {
-                                renameFoldersOpened(path, newName);
-                                path[path.length - 1] = newName;
+                                if (isFolder) {
+                                    renameFoldersOpened(path, newName);
+                                    path[path.length - 1] = newName;
+                                }
                                 APP.displayDirectory(path);
                             });
                         }
                         else {
                             manager.rename(path, $input.val(), function () {
-                                renameFoldersOpened(path, newName);
+                                if (isFolder) {
+                                    renameFoldersOpened(path, newName);
+                                    unselectElement($element);
+                                    $element.data("path", $element.data("path").slice(0, -1).concat(newName));
+                                    selectElement($element);
+                                }
                                 refresh();
                             });
                         }
@@ -897,7 +981,6 @@ define([
 
                 // We don't want to open the file/folder when clicking on the input
                 $input.on('click dblclick', function (e) {
-                    removeSelected();
                     e.stopPropagation();
                 });
                 // Remove the browser ability to drag text from the input to avoid
@@ -1117,8 +1200,9 @@ define([
 
         var getSelectedPaths = function ($element) {
             var paths = [];
-            if ($('.cp-app-drive-element-selected').length > 1) {
-                var $selected = $('.cp-app-drive-element-selected');
+            if (!$element || $element.length === 0) { return paths; }
+            if (findSelectedElements().length > 1) {
+                var $selected = findSelectedElements();
                 $selected.each(function (idx, elmt) {
                     var ePath = $(elmt).data('path');
                     if (ePath) {
@@ -1147,7 +1231,7 @@ define([
             } else {
                 $driveToolbar.find('cp-app-drive-toolbar-emptytrash').hide();
             }
-            var $li = $content.find('.cp-app-drive-element-selected');
+            var $li = findSelectedElements();
             if ($li.length === 0) {
                 $li = findDataHolder($tree.find('.cp-app-drive-element-active'));
             }
@@ -1214,6 +1298,7 @@ define([
             if (pos+eh <= h && pos >= 0) { return; }
             $content.scrollTop(v);
         };
+
         // Add the "selected" class to the "li" corresponding to the clicked element
         var onElementClick = APP.onElementClick = function (e, $element) {
             // If "Ctrl" is pressed, do not remove the current selection
@@ -1250,34 +1335,33 @@ define([
                 var $el;
                 removeSelected(true);
                 sel.oldSelection.forEach(function (el) {
-                    if (!$(el).hasClass("cp-app-drive-element-selected")) {
-                        $(el).addClass("cp-app-drive-element-selected");
+                    if (!isElementSelected($(el))) {
+                        selectElement($(el));
                     }
                 });
                 for (var i = Math.min(sel.startSelected, sel.endSelected);
                      i <= Math.max(sel.startSelected, sel.endSelected);
                      i++) {
                     $el = $($elements.get(i));
-                    if (!$el.hasClass("cp-app-drive-element-selected")) {
-                        $el.addClass("cp-app-drive-element-selected");
+                    if (!isElementSelected($el)) {
+                        selectElement($el);
                     }
                 }
             } else {
-                if (!$element.hasClass("cp-app-drive-element-selected")) {
-                    $element.addClass("cp-app-drive-element-selected");
+                if (!isElementSelected($element)) {
+                    selectElement($element);
                 } else {
-                    $element.removeClass("cp-app-drive-element-selected");
+                    unselectElement($element);
                 }
             }
             updateContextButton();
         };
 
-        var displayMenu = function (e) {
-            var $menu = $contextMenu;
+        // show / hide dropdown separators
+        var hideSeparators = function ($menu) {
             var showSep = false;
             var $lastVisibleSep = null;
-            // show / hide drop-down divider
-            $menu.find(".dropdown-menu").children().each(function (i, el) {
+            $menu.children().each(function (i, el) {
                 var $el = $(el);
                 if ($el.is(".dropdown-divider")) {
                     $el.css("display", showSep ? "list-item" : "none");
@@ -1289,18 +1373,36 @@ define([
                 }
             });
             if (!showSep && $lastVisibleSep) { $lastVisibleSep.css("display", "none"); } // remove last divider if no options after
+        };
+
+        // prepare and display contextmenu
+        var displayMenu = function (e) {
+            var $menu = $contextMenu;
             // show / hide submenus
             $menu.find(".dropdown-submenu").each(function (i, el) {
                 var $el = $(el);
+                $el.children(".dropdown-menu").css("display", "none");
                 $el.find("li").each(function (i, li) {
                     if ($(li).css("display") !== "none") {
-                        $(el).css("display", "block");
+                        $el.css("display", "block");
                         return;
                     }
                 });
             });
+            // show / hide separators
+            $menu.find(".dropdown-menu").each(function (i, menu) {
+                hideSeparators($(menu));
+            });
+            // show contextmenu at cursor position
             $menu.css({ display: "block" });
-            if (APP.mobile()) { return; }
+            if (APP.mobile()) {
+                $menu.css({
+                    top: ($("#cp-app-drive-toolbar-context-mobile").offset().top + 32) + 'px',
+                    right: '0px',
+                    left: ''
+                });
+                return;
+            }
             var h = $menu.outerHeight();
             var w = $menu.outerWidth();
             var wH = window.innerHeight;
@@ -1353,6 +1455,17 @@ define([
                 } else {
                     var $element = findDataHolder($(e.target));
 
+                    // if clicked from tree
+                    var fromTree = $element.closest("#cp-app-drive-tree").length;
+                    if (fromTree) {
+                        removeSelected();
+                    }
+
+                    // if clicked on non selected element
+                    if (!isElementSelected($element)) {
+                        removeSelected();
+                    }
+
                     if (type === 'trash' && !$element.data('path')) { return; }
 
                     if (!$element.length) {
@@ -1361,8 +1474,8 @@ define([
                         return false;
                     }
 
-                    if (!$element.hasClass('cp-app-drive-element-selected')) {
-                        onElementClick(undefined, $element);
+                    if (!isElementSelected($element)) {
+                        selectElement($element);
                     }
 
                     paths = getSelectedPaths($element);
@@ -1432,6 +1545,7 @@ define([
                 if (!res) { return; }
                 manager.delete(pathsList, function () {
                     pathsList.forEach(removeFoldersOpened);
+                    removeSelected();
                     refresh();
                 });
             }, null, true);
@@ -1442,7 +1556,7 @@ define([
             var paths = [];
             var $element = findDataHolder($(ev.target));
             if ($element.hasClass('cp-app-drive-element-selected')) {
-                var $selected = $('.cp-app-drive-element-selected');
+                var $selected = findSelectedElements();
                 $selected.each(function (idx, elmt) {
                     var ePath = $(elmt).data('path');
                     if (ePath) {
@@ -1459,7 +1573,7 @@ define([
                 });
             } else {
                 removeSelected();
-                $element.addClass('cp-app-drive-element-selected');
+                selectElement($element);
                 var val = manager.find(path);
                 if (!val) { return; } // The element is not in the object
                 paths = [{
@@ -1478,7 +1592,13 @@ define([
 
         var findDropPath = function (target) {
             var $target = $(target);
-            var $el = findDataHolder($target);
+            var $el;
+            if ($target.is(".cp-app-drive-path-element")) {
+                $el = $target;
+            }
+            else {
+                $el = findDataHolder($target);
+            }
             var newPath = $el.data('path');
             var dropEl = newPath && manager.find(newPath);
             if (newPath && manager.isSharedFolder(dropEl)) {
@@ -1606,7 +1726,8 @@ define([
                 $owner.attr('title', Messages.fm_padIsOwnedOther);
             }
         };
-        var addFileData = function (element, $span) {
+        var thumbsUrls = {};
+        var addFileData = function (element, $element) {
             if (!manager.isFile(element)) { return; }
 
             var data = manager.getFileData(element);
@@ -1615,7 +1736,7 @@ define([
 
             var hrefData = Hash.parsePadUrl(href);
             if (hrefData.type) {
-                $span.addClass('cp-border-color-'+hrefData.type);
+                $element.addClass('cp-border-color-'+hrefData.type);
             }
 
             var $state = $('<span>', {'class': 'cp-app-drive-element-state'});
@@ -1635,25 +1756,38 @@ define([
                 var $expire = $expirableIcon.clone().appendTo($state);
                 $expire.attr('title', Messages._getKey('fm_expirablePad', [new Date(data.expire).toLocaleString()]));
             }
-            _addOwnership($span, $state, data);
+            _addOwnership($element, $state, data);
 
             var name = manager.getTitle(element);
 
             // The element with the class '.name' is underlined when the 'li' is hovered
             var $name = $('<span>', {'class': 'cp-app-drive-element-name'}).text(name);
-            $span.append($name);
-            $span.append($state);
-            $span.attr('title', name);
+            $element.append($name);
+            $element.append($state);
+            $element.attr('title', name);
+
+            // display the thumbnail
+            // if the thumbnail has already been displayed once, do not reload it, keep the same url
+            if (thumbsUrls[element]) {
+                var img = new Image();
+                img.src = thumbsUrls[element];
+                $element.find('.cp-icon').addClass('cp-app-drive-element-list');
+                $element.prepend(img);
+                $(img).addClass('cp-app-drive-element-grid cp-app-drive-element-thumbnail');
+                $(img).attr("draggable", false);
+            }
+            else {
+                common.displayThumbnail(href || data.roHref, data.channel, data.password, $element, function ($thumb) {
+                    // Called only if the thumbnail exists
+                    // Remove the .hide() added by displayThumnail() because it hides the icon in list mode too
+                    $element.find('.cp-icon').removeAttr('style').addClass('cp-app-drive-element-list');
+                    $thumb.addClass('cp-app-drive-element-grid cp-app-drive-element-thumbnail');
+                    $thumb.attr("draggable", false);
+                    thumbsUrls[element] = $thumb[0].src;
+                });
+            }
 
             var type = Messages.type[hrefData.type] || hrefData.type;
-            common.displayThumbnail(href || data.roHref, data.channel, data.password, $span, function ($thumb) {
-                // Called only if the thumbnail exists
-                // Remove the .hide() added by displayThumnail() because it hides the icon in
-                // list mode too
-                $span.find('.cp-icon').removeAttr('style').addClass('cp-app-drive-element-list');
-                $thumb.addClass('cp-app-drive-element-grid')
-                    .addClass('cp-app-drive-element-thumbnail');
-            });
             var $type = $('<span>', {
                 'class': 'cp-app-drive-element-type cp-app-drive-element-list'
             }).text(type);
@@ -1663,7 +1797,7 @@ define([
             var $cdate = $('<span>', {
                 'class': 'cp-app-drive-element-ctime cp-app-drive-element-list'
             }).text(getDate(data.ctime));
-            $span.append($type).append($adate).append($cdate);
+            $element.append($type).append($adate).append($cdate);
         };
 
         var addFolderData = function (element, key, $span) {
@@ -1739,12 +1873,9 @@ define([
                 draggable: true,
                 'class': 'cp-app-drive-element-row'
             });
-            if (!isFolder && Array.isArray(APP.selectedFiles)) {
-                var idx = APP.selectedFiles.indexOf(element);
-                if (idx !== -1) {
-                    $element.addClass('cp-app-drive-element-selected');
-                    APP.selectedFiles.splice(idx, 1);
-                }
+            $element.data('path', newPath);
+            if (isElementSelected($element)) {
+                selectElement($element);
             }
             $element.prepend($icon).dblclick(function () {
                 if (isFolder) {
@@ -1760,11 +1891,10 @@ define([
                 addFileData(element, $element);
             }
             $element.addClass(liClass);
-            $element.data('path', newPath);
             addDragAndDropHandlers($element, newPath, isFolder, !isTrash);
             $element.click(function(e) {
                 e.stopPropagation();
-                onElementClick(e, $element, newPath);
+                onElementClick(e, $element);
             });
             if (!isTrash) {
                 $element.contextmenu(openContextMenu('tree'));
@@ -1915,6 +2045,8 @@ define([
                 } else if (idx > 0 && manager.isFile(el)) {
                     name = getElementName(path);
                 }
+                $span.data("path", path.slice(0, idx + 1));
+                addDragAndDropHandlers($span, path.slice(0, idx), true, true);
 
                 if (idx === 0) { name = p === SHARED_FOLDER ? name : getPrettyName(p); }
                 else {
@@ -2559,22 +2691,19 @@ define([
                     'class': 'cp-app-drive-element cp-app-drive-element-file cp-app-drive-element-row' + roClass,
                     draggable: draggable
                 });
-                if (Array.isArray(APP.selectedFiles)) {
-                    var sidx = APP.selectedFiles.indexOf(id);
-                    if (sidx !== -1) {
-                        $element.addClass('cp-app-drive-element-selected');
-                        APP.selectedFiles.splice(sidx, 1);
-                    }
+
+                var path = [rootName, idx];
+                $element.data('path', path);
+                if (isElementSelected($element)) {
+                    selectElement($element);
                 }
                 $element.prepend($icon).dblclick(function () {
                     openFile(id);
                 });
                 addFileData(id, $element);
-                var path = [rootName, idx];
-                $element.data('path', path);
                 $element.click(function(e) {
                     e.stopPropagation();
-                    onElementClick(e, $element, path);
+                    onElementClick(e, $element);
                 });
                 $element.contextmenu(openContextMenu('default'));
                 $element.data('context', 'default');
@@ -2701,8 +2830,8 @@ define([
                                 e.preventDefault();
                                 if (manager.isInTrashRoot(parentPath)) { parentPath = [TRASH]; }
                                 else { parentPath.pop(); }
-                                APP.selectedFiles = [r.id];
                                 APP.displayDirectory(parentPath);
+                                APP.selectedFiles = path.slice(-1);
                             }).appendTo($openDir);
                         }
                         $('<a>').text(Messages.fc_prop).click(function () {
@@ -2793,7 +2922,7 @@ define([
                 $element.data('path', path);
                 $element.click(function(e) {
                     e.stopPropagation();
-                    onElementClick(e, $element, path);
+                    onElementClick(e, $element);
                 });
                 $element.contextmenu(openContextMenu('default'));
                 $element.data('context', 'default');
@@ -3017,7 +3146,7 @@ define([
                 $context.click(function (e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    var $li = $content.find('.cp-app-drive-element-selected');
+                    var $li = findSelectedElements();
                     if ($li.length !== 1) {
                         $li = findDataHolder($tree.find('.cp-app-drive-element-active'));
                     }
@@ -3027,11 +3156,6 @@ define([
                         return;
                     }
                     // Open the menu
-                    $('.cp-contextmenu').css({
-                        top: ($context.offset().top + 32) + 'px',
-                        right: '0px',
-                        left: ''
-                    });
                     $li.contextmenu();
                 });
             } else {
@@ -3099,7 +3223,7 @@ define([
                 }
             });*/
 
-            var $sel = $content.find('.cp-app-drive-element-selected');
+            var $sel = findSelectedElements();
             if ($sel.length) {
                 $sel[0].scrollIntoView();
             } else {
@@ -3110,6 +3234,9 @@ define([
         var displayDirectory = APP.displayDirectory = function (path, force) {
             if (history.isHistoryMode) {
                 return void _displayDirectory(path, force);
+            }
+            if (!manager.comparePath(currentPath, path)) {
+                removeSelected();
             }
             updateObject(sframeChan, proxy, function () {
                 copyObjectValue(files, proxy.drive);
@@ -3461,6 +3588,7 @@ define([
                 if (!res) { return; }
                 manager.delete(pathsList, function () {
                     pathsList.forEach(removeFoldersOpened);
+                    removeSelected();
                     refresh();
                 });
             });
@@ -3482,7 +3610,7 @@ define([
                 if (paths.length !== 1) { return; }
                 displayRenameInput(paths[0].element, paths[0].path);
             }
-            if ($(this).hasClass("cp-app-drive-context-color")) {
+            else if ($(this).hasClass("cp-app-drive-context-color")) {
                 var currentColor = getFolderColor(paths[0].path);
                 pickFolderColor(paths[0].element, currentColor, function (color) {
                     paths.forEach(function (p) {
@@ -3707,16 +3835,15 @@ define([
                 var parentPath = paths[0].path.slice();
                 if (manager.isInTrashRoot(parentPath)) { parentPath = [TRASH]; }
                 else { parentPath.pop(); }
-                el = manager.find(paths[0].path);
-                APP.selectedFiles = [el];
                 APP.displayDirectory(parentPath);
+                APP.selectedFiles = paths[0].path.slice(-1);
             }
             APP.hideMenu();
         });
 
-        $content.on("keydown", function (e) {
-            if (e.which === 113) {
-                var paths = $contextMenu.data('paths');
+        $(window).on("keydown", function (e) {
+            if (e.which === 113) { // if F2 key pressed
+                var paths = getSelectedPaths(findSelectedElements().first());
                 if (paths.length !== 1) { return; }
                 displayRenameInput(paths[0].element, paths[0].path);
             }
@@ -3728,10 +3855,9 @@ define([
             e.preventDefault();
         });
         $appContainer.on('mouseup', function (e) {
-            //if (sel.down) { return; }
             if (e.which !== 1) { return ; }
+            if ($(e.target).is(".dropdown-submenu a, .dropdown-submenu a span")) { return; } // if we click on dropdown-submenu, don't close menu
             APP.hideMenu(e);
-            //removeSelected(e);
         });
         $appContainer.on('click', function (e) {
             if (e.which !== 1) { return ; }
@@ -3750,7 +3876,7 @@ define([
                 if (manager.isPathIn(currentPath, [FILES_DATA]) && APP.loggedIn) {
                     return; // We can't remove elements directly from filesData
                 }
-                var $selected = $('.cp-app-drive-element-selected');
+                var $selected = findSelectedElements();
                 if (!$selected.length) { return; }
                 var paths = [];
                 var isTrash = manager.isPathIn(currentPath, [TRASH]);

@@ -319,6 +319,12 @@ define([], function () {
         return window.innerHeight < 800 || window.innerWidth < 800;
     };
 
+    Util.stripTags = function (text) {
+        var div = document.createElement("div");
+        div.innerHTML = text;
+        return div.innerText;
+    };
+
     return Util;
 });
 }(self));

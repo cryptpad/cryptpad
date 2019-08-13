@@ -257,7 +257,7 @@ define([
         metadataMgr.onChange(function () {
             var md = metadataMgr.getMetadata();
             if (md.palette) {
-                updateLocalPalette(md.palette);
+                updatePalette(md.palette);
             }
         });
 
@@ -415,11 +415,11 @@ define([
             setEditable(!locked);
         });
 
-        framework.setFileExporter('png', function (cb) {
+        framework.setFileExporter('.png', function (cb) {
             $canvas[0].toBlob(function (blob) {
                 cb(blob);
             });
-        });
+        }, true);
 
         framework.setNormalizer(function (c) {
             return {

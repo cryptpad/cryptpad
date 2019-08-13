@@ -34,7 +34,7 @@ define([
         var path = '/' + type + '/export.js';
         require([path], function (Exporter) {
             Exporter.main(json, function (data) {
-                result.ext = '.' + Exporter.type;
+                result.ext = Exporter.ext || '';
                 result.data = data;
                 cb(result);
             });
@@ -163,12 +163,12 @@ define([
         var existingNames = [];
         Object.keys(root).forEach(function (k) {
             var el = root[k];
-            if (typeof el === "object") {
+            if (typeof el === "object" && el.metadata !== true) { // if folder
                 var fName = getUnique(sanitize(k), '', existingNames);
                 existingNames.push(fName.toLowerCase());
                 return void makeFolder(ctx, el, zip.folder(fName), fd);
             }
-            if (ctx.data.sharedFolders[el]) {
+            if (ctx.data.sharedFolders[el]) { // if shared folder
                 var sfData = ctx.sf[el].metadata;
                 var sfName = getUnique(sanitize(sfData.title || 'Folder'), '', existingNames);
                 existingNames.push(sfName.toLowerCase());
