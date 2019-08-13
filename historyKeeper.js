@@ -119,25 +119,25 @@ module.exports.create = function (cfg) {
             // old channels can contain metadata as the first message of the log
             // remember metadata the first time you encounter it
             // otherwise index important messages in the log
-            store.readMessagesBin(channelName, 0, (msgObj, rmcb) => {
+            store.readMessagesBin(channelName, 0, (msgObj, readMore) => {
                 let msg;
                 // keep an eye out for the metadata line if you haven't already seen it
                 // but only check for metadata on the first line
                 if (!i && !metadata && msgObj.buff.indexOf('{') === 0) {
                     i++; // always increment the message counter
                     msg = tryParse(msgObj.buff.toString('utf8'));
-                    if (typeof msg === "undefined") { return rmcb(); }
+                    if (typeof msg === "undefined") { return readMore(); }
 
                     // validate that the current line really is metadata before storing it as such
                     if (msg && typeof(msg) === 'object' && !Array.isArray(msg)) {
                         metadata = msg;
-                        return rmcb();
+                        return readMore();
                     }
                 }
                 i++;
                 if (msgObj.buff.indexOf('cp|') > -1) {
                     msg = msg || tryParse(msgObj.buff.toString('utf8'));
-                    if (typeof msg === "undefined") { return rmcb(); }
+                    if (typeof msg === "undefined") { return readMore(); }
                     // cache the offsets of checkpoints if they can be parsed
                     if (msg[2] === 'MSG' && msg[4].indexOf('cp|') === 0) {
                         cpIndex.push({
@@ -152,7 +152,7 @@ module.exports.create = function (cfg) {
                 // if it's not metadata or a checkpoint then it should be a regular message
                 // store it in the buffer
                 messageBuf.push(msgObj);
-                return rmcb();
+                return readMore();
             }, w((err) => {
                 if (err && err.code !== 'ENOENT') {
                     w.abort();
@@ -424,13 +424,13 @@ module.exports.create = function (cfg) {
             if (offset !== -1) { return; }
 
             // otherwise we have a non-negative offset and we can start to read from there
-            store.readMessagesBin(channelName, 0, (msgObj, rmcb, abort) => {
+            store.readMessagesBin(channelName, 0, (msgObj, readMore, abort) => {
                 // tryParse return a parsed message or undefined
                 const msg = tryParse(msgObj.buff.toString('utf8'));
                 // if it was undefined then go onto the next message
-                if (typeof msg === "undefined") { return rmcb(); }
+                if (typeof msg === "undefined") { return readMore(); }
                 if (typeof(msg[4]) !== 'string' || lastKnownHash !== getHash(msg[4])) {
-                    return void rmcb();
+                    return void readMore();
                 }
                 offset = msgObj.offset;
                 abort();
@@ -461,9 +461,9 @@ module.exports.create = function (cfg) {
         }).nThen((waitFor) => {
             if (offset === -1) { return void cb(new Error("could not find offset")); }
             const start = (beforeHash) ? 0 : offset;
-            store.readMessagesBin(channelName, start, (msgObj, rmcb, abort) => {
+            store.readMessagesBin(channelName, start, (msgObj, readMore, abort) => {
                 if (beforeHash && msgObj.offset >= offset) { return void abort(); }
-                handler(tryParse(msgObj.buff.toString('utf8')), rmcb);
+                handler(tryParse(msgObj.buff.toString('utf8')), readMore);
             }, waitFor(function (err) {
                 return void cb(err);
             }));
@@ -674,7 +674,13 @@ module.exports.create = function (cfg) {
             }).nThen(() => {
                 let msgCount = 0;
                 let expired = false;
-                getHistoryAsync(ctx, channelName, lastKnownHash, false, (msg, cb) => {
+
+                // XXX a lot of this logic is currently wrong
+                // we should have already sent the most up to data metadata (if it exists)
+                // we should have also already checked if the channel has expired
+                // we just need to avoid sending metadata a second time
+                // TODO compute lastKnownHash in a manner such that it will always skip past the metadata line?
+                getHistoryAsync(ctx, channelName, lastKnownHash, false, (msg, readMore) => {
                     if (!msg) { return; }
                     if (msg.validateKey) {
                         // If it is a young channel, this is the part where we get the metadata
@@ -682,10 +688,11 @@ module.exports.create = function (cfg) {
                         if (!metadata_cache[channelName]) { metadata_cache[channelName] = msg; }
                         expired = checkExpired(ctx, channelName);
                     }
-                    if (expired) { return void cb(); }
+
+                    if (expired) { return void readMore(); }
                     msgCount++;
 
-                    sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(msg)], cb);
+                    sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(msg)], readMore);
                 }, (err) => {
                     // If the pad is expired, stop here, we've already sent the error message
                     if (expired) { return; }
@@ -776,9 +783,9 @@ module.exports.create = function (cfg) {
 
             // XXX should we send metadata here too?
             // my gut says yes
-            getHistoryAsync(ctx, parsed[1], -1, false, (msg, cb) => {
+            getHistoryAsync(ctx, parsed[1], -1, false, (msg, readMore) => {
                 if (!msg) { return; }
-                sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(['FULL_HISTORY', msg])], cb);
+                sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(['FULL_HISTORY', msg])], readMore);
             }, (err) => {
                 let parsedMsg = ['FULL_HISTORY_END', parsed[1]];
                 if (err) {
