@@ -814,7 +814,7 @@ define([
             });
 
             sframeChan.on('Q_GET_FILE_THUMBNAIL', function (data, cb) {
-                if (!Cryptpad.fromFileData.href) {
+                if (!Cryptpad.fromFileData || !Cryptpad.fromFileData.href) {
                     return void cb({
                         error: "EINVAL",
                     });

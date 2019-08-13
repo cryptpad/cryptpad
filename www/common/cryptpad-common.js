@@ -9,12 +9,11 @@ define([
     '/common/outer/local-store.js',
     '/common/outer/worker-channel.js',
     '/common/outer/login-block.js',
-    '/file/file-crypto.js',
 
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
 ], function (Config, Messages, Util, Hash,
-            Messaging, Constants, Feedback, LocalStore, Channel, Block, FileCrypto,
+            Messaging, Constants, Feedback, LocalStore, Channel, Block,
             AppConfig, Nthen) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
@@ -588,9 +587,11 @@ define([
                 u8 = _u8;
             }));
         }).nThen(function (waitFor) {
-            FileCrypto.decrypt(u8, key, waitFor(function (err, _res) {
-                if (err || !_res.content) { return void waitFor.abort(); }
-                res = _res;
+            require(["/file/file-crypto.js"], waitFor(function (FileCrypto) {
+                FileCrypto.decrypt(u8, key, waitFor(function (err, _res) {
+                    if (err || !_res.content) { return void waitFor.abort(); }
+                    res = _res;
+                }));
             }));
         }).nThen(function (waitFor) {
             var ext = Util.parseFilename(data.title).ext;

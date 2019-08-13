@@ -319,7 +319,7 @@ define([
                 h('li', h('a.cp-app-drive-context-openincode.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faOpenInCode,
-                }, Messages.fc_openInCode || "Open in Code")),
+                }, Messages.fc_openInCode || "Open in Code")), // XXX
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-expandall.dropdown-item', {
                     'tabindex': '-1',
@@ -1014,6 +1014,7 @@ define([
                     }
                     if (!$element.is('.cp-border-color-file')) {
                         hide.push('download');
+                        hide.push('openincode');
                     }
                     if ($element.is('.cp-app-drive-element-file')) {
                         // No folder in files
@@ -1027,13 +1028,9 @@ define([
                         // if it's not a plain text file
                         var isPlainTextFile = false;
                         var metadata = manager.getFileData(manager.find(path));
-                        if (metadata) {
-                            var href = metadata.roHref || metadata.href;
-                            if (href && Hash.parsePadUrl(href).type === "file") {
-                                isPlainTextFile = Util.isPlainTextFile(metadata.fileType, metadata.title);
-                            }
+                        if (!metadata || !Util.isPlainTextFile(metadata.fileType, metadata.title)) {
+                            hide.push('openincode');
                         }
-                        if (!isPlainTextFile) { hide.push('openincode'); }
                     } else if ($element.is('.cp-app-drive-element-sharedf')) {
                         if (containsFolder) {
                             // More than 1 folder selected: cannot create a new subfolder
@@ -1090,6 +1087,7 @@ define([
                     hide.push('openparent');
                     hide.push('hashtag');
                     hide.push('download');
+                    hide.push('openincode'); // can't because of race condition
                 }
                 if (containsFolder && paths.length > 1) {
                     // Cannot open multiple folders
@@ -3543,21 +3541,21 @@ define([
                 });
             }
             else if ($(this).hasClass('cp-app-drive-context-openincode')) {
-                paths.forEach(function (p) {
-                    var el = manager.find(p.path);
-                    var metadata = manager.getFileData(el);
-                    var simpleData = {
-                        title: metadata.filename || metadata.title,
-                        href: metadata.href,
-                        password: metadata.password,
-                        channel: metadata.channel,
-                    };
-                    nThen(function (waitFor) {
-                        common.sessionStorage.put(Constants.newPadFileData, JSON.stringify(simpleData), waitFor());
-                        common.sessionStorage.put(Constants.newPadPathKey, currentPath, waitFor());
-                    }).nThen(function () {
-                        common.openURL('/code/');
-                    });
+                if (paths.length !== 1) { return; }
+                var p = paths[0];
+                var el = manager.find(p.path);
+                var metadata = manager.getFileData(el);
+                var simpleData = {
+                    title: metadata.filename || metadata.title,
+                    href: metadata.href,
+                    password: metadata.password,
+                    channel: metadata.channel,
+                };
+                nThen(function (waitFor) {
+                    common.sessionStorage.put(Constants.newPadFileData, JSON.stringify(simpleData), waitFor());
+                    common.sessionStorage.put(Constants.newPadPathKey, currentPath, waitFor());
+                }).nThen(function () {
+                    common.openURL('/code/');
                 });
             }
             else if ($(this).hasClass('cp-app-drive-context-expandall') ||

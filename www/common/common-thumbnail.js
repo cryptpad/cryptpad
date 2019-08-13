@@ -25,6 +25,7 @@ define([
     ];
 
     Thumb.isSupportedType = function (file) {
+        if (!file) { return false; }
         var type = file.type;
         if (Util.isPlainTextFile(file.type, file.name)) {
             type = "text/plain";
