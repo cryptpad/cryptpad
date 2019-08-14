@@ -291,6 +291,10 @@ module.exports.create = function (cfg) {
         });
     };
 
+    const isMetadataMessage = function (parsed) {
+        return Boolean(parsed && parsed.channel);
+    };
+
     var CHECKPOINT_PATTERN = /^cp\|(([A-Za-z0-9+\/=]+)\|)?/;
 
     /*  onChannelMessage
@@ -514,7 +518,7 @@ module.exports.create = function (cfg) {
             // and don't send metadata, since:
             // 1. the user won't be interested in it
             // 2. this metadata is potentially incomplete/incorrect
-            if (parsed.channel) { return; }
+            if (isMetadataMessage(parsed)) { return; }
 
             var content = parsed[4];
             if (typeof(content) !== 'string') { return; }
@@ -713,7 +717,7 @@ module.exports.create = function (cfg) {
 
                     // check for the channel because it's the one thing that should
                     // always exist in "classic metadata"
-                    if (msg.channel && metadata_cache[channelName]) { return readMore(); }
+                    if (isMetadataMessage(msg) && metadata_cache[channelName]) { return readMore(); }
                     sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(msg)], readMore);
                 }, (err) => {
                     if (err && err.code !== 'ENOENT') {
