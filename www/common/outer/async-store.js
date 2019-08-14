@@ -1108,7 +1108,6 @@ define([
         var channels = Store.channels = store.channels = {};
 
         Store.joinPad = function (clientId, data) {
-            console.log('joining', data.channel);
             var isNew = typeof channels[data.channel] === "undefined";
             var channel = channels[data.channel] = channels[data.channel] || {
                 queue: [],
