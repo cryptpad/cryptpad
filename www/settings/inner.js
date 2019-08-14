@@ -1082,18 +1082,9 @@ define([
         var exportDrive = function () {
             Feedback.send('FULL_DRIVE_EXPORT_START');
             var todo = function (data, filename) {
-                var getPad = function (data, cb) {
-                    sframeChan.query("Q_CRYPTGET", data, function (err, obj) {
-                        if (err) { return void cb(err); }
-                        if (obj.error) { return void cb(obj.error); }
-                        cb(null, obj.data);
-                    }, { timeout: 60000 });
-                };
-
                 var ui = createExportUI();
 
-                var bu = Backup.create(data, getPad, function (blob, errors) {
-                    console.log(blob);
+                var bu = Backup.create(data, common.getPad, function (blob, errors) {
                     saveAs(blob, filename);
                     sframeChan.event('EV_CRYPTGET_DISCONNECT');
                     ui.complete(function () {

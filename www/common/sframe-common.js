@@ -459,6 +459,14 @@ define([
         });
     }; */
 
+    funcs.getPad = function (data, cb) {
+        ctx.sframeChan.query("Q_CRYPTGET", data, function (err, obj) {
+            if (err) { return void cb(err); }
+            if (obj.error) { return void cb(obj.error); }
+            cb(null, obj.data);
+        }, { timeout: 60000 });
+    };
+
     funcs.gotoURL = function (url) { ctx.sframeChan.event('EV_GOTO_URL', url); };
     funcs.openURL = function (url) { ctx.sframeChan.event('EV_OPEN_URL', url); };
     funcs.openUnsafeURL = function (url) {

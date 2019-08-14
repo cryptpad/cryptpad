@@ -1,11 +1,13 @@
 define([
     '/common/cryptget.js',
+    '/file/file-crypto.js',
     '/common/common-hash.js',
-    '/common/sframe-common-file.js',
+    '/common/common-util.js',
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
     '/bower_components/jszip/dist/jszip.min.js',
-], function (Crypt, Hash, SFCFile, nThen, Saferphore, JsZip) {
+], function (Crypt, FileCrypto, Hash, Util, nThen, Saferphore, JsZip) {
+    var saveAs = window.saveAs;
 
     var sanitize = function (str) {
         return str.replace(/[\\/?%*:|"<>]/gi, '_')/*.toLowerCase()*/;
@@ -21,22 +23,16 @@ define([
     };
 
     var transform = function (ctx, type, sjson, cb) {
-        console.error("backup - transform");
-        console.log('type', type);
-        console.log('sjson', sjson);
-
         var result = {
             data: sjson,
             ext: '.json',
         };
-        console.log('result', result);
         var json;
         try {
             json = JSON.parse(sjson);
         } catch (e) {
             return void cb(result);
         }
-        console.log('json', json);
         var path = '/' + type + '/export.js';
         require([path], function (Exporter) {
             Exporter.main(json, function (data) {
@@ -49,11 +45,86 @@ define([
         });
     };
 
+
+    var _downloadFile = function (ctx, fData, cb, updateProgress) {
+        var cancelled = false;
+        var cancel = function () {
+            cancelled = true;
+        };
+        var parsed = Hash.parsePadUrl(fData.href || fData.roHref);
+        var hash = parsed.hash;
+        var name = fData.filename || fData.title;
+        var secret = Hash.getSecrets('file', hash, fData.password);
+        var src = Hash.getBlobPathFromHex(secret.channel);
+        var key = secret.keys && secret.keys.cryptKey;
+        Util.fetch(src, function (err, u8) {
+            if (cancelled) { return; }
+            if (err) { return void cb('E404'); }
+            FileCrypto.decrypt(u8, key, function (err, res) {
+                if (cancelled) { return; }
+                if (err) { return void cb(err); }
+                if (!res.content) { return void cb('EEMPTY'); }
+                var dl = function () {
+                    saveAs(res.content, name || res.metadata.name);
+                };
+                cb(null, {
+                    metadata: res.metadata,
+                    content: res.content,
+                    download: dl
+                });
+            }, updateProgress && updateProgress.progress2);
+        }, updateProgress && updateProgress.progress);
+        return {
+            cancel: cancel
+        };
+
+    };
+
+
+    var _downloadPad = function (ctx, pData, cb, updateProgress) {
+        var cancelled = false;
+        var cancel = function () {
+            cancelled = true;
+        };
+
+        var parsed = Hash.parsePadUrl(pData.href || pData.roHref);
+        var name = pData.filename || pData.title;
+        var opts = {
+            password: pData.password
+        };
+        updateProgress.progress(0);
+        ctx.get({
+            hash: parsed.hash,
+            opts: opts
+        }, function (err, val) {
+            if (cancelled) { return; }
+            if (err) { return; }
+            if (!val) { return; }
+            updateProgress.progress(1);
+
+            transform(ctx, parsed.type, val, function (res) {
+                if (cancelled) { return; }
+                if (!res.data) { return; }
+                updateProgress.progress2(1);
+                var dl = function () {
+                    saveAs(res.data, Util.fixFileName(name));
+                };
+                cb(null, {
+                    metadata: res.metadata,
+                    content: res.data,
+                    download: dl
+                });
+            });
+        });
+        return {
+            cancel: cancel
+        };
+
+    };
+
     // Add a file to the zip. We have to cryptget&transform it if it's a pad
     // or fetch&decrypt it if it's a file.
     var addFile = function (ctx, zip, fData, existingNames) {
-        console.error('backup - addFile');
-        console.log('fData', fData);
         if (!fData.href && !fData.roHref) {
             return void ctx.errors.push({
                 error: 'EINVAL',
@@ -62,7 +133,6 @@ define([
         }
 
         var parsed = Hash.parsePadUrl(fData.href || fData.roHref);
-        console.log('parsed', parsed);
         if (['pad', 'file'].indexOf(parsed.hashData.type) === -1) { return; }
 
         // waitFor is used to make sure all the pads and files are process before downloading the zip.
@@ -135,7 +205,7 @@ define([
                 // Files (mediatags...)
                 var todoFile = function () {
                     var it;
-                    var dl = SFCFile.downloadFile(fData, function (err, res) {
+                    var dl = _downloadFile(ctx, fData, function (err, res) {
                         if (it) { clearInterval(it); }
                         if (err) { return void error(err); }
                         var opts = {
@@ -232,7 +302,12 @@ define([
         };
     };
 
+
+
     return {
-        create: create
+        create: create,
+        downloadFile: _downloadFile,
+        downloadPad: _downloadPad,
+
     };
 });
