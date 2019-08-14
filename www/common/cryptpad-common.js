@@ -773,7 +773,7 @@ define([
                     waitFor.abort();
                     return void cb(obj);
                 }
-            }), true);
+            }));
             common.unpinPads([oldChannel], waitFor());
             common.pinPads([newSecret.channel], waitFor());
         }).nThen(function (waitFor) {
