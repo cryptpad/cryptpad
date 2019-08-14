@@ -1475,8 +1475,10 @@ var removeLoginBlock = function (Env, msg, cb) {
     });
 };
 
-// FIXME METADATA
+var ARRAY_LINE = /^\[/;
+
 // since we're changing how metadata works this can lead to false positives
+// XXX rewrite this such that we can abort once we have a conclusive answer
 var isNewChannel = function (Env, channel, cb) {
     if (!isValidId(channel)) { return void cb('INVALID_CHAN'); }
     if (channel.length !== 32) { return void cb('INVALID_CHAN'); }
@@ -1487,6 +1489,12 @@ var isNewChannel = function (Env, channel, cb) {
         if (done) { return; }
         var parsed;
         try {
+            if (count === 0 && typeof(msg) === 'string' && ARRAY_LINE.test(msg)) {
+                done = true;
+                count++;
+                return void cb(void 0, false);
+            }
+
             parsed = JSON.parse(msg);
             if (parsed && typeof(parsed) === 'object') { count++; }
             if (count >= 2) {
