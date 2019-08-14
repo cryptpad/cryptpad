@@ -99,6 +99,7 @@ define(['json.sortify'], function (Sortify) {
         var addAuthor = function () {
             if (!meta.user || !meta.user.netfluxId || !priv || !priv.edPublic) { return; }
             var authors = metadataObj.authors || {};
+            var old = Sortify(authors);
             if (!authors[priv.edPublic]) {
                 authors[priv.edPublic] = {
                     nId: [meta.user.netfluxId],
@@ -110,9 +111,11 @@ define(['json.sortify'], function (Sortify) {
                     authors[priv.edPublic].nId.push(meta.user.netfluxId);
                 }
             }
-            metadataObj.authors = authors;
-            metadataLazyObj.authors = JSON.parse(JSON.stringify(authors));
-            change();
+            if (Sortify(authors) !== old) {
+                metadataObj.authors = authors;
+                metadataLazyObj.authors = JSON.parse(JSON.stringify(authors));
+                change();
+            }
         };
 
         var netfluxId;

@@ -99,9 +99,17 @@ define([
             // lines beginning with a hash are potentially valuable
             // works for markdown, python, bash, etc.
             var hash = /^#+(.*?)$/;
+            var hashAndLink = /^#+\s*\[(.*?)\]\(.*\)\s*$/;
             if (hash.test(line)) {
+                // test for link inside the title, and set text just to the name of the link
+                if (hashAndLink.test(line)) {
+                    line.replace(hashAndLink, function (a, one) {
+                        text = Util.stripTags(one);
+                    });
+                    return true;
+                }
                 line.replace(hash, function (a, one) {
-                    text = one;
+                    text = Util.stripTags(one);
                 });
                 return true;
             }
@@ -387,21 +395,32 @@ define([
         exp.mkIndentSettings = function (metadataMgr) {
             var setIndentation = function (units, useTabs, fontSize, spellcheck) {
                 if (typeof(units) !== 'number') { return; }
+                var doc = editor.getDoc();
                 editor.setOption('indentUnit', units);
                 editor.setOption('tabSize', units);
                 editor.setOption('indentWithTabs', useTabs);
                 editor.setOption('spellcheck', spellcheck);
-                if (!useTabs) {
-                    editor.setOption("extraKeys", {
-                        Tab: function() {
-                            editor.replaceSelection(Array(units + 1).join(" "));
+                editor.setOption("extraKeys", {
+                    Tab: function() {
+                        if (doc.somethingSelected()) {
+                            editor.execCommand("indentMore");
                         }
-                    });
-                } else {
-                    editor.setOption("extraKeys", {
-                        Tab: undefined,
-                    });
-                }
+                        else {
+                            if (!useTabs) { editor.execCommand("insertSoftTab"); }
+                            else { editor.execCommand("insertTab"); }
+                        }
+                    },
+                    "Shift-Tab": function () {
+                        editor.execCommand("indentLess");
+                    },
+                    "Backspace": function () {
+                        var cursor = doc.getCursor();
+                        var line = doc.getLine(cursor.line);
+                        if (line.substring(0, cursor.ch).trim() === "") { editor.execCommand("indentLess"); }
+                        else { editor.execCommand("delCharBefore"); }
+
+                    },
+                });
                 $('.CodeMirror').css('font-size', fontSize+'px');
             };
 
