@@ -1095,9 +1095,6 @@ define([
                         // We can only open parent in virtual categories
                         hide.push('openparent');
                     }
-                    if (!$element.is('.cp-border-color-file')) {
-                        hide.push('download');
-                    }
                     if ($element.is('.cp-app-drive-element-file')) {
                         // No folder in files
                         hide.push('color');
