@@ -3597,19 +3597,16 @@ define([
         };
 
 
-        var downloadFolder = function (folderElement, folderName) {
-            console.warn("downloadFolder");
+        var downloadFolder = function (folderElement, folderName, sfId) {
             var todo = function (data) {
                 data.folder = folderElement;
-                folderName = Util.fixFileName(folderName) + '.zip';
-                console.log("data", data);
-                console.log("folderName", folderName);
+                data.sharedFolderId = sfId;
+                data.folderName = Util.fixFileName(folderName) + '.zip';
 
-                Backup.create(data, common.getPad, function (blob, errors) {
-                    console.log("blob", blob);
-                    window.saveAs(blob, folderName);
-                    console.error(errors);
-                }, function () {});
+                APP.FM.downloadFolder(data, function (err, obj) {
+                    console.log(err, obj);
+                    console.log('DONE');
+                });
             };
             todo({
                 uo: proxy,
@@ -3711,29 +3708,21 @@ define([
                 if (paths.length !== 1) { return; }
                 var path = paths[0];
                 el = manager.find(path.path);
-                console.log("el", el);
-                console.log('path', path);
                 // folder
                 if (manager.isFolder(el)) {
                     // folder
                     var name, folderEl;
                     if (!manager.isSharedFolder(el)) {
-                        console.log("--isFolder--");
                         name = path.path[path.path.length - 1];
-                        console.log('name', name);
                         folderEl = el;
                         downloadFolder(folderEl, name);
                     }
                     // shared folder
                     else {
-                        console.log("--isSharedFolder--");
                         data = manager.getSharedFolderData(el);
                         name = data.title;
                         folderEl = manager.find(path.path.concat("root"));
-                        console.log("folderEl", folderEl);
-                        console.log("data:", data);
-                        console.log('name', name);
-                        downloadFolder(folderEl, name);
+                        downloadFolder(folderEl, name, el);
                     }
                 }
                 // file

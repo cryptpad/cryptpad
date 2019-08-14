@@ -282,11 +282,12 @@ define([
             max: 0,
             done: 0
         };
+        var filesData = data.sharedFolderId && ctx.sf[data.sharedFolderId] ? ctx.sf[data.sharedFolderId].filesData : ctx.data.filesData;
         progress('reading', -1);
         nThen(function (waitFor) {
             ctx.waitFor = waitFor;
             var zipRoot = ctx.zip.folder('Root');
-            makeFolder(ctx, ctx.folder, zipRoot, ctx.data.filesData);
+            makeFolder(ctx, ctx.folder, zipRoot, filesData);
             progress('download', {});
         }).nThen(function () {
             console.log(ctx.zip);
@@ -308,11 +309,32 @@ define([
     };
 
 
+    var _downloadFolder = function (ctx, data, cb, updateProgress) {
+        create(data, ctx.get, function (blob, errors) {
+            console.error(errors); // TODO show user errors
+            var dl = function () {
+                saveAs(blob, data.folderName);
+            };
+            cb(null, {download: dl});
+        }, function (state, progress) {
+            if (state === "reading") {
+                updateProgress.folderProgress(0);
+            }
+            if (state === "download") {
+                if (typeof progress.current !== "number") { return; }
+                updateProgress.folderProgress(progress.current / progress.max);
+            }
+            else if (state === "done") {
+                updateProgress.folderProgress(1);
+            }
+        });
+    };
+
 
     return {
         create: create,
         downloadFile: _downloadFile,
         downloadPad: _downloadPad,
-
+        downloadFolder: _downloadFolder,
     };
 });
