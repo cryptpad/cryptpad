@@ -395,10 +395,6 @@ define([
                     'tabindex': '-1',
                     'data-icon': faTags,
                 }, Messages.fc_hashtag)),
-                h('li', h('a.cp-app-drive-context-properties.dropdown-item', {
-                    'tabindex': '-1',
-                    'data-icon': faProperties,
-                }, Messages.fc_prop)),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-delete.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
@@ -416,6 +412,11 @@ define([
                     'tabindex': '-1',
                     'data-icon': faDelete,
                 }, Messages.fc_remove_sharedfolder)),
+                $separator.clone()[0],
+                h('li', h('a.cp-app-drive-context-properties.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': faProperties,
+                }, Messages.fc_prop)),
             ])
         ]);
         $(menu).find("li a.dropdown-item").each(function (i, el) {
@@ -1077,6 +1078,7 @@ define([
                     hide.push('openparent');
                     hide.push('hashtag');
                     hide.push('download');
+                    hide.push('share');
                 }
                 if (containsFolder && paths.length > 1) {
                     // Cannot open multiple folders
