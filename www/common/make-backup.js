@@ -92,7 +92,15 @@ define([
         var opts = {
             password: pData.password
         };
-        updateProgress.progress(0);
+        var done = false;
+        ctx.sframeChan.on("EV_CRYPTGET_PROGRESS", function (data) {
+            if (done || data.hash !== parsed.hash) { return; }
+            updateProgress.progress(data.progress);
+            if (data.progress === 1) {
+                done = true;
+                updateProgress.progress2(1);
+            }
+        });
         ctx.get({
             hash: parsed.hash,
             opts: opts
@@ -100,12 +108,9 @@ define([
             if (cancelled) { return; }
             if (err) { return; }
             if (!val) { return; }
-            updateProgress.progress(1);
-
             transform(ctx, parsed.type, val, function (res) {
                 if (cancelled) { return; }
                 if (!res.data) { return; }
-                updateProgress.progress2(1);
                 var dl = function () {
                     saveAs(res.data, Util.fixFileName(name));
                 };

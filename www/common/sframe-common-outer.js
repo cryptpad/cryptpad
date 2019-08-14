@@ -880,7 +880,12 @@ define([
                             error: err,
                             data: val
                         });
-                    }, data.opts);
+                    }, data.opts, function (progress) {
+                        sframeChan.event("EV_CRYPTGET_PROGRESS", {
+                            hash: data.hash,
+                            progress: progress,
+                        });
+                    });
                 };
                 //return void todo();
                 if (i > 30) {

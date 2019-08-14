@@ -482,6 +482,7 @@ define([
 
             var ctx = {
                 get: common.getPad,
+                sframeChan: sframeChan,
             };
             var dl = downloadFunction(ctx, data, function (err, obj) {
                 $link.prepend($('<span>', {'class': 'fa fa-external-link'}))
