@@ -221,8 +221,10 @@ How to proceed
 };
 
 var writeMetadata = function (env, channelId, data, cb) {
-    // XXX
-    cb("NOT_IMPLEMENTED");
+    var path = mkMetadataPath(env, channelId);
+    // XXX appendFile isn't great
+    // but this is a simple way to get things working
+    Fs.appendFile(path, data + '\n', cb);
 };
 
 const NEWLINE_CHR = ('\n').charCodeAt(0);
@@ -268,6 +270,7 @@ const mkOffsetCounter = () => {
     });
 };
 
+// XXX write some docs for this magic
 const readMessagesBin = (env, id, start, msgHandler, cb) => {
     const stream = Fs.createReadStream(mkPath(env, id), { start: start });
     let keepReading = true;
