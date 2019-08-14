@@ -21,6 +21,11 @@ define([
                 S.leave();
             } catch (e) { console.log(e); }
         }
+        if (S.session && S.session.stop) {
+            try {
+                S.session.stop();
+            } catch (e) { console.error(e); }
+        }
         var abort = Util.find(S, ['session', 'realtime', 'abort']);
         if (typeof(abort) === 'function') {
             S.session.realtime.sync();
