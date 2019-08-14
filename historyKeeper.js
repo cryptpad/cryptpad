@@ -581,7 +581,8 @@ module.exports.create = function (cfg) {
     // If it is, remove it from memory and broadcast a message to its members
 
     const onChannelMetadataChanged = function (ctx, channel) {
-        // XXX
+        // XXX lint compliance
+        channel = channel;
     };
 
     /*  checkExpired
@@ -653,9 +654,10 @@ module.exports.create = function (cfg) {
             var lastKnownHash = parsed[3];
             var owners;
             var expire;
-            // XXX we can be a bit more strict in our validation here
-            // maybe we should check that it's an object and not an array?
-            if (parsed[2] && typeof parsed[2] === "object") {
+            // clients can optionally pass a map of attributes
+            // if the channel already exists this map will be ignored
+            // otherwise it will be stored as the initial metadata state for the channel
+            if (parsed[2] && typeof(parsed[2]) === "object" && !Array.isArray(parsed[2])) {
                 validateKey = parsed[2].validateKey;
                 lastKnownHash = parsed[2].lastKnownHash;
                 owners = parsed[2].owners;
