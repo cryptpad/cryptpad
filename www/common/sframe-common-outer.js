@@ -838,13 +838,6 @@ define([
                 Cryptpad.setLanguage(data, cb);
             });
 
-            sframeChan.on('Q_CLEAR_OWNED_CHANNEL', function (channel, cb) {
-                Cryptpad.clearOwnedChannel(channel, cb);
-            });
-            sframeChan.on('Q_REMOVE_OWNED_CHANNEL', function (channel, cb) {
-                Cryptpad.removeOwnedChannel(channel, cb);
-            });
-
             sframeChan.on('Q_GET_ALL_TAGS', function (data, cb) {
                 Cryptpad.listAllTags(function (err, tags) {
                     cb({
@@ -871,6 +864,9 @@ define([
                 Cryptpad.removeLoginBlock(data, cb);
             });
 
+            // It seems we have performance issues when we open and close a lot of channels over
+            // the same network, maybe a memory leak. To fix this, we kill and create a new
+            // network every 30 cryptget calls (1 call = 1 channel)
             var cgNetwork;
             var whenCGReady = function (cb) {
                 if (cgNetwork && cgNetwork !== true) { console.log(cgNetwork); return void cb(); }
@@ -887,7 +883,12 @@ define([
                             error: err,
                             data: val
                         });
-                    }, data.opts);
+                    }, data.opts, function (progress) {
+                        sframeChan.event("EV_CRYPTGET_PROGRESS", {
+                            hash: data.hash,
+                            progress: progress,
+                        });
+                    });
                 };
                 //return void todo();
                 if (i > 30) {

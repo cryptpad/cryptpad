@@ -254,8 +254,12 @@ define([
     common.clearOwnedChannel = function (channel, cb) {
         postMessage("CLEAR_OWNED_CHANNEL", channel, cb);
     };
-    common.removeOwnedChannel = function (channel, cb) {
-        postMessage("REMOVE_OWNED_CHANNEL", channel, cb);
+    // "force" allows you to delete your drive ID
+    common.removeOwnedChannel = function (channel, cb, force) {
+        postMessage("REMOVE_OWNED_CHANNEL", {
+            channel: channel,
+            force: force
+        }, cb);
     };
 
     common.getDeletedPads = function (data, cb) {
@@ -950,7 +954,7 @@ define([
                     common.logoutFromAll(waitFor(function () {
                         postMessage("DISCONNECT");
                     }));
-                }));
+                }), true);
             }
         }).nThen(function (waitFor) {
             if (!oldIsOwned) {
