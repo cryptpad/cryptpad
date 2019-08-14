@@ -710,15 +710,11 @@ module.exports.create = function (cfg) {
             }).nThen(() => {
                 let msgCount = 0;
 
-                // XXX a lot of this logic is currently wrong
-                // we should have already sent the most up-to-date metadata (if it exists)
                 // TODO compute lastKnownHash in a manner such that it will always skip past the metadata line?
                 getHistoryAsync(ctx, channelName, lastKnownHash, false, (msg, readMore) => {
                     if (!msg) { return; }
                     msgCount++;
-
-                    // check for the channel because it's the one thing that should
-                    // always exist in "classic metadata"
+                    // avoid sending the metadata message a second time
                     if (isMetadataMessage(msg) && metadata_cache[channelName]) { return readMore(); }
                     sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(msg)], readMore);
                 }, (err) => {
@@ -729,12 +725,8 @@ module.exports.create = function (cfg) {
                         return;
                     }
 
-                    // If this is a new channel, we should store it in the new format
-                    // as the first line in a dedicated metadata log, not in the channel
-                    // XXX read this kind of metadata before writing it
                     const chan = ctx.channels[channelName];
 
-                    // XXX check metadata message count too...
                     if (msgCount === 0 && !metadata_cache[channelName] && chan && chan.indexOf(user) > -1) {
                         var metadata = {};
                         metadata.channel = channelName;
@@ -749,10 +741,14 @@ module.exports.create = function (cfg) {
                         }
                         metadata_cache[channelName] = metadata;
 
+                        // new channels will always have their metadata written to a dedicated metadata log
+                        // but any lines after the first which are not amendments in a particular format will be ignored.
+                        // Thus we should be safe from race conditions here if just write metadata to the log as below...
+                        // TODO validate this logic
+                        // otherwise maybe we need to check that the metadata log is empty as well
                         store.writeMetadata(channelName, JSON.stringify(metadata), function (err) {
                             if (err) {
-                                // XXX handle errors
-                                return void console.error(err);
+                                return void Log.error('HK_WRITE_METADATA');
                             }
                         });
                         sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(metadata)]);
