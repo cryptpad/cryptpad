@@ -272,7 +272,7 @@ define([
             var initialState = modalState.owned || modalState.store;
             var initialDisabled = modalState.owned ? { disabled: true } : {};
             var manualStore = autoStore === 1 ? undefined :
-            UI.createCheckbox('cp-upload-store', isFolderUpload ? (Messages.uploadFolder_modal_forceSave || "Store files in your cryptDrive") : Messages.autostore_forceSave, initialState, {
+            UI.createCheckbox('cp-upload-store', isFolderUpload ? (Messages.uploadFolder_modal_forceSave) : Messages.autostore_forceSave, initialState, {
                 input: initialDisabled
             });
             return manualStore;
@@ -341,15 +341,14 @@ define([
 
             // Ask for name, password and owner
             var content = h('div', [
-                h('h4', Messages.uploadFolder_modal_title || "Folder upload options"),
+                h('h4', Messages.uploadFolder_modal_title),
                 UIElements.setHTML(h('label', {for: 'cp-upload-name'}), Messages.fm_folderName),
                 h('input#cp-upload-foldername', {type: 'text', placeholder: foldername, value: foldername}),
-                h('label', {for: 'cp-upload-password'}, Messages.uploadFolder_modal_filesPassword || "Files password"),
+                h('label', {for: 'cp-upload-password'}, Messages.uploadFolder_modal_filesPassword),
                 UI.passwordInput({id: 'cp-upload-password'}),
                 h('span', {
                     style: 'display:flex;align-items:center;justify-content:space-between'
                 }, [
-                    UI.createCheckbox('cp-upload-owned', Messages.uploadFolder_modal_owner || "Owned files", modalState.owned),
                     createHelper('/faq.html#keywords-owned', Messages.creation_owned1)
                 ]),
                 manualStore
