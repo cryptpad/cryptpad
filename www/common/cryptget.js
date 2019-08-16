@@ -21,9 +21,9 @@ define([
                 S.leave();
             } catch (e) { console.log(e); }
         }
-        if (S.session && S.session.stop) {
+        if (S.realtime && S.realtime.stop) {
             try {
-                S.session.stop();
+                S.realtime.stop();
             } catch (e) { console.error(e); }
         }
         var abort = Util.find(S, ['session', 'realtime', 'abort']);
