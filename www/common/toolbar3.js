@@ -575,7 +575,6 @@ MessengerUI, Messages) {
     };
 
     var createRequest = function (toolbar, config) {
-        console.error('test');
         if (!config.metadataMgr) {
             throw new Error("You must provide a `metadataMgr` to display the request access button");
         }
