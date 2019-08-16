@@ -93,6 +93,7 @@ define(function() {
     config.applicationsIcon = {
         file: 'cptools-file',
         fileupload: 'cptools-file-upload',
+        folderupload: 'cptools-folder-upload',
         pad: 'cptools-pad',
         code: 'cptools-code',
         slide: 'cptools-slide',
