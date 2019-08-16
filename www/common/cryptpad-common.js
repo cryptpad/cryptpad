@@ -571,6 +571,66 @@ define([
         });
     };
 
+    common.useFile = function (Crypt, cb, optsPut) {
+        var data = common.fromFileData;
+        var parsed = Hash.parsePadUrl(data.href);
+        var parsed2 = Hash.parsePadUrl(window.location.href);
+        var hash = parsed.hash;
+        var name = data.title;
+        var secret = Hash.getSecrets('file', hash, data.password);
+        var src = Hash.getBlobPathFromHex(secret.channel);
+        var key = secret.keys && secret.keys.cryptKey;
+
+        var u8;
+        var res;
+        var mode;
+        var val;
+        Nthen(function(waitFor) {
+            Util.fetch(src, waitFor(function (err, _u8) {
+                if (err) { return void waitFor.abort(); }
+                u8 = _u8;
+            }));
+        }).nThen(function (waitFor) {
+            require(["/file/file-crypto.js"], waitFor(function (FileCrypto) {
+                FileCrypto.decrypt(u8, key, waitFor(function (err, _res) {
+                    if (err || !_res.content) { return void waitFor.abort(); }
+                    res = _res;
+                }));
+            }));
+        }).nThen(function (waitFor) {
+            var ext = Util.parseFilename(data.title).ext;
+            if (!ext) {
+                mode = "text";
+                return;
+            }
+            require(["/common/modes.js"], waitFor(function (Modes) {
+                Modes.list.some(function (fType) {
+                    if (fType.ext === ext) {
+                        mode = fType.mode;
+                        return true;
+                    }
+                });
+            }));
+        }).nThen(function (waitFor) {
+            var reader = new FileReader();
+            reader.addEventListener('loadend', waitFor(function (e) {
+                val = {
+                    content: e.srcElement.result,
+                    highlightMode: mode,
+                    metadata: {
+                        defaultTitle: name,
+                        title: name,
+                        type: "code",
+                    },
+                };
+            }));
+            reader.readAsText(res.content);
+        }).nThen(function () {
+            Crypt.put(parsed2.hash, JSON.stringify(val), cb, optsPut);
+        });
+
+    };
+
     // Forget button
     common.moveToTrash = function (cb, href) {
         href = href || window.location.href;
@@ -1274,6 +1334,12 @@ define([
                 messenger: rdyCfg.messenger, // Boolean
                 driveEvents: rdyCfg.driveEvents // Boolean
             };
+            // if a pad is created from a file
+            if (sessionStorage[Constants.newPadFileData]) {
+                common.fromFileData = JSON.parse(sessionStorage[Constants.newPadFileData]);
+                delete sessionStorage[Constants.newPadFileData];
+            }
+
             if (sessionStorage[Constants.newPadPathKey]) {
                 common.initialPath = sessionStorage[Constants.newPadPathKey];
                 delete sessionStorage[Constants.newPadPathKey];

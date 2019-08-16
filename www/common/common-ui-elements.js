@@ -2301,7 +2301,10 @@ define([
         if (!common.isLoggedIn()) { return void cb(); }
         var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
+        var privateData = metadataMgr.getPrivateData();
         var type = metadataMgr.getMetadataLazy().type;
+        var fromFileData = privateData.fromFileData;
+
 
         var $body = $('body');
         var $creationContainer = $('<div>', { id: 'cp-creation-container' }).appendTo($body);
@@ -2313,7 +2316,8 @@ define([
         // Title
         //var colorClass = 'cp-icon-color-'+type;
         //$creation.append(h('h2.cp-creation-title', Messages.newButtonTitle));
-        $creation.append(h('h3.cp-creation-title', Messages['button_new'+type]));
+        var newPadH3Title = Messages['button_new' + type];
+        $creation.append(h('h3.cp-creation-title', newPadH3Title));
         //$creation.append(h('h2.cp-creation-title.'+colorClass, Messages.newButtonTitle));
 
         // Deleted pad warning
@@ -2323,7 +2327,7 @@ define([
             ));
         }
 
-        var origin = common.getMetadataMgr().getPrivateData().origin;
+        var origin = privateData.origin;
         var createHelper = function (href, text) {
             var q = h('a.cp-creation-help.fa.fa-question-circle', {
                 title: text,
@@ -2480,7 +2484,26 @@ define([
                 });
                 if (i < TEMPLATES_DISPLAYED) { $(left).addClass('hidden'); }
             };
-            redraw(0);
+            if (fromFileData) {
+                var todo = function (thumbnail) {
+                    allData = [{
+                        name: fromFileData.title,
+                        id: 0,
+                        thumbnail: thumbnail,
+                        icon: h('span.cptools.cptools-file'),
+                    }];
+                    redraw(0);
+                };
+                todo();
+                sframeChan.query("Q_GET_FILE_THUMBNAIL", null, function (err, res) {
+                    if (err || (res && res.error)) { return; }
+                    todo(res.data);
+                });
+            }
+            else {
+                redraw(0);
+            }
+
 
             // Change template selection when Tab is pressed
             next = function (revert) {
