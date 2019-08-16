@@ -574,6 +574,49 @@ MessengerUI, Messages) {
         return $shareBlock;
     };
 
+    var createRequest = function (toolbar, config) {
+        if (!config.metadataMgr) {
+            throw new Error("You must provide a `metadataMgr` to display the request access button");
+        }
+
+        // We can only requets more access if we're in read-only mode
+        if (config.readOnly !== 1) { return; }
+
+        var $requestBlock = $('<button>', {
+            'class': 'fa fa-lock cp-toolbar-share-button',
+            title: Messages.requestEdit_button
+        }).hide();
+
+        // If we have access to the owner's mailbox, display the button and enable it
+        // false => check if we can contact the owner
+        // true ==> send the request
+        Common.getSframeChannel().query('Q_REQUEST_ACCESS', false, function (err, obj) {
+            if (obj && obj.state) {
+                var locked = false;
+                $requestBlock.show().click(function () {
+                    if (locked) { return; }
+                    locked = true;
+                    Common.getSframeChannel().query('Q_REQUEST_ACCESS', true, function (err, obj) {
+                        if (obj && obj.state) {
+                            UI.log(Messages.requestEdit_sent);
+                            $requestBlock.hide();
+                        } else {
+                            locked = false;
+                        }
+                    });
+                });
+            }
+        });
+
+
+        toolbar.$leftside.append($requestBlock);
+        toolbar.request = $requestBlock;
+
+        return $requestBlock;
+    };
+
+    createRequest = createRequest;
+
     var createTitle = function (toolbar, config) {
         var $titleContainer = $('<span>', {
             'class': TITLE_CLS

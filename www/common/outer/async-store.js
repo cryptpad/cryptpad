@@ -1170,9 +1170,6 @@ define([
                 onLeave: function (m) {
                     channel.bcast("PAD_LEAVE", m);
                 },
-                onAbort: function () {
-                    channel.bcast("PAD_DISCONNECT");
-                },
                 onError: function (err) {
                     channel.bcast("PAD_ERROR", err);
                     delete channels[data.channel];
@@ -1181,7 +1178,11 @@ define([
                     channel.bcast("PAD_ERROR", err);
                     delete channels[data.channel];
                 },
-                onConnectionChange: function () {},
+                onConnectionChange: function (info) {
+                    if (!info.state) {
+                        channel.bcast("PAD_DISCONNECT");
+                    }
+                },
                 crypto: {
                     // The encryption and decryption is done in the outer window.
                     // This async-store only deals with already encrypted messages.
