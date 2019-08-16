@@ -82,6 +82,7 @@ define([
     var faCollapseAll = 'fa-minus-square-o';
     var faShared = 'fa-shhare-alt';
     var faReadOnly = 'fa-eye';
+    var faOpenInCode = 'cptools-code';
     var faRename = 'fa-pencil';
     var faColor = 'cptools-palette';
     var faTrash = 'fa-trash';
@@ -343,6 +344,10 @@ define([
                     'tabindex': '-1',
                     'data-icon': faReadOnly,
                 }, Messages.fc_open_ro)),
+                h('li', h('a.cp-app-drive-context-openincode.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': faOpenInCode,
+                }, Messages.fc_openInCode)),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-expandall.dropdown-item', {
                     'tabindex': '-1',
@@ -1095,6 +1100,10 @@ define([
                         // We can only open parent in virtual categories
                         hide.push('openparent');
                     }
+                    if (!$element.is('.cp-border-color-file')) {
+                        //hide.push('download');
+                        hide.push('openincode');
+                    }
                     if ($element.is('.cp-app-drive-element-file')) {
                         // No folder in files
                         hide.push('color');
@@ -1103,6 +1112,11 @@ define([
                             hide.push('open'); // Remove open 'edit' mode
                         } else if ($element.is('.cp-app-drive-element-noreadonly')) {
                             hide.push('openro'); // Remove open 'view' mode
+                        }
+                        // if it's not a plain text file
+                        var metadata = manager.getFileData(manager.find(path));
+                        if (!metadata || !Util.isPlainTextFile(metadata.fileType, metadata.title)) {
+                            hide.push('openincode');
                         }
                     } else if ($element.is('.cp-app-drive-element-sharedf')) {
                         if (containsFolder) {
@@ -1113,6 +1127,7 @@ define([
                         }
                         containsFolder = true;
                         hide.push('openro');
+                        hide.push('openincode');
                         hide.push('hashtag');
                         hide.push('delete');
                         //hide.push('deleteowned');
@@ -1125,6 +1140,7 @@ define([
                         }
                         containsFolder = true;
                         hide.push('openro');
+                        hide.push('openincode');
                         hide.push('properties');
                         hide.push('share');
                         hide.push('hashtag');
@@ -1159,6 +1175,7 @@ define([
                     hide.push('hashtag');
                     hide.push('download');
                     hide.push('share');
+                    hide.push('openincode'); // can't because of race condition
                 }
                 if (containsFolder && paths.length > 1) {
                     // Cannot open multiple folders
@@ -1175,7 +1192,7 @@ define([
                     show = ['newfolder', 'newsharedfolder', 'newdoc'];
                     break;
                 case 'tree':
-                    show = ['open', 'openro', 'expandall', 'collapseall', 'color', 'download', 'share', 'rename', 'delete', 'deleteowned', 'removesf', 'properties', 'hashtag'];
+                    show = ['open', 'openro', 'openincode', 'expandall', 'collapseall', 'color', 'download', 'share', 'rename', 'delete', 'deleteowned', 'removesf', 'properties', 'hashtag'];
                     break;
                 case 'default':
                     show = ['open', 'openro', 'share', 'openparent', 'delete', 'deleteowned', 'properties', 'hashtag'];
@@ -3677,6 +3694,25 @@ define([
                     openFile(null, href);
                 });
             }
+            else if ($this.hasClass('cp-app-drive-context-openincode')) {
+                if (paths.length !== 1) { return; }
+                var p = paths[0];
+                el = manager.find(p.path);
+                var metadata = manager.getFileData(el);
+                var simpleData = {
+                    title: metadata.filename || metadata.title,
+                    href: metadata.href,
+                    password: metadata.password,
+                    channel: metadata.channel,
+                };
+                nThen(function (waitFor) {
+                    common.sessionStorage.put(Constants.newPadFileData, JSON.stringify(simpleData), waitFor());
+                    common.sessionStorage.put(Constants.newPadPathKey, currentPath, waitFor());
+                }).nThen(function () {
+                    common.openURL('/code/');
+                });
+            }
+
             else if ($this.hasClass('cp-app-drive-context-expandall') ||
                      $this.hasClass('cp-app-drive-context-collapseall')) {
                 if (paths.length !== 1) { return; }
