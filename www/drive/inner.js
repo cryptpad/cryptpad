@@ -3588,11 +3588,11 @@ define([
                         wide: Object.keys(friends).length !== 0
                     });
                 } else if (manager.isFolder(el)) { // Folder
-                    // if folder already contains SF
+                    // if folder is inside SF
                     if (manager.isInSharedFolder(paths[0].path)) {
                         UI.alert(Messages.convertFolderToSF_SFParent, undefined, true);
                     }
-                    // if folder is inside SF
+                    // if folder already contains SF
                     else if (manager.hasSubSharedFolder(el)) {
                         UI.alert(Messages.convertFolderToSF_SFChildren, undefined, true);
                     }
