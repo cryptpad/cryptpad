@@ -4245,6 +4245,10 @@ define([
                 return;
             }
             history.sfId = false;
+
+            var ok = manager.isValidDrive(obj.drive);
+            if (!ok) { return; }
+
             copyObjectValue(files, obj.drive);
             appStatus.isReady = true;
             refresh();
