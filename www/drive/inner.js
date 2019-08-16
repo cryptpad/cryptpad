@@ -3590,15 +3590,15 @@ define([
                 } else if (manager.isFolder(el)) { // Folder
                     // if folder already contains SF
                     if (manager.isInSharedFolder(paths[0].path)) {
-                        UI.alert(Messages.convertFolderToSF_SFParent || "Sharing this folder can't be done because it already in a Shared Folder. Please, move this folder elsewhere in order to continue", undefined, true);
+                        UI.alert(Messages.convertFolderToSF_SFParent, undefined, true);
                     }
                     // if folder is inside SF
                     else if (manager.hasSubSharedFolder(el)) {
-                        UI.alert(Messages.convertFolderToSF_SFChildren || "Sharing this folder can't be done because it already contains one ore more Shared Folders. Please, remove those from this folder in order to continue.", undefined, true);
+                        UI.alert(Messages.convertFolderToSF_SFChildren, undefined, true);
                     }
                     // if folder does not contains SF
                     else {
-                        UI.confirm(Messages.convertFolderToSF_confirm || "In order to be shared, this folder must be converted into a shared folder. Proceed ?", function(res) {
+                        UI.confirm(Messages.convertFolderToSF_confirm, function(res) {
                             if (!res) { return; }
                             if (paths[0].path.length <= 1) { return; } // if root
                             manager.convertFolderToSharedFolder(paths[0].path, refresh);
