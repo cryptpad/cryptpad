@@ -1124,5 +1124,14 @@
     "requestEdit_accepted": "{1} vous a accordé les droits d'édition du pad <b>{0}</b>",
     "requestEdit_sent": "Demande envoyée",
     "uploadFolderButton": "Importer un dossier",
-    "properties_unknownUser": "{0} utilisateur(s) inconnu(s)"
+    "properties_unknownUser": "{0} utilisateur(s) inconnu(s)",
+    "fm_morePads": "Plus de pads",
+    "fc_openInCode": "Ouvrir dans l'application Code",
+    "uploadFolder_modal_title": "Options d'importation du dossier",
+    "uploadFolder_modal_filesPassword": "Mot de passe des fichiers",
+    "uploadFolder_modal_owner": "Être propriétaire des fichiers",
+    "uploadFolder_modal_forceSave": "Stocker les fichiers dans votre CryptDrive",
+    "convertFolderToSF_SFParent": "Impossible de convertir ce dossier en dossier partagé car il se situe à l'interieur d'un autre dossier partagé. Veuillez le déplacer à l'extérieur afin de continuer.",
+    "convertFolderToSF_SFChildren": "Impossible de convertir ce dossier en dossier partagé car il contient déjà d'autres dossiers partagés. Veuillez déplacer ces dossiers à l'extérieur afin de continuer.",
+    "convertFolderToSF_confirm": "Ce dossier va être converti en dossier partagé afin de pouvoir être accessible par d'autres utilisateurs. Continuer ?"
 }
