@@ -1111,5 +1111,18 @@
     "admin_supportInitHint": "Vous pouvez configurer une messagerie de support afin de fournir aux utilisateurs de votre instance CryptPad un moyen de vous contacter de manière sécurisée en cas de problème avec leur compte.",
     "admin_supportListHint": "Voici la liste des tickets envoyés par les utilisateurs au support. Tous les administrateurs peuvent voir les tickets et leurs réponses. Un ticket fermé ne peut pas être ré-ouvert. Vous ne pouvez supprimer (ou cacher) que les tickets fermés, et les tickets supprimés restent visible par les autres administrateurs.",
     "support_formHint": "Ce formulaire peut être utilisé pour créer un nouveau ticket de support. Utilisez-le pour contacter les administrateurs de manière sécurisée afin de résoudre un problème ou d'obtenir des renseignements. Merci de ne pas créer de nouveau ticket si vous avez déjà un ticket ouvert concernant le même problème, vous pouvez utiliser le bouton \"Répondre\" dans ce cas.",
-    "support_listHint": "Voici la liste des tickets envoyés au support, ainsi que les réponses. Un ticket fermé ne peut pas être ré-ouvert, mais il est possible d'en créer un nouveau. Vous pouvez cacher les tickets qui ont été fermés."
+    "support_listHint": "Voici la liste des tickets envoyés au support, ainsi que les réponses. Un ticket fermé ne peut pas être ré-ouvert, mais il est possible d'en créer un nouveau. Vous pouvez cacher les tickets qui ont été fermés.",
+    "support_notification": "Un administrateur a répondu à votre ticket de support",
+    "requestEdit_button": "Demander les droits d'édition",
+    "requestEdit_dialog": "Êtes-vous sûr de vouloir demander les droits d'édition de ce pad au propriétaire ?",
+    "requestEdit_confirm": "{1} a demandé les droits d'édition pour le pad <b>{1}</b>. Souhaitez-vous leur accorder les droits ?",
+    "requestEdit_fromFriend": "Vous êtes amis avec {0}",
+    "requestEdit_fromStranger": "Vous n'êtes <b>pas</b> amis avec {0}",
+    "requestEdit_viewPad": "Ouvrir le pad dans un nouvel onglet",
+    "later": "Décider plus tard",
+    "requestEdit_request": "{1} souhaite éditer le pad <b>{0}</b>",
+    "requestEdit_accepted": "{1} vous a accordé les droits d'édition du pad <b>{0}</b>",
+    "requestEdit_sent": "Demande envoyée",
+    "uploadFolderButton": "Importer un dossier",
+    "properties_unknownUser": "{0} utilisateur(s) inconnu(s)"
 }
