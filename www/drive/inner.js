@@ -319,7 +319,7 @@ define([
                 h('li', h('a.cp-app-drive-context-openincode.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faOpenInCode,
-                }, Messages.fc_openInCode || "Open in Code")), // XXX
+                }, Messages.fc_openInCode)),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-expandall.dropdown-item', {
                     'tabindex': '-1',
