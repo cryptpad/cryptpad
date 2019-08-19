@@ -469,16 +469,19 @@ define([
         // don't try to convert top-level elements (trash, root, etc) to shared-folders
         // TODO also validate that you're in root (not templates, etc)
         if (data.path.length <= 1) {
-            // XXX call back with error and abort nThen
-            return;
+            return void cb({
+                error: 'E_INVAL_PATH',
+            });
         }
         if (_isInSharedFolder(Env, path)) {
-            // XXX call back with error and abort nThen
-            return;
+            return void cb({
+                error: 'E_INVAL_NESTING',
+            });
         }
         if (Env.user.userObject.hasSubSharedFolder(folderElement)) {
-            // XXX call back with error and abort nThen
-            return;
+            return void cb({
+                error: 'E_INVAL_NESTING',
+            });
         }
         var parentPath = path.slice(0, -1);
         var parentFolder = Env.user.userObject.find(parentPath);
@@ -489,12 +492,13 @@ define([
             _addSharedFolder(Env, {
                 path: parentPath,
                 name: folderName,
-                owned: true, // FIXME hardcoded preference
-                password: '', // FIXME hardcoded preference
+                owned: true, // XXX FIXME hardcoded preference
+                password: '', // XXX FIXME hardcoded preference
             }, waitFor(function (id) {
                 // _addSharedFolder can be an id or an error
                 if (typeof(id) === 'object' && id && id.error) {
-                    // XXX FIXME handle error
+                    waitFor.abort();
+                    return void cb(id);
                 } else {
                     SFId = id;
                 }
@@ -502,9 +506,10 @@ define([
         }).nThen(function (waitFor) {
             // move everything from folder to SF
             if (!SFId) {
-                // XXX FIXME callback does not indicate that there is an error
-                // XXX FIXME does not abort nThen chain
-                return void cb();
+                waitFor.abort();
+                return void cb({
+                    error: 'E_NO_ID'
+                });
             }
             var paths = [];
             for (var el in folderElement) {
@@ -520,6 +525,13 @@ define([
                     return true;
                 }
             });
+
+            if (!SFKey) {
+                waitFor.abort();
+                return void cb({
+                    error: 'E_NO_KEY'
+                });
+            }
             var newPath = parentPath.concat(SFKey).concat(UserObject.ROOT);
             _move(Env, {
                 paths: paths,
