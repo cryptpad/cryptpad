@@ -498,10 +498,16 @@ define([
             var $el = $(el);
             var $a = $el.children().filter("a");
             var $sub = $el.find(".dropdown-menu").first();
+            var left, bottomOffset;
             var timeoutId;
             var showSubmenu = function () {
                 clearTimeout(timeoutId);
-                $sub.toggleClass("left", $el.offset().left + $el.outerWidth() + $sub.outerWidth() > $(window).width());
+                left = $el.offset().left + $el.outerWidth() + $sub.outerWidth() > $(window).width();
+                bottomOffset = $el.offset().top + $el.outerHeight() + $sub.outerHeight() - $(window).height();
+                $sub.css("left", left ? "0%": "100%");
+                $sub.css("transform", "translate("
+                         + (left ? "-100%" : "0")
+                         + "," + (bottomOffset > 0 ? -(bottomOffset - $el.outerHeight()) : 0) + "px)");
                 $el.siblings().find(".dropdown-menu").hide();
                 $sub.show();
             };
