@@ -738,7 +738,10 @@ define([
                 var object = getAttributeObject(data.attr);
                 object.obj[object.key] = data.value;
             } catch (e) { return void cb({error: e}); }
-            onSync(cb);
+            onSync(function () {
+                cb();
+                broadcast([], "UPDATE_METADATA");
+            });
         };
         Store.getAttribute = function (clientId, data, cb) {
             var object;
