@@ -764,6 +764,10 @@ define([
         postMessage("GIVE_PAD_ACCESS", data, cb);
     };
 
+    common.getPadMetadata = function (data, cb) {
+        postMessage('GET_PAD_METADATA', data, cb);
+    };
+
     common.changePadPassword = function (Crypt, href, newPassword, edPublic, cb) {
         if (!href) { return void cb({ error: 'EINVAL_HREF' }); }
         var parsed = Hash.parsePadUrl(href);

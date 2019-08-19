@@ -272,7 +272,7 @@ define([
             var parsed = Utils.Hash.parsePadUrl(window.location.href);
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Utils.Hash.getDefaultName(parsed);
-            var edPublic, isTemplate;
+            var edPublic, curvePublic, notifications, isTemplate;
             var forceCreationScreen = cfg.useCreationScreen &&
                                       sessionStorage[Utils.Constants.displayPadCreationScreen];
             delete sessionStorage[Utils.Constants.displayPadCreationScreen];
@@ -284,6 +284,8 @@ define([
                         if (err) { console.log(err); }
                         metaObj = m;
                         edPublic = metaObj.priv.edPublic; // needed to create an owned pad
+                        curvePublic = metaObj.user.curvePublic;
+                        notifications = metaObj.user.notifications;
                     }));
                     if (typeof(isTemplate) === "undefined") {
                         Cryptpad.isTemplate(window.location.href, waitFor(function (err, t) {
@@ -973,10 +975,33 @@ define([
                 if (readOnly && hashes.editHash) {
                     return void cb({error: 'ALREADYKNOWN'});
                 }
-                Cryptpad.padRpc.requestAccess({
-                    send: data,
-                    channel: secret.channel
-                }, cb);
+                var owner;
+                var crypto = Crypto.createEncryptor(secret.keys);
+                nThen(function (waitFor) {
+                    // Try to get the owner's mailbox from the pad metadata first.
+                    // If it's is an older owned pad, check if the owner is a friend
+                    // or an acquaintance (from async-store directly in requestAccess)
+                    Cryptpad.getPadMetadata({
+                        channel: secret.channel
+                    }, waitFor(function (obj) {
+                        obj = obj || {};
+                        if (obj.error) { return; }
+                        if (obj.mailbox) {
+                            try {
+                                var dataStr = crypto.decrypt(obj.mailbox, true, true);
+                                var data = JSON.parse(dataStr);
+                                if (!data.notifications || !data.curvePublic) { return; }
+                                owner = data;
+                            } catch (e) { console.error(e); }
+                        }
+                    }));
+                }).nThen(function () {
+                    Cryptpad.padRpc.requestAccess({
+                        send: data,
+                        channel: secret.channel,
+                        owner: owner
+                    }, cb);
+                });
             });
 
             if (cfg.messaging) {
@@ -1099,13 +1124,21 @@ define([
                 readOnly = false;
                 updateMeta();
 
-                var rtConfig = {};
+                var rtConfig = {
+                    metadata: {}
+                };
                 if (data.owned) {
-                    rtConfig.owners = [edPublic];
+                    rtConfig.metadata.owners = [edPublic];
+                    rtConfig.metadata.mailbox = Utils.crypto.encrypt(JSON.stringify({
+                        notifications: notifications,
+                        curvePublic: curvePublic
+                    }));
                 }
                 if (data.expire) {
-                    rtConfig.expire = data.expire;
+                    rtConfig.metadata.expire = data.expire;
                 }
+                rtConfig.metadata.validateKey = (secret.keys && secret.keys.validateKey) || undefined;
+
                 Utils.rtConfig = rtConfig;
                 nThen(function(waitFor) {
                     if (data.templateId) {
