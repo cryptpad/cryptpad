@@ -131,11 +131,14 @@ define([
             data.owners.forEach(function (ed) {
                 // If a friend is an owner, add their name to the list
                 // otherwise, increment the list of strangers
+                if (ed === edPublic) {
+                    names.push(Messages.yourself);
+                    return;
+                }
                 if (!Object.keys(priv.friends || {}).some(function (c) {
                     var friend = priv.friends[c] || {};
-                    if (friend.edPublic !== ed) { return; }
-                    var name = c === 'me' ? Messages.yourself : friend.displayName;
-                    names.push(name);
+                    if (friend.edPublic !== ed || c === 'me') { return; }
+                    names.push(friend.displayName);
                     return true;
                 })) {
                     strangers++;
