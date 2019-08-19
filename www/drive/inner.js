@@ -993,7 +993,7 @@ define([
                         hide.push('collapseall');
                     }
                     if (path.length === 1) {
-                        // Can't rename or delete root elements
+                        // Can't rename, share, delete, or change the color of root elements
                         hide.push('delete');
                         hide.push('rename');
                         hide.push('share');
@@ -1023,9 +1023,8 @@ define([
                         }
                     } else if ($element.is('.cp-app-drive-element-sharedf')) {
                         if (containsFolder) {
-                            // More than 1 shared folder selected: cannot create a new subfolder
+                            // More than 1 folder selected: cannot create a new subfolder
                             hide.push('newfolder');
-                            hide.push('share');
                             hide.push('expandall');
                             hide.push('collapseall');
                         }
@@ -1038,7 +1037,6 @@ define([
                         if (containsFolder) {
                             // More than 1 folder selected: cannot create a new subfolder
                             hide.push('newfolder');
-                            hide.push('share');
                             hide.push('expandall');
                             hide.push('collapseall');
                         }
@@ -3570,7 +3568,7 @@ define([
                 var parsed, modal;
                 var friends = common.getFriends();
 
-                if (manager.isSharedFolder(el)) { // Shared Folder
+                if (manager.isSharedFolder(el)) {
                     data = manager.getSharedFolderData(el);
                     parsed = Hash.parsePadUrl(data.href);
                     modal = UIElements.createSFShareModal({
@@ -3584,21 +3582,21 @@ define([
                             editHash: parsed.hash
                         }
                     });
-                    UI.openCustomModal(modal, {
+                    return void UI.openCustomModal(modal, {
                         wide: Object.keys(friends).length !== 0
                     });
                 } else if (manager.isFolder(el)) { // Folder
                     // if folder is inside SF
                     if (manager.isInSharedFolder(paths[0].path)) {
-                        UI.alert(Messages.convertFolderToSF_SFParent, undefined, true);
+                        return void UI.alert(Messages.convertFolderToSF_SFParent);
                     }
                     // if folder already contains SF
                     else if (manager.hasSubSharedFolder(el)) {
-                        UI.alert(Messages.convertFolderToSF_SFChildren, undefined, true);
+                        return void UI.alert(Messages.convertFolderToSF_SFChildren);
                     }
                     // if folder does not contains SF
                     else {
-                        UI.confirm(Messages.convertFolderToSF_confirm, function(res) {
+                        return void UI.confirm(Messages.convertFolderToSF_confirm, function(res) {
                             if (!res) { return; }
                             if (paths[0].path.length <= 1) { return; } // if root
                             manager.convertFolderToSharedFolder(paths[0].path, refresh);
