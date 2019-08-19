@@ -1241,6 +1241,10 @@ define([
             channel.sendMessage(msg, clientId, cb);
         };
 
+        // requestPadAccess is used to check if we have a way to contact the owner
+        // of the pad AND to send the request if we want
+        // data.send === false ==> check if we can contact them
+        // data.send === true  ==> send the request
         Store.requestPadAccess = function (clientId, data, cb) {
             var owner = data.owner;
             var channel = channels[data.channel];
@@ -1255,13 +1259,15 @@ define([
                     }
                     if (i >= 300) { // One minute timeout
                         clearInterval(it);
+                        return void cb({error: 'ETIMEOUT'});
                     }
                     i++;
                 }, 200);
                 return;
             }
 
-            // If the owner was not is the pad metadata, check if it is a friend
+            // If the owner was not is the pad metadata, check if it is a friend.
+            // We'll contact the first owner for whom we know the mailbox
             var fData = channel.data || {};
             if (!owner && fData.owners) {
                 var friends = store.proxy.friends || {};
@@ -1348,6 +1354,7 @@ define([
                     }
                     if (i >= 300) { // One minute timeout
                         clearInterval(it);
+                        return void cb({error: 'ETIMEOUT'});
                     }
                     i++;
                 }, 200);
