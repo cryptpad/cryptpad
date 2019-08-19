@@ -1101,9 +1101,10 @@ define([
                         hide.push('collapseall');
                     }
                     if (path.length === 1) {
-                        // Can't rename or delete root elements
+                        // Can't rename, share, delete, or change the color of root elements
                         hide.push('delete');
                         hide.push('rename');
+                        hide.push('share');
                         hide.push('color');
                     }
                     if (!$element.is('.cp-app-drive-element-owned')) {
@@ -1158,7 +1159,6 @@ define([
                         hide.push('openro');
                         hide.push('openincode');
                         hide.push('properties');
-                        hide.push('share');
                         hide.push('hashtag');
                     }
                     // If we're in the trash, hide restore and properties for non-root elements
@@ -3922,7 +3922,27 @@ define([
                             editHash: parsed.hash
                         }
                     });
-                } else {
+                    return void UI.openCustomModal(modal, {
+                        wide: Object.keys(friends).length !== 0
+                    });
+                } else if (manager.isFolder(el)) { // Folder
+                    // if folder is inside SF
+                    if (manager.isInSharedFolder(paths[0].path)) {
+                        return void UI.alert(Messages.convertFolderToSF_SFParent);
+                    }
+                    // if folder already contains SF
+                    else if (manager.hasSubSharedFolder(el)) {
+                        return void UI.alert(Messages.convertFolderToSF_SFChildren);
+                    }
+                    // if folder does not contains SF
+                    else {
+                        return void UI.confirm(Messages.convertFolderToSF_confirm, function(res) {
+                            if (!res) { return; }
+                            if (paths[0].path.length <= 1) { return; } // if root
+                            manager.convertFolderToSharedFolder(paths[0].path, refresh);
+                        });
+                    }
+                } else { // File
                     data = manager.getFileData(el);
                     parsed = Hash.parsePadUrl(data.href);
                     var roParsed = Hash.parsePadUrl(data.roHref);
@@ -3948,10 +3968,10 @@ define([
                     modal = padType === 'file' ? UIElements.createFileShareModal(padData)
                                             : UIElements.createShareModal(padData);
                     modal = UI.dialog.tabs(modal);
+                    UI.openCustomModal(modal, {
+                        wide: Object.keys(friends).length !== 0
+                    });
                 }
-                UI.openCustomModal(modal, {
-                    wide: Object.keys(friends).length !== 0
-                });
             }
             else if ($this.hasClass('cp-app-drive-context-newfolder')) {
                 if (paths.length !== 1) { return; }

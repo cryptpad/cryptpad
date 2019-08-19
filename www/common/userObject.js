@@ -123,7 +123,11 @@ define([
         };
         exp.isFolderEmpty = function (element) {
             if (!isFolder(element)) { return false; }
-            return Object.keys(element).length === 0;
+            // if the folder contains nothing, it's empty
+            if (Object.keys(element).length === 0) { return true; }
+            // or if it contains one thing and that thing is metadata
+            if (Object.keys(element).length === 1 && isFolderData(element[Object.keys(element)[0]])) { return true; }
+            return false;
         };
 
         exp.hasSubfolder = function (element, trashRoot) {
@@ -168,6 +172,20 @@ define([
                     return true;
                 }
             }
+        };
+
+        var hasSubSharedFolder = exp.hasSubSharedFolder = function (folder) {
+            for (var el in folder) {
+                if (isSharedFolder(folder[el])) {
+                    return true;
+                }
+                else if (isFolder(folder[el])) {
+                    if (hasSubSharedFolder(folder[el])) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         };
 
         // Get data from AllFiles (Cryptpad_RECENTPADS)
