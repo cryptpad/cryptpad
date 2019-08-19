@@ -81,17 +81,25 @@ define([
         // If the type is a query, your handler will be invoked with a reply function that takes
         // one argument (the content to reply with).
         chan.on = function (queryType, handler, quiet) {
-            (handlers[queryType] = handlers[queryType] || []).push(function (data, msg) {
+            var h = function (data, msg) {
                 handler(data.content, function (replyContent) {
                     postMsg(JSON.stringify({
                         txid: data.txid,
                         content: replyContent
                     }));
                 }, msg);
-            });
+            };
+            (handlers[queryType] = handlers[queryType] || []).push(h);
             if (!quiet) {
                 event('EV_REGISTER_HANDLER', queryType);
             }
+            return {
+                stop: function () {
+                    var idx = handlers[queryType].indexOf(h);
+                    if (idx === -1) { return; }
+                    handlers[queryType].splice(idx, 1);
+                }
+            };
         };
 
         // If a particular handler is registered, call the callback immediately, otherwise it will be called
