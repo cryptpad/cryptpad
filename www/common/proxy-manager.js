@@ -461,6 +461,102 @@ define([
             cb(id);
         });
     };
+
+    // convert a folder to a Shared Folder
+    var _convertFolderToSharedFolder = function (Env, data, cb) {
+        var path = data.path;
+        var folderElement = Env.user.userObject.find(path);
+        // don't try to convert top-level elements (trash, root, etc) to shared-folders
+        // TODO also validate that you're in root (not templates, etc)
+        if (data.path.length <= 1) {
+            return void cb({
+                error: 'E_INVAL_PATH',
+            });
+        }
+        if (_isInSharedFolder(Env, path)) {
+            return void cb({
+                error: 'E_INVAL_NESTING',
+            });
+        }
+        if (Env.user.userObject.hasSubSharedFolder(folderElement)) {
+            return void cb({
+                error: 'E_INVAL_NESTING',
+            });
+        }
+        var parentPath = path.slice(0, -1);
+        var parentFolder = Env.user.userObject.find(parentPath);
+        var folderName = path[path.length - 1];
+        var SFId;
+        nThen(function (waitFor) {
+            // create shared folder
+            _addSharedFolder(Env, {
+                path: parentPath,
+                name: folderName,
+                owned: true, // XXX FIXME hardcoded preference
+                password: '', // XXX FIXME hardcoded preference
+            }, waitFor(function (id) {
+                // _addSharedFolder can be an id or an error
+                if (typeof(id) === 'object' && id && id.error) {
+                    waitFor.abort();
+                    return void cb(id);
+                } else {
+                    SFId = id;
+                }
+            }));
+        }).nThen(function (waitFor) {
+            // move everything from folder to SF
+            if (!SFId) {
+                waitFor.abort();
+                return void cb({
+                    error: 'E_NO_ID'
+                });
+            }
+            var paths = [];
+            for (var el in folderElement) {
+                if (Env.user.userObject.isFolder(folderElement[el]) || Env.user.userObject.isFile(folderElement[el])) {
+                    paths.push(path.concat(el));
+                }
+            }
+            var SFKey;
+            // this is basically Array.find, except it works in IE
+            Object.keys(parentFolder).some(function (el) {
+                if (parentFolder[el] === SFId) {
+                    SFKey = el;
+                    return true;
+                }
+            });
+
+            if (!SFKey) {
+                waitFor.abort();
+                return void cb({
+                    error: 'E_NO_KEY'
+                });
+            }
+            var newPath = parentPath.concat(SFKey).concat(UserObject.ROOT);
+            _move(Env, {
+                paths: paths,
+                newPath: newPath,
+                copy: false,
+            }, waitFor());
+        }).nThen(function () {
+            // migrate metadata
+            var sharedFolderElement = Env.user.proxy[UserObject.SHARED_FOLDERS][SFId];
+            var metadata = Env.user.userObject.getFolderData(folderElement);
+            for (var key in metadata) {
+                // it shouldn't be possible to have nested metadata
+                // but this is a reasonable sanity check
+                if (key === "metadata") { continue; }
+                // copy the metadata from the original folder to the new shared folder
+                sharedFolderElement[key] = metadata[key];
+            }
+
+            // remove folder
+            Env.user.userObject.delete([path], function () {
+                cb();
+            });
+        });
+    };
+
     // Delete permanently some pads or folders
     var _delete = function (Env, data, cb) {
         data = data || {};
@@ -598,6 +694,8 @@ define([
                 _addFolder(Env, data, cb); break;
             case 'addSharedFolder':
                 _addSharedFolder(Env, data, cb); break;
+            case 'convertFolderToSharedFolder':
+                _convertFolderToSharedFolder(Env, data, cb); break;
             case 'delete':
                 _delete(Env, data, cb); break;
             case 'emptyTrash':
@@ -914,6 +1012,14 @@ define([
             }
         }, cb);
     };
+    var convertFolderToSharedFolderInner = function (Env, path, cb) {
+        return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
+            cmd: "convertFolderToSharedFolder",
+            data: {
+                path: path
+            }
+        }, cb);
+    };
     var deleteInner = function (Env, paths, cb) {
         return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
             cmd: "delete",
@@ -1074,6 +1180,9 @@ define([
         }
         return Env.user.userObject.hasSubfolder(el, trashRoot);
     };
+    var hasSubSharedFolder = function (Env, el) {
+        return Env.user.userObject.hasSubSharedFolder(el);
+    };
     var hasFile = function (Env, el, trashRoot) {
         if (Env.folders[el]) {
             var uo = Env.folders[el].userObject;
@@ -1113,6 +1222,7 @@ define([
             emptyTrash: callWithEnv(emptyTrashInner),
             addFolder: callWithEnv(addFolderInner),
             addSharedFolder: callWithEnv(addSharedFolderInner),
+            convertFolderToSharedFolder: callWithEnv(convertFolderToSharedFolderInner),
             delete: callWithEnv(deleteInner),
             restore: callWithEnv(restoreInner),
             setFolderData: callWithEnv(setFolderDataInner),
@@ -1144,6 +1254,7 @@ define([
             isInTrashRoot: callWithEnv(isInTrashRoot),
             comparePath: callWithEnv(comparePath),
             hasSubfolder: callWithEnv(hasSubfolder),
+            hasSubSharedFolder: callWithEnv(hasSubSharedFolder),
             hasFile: callWithEnv(hasFile),
             // Data
             user: Env.user,
