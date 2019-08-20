@@ -650,35 +650,35 @@ module.exports.create = function (cfg) {
             // parsed[3] is the last known hash (optionnal)
             sendMsg(ctx, user, [seq, 'ACK']);
             channelName = parsed[1];
-            var validateKey = parsed[2];
-            var lastKnownHash = parsed[3];
-            var owners;
-            var expire;
+            var config = parsed[2];
+            var metadata = {};
+            var lastKnownHash;
+
             // clients can optionally pass a map of attributes
             // if the channel already exists this map will be ignored
             // otherwise it will be stored as the initial metadata state for the channel
-            if (parsed[2] && typeof(parsed[2]) === "object" && !Array.isArray(parsed[2])) {
-                validateKey = parsed[2].validateKey;
-                lastKnownHash = parsed[2].lastKnownHash;
-                owners = parsed[2].owners;
-                if (parsed[2].expire) {
-                    expire = +parsed[2].expire * 1000 + (+new Date());
+            if (config && typeof config === "object" && !Array.isArray(parsed[2])) {
+                lastKnownHash = config.lastKnownHash;
+                metadata = config.metadata || {};
+                if (metadata.expire) {
+                    metadata.expire = +metadata.expire * 1000 + (+new Date());
                 }
             }
+            metadata.channel = channelName;
 
             nThen(function (waitFor) {
                 if (!tasks) { return; } // tasks are not supported
-                if (typeof(expire) !== 'number' || !expire) { return; }
+                if (typeof(metadata.expire) !== 'number' || !metadata.expire) { return; }
 
                 // the fun part...
                 // the user has said they want this pad to expire at some point
-                tasks.write(expire, "EXPIRE", [ channelName ], waitFor(function (err) {
+                tasks.write(metadata.expire, "EXPIRE", [ channelName ], waitFor(function (err) {
                     if (err) {
                         // if there is an error, we don't want to crash the whole server...
                         // just log it, and if there's a problem you'll be able to fix it
                         // at a later date with the provided information
                         Log.error('HK_CREATE_EXPIRE_TASK', err);
-                        Log.info('HK_INVALID_EXPIRE_TASK', JSON.stringify([expire, 'EXPIRE', channelName]));
+                        Log.info('HK_INVALID_EXPIRE_TASK', JSON.stringify([metadata.expire, 'EXPIRE', channelName]));
                     }
                 }));
             }).nThen(function (waitFor) {
@@ -728,19 +728,7 @@ module.exports.create = function (cfg) {
                     const chan = ctx.channels[channelName];
 
                     if (msgCount === 0 && !metadata_cache[channelName] && chan && chan.indexOf(user) > -1) {
-                        var metadata = {};
-                        metadata.channel = channelName;
-                        if (validateKey) {
-                            metadata.validateKey = validateKey;
-                        }
-                        if (owners) {
-                            metadata.owners = owners;
-                        }
-                        if (expire) {
-                            metadata.expire = expire;
-                        }
                         metadata_cache[channelName] = metadata;
-
                         // new channels will always have their metadata written to a dedicated metadata log
                         // but any lines after the first which are not amendments in a particular format will be ignored.
                         // Thus we should be safe from race conditions here if just write metadata to the log as below...

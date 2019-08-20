@@ -110,6 +110,7 @@
     "newButton": "New",
     "newButtonTitle": "Create a new pad",
     "uploadButton": "Upload files",
+    "uploadFolderButton": "Upload folder",
     "uploadButtonTitle": "Upload a new file to the current folder",
     "saveTemplateButton": "Save as template",
     "saveTemplatePrompt": "Choose a title for the template",

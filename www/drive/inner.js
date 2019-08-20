@@ -46,6 +46,7 @@ define([
             else { return $('body').width() <= 600; }
         },
         isMac: navigator.platform === "MacIntel",
+        allowFolderUpload: File.prototype.hasOwnProperty("webkitRelativePath"),
     };
 
     var stringify = function (obj) {
@@ -89,6 +90,8 @@ define([
     var faDelete = 'fa-eraser';
     var faProperties = 'fa-database';
     var faTags = 'fa-hashtag';
+    var faUploadFiles = 'cptools-file-upload';
+    var faUploadFolder = 'cptools-folder-upload';
     var faEmpty = 'fa-trash-o';
     var faRestore = 'fa-repeat';
     var faShowParent = 'fa-location-arrow';
@@ -380,6 +383,15 @@ define([
                     'tabindex': '-1',
                     'data-icon': faSharedFolder,
                 }, Messages.fc_newsharedfolder)),
+                $separator.clone()[0],
+                h('li', h('a.cp-app-drive-context-uploadfiles.dropdown-item.cp-app-drive-context-editable', {
+                    'tabindex': '-1',
+                    'data-icon': faUploadFiles,
+                }, Messages.uploadButton)),
+                h('li', h('a.cp-app-drive-context-uploadfolder.dropdown-item.cp-app-drive-context-editable', {
+                    'tabindex': '-1',
+                    'data-icon': faUploadFolder,
+                }, Messages.uploadFolderButton)),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
@@ -1070,7 +1082,11 @@ define([
                         // Hide the new shared folder menu if we're already in a shared folder
                         return manager.isInSharedFolder(currentPath) || APP.disableSF;
                     }
-                    return AppConfig.availablePadTypes.indexOf($el.attr('data-type')) === -1;
+                    if (className === 'uploadfiles') { return; }
+                    if (className === 'uploadfolder') { return !APP.allowFolderUpload; }
+                    if (className === 'newdoc') {
+                        return AppConfig.availablePadTypes.indexOf($el.attr('data-type')) === -1;
+                    }
                 };
             } else {
                 // In case of multiple selection, we must hide the option if at least one element
@@ -1085,9 +1101,10 @@ define([
                         hide.push('collapseall');
                     }
                     if (path.length === 1) {
-                        // Can't rename or delete root elements
+                        // Can't rename, share, delete, or change the color of root elements
                         hide.push('delete');
                         hide.push('rename');
+                        hide.push('share');
                         hide.push('color');
                     }
                     if (!$element.is('.cp-app-drive-element-owned')) {
@@ -1142,7 +1159,6 @@ define([
                         hide.push('openro');
                         hide.push('openincode');
                         hide.push('properties');
-                        hide.push('share');
                         hide.push('hashtag');
                     }
                     // If we're in the trash, hide restore and properties for non-root elements
@@ -1189,7 +1205,7 @@ define([
 
             switch(type) {
                 case 'content':
-                    show = ['newfolder', 'newsharedfolder', 'newdoc'];
+                    show = ['newfolder', 'newsharedfolder', 'uploadfiles', 'uploadfolder', 'newdoc'];
                     break;
                 case 'tree':
                     show = ['open', 'openro', 'openincode', 'expandall', 'collapseall', 'color', 'download', 'share', 'rename', 'delete', 'deleteowned', 'removesf', 'properties', 'hashtag'];
@@ -2251,6 +2267,111 @@ define([
             });
             return arr;
         };
+        var showUploadFilesModal = function () {
+            var $input = $('<input>', {
+                'type': 'file',
+                'style': 'display: none;',
+                'multiple': 'multiple'
+            }).on('change', function (e) {
+                var files = Util.slice(e.target.files);
+                files.forEach(function (file) {
+                    var ev = {
+                        target: $content[0],
+                        path: findDropPath($content[0])
+                    };
+                    APP.FM.handleFile(file, ev);
+                });
+            });
+            $input.click();
+        };
+
+        // create the folder structure before to upload files from folder
+        var uploadFolder = function (fileList) {
+            var currentFolder = currentPath;
+            // create an array of all the files relative path
+            var files = Array.prototype.map.call(fileList, function (file) {
+                return {
+                    file: file,
+                    path: file.webkitRelativePath.split("/"),
+                };
+            });
+            // if folder name already exist in drive, rename it
+            var uploadedFolderName = files[0].path[0];
+            var availableName = manager.user.userObject.getAvailableName(manager.find(currentFolder), uploadedFolderName);
+
+            // ask for folder name and files options, then upload all the files!
+            APP.FM.showFolderUploadModal(availableName, function (folderUploadOptions) {
+                if (!folderUploadOptions) { return; }
+
+                // verfify folder name is possible, and update files path
+                availableName = manager.user.userObject.getAvailableName(manager.find(currentFolder), folderUploadOptions.folderName);
+                if (uploadedFolderName !== availableName) {
+                    files.forEach(function (file) {
+                        file.path[0] = availableName;
+                    });
+                }
+
+                // uploadSteps is an array of objects {folders: [], files: []}, containing all the folders and files to create safely
+                // at the index i + 1, the files and folders are children of the folders at the index i
+                var maxSteps = files.reduce(function (max, file) { return Math.max(max, file.path.length); }, 0);
+                var uploadSteps = [];
+                for (var i = 0 ; i < maxSteps ; i++) {
+                    uploadSteps[i] = {
+                        folders: [],
+                        files: [],
+                    };
+                }
+                files.forEach(function (file) {
+                    // add steps to create subfolders containing file
+                    for (var depth = 0 ; depth < file.path.length - 1 ; depth++) {
+                        var subfolderStr = file.path.slice(0, depth + 1).join("/");
+                        if (uploadSteps[depth].folders.indexOf(subfolderStr) === -1) {
+                            uploadSteps[depth].folders.push(subfolderStr);
+                        }
+                    }
+                    // add step to upload file (one step later than the step of its direct parent folder)
+                    uploadSteps[file.path.length - 1].files.push(file);
+                });
+
+                // add folders, then add files when theirs folders have been created
+                // wait for the folders to be created to go to the next step (don't wait for the files)
+                var stepByStep = function (uploadSteps, i) {
+                    if (i >= uploadSteps.length) { return; }
+                    nThen(function (waitFor) {
+                        // add folders
+                        uploadSteps[i].folders.forEach(function (folder) {
+                            var folderPath = folder.split("/");
+                            var parentFolder = currentFolder.concat(folderPath.slice(0, -1));
+                            var folderName = folderPath.slice(-1);
+                            manager.addFolder(parentFolder, folderName, waitFor(refresh));
+                        });
+                        // upload files
+                        uploadSteps[i].files.forEach(function (file) {
+                            var ev = {
+                                target: $content[0],
+                                path: currentFolder.concat(file.path.slice(0, -1)),
+                            };
+                            APP.FM.handleFile(file.file, ev, folderUploadOptions);
+                        });
+                    }).nThen(function () {
+                        stepByStep(uploadSteps, i + 1);
+                    });
+                };
+
+                stepByStep(uploadSteps, 0);
+            });
+        };
+        var showUploadFolderModal = function () {
+            var $input = $('<input>', {
+                'type': 'file',
+                'style': 'display: none;',
+                'multiple': 'multiple',
+                'webkitdirectory': true,
+            }).on('change', function (e) {
+                uploadFolder(e.target.files);
+            });
+            $input.click();
+        };
         var addNewPadHandlers = function ($block, isInRoot) {
             // Handlers
             if (isInRoot) {
@@ -2277,24 +2398,8 @@ define([
                         });
                     });
                 }
-                $block.find('a.cp-app-drive-new-upload, li.cp-app-drive-new-upload')
-                    .click(function () {
-                    var $input = $('<input>', {
-                        'type': 'file',
-                        'style': 'display: none;',
-                        'multiple': 'multiple'
-                    }).on('change', function (e) {
-                        var files = Util.slice(e.target.files);
-                        files.forEach(function (file) {
-                            var ev = {
-                                target: $content[0],
-                                path: findDropPath($content[0])
-                            };
-                            APP.FM.handleFile(file, ev);
-                        });
-                    });
-                    $input.click();
-                });
+                $block.find('a.cp-app-drive-new-fileupload, li.cp-app-drive-new-fileupload').click(showUploadFilesModal);
+                $block.find('a.cp-app-drive-new-folderupload, li.cp-app-drive-new-folderupload').click(showUploadFolderModal);
             }
             $block.find('a.cp-app-drive-new-doc, li.cp-app-drive-new-doc')
                 .click(function () {
@@ -2329,9 +2434,16 @@ define([
                 options.push({tag: 'hr'});
                 options.push({
                     tag: 'a',
-                    attributes: {'class': 'cp-app-drive-new-upload'},
+                    attributes: {'class': 'cp-app-drive-new-fileupload'},
                     content: $('<div>').append(getIcon('fileupload')).html() + Messages.uploadButton
                 });
+                if (APP.allowFolderUpload) {
+                    options.push({
+                        tag: 'a',
+                        attributes: {'class': 'cp-app-drive-new-folderupload'},
+                        content: $('<div>').append(getIcon('folderupload')).html() + Messages.uploadFolderButton
+                    });
+                }
                 options.push({tag: 'hr'});
             }
             getNewPadTypes().forEach(function (type) {
@@ -2613,13 +2725,22 @@ define([
                     $element3.append($('<span>', { 'class': 'cp-app-drive-new-name' })
                         .text(Messages.fm_sharedFolder));
                 }
-                // File
-                var $element2 = $('<li>', {
-                    'class': 'cp-app-drive-new-upload cp-app-drive-element-row ' +
-                             'cp-app-drive-element-grid'
+                // Upload file
+                var $elementFileUpload = $('<li>', {
+                    'class': 'cp-app-drive-new-fileupload cp-app-drive-element-row ' +
+                        'cp-app-drive-element-grid'
                 }).prepend(getIcon('fileupload')).appendTo($container);
-                $element2.append($('<span>', {'class': 'cp-app-drive-new-name'})
+                $elementFileUpload.append($('<span>', {'class': 'cp-app-drive-new-name'})
                     .text(Messages.uploadButton));
+                // Upload folder
+                if (APP.allowFolderUpload) {
+                    var $elementFolderUpload = $('<li>', {
+                        'class': 'cp-app-drive-new-folderupload cp-app-drive-element-row ' +
+                        'cp-app-drive-element-grid'
+                    }).prepend(getIcon('folderupload')).appendTo($container);
+                    $elementFolderUpload.append($('<span>', {'class': 'cp-app-drive-new-name'})
+                        .text(Messages.uploadFolderButton));
+                }
             }
             // Pads
             getNewPadTypes().forEach(function (type) {
@@ -3801,7 +3922,27 @@ define([
                             editHash: parsed.hash
                         }
                     });
-                } else {
+                    return void UI.openCustomModal(modal, {
+                        wide: Object.keys(friends).length !== 0
+                    });
+                } else if (manager.isFolder(el)) { // Folder
+                    // if folder is inside SF
+                    if (manager.isInSharedFolder(paths[0].path)) {
+                        return void UI.alert(Messages.convertFolderToSF_SFParent);
+                    }
+                    // if folder already contains SF
+                    else if (manager.hasSubSharedFolder(el)) {
+                        return void UI.alert(Messages.convertFolderToSF_SFChildren);
+                    }
+                    // if folder does not contains SF
+                    else {
+                        return void UI.confirm(Messages.convertFolderToSF_confirm, function(res) {
+                            if (!res) { return; }
+                            if (paths[0].path.length <= 1) { return; } // if root
+                            manager.convertFolderToSharedFolder(paths[0].path, refresh);
+                        });
+                    }
+                } else { // File
                     data = manager.getFileData(el);
                     parsed = Hash.parsePadUrl(data.href);
                     var roParsed = Hash.parsePadUrl(data.roHref);
@@ -3827,10 +3968,10 @@ define([
                     modal = padType === 'file' ? UIElements.createFileShareModal(padData)
                                             : UIElements.createShareModal(padData);
                     modal = UI.dialog.tabs(modal);
+                    UI.openCustomModal(modal, {
+                        wide: Object.keys(friends).length !== 0
+                    });
                 }
-                UI.openCustomModal(modal, {
-                    wide: Object.keys(friends).length !== 0
-                });
             }
             else if ($this.hasClass('cp-app-drive-context-newfolder')) {
                 if (paths.length !== 1) { return; }
@@ -3851,6 +3992,12 @@ define([
                     if (!obj) { return; }
                     manager.addSharedFolder(paths[0].path, obj, refresh);
                 });
+            }
+            else if ($this.hasClass("cp-app-drive-context-uploadfiles")) {
+                showUploadFilesModal();
+            }
+            else if ($this.hasClass("cp-app-drive-context-uploadfolder")) {
+                showUploadFolderModal();
             }
             else if ($this.hasClass("cp-app-drive-context-newdoc")) {
                 var ntype = $this.data('type') || 'pad';
@@ -4118,6 +4265,10 @@ define([
                 return;
             }
             history.sfId = false;
+
+            var ok = manager.isValidDrive(obj.drive);
+            if (!ok) { return; }
+
             copyObjectValue(files, obj.drive);
             appStatus.isReady = true;
             refresh();

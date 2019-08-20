@@ -138,7 +138,7 @@ define([
         }
         postMessage("SET", {
             key:['drive'],
-            value: data
+            value: data.drive
         }, function (obj) {
             cb(obj);
         }, {
@@ -762,6 +762,10 @@ define([
     };
     pad.giveAccess = function (data, cb) {
         postMessage("GIVE_PAD_ACCESS", data, cb);
+    };
+
+    common.getPadMetadata = function (data, cb) {
+        postMessage('GET_PAD_METADATA', data, cb);
     };
 
     common.changePadPassword = function (Crypt, href, newPassword, edPublic, cb) {

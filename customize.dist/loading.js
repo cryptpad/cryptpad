@@ -184,7 +184,7 @@ define([], function () {
     box-sizing: border-box;
     width: 80px;
     height: 80px;
-    border: 11px solid lightgrey;
+    border: 11px solid white;
     border-radius: 50%;
     border-top-color: transparent;
     animation: spin infinite 3s;

@@ -92,12 +92,11 @@ define([
         var opts = {
             password: pData.password
         };
-        var done = false;
-        ctx.sframeChan.on("EV_CRYPTGET_PROGRESS", function (data) {
-            if (done || data.hash !== parsed.hash) { return; }
+        var handler = ctx.sframeChan.on("EV_CRYPTGET_PROGRESS", function (data) {
+            if (data.hash !== parsed.hash) { return; }
             updateProgress.progress(data.progress);
             if (data.progress === 1) {
-                done = true;
+                handler.stop();
                 updateProgress.progress2(1);
             }
         });
