@@ -1368,10 +1368,12 @@ define([
                             errEv.preventDefault();
                             errEv.stopPropagation();
                             noWorker = true;
+                            worker.terminate();
                             w();
                         };
                         worker.onmessage = function (ev) {
                             if (ev.data === "OK") {
+                                worker.terminate();
                                 w();
                             }
                         };
