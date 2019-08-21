@@ -247,7 +247,7 @@ var historyKeeper;
 
 var log;
 
-// Initialize tasks, then rpc, then store, then history keeper and then start the server
+// Initialize logging, the the store, then tasks, then rpc, then history keeper and then start the server
 var nt = nThen(function (w) {
     // set up logger
     var Logger = require("./lib/log");
