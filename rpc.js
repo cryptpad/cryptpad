@@ -330,16 +330,6 @@ var getMetadata = function (Env, channel, cb) {
         }
         cb(void 0, ref.meta);
     });
-
-/*
-    // FIXME METADATA
-    return void Env.msgStore.getChannelMetadata(channel, function (e, data) {
-        if (e) {
-            if (e.code === 'INVALID_METADATA') { return void cb(void 0, {}); }
-            return void cb(e.code);
-        }
-        cb(void 0, data);
-    });*/
 };
 
 var getMultipleFileSize = function (Env, channels, cb) {
@@ -813,20 +803,13 @@ var clearOwnedChannel = function (Env, channelId, unsafeKey, cb) {
         return cb('INVALID_ARGUMENTS');
     }
 
-    // FIXME METADATA
-    if (!(Env.msgStore && Env.msgStore.getChannelMetadata)) {
-        return cb('E_NOT_IMPLEMENTED');
-    }
-
-    // FIXME METADATA
-    Env.msgStore.getChannelMetadata(channelId, function (e, metadata) {
-        if (e) { return cb(e); }
+    getMetadata(Env, channelId, function (err, metadata) {
+        if (err) { return void cb(err); }
         if (!(metadata && Array.isArray(metadata.owners))) { return void cb('E_NO_OWNERS'); }
         // Confirm that the channel is owned by the user in question
         if (metadata.owners.indexOf(unsafeKey) === -1) {
             return void cb('INSUFFICIENT_PERMISSIONS');
         }
-
         // FIXME COLDSTORAGE
         return void Env.msgStore.clearChannel(channelId, function (e) {
             cb(e);
