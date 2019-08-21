@@ -17,6 +17,7 @@ const Saferphore = require("saferphore");
 const nThen = require("nthen");
 const getFolderSize = require("get-folder-size");
 const Pins = require("./lib/pins");
+const Meta = require("./lib/metadata");
 
 
 var RPC = module.exports;
@@ -313,7 +314,6 @@ var getFileSize = function (Env, channel, cb) {
     });
 };
 
-var Meta = require("./lib/metadata");
 
 var getMetadata = function (Env, channel, cb) {
     if (!isValidId(channel)) { return void cb('INVALID_CHAN'); }
