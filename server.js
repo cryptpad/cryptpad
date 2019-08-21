@@ -261,13 +261,13 @@ var nt = nThen(function (w) {
         config.store = _store;
     }));
 }).nThen(function (w) {
-    if (!config.enableTaskScheduling) { return; }
     var Tasks = require("./storage/tasks");
     Tasks.create(config, w(function (e, tasks) {
         if (e) {
             throw e;
         }
         config.tasks = tasks;
+        if (config.disableIntegratedTasks) { return; }
         setInterval(function () {
             tasks.runAll(function (err) {
                 if (err) {
