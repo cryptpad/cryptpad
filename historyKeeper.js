@@ -221,7 +221,12 @@ module.exports.create = function (cfg) {
     */
     const getIndex = (ctx, channelName, cb) => {
         const chan = ctx.channels[channelName];
-        if (chan && chan.index) { return void cb(undefined, chan.index); }
+        if (chan && chan.index) {
+            // enforce async behaviour
+            return void setTimeout(function () {
+                cb(undefined, chan.index);
+            });
+        }
         computeIndex(channelName, (err, ret) => {
             if (err) { return void cb(err); }
             if (chan) { chan.index = ret; }
