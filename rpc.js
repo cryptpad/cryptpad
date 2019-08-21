@@ -1453,29 +1453,21 @@ var removeLoginBlock = function (Env, msg, cb) {
 
 var ARRAY_LINE = /^\[/;
 
-// since we're changing how metadata works this can lead to false positives
-// XXX rewrite this such that we can abort once we have a conclusive answer
+/*  Files can contain metadata but not content
+    call back with true if the channel log has no content other than metadata
+    otherwise false
+*/
 var isNewChannel = function (Env, channel, cb) {
     if (!isValidId(channel)) { return void cb('INVALID_CHAN'); }
     if (channel.length !== 32) { return void cb('INVALID_CHAN'); }
 
-    var count = 0;
     var done = false;
     Env.msgStore.getMessages(channel, function (msg) {
         if (done) { return; }
-        var parsed;
         try {
-            if (count === 0 && typeof(msg) === 'string' && ARRAY_LINE.test(msg)) {
+            if (typeof(msg) === 'string' && ARRAY_LINE.test(msg)) {
                 done = true;
-                count++;
                 return void cb(void 0, false);
-            }
-
-            parsed = JSON.parse(msg);
-            if (parsed && typeof(parsed) === 'object') { count++; }
-            if (count >= 2) {
-                done = true;
-                cb(void 0, false); // it is not a new file
             }
         } catch (e) {
             WARN('invalid message read from store', e);
