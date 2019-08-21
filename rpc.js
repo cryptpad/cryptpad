@@ -888,19 +888,12 @@ var removeOwnedChannel = function (Env, channelId, unsafeKey, cb) {
         return void removeOwnedBlob(Env, channelId, unsafeKey, cb);
     }
 
-    // FIXME METADATA
-    if (!(Env.msgStore && Env.msgStore.removeChannel && Env.msgStore.getChannelMetadata)) {
-        return cb("E_NOT_IMPLEMENTED");
-    }
-
-    // FIXME METADATA
-    Env.msgStore.getChannelMetadata(channelId, function (e, metadata) {
-        if (e) { return cb(e); }
+    getMetadata(Env, channelId, function (err, metadata) {
+        if (err) { return void cb(err); }
         if (!(metadata && Array.isArray(metadata.owners))) { return void cb('E_NO_OWNERS'); }
         if (metadata.owners.indexOf(unsafeKey) === -1) {
             return void cb('INSUFFICIENT_PERMISSIONS');
         }
-
         // if the admin has configured data retention...
         // temporarily archive the file instead of removing it
         if (Env.retainData) {
