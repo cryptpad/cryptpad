@@ -62,6 +62,10 @@ const sliceCpIndex = function (cpIndex, line) {
     return start.concat(end);
 };
 
+const isMetadataMessage = function (parsed) {
+    return Boolean(parsed && parsed.channel);
+};
+
 module.exports.create = function (cfg) {
     const rpc = cfg.rpc;
     const tasks = cfg.tasks;
@@ -131,7 +135,7 @@ module.exports.create = function (cfg) {
                     if (typeof msg === "undefined") { return readMore(); }
 
                     // validate that the current line really is metadata before storing it as such
-                    if (msg && typeof(msg) === 'object' && !Array.isArray(msg)) {
+                    if (isMetadataMessage(msg)) {
                         metadata = msg;
                         return readMore();
                     }
@@ -289,10 +293,6 @@ module.exports.create = function (cfg) {
                 index.size += msgBin.length;
             }));
         });
-    };
-
-    const isMetadataMessage = function (parsed) {
-        return Boolean(parsed && parsed.channel);
     };
 
     var CHECKPOINT_PATTERN = /^cp\|(([A-Za-z0-9+\/=]+)\|)?/;
