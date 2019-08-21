@@ -569,15 +569,38 @@ var flushUnusedChannels = function (env, cb, frame) {
     cb();
 };
 
+/*  channelBytes
+    calls back with the size (in bytes) of a channel and its metadata
+*/
 var channelBytes = function (env, chanName, cb) {
-    var path = mkPath(env, chanName);
-    Fs.stat(path, function (err, stats) {
-        if (err) { return void cb(err); }
-        cb(undefined, stats.size);
+    var channelPath = mkPath(env, chanName);
+    var dataPath = mkMetadataPath(env, chanName);
+
+    var CB = Once(cb);
+
+    var channelSize = 0;
+    var dataSize = 0;
+    nThen(function (w) {
+        Fs.stat(channelPath, w(function (err, stats) {
+            if (err) {
+                if (err.code === 'ENOENT') { return; }
+                return void CB(err);
+            }
+            channelSize = stats.size;
+        }));
+        Fs.stat(dataPath, w(function (err, stats) {
+            if (err) {
+                if (err.code === 'ENOENT') { return; }
+                return void CB(err);
+            }
+            dataSize = stats.size;
+            CB(undefined, stats.size);
+        }));
+    }).nThen(function () {
+        CB(void 0, channelSize + dataSize);
     });
 };
 
-// implement metadata bytes as well?
 /*::
 export type ChainPadServer_ChannelInternal_t = {
     atime: number,
