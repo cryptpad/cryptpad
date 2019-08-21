@@ -318,6 +318,7 @@ module.exports.create = function (cfg) {
         if (metadata_cache[channel.id] && metadata_cache[channel.id].expire &&
                 metadata_cache[channel.id].expire < +new Date()) {
             return; // Don't store messages on expired channel
+            // TODO if a channel expired a long time ago but it's still here, remove it
         }
         let id;
         if (isCp) {
@@ -667,21 +668,6 @@ module.exports.create = function (cfg) {
             metadata.channel = channelName;
 
             nThen(function (waitFor) {
-                if (!tasks) { return; } // tasks are not supported
-                if (typeof(metadata.expire) !== 'number' || !metadata.expire) { return; }
-
-                // the fun part...
-                // the user has said they want this pad to expire at some point
-                tasks.write(metadata.expire, "EXPIRE", [ channelName ], waitFor(function (err) {
-                    if (err) {
-                        // if there is an error, we don't want to crash the whole server...
-                        // just log it, and if there's a problem you'll be able to fix it
-                        // at a later date with the provided information
-                        Log.error('HK_CREATE_EXPIRE_TASK', err);
-                        Log.info('HK_INVALID_EXPIRE_TASK', JSON.stringify([metadata.expire, 'EXPIRE', channelName]));
-                    }
-                }));
-            }).nThen(function (waitFor) {
                 var w = waitFor();
 
                 /*  unless this is a young channel, we will serve all messages from an offset
@@ -739,6 +725,21 @@ module.exports.create = function (cfg) {
                                 return void Log.error('HK_WRITE_METADATA');
                             }
                         });
+
+                        // write tasks
+                        if(tasks && metadata.expire && metadata.expire === 'number') {
+                            // the fun part...
+                            // the user has said they want this pad to expire at some point
+                            tasks.write(metadata.expire, "EXPIRE", [ channelName ], function (err) {
+                                if (err) {
+                                    // if there is an error, we don't want to crash the whole server...
+                                    // just log it, and if there's a problem you'll be able to fix it
+                                    // at a later date with the provided information
+                                    Log.error('HK_CREATE_EXPIRE_TASK', err);
+                                    Log.info('HK_INVALID_EXPIRE_TASK', JSON.stringify([metadata.expire, 'EXPIRE', channelName]));
+                                }
+                            });
+                        }
                         sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(metadata)]);
                     }
 
