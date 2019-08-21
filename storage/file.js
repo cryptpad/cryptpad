@@ -478,11 +478,13 @@ var archiveChannel = function (env, channelName, cb) {
     });
 };
 
+// restore a channel and its metadata from the archive
+// to the appropriate location in the live database
 var unarchiveChannel = function (env, channelName, cb) {
     // very much like 'archiveChannel' but in the opposite direction
 
     // the file is currently archived
-    var channelPath = mkArchivePath(env, channelName);
+    var channelPath = mkPath(env, channelName);
     var metadataPath = mkMetadataPath(env, channelName);
 
     // don't call the callback multiple times
