@@ -334,13 +334,14 @@ module.exports.create = function (cfg) {
                 return;
             }
         }
-        if (metadata_cache[channel.id] && metadata_cache[channel.id].validateKey) {
+        var metadata = metadata_cache[channel.id];
+        if (metadata && metadata.validateKey) {
             /*::if (typeof(msgStruct[4]) !== 'string') { throw new Error(); }*/
             let signedMsg = (isCp) ? msgStruct[4].replace(CHECKPOINT_PATTERN, '') : msgStruct[4];
             signedMsg = Nacl.util.decodeBase64(signedMsg);
             // FIXME PERFORMANCE: cache the decoded key instead of decoding it every time
             // CPU/Memory tradeoff
-            const validateKey = Nacl.util.decodeBase64(metadata_cache[channel.id].validateKey);
+            const validateKey = Nacl.util.decodeBase64(metadata.validateKey);
             const validated = Nacl.sign.open(signedMsg, validateKey);
             if (!validated) {
                 Log.info("HK_SIGNED_MESSAGE_REJECTED", 'Channel '+channel.id);
