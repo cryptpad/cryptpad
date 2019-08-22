@@ -603,7 +603,7 @@ var flushUnusedChannels = function (env, cb, frame) {
 };
 
 /*  channelBytes
-    calls back with the size (in bytes) of a channel and its metadata
+    calls back with an error or the size (in bytes) of a channel and its metadata
 */
 var channelBytes = function (env, chanName, cb) {
     var channelPath = mkPath(env, chanName);
@@ -627,7 +627,6 @@ var channelBytes = function (env, chanName, cb) {
                 return void CB(err);
             }
             dataSize = stats.size;
-            CB(undefined, stats.size);
         }));
     }).nThen(function () {
         CB(void 0, channelSize + dataSize);
