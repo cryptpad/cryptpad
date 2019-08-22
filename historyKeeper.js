@@ -733,7 +733,7 @@ module.exports.create = function (cfg) {
                         });
 
                         // write tasks
-                        if(tasks && metadata.expire && metadata.expire === 'number') {
+                        if(tasks && metadata.expire && typeof(metadata.expire) === 'number') {
                             // the fun part...
                             // the user has said they want this pad to expire at some point
                             tasks.write(metadata.expire, "EXPIRE", [ channelName ], function (err) {
