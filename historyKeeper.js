@@ -66,6 +66,17 @@ const isMetadataMessage = function (parsed) {
     return Boolean(parsed && parsed.channel);
 };
 
+const isValidValidateKey = function (key) {
+    if (typeof(key) !== 'string') { return false; }
+    let valid = false;
+    try {
+        if (Nacl.util.decodeBase64(key).length !== Nacl.sign.publicKeyLength) { return false; }
+    } catch (e) {
+        return valid;
+    }
+    return valid;
+};
+
 module.exports.create = function (cfg) {
     const rpc = cfg.rpc;
     const tasks = cfg.tasks;
@@ -720,8 +731,13 @@ module.exports.create = function (cfg) {
             }
             metadata.channel = channelName;
 
-            // XXX check that the validateKey is valid, otherwise send an error?
-            // don't bother putting it into storage
+            // if the user sends us an invalid key, we won't be able to validate their messages
+            // so they'll never get written to the log anyway. Let's just drop their message
+            // on the floor instead of doing a bunch of extra work
+            // TODO send them an error message so they know something is wrong
+            if (metadata.validateKey && !isValidValidateKey(metadata.validateKey)) {
+                return void Log.error('HK_INVALID_KEY', metadata.validateKey);
+            }
 
             nThen(function (waitFor) {
                 var w = waitFor();
