@@ -771,6 +771,12 @@ module.exports.create = function (cfg) {
 
                     if (msgCount === 0 && !metadata_cache[channelName] && chan && chan.indexOf(user) > -1) {
                         metadata_cache[channelName] = metadata;
+
+                        // the index will have already been constructed and cached at this point
+                        // but it will not have detected any metadata because it hasn't been written yet
+                        // this means that the cache starts off as invalid, so we have to correct it
+                        if (chan && chan.index) { chan.index.metadata = metadata; }
+
                         // new channels will always have their metadata written to a dedicated metadata log
                         // but any lines after the first which are not amendments in a particular format will be ignored.
                         // Thus we should be safe from race conditions here if just write metadata to the log as below...
@@ -778,6 +784,7 @@ module.exports.create = function (cfg) {
                         // otherwise maybe we need to check that the metadata log is empty as well
                         store.writeMetadata(channelName, JSON.stringify(metadata), function (err) {
                             if (err) {
+                                // XXX tell the user that there was a channel error?
                                 return void Log.error('HK_WRITE_METADATA');
                             }
                         });
