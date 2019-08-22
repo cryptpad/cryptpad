@@ -230,11 +230,8 @@ module.exports.create = function (cfg) {
         as an added bonus:
         if the channel exists but its index does not then it caches the index
     */
+    const indexQueue = {};
     const getIndex = (ctx, channelName, cb) => {
-        // FIXME don't allow more than one index to be computed at a time
-        // if one is in progress, the callback to a queue
-        // whenever you completed, empty the queue in order
-
         const chan = ctx.channels[channelName];
         if (chan && chan.index) {
             // enforce async behaviour
@@ -242,10 +239,45 @@ module.exports.create = function (cfg) {
                 cb(undefined, chan.index);
             });
         }
+
+        // make a queue of callbacks in case getIndex is called before you
+        // compute and cache the index
+
+        // if a call to computeIndex is already in progress for this channel
+        // then add the callback for the latest invocation to the queue
+        // and wait for it to complete
+        if (indexQueue[channelName]) {
+            indexQueue.channelName.push(cb);
+            return;
+        }
+
+        // if computeIndex is not already in progress, make an array
+        // with the current call first in line, so additional calls
+        // can add their callbacks to the queue
+        indexQueue[channelName] = (indexQueue[channelName] || []).push(cb);
+
         computeIndex(channelName, (err, ret) => {
-            if (err) { return void cb(err); }
+            // keep a local reference to this channel's queue
+            let queue = indexQueue[channelName];
+
+            // but remove it from the map of queues and not worry about cleaning up
+            // as long as computeIndex always calls back this won't be a memory leak
+            delete indexQueue[channelName];
+
+            if (err) {
+                // call back every pending function with the error
+                return void queue.forEach(function (_cb) {
+                    _cb(err);
+                });
+            }
+            // if there's a channel to use as a cache, store the result
+            // for future use
             if (chan) { chan.index = ret; }
-            cb(undefined, ret);
+
+            // call back every pending function with the result
+            queue.forEach(function (_cb) {
+                _cb(void 0, ret);
+            });
         });
     };
 
