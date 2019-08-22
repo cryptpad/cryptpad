@@ -853,8 +853,8 @@ module.exports.create = function (cfg) {
             // parsed[3] is the last known hash (optionnal)
             sendMsg(ctx, user, [seq, 'ACK']);
 
-            // XXX should we send metadata here too?
-            // my gut says yes
+            // FIXME should we send metadata here too?
+            // none of the clientside code which uses this API needs metadata, but it won't hurt to send it (2019-08-22)
             getHistoryAsync(ctx, parsed[1], -1, false, (msg, readMore) => {
                 if (!msg) { return; }
                 sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(['FULL_HISTORY', msg])], readMore);
