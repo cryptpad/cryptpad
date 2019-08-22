@@ -481,9 +481,13 @@ var archiveChannel = function (env, channelName, cb) {
     nThen(function (w) {
         // move the channel log and abort if anything goes wrong
         Fse.move(currentPath, archivePath, { overwrite: true }, w(function (err) {
-            if (!err) { return; }
-            w.abort();
-            cb(err);
+            if (err) {
+                // proceed to the next block to remove metadata even if there's no channel
+                if (err.code === 'ENOENT') { return; }
+                // abort and callback for other types of errors
+                w.abort();
+                return void cb(err);
+            }
         }));
     }).nThen(function (w) {
         // archive the dedicated metadata channel
