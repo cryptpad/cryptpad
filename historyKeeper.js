@@ -106,7 +106,7 @@ module.exports.create = function (cfg) {
             * offsetByHash:
                 * a map containing message offsets by their hash
                 * this is for every message in history, so it could be very large...
-                    * XXX OFFSET
+                    * FIXME OFFSET
                     * except we remove offsets from the map if they occur before the oldest relevant checkpoint
             * size: in bytes
             * metadata:
@@ -333,7 +333,7 @@ module.exports.create = function (cfg) {
                 if (isCp) {
                     index.cpIndex = sliceCpIndex(index.cpIndex, index.line || 0);
                     for (let k in index.offsetByHash) {
-                        // XXX OFFSET
+                        // FIXME OFFSET
                         if (index.offsetByHash[k] < index.cpIndex[0]) {
                             delete index.offsetByHash[k];
                         }
@@ -513,7 +513,6 @@ module.exports.create = function (cfg) {
                 // QUESTION: does this mean mailboxes are causing the server to store too much stuff in memory?
                 if (lastKnownHash && typeof(lkh) !== "number") {
                     waitFor.abort();
-                    // XXX this smells bad
                     return void cb(new Error('EINVAL'));
                 }
 
@@ -542,7 +541,7 @@ module.exports.create = function (cfg) {
             if (offset !== -1) { return; }
 
             // do a lookup from the index
-            // XXX maybe we don't need this anymore?
+            // FIXME maybe we don't need this anymore?
             // otherwise we have a non-negative offset and we can start to read from there
             store.readMessagesBin(channelName, 0, (msgObj, readMore, abort) => {
                 // tryParse return a parsed message or undefined
@@ -678,7 +677,6 @@ module.exports.create = function (cfg) {
     // If it is, remove it from memory and broadcast a message to its members
 
     const onChannelMetadataChanged = function (ctx, channel) {
-        // XXX lint compliance
         channel = channel;
     };
 
@@ -832,7 +830,7 @@ module.exports.create = function (cfg) {
                         // otherwise maybe we need to check that the metadata log is empty as well
                         store.writeMetadata(channelName, JSON.stringify(metadata), function (err) {
                             if (err) {
-                                // XXX tell the user that there was a channel error?
+                                // FIXME tell the user that there was a channel error?
                                 return void Log.error('HK_WRITE_METADATA');
                             }
                         });
