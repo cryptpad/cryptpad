@@ -505,9 +505,13 @@ var archiveChannel = function (env, channelName, cb) {
     nThen(function (w) {
         // move the channel log and abort if anything goes wrong
         Fse.move(currentPath, archivePath, { overwrite: true }, w(function (err) {
-            if (!err) { return; }
-            w.abort();
-            cb(err);
+            if (err) {
+                // proceed to the next block to remove metadata even if there's no channel
+                if (err.code === 'ENOENT') { return; }
+                // abort and callback for other types of errors
+                w.abort();
+                return void cb(err);
+            }
         }));
     }).nThen(function (w) {
         // archive the dedicated metadata channel
@@ -623,7 +627,7 @@ var flushUnusedChannels = function (env, cb, frame) {
 };
 
 /*  channelBytes
-    calls back with the size (in bytes) of a channel and its metadata
+    calls back with an error or the size (in bytes) of a channel and its metadata
 */
 var channelBytes = function (env, chanName, cb) {
     var channelPath = mkPath(env, chanName);
@@ -647,7 +651,6 @@ var channelBytes = function (env, chanName, cb) {
                 return void CB(err);
             }
             dataSize = stats.size;
-            CB(undefined, stats.size);
         }));
     }).nThen(function () {
         CB(void 0, channelSize + dataSize);
