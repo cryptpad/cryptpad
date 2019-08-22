@@ -314,11 +314,21 @@ define([
             var newPad = false;
             if (newContentStr === '') { newPad = true; }
 
+            var privateDat = cpNfInner.metadataMgr.getPrivateData();
+            var type = privateDat.app;
+
             // contentUpdate may be async so we need an nthen here
             nThen(function (waitFor) {
                 if (!newPad) {
                     var newContent = JSON.parse(newContentStr);
-                    cpNfInner.metadataMgr.updateMetadata(extractMetadata(newContent));
+                    var metadata = extractMetadata(newContent);
+                    if (metadata && typeof(metadata.type) !== 'undefined' && metadata.type !== type) {
+                        var errorText = Messages.typeError;
+                        UI.errorLoadingScreen(errorText);
+                        waitFor.abort();
+                        return;
+                    }
+                    cpNfInner.metadataMgr.updateMetadata(metadata);
                     newContent = normalize(newContent);
                     contentUpdate(newContent, waitFor);
                 } else {
@@ -356,8 +366,6 @@ define([
 
                 UI.removeLoadingScreen(emitResize);
 
-                var privateDat = cpNfInner.metadataMgr.getPrivateData();
-                var type = privateDat.app;
                 if (AppConfig.textAnalyzer && textContentGetter) {
                     AppConfig.textAnalyzer(textContentGetter, privateDat.channel);
                 }
