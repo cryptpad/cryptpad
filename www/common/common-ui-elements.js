@@ -1859,6 +1859,15 @@ define([
                 content: $userAdminContent.html()
             });
         }
+        options.push({
+            tag: 'a',
+            attributes: {
+                'target': '_blank',
+                'href': origin+'/index.html',
+                'class': 'fa fa-home'
+            },
+            content: h('span', Messages.homePage)
+        });
         if (padType !== 'drive' || (!accountName && priv.newSharedFolder)) {
             options.push({
                 tag: 'a',
@@ -1870,6 +1879,7 @@ define([
                 content: h('span', Messages.login_accessDrive)
             });
         }
+        options.push({ tag: 'hr' });
         // Add the change display name button if not in read only mode
         if (config.changeNameButtonCls && config.displayChangeName && !AppConfig.disableProfile) {
             options.push({
@@ -1892,6 +1902,7 @@ define([
                 content: h('span', Messages.settingsButton)
             });
         }
+        options.push({ tag: 'hr' });
         // Add administration panel link if the user is an admin
         if (priv.edPublic && Array.isArray(Config.adminKeys) && Config.adminKeys.indexOf(priv.edPublic) !== -1) {
             options.push({
@@ -1907,6 +1918,16 @@ define([
                 content: h('span', Messages.supportPage || 'Support')
             });
         }
+        options.push({
+            tag: 'a',
+            attributes: {
+                'target': '_blank',
+                'href': origin+'/features.html',
+                'class': 'fa fa-star-o'
+            },
+            content: h('span', priv.plan ? Messages.settings_cat_subscription : Messages.pricing)
+        });
+        options.push({ tag: 'hr' });
         // Add login or logout button depending on the current status
         if (accountName) {
             options.push({
