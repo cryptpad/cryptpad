@@ -1501,7 +1501,7 @@ define([
     UIElements.getAvatar = function (hash) {
         return avatars[hash];
     };
-    UIElements.displayAvatar = function (Common, $container, href, name, cb) {
+    UIElements.displayAvatar = function (common, $container, href, name, cb) {
         var displayDefault = function () {
             var text = getFirstEmojiOrCharacter(name);
             var $avatar = $('<span>', {'class': 'cp-avatar-default'}).text(text);
@@ -1537,12 +1537,15 @@ define([
             return;
         }
         // No password for avatars
+        var privateData = common.getMetadataMgr().getPrivateData();
+        var origin = privateData.fileHost || privateData.origin;
         var secret = Hash.getSecrets('file', parsed.hash);
         if (secret.keys && secret.channel) {
             var hexFileName = secret.channel;
             var cryptKey = Hash.encodeBase64(secret.keys && secret.keys.cryptKey);
             var src = Hash.getBlobPathFromHex(hexFileName);
-            Common.getFileSize(hexFileName, function (e, data) {
+            console.log(origin + src);
+            common.getFileSize(hexFileName, function (e, data) {
                 if (e || !data) {
                     displayDefault();
                     return void console.error(e || "404 avatar");
@@ -1550,9 +1553,9 @@ define([
                 if (typeof data !== "number") { return void displayDefault(); }
                 if (Util.bytesToMegabytes(data) > 0.5) { return void displayDefault(); }
                 var $img = $('<media-tag>').appendTo($container);
-                $img.attr('src', src);
+                $img.attr('src', origin + src);
                 $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
-                UIElements.displayMediatagImage(Common, $img, function (err, $image, img) {
+                UIElements.displayMediatagImage(common, $img, function (err, $image, img) {
                     if (err) { return void console.error(err); }
                     centerImage($img, $image,  img);
                 });
