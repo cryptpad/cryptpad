@@ -505,7 +505,7 @@ define([
     };
 
     var shortcuts = [];
-    funcs.addShortcuts = function (w) {
+    funcs.addShortcuts = function (w, isApp) {
         w = w || window;
         if (shortcuts.indexOf(w) !== -1) { return; }
         shortcuts.push(w);
@@ -513,7 +513,7 @@ define([
             // Ctrl || Meta (mac)
             if (e.ctrlKey || (navigator.platform === "MacIntel" && e.metaKey)) {
                 // Ctrl+E: New pad modal
-                if (e.which === 69) {
+                if (e.which === 69 && isApp) {
                     e.preventDefault();
                     return void funcs.createNewPadModal();
                 }
@@ -619,22 +619,24 @@ define([
 
             ctx.metadataMgr.onReady(waitFor());
 
-            funcs.addShortcuts();
         }).nThen(function () {
+            var privateData = ctx.metadataMgr.getPrivateData();
+            funcs.addShortcuts(window, Boolean(privateData.app));
+
             try {
-                var feedback = ctx.metadataMgr.getPrivateData().feedbackAllowed;
+                var feedback = privateData.feedbackAllowed;
                 Feedback.init(feedback);
             } catch (e) { Feedback.init(false); }
 
             try {
-                var forbidden = ctx.metadataMgr.getPrivateData().disabledApp;
+                var forbidden = privateData.disabledApp;
                 if (forbidden) {
                     UI.alert(Messages.disabledApp, function () {
                         funcs.gotoURL('/drive/');
                     }, {forefront: true});
                     return;
                 }
-                var mustLogin = ctx.metadataMgr.getPrivateData().registeredOnly;
+                var mustLogin = privateData.registeredOnly;
                 if (mustLogin) {
                     UI.alert(Messages.mustLogin, function () {
                         funcs.setLoginRedirect(function () {
@@ -648,7 +650,7 @@ define([
             }
 
             try {
-                window.CP_DEV_MODE = ctx.metadataMgr.getPrivateData().devMode;
+                window.CP_DEV_MODE = privateData.devMode;
             } catch (e) {}
 
             ctx.sframeChan.on('EV_LOGOUT', function () {
@@ -658,7 +660,7 @@ define([
                     }
                 });
                 UI.addLoadingScreen({hideTips: true});
-                var origin = ctx.metadataMgr.getPrivateData().origin;
+                var origin = privateData.origin;
                 var href = origin + "/login/";
                 var onLogoutMsg = Messages._getKey('onLogout', ['<a href="' + href + '" target="_blank">', '</a>']);
                 UI.errorLoadingScreen(onLogoutMsg, true);
