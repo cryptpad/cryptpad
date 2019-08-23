@@ -322,7 +322,7 @@
     "fm_newButtonTitle": "Create a new pad or folder, import a file in the current folder",
     "fm_newFolder": "New folder",
     "fm_newFile": "New pad",
-    "fm_morePads": "More pads",
+    "fm_morePads": "More",
     "fm_folder": "Folder",
     "fm_sharedFolder": "Shared folder",
     "fm_folderName": "Folder name",
@@ -1134,5 +1134,7 @@
     "requestEdit_accepted": "{1} granted you edit rights for the pad <b>{0}</b>",
     "requestEdit_sent": "Request sent",
     "uploadFolderButton": "Upload folder",
-    "properties_unknownUser": "{0} unknown user(s)"
+    "properties_unknownUser": "{0} unknown user(s)",
+    "pricing": "Pricing",
+    "homePage": "Home page"
 }
