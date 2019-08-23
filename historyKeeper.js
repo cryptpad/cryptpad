@@ -302,10 +302,8 @@ module.exports.create = function (cfg) {
             * because the two actions were performed like ABba...
         * the fix is to use callbacks and implement queueing for writes
           * to guarantee that offset computation is always atomic with writes
-
-        TODO rename maybeMsgHash to optionalMsgHash
     */
-    const storeMessage = function (ctx, channel, msg, isCp, maybeMsgHash) {
+    const storeMessage = function (ctx, channel, msg, isCp, optionalMessageHash) {
         // TODO implement a queue so that we know messages are written in order
 
         const msgBin = new Buffer(msg + '\n', 'utf8');
@@ -340,7 +338,7 @@ module.exports.create = function (cfg) {
                         line: ((index.line || 0) + 1)
                     } /*:cp_index_item*/));
                 }
-                if (maybeMsgHash) { index.offsetByHash[maybeMsgHash] = index.size; }
+                if (optionalMessageHash) { index.offsetByHash[optionalMessageHash] = index.size; }
                 index.size += msgBin.length;
             }));
         });
