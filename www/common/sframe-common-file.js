@@ -301,7 +301,7 @@ define([
             ]);
 
             $(content).find('#cp-upload-owned').on('change', function () {
-                var val = Util.isCheked($(content).find('#cp-upload-owned'));
+                var val = Util.isChecked($(content).find('#cp-upload-owned'));
                 if (val) {
                     $(content).find('#cp-upload-store').prop('checked', true).prop('disabled', true);
                 } else {
