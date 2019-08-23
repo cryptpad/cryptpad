@@ -1544,7 +1544,6 @@ define([
             var hexFileName = secret.channel;
             var cryptKey = Hash.encodeBase64(secret.keys && secret.keys.cryptKey);
             var src = Hash.getBlobPathFromHex(hexFileName);
-            console.log(origin + src);
             common.getFileSize(hexFileName, function (e, data) {
                 if (e || !data) {
                     displayDefault();
