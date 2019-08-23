@@ -66,15 +66,14 @@ const isMetadataMessage = function (parsed) {
     return Boolean(parsed && parsed.channel);
 };
 
-const isValidValidateKey = function (key) {
-    if (typeof(key) !== 'string') { return false; }
-    let valid = false;
+// validateKeyStrings supplied by clients must decode to 32-byte Uint8Arrays
+const isValidValidateKeyString = function (key) {
     try {
-        if (Nacl.util.decodeBase64(key).length !== Nacl.sign.publicKeyLength) { return false; }
+        return typeof(key) === 'string' &&
+            Nacl.util.decodeBase64(key).length === Nacl.sign.publicKeyLength;
     } catch (e) {
-        return valid;
+        return false;
     }
-    return valid;
 };
 
 module.exports.create = function (cfg) {
@@ -765,7 +764,7 @@ module.exports.create = function (cfg) {
             // so they'll never get written to the log anyway. Let's just drop their message
             // on the floor instead of doing a bunch of extra work
             // TODO send them an error message so they know something is wrong
-            if (metadata.validateKey && !isValidValidateKey(metadata.validateKey)) {
+            if (metadata.validateKey && !isValidValidateKeyString(metadata.validateKey)) {
                 return void Log.error('HK_INVALID_KEY', metadata.validateKey);
             }
 
