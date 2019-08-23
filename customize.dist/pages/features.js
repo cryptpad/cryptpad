@@ -29,9 +29,6 @@ define([
             sessionStorage.redirectTo = '/features.html';
             window.location.href = '/login/';
         });*/
-        Msg.features_emailRequired = 'Email address required';
-        Msg.features_noData = 'No personal data required';
-        Msg.features_pricing = '{0}, {1} or {2}€/month';
         return h('div#cp-main', [
             Pages.infopageTopbar(),
             h('div.container-fluid.cp_cont_features',[
