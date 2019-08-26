@@ -1116,7 +1116,7 @@
     "support_notification": "Un administrateur a répondu à votre ticket de support",
     "requestEdit_button": "Demander les droits d'édition",
     "requestEdit_dialog": "Êtes-vous sûr de vouloir demander les droits d'édition de ce pad au propriétaire ?",
-    "requestEdit_confirm": "{1} a demandé les droits d'édition pour le pad <b>{1}</b>. Souhaitez-vous leur accorder les droits ?",
+    "requestEdit_confirm": "{1} a demandé les droits d'édition pour le pad <b>{0}</b>. Souhaitez-vous leur accorder les droits ?",
     "requestEdit_fromFriend": "Vous êtes amis avec {0}",
     "requestEdit_fromStranger": "Vous n'êtes <b>pas</b> amis avec {0}",
     "requestEdit_viewPad": "Ouvrir le pad dans un nouvel onglet",

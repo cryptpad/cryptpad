@@ -1085,7 +1085,7 @@ define([
             var todo = function (data, filename) {
                 var ui = createExportUI();
 
-                var bu = Backup.create(data, common.getPad, function (blob, errors) {
+                var bu = Backup.create(data, common.getPad, privateData.fileHost, function (blob, errors) {
                     saveAs(blob, filename);
                     sframeChan.event('EV_CRYPTGET_DISCONNECT');
                     ui.complete(function () {

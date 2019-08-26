@@ -595,7 +595,9 @@ define([
                 });
             };
 
+            var privateData = common.getMetadataMgr().getPrivateData();
             var ctx = {
+                fileHost: privateData.fileHost,
                 get: common.getPad,
                 sframeChan: sframeChan,
             };
