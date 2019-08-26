@@ -310,7 +310,7 @@ define([
 
 
     var _downloadFolder = function (ctx, data, cb, updateProgress) {
-        create(data, ctx.get, function (blob, errors) {
+        create(data, ctx.get, ctx.fileHost, function (blob, errors) {
             console.error(errors); // TODO show user errors
             var dl = function () {
                 saveAs(blob, data.folderName);
