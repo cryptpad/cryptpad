@@ -16,11 +16,6 @@ define([
             var disconnect = Util.find(S, ['network', 'disconnect']);
             if (typeof(disconnect) === 'function') { disconnect(); }
         }
-        if (S.leave) {
-            try {
-                S.leave();
-            } catch (e) { console.log(e); }
-        }
         if (S.realtime && S.realtime.stop) {
             try {
                 S.realtime.stop();
@@ -70,7 +65,6 @@ define([
         config.onReady = function (info) {
             var rt = Session.session = info.realtime;
             Session.network = info.network;
-            Session.leave = info.leave;
             progress(1);
             finish(Session, void 0, rt.getUserDoc());
         };
