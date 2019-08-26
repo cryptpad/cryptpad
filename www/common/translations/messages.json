@@ -1133,8 +1133,10 @@
     "requestEdit_request": "{1} wants to edit the pad <b>{0}</b>",
     "requestEdit_accepted": "{1} granted you edit rights for the pad <b>{0}</b>",
     "requestEdit_sent": "Request sent",
-    "uploadFolderButton": "Upload folder",
     "properties_unknownUser": "{0} unknown user(s)",
     "pricing": "Pricing",
-    "homePage": "Home page"
+    "homePage": "Home page",
+    "features_noData": "No personal information required",
+    "features_pricing": "Between {0} and {2}€ per month",
+    "features_emailRequired": "Email address required"
 }
