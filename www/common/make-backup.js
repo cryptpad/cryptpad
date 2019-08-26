@@ -55,7 +55,7 @@ define([
         var hash = parsed.hash;
         var name = fData.filename || fData.title;
         var secret = Hash.getSecrets('file', hash, fData.password);
-        var src = Hash.getBlobPathFromHex(secret.channel);
+        var src = (ctx.fileHost || '') + Hash.getBlobPathFromHex(secret.channel);
         var key = secret.keys && secret.keys.cryptKey;
         Util.fetch(src, function (err, u8) {
             if (cancelled) { return; }
@@ -266,10 +266,11 @@ define([
     };
 
     // Main function. Create the empty zip and fill it starting from drive.root
-    var create = function (data, getPad, cb, progress) {
+    var create = function (data, getPad, fileHost, cb, progress) {
         if (!data || !data.uo || !data.uo.drive) { return void cb('EEMPTY'); }
         var sem = Saferphore.create(5);
         var ctx = {
+            fileHost: fileHost,
             get: getPad,
             data: data.uo.drive,
             folder: data.folder || ctx.data.root,
