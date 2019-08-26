@@ -868,7 +868,10 @@ module.exports.create = function (cfg) {
                         store.writeMetadata(channelName, JSON.stringify(metadata), function (err) {
                             if (err) {
                                 // FIXME tell the user that there was a channel error?
-                                return void Log.error('HK_WRITE_METADATA');
+                                return void Log.error('HK_WRITE_METADATA', {
+                                    channel: channelName,
+                                    error: err,
+                                });
                             }
                         });
 
