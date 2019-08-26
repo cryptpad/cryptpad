@@ -116,9 +116,7 @@ app.use(function (req, res, next) {
         res.statusCode = 204;
         return void res.end();
     }
-});
 
-app.use(function (req, res, next) {
     setHeaders(req, res);
     if (/[\?\&]ver=[^\/]+$/.test(req.url)) { res.setHeader("Cache-Control", "max-age=31536000"); }
     next();
