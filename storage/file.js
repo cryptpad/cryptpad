@@ -236,8 +236,13 @@ How to proceed
 //  writeMetadata appends to the dedicated log of metadata amendments
 var writeMetadata = function (env, channelId, data, cb) {
     var path = mkMetadataPath(env, channelId);
-    // TODO see if we can make this any faster by using something other than appendFile
-    Fs.appendFile(path, data + '\n', cb);
+
+    Fse.mkdirp(Path.dirname(path), PERMISSIVE, function (err) {
+        if (err && err.code !== 'EEXIST') { return void cb(err); }
+
+        // TODO see if we can make this any faster by using something other than appendFile
+        Fs.appendFile(path, data + '\n', cb);
+    });
 };
 
 
