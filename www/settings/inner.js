@@ -1188,15 +1188,23 @@ define([
         var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
 
         // when jscolor picker value change
-        var onchange = function (colorL) {
+        var _onchange = function (colorL) {
             var val = "#" + colorL.toString();
             if (!/^#[0-9a-fA-F]{6}$/.test(val)) { return; }
-            $spinner.show();
-            $ok.hide();
             common.setAttribute(['general', 'cursor', 'color'], val, function () {
                 $spinner.hide();
                 $ok.show();
             });
+        };
+        var to;
+        var onchange = function (colorL) {
+            $spinner.show();
+            $ok.hide();
+
+            if (to) { clearTimeout(to); }
+            to = setTimeout(function () {
+                _onchange(colorL);
+            }, 300);
         };
 
         // jscolor picker

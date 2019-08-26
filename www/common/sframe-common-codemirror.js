@@ -62,6 +62,7 @@ define([
         });
 
         editor._noCursorUpdate = false;
+        editor.state.focused = true;
         if(selects[0] === selects[1]) {
             editor.setCursor(posToCursor(selects[0], remoteDoc));
         }
