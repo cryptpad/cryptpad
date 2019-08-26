@@ -59,7 +59,7 @@ define([
         var secret;
         var metadataMgr = common.getMetadataMgr();
         var priv = metadataMgr.getPrivateData();
-        var fileHost = priv.fileHost || priv.origin;
+        var fileHost = priv.fileHost || priv.origin || '';
 
         if (!priv.filehash) {
             uploadMode = true;
