@@ -894,7 +894,7 @@ MessengerUI, Messages) {
             if (e) { return void console.error("Unable to get the pinned usage", e); }
             if (overLimit) {
                 var key = 'pinLimitReachedAlert';
-                if (ApiConfig.noSubscriptionButton === true) {
+                if (!ApiConfig.allowSubscriptions) {
                     key = 'pinLimitReachedAlertNoAccounts';
                 }
                 $limit.show().click(function () {
