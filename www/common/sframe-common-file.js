@@ -301,7 +301,7 @@ define([
             ]);
 
             $(content).find('#cp-upload-owned').on('change', function () {
-                var val = Util.isCheked($(content).find('#cp-upload-owned'));
+                var val = Util.isChecked($(content).find('#cp-upload-owned'));
                 if (val) {
                     $(content).find('#cp-upload-store').prop('checked', true).prop('disabled', true);
                 } else {
@@ -533,8 +533,7 @@ define([
 
         createUploader(config.dropArea, config.hoverArea, config.body);
 
-        // XXX an X is still displayed when downloading, even though we can't cancel (at the moment)
-        // XXX implement the abiality to cancel downloads :D
+        // TODO implement the ability to cancel downloads :D
         var updateProgressbar = function (file, data, downloadFunction, cb) {
             if (queue.inProgress) { return; }
             queue.inProgress = true;
@@ -625,10 +624,10 @@ define([
             });
 */
 
-/*
             $row.find('.cp-fileupload-table-cancel')
                 .html('')
-                .append($cancel); */
+                .append(h('span.fa.fa-minus'));
+                //.append($cancel);
         };
 
         File.downloadFile = function (fData, cb) {

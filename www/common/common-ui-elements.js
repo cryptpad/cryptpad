@@ -1501,7 +1501,7 @@ define([
     UIElements.getAvatar = function (hash) {
         return avatars[hash];
     };
-    UIElements.displayAvatar = function (Common, $container, href, name, cb) {
+    UIElements.displayAvatar = function (common, $container, href, name, cb) {
         var displayDefault = function () {
             var text = getFirstEmojiOrCharacter(name);
             var $avatar = $('<span>', {'class': 'cp-avatar-default'}).text(text);
@@ -1537,12 +1537,14 @@ define([
             return;
         }
         // No password for avatars
+        var privateData = common.getMetadataMgr().getPrivateData();
+        var origin = privateData.fileHost || privateData.origin;
         var secret = Hash.getSecrets('file', parsed.hash);
         if (secret.keys && secret.channel) {
             var hexFileName = secret.channel;
             var cryptKey = Hash.encodeBase64(secret.keys && secret.keys.cryptKey);
             var src = Hash.getBlobPathFromHex(hexFileName);
-            Common.getFileSize(hexFileName, function (e, data) {
+            common.getFileSize(hexFileName, function (e, data) {
                 if (e || !data) {
                     displayDefault();
                     return void console.error(e || "404 avatar");
@@ -1550,9 +1552,9 @@ define([
                 if (typeof data !== "number") { return void displayDefault(); }
                 if (Util.bytesToMegabytes(data) > 0.5) { return void displayDefault(); }
                 var $img = $('<media-tag>').appendTo($container);
-                $img.attr('src', src);
+                $img.attr('src', origin + src);
                 $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
-                UIElements.displayMediatagImage(Common, $img, function (err, $image, img) {
+                UIElements.displayMediatagImage(common, $img, function (err, $image, img) {
                     if (err) { return void console.error(err); }
                     centerImage($img, $image,  img);
                 });
@@ -1859,6 +1861,15 @@ define([
                 content: $userAdminContent.html()
             });
         }
+        options.push({
+            tag: 'a',
+            attributes: {
+                'target': '_blank',
+                'href': origin+'/index.html',
+                'class': 'fa fa-home'
+            },
+            content: h('span', Messages.homePage)
+        });
         if (padType !== 'drive' || (!accountName && priv.newSharedFolder)) {
             options.push({
                 tag: 'a',
@@ -1870,6 +1881,7 @@ define([
                 content: h('span', Messages.login_accessDrive)
             });
         }
+        options.push({ tag: 'hr' });
         // Add the change display name button if not in read only mode
         if (config.changeNameButtonCls && config.displayChangeName && !AppConfig.disableProfile) {
             options.push({
@@ -1892,6 +1904,7 @@ define([
                 content: h('span', Messages.settingsButton)
             });
         }
+        options.push({ tag: 'hr' });
         // Add administration panel link if the user is an admin
         if (priv.edPublic && Array.isArray(Config.adminKeys) && Config.adminKeys.indexOf(priv.edPublic) !== -1) {
             options.push({
@@ -1907,6 +1920,16 @@ define([
                 content: h('span', Messages.supportPage || 'Support')
             });
         }
+        options.push({
+            tag: 'a',
+            attributes: {
+                'target': '_blank',
+                'href': origin+'/features.html',
+                'class': 'fa fa-star-o'
+            },
+            content: h('span', priv.plan ? Messages.settings_cat_subscription : Messages.pricing)
+        });
+        options.push({ tag: 'hr' });
         // Add login or logout button depending on the current status
         if (accountName) {
             options.push({

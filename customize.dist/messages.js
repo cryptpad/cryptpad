@@ -26,7 +26,8 @@ var getLanguage = messages._getLanguage = function () {
     var l = getBrowserLanguage();
     // Edge returns 'fr-FR' --> transform it to 'fr' and check again
     return map[l] ? l :
-            (map[l.split('-')[0]] ? l.split('-')[0] : 'en');
+            (map[l.split('-')[0]] ? l.split('-')[0] :
+                (map[l.split('_')[0]] ? l.split('_')[0] : 'en'));
 };
 var language = getLanguage();
 
