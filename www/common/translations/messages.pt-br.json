@@ -8,7 +8,11 @@
         "drive": "Drive",
         "whiteboard": "Whiteboard",
         "file": "File",
-        "media": "Media"
+        "media": "Media",
+        "kanban": "Kanban",
+        "todo": "A Fazer",
+        "contacts": "Contactos",
+        "sheet": "SpreadSheet (Beta)"
     },
     "button_newpad": "Novo bloco RTF",
     "button_newcode": "Novo bloco de código",

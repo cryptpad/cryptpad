@@ -65,6 +65,7 @@ define([
                 if (box) {
                     actual += box.length;
                     var progressValue = (actual / estimate * 100);
+                    progressValue = Math.min(progressValue, 100);
                     updateProgress(progressValue);
 
                     return void sendChunk(box, function (e) {

@@ -12,9 +12,10 @@ define([
     '/customize/credential.js',
     '/customize/application_config.js',
     '/api/config',
-    '/settings/make-backup.js',
+    '/common/make-backup.js',
     '/common/common-feedback.js',
 
+    '/common/jscolor.js',
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -1082,18 +1083,9 @@ define([
         var exportDrive = function () {
             Feedback.send('FULL_DRIVE_EXPORT_START');
             var todo = function (data, filename) {
-                var getPad = function (data, cb) {
-                    sframeChan.query("Q_CRYPTGET", data, function (err, obj) {
-                        if (err) { return void cb(err); }
-                        if (obj.error) { return void cb(obj.error); }
-                        cb(null, obj.data);
-                    }, { timeout: 60000 });
-                };
-
                 var ui = createExportUI();
 
-                var bu = Backup.create(data, getPad, function (blob, errors) {
-                    console.log(blob);
+                var bu = Backup.create(data, common.getPad, privateData.fileHost, function (blob, errors) {
                     saveAs(blob, filename);
                     sframeChan.event('EV_CRYPTGET_DISCONNECT');
                     ui.complete(function () {
@@ -1191,29 +1183,47 @@ define([
 
         var $inputBlock = $('<div>').appendTo($div);
 
+        var $colorPicker = $("<div>", { class: "cp-settings-cursor-color-picker"});
         var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
         var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
 
-        var $input = $('<input>', {
-            type: 'color',
-        }).on('change', function () {
-            var val = $input.val();
+        // when jscolor picker value change
+        var _onchange = function (colorL) {
+            var val = "#" + colorL.toString();
             if (!/^#[0-9a-fA-F]{6}$/.test(val)) { return; }
-            $spinner.show();
-            $ok.hide();
             common.setAttribute(['general', 'cursor', 'color'], val, function () {
                 $spinner.hide();
                 $ok.show();
             });
-        }).appendTo($inputBlock);
+        };
+        var to;
+        var onchange = function (colorL) {
+            $spinner.show();
+            $ok.hide();
 
+            if (to) { clearTimeout(to); }
+            to = setTimeout(function () {
+                _onchange(colorL);
+            }, 300);
+        };
+
+        // jscolor picker
+        var jscolorL = new window.jscolor($colorPicker[0],{showOnClick: false, onFineChange: onchange, valueElement:undefined});
+        $colorPicker.click(function () {
+            jscolorL.show();
+        });
+
+        // set default color
+        common.getAttribute(['general', 'cursor', 'color'], function (e, val) {
+            if (e) { return void console.error(e); }
+            val = val || "#000";
+            jscolorL.fromString(val);
+        });
+
+        $colorPicker.appendTo($inputBlock);
         $ok.hide().appendTo($inputBlock);
         $spinner.hide().appendTo($inputBlock);
 
-        common.getAttribute(['general', 'cursor', 'color'], function (e, val) {
-            if (e) { return void console.error(e); }
-            $input.val(val || '');
-        });
         return $div;
     };
 

@@ -21,14 +21,14 @@ define([
             target: '_blank',
             rel: 'noopener noreferrer'
         }, h('button.cp-features-register-button', Msg.features_f_subscribe));
-        $(premiumButton).click(function (e) {
+        /*$(premiumButton).click(function (e) {
             if (LocalStore.isLoggedIn()) { return; }
             // Not logged in: go to /login with a redirect to this page
             e.preventDefault();
             e.stopPropagation();
             sessionStorage.redirectTo = '/features.html';
             window.location.href = '/login/';
-        });
+        });*/
         return h('div#cp-main', [
             Pages.infopageTopbar(),
             h('div.container-fluid.cp_cont_features',[
@@ -42,6 +42,10 @@ define([
                         h('div.card',[
                             h('div.card-body',[
                                 h('h3.text-center',Msg.features_anon)
+                            ]),
+                            h('div.card-body.cp-pricing',[
+                                h('div.text-center', '0€'),
+                                h('div.text-center', Msg.features_noData),
                             ]),
                             h('ul.list-group.list-group-flush',
                                 ['apps', 'core', 'file0', 'cryptdrive0', 'storage0'].map(function (f) {
@@ -60,6 +64,10 @@ define([
                         h('div.card',[
                             h('div.card-body',[
                                 h('h3.text-center',Msg.features_registered)
+                            ]),
+                            h('div.card-body.cp-pricing',[
+                                h('div.text-center', '0€'),
+                                h('div.text-center', Msg.features_noData),
                             ]),
                             h('ul.list-group.list-group-flush', [
                                 ['anon', 'social', 'file1', 'cryptdrive1', 'devices', 'storage1'].map(function (f) {
@@ -86,6 +94,13 @@ define([
                         h('div.card',[
                             h('div.card-body',[
                                 h('h3.text-center',Msg.features_premium)
+                            ]),
+                            h('div.card-body.cp-pricing',[
+                                h('div.text-center', h('a', {
+                                    href: accounts.upgradeURL,
+                                    target: '_blank'
+                                }, Msg._getKey('features_pricing', ['5', '10', '15']))),
+                                h('div.text-center', Msg.features_emailRequired),
                             ]),
                             h('ul.list-group.list-group-flush', [
                                 ['reg', 'storage2', 'support', 'supporter'].map(function (f) {

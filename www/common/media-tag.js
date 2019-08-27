@@ -30,9 +30,22 @@
     };
 
 
+    var isplainTextFile = function (metadata) {
+        // does its type begins with "text/"
+        if (metadata.type.indexOf("text/") === 0) { return true; }
+        // no type and no file extension -> let's guess it's plain text
+        var parsedName = /^(\.?.+?)(\.[^.]+)?$/.exec(metadata.name) || [];
+        if (!metadata.type && !parsedName[2]) { return true; }
+        // other exceptions
+        if (metadata.type === 'application/x-javascript') { return true; }
+        if (metadata.type === 'application/xml') { return true; }
+        return false;
+    };
+
     // Default config, can be overriden per media-tag call
     var config = {
         allowed: [
+            'text/plain',
             'image/png',
             'image/jpeg',
             'image/jpg',
@@ -53,6 +66,24 @@
             text: "Download"
         },
         Plugins: {
+            /**
+             * @param {object}   metadataObject {name,  metadatatype, owners} containing metadata of the file
+             * @param {strint}   url     Url of the blob object
+             * @param {Blob}     content Blob object containing the data of the file
+             * @param {object}   cfg     Object {Plugins, allowed, download, pdf} containing infos about plugins
+             * @param {function} cb      Callback function: (err, pluginElement) => {}
+             */
+            text: function (metadata, url, content, cfg, cb) {
+                var plainText = document.createElement('div');
+                plainText.className = "plain-text-reader";
+                plainText.setAttribute('style', 'white-space: pre-wrap;');
+                var reader = new FileReader();
+                reader.addEventListener('loadend', function (e) {
+                    plainText.innerText = e.srcElement.result;
+                    cb(void 0, plainText);
+                });
+                reader.readAsText(content);
+            },
             image: function (metadata, url, content, cfg, cb) {
                 var img = document.createElement('img');
                 img.setAttribute('src', url);
@@ -271,6 +302,9 @@
         var blob = decrypted.content;
 
         var mediaType = getType(mediaObject, metadata, cfg);
+        if (isplainTextFile(metadata)) {
+            mediaType = "text";
+        }
 
         if (mediaType === 'application') {
             mediaType = mediaObject.extension;

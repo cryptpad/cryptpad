@@ -615,8 +615,6 @@ MessengerUI, Messages) {
         return $requestBlock;
     };
 
-    createRequest = createRequest;
-
     var createTitle = function (toolbar, config) {
         var $titleContainer = $('<span>', {
             'class': TITLE_CLS
@@ -896,7 +894,7 @@ MessengerUI, Messages) {
             if (e) { return void console.error("Unable to get the pinned usage", e); }
             if (overLimit) {
                 var key = 'pinLimitReachedAlert';
-                if (ApiConfig.noSubscriptionButton === true) {
+                if (!ApiConfig.allowSubscriptions) {
                     key = 'pinLimitReachedAlertNoAccounts';
                 }
                 $limit.show().click(function () {
@@ -1221,6 +1219,7 @@ MessengerUI, Messages) {
         tb['fileshare'] = createFileShare;
         tb['title'] = createTitle;
         tb['pageTitle'] = createPageTitle;
+        tb['request'] = createRequest;
         tb['lag'] = $.noop;
         tb['spinner'] = createSpinner;
         tb['state'] = $.noop;

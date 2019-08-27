@@ -6,6 +6,7 @@ var Fse = require("fs-extra");
 var Path = require("path");
 var nThen = require("nthen");
 var Semaphore = require("saferphore");
+var Once = require("../lib/once");
 const ToPull = require('stream-to-pull-stream');
 const Pull = require('pull-stream');
 
@@ -27,6 +28,30 @@ var mkArchivePath = function (env, channelId) {
     return Path.join(env.archiveRoot, 'datastore', channelId.slice(0, 2), channelId) + '.ndjson';
 };
 
+var mkMetadataPath = function (env, channelId) {
+    return Path.join(env.root, channelId.slice(0, 2), channelId) + '.metadata.ndjson';
+};
+
+var mkArchiveMetadataPath = function (env, channelId) {
+    return Path.join(env.archiveRoot, 'datastore', channelId.slice(0, 2), channelId) + '.metadata.ndjson';
+};
+
+// pass in the path so we can reuse the same function for archived files
+var channelExists = function (filepath, cb) {
+    Fs.stat(filepath, function (err, stat) {
+        if (err) {
+            if (err.code === 'ENOENT') {
+                // no, the file doesn't exist
+                return void cb(void 0, false);
+            }
+            return void cb(err);
+        }
+        if (!stat.isFile()) { return void cb("E_NOT_FILE"); }
+        return void cb(void 0, true);
+    });
+};
+
+// reads classic metadata from a channel log and aborts
 var getMetadataAtPath = function (Env, path, cb) {
     var remainder = '';
     var stream = Fs.createReadStream(path, { encoding: 'utf8' });
@@ -60,11 +85,6 @@ var getMetadataAtPath = function (Env, path, cb) {
     stream.on('error', function (e) { complete(e); });
 };
 
-var getChannelMetadata = function (Env, channelId, cb) {
-    var path = mkPath(Env, channelId);
-    getMetadataAtPath(Env, path, cb);
-};
-
 var closeChannel = function (env, channelName, cb) {
     if (!env.channels[channelName]) { return void cb(); }
     try {
@@ -77,6 +97,7 @@ var closeChannel = function (env, channelName, cb) {
     }
 };
 
+// truncates a file to the end of its metadata line
 var clearChannel = function (env, channelId, cb) {
     var path = mkPath(env, channelId);
     getMetadataAtPath(env, path, function (e, metadata) {
@@ -106,6 +127,9 @@ var clearChannel = function (env, channelId, cb) {
     });
 };
 
+/*  readMessages is our classic method of reading messages from the disk
+    notably doesn't provide a means of aborting if you finish early
+*/
 var readMessages = function (path, msgHandler, cb) {
     var remainder = '';
     var stream = Fs.createReadStream(path, { encoding: 'utf8' });
@@ -127,6 +151,104 @@ var readMessages = function (path, msgHandler, cb) {
     stream.on('error', function (e) { complete(e); });
 };
 
+/*  getChannelMetadata
+    reads only the metadata embedded in the first line of a channel log.
+    does not necessarily provide the most up to date metadata, as it
+    could have been amended
+*/
+var getChannelMetadata = function (Env, channelId, cb) {
+    var path = mkPath(Env, channelId);
+
+    // gets metadata embedded in a file
+    getMetadataAtPath(Env, path, cb);
+};
+
+// low level method for getting just the dedicated metadata channel
+var getDedicatedMetadata = function (env, channelId, handler, cb) {
+    var metadataPath = mkMetadataPath(env, channelId);
+    readMessages(metadataPath, function (line) {
+        if (!line) { return; }
+        try {
+            var parsed = JSON.parse(line);
+            handler(null, parsed);
+        } catch (e) {
+            handler(e, line);
+        }
+    }, function (err) {
+        if (err) {
+            // ENOENT => there is no metadata log
+            if (err.code === 'ENOENT') { return void cb(); }
+            // otherwise stream errors?
+            return void cb(err);
+        }
+        cb();
+    });
+};
+
+/*  readMetadata
+    fetches the classic format of the metadata from the channel log
+    if it is present, otherwise load the log of metadata amendments.
+    Requires a handler to process successive lines.
+*/
+var readMetadata = function (env, channelId, handler, cb) {
+/*
+
+Possibilities
+
+    1. there is no metadata because it's an old channel
+    2. there is metadata in the first line of the channel, but nowhere else
+    3. there is metadata in the first line of the channel as well as in a dedicated log
+    4. there is no metadata in the first line of the channel. Everything is in the dedicated log
+
+How to proceed
+
+    1. load the first line of the channel and treat it as a metadata message if applicable
+    2. load the dedicated log and treat it as an update
+
+*/
+
+    nThen(function (w) {
+        // returns the first line of a channel, parsed...
+        getChannelMetadata(env, channelId, w(function (err, data) {
+            if (err) {
+                // 'INVALID_METADATA' if it can't parse
+                // stream errors if anything goes wrong at a lower level
+                    // ENOENT (no channel here)
+                return void handler(err);
+            }
+            // disregard anything that isn't a map
+            if (!data || typeof(data) !== 'object' || Array.isArray(data)) { return; }
+
+            // otherwise it's good.
+            handler(null, data);
+        }));
+    }).nThen(function () {
+        getDedicatedMetadata(env, channelId, handler, function (err) {
+            if (err) {
+                // stream errors?
+                return void cb(err);
+            }
+            cb();
+        });
+    });
+};
+
+//  writeMetadata appends to the dedicated log of metadata amendments
+var writeMetadata = function (env, channelId, data, cb) {
+    var path = mkMetadataPath(env, channelId);
+
+    Fse.mkdirp(Path.dirname(path), PERMISSIVE, function (err) {
+        if (err && err.code !== 'EEXIST') { return void cb(err); }
+
+        // TODO see if we can make this any faster by using something other than appendFile
+        Fs.appendFile(path, data + '\n', cb);
+    });
+};
+
+
+// transform a stream of arbitrarily divided data
+// into a stream of buffers divided by newlines in the source stream
+// TODO see if we could improve performance by using libnewline
 const NEWLINE_CHR = ('\n').charCodeAt(0);
 const mkBufferSplit = () => {
     let remainder = null;
@@ -160,6 +282,8 @@ const mkBufferSplit = () => {
     }, Pull.flatten());
 };
 
+// return a streaming function which transforms buffers into objects
+// containing the buffer and the offset from the start of the stream
 const mkOffsetCounter = () => {
     let offset = 0;
     return Pull.map((buff) => {
@@ -170,9 +294,13 @@ const mkOffsetCounter = () => {
     });
 };
 
+// readMessagesBin asynchronously iterates over the messages in a channel log
+// the handler for each message must call back to read more, which should mean
+// that this function has a lower memory profile than our classic method
+// of reading logs line by line.
+// it also allows the handler to abort reading at any time
 const readMessagesBin = (env, id, start, msgHandler, cb) => {
     const stream = Fs.createReadStream(mkPath(env, id), { start: start });
-    // TODO get the channel and add the atime
     let keepReading = true;
     Pull(
         ToPull.read(stream),
@@ -187,8 +315,8 @@ const readMessagesBin = (env, id, start, msgHandler, cb) => {
     );
 };
 
+// check if a file exists at $path
 var checkPath = function (path, callback) {
-    // TODO check if we actually need to use stat at all
     Fs.stat(path, function (err) {
         if (!err) {
             callback(undefined, true);
@@ -208,31 +336,79 @@ var checkPath = function (path, callback) {
     });
 };
 
-var removeChannel = function (env, channelName, cb) {
-    var filename = mkPath(env, channelName);
-    Fs.unlink(filename, cb);
+var labelError = function (label, err) {
+    return label + (err.code ? "_" +  err.code: '');
 };
 
-// pass in the path so we can reuse the same function for archived files
-var channelExists = function (filepath, channelName, cb) {
-    Fs.stat(filepath, function (err, stat) {
-        if (err) {
-            if (err.code === 'ENOENT') {
-                // no, the file doesn't exist
-                return void cb(void 0, false);
+/*  removeChannel
+    fully deletes a channel log and any associated metadata
+*/
+var removeChannel = function (env, channelName, cb) {
+    var channelPath = mkPath(env, channelName);
+    var metadataPath = mkMetadataPath(env, channelName);
+
+    var CB = Once(cb);
+
+    var errors = 0;
+    nThen(function (w) {
+        Fs.unlink(channelPath, w(function (err) {
+            if (err) {
+                if (err.code === 'ENOENT') {
+                    errors++;
+                    return;
+                }
+                w.abort();
+                CB(labelError("E_CHANNEL_REMOVAL", err));
             }
-            return void cb(err);
+        }));
+        Fs.unlink(metadataPath, w(function (err) {
+            if (err) {
+                if (err.code === 'ENOENT') {
+                    errors++;
+                    return;
+                } // proceed if there's no metadata to delete
+                w.abort();
+                CB(labelError("E_METADATA_REMOVAL", err));
+            }
+        }));
+    }).nThen(function () {
+        if (errors === 2) {
+            return void CB(labelError('E_REMOVE_CHANNEL', new Error("ENOENT")));
         }
-        if (!stat.isFile()) { return void cb("E_NOT_FILE"); }
-        return void cb(void 0, true);
+
+        CB();
     });
 };
 
+/*  removeArchivedChannel
+    fully removes an archived channel log and any associated metadata
+*/
 var removeArchivedChannel = function (env, channelName, cb) {
-    var filename = mkArchivePath(env, channelName);
-    Fs.unlink(filename, cb);
+    var channelPath = mkArchivePath(env, channelName);
+    var metadataPath = mkArchiveMetadataPath(env, channelName);
+
+    var CB = Once(cb);
+
+    nThen(function (w) {
+        Fs.unlink(channelPath, w(function (err) {
+            if (err) {
+                w.abort();
+                CB(labelError("E_ARCHIVED_CHANNEL_REMOVAL", err));
+            }
+        }));
+        Fs.unlink(metadataPath, w(function (err) {
+            if (err) {
+                if (err.code === "ENOENT") { return; }
+                w.abort();
+                CB(labelError("E_ARCHIVED_METADATA_REMOVAL", err));
+            }
+        }));
+    }).nThen(function () {
+        CB();
+    });
 };
 
+// TODO implement a method of removing metadata that doesn't have a corresponding channel
 var listChannels = function (root, handler, cb) {
     // do twenty things at a time
     var sema = Semaphore.create(20);
@@ -255,15 +431,31 @@ var listChannels = function (root, handler, cb) {
         var wait = w();
         dirList.forEach(function (dir) {
             sema.take(function (give) {
+    // TODO modify the asynchronous bits here to keep less in memory at any given time
+    // list a directory -> process its contents with semaphores until less than N jobs are running
+    // then list the next directory...
                 var nestedDirPath = Path.join(root, dir);
                 Fs.readdir(nestedDirPath, w(give(function (err, list) {
                     if (err) { return void handler(err); } // Is this correct?
 
                     list.forEach(function (item) {
-                        // ignore things that don't match the naming pattern
-                        if (/^\./.test(item) || !/[0-9a-fA-F]{32,}\.ndjson$/.test(item)) { return; }
+                        // ignore hidden files
+                        if (/^\./.test(item)) { return; }
+                        // ignore anything that isn't channel or metadata
+                        if (!/^[0-9a-fA-F]{32}(\.metadata?)*\.ndjson$/.test(item)) {
+                            return;
+                        }
+                        if (!/^[0-9a-fA-F]{32}\.ndjson$/.test(item)) {
+                            // this will catch metadata, which we want to ignore if
+                            // the corresponding channel is present
+                            if (list.indexOf(item.replace(/\.metadata/, '')) !== -1) { return; }
+                            // otherwise fall through
+                        }
                         var filepath = Path.join(nestedDirPath, item);
-                        var channel = filepath.replace(/\.ndjson$/, '').replace(/.*\//, '');
+                        var channel = filepath
+                            .replace(/\.ndjson$/, '')
+                            .replace(/\.metadata/, '')
+                            .replace(/.*\//, '');
                         if ([32, 34].indexOf(channel.length) === -1) { return; }
 
                         // otherwise throw it on the pile
@@ -296,6 +488,7 @@ var listChannels = function (root, handler, cb) {
 // move a channel's log file from its current location
 // to an equivalent location in the cold storage directory
 var archiveChannel = function (env, channelName, cb) {
+    // TODO close channels before archiving them?
     if (!env.retainData) {
         return void cb("ARCHIVES_DISABLED");
     }
@@ -314,20 +507,106 @@ var archiveChannel = function (env, channelName, cb) {
 
     // use Fse.move to move it, Fse makes paths to the directory when you use it.
     // https://github.com/jprichardson/node-fs-extra/blob/HEAD/docs/move.md
-    Fse.move(currentPath, archivePath, { overwrite: true }, cb);
+    nThen(function (w) {
+        // move the channel log and abort if anything goes wrong
+        Fse.move(currentPath, archivePath, { overwrite: true }, w(function (err) {
+            if (err) {
+                // proceed to the next block to remove metadata even if there's no channel
+                if (err.code === 'ENOENT') { return; }
+                // abort and callback for other types of errors
+                w.abort();
+                return void cb(err);
+            }
+        }));
+    }).nThen(function (w) {
+        // archive the dedicated metadata channel
+        var metadataPath = mkMetadataPath(env, channelName);
+        var archiveMetadataPath = mkArchiveMetadataPath(env, channelName);
+
+        Fse.move(metadataPath, archiveMetadataPath, { overwrite: true, }, w(function (err) {
+            // there's no metadata to archive, so you're done!
+            if (err && err.code === "ENOENT") {
+                return void cb();
+            }
+
+            // there was an error archiving the metadata
+            if (err) {
+                return void cb(labelError("E_METADATA_ARCHIVAL", err));
+            }
+
+            // it was archived successfully
+            cb();
+        }));
+    });
 };
 
+// restore a channel and its metadata from the archive
+// to the appropriate location in the live database
 var unarchiveChannel = function (env, channelName, cb) {
     // very much like 'archiveChannel' but in the opposite direction
 
     // the file is currently archived
-    var currentPath = mkArchivePath(env, channelName);
-    var unarchivedPath = mkPath(env, channelName);
+    var channelPath = mkPath(env, channelName);
+    var metadataPath = mkMetadataPath(env, channelName);
+
+    // don't call the callback multiple times
+    var CB = Once(cb);
 
     // if a file exists in the unarchived path, you probably don't want to clobber its data
     // so unlike 'archiveChannel' we won't overwrite.
     // Fse.move will call back with EEXIST in such a situation
-    Fse.move(currentPath, unarchivedPath, cb);
+
+    nThen(function (w) {
+        // if either metadata or a file exist in prod, abort
+        channelExists(channelPath, w(function (err, exists) {
+            if (err) {
+                w.abort();
+                return void CB(err);
+            }
+            if (exists) {
+                w.abort();
+                return CB('UNARCHIVE_CHANNEL_CONFLICT');
+            }
+        }));
+        channelExists(metadataPath, w(function (err, exists) {
+            if (err) {
+                w.abort();
+                return void CB(err);
+            }
+            if (exists) {
+                w.abort();
+                return CB("UNARCHIVE_METADATA_CONFLICT");
+            }
+        }));
+    }).nThen(function (w) {
+        // construct archive paths
+        var archiveChannelPath = mkArchivePath(env, channelName);
+        // restore the archived channel
+        Fse.move(archiveChannelPath, channelPath, w(function (err) {
+            if (err) {
+                w.abort();
+                return void CB(err);
+            }
+        }));
+    }).nThen(function (w) {
+        var archiveMetadataPath = mkArchiveMetadataPath(env, channelName);
+        // TODO validate that it's ok to move metadata non-atomically
+
+        // restore the metadata log
+        Fse.move(archiveMetadataPath, metadataPath, w(function (err) {
+            // if there's nothing to move, you're done.
+            if (err && err.code === 'ENOENT') {
+                return CB();
+            }
+            // call back with an error if something goes wrong
+            if (err) {
+                w.abort();
+                return void CB(labelError("E_METADATA_RESTORATION", err));
+            }
+            // otherwise it was moved successfully
+            CB();
+        }));
+    });
 };
 
 var flushUnusedChannels = function (env, cb, frame) {
@@ -352,11 +631,34 @@ var flushUnusedChannels = function (env, cb, frame) {
     cb();
 };
 
+/*  channelBytes
+    calls back with an error or the size (in bytes) of a channel and its metadata
+*/
 var channelBytes = function (env, chanName, cb) {
-    var path = mkPath(env, chanName);
-    Fs.stat(path, function (err, stats) {
-        if (err) { return void cb(err); }
-        cb(undefined, stats.size);
+    var channelPath = mkPath(env, chanName);
+    var dataPath = mkMetadataPath(env, chanName);
+
+    var CB = Once(cb);
+
+    var channelSize = 0;
+    var dataSize = 0;
+    nThen(function (w) {
+        Fs.stat(channelPath, w(function (err, stats) {
+            if (err) {
+                if (err.code === 'ENOENT') { return; }
+                return void CB(err);
+            }
+            channelSize = stats.size;
+        }));
+        Fs.stat(dataPath, w(function (err, stats) {
+            if (err) {
+                if (err.code === 'ENOENT') { return; }
+                return void CB(err);
+            }
+            dataSize = stats.size;
+        }));
+    }).nThen(function () {
+        CB(void 0, channelSize + dataSize);
     });
 };
 
@@ -450,6 +752,7 @@ var getChannel = function (
     });
 };
 
+// write a message to the disk as raw bytes
 const messageBin = (env, chanName, msgBin, cb) => {
     getChannel(env, chanName, function (err, chan) {
         if (!chan) {
@@ -466,18 +769,19 @@ const messageBin = (env, chanName, msgBin, cb) => {
         chan.writeStream.write(msgBin, function () {
             /*::if (!chan) { throw new Error("Flow unreachable"); }*/
             chan.onError.splice(chan.onError.indexOf(complete), 1);
+            chan.atime = +new Date();
             if (!cb) { return; }
-            //chan.messages.push(msg);
-            chan.atime = +new Date(); // FIXME seems like odd behaviour that not passing a callback would result in not updating atime...
             complete();
         });
     });
 };
 
+// append a string to a channel's log as a new line
 var message = function (env, chanName, msg, cb) {
     messageBin(env, chanName, new Buffer(msg + '\n', 'utf8'), cb);
 };
 
+// stream messages from a channel log
 var getMessages = function (env, chanName, handler, cb) {
     getChannel(env, chanName, function (err, chan) {
         if (!chan) {
@@ -499,6 +803,9 @@ var getMessages = function (env, chanName, handler, cb) {
                 errorState = true;
                 return void cb(err);
             }
+            // is it really, though? what if we hit the limit of open channels
+            // and 'clean up' in the middle of reading a massive file?
+            // certainly unlikely
             if (!chan) { throw new Error("impossible, flow checking"); }
             chan.atime = +new Date();
             cb();
@@ -563,80 +870,124 @@ module.exports.create = function (
         }));
     }).nThen(function () {
         cb({
-            readMessagesBin: (channelName, start, asyncMsgHandler, cb) => {
-                if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
-                readMessagesBin(env, channelName, start, asyncMsgHandler, cb);
-            },
+        // OLDER METHODS
+            // write a new message to a log
             message: function (channelName, content, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
                 message(env, channelName, content, cb);
             },
-            messageBin: (channelName, content, cb) => {
-                if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
-                messageBin(env, channelName, content, cb);
-            },
+            // iterate over all the messages in a log
             getMessages: function (channelName, msgHandler, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
                 getMessages(env, channelName, msgHandler, cb);
             },
+
+        // NEWER IMPLEMENTATIONS OF THE SAME THING
+            // write a new message to a log
+            messageBin: (channelName, content, cb) => {
+                if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
+                messageBin(env, channelName, content, cb);
+            },
+            // iterate over the messages in a log
+            readMessagesBin: (channelName, start, asyncMsgHandler, cb) => {
+                if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
+                readMessagesBin(env, channelName, start, asyncMsgHandler, cb);
+            },
+
+        // METHODS for deleting data
+            // remove a channel and its associated metadata log if present
             removeChannel: function (channelName, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
                 removeChannel(env, channelName, function (err) {
                     cb(err);
                 });
             },
+            // remove a channel and its associated metadata log from the archive directory
             removeArchivedChannel: function (channelName, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
                 removeArchivedChannel(env, channelName, cb);
             },
-            closeChannel: function (channelName, cb) {
-                if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
-                closeChannel(env, channelName, cb);
-            },
-            flushUnusedChannels: function (cb) {
-                flushUnusedChannels(env, cb);
-            },
-            getChannelSize: function (channelName, cb) {
-                if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
-                channelBytes(env, channelName, cb);
-            },
-            getChannelMetadata: function (channelName, cb) {
-                if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
-                getChannelMetadata(env, channelName, cb);
-            },
+            // clear all data for a channel but preserve its metadata
             clearChannel: function (channelName, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
                 clearChannel(env, channelName, cb);
             },
-            listChannels: function (handler, cb) {
-                listChannels(env.root, handler, cb);
-            },
+
+            // check if a channel exists in the database
             isChannelAvailable: function (channelName, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
                 // construct the path
                 var filepath = mkPath(env, channelName);
-                channelExists(filepath, channelName, cb);
+                channelExists(filepath, cb);
             },
+            // check if a channel exists in the archive
             isChannelArchived: function (channelName, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
                 // construct the path
                 var filepath = mkArchivePath(env, channelName);
-                channelExists(filepath, channelName, cb);
+                channelExists(filepath, cb);
             },
-            listArchivedChannels: function (handler, cb) {
-                listChannels(Path.join(env.archiveRoot, 'datastore'), handler, cb);
-            },
+            // move a channel from the database to the archive, along with its metadata
             archiveChannel: function (channelName, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
                 archiveChannel(env, channelName, cb);
             },
+            // restore a channel from the archive to the database, along with its metadata
             restoreArchivedChannel: function (channelName, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
                 unarchiveChannel(env, channelName, cb);
             },
+
+        // METADATA METHODS
+            // fetch the metadata for a channel
+            getChannelMetadata: function (channelName, cb) {
+                if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
+                getChannelMetadata(env, channelName, cb);
+            },
+            // iterate over lines of metadata changes from a dedicated log
+            readDedicatedMetadata: function (channelName, handler, cb) {
+                if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
+                getDedicatedMetadata(env, channelName, handler, cb);
+            },
+
+            // iterate over multiple lines of metadata changes
+            readChannelMetadata: function (channelName, handler, cb) {
+                if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
+                readMetadata(env, channelName, handler, cb);
+            },
+            // write a new line to a metadata log
+            writeMetadata: function (channelName, data, cb) {
+                if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
+                writeMetadata(env, channelName, data, cb);
+            },
+
+        // CHANNEL ITERATION
+            listChannels: function (handler, cb) {
+                listChannels(env.root, handler, cb);
+            },
+            listArchivedChannels: function (handler, cb) {
+                listChannels(Path.join(env.archiveRoot, 'datastore'), handler, cb);
+            },
+
+            getChannelSize: function (channelName, cb) {
+                if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
+                channelBytes(env, channelName, cb);
+            },
+        // OTHER DATABASE FUNCTIONALITY
+            // remove a particular channel from the cache
+            closeChannel: function (channelName, cb) {
+                if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
+                closeChannel(env, channelName, cb);
+            },
+            // iterate over open channels and close any that are not active
+            flushUnusedChannels: function (cb) {
+                flushUnusedChannels(env, cb);
+            },
+            // write to a log file
             log: function (channelName, content, cb) {
                 message(env, channelName, content, cb);
             },
+            // shut down the database
             shutdown: function () {
                 clearInterval(it);
             }

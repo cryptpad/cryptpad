@@ -15,6 +15,7 @@ define([
     };
 
     var supportedTypes = [
+        'text/plain',
         'image/png',
         'image/jpeg',
         'image/jpg',
@@ -23,7 +24,12 @@ define([
         'application/pdf'
     ];
 
-    Thumb.isSupportedType = function (type) {
+    Thumb.isSupportedType = function (file) {
+        if (!file) { return false; }
+        var type = file.type;
+        if (Util.isPlainTextFile(file.type, file.name)) {
+            type = "text/plain";
+        }
         return supportedTypes.some(function (t) {
             return type.indexOf(t) !== -1;
         });
@@ -164,12 +170,35 @@ define([
             });
         });
     };
+    Thumb.fromPlainTextBlob = function (blob, cb) {
+        var canvas = document.createElement("canvas");
+        canvas.width = canvas.height = Thumb.dimension;
+        var reader = new FileReader();
+        reader.addEventListener('loadend', function (e) {
+            var content = e.srcElement.result;
+            var lines = content.split("\n");
+            var canvasContext = canvas.getContext("2d");
+            var fontSize = 4;
+            canvas.height = (lines.length) * (fontSize + 1);
+            canvasContext.font = fontSize + 'px monospace';
+            lines.forEach(function (text, i) {
+
+                canvasContext.fillText(text, 5, i * (fontSize + 1));
+            });
+            var D = getResizedDimensions(canvas, "txt");
+            Thumb.fromCanvas(canvas, D, cb);
+        });
+        reader.readAsText(blob);
+    };
     Thumb.fromBlob = function (blob, cb) {
         if (blob.type.indexOf('video/') !== -1) {
             return void Thumb.fromVideoBlob(blob, cb);
         }
         if (blob.type.indexOf('application/pdf') !== -1) {
             return void Thumb.fromPdfBlob(blob, cb);
+        }
+        if (Util.isPlainTextFile(blob.type, blob.name)) {
+            return void Thumb.fromPlainTextBlob(blob, cb);
         }
         Thumb.fromImageBlob(blob, cb);
     };
@@ -230,9 +259,15 @@ define([
         if (!Visible.currently()) { to = window.setTimeout(interval, Thumb.UPDATE_FIRST); }
     };
 
+
     var addThumbnail = function (err, thumb, $span, cb) {
+        var u8 = Nacl.util.decodeBase64(thumb.split(',')[1]);
+        var blob = new Blob([u8], {
+            type: 'image/png'
+        });
+        var url = URL.createObjectURL(blob);
         var img = new Image();
-        img.src = thumb.slice(0,5) === 'data:' ? thumb : 'data:image/png;base64,'+thumb;
+        img.src = url;
         $span.find('.cp-icon').hide();
         $span.prepend(img);
         cb($(img));
@@ -254,9 +289,11 @@ define([
         var parsed = Hash.parsePadUrl(href);
         var k = getKey(parsed.type, channel);
         var whenNewThumb = function () {
+            var privateData = common.getMetadataMgr().getPrivateData();
+            var fileHost = privateData.fileHost || privateData.origin;
             var secret = Hash.getSecrets('file', parsed.hash, password);
             var hexFileName = secret.channel;
-            var src = Hash.getBlobPathFromHex(hexFileName);
+            var src = fileHost + Hash.getBlobPathFromHex(hexFileName);
             var key = secret.keys && secret.keys.cryptKey;
             FileCrypto.fetchDecryptedMetadata(src, key, function (e, metadata) {
                 if (e) {

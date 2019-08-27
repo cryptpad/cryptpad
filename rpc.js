@@ -17,6 +17,7 @@ const Saferphore = require("saferphore");
 const nThen = require("nthen");
 const getFolderSize = require("get-folder-size");
 const Pins = require("./lib/pins");
+const Meta = require("./lib/metadata");
 
 
 var RPC = module.exports;
@@ -313,22 +314,22 @@ var getFileSize = function (Env, channel, cb) {
     });
 };
 
+
 var getMetadata = function (Env, channel, cb) {
     if (!isValidId(channel)) { return void cb('INVALID_CHAN'); }
 
-    if (channel.length === 32) {
-        if (typeof(Env.msgStore.getChannelMetadata) !== 'function') {
-            return cb('GET_CHANNEL_METADATA_UNSUPPORTED');
-        }
+    if (channel.length !== 32) { return cb("INVALID_CHAN"); }
 
-        return void Env.msgStore.getChannelMetadata(channel, function (e, data) {
-            if (e) {
-                if (e.code === 'INVALID_METADATA') { return void cb(void 0, {}); }
-                return void cb(e.code);
-            }
-            cb(void 0, data);
-        });
-    }
+    var ref = {};
+    var lineHandler = Meta.createLineHandler(ref, Log.error);
+
+    return void Env.msgStore.readChannelMetadata(channel, lineHandler, function (err) {
+        if (err) {
+            // stream errors?
+            return void cb(err);
+        }
+        cb(void 0, ref.meta);
+    });
 };
 
 var getMultipleFileSize = function (Env, channels, cb) {
@@ -802,18 +803,13 @@ var clearOwnedChannel = function (Env, channelId, unsafeKey, cb) {
         return cb('INVALID_ARGUMENTS');
     }
 
-    if (!(Env.msgStore && Env.msgStore.getChannelMetadata)) {
-        return cb('E_NOT_IMPLEMENTED');
-    }
-
-    Env.msgStore.getChannelMetadata(channelId, function (e, metadata) {
-        if (e) { return cb(e); }
+    getMetadata(Env, channelId, function (err, metadata) {
+        if (err) { return void cb(err); }
         if (!(metadata && Array.isArray(metadata.owners))) { return void cb('E_NO_OWNERS'); }
         // Confirm that the channel is owned by the user in question
         if (metadata.owners.indexOf(unsafeKey) === -1) {
             return void cb('INSUFFICIENT_PERMISSIONS');
         }
-
         // FIXME COLDSTORAGE
         return void Env.msgStore.clearChannel(channelId, function (e) {
             cb(e);
@@ -822,6 +818,7 @@ var clearOwnedChannel = function (Env, channelId, unsafeKey, cb) {
 };
 
 var removeOwnedBlob = function (Env, blobId, unsafeKey, cb) {
+        // FIXME METADATA
     var safeKey = escapeKeyCharacters(unsafeKey);
     var safeKeyPrefix = safeKey.slice(0,3);
     var blobPrefix = blobId.slice(0,2);
@@ -891,17 +888,12 @@ var removeOwnedChannel = function (Env, channelId, unsafeKey, cb) {
         return void removeOwnedBlob(Env, channelId, unsafeKey, cb);
     }
 
-    if (!(Env.msgStore && Env.msgStore.removeChannel && Env.msgStore.getChannelMetadata)) {
-        return cb("E_NOT_IMPLEMENTED");
-    }
-
-    Env.msgStore.getChannelMetadata(channelId, function (e, metadata) {
-        if (e) { return cb(e); }
+    getMetadata(Env, channelId, function (err, metadata) {
+        if (err) { return void cb(err); }
         if (!(metadata && Array.isArray(metadata.owners))) { return void cb('E_NO_OWNERS'); }
         if (metadata.owners.indexOf(unsafeKey) === -1) {
             return void cb('INSUFFICIENT_PERMISSIONS');
         }
-
         // if the admin has configured data retention...
         // temporarily archive the file instead of removing it
         if (Env.retainData) {
@@ -1459,21 +1451,23 @@ var removeLoginBlock = function (Env, msg, cb) {
     });
 };
 
+var ARRAY_LINE = /^\[/;
+
+/*  Files can contain metadata but not content
+    call back with true if the channel log has no content other than metadata
+    otherwise false
+*/
 var isNewChannel = function (Env, channel, cb) {
     if (!isValidId(channel)) { return void cb('INVALID_CHAN'); }
     if (channel.length !== 32) { return void cb('INVALID_CHAN'); }
 
-    var count = 0;
     var done = false;
     Env.msgStore.getMessages(channel, function (msg) {
         if (done) { return; }
-        var parsed;
         try {
-            parsed = JSON.parse(msg);
-            if (parsed && typeof(parsed) === 'object') { count++; }
-            if (count >= 2) {
+            if (typeof(msg) === 'string' && ARRAY_LINE.test(msg)) {
                 done = true;
-                cb(void 0, false); // it is not a new file
+                return void cb(void 0, false);
             }
         } catch (e) {
             WARN('invalid message read from store', e);
@@ -1722,7 +1716,7 @@ RPC.create = function (
                     respond(e, [null, size, null]);
                 });
             case 'GET_METADATA':
-                return void getMetadata(Env, msg[1], function (e, data) {
+                return void getMetadata(Env, msg[1], function (e, data) { // FIXME METADATA
                     WARN(e, msg[1]);
                     respond(e, [null, data, null]);
                 });

@@ -1,3 +1,4 @@
+@import (reference) "./browser.less";
 @import (reference) './colortheme-all.less';
 @import (reference) './modal.less';
 
@@ -10,24 +11,35 @@
     #cp-fileupload {
         .modal_base();
         position: absolute;
-        left: 10vw; right: 10vw;
+        right: 10vw;
         bottom: 10vh;
-        opacity: 0.9;
         box-sizing: border-box;
         z-index: 1000000; //Z file upload table container
         display: none;
-        #cp-fileupload-table {
-            width: 80vw;
-            tr:nth-child(1) {
-                background-color: darken(@colortheme_modal-bg, 20%);
-                td {
-                    font-weight: bold;
-                    padding: 0.25em;
-                    &:nth-child(4), &:nth-child(5) {
-                        text-align: center;
-                    }
+        color: darken(@colortheme_drive-bg, 10%);
+
+        @media screen and (max-width: @browser_media-medium-screen) {
+            left: 5vw; right: 5vw; bottom: 5vw;
+        }
+
+        .cp-fileupload-header {
+            display: flex;
+            background-color: darken(@colortheme_modal-bg, 10%);
+            font-weight: bold;
+            .cp-fileupload-header-title {
+                padding: 0.25em 0.5em;
+                flex-grow: 1;
+            }
+            .cp-fileupload-header-close {
+                padding: 0.25em 0.5em;
+                cursor: pointer;
+                &:hover {
+                    background-color: rgba(0,0,0,0.1);
                 }
             }
+        }
+        #cp-fileupload-table {
+            width: 100%;
             @upload_pad_h: 0.25em;
             @upload_pad_v: 0.5em;
 
@@ -35,27 +47,55 @@
                 padding: @upload_pad_h @upload_pad_v;
             }
             .cp-fileupload-table-link {
+                display: flex;
+                align-items: center;
+                white-space: nowrap;
+                max-width: 30vw;
+                margin: 0px @upload_pad_v;
                 .fa {
+                    margin-top: 4px;
                     margin-right: 5px;
+                }
+                .cp-fileupload-table-name {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                &[href]:hover {
+                    text-decoration: none;
+                    .cp-fileupload-table-name {
+                        text-decoration: underline;
+                    }
                 }
             }
             .cp-fileupload-table-progress {
-                width: 25%;
+                min-width: 12em;
+                max-width: 16em;
                 position: relative;
                 text-align: center;
                 box-sizing: border-box;
             }
             .cp-fileupload-table-progress-container {
+                position: relative;
+            }
+            .cp-fileupload-table-progressbar {
                 position: absolute;
                 width: 0px;
-                left: @upload_pad_v;
-                top: @upload_pad_h; bottom: @upload_pad_h;
-                background-color: rgba(0,0,255,0.3);
+                height: 100%;
+                background-color: #dddddd;
                 z-index: -1; //Z file upload progress container
             }
-            .cp-fileupload-table-cancel { text-align: center; }
-            .fa.cancel {
-                color: rgb(255, 0, 115);
+            .cp-fileupload-table-cancel {
+                text-align: center;
+                padding: 0px;
+                &:not(.success):not(.cancelled):hover {
+                    background-color: rgba(0,0,0,0.1);
+                }
+                .fa {
+                    padding: @upload_pad_h @upload_pad_v;
+                    &.fa-times {
+                        cursor: pointer;
+                    }
+                }
             }
         }
     }

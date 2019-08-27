@@ -4,7 +4,7 @@ define([
     '/common/sframe-common-codemirror.js',
 ], function (SFCodeMirror) {
     var module = {
-        type: 'md'
+        ext: '.md'
     };
 
     module.main = function (userDoc, cb) {

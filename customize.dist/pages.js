@@ -103,7 +103,7 @@ define([
                     ])*/
                 ])
             ]),
-            h('div.cp-version-footer', "CryptPad v2.25.0 (Zebra)")
+            h('div.cp-version-footer', "CryptPad v3.0.0 (Aurochs)")
         ]);
     };
 
@@ -146,7 +146,7 @@ define([
                 //h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.topbar_whatIsCryptpad), // Moved the FAQ
                 //h('a.nav-item.nav-link', { href: '/faq.html'}, Msg.faq_link),
                 h('a.nav-item.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.blog),
-                h('a.nav-item.nav-link', { href: '/features.html'}, Msg.features),
+                h('a.nav-item.nav-link', { href: '/features.html'}, Msg.pricing),
                 h('a.nav-item.nav-link', { href: '/privacy.html'}, Msg.privacy),
                 //h('a.nav-item.nav-link', { href: '/contact.html'}, Msg.contact),
                 //h('a.nav-item.nav-link', { href: '/about.html'}, Msg.about),

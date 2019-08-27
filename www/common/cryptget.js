@@ -16,10 +16,10 @@ define([
             var disconnect = Util.find(S, ['network', 'disconnect']);
             if (typeof(disconnect) === 'function') { disconnect(); }
         }
-        if (S.leave) {
+        if (S.realtime && S.realtime.stop) {
             try {
-                S.leave();
-            } catch (e) { console.log(e); }
+                S.realtime.stop();
+            } catch (e) { console.error(e); }
         }
         var abort = Util.find(S, ['session', 'realtime', 'abort']);
         if (typeof(abort) === 'function') {
@@ -52,11 +52,12 @@ define([
         Object.keys(b).forEach(function (k) { a[k] = b[k]; });
     };
 
-    var get = function (hash, cb, opt) {
+    var get = function (hash, cb, opt, progress) {
         if (typeof(cb) !== 'function') {
             throw new Error('Cryptget expects a callback');
         }
         opt = opt || {};
+        progress = progress || function () {};
 
         var config = makeConfig(hash, opt);
         var Session = { cb: cb, hasNetwork: Boolean(opt.network) };
@@ -64,12 +65,22 @@ define([
         config.onReady = function (info) {
             var rt = Session.session = info.realtime;
             Session.network = info.network;
-            Session.leave = info.leave;
+            progress(1);
             finish(Session, void 0, rt.getUserDoc());
         };
 
         config.onChannelError = function (info) {
             finish(Session, info.error);
+        };
+
+        // We use the new onMessage handler to compute the progress:
+        // we should receive 2 checkpoints max, so 100 messages max
+        // We're going to consider that 1 message = 1%, and we'll send 100%
+        // at the end
+        var i = 0;
+        config.onMessage = function () {
+            i++;
+            progress(Math.min(0.99, i/100));
         };
 
         overwrite(config, opt);

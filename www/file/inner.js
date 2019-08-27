@@ -59,6 +59,7 @@ define([
         var secret;
         var metadataMgr = common.getMetadataMgr();
         var priv = metadataMgr.getPrivateData();
+        var fileHost = priv.fileHost || priv.origin || '';
 
         if (!priv.filehash) {
             uploadMode = true;
@@ -88,7 +89,7 @@ define([
 
         if (!uploadMode) {
             var hexFileName = secret.channel;
-            var src = Hash.getBlobPathFromHex(hexFileName);
+            var src = fileHost + Hash.getBlobPathFromHex(hexFileName);
             var key = secret.keys && secret.keys.cryptKey;
             var cryptKey = Nacl.util.encodeBase64(key);
 

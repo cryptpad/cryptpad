@@ -254,8 +254,12 @@ define([
     common.clearOwnedChannel = function (channel, cb) {
         postMessage("CLEAR_OWNED_CHANNEL", channel, cb);
     };
-    common.removeOwnedChannel = function (channel, cb) {
-        postMessage("REMOVE_OWNED_CHANNEL", channel, cb);
+    // "force" allows you to delete your drive ID
+    common.removeOwnedChannel = function (channel, cb, force) {
+        postMessage("REMOVE_OWNED_CHANNEL", {
+            channel: channel,
+            force: force
+        }, cb);
     };
 
     common.getDeletedPads = function (data, cb) {
@@ -567,6 +571,67 @@ define([
         });
     };
 
+    common.useFile = function (Crypt, cb, optsPut) {
+        var fileHost = Config.fileHost || window.location.origin;
+        var data = common.fromFileData;
+        var parsed = Hash.parsePadUrl(data.href);
+        var parsed2 = Hash.parsePadUrl(window.location.href);
+        var hash = parsed.hash;
+        var name = data.title;
+        var secret = Hash.getSecrets('file', hash, data.password);
+        var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
+        var key = secret.keys && secret.keys.cryptKey;
+
+        var u8;
+        var res;
+        var mode;
+        var val;
+        Nthen(function(waitFor) {
+            Util.fetch(src, waitFor(function (err, _u8) {
+                if (err) { return void waitFor.abort(); }
+                u8 = _u8;
+            }));
+        }).nThen(function (waitFor) {
+            require(["/file/file-crypto.js"], waitFor(function (FileCrypto) {
+                FileCrypto.decrypt(u8, key, waitFor(function (err, _res) {
+                    if (err || !_res.content) { return void waitFor.abort(); }
+                    res = _res;
+                }));
+            }));
+        }).nThen(function (waitFor) {
+            var ext = Util.parseFilename(data.title).ext;
+            if (!ext) {
+                mode = "text";
+                return;
+            }
+            require(["/common/modes.js"], waitFor(function (Modes) {
+                Modes.list.some(function (fType) {
+                    if (fType.ext === ext) {
+                        mode = fType.mode;
+                        return true;
+                    }
+                });
+            }));
+        }).nThen(function (waitFor) {
+            var reader = new FileReader();
+            reader.addEventListener('loadend', waitFor(function (e) {
+                val = {
+                    content: e.srcElement.result,
+                    highlightMode: mode,
+                    metadata: {
+                        defaultTitle: name,
+                        title: name,
+                        type: "code",
+                    },
+                };
+            }));
+            reader.readAsText(res.content);
+        }).nThen(function () {
+            Crypt.put(parsed2.hash, JSON.stringify(val), cb, optsPut);
+        });
+
+    };
+
     // Forget button
     common.moveToTrash = function (cb, href) {
         href = href || window.location.href;
@@ -692,6 +757,17 @@ define([
     pad.onDisconnectEvent = Util.mkEvent();
     pad.onConnectEvent = Util.mkEvent();
     pad.onErrorEvent = Util.mkEvent();
+
+    pad.requestAccess = function (data, cb) {
+        postMessage("REQUEST_PAD_ACCESS", data, cb);
+    };
+    pad.giveAccess = function (data, cb) {
+        postMessage("GIVE_PAD_ACCESS", data, cb);
+    };
+
+    common.getPadMetadata = function (data, cb) {
+        postMessage('GET_PAD_METADATA', data, cb);
+    };
 
     common.changePadPassword = function (Crypt, href, newPassword, edPublic, cb) {
         if (!href) { return void cb({ error: 'EINVAL_HREF' }); }
@@ -943,7 +1019,7 @@ define([
                     common.logoutFromAll(waitFor(function () {
                         postMessage("DISCONNECT");
                     }));
-                }));
+                }), true);
             }
         }).nThen(function (waitFor) {
             if (!oldIsOwned) {
@@ -1263,6 +1339,12 @@ define([
                 messenger: rdyCfg.messenger, // Boolean
                 driveEvents: rdyCfg.driveEvents // Boolean
             };
+            // if a pad is created from a file
+            if (sessionStorage[Constants.newPadFileData]) {
+                common.fromFileData = JSON.parse(sessionStorage[Constants.newPadFileData]);
+                delete sessionStorage[Constants.newPadFileData];
+            }
+
             if (sessionStorage[Constants.newPadPathKey]) {
                 common.initialPath = sessionStorage[Constants.newPadPathKey];
                 delete sessionStorage[Constants.newPadPathKey];
@@ -1287,10 +1369,12 @@ define([
                             errEv.preventDefault();
                             errEv.stopPropagation();
                             noWorker = true;
+                            worker.terminate();
                             w();
                         };
                         worker.onmessage = function (ev) {
                             if (ev.data === "OK") {
+                                worker.terminate();
                                 w();
                             }
                         };

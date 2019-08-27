@@ -3,7 +3,9 @@
 define([
     '/customize/messages.js',
 ], function (Messages) {
-    var module = {};
+    var module = {
+        ext: '.csv'
+    };
 
     var copyObject = function (obj) {
         return JSON.parse(JSON.stringify(obj));

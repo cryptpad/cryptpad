@@ -169,6 +169,28 @@ define([], function () {
     height: 100%;
     background: #5cb85c;
 }
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(1800deg);
+    }
+}
+
+.cp-spinner {
+    display: inline-block;
+    box-sizing: border-box;
+    width: 80px;
+    height: 80px;
+    border: 11px solid white;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin infinite 3s;
+    animation-timing-function: cubic-bezier(.6,0.15,0.4,0.85);
+}
+
 */}).toString().slice(14, -3);
     var urlArgs = window.location.href.replace(/^.*\?([^\?]*)$/, function (all, x) { return x; });
     var elem = document.createElement('div');
@@ -182,7 +204,7 @@ define([], function () {
         '</div>',
         '<div class="cp-loading-container">',
             '<div class="cp-loading-spinner-container">',
-                '<span class="fa fa-spinner fa-pulse fa-4x fa-fw"></span>',
+                '<span class="cp-spinner"></span>',
             '</div>',
             '<p id="cp-loading-message"></p>',
         '</div>'

@@ -224,6 +224,12 @@ module.exports = {
      *        STORAGE
      * ===================== */
 
+    /*  By default the CryptPad server will run scheduled tasks every five minutes
+     *  If you want to run scheduled tasks in a separate process (like a crontab)
+     *  you can disable this behaviour by setting the following value to true
+     */
+     disableIntegratedTasks: false,
+
     /*  Pads that are not 'pinned' by any registered user can be set to expire
      *  after a configurable number of days of inactivity (default 90 days).
      *  The value can be changed or set to false to remove expiration.

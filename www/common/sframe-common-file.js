@@ -1,6 +1,7 @@
 define([
     'jquery',
     '/file/file-crypto.js',
+    '/common/make-backup.js',
     '/common/common-thumbnail.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
@@ -11,9 +12,8 @@ define([
 
     '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function ($, FileCrypto, Thumb, UI, UIElements, Util, Hash, h, Messages) {
+], function ($, FileCrypto, MakeBackup, Thumb, UI, UIElements, Util, Hash, h, Messages) {
     var Nacl = window.nacl;
-    var saveAs = window.saveAs;
     var module = {};
 
     var blobToArrayBuffer = function (blob, cb) {
@@ -42,16 +42,19 @@ define([
             return 'cp-fileupload-element-' + String(Math.random()).substring(2);
         };
 
+        var tableHeader = h('div.cp-fileupload-header', [
+            h('div.cp-fileupload-header-title', h('span', Messages.fileuploadHeader || 'Uploaded files')),
+            h('div.cp-fileupload-header-close', h('span.fa.fa-times')),
+        ]);
+
+
         var $table = File.$table = $('<table>', { id: 'cp-fileupload-table' });
-        var $thead = $('<tr>').appendTo($table);
-        $('<td>').text(Messages.upload_type).appendTo($thead);
-        $('<td>').text(Messages.upload_name).appendTo($thead);
-        $('<td>').text(Messages.upload_size).appendTo($thead);
-        $('<td>').text(Messages.upload_progress).appendTo($thead);
-        $('<td>').text(Messages.cancel).appendTo($thead);
 
         var createTableContainer = function ($body) {
-            File.$container = $('<div>', { id: 'cp-fileupload' }).append($table).appendTo($body);
+            File.$container = $('<div>', { id: 'cp-fileupload' }).append(tableHeader).append($table).appendTo($body);
+            $('.cp-fileupload-header-close').click(function () {
+                File.$container.fadeOut();
+            });
             return File.$container;
         };
 
@@ -100,16 +103,19 @@ define([
 
             var $row = $table.find('tr[id="'+id+'"]');
 
-            $row.find('.cp-fileupload-table-cancel').html('-');
+            $row.find('.cp-fileupload-table-cancel').addClass('success').html('').append(h('span.fa.fa-minus'));
             var $pv = $row.find('.cp-fileupload-table-progress-value');
-            var $pb = $row.find('.cp-fileupload-table-progress-container');
-            var $pc = $row.find('.cp-fileupload-table-progress');
+            var $pb = $row.find('.cp-fileupload-table-progressbar');
             var $link = $row.find('.cp-fileupload-table-link');
 
+            /**
+             * Update progress in the download panel, for uploading a file
+             * @param {number} progressValue Progression of download, between 0 and 100
+             */
             updateProgress = function (progressValue) {
-                $pv.text(Math.round(progressValue*100)/100 + '%');
+                $pv.text(Math.round(progressValue * 100) / 100 + '%');
                 $pb.css({
-                    width: (progressValue/100)*$pc.width()+'px'
+                    width: progressValue + '%'
                 });
             };
 
@@ -179,8 +185,14 @@ define([
                 clearTimeout(queue.to);
                 queue.to = window.setTimeout(function () {
                     if (config.keepTable) { return; }
-                    File.$container.fadeOut();
-                }, 3000);
+                    // don't hide panel if mouse over
+                    if (File.$container.is(":hover")) {
+                        File.$container.one("mouseleave", function () { File.$container.fadeOut(); });
+                    }
+                    else {
+                        File.$container.fadeOut();
+                    }
+                }, 60000);
                 return;
             }
             if (queue.inProgress) { return; }
@@ -199,8 +211,9 @@ define([
             window.setTimeout(function () { $table.show(); });
             var estimate = obj.dl ? obj.size : FileCrypto.computeEncryptedSize(obj.blob.byteLength, obj.metadata);
 
-            var $progressBar = $('<div>', {'class':'cp-fileupload-table-progress-container'});
-            var $progressValue = $('<span>', {'class':'cp-fileupload-table-progress-value'}).text(Messages.upload_pending);
+            var $progressContainer = $('<div>', {'class':'cp-fileupload-table-progress-container'});
+            $('<div>', {'class':'cp-fileupload-table-progressbar'}).appendTo($progressContainer);
+            $('<span>', {'class':'cp-fileupload-table-progress-value'}).text(Messages.upload_pending).appendTo($progressContainer);
 
             var $tr = $('<tr>', {id: id}).appendTo($table);
             var $lines = $table.find('tr[id]');
@@ -211,19 +224,28 @@ define([
             var $cancel = $('<span>', {'class': 'cp-fileupload-table-cancel-button fa fa-times'}).click(function () {
                 queue.queue = queue.queue.filter(function (el) { return el.id !== id; });
                 $cancel.remove();
-                $tr.find('.cp-fileupload-table-cancel').text('-');
+                $tr.find('.cp-fileupload-table-cancel').addClass('cancelled').html('').append(h('span.fa.fa-minus'));
                 $tr.find('.cp-fileupload-table-progress-value').text(Messages.upload_cancelled);
             });
 
             var $link = $('<a>', {
                 'class': 'cp-fileupload-table-link',
                 'rel': 'noopener noreferrer'
-            }).text(obj.dl ? obj.name : obj.metadata.name);
+            }).append(h('span.cp-fileupload-table-name', obj.dl ? obj.name : obj.metadata.name));
 
-            $('<td>').text(obj.dl ? Messages.download_dl : Messages.upload_up).appendTo($tr);
+            var typeIcon;
+            if (obj.dl) { typeIcon = h('span.fa.fa-arrow-down', { title: Messages.download_dl }); }
+            else { typeIcon = h('span.fa.fa-arrow-up', { title: Messages.upload_up }); }
+
+            // type (download / upload)
+            $('<td>', {'class': 'cp-fileupload-table-type'}).append(typeIcon).appendTo($tr);
+            // name
             $('<td>').append($link).appendTo($tr);
+            // size
             $('<td>').text(prettySize(estimate)).appendTo($tr);
-            $('<td>', {'class': 'cp-fileupload-table-progress'}).append($progressBar).append($progressValue).appendTo($tr);
+            // progress
+            $('<td>', {'class': 'cp-fileupload-table-progress'}).append($progressContainer).appendTo($tr);
+            // cancel
             $('<td>', {'class': 'cp-fileupload-table-cancel'}).append($cancel).appendTo($tr);
 
             queue.next();
@@ -234,37 +256,32 @@ define([
             owned: true,
             store: true
         };
-        var fileUploadModal = function (file, cb) {
-            var extIdx = file.name.lastIndexOf('.');
-            var name = extIdx !== -1 ? file.name.slice(0,extIdx) : file.name;
-            var ext = extIdx !== -1 ? file.name.slice(extIdx) : "";
-
-            var createHelper = function (href, text) {
-                var q = h('a.fa.fa-question-circle', {
-                    style: 'text-decoration: none !important;',
-                    title: text,
-                    href: origin + href,
-                    target: "_blank",
-                    'data-tippy-placement': "right"
-                });
-                return q;
-            };
-
+        var createHelper = function (href, text) {
+            return UI.createHelper(origin + href, text);
+        };
+        var createManualStore = function (isFolderUpload) {
             var privateData = common.getMetadataMgr().getPrivateData();
             var autoStore = Util.find(privateData, ['settings', 'general', 'autostore']) || 0;
             var initialState = modalState.owned || modalState.store;
             var initialDisabled = modalState.owned ? { disabled: true } : {};
             var manualStore = autoStore === 1 ? undefined :
-                UI.createCheckbox('cp-upload-store', Messages.autostore_forceSave, initialState, {
-                    input: initialDisabled
-                });
+            UI.createCheckbox('cp-upload-store', isFolderUpload ? (Messages.uploadFolder_modal_forceSave) : Messages.autostore_forceSave, initialState, {
+                input: initialDisabled
+            });
+            return manualStore;
+        };
+        var fileUploadModal = function (defaultFileName, cb) {
+            var parsedName = /^(\.?.+?)(\.[^.]+)?$/.exec(defaultFileName) || [];
+            var ext = parsedName[2] || "";
+
+            var manualStore = createManualStore();
 
             // Ask for name, password and owner
             var content = h('div', [
                 h('h4', Messages.upload_modal_title),
                 UIElements.setHTML(h('label', {for: 'cp-upload-name'}),
                                    Messages._getKey('upload_modal_filename', [ext])),
-                h('input#cp-upload-name', {type: 'text', placeholder: name}),
+                h('input#cp-upload-name', {type: 'text', placeholder: defaultFileName, value: defaultFileName}),
                 h('label', {for: 'cp-upload-password'}, Messages.creation_passwordValue),
                 UI.passwordInput({id: 'cp-upload-password'}),
                 h('span', {
@@ -277,7 +294,7 @@ define([
             ]);
 
             $(content).find('#cp-upload-owned').on('change', function () {
-                var val = $(content).find('#cp-upload-owned').is(':checked');
+                var val = Util.isChecked($(content).find('#cp-upload-owned'));
                 if (val) {
                     $(content).find('#cp-upload-store').prop('checked', true).prop('disabled', true);
                 } else {
@@ -291,14 +308,14 @@ define([
                 // Get the values
                 var newName = $(content).find('#cp-upload-name').val();
                 var password = $(content).find('#cp-upload-password').val() || undefined;
-                var owned = $(content).find('#cp-upload-owned').is(':checked');
-                var forceSave = owned || $(content).find('#cp-upload-store').is(':checked');
+                var owned = Util.isChecked($(content).find('#cp-upload-owned'));
+                var forceSave = owned || Util.isChecked($(content).find('#cp-upload-store'));
 
                 modalState.owned = owned;
                 modalState.store = forceSave;
 
                 // Add extension to the name if needed
-                if (!newName || !newName.trim()) { newName = file.name; }
+                if (!newName || !newName.trim()) { newName = defaultFileName; }
                 var newExtIdx = newName.lastIndexOf('.');
                 var newExt = newExtIdx !== -1 ? newName.slice(newExtIdx) : "";
                 if (newExt !== ext) { newName += ext; }
@@ -312,12 +329,64 @@ define([
             });
         };
 
+        File.showFolderUploadModal = function (foldername, cb) {
+            var manualStore = createManualStore(true);
+
+            // Ask for name, password and owner
+            var content = h('div', [
+                h('h4', Messages.uploadFolder_modal_title),
+                UIElements.setHTML(h('label', {for: 'cp-upload-name'}), Messages.fm_folderName),
+                h('input#cp-upload-foldername', {type: 'text', placeholder: foldername, value: foldername}),
+                h('label', {for: 'cp-upload-password'}, Messages.uploadFolder_modal_filesPassword),
+                UI.passwordInput({id: 'cp-upload-password'}),
+                h('span', {
+                    style: 'display:flex;align-items:center;justify-content:space-between'
+                }, [
+                    UI.createCheckbox('cp-upload-owned', Messages.uploadFolder_modal_owner, modalState.owned),
+                    createHelper('/faq.html#keywords-owned', Messages.creation_owned1)
+                ]),
+                manualStore
+            ]);
+
+            $(content).find('#cp-upload-owned').on('change', function () {
+                var val = Util.isChecked($(content).find('#cp-upload-owned'));
+                if (val) {
+                    $(content).find('#cp-upload-store').prop('checked', true).prop('disabled', true);
+                } else {
+                    $(content).find('#cp-upload-store').prop('disabled', false);
+                }
+            });
+
+            UI.confirm(content, function (yes) {
+                if (!yes) { return void cb(); }
+
+                // Get the values
+                var newName = $(content).find('#cp-upload-foldername').val();
+                var password = $(content).find('#cp-upload-password').val() || undefined;
+                var owned = Util.isChecked($(content).find('#cp-upload-owned'));
+                var forceSave = owned || Util.isChecked($(content).find('#cp-upload-store'));
+
+                modalState.owned = owned;
+                modalState.store = forceSave;
+
+                if (!newName || !newName.trim()) { newName = foldername; }
+
+                cb({
+                    folderName: newName,
+                    password: password,
+                    owned: owned,
+                    forceSave: forceSave
+                });
+            });
+        };
+
         var handleFileState = {
             queue: [],
             inProgress: false
         };
-        var handleFile = File.handleFile = function (file, e) {
-            if (handleFileState.inProgress) { return void handleFileState.queue.push([file, e]); }
+        /* if defaultOptions is passed, the function does not show the upload options modal, and directly save the file with the specified options */
+        var handleFile = File.handleFile = function (file, e, defaultOptions) {
+            if (handleFileState.inProgress) { return void handleFileState.queue.push([file, e, defaultOptions]); }
             handleFileState.inProgress = true;
 
             var thumb;
@@ -345,7 +414,7 @@ define([
                 handleFileState.inProgress = false;
                 if (handleFileState.queue.length) {
                     var next = handleFileState.queue.shift();
-                    handleFile(next[0], next[1]);
+                    handleFile(next[0], next[1], next[2]);
                 }
             };
             var getName = function () {
@@ -354,20 +423,31 @@ define([
                 if (config.noStore) { return void finish(); }
 
                 // Otherwise, ask for password, name and ownership
-                fileUploadModal(file, function (obj) {
-                    if (!obj) { return void finish(true); }
-                    name = obj.name;
-                    password = obj.password;
-                    owned = obj.owned;
-                    forceSave = obj.forceSave;
-                    finish();
-                });
+                // if default options were passed, upload file immediately
+                if (defaultOptions && typeof defaultOptions === "object") {
+                    name = defaultOptions.name || file.name;
+                    password = defaultOptions.password || undefined;
+                    owned = !!defaultOptions.owned;
+                    forceSave = !!defaultOptions.forceSave;
+                    return void finish();
+                }
+                // if no default options were passed, ask the user
+                else {
+                    fileUploadModal(file.name, function (obj) {
+                        if (!obj) { return void finish(true); }
+                        name = obj.name;
+                        password = obj.password;
+                        owned = obj.owned;
+                        forceSave = obj.forceSave;
+                        finish();
+                    });
+                }
             };
 
             blobToArrayBuffer(file, function (e, buffer) {
                 if (e) { console.error(e); }
                 file_arraybuffer = buffer;
-                if (!Thumb.isSupportedType(file.type)) { return getName(); }
+                if (!Thumb.isSupportedType(file)) { return getName(); }
                 // make a resized thumbnail from the image..
                 Thumb.fromBlob(file, function (e, thumb64) {
                     if (e) { console.error(e); }
@@ -446,124 +526,135 @@ define([
 
         createUploader(config.dropArea, config.hoverArea, config.body);
 
+        // TODO implement the ability to cancel downloads :D
+        var updateProgressbar = function (file, data, downloadFunction, cb) {
+            if (queue.inProgress) { return; }
+            queue.inProgress = true;
+            var id = file.id;
+
+            var $row = $table.find('tr[id="'+id+'"]');
+            var $pv = $row.find('.cp-fileupload-table-progress-value');
+            var $pb = $row.find('.cp-fileupload-table-progressbar');
+            var $link = $row.find('.cp-fileupload-table-link');
+
+            var done = function () {
+                $row.find('.cp-fileupload-table-cancel').addClass('success').html('').append(h('span.fa.fa-check'));
+                queue.inProgress = false;
+                queue.next();
+            };
+
+            /*
+            var cancelled = function () {
+                $row.find('.cp-fileupload-table-cancel').addClass('cancelled').html('').append(h('span.fa.fa-minus'));
+                queue.inProgress = false;
+                queue.next();
+            };*/
+
+            /**
+             * Update progress in the download panel, for downloading a file
+             * @param {number} progressValue Progression of download, between 0 and 1
+             */
+            var updateDLProgress = function (progressValue) {
+                var text = Math.round(progressValue * 100) + '%';
+                text += ' ('+ Messages.download_step1 + '...)';
+                $pv.text(text);
+                $pb.css({
+                    width: (progressValue * 100) + '%'
+                });
+            };
+
+            /**
+             * Update progress in the download panel, for decrypting a file (after downloading it)
+             * @param {number} progressValue Progression of download, between 0 and 1
+             */
+            var updateDecryptProgress = function (progressValue) {
+                var text = Math.round(progressValue * 100) + '%';
+                text += progressValue === 1 ? '' : ' (' + Messages.download_step2 + '...)';
+                $pv.text(text);
+                $pb.css({
+                    width: (progressValue * 100) + '%'
+                });
+            };
+
+            /**
+             * As updateDLProgress but for folders
+             * @param {number} progressValue Progression of download, between 0 and 1
+             */
+            var updateProgress = function (progressValue) {
+                var text = Math.round(progressValue*100) + '%';
+                $pv.text(text);
+                $pb.css({
+                    width: (progressValue * 100) + '%'
+                });
+            };
+
+            var privateData = common.getMetadataMgr().getPrivateData();
+            var ctx = {
+                fileHost: privateData.fileHost,
+                get: common.getPad,
+                sframeChan: sframeChan,
+            };
+            downloadFunction(ctx, data, function (err, obj) {
+                $link.prepend($('<span>', {'class': 'fa fa-external-link'}))
+                    .attr('href', '#')
+                    .click(function (e) {
+                    e.preventDefault();
+                    obj.download();
+                });
+                done();
+                if (obj) { obj.download(); }
+                cb(err, obj);
+            }, {
+                progress: updateDLProgress,
+                progress2: updateDecryptProgress,
+                folderProgress: updateProgress,
+            });
+
+/*
+            var $cancel = $('<span>', {'class': 'cp-fileupload-table-cancel-button fa fa-times'}).click(function () {
+                dl.cancel();
+                $cancel.remove();
+                $row.find('.cp-fileupload-table-progress-value').text(Messages.upload_cancelled);
+                cancelled();
+            });
+*/
+
+            $row.find('.cp-fileupload-table-cancel')
+                .html('')
+                .append(h('span.fa.fa-minus'));
+                //.append($cancel);
+        };
+
         File.downloadFile = function (fData, cb) {
-            var parsed = Hash.parsePadUrl(fData.href || fData.roHref);
-            var hash = parsed.hash;
             var name = fData.filename || fData.title;
-            var secret = Hash.getSecrets('file', hash, fData.password);
-            var src = Hash.getBlobPathFromHex(secret.channel);
-            var key = secret.keys && secret.keys.cryptKey;
-            common.getFileSize(secret.channel, function (e, data) {
-                var todo = function (file) {
-                    if (queue.inProgress) { return; }
-                    queue.inProgress = true;
-                    var id = file.id;
-
-                    var $row = $table.find('tr[id="'+id+'"]');
-                    var $pv = $row.find('.cp-fileupload-table-progress-value');
-                    var $pb = $row.find('.cp-fileupload-table-progress-container');
-                    var $pc = $row.find('.cp-fileupload-table-progress');
-                    var $link = $row.find('.cp-fileupload-table-link');
-
-                    var done = function () {
-                        $row.find('.cp-fileupload-table-cancel').text('-');
-                        queue.inProgress = false;
-                        queue.next();
-                    };
-
-                    var updateDLProgress = function (progressValue) {
-                        var text = Math.round(progressValue*100) + '%';
-                        text += ' ('+ Messages.download_step1 +'...)';
-                        $pv.text(text);
-                        $pb.css({
-                            width: progressValue * $pc.width()+'px'
-                        });
-                    };
-                    var updateProgress = function (progressValue) {
-                        var text = Math.round(progressValue*100) + '%';
-                        text += progressValue === 1 ? '' : ' ('+ Messages.download_step2 +'...)';
-                        $pv.text(text);
-                        $pb.css({
-                            width: progressValue * $pc.width()+'px'
-                        });
-                    };
-
-                    var dl = module.downloadFile(fData, function (err, obj) {
-                        $link.prepend($('<span>', {'class': 'fa fa-external-link'}))
-                            .attr('href', '#')
-                            .click(function (e) {
-                            e.preventDefault();
-                            obj.download();
-                        });
-                        done();
-                        if (obj) { obj.download(); }
-                        cb(err, obj);
-                    }, {
-                        src: src,
-                        key: key,
-                        name: name,
-                        progress: updateDLProgress,
-                        progress2: updateProgress,
-                    });
-
-                    var $cancel = $('<span>', {'class': 'cp-fileupload-table-cancel-button fa fa-times'}).click(function () {
-                        dl.cancel();
-                        $cancel.remove();
-                        $row.find('.cp-fileupload-table-progress-value').text(Messages.upload_cancelled);
-                        done();
-                    });
-                    $row.find('.cp-fileupload-table-cancel').html('').append($cancel);
-                };
+            common.getFileSize(fData.channel, function (e, data) {
                 queue.push({
-                    dl: todo,
+                    dl: function (file) { updateProgressbar(file, fData, MakeBackup.downloadFile, cb); },
                     size: data,
                     name: name
                 });
             });
         };
 
+        File.downloadPad = function (pData, cb) {
+            queue.push({
+                dl: function (file) { updateProgressbar(file, pData, MakeBackup.downloadPad, cb); },
+                size: 0,
+                name: pData.title,
+            });
+        };
+
+        File.downloadFolder = function (data, cb) {
+            queue.push({
+                dl: function (file) { updateProgressbar(file, data, MakeBackup.downloadFolder, cb); },
+                size: 0,
+                name: data.folderName,
+            });
+        };
+
         return File;
     };
 
-    module.downloadFile = function (fData, cb, obj) {
-        var cancelled = false;
-        var cancel = function () {
-            cancelled = true;
-        };
-        var src, key, name;
-        if (obj && obj.src && obj.key && obj.name) {
-            src = obj.src;
-            key = obj.key;
-            name = obj.name;
-        } else {
-            var parsed = Hash.parsePadUrl(fData.href || fData.roHref);
-            var hash = parsed.hash;
-            name = fData.filename || fData.title;
-            var secret = Hash.getSecrets('file', hash, fData.password);
-            src = Hash.getBlobPathFromHex(secret.channel);
-            key = secret.keys && secret.keys.cryptKey;
-        }
-        Util.fetch(src, function (err, u8) {
-            if (cancelled) { return; }
-            if (err) { return void cb('E404'); }
-            FileCrypto.decrypt(u8, key, function (err, res) {
-                if (cancelled) { return; }
-                if (err) { return void cb(err); }
-                if (!res.content) { return void cb('EEMPTY'); }
-                var dl = function () {
-                    saveAs(res.content, name || res.metadata.name);
-                };
-                cb(null, {
-                    metadata: res.metadata,
-                    content: res.content,
-                    download: dl
-                });
-            }, obj && obj.progress2);
-        }, obj && obj.progress);
-        return {
-            cancel: cancel
-        };
-    };
 
     return module;
 });

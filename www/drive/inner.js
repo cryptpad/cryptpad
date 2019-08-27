@@ -17,8 +17,6 @@ define([
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/customize/messages.js',
 
-    '/common/jscolor.js',
-
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/drive/app-drive.less',
@@ -43,8 +41,12 @@ define([
 {
     var APP = window.APP = {
         editable: false,
-        mobile: function () { return $('body').width() <= 600; }, // Menu and content area are not inline-block anymore for mobiles
+        mobile: function () {
+            if (window.matchMedia) { return !window.matchMedia('(any-pointer:fine)').matches; }
+            else { return $('body').width() <= 600; }
+        },
         isMac: navigator.platform === "MacIntel",
+        allowFolderUpload: File.prototype.hasOwnProperty("webkitRelativePath"),
     };
 
     var stringify = function (obj) {
@@ -81,16 +83,19 @@ define([
     var faCollapseAll = 'fa-minus-square-o';
     var faShared = 'fa-shhare-alt';
     var faReadOnly = 'fa-eye';
+    var faOpenInCode = 'cptools-code';
     var faRename = 'fa-pencil';
     var faColor = 'cptools-palette';
     var faTrash = 'fa-trash';
     var faDelete = 'fa-eraser';
     var faProperties = 'fa-database';
     var faTags = 'fa-hashtag';
+    var faUploadFiles = 'cptools-file-upload';
+    var faUploadFolder = 'cptools-folder-upload';
     var faEmpty = 'fa-trash-o';
     var faRestore = 'fa-repeat';
     var faShowParent = 'fa-location-arrow';
-    var faDownload = 'cptools-file';
+    var faDownload = 'fa-download';
     var $folderIcon = $('<span>', {
         "class": faFolder + " cptools cp-app-drive-icon-folder cp-app-drive-content-icon"
     });
@@ -299,6 +304,33 @@ define([
         });
     };
 
+
+    APP.selectedFiles = [];
+
+    var isElementSelected = function ($element) {
+        var elementId = $element.data("path").slice(-1)[0];
+        return APP.selectedFiles.indexOf(elementId) !== -1;
+    };
+    var selectElement = function ($element) {
+        var elementId = $element.data("path").slice(-1)[0];
+        if (APP.selectedFiles.indexOf(elementId) === -1) {
+            APP.selectedFiles.push(elementId);
+        }
+        $element.addClass("cp-app-drive-element-selected");
+    };
+    var unselectElement = function ($element) {
+        var elementId = $element.data("path").slice(-1)[0];
+        var index = APP.selectedFiles.indexOf(elementId);
+        if (index !== -1) {
+            APP.selectedFiles.splice(index, 1);
+        }
+        $element.removeClass("cp-app-drive-element-selected");
+    };
+    var findSelectedElements = function () {
+        return $(".cp-app-drive-element-selected");
+    };
+
+
     var createContextMenu = function () {
         var menu = h('div.cp-contextmenu.dropdown.cp-unselectable', [
             h('ul.dropdown-menu', {
@@ -315,6 +347,10 @@ define([
                     'tabindex': '-1',
                     'data-icon': faReadOnly,
                 }, Messages.fc_open_ro)),
+                h('li', h('a.cp-app-drive-context-openincode.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': faOpenInCode,
+                }, Messages.fc_openInCode)),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-expandall.dropdown-item', {
                     'tabindex': '-1',
@@ -325,22 +361,20 @@ define([
                     'data-icon': faCollapseAll,
                 }, Messages.fc_collapseAll)),
                 $separator.clone()[0],
-                h('li', h('a.cp-app-drive-context-color.dropdown-item.cp-app-drive-context-editable', {
-                    'tabindex': '-1',
-                    'data-icon': faColor,
-                }, Messages.fc_color)),
-                h('li', h('a.cp-app-drive-context-download.dropdown-item', {
-                    'tabindex': '-1',
-                    'data-icon': faDownload,
-                }, Messages.download_mt_button)),
-                h('li', h('a.cp-app-drive-context-share.dropdown-item', {
-                    'tabindex': '-1',
-                    'data-icon': 'fa-shhare-alt',
-                }, Messages.shareButton)),
                 h('li', h('a.cp-app-drive-context-openparent.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faShowParent,
                 }, Messages.fm_openParent)),
+                $separator.clone()[0],
+                h('li', h('a.cp-app-drive-context-share.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': 'fa-shhare-alt',
+                }, Messages.shareButton)),
+                h('li', h('a.cp-app-drive-context-download.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': faDownload,
+                }, Messages.download_mt_button)),
+                $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-newfolder.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faFolder,
@@ -349,10 +383,15 @@ define([
                     'tabindex': '-1',
                     'data-icon': faSharedFolder,
                 }, Messages.fc_newsharedfolder)),
-                h('li', h('a.cp-app-drive-context-hashtag.dropdown-item.cp-app-drive-context-editable', {
+                $separator.clone()[0],
+                h('li', h('a.cp-app-drive-context-uploadfiles.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
-                    'data-icon': faTags,
-                }, Messages.fc_hashtag)),
+                    'data-icon': faUploadFiles,
+                }, Messages.uploadButton)),
+                h('li', h('a.cp-app-drive-context-uploadfolder.dropdown-item.cp-app-drive-context-editable', {
+                    'tabindex': '-1',
+                    'data-icon': faUploadFolder,
+                }, Messages.uploadFolderButton)),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
@@ -369,16 +408,34 @@ define([
                     'data-icon': AppConfig.applicationsIcon.slide,
                     'data-type': 'slide'
                 }, Messages.button_newslide)),
-                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
-                    'tabindex': '-1',
-                    'data-icon': AppConfig.applicationsIcon.poll,
-                    'data-type': 'poll'
-                }, Messages.button_newpoll)),
-                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
-                    'tabindex': '-1',
-                    'data-icon': AppConfig.applicationsIcon.whiteboard,
-                    'data-type': 'whiteboard'
-                }, Messages.button_newwhiteboard)),
+                h('li.dropdown-submenu', [
+                    h('a.cp-app-drive-context-newdocmenu.dropdown-item', {
+                        'tabindex': '-1',
+                        'data-icon': "fa-plus",
+                    }, Messages.fm_morePads),
+                    h("ul.dropdown-menu", [
+                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                            'tabindex': '-1',
+                            'data-icon': AppConfig.applicationsIcon.sheet,
+                            'data-type': 'sheet'
+                        }, Messages.button_newsheet)),
+                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                            'tabindex': '-1',
+                            'data-icon': AppConfig.applicationsIcon.whiteboard,
+                            'data-type': 'whiteboard'
+                        }, Messages.button_newwhiteboard)),
+                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                            'tabindex': '-1',
+                            'data-icon': AppConfig.applicationsIcon.kanban,
+                            'data-type': 'kanban'
+                        }, Messages.button_newkanban)),
+                        h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
+                            'tabindex': '-1',
+                            'data-icon': AppConfig.applicationsIcon.poll,
+                            'data-type': 'poll'
+                        }, Messages.button_newpoll)),
+                    ]),
+                ]),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-empty.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
@@ -393,6 +450,15 @@ define([
                     'tabindex': '-1',
                     'data-icon': faRename,
                 }, Messages.fc_rename)),
+                h('li', h('a.cp-app-drive-context-color.dropdown-item.cp-app-drive-context-editable', {
+                    'tabindex': '-1',
+                    'data-icon': faColor,
+                }, Messages.fc_color)),
+                h('li', h('a.cp-app-drive-context-hashtag.dropdown-item.cp-app-drive-context-editable', {
+                    'tabindex': '-1',
+                    'data-icon': faTags,
+                }, Messages.fc_hashtag)),
+                $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-delete.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faTrash,
@@ -409,12 +475,14 @@ define([
                     'tabindex': '-1',
                     'data-icon': faDelete,
                 }, Messages.fc_remove_sharedfolder)),
+                $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-properties.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faProperties,
                 }, Messages.fc_prop)),
             ])
         ]);
+        // add icons to the contextmenu options
         $(menu).find("li a.dropdown-item").each(function (i, el) {
             var $icon = $("<span>");
             if ($(el).attr('data-icon')) {
@@ -425,21 +493,52 @@ define([
             }
             $(el).prepend($icon);
         });
+        // add events handlers for the contextmenu submenus
         $(menu).find(".dropdown-submenu").each(function (i, el) {
             var $el = $(el);
             var $a = $el.children().filter("a");
             var $sub = $el.find(".dropdown-menu").first();
+            var left, bottomOffset;
+            var timeoutId;
+            var showSubmenu = function () {
+                clearTimeout(timeoutId);
+                left = $el.offset().left + $el.outerWidth() + $sub.outerWidth() > $(window).width();
+                bottomOffset = $el.offset().top + $el.outerHeight() + $sub.outerHeight() - $(window).height();
+                $sub.css("left", left ? "0%": "100%");
+                $sub.css("transform", "translate("
+                         + (left ? "-100%" : "0")
+                         + "," + (bottomOffset > 0 ? -(bottomOffset - $el.outerHeight()) : 0) + "px)");
+                $el.siblings().find(".dropdown-menu").hide();
+                $sub.show();
+            };
+            var hideSubmenu = function () {
+                $sub.hide();
+                $sub.removeClass("left");
+            };
+            var mouseOutSubmenu = function () {
+                // don't hide immediately the submenu
+                timeoutId = setTimeout(hideSubmenu, 100);
+            };
             // Add submenu expand icon
             $a.append(h("span.dropdown-toggle"));
             // Show / hide submenu
             $el.hover(function () {
-                setTimeout(function () { // wait for dom to update
-                    $sub.toggleClass("left", $el.offset().left + $el.outerWidth() + $sub.outerWidth() > $(window).width());
-                    $sub.show();
-                });
+                showSubmenu();
             }, function () {
-                $sub.hide();
-                $sub.removeClass("left");
+                mouseOutSubmenu();
+            });
+            // handle click event
+            $el.click(function (e) {
+                var targetItem = $(e.target).closest(".dropdown-item")[0]; // don't close contextmenu if open submenu
+                var elTarget = $el.children(".dropdown-item")[0];
+                if (targetItem === elTarget) { e.stopPropagation(); }
+                if ($el.children().filter(".dropdown-menu:visible").length !== 0) {
+                    $el.find(".dropdown-menu").hide();
+                    hideSubmenu();
+                }
+                else {
+                    showSubmenu();
+                }
             });
         });
         return $(menu);
@@ -565,7 +664,8 @@ define([
         var sel = {};
 
         var removeSelected =  function (keepObj) {
-            $('.cp-app-drive-element-selected').removeClass("cp-app-drive-element-selected");
+            APP.selectedFiles = [];
+            findSelectedElements().removeClass("cp-app-drive-element-selected");
             var $container = $driveToolbar.find('#cp-app-drive-toolbar-contextbuttons');
             if (!$container.length) { return; }
             $container.html('');
@@ -675,7 +775,9 @@ define([
             delete sel.move;
             $content.find('.cp-app-drive-element-selected-tmp')
                 .removeClass('cp-app-drive-element-selected-tmp')
-                .addClass('cp-app-drive-element-selected');
+                .each(function (idx, element) {
+                    selectElement($(element));
+            });
             e.stopPropagation();
         });
 
@@ -710,7 +812,9 @@ define([
             // Ctrl+A select all
             if (e.which === 65 && (e.ctrlKey || (e.metaKey && APP.isMac))) {
                 $content.find('.cp-app-drive-element:not(.cp-app-drive-element-selected)')
-                    .addClass('cp-app-drive-element-selected');
+                    .each(function (idx, element) {
+                        selectElement($(element));
+                });
                 return;
             }
 
@@ -723,7 +827,7 @@ define([
                 APP.onElementClick(ev, $(el));
             };
 
-            var $selection = $content.find('.cp-app-drive-element.cp-app-drive-element-selected');
+            var $selection = findSelectedElements();
             if ($selection.length === 0) { return void click($elements.first()[0]); }
 
             var lastIndex = typeof sel.endSelected === "number" ? sel.endSelected :
@@ -842,12 +946,12 @@ define([
                     return;
                 }
                 removeInput();
-                removeSelected();
                 var $name = $element.find('.cp-app-drive-element-name');
                 if (!$name.length) {
                     $name = $element.find('> .cp-app-drive-element');
                 }
                 $name.hide();
+                var isFolder = $element.is(".cp-app-drive-element-folder:not(.cp-app-drive-element-sharedf)");
                 var el = manager.find(path);
                 var name = manager.isFile(el) ? manager.getTitle(el)  : path[path.length - 1];
                 if (manager.isSharedFolder(el)) {
@@ -869,14 +973,21 @@ define([
                         var newName = $input.val();
                         if (JSON.stringify(path) === JSON.stringify(currentPath)) {
                             manager.rename(path, $input.val(), function () {
-                                renameFoldersOpened(path, newName);
-                                path[path.length - 1] = newName;
+                                if (isFolder) {
+                                    renameFoldersOpened(path, newName);
+                                    path[path.length - 1] = newName;
+                                }
                                 APP.displayDirectory(path);
                             });
                         }
                         else {
                             manager.rename(path, $input.val(), function () {
-                                renameFoldersOpened(path, newName);
+                                if (isFolder) {
+                                    renameFoldersOpened(path, newName);
+                                    unselectElement($element);
+                                    $element.data("path", $element.data("path").slice(0, -1).concat(newName));
+                                    selectElement($element);
+                                }
                                 refresh();
                             });
                         }
@@ -897,7 +1008,6 @@ define([
 
                 // We don't want to open the file/folder when clicking on the input
                 $input.on('click dblclick', function (e) {
-                    removeSelected();
                     e.stopPropagation();
                 });
                 // Remove the browser ability to drag text from the input to avoid
@@ -978,7 +1088,11 @@ define([
                         // Hide the new shared folder menu if we're already in a shared folder
                         return manager.isInSharedFolder(currentPath) || APP.disableSF;
                     }
-                    return AppConfig.availablePadTypes.indexOf($el.attr('data-type')) === -1;
+                    if (className === 'uploadfiles') { return; }
+                    if (className === 'uploadfolder') { return !APP.allowFolderUpload; }
+                    if (className === 'newdoc') {
+                        return AppConfig.availablePadTypes.indexOf($el.attr('data-type')) === -1;
+                    }
                 };
             } else {
                 // In case of multiple selection, we must hide the option if at least one element
@@ -993,9 +1107,10 @@ define([
                         hide.push('collapseall');
                     }
                     if (path.length === 1) {
-                        // Can't rename or delete root elements
+                        // Can't rename, share, delete, or change the color of root elements
                         hide.push('delete');
                         hide.push('rename');
+                        hide.push('share');
                         hide.push('color');
                     }
                     if (!$element.is('.cp-app-drive-element-owned')) {
@@ -1009,7 +1124,8 @@ define([
                         hide.push('openparent');
                     }
                     if (!$element.is('.cp-border-color-file')) {
-                        hide.push('download');
+                        //hide.push('download');
+                        hide.push('openincode');
                     }
                     if ($element.is('.cp-app-drive-element-file')) {
                         // No folder in files
@@ -1020,6 +1136,11 @@ define([
                         } else if ($element.is('.cp-app-drive-element-noreadonly')) {
                             hide.push('openro'); // Remove open 'view' mode
                         }
+                        // if it's not a plain text file
+                        var metadata = manager.getFileData(manager.find(path));
+                        if (!metadata || !Util.isPlainTextFile(metadata.fileType, metadata.title)) {
+                            hide.push('openincode');
+                        }
                     } else if ($element.is('.cp-app-drive-element-sharedf')) {
                         if (containsFolder) {
                             // More than 1 folder selected: cannot create a new subfolder
@@ -1029,6 +1150,7 @@ define([
                         }
                         containsFolder = true;
                         hide.push('openro');
+                        hide.push('openincode');
                         hide.push('hashtag');
                         hide.push('delete');
                         //hide.push('deleteowned');
@@ -1041,8 +1163,8 @@ define([
                         }
                         containsFolder = true;
                         hide.push('openro');
+                        hide.push('openincode');
                         hide.push('properties');
-                        hide.push('share');
                         hide.push('hashtag');
                     }
                     // If we're in the trash, hide restore and properties for non-root elements
@@ -1074,6 +1196,8 @@ define([
                     hide.push('openparent');
                     hide.push('hashtag');
                     hide.push('download');
+                    hide.push('share');
+                    hide.push('openincode'); // can't because of race condition
                 }
                 if (containsFolder && paths.length > 1) {
                     // Cannot open multiple folders
@@ -1087,10 +1211,10 @@ define([
 
             switch(type) {
                 case 'content':
-                    show = ['newfolder', 'newsharedfolder', 'newdoc'];
+                    show = ['newfolder', 'newsharedfolder', 'uploadfiles', 'uploadfolder', 'newdoc'];
                     break;
                 case 'tree':
-                    show = ['open', 'openro', 'expandall', 'collapseall', 'color', 'download', 'share', 'rename', 'delete', 'deleteowned', 'removesf', 'properties', 'hashtag'];
+                    show = ['open', 'openro', 'openincode', 'expandall', 'collapseall', 'color', 'download', 'share', 'rename', 'delete', 'deleteowned', 'removesf', 'properties', 'hashtag'];
                     break;
                 case 'default':
                     show = ['open', 'openro', 'share', 'openparent', 'delete', 'deleteowned', 'properties', 'hashtag'];
@@ -1117,8 +1241,9 @@ define([
 
         var getSelectedPaths = function ($element) {
             var paths = [];
-            if ($('.cp-app-drive-element-selected').length > 1) {
-                var $selected = $('.cp-app-drive-element-selected');
+            if (!$element || $element.length === 0) { return paths; }
+            if (findSelectedElements().length > 1) {
+                var $selected = findSelectedElements();
                 $selected.each(function (idx, elmt) {
                     var ePath = $(elmt).data('path');
                     if (ePath) {
@@ -1147,7 +1272,7 @@ define([
             } else {
                 $driveToolbar.find('cp-app-drive-toolbar-emptytrash').hide();
             }
-            var $li = $content.find('.cp-app-drive-element-selected');
+            var $li = findSelectedElements();
             if ($li.length === 0) {
                 $li = findDataHolder($tree.find('.cp-app-drive-element-active'));
             }
@@ -1214,6 +1339,7 @@ define([
             if (pos+eh <= h && pos >= 0) { return; }
             $content.scrollTop(v);
         };
+
         // Add the "selected" class to the "li" corresponding to the clicked element
         var onElementClick = APP.onElementClick = function (e, $element) {
             // If "Ctrl" is pressed, do not remove the current selection
@@ -1250,34 +1376,33 @@ define([
                 var $el;
                 removeSelected(true);
                 sel.oldSelection.forEach(function (el) {
-                    if (!$(el).hasClass("cp-app-drive-element-selected")) {
-                        $(el).addClass("cp-app-drive-element-selected");
+                    if (!isElementSelected($(el))) {
+                        selectElement($(el));
                     }
                 });
                 for (var i = Math.min(sel.startSelected, sel.endSelected);
                      i <= Math.max(sel.startSelected, sel.endSelected);
                      i++) {
                     $el = $($elements.get(i));
-                    if (!$el.hasClass("cp-app-drive-element-selected")) {
-                        $el.addClass("cp-app-drive-element-selected");
+                    if (!isElementSelected($el)) {
+                        selectElement($el);
                     }
                 }
             } else {
-                if (!$element.hasClass("cp-app-drive-element-selected")) {
-                    $element.addClass("cp-app-drive-element-selected");
+                if (!isElementSelected($element)) {
+                    selectElement($element);
                 } else {
-                    $element.removeClass("cp-app-drive-element-selected");
+                    unselectElement($element);
                 }
             }
             updateContextButton();
         };
 
-        var displayMenu = function (e) {
-            var $menu = $contextMenu;
+        // show / hide dropdown separators
+        var hideSeparators = function ($menu) {
             var showSep = false;
             var $lastVisibleSep = null;
-            // show / hide drop-down divider
-            $menu.find(".dropdown-menu").children().each(function (i, el) {
+            $menu.children().each(function (i, el) {
                 var $el = $(el);
                 if ($el.is(".dropdown-divider")) {
                     $el.css("display", showSep ? "list-item" : "none");
@@ -1289,18 +1414,36 @@ define([
                 }
             });
             if (!showSep && $lastVisibleSep) { $lastVisibleSep.css("display", "none"); } // remove last divider if no options after
+        };
+
+        // prepare and display contextmenu
+        var displayMenu = function (e) {
+            var $menu = $contextMenu;
             // show / hide submenus
             $menu.find(".dropdown-submenu").each(function (i, el) {
                 var $el = $(el);
+                $el.children(".dropdown-menu").css("display", "none");
                 $el.find("li").each(function (i, li) {
                     if ($(li).css("display") !== "none") {
-                        $(el).css("display", "block");
+                        $el.css("display", "block");
                         return;
                     }
                 });
             });
+            // show / hide separators
+            $menu.find(".dropdown-menu").each(function (i, menu) {
+                hideSeparators($(menu));
+            });
+            // show contextmenu at cursor position
             $menu.css({ display: "block" });
-            if (APP.mobile()) { return; }
+            if (APP.mobile()) {
+                $menu.css({
+                    top: ($("#cp-app-drive-toolbar-context-mobile").offset().top + 32) + 'px',
+                    right: '0px',
+                    left: ''
+                });
+                return;
+            }
             var h = $menu.outerHeight();
             var w = $menu.outerWidth();
             var wH = window.innerHeight;
@@ -1353,6 +1496,17 @@ define([
                 } else {
                     var $element = findDataHolder($(e.target));
 
+                    // if clicked from tree
+                    var fromTree = $element.closest("#cp-app-drive-tree").length;
+                    if (fromTree) {
+                        removeSelected();
+                    }
+
+                    // if clicked on non selected element
+                    if (!isElementSelected($element)) {
+                        removeSelected();
+                    }
+
                     if (type === 'trash' && !$element.data('path')) { return; }
 
                     if (!$element.length) {
@@ -1361,8 +1515,8 @@ define([
                         return false;
                     }
 
-                    if (!$element.hasClass('cp-app-drive-element-selected')) {
-                        onElementClick(undefined, $element);
+                    if (!isElementSelected($element)) {
+                        selectElement($element);
                     }
 
                     paths = getSelectedPaths($element);
@@ -1432,6 +1586,7 @@ define([
                 if (!res) { return; }
                 manager.delete(pathsList, function () {
                     pathsList.forEach(removeFoldersOpened);
+                    removeSelected();
                     refresh();
                 });
             }, null, true);
@@ -1442,7 +1597,7 @@ define([
             var paths = [];
             var $element = findDataHolder($(ev.target));
             if ($element.hasClass('cp-app-drive-element-selected')) {
-                var $selected = $('.cp-app-drive-element-selected');
+                var $selected = findSelectedElements();
                 $selected.each(function (idx, elmt) {
                     var ePath = $(elmt).data('path');
                     if (ePath) {
@@ -1459,7 +1614,7 @@ define([
                 });
             } else {
                 removeSelected();
-                $element.addClass('cp-app-drive-element-selected');
+                selectElement($element);
                 var val = manager.find(path);
                 if (!val) { return; } // The element is not in the object
                 paths = [{
@@ -1478,7 +1633,13 @@ define([
 
         var findDropPath = function (target) {
             var $target = $(target);
-            var $el = findDataHolder($target);
+            var $el;
+            if ($target.is(".cp-app-drive-path-element")) {
+                $el = $target;
+            }
+            else {
+                $el = findDataHolder($target);
+            }
             var newPath = $el.data('path');
             var dropEl = newPath && manager.find(newPath);
             if (newPath && manager.isSharedFolder(dropEl)) {
@@ -1606,7 +1767,8 @@ define([
                 $owner.attr('title', Messages.fm_padIsOwnedOther);
             }
         };
-        var addFileData = function (element, $span) {
+        var thumbsUrls = {};
+        var addFileData = function (element, $element) {
             if (!manager.isFile(element)) { return; }
 
             var data = manager.getFileData(element);
@@ -1615,7 +1777,7 @@ define([
 
             var hrefData = Hash.parsePadUrl(href);
             if (hrefData.type) {
-                $span.addClass('cp-border-color-'+hrefData.type);
+                $element.addClass('cp-border-color-'+hrefData.type);
             }
 
             var $state = $('<span>', {'class': 'cp-app-drive-element-state'});
@@ -1635,25 +1797,38 @@ define([
                 var $expire = $expirableIcon.clone().appendTo($state);
                 $expire.attr('title', Messages._getKey('fm_expirablePad', [new Date(data.expire).toLocaleString()]));
             }
-            _addOwnership($span, $state, data);
+            _addOwnership($element, $state, data);
 
             var name = manager.getTitle(element);
 
             // The element with the class '.name' is underlined when the 'li' is hovered
             var $name = $('<span>', {'class': 'cp-app-drive-element-name'}).text(name);
-            $span.append($name);
-            $span.append($state);
-            $span.attr('title', name);
+            $element.append($name);
+            $element.append($state);
+            $element.attr('title', name);
+
+            // display the thumbnail
+            // if the thumbnail has already been displayed once, do not reload it, keep the same url
+            if (thumbsUrls[element]) {
+                var img = new Image();
+                img.src = thumbsUrls[element];
+                $element.find('.cp-icon').addClass('cp-app-drive-element-list');
+                $element.prepend(img);
+                $(img).addClass('cp-app-drive-element-grid cp-app-drive-element-thumbnail');
+                $(img).attr("draggable", false);
+            }
+            else {
+                common.displayThumbnail(href || data.roHref, data.channel, data.password, $element, function ($thumb) {
+                    // Called only if the thumbnail exists
+                    // Remove the .hide() added by displayThumnail() because it hides the icon in list mode too
+                    $element.find('.cp-icon').removeAttr('style').addClass('cp-app-drive-element-list');
+                    $thumb.addClass('cp-app-drive-element-grid cp-app-drive-element-thumbnail');
+                    $thumb.attr("draggable", false);
+                    thumbsUrls[element] = $thumb[0].src;
+                });
+            }
 
             var type = Messages.type[hrefData.type] || hrefData.type;
-            common.displayThumbnail(href || data.roHref, data.channel, data.password, $span, function ($thumb) {
-                // Called only if the thumbnail exists
-                // Remove the .hide() added by displayThumnail() because it hides the icon in
-                // list mode too
-                $span.find('.cp-icon').removeAttr('style').addClass('cp-app-drive-element-list');
-                $thumb.addClass('cp-app-drive-element-grid')
-                    .addClass('cp-app-drive-element-thumbnail');
-            });
             var $type = $('<span>', {
                 'class': 'cp-app-drive-element-type cp-app-drive-element-list'
             }).text(type);
@@ -1663,7 +1838,7 @@ define([
             var $cdate = $('<span>', {
                 'class': 'cp-app-drive-element-ctime cp-app-drive-element-list'
             }).text(getDate(data.ctime));
-            $span.append($type).append($adate).append($cdate);
+            $element.append($type).append($adate).append($cdate);
         };
 
         var addFolderData = function (element, key, $span) {
@@ -1739,12 +1914,9 @@ define([
                 draggable: true,
                 'class': 'cp-app-drive-element-row'
             });
-            if (!isFolder && Array.isArray(APP.selectedFiles)) {
-                var idx = APP.selectedFiles.indexOf(element);
-                if (idx !== -1) {
-                    $element.addClass('cp-app-drive-element-selected');
-                    APP.selectedFiles.splice(idx, 1);
-                }
+            $element.data('path', newPath);
+            if (isElementSelected($element)) {
+                selectElement($element);
             }
             $element.prepend($icon).dblclick(function () {
                 if (isFolder) {
@@ -1760,11 +1932,10 @@ define([
                 addFileData(element, $element);
             }
             $element.addClass(liClass);
-            $element.data('path', newPath);
             addDragAndDropHandlers($element, newPath, isFolder, !isTrash);
             $element.click(function(e) {
                 e.stopPropagation();
-                onElementClick(e, $element, newPath);
+                onElementClick(e, $element);
             });
             if (!isTrash) {
                 $element.contextmenu(openContextMenu('tree'));
@@ -1915,6 +2086,8 @@ define([
                 } else if (idx > 0 && manager.isFile(el)) {
                     name = getElementName(path);
                 }
+                $span.data("path", path.slice(0, idx + 1));
+                addDragAndDropHandlers($span, path.slice(0, idx), true, true);
 
                 if (idx === 0) { name = p === SHARED_FOLDER ? name : getPrettyName(p); }
                 else {
@@ -2100,6 +2273,111 @@ define([
             });
             return arr;
         };
+        var showUploadFilesModal = function () {
+            var $input = $('<input>', {
+                'type': 'file',
+                'style': 'display: none;',
+                'multiple': 'multiple'
+            }).on('change', function (e) {
+                var files = Util.slice(e.target.files);
+                files.forEach(function (file) {
+                    var ev = {
+                        target: $content[0],
+                        path: findDropPath($content[0])
+                    };
+                    APP.FM.handleFile(file, ev);
+                });
+            });
+            $input.click();
+        };
+
+        // create the folder structure before to upload files from folder
+        var uploadFolder = function (fileList) {
+            var currentFolder = currentPath;
+            // create an array of all the files relative path
+            var files = Array.prototype.map.call(fileList, function (file) {
+                return {
+                    file: file,
+                    path: file.webkitRelativePath.split("/"),
+                };
+            });
+            // if folder name already exist in drive, rename it
+            var uploadedFolderName = files[0].path[0];
+            var availableName = manager.user.userObject.getAvailableName(manager.find(currentFolder), uploadedFolderName);
+
+            // ask for folder name and files options, then upload all the files!
+            APP.FM.showFolderUploadModal(availableName, function (folderUploadOptions) {
+                if (!folderUploadOptions) { return; }
+
+                // verfify folder name is possible, and update files path
+                availableName = manager.user.userObject.getAvailableName(manager.find(currentFolder), folderUploadOptions.folderName);
+                if (uploadedFolderName !== availableName) {
+                    files.forEach(function (file) {
+                        file.path[0] = availableName;
+                    });
+                }
+
+                // uploadSteps is an array of objects {folders: [], files: []}, containing all the folders and files to create safely
+                // at the index i + 1, the files and folders are children of the folders at the index i
+                var maxSteps = files.reduce(function (max, file) { return Math.max(max, file.path.length); }, 0);
+                var uploadSteps = [];
+                for (var i = 0 ; i < maxSteps ; i++) {
+                    uploadSteps[i] = {
+                        folders: [],
+                        files: [],
+                    };
+                }
+                files.forEach(function (file) {
+                    // add steps to create subfolders containing file
+                    for (var depth = 0 ; depth < file.path.length - 1 ; depth++) {
+                        var subfolderStr = file.path.slice(0, depth + 1).join("/");
+                        if (uploadSteps[depth].folders.indexOf(subfolderStr) === -1) {
+                            uploadSteps[depth].folders.push(subfolderStr);
+                        }
+                    }
+                    // add step to upload file (one step later than the step of its direct parent folder)
+                    uploadSteps[file.path.length - 1].files.push(file);
+                });
+
+                // add folders, then add files when theirs folders have been created
+                // wait for the folders to be created to go to the next step (don't wait for the files)
+                var stepByStep = function (uploadSteps, i) {
+                    if (i >= uploadSteps.length) { return; }
+                    nThen(function (waitFor) {
+                        // add folders
+                        uploadSteps[i].folders.forEach(function (folder) {
+                            var folderPath = folder.split("/");
+                            var parentFolder = currentFolder.concat(folderPath.slice(0, -1));
+                            var folderName = folderPath.slice(-1);
+                            manager.addFolder(parentFolder, folderName, waitFor(refresh));
+                        });
+                        // upload files
+                        uploadSteps[i].files.forEach(function (file) {
+                            var ev = {
+                                target: $content[0],
+                                path: currentFolder.concat(file.path.slice(0, -1)),
+                            };
+                            APP.FM.handleFile(file.file, ev, folderUploadOptions);
+                        });
+                    }).nThen(function () {
+                        stepByStep(uploadSteps, i + 1);
+                    });
+                };
+
+                stepByStep(uploadSteps, 0);
+            });
+        };
+        var showUploadFolderModal = function () {
+            var $input = $('<input>', {
+                'type': 'file',
+                'style': 'display: none;',
+                'multiple': 'multiple',
+                'webkitdirectory': true,
+            }).on('change', function (e) {
+                uploadFolder(e.target.files);
+            });
+            $input.click();
+        };
         var addNewPadHandlers = function ($block, isInRoot) {
             // Handlers
             if (isInRoot) {
@@ -2126,24 +2404,8 @@ define([
                         });
                     });
                 }
-                $block.find('a.cp-app-drive-new-upload, li.cp-app-drive-new-upload')
-                    .click(function () {
-                    var $input = $('<input>', {
-                        'type': 'file',
-                        'style': 'display: none;',
-                        'multiple': 'multiple'
-                    }).on('change', function (e) {
-                        var files = Util.slice(e.target.files);
-                        files.forEach(function (file) {
-                            var ev = {
-                                target: $content[0],
-                                path: findDropPath($content[0])
-                            };
-                            APP.FM.handleFile(file, ev);
-                        });
-                    });
-                    $input.click();
-                });
+                $block.find('a.cp-app-drive-new-fileupload, li.cp-app-drive-new-fileupload').click(showUploadFilesModal);
+                $block.find('a.cp-app-drive-new-folderupload, li.cp-app-drive-new-folderupload').click(showUploadFolderModal);
             }
             $block.find('a.cp-app-drive-new-doc, li.cp-app-drive-new-doc')
                 .click(function () {
@@ -2178,9 +2440,16 @@ define([
                 options.push({tag: 'hr'});
                 options.push({
                     tag: 'a',
-                    attributes: {'class': 'cp-app-drive-new-upload'},
+                    attributes: {'class': 'cp-app-drive-new-fileupload'},
                     content: $('<div>').append(getIcon('fileupload')).html() + Messages.uploadButton
                 });
+                if (APP.allowFolderUpload) {
+                    options.push({
+                        tag: 'a',
+                        attributes: {'class': 'cp-app-drive-new-folderupload'},
+                        content: $('<div>').append(getIcon('folderupload')).html() + Messages.uploadFolderButton
+                    });
+                }
                 options.push({tag: 'hr'});
             }
             getNewPadTypes().forEach(function (type) {
@@ -2462,13 +2731,22 @@ define([
                     $element3.append($('<span>', { 'class': 'cp-app-drive-new-name' })
                         .text(Messages.fm_sharedFolder));
                 }
-                // File
-                var $element2 = $('<li>', {
-                    'class': 'cp-app-drive-new-upload cp-app-drive-element-row ' +
-                             'cp-app-drive-element-grid'
+                // Upload file
+                var $elementFileUpload = $('<li>', {
+                    'class': 'cp-app-drive-new-fileupload cp-app-drive-element-row ' +
+                        'cp-app-drive-element-grid'
                 }).prepend(getIcon('fileupload')).appendTo($container);
-                $element2.append($('<span>', {'class': 'cp-app-drive-new-name'})
+                $elementFileUpload.append($('<span>', {'class': 'cp-app-drive-new-name'})
                     .text(Messages.uploadButton));
+                // Upload folder
+                if (APP.allowFolderUpload) {
+                    var $elementFolderUpload = $('<li>', {
+                        'class': 'cp-app-drive-new-folderupload cp-app-drive-element-row ' +
+                        'cp-app-drive-element-grid'
+                    }).prepend(getIcon('folderupload')).appendTo($container);
+                    $elementFolderUpload.append($('<span>', {'class': 'cp-app-drive-new-name'})
+                        .text(Messages.uploadFolderButton));
+                }
             }
             // Pads
             getNewPadTypes().forEach(function (type) {
@@ -2559,22 +2837,19 @@ define([
                     'class': 'cp-app-drive-element cp-app-drive-element-file cp-app-drive-element-row' + roClass,
                     draggable: draggable
                 });
-                if (Array.isArray(APP.selectedFiles)) {
-                    var sidx = APP.selectedFiles.indexOf(id);
-                    if (sidx !== -1) {
-                        $element.addClass('cp-app-drive-element-selected');
-                        APP.selectedFiles.splice(sidx, 1);
-                    }
+
+                var path = [rootName, idx];
+                $element.data('path', path);
+                if (isElementSelected($element)) {
+                    selectElement($element);
                 }
                 $element.prepend($icon).dblclick(function () {
                     openFile(id);
                 });
                 addFileData(id, $element);
-                var path = [rootName, idx];
-                $element.data('path', path);
                 $element.click(function(e) {
                     e.stopPropagation();
-                    onElementClick(e, $element, path);
+                    onElementClick(e, $element);
                 });
                 $element.contextmenu(openContextMenu('default'));
                 $element.data('context', 'default');
@@ -2701,8 +2976,8 @@ define([
                                 e.preventDefault();
                                 if (manager.isInTrashRoot(parentPath)) { parentPath = [TRASH]; }
                                 else { parentPath.pop(); }
-                                APP.selectedFiles = [r.id];
                                 APP.displayDirectory(parentPath);
+                                APP.selectedFiles = path.slice(-1);
                             }).appendTo($openDir);
                         }
                         $('<a>').text(Messages.fc_prop).click(function () {
@@ -2793,7 +3068,7 @@ define([
                 $element.data('path', path);
                 $element.click(function(e) {
                     e.stopPropagation();
-                    onElementClick(e, $element, path);
+                    onElementClick(e, $element);
                 });
                 $element.contextmenu(openContextMenu('default'));
                 $element.data('context', 'default');
@@ -3017,7 +3292,7 @@ define([
                 $context.click(function (e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    var $li = $content.find('.cp-app-drive-element-selected');
+                    var $li = findSelectedElements();
                     if ($li.length !== 1) {
                         $li = findDataHolder($tree.find('.cp-app-drive-element-active'));
                     }
@@ -3027,11 +3302,6 @@ define([
                         return;
                     }
                     // Open the menu
-                    $('.cp-contextmenu').css({
-                        top: ($context.offset().top + 32) + 'px',
-                        right: '0px',
-                        left: ''
-                    });
                     $li.contextmenu();
                 });
             } else {
@@ -3099,7 +3369,7 @@ define([
                 }
             });*/
 
-            var $sel = $content.find('.cp-app-drive-element-selected');
+            var $sel = findSelectedElements();
             if ($sel.length) {
                 $sel[0].scrollIntoView();
             } else {
@@ -3110,6 +3380,9 @@ define([
         var displayDirectory = APP.displayDirectory = function (path, force) {
             if (history.isHistoryMode) {
                 return void _displayDirectory(path, force);
+            }
+            if (!manager.comparePath(currentPath, path)) {
+                removeSelected();
             }
             updateObject(sframeChan, proxy, function () {
                 copyObjectValue(files, proxy.drive);
@@ -3461,15 +3734,37 @@ define([
                 if (!res) { return; }
                 manager.delete(pathsList, function () {
                     pathsList.forEach(removeFoldersOpened);
+                    removeSelected();
                     refresh();
                 });
             });
         };
+
+
+        var downloadFolder = function (folderElement, folderName, sfId) {
+            var todo = function (data) {
+                data.folder = folderElement;
+                data.sharedFolderId = sfId;
+                data.folderName = Util.fixFileName(folderName) + '.zip';
+
+                APP.FM.downloadFolder(data, function (err, obj) {
+                    console.log(err, obj);
+                    console.log('DONE');
+                });
+            };
+            todo({
+                uo: proxy,
+                sf: folders,
+            });
+        };
+
+
         $contextMenu.on("click", "a", function(e) {
             e.stopPropagation();
             var paths = $contextMenu.data('paths');
             var pathsList = [];
             var type = $contextMenu.attr('data-menu-type');
+            var $this = $(this);
 
             var el, data;
             if (paths.length === 0) {
@@ -3478,11 +3773,11 @@ define([
                 return;
             }
 
-            if ($(this).hasClass("cp-app-drive-context-rename")) {
+            if ($this.hasClass("cp-app-drive-context-rename")) {
                 if (paths.length !== 1) { return; }
                 displayRenameInput(paths[0].element, paths[0].path);
             }
-            if ($(this).hasClass("cp-app-drive-context-color")) {
+            else if ($this.hasClass("cp-app-drive-context-color")) {
                 var currentColor = getFolderColor(paths[0].path);
                 pickFolderColor(paths[0].element, currentColor, function (color) {
                     paths.forEach(function (p) {
@@ -3491,24 +3786,24 @@ define([
                     refresh();
                 });
             }
-            else if($(this).hasClass("cp-app-drive-context-delete")) {
+            else if($this.hasClass("cp-app-drive-context-delete")) {
                 if (!APP.loggedIn) {
                     return void deletePaths(paths);
                 }
                 paths.forEach(function (p) { pathsList.push(p.path); });
                 moveElements(pathsList, [TRASH], false, refresh);
             }
-            else if ($(this).hasClass('cp-app-drive-context-deleteowned')) {
+            else if ($this.hasClass('cp-app-drive-context-deleteowned')) {
                 deleteOwnedPaths(paths);
             }
-            else if ($(this).hasClass('cp-app-drive-context-open')) {
+            else if ($this.hasClass('cp-app-drive-context-open')) {
                 paths.forEach(function (p) {
                     var $element = p.element;
                     $element.click();
                     $element.dblclick();
                 });
             }
-            else if ($(this).hasClass('cp-app-drive-context-openro')) {
+            else if ($this.hasClass('cp-app-drive-context-openro')) {
                 paths.forEach(function (p) {
                     var el = manager.find(p.path);
                     if (paths[0].path[0] === SHARED_FOLDER && APP.newSharedFolder) {
@@ -3526,10 +3821,29 @@ define([
                     openFile(null, href);
                 });
             }
-            else if ($(this).hasClass('cp-app-drive-context-expandall') ||
-                     $(this).hasClass('cp-app-drive-context-collapseall')) {
+            else if ($this.hasClass('cp-app-drive-context-openincode')) {
                 if (paths.length !== 1) { return; }
-                var opened = $(this).hasClass('cp-app-drive-context-expandall');
+                var p = paths[0];
+                el = manager.find(p.path);
+                var metadata = manager.getFileData(el);
+                var simpleData = {
+                    title: metadata.filename || metadata.title,
+                    href: metadata.href,
+                    password: metadata.password,
+                    channel: metadata.channel,
+                };
+                nThen(function (waitFor) {
+                    common.sessionStorage.put(Constants.newPadFileData, JSON.stringify(simpleData), waitFor());
+                    common.sessionStorage.put(Constants.newPadPathKey, currentPath, waitFor());
+                }).nThen(function () {
+                    common.openURL('/code/');
+                });
+            }
+
+            else if ($this.hasClass('cp-app-drive-context-expandall') ||
+                     $this.hasClass('cp-app-drive-context-collapseall')) {
+                if (paths.length !== 1) { return; }
+                var opened = $this.hasClass('cp-app-drive-context-expandall');
                 var openRecursive = function (path) {
                     setFolderOpened(path, opened);
                     var folderContent = manager.find(path);
@@ -3552,17 +3866,49 @@ define([
                 openRecursive(paths[0].path);
                 refresh();
             }
-            else if ($(this).hasClass('cp-app-drive-context-download')) {
+
+            else if ($this.hasClass('cp-app-drive-context-download')) {
                 if (paths.length !== 1) { return; }
-                el = manager.find(paths[0].path);
-                if (!manager.isFile(el)) { return; }
-                data = manager.getFileData(el);
-                APP.FM.downloadFile(data, function (err, obj) {
-                    console.log(err, obj);
-                    console.log('DONE');
-                });
+                var path = paths[0];
+                el = manager.find(path.path);
+                // folder
+                if (manager.isFolder(el)) {
+                    // folder
+                    var name, folderEl;
+                    if (!manager.isSharedFolder(el)) {
+                        name = path.path[path.path.length - 1];
+                        folderEl = el;
+                        downloadFolder(folderEl, name);
+                    }
+                    // shared folder
+                    else {
+                        data = manager.getSharedFolderData(el);
+                        name = data.title;
+                        folderEl = manager.find(path.path.concat("root"));
+                        downloadFolder(folderEl, name, el);
+                    }
+                }
+                // file
+                else if (manager.isFile(el)) {
+                    // imported file
+                    if (path.element.is(".cp-border-color-file")) {
+                        data = manager.getFileData(el);
+                        APP.FM.downloadFile(data, function (err, obj) {
+                            console.log(err, obj);
+                            console.log('DONE');
+                        });
+                    }
+                    // pad
+                    else {
+                        data = manager.getFileData(el);
+                        APP.FM.downloadPad(data, function (err, obj) {
+                            console.log(err, obj);
+                            console.log('DONE');
+                        });
+                    }
+                }
             }
-            else if ($(this).hasClass('cp-app-drive-context-share')) {
+            else if ($this.hasClass('cp-app-drive-context-share')) {
                 if (paths.length !== 1) { return; }
                 el = manager.find(paths[0].path);
                 var parsed, modal;
@@ -3582,7 +3928,43 @@ define([
                             editHash: parsed.hash
                         }
                     });
-                } else {
+                    return void UI.openCustomModal(modal, {
+                        wide: Object.keys(friends).length !== 0
+                    });
+                } else if (manager.isFolder(el)) { // Folder
+                    // if folder is inside SF
+                    if (manager.isInSharedFolder(paths[0].path)) {
+                        return void UI.alert(Messages.convertFolderToSF_SFParent);
+                    }
+                    // if folder already contains SF
+                    else if (manager.hasSubSharedFolder(el)) {
+                        return void UI.alert(Messages.convertFolderToSF_SFChildren);
+                    }
+                    // if root
+                    else if (paths[0].path.length <= 1) {
+                        return void UI.warn(Messages.error);
+                    }
+                    // if folder does not contains SF
+                    else {
+                        var convertContent = h('div', [
+                            h('p', Messages.convertFolderToSF_confirm),
+                            h('label', {for: 'cp-upload-password'}, Messages.creation_passwordValue),
+                            UI.passwordInput({id: 'cp-upload-password'}),
+                            h('span', {
+                                style: 'display:flex;align-items:center;justify-content:space-between'
+                            }, [
+                                UI.createCheckbox('cp-upload-owned', Messages.sharedFolders_create_owned, true),
+                                UI.createHelper(APP.origin + '/faq.html#keywords-owned', Messages.creation_owned1)
+                            ]),
+                        ]);
+                        return void UI.confirm(convertContent, function(res) {
+                            if (!res) { return; }
+                            var password = $(convertContent).find('#cp-upload-password').val() || undefined;
+                            var owned = Util.isChecked($(convertContent).find('#cp-upload-owned'));
+                            manager.convertFolderToSharedFolder(paths[0].path, owned, password, refresh);
+                        });
+                    }
+                } else { // File
                     data = manager.getFileData(el);
                     parsed = Hash.parsePadUrl(data.href);
                     var roParsed = Hash.parsePadUrl(data.roHref);
@@ -3601,18 +3983,19 @@ define([
                             hash: parsed.hash,
                             password: data.password
                         },
+                        isTemplate: paths[0].path[0] === 'template',
                         title: data.title,
                         common: common
                     };
                     modal = padType === 'file' ? UIElements.createFileShareModal(padData)
                                             : UIElements.createShareModal(padData);
                     modal = UI.dialog.tabs(modal);
+                    UI.openCustomModal(modal, {
+                        wide: Object.keys(friends).length !== 0
+                    });
                 }
-                UI.openCustomModal(modal, {
-                    wide: Object.keys(friends).length !== 0
-                });
             }
-            else if ($(this).hasClass('cp-app-drive-context-newfolder')) {
+            else if ($this.hasClass('cp-app-drive-context-newfolder')) {
                 if (paths.length !== 1) { return; }
                 var onFolderCreated = function (err, info) {
                     if (err) { return void logError(err); }
@@ -3625,21 +4008,27 @@ define([
                 }
                 manager.addFolder(paths[0].path, null, onFolderCreated);
             }
-            else if ($(this).hasClass('cp-app-drive-context-newsharedfolder')) {
+            else if ($this.hasClass('cp-app-drive-context-newsharedfolder')) {
                 if (paths.length !== 1) { return; }
                 addSharedFolderModal(function (obj) {
                     if (!obj) { return; }
                     manager.addSharedFolder(paths[0].path, obj, refresh);
                 });
             }
-            else if ($(this).hasClass("cp-app-drive-context-newdoc")) {
-                var ntype = $(this).data('type') || 'pad';
+            else if ($this.hasClass("cp-app-drive-context-uploadfiles")) {
+                showUploadFilesModal();
+            }
+            else if ($this.hasClass("cp-app-drive-context-uploadfolder")) {
+                showUploadFolderModal();
+            }
+            else if ($this.hasClass("cp-app-drive-context-newdoc")) {
+                var ntype = $this.data('type') || 'pad';
                 var path2 = manager.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
                 common.sessionStorage.put(Constants.newPadPathKey, path2, function () {
                     common.openURL('/' + ntype + '/');
                 });
             }
-            else if ($(this).hasClass("cp-app-drive-context-properties")) {
+            else if ($this.hasClass("cp-app-drive-context-properties")) {
                 if (type === 'trash') {
                     var pPath = paths[0].path;
                     if (paths.length !== 1 || pPath.length !== 4) { return; }
@@ -3659,7 +4048,7 @@ define([
                     UI.alert($prop[0], undefined, true);
                 });
             }
-            else if ($(this).hasClass("cp-app-drive-context-hashtag")) {
+            else if ($this.hasClass("cp-app-drive-context-hashtag")) {
                 if (paths.length !== 1) { return; }
                 el = manager.find(paths[0].path);
                 data = manager.getFileData(el);
@@ -3667,7 +4056,7 @@ define([
                 var href = data.href || data.roHref;
                 common.updateTags(href);
             }
-            else if ($(this).hasClass("cp-app-drive-context-empty")) {
+            else if ($this.hasClass("cp-app-drive-context-empty")) {
                 if (paths.length !== 1 || !paths[0].element
                     || !manager.comparePath(paths[0].path, [TRASH])) {
                     log(Messages.fm_forbidden);
@@ -3678,13 +4067,13 @@ define([
                     manager.emptyTrash(refresh);
                 });
             }
-            else if ($(this).hasClass("cp-app-drive-context-remove")) {
+            else if ($this.hasClass("cp-app-drive-context-remove")) {
                 return void deletePaths(paths);
             }
-            else if ($(this).hasClass("cp-app-drive-context-removesf")) {
+            else if ($this.hasClass("cp-app-drive-context-removesf")) {
                 return void deletePaths(paths);
             }
-            else if ($(this).hasClass("cp-app-drive-context-restore")) {
+            else if ($this.hasClass("cp-app-drive-context-restore")) {
                 if (paths.length !== 1) { return; }
                 var restorePath = paths[0].path;
                 var restoreName = paths[0].path[paths[0].path.length - 1];
@@ -3701,21 +4090,20 @@ define([
                     manager.restore(restorePath, refresh);
                 });
             }
-            else if ($(this).hasClass("cp-app-drive-context-openparent")) {
+            else if ($this.hasClass("cp-app-drive-context-openparent")) {
                 if (paths.length !== 1) { return; }
                 var parentPath = paths[0].path.slice();
                 if (manager.isInTrashRoot(parentPath)) { parentPath = [TRASH]; }
                 else { parentPath.pop(); }
-                el = manager.find(paths[0].path);
-                APP.selectedFiles = [el];
                 APP.displayDirectory(parentPath);
+                APP.selectedFiles = paths[0].path.slice(-1);
             }
             APP.hideMenu();
         });
 
-        $content.on("keydown", function (e) {
-            if (e.which === 113) {
-                var paths = $contextMenu.data('paths');
+        $(window).on("keydown", function (e) {
+            if (e.which === 113) { // if F2 key pressed
+                var paths = getSelectedPaths(findSelectedElements().first());
                 if (paths.length !== 1) { return; }
                 displayRenameInput(paths[0].element, paths[0].path);
             }
@@ -3727,10 +4115,9 @@ define([
             e.preventDefault();
         });
         $appContainer.on('mouseup', function (e) {
-            //if (sel.down) { return; }
             if (e.which !== 1) { return ; }
+            if ($(e.target).is(".dropdown-submenu a, .dropdown-submenu a span")) { return; } // if we click on dropdown-submenu, don't close menu
             APP.hideMenu(e);
-            //removeSelected(e);
         });
         $appContainer.on('click', function (e) {
             if (e.which !== 1) { return ; }
@@ -3749,7 +4136,7 @@ define([
                 if (manager.isPathIn(currentPath, [FILES_DATA]) && APP.loggedIn) {
                     return; // We can't remove elements directly from filesData
                 }
-                var $selected = $('.cp-app-drive-element-selected');
+                var $selected = findSelectedElements();
                 if (!$selected.length) { return; }
                 var paths = [];
                 var isTrash = manager.isPathIn(currentPath, [TRASH]);

@@ -1,5 +1,6 @@
 define([
     'jquery',
+    '/api/config',
     '/bower_components/marked/marked.min.js',
     '/common/common-hash.js',
     '/common/common-util.js',
@@ -10,11 +11,12 @@ define([
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/common/highlight/styles/github.css'
-],function ($, Marked, Hash, Util, h, MediaTag, Highlight, Messages) {
+],function ($, ApiConfig, Marked, Hash, Util, h, MediaTag, Highlight, Messages) {
     var DiffMd = {};
 
     var DiffDOM = window.diffDOM;
     var renderer = new Marked.Renderer();
+    var restrictedRenderer = new Marked.Renderer();
 
     var Mermaid = {
         init: function () {}
@@ -61,13 +63,18 @@ define([
         return h('div.cp-md-toc', content).outerHTML;
     };
 
-    DiffMd.render = function (md, sanitize) {
+    DiffMd.render = function (md, sanitize, restrictedMd) {
+        Marked.setOptions({
+            renderer: restrictedMd ? restrictedRenderer : renderer,
+        });
         var r = Marked(md, {
             sanitize: sanitize
         });
 
         // Add Table of Content
-        r = r.replace(/<div class="cp-md-toc"><\/div>/g, getTOC());
+        if (!restrictedMd) {
+            r = r.replace(/<div class="cp-md-toc"><\/div>/g, getTOC());
+        }
         toc = [];
 
         return r;
@@ -83,12 +90,7 @@ define([
             return defaultCode.apply(renderer, arguments);
         }
     };
-
-    var stripTags = function (text) {
-        var div = document.createElement("div");
-        div.innerHTML = text;
-        return div.innerText;
-    };
+    restrictedRenderer.code = renderer.code;
 
     renderer.heading = function (text, level) {
         var i = 0;
@@ -105,9 +107,12 @@ define([
         toc.push({
             level: level,
             id: id,
-            title: stripTags(text)
+            title: Util.stripTags(text)
         });
         return "<h" + level + " id=\"" + id + "\"><a href=\"#" + id + "\" class=\"anchor\"></a>" + text + "</h" + level + ">";
+    };
+    restrictedRenderer.heading = function (text) {
+        return text;
     };
 
     // Tasks list
@@ -138,6 +143,13 @@ define([
         var cls = (isCheckedTaskItem || isUncheckedTaskItem || hasBogusInput) ? ' class="todo-list-item"' : '';
         return '<li'+ cls + '>' + text + '</li>\n';
     };
+    restrictedRenderer.listitem = function (text) {
+        if (bogusCheckPtn.test(text)) {
+            text = text.replace(bogusCheckPtn, '');
+        }
+        return '<li>' + text + '</li>\n';
+    };
+
     renderer.image = function (href, title, text) {
         if (href.slice(0,6) === '/file/') {
             // DEPRECATED
@@ -146,7 +158,7 @@ define([
             console.log('DEPRECATED: mediatag using markdown syntax!');
             var parsed = Hash.parsePadUrl(href);
             var secret = Hash.getSecrets('file', parsed.hash);
-            var src = Hash.getBlobPathFromHex(secret.channel);
+            var src = (ApiConfig.fileHost || '') +Hash.getBlobPathFromHex(secret.channel);
             var key = Hash.encodeBase64(secret.keys.cryptKey);
             var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + key + '"></media-tag>';
             if (mediaMap[src]) {
@@ -162,12 +174,19 @@ define([
         out += this.options.xhtml ? '/>' : '>';
         return out;
     };
+    restrictedRenderer.image = renderer.image;
 
+    var renderParagraph = function (p) {
+        return /<media\-tag[\s\S]*>/i.test(p)? p + '\n': '<p>' + p + '</p>\n';
+    };
     renderer.paragraph = function (p) {
         if (p === '[TOC]') {
             return '<p><div class="cp-md-toc"></div></p>';
         }
-        return /<media\-tag[\s\S]*>/i.test(p)? p + '\n': '<p>' + p + '</p>\n';
+        return renderParagraph(p);
+    };
+    restrictedRenderer.paragraph = function (p) {
+        return renderParagraph(p);
     };
 
     var MutationObserver = window.MutationObserver;

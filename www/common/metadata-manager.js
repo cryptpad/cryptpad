@@ -99,6 +99,7 @@ define(['json.sortify'], function (Sortify) {
         var addAuthor = function () {
             if (!meta.user || !meta.user.netfluxId || !priv || !priv.edPublic) { return; }
             var authors = metadataObj.authors || {};
+            var old = Sortify(authors);
             if (!authors[priv.edPublic]) {
                 authors[priv.edPublic] = {
                     nId: [meta.user.netfluxId],
@@ -110,9 +111,11 @@ define(['json.sortify'], function (Sortify) {
                     authors[priv.edPublic].nId.push(meta.user.netfluxId);
                 }
             }
-            metadataObj.authors = authors;
-            metadataLazyObj.authors = JSON.parse(JSON.stringify(authors));
-            change();
+            if (Sortify(authors) !== old) {
+                metadataObj.authors = authors;
+                metadataLazyObj.authors = JSON.parse(JSON.stringify(authors));
+                change();
+            }
         };
 
         var netfluxId;
@@ -191,6 +194,15 @@ define(['json.sortify'], function (Sortify) {
             onChange: function (f) { changeHandlers.push(f); },
             onChangeLazy: function (f) { lazyChangeHandlers.push(f); },
             onRequestSync: function (f) { syncHandlers.push(f); },
+            off: function (name, f) {
+                var h = [];
+                if (name === 'change') { h = changeHandlers; }
+                else if (name === 'lazy') { h = lazyChangeHandlers; }
+                else if (name === 'title') { h = titleChangeHandlers; }
+                else if (name === 'sync') { h = syncHandlers; }
+                var idx = h.indexOf(f);
+                if (idx !== -1) { h.splice(idx, 1); }
+            },
             isConnected : function () {
                 return members.indexOf(meta.user.netfluxId) !== -1;
             },

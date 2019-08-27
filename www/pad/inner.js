@@ -457,6 +457,8 @@ define([
 
         framework._.sfCommon.addShortcuts(ifrWindow);
 
+        var privateData = framework._.sfCommon.getMetadataMgr().getPrivateData();
+
         var documentBody = ifrWindow.document.body;
 
         var observer = new MutationObserver(function (muts) {
@@ -702,7 +704,8 @@ define([
                 onUploaded: function (ev, data) {
                     var parsed = Hash.parsePadUrl(data.url);
                     var secret = Hash.getSecrets('file', parsed.hash, data.password);
-                    var src = Hash.getBlobPathFromHex(secret.channel);
+                    var fileHost = privateData.fileHost || privateData.origin;
+                    var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
                     var key = Hash.encodeBase64(secret.keys.cryptKey);
                     var mt = '<media-tag contenteditable="false" src="' + src + '" data-crypto-key="cryptpad:' + key + '"></media-tag>';
                     // MEDIATAG
@@ -786,7 +789,7 @@ define([
             });
         }, true);
 
-        framework.setFileExporter(Exporter.type, function (cb) {
+        framework.setFileExporter(Exporter.ext, function (cb) {
             Exporter.main(inner, cb);
         }, true);
 

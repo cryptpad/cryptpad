@@ -1,11 +1,13 @@
 define([
     '/common/cryptget.js',
+    '/file/file-crypto.js',
     '/common/common-hash.js',
-    '/common/sframe-common-file.js',
+    '/common/common-util.js',
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
     '/bower_components/jszip/dist/jszip.min.js',
-], function (Crypt, Hash, SFCFile, nThen, Saferphore, JsZip) {
+], function (Crypt, FileCrypto, Hash, Util, nThen, Saferphore, JsZip) {
+    var saveAs = window.saveAs;
 
     var sanitize = function (str) {
         return str.replace(/[\\/?%*:|"<>]/gi, '_')/*.toLowerCase()*/;
@@ -34,13 +36,94 @@ define([
         var path = '/' + type + '/export.js';
         require([path], function (Exporter) {
             Exporter.main(json, function (data) {
-                result.ext = '.' + Exporter.type;
+                result.ext = Exporter.ext || '';
                 result.data = data;
                 cb(result);
             });
         }, function () {
             cb(result);
         });
+    };
+
+
+    var _downloadFile = function (ctx, fData, cb, updateProgress) {
+        var cancelled = false;
+        var cancel = function () {
+            cancelled = true;
+        };
+        var parsed = Hash.parsePadUrl(fData.href || fData.roHref);
+        var hash = parsed.hash;
+        var name = fData.filename || fData.title;
+        var secret = Hash.getSecrets('file', hash, fData.password);
+        var src = (ctx.fileHost || '') + Hash.getBlobPathFromHex(secret.channel);
+        var key = secret.keys && secret.keys.cryptKey;
+        Util.fetch(src, function (err, u8) {
+            if (cancelled) { return; }
+            if (err) { return void cb('E404'); }
+            FileCrypto.decrypt(u8, key, function (err, res) {
+                if (cancelled) { return; }
+                if (err) { return void cb(err); }
+                if (!res.content) { return void cb('EEMPTY'); }
+                var dl = function () {
+                    saveAs(res.content, name || res.metadata.name);
+                };
+                cb(null, {
+                    metadata: res.metadata,
+                    content: res.content,
+                    download: dl
+                });
+            }, updateProgress && updateProgress.progress2);
+        }, updateProgress && updateProgress.progress);
+        return {
+            cancel: cancel
+        };
+
+    };
+
+
+    var _downloadPad = function (ctx, pData, cb, updateProgress) {
+        var cancelled = false;
+        var cancel = function () {
+            cancelled = true;
+        };
+
+        var parsed = Hash.parsePadUrl(pData.href || pData.roHref);
+        var name = pData.filename || pData.title;
+        var opts = {
+            password: pData.password
+        };
+        var handler = ctx.sframeChan.on("EV_CRYPTGET_PROGRESS", function (data) {
+            if (data.hash !== parsed.hash) { return; }
+            updateProgress.progress(data.progress);
+            if (data.progress === 1) {
+                handler.stop();
+                updateProgress.progress2(1);
+            }
+        });
+        ctx.get({
+            hash: parsed.hash,
+            opts: opts
+        }, function (err, val) {
+            if (cancelled) { return; }
+            if (err) { return; }
+            if (!val) { return; }
+            transform(ctx, parsed.type, val, function (res) {
+                if (cancelled) { return; }
+                if (!res.data) { return; }
+                var dl = function () {
+                    saveAs(res.data, Util.fixFileName(name));
+                };
+                cb(null, {
+                    metadata: res.metadata,
+                    content: res.data,
+                    download: dl
+                });
+            });
+        });
+        return {
+            cancel: cancel
+        };
+
     };
 
     // Add a file to the zip. We have to cryptget&transform it if it's a pad
@@ -126,7 +209,7 @@ define([
                 // Files (mediatags...)
                 var todoFile = function () {
                     var it;
-                    var dl = SFCFile.downloadFile(fData, function (err, res) {
+                    var dl = _downloadFile(ctx, fData, function (err, res) {
                         if (it) { clearInterval(it); }
                         if (err) { return void error(err); }
                         var opts = {
@@ -163,12 +246,12 @@ define([
         var existingNames = [];
         Object.keys(root).forEach(function (k) {
             var el = root[k];
-            if (typeof el === "object") {
+            if (typeof el === "object" && el.metadata !== true) { // if folder
                 var fName = getUnique(sanitize(k), '', existingNames);
                 existingNames.push(fName.toLowerCase());
                 return void makeFolder(ctx, el, zip.folder(fName), fd);
             }
-            if (ctx.data.sharedFolders[el]) {
+            if (ctx.data.sharedFolders[el]) { // if shared folder
                 var sfData = ctx.sf[el].metadata;
                 var sfName = getUnique(sanitize(sfData.title || 'Folder'), '', existingNames);
                 existingNames.push(sfName.toLowerCase());
@@ -183,12 +266,14 @@ define([
     };
 
     // Main function. Create the empty zip and fill it starting from drive.root
-    var create = function (data, getPad, cb, progress) {
+    var create = function (data, getPad, fileHost, cb, progress) {
         if (!data || !data.uo || !data.uo.drive) { return void cb('EEMPTY'); }
         var sem = Saferphore.create(5);
         var ctx = {
+            fileHost: fileHost,
             get: getPad,
             data: data.uo.drive,
+            folder: data.folder || ctx.data.root,
             sf: data.sf,
             zip: new JsZip(),
             errors: [],
@@ -197,11 +282,12 @@ define([
             max: 0,
             done: 0
         };
+        var filesData = data.sharedFolderId && ctx.sf[data.sharedFolderId] ? ctx.sf[data.sharedFolderId].filesData : ctx.data.filesData;
         progress('reading', -1);
         nThen(function (waitFor) {
             ctx.waitFor = waitFor;
             var zipRoot = ctx.zip.folder('Root');
-            makeFolder(ctx, ctx.data.root, zipRoot, ctx.data.filesData);
+            makeFolder(ctx, ctx.folder, zipRoot, filesData);
             progress('download', {});
         }).nThen(function () {
             console.log(ctx.zip);
@@ -222,7 +308,33 @@ define([
         };
     };
 
+
+    var _downloadFolder = function (ctx, data, cb, updateProgress) {
+        create(data, ctx.get, ctx.fileHost, function (blob, errors) {
+            console.error(errors); // TODO show user errors
+            var dl = function () {
+                saveAs(blob, data.folderName);
+            };
+            cb(null, {download: dl});
+        }, function (state, progress) {
+            if (state === "reading") {
+                updateProgress.folderProgress(0);
+            }
+            if (state === "download") {
+                if (typeof progress.current !== "number") { return; }
+                updateProgress.folderProgress(progress.current / progress.max);
+            }
+            else if (state === "done") {
+                updateProgress.folderProgress(1);
+            }
+        });
+    };
+
+
     return {
-        create: create
+        create: create,
+        downloadFile: _downloadFile,
+        downloadPad: _downloadPad,
+        downloadFolder: _downloadFolder,
     };
 });

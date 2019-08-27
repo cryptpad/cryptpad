@@ -119,15 +119,35 @@ define([
         $('<label>', {'for': 'cp-app-prop-owners'}).text(Messages.creation_owners)
             .appendTo($d);
         var owners = Messages.creation_noOwner;
-        var edPublic = common.getMetadataMgr().getPrivateData().edPublic;
+        var priv = common.getMetadataMgr().getPrivateData();
+        var edPublic = priv.edPublic;
         var owned = false;
         if (data.owners && data.owners.length) {
             if (data.owners.indexOf(edPublic) !== -1) {
-                owners = Messages.yourself;
                 owned = true;
-            } else {
-                owners = Messages.creation_ownedByOther;
             }
+            var names = [];
+            var strangers = 0;
+            data.owners.forEach(function (ed) {
+                // If a friend is an owner, add their name to the list
+                // otherwise, increment the list of strangers
+                if (ed === edPublic) {
+                    names.push(Messages.yourself);
+                    return;
+                }
+                if (!Object.keys(priv.friends || {}).some(function (c) {
+                    var friend = priv.friends[c] || {};
+                    if (friend.edPublic !== ed || c === 'me') { return; }
+                    names.push(friend.displayName);
+                    return true;
+                })) {
+                    strangers++;
+                }
+            });
+            if (strangers) {
+                names.push(Messages._getKey('properties_unknownUser', [strangers]));
+            }
+            owners = names.join(', ');
         }
         $d.append(UI.dialog.selectable(owners, {
             id: 'cp-app-prop-owners',
@@ -325,7 +345,7 @@ define([
         });
     };
 
-    var getFriendsList = function (config) {
+    var getFriendsList = function (config, onShare) {
         var common = config.common;
         var title = config.title;
         var friends = config.friends;
@@ -337,17 +357,18 @@ define([
             if (curve.length <= 40) { return; }
             var data = friends[curve];
             if (!data.notifications) { return; }
+            var name = data.displayName || Messages.anonymous;
             var avatar = h('span.cp-share-friend-avatar.cp-avatar');
-            UIElements.displayAvatar(common, $(avatar), data.avatar, data.displayName);
+            UIElements.displayAvatar(common, $(avatar), data.avatar, name);
             return h('div.cp-share-friend', {
                 'data-curve': data.curvePublic,
-                'data-name': data.displayName,
+                'data-name': name,
                 'data-order': i,
-                title: data.displayName,
+                title: name,
                 style: 'order:'+i+';'
             },[
                 avatar,
-                h('span.cp-share-friend-name', data.displayName)
+                h('span.cp-share-friend-name', name)
             ]);
         }).filter(function (x) { return x; });
         var smallCurves = Object.keys(friends).map(function (c) {
@@ -413,6 +434,7 @@ define([
                         common.mailbox.sendTo("SHARE_PAD", {
                             href: href,
                             password: config.password,
+                            isTemplate: config.isTemplate,
                             name: myName,
                             title: title
                         }, {
@@ -436,6 +458,9 @@ define([
                         return smallCurves.indexOf(curve) !== -1;
                     });
                     common.setAttribute(['general', 'share-friends'], order);
+                    if (onShare) {
+                        onShare.fire();
+                    }
                 });
                 $nav.append(button);
             }
@@ -512,8 +537,10 @@ define([
 
         // Share link tab
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
-        var friendsList = hasFriends ? getFriendsList(config) : undefined;
+        var onFriendShare = Util.mkEvent();
+        var friendsList = hasFriends ? getFriendsList(config, onFriendShare) : undefined;
         var friendsUIClass = hasFriends ? '.cp-share-columns' : '';
+
         var link = h('div.cp-share-modal' + friendsUIClass, [
             h('div.cp-share-column', [
                 hasFriends ? h('p', Messages.share_description) : undefined,
@@ -547,11 +574,12 @@ define([
                 present: present
             });
         };
+        onFriendShare.reg(saveValue);
         var getLinkValue = function (initValue) {
             var val = initValue || {};
-            var edit = initValue ? val.edit : Util.isChecked($(link).find('#cp-share-editable-true'));
-            var embed = initValue ? val.embed : Util.isChecked($(link).find('#cp-share-embed'));
-            var present = initValue ? val.present : Util.isChecked($(link).find('#cp-share-present'));
+            var edit = val.edit !== undefined ? val.edit : Util.isChecked($(link).find('#cp-share-editable-true'));
+            var embed = val.embed !== undefined ? val.embed : Util.isChecked($(link).find('#cp-share-embed'));
+            var present = val.present !== undefined ? val.present : Util.isChecked($(link).find('#cp-share-present'));
 
             var hash = (!hashes.viewHash || (edit && hashes.editHash)) ? hashes.editHash : hashes.viewHash;
             var href = origin + pathname + '#' + hash;
@@ -1474,7 +1502,7 @@ define([
     UIElements.getAvatar = function (hash) {
         return avatars[hash];
     };
-    UIElements.displayAvatar = function (Common, $container, href, name, cb) {
+    UIElements.displayAvatar = function (common, $container, href, name, cb) {
         var displayDefault = function () {
             var text = getFirstEmojiOrCharacter(name);
             var $avatar = $('<span>', {'class': 'cp-avatar-default'}).text(text);
@@ -1510,12 +1538,14 @@ define([
             return;
         }
         // No password for avatars
+        var privateData = common.getMetadataMgr().getPrivateData();
+        var origin = privateData.fileHost || privateData.origin;
         var secret = Hash.getSecrets('file', parsed.hash);
         if (secret.keys && secret.channel) {
             var hexFileName = secret.channel;
             var cryptKey = Hash.encodeBase64(secret.keys && secret.keys.cryptKey);
-            var src = Hash.getBlobPathFromHex(hexFileName);
-            Common.getFileSize(hexFileName, function (e, data) {
+            var src = origin + Hash.getBlobPathFromHex(hexFileName);
+            common.getFileSize(hexFileName, function (e, data) {
                 if (e || !data) {
                     displayDefault();
                     return void console.error(e || "404 avatar");
@@ -1525,7 +1555,7 @@ define([
                 var $img = $('<media-tag>').appendTo($container);
                 $img.attr('src', src);
                 $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
-                UIElements.displayMediatagImage(Common, $img, function (err, $image, img) {
+                UIElements.displayMediatagImage(common, $img, function (err, $image, img) {
                     if (err) { return void console.error(err); }
                     centerImage($img, $image,  img);
                 });
@@ -1832,6 +1862,15 @@ define([
                 content: $userAdminContent.html()
             });
         }
+        options.push({
+            tag: 'a',
+            attributes: {
+                'target': '_blank',
+                'href': origin+'/index.html',
+                'class': 'fa fa-home'
+            },
+            content: h('span', Messages.homePage)
+        });
         if (padType !== 'drive' || (!accountName && priv.newSharedFolder)) {
             options.push({
                 tag: 'a',
@@ -1843,6 +1882,7 @@ define([
                 content: h('span', Messages.login_accessDrive)
             });
         }
+        options.push({ tag: 'hr' });
         // Add the change display name button if not in read only mode
         if (config.changeNameButtonCls && config.displayChangeName && !AppConfig.disableProfile) {
             options.push({
@@ -1865,6 +1905,7 @@ define([
                 content: h('span', Messages.settingsButton)
             });
         }
+        options.push({ tag: 'hr' });
         // Add administration panel link if the user is an admin
         if (priv.edPublic && Array.isArray(Config.adminKeys) && Config.adminKeys.indexOf(priv.edPublic) !== -1) {
             options.push({
@@ -1880,6 +1921,16 @@ define([
                 content: h('span', Messages.supportPage || 'Support')
             });
         }
+        options.push({
+            tag: 'a',
+            attributes: {
+                'target': '_blank',
+                'href': origin+'/features.html',
+                'class': 'fa fa-star-o'
+            },
+            content: h('span', priv.plan ? Messages.settings_cat_subscription : Messages.pricing)
+        });
+        options.push({ tag: 'hr' });
         // Add login or logout button depending on the current status
         if (accountName) {
             options.push({
@@ -2080,6 +2131,9 @@ define([
     };
 
     UIElements.createNewPadModal = function (common) {
+        // if in drive, show new pad modal instead
+        if ($("body.cp-app-drive").length !== 0) { return void $(".cp-app-drive-element-row.cp-app-drive-new-ghost").click(); }
+
         var $modal = UIElements.createModal({
             id: 'cp-app-toolbar-creation-dialog',
             $body: $('body')
@@ -2274,7 +2328,10 @@ define([
         if (!common.isLoggedIn()) { return void cb(); }
         var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
+        var privateData = metadataMgr.getPrivateData();
         var type = metadataMgr.getMetadataLazy().type;
+        var fromFileData = privateData.fromFileData;
+
 
         var $body = $('body');
         var $creationContainer = $('<div>', { id: 'cp-creation-container' }).appendTo($body);
@@ -2286,7 +2343,8 @@ define([
         // Title
         //var colorClass = 'cp-icon-color-'+type;
         //$creation.append(h('h2.cp-creation-title', Messages.newButtonTitle));
-        $creation.append(h('h3.cp-creation-title', Messages['button_new'+type]));
+        var newPadH3Title = Messages['button_new' + type];
+        $creation.append(h('h3.cp-creation-title', newPadH3Title));
         //$creation.append(h('h2.cp-creation-title.'+colorClass, Messages.newButtonTitle));
 
         // Deleted pad warning
@@ -2296,7 +2354,7 @@ define([
             ));
         }
 
-        var origin = common.getMetadataMgr().getPrivateData().origin;
+        var origin = privateData.origin;
         var createHelper = function (href, text) {
             var q = h('a.cp-creation-help.fa.fa-question-circle', {
                 title: text,
@@ -2453,7 +2511,26 @@ define([
                 });
                 if (i < TEMPLATES_DISPLAYED) { $(left).addClass('hidden'); }
             };
-            redraw(0);
+            if (fromFileData) {
+                var todo = function (thumbnail) {
+                    allData = [{
+                        name: fromFileData.title,
+                        id: 0,
+                        thumbnail: thumbnail,
+                        icon: h('span.cptools.cptools-file'),
+                    }];
+                    redraw(0);
+                };
+                todo();
+                sframeChan.query("Q_GET_FILE_THUMBNAIL", null, function (err, res) {
+                    if (err || (res && res.error)) { return; }
+                    todo(res.data);
+                });
+            }
+            else {
+                redraw(0);
+            }
+
 
             // Change template selection when Tab is pressed
             next = function (revert) {
@@ -2742,8 +2819,12 @@ define([
             UIElements.displayCrowdfunding(common);
             modal.delete();
         });
+        var waitingForStoringCb = false;
         $(store).click(function () {
+            if (waitingForStoringCb) { return; }
+            waitingForStoringCb = true;
             common.getSframeChannel().query("Q_AUTOSTORE_STORE", null, function (err, obj) {
+                waitingForStoringCb = false;
                 var error = err || (obj && obj.error);
                 if (error) {
                     if (error === 'E_OVER_LIMIT') {
@@ -2830,11 +2911,27 @@ define([
                 'aria-labelledBy': 'dropdownMenu',
                 'style': 'display:block;position:static;margin-bottom:5px;'
             }, [
-                h('li', h('a.dropdown-item', {
+                h('li', h('a.cp-app-code-context-saveindrive.dropdown-item', {
                     'tabindex': '-1',
-                }, Messages.pad_mediatagImport))
+                    'data-icon': "fa-cloud-upload",
+                }, Messages.pad_mediatagImport)),
+                h('li', h('a.cp-app-code-context-download.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': "fa-download",
+                }, Messages.download_mt_button)),
             ])
         ]);
+        // create the icon for each contextmenu option
+        $(menu).find("li a.dropdown-item").each(function (i, el) {
+            var $icon = $("<span>");
+            if ($(el).attr('data-icon')) {
+                var font = $(el).attr('data-icon').indexOf('cptools') === 0 ? 'cptools' : 'fa';
+                $icon.addClass(font).addClass($(el).attr('data-icon'));
+            } else {
+                $icon.text($(el).text());
+            }
+            $(el).prepend($icon);
+        });
         var m = createContextMenu(menu);
 
         mediatagContextMenu = m;
@@ -2844,7 +2941,13 @@ define([
             e.stopPropagation();
             m.hide();
             var $mt = $menu.data('mediatag');
-            common.importMediaTag($mt);
+            if ($(this).hasClass("cp-app-code-context-saveindrive")) {
+                common.importMediaTag($mt);
+            }
+            else if ($(this).hasClass("cp-app-code-context-download")) {
+                var media = $mt[0]._mediaObject;
+                window.saveAs(media._blob.content, media.name);
+            }
         });
 
         return m;

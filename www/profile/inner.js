@@ -9,6 +9,7 @@ define([
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
     '/common/common-realtime.js',
+    '/common/clipboard.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/customize/application_config.js',
@@ -36,6 +37,7 @@ define([
     UI,
     UIElements,
     Realtime,
+    Clipboard,
     h,
     Messages,
     AppConfig,
@@ -96,15 +98,20 @@ define([
         var hash = common.getMetadataMgr().getPrivateData().hashes.viewHash;
         var url = APP.origin + '/profile/#' + hash;
 
-        var $button = $('<button>', {
-            'class': 'btn btn-success',
-            id: VIEW_PROFILE_BUTTON,
-        })
-        .text(Messages.profile_viewMyProfile)
-        .click(function () {
+        $('<button>', {
+            'class': 'btn btn-success '+VIEW_PROFILE_BUTTON,
+        }).text(Messages.profile_viewMyProfile).click(function () {
             window.open(url, '_blank');
-        });
-        $container.append($button);
+        }).appendTo($container);
+
+        $('<button>', {
+            'class': 'btn btn-success '+VIEW_PROFILE_BUTTON,
+        }).append(h('i.fa.fa-shhare-alt'))
+          .append(h('span', Messages.shareButton))
+          .click(function () {
+            var success = Clipboard.copy(url);
+            if (success) { UI.log(Messages.shareSuccess); }
+        }).appendTo($container);
     };
 
     var addDisplayName = function ($container) {

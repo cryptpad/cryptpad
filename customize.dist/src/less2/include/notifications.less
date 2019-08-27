@@ -1,4 +1,5 @@
 @import (reference) "./colortheme-all.less";
+@import (reference) "./avatar.less";
 
 .notifications_main() {
     --LessLoader_require: LessLoader_currentFile();
@@ -51,6 +52,19 @@
             &:hover {
                 background-color: rgba(0,0,0,0.1);
             }
+        }
+    }
+    .cp-notifications-requestedit-verified {
+        display: flex;
+        align-items: center;
+        &> span.cp-avatar {
+            .avatar_main(30px);
+        }
+        &> span {
+            margin-right: 10px;
+        }
+        &> p {
+            margin: 0;
         }
     }
 }

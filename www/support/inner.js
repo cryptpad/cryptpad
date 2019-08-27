@@ -107,13 +107,13 @@ define([
                     // A ticket has been closed by the admins...
                     if (!$ticket.length) { return; }
                     $ticket.addClass('cp-support-list-closed');
-                    $ticket.append(Support.makeCloseMessage(common, content, hash));
+                    $ticket.append(APP.support.makeCloseMessage(content, hash));
                     return;
                 }
                 if (msg.type !== 'TICKET') { return; }
 
                 if (!$ticket.length) {
-                    $ticket = Support.makeTicket($div, common, content, function () {
+                    $ticket = APP.support.makeTicket($div, content, function () {
                         var error = false;
                         hashesById[id].forEach(function (d) {
                             common.mailbox.dismiss(d, function (err) {
@@ -126,7 +126,7 @@ define([
                         if (!error) { $ticket.remove(); }
                     });
                 }
-                $ticket.append(Support.makeMessage(common, content, hash, false));
+                $ticket.append(APP.support.makeMessage(content, hash));
             }
         });
         return $div;
@@ -137,7 +137,7 @@ define([
         var key = 'form';
         var $div = makeBlock(key, true);
 
-        var form = Support.makeForm();
+        var form = APP.support.makeForm();
 
         $div.find('button').before(form);
 
@@ -147,7 +147,7 @@ define([
             var metadataMgr = common.getMetadataMgr();
             var privateData = metadataMgr.getPrivateData();
             var user = metadataMgr.getUserData();
-            var sent = Support.sendForm(common, id, form, {
+            var sent = APP.support.sendForm(id, form, {
                 channel: privateData.support,
                 curvePublic: user.curvePublic
             });
@@ -244,6 +244,7 @@ define([
 
         APP.origin = privateData.origin;
         APP.readOnly = privateData.readOnly;
+        APP.support = Support.create(common, false);
 
         // Content
         var $rightside = APP.$rightside;

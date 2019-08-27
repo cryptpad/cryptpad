@@ -34,7 +34,7 @@ define([
         var sendDriveEvent = function () {};
         var registerProxyEvents = function () {};
 
-        var storeHash;
+        var storeHash, storeChannel;
 
         var store = window.CryptPad_AsyncStore = {
             modules: {}
@@ -239,6 +239,20 @@ define([
 
         Store.removeOwnedChannel = function (clientId, data, cb) {
             if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+
+            // "data" used to be a string (channelID), now it can also be an object
+            // data.force tells us we can safely remove the drive ID
+            var channel = data;
+            var force = false;
+            if (data && typeof(data) === "object") {
+                channel = data.channel;
+                force = data.force;
+            }
+
+            if (channel === storeChannel && !force) {
+                return void cb({error: 'User drive removal blocked!'});
+            }
+
             store.rpc.removeOwnedChannel(data, function (err) {
                 cb({error:err});
             });
@@ -573,7 +587,10 @@ define([
                         }));
                     }).nThen(function (waitFor) {
                         // Delete Drive
-                        Store.removeOwnedChannel(clientId, secret.channel, waitFor());
+                        Store.removeOwnedChannel(clientId, {
+                            channel: secret.channel,
+                            force: true
+                        }, waitFor());
                     }).nThen(function () {
                         store.network.disconnect();
                         cb({
@@ -721,7 +738,10 @@ define([
                 var object = getAttributeObject(data.attr);
                 object.obj[object.key] = data.value;
             } catch (e) { return void cb({error: e}); }
-            onSync(cb);
+            onSync(function () {
+                cb();
+                broadcast([], "UPDATE_METADATA");
+            });
         };
         Store.getAttribute = function (clientId, data, cb) {
             var object;
@@ -786,6 +806,7 @@ define([
             var h = p.hashData;
 
             if (AppConfig.disableAnonymousStore && !store.loggedIn) { return void cb(); }
+            if (p.type === "debug") { return void cb(); }
 
             var channelData = Store.channels && Store.channels[channel];
 
@@ -1191,10 +1212,7 @@ define([
                 },
                 noChainPad: true,
                 channel: data.channel,
-                validateKey: data.validateKey,
-                owners: data.owners,
-                password: data.password,
-                expire: data.expire,
+                metadata: data.metadata,
                 network: store.network,
                 //readOnly: data.readOnly,
                 onConnect: function (wc, sendMessage) {
@@ -1242,6 +1260,128 @@ define([
                 return void cb();
             }
             channel.sendMessage(msg, clientId, cb);
+        };
+
+        // requestPadAccess is used to check if we have a way to contact the owner
+        // of the pad AND to send the request if we want
+        // data.send === false ==> check if we can contact them
+        // data.send === true  ==> send the request
+        Store.requestPadAccess = function (clientId, data, cb) {
+            var owner = data.owner;
+            var channel = channels[data.channel];
+            if (!channel) { return void cb({error: 'ENOTFOUND'}); }
+            if (!data.send && channel && (!channel.data || !channel.data.channel)) {
+                var i = 0;
+                var it = setInterval(function () {
+                    if (channel.data && channel.data.channel) {
+                        clearInterval(it);
+                        Store.requestPadAccess(clientId, data, cb);
+                        return;
+                    }
+                    if (i >= 300) { // One minute timeout
+                        clearInterval(it);
+                        return void cb({error: 'ETIMEOUT'});
+                    }
+                    i++;
+                }, 200);
+                return;
+            }
+
+            // If the owner was not is the pad metadata, check if it is a friend.
+            // We'll contact the first owner for whom we know the mailbox
+            var fData = channel.data || {};
+            if (!owner && fData.owners) {
+                var friends = store.proxy.friends || {};
+                if (Object.keys(friends).length > 1) {
+                    fData.owners.some(function (edPublic) {
+                        return Object.keys(friends).some(function (curve) {
+                            if (curve === "me") { return; }
+                            if (edPublic === friends[curve].edPublic &&
+                                friends[curve].notifications) {
+                                owner = friends[curve];
+                                return true;
+                            }
+                        });
+                    });
+                }
+            }
+
+            // If send is true, send the request to the owner.
+            if (owner) {
+                if (data.send) {
+                    var myData = Messaging.createData(store.proxy);
+                    delete myData.channel;
+                    store.mailbox.sendTo('REQUEST_PAD_ACCESS', {
+                        channel: data.channel,
+                        user: myData
+                    }, {
+                        channel: owner.notifications,
+                        curvePublic: owner.curvePublic
+                    }, function () {
+                        cb({state: true});
+                    });
+                    return;
+                }
+                return void cb({state: true});
+            }
+            cb({state: false});
+        };
+        Store.givePadAccess = function (clientId, data, cb) {
+            var edPublic = store.proxy.edPublic;
+            var channel = data.channel;
+            var res = store.manager.findChannel(channel);
+
+            if (!data.user || !data.user.notifications || !data.user.curvePublic) {
+                return void cb({error: 'EINVAL'});
+            }
+
+            var href, title;
+
+            if (!res.some(function (obj) {
+                if (obj.data &&
+                    Array.isArray(obj.data.owners) && obj.data.owners.indexOf(edPublic) !== -1 &&
+                    obj.data.href) {
+                        href = obj.data.href;
+                        title = obj.data.title;
+                        return true;
+                }
+            })) { return void cb({error: 'ENOTFOUND'}); }
+
+            var myData = Messaging.createData(store.proxy);
+            delete myData.channel;
+            store.mailbox.sendTo("GIVE_PAD_ACCESS", {
+                channel: channel,
+                href: href,
+                title: title,
+                user: myData
+            }, {
+                channel: data.user.notifications,
+                curvePublic: data.user.curvePublic
+            });
+            cb();
+        };
+
+        Store.getPadMetadata = function (clientId, data, cb) {
+            if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }
+            var channel = channels[data.channel];
+            if (!channel) { return void cb({ error: 'ENOTFOUND' }); }
+            if (!channel.data || !channel.data.channel) {
+                var i = 0;
+                var it = setInterval(function () {
+                    if (channel.data && channel.data.channel) {
+                        clearInterval(it);
+                        Store.getPadMetadata(clientId, data, cb);
+                        return;
+                    }
+                    if (i >= 300) { // One minute timeout
+                        clearInterval(it);
+                        return void cb({error: 'ETIMEOUT'});
+                    }
+                    i++;
+                }, 200);
+                return;
+            }
+            cb(channel.data || {});
         };
 
         // GET_FULL_HISTORY from sframe-common-outer
@@ -1350,14 +1490,16 @@ define([
                 websocketURL: NetConfig.getWebsocketURL(),
                 channel: secret.channel,
                 readOnly: false,
-                validateKey: secret.keys.validateKey || undefined,
                 crypto: Crypto.createEncryptor(secret.keys),
                 userName: 'sharedFolder',
                 logLevel: 1,
                 ChainPad: ChainPad,
                 classic: true,
                 network: store.network,
-                owners: owners
+                metadata: {
+                    validateKey: secret.keys.validateKey || undefined,
+                    owners: owners
+                }
             };
             var rt = Listmap.create(listmapConfig);
             store.sharedFolders[id] = rt;
@@ -1824,6 +1966,7 @@ define([
             }
             // No password for drive
             var secret = Hash.getSecrets('drive', hash);
+            storeChannel = secret.channel;
             var listmapConfig = {
                 data: {},
                 websocketURL: NetConfig.getWebsocketURL(),

@@ -595,5 +595,21 @@
     "settings_deleteButton": "Borrar su cuenta",
     "settings_deleteModal": "Compartir la siguiente información con el administrado de su CryptDrive a fin de que sus datos sean removidos de su servidor.",
     "settings_deleteConfirm": "Presionar OK borrará su cuanta de manera permanente. Está seguro?",
-    "settings_deleted": "Tu cuenta de usuario ha sido borrada. Presione OK para ir a la página principal."
+    "settings_deleted": "Tu cuenta de usuario ha sido borrada. Presione OK para ir a la página principal.",
+    "uploadFolderButton": "Subir carpeta",
+    "fm_morePads": "Más",
+    "fc_color": "Cambiar color",
+    "fc_openInCode": "Abrir en el editor de código",
+    "fc_expandAll": "Expandir todo",
+    "fc_collapseAll": "Colapsar todo",
+    "settings_driveDuplicateLabel": "Ocultar duplicados",
+    "settings_codeFontSize": "Tamaño de la fuente en el editor de código",
+    "settings_padWidth": "Ancho máximo del editor",
+    "settings_padWidthLabel": "Reducir el ancho del editor",
+    "settings_padSpellcheckTitle": "Corrector ortográfico",
+    "settings_creationSkipTrue": "Omitir",
+    "settings_creationSkipFalse": "Monitor",
+    "settings_ownDriveTitle": "Habilitar las últimas características de la cuenta",
+    "settings_ownDriveHint": "Por razones técnicas, las cuentas más antiguas no tienen acceso a todas nuestras funciones más recientes. Una actualización gratuita a una nueva cuenta preparará su CryptDrive para las próximas funciones sin interrumpir sus actividades habituales.",
+    "settings_ownDriveButton": "Actualiza tu cuenta"
 }

@@ -319,6 +319,36 @@ define([], function () {
         return window.innerHeight < 800 || window.innerWidth < 800;
     };
 
+    Util.stripTags = function (text) {
+        var div = document.createElement("div");
+        div.innerHTML = text;
+        return div.innerText;
+    };
+
+    // return an object containing {name, ext}
+    // or {} if the name could not be parsed
+    Util.parseFilename = function (filename) {
+        if (!filename || !filename.trim()) { return {}; }
+        var parsedName =  /^(\.?.+?)(\.[^.]+)?$/.exec(filename) || [];
+        return {
+            name: parsedName[1],
+            ext: parsedName[2],
+        };
+    };
+
+    // Tell if a file is plain text from its metadata={title, fileType}
+    Util.isPlainTextFile = function (type, name) {
+        // does its type begins with "text/"
+        if (type && type.indexOf("text/") === 0) { return true; }
+        // no type and no file extension -> let's guess it's plain text
+        var parsedName = Util.parseFilename(name);
+        if (!type && name && !parsedName.ext) { return true; }
+        // other exceptions
+        if (type === 'application/x-javascript') { return true; }
+        if (type === 'application/xml') { return true; }
+        return false;
+    };
+
     return Util;
 });
 }(self));

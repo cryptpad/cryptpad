@@ -5,10 +5,24 @@
 const nThen = require('nthen');
 const Nacl = require('tweetnacl');
 const Crypto = require('crypto');
+const Once = require("./lib/once");
+const Meta = require("./lib/metadata");
 
 let Log;
 const now = function () { return (new Date()).getTime(); };
 
+/*  getHash
+    * this function slices off the leading portion of a message which is
+      most likely unique
+    * these "hashes" are used to identify particular messages in a channel's history
+    * clients store "hashes" either in memory or in their drive to query for new messages:
+      * when reconnecting to a pad
+      * when connecting to chat or a mailbox
+    * thus, we can't change this function without invalidating client data which:
+      * is encrypted clientside
+      * can't be easily migrated
+    * don't break it!
+*/
 const getHash = function (msg) {
     if (typeof(msg) !== 'string') {
         Log.warn('HK_GET_HASH', 'getHash() called on ' + typeof(msg) + ': ' + msg);
@@ -25,6 +39,18 @@ const tryParse = function (str) {
     }
 };
 
+/*  sliceCpIndex
+    returns a list of all checkpoints which might be relevant for a client connecting to a session
+
+    * if there are two or fewer checkpoints, return everything you have
+    * if there are more than two
+      * return at least two
+      * plus any more which were received within the last 100 messages
+
+    This is important because the additional history is what prevents
+    clients from forking on checkpoints and dropping forked history.
+
+*/
 const sliceCpIndex = function (cpIndex, line) {
     // Remove "old" checkpoints (cp sent before 100 messages ago)
     const minLine = Math.max(0, (line - 100));
@@ -36,6 +62,20 @@ const sliceCpIndex = function (cpIndex, line) {
     return start.concat(end);
 };
 
+const isMetadataMessage = function (parsed) {
+    return Boolean(parsed && parsed.channel);
+};
+
+// validateKeyStrings supplied by clients must decode to 32-byte Uint8Arrays
+const isValidValidateKeyString = function (key) {
+    try {
+        return typeof(key) === 'string' &&
+            Nacl.util.decodeBase64(key).length === Nacl.sign.publicKeyLength;
+    } catch (e) {
+        return false;
+    }
+};
+
 module.exports.create = function (cfg) {
     const rpc = cfg.rpc;
     const tasks = cfg.tasks;
@@ -44,7 +84,7 @@ module.exports.create = function (cfg) {
 
     Log.silly('HK_LOADING', 'LOADING HISTORY_KEEPER MODULE');
 
-    const historyKeeperKeys = {};
+    const metadata_cache = {};
     const HISTORY_KEEPER_ID = Crypto.randomBytes(8).toString('hex');
 
     Log.verbose('HK_ID', 'History keeper ID: ' + HISTORY_KEEPER_ID);
@@ -53,54 +93,122 @@ module.exports.create = function (cfg) {
     let STANDARD_CHANNEL_LENGTH, EPHEMERAL_CHANNEL_LENGTH;
     const setConfig = function (config) {
         STANDARD_CHANNEL_LENGTH = config.STANDARD_CHANNEL_LENGTH;
-        EPHEMERAL_CHANNEL_LENGTH = config.EPHEMERAL_CHANNEl_LENGTH;
+        EPHEMERAL_CHANNEL_LENGTH = config.EPHEMERAL_CHANNEL_LENGTH;
         sendMsg = config.sendMsg;
     };
 
+    /*  computeIndex
+        can call back with an error or a computed index which includes:
+            * cpIndex:
+                * array including any checkpoints pushed within the last 100 messages
+                * processed by 'sliceCpIndex(cpIndex, line)'
+            * offsetByHash:
+                * a map containing message offsets by their hash
+                * this is for every message in history, so it could be very large...
+                    * except we remove offsets from the map if they occur before the oldest relevant checkpoint
+            * size: in bytes
+            * metadata:
+                * validationKey
+                * expiration time
+                * owners
+                * ??? (anything else we might add in the future)
+            * line
+                * the number of messages in history
+                * including the initial metadata line, if it exists
+
+    */
     const computeIndex = function (channelName, cb) {
         const cpIndex = [];
         let messageBuf = [];
-        let validateKey;
         let metadata;
         let i = 0;
-        store.readMessagesBin(channelName, 0, (msgObj, rmcb) => {
-            let msg;
-            i++;
-            if (!validateKey && msgObj.buff.indexOf('validateKey') > -1) {
-                metadata = msg = tryParse(msgObj.buff.toString('utf8'));
-                if (typeof msg === "undefined") { return rmcb(); }
-                if (msg.validateKey) {
-                    validateKey = historyKeeperKeys[channelName] = msg;
-                    return rmcb();
+
+        const ref = {};
+
+        const CB = Once(cb);
+
+        const offsetByHash = {};
+        let size = 0;
+        nThen(function (w) {
+            // iterate over all messages in the channel log
+            // old channels can contain metadata as the first message of the log
+            // remember metadata the first time you encounter it
+            // otherwise index important messages in the log
+            store.readMessagesBin(channelName, 0, (msgObj, readMore) => {
+                let msg;
+                // keep an eye out for the metadata line if you haven't already seen it
+                // but only check for metadata on the first line
+                if (!i && !metadata && msgObj.buff.indexOf('{') === 0) {
+                    i++; // always increment the message counter
+                    msg = tryParse(msgObj.buff.toString('utf8'));
+                    if (typeof msg === "undefined") { return readMore(); }
+
+                    // validate that the current line really is metadata before storing it as such
+                    if (isMetadataMessage(msg)) {
+                        metadata = msg;
+                        return readMore();
+                    }
                 }
+                i++;
+                if (msgObj.buff.indexOf('cp|') > -1) {
+                    msg = msg || tryParse(msgObj.buff.toString('utf8'));
+                    if (typeof msg === "undefined") { return readMore(); }
+                    // cache the offsets of checkpoints if they can be parsed
+                    if (msg[2] === 'MSG' && msg[4].indexOf('cp|') === 0) {
+                        cpIndex.push({
+                            offset: msgObj.offset,
+                            line: i
+                        });
+                        // we only want to store messages since the latest checkpoint
+                        // so clear the buffer every time you see a new one
+                        messageBuf = [];
+                    }
+                }
+                // if it's not metadata or a checkpoint then it should be a regular message
+                // store it in the buffer
+                messageBuf.push(msgObj);
+                return readMore();
+            }, w((err) => {
+                if (err && err.code !== 'ENOENT') {
+                    w.abort();
+                    return void CB(err);
+                }
+
+                // once indexing is complete you should have a buffer of messages since the latest checkpoint
+                // map the 'hash' of each message to its byte offset in the log, to be used for reconnecting clients
+                messageBuf.forEach((msgObj) => {
+                    const msg = tryParse(msgObj.buff.toString('utf8'));
+                    if (typeof msg === "undefined") { return; }
+                    if (msg[0] === 0 && msg[2] === 'MSG' && typeof(msg[4]) === 'string') {
+                        // msgObj.offset is API guaranteed by our storage module
+                        // it should always be a valid positive integer
+                        offsetByHash[getHash(msg[4])] = msgObj.offset;
+                    }
+                    // There is a trailing \n at the end of the file
+                    size = msgObj.offset + msgObj.buff.length + 1;
+                });
+            }));
+        }).nThen(function (w) {
+            // create a function which will iterate over amendments to the metadata
+            const handler = Meta.createLineHandler(ref, Log.error);
+
+            // initialize the accumulator in case there was a foundational metadata line in the log content
+            if (metadata) { handler(void 0, metadata); }
+
+            // iterate over the dedicated metadata log (if it exists)
+            // proceed even in the event of a stream error on the metadata log
+            store.readDedicatedMetadata(channelName, handler, w(function (err) {
+                if (err) {
+                    return void Log.error("DEDICATED_METADATA_ERROR", err);
+                }
+            }));
+        }).nThen(function () {
+            // when all is done, cache the metadata in memory
+            if (ref.index) { // but don't bother if no metadata was found...
+                metadata = metadata_cache[channelName] = ref.meta;
             }
-            if (msgObj.buff.indexOf('cp|') > -1) {
-                msg = msg || tryParse(msgObj.buff.toString('utf8'));
-                if (typeof msg === "undefined") { return rmcb(); }
-                if (msg[2] === 'MSG' && msg[4].indexOf('cp|') === 0) {
-                    cpIndex.push({
-                        offset: msgObj.offset,
-                        line: i
-                    });
-                    messageBuf = [];
-                }
-            }
-            messageBuf.push(msgObj);
-            return rmcb();
-        }, (err) => {
-            if (err && err.code !== 'ENOENT') { return void cb(err); }
-            const offsetByHash = {};
-            let size = 0;
-            messageBuf.forEach((msgObj) => {
-                const msg = tryParse(msgObj.buff.toString('utf8'));
-                if (typeof msg === "undefined") { return; }
-                if (msg[0] === 0 && msg[2] === 'MSG' && typeof(msg[4]) === 'string') {
-                    offsetByHash[getHash(msg[4])] = msgObj.offset;
-                }
-                // There is a trailing \n at the end of the file
-                size = msgObj.offset + msgObj.buff.length + 1;
-            });
-            cb(null, {
+            // and return the computed index
+            CB(null, {
                 // Only keep the checkpoints included in the last 100 messages
                 cpIndex: sliceCpIndex(cpIndex, i),
                 offsetByHash: offsetByHash,
@@ -111,13 +219,61 @@ module.exports.create = function (cfg) {
         });
     };
 
+    /*  getIndex
+        calls back with an error if anything goes wrong
+        or with a cached index for a channel if it exists
+            (along with metadata)
+        otherwise it calls back with the index computed by 'computeIndex'
+
+        as an added bonus:
+        if the channel exists but its index does not then it caches the index
+    */
+    const indexQueues = {};
     const getIndex = (ctx, channelName, cb) => {
         const chan = ctx.channels[channelName];
-        if (chan && chan.index) { return void cb(undefined, chan.index); }
+        // if there is a channel in memory and it has an index cached, return it
+        if (chan && chan.index) {
+            // enforce async behaviour
+            return void setTimeout(function () {
+                cb(undefined, chan.index);
+            });
+        }
+
+        // if a call to computeIndex is already in progress for this channel
+        // then add the callback for the latest invocation to the queue
+        // and wait for it to complete
+        if (Array.isArray(indexQueues[channelName])) {
+            indexQueues[channelName].push(cb);
+            return;
+        }
+
+        // otherwise, make a queue for any 'getIndex' calls made before the following 'computeIndex' call completes
+        var queue = indexQueues[channelName] = (indexQueues[channelName] || [cb]);
+
         computeIndex(channelName, (err, ret) => {
-            if (err) { return void cb(err); }
+            if (!Array.isArray(queue)) {
+                // something is very wrong if there's no callback array
+                return void Log.error("E_INDEX_NO_CALLBACK", channelName);
+            }
+
+
+            // clean up the queue that you're about to handle, but keep a local copy
+            delete indexQueues[channelName];
+
+            // this is most likely an unrecoverable filesystem error
+            if (err) {
+                // call back every pending function with the error
+                return void queue.forEach(function (_cb) {
+                    _cb(err);
+                });
+            }
+            // cache the computed result if possible
             if (chan) { chan.index = ret; }
-            cb(undefined, ret);
+
+            // call back every pending function with the result
+            queue.forEach(function (_cb) {
+                _cb(void 0, ret);
+            });
         });
     };
 
@@ -128,24 +284,65 @@ module.exports.create = function (cfg) {
     }
     */
 
+    /*  storeMessage
+        * ctx
+        * channel id
+        * the message to store
+        * whether the message is a checkpoint
+        * optionally the hash of the message
+            * it's not always used, but we guard against it
 
-    const storeMessage = function (ctx, channel, msg, isCp, maybeMsgHash) {
-        const msgBin = new Buffer(msg + '\n', 'utf8');
+
+        * async but doesn't have a callback
+        * source of a race condition whereby:
+          * two messaages can be inserted
+          * two offsets can be computed using the total size of all the messages
+          * but the offsets don't correspond to the actual location of the newlines
+            * because the two actions were performed like ABba...
+        * the fix is to use callbacks and implement queueing for writes
+          * to guarantee that offset computation is always atomic with writes
+    */
+    const storageQueues = {};
+
+    const storeQueuedMessage = function (ctx, queue, id) {
+        if (queue.length === 0) {
+            delete storageQueues[id];
+            return;
+        }
+
+        const first = queue.shift();
+
+        const msgBin = first.msg;
+        const optionalMessageHash = first.hash;
+        const isCp = first.isCp;
+
         // Store the message first, and update the index only once it's stored.
         // store.messageBin can be async so updating the index first may
         // result in a wrong cpIndex
         nThen((waitFor) => {
-            store.messageBin(channel.id, msgBin, waitFor(function (err) {
+            store.messageBin(id, msgBin, waitFor(function (err) {
                 if (err) {
                     waitFor.abort();
-                    return void Log.error("HK_STORE_MESSAGE_ERROR", err.message);
+                    Log.error("HK_STORE_MESSAGE_ERROR", err.message);
+
+                    // this error is critical, but there's not much we can do at the moment
+                    // proceed with more messages, but they'll probably fail too
+                    // at least you won't have a memory leak
+
+                    // TODO make it possible to respond to clients with errors so they know
+                    // their message wasn't stored
+                    storeQueuedMessage(ctx, queue, id);
+                    return;
                 }
             }));
         }).nThen((waitFor) => {
-            getIndex(ctx, channel.id, waitFor((err, index) => {
+            getIndex(ctx, id, waitFor((err, index) => {
                 if (err) {
                     Log.warn("HK_STORE_MESSAGE_INDEX", err.stack);
                     // non-critical, we'll be able to get the channel index later
+
+                    // proceed to the next message in the queue
+                    storeQueuedMessage(ctx, queue, id);
                     return;
                 }
                 if (typeof (index.line) === "number") { index.line++; }
@@ -161,60 +358,177 @@ module.exports.create = function (cfg) {
                         line: ((index.line || 0) + 1)
                     } /*:cp_index_item*/));
                 }
-                if (maybeMsgHash) { index.offsetByHash[maybeMsgHash] = index.size; }
+                if (optionalMessageHash) { index.offsetByHash[optionalMessageHash] = index.size; }
                 index.size += msgBin.length;
+
+                // handle the next element in the queue
+                storeQueuedMessage(ctx, queue, id);
             }));
         });
     };
 
-    // Determine what we should store when a message a broadcasted to a channel
+    const storeMessage = function (ctx, channel, msg, isCp, optionalMessageHash) {
+        const id = channel.id;
+
+        const msgBin = new Buffer(msg + '\n', 'utf8');
+        if (Array.isArray(storageQueues[id])) {
+            return void storageQueues[id].push({
+                msg: msgBin,
+                hash: optionalMessageHash,
+                isCp: isCp,
+            });
+        }
+
+        const queue = storageQueues[id] = (storageQueues[id] || [{
+            msg: msgBin,
+            hash: optionalMessageHash,
+        }]);
+        storeQueuedMessage(ctx, queue, id);
+    };
+
+    var CHECKPOINT_PATTERN = /^cp\|(([A-Za-z0-9+\/=]+)\|)?/;
+
+    /*  onChannelMessage
+        Determine what we should store when a message a broadcasted to a channel"
+
+        * ignores ephemeral channels
+        * ignores messages sent to expired channels
+        * rejects duplicated checkpoints
+        * validates messages to channels that have validation keys
+        * caches the id of the last saved checkpoint
+        * adds timestamps to incoming messages
+        * writes messages to the store
+    */
     const onChannelMessage = function (ctx, channel, msgStruct) {
         // don't store messages if the channel id indicates that it's an ephemeral message
         if (!channel.id || channel.id.length === EPHEMERAL_CHANNEL_LENGTH) { return; }
 
         const isCp = /^cp\|/.test(msgStruct[4]);
-        if (historyKeeperKeys[channel.id] && historyKeeperKeys[channel.id].expire &&
-                historyKeeperKeys[channel.id].expire < +new Date()) {
-            return; // Don't store messages on expired channel
-        }
         let id;
         if (isCp) {
-            /*::if (typeof(msgStruct[4]) !== 'string') { throw new Error(); }*/
-            id = /cp\|(([A-Za-z0-9+\/=]+)\|)?/.exec(msgStruct[4]);
+            // id becomes either null or an array or results...
+            id = CHECKPOINT_PATTERN.exec(msgStruct[4]);
             if (Array.isArray(id) && id[2] && id[2] === channel.lastSavedCp) {
                 // Reject duplicate checkpoints
                 return;
             }
         }
-        if (historyKeeperKeys[channel.id] && historyKeeperKeys[channel.id].validateKey) {
-            /*::if (typeof(msgStruct[4]) !== 'string') { throw new Error(); }*/
-            let signedMsg = (isCp) ? msgStruct[4].replace(/^cp\|(([A-Za-z0-9+\/=]+)\|)?/, '') : msgStruct[4];
-            signedMsg = Nacl.util.decodeBase64(signedMsg);
-            const validateKey = Nacl.util.decodeBase64(historyKeeperKeys[channel.id].validateKey);
-            const validated = Nacl.sign.open(signedMsg, validateKey);
-            if (!validated) {
-                Log.info("HK_SIGNED_MESSAGE_REJECTED", 'Channel '+channel.id);
-                return;
+
+        let metadata;
+        nThen(function (w) {
+            // getIndex (and therefore the latest metadata)
+            getIndex(ctx, channel.id, w(function (err, index) {
+                if (err) {
+                    w.abort();
+                    return void Log.error('CHANNEL_MESSAGE_ERROR', err);
+                }
+
+                if (!index.metadata) {
+                    // if there's no channel metadata then it can't be an expiring channel
+                    // nor can we possibly validate it
+                    return;
+                }
+
+                metadata = index.metadata;
+
+                if (metadata.expire && metadata.expire < +new Date()) {
+                    // don't store message sent to expired channels
+                    w.abort();
+                    return;
+                    // TODO if a channel expired a long time ago but it's still here, remove it
+                }
+
+                // if there's no validateKey present skip to the next block
+                if (!metadata.validateKey) { return; }
+
+                // trim the checkpoint indicator off the message if it's present
+                let signedMsg = (isCp) ? msgStruct[4].replace(CHECKPOINT_PATTERN, '') : msgStruct[4];
+                // convert the message from a base64 string into a Uint8Array
+
+                // FIXME this can fail and the client won't notice
+                signedMsg = Nacl.util.decodeBase64(signedMsg);
+
+                // FIXME this can blow up
+                // TODO check that that won't cause any problems other than not being able to append...
+                const validateKey = Nacl.util.decodeBase64(metadata.validateKey);
+                // validate the message
+                const validated = Nacl.sign.open(signedMsg, validateKey);
+                if (!validated) {
+                    // don't go any further if the message fails validation
+                    w.abort();
+                    Log.info("HK_SIGNED_MESSAGE_REJECTED", 'Channel '+channel.id);
+                    return;
+                }
+            }));
+        }).nThen(function () {
+            // do checkpoint stuff...
+
+            // 1. get the checkpoint id
+            // 2. reject duplicate checkpoints
+
+            if (isCp) {
+                // if the message is a checkpoint we will have already validated
+                // that it isn't a duplicate. remember its id so that we can
+                // repeat this process for the next incoming checkpoint
+
+                // WARNING: the fact that we only check the most recent checkpoints
+                // is a potential source of bugs if one editor has high latency and
+                // pushes a duplicate of an earlier checkpoint than the latest which
+                // has been pushed by editors with low latency
+                // FIXME
+                if (Array.isArray(id) && id[2]) {
+                    // Store new checkpoint hash
+                    channel.lastSavedCp = id[2];
+                }
             }
-        }
-        if (isCp) {
-            // WARNING: the fact that we only check the most recent checkpoints
-            // is a potential source of bugs if one editor has high latency and
-            // pushes a duplicate of an earlier checkpoint than the latest which
-            // has been pushed by editors with low latency
-            if (Array.isArray(id) && id[2]) {
-                // Store new checkpoint hash
-                channel.lastSavedCp = id[2];
-            }
-        }
-        msgStruct.push(now());
-        storeMessage(ctx, channel, JSON.stringify(msgStruct), isCp, getHash(msgStruct[4]));
+
+            // add the time to the message
+            msgStruct.push(now());
+
+            // storeMessage
+            storeMessage(ctx, channel, JSON.stringify(msgStruct), isCp, getHash(msgStruct[4]));
+        });
     };
 
+    /*  dropChannel
+        * exported as API
+          * used by chainpad-server/NetfluxWebsocketSrv.js
+        * cleans up memory structures which are managed entirely by the historyKeeper
+          * the netflux server manages other memory in ctx.channels
+    */
     const dropChannel = function (chanName) {
-        delete historyKeeperKeys[chanName];
+        delete metadata_cache[chanName];
     };
 
+    /*  getHistoryOffset
+        returns a number representing the byte offset from the start of the log
+        for whatever history you're seeking.
+
+        query by providing a 'lastKnownHash',
+            which is really just a string of the first 64 characters of an encrypted message.
+        OR by -1 which indicates that we want the full history (byte offset 0)
+        OR nothing, which indicates that you want whatever messages the historyKeeper deems relevant
+            (typically the last few checkpoints)
+
+        this function embeds a lot of the history keeper's logic:
+
+        0. if you passed -1 as the lastKnownHash it means you want the complete history
+          * I'm not sure why you'd need to call this function if you know it will return 0 in this case...
+          * it has a side-effect of filling the index cache if it's empty
+        1. if you provided a lastKnownHash and that message does not exist in the history:
+          * either the client has made a mistake or the history they knew about no longer exists
+          * call back with EINVAL
+        2. if you did not provide a lastKnownHash
+          * and there are fewer than two checkpoints:
+            * return 0 (read from the start of the file)
+          * and there are two or more checkpoints:
+            * return the offset of the earliest checkpoint which 'sliceCpIndex' considers relevant
+        3. if you did provide a lastKnownHash
+          * read through the log until you find the hash that you're looking for
+          * call back with either the byte offset of the message that you found OR
+          * -1 if you didn't find it
+
+    */
     const getHistoryOffset = (ctx, channelName, lastKnownHash, cb /*:(e:?Error, os:?number)=>void*/) => {
         // lastKnownhash === -1 means we want the complete history
         if (lastKnownHash === -1) { return void cb(null, 0); }
@@ -223,8 +537,17 @@ module.exports.create = function (cfg) {
             getIndex(ctx, channelName, waitFor((err, index) => {
                 if (err) { waitFor.abort(); return void cb(err); }
 
-                // Check last known hash
+                // check if the "hash" the client is requesting exists in the index
                 const lkh = index.offsetByHash[lastKnownHash];
+                // we evict old hashes from the index as new checkpoints are discovered.
+                // if someone connects and asks for a hash that is no longer relevant,
+                // we tell them it's an invalid request. This is because of the semantics of "GET_HISTORY"
+                // which is only ever used when connecting or reconnecting in typical uses of history...
+                // this assumption should hold for uses by chainpad, but perhaps not for other uses cases.
+                // EXCEPT: other cases don't use checkpoints!
+                // clients that are told that their request is invalid should just make another request
+                // without specifying the hash, and just trust the server to give them the relevant data.
+                // QUESTION: does this mean mailboxes are causing the server to store too much stuff in memory?
                 if (lastKnownHash && typeof(lkh) !== "number") {
                     waitFor.abort();
                     return void cb(new Error('EINVAL'));
@@ -250,12 +573,20 @@ module.exports.create = function (cfg) {
                 offset = lkh;
             }));
         }).nThen((waitFor) => {
+            // if offset is less than zero then presumably the channel has no messages
+            // returning falls through to the next block and therefore returns -1
             if (offset !== -1) { return; }
-            store.readMessagesBin(channelName, 0, (msgObj, rmcb, abort) => {
+
+            // do a lookup from the index
+            // FIXME maybe we don't need this anymore?
+            // otherwise we have a non-negative offset and we can start to read from there
+            store.readMessagesBin(channelName, 0, (msgObj, readMore, abort) => {
+                // tryParse return a parsed message or undefined
                 const msg = tryParse(msgObj.buff.toString('utf8'));
-                if (typeof msg === "undefined") { return rmcb(); }
+                // if it was undefined then go onto the next message
+                if (typeof msg === "undefined") { return readMore(); }
                 if (typeof(msg[4]) !== 'string' || lastKnownHash !== getHash(msg[4])) {
-                    return void rmcb();
+                    return void readMore();
                 }
                 offset = msgObj.offset;
                 abort();
@@ -267,6 +598,15 @@ module.exports.create = function (cfg) {
         });
     };
 
+    /*  getHistoryAsync
+        * finds the appropriate byte offset from which to begin reading using 'getHistoryOffset'
+        * streams through the rest of the messages, safely parsing them and returning the parsed content to the handler
+        * calls back when it has reached the end of the log
+
+        Used by:
+        * GET_HISTORY
+
+    */
     const getHistoryAsync = (ctx, channelName, lastKnownHash, beforeHash, handler, cb) => {
         let offset = -1;
         nThen((waitFor) => {
@@ -280,15 +620,24 @@ module.exports.create = function (cfg) {
         }).nThen((waitFor) => {
             if (offset === -1) { return void cb(new Error("could not find offset")); }
             const start = (beforeHash) ? 0 : offset;
-            store.readMessagesBin(channelName, start, (msgObj, rmcb, abort) => {
+            store.readMessagesBin(channelName, start, (msgObj, readMore, abort) => {
                 if (beforeHash && msgObj.offset >= offset) { return void abort(); }
-                handler(tryParse(msgObj.buff.toString('utf8')), rmcb);
+                handler(tryParse(msgObj.buff.toString('utf8')), readMore);
             }, waitFor(function (err) {
                 return void cb(err);
             }));
         });
     };
 
+    /*  getOlderHistory
+        * allows clients to query for all messages until a known hash is read
+        * stores all messages in history as they are read
+          * can therefore be very expensive for memory
+          * should probably be converted to a streaming interface
+
+        Used by:
+        * GET_HISTORY_RANGE
+    */
     const getOlderHistory = function (channelName, oldestKnownHash, cb) {
         var messageBuffer = [];
         var found = false;
@@ -298,10 +647,11 @@ module.exports.create = function (cfg) {
             let parsed = tryParse(msgStr);
             if (typeof parsed === "undefined") { return; }
 
-            if (parsed.validateKey) {
-                historyKeeperKeys[channelName] = parsed;
-                return;
-            }
+            // identify classic metadata messages by their inclusion of a channel.
+            // and don't send metadata, since:
+            // 1. the user won't be interested in it
+            // 2. this metadata is potentially incomplete/incorrect
+            if (isMetadataMessage(parsed)) { return; }
 
             var content = parsed[4];
             if (typeof(content) !== 'string') { return; }
@@ -329,13 +679,20 @@ module.exports.create = function (cfg) {
     };
     */
 
-
+    /*  historyKeeperBroadcast
+        * uses API from the netflux server to send messages to every member of a channel
+        * sendMsg runs in a try-catch and drops users if sending a message fails
+    */
     const historyKeeperBroadcast = function (ctx, channel, msg) {
         let chan = ctx.channels[channel] || (([] /*:any*/) /*:Chan_t*/);
         chan.forEach(function (user) {
             sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(msg)]);
         });
     };
+
+    /*  onChannelCleared
+        * broadcasts to all clients in a channel if that channel is deleted
+    */
     const onChannelCleared = function (ctx, channel) {
         historyKeeperBroadcast(ctx, channel, {
             error: 'ECLEARED',
@@ -351,13 +708,29 @@ module.exports.create = function (cfg) {
             });
         });
         delete ctx.channels[channel];
-        delete historyKeeperKeys[channel];
+        delete metadata_cache[channel];
     };
     // Check if the selected channel is expired
     // If it is, remove it from memory and broadcast a message to its members
+
+    const onChannelMetadataChanged = function (ctx, channel) {
+        channel = channel;
+    };
+
+    /*  checkExpired
+        * synchronously returns true or undefined to indicate whether the channel is expired
+          * according to its metadata
+        * has some side effects:
+          * closes the channel via the store.closeChannel API
+            * and then broadcasts to all channel members that the channel has expired
+          * removes the channel from the netflux-server's in-memory cache
+          * removes the channel metadata from history keeper's in-memory cache
+
+        FIXME the boolean nature of this API should be separated from its side effects
+    */
     const checkExpired = function (ctx, channel) {
-        if (channel && channel.length === STANDARD_CHANNEL_LENGTH && historyKeeperKeys[channel] &&
-                historyKeeperKeys[channel].expire && historyKeeperKeys[channel].expire < +new Date()) {
+        if (channel && channel.length === STANDARD_CHANNEL_LENGTH && metadata_cache[channel] &&
+                metadata_cache[channel].expire && metadata_cache[channel].expire < +new Date()) {
             store.closeChannel(channel, function () {
                 historyKeeperBroadcast(ctx, channel, {
                     error: 'EEXPIRED',
@@ -365,12 +738,25 @@ module.exports.create = function (cfg) {
                 });
             });
             delete ctx.channels[channel];
-            delete historyKeeperKeys[channel];
+            delete metadata_cache[channel];
             return true;
         }
         return;
     };
 
+    /*  onDirectMessage
+        * exported for use by the netflux-server
+        * parses and handles all direct messages directed to the history keeper
+          * check if it's expired and execute all the associated side-effects
+          * routes queries to the appropriate handlers
+            * GET_HISTORY
+            * GET_HISTORY_RANGE
+            * GET_FULL_HISTORY
+            * RPC
+              * if the rpc has special hooks that the history keeper needs to be aware of...
+                * execute them here...
+
+    */
     const onDirectMessage = function (ctx, seq, user, json) {
         let parsed;
         let channelName;
@@ -386,7 +772,7 @@ module.exports.create = function (cfg) {
         }
 
         // If the requested history is for an expired channel, abort
-        // Note the if we don't have the keys for that channel in historyKeeperKeys, we'll
+        // Note the if we don't have the keys for that channel in metadata_cache, we'll
         // have to abort later (once we know the expiration time)
         if (checkExpired(ctx, parsed[1])) { return; }
 
@@ -396,35 +782,31 @@ module.exports.create = function (cfg) {
             // parsed[3] is the last known hash (optionnal)
             sendMsg(ctx, user, [seq, 'ACK']);
             channelName = parsed[1];
-            var validateKey = parsed[2];
-            var lastKnownHash = parsed[3];
-            var owners;
-            var expire;
-            if (parsed[2] && typeof parsed[2] === "object") {
-                validateKey = parsed[2].validateKey;
-                lastKnownHash = parsed[2].lastKnownHash;
-                owners = parsed[2].owners;
-                if (parsed[2].expire) {
-                    expire = +parsed[2].expire * 1000 + (+new Date());
+            var config = parsed[2];
+            var metadata = {};
+            var lastKnownHash;
+
+            // clients can optionally pass a map of attributes
+            // if the channel already exists this map will be ignored
+            // otherwise it will be stored as the initial metadata state for the channel
+            if (config && typeof config === "object" && !Array.isArray(parsed[2])) {
+                lastKnownHash = config.lastKnownHash;
+                metadata = config.metadata || {};
+                if (metadata.expire) {
+                    metadata.expire = +metadata.expire * 1000 + (+new Date());
                 }
+            }
+            metadata.channel = channelName;
+
+            // if the user sends us an invalid key, we won't be able to validate their messages
+            // so they'll never get written to the log anyway. Let's just drop their message
+            // on the floor instead of doing a bunch of extra work
+            // TODO send them an error message so they know something is wrong
+            if (metadata.validateKey && !isValidValidateKeyString(metadata.validateKey)) {
+                return void Log.error('HK_INVALID_KEY', metadata.validateKey);
             }
 
             nThen(function (waitFor) {
-                if (!tasks) { return; } // tasks are not supported
-                if (typeof(expire) !== 'number' || !expire) { return; }
-
-                // the fun part...
-                // the user has said they want this pad to expire at some point
-                tasks.write(expire, "EXPIRE", [ channelName ], waitFor(function (err) {
-                    if (err) {
-                        // if there is an error, we don't want to crash the whole server...
-                        // just log it, and if there's a problem you'll be able to fix it
-                        // at a later date with the provided information
-                        Log.error('HK_CREATE_EXPIRE_TASK', err);
-                        Log.info('HK_INVALID_EXPIRE_TASK', JSON.stringify([expire, 'EXPIRE', channelName]));
-                    }
-                }));
-            }).nThen(function (waitFor) {
                 var w = waitFor();
 
                 /*  unless this is a young channel, we will serve all messages from an offset
@@ -438,39 +820,29 @@ module.exports.create = function (cfg) {
                         so, let's just fall through...
                     */
                     if (err) { return w(); }
+
+
+                    // it's possible that the channel doesn't have metadata
+                    // but in that case there's no point in checking if the channel expired
+                    // or in trying to send metadata, so just skip this block
                     if (!index || !index.metadata) { return void w(); }
-                    // Store the metadata if we don't have it in memory
-                    if (!historyKeeperKeys[channelName]) {
-                        historyKeeperKeys[channelName] = index.metadata;
-                    }
                     // And then check if the channel is expired. If it is, send the error and abort
+                    // FIXME this is hard to read because 'checkExpired' has side effects
                     if (checkExpired(ctx, channelName)) { return void waitFor.abort(); }
-                    // Send the metadata to the user
-                    if (!lastKnownHash && index.cpIndex.length > 1) {
-                        sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(index.metadata)], w);
-                        return;
-                    }
-                    w();
+                    // always send metadata with GET_HISTORY requests
+                    sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(index.metadata)], w);
                 }));
             }).nThen(() => {
                 let msgCount = 0;
-                let expired = false;
-                getHistoryAsync(ctx, channelName, lastKnownHash, false, (msg, cb) => {
+
+                // TODO compute lastKnownHash in a manner such that it will always skip past the metadata line?
+                getHistoryAsync(ctx, channelName, lastKnownHash, false, (msg, readMore) => {
                     if (!msg) { return; }
-                    if (msg.validateKey) {
-                        // If it is a young channel, this is the part where we get the metadata
-                        // Check if the channel is expired and abort if it is.
-                        if (!historyKeeperKeys[channelName]) { historyKeeperKeys[channelName] = msg; }
-                        expired = checkExpired(ctx, channelName);
-                    }
-                    if (expired) { return void cb(); }
                     msgCount++;
-
-                    sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(msg)], cb);
+                    // avoid sending the metadata message a second time
+                    if (isMetadataMessage(msg) && metadata_cache[channelName]) { return readMore(); }
+                    sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(msg)], readMore);
                 }, (err) => {
-                    // If the pad is expired, stop here, we've already sent the error message
-                    if (expired) { return; }
-
                     if (err && err.code !== 'ENOENT') {
                         if (err.message !== 'EINVAL') { Log.error("HK_GET_HISTORY", err); }
                         const parsedMsg = {error:err.message, channel: channelName};
@@ -478,24 +850,46 @@ module.exports.create = function (cfg) {
                         return;
                     }
 
-                    // If this is a new channel, we need to store the metadata as
-                    // the first message in the file
                     const chan = ctx.channels[channelName];
-                    if (msgCount === 0 && !historyKeeperKeys[channelName] && chan && chan.indexOf(user) > -1) {
-                        var key = {};
-                        key.channel = channelName;
-                        if (validateKey) {
-                            key.validateKey = validateKey;
+
+                    if (msgCount === 0 && !metadata_cache[channelName] && chan && chan.indexOf(user) > -1) {
+                        metadata_cache[channelName] = metadata;
+
+                        // the index will have already been constructed and cached at this point
+                        // but it will not have detected any metadata because it hasn't been written yet
+                        // this means that the cache starts off as invalid, so we have to correct it
+                        if (chan && chan.index) { chan.index.metadata = metadata; }
+
+                        // new channels will always have their metadata written to a dedicated metadata log
+                        // but any lines after the first which are not amendments in a particular format will be ignored.
+                        // Thus we should be safe from race conditions here if just write metadata to the log as below...
+                        // TODO validate this logic
+                        // otherwise maybe we need to check that the metadata log is empty as well
+                        store.writeMetadata(channelName, JSON.stringify(metadata), function (err) {
+                            if (err) {
+                                // FIXME tell the user that there was a channel error?
+                                return void Log.error('HK_WRITE_METADATA', {
+                                    channel: channelName,
+                                    error: err,
+                                });
+                            }
+                        });
+
+                        // write tasks
+                        if(tasks && metadata.expire && typeof(metadata.expire) === 'number') {
+                            // the fun part...
+                            // the user has said they want this pad to expire at some point
+                            tasks.write(metadata.expire, "EXPIRE", [ channelName ], function (err) {
+                                if (err) {
+                                    // if there is an error, we don't want to crash the whole server...
+                                    // just log it, and if there's a problem you'll be able to fix it
+                                    // at a later date with the provided information
+                                    Log.error('HK_CREATE_EXPIRE_TASK', err);
+                                    Log.info('HK_INVALID_EXPIRE_TASK', JSON.stringify([metadata.expire, 'EXPIRE', channelName]));
+                                }
+                            });
                         }
-                        if (owners) {
-                            key.owners = owners;
-                        }
-                        if (expire) {
-                            key.expire = expire;
-                        }
-                        historyKeeperKeys[channelName] = key;
-                        storeMessage(ctx, chan, JSON.stringify(key), false, undefined);
-                        sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(key)]);
+                        sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(metadata)]);
                     }
 
                     // End of history message:
@@ -551,9 +945,12 @@ module.exports.create = function (cfg) {
             // parsed[2] is a validation key (optionnal)
             // parsed[3] is the last known hash (optionnal)
             sendMsg(ctx, user, [seq, 'ACK']);
-            getHistoryAsync(ctx, parsed[1], -1, false, (msg, cb) => {
+
+            // FIXME should we send metadata here too?
+            // none of the clientside code which uses this API needs metadata, but it won't hurt to send it (2019-08-22)
+            getHistoryAsync(ctx, parsed[1], -1, false, (msg, readMore) => {
                 if (!msg) { return; }
-                sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(['FULL_HISTORY', msg])], cb);
+                sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(['FULL_HISTORY', msg])], readMore);
             }, (err) => {
                 let parsedMsg = ['FULL_HISTORY_END', parsed[1]];
                 if (err) {
@@ -581,6 +978,15 @@ module.exports.create = function (cfg) {
                 if (msg[3] === 'CLEAR_OWNED_CHANNEL') {
                     onChannelCleared(ctx, msg[4]);
                 }
+
+                // FIXME METADATA CHANGE
+                if (msg[3] === 'SET_METADATA') { // or whatever we call the RPC????
+                    // make sure we update our cache of metadata
+                    // or at least invalidate it and force other mechanisms to recompute its state
+                    // 'output' could be the new state as computed by rpc
+                    onChannelMetadataChanged(ctx, msg[4]);
+                }
+
                 sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify([parsed[0]].concat(output))]);
             });
             } catch (e) {

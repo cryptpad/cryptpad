@@ -53,7 +53,7 @@ define([
                 'data-hash': data.content.hash
             }, [h('div.cp-notification-content', h('p', formatData(data)))]);
 
-            if (data.content.getFormatText) {
+            if (typeof(data.content.getFormatText) === "function") {
                 $(notif).find('.cp-notification-content p').html(data.content.getFormatText());
             }
 

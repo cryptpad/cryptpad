@@ -23,14 +23,12 @@ define([], function () {
     var start = function (conf) {
         var channel = conf.channel;
         var Crypto = conf.crypto;
-        var validateKey = conf.validateKey;
         var isNewHash = conf.isNewHash;
         var readOnly = conf.readOnly || false;
         var padRpc = conf.padRpc;
         var sframeChan = conf.sframeChan;
-        var password = conf.password;
-        var owners = conf.owners;
-        var expire = conf.expire;
+        var metadata= conf.metadata || {};
+        var validateKey = metadata.validateKey;
         var onConnect = conf.onConnect || function () { };
         conf = undefined;
 
@@ -127,11 +125,8 @@ define([], function () {
         // join the netflux network, promise to handle opening of the channel
         padRpc.joinPad({
             channel: channel || null,
-            validateKey: validateKey,
             readOnly: readOnly,
-            owners: owners,
-            password: password,
-            expire: expire
+            metadata: metadata
         });
     };
 

@@ -201,6 +201,64 @@ define([
         }
     };
 
+    // Hide duplicates when receiving a SUPPORT_MESSAGE notification
+    var supportMessage = false;
+    handlers['SUPPORT_MESSAGE'] = function (ctx, box, data, cb) {
+        if (supportMessage) { return void cb(true); }
+        supportMessage = true;
+        cb();
+    };
+
+    // Incoming edit rights request: add data before sending it to inner
+    handlers['REQUEST_PAD_ACCESS'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+
+        if (msg.author !== content.user.curvePublic) { return void cb(true); }
+
+        var channel = content.channel;
+        var res = ctx.store.manager.findChannel(channel);
+
+        if (!res.length) { return void cb(true); }
+
+        var edPublic = ctx.store.proxy.edPublic;
+        var title, href;
+        if (!res.some(function (obj) {
+            if (obj.data &&
+                Array.isArray(obj.data.owners) && obj.data.owners.indexOf(edPublic) !== -1 &&
+                obj.data.href) {
+                    href = obj.data.href;
+                    title = obj.data.filename || obj.data.title;
+                    return true;
+            }
+        })) { return void cb(true); }
+
+        content.title = title;
+        content.href = href;
+        cb(false);
+    };
+
+    handlers['GIVE_PAD_ACCESS'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+
+        if (msg.author !== content.user.curvePublic) { return void cb(true); }
+
+        var channel = content.channel;
+        var res = ctx.store.manager.findChannel(channel);
+
+        var title;
+        res.forEach(function (obj) {
+            if (obj.data && !obj.data.href) {
+                if (!title) { title = obj.data.filename || obj.data.title; }
+                obj.data.href = content.href;
+            }
+        });
+
+        content.title = title || content.title;
+        cb(false);
+    };
+
     return {
         add: function (ctx, box, data, cb) {
             /**

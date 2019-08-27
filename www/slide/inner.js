@@ -438,6 +438,7 @@ define([
     var andThen2 = function (editor, CodeMirror, framework, isPresentMode) {
 
         var common = framework._.sfCommon;
+        var privateData = common.getMetadataMgr().getPrivateData();
 
         var $contentContainer = $('#cp-app-slide-editor');
         var $modal = $('#cp-app-slide-modal');
@@ -515,7 +516,8 @@ define([
                 onUploaded: function (ev, data) {
                     var parsed = Hash.parsePadUrl(data.url);
                     var secret = Hash.getSecrets('file', parsed.hash, data.password);
-                    var src = Hash.getBlobPathFromHex(secret.channel);
+                    var fileHost = privateData.fileHost || privateData.origin;
+                    var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
                     var key = Hash.encodeBase64(secret.keys.cryptKey);
                     var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + key + '"></media-tag>';
                     editor.replaceSelection(mt);
@@ -538,7 +540,7 @@ define([
 
         editor.on('change', framework.localChange);
 
-        framework.setFileExporter(CodeMirror.getContentExtension, CodeMirror.fileExporter);
+        framework.setFileExporter(".md", CodeMirror.fileExporter);
         framework.setFileImporter({}, CodeMirror.fileImporter);
 
         framework.start();

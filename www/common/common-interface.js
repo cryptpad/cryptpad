@@ -592,6 +592,16 @@ define([
         ]);
     };
 
+    UI.createHelper = function (href, text) {
+        var q = h('a.fa.fa-question-circle', {
+            style: 'text-decoration: none !important;',
+            title: text,
+            href: href,
+            target: "_blank",
+            'data-tippy-placement': "right"
+        });
+        return q;
+    };
 
     /*
      *  spinner
@@ -773,6 +783,7 @@ define([
             var icon = AppConfig.applicationsIcon[type];
             var font = icon.indexOf('cptools') === 0 ? 'cptools' : 'fa';
             if (type === 'fileupload') { type = 'file'; }
+            if (type === 'folderupload') { type = 'file'; }
             var appClass = ' cp-icon cp-icon-color-'+type;
             $icon = $('<span>', {'class': font + ' ' + icon + appClass});
         }

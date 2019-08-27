@@ -314,11 +314,21 @@ define([
             var newPad = false;
             if (newContentStr === '') { newPad = true; }
 
+            var privateDat = cpNfInner.metadataMgr.getPrivateData();
+            var type = privateDat.app;
+
             // contentUpdate may be async so we need an nthen here
             nThen(function (waitFor) {
                 if (!newPad) {
                     var newContent = JSON.parse(newContentStr);
-                    cpNfInner.metadataMgr.updateMetadata(extractMetadata(newContent));
+                    var metadata = extractMetadata(newContent);
+                    if (metadata && typeof(metadata.type) !== 'undefined' && metadata.type !== type) {
+                        var errorText = Messages.typeError;
+                        UI.errorLoadingScreen(errorText);
+                        waitFor.abort();
+                        return;
+                    }
+                    cpNfInner.metadataMgr.updateMetadata(metadata);
                     newContent = normalize(newContent);
                     contentUpdate(newContent, waitFor);
                 } else {
@@ -356,8 +366,6 @@ define([
 
                 UI.removeLoadingScreen(emitResize);
 
-                var privateDat = cpNfInner.metadataMgr.getPrivateData();
-                var type = privateDat.app;
                 if (AppConfig.textAnalyzer && textContentGetter) {
                     AppConfig.textAnalyzer(textContentGetter, privateDat.channel);
                 }
@@ -401,7 +409,7 @@ define([
                 var ext = (typeof(extension) === 'function') ? extension() : extension;
                 var suggestion = title.suggestTitle('cryptpad-document');
                 UI.prompt(Messages.exportPrompt,
-                    Util.fixFileName(suggestion) + '.' + ext, function (filename)
+                    Util.fixFileName(suggestion) + ext, function (filename)
                 {
                     if (!(typeof(filename) === 'string' && filename)) { return; }
                     if (async) {
@@ -454,10 +462,10 @@ define([
                         return;
                     }
                     if (!mediaTagEmbedder) { console.log('mediaTagEmbedder missing'); return; }
-                    if (data.type !== 'file') { console.log('unhandled embed type ' + data.type); return; } 
+                    if (data.type !== 'file') { console.log('unhandled embed type ' + data.type); return; }
                     var privateDat = cpNfInner.metadataMgr.getPrivateData();
                     var origin = privateDat.fileHost || privateDat.origin;
-                    var src = data.src = origin + data.src;
+                    var src = data.src = data.src.slice(0,1) === '/' ? origin + data.src : data.src;
                     mediaTagEmbedder($('<media-tag src="' + src +
                         '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>'), data);
                 }
@@ -603,6 +611,7 @@ define([
                     'newpad',
                     'share',
                     'limit',
+                    'request',
                     'unpinnedWarning',
                     'notifications'
                 ],

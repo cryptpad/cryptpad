@@ -49,7 +49,7 @@ define([
                             // We want to merge an edit pad: check if we have the same channel
                             // but read-only and upgrade it in that case
                             datas.forEach(function (pad) {
-                                if (!pad.href) { data.href = pad.href; }
+                                if (pad.data && !pad.data.href) { pad.data.href = data.href; }
                             });
                             return;
                         }

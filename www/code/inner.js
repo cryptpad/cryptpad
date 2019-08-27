@@ -272,6 +272,7 @@ define([
     var andThen2 = function (editor, CodeMirror, framework, isPresentMode) {
 
         var common = framework._.sfCommon;
+        var privateData = common.getMetadataMgr().getPrivateData();
 
         var previewPane = mkPreviewPane(editor, CodeMirror, framework, isPresentMode);
         var markdownTb = mkMarkdownTb(editor, framework);
@@ -349,7 +350,8 @@ define([
                 onUploaded: function (ev, data) {
                     var parsed = Hash.parsePadUrl(data.url);
                     var secret = Hash.getSecrets('file', parsed.hash, data.password);
-                    var src = Hash.getBlobPathFromHex(secret.channel);
+                    var fileHost = privateData.fileHost || privateData.origin;
+                    var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
                     var key = Hash.encodeBase64(secret.keys.cryptKey);
                     var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + key + '"></media-tag>';
                     editor.replaceSelection(mt);
@@ -363,7 +365,15 @@ define([
         });
 
         framework.setFileExporter(CodeMirror.getContentExtension, CodeMirror.fileExporter);
-        framework.setFileImporter({}, CodeMirror.fileImporter);
+        framework.setFileImporter({}, function () {
+            /*  setFileImporter currently takes a function with the following signature:
+                (content, file) => {}
+                I used 'apply' with 'arguments' to avoid breaking things if this API ever changes.
+            */
+            var ret = CodeMirror.fileImporter.apply(null, Array.prototype.slice.call(arguments));
+            previewPane.modeChange(ret.mode);
+            return ret;
+        });
 
         framework.setNormalizer(function (c) {
             return {
