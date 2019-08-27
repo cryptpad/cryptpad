@@ -76,6 +76,7 @@
             text: function (metadata, url, content, cfg, cb) {
                 var plainText = document.createElement('div');
                 plainText.className = "plain-text-reader";
+                plainText.setAttribute('style', 'white-space: pre-wrap;');
                 var reader = new FileReader();
                 reader.addEventListener('loadend', function (e) {
                     plainText.innerText = e.srcElement.result;

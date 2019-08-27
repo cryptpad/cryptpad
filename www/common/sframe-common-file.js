@@ -257,14 +257,7 @@ define([
             store: true
         };
         var createHelper = function (href, text) {
-            var q = h('a.fa.fa-question-circle', {
-                style: 'text-decoration: none !important;',
-                title: text,
-                href: origin + href,
-                target: "_blank",
-                'data-tippy-placement': "right"
-            });
-            return q;
+            return UI.createHelper(origin + href, text);
         };
         var createManualStore = function (isFolderUpload) {
             var privateData = common.getMetadataMgr().getPrivateData();

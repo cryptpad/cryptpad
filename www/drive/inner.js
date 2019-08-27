@@ -3940,12 +3940,28 @@ define([
                     else if (manager.hasSubSharedFolder(el)) {
                         return void UI.alert(Messages.convertFolderToSF_SFChildren);
                     }
+                    // if root
+                    else if (paths[0].path.length <= 1) {
+                        return void UI.warn(Messages.error);
+                    }
                     // if folder does not contains SF
                     else {
-                        return void UI.confirm(Messages.convertFolderToSF_confirm, function(res) {
+                        var convertContent = h('div', [
+                            h('p', Messages.convertFolderToSF_confirm),
+                            h('label', {for: 'cp-upload-password'}, Messages.creation_passwordValue),
+                            UI.passwordInput({id: 'cp-upload-password'}),
+                            h('span', {
+                                style: 'display:flex;align-items:center;justify-content:space-between'
+                            }, [
+                                UI.createCheckbox('cp-upload-owned', Messages.sharedFolders_create_owned, true),
+                                UI.createHelper(APP.origin + '/faq.html#keywords-owned', Messages.creation_owned1)
+                            ]),
+                        ]);
+                        return void UI.confirm(convertContent, function(res) {
                             if (!res) { return; }
-                            if (paths[0].path.length <= 1) { return; } // if root
-                            manager.convertFolderToSharedFolder(paths[0].path, refresh);
+                            var password = $(convertContent).find('#cp-upload-password').val() || undefined;
+                            var owned = Util.isChecked($(convertContent).find('#cp-upload-owned'));
+                            manager.convertFolderToSharedFolder(paths[0].path, owned, password, refresh);
                         });
                     }
                 } else { // File

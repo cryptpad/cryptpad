@@ -492,8 +492,8 @@ define([
             _addSharedFolder(Env, {
                 path: parentPath,
                 name: folderName,
-                owned: true, // XXX FIXME hardcoded preference
-                password: '', // XXX FIXME hardcoded preference
+                owned: data.owned, // XXX FIXME hardcoded preference
+                password: data.password || '', // XXX FIXME hardcoded preference
             }, waitFor(function (id) {
                 // _addSharedFolder can be an id or an error
                 if (typeof(id) === 'object' && id && id.error) {
@@ -1012,11 +1012,13 @@ define([
             }
         }, cb);
     };
-    var convertFolderToSharedFolderInner = function (Env, path, cb) {
+    var convertFolderToSharedFolderInner = function (Env, path, owned, password, cb) {
         return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
             cmd: "convertFolderToSharedFolder",
             data: {
-                path: path
+                path: path,
+                owned: owned,
+                password: password
             }
         }, cb);
     };
