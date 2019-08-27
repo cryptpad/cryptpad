@@ -289,9 +289,11 @@ define([
         var parsed = Hash.parsePadUrl(href);
         var k = getKey(parsed.type, channel);
         var whenNewThumb = function () {
+            var privateData = common.getMetadataMgr().getPrivateData();
+            var fileHost = privateData.fileHost || privateData.origin;
             var secret = Hash.getSecrets('file', parsed.hash, password);
             var hexFileName = secret.channel;
-            var src = Hash.getBlobPathFromHex(hexFileName);
+            var src = fileHost + Hash.getBlobPathFromHex(hexFileName);
             var key = secret.keys && secret.keys.cryptKey;
             FileCrypto.fetchDecryptedMetadata(src, key, function (e, metadata) {
                 if (e) {
