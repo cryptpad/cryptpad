@@ -1133,5 +1133,10 @@
     "uploadFolder_modal_forceSave": "Dateien im CryptDrive speichern",
     "convertFolderToSF_SFParent": "Dieser Ordner kann an seinem aktuellen Ort nicht einen geteilten Ordner umgewandelt werden. Verschiebe ihn zunächst aus dem übergeordneten geteilten Ordner heraus.",
     "convertFolderToSF_SFChildren": "Dieser Ordner kann nicht in einen geteilten Ordner umgewandelt werden, weil er bereits geteilte Ordner enthält. Verschiebe diese geteilten Ordner zunächst an einen anderen Ort.",
-    "convertFolderToSF_confirm": "Dieser Ordner muss in einen geteilten Ordner umgewandelt werden, damit ihn andere sehen können. Fortfahren?"
+    "convertFolderToSF_confirm": "Dieser Ordner muss in einen geteilten Ordner umgewandelt werden, damit ihn andere sehen können. Fortfahren?",
+    "pricing": "Preise und Konditionen",
+    "homePage": "Hauptseite",
+    "features_noData": "Keine persönlichen Informationen benötigt",
+    "features_pricing": "Zwischen {0} und {2} € pro Monat",
+    "features_emailRequired": "E-Mail-Adresse benötigt"
 }
