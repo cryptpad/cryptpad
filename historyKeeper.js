@@ -93,7 +93,7 @@ module.exports.create = function (cfg) {
     let STANDARD_CHANNEL_LENGTH, EPHEMERAL_CHANNEL_LENGTH;
     const setConfig = function (config) {
         STANDARD_CHANNEL_LENGTH = config.STANDARD_CHANNEL_LENGTH;
-        EPHEMERAL_CHANNEL_LENGTH = config.EPHEMERAL_CHANNEl_LENGTH;
+        EPHEMERAL_CHANNEL_LENGTH = config.EPHEMERAL_CHANNEL_LENGTH;
         sendMsg = config.sendMsg;
     };
 
