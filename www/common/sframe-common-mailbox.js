@@ -57,11 +57,11 @@ define([
                 $(notif).find('.cp-notification-content p').html(data.content.getFormatText());
             }
 
-            if (typeof(data.content.isClickable) === "function") {
+            if (data.content.isClickable) {
                 $(notif).find('.cp-notification-content').addClass("cp-clickable")
                     .click(data.content.handler);
             }
-            if (typeof(data.content.isDismissible) === "function") {
+            if (data.content.isDismissible) {
                 var dismissIcon = h('span.fa.fa-times');
                 var dismiss = h('div.cp-notification-dismiss', {
                     title: Messages.notifications_dismiss
