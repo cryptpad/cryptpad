@@ -53,15 +53,15 @@ define([
                 'data-hash': data.content.hash
             }, [h('div.cp-notification-content', h('p', formatData(data)))]);
 
-            if (data.content.getFormatText) {
+            if (typeof(data.content.getFormatText) === "function") {
                 $(notif).find('.cp-notification-content p').html(data.content.getFormatText());
             }
 
-            if (data.content.isClickable) {
+            if (typeof(data.content.isClickable) === "function") {
                 $(notif).find('.cp-notification-content').addClass("cp-clickable")
                     .click(data.content.handler);
             }
-            if (data.content.isDismissible) {
+            if (typeof(data.content.isDismissible) === "function") {
                 var dismissIcon = h('span.fa.fa-times');
                 var dismiss = h('div.cp-notification-dismiss', {
                     title: Messages.notifications_dismiss
