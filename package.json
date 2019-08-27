@@ -11,7 +11,7 @@
     "chainpad-server": "~3.0.2",
     "express": "~4.16.0",
     "fs-extra": "^7.0.0",
-    "nthen": "~0.1.0",
+    "nthen": "0.1.8",
     "pull-stream": "^3.6.1",
     "replify": "^1.2.0",
     "saferphore": "0.0.1",
