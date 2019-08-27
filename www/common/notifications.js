@@ -4,10 +4,11 @@ define([
     '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
+    '/common/common-util.js',
     '/common/common-constants.js',
     '/customize/messages.js',
     '/bower_components/nthen/index.js'
-], function ($, h, Hash, UI, UIElements, Constants, Messages, nThen) {
+], function ($, h, Hash, UI, UIElements, Util, Constants, Messages, nThen) {
 
     var handlers = {};
 
@@ -28,10 +29,11 @@ define([
     handlers['FRIEND_REQUEST'] = function (common, data) {
         var content = data.content;
         var msg = content.msg;
+        var name = Util.fixHTML(msg.content.displayName) || Messages.anonymous;
 
         // Display the notification
         content.getFormatText = function () {
-            return Messages._getKey('friendRequest_notification', [msg.content.displayName || Messages.anonymous]);
+            return Messages._getKey('friendRequest_notification', [name]);
         };
 
         // Check authenticity
@@ -49,8 +51,9 @@ define([
     handlers['FRIEND_REQUEST_ACCEPTED'] = function (common, data) {
         var content = data.content;
         var msg = content.msg;
+        var name = Util.fixHTML(msg.content.name) || Messages.anonymous;
         content.getFormatText = function () {
-            return Messages._getKey('friendRequest_accepted', [msg.content.name || Messages.anonymous]);
+            return Messages._getKey('friendRequest_accepted', [name]);
         };
         if (!content.archived) {
             content.dismissHandler = defaultDismiss(common, data);
@@ -60,8 +63,9 @@ define([
     handlers['FRIEND_REQUEST_DECLINED'] = function (common, data) {
         var content = data.content;
         var msg = content.msg;
+        var name = Util.fixHTML(msg.content.name) || Messages.anonymous;
         content.getFormatText = function () {
-            return Messages._getKey('friendRequest_declined', [msg.content.name || Messages.anonymous]);
+            return Messages._getKey('friendRequest_declined', [name]);
         };
         if (!content.archived) {
             content.dismissHandler = defaultDismiss(common, data);
@@ -77,8 +81,10 @@ define([
         var key = type === 'drive' ? 'notification_folderShared' :
                     (type === 'file' ? 'notification_fileShared' :
                     'notification_padShared');
+        var name = Util.fixHTML(msg.content.name) || Messages.anonymous;
+        var title = Util.fixHTML(msg.content.title);
         content.getFormatText = function () {
-            return Messages._getKey(key, [msg.content.name || Messages.anonymous, msg.content.title]);
+            return Messages._getKey(key, [name, title]);
         };
         content.handler = function () {
             var todo = function () {
@@ -121,8 +127,10 @@ define([
         if (msg.author !== msg.content.user.curvePublic) { return; }
 
         // Display the notification
+        var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
+        var title = Util.fixHTML(msg.content.title);
         content.getFormatText = function () {
-            return Messages._getKey('requestEdit_request', [msg.content.title, msg.content.user.displayName]);
+            return Messages._getKey('requestEdit_request', [title, name]);
         };
 
         // if not archived, add handlers
@@ -136,6 +144,9 @@ define([
             var verified = h('p');
             var $verified = $(verified);
 
+            var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
+            var title = Util.fixHTML(msg.content.title);
+
             if (priv.friends && priv.friends[msg.author]) {
                 $verified.addClass('cp-notifications-requestedit-verified');
                 var f = priv.friends[msg.author];
@@ -144,11 +155,11 @@ define([
                 $verified.append(h('p', Messages._getKey('requestEdit_fromFriend', [f.displayName])));
                 common.displayAvatar($avatar, f.avatar, f.displayName);
             } else {
-                $verified.append(Messages._getKey('requestEdit_fromStranger', [msg.content.user.displayName]));
+                $verified.append(Messages._getKey('requestEdit_fromStranger', [name]));
             }
 
             var div = h('div', [
-                UI.setHTML(h('p'), Messages._getKey('requestEdit_confirm', [msg.content.title, msg.content.user.displayName])),
+                UI.setHTML(h('p'), Messages._getKey('requestEdit_confirm', [title, name])),
                 verified,
                 link
             ]);
@@ -184,9 +195,12 @@ define([
 
         if (!msg.content.href) { return; }
 
+        var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
+        var title = Util.fixHTML(msg.content.title);
+
         // Display the notification
         content.getFormatText = function () {
-            return Messages._getKey('requestEdit_accepted', [msg.content.title, msg.content.user.displayName]);
+            return Messages._getKey('requestEdit_accepted', [title, name]);
         };
 
         // if not archived, add handlers
@@ -195,6 +209,8 @@ define([
             defaultDismiss(common, data)();
         };
     };
+
+    // NOTE: don't forget to fixHTML everything returned by "getFormatText"
 
     return {
         add: function (common, data) {
