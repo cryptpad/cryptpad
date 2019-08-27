@@ -171,11 +171,12 @@ define([
             $(userData).find('pre').toggle();
         });
 
+        var name = Util.fixHTML(content.sender.name) || Messages.anonymous;
         return h('div.cp-support-list-message', {
             'data-hash': hash
         }, [
             h('div.cp-support-message-from' + (fromMe ? '.cp-support-fromme' : ''), [
-                UI.setHTML(h('span'), Messages._getKey('support_from', [content.sender.name])),
+                UI.setHTML(h('span'), Messages._getKey('support_from', [name])),
                 h('span.cp-support-message-time', content.time ? new Date(content.time).toLocaleString() : '')
             ]),
             h('pre.cp-support-message-content', content.message),
@@ -189,11 +190,12 @@ define([
         var privateData = metadataMgr.getPrivateData();
         var fromMe = content.sender && content.sender.edPublic === privateData.edPublic;
 
+        var name = Util.fixHTML(content.sender.name) || Messages.anonymous;
         return h('div.cp-support-list-message', {
             'data-hash': hash
         }, [
             h('div.cp-support-message-from' + (fromMe ? '.cp-support-fromme' : ''), [
-                UI.setHTML(h('span'), Messages._getKey('support_from', [content.sender.name])),
+                UI.setHTML(h('span'), Messages._getKey('support_from', [name])),
                 h('span.cp-support-message-time', content.time ? new Date(content.time).toLocaleString() : '')
             ]),
             h('pre.cp-support-message-content', Messages.support_closed)
