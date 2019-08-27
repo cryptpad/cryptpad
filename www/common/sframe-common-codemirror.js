@@ -145,6 +145,7 @@ define([
         };
 
         var editor = exp.editor = CMeditor.fromTextArea($textarea[0], {
+            allowDropFileTypes: [],
             lineNumbers: true,
             lineWrapping: true,
             autoCloseBrackets: true,
