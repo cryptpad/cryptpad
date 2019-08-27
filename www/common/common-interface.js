@@ -592,6 +592,16 @@ define([
         ]);
     };
 
+    UI.createHelper = function (href, text) {
+        var q = h('a.fa.fa-question-circle', {
+            style: 'text-decoration: none !important;',
+            title: text,
+            href: href,
+            target: "_blank",
+            'data-tippy-placement': "right"
+        });
+        return q;
+    };
 
     /*
      *  spinner
