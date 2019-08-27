@@ -357,17 +357,18 @@ define([
             if (curve.length <= 40) { return; }
             var data = friends[curve];
             if (!data.notifications) { return; }
+            var name = data.displayName || Messages.anonymous;
             var avatar = h('span.cp-share-friend-avatar.cp-avatar');
-            UIElements.displayAvatar(common, $(avatar), data.avatar, data.displayName);
+            UIElements.displayAvatar(common, $(avatar), data.avatar, name);
             return h('div.cp-share-friend', {
                 'data-curve': data.curvePublic,
-                'data-name': data.displayName,
+                'data-name': name,
                 'data-order': i,
-                title: data.displayName,
+                title: name,
                 style: 'order:'+i+';'
             },[
                 avatar,
-                h('span.cp-share-friend-name', data.displayName)
+                h('span.cp-share-friend-name', name)
             ]);
         }).filter(function (x) { return x; });
         var smallCurves = Object.keys(friends).map(function (c) {
