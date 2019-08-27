@@ -572,13 +572,14 @@ define([
     };
 
     common.useFile = function (Crypt, cb, optsPut) {
+        var fileHost = Config.fileHost || window.location.origin;
         var data = common.fromFileData;
         var parsed = Hash.parsePadUrl(data.href);
         var parsed2 = Hash.parsePadUrl(window.location.href);
         var hash = parsed.hash;
         var name = data.title;
         var secret = Hash.getSecrets('file', hash, data.password);
-        var src = Hash.getBlobPathFromHex(secret.channel);
+        var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
         var key = secret.keys && secret.keys.cryptKey;
 
         var u8;

@@ -29,6 +29,7 @@ define([
 
     var andThen = function (common) {
         var metadataMgr = common.getMetadataMgr();
+        var privateData = metadataMgr.getPrivateData();
         var $body = $('body');
         var sframeChan = common.getSframeChannel();
         var filters = metadataMgr.getPrivateData().types;
@@ -41,7 +42,8 @@ define([
             hideFileDialog();
             if (parsed.type === 'file') {
                 var secret = Hash.getSecrets('file', parsed.hash, data.password);
-                var src = Hash.getBlobPathFromHex(secret.channel);
+                var fileHost = privateData.fileHost || privateData.origin;
+                var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
                 var key = Hash.encodeBase64(secret.keys.cryptKey);
                 sframeChan.event("EV_FILE_PICKED", {
                     type: parsed.type,

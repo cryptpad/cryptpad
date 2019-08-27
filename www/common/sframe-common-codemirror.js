@@ -377,22 +377,6 @@ define([
             return { content: canonicalize(editor.getValue()) };
         };
 
-        exp.mkFileManager = function (framework) {
-            var fmConfig = {
-                dropArea: $('.CodeMirror'),
-                body: $('body'),
-                onUploaded: function (ev, data) {
-                    var parsed = Hash.parsePadUrl(data.url);
-                    var secret = Hash.getSecrets('file', parsed.hash, data.password);
-                    var src = Hash.getBlobPathFromHex(secret.channel);
-                    var key = Hash.encodeBase64(secret.keys.cryptKey);
-                    var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + key + '"></media-tag>';
-                    editor.replaceSelection(mt);
-                }
-            };
-            framework._.sfCommon.createFileManager(fmConfig);
-        };
-
         exp.mkIndentSettings = function (metadataMgr) {
             var setIndentation = function (units, useTabs, fontSize, spellcheck) {
                 if (typeof(units) !== 'number') { return; }

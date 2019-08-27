@@ -1544,7 +1544,7 @@ define([
         if (secret.keys && secret.channel) {
             var hexFileName = secret.channel;
             var cryptKey = Hash.encodeBase64(secret.keys && secret.keys.cryptKey);
-            var src = Hash.getBlobPathFromHex(hexFileName);
+            var src = origin + Hash.getBlobPathFromHex(hexFileName);
             common.getFileSize(hexFileName, function (e, data) {
                 if (e || !data) {
                     displayDefault();
@@ -1553,7 +1553,7 @@ define([
                 if (typeof data !== "number") { return void displayDefault(); }
                 if (Util.bytesToMegabytes(data) > 0.5) { return void displayDefault(); }
                 var $img = $('<media-tag>').appendTo($container);
-                $img.attr('src', origin + src);
+                $img.attr('src', src);
                 $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
                 UIElements.displayMediatagImage(common, $img, function (err, $image, img) {
                     if (err) { return void console.error(err); }

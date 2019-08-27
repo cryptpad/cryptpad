@@ -1,5 +1,6 @@
 define([
     'jquery',
+    '/api/config',
     '/bower_components/marked/marked.min.js',
     '/common/common-hash.js',
     '/common/common-util.js',
@@ -10,7 +11,7 @@ define([
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/common/highlight/styles/github.css'
-],function ($, Marked, Hash, Util, h, MediaTag, Highlight, Messages) {
+],function ($, ApiConfig, Marked, Hash, Util, h, MediaTag, Highlight, Messages) {
     var DiffMd = {};
 
     var DiffDOM = window.diffDOM;
@@ -157,7 +158,7 @@ define([
             console.log('DEPRECATED: mediatag using markdown syntax!');
             var parsed = Hash.parsePadUrl(href);
             var secret = Hash.getSecrets('file', parsed.hash);
-            var src = Hash.getBlobPathFromHex(secret.channel);
+            var src = (ApiConfig.fileHost || '') +Hash.getBlobPathFromHex(secret.channel);
             var key = Hash.encodeBase64(secret.keys.cryptKey);
             var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + key + '"></media-tag>';
             if (mediaMap[src]) {

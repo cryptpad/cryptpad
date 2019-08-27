@@ -748,7 +748,8 @@ define([
             var secret = Hash.getSecrets('file', parsed.hash);
             if (!secret || !secret.channel) { return; }
             var hexFileName = secret.channel;
-            var src = Hash.getBlobPathFromHex(hexFileName);
+            var fileHost = privateData.fileHost || privateData.origin;
+            var src = fileHost + Hash.getBlobPathFromHex(hexFileName);
             var key = secret.keys && secret.keys.cryptKey;
             var xhr = new XMLHttpRequest();
             xhr.open('GET', src, true);

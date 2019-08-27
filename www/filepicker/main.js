@@ -83,6 +83,7 @@ define([
                     }).nThen(function (/*waitFor*/) {
                         metaObj.doc = {};
                         var additionalPriv = {
+                            fileHost: ApiConfig.fileHost,
                             accountName: Utils.LocalStore.getAccountName(),
                             origin: window.location.origin,
                             pathname: window.location.pathname,

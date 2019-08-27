@@ -465,7 +465,7 @@ define([
                     if (data.type !== 'file') { console.log('unhandled embed type ' + data.type); return; }
                     var privateDat = cpNfInner.metadataMgr.getPrivateData();
                     var origin = privateDat.fileHost || privateDat.origin;
-                    var src = data.src = origin + data.src;
+                    var src = data.src = data.src.slice(0,1) === '/' ? data.src : origin + data.src;
                     mediaTagEmbedder($('<media-tag src="' + src +
                         '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>'), data);
                 }
