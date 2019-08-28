@@ -3,10 +3,11 @@ define([
     '/file/file-crypto.js',
     '/common/common-hash.js',
     '/common/common-util.js',
+    '/customize/messages.js',
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
     '/bower_components/jszip/dist/jszip.min.js',
-], function (Crypt, FileCrypto, Hash, Util, nThen, Saferphore, JsZip) {
+], function (Crypt, FileCrypto, Hash, Util, Messages, nThen, Saferphore, JsZip) {
     var saveAs = window.saveAs;
 
     var sanitize = function (str) {
@@ -273,7 +274,7 @@ define([
             fileHost: fileHost,
             get: getPad,
             data: data.uo.drive,
-            folder: data.folder || ctx.data.root,
+            folder: data.folder,
             sf: data.sf,
             zip: new JsZip(),
             errors: [],
@@ -286,8 +287,8 @@ define([
         progress('reading', -1);
         nThen(function (waitFor) {
             ctx.waitFor = waitFor;
-            var zipRoot = ctx.zip.folder('Root');
-            makeFolder(ctx, ctx.folder, zipRoot, filesData);
+            var zipRoot = ctx.zip.folder(data.name || Messages.fm_rootName);
+            makeFolder(ctx, ctx.folder || ctx.data.root, zipRoot, filesData);
             progress('download', {});
         }).nThen(function () {
             console.log(ctx.zip);
@@ -311,7 +312,7 @@ define([
 
     var _downloadFolder = function (ctx, data, cb, updateProgress) {
         create(data, ctx.get, ctx.fileHost, function (blob, errors) {
-            console.error(errors); // TODO show user errors
+            if (errors && errors.length) { console.error(errors); } // TODO show user errors
             var dl = function () {
                 saveAs(blob, data.folderName);
             };
