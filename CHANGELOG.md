@@ -1,3 +1,95 @@
+# Aurochs release (v3.0.0)
+
+The move to 3.0 is mostly because we ran out of letters in the alphabet for our 2.0 release cycle.
+Releases in this cycle will be named according to a theme of "extinct animals", a list which is unfortunately getting longer all the time.
+
+## Goals
+
+In this release, we took more time than usual to make some big changes to the way the platform works, taking great care to maintain or improve stability.
+
+Up until now it has been necessary to create documents with the whatever settings they might require in the future, after which point it was not possible to change them. This release introduces the ability of the server to store and read amendments to document metadata. This will soon allow users of owned documents to delegate that ownership to their friends, add or modify expiration times, and make other modifications that will greatly improve their control over their data.
+
+## Update notes
+
+During this development period we performed an extensive audit of our existing features and discovered a few potential security issues which we've addressed. We plan to announce the details of these flaws once administrators have had sufficient time to update their instances. If you are running a CryptPad instance, we advise you to update to 3.0.0 at your earliest opportunity.
+
+* It was brought to our attention that while expired pads were not being served beyond their expiration time, they were not being removed as intended. The cause was due to our failure to document a configuration point (`enableTaskScheduling`) that was added to make expiration optional in the example configuration file. We've removed this configuration point so that tasks like expiration will always be scheduled. Expiration of tasks was already integrated into the main server process, but we have added a new configuration point to the server in case any administrators would like to run the expiration tasks in a dedicated process for performance reasons. To disable the integration, change `disableIntegratedTasks` from `false` to `true` in the server configuration file.
+* This release depends on updates to three clientside libraries (`netflux-websocket@0.1.20`, `chainpad-netflux@0.9.0`, and `chainpad-listmap@0.7.0`). These changes are **not compatible with older versions of the server**. To update:
+  1. make any configuration changes you want
+  2. take down your server process
+  3. fetch the latest clientside and serverside code via git
+  4. run `bower update` and `npm install` to ensure you have the latest dependencies
+  5. update your cache-busting string if you've configured your instance to update this manually
+  6. bring your server back up
+
+## Features
+
+* Support panel
+  * Support tickets now include the "user agent" string of the user's browser to make it easier to debug issues.
+  * Users that submitted support tickets will now receive notifications when their tickets are answered
+* Sharing and access control
+  * the "pad properties modal" now displays the name of the owner of a pad if you recognize their public key
+    * this will be improved further in future releases as we introduce the notion of "acquantances" as users who you have seen in the past but who are not yet your friends
+  * newly created "owned pads" will now contain an "owner" field containing the address of your "mailbox", encrypted with the same key as the pad itself
+    * this allows users with view-only access rights to send you a message to request edit rights
+    * the same functionality is offered for older pads if you happen to know the mailbox address for an owner listed in the "owners" field
+  * it was already possible to delegate access to a friend via the "share modal", but we now support a special message type for templates so that the pad will be stored as a template in the receiving user's drive (if accepted)
+  * the "availability" tab of the "properties" modal for any particalar pad now shows the display name of the pad's owner if they are your friend. Additionally we now support displaying multiple owners rather than just "yourself" or "somebody else"
+* File and CryptDrive workflows
+  * we now support folder upload in any browser offering the required APIs
+  * it's now possible to export files and folders (as zips) directly from your CryptDrive
+  * the ctrl-e and right-click menus in the drive now features an entry for uploading files and folders
+  * certain plain-text file formats uploaded as static files can now be rendered within other documents or used as the basis of a new code pad
+  * regular folders in your CryptDrive can be converted into shared folders from the right-click menu as long as they do not contain shared folders and are not within another shared folder
+    * nesting is complicated for a variety of technical reasons, but we're discussing whether it's worthwhile to try to find a solution
+  * documents and folders within your CryptDrive can now be moved to parent folders by dropping them on the file path in the toolbar
+* Styles
+  * the upload/download progress table has been restyled to be less invasive
+  * right-click menus throughout the platform now feature icons for each entry in addition to text
+  * the animation on the spinner on the loading page has been updated:
+    * it no longer oscillates
+    * it doesn't display a 'box' while the icon font is loading
+    * it's more dynamic and stylish (depending on your tastes)
+* We've renamed the "features" page "pricing" after many prospective users reported that is was difficult to find details about premium accounts
+* Code editor updates
+  * you can now un-indent code blocks with shift-tab while on a line or selecting multiple lines of text
+  * backspace now removes the configured level of indentation
+  * titles which are inferred from document content now ignore any html you might have included in your markdown
+
+## Bug fixes
+
+* One of our users registered `CVE-2019-15302` for a bug they discovered
+  * users with edit access for rich text pads could change the URL of the document to load the same document in a code pad
+  * doing so invalidated the existing stored content, making it impossible to load the same document in the rich text editor
+  * doing the same steps now displays an error and does not modify the existing document
+* UI and responsiveness
+  * submenus in contextmenus can now be opened on mobile devices
+  * the CryptDrive layout mode is now detected dynamically instead of at page load
+  * contextmenus shouldn't get rendered off the page anymore
+  * a non-functional ctrl-e menu could be loaded when another modal is already open, but now it is simply blocked
+  * icons with thumbnails in the drive no longer flicker when the page is redrawn
+  * the color picker in the settings page which chooses your cursor color now uses the same cross-platform library used in other applications (jsColor) so that it will work in all modern browsers
+  * when prompted to save a pad to your CryptDrive is was possible to click multiple times, displaying multiple confirmation messages when the pad was finally stored. We now ignore successive clicks until the first request fails or is successful
+  * chat messages now only render a subset of the markdown implemented elsewhere on the platform
+  * your most recently used access-right settings are remembered when you delegate access directly to a friend, while previously the settings were only remembered when the other sharing methods were used
+* Code editor bugs
+  * indentation settings modified on the settings page are updated in real time, as intended
+  * we discovered that when changes made by remote editors were applied to the document when the window was not focused, the user's cursor position would not be preserved. This has been fixed
+  * when importing code without file extensions (.bashrc, .viminfo) the file name itself was used as an extension while the name was considered empty. These file names and extensions are now parsed correctly
+  * language modes in the code editor are now exported with their respective file extensions
+  * file extensions are reapplied when importing files
+* CryptDrive
+  * we offer a "debug" app which is not advertised anywhere in the UI which can be used to investigate strange behaviour in documents
+    * if the app is loaded without a hash, the hash for the user's drive is used instead
+    * we no longer add this document as an entry in your CryptDrive
+    * we guard against deleting the history of your CryptDrive if you already have such a file and you delete it permanently or move it to your trash
+  * we've fixed a number of bugs related to viewing and restoring invalid states from your CryptDrive's history
+* Connectivity
+  * we've fixed a bug that caused disconnection from the server to go undetected for 30 seconds
+  * we discovered that leaving rejoining a real-time session would cause the reactivation of existing listeners for that session as well as the addition of a new set of handlers. We now remove the old listeners when leaving a session, preventing a memory leak and avoiding the repeated application of incoming messages
+  * when we leave a session we also make sure to clean up residual data structures from the consensus engine, saving memory
+  * we found that support tickets on the admin page were displayed twice when the admin disconnected and reconnected while the support ticket panel was open. This has been fixed
+
 # Zebra release (v2.25.0)
 
 ## Goals
