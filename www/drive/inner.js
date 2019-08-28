@@ -3745,6 +3745,7 @@ define([
             var todo = function (data) {
                 data.folder = folderElement;
                 data.sharedFolderId = sfId;
+                data.name = Util.fixFileName(folderName);
                 data.folderName = Util.fixFileName(folderName) + '.zip';
 
                 APP.FM.downloadFolder(data, function (err, obj) {
