@@ -112,6 +112,85 @@ define([
             cb(void 0, data);
         });
     };
+    var createOwnerModal = function (common, owners) {
+        var friends = common.getFriends(true);
+
+        // Remove owner column
+        var _owners = {};
+        owners.forEach(function (edPublic) {
+            var f;
+            Object.keys(friends).some(function (c) {
+                if (friends[c].edPublic === edPublic) {
+                    f = friends[c];
+                    return true;
+                }
+            });
+            _owners[edPublic] = f || {
+                displayName: 'Unknown user: '+ edPublic, // XXX
+                notifications: true,
+                edPublic: edPublic,
+            };
+        });
+        var removeCol = UIElements.getFriendsList('Remove an existing owner instantly', {
+            common: common,
+            friends: _owners,
+            noFilter: true
+        }, function () {
+            // XXX onSelect...
+            //onSelect...
+            console.log(arguments);
+        });
+        var $div1 = $(removeCol.div);
+        var others1 = removeCol.others;
+        $div1.append(h('div.cp-share-grid', others1));
+        $div1.find('.cp-share-friend').click(function () {
+            var sel = $(this).hasClass('cp-selected');
+            if (!sel) {
+                $(this).addClass('cp-selected');
+            } else {
+                var order = $(this).attr('data-order');
+                order = order ? 'order:'+order : '';
+                $(this).removeClass('cp-selected').attr('style', order);
+            }
+            // XXX onSelect...
+        });
+
+        // Add owners column
+        var addCol = UIElements.getFriendsList('Ask a friend to be an owner', {
+            common: common,
+            friends: friends
+        }, function () {
+            // XXX onSelect...
+            console.log(arguments);
+        });
+        var $div2 = $(addCol.div);
+        var others2 = addCol.others;
+        $div2.append(h('div.cp-share-grid', others2));
+        $div2.find('.cp-share-friend').click(function () {
+            var sel = $(this).hasClass('cp-selected');
+            if (!sel) {
+                $(this).addClass('cp-selected');
+            } else {
+                var order = $(this).attr('data-order');
+                order = order ? 'order:'+order : '';
+                $(this).removeClass('cp-selected').attr('style', order);
+            }
+            // XXX onSelect...
+        });
+
+        // Create modal
+        var link = h('div.cp-share-columns', [
+            removeCol.div,
+            addCol.div
+        ]);
+        var linkButtons = [{
+            className: 'cancel',
+            name: Messages.ok,
+            onClick: function () {},
+            keys: [27]
+        }];
+        return UI.dialog.customModal(link, {buttons: linkButtons});
+    };
     var getRightsProperties = function (common, data, cb) {
         var $d = $('<div>');
         if (!data) { return void cb(void 0, $d); }
@@ -152,6 +231,16 @@ define([
         $d.append(UI.dialog.selectable(owners, {
             id: 'cp-app-prop-owners',
         }));
+        if (owned) {
+            var manageOwners = h('button.no-margin', 'Manage owners'); // XXX
+            $(manageOwners).click(function () {
+                var modal = createOwnerModal(common, data.owners);
+                UI.openCustomModal(modal, {
+                    wide: true,
+                });
+            });
+            $d.append(h('p', manageOwners));
+        }
 
         if (!data.noExpiration) {
             var expire = Messages.creation_expireFalse;
@@ -345,9 +434,8 @@ define([
         });
     };
 
-    var getFriendsList = function (config, onShare) {
+    UIElements.getFriendsList = function (label, config, onSelect) {
         var common = config.common;
-        var title = config.title;
         var friends = config.friends;
         var myName = common.getMetadataMgr().getUserData().name;
         var order = [];
@@ -361,6 +449,7 @@ define([
             var avatar = h('span.cp-share-friend-avatar.cp-avatar');
             UIElements.displayAvatar(common, $(avatar), data.avatar, name);
             return h('div.cp-share-friend', {
+                'data-ed': data.edPublic,
                 'data-curve': data.curvePublic,
                 'data-name': name,
                 'data-order': i,
@@ -371,9 +460,6 @@ define([
                 h('span.cp-share-friend-name', name)
             ]);
         }).filter(function (x) { return x; });
-        var smallCurves = Object.keys(friends).map(function (c) {
-            return friends[c].curvePublic.slice(0,8);
-        });
 
         var noOthers = others.length === 0 ? '.cp-recent-only' : '';
 
@@ -384,8 +470,8 @@ define([
         });
 
         var div = h('div.cp-share-friends.cp-share-column' + noOthers, [
-            h('label', Messages.share_linkFriends),
-            h('div.cp-share-grid-filter', [
+            h('label', label),
+            h('div.cp-share-grid-filter', config.noFilter ? undefined : [
                 inputFilter,
                 buttonSelect,
                 buttonDeselect
@@ -394,13 +480,16 @@ define([
         var $div = $(div);
 
         // Fill with fake friends to have a uniform spacing (from the flexbox)
+        var makeFake = function () {
+            return h('div.cp-share-friend.cp-fake-friend', {
+                style: 'order:9999999;'
+            });
+        };
         var addFake = function (els) {
             $div.find('.cp-fake-friend').remove();
             var n = (6 - els.length%6)%6;
             for (var j = 0; j < n; j++) {
-                els.push(h('div.cp-share-friend.cp-fake-friend', {
-                    style: 'order:9999999;'
-                }));
+                els.push(makeFake);
             }
         };
         addFake(others);
@@ -409,13 +498,53 @@ define([
         var redraw = function () {
             var name = $(inputFilter).val().trim().replace(/"/g, '');
             $div.find('.cp-share-friend').show();
-            if (!name) { return; }
-            $div.find('.cp-share-friend:not(.cp-selected):not([data-name*="'+name+'"])').hide();
+            if (name) {
+                $div.find('.cp-share-friend:not(.cp-selected):not([data-name*="'+name+'"])').hide();
+            }
+
+            // Redraw fake friends
+            $div.find('.cp-fake-friend').remove();
+            var visible = $div.find('.cp-share-friend:visible').length;
+            var n = (6 - visible%6)%6;
+            for (var i = 0; i<n; i++) {
+                $div.find('.cp-share-grid').append(makeFake());
+            }
         };
 
         $(inputFilter).on('keydown keyup change', redraw);
 
-        // Replace "copy link" by "share with friends" if at least one friedn is selected
+        $(buttonSelect).click(function () {
+            $div.find('.cp-share-friend:not(.cp-fake-friend):not(.cp-selected):visible').addClass('cp-selected');
+            onSelect();
+        });
+        $(buttonDeselect).click(function () {
+            $div.find('.cp-share-friend.cp-selected').removeClass('cp-selected').each(function (i, el) {
+                var order = $(el).attr('data-order');
+                if (!order) { return; }
+                $(el).attr('style', 'order:'+order);
+            });
+            redraw();
+            onSelect();
+        });
+
+        return {
+            others: others,
+            div: div
+        };
+    };
+
+
+    var createShareWithFriends = function (config, onShare) {
+        var common = config.common;
+        var title = config.title;
+        var friends = config.friends;
+        if (!friends) { return; }
+
+        var smallCurves = Object.keys(friends).map(function (c) {
+            return friends[c].curvePublic.slice(0,8);
+        });
+
+        // Replace "copy link" by "share with friends" if at least one friend is selected
         // Also create the "share with friends" button if it doesn't exist
         var refreshButtons = function () {
             var $nav = $div.parents('.alertify').find('nav');
@@ -475,19 +604,10 @@ define([
             }
         };
 
-        $(buttonSelect).click(function () {
-            $div.find('.cp-share-friend:not(.cp-fake-friend):not(.cp-selected):visible').addClass('cp-selected');
-            refreshButtons();
-        });
-        $(buttonDeselect).click(function () {
-            $div.find('.cp-share-friend.cp-selected').removeClass('cp-selected').each(function (i, el) {
-                var order = $(el).attr('data-order');
-                if (!order) { return; }
-                $(el).attr('style', 'order:'+order);
-            });
-            redraw();
-            refreshButtons();
-        });
+        var friendsList = UIElements.getFriendsList(Messages.share_linkFriends, config, refreshButtons);
+        var div = friendsList.div;
+        var $div = $(div);
+        var others = friendsList.others;
 
         common.getAttribute(['general', 'share-friends'], function (err, val) {
             order = val || [];
@@ -538,7 +658,7 @@ define([
         // Share link tab
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
         var onFriendShare = Util.mkEvent();
-        var friendsList = hasFriends ? getFriendsList(config, onFriendShare) : undefined;
+        var friendsList = hasFriends ? createShareWithFriends(config, onFriendShare) : undefined;
         var friendsUIClass = hasFriends ? '.cp-share-columns' : '';
 
         var link = h('div.cp-share-modal' + friendsUIClass, [
@@ -703,7 +823,7 @@ define([
 
         // Share link tab
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
-        var friendsList = hasFriends ? getFriendsList(config) : undefined;
+        var friendsList = hasFriends ? createShareWithFriends(config) : undefined;
         var friendsUIClass = hasFriends ? '.cp-share-columns' : '';
         var link = h('div.cp-share-modal' + friendsUIClass, [
             h('div.cp-share-column', [
@@ -791,7 +911,7 @@ define([
 
         // Share link tab
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
-        var friendsList = hasFriends ? getFriendsList(config) : undefined;
+        var friendsList = hasFriends ? createShareWithFriends(config) : undefined;
         var friendsUIClass = hasFriends ? '.cp-share-columns' : '';
         var link = h('div.cp-share-modal' + friendsUIClass, [
             h('div.cp-share-column', [

@@ -422,12 +422,12 @@ define([
         return JSON.parse(JSON.stringify(friendRequests));
     };
 
-    funcs.getFriends = function () {
+    funcs.getFriends = function (meIncluded) {
         var priv = ctx.metadataMgr.getPrivateData();
         var friends = priv.friends;
         var goodFriends = {};
         Object.keys(friends).forEach(function (curve) {
-            if (curve.length !== 44) { return; }
+            if (curve.length !== 44 && !meIncluded) { return; }
             var data = friends[curve];
             if (!data.notifications) { return; }
             goodFriends[curve] = friends[curve];

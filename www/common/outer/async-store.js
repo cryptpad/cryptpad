@@ -1204,6 +1204,18 @@ define([
                         channel.bcast("PAD_DISCONNECT");
                     }
                 },
+                onMetadataUpdate: function (metadata) {
+                    console.log('onMetadataUpdate', metadata);
+                    channel.data = metadata || {};
+                    var allData = store.manager.findChannel(data.channel);
+                    allData.forEach(function (obj) {
+                        obj.data.owners = metadata.owners;
+                        if (metadata.expire) {
+                            obj.data.expire = +metadata.expire;
+                        }
+                    });
+                    //channel.bcast("PAD_METADATA", metadata);
+                },
                 crypto: {
                     // The encryption and decryption is done in the outer window.
                     // This async-store only deals with already encrypted messages.

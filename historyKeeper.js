@@ -714,10 +714,10 @@ module.exports.create = function (cfg) {
     // If it is, remove it from memory and broadcast a message to its members
 
     const onChannelMetadataChanged = function (ctx, channel, metadata) {
-        Log.debug('SET_METADATA_CACHE', 'Test'); // XXX
-        if (channel && metadata_cache[channel]) {
-            Log.debug('SET_METADATA_CACHE', 'Channel '+ channel +', metadata: '+ JSON.stringify(metadata));
+        if (channel && metadata_cache[channel] && typeof (metadata) === "object") {
+            Log.silly('SET_METADATA_CACHE', 'Channel '+ channel +', metadata: '+ JSON.stringify(metadata));
             metadata_cache[channel] = metadata;
+            historyKeeperBroadcast(ctx, channel, metadata);
         }
     };
 
@@ -988,7 +988,7 @@ module.exports.create = function (cfg) {
                     // make sure we update our cache of metadata
                     // or at least invalidate it and force other mechanisms to recompute its state
                     // 'output' could be the new state as computed by rpc
-                    onChannelMetadataChanged(ctx, msg[4], output[1]);
+                    onChannelMetadataChanged(ctx, msg[4].channel, output[1]);
                 }
 
                 sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify([parsed[0]].concat(output))]);
