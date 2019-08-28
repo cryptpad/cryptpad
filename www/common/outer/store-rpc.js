@@ -81,6 +81,7 @@ define([
             REQUEST_PAD_ACCESS: Store.requestPadAccess,
             GIVE_PAD_ACCESS: Store.givePadAccess,
             GET_PAD_METADATA: Store.getPadMetadata,
+            SET_PAD_METADATA: Store.setPadMetadata,
             // Drive
             DRIVE_USEROBJECT: Store.userObjectCommand,
             // Settings,

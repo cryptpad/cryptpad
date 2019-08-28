@@ -1004,6 +1004,10 @@ define([
                 });
             });
 
+            sframeChan.on('Q_SET_PAD_METADATA', function (data, cb) {
+                Cryptpad.setPadMetadata(data, cb);
+            });
+
             if (cfg.messaging) {
                 Notifier.getPermission();
 

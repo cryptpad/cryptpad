@@ -765,6 +765,9 @@ define([
         postMessage("GIVE_PAD_ACCESS", data, cb);
     };
 
+    common.setPadMetadata = function (data, cb) {
+        postMessage('SET_PAD_METADATA', data, cb);
+    };
     common.getPadMetadata = function (data, cb) {
         postMessage('GET_PAD_METADATA', data, cb);
     };

@@ -1395,6 +1395,15 @@ define([
             }
             cb(channel.data || {});
         };
+        Store.setPadMetadata = function (clientId, data, cb) {
+            if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }
+            if (!data.command) { return void cb({ error: 'EINVAL' }); }
+            store.rpc.setMetadata(data, function (err, res) {
+                if (err) { return void cb({ error: err }); }
+                if (!Array.isArray(res) || !res.length) { return void cb({}); }
+                cb(res[0]);
+            });
+        };
 
         // GET_FULL_HISTORY from sframe-common-outer
         Store.getFullHistory = function (clientId, data, cb) {

@@ -112,80 +112,156 @@ define([
             cb(void 0, data);
         });
     };
-    var createOwnerModal = function (common, owners) {
+    var createOwnerModal = function (common, channel, owners) {
         var friends = common.getFriends(true);
+        var sframeChan = common.getSframeChannel();
+        var priv = common.getMetadataMgr().getPrivateData();
+        var edPublic = priv.edPublic;
 
         // Remove owner column
-        var _owners = {};
-        owners.forEach(function (edPublic) {
-            var f;
-            Object.keys(friends).some(function (c) {
-                if (friends[c].edPublic === edPublic) {
-                    f = friends[c];
-                    return true;
+        var drawRemove = function () {
+            var _owners = {};
+            owners.forEach(function (ed) {
+                var f;
+                Object.keys(friends).some(function (c) {
+                    if (friends[c].edPublic === ed) {
+                        f = friends[c];
+                        return true;
+                    }
+                });
+                _owners[ed] = f || {
+                    displayName: 'Unknown user: '+ ed, // XXX
+                    notifications: true,
+                    edPublic: ed,
+                };
+            });
+            var removeCol = UIElements.getFriendsList('Remove an existing owner instantly', {
+                common: common,
+                friends: _owners,
+                noFilter: true
+            }, function () {
+                console.log(arguments);
+            });
+            var $div1 = $(removeCol.div);
+            var others1 = removeCol.others;
+            $div1.append(h('div.cp-share-grid', others1));
+            $div1.find('.cp-share-friend').click(function () {
+                var sel = $(this).hasClass('cp-selected');
+                if (!sel) {
+                    $(this).addClass('cp-selected');
+                } else {
+                    var order = $(this).attr('data-order');
+                    order = order ? 'order:'+order : '';
+                    $(this).removeClass('cp-selected').attr('style', order);
                 }
             });
-            _owners[edPublic] = f || {
-                displayName: 'Unknown user: '+ edPublic, // XXX
-                notifications: true,
-                edPublic: edPublic,
-            };
-        });
-        var removeCol = UIElements.getFriendsList('Remove an existing owner instantly', {
-            common: common,
-            friends: _owners,
-            noFilter: true
-        }, function () {
-            // XXX onSelect...
-            //onSelect...
-            console.log(arguments);
-        });
-        var $div1 = $(removeCol.div);
-        var others1 = removeCol.others;
-        $div1.append(h('div.cp-share-grid', others1));
-        $div1.find('.cp-share-friend').click(function () {
-            var sel = $(this).hasClass('cp-selected');
-            if (!sel) {
-                $(this).addClass('cp-selected');
-            } else {
-                var order = $(this).attr('data-order');
-                order = order ? 'order:'+order : '';
-                $(this).removeClass('cp-selected').attr('style', order);
-            }
-            // XXX onSelect...
-        });
+            // When clicking on the remove button, we check the selected users.
+            // If you try to remove yourself, we'll display an additional warning message
+            var removeButton = h('button.no-margin', 'Remove owners'); // XXX
+            $(removeButton).click(function () {
+                // Check selection
+                var $sel = $div1.find('.cp-share-friend.cp-selected');
+                var sel = $sel.toArray();
+                var me = false;
+                var toRemove = sel.map(function (el) {
+                    var ed = $(el).attr('data-ed');
+                    if (!ed) { return; }
+                    if (ed === edPublic) { me = true; }
+                    return ed;
+                }).filter(function (x) { return x; });
+                // Send the command
+                var send = function () {
+                    sframeChan.query('Q_SET_PAD_METADATA', {
+                        channel: channel,
+                        command: 'RM_OWNERS',
+                        value: toRemove
+                    }, function (err, res) {
+                        err = err || (res && res.error);
+                        if (err) { return void UI.warn('ERROR' + err); } // XXX
+                        owners = res.owners;
+                        drawRemove().insertBefore($div1);
+                        $div1.remove();
+                        UI.log('DONE'); // XXX
+                    });
+                };
+                var msg = me ?
+                  "Are you sure? You're going to give up on your rights, this can't be undone!" :
+                  "Are you sure?"; // XXX
+                UI.confirm(msg, function (yes) {
+                    if (!yes) { return; }
+                    send();
+                });
+            });
+            $div1.append(h('p', removeButton));
+            return $div1;
+        };
 
         // Add owners column
-        var addCol = UIElements.getFriendsList('Ask a friend to be an owner', {
-            common: common,
-            friends: friends
-        }, function () {
-            // XXX onSelect...
-            console.log(arguments);
-        });
-        var $div2 = $(addCol.div);
-        var others2 = addCol.others;
-        $div2.append(h('div.cp-share-grid', others2));
-        $div2.find('.cp-share-friend').click(function () {
-            var sel = $(this).hasClass('cp-selected');
-            if (!sel) {
-                $(this).addClass('cp-selected');
-            } else {
-                var order = $(this).attr('data-order');
-                order = order ? 'order:'+order : '';
-                $(this).removeClass('cp-selected').attr('style', order);
-            }
-            // XXX onSelect...
-        });
+        var drawAdd = function () {
+            var addCol = UIElements.getFriendsList('Ask a friend to be an owner.', {
+                common: common,
+                friends: friends
+            }, function () {
+                // XXX onSelect...
+                console.log(arguments);
+            });
+            var $div2 = $(addCol.div);
+            var others2 = addCol.others;
+            $div2.append(h('div.cp-share-grid', others2));
+            $div2.find('.cp-share-friend').click(function () {
+                var sel = $(this).hasClass('cp-selected');
+                if (!sel) {
+                    $(this).addClass('cp-selected');
+                } else {
+                    var order = $(this).attr('data-order');
+                    order = order ? 'order:'+order : '';
+                    $(this).removeClass('cp-selected').attr('style', order);
+                }
+                // XXX onSelect...
+            });
+            // When clicking on the add button, we get the selected users.
+            var addButton = h('button.no-margin', 'Add owners'); // XXX
+            $(addButton).click(function () {
+                // Check selection
+                var $sel = $div2.find('.cp-share-friend.cp-selected');
+                var sel = $sel.toArray();
+                var toAdd = sel.map(function (el) {
+                    return $(el).attr('data-curve');
+                }).filter(function (x) { return x; });
+                // Send the command
+                var send = function () {
+                    // XXX Pinning problem....
+                    sframeChan.query('Q_SET_PAD_METADATA', {
+                        channel: channel,
+                        command: 'ADD_OWNERS',
+                        value: toAdd
+                    }, function (err, res) {
+                        err = err || (res && res.error);
+                        if (err) { return void UI.warn('ERROR' + err); } // XXX
+                        owners = res.owners;
+                        drawRemove().insertBefore($div2);
+                        $div2.remove();
+                        UI.log('DONE'); // XXX
+                    });
+                };
+                var msg = "Are you sure?"; // XXX
+                UI.confirm(msg, function (yes) {
+                    if (!yes) { return; }
+                    send();
+                });
+            });
+            //$div2.append(h('p', addButton));
+            return $div2;
+        };
 
         // Create modal
         var link = h('div.cp-share-columns', [
-            removeCol.div,
-            addCol.div
+            drawRemove()[0],
+            drawAdd()[0]
         ]);
         var linkButtons = [{
             className: 'cancel',
-            name: Messages.ok,
+            name: 'CLOSE', // XXX existing key?
             onClick: function () {},
             keys: [27]
         }];
@@ -234,7 +310,7 @@ define([
         if (owned) {
             var manageOwners = h('button.no-margin', 'Manage owners'); // XXX
             $(manageOwners).click(function () {
-                var modal = createOwnerModal(common, data.owners);
+                var modal = createOwnerModal(common, data.channel, data.owners);
                 UI.openCustomModal(modal, {
                     wide: true,
                 });
@@ -437,8 +513,6 @@ define([
     UIElements.getFriendsList = function (label, config, onSelect) {
         var common = config.common;
         var friends = config.friends;
-        var myName = common.getMetadataMgr().getUserData().name;
-        var order = [];
         if (!friends) { return; }
 
         var others = Object.keys(friends).map(function (curve, i) {
@@ -538,12 +612,15 @@ define([
         var common = config.common;
         var title = config.title;
         var friends = config.friends;
+        var myName = common.getMetadataMgr().getUserData().name;
         if (!friends) { return; }
+        var order = [];
 
         var smallCurves = Object.keys(friends).map(function (c) {
             return friends[c].curvePublic.slice(0,8);
         });
 
+        var $div;
         // Replace "copy link" by "share with friends" if at least one friend is selected
         // Also create the "share with friends" button if it doesn't exist
         var refreshButtons = function () {
@@ -606,7 +683,7 @@ define([
 
         var friendsList = UIElements.getFriendsList(Messages.share_linkFriends, config, refreshButtons);
         var div = friendsList.div;
-        var $div = $(div);
+        $div = $(div);
         var others = friendsList.others;
 
         common.getAttribute(['general', 'share-friends'], function (err, val) {
