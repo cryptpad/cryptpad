@@ -713,8 +713,12 @@ module.exports.create = function (cfg) {
     // Check if the selected channel is expired
     // If it is, remove it from memory and broadcast a message to its members
 
-    const onChannelMetadataChanged = function (ctx, channel) {
-        channel = channel;
+    const onChannelMetadataChanged = function (ctx, channel, metadata) {
+        Log.debug('SET_METADATA_CACHE', 'Test'); // XXX
+        if (channel && metadata_cache[channel]) {
+            Log.debug('SET_METADATA_CACHE', 'Channel '+ channel +', metadata: '+ JSON.stringify(metadata));
+            metadata_cache[channel] = metadata;
+        }
     };
 
     /*  checkExpired
@@ -984,7 +988,7 @@ module.exports.create = function (cfg) {
                     // make sure we update our cache of metadata
                     // or at least invalidate it and force other mechanisms to recompute its state
                     // 'output' could be the new state as computed by rpc
-                    onChannelMetadataChanged(ctx, msg[4]);
+                    onChannelMetadataChanged(ctx, msg[4], output[1]);
                 }
 
                 sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify([parsed[0]].concat(output))]);

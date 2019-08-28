@@ -332,6 +332,46 @@ var getMetadata = function (Env, channel, cb) {
     });
 };
 
+/* setMetadata
+    - write a new line to the metadata log if a valid command is provided
+    - data is an object: {
+        channel: channelId,
+        command: metadataCommand (string),
+        value: value
+    }
+*/
+var setMetadata = function (Env, data, unsafeKey, cb) {
+    var channel = data.channel;
+    var command = data.command;
+    if (!channel || !isValidId(channel)) { return void cb ('INVALID_CHAN'); }
+    if (!command || typeof (command) !== 'string') { return void cb ('INVALID_COMMAND'); }
+    if (Meta.commands.indexOf(command) === -1) { return void('UNSUPPORTED_COMMAND'); }
+
+    // XXX should we add checks to "metadata.js" to make sure data.value is
+    // valid for the selected command?
+
+    getMetadata(Env, channel, function (err, metadata) {
+        if (err) { return void cb(err); }
+        if (!(metadata && Array.isArray(metadata.owners))) { return void cb('E_NO_OWNERS'); }
+        // Confirm that the channel is owned by the user in question
+        if (metadata.owners.indexOf(unsafeKey) === -1) {
+            return void cb('INSUFFICIENT_PERMISSIONS');
+        }
+
+        // Add the new metadata line
+        var line = JSON.stringify([command, data.value]);
+        return void Env.msgStore.writeMetadata(channel, line, function (e) {
+            if (e) {
+                return void cb(e);
+            }
+            getMetadata(Env, channel, function (err, metadata) {
+                // XXX handle error here?
+                cb(void 0, metadata);
+            });
+        });
+    });
+};
+
 var getMultipleFileSize = function (Env, channels, cb) {
     if (!Array.isArray(channels)) { return cb('INVALID_PIN_LIST'); }
     if (typeof(Env.msgStore.getChannelSize) !== 'function') {
@@ -1602,6 +1642,7 @@ var isAuthenticatedCall = function (call) {
         'WRITE_LOGIN_BLOCK',
         'REMOVE_LOGIN_BLOCK',
         'ADMIN',
+        'SET_METADATA'
     ].indexOf(call) !== -1;
 };
 
@@ -1970,6 +2011,14 @@ RPC.create = function (
                         return void Respond(e);
                     }
                     Respond(void 0, result);
+                });
+            case 'SET_METADATA':
+                return void setMetadata(Env, msg[1], publicKey, function (e, data) {
+                    if (e) {
+                        WARN(e, data);
+                        return void Respond(e);
+                    }
+                    Respond(void 0, data);
                 });
             default:
                 return void Respond('UNSUPPORTED_RPC_CALL', msg);

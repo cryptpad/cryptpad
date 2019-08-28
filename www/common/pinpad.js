@@ -260,6 +260,16 @@ define([
                 });
             };
 
+            // Get data for the admin panel
+            exp.setMetadata = function (obj, cb) {
+                rpc.send('SET_METADATA', {
+                    channel: obj.channel,
+                    command: obj.command,
+                    value: obj.value
+                }, cb);
+            };
+
+
             cb(e, exp);
         });
     };
