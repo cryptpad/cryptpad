@@ -118,6 +118,8 @@ define([
         var priv = common.getMetadataMgr().getPrivateData();
         var edPublic = priv.edPublic;
 
+        var $div1, $div2;
+
         // Remove owner column
         var drawRemove = function () {
             var _owners = {};
@@ -142,7 +144,7 @@ define([
             }, function () {
                 console.log(arguments);
             });
-            var $div1 = $(removeCol.div);
+            $div1 = $(removeCol.div);
             var others1 = removeCol.others;
             $div1.append(h('div.cp-share-grid', others1));
             $div1.find('.cp-share-friend').click(function () {
@@ -179,8 +181,12 @@ define([
                         err = err || (res && res.error);
                         if (err) { return void UI.warn('ERROR' + err); } // XXX
                         owners = res.owners;
-                        drawRemove().insertBefore($div1);
-                        $div1.remove();
+                        var $d1 = $div1;
+                        var $d2 = $div2;
+                        drawRemove().insertBefore($d1);
+                        $d1.remove();
+                        drawAdd().insertBefore($d2);
+                        $d2.remove();
                         UI.log('DONE'); // XXX
                     });
                 };
@@ -198,14 +204,20 @@ define([
 
         // Add owners column
         var drawAdd = function () {
+            var _friends = JSON.parse(JSON.stringify(friends));
+            Object.keys(_friends).forEach(function (curve) {
+                if (owners.indexOf(_friends[curve].edPublic) !== -1) {
+                    delete _friends[curve];
+                }
+            });
             var addCol = UIElements.getFriendsList('Ask a friend to be an owner.', {
                 common: common,
-                friends: friends
+                friends: _friends
             }, function () {
                 // XXX onSelect...
                 console.log(arguments);
             });
-            var $div2 = $(addCol.div);
+            $div2 = $(addCol.div);
             var others2 = addCol.others;
             $div2.append(h('div.cp-share-grid', others2));
             $div2.find('.cp-share-friend').click(function () {
@@ -226,7 +238,7 @@ define([
                 var $sel = $div2.find('.cp-share-friend.cp-selected');
                 var sel = $sel.toArray();
                 var toAdd = sel.map(function (el) {
-                    return $(el).attr('data-curve');
+                    return friends[$(el).attr('data-curve')].edPublic;
                 }).filter(function (x) { return x; });
                 // Send the command
                 var send = function () {
@@ -239,8 +251,12 @@ define([
                         err = err || (res && res.error);
                         if (err) { return void UI.warn('ERROR' + err); } // XXX
                         owners = res.owners;
-                        drawRemove().insertBefore($div2);
-                        $div2.remove();
+                        var $d1 = $div1;
+                        var $d2 = $div2;
+                        drawRemove().insertBefore($d1);
+                        $d1.remove();
+                        drawAdd().insertBefore($d2);
+                        $d2.remove();
                         UI.log('DONE'); // XXX
                     });
                 };
@@ -250,7 +266,7 @@ define([
                     send();
                 });
             });
-            //$div2.append(h('p', addButton));
+            $div2.append(h('p', addButton));
             return $div2;
         };
 
