@@ -399,17 +399,6 @@ define([
                     "Shift-Tab": function () {
                         editor.execCommand("indentLess");
                     },
-                    "Backspace": function () {
-                        var cursor = doc.getCursor();
-                        var line = doc.getLine(cursor.line);
-                        var beforeCursor = line.substring(0, cursor.ch);
-                        if (beforeCursor && beforeCursor.trim() === "") {
-                            editor.execCommand("indentLess");
-                        } else {
-                            editor.execCommand("delCharBefore");
-                        }
-
-                    },
                 });
                 $('.CodeMirror').css('font-size', fontSize+'px');
             };
