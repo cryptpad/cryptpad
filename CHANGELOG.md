@@ -40,8 +40,9 @@ During this development period we performed an extensive audit of our existing f
   * it's now possible to export files and folders (as zips) directly from your CryptDrive
   * the ctrl-e and right-click menus in the drive now features an entry for uploading files and folders
   * certain plain-text file formats uploaded as static files can now be rendered within other documents or used as the basis of a new code pad
-  * regular folders in your CryptDrive can be converted into shared folders from the right-click menu as long as they do not contain shared folders and are not within another shared folder
+  * ~~regular folders in your CryptDrive can be converted into shared folders from the right-click menu as long as they do not contain shared folders and are not within another shared folder~~
     * nesting is complicated for a variety of technical reasons, but we're discussing whether it's worthwhile to try to find a solution
+    * we found a critical bug in the implementation of this feature and disabled it for this release
   * documents and folders within your CryptDrive can now be moved to parent folders by dropping them on the file path in the toolbar
 * Styles
   * the upload/download progress table has been restyled to be less invasive
