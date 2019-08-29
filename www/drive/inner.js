@@ -1162,6 +1162,7 @@ define([
                             hide.push('collapseall');
                         }
                         containsFolder = true;
+                        hide.push('share'); // XXX CONVERT
                         hide.push('openro');
                         hide.push('openincode');
                         hide.push('properties');
@@ -3934,7 +3935,8 @@ define([
                     });
                 } else if (manager.isFolder(el)) { // Folder
                     // if folder is inside SF
-                    if (manager.isInSharedFolder(paths[0].path)) {
+                    return UI.warn('ERROR: Temporarily disabled'); // XXX CONVERT
+                    /*if (manager.isInSharedFolder(paths[0].path)) {
                         return void UI.alert(Messages.convertFolderToSF_SFParent);
                     }
                     // if folder already contains SF
@@ -3964,7 +3966,7 @@ define([
                             var owned = Util.isChecked($(convertContent).find('#cp-upload-owned'));
                             manager.convertFolderToSharedFolder(paths[0].path, owned, password, refresh);
                         });
-                    }
+                    }*/
                 } else { // File
                     data = manager.getFileData(el);
                     parsed = Hash.parsePadUrl(data.href);
