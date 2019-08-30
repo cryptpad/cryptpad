@@ -65,7 +65,7 @@ define([
             var doesAccept = $checkAcceptTerms[0].checked;
 
             if (Cred.isEmail(uname) && !I_REALLY_WANT_TO_USE_MY_EMAIL_FOR_MY_USERNAME) {
-                var warning = [
+                var emailWarning = [
                     Messages.register_emailWarning0,
                     Messages.register_emailWarning1,
                     Messages.register_emailWarning2,
@@ -74,7 +74,7 @@ define([
 
                 Feedback.send("EMAIL_USERNAME_WARNING", true);
 
-                return void UI.confirm(warning, function (yes) {
+                return void UI.confirm(emailWarning, function (yes) {
                     if (!yes) { return; }
                     I_REALLY_WANT_TO_USE_MY_EMAIL_FOR_MY_USERNAME = true;
                     registerClick();
