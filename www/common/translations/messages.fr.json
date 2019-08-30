@@ -1138,5 +1138,6 @@
     "homePage": "Page d'accueil",
     "features_noData": "Aucune donnée personnelle requise",
     "features_pricing": "Entre {0} et {2}€ par mois",
-    "features_emailRequired": "Adresse email requise"
+    "features_emailRequired": "Adresse email requise",
+    "padNotPinnedVariable": "Ce pad va expirer après {4} jours d'inactivité, {0}connectez-vous{1} ou {2}enregistrez-vous{3} pour le préserver."
 }
