@@ -340,6 +340,7 @@ var getMetadata = function (Env, channel, cb) {
         value: value
     }
 */
+var metadataSem = Saferphore.create(1);
 var setMetadata = function (Env, data, unsafeKey, cb) {
     var channel = data.channel;
     var command = data.command;
@@ -347,39 +348,53 @@ var setMetadata = function (Env, data, unsafeKey, cb) {
     if (!command || typeof (command) !== 'string') { return void cb ('INVALID_COMMAND'); }
     if (Meta.commands.indexOf(command) === -1) { return void('UNSUPPORTED_COMMAND'); }
 
-    getMetadata(Env, channel, function (err, metadata) {
-        if (err) { return void cb(err); }
-        if (!(metadata && Array.isArray(metadata.owners))) { return void cb('E_NO_OWNERS'); }
+    metadataSem.take(function (give) {
+        var g = give();
+        getMetadata(Env, channel, function (err, metadata) {
+            if (err) {
+                g();
+                return void cb(err);
+            }
+            if (!(metadata && Array.isArray(metadata.owners))) {
+                g();
+                return void cb('E_NO_OWNERS');
+            }
 
-        // Confirm that the channel is owned by the user in question
-        // or the user is accepting a pending ownerhsip offer
-        if (metadata.pending_owners && Array.isArray(metadata.pending_owners) &&
-                    metadata.pending_owners.indexOf(unsafeKey) !== -1 &&
-                    metadata.owners.indexOf(unsafeKey) === -1) {
+            // Confirm that the channel is owned by the user in question
+            // or the user is accepting a pending ownerhsip offer
+            if (metadata.pending_owners && Array.isArray(metadata.pending_owners) &&
+                        metadata.pending_owners.indexOf(unsafeKey) !== -1 &&
+                        metadata.owners.indexOf(unsafeKey) === -1) {
 
-            // If you are a pending owner, make sure you can only add yourelf as an owner
-            if (command !== 'ADD_OWNERS' || !Array.isArray(data.value) || data.value.length !== 1
-                    || data.value[0] !== unsafeKey) {
+                // If you are a pending owner, make sure you can only add yourelf as an owner
+                if (command !== 'ADD_OWNERS' || !Array.isArray(data.value)
+                        || data.value.length !== 1
+                        || data.value[0] !== unsafeKey) {
+                    g();
+                    return void cb('INSUFFICIENT_PERMISSIONS');
+                }
+
+            } else if (metadata.owners.indexOf(unsafeKey) === -1) {
+                g();
                 return void cb('INSUFFICIENT_PERMISSIONS');
             }
 
-        } else if (metadata.owners.indexOf(unsafeKey) === -1) {
-            return void cb('INSUFFICIENT_PERMISSIONS');
-        }
-
-        // Add the new metadata line
-        var line = [command, data.value, +new Date()];
-        try {
-            Meta.handleCommand(metadata, line);
-        } catch (e) {
-            return void cb(e);
-        }
-
-        return void Env.msgStore.writeMetadata(channel, JSON.stringify(line), function (e) {
-            if (e) {
+            // Add the new metadata line
+            var line = [command, data.value, +new Date()];
+            try {
+                Meta.handleCommand(metadata, line);
+            } catch (e) {
+                g();
                 return void cb(e);
             }
-            cb(void 0, metadata);
+
+            Env.msgStore.writeMetadata(channel, JSON.stringify(line), function (e) {
+                g();
+                if (e) {
+                    return void cb(e);
+                }
+                cb(void 0, metadata);
+            });
         });
     });
 };
