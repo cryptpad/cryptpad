@@ -347,27 +347,39 @@ var setMetadata = function (Env, data, unsafeKey, cb) {
     if (!command || typeof (command) !== 'string') { return void cb ('INVALID_COMMAND'); }
     if (Meta.commands.indexOf(command) === -1) { return void('UNSUPPORTED_COMMAND'); }
 
-    // XXX should we add checks to "metadata.js" to make sure data.value is
-    // valid for the selected command?
-
     getMetadata(Env, channel, function (err, metadata) {
         if (err) { return void cb(err); }
         if (!(metadata && Array.isArray(metadata.owners))) { return void cb('E_NO_OWNERS'); }
+
         // Confirm that the channel is owned by the user in question
-        if (metadata.owners.indexOf(unsafeKey) === -1) {
+        // or the user is accepting a pending ownerhsip offer
+        if (metadata.pending_owners && Array.isArray(metadata.pending_owners) &&
+                    metadata.pending_owners.indexOf(unsafeKey) !== -1 &&
+                    metadata.owners.indexOf(unsafeKey) === -1) {
+
+            // If you are a pending owner, make sure you can only add yourelf as an owner
+            if (command !== 'ADD_OWNERS' || !Array.isArray(data.value) || data.value.length !== 1
+                    || data.value[0] !== unsafeKey) {
+                return void cb('INSUFFICIENT_PERMISSIONS');
+            }
+
+        } else if (metadata.owners.indexOf(unsafeKey) === -1) {
             return void cb('INSUFFICIENT_PERMISSIONS');
         }
 
         // Add the new metadata line
-        var line = JSON.stringify([command, data.value]);
-        return void Env.msgStore.writeMetadata(channel, line, function (e) {
+        var line = [command, data.value, +new Date()];
+        try {
+            Meta.handleCommand(metadata, line);
+        } catch (e) {
+            return void cb(e);
+        }
+
+        return void Env.msgStore.writeMetadata(channel, JSON.stringify(line), function (e) {
             if (e) {
                 return void cb(e);
             }
-            getMetadata(Env, channel, function (err, metadata) {
-                // XXX handle error here?
-                cb(void 0, metadata);
-            });
+            cb(void 0, metadata);
         });
     });
 };
