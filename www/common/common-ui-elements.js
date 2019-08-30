@@ -107,11 +107,12 @@ define([
             common.getPadAttribute('tags', waitFor(function (err, val) {
                 data.tags = val;
             }));
-            common.getSframeChannel().query('Q_GET_PAD_METADATA', null, waitFor(function (err, val) {
-                if (err) { return; }
-                data.owners = val.owners;
-                data.expire = val.expire;
-                data.pending_owners = val.pending_owners;
+            common.getPadMetadata(null, waitFor(function (obj) {
+                console.log(obj);
+                if (obj && obj.error) { return; }
+                data.owners = obj.owners;
+                data.expire = obj.expire;
+                data.pending_owners = obj.pending_owners;
             }));
             /*
             common.getPadAttribute('owners', waitFor(function (err, val) {
@@ -132,14 +133,20 @@ define([
         var edPublic = priv.edPublic;
         var channel = data.channel;
         var owners = data.owners;
+        var pending_owners = data.pending_owners;
 
-        var $div1, $div2;
         var redrawAll = function () {};
 
+        var div1 = h('div.cp-share-friends.cp-share-column');
+        var div2 = h('div.cp-share-friends.cp-share-column');
+        var $div1 = $(div1);
+        var $div2 = $(div2);
+
         // Remove owner column
-        var drawRemove = function () {
+        var drawRemove = function (pending) {
             var _owners = {};
-            owners.forEach(function (ed) {
+            var o = pending ? pending_owners : owners;
+            o.forEach(function (ed) {
                 var f;
                 Object.keys(friends).some(function (c) {
                     if (friends[c].edPublic === ed) {
@@ -153,17 +160,19 @@ define([
                     edPublic: ed,
                 };
             });
-            var removeCol = UIElements.getFriendsList('Remove an existing owner instantly', {
+            var msg = pending ? 'Remove a pending owner:'
+                        : 'Remove an existing owner:'; // XXX
+            var removeCol = UIElements.getFriendsList(msg, {
                 common: common,
                 friends: _owners,
                 noFilter: true
             }, function () {
                 console.log(arguments);
             });
-            $div1 = $(removeCol.div);
+            var $div = $(removeCol.div);
             var others1 = removeCol.others;
-            $div1.append(h('div.cp-share-grid', others1));
-            $div1.find('.cp-share-friend').click(function () {
+            $div.append(h('div.cp-share-grid', others1));
+            $div.find('.cp-share-friend').click(function () {
                 var sel = $(this).hasClass('cp-selected');
                 if (!sel) {
                     $(this).addClass('cp-selected');
@@ -175,10 +184,11 @@ define([
             });
             // When clicking on the remove button, we check the selected users.
             // If you try to remove yourself, we'll display an additional warning message
-            var removeButton = h('button.no-margin', 'Remove owners'); // XXX
+            var btnMsg = pending ? 'Remove pending owners' : 'Remove owners'; // XXX
+            var removeButton = h('button.no-margin', btnMsg);
             $(removeButton).click(function () {
                 // Check selection
-                var $sel = $div1.find('.cp-share-friend.cp-selected');
+                var $sel = $div.find('.cp-share-friend.cp-selected');
                 var sel = $sel.toArray();
                 var me = false;
                 var toRemove = sel.map(function (el) {
@@ -191,12 +201,11 @@ define([
                 var send = function () {
                     sframeChan.query('Q_SET_PAD_METADATA', {
                         channel: channel,
-                        command: 'RM_OWNERS',
+                        command: pending ? 'RM_PENDING_OWNERS' : 'RM_OWNERS',
                         value: toRemove
                     }, function (err, res) {
                         err = err || (res && res.error);
                         if (err) { return void UI.warn('ERROR' + err); } // XXX
-                        owners = res.owners;
                         redrawAll();
                         UI.log('DONE'); // XXX
                     });
@@ -209,8 +218,8 @@ define([
                     send();
                 });
             });
-            $div1.append(h('p', removeButton));
-            return $div1;
+            $div.append(h('p', removeButton));
+            return $div;
         };
 
         // Add owners column
@@ -261,20 +270,22 @@ define([
                         }
                     }));
                 }).nThen(function (waitFor) {
+                    console.log('koko');
                     // Send the command
                     sframeChan.query('Q_SET_PAD_METADATA', {
                         channel: channel,
                         command: 'ADD_PENDING_OWNERS',
                         value: toAdd
                     }, waitFor(function (err, res) {
+                        console.error(arguments);
                         err = err || (res && res.error);
                         if (err) {
                             waitFor.abort();
                             return void UI.warn('ERROR' + err);
                         } // XXX
-                        owners = res.owners;
                     }));
                 }).nThen(function (waitFor) {
+                    console.log('okok');
                     // TODO send notifications
                     sel.forEach(function (el) {
                         var friend = friends[$(el).attr('data-curve')];
@@ -307,18 +318,26 @@ define([
         };
 
         redrawAll = function () {
-            var $d1 = $div1;
-            var $d2 = $div2;
-            drawRemove().insertBefore($d1);
-            $d1.remove();
-            drawAdd().insertBefore($d2);
-            $d2.remove();
+            $div1.empty();
+            $div2.empty();
+            common.getPadMetadata(null, function (obj) {
+                if (obj && obj.error) { return; }
+                owners = obj.owners;
+                pending_owners = obj.pending_owners;
+                $div1.append(drawRemove(false)).append(drawRemove(true));
+                $div2.append(drawAdd());
+            });
         };
+
+        $div1.append(drawRemove(false)).append(drawRemove(true));
+        $div2.append(drawAdd());
 
         // Create modal
         var link = h('div.cp-share-columns', [
-            drawRemove()[0],
-            drawAdd()[0]
+            div1,
+            div2
+            /*drawRemove()[0],
+            drawAdd()[0]*/
         ]);
         var linkButtons = [{
             className: 'cancel',
@@ -3260,8 +3279,10 @@ define([
 
     UIElements.displayAddOwnerModal = function (common, data) {
         var priv = common.getMetadataMgr().getPrivateData();
+        var user = common.getMetadataMgr().getUserData();
         var sframeChan = common.getSframeChannel();
         var msg = data.content.msg;
+
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
         var title = Util.fixHTML(msg.content.title);
 
@@ -3274,8 +3295,8 @@ define([
         $(link).click(function (e) {
             e.preventDefault();
             e.stopPropagation();
-            if (data.content.password) {
-                common.sessionStorage.put('newPadPassword', data.content.password, function () {
+            if (msg.content.password) {
+                common.sessionStorage.put('newPadPassword', msg.content.password, function () {
                     common.openURL(msg.content.href);
                 });
                 return;
@@ -3288,23 +3309,76 @@ define([
             link
         ]);
 
+        var answer = function (yes) {
+            common.mailbox.sendTo("ADD_OWNER_ANSWER", {
+                channel: msg.content.channel,
+                href: msg.content.href,
+                password: msg.content.password,
+                title: msg.content.title,
+                answer: yes,
+                user: {
+                    displayName: user.name,
+                    avatar: user.avatar,
+                    profile: user.profile,
+                    notifications: user.notifications,
+                    curvePublic: user.curvePublic,
+                    edPublic: priv.edPublic
+                }
+            }, {
+                channel: msg.content.user.notifications,
+                curvePublic: msg.content.user.curvePublic
+            });
+            common.mailbox.dismiss(data, function (err) {
+                console.log(err);
+            });
+        };
+
         var todo = function (yes) {
             if (yes) {
+                // ACCEPT
                 sframeChan.query('Q_SET_PAD_METADATA', {
-                    channel: data.content.channel,
+                    channel: msg.content.channel,
                     command: 'ADD_OWNERS',
                     value: [priv.edPublic]
                 }, function (err, res) {
                     err = err || (res && res.error);
                     if (err) {
-                        return void UI.warn('ERROR' + err);
+                        return void UI.warn('ERROR ' + err);
                     } // XXX
                     UI.log('DONE'); // XXX
-                    // TODO send notification to the sender?
+
+                    // Send notification to the sender
+                    answer(true);
+
+                    // Remove yourself from the pending owners
+                    sframeChan.query('Q_SET_PAD_METADATA', {
+                        channel: msg.content.channel,
+                        command: 'RM_PENDING_OWNERS',
+                        value: [priv.edPublic]
+                    }, function (err, res) {
+                        err = err || (res && res.error);
+                        if (err) {
+                            console.error(err);
+                        }
+                    });
                 });
                 return;
             }
-            // XXX implement decline?
+
+            // DECLINE
+            // Remove yourself from the pending owners
+            sframeChan.query('Q_SET_PAD_METADATA', {
+                channel: msg.content.channel,
+                command: 'RM_PENDING_OWNERS',
+                value: [priv.edPublic]
+            }, function (err, res) {
+                err = err || (res && res.error);
+                if (err) {
+                    console.error(err);
+                }
+                // Send notification to the sender
+                answer(false);
+            });
         };
 
         var buttons = [{

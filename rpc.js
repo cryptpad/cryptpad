@@ -367,7 +367,8 @@ var setMetadata = function (Env, data, unsafeKey, cb) {
                         metadata.owners.indexOf(unsafeKey) === -1) {
 
                 // If you are a pending owner, make sure you can only add yourelf as an owner
-                if (command !== 'ADD_OWNERS' || !Array.isArray(data.value)
+                if ((command !== 'ADD_OWNERS' && command !== 'RM_PENDING_OWNERS')
+                        || !Array.isArray(data.value)
                         || data.value.length !== 1
                         || data.value[0] !== unsafeKey) {
                     g();

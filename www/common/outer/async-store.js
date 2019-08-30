@@ -1397,6 +1397,7 @@ define([
             cb(channel.data || {});
         };
         Store.setPadMetadata = function (clientId, data, cb) {
+            console.log(data);
             if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }
             if (!data.command) { return void cb({ error: 'EINVAL' }); }
             store.rpc.setMetadata(data, function (err, res) {

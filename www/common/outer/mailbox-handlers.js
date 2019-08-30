@@ -264,6 +264,7 @@ define([
     handlers['ADD_OWNER'] = function (ctx, box, data, cb) {
         var msg = data.msg;
         var content = msg.content;
+console.log(msg);
 
         if (msg.author !== content.user.curvePublic) { return void cb(true); }
         if (!content.href || !content.title || !content.channel) {

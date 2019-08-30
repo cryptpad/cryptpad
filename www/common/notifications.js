@@ -216,18 +216,39 @@ define([
         var msg = content.msg;
 
         // Display the notification
+        var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
+        var title = Util.fixHTML(msg.content.title);
+        Messages.owner_request = '{0} wants you to be an owner of <b>{1}</b>'; // XXX
         content.getFormatText = function () {
-            return Messages._getKey('friendRequest_notification', [name]);
+            return Messages._getKey('owner_request', [name, title]);
         };
 
         // Check authenticity
-        if (msg.author !== msg.content.curvePublic) { return; }
+        if (msg.author !== msg.content.user.curvePublic) { return; }
 
         // if not archived, add handlers
         if (!content.archived) {
             content.handler = function () {
                 UIElements.displayAddOwnerModal(common, data);
             };
+        }
+    };
+
+    handlers['ADD_OWNER_ANSWER'] = function (common, data) {
+        var content = data.content;
+        var msg = content.msg;
+
+        // Display the notification
+        var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
+        var title = Util.fixHTML(msg.content.title);
+        Messages.owner_request_accepted = '{0} has accepted your offer to be an owner of <b>{1}</b>'; // XXX
+        Messages.owner_request_declined = '{0} has declined your offer to be an owner of <b>{1}</b>'; // XXX
+        var key = 'owner_request_' + (msg.content.answer ? 'accepted' : 'declined');
+        content.getFormatText = function () {
+            return Messages._getKey(key, [name, title]);
+        };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
         }
     };
 
