@@ -1,6 +1,5 @@
 define([
     '/bower_components/chainpad-crypto/crypto.js',
-    '/common/curve.js',
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/common-realtime.js',
@@ -8,8 +7,10 @@ define([
     '/customize/messages.js',
 
     '/bower_components/nthen/index.js',
-], function (Crypto, Curve, Hash, Util, Realtime, Constants, Messages, nThen) {
+], function (Crypto, Hash, Util, Realtime, Constants, Messages, nThen) {
     'use strict';
+    var Curve = Crypto.Curve;
+
     var Msg = {
         inputs: [],
     };
