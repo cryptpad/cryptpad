@@ -464,7 +464,10 @@ define([
 
     // convert a folder to a Shared Folder
     var _convertFolderToSharedFolder = function (Env, data, cb) {
-        var path = data.path;
+        return void cb({
+            error: 'DISABLED'
+        }); // XXX CONVERT
+        /*var path = data.path;
         var folderElement = Env.user.userObject.find(path);
         // don't try to convert top-level elements (trash, root, etc) to shared-folders
         // TODO also validate that you're in root (not templates, etc)
@@ -554,7 +557,7 @@ define([
             Env.user.userObject.delete([path], function () {
                 cb();
             });
-        });
+        });*/
     };
 
     // Delete permanently some pads or folders
