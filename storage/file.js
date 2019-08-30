@@ -408,7 +408,6 @@ var removeArchivedChannel = function (env, channelName, cb) {
     });
 };
 
-// TODO implement a method of removing metadata that doesn't have a corresponding channel
 var listChannels = function (root, handler, cb) {
     // do twenty things at a time
     var sema = Semaphore.create(20);
@@ -442,38 +441,91 @@ var listChannels = function (root, handler, cb) {
                         // ignore hidden files
                         if (/^\./.test(item)) { return; }
                         // ignore anything that isn't channel or metadata
-                        if (!/^[0-9a-fA-F]{32}(\.metadata?)*\.ndjson$/.test(item)) {
-                            return;
-                        }
+                        if (!/^[0-9a-fA-F]{32}(\.metadata?)*\.ndjson$/.test(item)) { return; }
+
+                        var isLonelyMetadata = false;
+                        var channelName;
+                        var metadataName;
+
+                        // if the current file is not the channel data, then it must be metadata
                         if (!/^[0-9a-fA-F]{32}\.ndjson$/.test(item)) {
-                            // this will catch metadata, which we want to ignore if
-                            // the corresponding channel is present
-                            if (list.indexOf(item.replace(/\.metadata/, '')) !== -1) { return; }
-                            // otherwise fall through
+                            metadataName = item;
+
+                            channelName = item.replace(/\.metadata/, '');
+
+                            // if there is a corresponding channel present in the list,
+                            // then we should stop here and handle everything when we get to the channel
+                            if (list.indexOf(channelName) !== -1) { return; }
+                            // otherwise set a flag indicating that we should
+                            // handle the metadata on its own
+                            isLonelyMetadata = true;
+                        } else {
+                            channelName = item;
+                            metadataName = channelName.replace(/\.ndjson$/, '.metadata.ndjson');
                         }
-                        var filepath = Path.join(nestedDirPath, item);
-                        var channel = filepath
-                            .replace(/\.ndjson$/, '')
-                            .replace(/\.metadata/, '')
-                            .replace(/.*\//, '');
+
+                        var filePath = Path.join(nestedDirPath, channelName);
+                        var metadataPath = Path.join(nestedDirPath, metadataName);
+                        var channel = metadataName.replace(/\.metadata.ndjson$/, '');
                         if ([32, 34].indexOf(channel.length) === -1) { return; }
 
                         // otherwise throw it on the pile
                         sema.take(function (give) {
                             var next = w(give());
-                            Fs.stat(filepath, w(function (err, stats) {
-                                if (err) {
-                                    return void handler(err);
+
+                            var metaStat, channelStat;
+                            var metaErr, channelErr;
+                            nThen(function (ww) {
+                                // get the stats for the metadata
+                                Fs.stat(metadataPath, ww(function (err, stats) {
+                                    if (err) {
+                                        metaErr = err;
+                                        return;
+                                    }
+                                    metaStat = stats;
+                                }));
+
+                                if (isLonelyMetadata) { return; }
+
+                                Fs.stat(filePath, ww(function (err, stats) {
+                                    if (err) {
+                                        channelErr = err;
+                                        return;
+                                    }
+                                    channelStat = stats;
+                                }));
+                            }).nThen(function () {
+                                if (channelErr && metaErr) {
+                                    return void handler(channelErr, void 0, next);
                                 }
 
-                                handler(void 0, {
+                                var data = {
                                     channel: channel,
-                                    atime: stats.atime,
-                                    mtime: stats.mtime,
-                                    ctime: stats.ctime,
-                                    size: stats.size,
-                                }, next);
-                            }));
+                                };
+
+                                if (metaStat && channelStat) {
+                                // take max of times returned by either stat
+                                    data.atime = Math.max(channelStat.atime, metaStat.atime);
+                                    data.mtime = Math.max(channelStat.mtime, metaStat.mtime);
+                                    data.ctime = Math.max(channelStat.ctime, metaStat.ctime);
+                                // return the sum of the size of the two files
+                                    data.size = channelStat.size + metaStat.size;
+                                } else if (metaStat) {
+                                    data.atime = metaStat.atime;
+                                    data.mtime = metaStat.mtime;
+                                    data.ctime = metaStat.ctime;
+                                    data.size = metaStat.size;
+                                } else if (channelStat) {
+                                    data.atime = channelStat.atime;
+                                    data.mtime = channelStat.mtime;
+                                    data.ctime = channelStat.ctime;
+                                    data.size = channelStat.size;
+                                } else {
+                                    return void handler('NO_DATA', void 0, next);
+                                }
+
+                                handler(void 0, data, next);
+                            });
                         });
                     });
                 })));
