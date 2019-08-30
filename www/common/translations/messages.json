@@ -27,6 +27,7 @@
     "onLogout": "You are logged out, {0}click here{1} to log in<br>or press <em>Escape</em> to access your pad in read-only mode.",
     "wrongApp": "Unable to display the content of that realtime session in your browser. Please try to reload that page.",
     "padNotPinned": "This pad will expire after 3 months of inactivity, {0}login{1} or {2}register{3} to preserve it.",
+    "padNotPinnedVariable": "This pad will expire after {4} days of inactivity, {0}login{1} or {2}register{3} to preserve it.",
     "anonymousStoreDisabled": "The webmaster of this CryptPad instance has disabled the store for anonymous users. You have to log in to be able to use CryptDrive.",
     "expiredError": "This pad has reached its expiration time and is no longer available.",
     "deletedError": "This pad has been deleted by its owner and is no longer available.",

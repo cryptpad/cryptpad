@@ -217,6 +217,7 @@ app.get('/api/config', function(req, res){
             httpUnsafeOrigin: config.httpUnsafeOrigin,
             adminEmail: config.adminEmail,
             adminKeys: admins,
+            inactiveTime: config.inactiveTime,
             supportMailbox: config.supportMailboxPublicKey
         }, null, '\t'),
         'obj.httpSafeOrigin = ' + (function () {
