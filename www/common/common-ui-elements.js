@@ -252,7 +252,7 @@ define([
                     return friends[$(el).attr('data-curve')].edPublic;
                 }).filter(function (x) { return x; });
 
-                nThen(function (waitFor) {
+                NThen(function (waitFor) {
                     var msg = "Are you sure?"; // XXX
                     UI.confirm(msg, waitFor(function (yes) {
                         if (!yes) {
@@ -276,7 +276,7 @@ define([
                     }));
                 }).nThen(function (waitFor) {
                     // TODO send notifications
-                    sel.forEach(function () {
+                    sel.forEach(function (el) {
                         var friend = friends[$(el).attr('data-curve')];
                         if (!friend) { return; }
                         common.mailbox.sendTo("ADD_OWNER", {
@@ -3291,7 +3291,7 @@ define([
         var todo = function (yes) {
             if (yes) {
                 sframeChan.query('Q_SET_PAD_METADATA', {
-                    channel: channel,
+                    channel: data.content.channel,
                     command: 'ADD_OWNERS',
                     value: [priv.edPublic]
                 }, function (err, res) {
