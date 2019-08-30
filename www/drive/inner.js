@@ -3715,6 +3715,20 @@ define([
                 data.sharedFolder = true;
             }
 
+            if (manager.isFile(el) && data.roHref) { // Only for pads!
+                sframeChan.query('Q_GET_PAD_METADATA', {
+                    channel: data.channel
+                }, function (err, val) {
+                    console.log(arguments);
+                    if (!err && !(val && val.error)) {
+                        data.owners = val.owners;
+                        data.expire = val.expire;
+                        data.pending_owners = val.pending_owners;
+                    }
+                    UIElements.getProperties(common, data, cb);
+                });
+                return;
+            }
             UIElements.getProperties(common, data, cb);
         };
 

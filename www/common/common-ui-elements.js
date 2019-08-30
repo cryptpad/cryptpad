@@ -76,6 +76,8 @@ define([
             }));
         }).nThen(function (waitFor) {
             var base = common.getMetadataMgr().getPrivateData().origin;
+            // XXX getFileData?
+            // XXX getPadMetadata
             common.getPadAttribute('href', waitFor(function (err, val) {
                 if (!val) { return; }
                 data.href = base + val;
@@ -99,26 +101,40 @@ define([
             common.getPadAttribute('ctime', waitFor(function (err, val) {
                 data.ctime = val;
             }));
+            common.getPadAttribute('title', waitFor(function (err, val) {
+                data.title = val;
+            }));
             common.getPadAttribute('tags', waitFor(function (err, val) {
                 data.tags = val;
             }));
+            common.getSframeChannel().query('Q_GET_PAD_METADATA', null, waitFor(function (err, val) {
+                if (err) { return; }
+                data.owners = val.owners;
+                data.expire = val.expire;
+                data.pending_owners = val.pending_owners;
+            }));
+            /*
             common.getPadAttribute('owners', waitFor(function (err, val) {
                 data.owners = val;
             }));
             common.getPadAttribute('expire', waitFor(function (err, val) {
                 data.expire = val;
-            }));
+            }));*/
         }).nThen(function () {
             cb(void 0, data);
         });
     };
-    var createOwnerModal = function (common, channel, owners) {
+    var createOwnerModal = function (common, data) {
         var friends = common.getFriends(true);
         var sframeChan = common.getSframeChannel();
         var priv = common.getMetadataMgr().getPrivateData();
+        var user = common.getMetadataMgr().getUserData();
         var edPublic = priv.edPublic;
+        var channel = data.channel;
+        var owners = data.owners;
 
         var $div1, $div2;
+        var redrawAll = function () {};
 
         // Remove owner column
         var drawRemove = function () {
@@ -181,12 +197,7 @@ define([
                         err = err || (res && res.error);
                         if (err) { return void UI.warn('ERROR' + err); } // XXX
                         owners = res.owners;
-                        var $d1 = $div1;
-                        var $d2 = $div2;
-                        drawRemove().insertBefore($d1);
-                        $d1.remove();
-                        drawAdd().insertBefore($d2);
-                        $d2.remove();
+                        redrawAll();
                         UI.log('DONE'); // XXX
                     });
                 };
@@ -240,34 +251,68 @@ define([
                 var toAdd = sel.map(function (el) {
                     return friends[$(el).attr('data-curve')].edPublic;
                 }).filter(function (x) { return x; });
-                // Send the command
-                var send = function () {
-                    // XXX Pinning problem....
+
+                nThen(function (waitFor) {
+                    var msg = "Are you sure?"; // XXX
+                    UI.confirm(msg, waitFor(function (yes) {
+                        if (!yes) {
+                            waitFor.abort();
+                            return;
+                        }
+                    }));
+                }).nThen(function (waitFor) {
+                    // Send the command
                     sframeChan.query('Q_SET_PAD_METADATA', {
                         channel: channel,
-                        command: 'ADD_OWNERS',
+                        command: 'ADD_PENDING_OWNERS',
                         value: toAdd
-                    }, function (err, res) {
+                    }, waitFor(function (err, res) {
                         err = err || (res && res.error);
-                        if (err) { return void UI.warn('ERROR' + err); } // XXX
+                        if (err) {
+                            waitFor.abort();
+                            return void UI.warn('ERROR' + err);
+                        } // XXX
                         owners = res.owners;
-                        var $d1 = $div1;
-                        var $d2 = $div2;
-                        drawRemove().insertBefore($d1);
-                        $d1.remove();
-                        drawAdd().insertBefore($d2);
-                        $d2.remove();
-                        UI.log('DONE'); // XXX
+                    }));
+                }).nThen(function (waitFor) {
+                    // TODO send notifications
+                    sel.forEach(function () {
+                        var friend = friends[$(el).attr('data-curve')];
+                        if (!friend) { return; }
+                        common.mailbox.sendTo("ADD_OWNER", {
+                            channel: channel,
+                            href: data.href,
+                            password: data.password,
+                            title: data.title,
+                            user: {
+                                displayName: user.name,
+                                avatar: user.avatar,
+                                profile: user.profile,
+                                notifications: user.notifications,
+                                curvePublic: user.curvePublic,
+                                edPublic: priv.edPublic
+                            }
+                        }, {
+                            channel: friend.notifications,
+                            curvePublic: friend.curvePublic
+                        }, waitFor());
                     });
-                };
-                var msg = "Are you sure?"; // XXX
-                UI.confirm(msg, function (yes) {
-                    if (!yes) { return; }
-                    send();
+                }).nThen(function () {
+                    redrawAll();
+                    UI.log('DONE'); // XXX
                 });
             });
             $div2.append(h('p', addButton));
             return $div2;
+        };
+
+        redrawAll = function () {
+            var $d1 = $div1;
+            var $d2 = $div2;
+            drawRemove().insertBefore($d1);
+            $d1.remove();
+            drawAdd().insertBefore($d2);
+            $d2.remove();
         };
 
         // Create modal
@@ -326,7 +371,7 @@ define([
         if (owned) {
             var manageOwners = h('button.no-margin', 'Manage owners'); // XXX
             $(manageOwners).click(function () {
-                var modal = createOwnerModal(common, data.channel, data.owners);
+                var modal = createOwnerModal(common, data);
                 UI.openCustomModal(modal, {
                     wide: true,
                 });
@@ -3168,7 +3213,7 @@ define([
 
     UIElements.displayFriendRequestModal = function (common, data) {
         var msg = data.content.msg;
-        var text = Messages._getKey('contacts_request', [msg.content.displayName]);
+        var text = Messages._getKey('contacts_request', [Util.fixHTML(msg.content.displayName)]);
 
         var todo = function (yes) {
             common.getSframeChannel().query("Q_ANSWER_FRIEND_REQUEST", {
@@ -3210,6 +3255,78 @@ define([
             keys: [[13, 'ctrl']]
         }];
         var modal = UI.dialog.customModal(content, {buttons: buttons});
+        UI.openCustomModal(modal);
+    };
+
+    UIElements.displayAddOwnerModal = function (common, data) {
+        var priv = common.getMetadataMgr().getPrivateData();
+        var sframeChan = common.getSframeChannel();
+        var msg = data.content.msg;
+        var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
+        var title = Util.fixHTML(msg.content.title);
+
+        Messages.owner_add = '{0} wants you to be an owner of the pad <b>{1}</b>. Do you accept?'; //XXX
+        var text = Messages._getKey('owner_add', [name, title]);
+
+        var link = h('a', {
+            href: '#'
+        }, Messages.requestEdit_viewPad);
+        $(link).click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (data.content.password) {
+                common.sessionStorage.put('newPadPassword', data.content.password, function () {
+                    common.openURL(msg.content.href);
+                });
+                return;
+            }
+            common.openURL(msg.content.href);
+        });
+
+        var div = h('div', [
+            UI.setHTML(h('p'), text),
+            link
+        ]);
+
+        var todo = function (yes) {
+            if (yes) {
+                sframeChan.query('Q_SET_PAD_METADATA', {
+                    channel: channel,
+                    command: 'ADD_OWNERS',
+                    value: [priv.edPublic]
+                }, function (err, res) {
+                    err = err || (res && res.error);
+                    if (err) {
+                        return void UI.warn('ERROR' + err);
+                    } // XXX
+                    UI.log('DONE'); // XXX
+                    // TODO send notification to the sender?
+                });
+                return;
+            }
+            // XXX implement decline?
+        };
+
+        var buttons = [{
+            name: Messages.friendRequest_later,
+            onClick: function () {},
+            keys: [27]
+        }, {
+            className: 'primary',
+            name: Messages.friendRequest_accept,
+            onClick: function () {
+                todo(true);
+            },
+            keys: [13]
+        }, {
+            className: 'primary',
+            name: Messages.friendRequest_decline,
+            onClick: function () {
+                todo(false);
+            },
+            keys: [[13, 'ctrl']]
+        }];
+        var modal = UI.dialog.customModal(div, {buttons: buttons});
         UI.openCustomModal(modal);
     };
 

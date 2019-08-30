@@ -1374,6 +1374,7 @@ define([
         };
 
         Store.getPadMetadata = function (clientId, data, cb) {
+            console.log(data);
             if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }
             var channel = channels[data.channel];
             if (!channel) { return void cb({ error: 'ENOTFOUND' }); }

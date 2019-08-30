@@ -210,6 +210,27 @@ define([
         };
     };
 
+
+    handlers['ADD_OWNER'] = function (common, data) {
+        var content = data.content;
+        var msg = content.msg;
+
+        // Display the notification
+        content.getFormatText = function () {
+            return Messages._getKey('friendRequest_notification', [name]);
+        };
+
+        // Check authenticity
+        if (msg.author !== msg.content.curvePublic) { return; }
+
+        // if not archived, add handlers
+        if (!content.archived) {
+            content.handler = function () {
+                UIElements.displayAddOwnerModal(common, data);
+            };
+        }
+    };
+
     // NOTE: don't forget to fixHTML everything returned by "getFormatText"
 
     return {

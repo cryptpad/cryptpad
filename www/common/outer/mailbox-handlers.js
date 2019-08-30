@@ -259,6 +259,32 @@ define([
         cb(false);
     };
 
+    // Hide duplicates when receiving an ADD_OWNER notification:
+    var addOwners = {};
+    handlers['ADD_OWNER'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+
+        if (msg.author !== content.user.curvePublic) { return void cb(true); }
+        if (!content.href || !content.title || !content.channel) {
+            console.log('Remove invalid notification');
+            return void cb(true);
+        }
+
+        var channel = content.channel;
+
+        if (addOwners[channel]) { return void cb(true); }
+        addOwners[channel] = true;
+
+        cb(false);
+    };
+    removeHandlers['ADD_OWNER'] = function (ctx, box, data) {
+        var channel = data.content.channel;
+        if (addOwners[channel]) {
+            delete addOwners[channel];
+        }
+    };
+
     return {
         add: function (ctx, box, data, cb) {
             /**

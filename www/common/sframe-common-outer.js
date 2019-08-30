@@ -981,7 +981,7 @@ define([
                     // Try to get the owner's mailbox from the pad metadata first.
                     // If it's is an older owned pad, check if the owner is a friend
                     // or an acquaintance (from async-store directly in requestAccess)
-                    Cryptpad.getPadMetadata({
+                    Cryptpad.pad.getPadMetadata({
                         channel: secret.channel
                     }, waitFor(function (obj) {
                         obj = obj || {};
@@ -1004,6 +1004,15 @@ define([
                 });
             });
 
+            sframeChan.on('Q_GET_PAD_METADATA', function (data, cb) {
+                if (!data || !data.channel) {
+                    data = {
+                        channel: secret.channel
+                    };
+                }
+                console.log(data);
+                Cryptpad.getPadMetadata(data, cb);
+            });
             sframeChan.on('Q_SET_PAD_METADATA', function (data, cb) {
                 Cryptpad.setPadMetadata(data, cb);
             });

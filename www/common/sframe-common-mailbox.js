@@ -32,13 +32,17 @@ define([
             });
         };
 
-        mailbox.sendTo = function (type, content, user) {
+        mailbox.sendTo = function (type, content, user, cb) {
+            cb = cb || function () {};
             execCommand('SENDTO', {
                 type: type,
                 msg: content,
                 user: user
             }, function (err, obj) {
-                if (err || (obj && obj.error)) { return void console.error(err || obj.error); }
+                cb(err || (obj && obj.error), obj);
+                if (err || (obj && obj.error)) {
+                    return void console.error(err || obj.error);
+                }
             });
         };
 

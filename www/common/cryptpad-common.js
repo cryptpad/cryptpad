@@ -758,6 +758,10 @@ define([
     pad.onConnectEvent = Util.mkEvent();
     pad.onErrorEvent = Util.mkEvent();
 
+    pad.getPadMetadata = function (data, cb) {
+        postMessage('GET_PAD_METADATA', data, cb);
+    };
+
     pad.requestAccess = function (data, cb) {
         postMessage("REQUEST_PAD_ACCESS", data, cb);
     };
@@ -769,7 +773,10 @@ define([
         postMessage('SET_PAD_METADATA', data, cb);
     };
     common.getPadMetadata = function (data, cb) {
-        postMessage('GET_PAD_METADATA', data, cb);
+        common.anonRpcMsg('GET_METADATA', data.channel, function (err, obj) {
+            if (err) { return void cb({error: err}); }
+            cb(obj && obj[0]);
+        });
     };
 
     common.changePadPassword = function (Crypt, href, newPassword, edPublic, cb) {
