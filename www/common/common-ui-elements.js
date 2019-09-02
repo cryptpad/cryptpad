@@ -154,6 +154,12 @@ define([
                         return true;
                     }
                 });
+                if (ed === edPublic) {
+                    f = f || user;
+                    if (f.name) {
+                        f.displayName = f.name;
+                    }
+                }
                 _owners[ed] = f || {
                     displayName: 'Unknown user: '+ ed, // XXX
                     notifications: true,
