@@ -83,6 +83,9 @@ define([
             store.messenger.updateMyData();
         }
         var myData = createData(store.proxy);
+        if (store.proxy.friends) {
+            store.proxy.friends.me = myData;
+        }
         var todo = function (friend) {
             if (!friend || !friend.notifications) { return; }
             myData.channel = friend.channel;

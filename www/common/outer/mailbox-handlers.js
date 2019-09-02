@@ -153,6 +153,9 @@ define([
         Object.keys(msg.content).forEach(function (key) {
             friend[key] = msg.content[key];
         });
+        if (ctx.store.messenger) {
+            ctx.store.messenger.onFriendUpdate(curve, friend);
+        }
         ctx.updateMetadata();
         cb(true);
     };

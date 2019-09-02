@@ -229,6 +229,11 @@ define([
             });
         };
 
+        messenger.onFriendUpdate = function (curve) {
+            var friend = getFriend(proxy, curve);
+            checkFriendData(curve, friend, friend.channel);
+        };
+
         // Id message allows us to map a netfluxId with a public curve key
         var onIdMessage = function (msg, sender) {
             var channel, parsed0;
@@ -373,12 +378,14 @@ define([
                  || mySyncData.profile !== myData.profile
                  || mySyncData.avatar !== myData.avatar) {
                 delete myData.channel;
-                Object.keys(channels).forEach(function (chan) {
-                    var channel = channels[chan];
+                Object.keys(friends).forEach(function (curve) {
+                    var friend = friends[curve];
+                    var chan = friend.channel;
+                    if (friend.notifications) { return; }
+                    if (!chan) { return; }
 
-                    if (!channel) {
-                        return void console.error('NO_SUCH_CHANNEL');
-                    }
+                    var channel = channels[chan];
+                    if (!channel) { return; }
                     if (channel.readOnly) { return; }
 
                     var msg = [Types.update, myData.curvePublic, +new Date(), myData];
@@ -396,7 +403,6 @@ define([
                     info: myData,
                     types: ['displayName', 'profile', 'avatar'],
                 });
-                friends.me = myData;
             }
         };
 
