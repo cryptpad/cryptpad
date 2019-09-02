@@ -467,6 +467,13 @@ define([
         }, { timeout: 60000 });
     };
 
+    funcs.getPadMetadata = function (data, cb) {
+        ctx.sframeChan.query('Q_GET_PAD_METADATA', data, function (err, val) {
+            if (err || (val && val.error)) { return void cb({error: err || val.error}); }
+            cb(val);
+        });
+    };
+
     funcs.gotoURL = function (url) { ctx.sframeChan.event('EV_GOTO_URL', url); };
     funcs.openURL = function (url) { ctx.sframeChan.event('EV_OPEN_URL', url); };
     funcs.openUnsafeURL = function (url) {

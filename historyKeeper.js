@@ -717,6 +717,9 @@ module.exports.create = function (cfg) {
         if (channel && metadata_cache[channel] && typeof (metadata) === "object") {
             Log.silly('SET_METADATA_CACHE', 'Channel '+ channel +', metadata: '+ JSON.stringify(metadata));
             metadata_cache[channel] = metadata;
+            if (ctx.channels[channel] && ctx.channels[channel].index) {
+                ctx.channels[channel].index.metadata = metadata;
+            }
             historyKeeperBroadcast(ctx, channel, metadata);
         }
     };
