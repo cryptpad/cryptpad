@@ -91,9 +91,9 @@ define([
 
             var hk = network.historyKeeper;
             var cfg = {
-                validateKey: obj.validateKey,
+                lastKnownHash: chan.lastKnownHash || chan.lastCpHash,
                 metadata: {
-                    lastKnownHash: chan.lastKnownHash || chan.lastCpHash,
+                    validateKey: obj.validateKey,
                     owners: obj.owners,
                     expire: obj.expire
                 }
