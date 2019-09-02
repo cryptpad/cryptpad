@@ -340,6 +340,7 @@ var getMetadata = function (Env, channel, cb) {
         value: value
     }
 */
+// XXX global saferphore may cause issues here, a queue "per channel" is probably better
 var metadataSem = Saferphore.create(1);
 var setMetadata = function (Env, data, unsafeKey, cb) {
     var channel = data.channel;
@@ -382,13 +383,19 @@ var setMetadata = function (Env, data, unsafeKey, cb) {
 
             // Add the new metadata line
             var line = [command, data.value, +new Date()];
+            var changed = false;
             try {
-                Meta.handleCommand(metadata, line);
+                changed = Meta.handleCommand(metadata, line);
             } catch (e) {
                 g();
                 return void cb(e);
             }
 
+            // if your command is valid but it didn't result in any change to the metadata,
+            // call back now and don't write any "useless" line to the log
+            if (!changed) {
+                return void cb(void 0, metadata);
+            }
             Env.msgStore.writeMetadata(channel, JSON.stringify(line), function (e) {
                 g();
                 if (e) {
