@@ -3068,6 +3068,7 @@ define([
     };
 
     var storePopupState = false;
+    var autoStoreModal = {};
     UIElements.displayStorePadPopup = function (common, data) {
         if (storePopupState) { return; }
         storePopupState = true;
@@ -3087,6 +3088,8 @@ define([
         var initialHide = data && data.autoStore && data.autoStore === -1;
         var modal = UI.cornerPopup(text, actions, footer, {hidden: initialHide});
 
+        autoStoreModal[priv.channel] = modal;
+
         $(modal.popup).find('.cp-corner-footer a').click(function (e) {
             e.preventDefault();
             common.openURL('/settings/');
@@ -3094,6 +3097,7 @@ define([
 
         $(hide).click(function () {
             UIElements.displayCrowdfunding(common);
+            delete autoStoreModal[priv.channel];
             modal.delete();
         });
         var waitingForStoringCb = false;
@@ -3109,6 +3113,7 @@ define([
                     }
                     return void UI.warn(Messages.autostore_error);
                 }
+                delete autoStoreModal[priv.channel];
                 modal.delete();
                 UIElements.displayCrowdfunding(common);
                 UI.log(Messages.autostore_saved);
@@ -3349,6 +3354,21 @@ define([
 
                     // Send notification to the sender
                     answer(true);
+
+                    var data = JSON.parse(JSON.stringify(msg.content));
+                    data.metadata = res;
+
+                    // Add the pad to your drive
+                    sframeChan.query('Q_ACCEPT_OWNERSHIP', data, function (err, res) {
+                        if (err || (res && res.error)) {
+                            return void console.error(err | res.error);
+                        }
+                        UI.log(Messages.saved);
+                        if (autoStoreModal[data.channel]) {
+                            autoStoreModal[data.channel].delete();
+                            delete autoStoreModal[data.channel];
+                        }
+                    });
 
                     // Remove yourself from the pending owners
                     sframeChan.query('Q_SET_PAD_METADATA', {

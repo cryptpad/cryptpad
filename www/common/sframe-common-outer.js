@@ -476,6 +476,21 @@ define([
                 });
             });
 
+            sframeChan.on('Q_ACCEPT_OWNERSHIP', function (data, cb) {
+                var data = {
+                    password: data.password,
+                    href: data.href,
+                    channel: data.channel,
+                    title: data.title,
+                    owners: data.metadata.owners,
+                    expire: data.metadata.expire,
+                    forceSave: true
+                };
+                Cryptpad.setPadTitle(data, function (err) {
+                    cb({error: err});
+                });
+            });
+
             sframeChan.on('Q_IMPORT_MEDIATAG', function (obj, cb) {
                 var key = obj.key;
                 var channel = obj.channel;
