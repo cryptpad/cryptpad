@@ -226,7 +226,8 @@ define([
         var drawAdd = function () {
             var _friends = JSON.parse(JSON.stringify(friends));
             Object.keys(_friends).forEach(function (curve) {
-                if (owners.indexOf(_friends[curve].edPublic) !== -1) {
+                if (owners.indexOf(_friends[curve].edPublic) !== -1 ||
+                    pending_owners.indexOf(_friends[curve].edPublic) !== -1) {
                     delete _friends[curve];
                 }
             });
