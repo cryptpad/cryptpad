@@ -267,7 +267,6 @@ define([
     handlers['ADD_OWNER'] = function (ctx, box, data, cb) {
         var msg = data.msg;
         var content = msg.content;
-console.log(msg);
 
         if (msg.author !== content.user.curvePublic) { return void cb(true); }
         if (!content.href || !content.title || !content.channel) {
@@ -278,7 +277,10 @@ console.log(msg);
         var channel = content.channel;
 
         if (addOwners[channel]) { return void cb(true); }
-        addOwners[channel] = true;
+        addOwners[channel] = {
+            type: box.type,
+            hash: data.hash
+        };
 
         cb(false);
     };
@@ -287,6 +289,24 @@ console.log(msg);
         if (addOwners[channel]) {
             delete addOwners[channel];
         }
+    };
+
+    handlers['RM_OWNER'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+
+        if (msg.author !== content.user.curvePublic) { return void cb(true); }
+        if (!content.channel) {
+            console.log('Remove invalid notification');
+            return void cb(true);
+        }
+
+        var channel = content.channel;
+
+        if (addOwners[channel] && content.pending) {
+            return void cb(false, addOwners[channel]);
+        }
+        cb(false);
     };
 
     return {

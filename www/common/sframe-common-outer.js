@@ -477,7 +477,7 @@ define([
             });
 
             sframeChan.on('Q_ACCEPT_OWNERSHIP', function (data, cb) {
-                var data = {
+                var _data = {
                     password: data.password,
                     href: data.href,
                     channel: data.channel,
@@ -486,7 +486,7 @@ define([
                     expire: data.metadata.expire,
                     forceSave: true
                 };
-                Cryptpad.setPadTitle(data, function (err) {
+                Cryptpad.setPadTitle(_data, function (err) {
                     cb({error: err});
                 });
             });

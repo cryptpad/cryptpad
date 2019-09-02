@@ -203,25 +203,53 @@ define([
                     if (ed === edPublic) { me = true; }
                     return ed;
                 }).filter(function (x) { return x; });
-                // Send the command
-                var send = function () {
+                NThen(function (waitFor) {
+                    var msg = me ?
+                      "Are you sure? You're going to give up on your rights, this can't be undone!" :
+                      "Are you sure?"; // XXX
+                    UI.confirm(msg, waitFor(function (yes) {
+                        if (!yes) {
+                            waitFor.abort();
+                            return;
+                        }
+                    }));
+                }).nThen(function (waitFor) {
+                    // Send the command
                     sframeChan.query('Q_SET_PAD_METADATA', {
                         channel: channel,
                         command: pending ? 'RM_PENDING_OWNERS' : 'RM_OWNERS',
                         value: toRemove
-                    }, function (err, res) {
+                    }, waitFor(function (err, res) {
                         err = err || (res && res.error);
-                        if (err) { return void UI.warn('ERROR' + err); } // XXX
-                        redrawAll();
+                        if (err) {
+                            waitFor.abort();
+                            return void UI.warn('ERROR' + err);
+                        } // XXX
                         UI.log('DONE'); // XXX
+                    }));
+                }).nThen(function (waitFor) {
+                    sel.forEach(function (el) {
+                        var friend = friends[$(el).attr('data-curve')];
+                        if (!friend) { return; }
+                        common.mailbox.sendTo("RM_OWNER", {
+                            channel: channel,
+                            title: data.title,
+                            pending: pending,
+                            user: {
+                                displayName: user.name,
+                                avatar: user.avatar,
+                                profile: user.profile,
+                                notifications: user.notifications,
+                                curvePublic: user.curvePublic,
+                                edPublic: priv.edPublic
+                            }
+                        }, {
+                            channel: friend.notifications,
+                            curvePublic: friend.curvePublic
+                        }, waitFor());
                     });
-                };
-                var msg = me ?
-                  "Are you sure? You're going to give up on your rights, this can't be undone!" :
-                  "Are you sure?"; // XXX
-                UI.confirm(msg, function (yes) {
-                    if (!yes) { return; }
-                    send();
+                }).nThen(function () {
+                    redrawAll();
                 });
             });
             $div.append(h('p', removeButton));
