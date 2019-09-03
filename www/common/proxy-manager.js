@@ -492,8 +492,8 @@ define([
             _addSharedFolder(Env, {
                 path: parentPath,
                 name: folderName,
-                owned: data.owned, // XXX FIXME hardcoded preference
-                password: data.password || '', // XXX FIXME hardcoded preference
+                owned: data.owned,
+                password: data.password || '',
             }, waitFor(function (id) {
                 // _addSharedFolder can be an id or an error
                 if (typeof(id) === 'object' && id && id.error) {
