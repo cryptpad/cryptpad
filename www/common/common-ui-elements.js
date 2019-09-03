@@ -133,7 +133,7 @@ define([
                 };
             });
             var msg = pending ? Messages.owner_removePendingText
-                        : Messages.owner_removeText
+                        : Messages.owner_removeText;
             var removeCol = UIElements.getFriendsList(msg, {
                 common: common,
                 friends: _owners,
@@ -256,8 +256,8 @@ define([
             $(addButton).click(function () {
                 // Check selection
                 var $sel = $div2.find('.cp-share-friend.cp-selected');
-                if (!sel.length) { return; }
                 var sel = $sel.toArray();
+                if (!sel.length) { return; }
                 var toAdd = sel.map(function (el) {
                     return friends[$(el).attr('data-curve')].edPublic;
                 }).filter(function (x) { return x; });
