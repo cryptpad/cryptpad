@@ -809,6 +809,7 @@ module.exports.create = function (cfg) {
                 }
             }
             metadata.channel = channelName;
+            metadata.created = +new Date();
 
             // if the user sends us an invalid key, we won't be able to validate their messages
             // so they'll never get written to the log anyway. Let's just drop their message
