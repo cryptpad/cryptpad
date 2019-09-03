@@ -127,13 +127,13 @@ define([
                     }
                 }
                 _owners[ed] = f || {
-                    displayName: 'Unknown user: '+ ed, // XXX
+                    displayName: Messages._getKey('owner_unknownUser', [ed]),
                     notifications: true,
                     edPublic: ed,
                 };
             });
-            var msg = pending ? 'Remove a pending owner:'
-                        : 'Remove an existing owner:'; // XXX
+            var msg = pending ? Messages.owner_removePendingText
+                        : Messages.owner_removeText
             var removeCol = UIElements.getFriendsList(msg, {
                 common: common,
                 friends: _owners,
@@ -156,7 +156,7 @@ define([
             });
             // When clicking on the remove button, we check the selected users.
             // If you try to remove yourself, we'll display an additional warning message
-            var btnMsg = pending ? 'Remove pending owners' : 'Remove owners'; // XXX
+            var btnMsg = pending ? Messages.owner_removePendingButton : Messages.owner_removeButton;
             var removeButton = h('button.no-margin', btnMsg);
             $(removeButton).click(function () {
                 // Check selection
@@ -170,9 +170,7 @@ define([
                     return ed;
                 }).filter(function (x) { return x; });
                 NThen(function (waitFor) {
-                    var msg = me ?
-                      "Are you sure? You're going to give up on your rights, this can't be undone!" :
-                      "Are you sure?"; // XXX
+                    var msg = me ? Messages.owner_removeMeConfirm : Messages.owner_removeConfirm;
                     UI.confirm(msg, waitFor(function (yes) {
                         if (!yes) {
                             waitFor.abort();
@@ -190,9 +188,11 @@ define([
                         if (err) {
                             waitFor.abort();
                             redrawAll();
-                            return void UI.warn('ERROR' + err);
-                        } // XXX
-                        UI.log('DONE'); // XXX
+                            var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
+                                                                          : Messages.error;
+                            return void UI.warn(text);
+                        }
+                        UI.log(Messages.saved);
                     }));
                 }).nThen(function (waitFor) {
                     sel.forEach(function (el) {
@@ -232,12 +232,11 @@ define([
                     delete _friends[curve];
                 }
             });
-            var addCol = UIElements.getFriendsList('Ask a friend to be an owner.', {
+            var addCol = UIElements.getFriendsList(Messages.owner_addText, {
                 common: common,
                 friends: _friends
             }, function () {
-                // XXX onSelect...
-                console.log(arguments);
+                //console.log(arguments);
             });
             $div2 = $(addCol.div);
             var others2 = addCol.others;
@@ -251,10 +250,9 @@ define([
                     order = order ? 'order:'+order : '';
                     $(this).removeClass('cp-selected').attr('style', order);
                 }
-                // XXX onSelect...
             });
             // When clicking on the add button, we get the selected users.
-            var addButton = h('button.no-margin', 'Add owners'); // XXX
+            var addButton = h('button.no-margin', Messages.owner_addButton);
             $(addButton).click(function () {
                 // Check selection
                 var $sel = $div2.find('.cp-share-friend.cp-selected');
@@ -264,7 +262,7 @@ define([
                 }).filter(function (x) { return x; });
 
                 NThen(function (waitFor) {
-                    var msg = "Are you sure?"; // XXX
+                    var msg = Messages.owner_addConfirm;
                     UI.confirm(msg, waitFor(function (yes) {
                         if (!yes) {
                             waitFor.abort();
@@ -282,8 +280,10 @@ define([
                         if (err) {
                             waitFor.abort();
                             redrawAll();
-                            return void UI.warn('ERROR' + err);
-                        } // XXX
+                            var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
+                                                                          : Messages.error;
+                            return void UI.warn(text);
+                        }
                     }));
                 }).nThen(function (waitFor) {
                     sel.forEach(function (el) {
@@ -309,7 +309,7 @@ define([
                     });
                 }).nThen(function () {
                     redrawAll();
-                    UI.log('DONE'); // XXX
+                    UI.log(Messages.saved);
                 });
             });
             $div2.append(h('p', addButton));
@@ -354,7 +354,7 @@ define([
         ]);
         var linkButtons = [{
             className: 'cancel',
-            name: 'CLOSE', // XXX existing key?
+            name: Messages.filePicker_close,
             onClick: function () {},
             keys: [27]
         }];
@@ -403,7 +403,7 @@ define([
                 id: 'cp-app-prop-owners',
             }));
             if (owned) {
-                var manageOwners = h('button.no-margin', 'Manage owners'); // XXX
+                var manageOwners = h('button.no-margin', Messages.owner_openModalButton);
                 $(manageOwners).click(function () {
                     var modal = createOwnerModal(common, data);
                     UI.openCustomModal(modal, {
@@ -3325,7 +3325,6 @@ define([
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
         var title = Util.fixHTML(msg.content.title);
 
-        Messages.owner_add = '{0} wants you to be an owner of the pad <b>{1}</b>. Do you accept?'; //XXX
         var text = Messages._getKey('owner_add', [name, title]);
 
         var link = h('a', {
@@ -3382,9 +3381,11 @@ define([
                 }, function (err, res) {
                     err = err || (res && res.error);
                     if (err) {
-                        return void UI.warn('ERROR ' + err);
-                    } // XXX
-                    UI.log('DONE'); // XXX
+                        var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
+                                                                      : Messages.error;
+                        return void UI.warn(text);
+                    }
+                    UI.log(Messages.saved);
 
                     // Send notification to the sender
                     answer(true);
