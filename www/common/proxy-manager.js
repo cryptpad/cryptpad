@@ -742,7 +742,7 @@ define([
         datas.forEach(function (d) {
             var atime = d.data.atime;
 
-            var value = attr ? d.data[attr] : JSON.parse(JSON.stringify(d.data));
+            var value = data.attr ? d.data[data.attr] : JSON.parse(JSON.stringify(d.data));
             if (!res.value || res.atime < atime) {
                 res.atime = atime;
                 res.value = value;

@@ -1205,7 +1205,6 @@ define([
                     }
                 },
                 onMetadataUpdate: function (metadata) {
-                    console.log('onMetadataUpdate', metadata);
                     channel.data = metadata || {};
                     var allData = store.manager.findChannel(data.channel);
                     allData.forEach(function (obj) {
@@ -1214,7 +1213,7 @@ define([
                             obj.data.expire = +metadata.expire;
                         }
                     });
-                    //channel.bcast("PAD_METADATA", metadata);
+                    channel.bcast("PAD_METADATA", metadata);
                 },
                 crypto: {
                     // The encryption and decryption is done in the outer window.
@@ -1374,7 +1373,6 @@ define([
         };
 
         Store.getPadMetadata = function (clientId, data, cb) {
-            console.log(data);
             if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }
             var channel = channels[data.channel];
             if (!channel) { return void cb({ error: 'ENOTFOUND' }); }
@@ -1397,7 +1395,6 @@ define([
             cb(channel.data || {});
         };
         Store.setPadMetadata = function (clientId, data, cb) {
-            console.log(data);
             if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }
             if (!data.command) { return void cb({ error: 'EINVAL' }); }
             store.rpc.setMetadata(data, function (err, res) {

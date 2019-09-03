@@ -271,14 +271,12 @@ define([
                         }
                     }));
                 }).nThen(function (waitFor) {
-                    console.log('koko');
                     // Send the command
                     sframeChan.query('Q_SET_PAD_METADATA', {
                         channel: channel,
                         command: 'ADD_PENDING_OWNERS',
                         value: toAdd
                     }, waitFor(function (err, res) {
-                        console.error(arguments);
                         err = err || (res && res.error);
                         if (err) {
                             waitFor.abort();
@@ -286,8 +284,6 @@ define([
                         } // XXX
                     }));
                 }).nThen(function (waitFor) {
-                    console.log('okok');
-                    // TODO send notifications
                     sel.forEach(function (el) {
                         var friend = friends[$(el).attr('data-curve')];
                         if (!friend) { return; }
@@ -318,13 +314,17 @@ define([
             return $div2;
         };
 
+        var pending = false;
         redrawAll = function () {
-            $div1.empty();
-            $div2.empty();
+            if (pending) { return; }
+            pending = true;
             common.getPadMetadata(null, function (obj) {
+                pending = false;
                 if (obj && obj.error) { return; }
                 owners = obj.owners;
                 pending_owners = obj.pending_owners;
+                $div1.empty();
+                $div2.empty();
                 $div1.append(drawRemove(false)).append(drawRemove(true));
                 $div2.append(drawAdd());
             });
@@ -332,6 +332,15 @@ define([
 
         $div1.append(drawRemove(false)).append(drawRemove(true));
         $div2.append(drawAdd());
+
+        var handler = sframeChan.on('EV_RT_METADATA', function (md) {
+            if (!$div1.length) {
+                return void handler.stop();
+            }
+            owners = md.owners;
+            pending_owners = md.pending_owners;
+            redrawAll();
+        });
 
         // Create modal
         var link = h('div.cp-share-columns', [
@@ -349,139 +358,158 @@ define([
         return UI.dialog.customModal(link, {buttons: linkButtons});
     };
     var getRightsProperties = function (common, data, cb) {
-        var $d = $('<div>');
-        if (!data) { return void cb(void 0, $d); }
+        var $div = $('<div>');
+        if (!data) { return void cb(void 0, $div); }
 
-        $('<label>', {'for': 'cp-app-prop-owners'}).text(Messages.creation_owners)
-            .appendTo($d);
-        var owners = Messages.creation_noOwner;
-        var priv = common.getMetadataMgr().getPrivateData();
-        var edPublic = priv.edPublic;
-        var owned = false;
-        if (data.owners && data.owners.length) {
-            if (data.owners.indexOf(edPublic) !== -1) {
-                owned = true;
-            }
-            var names = [];
-            var strangers = 0;
-            data.owners.forEach(function (ed) {
-                // If a friend is an owner, add their name to the list
-                // otherwise, increment the list of strangers
-                if (ed === edPublic) {
-                    names.push(Messages.yourself);
-                    return;
-                }
-                if (!Object.keys(priv.friends || {}).some(function (c) {
-                    var friend = priv.friends[c] || {};
-                    if (friend.edPublic !== ed || c === 'me') { return; }
-                    names.push(friend.displayName);
-                    return true;
-                })) {
-                    strangers++;
-                }
-            });
-            if (strangers) {
-                names.push(Messages._getKey('properties_unknownUser', [strangers]));
-            }
-            owners = names.join(', ');
-        }
-        $d.append(UI.dialog.selectable(owners, {
-            id: 'cp-app-prop-owners',
-        }));
-        if (owned) {
-            var manageOwners = h('button.no-margin', 'Manage owners'); // XXX
-            $(manageOwners).click(function () {
-                var modal = createOwnerModal(common, data);
-                UI.openCustomModal(modal, {
-                    wide: true,
-                });
-            });
-            $d.append(h('p', manageOwners));
-        }
-
-        if (!data.noExpiration) {
-            var expire = Messages.creation_expireFalse;
-            if (data.expire && typeof (data.expire) === "number") {
-                expire = new Date(data.expire).toLocaleString();
-            }
-            $('<label>', {'for': 'cp-app-prop-expire'}).text(Messages.creation_expiration)
+        var draw = function () {
+            var $d = $('<div>');
+            $('<label>', {'for': 'cp-app-prop-owners'}).text(Messages.creation_owners)
                 .appendTo($d);
-            $d.append(UI.dialog.selectable(expire, {
-                id: 'cp-app-prop-expire',
-            }));
-        }
-
-        if (!data.noPassword) {
-            var hasPassword = data.password;
-            if (hasPassword) {
-                $('<label>', {'for': 'cp-app-prop-password'}).text(Messages.creation_passwordValue)
-                    .appendTo($d);
-                var password = UI.passwordInput({
-                    id: 'cp-app-prop-password',
-                    readonly: 'readonly'
-                });
-                var $pwInput = $(password).find('.cp-password-input');
-                $pwInput.val(data.password).click(function () {
-                    $pwInput[0].select();
-                });
-                $d.append(password);
-            }
-
-            var parsed = Hash.parsePadUrl(data.href || data.roHref);
-            if (!data.noEditPassword && owned && parsed.hashData.type === 'pad' && parsed.type !== "sheet") { // FIXME SHEET fix password change for sheets
-                var sframeChan = common.getSframeChannel();
-                var changePwTitle = Messages.properties_changePassword;
-                var changePwConfirm = Messages.properties_confirmChange;
-                if (!hasPassword) {
-                    changePwTitle = Messages.properties_addPassword;
-                    changePwConfirm = Messages.properties_confirmNew;
+            var owners = Messages.creation_noOwner;
+            var priv = common.getMetadataMgr().getPrivateData();
+            var edPublic = priv.edPublic;
+            var owned = false;
+            if (data.owners && data.owners.length) {
+                if (data.owners.indexOf(edPublic) !== -1) {
+                    owned = true;
                 }
-                $('<label>', {'for': 'cp-app-prop-change-password'})
-                    .text(changePwTitle).appendTo($d);
-                var newPassword = UI.passwordInput({
-                    id: 'cp-app-prop-change-password',
-                    style: 'flex: 1;'
-                });
-                var passwordOk = h('button', Messages.properties_changePasswordButton);
-                var changePass = h('span.cp-password-container', [
-                    newPassword,
-                    passwordOk
-                ]);
-                $(passwordOk).click(function () {
-                    var newPass = $(newPassword).find('input').val();
-                    if (data.password === newPass ||
-                        (!data.password && !newPass)) {
-                        return void UI.alert(Messages.properties_passwordSame);
+                var names = [];
+                var strangers = 0;
+                data.owners.forEach(function (ed) {
+                    // If a friend is an owner, add their name to the list
+                    // otherwise, increment the list of strangers
+                    if (ed === edPublic) {
+                        names.push(Messages.yourself);
+                        return;
                     }
-                    UI.confirm(changePwConfirm, function (yes) {
-                        if (!yes) { return; }
-                        sframeChan.query("Q_PAD_PASSWORD_CHANGE", {
-                            href: data.href || data.roHref,
-                            password: newPass
-                        }, function (err, data) {
-                            if (err || data.error) {
-                                return void UI.alert(Messages.properties_passwordError);
-                            }
-                            UI.findOKButton().click();
-                            // If we didn't have a password, we have to add the /p/
-                            // If we had a password and we changed it to a new one, we just have to reload
-                            // If we had a password and we removed it, we have to remove the /p/
-                            if (data.warning) {
-                                return void UI.alert(Messages.properties_passwordWarning, function () {
-                                    common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
-                                }, {force: true});
-                            }
-                            return void UI.alert(Messages.properties_passwordSuccess, function () {
-                                common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
-                            }, {force: true});
-                        });
+                    if (!Object.keys(priv.friends || {}).some(function (c) {
+                        var friend = priv.friends[c] || {};
+                        if (friend.edPublic !== ed || c === 'me') { return; }
+                        names.push(friend.displayName);
+                        return true;
+                    })) {
+                        strangers++;
+                    }
+                });
+                if (strangers) {
+                    names.push(Messages._getKey('properties_unknownUser', [strangers]));
+                }
+                owners = names.join(', ');
+            }
+            $d.append(UI.dialog.selectable(owners, {
+                id: 'cp-app-prop-owners',
+            }));
+            if (owned) {
+                var manageOwners = h('button.no-margin', 'Manage owners'); // XXX
+                $(manageOwners).click(function () {
+                    var modal = createOwnerModal(common, data);
+                    UI.openCustomModal(modal, {
+                        wide: true,
                     });
                 });
-                $d.append(changePass);
+                $d.append(h('p', manageOwners));
             }
-        }
 
-        cb(void 0, $d);
+            if (!data.noExpiration) {
+                var expire = Messages.creation_expireFalse;
+                if (data.expire && typeof (data.expire) === "number") {
+                    expire = new Date(data.expire).toLocaleString();
+                }
+                $('<label>', {'for': 'cp-app-prop-expire'}).text(Messages.creation_expiration)
+                    .appendTo($d);
+                $d.append(UI.dialog.selectable(expire, {
+                    id: 'cp-app-prop-expire',
+                }));
+            }
+
+            if (!data.noPassword) {
+                var hasPassword = data.password;
+                if (hasPassword) {
+                    $('<label>', {'for': 'cp-app-prop-password'}).text(Messages.creation_passwordValue)
+                        .appendTo($d);
+                    var password = UI.passwordInput({
+                        id: 'cp-app-prop-password',
+                        readonly: 'readonly'
+                    });
+                    var $pwInput = $(password).find('.cp-password-input');
+                    $pwInput.val(data.password).click(function () {
+                        $pwInput[0].select();
+                    });
+                    $d.append(password);
+                }
+
+                var parsed = Hash.parsePadUrl(data.href || data.roHref);
+                if (!data.noEditPassword && owned && parsed.hashData.type === 'pad' && parsed.type !== "sheet") { // FIXME SHEET fix password change for sheets
+                    var sframeChan = common.getSframeChannel();
+                    var changePwTitle = Messages.properties_changePassword;
+                    var changePwConfirm = Messages.properties_confirmChange;
+                    if (!hasPassword) {
+                        changePwTitle = Messages.properties_addPassword;
+                        changePwConfirm = Messages.properties_confirmNew;
+                    }
+                    $('<label>', {'for': 'cp-app-prop-change-password'})
+                        .text(changePwTitle).appendTo($d);
+                    var newPassword = UI.passwordInput({
+                        id: 'cp-app-prop-change-password',
+                        style: 'flex: 1;'
+                    });
+                    var passwordOk = h('button', Messages.properties_changePasswordButton);
+                    var changePass = h('span.cp-password-container', [
+                        newPassword,
+                        passwordOk
+                    ]);
+                    $(passwordOk).click(function () {
+                        var newPass = $(newPassword).find('input').val();
+                        if (data.password === newPass ||
+                            (!data.password && !newPass)) {
+                            return void UI.alert(Messages.properties_passwordSame);
+                        }
+                        UI.confirm(changePwConfirm, function (yes) {
+                            if (!yes) { return; }
+                            sframeChan.query("Q_PAD_PASSWORD_CHANGE", {
+                                href: data.href || data.roHref,
+                                password: newPass
+                            }, function (err, data) {
+                                if (err || data.error) {
+                                    return void UI.alert(Messages.properties_passwordError);
+                                }
+                                UI.findOKButton().click();
+                                // If we didn't have a password, we have to add the /p/
+                                // If we had a password and we changed it to a new one, we just have to reload
+                                // If we had a password and we removed it, we have to remove the /p/
+                                if (data.warning) {
+                                    return void UI.alert(Messages.properties_passwordWarning, function () {
+                                        common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
+                                    }, {force: true});
+                                }
+                                return void UI.alert(Messages.properties_passwordSuccess, function () {
+                                    common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
+                                }, {force: true});
+                            });
+                        });
+                    });
+                    $d.append(changePass);
+                }
+            }
+            return $d;
+        };
+
+        var sframeChan = common.getSframeChannel();
+        var handler = sframeChan.on('EV_RT_METADATA', function (md) {
+            if (!$div.length) {
+                handler.stop();
+                return;
+            }
+            md = JSON.parse(JSON.stringify(md));
+            data.owners = md.owners;
+            data.expire = md.expire;
+            data.pending_owners = md.pending_owners;
+            $div.empty();
+            $div.append(draw());
+        });
+        $div.append(draw());
+
+        cb(void 0, $div);
     };
     var getPadProperties = function (common, data, cb) {
         var $d = $('<div>');
@@ -568,6 +596,8 @@ define([
         } else {
             cb(void 0, $d);
         }
+
+
     };
     UIElements.getProperties = function (common, data, cb) {
         var c1;

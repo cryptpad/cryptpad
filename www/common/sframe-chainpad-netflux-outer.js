@@ -118,6 +118,10 @@ define([], function () {
             onOpen(data);
         });
 
+        padRpc.onMetadataEvent.reg(function (data) {
+            sframeChan.event('EV_RT_METADATA', data);
+        });
+
         padRpc.onErrorEvent.reg(function (err) {
             sframeChan.event('EV_RT_ERROR', err);
         });

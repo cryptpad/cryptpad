@@ -757,6 +757,7 @@ define([
     pad.onDisconnectEvent = Util.mkEvent();
     pad.onConnectEvent = Util.mkEvent();
     pad.onErrorEvent = Util.mkEvent();
+    pad.onMetadataEvent = Util.mkEvent();
 
     pad.getPadMetadata = function (data, cb) {
         postMessage('GET_PAD_METADATA', data, cb);
@@ -1208,6 +1209,7 @@ define([
         PAD_DISCONNECT: common.padRpc.onDisconnectEvent.fire,
         PAD_CONNECT: common.padRpc.onConnectEvent.fire,
         PAD_ERROR: common.padRpc.onErrorEvent.fire,
+        PAD_METADATA: common.padRpc.onMetadataEvent.fire,
         // Drive
         DRIVE_LOG: common.drive.onLog.fire,
         DRIVE_CHANGE: common.drive.onChange.fire,

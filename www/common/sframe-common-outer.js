@@ -1025,7 +1025,6 @@ define([
                         channel: secret.channel
                     };
                 }
-                console.log(data);
                 Cryptpad.getPadMetadata(data, cb);
             });
             sframeChan.on('Q_SET_PAD_METADATA', function (data, cb) {
