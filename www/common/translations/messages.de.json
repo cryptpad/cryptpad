@@ -1143,5 +1143,11 @@
     "register_emailWarning0": "Anscheinend hast du deine E-Mail-Adresse als Benutzername angegeben.",
     "register_emailWarning1": "Wenn du möchtest, kannst du dies tun. Allerdings wird sie nicht an unseren Server gesendet.",
     "register_emailWarning2": "Du kannst dein Passwort nicht wie bei vielen anderen Diensten mit der E-Mail-Adresse zurücksetzen.",
-    "register_emailWarning3": "Wenn du dies verstanden hast und die E-Mail-Adresse dennoch als Benutzername verwenden möchtest, klicke auf OK."
+    "register_emailWarning3": "Wenn du dies verstanden hast und die E-Mail-Adresse dennoch als Benutzername verwenden möchtest, klicke auf OK.",
+    "owner_unknownUser": "Unbekannter Benutzer",
+    "owner_removeButton": "Ausgewählte Eigentümer entfernen",
+    "owner_removeConfirm": "Bist du sicher, dass die Eigentümerschaft der ausgewählten Benutzer entfernen möchtest? Sie werden über diese Aktion informiert.",
+    "owner_removeMeConfirm": "Du bist dabei, deine Rechte als Eigentümer aufzugeben. Diese Aktion kannst du nicht rückgängig machen. Bist du sicher?",
+    "owner_openModalButton": "Eigentümer verwalten",
+    "owner_add": "{0} möchte ein Eigentümer des Pads <b>{1}</b> sein. Bist du damit einverstanden?"
 }
