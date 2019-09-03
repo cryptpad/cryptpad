@@ -134,54 +134,54 @@ define([
         };
 
         // if not archived, add handlers
-        content.handler = function () {
-            var metadataMgr = common.getMetadataMgr();
-            var priv = metadataMgr.getPrivateData();
-
-            var link = h('a', {
-                href: '#'
-            }, Messages.requestEdit_viewPad);
-            var verified = h('p');
-            var $verified = $(verified);
-
-            var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
-            var title = Util.fixHTML(msg.content.title);
-
-            if (priv.friends && priv.friends[msg.author]) {
-                $verified.addClass('cp-notifications-requestedit-verified');
-                var f = priv.friends[msg.author];
-                $verified.append(h('span.fa.fa-certificate'));
-                var $avatar = $(h('span.cp-avatar')).appendTo($verified);
-                $verified.append(h('p', Messages._getKey('requestEdit_fromFriend', [f.displayName])));
-                common.displayAvatar($avatar, f.avatar, f.displayName);
-            } else {
-                $verified.append(Messages._getKey('requestEdit_fromStranger', [name]));
-            }
-
-            var div = h('div', [
-                UI.setHTML(h('p'), Messages._getKey('requestEdit_confirm', [title, name])),
-                verified,
-                link
-            ]);
-            $(link).click(function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                common.openURL(msg.content.href);
-            });
-            UI.confirm(div, function (yes) {
-                if (!yes) { return; }
-                common.getSframeChannel().event('EV_GIVE_ACCESS', {
-                    channel: msg.content.channel,
-                    user: msg.content.user
-                });
-                defaultDismiss(common, data)();
-            }, {
-                ok: Messages.friendRequest_accept,
-                cancel: Messages.later
-            });
-        };
-
         if (!content.archived) {
+            content.handler = function () {
+                var metadataMgr = common.getMetadataMgr();
+                var priv = metadataMgr.getPrivateData();
+
+                var link = h('a', {
+                    href: '#'
+                }, Messages.requestEdit_viewPad);
+                var verified = h('p');
+                var $verified = $(verified);
+
+                var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
+                var title = Util.fixHTML(msg.content.title);
+
+                if (priv.friends && priv.friends[msg.author]) {
+                    $verified.addClass('cp-notifications-requestedit-verified');
+                    var f = priv.friends[msg.author];
+                    $verified.append(h('span.fa.fa-certificate'));
+                    var $avatar = $(h('span.cp-avatar')).appendTo($verified);
+                    $verified.append(h('p', Messages._getKey('requestEdit_fromFriend', [f.displayName])));
+                    common.displayAvatar($avatar, f.avatar, f.displayName);
+                } else {
+                    $verified.append(Messages._getKey('requestEdit_fromStranger', [name]));
+                }
+
+                var div = h('div', [
+                    UI.setHTML(h('p'), Messages._getKey('requestEdit_confirm', [title, name])),
+                    verified,
+                    link
+                ]);
+                $(link).click(function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    common.openURL(msg.content.href);
+                });
+                UI.confirm(div, function (yes) {
+                    if (!yes) { return; }
+                    common.getSframeChannel().event('EV_GIVE_ACCESS', {
+                        channel: msg.content.channel,
+                        user: msg.content.user
+                    });
+                    defaultDismiss(common, data)();
+                }, {
+                    ok: Messages.friendRequest_accept,
+                    cancel: Messages.later
+                });
+            };
+
             content.dismissHandler = defaultDismiss(common, data);
         }
     };
@@ -284,5 +284,6 @@ define([
         remove: function (common, data) {
             common.removeFriendRequest(data.hash);
         },
+        allowed: Object.keys(handlers)
     };
 });
