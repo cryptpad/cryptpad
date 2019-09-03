@@ -342,7 +342,7 @@ types of messages:
             '/common/common-util.js',
             '/bower_components/tweetnacl/nacl-fast.min.js',
         ], function (Util) {
-            return factory(Util, window.Nacl);
+            return factory(Util, window.nacl);
         });
     } else {
         // I'm not gonna bother supporting any other kind of instanciation
