@@ -394,6 +394,7 @@ var setMetadata = function (Env, data, unsafeKey, cb) {
             // if your command is valid but it didn't result in any change to the metadata,
             // call back now and don't write any "useless" line to the log
             if (!changed) {
+                g();
                 return void cb(void 0, metadata);
             }
             Env.msgStore.writeMetadata(channel, JSON.stringify(line), function (e) {
