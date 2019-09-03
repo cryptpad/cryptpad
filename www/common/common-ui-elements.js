@@ -98,8 +98,8 @@ define([
         var user = common.getMetadataMgr().getUserData();
         var edPublic = priv.edPublic;
         var channel = data.channel;
-        var owners = data.owners;
-        var pending_owners = data.pending_owners;
+        var owners = data.owners || [];
+        var pending_owners = data.pending_owners || [];
 
         var redrawAll = function () {};
 
@@ -316,22 +316,21 @@ define([
             return $div2;
         };
 
-        var pending = false;
-        redrawAll = function () {
-            if (pending) { return; }
-            pending = true;
-            common.getPadMetadata({
-                channel: data.channel
-            }, function (obj) {
-                pending = false;
+        redrawAll = function (md) {
+            var todo = function (obj) {
                 if (obj && obj.error) { return; }
-                owners = obj.owners;
-                pending_owners = obj.pending_owners;
+                owners = obj.owners || [];
+                pending_owners = obj.pending_owners || [];
                 $div1.empty();
                 $div2.empty();
                 $div1.append(drawRemove(false)).append(drawRemove(true));
                 $div2.append(drawAdd());
-            });
+            };
+
+            if (md) { return void todo(md); }
+            common.getPadMetadata({
+                channel: data.channel
+            }, todo);
         };
 
         $div1.append(drawRemove(false)).append(drawRemove(true));
@@ -341,9 +340,9 @@ define([
             if (!$div1.length) {
                 return void handler.stop();
             }
-            owners = md.owners;
-            pending_owners = md.pending_owners;
-            redrawAll();
+            owners = md.owners || [];
+            pending_owners = md.pending_owners || [];
+            redrawAll(md);
         });
 
         // Create modal
@@ -3394,6 +3393,8 @@ define([
                     data.metadata = res;
 
                     // Add the pad to your drive
+                    // This command will also add your mailbox to the metadata log
+                    // The callback is called when the pad is stored, independantly of the metadata command
                     sframeChan.query('Q_ACCEPT_OWNERSHIP', data, function (err, res) {
                         if (err || (res && res.error)) {
                             return void console.error(err | res.error);

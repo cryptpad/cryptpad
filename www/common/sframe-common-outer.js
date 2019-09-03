@@ -489,6 +489,28 @@ define([
                 Cryptpad.setPadTitle(_data, function (err) {
                     cb({error: err});
                 });
+
+                // Also add your mailbox to the metadata object
+                var padParsed = Utils.Hash.parsePadUrl(data.href);
+                var padSecret = Utils.Hash.getSecrets(padParsed.type, padParsed.hash, data.password);
+                var padCrypto = Utils.Crypto.createEncryptor(padSecret.keys);
+                try {
+                    var value = {};
+                    value[edPublic] = padCrypto.encrypt(JSON.stringify({
+                        notifications: notifications,
+                        curvePublic: curvePublic
+                    }));
+                    var msg = {
+                        channel: data.channel,
+                        command: 'ADD_MAILBOX',
+                        value: value
+                    };
+                    Cryptpad.setPadMetadata(msg, function (res) {
+                        if (res.error) { console.error(res.error); }
+                    });
+                } catch (err) {
+                    return void console.error(err);
+                }
             });
 
             sframeChan.on('Q_IMPORT_MEDIATAG', function (obj, cb) {
@@ -1001,9 +1023,17 @@ define([
                     }, waitFor(function (obj) {
                         obj = obj || {};
                         if (obj.error) { return; }
-                        if (obj.mailbox) {
+                        var mailbox;
+                        // Get the first available mailbox (the field can be an string or an object)
+                        // TODO maybe we should send the request to all the owners?
+                        if (typeof (obj.mailbox) === "string") {
+                            mailbox = obj.mailbox;
+                        } else if (obj.mailbox && obj.owners && obj.owners.length) {
+                            mailbox = obj.mailbox[obj.owners[0]];
+                        }
+                        if (mailbox) {
                             try {
-                                var dataStr = crypto.decrypt(obj.mailbox, true, true);
+                                var dataStr = crypto.decrypt(mailbox, true, true);
                                 var data = JSON.parse(dataStr);
                                 if (!data.notifications || !data.curvePublic) { return; }
                                 owner = data;
@@ -1156,7 +1186,8 @@ define([
                 };
                 if (data.owned) {
                     rtConfig.metadata.owners = [edPublic];
-                    rtConfig.metadata.mailbox = Utils.crypto.encrypt(JSON.stringify({
+                    rtConfig.metadata.mailbox = {};
+                    rtConfig.metadata.mailbox[edPublic] = Utils.crypto.encrypt(JSON.stringify({
                         notifications: notifications,
                         curvePublic: curvePublic
                     }));
