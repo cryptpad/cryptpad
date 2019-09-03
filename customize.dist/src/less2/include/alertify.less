@@ -462,6 +462,10 @@
                 }
             }
             margin-bottom: 15px;
+            &:empty {
+                margin: 0;
+                display: none;
+            }
         }
         .cp-share-friend {
             width: 70px;
@@ -491,6 +495,11 @@
             border: 1px solid @colortheme_alertify-primary;
             &.cp-fake-friend {
                 visibility: hidden;
+            }
+        }
+        .cp-ownership {
+            & > label {
+                font-weight: bold;
             }
         }
     }

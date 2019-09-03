@@ -495,8 +495,8 @@ define([
             _addSharedFolder(Env, {
                 path: parentPath,
                 name: folderName,
-                owned: data.owned, // XXX FIXME hardcoded preference
-                password: data.password || '', // XXX FIXME hardcoded preference
+                owned: data.owned,
+                password: data.password || '',
             }, waitFor(function (id) {
                 // _addSharedFolder can be an id or an error
                 if (typeof(id) === 'object' && id && id.error) {
@@ -741,29 +741,17 @@ define([
             return void cb(null, Env.user.proxy[UserObject.SHARED_FOLDERS][sfId][data.attr]);
         }
         var datas = findHref(Env, data.href);
-        var nt = nThen;
         var res = {};
         datas.forEach(function (d) {
-            nt = nt(function (waitFor) {
-                var atime, value;
-                var w = waitFor();
-                nThen(function (waitFor2) {
-                    d.userObject.getPadAttribute(data.href, 'atime', waitFor2(function (err, v) {
-                        atime = v;
-                    }));
-                    d.userObject.getPadAttribute(data.href, data.attr, waitFor2(function (err, v) {
-                        value = v;
-                    }));
-                }).nThen(function () {
-                    if (!res.value || res.atime < atime) {
-                        res.atime = atime;
-                        res.value = value;
-                    }
-                    w();
-                });
-            }).nThen;
+            var atime = d.data.atime;
+
+            var value = data.attr ? d.data[data.attr] : JSON.parse(JSON.stringify(d.data));
+            if (!res.value || res.atime < atime) {
+                res.atime = atime;
+                res.value = value;
+            }
         });
-        nt(function () { cb(null, res.value); });
+        cb(null, res.value);
     };
 
     var getTagsList = function (Env) {

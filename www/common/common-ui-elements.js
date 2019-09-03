@@ -71,56 +71,22 @@ define([
     var getPropertiesData = function (common, cb) {
         var data = {};
         NThen(function (waitFor) {
-            common.getPadAttribute('password', waitFor(function (err, val) {
-                data.password = val;
-            }));
-        }).nThen(function (waitFor) {
             var base = common.getMetadataMgr().getPrivateData().origin;
-            // XXX getFileData?
-            // XXX getPadMetadata
-            common.getPadAttribute('href', waitFor(function (err, val) {
-                if (!val) { return; }
-                data.href = base + val;
-            }));
-            common.getPadAttribute('roHref', waitFor(function (err, val) {
-                if (!val) { return; }
-                data.roHref = base + val;
-            }));
-            common.getPadAttribute('channel', waitFor(function (err, val) {
-                data.channel = val;
-            }));
-            common.getPadAttribute('rtChannel', waitFor(function (err, val) {
-                data.rtChannel = val;
-            }));
-            common.getPadAttribute('lastVersion', waitFor(function (err, val) {
-                data.lastVersion = val;
-            }));
-            common.getPadAttribute('atime', waitFor(function (err, val) {
-                data.atime = val;
-            }));
-            common.getPadAttribute('ctime', waitFor(function (err, val) {
-                data.ctime = val;
-            }));
-            common.getPadAttribute('title', waitFor(function (err, val) {
-                data.title = val;
-            }));
-            common.getPadAttribute('tags', waitFor(function (err, val) {
-                data.tags = val;
+            common.getPadAttribute('', waitFor(function (err, val) {
+                if (err || !val) {
+                    waitFor.abort();
+                    return void cb(err || 'EEMPTY');
+                }
+                Util.extend(data, val);
+                if (data.href) { data.href = base + data.href; }
+                if (data.roHref) { data.roHref = base + data.roHref; }
             }));
             common.getPadMetadata(null, waitFor(function (obj) {
-                console.log(obj);
                 if (obj && obj.error) { return; }
                 data.owners = obj.owners;
                 data.expire = obj.expire;
                 data.pending_owners = obj.pending_owners;
             }));
-            /*
-            common.getPadAttribute('owners', waitFor(function (err, val) {
-                data.owners = val;
-            }));
-            common.getPadAttribute('expire', waitFor(function (err, val) {
-                data.expire = val;
-            }));*/
         }).nThen(function () {
             cb(void 0, data);
         });
@@ -132,20 +98,20 @@ define([
         var user = common.getMetadataMgr().getUserData();
         var edPublic = priv.edPublic;
         var channel = data.channel;
-        var owners = data.owners;
-        var pending_owners = data.pending_owners;
+        var owners = data.owners || [];
+        var pending_owners = data.pending_owners || [];
 
         var redrawAll = function () {};
 
-        var div1 = h('div.cp-share-friends.cp-share-column');
-        var div2 = h('div.cp-share-friends.cp-share-column');
+        var div1 = h('div.cp-share-friends.cp-share-column.cp-ownership');
+        var div2 = h('div.cp-share-friends.cp-share-column.cp-ownership');
         var $div1 = $(div1);
         var $div2 = $(div2);
 
         // Remove owner column
         var drawRemove = function (pending) {
             var _owners = {};
-            var o = pending ? pending_owners : owners;
+            var o = (pending ? pending_owners : owners) || [];
             o.forEach(function (ed) {
                 var f;
                 Object.keys(friends).some(function (c) {
@@ -154,20 +120,25 @@ define([
                         return true;
                     }
                 });
+                if (ed === edPublic) {
+                    f = f || user;
+                    if (f.name) {
+                        f.displayName = f.name;
+                    }
+                }
                 _owners[ed] = f || {
-                    displayName: 'Unknown user: '+ ed, // XXX
+                    displayName: Messages._getKey('owner_unknownUser', [ed]),
                     notifications: true,
                     edPublic: ed,
                 };
             });
-            var msg = pending ? 'Remove a pending owner:'
-                        : 'Remove an existing owner:'; // XXX
+            var msg = pending ? Messages.owner_removePendingText
+                        : Messages.owner_removeText;
             var removeCol = UIElements.getFriendsList(msg, {
                 common: common,
                 friends: _owners,
                 noFilter: true
             }, function () {
-                console.log(arguments);
             });
             var $div = $(removeCol.div);
             var others1 = removeCol.others;
@@ -184,12 +155,13 @@ define([
             });
             // When clicking on the remove button, we check the selected users.
             // If you try to remove yourself, we'll display an additional warning message
-            var btnMsg = pending ? 'Remove pending owners' : 'Remove owners'; // XXX
+            var btnMsg = pending ? Messages.owner_removePendingButton : Messages.owner_removeButton;
             var removeButton = h('button.no-margin', btnMsg);
             $(removeButton).click(function () {
                 // Check selection
                 var $sel = $div.find('.cp-share-friend.cp-selected');
                 var sel = $sel.toArray();
+                if (!sel.length) { return; }
                 var me = false;
                 var toRemove = sel.map(function (el) {
                     var ed = $(el).attr('data-ed');
@@ -197,25 +169,54 @@ define([
                     if (ed === edPublic) { me = true; }
                     return ed;
                 }).filter(function (x) { return x; });
-                // Send the command
-                var send = function () {
+                NThen(function (waitFor) {
+                    var msg = me ? Messages.owner_removeMeConfirm : Messages.owner_removeConfirm;
+                    UI.confirm(msg, waitFor(function (yes) {
+                        if (!yes) {
+                            waitFor.abort();
+                            return;
+                        }
+                    }));
+                }).nThen(function (waitFor) {
+                    // Send the command
                     sframeChan.query('Q_SET_PAD_METADATA', {
                         channel: channel,
                         command: pending ? 'RM_PENDING_OWNERS' : 'RM_OWNERS',
                         value: toRemove
-                    }, function (err, res) {
+                    }, waitFor(function (err, res) {
                         err = err || (res && res.error);
-                        if (err) { return void UI.warn('ERROR' + err); } // XXX
-                        redrawAll();
-                        UI.log('DONE'); // XXX
+                        if (err) {
+                            waitFor.abort();
+                            redrawAll();
+                            var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
+                                                                          : Messages.error;
+                            return void UI.warn(text);
+                        }
+                        UI.log(Messages.saved);
+                    }));
+                }).nThen(function (waitFor) {
+                    sel.forEach(function (el) {
+                        var friend = friends[$(el).attr('data-curve')];
+                        if (!friend) { return; }
+                        common.mailbox.sendTo("RM_OWNER", {
+                            channel: channel,
+                            title: data.title,
+                            pending: pending,
+                            user: {
+                                displayName: user.name,
+                                avatar: user.avatar,
+                                profile: user.profile,
+                                notifications: user.notifications,
+                                curvePublic: user.curvePublic,
+                                edPublic: priv.edPublic
+                            }
+                        }, {
+                            channel: friend.notifications,
+                            curvePublic: friend.curvePublic
+                        }, waitFor());
                     });
-                };
-                var msg = me ?
-                  "Are you sure? You're going to give up on your rights, this can't be undone!" :
-                  "Are you sure?"; // XXX
-                UI.confirm(msg, function (yes) {
-                    if (!yes) { return; }
-                    send();
+                }).nThen(function () {
+                    redrawAll();
                 });
             });
             $div.append(h('p', removeButton));
@@ -226,16 +227,16 @@ define([
         var drawAdd = function () {
             var _friends = JSON.parse(JSON.stringify(friends));
             Object.keys(_friends).forEach(function (curve) {
-                if (owners.indexOf(_friends[curve].edPublic) !== -1) {
+                if (owners.indexOf(_friends[curve].edPublic) !== -1 ||
+                    pending_owners.indexOf(_friends[curve].edPublic) !== -1) {
                     delete _friends[curve];
                 }
             });
-            var addCol = UIElements.getFriendsList('Ask a friend to be an owner.', {
+            var addCol = UIElements.getFriendsList(Messages.owner_addText, {
                 common: common,
                 friends: _friends
             }, function () {
-                // XXX onSelect...
-                console.log(arguments);
+                //console.log(arguments);
             });
             $div2 = $(addCol.div);
             var others2 = addCol.others;
@@ -249,20 +250,20 @@ define([
                     order = order ? 'order:'+order : '';
                     $(this).removeClass('cp-selected').attr('style', order);
                 }
-                // XXX onSelect...
             });
             // When clicking on the add button, we get the selected users.
-            var addButton = h('button.no-margin', 'Add owners'); // XXX
+            var addButton = h('button.no-margin', Messages.owner_addButton);
             $(addButton).click(function () {
                 // Check selection
                 var $sel = $div2.find('.cp-share-friend.cp-selected');
                 var sel = $sel.toArray();
+                if (!sel.length) { return; }
                 var toAdd = sel.map(function (el) {
                     return friends[$(el).attr('data-curve')].edPublic;
                 }).filter(function (x) { return x; });
 
                 NThen(function (waitFor) {
-                    var msg = "Are you sure?"; // XXX
+                    var msg = Messages.owner_addConfirm;
                     UI.confirm(msg, waitFor(function (yes) {
                         if (!yes) {
                             waitFor.abort();
@@ -270,23 +271,22 @@ define([
                         }
                     }));
                 }).nThen(function (waitFor) {
-                    console.log('koko');
                     // Send the command
                     sframeChan.query('Q_SET_PAD_METADATA', {
                         channel: channel,
                         command: 'ADD_PENDING_OWNERS',
                         value: toAdd
                     }, waitFor(function (err, res) {
-                        console.error(arguments);
                         err = err || (res && res.error);
                         if (err) {
                             waitFor.abort();
-                            return void UI.warn('ERROR' + err);
-                        } // XXX
+                            redrawAll();
+                            var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
+                                                                          : Messages.error;
+                            return void UI.warn(text);
+                        }
                     }));
                 }).nThen(function (waitFor) {
-                    console.log('okok');
-                    // TODO send notifications
                     sel.forEach(function (el) {
                         var friend = friends[$(el).attr('data-curve')];
                         if (!friend) { return; }
@@ -310,27 +310,41 @@ define([
                     });
                 }).nThen(function () {
                     redrawAll();
-                    UI.log('DONE'); // XXX
+                    UI.log(Messages.saved);
                 });
             });
             $div2.append(h('p', addButton));
             return $div2;
         };
 
-        redrawAll = function () {
-            $div1.empty();
-            $div2.empty();
-            common.getPadMetadata(null, function (obj) {
+        redrawAll = function (md) {
+            var todo = function (obj) {
                 if (obj && obj.error) { return; }
-                owners = obj.owners;
-                pending_owners = obj.pending_owners;
+                owners = obj.owners || [];
+                pending_owners = obj.pending_owners || [];
+                $div1.empty();
+                $div2.empty();
                 $div1.append(drawRemove(false)).append(drawRemove(true));
                 $div2.append(drawAdd());
-            });
+            };
+
+            if (md) { return void todo(md); }
+            common.getPadMetadata({
+                channel: data.channel
+            }, todo);
         };
 
         $div1.append(drawRemove(false)).append(drawRemove(true));
         $div2.append(drawAdd());
+
+        var handler = sframeChan.on('EV_RT_METADATA', function (md) {
+            if (!$div1.length) {
+                return void handler.stop();
+            }
+            owners = md.owners || [];
+            pending_owners = md.pending_owners || [];
+            redrawAll(md);
+        });
 
         // Create modal
         var link = h('div.cp-share-columns', [
@@ -341,146 +355,165 @@ define([
         ]);
         var linkButtons = [{
             className: 'cancel',
-            name: 'CLOSE', // XXX existing key?
+            name: Messages.filePicker_close,
             onClick: function () {},
             keys: [27]
         }];
         return UI.dialog.customModal(link, {buttons: linkButtons});
     };
     var getRightsProperties = function (common, data, cb) {
-        var $d = $('<div>');
-        if (!data) { return void cb(void 0, $d); }
+        var $div = $('<div>');
+        if (!data) { return void cb(void 0, $div); }
 
-        $('<label>', {'for': 'cp-app-prop-owners'}).text(Messages.creation_owners)
-            .appendTo($d);
-        var owners = Messages.creation_noOwner;
-        var priv = common.getMetadataMgr().getPrivateData();
-        var edPublic = priv.edPublic;
-        var owned = false;
-        if (data.owners && data.owners.length) {
-            if (data.owners.indexOf(edPublic) !== -1) {
-                owned = true;
-            }
-            var names = [];
-            var strangers = 0;
-            data.owners.forEach(function (ed) {
-                // If a friend is an owner, add their name to the list
-                // otherwise, increment the list of strangers
-                if (ed === edPublic) {
-                    names.push(Messages.yourself);
-                    return;
-                }
-                if (!Object.keys(priv.friends || {}).some(function (c) {
-                    var friend = priv.friends[c] || {};
-                    if (friend.edPublic !== ed || c === 'me') { return; }
-                    names.push(friend.displayName);
-                    return true;
-                })) {
-                    strangers++;
-                }
-            });
-            if (strangers) {
-                names.push(Messages._getKey('properties_unknownUser', [strangers]));
-            }
-            owners = names.join(', ');
-        }
-        $d.append(UI.dialog.selectable(owners, {
-            id: 'cp-app-prop-owners',
-        }));
-        if (owned) {
-            var manageOwners = h('button.no-margin', 'Manage owners'); // XXX
-            $(manageOwners).click(function () {
-                var modal = createOwnerModal(common, data);
-                UI.openCustomModal(modal, {
-                    wide: true,
-                });
-            });
-            $d.append(h('p', manageOwners));
-        }
-
-        if (!data.noExpiration) {
-            var expire = Messages.creation_expireFalse;
-            if (data.expire && typeof (data.expire) === "number") {
-                expire = new Date(data.expire).toLocaleString();
-            }
-            $('<label>', {'for': 'cp-app-prop-expire'}).text(Messages.creation_expiration)
+        var draw = function () {
+            var $d = $('<div>');
+            $('<label>', {'for': 'cp-app-prop-owners'}).text(Messages.creation_owners)
                 .appendTo($d);
-            $d.append(UI.dialog.selectable(expire, {
-                id: 'cp-app-prop-expire',
-            }));
-        }
-
-        if (!data.noPassword) {
-            var hasPassword = data.password;
-            if (hasPassword) {
-                $('<label>', {'for': 'cp-app-prop-password'}).text(Messages.creation_passwordValue)
-                    .appendTo($d);
-                var password = UI.passwordInput({
-                    id: 'cp-app-prop-password',
-                    readonly: 'readonly'
-                });
-                var $pwInput = $(password).find('.cp-password-input');
-                $pwInput.val(data.password).click(function () {
-                    $pwInput[0].select();
-                });
-                $d.append(password);
-            }
-
-            var parsed = Hash.parsePadUrl(data.href || data.roHref);
-            if (!data.noEditPassword && owned && parsed.hashData.type === 'pad' && parsed.type !== "sheet") { // FIXME SHEET fix password change for sheets
-                var sframeChan = common.getSframeChannel();
-                var changePwTitle = Messages.properties_changePassword;
-                var changePwConfirm = Messages.properties_confirmChange;
-                if (!hasPassword) {
-                    changePwTitle = Messages.properties_addPassword;
-                    changePwConfirm = Messages.properties_confirmNew;
+            var owners = Messages.creation_noOwner;
+            var priv = common.getMetadataMgr().getPrivateData();
+            var edPublic = priv.edPublic;
+            var owned = false;
+            if (data.owners && data.owners.length) {
+                if (data.owners.indexOf(edPublic) !== -1) {
+                    owned = true;
                 }
-                $('<label>', {'for': 'cp-app-prop-change-password'})
-                    .text(changePwTitle).appendTo($d);
-                var newPassword = UI.passwordInput({
-                    id: 'cp-app-prop-change-password',
-                    style: 'flex: 1;'
-                });
-                var passwordOk = h('button', Messages.properties_changePasswordButton);
-                var changePass = h('span.cp-password-container', [
-                    newPassword,
-                    passwordOk
-                ]);
-                $(passwordOk).click(function () {
-                    var newPass = $(newPassword).find('input').val();
-                    if (data.password === newPass ||
-                        (!data.password && !newPass)) {
-                        return void UI.alert(Messages.properties_passwordSame);
+                var names = [];
+                var strangers = 0;
+                data.owners.forEach(function (ed) {
+                    // If a friend is an owner, add their name to the list
+                    // otherwise, increment the list of strangers
+                    if (ed === edPublic) {
+                        names.push(Messages.yourself);
+                        return;
                     }
-                    UI.confirm(changePwConfirm, function (yes) {
-                        if (!yes) { return; }
-                        sframeChan.query("Q_PAD_PASSWORD_CHANGE", {
-                            href: data.href || data.roHref,
-                            password: newPass
-                        }, function (err, data) {
-                            if (err || data.error) {
-                                return void UI.alert(Messages.properties_passwordError);
-                            }
-                            UI.findOKButton().click();
-                            // If we didn't have a password, we have to add the /p/
-                            // If we had a password and we changed it to a new one, we just have to reload
-                            // If we had a password and we removed it, we have to remove the /p/
-                            if (data.warning) {
-                                return void UI.alert(Messages.properties_passwordWarning, function () {
-                                    common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
-                                }, {force: true});
-                            }
-                            return void UI.alert(Messages.properties_passwordSuccess, function () {
-                                common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
-                            }, {force: true});
-                        });
+                    if (!Object.keys(priv.friends || {}).some(function (c) {
+                        var friend = priv.friends[c] || {};
+                        if (friend.edPublic !== ed || c === 'me') { return; }
+                        names.push(friend.displayName);
+                        return true;
+                    })) {
+                        strangers++;
+                    }
+                });
+                if (strangers) {
+                    names.push(Messages._getKey('properties_unknownUser', [strangers]));
+                }
+                owners = names.join(', ');
+            }
+            $d.append(UI.dialog.selectable(owners, {
+                id: 'cp-app-prop-owners',
+            }));
+            if (owned) {
+                var manageOwners = h('button.no-margin', Messages.owner_openModalButton);
+                $(manageOwners).click(function () {
+                    var modal = createOwnerModal(common, data);
+                    UI.openCustomModal(modal, {
+                        wide: true,
                     });
                 });
-                $d.append(changePass);
+                $d.append(h('p', manageOwners));
             }
-        }
 
-        cb(void 0, $d);
+            if (!data.noExpiration) {
+                var expire = Messages.creation_expireFalse;
+                if (data.expire && typeof (data.expire) === "number") {
+                    expire = new Date(data.expire).toLocaleString();
+                }
+                $('<label>', {'for': 'cp-app-prop-expire'}).text(Messages.creation_expiration)
+                    .appendTo($d);
+                $d.append(UI.dialog.selectable(expire, {
+                    id: 'cp-app-prop-expire',
+                }));
+            }
+
+            if (!data.noPassword) {
+                var hasPassword = data.password;
+                if (hasPassword) {
+                    $('<label>', {'for': 'cp-app-prop-password'}).text(Messages.creation_passwordValue)
+                        .appendTo($d);
+                    var password = UI.passwordInput({
+                        id: 'cp-app-prop-password',
+                        readonly: 'readonly'
+                    });
+                    var $pwInput = $(password).find('.cp-password-input');
+                    $pwInput.val(data.password).click(function () {
+                        $pwInput[0].select();
+                    });
+                    $d.append(password);
+                }
+
+                var parsed = Hash.parsePadUrl(data.href || data.roHref);
+                if (!data.noEditPassword && owned && parsed.hashData.type === 'pad' && parsed.type !== "sheet") { // FIXME SHEET fix password change for sheets
+                    var sframeChan = common.getSframeChannel();
+                    var changePwTitle = Messages.properties_changePassword;
+                    var changePwConfirm = Messages.properties_confirmChange;
+                    if (!hasPassword) {
+                        changePwTitle = Messages.properties_addPassword;
+                        changePwConfirm = Messages.properties_confirmNew;
+                    }
+                    $('<label>', {'for': 'cp-app-prop-change-password'})
+                        .text(changePwTitle).appendTo($d);
+                    var newPassword = UI.passwordInput({
+                        id: 'cp-app-prop-change-password',
+                        style: 'flex: 1;'
+                    });
+                    var passwordOk = h('button', Messages.properties_changePasswordButton);
+                    var changePass = h('span.cp-password-container', [
+                        newPassword,
+                        passwordOk
+                    ]);
+                    $(passwordOk).click(function () {
+                        var newPass = $(newPassword).find('input').val();
+                        if (data.password === newPass ||
+                            (!data.password && !newPass)) {
+                            return void UI.alert(Messages.properties_passwordSame);
+                        }
+                        UI.confirm(changePwConfirm, function (yes) {
+                            if (!yes) { return; }
+                            sframeChan.query("Q_PAD_PASSWORD_CHANGE", {
+                                href: data.href || data.roHref,
+                                password: newPass
+                            }, function (err, data) {
+                                if (err || data.error) {
+                                    return void UI.alert(Messages.properties_passwordError);
+                                }
+                                UI.findOKButton().click();
+                                // If we didn't have a password, we have to add the /p/
+                                // If we had a password and we changed it to a new one, we just have to reload
+                                // If we had a password and we removed it, we have to remove the /p/
+                                if (data.warning) {
+                                    return void UI.alert(Messages.properties_passwordWarning, function () {
+                                        common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
+                                    }, {force: true});
+                                }
+                                return void UI.alert(Messages.properties_passwordSuccess, function () {
+                                    common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
+                                }, {force: true});
+                            });
+                        });
+                    });
+                    $d.append(changePass);
+                }
+            }
+            return $d;
+        };
+
+        var sframeChan = common.getSframeChannel();
+        var handler = sframeChan.on('EV_RT_METADATA', function (md) {
+            if (!$div.length) {
+                handler.stop();
+                return;
+            }
+            md = JSON.parse(JSON.stringify(md));
+            data.owners = md.owners;
+            data.expire = md.expire;
+            data.pending_owners = md.pending_owners;
+            $div.empty();
+            $div.append(draw());
+        });
+        $div.append(draw());
+
+        cb(void 0, $div);
     };
     var getPadProperties = function (common, data, cb) {
         var $d = $('<div>');
@@ -567,6 +600,8 @@ define([
         } else {
             cb(void 0, $d);
         }
+
+
     };
     UIElements.getProperties = function (common, data, cb) {
         var c1;
@@ -3068,6 +3103,7 @@ define([
     };
 
     var storePopupState = false;
+    var autoStoreModal = {};
     UIElements.displayStorePadPopup = function (common, data) {
         if (storePopupState) { return; }
         storePopupState = true;
@@ -3087,6 +3123,8 @@ define([
         var initialHide = data && data.autoStore && data.autoStore === -1;
         var modal = UI.cornerPopup(text, actions, footer, {hidden: initialHide});
 
+        autoStoreModal[priv.channel] = modal;
+
         $(modal.popup).find('.cp-corner-footer a').click(function (e) {
             e.preventDefault();
             common.openURL('/settings/');
@@ -3094,6 +3132,7 @@ define([
 
         $(hide).click(function () {
             UIElements.displayCrowdfunding(common);
+            delete autoStoreModal[priv.channel];
             modal.delete();
         });
         var waitingForStoringCb = false;
@@ -3109,6 +3148,7 @@ define([
                     }
                     return void UI.warn(Messages.autostore_error);
                 }
+                delete autoStoreModal[priv.channel];
                 modal.delete();
                 UIElements.displayCrowdfunding(common);
                 UI.log(Messages.autostore_saved);
@@ -3286,7 +3326,6 @@ define([
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
         var title = Util.fixHTML(msg.content.title);
 
-        Messages.owner_add = '{0} wants you to be an owner of the pad <b>{1}</b>. Do you accept?'; //XXX
         var text = Messages._getKey('owner_add', [name, title]);
 
         var link = h('a', {
@@ -3343,12 +3382,31 @@ define([
                 }, function (err, res) {
                     err = err || (res && res.error);
                     if (err) {
-                        return void UI.warn('ERROR ' + err);
-                    } // XXX
-                    UI.log('DONE'); // XXX
+                        var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
+                                                                      : Messages.error;
+                        return void UI.warn(text);
+                    }
+                    UI.log(Messages.saved);
 
                     // Send notification to the sender
                     answer(true);
+
+                    var data = JSON.parse(JSON.stringify(msg.content));
+                    data.metadata = res;
+
+                    // Add the pad to your drive
+                    // This command will also add your mailbox to the metadata log
+                    // The callback is called when the pad is stored, independantly of the metadata command
+                    sframeChan.query('Q_ACCEPT_OWNERSHIP', data, function (err, res) {
+                        if (err || (res && res.error)) {
+                            return void console.error(err | res.error);
+                        }
+                        UI.log(Messages.saved);
+                        if (autoStoreModal[data.channel]) {
+                            autoStoreModal[data.channel].delete();
+                            delete autoStoreModal[data.channel];
+                        }
+                    });
 
                     // Remove yourself from the pending owners
                     sframeChan.query('Q_SET_PAD_METADATA', {
