@@ -3719,7 +3719,6 @@ define([
                 sframeChan.query('Q_GET_PAD_METADATA', {
                     channel: data.channel
                 }, function (err, val) {
-                    console.log(arguments);
                     if (!err && !(val && val.error)) {
                         data.owners = val.owners;
                         data.expire = val.expire;

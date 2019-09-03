@@ -111,7 +111,7 @@ define([
         // Remove owner column
         var drawRemove = function (pending) {
             var _owners = {};
-            var o = pending ? pending_owners : owners;
+            var o = (pending ? pending_owners : owners) || [];
             o.forEach(function (ed) {
                 var f;
                 Object.keys(friends).some(function (c) {
@@ -189,6 +189,7 @@ define([
                         err = err || (res && res.error);
                         if (err) {
                             waitFor.abort();
+                            redrawAll();
                             return void UI.warn('ERROR' + err);
                         } // XXX
                         UI.log('DONE'); // XXX
@@ -280,6 +281,7 @@ define([
                         err = err || (res && res.error);
                         if (err) {
                             waitFor.abort();
+                            redrawAll();
                             return void UI.warn('ERROR' + err);
                         } // XXX
                     }));
@@ -318,7 +320,9 @@ define([
         redrawAll = function () {
             if (pending) { return; }
             pending = true;
-            common.getPadMetadata(null, function (obj) {
+            common.getPadMetadata({
+                channel: data.channel
+            }, function (obj) {
                 pending = false;
                 if (obj && obj.error) { return; }
                 owners = obj.owners;
