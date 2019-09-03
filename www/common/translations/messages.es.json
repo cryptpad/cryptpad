@@ -611,5 +611,310 @@
     "settings_creationSkipFalse": "Monitor",
     "settings_ownDriveTitle": "Habilitar las últimas características de la cuenta",
     "settings_ownDriveHint": "Por razones técnicas, las cuentas más antiguas no tienen acceso a todas nuestras funciones más recientes. Una actualización gratuita a una nueva cuenta preparará su CryptDrive para las próximas funciones sin interrumpir sus actividades habituales.",
-    "settings_ownDriveButton": "Actualiza tu cuenta"
+    "settings_ownDriveButton": "Actualiza tu cuenta",
+    "padNotPinnedVariable": "Este pad caducará después de {4} días de inactividad, {0} inicie sesión {1} o {2} registre {3} para preservarlo.",
+    "register_emailWarning0": "Parece que envió su correo electrónico como su nombre de usuario.",
+    "register_emailWarning1": "Puedes hacerlo si usted quiere, pero no se enviara a nuestros servidores.",
+    "register_emailWarning2": "No podrá restablecer su contraseña utilizando su correo electrónico como puede hacerlo con muchos otros servicios.",
+    "register_emailWarning3": "Si de todos modos entiende y desea utilizar su correo electrónico para su nombre de usuario, haga clic en Aceptar.",
+    "settings_autostoreHint": "<b> Automático </b> Todos los pads que visita se almacenan en su CryptDrive. <br> <b> Manual (siempre pregunte) </b> Si aún no ha guardado un pad, se le preguntará si desea para almacenarlos en su CryptDrive. <br> <b> Manual (nunca preguntar) </b> Los Pads no se almacenan automáticamente en su Cryptpad. La opción para almacenarlos estará oculta.",
+    "settings_driveDuplicateTitle": "Pads de propiedad duplicadas",
+    "settings_driveDuplicateHint": "Cuando mueve sus propias Pads a una carpeta compartida, se guarda una copia en su CryptDrive para asegurarse de que conserva su control sobre ella. Puedes ocultar archivos duplicados. Solo la versión compartida será visible, a menos que se elimine, en cuyo caso el original se mostrará en su ubicación anterior.",
+    "settings_padWidthHint": "Los Pads de texto enriquecido usan de manera predeterminada el ancho máximo disponible en su pantalla y puede ser difícil de leer. Puede reducir el ancho del editor aquí.",
+    "settings_padSpellcheckHint": "Esta opción le permite habilitar la corrección ortográfica en los Pads de texto enriquecido. Los errores ortográficos estarán subrayados en rojo y tendrá que mantener presionada la tecla Ctrl o Meta mientras hace clic derecho para ver las opciones correctas.",
+    "settings_padSpellcheckLabel": "Habilite el corrector ortográfico en el Pad de texto enriquecido",
+    "settings_creationSkip": "Saltar la pantalla de creación de pad",
+    "settings_creationSkipHint": "La pantalla de creación de Pad ofrece nuevas opciones para crear un Pad, que le brinda más control y seguridad sobre sus datos. Sin embargo, puede ralentizar su flujo de trabajo al agregar un paso adicional, por lo que aquí tiene la opción de omitir esta pantalla y usar la configuración predeterminada seleccionada anteriormente.",
+    "settings_templateSkip": "Omitir el modal de selección de plantilla",
+    "settings_templateSkipHint": "Cuando crea una nueva Pad vacía, si ha almacenado plantillas para este tipo de Pad, aparece un modal que le pregunta si desea usar una plantilla. Aquí puede elegir no mostrar nunca este modal y, por lo tanto, nunca usar una plantilla.",
+    "settings_ownDriveConfirm": "La actualización de su cuenta puede llevar algún tiempo. Deberá volver a iniciar sesión en todos sus dispositivos. ¿Estás seguro?",
+    "settings_ownDrivePending": "Su cuenta se está actualizando. No cierre ni vuelva a cargar esta página hasta que se haya completado el proceso.",
+    "settings_changePasswordTitle": "Cambiar tu contraseña",
+    "settings_changePasswordHint": "Cambia la contraseña de tu cuenta. Ingrese su contraseña actual y confirme la nueva contraseña tipeándola dos veces. <br> <b> No podemos restablecer su contraseña si la olvida, ¡así que tenga mucho cuidado! </b>",
+    "settings_changePasswordButton": "cambiar la contraseña",
+    "settings_changePasswordCurrent": "Contraseña actual",
+    "settings_changePasswordNew": "Nueva contraseña",
+    "settings_changePasswordNewConfirm": "Confirma nueva contraseña",
+    "settings_changePasswordConfirm": "Estas seguro que quieres cambiar tu contraseña. Deberás volver a iniciar sesión en todos tus dispositivos.",
+    "settings_changePasswordError": "Ocurrió un error inesperado. Si no puede iniciar sesión o cambiar su contraseña, comuníquese con los administradores de CryptPad.",
+    "settings_changePasswordPending": "Tu contraseña a sido cambiada. Por favor no cierre o recargue esta pagina mientras se completa el proceso.",
+    "settings_changePasswordNewPasswordSameAsOld": "Tu nueva contraseña debe ser diferente que tu contraseña actual.",
+    "settings_cursorColorHint": "Cambiar el color asociado con tu usuario en documentos colaborativos.",
+    "settings_cursorShareTitle": "Compartir mi posicion de cursor",
+    "settings_cursorShareHint": "Puedes decidir si quieres que otros usuarios vean tu posición del cursor en documentos colaborativos.",
+    "settings_cursorShareLabel": "Compartir la posición",
+    "settings_cursorShowTitle": "Mostrar la posición del cursor de otros usuarios",
+    "settings_cursorShowHint": "Puede elegir si desea ver el cursor de otros usuarios en documentos de colaboración.",
+    "settings_cursorShowLabel": "mostrar cursores",
+    "upload_type": "Tipo",
+    "upload_modal_title": "Opciones de subir archivo",
+    "upload_modal_filename": "Nombre del archivo (extension <em>{0}</em> agregado automaticamente)",
+    "upload_modal_owner": "Archivo de propiedad",
+    "uploadFolder_modal_title": "Opciones de subida de carpetas",
+    "uploadFolder_modal_filesPassword": "Archivo de contraseña",
+    "uploadFolder_modal_owner": "Archivos de propiedad",
+    "uploadFolder_modal_forceSave": "Almacene sus archivos en su CryptDrive",
+    "upload_notEnoughSpaceBrief": "Sin espacio suficiente",
+    "upload_tooLargeBrief": "Archivo muy grande",
+    "upload_up": "Subir",
+    "download_resourceNotAvailable": "El recurso solicitado no estaba disponible... Presione Esc para continuar.",
+    "download_dl": "Descargar",
+    "download_step1": "Descargando",
+    "download_step2": "Descifrando",
+    "pad_base64": "Este Pad contiene imágenes almacenadas de manera ineficiente. Estas imágenes aumentarán significativamente el tamaño de la Pad en su CryptDrive y harán que la carga sea más lenta. Puede migrar estos archivos a un nuevo formato que se almacenará por separado en su CryptDrive. ¿Desea migrar estas imágenes ahora?",
+    "mdToolbar_defaultText": "Su texto aqui",
+    "mdToolbar_help": "Ayuda",
+    "mdToolbar_tutorial": "http://www.markdowntutorial.com/",
+    "mdToolbar_bold": "Negrita",
+    "mdToolbar_italic": "Itálica",
+    "mdToolbar_strikethrough": "Tachado",
+    "mdToolbar_heading": "Encabezado",
+    "mdToolbar_link": "Enlace",
+    "mdToolbar_quote": "Citar",
+    "mdToolbar_nlist": "Lista ordenada",
+    "mdToolbar_list": "Lista de viñetas",
+    "mdToolbar_check": "Lista de tarea",
+    "mdToolbar_code": "Código",
+    "mdToolbar_toc": "Tablas de contenidos",
+    "home_product": "CryptPad es una alternativa privada por diseño a las populares herramientas de oficina y servicios en la nube. Todo el contenido almacenado en CryptPad está encriptado antes de ser enviado, lo que significa que nadie puede acceder a sus datos a menos que usted les dé las claves (ni siquiera nosotros).",
+    "home_host": "Esta es una instancia de comunidad independiente de CryptPad. Su código fuente está disponible <a href=\"https://github.com/xwiki-labs/cryptpad\" target=\"_blank\" rel=\"noreferrer noopener\"> en GitHub </a>.",
+    "home_host_agpl": "CryptPad se distribuye bajo los términos de la licencia de software AGPL3",
+    "home_ngi": "Ganador del Premio NGI",
+    "about_intro": "CryptPad se crea dentro del Equipo de Investigación en <a href=\"http://xwiki.com\"> XWiki SAS </a>, una pequeña empresa ubicada en París, Francia e Iasi Rumania. Hay 3 miembros principales del equipo trabajando en CryptPad más una cantidad de contribuyentes tanto dentro como fuera de XWiki SAS.",
+    "about_core": "Desarrolladores principales",
+    "about_contributors": "Colaboradores clave",
+    "main_footerText": "Con CryptPad, puede crear documentos colaborativos rápidos para tomar notas y escribir ideas juntos.",
+    "whatis_title": "¿Que es CryptPad?",
+    "whatis_collaboration": "Colaboración fácil y rápida",
+    "whatis_collaboration_p1": "Con CryptPad, puede crear documentos colaborativos rápidos para tomar notas y escribir ideas juntos. Cuando te registras e inicias sesión, obtienes la capacidad de carga de archivos y un CryptDrive donde puedes organizar todos tus pads. Como usuario registrado, obtienes 50 MB de espacio gratis.",
+    "whatis_collaboration_p2": "Puede compartir el acceso a un documento de CryptPad simplemente compartiendo el enlace. También puede compartir un enlace que proporciona acceso <em> de solo lectura </em> a un bloc, lo que le permite publicitar su trabajo colaborativo mientras aún puede editarlo.",
+    "whatis_collaboration_p3": "Puede crear documentos de texto enriquecido simples con <a href=\"http://ckeditor.com/\"> CKEditor </a>, así como documentos reducidos que se representan en tiempo real mientras escribe. También puede usar la aplicación de encuestas para programar eventos con múltiples participantes.",
+    "whatis_zeroknowledge": "Conocimiento cero",
+    "whatis_zeroknowledge_p1": "No queremos saber qué está escribiendo y con la criptografía moderna, puede estar seguro de que no podemos saberlo. CryptPad utiliza <strong> 100% de cifrado del lado del cliente </strong> para proteger el contenido que escribe de nosotros, las personas que alojan el servidor.",
+    "whatis_zeroknowledge_p2": "Cuando se registra e inicia sesión, su nombre de usuario y contraseña se calculan en una clave secreta utilizando <a href=\"https://en.wikipedia.org/wiki/Scrypt\"> función de derivación de clave scrypt </a>. Ni esta clave ni el nombre de usuario y la contraseña se envían al servidor. En su lugar, se usan en el lado del cliente para descifrar el contenido de su CryptDrive, que contiene las claves de todos los pads a los que puede acceder.",
+    "whatis_zeroknowledge_p3": "Cuando comparte el enlace a un documento, está compartiendo la clave criptográfica para acceder a ese documento, pero dado que la clave está en el<a href=\"https://en.wikipedia.org/wiki/Fragment_identifier\"> identificador de fragmento</a>, nunca se envía directamente al servidor. Echa un vistazo a nuestro <a href = \"https://blog.cryptpad.fr/2017/07/07/cryptpad-analytics-what-we-cant-know-what-we-must-know-what-we-want- to-know / \"> blog de privacidad </a> para obtener más información sobre los tipos de metadatos a los que tenemos acceso y a los que no tenemos acceso.",
+    "whatis_drive": "Organización con CryptDrive",
+    "whatis_drive_p1": "Cada vez que accede a un pad en CryptPad, el pad se agrega automáticamente a su CryptDrive en la carpeta principal. Más adelante, puede organizar estos Pads dentro de carpetas o puede ponerlos en la papelera. CryptDrive te permite buscar a través de tus pads y organizarlos cuando quieras, como quieras.",
+    "whatis_drive_p2": "Con la función intuitiva de arrastrar y soltar, puede mover los pads en su unidad y el enlace a estos pads se mantendrá igual para que sus colaboradores nunca pierdan el acceso.",
+    "whatis_drive_p3": "También puede cargar archivos en su CryptDrive y compartirlos con colegas. Los archivos cargados se pueden organizar al igual que los pads colaborativos.",
+    "whatis_business": "CryptPad para negocios",
+    "whatis_business_p1": "El cifrado Cero conocimiento de CryptPad multiplica la efectividad de los protocolos de seguridad existentes al reflejar los controles de acceso de la organización en criptografía. Debido a que los activos confidenciales solo se pueden descifrar con credenciales de acceso de usuario, CryptPad es menos valioso como objetivo en comparación con los servicios tradicionales en la nube. Lea el <a href='https://blog.cryptpad.fr/images/CryptPad-Whitepaper-v1.0.pdf'> CryptPad Papel blanco </a> para obtener más información sobre cómo puede ayudar a su negocio.",
+    "whatis_business_p2": "CryptPad se puede implementar en las instalaciones y los <a href=\"https://cryptpad.fr/about.html\"> desarrolladores de CryptPad </a> en XWiki SAS pueden ofrecer soporte comercial, personalización y desarrollo. Comuníquese con <a href=\"mailto:sales@cryptpad.fr\"> sales@cryptpad.fr </a> para obtener más información.",
+    "features": "Caracteristicas",
+    "features_title": "Comparación de características",
+    "features_feature": "Característica",
+    "features_anon": "Usuario anonimo",
+    "features_registered": "Usuario registrado",
+    "features_premium": "Usuarios Premium",
+    "features_notes": "Notas",
+    "features_f_apps": "Acceso a las principales aplicaciones",
+    "features_f_core": "Características comunes para las aplicaciones",
+    "features_f_core_note": "Editar, Importar y Exportar, Historial, Lista de usuarios, Chat",
+    "features_f_file0": "Abrir archivos",
+    "features_f_file0_note": "Ver y descargar archivos compartidos por otros usuarios",
+    "features_f_cryptdrive0": "Acceso limitado a CryptDrive",
+    "features_f_cryptdrive0_note": "Posibilidad de almacenar los pads visitados en su navegador para poder abrirlos más tarde",
+    "features_f_storage0": "Tiempo de almacenamiento limitado",
+    "features_f_storage0_note": "Las Pads creadas corren el riesgo de eliminación después de 3 meses de inactividad",
+    "features_f_anon": "Todas las funciones de usuario anónimo",
+    "features_f_anon_note": "Con mejor usabilidad y más poder sobre tus pads",
+    "features_f_cryptdrive1": "Funcionalidad completa de CryptDrive",
+    "features_f_cryptdrive1_note": "Carpetas, compartir carpetas, plantillas, tareas",
+    "features_f_devices": "Tus pads en todos tus dispositivos",
+    "features_f_devices_note": "Acceda a su CryptDrive en todas partes con su cuenta de usuario",
+    "features_f_social": "Aplicaciones sociales",
+    "features_f_social_note": "Crear un perfil, usar un avatar, hablar con contactos",
+    "features_f_file1": "Subir y compartir archivos",
+    "features_f_file1_note": "Compartir archivos con tus amigos o incrustarlo en tus Pads",
+    "features_f_storage1": "Almacenamiento permanente (50 MB)",
+    "features_f_storage1_note": "Los Pads almacenados en su CryptDrive nunca se eliminan por inactividad",
+    "features_f_register": "Registrate gratis",
+    "features_f_register_note": "No se requiere correo electrónico ni información personal",
+    "features_f_reg": "Todas las funciones de usuario registrado",
+    "features_f_reg_note": "Y ayudar al desarrollo de CryptPad",
+    "features_f_storage2": "Espacio de almacenamiento adicional",
+    "features_f_storage2_note": "De 5GB a 50GB dependiendo del plan seleccionado",
+    "features_f_support": "Soporte más rápido",
+    "features_f_support_note": "Soporte profesional por correo electrónico con el plan Team",
+    "features_f_supporter": "Conviértete en un defensor de la privacidad",
+    "features_f_supporter_note": "Ayúdenos a mostrar que el software para mejorar la privacidad debería ser la norma",
+    "features_f_subscribe": "Suscríbase a premium",
+    "features_f_subscribe_note": "Primero debe iniciar sesión en CryptPad",
+    "faq_link": "FAQ",
+    "faq_title": "Preguntas frecuentes",
+    "faq_whatis": "¿ Que es <span class='cp-brand-font'>CryptPad</span>?",
+    "faq": {
+        "keywords": {
+            "title": "Palabra clave",
+            "pad": {
+                "q": "¿ Que es un Pad ?",
+                "a": "<em> Pad </em> es un término popularizado por <a href='http://etherpad.org/' target='_blank'> Etherpad </a>, un editor colaborativo en tiempo real.\nSe refiere a un documento que puede editar en su navegador, generalmente con los cambios de otras personas visibles casi al instante."
+            },
+            "owned": {
+                "q": "¿Qué es un Pad de propiedad?",
+                "a": "Un <em> pad propiedad </em> es un pad creado con un <em> propietario </em> explícito, identificado al servidor por su <em> clave de firma pública </em>. El propietario de una almohadilla puede optar por eliminar sus almohadillas del servidor, por lo que no estará disponible para otros colaboradores en el futuro, ya sea que lo tengan en su CryptDrive o no."
+            },
+            "expiring": {
+                "q": "¿ Que es un Pad expirado ?",
+                "a": "Una <em> Pad que caduca </em> es una almohadilla creada con un tiempo establecido en el que se eliminará automáticamente del servidor. Las almohadillas que caducan se pueden configurar para durar desde una hora hasta cien meses. El pad y todo su historial dejarán de estar disponibles de forma permanente, incluso si se están editando en el momento en que caduca. <br> <br> Si un pad está configurado para caducar, puede verificar su tiempo de caducidad al ver su <em> propiedades </em>, ya sea haciendo clic con el botón derecho en el pad en su CryptDrive, o utilizando el submenú <em> propiedades </em> de la barra de herramientas de una aplicación."
+            },
+            "tag": {
+                "q": "¿Cómo puedo usar etiquetas?",
+                "a": "Puede etiquetar pads y archivos cargados a través de su CryptDrive, o usando el botón <em> tag </em> (<span class = 'fa fa-hashtag'> </span>) en la barra de herramientas de cualquier editor. Busque pads y archivos en su CryptDrive utilizando la barra de búsqueda con un término que comience con un hashtag, como <em> #crypto </em>."
+            },
+            "template": {
+                "q": "¿ Que es una plantilla ?",
+                "a": "Una plantilla es un pad que se puede usar para definir el contenido inicial de otro pad del mismo tipo cuando lo crea. Cualquier pad existente puede convertirse en una plantilla moviéndolo a la sección <em> Plantillas </em> en su CryptDrive. También puede crear una copia de un pad para usar como plantilla haciendo clic en el botón de plantilla (<span class = 'fa fa-bookmark'> </span>) en la barra de herramientas del editor."
+            },
+            "abandoned": {
+                "q": "¿Qué es una plataforma abandonada?",
+                "a": "¿Qué es una almohadilla abandonada? Una <em> almohadilla abandonada </em> es una almohadilla que no está anclada en el CryptDrive de ningún usuario registrado y que no se ha cambiado durante seis meses. Los documentos abandonados se eliminarán automáticamente del servidor."
+            }
+        },
+        "privacy": {
+            "title": "Privacidad",
+            "different": {
+                "q": "¿En qué se diferencia CryptPad de otros servicios de Pad?",
+                "a": "CryptPad cifra los cambios en sus pads antes de enviar esa información para que se almacene en el servidor, por lo que no podemos leer lo que está escribiendo."
+            },
+            "me": {
+                "q": "¿Qué información sabe el servidor sobre mí?",
+                "a": "Los administradores del servidor pueden ver las direcciones IP de las personas que visitan el CryptPad. No registramos qué direcciones visitan qué pads, pero podríamos, aunque no tengamos acceso al contenido descifrado de esos pads. Si le preocupa que analicemos esa información, es más seguro asumir que la recopilamos, ya que no podemos demostrar que no lo hacemos. <br> <br> Recopilamos cierta telemetría básica sobre cómo las personas usan CryptPad, como como el tamaño de la pantalla en su dispositivo y en qué botones hacen clic más. Esto nos ayuda a mejorar el software, pero si prefiere no enviar dicha información al servidor, puede <strong> optar por desactivarla desmarcando <em> Casilla de verificación Habilitar comentarios del usuario </em> </strong>. <br> <br> Realizamos un seguimiento de las almohadillas que hay en el CryptDrive de un usuario para poder imponer límites de almacenamiento, pero no conocemos el contenido o tipo de esas almohadillas. Las cuotas de almacenamiento están asociadas con la clave pública de un usuario, pero no asociamos nombres o correos electrónicos con esas claves públicas. <br> <br> Para obtener más información, puede leer esto <a href = 'https: //blog.cryptpad .fr / 2017/07/07 / cryptpad-analytics-what-we-cant-know-what-we-must-know-what-we-want-to-know / 'target =' _ blank '> publicación de blog </ a> que escribimos sobre el tema."
+            },
+            "register": {
+                "q": "¿El servidor sabe más sobre mí si me registro?",
+                "a": "No requerimos que los usuarios verifiquen su dirección de correo electrónico, y el servidor ni siquiera aprende su nombre de usuario o contraseña cuando se registra. En cambio, los formularios de registro e inicio de sesión generan un llavero único a partir de su entrada, y el servidor solo aprende su firma criptográfica. Utilizamos esta información para rastrear detalles como la cantidad de datos que está utilizando, lo que nos permite restringir a cada usuario a una cuota. <br> <br> Utilizamos nuestra funcionalidad <em> feedback </em> para informar al servidor que alguien Con su IP ha registrado una cuenta. Usamos esto para medir cuántas personas se registran para las cuentas de CryptPad y para ver en qué regiones se encuentran para poder adivinar en qué idiomas pueden necesitar un mejor soporte. <br> <br> Los usuarios registrados informan al servidor qué pads están en su CryptDrive para que dichos pads no se consideren abandonados y se eliminen del servidor debido a la inactividad."
+            },
+            "other": {
+                "q": "¿Qué pueden aprender otros colaboradores sobre mí?",
+                "a": "Cuando edita un bloc con otra persona, se comunica a través del servidor, por lo que solo nosotros conocemos su dirección IP. Otros usuarios pueden ver su nombre para mostrar, avatar, el enlace a su perfil (si tiene uno) y su <em> clave pública </em> (que se utiliza para cifrar las comunicaciones entre ellos)."
+            },
+            "anonymous": {
+                "q": "¿CryptPad me hace anónimo?",
+                "a": "Aunque CryptPad está diseñado para saber lo menos posible sobre usted, no proporciona un anonimato fuerte. Nuestros servidores tienen acceso a su dirección IP, sin embargo, puede ocultar esta información utilizando Tor para acceder a CryptPad. Usar Tor sin cambiar su comportamiento no le garantizará el anonimato, ya que el servidor también puede identificar a los usuarios mediante su identificador criptográfico único. Si usa la misma cuenta cuando no está usando Tor, será posible desanonimizar su sesión. <br> <br> Para los usuarios que requieren un menor grado de privacidad, CryptPad no requiere que los usuarios se identifiquen por su nombre, número de teléfono o dirección de correo electrónico como muchos otros servicios."
+            },
+            "policy": {
+                "q": "¿Tiene una política de privacidad de datos?",
+                "a": "¡Sí! Está disponible <a href='/privacy.html' target='_blank'> aquí </a>."
+            }
+        },
+        "security": {
+            "title": "Seguridad",
+            "proof": {
+                "q": "¿Cómo se utilizan las pruebas de conocimiento cero?",
+                "a": "Cuando usamos el término <em> Zero Knowledge </em>, no nos estamos refiriendo a <em> pruebas de Zero Knowledge </em>, sino a <em> Zero Knowledge Web Services </em>. <em> Zero Knowledge Web Services </em> encripta los datos del usuario en el navegador del usuario, sin que el servidor tenga acceso a los datos no encriptados o las claves de encriptación. <br> <br> Hemos compilado una breve lista de Zero Servicios de conocimiento <a href='https://blog.cryptpad.fr/2017/02/20/Time-to-Encrypt-the-Cloud/#Other-Zero-Knowledge-Services'> aquí </a>."
+            },
+            "why": {
+                "q": "¿Por qué debería usar CryptPad?",
+                "a": "Nuestra posición es que los servicios en la nube no deberían requerir acceso a sus datos para que pueda compartirlos con sus amigos y colegas. Si está utilizando otro servicio para colaborar, y no dicen explícitamente que no pueden acceder a su información, es muy probable que la estén aprovechando para obtener ganancias."
+            },
+            "compromised": {
+                "q": "¿CryptPad me protege si mi dispositivo se ve comprometido?",
+                "a": "En caso de que le roben su dispositivo, CryptPad le permite activar un cierre de sesión remoto de todos los dispositivos, excepto el que está utilizando actualmente. Para hacerlo, vaya a su <strong> página de configuración </strong> y haga clic en <strong> Cerrar sesión en todas partes </strong>. Todos los demás dispositivos que están actualmente conectados a la cuenta cerrarán sesión. Cualquier dispositivo conectado previamente que visite CryptPad cerrará sesión tan pronto como cargue la página. <br> <br> Actualmente, <em> cierre de sesión remoto </em> se implementa en el navegador, no en conjunto con el servidor. Como tal, es posible que no lo proteja de las agencias gubernamentales, pero debería ser suficiente si olvidó cerrar sesión después de usar CryptPad desde una computadora compartida."
+            },
+            "crypto": {
+                "q": "¿Qué criptografía usas?",
+                "a": "CryptPad se basa en dos bibliotecas de criptografía de código abierto: <a href='https://github.com/dchest/tweetnacl-js' target='_blank'> tweetnacl.js </a> y <a href = 'https : //github.com/dchest/scrypt-async-js 'target =' _ blank '> scrypt-async.js </a>. <br> <br> Scrypt es un <em> algoritmo de derivación de clave basado en contraseña < / em>. Lo usamos para convertir su nombre de usuario y contraseña en un llavero único que asegura el acceso a su CryptDrive de modo que solo usted pueda acceder a su lista de almohadillas. <br> <br> Utilizamos <em> xsalsa20-poly1305 </em> y <em> x25519-xsalsa20-poly1305 </em> cifrados proporcionados por tweetnacl para cifrar los pads y el historial de chat, respectivamente."
+            }
+        },
+        "usability": {
+            "title": "Usabilidad",
+            "register": {
+                "q": "¿Qué obtengo al registrarme?",
+                "a": "Los usuarios registrados tienen acceso a una serie de funciones que no están disponibles para usuarios no registrados. Hay un gráfico <a href='/features.html' target='_blank'> aquí </a>."
+            },
+            "share": {
+                "q": "¿Cómo puedo compartir pads cifrados con mis amigos?",
+                "a": "CryptPad coloca la clave de cifrado secreta en su teclado después del carácter <em> # </em> en la URL. Cualquier cosa después de este carácter no se envía al servidor, por lo que nunca tenemos acceso a sus claves de cifrado. Al compartir el enlace a un bloc, comparte la capacidad de leerlo y acceder a él."
+            },
+            "remove": {
+                "q": "Eliminé un Pad o archivo de mi CryptDrive, pero el contenido aún está disponible. ¿Como puedo quitarlo?",
+                "a": "Solo se pueden eliminar <em> Pad propias </em> (introducidas en febrero de 2018). Además, estos pads solo pueden ser eliminados por sus <em> propietarios </em> (la persona que originalmente creó el pad). Si no es el creador del pad, deberá pedirle a su propietario que lo elimine por usted. Para los pads que posee, puede <strong> hacer clic con el botón derecho en el pad en su CryptDrive </strong> y elegir <strong> Eliminar del servidor </strong>."
+            },
+            "forget": {
+                "q": "¿Qué pasa si olvido mi contraseña?",
+                "a": "Desafortunadamente, si pudiéramos recuperar el acceso a sus pads cifrados por usted, podríamos acceder a ellos nosotros mismos. Si no registró su nombre de usuario y contraseña en ninguna parte, y tampoco puede recordarlos, puede recuperar sus pads filtrando el historial de su navegador."
+            },
+            "change": {
+                "q": "¿Qué pasa si quiero cambiar mi contraseña?",
+                "a": "Puede cambiar su contraseña de CryptPad en la página de configuración de su cuenta."
+            },
+            "devices": {
+                "q": "He iniciado sesión en dos dispositivos y veo dos CryptDrives diferentes, ¿cómo es esto posible?",
+                "a": "Es probable que haya registrado el mismo nombre dos veces, utilizando contraseñas diferentes. Debido a que el servidor CryptPad lo identifica por su firma criptográfica y no por su nombre, no puede evitar que otros se registren con el mismo nombre. Como tal, cada cuenta de usuario tiene una combinación única de nombre de usuario y contraseña. Los usuarios registrados pueden ver su nombre de usuario en la parte superior de la página de configuración."
+            },
+            "folder": {
+                "q": "¿Puedo compartir carpetas completas de mi CryptDrive?",
+                "a": "Sí, puede crear una <em> carpeta compartida </em> desde su CryptDrive y compartir todos los pads que contiene a la vez."
+            },
+            "feature": {
+                "q": "¿Puedes agregar una característica muy especial que necesito?",
+                "a": "Muchas de las funciones de CryptPad existen porque los usuarios las solicitaron. Nuestra <a href='https://cryptpad.fr/contact.html' target='_blank'> página de contactos </a> enumera las formas en que puede contactarnos. <br> <br> Desafortunadamente, no podemos garantizar que implementaremos todo lo que la gente pide. Si una característica particular es crítica para su organización, puede patrocinar el tiempo de desarrollo para garantizar su finalización. Póngase en contacto con <a href='mailto:sales@cryptpad.fr' target='_blank'> sales@cryptpad.fr </a> para obtener más información. <br> <br> Incluso si no puede permitirse patrocinar el desarrollo, nosotros Le interesan los comentarios que pueden ayudarnos a mejorar CryptPad. No dude en contactarnos a través de los métodos anteriores en cualquier momento."
+            }
+        },
+        "other": {
+            "title": "Otras preguntas",
+            "pay": {
+                "q": "¿ Porque debería de pagar cuando hay características que son gratis ?",
+                "a": "Brindamos a los seguidores almacenamiento adicional y la capacidad de aumentar las cuotas de sus amigos (<a href='https://accounts.cryptpad.fr/#/faq' target='_blank'> obtener más información </a>). <Br > <br> Más allá de estos beneficios a corto plazo, al suscribirse con una cuenta premium, usted ayuda a financiar el desarrollo continuo y activo de CryptPad. Eso incluye corregir errores, agregar nuevas funciones y facilitar que otros ayuden a alojar CryptPad ellos mismos. Además, ayuda a demostrar a otros proveedores de servicios que las personas están dispuestas a apoyar las tecnologías que mejoran la privacidad. Esperamos que eventualmente los modelos de negocio basados en la venta de datos de usuarios se conviertan en cosa del pasado. <br> <br> Finalmente, ofrecemos la mayor parte de la funcionalidad de CryptPad de forma gratuita porque creemos que todos merecen privacidad personal, no solo aquellos con desechables. ingresos. Al apoyarnos, nos ayuda a continuar haciendo posible que las poblaciones desfavorecidas accedan a estas funciones básicas sin una etiqueta de precio adjunta."
+            },
+            "goal": {
+                "q": "¿Cuál es tu objetivo?",
+                "a": "Al desarrollar tecnología de colaboración respetuosa con la privacidad, deseamos aumentar las expectativas de privacidad de los usuarios de las plataformas de computación en la nube. Esperamos que nuestro trabajo impulse a otros proveedores de servicios en todos los dominios para igualar o superar nuestros esfuerzos. A pesar de nuestro optimismo, sabemos que gran parte de la web está financiada por los ingresos de la publicidad dirigida. Hay mucho más trabajo por hacer de lo que podemos gestionar nosotros mismos, y apreciamos la promoción, el apoyo y las contribuciones de nuestra comunidad para lograr este objetivo."
+            },
+            "jobs": {
+                "q": "¿Estas contratando?",
+                "a": "¡Sí! Preséntese con un correo electrónico a <a href='mailto:jobs@xwiki.com' target='_blank'> jobs@xwiki.com </a>."
+            },
+            "host": {
+                "q": "¿Me pueden ayudar a configurar mi propia instancia de CryptPad?",
+                "a": "Nos complace brindar asistencia para la instalación interna de CryptPad de su organización. Póngase en contacto con <a href='mailto:sales@cryptpad.fr' target='_blank'> sales@cryptpad.fr </a> para obtener más información."
+            },
+            "revenue": {
+                "q": "¿Cómo puedo participar en el reparto de ingresos?",
+                "a": "Si está ejecutando su propia instancia de CryptPad y desea habilitar cuentas pagas y dividir los ingresos con los desarrolladores, su servidor deberá configurarse como un servicio asociado. <br> <br> En su directorio de CryptPad, <em > config.example.js </em> debe contener una explicación de lo que necesita configurar en su servidor. Deberá ponerse en contacto con <a href='mailto:sales@cryptpad.fr'> sales@cryptpad.fr </a> para verificar que su servidor esté configurado para usar HTTPS correctamente y analizar los métodos de pago."
+            }
+        }
+    },
+    "four04_pageNotFound": "No pudimos encontrar la página que estabas buscando.",
+    "help": {
+        "title": "Empezando",
+        "generic": {
+            "more": "Obtenga más información sobre cómo CryptPad puede funcionar para usted leyendo nuestras <a href=\"/faq.html\" target=\"_blank\"> Preguntas frecuentes </a>",
+            "share": "Use el menú para compartir (<span class = \"fa fa-share-alt\"> </span>) para generar un enlace para que los colaboradores puedan ver o editar este pad",
+            "save": "Todos sus cambios se sincronizan automáticamente para que nunca necesite guardar"
+        },
+        "text": {
+            "formatting": "Puede mostrar u ocultar la barra de herramientas de formato de texto haciendo clic en los botones <span class = \"fa fa-caret-down\"> </span> o <span class = \"fa fa-caret-up\"> </span>",
+            "embed": "Los usuarios registrados pueden incrustar una imagen o un archivo almacenado en su CryptDrive usando <span class = \"fa fa-image\"> </span>",
+            "history": "Puede usar <em> historial </em> <span class = \"fa fa-history\"> </span> para ver o restaurar versiones anteriores"
+        },
+        "pad": {
+            "export": "Puede exportar el contenido como PDF utilizando el botón <span class = \"fa fa-print\"> </span> en la barra de herramientas de formato de texto"
+        },
+        "code": {
+            "modes": "Use los menús desplegables en el submenú <span class = \"fa fa-ellipsis-h\"> </span> para cambiar los modos de resaltado de sintaxis o temas de color"
+        },
+        "beta": {
+            "warning": "Este editor sigue siendo <strong> experimental </strong>, puede informar errores en <a href=\"https://github.com/xwiki-labs/cryptpad/issues/\" target=\"_blank\"> nuestro rastreador de problemas </a>"
+        },
+        "oo": {
+            "access": "El acceso está restringido a usuarios registrados, los colaboradores deberán iniciar sesión"
+        },
+        "slide": {
+            "markdown": "Escriba diapositivas en <a href=\"http://www.markdowntutorial.com/\"> Reducción </a> y sepárelas con una línea que contenga <code> --- </code>",
+            "present": "Comenzar la presentación usando el <span class=\"fa fa-play-circle\"></span> botón",
+            "colors": "Cambia el texto y el color de fondo usando el <span class=\"fa fa-i-cursor\"></span> y <span class=\"fa fa-square\"></span> botones"
+        },
+        "poll": {
+            "decisions": "Crea decisiones en privado entre verdaderos amigos",
+            "options": "Proponga opciones y exprese sus preferencias",
+            "choices": "Haga clic en las celdas de su columna para recorrer sí (<strong> ✔ </strong>), tal vez (<strong> ~ </strong>) o no (<strong> ✖ </strong>)",
+            "submit": "Haga clic en <strong> enviar </strong> para que otras personas puedan ver sus opciones"
+        },
+        "whiteboard": {
+            "colors": "Haga doble clic en los colores para modificar su paleta",
+            "mode": "Deshabilite el modo de dibujo para arrastrar y estirar trazos"
+        }
+    }
 }

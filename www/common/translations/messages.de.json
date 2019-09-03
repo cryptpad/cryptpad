@@ -1138,5 +1138,10 @@
     "homePage": "Hauptseite",
     "features_noData": "Keine persönlichen Informationen benötigt",
     "features_pricing": "Zwischen {0} und {2} € pro Monat",
-    "features_emailRequired": "E-Mail-Adresse benötigt"
+    "features_emailRequired": "E-Mail-Adresse benötigt",
+    "padNotPinnedVariable": "Dieses Pad wird nach {4} Tagen ohne Aktivität auslaufen, {0}logge dich ein{1} oder {2}registriere dich{3}, um das Auslaufen zu verhindern.",
+    "register_emailWarning0": "Anscheinend hast du deine E-Mail-Adresse als Benutzername angegeben.",
+    "register_emailWarning1": "Wenn du möchtest, kannst du dies tun. Allerdings wird sie nicht an unseren Server gesendet.",
+    "register_emailWarning2": "Du kannst dein Passwort nicht wie bei vielen anderen Diensten mit der E-Mail-Adresse zurücksetzen.",
+    "register_emailWarning3": "Wenn du dies verstanden hast und die E-Mail-Adresse dennoch als Benutzername verwenden möchtest, klicke auf OK."
 }
