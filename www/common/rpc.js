@@ -1,9 +1,5 @@
-define([
-    '/common/common-util.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js',
-], function (Util) {
-    var Nacl = window.nacl;
-
+(function () {
+var factory = function (Util, Nacl) {
     var uid = Util.uid;
     var signMsg = function (data, signKey) {
         var buffer = Nacl.util.decodeUTF8(JSON.stringify(data));
@@ -337,4 +333,18 @@ types of messages:
     };
 
     return { create: create, createAnonymous: createAnonymous };
-});
+};
+
+    if (typeof(module) !== 'undefined' && module.exports) {
+        module.exports = factory(require("./common-util"), require("tweetnacl"));
+    } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+        define([
+            '/common/common-util.js',
+            '/bower_components/tweetnacl/nacl-fast.min.js',
+        ], function (Util) {
+            return factory(Util, window.Nacl);
+        });
+    } else {
+        // I'm not gonna bother supporting any other kind of instanciation
+    }
+}());
