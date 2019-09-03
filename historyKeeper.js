@@ -400,6 +400,11 @@ module.exports.create = function (cfg) {
         * writes messages to the store
     */
     const onChannelMessage = function (ctx, channel, msgStruct) {
+        // TODO our usage of 'channel' here looks prone to errors
+        // we only use it for its 'id', but it can contain other stuff
+        // also, we're using this RPC from both the RPC and Netflux-server
+        // we should probably just change this to expect a channel id directly
+
         // don't store messages if the channel id indicates that it's an ephemeral message
         if (!channel.id || channel.id.length === EPHEMERAL_CHANNEL_LENGTH) { return; }
 
@@ -986,7 +991,6 @@ module.exports.create = function (cfg) {
                     onChannelCleared(ctx, msg[4]);
                 }
 
-                // FIXME METADATA CHANGE
                 if (msg[3] === 'SET_METADATA') { // or whatever we call the RPC????
                     // make sure we update our cache of metadata
                     // or at least invalidate it and force other mechanisms to recompute its state
@@ -994,6 +998,12 @@ module.exports.create = function (cfg) {
                     onChannelMetadataChanged(ctx, msg[4].channel, output[1]);
                 }
 
+                // unauthenticated RPC calls have a different message format
+                if (msg[0] === "WRITE_PRIVATE_MESSAGE" && output) {
+                    historyKeeperBroadcast(ctx, output.channel, output.message);
+                }
+
+                // finally, send a response to the client that sent the RPC
                 sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify([parsed[0]].concat(output))]);
             });
             } catch (e) {

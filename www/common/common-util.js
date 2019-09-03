@@ -1,7 +1,5 @@
 (function (window) {
-define([], function () {
-    var Util = window.CryptPad_Util = {};
-
+    var Util = {};
     Util.mkAsync = function (f) {
         return function () {
             var args = Array.prototype.slice.call(arguments);
@@ -349,6 +347,14 @@ define([], function () {
         return false;
     };
 
-    return Util;
-});
-}(self));
+    if (typeof(module) !== 'undefined' && module.exports) {
+        module.exports = Util;
+    } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+        define([], function () {
+            window.CryptPad_Util = Util;
+            return Util;
+        });
+    } else {
+        window.CryptPad_Util = Util;
+    }
+}(typeof(self) !== 'undefined'? self: this));

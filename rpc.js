@@ -1555,6 +1555,57 @@ var isNewChannel = function (Env, channel, cb) {
     });
 };
 
+/*  writePrivateMessage
+    allows users to anonymously send a message to the channel
+    prevents their netflux-id from being stored in history
+    and from being broadcast to anyone that might currently be in the channel
+
+    Otherwise behaves the same as sending to a channel
+*/
+var writePrivateMessage = function (Env, args, nfwssCtx, cb) {
+    var channelId = args[0];
+    var msg = args[1];
+
+    // don't bother handling empty messages
+    if (!msg) { return void cb("INVALID_MESSAGE"); }
+
+    // don't support anything except regular channels
+    if (!isValidId(channelId) || channelId.length !== 32) {
+        return void cb("INVALID_CHAN");
+    }
+
+    // We expect a modern netflux-websocket-server instance
+    // if this API isn't here everything will fall apart anyway
+    if (!(nfwssCtx && nfwssCtx.historyKeeper && typeof(nfwssCtx.historyKeeper.onChannelMessage) === 'function')) {
+        return void cb("NOT_IMPLEMENTED");
+    }
+
+    // historyKeeper expects something with an 'id' attribute
+    // it will fail unless you provide it, but it doesn't need anything else
+    var channelStruct = {
+        id: channelId,
+    };
+
+    // construct a message to store and broadcast
+    var fullMessage = [
+        0, // idk
+        null, // normally the netflux id, null isn't rejected, and it distinguishes messages written in this way
+        "MSG", // indicate that this is a MSG
+        channelId, // channel id
+        msg // the actual message content. Generally a string
+    ];
+
+    // store the message and do everything else that is typically done when going through historyKeeper
+    nfwssCtx.historyKeeper.onChannelMessage(nfwssCtx, channelStruct, fullMessage);
+
+    // call back with the message and the target channel.
+    // historyKeeper will take care of broadcasting it if anyone is in the channel
+    cb(void 0, {
+        channel: channelId,
+        message: fullMessage
+    });
+};
+
 var getDiskUsage = function (Env, cb) {
     var data = {};
     nThen(function (waitFor) {
@@ -1654,6 +1705,7 @@ var isUnauthenticatedCall = function (call) {
         'IS_NEW_CHANNEL',
         'GET_HISTORY_OFFSET',
         'GET_DELETED_PADS',
+        'WRITE_PRIVATE_MESSAGE',
     ].indexOf(call) !== -1;
 };
 
@@ -1820,6 +1872,10 @@ RPC.create = function (
             case 'IS_NEW_CHANNEL':
                 return void isNewChannel(Env, msg[1], function (e, isNew) {
                     respond(e, [null, isNew, null]);
+                });
+            case 'WRITE_PRIVATE_MESSAGE':
+                return void writePrivateMessage(Env, msg[1], nfwssCtx, function (e, output) {
+                    respond(e, output);
                 });
             default:
                 Log.warn("UNSUPPORTED_RPC_CALL", msg);
