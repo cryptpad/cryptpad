@@ -276,6 +276,9 @@ define([
                 // add getters to access simply some informations
                 data.content.isClickable = typeof data.content.handler === "function";
                 data.content.isDismissible = typeof data.content.dismissHandler === "function";
+            } else {
+                data.content.dismissHandler = defaultDismiss(common, data);
+                data.content.isDismissible = typeof data.content.dismissHandler === "function";
             }
         },
         remove: function (common, data) {
