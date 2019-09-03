@@ -8,6 +8,7 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/common/common-interface.js',
+    '/common/notifications.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -21,7 +22,8 @@ define([
     SFCommon,
     h,
     Messages,
-    UI
+    UI,
+    Notifications
     )
 {
     var APP = {};
@@ -44,7 +46,7 @@ define([
         ],
     };
 
-    var notifsAllowedTypes = ["FRIEND_REQUEST", "FRIEND_REQUEST_ACCEPTED", "FRIEND_REQUEST_DECLINED", "SHARE_PAD", "REQUEST_PAD_ACCESS"];
+    var notifsAllowedTypes = Notifications.allowed;
 
     var create = {};
 

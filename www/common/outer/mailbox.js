@@ -343,6 +343,7 @@ proxy.mailboxes = {
                 try {
                     var decrypted = box.encryptor.decrypt(_msg[4]);
                     message = JSON.parse(decrypted.content);
+                    message.author = decrypted.author;
                 } catch (e) {
                     console.log(e);
                 }
