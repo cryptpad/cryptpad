@@ -117,6 +117,9 @@ define([
             common.openURL('/support/');
             defaultDismiss(common, data)();
         };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
     };
 
     handlers['REQUEST_PAD_ACCESS'] = function (common, data) {
