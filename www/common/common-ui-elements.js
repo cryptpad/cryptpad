@@ -71,56 +71,22 @@ define([
     var getPropertiesData = function (common, cb) {
         var data = {};
         NThen(function (waitFor) {
-            common.getPadAttribute('password', waitFor(function (err, val) {
-                data.password = val;
-            }));
-        }).nThen(function (waitFor) {
             var base = common.getMetadataMgr().getPrivateData().origin;
-            // XXX getFileData?
-            // XXX getPadMetadata
-            common.getPadAttribute('href', waitFor(function (err, val) {
-                if (!val) { return; }
-                data.href = base + val;
-            }));
-            common.getPadAttribute('roHref', waitFor(function (err, val) {
-                if (!val) { return; }
-                data.roHref = base + val;
-            }));
-            common.getPadAttribute('channel', waitFor(function (err, val) {
-                data.channel = val;
-            }));
-            common.getPadAttribute('rtChannel', waitFor(function (err, val) {
-                data.rtChannel = val;
-            }));
-            common.getPadAttribute('lastVersion', waitFor(function (err, val) {
-                data.lastVersion = val;
-            }));
-            common.getPadAttribute('atime', waitFor(function (err, val) {
-                data.atime = val;
-            }));
-            common.getPadAttribute('ctime', waitFor(function (err, val) {
-                data.ctime = val;
-            }));
-            common.getPadAttribute('title', waitFor(function (err, val) {
-                data.title = val;
-            }));
-            common.getPadAttribute('tags', waitFor(function (err, val) {
-                data.tags = val;
+            common.getPadAttribute('', waitFor(function (err, val) {
+                if (err || !val) {
+                    waitFor.abort();
+                    return void cb(err || 'EEMPTY');
+                }
+                Util.extend(data, val);
+                if (data.href) { data.href = base + data.href; }
+                if (data.roHref) { data.roHref = base + data.roHref; }
             }));
             common.getPadMetadata(null, waitFor(function (obj) {
-                console.log(obj);
                 if (obj && obj.error) { return; }
                 data.owners = obj.owners;
                 data.expire = obj.expire;
                 data.pending_owners = obj.pending_owners;
             }));
-            /*
-            common.getPadAttribute('owners', waitFor(function (err, val) {
-                data.owners = val;
-            }));
-            common.getPadAttribute('expire', waitFor(function (err, val) {
-                data.expire = val;
-            }));*/
         }).nThen(function () {
             cb(void 0, data);
         });
