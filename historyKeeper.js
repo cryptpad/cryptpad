@@ -999,8 +999,20 @@ module.exports.create = function (cfg) {
                 }
 
                 // unauthenticated RPC calls have a different message format
-                if (msg[0] === "WRITE_PRIVATE_MESSAGE" && output) {
-                    historyKeeperBroadcast(ctx, output.channel, output.message);
+                if (msg[0] === "WRITE_PRIVATE_MESSAGE" && output && output.channel) {
+                    // this is an inline reimplementation of historyKeeperBroadcast
+                    // because if we use that directly it will bypass signature validation
+                    // which opens up the user to malicious behaviour
+                    let chan = ctx.channels[output.channel];
+                    if (chan && chan.length) {
+                        chan.forEach(function (user) {
+                            sendMsg(ctx, user, output.message);
+                            //[0, null, 'MSG', user.id, JSON.stringify(output.message)]);
+                        });
+                    }
+                    // rpc and anonRpc expect their responses to be of a certain length
+                    // and we've already used the output of the rpc call, so overwrite it
+                    output = [null, null, null];
                 }
 
                 // finally, send a response to the client that sent the RPC
