@@ -103,8 +103,8 @@ define([
 
         var redrawAll = function () {};
 
-        var div1 = h('div.cp-share-friends.cp-share-column');
-        var div2 = h('div.cp-share-friends.cp-share-column');
+        var div1 = h('div.cp-share-friends.cp-share-column.cp-ownership');
+        var div2 = h('div.cp-share-friends.cp-share-column.cp-ownership');
         var $div1 = $(div1);
         var $div2 = $(div2);
 
@@ -139,7 +139,6 @@ define([
                 friends: _owners,
                 noFilter: true
             }, function () {
-                console.log(arguments);
             });
             var $div = $(removeCol.div);
             var others1 = removeCol.others;
@@ -162,6 +161,7 @@ define([
                 // Check selection
                 var $sel = $div.find('.cp-share-friend.cp-selected');
                 var sel = $sel.toArray();
+                if (!sel.length) { return; }
                 var me = false;
                 var toRemove = sel.map(function (el) {
                     var ed = $(el).attr('data-ed');
@@ -256,6 +256,7 @@ define([
             $(addButton).click(function () {
                 // Check selection
                 var $sel = $div2.find('.cp-share-friend.cp-selected');
+                if (!sel.length) { return; }
                 var sel = $sel.toArray();
                 var toAdd = sel.map(function (el) {
                     return friends[$(el).attr('data-curve')].edPublic;
