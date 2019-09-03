@@ -253,7 +253,7 @@ define([
                 return void cb({error: 'User drive removal blocked!'});
             }
 
-            store.rpc.removeOwnedChannel(data, function (err) {
+            store.rpc.removeOwnedChannel(channel, function (err) {
                 cb({error:err});
             });
         };

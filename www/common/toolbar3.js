@@ -732,13 +732,20 @@ MessengerUI, Messages) {
                 $('.cp-pad-not-pinned').remove();
                 return;
             }
+
+            if (typeof(ApiConfig.inactiveTime) !== 'number') {
+                $('.cp-pad-not-pinned').remove();
+                return;
+            }
+
             if ($('.cp-pad-not-pinned').length) { return; }
-            var pnpTitle = Messages._getKey('padNotPinned', ['','','','']);
-            var pnpMsg = Messages._getKey('padNotPinned', [
+            var pnpTitle = Messages._getKey('padNotPinnedVariable', ['','','','', ApiConfig.inactiveTime]);
+            var pnpMsg = Messages._getKey('padNotPinnedVariable', [
                 '<a href="' + o + '/login" class="cp-pnp-login" target="blank" title>',
                 '</a>',
                 '<a href="' + o + '/register" class="cp-pnp-register" target="blank" title>',
-                '</a>'
+                '</a>',
+                ApiConfig.inactiveTime
             ]);
             var $msg = $('<span>', {
                 'class': 'cp-pad-not-pinned'

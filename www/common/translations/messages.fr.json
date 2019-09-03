@@ -1159,5 +1159,6 @@
     "owner_request_accepted": "{0} a accepté votre offre de devenir propriétaire de <b>{1}</b>",
     "owner_request_declined": "{0} a refusé votre offre de devenir propriétaire de <b>{1}</b>",
     "owner_removed": "{0} a supprimé vos droits de propriétaire de <b>{1}</b>",
-    "owner_removedPending": "{0} a annulé l'offre de co-propriété reçue pour <b>{1}</b>"
+    "owner_removedPending": "{0} a annulé l'offre de co-propriété reçue pour <b>{1}</b>",
+    "padNotPinnedVariable": "Ce pad va expirer après {4} jours d'inactivité, {0}connectez-vous{1} ou {2}enregistrez-vous{3} pour le préserver."
 }

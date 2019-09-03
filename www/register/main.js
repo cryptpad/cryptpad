@@ -54,13 +54,32 @@ define([
         var registering = false;
         var test;
 
-        $register.click(function () {
+        var I_REALLY_WANT_TO_USE_MY_EMAIL_FOR_MY_USERNAME = false;
+
+        var registerClick = function () {
             var uname = $uname.val();
             var passwd = $passwd.val();
             var confirmPassword = $confirm.val();
 
             var shouldImport = $checkImport[0].checked;
             var doesAccept = $checkAcceptTerms[0].checked;
+
+            if (Cred.isEmail(uname) && !I_REALLY_WANT_TO_USE_MY_EMAIL_FOR_MY_USERNAME) {
+                var emailWarning = [
+                    Messages.register_emailWarning0,
+                    Messages.register_emailWarning1,
+                    Messages.register_emailWarning2,
+                    Messages.register_emailWarning3,
+                ].join('<br><br>');
+
+                Feedback.send("EMAIL_USERNAME_WARNING", true);
+
+                return void UI.confirm(emailWarning, function (yes) {
+                    if (!yes) { return; }
+                    I_REALLY_WANT_TO_USE_MY_EMAIL_FOR_MY_USERNAME = true;
+                    registerClick();
+                }, {}, true);
+            }
 
             /* basic validation */
             if (!Cred.isLongEnoughPassword(passwd)) {
@@ -104,7 +123,9 @@ define([
                 },
             }, true);
             }, 150);
-        });
+        };
+
+        $register.click(registerClick);
 
         var clickRegister = Util.notAgainForAnother(function () {
             $register.click();

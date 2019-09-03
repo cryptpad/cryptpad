@@ -38,21 +38,33 @@ var app = debuggable('app', Express());
 
 var httpsOpts;
 
-var DEV_MODE = !!process.env.DEV
-if (DEV_MODE) {
-    console.log("DEV MODE ENABLED");
-}
+// mode can be FRESH (default), DEV, or PACKAGE
 
-var FRESH_MODE = !!process.env.FRESH;
 var FRESH_KEY = '';
-if (FRESH_MODE) {
+var FRESH_MODE = true;
+var DEV_MODE = false;
+if (process.env.PACKAGE) {
+// `PACKAGE=1 node server` uses the version string from package.json as the cache string
+    console.log("PACKAGE MODE ENABLED");
+    FRESH_MODE = false;
+    DEV_MODE = false;
+} else if (process.env.DEV) {
+// `DEV=1 node server` will use a random cache string on every page reload
+    console.log("DEV MODE ENABLED");
+    FRESH_MODE = false;
+    DEV_MODE = true;
+} else {
+// `FRESH=1 node server` will set a random cache string when the server is launched
+// and use it for the process lifetime or until it is reset from the admin panel
     console.log("FRESH MODE ENABLED");
     FRESH_KEY = +new Date();
 }
+
 config.flushCache = function () {
     FRESH_KEY = +new Date();
+    if (!config.log) { return; }
+    config.log.info("UPDATING_FRESH_KEY", FRESH_KEY);
 };
-
 
 const clone = (x) => (JSON.parse(JSON.stringify(x)));
 
@@ -205,6 +217,7 @@ app.get('/api/config', function(req, res){
             httpUnsafeOrigin: config.httpUnsafeOrigin,
             adminEmail: config.adminEmail,
             adminKeys: admins,
+            inactiveTime: config.inactiveTime,
             supportMailbox: config.supportMailboxPublicKey
         }, null, '\t'),
         'obj.httpSafeOrigin = ' + (function () {

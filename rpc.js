@@ -734,7 +734,7 @@ var pinChannel = function (Env, publicKey, channels, cb) {
                 }
                 if (pinSize > free) { return void cb('E_OVER_LIMIT'); }
 
-                Env.pinStore.message(publicKey, JSON.stringify(['PIN', toStore]),
+                Env.pinStore.message(publicKey, JSON.stringify(['PIN', toStore, +new Date()]),
                     function (e) {
                     if (e) { return void cb(e); }
                     toStore.forEach(function (channel) {
@@ -766,7 +766,7 @@ var unpinChannel = function (Env, publicKey, channels, cb) {
             return void getHash(Env, publicKey, cb);
         }
 
-        Env.pinStore.message(publicKey, JSON.stringify(['UNPIN', toStore]),
+        Env.pinStore.message(publicKey, JSON.stringify(['UNPIN', toStore, +new Date()]),
             function (e) {
             if (e) { return void cb(e); }
             toStore.forEach(function (channel) {
@@ -810,7 +810,7 @@ var resetUserPins = function (Env, publicKey, channelList, cb) {
                 They will not be able to pin additional pads until they upgrade
                 or delete enough files to go back under their limit. */
             if (pinSize > limit[0] && session.hasPinned) { return void(cb('E_OVER_LIMIT')); }
-            Env.pinStore.message(publicKey, JSON.stringify(['RESET', channelList]),
+            Env.pinStore.message(publicKey, JSON.stringify(['RESET', channelList, +new Date()]),
                 function (e) {
                 if (e) { return void cb(e); }
                 channelList.forEach(function (channel) {

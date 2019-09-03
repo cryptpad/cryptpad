@@ -1,7 +1,7 @@
 {
   "name": "cryptpad",
   "description": "realtime collaborative visual editor with zero knowlege server",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "license": "AGPL-3.0+",
   "repository": {
     "type": "git",
@@ -32,6 +32,7 @@
     "start": "node server.js",
     "dev": "DEV=1 node server.js",
     "fresh": "FRESH=1 node server.js",
+    "package": "PACKAGE=1 node server.js",
     "lint": "jshint --config .jshintrc --exclude-path .jshintignore . && ./node_modules/lesshint/bin/lesshint -c ./.lesshintrc ./customize.dist/src/less2/",
     "lint:js": "jshint --config .jshintrc --exclude-path .jshintignore .",
     "lint:less": "./node_modules/lesshint/bin/lesshint -c ./.lesshintrc ./customize.dist/src/less2/",
