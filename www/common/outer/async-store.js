@@ -1792,7 +1792,7 @@ define([
             // If we don't check now, Listmap will create an empty proxy if it no longer exists on
             // the server.
             nThen(function (waitFor) {
-                var edPublic = store.proxy.edPublic;
+                //var edPublic = store.proxy.edPublic;
                 /*var checkExpired = Object.keys(shared).filter(function (fId) {
                     var d = shared[fId];
                     return (Array.isArray(d.owners) && d.owners.length &&
