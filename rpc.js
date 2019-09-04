@@ -18,7 +18,7 @@ const nThen = require("nthen");
 const getFolderSize = require("get-folder-size");
 const Pins = require("./lib/pins");
 const Meta = require("./lib/metadata");
-
+const WriteQueue = require("./lib/write-queue");
 
 var RPC = module.exports;
 
@@ -340,8 +340,7 @@ var getMetadata = function (Env, channel, cb) {
         value: value
     }
 */
-// XXX global saferphore may cause issues here, a queue "per channel" is probably better
-var metadataSem = Saferphore.create(1);
+var queueMetadata = WriteQueue();
 var setMetadata = function (Env, data, unsafeKey, cb) {
     var channel = data.channel;
     var command = data.command;
@@ -349,16 +348,15 @@ var setMetadata = function (Env, data, unsafeKey, cb) {
     if (!command || typeof (command) !== 'string') { return void cb ('INVALID_COMMAND'); }
     if (Meta.commands.indexOf(command) === -1) { return void('UNSUPPORTED_COMMAND'); }
 
-    metadataSem.take(function (give) {
-        var g = give();
+    queueMetadata(channel, function (next) {
         getMetadata(Env, channel, function (err, metadata) {
             if (err) {
-                g();
-                return void cb(err);
+                cb(err);
+                return void next();
             }
             if (!(metadata && Array.isArray(metadata.owners))) {
-                g();
-                return void cb('E_NO_OWNERS');
+                cb('E_NO_OWNERS');
+                return void next();
             }
 
             // Confirm that the channel is owned by the user in question
@@ -372,13 +370,13 @@ var setMetadata = function (Env, data, unsafeKey, cb) {
                         || !Array.isArray(data.value)
                         || data.value.length !== 1
                         || data.value[0] !== unsafeKey) {
-                    g();
-                    return void cb('INSUFFICIENT_PERMISSIONS');
+                    cb('INSUFFICIENT_PERMISSIONS');
+                    return void next();
                 }
 
             } else if (metadata.owners.indexOf(unsafeKey) === -1) {
-                g();
-                return void cb('INSUFFICIENT_PERMISSIONS');
+                cb('INSUFFICIENT_PERMISSIONS');
+                return void next();
             }
 
             // Add the new metadata line
@@ -387,22 +385,23 @@ var setMetadata = function (Env, data, unsafeKey, cb) {
             try {
                 changed = Meta.handleCommand(metadata, line);
             } catch (e) {
-                g();
-                return void cb(e);
+                cb(e);
+                return void next();
             }
 
             // if your command is valid but it didn't result in any change to the metadata,
             // call back now and don't write any "useless" line to the log
             if (!changed) {
-                g();
-                return void cb(void 0, metadata);
+                cb(void 0, metadata);
+                return void next();
             }
             Env.msgStore.writeMetadata(channel, JSON.stringify(line), function (e) {
-                g();
                 if (e) {
-                    return void cb(e);
+                    cb(e);
+                    return void next();
                 }
                 cb(void 0, metadata);
+                next();
             });
         });
     });
@@ -1884,8 +1883,6 @@ RPC.create = function (
     };
 
     var rpc0 = function (ctx, data, respond) {
-        if (!Env.msgStore) { Env.msgStore = ctx.store; }
-
         if (!Array.isArray(data)) {
             Log.debug('INVALID_ARG_FORMET', data);
             return void respond('INVALID_ARG_FORMAT');

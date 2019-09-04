@@ -89,7 +89,6 @@ proxy.mailboxes = {
         if (!anonRpc) { return void cb({error: "anonymous rpc session not ready"}); }
 
         var crypto = Crypto.Mailbox.createEncryptor(keys);
-        var network = ctx.store.network;
 
         var text = JSON.stringify({
             type: type,
@@ -100,7 +99,7 @@ proxy.mailboxes = {
         anonRpc.send("WRITE_PRIVATE_MESSAGE", [
             user.channel,
             ciphertext
-        ], function (err, response) {
+        ], function (err /*, response */) {
             if (err) {
                 return void cb({
                     error: err,
