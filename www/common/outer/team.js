@@ -91,7 +91,6 @@ define([
 
         initializeTeams(ctx, waitFor(function (err) {
             if (err) { return; }
-            openChannel(ctx);
         }));
 
         Object.keys(teams).forEach(function (id) {

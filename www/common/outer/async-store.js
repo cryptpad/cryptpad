@@ -10,6 +10,7 @@ define([
     '/common/common-realtime.js',
     '/common/common-messaging.js',
     '/common/common-messenger.js',
+    '/common/outer/sharedfolder.js',
     '/common/outer/cursor.js',
     '/common/outer/onlyoffice.js',
     '/common/outer/mailbox.js',
@@ -24,8 +25,9 @@ define([
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
-], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, Messenger,
-             Cursor, OnlyOffice, Mailbox, Profile, Team, NetConfig, AppConfig,
+], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
+             Realtime, Messaging, Messenger,
+             SF, Cursor, OnlyOffice, Mailbox, Profile, Team, NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, nThen, Saferphore) {
 
     var create = function () {
@@ -1503,31 +1505,11 @@ define([
 
         // SHARED FOLDERS
         var loadSharedFolder = Store.loadSharedFolder = function (id, data, cb) {
-            var parsed = Hash.parsePadUrl(data.href);
-            var secret = Hash.getSecrets('drive', parsed.hash, data.password);
-            var owners = data.owners;
-            var listmapConfig = {
-                data: {},
-                websocketURL: NetConfig.getWebsocketURL(),
-                channel: secret.channel,
-                readOnly: false,
-                crypto: Crypto.createEncryptor(secret.keys),
-                userName: 'sharedFolder',
-                logLevel: 1,
-                ChainPad: ChainPad,
-                classic: true,
+            var rt = SF.load({
                 network: store.network,
-                metadata: {
-                    validateKey: secret.keys.validateKey || undefined,
-                    owners: owners
-                }
-            };
-            var rt = Listmap.create(listmapConfig);
+                manager: store.manager
+            }, id, data, cb);
             store.sharedFolders[id] = rt;
-            rt.proxy.on('ready', function (info) {
-                store.manager.addProxy(id, rt.proxy, info.leave);
-                cb(rt, info.metadata);
-            });
             if (store.driveEvents) {
                 registerProxyEvents(rt.proxy, id);
             }
