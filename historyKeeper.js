@@ -1,5 +1,5 @@
 /* jshint esversion: 6 */
-/* global Buffer, process */
+/* global Buffer */
 ;(function () { 'use strict';
 
 const nThen = require('nthen');
@@ -1024,33 +1024,6 @@ module.exports.create = function (cfg) {
         }
     };
 
-    var cciLock = false;
-    const checkChannelIntegrity = function (ctx) {
-        if (process.env['CRYPTPAD_DEBUG'] && !cciLock) {
-            let nt = nThen;
-            cciLock = true;
-            Object.keys(ctx.channels).forEach(function (channelName) {
-                const chan = ctx.channels[channelName];
-                if (!chan.index) { return; }
-                nt = nt((waitFor) => {
-                    store.getChannelSize(channelName, waitFor((err, size) => {
-                        if (err) {
-                            return void Log.debug("HK_CHECK_CHANNEL_INTEGRITY",
-                                "Couldn't get size of channel " + channelName);
-                        }
-                        if (size !== chan.index.size) {
-                            return void Log.debug("HK_CHECK_CHANNEL_SIZE",
-                                "channel size mismatch for " + channelName +
-                                " --- cached: " + chan.index.size +
-                                " --- fileSize: " + size);
-                        }
-                    }));
-                }).nThen;
-            });
-            nt(() => { cciLock = false; });
-        }
-    };
-
     return {
         id: HISTORY_KEEPER_ID,
         setConfig: setConfig,
@@ -1058,7 +1031,6 @@ module.exports.create = function (cfg) {
         dropChannel: dropChannel,
         checkExpired: checkExpired,
         onDirectMessage: onDirectMessage,
-        checkChannelIntegrity: checkChannelIntegrity
     };
 };
 
