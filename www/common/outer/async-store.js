@@ -1524,10 +1524,12 @@ define([
             });
         };
         Store.addSharedFolder = function (clientId, data, cb) {
-            Store.userObjectCommand(clientId, {
-                cmd: 'addSharedFolder',
-                data: data
-            }, cb);
+            store.manager.addSharedFolder(data, function (id) {
+                sendDriveEvent('DRIVE_CHANGE', {
+                    path: ['drive', UserObject.FILES_DATA]
+                }, clientId);
+                cb(id);
+            });
         };
 
         // Drive

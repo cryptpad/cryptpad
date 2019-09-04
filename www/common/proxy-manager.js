@@ -458,7 +458,9 @@ define([
                 }
             }));
         }).nThen(function () {
-            cb(id);
+            Env.onSync(function () {
+                cb(id);
+            });
         });
     };
 
@@ -935,6 +937,7 @@ define([
             // Manager
             addProxy: callWithEnv(addProxy),
             removeProxy: callWithEnv(removeProxy),
+            addSharedFolder: callWithEnv(addSharedFolder);
             // Drive
             command: callWithEnv(onCommand),
             getPadAttribute: callWithEnv(getPadAttribute),
