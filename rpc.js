@@ -1883,8 +1883,6 @@ RPC.create = function (
     };
 
     var rpc0 = function (ctx, data, respond) {
-        if (!Env.msgStore) { Env.msgStore = ctx.store; }
-
         if (!Array.isArray(data)) {
             Log.debug('INVALID_ARG_FORMET', data);
             return void respond('INVALID_ARG_FORMAT');
