@@ -14,6 +14,7 @@ define([
     '/common/outer/onlyoffice.js',
     '/common/outer/mailbox.js',
     '/common/outer/profile.js',
+    '/common/outer/team.js',
     '/common/outer/network-config.js',
     '/customize/application_config.js',
 
@@ -24,7 +25,7 @@ define([
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
 ], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, Messenger,
-             Cursor, OnlyOffice, Mailbox, Profile, NetConfig, AppConfig,
+             Cursor, OnlyOffice, Mailbox, Profile, Team, NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, nThen, Saferphore) {
 
     var create = function () {
@@ -1880,6 +1881,7 @@ define([
                 loadCursor();
                 loadOnlyOffice();
                 loadUniversal(Profile, 'profile', waitFor);
+                loadUniversal(Team, 'team', waitFor);
                 cleanFriendRequests();
             }).nThen(function () {
                 arePinsSynced(function (err, yes) {
