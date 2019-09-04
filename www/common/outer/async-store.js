@@ -1793,12 +1793,17 @@ define([
             // the server.
             nThen(function (waitFor) {
                 var edPublic = store.proxy.edPublic;
-                var checkExpired = Object.keys(shared).filter(function (fId) {
+                /*var checkExpired = Object.keys(shared).filter(function (fId) {
                     var d = shared[fId];
                     return (Array.isArray(d.owners) && d.owners.length &&
                             (!edPublic || d.owners.indexOf(edPublic) === -1))
                             || (d.expire && d.expire < (+new Date()));
                 }).map(function (fId) {
+                    return shared[fId].channel;
+                });*/
+                // XXX test: we probably shouldn't filter shared folder anymore here because
+                // the owner or the expiration time can change, so they can all be deleted
+                var checkExpired = Object.keys(shared).map(function (fId) {
                     return shared[fId].channel;
                 });
                 Store.getDeletedPads(null, {list: checkExpired}, waitFor(function (chans) {
