@@ -3,15 +3,27 @@ define([
     '/common/common-hash.js',
     '/common/common-constants.js',
     '/common/common-realtime.js',
+
+    '/common/outer/sharedfolder.js',
+
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad/chainpad.dist.js',
-], function (Util, Hash, Constants, Realtime, Listmap, Crypto, ChainPad) {
+], function (Util, Hash, Constants, Realtime,
+             SF,
+             Listmap, Crypto, ChainPad) {
     var Team = {};
 
     var initializeTeams = function (ctx, cb) {
         // XXX ?
         cb();
+    };
+
+    var onready = function (ctx, team, id, cb) {
+        // XXX
+        // load manager
+        // load shared folders
+
     };
 
     var openChannel = function (ctx, team, id, cb) {
@@ -35,9 +47,13 @@ define([
         lm.proxy.on('create', function () {
         }).on('ready', function () {
             ctx.teams[id] = {
+                proxy: lm.proxy,
                 listmap: lm,
                 clients: []
             };
+            onReady(ctx, team, id, function () {
+                // TODO
+            });
             if (ctx.onReadyHandlers.length) {
                 ctx.onReadyHandlers.forEach(function (f) {
                     try {
@@ -101,6 +117,9 @@ define([
             });
         });
 
+        team.getTeam = function (id) {
+            return ctx.teams[id];
+        };
         team.removeClient = function (clientId) {
             removeClient(ctx, clientId);
         };

@@ -43,6 +43,31 @@ define([
             modules: {}
         };
 
+        var getProxy = function (teamId) {
+            if (!teamId) { return store.proxy; }
+            try {
+                var teams = store.modules['team'];
+                var team = teams.getTeam(teamId);
+                if (team) { return; }
+                return team.proxy;
+            } catch (e) {
+                console.error(e);
+                return;
+            }
+        };
+        var getManager = function (teamId) {
+            if (!teamId) { return store.manager; }
+            try {
+                var teams = store.modules['team'];
+                var team = teams.getTeam(teamId);
+                if (team) { return; }
+                return team.manager;
+            } catch (e) {
+                console.error(e);
+                return;
+            }
+        };
+
         var onSync = function (cb) {
             nThen(function (waitFor) {
                 Realtime.whenRealtimeSyncs(store.realtime, waitFor());
