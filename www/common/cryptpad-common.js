@@ -820,6 +820,8 @@ define([
                 }
                 optsPut.owners = owners;
             }), href);
+            // XXX get the mailbox fields, decrypt all the mailboxes, reencrypt them, and put them in the metadata
+            // XXX also use optsPut.metadata (and fix it in cryptget) instead of optsPut.owners
             common.getPadAttribute('expire', waitFor(function (err, expire) {
                 optsPut.expire = (expire - (+new Date())) / 1000; // Lifetime in seconds
             }), href);
