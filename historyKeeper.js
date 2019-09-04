@@ -771,7 +771,6 @@ module.exports.create = function (cfg) {
     const onDirectMessage = function (ctx, seq, user, json) {
         let parsed;
         let channelName;
-        let obj = HISTORY_KEEPER_ID;
 
         Log.silly('HK_MESSAGE', json);
 
@@ -913,7 +912,7 @@ module.exports.create = function (cfg) {
             channelName = parsed[1];
             var map = parsed[2];
             if (!(map && typeof(map) === 'object')) {
-                return void sendMsg(ctx, user, [seq, 'ERROR', 'INVALID_ARGS', obj]);
+                return void sendMsg(ctx, user, [seq, 'ERROR', 'INVALID_ARGS', HISTORY_KEEPER_ID]);
             }
 
             var oldestKnownHash = map.from;
@@ -921,11 +920,11 @@ module.exports.create = function (cfg) {
             var desiredCheckpoint = map.cpCount;
             var txid = map.txid;
             if (typeof(desiredMessages) !== 'number' && typeof(desiredCheckpoint) !== 'number') {
-                return void sendMsg(ctx, user, [seq, 'ERROR', 'UNSPECIFIED_COUNT', obj]);
+                return void sendMsg(ctx, user, [seq, 'ERROR', 'UNSPECIFIED_COUNT', HISTORY_KEEPER_ID]);
             }
 
             if (!txid) {
-                return void sendMsg(ctx, user, [seq, 'ERROR', 'NO_TXID', obj]);
+                return void sendMsg(ctx, user, [seq, 'ERROR', 'NO_TXID', HISTORY_KEEPER_ID]);
             }
 
             sendMsg(ctx, user, [seq, 'ACK']);
