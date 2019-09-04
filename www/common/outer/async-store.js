@@ -1504,15 +1504,18 @@ define([
         };
 
         // SHARED FOLDERS
+        var handleSharedFolder = function (id, rt) {
+            store.sharedFolders[id] = rt;
+            if (store.driveEvents) {
+                registerProxyEvents(rt.proxy, id);
+            }
+        };
         var loadSharedFolder = Store.loadSharedFolder = function (id, data, cb) {
             var rt = SF.load({
                 network: store.network,
                 manager: store.manager
             }, id, data, cb);
-            store.sharedFolders[id] = rt;
-            if (store.driveEvents) {
-                registerProxyEvents(rt.proxy, id);
-            }
+            handleSharedFolder(id, rt);
             return rt;
         };
         Store.loadSharedFolderAnon = function (clientId, data, cb) {
@@ -1768,51 +1771,6 @@ define([
         /////////////////////// Init /////////////////////////////////////
         //////////////////////////////////////////////////////////////////
 
-        var loadSharedFolders = function (waitFor) {
-            store.sharedFolders = {};
-            var shared = Util.find(store.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
-            // Check if any of our shared folder is expired or deleted by its owner.
-            // If we don't check now, Listmap will create an empty proxy if it no longer exists on
-            // the server.
-            nThen(function (waitFor) {
-                //var edPublic = store.proxy.edPublic;
-                /*var checkExpired = Object.keys(shared).filter(function (fId) {
-                    var d = shared[fId];
-                    return (Array.isArray(d.owners) && d.owners.length &&
-                            (!edPublic || d.owners.indexOf(edPublic) === -1))
-                            || (d.expire && d.expire < (+new Date()));
-                }).map(function (fId) {
-                    return shared[fId].channel;
-                });*/
-                // XXX test: we probably shouldn't filter shared folder anymore here because
-                // the owner or the expiration time can change, so they can all be deleted
-                var checkExpired = Object.keys(shared).map(function (fId) {
-                    return shared[fId].channel;
-                });
-                Store.getDeletedPads(null, {list: checkExpired}, waitFor(function (chans) {
-                    if (chans && chans.error) { return void console.error(chans.error); }
-                    if (!Array.isArray(chans) || !chans.length) { return; }
-                    var toDelete = [];
-                    Object.keys(shared).forEach(function (fId) {
-                        if (chans.indexOf(shared[fId].channel) !== -1
-                            && toDelete.indexOf(fId) === -1) {
-                            toDelete.push(fId);
-                        }
-                    });
-                    toDelete.forEach(function (fId) {
-                        var paths = store.userObject.findFile(Number(fId));
-                        store.userObject.delete(paths, waitFor(), true);
-                        delete shared[fId];
-                    });
-                }));
-            }).nThen(function (waitFor) {
-                Object.keys(shared).forEach(function (id) {
-                    var sf = shared[id];
-                    loadSharedFolder(id, sf, waitFor());
-                });
-            }).nThen(waitFor());
-        };
-
         var onReady = function (clientId, returned, cb) {
             var proxy = store.proxy;
             var unpin = function (data, cb) {
@@ -1863,7 +1821,7 @@ define([
                     state: 3
                 });
                 userObject.fixFiles();
-                loadSharedFolders(waitFor);
+                SF.loadSharedFolders(store.proxy, userObject, handleSharedFolder, waitFor);
                 loadMessenger();
                 loadCursor();
                 loadOnlyOffice();
