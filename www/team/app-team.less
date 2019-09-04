@@ -1,0 +1,13 @@
+@import (reference) '../../customize/src/less2/include/framework.less';
+@import (reference) '../../customize/src/less2/include/drive.less';
+
+&.cp-app-team {
+    .framework_min_main(
+        @bg-color: @colortheme_team-bg,
+        @warn-color: @colortheme_team-warn,
+        @color: @colortheme_team-color
+    );
+
+    .drive_main();
+}
+
