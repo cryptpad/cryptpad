@@ -761,18 +761,42 @@ define([
          *   - attr (Array)
          *   - value (String)
          */
+        var getAllStores = function () {
+            var stores = [store];
+            var teamModule = store.modules['team'];
+            if (teamModule) {
+                var teams = teamModule.getTeams().map(function (id) {
+                    return teamModule.getTeam(id);
+                });
+                Array.prototype.push.apply(stores, teams);
+            }
+            return stores;
+        };
         Store.setPadAttribute = function (clientId, data, cb) {
-            store.manager.setPadAttribute(data, function () {
-                sendDriveEvent('DRIVE_CHANGE', {
-                    path: ['drive', UserObject.FILES_DATA]
-                }, clientId);
-                onSync(cb);
+            getAllStores.forEach(function (s) {
+                s.manager.setPadAttribute(data, function () {
+                    var send = s.id ? s.sendEvent : sendDriveEvent;
+                    send('DRIVE_CHANGE', {
+                        path: ['drive', UserObject.FILES_DATA]
+                    }, clientId);
+                    onSync(s.id, cb);
+                });
             });
         };
         Store.getPadAttribute = function (clientId, data, cb) {
-            store.manager.getPadAttribute(data, function (err, val) {
-                if (err) { return void cb({error: err}); }
-                cb(val);
+            var res = {};
+            nThen(function (waitFor) {
+                getAllStores.forEach(function (s) {
+                    s.manager.getPadAttribute(data, waitFor(function (err, val) {
+                        if (err) { return; }
+                        if (!res.value || res.atime < val.atime) {
+                            res.atime = val.atime;
+                            res.value = val.value;
+                        }
+                    }));
+                });
+            }).nThen(function () {
+                cb(res.value);
             });
         };
 

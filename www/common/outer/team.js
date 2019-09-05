@@ -37,11 +37,13 @@ define([
         // load shared folders
         // ~resetPins for the team?
         // getPinLimit
+        ctx.teams[id] = team;
+        cb();
     };
 
-    var openChannel = function (ctx, team, id, cb) {
+    var openChannel = function (ctx, teamData, id, cb) {
         // XXX team password?
-        var secret = Hash.getSecrets('team', team.href);
+        var secret = Hash.getSecrets('team', teamData.href);
         var crypto = Crypto.createEncryptor(secret.keys);
 
         var cfg = {
@@ -65,7 +67,8 @@ define([
                 // types are DRIVE_CHANGE, DRIVE_REMOVE and DRIVE_LOG
             };
 
-            ctx.teams[id] = {
+            var team = {
+                id: id,
                 proxy: lm.proxy,
                 listmap: lm,
                 clients: [],
@@ -78,6 +81,7 @@ define([
 
             onReady(ctx, team, id, function () {
                 // TODO
+                cb();
             });
             if (ctx.onReadyHandlers.length) {
                 ctx.onReadyHandlers.forEach(function (f) {
@@ -144,6 +148,9 @@ define([
 
         team.getTeam = function (id) {
             return ctx.teams[id];
+        };
+        team.getTeams = function () {
+            return Object.keys(ctx.teams);
         };
         team.removeClient = function (clientId) {
             removeClient(ctx, clientId);
