@@ -507,7 +507,7 @@ define([
                 roHref: roHref,
                 atime: now,
                 ctime: now,
-                title: title || Hash.getDefaultName(Hash.parsePadUrl(href)),
+                title: title || UserObject.getDefaultName(Hash.parsePadUrl(href)),
             };
         };
 
@@ -804,6 +804,8 @@ define([
             var channel = data.channel;
             var p = Hash.parsePadUrl(href);
             var h = p.hashData;
+
+            if (title.trim() === "") { title = UserObject.getDefaultName(p); }
 
             if (AppConfig.disableAnonymousStore && !store.loggedIn) { return void cb(); }
             if (p.type === "debug") { return void cb(); }

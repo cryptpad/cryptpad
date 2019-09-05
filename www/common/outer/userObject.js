@@ -694,7 +694,7 @@ define([
                     // Fix creation time
                     if (!el.ctime) { el.ctime = el.atime; }
                     // Fix title
-                    if (!el.title) { el.title = Hash.getDefaultName(parsed); }
+                    if (!el.title) { el.title = exp.getDefaultName(parsed); }
                     // Fix channel
                     if (!el.channel) {
                         try {
