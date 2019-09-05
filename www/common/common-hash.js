@@ -542,7 +542,7 @@ Version 1
             '/bower_components/chainpad-crypto/crypto.js',
             '/bower_components/tweetnacl/nacl-fast.min.js'
         ], function (Util, Crypto) {
-            factory(Util, Crypto, window.nacl);
+            return factory(Util, Crypto, window.nacl);
         });
     } else {
         // unsupported initialization
