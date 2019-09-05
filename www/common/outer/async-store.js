@@ -407,6 +407,9 @@ define([
             if (!store.loggedIn) { return cb(); }
             if (store.rpc) { return void cb(account); }
             require(['/common/pinpad.js'], function (Pinpad) {
+                // XXX Teams: we wont' pass the team's proxy directly here because all the users
+                // may not have access to the edPrivate key
+                // Users without edPrivate should not be able to create a pinpad object
                 Pinpad.create(store.network, store.proxy, function (e, call) {
                     if (e) { return void cb({error: e}); }
 
@@ -846,17 +849,33 @@ define([
 
         // Tags
         Store.listAllTags = function (clientId, data, cb) {
-            cb(store.manager.getTagsList());
+            var tags = {};
+            getAllStores.forEach(function (s) {
+                var l = s.manager.getTagsList();
+                Object.keys(l).forEach(function (tag) {
+                    tags[tag] = (tags[tag] || 0) + l[tag];
+                });
+            });
+            cb(tags);
         };
 
         // Templates
+        // Note: maybe we should get templates "per team" to avoid creating a document with a template
+        // from a different team
         Store.getTemplates = function (clientId, data, cb) {
             // No templates in shared folders: we don't need the manager here
-            var templateFiles = store.userObject.getFiles(['template']);
             var res = [];
-            templateFiles.forEach(function (f) {
-                var data = store.userObject.getFileData(f);
-                res.push(JSON.parse(JSON.stringify(data)));
+            var channels = [];
+            getAllStores.forEach(function (s) {
+                var templateFiles = s.userObject.getFiles(['template']);
+                templateFiles.forEach(function (f) {
+                    var data = s.userObject.getFileData(f);
+                    // Don't push duplicates
+                    if (channels.indexOf(data.channel) !== -1) { return }
+                    channels.push(data.channel);
+                    // Puhs a copy of the data
+                    res.push(JSON.parse(JSON.stringify(data)));
+                });
             });
             cb(res);
         };

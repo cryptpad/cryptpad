@@ -33,7 +33,8 @@ define([
         // sanity check: do we have all the required keys?
         // initialize team rpc with pin, unpin, ...
         // team.rpc = rpc
-        // load manager
+        // load manager with userObject
+        //   team.manager =... team.userObject = ....
         // load shared folders
         // ~resetPins for the team?
         // getPinLimit
@@ -73,6 +74,7 @@ define([
                 listmap: lm,
                 clients: [],
                 manager: undefined, // XXX
+                userObject: undefined, // XXX
                 realtime: lm.realtime,
                 handleSharedFolder: function (sfId, rt) { handleSharedFolder(ctx, id, sfId, rt); },
                 sharedFolders: {}, // equivalent of store.sharedFolders in async-store
