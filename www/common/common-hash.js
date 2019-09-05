@@ -1,10 +1,5 @@
-define([
-    '/common/common-util.js',
-    '/bower_components/chainpad-crypto/crypto.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js'
-], function (Util, Crypto) {
-    var Nacl = window.nacl;
-
+(function () {
+var factory = function (Util, Crypto, Nacl) {
     var Hash = window.CryptPad_Hash = {};
 
     var uint8ArrayToHex = Util.uint8ArrayToHex;
@@ -537,4 +532,19 @@ Version 1
     };
 
     return Hash;
-});
+};
+
+    if (typeof(module) !== 'undefined' && module.exports) {
+        module.exports = factory(require("./common-util"), require("chainpad-crypto"), require("tweetnacl"));
+    } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+        define([
+            '/common/common-util.js',
+            '/bower_components/chainpad-crypto/crypto.js',
+            '/bower_components/tweetnacl/nacl-fast.min.js'
+        ], function (Util, Crypto) {
+            factory(Util, Crypto, window.nacl);
+        });
+    } else {
+        // unsupported initialization
+    }
+}());
