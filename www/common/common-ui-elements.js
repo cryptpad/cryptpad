@@ -124,6 +124,7 @@ define([
                     f = f || user;
                     if (f.name) {
                         f.displayName = f.name;
+                        f.edPublic = edPublic;
                     }
                 }
                 _owners[ed] = f || {
