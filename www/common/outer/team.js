@@ -28,11 +28,15 @@ define([
         // TODO: pin or unpin document added to a shared folder from someone who is not a member of the team
     };
 
-    var onready = function (ctx, team, id, cb) {
+    var onReady = function (ctx, team, id, cb) {
         // XXX
+        // sanity check: do we have all the required keys?
+        // initialize team rpc with pin, unpin, ...
+        // team.rpc = rpc
         // load manager
         // load shared folders
-
+        // ~resetPins for the team?
+        // getPinLimit
     };
 
     var openChannel = function (ctx, team, id, cb) {
@@ -55,6 +59,12 @@ define([
         var lm = Listmap.create(cfg);
         lm.proxy.on('create', function () {
         }).on('ready', function () {
+            var sendEvent = function (type, data, sender) {
+                // XXX emit UPDATE event to the inner iframe
+                // don't send the event back to the sender
+                // types are DRIVE_CHANGE, DRIVE_REMOVE and DRIVE_LOG
+            };
+
             ctx.teams[id] = {
                 proxy: lm.proxy,
                 listmap: lm,
@@ -62,7 +72,8 @@ define([
                 manager: undefined, // XXX
                 realtime: lm.realtime,
                 handleSharedFolder: function (sfId, rt) { handleSharedFolder(ctx, id, sfId, rt); },
-                sharedFolders: {} // equivalent of store.sharedFolders in async-store
+                sharedFolders: {}, // equivalent of store.sharedFolders in async-store
+                sendEvent: sendEvent
             };
 
             onReady(ctx, team, id, function () {

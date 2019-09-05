@@ -33,6 +33,8 @@ define([
         var File = {};
         var origin = common.getMetadataMgr().getPrivateData().origin;
 
+        var teamId = config.teamId; // XXX Teams file upload as a team
+
         var queue = File.queue = {
             queue: [],
             inProgress: false
@@ -165,6 +167,7 @@ define([
             file.noStore = config.noStore;
             try {
                 file.blob = Nacl.util.encodeBase64(u8);
+                file.teamId = teamId;
                 common.uploadFile(file, function () {
                     console.log('Upload started...');
                 });

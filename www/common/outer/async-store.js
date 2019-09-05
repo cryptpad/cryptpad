@@ -146,14 +146,12 @@ define([
             onSync(data.teamId, cb);
         };
 
-        // XXX Teams
         Store.hasSigningKeys = function () {
             if (!store.proxy) { return; }
             return typeof(store.proxy.edPrivate) === 'string' &&
                    typeof(store.proxy.edPublic) === 'string';
         };
 
-        // XXX Teams
         Store.hasCurveKeys = function () {
             if (!store.proxy) { return; }
             return typeof(store.proxy.curvePrivate) === 'string' &&
@@ -218,7 +216,6 @@ define([
         /////////////////////// RPC //////////////////////////////////////
         //////////////////////////////////////////////////////////////////
 
-        // XXX Teams pin in teams
         Store.pinPads = function (clientId, data, cb) {
             if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
             if (typeof(cb) !== 'function') {
@@ -231,7 +228,6 @@ define([
             });
         };
 
-        // XXX Teams ...
         Store.unpinPads = function (clientId, data, cb) {
             if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
@@ -284,6 +280,7 @@ define([
             cb(account);
         };
 
+        // clearOwnedChannel is only used for private chat at the moment
         Store.clearOwnedChannel = function (clientId, data, cb) {
             if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
             store.rpc.clearOwnedChannel(data, function (err) {
@@ -292,22 +289,26 @@ define([
         };
 
         Store.removeOwnedChannel = function (clientId, data, cb) {
-            if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-
             // "data" used to be a string (channelID), now it can also be an object
             // data.force tells us we can safely remove the drive ID
             var channel = data;
             var force = false;
+            var teamId;
             if (data && typeof(data) === "object") {
                 channel = data.channel;
                 force = data.force;
+                teamId = data.teamId;
             }
 
             if (channel === storeChannel && !force) {
                 return void cb({error: 'User drive removal blocked!'});
             }
 
-            store.rpc.removeOwnedChannel(channel, function (err) {
+            var s = getStore(teamId);
+            if (!s) { return void cb({ error: 'ENOTFOUND' }); }
+            if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+
+            s.rpc.removeOwnedChannel(channel, function (err) {
                 cb({error:err});
             });
         };
@@ -334,40 +335,49 @@ define([
         };
 
         Store.uploadComplete = function (clientId, data, cb) {
-            if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+            var s = getStore(teamId);
+            if (!s) { return void cb({ error: 'ENOTFOUND' }); }
+            if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
             if (data.owned) {
                 // Owned file
-                store.rpc.ownedUploadComplete(data.id, function (err, res) {
+                s.rpc.ownedUploadComplete(data.id, function (err, res) {
                     if (err) { return void cb({error:err}); }
                     cb(res);
                 });
                 return;
             }
             // Normal upload
-            store.rpc.uploadComplete(data.id, function (err, res) {
+            s.rpc.uploadComplete(data.id, function (err, res) {
                 if (err) { return void cb({error:err}); }
                 cb(res);
             });
         };
 
         Store.uploadStatus = function (clientId, data, cb) {
-            if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-            store.rpc.uploadStatus(data.size, function (err, res) {
+            var s = getStore(teamId);
+            if (!s) { return void cb({ error: 'ENOTFOUND' }); }
+            if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+            s.rpc.uploadStatus(data.size, function (err, res) {
                 if (err) { return void cb({error:err}); }
                 cb(res);
             });
         };
 
         Store.uploadCancel = function (clientId, data, cb) {
-            if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-            store.rpc.uploadCancel(data.size, function (err, res) {
+            var s = getStore(teamId);
+            if (!s) { return void cb({ error: 'ENOTFOUND' }); }
+            if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+            s.rpc.uploadCancel(data.size, function (err, res) {
                 if (err) { return void cb({error:err}); }
                 cb(res);
             });
         };
 
         Store.uploadChunk = function (clientId, data, cb) {
-            store.rpc.send.unauthenticated('UPLOAD', data.chunk, function (e, msg) {
+            var s = getStore(teamId);
+            if (!s) { return void cb({ error: 'ENOTFOUND' }); }
+            if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+            s.rpc.send.unauthenticated('UPLOAD', data.chunk, function (e, msg) {
                 cb({
                     error: e,
                     msg: msg
@@ -393,7 +403,7 @@ define([
             });
         };
 
-        Store.initRpc = function (clientId, data, cb) {
+        var initRpc = function (clientId, data, cb) {
             if (!store.loggedIn) { return cb(); }
             if (store.rpc) { return void cb(account); }
             require(['/common/pinpad.js'], function (Pinpad) {
@@ -486,7 +496,7 @@ define([
             });
         };
 
-        Store.initAnonRpc = function (clientId, data, cb) {
+        var initAnonRpc = function (clientId, data, cb) {
             if (store.anon_rpc) { return void cb(); }
             require([
                 '/common/rpc.js',
@@ -580,12 +590,17 @@ define([
             if (data.expire) { pad.expire = data.expire; }
             if (data.password) { pad.password = data.password; }
             if (data.channel || secret) { pad.channel = data.channel || secret.channel; }
-            store.manager.addPad(data.path, pad, function (e) {
+
+            var s = getStore(data.teamId);
+            if (!s || !s.manager) { return void cb({ error: 'ENOTFOUND' }); }
+
+            s.manager.addPad(data.path, pad, function (e) {
                 if (e) { return void cb({error: e}); }
-                sendDriveEvent('DRIVE_CHANGE', {
+                var send = data.teamId ? s.sendEvent : sendDriveEvent;
+                send('DRIVE_CHANGE', {
                     path: ['drive', UserObject.FILES_DATA]
                 }, clientId);
-                onSync(cb);
+                onSync(teamId, cb);
             });
         };
 
@@ -1849,7 +1864,7 @@ define([
                 settings: proxy.settings
             }, {
                 outer: true,
-                removeOwnedChannel: function (data, cb) { Store.removeOwnedChannel('', data, cb); },
+                removeOwnedChannel: function (channel, cb) { Store.removeOwnedChannel('', channel, cb); },
                 edPublic: store.proxy.edPublic,
                 loggedIn: store.loggedIn,
                 log: function (msg) {
@@ -1866,8 +1881,8 @@ define([
                 });
                 userObject.migrate(waitFor());
             }).nThen(function (waitFor) {
-                Store.initAnonRpc(null, null, waitFor());
-                Store.initRpc(null, null, waitFor());
+                initAnonRpc(null, null, waitFor());
+                initRpc(null, null, waitFor());
             }).nThen(function (waitFor) {
                 loadMailbox(waitFor);
                 Migrate(proxy, waitFor(), function (version, progress) {

@@ -12,6 +12,7 @@ define([
         var metadata = file.metadata;
 
         var owned = file.owned;
+        var teamId = file.teamId;
 
         // if it exists, path contains the new pad location in the drive
         var path = file.path;
@@ -43,8 +44,9 @@ define([
             getValidHash(waitFor());
         }).nThen(function (waitFor) {
             if (!owned) { return; }
-            common.getMetadata(waitFor(function (err, m) {
-                edPublic = m.priv.edPublic;
+            common.getEdPublic(teamId, waitFor(function (obj) {
+                if (obj && obj.error) { return; }
+                edPublic = obj;
                 metadata.owners = [edPublic];
             }));
         }).nThen(function () {
@@ -54,7 +56,7 @@ define([
 
             var sendChunk = function (box, cb) {
                 var enc = Nacl.util.encodeBase64(box);
-                common.uploadChunk(enc, function (e, msg) {
+                common.uploadChunk(teamId, enc, function (e, msg) {
                     cb(e, msg);
                 });
             };
@@ -79,7 +81,7 @@ define([
                 }
 
                 // if not box then done
-                common.uploadComplete(id, owned, function (e) {
+                common.uploadComplete(teamId, id, owned, function (e) {
                     if (e) { return void console.error(e); }
                     var uri = ['', 'blob', id.slice(0,2), id].join('/');
                     console.log("encrypted blob is now available as %s", uri);
@@ -90,6 +92,7 @@ define([
                     if (noStore) { return void onComplete(href); }
 
                     var data = {
+                        teamId: teamId,
                         title: title || "",
                         href: href,
                         path: path,
@@ -107,7 +110,7 @@ define([
                 });
             };
 
-            common.uploadStatus(estimate, function (e, pending) {
+            common.uploadStatus(teamId, estimate, function (e, pending) {
                 if (e) {
                     console.error(e);
                     onError(e);
@@ -117,7 +120,7 @@ define([
                 if (pending) {
                     return void onPending(function () {
                         // if the user wants to cancel the pending upload to execute that one
-                        common.uploadCancel(estimate, function (e) {
+                        common.uploadCancel(teamId, estimate, function (e) {
                             if (e) {
                                 return void console.error(e);
                             }

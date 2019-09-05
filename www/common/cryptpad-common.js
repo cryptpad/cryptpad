@@ -110,6 +110,14 @@ define([
             data: data
         }, cb);
     };
+    common.getEdPublic = function (teamId, cb) {
+        postMessage("GET", {
+            teamId: teamId,
+            key: ['edPublic']
+        }, function (obj) {
+            cb(obj);
+        });
+    };
     // Settings and ready
     common.mergeAnonDrive = function (cb) {
         var data = {
@@ -259,11 +267,8 @@ define([
         postMessage("CLEAR_OWNED_CHANNEL", channel, cb);
     };
     // "force" allows you to delete your drive ID
-    common.removeOwnedChannel = function (channel, cb, force) {
-        postMessage("REMOVE_OWNED_CHANNEL", {
-            channel: channel,
-            force: force
-        }, cb);
+    common.removeOwnedChannel = function (data, cb) {
+        postMessage("REMOVE_OWNED_CHANNEL", data, cb);
     };
 
     common.getDeletedPads = function (data, cb) {
@@ -273,29 +278,29 @@ define([
         });
     };
 
-    common.uploadComplete = function (id, owned, cb) {
-        postMessage("UPLOAD_COMPLETE", {id: id, owned: owned}, function (obj) {
+    common.uploadComplete = function (teamId, id, owned, cb) {
+        postMessage("UPLOAD_COMPLETE", {teamId: teamId, id: id, owned: owned}, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });
     };
 
-    common.uploadStatus = function (size, cb) {
-        postMessage("UPLOAD_STATUS", {size: size}, function (obj) {
+    common.uploadStatus = function (teamId, size, cb) {
+        postMessage("UPLOAD_STATUS", {teamId: teamId, size: size}, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });
     };
 
-    common.uploadCancel = function (size, cb) {
-        postMessage("UPLOAD_CANCEL", {size: size}, function (obj) {
+    common.uploadCancel = function (teamId, size, cb) {
+        postMessage("UPLOAD_CANCEL", {teamId: teamId, size: size}, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });
     };
 
-    common.uploadChunk = function (data, cb) {
-        postMessage("UPLOAD_CHUNK", {chunk: data}, function (obj) {
+    common.uploadChunk = function (teamId, data, cb) {
+        postMessage("UPLOAD_CHUNK", {teamId: teamId, chunk: data}, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });
@@ -496,6 +501,7 @@ define([
         Cryptput(hash, data.toSave, function (e) {
             if (e) { throw new Error(e); }
             postMessage("ADD_PAD", {
+                teamId: data.teamId,
                 href: href,
                 title: data.title,
                 path: ['template']
@@ -784,6 +790,7 @@ define([
         });
     };
 
+    // XXX Teams: change the password of a pad owned by the team
     common.changePadPassword = function (Crypt, href, newPassword, edPublic, cb) {
         if (!href) { return void cb({ error: 'EINVAL_HREF' }); }
         var parsed = Hash.parsePadUrl(href);
@@ -850,7 +857,10 @@ define([
             }, waitFor());
             pad.onDisconnectEvent.fire(true);
         }).nThen(function (waitFor) {
-            common.removeOwnedChannel(oldChannel, waitFor(function (obj) {
+            common.removeOwnedChannel({
+                channel: oldChannel,
+                teamId: null // TODO
+            }, waitFor(function (obj) {
                 if (obj && obj.error) {
                     waitFor.abort();
                     return void cb(obj);
@@ -1027,7 +1037,11 @@ define([
         }).nThen(function (waitFor) {
             if (oldIsOwned) {
                 console.log('removing old drive');
-                common.removeOwnedChannel(secret.channel, waitFor(function (obj) {
+                common.removeOwnedChannel({
+                    channel: secret.channel,
+                    teamId: null,
+                    force: true
+                }, waitFor(function (obj) {
                     if (obj && obj.error) {
                         // Deal with it as if it was not owned
                         oldIsOwned = false;
@@ -1036,7 +1050,7 @@ define([
                     common.logoutFromAll(waitFor(function () {
                         postMessage("DISCONNECT");
                     }));
-                }), true);
+                }));
             }
         }).nThen(function (waitFor) {
             if (!oldIsOwned) {
