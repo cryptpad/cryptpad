@@ -43,70 +43,88 @@ define([
             modules: {}
         };
 
-        var getProxy = function (teamId) {
-            if (!teamId) { return store.proxy; }
+        var getStore = function (teamId) {
+            if (!teamId) { return store; }
             try {
                 var teams = store.modules['team'];
                 var team = teams.getTeam(teamId);
-                if (team) { return; }
-                return team.proxy;
+                if (!team) {
+                    console.error('Team not found', teamId);
+                    return;
+                }
+                return team;
             } catch (e) {
                 console.error(e);
+                console.error('Team not found', teamId);
                 return;
             }
+        };
+        var getProxy = function (teamId) {
+            var s = getStore(teamId);
+            if (!s) { return; }
+            return s.proxy;
         };
         var getManager = function (teamId) {
-            if (!teamId) { return store.manager; }
-            try {
-                var teams = store.modules['team'];
-                var team = teams.getTeam(teamId);
-                if (team) { return; }
-                return team.manager;
-            } catch (e) {
-                console.error(e);
-                return;
-            }
+            var s = getStore(teamId);
+            if (!s) { return; }
+            return s.manager;
         };
 
-        var onSync = function (cb) {
+        // XXX search for all calls
+        var onSync = function (teamId, cb) {
+            var s = getStore(teamId);
+            if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             nThen(function (waitFor) {
-                Realtime.whenRealtimeSyncs(store.realtime, waitFor());
-                if (store.sharedFolders) {
-                    for (var k in store.sharedFolders) {
-                        Realtime.whenRealtimeSyncs(store.sharedFolders[k].realtime, waitFor());
+                Realtime.whenRealtimeSyncs(s.realtime, waitFor());
+                if (s.sharedFolders) {
+                    for (var k in s.sharedFolders) {
+                        Realtime.whenRealtimeSyncs(s.sharedFolders[k].realtime, waitFor());
                     }
                 }
             }).nThen(function () { cb(); });
         };
 
-        Store.get = function (clientId, key, cb) {
-            cb(Util.find(store.proxy, key));
+        // OKTEAM
+        Store.get = function (clientId, data, cb) {
+            var s = getStore(data.teamId);
+            if (!s) { return void cb({ error: 'ENOTFOUND' }); }
+            cb(Util.find(s.proxy, data.key));
         };
         Store.set = function (clientId, data, cb) {
+            var s = getStore(data.teamId);
+            if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             var path = data.key.slice();
             var key = path.pop();
-            var obj = Util.find(store.proxy, path);
+            var obj = Util.find(s.proxy, path);
             if (!obj || typeof(obj) !== "object") { return void cb({error: 'INVALID_PATH'}); }
             if (typeof data.value === "undefined") {
                 delete obj[key];
             } else {
                 obj[key] = data.value;
             }
+            if (!data.teamId) {
             broadcast([clientId], "UPDATE_METADATA");
-            if (Array.isArray(path) && path[0] === 'profile' && store.messenger) {
-                Messaging.updateMyData(store);
+                if (Array.isArray(path) && path[0] === 'profile' && store.messenger) {
+                    Messaging.updateMyData(store);
+                }
             }
-            onSync(cb);
+            onSync(data.teamId, cb);
         };
 
-        Store.getSharedFolder = function (clientId, id, cb) {
-            if (store.manager.folders[id]) {
-                return void cb(store.manager.folders[id].proxy);
+        Store.getSharedFolder = function (clientId, data, cb) {
+            var s = getStore(data.teamId);
+            var id = data.id;
+            if (!s || !s.manager) { return void cb({ error: 'ENOTFOUND' }); }
+            if (s.manager.folders[id]) {
+                // If it is loaded, return the shared folder proxy
+                return void cb(s.manager.folders[id].proxy);
             } else {
-                var shared = Util.find(store.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
+                // Otherwise, check if we know this shared folder
+                var shared = Util.find(s.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
                 if (shared[id]) {
-                    return void Store.loadSharedFolder(id, shared[id], function () {
-                        cb(store.manager.folders[id].proxy);
+                    // If we know the shared folder, load it and return the proxy
+                    return void Store.loadSharedFolder(data.teamId, id, shared[id], function () {
+                        cb(s.manager.folders[id].proxy);
                     });
                 }
             }
@@ -115,30 +133,34 @@ define([
 
         Store.restoreSharedFolder = function (clientId, data, cb) {
             if (!data.sfId || !data.drive) { return void cb({error:'EINVAL'}); }
-            if (store.sharedFolders[data.sfId]) {
+            var s = getStore(data.teamId);
+            if (s.sharedFolders[data.sfId]) {
                 Object.keys(data.drive).forEach(function (k) {
-                    store.sharedFolders[data.sfId].proxy[k] = data.drive[k];
+                    s.sharedFolders[data.sfId].proxy[k] = data.drive[k];
                 });
-                Object.keys(store.sharedFolders[data.sfId].proxy).forEach(function (k) {
+                Object.keys(s.sharedFolders[data.sfId].proxy).forEach(function (k) {
                     if (data.drive[k]) { return; }
-                    delete store.sharedFolders[data.sfId].proxy[k];
+                    delete s.sharedFolders[data.sfId].proxy[k];
                 });
             }
-            onSync(cb);
+            onSync(data.teamId, cb);
         };
 
+        // XXX Teams
         Store.hasSigningKeys = function () {
             if (!store.proxy) { return; }
             return typeof(store.proxy.edPrivate) === 'string' &&
                    typeof(store.proxy.edPublic) === 'string';
         };
 
+        // XXX Teams
         Store.hasCurveKeys = function () {
             if (!store.proxy) { return; }
             return typeof(store.proxy.curvePrivate) === 'string' &&
                    typeof(store.proxy.curvePublic) === 'string';
         };
 
+        // XXX TODO Implement same behavior in team.js
         var getUserChannelList = function () {
             // start with your userHash...
             var userHash = storeHash;
@@ -181,10 +203,12 @@ define([
             return list;
         };
 
+        // XXX TODO Implement same behavior in team.js
         var getExpirableChannelList = function () {
             return store.manager.getChannelsList('expirable');
         };
 
+        // XXX TODO Implement same behavior in team.js
         var getCanonicalChannelList = function (expirable) {
             var list = expirable ? getExpirableChannelList() : getUserChannelList();
             return Util.deduplicateString(list).sort();
@@ -194,6 +218,7 @@ define([
         /////////////////////// RPC //////////////////////////////////////
         //////////////////////////////////////////////////////////////////
 
+        // XXX Teams pin in teams
         Store.pinPads = function (clientId, data, cb) {
             if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
             if (typeof(cb) !== 'function') {
@@ -206,6 +231,7 @@ define([
             });
         };
 
+        // XXX Teams ...
         Store.unpinPads = function (clientId, data, cb) {
             if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
@@ -1529,24 +1555,29 @@ define([
         };
 
         // SHARED FOLDERS
-        var handleSharedFolder = function (id, rt) {
-            store.sharedFolders[id] = rt;
-            if (store.driveEvents) {
-                registerProxyEvents(rt.proxy, id);
-            }
+        var addSharedFolderHandler = function () {
+            store.sharedFolders = {};
+            store.handleSharedFolder = function (id, rt) {
+                store.sharedFolders[id] = rt;
+                if (store.driveEvents) {
+                    registerProxyEvents(rt.proxy, id);
+                }
+            };
         };
-        var loadSharedFolder = Store.loadSharedFolder = function (id, data, cb) {
+        Store.loadSharedFolder = function (teamId, id, data, cb) {
+            var s = getStore(teamId);
+            if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             var rt = SF.load({
                 network: store.network,
-                manager: store.manager
+                store: s
             }, id, data, cb);
-            handleSharedFolder(id, rt);
             return rt;
         };
+        var loadSharedFolder = function (id, data, cb) {
+            Store.loadSharedFolder(null, id, data, cb);
+        };
         Store.loadSharedFolderAnon = function (clientId, data, cb) {
-            loadSharedFolder(data.id, data.data, function () {
-                cb();
-            });
+            Store.loadSharedFolder(null, data.id, data.data, cb);
         };
         Store.addSharedFolder = function (clientId, data, cb) {
             store.manager.addSharedFolder(data, function (id) {
@@ -1827,6 +1858,8 @@ define([
                 }
             });
             var userObject = store.userObject = manager.user.userObject;
+            addSharedFolderHandler();
+
             nThen(function (waitFor) {
                 postMessage(clientId, 'LOADING_DRIVE', {
                     state: 2
@@ -1848,7 +1881,7 @@ define([
                     state: 3
                 });
                 userObject.fixFiles();
-                SF.loadSharedFolders(store.proxy, userObject, handleSharedFolder, waitFor);
+                SF.loadSharedFolders(Store, store.network, store, userObject, waitFor);
                 loadMessenger();
                 loadCursor();
                 loadOnlyOffice();

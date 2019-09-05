@@ -18,7 +18,9 @@ define([
     */
     SF.load = function (config, id, data, cb) {
         var network = config.network;
-        var manager = config.manager;
+        var store = config.store;
+        var manager = store.manager;
+        var handler = store.handleSharedFolder;
 
         var parsed = Hash.parsePadUrl(data.href);
         var secret = Hash.getSecrets('drive', parsed.hash, data.password);
@@ -43,18 +45,18 @@ define([
             manager.addProxy(id, rt.proxy, info.leave);
             cb(rt, info.metadata);
         });
+        if (handler) { handler(id, rt); }
         return rt;
     };
 
     /* loadSharedFolders
         load all shared folder stored in a given drive
-        - proxy: user or team main proxy
+        - store: user or team main store
         - userObject: userObject associated to the main drive
         - handler: a function (sfid, rt) called for each shared folder loaded
     */
-    SF.loadSharedFolders = function (proxy, userObject, handler, waitFor) {
-        store.sharedFolders = {};
-        var shared = Util.find(proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
+    SF.loadSharedFolders = function (Store, network, store, userObject, waitFor) {
+        var shared = Util.find(store.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
         // Check if any of our shared folder is expired or deleted by its owner.
         // If we don't check now, Listmap will create an empty proxy if it no longer exists on
         // the server.
@@ -81,8 +83,10 @@ define([
         }).nThen(function (waitFor) {
             Object.keys(shared).forEach(function (id) {
                 var sf = shared[id];
-                var rt = loadSharedFolder(id, sf, waitFor());
-                handler(id, rt);
+                var rt = SF.load({
+                    network: network,
+                    store: store
+                }, id, sf, waitFor());
             });
         }).nThen(waitFor());
     };

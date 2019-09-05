@@ -77,7 +77,7 @@ define([
     nThen(function (waitFor) {
         Cryptpad.ready(waitFor());
     }).nThen(function (waitFor) {
-        Cryptpad.getUserObject(waitFor(function (obj) {
+        Cryptpad.getUserObject(null, waitFor(function (obj) {
             proxy = obj;
         }));
     }).nThen(function () {

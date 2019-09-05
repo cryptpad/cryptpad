@@ -937,7 +937,7 @@ define([
             // Manager
             addProxy: callWithEnv(addProxy),
             removeProxy: callWithEnv(removeProxy),
-            addSharedFolder: callWithEnv(addSharedFolder);
+            addSharedFolder: callWithEnv(_addSharedFolder),
             // Drive
             command: callWithEnv(onCommand),
             getPadAttribute: callWithEnv(getPadAttribute),

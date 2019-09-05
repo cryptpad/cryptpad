@@ -43,7 +43,7 @@ define([
                 });
             });
             sframeChan.on('Q_SETTINGS_DRIVE_GET', function (d, cb) {
-                Cryptpad.getUserObject(function (obj) {
+                Cryptpad.getUserObject(null, function (obj) {
                     if (obj.error) { return void cb(obj); }
                     if (d === "full") {
                         // We want shared folders too
@@ -54,7 +54,9 @@ define([
                         if (!obj.drive || !obj.drive.sharedFolders) { return void cb(result); }
                         Utils.nThen(function (waitFor) {
                             Object.keys(obj.drive.sharedFolders).forEach(function (id) {
-                                Cryptpad.getSharedFolder(id, waitFor(function (obj) {
+                                Cryptpad.getSharedFolder({
+                                    id: id
+                                }, waitFor(function (obj) {
                                     result.sf[id] = obj;
                                 }));
                             });

@@ -91,13 +91,16 @@ define([
         });
     };
     // Settings and drive and auth
-    common.getUserObject = function (cb) {
-        postMessage("GET", [], function (obj) {
+    common.getUserObject = function (teamId, cb) {
+        postMessage("GET", {
+            teamId: teamId,
+            key: []
+        }, function (obj) {
             cb(obj);
         });
     };
-    common.getSharedFolder = function (id, cb) {
-        postMessage("GET_SHARED_FOLDER", id, function (obj) {
+    common.getSharedFolder = function (data, cb) {
+        postMessage("GET_SHARED_FOLDER", data, function (obj) {
             cb(obj);
         });
     };
@@ -137,6 +140,7 @@ define([
             return;
         }
         postMessage("SET", {
+            teamId: data.teamId,
             key:['drive'],
             value: data.drive
         }, function (obj) {
@@ -163,7 +167,7 @@ define([
     common.drive.onRemove = Util.mkEvent();
     // Profile
     common.getProfileEditUrl = function (cb) {
-        postMessage("GET", ['profile', 'edit'], function (obj) {
+        postMessage("GET", { key: ['profile', 'edit'] }, function (obj) {
             cb(obj);
         });
     };
@@ -184,7 +188,7 @@ define([
     };
     // Todo
     common.getTodoHash = function (cb) {
-        postMessage("GET", ['todo'], function (obj) {
+        postMessage("GET", { key: ['todo'] }, function (obj) {
             cb(obj);
         });
     };
@@ -1038,6 +1042,7 @@ define([
             if (!oldIsOwned) {
                 console.error('deprecating old drive.');
                 postMessage("SET", {
+                    teamId: data.teamId,
                     key: [Constants.deprecatedKey],
                     value: true
                 }, waitFor(function (obj) {

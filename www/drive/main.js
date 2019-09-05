@@ -71,12 +71,14 @@ define([
             });
             sframeChan.on('Q_DRIVE_GETOBJECT', function (data, cb) {
                 if (data && data.sharedFolder) {
-                    Cryptpad.getSharedFolder(data.sharedFolder, function (obj) {
+                    Cryptpad.getSharedFolder({
+                        id: data.sharedFolder
+                    }, function (obj) {
                         cb(obj);
                     });
                     return;
                 }
-                Cryptpad.getUserObject(function (obj) {
+                Cryptpad.getUserObject(null, function (obj) {
                     cb(obj);
                 });
             });

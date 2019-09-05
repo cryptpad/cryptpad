@@ -36,6 +36,7 @@ define([
         };
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
+        var teamId; // XXX
         var afterSecrets = function (Cryptpad, Utils, secret, cb) {
             var hash = window.location.hash.slice(1);
             if (hash && Utils.LocalStore.isLoggedIn()) {
@@ -66,17 +67,22 @@ define([
             sframeChan.on('Q_DRIVE_USEROBJECT', function (data, cb) {
                 Cryptpad.userObjectCommand(data, cb);
             });
-            sframeChan.on('Q_DRIVE_RESTORE', function (data, cb) {
+            // XXX no drive restore in teams? you could restore old keys...
+            /*sframeChan.on('Q_DRIVE_RESTORE', function (data, cb) {
+                data.teamId = teamId;
                 Cryptpad.restoreDrive(data, cb);
-            });
+            });*/
             sframeChan.on('Q_DRIVE_GETOBJECT', function (data, cb) {
                 if (data && data.sharedFolder) {
-                    Cryptpad.getSharedFolder(data.sharedFolder, function (obj) {
+                    Cryptpad.getSharedFolder({
+                        teamId: teamId,
+                        id: data.sharedFolder
+                    }, function (obj) {
                         cb(obj);
                     });
                     return;
                 }
-                Cryptpad.getUserObject(function (obj) {
+                Cryptpad.getUserObject(teamId, function (obj) {
                     cb(obj);
                 });
             });

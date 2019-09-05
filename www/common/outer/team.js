@@ -19,6 +19,15 @@ define([
         cb();
     };
 
+    var handleSharedFolder = function (ctx, id, sfId, rt) {
+        var t = ctx.teams[id];
+        if (!t) { return; }
+        t.sharedFolders[sfId] = rt;
+        // XXX register events
+        // rt.proxy.on('change',...  emit change event
+        // TODO: pin or unpin document added to a shared folder from someone who is not a member of the team
+    };
+
     var onready = function (ctx, team, id, cb) {
         // XXX
         // load manager
@@ -49,8 +58,13 @@ define([
             ctx.teams[id] = {
                 proxy: lm.proxy,
                 listmap: lm,
-                clients: []
+                clients: [],
+                manager: undefined, // XXX
+                realtime: lm.realtime,
+                handleSharedFolder: function (sfId, rt) { handleSharedFolder(ctx, id, sfId, rt); },
+                sharedFolders: {} // equivalent of store.sharedFolders in async-store
             };
+
             onReady(ctx, team, id, function () {
                 // TODO
             });
