@@ -272,12 +272,12 @@ var getChannelList = function (Env, publicKey, cb) {
     });
 };
 
-var makeFilePath = function (root, id) {
+var makeFilePath = function (root, id) { // FIXME FILES
     if (typeof(id) !== 'string' || id.length <= 2) { return null; }
     return Path.join(root, id.slice(0, 2), id);
 };
 
-var getUploadSize = function (Env, channel, cb) {
+var getUploadSize = function (Env, channel, cb) { // FIXME FILES
     var paths = Env.paths;
     var path = makeFilePath(paths.blob, channel);
     if (!path) {
@@ -549,7 +549,7 @@ var applyCustomLimits = function (Env, config) {
 
 // The limits object contains storage limits for all the publicKey that have paid
 // To each key is associated an object containing the 'limit' value and a 'note' explaining that limit
-var updateLimits = function (Env, config, publicKey, cb /*:(?string, ?any[])=>void*/) {
+var updateLimits = function (Env, config, publicKey, cb /*:(?string, ?any[])=>void*/) { // FIXME BATCH?
 
     if (config.adminEmail === false) {
         applyCustomLimits(Env, config);
@@ -842,7 +842,7 @@ var resetUserPins = function (Env, publicKey, channelList, cb) {
     });
 };
 
-var makeFileStream = function (root, id, cb) {
+var makeFileStream = function (root, id, cb) { // FIXME FILES
     var stub = id.slice(0, 2);
     var full = makeFilePath(root, id);
     if (!full) {
@@ -873,7 +873,7 @@ var makeFileStream = function (root, id, cb) {
     });
 };
 
-var isFile = function (filePath, cb) {
+var isFile = function (filePath, cb) { // FIXME FILES
     /*:: if (typeof(filePath) !== 'string') { throw new Error('should never happen'); } */
     Fs.stat(filePath, function (e, stats) {
         if (e) {
@@ -903,8 +903,7 @@ var clearOwnedChannel = function (Env, channelId, unsafeKey, cb) {
     });
 };
 
-var removeOwnedBlob = function (Env, blobId, unsafeKey, cb) {
-        // FIXME METADATA
+var removeOwnedBlob = function (Env, blobId, unsafeKey, cb) { // FIXME FILES // FIXME METADATA
     var safeKey = escapeKeyCharacters(unsafeKey);
     var safeKeyPrefix = safeKey.slice(0,3);
     var blobPrefix = blobId.slice(0,2);
@@ -1020,7 +1019,7 @@ var removePins = function (Env, safeKey, cb) {
     });
 };
 
-var upload = function (Env, publicKey, content, cb) {
+var upload = function (Env, publicKey, content, cb) { // FIXME FILES
     var paths = Env.paths;
     var dec;
     try { dec = Buffer.from(content, 'base64'); }
@@ -1056,7 +1055,7 @@ var upload = function (Env, publicKey, content, cb) {
     }
 };
 
-var upload_cancel = function (Env, publicKey, fileSize, cb) {
+var upload_cancel = function (Env, publicKey, fileSize, cb) { // FIXME FILES
     var paths = Env.paths;
 
     var session = getSession(Env.Sessions, publicKey);
@@ -1080,7 +1079,7 @@ var upload_cancel = function (Env, publicKey, fileSize, cb) {
     });
 };
 
-var upload_complete = function (Env, publicKey, id, cb) { // FIXME logging
+var upload_complete = function (Env, publicKey, id, cb) { // FIXME FILES
     var paths = Env.paths;
     var session = getSession(Env.Sessions, publicKey);
 
@@ -1096,7 +1095,7 @@ var upload_complete = function (Env, publicKey, id, cb) { // FIXME logging
 
     var oldPath = makeFilePath(paths.staging, publicKey);
     if (!oldPath) {
-        WARN('safeMkdir', "oldPath is null"); // FIXME logging
+        WARN('safeMkdir', "oldPath is null");
         return void cb('RENAME_ERR');
     }
 
@@ -1104,13 +1103,13 @@ var upload_complete = function (Env, publicKey, id, cb) { // FIXME logging
         var prefix = id.slice(0, 2);
         var newPath = makeFilePath(paths.blob, id);
         if (typeof(newPath) !== 'string') {
-            WARN('safeMkdir', "newPath is null"); // FIXME logging
+            WARN('safeMkdir', "newPath is null");
             return void cb('RENAME_ERR');
         }
 
         Fse.mkdirp(Path.join(paths.blob, prefix), function (e) {
             if (e || !newPath) {
-                WARN('safeMkdir', e); // FIXME logging
+                WARN('safeMkdir', e);
                 return void cb('RENAME_ERR');
             }
             isFile(newPath, function (e, yes) {
@@ -1133,7 +1132,6 @@ var upload_complete = function (Env, publicKey, id, cb) { // FIXME logging
             return void cb(e || 'PATH_ERR');
         }
 
-        // lol wut handle ur errors
         Fse.move(oldPath, newPath, function (e) {
             if (e) {
                 WARN('rename', e);
@@ -1146,7 +1144,7 @@ var upload_complete = function (Env, publicKey, id, cb) { // FIXME logging
     tryLocation(handleMove);
 };
 
-/*
+/* FIXME FILES
 var owned_upload_complete = function (Env, safeKey, cb) {
     var session = getSession(Env.Sessions, safeKey);
 
@@ -1241,7 +1239,7 @@ var owned_upload_complete = function (Env, safeKey, cb) {
 };
 */
 
-var owned_upload_complete = function (Env, safeKey, id, cb) { // FIXME logging
+var owned_upload_complete = function (Env, safeKey, id, cb) { // FIXME FILES
     var session = getSession(Env.Sessions, safeKey);
 
     // the file has already been uploaded to the staging area
@@ -1352,7 +1350,7 @@ var owned_upload_complete = function (Env, safeKey, id, cb) { // FIXME logging
     });
 };
 
-var upload_status = function (Env, publicKey, filesize, cb) {
+var upload_status = function (Env, publicKey, filesize, cb) { // FIXME FILES
     var paths = Env.paths;
 
     // validate that the provided size is actually a positive number
@@ -1398,7 +1396,7 @@ var upload_status = function (Env, publicKey, filesize, cb) {
     author of the block, since we assume that the block will have been
     encrypted with xsalsa20-poly1305 which is authenticated.
 */
-var validateLoginBlock = function (Env, publicKey, signature, block, cb) {
+var validateLoginBlock = function (Env, publicKey, signature, block, cb) { // FIXME BLOCKS
     // convert the public key to a Uint8Array and validate it
     if (typeof(publicKey) !== 'string') { return void cb('E_INVALID_KEY'); }
 
@@ -1439,7 +1437,7 @@ var validateLoginBlock = function (Env, publicKey, signature, block, cb) {
     return void cb(null, u8_block);
 };
 
-var createLoginBlockPath = function (Env, publicKey) {
+var createLoginBlockPath = function (Env, publicKey) { // FIXME BLOCKS
     // prepare publicKey to be used as a file name
     var safeKey = escapeKeyCharacters(publicKey);
 
@@ -1453,7 +1451,7 @@ var createLoginBlockPath = function (Env, publicKey) {
     return Path.join(Env.paths.block, safeKey.slice(0, 2), safeKey);
 };
 
-var writeLoginBlock = function (Env, msg, cb) {
+var writeLoginBlock = function (Env, msg, cb) { // FIXME BLOCKS
     //console.log(msg);
     var publicKey = msg[0];
     var signature = msg[1];
@@ -1484,7 +1482,7 @@ var writeLoginBlock = function (Env, msg, cb) {
                     cb(e);
                 }
             }));
-        }).nThen(function () { // FIXME logging
+        }).nThen(function () {
             // actually write the block
 
             // flow is dumb and I need to guard against this which will never happen
@@ -1508,7 +1506,7 @@ var writeLoginBlock = function (Env, msg, cb) {
     information, we can just sign some constant and use that as proof.
 
 */
-var removeLoginBlock = function (Env, msg, cb) {
+var removeLoginBlock = function (Env, msg, cb) { // FIXME BLOCKS
     var publicKey = msg[0];
     var signature = msg[1];
     var block = Nacl.util.decodeUTF8('DELETE_BLOCK'); // clients and the server will have to agree on this constant
@@ -1862,7 +1860,7 @@ RPC.create = function (
                     respond(e, [null, size, null]);
                 });
             case 'GET_METADATA':
-                return void getMetadata(Env, msg[1], function (e, data) { // FIXME METADATA
+                return void getMetadata(Env, msg[1], function (e, data) {
                     WARN(e, msg[1]);
                     respond(e, [null, data, null]);
                 });
