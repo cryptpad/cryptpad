@@ -1,4 +1,4 @@
-(function () {
+(function (window) {
 var factory = function (Util, Crypto, Nacl) {
     var Hash = window.CryptPad_Hash = {};
 
@@ -547,4 +547,4 @@ Version 1
     } else {
         // unsupported initialization
     }
-}());
+}(typeof(window) !== 'undefined'? window : {}));

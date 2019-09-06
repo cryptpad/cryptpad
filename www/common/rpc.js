@@ -19,26 +19,21 @@ var factory = function (Util, Nacl) {
     // and finally sends it off to the historyKeeper, which delegates its
     // processing to the RPC submodule
     var sendMsg = function (ctx, data, cb) {
-        // enforce async behaviour
-        setTimeout(function () {
-            if (typeof(cb) !== 'function') {
-                return console.error('expected callback');
-            }
+        if (typeof(cb) !== 'function') { throw new Error('expected callback'); }
 
-            var network = ctx.network;
-            var hkn = network.historyKeeper;
-            if (typeof(hkn) !== 'string') { return void cb("NO_HISTORY_KEEPER"); }
+        var network = ctx.network;
+        var hkn = network.historyKeeper;
+        if (typeof(hkn) !== 'string') { return void cb("NO_HISTORY_KEEPER"); }
 
-            var txid = uid();
+        var txid = uid();
 
-            var pending = ctx.pending[txid] = function (err, response) {
-                cb(err, response);
-            };
-            pending.data = data;
-            pending.called = 0;
+        var pending = ctx.pending[txid] = function (err, response) {
+            cb(err, response);
+        };
+        pending.data = data;
+        pending.called = 0;
 
-            return network.sendto(hkn, JSON.stringify([txid, data]));
-        });
+        return network.sendto(hkn, JSON.stringify([txid, data]));
     };
 
     var matchesAnon = function (ctx, txid) {
@@ -190,9 +185,11 @@ var factory = function (Util, Nacl) {
             connected: true,
         };
 
-        var send = ctx.send = function (type, msg, cb) {
+        var send = ctx.send = function (type, msg, _cb) {
+            var cb = Util.mkAsync(_cb);
+
             if (!ctx.connected && type !== 'COOKIE') {
-                return void Util.mkAsync(cb)("DISCONNECTED");
+                return void cb("DISCONNECTED");
             }
 
             // construct a signed message...
@@ -233,12 +230,9 @@ var factory = function (Util, Nacl) {
             }
         };
 
-        send.unauthenticated = function (type, msg, cb) {
-            if (!ctx.connected) {
-                return void setTimeout(function () {
-                    cb('DISCONNECTED');
-                });
-            }
+        send.unauthenticated = function (type, msg, _cb) {
+            var cb = Util.mkAsync(_cb);
+            if (!ctx.connected) { return void cb('DISCONNECTED'); }
 
             // construct an unsigned message
             var data = [null, keys.publicKeyString, null, type, msg];
@@ -284,8 +278,10 @@ var factory = function (Util, Nacl) {
         return initAuthenticatedRpc(networkContext, keys);
     };
 
-    var create = function (network, edPrivateKey, edPublicKey, cb) {
-        if (typeof(cb) !== 'function') { throw new Error("expected callback"); }
+    var create = function (network, edPrivateKey, edPublicKey, _cb) {
+        if (typeof(_cb) !== 'function') { throw new Error("expected callback"); }
+
+        var cb = Util.mkAsync(_cb);
 
         var signKey;
 
@@ -335,12 +331,9 @@ var factory = function (Util, Nacl) {
         // any particular network will only ever need one anonymous rpc
         networkContext.anon = ctx;
 
-        ctx.send = function (type, msg, cb) {
-            if (!ctx.connected) {
-                return void setTimeout(function () {
-                    cb('DISCONNECTED');
-                });
-            }
+        ctx.send = function (type, msg, _cb) {
+            var cb = Util.mkAsync(_cb);
+            if (!ctx.connected) { return void cb('DISCONNECTED'); }
 
             // construct an unsigned message...
             var data = [type, msg];
@@ -382,7 +375,10 @@ var factory = function (Util, Nacl) {
         return networkContext.anon || initAnonRpc(networkContext);
     };
 
-    var createAnonymous = function (network, cb) {
+    var createAnonymous = function (network, _cb) {
+        // enforce asynchrony
+        var cb = Util.mkAsync(_cb);
+
         if (typeof(cb) !== 'function') { throw new Error("expected callback"); }
         if (!network) { return void cb('NO_NETWORK'); }
 
