@@ -99,7 +99,7 @@ var factory = function (Util, Nacl) {
             // NO_COOKIE errors mean you failed to authenticate.
             // request a new cookie and resend the query
             if (parsed[2] === 'NO_COOKIE') {
-                return void ctx.send('COOKIE', "", function (e) {
+                return void rpc_ctx.send('COOKIE', "", function (e) {
                     if (e) {
                         console.error(e);
                         return void pending(e);
@@ -107,7 +107,7 @@ var factory = function (Util, Nacl) {
 
                     // resend the same command again
                     // give up if you've already tried resending
-                    if (ctx.resend(txid)) { delete ctx.pending[txid]; }
+                    if (rpc_ctx.resend(txid)) { delete rpc_ctx.pending[txid]; }
                 });
             }
 
@@ -115,7 +115,7 @@ var factory = function (Util, Nacl) {
             // call back with the error message
             pending(parsed[2]);
             // and delete the pending callback
-            delete ctx.pending[txid];
+            delete rpc_ctx.pending[txid];
 
             // prevent further iteration
             return true;
