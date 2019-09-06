@@ -217,7 +217,7 @@ define([
             if (!proxy.drive || typeof(proxy.drive) !== 'object') {
                 throw new Error("Corrupted drive");
             }
-            DriveUI.create(common, {
+            var drive = DriveUI.create(common, {
                 proxy: proxy,
                 folders: folders,
                 updateObject: updateObject,
@@ -228,13 +228,13 @@ define([
 
             var onDisconnect = function (noAlert) {
                 setEditable(false);
-                if (APP.refresh) { APP.refresh(); }
+                if (drive.refresh) { drive.refresh(); }
                 APP.toolbar.failed();
                 if (!noAlert) { UI.alert(Messages.common_connectionLost, undefined, true); }
             };
             var onReconnect = function (info) {
                 setEditable(true);
-                if (APP.refresh) { APP.refresh(); }
+                if (drive.refresh) { drive.refresh(); }
                 APP.toolbar.reconnecting(info.myId);
                 UI.findOKButton().click();
             };

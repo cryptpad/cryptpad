@@ -1,5 +1,6 @@
 @import (reference) '../../customize/src/less2/include/framework.less';
 @import (reference) '../../customize/src/less2/include/drive.less';
+@import (reference) '../../customize/src/less2/include/sidebar-layout.less';
 
 &.cp-app-team {
     .framework_min_main(
@@ -9,5 +10,21 @@
     );
 
     .drive_main();
+    .sidebar-layout_main();
+
+    .cp-app-team-container {
+        flex: 1;
+        display: flex;
+        width: 100%;
+        flex-flow: row;
+        .cp-app-team-drive {
+            flex: 1;
+            display: flex;
+            &.hidden {
+                display: none;
+            }
+        }
+        
+    }
 }
 

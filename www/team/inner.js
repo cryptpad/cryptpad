@@ -28,6 +28,7 @@ define([
     Messages)
 {
     var APP = {};
+    var driveAPP = {};
     var SHARED_FOLDER_NAME = Messages.fm_sharedFolderName;
 
     var copyObjectValue = function (objRef, objToCopy) {
@@ -58,26 +59,155 @@ define([
     var updateObject = function (sframeChan, obj, cb) {
         sframeChan.query('Q_DRIVE_GETOBJECT', null, function (err, newObj) {
             copyObjectValue(obj, newObj);
-            if (!APP.loggedIn && APP.newSharedFolder) {
+            if (!driveAPP.loggedIn && driveAPP.newSharedFolder) {
                 obj.drive.sharedFolders = obj.drive.sharedFolders || {};
-                obj.drive.sharedFolders[APP.newSharedFolder] = {};
+                obj.drive.sharedFolders[driveAPP.newSharedFolder] = {};
             }
             cb();
         });
     };
 
-    var history = {
-        isHistoryMode: false,
-    };
-
     var setEditable = DriveUI.setEditable;
 
-    var setHistory = function (bool, update) {
-        history.isHistoryMode = bool;
-        setEditable(!bool);
-        if (!bool && update) {
-            history.onLeaveHistory();
+    var mainCategories = {
+        'general': [
+            'cp-team-info',
+        ],
+        'list': [
+            'cp-team-list',
+        ],
+        'create': [
+            'cp-team-create',
+        ],
+    };
+    var teamCategories = {
+        'back': [
+        ],
+        'drive': [
+        ],
+        'members': [
+        ],
+    };
+
+    var create = {};
+
+    var makeBlock = function (key, getter) {
+        create[key] = function (common) {
+            var $div = $('<div>', {'class': 'cp-team-' + key + ' cp-sidebarlayout-element'});
+            getter(common, function (content) {
+                $div.append(content);
+            });
+            return $div;
+        };
+    };
+
+    makeBlock('info', function (common, cb) {
+        cb([
+            h('h3', 'Team application'), // XXX
+            h('p', 'From here you can ...') // XXX
+        ]);
+    });
+
+    makeBlock('list', function (common, cb) {
+        var content = [];
+        var sframeChan = common.getSframeChannel();
+        APP.module.execCommand('LIST_TEAMS', null, function (obj) {
+            
+        });
+    });
+
+    // Sidebar layout
+
+    var hideCategories = function () {
+        APP.$rightside.find('> div').hide();
+    };
+    var showCategories = function (cat) {
+        hideCategories();
+        cat.forEach(function (c) {
+            APP.$rightside.find('.'+c).show();
+        });
+    };
+    var createLeftside = function (team) {
+        APP.$leftside.empty();
+        var $categories = $('<div>', {'class': 'cp-sidebarlayout-categories'})
+                            .appendTo(APP.$leftside);
+
+        var categories = team ? teamCategories : mainCategories;
+        var active = team ? 'drive' : 'general';
+
+        Object.keys(categories).forEach(function (key) {
+            var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
+            if (key === 'general') { $category.append($('<span>', {'class': 'fa fa-info-circle'})); }
+            if (key === 'list') { $category.append($('<span>', {'class': 'fa fa-list'})); }
+            if (key === 'create') { $category.append($('<span>', {'class': 'fa fa-plus-circle'})); }
+            if (key === 'back') { $category.append($('<span>', {'class': 'fa fa-arrow-left'})); }
+            if (key === 'members') { $category.append($('<span>', {'class': 'fa fa-users'})); }
+            if (key === 'drive') { $category.append($('<span>', {'class': 'fa fa-hdd-o'})); }
+
+            if (key === active) {
+                $category.addClass('cp-leftside-active');
+            }
+
+            $category.click(function () {
+                if (!Array.isArray(categories[key]) && categories[key].onClick) {
+                    categories[key].onClick();
+                    return;
+                }
+                $categories.find('.cp-leftside-active').removeClass('cp-leftside-active');
+                $category.addClass('cp-leftside-active');
+                showCategories(categories[key]);
+            });
+
+            $category.append(Messages['team_cat_'+key] || key); // XXX
+        });
+        showCategories(categories[active]);
+    };
+
+    var buildUI = function (common, team) {
+        var $rightside = APP.$rightside;
+        $rightside.empty();
+        var addItem = function (cssClass) {
+            var item = cssClass.slice(8);
+            if (typeof (create[item]) === "function") {
+                $rightside.append(create[item](common));
+            }
+        };
+        var categories = team ? teamCategories : mainCategories;
+        for (var cat in categories) {
+            if (!Array.isArray(categories[cat])) { continue; }
+            categories[cat].forEach(addItem);
         }
+
+        createLeftside(team);
+    };
+
+    // Team APP
+
+    var loadTeam = function (common) {
+        var sframeChan = common.getSframeChannel();
+        nThen(function (waitFor) {
+            updateObject(sframeChan, proxy, waitFor(function () {
+                updateSharedFolders(sframeChan, null, proxy.drive, folders, waitFor());
+            }));
+        }).nThen(function (waitFor) {
+            if (!proxy.drive || typeof(proxy.drive) !== 'object') {
+                throw new Error("Corrupted drive");
+            }
+            var drive = DriveUI.create(common, {
+                proxy: proxy,
+                folders: folders,
+                updateObject: updateObject,
+                updateSharedFolders: updateSharedFolders,
+                APP: driveAPP
+            });
+            driveAPP.refresh = drive.refresh;
+        });
+        buildUI(common, true);
+    };
+
+    var loadMain = function (common) {
+        buildUI(common);
+        UI.removeLoadingScreen();
     };
 
     var main = function () {
@@ -91,151 +221,86 @@ define([
                 UI.addLoadingScreen();
             }));
             window.cryptpadStore.getAll(waitFor(function (val) {
-                APP.store = JSON.parse(JSON.stringify(val));
+                driveAPP.store = JSON.parse(JSON.stringify(val));
             }));
             SFCommon.create(waitFor(function (c) { common = c; }));
         }).nThen(function (waitFor) {
-            var privReady = Util.once(waitFor());
-            var metadataMgr = common.getMetadataMgr();
-            if (JSON.stringify(metadataMgr.getPrivateData()) !== '{}') {
-                privReady();
-                return;
-            }
-            metadataMgr.onChange(function () {
-                if (typeof(metadataMgr.getPrivateData().readOnly) === 'boolean') {
-                    readOnly = APP.readOnly = metadataMgr.getPrivateData().readOnly;
-                    privReady();
-                }
-            });
+            APP.$container = $('#cp-sidebarlayout-container');
+            APP.$leftside = $('<div>', {id: 'cp-sidebarlayout-leftside'}).appendTo(APP.$container);
+            APP.$rightside = $('<div>', {id: 'cp-sidebarlayout-rightside'}).appendTo(APP.$container);
+            sFrameChan = common.getSframeChannel();
+            sFrameChan.onReady(waitFor());
         }).nThen(function (waitFor) {
-            APP.loggedIn = common.isLoggedIn();
-            if (!APP.loggedIn) { Feedback.send('ANONYMOUS_DRIVE'); }
-            APP.$body = $('body');
-            APP.$bar = $('#cp-toolbar');
+            var sframeChan = common.getSframeChannel();
+            var metadataMgr = common.getMetadataMgr();
+            var privateData = metadataMgr.getPrivateData();
+            readOnly = driveAPP.readOnly = metadataMgr.getPrivateData().readOnly;
 
-            common.setTabTitle(Messages.type.drive);
+            driveAPP.loggedIn = common.isLoggedIn();
+            if (!driveAPP.loggedIn) { throw new Error('NOT_LOGGED_IN'); }
 
+            common.setTabTitle('TEAMS'); // XXX
+
+            // Drive data
             var metadataMgr = common.getMetadataMgr();
             var privateData = metadataMgr.getPrivateData();
             if (privateData.newSharedFolder) {
-                APP.newSharedFolder = privateData.newSharedFolder;
+                driveAPP.newSharedFolder = privateData.newSharedFolder;
             }
+            driveAPP.disableSF = !privateData.enableSF && AppConfig.disableSharedFolders;
 
-            var sframeChan = common.getSframeChannel();
-            updateObject(sframeChan, proxy, waitFor(function () {
-                updateSharedFolders(sframeChan, null, proxy.drive, folders, waitFor());
-            }));
-        }).nThen(function () {
-            var sframeChan = common.getSframeChannel();
-            var metadataMgr = common.getMetadataMgr();
-            var privateData = metadataMgr.getPrivateData();
-
-            APP.disableSF = !privateData.enableSF && AppConfig.disableSharedFolders;
-            if (APP.newSharedFolder && !APP.loggedIn) {
-                readOnly = APP.readOnly = true;
-                var data = folders[APP.newSharedFolder];
-                if (data) {
-                    sframeChan.query('Q_SET_PAD_TITLE_IN_DRIVE', {
-                        title: data.metadata && data.metadata.title,
-                    }, function () {});
-                }
-            }
-
-            // ANON_SHARED_FOLDER
-            var pageTitle = (!APP.loggedIn && APP.newSharedFolder) ? SHARED_FOLDER_NAME : Messages.type.drive;
-
+            // Toolbar
+            var $bar = $('#cp-toolbar');
             var configTb = {
                 displayed: ['useradmin', 'pageTitle', 'newpad', 'limit', 'notifications'],
-                pageTitle: pageTitle,
+                pageTitle: 'TEAMS', // XXX
                 metadataMgr: metadataMgr,
                 readOnly: privateData.readOnly,
                 sfCommon: common,
-                $container: APP.$bar
+                $container: $bar
             };
-            var toolbar = APP.toolbar = Toolbar.create(configTb);
-
-            var $rightside = toolbar.$rightside;
-            $rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
-            APP.$displayName = APP.$bar.find('.' + Toolbar.constants.username);
+            var toolbar = Toolbar.create(configTb);
+            toolbar.$rightside.hide(); // hide the bottom part of the toolbar
+            // Update the name in the user menu
+            driveAPP.$displayName = $bar.find('.' + Toolbar.constants.username);
+            metadataMgr.onChange(function () {
+                var name = metadataMgr.getUserData().name || Messages.anonymous;
+                driveAPP.$displayName.text(name);
+            });
 
             /* add the usage */
-            if (APP.loggedIn) {
+            // XXX Teams
+            if (false) {
+                // Synchronous callback...
                 common.createUsageBar(function (err, $limitContainer) {
                     if (err) { return void DriveUI.logError(err); }
-                    APP.$limit = $limitContainer;
+                    driveAPP.$limit = $limitContainer;
                 }, true);
             }
 
-            /* add a history button */
-            APP.histConfig = {
-                onLocal: function () {
-                    UI.addLoadingScreen({ loadingText: Messages.fm_restoreDrive });
-                    var data = {};
-                    if (history.sfId) {
-                        copyObjectValue(folders[history.sfId], history.currentObj);
-                        data.sfId = history.sfId;
-                        data.drive = history.currentObj;
-                    } else {
-                        proxy.drive = history.currentObj.drive;
-                        data.drive = history.currentObj.drive;
-                    }
-                    sframeChan.query("Q_DRIVE_RESTORE", data, function () {
-                        UI.removeLoadingScreen();
-                    }, {
-                        timeout: 5 * 60 * 1000
-                    });
-                },
-                onOpen: function () {},
-                onRemote: function () {},
-                setHistory: setHistory,
-                applyVal: function (val) {
-                    var obj = JSON.parse(val || '{}');
-                    history.currentObj = obj;
-                    history.onEnterHistory(obj);
-                },
-                $toolbar: APP.$bar,
-            };
-
-            // Add a "Burn this drive" button
-            if (!APP.loggedIn) {
-                APP.$burnThisDrive = common.createButton(null, true).click(function () {
-                    UI.confirm(Messages.fm_burnThisDrive, function (yes) {
-                        if (!yes) { return; }
-                        common.getSframeChannel().event('EV_BURN_ANON_DRIVE');
-                    }, null, true);
-                }).attr('title', Messages.fm_burnThisDriveButton)
-                  .removeClass('fa-question')
-                  .addClass('fa-ban');
-            }
-
-            metadataMgr.onChange(function () {
-                var name = metadataMgr.getUserData().name || Messages.anonymous;
-                APP.$displayName.text(name);
+            // Load the Team module
+            APP.module = common.makeUniversal('team', {
+                onEvent: onEvent
             });
 
             $('body').css('display', '');
-            if (!proxy.drive || typeof(proxy.drive) !== 'object') {
-                throw new Error("Corrupted drive");
+            if (privateData.teamId) {
+                loadTeam(common, privateData.teamId);
+            } else {
+                loadMain(common);
             }
-            DriveUI.create(common, {
-                proxy: proxy,
-                folders: folders,
-                updateObject: updateObject,
-                updateSharedFolders: updateSharedFolders,
-                history: history,
-                APP: APP
-            });
+
 
             var onDisconnect = function (noAlert) {
                 setEditable(false);
-                if (APP.refresh) { APP.refresh(); }
-                APP.toolbar.failed();
+                if (driveAPP.refresh) { driveAPP.refresh(); }
+                toolbar.failed();
                 if (!noAlert) { UI.alert(Messages.common_connectionLost, undefined, true); }
             };
             var onReconnect = function (info) {
                 setEditable(true);
-                if (APP.refresh) { APP.refresh(); }
-                APP.toolbar.reconnecting(info.myId);
+                if (driveAPP.refresh) { driveAPP.refresh(); }
+                toolbar.reconnecting(info.myId);
                 UI.findOKButton().click();
             };
 

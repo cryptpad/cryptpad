@@ -535,7 +535,6 @@ define([
         // manager
         config.loggedIn = APP.loggedIn;
         config.sframeChan = sframeChan;
-        // XXX Teams. provide team id
         var manager = ProxyManager.createInner(files, sframeChan, edPublic, config);
 
         var LS = makeLS(teamId);
@@ -585,7 +584,6 @@ define([
 
         var virtualCategories = [SEARCH, RECENT, OWNED, TAGS];
 
-        // XXX Teams. not logged in should not be allowe din the team APP
         if (!APP.loggedIn) {
             $tree.hide();
             if (APP.newSharedFolder) {
@@ -4318,7 +4316,6 @@ define([
         refresh();
         UI.removeLoadingScreen();
 
-        // XXX Teams. should provide a team ID (or null for main drive)
         sframeChan.query('Q_DRIVE_GETDELETED', null, function (err, data) {
             var ids = manager.findChannels(data);
             var titles = [];
@@ -4331,6 +4328,10 @@ define([
             if (!titles.length) { return; }
             UI.log(Messages._getKey('fm_deletedPads', [titles.join(', ')]));
         });
+
+        return {
+            refresh: refresh
+        };
     };
 
     return {

@@ -1883,6 +1883,7 @@ define([
         If changes are made to your drive in the interim, they will trigger an
         update.
     */
+    // NOTE: The callback must stay SYNCHRONOUS
     var LIMIT_REFRESH_RATE = 30000; // milliseconds
     UIElements.createUsageBar = function (common, cb) {
         if (AppConfig.hideUsageBar) { return cb('USAGE_BAR_HIDDEN'); }

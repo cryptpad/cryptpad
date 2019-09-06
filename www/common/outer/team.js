@@ -145,11 +145,10 @@ define([
         }));
 
         Object.keys(teams).forEach(function (id) {
-            // XXX waitFor?
             // only if we want to make sure teams are loaded before remore the loading screen
-            openChannel(ctx, teams[id], id, function () {
+            openChannel(ctx, teams[id], id, waitFor(function () {
                 console.error('team '+id+' ready');
-            });
+            }));
         });
 
         team.getTeam = function (id) {
@@ -168,6 +167,9 @@ define([
             if (cmd === 'SUBSCRIBE') {
                 // Only the team app will subscribe to events?
                 return void subscribe(ctx, data, clientId, cb);
+            }
+            if (cmd === 'LIST_TEAMS') {
+                return void cb(ctx.teams);
             }
         };
 

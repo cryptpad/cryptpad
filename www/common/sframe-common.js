@@ -692,9 +692,10 @@ define([
             });
 
             ctx.sframeChan.ready();
-            cb(funcs);
 
             Mailbox.create(funcs);
+
+            cb(funcs);
         });
     } };
 });
