@@ -99,7 +99,7 @@ var factory = function (Util, Nacl) {
             // NO_COOKIE errors mean you failed to authenticate.
             // request a new cookie and resend the query
             if (parsed[2] === 'NO_COOKIE') {
-                return void rpc_ctx.send('COOKIE', "", function (e) {
+                rpc_ctx.send('COOKIE', "", function (e) {
                     if (e) {
                         console.error(e);
                         return void pending(e);
@@ -109,6 +109,8 @@ var factory = function (Util, Nacl) {
                     // give up if you've already tried resending
                     if (rpc_ctx.resend(txid)) { delete rpc_ctx.pending[txid]; }
                 });
+                // prevent further iteration
+                return true;
             }
 
             // if you're here then your RPC passed authentication but had some other error
@@ -124,7 +126,7 @@ var factory = function (Util, Nacl) {
             return;
         }
 
-        console.error("UNHANDLED RPC MESSAGE");
+        console.error("UNHANDLED RPC MESSAGE", msg);
     };
 
     var networks = [];
@@ -221,9 +223,16 @@ var factory = function (Util, Nacl) {
             // update the cookie and signature...
             pending.data[2] = ctx.cookie;
             pending.data[0] = signMsg(pending.data.slice(2), keys.signKey);
+
+            // store the callback with a new txid
+            var new_txid = uid();
+            ctx.pending[new_txid] = pending;
+            // and delete the old one
+            delete ctx.pending[txid];
+
             try {
                 return ctx.network.sendto(ctx.network.historyKeeper,
-                    JSON.stringify([txid, pending.data]));
+                    JSON.stringify([new_txid, pending.data]));
             } catch (e) {
                 console.log("failed to resend");
                 console.error(e);
