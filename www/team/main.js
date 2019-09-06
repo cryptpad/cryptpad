@@ -41,7 +41,7 @@ define([
             var hash = window.location.hash.slice(1);
             if (hash && Utils.LocalStore.isLoggedIn()) {
                 // Add a shared folder!
-                Cryptpad.addSharedFolder(secret, function (id) {
+                Cryptpad.addSharedFolder(teamId, secret, function (id) {
                     window.CryptPad_newSharedFolder = id;
                     cb();
                 });
@@ -58,13 +58,8 @@ define([
             cb();
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
-            sframeChan.on('EV_BURN_ANON_DRIVE', function () {
-                if (Utils.LocalStore.isLoggedIn()) { return; }
-                Utils.LocalStore.setFSHash('');
-                Utils.LocalStore.clearThumbnail();
-                window.location.reload();
-            });
             sframeChan.on('Q_DRIVE_USEROBJECT', function (data, cb) {
+                data.teamId = teamId;
                 Cryptpad.userObjectCommand(data, cb);
             });
             // XXX no drive restore in teams? you could restore old keys...
@@ -115,9 +110,9 @@ define([
             afterSecrets: afterSecrets,
             noHash: true,
             noRealtime: true,
-            driveEvents: true,
+            //driveEvents: true,
             addRpc: addRpc,
-            isDrive: true,
+            isDrive: true, // Used for history...
         });
     });
 });

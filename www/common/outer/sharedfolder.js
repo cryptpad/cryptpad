@@ -83,7 +83,7 @@ define([
         }).nThen(function (waitFor) {
             Object.keys(shared).forEach(function (id) {
                 var sf = shared[id];
-                var rt = SF.load({
+                SF.load({
                     network: network,
                     store: store
                 }, id, sf, waitFor());

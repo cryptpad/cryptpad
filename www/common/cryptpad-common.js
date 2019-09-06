@@ -157,8 +157,9 @@ define([
             timeout: 5 * 60 * 1000
         });
     };
-    common.addSharedFolder = function (secret, cb) {
+    common.addSharedFolder = function (teamId, secret, cb) {
         postMessage("ADD_SHARED_FOLDER", {
+            teamId: teamId,
             path: ['root'],
             folderData: {
                 href: '/drive/#' + Hash.getEditHashFromKeys(secret),

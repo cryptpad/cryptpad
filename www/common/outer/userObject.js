@@ -317,10 +317,11 @@ define([
             if (!loggedIn && !config.testMode) {
                 // delete permanently
                 spliceFileData(id);
-                return;
+                return true;
             }
             var paths = exp.findFile(id);
             exp.move(paths, [TRASH]);
+            return true;
         };
 
         // REPLACE

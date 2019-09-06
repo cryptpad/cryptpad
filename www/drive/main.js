@@ -40,7 +40,7 @@ define([
             var hash = window.location.hash.slice(1);
             if (hash && Utils.LocalStore.isLoggedIn()) {
                 // Add a shared folder!
-                Cryptpad.addSharedFolder(secret, function (id) {
+                Cryptpad.addSharedFolder(null, secret, function (id) {
                     window.CryptPad_newSharedFolder = id;
                     cb();
                 });

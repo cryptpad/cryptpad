@@ -36,6 +36,7 @@ define([
         // load manager with userObject
         //   team.manager =... team.userObject = ....
         // load shared folders
+        //   register event for these folders
         // ~resetPins for the team?
         // getPinLimit
         ctx.teams[id] = team;
@@ -63,6 +64,9 @@ define([
         lm.proxy.on('create', function () {
         }).on('ready', function () {
             var sendEvent = function (type, data, sender) {
+                type = type;
+                data = data;
+                sender = sender;
                 // XXX emit UPDATE event to the inner iframe
                 // don't send the event back to the sender
                 // types are DRIVE_CHANGE, DRIVE_REMOVE and DRIVE_LOG

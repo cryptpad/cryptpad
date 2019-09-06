@@ -59,18 +59,7 @@ define([
                 return;
             }
         };
-        var getProxy = function (teamId) {
-            var s = getStore(teamId);
-            if (!s) { return; }
-            return s.proxy;
-        };
-        var getManager = function (teamId) {
-            var s = getStore(teamId);
-            if (!s) { return; }
-            return s.manager;
-        };
 
-        // XXX search for all calls
         var onSync = function (teamId, cb) {
             var s = getStore(teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
@@ -335,7 +324,7 @@ define([
         };
 
         Store.uploadComplete = function (clientId, data, cb) {
-            var s = getStore(teamId);
+            var s = getStore(data.teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
             if (data.owned) {
@@ -354,7 +343,7 @@ define([
         };
 
         Store.uploadStatus = function (clientId, data, cb) {
-            var s = getStore(teamId);
+            var s = getStore(data.teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
             s.rpc.uploadStatus(data.size, function (err, res) {
@@ -364,7 +353,7 @@ define([
         };
 
         Store.uploadCancel = function (clientId, data, cb) {
-            var s = getStore(teamId);
+            var s = getStore(data.teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
             s.rpc.uploadCancel(data.size, function (err, res) {
@@ -374,7 +363,7 @@ define([
         };
 
         Store.uploadChunk = function (clientId, data, cb) {
-            var s = getStore(teamId);
+            var s = getStore(data.teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
             s.rpc.send.unauthenticated('UPLOAD', data.chunk, function (e, msg) {
@@ -603,7 +592,7 @@ define([
                 send('DRIVE_CHANGE', {
                     path: ['drive', UserObject.FILES_DATA]
                 }, clientId);
-                onSync(teamId, cb);
+                onSync(data.teamId, cb);
             });
         };
 
@@ -776,20 +765,22 @@ define([
             return stores;
         };
         Store.setPadAttribute = function (clientId, data, cb) {
-            getAllStores.forEach(function (s) {
-                s.manager.setPadAttribute(data, function () {
-                    var send = s.id ? s.sendEvent : sendDriveEvent;
-                    send('DRIVE_CHANGE', {
-                        path: ['drive', UserObject.FILES_DATA]
-                    }, clientId);
-                    onSync(s.id, cb);
+            nThen(function (waitFor) {
+                getAllStores().forEach(function (s) {
+                    s.manager.setPadAttribute(data, waitFor(function () {
+                        var send = s.id ? s.sendEvent : sendDriveEvent;
+                        send('DRIVE_CHANGE', {
+                            path: ['drive', UserObject.FILES_DATA]
+                        }, clientId);
+                        onSync(s.id, waitFor());
+                    }));
                 });
-            });
+            }).nThen(cb); // cb when all managers are synced
         };
         Store.getPadAttribute = function (clientId, data, cb) {
             var res = {};
             nThen(function (waitFor) {
-                getAllStores.forEach(function (s) {
+                getAllStores().forEach(function (s) {
                     s.manager.getPadAttribute(data, waitFor(function (err, val) {
                         if (err) { return; }
                         if (!res.value || res.atime < val.atime) {
@@ -850,7 +841,7 @@ define([
         // Tags
         Store.listAllTags = function (clientId, data, cb) {
             var tags = {};
-            getAllStores.forEach(function (s) {
+            getAllStores().forEach(function (s) {
                 var l = s.manager.getTagsList();
                 Object.keys(l).forEach(function (tag) {
                     tags[tag] = (tags[tag] || 0) + l[tag];
@@ -866,12 +857,12 @@ define([
             // No templates in shared folders: we don't need the manager here
             var res = [];
             var channels = [];
-            getAllStores.forEach(function (s) {
+            getAllStores().forEach(function (s) {
                 var templateFiles = s.userObject.getFiles(['template']);
                 templateFiles.forEach(function (f) {
                     var data = s.userObject.getFileData(f);
                     // Don't push duplicates
-                    if (channels.indexOf(data.channel) !== -1) { return }
+                    if (channels.indexOf(data.channel) !== -1) { return; }
                     channels.push(data.channel);
                     // Puhs a copy of the data
                     res.push(JSON.parse(JSON.stringify(data)));
@@ -881,35 +872,60 @@ define([
         };
         Store.incrementTemplateUse = function (clientId, href) {
             // No templates in shared folders: we don't need the manager here
-            store.userObject.getPadAttribute(href, 'used', function (err, data) {
-                // This is a not critical function, abort in case of error to make sure we won't
-                // create any issue with the user object or the async store
-                if (err) { return; }
-                var used = typeof data === "number" ? ++data : 1;
-                store.userObject.setPadAttribute(href, 'used', used);
+            getAllStores().forEach(function (s) {
+                s.userObject.getPadAttribute(href, 'used', function (err, data) {
+                    // This is a not critical function, abort in case of error to make sure we won't
+                    // create any issue with the user object or the async store
+                    if (err) { return; }
+                    var used = typeof data === "number" ? ++data : 1;
+                    s.userObject.setPadAttribute(href, 'used', used);
+                });
             });
         };
 
         // Pads
         Store.isOnlyInSharedFolder = function (clientId, channel, cb) {
-            var res = store.manager.findChannel(channel);
+            var res = false;
 
-            // A pad is only in a shared worker if:
-            // 1. this pad is in at least one proxy
-            // 2. no proxy containing this pad is the main drive
-            return cb (res.length && !res.some(function (obj) {
-                // Main drive doesn't have an fId (folder ID)
-                return !obj.fId;
-            }));
+            // The main drive doesn't have an fId (folder ID)
+            var isInMainDrive = function (obj) { return !obj.fId; };
+
+            // A pad is only in a shared folder if it is in one of our managers
+            // AND if if it not in any "main" drive
+            getAllStores().some(function (s) {
+                var _res = s.manager.findChannel(channel);
+
+                // Not in this manager: go the the next one
+                if (!_res.length) { return; }
+
+                // if the pad is in the main drive, cb(false)
+                if (_res.some(isInMainDrive)) {
+                    res = false;
+                    return true;
+                }
+
+                // Otherwise the pad is only in a shared folder in this manager:
+                // set the result to true and check the next manager
+                res = true;
+            });
+
+            return cb (res);
         };
         Store.moveToTrash = function (clientId, data, cb) {
             var href = Hash.getRelativeHref(data.href);
-            store.userObject.forget(href);
-            sendDriveEvent('DRIVE_CHANGE', {
-                path: ['drive', UserObject.FILES_DATA]
-            }, clientId);
-            onSync(cb);
+            nThen(function (waitFor) {
+                getAllStores().forEach(function (s) {
+                    var deleted = s.userObject.forget(href);
+                    if (!deleted) { return; }
+                    var send = s.id ? s.sendEvent : sendDriveEvent;
+                    send('DRIVE_CHANGE', {
+                        path: ['drive', UserObject.FILES_DATA]
+                    }, clientId);
+                    onSync(s.id, waitFor());
+                });
+            }).nThen(cb);
         };
+        // XXX Teams. encrypted href...
         Store.setPadTitle = function (clientId, data, cb) {
             var title = data.title;
             var href = data.href;
@@ -935,9 +951,19 @@ define([
                 expire = +channelData.data.expire || undefined;
             }
 
-            var datas = store.manager.findChannel(channel);
-            var contains = datas.length !== 0;
-            datas.forEach(function (obj) {
+            // Check if the pad is stored in any managers.
+            // If it is stored, update its data, otherwise ask the user where to store it
+            var allData = [];
+            var sendTo = [];
+            getAllStores().forEach(function (s) {
+                var res = s.manager.findChannel(channel);
+                if (res.length) {
+                    sendTo.push(s.id);
+                }
+                Array.prototype.push.apply(allData, res);
+            });
+            var contains = allData.length !== 0;
+            allData.forEach(function (obj) {
                 var pad = obj.data;
                 pad.atime = +new Date();
                 pad.title = title;
@@ -961,6 +987,7 @@ define([
             // Add the pad if it does not exist in our drive
             if (!contains) {
                 var autoStore = Util.find(store.proxy, ['settings', 'general', 'autostore']);
+                // XXX owned by one of our teams?
                 var ownedByMe = Array.isArray(owners) && owners.indexOf(store.proxy.edPublic) !== -1;
                 if (autoStore !== 1 && !data.forceSave && !data.path && !ownedByMe) {
                     // send event to inner to display the corner popup
@@ -975,6 +1002,7 @@ define([
                         href = undefined;
                     }
                     Store.addPad(clientId, {
+                        teamId: data.teamId,
                         href: href,
                         roHref: roHref,
                         channel: channel,
@@ -990,19 +1018,30 @@ define([
                     });
                     return;
                 }
-            } else {
-                sendDriveEvent('DRIVE_CHANGE', {
+            }
+
+            sendTo.forEach(function (teamId) {
+                var send = teamId ? getStore(teamId).sendEvent : sendDriveEvent;
+                send('DRIVE_CHANGE', {
                     path: ['drive', UserObject.FILES_DATA]
                 }, clientId);
-                // Let inner know that dropped files shouldn't trigger the popup
-                postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {
-                    stored: true
+            });
+            // Let inner know that dropped files shouldn't trigger the popup
+            postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {
+                stored: true
+            });
+            nThen(function (waitFor) {
+                sendTo.forEach(function (teamId) {
+                    onSync(teamId, waitFor());
                 });
-            }
-            onSync(cb);
+            }).nThen(cb);
         };
 
         // Filepicker app
+
+        // Get a map of file data corresponding to the given filters.
+        // The keys used in the map represent the ID of the "files"
+        // TODO maybe we shouldn't mix results from teams and from the user?
         Store.getSecureFilesList = function (clientId, query, cb) {
             var list = {};
             var types = query.types;
@@ -1019,20 +1058,31 @@ define([
                 }
                 return filtered;
             };
-            store.manager.getSecureFilesList(where).forEach(function (obj) {
-                var data = obj.data;
-                var id = obj.id;
-                var parsed = Hash.parsePadUrl(data.href || data.roHref);
-                if ((!types || types.length === 0 || types.indexOf(parsed.type) !== -1) &&
-                    !isFiltered(parsed.type, data)) {
-                    list[id] = data;
-                }
+            var channels = [];
+            getAllStores().forEach(function (s) {
+                s.manager.getSecureFilesList(where).forEach(function (obj) {
+                    var data = obj.data;
+                    if (channels.indexOf(data.channel) !== -1) { return; }
+                    var id = obj.id;
+                    var parsed = Hash.parsePadUrl(data.href || data.roHref);
+                    if ((!types || types.length === 0 || types.indexOf(parsed.type) !== -1) &&
+                        !isFiltered(parsed.type, data)) {
+                        list[id] = data;
+                    }
+                });
             });
             cb(list);
         };
+        // Get the first pad we can find in any of our managers and return its file data
         Store.getPadData = function (clientId, id, cb) {
-            // FIXME: this is only used for templates at the moment, so we don't need the manager
-            cb(store.userObject.getFileData(id));
+            var res = {};
+            getAllStores().some(function (s) {
+                var d = s.userObject.getFileData(id);
+                if (!d.roHref && !d.href) { return; }
+                res = d;
+                return true;
+            });
+            cb(res);
         };
 
 
@@ -1109,16 +1159,22 @@ define([
         };
 
         // Get hashes for the share button
+        // If we can find a stronger hash
         Store.getStrongerHash = function (clientId, data, cb) {
-            var allPads = Util.find(store.proxy, ['drive', 'filesData']) || {};
+            var found = getAllStores().some(function (s) {
+                var allPads = Util.find(s.proxy, ['drive', 'filesData']) || {};
 
-            // If we have a stronger version in drive, add it and add a redirect button
-            var stronger = Hash.findStronger(data.href, data.channel, allPads);
-            if (stronger) {
-                var parsed2 = Hash.parsePadUrl(stronger.href);
-                return void cb(parsed2.hash);
+                // If we have a stronger version in drive, add it and add a redirect button
+                var stronger = Hash.findStronger(data.href, data.channel, allPads);
+                if (stronger) {
+                    var parsed2 = Hash.parsePadUrl(stronger.href);
+                    cb(parsed2.hash);
+                    return true;
+                }
+            });
+            if (!found) {
+                cb();
             }
-            cb();
         };
 
         // Universal
@@ -1318,12 +1374,14 @@ define([
                 },
                 onMetadataUpdate: function (metadata) {
                     channel.data = metadata || {};
-                    var allData = store.manager.findChannel(data.channel);
-                    allData.forEach(function (obj) {
-                        obj.data.owners = metadata.owners;
-                        if (metadata.expire) {
-                            obj.data.expire = +metadata.expire;
-                        }
+                    getAllStores().forEach(function (s) {
+                        var allData = s.manager.findChannel(data.channel);
+                        allData.forEach(function (obj) {
+                            obj.data.owners = metadata.owners;
+                            if (metadata.expire) {
+                                obj.data.expire = +metadata.expire;
+                            }
+                        });
                     });
                     channel.bcast("PAD_METADATA", metadata);
                 },
@@ -1460,6 +1518,7 @@ define([
 
             var href, title;
 
+            // XXX TEAMOWNER
             if (!res.some(function (obj) {
                 if (obj.data &&
                     Array.isArray(obj.data.owners) && obj.data.owners.indexOf(edPublic) !== -1 &&
@@ -1509,6 +1568,10 @@ define([
         Store.setPadMetadata = function (clientId, data, cb) {
             if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }
             if (!data.command) { return void cb({ error: 'EINVAL' }); }
+            // XXX TEAMOWNER
+            // If owned by a team, we should use the team rpc here
+            // We'll need common-ui-elements to tell us the "owners" value or we can
+            // call getPadMetadata first
             store.rpc.setMetadata(data, function (err, res) {
                 if (err) { return void cb({ error: err }); }
                 if (!Array.isArray(res) || !res.length) { return void cb({}); }
@@ -1638,8 +1701,10 @@ define([
             Store.loadSharedFolder(null, data.id, data.data, cb);
         };
         Store.addSharedFolder = function (clientId, data, cb) {
-            store.manager.addSharedFolder(data, function (id) {
-                sendDriveEvent('DRIVE_CHANGE', {
+            var s = getStore(data.teamId);
+            s.manager.addSharedFolder(data, function (id) {
+                var send = data.teamId ? s.sendEvent : sendDriveEvent;
+                send('DRIVE_CHANGE', {
                     path: ['drive', UserObject.FILES_DATA]
                 }, clientId);
                 cb(id);
@@ -1650,20 +1715,17 @@ define([
         Store.userObjectCommand = function (clientId, cmdData, cb) {
             if (!cmdData || !cmdData.cmd) { return; }
             //var data = cmdData.data;
+            var s = getStore(cmdData.teamId);
             var cb2 = function (data2) {
-                //var paths = data.paths || [data.path] || [];
-                //paths = paths.concat(data.newPath ? [data.newPath] : []);
-                //paths.forEach(function (p) {
-                    sendDriveEvent('DRIVE_CHANGE', {
-                        path: ['drive', UserObject.FILES_DATA]
-                        //path: ['drive'].concat(p)
-                    }, clientId);
-                //});
-                onSync(function () {
+                var send = cmdData.teamId ? s.sendEvent : sendDriveEvent;
+                send('DRIVE_CHANGE', {
+                    path: ['drive', UserObject.FILES_DATA]
+                }, clientId);
+                onSync(cmdData.teamId, function () {
                     cb(data2);
                 });
             };
-            store.manager.command(cmdData, cb2);
+            s.manager.command(cmdData, cb2);
         };
 
         // Clients management
