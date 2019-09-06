@@ -462,33 +462,28 @@ Version 1
     Hash.findStronger = function (href, channel, recents) {
         var parsed = parsePadUrl(href);
         if (!parsed.hash) { return false; }
+        var parsedHash = parsed.hashData;
+
         // We can't have a stronger hash if we're already in edit mode
-        if (parsed.hashData && parsed.hashData.mode === 'edit') { return; }
+        if (!parsedHash || parsedHash.mode === 'edit') { return; }
+
+        // We don't have stronger/weaker versions of files or users
+        if (parsedHash.type !== 'pad') { return; }
+
         var stronger;
         Object.keys(recents).some(function (id) {
             var pad = recents[id];
-            if (!pad.href) {
-                // This pad doesn't have an edit link, so it can't be stronger
-                return;
-            }
-            var p = parsePadUrl(pad.href);
-            if (p.type !== parsed.type) { return; } // Not the same type
-            if (p.hash === parsed.hash) { return; } // Same hash, not stronger
-            if (channel !== pad.channel) { return; } // Not the same channel
 
-            var pHash = p.hashData;
-            var parsedHash = parsed.hashData;
-            if (!parsedHash || !pHash) { return; }
+            // Not the same channel? reject
+            if (channel !== pad.channel) { return; }
 
-            // We don't have stronger/weaker versions of files or users
-            if (pHash.type !== 'pad' && parsedHash.type !== 'pad') { return; }
+            // If this pad doesn't have an edit link, it can't be stronger
+            if (!pad.href || !pad.roHref) { return; }
 
-            if (pHash.version !== parsedHash.version) { return; }
-            if (pHash.mode === 'edit' && parsedHash.mode === 'view') {
-                stronger = pad;
-                return true;
-            }
-            return;
+            // This is a pad with an EDIT href and using the same channel as our target
+            // ==> it is stronger
+            stronger = pad;
+            return true;
         });
         return stronger;
     };
