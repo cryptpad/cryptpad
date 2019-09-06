@@ -189,7 +189,6 @@ proxy.mailboxes = {
                 box.queue.push(msg);
             }
         };
-        Crypto = Crypto;
         if (!Crypto.Mailbox) {
             return void console.error("chainpad-crypto is outdated and doesn't support mailboxes.");
         }
