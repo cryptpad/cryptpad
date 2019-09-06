@@ -147,9 +147,70 @@ var createUser = function (config, cb) {
                 return void cb(err2);
             }
         }));
+    }).nThen(function (w) {
+        // pin your mailbox
+        user.rpc.send('PIN', [user.mailboxChannel], w(function (err, data) {
+            if (err) {
+                w.abort();
+                return void cb(err);
+            }
+            try {
+                if (data[0] === EMPTY_ARRAY_HASH) { throw new Error("PIN_DIDNT_WORK"); }
+                user.latestPinHash = data[0];
+            } catch (err2) {
+                w.abort();
+                return void cb(err2);
+            }
+        }));
+    }).nThen(function (w) {
+        user.team_rpc.send('GET_HASH', config.teamEdKeys.edPublic, w(function (err, hash) {
+            if (err) {
+                w.abort();
+                return void cb(err);
+            }
+            if (!hash || hash[0] !== EMPTY_ARRAY_HASH) {
+                console.error("EXPECTED EMPTY ARRAY HASH");
+                process.exit(1);
+            }
+        }));
     }).nThen(function () {
+        // TODO check your quota usage
 
+    }).nThen(function (w) {
+        user.rpc.send('UNPIN', [user.mailboxChannel], w(function (err, data) {
+            if (err) {
+                w.abort();
+                return void cb(err);
+            }
+            try {
+                if (data[0] !== EMPTY_ARRAY_HASH) { throw new Error("UNPIN_DIDNT_WORK"); }
+                user.latestPinHash = data[0];
+            } catch (err2) {
+                w.abort();
+                return void cb(err2);
+            }
+        }));
+    }).nThen(function (w) {
+        // clean up the pin list to avoid lots of accounts on the server
+        user.rpc.send("REMOVE_PINS", undefined, w(function (err, data) {
+            if (err) {
+                w.abort();
+                return void cb(err);
+            }
+            if (!data || data[0] !== 'OK') {
+                w.abort();
+                return void cb("REMOVE_PINS_DIDNT_WORK");
+            }
+        }));
     }).nThen(function () {
+        user.cleanup = function (cb) {
+            // TODO remove your mailbox
+
+            cb = cb;
+        };
+
+
+
 
         cb(void 0, user);
     });
@@ -177,9 +238,6 @@ nThen(function (w) {
         bob = _bob;
     }));
 }).nThen(function (w) {
-    // Alice sends a message to Bob's mailbox
-
-
     var message = alice.mailbox.encrypt(JSON.stringify({
         type: "CHEESE",
         author: alice.curveKeys.curvePublic,
