@@ -232,7 +232,7 @@ module.exports.create = function (cfg) {
         as an added bonus:
         if the channel exists but its index does not then it caches the index
     */
-    const batchIndexReads = BatchRead();
+    const batchIndexReads = BatchRead("HK_GET_INDEX");
     const getIndex = (ctx, channelName, cb) => {
         const chan = ctx.channels[channelName];
         // if there is a channel in memory and it has an index cached, return it

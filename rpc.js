@@ -232,7 +232,7 @@ var checkSignature = function (signedMsg, signature, publicKey) {
     return Nacl.sign.detached.verify(signedBuffer, signatureBuffer, pubBuffer);
 };
 
-const batchUserPins = BatchRead();
+const batchUserPins = BatchRead("LOAD_USER_PINS");
 var loadUserPins = function (Env, publicKey, cb) {
     var session = getSession(Env.Sessions, publicKey);
 
@@ -294,7 +294,7 @@ var getUploadSize = function (Env, channel, cb) { // FIXME FILES
     });
 };
 
-const batchFileSize = BatchRead();
+const batchFileSize = BatchRead("GET_FILE_SIZE");
 var getFileSize = function (Env, channel, cb) {
     if (!isValidId(channel)) { return void cb('INVALID_CHAN'); }
     batchFileSize(channel, cb, function (done) {
@@ -320,7 +320,7 @@ var getFileSize = function (Env, channel, cb) {
     });
 };
 
-const batchMetadata = BatchRead();
+const batchMetadata = BatchRead("GET_METADATA");
 var getMetadata = function (Env, channel, cb) {
     if (!isValidId(channel)) { return void cb('INVALID_CHAN'); }
 
@@ -478,7 +478,7 @@ var getDeletedPads = function (Env, channels, cb) {
     });
 };
 
-const batchTotalSize = BatchRead();
+const batchTotalSize = BatchRead("GET_TOTAL_SIZE");
 var getTotalSize = function (Env, publicKey, cb) {
     batchTotalSize(publicKey, cb, function (done) {
         var bytes = 0;
@@ -1614,7 +1614,7 @@ var writePrivateMessage = function (Env, args, nfwssCtx, cb) {
     });
 };
 
-const batchDiskUsage = BatchRead();
+const batchDiskUsage = BatchRead("GET_DISK_USAGE");
 var getDiskUsage = function (Env, cb) {
     batchDiskUsage('', cb, function (done) {
         var data = {};
@@ -1643,7 +1643,7 @@ var getDiskUsage = function (Env, cb) {
     });
 };
 
-const batchRegisteredUsers = BatchRead();
+const batchRegisteredUsers = BatchRead("GET_REGISTERED_USERS");
 var getRegisteredUsers = function (Env, cb) {
     batchRegisteredUsers('', cb, function (done) {
         var dir = Env.paths.pin;
