@@ -50,9 +50,10 @@ define([
                 '/common/outer/local-store.js',
                 '/customize/application_config.js',
                 '/common/test.js',
+                '/common/userObject.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
             _FilePicker, _Share, _Messaging, _Notifier, _Hash, _Util, _Realtime,
-            _Constants, _Feedback, _LocalStore, _AppConfig, _Test) {
+            _Constants, _Feedback, _LocalStore, _AppConfig, _Test, _UserObject) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = Utils.Crypto = _Crypto;
@@ -68,6 +69,7 @@ define([
                 Utils.Constants = _Constants;
                 Utils.Feedback = _Feedback;
                 Utils.LocalStore = _LocalStore;
+                Utils.UserObject = _UserObject;
                 AppConfig = _AppConfig;
                 Test = _Test;
 
@@ -271,7 +273,7 @@ define([
             Utils.crypto = Utils.Crypto.createEncryptor(Utils.secret.keys);
             var parsed = Utils.Hash.parsePadUrl(window.location.href);
             if (!parsed.type) { throw new Error(); }
-            var defaultTitle = Utils.Hash.getDefaultName(parsed);
+            var defaultTitle = Utils.UserObject.getDefaultName(parsed);
             var edPublic, curvePublic, notifications, isTemplate;
             var forceCreationScreen = cfg.useCreationScreen &&
                                       sessionStorage[Utils.Constants.displayPadCreationScreen];
@@ -1176,7 +1178,7 @@ define([
 
                 // Update metadata values and send new metadata inside
                 parsed = Utils.Hash.parsePadUrl(window.location.href);
-                defaultTitle = Utils.Hash.getDefaultName(parsed);
+                defaultTitle = Utils.UserObject.getDefaultName(parsed);
                 hashes = Utils.Hash.getHashes(secret);
                 readOnly = false;
                 updateMeta();

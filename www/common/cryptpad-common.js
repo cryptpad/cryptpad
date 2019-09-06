@@ -659,7 +659,6 @@ define([
         data.href = parsed.getUrl({present: parsed.present});
 
         if (typeof (data.title) !== "string") { return cb('Missing title'); }
-        if (data.title.trim() === "") { data.title = Hash.getDefaultName(parsed); }
 
         if (common.initialPath) {
             if (!data.path) {

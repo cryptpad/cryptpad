@@ -1,5 +1,10 @@
 (function (window) {
     var Util = {};
+
+    Util.tryParse = function (s) {
+        try { return JSON.parse(s); } catch (e) { return;}
+    };
+
     Util.mkAsync = function (f) {
         return function () {
             var args = Array.prototype.slice.call(arguments);

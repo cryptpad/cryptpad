@@ -1,11 +1,5 @@
-define([
-    '/common/common-util.js',
-    '/customize/messages.js',
-    '/bower_components/chainpad-crypto/crypto.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js'
-], function (Util, Messages, Crypto) {
-    var Nacl = window.nacl;
-
+(function (window) {
+var factory = function (Util, Crypto, Nacl) {
     var Hash = window.CryptPad_Hash = {};
 
     var uint8ArrayToHex = Util.uint8ArrayToHex;
@@ -510,20 +504,6 @@ Version 1
             '/' + curvePublic.replace(/\//g, '-') + '/';
     };
 
-    // Create untitled documents when no name is given
-    var getLocaleDate = function () {
-        if (window.Intl && window.Intl.DateTimeFormat) {
-            var options = {weekday: "short", year: "numeric", month: "long", day: "numeric"};
-            return new window.Intl.DateTimeFormat(undefined, options).format(new Date());
-        }
-        return new Date().toString().split(' ').slice(0,4).join(' ');
-    };
-    Hash.getDefaultName = function (parsed) {
-        var type = parsed.type;
-        var name = (Messages.type)[type] + ' - ' + getLocaleDate();
-        return name;
-    };
-
     Hash.isValidHref = function (href) {
         // Non-empty href?
         if (!href) { return; }
@@ -547,4 +527,19 @@ Version 1
     };
 
     return Hash;
-});
+};
+
+    if (typeof(module) !== 'undefined' && module.exports) {
+        module.exports = factory(require("./common-util"), require("chainpad-crypto"), require("tweetnacl"));
+    } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+        define([
+            '/common/common-util.js',
+            '/bower_components/chainpad-crypto/crypto.js',
+            '/bower_components/tweetnacl/nacl-fast.min.js'
+        ], function (Util, Crypto) {
+            return factory(Util, Crypto, window.nacl);
+        });
+    } else {
+        // unsupported initialization
+    }
+}(typeof(window) !== 'undefined'? window : {}));

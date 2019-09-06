@@ -15,8 +15,24 @@ define([
     var TEMPLATE = module.TEMPLATE = "template";
     var SHARED_FOLDERS = module.SHARED_FOLDERS = "sharedFolders";
 
+    // Create untitled documents when no name is given
+    var getLocaleDate = function () {
+        if (window.Intl && window.Intl.DateTimeFormat) {
+            var options = {weekday: "short", year: "numeric", month: "long", day: "numeric"};
+            return new window.Intl.DateTimeFormat(undefined, options).format(new Date());
+        }
+        return new Date().toString().split(' ').slice(0,4).join(' ');
+    };
+    module.getDefaultName = function (parsed) {
+        var type = parsed.type;
+        var name = (Messages.type)[type] + ' - ' + getLocaleDate();
+        return name;
+    };
+
     module.init = function (files, config) {
         var exp = {};
+        exp.getDefaultName = module.getDefaultName;
+
         var sframeChan = config.sframeChan;
 
         var FILES_DATA = module.FILES_DATA = exp.FILES_DATA = Constants.storageKey;

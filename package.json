@@ -8,7 +8,8 @@
     "url": "git://github.com/xwiki-labs/cryptpad.git"
   },
   "dependencies": {
-    "chainpad-server": "~3.0.2",
+    "chainpad-crypto": "^0.2.2",
+    "chainpad-server": "^3.0.5",
     "express": "~4.16.0",
     "fs-extra": "^7.0.0",
     "get-folder-size": "^2.0.1",
@@ -39,7 +40,7 @@
     "lint:less": "./node_modules/lesshint/bin/lesshint -c ./.lesshintrc ./customize.dist/src/less2/",
     "flow": "./node_modules/.bin/flow",
     "test": "node scripts/TestSelenium.js",
-    "test-rpc": "cd scripts && node test-rpc",
+    "test-rpc": "cd scripts/tests && node test-rpc",
     "template": "cd customize.dist/src && for page in ../index.html ../privacy.html ../terms.html ../about.html ../contact.html ../what-is-cryptpad.html ../features.html ../../www/login/index.html ../../www/register/index.html ../../www/user/index.html;do echo $page; cp template.html $page; done;"
   }
 }
