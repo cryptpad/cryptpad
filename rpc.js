@@ -1837,6 +1837,7 @@ RPC.create = function (
     };
 
     var handleUnauthenticatedMessage = function (msg, respond, nfwssCtx) {
+        Log.silly('LOG_RPC', msg[0]);
         switch (msg[0]) {
             case 'GET_HISTORY_OFFSET': {
                 if (typeof(msg[1]) !== 'object' || typeof(msg[1].channelName) !== 'string') {
