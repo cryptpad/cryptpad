@@ -952,6 +952,9 @@ define([
             if (channelData && channelData.wc && channel === channelData.wc.id) {
                 expire = +channelData.data.expire || undefined;
             }
+            if (data.expire) {
+                expire = data.expire;
+            }
 
             // Check if the pad is stored in any managers.
             // If it is stored, update its data, otherwise ask the user where to store it
@@ -1380,9 +1383,14 @@ define([
                         var allData = s.manager.findChannel(data.channel);
                         allData.forEach(function (obj) {
                             obj.data.owners = metadata.owners;
+                            obj.data.atime = +new Date();
                             if (metadata.expire) {
                                 obj.data.expire = +metadata.expire;
                             }
+                        });
+                        var send = s.sendEvent || sendDriveEvent;
+                        send('DRIVE_CHANGE', {
+                            path: ['drive', UserObject.FILES_DATA]
                         });
                     });
                     channel.bcast("PAD_METADATA", metadata);
@@ -1451,32 +1459,15 @@ define([
         // data.send === true  ==> send the request
         Store.requestPadAccess = function (clientId, data, cb) {
             var owner = data.owner;
-            var channel = channels[data.channel];
-            if (!channel) { return void cb({error: 'ENOTFOUND'}); }
-            if (!data.send && channel && (!channel.data || !channel.data.channel)) {
-                var i = 0;
-                var it = setInterval(function () {
-                    if (channel.data && channel.data.channel) {
-                        clearInterval(it);
-                        Store.requestPadAccess(clientId, data, cb);
-                        return;
-                    }
-                    if (i >= 300) { // One minute timeout
-                        clearInterval(it);
-                        return void cb({error: 'ETIMEOUT'});
-                    }
-                    i++;
-                }, 200);
-                return;
-            }
+            var owners = data.owners;
 
             // If the owner was not is the pad metadata, check if it is a friend.
             // We'll contact the first owner for whom we know the mailbox
-            var fData = channel.data || {};
-            if (!owner && fData.owners) {
+            if (!owner && Array.isArray(owners)) {
                 var friends = store.proxy.friends || {};
-                if (Object.keys(friends).length > 1) {
-                    fData.owners.some(function (edPublic) {
+                // If we have friends, check if an owner is one of them (with a mailbox)
+                if (Object.keys(friends).filter(function (curve) { return curve !== 'me'; }).length) {
+                    owners.some(function (edPublic) {
                         return Object.keys(friends).some(function (curve) {
                             if (curve === "me") { return; }
                             if (edPublic === friends[curve].edPublic &&
@@ -1545,27 +1536,31 @@ define([
             cb();
         };
 
+        // Fetch the latest version of the metadata on the server and return it.
+        // If the pad is stored in our drive, update the local values of "owners" and "expire"
         Store.getPadMetadata = function (clientId, data, cb) {
             if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }
-            var channel = channels[data.channel];
-            if (!channel) { return void cb({ error: 'ENOTFOUND' }); }
-            if (!channel.data || !channel.data.channel) {
-                var i = 0;
-                var it = setInterval(function () {
-                    if (channel.data && channel.data.channel) {
-                        clearInterval(it);
-                        Store.getPadMetadata(clientId, data, cb);
-                        return;
-                    }
-                    if (i >= 300) { // One minute timeout
-                        clearInterval(it);
-                        return void cb({error: 'ETIMEOUT'});
-                    }
-                    i++;
-                }, 200);
-                return;
-            }
-            cb(channel.data || {});
+            store.anon_rpc.send('GET_METADATA', data.channel, function (err, obj) {
+                if (err) { return void cb({error: err}); }
+                var metadata = (obj && obj[0]) || {};
+                cb(metadata);
+
+                // Update owners and expire time in the drive
+                getAllStores().forEach(function (s) {
+                    var allData = s.manager.findChannel(data.channel);
+                    allData.forEach(function (obj) {
+                        obj.data.owners = metadata.owners;
+                        obj.data.atime = +new Date();
+                        if (metadata.expire) {
+                            obj.data.expire = +metadata.expire;
+                        }
+                    });
+                    var send = s.sendEvent || sendDriveEvent;
+                    send('DRIVE_CHANGE', {
+                        path: ['drive', UserObject.FILES_DATA]
+                    });
+                });
+            });
         };
         Store.setPadMetadata = function (clientId, data, cb) {
             if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }

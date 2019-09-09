@@ -77,7 +77,12 @@ proxy.mailboxes = {
     };
 
     // Send a message to someone else
-    var sendTo = Mailbox.sendTo = function (ctx, type, msg, user, cb) {
+    var sendTo = Mailbox.sendTo = function (ctx, type, msg, user, _cb) {
+        var cb = _cb || function (obj) {
+            if (obj && obj.error) {
+                console.error(obj.error);
+            }
+        };
         if (!Crypto.Mailbox) {
             return void cb({error: "chainpad-crypto is outdated and doesn't support mailboxes."});
         }
