@@ -642,8 +642,13 @@ define([
                         href: href,
                         channel: channel,
                         title: data.driveReadmeTitle,
+                        owners: [ store.proxy.edPublic ],
                     };
                     Store.addPad(clientId, fileData, cb);
+                }, {
+                    metadata: {
+                        owners: [ store.proxy.edPublic ],
+                    },
                 });
             });
         };
