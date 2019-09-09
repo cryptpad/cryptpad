@@ -6,7 +6,7 @@ define(['/api/config'], function (ApiConfig) {
 
 
     var isSupported = Module.isSupported = function () {
-        return typeof(window.Notification) === 'function';
+        return typeof(window.Notification) === 'function' && window.location.protocol === 'https:';
     };
 
     var hasPermission = Module.hasPermission = function () {
