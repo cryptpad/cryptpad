@@ -128,7 +128,7 @@ define([
             // data = { type: 'type', content: {msg: 'msg', hash: 'hash'} }
             console.debug(data.type, data.content);
             pushMessage(data);
-            if (data.content && typeof (data.content.getFormatText) == "function") {
+            if (data.content && typeof (data.content.getFormatText) === "function") {
                 var text = $('<div>').html(data.content.getFormatText()).text();
                 cb({
                     msg: text
