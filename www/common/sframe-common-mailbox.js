@@ -126,7 +126,7 @@ define([
 
         var onMessage = function (data, cb) {
             // data = { type: 'type', content: {msg: 'msg', hash: 'hash'} }
-            console.log(data.type, data.content);
+            console.debug(data.type, data.content);
             pushMessage(data);
             if (data.content && typeof (data.content.getFormatText) == "function") {
                 var text = $('<div>').html(data.content.getFormatText()).text();

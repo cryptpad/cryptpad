@@ -6,7 +6,7 @@ define(['/api/config'], function (ApiConfig) {
 
 
     var isSupported = Module.isSupported = function () {
-        return typeof(window.Notification) === 'function';
+        return typeof(window.Notification) === 'function' && window.location.protocol === 'https:';
     };
 
     var hasPermission = Module.hasPermission = function () {
@@ -52,7 +52,7 @@ define(['/api/config'], function (ApiConfig) {
     };
 
     var createFavicon = function () {
-        console.log("creating favicon");
+        console.debug("creating favicon");
         var fav = document.createElement('link');
         var attrs = {
             id: 'favicon',
