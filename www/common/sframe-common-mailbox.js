@@ -126,7 +126,7 @@ define([
 
         var onMessage = function (data) {
             // data = { type: 'type', content: {msg: 'msg', hash: 'hash'} }
-            console.log(data.type, data.content);
+            console.debug(data.type, data.content);
             pushMessage(data);
             if (!history[data.type]) { history[data.type] = []; }
             history[data.type].push(data.content);

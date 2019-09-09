@@ -158,7 +158,7 @@ define([
         var done = function () {
             clearTimeout(timeout);
             if (btime) {
-                console.log("Compiling [" + url + "] took " + (+new Date() - btime) + "ms");
+                console.info("Compiling [" + url + "] took " + (+new Date() - btime) + "ms");
             }
             cb();
         };

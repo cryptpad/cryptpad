@@ -52,7 +52,7 @@ define(['/api/config'], function (ApiConfig) {
     };
 
     var createFavicon = function () {
-        console.log("creating favicon");
+        console.debug("creating favicon");
         var fav = document.createElement('link');
         var attrs = {
             id: 'favicon',
