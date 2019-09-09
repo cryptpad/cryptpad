@@ -124,10 +124,16 @@ define([
             removeFromHistory(data.type, data.hash);
         };
 
-        var onMessage = function (data) {
+        var onMessage = function (data, cb) {
             // data = { type: 'type', content: {msg: 'msg', hash: 'hash'} }
             console.log(data.type, data.content);
             pushMessage(data);
+            if (data.content && typeof (data.content.getFormatText) == "function") {
+                var text = $('<div>').html(data.content.getFormatText()).text();
+                cb({
+                    msg: text
+                });
+            }
             if (!history[data.type]) { history[data.type] = []; }
             history[data.type].push(data.content);
         };
@@ -224,7 +230,7 @@ define([
 
         // CHANNEL WITH WORKER
 
-        sframeChan.on('EV_MAILBOX_EVENT', function (obj) {
+        sframeChan.on('EV_MAILBOX_EVENT', function (obj, cb) {
             // obj = { ev: 'type', data: obj }
             var ev = obj.ev;
             var data = obj.data;
@@ -232,7 +238,7 @@ define([
                 return void onHistory(data);
             }
             if (ev === 'MESSAGE') {
-                return void onMessage(data);
+                return void onMessage(data, cb);
             }
             if (ev === 'VIEWED') {
                 return void onViewed(data);

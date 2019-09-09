@@ -1752,12 +1752,12 @@ define([
                     broadcast([], "UPDATE_METADATA");
                 },
                 pinPads: function (data, cb) { Store.pinPads(null, data, cb); },
-            }, waitFor, function (ev, data, clients) {
+            }, waitFor, function (ev, data, clients, cb) {
                 clients.forEach(function (cId) {
                     postMessage(cId, 'MAILBOX_EVENT', {
                         ev: ev,
                         data: data
-                    });
+                    }, cb);
                 });
             });
         };
