@@ -1149,7 +1149,7 @@
     "owner_unknownUser": "Utilisateur inconnu",
     "owner_removeButton": "Supprimer les propriétaires sélectionnés",
     "owner_removePendingButton": "Annuler les offres sélectionnées",
-    "owner_addButton": "Proposer la co-propriété",
+    "owner_addButton": "Proposer d'être propriétaire",
     "owner_removeConfirm": "Êtes-vous sûr de vouloir suppprimer les droits de propriétaire pour les utilisateurs sélectionnés ? Ils seront notifiés de cette action.",
     "owner_removeMeConfirm": "Vous êtes sur le point de renoncer à vos droits de propriétaire. Vous ne serez pas en mesure d'annuler cette action. Continuer ?",
     "owner_addConfirm": "Les co-propriétaires seront en mesure de changer le contenu du document et pourront supprimer vos droits de propriétaire. Continuer ?",
