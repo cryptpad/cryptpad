@@ -1211,12 +1211,15 @@ define([
                     var allData = store.manager.findChannel(data.channel);
                     allData.forEach(function (obj) {
                         obj.data.owners = metadata.owners;
+                        obj.data.atime = +new Date();
                         if (metadata.expire) {
-                            obj.data.atime = +new Date();
                             obj.data.expire = +metadata.expire;
                         }
                     });
                     channel.bcast("PAD_METADATA", metadata);
+                    sendDriveEvent('DRIVE_CHANGE', {
+                        path: ['drive', UserObject.FILES_DATA]
+                    });
                 },
                 crypto: {
                     // The encryption and decryption is done in the outer window.
@@ -1289,7 +1292,7 @@ define([
             if (!owner && Array.isArray(owners)) {
                 var friends = store.proxy.friends || {};
                 // If we have friends, check if an owner is one of them (with a mailbox)
-                if (Object.keys(friends).filter(function (curve) { return curve !== 'me' }).length) {
+                if (Object.keys(friends).filter(function (curve) { return curve !== 'me'; }).length) {
                     owners.some(function (edPublic) {
                         return Object.keys(friends).some(function (curve) {
                             if (curve === "me") { return; }
@@ -1358,12 +1361,27 @@ define([
             cb();
         };
 
+        // Fetch the latest version of the metadata on the server and return it.
+        // If the pad is stored in our drive, update the local values of "owners" and "expire"
         Store.getPadMetadata = function (clientId, data, cb) {
             if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }
             store.anon_rpc.send('GET_METADATA', data.channel, function (err, obj) {
                 if (err) { return void cb({error: err}); }
-                // XXX update local owner and expire here
-                cb((obj && obj[0]) || {});
+                var metadata = (obj && obj[0]) || {};
+                cb(metadata);
+
+                // Update owners and expire time in the drive
+                var allData = store.manager.findChannel(data.channel);
+                allData.forEach(function (obj) {
+                    obj.data.atime = +new Date();
+                    obj.data.owners = metadata.owners;
+                    if (metadata.expire) {
+                        obj.data.expire = +metadata.expire;
+                    }
+                });
+                sendDriveEvent('DRIVE_CHANGE', {
+                    path: ['drive', UserObject.FILES_DATA]
+                });
             });
         };
         Store.setPadMetadata = function (clientId, data, cb) {
