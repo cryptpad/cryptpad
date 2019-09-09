@@ -758,9 +758,6 @@ define([
     pad.onErrorEvent = Util.mkEvent();
     pad.onMetadataEvent = Util.mkEvent();
 
-    pad.getPadMetadata = function (data, cb) {
-    };
-
     pad.requestAccess = function (data, cb) {
         postMessage("REQUEST_PAD_ACCESS", data, cb);
     };
@@ -840,7 +837,7 @@ define([
                     try {
                         m = newCrypto.encrypt(oldCrypto.decrypt(mailbox, true, true));
                     } catch (e) {}
-                } else if (mailbox && typeof(mailbox) == "object") {
+                } else if (mailbox && typeof(mailbox) === "object") {
                     m = {};
                     Object.keys(mailbox).forEach(function (ed) {
                         console.log(mailbox[ed]);
