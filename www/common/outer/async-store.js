@@ -1212,6 +1212,7 @@ define([
                     allData.forEach(function (obj) {
                         obj.data.owners = metadata.owners;
                         if (metadata.expire) {
+                            obj.data.atime = +new Date();
                             obj.data.expire = +metadata.expire;
                         }
                     });
