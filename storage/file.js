@@ -76,7 +76,7 @@ var getMetadataAtPath = function (Env, path, cb) {
         catch (e) {
             console.log("getMetadataAtPath");
             console.error(e);
-            complete('INVALID_METADATA');
+            complete('INVALID_METADATA', metadata);
         }
     });
     stream.on('end', function () {
