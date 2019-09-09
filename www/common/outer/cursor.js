@@ -154,7 +154,8 @@ define([
                 console.error(err);
             });
         };
-        chan.onReconnect = onReconnect;
+        ctx.channels[channel] = ctx.channels[channel] || {};
+        ctx.channels[channel].onReconnect = onReconnect;
         network.on('reconnect', onReconnect);
     };
 
