@@ -8,6 +8,7 @@ define([
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/proxy-manager.js',
+    '/common/hyperscript.js',
     '/customize/application_config.js',
     '/customize/messages.js',
 
@@ -24,6 +25,7 @@ define([
     nThen,
     SFCommon,
     ProxyManager,
+    h,
     AppConfig,
     Messages)
 {
@@ -208,6 +210,15 @@ define([
     var loadMain = function (common) {
         buildUI(common);
         UI.removeLoadingScreen();
+    };
+
+    var onEvent = function (obj) {
+        var ev = obj.ev;
+        var data = obj.data;
+        if (ev === 'PEWPEW') {
+            // Do something
+            return;
+        }
     };
 
     var main = function () {
