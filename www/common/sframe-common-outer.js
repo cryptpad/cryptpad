@@ -911,7 +911,7 @@ define([
 
             sframeChan.on('Q_PAD_PASSWORD_CHANGE', function (data, cb) {
                 var href = data.href || window.location.href;
-                Cryptpad.changePadPassword(Cryptget, href, data.password, edPublic, cb);
+                Cryptpad.changePadPassword(Cryptget, Crypto, href, data.password, edPublic, cb);
             });
 
             sframeChan.on('Q_CHANGE_USER_PASSWORD', function (data, cb) {
@@ -1020,7 +1020,7 @@ define([
                     // Try to get the owner's mailbox from the pad metadata first.
                     // If it's is an older owned pad, check if the owner is a friend
                     // or an acquaintance (from async-store directly in requestAccess)
-                    Cryptpad.pad.getPadMetadata({
+                    Cryptpad.padRpc.getPadMetadata({
                         channel: secret.channel
                     }, waitFor(function (obj) {
                         obj = obj || {};
