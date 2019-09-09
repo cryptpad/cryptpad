@@ -824,6 +824,9 @@ define([
             if (channelData && channelData.wc && channel === channelData.wc.id) {
                 expire = +channelData.data.expire || undefined;
             }
+            if (data.expire) {
+                expire = data.expire;
+            }
 
             var datas = store.manager.findChannel(channel);
             var contains = datas.length !== 0;
