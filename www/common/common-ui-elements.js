@@ -77,6 +77,8 @@ define([
                     waitFor.abort();
                     return void cb(err || 'EEMPTY');
                 }
+                delete val.owners;
+                delete val.expire;
                 Util.extend(data, val);
                 if (data.href) { data.href = base + data.href; }
                 if (data.roHref) { data.roHref = base + data.roHref; }

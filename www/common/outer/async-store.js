@@ -1282,32 +1282,15 @@ define([
         // data.send === true  ==> send the request
         Store.requestPadAccess = function (clientId, data, cb) {
             var owner = data.owner;
-            var channel = channels[data.channel];
-            if (!channel) { return void cb({error: 'ENOTFOUND'}); }
-            if (!data.send && channel && (!channel.data || !channel.data.channel)) {
-                var i = 0;
-                var it = setInterval(function () {
-                    if (channel.data && channel.data.channel) {
-                        clearInterval(it);
-                        Store.requestPadAccess(clientId, data, cb);
-                        return;
-                    }
-                    if (i >= 300) { // One minute timeout
-                        clearInterval(it);
-                        return void cb({error: 'ETIMEOUT'});
-                    }
-                    i++;
-                }, 200);
-                return;
-            }
+            var owners = data.owners;
 
             // If the owner was not is the pad metadata, check if it is a friend.
             // We'll contact the first owner for whom we know the mailbox
-            var fData = channel.data || {};
-            if (!owner && fData.owners) {
+            if (!owner && Array.isArray(owners)) {
                 var friends = store.proxy.friends || {};
-                if (Object.keys(friends).length > 1) {
-                    fData.owners.some(function (edPublic) {
+                // If we have friends, check if an owner is one of them (with a mailbox)
+                if (Object.keys(friends).filter(function (curve) { return curve !== 'me' }).length) {
+                    owners.some(function (edPublic) {
                         return Object.keys(friends).some(function (curve) {
                             if (curve === "me") { return; }
                             if (edPublic === friends[curve].edPublic &&
@@ -1377,25 +1360,11 @@ define([
 
         Store.getPadMetadata = function (clientId, data, cb) {
             if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }
-            var channel = channels[data.channel];
-            if (!channel) { return void cb({ error: 'ENOTFOUND' }); }
-            if (!channel.data || !channel.data.channel) {
-                var i = 0;
-                var it = setInterval(function () {
-                    if (channel.data && channel.data.channel) {
-                        clearInterval(it);
-                        Store.getPadMetadata(clientId, data, cb);
-                        return;
-                    }
-                    if (i >= 300) { // One minute timeout
-                        clearInterval(it);
-                        return void cb({error: 'ETIMEOUT'});
-                    }
-                    i++;
-                }, 200);
-                return;
-            }
-            cb(channel.data || {});
+            store.anon_rpc.send('GET_METADATA', data.channel, function (err, obj) {
+                if (err) { return void cb({error: err}); }
+                // XXX update local owner and expire here
+                cb((obj && obj[0]) || {});
+            });
         };
         Store.setPadMetadata = function (clientId, data, cb) {
             if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }

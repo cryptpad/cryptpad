@@ -1010,21 +1010,26 @@ define([
             sframeChan.on('EV_GIVE_ACCESS', function (data, cb) {
                 Cryptpad.padRpc.giveAccess(data, cb);
             });
-            sframeChan.on('Q_REQUEST_ACCESS', function (data, cb) {
+            // REQUEST_ACCESS is used both to check IF we can contact an owner (send === false)
+            // AND also to send the request if we want (send === true)
+            sframeChan.on('Q_REQUEST_ACCESS', function (send, cb) {
                 if (readOnly && hashes.editHash) {
                     return void cb({error: 'ALREADYKNOWN'});
                 }
-                var owner;
+                var owner, owners;
                 var crypto = Crypto.createEncryptor(secret.keys);
                 nThen(function (waitFor) {
                     // Try to get the owner's mailbox from the pad metadata first.
                     // If it's is an older owned pad, check if the owner is a friend
                     // or an acquaintance (from async-store directly in requestAccess)
-                    Cryptpad.padRpc.getPadMetadata({
+                    Cryptpad.getPadMetadata({
                         channel: secret.channel
                     }, waitFor(function (obj) {
                         obj = obj || {};
                         if (obj.error) { return; }
+
+                        owners = obj.owners;
+
                         var mailbox;
                         // Get the first available mailbox (the field can be an string or an object)
                         // TODO maybe we should send the request to all the owners?
@@ -1043,10 +1048,16 @@ define([
                         }
                     }));
                 }).nThen(function () {
+                    // If we are just checking (send === false) and there is a mailbox field, cb state true
+                    // If there is no mailbox, we'll have to check if an owner is a friend in the worker
+                    if (owner && !send) {
+                        return void cb({state: true});
+                    }
                     Cryptpad.padRpc.requestAccess({
-                        send: data,
+                        send: send,
                         channel: secret.channel,
-                        owner: owner
+                        owner: owner,
+                        owners: owners
                     }, cb);
                 });
             });
