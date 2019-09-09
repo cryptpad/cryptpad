@@ -4,6 +4,7 @@ define(['/api/config'], function (ApiConfig) {
     var DEFAULT_MAIN = '/customize/main-favicon.png?' + ApiConfig.requireConf.urlArgs;
     var DEFAULT_ALT = '/customize/alt-favicon.png?' + ApiConfig.requireConf.urlArgs;
 
+    var document = window.document;
 
     var isSupported = Module.isSupported = function () {
         return typeof(window.Notification) === 'function' && window.location.protocol === 'https:';
@@ -22,7 +23,7 @@ define(['/api/config'], function (ApiConfig) {
     };
 
     var create = Module.create = function (msg, title, icon) {
-        if (!icon) {
+        if (document && !icon) {
             var favicon = document.getElementById('favicon');
             icon = favicon.getAttribute('data-main-favicon') || DEFAULT_MAIN;
         }
@@ -52,6 +53,9 @@ define(['/api/config'], function (ApiConfig) {
     };
 
     var createFavicon = function () {
+        if (!document) {
+            return void console.error('document is not available in this context');
+        }
         console.debug("creating favicon");
         var fav = document.createElement('link');
         var attrs = {
@@ -68,9 +72,12 @@ define(['/api/config'], function (ApiConfig) {
         document.head.appendChild(fav);
     };
 
-    if (!document.getElementById('favicon')) { createFavicon(); }
+    if (document && !document.getElementById('favicon')) { createFavicon(); }
 
     Module.tab = function (frequency, count) {
+        if (!document) {
+            return void console.error('document is not available in this context');
+        }
         var key = '_pendingTabNotification';
 
         var favicon = document.getElementById('favicon');
