@@ -48,6 +48,7 @@ define([
     };
 
     var CHECKPOINT_INTERVAL = 50;
+    var DISPLAY_RESTORE_BUTTON = false;
 
     var debug = function (x) {
         if (!window.CP_DEV_MODE) { return; }
@@ -237,6 +238,35 @@ define([
             }
         };
 
+        var onUploaded = function (ev, data, err) {
+            if (err) {
+                console.error(err);
+                return void UI.alert(Messages.oo_saveError);
+            }
+            var i = Math.floor(ev.index / CHECKPOINT_INTERVAL);
+            content.hashes[i] = {
+                file: data.url,
+                hash: ev.hash,
+                index: ev.index
+            };
+            oldHashes = JSON.parse(JSON.stringify(content.hashes));
+            content.saveLock = undefined;
+            APP.onLocal();
+            APP.realtime.onSettle(function () {
+                fixSheets();
+                UI.log(Messages.saved);
+                if (ev.callback) {
+                    return void ev.callback();
+                }
+            });
+            sframeChan.query('Q_OO_COMMAND', {
+                cmd: 'UPDATE_HASH',
+                data: ev.hash
+            }, function (err, obj) {
+                if (err || (obj && obj.error)) { console.error(err || obj.error); }
+            });
+        };
+
         var fmConfig = {
             noHandlers: true,
             noStore: true,
@@ -244,32 +274,7 @@ define([
             onUploaded: function (ev, data) {
                 if (!data || !data.url) { return; }
                 sframeChan.query('Q_OO_SAVE', data, function (err) {
-                    if (err) {
-                        console.error(err);
-                        return void UI.alert(Messages.oo_saveError);
-                    }
-                    var i = Math.floor(ev.index / CHECKPOINT_INTERVAL);
-                    content.hashes[i] = {
-                        file: data.url,
-                        hash: ev.hash,
-                        index: ev.index
-                    };
-                    oldHashes = JSON.parse(JSON.stringify(content.hashes));
-                    content.saveLock = undefined;
-                    APP.onLocal();
-                    APP.realtime.onSettle(function () {
-                        fixSheets();
-                        UI.log(Messages.saved);
-                        if (ev.callback) {
-                            return void ev.callback();
-                        }
-                    });
-                    sframeChan.query('Q_OO_COMMAND', {
-                        cmd: 'UPDATE_HASH',
-                        data: ev.hash
-                    }, function (err, obj) {
-                        if (err || (obj && obj.error)) { console.error(err || obj.error); }
-                    });
+                    onUploaded(ev, data, err);
                 });
             }
         };
@@ -307,6 +312,19 @@ define([
                 }
             }, to);
         };
+        var restoreLastCp = function () {
+            content.saveLock = myOOId;
+            APP.onLocal();
+            APP.realtime.onSettle(function () {
+                onUploaded({
+                    hash: ooChannel.lastHash,
+                    index: ooChannel.cpIndex
+                }, {
+                    url: getLastCp().file,
+                });
+            });
+        };
+
 
         var openRtChannel = function (cb) {
             if (rtChannel.ready) { return void cb(); }
@@ -879,6 +897,16 @@ define([
                     saveToServer();
                 });
                 $save.appendTo($rightside);
+            }
+            if (window.CP_DEV_MODE || DISPLAY_RESTORE_BUTTON) {
+                common.createButton('', true, {
+                    name: 'restore',
+                    icon: 'fa-history',
+                    hiddenReadOnly: true
+                }).click(function () {
+                    if (initializing) { return void console.error('initializing'); }
+                    restoreLastCp();
+                }).attr('title', 'Restore last checkpoint').appendTo($rightside);
             }
 
             var $export = common.createButton('export', true, {}, exportFile);

@@ -2,10 +2,11 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-realtime.js',
+    '/common/notify.js',
     '/common/outer/mailbox-handlers.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-crypto/crypto.js',
-], function (Util, Hash, Realtime, Handlers, CpNetflux, Crypto) {
+], function (Util, Hash, Realtime, Notify, Handlers, CpNetflux, Crypto) {
     var Mailbox = {};
 
     var TYPES = [
@@ -54,11 +55,11 @@ proxy.mailboxes = {
         return (m.viewed || []).indexOf(hash) === -1 && hash !== m.lastKnownHash;
     };
 
-    var showMessage = function (ctx, type, msg, cId) {
+    var showMessage = function (ctx, type, msg, cId, cb) {
         ctx.emit('MESSAGE', {
             type: type,
             content: msg
-        }, cId ? [cId] : ctx.clients);
+        }, cId ? [cId] : ctx.clients, cb);
     };
     var hideMessage = function (ctx, type, hash, clients) {
         ctx.emit('VIEWED', {
@@ -272,7 +273,11 @@ proxy.mailboxes = {
                         });
                     }
                     box.content[hash] = msg;
-                    showMessage(ctx, type, message);
+                    showMessage(ctx, type, message, null, function (obj) {
+                        if (!box.ready) { return; }
+                        if (!obj || !obj.msg) { return; }
+                        Notify.system(undefined, obj.msg);
+                    });
                 });
             } else {
                 // Message has already been viewed by the user
@@ -320,6 +325,7 @@ proxy.mailboxes = {
                     view(n);
                 }
             });
+            box.ready = true;
             // Continue
             onReady();
         };

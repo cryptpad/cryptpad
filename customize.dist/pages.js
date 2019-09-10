@@ -103,7 +103,7 @@ define([
                     ])*/
                 ])
             ]),
-            h('div.cp-version-footer', "CryptPad v3.0.1 (Aurochs' revenge)")
+            h('div.cp-version-footer', "CryptPad v3.1.0 (Baiji)")
         ]);
     };
 

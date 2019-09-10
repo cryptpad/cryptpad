@@ -222,13 +222,14 @@
         return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
     };
 
+    Util.noop = function () {};
+
     /* for wrapping async functions such that they can only be called once */
-    Util.once = function (f) {
-        var called;
+    Util.once = function (f, g) {
         return function () {
-            if (called) { return; }
-            called = true;
+            if (!f) { return; }
             f.apply(this, Array.prototype.slice.call(arguments));
+            f = g;
         };
     };
 

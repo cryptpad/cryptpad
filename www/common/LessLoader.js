@@ -158,14 +158,14 @@ define([
         var done = function () {
             clearTimeout(timeout);
             if (btime) {
-                console.log("Compiling [" + url + "] took " + (+new Date() - btime) + "ms");
+                console.info("Compiling [" + url + "] took " + (+new Date() - btime) + "ms");
             }
             cb();
         };
         stack.push(url);
         cacheGet(url, function (css) {
             if (css) { return void loadSubmodulesAndInject(css, url, done, stack); }
-            console.log('CACHE MISS ' + url);
+            console.debug('CACHE MISS ' + url);
             ((/\.less([\?\#].*)?$/.test(url)) ? loadLess : loadCSS)(url, function (err, css) {
                 if (!css) { return void console.error(err); }
                 var output = fixAllURLs(css, url);

@@ -148,12 +148,15 @@ define([
             return void cb({error: err});
         });
 
-        network.on('reconnect', function () {
+        var onReconnect = function () {
             if (!ctx.channels[channel]) { console.log("cant reconnect", channel); return; }
             network.join(channel).then(onOpen, function (err) {
                 console.error(err);
             });
-        });
+        };
+        ctx.channels[channel] = ctx.channels[channel] || {};
+        ctx.channels[channel].onReconnect = onReconnect;
+        network.on('reconnect', onReconnect);
     };
 
     var updateCursor = function (ctx, data, client, cb) {
@@ -173,6 +176,10 @@ define([
             var channel = ctx.channels[cursorChan];
             if (channel.padChan !== padChan) { return; }
             if (channel.wc) { channel.wc.leave(); }
+            if (channel.onReconnect) {
+                var network = ctx.store.network;
+                network.off('reconnect', channel.onReconnect);
+            }
             delete ctx.channels[cursorChan];
             return true;
         });
@@ -190,6 +197,10 @@ define([
             chan.clients = chan.clients.filter(filter);
             if (chan.clients.length === 0) {
                 if (chan.wc) { chan.wc.leave(); }
+                if (chan.onReconnect) {
+                    var network = ctx.store.network;
+                    network.off('reconnect', chan.onReconnect);
+                }
                 delete ctx.channels[k];
             }
         }

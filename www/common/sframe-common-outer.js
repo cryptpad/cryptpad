@@ -414,8 +414,12 @@ define([
                     });
                 });
 
-                Cryptpad.mailbox.onEvent.reg(function (data) {
-                    sframeChan.event('EV_MAILBOX_EVENT', data);
+                Cryptpad.mailbox.onEvent.reg(function (data, cb) {
+                    sframeChan.query('EV_MAILBOX_EVENT', data, function (err, obj) {
+                        if (!cb) { return; }
+                        if (err) { return void cb({error: err}); }
+                        cb(obj);
+                    });
                 });
                 sframeChan.on('Q_MAILBOX_COMMAND', function (data, cb) {
                     Cryptpad.mailbox.execCommand(data, cb);

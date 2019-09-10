@@ -1366,7 +1366,7 @@ define([
                     console.log(parsed);
                     return;
                 } else {
-                    console.log(parsed);
+                    //console.log(parsed);
                 }
                 Util.fetch(parsed.href, waitFor(function (err, arraybuffer) {
                     if (err) { return void console.log(err); }

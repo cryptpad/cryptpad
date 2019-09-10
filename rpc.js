@@ -294,37 +294,33 @@ var getUploadSize = function (Env, channel, cb) { // FIXME FILES
     });
 };
 
-const batchFileSize = BatchRead("GET_FILE_SIZE");
 var getFileSize = function (Env, channel, cb) {
     if (!isValidId(channel)) { return void cb('INVALID_CHAN'); }
-    batchFileSize(channel, cb, function (done) {
-        if (channel.length === 32) {
-            if (typeof(Env.msgStore.getChannelSize) !== 'function') {
-                return done('GET_CHANNEL_SIZE_UNSUPPORTED');
-            }
-
-            return void Env.msgStore.getChannelSize(channel, function (e, size /*:number*/) {
-                if (e) {
-                    if (e.code === 'ENOENT') { return void done(void 0, 0); }
-                    return void done(e.code);
-                }
-                done(void 0, size);
-            });
+    if (channel.length === 32) {
+        if (typeof(Env.msgStore.getChannelSize) !== 'function') {
+            return cb('GET_CHANNEL_SIZE_UNSUPPORTED');
         }
 
-        // 'channel' refers to a file, so you need another API
-        getUploadSize(Env, channel, function (e, size) {
-            if (typeof(size) === 'undefined') { return void done(e); }
-            done(void 0, size);
+        return void Env.msgStore.getChannelSize(channel, function (e, size /*:number*/) {
+            if (e) {
+                if (e.code === 'ENOENT') { return void cb(void 0, 0); }
+                return void cb(e.code);
+            }
+            cb(void 0, size);
         });
+    }
+
+    // 'channel' refers to a file, so you need another API
+    getUploadSize(Env, channel, function (e, size) {
+        if (typeof(size) === 'undefined') { return void cb(e); }
+        cb(void 0, size);
     });
 };
 
 const batchMetadata = BatchRead("GET_METADATA");
 var getMetadata = function (Env, channel, cb) {
     if (!isValidId(channel)) { return void cb('INVALID_CHAN'); }
-
-    if (channel.length !== 32) { return cb("INVALID_CHAN"); }
+    if (channel.length !== 32) { return cb("INVALID_CHAN_LENGTH"); }
 
     batchMetadata(channel, cb, function (done) {
         var ref = {};

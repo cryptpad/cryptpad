@@ -703,8 +703,13 @@ define([
                         href: href,
                         channel: channel,
                         title: data.driveReadmeTitle,
+                        owners: [ store.proxy.edPublic ],
                     };
                     Store.addPad(clientId, fileData, cb);
+                }, {
+                    metadata: {
+                        owners: [ store.proxy.edPublic ],
+                    },
                 });
             });
         };
@@ -989,11 +994,18 @@ define([
                 pad.href = href;
             });
 
+            // If we've just accepted ownership for a pad stored in a shared folder,
+            // we need to make a copy of this pad in our drive. We're going to check
+            // the pad is owned by us BUT is not stored in our main drive
+            var inMyDrive = datas.some(function (obj) {
+                return !obj.fId;
+            });
+            // XXX owned by one of our teams?
+            var ownedByMe = Array.isArray(owners) && owners.indexOf(store.proxy.edPublic) !== -1;
+
             // Add the pad if it does not exist in our drive
-            if (!contains) {
+            if (!contains || (ownedByMe && !inMyDrive)) {
                 var autoStore = Util.find(store.proxy, ['settings', 'general', 'autostore']);
-                // XXX owned by one of our teams?
-                var ownedByMe = Array.isArray(owners) && owners.indexOf(store.proxy.edPublic) !== -1;
                 if (autoStore !== 1 && !data.forceSave && !data.path && !ownedByMe) {
                     // send event to inner to display the corner popup
                     postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {
@@ -1920,12 +1932,12 @@ define([
                     broadcast([], "UPDATE_METADATA");
                 },
                 pinPads: function (data, cb) { Store.pinPads(null, data, cb); },
-            }, waitFor, function (ev, data, clients) {
+            }, waitFor, function (ev, data, clients, cb) {
                 clients.forEach(function (cId) {
                     postMessage(cId, 'MAILBOX_EVENT', {
                         ev: ev,
                         data: data
-                    });
+                    }, cb);
                 });
             });
         };

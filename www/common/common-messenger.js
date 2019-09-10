@@ -728,6 +728,15 @@ define([
             network.on('reconnect', function () {
                 if (channel && channel.stopped) { return; }
                 if (!channels[data.channel]) { return; }
+
+                if (!joining[data.channel]) {
+                    joining[data.channel] = function () {
+                        console.log("reconnected to %s", data.channel);
+                    };
+                } else {
+                    console.error("Reconnected to a chat channel (%s) which was not fully connected", data.channel);
+                }
+
                 network.join(data.channel).then(onOpen, function (err) {
                     console.error(err);
                 });

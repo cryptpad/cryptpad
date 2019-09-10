@@ -251,8 +251,7 @@ nThen(function (w) {
             return void console.error(err);
         }
 
-        // XXX validate that the write was actually successful by checking its size
-
+        // TODO validate that the write was actually successful by checking its size
         response = response;
         // shutdown doesn't work, so we need to do this instead
     }));
