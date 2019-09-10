@@ -1,3 +1,74 @@
+# Baiji release (v3.1.0)
+
+## Goals
+
+For CryptPad 3.1.0 we prioritized our work on team-centric features. In particular we wanted to finish some improvements to make our notifications system more private and start making use of our prior work on editable pad metadata.
+
+## Update notes
+
+* `config/config.example.js` has included the `inactiveTime` value for a while. It's used by our archival script (`scripts/evict-inactive.js`) to determine if a pad should be removed. This value is now shared with clients via the `/api/config` endpoint. Unregistered clients now use this value to inform users that unpinned pad will expire after that number of days of inactivity.
+  * previously the value was hardcoded to "3 months"
+* Changes to channel metadata logs and users' pin logs now include the time of the modification.
+  * this is mostly to help with debugging, though we might use this value in the future
+  * newly created metadata will also include a `created` field with a timestamp indicating when it was first created on the server
+* We've removed two files from our `scripts` directory:
+  * `delete-inactive.js`: because it ignored the configured values for archival
+  * `pinned-data.js`: because it was only used by `delete-inactive.js` and we will soon have better ways to accomplish the same goal
+* We've made some updates to the server-side components of our caching logic
+  * CryptPad used to use the `version` value from `package.json` as a cache-busting string so that all assets would be reloaded and cached when you upgraded to a new version
+  * in practice, lots of administrators had problems with this where they made configuration changes and restarted the server, but their client was stuck with old values cached
+  * the new default is to generate a cache string at the server's launch time and use this value for the lifetime of the server
+    * server administrators can still change the cache string through the instance's admin panel
+    * this behaviour was previously available by launching the server with `FRESH=1 node server.js`
+  * the old behaviour is still available by launching the server with `PACKAGE=1 node server.js`
+* We've refactored some small functions implemented in `historyKeeper.js` which halved our server's memory usage in the previous release and reused those functions in our RPC module.
+  * we hope this leads to even better performance under heavy load when doing things like
+    * reading metadata
+    * checking disk usage (global and for particular users)
+    * loading a user's pin log
+
+Baiji depends on updates to clientside and serverside dependencies.
+
+To update:
+
+1. Take down your server
+2. Pull the latest code
+2. `npm install`
+3. `bower update`
+4. Launch your server
+
+## Features
+
+* Messages sent to a user's encrypted mailbox are now anonymized by the server.
+  * This means that clients other than the intended recipient of a message no longer have any information indicating the identity of the sender
+* It is now possible to modify ownership of pads
+  * use the "properties modal", available by right-clicking on the pad in your drive or from the properties entry in the "toolbar drawer" in pads
+  * navigate to the "Availability tab" and click "manage owners" where you can:
+    * offer ownership to friends, who will receive a notification and will be able to accept or refuse ownership
+    * remove ownership from confirmed owners
+    * rescind pending offers
+* Amendments to the "owners" field in pad metadata will now also change the "mailbox" field, allowing users with read-only access rights to request editing rights from any of the owners
+  * the current behaviour is to ask only the first owner in the list, but we'll be able to make use of the additional mailboxes in future releases
+* We now consider changes to metadata to be "activity" for a channel for the purposes of deciding whether an unpinned channel should be archived.
+  * this means that if you offer other users ownership of a pad and remove yourself as owner, even if nobody is pinning the document it will not be removed until the configured period of inactivity from the time when you removed yourself as owner
+* The "What is CryptPad" pad which is created in a user's CryptDrive when they first register is now created as an "owned pad" which they can remove from the server
+* We've begun work on a basic command-line client which we're mostly using for automated testing of our history-related APIs and our serverside RPCs (Remote Procedure Calls).
+  * a stable command-line client API won't necessarily be available for the foreseeable future, but these tests should lead to fewer serverside regressions which will be better for the browser client as well
+  * as we write tests we're converting more and more of our browser-only modules to work in more environments, so native and mobile apps will be easier to implement in the future
+* Finally, we've begun to detect and users that try to register with their email address as their username
+  * we don't prevent them from doing so, but we do warn them that their email address is not actually sent to the server, and we won't be able to use it to recover their account if they forget it or their password
+
+## Bug fixes
+
+* In our previous release we discovered that `config/config.example.js` did not include the configuration point which enabled the server to schedule tasks for the expiration of files.
+  * even though the pads were created with the expiration time in their metadata, and the server would not serve such files to clients that requested them, they would still remain in the database
+  * if these expired pads are ever requested and they should have expired over a day before, the server will now archive or delete the file immediately
+* We've investigated and fixed a number of errors that were visible in the browser console even if they didn't have harmful effects on the client's behaviour
+  * when reconnecting
+    * "channel ready without callback"
+    * network "EJOINED" error
+* Changes to the metadata logs for pads are now queued so that they are always written in the same order as they were received
+
 # Aurochs release (v3.0.0)
 
 The move to 3.0 is mostly because we ran out of letters in the alphabet for our 2.0 release cycle.

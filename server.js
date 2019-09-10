@@ -62,6 +62,7 @@ if (process.env.PACKAGE) {
 
 config.flushCache = function () {
     FRESH_KEY = +new Date();
+    if (!(DEV_MODE || FRESH_MODE)) { FRESH_MODE = true; }
     if (!config.log) { return; }
     config.log.info("UPDATING_FRESH_KEY", FRESH_KEY);
 };
