@@ -406,7 +406,11 @@ define([
             $d.append(UI.dialog.selectable(owners, {
                 id: 'cp-app-prop-owners',
             }));
-            if (owned) {
+            var parsed;
+            if (data.href || data.roHref) {
+                parsed = Hash.parsePadUrl(data.href || data.roHref);
+            }
+            if (owned && data.roHref && parsed.type !== 'drive' && parsed.hashData.type === 'pad') {
                 var manageOwners = h('button.no-margin', Messages.owner_openModalButton);
                 $(manageOwners).click(function () {
                     var modal = createOwnerModal(common, data);
@@ -445,7 +449,6 @@ define([
                     $d.append(password);
                 }
 
-                var parsed = Hash.parsePadUrl(data.href || data.roHref);
                 if (!data.noEditPassword && owned && parsed.hashData.type === 'pad' && parsed.type !== "sheet") { // FIXME SHEET fix password change for sheets
                     var sframeChan = common.getSframeChannel();
                     var changePwTitle = Messages.properties_changePassword;
@@ -590,7 +593,7 @@ define([
                     id: 'cp-app-prop-size',
                 }));
 
-        if (data.sharedFolder) {
+        if (data.sharedFolder && false) {
             $('<label>', {'for': 'cp-app-prop-channel'}).text('Channel ID').appendTo($d);
             if (AppConfig.pinBugRecovery) { $d.append(h('p', AppConfig.pinBugRecovery)); }
             $d.append(UI.dialog.selectable(data.channel, {
