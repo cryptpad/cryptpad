@@ -25,7 +25,9 @@ define(['/api/config'], function (ApiConfig) {
     var create = Module.create = function (msg, title, icon) {
         if (document && !icon) {
             var favicon = document.getElementById('favicon');
-            icon = favicon.getAttribute('data-main-favicon') || DEFAULT_MAIN;
+            icon = favicon.getAttribute('data-main-favicon') || DEFAULT_ALT;
+        } else if (!icon) {
+            icon = DEFAULT_ALT;
         }
 
         return new Notification(title,{
