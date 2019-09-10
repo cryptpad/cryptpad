@@ -997,7 +997,7 @@ define([
             // If we've just accepted ownership for a pad stored in a shared folder,
             // we need to make a copy of this pad in our drive. We're going to check
             // the pad is owned by us BUT is not stored in our main drive
-            var inMyDrive = datas.some(function (obj) {
+            var inMyDrive = allData.some(function (obj) {
                 return !obj.fId;
             });
             // XXX owned by one of our teams?

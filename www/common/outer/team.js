@@ -77,7 +77,6 @@ define([
 
         var pin = function (data, cb) { return void cb({error: 'EFORBIDDEN'}); };
         var unpin = function (data, cb) { return void cb({error: 'EFORBIDDEN'}); };
-        var removeOwnedChannel = function (data, cb) {};
         nThen(function (waitFor) {
             if (!keys.edPrivate) { return; }
             initRpc(ctx, team, keys, waitFor(function (err) {
@@ -101,7 +100,7 @@ define([
                     });
                 };
             }));
-        }).nThen(function (waitFor) {
+        }).nThen(function () {
             var loadSharedFolder = function (id, data, cb) {
                 SF.load({
                     network: ctx.store.network,
@@ -145,7 +144,7 @@ define([
             // XXX
             // Load shared folders
             // Load members pad
-            console.log('ok');
+            console.log('ok', waitFor);
         }).nThen(function () {
             ctx.teams[id] = team;
             if (ctx.onReadyHandlers[id]) {
@@ -195,7 +194,6 @@ define([
 
 console.log(data);
 
-        var teams = ctx.store.teams;
         var password = Hash.createChannelId();
         var hash = Hash.createRandomHash('team', password);
         var secret = Hash.getSecrets('team', hash, password);

@@ -31,7 +31,7 @@ define([
 {
     var APP = {};
     var driveAPP = {};
-    var SHARED_FOLDER_NAME = Messages.fm_sharedFolderName;
+    //var SHARED_FOLDER_NAME = Messages.fm_sharedFolderName;
 
     var copyObjectValue = function (objRef, objToCopy) {
         for (var k in objRef) { delete objRef[k]; }
@@ -135,7 +135,7 @@ define([
         return content;
     };
     makeBlock('list', function (common, cb) {
-        refreshList(common, cb)
+        refreshList(common, cb);
     });
 
     makeBlock('create', function (common, cb) {
@@ -243,11 +243,13 @@ define([
 
     var loadTeam = function (common) {
         var sframeChan = common.getSframeChannel();
+        var proxy = {};
+        var folders = {};
         nThen(function (waitFor) {
             updateObject(sframeChan, proxy, waitFor(function () {
                 updateSharedFolders(sframeChan, null, proxy.drive, folders, waitFor());
             }));
-        }).nThen(function (waitFor) {
+        }).nThen(function () {
             if (!proxy.drive || typeof(proxy.drive) !== 'object') {
                 throw new Error("Corrupted drive");
             }
@@ -272,6 +274,7 @@ define([
         var ev = obj.ev;
         var data = obj.data;
         if (ev === 'PEWPEW') {
+            data = data;
             // Do something
             return;
         }
@@ -279,8 +282,6 @@ define([
 
     var main = function () {
         var common;
-        var proxy = {};
-        var folders = {};
         var readOnly;
 
         nThen(function (waitFor) {
@@ -295,9 +296,9 @@ define([
             APP.$container = $('#cp-sidebarlayout-container');
             APP.$leftside = $('<div>', {id: 'cp-sidebarlayout-leftside'}).appendTo(APP.$container);
             APP.$rightside = $('<div>', {id: 'cp-sidebarlayout-rightside'}).appendTo(APP.$container);
-            sFrameChan = common.getSframeChannel();
+            var sFrameChan = common.getSframeChannel();
             sFrameChan.onReady(waitFor());
-        }).nThen(function (waitFor) {
+        }).nThen(function () {
             var sframeChan = common.getSframeChannel();
             var metadataMgr = common.getMetadataMgr();
             var privateData = metadataMgr.getPrivateData();
@@ -309,8 +310,6 @@ define([
             common.setTabTitle('TEAMS'); // XXX
 
             // Drive data
-            var metadataMgr = common.getMetadataMgr();
-            var privateData = metadataMgr.getPrivateData();
             if (privateData.newSharedFolder) {
                 driveAPP.newSharedFolder = privateData.newSharedFolder;
             }
