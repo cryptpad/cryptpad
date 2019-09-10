@@ -98,7 +98,7 @@ define([
             var $div = $('<div>', {'class': 'cp-team-' + key + ' cp-sidebarlayout-element'});
             getter(common, function (content) {
                 $div.append(content);
-            });
+            }, $div);
             return $div;
         };
     };
@@ -110,12 +110,68 @@ define([
         ]);
     });
 
-    makeBlock('list', function (common, cb) {
+    var refreshList = function (common, cb) {
         var content = [];
-        var sframeChan = common.getSframeChannel();
+        content.push(h('h3', 'Your teams'));
         APP.module.execCommand('LIST_TEAMS', null, function (obj) {
-            
+            if (!obj) { return; }
+            if (obj.error) { return void console.error(obj.error); }
+            var lis = [];
+            Object.keys(obj).forEach(function (id) {
+                var team = obj[id];
+                var a = h('a', 'Open');
+                lis.push(h('li', h('ul', [
+                    h('li', 'Name: ' + team.name), // XXX
+                    h('li', 'ID: ' + id), // XXX
+                    h('li', a) // XXX
+                ])));
+                $(a).click(function () {
+                    console.log('okok'); // XXX
+                });
+            });
+            content.push(h('ul', lis));
+            cb(content);
         });
+        return content;
+    };
+    makeBlock('list', function (common, cb) {
+        refreshList(common, cb)
+    });
+
+    makeBlock('create', function (common, cb) {
+        var content = [];
+        content.push(h('h3', 'Create a team')); // XXX
+        content.push(h('label', 'Team name')); // XXX
+        var input = h('input', {type:'text'});
+        content.push(input);
+        var button = h('button.btn.btn-success', 'Create'); // XXX
+        content.push(h('br'));
+        content.push(h('br'));
+        content.push(button);
+        var state = false;
+        $(button).click(function () {
+            if (state) { return; }
+            var name = $(input).val();
+            if (!name.trim()) { return; }
+            state = true;
+            UI.confirm('Are you sure?', function (yes) {
+                if (!yes) {
+                    state = false;
+                    return;
+                }
+                APP.module.execCommand('CREATE_TEAM', {
+                    name: name
+                }, function () {
+                    var $div = $('div.cp-team-list').empty();
+                    refreshList(common, function (content) {
+                        state = false;
+                        $div.append(content);
+                        $('div.cp-team-cat-list').click();
+                    });
+                });
+            });
+        });
+        cb(content);
     });
 
     // Sidebar layout
@@ -138,9 +194,9 @@ define([
         var active = team ? 'drive' : 'general';
 
         Object.keys(categories).forEach(function (key) {
-            var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
+            var $category = $('<div>', {'class': 'cp-sidebarlayout-category cp-team-cat-'+key}).appendTo($categories);
             if (key === 'general') { $category.append($('<span>', {'class': 'fa fa-info-circle'})); }
-            if (key === 'list') { $category.append($('<span>', {'class': 'fa fa-list'})); }
+            if (key === 'list') { $category.append($('<span>', {'class': 'fa fa-list cp-team-cat-list'})); }
             if (key === 'create') { $category.append($('<span>', {'class': 'fa fa-plus-circle'})); }
             if (key === 'back') { $category.append($('<span>', {'class': 'fa fa-arrow-left'})); }
             if (key === 'members') { $category.append($('<span>', {'class': 'fa fa-users'})); }

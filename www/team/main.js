@@ -96,14 +96,11 @@ define([
             Cryptpad.onNetworkReconnect.reg(function (data) {
                 sframeChan.event('EV_NETWORK_RECONNECT', data);
             });
-            Cryptpad.drive.onLog.reg(function (msg) {
-                sframeChan.event('EV_DRIVE_LOG', msg);
-            });
-            Cryptpad.drive.onChange.reg(function (data) {
-                sframeChan.event('EV_DRIVE_CHANGE', data);
-            });
-            Cryptpad.drive.onRemove.reg(function (data) {
-                sframeChan.event('EV_DRIVE_REMOVE', data);
+            Cryptpad.universal.onEvent.reg(function (obj) {
+                // Intercept events for the team drive and send them the required way
+                if (obj.type !== 'team' ||
+                    ['DRIVE_CHANGE', 'DRIVE_LOG', 'DRIVE_REMOVE'].indexOf(obj.data.ev) === -1) { return; }
+                sframeChan.event(obj.data.ev, obj.data.data);
             });
         };
         SFCommonO.start({

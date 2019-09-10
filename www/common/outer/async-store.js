@@ -60,7 +60,7 @@ define([
             }
         };
 
-        var onSync = function (teamId, cb) {
+        var onSync = Store.onSync = function (teamId, cb) {
             var s = getStore(teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             nThen(function (waitFor) {
@@ -735,7 +735,7 @@ define([
             store.proxy[Constants.displayNameKey] = value;
             broadcast([clientId], "UPDATE_METADATA");
             Messaging.updateMyData(store);
-            onSync(cb);
+            onSync(null, cb);
         };
 
         // Reset the drive part of the userObject (from settings)
@@ -747,7 +747,7 @@ define([
                 sendDriveEvent('DRIVE_CHANGE', {
                     path: ['drive', 'filesData']
                 }, clientId);
-                onSync(cb);
+                onSync(null, cb);
             });
         };
 
@@ -830,7 +830,7 @@ define([
                 var object = getAttributeObject(data.attr);
                 object.obj[object.key] = data.value;
             } catch (e) { return void cb({error: e}); }
-            onSync(function () {
+            onSync(null, function () {
                 cb();
                 broadcast([], "UPDATE_METADATA");
             });
@@ -1209,6 +1209,7 @@ define([
         var loadUniversal = function (Module, type, waitFor) {
             if (store.modules[type]) { return; }
             store.modules[type] = Module.init({
+                Store: Store,
                 store: store,
                 updateMetadata: function () {
                     broadcast([], "UPDATE_METADATA");
@@ -1286,7 +1287,7 @@ define([
             store.mailbox.open('supportadmin', box, function () {
                 console.log('ready');
             });
-            onSync(cb);
+            onSync(null, cb);
         };
 
         //////////////////////////////////////////////////////////////////
@@ -1970,7 +1971,7 @@ define([
             };
             if (!proxy.settings) { proxy.settings = {}; }
             var manager = store.manager = ProxyManager.create(proxy.drive, {
-                onSync: onSync,
+                onSync: function (cb) { onSync(null, cb); },
                 edPublic: proxy.edPublic,
                 pin: pin,
                 unpin: unpin,
