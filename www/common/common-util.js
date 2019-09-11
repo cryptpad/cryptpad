@@ -1,6 +1,14 @@
 (function (window) {
     var Util = {};
 
+    Util.both = function (pre, post) {
+        if (typeof(post) !== 'function') { post = function (x) { return x; }; }
+        return function () {
+            pre.apply(null, arguments);
+            return post.apply(null, arguments);
+        };
+    };
+
     Util.tryParse = function (s) {
         try { return JSON.parse(s); } catch (e) { return;}
     };
