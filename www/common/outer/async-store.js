@@ -147,7 +147,6 @@ define([
                    typeof(store.proxy.curvePublic) === 'string';
         };
 
-        // XXX TODO Implement same behavior in team.js
         var getUserChannelList = function () {
             // start with your userHash...
             var userHash = storeHash;
@@ -190,12 +189,10 @@ define([
             return list;
         };
 
-        // XXX TODO Implement same behavior in team.js
         var getExpirableChannelList = function () {
             return store.manager.getChannelsList('expirable');
         };
 
-        // XXX TODO Implement same behavior in team.js
         var getCanonicalChannelList = function (expirable) {
             var list = expirable ? getExpirableChannelList() : getUserChannelList();
             return Util.deduplicateString(list).sort();
@@ -396,9 +393,6 @@ define([
             if (!store.loggedIn) { return cb(); }
             if (store.rpc) { return void cb(account); }
             require(['/common/pinpad.js'], function (Pinpad) {
-                // XXX Teams: we wont' pass the team's proxy directly here because all the users
-                // may not have access to the edPrivate key
-                // Users without edPrivate should not be able to create a pinpad object
                 Pinpad.create(store.network, store.proxy, function (e, call) {
                     if (e) { return void cb({error: e}); }
 

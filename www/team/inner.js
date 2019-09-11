@@ -30,7 +30,9 @@ define([
     Messages)
 {
     var APP = {};
-    var driveAPP = {};
+    var driveAPP = {
+        isTeam: true
+    };
     //var SHARED_FOLDER_NAME = Messages.fm_sharedFolderName;
 
     var copyObjectValue = function (objRef, objToCopy) {
@@ -86,9 +88,11 @@ define([
         'back': {
             onClick: function (common) {
                 var sframeChan = common.getSframeChannel();
-                sframeChan.query('Q_SET_TEAM', null, function (err) {
-                    if (err) { return void console.error(err); }
-                    APP.buildUI(common);
+                APP.module.execCommand('SUBSCRIBE', null, function () {
+                    sframeChan.query('Q_SET_TEAM', null, function (err) {
+                        if (err) { return void console.error(err); }
+                        APP.buildUI(common);
+                    });
                 });
             }
         },
@@ -248,9 +252,11 @@ define([
                     h('li', a) // XXX
                 ])));
                 $(a).click(function () {
-                    sframeChan.query('Q_SET_TEAM', id, function (err) {
-                        if (err) { return void console.error(err); }
-                        buildUI(common, true);
+                    APP.module.execCommand('SUBSCRIBE', id, function () {
+                        sframeChan.query('Q_SET_TEAM', id, function (err) {
+                            if (err) { return void console.error(err); }
+                            buildUI(common, true);
+                        });
                     });
                 });
             });
@@ -304,7 +310,7 @@ define([
     });
 
     makeBlock('drive', function (common, cb) {
-        var $div = $('div.cp-team-drive').empty();
+        $('div.cp-team-drive').empty();
         var content = [
             h('div.cp-app-drive-container', {tabindex:0}, [
                 h('div#cp-app-drive-tree'),

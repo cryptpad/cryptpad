@@ -38,6 +38,8 @@ define([
     }).nThen(function (/*waitFor*/) {
         var teamId; // XXX
         var afterSecrets = function (Cryptpad, Utils, secret, cb) {
+            return void cb();
+            /*
             var hash = window.location.hash.slice(1);
             if (hash && Utils.LocalStore.isLoggedIn()) {
                 return; // XXX How to add a shared folder?
@@ -57,8 +59,9 @@ define([
                 return void Cryptpad.loadSharedFolder(id, data, cb);
             }
             cb();
+            */
         };
-        var addRpc = function (sframeChan, Cryptpad, Utils) {
+        var addRpc = function (sframeChan, Cryptpad) {
             sframeChan.on('Q_SET_TEAM', function (data, cb) {
                 teamId = data;
                 cb();
@@ -89,14 +92,8 @@ define([
                     cb(obj);
                 });
             });
-            sframeChan.on('EV_DRIVE_SET_HASH', function (hash) {
-                // Update the hash in the address bar
-                if (!Utils.LocalStore.isLoggedIn()) { return; }
-                var ohc = window.onhashchange;
-                window.onhashchange = function () {};
-                window.location.hash = hash || '';
-                window.onhashchange = ohc;
-                ohc({reset:true});
+            sframeChan.on('EV_DRIVE_SET_HASH', function () {
+                return;
             });
             Cryptpad.onNetworkDisconnect.reg(function () {
                 sframeChan.event('EV_NETWORK_DISCONNECT');
@@ -108,7 +105,7 @@ define([
                 // Intercept events for the team drive and send them the required way
                 if (obj.type !== 'team' ||
                     ['DRIVE_CHANGE', 'DRIVE_LOG', 'DRIVE_REMOVE'].indexOf(obj.data.ev) === -1) { return; }
-                sframeChan.event(obj.data.ev, obj.data.data);
+                sframeChan.event('EV_'+obj.data.ev, obj.data.data);
             });
         };
         SFCommonO.start({

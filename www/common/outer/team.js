@@ -5,6 +5,7 @@ define([
     '/common/common-realtime.js',
 
     '/common/proxy-manager.js',
+    '/common/userObject.js',
     '/common/outer/sharedfolder.js',
 
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
@@ -13,24 +14,96 @@ define([
     '/bower_components/nthen/index.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
 ], function (Util, Hash, Constants, Realtime,
-             ProxyManager, SF,
+             ProxyManager, UserObject, SF,
              Listmap, Crypto, ChainPad, nThen) {
     var Team = {};
 
     var Nacl = window.nacl;
 
     var initializeTeams = function (ctx, cb) {
-        // XXX ?
         cb();
+    };
+
+    var registerChangeEvents = function (ctx, team, proxy, fId) {
+        if (!team) { return; }
+        proxy.on('change', [], function (o, n, p) {
+            if (fId) {
+                // Pin the new pads
+                if (p[0] === UserObject.FILES_DATA && typeof(n) === "object" && n.channel && !n.owners) {
+                    var toPin = [n.channel];
+                    // Also pin the onlyoffice channels if they exist
+                    if (n.rtChannel) { toPin.push(n.rtChannel); }
+                    if (n.lastVersion) { toPin.push(n.lastVersion); }
+                    team.pin(toPin, function (obj) { console.error(obj); });
+                }
+                // Unpin the deleted pads (deleted <=> changed to undefined)
+                if (p[0] === UserObject.FILES_DATA && typeof(o) === "object" && o.channel && !n) {
+                    var toUnpin = [o.channel];
+                    var c = team.manager.findChannel(o.channel);
+                    var exists = c.some(function (data) {
+                        return data.fId !== fId;
+                    });
+                    if (!exists) { // Unpin
+                        // Also unpin the onlyoffice channels if they exist
+                        if (o.rtChannel) { toUnpin.push(o.rtChannel); }
+                        if (o.lastVersion) { toUnpin.push(o.lastVersion); }
+                        team.unpin(toUnpin, function (obj) { console.error(obj); });
+                    }
+                }
+            }
+            team.sendEvent('DRIVE_CHANGE', {
+                id: fId,
+                old: o,
+                new: n,
+                path: p
+            });
+        });
+        proxy.on('remove', [], function (o, p) {
+            team.sendEvent('DRIVE_REMOVE', {
+                id: fId,
+                old: o,
+                path: p
+            });
+        });
+    };
+
+    var getTeamChannelList = function (ctx, id) {
+        // Get the list of pads' channel ID in your drive
+        // This list is filtered so that it doesn't include pad owned by other users
+        // It now includes channels from shared folders
+        var store = ctx.teams[id];
+        if (!store) { return null; }
+        var list = store.manager.getChannelsList('pin');
+
+        // Teams will always be owned for now
+        // XXX if the team is not owned, add the teamChannel to the list
+        /*
+        var _team = Util.find(ctx, ['store', 'proxy', 'teams', id]);
+        var secret = Hash.getSecrets('team', _team.hash, _team.password);
+        var teamChannel = secret.channel;
+        list.push(userChannel);
+        */
+
+
+        // XXX Add the team mailbox
+        /*
+        if (store.proxy.mailboxes) {
+            var mList = Object.keys(store.proxy.mailboxes).map(function (m) {
+                return store.proxy.mailboxes[m].channel;
+            });
+            list = list.concat(mList);
+        }
+        */
+
+        list.sort();
+        return list;
     };
 
     var handleSharedFolder = function (ctx, id, sfId, rt) {
         var t = ctx.teams[id];
         if (!t) { return; }
         t.sharedFolders[sfId] = rt;
-        // XXX register events
-        // rt.proxy.on('change',...  emit change event
-        // TODO: pin or unpin document added to a shared folder from someone who is not a member of the team
+        registerChangeEvents(ctx, t, rt.proxy, sfId);
     };
 
     var initRpc = function (ctx, team, data, cb) {
@@ -41,24 +114,11 @@ define([
                 if (e) { return void cb(e); }
                 team.rpc = call;
                 cb();
-                // XXX get pin limit?
             });
         });
     };
 
-    var onReady = function (ctx, id, lm, keys, cb) {
-        // XXX
-        // sanity check: do we have all the required keys?
-        // [x] initialize team rpc with pin, unpin, ...
-        // [x] team.rpc = rpc
-        // [x] load manager with userObject
-        //   team.manager =... team.userObject = ....
-        // [ ] load members pad
-        // [ ] load shared folders
-        // [ ] register listmap 'change' events for the drive and the shared folders
-        // [ ] ~resetPins for the team?
-        // [ ] getPinLimit
-
+    var onReady = function (ctx, id, lm, keys, cId, cb) {
         var proxy = lm.proxy;
         var team = {
             id: id,
@@ -70,20 +130,22 @@ define([
             sharedFolders: {}, // equivalent of store.sharedFolders in async-store
         };
 
+        if (cId) { team.clients.push(cId); }
+
         team.sendEvent = function (q, data, sender) {
             ctx.emit(q, data, team.clients.filter(function (cId) {
                 return cId !== sender;
             }));
         };
 
-        var pin = function (data, cb) { return void cb({error: 'EFORBIDDEN'}); };
-        var unpin = function (data, cb) { return void cb({error: 'EFORBIDDEN'}); };
+        team.pin = function (data, cb) { return void cb({error: 'EFORBIDDEN'}); };
+        team.unpin = function (data, cb) { return void cb({error: 'EFORBIDDEN'}); };
         nThen(function (waitFor) {
             if (!keys.edPrivate) { return; }
             initRpc(ctx, team, keys, waitFor(function (err) {
                 if (err) { return; }
 
-                pin = function (data, cb) {
+                team.pin = function (data, cb) {
                     if (!team.rpc) { return void cb({error: 'TEAM_RPC_NOT_READY'}); }
                     if (typeof(cb) !== 'function') { console.error('expected a callback'); }
                     team.rpc.pin(data, function (e, hash) {
@@ -92,7 +154,7 @@ define([
                     });
                 };
 
-                unpin = function (data, cb) {
+                team.unpin = function (data, cb) {
                     if (!team.rpc) { return void cb({error: 'TEAM_RPC_NOT_READY'}); }
                     if (typeof(cb) !== 'function') { console.error('expected a callback'); }
                     team.rpc.unpin(data, function (e, hash) {
@@ -111,8 +173,8 @@ define([
             var manager = team.manager = ProxyManager.create(proxy.drive, {
                 onSync: function (cb) { ctx.Store.onSync(id, cb); },
                 edPublic: proxy.edPublic,
-                pin: pin,
-                unpin: unpin,
+                pin: team.pin,
+                unpin: team.unpin,
                 loadSharedFolder: loadSharedFolder,
                 settings: {
                     drive: Util.find(ctx.store, ['proxy', 'settings', 'drive'])
@@ -142,12 +204,26 @@ define([
             team.userObject = manager.user.userObject;
             team.userObject.fixFiles();
         }).nThen(function (waitFor) {
-            // XXX
-            // Load shared folders
-            // Load members pad
-            console.log('ok', waitFor);
-        }).nThen(function () {
             ctx.teams[id] = team;
+            registerChangeEvents(ctx, team, proxy);
+            SF.loadSharedFolders(ctx.Store, ctx.store.network, team, team.userObject, waitFor);
+            // XXX
+            // Load members pad
+        }).nThen(function () {
+            if (!team.rpc) { return; }
+            var list = getTeamChannelList(ctx, id);
+            var local = Hash.hashChannelList(list);
+            // Check pin list
+            team.rpc.getServerHash(function (e, hash) {
+                if (e) { return void console.warn(e); }
+                if (hash !== local) {
+                    // Reset pin list
+                    team.rpc.reset(list, function (e/*, hash*/) {
+                        if (e) { console.warn(e); }
+                    });
+                }
+            });
+        }).nThen(function () {
             if (ctx.onReadyHandlers[id]) {
                 ctx.onReadyHandlers[id].forEach(function (obj) {
                     // Callback and subscribe the client to new notifications
@@ -185,7 +261,7 @@ define([
         var lm = Listmap.create(cfg);
         lm.proxy.on('create', function () {
         }).on('ready', function () {
-            onReady(ctx, id, lm, teamData.keys, cb);
+            onReady(ctx, id, lm, teamData.keys, null, cb);
         });
     };
 
@@ -252,7 +328,7 @@ define([
                 onReady(ctx, id, lm, {
                     edPrivate: keyPair.secretKey,
                     edPublic: keyPair.publicKey
-                }, function () {
+                }, cId, function () {
                     cb();
                 });
             }).on('error', function (info) {
@@ -264,6 +340,29 @@ define([
     };
 
     var subscribe = function (ctx, id, cId, cb) {
+        // Unsubscribe from other teams: one tab can only receive events about one team
+        Object.keys(ctx.teams).forEach(function (teamId) {
+            var c = ctx.teams[teamId].clients;
+            var idx = c.indexOf(cId);
+            if (idx !== -1) {
+                c.splice(idx, 1);
+            }
+        });
+        // Also remove from pending subscriptions
+        Object.keys(ctx.onReadyHandlers).forEach(function (teamId) {
+            var idx = -1;
+            ctx.onReadyHandlers[teamId].some(function (obj, _idx) {
+                if (obj.cId === cId) {
+                    idx = _idx;
+                    return true;
+                }
+            });
+            if (idx !== -1) {
+                ctx.onReadyHandlers[teamId].splice(idx, 1);
+            }
+        });
+
+        if (!id) { return; }
         // If the team is loading, as ourselves in the list
         if (ctx.onReadyHandlers[id]) {
             var _idx = ctx.onReadyHandlers[id].indexOf(cId);
@@ -276,7 +375,7 @@ define([
             return;
         }
         // Otherwise, subscribe to new notifications
-        if (!id || !ctx.teams[id]) {
+        if (!ctx.teams[id]) {
             return void cb({error: 'EINVAL'});
         }
         var clients = ctx.teams[id].clients;
