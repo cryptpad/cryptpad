@@ -40,6 +40,7 @@ define([
             Pinpad.create(ctx.store.network, data, function (e, call) {
                 if (e) { return void cb(e); }
                 team.rpc = call;
+                cb();
                 // XXX get pin limit?
             });
         });
@@ -159,7 +160,6 @@ define([
                 });
             }
             delete ctx.onReadyHandlers[id];
-            console.log(cb);
             cb();
         });
 
@@ -171,7 +171,7 @@ define([
 
         var cfg = {
             data: {},
-            readOnly: Boolean(secret.keys.signKey),
+            readOnly: !Boolean(secret.keys.signKey),
             network: ctx.store.network,
             channel: secret.channel,
             crypto: crypto,
@@ -192,15 +192,13 @@ define([
     var createTeam = function (ctx, data, cId, _cb) {
         var cb = Util.once(_cb);
 
-console.log(data);
-
         var password = Hash.createChannelId();
         var hash = Hash.createRandomHash('team', password);
         var secret = Hash.getSecrets('team', hash, password);
         var keyPair = Nacl.sign.keyPair(); // keyPair.secretKey , keyPair.publicKey
 
         var membersSecret = Hash.getSecrets('members');
-        var membersHashes = Hash.getHashes(secret);
+        var membersHashes = Hash.getHashes(membersSecret);
 
         var config = {
             network: ctx.store.network,
@@ -231,8 +229,8 @@ console.log(data);
                 // Store keys in our drive
                 var id = Util.createRandomInteger();
                 var keys = {
-                    edPrivate: keyPair.secretKey,
-                    edPublic: keyPair.publicKey
+                    edPrivate: Nacl.util.encodeBase64(keyPair.secretKey),
+                    edPublic: Nacl.util.encodeBase64(keyPair.publicKey)
                 };
                 ctx.store.proxy.teams[id] = {
                     hash: hash,
@@ -249,7 +247,7 @@ console.log(data);
                     members: membersHashes.viewHash,
                 };
                 // Add rpc key
-                proxy.edPublic = keyPair.publicKey;
+                proxy.edPublic = Nacl.util.encodeBase64(keyPair.publicKey);
 
                 onReady(ctx, id, lm, {
                     edPrivate: keyPair.secretKey,

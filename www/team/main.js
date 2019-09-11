@@ -40,6 +40,7 @@ define([
         var afterSecrets = function (Cryptpad, Utils, secret, cb) {
             var hash = window.location.hash.slice(1);
             if (hash && Utils.LocalStore.isLoggedIn()) {
+                return; // XXX How to add a shared folder?
                 // Add a shared folder!
                 Cryptpad.addSharedFolder(teamId, secret, function (id) {
                     window.CryptPad_newSharedFolder = id;
@@ -58,7 +59,13 @@ define([
             cb();
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
+            sframeChan.on('Q_SET_TEAM', function (data, cb) {
+                teamId = data;
+                cb();
+            });
+
             sframeChan.on('Q_DRIVE_USEROBJECT', function (data, cb) {
+                if (!teamId) { return void cb({error: 'EINVAL'}); }
                 data.teamId = teamId;
                 Cryptpad.userObjectCommand(data, cb);
             });
@@ -68,6 +75,7 @@ define([
                 Cryptpad.restoreDrive(data, cb);
             });*/
             sframeChan.on('Q_DRIVE_GETOBJECT', function (data, cb) {
+                if (!teamId) { return void cb({error: 'EINVAL'}); }
                 if (data && data.sharedFolder) {
                     Cryptpad.getSharedFolder({
                         teamId: teamId,

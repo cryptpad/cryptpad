@@ -12,19 +12,18 @@
     .drive_main();
     .sidebar-layout_main();
 
-    .cp-app-team-container {
-        flex: 1;
-        display: flex;
-        width: 100%;
-        flex-flow: row;
-        .cp-app-team-drive {
-            flex: 1;
-            display: flex;
-            &.hidden {
-                display: none;
+    #cp-sidebarlayout-container {
+        div#cp-sidebarlayout-rightside.cp-rightside-drive {
+            padding: 0;
+            & > .cp-team-drive {
+                display: flex;
+                height: 100%;
+                margin: 0;
+                .cp-app-drive-container {
+                    height: 100%;
+                }
             }
         }
-        
     }
 }
 

@@ -83,15 +83,136 @@ define([
         ],
     };
     var teamCategories = {
-        'back': [
-        ],
+        'back': {
+            onClick: function (common) {
+                var sframeChan = common.getSframeChannel();
+                sframeChan.query('Q_SET_TEAM', null, function (err) {
+                    if (err) { return void console.error(err); }
+                    APP.buildUI(common);
+                });
+            }
+        },
         'drive': [
+            'cp-team-drive'
         ],
         'members': [
+            'cp-team-roster'
         ],
     };
 
     var create = {};
+
+    // Sidebar layout
+
+    var hideCategories = function () {
+        APP.$rightside.find('> div').hide();
+    };
+    var showCategories = function (cat) {
+        hideCategories();
+        cat.forEach(function (c) {
+            APP.$rightside.find('.'+c).show();
+        });
+    };
+    var createLeftSide = APP.createLeftSide = function (common, team) {
+        APP.$leftside.empty();
+        var $categories = $('<div>', {'class': 'cp-sidebarlayout-categories'})
+                            .appendTo(APP.$leftside);
+
+        var categories = team ? teamCategories : mainCategories;
+        var active = team ? 'drive' : 'list';
+
+        Object.keys(categories).forEach(function (key) {
+            var $category = $('<div>', {'class': 'cp-sidebarlayout-category cp-team-cat-'+key}).appendTo($categories);
+            if (key === 'general') { $category.append($('<span>', {'class': 'fa fa-info-circle'})); }
+            if (key === 'list') { $category.append($('<span>', {'class': 'fa fa-list cp-team-cat-list'})); }
+            if (key === 'create') { $category.append($('<span>', {'class': 'fa fa-plus-circle'})); }
+            if (key === 'back') { $category.append($('<span>', {'class': 'fa fa-arrow-left'})); }
+            if (key === 'members') { $category.append($('<span>', {'class': 'fa fa-users'})); }
+            if (key === 'drive') { $category.append($('<span>', {'class': 'fa fa-hdd-o'})); }
+
+            if (key === active) {
+                $category.addClass('cp-leftside-active');
+            }
+
+            $category.click(function () {
+                if (!Array.isArray(categories[key]) && categories[key].onClick) {
+                    categories[key].onClick(common);
+                    return;
+                }
+                if (active === key) { return; }
+                active = key;
+                if (key === 'drive') {
+                    APP.$rightside.addClass('cp-rightside-drive');
+                } else {
+                    APP.$rightside.removeClass('cp-rightside-drive');
+                }
+
+                $categories.find('.cp-leftside-active').removeClass('cp-leftside-active');
+                $category.addClass('cp-leftside-active');
+                showCategories(categories[key]);
+            });
+
+            $category.append(Messages['team_cat_'+key] || key); // XXX
+        });
+        if (active === 'drive') {
+            APP.$rightside.addClass('cp-rightside-drive');
+        }
+        showCategories(categories[active]);
+    };
+
+    var buildUI = APP.buildUI = function (common, team) {
+        var $rightside = APP.$rightside;
+        $rightside.empty();
+        var addItem = function (cssClass) {
+            var item = cssClass.slice(8);
+            if (typeof (create[item]) === "function") {
+                $rightside.append(create[item](common));
+            }
+        };
+        var categories = team ? teamCategories : mainCategories;
+        for (var cat in categories) {
+            if (!Array.isArray(categories[cat])) { continue; }
+            categories[cat].forEach(addItem);
+        }
+
+        createLeftSide(common, team);
+    };
+
+    // Team APP
+
+    var loadTeam = function (common, firstLoad) {
+        var sframeChan = common.getSframeChannel();
+        var proxy = {};
+        var folders = {};
+        if (firstLoad) {
+            buildUI(common, true);
+        }
+        nThen(function (waitFor) {
+            updateObject(sframeChan, proxy, waitFor(function () {
+                updateSharedFolders(sframeChan, null, proxy.drive, folders, waitFor());
+            }));
+        }).nThen(function () {
+            if (!proxy.drive || typeof(proxy.drive) !== 'object') {
+                throw new Error("Corrupted drive");
+            }
+            var drive = DriveUI.create(common, {
+                proxy: proxy,
+                folders: folders,
+                updateObject: updateObject,
+                updateSharedFolders: updateSharedFolders,
+                APP: driveAPP
+            });
+            driveAPP.refresh = drive.refresh;
+        });
+    };
+
+    var loadMain = function (common) {
+        buildUI(common);
+        UI.removeLoadingScreen();
+    };
+
+
+    // Rightside elements
 
     var makeBlock = function (key, getter) {
         create[key] = function (common) {
@@ -111,6 +232,7 @@ define([
     });
 
     var refreshList = function (common, cb) {
+        var sframeChan = common.getSframeChannel();
         var content = [];
         content.push(h('h3', 'Your teams'));
         APP.module.execCommand('LIST_TEAMS', null, function (obj) {
@@ -126,7 +248,10 @@ define([
                     h('li', a) // XXX
                 ])));
                 $(a).click(function () {
-                    console.log('okok'); // XXX
+                    sframeChan.query('Q_SET_TEAM', id, function (err) {
+                        if (err) { return void console.error(err); }
+                        buildUI(common, true);
+                    });
                 });
             });
             content.push(h('ul', lis));
@@ -174,101 +299,26 @@ define([
         cb(content);
     });
 
-    // Sidebar layout
+    makeBlock('back', function (common, cb) {
+        refreshList(common, cb);
+    });
 
-    var hideCategories = function () {
-        APP.$rightside.find('> div').hide();
-    };
-    var showCategories = function (cat) {
-        hideCategories();
-        cat.forEach(function (c) {
-            APP.$rightside.find('.'+c).show();
-        });
-    };
-    var createLeftside = function (team) {
-        APP.$leftside.empty();
-        var $categories = $('<div>', {'class': 'cp-sidebarlayout-categories'})
-                            .appendTo(APP.$leftside);
+    makeBlock('drive', function (common, cb) {
+        var $div = $('div.cp-team-drive').empty();
+        var content = [
+            h('div.cp-app-drive-container', {tabindex:0}, [
+                h('div#cp-app-drive-tree'),
+                h('div#cp-app-drive-content-container', [
+                    h('div#cp-app-drive-toolbar'),
+                    h('div#cp-app-drive-content', {tabindex:2})
+                ])
+            ])
+        ];
+        UI.addLoadingScreen();
+        cb(content);
+        loadTeam(common, false);
+    });
 
-        var categories = team ? teamCategories : mainCategories;
-        var active = team ? 'drive' : 'general';
-
-        Object.keys(categories).forEach(function (key) {
-            var $category = $('<div>', {'class': 'cp-sidebarlayout-category cp-team-cat-'+key}).appendTo($categories);
-            if (key === 'general') { $category.append($('<span>', {'class': 'fa fa-info-circle'})); }
-            if (key === 'list') { $category.append($('<span>', {'class': 'fa fa-list cp-team-cat-list'})); }
-            if (key === 'create') { $category.append($('<span>', {'class': 'fa fa-plus-circle'})); }
-            if (key === 'back') { $category.append($('<span>', {'class': 'fa fa-arrow-left'})); }
-            if (key === 'members') { $category.append($('<span>', {'class': 'fa fa-users'})); }
-            if (key === 'drive') { $category.append($('<span>', {'class': 'fa fa-hdd-o'})); }
-
-            if (key === active) {
-                $category.addClass('cp-leftside-active');
-            }
-
-            $category.click(function () {
-                if (!Array.isArray(categories[key]) && categories[key].onClick) {
-                    categories[key].onClick();
-                    return;
-                }
-                $categories.find('.cp-leftside-active').removeClass('cp-leftside-active');
-                $category.addClass('cp-leftside-active');
-                showCategories(categories[key]);
-            });
-
-            $category.append(Messages['team_cat_'+key] || key); // XXX
-        });
-        showCategories(categories[active]);
-    };
-
-    var buildUI = function (common, team) {
-        var $rightside = APP.$rightside;
-        $rightside.empty();
-        var addItem = function (cssClass) {
-            var item = cssClass.slice(8);
-            if (typeof (create[item]) === "function") {
-                $rightside.append(create[item](common));
-            }
-        };
-        var categories = team ? teamCategories : mainCategories;
-        for (var cat in categories) {
-            if (!Array.isArray(categories[cat])) { continue; }
-            categories[cat].forEach(addItem);
-        }
-
-        createLeftside(team);
-    };
-
-    // Team APP
-
-    var loadTeam = function (common) {
-        var sframeChan = common.getSframeChannel();
-        var proxy = {};
-        var folders = {};
-        nThen(function (waitFor) {
-            updateObject(sframeChan, proxy, waitFor(function () {
-                updateSharedFolders(sframeChan, null, proxy.drive, folders, waitFor());
-            }));
-        }).nThen(function () {
-            if (!proxy.drive || typeof(proxy.drive) !== 'object') {
-                throw new Error("Corrupted drive");
-            }
-            var drive = DriveUI.create(common, {
-                proxy: proxy,
-                folders: folders,
-                updateObject: updateObject,
-                updateSharedFolders: updateSharedFolders,
-                APP: driveAPP
-            });
-            driveAPP.refresh = drive.refresh;
-        });
-        buildUI(common, true);
-    };
-
-    var loadMain = function (common) {
-        buildUI(common);
-        UI.removeLoadingScreen();
-    };
 
     var onEvent = function (obj) {
         var ev = obj.ev;
@@ -351,7 +401,7 @@ define([
 
             $('body').css('display', '');
             if (privateData.teamId) {
-                loadTeam(common, privateData.teamId);
+                loadTeam(common, privateData.teamId, true);
             } else {
                 loadMain(common);
             }
