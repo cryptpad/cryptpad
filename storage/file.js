@@ -67,12 +67,8 @@ var getMetadataAtPath = function (Env, path, _cb) {
         }
     }, Util.mkAsync(_cb)));
 
-    try {
-        // stream creation can throw... probably ENOENT
-        stream = Fs.createReadStream(path, { encoding: 'utf8' });
-    } catch (err) {
-        return void cb(err);
-    }
+    // stream creation emit errors... probably ENOENT
+    stream = Fs.createReadStream(path, { encoding: 'utf8' }).on('error', cb);
 
     // stream lines
     const rl = Readline.createInterface({
