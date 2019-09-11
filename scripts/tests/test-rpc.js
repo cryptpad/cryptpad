@@ -1,12 +1,14 @@
 /* globals process */
 
 var Client = require("../../lib/client/");
-var Mailbox = require("../../www/bower_components/chainpad-crypto").Mailbox;
+var Crypto = require("../../www/bower_components/chainpad-crypto");
+var Mailbox = Crypto.Mailbox;
 var Nacl = require("tweetnacl");
 var nThen = require("nthen");
 var Rpc = require("../../www/common/rpc");
 var Hash = require("../../www/common/common-hash");
 var CpNetflux = require("../../www/bower_components/chainpad-netflux");
+var Roster = require("./roster");
 
 var createMailbox = function (config, cb) {
     var webchannel;
@@ -30,6 +32,15 @@ var createMailbox = function (config, cb) {
     });
 };
 
+var createRoster = function (config, cb) {
+    Roster.create({
+        network: config.network,
+        channel: config.channel,
+        owners: config.owners,
+        crypto: config.crypto,
+    }, cb);
+};
+
 process.on('unhandledRejection', function (err) {
     console.error(err);
 });
@@ -50,11 +61,16 @@ var makeEdKeys = function () {
     };
 };
 
+var makeRosterHash = function () {
+    return Hash.createRandomHash('pad', '');//.replace(/\/pad\//, '/roster/');
+};
+
 var EMPTY_ARRAY_HASH = 'slspTLTetp6gCkw88xE5BIAbYBXllWvQGahXCx/h1gQOlE7zze4W0KRlA8puZZol8hz5zt3BPzUqPJgTjBXWrw==';
 
 var createUser = function (config, cb) {
     // config should contain keys for a team rpc (ed)
         // teamEdKeys
+        // rosterHash
 
     var user;
     nThen(function (w) {
@@ -74,6 +90,26 @@ var createUser = function (config, cb) {
         user.curveKeys = makeCurveKeys();
         user.mailbox = Mailbox.createEncryptor(user.curveKeys);
         user.mailboxChannel = Hash.createChannelId();
+
+        //console.log(config.rosterHash);
+        //console.log(Hash.parseTypeHash('pad', config.rosterHash));
+
+        user.roster = Hash.getSecrets('pad', config.rosterHash, '');
+        console.log(user.roster);
+        var crypto = Crypto.createEncryptor(user.roster.keys);
+
+        console.log(crypto);
+
+        createRoster({
+            network: network,
+            channel: user.roster.channel,
+            owners: [ user.edKeys.edPublic ],
+            crypto: crypto,
+            validateKey: user.roster.validateKey,
+        }, w(function (err, roster) {
+            if (err) { return void console.error(err); }
+            user.roster = roster;
+        }));
 
         // create an anon rpc for alice
         Rpc.createAnonymous(network, w(function (err, rpc) {
@@ -221,6 +257,7 @@ var alice, bob;
 nThen(function (w) {
     var sharedConfig = {
         teamEdKeys: makeEdKeys(),
+        rosterHash: makeRosterHash(),
     };
 
     createUser(sharedConfig, w(function (err, _alice) {
