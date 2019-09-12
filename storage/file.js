@@ -816,24 +816,13 @@ var getChannel = function (
 
 // write a message to the disk as raw bytes
 const messageBin = (env, chanName, msgBin, cb) => {
+    var complete = Util.once(cb);
     getChannel(env, chanName, function (err, chan) {
-        if (!chan) {
-            cb(err);
-            return;
-        }
-        let called = false;
-        var complete = function (err) {
-            if (called) { return; }
-            called = true;
-            cb(err);
-        };
+        if (!chan) { return void complete(err); }
         chan.onError.push(complete);
         chan.writeStream.write(msgBin, function () {
-            /*::if (!chan) { throw new Error("Flow unreachable"); }*/
-            // TODO replace ad hoc queuing with WriteQueue
             chan.onError.splice(chan.onError.indexOf(complete), 1);
             chan.atime = +new Date();
-            if (!cb) { return; }
             complete();
         });
     });
