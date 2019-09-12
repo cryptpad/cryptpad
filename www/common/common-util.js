@@ -130,6 +130,14 @@
         return C;
     };
 
+    Util.escapeKeyCharacters = function (key) {
+        return key && key.replace && key.replace(/\//g, '-');
+    };
+
+    Util.unescapeKeyCharacters = function (key) {
+        return key.replace(/\-/g, '/');
+    };
+
     Util.deduplicateString = function (array) {
         var a = array.slice();
         for(var i=0; i<a.length; i++) {
