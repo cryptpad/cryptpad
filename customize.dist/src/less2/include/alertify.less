@@ -314,6 +314,16 @@
                 &::-moz-focus-inner {
                     border: 0;
                 }
+
+                &:disabled {
+                    cursor: not-allowed !important;
+                    background-color: @colortheme_alertify-disabled;
+                    color: @colortheme_alertify-disabled-text;
+                    border-color: @colortheme_alertify-disabled-border;
+                    &:hover, &:active {
+                        background-color: @colortheme_alertify-disabled;
+                    }
+                }
             }
 
             button.btn {
@@ -430,6 +440,15 @@
             & > .cp-share-column {
                 width: 50%;
                 padding: 0 10px;
+                position: relative;
+                &.contains-nav {
+                    padding-bottom: 50px;
+                }
+                nav {
+                    position: absolute;
+                    bottom: 0;
+                    right: 0;
+                }
             }
         }
         .cp-share-grid, .cp-share-list {

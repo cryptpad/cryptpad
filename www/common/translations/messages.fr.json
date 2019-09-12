@@ -1068,7 +1068,7 @@
     "notification_padShared": "{0} a partagé un pad avec vous : <b>{1}</b>",
     "notification_fileShared": "{0} a partagé un fichier avec vous : <b>{1}</b>",
     "notification_folderShared": "{0} a partagé un dossier avec vous : <b>{1}</b>",
-    "share_selectAll": "Tout sélectionner",
+    "share_selectAll": "Tout",
     "share_deselectAll": "Aucun",
     "share_filterFriend": "Rechercher par nom",
     "share_linkFriends": "Partager avec des amis",
