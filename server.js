@@ -119,7 +119,6 @@ app.head(/^\/common\/feedback\.html/, function (req, res, next) {
 
 app.use(function (req, res, next) {
     if (req.method === 'OPTIONS' && /\/blob\//.test(req.url)) {
-        console.log(req.url);
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range');
