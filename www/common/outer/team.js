@@ -431,6 +431,16 @@ define([
         team.getTeam = function (id) {
             return ctx.teams[id];
         };
+        team.getTeamsData = function () {
+            var t = {};
+            Object.keys(teams).forEach(function (id) {
+                t[id] = {
+                    name: teams[id].name,
+                    edPublic: Util.find(teams[id], ['keys', 'edPublic'])
+                };
+            });
+            return t;
+        };
         team.getTeams = function () {
             return Object.keys(ctx.teams);
         };

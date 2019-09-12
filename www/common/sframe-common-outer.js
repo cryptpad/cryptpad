@@ -326,6 +326,7 @@ define([
                         fromFileData: Cryptpad.fromFileData ? {
                             title: Cryptpad.fromFileData.title
                         } : undefined,
+                        storeInTeam: Cryptpad.initialTeam || (Cryptpad.initialPath ? -1 : undefined)
                     };
                     if (window.CryptPad_newSharedFolder) {
                         additionalPriv.newSharedFolder = window.CryptPad_newSharedFolder;
@@ -682,7 +683,11 @@ define([
             });
 
             sframeChan.on('Q_SESSIONSTORAGE_PUT', function (data, cb) {
-                sessionStorage[data.key] = data.value;
+                if (typeof (data.value) === "undefined") {
+                    delete sessionStorage[data.key];
+                } else {
+                    sessionStorage[data.key] = data.value;
+                }
                 cb();
             });
 
@@ -1201,7 +1206,13 @@ define([
                 var rtConfig = {
                     metadata: {}
                 };
-                if (data.owned) {
+                if (data.team) {
+                    Cryptpad.initialTeam = data.team.id;
+                }
+                if (data.owned && data.team && data.team.edPublic) {
+                    rtConfig.metadata.owners = [data.team.edPublic];
+                    // XXX Teams mailbox
+                } else if (data.owned) {
                     rtConfig.metadata.owners = [edPublic];
                     rtConfig.metadata.mailbox = {};
                     rtConfig.metadata.mailbox[edPublic] = Utils.crypto.encrypt(JSON.stringify({

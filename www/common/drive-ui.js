@@ -2243,6 +2243,7 @@ define([
             var arr = [];
             AppConfig.availablePadTypes.forEach(function (type) {
                 if (type === 'drive') { return; }
+                if (type === 'team') { return; }
                 if (type === 'contacts') { return; }
                 if (type === 'todo') { return; }
                 if (type === 'file') { return; }
@@ -2392,7 +2393,10 @@ define([
                 .click(function () {
                 var type = $(this).attr('data-type') || 'pad';
                 var path = manager.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
-                common.sessionStorage.put(Constants.newPadPathKey, path, function () {
+                nThen(function (waitFor) {
+                    common.sessionStorage.put(Constants.newPadPathKey, path, waitFor());
+                    common.sessionStorage.put(Constants.newPadTeamKey, APP.team, waitFor());
+                }).nThen(function () {
                     common.openURL('/' + type + '/');
                 });
             });
@@ -3830,6 +3834,7 @@ define([
                 nThen(function (waitFor) {
                     common.sessionStorage.put(Constants.newPadFileData, JSON.stringify(simpleData), waitFor());
                     common.sessionStorage.put(Constants.newPadPathKey, currentPath, waitFor());
+                    common.sessionStorage.put(Constants.newPadTeamKey, APP.team, waitFor());
                 }).nThen(function () {
                     common.openURL('/code/');
                 });
@@ -4020,7 +4025,10 @@ define([
             else if ($this.hasClass("cp-app-drive-context-newdoc")) {
                 var ntype = $this.data('type') || 'pad';
                 var path2 = manager.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
-                common.sessionStorage.put(Constants.newPadPathKey, path2, function () {
+                nThen(function (waitFor) {
+                    common.sessionStorage.put(Constants.newPadPathKey, path2, waitFor());
+                    common.sessionStorage.put(Constants.newPadTeamKey, APP.team, waitFor());
+                }).nThen(function () {
                     common.openURL('/' + ntype + '/');
                 });
             }
@@ -4312,7 +4320,7 @@ define([
         refresh();
         UI.removeLoadingScreen();
 
-        if (!APP.isTeam) {
+        if (!APP.team) {
             sframeChan.query('Q_DRIVE_GETDELETED', null, function (err, data) {
                 var ids = manager.findChannels(data);
                 var titles = [];

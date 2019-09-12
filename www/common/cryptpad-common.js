@@ -660,6 +660,16 @@ define([
 
         if (typeof (data.title) !== "string") { return cb('Missing title'); }
 
+        if (common.initialTeam) {
+            // If the value is -1, it means the user drive was selected from the pad creation screen
+            // If the value is a positive Integer, force save in the team with the selected ID
+            if (common.initialTeam !== -1) {
+                // Team selected from the PCS or pad created from a team drive
+                data.teamId = common.initialTeam;
+            }
+            data.forceSave = 1;
+            delete common.initialTeam;
+        }
         if (common.initialPath) {
             if (!data.path) {
                 data.path = Array.isArray(common.initialPath) ? common.initialPath
@@ -1408,6 +1418,11 @@ define([
             if (sessionStorage[Constants.newPadPathKey]) {
                 common.initialPath = sessionStorage[Constants.newPadPathKey];
                 delete sessionStorage[Constants.newPadPathKey];
+            }
+
+            if (sessionStorage[Constants.newPadTeamKey]) {
+                common.initialTeam = sessionStorage[Constants.newPadTeamKey];
+                delete sessionStorage[Constants.newPadTeamKey];
             }
 
             var channelIsReady = waitFor();

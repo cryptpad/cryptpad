@@ -2652,7 +2652,6 @@ define([
         var type = metadataMgr.getMetadataLazy().type;
         var fromFileData = privateData.fromFileData;
 
-
         var $body = $('body');
         var $creationContainer = $('<div>', { id: 'cp-creation-container' }).appendTo($body);
         var urlArgs = (Config.requireConf && Config.requireConf.urlArgs) || '';
@@ -2684,6 +2683,64 @@ define([
             });
             return q;
         };
+
+        // Team pad
+        var team;
+        var teamExists = privateData.teams && Object.keys(privateData.teams).length;
+        var $teamBlock;
+        // storeInTeam can be
+        // * a team ID ==> store in the team drive, and the team will be the owner
+        // * -1 ==> store in the user drive, and the user will be the owner
+        // * undefined ==> ask
+        if (teamExists) {
+            var teamOptions = Object.keys(privateData.teams).map(function (teamId) {
+                var t = privateData.teams[teamId];
+                return {
+                    tag: 'a',
+                    attributes: {
+                        'data-value': teamId,
+                        'href': '#'
+                    },
+                    content: 'TEAM: <b>' + t.name + '</b>' // XXX
+                };
+            });
+            teamOptions.unshift({
+                tag: 'a',
+                attributes: {
+                    'data-value': '-1',
+                    'href': '#'
+                },
+                content: Messages.settings_cat_drive
+            });
+            teamOptions.unshift({
+                tag: 'a',
+                attributes: {
+                    'data-value': '',
+                    'href': '#'
+                },
+                content: '&nbsp;'
+            });
+            var teamDropdownConfig = {
+                text: "&nbsp;", // Button initial text
+                options: teamOptions, // Entries displayed in the menu
+                isSelect: true,
+                common: common
+            };
+            $teamBlock = UIElements.createDropdown(teamDropdownConfig);
+            $teamBlock.find('a').click(function () {
+                var id = $(this).attr('data-value');
+                $teamBlock.setValue(id);
+            });
+            team = h('div.cp-creation-team', [
+                'Store in', // XXX
+                $teamBlock[0],
+                createHelper('#', "The pad will be stored in your team's drive. If this is an owned pad, it will be owned by the team.") // XXX
+            ]);
+            if (privateData.storeInTeam) {
+                $teamBlock.setValue(privateData.storeInTeam);
+            }
+        }
+
 
         // Owned pads
         // Default is Owned pad
@@ -2749,6 +2806,7 @@ define([
         var $create = $(createDiv);
 
         $(h('div#cp-creation-form', [
+            team,
             owned,
             expire,
             password,
@@ -2954,12 +3012,19 @@ define([
 
             var $template = $creation.find('.cp-creation-template-selected');
             var templateId = $template.data('id') || undefined;
+            // Team
+            var team;
+            if ($teamBlock && $teamBlock.getValue()) {
+                team = privateData.teams[$teamBlock.getValue()] || {};
+                team.id = Number($teamBlock.getValue());
+            }
 
             return {
                 owned: ownedVal,
                 password: passwordVal,
                 expire: expireVal,
-                templateId: templateId
+                templateId: templateId,
+                team: team
             };
         };
         var create = function () {

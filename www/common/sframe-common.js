@@ -297,6 +297,7 @@ define([
             owned: cfg.owned,
             expire: cfg.expire,
             password: cfg.password,
+            team: cfg.team,
             template: cfg.template,
             templateId: cfg.templateId
         }, cb);

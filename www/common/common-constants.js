@@ -7,6 +7,7 @@ define(function () {
         fileHashKey: 'FS_hash',
         // sessionStorage
         newPadPathKey: "newPadPath",
+        newPadTeamKey: "newPadTeam",
         newPadFileData: "newPadFileData",
         // Store
         displayNameKey: 'cryptpad.username',

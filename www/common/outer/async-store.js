@@ -523,6 +523,7 @@ define([
         // Get the metadata for sframe-common-outer
         Store.getMetadata = function (clientId, data, cb) {
             var disableThumbnails = Util.find(store.proxy, ['settings', 'general', 'disableThumbnails']);
+            var teams = store.modules['team']  && store.modules['team'].getTeamsData();
             var metadata = {
                 // "user" is shared with everybody via the userlist
                 user: {
@@ -544,7 +545,8 @@ define([
                     isDriveOwned: Boolean(Util.find(store, ['driveMetadata', 'owners'])),
                     support: Util.find(store.proxy, ['mailboxes', 'support', 'channel']),
                     pendingFriends: store.proxy.friends_pending || {},
-                    supportPrivateKey: Util.find(store.proxy, ['mailboxes', 'supportadmin', 'keys', 'curvePrivate'])
+                    supportPrivateKey: Util.find(store.proxy, ['mailboxes', 'supportadmin', 'keys', 'curvePrivate']),
+                    teams: teams
                 }
             };
             cb(JSON.parse(JSON.stringify(metadata)));

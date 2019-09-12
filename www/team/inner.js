@@ -30,9 +30,7 @@ define([
     Messages)
 {
     var APP = {};
-    var driveAPP = {
-        isTeam: true
-    };
+    var driveAPP = {};
     //var SHARED_FOLDER_NAME = Messages.fm_sharedFolderName;
 
     var copyObjectValue = function (objRef, objToCopy) {
@@ -91,6 +89,7 @@ define([
                 APP.module.execCommand('SUBSCRIBE', null, function () {
                     sframeChan.query('Q_SET_TEAM', null, function (err) {
                         if (err) { return void console.error(err); }
+                        APP.team = null;
                         APP.buildUI(common);
                     });
                 });
@@ -184,7 +183,7 @@ define([
 
     // Team APP
 
-    var loadTeam = function (common, firstLoad) {
+    var loadTeam = function (common, id, firstLoad) {
         var sframeChan = common.getSframeChannel();
         var proxy = {};
         var folders = {};
@@ -199,6 +198,7 @@ define([
             if (!proxy.drive || typeof(proxy.drive) !== 'object') {
                 throw new Error("Corrupted drive");
             }
+            driveAPP.team = id;
             var drive = DriveUI.create(common, {
                 proxy: proxy,
                 folders: folders,
@@ -255,6 +255,7 @@ define([
                     APP.module.execCommand('SUBSCRIBE', id, function () {
                         sframeChan.query('Q_SET_TEAM', id, function (err) {
                             if (err) { return void console.error(err); }
+                            APP.team = id;
                             buildUI(common, true);
                         });
                     });
@@ -322,7 +323,7 @@ define([
         ];
         UI.addLoadingScreen();
         cb(content);
-        loadTeam(common, false);
+        loadTeam(common, APP.team, false);
     });
 
 
