@@ -693,6 +693,7 @@ define([
         var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
         if (!secret || !secret.channel) { return void cb ({error: 'EINVAL'}); }
         Nthen(function (waitFor) {
+            if (parsed.hashData.type !== 'pad') { return; }
             // Set the correct owner and expiration time if we can find them
             postMessage('GET_PAD_METADATA', {
                 channel: secret.channel
