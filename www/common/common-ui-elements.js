@@ -766,6 +766,7 @@ define([
         var teamsData = Util.tryParse(JSON.stringify(privateData.teams)) || {};
         var teams = {};
         Object.keys(teamsData).forEach(function (id) {
+            if (config.teamId && config.teamId === id) { return; }
             var t = teamsData[id];
             teams[t.edPublic] = {
                 notifications: true,

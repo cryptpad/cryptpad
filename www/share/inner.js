@@ -38,6 +38,8 @@ define([
                                           : UIElements.createShareModal;
 
             var friends = common.getFriends();
+            var teams = priv.teams;
+            var _wide = Object.keys(friends).length || Object.keys(teams).length;
 
             var modal = f({
                 origin: origin,
@@ -58,7 +60,7 @@ define([
             });
             $('button.cancel').click(); // Close any existing alertify
             UI.openCustomModal(UI.dialog.tabs(modal), {
-                wide: Object.keys(friends).length !== 0
+                wide: _wide
             });
         };
         sframeChan.on('EV_SHARE_REFRESH', function (data) {

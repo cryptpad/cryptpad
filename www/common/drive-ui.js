@@ -516,7 +516,6 @@ define([
 
         // Initialization
         Util.extend(APP, driveConfig.APP);
-        var teamId = APP.teamId = driveConfig.teamId;
         var proxy = driveConfig.proxy;
         var folders = driveConfig.folders;
         var files = proxy.drive;
@@ -533,7 +532,7 @@ define([
         config.sframeChan = sframeChan;
         var manager = ProxyManager.createInner(files, sframeChan, edPublic, config);
 
-        var LS = makeLS(teamId);
+        var LS = makeLS(APP.team);
 
         Object.keys(folders).forEach(function (id) {
             var f = folders[id];
@@ -2480,7 +2479,10 @@ define([
             var parsed = Hash.parsePadUrl(data.href);
             if (!parsed || !parsed.hash) { return void console.error("Invalid href: "+data.href); }
             var friends = common.getFriends();
+            var teams = common.getMetadataMgr().getPrivateData().teams;
+            var _wide = Object.keys(friends).length || Object.keys(teams).length;
             var modal = UIElements.createSFShareModal({
+                teamId: APP.team,
                 origin: APP.origin,
                 pathname: "/drive/",
                 friends: friends,
@@ -2493,7 +2495,7 @@ define([
             });
             $shareBlock.click(function () {
                 UI.openCustomModal(modal, {
-                    wide: Object.keys(friends).length !== 0
+                    wide: _wide
                 });
             });
             $container.append($shareBlock);
@@ -3913,11 +3915,14 @@ define([
                 el = manager.find(paths[0].path);
                 var parsed, modal;
                 var friends = common.getFriends();
+                var teams = common.getMetadataMgr().getPrivateData().teams;
+                var _wide = Object.keys(friends).length || Object.keys(teams).length;
 
                 if (manager.isSharedFolder(el)) {
                     data = manager.getSharedFolderData(el);
                     parsed = Hash.parsePadUrl(data.href);
                     modal = UIElements.createSFShareModal({
+                        teamId: APP.team,
                         origin: APP.origin,
                         pathname: "/drive/",
                         friends: friends,
@@ -3929,7 +3934,7 @@ define([
                         }
                     });
                     return void UI.openCustomModal(modal, {
-                        wide: Object.keys(friends).length !== 0
+                        wide: _wide
                     });
                 } else if (manager.isFolder(el)) { // Folder
                     // if folder is inside SF
@@ -3971,6 +3976,7 @@ define([
                     var roParsed = Hash.parsePadUrl(data.roHref);
                     var padType = parsed.type || roParsed.type;
                     var padData = {
+                        teamId: APP.team,
                         origin: APP.origin,
                         pathname: "/" + padType + "/",
                         friends: friends,
@@ -3992,7 +3998,7 @@ define([
                                             : UIElements.createShareModal(padData);
                     modal = UI.dialog.tabs(modal);
                     UI.openCustomModal(modal, {
-                        wide: Object.keys(friends).length !== 0
+                        wide: _wide
                     });
                 }
             }
