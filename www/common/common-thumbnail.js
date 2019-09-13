@@ -261,7 +261,8 @@ define([
 
 
     var addThumbnail = function (err, thumb, $span, cb) {
-        var u8 = Nacl.util.decodeBase64(thumb.split(',')[1]);
+        var split = thumb.split(',');
+        var u8 = Nacl.util.decodeBase64(split[1] || split[0]);
         var blob = new Blob([u8], {
             type: 'image/png'
         });
