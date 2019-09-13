@@ -458,6 +458,10 @@ define([
                 setDocumentTitle();
             });
 
+            sframeChan.on('Q_STORE_IN_TEAM', function (data, cb) {
+                Cryptpad.storeInTeam(data, cb);
+            });
+
             sframeChan.on('EV_SET_HASH', function (hash) {
                 window.location.hash = hash;
             });

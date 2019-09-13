@@ -687,6 +687,38 @@ define([
         });
     };
 
+    common.storeInTeam = function (data, cb) {
+        if (!data.href) { return void cb({error: 'EINVAL'}); }
+        var parsed = Hash.parsePadUrl(data.href);
+        var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
+        if (!secret || !secret.channel) { return void cb ({error: 'EINVAL'}); }
+        Nthen(function (waitFor) {
+            // Set the correct owner and expiration time if we can find them
+            postMessage('GET_PAD_METADATA', {
+                channel: secret.channel
+            }, waitFor(function (obj) {
+                if (!obj || obj.error) { return; }
+                data.owners = obj.owners;
+                data.expire = +obj.expire;
+            }));
+        }).nThen(function () {
+            postMessage("SET_PAD_TITLE", {
+                teamId: data.teamId,
+                href: data.href,
+                title: data.title,
+                password: data.password,
+                channel: secret.channel,
+                path: data.path,
+                owners: data.owners,
+                expire: data.expire,
+                forceSave: 1
+            }, function (obj) {
+                if (obj && obj.error) { return void cb(obj.error); }
+                cb();
+            });
+        });
+    };
+
     // Needed for the secure filepicker app
     common.getSecureFilesList = function (query, cb) {
         postMessage("GET_SECURE_FILES_LIST", query, function (list) {

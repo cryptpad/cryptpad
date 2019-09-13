@@ -957,15 +957,33 @@ define([
                 expire = data.expire;
             }
 
-            // Check if the pad is stored in any managers.
-            // If it is stored, update its data, otherwise ask the user where to store it
+            // If a teamId is provided, it means we want to store the pad in a specific
+            // team drive. In this case, we just need to check if the pad is already
+            // stored in th eteam drive.
+            // If no team ID is provided, this may be a pad shared iwth its URL.
+            // We need to check if the pad is stored in any managers (user or teams).
+            // If it is stored, update its data, otherwise ask the user if they want to store it
             var allData = [];
             var sendTo = [];
+            var inMyDrive;
             getAllStores().forEach(function (s) {
+                if (data.teamId && s.id !== data.teamId) { return; }
+
                 var res = s.manager.findChannel(channel);
                 if (res.length) {
                     sendTo.push(s.id);
                 }
+
+                // If we've just accepted ownership for a pad stored in a shared folder,
+                // we need to make a copy of this pad in our drive. We're going to check
+                // if the pad is stored in our MAIN drive.
+                // We only need to check this if the current manager is the target (data.teamId)
+                if (data.teamId === s.id) {
+                    inMyDrive = res.some(function (obj) {
+                        return !obj.fId;
+                    });
+                }
+
                 Array.prototype.push.apply(allData, res);
             });
             var contains = allData.length !== 0;
@@ -990,14 +1008,13 @@ define([
                 pad.href = href;
             });
 
-            // If we've just accepted ownership for a pad stored in a shared folder,
-            // we need to make a copy of this pad in our drive. We're going to check
-            // the pad is owned by us BUT is not stored in our main drive
-            var inMyDrive = allData.some(function (obj) {
-                return !obj.fId;
-            });
-            // XXX owned by one of our teams?
-            var ownedByMe = Array.isArray(owners) && owners.indexOf(store.proxy.edPublic) !== -1;
+            // Pads owned by us ("us" can be a user or a team) that are not in our "main" drive
+            // (meaning they are stored in a shared folder) must be added to the "main" drive.
+            // This is to make sure owners always have control over owned data.
+            var edPublic = data.teamId ?
+                    Util.find(store.proxy, ['teams', data.teamId, 'keys', 'edPublic']) :
+                    store.proxy.edPublic;
+            var ownedByMe = Array.isArray(owners) && owners.indexOf(edPublic) !== -1;
 
             // Add the pad if it does not exist in our drive
             if (!contains || (ownedByMe && !inMyDrive)) {

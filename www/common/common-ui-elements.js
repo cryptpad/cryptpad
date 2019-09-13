@@ -645,7 +645,7 @@ define([
             UIElements.displayAvatar(common, $(avatar), data.avatar, name);
             return h('div.cp-share-friend', {
                 'data-ed': data.edPublic,
-                'data-curve': data.curvePublic,
+                'data-curve': data.curvePublic || '',
                 'data-name': name.toLowerCase(),
                 'data-order': i,
                 title: name,
@@ -731,6 +731,7 @@ define([
 
     var createShareWithFriends = function (config, onShare) {
         var common = config.common;
+        var sframeChan = common.getSframeChannel();
         var title = config.title;
         var friends = config.friends;
         var myName = common.getMetadataMgr().getUserData().name;
@@ -741,14 +742,14 @@ define([
             return friends[c].curvePublic.slice(0,8);
         });
 
-        var $div;
+        var div = h('div.cp-share-column.contains-nav');
+        var $div = $(div);
         // Replace "copy link" by "share with friends" if at least one friend is selected
         // Also create the "share with friends" button if it doesn't exist
         var refreshButtons = function () {
             var $nav = $div.parents('.alertify').find('nav');
 
             var friendMode = $div.find('.cp-share-friend.cp-selected').length;
-            console.log(friendMode, Boolean(friendMode));
             if (friendMode) {
                 $nav.find('button.cp-share-with-friends').prop('disabled', '');
             } else {
@@ -757,10 +758,30 @@ define([
         };
 
         var friendsList = UIElements.getFriendsList(Messages.share_linkFriends, config, refreshButtons);
-        var div = friendsList.div;
-        $div = $(div);
-        $div.addClass('contains-nav');
+        var friendDiv = friendsList.div;
+        $div.append(friendDiv);
         var others = friendsList.others;
+
+        var privateData = common.getMetadataMgr().getPrivateData();
+        var teamsData = Util.tryParse(JSON.stringify(privateData.teams)) || {};
+        var teams = {};
+        Object.keys(teamsData).forEach(function (id) {
+            var t = teamsData[id];
+            teams[t.edPublic] = {
+                notifications: true,
+                displayName: t.name,
+                edPublic: t.edPublic,
+                avatar: t.avatar,
+                id: id
+            }
+        });
+        var teamsList = UIElements.getFriendsList('Share with a team', {
+            common: common,
+            noFilter: true,
+            friends: teams
+        }, refreshButtons);
+        $div.append(teamsList.div);
+        $(teamsList.div).append(h('div.cp-share-grid', teamsList.others));
 
         var shareButtons = [{
             className: 'primary cp-share-with-friends',
@@ -770,18 +791,35 @@ define([
                 var $friends = $div.find('.cp-share-friend.cp-selected');
                 $friends.each(function (i, el) {
                     var curve = $(el).attr('data-curve');
-                    if (!curve || !friends[curve]) { return; }
-                    var friend = friends[curve];
-                    if (!friend.notifications || !friend.curvePublic) { return; }
-                    common.mailbox.sendTo("SHARE_PAD", {
+                    // Check if the selected element is a friend or a team
+                    if (curve) { // Friend
+                        if (!curve || !friends[curve]) { return; }
+                        var friend = friends[curve];
+                        if (!friend.notifications || !friend.curvePublic) { return; }
+                        common.mailbox.sendTo("SHARE_PAD", {
+                            href: href,
+                            password: config.password,
+                            isTemplate: config.isTemplate,
+                            name: myName,
+                            title: title
+                        }, {
+                            channel: friend.notifications,
+                            curvePublic: friend.curvePublic
+                        });
+                        return;
+                    }
+                    // Team
+                    var ed = $(el).attr('data-ed');
+                    var team = teams[ed];
+                    if (!team) { return; }
+                    sframeChan.query('Q_STORE_IN_TEAM', {
                         href: href,
                         password: config.password,
-                        isTemplate: config.isTemplate,
-                        name: myName,
-                        title: title
-                    }, {
-                        channel: friend.notifications,
-                        curvePublic: friend.curvePublic
+                        path: config.isTemplate ? ['template'] : undefined,
+                        title: title,
+                        teamId: team.id
+                    }, function (err) {
+                        if (err) { return void console.error(err); }
                     });
                 });
 
@@ -829,7 +867,7 @@ define([
                 $(el).attr('data-order', i).css('order', i);
             });
             // Display them
-            $div.append(h('div.cp-share-grid', others));
+            $(friendDiv).append(h('div.cp-share-grid', others));
             $div.append(UI.dialog.getButtons(shareButtons, config.onClose));
             $div.find('.cp-share-friend').click(function () {
                 var sel = $(this).hasClass('cp-selected');
@@ -904,10 +942,6 @@ define([
             var parsed = Hash.parsePadUrl(href);
             return origin + parsed.getUrl({embed: embed, present: present});
         };
-        $(link).find('#cp-share-link-preview').val(getLinkValue());
-        $(link).find('input[type="radio"], input[type="checkbox"]').on('change', function () {
-            $(link).find('#cp-share-link-preview').val(getLinkValue());
-        });
         var linkButtons = [{
             className: 'cancel',
             name: Messages.cancel,
@@ -938,6 +972,11 @@ define([
         var $link = $(link);
         $(mainShareColumn).append(UI.dialog.getButtons(shareButtons, config.onClose)).appendTo($link);
         $(friendsList).appendTo($link);
+
+        $(link).find('#cp-share-link-preview').val(getLinkValue());
+        $(link).find('input[type="radio"], input[type="checkbox"]').on('change', function () {
+            $(link).find('#cp-share-link-preview').val(getLinkValue());
+        });
 
         var frameLink = UI.dialog.customModal(link, {
             buttons: linkButtons,
