@@ -51,7 +51,7 @@ define([
 
         // Logging
         var logging = function () {
-            console.log.apply(console, arguments);
+            console.debug.apply(console, arguments);
         };
         var log = exp.log = config.log || logging;
         var logError = config.logError || logging;
