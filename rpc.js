@@ -762,7 +762,12 @@ var resetUserPins = function (Env, publicKey, channelList, cb) {
                     pins[channel] = true;
                 });
 
-                var oldChannels = Object.keys(session.channels);
+                var oldChannels;
+                if (session.channels && typeof(session.channels) === 'object') {
+                    oldChannels = Object.keys(session.channels);
+                } else {
+                    oldChannels = [];
+                }
                 removePinned(Env, publicKey, oldChannels, () => {
                     addPinned(Env, publicKey, channelList, ()=>{});
                 });
