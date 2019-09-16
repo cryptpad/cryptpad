@@ -54,9 +54,6 @@ define([
                     if (cfg.driveEvents) {
                         Rpc._subscribeToDrive(clientId);
                     }
-                    if (cfg.messenger) {
-                        Rpc._subscribeToMessenger(clientId);
-                    }
                     cb(data);
                 });
             });

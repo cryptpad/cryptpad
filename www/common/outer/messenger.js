@@ -160,8 +160,8 @@ define([
 
     var setChannelHead = function (ctx, id, hash, cb) {
         var channel = ctx.channels[id];
-        if (channel.friend) {
-            var friend = channel.friend;
+        if (channel.isFriendChat) {
+            var friend = getFriendFromChannel(ctx, id);
             if (!friend) { return void cb({error: 'NO_SUCH_FRIEND'}); }
             friend.lastKnownHash = hash;
         } else if (channel.isPadChat) {
@@ -292,7 +292,7 @@ define([
     };
 
     var onDirectMessage = function (ctx, msg, sender) {
-        var hk = ctx.store.etwork.historyKeeper;
+        var hk = ctx.store.network.historyKeeper;
         if (sender !== hk) { return void onIdMessage(ctx, msg, sender); }
         var parsed = JSON.parse(msg);
 
@@ -356,7 +356,7 @@ define([
 
                 orderMessages(channel, decrypted);
                 req.cb(decrypted);
-                return deleteRangeRequest(txid);
+                return deleteRangeRequest(ctx, txid);
             } else {
                 console.log(parsed);
             }
@@ -617,7 +617,7 @@ define([
             clients: clientId ? [clientId] : ctx.friendsClients,
             onReady: cb
         };
-        openChannel(data);
+        openChannel(ctx, data);
     };
 
     var initFriends = function (ctx, clientId, cb) {
@@ -750,7 +750,7 @@ define([
             clients: [clientId],
             onReady: cb
         };
-        openChannel(chanData);
+        openChannel(ctx, chanData);
     };
 
     var clearOwnedChannel = function (ctx, id, cb) {
@@ -882,7 +882,6 @@ define([
             removeClient(ctx, clientId);
         };
         messenger.execCommand = function (clientId, obj, cb) {
-            console.log(obj);
             var cmd = obj.cmd;
             var data = obj.data;
             if (cmd === 'INIT_FRIENDS') {

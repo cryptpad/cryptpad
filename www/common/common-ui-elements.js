@@ -774,7 +774,7 @@ define([
                 edPublic: t.edPublic,
                 avatar: t.avatar,
                 id: id
-            }
+            };
         });
         var teamsList = UIElements.getFriendsList('Share with a team', {
             common: common,

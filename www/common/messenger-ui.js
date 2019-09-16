@@ -40,7 +40,6 @@ define([
     };
 
     MessengerUI.create = function ($container, common, toolbar) {
-        var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
         var origin = metadataMgr.getPrivateData().origin;
         var readOnly = metadataMgr.getPrivateData().readOnly;
@@ -76,12 +75,17 @@ define([
             ]),
         ]);
 
+        var execCommand = function () {
+            console.warn(arguments);
+        };
+        /*
         var execCommand = function (cmd, data, cb) {
             sframeChan.query('Q_CHAT_COMMAND', {cmd: cmd, data: data}, function (err, obj) {
                 if (err || (obj && obj.error)) { return void cb(err || (obj && obj.error)); }
                 cb(void 0, obj);
             });
         };
+        */
 
         var $userlist = $(friendList).appendTo($container);
         var $messages = $(messaging).appendTo($container);
@@ -780,10 +784,6 @@ define([
         // var onLeaveRoom
 
 
-        execCommand('GET_MY_INFO', null, function (e, info) {
-            contactsData[info.curvePublic] = info;
-        });
-
         var ready = false;
         var onMessengerReady = function () {
             if (isApp) { return; }
@@ -826,15 +826,8 @@ define([
             $messages.find('.cp-app-contacts-input textarea').prop('disabled', false);
         };
 
-        // Initialize chat when outer is ready (all channels loaded)
-        // TODO: try again in outer if fail to load a channel
-        if (!isApp) {
-            execCommand('INIT_FRIENDS', null, function () {});
-            execCommand('IS_READY', null, function (err, yes) {
-                if (yes) { onMessengerReady(); }
-            });
-        }
-        sframeChan.on('EV_CHAT_EVENT', function (obj) {
+        //sframeChan.on('EV_CHAT_EVENT', function (obj) {
+        var onEvent = function (obj) {
             var cmd = obj.ev;
             var data = obj.data;
             if (cmd === 'READY') {
@@ -881,7 +874,30 @@ define([
                 onUnfriend(data);
                 return;
             }
+        };
+        var module = common.makeUniversal('messenger', {
+            onEvent: onEvent
         });
+        execCommand = function (cmd, data, cb) {
+            module.execCommand(cmd, data, function (obj) {
+                if (obj && obj.error) { return void cb(obj.error); }
+                cb(void 0, obj);
+            });
+        };
+        //});
+
+        execCommand('GET_MY_INFO', null, function (e, info) {
+            contactsData[info.curvePublic] = info;
+        });
+
+
+        // Initialize chat when outer is ready (all channels loaded)
+        // TODO: try again in outer if fail to load a channel
+        if (!isApp) {
+            execCommand('INIT_FRIENDS', null, function () {
+                onMessengerReady();
+            });
+        }
     };
 
     return MessengerUI;
