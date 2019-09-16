@@ -16,6 +16,7 @@ define([
     '/common/outer/mailbox.js',
     '/common/outer/profile.js',
     '/common/outer/team.js',
+    '/common/outer/messenger.js',
     '/common/outer/network-config.js',
     '/customize/application_config.js',
 
@@ -27,7 +28,8 @@ define([
     '/bower_components/saferphore/index.js',
 ], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
              Realtime, Messaging, Messenger,
-             SF, Cursor, OnlyOffice, Mailbox, Profile, Team, NetConfig, AppConfig,
+             SF, Cursor, OnlyOffice, Mailbox, Profile, Team, _Messenger,
+             NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, nThen, Saferphore) {
 
     var create = function () {
@@ -2028,6 +2030,7 @@ define([
                 loadMessenger();
                 loadCursor();
                 loadOnlyOffice();
+                loadUniversal(_Messenger, 'messenger', waitFor);
                 loadUniversal(Profile, 'profile', waitFor);
                 loadUniversal(Team, 'team', waitFor);
                 cleanFriendRequests();

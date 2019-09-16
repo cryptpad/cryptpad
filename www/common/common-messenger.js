@@ -464,6 +464,7 @@ define([
 
                 if (!req.cb) {
                     // This is the initial history for a pad chat
+                    // XXX delete range request
                     if (type === 'HISTORY_RANGE') {
                         if (!getChannel(req.chanId)) { return; }
                         if (!Array.isArray(parsed[2])) { return; }

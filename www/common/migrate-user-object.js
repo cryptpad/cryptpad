@@ -3,11 +3,11 @@ define([
     '/common/common-feedback.js',
     '/common/common-hash.js',
     '/common/common-util.js',
-    '/common/common-messenger.js',
+    '/common/common-messaging.js',
     '/common/outer/mailbox.js',
     '/bower_components/nthen/index.js',
     '/bower_components/chainpad-crypto/crypto.js',
-], function (AppConfig, Feedback, Hash, Util, Messenger, Mailbox, nThen, Crypto) {
+], function (AppConfig, Feedback, Hash, Util, Messaging, Mailbox, nThen, Crypto) {
     // Start migration check
     // Versions:
     // 1: migrate pad attributes
@@ -198,7 +198,7 @@ define([
                 var ctx = {
                     store: store
                 };
-                var myData = Messenger.createData(userObject);
+                var myData = Messaging.createData(userObject);
 
                 var close = function (chan) {
                     var channel = channels[chan];
