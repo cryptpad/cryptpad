@@ -112,8 +112,7 @@ define([
         var network = ctx.store.network;
         network.sendto(network.historyKeeper, JSON.stringify(msg)).then(function () {
         }, function (err) {
-            // XXX throw?
-            throw new Error(err);
+            console.error(err);
         });
     };
 

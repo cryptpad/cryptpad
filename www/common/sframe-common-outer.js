@@ -134,7 +134,6 @@ define([
                         });
                     }
                 }), {
-                    messenger: cfg.messaging,
                     driveEvents: cfg.driveEvents
                 });
             }));
@@ -1102,14 +1101,6 @@ define([
                         }
                     }, cb);
                 });
-                /* DEPRECATED
-                sframeChan.on('Q_CHAT_COMMAND', function (data, cb) {
-                    Cryptpad.messenger.execCommand(data, cb);
-                });
-                Cryptpad.messenger.onEvent.reg(function (data) {
-                    sframeChan.event('EV_CHAT_EVENT', data);
-                });
-                */
             }
 
             // Chrome 68 on Mac contains a bug resulting in the page turning white after a few seconds
