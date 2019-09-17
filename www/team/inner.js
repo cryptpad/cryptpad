@@ -89,7 +89,9 @@ define([
                 APP.module.execCommand('SUBSCRIBE', null, function () {
                     sframeChan.query('Q_SET_TEAM', null, function (err) {
                         if (err) { return void console.error(err); }
+                        if (APP.drive && APP.drive.close) { APP.drive.close(); }
                         APP.team = null;
+                        APP.drive = null;
                         APP.buildUI(common);
                     });
                 });
@@ -206,6 +208,7 @@ define([
                 updateSharedFolders: updateSharedFolders,
                 APP: driveAPP
             });
+            APP.drive = drive;
             driveAPP.refresh = drive.refresh;
         });
     };

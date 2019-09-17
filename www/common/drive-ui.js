@@ -732,7 +732,8 @@ define([
             };
             $content.mousemove(sel.move);
         });
-        $(window).on('mouseup', function (e) {
+
+        var onWindowMouseUp = function (e) {
             if (!sel.down) { return; }
             if (e.which !== 1) { return; }
             sel.down = false;
@@ -745,10 +746,146 @@ define([
                     selectElement($(element));
             });
             e.stopPropagation();
-        });
+        };
+
+        var getSelectedPaths = function ($element) {
+            var paths = [];
+            if (!$element || $element.length === 0) { return paths; }
+            if (findSelectedElements().length > 1) {
+                var $selected = findSelectedElements();
+                $selected.each(function (idx, elmt) {
+                    var ePath = $(elmt).data('path');
+                    if (ePath) {
+                        paths.push({
+                            path: ePath,
+                            element: $(elmt)
+                        });
+                    }
+                });
+            }
+
+            if (!paths.length) {
+                var path = $element.data('path');
+                if (!path) { return false; }
+                paths.push({
+                    path: path,
+                    element: $element
+                });
+            }
+            return paths;
+        };
+
+        var removeInput =  function (cancel) {
+            if (!cancel && $('.cp-app-drive-element-row > input').length === 1) {
+                var $input = $('.cp-app-drive-element-row > input');
+                manager.rename($input.data('path'), $input.val(), APP.refresh);
+            }
+            $('.cp-app-drive-element-row > input').remove();
+            $('.cp-app-drive-element-row > span:hidden').removeAttr('style');
+        };
+
+        var getFileNameExtension = function (name) {
+            var matched = /\.[^\. ]+$/.exec(name);
+            if (matched && matched.length) { return matched[matched.length -1]; }
+            return '';
+        };
+
+        // Replace a file/folder name by an input to change its value
+        var displayRenameInput = function ($element, path) {
+            // NOTE: setTimeout(f, 0) otherwise the "rename" button in the toolbar is not working
+            window.setTimeout(function () {
+                if (!APP.editable) { return; }
+                if (!path || path.length < 2) {
+                    logError("Renaming a top level element (root, trash or filesData) is forbidden.");
+                    return;
+                }
+                removeInput();
+                var $name = $element.find('.cp-app-drive-element-name');
+                if (!$name.length) {
+                    $name = $element.find('> .cp-app-drive-element');
+                }
+                $name.hide();
+                var isFolder = $element.is(".cp-app-drive-element-folder:not(.cp-app-drive-element-sharedf)");
+                var el = manager.find(path);
+                var name = manager.isFile(el) ? manager.getTitle(el)  : path[path.length - 1];
+                if (manager.isSharedFolder(el)) {
+                    name = manager.getSharedFolderData(el).title;
+                }
+                var $input = $('<input>', {
+                    placeholder: name,
+                    value: name
+                }).data('path', path);
+
+
+                // Stop propagation on keydown to avoid issues with arrow keys
+                $input.on('keydown', function (e) { e.stopPropagation(); });
+
+                $input.on('keyup', function (e) {
+                    e.stopPropagation();
+                    if (e.which === 13) {
+                        removeInput(true);
+                        var newName = $input.val();
+                        if (JSON.stringify(path) === JSON.stringify(currentPath)) {
+                            manager.rename(path, $input.val(), function () {
+                                if (isFolder) {
+                                    LS.renameFoldersOpened(path, newName);
+                                    path[path.length - 1] = newName;
+                                }
+                                APP.displayDirectory(path);
+                            });
+                        }
+                        else {
+                            manager.rename(path, $input.val(), function () {
+                                if (isFolder) {
+                                    LS.renameFoldersOpened(path, newName);
+                                    unselectElement($element);
+                                    $element.data("path", $element.data("path").slice(0, -1).concat(newName));
+                                    selectElement($element);
+                                }
+                                APP.refresh();
+                            });
+                        }
+                        return;
+                    }
+                    if (e.which === 27) {
+                        removeInput(true);
+                    }
+                }).on('keypress', function (e) { e.stopPropagation(); });
+                //$element.parent().append($input);
+                $name.after($input);
+                $input.focus();
+
+                var extension = getFileNameExtension(name);
+                var input = $input[0];
+                input.selectionStart = 0;
+                input.selectionEnd = name.length - extension.length;
+
+                // We don't want to open the file/folder when clicking on the input
+                $input.on('click dblclick', function (e) {
+                    e.stopPropagation();
+                });
+                // Remove the browser ability to drag text from the input to avoid
+                // triggering our drag/drop event handlers
+                $input.on('dragstart dragleave drag drop', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+                // Make the parent element non-draggable when selecting text in the field
+                // since it would remove the input
+                $input.on('mousedown', function (e) {
+                    e.stopPropagation();
+                    $input.parents('.cp-app-drive-element-row').attr("draggable", false);
+                });
+                $input.on('mouseup', function (e) {
+                    e.stopPropagation();
+                    $input.parents('.cp-app-drive-element-row').attr("draggable", true);
+                });
+            },0);
+        };
+
 
         // Arrow keys to modify the selection
-        $(window).keydown(function (e) {
+        var onWindowKeydown = function (e) {
             var $searchBar = $tree.find('#cp-app-drive-tree-search-input');
             if (document.activeElement && document.activeElement.nodeName === 'INPUT') { return; }
             if ($searchBar.is(':focus') && $searchBar.val()) { return; }
@@ -782,6 +919,13 @@ define([
                         selectElement($(element));
                 });
                 return;
+            }
+
+            // F2: rename selected element
+            if (e.which === 113) {
+                var paths = getSelectedPaths(findSelectedElements().first());
+                if (paths.length !== 1) { return; }
+                displayRenameInput(paths[0].element, paths[0].path);
             }
 
             // [Left, Up, Right, Down]
@@ -843,17 +987,6 @@ define([
                 click($elements.get(Math.min(lastIndex+cols, length-1)));
                 return;
             }
-
-        });
-
-
-        var removeInput =  function (cancel) {
-            if (!cancel && $('.cp-app-drive-element-row > input').length === 1) {
-                var $input = $('.cp-app-drive-element-row > input');
-                manager.rename($input.data('path'), $input.val(), APP.refresh);
-            }
-            $('.cp-app-drive-element-row > input').remove();
-            $('.cp-app-drive-element-row > span:hidden').removeAttr('style');
         };
 
         var compareDays = function (date1, date2) {
@@ -894,105 +1027,6 @@ define([
 
         var refresh = APP.refresh = function () {
             APP.displayDirectory(currentPath);
-        };
-
-        var getFileNameExtension = function (name) {
-            var matched = /\.[^\. ]+$/.exec(name);
-            if (matched && matched.length) { return matched[matched.length -1]; }
-            return '';
-        };
-
-        // Replace a file/folder name by an input to change its value
-        var displayRenameInput = function ($element, path) {
-            // NOTE: setTimeout(f, 0) otherwise the "rename" button in the toolbar is not working
-            window.setTimeout(function () {
-                if (!APP.editable) { return; }
-                if (!path || path.length < 2) {
-                    logError("Renaming a top level element (root, trash or filesData) is forbidden.");
-                    return;
-                }
-                removeInput();
-                var $name = $element.find('.cp-app-drive-element-name');
-                if (!$name.length) {
-                    $name = $element.find('> .cp-app-drive-element');
-                }
-                $name.hide();
-                var isFolder = $element.is(".cp-app-drive-element-folder:not(.cp-app-drive-element-sharedf)");
-                var el = manager.find(path);
-                var name = manager.isFile(el) ? manager.getTitle(el)  : path[path.length - 1];
-                if (manager.isSharedFolder(el)) {
-                    name = manager.getSharedFolderData(el).title;
-                }
-                var $input = $('<input>', {
-                    placeholder: name,
-                    value: name
-                }).data('path', path);
-
-
-                // Stop propagation on keydown to avoid issues with arrow keys
-                $input.on('keydown', function (e) { e.stopPropagation(); });
-
-                $input.on('keyup', function (e) {
-                    e.stopPropagation();
-                    if (e.which === 13) {
-                        removeInput(true);
-                        var newName = $input.val();
-                        if (JSON.stringify(path) === JSON.stringify(currentPath)) {
-                            manager.rename(path, $input.val(), function () {
-                                if (isFolder) {
-                                    LS.renameFoldersOpened(path, newName);
-                                    path[path.length - 1] = newName;
-                                }
-                                APP.displayDirectory(path);
-                            });
-                        }
-                        else {
-                            manager.rename(path, $input.val(), function () {
-                                if (isFolder) {
-                                    LS.renameFoldersOpened(path, newName);
-                                    unselectElement($element);
-                                    $element.data("path", $element.data("path").slice(0, -1).concat(newName));
-                                    selectElement($element);
-                                }
-                                refresh();
-                            });
-                        }
-                        return;
-                    }
-                    if (e.which === 27) {
-                        removeInput(true);
-                    }
-                }).on('keypress', function (e) { e.stopPropagation(); });
-                //$element.parent().append($input);
-                $name.after($input);
-                $input.focus();
-
-                var extension = getFileNameExtension(name);
-                var input = $input[0];
-                input.selectionStart = 0;
-                input.selectionEnd = name.length - extension.length;
-
-                // We don't want to open the file/folder when clicking on the input
-                $input.on('click dblclick', function (e) {
-                    e.stopPropagation();
-                });
-                // Remove the browser ability to drag text from the input to avoid
-                // triggering our drag/drop event handlers
-                $input.on('dragstart dragleave drag drop', function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                });
-                // Make the parent element non-draggable when selecting text in the field
-                // since it would remove the input
-                $input.on('mousedown', function (e) {
-                    e.stopPropagation();
-                    $input.parents('.cp-app-drive-element-row').attr("draggable", false);
-                });
-                $input.on('mouseup', function (e) {
-                    e.stopPropagation();
-                    $input.parents('.cp-app-drive-element-row').attr("draggable", true);
-                });
-            },0);
         };
 
 
@@ -1204,33 +1238,6 @@ define([
                 filtered.push('.cp-app-drive-context-' + className);
             });
             return filtered;
-        };
-
-        var getSelectedPaths = function ($element) {
-            var paths = [];
-            if (!$element || $element.length === 0) { return paths; }
-            if (findSelectedElements().length > 1) {
-                var $selected = findSelectedElements();
-                $selected.each(function (idx, elmt) {
-                    var ePath = $(elmt).data('path');
-                    if (ePath) {
-                        paths.push({
-                            path: ePath,
-                            element: $(elmt)
-                        });
-                    }
-                });
-            }
-
-            if (!paths.length) {
-                var path = $element.data('path');
-                if (!path) { return false; }
-                paths.push({
-                    path: path,
-                    element: $element
-                });
-            }
-            return paths;
         };
 
         var updateContextButton = function () {
@@ -3663,13 +3670,13 @@ define([
         };
 
         // Disable middle click in the context menu to avoid opening /drive/inner.html# in new tabs
-        $(window).click(function (e) {
+        var onWindowClick = function (e) {
             if (!e.target || !$(e.target).parents('.cp-dropdown-content').length) { return; }
             if (e.which !== 1) {
                 e.stopPropagation();
                 return false;
             }
-        });
+        };
 
         var getProperties = APP.getProperties = function (el, cb) {
             if (!manager.isFile(el) && !manager.isSharedFolder(el)) {
@@ -4111,13 +4118,15 @@ define([
             APP.hideMenu();
         });
 
-        $(window).on("keydown", function (e) {
-            if (e.which === 113) { // if F2 key pressed
-                var paths = getSelectedPaths(findSelectedElements().first());
-                if (paths.length !== 1) { return; }
-                displayRenameInput(paths[0].element, paths[0].path);
-            }
-        });
+        $(window).on('mouseup', onWindowMouseUp);
+        $(window).on('keydown', onWindowKeydown);
+        $(window).on('click', onWindowClick);
+
+        var removeWindowListeners = function () {
+            $(window).off('mouseup', onWindowMouseUp);
+            $(window).off('keydown', onWindowKeydown);
+            $(window).off('click', onWindowClick);
+        };
 
         // Chrome considers the double-click means "select all" in the window
         $content.on('mousedown', function (e) {
@@ -4342,7 +4351,10 @@ define([
         }
 
         return {
-            refresh: refresh
+            refresh: refresh,
+            close: function () {
+                removeWindowListeners();
+            }
         };
     };
 
