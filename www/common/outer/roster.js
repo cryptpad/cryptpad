@@ -123,6 +123,11 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             throw new Error("CANNOT_ADD_TO_UNITIALIZED_ROSTER");
         }
 
+        // XXX reject if not all of these are present
+            // displayName
+            // notifications (channel)
+        // XXX if no role is passed, assume MEMBER
+
         var changed = false;
         Object.keys(args).forEach(function (curve) {
             // FIXME only allow valid curve keys, anything else is pollution
@@ -250,6 +255,16 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         return true;
     };
 
+    // describe the team {name, description}, (only admin/owner)
+    commands.TOPIC = function (/* args, author, roster */) {
+        
+    };
+
+    // add a link to an avatar (only owner/admin can do this)
+    commands.AVATAR = function (/* args, author, roster */) {
+
+    };
+
     var handleCommand = function (content, author, roster) {
         if (!(Array.isArray(content) && typeof(author) === 'string')) {
             throw new Error("INVALID ARGUMENTS");
@@ -269,15 +284,22 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         return handleCommand(content, author, clone(roster));
     };
 
+    var getMessageId = function (msgString) {
+        return msgString.slice(0, 64);
+    };
+
     Roster.create = function (config, _cb) {
         if (typeof(_cb) !== 'function') { throw new Error("EXPECTED_CALLBACK"); }
         var cb = Util.once(Util.mkAsync(_cb));
 
         if (!config.network) { return void cb("EXPECTED_NETWORK"); }
         if (!config.channel || typeof(config.channel) !== 'string' || config.channel.length !== 32) { return void cb("EXPECTED_CHANNEL"); }
-        if (!config.owners || !Array.isArray(config.owners)) { return void cb("EXPECTED_OWNERS"); }
         if (!config.keys || typeof(config.keys) !== 'object') { return void cb("EXPECTED_CRYPTO_KEYS"); }
         if (!config.anon_rpc) { return void cb("EXPECTED_ANON_RPC"); }
+
+
+
+
 
         var anon_rpc = config.anon_rpc;
 
@@ -291,6 +313,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
 
         var events = {
             change: Util.mkEvent(),
+            checkpoint: Util.mkEvent(),
         };
 
         roster.on = function (key, handler) {
@@ -305,6 +328,12 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
 
         roster.getState = function () {
             return ref.state;
+        };
+
+        // XXX you must be able to 'leave' a roster session
+        roster.stop = function () {
+            // shut down the chainpad-netflux session and...
+            // cpNf.leave();
         };
 
         var ready = false;
@@ -330,6 +359,10 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             console.log("ROSTER CONNECTED");
         };
 
+        // XXX reuse code from RPC ?
+        var pending = {};
+        //var timeouts = {};
+
         var onMessage = function (msg, user, vKey, isCp , hash, author) {
             //console.log("onMessage");
             //console.log(typeof(msg), msg);
@@ -344,18 +377,31 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
                 console.error(err);
             }
 
+            var id = getMessageId(hash);
+            if (typeof(pending[id]) === 'function') {
+                // it was your message, execute a callback
+                if (!changed) {
+                    pending[id]("NO_CHANGE");
+                } else {
+                    pending[id](void 0, clone(roster.state));
+                }
+            } else {
+                // it was not your message, or it timed out...
+                // execute change ?
+                console.log("HASH", hash);
+            }
             if (changed) { events.change.fire(); }
 
             return void console.log(msg);
         };
-
 
         var isReady = function () {
              return Boolean(ready && me);
         };
 
         var metadata, crypto;
-        var send = function (msg, cb) {
+        var send = function (msg, _cb) {
+            var cb = Util.once(Util.mkAsync(_cb));
             if (!isReady()) { return void cb("NOT_READY"); }
 
             var changed = false;
@@ -369,12 +415,14 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
 
             var ciphertext = crypto.encrypt(Sortify(msg));
 
+            var id = getMessageId(ciphertext);
+
             anon_rpc.send('WRITE_PRIVATE_MESSAGE', [
                 channel,
                 ciphertext
             ], function (err) {
                 if (err) { return void cb(err); }
-                cb();
+                pending[id] = cb;
             });
         };
 
