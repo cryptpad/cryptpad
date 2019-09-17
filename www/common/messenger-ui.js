@@ -21,7 +21,7 @@ define([
     };
 
     var initChannel = function (state, info) {
-        console.log('initializing channel for [%s]', info.id);
+        console.debug('initializing channel for [%s]', info.id);
         var h, t;
         if (Array.isArray(info.messages) && info.messages.length) {
             h = info.messages[info.messages.length -1].sig;
@@ -31,8 +31,9 @@ define([
             messages: info.messages || [],
             name: info.name,
             isFriendChat: info.isFriendChat,
-            needMoreHistory: !info.isPadChat,
             isPadChat: info.isPadChat,
+            isTeamChat: info.isTeamChat,
+            needMoreHistory: !info.isPadChat && !info.isTeamChat,
             curvePublic: info.curvePublic,
             HEAD: h || info.lastKnownHash,
             TAIL: t || null,
@@ -40,7 +41,6 @@ define([
     };
 
     MessengerUI.create = function ($container, common, toolbar) {
-        var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
         var origin = metadataMgr.getPrivateData().origin;
         var readOnly = metadataMgr.getPrivateData().readOnly;
@@ -76,12 +76,17 @@ define([
             ]),
         ]);
 
+        var execCommand = function () {
+            console.warn(arguments);
+        };
+        /*
         var execCommand = function (cmd, data, cb) {
             sframeChan.query('Q_CHAT_COMMAND', {cmd: cmd, data: data}, function (err, obj) {
                 if (err || (obj && obj.error)) { return void cb(err || (obj && obj.error)); }
                 cb(void 0, obj);
             });
         };
+        */
 
         var $userlist = $(friendList).appendTo($container);
         var $messages = $(messaging).appendTo($container);
@@ -503,7 +508,7 @@ define([
             var rightCol = h('span.cp-app-contacts-right-col', [
                 h('span.cp-app-contacts-name', [room.name]),
                 room.isFriendChat ? remove :
-                    room.isPadChat ? undefined : leaveRoom,
+                    (room.isPadChat || room.isTeamChat) ? undefined : leaveRoom,
             ]);
 
             var friendData = room.isFriendChat ? userlist[0] : {};
@@ -619,7 +624,6 @@ define([
             var channel = obj.id;
             var chan = state.channels[channel];
             var data = obj.info;
-            // XXX Teams: if someone leaves a room, don't remove their data if they're also a friend
             if (contactsData[data.curvePublic] && !(chan && chan.isFriendChat)) {
                 delete contactsData[data.curvePublic];
             }
@@ -682,7 +686,7 @@ define([
 
             execCommand('GET_USERLIST', {id: id}, function (e, list) {
                 if (e || list.error) { return void console.error(e || list.error); }
-                if (!room.isPadChat && (!Array.isArray(list) || !list.length)) {
+                if (!room.isPadChat && !room.isTeamChat && (!Array.isArray(list) || !list.length)) {
                     return void console.error("Empty room!");
                 }
                 debug('userlist: ' + JSON.stringify(list), id);
@@ -711,6 +715,8 @@ define([
                 var $parentEl;
                 if (room.isFriendChat) {
                     $parentEl = $userlist.find('.cp-app-contacts-friends');
+                } else if (room.isTeamChat) {
+                    $parentEl = $userlist.find('.cp-app-contacts-padchat'); // XXX
                 } else if (room.isPadChat) {
                     $parentEl = $userlist.find('.cp-app-contacts-padchat');
                 } else {
@@ -722,7 +728,7 @@ define([
 
                 updateStatus(id);
 
-                if (isApp && room.isPadChat) {
+                if (isApp && (room.isPadChat || room.isTeamChat)) {
                     $container.removeClass('cp-app-contacts-initializing');
                     display(room.id);
                 }
@@ -780,10 +786,6 @@ define([
         // var onLeaveRoom
 
 
-        execCommand('GET_MY_INFO', null, function (e, info) {
-            contactsData[info.curvePublic] = info;
-        });
-
         var ready = false;
         var onMessengerReady = function () {
             if (isApp) { return; }
@@ -817,6 +819,21 @@ define([
             });
         };
 
+        var onTeamChatReady = function (data) {
+            var teamChat = common.getTeamChat();
+            if (data !== teamChat) { return; }
+            if (state.channels[data]) { return; }
+            execCommand('GET_ROOMS', {teamChat: data}, function (err, rooms) {
+                if (err) { return void console.error(err); }
+                if (!Array.isArray(rooms) || rooms.length !== 1) {
+                    return void console.error('Invalid team chat');
+                }
+                var room = rooms[0];
+                room.name = 'TEAMS'; // XXX
+                rooms.forEach(initializeRoom);
+            });
+        };
+
         var onDisconnect = function () {
             debug('disconnected');
             $messages.find('.cp-app-contacts-input textarea').prop('disabled', true);
@@ -826,15 +843,8 @@ define([
             $messages.find('.cp-app-contacts-input textarea').prop('disabled', false);
         };
 
-        // Initialize chat when outer is ready (all channels loaded)
-        // TODO: try again in outer if fail to load a channel
-        if (!isApp) {
-            execCommand('INIT_FRIENDS', null, function () {});
-            execCommand('IS_READY', null, function (err, yes) {
-                if (yes) { onMessengerReady(); }
-            });
-        }
-        sframeChan.on('EV_CHAT_EVENT', function (obj) {
+        //sframeChan.on('EV_CHAT_EVENT', function (obj) {
+        var onEvent = function (obj) {
             var cmd = obj.ev;
             var data = obj.data;
             if (cmd === 'READY') {
@@ -847,6 +857,10 @@ define([
             }
             if (cmd === 'PADCHAT_READY') {
                 onPadChatReady(data);
+                return;
+            }
+            if (cmd === 'TEAMCHAT_READY') {
+                onTeamChatReady(data);
                 return;
             }
             if (cmd === 'DISCONNECT') {
@@ -881,7 +895,30 @@ define([
                 onUnfriend(data);
                 return;
             }
+        };
+        var module = common.makeUniversal('messenger', {
+            onEvent: onEvent
         });
+        execCommand = function (cmd, data, cb) {
+            module.execCommand(cmd, data, function (obj) {
+                if (obj && obj.error) { return void cb(obj.error); }
+                cb(void 0, obj);
+            });
+        };
+        //});
+
+        execCommand('GET_MY_INFO', null, function (e, info) {
+            contactsData[info.curvePublic] = info;
+        });
+
+
+        // Initialize chat when outer is ready (all channels loaded)
+        // TODO: try again in outer if fail to load a channel
+        if (!isApp) {
+            execCommand('INIT_FRIENDS', null, function () {
+                onMessengerReady();
+            });
+        }
     };
 
     return MessengerUI;

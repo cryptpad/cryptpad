@@ -1,5 +1,6 @@
 @import (reference) '../../customize/src/less2/include/framework.less';
 @import (reference) '../../customize/src/less2/include/drive.less';
+@import (reference) '../../customize/src/less2/include/messenger.less';
 @import (reference) '../../customize/src/less2/include/sidebar-layout.less';
 
 &.cp-app-team {
@@ -10,11 +11,20 @@
     );
 
     .drive_main();
+    .messenger_main();
     .sidebar-layout_main();
 
     #cp-sidebarlayout-container {
         div#cp-sidebarlayout-rightside.cp-rightside-drive {
             padding: 0;
+            & > .cp-team-chat {
+                display: flex;
+                height: 100%;
+                margin: 0;
+                .cp-app-contacts-container {
+                    height: 100%;
+                }
+            }
             & > .cp-team-drive {
                 display: flex;
                 height: 100%;

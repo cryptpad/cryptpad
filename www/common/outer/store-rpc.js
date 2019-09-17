@@ -59,8 +59,6 @@ define([
             // Messaging
             ANSWER_FRIEND_REQUEST: Store.answerFriendRequest,
             SEND_FRIEND_REQUEST: Store.sendFriendRequest,
-            // Chat
-            CHAT_COMMAND: Store.messenger.execCommand,
             // OnlyOffice
             OO_COMMAND: Store.onlyoffice.execCommand,
             // Cursor
@@ -100,7 +98,6 @@ define([
         // Internal calls
         Rpc._removeClient = Store._removeClient;
         Rpc._subscribeToDrive = Store._subscribeToDrive;
-        Rpc._subscribeToMessenger = Store._subscribeToMessenger;
 
         return Rpc;
     };

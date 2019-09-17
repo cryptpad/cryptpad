@@ -134,7 +134,6 @@ define([
                         });
                     }
                 }), {
-                    messenger: cfg.messaging,
                     driveEvents: cfg.driveEvents
                 });
             }));
@@ -1091,19 +1090,16 @@ define([
                 Notifier.getPermission();
 
                 sframeChan.on('Q_CHAT_OPENPADCHAT', function (data, cb) {
-                    Cryptpad.messenger.execCommand({
-                        cmd: 'OPEN_PAD_CHAT',
+                    Cryptpad.universal.execCommand({
+                        type: 'messenger',
                         data: {
-                            channel: data,
-                            secret: secret
+                            cmd: 'OPEN_PAD_CHAT',
+                            data: {
+                                channel: data,
+                                secret: secret
+                            }
                         }
                     }, cb);
-                });
-                sframeChan.on('Q_CHAT_COMMAND', function (data, cb) {
-                    Cryptpad.messenger.execCommand(data, cb);
-                });
-                Cryptpad.messenger.onEvent.reg(function (data) {
-                    sframeChan.event('EV_CHAT_EVENT', data);
                 });
             }
 

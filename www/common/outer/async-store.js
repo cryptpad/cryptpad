@@ -9,13 +9,13 @@ define([
     '/common/common-feedback.js',
     '/common/common-realtime.js',
     '/common/common-messaging.js',
-    '/common/common-messenger.js',
     '/common/outer/sharedfolder.js',
     '/common/outer/cursor.js',
     '/common/outer/onlyoffice.js',
     '/common/outer/mailbox.js',
     '/common/outer/profile.js',
     '/common/outer/team.js',
+    '/common/outer/messenger.js',
     '/common/outer/network-config.js',
     '/customize/application_config.js',
 
@@ -26,8 +26,9 @@ define([
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
 ], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
-             Realtime, Messaging, Messenger,
-             SF, Cursor, OnlyOffice, Mailbox, Profile, Team, NetConfig, AppConfig,
+             Realtime, Messaging,
+             SF, Cursor, OnlyOffice, Mailbox, Profile, Team, Messenger,
+             NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, nThen, Saferphore) {
 
     var create = function () {
@@ -1241,14 +1242,6 @@ define([
             });
         };
 
-        // Messenger
-        Store.messenger = {
-            execCommand: function (clientId, data, cb) {
-                if (!store.messenger) { return void cb({error: 'Messenger is disabled'}); }
-                store.messenger.execCommand(data, cb);
-            }
-        };
-
         // OnlyOffice
         Store.onlyoffice = {
             execCommand: function (clientId, data, cb) {
@@ -1753,7 +1746,6 @@ define([
 
         // Clients management
         var driveEventClients = [];
-        var messengerEventClients = [];
 
         var dropChannel = function (chanId) {
             try {
@@ -1778,10 +1770,6 @@ define([
             var driveIdx = driveEventClients.indexOf(clientId);
             if (driveIdx !== -1) {
                 driveEventClients.splice(driveIdx, 1);
-            }
-            var messengerIdx = messengerEventClients.indexOf(clientId);
-            if (messengerIdx !== -1) {
-                messengerEventClients.splice(messengerIdx, 1);
             }
             try {
                 store.cursor.removeClient(clientId);
@@ -1873,28 +1861,6 @@ define([
             }
         };
 
-        var sendMessengerEvent = function (q, data) {
-            messengerEventClients.forEach(function (cId) {
-                postMessage(cId, q, data);
-            });
-        };
-        Store._subscribeToMessenger = function (clientId) {
-            if (messengerEventClients.indexOf(clientId) === -1) {
-                messengerEventClients.push(clientId);
-            }
-        };
-        var loadMessenger = function () {
-            if (AppConfig.availablePadTypes.indexOf('contacts') === -1) { return; }
-            var messenger = store.messenger = Messenger.messenger(store, function () {
-                broadcast([], "UPDATE_METADATA");
-            });
-            messenger.on('event', function (ev, data) {
-                sendMessengerEvent('CHAT_EVENT', {
-                    ev: ev,
-                    data: data
-                });
-            });
-        };
 
 /*
         var loadProfile = function (waitFor) {
@@ -2025,9 +1991,10 @@ define([
                 });
                 userObject.fixFiles();
                 SF.loadSharedFolders(Store, store.network, store, userObject, waitFor);
-                loadMessenger();
                 loadCursor();
                 loadOnlyOffice();
+                loadUniversal(Messenger, 'messenger', waitFor);
+                store.messenger = store.modules['messenger'];
                 loadUniversal(Profile, 'profile', waitFor);
                 loadUniversal(Team, 'team', waitFor);
                 cleanFriendRequests();

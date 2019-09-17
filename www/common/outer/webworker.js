@@ -63,9 +63,6 @@ require(['/api/config?cb=' + (+new Date()).toString(16)], function (ApiConfig) {
                         if (cfg.driveEvents) {
                             Rpc._subscribeToDrive(clientId);
                         }
-                        if (cfg.messenger) {
-                            Rpc._subscribeToMessenger(clientId);
-                        }
                         cb(data);
                     });
                 });

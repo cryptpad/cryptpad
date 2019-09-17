@@ -763,13 +763,6 @@ define([
     };
     onlyoffice.onEvent = Util.mkEvent();
 
-    // Messenger
-    var messenger = common.messenger = {};
-    messenger.execCommand = function (data, cb) {
-        postMessage("CHAT_COMMAND", data, cb);
-    };
-    messenger.onEvent = Util.mkEvent();
-
     // Cursor
     var cursor = common.cursor = {};
     cursor.execCommand = function (data, cb) {
@@ -1284,8 +1277,6 @@ define([
         },
         // OnlyOffice
         OO_EVENT: common.onlyoffice.onEvent.fire,
-        // Chat
-        CHAT_EVENT: common.messenger.onEvent.fire,
         // Cursor
         CURSOR_EVENT: common.cursor.onEvent.fire,
         // Mailbox
@@ -1439,7 +1430,6 @@ define([
                 anonHash: LocalStore.getFSHash(),
                 localToken: tryParsing(localStorage.getItem(Constants.tokenKey)), // TODO move this to LocalStore ?
                 language: common.getLanguage(),
-                messenger: rdyCfg.messenger, // Boolean
                 driveEvents: rdyCfg.driveEvents // Boolean
             };
             // if a pad is created from a file

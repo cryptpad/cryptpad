@@ -154,7 +154,7 @@ define([
             friend[key] = msg.content[key];
         });
         if (ctx.store.messenger) {
-            ctx.store.messenger.onFriendUpdate(curve, friend);
+            ctx.store.messenger.onFriendUpdate(curve);
         }
         ctx.updateMetadata();
         cb(true);

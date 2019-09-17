@@ -75,9 +75,6 @@ var init = function (client, cb) {
                             if (cfg.driveEvents) {
                                 Rpc._subscribeToDrive(clientId);
                             }
-                            if (cfg.messenger) {
-                                Rpc._subscribeToMessenger(clientId);
-                            }
                             return void cb(self.store);
                         }
 
@@ -103,9 +100,6 @@ var init = function (client, cb) {
                         Rpc.queries['CONNECT'](clientId, cfg, function (data) {
                             if (cfg.driveEvents) {
                                 Rpc._subscribeToDrive(clientId);
-                            }
-                            if (cfg.messenger) {
-                                Rpc._subscribeToMessenger(clientId);
                             }
                             if (data && data.state === "ALREADY_INIT") {
                                 self.store = data.returned;
