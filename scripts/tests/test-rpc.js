@@ -261,10 +261,12 @@ nThen(function  (w) {
     // network
     // owners:
 
+/*
     var team = {
         curve: sharedConfig.teamCurveKeys,
         ed: sharedConfig.teamEdKeys,
     };
+*/
 
     var rosterSeed = Crypto.Team.createSeed();
     var rosterKeys = Crypto.Team.deriveMemberKeys(rosterSeed, oscar.curveKeys);
