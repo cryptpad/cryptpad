@@ -1,6 +1,26 @@
 (function (window) {
     var Util = {};
 
+    // polyfill for atob in case you're using this from node...
+    window.atob = window.atob || function (str) { return Buffer.from(str, 'base64').toString('binary'); }; // jshint ignore:line
+    window.btoa = window.btoa || function (str) { return new Buffer(str, 'binary').toString('base64'); }; // jshint ignore:line
+
+    Util.bake = function (f, args) {
+        if (typeof(args) === 'undefined') { args = []; }
+        if (!Array.isArray(args)) { args = [args]; }
+        return function () {
+            return f.apply(null, args);
+        };
+    };
+
+    Util.both = function (pre, post) {
+        if (typeof(post) !== 'function') { post = function (x) { return x; }; }
+        return function () {
+            pre.apply(null, arguments);
+            return post.apply(null, arguments);
+        };
+    };
+
     Util.tryParse = function (s) {
         try { return JSON.parse(s); } catch (e) { return;}
     };
@@ -70,7 +90,7 @@
 
     Util.base64ToHex = function (b64String) {
         var hexArray = [];
-        atob(b64String.replace(/-/g, '/')).split("").forEach(function(e){
+        window.atob(b64String.replace(/-/g, '/')).split("").forEach(function(e){
             var h = e.charCodeAt(0).toString(16);
             if (h.length === 1) { h = "0"+h; }
             hexArray.push(h);
@@ -108,6 +128,14 @@
             offset += AA[i].length;
         }
         return C;
+    };
+
+    Util.escapeKeyCharacters = function (key) {
+        return key && key.replace && key.replace(/\//g, '-');
+    };
+
+    Util.unescapeKeyCharacters = function (key) {
+        return key.replace(/\-/g, '/');
     };
 
     Util.deduplicateString = function (array) {

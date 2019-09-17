@@ -1,29 +1,16 @@
-define([
-    '/common/rpc.js',
-], function (Rpc) {
-    var create = function (network, proxy, cb) {
-        if (!network) {
-            setTimeout(function () {
-                cb('INVALID_NETWORK');
-            });
-            return;
-        }
-        if (!proxy) {
-            setTimeout(function () {
-                cb('INVALID_PROXY');
-            });
-            return;
-        }
+(function () {
+var factory = function (Util, Rpc) {
+    var create = function (network, proxy, _cb) {
+        if (typeof(_cb) !== 'function') { throw new Error("Expected callback"); }
+        var cb = Util.once(Util.mkAsync(_cb));
+
+        if (!network) { return void cb('INVALID_NETWORK'); }
+        if (!proxy) { return void cb('INVALID_PROXY'); }
 
         var edPrivate = proxy.edPrivate;
         var edPublic = proxy.edPublic;
 
-        if (!(edPrivate && edPublic)) {
-            setTimeout(function () {
-                cb('INVALID_KEYS');
-            });
-            return;
-        }
+        if (!(edPrivate && edPublic)) { return void cb('INVALID_KEYS'); }
 
         Rpc.create(network, edPrivate, edPublic, function (e, rpc) {
             if (e) { return void cb(e); }
@@ -76,7 +63,7 @@ define([
                     if (!(hash && hash[0])) {
                         return void cb('NO_HASH_RETURNED');
                     }
-                    cb(e, hash[0]);
+                    cb(e, Array.isArray(hash) && hash[0] || undefined);
                 });
             };
 
@@ -275,4 +262,10 @@ define([
     };
 
     return { create: create };
-});
+};
+    if (typeof(module) !== 'undefined' && module.exports) {
+        module.exports = factory(require('./common-util'), require("./rpc"));
+    } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+        define([ '/common/common-util.js', '/common/rpc.js', ], function (Util, Rpc) { return factory(Util, Rpc); });
+    }
+}());
