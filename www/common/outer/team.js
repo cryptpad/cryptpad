@@ -362,7 +362,7 @@ define([
             }
         });
 
-        if (!id) { return; }
+        if (!id) { return void cb(); }
         // If the team is loading, as ourselves in the list
         if (ctx.onReadyHandlers[id]) {
             var _idx = ctx.onReadyHandlers[id].indexOf(cId);
