@@ -266,22 +266,16 @@ nThen(function  (w) {
         ed: sharedConfig.teamEdKeys,
     };
 
+    var rosterSeed = Crypto.Team.createSeed();
+    var rosterKeys = Crypto.Team.deriveMemberKeys(rosterSeed, oscar.curveKeys);
+
     Roster.create({
         network: oscar.network,
-        channel: sharedConfig.rosterChannel,
+        channel: rosterKeys.channel, //sharedConfig.rosterChannel,
         owners: [
             oscar.edKeys.edPublic
         ],
-        keys: {
-            myCurvePublic: oscar.curveKeys.curvePublic,
-            myCurvePrivate: oscar.curveKeys.curvePrivate,
-
-            teamCurvePublic: team.curve.curvePublic,
-            teamCurvePrivate: team.curve.curvePrivate,
-
-            teamEdPrivate: team.ed.edPrivate,
-            teamEdPublic: team.ed.edPublic,
-        },
+        keys: rosterKeys,
         anon_rpc: oscar.anonRpc,
         lastKnownHash: void 0,
     }, w(function (err, roster) {
