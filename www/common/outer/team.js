@@ -352,6 +352,8 @@ define([
                     }
                 };
                 ctx.store.proxy.teams[id] = {
+                    owner: true,
+                    channel: secret.channel,
                     hash: hash,
                     password: password,
                     keys: keys,
