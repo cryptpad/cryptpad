@@ -437,13 +437,13 @@ define([
 
             var onDisconnect = function (noAlert) {
                 setEditable(false);
-                if (driveAPP.refresh) { driveAPP.refresh(); }
+                if (APP.team && driveAPP.refresh) { driveAPP.refresh(); }
                 toolbar.failed();
                 if (!noAlert) { UI.alert(Messages.common_connectionLost, undefined, true); }
             };
             var onReconnect = function (info) {
                 setEditable(true);
-                if (driveAPP.refresh) { driveAPP.refresh(); }
+                if (APP.team && driveAPP.refresh) { driveAPP.refresh(); }
                 toolbar.reconnecting(info.myId);
                 UI.findOKButton().click();
             };

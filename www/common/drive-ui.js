@@ -254,6 +254,7 @@ define([
 
     var setEditable = function (state) {
         APP.editable = state;
+        if (APP.closed || (APP.$content && !$.contains(document.documentElement, APP.$content[0]))) { return; }
         if (!state) {
             APP.$content.addClass('cp-app-drive-readonly');
             $('[draggable="true"]').attr('draggable', false);
@@ -3175,6 +3176,8 @@ define([
         // Display the selected directory into the content part (rightside)
         // NOTE: Elements in the trash are not using the same storage structure as the others
         var _displayDirectory = function (path, force) {
+            if (APP.closed || (APP.$content && !$.contains(document.documentElement, APP.$content[0]))) { return; }
+
             APP.hideMenu();
 
             if (!APP.editable) { debug("Read-only mode"); }
@@ -3372,6 +3375,7 @@ define([
             appStatus.ready(true);
         };
         var displayDirectory = APP.displayDirectory = function (path, force) {
+            if (APP.closed || (APP.$content && !$.contains(document.documentElement, APP.$content[0]))) { return; }
             if (history.isHistoryMode) {
                 return void _displayDirectory(path, force);
             }
@@ -4118,16 +4122,6 @@ define([
             APP.hideMenu();
         });
 
-        $(window).on('mouseup', onWindowMouseUp);
-        $(window).on('keydown', onWindowKeydown);
-        $(window).on('click', onWindowClick);
-
-        var removeWindowListeners = function () {
-            $(window).off('mouseup', onWindowMouseUp);
-            $(window).off('keydown', onWindowKeydown);
-            $(window).off('click', onWindowClick);
-        };
-
         // Chrome considers the double-click means "select all" in the window
         $content.on('mousedown', function (e) {
             $content.focus();
@@ -4211,7 +4205,7 @@ define([
             }
         };
 
-        sframeChan.on('EV_DRIVE_CHANGE', function (data) {
+        var onEvDriveChange = sframeChan.on('EV_DRIVE_CHANGE', function (data) {
             if (history.isHistoryMode) { return; }
 
             var path = data.path.slice();
@@ -4247,7 +4241,7 @@ define([
             }
             return false;
         });
-        sframeChan.on('EV_DRIVE_REMOVE', function (data) {
+        var onEvDriveRemove = sframeChan.on('EV_DRIVE_REMOVE', function (data) {
             if (history.isHistoryMode) { return; }
 
             var path = data.path.slice();
@@ -4279,6 +4273,21 @@ define([
             }
             return false;
         });
+
+        $(window).on('mouseup', onWindowMouseUp);
+        $(window).on('keydown', onWindowKeydown);
+        $(window).on('click', onWindowClick);
+
+        var removeWindowListeners = function () {
+            $(window).off('mouseup', onWindowMouseUp);
+            $(window).off('keydown', onWindowKeydown);
+            $(window).off('click', onWindowClick);
+            try {
+                onEvDriveChange.stop();
+                onEvDriveRemove.stop();
+            } catch (e) {}
+        };
+
 
         if (APP.histConfig) {
             APP.histConfig.onOpen = function () {
@@ -4353,6 +4362,7 @@ define([
         return {
             refresh: refresh,
             close: function () {
+                APP.closed = true;
                 removeWindowListeners();
             }
         };
