@@ -771,7 +771,7 @@ define([
         var chanId = chatData.channel;
         var secret = chatData.secret;
 
-        if (!chanId || !secret) { return void cb({error: 'EINVAL'}); }
+        if (!chanId || !secret) { return void _cb({error: 'EINVAL'}); }
 
         var cb = Util.once(Util.mkAsync(function () {
             ctx.emit('TEAMCHAT_READY', chanId, [clientId]);

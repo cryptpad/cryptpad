@@ -76,14 +76,15 @@ define([
         if (!store) { return null; }
         var list = store.manager.getChannelsList('pin');
 
-        // Teams will always be owned for now
-        // XXX if the team is not owned, add the teamChannel to the list
-        /*
-        var _team = Util.find(ctx, ['store', 'proxy', 'teams', id]);
-        var secret = Hash.getSecrets('team', _team.hash, _team.password);
-        var teamChannel = secret.channel;
-        list.push(userChannel);
-        */
+        var team = ctx.store.proxy.teams[id];
+        list.push(team.channel);
+        var chatChannel = Util.find(team, ['keys', 'chat', 'channel']);
+        var membersChannel = Util.find(team, ['keys', 'members', 'channel']);
+        var mailboxChannel = Util.find(team, ['keys', 'mailbox', 'channel']);
+        if (chatChannel) { list.push(chatChannel); }
+        if (membersChannel) { list.push(membersChannel); }
+        if (mailboxChannel) { list.push(mailboxChannel); }
+
 
 
         // XXX Add the team mailbox
@@ -140,7 +141,7 @@ define([
         };
 
         team.getChatData = function () {
-            var hash = Util.find(ctx.store.proxy, ['teams', id, 'keys' 'chat', 'hash']);
+            var hash = Util.find(ctx.store.proxy, ['teams', id, 'keys', 'chat', 'hash']);
             if (!hash) { return {}; }
             var secret = Hash.getSecrets('chat', hash);
             return {
@@ -306,13 +307,6 @@ define([
             owners: [ctx.store.proxy.edPublic]
         };
         nThen(function (waitFor) {
-            // XXX add this to the reset list too
-            ctx.pinPads([secret.channel, membersSecret.channel, chatSecret.channel], waitFor(function (obj) {
-                if (obj && obj.error) {
-                    waitFor.abort();
-                    return void cb(obj);
-                }
-            }));
             // XXX initialize the members channel with yourself, and mark it as owned!
             var chatCfg = {
                 network: ctx.store.network,

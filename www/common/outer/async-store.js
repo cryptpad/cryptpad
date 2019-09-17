@@ -184,21 +184,6 @@ define([
                 list = list.concat(mList);
             }
 
-            if (store.proxy.teams) {
-                Object.keys(store.proxy.teams).forEach(function (id) {
-                    var team = store.proxy.teams[id];
-                    if (!team.owner) { return; }
-                    list.push(team.channel);
-                    var chatChannel = Util.find(team, ['keys', 'chat', 'channel']);
-                    var membersChannel = Util.find(team, ['keys', 'members', 'channel']);
-                    var mailboxChannel = Util.find(team, ['keys', 'mailbox', 'channel']);
-                    if (chatChannel) { list.push(chatChannel); }
-                    if (membersChannel) { list.push(membersChannel); }
-                    if (mailboxChannel) { list.push(mailboxChannel); }
-                    // XXX team mailbox
-                });
-            }
-
             list.push(userChannel);
             list.sort();
 
