@@ -138,6 +138,19 @@ define([
             }));
         };
 
+        team.getChatData = function () {
+            var hash = Util.find(proxy, ['metadata', 'chat']);
+            if (!hash) {
+                hash = proxy.metadata.chat = Hash.createRandomHash('chat');
+            }
+            var secret = Hash.getSecrets('chat', hash);
+            return {
+                channel: secret.channel,
+                secret: secret,
+                validateKey: secret.keys.validateKey
+            };
+        };
+
         team.pin = function (data, cb) { return void cb({error: 'EFORBIDDEN'}); };
         team.unpin = function (data, cb) { return void cb({error: 'EFORBIDDEN'}); };
         nThen(function (waitFor) {
@@ -276,6 +289,9 @@ define([
         var membersSecret = Hash.getSecrets('members');
         var membersHashes = Hash.getHashes(membersSecret);
 
+        var chatSecret = Hash.getSecrets('chat');
+        var chatHashes = Hash.getHashes(chatSecret);
+
         var config = {
             network: ctx.store.network,
             channel: secret.channel,
@@ -319,6 +335,7 @@ define([
                 proxy.drive = {};
                 // Create metadata
                 proxy.metadata = {
+                    chat: chatHashes.editHash,
                     name: name,
                     members: membersHashes.viewHash,
                 };
@@ -424,7 +441,7 @@ define([
         Object.keys(teams).forEach(function (id) {
             ctx.onReadyHandlers[id] = [];
             openChannel(ctx, teams[id], id, waitFor(function () {
-                console.error('team '+id+' ready');
+                console.debug('Team '+id+' ready');
             }));
         });
 
@@ -448,7 +465,6 @@ define([
             removeClient(ctx, clientId);
         };
         team.execCommand = function (clientId, obj, cb) {
-            console.log(obj);
             var cmd = obj.cmd;
             var data = obj.data;
             if (cmd === 'SUBSCRIBE') {
@@ -457,6 +473,9 @@ define([
             }
             if (cmd === 'LIST_TEAMS') {
                 return void cb(store.proxy.teams);
+            }
+            if (cmd === 'OPEN_TEAM_CHAT') {
+                return void ctx.store.messenger.openTeamChat(data, clientId, cb);
             }
             if (cmd === 'CREATE_TEAM') {
                 return void createTeam(ctx, data, clientId, cb);

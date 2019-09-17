@@ -120,7 +120,7 @@ define([
         var network = ctx.store.network;
         console.log('Fetching [%s] messages since [%s]', channel.id, data.lastKnownHash || '');
 
-        if (channel.isPadChat) {
+        if (channel.isPadChat || channel.isTeamChat) {
             // We need to use GET_HISTORY_RANGE to make sure we won't get the full history
             var txid = Util.uid();
             initRangeRequest(ctx, txid, channel.id, undefined);
@@ -136,8 +136,6 @@ define([
             });
             return;
         }
-
-        // XXX team chat
 
         // Friend chat, intial history
         var proxy = ctx.store.proxy;
@@ -164,6 +162,8 @@ define([
             if (!friend) { return void cb({error: 'NO_SUCH_FRIEND'}); }
             friend.lastKnownHash = hash;
         } else if (channel.isPadChat) {
+            // Nothing to do
+        } else if (channel.isTeamChat) {
             // Nothing to do
         } else {
             // TODO room
@@ -453,6 +453,7 @@ define([
             id: data.channel,
             isFriendChat: data.isFriendChat,
             isPadChat: data.isPadChat,
+            isTeamChat: data.isTeamChat,
             padChan: data.padChan, // Channel ID of the pad linked to this pad chat
             readOnly: data.readOnly,
             ready: false,
@@ -671,6 +672,17 @@ define([
             }]);
         }
 
+        // Team chat room
+        if (data && data.teamChat) {
+            var tCChannel = ctx.channels[data.teamChat];
+            if (!tCChannel) { return void cb({error: 'NO_SUCH_CHANNEL'}); }
+            return void cb([{
+                id: tCChannel.id,
+                isTeamChat: true,
+                messages: tCChannel.messages
+            }]);
+        }
+
         // Existing friends...
         var rooms = Object.keys(ctx.channels).map(function (id) {
             var r = ctx.channels[id];
@@ -682,6 +694,8 @@ define([
                 lastKnownHash = friend.lastKnownHash;
                 curvePublic = friend.curvePublic;
             } else if (r.isPadChat) {
+                return;
+            } else if (r.isTeamChat) {
                 return;
             } else {
                 // TODO room get metadata (name) && lastKnownHash
@@ -743,6 +757,52 @@ define([
             encryptor: encryptor,
             channel: data.channel,
             isPadChat: true,
+            decrypt: function (msg) {
+                return encryptor.decrypt(msg, vKey);
+            },
+            clients: [clientId],
+            onReady: cb
+        };
+        openChannel(ctx, chanData);
+    };
+
+    var openTeamChat = function (ctx, clientId, data, _cb) {
+        var teams = ctx.store.modules['team'];
+        var team = teams.getTeam(data.teamId);
+        if (!team) { return; }
+
+        var chatData = team.getChatData();
+        var chanId = chatData.channel;
+
+        var cb = Util.once(Util.mkAsync(function () {
+            ctx.emit('TEAMCHAT_READY', chanId, [clientId]);
+            _cb({
+                channel: chanId
+            });
+        }));
+
+        var channel = ctx.channels[chanId];
+        if (channel) {
+            return void channel.onReady.reg(function () {
+                if (channel.clients.indexOf(clientId) === -1) {
+                    channel.clients.push(clientId);
+                }
+                cb();
+            });
+        }
+
+        var secret = chatData.secret;
+        if (secret.keys.cryptKey) {
+            secret.keys.cryptKey = convertToUint8(secret.keys.cryptKey);
+        }
+        var encryptor = Crypto.createEncryptor(secret.keys);
+        var vKey = (secret.keys && secret.keys.validateKey) || chatData.validateKey;
+        var chanData = {
+            teamId: data.teamId,
+            readOnly: typeof(secret.keys) === "object" && !secret.keys.validateKey,
+            encryptor: encryptor,
+            channel: chanId,
+            isTeamChat: true,
             decrypt: function (msg) {
                 return encryptor.decrypt(msg, vKey);
             },
@@ -877,6 +937,10 @@ define([
             });
         };
 
+        messenger.openTeamChat = function (data, cId, cb) {
+            openTeamChat(ctx, cId, data, cb);
+        };
+
         messenger.removeClient = function (clientId) {
             removeClient(ctx, clientId);
         };
@@ -891,6 +955,9 @@ define([
             }
             if (cmd === 'GET_USERLIST') {
                 return void getUserList(ctx, data, cb);
+            }
+            if (cmd === 'OPEN_TEAM_CHAT') {
+                return void openTeamChat(ctx, clientId, data, cb);
             }
             if (cmd === 'OPEN_PAD_CHAT') {
                 return void openPadChat(ctx, clientId, data, cb);

@@ -212,6 +212,15 @@ define([
         });
     };
 
+    // Team Chat
+    var teamChatChannel;
+    funcs.setTeamChat = function (channel) {
+        teamChatChannel = channel;
+    };
+    funcs.getTeamChat = function () {
+        return teamChatChannel;
+    };
+
     var cursorChannel;
     // common-ui-elements needs to be able to get the cursor channel to put it in metadata when
     // importing a template

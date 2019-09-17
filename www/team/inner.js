@@ -10,6 +10,7 @@ define([
     '/common/proxy-manager.js',
     '/common/hyperscript.js',
     '/customize/application_config.js',
+    '/common/messenger-ui.js',
     '/customize/messages.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -27,6 +28,7 @@ define([
     ProxyManager,
     h,
     AppConfig,
+    MessengerUI,
     Messages)
 {
     var APP = {};
@@ -101,6 +103,9 @@ define([
         'members': [
             'cp-team-roster'
         ],
+        'chat': [
+            'cp-team-chat'
+        ],
     };
 
     var create = {};
@@ -131,6 +136,7 @@ define([
             if (key === 'create') { $category.append($('<span>', {'class': 'fa fa-plus-circle'})); }
             if (key === 'back') { $category.append($('<span>', {'class': 'fa fa-arrow-left'})); }
             if (key === 'members') { $category.append($('<span>', {'class': 'fa fa-users'})); }
+            if (key === 'chat') { $category.append($('<span>', {'class': 'fa fa-comments'})); }
             if (key === 'drive') { $category.append($('<span>', {'class': 'fa fa-hdd-o'})); }
 
             if (key === active) {
@@ -144,7 +150,7 @@ define([
                 }
                 if (active === key) { return; }
                 active = key;
-                if (key === 'drive') {
+                if (key === 'drive' || key === 'chat') {
                     APP.$rightside.addClass('cp-rightside-drive');
                 } else {
                     APP.$rightside.removeClass('cp-rightside-drive');
@@ -326,6 +332,18 @@ define([
         loadTeam(common, APP.team, false);
     });
 
+    makeBlock('chat', function (common, cb) {
+        var container = h('div#cp-app-contacts-container.cp-app-contacts-inapp');
+        var content = [container];
+        APP.module.execCommand('OPEN_TEAM_CHAT', {
+            teamId: APP.team
+        }, function (obj) {
+            console.warn(obj);
+            common.setTeamChat(obj.channel);
+            MessengerUI.create($(container), common, true);
+            cb(content);
+        });
+    });
 
     var onEvent = function (obj) {
         var ev = obj.ev;

@@ -21,7 +21,7 @@ define([
     };
 
     var initChannel = function (state, info) {
-        console.log('initializing channel for [%s]', info.id);
+        console.debug('initializing channel for [%s]', info.id);
         var h, t;
         if (Array.isArray(info.messages) && info.messages.length) {
             h = info.messages[info.messages.length -1].sig;
@@ -31,8 +31,9 @@ define([
             messages: info.messages || [],
             name: info.name,
             isFriendChat: info.isFriendChat,
-            needMoreHistory: !info.isPadChat,
             isPadChat: info.isPadChat,
+            isTeamChat: info.isTeamChat,
+            needMoreHistory: !info.isPadChat && !info.isTeamChat,
             curvePublic: info.curvePublic,
             HEAD: h || info.lastKnownHash,
             TAIL: t || null,
@@ -507,7 +508,7 @@ define([
             var rightCol = h('span.cp-app-contacts-right-col', [
                 h('span.cp-app-contacts-name', [room.name]),
                 room.isFriendChat ? remove :
-                    room.isPadChat ? undefined : leaveRoom,
+                    (room.isPadChat || room.isTeamChat) ? undefined : leaveRoom,
             ]);
 
             var friendData = room.isFriendChat ? userlist[0] : {};
@@ -685,7 +686,7 @@ define([
 
             execCommand('GET_USERLIST', {id: id}, function (e, list) {
                 if (e || list.error) { return void console.error(e || list.error); }
-                if (!room.isPadChat && (!Array.isArray(list) || !list.length)) {
+                if (!room.isPadChat && !room.isTeamChat && (!Array.isArray(list) || !list.length)) {
                     return void console.error("Empty room!");
                 }
                 debug('userlist: ' + JSON.stringify(list), id);
@@ -714,6 +715,8 @@ define([
                 var $parentEl;
                 if (room.isFriendChat) {
                     $parentEl = $userlist.find('.cp-app-contacts-friends');
+                } else if (room.isTeamChat) {
+                    $parentEl = $userlist.find('.cp-app-contacts-padchat'); // XXX
                 } else if (room.isPadChat) {
                     $parentEl = $userlist.find('.cp-app-contacts-padchat');
                 } else {
@@ -725,7 +728,7 @@ define([
 
                 updateStatus(id);
 
-                if (isApp && room.isPadChat) {
+                if (isApp && (room.isPadChat || room.isTeamChat)) {
                     $container.removeClass('cp-app-contacts-initializing');
                     display(room.id);
                 }
@@ -816,6 +819,21 @@ define([
             });
         };
 
+        var onTeamChatReady = function (data) {
+            var teamChat = common.getTeamChat();
+            if (data !== teamChat) { return; }
+            if (state.channels[data]) { return; }
+            execCommand('GET_ROOMS', {teamChat: data}, function (err, rooms) {
+                if (err) { return void console.error(err); }
+                if (!Array.isArray(rooms) || rooms.length !== 1) {
+                    return void console.error('Invalid team chat');
+                }
+                var room = rooms[0];
+                room.name = 'TEAMS'; // XXX
+                rooms.forEach(initializeRoom);
+            });
+        };
+
         var onDisconnect = function () {
             debug('disconnected');
             $messages.find('.cp-app-contacts-input textarea').prop('disabled', true);
@@ -839,6 +857,10 @@ define([
             }
             if (cmd === 'PADCHAT_READY') {
                 onPadChatReady(data);
+                return;
+            }
+            if (cmd === 'TEAMCHAT_READY') {
+                onTeamChatReady(data);
                 return;
             }
             if (cmd === 'DISCONNECT') {
