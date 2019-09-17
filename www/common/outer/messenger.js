@@ -767,12 +767,11 @@ define([
     };
 
     var openTeamChat = function (ctx, clientId, data, _cb) {
-        var teams = ctx.store.modules['team'];
-        var team = teams.getTeam(data.teamId);
-        if (!team) { return; }
-
-        var chatData = team.getChatData();
+        var chatData = data;
         var chanId = chatData.channel;
+        var secret = chatData.secret;
+
+        if (!chanId || !secret) { return void cb({error: 'EINVAL'}); }
 
         var cb = Util.once(Util.mkAsync(function () {
             ctx.emit('TEAMCHAT_READY', chanId, [clientId]);
@@ -791,7 +790,6 @@ define([
             });
         }
 
-        var secret = chatData.secret;
         if (secret.keys.cryptKey) {
             secret.keys.cryptKey = convertToUint8(secret.keys.cryptKey);
         }

@@ -342,6 +342,9 @@ define([
             teamId: APP.team
         }, function (obj) {
             console.warn(obj);
+            if (obj && obj.error) {
+                return void UI.alert(Messages.error); // XXX
+            }
             common.setTeamChat(obj.channel);
             MessengerUI.create($(container), common, true);
             cb(content);

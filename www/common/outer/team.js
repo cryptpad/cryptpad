@@ -10,12 +10,13 @@ define([
 
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
+    '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad/chainpad.dist.js',
     '/bower_components/nthen/index.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
 ], function (Util, Hash, Constants, Realtime,
              ProxyManager, UserObject, SF,
-             Listmap, Crypto, ChainPad, nThen) {
+             Listmap, Crypto, CpNetflux, ChainPad, nThen) {
     var Team = {};
 
     var Nacl = window.nacl;
@@ -139,15 +140,15 @@ define([
         };
 
         team.getChatData = function () {
-            var hash = Util.find(proxy, ['metadata', 'chat']);
-            if (!hash) {
-                hash = proxy.metadata.chat = Hash.createRandomHash('chat');
-            }
+            var hash = Util.find(ctx.store.proxy, ['teams', id, 'keys' 'chat', 'hash']);
+            if (!hash) { return {}; }
             var secret = Hash.getSecrets('chat', hash);
             return {
+                teamId: id,
                 channel: secret.channel,
                 secret: secret,
                 validateKey: secret.keys.validateKey
+                // XXX owners: team owner + all admins?
             };
         };
 
@@ -286,6 +287,7 @@ define([
         var secret = Hash.getSecrets('team', hash, password);
         var keyPair = Nacl.sign.keyPair(); // keyPair.secretKey , keyPair.publicKey
 
+        // Crypto.create
         var membersSecret = Hash.getSecrets('members');
         var membersHashes = Hash.getHashes(membersSecret);
 
@@ -304,43 +306,70 @@ define([
             owners: [ctx.store.proxy.edPublic]
         };
         nThen(function (waitFor) {
-            console.log('pin..');
-            ctx.pinPads([secret.channel, membersSecret.channel], waitFor(function (obj) {
+            // XXX add this to the reset list too
+            ctx.pinPads([secret.channel, membersSecret.channel, chatSecret.channel], waitFor(function (obj) {
                 if (obj && obj.error) {
                     waitFor.abort();
                     return void cb(obj);
                 }
             }));
             // XXX initialize the members channel with yourself, and mark it as owned!
+            var chatCfg = {
+                network: ctx.store.network,
+                channel: chatSecret.channel,
+                noChainPad: true,
+                crypto: crypto,
+                metadata: {
+                    validateKey: secret.keys.validateKey,
+                    owners: [ctx.store.proxy.edPublic],
+                }
+            };
+            var chatReady = waitFor();
+            var cpNf2;
+            chatCfg.onReady = function () {
+                if (cpNf2) { cpNf2.stop(); }
+                chatReady();
+            };
+            chatCfg.onError = function () { chatReady(); };
+            cpNf2 = CpNetflux.start(chatCfg);
         }).nThen(function () {
-            console.log('init proxy');
             var lm = Listmap.create(config);
             var proxy = lm.proxy;
             proxy.on('ready', function () {
-                console.log('ready');
-                // Store keys in our drive
                 var id = Util.createRandomInteger();
+                // Store keys in our drive
                 var keys = {
-                    edPrivate: Nacl.util.encodeBase64(keyPair.secretKey),
-                    edPublic: Nacl.util.encodeBase64(keyPair.publicKey)
+                    drive: {
+                        edPrivate: Nacl.util.encodeBase64(keyPair.secretKey),
+                        edPublic: Nacl.util.encodeBase64(keyPair.publicKey)
+                    },
+                    chat: {
+                        hash: chatHashes.editHash,
+                        channel: chatSecret.channel
+                    },
+                    members: {
+                        // XXX
+                    }
                 };
                 ctx.store.proxy.teams[id] = {
                     hash: hash,
                     password: password,
                     keys: keys,
-                    members: membersHashes.editHash,
-                    name: data.name
+                    //members: membersHashes.editHash,
+                    metadata: {
+                        name: data.name
+                    }
                 };
                 // Initialize the team drive
                 proxy.drive = {};
                 // Create metadata
                 proxy.metadata = {
-                    chat: chatHashes.editHash,
-                    name: name,
-                    members: membersHashes.viewHash,
+                    //chat: chatHashes.editHash,
+                    //name: name,
+                    //members: membersHashes.viewHash,
                 };
                 // Add rpc key
-                proxy.edPublic = Nacl.util.encodeBase64(keyPair.publicKey);
+                //proxy.edPublic = Nacl.util.encodeBase64(keyPair.publicKey);
 
                 onReady(ctx, id, lm, {
                     edPrivate: keyPair.secretKey,
@@ -401,6 +430,12 @@ define([
             clients.push(cId);
         }
         cb();
+    };
+
+    var openTeamChat = function (ctx, data, cId, cb) {
+        var team = ctx.teams[data.teamId];
+        if (!team) { return void cb({error: 'ENOENT'}); }
+        ctx.store.messenger.openTeamChat(team.getChatData(), cId, cb);
     };
 
     // Remove a client from all the team they're subscribed to
@@ -475,7 +510,7 @@ define([
                 return void cb(store.proxy.teams);
             }
             if (cmd === 'OPEN_TEAM_CHAT') {
-                return void ctx.store.messenger.openTeamChat(data, clientId, cb);
+                return void openTeamChat(ctx, data, clientId, cb);
             }
             if (cmd === 'CREATE_TEAM') {
                 return void createTeam(ctx, data, clientId, cb);
