@@ -400,7 +400,7 @@ nThen(function  (w) {
         if (err) { return void console.log(err); }
         console.log("STATE =", JSON.stringify(oscar.roster.getState(), null, 2));
     }));
-}).nThen(function (w) {
+}).nThen(function () {
 
 
 

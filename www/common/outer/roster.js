@@ -493,7 +493,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         // commands
         roster.checkpoint = function (_cb) {
             var cb = Util.once(Util.mkAsync(_cb));
-            var state = ref.state;
+            //var state = ref.state;
             //if (!state) { return cb("UNINITIALIZED"); }
             send([ 'CHECKPOINT', ref.state], cb);
         };
@@ -626,11 +626,12 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             require("../../bower_components/chainpad-crypto/crypto")
         );
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+        require.config({ paths:  { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
         define([
             '/common/common-util.js',
             '/common/common-hash.js',
             '/bower_components/chainpad-netflux/chainpad-netflux.js',
-            '/bower_compoents/json.sortify/dist/JSON.sortify.js',
+            'json.sortify',
             '/bower_components/nthen/index.js',
             '/bower_components/chainpad-crypto/crypto.js'
             //'/bower_components/tweetnacl/nacl-fast.min.js',
