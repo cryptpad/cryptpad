@@ -122,7 +122,7 @@ define([
         });
     };
 
-    var onReady = function (ctx, id, lm, keys, cId, cb) {
+    var onReady = function (ctx, id, lm, roster, keys, cId, cb) {
         var proxy = lm.proxy;
         var team = {
             id: id,
@@ -292,7 +292,7 @@ define([
             };
             var rosterData = keys.roster || {};
             var rosterKeys = rosterData.edit ? Crypto.Team.deriveMemberKeys(rosterData.edit, myKeys)
-                                            : Crypto.Team.deriveGuestKeys(rosterData.view);
+                                            : Crypto.Team.deriveGuestKeys(rosterData.view || '');
             Roster.create({
                 network: ctx.store.network,
                 channel: rosterKeys.channel,
@@ -385,7 +385,7 @@ define([
                 noChainPad: true,
                 crypto: crypto,
                 metadata: {
-                    validateKey: secret.keys.validateKey,
+                    validateKey: chatSecret.keys.validateKey,
                     owners: [ctx.store.proxy.edPublic],
                 }
             };
@@ -469,6 +469,10 @@ define([
                 ctx.onReadyHandlers[teamId].splice(idx, 1);
             }
         });
+        // And leave the channel channel
+        try {
+            ctx.store.messenger.removeClient(cId);
+        } catch (e) {}
 
         if (!id) { return void cb(); }
         // If the team is loading, as ourselves in the list
@@ -549,8 +553,8 @@ define([
             var t = {};
             Object.keys(teams).forEach(function (id) {
                 t[id] = {
-                    name: teams[id].name,
-                    edPublic: Util.find(teams[id], ['keys', 'edPublic'])
+                    name: teams[id].metadata.name,
+                    edPublic: Util.find(teams[id], ['keys', 'drive', 'edPublic'])
                 };
             });
             return t;

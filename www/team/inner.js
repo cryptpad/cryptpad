@@ -191,13 +191,10 @@ define([
 
     // Team APP
 
-    var loadTeam = function (common, id, firstLoad) {
+    var loadTeam = function (common, id) {
         var sframeChan = common.getSframeChannel();
         var proxy = {};
         var folders = {};
-        if (firstLoad) {
-            buildUI(common, true);
-        }
         nThen(function (waitFor) {
             updateObject(sframeChan, proxy, waitFor(function () {
                 updateSharedFolders(sframeChan, null, proxy.drive, folders, waitFor());
@@ -256,7 +253,7 @@ define([
                 var team = obj[id];
                 var a = h('a', 'Open');
                 lis.push(h('li', h('ul', [
-                    h('li', 'Name: ' + team.name), // XXX
+                    h('li', 'Name: ' + team.metadata.name), // XXX
                     h('li', 'ID: ' + id), // XXX
                     h('li', a) // XXX
                 ])));
@@ -341,7 +338,6 @@ define([
         APP.module.execCommand('OPEN_TEAM_CHAT', {
             teamId: APP.team
         }, function (obj) {
-            console.warn(obj);
             if (obj && obj.error) {
                 return void UI.alert(Messages.error); // XXX
             }
@@ -431,11 +427,7 @@ define([
             });
 
             $('body').css('display', '');
-            if (privateData.teamId) {
-                loadTeam(common, privateData.teamId, true);
-            } else {
-                loadMain(common);
-            }
+            loadMain(common);
 
 
             var onDisconnect = function (noAlert) {

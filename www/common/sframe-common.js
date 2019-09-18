@@ -167,11 +167,10 @@ define([
     // Universal direct channel
     var modules = {};
     funcs.makeUniversal = function (type, cfg) {
-        if (modules[type]) { return; }
-        var sframeChan = funcs.getSframeChannel();
         modules[type] = {
             onEvent: cfg.onEvent || function () {}
         };
+        var sframeChan = funcs.getSframeChannel();
         return {
             execCommand: function (cmd, data, cb) {
                 sframeChan.query("Q_UNIVERSAL_COMMAND", {
