@@ -22,6 +22,10 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         }
     */
 
+    var isMap = function (obj) {
+        return Boolean(obj && typeof(obj) === 'object' && !Array.isArray(obj));
+    };
+
     var canCheckpoint = function (author, state) {
         // if you're here then you've received a checkpoint message
         // that you don't necessarily trust.
@@ -90,6 +94,11 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         return false;
     };
 
+    var canUpdateMetadata = function (author, state) {
+        var authorRole = Util.find(state, [author, 'role']);
+        return Boolean(authorRole && ['OWNER', 'ADMIN'].indexOf(authorRole) !== -1);
+    };
+
     var shouldCheckpoint = function (state) {
         // 
 
@@ -123,30 +132,29 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             throw new Error("CANNOT_ADD_TO_UNITIALIZED_ROSTER");
         }
 
-        // XXX reject if not all of these are present
-            // displayName
-            // notifications (channel)
-        // XXX if no role is passed, assume MEMBER
-
-        var changed = false;
+        // iterate over everything and make sure it is valid, throw if not
         Object.keys(args).forEach(function (curve) {
             // FIXME only allow valid curve keys, anything else is pollution
-            if (curve.length !== 44) {
+            if (!isValidId(curve)) {
                 console.log(curve, curve.length);
                 throw new Error("INVALID_CURVE_KEY");
             }
+            // reject commands where the members are not proper objects
+            if (!isMap(args[curve])) { throw new Error("INVALID_CONTENT"); }
+            if (roster.state[curve]) { throw new Error("ALREADY_PRESENT"); }
 
             var data = args[curve];
+            // if no role was provided, assume MEMBER
+            if (typeof(data.role) !== 'string') { data.role = 'MEMBER'; }
 
+            if (typeof(data.displayName) !== 'string') { throw new Error("DISPLAYNAME_REQUIRED"); }
+            if (typeof(data.notifications) !== 'string') { throw new Error("NOTIFICATIONS_REQUIRED"); }
+        });
 
-            // ignore anything that isn't a proper object
-            if (!data || typeof(data) !== 'object' || Array.isArray(data)) {
-                return;
-            }
-
-            // ignore instructions to ADD someone who is already in the roster
-            if (roster.state[curve]) { return; }
-
+        var changed = false;
+        // then iterate again and apply it
+        Object.keys(args).forEach(function (curve) {
+            var data = args[curve];
             if (!canAddRole(author, data.role, roster.state)) { return; }
 
             // this will result in a change
@@ -166,15 +174,12 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
 
         var changed = false;
         args.forEach(function (curve) {
-            if (isValidId(curve)) { throw new Error("INVALID_CURVE_KEY"); }
+            if (!isValidId(curve)) { throw new Error("INVALID_CURVE_KEY"); }
 
             // don't try to remove something that isn't there
             if (!roster.state[curve]) { return; }
-
             var role = roster.state[curve].role;
-
             if (!canRemoveRole(author, role, roster.state)) { return; }
-
             changed = true;
             delete roster.state[curve];
         });
@@ -187,42 +192,47 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         }
 
         if (typeof(roster.state) === 'undefined') {
-            throw new Error("CANNOT_DESCRIBE_MEMBERS_OF_UNITIALIZED_ROSTER");
+            throw new Error("NOT_READY");
         }
 
-        var changed = false;
+        // iterate over all the data and make sure it is valid, throw otherwise
         Object.keys(args).forEach(function (curve) {
-            if (!isValidId(curve)) { return; }
-            if (!roster.state[curve]) { return; }
+            if (!isValidId(curve)) {  throw new Error("INVALID_ID"); }
+            if (!roster.state[curve]) { throw new Error("NOT_PRESENT"); }
 
-            if (!canDescribeTarget(author, curve, roster.state)) { return; }
+            if (!canDescribeTarget(author, curve, roster.state)) { throw new Error("INSUFFICIENT_PERMISSIONS"); }
 
             var data = args[curve];
-            if (!data || typeof(data) !== 'object' || Array.isArray(data)) { return; }
+            if (!isMap(data)) { throw new Error("INVALID_ARGUMENTS"); }
 
-            var current = roster.state[curve];
+            var current = Util.clone(roster.state[curve]);
+
+            // DESCRIBE commands must initialize a displayName if it isn't already present
+            if (typeof(current.displayName) !== 'string' && typeof(data.displayName) !== 'string') { throw new Error('DISPLAYNAME_REQUIRED'); }
+
+            // DESCRIBE commands must initialize a mailbox channel if it isn't already present
+            if (typeof(current.notifications) !== 'string' && typeof(data.displayName) !== 'string') { throw new Error('NOTIFICATIONS_REQUIRED'); }
+        });
+
+        var changed = false;
+        // then do a second pass and apply it if there were changes
+        Object.keys(args).forEach(function (curve) {
+            var current = Util.clone(roster.state[curve]);
+
+            var data = args[curve];
+
             Object.keys(data).forEach(function (key) {
                 if (current[key] === data[key]) { return; }
-                changed = true;
                 current[key] = data[key];
             });
-        });
-        return changed;
 
-
-        /*
-            args: {
-                userkey: {
-                    field: newValue
-                },
+            if (Sortify(current) !== Sortify(roster.state[curve])) {
+                changed = true;
+                roster.state[curve] = current;
             }
-        */
+        });
 
-        // owners can update information about any team member
-        // admins can update information about members
-        // members can update information about themselves
-        // non-members cannot update anything
-        //roster = roster;
+        return changed;
     };
 
     // XXX what about concurrent checkpoints? Let's solve for race conditions...
@@ -255,14 +265,29 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         return true;
     };
 
-    // describe the team {name, description}, (only admin/owner)
-    commands.TOPIC = function (/* args, author, roster */) {
-        
-    };
+    // only admin/owner can change group metadata
+    commands.METADATA = function (args, author, roster) {
+        if (!isMap(args)) { throw new Error("INVALID_ARGS"); }
 
-    // add a link to an avatar (only owner/admin can do this)
-    commands.AVATAR = function (/* args, author, roster */) {
+        if (!canUpdateMetadata(author, roster.state)) { throw new Error("INSUFFICIENT_PERMISSIONS"); }
 
+        // validate inputs
+        Object.keys(args).forEach(function (k) {
+            // can't set metadata to anything other than strings
+            // use empty string to unset a value if you must
+            if (typeof(args[k]) !== 'string') { throw new Error("INVALID_ARGUMENTS"); }
+        });
+
+        var changed = false;
+        // {topic, name, avatar} are all strings...
+        Object.keys(args).forEach(function (k) {
+            // ignore things that won't cause changes
+            if (args[k] === roster.metadata[k]) { return; }
+
+            changed = true;
+            roster.metadata[k] = args[k];
+        });
+        return changed;
     };
 
     var handleCommand = function (content, author, roster) {
@@ -276,12 +301,8 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         return commands[command](content[1], author, roster);
     };
 
-    var clone = function (o) {
-        return JSON.parse(JSON.stringify(o));
-    };
-
     var simulate = function (content, author, roster) {
-        return handleCommand(content, author, clone(roster));
+        return handleCommand(content, author, Util.clone(roster));
     };
 
     var getMessageId = function (msgString) {
@@ -298,8 +319,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         if (!config.anon_rpc) { return void cb("EXPECTED_ANON_RPC"); }
 
 
-
-
+        var response = Util.response();
 
         var anon_rpc = config.anon_rpc;
 
@@ -308,7 +328,16 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         var me = keys.myCurvePublic;
         var channel = config.channel;
 
-        var ref = {};
+        var ref = {
+            // topic, name, and avatar are all guaranteed to be strings, though they might be empty
+            metadata: {
+                topic: '',
+                name: '',
+                avatar: '',
+            },
+            internal: {},
+        };
+
         var roster = {};
 
         var events = {
@@ -319,25 +348,46 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         roster.on = function (key, handler) {
             if (typeof(events[key]) !== 'object') { throw new Error("unsupported event"); }
             events[key].reg(handler);
+            return roster;
         };
 
         roster.off = function (key, handler) {
             if (typeof(events[key]) !== 'object') { throw new Error("unsupported event"); }
             events[key].unreg(handler);
+            return roster;
+        };
+
+        roster.once = function (key, handler) {
+            if (typeof(events[key]) !== 'object') { throw new Error("unsupported event"); }
+            var f = function () {
+                handler.apply(null, Array.prototype.slice.call(arguments));
+                events[key].unreg(f);
+            };
+            events[key].reg(f);
+            return roster;
         };
 
         roster.getState = function () {
-            return ref.state;
+            if (!isMap(ref.state)) { return; }
+
+            // XXX return parent element instead of .state ?
+            return Util.clone(ref.state);
         };
 
-        // XXX you must be able to 'leave' a roster session
+        var webChannel;
+
         roster.stop = function () {
-            // shut down the chainpad-netflux session and...
-            // cpNf.leave();
+            if (webChannel && typeof(webChannel.leave) === 'function') {
+                webChannel.leave();
+            } else {
+                console.log("FAILED TO LEAVE");
+            }
         };
 
         var ready = false;
-        var onReady = function (/* info */) {
+        var onReady = function (info) {
+            //console.log("READY");
+            webChannel = info;
             ready = true;
             cb(void 0, roster);
         };
@@ -359,50 +409,60 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             console.log("ROSTER CONNECTED");
         };
 
-        // XXX reuse code from RPC ?
-        var pending = {};
-        //var timeouts = {};
+        var isReady = function () {
+             return Boolean(ready && me);
+        };
 
         var onMessage = function (msg, user, vKey, isCp , hash, author) {
-            //console.log("onMessage");
-            //console.log(typeof(msg), msg);
             var parsed = Util.tryParse(msg);
 
             if (!parsed) { return void console.error("could not parse"); }
 
             var changed;
+            var error;
             try {
                 changed = handleCommand(parsed, author, ref);
             } catch (err) {
-                console.error(err);
+                error = err;
             }
 
             var id = getMessageId(hash);
-            if (typeof(pending[id]) === 'function') {
-                // it was your message, execute a callback
-                if (!changed) {
-                    pending[id]("NO_CHANGE");
-                } else {
-                    pending[id](void 0, clone(roster.state));
+
+            if (response.expected(id)) {
+                if (error) { return void response.handle(id, [error]); }
+                try {
+                    if (!changed) {
+                        response.handle(id, ['NO_CHANGE']);
+                    } else {
+                        response.handle(id, [void 0, roster.getState()]);
+                    }
+                } catch (err) {
+                    console.log('CAUGHT', err);
                 }
-            } else {
-                // it was not your message, or it timed out...
-                // execute change ?
-                console.log("HASH", hash);
             }
-            if (changed) { events.change.fire(); }
+            /*
+            else {
+                if (isReady()) {
+                    console.log("unexpected message [%s]", hash, msg);
+                    console.log("received by %s", me);
+                }
+                // it was not your message, or it timed out...
+            }*/
 
-            return void console.log(msg);
+            // if a checkpoint was successfully applied, emit an event
+            if (parsed[0] === 'CHECKPOINT' && changed) {
+                events.checkpoint.fire(hash);
+            } else if (changed) {
+                events.change.fire();
+            }
         };
 
-        var isReady = function () {
-             return Boolean(ready && me);
-        };
 
         var metadata, crypto;
-        var send = function (msg, _cb) {
-            var cb = Util.once(Util.mkAsync(_cb));
-            if (!isReady()) { return void cb("NOT_READY"); }
+        var send = function (msg, cb) {
+            if (!isReady()) {
+                return void cb("NOT_READY");
+            }
 
             var changed = false;
             try {
@@ -411,23 +471,30 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             } catch (err) {
                 return void cb(err);
             }
-            if (!changed) { return void cb("NO_CHANGE"); }
+            if (!changed) {
+                return void cb("NO_CHANGE");
+            }
 
             var ciphertext = crypto.encrypt(Sortify(msg));
 
             var id = getMessageId(ciphertext);
 
+            //console.log("Sending with id [%s]", id, msg);
+            //console.log();
+
+            response.expect(id, cb, 3000);
             anon_rpc.send('WRITE_PRIVATE_MESSAGE', [
                 channel,
                 ciphertext
             ], function (err) {
-                if (err) { return void cb(err); }
-                pending[id] = cb;
+                if (err) { return response.handle(id, [err]); }
             });
         };
 
-        roster.init = function (_data, cb) {
-            var data = clone(_data);
+        roster.init = function (_data, _cb) {
+            var cb = Util.once(Util.mkAsync(_cb));
+            if (ref.state) { return void cb("ALREADY_INITIALIZED"); }
+            var data = Util.clone(_data);
             data.role = 'OWNER';
             var state = {};
             state[me] = data;
@@ -435,20 +502,73 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         };
 
         // commands
-        roster.checkpoint = function () {
+        roster.checkpoint = function (_cb) {
+            var cb = Util.once(Util.mkAsync(_cb));
+            var state = ref.state;
+            if (!state) { return cb("UNINITIALIZED"); }
             send([ 'CHECKPOINT', ref.state], cb);
         };
 
-        roster.add = function (data, cb) {
+        roster.add = function (data, _cb) {
+            var cb = Util.once(Util.mkAsync(_cb));
+            var state = ref.state;
+            if (!state) { return cb("UNINITIALIZED"); }
+            if (!isMap(data)) { return void cb("INVALID_ARGUMENTS"); }
+
+            // don't add members that are already present
+            // use DESCRIBE to amend
+            Object.keys(data).forEach(function (curve) {
+                if (!isValidId(curve) || isMap(state[curve])) { return delete data[curve]; }
+            });
+
             send([ 'ADD', data ], cb);
         };
 
-        roster.remove = function (data, cb) {
-            send([ 'REMOVE', data ], cb);
+        roster.remove = function (data, _cb) {
+            var cb = Util.once(Util.mkAsync(_cb));
+            var state = ref.state;
+            if (!state) { return cb("UNINITIALIZED"); }
+
+            if (!Array.isArray(data)) { return void cb("INVALID_ARGUMENTS"); }
+
+            var toRemove = [];
+            var current = Object.keys(state);
+            data.forEach(function (curve) {
+                // don't try to remove elements which are not in the current state
+                if (current.indexOf(curve) === -1) { return; }
+                toRemove.push(curve);
+            });
+
+            send([ 'RM', toRemove ], cb);
         };
 
-        roster.describe = function (data, cb) {
+        roster.describe = function (data, _cb) {
+            var cb = Util.once(Util.mkAsync(_cb));
+            var state = ref.state;
+            if (!state) { return cb("UNINITIALIZED"); }
+            if (!isMap(data)) { return void cb("INVALID_ARGUMENTS"); }
+
+            Object.keys(data).forEach(function (curve) {
+                var member = data[curve];
+                if (!isMap(member)) { delete data[curve]; }
+                // don't send fields that won't result in a change
+                Object.keys(member).forEach(function (k) {
+                    if (member[k] === state[curve][k]) { delete member[k]; }
+                });
+            });
+
             send(['DESCRIBE', data], cb);
+        };
+
+        roster.metadata = function (data, _cb) {
+            var cb = Util.once(Util.mkAsync(_cb));
+            var metadata = ref.metadata;
+            if (!isMap(data)) { return void cb("INVALID_ARGUMENTS"); }
+
+            Object.keys(data).forEach(function (k) {
+                if (data[k] === metadata[k]) { delete data[k]; }
+            });
+            send(['METADATA', data], cb);
         };
 
         nThen(function (w) {
@@ -458,7 +578,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
                     w.abort();
                     return void console.error(err);
                 }
-                metadata = ref.metadata = (data && data[0]) || undefined;
+                metadata = ref.internal.metadata = (data && data[0]) || undefined;
                 console.log("TEAM_METADATA", metadata);
             });
         }).nThen(function (w) {

@@ -17,6 +17,8 @@ var factory = function (Util, Rpc) {
 
             var exp = {};
 
+            exp.destroy = rpc.destroy;
+
             // expose the supplied publicKey as an identifier
             exp.publicKey = edPublic;
 

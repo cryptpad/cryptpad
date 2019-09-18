@@ -21,6 +21,10 @@
         };
     };
 
+    Util.clone = function (o) {
+        return JSON.parse(JSON.stringify(o));
+    };
+
     Util.tryParse = function (s) {
         try { return JSON.parse(s); } catch (e) { return;}
     };
@@ -54,6 +58,44 @@
                 var args = Array.prototype.slice.call(arguments);
                 handlers.forEach(function (h) { h.apply(null, args); });
             }
+        };
+    };
+
+    Util.response = function () {
+        var pending = {};
+        var timeouts = {};
+
+        var clear = function (id) {
+            clearTimeout(timeouts[id]);
+            delete timeouts[id];
+            delete pending[id];
+        };
+
+        var expect = function (id, fn, ms) {
+            if (typeof(id) !== 'string') { throw new Error("EXPECTED_STRING"); }
+            if (typeof(fn) !== 'function') { throw new Error("EXPECTED_CALLBACK"); }
+            pending[id] = fn;
+            if (typeof(ms) === 'number' && ms) {
+                timeouts[id] = setTimeout(function () {
+                    if (typeof(pending[id]) === 'function') { pending[id]('TIMEOUT'); }
+                    clear(id);
+                }, ms);
+            }
+        };
+
+        var handle = function (id, args) {
+            var fn = pending[id];
+            if (typeof(fn) !== 'function') { throw new Error("MISSING_CALLBACK"); }
+            pending[id].apply(null, Array.isArray(args)? args : [args]);
+            clear(id);
+        };
+
+        return {
+            expected: function (id) {
+                return Boolean(pending[id]);
+            },
+            expect: expect,
+            handle: handle,
         };
     };
 
@@ -98,21 +140,21 @@
         return hexArray.join("");
     };
 
-    Util.uint8ArrayToHex = function (a) {
-        // call slice so Uint8Arrays work as expected
-        return Array.prototype.slice.call(a).map(function (e) {
-            var n = Number(e & 0xff).toString(16);
-            if (n === 'NaN') {
-                throw new Error('invalid input resulted in NaN');
-            }
+    Util.uint8ArrayToHex = function (bytes) {
+        var hexString = '';
+        for (var i = 0; i < bytes.length; i++) {
+            if (bytes[i] < 16) { hexString += '0'; }
+            hexString += bytes[i].toString(16);
+        }
+        return hexString;
+    };
 
-            switch (n.length) {
-                case 0: return '00'; // just being careful, shouldn't happen
-                case 1: return '0' + n;
-                case 2: return n;
-                default: throw new Error('unexpected value');
-            }
-        }).join('');
+    Util.hexToUint8Array = function (hexString) {
+        var bytes = new Uint8Array(Math.ceil(hexString.length / 2));
+        for (var i = 0; i < bytes.length; i++) {
+            bytes[i] = parseInt(hexString.substr(i * 2, 2), 16);
+        }
+        return bytes;
     };
 
     // given an array of Uint8Arrays, return a new Array with all their values
