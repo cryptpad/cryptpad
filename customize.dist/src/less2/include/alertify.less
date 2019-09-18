@@ -433,6 +433,11 @@
         }
     }
     div.wide {
+        div.alertify-tabs {
+            p.msg:not(:last-child) {
+                border-bottom: 1px solid @alertify-fore;
+            }
+        }
         .cp-share-columns {
             display: flex;
             flex-flow: row;
@@ -448,6 +453,9 @@
                     position: absolute;
                     bottom: 0;
                     right: 0;
+                }
+                &:first-child {
+                    border-right: 1px solid @alertify-fore;
                 }
             }
         }

@@ -1105,6 +1105,9 @@ define([
                 // is not compatible
                 var containsFolder = false;
                 var hide = [];
+                if (!APP.team) {
+                    hide.push('savelocal');
+                }
                 paths.forEach(function (p) {
                     var path = p.path;
                     var $element = p.element;
