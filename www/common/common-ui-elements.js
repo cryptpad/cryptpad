@@ -1069,30 +1069,37 @@ define([
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
         var friendsList = hasFriends ? createShareWithFriends(config) : undefined;
         var friendsUIClass = hasFriends ? '.cp-share-columns' : '';
-        var link = h('div.cp-share-modal' + friendsUIClass, [
+        var mainShareColumn = h('div.cp-share-column.contains-nav', [
             h('div.cp-share-column', [
                 hasFriends ? h('p', Messages.share_description) : undefined,
                 UI.dialog.selectable('', { id: 'cp-share-link-preview' }),
             ]),
-            friendsList
         ]);
+        var link = h('div.cp-share-modal' + friendsUIClass);
         var getLinkValue = function () { return url; };
-        $(link).find('#cp-share-link-preview').val(getLinkValue());
+        $(mainShareColumn).find('#cp-share-link-preview').val(getLinkValue());
         var linkButtons = [{
             className: 'cancel',
             name: Messages.cancel,
             onClick: function () {},
             keys: [27]
-        }, {
+        }];
+        var shareButtons = [{
             className: 'primary',
             name: Messages.share_linkCopy,
             onClick: function () {
+                saveValue();
                 var v = getLinkValue();
                 var success = Clipboard.copy(v);
                 if (success) { UI.log(Messages.shareSuccess); }
             },
             keys: [13]
         }];
+
+        var $link = $(link);
+        $(mainShareColumn).append(UI.dialog.getButtons(shareButtons, config.onClose)).appendTo($link);
+        $(friendsList).appendTo($link);
+
         var frameLink = UI.dialog.customModal(link, {
             buttons: linkButtons,
             onClose: config.onClose,
@@ -1157,21 +1164,22 @@ define([
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
         var friendsList = hasFriends ? createShareWithFriends(config) : undefined;
         var friendsUIClass = hasFriends ? '.cp-share-columns' : '';
-        var link = h('div.cp-share-modal' + friendsUIClass, [
+        var mainShareColumn = h('div.cp-share-column.contains-nav', [
             h('div.cp-share-column', [
                 h('label', Messages.sharedFolders_share),
                 h('br'),
                 hasFriends ? h('p', Messages.share_description) : undefined,
                 UI.dialog.selectable(url, { id: 'cp-share-link-preview', tabindex: 1 })
-            ]),
-            friendsList
+            ])
         ]);
+        var link = h('div.cp-share-modal' + friendsUIClass);
         var linkButtons = [{
             className: 'cancel',
             name: Messages.cancel,
             onClick: function () {},
             keys: [27]
-        }, {
+        }];
+        var shareButtons = [{
             className: 'primary',
             name: Messages.share_linkCopy,
             onClick: function () {
@@ -1180,6 +1188,9 @@ define([
             },
             keys: [13]
         }];
+        var $link = $(link);
+        $(mainShareColumn).append(UI.dialog.getButtons(shareButtons, config.onClose)).appendTo($link);
+        $(friendsList).appendTo($link);
         return UI.dialog.customModal(link, {buttons: linkButtons});
     };
 

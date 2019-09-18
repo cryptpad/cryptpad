@@ -692,6 +692,14 @@ define([
         var parsed = Hash.parsePadUrl(data.href);
         var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
         if (!secret || !secret.channel) { return void cb ({error: 'EINVAL'}); }
+
+        if (parsed.type === 'drive') {
+            // Shared folder
+            var teamId = data.teamId === -1 ? undefined : data.teamId;
+            common.addSharedFolder(teamId, secret, cb);
+            return;
+        }
+
         Nthen(function (waitFor) {
             if (parsed.hashData.type !== 'pad') { return; }
             // Set the correct owner and expiration time if we can find them

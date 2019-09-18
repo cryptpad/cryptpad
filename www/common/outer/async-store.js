@@ -958,10 +958,13 @@ define([
                 expire = data.expire;
             }
 
+            var storeLocally = data.teamId === -1;
+            if (data.teamId === -1) { data.teamId = undefined; }
+
             // If a teamId is provided, it means we want to store the pad in a specific
             // team drive. In this case, we just need to check if the pad is already
-            // stored in th eteam drive.
-            // If no team ID is provided, this may be a pad shared iwth its URL.
+            // stored in this team drive.
+            // If no team ID is provided, this may be a pad shared with its URL.
             // We need to check if the pad is stored in any managers (user or teams).
             // If it is stored, update its data, otherwise ask the user if they want to store it
             var allData = [];
@@ -969,6 +972,7 @@ define([
             var inMyDrive;
             getAllStores().forEach(function (s) {
                 if (data.teamId && s.id !== data.teamId) { return; }
+                if (storeLocally && s.id) { return; }
 
                 var res = s.manager.findChannel(channel);
                 if (res.length) {

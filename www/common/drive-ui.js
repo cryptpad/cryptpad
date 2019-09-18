@@ -335,6 +335,10 @@ define([
                     'tabindex': '-1',
                     'data-icon': 'fa-shhare-alt',
                 }, Messages.shareButton)),
+                h('li', h('a.cp-app-drive-context-savelocal.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': 'fa-cloud-upload',
+                }, Messages.pad_mediatagImport)), // Save in your CryptDrive
                 h('li', h('a.cp-app-drive-context-download.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faDownload,
@@ -1113,6 +1117,7 @@ define([
                         hide.push('delete');
                         hide.push('rename');
                         hide.push('share');
+                        hide.push('savelocal');
                         hide.push('color');
                     }
                     if (!$element.is('.cp-app-drive-element-owned')) {
@@ -1165,6 +1170,7 @@ define([
                         }
                         containsFolder = true;
                         hide.push('share'); // XXX CONVERT
+                        hide.push('savelocal'); // XXX CONVERT
                         hide.push('openro');
                         hide.push('openincode');
                         hide.push('properties');
@@ -1200,6 +1206,7 @@ define([
                     hide.push('hashtag');
                     hide.push('download');
                     hide.push('share');
+                    hide.push('savelocal');
                     hide.push('openincode'); // can't because of race condition
                 }
                 if (containsFolder && paths.length > 1) {
@@ -1217,7 +1224,9 @@ define([
                     show = ['newfolder', 'newsharedfolder', 'uploadfiles', 'uploadfolder', 'newdoc'];
                     break;
                 case 'tree':
-                    show = ['open', 'openro', 'openincode', 'expandall', 'collapseall', 'color', 'download', 'share', 'rename', 'delete', 'deleteowned', 'removesf', 'properties', 'hashtag'];
+                    show = ['open', 'openro', 'openincode', 'expandall', 'collapseall',
+                            'color', 'download', 'share', 'savelocal', 'rename', 'delete',
+                            'deleteowned', 'removesf', 'properties', 'hashtag'];
                     break;
                 case 'default':
                     show = ['open', 'openro', 'share', 'openparent', 'delete', 'deleteowned', 'properties', 'hashtag'];
@@ -4013,6 +4022,25 @@ define([
                         wide: _wide
                     });
                 }
+            }
+            else if ($this.hasClass('cp-app-drive-context-savelocal')) {
+                if (paths.length !== 1) { return; }
+                el = manager.find(paths[0].path);
+                if (manager.isFile(el)) {
+                    data = manager.getFileData(el);
+                } else if (manager.isSharedFolder(el)) {
+                    data = manager.getSharedFolderData(el);
+                }
+                if (!data) { return; }
+                sframeChan.query('Q_STORE_IN_TEAM', {
+                    href: data.href || data.rohref,
+                    password: data.password,
+                    path: paths[0].path[0] === 'template' ? ['template'] : undefined,
+                    title: data.title || '',
+                    teamId: -1
+                }, function (err) {
+                    if (err) { return void console.error(err); }
+                });
             }
             else if ($this.hasClass('cp-app-drive-context-newfolder')) {
                 if (paths.length !== 1) { return; }

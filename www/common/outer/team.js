@@ -447,16 +447,8 @@ define([
         });
     };
 
-    var subscribe = function (ctx, id, cId, cb) {
-        // Unsubscribe from other teams: one tab can only receive events about one team
-        Object.keys(ctx.teams).forEach(function (teamId) {
-            var c = ctx.teams[teamId].clients;
-            var idx = c.indexOf(cId);
-            if (idx !== -1) {
-                c.splice(idx, 1);
-            }
-        });
-        // Also remove from pending subscriptions
+    // Remove a client from all the team they're subscribed to
+    var removeClient = function (ctx, cId) {
         Object.keys(ctx.onReadyHandlers).forEach(function (teamId) {
             var idx = -1;
             ctx.onReadyHandlers[teamId].some(function (obj, _idx) {
@@ -469,6 +461,17 @@ define([
                 ctx.onReadyHandlers[teamId].splice(idx, 1);
             }
         });
+
+        Object.keys(ctx.teams).forEach(function (id) {
+            var clients = ctx.teams[id].clients;
+            var idx = clients.indexOf(cId);
+            if (idx !== -1) { clients.splice(idx, 1); }
+        });
+    };
+
+    var subscribe = function (ctx, id, cId, cb) {
+        // Unsubscribe from other teams: one tab can only receive events about one team
+        removeClient(ctx, cId);
         // And leave the channel channel
         try {
             ctx.store.messenger.removeClient(cId);
@@ -502,22 +505,6 @@ define([
         var team = ctx.teams[data.teamId];
         if (!team) { return void cb({error: 'ENOENT'}); }
         ctx.store.messenger.openTeamChat(team.getChatData(), cId, cb);
-    };
-
-    // Remove a client from all the team they're subscribed to
-    var removeClient = function (ctx, cId) {
-        Object.keys(ctx.teams).forEach(function (id) {
-            // Remove from the subscribers
-            var clients = ctx.teams[id].clients;
-            var idx = clients.indexOf(cId);
-            if (idx !== -1) { clients.splice(idx, 1); }
-
-            // And remove from the onReady handlers in case they haven't finished loading
-            if (ctx.onReadyHandlers[id]) {
-                var idx2 = ctx.onReadyHandlers.indexOf(cId);
-                if (idx2 !== -1) { ctx.onReadyHandlers.splice(idx2, 1); }
-            }
-        });
     };
 
     Team.init = function (cfg, waitFor, emit) {
