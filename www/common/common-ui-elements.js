@@ -1090,7 +1090,6 @@ define([
             className: 'primary',
             name: Messages.share_linkCopy,
             onClick: function () {
-                saveValue();
                 var v = getLinkValue();
                 var success = Clipboard.copy(v);
                 if (success) { UI.log(Messages.shareSuccess); }

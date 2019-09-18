@@ -468,7 +468,7 @@ define([
             if (err) { return void cb({error: err}); }
             var localTeam = ctx.store.proxy.teams[teamId];
             if (localTeam) {
-                localTeam.metadata = data.metadata
+                localTeam.metadata = data.metadata;
             }
             cb();
         });
