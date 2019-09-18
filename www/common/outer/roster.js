@@ -5,19 +5,25 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
     /*
         roster: {
             state: {
-                user0CurveKey: {
-                    role: "OWNER|ADMIN|MEMBER",
-                    profile: "",
-                    mailbox: "",
-                    name: "",
-                    title: ""
+                members: {
+                    user0CurveKey: {
+                        notifications: "", // required
+                        displayName: "", // required
+                        role: "OWNER|ADMIN|MEMBER", // MEMBER if not specified
+                        profile: "",
+                        title: ""
+                    },
+                    user1CurveKey: {
+                        ...
+                    }
                 },
-                user1CurveKey: {
-                    ...
+                metadata: {
+                    // guaranteed to be strings, but may be empty
+                    topic: '',
+                    name: '',
+                    avatar: '',
+                    // anything else you use may not be defined
                 }
-            },
-            metadata: {
-
             }
         }
     */
@@ -26,12 +32,16 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         return Boolean(obj && typeof(obj) === 'object' && !Array.isArray(obj));
     };
 
-    var canCheckpoint = function (author, state) {
+    var getMessageId = function (msgString) {
+        return msgString.slice(0, 64);
+    };
+
+    var canCheckpoint = function (author, members) {
         // if you're here then you've received a checkpoint message
         // that you don't necessarily trust.
 
         // find the author's role from your knoweldge of the state
-        var role = Util.find(state, ['author', 'role']);
+        var role = Util.find(members, [author, 'role']);
         // and check if it is 'OWNER' or 'ADMIN'
         return ['OWNER', 'ADMIN'].indexOf(role) !== -1;
     };
@@ -40,8 +50,8 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         return ['OWNER', 'ADMIN', 'MEMBER'].indexOf(role) !== -1;
     };
 
-    var canAddRole = function (author, role, state) {
-        var authorRole = Util.find(state, [author, 'role']);
+    var canAddRole = function (author, role, members) {
+        var authorRole = Util.find(members, [author, 'role']);
         if (!authorRole) { return false; }
 
         // nobody can add an invalid role
@@ -82,8 +92,8 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         return false;
     };
 
-    var canRemoveRole = function (author, role, state) {
-        var authorRole = Util.find(state, [author, 'role']);
+    var canRemoveRole = function (author, role, members) {
+        var authorRole = Util.find(members, [author, 'role']);
         if (!authorRole) { return false; }
 
         // owners can remove anyone they want
@@ -94,17 +104,14 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         return false;
     };
 
-    var canUpdateMetadata = function (author, state) {
-        var authorRole = Util.find(state, [author, 'role']);
+    var canUpdateMetadata = function (author, members) {
+        var authorRole = Util.find(members, [author, 'role']);
         return Boolean(authorRole && ['OWNER', 'ADMIN'].indexOf(authorRole) !== -1);
     };
 
-    var shouldCheckpoint = function (state) {
-        // 
-
-        state = state;
+    var shouldCheckpoint = function (ref) {
+        ref = ref;
     };
-
     shouldCheckpoint = shouldCheckpoint; // XXX lint
 
     var commands = Roster.commands = {};
@@ -124,13 +131,12 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
     // the author is trying to add someone to the roster
     // owners can add any role
     commands.ADD = function (args, author, roster) {
-        if (!(args && typeof(args) === 'object' && !Array.isArray(args))) {
-            throw new Error("INVALID ARGS");
-        }
-
-        if (typeof(roster.state) === 'undefined') {
+        if (!isMap(args)) { throw new Error("INVALID ARGS"); }
+        if (!roster.internal.initialized) { throw new Error("UNITIALIZED"); }
+        if (typeof(roster.state.members) === 'undefined') {
             throw new Error("CANNOT_ADD_TO_UNITIALIZED_ROSTER");
         }
+        var members = roster.state.members;
 
         // iterate over everything and make sure it is valid, throw if not
         Object.keys(args).forEach(function (curve) {
@@ -141,7 +147,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             }
             // reject commands where the members are not proper objects
             if (!isMap(args[curve])) { throw new Error("INVALID_CONTENT"); }
-            if (roster.state[curve]) { throw new Error("ALREADY_PRESENT"); }
+            if (members[curve]) { throw new Error("ALREADY_PRESENT"); }
 
             var data = args[curve];
             // if no role was provided, assume MEMBER
@@ -155,11 +161,11 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         // then iterate again and apply it
         Object.keys(args).forEach(function (curve) {
             var data = args[curve];
-            if (!canAddRole(author, data.role, roster.state)) { return; }
+            if (!canAddRole(author, data.role, members)) { return; }
 
             // this will result in a change
             changed = true;
-            roster.state[curve] = data;
+            members[curve] = data;
         });
 
         return changed;
@@ -168,20 +174,21 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
     commands.RM = function (args, author, roster) {
         if (!Array.isArray(args)) { throw new Error("INVALID_ARGS"); }
 
-        if (typeof(roster.state) === 'undefined') {
+        if (typeof(roster.state.members) === 'undefined') {
             throw new Error("CANNOT_RM_FROM_UNITIALIZED_ROSTER");
         }
+        var members = roster.state.members;
 
         var changed = false;
         args.forEach(function (curve) {
             if (!isValidId(curve)) { throw new Error("INVALID_CURVE_KEY"); }
 
             // don't try to remove something that isn't there
-            if (!roster.state[curve]) { return; }
-            var role = roster.state[curve].role;
-            if (!canRemoveRole(author, role, roster.state)) { return; }
+            if (!members[curve]) { return; }
+            var role = members[curve].role;
+            if (!canRemoveRole(author, role, members)) { throw new Error("INSUFFICIENT_PERMISSIONS"); }
             changed = true;
-            delete roster.state[curve];
+            delete members[curve];
         });
         return changed;
     };
@@ -191,21 +198,22 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             throw new Error("INVALID_ARGUMENTS");
         }
 
-        if (typeof(roster.state) === 'undefined') {
+        if (typeof(roster.state.members) === 'undefined') {
             throw new Error("NOT_READY");
         }
+        var members = roster.state.members;
 
         // iterate over all the data and make sure it is valid, throw otherwise
         Object.keys(args).forEach(function (curve) {
             if (!isValidId(curve)) {  throw new Error("INVALID_ID"); }
-            if (!roster.state[curve]) { throw new Error("NOT_PRESENT"); }
+            if (!members[curve]) { throw new Error("NOT_PRESENT"); }
 
-            if (!canDescribeTarget(author, curve, roster.state)) { throw new Error("INSUFFICIENT_PERMISSIONS"); }
+            if (!canDescribeTarget(author, curve, members)) { throw new Error("INSUFFICIENT_PERMISSIONS"); }
 
             var data = args[curve];
             if (!isMap(data)) { throw new Error("INVALID_ARGUMENTS"); }
 
-            var current = Util.clone(roster.state[curve]);
+            var current = Util.clone(members[curve]);
 
             // DESCRIBE commands must initialize a displayName if it isn't already present
             if (typeof(current.displayName) !== 'string' && typeof(data.displayName) !== 'string') { throw new Error('DISPLAYNAME_REQUIRED'); }
@@ -217,7 +225,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         var changed = false;
         // then do a second pass and apply it if there were changes
         Object.keys(args).forEach(function (curve) {
-            var current = Util.clone(roster.state[curve]);
+            var current = Util.clone(members[curve]);
 
             var data = args[curve];
 
@@ -226,9 +234,9 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
                 current[key] = data[key];
             });
 
-            if (Sortify(current) !== Sortify(roster.state[curve])) {
+            if (Sortify(current) !== Sortify(members[curve])) {
                 changed = true;
-                roster.state[curve] = current;
+                members[curve] = current;
             }
         });
 
@@ -240,14 +248,21 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         // args: complete state
 
         // args should be a map
-        if (!(args && typeof(args) === 'object' && !Array.isArray(args))) { throw new Error("INVALID_CHECKPOINT_STATE"); }
+        if (!isMap(args)) { throw new Error("INVALID_CHECKPOINT_STATE"); }
 
-        if (typeof(roster.state) === 'undefined') {
+        if (!roster.internal.initialized) {
+            //console.log("INITIALIZING");
             // either you're connecting from the beginning of the log
             // or from a trusted lastKnownHash.
             // Either way, initialize the roster state
 
             roster.state = args;
+            var metadata = roster.state.metadata = roster.state.metadata || {};
+            metadata.topic = metadata.topic || '';
+            metadata.name = metadata.name || '';
+            metadata.avatar = metadata.avatar || '';
+
+            roster.internal.initialized = true;
             return true;
         } else if (Sortify(args) !== Sortify(roster.state)) {
             // a checkpoint must reinsert the previous state
@@ -258,7 +273,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         // so you should know everyone's role
 
         // owners and admins can checkpoint. members and non-members cannot
-        if (!canCheckpoint(author, roster)) { return false; }
+        if (!canCheckpoint(author, roster.state.members)) { throw new Error("INSUFFICIENT_PERMISSIONS"); }
 
         // set the state, and indicate that a change was made
         roster.state = args;
@@ -269,7 +284,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
     commands.METADATA = function (args, author, roster) {
         if (!isMap(args)) { throw new Error("INVALID_ARGS"); }
 
-        if (!canUpdateMetadata(author, roster.state)) { throw new Error("INSUFFICIENT_PERMISSIONS"); }
+        if (!canUpdateMetadata(author, roster.state.members)) { throw new Error("INSUFFICIENT_PERMISSIONS"); }
 
         // validate inputs
         Object.keys(args).forEach(function (k) {
@@ -282,10 +297,10 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         // {topic, name, avatar} are all strings...
         Object.keys(args).forEach(function (k) {
             // ignore things that won't cause changes
-            if (args[k] === roster.metadata[k]) { return; }
+            if (args[k] === roster.state.metadata[k]) { return; }
 
             changed = true;
-            roster.metadata[k] = args[k];
+            roster.state.metadata[k] = args[k];
         });
         return changed;
     };
@@ -305,10 +320,6 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         return handleCommand(content, author, Util.clone(roster));
     };
 
-    var getMessageId = function (msgString) {
-        return msgString.slice(0, 64);
-    };
-
     Roster.create = function (config, _cb) {
         if (typeof(_cb) !== 'function') { throw new Error("EXPECTED_CALLBACK"); }
         var cb = Util.once(Util.mkAsync(_cb));
@@ -320,26 +331,20 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
 
 
         var response = Util.response();
-
         var anon_rpc = config.anon_rpc;
-
         var keys = config.keys;
-
         var me = keys.myCurvePublic;
         var channel = config.channel;
-
         var ref = {
-            // topic, name, and avatar are all guaranteed to be strings, though they might be empty
-            metadata: {
-                topic: '',
-                name: '',
-                avatar: '',
+            state: {
+                members: { },
+                metadata: { },
             },
-            internal: {},
+            internal: {
+                initialized: false,
+            },
         };
-
         var roster = {};
-
         var events = {
             change: Util.mkEvent(),
             checkpoint: Util.mkEvent(),
@@ -368,14 +373,11 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         };
 
         roster.getState = function () {
-            if (!isMap(ref.state)) { return; }
-
-            // XXX return parent element instead of .state ?
+            //if (!isMap(ref.state)) { return; }
             return Util.clone(ref.state);
         };
 
         var webChannel;
-
         roster.stop = function () {
             if (webChannel && typeof(webChannel.leave) === 'function') {
                 webChannel.leave();
@@ -383,7 +385,6 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
                 console.log("FAILED TO LEAVE");
             }
         };
-
         var ready = false;
         var onReady = function (info) {
             //console.log("READY");
@@ -433,6 +434,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
                 try {
                     if (!changed) {
                         response.handle(id, ['NO_CHANGE']);
+                        console.log(msg);
                     } else {
                         response.handle(id, [void 0, roster.getState()]);
                     }
@@ -440,14 +442,6 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
                     console.log('CAUGHT', err);
                 }
             }
-            /*
-            else {
-                if (isReady()) {
-                    console.log("unexpected message [%s]", hash, msg);
-                    console.log("received by %s", me);
-                }
-                // it was not your message, or it timed out...
-            }*/
 
             // if a checkpoint was successfully applied, emit an event
             if (parsed[0] === 'CHECKPOINT' && changed) {
@@ -457,12 +451,9 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             }
         };
 
-
         var metadata, crypto;
         var send = function (msg, cb) {
-            if (!isReady()) {
-                return void cb("NOT_READY");
-            }
+            if (!isReady()) { return void cb("NOT_READY"); }
 
             var changed = false;
             try {
@@ -471,9 +462,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             } catch (err) {
                 return void cb(err);
             }
-            if (!changed) {
-                return void cb("NO_CHANGE");
-            }
+            if (!changed) { return void cb("NO_CHANGE"); }
 
             var ciphertext = crypto.encrypt(Sortify(msg));
 
@@ -493,32 +482,32 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
 
         roster.init = function (_data, _cb) {
             var cb = Util.once(Util.mkAsync(_cb));
-            if (ref.state) { return void cb("ALREADY_INITIALIZED"); }
+            if (ref.internal.initialized) { return void cb("ALREADY_INITIALIZED"); }
             var data = Util.clone(_data);
             data.role = 'OWNER';
-            var state = {};
-            state[me] = data;
-            send([ 'CHECKPOINT', state ], cb);
+            var members = {};
+            members[me] = data;
+            send([ 'CHECKPOINT', { members: members } ], cb);
         };
 
         // commands
         roster.checkpoint = function (_cb) {
             var cb = Util.once(Util.mkAsync(_cb));
             var state = ref.state;
-            if (!state) { return cb("UNINITIALIZED"); }
+            //if (!state) { return cb("UNINITIALIZED"); }
             send([ 'CHECKPOINT', ref.state], cb);
         };
 
         roster.add = function (data, _cb) {
             var cb = Util.once(Util.mkAsync(_cb));
-            var state = ref.state;
-            if (!state) { return cb("UNINITIALIZED"); }
+            //var state = ref.state;
+            if (!ref.internal.initialized) { return cb("UNINITIALIZED"); }
             if (!isMap(data)) { return void cb("INVALID_ARGUMENTS"); }
 
             // don't add members that are already present
             // use DESCRIBE to amend
             Object.keys(data).forEach(function (curve) {
-                if (!isValidId(curve) || isMap(state[curve])) { return delete data[curve]; }
+                if (!isValidId(curve) || isMap(ref.state.members[curve])) { return delete data[curve]; }
             });
 
             send([ 'ADD', data ], cb);
@@ -532,7 +521,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             if (!Array.isArray(data)) { return void cb("INVALID_ARGUMENTS"); }
 
             var toRemove = [];
-            var current = Object.keys(state);
+            var current = Object.keys(state.members);
             data.forEach(function (curve) {
                 // don't try to remove elements which are not in the current state
                 if (current.indexOf(curve) === -1) { return; }
@@ -553,7 +542,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
                 if (!isMap(member)) { delete data[curve]; }
                 // don't send fields that won't result in a change
                 Object.keys(member).forEach(function (k) {
-                    if (member[k] === state[curve][k]) { delete member[k]; }
+                    if (member[k] === state.members[curve][k]) { delete member[k]; }
                 });
             });
 
@@ -562,7 +551,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
 
         roster.metadata = function (data, _cb) {
             var cb = Util.once(Util.mkAsync(_cb));
-            var metadata = ref.metadata;
+            var metadata = ref.state.metadata;
             if (!isMap(data)) { return void cb("INVALID_ARGUMENTS"); }
 
             Object.keys(data).forEach(function (k) {
@@ -593,12 +582,17 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
                 return void cb(err);
             }
         }).nThen(function () {
+            var lastKnownHash = config.lastKnownHash || -1;
+            if (typeof(lastKnownHash) === 'string') {
+                console.log("Synchronizing from checkpoint");
+            }
+
             CPNetflux.start({
                 // if you don't have a lastKnownHash you will need the full history
                 // passing -1 forces the server to send all messages, otherwise
                 // malicious users with the signing key could send cp| messages
                 // and fool new users into initializing their session incorrectly
-                lastKnownHash: config.lastKnownHash || -1,
+                lastKnownHash: lastKnownHash,
 
                 network: config.network,
                 channel: config.channel,

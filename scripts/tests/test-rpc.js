@@ -302,6 +302,7 @@ nThen(function  (w) {
         oscar.currentRoster = roster.getState();
         //console.log("new state = %s\n", JSON.stringify(oscar.currentRoster));
     }).on('checkpoint', function (hash) {
+        console.log("updating lastKnownHash to [%s]", hash);
         oscar.lastKnownHash = hash;
     });
 
@@ -338,8 +339,8 @@ nThen(function  (w) {
         bob.name = 'bob';
         //console.log("Initialized Bob");
     }));
-}).nThen(function (w) {
-    setTimeout(w(), 500);
+}).nThen(function () {
+    //setTimeout(w(), 500);
 
 }).nThen(function (w) {
     // Alice loads the roster...
@@ -387,21 +388,92 @@ nThen(function  (w) {
 
     roster.add(data, w(function (err) {
         if (err) { return void console.error(err); }
-        //console.log("SENT ADD COMMAND");
     }));
-}).nThen(function () {
-    
+}).nThen(function (w) {
+    console.log("STATE =", JSON.stringify(oscar.roster.getState(), null, 2));
+
+    // oscar describes the team
+    oscar.roster.metadata({
+        name: "THE DREAM TEAM",
+        topic: "pewpewpew",
+    }, w(function (err) {
+        if (err) { return void console.log(err); }
+        console.log("STATE =", JSON.stringify(oscar.roster.getState(), null, 2));
+    }));
+}).nThen(function (w) {
 
 
+
+}).nThen(function (w) {
+    // oscar sends a checkpoint
+    oscar.roster.checkpoint(w(function (err) {
+        if (err) {
+            w.abort();
+            return void console.error(err);
+        }
+        console.log("Checkpoint sent successfully");
+    }));
     // TODO alice and bob describe themselves...
-
-}).nThen(function () {
+}).nThen(function (w) {
     // TODO Oscar promotes Alice to 'ADMIN'
+    var members = {};
+    members[alice.curveKeys.curvePublic] = {
+        role: "ADMIN",
+    };
 
-}).nThen(function () {
+    oscar.roster.describe(members, w(function (err) {
+        if (err) {
+            w.abort();
+            return void console.error(err);
+        }
+        console.log("Promoted Alice to ADMIN");
+    }));
+}).nThen(function (w) {
+    // bob finally connects, this time with the lastKnownHash provided by oscar
+    var rosterKeys = Crypto.Team.deriveMemberKeys(sharedConfig.rosterSeed, bob.curveKeys);
+
+    Roster.create({
+        network: bob.network,
+        channel: rosterKeys.channel,
+        keys: rosterKeys,
+        anon_rpc: bob.anonRpc,
+        lastKnownHash: oscar.lastKnownHash,
+    }, w(function (err, roster) {
+        if (err) {
+            w.abort();
+            return void console.trace(err);
+        }
 
 
+        bob.roster = roster;
+        if (JSON.stringify(bob.roster.getState()) !== JSON.stringify(oscar.roster.getState())) {
+            console.log("BOB AND OSCAR DO NOT HAVE THE SAME STATE");
+            console.log("BOB =", JSON.stringify(bob.roster.getState(), null, 2));
+            console.log("OSCAR =", JSON.stringify(oscar.roster.getState(), null, 2));
+        }
 
+        bob.destroy.reg(function () {
+            roster.stop();
+        });
+    }));
+}).nThen(function (w) {
+    bob.roster.remove([
+        oscar.curveKeys.curvePublic,
+        alice.curveKeys.curvePublic
+    ], w(function (err) {
+        if (err) { return void console.log("command failed as expected"); }
+        w.abort();
+        console.log("Expected command to fail!");
+        process.exit(1);
+    }));
+}).nThen(function (w) {
+    alice.roster.remove([bob.curveKeys.curvePublic], w(function (err) {
+        if (err) {
+            w.abort();
+            return void console.error(err);
+        }
+        console.log("Alice successfully removed Bob from the roster");
+    }));
 }).nThen(function (w) {
     var message = alice.mailbox.encrypt(JSON.stringify({
         type: "CHEESE",
