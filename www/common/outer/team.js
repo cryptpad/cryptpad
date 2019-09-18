@@ -132,6 +132,7 @@ define([
             realtime: lm.realtime,
             handleSharedFolder: function (sfId, rt) { handleSharedFolder(ctx, id, sfId, rt); },
             sharedFolders: {}, // equivalent of store.sharedFolders in async-store
+            roster: roster
         };
 
         if (cId) { team.clients.push(cId); }
@@ -447,6 +448,32 @@ define([
         });
     };
 
+    var getTeamMetadata = function (ctx, data, cId, cb) {
+        var teamId = data.teamId;
+        if (!teamId) { return void cb({error: 'EINVAL'}); }
+        var team = ctx.teams[teamId];
+        if (!team) { return void cb ({error: 'ENOENT'}); }
+        if (!team.roster) { return void cb({error: 'NO_ROSTER'}); }
+        var state = team.roster.getState() || {};
+        cb(state.metadata || {});
+    };
+
+    var setTeamMetadata = function (ctx, data, cId, cb) {
+        var teamId = data.teamId;
+        if (!teamId) { return void cb({error: 'EINVAL'}); }
+        var team = ctx.teams[teamId];
+        if (!team) { return void cb ({error: 'ENOENT'}); }
+        if (!team.roster) { return void cb({error: 'NO_ROSTER'}); }
+        team.roster.metadata(data.metadata, function (err) {
+            if (err) { return void cb({error: err}); }
+            var localTeam = ctx.store.proxy.teams[teamId];
+            if (localTeam) {
+                localTeam.metadata = data.metadata
+            }
+            cb();
+        });
+    };
+
     // Remove a client from all the team they're subscribed to
     var removeClient = function (ctx, cId) {
         Object.keys(ctx.onReadyHandlers).forEach(function (teamId) {
@@ -564,6 +591,12 @@ define([
             }
             if (cmd === 'OPEN_TEAM_CHAT') {
                 return void openTeamChat(ctx, data, clientId, cb);
+            }
+            if (cmd === 'GET_TEAM_METADATA') {
+                return void getTeamMetadata(ctx, data, clientId, cb);
+            }
+            if (cmd === 'SET_TEAM_METADATA') {
+                return void setTeamMetadata(ctx, data, clientId, cb);
             }
             if (cmd === 'CREATE_TEAM') {
                 return void createTeam(ctx, data, clientId, cb);

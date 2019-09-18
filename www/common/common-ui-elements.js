@@ -14,7 +14,9 @@ define([
     '/customize/application_config.js',
     '/customize/pages.js',
     '/bower_components/nthen/index.js',
-    'css!/customize/fonts/cptools/style.css'
+    'css!/customize/fonts/cptools/style.css',
+    '/bower_components/croppie/croppie.min.js',
+    'css!/bower_components/croppie/croppie.css',
 ], function ($, Config, Util, Hash, Language, UI, Constants, Feedback, h, MediaTag, Clipboard,
              Messages, AppConfig, Pages, NThen) {
     var UIElements = {};
@@ -1936,6 +1938,84 @@ define([
                 });
             });
         }
+    };
+    var transformAvatar = function (file, cb) {
+        if (file.type === 'image/gif') { return void cb(file); }
+        var $croppie = $('<div>', {
+            'class': 'cp-app-profile-resizer'
+        });
+
+        if (typeof ($croppie.croppie) !== "function") {
+            console.warn('fuck');
+            return void cb(file);
+        }
+
+        var todo = function () {
+            UI.confirm($croppie[0], function (yes) {
+                if (!yes) { return; }
+                $croppie.croppie('result', {
+                    type: 'blob',
+                    size: {width: 300, height: 300}
+                }).then(function(blob) {
+                    blob.lastModifiedDate = new Date();
+                    blob.name = 'avatar';
+                    cb(blob);
+                });
+            });
+        };
+
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            $croppie.croppie({
+                url: e.target.result,
+                viewport: { width: 100, height: 100 },
+                boundary: { width: 400, height: 300 },
+            });
+            todo();
+        };
+        reader.readAsDataURL(file);
+    };
+    UIElements.addAvatar = function (common, cb) {
+        var AVATAR_SIZE_LIMIT = 0.5;
+        var allowedMediaTypes = [
+            'image/png',
+            'image/jpeg',
+            'image/jpg',
+            'image/gif',
+        ];
+        var fmConfig = {
+            noHandlers: true,
+            noStore: true,
+            body: $('body'),
+            onUploaded: cb
+        };
+        var FM = common.createFileManager(fmConfig);
+        var accepted = ".gif,.jpg,.jpeg,.png";
+        var data = {
+            FM: FM,
+            filter: function (file) {
+                var sizeMB = Util.bytesToMegabytes(file.size);
+                var type = file.type;
+                // We can't resize .gif so we have to display an error if it is too big
+                if (sizeMB > AVATAR_SIZE_LIMIT && type === 'image/gif') {
+                    UI.log(Messages._getKey('profile_uploadSizeError', [
+                        Messages._getKey('formattedMB', [AVATAR_SIZE_LIMIT])
+                    ]));
+                    return false;
+                }
+                // Display an error if the image type is not allowed
+                if (allowedMediaTypes.indexOf(type) === -1) {
+                    UI.log(Messages._getKey('profile_uploadTypeError', [
+                        accepted.split(',').join(', ')
+                    ]));
+                    return false;
+                }
+                return true;
+            },
+            transformer: transformAvatar,
+            accept: accepted
+        };
+        return data;
     };
 
     /*  Create a usage bar which keeps track of how much storage space is used

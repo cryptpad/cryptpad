@@ -24,8 +24,6 @@ define([
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/profile/app-profile.less',
-    '/bower_components/croppie/croppie.min.js',
-    'css!/bower_components/croppie/croppie.css',
 ], function (
     $,
     Crypto,
@@ -233,48 +231,6 @@ define([
             });
     };
 
-    var AVATAR_SIZE_LIMIT = 0.5;
-    var allowedMediaTypes = [
-        'image/png',
-        'image/jpeg',
-        'image/jpg',
-        'image/gif',
-    ];
-    var transformAvatar = function (file, cb) {
-        if (file.type === 'image/gif') { return void cb(file); }
-        var $croppie = $('<div>', {
-            'class': 'cp-app-profile-resizer'
-        });
-
-        if (typeof ($croppie.croppie) !== "function") {
-            return void cb(file);
-        }
-
-        var todo = function () {
-            UI.confirm($croppie[0], function (yes) {
-                if (!yes) { return; }
-                $croppie.croppie('result', {
-                    type: 'blob',
-                    size: {width: 300, height: 300}
-                }).then(function(blob) {
-                    blob.lastModifiedDate = new Date();
-                    blob.name = 'avatar';
-                    cb(blob);
-                });
-            });
-        };
-
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            $croppie.croppie({
-                url: e.target.result,
-                viewport: { width: 100, height: 100 },
-                boundary: { width: 400, height: 300 },
-            });
-            todo();
-        };
-        reader.readAsDataURL(file);
-    };
     var displayAvatar = function (val) {
         var sframeChan = common.getSframeChannel();
         var $span = APP.$avatar;
@@ -316,59 +272,28 @@ define([
         displayAvatar();
         if (APP.readOnly) { return; }
 
-        var fmConfig = {
-            noHandlers: true,
-            noStore: true,
-            body: $('body'),
-            onUploaded: function (ev, data) {
-                var old = common.getMetadataMgr().getUserData().avatar;
-                var todo = function () {
-                    APP.module.execCommand("SET", {
-                        key: 'avatar',
-                        value: data.url
-                    }, function () {
-                        sframeChan.query("Q_PROFILE_AVATAR_ADD", data.url, function (err, err2) {
-                            if (err || err2) { return void UI.log(err || err2); }
-                            displayAvatar(data.url);
-                        });
-                    });
-                };
-                if (old) {
-                    sframeChan.query("Q_PROFILE_AVATAR_REMOVE", old, function (err, err2) {
+        var data = UIElements.addAvatar(common, function (ev, data) {
+            var old = common.getMetadataMgr().getUserData().avatar;
+            var todo = function () {
+                APP.module.execCommand("SET", {
+                    key: 'avatar',
+                    value: data.url
+                }, function () {
+                    sframeChan.query("Q_PROFILE_AVATAR_ADD", data.url, function (err, err2) {
                         if (err || err2) { return void UI.log(err || err2); }
-                        todo();
+                        displayAvatar(data.url);
                     });
-                    return;
-                }
-                todo();
+                });
+            };
+            if (old) {
+                sframeChan.query("Q_PROFILE_AVATAR_REMOVE", old, function (err, err2) {
+                    if (err || err2) { return void UI.log(err || err2); }
+                    todo();
+                });
+                return;
             }
-        };
-        APP.FM = common.createFileManager(fmConfig);
-        var accepted = ".gif,.jpg,.jpeg,.png";
-        var data = {
-            FM: APP.FM,
-            filter: function (file) {
-                var sizeMB = Util.bytesToMegabytes(file.size);
-                var type = file.type;
-                // We can't resize .gif so we have to display an error if it is too big
-                if (sizeMB > AVATAR_SIZE_LIMIT && type === 'image/gif') {
-                    UI.log(Messages._getKey('profile_uploadSizeError', [
-                        Messages._getKey('formattedMB', [AVATAR_SIZE_LIMIT])
-                    ]));
-                    return false;
-                }
-                // Display an error if the image type is not allowed
-                if (allowedMediaTypes.indexOf(type) === -1) {
-                    UI.log(Messages._getKey('profile_uploadTypeError', [
-                        accepted.split(',').join(', ')
-                    ]));
-                    return false;
-                }
-                return true;
-            },
-            transformer: transformAvatar,
-            accept: accepted
-        };
+            todo();
+        });
         var $upButton = common.createButton('upload', false, data);
         $upButton.text(Messages.profile_upload);
         $upButton.prepend($('<span>', {'class': 'fa fa-upload'}));

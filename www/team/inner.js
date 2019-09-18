@@ -4,6 +4,7 @@ define([
     '/common/drive-ui.js',
     '/common/common-util.js',
     '/common/common-interface.js',
+    '/common/common-ui-elements.js',
     '/common/common-feedback.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
@@ -22,6 +23,7 @@ define([
     DriveUI,
     Util,
     UI,
+    UIElements,
     Feedback,
     nThen,
     SFCommon,
@@ -109,6 +111,10 @@ define([
         'chat': [
             'cp-team-chat'
         ],
+        'admin': [
+            'cp-team-name',
+            'cp-team-avatar'
+        ],
     };
 
     var create = {};
@@ -124,7 +130,7 @@ define([
             APP.$rightside.find('.'+c).show();
         });
     };
-    var createLeftSide = APP.createLeftSide = function (common, team) {
+    var createLeftSide = APP.createLeftSide = function (common, team, teamAdmin) {
         APP.$leftside.empty();
         var $categories = $('<div>', {'class': 'cp-sidebarlayout-categories'})
                             .appendTo(APP.$leftside);
@@ -133,6 +139,8 @@ define([
         var active = team ? 'drive' : 'list';
 
         Object.keys(categories).forEach(function (key) {
+            if (key === 'admin' && !teamAdmin) { return; }
+
             var $category = $('<div>', {'class': 'cp-sidebarlayout-category cp-team-cat-'+key}).appendTo($categories);
             if (key === 'general') { $category.append($('<span>', {'class': 'fa fa-info-circle'})); }
             if (key === 'list') { $category.append($('<span>', {'class': 'fa fa-list cp-team-cat-list'})); }
@@ -141,6 +149,7 @@ define([
             if (key === 'members') { $category.append($('<span>', {'class': 'fa fa-users'})); }
             if (key === 'chat') { $category.append($('<span>', {'class': 'fa fa-comments'})); }
             if (key === 'drive') { $category.append($('<span>', {'class': 'fa fa-hdd-o'})); }
+            if (key === 'admin') { $category.append($('<span>', {'class': 'fa fa-cogs'})); }
 
             if (key === active) {
                 $category.addClass('cp-leftside-active');
@@ -172,7 +181,7 @@ define([
         showCategories(categories[active]);
     };
 
-    var buildUI = APP.buildUI = function (common, team) {
+    var buildUI = APP.buildUI = function (common, team, teamAdmin) {
         var $rightside = APP.$rightside;
         $rightside.empty();
         var addItem = function (cssClass) {
@@ -187,7 +196,7 @@ define([
             categories[cat].forEach(addItem);
         }
 
-        createLeftSide(common, team);
+        createLeftSide(common, team, teamAdmin);
     };
 
     // Team APP
@@ -226,9 +235,16 @@ define([
 
     // Rightside elements
 
-    var makeBlock = function (key, getter) {
+    var makeBlock = function (key, getter, full) {
+        var safeKey = key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
+
         create[key] = function (common) {
             var $div = $('<div>', {'class': 'cp-team-' + key + ' cp-sidebarlayout-element'});
+            if (full) {
+                $('<label>').text(Messages['team_'+safeKey+'Title'] || key).appendTo($div);
+                $('<span>', {'class': 'cp-sidebarlayout-description'})
+                    .text(Messages['team_'+safeKey+'Hint'] || 'Coming soon...').appendTo($div);
+            }
             getter(common, function (content) {
                 $div.append(content);
             }, $div);
@@ -254,18 +270,21 @@ define([
             Object.keys(obj).forEach(function (id) {
                 var team = obj[id];
                 var a = h('a', 'Open');
+                var avatar = h('span.cp-avatar.cp-team-list-avatar');
                 lis.push(h('li', h('ul', [
+                    h('li', avatar), // XXX
                     h('li', 'Name: ' + team.metadata.name), // XXX
                     h('li', 'ID: ' + id), // XXX
                     h('li', a) // XXX
                 ])));
+                common.displayAvatar($(avatar), team.metadata.avatar, team.metadata.name);
                 $(a).click(function () {
                     APP.module.execCommand('SUBSCRIBE', id, function () {
                         sframeChan.query('Q_SET_TEAM', id, function (err) {
                             if (err) { return void console.error(err); }
                             APP.team = id;
                             APP.teamEdPublic = Util.find(team, ['keys', 'drive', 'edPublic']);
-                            buildUI(common, true);
+                            buildUI(common, true, team.owner);
                         });
                     });
                 });
@@ -349,6 +368,105 @@ define([
             cb(content);
         });
     });
+
+    makeBlock('name', function (common, cb) {
+        var $inputBlock = $('<div>', {'class': 'cp-sidebarlayout-input-block'});
+        var $input = $('<input>', {
+            'type': 'text',
+            'id': 'cp-settings-displayname',
+            'placeholder': Messages.anonymous}).appendTo($inputBlock);
+        var $save = $('<button>', {'class': 'btn btn-primary'}).text(Messages.settings_save).appendTo($inputBlock);
+
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide();
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide();
+
+        var md;
+
+        var todo = function () {
+            var newName = $input.val();
+            if (newName === md.name) { return; }
+            md.name = newName;
+            $spinner.show();
+            APP.module.execCommand('SET_TEAM_METADATA', {
+                teamId: APP.team,
+                metadata: md
+            }, function () {
+                $spinner.hide();
+                $ok.show();
+            });
+        };
+
+        APP.module.execCommand('GET_TEAM_METADATA', {
+            teamId: APP.team
+        }, function (obj) {
+            if (obj && obj.error) {
+                return void UI.warn(Messages.error);
+            }
+            md = obj;
+            $input.val(obj.name);
+            $input.on('keyup', function (e) {
+                if ($input.val() !== obj.name) { $ok.hide(); }
+                if (e.which === 13) { todo(); }
+            });
+            $save.click(todo);
+            var content = [
+                $inputBlock[0],
+                $ok[0],
+                $spinner[0]
+            ];
+            cb(content);
+        });
+    }, true);
+
+    makeBlock('avatar', function (common, cb) {
+        // Upload
+        var avatar = h('div.cp-team-avatar.cp-avatar');
+        var $avatar = $(avatar);
+        var md;
+        var data = UIElements.addAvatar(common, function (ev, data) {
+            if (!data.url) { return void UI.warn(Messages.error); }
+            md.avatar = data.url;
+            APP.module.execCommand('SET_TEAM_METADATA', {
+                teamId: APP.team,
+                metadata: md
+            }, function () {
+                $avatar.empty();
+                common.displayAvatar($avatar, data.url);
+            });
+        });
+        var $upButton = common.createButton('upload', false, data);
+        $upButton.text(Messages.profile_upload);
+        $upButton.prepend($('<span>', {'class': 'fa fa-upload'}));
+
+        APP.module.execCommand('GET_TEAM_METADATA', {
+            teamId: APP.team
+        }, function (obj) {
+            if (obj && obj.error) {
+                return void UI.warn(Messages.error);
+            }
+            var val = obj.avatar;
+            md = obj;
+            if (!val) {
+                var $img = $('<img>', {
+                    src: '/customize/images/avatar.png',
+                    title: Messages.profile_avatar,
+                    alt: 'Avatar'
+                });
+                var mt = h('media-tag', $img[0]);
+                $avatar.append(mt);
+            } else {
+                common.displayAvatar($avatar, val);
+            }
+
+            // Display existing + button
+            var content = [
+                avatar,
+                h('br'),
+                $upButton[0]
+            ];
+            cb(content);
+        });
+    }, true);
 
     var onEvent = function (obj) {
         var ev = obj.ev;
