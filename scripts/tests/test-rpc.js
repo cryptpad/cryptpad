@@ -10,6 +10,7 @@ var Rpc = require("../../www/common/rpc");
 var Hash = require("../../www/common/common-hash");
 var CpNetflux = require("../../www/bower_components/chainpad-netflux");
 var Roster = require("./roster");
+var Util = require("../../lib/common-util");
 
 var createMailbox = function (config, cb) {
     var webchannel;
@@ -68,6 +69,10 @@ var createUser = function (config, cb) {
                 return void cb(err);
             }
             user = client;
+            user.destroy = Util.mkEvent(true);
+            user.destroy.reg(function () {
+                user.network.disconnect();
+            });
         }));
     }).nThen(function (w) {
         // make all the parameters you'll need
@@ -87,6 +92,9 @@ var createUser = function (config, cb) {
                 return void console.error('ANON_RPC_CONNECT_ERR');
             }
             user.anonRpc = rpc;
+            user.destroy.reg(function () {
+                user.anonRpc.destroy();
+            });
         }));
 
         Pinpad.create(network, user.edKeys, w(function (err, rpc) {
@@ -97,6 +105,9 @@ var createUser = function (config, cb) {
                 return console.log('RPC_CONNECT_ERR');
             }
             user.rpc = rpc;
+            user.destroy.reg(function () {
+                user.rpc.destroy();
+            });
         }));
 
         Pinpad.create(network, config.teamEdKeys, w(function (err, rpc) {
@@ -106,6 +117,9 @@ var createUser = function (config, cb) {
                 return console.log('RPC_CONNECT_ERR');
             }
             user.team_rpc = rpc;
+            user.destroy.reg(function () {
+                user.team_rpc.destroy();
+            });
         }));
     }).nThen(function (w) {
         user.rpc.reset([], w(function (err, hash) {
@@ -169,7 +183,7 @@ var createUser = function (config, cb) {
                 return void cb(err);
             }
 
-            console.log('PIN_RESPONSE', hash);
+            //console.log('PIN_RESPONSE', hash);
 
             if (hash[0] === EMPTY_ARRAY_HASH) { throw new Error("PIN_DIDNT_WORK"); }
             user.latestPinHash = hash;
@@ -201,7 +215,7 @@ var createUser = function (config, cb) {
             }
 
             if (hash[0] !== EMPTY_ARRAY_HASH) {
-                console.log('UNPIN_RESPONSE', hash);
+                //console.log('UNPIN_RESPONSE', hash);
                 throw new Error("UNPIN_DIDNT_WORK");
             }
             user.latestPinHash = hash[0];
@@ -215,14 +229,13 @@ var createUser = function (config, cb) {
             }
         }));
     }).nThen(function () {
-        user.cleanup = function (cb) {
-            // TODO remove your mailbox
 
+        user.cleanup = function (cb) {
+            //console.log("Destroying user");
+            // TODO remove your mailbox
+            user.destroy.fire();
             cb = cb;
         };
-
-
-
 
         cb(void 0, user);
     });
@@ -233,8 +246,7 @@ var alice, bob, oscar;
 var sharedConfig = {
     teamEdKeys: makeEdKeys(),
     teamCurveKeys: makeCurveKeys(),
-    rosterChannel: Hash.createChannelId(),
-    //rosterHash: makeRosterHash(),
+    rosterSeed: Crypto.Team.createSeed(),
 };
 
 nThen(function  (w) {
@@ -249,7 +261,6 @@ nThen(function  (w) {
     }));
 }).nThen(function (w) {
     // TODO oscar creates the team roster
-    //Roster = Roster;
 
     // user edPublic (for ownership)
     // user curve keys (for encryption and authentication)
@@ -261,19 +272,11 @@ nThen(function  (w) {
     // network
     // owners:
 
-/*
-    var team = {
-        curve: sharedConfig.teamCurveKeys,
-        ed: sharedConfig.teamEdKeys,
-    };
-*/
-
-    var rosterSeed = Crypto.Team.createSeed();
-    var rosterKeys = Crypto.Team.deriveMemberKeys(rosterSeed, oscar.curveKeys);
+    var rosterKeys = Crypto.Team.deriveMemberKeys(sharedConfig.rosterSeed, oscar.curveKeys);
 
     Roster.create({
         network: oscar.network,
-        channel: rosterKeys.channel, //sharedConfig.rosterChannel,
+        channel: rosterKeys.channel,
         owners: [
             oscar.edKeys.edPublic
         ],
@@ -286,32 +289,37 @@ nThen(function  (w) {
             return void console.trace(err);
         }
         oscar.roster = roster;
+        oscar.destroy.reg(function () {
+            roster.stop();
+        });
     }));
 }).nThen(function (w) {
     var roster = oscar.roster;
 
-    roster.on('change', function () {
-        setTimeout(function () {
+    oscar.lastKnownHash = -1;
 
-            console.log("\nCHANGE");
-            console.log("roster.getState()", roster.getState());
-            console.log();
-        });
+    roster.on('change', function () {
+        oscar.currentRoster = roster.getState();
+        //console.log("new state = %s\n", JSON.stringify(oscar.currentRoster));
+    }).on('checkpoint', function (hash) {
+        oscar.lastKnownHash = hash;
     });
 
-    var state = roster.getState();
-    console.log("CURRENT ROSTER STATE:", state);
+    //var state = roster.getState();
+    //console.log("CURRENT ROSTER STATE:", state);
 
     roster.init({
-        name: oscar.name,
+        displayName: oscar.name,
+
         //profile: '',
         // mailbox: '',
         //title: '',
     }, w(function (err) {
         if (err) { return void console.error(err); }
+        //console.log("INITIALIZED");
     }));
 }).nThen(function (w) {
-    console.log("ALICE && BOB");
+    //console.log("ALICE && BOB");
     createUser(sharedConfig, w(function (err, _alice) {
         if (err) {
             w.abort();
@@ -319,7 +327,7 @@ nThen(function  (w) {
         }
         alice = _alice;
         alice.name = 'alice';
-        console.log("Initialized Alice");
+        //console.log("Initialized Alice");
     }));
     createUser(sharedConfig, w(function (err, _bob) {
         if (err) {
@@ -328,29 +336,63 @@ nThen(function  (w) {
         }
         bob = _bob;
         bob.name = 'bob';
-        console.log("Initialized Bob");
+        //console.log("Initialized Bob");
     }));
-}).nThen(function () {
+}).nThen(function (w) {
+    setTimeout(w(), 500);
+
+}).nThen(function (w) {
+    // Alice loads the roster...
+    var rosterKeys = Crypto.Team.deriveMemberKeys(sharedConfig.rosterSeed, alice.curveKeys);
+
+    Roster.create({
+        network: alice.network,
+        channel: rosterKeys.channel,
+        //owners: [], // Alice doesn't know who the owners might be...
+        keys: rosterKeys,
+        anon_rpc: alice.anonRpc,
+        lastKnownHash: void 0, // alice should fetch everything from the beginning of time...
+    }, w(function (err, roster) {
+        if (err) {
+            w.abort();
+            return void console.error(err);
+        }
+        alice.roster = roster;
+        alice.destroy.reg(function () {
+            roster.stop();
+        });
+
+        if (JSON.stringify(alice.roster.getState()) !== JSON.stringify(oscar.roster.getState())) {
+            console.error("Alice and Oscar have different roster states!");
+            throw new Error();
+        } else {
+            console.log("Alice and Oscar have the same roster state");
+        }
+    }));
+}).nThen(function (w) {
     // TODO oscar adds alice and bob to the team as members
     var roster = oscar.roster;
 
     var data = {};
     data[alice.curveKeys.curvePublic] = {
-        name: alice.name,
-        role: 'MEMBER',
+        displayName: alice.name,
+        // role: 'MEMBER', // MEMBER is implicit
+        notifications: '',
     };
     data[bob.curveKeys.curvePublic] = {
-        name: bob.name,
-        role: 'MEMBER',
+        displayName: bob.name,
+        //role: 'MEMBER',
+        notifications: '',
     };
 
-    roster.add(data, function (err) {
-        if (err) {
-            return void console.error(err);
-        }
-        console.log("SENT ADD COMMAND");
-    });
+    roster.add(data, w(function (err) {
+        if (err) { return void console.error(err); }
+        //console.log("SENT ADD COMMAND");
+    }));
 }).nThen(function () {
+    
+
+
     // TODO alice and bob describe themselves...
 
 }).nThen(function () {
@@ -368,7 +410,6 @@ nThen(function  (w) {
             text: "CAMEMBERT",
         }
     }), bob.curveKeys.curvePublic);
-
     alice.anonRpc.send('WRITE_PRIVATE_MESSAGE', [bob.mailboxChannel, message], w(function (err, response) {
         if (err) {
             return void console.error(err);
@@ -410,8 +451,11 @@ nThen(function  (w) {
 
     });
 }).nThen(function () {
-    alice.shutdown();
-    bob.shutdown();
+    //alice.shutdown();
+    //bob.shutdown();
+    alice.cleanup();
+    bob.cleanup();
+    oscar.cleanup();
 });
 
 
