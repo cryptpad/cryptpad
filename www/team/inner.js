@@ -457,7 +457,7 @@ define([
         }
         return div;
     };
-    var refreshRoster = APP.refreshRoster = function (common, roster) {
+    APP.refreshRoster = function (common, roster) {
         if (!roster || typeof(roster) !== "object" || Object.keys(roster) === 0) { return; }
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
