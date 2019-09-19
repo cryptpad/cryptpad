@@ -723,22 +723,27 @@ define([
                     };
                     var updateProgress = function (progressValue) {
                         sendEvent({
+                            uid: data.uid,
                             progress: progressValue
                         });
                     };
                     var onComplete = function (href) {
                         sendEvent({
                             complete: true,
+                            uid: data.uid,
                             href: href
                         });
                     };
                     var onError = function (e) {
                         sendEvent({
+                            uid: data.uid,
                             error: e
                         });
                     };
                     var onPending = function (cb) {
-                        sframeChan.query('Q_CANCEL_PENDING_FILE_UPLOAD', null, function (err, data) {
+                        sframeChan.query('Q_CANCEL_PENDING_FILE_UPLOAD', {
+                            uid: data.uid
+                        }, function (err, data) {
                             if (data) {
                                 cb();
                             }

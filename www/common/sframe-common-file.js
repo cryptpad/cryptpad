@@ -32,6 +32,7 @@ define([
     module.create = function (common, config) {
         var File = {};
         var origin = common.getMetadataMgr().getPrivateData().origin;
+        var response = Util.response();
 
         var teamId = config.teamId; // XXX Teams file upload as a team
 
@@ -75,21 +76,25 @@ define([
 
         var sframeChan = common.getSframeChannel();
         var onError = $.noop,
-            onComplete = $.noop,
             updateProgress = $.noop,
             onPending = $.noop;
         sframeChan.on('EV_FILE_UPLOAD_STATE', function (data) {
-            if (data.error) {
+            if (data.error && response.expected(data.uid)) {
+                response.clear(data.uid);
                 return void onError(data.error);
             }
-            if (data.complete && data.href) {
-                return void onComplete(data.href);
+            if (data.complete && data.href && data.uid) {
+                if (response.expected(data.uid)) {
+                    response.handle(data.uid, [data.href]);
+                }
+                return;
             }
-            if (typeof data.progress !== "undefined") {
+            if (typeof data.progress !== "undefined" && response.expected(data.uid)) {
                 return void updateProgress(data.progress);
             }
         });
         sframeChan.on('Q_CANCEL_PENDING_FILE_UPLOAD', function (data, cb) {
+            if (!response.expected(data.uid)) { return; }
             onPending(cb);
         });
         var upload = function (file) {
@@ -121,7 +126,8 @@ define([
                 });
             };
 
-            onComplete = function (href) {
+            file.uid = Util.uid();
+            response.expect(file.uid, function (href) {
                 var mdMgr = common.getMetadataMgr();
                 var origin = mdMgr.getPrivateData().origin;
                 $link.prepend($('<span>', {'class': 'fa fa-external-link'}));
@@ -143,7 +149,7 @@ define([
 
                 queue.inProgress = false;
                 queue.next();
-            };
+            });
 
             onError = function (e) {
                 queue.inProgress = false;
