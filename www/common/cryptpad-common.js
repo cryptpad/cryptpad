@@ -112,8 +112,7 @@ define([
     };
     common.getEdPublic = function (teamId, cb) {
         postMessage("GET", {
-            teamId: teamId,
-            key: ['edPublic']
+            key: teamId ? ['teams', teamId, 'keys', 'drive', 'edPublic'] : ['edPublic']
         }, function (obj) {
             cb(obj);
         });

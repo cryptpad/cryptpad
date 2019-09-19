@@ -4365,6 +4365,7 @@ define([
         }
 
         var fmConfig = {
+            teamId: APP.team,
             noHandlers: true,
             onUploaded: function () {
                 refresh();

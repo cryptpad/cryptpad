@@ -34,7 +34,7 @@ define([
         var origin = common.getMetadataMgr().getPrivateData().origin;
         var response = Util.response();
 
-        var teamId = config.teamId; // XXX Teams file upload as a team
+        var teamId = config.teamId;
 
         var queue = File.queue = {
             queue: [],
