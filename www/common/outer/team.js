@@ -448,6 +448,16 @@ define([
         });
     };
 
+    var getTeamRoster = function (ctx, data, cId, cb) {
+        var teamId = data.teamId;
+        if (!teamId) { return void cb({error: 'EINVAL'}); }
+        var team = ctx.teams[teamId];
+        if (!team) { return void cb ({error: 'ENOENT'}); }
+        if (!team.roster) { return void cb({error: 'NO_ROSTER'}); }
+        var state = team.roster.getState() || {};
+        cb(state.members || {});
+    };
+
     var getTeamMetadata = function (ctx, data, cId, cb) {
         var teamId = data.teamId;
         if (!teamId) { return void cb({error: 'EINVAL'}); }
@@ -470,6 +480,36 @@ define([
             if (localTeam) {
                 localTeam.metadata = data.metadata;
             }
+            cb();
+        });
+    };
+
+    var describeUser = function (ctx, data, cId, cb) {
+        var teamId = data.teamId;
+        if (!teamId) { return void cb({error: 'EINVAL'}); }
+        var team = ctx.teams[teamId];
+        if (!team) { return void cb ({error: 'ENOENT'}); }
+        if (!team.roster) { return void cb({error: 'NO_ROSTER'}); }
+        if (!data.curvePublic || !data.data) { return void cb({error: 'MISSING_DATA'}); }
+        var obj = {};
+        obj[data.curvePublic] = data.data;
+        team.roster.describe(obj, function (err) {
+            if (err) { return void cb({error: err}); }
+            cb();
+        });
+    };
+
+    // XXX Listen for changes to the roster pad to know if you've been removed
+    // XXX onReady, if you've been removed, leave the team
+    var removeUser = function (ctx, data, cId, cb) {
+        var teamId = data.teamId;
+        if (!teamId) { return void cb({error: 'EINVAL'}); }
+        var team = ctx.teams[teamId];
+        if (!team) { return void cb ({error: 'ENOENT'}); }
+        if (!team.roster) { return void cb({error: 'NO_ROSTER'}); }
+        if (!data.curvePublic) { return void cb({error: 'MISSING_DATA'}); }
+        team.roster.remove([data.curvePublic], function (err) {
+            if (err) { return void cb({error: err}); }
             cb();
         });
     };
@@ -592,11 +632,20 @@ define([
             if (cmd === 'OPEN_TEAM_CHAT') {
                 return void openTeamChat(ctx, data, clientId, cb);
             }
+            if (cmd === 'GET_TEAM_ROSTER') {
+                return void getTeamRoster(ctx, data, clientId, cb);
+            }
             if (cmd === 'GET_TEAM_METADATA') {
                 return void getTeamMetadata(ctx, data, clientId, cb);
             }
             if (cmd === 'SET_TEAM_METADATA') {
                 return void setTeamMetadata(ctx, data, clientId, cb);
+            }
+            if (cmd === 'DESCRIBE_USER') {
+                return void describeUser(ctx, data, clientId, cb);
+            }
+            if (cmd === 'REMOVE_USER') {
+                return void removeUser(ctx, data, clientId, cb);
             }
             if (cmd === 'CREATE_TEAM') {
                 return void createTeam(ctx, data, clientId, cb);

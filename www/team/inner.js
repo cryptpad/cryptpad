@@ -354,6 +354,147 @@ define([
         loadTeam(common, APP.team, false);
     });
 
+    var redrawRoster = function (common, _$roster) {
+        var $roster = _$roster || $('#cp-team-roster-container');
+        if (!$roster.length) { return; }
+        APP.module.execCommand('GET_TEAM_ROSTER', {
+            teamId: APP.team
+        }, function (obj) {
+            if (obj && obj.error) {
+                return void UI.warn(Messages.error);
+            }
+            var roster = APP.refreshRoster(common, obj);
+            $roster.empty().append(roster);
+        });
+    };
+
+    var ROLES = ['MEMBER', 'ADMIN', 'OWNER'];
+    var describeUser = function (data, icon) {
+        APP.module.execCommand('DESCRIBE_USER', {
+            teamId: APP.team,
+            curvePublic: data.curvePublic,
+            data: data
+        }, function (obj) {
+            if (obj && obj.error) {
+                $(icon).show();
+                return void UI.alert(Messages.error);
+            }
+            redrawRoster();
+        });
+    };
+    var makeMember = function (common, data, me) {
+        if (!data.curvePublic) { return; }
+        // Avatar
+        var avatar = h('span.cp-avatar.cp-team-member-avatar');
+        common.displayAvatar($(avatar), data.avatar, data.displayName);
+        // Name
+        var name = h('span.cp-team-member-name', data.displayName);
+        // Actions
+        var actions = h('span.cp-team-member-actions');
+        var $actions = $(actions);
+        var isMe = me && me.curvePublic === data.curvePublic;
+        var myRole = me ? (ROLES.indexOf(me.role) || 0) : -1;
+        var theirRole = ROLES.indexOf(data.role) || 0;
+        // If they're a member and I have a higher role than them, I can promote them to admin
+        if (!isMe && myRole > theirRole && theirRole === 0) {
+            var promote = h('fa.fa-angle-double-up', {
+                title: 'Promote' // XXX
+            });
+            $(promote).click(function () {
+                data.role = 'ADMIN';
+                $(promote).hide();
+                describeUser(data, promote);
+            });
+            $actions.append(promote);
+        }
+        // If I'm not a member and I have an equal or higher role than them, I can demote them
+        // (if they're not already a MEMBER)
+        if (!isMe && myRole >= theirRole && theirRole > 0) {
+            var demote = h('fa.fa-angle-double-down', {
+                title: 'Demote' // XXX
+            });
+            $(demote).click(function () {
+                data.role = ROLES[theirRole - 1] || 'MEMBER';
+                $(demote).hide();
+                describeUser(data, demote);
+            });
+            $actions.append(demote);
+        }
+        // If I'm not a member and I have an equal or higher role than them, I can remove them
+        if (!isMe && myRole > 0 && myRole >= theirRole) {
+            var remove = h('fa.fa-times', {
+                title: 'Remove' // XXX
+            });
+            $(remove).click(function () {
+                $(remove).hide();
+                APP.module.execCommand('REMOVE_USER', {
+                    teamId: APP.team,
+                    curvePublic: data.curvePublic,
+                }, function (obj) {
+                    if (obj && obj.error) {
+                        $(remove).show();
+                        return void UI.alert(Messages.error);
+                    }
+                    redrawRoster();
+                });
+            });
+            $actions.append(remove);
+        }
+
+        // User
+        var content = [
+            avatar,
+            name,
+            actions
+        ];
+        var div = h('div.cp-team-roster-member', content);
+        if (data.profile) {
+            $(div).click(function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                common.openURL('/profile/#' + data.profile);
+            });
+        }
+        return div;
+    };
+    var refreshRoster = APP.refreshRoster = function (common, roster) {
+        if (!roster || typeof(roster) !== "object" || Object.keys(roster) === 0) { return; }
+        var metadataMgr = common.getMetadataMgr();
+        var privateData = metadataMgr.getPrivateData();
+        var me = roster[privateData.curvePublic];
+        var owner = Object.keys(roster).filter(function (k) {
+            return roster[k].role === "OWNER";
+        }).map(function (k) {
+            return makeMember(common, roster[k], me);
+        });
+        var admins = Object.keys(roster).filter(function (k) {
+            return roster[k].role === "ADMIN";
+        }).map(function (k) {
+            return makeMember(common, roster[k], me);
+        });
+        var members = Object.keys(roster).filter(function (k) {
+            return roster[k].role === "MEMBER" || !roster[k].role;
+        }).map(function (k) {
+            return makeMember(common, roster[k], me);
+        });
+        // XXX LEAVE the team button
+        // XXX INVITE to the team button
+        return [
+            h('h3', 'OWNER'), // XXX
+            h('div', owner),
+            h('h3', 'ADMINS'), // XXX
+            h('div', admins),
+            h('h3', 'MEMBERS'), // XXX
+            h('div', members)
+        ];
+    };
+    makeBlock('roster', function (common, cb) {
+        var container = h('div#cp-team-roster-container');
+        var content = [container];
+        redrawRoster(common, $(container));
+        cb(content);
+    });
+
     makeBlock('chat', function (common, cb) {
         var container = h('div#cp-app-contacts-container.cp-app-contacts-inapp');
         var content = [container];
