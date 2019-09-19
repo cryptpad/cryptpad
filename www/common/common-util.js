@@ -91,6 +91,7 @@
         };
 
         return {
+            clear: clear,
             expected: function (id) {
                 return Boolean(pending[id]);
             },
