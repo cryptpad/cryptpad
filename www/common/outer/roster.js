@@ -261,7 +261,6 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         return changed;
     };
 
-    // XXX what about concurrent checkpoints? Let's solve for race conditions...
     commands.CHECKPOINT = function (args, author, roster) {
         // args: complete state
 
@@ -536,6 +535,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         roster.init = function (_data, _cb) {
             var cb = Util.once(Util.mkAsync(_cb));
             if (ref.internal.initialized) { return void cb("ALREADY_INITIALIZED"); }
+            if (!isMap(_data)) { return void cb("INVALID_ARGUMENTS"); }
             var data = Util.clone(_data);
             data.role = 'OWNER';
             var members = {};
@@ -546,16 +546,15 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         // commands
         roster.checkpoint = function (_cb) {
             var cb = Util.once(Util.mkAsync(_cb));
-            //var state = ref.state;
-            //if (!state) { return cb("UNINITIALIZED"); }
-            send([ 'CHECKPOINT', ref.state], cb);
+            send([ 'CHECKPOINT', Util.clone(ref.state)], cb);
         };
 
-        roster.add = function (data, _cb) {
+        roster.add = function (_data, _cb) {
             var cb = Util.once(Util.mkAsync(_cb));
             //var state = ref.state;
             if (!ref.internal.initialized) { return cb("UNINITIALIZED"); }
-            if (!isMap(data)) { return void cb("INVALID_ARGUMENTS"); }
+            if (!isMap(_data)) { return void cb("INVALID_ARGUMENTS"); }
+            var data = Util.clone(_data);
 
             // don't add members that are already present
             // use DESCRIBE to amend
@@ -566,12 +565,13 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             send([ 'ADD', data ], cb);
         };
 
-        roster.remove = function (data, _cb) {
+        roster.remove = function (_data, _cb) {
             var cb = Util.once(Util.mkAsync(_cb));
             var state = ref.state;
             if (!state) { return cb("UNINITIALIZED"); }
 
-            if (!Array.isArray(data)) { return void cb("INVALID_ARGUMENTS"); }
+            if (!Array.isArray(_data)) { return void cb("INVALID_ARGUMENTS"); }
+            var data = Util.clone(_data);
 
             var toRemove = [];
             var current = Object.keys(state.members);
@@ -584,11 +584,13 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             send([ 'RM', toRemove ], cb);
         };
 
-        roster.describe = function (data, _cb) {
+        roster.describe = function (_data, _cb) {
             var cb = Util.once(Util.mkAsync(_cb));
             var state = ref.state;
+
             if (!state) { return cb("UNINITIALIZED"); }
-            if (!isMap(data)) { return void cb("INVALID_ARGUMENTS"); }
+            if (!isMap(_data)) { return void cb("INVALID_ARGUMENTS"); }
+            var data = Util.clone(_data);
 
             Object.keys(data).forEach(function (curve) {
                 var member = data[curve];
@@ -602,10 +604,11 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             send(['DESCRIBE', data], cb);
         };
 
-        roster.metadata = function (data, _cb) {
+        roster.metadata = function (_data, _cb) {
             var cb = Util.once(Util.mkAsync(_cb));
             var metadata = ref.state.metadata;
-            if (!isMap(data)) { return void cb("INVALID_ARGUMENTS"); }
+            if (!isMap(_data)) { return void cb("INVALID_ARGUMENTS"); }
+            var data = Util.clone(_data);
 
             Object.keys(data).forEach(function (k) {
                 if (data[k] === metadata[k]) { delete data[k]; }
