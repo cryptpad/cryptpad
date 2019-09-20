@@ -551,6 +551,30 @@ define([
         });
     };
 
+    UI.proposal = function (content, cb) {
+        var buttons = [{
+            name: Messages.friendRequest_later,
+            onClick: function () {},
+            keys: [27]
+        }, {
+            className: 'primary',
+            name: Messages.friendRequest_accept,
+            onClick: function () {
+                cb(true);
+            },
+            keys: [13]
+        }, {
+            className: 'primary',
+            name: Messages.friendRequest_decline,
+            onClick: function () {
+                cb(false);
+            },
+            keys: [[13, 'ctrl']]
+        }];
+        var modal = dialog.customModal(content, {buttons: buttons});
+        UI.openCustomModal(modal);
+    };
+
     UI.log = function (msg) {
         Alertify.success(Util.fixHTML(msg));
     };
