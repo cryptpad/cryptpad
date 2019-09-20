@@ -137,6 +137,23 @@ define([
 
         if (cId) { team.clients.push(cId); }
 
+        roster.on('change', function () {
+            var state = roster.getState();
+            var me = Util.find(ctx, ['store', 'proxy', 'curvePublic']);
+            if (!state.members[me]) {
+                lm.stop();
+                roster.stop();
+                proxy = {};
+                delete ctx.teams[id];
+                delete ctx.store.proxy.teams[id];
+                ctx.emit('LEAVE_TEAM', id, team.clients);
+                ctx.updateMetadata();
+                return;
+            }
+            ctx.emit('ROSTER_CHANGE', id, team.clients);
+        });
+
+
         team.sendEvent = function (q, data, sender) {
             ctx.emit(q, data, team.clients.filter(function (cId) {
                 return cId !== sender;
@@ -307,6 +324,12 @@ define([
                 }
                 roster = _roster;
 
+                // If we've been kicked, don't try to update our data, we'll close everything
+                // in the next nThen part
+                var state = roster.getState();
+                var me = Util.find(ctx, ['store', 'proxy', 'curvePublic']);
+                if (!state.members[me]) { return; }
+
                 // If you're allowed to edit the roster, try to update your data
                 if (!rosterData.edit) { return; }
                 var data = {};
@@ -319,6 +342,19 @@ define([
                     console.error(err);
                 });
             }));
+        }).nThen(function (waitFor) {
+            // Make sure we have not been kicked from the roster
+            var state = roster.getState();
+            var me = Util.find(ctx, ['store', 'proxy', 'curvePublic']);
+            if (!state.members[me]) {
+                lm.stop();
+                roster.stop();
+                lm.proxy = {};
+                delete ctx.store.proxy.teams[id];
+                ctx.updateMetadata();
+                cb({error: 'EFORBIDDEN'});
+                waitFor.abort();
+            }
         }).nThen(function () {
             onReady(ctx, id, lm, roster, keys, null, cb);
         });
@@ -457,6 +493,7 @@ define([
         ctx.onReadyHandlers[id] = [];
         openChannel(ctx, team, id, function (obj) {
             if (!(obj && obj.error)) { console.debug('Team joined:' + id); }
+            ctx.updateMetadata();
             cb(obj);
         });
     };
@@ -549,8 +586,6 @@ define([
         });
     };
 
-    // XXX Listen for changes to the roster pad to know if you've been removed
-    // XXX onReady, if you've been removed, leave the team
     var removeUser = function (ctx, data, cId, cb) {
         var teamId = data.teamId;
         if (!teamId) { return void cb({error: 'EINVAL'}); }

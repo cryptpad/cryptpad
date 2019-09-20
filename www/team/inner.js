@@ -369,7 +369,7 @@ define([
     };
 
     var ROLES = ['MEMBER', 'ADMIN', 'OWNER'];
-    var describeUser = function (data, icon) {
+    var describeUser = function (common, data, icon) {
         APP.module.execCommand('DESCRIBE_USER', {
             teamId: APP.team,
             curvePublic: data.curvePublic,
@@ -379,7 +379,7 @@ define([
                 $(icon).show();
                 return void UI.alert(Messages.error);
             }
-            redrawRoster();
+            redrawRoster(common);
         });
     };
     var makeMember = function (common, data, me) {
@@ -403,7 +403,7 @@ define([
             $(promote).click(function () {
                 data.role = 'ADMIN';
                 $(promote).hide();
-                describeUser(data, promote);
+                describeUser(common, data, promote);
             });
             $actions.append(promote);
         }
@@ -416,7 +416,7 @@ define([
             $(demote).click(function () {
                 data.role = ROLES[theirRole - 1] || 'MEMBER';
                 $(demote).hide();
-                describeUser(data, demote);
+                describeUser(common, data, demote);
             });
             $actions.append(demote);
         }
@@ -435,7 +435,7 @@ define([
                         $(remove).show();
                         return void UI.alert(Messages.error);
                     }
-                    redrawRoster();
+                    redrawRoster(common);
                 });
             });
             $actions.append(remove);
@@ -449,7 +449,7 @@ define([
         ];
         var div = h('div.cp-team-roster-member', content);
         if (data.profile) {
-            $(div).click(function (e) {
+            $(div).dblclick(function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 common.openURL('/profile/#' + data.profile);
@@ -463,16 +463,19 @@ define([
         var userData = metadataMgr.getUserData();
         var me = roster[userData.curvePublic] || {};
         var owner = Object.keys(roster).filter(function (k) {
+            if (roster[k].pending) { return; }
             return roster[k].role === "OWNER";
         }).map(function (k) {
             return makeMember(common, roster[k], me);
         });
         var admins = Object.keys(roster).filter(function (k) {
+            if (roster[k].pending) { return; }
             return roster[k].role === "ADMIN";
         }).map(function (k) {
             return makeMember(common, roster[k], me);
         });
         var members = Object.keys(roster).filter(function (k) {
+            if (roster[k].pending) { return; }
             return roster[k].role === "MEMBER" || !roster[k].role;
         }).map(function (k) {
             return makeMember(common, roster[k], me);
@@ -637,16 +640,6 @@ define([
         });
     }, true);
 
-    var onEvent = function (obj) {
-        var ev = obj.ev;
-        var data = obj.data;
-        if (ev === 'PEWPEW') {
-            data = data;
-            // Do something
-            return;
-        }
-    };
-
     var main = function () {
         var common;
         var readOnly;
@@ -712,6 +705,21 @@ define([
             }
 
             // Load the Team module
+            var onEvent = function (obj) {
+                var ev = obj.ev;
+                var data = obj.data;
+                if (ev === 'LEAVE_TEAM') {
+                    $('div.cp-team-cat-back').click();
+                    return;
+                }
+                if (ev === 'ROSTER_CHANGE') {
+                    if (Number(APP.team) === Number(data)) {
+                        redrawRoster(common);
+                    }
+                    return;
+                }
+            };
+
             APP.module = common.makeUniversal('team', {
                 onEvent: onEvent
             });
@@ -719,6 +727,13 @@ define([
             $('body').css('display', '');
             loadMain(common);
 
+            metadataMgr.onChange(function () {
+                var $div = $('div.cp-team-list');
+                if (!$div.length) { return; }
+                refreshList(common, function (content) {
+                    $div.empty().append(content);
+                });
+            });
 
             var onDisconnect = function (noAlert) {
                 setEditable(false);
