@@ -17,34 +17,19 @@ var isValidId = function (id) {
 
 // helpers
 
-// /blob/<safeKeyPrefix>/<safeKey>/<blobPrefix>
-var makePathToBlob = function (Env, blobId) {
-    return Path.join(Env.blobPath, blobId.slice(0, 2));
-};
-
 // /blob/<safeKeyPrefix>/<safeKey>/<blobPrefix>/<blobId>
 var makeBlobPath = function (Env, blobId) {
-    return Path.join(makePathToBlob(Env, blobId), blobId);
-};
-
-// /blobstate/<safeKeyPrefix>
-var makePathToStage = function (Env, safeKey) {
-    return Path.join(Env.blobStagingPath, safeKey.slice(0, 2));
+    return Path.join(Env.blobPath, blobId.slice(0, 2), blobId);
 };
 
 // /blobstate/<safeKeyPrefix>/<safeKey>
 var makeStagePath = function (Env, safeKey) {
-    return Path.join(makePathToStage(Env, safeKey), safeKey);
-};
-
-// /blob/<safeKeyPrefix>/<safeKey>/<blobPrefix>
-var makePathToProof = function (Env, safeKey, blobId) {
-    return Path.join(Env.blobPath, safeKey.slice(0, 3), safeKey, blobId.slice(0, 2), blobId);
+    return Path.join(Env.blobStagingPath, safeKey.slice(0, 2), safeKey);
 };
 
 // /blob/<safeKeyPrefix>/<safeKey>/<blobPrefix>/<blobId>
 var makeProofPath = function (Env, safeKey, blobId) {
-    return Path.join(makePathToProof(Env, safeKey, blobId), blobId);
+    return Path.join(Env.blobPath, safeKey.slice(0, 3), safeKey, blobId.slice(0, 2), blobId);
 };
 
 // getUploadSize: used by
@@ -125,8 +110,10 @@ var upload = function (Env, safeKey, content, cb) {
         return cb('E_OVER_LIMIT');
     }
 
+    var stagePath = makeStagePath(Env, safeKey);
+
     if (!session.blobstage) {
-        makeFileStream(makePathToStage(Env, safeKey), makeStagePath(Env, safeKey), function (e, stream) {
+        makeFileStream(Path.dirname(stagePath), stagePath, function (e, stream) {
             if (!stream) { return void cb(e); }
 
             var blobstage = session.blobstage = stream;
@@ -170,7 +157,7 @@ var upload_complete = function (Env, safeKey, id, cb) {
 
     nThen(function (w) {
         // make sure the path to your final location exists
-        Fse.mkdirp(makePathToBlob(Env, id), function (e) {
+        Fse.mkdirp(Path.dirname(newPath), function (e) {
             if (e) {
                 w.abort();
                 return void cb('RENAME_ERR');
@@ -237,10 +224,8 @@ var owned_upload_complete = function (Env, safeKey, id, cb) {
         return void cb('EINVAL_CONFIG');
     }
 
-    var ownPath = makePathToProof(Env, safeKey, id);
-    var filePath = makePathToBlob(Env, id);
-
     var finalPath = makeBlobPath(Env, id);
+
     var finalOwnPath = makeProofPath(Env, safeKey, id);
 
     // the user wants to move it into blob and create a empty file with the same id
@@ -249,13 +234,13 @@ var owned_upload_complete = function (Env, safeKey, id, cb) {
 
     nThen(function (w) {
         // make the requisite directory structure using Mkdirp
-        Fse.mkdirp(filePath, w(function (e /*, path */) {
+        Fse.mkdirp(Path.dirname(finalPath), w(function (e /*, path */) {
             if (e) { // does not throw error if the directory already existed
                 w.abort();
                 return void cb(e.code);
             }
         }));
-        Fse.mkdirp(ownPath, w(function (e /*, path */) {
+        Fse.mkdirp(Path.dirname(finalOwnPath), w(function (e /*, path */) {
             if (e) { // does not throw error if the directory already existed
                 w.abort();
                 return void cb(e.code);
