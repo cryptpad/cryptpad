@@ -407,8 +407,8 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
 
         var webChannel;
         roster.stop = function () {
-            if (webChannel && typeof(webChannel.leave) === 'function') {
-                webChannel.leave();
+            if (ref.internal.cpNetflux && typeof(ref.internal.cpNetflux) === "function") {
+                ref.internal.cpNetflux.stop();
                 clearPendingCheckpoints();
             } else {
                 console.log("FAILED TO LEAVE");
@@ -643,7 +643,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
                 console.log("Synchronizing from checkpoint");
             }
 
-            CPNetflux.start({
+            ref.internal.cpNetflux = CPNetflux.start({
                 // if you don't have a lastKnownHash you will need the full history
                 // passing -1 forces the server to send all messages, otherwise
                 // malicious users with the signing key could send cp| messages
