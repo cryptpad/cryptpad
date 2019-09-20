@@ -310,8 +310,8 @@ define([
                 // If you're allowed to edit the roster, try to update your data
                 if (!rosterData.edit) { return; }
                 var data = {};
-                var myData = Messaging.createData(ctx.store.proxy);
-                delete myData.channel;
+                var myData = Messaging.createData(ctx.store.proxy, false);
+                myData.pending = false;
                 data[ctx.store.proxy.curvePublic] = myData;
                 roster.describe(data, function (err) {
                     if (!err) { return; }
@@ -448,6 +448,19 @@ define([
         });
     };
 
+    var joinTeam = function (ctx, data, cId, cb) {
+        var team = data.team;
+        if (!team.hash || !team.channel || !team.password
+            || !team.keys || !team.metadata) { return void cb({error: 'EINVAL'}); }
+        var id = Util.createRandomInteger();
+        ctx.store.proxy.teams[id] = team;
+        ctx.onReadyHandlers[id] = [];
+        openChannel(ctx, team, id, function (obj) {
+            if (!(obj && obj.error)) { console.debug('Team joined:' + id); }
+            cb(obj);
+        });
+    };
+
     var getTeamRoster = function (ctx, data, cId, cb) {
         var teamId = data.teamId;
         if (!teamId) { return void cb({error: 'EINVAL'}); }
@@ -496,6 +509,43 @@ define([
         team.roster.describe(obj, function (err) {
             if (err) { return void cb({error: err}); }
             cb();
+        });
+    };
+
+    // TODO send guest keys only in the future
+    var getInviteData = function (ctx, teamId) {
+        var teamData = Util.find(ctx, ['store', 'proxy', 'teams', teamId]);
+        if (!teamData) { return; }
+        var data = Util.clone(teamData);
+        delete data.owner;
+        return data;
+    };
+
+    var inviteToTeam = function (ctx, data, cId, cb) {
+        var teamId = data.teamId;
+        if (!teamId) { return void cb({error: 'EINVAL'}); }
+        var team = ctx.teams[teamId];
+        if (!team) { return void cb ({error: 'ENOENT'}); }
+        if (!team.roster) { return void cb({error: 'NO_ROSTER'}); }
+        var user = data.user;
+        if (!user || !user.curvePublic || !user.notifications) { return void cb({error: 'MISSING_DATA'}); }
+        delete user.channel;
+        delete user.lastKnownHash;
+        user.pending = true;
+
+        var obj = {};
+        obj[user.curvePublic] = user;
+        team.roster.add(obj, function (err) {
+            if (err && err !== 'NO_CHANGE') { return void cb({error: err}); }
+            ctx.store.mailbox.sendTo('INVITE_TO_TEAM', {
+                user: Messaging.createData(ctx.store.proxy, false),
+                team: getInviteData(ctx, teamId)
+            }, {
+                channel: user.notifications,
+                curvePublic: user.curvePublic
+            }, function (obj) {
+                cb(obj);
+            });
         });
     };
 
@@ -584,7 +634,8 @@ define([
             pinPads: cfg.pinPads,
             emit: emit,
             onReadyHandlers: {},
-            teams: {}
+            teams: {},
+            updateMetadata: cfg.updateMetadata
         };
 
         var teams = store.proxy.teams = store.proxy.teams || {};
@@ -608,13 +659,30 @@ define([
             Object.keys(teams).forEach(function (id) {
                 t[id] = {
                     name: teams[id].metadata.name,
-                    edPublic: Util.find(teams[id], ['keys', 'drive', 'edPublic'])
+                    edPublic: Util.find(teams[id], ['keys', 'drive', 'edPublic']),
+                    avatar: Util.find(teams[id], ['metadata', 'avatar'])
                 };
             });
             return t;
         };
         team.getTeams = function () {
             return Object.keys(ctx.teams);
+        };
+        team.removeFromTeam = function (teamId, curve) {
+            if (!teams[teamId]) { return; }
+            if (ctx.onReadyHandlers[teamId]) {
+                ctx.onReadyHandlers[teamId].push({cb : function () {
+                    ctx.teams[teamId].roster.remove([curve], function (err) {
+                        if (err && err !== 'NO_CHANGE') { console.error(err); }
+                    });
+                }});
+                return;
+            }
+            if (!ctx.teams[teamId]) { return void console.error("TEAM MODULE ERROR"); }
+            ctx.teams[teamId].roster.remove([curve], function (err) {
+                if (err && err !== 'NO_CHANGE') { console.error(err); }
+            });
+
         };
         team.removeClient = function (clientId) {
             removeClient(ctx, clientId);
@@ -643,6 +711,12 @@ define([
             }
             if (cmd === 'DESCRIBE_USER') {
                 return void describeUser(ctx, data, clientId, cb);
+            }
+            if (cmd === 'INVITE_TO_TEAM') {
+                return void inviteToTeam(ctx, data, clientId, cb);
+            }
+            if (cmd === 'JOIN_TEAM') {
+                return void joinTeam(ctx, data, clientId, cb);
             }
             if (cmd === 'REMOVE_USER') {
                 return void removeUser(ctx, data, clientId, cb);

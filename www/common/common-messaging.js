@@ -10,7 +10,7 @@ define([
     var Msg = {};
 
     var createData = Msg.createData = function (proxy, hash) {
-        return {
+        var data = {
             channel: hash || Hash.createChannelId(),
             displayName: proxy['cryptpad.username'],
             profile: proxy.profile && proxy.profile.view,
@@ -19,6 +19,8 @@ define([
             notifications: Util.find(proxy, ['mailboxes', 'notifications', 'channel']),
             avatar: proxy.profile && proxy.profile.avatar
         };
+        if (hash === false) { delete data.channel; }
+        return data;
     };
 
     var getFriend = Msg.getFriend = function (proxy, pubkey) {

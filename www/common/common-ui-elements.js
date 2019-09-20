@@ -146,18 +146,6 @@ define([
             }, function () {
             });
             var $div = $(removeCol.div);
-            var others1 = removeCol.others;
-            $div.append(h('div.cp-share-grid', others1));
-            $div.find('.cp-share-friend').click(function () {
-                var sel = $(this).hasClass('cp-selected');
-                if (!sel) {
-                    $(this).addClass('cp-selected');
-                } else {
-                    var order = $(this).attr('data-order');
-                    order = order ? 'order:'+order : '';
-                    $(this).removeClass('cp-selected').attr('style', order);
-                }
-            });
             // When clicking on the remove button, we check the selected users.
             // If you try to remove yourself, we'll display an additional warning message
             var btnMsg = pending ? Messages.owner_removePendingButton : Messages.owner_removeButton;
@@ -244,18 +232,6 @@ define([
                 //console.log(arguments);
             });
             $div2 = $(addCol.div);
-            var others2 = addCol.others;
-            $div2.append(h('div.cp-share-grid', others2));
-            $div2.find('.cp-share-friend').click(function () {
-                var sel = $(this).hasClass('cp-selected');
-                if (!sel) {
-                    $(this).addClass('cp-selected');
-                } else {
-                    var order = $(this).attr('data-order');
-                    order = order ? 'order:'+order : '';
-                    $(this).removeClass('cp-selected').attr('style', order);
-                }
-            });
             // When clicking on the add button, we get the selected users.
             var addButton = h('button.no-margin', Messages.owner_addButton);
             $(addButton).click(function () {
@@ -724,6 +700,19 @@ define([
             onSelect();
         });
 
+        $(div).append(h('div.cp-share-grid', others));
+        $div.on('click', '.cp-share-friend', function () {
+            var sel = $(this).hasClass('cp-selected');
+            if (!sel) {
+                $(this).addClass('cp-selected');
+            } else {
+                var order = $(this).attr('data-order');
+                order = order ? 'order:'+order : '';
+                $(this).removeClass('cp-selected').attr('style', order);
+            }
+            onSelect();
+        });
+
         return {
             others: others,
             div: div
@@ -749,7 +738,7 @@ define([
         // Replace "copy link" by "share with friends" if at least one friend is selected
         // Also create the "share with friends" button if it doesn't exist
         var refreshButtons = function () {
-            var $nav = $div.parents('.alertify').find('nav');
+            var $nav = $div.closest('.alertify').find('nav');
 
             var friendMode = $div.find('.cp-share-friend.cp-selected').length;
             if (friendMode) {
@@ -759,6 +748,7 @@ define([
             }
         };
 
+        config.noInclude = true;
         var friendsList = UIElements.getFriendsList(Messages.share_linkFriends, config, refreshButtons);
         var friendDiv = friendsList.div;
         $div.append(friendDiv);
@@ -784,7 +774,6 @@ define([
             friends: teams
         }, refreshButtons);
         $div.append(teamsList.div);
-        $(teamsList.div).append(h('div.cp-share-grid', teamsList.others));
 
         var shareButtons = [{
             className: 'primary cp-share-with-friends',
@@ -870,19 +859,9 @@ define([
                 $(el).attr('data-order', i).css('order', i);
             });
             // Display them
+            $(friendDiv).find('.cp-share-grid').detach();
             $(friendDiv).append(h('div.cp-share-grid', others));
             $div.append(UI.dialog.getButtons(shareButtons, config.onClose));
-            $div.find('.cp-share-friend').click(function () {
-                var sel = $(this).hasClass('cp-selected');
-                if (!sel) {
-                    $(this).addClass('cp-selected');
-                } else {
-                    var order = $(this).attr('data-order');
-                    order = order ? 'order:'+order : '';
-                    $(this).removeClass('cp-selected').attr('style', order);
-                }
-                refreshButtons();
-            });
             refreshButtons();
         });
         return div;
@@ -903,7 +882,6 @@ define([
         var friendsUIClass = hasFriends ? '.cp-share-columns' : '';
 
         var mainShareColumn = h('div.cp-share-column.contains-nav', [
-            hasFriends ? h('p', Messages.share_description) : undefined,
             h('label', Messages.share_linkAccess),
             h('br'),
             UI.createRadio('cp-share-editable', 'cp-share-editable-true',
@@ -1193,6 +1171,78 @@ define([
         $(mainShareColumn).append(UI.dialog.getButtons(shareButtons, config.onClose)).appendTo($link);
         $(friendsList).appendTo($link);
         return UI.dialog.customModal(link, {buttons: linkButtons});
+    };
+
+    UIElements.createInviteTeamModal = function (config) {
+        var common = config.common;
+        var hasFriends = Object.keys(config.friends || {}).length !== 0;
+        var friendsList = hasFriends ? createShareWithFriends(config) : undefined;
+
+        if (!hasFriends) {
+            return void UI.alert('No friend to invite'); // XXX
+        }
+        var privateData = common.getMetadataMgr().getPrivateData();
+        var team = privateData.teams[config.teamId];
+        if (!team) { return void UI.warn(Messages.error); }
+
+        var module = config.module || common.makeUniversal('team', { onEvent: function () {} });
+
+        var $div;
+        var refreshButton = function () {
+            if (!$div) { return; }
+            var $modal = $div.closest('.alertify');
+            var $nav = $modal.find('nav');
+            var $btn = $nav.find('button.primary');
+            var selected = $div.find('.cp-share-friend.cp-selected').length;
+            if (selected) {
+                $btn.prop('disabled', '');
+            } else {
+                $btn.prop('disabled', 'disabled');
+            }
+        };
+        var list = UIElements.getFriendsList('Pick the friends you want to invite to the team', { // XXX
+            common: common,
+            friends: config.friends,
+        }, refreshButton);
+        $div = $(list.div);
+        refreshButton();
+
+        var buttons = [{
+            className: 'cancel',
+            name: Messages.cancel,
+            onClick: function () {},
+            keys: [27]
+        }, {
+            className: 'primary',
+            name: 'INVITE', // XXX
+            onClick: function () {
+                var $sel = $div.find('.cp-share-friend.cp-selected');
+                var sel = $sel.toArray();
+                if (!sel.length) { return; }
+
+                var friends = sel.forEach(function (el) {
+                    var curve = $(el).attr('data-curve');
+                    module.execCommand('INVITE_TO_TEAM', {
+                        teamId: config.teamId,
+                        user: config.friends[curve]
+                    }, function (obj) {
+                        if (obj && obj.error) {
+                            console.error(obj.error);
+                            return UI.warn(Messages.error);
+                        }
+                    });
+                });
+            },
+            keys: [13]
+        }];
+
+        var content = h('div', [
+            h('h4', 'Invite friends to your team: '+ team.name),
+            list.div
+        ]);
+
+        var modal = UI.dialog.customModal(content, {buttons: buttons});
+        UI.openCustomModal(modal);
     };
 
     UIElements.createButton = function (common, type, rightside, data, callback) {
@@ -3503,27 +3553,7 @@ define([
         var content = h('div.cp-share-modal', [
             setHTML(h('p'), text)
         ]);
-        var buttons = [{
-            name: Messages.friendRequest_later,
-            onClick: function () {},
-            keys: [27]
-        }, {
-            className: 'primary',
-            name: Messages.friendRequest_accept,
-            onClick: function () {
-                todo(true);
-            },
-            keys: [13]
-        }, {
-            className: 'primary',
-            name: Messages.friendRequest_decline,
-            onClick: function () {
-                todo(false);
-            },
-            keys: [[13, 'ctrl']]
-        }];
-        var modal = UI.dialog.customModal(content, {buttons: buttons});
-        UI.openCustomModal(modal);
+        UI.proposal(content, todo);
     };
 
     UIElements.displayAddOwnerModal = function (common, data) {
@@ -3648,27 +3678,85 @@ define([
             });
         };
 
-        var buttons = [{
-            name: Messages.friendRequest_later,
-            onClick: function () {},
-            keys: [27]
-        }, {
-            className: 'primary',
-            name: Messages.friendRequest_accept,
-            onClick: function () {
-                todo(true);
-            },
-            keys: [13]
-        }, {
-            className: 'primary',
-            name: Messages.friendRequest_decline,
-            onClick: function () {
-                todo(false);
-            },
-            keys: [[13, 'ctrl']]
-        }];
-        var modal = UI.dialog.customModal(div, {buttons: buttons});
-        UI.openCustomModal(modal);
+        UI.proposal(div, todo);
+    };
+
+    UIElements.getVerifiedFriend = function (common, curve, name) {
+        var priv = common.getMetadataMgr().getPrivateData();
+        var verified = h('p');
+        var $verified = $(verified);
+
+        if (priv.friends && priv.friends[curve]) {
+            $verified.addClass('cp-notifications-requestedit-verified');
+            var f = priv.friends[curve];
+            $verified.append(h('span.fa.fa-certificate'));
+            var $avatar = $(h('span.cp-avatar')).appendTo($verified);
+            $verified.append(h('p', Messages._getKey('requestEdit_fromFriend', [f.displayName])));
+            common.displayAvatar($avatar, f.avatar, f.displayName);
+        } else {
+            $verified.append(Messages._getKey('requestEdit_fromStranger', [name]));
+        }
+        return verified;
+    };
+
+    UIElements.displayInviteTeamModal = function (common, data) {
+        var priv = common.getMetadataMgr().getPrivateData();
+        var user = common.getMetadataMgr().getUserData();
+        var sframeChan = common.getSframeChannel();
+        var msg = data.content.msg;
+
+        var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
+        var teamName = Util.fixHTML(Util.find(msg, ['content', 'team', 'metadata', 'name']) || '');
+
+        var verified = UIElements.getVerifiedFriend(common, msg.author, name);
+
+        //var text = Messages._getKey('', [name, title]); // XXX
+        var text = name + " has invited you to join the team <b>" + teamName +"</b>";
+
+        var div = h('div', [
+            UI.setHTML(h('p'), text),
+            verified
+        ]);
+
+        var module = common.makeUniversal('team');
+
+        var answer = function (yes) {
+            common.mailbox.sendTo("INVITE_TO_TEAM_ANSWER", {
+                answer: yes,
+                teamChannel: msg.content.team.channel,
+                user: {
+                    displayName: user.name,
+                    avatar: user.avatar,
+                    profile: user.profile,
+                    notifications: user.notifications,
+                    curvePublic: user.curvePublic,
+                    edPublic: priv.edPublic
+                }
+            }, {
+                channel: msg.content.user.notifications,
+                curvePublic: msg.content.user.curvePublic
+            });
+            common.mailbox.dismiss(data, function (err) {
+                console.log(err);
+            });
+        };
+        var todo = function (yes) {
+            if (yes) {
+                // ACCEPT
+                module.execCommand('JOIN_TEAM', {
+                    team: msg.content.team
+                }, function (obj) {
+                    if (obj && obj.error) { return void UI.warn(Messages.error); }
+                    answer(true);
+                });
+                return;
+            }
+
+            // DECLINE
+            answer(false);
+        };
+
+        UI.proposal(div, todo);
     };
 
     return UIElements;

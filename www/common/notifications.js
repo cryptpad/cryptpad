@@ -145,22 +145,10 @@ define([
                 var link = h('a', {
                     href: '#'
                 }, Messages.requestEdit_viewPad);
-                var verified = h('p');
-                var $verified = $(verified);
 
                 var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
                 var title = Util.fixHTML(msg.content.title);
-
-                if (priv.friends && priv.friends[msg.author]) {
-                    $verified.addClass('cp-notifications-requestedit-verified');
-                    var f = priv.friends[msg.author];
-                    $verified.append(h('span.fa.fa-certificate'));
-                    var $avatar = $(h('span.cp-avatar')).appendTo($verified);
-                    $verified.append(h('p', Messages._getKey('requestEdit_fromFriend', [f.displayName])));
-                    common.displayAvatar($avatar, f.avatar, f.displayName);
-                } else {
-                    $verified.append(Messages._getKey('requestEdit_fromStranger', [name]));
-                }
+                var verified = UIElements.getVerifiedFriend(common, msg.author, name);
 
                 var div = h('div', [
                     UI.setHTML(h('p'), Messages._getKey('requestEdit_confirm', [title, name])),
@@ -267,6 +255,42 @@ define([
             content.dismissHandler = defaultDismiss(common, data);
         }
     };
+
+    handlers['INVITE_TO_TEAM'] = function (common, data) {
+        var content = data.content;
+        var msg = content.msg;
+
+        // Display the notification
+        var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
+        var teamName = Util.fixHTML(Util.find(msg, ['content', 'team', 'metadata', 'name']) || '');
+        content.getFormatText = function () {
+            var text = name + " has invited you to join the team <b>" + teamName +"</b>";
+            return text;
+        };
+        if (!content.archived) {
+            content.handler = function () {
+                UIElements.displayInviteTeamModal(common, data);
+            };
+        }
+    };
+
+    handlers['INVITE_TO_TEAM_ANSWER'] = function (common, data) {
+        var content = data.content;
+        var msg = content.msg;
+
+        // Display the notification
+        var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
+        var teamName = Util.fixHTML(Util.find(msg, ['content', 'team', 'metadata', 'name']) || '');
+        var key = 'owner_request_' + (msg.content.answer ? 'accepted' : 'declined');
+        content.getFormatText = function () {
+            //return Messages._getKey(key, [name, title]); // XXX
+            return name +' has ' + (msg.content.answer ? 'accepted' : 'declined') + ' your offer to join the team <b>' + teamName + '</b>';
+        };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
 
     // NOTE: don't forget to fixHTML everything returned by "getFormatText"
 

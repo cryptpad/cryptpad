@@ -397,7 +397,7 @@ define([
         var theirRole = ROLES.indexOf(data.role) || 0;
         // If they're a member and I have a higher role than them, I can promote them to admin
         if (!isMe && myRole > theirRole && theirRole === 0) {
-            var promote = h('fa.fa-angle-double-up', {
+            var promote = h('span.fa.fa-angle-double-up', {
                 title: 'Promote' // XXX
             });
             $(promote).click(function () {
@@ -410,7 +410,7 @@ define([
         // If I'm not a member and I have an equal or higher role than them, I can demote them
         // (if they're not already a MEMBER)
         if (!isMe && myRole >= theirRole && theirRole > 0) {
-            var demote = h('fa.fa-angle-double-down', {
+            var demote = h('span.fa.fa-angle-double-down', {
                 title: 'Demote' // XXX
             });
             $(demote).click(function () {
@@ -422,7 +422,7 @@ define([
         }
         // If I'm not a member and I have an equal or higher role than them, I can remove them
         if (!isMe && myRole > 0 && myRole >= theirRole) {
-            var remove = h('fa.fa-times', {
+            var remove = h('span.fa.fa-times', {
                 title: 'Remove' // XXX
             });
             $(remove).click(function () {
@@ -460,8 +460,8 @@ define([
     APP.refreshRoster = function (common, roster) {
         if (!roster || typeof(roster) !== "object" || Object.keys(roster) === 0) { return; }
         var metadataMgr = common.getMetadataMgr();
-        var privateData = metadataMgr.getPrivateData();
-        var me = roster[privateData.curvePublic];
+        var userData = metadataMgr.getUserData();
+        var me = roster[userData.curvePublic] || {};
         var owner = Object.keys(roster).filter(function (k) {
             return roster[k].role === "OWNER";
         }).map(function (k) {
@@ -479,7 +479,35 @@ define([
         });
         // XXX LEAVE the team button
         // XXX INVITE to the team button
+        var header = h('div.cp-app-team-roster-header');
+        var $header = $(header);
+
+        // If you're an admin or an owner, you can invite your friends to the team
+        // TODO and acquaintances later?
+        if (me && (me.role === 'ADMIN' || me.role === 'OWNER')) {
+            var invite = h('button.btn.btn-primary', 'INVITE A FRIEND');
+            var inviteFriends = common.getFriends();
+            Object.keys(inviteFriends).forEach(function (curve) {
+                // Keep only friends that are not already in the team and that you can contact
+                // via their mailbox
+                if (roster[curve] && !roster[curve].pending) {
+                    delete inviteFriends[curve];
+                }
+            });
+            var inviteCfg = {
+                teamId: APP.team,
+                common: common,
+                friends: inviteFriends,
+                module: APP.module
+            };
+            $(invite).click(function () {
+                UIElements.createInviteTeamModal(inviteCfg);
+            });
+            $header.append(invite);
+        }
+
         return [
+            header,
             h('h3', 'OWNER'), // XXX
             h('div', owner),
             h('h3', 'ADMINS'), // XXX

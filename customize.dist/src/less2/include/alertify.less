@@ -30,7 +30,7 @@
     // These show only once
 
     .alertify-logs {
-        z-index: 10000; // alertify logs
+        z-index: 100001; // alertify logs should be in front of alertify modals
         @media print {
             visibility: hidden;
         }
@@ -339,7 +339,7 @@
     .alertify-logs {
 
         position: fixed;
-        z-index: 99999; // alertify logs
+        z-index: 100001; // alertify logs (just in front of alertify modals
 
         &.bottom, &:not(.top) {
             bottom: 16px;
@@ -459,8 +459,15 @@
                 }
             }
         }
+        .cp-ownership {
+            & > label {
+                font-weight: bold;
+            }
+        }
+    }
+    .cp-share-column {
         .cp-share-grid, .cp-share-list {
-            .avatar_main(50px);
+            .avatar_main(40px);
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
@@ -513,6 +520,9 @@
                 color: @colortheme_alertify-primary-text;
                 order: -1 !important;
             }
+            .cp-share-friend-avatar {
+                min-height: 40px;
+            }
             .cp-share-friend-name {
                 overflow: hidden;
                 white-space: nowrap;
@@ -523,11 +533,6 @@
             border: 1px solid @colortheme_alertify-primary;
             &.cp-fake-friend {
                 visibility: hidden;
-            }
-        }
-        .cp-ownership {
-            & > label {
-                font-weight: bold;
             }
         }
     }

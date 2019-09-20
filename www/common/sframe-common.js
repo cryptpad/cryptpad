@@ -167,9 +167,11 @@ define([
     // Universal direct channel
     var modules = {};
     funcs.makeUniversal = function (type, cfg) {
-        modules[type] = {
-            onEvent: cfg.onEvent || function () {}
-        };
+        if (cfg && cfg.onEvent) {
+            modules[type] = {
+                onEvent: cfg.onEvent || function () {}
+            };
+        }
         var sframeChan = funcs.getSframeChannel();
         return {
             execCommand: function (cmd, data, cb) {
