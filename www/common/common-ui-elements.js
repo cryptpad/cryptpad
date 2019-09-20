@@ -1176,7 +1176,6 @@ define([
     UIElements.createInviteTeamModal = function (config) {
         var common = config.common;
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
-        var friendsList = hasFriends ? createShareWithFriends(config) : undefined;
 
         if (!hasFriends) {
             return void UI.alert('No friend to invite'); // XXX
@@ -1220,7 +1219,7 @@ define([
                 var sel = $sel.toArray();
                 if (!sel.length) { return; }
 
-                var friends = sel.forEach(function (el) {
+                sel.forEach(function (el) {
                     var curve = $(el).attr('data-curve');
                     module.execCommand('INVITE_TO_TEAM', {
                         teamId: config.teamId,
@@ -3702,7 +3701,6 @@ define([
     UIElements.displayInviteTeamModal = function (common, data) {
         var priv = common.getMetadataMgr().getPrivateData();
         var user = common.getMetadataMgr().getUserData();
-        var sframeChan = common.getSframeChannel();
         var msg = data.content.msg;
 
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;

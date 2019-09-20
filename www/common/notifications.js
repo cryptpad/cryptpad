@@ -139,9 +139,6 @@ define([
         // if not archived, add handlers
         if (!content.archived) {
             content.handler = function () {
-                var metadataMgr = common.getMetadataMgr();
-                var priv = metadataMgr.getPrivateData();
-
                 var link = h('a', {
                     href: '#'
                 }, Messages.requestEdit_viewPad);
@@ -281,7 +278,7 @@ define([
         // Display the notification
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
         var teamName = Util.fixHTML(Util.find(msg, ['content', 'team', 'metadata', 'name']) || '');
-        var key = 'owner_request_' + (msg.content.answer ? 'accepted' : 'declined');
+        //var key = 'owner_request_' + (msg.content.answer ? 'accepted' : 'declined');
         content.getFormatText = function () {
             //return Messages._getKey(key, [name, title]); // XXX
             return name +' has ' + (msg.content.answer ? 'accepted' : 'declined') + ' your offer to join the team <b>' + teamName + '</b>';

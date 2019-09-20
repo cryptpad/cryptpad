@@ -323,7 +323,7 @@ define([
 
         if (invitedTo[content.team.channel]) { return void cb(true); }
 
-        var myTeams = Util.find(ctx, ['store', 'proxy', 'teams'])
+        var myTeams = Util.find(ctx, ['store', 'proxy', 'teams']);
         var alreadyMember = Object.keys(myTeams).some(function (k) {
             var team = myTeams[k];
             return team.channel === content.team.channel;
@@ -349,7 +349,7 @@ define([
             return void cb(true);
         }
 
-        var myTeams = Util.find(ctx, ['store', 'proxy', 'teams'])
+        var myTeams = Util.find(ctx, ['store', 'proxy', 'teams']);
         var teamId;
         var team;
         Object.keys(myTeams).some(function (k) {
