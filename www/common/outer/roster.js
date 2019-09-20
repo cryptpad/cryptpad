@@ -407,7 +407,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
 
         var webChannel;
         roster.stop = function () {
-            if (ref.internal.cpNetflux && typeof(ref.internal.cpNetflux) === "function") {
+            if (ref.internal.cpNetflux && typeof(ref.internal.cpNetflux.stop) === "function") {
                 ref.internal.cpNetflux.stop();
                 clearPendingCheckpoints();
             } else {
