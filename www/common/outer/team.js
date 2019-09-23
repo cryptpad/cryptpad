@@ -250,8 +250,6 @@ define([
             ctx.teams[id] = team;
             registerChangeEvents(ctx, team, proxy);
             SF.loadSharedFolders(ctx.Store, ctx.store.network, team, team.userObject, waitFor);
-            // XXX
-            // Load members pad
         }).nThen(function () {
             if (!team.rpc) { return; }
             var list = getTeamChannelList(ctx, id);
@@ -331,7 +329,7 @@ define([
                 }
                 roster = _roster;
 
-                // XXX update our roster last known hash if a checkpoint was sent in the history
+                rosterData.lastKnownHash = roster.getLastCheckpointHash();
 
                 // If we've been kicked, don't try to update our data, we'll close everything
                 // in the next nThen part
