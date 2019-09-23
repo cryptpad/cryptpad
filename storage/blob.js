@@ -37,6 +37,14 @@ var makeProofPath = function (Env, safeKey, blobId) {
     return Path.join(Env.blobPath, safeKey.slice(0, 3), safeKey, blobId.slice(0, 2), blobId);
 };
 
+var parseProofPath = function (path) {
+    var parts = path.split('/');
+    return {
+        blobId: parts[parts.length -1],
+        safeKey: parts[parts.length - 3],
+    };
+};
+
 // getUploadSize: used by
     // getFileSize
 var getUploadSize = function (Env, blobId, cb) {
@@ -346,11 +354,11 @@ var restoreProof = function (Env, safeKey, blobId, cb) {
     Fse.move(archivePath, proofPath, cb);
 };
 
-var makeWalker = function (n, handleChild, cb) {
+var makeWalker = function (n, handleChild, done) {
     if (!n || typeof(n) !== 'number' || n < 2) { n = 2; }
 
     var W;
-    var nt = nThen(function (w) {
+    nThen(function (w) {
         // this asynchronous bit defers the completion of this block until
         // synchronous execution has completed. This means you must create
         // the walker and start using it synchronously or else it will call back
@@ -358,7 +366,7 @@ var makeWalker = function (n, handleChild, cb) {
         setTimeout(w());
         W = w;
     }).nThen(function () {
-        cb();
+        done();
     });
 
     // do no more than 20 jobs at a time
@@ -366,21 +374,28 @@ var makeWalker = function (n, handleChild, cb) {
 
     var recurse = function (path) {
         tasks.take(function (give) {
-            var done = give(W());
-            Fs.readdir(path, function (err, dir) {
-                if (err) {
-                    if (err.code === 'ENOTDIR') {
-                        return void handleChild(path, done);
+            var next = give(W());
+
+            nThen(function (w) {
+                // check if the path is a directory...
+                Fs.stat(path, w(function (err, stats) {
+                    if (err) { return next(); }
+                    if (!stats.isDirectory()) {
+                        w.abort();
+                        return void handleChild(void 0, path, next);
                     }
-                    // XXX handle other error
-                    return done();
-                }
-                // everything is fine and it's a directory...
-                if (dir.length === 0) { return done(); }
-                dir.forEach(function (d) {
-                    recurse(Path.join(path, d));
+                    // fall through
+                }));
+            }).nThen(function () {
+                // handle directories
+                Fs.readdir(path, function (err, dir) {
+                    if (err) { return next(); }
+                    // everything is fine and it's a directory...
+                    dir.forEach(function (d) {
+                        recurse(Path.join(path, d));
+                    });
+                    next();
                 });
-                done();
             });
         });
     };
@@ -392,17 +407,28 @@ var listProofs = function (root, handler, cb) {
     Fs.readdir(root, function (err, dir) {
         if (err) { return void cb(err); }
 
-        var walk = makeWalker(20, function (path, next) {
+        var walk = makeWalker(20, function (err, path, next) {
             // path is the path to a child node on the filesystem
 
             // next handles the next job in a queue
 
                 // iterate over proofs
                 // check for presence of corresponding files
+            Fs.stat(path, function (err, stats) {
+                if (err) {
+                    return void handler(err, void 0, next);
+                }
 
-            handler(path, next);
-            //console.log(path);
-            //next();
+                var parsed = parseProofPath(path);
+                handler(void 0, {
+                    path: path,
+                    blobId: parsed.blobId,
+                    safeKey: parsed.safeKey,
+                    atime: stats.atime,
+                    ctime: stats.ctime,
+                    mtime: stats.mtime,
+                }, next);
+            });
         }, function () {
             // called when there are no more directories or children to process
             cb();
@@ -420,8 +446,19 @@ var listBlobs = function (root, handler, cb) {
     // iterate over files
     Fs.readdir(root, function (err, dir) {
         if (err) { return void cb(err); }
-        var walk = makeWalker(20, function (path, next) {
-            handler(path, next);
+        var walk = makeWalker(20, function (err, path, next) {
+            Fs.stat(path, function (err, stats) {
+                if (err) {
+                    return void handler(err, void 0, next);
+                }
+
+                handler(void 0, {
+                    blobId: Path.basename(path),
+                    atime: stats.atime,
+                    ctime: stats.ctime,
+                    mtime: stats.mtime,
+                }, next);
+            });
         }, function () {
             cb();
         });
