@@ -891,10 +891,10 @@ define([
             onDirectMessage(ctx, msg, sender);
         });
         ctx.store.network.on('disconnect', function () {
-            ctx.emit('DISCONNECT', null, getAllClients());
+            ctx.emit('DISCONNECT', null, getAllClients(ctx));
         });
         ctx.store.network.on('reconnect', function () {
-            ctx.emit('RECONNECT', null, getAllClients());
+            ctx.emit('RECONNECT', null, getAllClients(ctx));
         });
 
         messenger.onFriendUpdate = function (curve) {
