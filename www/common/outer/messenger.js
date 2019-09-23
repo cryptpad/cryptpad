@@ -191,7 +191,7 @@ define([
             return void console.error(e, msg);
         }
 
-        // Decrypt and parse its content... // XXX decryption outer
+        // Decrypt and parse its content...
         var decryptedMsg = channel.decrypt(parsed0.msg);
         if (!decryptedMsg) { return void console.error("Failed to decrypt message"); }
         var parsed = Util.tryParse(decryptedMsg);
@@ -280,6 +280,8 @@ define([
 
             removeFromFriendList(ctx, curvePublic, function () {
                 channel.wc.leave(Types.unfriend);
+                var network = ctx.store.network;
+                if (channel.onReconnect) { network.off('reconnect', channel.onReconnect); }
                 delete ctx.channels[channel.id];
                 ctx.emit('UNFRIEND', {
                     curvePublic: curvePublic,
@@ -399,6 +401,20 @@ define([
         pushMsg(ctx, channel, msg);
     };
 
+    var onFriendRemoved = function (ctx, curvePublic, chanId) {
+        var channel = ctx.channels[chanId];
+        if (!channel) { return; }
+        if (channel.wc) {
+            channel.wc.leave(Types.unfriend);
+        }
+        var network = ctx.store.network;
+        if (channel.onReconnect) { network.off('reconnect', channel.onReconnect); }
+        delete ctx.channels[channel.id];
+        ctx.emit('UNFRIEND', {
+            curvePublic: curvePublic,
+            fromMe: true
+        }, ctx.friendsClients);
+    };
     var removeFriend = function (ctx, curvePublic, _cb) {
         var cb = Util.once(_cb);
         if (typeof(cb) !== 'function') { return void console.error('NO_CALLBACK'); }
@@ -432,7 +448,7 @@ define([
             var cryptMsg = channel.encrypt(msgStr);
             channel.wc.bcast(cryptMsg).then(function () {}, function (err) {
                 if (err) { return void cb({error:err}); }
-                // XXX call onFriendRemoved here (leave the channel and emit notification to inner)
+                onFriendRemoved(ctx, curvePublic, data.channel);
                 removeFromFriendList(ctx, curvePublic, function () {
                     cb();
                 });
@@ -448,7 +464,7 @@ define([
         var hk = network.historyKeeper;
 
         var keys = data.keys;
-        var encryptor = data.encryptor || Curve.createEncryptor(keys); // XXX encryption
+        var encryptor = data.encryptor || Curve.createEncryptor(keys);
         var channel = {
             id: data.channel,
             isFriendChat: data.isFriendChat,
@@ -527,14 +543,15 @@ define([
         network.join(data.channel).then(onOpen, function (err) {
             console.error(err);
         });
-        network.on('reconnect', function () {
+        channel.onReconnect = function () {
             if (channel && channel.stopped) { return; }
             if (!ctx.channels[data.channel]) { return; }
 
             network.join(data.channel).then(onOpen, function (err) {
                 console.error(err);
             });
-        });
+        };
+        network.on('reconnect', channel.onReconnect);
     };
 
     var sendMessage = function (ctx, id, payload, cb) {
@@ -556,7 +573,6 @@ define([
                         Messages.anonymous + '#' + proxy.uid.slice(0,5);
             msg.push(name);
         }
-        // XXX encryption
         var msgStr = JSON.stringify(msg);
         var cryptMsg = channel.encrypt(msgStr);
 
@@ -605,7 +621,6 @@ define([
             });
         }
 
-        // XXX encryption
         var proxy = ctx.store.proxy;
         var keys = Curve.deriveKeys(friend.curvePublic, proxy.curvePrivate);
         var data = {
@@ -837,6 +852,8 @@ define([
 
             if (clients.length === 0) {
                 if (channel.wc) { channel.wc.leave(); }
+                var network = ctx.store.network;
+                if (channel.onReconnect) { network.off('reconnect', channel.onReconnect); }
                 channel.stopped = true;
                 delete ctx.channels[id];
                 return true;
@@ -866,7 +883,7 @@ define([
             emit: emit,
             friendsClients: [],
             channels: {},
-            validateKeys: {} // XXX encryption
+            validateKeys: {}
         };
 
 
@@ -907,16 +924,7 @@ define([
             });
         };
         messenger.onFriendRemoved = function (curvePublic, chanId) {
-            var channel = ctx.channels[chanId];
-            if (!channel) { return; }
-            if (channel.wc) {
-                channel.wc.leave(Types.unfriend);
-            }
-            delete ctx.channels[channel.id];
-            emit('UNFRIEND', {
-                curvePublic: curvePublic,
-                fromMe: true
-            }, ctx.friendsClients);
+            onFriendRemoved(ctx, curvePublic, chanId);
         };
 
         messenger.storeValidateKey = function (chan, key) {
@@ -929,6 +937,8 @@ define([
                 var channel = ctx.channels[chatChan];
                 if (channel.padChan !== padChan) { return; }
                 if (channel.wc) { channel.wc.leave(); }
+                var network = ctx.store.network;
+                if (channel.onReconnect) { network.off('reconnect', channel.onReconnect); }
                 channel.stopped = true;
                 delete ctx.channels[chatChan];
                 return true;
