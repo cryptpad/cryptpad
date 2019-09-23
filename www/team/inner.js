@@ -552,19 +552,21 @@ define([
         var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide();
         var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide();
 
-        var md;
-
         var todo = function () {
             var newName = $input.val();
-            if (newName === md.name) { return; }
-            md.name = newName;
             $spinner.show();
-            APP.module.execCommand('SET_TEAM_METADATA', {
-                teamId: APP.team,
-                metadata: md
-            }, function () {
-                $spinner.hide();
-                $ok.show();
+            APP.module.execCommand('GET_TEAM_METADATA', {
+                teamId: APP.team
+            }, function (obj) {
+                if (obj && obj.error) { return void UI.warn(Messages.error); }
+                obj.name = newName;
+                APP.module.execCommand('SET_TEAM_METADATA', {
+                    teamId: APP.team,
+                    metadata: obj
+                }, function () {
+                    $spinner.hide();
+                    $ok.show();
+                });
             });
         };
 
@@ -574,7 +576,6 @@ define([
             if (obj && obj.error) {
                 return void UI.warn(Messages.error);
             }
-            md = obj;
             $input.val(obj.name);
             $input.on('keyup', function (e) {
                 if ($input.val() !== obj.name) { $ok.hide(); }
@@ -594,16 +595,20 @@ define([
         // Upload
         var avatar = h('div.cp-team-avatar.cp-avatar');
         var $avatar = $(avatar);
-        var md;
         var data = UIElements.addAvatar(common, function (ev, data) {
             if (!data.url) { return void UI.warn(Messages.error); }
-            md.avatar = data.url;
-            APP.module.execCommand('SET_TEAM_METADATA', {
-                teamId: APP.team,
-                metadata: md
-            }, function () {
-                $avatar.empty();
-                common.displayAvatar($avatar, data.url);
+            APP.module.execCommand('GET_TEAM_METADATA', {
+                teamId: APP.team
+            }, function (obj) {
+                if (obj && obj.error) { return void UI.warn(Messages.error); }
+                obj.avatar = data.url;
+                APP.module.execCommand('SET_TEAM_METADATA', {
+                    teamId: APP.team,
+                    metadata: obj
+                }, function () {
+                    $avatar.empty();
+                    common.displayAvatar($avatar, data.url);
+                });
             });
         });
         var $upButton = common.createButton('upload', false, data);
@@ -617,7 +622,6 @@ define([
                 return void UI.warn(Messages.error);
             }
             var val = obj.avatar;
-            md = obj;
             if (!val) {
                 var $img = $('<img>', {
                     src: '/customize/images/avatar.png',
