@@ -197,14 +197,22 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         }
         var members = roster.state.members;
 
-        var changed = false;
+        // validate first...
         args.forEach(function (curve) {
             if (!isValidId(curve)) { throw new Error("INVALID_CURVE_KEY"); }
 
-            // don't try to remove something that isn't there
-            if (!members[curve]) { return; }
+            // even members can remove themselves
+            if (curve === author) { return; }
+
+            // but if it concerns anyone else, validate that the author has sufficient permissions
             var role = members[curve].role;
             if (!canRemoveRole(author, role, members)) { throw new Error("INSUFFICIENT_PERMISSIONS"); }
+        });
+
+        var changed = false;
+        args.forEach(function (curve) {
+            // don't try to remove something that isn't there
+            if (!members[curve]) { return; }
             changed = true;
             delete members[curve];
         });
@@ -352,6 +360,8 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         var keys = config.keys;
         var me = keys.myCurvePublic;
         var channel = config.channel;
+        var lastKnownHash = config.lastKnownHash || -1;
+
         var ref = {
             state: {
                 members: { },
@@ -360,7 +370,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             internal: {
                 initialized: false,
                 sinceLastCheckpoint: 0,
-                lastCheckpointHash: -1
+                lastCheckpointHash: lastKnownHash,
             },
         };
         var roster = {};
@@ -462,7 +472,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             try {
                 changed = handleCommand(parsed, author, ref);
             } catch (err) {
-                error = err;
+                error = err.message;
             }
 
             var id = getMessageId(hash);
@@ -517,7 +527,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
                 // simulate the command before you send it
                 changed = simulate(msg, keys.myCurvePublic, ref);
             } catch (err) {
-                return void cb(err);
+                return void cb(err.message);
             }
             if (!changed) { return void cb("NO_CHANGE"); }
 
@@ -533,7 +543,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
                 channel,
                 ciphertext
             ], function (err) {
-                if (err) { return response.handle(id, [err]); }
+                if (err) { return response.handle(id, [err.message || err]); }
             });
             return id;
         };
@@ -644,7 +654,6 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
                 return void cb(err);
             }
         }).nThen(function () {
-            var lastKnownHash = config.lastKnownHash || -1;
             if (typeof(lastKnownHash) === 'string') {
                 console.log("Synchronizing from checkpoint");
             }

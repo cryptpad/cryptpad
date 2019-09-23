@@ -190,14 +190,13 @@ var createUser = function (config, cb) {
         }));
     }).nThen(function () {
 /*
-        // XXX race condition because both users try to pin things...
+        // FIXME race condition because both users try to pin things...
         user.team_rpc.getServerHash(w(function (err, hash) {
             if (err) {
                 w.abort();
                 return void cb(err);
             }
-
-            /*
+/*
             if (!hash || hash[0] !== EMPTY_ARRAY_HASH) {
                 console.error("EXPECTED EMPTY ARRAY HASH");
                 process.exit(1);
