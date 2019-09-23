@@ -1,6 +1,7 @@
 var nThen = require("nthen");
 
 var Store = require("../storage/file");
+var BlobStore = require("../storage/blob");
 var Pinned = require("./pinned");
 var config = require("../lib/load-config");
 
@@ -14,9 +15,16 @@ var inactiveTime = +new Date() - (config.inactiveTime * 24 * 3600 * 1000);
 // files which were archived before this date can be considered safe to remove
 var retentionTime = +new Date() - (config.archiveRetentionTime * 24 * 3600 * 1000);
 
+var getNewestTime = function (stats) {
+    return stats[['atime', 'ctime', 'mtime'].reduce(function (a, b) {
+        return stats[b] > stats[a]? b: a;
+    })];
+};
+
 var store;
 var pins;
 var Log;
+var blobs;
 nThen(function (w) {
     // load the store which will be used for iterating over channels
     // and performing operations like archival and deletion
@@ -40,8 +48,17 @@ nThen(function (w) {
     Logger.create(config, w(function (_) {
         Log = _;
     }));
+
+    config.getSession = function () {};
+    BlobStore.create(config, w(function (err, _) {
+        if (err) {
+            w.abort();
+            return console.error(err);
+        }
+        blobs = _;
+    }));
 }).nThen(function (w) {
-    // this block will iterate over archived channels and remove them
+    // this block will iterate over archived channels and removes them
     // if they've been in cold storage for longer than your configured archive time
 
     // if the admin has not set an 'archiveRetentionTime', this block makes no sense
@@ -89,6 +106,104 @@ nThen(function (w) {
     };
 
     store.listArchivedChannels(handler, w(done));
+}).nThen(function (w) {
+    if (typeof(config.archiveRetentionTime) !== "number") { return; }
+    var removed = 0;
+    blobs.list.archived.proofs(function (err, item, next) {
+        if (err) {
+            Log.error("EVICT_BLOB_LIST_ARCHIVED_PROOF_ERROR", err);
+            return void next();
+        }
+        if (pins[item.blobId]) { return void next(); }
+        if (item && getNewestTime(item) > retentionTime) { return void next(); }
+        blobs.remove.archived.proof(item.safeKey, item.blobId, (function (err) {
+            if (err) {
+                Log.error("EVICT_ARCHIVED_BLOB_PROOF_ERROR", item);
+                return void next();
+            }
+            Log.info("EVICT_ARCHIVED_BLOB_PROOF", item);
+            removed++;
+            next();
+        }));
+    }, w(function () {
+        Log.info('EVICT_ARCHIVED_BLOB_PROOFS_REMOVED', removed);
+    }));
+}).nThen(function (w) {
+    if (typeof(config.archiveRetentionTime) !== "number") { return; }
+    var removed = 0;
+    blobs.list.archived.blobs(function (err, item, next) {
+        if (err) {
+            Log.error("EVICT_BLOB_LIST_ARCHIVED_BLOBS_ERROR", err);
+            return void next();
+        }
+        if (pins[item.blobId]) { return void next(); }
+        if (item && getNewestTime(item) > retentionTime) { return void next(); }
+        blobs.remove.archived.blob(item.blobId, function (err) {
+            if (err) {
+                Log.error("EVICT_ARCHIVED_BLOB_ERROR", item);
+                return void next();
+            }
+            Log.info("EVICT_ARCHIVED_BLOB", item);
+            removed++;
+            next();
+        });
+    }, w(function () {
+        Log.info('EVICT_ARCHIVED_BLOBS_REMOVED', removed);
+    }));
+/*  TODO find a reliable metric for determining the activity of blobs...
+}).nThen(function (w) {
+    var blobCount = 0;
+    var lastHour = 0;
+    blobs.list.blobs(function (err, item, next) {
+        blobCount++;
+        if (err) {
+            Log.error("EVICT_BLOB_LIST_BLOBS_ERROR", err);
+            return void next();
+        }
+        if (pins[item.blobId]) { return void next(); }
+        if (item && getNewestTime(item) > retentionTime) { return void next(); }
+        // TODO determine when to retire blobs
+        console.log(item);
+        next();
+    }, w(function () {
+        console.log("Listed %s blobs", blobCount);
+        console.log("Listed %s blobs accessed in the last hour", lastHour);
+    }));
+}).nThen(function (w) {
+    var proofCount = 0;
+    blobs.list.proofs(function (err, item, next) {
+        proofCount++;
+        if (err) {
+            next();
+            return void Log.error("EVICT_BLOB_LIST_PROOFS_ERROR", err);
+        }
+        if (pins[item.blobId]) { return void next(); }
+        if (item && getNewestTime(item) > retentionTime) { return void next(); }
+        nThen(function (w) {
+            blobs.size(item.blobId, w(function (err, size) {
+                if (err) {
+                    w.abort();
+                    next();
+                    return void Log.error("EVICT_BLOB_LIST_PROOFS_ERROR", err);
+                }
+                if (size !== 0) {
+                    w.abort();
+                    next();
+                }
+            }));
+        }).nThen(function () {
+            blobs.remove.proof(item.safeKey, item.blobId, function (err) {
+                next();
+                if (err) {
+                    return Log.error("EVICT_BLOB_PROOF_LONELY_ERROR", item);
+                }
+                return Log.info("EVICT_BLOB_PROOF_LONELY", item);
+            });
+        });
+    }, function () {
+        console.log("Listed %s blob proofs", proofCount);
+    });
+*/
 }).nThen(function (w) {
     var removed = 0;
     var channels = 0;

@@ -820,7 +820,21 @@ var removeOwnedChannel = function (Env, channelId, unsafeKey, cb) {
             }));
         }).nThen(function (w) {
             // remove the blob
-            Env.blobStore.remove(blobId, w(function (err) {
+
+            if (Env.retainData) {
+                return void Env.blobStore.archive.blob(blobId, w(function (err) {
+                    Log.info('ARCHIVAL_OWNED_FILE_BY_OWNER_RPC', {
+                        safeKey: safeKey,
+                        blobId: blobId,
+                        status: err? String(err): 'SUCCESS',
+                    });
+                    if (err) {
+                        w.abort();
+                        return void cb(err);
+                    }
+                }));
+            }
+            Env.blobStore.remove.blob(blobId, w(function (err) {
                 Log.info('DELETION_OWNED_FILE_BY_OWNER_RPC', {
                     safeKey: safeKey,
                     blobId: blobId,
@@ -833,7 +847,20 @@ var removeOwnedChannel = function (Env, channelId, unsafeKey, cb) {
             }));
         }).nThen(function () {
             // remove the proof
-            Env.blobStore.removeProof(safeKey, blobId, function (err) {
+            if (Env.retainData) {
+                return void Env.blobStore.archive.proof(safeKey, blobId, function (err) {
+                    Log.info("ARCHIVAL_PROOF_REMOVAL_BY_OWNER_RPC", {
+                        safeKey: safeKey,
+                        blobId: blobId,
+                        status: err? String(err): 'SUCCESS',
+                    });
+                    if (err) {
+                        return void cb("E_PROOF_REMOVAL");
+                    }
+                });
+            }
+
+            Env.blobStore.remove.proof(safeKey, blobId, function (err) {
                 Log.info("DELETION_PROOF_REMOVAL_BY_OWNER_RPC", {
                     safeKey: safeKey,
                     blobId: blobId,
@@ -1692,6 +1719,7 @@ RPC.create = function (
         BlobStore.create({
             blobPath: config.blobPath,
             blobStagingPath: config.blobStagingPath,
+            archivePath: config.archivePath,
             getSession: function (safeKey) {
                 return getSession(Sessions, safeKey);
             },

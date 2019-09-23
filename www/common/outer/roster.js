@@ -360,6 +360,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             internal: {
                 initialized: false,
                 sinceLastCheckpoint: 0,
+                lastCheckpointHash: -1
             },
         };
         var roster = {};
@@ -393,6 +394,10 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         roster.getState = function () {
             //if (!isMap(ref.state)) { return; }
             return Util.clone(ref.state);
+        };
+
+        roster.getLastCheckpointHash = function () {
+            return ref.internal.lastCheckpointHash || -1;
         };
 
         var clearPendingCheckpoints = function () {
@@ -481,6 +486,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
                 events.checkpoint.fire(hash);
                 // reset the counter for messages since the last checkpoint
                 ref.internal.sinceLastCheckpoint = 0;
+                ref.internal.lastCheckpointHash = hash;
             } else if (changed) {
                 events.change.fire();
             }

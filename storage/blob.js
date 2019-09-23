@@ -5,6 +5,7 @@ var Path = require("path");
 
 var BlobStore = module.exports;
 var nThen = require("nthen");
+var Semaphore = require("saferphore");
 var Util = require("../lib/common-util");
 
 var isValidSafeKey = function (safeKey) {
@@ -17,34 +18,31 @@ var isValidId = function (id) {
 
 // helpers
 
-// /blob/<safeKeyPrefix>/<safeKey>/<blobPrefix>
-var makePathToBlob = function (Env, blobId) {
-    return Path.join(Env.blobPath, blobId.slice(0, 2));
+var prependArchive = function (Env, path) {
+    return Path.join(Env.archivePath, path);
 };
 
 // /blob/<safeKeyPrefix>/<safeKey>/<blobPrefix>/<blobId>
 var makeBlobPath = function (Env, blobId) {
-    return Path.join(makePathToBlob(Env, blobId), blobId);
-};
-
-// /blobstate/<safeKeyPrefix>
-var makePathToStage = function (Env, safeKey) {
-    return Path.join(Env.blobStagingPath, safeKey.slice(0, 2));
+    return Path.join(Env.blobPath, blobId.slice(0, 2), blobId);
 };
 
 // /blobstate/<safeKeyPrefix>/<safeKey>
 var makeStagePath = function (Env, safeKey) {
-    return Path.join(makePathToStage(Env, safeKey), safeKey);
-};
-
-// /blob/<safeKeyPrefix>/<safeKey>/<blobPrefix>
-var makePathToProof = function (Env, safeKey, blobId) {
-    return Path.join(Env.blobPath, safeKey.slice(0, 3), safeKey, blobId.slice(0, 2), blobId);
+    return Path.join(Env.blobStagingPath, safeKey.slice(0, 2), safeKey);
 };
 
 // /blob/<safeKeyPrefix>/<safeKey>/<blobPrefix>/<blobId>
 var makeProofPath = function (Env, safeKey, blobId) {
-    return Path.join(makePathToProof(Env, safeKey, blobId), blobId);
+    return Path.join(Env.blobPath, safeKey.slice(0, 3), safeKey, blobId.slice(0, 2), blobId);
+};
+
+var parseProofPath = function (path) {
+    var parts = path.split('/');
+    return {
+        blobId: parts[parts.length -1],
+        safeKey: parts[parts.length - 3],
+    };
 };
 
 // getUploadSize: used by
@@ -76,10 +74,9 @@ var isFile = function (filePath, cb) {
     });
 };
 
-var makeFileStream = function (dir, full, cb) {
-    Fse.mkdirp(dir, function (e) {
+var makeFileStream = function (full, cb) {
+    Fse.mkdirp(Path.dirname(full), function (e) {
         if (e || !full) { // !full for pleasing flow, it's already checked
-            //WARN('makeFileStream', e);
             return void cb(e ? e.message : 'INTERNAL_ERROR');
         }
 
@@ -125,8 +122,10 @@ var upload = function (Env, safeKey, content, cb) {
         return cb('E_OVER_LIMIT');
     }
 
+    var stagePath = makeStagePath(Env, safeKey);
+
     if (!session.blobstage) {
-        makeFileStream(makePathToStage(Env, safeKey), makeStagePath(Env, safeKey), function (e, stream) {
+        makeFileStream(stagePath, function (e, stream) {
             if (!stream) { return void cb(e); }
 
             var blobstage = session.blobstage = stream;
@@ -170,7 +169,7 @@ var upload_complete = function (Env, safeKey, id, cb) {
 
     nThen(function (w) {
         // make sure the path to your final location exists
-        Fse.mkdirp(makePathToBlob(Env, id), function (e) {
+        Fse.mkdirp(Path.dirname(newPath), function (e) {
             if (e) {
                 w.abort();
                 return void cb('RENAME_ERR');
@@ -237,10 +236,8 @@ var owned_upload_complete = function (Env, safeKey, id, cb) {
         return void cb('EINVAL_CONFIG');
     }
 
-    var ownPath = makePathToProof(Env, safeKey, id);
-    var filePath = makePathToBlob(Env, id);
-
     var finalPath = makeBlobPath(Env, id);
+
     var finalOwnPath = makeProofPath(Env, safeKey, id);
 
     // the user wants to move it into blob and create a empty file with the same id
@@ -249,13 +246,13 @@ var owned_upload_complete = function (Env, safeKey, id, cb) {
 
     nThen(function (w) {
         // make the requisite directory structure using Mkdirp
-        Fse.mkdirp(filePath, w(function (e /*, path */) {
+        Fse.mkdirp(Path.dirname(finalPath), w(function (e /*, path */) {
             if (e) { // does not throw error if the directory already existed
                 w.abort();
                 return void cb(e.code);
             }
         }));
-        Fse.mkdirp(ownPath, w(function (e /*, path */) {
+        Fse.mkdirp(Path.dirname(finalOwnPath), w(function (e /*, path */) {
             if (e) { // does not throw error if the directory already existed
                 w.abort();
                 return void cb(e.code);
@@ -318,8 +315,159 @@ var isOwnedBy = function (Env, safeKey, blobId, cb) {
     isFile(proofPath, cb);
 };
 
-var listFiles = function (Env, handler, cb) {
-    cb("NOT_IMPLEMENTED");
+
+// archiveBlob
+var archiveBlob = function (Env, blobId, cb) {
+    var blobPath = makeBlobPath(Env, blobId);
+    var archivePath = prependArchive(Env, blobPath);
+    Fse.move(blobPath, archivePath, { overwrite: true }, cb);
+};
+
+var removeArchivedBlob = function (Env, blobId, cb) {
+    var archivePath = prependArchive(Env, makeBlobPath(Env, blobId));
+    Fs.unlink(archivePath, cb);
+};
+
+// restoreBlob
+var restoreBlob = function (Env, blobId, cb) {
+    var blobPath = makeBlobPath(Env, blobId);
+    var archivePath = prependArchive(Env, blobPath);
+    Fse.move(archivePath, blobPath, cb);
+};
+
+// archiveProof
+var archiveProof = function (Env, safeKey, blobId, cb) {
+    var proofPath = makeProofPath(Env, safeKey, blobId);
+    var archivePath = prependArchive(Env, proofPath);
+    Fse.move(proofPath, archivePath, { overwrite: true }, cb);
+};
+
+var removeArchivedProof = function (Env, safeKey, blobId, cb) {
+    var archivedPath = prependArchive(Env, makeProofPath(Env, safeKey, blobId));
+    Fs.unlink(archivedPath, cb);
+};
+
+// restoreProof
+var restoreProof = function (Env, safeKey, blobId, cb) {
+    var proofPath = makeProofPath(Env, safeKey, blobId);
+    var archivePath = prependArchive(Env, proofPath);
+    Fse.move(archivePath, proofPath, cb);
+};
+
+var makeWalker = function (n, handleChild, done) {
+    if (!n || typeof(n) !== 'number' || n < 2) { n = 2; }
+
+    var W;
+    nThen(function (w) {
+        // this asynchronous bit defers the completion of this block until
+        // synchronous execution has completed. This means you must create
+        // the walker and start using it synchronously or else it will call back
+        // prematurely
+        setTimeout(w());
+        W = w;
+    }).nThen(function () {
+        done();
+    });
+
+    // do no more than 20 jobs at a time
+    var tasks = Semaphore.create(n);
+
+    var recurse = function (path) {
+        tasks.take(function (give) {
+            var next = give(W());
+
+            nThen(function (w) {
+                // check if the path is a directory...
+                Fs.stat(path, w(function (err, stats) {
+                    if (err) { return next(); }
+                    if (!stats.isDirectory()) {
+                        w.abort();
+                        return void handleChild(void 0, path, next);
+                    }
+                    // fall through
+                }));
+            }).nThen(function () {
+                // handle directories
+                Fs.readdir(path, function (err, dir) {
+                    if (err) { return next(); }
+                    // everything is fine and it's a directory...
+                    dir.forEach(function (d) {
+                        recurse(Path.join(path, d));
+                    });
+                    next();
+                });
+            });
+        });
+    };
+
+    return recurse;
+};
+
+var listProofs = function (root, handler, cb) {
+    Fs.readdir(root, function (err, dir) {
+        if (err) { return void cb(err); }
+
+        var walk = makeWalker(20, function (err, path, next) {
+            // path is the path to a child node on the filesystem
+
+            // next handles the next job in a queue
+
+                // iterate over proofs
+                // check for presence of corresponding files
+            Fs.stat(path, function (err, stats) {
+                if (err) {
+                    return void handler(err, void 0, next);
+                }
+
+                var parsed = parseProofPath(path);
+                handler(void 0, {
+                    path: path,
+                    blobId: parsed.blobId,
+                    safeKey: parsed.safeKey,
+                    atime: stats.atime,
+                    ctime: stats.ctime,
+                    mtime: stats.mtime,
+                }, next);
+            });
+        }, function () {
+            // called when there are no more directories or children to process
+            cb();
+        });
+
+        dir.forEach(function (d) {
+            // ignore directories that aren't 3 characters long...
+            if (d.length !== 3) { return; }
+            walk(Path.join(root, d));
+        });
+    });
+};
+
+var listBlobs = function (root, handler, cb) {
+    // iterate over files
+    Fs.readdir(root, function (err, dir) {
+        if (err) { return void cb(err); }
+        var walk = makeWalker(20, function (err, path, next) {
+            Fs.stat(path, function (err, stats) {
+                if (err) {
+                    return void handler(err, void 0, next);
+                }
+
+                handler(void 0, {
+                    blobId: Path.basename(path),
+                    atime: stats.atime,
+                    ctime: stats.ctime,
+                    mtime: stats.mtime,
+                }, next);
+            });
+        }, function () {
+            cb();
+        });
+
+        dir.forEach(function (d) {
+            if (d.length !== 2) { return; }
+            walk(Path.join(root, d));
+        });
+    });
 };
 
 BlobStore.create = function (config, _cb) {
@@ -331,6 +479,7 @@ BlobStore.create = function (config, _cb) {
     var Env = {
         blobPath: config.blobPath || './blob',
         blobStagingPath: config.blobStagingPath || './blobstage',
+        archivePath: config.archivePath || './data/archive',
         getSession: config.getSession,
     };
 
@@ -342,8 +491,12 @@ BlobStore.create = function (config, _cb) {
         Fse.mkdirp(Env.blobStagingPath, w(function (e) {
             if (e) { CB(e); }
         }));
+
+        Fse.mkdirp(Path.join(Env.archivePath, Env.blobPath), w(function (e) {
+            if (e) { CB(e); }
+        }));
     }).nThen(function () {
-        cb(void 0, {
+        var methods = {
             isFileId: isValidId,
             status: function (safeKey, _cb) {
                 // TODO check if the final destination is a file
@@ -372,17 +525,59 @@ BlobStore.create = function (config, _cb) {
                 isOwnedBy(Env, safeKey, blobId, cb);
             },
 
-            remove: function (blobId, _cb) {
-                var cb = Util.once(Util.mkAsync(_cb));
-                if (!isValidId(blobId)) { return void cb("INVALID_ID"); }
-                remove(Env, blobId, cb);
+            remove: {
+                blob: function (blobId, _cb) {
+                    var cb = Util.once(Util.mkAsync(_cb));
+                    if (!isValidId(blobId)) { return void cb("INVALID_ID"); }
+                    remove(Env, blobId, cb);
+                },
+                proof: function (safeKey, blobId, _cb) {
+                    var cb = Util.once(Util.mkAsync(_cb));
+                    if (!isValidSafeKey(safeKey)) { return void cb('INVALID_SAFEKEY'); }
+                    if (!isValidId(blobId)) { return void cb("INVALID_ID"); }
+                    removeProof(Env, safeKey, blobId, cb);
+                },
+                archived: {
+                    blob: function (blobId, _cb) {
+                        var cb = Util.once(Util.mkAsync(_cb));
+                        if (!isValidId(blobId)) { return void cb("INVALID_ID"); }
+                        removeArchivedBlob(Env, blobId, cb);
+                    },
+                    proof:  function (safeKey, blobId, _cb) {
+                        var cb = Util.once(Util.mkAsync(_cb));
+                        if (!isValidSafeKey(safeKey)) { return void cb('INVALID_SAFEKEY'); }
+                        if (!isValidId(blobId)) { return void cb("INVALID_ID"); }
+                        removeArchivedProof(Env, safeKey, blobId, cb);
+                    },
+                },
             },
 
-            removeProof: function (safeKey, blobId, _cb) {
-                var cb = Util.once(Util.mkAsync(_cb));
-                if (!isValidSafeKey(safeKey)) { return void cb('INVALID_SAFEKEY'); }
-                if (!isValidId(blobId)) { return void cb("INVALID_ID"); }
-                removeProof(Env, safeKey, blobId, cb);
+            archive: {
+                blob: function (blobId, _cb) {
+                    var cb = Util.once(Util.mkAsync(_cb));
+                    if (!isValidId(blobId)) { return void cb("INVALID_ID"); }
+                    archiveBlob(Env, blobId, cb);
+                },
+                proof: function (safeKey, blobId, _cb) {
+                    var cb = Util.once(Util.mkAsync(_cb));
+                    if (!isValidSafeKey(safeKey)) { return void cb('INVALID_SAFEKEY'); }
+                    if (!isValidId(blobId)) { return void cb("INVALID_ID"); }
+                    archiveProof(Env, safeKey, blobId, cb);
+                },
+            },
+
+            restore: {
+                blob: function (blobId, _cb) {
+                    var cb = Util.once(Util.mkAsync(_cb));
+                    if (!isValidId(blobId)) { return void cb("INVALID_ID"); }
+                    restoreBlob(Env, blobId, cb);
+                },
+                proof: function (safeKey, blobId, _cb) {
+                    var cb = Util.once(Util.mkAsync(_cb));
+                    if (!isValidSafeKey(safeKey)) { return void cb('INVALID_SAFEKEY'); }
+                    if (!isValidId(blobId)) { return void cb("INVALID_ID"); }
+                    restoreProof(Env, safeKey, blobId, cb);
+                },
             },
 
             complete: function (safeKey, id, _cb) {
@@ -403,11 +598,29 @@ BlobStore.create = function (config, _cb) {
                 getUploadSize(Env, id, cb);
             },
 
-            list: function (handler, _cb) {
-                var cb = Util.once(Util.mkAsync(_cb));
-                listFiles(Env, handler, cb);
+            list: {
+                blobs: function (handler, _cb) {
+                    var cb = Util.once(Util.mkAsync(_cb));
+                    listBlobs(Env.blobPath, handler, cb);
+                },
+                proofs: function (handler, _cb) {
+                    var cb = Util.once(Util.mkAsync(_cb));
+                    listProofs(Env.blobPath, handler, cb);
+                },
+                archived: {
+                    proofs: function (handler, _cb) {
+                        var cb = Util.once(Util.mkAsync(_cb));
+                        listProofs(prependArchive(Env, Env.blobPath), handler, cb);
+                    },
+                    blobs: function (handler, _cb) {
+                        var cb = Util.once(Util.mkAsync(_cb));
+                        listBlobs(prependArchive(Env, Env.blobPath), handler, cb);
+                    },
+                }
             },
-        });
+        };
+
+        cb(void 0, methods);
     });
 };
 
