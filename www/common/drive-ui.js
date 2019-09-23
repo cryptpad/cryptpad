@@ -3209,6 +3209,11 @@ define([
                 }
             }
 
+            if (APP.loggedIn && path[0] === FILES_DATA) {
+                path = [ROOT];
+            }
+
+
             appStatus.ready(false);
             currentPath = path;
             var s = $content.scrollTop() || 0;

@@ -449,6 +449,15 @@ define([
                 return void cb({error: 'CHAT_INIT_ERROR'});
             };
             cpNf2 = CpNetflux.start(chatCfg);
+        }).nThen(function (waitFor) {
+            roster.metadata({
+                name: data.name
+            }, waitFor(function (err) {
+                if (err) {
+                    waitFor.abort();
+                    return void cb({error: 'ROSTER_INIT_ERROR'});
+                }
+            }));
         }).nThen(function () {
             var lm = Listmap.create(config);
             var proxy = lm.proxy;
@@ -486,6 +495,7 @@ define([
                 proxy.drive = {};
 
                 onReady(ctx, id, lm, roster, keys, cId, function () {
+                    ctx.updateMetadata();
                     cb();
                 });
             }).on('error', function (info) {
