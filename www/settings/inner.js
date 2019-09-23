@@ -1519,7 +1519,7 @@ define([
     // Settings app
 
     var createUsageButton = function () {
-        common.createUsageBar(function (err, $bar) {
+        common.createUsageBar(null, function (err, $bar) {
             if (err) { return void console.error(err); }
             APP.$usage.html('').append($bar);
         }, true);

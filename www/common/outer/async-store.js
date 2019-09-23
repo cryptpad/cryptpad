@@ -227,10 +227,11 @@ define([
         var account = {};
 
         Store.getPinnedUsage = function (clientId, data, cb) {
-            if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+            var s = getStore(data && data.teamId);
+            if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
-            store.rpc.getFileListSize(function (err, bytes) {
-                if (typeof(bytes) === 'number') {
+            s.rpc.getFileListSize(function (err, bytes) {
+                if (!s.id && typeof(bytes) === 'number') {
                     account.usage = bytes;
                 }
                 cb({bytes: bytes});
@@ -250,18 +251,20 @@ define([
         };
         // Get current user limits
         Store.getPinLimit = function (clientId, data, cb) {
-            if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+            var s = getStore(data && data.teamId);
+            if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
             var ALWAYS_REVALIDATE = true;
             if (ALWAYS_REVALIDATE || typeof(account.limit) !== 'number' ||
                 typeof(account.plan) !== 'string' ||
                 typeof(account.note) !== 'string') {
-                return void store.rpc.getLimit(function (e, limit, plan, note) {
+                return void s.rpc.getLimit(function (e, limit, plan, note) {
                     if (e) { return void cb({error: e}); }
-                    account.limit = limit;
-                    account.plan = plan;
-                    account.note = note;
-                    cb(account);
+                    var data = s.id ? {} : account;
+                    data.limit = limit;
+                    data.plan = plan;
+                    data.note = note;
+                    cb(data);
                 });
             }
             cb(account);

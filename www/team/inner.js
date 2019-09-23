@@ -213,6 +213,11 @@ define([
             if (!proxy.drive || typeof(proxy.drive) !== 'object') {
                 throw new Error("Corrupted drive");
             }
+            if (APP.usageBar) { APP.usageBar.stop(); }
+            APP.usageBar = common.createUsageBar(APP.team, function (err, $limitContainer) {
+                if (err) { return void DriveUI.logError(err); }
+                driveAPP.$limit = $limitContainer;
+            }, true);
             driveAPP.team = id;
             var drive = DriveUI.create(common, {
                 proxy: proxy,
@@ -721,16 +726,6 @@ define([
                 var name = metadataMgr.getUserData().name || Messages.anonymous;
                 driveAPP.$displayName.text(name);
             });
-
-            /* add the usage */
-            // XXX Teams
-            if (false) {
-                // Synchronous callback...
-                common.createUsageBar(function (err, $limitContainer) {
-                    if (err) { return void DriveUI.logError(err); }
-                    driveAPP.$limit = $limitContainer;
-                }, true);
-            }
 
             // Load the Team module
             var onEvent = function (obj) {

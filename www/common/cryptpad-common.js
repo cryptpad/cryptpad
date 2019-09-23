@@ -223,8 +223,8 @@ define([
         });
     };
 
-    common.getPinnedUsage = function (cb) {
-        postMessage("GET_PINNED_USAGE", null, function (obj) {
+    common.getPinnedUsage = function (data, cb) {
+        postMessage("GET_PINNED_USAGE", data, function (obj) {
             if (obj.error) { return void cb(obj.error); }
             cb(null, obj.bytes);
         });
@@ -237,14 +237,14 @@ define([
         });
     };
 
-    common.getPinLimit = function (cb) {
-        postMessage("GET_PIN_LIMIT", null, function (obj) {
+    common.getPinLimit = function (data, cb) {
+        postMessage("GET_PIN_LIMIT", data, function (obj) {
             if (obj.error) { return void cb(obj.error); }
             cb(undefined, obj.limit, obj.plan, obj.note);
         });
     };
 
-    common.isOverPinLimit = function (cb) {
+    common.isOverPinLimit = function (teamId, cb) {
         if (!LocalStore.isLoggedIn()) { return void cb(null, false); }
         var usage;
         var andThen = function (e, limit, plan) {
@@ -258,9 +258,13 @@ define([
         var todo = function (e, used) {
             if (e) { return void cb(e); }
             usage = used;
-            common.getPinLimit(andThen);
+            common.getPinLimit({
+                teamId: teamId
+            }, andThen);
         };
-        common.getPinnedUsage(todo);
+        common.getPinnedUsage({
+            teamId: teamId
+        }, todo);
     };
 
     common.clearOwnedChannel = function (channel, cb) {

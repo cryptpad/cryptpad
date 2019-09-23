@@ -378,7 +378,7 @@ define([
                 });
 
                 sframeChan.on('Q_GET_PIN_LIMIT_STATUS', function (data, cb) {
-                    Cryptpad.isOverPinLimit(function (e, overLimit, limits) {
+                    Cryptpad.isOverPinLimit(null, function (e, overLimit, limits) {
                         cb({
                             error: e,
                             overLimit: overLimit,
@@ -905,8 +905,8 @@ define([
                 }
             });
 
-            sframeChan.on('Q_PIN_GET_USAGE', function (data, cb) {
-                Cryptpad.isOverPinLimit(function (err, overLimit, data) {
+            sframeChan.on('Q_PIN_GET_USAGE', function (teamId, cb) {
+                Cryptpad.isOverPinLimit(teamId, function (err, overLimit, data) {
                     cb({
                         error: err,
                         data: data

@@ -327,9 +327,9 @@ define([
             if (cb) { cb(data); }
         });
     };
-    funcs.getPinUsage = function (cb) {
+    funcs.getPinUsage = function (teamId, cb) {
         cb = cb || $.noop;
-        ctx.sframeChan.query('Q_PIN_GET_USAGE', null, function (err, data) {
+        ctx.sframeChan.query('Q_PIN_GET_USAGE', teamId, function (err, data) {
             cb(err || data.error, data.data);
         });
     };

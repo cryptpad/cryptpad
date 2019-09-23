@@ -2079,7 +2079,7 @@ define([
     */
     // NOTE: The callback must stay SYNCHRONOUS
     var LIMIT_REFRESH_RATE = 30000; // milliseconds
-    UIElements.createUsageBar = function (common, cb) {
+    UIElements.createUsageBar = function (common, teamId, cb) {
         if (AppConfig.hideUsageBar) { return cb('USAGE_BAR_HIDDEN'); }
         if (!common.isLoggedIn()) { return cb("NOT_LOGGED_IN"); }
         // getPinnedUsage updates common.account.usage, and other values
@@ -2161,15 +2161,20 @@ define([
         };
 
         var updateUsage = Util.notAgainForAnother(function () {
-            common.getPinUsage(todo);
+            common.getPinUsage(teamId, todo);
         }, LIMIT_REFRESH_RATE);
 
-        setInterval(function () {
+        var interval = setInterval(function () {
             updateUsage();
         }, LIMIT_REFRESH_RATE * 3);
 
         updateUsage();
         cb(null, $container);
+        return {
+            stop: function () {
+                clearInterval(interval);
+            }
+        };
     };
 
     // Create a button with a dropdown menu
