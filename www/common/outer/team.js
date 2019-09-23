@@ -507,6 +507,26 @@ define([
         });
     };
 
+    var leaveTeam = function (ctx, data, cId, cb) {
+        var teamId = data.teamId;
+        if (!teamId) { return void cb({error: 'EINVAL'}); }
+        var team = ctx.teams[teamId];
+        if (!team) { return void cb ({error: 'ENOENT'}); }
+        if (!team.roster) { return void cb({error: 'NO_ROSTER'}); }
+        var curvePublic = ctx.store.proxy.curvePublic;
+        team.roster.remove([curvePublic], function (err) {
+            if (err) { return void cb({error: err}); }
+            team.lm.stop();
+            team.roster.stop();
+            team.proxy = {};
+            delete ctx.teams[teamId];
+            delete ctx.store.proxy.teams[teamId];
+            ctx.emit('LEAVE_TEAM', teamId, team.clients);
+            ctx.updateMetadata();
+            cb();
+        });
+    };
+
     var getTeamRoster = function (ctx, data, cId, cb) {
         var teamId = data.teamId;
         if (!teamId) { return void cb({error: 'EINVAL'}); }
@@ -649,7 +669,7 @@ define([
     var subscribe = function (ctx, id, cId, cb) {
         // Unsubscribe from other teams: one tab can only receive events about one team
         removeClient(ctx, cId);
-        // And leave the channel channel
+        // And leave the chat channel
         try {
             ctx.store.messenger.removeClient(cId);
         } catch (e) {}
@@ -775,6 +795,9 @@ define([
             }
             if (cmd === 'INVITE_TO_TEAM') {
                 return void inviteToTeam(ctx, data, clientId, cb);
+            }
+            if (cmd === 'LEAVE_TEAM') {
+                return void leaveTeam(ctx, data, clientId, cb);
             }
             if (cmd === 'JOIN_TEAM') {
                 return void joinTeam(ctx, data, clientId, cb);

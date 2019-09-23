@@ -511,6 +511,23 @@ define([
             $header.append(invite);
         }
 
+        if (me && (me.role === 'ADMIN' || me.role === 'MEMBER')) {
+            var leave = h('button.btn.btn-danger', 'LEAVE THE TEAM');
+            $(leave).click(function () {
+                UI.confirm("Your're going to leave this team and lose access to its entire drive. Are you sure?", function (yes) {
+                    if (!yes) { return; }
+                    APP.module.execCommand('LEAVE_TEAM', {
+                        teamId: APP.team
+                    }, function (obj) {
+                        if (obj && obj.error) {
+                            return void UI.warn(Messages.error);
+                        }
+                    });
+                });
+            });
+            $header.append(leave);
+        }
+
         return [
             header,
             h('h3', 'OWNER'), // XXX
