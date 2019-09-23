@@ -757,23 +757,25 @@ define([
         var privateData = common.getMetadataMgr().getPrivateData();
         var teamsData = Util.tryParse(JSON.stringify(privateData.teams)) || {};
         var teams = {};
-        Object.keys(teamsData).forEach(function (id) {
-            if (config.teamId && config.teamId === id) { return; }
-            var t = teamsData[id];
-            teams[t.edPublic] = {
-                notifications: true,
-                displayName: t.name,
-                edPublic: t.edPublic,
-                avatar: t.avatar,
-                id: id
-            };
-        });
-        var teamsList = UIElements.getFriendsList('Share with a team', {
-            common: common,
-            noFilter: true,
-            friends: teams
-        }, refreshButtons);
-        $div.append(teamsList.div);
+        if (privateData.enableTeams) {
+            Object.keys(teamsData).forEach(function (id) {
+                if (config.teamId && config.teamId === id) { return; }
+                var t = teamsData[id];
+                teams[t.edPublic] = {
+                    notifications: true,
+                    displayName: t.name,
+                    edPublic: t.edPublic,
+                    avatar: t.avatar,
+                    id: id
+                };
+            });
+            var teamsList = UIElements.getFriendsList('Share with a team', {
+                common: common,
+                noFilter: true,
+                friends: teams
+            }, refreshButtons);
+            $div.append(teamsList.div);
+        }
 
         var shareButtons = [{
             className: 'primary cp-share-with-friends',
@@ -2877,7 +2879,7 @@ define([
         // * a team ID ==> store in the team drive, and the team will be the owner
         // * -1 ==> store in the user drive, and the user will be the owner
         // * undefined ==> ask
-        if (teamExists) {
+        if (teamExists && privateData.enableTeams) {
             var teamOptions = Object.keys(privateData.teams).map(function (teamId) {
                 var t = privateData.teams[teamId];
                 return {
