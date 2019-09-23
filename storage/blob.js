@@ -74,7 +74,8 @@ var isFile = function (filePath, cb) {
     });
 };
 
-var makeFileStream = function (full, cb) {
+var makeFileStream = function (full, _cb) {
+    var cb = Util.once(Util.mkAsync(_cb));
     Fse.mkdirp(Path.dirname(full), function (e) {
         if (e || !full) { // !full for pleasing flow, it's already checked
             return void cb(e ? e.message : 'INTERNAL_ERROR');
@@ -89,10 +90,8 @@ var makeFileStream = function (full, cb) {
             stream.on('open', function () {
                 cb(void 0, stream);
             });
-            stream.on('error', function (/* e */) {
-                //console.error("MAKE_FILE_STREAM", full);
-                // XXX ERROR
-                //WARN('stream error', e);
+            stream.on('error', function (err) {
+                cb(err);
             });
         } catch (err) {
             cb('BAD_STREAM');
