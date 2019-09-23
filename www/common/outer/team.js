@@ -70,6 +70,18 @@ define([
         });
     };
 
+    var closeTeam = function (ctx, teamId) {
+        var team = ctx.teams[teamId];
+        if (!team) { return; }
+        team.listmap.stop();
+        team.roster.stop();
+        team.proxy = {};
+        delete ctx.teams[teamId];
+        delete ctx.store.proxy.teams[teamId];
+        ctx.emit('LEAVE_TEAM', teamId, team.clients);
+        ctx.updateMetadata();
+    };
+
     var getTeamChannelList = function (ctx, id) {
         // Get the list of pads' channel ID in your drive
         // This list is filtered so that it doesn't include pad owned by other users
@@ -141,14 +153,7 @@ define([
             var state = roster.getState();
             var me = Util.find(ctx, ['store', 'proxy', 'curvePublic']);
             if (!state.members[me]) {
-                lm.stop();
-                roster.stop();
-                proxy = {};
-                delete ctx.teams[id];
-                delete ctx.store.proxy.teams[id];
-                ctx.emit('LEAVE_TEAM', id, team.clients);
-                ctx.updateMetadata();
-                return;
+                return void closeTeam(ctx, id);
             }
             var teamData = Util.find(ctx, ['store', 'proxy', 'teams', id]);
             if (teamData) { teamData.metadata = state.metadata; }
@@ -514,13 +519,7 @@ define([
         var curvePublic = ctx.store.proxy.curvePublic;
         team.roster.remove([curvePublic], function (err) {
             if (err) { return void cb({error: err}); }
-            team.lm.stop();
-            team.roster.stop();
-            team.proxy = {};
-            delete ctx.teams[teamId];
-            delete ctx.store.proxy.teams[teamId];
-            ctx.emit('LEAVE_TEAM', teamId, team.clients);
-            ctx.updateMetadata();
+            closeTeam(ctx, teamId);
             cb();
         });
     };
