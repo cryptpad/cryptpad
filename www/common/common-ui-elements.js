@@ -759,6 +759,8 @@ define([
         var teams = {};
         if (privateData.enableTeams) {
             Object.keys(teamsData).forEach(function (id) {
+                // config.teamId only exists when we're trying to share a pad from a team drive
+                // In this case, we don't want to share the pad with the current team
                 if (config.teamId && config.teamId === id) { return; }
                 var t = teamsData[id];
                 teams[t.edPublic] = {
@@ -769,7 +771,7 @@ define([
                     id: id
                 };
             });
-            var teamsList = UIElements.getFriendsList('Share with a team', {
+            var teamsList = UIElements.getFriendsList('Share with a team', { // XXX
                 common: common,
                 noFilter: true,
                 friends: teams

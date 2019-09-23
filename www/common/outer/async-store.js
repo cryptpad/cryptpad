@@ -66,7 +66,7 @@ define([
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             nThen(function (waitFor) {
                 Realtime.whenRealtimeSyncs(s.realtime, waitFor());
-                if (s.sharedFolders) {
+                if (s.sharedFolders && typeof (s.sharedFolders) === "object") {
                     for (var k in s.sharedFolders) {
                         Realtime.whenRealtimeSyncs(s.sharedFolders[k].realtime, waitFor());
                     }

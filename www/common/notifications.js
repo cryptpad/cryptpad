@@ -262,6 +262,7 @@ define([
         var teamName = Util.fixHTML(Util.find(msg, ['content', 'team', 'metadata', 'name']) || '');
         content.getFormatText = function () {
             var text = name + " has invited you to join the team <b>" + teamName +"</b>";
+            // XXX
             return text;
         };
         if (!content.archived) {
@@ -280,6 +281,7 @@ define([
         var teamName = Util.fixHTML(Util.find(msg, ['content', 'teamName']) || '');
         content.getFormatText = function () {
             var text = name + " has kicked you from join the team <b>" + teamName +"</b>";
+            // XXX
             return text;
         };
         if (!content.archived) {
