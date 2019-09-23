@@ -155,6 +155,10 @@ define([
             ctx.updateMetadata();
             ctx.emit('ROSTER_CHANGE', id, team.clients);
         });
+        roster.on('checkpoint', function (hash) {
+            var rosterData = Util.find(ctx, ['store', 'proxy', 'teams', id, 'keys', 'roster']);
+            rosterData.lastKnownHash = hash;
+        });
 
 
         team.sendEvent = function (q, data, sender) {
@@ -326,6 +330,8 @@ define([
                     return void cb({error: 'ROSTER_ERROR'});
                 }
                 roster = _roster;
+
+                // XXX update our roster last known hash if a checkpoint was sent in the history
 
                 // If we've been kicked, don't try to update our data, we'll close everything
                 // in the next nThen part
