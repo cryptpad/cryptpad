@@ -1382,6 +1382,8 @@ RPC.create = function (
     var pinPath = paths.pin = keyOrDefaultString('pinPath', './pins');
     paths.block = keyOrDefaultString('blockPath', './block');
     paths.data = keyOrDefaultString('filePath', './datastore');
+    paths.staging = keyOrDefaultString('blobStagingPath', './blobstage');
+    paths.blob = keyOrDefaultString('blobPath', './blob');
 
     var isUnauthenticateMessage = function (msg) {
         return msg && msg.length === 2 && isUnauthenticatedCall(msg[0]);
