@@ -447,7 +447,9 @@ define([
             name,
             actions
         ];
-        var div = h('div.cp-team-roster-member', content);
+        var div = h('div.cp-team-roster-member', {
+            title: data.displayName
+        }, content);
         if (data.profile) {
             $(div).dblclick(function (e) {
                 e.preventDefault();
