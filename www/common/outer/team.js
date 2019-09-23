@@ -165,6 +165,9 @@ define([
             rosterData.lastKnownHash = hash;
         });
 
+        var state = roster.getState();
+        var teamData = Util.find(ctx, ['store', 'proxy', 'teams', id]);
+        if (teamData) { teamData.metadata = state.metadata; }
 
         team.sendEvent = function (q, data, sender) {
             ctx.emit(q, data, team.clients.filter(function (cId) {
