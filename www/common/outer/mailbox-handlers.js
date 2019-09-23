@@ -323,7 +323,7 @@ define([
 
         if (invitedTo[content.team.channel]) { return void cb(true); }
 
-        var myTeams = Util.find(ctx, ['store', 'proxy', 'teams']);
+        var myTeams = Util.find(ctx, ['store', 'proxy', 'teams']) || {};
         var alreadyMember = Object.keys(myTeams).some(function (k) {
             var team = myTeams[k];
             return team.channel === content.team.channel;
@@ -339,6 +339,19 @@ define([
         delete invitedTo[channel];
     };
 
+    handlers['KICKED_FROM_TEAM'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+
+        if (msg.author !== content.user.curvePublic) { return void cb(true); }
+        if (!content.teamChannel) {
+            console.log('Remove invalid notification');
+            return void cb(true);
+        }
+
+        cb(false);
+    };
+
     handlers['INVITE_TO_TEAM_ANSWER'] = function (ctx, box, data, cb) {
         var msg = data.msg;
         var content = msg.content;
@@ -349,7 +362,7 @@ define([
             return void cb(true);
         }
 
-        var myTeams = Util.find(ctx, ['store', 'proxy', 'teams']);
+        var myTeams = Util.find(ctx, ['store', 'proxy', 'teams']) || {};
         var teamId;
         var team;
         Object.keys(myTeams).some(function (k) {

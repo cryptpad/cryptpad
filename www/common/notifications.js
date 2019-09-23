@@ -271,6 +271,22 @@ define([
         }
     };
 
+    handlers['KICKED_FROM_TEAM'] = function (common, data) {
+        var content = data.content;
+        var msg = content.msg;
+
+        // Display the notification
+        var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
+        var teamName = Util.fixHTML(Util.find(msg, ['content', 'teamName']) || '');
+        content.getFormatText = function () {
+            var text = name + " has kicked you from join the team <b>" + teamName +"</b>";
+            return text;
+        };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
     handlers['INVITE_TO_TEAM_ANSWER'] = function (common, data) {
         var content = data.content;
         var msg = content.msg;

@@ -150,6 +150,9 @@ define([
                 ctx.updateMetadata();
                 return;
             }
+            var teamData = Util.find(ctx, ['store', 'proxy', 'teams', id]);
+            if (teamData) { teamData.metadata = state.metadata; }
+            ctx.updateMetadata();
             ctx.emit('ROSTER_CHANGE', id, team.clients);
         });
 
@@ -552,7 +555,7 @@ define([
     // TODO send guest keys only in the future
     var getInviteData = function (ctx, teamId) {
         var teamData = Util.find(ctx, ['store', 'proxy', 'teams', teamId]);
-        if (!teamData) { return; }
+        if (!teamData) { return {}; }
         var data = Util.clone(teamData);
         delete data.owner;
         return data;
@@ -593,9 +596,25 @@ define([
         if (!team) { return void cb ({error: 'ENOENT'}); }
         if (!team.roster) { return void cb({error: 'NO_ROSTER'}); }
         if (!data.curvePublic) { return void cb({error: 'MISSING_DATA'}); }
+
+        var state = team.roster.getState();
+        var userData = state.members[data.curvePublic];
+        console.error(userData);
         team.roster.remove([data.curvePublic], function (err) {
             if (err) { return void cb({error: err}); }
-            cb();
+            // The user has been removed, send them a notification
+            if (!userData || !userData.notifications) { return cb(); }
+            console.log('send notif');
+            ctx.store.mailbox.sendTo('KICKED_FROM_TEAM', {
+                user: Messaging.createData(ctx.store.proxy, false),
+                teamChannel: getInviteData(ctx, teamId).channel,
+                teamName: getInviteData(ctx, teamId).metadata.name
+            }, {
+                channel: userData.notifications,
+                curvePublic: userData.curvePublic
+            }, function (obj) {
+                cb(obj);
+            });
         });
     };
 
@@ -713,8 +732,9 @@ define([
                 }});
                 return;
             }
-            if (!ctx.teams[teamId]) { return void console.error("TEAM MODULE ERROR"); }
-            ctx.teams[teamId].roster.remove([curve], function (err) {
+            var team = ctx.teams[teamId];
+            if (!team) { return void console.error("TEAM MODULE ERROR"); }
+            team.roster.remove([curve], function (err) {
                 if (err && err !== 'NO_CHANGE') { console.error(err); }
             });
 
