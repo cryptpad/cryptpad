@@ -1197,5 +1197,9 @@
     "team_nameHint": "Définir le nom de l'équipe",
     "team_avatarTitle": "Avatar de l'équipe",
     "team_avatarHint": "500 Ko maximum (png, jpg, jpeg, gif)",
-    "team_infoContent": "Chaque équipe possède son propre CryptDrive, sa limite de stockage, son chat et sa liste de membres. Les Propriétaires de l'équipe peuvent la supprimer complètement, les Administrateurs peuvent inviter ou expulser des members et les Membres peuvent quitter l'équipe."
+    "team_infoContent": "Chaque équipe possède son propre CryptDrive, sa limite de stockage, son chat et sa liste de membres. Les Propriétaires de l'équipe peuvent la supprimer complètement, les Administrateurs peuvent inviter ou expulser des members et les Membres peuvent quitter l'équipe.",
+    "team_maxOwner": "Chaque compte utilisateur ne peut être propriétaire que d'une seule équipe.",
+    "team_maxTeams": "Chaque compte utilisateur ne peut être membre que de {0} équipes.",
+    "team_listTitle": "Vos équipes",
+    "team_listSlot": "Emplacement d'équipe disponible"
 }
