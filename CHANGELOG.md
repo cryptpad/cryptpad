@@ -1,3 +1,41 @@
+# Chilihueque release (v3.2.0)
+
+## Goals
+
+We've continued to prioritize the development of team-centric features in CryptPad. This release implements most of the core functionality for fully-functional teams as a core part of CryptPad, though they're not quite ready for use just yet.
+
+Beyond teams we did a little work to standardize some serverside APIs related to storage.
+
+## Update notes
+
+This is a pretty basic release:
+
+1. stop your server
+2. pull the latest source code
+3. install the latest clientside dependencies with `bower update`
+4. restart your server
+
+## Features
+
+* Much of the code from CryptPad's sharedworker system and the CryptDrive's front end has been refactored to consider the existence of _Teams_ in addition to your regular user account.
+  * Our next release will make it possible to use this functionality
+* Blob (encrypted file uploads) can now archived instead of being deleted outright.
+  * set `retainData` to false in your config if you want both channels and blobs to be deleted, or true if you prefer to have them both archived
+  * the tools for restoring accidentally deleted data are limited, but if the data is gone then there will certainly be nothing you can do
+  * `scripts/evict-inactive.js` expires archived blobs after `archiveRetentionTime` days, as was already the case with channel data
+* We've added support for nodejs to a few more of our internal dependencies.
+  * for now we're just using this for tests and to speed up development time
+  * eventually we hope to be able to use these modules for more command-line tools
+
+## Bug fixes
+
+* Alertify logs (the little pop-ups in the bottom-left of the screen) are now set to appear in front of everything else.
+  * it was possible for them to be hidden behind a variety of modals
+* When using the search bar to filter friends in the share modal the returned results are now case-insensitive.
+* We've fixed some thumbnail bugs related to handling different encodings gracefully.
+* We've found and fixed a minor memory leak in our shared workers related to how we fetched chat messages.
+* We've also found a serverside bug which could have caused otherwise valid metadata entries in channels to not be read due to how the messages were chunked when reading from the filesystem.
+
 # Baiji release (v3.1.0)
 
 ## Goals
