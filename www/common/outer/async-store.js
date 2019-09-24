@@ -788,6 +788,7 @@ define([
                 getAllStores().forEach(function (s) {
                     s.manager.getPadAttribute(data, waitFor(function (err, val) {
                         if (err) { return; }
+                        if (!val || typeof(val) !== "object") { return void console.error("Not an object!"); }
                         if (!res.value || res.atime < val.atime) {
                             res.atime = val.atime;
                             res.value = val.value;
