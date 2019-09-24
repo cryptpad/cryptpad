@@ -741,8 +741,12 @@ define([
         cb = cb || function () {};
         var sfId = Env.user.userObject.getSFIdFromHref(data.href);
         if (sfId) {
+            var sfData = Env.user.proxy[UserObject.SHARED_FOLDERS][sfId];
             setTimeout(function () {
-                cb(null, Env.user.proxy[UserObject.SHARED_FOLDERS][sfId][data.attr]);
+                cb(null, {
+                    value: sfData[data.attr],
+                    atime: 1
+                });
             });
             return;
         }
