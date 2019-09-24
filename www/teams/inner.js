@@ -177,6 +177,8 @@ define([
         });
         if (active === 'drive') {
             APP.$rightside.addClass('cp-rightside-drive');
+        } else {
+            APP.$rightside.removeClass('cp-rightside-drive');
         }
         showCategories(categories[active]);
     };
@@ -264,25 +266,44 @@ define([
         ]);
     });
 
+    var MAX_TEAMS_SLOTS = Constants.MAX_TEAMS_SLOTS;
     var refreshList = function (common, cb) {
         var sframeChan = common.getSframeChannel();
         var content = [];
-        content.push(h('h3', 'Your teams'));
         APP.module.execCommand('LIST_TEAMS', null, function (obj) {
             if (!obj) { return; }
             if (obj.error) { return void console.error(obj.error); }
-            var lis = [];
-            Object.keys(obj).forEach(function (id) {
+            var list = [];
+            var keys = Object.keys(obj).slice(0,3);
+            var slots = '('+Math.min(keys.length, MAX_TEAMS_SLOTS)+'/'+MAX_TEAMS_SLOTS+')';
+            for (var i = keys.length; i < MAX_TEAMS_SLOTS; i++) {
+                obj[i] = {
+                    empty: true
+                }
+                keys.push(i);
+            }
+
+            content.push(h('h3', Messages.team_listTitle + ' ' + slots));
+
+            keys.forEach(function (id) {
                 var team = obj[id];
-                var a = h('a', Messages.team_listLoad);
-                var avatar = h('span.cp-avatar.cp-team-list-avatar');
-                lis.push(h('li', h('ul', [ // XXX UI
-                    h('li', avatar),
-                    h('li', team.metadata.name),
-                    h('li', a)
-                ])));
+                if (team.empty) {
+                    list.push(h('div.cp-team-list-team', [
+                        h('span.cp-team-list-name', Messages.team_listSlot)
+                    ]));
+                    return;
+                }
+                var btn;
+                var avatar = h('span.cp-avatar');
+                list.push(h('div.cp-team-list-team', [
+                    h('span.cp-team-list-avatar', avatar),
+                    h('span.cp-team-list-name', {
+                        title: team.metadata.name
+                    }, team.metadata.name),
+                    btn = h('button.cp-team-list-open.btn.btn-primary', Messages.team_listLoad)
+                ]));
                 common.displayAvatar($(avatar), team.metadata.avatar, team.metadata.name);
-                $(a).click(function () {
+                $(btn).click(function () {
                     APP.module.execCommand('SUBSCRIBE', id, function () {
                         sframeChan.query('Q_SET_TEAM', id, function (err) {
                             if (err) { return void console.error(err); }
@@ -293,7 +314,7 @@ define([
                     });
                 });
             });
-            content.push(h('ul', lis));
+            content.push(h('div.cp-team-list-container', list));
             cb(content);
         });
         return content;
@@ -313,7 +334,7 @@ define([
         if (Object.keys(privateData.teams || {}).length >= 3 || isOwner) {
             content.push(h('div.alert.alert-warning', {
                 role:'alert'
-            }, isOwner ? Messages.team_maxOwner : Messages.team_maxTeams));
+            }, isOwner ? Messages.team_maxOwner : Messages._getKey('team_maxTeams', [MAX_TEAMS_SLOTS])));
             return void cb(content);
         }
 

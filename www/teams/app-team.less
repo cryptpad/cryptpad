@@ -39,8 +39,42 @@
             }
         }
 
-        .cp-team-list-avatar {
-            .avatar_main(30px);
+        .cp-team-list {
+            .cp-team-list-container {
+                display: flex;
+                align-items: center;
+                justify-content: space-evenly;
+                flex-wrap: wrap;
+            }
+            .cp-team-list-team {
+                .tools_unselectable();
+                background-color: @roster-bg-color;
+                display: flex;
+                align-items: center;
+                flex-flow: column;
+                width: 300px;
+                max-width: 90%;
+                height: 400px;
+                padding: 20px;
+                margin: 5px;
+                .cp-team-list-avatar {
+                    .avatar_main(200px);
+                }
+                .cp-team-list-name {
+                    flex: 1;
+                    min-width: 0;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    max-width: 500px;
+                    font-size: 25px;
+                    display: inline-flex;
+                    align-items: center;
+                }
+                .cp-team-list-open {
+                    width: 100%;
+                }
+            }
         }
         .cp-team-avatar {
             .avatar_main(300px);

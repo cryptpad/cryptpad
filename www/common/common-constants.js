@@ -16,6 +16,7 @@ define(function () {
         tokenKey: 'loginToken',
         displayPadCreationScreen: 'displayPadCreationScreen',
         deprecatedKey: 'deprecated',
+        MAX_TEAMS_SLOTS: 3,
         // Sub
         plan: 'CryptPad_plan',
         // Apps

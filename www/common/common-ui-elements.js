@@ -3746,8 +3746,15 @@ define([
                 console.log(err);
             });
         };
+
+        var MAX_TEAMS_SLOTS = Constants.MAX_TEAMS_SLOTS;
         var todo = function (yes) {
+            var priv = common.getMetadataMgr().getPrivateData();
+            var numberOfTeams = Object.keys(priv.teams || {}).length;
             if (yes) {
+                if (numberOfTeams >= MAX_TEAMS_SLOTS) {
+                    return void UI.alert(Messages._getKey('team_maxTeams', [MAX_TEAMS_SLOTS]));
+                }
                 // ACCEPT
                 module.execCommand('JOIN_TEAM', {
                     team: msg.content.team
