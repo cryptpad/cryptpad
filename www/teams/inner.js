@@ -6,6 +6,7 @@ define([
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
     '/common/common-feedback.js',
+    '/common/common-constants.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/proxy-manager.js',
@@ -25,6 +26,7 @@ define([
     UI,
     UIElements,
     Feedback,
+    Constants,
     nThen,
     SFCommon,
     ProxyManager,
@@ -610,6 +612,7 @@ define([
 
         var todo = function () {
             var newName = $input.val();
+            if (!newName.trim()) { return; }
             $spinner.show();
             APP.module.execCommand('GET_TEAM_METADATA', {
                 teamId: APP.team
