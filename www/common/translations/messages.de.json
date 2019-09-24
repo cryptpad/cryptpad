@@ -12,7 +12,8 @@
         "media": "Medien",
         "todo": "Aufgaben",
         "contacts": "Kontakte",
-        "sheet": "Tabelle (Beta)"
+        "sheet": "Tabelle (Beta)",
+        "team": ""
     },
     "button_newpad": "Neues Rich-Text-Pad",
     "button_newcode": "Neues Code-Pad",
@@ -1160,5 +1161,7 @@
     "owner_request_accepted": "{0} hat deine Einladung angenommen, ein Eigentümer von <b>{1}</b> zu sein",
     "owner_request_declined": "{0} hat deine Einladung abgelehnt, ein Eigentümer von <b>{1}</b> zu sein",
     "owner_removed": "{0} hat dich als Eigentümer von <b>{1}</b> entfernt",
-    "owner_removedPending": "{0} hat die Einladung zur Eigentümerschaft von <b>{1}</b> zurückgezogen"
+    "owner_removedPending": "{0} hat die Einladung zur Eigentümerschaft von <b>{1}</b> zurückgezogen",
+    "share_linkTeam": "",
+    "team_inviteModalButton": ""
 }
