@@ -303,7 +303,20 @@ define([
     });
 
     makeBlock('create', function (common, cb) {
+        var metadataMgr = common.getMetadataMgr();
+        var privateData = metadataMgr.getPrivateData();
         var content = [];
+
+        var isOwner = Object.keys(privateData.teams || {}).some(function (id) {
+            return privateData.teams[id].owner;
+        });
+        if (Object.keys(privateData.teams || {}).length >= 3 || isOwner) {
+            content.push(h('div.alert.alert-warning', {
+                role:'alert'
+            }, isOwner ? Messages.team_maxOwner : Messages.team_maxTeams));
+            return void cb(content);
+        }
+
         content.push(h('h3', Messages.team_createLabel));
         content.push(h('label', Messages.team_createName));
         var input = h('input', {type:'text'});

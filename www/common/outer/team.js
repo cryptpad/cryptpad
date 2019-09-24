@@ -748,6 +748,7 @@ define([
             var t = {};
             Object.keys(teams).forEach(function (id) {
                 t[id] = {
+                    owner: teams[id].owner,
                     name: teams[id].metadata.name,
                     edPublic: Util.find(teams[id], ['keys', 'drive', 'edPublic']),
                     avatar: Util.find(teams[id], ['metadata', 'avatar'])
