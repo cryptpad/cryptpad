@@ -76,14 +76,14 @@ define([
     var setEditable = DriveUI.setEditable;
 
     var mainCategories = {
-        'general': [
-            'cp-team-info',
-        ],
         'list': [
             'cp-team-list',
         ],
         'create': [
             'cp-team-create',
+        ],
+        'general': [
+            'cp-team-info',
         ],
     };
     var teamCategories = {

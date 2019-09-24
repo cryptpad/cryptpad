@@ -2895,7 +2895,7 @@ define([
                         'data-value': teamId,
                         'href': '#'
                     },
-                    content: Messages._getKey('team_pcsSelectEntry', [Util.fixHTML(t.name)])
+                    content: Util.fixHTML(t.name)
                 };
             });
             teamOptions.unshift({
