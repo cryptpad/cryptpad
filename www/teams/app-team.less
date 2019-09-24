@@ -19,6 +19,16 @@
     @roster-bg-color: #efefef;
 
     #cp-sidebarlayout-container {
+        @media screen and (max-width: 900px) {
+            .cp-app-drive-toolbar-leftside {
+                .cp-dropdown-button-title span:last-child {
+                    display: none;
+                }
+                .cp-toolbar-share-button span:last-child {
+                    display: none;
+                }
+            }
+        }
         div#cp-sidebarlayout-rightside.cp-rightside-drive {
             padding: 0;
             & > .cp-team-chat {
