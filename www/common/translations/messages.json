@@ -1197,5 +1197,9 @@
     "team_nameHint": "Set the team's name",
     "team_avatarTitle": "Team avatar",
     "team_avatarHint": "500KB maximum size (png, jpg, jpeg, gif)",
-    "team_infoContent": "Each team has its own CryptDrive, storage quota, chat, and members list. Team owners can delete the whole team, Admins can invite or kick members, members can leave the team."
+    "team_infoContent": "Each team has its own CryptDrive, storage quota, chat, and members list. Team owners can delete the whole team, Admins can invite or kick members, members can leave the team.",
+    "team_maxOwner": "Each user account is restricted to owning a single team.",
+    "team_maxTeams": "Each user account can only be a member of {0} teams.",
+    "team_listTitle": "Your teams",
+    "team_listSlot": "Available team slot"
 }
