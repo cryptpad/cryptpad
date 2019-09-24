@@ -261,8 +261,7 @@ define([
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
         var teamName = Util.fixHTML(Util.find(msg, ['content', 'team', 'metadata', 'name']) || '');
         content.getFormatText = function () {
-            var text = name + " has invited you to join the team <b>" + teamName +"</b>";
-            // XXX
+            var text = Messages._getKey('team_invitedToTeam', [name, teamName]);
             return text;
         };
         if (!content.archived) {
@@ -280,8 +279,7 @@ define([
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
         var teamName = Util.fixHTML(Util.find(msg, ['content', 'teamName']) || '');
         content.getFormatText = function () {
-            var text = name + " has kicked you from join the team <b>" + teamName +"</b>";
-            // XXX
+            var text = Messages._getKey('team_kickedFromTeam', [name, teamName]);
             return text;
         };
         if (!content.archived) {
@@ -296,10 +294,9 @@ define([
         // Display the notification
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
         var teamName = Util.fixHTML(Util.find(msg, ['content', 'team', 'metadata', 'name']) || '');
-        //var key = 'owner_request_' + (msg.content.answer ? 'accepted' : 'declined');
+        var key = 'team_' + (msg.content.answer ? 'accept' : 'decline') + 'Invitation';
         content.getFormatText = function () {
-            //return Messages._getKey(key, [name, title]); // XXX
-            return name +' has ' + (msg.content.answer ? 'accepted' : 'declined') + ' your offer to join the team <b>' + teamName + '</b>';
+            return Messages._getKey(key, [name, teamName]);
         };
         if (!content.archived) {
             content.dismissHandler = defaultDismiss(common, data);

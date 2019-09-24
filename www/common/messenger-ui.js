@@ -716,7 +716,7 @@ define([
                 if (room.isFriendChat) {
                     $parentEl = $userlist.find('.cp-app-contacts-friends');
                 } else if (room.isTeamChat) {
-                    $parentEl = $userlist.find('.cp-app-contacts-padchat'); // XXX
+                    $parentEl = $userlist.find('.cp-app-contacts-padchat');
                 } else if (room.isPadChat) {
                     $parentEl = $userlist.find('.cp-app-contacts-padchat');
                 } else {
@@ -829,7 +829,7 @@ define([
                     return void console.error('Invalid team chat');
                 }
                 var room = rooms[0];
-                room.name = 'TEAMS'; // XXX
+                room.name = Messages.type.team;
                 rooms.forEach(initializeRoom);
             });
         };

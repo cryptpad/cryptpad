@@ -446,7 +446,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         // deleted while you are open
         // emit an event
         var onChannelError = function (info) {
-            if (!ready) { return void cb(info); } // XXX make sure we don't reconnect
+            if (!ready) { return void cb(info); }
             console.error("CHANNEL_ERROR", info);
         };
 

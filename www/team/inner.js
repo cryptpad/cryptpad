@@ -173,7 +173,7 @@ define([
                 showCategories(categories[key]);
             });
 
-            $category.append(Messages['team_cat_'+key] || key); // XXX
+            $category.append(Messages['team_cat_'+key] || key);
         });
         if (active === 'drive') {
             APP.$rightside.addClass('cp-rightside-drive');
@@ -259,8 +259,8 @@ define([
 
     makeBlock('info', function (common, cb) {
         cb([
-            h('h3', 'Team application'), // XXX
-            h('p', 'From here you can ...') // XXX
+            h('h3', Messages.team_infoLabel),
+            h('p', Messages.team_infoContent)
         ]);
     });
 
@@ -274,13 +274,12 @@ define([
             var lis = [];
             Object.keys(obj).forEach(function (id) {
                 var team = obj[id];
-                var a = h('a', 'Open');
+                var a = h('a', Messages.team_listLoad);
                 var avatar = h('span.cp-avatar.cp-team-list-avatar');
-                lis.push(h('li', h('ul', [
-                    h('li', avatar), // XXX
-                    h('li', 'Name: ' + team.metadata.name), // XXX
-                    h('li', 'ID: ' + id), // XXX
-                    h('li', a) // XXX
+                lis.push(h('li', h('ul', [ // XXX UI
+                    h('li', avatar),
+                    h('li', team.metadata.name),
+                    h('li', a)
                 ])));
                 common.displayAvatar($(avatar), team.metadata.avatar, team.metadata.name);
                 $(a).click(function () {
@@ -305,11 +304,11 @@ define([
 
     makeBlock('create', function (common, cb) {
         var content = [];
-        content.push(h('h3', 'Create a team')); // XXX
-        content.push(h('label', 'Team name')); // XXX
+        content.push(h('h3', Messages.team_createLabel));
+        content.push(h('label', Messages.team_createName));
         var input = h('input', {type:'text'});
         content.push(input);
-        var button = h('button.btn.btn-success', 'Create'); // XXX
+        var button = h('button.btn.btn-success', Messages.creation_create);
         content.push(h('br'));
         content.push(h('br'));
         content.push(button);
@@ -403,7 +402,7 @@ define([
         // If they're a member and I have a higher role than them, I can promote them to admin
         if (!isMe && myRole > theirRole && theirRole === 0) {
             var promote = h('span.fa.fa-angle-double-up', {
-                title: 'Promote' // XXX
+                title: Messages.team_rosterPromote
             });
             $(promote).click(function () {
                 data.role = 'ADMIN';
@@ -416,7 +415,7 @@ define([
         // (if they're not already a MEMBER)
         if (!isMe && myRole >= theirRole && theirRole > 0) {
             var demote = h('span.fa.fa-angle-double-down', {
-                title: 'Demote' // XXX
+                title: Messages.team_rosterDemote
             });
             $(demote).click(function () {
                 data.role = ROLES[theirRole - 1] || 'MEMBER';
@@ -428,7 +427,7 @@ define([
         // If I'm not a member and I have an equal or higher role than them, I can remove them
         if (!isMe && myRole > 0 && myRole >= theirRole) {
             var remove = h('span.fa.fa-times', {
-                title: 'Remove' // XXX
+                title: Messages.team_rosterKick
             });
             $(remove).click(function () {
                 $(remove).hide();
@@ -487,15 +486,14 @@ define([
         }).map(function (k) {
             return makeMember(common, roster[k], me);
         });
-        // XXX LEAVE the team button
-        // XXX INVITE to the team button
+
         var header = h('div.cp-app-team-roster-header');
         var $header = $(header);
 
         // If you're an admin or an owner, you can invite your friends to the team
         // TODO and acquaintances later?
         if (me && (me.role === 'ADMIN' || me.role === 'OWNER')) {
-            var invite = h('button.btn.btn-primary', 'INVITE A FRIEND');
+            var invite = h('button.btn.btn-primary', Messages.team_inviteButton);
             var inviteFriends = common.getFriends();
             Object.keys(inviteFriends).forEach(function (curve) {
                 // Keep only friends that are not already in the team and that you can contact
@@ -517,9 +515,9 @@ define([
         }
 
         if (me && (me.role === 'ADMIN' || me.role === 'MEMBER')) {
-            var leave = h('button.btn.btn-danger', 'LEAVE THE TEAM');
+            var leave = h('button.btn.btn-danger', Messages.team_leaveButton);
             $(leave).click(function () {
-                UI.confirm("Your're going to leave this team and lose access to its entire drive. Are you sure?", function (yes) {
+                UI.confirm(Messages.team_leaveConfirm, function (yes) {
                     if (!yes) { return; }
                     APP.module.execCommand('LEAVE_TEAM', {
                         teamId: APP.team
@@ -535,11 +533,11 @@ define([
 
         return [
             header,
-            h('h3', 'OWNER'), // XXX
+            h('h3', Messages.team_owner),
             h('div', owner),
-            h('h3', 'ADMINS'), // XXX
+            h('h3', Messages.team_admins),
             h('div', admins),
-            h('h3', 'MEMBERS'), // XXX
+            h('h3', Messages.team_members),
             h('div', members)
         ];
     };
@@ -557,7 +555,7 @@ define([
             teamId: APP.team
         }, function (obj) {
             if (obj && obj.error) {
-                return void UI.alert(Messages.error); // XXX
+                return void UI.alert(Messages.error);
             }
             common.setTeamChat(obj.channel);
             MessengerUI.create($(container), common, true);
@@ -700,7 +698,7 @@ define([
             driveAPP.loggedIn = common.isLoggedIn();
             if (!driveAPP.loggedIn) { throw new Error('NOT_LOGGED_IN'); }
 
-            common.setTabTitle('TEAMS (ALPHA)'); // XXX
+            common.setTabTitle(Messages.type.team);
 
             // Drive data
             if (privateData.newSharedFolder) {
@@ -712,7 +710,7 @@ define([
             var $bar = $('#cp-toolbar');
             var configTb = {
                 displayed: ['useradmin', 'pageTitle', 'newpad', 'limit', 'notifications'],
-                pageTitle: 'TEAMS (ALPHA)', // XXX
+                pageTitle: Messages.type.team,
                 metadataMgr: metadataMgr,
                 readOnly: privateData.readOnly,
                 sfCommon: common,

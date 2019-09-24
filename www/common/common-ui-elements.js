@@ -771,7 +771,7 @@ define([
                     id: id
                 };
             });
-            var teamsList = UIElements.getFriendsList('Share with a team', { // XXX
+            var teamsList = UIElements.getFriendsList(Messages.share_linkTeam, {
                 common: common,
                 noFilter: true,
                 friends: teams
@@ -1182,7 +1182,7 @@ define([
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
 
         if (!hasFriends) {
-            return void UI.alert('No friend to invite'); // XXX
+            return void UI.alert(Messages.team_noFriend);
         }
         var privateData = common.getMetadataMgr().getPrivateData();
         var team = privateData.teams[config.teamId];
@@ -1203,7 +1203,7 @@ define([
                 $btn.prop('disabled', 'disabled');
             }
         };
-        var list = UIElements.getFriendsList('Pick the friends you want to invite to the team', { // XXX
+        var list = UIElements.getFriendsList(Messages.team_pickFriends, {
             common: common,
             friends: config.friends,
         }, refreshButton);
@@ -1217,7 +1217,7 @@ define([
             keys: [27]
         }, {
             className: 'primary',
-            name: 'INVITE', // XXX
+            name: Messages.team_inviteModalButton,
             onClick: function () {
                 var $sel = $div.find('.cp-share-friend.cp-selected');
                 var sel = $sel.toArray();
@@ -2895,7 +2895,7 @@ define([
                         'data-value': teamId,
                         'href': '#'
                     },
-                    content: 'TEAM: <b>' + t.name + '</b>' // XXX
+                    content: Messages._getKey('team_pcsSelectEntry', [Util.fixHTML(t.name)])
                 };
             });
             teamOptions.unshift({
@@ -2926,9 +2926,9 @@ define([
                 $teamBlock.setValue(id);
             });
             team = h('div.cp-creation-team', [
-                'Store in', // XXX
+                Messages.team_pcsSelectLabel,
                 $teamBlock[0],
-                createHelper('#', "The pad will be stored in your team's drive. If this is an owned pad, it will be owned by the team.") // XXX
+                createHelper('#', Messages.team_pcsSelectHelp)
             ]);
             if (privateData.storeInTeam) {
                 $teamBlock.setValue(privateData.storeInTeam);
@@ -3717,8 +3717,7 @@ define([
 
         var verified = UIElements.getVerifiedFriend(common, msg.author, name);
 
-        //var text = Messages._getKey('', [name, title]); // XXX
-        var text = name + " has invited you to join the team <b>" + teamName +"</b>";
+        var text = Messages._getKey('team_invitedToTeam', [name, teamName]);
 
         var div = h('div', [
             UI.setHTML(h('p'), text),
