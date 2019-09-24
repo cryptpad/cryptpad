@@ -16,7 +16,7 @@ define([
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'less!/team/app-team.less',
+    'less!/teams/app-team.less',
 ], function (
     $,
     Toolbar,

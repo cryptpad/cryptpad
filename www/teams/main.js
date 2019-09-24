@@ -20,7 +20,7 @@ define([
         window.rc = requireConfig;
         window.apiconf = ApiConfig;
         document.getElementById('sbox-iframe').setAttribute('src',
-            ApiConfig.httpSafeOrigin + '/team/inner.html?' + requireConfig.urlArgs +
+            ApiConfig.httpSafeOrigin + '/teams/inner.html?' + requireConfig.urlArgs +
                 '#' + encodeURIComponent(JSON.stringify(req)));
 
         // This is a cheap trick to avoid loading sframe-channel in parallel with the
