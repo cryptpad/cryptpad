@@ -80,6 +80,10 @@
                     font-size: 25px;
                     display: inline-flex;
                     align-items: center;
+                    &.empty {
+                        white-space: initial;
+                        text-align: center;
+                    }
                 }
                 .cp-team-list-open {
                     width: 100%;
@@ -103,6 +107,16 @@
                 }
                 .cp-avatar {
                     margin-right: 10px;
+                }
+                .cp-team-member-status {
+                    margin-left: 5px;
+                    width: 5px;
+                    height: 50px;
+                    display: inline-block;
+                    background-color: red;
+                    &.online {
+                        background-color: green;
+                    }
                 }
                 .cp-team-member-name {
                     flex: 1;

@@ -544,7 +544,18 @@ define([
         if (!team) { return void cb ({error: 'ENOENT'}); }
         if (!team.roster) { return void cb({error: 'NO_ROSTER'}); }
         var state = team.roster.getState() || {};
-        cb(state.members || {});
+        var members = state.members || {};
+
+        // Add online status (using messenger data)
+        var chatData = team.getChatData();
+        var online = ctx.store.messenger.getOnlineList(chatData.channel) || [];
+        online.forEach(function (curve) {
+            if (members[curve]) {
+                members[curve].online = true;
+            }
+        });
+
+        cb(members);
     };
 
     var getTeamMetadata = function (ctx, data, cId, cb) {
@@ -635,13 +646,12 @@ define([
 
         var state = team.roster.getState();
         var userData = state.members[data.curvePublic];
-        console.error(userData);
         team.roster.remove([data.curvePublic], function (err) {
             if (err) { return void cb({error: err}); }
             // The user has been removed, send them a notification
             if (!userData || !userData.notifications) { return cb(); }
-            console.log('send notif');
             ctx.store.mailbox.sendTo('KICKED_FROM_TEAM', {
+                pending: data.pending,
                 user: Messaging.createData(ctx.store.proxy, false),
                 teamChannel: getInviteData(ctx, teamId).channel,
                 teamName: getInviteData(ctx, teamId).metadata.name
@@ -711,7 +721,10 @@ define([
     var openTeamChat = function (ctx, data, cId, cb) {
         var team = ctx.teams[data.teamId];
         if (!team) { return void cb({error: 'ENOENT'}); }
-        ctx.store.messenger.openTeamChat(team.getChatData(), cId, cb);
+        var onUpdate = function () {
+            ctx.emit('ROSTER_CHANGE', data.teamId, team.clients);
+        };
+        ctx.store.messenger.openTeamChat(team.getChatData(), onUpdate, cId, cb);
     };
 
     Team.init = function (cfg, waitFor, emit) {
@@ -775,6 +788,17 @@ define([
                 if (err && err !== 'NO_CHANGE') { console.error(err); }
             });
 
+        };
+        team.updateMyData = function (data) {
+            Object.keys(ctx.teams).forEach(function (id) {
+                var team = ctx.teams[id];
+                if (!team.roster) { return; }
+                var obj = {};
+                obj[data.curvePublic] = data;
+                team.roster.describe(obj, function (err) {
+                    if (err) { console.error(err); }
+                });
+            });
         };
         team.removeClient = function (clientId) {
             removeClient(ctx, clientId);

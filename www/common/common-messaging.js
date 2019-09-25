@@ -81,9 +81,12 @@ define([
     };
 
     Msg.updateMyData = function (store, curve) {
-        var myData = createData(store.proxy);
+        var myData = createData(store.proxy, false);
         if (store.proxy.friends) {
             store.proxy.friends.me = myData;
+        }
+        if (store.modules['team']) {
+            store.modules['team'].updateMyData(myData);
         }
         var todo = function (friend) {
             if (!friend || !friend.notifications) { return; }

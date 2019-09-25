@@ -321,7 +321,16 @@ define([
             return void cb(true);
         }
 
-        if (invitedTo[content.team.channel]) { return void cb(true); }
+        var invited = invitedTo[content.team.channel];
+        if (invited) {
+            console.log('removing old invitation');
+            cb(false, invited);
+            invitedTo[content.team.channel] = {
+                type: box.type,
+                hash: data.hash
+            };
+            return;
+        }
 
         var myTeams = Util.find(ctx, ['store', 'proxy', 'teams']) || {};
         var alreadyMember = Object.keys(myTeams).some(function (k) {
@@ -330,7 +339,10 @@ define([
         });
         if (alreadyMember) { return void cb(true); }
 
-        invitedTo[content.team.channel] = true;
+        invitedTo[content.team.channel] = {
+            type: box.type,
+            hash: data.hash
+        };
 
         cb(false);
     };
@@ -347,6 +359,10 @@ define([
         if (!content.teamChannel) {
             console.log('Remove invalid notification');
             return void cb(true);
+        }
+
+        if (invitedTo[content.teamChannel] && content.pending) {
+            return void cb(true, invitedTo[content.teamChannel]);
         }
 
         cb(false);

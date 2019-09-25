@@ -281,7 +281,7 @@ define([
             for (var i = keys.length; i < MAX_TEAMS_SLOTS; i++) {
                 obj[i] = {
                     empty: true
-                }
+                };
                 keys.push(i);
             }
 
@@ -290,8 +290,8 @@ define([
             keys.forEach(function (id) {
                 var team = obj[id];
                 if (team.empty) {
-                    list.push(h('div.cp-team-list-team', [
-                        h('span.cp-team-list-name', Messages.team_listSlot)
+                    list.push(h('div.cp-team-list-team.empty', [
+                        h('span.cp-team-list-name.empty', Messages.team_listSlot)
                     ]));
                     return;
                 }
@@ -429,6 +429,8 @@ define([
         common.displayAvatar($(avatar), data.avatar, data.displayName);
         // Name
         var name = h('span.cp-team-member-name', data.displayName);
+        // Status
+        var status = h('span.cp-team-member-status'+(data.online ? '.online' : ''));
         // Actions
         var actions = h('span.cp-team-member-actions');
         var $actions = $(actions);
@@ -436,7 +438,7 @@ define([
         var myRole = me ? (ROLES.indexOf(me.role) || 0) : -1;
         var theirRole = ROLES.indexOf(data.role) || 0;
         // If they're a member and I have a higher role than them, I can promote them to admin
-        if (!isMe && myRole > theirRole && theirRole === 0) {
+        if (!isMe && myRole > theirRole && theirRole === 0 && !data.pending) {
             var promote = h('span.fa.fa-angle-double-up', {
                 title: Messages.team_rosterPromote
             });
@@ -449,7 +451,7 @@ define([
         }
         // If I'm not a member and I have an equal or higher role than them, I can demote them
         // (if they're not already a MEMBER)
-        if (!isMe && myRole >= theirRole && theirRole > 0) {
+        if (!isMe && myRole >= theirRole && theirRole > 0 && !data.pending) {
             var demote = h('span.fa.fa-angle-double-down', {
                 title: Messages.team_rosterDemote
             });
@@ -468,6 +470,7 @@ define([
             $(remove).click(function () {
                 $(remove).hide();
                 APP.module.execCommand('REMOVE_USER', {
+                    pending: data.pending,
                     teamId: APP.team,
                     curvePublic: data.curvePublic,
                 }, function (obj) {
@@ -485,7 +488,8 @@ define([
         var content = [
             avatar,
             name,
-            actions
+            actions,
+            status,
         ];
         var div = h('div.cp-team-roster-member', {
             title: data.displayName
@@ -518,6 +522,12 @@ define([
         });
         var members = Object.keys(roster).filter(function (k) {
             if (roster[k].pending) { return; }
+            return roster[k].role === "MEMBER" || !roster[k].role;
+        }).map(function (k) {
+            return makeMember(common, roster[k], me);
+        });
+        var pending = Object.keys(roster).filter(function (k) {
+            if (!roster[k].pending) { return; }
             return roster[k].role === "MEMBER" || !roster[k].role;
         }).map(function (k) {
             return makeMember(common, roster[k], me);
@@ -574,7 +584,9 @@ define([
             h('h3', Messages.team_admins),
             h('div', admins),
             h('h3', Messages.team_members),
-            h('div', members)
+            h('div', members),
+            h('h3', Messages.team_pending || 'PENDING'), // XXX
+            h('div', pending)
         ];
     };
     makeBlock('roster', function (common, cb) {
