@@ -1589,13 +1589,19 @@ define([
                 // Update owners and expire time in the drive
                 getAllStores().forEach(function (s) {
                     var allData = s.manager.findChannel(data.channel);
+                    var changed = false;
                     allData.forEach(function (obj) {
+                        if (Sortify(obj.data.owners) !== Sortify(metadata.owners)) {
+                            changed = true;
+                        }
                         obj.data.owners = metadata.owners;
                         obj.data.atime = +new Date();
                         if (metadata.expire) {
                             obj.data.expire = +metadata.expire;
                         }
                     });
+                    // If we had to change the "owners" field, redraw the drive UI
+                    if (!changed) { return; }
                     var send = s.sendEvent || sendDriveEvent;
                     send('DRIVE_CHANGE', {
                         path: ['drive', UserObject.FILES_DATA]

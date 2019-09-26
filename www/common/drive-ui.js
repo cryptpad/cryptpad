@@ -3384,9 +3384,17 @@ define([
                 }
             });*/
 
+            // If the selected element is not visible, scroll to make it visible, otherwise scroll to
+            // the previous scroll position
             var $sel = findSelectedElements();
             if ($sel.length) {
-                $sel[0].scrollIntoView();
+                var _top = $sel[0].getBoundingClientRect().top;
+                var _topContent = $content[0].getBoundingClientRect().top;
+                if ((_topContent + s + $content.height() - 20) < _top) {
+                    $sel[0].scrollIntoView();
+                } else {
+                    $content.scrollTop(s);
+                }
             } else {
                 $content.scrollTop(s);
             }
