@@ -107,8 +107,8 @@ define([
 
         var redrawAll = function () {};
 
-        var div1 = h('div.cp-share-friends.cp-share-column.cp-ownership');
-        var div2 = h('div.cp-share-friends.cp-share-column.cp-ownership');
+        var div1 = h('div.cp-usergrid-user.cp-share-column.cp-ownership');
+        var div2 = h('div.cp-usergrid-user.cp-share-column.cp-ownership');
         var $div1 = $(div1);
         var $div2 = $(div2);
 
@@ -126,22 +126,18 @@ define([
                 });
                 if (ed === edPublic) {
                     f = f || user;
-                    if (f.name) {
-                        f.displayName = f.name;
-                        f.edPublic = edPublic;
-                    }
+                    if (f.name) { f.edPublic = edPublic; }
                 }
                 _owners[ed] = f || {
                     displayName: Messages._getKey('owner_unknownUser', [ed]),
-                    notifications: true,
                     edPublic: ed,
                 };
             });
             var msg = pending ? Messages.owner_removePendingText
                         : Messages.owner_removeText;
-            var removeCol = UIElements.getFriendsList(msg, {
+            var removeCol = UIElements.getUserGrid(msg, {
                 common: common,
-                friends: _owners,
+                data: _owners,
                 noFilter: true
             }, function () {
             });
@@ -152,7 +148,7 @@ define([
             var removeButton = h('button.no-margin', btnMsg);
             $(removeButton).click(function () {
                 // Check selection
-                var $sel = $div.find('.cp-share-friend.cp-selected');
+                var $sel = $div.find('.cp-usergrid-user.cp-selected');
                 var sel = $sel.toArray();
                 if (!sel.length) { return; }
                 var me = false;
@@ -221,13 +217,14 @@ define([
             var _friends = JSON.parse(JSON.stringify(friends));
             Object.keys(_friends).forEach(function (curve) {
                 if (owners.indexOf(_friends[curve].edPublic) !== -1 ||
-                    pending_owners.indexOf(_friends[curve].edPublic) !== -1) {
+                    pending_owners.indexOf(_friends[curve].edPublic) !== -1 ||
+                    !_friends[curve].notifications) {
                     delete _friends[curve];
                 }
             });
-            var addCol = UIElements.getFriendsList(Messages.owner_addText, {
+            var addCol = UIElements.getUserGrid(Messages.owner_addText, {
                 common: common,
-                friends: _friends
+                data: _friends
             }, function () {
                 //console.log(arguments);
             });
@@ -236,7 +233,7 @@ define([
             var addButton = h('button.no-margin', Messages.owner_addButton);
             $(addButton).click(function () {
                 // Check selection
-                var $sel = $div2.find('.cp-share-friend.cp-selected');
+                var $sel = $div2.find('.cp-usergrid-user.cp-selected');
                 var sel = $sel.toArray();
                 if (!sel.length) { return; }
                 var toAdd = sel.map(function (el) {
@@ -632,19 +629,17 @@ define([
         });
     };
 
-    UIElements.getFriendsList = function (label, config, onSelect) {
+    UIElements.getUserGrid = function (label, config, onSelect) {
         var common = config.common;
-        var friends = config.friends;
-        if (!friends) { return; }
+        var users = config.data;
+        if (!users) { return; }
 
-        var others = Object.keys(friends).map(function (curve, i) {
-            if (curve.length <= 40) { return; }
-            var data = friends[curve];
-            if (!data.notifications) { return; }
-            var name = data.displayName || Messages.anonymous;
-            var avatar = h('span.cp-share-friend-avatar.cp-avatar');
+        var icons = Object.keys(users).map(function (key, i) {
+            var data = users[key];
+            var name = data.displayName || data.name || Messages.anonymous;
+            var avatar = h('span.cp-usergrid-avatar.cp-avatar');
             UIElements.displayAvatar(common, $(avatar), data.avatar, name);
-            return h('div.cp-share-friend', {
+            return h('div.cp-usergrid-user', {
                 'data-ed': data.edPublic,
                 'data-curve': data.curvePublic || '',
                 'data-name': name.toLowerCase(),
@@ -653,21 +648,21 @@ define([
                 style: 'order:'+i+';'
             },[
                 avatar,
-                h('span.cp-share-friend-name', name)
+                h('span.cp-usergrid-user-name', name)
             ]);
         }).filter(function (x) { return x; });
 
-        var noOthers = others.length === 0 ? '.cp-recent-only' : '';
+        var noOthers = icons.length === 0 ? '.cp-usergrid-empty' : '';
 
-        var buttonSelect = h('button.cp-share-with-friends', Messages.share_selectAll);
-        var buttonDeselect = h('button.cp-share-with-friends', Messages.share_deselectAll);
+        var buttonSelect = h('button', Messages.share_selectAll);
+        var buttonDeselect = h('button', Messages.share_deselectAll);
         var inputFilter = h('input', {
             placeholder: Messages.share_filterFriend
         });
 
-        var div = h('div.cp-share-friends.cp-share-column' + noOthers, [
+        var div = h('div.cp-usergrid-container' + noOthers, [
             h('label', label),
-            h('div.cp-share-grid-filter', config.noFilter ? undefined : [
+            h('div.cp-usergrid-filter', config.noFilter ? undefined : [
                 inputFilter,
                 buttonSelect,
                 buttonDeselect
@@ -675,46 +670,23 @@ define([
         ]);
         var $div = $(div);
 
-        // Fill with fake friends to have a uniform spacing (from the flexbox)
-        var makeFake = function () {
-            return h('div.cp-share-friend.cp-fake-friend', {
-                style: 'order:9999999;'
-            });
-        };
-        var addFake = function (els) {
-            $div.find('.cp-fake-friend').remove();
-            var n = (6 - els.length%6)%6;
-            for (var j = 0; j < n; j++) {
-                els.push(makeFake);
-            }
-        };
-        addFake(others);
-
         // Hide friends when they are filtered using the text input
         var redraw = function () {
             var name = $(inputFilter).val().trim().replace(/"/g, '').toLowerCase();
-            $div.find('.cp-share-friend').show();
+            $div.find('.cp-usergrid-user').show();
             if (name) {
-                $div.find('.cp-share-friend:not(.cp-selected):not([data-name*="'+name+'"])').hide();
-            }
-
-            // Redraw fake friends
-            $div.find('.cp-fake-friend').remove();
-            var visible = $div.find('.cp-share-friend:visible').length;
-            var n = (6 - visible%6)%6;
-            for (var i = 0; i<n; i++) {
-                $div.find('.cp-share-grid').append(makeFake());
+                $div.find('.cp-usergrid-user:not(.cp-selected):not([data-name*="'+name+'"])').hide();
             }
         };
 
         $(inputFilter).on('keydown keyup change', redraw);
 
         $(buttonSelect).click(function () {
-            $div.find('.cp-share-friend:not(.cp-fake-friend):not(.cp-selected):visible').addClass('cp-selected');
+            $div.find('.cp-usergrid-user:not(.cp-selected):visible').addClass('cp-selected');
             onSelect();
         });
         $(buttonDeselect).click(function () {
-            $div.find('.cp-share-friend.cp-selected').removeClass('cp-selected').each(function (i, el) {
+            $div.find('.cp-usergrid-user.cp-selected').removeClass('cp-selected').each(function (i, el) {
                 var order = $(el).attr('data-order');
                 if (!order) { return; }
                 $(el).attr('style', 'order:'+order);
@@ -723,8 +695,8 @@ define([
             onSelect();
         });
 
-        $(div).append(h('div.cp-share-grid', others));
-        $div.on('click', '.cp-share-friend', function () {
+        $(div).append(h('div.cp-usergrid-grid', icons));
+        $div.on('click', '.cp-usergrid-user', function () {
             var sel = $(this).hasClass('cp-selected');
             if (!sel) {
                 $(this).addClass('cp-selected');
@@ -737,7 +709,7 @@ define([
         });
 
         return {
-            others: others,
+            icons: icons,
             div: div
         };
     };
@@ -763,7 +735,7 @@ define([
         var refreshButtons = function () {
             var $nav = $div.closest('.alertify').find('nav');
 
-            var friendMode = $div.find('.cp-share-friend.cp-selected').length;
+            var friendMode = $div.find('.cp-usergrid-user.cp-selected').length;
             if (friendMode) {
                 $nav.find('button.cp-share-with-friends').prop('disabled', '');
             } else {
@@ -772,10 +744,20 @@ define([
         };
 
         config.noInclude = true;
-        var friendsList = UIElements.getFriendsList(Messages.share_linkFriends, config, refreshButtons);
+        Object.keys(friends).forEach(function (curve) {
+            var data = friends[curve];
+            if (curve.length > 40 && data.notifications) { return; }
+            delete friends[curve];
+        });
+
+        var friendsList = UIElements.getUserGrid(Messages.share_linkFriends, {
+            common: common,
+            data: friends,
+            noFilter: false
+        }, refreshButtons);
         var friendDiv = friendsList.div;
         $div.append(friendDiv);
-        var others = friendsList.others;
+        var others = friendsList.icons;
 
         var privateData = common.getMetadataMgr().getPrivateData();
         var teamsData = Util.tryParse(JSON.stringify(privateData.teams)) || {};
@@ -794,10 +776,10 @@ define([
                     id: id
                 };
             });
-            var teamsList = UIElements.getFriendsList(Messages.share_linkTeam, {
+            var teamsList = UIElements.getUserGrid(Messages.share_linkTeam, {
                 common: common,
                 noFilter: true,
-                friends: teams
+                data: teams
             }, refreshButtons);
             $div.append(teamsList.div);
         }
@@ -807,7 +789,7 @@ define([
             name: Messages.share_withFriends,
             onClick: function () {
                 var href = Hash.getRelativeHref($('#cp-share-link-preview').val());
-                var $friends = $div.find('.cp-share-friend.cp-selected');
+                var $friends = $div.find('.cp-usergrid-user.cp-selected');
                 $friends.each(function (i, el) {
                     var curve = $(el).attr('data-curve');
                     // Check if the selected element is a friend or a team
@@ -882,12 +864,11 @@ define([
             });
             // Reorder the friend icons
             others.forEach(function (el, i) {
-                if ($(el).is('.cp-fake-friend')) { return; }
                 $(el).attr('data-order', i).css('order', i);
             });
             // Display them
-            $(friendDiv).find('.cp-share-grid').detach();
-            $(friendDiv).append(h('div.cp-share-grid', others));
+            $(friendDiv).find('.cp-usergrid-grid').detach();
+            $(friendDiv).append(h('div.cp-usergrid-grid', others));
             $div.append(UI.dialog.getButtons(shareButtons, config.onClose));
             refreshButtons();
         });
@@ -1219,16 +1200,16 @@ define([
             var $modal = $div.closest('.alertify');
             var $nav = $modal.find('nav');
             var $btn = $nav.find('button.primary');
-            var selected = $div.find('.cp-share-friend.cp-selected').length;
+            var selected = $div.find('.cp-usergrid-user.cp-selected').length;
             if (selected) {
                 $btn.prop('disabled', '');
             } else {
                 $btn.prop('disabled', 'disabled');
             }
         };
-        var list = UIElements.getFriendsList(Messages.team_pickFriends, {
+        var list = UIElements.getUserGrid(Messages.team_pickFriends, {
             common: common,
-            friends: config.friends,
+            data: config.friends,
         }, refreshButton);
         $div = $(list.div);
         refreshButton();
@@ -1242,7 +1223,7 @@ define([
             className: 'primary',
             name: Messages.team_inviteModalButton,
             onClick: function () {
-                var $sel = $div.find('.cp-share-friend.cp-selected');
+                var $sel = $div.find('.cp-usergrid-user.cp-selected');
                 var sel = $sel.toArray();
                 if (!sel.length) { return; }
 
