@@ -928,8 +928,8 @@ define([
             });
 
             sframeChan.on('Q_PAD_PASSWORD_CHANGE', function (data, cb) {
-                var href = data.href || window.location.href;
-                Cryptpad.changePadPassword(Cryptget, Crypto, href, data.password, edPublic, cb);
+                data.href = data.href || window.location.href;
+                Cryptpad.changePadPassword(Cryptget, Crypto, data, cb);
             });
 
             sframeChan.on('Q_CHANGE_USER_PASSWORD', function (data, cb) {

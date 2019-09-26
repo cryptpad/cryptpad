@@ -203,22 +203,36 @@ define([
         /////////////////////// RPC //////////////////////////////////////
         //////////////////////////////////////////////////////////////////
 
+        // pinPads needs to support the old format where data is an array of channel IDs
+        // and the new format where data is an object with "teamId" and "pads"
         Store.pinPads = function (clientId, data, cb) {
-            if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+            if (!data) { return void cb({error: 'EINVAL'}); }
+
+            var s = getStore(data && data.teamId);
+            if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+
             if (typeof(cb) !== 'function') {
                 console.error('expected a callback');
+                cb = function () {};
             }
 
-            store.rpc.pin(data, function (e, hash) {
+            var pads = data.pads || data;
+            s.rpc.pin(pads, function (e, hash) {
                 if (e) { return void cb({error: e}); }
                 cb({hash: hash});
             });
         };
 
+        // unpinPads needs to support the old format where data is an array of channel IDs
+        // and the new format where data is an object with "teamId" and "pads"
         Store.unpinPads = function (clientId, data, cb) {
-            if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+            if (!data) { return void cb({error: 'EINVAL'}); }
 
-            store.rpc.unpin(data, function (e, hash) {
+            var s = getStore(data && data.teamId);
+            if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+
+            var pads = data.pads || data;
+            s.rpc.unpin(pads, function (e, hash) {
                 if (e) { return void cb({error: e}); }
                 cb({hash: hash});
             });

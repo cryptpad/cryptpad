@@ -357,27 +357,48 @@ define([
             if (data.owners && data.owners.length) {
                 if (data.owners.indexOf(edPublic) !== -1) {
                     owned = true;
+                } else {
+                    Object.keys(priv.teams || {}).some(function (id) {
+                        var team = priv.teams[id] || {};
+                        if (data.owners.indexOf(team.edPublic) === -1) { return; }
+                        owned = id;
+                        return true;
+                    });
                 }
                 var names = [];
                 var strangers = 0;
                 data.owners.forEach(function (ed) {
                     // If a friend is an owner, add their name to the list
                     // otherwise, increment the list of strangers
+
+                    // Our edPublic? print "Yourself"
                     if (ed === edPublic) {
                         names.push(Messages.yourself);
                         return;
                     }
-                    if (!Object.keys(priv.friends || {}).some(function (c) {
+                    // One of our teams? print the team name
+                    if (Object.keys(priv.teams || {}).some(function (id) {
+                        var team = priv.teams[id] || {};
+                        if (team.edPublic !== ed) { return; }
+                        names.push('TEAM: '+team.name); // XXX
+                        return true;
+                    })) {
+                        return;
+                    }
+                    // One of our friends? print the friend name
+                    if (Object.keys(priv.friends || {}).some(function (c) {
                         var friend = priv.friends[c] || {};
                         if (friend.edPublic !== ed || c === 'me') { return; }
                         names.push(friend.displayName);
                         return true;
                     })) {
-                        strangers++;
+                        return;
                     }
+                    // Otherwise it's a stranger
+                    strangers++;
                 });
                 if (strangers) {
-                    names.push(Messages._getKey('properties_unknownUser', [strangers]));
+                    names.push(Messages._getKey('properties_unknownUser', [strangers])); // XXX unknown owner?
                 }
                 owners = names.join(', ');
             }
@@ -388,6 +409,7 @@ define([
             if (data.href || data.roHref) {
                 parsed = Hash.parsePadUrl(data.href || data.roHref);
             }
+            // XXX Teams owner: transfer ownership
             if (owned && data.roHref && parsed.type !== 'drive' && parsed.hashData.type === 'pad') {
                 var manageOwners = h('button.no-margin', Messages.owner_openModalButton);
                 $(manageOwners).click(function () {
@@ -455,6 +477,7 @@ define([
                         UI.confirm(changePwConfirm, function (yes) {
                             if (!yes) { return; }
                             sframeChan.query("Q_PAD_PASSWORD_CHANGE", {
+                                teamId: typeof(owned) !== "boolean" ? owned : undefined,
                                 href: data.href || data.roHref,
                                 password: newPass
                             }, function (err, data) {
