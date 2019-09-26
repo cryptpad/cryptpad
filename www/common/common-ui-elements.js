@@ -345,12 +345,11 @@ define([
 
         var draw = function () {
             var $d = $('<div>');
-            $('<label>', {'for': 'cp-app-prop-owners'}).text(Messages.creation_owners)
-                .appendTo($d);
-            var owners = Messages.creation_noOwner;
             var priv = common.getMetadataMgr().getPrivateData();
+            var user = common.getMetadataMgr().getUserData();
             var edPublic = priv.edPublic;
             var owned = false;
+            var _owners = {};
             if (data.owners && data.owners.length) {
                 if (data.owners.indexOf(edPublic) !== -1) {
                     owned = true;
@@ -362,7 +361,6 @@ define([
                         return true;
                     });
                 }
-                var names = [];
                 var strangers = 0;
                 data.owners.forEach(function (ed) {
                     // If a friend is an owner, add their name to the list
@@ -370,14 +368,21 @@ define([
 
                     // Our edPublic? print "Yourself"
                     if (ed === edPublic) {
-                        names.push(Messages.yourself);
+                        _owners[ed] = {
+                            selected: true,
+                            name: user.name,
+                            avatar: user.avatar
+                        };
                         return;
                     }
                     // One of our teams? print the team name
                     if (Object.keys(priv.teams || {}).some(function (id) {
                         var team = priv.teams[id] || {};
                         if (team.edPublic !== ed) { return; }
-                        names.push('TEAM: '+team.name); // XXX
+                        _owners[ed] = {
+                            name: team.name,
+                            avatar: team.avatar
+                        };
                         return true;
                     })) {
                         return;
@@ -386,7 +391,10 @@ define([
                     if (Object.keys(priv.friends || {}).some(function (c) {
                         var friend = priv.friends[c] || {};
                         if (friend.edPublic !== ed || c === 'me') { return; }
-                        names.push(friend.displayName);
+                        _owners[friend.edPublic] = {
+                            name: friend.displayName,
+                            avatar: friend.avatar
+                        };
                         return true;
                     })) {
                         return;
@@ -395,13 +403,29 @@ define([
                     strangers++;
                 });
                 if (strangers) {
-                    names.push(Messages._getKey('properties_unknownUser', [strangers])); // XXX unknown owner?
+                    _owners['stangers'] = {
+                        name: Messages._getKey('properties_unknownUser', [strangers]),
+                    };
                 }
-                owners = names.join(', ');
             }
-            $d.append(UI.dialog.selectable(owners, {
-                id: 'cp-app-prop-owners',
-            }));
+            var _ownersGrid = UIElements.getUserGrid(Messages.creation_owners, {
+                common: common,
+                noSelect: true,
+                data: _owners,
+                large: true
+            }, function () {});
+            if (_ownersGrid) {
+                $d.append(_ownersGrid.div);
+            } else {
+                $d.append([
+                    h('label', Messages.creation_owners),
+                ]);
+                $d.append(UI.dialog.selectable(Messages.creation_noOwner, {
+                    id: 'cp-app-prop-owners',
+                }));
+
+            }
+
             var parsed;
             if (data.href || data.roHref) {
                 parsed = Hash.parsePadUrl(data.href || data.roHref);
@@ -639,7 +663,7 @@ define([
             var name = data.displayName || data.name || Messages.anonymous;
             var avatar = h('span.cp-usergrid-avatar.cp-avatar');
             UIElements.displayAvatar(common, $(avatar), data.avatar, name);
-            return h('div.cp-usergrid-user', {
+            return h('div.cp-usergrid-user'+(data.selected?'.cp-selected':'')+(config.large?'.large':''), {
                 'data-ed': data.edPublic,
                 'data-curve': data.curvePublic || '',
                 'data-name': name.toLowerCase(),
@@ -662,7 +686,7 @@ define([
 
         var div = h('div.cp-usergrid-container' + noOthers, [
             h('label', label),
-            h('div.cp-usergrid-filter', config.noFilter ? undefined : [
+            h('div.cp-usergrid-filter', (config.noFilter || config.noSelect) ? undefined : [
                 inputFilter,
                 buttonSelect,
                 buttonDeselect
@@ -696,17 +720,19 @@ define([
         });
 
         $(div).append(h('div.cp-usergrid-grid', icons));
-        $div.on('click', '.cp-usergrid-user', function () {
-            var sel = $(this).hasClass('cp-selected');
-            if (!sel) {
-                $(this).addClass('cp-selected');
-            } else {
-                var order = $(this).attr('data-order');
-                order = order ? 'order:'+order : '';
-                $(this).removeClass('cp-selected').attr('style', order);
-            }
-            onSelect();
-        });
+        if (!config.noSelect) {
+            $div.on('click', '.cp-usergrid-user', function () {
+                var sel = $(this).hasClass('cp-selected');
+                if (!sel) {
+                    $(this).addClass('cp-selected');
+                } else {
+                    var order = $(this).attr('data-order');
+                    order = order ? 'order:'+order : '';
+                    $(this).removeClass('cp-selected').attr('style', order);
+                }
+                onSelect();
+            });
+        }
 
         return {
             icons: icons,
