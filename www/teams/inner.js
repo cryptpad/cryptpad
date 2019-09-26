@@ -409,10 +409,10 @@ define([
     };
 
     var ROLES = ['MEMBER', 'ADMIN', 'OWNER'];
-    var describeUser = function (common, data, icon) {
+    var describeUser = function (common, curvePublic, data, icon) {
         APP.module.execCommand('DESCRIBE_USER', {
             teamId: APP.team,
-            curvePublic: data.curvePublic,
+            curvePublic: curvePublic,
             data: data
         }, function (obj) {
             if (obj && obj.error) {
@@ -443,9 +443,10 @@ define([
                 title: Messages.team_rosterPromote
             });
             $(promote).click(function () {
-                data.role = 'ADMIN';
                 $(promote).hide();
-                describeUser(common, data, promote);
+                describeUser(common, data.curvePublic, {
+                    role: 'ADMIN'
+                }, promote);
             });
             $actions.append(promote);
         }
@@ -456,9 +457,11 @@ define([
                 title: Messages.team_rosterDemote
             });
             $(demote).click(function () {
-                data.role = ROLES[theirRole - 1] || 'MEMBER';
+                var role = ROLES[theirRole - 1] || 'MEMBER';
                 $(demote).hide();
-                describeUser(common, data, demote);
+                describeUser(common, data.curvePublic, {
+                    role: role
+                }, promote);
             });
             $actions.append(demote);
         }
