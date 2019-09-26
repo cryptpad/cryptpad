@@ -227,6 +227,20 @@ define([
                 $(window).off('mouseup mousemove', handler);
                 $(window).on('mouseup mousemove', handler);
             });
+
+            var previewInt;
+            var clear = function () { clearInterval(previewInt); };
+
+            // keep trying to draw until you're confident it has been drawn
+            previewInt = setInterval(function () {
+                // give up if it's not a valid preview mode
+                if (['markdown', 'gfm'].indexOf(CodeMirror.highlightMode) === -1) { return void clear(); }
+                // give up if content has been drawn
+                if ($preview.text()) { return void clear(); }
+                // only draw if there is actually content to display
+                if (editor && !editor.getValue().trim()) { return void clear(); }
+                forceDrawPreview();
+            }, 1000);
         });
 
         framework._.sfCommon.getPadAttribute('previewMode', function (e, data) {
