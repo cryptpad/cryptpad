@@ -19,6 +19,16 @@
     @roster-bg-color: #efefef;
 
     #cp-sidebarlayout-container {
+        @media screen and (max-width: 900px) {
+            .cp-app-drive-toolbar-leftside {
+                .cp-dropdown-button-title span:last-child {
+                    display: none;
+                }
+                .cp-toolbar-share-button span:last-child {
+                    display: none;
+                }
+            }
+        }
         div#cp-sidebarlayout-rightside.cp-rightside-drive {
             padding: 0;
             & > .cp-team-chat {
@@ -39,8 +49,46 @@
             }
         }
 
-        .cp-team-list-avatar {
-            .avatar_main(30px);
+        .cp-team-list {
+            .cp-team-list-container {
+                display: flex;
+                align-items: center;
+                justify-content: space-evenly;
+                flex-wrap: wrap;
+            }
+            .cp-team-list-team {
+                .tools_unselectable();
+                background-color: @roster-bg-color;
+                display: flex;
+                align-items: center;
+                flex-flow: column;
+                width: 300px;
+                max-width: 90%;
+                height: 400px;
+                padding: 20px;
+                margin: 5px;
+                .cp-team-list-avatar {
+                    .avatar_main(200px);
+                }
+                .cp-team-list-name {
+                    flex: 1;
+                    min-width: 0;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    max-width: 500px;
+                    font-size: 25px;
+                    display: inline-flex;
+                    align-items: center;
+                    &.empty {
+                        white-space: initial;
+                        text-align: center;
+                    }
+                }
+                .cp-team-list-open {
+                    width: 100%;
+                }
+            }
         }
         .cp-team-avatar {
             .avatar_main(300px);
@@ -59,6 +107,16 @@
                 }
                 .cp-avatar {
                     margin-right: 10px;
+                }
+                .cp-team-member-status {
+                    margin-left: 5px;
+                    width: 5px;
+                    height: 50px;
+                    display: inline-block;
+                    background-color: red;
+                    &.online {
+                        background-color: green;
+                    }
                 }
                 .cp-team-member-name {
                     flex: 1;

@@ -6,6 +6,7 @@ define([
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
     '/common/common-feedback.js',
+    '/common/common-constants.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/proxy-manager.js',
@@ -25,6 +26,7 @@ define([
     UI,
     UIElements,
     Feedback,
+    Constants,
     nThen,
     SFCommon,
     ProxyManager,
@@ -177,6 +179,8 @@ define([
         });
         if (active === 'drive') {
             APP.$rightside.addClass('cp-rightside-drive');
+        } else {
+            APP.$rightside.removeClass('cp-rightside-drive');
         }
         showCategories(categories[active]);
     };
@@ -264,25 +268,44 @@ define([
         ]);
     });
 
+    var MAX_TEAMS_SLOTS = Constants.MAX_TEAMS_SLOTS;
     var refreshList = function (common, cb) {
         var sframeChan = common.getSframeChannel();
         var content = [];
-        content.push(h('h3', 'Your teams'));
         APP.module.execCommand('LIST_TEAMS', null, function (obj) {
             if (!obj) { return; }
             if (obj.error) { return void console.error(obj.error); }
-            var lis = [];
-            Object.keys(obj).forEach(function (id) {
+            var list = [];
+            var keys = Object.keys(obj).slice(0,3);
+            var slots = '('+Math.min(keys.length, MAX_TEAMS_SLOTS)+'/'+MAX_TEAMS_SLOTS+')';
+            for (var i = keys.length; i < MAX_TEAMS_SLOTS; i++) {
+                obj[i] = {
+                    empty: true
+                };
+                keys.push(i);
+            }
+
+            content.push(h('h3', Messages.team_listTitle + ' ' + slots));
+
+            keys.forEach(function (id) {
                 var team = obj[id];
-                var a = h('a', Messages.team_listLoad);
-                var avatar = h('span.cp-avatar.cp-team-list-avatar');
-                lis.push(h('li', h('ul', [ // XXX UI
-                    h('li', avatar),
-                    h('li', team.metadata.name),
-                    h('li', a)
-                ])));
+                if (team.empty) {
+                    list.push(h('div.cp-team-list-team.empty', [
+                        h('span.cp-team-list-name.empty', Messages.team_listSlot)
+                    ]));
+                    return;
+                }
+                var btn;
+                var avatar = h('span.cp-avatar');
+                list.push(h('div.cp-team-list-team', [
+                    h('span.cp-team-list-avatar', avatar),
+                    h('span.cp-team-list-name', {
+                        title: team.metadata.name
+                    }, team.metadata.name),
+                    btn = h('button.cp-team-list-open.btn.btn-primary', Messages.team_listLoad)
+                ]));
                 common.displayAvatar($(avatar), team.metadata.avatar, team.metadata.name);
-                $(a).click(function () {
+                $(btn).click(function () {
                     APP.module.execCommand('SUBSCRIBE', id, function () {
                         sframeChan.query('Q_SET_TEAM', id, function (err) {
                             if (err) { return void console.error(err); }
@@ -293,7 +316,7 @@ define([
                     });
                 });
             });
-            content.push(h('ul', lis));
+            content.push(h('div.cp-team-list-container', list));
             cb(content);
         });
         return content;
@@ -303,7 +326,20 @@ define([
     });
 
     makeBlock('create', function (common, cb) {
+        var metadataMgr = common.getMetadataMgr();
+        var privateData = metadataMgr.getPrivateData();
         var content = [];
+
+        var isOwner = Object.keys(privateData.teams || {}).some(function (id) {
+            return privateData.teams[id].owner;
+        });
+        if (Object.keys(privateData.teams || {}).length >= 3 || isOwner) {
+            content.push(h('div.alert.alert-warning', {
+                role:'alert'
+            }, isOwner ? Messages.team_maxOwner : Messages._getKey('team_maxTeams', [MAX_TEAMS_SLOTS])));
+            return void cb(content);
+        }
+
         content.push(h('h3', Messages.team_createLabel));
         content.push(h('label', Messages.team_createName));
         var input = h('input', {type:'text'});
@@ -393,6 +429,8 @@ define([
         common.displayAvatar($(avatar), data.avatar, data.displayName);
         // Name
         var name = h('span.cp-team-member-name', data.displayName);
+        // Status
+        var status = h('span.cp-team-member-status'+(data.online ? '.online' : ''));
         // Actions
         var actions = h('span.cp-team-member-actions');
         var $actions = $(actions);
@@ -400,7 +438,7 @@ define([
         var myRole = me ? (ROLES.indexOf(me.role) || 0) : -1;
         var theirRole = ROLES.indexOf(data.role) || 0;
         // If they're a member and I have a higher role than them, I can promote them to admin
-        if (!isMe && myRole > theirRole && theirRole === 0) {
+        if (!isMe && myRole > theirRole && theirRole === 0 && !data.pending) {
             var promote = h('span.fa.fa-angle-double-up', {
                 title: Messages.team_rosterPromote
             });
@@ -413,7 +451,7 @@ define([
         }
         // If I'm not a member and I have an equal or higher role than them, I can demote them
         // (if they're not already a MEMBER)
-        if (!isMe && myRole >= theirRole && theirRole > 0) {
+        if (!isMe && myRole >= theirRole && theirRole > 0 && !data.pending) {
             var demote = h('span.fa.fa-angle-double-down', {
                 title: Messages.team_rosterDemote
             });
@@ -432,6 +470,7 @@ define([
             $(remove).click(function () {
                 $(remove).hide();
                 APP.module.execCommand('REMOVE_USER', {
+                    pending: data.pending,
                     teamId: APP.team,
                     curvePublic: data.curvePublic,
                 }, function (obj) {
@@ -449,7 +488,8 @@ define([
         var content = [
             avatar,
             name,
-            actions
+            actions,
+            status,
         ];
         var div = h('div.cp-team-roster-member', {
             title: data.displayName
@@ -482,6 +522,12 @@ define([
         });
         var members = Object.keys(roster).filter(function (k) {
             if (roster[k].pending) { return; }
+            return roster[k].role === "MEMBER" || !roster[k].role;
+        }).map(function (k) {
+            return makeMember(common, roster[k], me);
+        });
+        var pending = Object.keys(roster).filter(function (k) {
+            if (!roster[k].pending) { return; }
             return roster[k].role === "MEMBER" || !roster[k].role;
         }).map(function (k) {
             return makeMember(common, roster[k], me);
@@ -538,7 +584,9 @@ define([
             h('h3', Messages.team_admins),
             h('div', admins),
             h('h3', Messages.team_members),
-            h('div', members)
+            h('div', members),
+            h('h3', Messages.team_pending || 'PENDING'), // XXX
+            h('div', pending)
         ];
     };
     makeBlock('roster', function (common, cb) {
@@ -576,6 +624,7 @@ define([
 
         var todo = function () {
             var newName = $input.val();
+            if (!newName.trim()) { return; }
             $spinner.show();
             APP.module.execCommand('GET_TEAM_METADATA', {
                 teamId: APP.team

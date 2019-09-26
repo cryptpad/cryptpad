@@ -2881,57 +2881,49 @@ define([
         // Team pad
         var team;
         var teamExists = privateData.teams && Object.keys(privateData.teams).length;
-        var $teamBlock;
+        var teamValue;
         // storeInTeam can be
         // * a team ID ==> store in the team drive, and the team will be the owner
         // * -1 ==> store in the user drive, and the user will be the owner
         // * undefined ==> ask
         if (teamExists && privateData.enableTeams) {
-            var teamOptions = Object.keys(privateData.teams).map(function (teamId) {
-                var t = privateData.teams[teamId];
-                return {
-                    tag: 'a',
-                    attributes: {
-                        'data-value': teamId,
-                        'href': '#'
-                    },
-                    content: Util.fixHTML(t.name)
-                };
+            var teams = Object.keys(privateData.teams).map(function (id) {
+                var data = privateData.teams[id];
+                var avatar = h('span.cp-creation-team-avatar.cp-avatar');
+                UIElements.displayAvatar(common, $(avatar), data.avatar, data.name);
+                return h('div.cp-creation-team', {
+                    'data-id': id,
+                    title: data.name,
+                },[
+                    avatar,
+                    h('span.cp-creation-team-name', data.name)
+                ]);
             });
-            teamOptions.unshift({
-                tag: 'a',
-                attributes: {
-                    'data-value': '-1',
-                    'href': '#'
-                },
-                content: Messages.settings_cat_drive
-            });
-            teamOptions.unshift({
-                tag: 'a',
-                attributes: {
-                    'data-value': '',
-                    'href': '#'
-                },
-                content: '&nbsp;'
-            });
-            var teamDropdownConfig = {
-                text: "&nbsp;", // Button initial text
-                options: teamOptions, // Entries displayed in the menu
-                isSelect: true,
-                common: common
-            };
-            $teamBlock = UIElements.createDropdown(teamDropdownConfig);
-            $teamBlock.find('a').click(function () {
-                var id = $(this).attr('data-value');
-                $teamBlock.setValue(id);
-            });
-            team = h('div.cp-creation-team', [
+            teams.unshift(h('div.cp-creation-team', {
+                'data-id': '-1',
+                title: Messages.settings_cat_drive
+            }, [
+                h('span.cp-creation-team-avatar.fa.fa-hdd-o'),
+                h('span.cp-creation-team-name', Messages.settings_cat_drive)
+            ]));
+            team = h('div.cp-creation-teams', [
                 Messages.team_pcsSelectLabel,
-                $teamBlock[0],
+                h('div.cp-creation-teams-grid', teams),
                 createHelper('#', Messages.team_pcsSelectHelp)
             ]);
+            var $team = $(team);
+            $team.find('.cp-creation-team').click(function () {
+                if ($(this).hasClass('cp-selected')) {
+                    teamValue = undefined;
+                    return void $(this).removeClass('cp-selected');
+                }
+                $team.find('.cp-creation-team').removeClass('cp-selected');
+                $(this).addClass('cp-selected');
+                teamValue = $(this).attr('data-id');
+            });
             if (privateData.storeInTeam) {
-                $teamBlock.setValue(privateData.storeInTeam);
+                $team.find('[data-id="'+privateData.storeInTeam+'"]').addClass('cp-selected');
+                teamValue = privateData.storeInTeam;
             }
         }
 
@@ -3208,9 +3200,9 @@ define([
             var templateId = $template.data('id') || undefined;
             // Team
             var team;
-            if ($teamBlock && $teamBlock.getValue()) {
-                team = privateData.teams[$teamBlock.getValue()] || {};
-                team.id = Number($teamBlock.getValue());
+            if (teamValue) {
+                team = privateData.teams[teamValue] || {};
+                team.id = Number(teamValue);
             }
 
             return {
@@ -3746,8 +3738,15 @@ define([
                 console.log(err);
             });
         };
+
+        var MAX_TEAMS_SLOTS = Constants.MAX_TEAMS_SLOTS;
         var todo = function (yes) {
+            var priv = common.getMetadataMgr().getPrivateData();
+            var numberOfTeams = Object.keys(priv.teams || {}).length;
             if (yes) {
+                if (numberOfTeams >= MAX_TEAMS_SLOTS) {
+                    return void UI.alert(Messages._getKey('team_maxTeams', [MAX_TEAMS_SLOTS]));
+                }
                 // ACCEPT
                 module.execCommand('JOIN_TEAM', {
                     team: msg.content.team

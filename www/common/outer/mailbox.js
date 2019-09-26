@@ -258,6 +258,11 @@ proxy.mailboxes = {
                     hash: hash
                 };
                 Handlers.add(ctx, box, message, function (dismissed, toDismiss) {
+                    if (toDismiss) { // List of other messages to remove
+                        dismiss(ctx, toDismiss, '', function () {
+                            console.log('Notification handled automatically');
+                        });
+                    }
                     if (dismissed) { // This message should be removed
                         dismiss(ctx, {
                             type: type,
@@ -266,11 +271,6 @@ proxy.mailboxes = {
                             console.log('Notification handled automatically');
                         });
                         return;
-                    }
-                    if (toDismiss) { // List of other messages to remove
-                        dismiss(ctx, toDismiss, '', function () {
-                            console.log('Notification handled automatically');
-                        });
                     }
                     box.content[hash] = msg;
                     showMessage(ctx, type, message, null, function (obj) {
