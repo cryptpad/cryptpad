@@ -5,6 +5,10 @@
     window.atob = window.atob || function (str) { return Buffer.from(str, 'base64').toString('binary'); }; // jshint ignore:line
     window.btoa = window.btoa || function (str) { return new Buffer(str, 'binary').toString('base64'); }; // jshint ignore:line
 
+    Util.slice = function (A, start, end) {
+        return Array.prototype.slice.call(A, start, end);
+    };
+
     Util.bake = function (f, args) {
         if (typeof(args) === 'undefined') { args = []; }
         if (!Array.isArray(args)) { args = [args]; }
@@ -265,7 +269,7 @@
         var to;
         var g = function () {
             window.clearTimeout(to);
-            to = window.setTimeout(f, ms);
+            to = window.setTimeout(Util.bake(f, Util.slice(arguments)), ms);
         };
         return g;
     };
