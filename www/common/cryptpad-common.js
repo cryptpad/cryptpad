@@ -838,7 +838,6 @@ define([
         postMessage('GET_PAD_METADATA', data, cb);
     };
 
-    // XXX Teams: change the password of a pad owned by the team
     common.changePadPassword = function (Crypt, Crypto, data, cb) {
         var href = data.href;
         var newPassword = data.password;

@@ -304,7 +304,6 @@ define([
                                         Messages.fm_forbidden : Messages.error;
                                 return void UI.warn(text);
                             }
-                            // XXX add the pad to the team drive
                             var isTemplate = priv.isTemplate || data.isTemplate;
                             toAddTeams.forEach(function (obj) {
                                 sframeChan.query('Q_STORE_IN_TEAM', {
@@ -505,7 +504,6 @@ define([
             if (data.href || data.roHref) {
                 parsed = Hash.parsePadUrl(data.href || data.roHref);
             }
-            // XXX Teams owner: transfer ownership
             if (owned && data.roHref && parsed.type !== 'drive' && parsed.hashData.type === 'pad') {
                 var manageOwners = h('button.no-margin', Messages.owner_openModalButton);
                 $(manageOwners).click(function () {
