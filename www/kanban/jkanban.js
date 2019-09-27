@@ -271,7 +271,10 @@
                     if (element.id) {
                         nodeItem.setAttribute('data-eid', element.id)
                     }
-                    nodeItem.innerHTML = element.title;
+                    var nodeItemText = document.createElement('div');
+                    nodeItemText.classList.add('kanban-item-text');
+                    nodeItemText.innerHTML = element.title;
+                    nodeItem.appendChild(nodeItemText);
                     //add function
                     nodeItem.clickfn = element.click;
                     nodeItem.dragfn = element.drag;
