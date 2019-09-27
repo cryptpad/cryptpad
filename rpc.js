@@ -1,7 +1,7 @@
 /*@flow*/
 /*jshint esversion: 6 */
 /*  Use Nacl for checking signatures of messages */
-var Nacl = require("tweetnacl");
+var Nacl = require("tweetnacl/nacl-fast");
 
 /* globals Buffer*/
 /* globals process */
