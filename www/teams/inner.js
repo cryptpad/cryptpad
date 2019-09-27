@@ -115,7 +115,8 @@ define([
         ],
         'admin': [
             'cp-team-name',
-            'cp-team-avatar'
+            'cp-team-avatar',
+            'cp-team-delete',
         ],
     };
 
@@ -332,7 +333,7 @@ define([
 
         var isOwner = Object.keys(privateData.teams || {}).some(function (id) {
             return privateData.teams[id].owner;
-        });
+        }) && !privateData.devMode; // XXX
         if (Object.keys(privateData.teams || {}).length >= 3 || isOwner) {
             content.push(h('div.alert.alert-warning', {
                 role:'alert'
@@ -716,6 +717,39 @@ define([
             ];
             cb(content);
         });
+    }, true);
+
+    makeBlock('delete', function (common, cb) { // XXX makeBlock keys
+        var deleteTeam = h('button.btn.btn-danger', Messages.team_delete || "DELETE"); // XXX
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide();
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide();
+
+        var deleting = false;
+        $(deleteTeam).click(function () {
+            if (deleting) { return; }
+            UI.confirm("Are you sure", function (yes) { // XXX
+                if (deleting) { return; }
+                deleting = true;
+                $spinner.show();
+                APP.module.execCommand("DELETE_TEAM", {
+                    teamId: APP.team
+                }, function (obj) {
+                    $spinner.hide();
+                    deleting = false
+                    if (obj && obj.error) {
+                        return void UI.warn(obj.error);
+                    }
+                    $ok.show();
+                    UI.log('DELETED'); // XXX
+                });
+            });
+        });
+
+        cb([
+            deleteTeam,
+            $ok[0],
+            $spinner[0]
+        ]);
     }, true);
 
     var main = function () {

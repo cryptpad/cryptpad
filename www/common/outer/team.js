@@ -15,10 +15,11 @@ define([
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad/chainpad.dist.js',
     '/bower_components/nthen/index.js',
+    '/bower_components/saferphore/index.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
 ], function (Util, Hash, Constants, Realtime,
              ProxyManager, UserObject, SF, Roster, Messaging,
-             Listmap, Crypto, CpNetflux, ChainPad, nThen) {
+             Listmap, Crypto, CpNetflux, ChainPad, nThen, Saferphore) {
     var Team = {};
 
     var Nacl = window.nacl;
@@ -73,8 +74,8 @@ define([
     var closeTeam = function (ctx, teamId) {
         var team = ctx.teams[teamId];
         if (!team) { return; }
-        team.listmap.stop();
-        team.roster.stop();
+        try { team.listmap.stop(); } catch (e) {}
+        try { team.roster.stop(); } catch (e) {}
         team.proxy = {};
         delete ctx.teams[teamId];
         delete ctx.store.proxy.teams[teamId];
@@ -509,6 +510,82 @@ define([
         });
     };
 
+    var deleteTeam = function (ctx, data, cId, cb) {
+        var teamId = data.teamId;
+        if (!teamId) { return void cb({error: 'EINVAL'}); }
+        var team = ctx.teams[teamId];
+        var teamData = Util.find(ctx, ['store', 'proxy', 'teams', teamId]);
+        if (!team || !teamData) { return void cb ({error: 'ENOENT'}); }
+        var state = team.roster.getState();
+        var curvePublic = Util.find(ctx, ['store', 'proxy', 'curvePublic']);
+        var me = state.members[curvePublic];
+        if (!me || me.role !== "OWNER") { return cb({ error: "EFORBIDDEN"}); }
+
+        var edPublic = Util.find(ctx, ['store', 'proxy', 'edPublic']);
+
+        nThen(function (waitFor) {
+            ctx.Store.anonRpcMsg(null, {
+                msg: 'GET_METADATA',
+                data: teamData.channel
+            }, waitFor(function (obj) {
+                // If we can't get owners, abort
+                if (obj && obj.error) {
+                    waitFor.abort();
+                    return cb({ error: obj.error});
+                }
+                // Check if we're an owner of the team drive
+                var metadata = obj[0];
+                if (metadata && Array.isArray(metadata.owners) &&
+                    metadata.owners.indexOf(edPublic) !== -1) { return; }
+                // If w'e're not an owner, abort
+                waitFor.abort();
+                cb({error: 'EFORBIDDEN'});
+            }));
+        }).nThen(function (waitFor) {
+            team.proxy.delete = true;
+            // Delete the owned pads
+            var ownedPads = team.manager.getChannelsList('owned');
+            var sem = Saferphore.create(10);
+            ownedPads.forEach(function (c) {
+                var w = waitFor();
+                sem.take(function (give) {
+                    team.rpc.removeOwnedChannel(c, give(function (err) {
+                        if (err) { console.error(err); }
+                        w();
+                    }));
+                });
+             });
+        }).nThen(function (waitFor) {
+            // Delete the pins log
+            team.rpc.removePins(waitFor(function (err) {
+                if (err) { console.error(err); }
+                console.error(err);
+            }));
+            // Delete the roster
+            var rosterChan = Util.find(teamData, ['keys', 'roster', 'channel']);
+            ctx.store.rpc.removeOwnedChannel(rosterChan, waitFor(function (err) {
+                if (err) { console.error(err); }
+                console.error(err);
+            }));
+            // Delete the chat
+            var chatChan = Util.find(teamData, ['keys', 'chat', 'channel']);
+            /*
+            ctx.store.rpc.removeOwnedChannel(chatChan, waitFor(function (err) {
+                if (err) { console.error(err); }
+                console.error(err);
+            }));
+            */ // XXX
+            // Delete the team drive
+            ctx.store.rpc.removeOwnedChannel(teamData.channel, waitFor(function (err) {
+                if (err) { console.error(err); }
+                console.error(err);
+            }));
+        }).nThen(function () {
+            cb();
+            closeTeam(ctx, teamId);
+        });
+    };
+
     var joinTeam = function (ctx, data, cId, cb) {
         var team = data.team;
         if (!team.hash || !team.channel || !team.password
@@ -839,6 +916,9 @@ define([
             }
             if (cmd === 'REMOVE_USER') {
                 return void removeUser(ctx, data, clientId, cb);
+            }
+            if (cmd === 'DELETE_TEAM') {
+                return void deleteTeam(ctx, data, clientId, cb);
             }
             if (cmd === 'CREATE_TEAM') {
                 return void createTeam(ctx, data, clientId, cb);
