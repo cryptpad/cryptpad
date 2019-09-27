@@ -25,6 +25,14 @@ define([
             edPublic: privateData.edPublic,
             notifications: user.notifications,
         };
+
+        if (typeof(ctx.pinUsage) === 'object') {
+            // pass pin.usage, pin.limit, and pin.plan if supplied
+            Object.keys(ctx.pinUsage).forEach(function (k) {
+                data.sender[k] = ctx.pinUsage[k];
+            });
+        }
+
         data.id = id;
         data.time = +new Date();
 
@@ -202,11 +210,12 @@ define([
         ]);
     };
 
-    var create = function (common, isAdmin) {
+    var create = function (common, isAdmin, pinUsage) {
         var ui = {};
         var ctx = {
             common: common,
             isAdmin: isAdmin
+            pinUsage: pinUsage || false,
         };
 
         ui.sendForm = function (id, form, dest) {
