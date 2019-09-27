@@ -104,6 +104,8 @@ define([
         var channel = data.channel;
         var owners = data.owners || [];
         var pending_owners = data.pending_owners || [];
+        var teams = priv.teams;
+        var teamOwner = data.teamId;
 
         var redrawAll = function () {};
 
@@ -122,6 +124,12 @@ define([
                     if (friends[c].edPublic === ed) {
                         f = friends[c];
                         return true;
+                    }
+                });
+                Object.keys(teams).some(function (id) {
+                    if (teams[id].edPublic === ed) {
+                        f = teams[id];
+                        f.teamId = id;
                     }
                 });
                 if (ed === edPublic) {
@@ -155,6 +163,7 @@ define([
                 var toRemove = sel.map(function (el) {
                     var ed = $(el).attr('data-ed');
                     if (!ed) { return; }
+                    if (teamOwner && teams[teamOwner] && teams[teamOwner].edPublic === ed) { me = true; }
                     if (ed === edPublic) { me = true; }
                     return ed;
                 }).filter(function (x) { return x; });
@@ -171,7 +180,8 @@ define([
                     sframeChan.query('Q_SET_PAD_METADATA', {
                         channel: channel,
                         command: pending ? 'RM_PENDING_OWNERS' : 'RM_OWNERS',
-                        value: toRemove
+                        value: toRemove,
+                        teamId: teamOwner
                     }, waitFor(function (err, res) {
                         err = err || (res && res.error);
                         if (err) {
@@ -214,6 +224,7 @@ define([
 
         // Add owners column
         var drawAdd = function () {
+            var $div = $(h('div.cp-share-column'));
             var _friends = JSON.parse(JSON.stringify(friends));
             Object.keys(_friends).forEach(function (curve) {
                 if (owners.indexOf(_friends[curve].edPublic) !== -1 ||
@@ -228,16 +239,44 @@ define([
             }, function () {
                 //console.log(arguments);
             });
-            $div2 = $(addCol.div);
+            $div.append(addCol.div);
+
+            if (priv.enableTeams) {
+                var teamsData = Util.tryParse(JSON.stringify(priv.teams)) || {};
+                Object.keys(teamsData).forEach(function (id) {
+                    var t = teamsData[id];
+                    t.teamId = id;
+                    if (owners.indexOf(t.edPublic) !== -1 || pending_owners.indexOf(t.edPublic) !== -1) {
+                        delete teamsData[id];
+                    }
+                });
+                var teamsList = UIElements.getUserGrid('Or a team?', { // XXX
+                    common: common,
+                    noFilter: true,
+                    data: teamsData
+                }, function () {});
+                $div.append(teamsList.div);
+            }
+
             // When clicking on the add button, we get the selected users.
             var addButton = h('button.no-margin', Messages.owner_addButton);
             $(addButton).click(function () {
                 // Check selection
-                var $sel = $div2.find('.cp-usergrid-user.cp-selected');
+                var $sel = $div.find('.cp-usergrid-user.cp-selected');
                 var sel = $sel.toArray();
                 if (!sel.length) { return; }
                 var toAdd = sel.map(function (el) {
-                    return friends[$(el).attr('data-curve')].edPublic;
+                    var friend = friends[$(el).attr('data-curve')];
+                    if (!friend) { return; }
+                    return friend.edPublic;
+                }).filter(function (x) { return x; });
+                var toAddTeams = sel.map(function (el) {
+                    var team = teamsData[$(el).attr('data-teamid')];
+                    if (!team || !team.edPublic) { return; }
+                    return {
+                        edPublic: team.edPublic,
+                        id: $(el).attr('data-teamid')
+                    };
                 }).filter(function (x) { return x; });
 
                 NThen(function (waitFor) {
@@ -249,21 +288,57 @@ define([
                         }
                     }));
                 }).nThen(function (waitFor) {
-                    // Send the command
-                    sframeChan.query('Q_SET_PAD_METADATA', {
-                        channel: channel,
-                        command: 'ADD_PENDING_OWNERS',
-                        value: toAdd
-                    }, waitFor(function (err, res) {
-                        err = err || (res && res.error);
-                        if (err) {
-                            waitFor.abort();
-                            redrawAll();
-                            var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
-                                                                          : Messages.error;
-                            return void UI.warn(text);
-                        }
-                    }));
+                    if (toAddTeams.length) {
+                        // Send the command
+                        sframeChan.query('Q_SET_PAD_METADATA', {
+                            channel: channel,
+                            command: 'ADD_OWNERS',
+                            value: toAddTeams.map(function (obj) { return obj.edPublic; }),
+                            teamId: teamOwner
+                        }, waitFor(function (err, res) {
+                            err = err || (res && res.error);
+                            if (err) {
+                                waitFor.abort();
+                                redrawAll();
+                                var text = err === "INSUFFICIENT_PERMISSIONS" ?
+                                        Messages.fm_forbidden : Messages.error;
+                                return void UI.warn(text);
+                            }
+                            // XXX add the pad to the team drive
+                            var isTemplate = priv.isTemplate || data.isTemplate;
+                            toAddTeams.forEach(function (obj) {
+                                sframeChan.query('Q_STORE_IN_TEAM', {
+                                    href: data.href || data.rohref,
+                                    password: data.password,
+                                    path: isTemplate ? ['template'] : undefined,
+                                    title: data.title || '',
+                                    teamId: obj.id
+                                }, waitFor(function (err) {
+                                    if (err) { return void console.error(err); }
+                                    console.warn(obj.id);
+                                }));
+                            });
+                        }));
+                    }
+                }).nThen(function (waitFor) {
+                    if (toAdd.length) {
+                        // Send the command
+                        sframeChan.query('Q_SET_PAD_METADATA', {
+                            channel: channel,
+                            command: 'ADD_PENDING_OWNERS',
+                            value: toAdd,
+                            teamId: teamOwner
+                        }, waitFor(function (err, res) {
+                            err = err || (res && res.error);
+                            if (err) {
+                                waitFor.abort();
+                                redrawAll();
+                                var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
+                                                                              : Messages.error;
+                                return void UI.warn(text);
+                            }
+                        }));
+                    }
                 }).nThen(function (waitFor) {
                     sel.forEach(function (el) {
                         var friend = friends[$(el).attr('data-curve')];
@@ -291,8 +366,8 @@ define([
                     UI.log(Messages.saved);
                 });
             });
-            $div2.append(h('p', addButton));
-            return $div2;
+            $div.append(h('p', addButton));
+            return $div;
         };
 
         redrawAll = function (md) {
@@ -434,6 +509,7 @@ define([
             if (owned && data.roHref && parsed.type !== 'drive' && parsed.hashData.type === 'pad') {
                 var manageOwners = h('button.no-margin', Messages.owner_openModalButton);
                 $(manageOwners).click(function () {
+                    data.teamId = typeof(owned) !== "boolean" ? owned : undefined;
                     var modal = createOwnerModal(common, data);
                     UI.openCustomModal(modal, {
                         wide: true,
@@ -665,6 +741,7 @@ define([
             UIElements.displayAvatar(common, $(avatar), data.avatar, name);
             return h('div.cp-usergrid-user'+(data.selected?'.cp-selected':'')+(config.large?'.large':''), {
                 'data-ed': data.edPublic,
+                'data-teamid': data.teamId,
                 'data-curve': data.curvePublic || '',
                 'data-name': name.toLowerCase(),
                 'data-order': i,

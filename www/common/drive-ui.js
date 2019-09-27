@@ -3729,6 +3729,10 @@ define([
                 data.roHref = base + data.roHref;
             }
 
+            if (currentPath[0] === TEMPLATE) {
+                data.isTemplate = true;
+            }
+
             if (manager.isSharedFolder(el)) {
                 delete data.roHref;
                 //data.noPassword = true;
