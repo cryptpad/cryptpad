@@ -1,0 +1,91 @@
+@import (reference) "./colortheme-all.less";
+@import (reference) "./avatar.less";
+@import (reference) "./tools.less";
+
+.usergrid_main() {
+    --LessLoader_require: LessLoader_currentFile();
+};
+& {
+    .cp-usergrid-container {
+        .cp-usergrid-grid {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 6px;
+        }
+        &.cp-usergrid-empty {
+            .cp-usergrid-grid, .cp-usergrid-filter {
+                display: none;
+            }
+        }
+        .cp-usergrid-filter {
+            display: flex;
+            input {
+                flex: 1;
+                min-width: 0;
+                margin-bottom: 0 !important;
+                &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+                    color: @colortheme_alertify-primary-text;
+                    opacity: 1; /* Firefox */
+                }
+            }
+            margin-bottom: 15px;
+            &:empty {
+                margin: 0;
+                display: none;
+            }
+        }
+        .cp-usergrid-user {
+            width: 70px;
+            height: 70px;
+            display: flex;
+            flex-flow: column;
+            justify-content: center;
+            align-items: center;
+            padding: 5px;
+            margin-bottom: 6px;
+            margin-right: 6px;
+            cursor: default;
+            transition: order 0.5s, background-color 0.5s;
+            margin-top: 1px;
+            .tools_unselectable();
+
+            &:nth-child(6n) {
+                margin-right: 0;
+            }
+
+            &.cp-selected {
+                background-color: @colortheme_alertify-primary;
+                color: @colortheme_alertify-primary-text;
+                order: -1 !important;
+            }
+            .cp-usergrid-user-avatar {
+                min-height: 40px;
+            }
+            .cp-usergrid-user-name {
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                width: 100%;
+                text-align: center;
+                line-height: 18px;
+            }
+            border: 1px solid @colortheme_alertify-primary;
+
+            &:not(.large) {
+                .avatar_main(40px);
+            }
+            &.large {
+                .avatar_main(25px);
+                width: 140px;
+                height: 35px;
+                flex-flow: row;
+                margin-right: 15px;
+                margin-bottom: 1px;
+                &:nth-child(3n) {
+                    margin-right: 0;
+                }
+            }
+        }
+    }
+}
+
