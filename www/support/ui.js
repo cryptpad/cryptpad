@@ -177,6 +177,8 @@ define([
         ]);
         $(userData).click(function () {
             $(userData).find('pre').toggle();
+        }).find('pre').click(function (ev) {
+            ev.stopPropagation();
         });
 
         var name = Util.fixHTML(content.sender.name) || Messages.anonymous;
