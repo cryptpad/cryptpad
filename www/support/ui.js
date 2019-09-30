@@ -214,7 +214,7 @@ define([
         var ui = {};
         var ctx = {
             common: common,
-            isAdmin: isAdmin
+            isAdmin: isAdmin,
             pinUsage: pinUsage || false,
         };
 
