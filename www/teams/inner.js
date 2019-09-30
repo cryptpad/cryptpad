@@ -100,6 +100,10 @@ define([
                         APP.teamEdPublic = null;
                         APP.drive = null;
                         APP.buildUI(common);
+                        if (APP.usageBar) {
+                            APP.usageBar.stop();
+                            APP.usageBar = null;
+                        }
                     });
                 });
             }
