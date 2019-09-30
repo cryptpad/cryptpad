@@ -95,7 +95,7 @@ var getMetadataAtPath = function (Env, path, _cb) {
             return void cb("INVALID_METADATA");
         }
     })
-    .on('end', cb)
+    .on('close', cb)
     .on('error', cb);
 };
 
