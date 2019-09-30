@@ -620,24 +620,20 @@ define([
             // Delete the pins log
             team.rpc.removePins(waitFor(function (err) {
                 if (err) { console.error(err); }
-                console.error(err);
             }));
             // Delete the roster
             var rosterChan = Util.find(teamData, ['keys', 'roster', 'channel']);
             ctx.store.rpc.removeOwnedChannel(rosterChan, waitFor(function (err) {
                 if (err) { console.error(err); }
-                console.error(err);
             }));
             // Delete the chat
             var chatChan = Util.find(teamData, ['keys', 'chat', 'channel']);
             ctx.store.rpc.removeOwnedChannel(chatChan, waitFor(function (err) {
                 if (err) { console.error(err); }
-                console.error(err);
             }));
             // Delete the team drive
             ctx.store.rpc.removeOwnedChannel(teamData.channel, waitFor(function (err) {
                 if (err) { console.error(err); }
-                console.error(err);
             }));
         }).nThen(function () {
             cb();
