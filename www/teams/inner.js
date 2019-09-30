@@ -443,12 +443,13 @@ define([
         var theirRole = ROLES.indexOf(data.role) || 0;
         // If they're an admin and I am an owner, I can promote them to owner
         if (!isMe && myRole > theirRole && theirRole === 1 && !data.pending) {
-            var promote = h('span.fa.fa-angle-double-up', {
+            var promoteOwner = h('span.fa.fa-angle-double-up', {
                 title: "Offer ownership" // XXX
             });
-            $(promote).click(function () {
-                $(promote).hide();
+            $(promoteOwner).click(function () {
+                $(promoteOwner).hide();
                 UI.confirm("Are you sure???", function (yes) { // XXX
+                    if (!yes) { return; }
                     APP.module.execCommand('OFFER_OWNERSHIP', {
                         teamId: APP.team,
                         curvePublic: data.curvePublic
@@ -461,7 +462,7 @@ define([
                     });
                 });
             });
-            $actions.append(promote);
+            $actions.append(promoteOwner);
         }
         // If they're a member and I have a higher role than them, I can promote them to admin
         if (!isMe && myRole > theirRole && theirRole === 0 && !data.pending) {
@@ -754,6 +755,7 @@ define([
         $(deleteTeam).click(function () {
             if (deleting) { return; }
             UI.confirm("Are you sure", function (yes) { // XXX
+                if (!yes) { return; }
                 if (deleting) { return; }
                 deleting = true;
                 $spinner.show();
@@ -761,7 +763,7 @@ define([
                     teamId: APP.team
                 }, function (obj) {
                     $spinner.hide();
-                    deleting = false
+                    deleting = false;
                     if (obj && obj.error) {
                         return void UI.warn(obj.error);
                     }

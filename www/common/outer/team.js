@@ -301,7 +301,7 @@ define([
                 userName: 'team',
                 classic: true
             };
-            cfg.onMetadataUpdate = function (md) {
+            cfg.onMetadataUpdate = function () {
                 var team = ctx.teams[id];
                 if (!team) { return; }
                 ctx.emit('ROSTER_CHANGE', id, team.clients);
@@ -456,7 +456,8 @@ define([
             }));
         }).nThen(function () {
             var id = Util.createRandomInteger();
-            config.onMetadataUpdate = function (md) {
+            config.onMetadataUpdate = function () {
+                var team = ctx.teams[id];
                 if (!team) { return; }
                 ctx.emit('ROSTER_CHANGE', id, team.clients);
             };
@@ -852,12 +853,10 @@ define([
         var user = state.members[data.curvePublic];
 
         // It it is an ownership revocation, we have to set it in pad metadata first
-        console.log(user.role, data.data.role);
         if (user.role === "OWNER" && data.data.role !== "OWNER") {
             revokeOwnership(ctx, teamId, user, function (err) {
-                console.error(err);
                 if (!err) { return; }
-                waitFor.abort();
+                console.error(err);
                 return void cb({error: err});
             });
             return;
