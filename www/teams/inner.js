@@ -145,6 +145,23 @@ define([
         var categories = team ? teamCategories : mainCategories;
         var active = team ? 'drive' : 'list';
 
+        if (team && APP.team) {
+            var $category = $('<div>', {'class': 'cp-sidebarlayout-category cp-team-cat-header'}).appendTo($categories);
+            var avatar = h('div.cp-avatar');
+            var $avatar = $(avatar);
+            APP.module.execCommand('GET_TEAM_METADATA', {
+                teamId: APP.team
+            }, function (obj) {
+                if (obj && obj.error) {
+                    return void UI.warn(Messages.error);
+                }
+                var val = obj.avatar;
+                common.displayAvatar($avatar, obj.avatar, obj.name);
+                $category.append($avatar);
+                $avatar.append(obj.name);
+            });
+        }
+
         Object.keys(categories).forEach(function (key) {
             if (key === 'admin' && !teamAdmin) { return; }
 
