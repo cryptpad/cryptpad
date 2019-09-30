@@ -278,7 +278,9 @@ define([
 
     };
 
-    var openChannel = function (ctx, teamData, id, cb) {
+    var openChannel = function (ctx, teamData, id, _cb) {
+        var cb = Util.once(_cb);
+
         var secret = Hash.getSecrets('team', teamData.hash, teamData.password);
         var crypto = Crypto.createEncryptor(secret.keys);
 
@@ -286,7 +288,34 @@ define([
 
         var roster;
         var lm;
+
+        // Roster keys
+        var myKeys = {
+            curvePublic: ctx.store.proxy.curvePublic,
+            curvePrivate: ctx.store.proxy.curvePrivate
+        };
+        var rosterData = keys.roster || {};
+        var rosterKeys = rosterData.edit ? Crypto.Team.deriveMemberKeys(rosterData.edit, myKeys)
+                                        : Crypto.Team.deriveGuestKeys(rosterData.view || '');
+
         nThen(function (waitFor) {
+            ctx.store.anon_rpc.send("IS_NEW_CHANNEL", secret.channel, waitFor(function (e, response) {
+                if (response && response.length && typeof(response[0]) === 'boolean' && response[0]) {
+                    // Channel is empty: remove this team
+                    delete ctx.store.proxy.teams[id];
+                    waitFor.abort();
+                    cb({error: 'ENOENT'});
+                }
+            }));
+            ctx.store.anon_rpc.send("IS_NEW_CHANNEL", rosterKeys.channel, waitFor(function (e, response) {
+                if (response && response.length && typeof(response[0]) === 'boolean' && response[0]) {
+                    // Channel is empty: remove this team
+                    delete ctx.store.proxy.teams[id];
+                    waitFor.abort();
+                    cb({error: 'ENOENT'});
+                }
+            }));
+        }).nThen(function (waitFor) {
             // Load the proxy
             var cfg = {
                 data: {},
@@ -308,15 +337,18 @@ define([
             };
             lm = Listmap.create(cfg);
             lm.proxy.on('ready', waitFor());
+            lm.proxy.on('error', function (info) {
+                if (info && typeof (info.loaded) !== "undefined"  && !info.loaded) {
+                    cb({error:'ECONNECT'});
+                }
+                if (info && info.error) {
+                    if (info.error === "EDELETED" ) {
+                        closeTeam(ctx, id);
+                    }
+                }
+            });
 
             // Load the roster
-            var myKeys = {
-                curvePublic: ctx.store.proxy.curvePublic,
-                curvePrivate: ctx.store.proxy.curvePrivate
-            };
-            var rosterData = keys.roster || {};
-            var rosterKeys = rosterData.edit ? Crypto.Team.deriveMemberKeys(rosterData.edit, myKeys)
-                                            : Crypto.Team.deriveGuestKeys(rosterData.view || '');
             Roster.create({
                 network: ctx.store.network,
                 channel: rosterKeys.channel,
@@ -502,6 +534,11 @@ define([
             }).on('error', function (info) {
                 if (info && typeof (info.loaded) !== "undefined"  && !info.loaded) {
                     cb({error:'ECONNECT'});
+                }
+                if (info && info.error) {
+                    if (info.error === "EDELETED") {
+                        closeTeam(ctx, id);
+                    }
                 }
             });
         });
