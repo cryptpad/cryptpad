@@ -241,6 +241,11 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
 
             var current = Util.clone(members[curve]);
 
+            if (typeof(data.role) === 'string') { // they're trying to change the role...
+                // throw if they're trying to upgrade to something greater
+                if (!canAddRole(author, data.role, members)) { throw new Error("INSUFFICIENT_PERMISSIONS"); }
+            }
+
             // DESCRIBE commands must initialize a displayName if it isn't already present
             if (typeof(current.displayName) !== 'string' && typeof(data.displayName) !== 'string') { throw new Error('DISPLAYNAME_REQUIRED'); }
 
@@ -256,7 +261,9 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             var data = args[curve];
 
             Object.keys(data).forEach(function (key) {
-                if (current[key] === data[key]) { return; }
+                // when null is passed as new data and it wasn't considered an invalid change
+                // remove it from the map. This is how you delete things properly
+                if (typeof(current[key]) !== 'undefined' && data[key] === null) { return void delete current[key]; }
                 current[key] = data[key];
             });
 
@@ -608,14 +615,19 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             if (!isMap(_data)) { return void cb("INVALID_ARGUMENTS"); }
             var data = Util.clone(_data);
 
-            Object.keys(data).forEach(function (curve) {
+            if (Object.keys(data).some(function (curve) {
                 var member = data[curve];
                 if (!isMap(member)) { delete data[curve]; }
+                // validate that you're trying to describe a user that is present
+                if (!isMap(state.members[curve])) { return true; }
                 // don't send fields that won't result in a change
                 Object.keys(member).forEach(function (k) {
                     if (member[k] === state.members[curve][k]) { delete member[k]; }
                 });
-            });
+            })) {
+                // returning true in the above loop indicates that something was invalid
+                return void cb("INVALID_ARGUMENTS");
+            }
 
             send(['DESCRIBE', data], cb);
         };
