@@ -1,9 +1,6 @@
-define([
-    '/customize/application_config.js',
-    '/bower_components/scrypt-async/scrypt-async.min.js',
-], function (AppConfig) {
+(function () {
+var factory = function (AppConfig, Scrypt) {
     var Cred = {};
-    var Scrypt = window.scrypt;
 
     Cred.MINIMUM_PASSWORD_LENGTH = typeof(AppConfig.minimumPasswordLength) === 'number'?
         AppConfig.minimumPasswordLength: 8;
@@ -86,4 +83,19 @@ define([
     };
 
     return Cred;
-});
+};
+
+    if (typeof(module) !== 'undefined' && module.exports) {
+        module.exports = factory(
+            {}, //require("../../customize.dist/application_config.js"),
+            require("../bower_components/scrypt-async/scrypt-async.min.js")
+        );
+    } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+        define([
+            '/customize/application_config.js',
+            '/bower_components/scrypt-async/scrypt-async.min.js',
+        ], function (AppConfig) {
+            return factory(AppConfig, window.scrypt);
+        });
+    }
+}());

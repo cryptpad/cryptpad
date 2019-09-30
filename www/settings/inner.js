@@ -9,7 +9,7 @@ define([
     '/common/common-hash.js',
     '/customize/messages.js',
     '/common/hyperscript.js',
-    '/customize/credential.js',
+    '/common/common-credential.js',
     '/customize/application_config.js',
     '/api/config',
     '/common/make-backup.js',
