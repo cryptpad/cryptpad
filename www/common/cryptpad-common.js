@@ -1016,7 +1016,7 @@ define([
         var Cred, Block, Login;
         Nthen(function (waitFor) {
             require([
-                '/customize/credential.js',
+                '/common/common-credential.js',
                 '/common/outer/login-block.js',
                 '/customize/login.js'
             ], waitFor(function (_Cred, _Block, _Login) {

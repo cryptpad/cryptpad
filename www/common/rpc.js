@@ -404,7 +404,7 @@ var factory = function (Util, Nacl) {
 };
 
     if (typeof(module) !== 'undefined' && module.exports) {
-        module.exports = factory(require("./common-util"), require("tweetnacl"));
+        module.exports = factory(require("./common-util"), require("tweetnacl/nacl-fast"));
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
         define([
             '/common/common-util.js',

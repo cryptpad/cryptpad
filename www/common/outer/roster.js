@@ -171,6 +171,10 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             // if no role was provided, assume MEMBER
             if (typeof(data.role) !== 'string') { data.role = 'MEMBER'; }
 
+            if (!canAddRole(author, data.role, members)) {
+                throw new Error("INSUFFICIENT_PERMISSIONS");
+            }
+
             if (typeof(data.displayName) !== 'string') { throw new Error("DISPLAYNAME_REQUIRED"); }
             if (typeof(data.notifications) !== 'string') { throw new Error("NOTIFICATIONS_REQUIRED"); }
         });
@@ -178,12 +182,9 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         var changed = false;
         // then iterate again and apply it
         Object.keys(args).forEach(function (curve) {
-            var data = args[curve];
-            if (!canAddRole(author, data.role, members)) { return; }
-
             // this will result in a change
             changed = true;
-            members[curve] = data;
+            members[curve] = args[curve];
         });
 
         return changed;
@@ -241,11 +242,26 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
 
             var current = Util.clone(members[curve]);
 
+            if (typeof(data.role) === 'string') { // they're trying to change the role...
+                // throw if they're trying to upgrade to something greater
+                if (!canAddRole(author, data.role, members)) { throw new Error("INSUFFICIENT_PERMISSIONS"); }
+            }
             // DESCRIBE commands must initialize a displayName if it isn't already present
-            if (typeof(current.displayName) !== 'string' && typeof(data.displayName) !== 'string') { throw new Error('DISPLAYNAME_REQUIRED'); }
+            if (typeof(current.displayName) !== 'string' && typeof(data.displayName) !== 'string') {
+                throw new Error('DISPLAYNAME_REQUIRED');
+            }
+
+            if (['undefined', 'string'].indexOf(typeof(data.displayName)) === -1) {
+                throw new Error("INVALID_DISPLAYNAME");
+            }
 
             // DESCRIBE commands must initialize a mailbox channel if it isn't already present
-            if (typeof(current.notifications) !== 'string' && typeof(data.displayName) !== 'string') { throw new Error('NOTIFICATIONS_REQUIRED'); }
+            if (typeof(current.notifications) !== 'string' && typeof(data.notifications) !== 'string') {
+                throw new Error('NOTIFICATIONS_REQUIRED');
+            }
+            if (['undefined', 'string'].indexOf(typeof(data.notifications)) === -1) {
+                throw new Error("INVALID_NOTIFICATIONS");
+            }
         });
 
         var changed = false;
@@ -256,7 +272,9 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             var data = args[curve];
 
             Object.keys(data).forEach(function (key) {
-                if (current[key] === data[key]) { return; }
+                // when null is passed as new data and it wasn't considered an invalid change
+                // remove it from the map. This is how you delete things properly
+                if (typeof(current[key]) !== 'undefined' && data[key] === null) { return void delete current[key]; }
                 current[key] = data[key];
             });
 
@@ -305,6 +323,12 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         return true;
     };
 
+    var MANDATORY_METADATA_FIELDS = [
+        'avatar',
+        'name',
+        'topic',
+    ];
+
     // only admin/owner can change group metadata
     commands.METADATA = function (args, author, roster) {
         if (!isMap(args)) { throw new Error("INVALID_ARGS"); }
@@ -313,6 +337,11 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
 
         // validate inputs
         Object.keys(args).forEach(function (k) {
+            if (args[k] === null) {
+                if (MANDATORY_METADATA_FIELDS.indexOf(k) === -1) { return; }
+                throw new Error('CANNOT_REMOVE_MANDATORY_METADATA');
+            }
+
             // can't set metadata to anything other than strings
             // use empty string to unset a value if you must
             if (typeof(args[k]) !== 'string') { throw new Error("INVALID_ARGUMENTS"); }
@@ -321,6 +350,11 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         var changed = false;
         // {topic, name, avatar} are all strings...
         Object.keys(args).forEach(function (k) {
+            if (typeof(roster.state.metadata[k]) !== 'undefined' && args[k] === null) {
+                changed = true;
+                delete roster.state.metadata[k];
+            }
+
             // ignore things that won't cause changes
             if (args[k] === roster.state.metadata[k]) { return; }
 
@@ -608,14 +642,19 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             if (!isMap(_data)) { return void cb("INVALID_ARGUMENTS"); }
             var data = Util.clone(_data);
 
-            Object.keys(data).forEach(function (curve) {
+            if (Object.keys(data).some(function (curve) {
                 var member = data[curve];
                 if (!isMap(member)) { delete data[curve]; }
+                // validate that you're trying to describe a user that is present
+                if (!isMap(state.members[curve])) { return true; }
                 // don't send fields that won't result in a change
                 Object.keys(member).forEach(function (k) {
                     if (member[k] === state.members[curve][k]) { delete member[k]; }
                 });
-            });
+            })) {
+                // returning true in the above loop indicates that something was invalid
+                return void cb("INVALID_ARGUMENTS");
+            }
 
             send(['DESCRIBE', data], cb);
         };
