@@ -245,12 +245,22 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
                 // throw if they're trying to upgrade to something greater
                 if (!canAddRole(author, data.role, members)) { throw new Error("INSUFFICIENT_PERMISSIONS"); }
             }
-
             // DESCRIBE commands must initialize a displayName if it isn't already present
-            if (typeof(current.displayName) !== 'string' && typeof(data.displayName) !== 'string') { throw new Error('DISPLAYNAME_REQUIRED'); }
+            if (typeof(current.displayName) !== 'string' && typeof(data.displayName) !== 'string') {
+                throw new Error('DISPLAYNAME_REQUIRED');
+            }
+
+            if (['undefined', 'string'].indexOf(typeof(data.displayName)) === -1) {
+                throw new Error("INVALID_DISPLAYNAME");
+            }
 
             // DESCRIBE commands must initialize a mailbox channel if it isn't already present
-            if (typeof(current.notifications) !== 'string' && typeof(data.displayName) !== 'string') { throw new Error('NOTIFICATIONS_REQUIRED'); }
+            if (typeof(current.notifications) !== 'string' && typeof(data.notifications) !== 'string') {
+                throw new Error('NOTIFICATIONS_REQUIRED');
+            }
+            if (['undefined', 'string'].indexOf(typeof(data.notifications)) === -1) {
+                throw new Error("INVALID_NOTIFICATIONS");
+            }
         });
 
         var changed = false;
