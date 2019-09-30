@@ -462,7 +462,7 @@ define([
                             console.error(obj.error);
                             return void UI.warn(Messages.error);
                         }
-                        UI.log(Messags.sent);
+                        UI.log(Messages.sent);
                     });
                 });
             });

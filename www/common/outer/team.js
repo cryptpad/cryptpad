@@ -577,16 +577,43 @@ define([
             }));
         }).nThen(function (waitFor) {
             team.proxy.delete = true;
-            // Delete the owned pads
+            // For each pad, check on the server if there are other owners.
+            // If yes, then remove yourself as an owner
+            // If no, delete the pad
             var ownedPads = team.manager.getChannelsList('owned');
             var sem = Saferphore.create(10);
             ownedPads.forEach(function (c) {
                 var w = waitFor();
                 sem.take(function (give) {
-                    team.rpc.removeOwnedChannel(c, give(function (err) {
-                        if (err) { console.error(err); }
+                    var otherOwners = false;
+                    nThen(function (_w) {
+                        ctx.Store.anonRpcMsg(null, {
+                            msg: 'GET_METADATA',
+                            data: c
+                        }, _w(function (obj) {
+                            if (obj && obj.error) { return void _w.abort(); }
+                            var md = obj[0];
+                            var isOwner = md && Array.isArray(md.owners) && md.owners.indexOf(edPublic) !== -1;
+                            if (!isOwner) { return void _w.abort(); }
+                            otherOwners = md.owners.some(function (ed) { return void ed !== edPublic; });
+                        }));
+                    }).nThen(function (_w) {
+                        if (otherOwners) {
+                            ctx.Store.setPadMetadata(null, {
+                                channel: c,
+                                command: 'RM_OWNERS',
+                                value: [edPublic],
+                            }, _w());
+                            return;
+                        }
+                        // We're the only owner: delete the pad
+                        team.rpc.removeOwnedChannel(c, _w(function (err) {
+                            if (err) { console.error(err); }
+                        }));
+                    }).nThen(function () {
+                        give();
                         w();
-                    }));
+                    });
                 });
              });
         }).nThen(function (waitFor) {
@@ -603,12 +630,10 @@ define([
             }));
             // Delete the chat
             var chatChan = Util.find(teamData, ['keys', 'chat', 'channel']);
-            /*
             ctx.store.rpc.removeOwnedChannel(chatChan, waitFor(function (err) {
                 if (err) { console.error(err); }
                 console.error(err);
             }));
-            */ // XXX
             // Delete the team drive
             ctx.store.rpc.removeOwnedChannel(teamData.channel, waitFor(function (err) {
                 if (err) { console.error(err); }

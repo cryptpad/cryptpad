@@ -620,19 +620,68 @@ define([
                 // No password for profile
                 list.push(Hash.hrefToHexChannelId('/profile/#' + store.proxy.profile.edit, null));
             }
+            if (store.proxy.mailboxes) {
+                Object.keys(store.proxy.mailboxes || {}).forEach(function (id) {
+                    if (id === 'supportadmin') { return; }
+                    var m = store.proxy.mailboxes[id];
+                    list.push(m.channel);
+                });
+            }
+            if (store.proxy.teams) {
+                Object.keys(store.proxy.teams || {}).forEach(function (id) {
+                    var t = store.proxy.teams[id];
+                    if (t.owner) {
+                        list.push(t.channel);
+                        list.push(t.keys.roster.channel);
+                        list.push(t.keys.chat.channel);
+                    }
+                });
+            }
             return list;
         };
         var removeOwnedPads = function (waitFor) {
             // Delete owned pads
+            var edPublic = Util.find(store, ['proxy', 'edPublic']);
             var ownedPads = getOwnedPads();
             var sem = Saferphore.create(10);
             ownedPads.forEach(function (c) {
                 var w = waitFor();
                 sem.take(function (give) {
-                    Store.removeOwnedChannel(null, c, give(function (obj) {
-                        if (obj && obj.error) { console.error(obj.error); }
+                    var otherOwners = false;
+                    nThen(function (_w) {
+                        Store.anonRpcMsg(null, {
+                            msg: 'GET_METADATA',
+                            data: c
+                        }, _w(function (obj) {
+                            if (obj && obj.error) {
+                                give();
+                                return void _w.abort();
+                            }
+                            var md = obj[0];
+                            var isOwner = md && Array.isArray(md.owners) && md.owners.indexOf(edPublic) !== -1;
+                            if (!isOwner) {
+                                give();
+                                return void _w.abort();
+                            }
+                            otherOwners = md.owners.some(function (ed) { return void ed !== edPublic; });
+                        }));
+                    }).nThen(function (_w) {
+                        if (otherOwners) {
+                            Store.setPadMetadata(null, {
+                                channel: c,
+                                command: 'RM_OWNERS',
+                                value: [edPublic],
+                            }, _w());
+                            return;
+                        }
+                        // We're the only owner: delete the pad
+                        store.rpc.removeOwnedChannel(c, _w(function (err) {
+                            if (err) { console.error(err); }
+                        }));
+                    }).nThen(function () {
+                        give();
                         w();
-                    }));
+                    });
                 });
             });
         };
