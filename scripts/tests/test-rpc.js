@@ -389,6 +389,108 @@ nThen(function  (w) {
         if (err) { return void console.error(err); }
     }));
 }).nThen(function (w) {
+    var data = {};
+    data[alice.curveKeys.curvePublic] = {
+        role: "OWNER",
+    };
+
+    alice.roster.describe(data, w(function (err) {
+        if (!err) {
+            console.log("Members should not be able to add themselves as owners!");
+            process.exit(1);
+        }
+        console.log("Alice failed to promote herself to owner, as expected");
+    }));
+}).nThen(function (w) {
+    var data = {};
+    data[alice.curveKeys.curvePublic] = {
+        role: "ADMIN",
+    };
+
+    alice.roster.describe(data, w(function (err) {
+        if (!err) {
+            console.log("Members should not be able to add themselves as admins!");
+            process.exit(1);
+        }
+        console.log("Alice failed to promote herself to admin, as expected");
+    }));
+}).nThen(function (w) {
+    var data = {};
+    data[alice.curveKeys.curvePublic] = {
+        test: true,
+    };
+    alice.roster.describe(data, w(function (err) {
+        if (err) {
+            console.log("Unexpected error while describing an arbitrary attribute");
+            process.exit(1);
+        }
+    }));
+}).nThen(function (w) {
+    var state = alice.roster.getState();
+
+    var alice_state = state.members[alice.curveKeys.curvePublic];
+    //console.log(alice_state);
+
+    if (typeof(alice_state.test) !== 'boolean') {
+        console.error("Arbitrary boolean attribute was not set");
+        process.exit(1);
+    }
+
+    var data = {};
+    data[alice.curveKeys.curvePublic] = {
+        test: null,
+    };
+    alice.roster.describe(data, w(function (err) {
+        if (err) {
+            console.error(err);
+            console.error("Expected removal of arbitrary attribute to be successfully applied");
+            console.log(alice.roster.getState());
+            process.exit(1);
+        }
+    }));
+}).nThen(function (w) {
+    var data = {};
+    data[alice.curveKeys.curvePublic] = {
+        notifications: null,
+    };
+    alice.roster.describe(data, w(function (err) {
+        if (!err) {
+            console.error("Expected deletion of notifications channel to fail");
+            process.exit(1);
+        }
+        if (err !== 'INVALID_NOTIFICATIONS') {
+            console.log("UNEXPECTED ERROR 1231241245");
+            console.error(err);
+            process.exit(1);
+        }
+        console.log("Deletion of notifications channel failed as expected");
+    }));
+}).nThen(function (w) {
+    var data = {};
+    data[alice.curveKeys.curvePublic] = {
+        displayName: null,
+    };
+    alice.roster.describe(data, w(function (err) {
+        if (!err) {
+            console.error("Expected deletion of displayName to fail");
+            process.exit(1);
+        }
+        if (err !== 'INVALID_DISPLAYNAME') {
+            console.log("UNEXPECTED ERROR 12352623465");
+            console.error(err);
+            process.exit(1);
+        }
+        console.log("Deletion of displayName failed as expected");
+    }));
+}).nThen(function (w) {
+    alice.roster.checkpoint(w(function (err) {
+        if (!err) {
+            console.error("Members should not be able to send checkpoints!");
+            process.exit(0);
+        }
+        console.error("checkpoint by member failed as expected");
+    }));
+}).nThen(function (w) {
     console.log("STATE =", JSON.stringify(oscar.roster.getState(), null, 2));
 
     // oscar describes the team
@@ -399,10 +501,6 @@ nThen(function  (w) {
         if (err) { return void console.log(err); }
         console.log("STATE =", JSON.stringify(oscar.roster.getState(), null, 2));
     }));
-}).nThen(function () {
-
-
-
 }).nThen(function (w) {
     // oscar sends a checkpoint
     oscar.roster.checkpoint(w(function (err) {
@@ -426,6 +524,20 @@ nThen(function  (w) {
             return void console.error(err);
         }
         console.log("Promoted Alice to ADMIN");
+    }));
+}).nThen(function (w) {
+    alice.roster.checkpoint(w(function (err) {
+        if (!err) { return; }
+        console.error("Checkpoint by an admin failed unexpectedly");
+        console.error(err);
+        process.exit(1);
+    }));
+}).nThen(function (w) {
+    oscar.roster.checkpoint(w(function (err) {
+        if (!err) { return; }
+        console.error("Checkpoint by an owner failed unexpectedly");
+        console.error(err);
+        process.exit(1);
     }));
 }).nThen(function (w) {
     // bob finally connects, this time with the lastKnownHash provided by oscar
@@ -454,6 +566,20 @@ nThen(function  (w) {
         bob.destroy.reg(function () {
             roster.stop();
         });
+    }));
+}).nThen(function (w) {
+    var bogus = {};
+    var curveKeys = makeCurveKeys();
+    bogus[curveKeys.curvePublic] = {
+        displayName: "chewbacca",
+        notifications: Hash.createChannelId(),
+    };
+    bob.roster.add(bogus, w(function (err) {
+        if (!err) {
+            console.error("Expected 'add' by member to fail");
+            process.exit(1);
+        }
+        console.log("'add' by member failed as expected");
     }));
 }).nThen(function (w) {
     bob.roster.remove([
