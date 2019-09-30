@@ -270,12 +270,12 @@ define([
         var content = msg.content;
 
         if (msg.author !== content.user.curvePublic) { return void cb(true); }
-        if (!content.href || !content.title || !content.channel) {
+        if (!content.teamChannel && !(content.href && content.title && content.channel)) {
             console.log('Remove invalid notification');
             return void cb(true);
         }
 
-        var channel = content.channel;
+        var channel = content.channel || content.teamChannel;
 
         if (addOwners[channel]) { return void cb(true); }
         addOwners[channel] = {
@@ -286,7 +286,7 @@ define([
         cb(false);
     };
     removeHandlers['ADD_OWNER'] = function (ctx, box, data) {
-        var channel = data.content.channel;
+        var channel = data.content.channel || data.content.teamChannel;
         if (addOwners[channel]) {
             delete addOwners[channel];
         }
@@ -297,12 +297,23 @@ define([
         var content = msg.content;
 
         if (msg.author !== content.user.curvePublic) { return void cb(true); }
-        if (!content.channel) {
+        if (!content.channel && !content.teamChannel) {
             console.log('Remove invalid notification');
             return void cb(true);
         }
 
-        var channel = content.channel;
+        var channel = content.channel || content.teamChannel;
+
+        // If our ownership rights for a team have been removed, update the owner flag
+        if (content.teamChannel) {
+            var teams = ctx.store.proxy.teams || {};
+            Object.keys(teams).some(function (id) {
+                if (teams[id].channel === channel) {
+                    teams[id].owner = false;
+                    return true;
+                }
+            });
+        }
 
         if (addOwners[channel] && content.pending) {
             return void cb(false, addOwners[channel]);

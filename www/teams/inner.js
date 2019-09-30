@@ -115,7 +115,8 @@ define([
         ],
         'admin': [
             'cp-team-name',
-            'cp-team-avatar'
+            'cp-team-avatar',
+            'cp-team-delete',
         ],
     };
 
@@ -332,7 +333,7 @@ define([
 
         var isOwner = Object.keys(privateData.teams || {}).some(function (id) {
             return privateData.teams[id].owner;
-        });
+        }) && !privateData.devMode; // XXX
         if (Object.keys(privateData.teams || {}).length >= 3 || isOwner) {
             content.push(h('div.alert.alert-warning', {
                 role:'alert'
@@ -429,6 +430,9 @@ define([
         common.displayAvatar($(avatar), data.avatar, data.displayName);
         // Name
         var name = h('span.cp-team-member-name', data.displayName);
+        if (data.pendingOwner) {
+            $(name).append(h('em', " PENDING"));
+        }
         // Status
         var status = h('span.cp-team-member-status'+(data.online ? '.online' : ''));
         // Actions
@@ -437,6 +441,29 @@ define([
         var isMe = me && me.curvePublic === data.curvePublic;
         var myRole = me ? (ROLES.indexOf(me.role) || 0) : -1;
         var theirRole = ROLES.indexOf(data.role) || 0;
+        // If they're an admin and I am an owner, I can promote them to owner
+        if (!isMe && myRole > theirRole && theirRole === 1 && !data.pending) {
+            var promoteOwner = h('span.fa.fa-angle-double-up', {
+                title: "Offer ownership" // XXX
+            });
+            $(promoteOwner).click(function () {
+                $(promoteOwner).hide();
+                UI.confirm("Are you sure???", function (yes) { // XXX
+                    if (!yes) { return; }
+                    APP.module.execCommand('OFFER_OWNERSHIP', {
+                        teamId: APP.team,
+                        curvePublic: data.curvePublic
+                    }, function (obj) {
+                        if (obj && obj.error) {
+                            console.error(obj.error);
+                            return void UI.warn(Messages.error);
+                        }
+                        UI.log("DONE"); // XXX
+                    });
+                });
+            });
+            $actions.append(promoteOwner);
+        }
         // If they're a member and I have a higher role than them, I can promote them to admin
         if (!isMe && myRole > theirRole && theirRole === 0 && !data.pending) {
             var promote = h('span.fa.fa-angle-double-up', {
@@ -466,7 +493,8 @@ define([
             $actions.append(demote);
         }
         // If I'm not a member and I have an equal or higher role than them, I can remove them
-        if (!isMe && myRole > 0 && myRole >= theirRole) {
+        // Note: we can't remove owners, we have to demote them first
+        if (!isMe && myRole > 0 && myRole >= theirRole && theirRole !== 2) {
             var remove = h('span.fa.fa-times', {
                 title: Messages.team_rosterKick
             });
@@ -513,7 +541,7 @@ define([
         var me = roster[userData.curvePublic] || {};
         var owner = Object.keys(roster).filter(function (k) {
             if (roster[k].pending) { return; }
-            return roster[k].role === "OWNER";
+            return roster[k].role === "OWNER" || roster[k].pendingOwner;
         }).map(function (k) {
             return makeMember(common, roster[k], me);
         });
@@ -716,6 +744,40 @@ define([
             ];
             cb(content);
         });
+    }, true);
+
+    makeBlock('delete', function (common, cb) { // XXX makeBlock keys
+        var deleteTeam = h('button.btn.btn-danger', Messages.team_delete || "DELETE"); // XXX
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide();
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide();
+
+        var deleting = false;
+        $(deleteTeam).click(function () {
+            if (deleting) { return; }
+            UI.confirm("Are you sure", function (yes) { // XXX
+                if (!yes) { return; }
+                if (deleting) { return; }
+                deleting = true;
+                $spinner.show();
+                APP.module.execCommand("DELETE_TEAM", {
+                    teamId: APP.team
+                }, function (obj) {
+                    $spinner.hide();
+                    deleting = false;
+                    if (obj && obj.error) {
+                        return void UI.warn(obj.error);
+                    }
+                    $ok.show();
+                    UI.log('DELETED'); // XXX
+                });
+            });
+        });
+
+        cb([
+            deleteTeam,
+            $ok[0],
+            $spinner[0]
+        ]);
     }, true);
 
     var main = function () {

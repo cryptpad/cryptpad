@@ -42,7 +42,7 @@
     "error": "Error",
     "saved": "Saved",
     "synced": "Everything is saved",
-    "deleted": "Pad deleted from your CryptDrive",
+    "deleted": "Deleted",
     "deletedFromServer": "Pad deleted from the server",
     "mustLogin": "You must be logged in to access this page",
     "disabledApp": "This application has been disabled. Contact the administrator of this CryptPad for more information.",
@@ -1201,5 +1201,16 @@
     "team_maxOwner": "Each user account is restricted to owning a single team.",
     "team_maxTeams": "Each user account can only be a member of {0} teams.",
     "team_listTitle": "Your teams",
-    "team_listSlot": "Available team slot"
+    "team_listSlot": "Available team slot",
+    "owner_addTeamText": "...or a team",
+    "owner_team_add": "{0} wants you to be an owner of the team <b>{1}</b>. Do you accept?",
+    "team_rosterPromoteOwner": "Offer ownership",
+    "team_ownerConfirm": "Co-owners can modify or delete the team and remove you as an owner. Are you sure?",
+    "team_kickConfirm": "{0} will know that you removed them from the team. Are you sure?",
+    "sent": "Message sent",
+    "team_pending": "Invited",
+    "team_deleteTitle": "Team deletion",
+    "team_deleteHint": "Delete the team and all documents owned exclusively by the team.",
+    "team_deleteButton": "Delete",
+    "team_deleteConfirm": "You are about to delete all of an entire team's data. This may impact other team members access to their data. This cannot be undone. Are you sure you want to proceed?"
 }

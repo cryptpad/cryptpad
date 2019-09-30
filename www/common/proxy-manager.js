@@ -827,7 +827,7 @@ define([
                     // Don't push duplicates
                     if (result.indexOf(data.channel) !== -1) { return; }
                     // Return owned pads
-                    if (_ownedByMe(Env, data.owners)) {
+                    if (_ownedByMe(Env, data.owners) && data.owners.length === 1) {
                         result.push(data.channel);
                     }
                 };

@@ -1552,7 +1552,6 @@ define([
 
             var href, title;
 
-            // XXX TEAMOWNER
             if (!res.some(function (obj) {
                 if (obj.data &&
                     Array.isArray(obj.data.owners) && obj.data.owners.indexOf(edPublic) !== -1 &&
@@ -1612,11 +1611,8 @@ define([
         Store.setPadMetadata = function (clientId, data, cb) {
             if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }
             if (!data.command) { return void cb({ error: 'EINVAL' }); }
-            // XXX TEAMOWNER
-            // If owned by a team, we should use the team rpc here
-            // We'll need common-ui-elements to tell us the "owners" value or we can
-            // call getPadMetadata first
-            store.rpc.setMetadata(data, function (err, res) {
+            var s = getStore(data.teamId);
+            s.rpc.setMetadata(data, function (err, res) {
                 if (err) { return void cb({ error: err }); }
                 if (!Array.isArray(res) || !res.length) { return void cb({}); }
                 cb(res[0]);
