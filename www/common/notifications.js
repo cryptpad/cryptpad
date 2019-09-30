@@ -216,6 +216,9 @@ define([
         // if not archived, add handlers
         if (!content.archived) {
             content.handler = function () {
+                if (msg.content.teamChannel) {
+                    return void UIElements.displayAddTeamOwnerModal(common, data);
+                }
                 UIElements.displayAddOwnerModal(common, data);
             };
         }

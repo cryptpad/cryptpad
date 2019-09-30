@@ -288,6 +288,7 @@ define([
                         }
                     }));
                 }).nThen(function (waitFor) {
+                    // Add one of our teams as an owner
                     if (toAddTeams.length) {
                         // Send the command
                         sframeChan.query('Q_SET_PAD_METADATA', {
@@ -320,6 +321,7 @@ define([
                         }));
                     }
                 }).nThen(function (waitFor) {
+                    // Offer ownership to a friend
                     if (toAdd.length) {
                         // Send the command
                         sframeChan.query('Q_SET_PAD_METADATA', {
@@ -1293,7 +1295,7 @@ define([
         var team = privateData.teams[config.teamId];
         if (!team) { return void UI.warn(Messages.error); }
 
-        var module = config.module || common.makeUniversal('team', { onEvent: function () {} });
+        var module = config.module || common.makeUniversal('team');
 
         var $div;
         var refreshButton = function () {
@@ -3780,6 +3782,130 @@ define([
                 }
                 // Send notification to the sender
                 answer(false);
+            });
+        };
+
+        UI.proposal(div, todo);
+    };
+    UIElements.displayAddTeamOwnerModal = function (common, data) {
+        var priv = common.getMetadataMgr().getPrivateData();
+        var user = common.getMetadataMgr().getUserData();
+        var sframeChan = common.getSframeChannel();
+        var msg = data.content.msg;
+
+        var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
+        var title = Util.fixHTML(msg.content.title);
+
+        //var text = Messages._getKey('owner_team_add', [name, title]); // XXX
+        var text = name + ' wants you to be an owner of the team ' + title; // XXX
+
+        var div = h('div', [
+            UI.setHTML(h('p'), text),
+        ]);
+
+        var answer = function (yes) {
+            common.mailbox.sendTo("ADD_OWNER_ANSWER", {
+                teamChannel: msg.content.teamChannel,
+                title: msg.content.title,
+                answer: yes,
+                user: {
+                    displayName: user.name,
+                    avatar: user.avatar,
+                    profile: user.profile,
+                    notifications: user.notifications,
+                    curvePublic: user.curvePublic,
+                    edPublic: priv.edPublic
+                }
+            }, {
+                channel: msg.content.user.notifications,
+                curvePublic: msg.content.user.curvePublic
+            });
+            common.mailbox.dismiss(data, function (err) {
+                if (err) { console.log(err); }
+            });
+        };
+        var module = common.makeUniversal('team');
+
+        var addOwner = function (chan, waitFor, cb) {
+            // Remove yourself from the pending owners
+            sframeChan.query('Q_SET_PAD_METADATA', {
+                channel: chan,
+                command: 'ADD_OWNERS',
+                value: [priv.edPublic]
+            }, function (err, res) {
+                err = err || (res && res.error);
+                if (!err) { return; }
+                waitFor.abort();
+                cb(err);
+            });
+        };
+        var removePending = function (chan, waitFor, cb) {
+            // Remove yourself from the pending owners
+            sframeChan.query('Q_SET_PAD_METADATA', {
+                channel: chan,
+                command: 'RM_PENDING_OWNERS',
+                value: [priv.edPublic]
+            }, waitFor(function (err, res) {
+                err = err || (res && res.error);
+                if (!err) { return; }
+                waitFor.abort();
+                cb(err);
+            }));
+        };
+        var changeAll = function (add, _cb) {
+            var f = add ? addOwner : removePending;
+            var cb = Util.once(_cb);
+            NThen(function (waitFor) {
+                f(msg.content.teamChannel, waitFor, cb);
+                f(msg.content.chatChannel, waitFor, cb);
+                f(msg.content.rosterChannel, waitFor, cb);
+            }).nThen(function () { cb(); });
+        };
+
+        var todo = function (yes) {
+            if (yes) {
+                // ACCEPT
+                changeAll(true, function (err) {
+                    if (err) {
+                        console.error(err);
+                        var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
+                                                                      : Messages.error;
+                        return void UI.warn(text);
+                    }
+                    UI.log(Messages.saved);
+
+                    // Send notification to the sender
+                    answer(true);
+
+                    // Mark ourselves as "owner" in our local team data
+                    module.execCommand("ANSWER_OWNERSHIP", {
+                        teamChannel: msg.content.teamChannel,
+                        answer: true
+                    }, function (obj) {
+                        if (obj && obj.error) { console.error(obj.error); }
+                    });
+
+                    // Remove yourself from the pending owners
+                    changeAll(false, function (err) {
+                        if (err) { console.error(err); }
+                    });
+                });
+                return;
+            }
+
+            // DECLINE
+            // Remove yourself from the pending owners
+            changeAll(false, function (err) {
+                if (err) { console.error(err); }
+                // Send notification to the sender
+                answer(false);
+                // Set our role back to ADMIN
+                module.execCommand("ANSWER_OWNERSHIP", {
+                    teamChannel: msg.content.teamChannel,
+                    answer: false
+                }, function (obj) {
+                    if (obj && obj.error) { console.error(obj.error); }
+                });
             });
         };
 

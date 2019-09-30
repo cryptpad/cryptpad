@@ -100,18 +100,6 @@ define([
         if (membersChannel) { list.push(membersChannel); }
         if (mailboxChannel) { list.push(mailboxChannel); }
 
-
-
-        // XXX Add the team mailbox
-        /*
-        if (store.proxy.mailboxes) {
-            var mList = Object.keys(store.proxy.mailboxes).map(function (m) {
-                return store.proxy.mailboxes[m].channel;
-            });
-            list = list.concat(mList);
-        }
-        */
-
         list.sort();
         return list;
     };
@@ -186,7 +174,6 @@ define([
                 channel: secret.channel,
                 secret: secret,
                 validateKey: secret.keys.validateKey
-                // XXX owners: team owner + all admins?
             };
         };
 
@@ -313,6 +300,11 @@ define([
                 },
                 userName: 'team',
                 classic: true
+            };
+            cfg.onMetadataUpdate = function (md) {
+                var team = ctx.teams[id];
+                if (!team) { return; }
+                ctx.emit('ROSTER_CHANGE', id, team.clients);
             };
             lm = Listmap.create(cfg);
             lm.proxy.on('ready', waitFor());
@@ -463,10 +455,14 @@ define([
                 }
             }));
         }).nThen(function () {
+            var id = Util.createRandomInteger();
+            config.onMetadataUpdate = function (md) {
+                if (!team) { return; }
+                ctx.emit('ROSTER_CHANGE', id, team.clients);
+            };
             var lm = Listmap.create(config);
             var proxy = lm.proxy;
             proxy.on('ready', function () {
-                var id = Util.createRandomInteger();
                 // Store keys in our drive
                 var keys = {
                     drive: {
@@ -617,11 +613,42 @@ define([
     var getTeamRoster = function (ctx, data, cId, cb) {
         var teamId = data.teamId;
         if (!teamId) { return void cb({error: 'EINVAL'}); }
+        var teamData = Util.find(ctx, ['store', 'proxy', 'teams', teamId]);
+        if (!teamData) { return void cb ({error: 'ENOENT'}); }
         var team = ctx.teams[teamId];
         if (!team) { return void cb ({error: 'ENOENT'}); }
         if (!team.roster) { return void cb({error: 'NO_ROSTER'}); }
         var state = team.roster.getState() || {};
         var members = state.members || {};
+
+        // Get pending owners
+        var md = team.listmap.metadata || {};
+        if (Array.isArray(md.pending_owners)) {
+            // Get the members associated to the pending_owners' edPublic and mark them as such
+            md.pending_owners.forEach(function (ed) {
+                var member;
+                Object.keys(members).some(function (curve) {
+                    if (members[curve].edPublic === ed) {
+                        member = members[curve];
+                        return true;
+                    }
+                });
+                if ((!member || member.role !== 'OWNER') && teamData.owner) {
+                    var removeOwnership = function (chan) {
+                        ctx.Store.setPadMetadata(null, {
+                            channel: chan,
+                            command: 'RM_PENDING_OWNERS',
+                            value: [ed],
+                        }, function () {});
+                    };
+                    removeOwnership(teamData.channel);
+                    removeOwnership(Util.find(teamData, ['keys', 'roster', 'channel']));
+                    removeOwnership(Util.find(teamData, ['keys', 'chat', 'channel']));
+                    return;
+                }
+                member.pendingOwner = true;
+            });
+        }
 
         // Add online status (using messenger data)
         var chatData = team.getChatData();
@@ -661,6 +688,159 @@ define([
         });
     };
 
+    var offerOwnership = function (ctx, data, cId, _cb) {
+        var cb = Util.once(_cb);
+        var teamId = data.teamId;
+        if (!teamId) { return void cb({error: 'EINVAL'}); }
+        var teamData = Util.find(ctx, ['store', 'proxy', 'teams', teamId]);
+        if (!teamData) { return void cb ({error: 'ENOENT'}); }
+        var team = ctx.teams[teamId];
+        if (!team) { return void cb ({error: 'ENOENT'}); }
+        if (!team.roster) { return void cb({error: 'NO_ROSTER'}); }
+        if (!data.curvePublic) { return void cb({error: 'MISSING_DATA'}); }
+        var state = team.roster.getState();
+        var user = state.members[data.curvePublic];
+        nThen(function (waitFor) {
+            // Offer ownership to a friend
+            var onError = function (res) {
+                var err = res && res.error;
+                if (err) {
+                    waitFor.abort();
+                    return void cb({error:err});
+                }
+            };
+            var addPendingOwner = function (chan) {
+                ctx.Store.setPadMetadata(null, {
+                    channel: chan,
+                    command: 'ADD_PENDING_OWNERS',
+                    value: [user.edPublic],
+                }, waitFor(onError));
+            };
+            // Team proxy
+            addPendingOwner(teamData.channel);
+            // Team roster
+            addPendingOwner(Util.find(teamData, ['keys', 'roster', 'channel']));
+            // Team chat
+            addPendingOwner(Util.find(teamData, ['keys', 'chat', 'channel']));
+        }).nThen(function (waitFor) {
+            var obj = {};
+            obj[user.curvePublic] = {
+                role: 'OWNER'
+            };
+            team.roster.describe(obj, waitFor(function (err) {
+                if (err) { console.error(err); }
+            }));
+        }).nThen(function (waitFor) {
+            // Send mailbox to offer ownership
+            var myData = Messaging.createData(ctx.store.proxy, false);
+            ctx.store.mailbox.sendTo("ADD_OWNER", {
+                teamChannel: teamData.channel,
+                chatChannel: Util.find(teamData, ['keys', 'chat', 'channel']),
+                rosterChannel: Util.find(teamData, ['keys', 'roster', 'channel']),
+                title: teamData.metadata.name,
+                user: myData
+            }, {
+                channel: user.notifications,
+                curvePublic: user.curvePublic
+            }, waitFor());
+        }).nThen(function () {
+            cb();
+        });
+    };
+
+    var revokeOwnership = function (ctx, teamId, user, _cb) {
+        var cb = Util.once(_cb);
+        if (!teamId) { return void cb({error: 'EINVAL'}); }
+        var teamData = Util.find(ctx, ['store', 'proxy', 'teams', teamId]);
+        if (!teamData) { return void cb ({error: 'ENOENT'}); }
+        var team = ctx.teams[teamId];
+        if (!team) { return void cb ({error: 'ENOENT'}); }
+        var md = team.listmap.metadata || {};
+        var isPendingOwner = (md.pending_owners || []).indexOf(user.edPublic) !== -1;
+        nThen(function (waitFor) {
+            var cmd = isPendingOwner ? 'RM_PENDING_OWNERS' : 'RM_OWNERS';
+
+            var onError = function (res) {
+                var err = res && res.error;
+                if (err) {
+                    waitFor.abort();
+                    return void cb(err);
+                }
+            };
+            var removeOwnership = function (chan) {
+                ctx.Store.setPadMetadata(null, {
+                    channel: chan,
+                    command: cmd,
+                    value: [user.edPublic],
+                }, waitFor(onError));
+            };
+            // Team proxy
+            removeOwnership(teamData.channel);
+            // Team roster
+            removeOwnership(Util.find(teamData, ['keys', 'roster', 'channel']));
+            // Team chat
+            removeOwnership(Util.find(teamData, ['keys', 'chat', 'channel']));
+        }).nThen(function (waitFor) {
+            var obj = {};
+            obj[user.curvePublic] = {
+                role: 'ADMIN',
+                pendingOwner: false
+            };
+            team.roster.describe(obj, waitFor(function (err) {
+                if (err) { console.error(err); }
+            }));
+        }).nThen(function (waitFor) {
+            // Send mailbox to offer ownership
+            var myData = Messaging.createData(ctx.store.proxy, false);
+            ctx.store.mailbox.sendTo("RM_OWNER", {
+                teamChannel: teamData.channel,
+                title: teamData.metadata.name,
+                pending: isPendingOwner,
+                user: myData
+            }, {
+                channel: user.notifications,
+                curvePublic: user.curvePublic
+            }, waitFor());
+        }).nThen(function () {
+            cb();
+        });
+    };
+
+    // We've received an offer to be an owner of the team.
+    // If we accept, we need to set the "owner" flag in our team data
+    // If we decline, we need to change our role back to "ADMIN"
+    var answerOwnership = function (ctx, data, cId, cb) {
+        var myTeams = ctx.store.proxy.teams;
+        var teamId;
+        Object.keys(myTeams).forEach(function (id) {
+            if (myTeams[id].channel === data.teamChannel) {
+                teamId = id;
+                return true;
+            }
+        });
+        if (!teamId) { return void cb({error: 'EINVAL'}); }
+        var teamData = Util.find(ctx, ['store', 'proxy', 'teams', teamId]);
+        if (!teamData) { return void cb ({error: 'ENOENT'}); }
+        var team = ctx.teams[teamId];
+        if (!team) { return void cb ({error: 'ENOENT'}); }
+        if (!team.roster) { return void cb({error: 'NO_ROSTER'}); }
+        var obj = {};
+
+        // Accept
+        if (data.answer) {
+            teamData.owner = true;
+            return;
+        }
+        // Decline
+        obj[ctx.store.proxy.curvePublic] = {
+            role: 'ADMIN',
+        };
+        team.roster.describe(obj, function (err) {
+            if (err) { return void cb({error: err}); }
+            cb();
+        });
+    };
+
     var describeUser = function (ctx, data, cId, cb) {
         var teamId = data.teamId;
         if (!teamId) { return void cb({error: 'EINVAL'}); }
@@ -668,6 +848,21 @@ define([
         if (!team) { return void cb ({error: 'ENOENT'}); }
         if (!team.roster) { return void cb({error: 'NO_ROSTER'}); }
         if (!data.curvePublic || !data.data) { return void cb({error: 'MISSING_DATA'}); }
+        var state = team.roster.getState();
+        var user = state.members[data.curvePublic];
+
+        // It it is an ownership revocation, we have to set it in pad metadata first
+        console.log(user.role, data.data.role);
+        if (user.role === "OWNER" && data.data.role !== "OWNER") {
+            revokeOwnership(ctx, teamId, user, function (err) {
+                console.error(err);
+                if (!err) { return; }
+                waitFor.abort();
+                return void cb({error: err});
+            });
+            return;
+        }
+
         var obj = {};
         obj[data.curvePublic] = data.data;
         team.roster.describe(obj, function (err) {
@@ -901,6 +1096,12 @@ define([
             }
             if (cmd === 'SET_TEAM_METADATA') {
                 return void setTeamMetadata(ctx, data, clientId, cb);
+            }
+            if (cmd === 'OFFER_OWNERSHIP') {
+                return void offerOwnership(ctx, data, clientId, cb);
+            }
+            if (cmd === 'ANSWER_OWNERSHIP') {
+                return void answerOwnership(ctx, data, clientId, cb);
             }
             if (cmd === 'DESCRIBE_USER') {
                 return void describeUser(ctx, data, clientId, cb);
