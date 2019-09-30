@@ -171,6 +171,10 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             // if no role was provided, assume MEMBER
             if (typeof(data.role) !== 'string') { data.role = 'MEMBER'; }
 
+            if (!canAddRole(author, data.role, members)) {
+                throw new Error("INSUFFICIENT_PERMISSIONS");
+            }
+
             if (typeof(data.displayName) !== 'string') { throw new Error("DISPLAYNAME_REQUIRED"); }
             if (typeof(data.notifications) !== 'string') { throw new Error("NOTIFICATIONS_REQUIRED"); }
         });
@@ -178,12 +182,9 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         var changed = false;
         // then iterate again and apply it
         Object.keys(args).forEach(function (curve) {
-            var data = args[curve];
-            if (!canAddRole(author, data.role, members)) { return; }
-
             // this will result in a change
             changed = true;
-            members[curve] = data;
+            members[curve] = args[curve];
         });
 
         return changed;
@@ -322,6 +323,12 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         return true;
     };
 
+    var MANDATORY_METADATA_FIELDS = [
+        'avatar',
+        'name',
+        'topic',
+    ];
+
     // only admin/owner can change group metadata
     commands.METADATA = function (args, author, roster) {
         if (!isMap(args)) { throw new Error("INVALID_ARGS"); }
@@ -330,6 +337,11 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
 
         // validate inputs
         Object.keys(args).forEach(function (k) {
+            if (args[k] === null) {
+                if (MANDATORY_METADATA_FIELDS.indexOf(k) === -1) { return; }
+                throw new Error('CANNOT_REMOVE_MANDATORY_METADATA');
+            }
+
             // can't set metadata to anything other than strings
             // use empty string to unset a value if you must
             if (typeof(args[k]) !== 'string') { throw new Error("INVALID_ARGUMENTS"); }
@@ -338,6 +350,11 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         var changed = false;
         // {topic, name, avatar} are all strings...
         Object.keys(args).forEach(function (k) {
+            if (typeof(roster.state.metadata[k]) !== 'undefined' && args[k] === null) {
+                changed = true;
+                delete roster.state.metadata[k];
+            }
+
             // ignore things that won't cause changes
             if (args[k] === roster.state.metadata[k]) { return; }
 

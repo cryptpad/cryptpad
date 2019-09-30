@@ -526,6 +526,26 @@ nThen(function  (w) {
         console.log("Promoted Alice to ADMIN");
     }));
 }).nThen(function (w) {
+    var data = {};
+    data[bob.curveKeys.curvePublic] = {
+        notifications: Hash.createChannelId(),
+        displayName: "BORB",
+    };
+
+    alice.roster.add(data, w(function (err) {
+        if (err === 'ALREADY_PRESENT' || err === 'NO_CHANGE') {
+            return void console.log("Duplicate add command failed as expected");
+        }
+        if (err) {
+            console.error("Unexpected error", err);
+            process.exit(1);
+        }
+        if (!err) {
+            console.log("Duplicate add succeeded unexpectedly");
+            process.exit(1);
+        }
+    }));
+}).nThen(function (w) {
     alice.roster.checkpoint(w(function (err) {
         if (!err) { return; }
         console.error("Checkpoint by an admin failed unexpectedly");
@@ -538,6 +558,16 @@ nThen(function  (w) {
         console.error("Checkpoint by an owner failed unexpectedly");
         console.error(err);
         process.exit(1);
+    }));
+}).nThen(function (w) {
+    alice.roster.remove([
+        oscar.curveKeys.curvePublic,
+    ], w(function (err) {
+        if (!err) {
+            console.error("Removal of owner by admin succeeded unexpectedly");
+            process.exit(1);
+        }
+        console.log("Removal of owner by admin failed as expected");
     }));
 }).nThen(function (w) {
     // bob finally connects, this time with the lastKnownHash provided by oscar
@@ -583,13 +613,106 @@ nThen(function  (w) {
     }));
 }).nThen(function (w) {
     bob.roster.remove([
+        alice.curveKeys.curvePublic,
+    ], w(function (err) {
+        if (!err) {
+            console.error("Removal of admin by member succeeded unexpectedly");
+            process.exit(1);
+        }
+        console.log("Removal of admin by member failed as expected");
+    }));
+}).nThen(function (w) {
+    bob.roster.remove([
         oscar.curveKeys.curvePublic,
-        alice.curveKeys.curvePublic
+        //alice.curveKeys.curvePublic
     ], w(function (err) {
         if (err) { return void console.log("command failed as expected"); }
         w.abort();
         console.log("Expected command to fail!");
         process.exit(1);
+    }));
+}).nThen(function (w) {
+    var data = {};
+    data[bob.curveKeys.curvePublic] = {
+        displayName: 'BORB',
+    };
+
+    bob.roster.describe(data, w(function (err) {
+        if (err) {
+            console.error("self-description by a member failed unexpectedly");
+            process.exit(1);
+        }
+    }));
+}).nThen(function (w) {
+    var data = {};
+    data[oscar.curveKeys.curvePublic] = {
+        displayName: 'NULL',
+    };
+
+    bob.roster.describe(data, w(function (err) {
+        if (!err) {
+            console.error("description of an owner by a member succeeded unexpectedly");
+            process.exit(1);
+        }
+        console.log("description of an owner by a member failed as expected");
+    }));
+}).nThen(function (w) {
+    var data = {};
+    data[alice.curveKeys.curvePublic] = {
+        displayName: 'NULL',
+    };
+
+    bob.roster.describe(data, w(function (err) {
+        if (!err) {
+            console.error("description of an admin by a member succeeded unexpectedly");
+            process.exit(1);
+        }
+        console.log("description of an admin by a member failed as expected");
+    }));
+}).nThen(function (w) {
+    var data = {};
+    data[bob.curveKeys.curvePublic] = {
+        displayName: "NULL",
+    };
+
+    alice.roster.describe(data, w(function (err) {
+        if (err) {
+            console.error("Description of member by admin failed unexpectedly");
+            console.error(err);
+            process.exit(1);
+        }
+    }));
+}).nThen(function (w) {
+    alice.roster.metadata({
+        name: "BEST TEAM",
+        topic: "Champions de monde!",
+        cheese: "Camembert",
+    }, w(function (err) {
+        if (err) {
+            console.error("Metadata change by admin failed unexpectedly");
+            console.error(err);
+            process.exit(1);
+        }
+    }));
+}).nThen(function (w) {
+    bob.roster.metadata({
+        name: "WORST TEAM",
+        topic: "not a good team",
+    }, w(function (err) {
+        if (!err) {
+            console.error("Metadata change by member should have failed");
+            process.exit(1);
+        }
+    }));
+}).nThen(function (w) {
+    oscar.roster.metadata({
+        cheese: null, // delete a field that you don't want presenet
+    }, w(function (err) {
+        if (err) {
+            console.error(err);
+            process.exit(1);
+        }
+
     }));
 }).nThen(function (w) {
     alice.roster.remove([bob.curveKeys.curvePublic], w(function (err) {
