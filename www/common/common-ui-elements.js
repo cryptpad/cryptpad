@@ -250,7 +250,7 @@ define([
                         delete teamsData[id];
                     }
                 });
-                var teamsList = UIElements.getUserGrid('Or a team?', { // XXX
+                var teamsList = UIElements.getUserGrid(Messages.owner_addTeamText, {
                     common: common,
                     noFilter: true,
                     data: teamsData
@@ -3796,8 +3796,7 @@ define([
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
         var title = Util.fixHTML(msg.content.title);
 
-        //var text = Messages._getKey('owner_team_add', [name, title]); // XXX
-        var text = name + ' wants you to be an owner of the team ' + title; // XXX
+        var text = Messages._getKey('owner_team_add', [name, title]);
 
         var div = h('div', [
             UI.setHTML(h('p'), text),

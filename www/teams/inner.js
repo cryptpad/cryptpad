@@ -448,11 +448,11 @@ define([
         // If they're an admin and I am an owner, I can promote them to owner
         if (!isMe && myRole > theirRole && theirRole === 1 && !data.pending) {
             var promoteOwner = h('span.fa.fa-angle-double-up', {
-                title: "Offer ownership" // XXX
+                title: Messages.team_rosterPromoteOwner
             });
             $(promoteOwner).click(function () {
                 $(promoteOwner).hide();
-                UI.confirm("Are you sure???", function (yes) { // XXX
+                UI.confirm(Messages.team_ownerConfirm, function (yes) {
                     if (!yes) { return; }
                     APP.module.execCommand('OFFER_OWNERSHIP', {
                         teamId: APP.team,
@@ -462,7 +462,7 @@ define([
                             console.error(obj.error);
                             return void UI.warn(Messages.error);
                         }
-                        UI.log("DONE"); // XXX
+                        UI.log(Messags.sent);
                     });
                 });
             });
@@ -504,16 +504,19 @@ define([
             });
             $(remove).click(function () {
                 $(remove).hide();
-                APP.module.execCommand('REMOVE_USER', {
-                    pending: data.pending,
-                    teamId: APP.team,
-                    curvePublic: data.curvePublic,
-                }, function (obj) {
-                    if (obj && obj.error) {
-                        $(remove).show();
-                        return void UI.alert(Messages.error);
-                    }
-                    redrawRoster(common);
+                UI.confirm(Messages._getKey('team_kickConfirm', [Util.fixHTML(data.displayName)]), function (yes) {
+                    if (!yes) { return; }
+                    APP.module.execCommand('REMOVE_USER', {
+                        pending: data.pending,
+                        teamId: APP.team,
+                        curvePublic: data.curvePublic,
+                    }, function (obj) {
+                        if (obj && obj.error) {
+                            $(remove).show();
+                            return void UI.alert(Messages.error);
+                        }
+                        redrawRoster(common);
+                    });
                 });
             });
             $actions.append(remove);
@@ -612,6 +615,8 @@ define([
             $header.append(leave);
         }
 
+        var noPending = pending.length ? '' : '.cp-hidden';
+
         return [
             header,
             h('h3', Messages.team_owner),
@@ -620,8 +625,8 @@ define([
             h('div', admins),
             h('h3', Messages.team_members),
             h('div', members),
-            h('h3', Messages.team_pending || 'PENDING'), // XXX
-            h('div', pending)
+            h('h3'+noPending, Messages.team_pending),
+            h('div'+noPending, pending)
         ];
     };
     makeBlock('roster', function (common, cb) {
@@ -750,15 +755,15 @@ define([
         });
     }, true);
 
-    makeBlock('delete', function (common, cb) { // XXX makeBlock keys
-        var deleteTeam = h('button.btn.btn-danger', Messages.team_delete || "DELETE"); // XXX
+    makeBlock('delete', function (common, cb) {
+        var deleteTeam = h('button.btn.btn-danger', Messages.team_deleteButton);
         var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide();
         var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide();
 
         var deleting = false;
         $(deleteTeam).click(function () {
             if (deleting) { return; }
-            UI.confirm("Are you sure", function (yes) { // XXX
+            UI.confirm(Messages.team_deleteConfirm, function (yes) {
                 if (!yes) { return; }
                 if (deleting) { return; }
                 deleting = true;
@@ -772,7 +777,7 @@ define([
                         return void UI.warn(obj.error);
                     }
                     $ok.show();
-                    UI.log('DELETED'); // XXX
+                    UI.log(Messages.deleted);
                 });
             });
         });

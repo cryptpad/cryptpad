@@ -1217,7 +1217,6 @@ define([
                 }
                 if (data.owned && data.team && data.team.edPublic) {
                     rtConfig.metadata.owners = [data.team.edPublic];
-                    // XXX Teams mailbox
                 } else if (data.owned) {
                     rtConfig.metadata.owners = [edPublic];
                     rtConfig.metadata.mailbox = {};
