@@ -40,7 +40,7 @@
     "error": "Erreur",
     "saved": "Enregistré",
     "synced": "Tout est enregistré",
-    "deleted": "Pad supprimé de votre CryptDrive",
+    "deleted": "Supprimé",
     "deletedFromServer": "Pad supprimé du serveur",
     "mustLogin": "Vous devez être enregistré pour avoir accès à cette page",
     "disabledApp": "Cette application a été désactivée. Pour plus d'information, veuillez contacter l'administrateur de ce CryptPad.",
@@ -1201,5 +1201,16 @@
     "team_maxOwner": "Chaque compte utilisateur ne peut être propriétaire que d'une seule équipe.",
     "team_maxTeams": "Chaque compte utilisateur ne peut être membre que de {0} équipes.",
     "team_listTitle": "Vos équipes",
-    "team_listSlot": "Emplacement d'équipe disponible"
+    "team_listSlot": "Emplacement d'équipe disponible",
+    "owner_addTeamText": "...ou à une équipe",
+    "owner_team_add": "{0} souhaite que vous soyez propriétaire de l'équipe <b>{1}</b>. Acceptez-vous ?",
+    "team_rosterPromoteOwner": "Proposer d'être propriétaire",
+    "team_ownerConfirm": "Les co-propriétaires seront en mesure de modifier ou supprimer l'équipe et pourront supprimer vos droits de propriétaire. Continuer ?",
+    "team_kickConfirm": "{0} sera informé que vous l'avez expulsé de l'équipe. Êtes-vous sûr ?",
+    "sent": "Message envoyé",
+    "team_pending": "Invité",
+    "team_deleteTitle": "Suppression de l'équipe",
+    "team_deleteHint": "Supprimer l'équipe et tous les documents dont elle est exclusivement propriétaire.",
+    "team_deleteButton": "Supprimer",
+    "team_deleteConfirm": "Vous êtes sur le point de supprimer les données d'une équipe entière. Cette action peut impacter l'accès à leur données pour d'autres membres de l'équipe. La suppression est irréversible. Êtes-vous sûr de vouloir continuer ?"
 }
