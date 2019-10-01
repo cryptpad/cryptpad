@@ -24,6 +24,7 @@ define([
             curvePublic: user.curvePublic,
             edPublic: privateData.edPublic,
             notifications: user.notifications,
+            blockLocation: privateData.blockLocation || '',
         };
 
         if (typeof(ctx.pinUsage) === 'object') {
