@@ -3245,6 +3245,11 @@ define([
             if (!isVirtual && typeof(root) === "undefined") {
                 log(Messages.fm_unknownFolderError);
                 debug("Unable to locate the selected directory: ", path);
+                if (path.length === 1 && path[0] === ROOT) {
+                    // Somehow we can't display ROOT. We should abort now because we'll
+                    // end up in an infinite loop
+                    return void UI.warn(Messages.fm_error_cantPin); // Internal server error, please reload...
+                }
                 var parentPath = path.slice();
                 parentPath.pop();
                 _displayDirectory(parentPath, true);
