@@ -321,7 +321,6 @@ define([
                         password: password,
                         channel: secret.channel,
                         enableSF: localStorage.CryptPad_SF === "1", // TODO to remove when enabled by default
-                        enableTeams: localStorage.CryptPad_teams === "1",
                         devMode: localStorage.CryptPad_dev === "1",
                         fromFileData: Cryptpad.fromFileData ? {
                             title: Cryptpad.fromFileData.title

@@ -94,7 +94,6 @@ define([
                             password: config.data.password,
                             isTemplate: config.data.isTemplate,
                             file: config.data.file,
-                            enableTeams: localStorage.CryptPad_teams === "1",
                         };
                         for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 

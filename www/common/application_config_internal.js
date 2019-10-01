@@ -106,6 +106,7 @@ define(function() {
         ooslide: 'fa-file-powerpoint-o',
         sheet: 'fa-file-excel-o',
         drive: 'fa-hdd-o',
+        teams: 'fa-users',
     };
 
     // Ability to create owned pads and expiring pads through a new pad creation screen.

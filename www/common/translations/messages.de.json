@@ -13,7 +13,7 @@
         "todo": "Aufgaben",
         "contacts": "Kontakte",
         "sheet": "Tabelle (Beta)",
-        "team": "Teams"
+        "teams": "Teams"
     },
     "button_newpad": "Neues Rich-Text-Pad",
     "button_newcode": "Neues Code-Pad",
@@ -39,7 +39,7 @@
     "error": "Fehler",
     "saved": "Gespeichert",
     "synced": "Alles gespeichert",
-    "deleted": "Pad wurde aus deinem CryptDrive gelöscht",
+    "deleted": "Gelöscht",
     "deletedFromServer": "Pad wurde vom Server gelöscht",
     "mustLogin": "Du musst angemeldet sein, um auf diese Seite zuzugreifen",
     "disabledApp": "Diese Anwendung wurde deaktiviert. Kontaktiere den Administrator dieses CryptPads, um mehr Informationen zu erhalten.",
@@ -1201,5 +1201,16 @@
     "team_maxOwner": "Jeder Benutzer kann nur Eigentümer eines Teams sein.",
     "team_maxTeams": "Jeder Benutzer kann nur Mitglied von {0} Teams sein.",
     "team_listTitle": "Deine Teams",
-    "team_listSlot": "Verfügbare Teamplätze"
+    "team_listSlot": "Verfügbare Teamplätze",
+    "owner_addTeamText": "... oder ein Team",
+    "owner_team_add": "{0} möchte dich zum Eigentümer des Teams <b>{1}</b> machen. Bist du damit einverstanden?",
+    "team_rosterPromoteOwner": "Eigentümerschaft anbieten",
+    "team_ownerConfirm": "Mit-Eigentümer können das Team ändern öder löschen, sowie dich als Eigentümer entfernen. Bist du sicher?",
+    "team_kickConfirm": "{0} wird über die Entfernung aus dem Team benachrichtigt. Bist du sicher?",
+    "sent": "Nachricht versandt",
+    "team_pending": "Eingeladen",
+    "team_deleteTitle": "Löschung des Teams",
+    "team_deleteHint": "Das Team und alle Dokumente, die ausschließlich Eigentum des Teams sind, löschen.",
+    "team_deleteButton": "Löschen",
+    "team_deleteConfirm": "Du bist gerade dabei, alle Daten eines Teams zu löschen. Andere Teammitglieder können dann möglicherweise nicht mehr auf ihre Daten zugreifen. Dies kann nicht rückgängig gemacht werden. Bist du sicher, dass du fortfahren möchtest?"
 }

@@ -241,22 +241,20 @@ define([
             });
             $div.append(addCol.div);
 
-            if (priv.enableTeams) {
-                var teamsData = Util.tryParse(JSON.stringify(priv.teams)) || {};
-                Object.keys(teamsData).forEach(function (id) {
-                    var t = teamsData[id];
-                    t.teamId = id;
-                    if (owners.indexOf(t.edPublic) !== -1 || pending_owners.indexOf(t.edPublic) !== -1) {
-                        delete teamsData[id];
-                    }
-                });
-                var teamsList = UIElements.getUserGrid(Messages.owner_addTeamText, {
-                    common: common,
-                    noFilter: true,
-                    data: teamsData
-                }, function () {});
-                $div.append(teamsList.div);
-            }
+            var teamsData = Util.tryParse(JSON.stringify(priv.teams)) || {};
+            Object.keys(teamsData).forEach(function (id) {
+                var t = teamsData[id];
+                t.teamId = id;
+                if (owners.indexOf(t.edPublic) !== -1 || pending_owners.indexOf(t.edPublic) !== -1) {
+                    delete teamsData[id];
+                }
+            });
+            var teamsList = UIElements.getUserGrid(Messages.owner_addTeamText, {
+                common: common,
+                noFilter: true,
+                data: teamsData
+            }, function () {});
+            $div.append(teamsList.div);
 
             // When clicking on the add button, we get the selected users.
             var addButton = h('button.no-margin', Messages.owner_addButton);
@@ -865,27 +863,25 @@ define([
         var privateData = common.getMetadataMgr().getPrivateData();
         var teamsData = Util.tryParse(JSON.stringify(privateData.teams)) || {};
         var teams = {};
-        if (privateData.enableTeams) {
-            Object.keys(teamsData).forEach(function (id) {
-                // config.teamId only exists when we're trying to share a pad from a team drive
-                // In this case, we don't want to share the pad with the current team
-                if (config.teamId && config.teamId === id) { return; }
-                var t = teamsData[id];
-                teams[t.edPublic] = {
-                    notifications: true,
-                    displayName: t.name,
-                    edPublic: t.edPublic,
-                    avatar: t.avatar,
-                    id: id
-                };
-            });
-            var teamsList = UIElements.getUserGrid(Messages.share_linkTeam, {
-                common: common,
-                noFilter: true,
-                data: teams
-            }, refreshButtons);
-            $div.append(teamsList.div);
-        }
+        Object.keys(teamsData).forEach(function (id) {
+            // config.teamId only exists when we're trying to share a pad from a team drive
+            // In this case, we don't want to share the pad with the current team
+            if (config.teamId && config.teamId === id) { return; }
+            var t = teamsData[id];
+            teams[t.edPublic] = {
+                notifications: true,
+                displayName: t.name,
+                edPublic: t.edPublic,
+                avatar: t.avatar,
+                id: id
+            };
+        });
+        var teamsList = UIElements.getUserGrid(Messages.share_linkTeam, {
+            common: common,
+            noFilter: true,
+            data: teams
+        }, refreshButtons);
+        $div.append(teamsList.div);
 
         var shareButtons = [{
             className: 'primary cp-share-with-friends',
@@ -2499,7 +2495,18 @@ define([
                     'href': origin+'/drive/',
                     'class': 'fa fa-hdd-o'
                 },
-                content: h('span', Messages.login_accessDrive)
+                content: h('span', Messages.type.drive)
+            });
+        }
+        if (padType !== 'teams' && accountName) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'target': '_blank',
+                    'href': origin+'/teams/',
+                    'class': 'fa fa-users'
+                },
+                content: h('span', Messages.type.teams)
             });
         }
         options.push({ tag: 'hr' });
@@ -2781,7 +2788,7 @@ define([
         var i = 0;
         var types = AppConfig.availablePadTypes.filter(function (p) {
             if (p === 'drive') { return; }
-            if (p === 'team') { return; }
+            if (p === 'teams') { return; }
             if (p === 'contacts') { return; }
             if (p === 'todo') { return; }
             if (p === 'file') { return; }
@@ -2993,7 +3000,7 @@ define([
         // * a team ID ==> store in the team drive, and the team will be the owner
         // * -1 ==> store in the user drive, and the user will be the owner
         // * undefined ==> ask
-        if (teamExists && privateData.enableTeams) {
+        if (teamExists) {
             var teams = Object.keys(privateData.teams).map(function (id) {
                 var data = privateData.teams[id];
                 var avatar = h('span.cp-creation-team-avatar.cp-avatar');

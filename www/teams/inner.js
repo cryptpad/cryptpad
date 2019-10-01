@@ -829,16 +829,12 @@ define([
             var metadataMgr = common.getMetadataMgr();
             var privateData = metadataMgr.getPrivateData();
 
-            if (!privateData.enableTeams) {
-                return void UI.errorLoadingScreen(Messages.comingSoon);
-            }
-
             readOnly = driveAPP.readOnly = metadataMgr.getPrivateData().readOnly;
 
             driveAPP.loggedIn = common.isLoggedIn();
             if (!driveAPP.loggedIn) { throw new Error('NOT_LOGGED_IN'); }
 
-            common.setTabTitle(Messages.type.team);
+            common.setTabTitle(Messages.type.teams);
 
             // Drive data
             if (privateData.newSharedFolder) {
@@ -850,7 +846,7 @@ define([
             var $bar = $('#cp-toolbar');
             var configTb = {
                 displayed: ['useradmin', 'pageTitle', 'newpad', 'limit', 'notifications'],
-                pageTitle: Messages.type.team,
+                pageTitle: Messages.type.teams,
                 metadataMgr: metadataMgr,
                 readOnly: privateData.readOnly,
                 sfCommon: common,
