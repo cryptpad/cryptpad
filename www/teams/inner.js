@@ -444,8 +444,14 @@ define([
             redrawRoster(common);
         });
     };
-    var makeMember = function (common, data, me) {
+    var makeMember = function (common, data, me, roster) {
         if (!data.curvePublic) { return; }
+
+        var otherOwners = Object.keys(roster || {}).some(function (key) {
+            var user = roster[key];
+            return user.role === "OWNER" && user.curvePublic !== me.curvePublic && !user.pendingOwner;
+        });
+
         // Avatar
         var avatar = h('span.cp-avatar.cp-team-member-avatar');
         common.displayAvatar($(avatar), data.avatar, data.displayName);
@@ -455,7 +461,6 @@ define([
             $(name).append(h('em', {
                 title: Messages.team_pendingOwnerTitle
             }, ' ' + Messages.team_pendingOwner));
-            // + XXX ability to demote yourself as owner if there is another owner
         }
         // Status
         var status = h('span.cp-team-member-status'+(data.online ? '.online' : ''));
@@ -523,7 +528,9 @@ define([
                 }
                 todo();
             });
-            $actions.append(demote);
+            if (!(isMe && myRole === 2 && !otherOwners)) {
+                $actions.append(demote);
+            }
         }
         // If I'm not a member and I have an equal or higher role than them, I can remove them
         // Note: we can't remove owners, we have to demote them first
@@ -579,7 +586,7 @@ define([
             if (roster[k].pending) { return; }
             return roster[k].role === "OWNER" || roster[k].pendingOwner;
         }).map(function (k) {
-            return makeMember(common, roster[k], me);
+            return makeMember(common, roster[k], me, roster);
         });
         var admins = Object.keys(roster).filter(function (k) {
             if (roster[k].pending) { return; }
