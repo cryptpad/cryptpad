@@ -3,6 +3,7 @@ define([
     '/common/toolbar3.js',
     '/common/drive-ui.js',
     '/common/common-util.js',
+    '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
     '/common/common-feedback.js',
@@ -23,6 +24,7 @@ define([
     Toolbar,
     DriveUI,
     Util,
+    Hash,
     UI,
     UIElements,
     Feedback,
@@ -118,6 +120,7 @@ define([
             'cp-team-chat'
         ],
         'admin': [
+            'cp-team-edpublic',
             'cp-team-name',
             'cp-team-avatar',
             'cp-team-delete',
@@ -688,6 +691,26 @@ define([
             MessengerUI.create($(container), common, true);
             cb(content);
         });
+    });
+
+    makeBlock('edpublic', function (common, cb) {
+        var container = h('div');
+        var $div = $(container);
+        var metadataMgr = common.getMetadataMgr();
+        var privateData = metadataMgr.getPrivateData();
+        var team = privateData.teams[APP.team];
+        if (!team) { return void cb(); }
+        var publicKey = team.edPublic;
+        var name = team.name;
+        if (publicKey) {
+            var $key = $('<div>', {'class': 'cp-sidebarlayout-element'}).appendTo($div);
+            var userHref = Hash.getUserHrefFromKeys(privateData.origin, name, publicKey);
+            var $pubLabel = $('<span>', {'class': 'label'})
+                .text(Messages.settings_publicSigningKey);
+            $key.append($pubLabel).append(UI.dialog.selectable(userHref));
+        }
+        var content = [container];
+        cb(content);
     });
 
     makeBlock('name', function (common, cb) {
