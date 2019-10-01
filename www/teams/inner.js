@@ -155,7 +155,6 @@ define([
                 if (obj && obj.error) {
                     return void UI.warn(Messages.error);
                 }
-                var val = obj.avatar;
                 common.displayAvatar($avatar, obj.avatar, obj.name);
                 $category.append($avatar);
                 $avatar.append(obj.name);
