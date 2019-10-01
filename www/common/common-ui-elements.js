@@ -2499,7 +2499,18 @@ define([
                     'href': origin+'/drive/',
                     'class': 'fa fa-hdd-o'
                 },
-                content: h('span', Messages.login_accessDrive)
+                content: h('span', Messages.type.drive)
+            });
+        }
+        if (padType !== 'teams' && accountName) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'target': '_blank',
+                    'href': origin+'/teams/',
+                    'class': 'fa fa-users'
+                },
+                content: h('span', Messages.type.teams)
             });
         }
         options.push({ tag: 'hr' });

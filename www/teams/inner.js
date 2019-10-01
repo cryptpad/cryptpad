@@ -838,7 +838,7 @@ define([
             driveAPP.loggedIn = common.isLoggedIn();
             if (!driveAPP.loggedIn) { throw new Error('NOT_LOGGED_IN'); }
 
-            common.setTabTitle(Messages.type.team);
+            common.setTabTitle(Messages.type.teams);
 
             // Drive data
             if (privateData.newSharedFolder) {
@@ -850,7 +850,7 @@ define([
             var $bar = $('#cp-toolbar');
             var configTb = {
                 displayed: ['useradmin', 'pageTitle', 'newpad', 'limit', 'notifications'],
-                pageTitle: Messages.type.team,
+                pageTitle: Messages.type.teams,
                 metadataMgr: metadataMgr,
                 readOnly: privateData.readOnly,
                 sfCommon: common,
