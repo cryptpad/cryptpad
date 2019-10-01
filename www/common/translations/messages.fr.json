@@ -1212,5 +1212,8 @@
     "team_deleteTitle": "Suppression de l'équipe",
     "team_deleteHint": "Supprimer l'équipe et tous les documents dont elle est exclusivement propriétaire.",
     "team_deleteButton": "Supprimer",
-    "team_deleteConfirm": "Vous êtes sur le point de supprimer les données d'une équipe entière. Cette action peut impacter l'accès à leur données pour d'autres membres de l'équipe. La suppression est irréversible. Êtes-vous sûr de vouloir continuer ?"
+    "team_deleteConfirm": "Vous êtes sur le point de supprimer les données d'une équipe entière. Cette action peut impacter l'accès à leur données pour d'autres membres de l'équipe. La suppression est irréversible. Êtes-vous sûr de vouloir continuer ?",
+    "team_pendingOwner": "(en attente)",
+    "team_pendingOwnerTitle": "Cet administrateur n'a pas encore accepté l'offre de devenir propriétaire de l'équipe.",
+    "team_demoteMeConfirm": "Vous êtes sur le point de renoncer à vos droits. Vous ne serez pas en mesure d'annuler cette action. Continuer ?"
 }

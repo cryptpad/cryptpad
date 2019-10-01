@@ -155,7 +155,6 @@ define([
                 if (obj && obj.error) {
                     return void UI.warn(Messages.error);
                 }
-                var val = obj.avatar;
                 common.displayAvatar($avatar, obj.avatar, obj.name);
                 $category.append($avatar);
                 $avatar.append(obj.name);
@@ -444,15 +443,23 @@ define([
             redrawRoster(common);
         });
     };
-    var makeMember = function (common, data, me) {
+    var makeMember = function (common, data, me, roster) {
         if (!data.curvePublic) { return; }
+
+        var otherOwners = Object.keys(roster || {}).some(function (key) {
+            var user = roster[key];
+            return user.role === "OWNER" && user.curvePublic !== me.curvePublic && !user.pendingOwner;
+        });
+
         // Avatar
         var avatar = h('span.cp-avatar.cp-team-member-avatar');
         common.displayAvatar($(avatar), data.avatar, data.displayName);
         // Name
         var name = h('span.cp-team-member-name', data.displayName);
         if (data.pendingOwner) {
-            $(name).append(h('em', " PENDING"));
+            $(name).append(h('em', {
+                title: Messages.team_pendingOwnerTitle
+            }, ' ' + Messages.team_pendingOwner));
         }
         // Status
         var status = h('span.cp-team-member-status'+(data.online ? '.online' : ''));
@@ -468,9 +475,9 @@ define([
                 title: Messages.team_rosterPromoteOwner
             });
             $(promoteOwner).click(function () {
-                $(promoteOwner).hide();
                 UI.confirm(Messages.team_ownerConfirm, function (yes) {
                     if (!yes) { return; }
+                    $(promoteOwner).hide();
                     APP.module.execCommand('OFFER_OWNERSHIP', {
                         teamId: APP.team,
                         curvePublic: data.curvePublic
@@ -500,18 +507,29 @@ define([
         }
         // If I'm not a member and I have an equal or higher role than them, I can demote them
         // (if they're not already a MEMBER)
-        if (!isMe && myRole >= theirRole && theirRole > 0 && !data.pending) {
+        if (myRole >= theirRole && theirRole > 0 && !data.pending) {
             var demote = h('span.fa.fa-angle-double-down', {
                 title: Messages.team_rosterDemote
             });
             $(demote).click(function () {
-                var role = ROLES[theirRole - 1] || 'MEMBER';
-                $(demote).hide();
-                describeUser(common, data.curvePublic, {
-                    role: role
-                }, promote);
+                var todo = function () {
+                    var role = ROLES[theirRole - 1] || 'MEMBER';
+                    $(demote).hide();
+                    describeUser(common, data.curvePublic, {
+                        role: role
+                    }, promote);
+                };
+                if (isMe) {
+                    return void UI.confirm(Messages.team_demoteMeConfirm, function (yes) {
+                        if (!yes) { return; }
+                        todo();
+                    });
+                }
+                todo();
             });
-            $actions.append(demote);
+            if (!(isMe && myRole === 2 && !otherOwners)) {
+                $actions.append(demote);
+            }
         }
         // If I'm not a member and I have an equal or higher role than them, I can remove them
         // Note: we can't remove owners, we have to demote them first
@@ -567,7 +585,7 @@ define([
             if (roster[k].pending) { return; }
             return roster[k].role === "OWNER" || roster[k].pendingOwner;
         }).map(function (k) {
-            return makeMember(common, roster[k], me);
+            return makeMember(common, roster[k], me, roster);
         });
         var admins = Object.keys(roster).filter(function (k) {
             if (roster[k].pending) { return; }
