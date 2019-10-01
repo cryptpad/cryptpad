@@ -2263,7 +2263,7 @@ define([
             var arr = [];
             AppConfig.availablePadTypes.forEach(function (type) {
                 if (type === 'drive') { return; }
-                if (type === 'team') { return; }
+                if (type === 'teams') { return; }
                 if (type === 'contacts') { return; }
                 if (type === 'todo') { return; }
                 if (type === 'file') { return; }

@@ -2781,7 +2781,7 @@ define([
         var i = 0;
         var types = AppConfig.availablePadTypes.filter(function (p) {
             if (p === 'drive') { return; }
-            if (p === 'team') { return; }
+            if (p === 'teams') { return; }
             if (p === 'contacts') { return; }
             if (p === 'todo') { return; }
             if (p === 'file') { return; }
