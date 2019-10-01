@@ -38,7 +38,9 @@ define([
                     // Also pin the onlyoffice channels if they exist
                     if (n.rtChannel) { toPin.push(n.rtChannel); }
                     if (n.lastVersion) { toPin.push(n.lastVersion); }
-                    team.pin(toPin, function (obj) { console.error(obj); });
+                    team.pin(toPin, function (obj) {
+                        if (obj && obj.error) { console.error(obj.error); }
+                    });
                 }
                 // Unpin the deleted pads (deleted <=> changed to undefined)
                 if (p[0] === UserObject.FILES_DATA && typeof(o) === "object" && o.channel && !n) {
@@ -51,7 +53,9 @@ define([
                         // Also unpin the onlyoffice channels if they exist
                         if (o.rtChannel) { toUnpin.push(o.rtChannel); }
                         if (o.lastVersion) { toUnpin.push(o.lastVersion); }
-                        team.unpin(toUnpin, function (obj) { console.error(obj); });
+                        team.unpin(toUnpin, function (obj) {
+                            if (obj && obj.error) { console.error(obj); }
+                        });
                     }
                 }
             }
@@ -692,7 +696,7 @@ define([
                         return true;
                     }
                 });
-                if ((!member || member.role !== 'OWNER') && teamData.owner) {
+                if (!member && teamData.owner) {
                     var removeOwnership = function (chan) {
                         ctx.Store.setPadMetadata(null, {
                             channel: chan,
@@ -764,6 +768,7 @@ define([
             var onError = function (res) {
                 var err = res && res.error;
                 if (err) {
+                    console.error(err);
                     waitFor.abort();
                     return void cb({error:err});
                 }
@@ -822,6 +827,7 @@ define([
             var onError = function (res) {
                 var err = res && res.error;
                 if (err) {
+                    console.error(err);
                     waitFor.abort();
                     return void cb(err);
                 }

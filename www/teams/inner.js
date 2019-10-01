@@ -452,7 +452,8 @@ define([
         // Name
         var name = h('span.cp-team-member-name', data.displayName);
         if (data.pendingOwner) {
-            $(name).append(h('em', " PENDING"));
+            $(name).append(h('em', " PENDING")); // XXX
+            // + XXX ability to demote yourself as owner if there is another owner
         }
         // Status
         var status = h('span.cp-team-member-status'+(data.online ? '.online' : ''));
@@ -468,9 +469,9 @@ define([
                 title: Messages.team_rosterPromoteOwner
             });
             $(promoteOwner).click(function () {
-                $(promoteOwner).hide();
                 UI.confirm(Messages.team_ownerConfirm, function (yes) {
                     if (!yes) { return; }
+                    $(promoteOwner).hide();
                     APP.module.execCommand('OFFER_OWNERSHIP', {
                         teamId: APP.team,
                         curvePublic: data.curvePublic
