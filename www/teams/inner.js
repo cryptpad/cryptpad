@@ -829,10 +829,6 @@ define([
             var metadataMgr = common.getMetadataMgr();
             var privateData = metadataMgr.getPrivateData();
 
-            if (!privateData.enableTeams) {
-                return void UI.errorLoadingScreen(Messages.comingSoon);
-            }
-
             readOnly = driveAPP.readOnly = metadataMgr.getPrivateData().readOnly;
 
             driveAPP.loggedIn = common.isLoggedIn();
