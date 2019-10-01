@@ -157,7 +157,7 @@ define([
                 }
                 common.displayAvatar($avatar, obj.avatar, obj.name);
                 $category.append($avatar);
-                $avatar.append(obj.name);
+                $avatar.append(h('span.cp-sidebarlayout-category-name', obj.name));
             });
         }
 
@@ -187,8 +187,10 @@ define([
                 active = key;
                 if (key === 'drive' || key === 'chat') {
                     APP.$rightside.addClass('cp-rightside-drive');
+                    APP.$leftside.addClass('cp-leftside-narrow');
                 } else {
                     APP.$rightside.removeClass('cp-rightside-drive');
+                    APP.$leftside.removeClass('cp-leftside-narrow');
                 }
 
                 $categories.find('.cp-leftside-active').removeClass('cp-leftside-active');
@@ -196,12 +198,14 @@ define([
                 showCategories(categories[key]);
             });
 
-            $category.append(Messages['team_cat_'+key] || key);
+            $category.append(h('span.cp-sidebarlayout-category-name', Messages['team_cat_'+key] || key));
         });
         if (active === 'drive') {
             APP.$rightside.addClass('cp-rightside-drive');
+            APP.$leftside.addClass('cp-leftside-narrow');
         } else {
             APP.$rightside.removeClass('cp-rightside-drive');
+            APP.$leftside.removeClass('cp-leftside-narrow');
         }
         showCategories(categories[active]);
     };
