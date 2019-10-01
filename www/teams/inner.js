@@ -452,7 +452,9 @@ define([
         // Name
         var name = h('span.cp-team-member-name', data.displayName);
         if (data.pendingOwner) {
-            $(name).append(h('em', " PENDING")); // XXX
+            $(name).append(h('em', {
+                title: Messages.team_pendingOwnerTitle
+            }, ' ' + Messages.team_pendingOwner));
             // + XXX ability to demote yourself as owner if there is another owner
         }
         // Status
@@ -501,16 +503,25 @@ define([
         }
         // If I'm not a member and I have an equal or higher role than them, I can demote them
         // (if they're not already a MEMBER)
-        if (!isMe && myRole >= theirRole && theirRole > 0 && !data.pending) {
+        if (myRole >= theirRole && theirRole > 0 && !data.pending) {
             var demote = h('span.fa.fa-angle-double-down', {
                 title: Messages.team_rosterDemote
             });
             $(demote).click(function () {
-                var role = ROLES[theirRole - 1] || 'MEMBER';
-                $(demote).hide();
-                describeUser(common, data.curvePublic, {
-                    role: role
-                }, promote);
+                var todo = function () {
+                    var role = ROLES[theirRole - 1] || 'MEMBER';
+                    $(demote).hide();
+                    describeUser(common, data.curvePublic, {
+                        role: role
+                    }, promote);
+                };
+                if (isMe) {
+                    return void UI.confirm(Messages.team_demoteMeConfirm, function (yes) {
+                        if (!yes) { return; }
+                        todo();
+                    });
+                }
+                todo();
             });
             $actions.append(demote);
         }
