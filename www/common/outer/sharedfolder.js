@@ -22,6 +22,7 @@ define([
     SF.load = function (config, id, data, cb) {
         var network = config.network;
         var store = config.store;
+        var teamId = store.id || -1;
         var handler = store.handleSharedFolder;
 
         var parsed = Hash.parsePadUrl(data.href);
@@ -31,9 +32,11 @@ define([
         if (sf && sf.ready && sf.rt) {
             // The shared folder is already loaded, return its data
             setTimeout(function () {
-                store.manager.addProxy(id, sf.rt.proxy, sf.leave);
+                var leave = function () { SF.leave(secret.channel, teamId); };
+                store.manager.addProxy(id, sf.rt.proxy, leave);
                 cb(sf.rt, sf.metadata);
             });
+            sf.team.push(teamId);
             if (handler) { handler(id, sf.rt); }
             return sf.rt;
         }
@@ -44,6 +47,7 @@ define([
                 store: store,
                 id: id
             });
+            sf.team.push(teamId);
             if (handler) { handler(id, sf.rt); }
             return sf.rt;
         }
@@ -53,7 +57,8 @@ define([
                 cb: cb,
                 store: store,
                 id: id
-            }]
+            }],
+            team: [store.id || -1]
         };
 
         var owners = data.owners;
@@ -78,7 +83,8 @@ define([
                 return;
             }
             sf.queue.forEach(function (obj) {
-                obj.store.manager.addProxy(obj.id, rt.proxy, info.leave);
+                var leave = function () { SF.leave(secret.channel, teamId); };
+                obj.store.manager.addProxy(obj.id, rt.proxy, leave);
                 obj.cb(rt, info.metadata);
             });
             sf.leave = info.leave;
@@ -88,6 +94,23 @@ define([
         });
         if (handler) { handler(id, rt); }
         return rt;
+    };
+
+    SF.leave = function (channel, teamId) {
+        var sf = allSharedFolders[channel];
+        if (!sf) { return; }
+        var clients = sf.teams;
+        if (!Array.isArray(clients)) { return; }
+        var idx = clients.indexOf(teamId);
+        if (idx === -1) { return; }
+        // Remove the selected team
+        clients.splice(idx, 1);
+
+        //If all the teams have closed this shared folder, stop it
+        if (clients.length) { return; }
+        if (sf.rt && sf.rt.stop) {
+            sf.rt.stop();
+        }
     };
 
     /* loadSharedFolders
