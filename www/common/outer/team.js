@@ -211,7 +211,9 @@ define([
                 SF.load({
                     network: ctx.store.network,
                     store: team
-                }, id, data, cb);
+                }, id, data, function (id, rt) {
+                    cb(id, rt);
+                });
             };
             var manager = team.manager = ProxyManager.create(proxy.drive, {
                 onSync: function (cb) { ctx.Store.onSync(id, cb); },

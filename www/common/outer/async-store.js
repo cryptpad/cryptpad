@@ -1808,10 +1808,13 @@ define([
             //var data = cmdData.data;
             var s = getStore(cmdData.teamId);
             var cb2 = function (data2) {
-                var send = cmdData.teamId ? s.sendEvent : sendDriveEvent;
-                send('DRIVE_CHANGE', {
-                    path: ['drive', UserObject.FILES_DATA]
-                }, clientId);
+
+                getAllStores().forEach(function (_s) {
+                    var send = _s.id ? _s.sendEvent : sendDriveEvent;
+                    send('DRIVE_CHANGE', {
+                        path: ['drive', UserObject.FILES_DATA]
+                    }, clientId);
+                });
                 onSync(cmdData.teamId, function () {
                     cb(data2);
                 });

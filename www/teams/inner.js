@@ -382,20 +382,14 @@ define([
             var name = $(input).val();
             if (!name.trim()) { return; }
             state = true;
-            UI.confirm('Are you sure?', function (yes) {
-                if (!yes) {
+            APP.module.execCommand('CREATE_TEAM', {
+                name: name
+            }, function () {
+                var $div = $('div.cp-team-list').empty();
+                refreshList(common, function (content) {
                     state = false;
-                    return;
-                }
-                APP.module.execCommand('CREATE_TEAM', {
-                    name: name
-                }, function () {
-                    var $div = $('div.cp-team-list').empty();
-                    refreshList(common, function (content) {
-                        state = false;
-                        $div.append(content);
-                        $('div.cp-team-cat-list').click();
-                    });
+                    $div.append(content);
+                    $('div.cp-team-cat-list').click();
                 });
             });
         });

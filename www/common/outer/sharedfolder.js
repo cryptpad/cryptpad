@@ -16,14 +16,46 @@ define([
         - config: network and "manager" (either the user one or a team manager)
         - id: shared folder id
     */
+
+    var allSharedFolders = {};
+
     SF.load = function (config, id, data, cb) {
         var network = config.network;
         var store = config.store;
-        var manager = store.manager;
         var handler = store.handleSharedFolder;
 
         var parsed = Hash.parsePadUrl(data.href);
         var secret = Hash.getSecrets('drive', parsed.hash, data.password);
+
+        var sf = allSharedFolders[secret.channel];
+        if (sf && sf.ready && sf.rt) {
+            // The shared folder is already loaded, return its data
+            setTimeout(function () {
+                store.manager.addProxy(id, sf.rt.proxy, sf.leave);
+                cb(sf.rt, sf.metadata);
+            });
+            if (handler) { handler(id, sf.rt); }
+            return sf.rt;
+        }
+        if (sf && sf.queue && sf.rt) {
+            // The shared folder is loading, add our callbacks to the queue
+            sf.queue.push({
+                cb: cb,
+                store: store,
+                id: id
+            });
+            if (handler) { handler(id, sf.rt); }
+            return sf.rt;
+        }
+
+        sf = allSharedFolders[secret.channel] = {
+            queue: [{
+                cb: cb,
+                store: store,
+                id: id
+            }]
+        };
+
         var owners = data.owners;
         var listmapConfig = {
             data: {},
@@ -40,10 +72,19 @@ define([
                 owners: owners
             }
         };
-        var rt = Listmap.create(listmapConfig);
+        var rt = sf.rt = Listmap.create(listmapConfig);
         rt.proxy.on('ready', function (info) {
-            manager.addProxy(id, rt.proxy, info.leave);
-            cb(rt, info.metadata);
+            if (!sf.queue) {
+                return;
+            }
+            sf.queue.forEach(function (obj) {
+                obj.store.manager.addProxy(obj.id, rt.proxy, info.leave);
+                obj.cb(rt, info.metadata);
+            });
+            sf.leave = info.leave;
+            sf.metadata = info.metadata;
+            sf.ready = true;
+            delete sf.queue;
         });
         if (handler) { handler(id, rt); }
         return rt;
