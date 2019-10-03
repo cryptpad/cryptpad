@@ -97,7 +97,7 @@ define([
             ]);*/
 
         var _link = h('a', {
-            href: "https://opencollective.com/cryptpad/contribute",
+            href: "https://opencollective.com/cryptpad/",
             target: '_blank',
             rel: 'noopener',
         });

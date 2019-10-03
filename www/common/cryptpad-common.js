@@ -42,7 +42,8 @@ define([
     var origin = encodeURIComponent(window.location.hostname);
     var common = window.Cryptpad = {
         Messages: Messages,
-        donateURL: 'https://accounts.cryptpad.fr/#/donate?on=' + origin,
+        //donateURL: 'https://accounts.cryptpad.fr/#/donate?on=' + origin,
+        donateURL: "https://opencollective.com/cryptpad/",
         upgradeURL: 'https://accounts.cryptpad.fr/#/?on=' + origin,
         account: {},
     };

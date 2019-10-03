@@ -2205,15 +2205,16 @@ define([
             var $limit = $('<span>', {'class': 'cp-limit-bar'}).appendTo($container);
             var quota = usage/limit;
             var $usage = $('<span>', {'class': 'cp-limit-usage'}).css('width', quota*100+'%');
+            var $buttons = $(h('span.cp-limit-buttons')).appendTo($container);
 
             var urls = common.getMetadataMgr().getPrivateData().accounts;
             var makeDonateButton = function () {
                 var $a = $('<a>', {
-                    'class': 'cp-limit-upgrade btn btn-success',
+                    'class': 'cp-limit-upgrade btn btn-primary',
                     href: urls.donateURL,
                     rel: "noreferrer noopener",
                     target: "_blank",
-                }).text(Messages.supportCryptpad).appendTo($container);
+                }).text(Messages.crowdfunding_button2).appendTo($buttons);
                 $a.click(function () {
                     Feedback.send('SUPPORT_CRYPTPAD');
                 });
@@ -2225,7 +2226,7 @@ define([
                     href: urls.upgradeURL,
                     rel: "noreferrer noopener",
                     target: "_blank",
-                }).text(Messages.upgradeAccount).appendTo($container);
+                }).text(Messages.upgradeAccount).appendTo($buttons);
                 $a.click(function () {
                     Feedback.send('UPGRADE_ACCOUNT');
                 });
@@ -2238,6 +2239,7 @@ define([
                 } else if (!plan) {
                     // user is logged in and subscriptions are allowed
                     // and they don't have one. show upgrades
+                    makeDonateButton();
                     makeUpgradeButton();
                 } else {
                     // they have a plan. show nothing
@@ -2548,15 +2550,42 @@ define([
                 content: h('span', Messages.supportPage || 'Support')
             });
         }
-        options.push({
-            tag: 'a',
-            attributes: {
-                'target': '_blank',
-                'href': origin+'/features.html',
-                'class': 'fa fa-star-o'
-            },
-            content: h('span', priv.plan ? Messages.settings_cat_subscription : Messages.pricing)
-        });
+        options.push({ tag: 'hr' });
+        if (Config.allowSubscriptions) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'target': '_blank',
+                    'href': priv.plan ? priv.accounts.upgradeURL : origin+'/features.html',
+                    'class': 'fa fa-star-o'
+                },
+                content: h('span', priv.plan ? Messages.settings_cat_subscription : Messages.pricing)
+            });
+        }
+        if (!priv.plan && !Config.removeDonateButton) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'target': '_blank',
+                    'rel': 'noopener',
+                    'href': priv.accounts.donateURL,
+                    'class': 'fa fa-gift'
+                },
+                content: h('span', Messages.crowdfunding_button2)
+            });
+        }
+        if (AppConfig.surveyURL) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'target': '_blank',
+                    'rel': 'noopener',
+                    'href': AppConfig.surveyURL,
+                    'class': 'fa fa-graduation-cap'
+                },
+                content: h('span', Messages.survey)
+            });
+        }
         options.push({ tag: 'hr' });
         // Add login or logout button depending on the current status
         if (accountName) {
@@ -3440,37 +3469,40 @@ define([
         setTimeout(function () {
             common.getAttribute(['general', 'crowdfunding'], function (err, val) {
                 if (err || val === false) { return; }
-                // Display the popup
-                var text = Messages.crowdfunding_popup_text;
-                var yes = h('button.cp-corner-primary', Messages.crowdfunding_popup_yes);
-                var no = h('button.cp-corner-primary', Messages.crowdfunding_popup_no);
-                var never = h('button.cp-corner-cancel', Messages.crowdfunding_popup_never);
-                var actions = h('div', [yes, no, never]);
+                common.getSframeChannel().query('Q_GET_PINNED_USAGE', null, function (err, obj) {
+                    var quotaMb = obj.quota / (1024 * 1024);
+                    if (quotaMb < 10) { return; }
+                    // Display the popup
+                    var text = Messages.crowdfunding_popup_text;
+                    var yes = h('button.cp-corner-primary', Messages.crowdfunding_popup_yes);
+                    var no = h('button.cp-corner-primary', Messages.crowdfunding_popup_no);
+                    var never = h('button.cp-corner-cancel', Messages.crowdfunding_popup_never);
+                    var actions = h('div', [yes, no, never]);
 
-                var modal = UI.cornerPopup(text, actions, null, {big: true});
+                    var modal = UI.cornerPopup(text, actions, null, {big: true});
 
-                $(yes).click(function () {
-                    modal.delete();
-                    common.openURL('https://opencollective.com/cryptpad/contribute');
-                    Feedback.send('CROWDFUNDING_YES');
+                    $(yes).click(function () {
+                        modal.delete();
+                        common.openURL(priv.accounts.donateURL);
+                        Feedback.send('CROWDFUNDING_YES');
+                    });
+                    $(modal.popup).find('a').click(function (e) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        modal.delete();
+                        common.openURL(priv.accounts.donateURL);
+                        Feedback.send('CROWDFUNDING_LINK');
+                    });
+                    $(no).click(function () {
+                        modal.delete();
+                        Feedback.send('CROWDFUNDING_NO');
+                    });
+                    $(never).click(function () {
+                        modal.delete();
+                        common.setAttribute(['general', 'crowdfunding'], false);
+                        Feedback.send('CROWDFUNDING_NEVER');
+                    });
                 });
-                $(modal.popup).find('a').click(function (e) {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    modal.delete();
-                    common.openURL('https://opencollective.com/cryptpad/');
-                    Feedback.send('CROWDFUNDING_LINK');
-                });
-                $(no).click(function () {
-                    modal.delete();
-                    Feedback.send('CROWDFUNDING_NO');
-                });
-                $(never).click(function () {
-                    modal.delete();
-                    common.setAttribute(['general', 'crowdfunding'], false);
-                    Feedback.send('CROWDFUNDING_NEVER');
-                });
-
             });
         }, 5000);
     };

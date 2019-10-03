@@ -376,6 +376,14 @@ define([
                     });
                 });
 
+                sframeChan.on('Q_GET_PINNED_USAGE', function (data, cb) {
+                    Cryptpad.getPinnedUsage({}, function (e, used) {
+                        cb({
+                            error: e,
+                            quota: used
+                        });
+                    });
+                });
                 sframeChan.on('Q_GET_PIN_LIMIT_STATUS', function (data, cb) {
                     Cryptpad.isOverPinLimit(null, function (e, overLimit, limits) {
                         cb({

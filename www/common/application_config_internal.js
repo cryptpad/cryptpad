@@ -156,5 +156,7 @@ define(function() {
     // by default by the CryptPad developers.
     config.disableSharedFolders = false;
 
+    config.surveyURL = "https://survey.cryptpad.fr/index.php/672782";
+
     return config;
 });
