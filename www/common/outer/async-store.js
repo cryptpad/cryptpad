@@ -2082,20 +2082,20 @@ define([
                 loadUniversal(Team, 'team', waitFor);
                 cleanFriendRequests();
             }).nThen(function () {
-                arePinsSynced(function (err, yes) {
-                    if (!yes) {
-                        resetPins(function (err) {
-                            if (err) { return console.error(err); }
-                            console.log('RESET DONE');
-                        });
-                    }
-                });
-
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");
                 };
 
                 if (store.loggedIn) {
+                    arePinsSynced(function (err, yes) {
+                        if (!yes) {
+                            resetPins(function (err) {
+                                if (err) { return console.error(err); }
+                                console.log('RESET DONE');
+                            });
+                        }
+                    });
+
                     /*  This isn't truly secure, since anyone who can read the user's object can
                         set their local loginToken to match that in the object. However, it exposes
                         a UI that will work most of the time. */
