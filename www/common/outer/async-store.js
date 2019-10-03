@@ -603,9 +603,14 @@ define([
             s.manager.addPad(data.path, pad, function (e) {
                 if (e) { return void cb({error: e}); }
                 var send = data.teamId ? s.sendEvent : sendDriveEvent;
-                send('DRIVE_CHANGE', {
-                    path: ['drive', UserObject.FILES_DATA]
-                }, clientId);
+                // Send a CHANGE events to all the teams because we may have just
+                // added a pad to a shared folder stored in multiple teams
+                getAllStores().forEach(function (_s) {
+                    var send = _s.id ? _s.sendEvent : sendDriveEvent;
+                    send('DRIVE_CHANGE', {
+                        path: ['drive', UserObject.FILES_DATA]
+                    }, clientId);
+                });
                 onSync(data.teamId, cb);
             });
         };
@@ -994,7 +999,6 @@ define([
                 });
             }).nThen(cb);
         };
-        // XXX Teams. encrypted href...
         Store.setPadTitle = function (clientId, data, cb) {
             var title = data.title;
             var href = data.href;
@@ -1808,7 +1812,8 @@ define([
             //var data = cmdData.data;
             var s = getStore(cmdData.teamId);
             var cb2 = function (data2) {
-
+                // Send the CHANGE event to all the stores because the command may have
+                // affected data from a shared folder used by multiple teams.
                 getAllStores().forEach(function (_s) {
                     var send = _s.id ? _s.sendEvent : sendDriveEvent;
                     send('DRIVE_CHANGE', {
