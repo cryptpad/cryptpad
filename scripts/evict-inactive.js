@@ -284,7 +284,7 @@ nThen(function (w) {
     };
 
     store.listChannels(handler, w(done));
-}).nThen(function (w) {
+}).nThen(function () {
     Log.info("EVICT_TIME_TO_RUN_SCRIPT", msSinceStart());
 }).nThen(function () {
     // the store will keep this script running if you don't shut it down

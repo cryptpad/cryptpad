@@ -517,6 +517,18 @@ define([
         /////////////////////// Store ////////////////////////////////////
         //////////////////////////////////////////////////////////////////
 
+        var getAllStores = function () {
+            var stores = [store];
+            var teamModule = store.modules['team'];
+            if (teamModule) {
+                var teams = teamModule.getTeams().map(function (id) {
+                    return teamModule.getTeam(id);
+                });
+                Array.prototype.push.apply(stores, teams);
+            }
+            return stores;
+        };
+
         // Get or create the user color for the cursor position
         var getRandomColor = function () {
             var getColor = function () {
@@ -602,7 +614,6 @@ define([
 
             s.manager.addPad(data.path, pad, function (e) {
                 if (e) { return void cb({error: e}); }
-                var send = data.teamId ? s.sendEvent : sendDriveEvent;
                 // Send a CHANGE events to all the teams because we may have just
                 // added a pad to a shared folder stored in multiple teams
                 getAllStores().forEach(function (_s) {
@@ -826,17 +837,6 @@ define([
          *   - attr (Array)
          *   - value (String)
          */
-        var getAllStores = function () {
-            var stores = [store];
-            var teamModule = store.modules['team'];
-            if (teamModule) {
-                var teams = teamModule.getTeams().map(function (id) {
-                    return teamModule.getTeam(id);
-                });
-                Array.prototype.push.apply(stores, teams);
-            }
-            return stores;
-        };
         Store.setPadAttribute = function (clientId, data, cb) {
             nThen(function (waitFor) {
                 getAllStores().forEach(function (s) {
