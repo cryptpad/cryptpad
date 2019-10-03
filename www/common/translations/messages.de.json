@@ -1158,7 +1158,7 @@
     "owner_addButton": "Zur Eigentümerschaft einladen",
     "owner_addConfirm": "Mit-Eigentümer können den Inhalt bearbeiten und dich als Eigentümer entfernen. Bist du sicher?",
     "owner_request": "{0} möchte dich zum Eigentümer von <b>{1}</b> machen",
-    "owner_request_accepted": "{0} hat deine Einladung angenommen, ein Eigentümer von <b>{1}</b> zu sein",
+    "owner_request_accepted": "{0} hat deine Einladung akzeptiert, ein Eigentümer von <b>{1}</b> zu sein",
     "owner_request_declined": "{0} hat deine Einladung abgelehnt, ein Eigentümer von <b>{1}</b> zu sein",
     "owner_removed": "{0} hat dich als Eigentümer von <b>{1}</b> entfernt",
     "owner_removedPending": "{0} hat die Einladung zur Eigentümerschaft von <b>{1}</b> zurückgezogen",
@@ -1212,5 +1212,8 @@
     "team_deleteTitle": "Löschung des Teams",
     "team_deleteHint": "Das Team und alle Dokumente, die ausschließlich Eigentum des Teams sind, löschen.",
     "team_deleteButton": "Löschen",
-    "team_deleteConfirm": "Du bist gerade dabei, alle Daten eines Teams zu löschen. Andere Teammitglieder können dann möglicherweise nicht mehr auf ihre Daten zugreifen. Dies kann nicht rückgängig gemacht werden. Bist du sicher, dass du fortfahren möchtest?"
+    "team_deleteConfirm": "Du bist gerade dabei, alle Daten eines Teams zu löschen. Andere Teammitglieder können dann möglicherweise nicht mehr auf ihre Daten zugreifen. Dies kann nicht rückgängig gemacht werden. Bist du sicher, dass du fortfahren möchtest?",
+    "team_pendingOwner": "(ausstehend)",
+    "team_pendingOwnerTitle": "Dieser Administrator hat dein Angebot auf Eigentümerschaft noch nicht akzeptiert.",
+    "team_demoteMeConfirm": "Du bist gerade dabei, deine Rechte aufzugeben. Dies kann nicht rückgängig gemacht werden. Bist du sicher?"
 }
