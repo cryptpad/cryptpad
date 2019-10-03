@@ -823,7 +823,6 @@ define([
             }
         }
         if (!proxy.metadata || typeof(proxy.metadata.title) === "undefined") {
-            console.error("UPDATE TITLE");
             Title.updateTitle(Title.defaultTitle);
         }
 
