@@ -899,7 +899,6 @@ define([
         var messenger = {};
         var store = cfg.store;
         if (AppConfig.availablePadTypes.indexOf('contacts') === -1) { return; }
-        if (!store.loggedIn || !store.proxy.edPublic) { return; }
         var ctx = {
             store: store,
             updateMetadata: cfg.updateMetadata,
