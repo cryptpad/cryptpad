@@ -98,6 +98,8 @@ define([
                     sframeChan.query('Q_SET_TEAM', null, function (err) {
                         if (err) { return void console.error(err); }
                         if (APP.drive && APP.drive.close) { APP.drive.close(); }
+                        $('.cp-toolbar-title-value').text(Messages.type.teams);
+                        sframeChan.event('EV_SET_TAB_TITLE', Messages.type.teams);
                         APP.team = null;
                         APP.teamEdPublic = null;
                         APP.drive = null;
@@ -341,8 +343,13 @@ define([
                 common.displayAvatar($(avatar), team.metadata.avatar, team.metadata.name);
                 $(btn).click(function () {
                     APP.module.execCommand('SUBSCRIBE', id, function () {
+                        var t = Messages._getKey('team_title', [Util.fixHTML(team.metadata.name)]);
                         sframeChan.query('Q_SET_TEAM', id, function (err) {
                             if (err) { return void console.error(err); }
+                            // Change title
+                            $('.cp-toolbar-title-value').text(t);
+                            sframeChan.event('EV_SET_TAB_TITLE', t);
+                            // Load data
                             APP.team = id;
                             APP.teamEdPublic = Util.find(team, ['keys', 'drive', 'edPublic']);
                             buildUI(common, true, team.owner);

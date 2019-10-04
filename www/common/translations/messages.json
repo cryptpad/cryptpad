@@ -1217,5 +1217,6 @@
     "team_deleteConfirm": "You are about to delete all of an entire team's data. This may impact other team members access to their data. This cannot be undone. Are you sure you want to proceed?",
     "team_pendingOwner": "(pending)",
     "team_pendingOwnerTitle": "This administrator has not accepted the ownership offer yet.",
-    "team_demoteMeConfirm": "You are about to give up your rights. You will not be able to undo this action. Are you sure?"
+    "team_demoteMeConfirm": "You are about to give up your rights. You will not be able to undo this action. Are you sure?",
+    "team_title": "Team: {0}"
 }
