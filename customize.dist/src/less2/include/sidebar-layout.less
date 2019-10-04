@@ -38,13 +38,18 @@
             }
             &.cp-leftside-narrow {
                 transition: width 0.2s;
-                width: 50px;
+                width: 55px;
                 .cp-sidebarlayout-category {
                     display: flex;
                     max-width: 100%;
                     align-items: center;
+                    .fa, .cptools {
+                        margin-right: 0;
+                        flex: 0;
+                    }
                     span.cp-sidebarlayout-category-name {
-                        flex: 1;
+                        //margin-left: 5px;
+                        padding-left: 5px;
                         white-space: nowrap;
                         overflow: hidden;
                         text-overflow: ellipsis;
