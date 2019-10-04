@@ -195,6 +195,9 @@ define([
                     APP.$rightside.removeClass('cp-rightside-drive');
                     APP.$leftside.removeClass('cp-leftside-narrow');
                 }
+                if (key === 'chat') {
+                    $category.find('.cp-team-chat-notification').removeClass('cp-team-chat-notification');
+                }
 
                 $categories.find('.cp-leftside-active').removeClass('cp-leftside-active');
                 $category.addClass('cp-leftside-active');
@@ -205,7 +208,10 @@ define([
         });
         if (active === 'drive') {
             APP.$rightside.addClass('cp-rightside-drive');
-            APP.$leftside.addClass('cp-leftside-narrow');
+            APP.$leftside.on('mouseover', function() {
+                APP.$leftside.addClass('cp-leftside-narrow');
+                APP.$leftside.off('mouseover');
+            });
         } else {
             APP.$rightside.removeClass('cp-rightside-drive');
             APP.$leftside.removeClass('cp-leftside-narrow');
@@ -360,11 +366,16 @@ define([
 
         var isOwner = Object.keys(privateData.teams || {}).some(function (id) {
             return privateData.teams[id].owner;
-        }) && !privateData.devMode; // XXX
-        if (Object.keys(privateData.teams || {}).length >= 3 || isOwner) {
-            content.push(h('div.alert.alert-warning', {
+        }) && !privateData.devMode;
+
+        var getWarningBox = function () {
+            return h('div.alert.alert-warning', {
                 role:'alert'
-            }, isOwner ? Messages.team_maxOwner : Messages._getKey('team_maxTeams', [MAX_TEAMS_SLOTS])));
+            }, isOwner ? Messages.team_maxOwner : Messages._getKey('team_maxTeams', [MAX_TEAMS_SLOTS]));
+        };
+
+        if (Object.keys(privateData.teams || {}).length >= 3 || isOwner) {
+            content.push(getWarningBox());
             return void cb(content);
         }
 
@@ -384,7 +395,16 @@ define([
             state = true;
             APP.module.execCommand('CREATE_TEAM', {
                 name: name
-            }, function () {
+            }, function (obj) {
+                if (obj && obj.error) {
+                    console.error(obj.error);
+                    return void UI.warn(Messages.error);
+                }
+                // Redraw the create block
+                var $createDiv = $('div.cp-team-create').empty();
+                isOwner = true;
+                $createDiv.append(getWarningBox());
+                // Redraw the teams list
                 var $div = $('div.cp-team-list').empty();
                 refreshList(common, function (content) {
                     state = false;
@@ -682,7 +702,10 @@ define([
                 return void UI.alert(Messages.error);
             }
             common.setTeamChat(obj.channel);
-            MessengerUI.create($(container), common, true);
+            MessengerUI.create($(container), common, {
+                chat: $('.cp-team-cat-chat'),
+                team: true
+            });
             cb(content);
         });
     });

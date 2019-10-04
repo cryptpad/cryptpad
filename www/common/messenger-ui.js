@@ -113,8 +113,12 @@ define([
 
         var notifyToolbar = function () {
             if (!toolbar || !toolbar['chat']) { return; }
-            if (toolbar['chat'].find('button').hasClass('cp-toolbar-button-active')) { return; }
-            toolbar['chat'].find('button').addClass('cp-toolbar-notification');
+            if (!toolbar['chat'].find('button').hasClass('cp-toolbar-button-active')) {
+                toolbar['chat'].find('button').addClass('cp-toolbar-notification');
+            }
+            if (!toolbar['chat'].hasClass('cp-leftside-active')) {
+                toolbar['chat'].find('span.fa').addClass('cp-team-chat-notification');
+            }
         };
 
         var notify = function (id) {
@@ -568,12 +572,15 @@ define([
 
             var el_message = markup.message(message);
 
-            common.notify();
             if (message.type === 'MSG') {
                 var name = typeof message.name !== "undefined" ?
                         (message.name || Messages.anonymous) :
                         contactsData[message.author].displayName;
-                common.notify({title: name, msg: message.text});
+                common.notify({
+                    title: name,
+                    msg: message.text,
+                    force: toolbar && toolbar.team && !toolbar['chat'].hasClass('cp-leftside-active')
+                });
             }
             notifyToolbar();
 

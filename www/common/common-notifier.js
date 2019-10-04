@@ -13,7 +13,7 @@ define([
     };
 
     Notifier.notify = function (data) {
-        if (Visible.isSupported() && !Visible.currently()) {
+        if (Visible.isSupported() && (!Visible.currently() || (data && data.force))) {
             if (data) {
                 var title = data.title;
                 if (document.title) { title += ' (' + document.title + ')'; }
