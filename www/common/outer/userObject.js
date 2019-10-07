@@ -36,7 +36,7 @@ define([
             var id = exp.getIdFromHref(href);
             if (!id) { return void cb("E_INVAL_HREF"); }
             if (!attr || !attr.trim()) { return void cb("E_INVAL_ATTR"); }
-            var data = exp.getFileData(id);
+            var data = exp.getFileData(id, true);
             data[attr] = clone(value);
             cb(null);
         };

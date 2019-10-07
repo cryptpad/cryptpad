@@ -215,6 +215,11 @@ define([
                     cb(id, rt);
                 });
             };
+            var teamData = ctx.store.proxy.teams[team.id];
+            var secret;
+            if (teamData) {
+                secret = Hash.getSecrets('team', teamData.hash, teamData.password);
+            }
             var manager = team.manager = ProxyManager.create(proxy.drive, {
                 onSync: function (cb) { ctx.Store.onSync(id, cb); },
                 edPublic: keys.drive.edPublic,
@@ -223,7 +228,8 @@ define([
                 loadSharedFolder: loadSharedFolder,
                 settings: {
                     drive: Util.find(ctx.store, ['proxy', 'settings', 'drive'])
-                }
+                },
+                editKey: secret && secret.keys.secondaryKey
             }, {
                 outer: true,
                 removeOwnedChannel: function (channel, cb) {

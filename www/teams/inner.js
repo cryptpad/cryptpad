@@ -52,13 +52,16 @@ define([
         var oldIds = Object.keys(folders);
         nThen(function (waitFor) {
             Object.keys(drive.sharedFolders).forEach(function (fId) {
+                var sfData = drive.sharedFolders[id] || {};
+                var parsed = Hash.parsePadUrl(sfData.href);
+                var secret = Hash.getSecrets('drive', parsed.hash, sfData.password);
                 sframeChan.query('Q_DRIVE_GETOBJECT', {
                     sharedFolder: fId
                 }, waitFor(function (err, newObj) {
                     folders[fId] = folders[fId] || {};
                     copyObjectValue(folders[fId], newObj);
                     if (manager && oldIds.indexOf(fId) === -1) {
-                        manager.addProxy(fId, folders[fId]);
+                        manager.addProxy(fId, folders[fId], null, secret.keys.secondaryKey);
                     }
                 }));
             });
@@ -260,13 +263,21 @@ define([
                 $limitContainer.attr('title', Messages.team_quota);
             }, true);
             driveAPP.team = id;
+
+            // Provide secondaryKey
+            var teamData = (proxy.teams || {})[id];
+            var secret;
+            if (teamData) {
+                secret = Hash.getSecrets('team', teamData.hash, teamData.password);
+            }
             var drive = DriveUI.create(common, {
                 proxy: proxy,
                 folders: folders,
                 updateObject: updateObject,
                 updateSharedFolders: updateSharedFolders,
                 APP: driveAPP,
-                edPublic: APP.teamEdPublic
+                edPublic: APP.teamEdPublic,
+                editKey: secret && secret.keys.secondaryKey
             });
             APP.drive = drive;
             driveAPP.refresh = drive.refresh;

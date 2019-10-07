@@ -5,8 +5,9 @@ define([
     '/common/common-realtime.js',
     '/common/common-constants.js',
     '/common/outer/userObject.js',
-    '/customize/messages.js'
-], function (AppConfig, Util, Hash, Realtime, Constants, OuterFO, Messages) {
+    '/customize/messages.js',
+    '/bower_components/chainpad-crypto/crypto.js',
+], function (AppConfig, Util, Hash, Realtime, Constants, OuterFO, Messages, Crypto) {
     var module = {};
 
     var ROOT = module.ROOT = "root";
@@ -31,6 +32,19 @@ define([
 
     module.init = function (files, config) {
         var exp = {};
+
+        exp.cryptor = {
+            encrypt : function (x) { return x; },
+            decrypt : function (x) { return x; },
+        };
+        if (config.editKey) {
+            try {
+                exp.cryptor = Crypto.createEncryptor(config.editKey);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
         exp.getDefaultName = module.getDefaultName;
 
         var sframeChan = config.sframeChan;
@@ -205,9 +219,14 @@ define([
         };
 
         // Get data from AllFiles (Cryptpad_RECENTPADS)
-        var getFileData = exp.getFileData = function (file) {
+        var getFileData = exp.getFileData = function (file, noCopy) {
             if (!file) { return; }
-            return files[FILES_DATA][file] || {};
+            var data = files[FILES_DATA][file] || {};
+            if (!noCopy) {
+                // XXX encrypted href: decrypt or remove "href"
+                data = JSON.parse(JSON.stringify(data));
+            }
+            return data;
         };
 
         exp.getFolderData = function (folder) {

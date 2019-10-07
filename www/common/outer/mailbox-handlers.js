@@ -249,6 +249,7 @@ define([
         if (msg.author !== content.user.curvePublic) { return void cb(true); }
 
         var channel = content.channel;
+        // XXX encrypted href
         var res = ctx.store.manager.findChannel(channel);
 
         var title;

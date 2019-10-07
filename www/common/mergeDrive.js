@@ -38,6 +38,7 @@ define([
                         var data = oldFo.getFileData(id);
                         var channel = data.channel;
 
+                        // XXX encrypted href: we need to be able to change the value here
                         var datas = manager.findChannel(channel, true);
                         // Do not migrate a pad if we already have it, it would create a duplicate
                         // in the drive

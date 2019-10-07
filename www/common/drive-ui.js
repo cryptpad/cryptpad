@@ -542,7 +542,10 @@ define([
 
         Object.keys(folders).forEach(function (id) {
             var f = folders[id];
-            manager.addProxy(id, f);
+            var sfData = files.sharedFolders[id] || {};
+            var parsed = Hash.parsePadUrl(sfData.href);
+            var secret = Hash.getSecrets('drive', parsed.hash, sfData.password);
+            manager.addProxy(id, f, null, secret.keys.secondaryKey);
         });
 
         // UI containers

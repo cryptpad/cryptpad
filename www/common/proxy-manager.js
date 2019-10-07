@@ -14,10 +14,11 @@ define([
     };
 
     // Add a shared folder to the list
-    var addProxy = function (Env, id, proxy, leave) {
+    var addProxy = function (Env, id, proxy, leave, editKey) {
         var cfg = getConfig(Env);
         cfg.sharedFolder = true;
         cfg.id = id;
+        cfg.editKey = editKey;
         var userObject = UserObject.init(proxy, cfg);
         if (userObject.fixFiles) {
             // Only in outer

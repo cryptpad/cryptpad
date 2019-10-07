@@ -27,13 +27,14 @@ define([
 
         var parsed = Hash.parsePadUrl(data.href);
         var secret = Hash.getSecrets('drive', parsed.hash, data.password);
+        var secondaryKey = secret.keys.secondaryKey;
 
         var sf = allSharedFolders[secret.channel];
         if (sf && sf.ready && sf.rt) {
             // The shared folder is already loaded, return its data
             setTimeout(function () {
                 var leave = function () { SF.leave(secret.channel, teamId); };
-                store.manager.addProxy(id, sf.rt.proxy, leave);
+                store.manager.addProxy(id, sf.rt.proxy, leave, secondaryKey);
                 cb(sf.rt, sf.metadata);
             });
             sf.team.push(teamId);
@@ -84,7 +85,7 @@ define([
             }
             sf.queue.forEach(function (obj) {
                 var leave = function () { SF.leave(secret.channel, teamId); };
-                obj.store.manager.addProxy(obj.id, rt.proxy, leave);
+                obj.store.manager.addProxy(obj.id, rt.proxy, leave, secondaryKey);
                 obj.cb(rt, info.metadata);
             });
             sf.leave = info.leave;

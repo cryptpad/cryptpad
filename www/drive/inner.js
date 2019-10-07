@@ -3,6 +3,7 @@ define([
     '/common/toolbar3.js',
     '/common/drive-ui.js',
     '/common/common-util.js',
+    '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/common-feedback.js',
     '/bower_components/nthen/index.js',
@@ -19,6 +20,7 @@ define([
     Toolbar,
     DriveUI,
     Util,
+    Hash,
     UI,
     Feedback,
     nThen,
@@ -41,13 +43,16 @@ define([
         var oldIds = Object.keys(folders);
         nThen(function (waitFor) {
             Object.keys(drive.sharedFolders).forEach(function (fId) {
+                var sfData = drive.sharedFolders[id] || {};
+                var parsed = Hash.parsePadUrl(sfData.href);
+                var secret = Hash.getSecrets('drive', parsed.hash, sfData.password);
                 sframeChan.query('Q_DRIVE_GETOBJECT', {
                     sharedFolder: fId
                 }, waitFor(function (err, newObj) {
                     folders[fId] = folders[fId] || {};
                     copyObjectValue(folders[fId], newObj);
                     if (manager && oldIds.indexOf(fId) === -1) {
-                        manager.addProxy(fId, folders[fId]);
+                        manager.addProxy(fId, folders[fId], null, secret.keys.secondaryKey);
                     }
                 }));
             });
