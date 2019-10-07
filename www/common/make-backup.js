@@ -52,7 +52,8 @@ define([
         var cancel = function () {
             cancelled = true;
         };
-        var parsed = Hash.parsePadUrl(fData.href || fData.roHref);
+        var href = (fData.href && fData.href.indexOf('#') !== -1) ? fData.href : fData.roHref;
+        var parsed = Hash.parsePadUrl(href);
         var hash = parsed.hash;
         var name = fData.filename || fData.title;
         var secret = Hash.getSecrets('file', hash, fData.password);
@@ -88,7 +89,8 @@ define([
             cancelled = true;
         };
 
-        var parsed = Hash.parsePadUrl(pData.href || pData.roHref);
+        var href = (pData.href && pData.href.indexOf('#') !== -1) ? pData.href : pData.roHref;
+        var parsed = Hash.parsePadUrl(href);
         var name = pData.filename || pData.title;
         var opts = {
             password: pData.password
@@ -137,7 +139,8 @@ define([
             });
         }
 
-        var parsed = Hash.parsePadUrl(fData.href || fData.roHref);
+        var href = (fData.href && fData.href.indexOf('#') !== -1) ? fData.href : fData.roHref;
+        var parsed = Hash.parsePadUrl(href);
         if (['pad', 'file'].indexOf(parsed.hashData.type) === -1) { return; }
 
         // waitFor is used to make sure all the pads and files are process before downloading the zip.

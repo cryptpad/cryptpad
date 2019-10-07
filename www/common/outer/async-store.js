@@ -1045,7 +1045,7 @@ define([
                 if (data.teamId && s.id !== data.teamId) { return; }
                 if (storeLocally && s.id) { return; }
 
-                var res = s.manager.findChannel(channel);
+                var res = s.manager.findChannel(channel, true);
                 if (res.length) {
                     sendTo.push(s.id);
                 }
@@ -1081,7 +1081,7 @@ define([
                     // If all of the weaker ones were in the trash, add the stronger to ROOT
                     obj.userObject.restoreHref(href);
                 }
-                pad.href = href;
+                obj.userObject.setHref(channel, null, href);
             });
 
             // Pads owned by us ("us" can be a user or a team) that are not in our "main" drive
@@ -1474,7 +1474,7 @@ define([
                 onMetadataUpdate: function (metadata) {
                     channel.data = metadata || {};
                     getAllStores().forEach(function (s) {
-                        var allData = s.manager.findChannel(data.channel);
+                        var allData = s.manager.findChannel(data.channel, true);
                         allData.forEach(function (obj) {
                             obj.data.owners = metadata.owners;
                             obj.data.atime = +new Date();
@@ -1640,7 +1640,7 @@ define([
 
                 // Update owners and expire time in the drive
                 getAllStores().forEach(function (s) {
-                    var allData = s.manager.findChannel(data.channel);
+                    var allData = s.manager.findChannel(data.channel, true);
                     var changed = false;
                     allData.forEach(function (obj) {
                         if (Sortify(obj.data.owners) !== Sortify(metadata.owners)) {

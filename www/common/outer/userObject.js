@@ -31,13 +31,26 @@ define([
 
         var debug = exp.debug;
 
+        exp.setHref = function (channel, id, href) {
+            if (!id && !channel) { return; }
+            var ids = id ? [id] : exp.findChannels([channel]);
+            ids.forEach(function (i) {
+                var data = exp.getFileData(i, true);
+                data.href = exp.cryptor.encrypt(href);
+            });
+        };
+
         exp.setPadAttribute = function (href, attr, value, cb) {
             cb = cb || function () {};
             var id = exp.getIdFromHref(href);
             if (!id) { return void cb("E_INVAL_HREF"); }
             if (!attr || !attr.trim()) { return void cb("E_INVAL_ATTR"); }
             var data = exp.getFileData(id, true);
-            data[attr] = clone(value);
+            if (attr === "href") {
+                exp.setHref(null, id, value);
+            } else {
+                data[attr] = clone(value);
+            }
             cb(null);
         };
         exp.getPadAttribute = function (href, attr, cb) {
@@ -51,6 +64,8 @@ define([
         exp.pushData = function (data, cb) {
             if (typeof cb !== "function") { cb = function () {}; }
             var id = Util.createRandomInteger();
+            // If we were given an edit link, encrypt its value if needed
+            if (data.href) { data.href = exp.cryptor.encrypt(data.href); }
             files[FILES_DATA][id] = data;
             cb(null, id);
         };
@@ -70,6 +85,7 @@ define([
                 return void cb("EAUTH");
             }
             var id = Util.createRandomInteger();
+            if (data.href) { data.href = exp.cryptor.encrypt(data.href); }
             files[SHARED_FOLDERS][id] = data;
             cb(null, id);
         };
@@ -209,11 +225,15 @@ define([
                 id = Number(id);
                 // Find and maybe update existing pads with the same channel id
                 var d = data[id];
+                // If we were given an edit link, encrypt its value if needed
+                if (d.href) { d.href = exp.cryptor.encrypt(d.href); }
                 var found = false;
                 for (var i in files[FILES_DATA]) {
                     if (files[FILES_DATA][i].channel === d.channel) {
                         // Update href?
-                        if (!files[FILES_DATA][i].href) { files[FILES_DATA][i].href = d.href; }
+                        if (!files[FILES_DATA][i].href) {
+                            files[FILES_DATA][i].href = d.href;
+                        }
                         found = true;
                         break;
                     }
@@ -222,7 +242,7 @@ define([
                     toRemove.push(id);
                     return;
                 }
-                files[FILES_DATA][id] = data[id];
+                files[FILES_DATA][id] = d;
             });
 
             // Remove existing pads from the "element" variable
@@ -500,6 +520,7 @@ define([
 
             if (silent) { debug = function () {}; }
 
+            var t0 = +new Date();
             debug("Cleaning file system...");
 
             var before = JSON.stringify(files);
@@ -536,7 +557,10 @@ define([
                         // We have an old file (href) which is not in filesData: add it
                         var id = Util.createRandomInteger();
                         var key = Hash.createChannelId();
-                        files[FILES_DATA][id] = {href: element[el], filename: el};
+                        files[FILES_DATA][id] = {
+                            href: exp.cryptor.encrypt(element[el]),
+                            filename: el
+                        };
                         element[key] = id;
                         delete element[el];
                     }
@@ -562,7 +586,10 @@ define([
                     if (typeof obj.element === "string") {
                         // We have an old file (href) which is not in filesData: add it
                         var id = Util.createRandomInteger();
-                        files[FILES_DATA][id] = {href: obj.element, filename: el};
+                        files[FILES_DATA][id] = {
+                            href: exp.cryptor.encrypt(obj.element),
+                            filename: el
+                        };
                         obj.element = id;
                     }
                     if (exp.isFolder(obj.element)) { fixRoot(obj.element); }
@@ -607,7 +634,9 @@ define([
                     if (typeof el === "string") {
                         // We have an old file (href) which is not in filesData: add it
                         var id = Util.createRandomInteger();
-                        files[FILES_DATA][id] = {href: el};
+                        files[FILES_DATA][id] = {
+                            href: exp.cryptor.encrypt(el)
+                        };
                         us[idx] = id;
                     }
                     if (typeof el === "number") {
@@ -653,7 +682,12 @@ define([
                         continue;
                     }
 
-                    var parsed = Hash.parsePadUrl(el.href || el.roHref);
+                    var href;
+                    try {
+                        href = el.href && ((el.href.indexOf('#') !== -1) ? el.href : exp.cryptor.decrypt(el.href));
+                    } catch (e) {}
+
+                    var parsed = Hash.parsePadUrl(href || el.roHref);
                     var secret;
 
                     // Clean invalid hash
@@ -670,9 +704,9 @@ define([
                     }
 
                     // If we have an edit link, check the view link
-                    if (el.href && parsed.hashData.type === "pad" && parsed.hashData.version) {
+                    if (href && parsed.hashData.type === "pad" && parsed.hashData.version) {
                         if (parsed.hashData.mode === "view") {
-                            el.roHref = el.href;
+                            el.roHref = href;
                             delete el.href;
                         } else if (!el.roHref) {
                             secret = Hash.getSecrets(parsed.type, parsed.hash, el.password);
@@ -691,7 +725,7 @@ define([
                     }
 
                     // Fix href
-                    if (el.href && /^https*:\/\//.test(el.href)) { el.href = Hash.getRelativeHref(el.href); }
+                    if (href && href.slice(0,1) !== '/') { el.href = exp.cryptor.encrypt(Hash.getRelativeHref(el.href)); }
                     // Fix creation time
                     if (!el.ctime) { el.ctime = el.atime; }
                     // Fix title
@@ -732,8 +766,13 @@ define([
                     el = sf[id];
                     id = Number(id);
 
+                    var href;
+                    try {
+                        href = el.href && ((el.href.indexOf('#') !== -1) ? el.href : exp.cryptor.decrypt(el.href));
+                    } catch (e) {}
+
                     // Fix undefined hash
-                    parsed = Hash.parsePadUrl(el.href || el.roHref);
+                    parsed = Hash.parsePadUrl(href || el.roHref);
                     secret = Hash.getSecrets('drive', parsed.hash, el.password);
                     if (!secret.keys) {
                         delete sf[id];
@@ -762,11 +801,12 @@ define([
             fixDrive();
             fixSharedFolders();
 
+            var ms = (+new Date() - t0) + 'ms';
             if (JSON.stringify(files) !== before) {
-                debug("Your file system was corrupted. It has been cleaned so that the pads you visit can be stored safely");
+                debug("Your file system was corrupted. It has been cleaned so that the pads you visit can be stored safely.", ms);
                 return;
             }
-            debug("File system was clean");
+            debug("File system was clean.", ms);
         };
 
         return exp;

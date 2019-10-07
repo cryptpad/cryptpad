@@ -249,14 +249,13 @@ define([
         if (msg.author !== content.user.curvePublic) { return void cb(true); }
 
         var channel = content.channel;
-        // XXX encrypted href
-        var res = ctx.store.manager.findChannel(channel);
+        var res = ctx.store.manager.findChannel(channel, true);
 
         var title;
         res.forEach(function (obj) {
             if (obj.data && !obj.data.href) {
                 if (!title) { title = obj.data.filename || obj.data.title; }
-                obj.data.href = content.href;
+                obj.userObject.setHref(channel, null, content.href);
             }
         });
 

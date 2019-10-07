@@ -145,8 +145,12 @@ define([
                     n = n.nThen(function (w) {
                         setTimeout(w(function () {
                             el = data[k];
-                            if (!el.href || (el.roHref && false)) {
+                            if (!el.href) {
                                 // Already migrated
+                                return void progress(7, Math.round(100*i/padsLength));
+                            }
+                            if (el.href.indexOf('#') === -1) {
+                                // Encrypted href: already migrated
                                 return void progress(7, Math.round(100*i/padsLength));
                             }
                             parsed = Hash.parsePadUrl(el.href);

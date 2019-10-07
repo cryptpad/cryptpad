@@ -97,7 +97,7 @@ define([
                     for (var i = 0; i<old.length; i++) {
                         try {
                             pad = old[i];
-                            href = pad.href || pad.roHref;
+                            href = (pad.href && pad.href.indexOf('#') !== -1) ? pad.href : pad.roHref;
                             chan = channelByHref[href];
                             if (!chan && href) {
                                 parsed = Hash.parsePadUrl(href);
@@ -121,7 +121,7 @@ define([
                     for (var id in ids) {
                         try {
                             pad = ids[id];
-                            href = pad.href || pad.roHref;
+                            href = (pad.href && pad.href.indexOf('#') !== -1) ? pad.href : pad.roHref;
                             chan = pad.channel || channelByHref[href];
                             if (!chan) {
                                 if (href) {

@@ -81,11 +81,13 @@ define([
 
     // Return files data objects associated to a channel for setPadTitle
     // All occurences are returned, in drive or shared folders
-    var findChannel = function (Env, channel) {
+    // If "editable" is true, the data returned is a proxy, otherwise
+    // it's a cloned object (NOTE: href should never be edited directly)
+    var findChannel = function (Env, channel, editable) {
         var ret = [];
         Env.user.userObject.findChannels([channel]).forEach(function (id) {
             ret.push({
-                data: Env.user.userObject.getFileData(id),
+                data: Env.user.userObject.getFileData(id, editable),
                 userObject: Env.user.userObject
             });
         });
@@ -93,7 +95,7 @@ define([
             Env.folders[fId].userObject.findChannels([channel]).forEach(function (id) {
                 ret.push({
                     fId: fId,
-                    data: Env.folders[fId].userObject.getFileData(id),
+                    data: Env.folders[fId].userObject.getFileData(id, editable),
                     userObject: Env.folders[fId].userObject
                 });
             });
@@ -101,6 +103,8 @@ define([
         return ret;
     };
     // Return files data objects associated to a given href for setPadAttribute...
+    // If "editable" is true, the data returned is a proxy, otherwise
+    // it's a cloned object (NOTE: href should never be edited directly)
     var findHref = function (Env, href) {
         var ret = [];
         var id = Env.user.userObject.getIdFromHref(href);
@@ -155,11 +159,11 @@ define([
         return ret;
     };
 
-    var _getFileData = function (Env, id) {
+    var _getFileData = function (Env, id, editable) {
         var userObjects = _getUserObjects(Env);
         var data = {};
         userObjects.some(function (uo) {
-            data = uo.getFileData(id);
+            data = uo.getFileData(id, editable);
             if (Object.keys(data).length) { return true; }
         });
         return data;
@@ -277,11 +281,6 @@ define([
             files.forEach(function (f) {
                 filesData[f] = userObject.getFileData(f);
             });
-
-            // TODO RO
-            // Encrypt  or decrypt edit link here
-            // filesData.forEach(function (d) { d.href = encrypt(d.href); });
-
 
             data.push({
                 el: el,
@@ -435,6 +434,7 @@ define([
             Env.pinPads([folderData.channel], waitFor());
         }).nThen(function (waitFor) {
             // 1. add the shared folder to our list of shared folders
+            // NOTE: pushSharedFolder will encrypt the href directly in the object if needed
             Env.user.userObject.pushSharedFolder(folderData, waitFor(function (err, folderId) {
                 if (err) {
                     waitFor.abort();
@@ -1128,7 +1128,13 @@ define([
         if (!Env.folders[id]) { return {}; }
         var obj = Env.folders[id].proxy.metadata || {};
         for (var k in Env.user.proxy[UserObject.SHARED_FOLDERS][id] || {}) {
-            obj[k] = Env.user.proxy[UserObject.SHARED_FOLDERS][id][k];
+            var data = JSON.parse(JSON.stringify(Env.user.proxy[UserObject.SHARED_FOLDERS][id][k]));
+            if (data.href && data.href.indexOf('#') === -1) {
+                try {
+                    data.href = Env.user.userObject.cryptor.decrypt(data.href);
+                } catch (e) {}
+            }
+            obj[k] = data;
         }
         return obj;
     };

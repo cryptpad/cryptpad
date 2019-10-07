@@ -25,7 +25,9 @@ define([
         var teamId = store.id || -1;
         var handler = store.handleSharedFolder;
 
-        var parsed = Hash.parsePadUrl(data.href);
+        var href = store.manager.user.userObject.getHref(data);
+
+        var parsed = Hash.parsePadUrl(href);
         var secret = Hash.getSecrets('drive', parsed.hash, data.password);
         var secondaryKey = secret.keys.secondaryKey;
 

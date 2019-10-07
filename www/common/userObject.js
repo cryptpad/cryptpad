@@ -39,7 +39,13 @@ define([
         };
         if (config.editKey) {
             try {
-                exp.cryptor = Crypto.createEncryptor(config.editKey);
+                var c = Crypto.createEncryptor(config.editKey);
+                exp.cryptor.encrypt = function (href) {
+                    // Never encrypt blob href, they are always read-only
+                    if (href.slice(0,7) === '/file/#') { return href; }
+                    return c.encrypt(href);
+                };
+                exp.cryptor.decrypt = c.decrypt;
             } catch (e) {
                 console.error(e);
             }
@@ -104,6 +110,16 @@ define([
             a[TEMPLATE] = [];
             a[SHARED_FOLDERS] = {};
             return a;
+        };
+
+        var getHref = exp.getHref = function (pad) {
+            if (pad.href && pad.href.indexOf('#') !== -1) {
+                return pad.href;
+            }
+            if (pad.href) {
+                return exp.cryptor.decrypt(pad.href);
+            }
+            return pad.roHref;
         };
 
         var type = function (dat) {
@@ -219,12 +235,23 @@ define([
         };
 
         // Get data from AllFiles (Cryptpad_RECENTPADS)
-        var getFileData = exp.getFileData = function (file, noCopy) {
+        var getFileData = exp.getFileData = function (file, editable) {
             if (!file) { return; }
             var data = files[FILES_DATA][file] || {};
-            if (!noCopy) {
-                // XXX encrypted href: decrypt or remove "href"
+            if (!editable) {
                 data = JSON.parse(JSON.stringify(data));
+                if (data.href && data.href.indexOf('#') === -1) {
+                    // Encrypted href: decrypt it if we can, otherwise remove it
+                    if (config.editKey) {
+                        try {
+                            data.href = exp.cryptor.decrypt(data.href);
+                        } catch (e) {
+                            delete data.href;
+                        }
+                    } else {
+                        delete data.href;
+                    }
+                }
             }
             return data;
         };
@@ -401,7 +428,7 @@ define([
         var getIdFromHref = exp.getIdFromHref = function (href) {
             var result;
             getFiles([FILES_DATA]).some(function (id) {
-                if (files[FILES_DATA][id].href === href ||
+                if (getHref(files[FILES_DATA][id]) === href ||
                     files[FILES_DATA][id].roHref === href) {
                     result = id;
                     return true;
@@ -413,7 +440,7 @@ define([
         exp.getSFIdFromHref = function (href) {
             var result;
             getFiles([SHARED_FOLDERS]).some(function (id) {
-                if (files[SHARED_FOLDERS][id].href === href ||
+                if (getHref(files[SHARED_FOLDERS][id]) === href ||
                     files[SHARED_FOLDERS][id].roHref === href) {
                     result = id;
                     return true;

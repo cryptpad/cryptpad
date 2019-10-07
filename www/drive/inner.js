@@ -43,7 +43,7 @@ define([
         var oldIds = Object.keys(folders);
         nThen(function (waitFor) {
             Object.keys(drive.sharedFolders).forEach(function (fId) {
-                var sfData = drive.sharedFolders[id] || {};
+                var sfData = drive.sharedFolders[fId] || {};
                 var parsed = Hash.parsePadUrl(sfData.href);
                 var secret = Hash.getSecrets('drive', parsed.hash, sfData.password);
                 sframeChan.query('Q_DRIVE_GETOBJECT', {
