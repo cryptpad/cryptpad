@@ -74,7 +74,6 @@ define([
             }).nThen(function () { cb(); });
         };
 
-        // OKTEAM
         Store.get = function (clientId, data, cb) {
             var s = getStore(data.teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
