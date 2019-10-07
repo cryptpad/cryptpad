@@ -1218,5 +1218,7 @@
     "team_pendingOwner": "(en attente)",
     "team_pendingOwnerTitle": "Cet administrateur n'a pas encore accepté l'offre de devenir propriétaire de l'équipe.",
     "team_demoteMeConfirm": "Vous êtes sur le point de renoncer à vos droits. Vous ne serez pas en mesure d'annuler cette action. Continuer ?",
-    "team_title": "Équipe : {0}"
+    "team_title": "Équipe : {0}",
+    "team_quota": "Limite de stockage de votre équipe",
+    "drive_quota": "Votre limite de stockage"
 }

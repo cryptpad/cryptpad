@@ -257,6 +257,7 @@ define([
             APP.usageBar = common.createUsageBar(APP.team, function (err, $limitContainer) {
                 if (err) { return void DriveUI.logError(err); }
                 driveAPP.$limit = $limitContainer;
+                $limitContainer.attr('title', Messages.team_quota);
             }, true);
             driveAPP.team = id;
             var drive = DriveUI.create(common, {
