@@ -1995,7 +1995,8 @@ define([
                     broadcast([], "UPDATE_METADATA");
                 },
                 pinPads: function (data, cb) { Store.pinPads(null, data, cb); },
-            }, waitFor, function (ev, data, clients, cb) {
+            }, waitFor, function (ev, data, clients, _cb) {
+                var cb = Util.once(_cb || function () {});
                 clients.forEach(function (cId) {
                     postMessage(cId, 'MAILBOX_EVENT', {
                         ev: ev,
