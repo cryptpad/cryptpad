@@ -378,7 +378,7 @@ define([
         refreshList(common, cb);
     });
 
-    makeBlock('create', function (common, cb) {
+    var refreshCreate = function (common, cb) {
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
         var content = [];
@@ -406,17 +406,21 @@ define([
         content.push(h('br'));
         content.push(h('br'));
         content.push(button);
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide();
+        content.push($spinner[0]);
         var state = false;
         $(button).click(function () {
             if (state) { return; }
             var name = $(input).val();
             if (!name.trim()) { return; }
             state = true;
+            $spinner.show();
             APP.module.execCommand('CREATE_TEAM', {
                 name: name
             }, function (obj) {
                 if (obj && obj.error) {
                     console.error(obj.error);
+                    $spinner.hide();
                     return void UI.warn(Messages.error);
                 }
                 // Redraw the create block
@@ -428,15 +432,15 @@ define([
                 refreshList(common, function (content) {
                     state = false;
                     $div.append(content);
+                    $spinner.hide();
                     $('div.cp-team-cat-list').click();
                 });
             });
         });
         cb(content);
-    });
-
-    makeBlock('back', function (common, cb) {
-        refreshList(common, cb);
+    };
+    makeBlock('create', function (common, cb) {
+        refreshCreate(common, cb);
     });
 
     makeBlock('drive', function (common, cb) {
@@ -967,10 +971,17 @@ define([
 
             metadataMgr.onChange(function () {
                 var $div = $('div.cp-team-list');
-                if (!$div.length) { return; }
-                refreshList(common, function (content) {
-                    $div.empty().append(content);
-                });
+                if ($div.length) {
+                    refreshList(common, function (content) {
+                        $div.empty().append(content);
+                    });
+                }
+                var $divCreate = $('div.cp-team-create');
+                if ($divCreate.length) {
+                    refreshCreate(common, function (content) {
+                        $divCreate.empty().append(content);
+                    });
+                }
             });
 
             var onDisconnect = function (noAlert) {

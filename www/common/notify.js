@@ -30,10 +30,19 @@ define(['/api/config'], function (ApiConfig) {
             icon = DEFAULT_ALT;
         }
 
-        return new Notification(title,{
+        var n = new Notification(title,{
             icon: icon,
             body: msg,
         });
+        n.onclick = function () {
+            if (!document) { return; }
+            try {
+                parent.focus();
+                window.focus(); //just in case, older browsers
+                this.close();
+            } catch (e) {}
+        };
+        return n;
     };
 
     Module.system = function (msg, title, icon) {

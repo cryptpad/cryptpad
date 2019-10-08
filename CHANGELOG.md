@@ -1,3 +1,48 @@
+# Dodo release (v3.3.0)
+
+## Goals
+
+We've continued to prioritize the development of team-centric features in CryptPad. This release was focused on stabilizing the code for Teams and making them available to the users.
+
+## Update notes
+
+This is a pretty basic release:
+
+1. stop your server
+2. pull the latest source code
+3. install the latest serverside dependencies with `npm install`
+4. install the latest clientside dependencies with `bower update`
+5. restart your server
+
+Note: we've updated our Nginx configuration to fix any missing trailing slash in the URL for the newest applications: https://github.com/xwiki-labs/cryptpad/commit/d4e5b98c140c28417e008379ec7af7cdc235792b
+
+## Features
+
+* You can now create _Teams_ in CryptPad. They're available from a new _Teams_ application and provide a full CryptDrive that can be shared between multiple users.
+  * Each team has a list of members. There are currently 3 different access level for team members:
+    * Members: can add, delete and edit pads from the team
+    * Admins: can also invite their CryptPad friends to the team, kick members and promote members as "Admin"
+    * Owners: can also promote admins as "Owner", change the team name or avatar and delete the team
+  * Each team has its own storage limit (50 MB by default, the same as user accounts).
+  * A chat is available to all the team members
+  * Pads created from the team's drive will be stored in this drive. If they are created as _owned_ pads, they will be ownedcc by the team.
+  * You can share pads or folders from your drive with one of your teams and you can store pads or folders from your team to your personal drive.
+  * Each user can be a member of up to 3 teams. A user can't create a new Team if they are already _Owner_ of another one.
+* We've done some server improvements to save CPU usage.
+* We've also improved to the messenger module to save CPU and memory in the client.
+* The support panel (administrator side) now provides more debugging information about the users who ask for help
+* A link to the new CryptPad survey (https://survey.cryptpad.fr/index.php/672782?lang=en) has been added to the user menu
+  * This link can be changed or removed using the "surveyURL" key in `/customize/application_config.js`. An empty value will remove the link from the menu.
+
+## Bug fixes
+
+* We've fixed an issue preventing users to remove owned empty channels from the server
+* Adding and editing new items to the kanban boards will now update the correct item from the board
+* We've fixed an issue with shared folders loaded by unregistered users
+* The default title is now always set in newly created polls
+* Desktop notifications will now be displayed only once per connection to the server and not once per CryptPad tab in the browser
+* The button to download a spreadsheet from the drive has been removed. This feature is not available yet and the button was doing nothing.
+
 # Chilihueque release (v3.2.0)
 
 ## Goals

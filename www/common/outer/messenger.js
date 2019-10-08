@@ -906,7 +906,8 @@ define([
             emit: emit,
             friendsClients: [],
             channels: {},
-            validateKeys: {}
+            validateKeys: {},
+            range_requests: {}
         };
 
 

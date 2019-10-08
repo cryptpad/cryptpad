@@ -1141,6 +1141,9 @@ define([
                         //hide.push('download');
                         hide.push('openincode');
                     }
+                    if ($element.is('.cp-border-color-sheet')) {
+                        hide.push('download');
+                    }
                     if ($element.is('.cp-app-drive-element-file')) {
                         // No folder in files
                         hide.push('color');

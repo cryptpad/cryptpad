@@ -655,8 +655,8 @@ define([
                 if (err) { console.error(err); }
             }));
         }).nThen(function () {
-            cb();
             closeTeam(ctx, teamId);
+            cb();
         });
     };
 

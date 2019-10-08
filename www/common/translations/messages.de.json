@@ -1215,5 +1215,10 @@
     "team_deleteConfirm": "Du bist gerade dabei, alle Daten eines Teams zu löschen. Andere Teammitglieder können dann möglicherweise nicht mehr auf ihre Daten zugreifen. Dies kann nicht rückgängig gemacht werden. Bist du sicher, dass du fortfahren möchtest?",
     "team_pendingOwner": "(ausstehend)",
     "team_pendingOwnerTitle": "Dieser Administrator hat dein Angebot auf Eigentümerschaft noch nicht akzeptiert.",
-    "team_demoteMeConfirm": "Du bist gerade dabei, deine Rechte aufzugeben. Dies kann nicht rückgängig gemacht werden. Bist du sicher?"
+    "team_demoteMeConfirm": "Du bist gerade dabei, deine Rechte aufzugeben. Dies kann nicht rückgängig gemacht werden. Bist du sicher?",
+    "crowdfunding_button2": "CryptPad unterstützen",
+    "survey": "CryptPad-Umfrage",
+    "team_title": "Team: {0}",
+    "team_quota": "Speicherplatzbegrenzung deines Teams",
+    "drive_quota": "Deine Speicherplatzbegrenzung"
 }
