@@ -3,7 +3,7 @@ define([
     '/customize/login.js',
     '/common/cryptpad-common.js',
     '/common/test.js',
-    '/customize/credential.js', // preloaded for login.js
+    '/common/common-credential.js',
     '/common/common-interface.js',
     '/common/common-util.js',
     '/common/common-realtime.js',

@@ -821,7 +821,8 @@ define([
                 UI.errorLoadingScreen(errorText);
                 throw new Error(errorText);
             }
-        } else {
+        }
+        if (!proxy.metadata || typeof(proxy.metadata.title) === "undefined") {
             Title.updateTitle(Title.defaultTitle);
         }
 

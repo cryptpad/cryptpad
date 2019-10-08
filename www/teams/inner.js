@@ -3,9 +3,11 @@ define([
     '/common/toolbar3.js',
     '/common/drive-ui.js',
     '/common/common-util.js',
+    '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
     '/common/common-feedback.js',
+    '/common/common-constants.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/proxy-manager.js',
@@ -16,15 +18,17 @@ define([
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'less!/team/app-team.less',
+    'less!/teams/app-team.less',
 ], function (
     $,
     Toolbar,
     DriveUI,
     Util,
+    Hash,
     UI,
     UIElements,
     Feedback,
+    Constants,
     nThen,
     SFCommon,
     ProxyManager,
@@ -76,14 +80,14 @@ define([
     var setEditable = DriveUI.setEditable;
 
     var mainCategories = {
-        'general': [
-            'cp-team-info',
-        ],
         'list': [
             'cp-team-list',
         ],
         'create': [
             'cp-team-create',
+        ],
+        'general': [
+            'cp-team-info',
         ],
     };
     var teamCategories = {
@@ -94,10 +98,16 @@ define([
                     sframeChan.query('Q_SET_TEAM', null, function (err) {
                         if (err) { return void console.error(err); }
                         if (APP.drive && APP.drive.close) { APP.drive.close(); }
+                        $('.cp-toolbar-title-value').text(Messages.type.teams);
+                        sframeChan.event('EV_SET_TAB_TITLE', Messages.type.teams);
                         APP.team = null;
                         APP.teamEdPublic = null;
                         APP.drive = null;
                         APP.buildUI(common);
+                        if (APP.usageBar) {
+                            APP.usageBar.stop();
+                            APP.usageBar = null;
+                        }
                     });
                 });
             }
@@ -112,8 +122,10 @@ define([
             'cp-team-chat'
         ],
         'admin': [
+            'cp-team-edpublic',
             'cp-team-name',
-            'cp-team-avatar'
+            'cp-team-avatar',
+            'cp-team-delete',
         ],
     };
 
@@ -137,6 +149,22 @@ define([
 
         var categories = team ? teamCategories : mainCategories;
         var active = team ? 'drive' : 'list';
+
+        if (team && APP.team) {
+            var $category = $('<div>', {'class': 'cp-sidebarlayout-category cp-team-cat-header'}).appendTo($categories);
+            var avatar = h('div.cp-avatar');
+            var $avatar = $(avatar);
+            APP.module.execCommand('GET_TEAM_METADATA', {
+                teamId: APP.team
+            }, function (obj) {
+                if (obj && obj.error) {
+                    return void UI.warn(Messages.error);
+                }
+                common.displayAvatar($avatar, obj.avatar, obj.name);
+                $category.append($avatar);
+                $avatar.append(h('span.cp-sidebarlayout-category-name', obj.name));
+            });
+        }
 
         Object.keys(categories).forEach(function (key) {
             if (key === 'admin' && !teamAdmin) { return; }
@@ -164,8 +192,13 @@ define([
                 active = key;
                 if (key === 'drive' || key === 'chat') {
                     APP.$rightside.addClass('cp-rightside-drive');
+                    APP.$leftside.addClass('cp-leftside-narrow');
                 } else {
                     APP.$rightside.removeClass('cp-rightside-drive');
+                    APP.$leftside.removeClass('cp-leftside-narrow');
+                }
+                if (key === 'chat') {
+                    $category.find('.cp-team-chat-notification').removeClass('cp-team-chat-notification');
                 }
 
                 $categories.find('.cp-leftside-active').removeClass('cp-leftside-active');
@@ -173,10 +206,17 @@ define([
                 showCategories(categories[key]);
             });
 
-            $category.append(Messages['team_cat_'+key] || key); // XXX
+            $category.append(h('span.cp-sidebarlayout-category-name', Messages['team_cat_'+key] || key));
         });
         if (active === 'drive') {
             APP.$rightside.addClass('cp-rightside-drive');
+            APP.$leftside.on('mouseover', function() {
+                APP.$leftside.addClass('cp-leftside-narrow');
+                APP.$leftside.off('mouseover');
+            });
+        } else {
+            APP.$rightside.removeClass('cp-rightside-drive');
+            APP.$leftside.removeClass('cp-leftside-narrow');
         }
         showCategories(categories[active]);
     };
@@ -217,6 +257,7 @@ define([
             APP.usageBar = common.createUsageBar(APP.team, function (err, $limitContainer) {
                 if (err) { return void DriveUI.logError(err); }
                 driveAPP.$limit = $limitContainer;
+                $limitContainer.attr('title', Messages.team_quota);
             }, true);
             driveAPP.team = id;
             var drive = DriveUI.create(common, {
@@ -259,34 +300,57 @@ define([
 
     makeBlock('info', function (common, cb) {
         cb([
-            h('h3', 'Team application'), // XXX
-            h('p', 'From here you can ...') // XXX
+            h('h3', Messages.team_infoLabel),
+            h('p', Messages.team_infoContent)
         ]);
     });
 
+    var MAX_TEAMS_SLOTS = Constants.MAX_TEAMS_SLOTS;
     var refreshList = function (common, cb) {
         var sframeChan = common.getSframeChannel();
         var content = [];
-        content.push(h('h3', 'Your teams'));
         APP.module.execCommand('LIST_TEAMS', null, function (obj) {
             if (!obj) { return; }
             if (obj.error) { return void console.error(obj.error); }
-            var lis = [];
-            Object.keys(obj).forEach(function (id) {
+            var list = [];
+            var keys = Object.keys(obj).slice(0,3);
+            var slots = '('+Math.min(keys.length, MAX_TEAMS_SLOTS)+'/'+MAX_TEAMS_SLOTS+')';
+            for (var i = keys.length; i < MAX_TEAMS_SLOTS; i++) {
+                obj[i] = {
+                    empty: true
+                };
+                keys.push(i);
+            }
+
+            content.push(h('h3', Messages.team_listTitle + ' ' + slots));
+
+            keys.forEach(function (id) {
                 var team = obj[id];
-                var a = h('a', 'Open');
-                var avatar = h('span.cp-avatar.cp-team-list-avatar');
-                lis.push(h('li', h('ul', [
-                    h('li', avatar), // XXX
-                    h('li', 'Name: ' + team.metadata.name), // XXX
-                    h('li', 'ID: ' + id), // XXX
-                    h('li', a) // XXX
-                ])));
+                if (team.empty) {
+                    list.push(h('div.cp-team-list-team.empty', [
+                        h('span.cp-team-list-name.empty', Messages.team_listSlot)
+                    ]));
+                    return;
+                }
+                var btn;
+                var avatar = h('span.cp-avatar');
+                list.push(h('div.cp-team-list-team', [
+                    h('span.cp-team-list-avatar', avatar),
+                    h('span.cp-team-list-name', {
+                        title: team.metadata.name
+                    }, team.metadata.name),
+                    btn = h('button.cp-team-list-open.btn.btn-primary', Messages.team_listLoad)
+                ]));
                 common.displayAvatar($(avatar), team.metadata.avatar, team.metadata.name);
-                $(a).click(function () {
+                $(btn).click(function () {
                     APP.module.execCommand('SUBSCRIBE', id, function () {
+                        var t = Messages._getKey('team_title', [Util.fixHTML(team.metadata.name)]);
                         sframeChan.query('Q_SET_TEAM', id, function (err) {
                             if (err) { return void console.error(err); }
+                            // Change title
+                            $('.cp-toolbar-title-value').text(t);
+                            sframeChan.event('EV_SET_TAB_TITLE', t);
+                            // Load data
                             APP.team = id;
                             APP.teamEdPublic = Util.find(team, ['keys', 'drive', 'edPublic']);
                             buildUI(common, true, team.owner);
@@ -294,7 +358,7 @@ define([
                     });
                 });
             });
-            content.push(h('ul', lis));
+            content.push(h('div.cp-team-list-container', list));
             cb(content);
         });
         return content;
@@ -304,12 +368,30 @@ define([
     });
 
     makeBlock('create', function (common, cb) {
+        var metadataMgr = common.getMetadataMgr();
+        var privateData = metadataMgr.getPrivateData();
         var content = [];
-        content.push(h('h3', 'Create a team')); // XXX
-        content.push(h('label', 'Team name')); // XXX
+
+        var isOwner = Object.keys(privateData.teams || {}).some(function (id) {
+            return privateData.teams[id].owner;
+        }) && !privateData.devMode;
+
+        var getWarningBox = function () {
+            return h('div.alert.alert-warning', {
+                role:'alert'
+            }, isOwner ? Messages.team_maxOwner : Messages._getKey('team_maxTeams', [MAX_TEAMS_SLOTS]));
+        };
+
+        if (Object.keys(privateData.teams || {}).length >= 3 || isOwner) {
+            content.push(getWarningBox());
+            return void cb(content);
+        }
+
+        content.push(h('h3', Messages.team_createLabel));
+        content.push(h('label', Messages.team_createName));
         var input = h('input', {type:'text'});
         content.push(input);
-        var button = h('button.btn.btn-success', 'Create'); // XXX
+        var button = h('button.btn.btn-success', Messages.creation_create);
         content.push(h('br'));
         content.push(h('br'));
         content.push(button);
@@ -319,20 +401,23 @@ define([
             var name = $(input).val();
             if (!name.trim()) { return; }
             state = true;
-            UI.confirm('Are you sure?', function (yes) {
-                if (!yes) {
-                    state = false;
-                    return;
+            APP.module.execCommand('CREATE_TEAM', {
+                name: name
+            }, function (obj) {
+                if (obj && obj.error) {
+                    console.error(obj.error);
+                    return void UI.warn(Messages.error);
                 }
-                APP.module.execCommand('CREATE_TEAM', {
-                    name: name
-                }, function () {
-                    var $div = $('div.cp-team-list').empty();
-                    refreshList(common, function (content) {
-                        state = false;
-                        $div.append(content);
-                        $('div.cp-team-cat-list').click();
-                    });
+                // Redraw the create block
+                var $createDiv = $('div.cp-team-create').empty();
+                isOwner = true;
+                $createDiv.append(getWarningBox());
+                // Redraw the teams list
+                var $div = $('div.cp-team-list').empty();
+                refreshList(common, function (content) {
+                    state = false;
+                    $div.append(content);
+                    $('div.cp-team-cat-list').click();
                 });
             });
         });
@@ -374,10 +459,10 @@ define([
     };
 
     var ROLES = ['MEMBER', 'ADMIN', 'OWNER'];
-    var describeUser = function (common, data, icon) {
+    var describeUser = function (common, curvePublic, data, icon) {
         APP.module.execCommand('DESCRIBE_USER', {
             teamId: APP.team,
-            curvePublic: data.curvePublic,
+            curvePublic: curvePublic,
             data: data
         }, function (obj) {
             if (obj && obj.error) {
@@ -387,60 +472,115 @@ define([
             redrawRoster(common);
         });
     };
-    var makeMember = function (common, data, me) {
+    var makeMember = function (common, data, me, roster) {
         if (!data.curvePublic) { return; }
+
+        var otherOwners = Object.keys(roster || {}).some(function (key) {
+            var user = roster[key];
+            return user.role === "OWNER" && user.curvePublic !== me.curvePublic && !user.pendingOwner;
+        });
+
         // Avatar
         var avatar = h('span.cp-avatar.cp-team-member-avatar');
         common.displayAvatar($(avatar), data.avatar, data.displayName);
         // Name
         var name = h('span.cp-team-member-name', data.displayName);
+        if (data.pendingOwner) {
+            $(name).append(h('em', {
+                title: Messages.team_pendingOwnerTitle
+            }, ' ' + Messages.team_pendingOwner));
+        }
+        // Status
+        var status = h('span.cp-team-member-status'+(data.online ? '.online' : ''));
         // Actions
         var actions = h('span.cp-team-member-actions');
         var $actions = $(actions);
         var isMe = me && me.curvePublic === data.curvePublic;
         var myRole = me ? (ROLES.indexOf(me.role) || 0) : -1;
         var theirRole = ROLES.indexOf(data.role) || 0;
+        // If they're an admin and I am an owner, I can promote them to owner
+        if (!isMe && myRole > theirRole && theirRole === 1 && !data.pending) {
+            var promoteOwner = h('span.fa.fa-angle-double-up', {
+                title: Messages.team_rosterPromoteOwner
+            });
+            $(promoteOwner).click(function () {
+                UI.confirm(Messages.team_ownerConfirm, function (yes) {
+                    if (!yes) { return; }
+                    $(promoteOwner).hide();
+                    APP.module.execCommand('OFFER_OWNERSHIP', {
+                        teamId: APP.team,
+                        curvePublic: data.curvePublic
+                    }, function (obj) {
+                        if (obj && obj.error) {
+                            console.error(obj.error);
+                            return void UI.warn(Messages.error);
+                        }
+                        UI.log(Messages.sent);
+                    });
+                });
+            });
+            $actions.append(promoteOwner);
+        }
         // If they're a member and I have a higher role than them, I can promote them to admin
-        if (!isMe && myRole > theirRole && theirRole === 0) {
+        if (!isMe && myRole > theirRole && theirRole === 0 && !data.pending) {
             var promote = h('span.fa.fa-angle-double-up', {
-                title: 'Promote' // XXX
+                title: Messages.team_rosterPromote
             });
             $(promote).click(function () {
-                data.role = 'ADMIN';
                 $(promote).hide();
-                describeUser(common, data, promote);
+                describeUser(common, data.curvePublic, {
+                    role: 'ADMIN'
+                }, promote);
             });
             $actions.append(promote);
         }
         // If I'm not a member and I have an equal or higher role than them, I can demote them
         // (if they're not already a MEMBER)
-        if (!isMe && myRole >= theirRole && theirRole > 0) {
+        if (myRole >= theirRole && theirRole > 0 && !data.pending) {
             var demote = h('span.fa.fa-angle-double-down', {
-                title: 'Demote' // XXX
+                title: Messages.team_rosterDemote
             });
             $(demote).click(function () {
-                data.role = ROLES[theirRole - 1] || 'MEMBER';
-                $(demote).hide();
-                describeUser(common, data, demote);
+                var todo = function () {
+                    var role = ROLES[theirRole - 1] || 'MEMBER';
+                    $(demote).hide();
+                    describeUser(common, data.curvePublic, {
+                        role: role
+                    }, promote);
+                };
+                if (isMe) {
+                    return void UI.confirm(Messages.team_demoteMeConfirm, function (yes) {
+                        if (!yes) { return; }
+                        todo();
+                    });
+                }
+                todo();
             });
-            $actions.append(demote);
+            if (!(isMe && myRole === 2 && !otherOwners)) {
+                $actions.append(demote);
+            }
         }
         // If I'm not a member and I have an equal or higher role than them, I can remove them
-        if (!isMe && myRole > 0 && myRole >= theirRole) {
+        // Note: we can't remove owners, we have to demote them first
+        if (!isMe && myRole > 0 && myRole >= theirRole && theirRole !== 2) {
             var remove = h('span.fa.fa-times', {
-                title: 'Remove' // XXX
+                title: Messages.team_rosterKick
             });
             $(remove).click(function () {
                 $(remove).hide();
-                APP.module.execCommand('REMOVE_USER', {
-                    teamId: APP.team,
-                    curvePublic: data.curvePublic,
-                }, function (obj) {
-                    if (obj && obj.error) {
-                        $(remove).show();
-                        return void UI.alert(Messages.error);
-                    }
-                    redrawRoster(common);
+                UI.confirm(Messages._getKey('team_kickConfirm', [Util.fixHTML(data.displayName)]), function (yes) {
+                    if (!yes) { return; }
+                    APP.module.execCommand('REMOVE_USER', {
+                        pending: data.pending,
+                        teamId: APP.team,
+                        curvePublic: data.curvePublic,
+                    }, function (obj) {
+                        if (obj && obj.error) {
+                            $(remove).show();
+                            return void UI.alert(Messages.error);
+                        }
+                        redrawRoster(common);
+                    });
                 });
             });
             $actions.append(remove);
@@ -450,7 +590,8 @@ define([
         var content = [
             avatar,
             name,
-            actions
+            actions,
+            status,
         ];
         var div = h('div.cp-team-roster-member', {
             title: data.displayName
@@ -471,9 +612,9 @@ define([
         var me = roster[userData.curvePublic] || {};
         var owner = Object.keys(roster).filter(function (k) {
             if (roster[k].pending) { return; }
-            return roster[k].role === "OWNER";
+            return roster[k].role === "OWNER" || roster[k].pendingOwner;
         }).map(function (k) {
-            return makeMember(common, roster[k], me);
+            return makeMember(common, roster[k], me, roster);
         });
         var admins = Object.keys(roster).filter(function (k) {
             if (roster[k].pending) { return; }
@@ -487,15 +628,20 @@ define([
         }).map(function (k) {
             return makeMember(common, roster[k], me);
         });
-        // XXX LEAVE the team button
-        // XXX INVITE to the team button
+        var pending = Object.keys(roster).filter(function (k) {
+            if (!roster[k].pending) { return; }
+            return roster[k].role === "MEMBER" || !roster[k].role;
+        }).map(function (k) {
+            return makeMember(common, roster[k], me);
+        });
+
         var header = h('div.cp-app-team-roster-header');
         var $header = $(header);
 
         // If you're an admin or an owner, you can invite your friends to the team
         // TODO and acquaintances later?
         if (me && (me.role === 'ADMIN' || me.role === 'OWNER')) {
-            var invite = h('button.btn.btn-primary', 'INVITE A FRIEND');
+            var invite = h('button.btn.btn-primary', Messages.team_inviteButton);
             var inviteFriends = common.getFriends();
             Object.keys(inviteFriends).forEach(function (curve) {
                 // Keep only friends that are not already in the team and that you can contact
@@ -517,9 +663,9 @@ define([
         }
 
         if (me && (me.role === 'ADMIN' || me.role === 'MEMBER')) {
-            var leave = h('button.btn.btn-danger', 'LEAVE THE TEAM');
+            var leave = h('button.btn.btn-danger', Messages.team_leaveButton);
             $(leave).click(function () {
-                UI.confirm("Your're going to leave this team and lose access to its entire drive. Are you sure?", function (yes) {
+                UI.confirm(Messages.team_leaveConfirm, function (yes) {
                     if (!yes) { return; }
                     APP.module.execCommand('LEAVE_TEAM', {
                         teamId: APP.team
@@ -533,14 +679,18 @@ define([
             $header.append(leave);
         }
 
+        var noPending = pending.length ? '' : '.cp-hidden';
+
         return [
             header,
-            h('h3', 'OWNER'), // XXX
+            h('h3', Messages.team_owner),
             h('div', owner),
-            h('h3', 'ADMINS'), // XXX
+            h('h3', Messages.team_admins),
             h('div', admins),
-            h('h3', 'MEMBERS'), // XXX
-            h('div', members)
+            h('h3', Messages.team_members),
+            h('div', members),
+            h('h3'+noPending, Messages.team_pending),
+            h('div'+noPending, pending)
         ];
     };
     makeBlock('roster', function (common, cb) {
@@ -557,12 +707,35 @@ define([
             teamId: APP.team
         }, function (obj) {
             if (obj && obj.error) {
-                return void UI.alert(Messages.error); // XXX
+                return void UI.alert(Messages.error);
             }
             common.setTeamChat(obj.channel);
-            MessengerUI.create($(container), common, true);
+            MessengerUI.create($(container), common, {
+                chat: $('.cp-team-cat-chat'),
+                team: true
+            });
             cb(content);
         });
+    });
+
+    makeBlock('edpublic', function (common, cb) {
+        var container = h('div');
+        var $div = $(container);
+        var metadataMgr = common.getMetadataMgr();
+        var privateData = metadataMgr.getPrivateData();
+        var team = privateData.teams[APP.team];
+        if (!team) { return void cb(); }
+        var publicKey = team.edPublic;
+        var name = team.name;
+        if (publicKey) {
+            var $key = $('<div>', {'class': 'cp-sidebarlayout-element'}).appendTo($div);
+            var userHref = Hash.getUserHrefFromKeys(privateData.origin, name, publicKey);
+            var $pubLabel = $('<span>', {'class': 'label'})
+                .text(Messages.settings_publicSigningKey);
+            $key.append($pubLabel).append(UI.dialog.selectable(userHref));
+        }
+        var content = [container];
+        cb(content);
     });
 
     makeBlock('name', function (common, cb) {
@@ -578,6 +751,7 @@ define([
 
         var todo = function () {
             var newName = $input.val();
+            if (!newName.trim()) { return; }
             $spinner.show();
             APP.module.execCommand('GET_TEAM_METADATA', {
                 teamId: APP.team
@@ -668,6 +842,40 @@ define([
         });
     }, true);
 
+    makeBlock('delete', function (common, cb) {
+        var deleteTeam = h('button.btn.btn-danger', Messages.team_deleteButton);
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide();
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide();
+
+        var deleting = false;
+        $(deleteTeam).click(function () {
+            if (deleting) { return; }
+            UI.confirm(Messages.team_deleteConfirm, function (yes) {
+                if (!yes) { return; }
+                if (deleting) { return; }
+                deleting = true;
+                $spinner.show();
+                APP.module.execCommand("DELETE_TEAM", {
+                    teamId: APP.team
+                }, function (obj) {
+                    $spinner.hide();
+                    deleting = false;
+                    if (obj && obj.error) {
+                        return void UI.warn(obj.error);
+                    }
+                    $ok.show();
+                    UI.log(Messages.deleted);
+                });
+            });
+        });
+
+        cb([
+            deleteTeam,
+            $ok[0],
+            $spinner[0]
+        ]);
+    }, true);
+
     var main = function () {
         var common;
         var readOnly;
@@ -691,16 +899,12 @@ define([
             var metadataMgr = common.getMetadataMgr();
             var privateData = metadataMgr.getPrivateData();
 
-            if (!privateData.enableTeams) {
-                return void UI.errorLoadingScreen(Messages.comingSoon);
-            }
-
             readOnly = driveAPP.readOnly = metadataMgr.getPrivateData().readOnly;
 
             driveAPP.loggedIn = common.isLoggedIn();
             if (!driveAPP.loggedIn) { throw new Error('NOT_LOGGED_IN'); }
 
-            common.setTabTitle('TEAMS (ALPHA)'); // XXX
+            common.setTabTitle(Messages.type.teams);
 
             // Drive data
             if (privateData.newSharedFolder) {
@@ -712,7 +916,7 @@ define([
             var $bar = $('#cp-toolbar');
             var configTb = {
                 displayed: ['useradmin', 'pageTitle', 'newpad', 'limit', 'notifications'],
-                pageTitle: 'TEAMS (ALPHA)', // XXX
+                pageTitle: Messages.type.teams,
                 metadataMgr: metadataMgr,
                 readOnly: privateData.readOnly,
                 sfCommon: common,

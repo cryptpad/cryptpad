@@ -321,7 +321,6 @@ define([
                         password: password,
                         channel: secret.channel,
                         enableSF: localStorage.CryptPad_SF === "1", // TODO to remove when enabled by default
-                        enableTeams: localStorage.CryptPad_teams === "1",
                         devMode: localStorage.CryptPad_dev === "1",
                         fromFileData: Cryptpad.fromFileData ? {
                             title: Cryptpad.fromFileData.title
@@ -377,6 +376,14 @@ define([
                     });
                 });
 
+                sframeChan.on('Q_GET_PINNED_USAGE', function (data, cb) {
+                    Cryptpad.getPinnedUsage({}, function (e, used) {
+                        cb({
+                            error: e,
+                            quota: used
+                        });
+                    });
+                });
                 sframeChan.on('Q_GET_PIN_LIMIT_STATUS', function (data, cb) {
                     Cryptpad.isOverPinLimit(null, function (e, overLimit, limits) {
                         cb({
@@ -928,8 +935,8 @@ define([
             });
 
             sframeChan.on('Q_PAD_PASSWORD_CHANGE', function (data, cb) {
-                var href = data.href || window.location.href;
-                Cryptpad.changePadPassword(Cryptget, Crypto, href, data.password, edPublic, cb);
+                data.href = data.href || window.location.href;
+                Cryptpad.changePadPassword(Cryptget, Crypto, data, cb);
             });
 
             sframeChan.on('Q_CHANGE_USER_PASSWORD', function (data, cb) {
@@ -1217,7 +1224,6 @@ define([
                 }
                 if (data.owned && data.team && data.team.edPublic) {
                     rtConfig.metadata.owners = [data.team.edPublic];
-                    // XXX Teams mailbox
                 } else if (data.owned) {
                     rtConfig.metadata.owners = [edPublic];
                     rtConfig.metadata.mailbox = {};

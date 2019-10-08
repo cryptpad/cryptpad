@@ -163,6 +163,7 @@ define([
                 common.createUsageBar(null, function (err, $limitContainer) {
                     if (err) { return void DriveUI.logError(err); }
                     APP.$limit = $limitContainer;
+                    $limitContainer.attr('title', Messages.drive_quota);
                 }, true);
             }
 

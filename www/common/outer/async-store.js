@@ -203,22 +203,36 @@ define([
         /////////////////////// RPC //////////////////////////////////////
         //////////////////////////////////////////////////////////////////
 
+        // pinPads needs to support the old format where data is an array of channel IDs
+        // and the new format where data is an object with "teamId" and "pads"
         Store.pinPads = function (clientId, data, cb) {
-            if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+            if (!data) { return void cb({error: 'EINVAL'}); }
+
+            var s = getStore(data && data.teamId);
+            if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+
             if (typeof(cb) !== 'function') {
                 console.error('expected a callback');
+                cb = function () {};
             }
 
-            store.rpc.pin(data, function (e, hash) {
+            var pads = data.pads || data;
+            s.rpc.pin(pads, function (e, hash) {
                 if (e) { return void cb({error: e}); }
                 cb({hash: hash});
             });
         };
 
+        // unpinPads needs to support the old format where data is an array of channel IDs
+        // and the new format where data is an object with "teamId" and "pads"
         Store.unpinPads = function (clientId, data, cb) {
-            if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+            if (!data) { return void cb({error: 'EINVAL'}); }
 
-            store.rpc.unpin(data, function (e, hash) {
+            var s = getStore(data && data.teamId);
+            if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+
+            var pads = data.pads || data;
+            s.rpc.unpin(pads, function (e, hash) {
                 if (e) { return void cb({error: e}); }
                 cb({hash: hash});
             });
@@ -503,6 +517,18 @@ define([
         /////////////////////// Store ////////////////////////////////////
         //////////////////////////////////////////////////////////////////
 
+        var getAllStores = function () {
+            var stores = [store];
+            var teamModule = store.modules['team'];
+            if (teamModule) {
+                var teams = teamModule.getTeams().map(function (id) {
+                    return teamModule.getTeam(id);
+                });
+                Array.prototype.push.apply(stores, teams);
+            }
+            return stores;
+        };
+
         // Get or create the user color for the cursor position
         var getRandomColor = function () {
             var getColor = function () {
@@ -588,10 +614,14 @@ define([
 
             s.manager.addPad(data.path, pad, function (e) {
                 if (e) { return void cb({error: e}); }
-                var send = data.teamId ? s.sendEvent : sendDriveEvent;
-                send('DRIVE_CHANGE', {
-                    path: ['drive', UserObject.FILES_DATA]
-                }, clientId);
+                // Send a CHANGE events to all the teams because we may have just
+                // added a pad to a shared folder stored in multiple teams
+                getAllStores().forEach(function (_s) {
+                    var send = _s.id ? _s.sendEvent : sendDriveEvent;
+                    send('DRIVE_CHANGE', {
+                        path: ['drive', UserObject.FILES_DATA]
+                    }, clientId);
+                });
                 onSync(data.teamId, cb);
             });
         };
@@ -606,19 +636,68 @@ define([
                 // No password for profile
                 list.push(Hash.hrefToHexChannelId('/profile/#' + store.proxy.profile.edit, null));
             }
+            if (store.proxy.mailboxes) {
+                Object.keys(store.proxy.mailboxes || {}).forEach(function (id) {
+                    if (id === 'supportadmin') { return; }
+                    var m = store.proxy.mailboxes[id];
+                    list.push(m.channel);
+                });
+            }
+            if (store.proxy.teams) {
+                Object.keys(store.proxy.teams || {}).forEach(function (id) {
+                    var t = store.proxy.teams[id];
+                    if (t.owner) {
+                        list.push(t.channel);
+                        list.push(t.keys.roster.channel);
+                        list.push(t.keys.chat.channel);
+                    }
+                });
+            }
             return list;
         };
         var removeOwnedPads = function (waitFor) {
             // Delete owned pads
+            var edPublic = Util.find(store, ['proxy', 'edPublic']);
             var ownedPads = getOwnedPads();
             var sem = Saferphore.create(10);
             ownedPads.forEach(function (c) {
                 var w = waitFor();
                 sem.take(function (give) {
-                    Store.removeOwnedChannel(null, c, give(function (obj) {
-                        if (obj && obj.error) { console.error(obj.error); }
+                    var otherOwners = false;
+                    nThen(function (_w) {
+                        Store.anonRpcMsg(null, {
+                            msg: 'GET_METADATA',
+                            data: c
+                        }, _w(function (obj) {
+                            if (obj && obj.error) {
+                                give();
+                                return void _w.abort();
+                            }
+                            var md = obj[0];
+                            var isOwner = md && Array.isArray(md.owners) && md.owners.indexOf(edPublic) !== -1;
+                            if (!isOwner) {
+                                give();
+                                return void _w.abort();
+                            }
+                            otherOwners = md.owners.some(function (ed) { return ed !== edPublic; });
+                        }));
+                    }).nThen(function (_w) {
+                        if (otherOwners) {
+                            Store.setPadMetadata(null, {
+                                channel: c,
+                                command: 'RM_OWNERS',
+                                value: [edPublic],
+                            }, _w());
+                            return;
+                        }
+                        // We're the only owner: delete the pad
+                        store.rpc.removeOwnedChannel(c, _w(function (err) {
+                            if (err) { console.error(err); }
+                        }));
+                    }).nThen(function () {
+                        give();
                         w();
-                    }));
+                    });
                 });
             });
         };
@@ -758,17 +837,6 @@ define([
          *   - attr (Array)
          *   - value (String)
          */
-        var getAllStores = function () {
-            var stores = [store];
-            var teamModule = store.modules['team'];
-            if (teamModule) {
-                var teams = teamModule.getTeams().map(function (id) {
-                    return teamModule.getTeam(id);
-                });
-                Array.prototype.push.apply(stores, teams);
-            }
-            return stores;
-        };
         Store.setPadAttribute = function (clientId, data, cb) {
             nThen(function (waitFor) {
                 getAllStores().forEach(function (s) {
@@ -931,7 +999,6 @@ define([
                 });
             }).nThen(cb);
         };
-        // XXX Teams. encrypted href...
         Store.setPadTitle = function (clientId, data, cb) {
             var title = data.title;
             var href = data.href;
@@ -1538,7 +1605,6 @@ define([
 
             var href, title;
 
-            // XXX TEAMOWNER
             if (!res.some(function (obj) {
                 if (obj.data &&
                     Array.isArray(obj.data.owners) && obj.data.owners.indexOf(edPublic) !== -1 &&
@@ -1575,13 +1641,19 @@ define([
                 // Update owners and expire time in the drive
                 getAllStores().forEach(function (s) {
                     var allData = s.manager.findChannel(data.channel);
+                    var changed = false;
                     allData.forEach(function (obj) {
+                        if (Sortify(obj.data.owners) !== Sortify(metadata.owners)) {
+                            changed = true;
+                        }
                         obj.data.owners = metadata.owners;
                         obj.data.atime = +new Date();
                         if (metadata.expire) {
                             obj.data.expire = +metadata.expire;
                         }
                     });
+                    // If we had to change the "owners" field, redraw the drive UI
+                    if (!changed) { return; }
                     var send = s.sendEvent || sendDriveEvent;
                     send('DRIVE_CHANGE', {
                         path: ['drive', UserObject.FILES_DATA]
@@ -1592,11 +1664,8 @@ define([
         Store.setPadMetadata = function (clientId, data, cb) {
             if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }
             if (!data.command) { return void cb({ error: 'EINVAL' }); }
-            // XXX TEAMOWNER
-            // If owned by a team, we should use the team rpc here
-            // We'll need common-ui-elements to tell us the "owners" value or we can
-            // call getPadMetadata first
-            store.rpc.setMetadata(data, function (err, res) {
+            var s = getStore(data.teamId);
+            s.rpc.setMetadata(data, function (err, res) {
                 if (err) { return void cb({ error: err }); }
                 if (!Array.isArray(res) || !res.length) { return void cb({}); }
                 cb(res[0]);
@@ -1743,10 +1812,14 @@ define([
             //var data = cmdData.data;
             var s = getStore(cmdData.teamId);
             var cb2 = function (data2) {
-                var send = cmdData.teamId ? s.sendEvent : sendDriveEvent;
-                send('DRIVE_CHANGE', {
-                    path: ['drive', UserObject.FILES_DATA]
-                }, clientId);
+                // Send the CHANGE event to all the stores because the command may have
+                // affected data from a shared folder used by multiple teams.
+                getAllStores().forEach(function (_s) {
+                    var send = _s.id ? _s.sendEvent : sendDriveEvent;
+                    send('DRIVE_CHANGE', {
+                        path: ['drive', UserObject.FILES_DATA]
+                    }, clientId);
+                });
                 onSync(cmdData.teamId, function () {
                     cb(data2);
                 });
@@ -1922,7 +1995,8 @@ define([
                     broadcast([], "UPDATE_METADATA");
                 },
                 pinPads: function (data, cb) { Store.pinPads(null, data, cb); },
-            }, waitFor, function (ev, data, clients, cb) {
+            }, waitFor, function (ev, data, clients, _cb) {
+                var cb = Util.once(_cb || function () {});
                 clients.forEach(function (cId) {
                     postMessage(cId, 'MAILBOX_EVENT', {
                         ev: ev,
@@ -2009,20 +2083,20 @@ define([
                 loadUniversal(Team, 'team', waitFor);
                 cleanFriendRequests();
             }).nThen(function () {
-                arePinsSynced(function (err, yes) {
-                    if (!yes) {
-                        resetPins(function (err) {
-                            if (err) { return console.error(err); }
-                            console.log('RESET DONE');
-                        });
-                    }
-                });
-
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");
                 };
 
                 if (store.loggedIn) {
+                    arePinsSynced(function (err, yes) {
+                        if (!yes) {
+                            resetPins(function (err) {
+                                if (err) { return console.error(err); }
+                                console.log('RESET DONE');
+                            });
+                        }
+                    });
+
                     /*  This isn't truly secure, since anyone who can read the user's object can
                         set their local loginToken to match that in the object. However, it exposes
                         a UI that will work most of the time. */

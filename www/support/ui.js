@@ -24,7 +24,16 @@ define([
             curvePublic: user.curvePublic,
             edPublic: privateData.edPublic,
             notifications: user.notifications,
+            blockLocation: privateData.blockLocation || '',
         };
+
+        if (typeof(ctx.pinUsage) === 'object') {
+            // pass pin.usage, pin.limit, and pin.plan if supplied
+            Object.keys(ctx.pinUsage).forEach(function (k) {
+                data.sender[k] = ctx.pinUsage[k];
+            });
+        }
+
         data.id = id;
         data.time = +new Date();
 
@@ -169,6 +178,8 @@ define([
         ]);
         $(userData).click(function () {
             $(userData).find('pre').toggle();
+        }).find('pre').click(function (ev) {
+            ev.stopPropagation();
         });
 
         var name = Util.fixHTML(content.sender.name) || Messages.anonymous;
@@ -202,11 +213,12 @@ define([
         ]);
     };
 
-    var create = function (common, isAdmin) {
+    var create = function (common, isAdmin, pinUsage) {
         var ui = {};
         var ctx = {
             common: common,
-            isAdmin: isAdmin
+            isAdmin: isAdmin,
+            pinUsage: pinUsage || false,
         };
 
         ui.sendForm = function (id, form, dest) {

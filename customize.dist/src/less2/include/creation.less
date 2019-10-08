@@ -2,6 +2,7 @@
 @import (reference) "./colortheme-all.less";
 @import (reference) "./tools.less";
 @import (reference) './icon-colors.less';
+@import (reference) "./avatar.less";
 
 .creation_vars(
     @color: @colortheme_default-color,
@@ -62,7 +63,7 @@
         outline: none;
         width: 700px;
         max-width: 90vw;
-        height: 500px;
+        height: 550px;
         max-height: calc(~"100vh - 20px");
         margin: 50px;
         flex-shrink: 0;
@@ -175,15 +176,47 @@
                 color: @colortheme_form-color;
             }
 
-            .cp-creation-team {
-                .cp-dropdown-container {
+            .cp-creation-teams {
+                display: none !important;
+                .cp-creation-teams-grid {
+                    display: flex;
+                    flex-wrap: wrap;
+                    padding: 0 2px;
                     flex: 1;
-                    min-width: 0;
-                    margin-left: 10px;
-                    margin-right: 10px;
-                    button, .cp-dropdown-content {
-                        width: 100%;
+                }
+                .cp-creation-team {
+                    .avatar_main(25px);
+                    width: 140px;
+                    height: 35px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    padding: 5px;
+                    cursor: default;
+                    font: @colortheme_app-font;
+                    color: @colortheme_modal-fg;
+                    margin: 0 1px;
+
+                    .tools_unselectable();
+
+                    &.cp-selected {
+                        background-color: @colortheme_alertify-primary;
+                        color: @colortheme_alertify-primary-text;
                     }
+                    .cp-creation-team-avatar {
+                        .fa {
+                            font-size: 25px;
+                        }
+                    }
+                    .cp-creation-team-name {
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        width: 100%;
+                        text-align: center;
+                        line-height: 18px;
+                    }
+                    border: 1px solid @colortheme_alertify-primary;
                 }
             }
 

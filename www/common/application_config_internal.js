@@ -11,7 +11,7 @@ define(function() {
      * redirected to the drive.
      * You should never remove the drive from this list.
      */
-    config.availablePadTypes = ['drive', 'team', 'pad', 'sheet', 'code', 'slide', 'poll', 'kanban', 'whiteboard',
+    config.availablePadTypes = ['drive', 'teams', 'pad', 'sheet', 'code', 'slide', 'poll', 'kanban', 'whiteboard',
                                 /*'oodoc', 'ooslide',*/ 'file', 'todo', 'contacts'];
     /* The registered only types are apps restricted to registered users.
      * You should never remove apps from this list unless you know what you're doing. The apps
@@ -20,7 +20,7 @@ define(function() {
      * users and these users will be redirected to the login page if they still try to access
      * the app
      */
-    config.registeredOnlyTypes = ['team', 'file', 'contacts', 'oodoc', 'ooslide', 'sheet', 'notifications'];
+    config.registeredOnlyTypes = ['teams', 'file', 'contacts', 'oodoc', 'ooslide', 'sheet', 'notifications'];
 
     /* CryptPad is available is multiple languages, but only English and French are maintained
      * by the developers. The other languages may be outdated, and any missing string for a langauge
@@ -106,6 +106,7 @@ define(function() {
         ooslide: 'fa-file-powerpoint-o',
         sheet: 'fa-file-excel-o',
         drive: 'fa-hdd-o',
+        teams: 'fa-users',
     };
 
     // Ability to create owned pads and expiring pads through a new pad creation screen.
@@ -154,6 +155,8 @@ define(function() {
     // We highly recommend to keep them disabled until they are stable enough to be enabled
     // by default by the CryptPad developers.
     config.disableSharedFolders = false;
+
+    config.surveyURL = "https://survey.cryptpad.fr/index.php/672782";
 
     return config;
 });

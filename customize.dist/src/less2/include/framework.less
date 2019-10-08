@@ -14,6 +14,7 @@
 @import (reference) "./app-noscroll.less";
 @import (reference) "./messenger.less";
 @import (reference) "./cursor.less";
+@import (reference) "./usergrid.less";
 
 .framework_main(@bg-color, @warn-color, @color) {
     --LessLoader_require: LessLoader_currentFile();
@@ -40,6 +41,7 @@
     .password_main();
     .messenger_main();
     .cursor_main();
+    .usergrid_main();
     .creation_main(
         @bg-color: @bg-color,
         @color: @color
@@ -73,6 +75,7 @@
     .tippy_main();
     .checkmark_main(20px);
     .password_main();
+    .usergrid_main();
     font: @colortheme_app-font;
 }
 

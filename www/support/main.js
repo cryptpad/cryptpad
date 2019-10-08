@@ -4,8 +4,10 @@ define([
     '/api/config',
     '/common/dom-ready.js',
     '/common/requireconfig.js',
-    '/common/sframe-common-outer.js'
-], function (nThen, ApiConfig, DomReady, RequireConfig, SFCommonO) {
+    '/common/sframe-common-outer.js',
+    '/common/outer/local-store.js',
+    '/common/outer/login-block.js',
+], function (nThen, ApiConfig, DomReady, RequireConfig, SFCommonO, LocalStore, Block) {
     var requireConfig = RequireConfig();
 
     // Loaded in load #2
@@ -43,6 +45,12 @@ define([
         }
         var addData = function (obj) {
             if (category) { obj.category = category; }
+            var hash = LocalStore.getBlockHash();
+
+            if (!hash) { return; }
+            var parsed = Block.parseBlockHash(hash);
+            if (!parsed || !parsed.href) { return; }
+            obj.blockLocation = parsed.href;
         };
         SFCommonO.start({
             noRealtime: true,

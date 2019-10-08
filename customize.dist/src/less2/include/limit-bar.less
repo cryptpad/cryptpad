@@ -53,12 +53,22 @@
                 font-weight: bold;
             }
         }
-        .cp-limit-upgrade {
-            padding: 0;
-            line-height: 25px;
-            height: 25px;
-            margin: 0 3px;
-            border-radius: 0;
+        .cp-limit-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            justify-content: space-evenly;
+            a {
+                height: 25px;
+                display: inline-flex;
+                align-items: center;
+                min-width: 200px;
+                width: 50%;
+                padding-top: 0;
+                padding-bottom: 0;
+                justify-content: center;
+                flex: 1;
+            }
         }
     }
 }

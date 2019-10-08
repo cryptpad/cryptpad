@@ -1,6 +1,6 @@
 /* jshint esversion: 6, node: true */
 
-const Nacl = require('tweetnacl');
+const Nacl = require('tweetnacl/nacl-fast');
 
 const keyPair = Nacl.box.keyPair();
 console.log("You've just generated a new key pair for your support mailbox.");

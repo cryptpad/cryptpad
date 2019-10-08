@@ -42,7 +42,8 @@ define([
     var origin = encodeURIComponent(window.location.hostname);
     var common = window.Cryptpad = {
         Messages: Messages,
-        donateURL: 'https://accounts.cryptpad.fr/#/donate?on=' + origin,
+        //donateURL: 'https://accounts.cryptpad.fr/#/donate?on=' + origin,
+        donateURL: "https://opencollective.com/cryptpad/",
         upgradeURL: 'https://accounts.cryptpad.fr/#/?on=' + origin,
         account: {},
     };
@@ -209,15 +210,23 @@ define([
 
 
     // RPC
-    common.pinPads = function (pads, cb) {
-        postMessage("PIN_PADS", pads, function (obj) {
+    common.pinPads = function (pads, cb, teamId) {
+        var data = {
+            teamId: teamId,
+            pads: pads
+        };
+        postMessage("PIN_PADS", data, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj.hash);
         });
     };
 
-    common.unpinPads = function (pads, cb) {
-        postMessage("UNPIN_PADS", pads, function (obj) {
+    common.unpinPads = function (pads, cb, teamId) {
+        var data = {
+            teamId: teamId,
+            pads: pads
+        };
+        postMessage("UNPIN_PADS", data, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj.hash);
         });
@@ -830,8 +839,10 @@ define([
         postMessage('GET_PAD_METADATA', data, cb);
     };
 
-    // XXX Teams: change the password of a pad owned by the team
-    common.changePadPassword = function (Crypt, Crypto, href, newPassword, edPublic, cb) {
+    common.changePadPassword = function (Crypt, Crypto, data, cb) {
+        var href = data.href;
+        var newPassword = data.password;
+        var teamId = data.teamId;
         if (!href) { return void cb({ error: 'EINVAL_HREF' }); }
         var parsed = Hash.parsePadUrl(href);
         if (!parsed.hash) { return void cb({ error: 'EINVAL_HREF' }); }
@@ -842,6 +853,7 @@ define([
         var oldSecret;
         var oldMetadata;
         var newSecret;
+        var privateData;
 
         if (parsed.hashData.version >= 2) {
             newSecret = Hash.getSecrets(parsed.type, parsed.hash, newPassword);
@@ -874,16 +886,26 @@ define([
             common.getPadMetadata({channel: oldChannel}, waitFor(function (metadata) {
                 oldMetadata = metadata;
             }));
+            common.getMetadata(waitFor(function (err, data) {
+                if (err) {
+                    waitFor.abort();
+                    return void cb({ error: err });
+                }
+                privateData = data.priv;
+            }));
         }).nThen(function (waitFor) {
             // Get owners, mailbox and expiration time
-
             var owners = oldMetadata.owners;
-            if (!Array.isArray(owners) || owners.indexOf(edPublic) === -1) {
+            optsPut.metadata.owners = owners;
+
+            // Check if we're allowed to change the password
+            var edPublic = teamId ? (privateData.teams[teamId] || {}).edPublic : privateData.edPublic;
+            var isOwner = Array.isArray(owners) && edPublic && owners.indexOf(edPublic) !== -1;
+            if (!isOwner) {
                 // We're not an owner, we shouldn't be able to change the password!
                 waitFor.abort();
                 return void cb({ error: 'EPERM' });
             }
-            optsPut.metadata.owners = owners;
 
             var mailbox = oldMetadata.mailbox;
             if (mailbox) {
@@ -933,15 +955,15 @@ define([
         }).nThen(function (waitFor) {
             common.removeOwnedChannel({
                 channel: oldChannel,
-                teamId: null // TODO
+                teamId: teamId
             }, waitFor(function (obj) {
                 if (obj && obj.error) {
                     waitFor.abort();
                     return void cb(obj);
                 }
             }));
-            common.unpinPads([oldChannel], waitFor());
-            common.pinPads([newSecret.channel], waitFor());
+            common.unpinPads([oldChannel], waitFor(), teamId);
+            common.pinPads([newSecret.channel], waitFor(), teamId);
         }).nThen(function (waitFor) {
             common.setPadAttribute('password', newPassword, waitFor(function (err) {
                 if (err) { warning = true; }
@@ -995,7 +1017,7 @@ define([
         var Cred, Block, Login;
         Nthen(function (waitFor) {
             require([
-                '/customize/credential.js',
+                '/common/common-credential.js',
                 '/common/outer/login-block.js',
                 '/customize/login.js'
             ], waitFor(function (_Cred, _Block, _Login) {

@@ -6,13 +6,16 @@
 }
 .leftside-menu-category_main() {
     .unselectable_make();
-    padding: 5px 20px;
+    padding: 5px 15px;
     margin: 15px 0;
     cursor: pointer;
     height: @variables_bar-height;
     line-height: @variables_bar-height - 10px;
     .fa, .cptools {
-        width: 25px;
+        display: inline-flex;
+        justify-content: center;
+        margin-right: 5px;
+        min-width: 25px;
     }
     &:hover {
         background: rgba(0,0,0,0.05);

@@ -4,7 +4,7 @@ define([
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/common-util.js',
     '/common/outer/network-config.js',
-    '/customize/credential.js',
+    '/common/common-credential.js',
     '/bower_components/chainpad/chainpad.dist.js',
     '/common/common-realtime.js',
     '/common/common-constants.js',

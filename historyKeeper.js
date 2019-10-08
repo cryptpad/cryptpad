@@ -3,7 +3,7 @@
 ;(function () { 'use strict';
 
 const nThen = require('nthen');
-const Nacl = require('tweetnacl');
+const Nacl = require('tweetnacl/nacl-fast');
 const Crypto = require('crypto');
 const Once = require("./lib/once");
 const Meta = require("./lib/metadata");
