@@ -1343,7 +1343,6 @@ define([
         }];
 
         var content = h('div', [
-            h('h4', 'Invite friends to your team: '+ team.name),
             list.div
         ]);
 
@@ -4020,8 +4019,15 @@ define([
                 module.execCommand('JOIN_TEAM', {
                     team: msg.content.team
                 }, function (obj) {
-                    if (obj && obj.error) { return void UI.warn(Messages.error); }
+                    if (obj && obj.error) {
+                        if (obj.error === 'ENOENT') {
+                            common.mailbox.dismiss(data, function () {});
+                            return void UI.alert(Messages.deletedError);
+                        }
+                        return void UI.warn(Messages.error);
+                    }
                     answer(true);
+                    if (priv.app !== 'teams') { common.openURL('/teams/'); }
                 });
                 return;
             }

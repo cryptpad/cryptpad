@@ -562,6 +562,7 @@ define([
         if (!me || me.role !== "OWNER") { return cb({ error: "EFORBIDDEN"}); }
 
         var edPublic = Util.find(ctx, ['store', 'proxy', 'edPublic']);
+        var teamEdPublic = Util.find(teamData, ['keys', 'drive', 'edPublic']);
 
         nThen(function (waitFor) {
             ctx.Store.anonRpcMsg(null, {
@@ -597,18 +598,24 @@ define([
                             msg: 'GET_METADATA',
                             data: c
                         }, _w(function (obj) {
-                            if (obj && obj.error) { return void _w.abort(); }
+                            if (obj && obj.error) {
+                                give();
+                                return void _w.abort();
+                            }
                             var md = obj[0];
-                            var isOwner = md && Array.isArray(md.owners) && md.owners.indexOf(edPublic) !== -1;
-                            if (!isOwner) { return void _w.abort(); }
-                            otherOwners = md.owners.some(function (ed) { return void ed !== edPublic; });
+                            var isOwner = md && Array.isArray(md.owners) && md.owners.indexOf(teamEdPublic) !== -1;
+                            if (!isOwner) {
+                                give();
+                                return void _w.abort();
+                            }
+                            otherOwners = md.owners.some(function (ed) { return ed !== teamEdPublic; });
                         }));
                     }).nThen(function (_w) {
                         if (otherOwners) {
                             ctx.Store.setPadMetadata(null, {
                                 channel: c,
                                 command: 'RM_OWNERS',
-                                value: [edPublic],
+                                value: [teamEdPublic],
                             }, _w());
                             return;
                         }
