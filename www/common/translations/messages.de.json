@@ -1217,5 +1217,8 @@
     "team_pendingOwnerTitle": "Dieser Administrator hat dein Angebot auf Eigentümerschaft noch nicht akzeptiert.",
     "team_demoteMeConfirm": "Du bist gerade dabei, deine Rechte aufzugeben. Dies kann nicht rückgängig gemacht werden. Bist du sicher?",
     "crowdfunding_button2": "CryptPad unterstützen",
-    "survey": "CryptPad-Umfrage"
+    "survey": "CryptPad-Umfrage",
+    "team_title": "Team: {0}",
+    "team_quota": "Speicherplatzbegrenzung deines Teams",
+    "drive_quota": "Deine Speicherplatzbegrenzung"
 }
