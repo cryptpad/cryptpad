@@ -678,7 +678,7 @@ define([
                                 give();
                                 return void _w.abort();
                             }
-                            otherOwners = md.owners.some(function (ed) { return void ed !== edPublic; });
+                            otherOwners = md.owners.some(function (ed) { return ed !== edPublic; });
                         }));
                     }).nThen(function (_w) {
                         if (otherOwners) {
