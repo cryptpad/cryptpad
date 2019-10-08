@@ -107,12 +107,17 @@ define([
                 sframeChan.event('EV_DRIVE_REMOVE', data);
             });
         };
+        var addData = function (meta) {
+            if (!window.CryptPad_newSharedFolder) { return; }
+            meta.anonSFHref = window.location.href;
+        };
         SFCommonO.start({
             afterSecrets: afterSecrets,
             noHash: true,
             noRealtime: true,
             driveEvents: true,
             addRpc: addRpc,
+            addData: addData,
             isDrive: true,
         });
     });

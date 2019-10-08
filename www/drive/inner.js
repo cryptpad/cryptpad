@@ -65,7 +65,10 @@ define([
             copyObjectValue(obj, newObj);
             if (!APP.loggedIn && APP.newSharedFolder) {
                 obj.drive.sharedFolders = obj.drive.sharedFolders || {};
-                obj.drive.sharedFolders[APP.newSharedFolder] = {};
+                obj.drive.sharedFolders[APP.newSharedFolder] = {
+                    href: APP.anonSFHref,
+                    password: APP.anonSFPassword
+                };
             }
             cb();
         });
@@ -124,6 +127,8 @@ define([
             var privateData = metadataMgr.getPrivateData();
             if (privateData.newSharedFolder) {
                 APP.newSharedFolder = privateData.newSharedFolder;
+                APP.anonSFHref = privateData.anonSFHref;
+                APP.anonSFPassword = privateData.password;
             }
 
             var sframeChan = common.getSframeChannel();

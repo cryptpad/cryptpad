@@ -68,7 +68,7 @@ define([
         var listmapConfig = {
             data: {},
             channel: secret.channel,
-            readOnly: false,
+            readOnly: secret.keys && !secret.keys.editKeyStr,
             crypto: Crypto.createEncryptor(secret.keys),
             userName: 'sharedFolder',
             logLevel: 1,

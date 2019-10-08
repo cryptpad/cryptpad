@@ -164,7 +164,7 @@ define([
         var data = {};
         userObjects.some(function (uo) {
             data = uo.getFileData(id, editable);
-            if (Object.keys(data).length) { return true; }
+            if (data && Object.keys(data).length) { return true; }
         });
         return data;
     };

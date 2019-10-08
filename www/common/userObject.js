@@ -114,10 +114,16 @@ define([
 
         var getHref = exp.getHref = function (pad) {
             if (pad.href && pad.href.indexOf('#') !== -1) {
+                // Href exists and is not encrypted: return href
                 return pad.href;
             }
             if (pad.href) {
-                return exp.cryptor.decrypt(pad.href);
+                // Href exists and is encrypted
+                var d = exp.cryptor.decrypt(pad.href);
+                // If we can decrypt, return the decrypted value, otherwise continue and return roHref
+                if (d.indexOf('#') !== -1) {
+                    return d;
+                }
             }
             return pad.roHref;
         };

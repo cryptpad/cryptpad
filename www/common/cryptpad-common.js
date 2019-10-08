@@ -1494,6 +1494,7 @@ define([
                 noWorker = localStorage.CryptPad_noWorkers === '1';
                 console.error('WebWorker/SharedWorker state forced to ' + !noWorker);
             }
+            noWorker = true;
             Nthen(function (waitFor2) {
                 if (Worker) {
                     var w = waitFor2();

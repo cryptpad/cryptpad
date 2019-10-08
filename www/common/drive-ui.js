@@ -1154,9 +1154,12 @@ define([
                             hide.push('openro'); // Remove open 'view' mode
                         }
                         // if it's not a plain text file
-                        var metadata = manager.getFileData(manager.find(path));
-                        if (!metadata || !Util.isPlainTextFile(metadata.fileType, metadata.title)) {
-                            hide.push('openincode');
+                        // XXX: there is a bug with this code in anon shared folder, so we disable it
+                        if (APP.loggedIn || !APP.newSharedFolder) {
+                            var metadata = manager.getFileData(manager.find(path));
+                            if (!metadata || !Util.isPlainTextFile(metadata.fileType, metadata.title)) {
+                                hide.push('openincode');
+                            }
                         }
                     } else if ($element.is('.cp-app-drive-element-sharedf')) {
                         if (containsFolder) {

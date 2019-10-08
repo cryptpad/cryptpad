@@ -687,6 +687,12 @@ define([
                         href = el.href && ((el.href.indexOf('#') !== -1) ? el.href : exp.cryptor.decrypt(el.href));
                     } catch (e) {}
 
+                    if (href && href.indexOf('#') === -1) {
+                        // If we can't decrypt the href, it means we don't have the correct secondaryKey and we're in readOnly mode:
+                        // abort now, we won't be able to fix anything anyway
+                        continue;
+                    }
+
                     var parsed = Hash.parsePadUrl(href || el.roHref);
                     var secret;
 

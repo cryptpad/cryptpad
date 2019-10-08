@@ -72,10 +72,6 @@ define([
     var updateObject = function (sframeChan, obj, cb) {
         sframeChan.query('Q_DRIVE_GETOBJECT', null, function (err, newObj) {
             copyObjectValue(obj, newObj);
-            if (!driveAPP.loggedIn && driveAPP.newSharedFolder) {
-                obj.drive.sharedFolders = obj.drive.sharedFolders || {};
-                obj.drive.sharedFolders[driveAPP.newSharedFolder] = {};
-            }
             cb();
         });
     };
@@ -922,9 +918,6 @@ define([
             common.setTabTitle(Messages.type.teams);
 
             // Drive data
-            if (privateData.newSharedFolder) {
-                driveAPP.newSharedFolder = privateData.newSharedFolder;
-            }
             driveAPP.disableSF = !privateData.enableSF && AppConfig.disableSharedFolders;
 
             // Toolbar
