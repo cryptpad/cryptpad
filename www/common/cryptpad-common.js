@@ -1200,6 +1200,11 @@ define([
         if (!parsed.type || !parsed.hashData) { return void cb('E_INVALID_HREF'); }
         hashes = Hash.getHashes(secret);
 
+        // If the current href is an edit one, return the existing hashes
+        var parsedHash = parsed.hashData;
+        if (!parsedHash || parsedHash.mode === 'edit') { return void cb(null, hashes); }
+        if (parsedHash.type !== 'pad') { return void cb(null, hashes); }
+
         if (secret.version === 0) {
             // It means we're using an old hash
             hashes.editHash = window.location.hash.slice(1);
@@ -1212,9 +1217,7 @@ define([
         }
 
         postMessage("GET_STRONGER_HASH", {
-            href: window.location.href,
-            channel: secret.channel,
-            password: secret.password
+            channel: secret.channel
         }, function (hash) {
             if (hash) { hashes.editHash = hash; }
             cb(null, hashes);

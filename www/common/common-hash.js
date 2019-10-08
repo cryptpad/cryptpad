@@ -420,36 +420,6 @@ Version 1
     };
 
     // STORAGE
-    Hash.findStronger = function (href, channel, recents) {
-        var parsed = parsePadUrl(href);
-        if (!parsed.hash) { return false; }
-        var parsedHash = parsed.hashData;
-
-        // We can't have a stronger hash if we're already in edit mode
-        if (!parsedHash || parsedHash.mode === 'edit') { return; }
-
-        // We don't have stronger/weaker versions of files or users
-        if (parsedHash.type !== 'pad') { return; }
-
-        var stronger;
-        Object.keys(recents).some(function (id) {
-            var pad = recents[id];
-
-            // Not the same channel? reject
-            if (channel !== pad.channel) { return; }
-
-            // If this pad doesn't have an edit link, it can't be stronger
-            // XXX encrypted href
-            if (!pad.href || !pad.roHref) { return; }
-
-            // This is a pad with an EDIT href and using the same channel as our target
-            // ==> it is stronger
-            stronger = pad;
-            return true;
-        });
-        return stronger;
-    };
-
     Hash.hrefToHexChannelId = function (href, password) {
         var parsed = Hash.parsePadUrl(href);
         if (!parsed || !parsed.hash) { return; }

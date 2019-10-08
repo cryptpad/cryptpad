@@ -1265,21 +1265,17 @@ define([
 
         // Get hashes for the share button
         // If we can find a stronger hash
-        Store.getStrongerHash = function (clientId, data, cb) {
-            var found = getAllStores().some(function (s) {
-                var allPads = Util.find(s.proxy, ['drive', 'filesData']) || {};
+        Store.getStrongerHash = function (clientId, data, _cb) {
+            var cb = Util.once(_cb);
 
-                // If we have a stronger version in drive, add it and add a redirect button
-                var stronger = Hash.findStronger(data.href, data.channel, allPads);
+            var found = getAllStores().some(function (s) {
+                var stronger = s.manager.getEditHash(data.channel);
                 if (stronger) {
-                    var parsed2 = Hash.parsePadUrl(stronger.href);
-                    cb(parsed2.hash);
+                    cb(stronger);
                     return true;
                 }
             });
-            if (!found) {
-                cb();
-            }
+            if (!found) { cb(); }
         };
 
         // Universal

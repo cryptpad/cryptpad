@@ -297,6 +297,21 @@ define([
         return data;
     };
 
+    var getEditHash = function (Env, channel) {
+        var res = findChannel(Env, channel);
+        var stronger;
+        res.some(function (obj) {
+            if (!obj || !obj.data || !obj.data.href) { return; }
+            var parsed = Hash.parsePadUrl(obj.data.href);
+            var parsedHash = parsed.hashData;
+            if (!parsedHash || parsedHash.mode === 'view') { return; }
+            // We've found an edit hash!
+            stronger = parsed.hash;
+            return true;
+        });
+        return stronger;
+    };
+
     /*
         Drive RPC
     */
@@ -961,6 +976,7 @@ define([
             // Tools
             findChannel: callWithEnv(findChannel),
             findHref: callWithEnv(findHref),
+            getEditHash: callWithEnv(getEditHash),
             user: Env.user,
             folders: Env.folders
         };
