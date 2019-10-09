@@ -395,17 +395,16 @@
                             contentBoard.appendChild(nodeItem);
                         }
                         //footer board
-                        var footerBoard = document.createElement('footer');
                         //add button
                         var addBoardItem = document.createElement('button');
-                        $(addBoardItem).addClass("kanban-additem btn btn-default fa fa-plus");
-                        footerBoard.appendChild(addBoardItem);
+                        addBoardItem.setAttribute('title', 'Add new item');
+                        $(addBoardItem).addClass("btn btn-default fa fa-plus");
+                        headerBoard.appendChild(addBoardItem);
                         __onAddItemClickHandler(addBoardItem);
 
                         //board assembly
                         boardNode.appendChild(headerBoard);
                         boardNode.appendChild(contentBoard);
-                        boardNode.appendChild(footerBoard);
                         //board add
                         self.container.appendChild(boardNode);
                     }
