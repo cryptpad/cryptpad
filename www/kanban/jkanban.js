@@ -509,13 +509,13 @@
                     var addBoard = document.createElement('div');
                     addBoard.id = 'kanban-addboard';
                     addBoard.setAttribute('class', 'fa fa-plus');
-                    boardContainerOuter.appendChild(addBoard);
 
                     self.container = boardContainer;
                     //add boards
                     self.addBoards(self.options.boards);
                     //appends to container
                     self.element.appendChild(boardContainerOuter);
+                    self.element.appendChild(addBoard);
 
                     // send event that board has changed
                     self.onChange();
