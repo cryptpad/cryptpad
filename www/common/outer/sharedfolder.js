@@ -44,7 +44,7 @@ define([
                 return void cb();
             }
         }, 100);
-        var to = setTimeout(function () {
+        to = setTimeout(function () {
             clearInterval(it);
             uo.migrateReadOnly(function () {
                 done = true;
