@@ -413,6 +413,45 @@ define([
          * INTEGRITY CHECK
          */
 
+        var onSync = function (next) {
+            if (exp.rt) {
+                exp.rt.sync();
+                Realtime.whenRealtimeSyncs(exp.rt, next);
+            } else {
+                window.setTimeout(next, 1000);
+            }
+        };
+
+        exp.migrateReadOnly = function (cb) {
+            if (!config.editKey) { return void cb({error: 'EFORBIDDEN'}); }
+            if (files.version >= 2) { return void cb(); } // Already migrated, nothing to do
+            files.migrateRo = 1;
+            var next = function () {
+                var copy = JSON.parse(JSON.stringify(files));
+                Object.keys(copy[FILES_DATA]).forEach(function (id) {
+                    var data = copy[FILES_DATA][id] || {};
+                    // If this pad has a visible href, encrypt it
+                    // "&& data.roHref" is here to make sure this is not a "file"
+                    if (data.href && data.roHref && !data.fileType && data.href.indexOf('#') !== -1) {
+                        data.href = exp.cryptor.encrypt(data.href);
+                    }
+                });
+                Object.keys(copy[SHARED_FOLDERS] || {}).forEach(function (id) {
+                    var data = copy[SHARED_FOLDERS][id] || {};
+                    // If this folder has a visible href, encrypt it
+                    if (data.href && data.roHref && !data.fileType && data.href.indexOf('#') !== -1) {
+                        data.href = exp.cryptor.encrypt(data.href);
+                    }
+                });
+                copy.version = 2;
+                delete copy.migrateRo;
+
+                files = copy;
+                onSync(cb);
+            };
+            onSync(next);
+        };
+
         exp.migrate = function (cb) {
             // Make sure unsorted doesn't exist anymore
             // Note: Unsorted only works with the old structure where pads are href
@@ -491,13 +530,7 @@ define([
                         delete files.migrate;
                         todo();
                     };
-                    if (exp.rt) {
-                        exp.rt.sync();
-                        // TODO
-                        Realtime.whenRealtimeSyncs(exp.rt, next);
-                    } else {
-                        window.setTimeout(next, 1000);
-                    }
+                    onSync(next);
                 } catch(e) {
                     console.error(e);
                     todo();

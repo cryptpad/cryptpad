@@ -19,7 +19,52 @@ define([
 
     var allSharedFolders = {};
 
-    SF.load = function (config, id, data, cb) {
+    // No version: visible edit
+    // Version 2: encrypted edit links
+    SF.checkMigration = function (secondaryKey, proxy, uo, cb) {
+        if (true) { // XXX remove this block to enable migration at load time
+            // FIXME history
+            return void cb();
+        }
+        var drive = proxy.drive || proxy;
+        // View access: can't migrate
+        if (!secondaryKey) { return void cb(); }
+        // Already migrated: nothing to do
+        if (drive.version >= 2) { return void cb(); }
+        // Not yet migrating: migrate
+        if (!drive.migrateRo) { return void uo.migrateReadOnly(cb); }
+        // Already migrating: wait for the end...
+        var done = false;
+        var to;
+        var it = setInterval(function () {
+            if (drive.version >= 2) {
+                done = true;
+                clearTimeout(to);
+                clearInterval(it);
+                return void cb();
+            }
+        }, 100);
+        var to = setTimeout(function () {
+            clearInterval(it);
+            uo.migrateReadOnly(function () {
+                done = true;
+                cb();
+            });
+        }, 20000);
+        var path = proxy.drive ? ['drive', 'version'] : ['version'];
+        proxy.on('change', path, function () {
+            if (done) { return; }
+            if (drive.version >= 2) {
+                done = true;
+                clearTimeout(to);
+                clearInterval(it);
+                cb();
+            }
+        });
+    };
+
+    SF.load = function (config, id, data, _cb) {
+        var cb = Util.once(_cb);
         var network = config.network;
         var store = config.store;
         var teamId = store.id || -1;
@@ -36,8 +81,10 @@ define([
             // The shared folder is already loaded, return its data
             setTimeout(function () {
                 var leave = function () { SF.leave(secret.channel, teamId); };
-                store.manager.addProxy(id, sf.rt.proxy, leave, secondaryKey);
-                cb(sf.rt, sf.metadata);
+                var uo = store.manager.addProxy(id, sf.rt, leave, secondaryKey);
+                SF.checkMigration(secondaryKey, sf.rt.proxy, uo, function () {
+                    cb(sf.rt, sf.metadata);
+                });
             });
             sf.team.push(teamId);
             if (handler) { handler(id, sf.rt); }
@@ -85,13 +132,15 @@ define([
             if (!sf.queue) {
                 return;
             }
-            sf.queue.forEach(function (obj) {
-                var leave = function () { SF.leave(secret.channel, teamId); };
-                obj.store.manager.addProxy(obj.id, rt.proxy, leave, secondaryKey);
-                obj.cb(rt, info.metadata);
-            });
             sf.leave = info.leave;
             sf.metadata = info.metadata;
+            sf.queue.forEach(function (obj) {
+                var leave = function () { SF.leave(secret.channel, teamId); };
+                var uo = obj.store.manager.addProxy(obj.id, rt, leave, secondaryKey);
+                SF.checkMigration(secondaryKey, rt.proxy, uo, function () {
+                    obj.cb(sf.rt, sf.metadata);
+                });
+            });
             sf.ready = true;
             delete sf.queue;
         });

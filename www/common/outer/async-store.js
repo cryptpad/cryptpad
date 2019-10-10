@@ -2034,7 +2034,7 @@ define([
                 pin: pin,
                 unpin: unpin,
                 loadSharedFolder: loadSharedFolder,
-                settings: proxy.settings
+                settings: proxy.settings,
             }, {
                 outer: true,
                 removeOwnedChannel: function (channel, cb) { Store.removeOwnedChannel('', channel, cb); },
@@ -2043,7 +2043,8 @@ define([
                 log: function (msg) {
                     // broadcast to all drive apps
                     sendDriveEvent("DRIVE_LOG", msg);
-                }
+                },
+                rt: store.realtime
             });
             var userObject = store.userObject = manager.user.userObject;
             addSharedFolderHandler();

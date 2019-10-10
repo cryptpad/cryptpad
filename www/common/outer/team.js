@@ -181,6 +181,7 @@ define([
             };
         };
 
+        var secret;
         team.pin = function (data, cb) { return void cb({error: 'EFORBIDDEN'}); };
         team.unpin = function (data, cb) { return void cb({error: 'EFORBIDDEN'}); };
         nThen(function (waitFor) {
@@ -216,7 +217,6 @@ define([
                 });
             };
             var teamData = ctx.store.proxy.teams[team.id];
-            var secret;
             if (teamData) {
                 secret = Hash.getSecrets('team', teamData.hash, teamData.password);
             }
@@ -229,7 +229,6 @@ define([
                 settings: {
                     drive: Util.find(ctx.store, ['proxy', 'settings', 'drive'])
                 },
-                editKey: secret && secret.keys.secondaryKey
             }, {
                 outer: true,
                 removeOwnedChannel: function (channel, cb) {
@@ -250,13 +249,16 @@ define([
                 log: function (msg) {
                     // broadcast to all drive apps
                     team.sendEvent("DRIVE_LOG", msg);
-                }
+                },
+                rt: team.realtime,
+                editKey: secret && secret.keys.secondaryKey
             });
             team.userObject = manager.user.userObject;
             team.userObject.fixFiles();
         }).nThen(function (waitFor) {
             ctx.teams[id] = team;
             registerChangeEvents(ctx, team, proxy);
+            SF.checkMigration(secret && secret.keys.secondaryKey, proxy, team.userObject, waitFor());
             SF.loadSharedFolders(ctx.Store, ctx.store.network, team, team.userObject, waitFor);
         }).nThen(function () {
             if (!team.rpc) { return; }

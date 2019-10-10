@@ -2,12 +2,11 @@ define([
     '/customize/application_config.js',
     '/common/common-util.js',
     '/common/common-hash.js',
-    '/common/common-realtime.js',
     '/common/common-constants.js',
     '/common/outer/userObject.js',
     '/customize/messages.js',
     '/bower_components/chainpad-crypto/crypto.js',
-], function (AppConfig, Util, Hash, Realtime, Constants, OuterFO, Messages, Crypto) {
+], function (AppConfig, Util, Hash, Constants, OuterFO, Messages, Crypto) {
     var module = {};
 
     var ROOT = module.ROOT = "root";

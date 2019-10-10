@@ -545,7 +545,7 @@ define([
             var sfData = files.sharedFolders[id] || {};
             var parsed = Hash.parsePadUrl(sfData.href);
             var secret = Hash.getSecrets('drive', parsed.hash, sfData.password);
-            manager.addProxy(id, f, null, secret.keys.secondaryKey);
+            manager.addProxy(id, {proxy: f}, null, secret.keys.secondaryKey);
         });
 
         // UI containers

@@ -14,25 +14,26 @@ define([
     };
 
     // Add a shared folder to the list
-    var addProxy = function (Env, id, proxy, leave, editKey) {
+    var addProxy = function (Env, id, lm, leave, editKey) {
         var cfg = getConfig(Env);
         cfg.sharedFolder = true;
         cfg.id = id;
         cfg.editKey = editKey;
-        var userObject = UserObject.init(proxy, cfg);
+        cfg.rt = lm.realtime;
+        var userObject = UserObject.init(lm.proxy, cfg);
         if (userObject.fixFiles) {
             // Only in outer
             userObject.fixFiles();
         }
         Env.folders[id] = {
-            proxy: proxy,
+            proxy: lm.proxy,
             userObject: userObject,
             leave: leave
         };
         return userObject;
     };
 
-    // TODO: Remove a shared folder from the list
+    // XXX: Remove a shared folder from the list
     var removeProxy = function (Env, id) {
         var f = Env.folders[id];
         if (!f) { return; }

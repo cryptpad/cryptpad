@@ -61,7 +61,7 @@ define([
                     folders[fId] = folders[fId] || {};
                     copyObjectValue(folders[fId], newObj);
                     if (manager && oldIds.indexOf(fId) === -1) {
-                        manager.addProxy(fId, folders[fId], null, secret.keys.secondaryKey);
+                        manager.addProxy(fId, { proxy: folders[fId] }, null, secret.keys.secondaryKey);
                     }
                 }));
             });
