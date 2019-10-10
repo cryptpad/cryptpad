@@ -241,6 +241,8 @@ define([
     // Team APP
 
     var loadTeam = function (common, id) {
+        var metadataMgr = common.getMetadataMgr();
+        var privateData = metadataMgr.getPrivateData();
         var sframeChan = common.getSframeChannel();
         var proxy = {};
         var folders = {};
@@ -261,11 +263,7 @@ define([
             driveAPP.team = id;
 
             // Provide secondaryKey
-            var teamData = (proxy.teams || {})[id];
-            var secret;
-            if (teamData) {
-                secret = Hash.getSecrets('team', teamData.hash, teamData.password);
-            }
+            var teamData = (privateData.teams || {})[id] || {};
             var drive = DriveUI.create(common, {
                 proxy: proxy,
                 folders: folders,
@@ -273,7 +271,7 @@ define([
                 updateSharedFolders: updateSharedFolders,
                 APP: driveAPP,
                 edPublic: APP.teamEdPublic,
-                editKey: secret && secret.keys.secondaryKey
+                editKey: teamData.secondaryKey
             });
             APP.drive = drive;
             driveAPP.refresh = drive.refresh;

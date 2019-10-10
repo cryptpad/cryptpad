@@ -526,6 +526,7 @@ define([
         var files = proxy.drive;
         var history = driveConfig.history || {};
         var edPublic = driveConfig.edPublic || priv.edPublic;
+        config.editKey = driveConfig.editKey;
         APP.origin = priv.origin;
         APP.hideDuplicateOwned = Util.find(priv, ['settings', 'drive', 'hideDuplicate']);
         APP.closed = false;

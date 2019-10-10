@@ -372,7 +372,8 @@ define([
 
 
     common.getMetadata = function (cb) {
-        postMessage("GET_METADATA", null, function (obj) {
+        var parsed = Hash.parsePadUrl(window.location.href);
+        postMessage("GET_METADATA", parsed && parsed.type, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });

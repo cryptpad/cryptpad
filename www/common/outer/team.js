@@ -253,12 +253,13 @@ define([
                 rt: team.realtime,
                 editKey: secret && secret.keys.secondaryKey
             });
+            team.secondaryKey = secret && secret.keys.secondaryKey;
             team.userObject = manager.user.userObject;
             team.userObject.fixFiles();
         }).nThen(function (waitFor) {
             ctx.teams[id] = team;
             registerChangeEvents(ctx, team, proxy);
-            SF.checkMigration(secret && secret.keys.secondaryKey, proxy, team.userObject, waitFor());
+            SF.checkMigration(team.secondaryKey, proxy, team.userObject, waitFor());
             SF.loadSharedFolders(ctx.Store, ctx.store.network, team, team.userObject, waitFor);
         }).nThen(function () {
             if (!team.rpc) { return; }
@@ -1109,8 +1110,10 @@ define([
         team.getTeam = function (id) {
             return ctx.teams[id];
         };
-        team.getTeamsData = function () {
+        team.getTeamsData = function (app) {
             var t = {};
+            var safe = false;
+            if (['drive', 'teams', 'settings'].indexOf(app) !== -1) { safe = true; }
             Object.keys(teams).forEach(function (id) {
                 t[id] = {
                     owner: teams[id].owner,
@@ -1118,6 +1121,9 @@ define([
                     edPublic: Util.find(teams[id], ['keys', 'drive', 'edPublic']),
                     avatar: Util.find(teams[id], ['metadata', 'avatar'])
                 };
+                if (safe) {
+                    t[id].secondaryKey = ctx.teams[id].secondaryKey;
+                }
             });
             return t;
         };
