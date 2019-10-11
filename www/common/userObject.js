@@ -32,13 +32,15 @@ define([
     module.init = function (files, config) {
         var exp = {};
 
-        exp.cryptor = {
-            encrypt : function (x) { return x; },
-            decrypt : function (x) { return x; },
-        };
-        if (config.editKey) {
+        exp.cryptor = {};
+        var createCryptor = function (key) {
+            if (!key) {
+                exp.cryptor.encrypt = function (x) { return x; };
+                exp.cryptor.decrypt = function (x) { return x; };
+                return;
+            }
             try {
-                var c = Crypto.createEncryptor(config.editKey);
+                var c = Crypto.createEncryptor(key);
                 exp.cryptor.encrypt = function (href) {
                     // Never encrypt blob href, they are always read-only
                     if (href.slice(0,7) === '/file/#') { return href; }
@@ -48,7 +50,17 @@ define([
             } catch (e) {
                 console.error(e);
             }
-        }
+        };
+        createCryptor(config.editKey);
+
+        exp.setReadOnly = function (state, key) {
+            config.editKey = key;
+            createCryptor(key);
+            if (exp._setReadOnly) {
+                // Change outer
+                exp._setReadOnly(state);
+            }
+        };
 
         exp.getDefaultName = module.getDefaultName;
 

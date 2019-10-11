@@ -77,6 +77,10 @@ define([
         var secondaryKey = secret.keys.secondaryKey;
 
         var sf = allSharedFolders[secret.channel];
+        if (sf && sf.readOnly && secondaryKey) {
+            // We were in readOnly mode and now we know the edit keys!
+            SF.upgrade(secret.channel, secret);
+        }
         if (sf && sf.ready && sf.rt) {
             // The shared folder is already loaded, return its data
             setTimeout(function () {
@@ -108,14 +112,15 @@ define([
                 store: store,
                 id: id
             }],
-            team: [store.id || -1]
+            team: [store.id || -1],
+            readOnly: Boolean(secondaryKey)
         };
 
         var owners = data.owners;
         var listmapConfig = {
             data: {},
             channel: secret.channel,
-            readOnly: secret.keys && !secret.keys.editKeyStr,
+            readOnly: Boolean(secondaryKey),
             crypto: Crypto.createEncryptor(secret.keys),
             userName: 'sharedFolder',
             logLevel: 1,
@@ -146,6 +151,17 @@ define([
         });
         if (handler) { handler(id, rt); }
         return rt;
+    };
+
+    SF.upgrade = function (channel, secret) {
+        var sf = allSharedFolders[channel];
+        if (!sf || !sf.readOnly) { return; }
+        if (!sf.rt.setReadOnly) { return; }
+
+        if (!secret.keys || !secret.keys.editKeyStr) { return; }
+        var crypto = Crypto.createEncryptor(secret.keys);
+        sf.readOnly = false;
+        sf.rt.setReadOnly(false, crypto);
     };
 
     SF.leave = function (channel, teamId) {

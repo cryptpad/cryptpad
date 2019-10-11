@@ -814,6 +814,7 @@ define([
         var cb = Util.once(Util.mkAsync(function () {
             ctx.emit('TEAMCHAT_READY', chanId, [clientId]);
             _cb({
+                readOnly: typeof(secret.keys) === "object" && !secret.keys.validateKey,
                 channel: chanId
             });
         }));

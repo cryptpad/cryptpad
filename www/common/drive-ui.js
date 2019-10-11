@@ -544,7 +544,7 @@ define([
         Object.keys(folders).forEach(function (id) {
             var f = folders[id];
             var sfData = files.sharedFolders[id] || {};
-            var parsed = Hash.parsePadUrl(sfData.href);
+            var parsed = Hash.parsePadUrl(sfData.href || sfData.roHref);
             var secret = Hash.getSecrets('drive', parsed.hash, sfData.password);
             manager.addProxy(id, {proxy: f}, null, secret.keys.secondaryKey);
         });
@@ -2509,6 +2509,7 @@ define([
             $('<span>').text(Messages.shareButton).appendTo($shareBlock);
             var data = manager.getSharedFolderData(id);
             var parsed = Hash.parsePadUrl(data.href);
+            // XXX share modal shared folder read only
             if (!parsed || !parsed.hash) { return void console.error("Invalid href: "+data.href); }
             var friends = common.getFriends();
             var teams = common.getMetadataMgr().getPrivateData().teams;

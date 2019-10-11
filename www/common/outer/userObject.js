@@ -21,6 +21,8 @@ define([
         var sharedFolder = config.sharedFolder;
         var edPublic = config.edPublic;
 
+        var readOnly = config.readOnly;
+
         var ROOT = exp.ROOT;
         var FILES_DATA = exp.FILES_DATA;
         var OLD_FILES_DATA = exp.OLD_FILES_DATA;
@@ -31,8 +33,14 @@ define([
 
         var debug = exp.debug;
 
+        exp._setReadOnly = function (state) {
+            readOnly = state;
+            if (!readOnly) { exp.fixFiles(); }
+        };
+
         exp.setHref = function (channel, id, href) {
             if (!id && !channel) { return; }
+            if (readOnly) { return; }
             var ids = id ? [id] : exp.findChannels([channel]);
             ids.forEach(function (i) {
                 var data = exp.getFileData(i, true);
@@ -42,6 +50,7 @@ define([
 
         exp.setPadAttribute = function (href, attr, value, cb) {
             cb = cb || function () {};
+            if (readOnly) { return void cb('EFORBIDDEN'); }
             var id = exp.getIdFromHref(href);
             if (!id) { return void cb("E_INVAL_HREF"); }
             if (!attr || !attr.trim()) { return void cb("E_INVAL_ATTR"); }
@@ -63,6 +72,7 @@ define([
 
         exp.pushData = function (data, cb) {
             if (typeof cb !== "function") { cb = function () {}; }
+            if (readOnly) { return void cb('EFORBIDDEN'); }
             var id = Util.createRandomInteger();
             // If we were given an edit link, encrypt its value if needed
             if (data.href) { data.href = exp.cryptor.encrypt(data.href); }
@@ -72,12 +82,21 @@ define([
 
         exp.pushSharedFolder = function (data, cb) {
             if (typeof cb !== "function") { cb = function () {}; }
+            if (readOnly) { return void cb('EFORBIDDEN'); }
 
             // Check if we already have this shared folder in our drive
+            var exists;
             if (Object.keys(files[SHARED_FOLDERS]).some(function (k) {
-                return files[SHARED_FOLDERS][k].channel === data.channel;
+                if (files[SHARED_FOLDERS][k].channel === data.channel) {
+                    // We already know this shared folder. Check if we can get better access rights
+                    if (data.href && !files[SHARED_FOLDERS][k].href) {
+                        files[SHARED_FOLDERS][k].href = data.href;
+                    }
+                    exists = k;
+                    return true;
+                }
             })) {
-                return void cb ('EEXISTS');
+                return void cb ('EEXISTS', exists);
             }
 
             // Add the folder
@@ -92,6 +111,7 @@ define([
 
         // FILES DATA
         var spliceFileData = function (id) {
+            if (readOnly) { return; }
             delete files[FILES_DATA][id];
         };
 
@@ -99,6 +119,7 @@ define([
         // FILES_DATA. If there are owned pads, remove them from server too.
         exp.checkDeletedFiles = function (cb) {
             if (!loggedIn && !config.testMode) { return void cb(); }
+            if (readOnly) { return void cb('EFORBIDDEN'); }
 
             var filesList = exp.getFiles([ROOT, 'hrefArray', TRASH]);
             var toClean = [];
@@ -144,21 +165,22 @@ define([
             cb(null, toClean, ownedRemoved);
         };
         var deleteHrefs = function (ids) {
+            if (readOnly) { return; }
             ids.forEach(function (obj) {
                 var idx = files[obj.root].indexOf(obj.id);
                 files[obj.root].splice(idx, 1);
             });
         };
         var deleteMultipleTrashRoot = function (roots) {
+            if (readOnly) { return; }
             roots.forEach(function (obj) {
                 var idx = files[TRASH][obj.name].indexOf(obj.el);
                 files[TRASH][obj.name].splice(idx, 1);
             });
         };
         exp.deleteMultiplePermanently = function (paths, nocheck, cb) {
-            var hrefPaths = paths.filter(function(x) { return exp.isPathIn(x, ['hrefArray']); });
-            var rootPaths = paths.filter(function(x) { return exp.isPathIn(x, [ROOT]); });
-            var trashPaths = paths.filter(function(x) { return exp.isPathIn(x, [TRASH]); });
+            if (readOnly) { return void cb('EFORBIDDEN'); }
+
             var allFilesPaths = paths.filter(function(x) { return exp.isPathIn(x, [FILES_DATA]); });
 
             if (!loggedIn && !config.testMode) {
@@ -169,6 +191,10 @@ define([
                 });
                 return void cb();
             }
+
+            var hrefPaths = paths.filter(function(x) { return exp.isPathIn(x, ['hrefArray']); });
+            var rootPaths = paths.filter(function(x) { return exp.isPathIn(x, [ROOT]); });
+            var trashPaths = paths.filter(function(x) { return exp.isPathIn(x, [TRASH]); });
 
             var ids = [];
             hrefPaths.forEach(function (path) {
@@ -216,6 +242,7 @@ define([
 
         // From another drive
         exp.copyFromOtherDrive = function (path, element, data, key) {
+            if (readOnly) { return; }
             // Copy files data
             // We have to remove pads that are already in the current proxy to make sure
             // we won't create duplicates
@@ -275,6 +302,8 @@ define([
 
         // From the same drive
         var pushToTrash = function (name, element, path) {
+            if (readOnly) { return; }
+
             var trash = files[TRASH];
             if (typeof(trash[name]) === "undefined") { trash[name] = []; }
             var trashArray = trash[name];
@@ -285,6 +314,7 @@ define([
             trashArray.push(trashElement);
         };
         exp.copyElement = function (elementPath, newParentPath) {
+            if (readOnly) { return; }
             if (exp.comparePath(elementPath, newParentPath)) { return; } // Nothing to do...
             var element = exp.find(elementPath);
             var newParent = exp.find(newParentPath);
@@ -332,6 +362,8 @@ define([
 
         // FORGET (move with href not path)
         exp.forget = function (href) {
+            if (readOnly) { return; }
+
             var id = exp.getIdFromHref(href);
             if (!id) { return; }
             if (!loggedIn && !config.testMode) {
@@ -348,6 +380,8 @@ define([
         // If all the occurences of an href are in the trash, remove them and add the file in root.
         // This is use with setPadTitle when we open a stronger version of a deleted pad
         exp.restoreHref = function (href) {
+            if (readOnly) { return; }
+
             var idO = exp.getIdFromHref(href);
 
             if (!idO || !exp.isFile(idO)) { return; }
@@ -370,6 +404,8 @@ define([
         };
 
         exp.add = function (id, path) {
+            if (readOnly) { return; }
+
             if (!loggedIn && !config.testMode) { return; }
             id = Number(id);
             var data = files[FILES_DATA][id] || files[SHARED_FOLDERS][id];
@@ -397,6 +433,8 @@ define([
         };
 
         exp.setFolderData = function (path, key, value, cb) {
+            if (readOnly) { return; }
+
             var folder = exp.find(path);
             if (!exp.isFolder(folder) || exp.isSharedFolder(folder)) { return; }
             if (!exp.hasFolderData(folder)) {
@@ -423,7 +461,7 @@ define([
         };
 
         exp.migrateReadOnly = function (cb) {
-            if (!config.editKey) { return void cb({error: 'EFORBIDDEN'}); }
+            if (readOnly || !config.editKey) { return void cb({error: 'EFORBIDDEN'}); }
             if (files.version >= 2) { return void cb(); } // Already migrated, nothing to do
             files.migrateRo = 1;
             var next = function () {
@@ -453,6 +491,7 @@ define([
         };
 
         exp.migrate = function (cb) {
+            if (readOnly) { return void cb(); }
             // Make sure unsorted doesn't exist anymore
             // Note: Unsorted only works with the old structure where pads are href
             // It should be called before the migration code
@@ -550,6 +589,9 @@ define([
             //                - Dates (adate, cdate) can be parsed/formatted
             //                - All files in filesData should be either in 'root', 'trash' or 'unsorted'. If that's not the case, copy the fily to 'unsorted'
             //  * TEMPLATE: Contains only files (href), and does not contains files that are in ROOT
+
+            // We can't fix anything in read-only mode: abort
+            if (readOnly) { return; }
 
             if (silent) { debug = function () {}; }
 

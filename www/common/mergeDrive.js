@@ -27,6 +27,7 @@ define([
             if (parsed) {
                 var proxy = proxyData.proxy;
                 var oldFo = FO.init(parsed.drive, {
+                    readOnly: false,
                     loggedIn: true,
                     outer: true
                 });

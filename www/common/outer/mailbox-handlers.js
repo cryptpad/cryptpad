@@ -415,6 +415,41 @@ define([
         cb(false);
     };
 
+    handlers['TEAM_EDIT_RIGHTS'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+
+        if (msg.author !== content.user.curvePublic) { return void cb(true); }
+        if (!content.teamData) {
+            console.log('Remove invalid notification');
+            return void cb(true);
+        }
+
+        // Make sure we are a member of this team
+        var myTeams = Util.find(ctx, ['store', 'proxy', 'teams']) || {};
+        var teamId;
+        var team;
+        Object.keys(myTeams).some(function (k) {
+            var _team = myTeams[k];
+            if (_team.channel === content.teamChannel) {
+                teamId = k;
+                team = _team;
+                return true;
+            }
+        });
+        if (!teamId) { return void cb(true); }
+
+        var dismiss = false;
+        try {
+            var module = ctx.store.modules['team'];
+            // changeMyRights returns true if we can't change our rights
+            dismiss = module.changeMyRights(teamId, content.state, content.teamData);
+        } catch (e) { console.error(e); }
+
+        cb(dismiss);
+    };
+
+
 
     return {
         add: function (ctx, box, data, cb) {

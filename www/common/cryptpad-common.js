@@ -158,11 +158,12 @@ define([
         });
     };
     common.addSharedFolder = function (teamId, secret, cb) {
+        var href = secret.keys && secret.keys.editKeyStr ? '/drive/#' + Hash.getEditHashFromKeys(secret) : undefined;
         postMessage("ADD_SHARED_FOLDER", {
             teamId: teamId,
             path: ['root'],
             folderData: {
-                href: '/drive/#' + Hash.getEditHashFromKeys(secret),
+                href: href,
                 roHref: '/drive/#' + Hash.getViewHashFromKeys(secret),
                 channel: secret.channel,
                 password: secret.password,

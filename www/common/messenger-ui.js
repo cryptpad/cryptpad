@@ -43,7 +43,7 @@ define([
     MessengerUI.create = function ($container, common, toolbar) {
         var metadataMgr = common.getMetadataMgr();
         var origin = metadataMgr.getPrivateData().origin;
-        var readOnly = metadataMgr.getPrivateData().readOnly;
+        var readOnly = metadataMgr.getPrivateData().readOnly || toolbar.readOnly;
 
         var isApp = typeof(toolbar) !== "undefined";
 

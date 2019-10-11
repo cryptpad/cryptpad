@@ -168,8 +168,8 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             if (members[curve]) { throw new Error("ALREADY_PRESENT"); }
 
             var data = args[curve];
-            // if no role was provided, assume VIEWER
-            if (typeof(data.role) !== 'string') { data.role = 'VIEWER'; }
+            // if no role was provided, assume MEMBER
+            if (typeof(data.role) !== 'string') { data.role = 'MEMBER'; }
 
             if (!canAddRole(author, data.role, members)) {
                 throw new Error("INSUFFICIENT_PERMISSIONS");

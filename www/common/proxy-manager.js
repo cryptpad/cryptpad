@@ -2,9 +2,10 @@ define([
     '/common/userObject.js',
     '/common/common-util.js',
     '/common/common-hash.js',
+    '/common/outer/sharedfolder.js',
     '/customize/messages.js',
     '/bower_components/nthen/index.js',
-], function (UserObject, Util, Hash, Messages, nThen) {
+], function (UserObject, Util, Hash, SF, Messages, nThen) {
 
 
     var getConfig = function (Env) {
@@ -20,6 +21,7 @@ define([
         cfg.id = id;
         cfg.editKey = editKey;
         cfg.rt = lm.realtime;
+        cfg.readOnly = Boolean(!editKey);
         var userObject = UserObject.init(lm.proxy, cfg);
         if (userObject.fixFiles) {
             // Only in outer
@@ -452,6 +454,12 @@ define([
             // 1. add the shared folder to our list of shared folders
             // NOTE: pushSharedFolder will encrypt the href directly in the object if needed
             Env.user.userObject.pushSharedFolder(folderData, waitFor(function (err, folderId) {
+                if (err === "EEXISTS" && folderData.href && folderId) {
+                    var parsed = Hash.parsePadUrl(folderData.href);
+                    var secret = Hash.getSecrets('drive', parsed.hash, folderData.password);
+                    SF.upgrade(secret.channel, secret);
+                    Env.folders[folderId].userObject.setReadOnly(false, secret.keys.secondaryKey);
+                }
                 if (err) {
                     waitFor.abort();
                     return void cb(err);

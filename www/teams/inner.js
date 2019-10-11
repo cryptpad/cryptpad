@@ -53,7 +53,7 @@ define([
         nThen(function (waitFor) {
             Object.keys(drive.sharedFolders).forEach(function (fId) {
                 var sfData = drive.sharedFolders[fId] || {};
-                var parsed = Hash.parsePadUrl(sfData.href);
+                var parsed = Hash.parsePadUrl(sfData.href || sfData.roHref);
                 var secret = Hash.getSecrets('drive', parsed.hash, sfData.password);
                 sframeChan.query('Q_DRIVE_GETOBJECT', {
                     sharedFolder: fId
@@ -467,7 +467,7 @@ define([
         });
     };
 
-    var ROLES = ['MEMBER', 'ADMIN', 'OWNER'];
+    var ROLES = ['VIEWER', 'MEMBER', 'ADMIN', 'OWNER'];
     var describeUser = function (common, curvePublic, data, icon) {
         APP.module.execCommand('DESCRIBE_USER', {
             teamId: APP.team,
@@ -505,10 +505,11 @@ define([
         var actions = h('span.cp-team-member-actions');
         var $actions = $(actions);
         var isMe = me && me.curvePublic === data.curvePublic;
-        var myRole = me ? (ROLES.indexOf(me.role) || 0) : -1;
-        var theirRole = ROLES.indexOf(data.role) || 0;
+        var myRole = me ? (ROLES.indexOf(me.role) || 1) : -1;
+        var theirRole = ROLES.indexOf(data.role) || 1;
+        var ADMIN = ROLES.indexOf('ADMIN');
         // If they're an admin and I am an owner, I can promote them to owner
-        if (!isMe && myRole > theirRole && theirRole === 1 && !data.pending) {
+        if (!isMe && myRole > theirRole && theirRole === ADMIN && !data.pending) {
             var promoteOwner = h('span.fa.fa-angle-double-up', {
                 title: Messages.team_rosterPromoteOwner
             });
@@ -530,28 +531,28 @@ define([
             });
             $actions.append(promoteOwner);
         }
-        // If they're a member and I have a higher role than them, I can promote them to admin
-        if (!isMe && myRole > theirRole && theirRole === 0 && !data.pending) {
+        // If they're a viewer/member and I have a higher role than them, I can promote them to admin
+        if (!isMe && myRole >= ADMIN && theirRole < ADMIN && !data.pending) {
             var promote = h('span.fa.fa-angle-double-up', {
                 title: Messages.team_rosterPromote
             });
             $(promote).click(function () {
                 $(promote).hide();
                 describeUser(common, data.curvePublic, {
-                    role: 'ADMIN'
+                    role: ROLES[theirRole + 1]
                 }, promote);
             });
             $actions.append(promote);
         }
         // If I'm not a member and I have an equal or higher role than them, I can demote them
         // (if they're not already a MEMBER)
-        if (myRole >= theirRole && theirRole > 0 && !data.pending) {
+        if (myRole >= theirRole && myRole >= ADMIN && theirRole > 0 && !data.pending) {
             var demote = h('span.fa.fa-angle-double-down', {
                 title: Messages.team_rosterDemote
             });
             $(demote).click(function () {
                 var todo = function () {
-                    var role = ROLES[theirRole - 1] || 'MEMBER';
+                    var role = ROLES[theirRole - 1] || 'VIEWER';
                     $(demote).hide();
                     describeUser(common, data.curvePublic, {
                         role: role
@@ -569,9 +570,9 @@ define([
                 $actions.append(demote);
             }
         }
-        // If I'm not a member and I have an equal or higher role than them, I can remove them
+        // If I'm at least an admin and I have an equal or higher role than them, I can remove them
         // Note: we can't remove owners, we have to demote them first
-        if (!isMe && myRole > 0 && myRole >= theirRole && theirRole !== 2) {
+        if (!isMe && myRole >= ADMIN && myRole >= theirRole && theirRole !== ROLES.indexOf('OWNER')) {
             var remove = h('span.fa.fa-times', {
                 title: Messages.team_rosterKick
             });
@@ -637,6 +638,12 @@ define([
         }).map(function (k) {
             return makeMember(common, roster[k], me);
         });
+        var viewers = Object.keys(roster).filter(function (k) {
+            if (roster[k].pending) { return; }
+            return roster[k].role === "VIEWER";
+        }).map(function (k) {
+            return makeMember(common, roster[k], me);
+        });
         var pending = Object.keys(roster).filter(function (k) {
             if (!roster[k].pending) { return; }
             return roster[k].role === "MEMBER" || !roster[k].role;
@@ -671,7 +678,7 @@ define([
             $header.append(invite);
         }
 
-        if (me && (me.role === 'ADMIN' || me.role === 'MEMBER')) {
+        if (me && (me.role !== 'OWNER')) {
             var leave = h('button.btn.btn-danger', Messages.team_leaveButton);
             $(leave).click(function () {
                 UI.confirm(Messages.team_leaveConfirm, function (yes) {
@@ -698,6 +705,8 @@ define([
             h('div', admins),
             h('h3', Messages.team_members),
             h('div', members),
+            h('h3', Messages.team_viewers || 'VIEWERS'), // XXX
+            h('div', viewers),
             h('h3'+noPending, Messages.team_pending),
             h('div'+noPending, pending)
         ];
@@ -721,7 +730,8 @@ define([
             common.setTeamChat(obj.channel);
             MessengerUI.create($(container), common, {
                 chat: $('.cp-team-cat-chat'),
-                team: true
+                team: true,
+                readOnly: obj.readOnly
             });
             cb(content);
         });
