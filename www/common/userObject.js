@@ -29,29 +29,46 @@ define([
         return name;
     };
 
+    var createCryptor = module.createCryptor = function (key) {
+        var cryptor = {};
+        if (!key) {
+            cryptor.encrypt = function (x) { return x; };
+            cryptor.decrypt = function (x) { return x; };
+            return cryptor;
+        }
+        try {
+            var c = Crypto.createEncryptor(key);
+            cryptor.encrypt = function (href) {
+                // Never encrypt blob href, they are always read-only
+                if (href.slice(0,7) === '/file/#') { return href; }
+                return c.encrypt(href);
+            };
+            cryptor.decrypt = c.decrypt;
+        } catch (e) {
+            console.error(e);
+        }
+        return cryptor;
+    };
+    module.getHref = function (pad, cryptor) {
+        if (pad.href && pad.href.indexOf('#') !== -1) {
+            // Href exists and is not encrypted: return href
+            return pad.href;
+        }
+        if (pad.href) {
+            // Href exists and is encrypted
+            var d = cryptor.decrypt(pad.href);
+            // If we can decrypt, return the decrypted value, otherwise continue and return roHref
+            if (d.indexOf('#') !== -1) {
+                return d;
+            }
+        }
+        return pad.roHref;
+    };
+
     module.init = function (files, config) {
         var exp = {};
 
-        exp.cryptor = {};
-        var createCryptor = function (key) {
-            if (!key) {
-                exp.cryptor.encrypt = function (x) { return x; };
-                exp.cryptor.decrypt = function (x) { return x; };
-                return;
-            }
-            try {
-                var c = Crypto.createEncryptor(key);
-                exp.cryptor.encrypt = function (href) {
-                    // Never encrypt blob href, they are always read-only
-                    if (href.slice(0,7) === '/file/#') { return href; }
-                    return c.encrypt(href);
-                };
-                exp.cryptor.decrypt = c.decrypt;
-            } catch (e) {
-                console.error(e);
-            }
-        };
-        createCryptor(config.editKey);
+        exp.cryptor = createCryptor(config.editKey);
 
         exp.setReadOnly = function (state, key) {
             config.editKey = key;
@@ -124,19 +141,7 @@ define([
         };
 
         var getHref = exp.getHref = function (pad) {
-            if (pad.href && pad.href.indexOf('#') !== -1) {
-                // Href exists and is not encrypted: return href
-                return pad.href;
-            }
-            if (pad.href) {
-                // Href exists and is encrypted
-                var d = exp.cryptor.decrypt(pad.href);
-                // If we can decrypt, return the decrypted value, otherwise continue and return roHref
-                if (d.indexOf('#') !== -1) {
-                    return d;
-                }
-            }
-            return pad.roHref;
+            return module.getHref(pad, exp.cryptor);
         };
 
         var type = function (dat) {

@@ -44,7 +44,8 @@ define([
         nThen(function (waitFor) {
             Object.keys(drive.sharedFolders).forEach(function (fId) {
                 var sfData = drive.sharedFolders[fId] || {};
-                var parsed = Hash.parsePadUrl(sfData.href || sfData.roHref);
+                var href = (sfData.href && sfData.href.indexOf('#') !== -1) ? sfData.href : sfData.roHref;
+                var parsed = Hash.parsePadUrl(href);
                 var secret = Hash.getSecrets('drive', parsed.hash, sfData.password);
                 sframeChan.query('Q_DRIVE_GETOBJECT', {
                     sharedFolder: fId

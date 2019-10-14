@@ -433,6 +433,10 @@ define([
                     Cryptpad.mailbox.execCommand(data, cb);
                 });
 
+                sframeChan.on('Q_STORE_IN_TEAM', function (data, cb) {
+                    Cryptpad.storeInTeam(data, cb);
+                });
+
             };
             addCommonRpc(sframeChan);
 
@@ -463,10 +467,6 @@ define([
             sframeChan.on('EV_SET_TAB_TITLE', function (newTabTitle) {
                 currentTabTitle = newTabTitle;
                 setDocumentTitle();
-            });
-
-            sframeChan.on('Q_STORE_IN_TEAM', function (data, cb) {
-                Cryptpad.storeInTeam(data, cb);
             });
 
             sframeChan.on('EV_SET_HASH', function (hash) {

@@ -431,7 +431,7 @@ define([
         var team;
         Object.keys(myTeams).some(function (k) {
             var _team = myTeams[k];
-            if (_team.channel === content.teamChannel) {
+            if (_team.channel === content.teamData.channel) {
                 teamId = k;
                 team = _team;
                 return true;

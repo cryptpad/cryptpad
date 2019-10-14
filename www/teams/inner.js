@@ -11,6 +11,7 @@ define([
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/proxy-manager.js',
+    '/common/userObject.js',
     '/common/hyperscript.js',
     '/customize/application_config.js',
     '/common/messenger-ui.js',
@@ -32,6 +33,7 @@ define([
     nThen,
     SFCommon,
     ProxyManager,
+    UserObject,
     h,
     AppConfig,
     MessengerUI,
@@ -53,7 +55,8 @@ define([
         nThen(function (waitFor) {
             Object.keys(drive.sharedFolders).forEach(function (fId) {
                 var sfData = drive.sharedFolders[fId] || {};
-                var parsed = Hash.parsePadUrl(sfData.href || sfData.roHref);
+                var href = UserObject.getHref(sfData, APP.cryptor);
+                var parsed = Hash.parsePadUrl(href);
                 var secret = Hash.getSecrets('drive', parsed.hash, sfData.password);
                 sframeChan.query('Q_DRIVE_GETOBJECT', {
                     sharedFolder: fId
@@ -78,6 +81,30 @@ define([
 
     var setEditable = DriveUI.setEditable;
 
+    var closeTeam = function (common, cb) {
+        var sframeChan = common.getSframeChannel();
+        APP.module.execCommand('SUBSCRIBE', null, function () {
+            sframeChan.query('Q_SET_TEAM', null, function (err) {
+                if (err) { return void console.error(err); }
+                if (APP.drive && APP.drive.close) { APP.drive.close(); }
+                $('.cp-toolbar-title-value').text(Messages.type.teams);
+                sframeChan.event('EV_SET_TAB_TITLE', Messages.type.teams);
+                APP.team = null;
+                APP.teamEdPublic = null;
+                APP.drive = null;
+                APP.cryptor = null;
+                APP.buildUI(common);
+                if (APP.usageBar) {
+                    APP.usageBar.stop();
+                    APP.usageBar = null;
+                }
+                if (cb) {
+                    cb(common);
+                }
+            });
+        });
+    };
+
     var mainCategories = {
         'list': [
             'cp-team-list',
@@ -92,23 +119,7 @@ define([
     var teamCategories = {
         'back': {
             onClick: function (common) {
-                var sframeChan = common.getSframeChannel();
-                APP.module.execCommand('SUBSCRIBE', null, function () {
-                    sframeChan.query('Q_SET_TEAM', null, function (err) {
-                        if (err) { return void console.error(err); }
-                        if (APP.drive && APP.drive.close) { APP.drive.close(); }
-                        $('.cp-toolbar-title-value').text(Messages.type.teams);
-                        sframeChan.event('EV_SET_TAB_TITLE', Messages.type.teams);
-                        APP.team = null;
-                        APP.teamEdPublic = null;
-                        APP.drive = null;
-                        APP.buildUI(common);
-                        if (APP.usageBar) {
-                            APP.usageBar.stop();
-                            APP.usageBar = null;
-                        }
-                    });
-                });
+                closeTeam(common);
             }
         },
         'drive': [
@@ -311,8 +322,26 @@ define([
     });
 
     var MAX_TEAMS_SLOTS = Constants.MAX_TEAMS_SLOTS;
-    var refreshList = function (common, cb) {
+    var openTeam = function (common, id, team) {
         var sframeChan = common.getSframeChannel();
+        APP.module.execCommand('SUBSCRIBE', id, function () {
+            var t = Messages._getKey('team_title', [Util.fixHTML(team.metadata.name)]);
+            sframeChan.query('Q_SET_TEAM', id, function (err) {
+                if (err) { return void console.error(err); }
+                // Change title
+                $('.cp-toolbar-title-value').text(t);
+                sframeChan.event('EV_SET_TAB_TITLE', t);
+                // Get secondary key
+                var secret = Hash.getSecrets('team', team.hash || team.roHash, team.password);
+                APP.cryptor = UserObject.createCryptor(secret.keys.secondaryKey);
+                // Load data
+                APP.team = id;
+                APP.teamEdPublic = Util.find(team, ['keys', 'drive', 'edPublic']);
+                buildUI(common, true, team.owner);
+            });
+        });
+    };
+    var refreshList = function (common, cb) {
         var content = [];
         APP.module.execCommand('LIST_TEAMS', null, function (obj) {
             if (!obj) { return; }
@@ -348,19 +377,7 @@ define([
                 ]));
                 common.displayAvatar($(avatar), team.metadata.avatar, team.metadata.name);
                 $(btn).click(function () {
-                    APP.module.execCommand('SUBSCRIBE', id, function () {
-                        var t = Messages._getKey('team_title', [Util.fixHTML(team.metadata.name)]);
-                        sframeChan.query('Q_SET_TEAM', id, function (err) {
-                            if (err) { return void console.error(err); }
-                            // Change title
-                            $('.cp-toolbar-title-value').text(t);
-                            sframeChan.event('EV_SET_TAB_TITLE', t);
-                            // Load data
-                            APP.team = id;
-                            APP.teamEdPublic = Util.find(team, ['keys', 'drive', 'edPublic']);
-                            buildUI(common, true, team.owner);
-                        });
-                    });
+                    openTeam(common, id, team);
                 });
             });
             content.push(h('div.cp-team-list-container', list));
@@ -506,7 +523,7 @@ define([
         var $actions = $(actions);
         var isMe = me && me.curvePublic === data.curvePublic;
         var myRole = me ? (ROLES.indexOf(me.role) || 1) : -1;
-        var theirRole = ROLES.indexOf(data.role) || 1;
+        var theirRole = ROLES.indexOf(data.role);
         var ADMIN = ROLES.indexOf('ADMIN');
         // If they're an admin and I am an owner, I can promote them to owner
         if (!isMe && myRole > theirRole && theirRole === ADMIN && !data.pending) {
@@ -895,6 +912,22 @@ define([
         ]);
     }, true);
 
+    var redrawTeam = function (common) {
+        if (!APP.team) { return; }
+        var teamId = APP.team;
+        var name = $('.cp-toolbar-title-value').text();
+        APP.module.execCommand('LIST_TEAMS', null, function (obj) {
+            if (!obj) { return; }
+            if (obj.error) { return void console.error(obj.error); }
+            var team = obj[teamId];
+            if (!team) { return; }
+            closeTeam(common, function () {
+                openTeam(common, teamId, team);
+            });
+        });
+    };
+
+
     var main = function () {
         var common;
         var readOnly;
@@ -959,6 +992,10 @@ define([
                     if (Number(APP.team) === Number(data)) {
                         redrawRoster(common);
                     }
+                    return;
+                }
+                if (ev === 'ROSTER_CHANGE_RIGHTS') {
+                    redrawTeam(common);
                     return;
                 }
             };

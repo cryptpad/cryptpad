@@ -172,6 +172,22 @@ define([
         return data;
     };
 
+    var getSharedFolderData = function (Env, id) {
+        if (!Env.folders[id]) { return {}; }
+        var obj = Env.folders[id].proxy.metadata || {};
+        for (var k in Env.user.proxy[UserObject.SHARED_FOLDERS][id] || {}) {
+            var data = JSON.parse(JSON.stringify(Env.user.proxy[UserObject.SHARED_FOLDERS][id][k]));
+            if (data.href && data.href.indexOf('#') === -1) {
+                try {
+                    data.href = Env.user.userObject.cryptor.decrypt(data.href);
+                } catch (e) {}
+            }
+            obj[k] = data;
+        }
+        return obj;
+    };
+
+
     // Transform an absolute path into a path relative to the correct shared folder
     var _resolvePath = function (Env, path) {
         var res = {
@@ -979,6 +995,7 @@ define([
             setPadAttribute: callWithEnv(setPadAttribute),
             getTagsList: callWithEnv(getTagsList),
             getSecureFilesList: callWithEnv(getSecureFilesList),
+            getSharedFolderData: callWithEnv(getSharedFolderData),
             // Store
             getChannelsList: callWithEnv(getChannelsList),
             addPad: callWithEnv(addPad),
@@ -1147,21 +1164,6 @@ define([
     };
     var getOwnedPads = function (Env) {
         return Env.user.userObject.getOwnedPads(Env.edPublic);
-    };
-
-    var getSharedFolderData = function (Env, id) {
-        if (!Env.folders[id]) { return {}; }
-        var obj = Env.folders[id].proxy.metadata || {};
-        for (var k in Env.user.proxy[UserObject.SHARED_FOLDERS][id] || {}) {
-            var data = JSON.parse(JSON.stringify(Env.user.proxy[UserObject.SHARED_FOLDERS][id][k]));
-            if (data.href && data.href.indexOf('#') === -1) {
-                try {
-                    data.href = Env.user.userObject.cryptor.decrypt(data.href);
-                } catch (e) {}
-            }
-            obj[k] = data;
-        }
-        return obj;
     };
 
     var getFolderData = function (Env, path) {

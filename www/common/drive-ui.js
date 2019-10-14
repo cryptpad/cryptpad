@@ -544,7 +544,8 @@ define([
         Object.keys(folders).forEach(function (id) {
             var f = folders[id];
             var sfData = files.sharedFolders[id] || {};
-            var parsed = Hash.parsePadUrl(sfData.href || sfData.roHref);
+            var href = manager.user.userObject.getHref(sfData);
+            var parsed = Hash.parsePadUrl(href);
             var secret = Hash.getSecrets('drive', parsed.hash, sfData.password);
             manager.addProxy(id, {proxy: f}, null, secret.keys.secondaryKey);
         });

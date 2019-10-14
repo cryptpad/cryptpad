@@ -990,6 +990,7 @@ define([
                 uo.setReadOnly(!secret.keys.secondaryKey, secret.keys.secondaryKey);
             }
         });
+        ctx.updateMetadata();
         ctx.emit('ROSTER_CHANGE_RIGHTS', teamId, team.clients);
     };
 
@@ -1006,10 +1007,14 @@ define([
             teamData.hash = data.hash;
             teamData.keys.drive.edPrivate = data.keys.drive.edPrivate;
             teamData.keys.chat.edit = data.keys.chat.edit;
+
+            var secret = Hash.getSecrets('team', data.hash, teamData.password);
+            team.secondaryKey = secret && secret.keys.secondaryKey;
         } else {
             delete teamData.hash;
             delete teamData.keys.drive.edPrivate;
             delete teamData.keys.chat.edit;
+            delete team.secondaryKey;
         }
 
         updateMyRights(ctx, teamId, data.hash);
@@ -1055,14 +1060,14 @@ define([
 
         // Viewer to editor
         if (user.role === "VIEWER" && data.data.role !== "VIEWER") {
-            return void changeEditRights(ctx, teamId, user, true, function (err) {
+            changeEditRights(ctx, teamId, user, true, function (err) {
                 return void cb({error: err});
             });
         }
 
         // Editor to viewer
         if (user.role !== "VIEWER" && data.data.role === "VIEWER") {
-            return void changeEditRights(ctx, teamId, user, false, function (err) {
+            changeEditRights(ctx, teamId, user, false, function (err) {
                 return void cb({error: err});
             });
         }
