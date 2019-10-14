@@ -252,15 +252,18 @@ define([
         return APP.store[LS_SEARCHCURSOR] || 0;
     };
 
+    // Handle disconnect/reconnect
     var setEditable = function (state) {
-        APP.editable = state;
-        if (APP.closed || (APP.$content && !$.contains(document.documentElement, APP.$content[0]))) { return; }
+        if (APP.closed || !APP.$content || !$.contains(document.documentElement, APP.$content[0])) { return; }
+        APP.editable = !APP.readOnly && state;
         if (!state) {
             APP.$content.addClass('cp-app-drive-readonly');
+            $('#cp-app-drive-connection-state').show();
             $('[draggable="true"]').attr('draggable', false);
         }
         else {
             APP.$content.removeClass('cp-app-drive-readonly');
+            $('#cp-app-drive-connection-state').hide();
             $('[draggable="false"]').attr('draggable', true);
         }
     };
@@ -531,6 +534,8 @@ define([
         APP.hideDuplicateOwned = Util.find(priv, ['settings', 'drive', 'hideDuplicate']);
         APP.closed = false;
 
+        var $readOnly = $('#cp-app-drive-edition-state');
+
         var updateObject = driveConfig.updateObject;
         var updateSharedFolders = driveConfig.updateSharedFolders;
 
@@ -608,9 +613,7 @@ define([
             }
         }
 
-        if (!APP.readOnly) {
-            setEditable(true);
-        }
+        APP.editable = !APP.readOnly;
         var appStatus = {
             isReady: true,
             _onReady: [],
@@ -1091,8 +1094,10 @@ define([
 
             var show = [];
             var filter;
+            var editable = true;
 
             if (type === "content") {
+                if (APP.$content.data('readOnlyFolder')) { editable = false; }
                 // Return true in filter to hide
                 filter = function ($el, className) {
                     if (className === 'newfolder') { return; }
@@ -1212,6 +1217,9 @@ define([
                             hide.push('removesf');
                         }
                     }
+                    if ($element.closest('[data-ro]').length) {
+                        editable = false;
+                    }
                 });
                 if (paths.length > 1) {
                     hide.push('restore');
@@ -1258,7 +1266,7 @@ define([
             var filtered = [];
             show.forEach(function (className) {
                 var $el = $contextMenu.find('.cp-app-drive-context-' + className);
-                if (!APP.editable && $el.is('.cp-app-drive-context-editable')) { return; }
+                if ((!APP.editable || !editable) && $el.is('.cp-app-drive-context-editable')) { return; }
                 if (filter($el, className)) { return; }
                 $el.parent('li').show();
                 filtered.push('.cp-app-drive-context-' + className);
@@ -1665,6 +1673,13 @@ define([
             $('.cp-app-drive-element-droppable').removeClass('cp-app-drive-element-droppable');
             var data = ev.dataTransfer.getData("text");
 
+            var newPath = findDropPath(ev.target);
+            if (!newPath) { return; }
+            var sfId = manager.isInSharedFolder(newPath);
+            if (sfId && folders[sfId] && folders[sfId].readOnly) {
+                return void UI.warn(Messages.fm_forbidden);
+            }
+
             // Don't use the normal drop handler for file upload
             var fileDrop = ev.dataTransfer.files;
             if (fileDrop.length) { return void onFileDrop(fileDrop, ev); }
@@ -1682,8 +1697,6 @@ define([
                 }
             });
 
-            var newPath = findDropPath(ev.target);
-            if (!newPath) { return; }
             if (sharedF && manager.isPathIn(newPath, [TRASH])) {
                 return void deletePaths(null, movedPaths);
             }
@@ -1945,7 +1958,8 @@ define([
                 addFileData(element, $element);
             }
             $element.addClass(liClass);
-            addDragAndDropHandlers($element, newPath, isFolder, !isTrash);
+            var droppable = !isTrash && !APP.$content.data('readOnlyFolder');
+            addDragAndDropHandlers($element, newPath, isFolder, droppable);
             $element.click(function(e) {
                 e.stopPropagation();
                 onElementClick(e, $element);
@@ -2786,6 +2800,7 @@ define([
             return $container;
         };
         var createGhostIcon = function ($list) {
+            if (APP.$content.data('readOnlyFolder')) { return; }
             var isInRoot = currentPath[0] === ROOT;
             var $element = $('<li>', {
                 'class': 'cp-app-drive-element-row cp-app-drive-element-grid cp-app-drive-new-ghost'
@@ -3209,6 +3224,7 @@ define([
             if (!APP.editable) { debug("Read-only mode"); }
             if (!appStatus.isReady && !force) { return; }
 
+            // Fix path obvious issues
             if (!path || path.length === 0) {
                 // Only Trash and Root are available in not-owned files manager
                 if (!path || displayedCategories.indexOf(path[0]) === -1) {
@@ -3226,7 +3242,7 @@ define([
                 path = [ROOT];
             }
 
-
+            // Get path data
             appStatus.ready(false);
             currentPath = path;
             var s = $content.scrollTop() || 0;
@@ -3248,6 +3264,7 @@ define([
                 currentPath = path;
             }
 
+            // Make sure the path is valid
             var root = isVirtual ? undefined : manager.find(path);
             if (manager.isSharedFolder(root)) {
                 // ANON_SHARED_FOLDER
@@ -3270,6 +3287,7 @@ define([
             }
             if (!isSearch) { delete APP.Search.oldLocation; }
 
+            // Display the tree and build the content
             APP.resetTree();
             if (displayedCategories.indexOf(SEARCH) !== -1 && $tree.find('#cp-app-drive-tree-search-input').length) {
                 // in history mode we want to focus the version number input
@@ -3302,9 +3320,24 @@ define([
 
             var $list = $('<ul>').appendTo($dirContent);
 
-            // NewButton can be undefined if we're in read only mode
-            createNewButton(isInRoot, $toolbar.find('.cp-app-drive-toolbar-leftside'));
             var sfId = manager.isInSharedFolder(currentPath);
+            var readOnlyFolder = false;
+            if (APP.readOnly) {
+                // Read-only drive (team?)
+                $readOnly.show();
+            } else if (folders[sfId] && folders[sfId].readOnly) {
+                // If readonly shared folder...
+                $readOnly.show();
+                readOnlyFolder = true;
+            } else {
+                $readOnly.hide();
+            }
+            $content.data('readOnlyFolder', readOnlyFolder);
+
+            // NewButton can be undefined if we're in read only mode
+            if (!readOnlyFolder) {
+                createNewButton(isInRoot, $toolbar.find('.cp-app-drive-toolbar-leftside'));
+            }
             if (sfId) {
                 var sfData = manager.getSharedFolderData(sfId);
                 var parsed = Hash.parsePadUrl(sfData.href);
@@ -3313,6 +3346,7 @@ define([
             } else {
                 sframeChan.event('EV_DRIVE_SET_HASH', '');
             }
+
 
             createTitle($toolbar.find('.cp-app-drive-path'), path);
 
@@ -3524,6 +3558,7 @@ define([
                 var newPath = path.slice();
                 newPath.push(key);
                 var isSharedFolder = manager.isSharedFolder(root[key]);
+                var sfId = manager.isInSharedFolder(newPath) || (isSharedFolder && root[key]);
                 var $icon, isCurrentFolder, subfolder;
                 if (isSharedFolder) {
                     var fId = root[key];
@@ -3545,12 +3580,18 @@ define([
                         (isCurrentFolder ? $folderOpenedEmptyIcon : $folderEmptyIcon) :
                         (isCurrentFolder ? $folderOpenedIcon : $folderIcon);
                 }
-                var $element = createTreeElement(key, $icon.clone(), newPath, true, true, subfolder, isCurrentFolder, isSharedFolder);
+                var f = folders[sfId];
+                var editable = !(f && f.readOnly);
+                var $element = createTreeElement(key, $icon.clone(), newPath, true, editable,
+                                                subfolder, isCurrentFolder, isSharedFolder);
                 $element.appendTo($list);
                 $element.find('>.cp-app-drive-element-row').contextmenu(openContextMenu('tree'));
                 if (isSharedFolder) {
                     $element.find('>.cp-app-drive-element-row')
                         .addClass('cp-app-drive-element-sharedf');
+                }
+                if (sfId && !editable) {
+                    $element.attr('data-ro', true);
                 }
                 createTree($element, newPath);
             });

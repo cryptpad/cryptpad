@@ -63,6 +63,7 @@ define([
                 }, waitFor(function (err, newObj) {
                     folders[fId] = folders[fId] || {};
                     copyObjectValue(folders[fId], newObj);
+                    folders[fId].readOnly = !secret.keys.secondaryKey;
                     if (manager && oldIds.indexOf(fId) === -1) {
                         manager.addProxy(fId, { proxy: folders[fId] }, null, secret.keys.secondaryKey);
                     }
@@ -275,6 +276,7 @@ define([
 
             // Provide secondaryKey
             var teamData = (privateData.teams || {})[id] || {};
+            driveAPP.readOnly = !teamData.secondaryKey;
             var drive = DriveUI.create(common, {
                 proxy: proxy,
                 folders: folders,
@@ -461,6 +463,8 @@ define([
                 h('div#cp-app-drive-tree'),
                 h('div#cp-app-drive-content-container', [
                     h('div#cp-app-drive-toolbar'),
+                    h('div#cp-app-drive-connection-state', {style: "display: none;"}, Messages.disconnected),
+                    h('div#cp-app-drive-edition-state', {style: "display: none;"}, Messages.readonly),
                     h('div#cp-app-drive-content', {tabindex:2})
                 ])
             ])
@@ -915,7 +919,6 @@ define([
     var redrawTeam = function (common) {
         if (!APP.team) { return; }
         var teamId = APP.team;
-        var name = $('.cp-toolbar-title-value').text();
         APP.module.execCommand('LIST_TEAMS', null, function (obj) {
             if (!obj) { return; }
             if (obj.error) { return void console.error(obj.error); }

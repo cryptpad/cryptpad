@@ -52,6 +52,7 @@ define([
                 }, waitFor(function (err, newObj) {
                     folders[fId] = folders[fId] || {};
                     copyObjectValue(folders[fId], newObj);
+                    folders[fId].readOnly = !secret.keys.secondaryKey;
                     if (manager && oldIds.indexOf(fId) === -1) {
                         manager.addProxy(fId, { proxy: folders[fId] }, null, secret.keys.secondaryKey);
                     }
@@ -107,6 +108,7 @@ define([
             }));
             SFCommon.create(waitFor(function (c) { common = c; }));
         }).nThen(function (waitFor) {
+            $('#cp-app-drive-connection-state').text(Messages.disconnected);
             var privReady = Util.once(waitFor());
             var metadataMgr = common.getMetadataMgr();
             if (JSON.stringify(metadataMgr.getPrivateData()) !== '{}') {
