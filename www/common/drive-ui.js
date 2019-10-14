@@ -2523,24 +2523,28 @@ define([
             $sharedIcon.clone().appendTo($shareBlock);
             $('<span>').text(Messages.shareButton).appendTo($shareBlock);
             var data = manager.getSharedFolderData(id);
-            var parsed = Hash.parsePadUrl(data.href);
-            // XXX share modal shared folder read only
-            if (!parsed || !parsed.hash) { return void console.error("Invalid href: "+data.href); }
+            var parsed = (data.href && data.href.indexOf('#') !== -1) ? Hash.parsePadUrl(data.href) : {};
+            var roParsed = Hash.parsePadUrl(data.roHref) || {};
+            if (!parsed.hash && !roParsed.hash) { return void console.error("Invalid href: "+(data.href || data.roHref)); }
             var friends = common.getFriends();
             var teams = common.getMetadataMgr().getPrivateData().teams;
             var _wide = Object.keys(friends).length || Object.keys(teams).length;
-            var modal = UIElements.createSFShareModal({
+            var ro = folders[id] && folders[id].version >= 2;
+            var modal = UIElements.createShareModal({
                 teamId: APP.team,
                 origin: APP.origin,
                 pathname: "/drive/",
                 friends: friends,
                 title: data.title,
                 password: data.password,
+                sharedFolder: true,
                 common: common,
                 hashes: {
-                    editHash: parsed.hash
+                    editHash: parsed.hash,
+                    viewHash: ro && roParsed.hash,
                 }
             });
+            modal = UI.dialog.tabs(modal);
             $shareBlock.click(function () {
                 UI.openCustomModal(modal, {
                     wide: _wide
@@ -4018,25 +4022,7 @@ define([
                 var teams = common.getMetadataMgr().getPrivateData().teams;
                 var _wide = Object.keys(friends).length || Object.keys(teams).length;
 
-                if (manager.isSharedFolder(el)) {
-                    data = manager.getSharedFolderData(el);
-                    parsed = Hash.parsePadUrl(data.href);
-                    modal = UIElements.createSFShareModal({
-                        teamId: APP.team,
-                        origin: APP.origin,
-                        pathname: "/drive/",
-                        friends: friends,
-                        title: data.title,
-                        common: common,
-                        password: data.password,
-                        hashes: {
-                            editHash: parsed.hash
-                        }
-                    });
-                    return void UI.openCustomModal(modal, {
-                        wide: _wide
-                    });
-                } else if (manager.isFolder(el)) { // Folder
+                if (manager.isFolder(el) && !manager.isSharedFolder(el)) { // Folder
                     // if folder is inside SF
                     return UI.warn('ERROR: Temporarily disabled'); // XXX CONVERT
                     /*if (manager.isInSharedFolder(paths[0].path)) {
@@ -4071,10 +4057,13 @@ define([
                         });
                     }*/
                 } else { // File
-                    data = manager.getFileData(el);
-                    parsed = Hash.parsePadUrl(data.href);
+                    var sf = manager.isSharedFolder(el);
+                    data = sf ? manager.getSharedFolderData(el) : manager.getFileData(el);
+                    parsed = (data.href && data.href.indexOf('#') !== -1) ? Hash.parsePadUrl(data.href) : {};
                     var roParsed = Hash.parsePadUrl(data.roHref);
                     var padType = parsed.type || roParsed.type;
+                    var ro = !sf || (folders[el] && folders[el].version >= 2);
+                    console.log(folders[el]);
                     var padData = {
                         teamId: APP.team,
                         origin: APP.origin,
@@ -4083,7 +4072,7 @@ define([
                         password: data.password,
                         hashes: {
                             editHash: parsed.hash,
-                            viewHash: roParsed.hash,
+                            viewHash: ro && roParsed.hash,
                             fileHash: parsed.hash
                         },
                         fileData: {
@@ -4092,6 +4081,7 @@ define([
                         },
                         isTemplate: paths[0].path[0] === 'template',
                         title: data.title,
+                        sharedFolder: sf,
                         common: common
                     };
                     modal = padType === 'file' ? UIElements.createFileShareModal(padData)

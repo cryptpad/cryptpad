@@ -867,6 +867,7 @@ define([
             // config.teamId only exists when we're trying to share a pad from a team drive
             // In this case, we don't want to share the pad with the current team
             if (config.teamId && config.teamId === id) { return; }
+            if (!teamsData[id].secondaryKey) { return; }
             var t = teamsData[id];
             teams[t.edPublic] = {
                 notifications: true,
@@ -980,7 +981,7 @@ define([
         var hashes = config.hashes;
         var common = config.common;
 
-        if (!hashes) { return; }
+        if (!hashes || (!hashes.editHash && !hashes.viewHash)) { return; }
 
         // Share link tab
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
@@ -988,7 +989,12 @@ define([
         var friendsList = hasFriends ? createShareWithFriends(config, onFriendShare) : undefined;
         var friendsUIClass = hasFriends ? '.cp-share-columns' : '';
 
-        var mainShareColumn = h('div.cp-share-column.contains-nav', [
+        var content = [];
+        var sfContent = [
+            h('label', Messages.sharedFolders_share),
+            h('br'),
+        ];
+        var shareContent = [
             h('label', Messages.share_linkAccess),
             h('br'),
             UI.createRadio('cp-share-editable', 'cp-share-editable-true',
@@ -996,18 +1002,21 @@ define([
             UI.createRadio('cp-share-editable', 'cp-share-editable-false',
                            Messages.share_linkView, false, { mark: {tabindex:1} }),
             h('br'),
+        ];
+        var padContent = [
             h('label', Messages.share_linkOptions),
             h('br'),
             UI.createCheckbox('cp-share-embed', Messages.share_linkEmbed, false, { mark: {tabindex:1} }),
             UI.createCheckbox('cp-share-present', Messages.share_linkPresent, false, { mark: {tabindex:1} }),
             h('br'),
-            UI.dialog.selectable('', { id: 'cp-share-link-preview', tabindex: 1 }),
-        ]);
+        ];
+        if (config.sharedFolder) { Array.prototype.push.apply(content, sfContent); }
+        Array.prototype.push.apply(content, shareContent);
+        if (!config.sharedFolder) { Array.prototype.push.apply(content, padContent); }
+        content.push(UI.dialog.selectable('', { id: 'cp-share-link-preview', tabindex: 1 }));
+
+        var mainShareColumn = h('div.cp-share-column.contains-nav', content);
         var link = h('div.cp-share-modal' + friendsUIClass);
-        if (!hashes.editHash) {
-            $(link).find('#cp-share-editable-false').attr('checked', true);
-            $(link).find('#cp-share-editable-true').removeAttr('checked').attr('disabled', true);
-        }
         var saveValue = function () {
             var edit = Util.isChecked($(link).find('#cp-share-editable-true'));
             var embed = Util.isChecked($(link).find('#cp-share-embed'));
@@ -1046,20 +1055,31 @@ define([
                 if (success) { UI.log(Messages.shareSuccess); }
             },
             keys: [13]
-        }, {
-            className: 'primary',
-            name: Messages.share_linkOpen,
-            onClick: function () {
-                saveValue();
-                var v = getLinkValue();
-                window.open(v);
-            },
-            keys: [[13, 'ctrl']]
         }];
+        if (!config.sharedFolder) {
+            shareButtons.push({
+                className: 'primary',
+                name: Messages.share_linkOpen,
+                onClick: function () {
+                    saveValue();
+                    var v = getLinkValue();
+                    window.open(v);
+                },
+                keys: [[13, 'ctrl']]
+            });
+        }
 
         var $link = $(link);
         $(mainShareColumn).append(UI.dialog.getButtons(shareButtons, config.onClose)).appendTo($link);
         $(friendsList).appendTo($link);
+
+        if (!hashes.editHash) {
+            $(link).find('#cp-share-editable-false').attr('checked', true);
+            $(link).find('#cp-share-editable-true').removeAttr('checked').attr('disabled', true);
+        } else if (!hashes.viewHash) {
+            $(link).find('#cp-share-editable-false').removeAttr('checked').attr('disabled', true);
+            $(link).find('#cp-share-editable-true').attr('checked', true);
+        }
 
         $(link).find('#cp-share-link-preview').val(getLinkValue());
         $(link).find('input[type="radio"], input[type="checkbox"]').on('change', function () {
@@ -1122,7 +1142,7 @@ define([
         }
         common.getAttribute(['general', 'share'], function (err, val) {
             val = val || {};
-            if (val.edit === false || !hashes.editHash) {
+            if ((val.edit === false && hashes.viewHash) || !hashes.editHash) {
                 $(link).find('#cp-share-editable-false').prop('checked', true);
                 $(link).find('#cp-share-editable-true').prop('checked', false);
             } else {
@@ -1131,12 +1151,17 @@ define([
             }
             if (val.embed) { $(link).find('#cp-share-embed').prop('checked', true); }
             if (val.present) { $(link).find('#cp-share-present').prop('checked', true); }
+            if (config.sharedFolder) {
+                delete val.embed;
+                delete val.present;
+            }
             $(link).find('#cp-share-link-preview').val(getLinkValue(val));
         });
         common.getMetadataMgr().onChange(function () {
             // "hashes" is only available is the secure "share" app
-            hashes = common.getMetadataMgr().getPrivateData().hashes;
-            if (!hashes) { return; }
+            var _hashes = common.getMetadataMgr().getPrivateData().hashes;
+            if (!_hashes) { return; }
+            hashes = _hashes;
             $(link).find('#cp-share-link-preview').val(getLinkValue());
         });
         return tabs;
@@ -1237,47 +1262,6 @@ define([
             });
         }
         return tabs;
-    };
-    UIElements.createSFShareModal = function (config) {
-        var origin = config.origin;
-        var pathname = config.pathname;
-        var hashes = config.hashes;
-
-        if (!hashes.editHash) { throw new Error("You must provide a valid hash"); }
-        var url = origin + pathname + '#' + hashes.editHash;
-
-        // Share link tab
-        var hasFriends = Object.keys(config.friends || {}).length !== 0;
-        var friendsList = hasFriends ? createShareWithFriends(config) : undefined;
-        var friendsUIClass = hasFriends ? '.cp-share-columns' : '';
-        var mainShareColumn = h('div.cp-share-column.contains-nav', [
-            h('div.cp-share-column', [
-                h('label', Messages.sharedFolders_share),
-                h('br'),
-                hasFriends ? h('p', Messages.share_description) : undefined,
-                UI.dialog.selectable(url, { id: 'cp-share-link-preview', tabindex: 1 })
-            ])
-        ]);
-        var link = h('div.cp-share-modal' + friendsUIClass);
-        var linkButtons = [{
-            className: 'cancel',
-            name: Messages.cancel,
-            onClick: function () {},
-            keys: [27]
-        }];
-        var shareButtons = [{
-            className: 'primary',
-            name: Messages.share_linkCopy,
-            onClick: function () {
-                var success = Clipboard.copy(url);
-                if (success) { UI.log(Messages.shareSuccess); }
-            },
-            keys: [13]
-        }];
-        var $link = $(link);
-        $(mainShareColumn).append(UI.dialog.getButtons(shareButtons, config.onClose)).appendTo($link);
-        $(friendsList).appendTo($link);
-        return UI.dialog.customModal(link, {buttons: linkButtons});
     };
 
     UIElements.createInviteTeamModal = function (config) {

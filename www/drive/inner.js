@@ -109,6 +109,7 @@ define([
             SFCommon.create(waitFor(function (c) { common = c; }));
         }).nThen(function (waitFor) {
             $('#cp-app-drive-connection-state').text(Messages.disconnected);
+            $('#cp-app-drive-edition-state').text(Messages.readonly);
             var privReady = Util.once(waitFor());
             var metadataMgr = common.getMetadataMgr();
             if (JSON.stringify(metadataMgr.getPrivateData()) !== '{}') {
@@ -214,7 +215,7 @@ define([
             };
 
             // Add a "Burn this drive" button
-            if (!APP.loggedIn) {
+            if (!APP.loggedIn && !APP.readOnly) {
                 APP.$burnThisDrive = common.createButton(null, true).click(function () {
                     UI.confirm(Messages.fm_burnThisDrive, function (yes) {
                         if (!yes) { return; }

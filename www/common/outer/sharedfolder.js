@@ -134,6 +134,10 @@ define([
         };
         var rt = sf.rt = Listmap.create(listmapConfig);
         rt.proxy.on('ready', function (info) {
+            if (!Object.keys(rt.proxy).length) {
+                // New Shared folder: no migration required
+                rt.proxy.version = 2;
+            }
             if (!sf.queue) {
                 return;
             }

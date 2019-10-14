@@ -531,6 +531,7 @@ define([
             };
             var lm = Listmap.create(config);
             var proxy = lm.proxy;
+            proxy.version = 2; // No migration needed
             proxy.on('ready', function () {
                 // Store keys in our drive
                 var keys = {
