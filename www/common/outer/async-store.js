@@ -2121,6 +2121,7 @@ define([
                     proxy.settings.general.allowUserFeedback = true;
                 }
                 returned.feedback = proxy.settings.general.allowUserFeedback;
+                Feedback.init(returned.feedback);
 
                 if (typeof(cb) === 'function') { cb(returned); }
 

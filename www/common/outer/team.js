@@ -9,6 +9,7 @@ define([
     '/common/outer/sharedfolder.js',
     '/common/outer/roster.js',
     '/common/common-messaging.js',
+    '/common/common-feedback.js',
 
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
@@ -18,7 +19,7 @@ define([
     '/bower_components/saferphore/index.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
 ], function (Util, Hash, Constants, Realtime,
-             ProxyManager, UserObject, SF, Roster, Messaging,
+             ProxyManager, UserObject, SF, Roster, Messaging, Feedback,
              Listmap, Crypto, CpNetflux, ChainPad, nThen, Saferphore) {
     var Team = {};
 
@@ -534,6 +535,7 @@ define([
                 proxy.drive = {};
 
                 onReady(ctx, id, lm, roster, keys, cId, function () {
+                    Feedback.send('TEAM_CREATION');
                     ctx.updateMetadata();
                     cb();
                 });
@@ -649,6 +651,7 @@ define([
                 if (err) { console.error(err); }
             }));
         }).nThen(function () {
+            Feedback.send('TEAM_DELETION');
             closeTeam(ctx, teamId);
             cb();
         });

@@ -2580,7 +2580,7 @@ define([
                     'target': '_blank',
                     'rel': 'noopener',
                     'href': AppConfig.surveyURL,
-                    'class': 'fa fa-graduation-cap'
+                    'class': 'cp-toolbar-survey fa fa-graduation-cap'
                 },
                 content: h('span', Messages.survey)
             });
@@ -2694,6 +2694,9 @@ define([
             } else {
                 window.parent.location = origin+'/admin/';
             }
+        });
+        $userAdmin.find('a.cp-toolbar-survey').click(function () {
+            Feedback.send('SURVEY_CLICKED');
         });
         $userAdmin.find('a.cp-toolbar-menu-profile').click(function () {
             if (padType) {
