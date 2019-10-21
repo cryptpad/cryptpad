@@ -14,6 +14,7 @@ define([
     var TRASH = module.TRASH = "trash";
     var TEMPLATE = module.TEMPLATE = "template";
     var SHARED_FOLDERS = module.SHARED_FOLDERS = "sharedFolders";
+    var SHARED_FOLDERS_TEMP = module.SHARED_FOLDERS_TEMP = "sharedFoldersTemp"; // Maybe deleted or new password
 
     // Create untitled documents when no name is given
     var getLocaleDate = function () {
@@ -45,6 +46,7 @@ define([
         exp.TRASH = TRASH;
         exp.TEMPLATE = TEMPLATE;
         exp.SHARED_FOLDERS = SHARED_FOLDERS;
+        exp.SHARED_FOLDERS_TEMP = SHARED_FOLDERS_TEMP;
 
         var sharedFolder = exp.sharedFolder = config.sharedFolder;
         exp.id = config.id;
@@ -379,11 +381,17 @@ define([
             return Util.deduplicateString(ret);
         };
 
-        var getIdFromHref = exp.getIdFromHref = function (href) {
+        var getIdFromHref = exp.getIdFromHref = function (_href) {
             var result;
+            var noPassword = function (str) {
+                if (!str) { return; }
+                var value = str.replace(/\/p\/?/, '/');
+                return Hash.getRelativeHref(value);
+            };
+            var href = noPassword(_href);
             getFiles([FILES_DATA]).some(function (id) {
-                if (files[FILES_DATA][id].href === href ||
-                    files[FILES_DATA][id].roHref === href) {
+                if (noPassword(files[FILES_DATA][id].href) === href ||
+                    noPassword(files[FILES_DATA][id].roHref) === href) {
                     result = id;
                     return true;
                 }
@@ -391,11 +399,17 @@ define([
             return result;
         };
 
-        exp.getSFIdFromHref = function (href) {
+        exp.getSFIdFromHref = function (_href) {
             var result;
+            var noPassword = function (str) {
+                if (!str) { return; }
+                var value = str.replace(/\/p\/?/, '/');
+                return Hash.getRelativeHref(value);
+            };
+            var href = noPassword(_href);
             getFiles([SHARED_FOLDERS]).some(function (id) {
-                if (files[SHARED_FOLDERS][id].href === href ||
-                    files[SHARED_FOLDERS][id].roHref === href) {
+                if (noPassword(files[SHARED_FOLDERS][id].href) === href ||
+                    noPassword(files[SHARED_FOLDERS][id].roHref) === href) {
                     result = id;
                     return true;
                 }

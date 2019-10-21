@@ -28,6 +28,7 @@ define([
         var TRASH = exp.TRASH;
         var TEMPLATE = exp.TEMPLATE;
         var SHARED_FOLDERS = exp.SHARED_FOLDERS;
+        var SHARED_FOLDERS_TEMP = exp.SHARED_FOLDERS_TEMP;
 
         var debug = exp.debug;
 
@@ -72,6 +73,15 @@ define([
             var id = Util.createRandomInteger();
             files[SHARED_FOLDERS][id] = data;
             cb(null, id);
+        };
+
+        exp.deprecateSharedFolder = function (id) {
+            var data = files[SHARED_FOLDERS][id];
+            if (!data) { return; }
+            files[SHARED_FOLDERS_TEMP][id] = JSON.parse(JSON.stringify(data));
+            var paths = exp.findFile(Number(id));
+            exp.delete(paths, null, true);
+            delete files[SHARED_FOLDERS][id];
         };
 
         // FILES DATA
@@ -724,6 +734,10 @@ define([
             var fixSharedFolders = function () {
                 if (sharedFolder) { return; }
                 if (typeof(files[SHARED_FOLDERS]) !== "object") { debug("SHARED_FOLDER was not an object"); files[SHARED_FOLDERS] = {}; }
+                if (typeof(files[SHARED_FOLDERS_TEMP]) !== "object") {
+                    debug("SHARED_FOLDER_TEMP was not an object");
+                    files[SHARED_FOLDERS_TEMP] = {};
+                }
                 var sf = files[SHARED_FOLDERS];
                 var rootFiles = exp.getFiles([ROOT]);
                 var root = exp.find([ROOT]);
@@ -748,6 +762,7 @@ define([
                     }
                 }
             };
+
 
             var fixDrive = function () {
                 Object.keys(files).forEach(function (key) {

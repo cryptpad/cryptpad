@@ -31,6 +31,27 @@ define([
 
     var registerChangeEvents = function (ctx, team, proxy, fId) {
         if (!team) { return; }
+        if (!fId) {
+            // Listen for shared folder password change
+            proxy.on('change', ['drive', UserObject.SHARED_FOLDERS], function (o, n, p) {
+                if (p.length > 3 && p[3] === 'password') {
+                    var id = p[2];
+                    var data = proxy.drive[UserObject.SHARED_FOLDERS][id];
+                    var href = team.manager.user.userObject.getHref ?
+                            team.manager.user.userObject.getHref(data) : data.href;
+                    var parsed = Hash.parsePadUrl(href);
+                    var secret = Hash.getSecrets(parsed.type, parsed.hash, o);
+                    SF.updatePassword(ctx.Store, {
+                        oldChannel: secret.channel,
+                        password: n,
+                        href: href
+                    }, ctx.store.network, function () {
+                        console.log('Shared folder password changed');
+                    });
+                    return false;
+                }
+            });
+        }
         proxy.on('change', [], function (o, n, p) {
             if (fId) {
                 // Pin the new pads
@@ -208,13 +229,13 @@ define([
                 };
             }));
         }).nThen(function () {
-            var loadSharedFolder = function (id, data, cb) {
+            var loadSharedFolder = function (id, data, cb, isNew) {
                 SF.load({
+                    isNew: isNew,
                     network: ctx.store.network,
-                    store: team
-                }, id, data, function (id, rt) {
-                    cb(id, rt);
-                });
+                    store: team,
+                    isNewChannel: ctx.Store.isNewChannel
+                }, id, data, cb);
             };
             var manager = team.manager = ProxyManager.create(proxy.drive, {
                 onSync: function (cb) { ctx.Store.onSync(id, cb); },
@@ -224,7 +245,8 @@ define([
                 loadSharedFolder: loadSharedFolder,
                 settings: {
                     drive: Util.find(ctx.store, ['proxy', 'settings', 'drive'])
-                }
+                },
+                Store: ctx.Store
             }, {
                 outer: true,
                 removeOwnedChannel: function (channel, cb) {

@@ -116,7 +116,7 @@
             }*/
         }
 
-        .dialog, .alert {
+        .dialog {
             & > div {
                 background-color: @alertify-dialog-bg;
                 &.half {
@@ -205,6 +205,16 @@
                 }
             }
 
+            ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+                color: darken(@alertify-input-fg, 15%);
+                opacity: 1; /* Firefox */
+            }
+            :-ms-input-placeholder { /* Internet Explorer 10-11 */
+                color: darken(@alertify-input-fg, 15%);
+            }
+            ::-ms-input-placeholder { /* Microsoft Edge */
+                color: darken(@alertify-input-fg, 15%);
+            }
             input:not(.form-control), textarea {
                 background-color: @alertify-input-bg;
                 color: @alertify-input-fg;

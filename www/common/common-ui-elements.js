@@ -548,6 +548,7 @@ define([
                     var sframeChan = common.getSframeChannel();
                     var changePwTitle = Messages.properties_changePassword;
                     var changePwConfirm = Messages.properties_confirmChange;
+                    var isSharedFolder = parsed.type === 'drive';
                     if (!hasPassword) {
                         changePwTitle = Messages.properties_addPassword;
                         changePwConfirm = Messages.properties_confirmNew;
@@ -577,6 +578,7 @@ define([
                                 password: newPass
                             }, function (err, data) {
                                 if (err || data.error) {
+                                    console.error(err || data.error);
                                     return void UI.alert(Messages.properties_passwordError);
                                 }
                                 UI.findOKButton().click();
@@ -589,7 +591,9 @@ define([
                                     }, {force: true});
                                 }
                                 return void UI.alert(Messages.properties_passwordSuccess, function () {
-                                    common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
+                                    if (!isSharedFolder) {
+                                        common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
+                                    }
                                 }, {force: true});
                             });
                         });

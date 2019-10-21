@@ -118,7 +118,7 @@ define([
                         msgEv.fire(msg);
                     });
                     SFrameChannel.create(msgEv, postMsg, waitFor(function (sfc) {
-                        sframeChan = sfc;
+                        Utils.sframeChan = sframeChan = sfc;
                     }));
                 });
                 window.addEventListener('message', whenReady);

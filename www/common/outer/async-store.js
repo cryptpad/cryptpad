@@ -454,7 +454,7 @@ define([
 
         Store.isNewChannel = function (clientId, data, cb) {
             if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
-            var channelId = Hash.hrefToHexChannelId(data.href, data.password);
+            var channelId = data.channel || Hash.hrefToHexChannelId(data.href, data.password);
             store.anon_rpc.send("IS_NEW_CHANNEL", channelId, function (e, response) {
                 if (e) { return void cb({error: e}); }
                 if (response && response.length && typeof(response[0]) === 'boolean') {
@@ -1778,21 +1778,24 @@ define([
                 }
             };
         };
-        Store.loadSharedFolder = function (teamId, id, data, cb) {
+        Store.loadSharedFolder = function (teamId, id, data, cb, isNew) {
             var s = getStore(teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
-            var rt = SF.load({
+            SF.load({
+                isNew: isNew,
                 network: store.network,
-                store: s
+                store: s,
+                isNewChannel: Store.isNewChannel
             }, id, data, cb);
-            return rt;
         };
-        var loadSharedFolder = function (id, data, cb) {
-            Store.loadSharedFolder(null, id, data, cb);
+        var loadSharedFolder = function (id, data, cb, isNew) {
+            Store.loadSharedFolder(null, id, data, cb, isNew);
         };
         Store.loadSharedFolderAnon = function (clientId, data, cb) {
-            Store.loadSharedFolder(null, data.id, data.data, function () {
-                cb();
+            Store.loadSharedFolder(null, data.id, data.data, function (rt) {
+                cb({
+                    error: rt ? undefined : 'EDELETED'
+                });
             });
         };
         Store.addSharedFolder = function (clientId, data, cb) {
@@ -1804,6 +1807,9 @@ define([
                 }, clientId);
                 cb(id);
             });
+        };
+        Store.updateSharedFolderPassword = function (clientId, data, cb) {
+            SF.updatePassword(Store, data, store.network, cb);
         };
 
         // Drive
@@ -1889,6 +1895,27 @@ define([
             });
         };
         registerProxyEvents = function (proxy, fId) {
+            if (!fId) {
+                // Listen for shared folder password change
+                proxy.on('change', ['drive', UserObject.SHARED_FOLDERS], function (o, n, p) {
+                    if (p.length > 3 && p[3] === 'password') {
+                        var id = p[2];
+                        var data = proxy.drive[UserObject.SHARED_FOLDERS][id];
+                        var href = store.manager.user.userObject.getHref ?
+                                store.manager.user.userObject.getHref(data) : data.href;
+                        var parsed = Hash.parsePadUrl(href);
+                        var secret = Hash.getSecrets(parsed.type, parsed.hash, o);
+                        SF.updatePassword({
+                            oldChannel: secret.channel,
+                            password: n,
+                            href: href
+                        }, store.network, function () {
+                            console.log('Shared folder password changed');
+                        });
+                        return false;
+                    }
+                });
+            }
             proxy.on('change', [], function (o, n, p) {
                 if (fId) {
                     // Pin the new pads
@@ -2039,7 +2066,8 @@ define([
                 pin: pin,
                 unpin: unpin,
                 loadSharedFolder: loadSharedFolder,
-                settings: proxy.settings
+                settings: proxy.settings,
+                Store: Store
             }, {
                 outer: true,
                 removeOwnedChannel: function (channel, cb) { Store.removeOwnedChannel('', channel, cb); },

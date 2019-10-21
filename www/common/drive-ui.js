@@ -3745,7 +3745,7 @@ define([
             if (manager.isSharedFolder(el)) {
                 delete data.roHref;
                 //data.noPassword = true;
-                data.noEditPassword = true;
+                //data.noEditPassword = true;
                 data.noExpiration = true;
                 // this is here to allow users to check the channel id of a shared folder
                 // we should remove it at some point
@@ -4403,6 +4403,7 @@ define([
         refresh();
         UI.removeLoadingScreen();
 
+        /*
         if (!APP.team) {
             sframeChan.query('Q_DRIVE_GETDELETED', null, function (err, data) {
                 var ids = manager.findChannels(data);
@@ -4417,6 +4418,83 @@ define([
                 UI.log(Messages._getKey('fm_deletedPads', [titles.join(', ')]));
             });
         }
+        */
+        var deprecated = files.sharedFoldersTemp;
+        var nt = nThen;
+        var passwordModal = function (fId, data, cb) {
+            var content = [];
+            var folderName = '<b>'+ (data.lastTitlei || Messages.fm_newFolder) +'</b>';
+            content.push(UI.setHTML(h('p'), Messages._getKey('drive_sfPassword', [folderName])));
+            if (data.lastTitle) {
+                content.push(h('p', [
+                    Messages.fm_folderName,
+                    ' ',
+                    h('input', data.lastTitle)
+                ]));
+            }
+            var newPassword = UI.passwordInput({
+                id: 'cp-app-prop-change-password',
+                placeholder: Messages.settings_changePasswordNew,
+                style: 'flex: 1;'
+            });
+            var passwordOk = h('button', Messages.properties_changePasswordButton);
+            var changePass = h('span.cp-password-container', [
+                newPassword,
+                passwordOk
+            ]);
+            content.push(changePass);
+            var div = h('div', content);
+
+            var locked = false;
+            $(passwordOk).click(function () {
+                if (locked) { return; }
+                var pw = $(newPassword).find('.cp-password-input').val();
+                locked = true;
+                $(div).find('.alert').remove();
+                $(passwordOk).html('').append(h('span.fa.fa-spinner.fa-spin', {style: 'margin-left: 0'}));
+                manager.restoreSharedFolder(fId, pw, function (err, obj) {
+                    if (obj && obj.error) {
+                        var wrong = h('div.alert.alert-danger', Messages.drive_sfPasswordError);
+                        $(div).prepend(wrong);
+                        $(passwordOk).text(Messages.properties_changePasswordButton);
+                        locked = false;
+                        return;
+                    }
+                    UI.findCancelButton($(div).closest('.alertify')).click();
+                    cb();
+                });
+            });
+            var buttons = [{
+                className: 'primary',
+                name: Messages.forgetButton,
+                onClick: function () {
+                    manager.delete([['sharedFoldersTemp', fId]], function () {
+                    });
+                },
+                keys: []
+            }, {
+                className: 'cancel',
+                name: Messages.later,
+                onClick: function () {},
+                keys: [27]
+            }];
+            return UI.dialog.customModal(div, {
+                buttons: buttons,
+                onClose: cb
+            });
+        };
+        if (typeof (deprecated) === "object") {
+            Object.keys(deprecated).forEach(function (fId) {
+                nt = nt(function (waitFor) {
+                    var data = deprecated[fId];
+                    UI.openCustomModal(passwordModal(fId, data, waitFor()));
+                }).nThen;
+            });
+            nt(function () {
+                refresh();
+            });
+        }
+
 
         return {
             refresh: refresh,

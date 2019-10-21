@@ -867,12 +867,14 @@ define([
         }
         var newHref = '/' + parsed.type + '/#' + newHash;
 
+        var isSharedFolder = parsed.type === 'drive';
+
         var optsGet = {};
         var optsPut = {
             password: newPassword,
-            metadata: {}
+            metadata: {},
+            initialState: isSharedFolder ? '{}' : undefined
         };
-
 
         Nthen(function (waitFor) {
             if (parsed.hashData && parsed.hashData.password) {
@@ -933,7 +935,9 @@ define([
             }
 
             var expire = oldMetadata.expire;
-            optsPut.metadata.expire = (expire - (+new Date())) / 1000; // Lifetime in seconds
+            if (expire) {
+                optsPut.metadata.expire = (expire - (+new Date())) / 1000; // Lifetime in seconds
+            }
         }).nThen(function (waitFor) {
             Crypt.get(parsed.hash, waitFor(function (err, val) {
                 if (err) {
@@ -948,23 +952,22 @@ define([
                 }), optsPut);
             }), optsGet);
         }).nThen(function (waitFor) {
+            if (isSharedFolder) {
+                postMessage("UPDATE_SHARED_FOLDER_PASSWORD", {
+                    href: href,
+                    oldChannel: oldChannel,
+                    password: newPassword
+                }, waitFor(function (obj) {
+                    console.error(obj);
+                }));
+                return;
+            }
             pad.leavePad({
                 channel: oldChannel
             }, waitFor());
             pad.onDisconnectEvent.fire(true);
         }).nThen(function (waitFor) {
-            common.removeOwnedChannel({
-                channel: oldChannel,
-                teamId: teamId
-            }, waitFor(function (obj) {
-                if (obj && obj.error) {
-                    waitFor.abort();
-                    return void cb(obj);
-                }
-            }));
-            common.unpinPads([oldChannel], waitFor(), teamId);
-            common.pinPads([newSecret.channel], waitFor(), teamId);
-        }).nThen(function (waitFor) {
+            // Set the new password to our pad data
             common.setPadAttribute('password', newPassword, waitFor(function (err) {
                 if (err) { warning = true; }
             }), href);
@@ -981,6 +984,21 @@ define([
             common.setPadAttribute('href', newHref, waitFor(function (err) {
                 if (err) { warning = true; }
             }), href);
+        }).nThen(function (waitFor) {
+            // delete the old pad
+            common.removeOwnedChannel({
+                channel: oldChannel,
+                teamId: teamId
+            }, waitFor(function (obj) {
+                if (obj && obj.error) {
+                    waitFor.abort();
+                    return void cb(obj);
+                }
+            }));
+            if (!isSharedFolder) {
+                common.unpinPads([oldChannel], waitFor(), teamId);
+                common.pinPads([newSecret.channel], waitFor(), teamId);
+            }
         }).nThen(function () {
             cb({
                 warning: warning,
