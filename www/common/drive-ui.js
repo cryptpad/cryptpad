@@ -4423,15 +4423,8 @@ define([
         var nt = nThen;
         var passwordModal = function (fId, data, cb) {
             var content = [];
-            var folderName = '<b>'+ (data.lastTitlei || Messages.fm_newFolder) +'</b>';
+            var folderName = '<b>'+ (data.lastTitle || Messages.fm_newFolder) +'</b>';
             content.push(UI.setHTML(h('p'), Messages._getKey('drive_sfPassword', [folderName])));
-            if (data.lastTitle) {
-                content.push(h('p', [
-                    Messages.fm_folderName,
-                    ' ',
-                    h('input', data.lastTitle)
-                ]));
-            }
             var newPassword = UI.passwordInput({
                 id: 'cp-app-prop-change-password',
                 placeholder: Messages.settings_changePasswordNew,
