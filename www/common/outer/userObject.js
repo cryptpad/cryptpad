@@ -734,10 +734,6 @@ define([
             var fixSharedFolders = function () {
                 if (sharedFolder) { return; }
                 if (typeof(files[SHARED_FOLDERS]) !== "object") { debug("SHARED_FOLDER was not an object"); files[SHARED_FOLDERS] = {}; }
-                if (typeof(files[SHARED_FOLDERS_TEMP]) !== "object") {
-                    debug("SHARED_FOLDER_TEMP was not an object");
-                    files[SHARED_FOLDERS_TEMP] = {};
-                }
                 var sf = files[SHARED_FOLDERS];
                 var rootFiles = exp.getFiles([ROOT]);
                 var root = exp.find([ROOT]);
@@ -762,6 +758,21 @@ define([
                     }
                 }
             };
+            var fixSharedFoldersTemp = function () {
+                if (sharedFolder) { return; }
+                if (typeof(files[SHARED_FOLDERS_TEMP]) !== "object") {
+                    debug("SHARED_FOLDER_TEMP was not an object");
+                    files[SHARED_FOLDERS_TEMP] = {};
+                }
+                // Remove deprecated shared folder if they were already added back
+                var sft = files[SHARED_FOLDERS_TEMP];
+                var sf = files[SHARED_FOLDERS];
+                for (var id in sft) {
+                    if (sf[id]) {
+                        delete sft[id];
+                    }
+                }
+            };
 
 
             var fixDrive = function () {
@@ -776,6 +787,7 @@ define([
             fixFilesData();
             fixDrive();
             fixSharedFolders();
+            fixSharedFoldersTemp();
 
             if (JSON.stringify(files) !== before) {
                 debug("Your file system was corrupted. It has been cleaned so that the pads you visit can be stored safely");

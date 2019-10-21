@@ -4461,8 +4461,7 @@ define([
                 className: 'primary',
                 name: Messages.forgetButton,
                 onClick: function () {
-                    manager.delete([['sharedFoldersTemp', fId]], function () {
-                    });
+                    manager.delete([['sharedFoldersTemp', fId]], function () { });
                 },
                 keys: []
             }, {
@@ -4478,8 +4477,12 @@ define([
         };
         if (typeof (deprecated) === "object") {
             Object.keys(deprecated).forEach(function (fId) {
+                var data = deprecated[fId];
+                var sfId = manager.user.userObject.getSFIdFromHref(data.href);
+                if (folders[fId] || sfId) { // This shared folder is already stored in the drive...
+                    return void manager.delete([['sharedFoldersTemp', fId]], function () { });
+                }
                 nt = nt(function (waitFor) {
-                    var data = deprecated[fId];
                     UI.openCustomModal(passwordModal(fId, data, waitFor()));
                 }).nThen;
             });
