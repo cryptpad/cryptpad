@@ -599,6 +599,10 @@ define([
                 UIElements.displayPasswordPrompt(funcs);
             });
 
+            ctx.sframeChan.on("EV_PAD_PASSWORD_ERROR", function () {
+                UI.errorLoadingScreen(Messages.password_error_seed);
+            });
+
             ctx.sframeChan.on('EV_LOADING_INFO', function (data) {
                 UI.updateLoadingProgress(data, 'drive');
             });
