@@ -825,6 +825,9 @@ define([
         if (!data.attr || !data.attr.trim()) { return void cb("E_INVAL_ATTR"); }
         var sfId = Env.user.userObject.getSFIdFromHref(data.href);
         if (sfId) {
+            if (data.attr === "href") {
+                data.value = Env.user.userObject.cryptor.encrypt(data.value);
+            }
             Env.user.proxy[UserObject.SHARED_FOLDERS][sfId][data.attr] = data.value;
         }
         var datas = findHref(Env, data.href);
