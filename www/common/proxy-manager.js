@@ -27,6 +27,13 @@ define([
             // Only in outer
             userObject.fixFiles();
         }
+        var proxy = lm.proxy;
+        if (proxy.metadata && proxy.metadata.title) {
+            var sf = Env.user.proxy[UserObject.SHARED_FOLDERS][id];
+            if (sf) {
+                sf.lastTitle = proxy.metadata.title;
+            }
+        }
         Env.folders[id] = {
             proxy: lm.proxy,
             userObject: userObject,
@@ -41,6 +48,12 @@ define([
         if (!f) { return; }
         f.leave();
         delete Env.folders[id];
+    };
+
+    // Password may have changed
+    var deprecateProxy = function (Env, id, channel) {
+        Env.unpinPads([channel], function () {});
+        Env.user.userObject.deprecateSharedFolder(id);
     };
 
     /*
@@ -488,6 +501,11 @@ define([
 
             // 2b. load the proxy
             Env.loadSharedFolder(id, folderData, waitFor(function (rt, metadata) {
+                if (!rt) {
+                    waitFor.abort();
+                    return void cb({ error: 'EDELETED' });
+                }
+
                 if (!rt.proxy.metadata) { // Creating a new shared folder
                     rt.proxy.metadata = { title: data.name || Messages.fm_newFolder };
                 }
@@ -497,12 +515,48 @@ define([
                     if (metadata.owners) { fData.owners = metadata.owners; }
                     if (metadata.expire) { fData.expire = +metadata.expire; }
                 }
-            }));
+            }), !Boolean(data.folderData));
         }).nThen(function () {
             Env.onSync(function () {
                 cb(id);
             });
         });
+    };
+
+    var _restoreSharedFolder = function (Env, _data, cb) {
+        var fId = _data.id;
+        var newPassword = _data.password;
+        var temp = Util.find(Env, ['user', 'proxy', UserObject.SHARED_FOLDERS_TEMP]);
+        var data = temp && temp[fId];
+        if (!data) { return void cb({ error: 'EINVAL' }); }
+        if (!Env.Store) { return void cb({ error: 'ESTORE' }); }
+        var href = Env.user.userObject.getHref ? Env.user.userObject.getHref(data) : data.href;
+        var isNew = false;
+        nThen(function (waitFor) {
+            Env.Store.isNewChannel(null, {
+                href: href,
+                password: newPassword
+            }, waitFor(function (obj) {
+                if (!obj || obj.error) {
+                    isNew = false;
+                    return;
+                }
+                isNew = obj.isNew;
+            }));
+        }).nThen(function () {
+            if (isNew) {
+                return void cb({ error: 'ENOTFOUND' });
+            }
+            data.password = newPassword;
+            _addSharedFolder(Env, {
+                path: ['root'],
+                folderData: data,
+            }, function () {
+                delete temp[fId];
+                Env.onSync(cb);
+            });
+        });
+
     };
 
     // convert a folder to a Shared Folder
@@ -611,6 +665,13 @@ define([
             return void cb({error: 'E_NOTFOUND'});
         }
 
+        // Deleted or password changed for a shared folder
+        if (data.paths.length === 1 && data.paths[0][0] === UserObject.SHARED_FOLDERS_TEMP) {
+            var temp = Util.find(Env, ['user', 'proxy', UserObject.SHARED_FOLDERS_TEMP]);
+            delete temp[data.paths[0][1]];
+            return void Env.onSync(cb);
+        }
+
         var toUnpin = [];
         var ownedRemoved;
         nThen(function (waitFor)  {
@@ -707,6 +768,7 @@ define([
             var el = Env.user.userObject.find(resolved.path);
             if (Env.user.userObject.isSharedFolder(el) && Env.folders[el]) {
                 Env.folders[el].proxy.metadata.title = data.newName;
+                Env.user.proxy[UserObject.SHARED_FOLDERS][el].lastTitle = data.value;
                 return void cb();
             }
         }
@@ -740,6 +802,8 @@ define([
                 _addFolder(Env, data, cb); break;
             case 'addSharedFolder':
                 _addSharedFolder(Env, data, cb); break;
+            case 'restoreSharedFolder':
+                _restoreSharedFolder(Env, data, cb); break;
             case 'convertFolderToSharedFolder':
                 _convertFolderToSharedFolder(Env, data, cb); break;
             case 'delete':
@@ -966,6 +1030,7 @@ define([
             pinPads: data.pin,
             unpinPads: data.unpin,
             onSync: data.onSync,
+            Store: data.Store,
             loadSharedFolder: data.loadSharedFolder,
             cfg: uoConfig,
             edPublic: data.edPublic,
@@ -988,6 +1053,7 @@ define([
             // Manager
             addProxy: callWithEnv(addProxy),
             removeProxy: callWithEnv(removeProxy),
+            deprecateProxy: callWithEnv(deprecateProxy),
             addSharedFolder: callWithEnv(_addSharedFolder),
             // Drive
             command: callWithEnv(onCommand),
@@ -1056,6 +1122,15 @@ define([
                 name: data.name,
                 owned: data.owned,
                 password: data.password
+            }
+        }, cb);
+    };
+    var restoreSharedFolderInner = function (Env, fId, password, cb) {
+        return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
+            cmd: "restoreSharedFolder",
+            data: {
+                id: fId,
+                password: password
             }
         }, cb);
     };
@@ -1262,6 +1337,7 @@ define([
             emptyTrash: callWithEnv(emptyTrashInner),
             addFolder: callWithEnv(addFolderInner),
             addSharedFolder: callWithEnv(addSharedFolderInner),
+            restoreSharedFolder: callWithEnv(restoreSharedFolderInner),
             convertFolderToSharedFolder: callWithEnv(convertFolderToSharedFolderInner),
             delete: callWithEnv(deleteInner),
             restore: callWithEnv(restoreInner),

@@ -1220,5 +1220,6 @@
     "team_demoteMeConfirm": "Vous êtes sur le point de renoncer à vos droits. Vous ne serez pas en mesure d'annuler cette action. Continuer ?",
     "team_title": "Équipe : {0}",
     "team_quota": "Limite de stockage de votre équipe",
-    "drive_quota": "Votre limite de stockage"
+    "drive_quota": "Votre limite de stockage",
+    "settings_codeBrackets": "Fermer automatiquement les parenthèses"
 }

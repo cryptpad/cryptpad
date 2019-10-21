@@ -50,6 +50,14 @@ define([
                 sframeChan.query('Q_DRIVE_GETOBJECT', {
                     sharedFolder: fId
                 }, waitFor(function (err, newObj) {
+                    if (!APP.loggedIn && APP.newSharedFolder) {
+                        if (!newObj || !Object.keys(newObj).length) {
+                            // Empty anon drive: deleted
+                            var msg = Messages.deletedError + '<br>' + Messages.errorRedirectToHome;
+                            setTimeout(function () { UI.errorLoadingScreen(msg, false, function () {}); });
+                            APP.newSharedFolder = null;
+                        }
+                    }
                     folders[fId] = folders[fId] || {};
                     copyObjectValue(folders[fId], newObj);
                     folders[fId].readOnly = !secret.keys.secondaryKey;

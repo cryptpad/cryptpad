@@ -396,9 +396,9 @@ define([
         var privateData = metadataMgr.getPrivateData();
         var content = [];
 
-        var isOwner = Object.keys(privateData.teams || {}).some(function (id) {
+        var isOwner = Object.keys(privateData.teams || {}).filter(function (id) {
             return privateData.teams[id].owner;
-        }) && !privateData.devMode;
+        }).length >= Constants.MAX_TEAMS_OWNED; // && !privateData.devMode;
 
         var getWarningBox = function () {
             return h('div.alert.alert-warning', {

@@ -435,9 +435,14 @@
             return mediaObject;
         }
 
+        mediaObject.tag.innerHTML = '<img style="width: 100px; height: 100px;">';
+
         // Download the encrypted blob
         download(src, function (err, u8Encrypted) {
             if (err) {
+                if (err === "XHR_ERROR 404") {
+                    mediaObject.tag.innerHTML = '<img style="width: 100px; height: 100px;" src="/images/broken.png">';
+                }
                 return void emit('error', err);
             }
             // Decrypt the blob

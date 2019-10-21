@@ -1220,5 +1220,6 @@
     "team_demoteMeConfirm": "You are about to give up your rights. You will not be able to undo this action. Are you sure?",
     "team_title": "Team: {0}",
     "team_quota": "Your team's storage limit",
-    "drive_quota": "Your storage limit"
+    "drive_quota": "Your storage limit",
+    "settings_codeBrackets": "Auto-close brackets"
 }

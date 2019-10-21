@@ -1220,5 +1220,6 @@
     "survey": "CryptPad-Umfrage",
     "team_title": "Team: {0}",
     "team_quota": "Speicherplatzbegrenzung deines Teams",
-    "drive_quota": "Deine Speicherplatzbegrenzung"
+    "drive_quota": "Deine Speicherplatzbegrenzung",
+    "settings_codeBrackets": "Klammern automatisch schließen"
 }

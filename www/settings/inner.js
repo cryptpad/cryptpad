@@ -85,6 +85,7 @@ define([
         'code': [
             'cp-settings-code-indent-unit',
             'cp-settings-code-indent-type',
+            'cp-settings-code-brackets',
             'cp-settings-code-font-size',
             'cp-settings-code-spellcheck',
         ],
@@ -1441,6 +1442,35 @@ define([
         common.getAttribute(['codemirror', key], function (e, val) {
             if (e) { return void console.error(e); }
             $checkbox[0].checked = !!val;
+        });
+        return $div;
+    };
+
+    create['code-brackets'] = function () {
+        var key = 'brackets';
+
+        var $div = $('<div>', {
+            'class': 'cp-settings-code-brackets cp-sidebarlayout-element'
+        });
+        $('<label>').text(Messages.settings_codeBrackets).appendTo($div);
+
+        var $inputBlock = $('<div>', {
+            'class': 'cp-sidebarlayout-input-block',
+        }).css('flex-flow', 'column')
+        .appendTo($div);
+
+
+        var $cbox = $(UI.createCheckbox('cp-settings-codebrackets'));
+        var $checkbox = $cbox.find('input').on('change', function () {
+            var val = $checkbox.is(':checked');
+            if (typeof(val) !== 'boolean') { return; }
+            common.setAttribute(['codemirror', key], val);
+        });
+        $cbox.appendTo($inputBlock);
+
+        common.getAttribute(['codemirror', key], function (e, val) {
+            if (e) { return void console.error(e); }
+            $checkbox[0].checked = typeof(val) !== "boolean" || val;
         });
         return $div;
     };

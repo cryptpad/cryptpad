@@ -9,6 +9,7 @@ define([
     '/common/outer/sharedfolder.js',
     '/common/outer/roster.js',
     '/common/common-messaging.js',
+    '/common/common-feedback.js',
 
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
@@ -18,7 +19,7 @@ define([
     '/bower_components/saferphore/index.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
 ], function (Util, Hash, Constants, Realtime,
-             ProxyManager, UserObject, SF, Roster, Messaging,
+             ProxyManager, UserObject, SF, Roster, Messaging, Feedback,
              Listmap, Crypto, CpNetflux, ChainPad, nThen, Saferphore) {
     var Team = {};
 
@@ -30,6 +31,27 @@ define([
 
     var registerChangeEvents = function (ctx, team, proxy, fId) {
         if (!team) { return; }
+        if (!fId) {
+            // Listen for shared folder password change
+            proxy.on('change', ['drive', UserObject.SHARED_FOLDERS], function (o, n, p) {
+                if (p.length > 3 && p[3] === 'password') {
+                    var id = p[2];
+                    var data = proxy.drive[UserObject.SHARED_FOLDERS][id];
+                    var href = team.manager.user.userObject.getHref ?
+                            team.manager.user.userObject.getHref(data) : data.href;
+                    var parsed = Hash.parsePadUrl(href);
+                    var secret = Hash.getSecrets(parsed.type, parsed.hash, o);
+                    SF.updatePassword(ctx.Store, {
+                        oldChannel: secret.channel,
+                        password: n,
+                        href: href
+                    }, ctx.store.network, function () {
+                        console.log('Shared folder password changed');
+                    });
+                    return false;
+                }
+            });
+        }
         proxy.on('change', [], function (o, n, p) {
             if (fId) {
                 // Pin the new pads
@@ -216,13 +238,13 @@ define([
             }));
         }).nThen(function () {
             // Create the proxy manager
-            var loadSharedFolder = function (id, data, cb) {
+            var loadSharedFolder = function (id, data, cb, isNew) {
                 SF.load({
+                    isNew: isNew,
                     network: ctx.store.network,
-                    store: team
-                }, id, data, function (id, rt) {
-                    cb(id, rt);
-                });
+                    store: team,
+                    isNewChannel: ctx.Store.isNewChannel
+                }, id, data, cb);
             };
             var teamData = ctx.store.proxy.teams[team.id];
             var hash = teamData.hash || teamData.roHash;
@@ -236,6 +258,7 @@ define([
                 settings: {
                     drive: Util.find(ctx.store, ['proxy', 'settings', 'drive'])
                 },
+                Store: ctx.Store
             }, {
                 outer: true,
                 removeOwnedChannel: function (channel, cb) {
@@ -567,6 +590,7 @@ define([
                 proxy.drive = {};
 
                 onReady(ctx, id, lm, roster, keys, cId, function () {
+                    Feedback.send('TEAM_CREATION');
                     ctx.updateMetadata();
                     cb();
                 });
@@ -682,6 +706,7 @@ define([
                 if (err) { console.error(err); }
             }));
         }).nThen(function () {
+            Feedback.send('TEAM_DELETION');
             closeTeam(ctx, teamId);
             cb();
         });

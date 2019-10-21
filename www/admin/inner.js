@@ -170,9 +170,35 @@ define([
     var supportKey = ApiConfig.supportMailbox;
     create['support-list'] = function () {
         if (!supportKey || !APP.privateKey) { return; }
-        var $div = makeBlock('support-list');
-        $div.addClass('cp-support-container');
+        var $container = makeBlock('support-list');
+        var $div = $(h('div.cp-support-container')).appendTo($container);
         var hashesById = {};
+
+        var reorder = function () {
+            var order = Object.keys(hashesById);
+            order.sort(function (id1, id2) {
+                var t1 = hashesById[id1];
+                var t2 = hashesById[id2];
+                if (!Array.isArray(t1)) { return 1; }
+                if (!Array.isArray(t2)) { return -1; }
+                var lastMsg1 = t1[t1.length - 1];
+                var lastMsg2 = t2[t2.length - 1];
+                var time1 = Util.find(lastMsg1, ['content', 'msg', 'content', 'time']);
+                var time2 = Util.find(lastMsg2, ['content', 'msg', 'content', 'time']);
+                var authorEd1 = Util.find(lastMsg1, ['content', 'msg', 'content', 'sender', 'edPublic']);
+                var authorEd2 = Util.find(lastMsg2, ['content', 'msg', 'content', 'sender', 'edPublic']);
+                var admin1 = ApiConfig.adminKeys.indexOf(authorEd1) !== -1;
+                var admin2 = ApiConfig.adminKeys.indexOf(authorEd2) !== -1;
+                // If one is answered and not the other, put the unanswered first
+                if (admin1 && !admin2) { return 1; }
+                if (!admin1 && admin2) { return -1; }
+                // Otherwise, sort them by time
+                return time2 - time1;
+            });
+            order.forEach(function (id, i) {
+                $div.find('[data-id="'+id+'"]').css('order', i);
+            });
+        };
 
         // Register to the "support" mailbox
         common.mailbox.subscribe(['supportadmin'], {
@@ -219,10 +245,12 @@ define([
                     });
                 }
                 $ticket.append(APP.support.makeMessage(content, hash));
+                reorder();
             }
         });
-        return $div;
+        return $container;
     };
+
 
     var checkAdminKey = function (priv) {
         if (!supportKey) { return; }
