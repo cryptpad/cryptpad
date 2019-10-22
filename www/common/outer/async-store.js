@@ -1547,6 +1547,20 @@ define([
             channel.sendMessage(msg, clientId, cb);
         };
 
+        // Unpin and pin the new channel in all team when changing a pad password
+        Store.changePadPasswordPin = function (clientId, data, cb) {
+            var oldChannel = data.oldChannel;
+            var channel = data.channel;
+            nThen(function (waitFor) {
+                getAllStores().forEach(function (s) {
+                    var allData = s.manager.findChannel(channel);
+                    if (!allData.length) { return; }
+                    s.rpc.unpin([oldChannel], waitFor());
+                    s.rpc.pin([channel], waitFor());
+                });
+            }).nThen(cb);
+        };
+
         // requestPadAccess is used to check if we have a way to contact the owner
         // of the pad AND to send the request if we want
         // data.send === false ==> check if we can contact them
