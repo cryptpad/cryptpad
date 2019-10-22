@@ -726,7 +726,7 @@ define([
             h('div', admins),
             h('h3', Messages.team_members),
             h('div', members),
-            h('h3', Messages.team_viewers || 'VIEWERS'), // XXX
+            h('h3', Messages.team_viewers || 'VIEWERS'),
             h('div', viewers),
             h('h3'+noPending, Messages.team_pending),
             h('div'+noPending, pending)
