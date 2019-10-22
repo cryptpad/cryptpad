@@ -79,6 +79,7 @@ define([
             GIVE_PAD_ACCESS: Store.givePadAccess,
             GET_PAD_METADATA: Store.getPadMetadata,
             SET_PAD_METADATA: Store.setPadMetadata,
+            CHANGE_PAD_PASSWORD_PIN: Store.changePadPasswordPin,
             // Drive
             DRIVE_USEROBJECT: Store.userObjectCommand,
             // Settings,

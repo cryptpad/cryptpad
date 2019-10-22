@@ -1526,8 +1526,7 @@ define([
         Store.leavePad = function (clientId, data, cb) {
             var channel = channels[data.channel];
             if (!channel || !channel.cpNf) { return void cb ({error: 'EINVAL'}); }
-            channel.cpNf.stop();
-            delete channels[data.channel];
+            Store.dropChannel(data.channel);
             cb();
         };
         Store.sendPadMsg = function (clientId, data, cb) {
@@ -1540,6 +1539,20 @@ define([
                 return void cb();
             }
             channel.sendMessage(msg, clientId, cb);
+        };
+
+        // Unpin and pin the new channel in all team when changing a pad password
+        Store.changePadPasswordPin = function (clientId, data, cb) {
+            var oldChannel = data.oldChannel;
+            var channel = data.channel;
+            nThen(function (waitFor) {
+                getAllStores().forEach(function (s) {
+                    var allData = s.manager.findChannel(channel);
+                    if (!allData.length) { return; }
+                    s.rpc.unpin([oldChannel], waitFor());
+                    s.rpc.pin([channel], waitFor());
+                });
+            }).nThen(cb);
         };
 
         // requestPadAccess is used to check if we have a way to contact the owner
@@ -1831,7 +1844,7 @@ define([
         // Clients management
         var driveEventClients = [];
 
-        var dropChannel = function (chanId) {
+        var dropChannel = Store.dropChannel = function (chanId) {
             try {
                 store.messenger.leavePad(chanId);
             } catch (e) { console.error(e); }
@@ -1900,7 +1913,7 @@ define([
                                 store.manager.user.userObject.getHref(data) : data.href;
                         var parsed = Hash.parsePadUrl(href);
                         var secret = Hash.getSecrets(parsed.type, parsed.hash, o);
-                        SF.updatePassword({
+                        SF.updatePassword(Store, {
                             oldChannel: secret.channel,
                             password: n,
                             href: href
@@ -2043,6 +2056,15 @@ define([
         //////////////////////////////////////////////////////////////////
         /////////////////////// Init /////////////////////////////////////
         //////////////////////////////////////////////////////////////////
+
+        Store.refreshDriveUI = function () {
+            getAllStores().forEach(function (_s) {
+                var send = _s.id ? _s.sendEvent : sendDriveEvent;
+                send('DRIVE_CHANGE', {
+                    path: ['drive', UserObject.FILES_DATA]
+                });
+            });
+        };
 
         var onReady = function (clientId, returned, cb) {
             var proxy = store.proxy;

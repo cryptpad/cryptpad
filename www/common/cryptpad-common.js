@@ -959,9 +959,7 @@ define([
                     href: href,
                     oldChannel: oldChannel,
                     password: newPassword
-                }, waitFor(function (obj) {
-                    console.error(obj);
-                }));
+                }, waitFor());
                 return;
             }
             pad.leavePad({
@@ -998,8 +996,10 @@ define([
                 }
             }));
             if (!isSharedFolder) {
-                common.unpinPads([oldChannel], waitFor(), teamId);
-                common.pinPads([newSecret.channel], waitFor(), teamId);
+                postMessage("CHANGE_PAD_PASSWORD_PIN", {
+                    oldChannel: oldChannel,
+                    channel: newSecret.channel
+                }, waitFor());
             }
         }).nThen(function () {
             cb({

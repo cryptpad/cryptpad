@@ -1878,6 +1878,12 @@ define([
                 $span.addClass('cp-app-drive-element-sharedf');
                 _addOwnership($span, $state, data);
 
+                var hrefData = Hash.parsePadUrl(data.href || data.roHref);
+                if (hrefData.hashData && hrefData.hashData.password) {
+                    var $password = $passwordIcon.clone().appendTo($state);
+                    $password.attr('title', Messages.fm_passwordProtected || '');
+                }
+
                 var $shared = $sharedIcon.clone().appendTo($state);
                 $shared.attr('title', Messages.fm_canBeShared);
             }
@@ -4515,7 +4521,7 @@ define([
                 onClose: cb
             });
         };
-        if (typeof (deprecated) === "object") {
+        if (typeof (deprecated) === "object" && APP.editable) {
             Object.keys(deprecated).forEach(function (fId) {
                 var data = deprecated[fId];
                 var sfId = manager.user.userObject.getSFIdFromHref(data.href);

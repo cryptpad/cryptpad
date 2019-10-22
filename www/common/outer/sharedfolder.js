@@ -103,29 +103,31 @@ define([
                         cb(sf.rt, sf.metadata);
                     });
                 });
-                sf.teams.push(store);
-                if (handler) { handler(id, sf.rt); }
-                return sf.rt;
-            }
-            if (sf && sf.queue && sf.rt) {
-                // The shared folder is loading, add our callbacks to the queue
-                sf.queue.push({
+                sf.teams.push({
                     cb: cb,
                     store: store,
                     id: id
                 });
-                sf.teams.push(store);
                 if (handler) { handler(id, sf.rt); }
-                return sf.rt;
+                return;
+            }
+            if (sf && !sf.ready && sf.rt) {
+                // The shared folder is loading, add our callbacks to the queue
+                sf.teams.push({
+                    cb: cb,
+                    store: store,
+                    id: id
+                });
+                if (handler) { handler(id, sf.rt); }
+                return;
             }
 
             sf = allSharedFolders[secret.channel] = {
-                queue: [{
+                teams: [{
                     cb: cb,
                     store: store,
                     id: id
                 }],
-                teams: [store],
                 readOnly: Boolean(secondaryKey)
             };
 
@@ -151,10 +153,10 @@ define([
                     // New Shared folder: no migration required
                     rt.proxy.version = 2;
                 }
-                if (!sf.queue) {
+                if (!sf.teams) {
                     return;
                 }
-                sf.queue.forEach(function (obj) {
+                sf.teams.forEach(function (obj) {
                     var leave = function () { SF.leave(secret.channel, teamId); };
                     var uo = obj.store.manager.addProxy(obj.id, rt, leave, secondaryKey);
                     SF.checkMigration(secondaryKey, rt.proxy, uo, function () {
@@ -163,15 +165,17 @@ define([
                 });
                 sf.metadata = info.metadata;
                 sf.ready = true;
-                delete sf.queue;
             });
             rt.proxy.on('error', function (info) {
                 if (info && info.error) {
                     if (info.error === "EDELETED" ) {
                         try {
                             // Deprecate the shared folder from each team
-                            sf.teams.forEach(function (store) {
-                                store.manager.deprecateProxy(id, secret.channel);
+                            // XXX We can't deprecate a read-only proxy: the read-only seed will change...
+                            // We can only remove it
+                            sf.teams.forEach(function (obj) {
+                                console.log(obj.store.id, obj.store, obj.id);
+                                obj.store.manager.deprecateProxy(obj.id, secret.channel);
                             });
                         } catch (e) {}
                         delete allSharedFolders[secret.channel];
@@ -200,8 +204,8 @@ define([
         var clients = sf.teams;
         if (!Array.isArray(clients)) { return; }
         var idx;
-        clients.some(function (store, i) {
-            if (store.id === teamId) {
+        clients.some(function (obj, i) {
+            if (obj.store.id === teamId) {
                 idx = i;
                 return true;
             }
@@ -217,6 +221,7 @@ define([
         }
     };
 
+    // Update the password locally
     SF.updatePassword = function (Store, data, network, cb) {
         var oldChannel = data.oldChannel;
         var href = data.href;
@@ -229,13 +234,18 @@ define([
             sf.rt.stop();
         }
         var nt = nThen;
-        sf.teams.forEach(function (s) {
+        sf.teams.forEach(function (obj) {
+            // XXX if we're a viewer in this team, we can't update the keys
             nt = nt(function (waitFor) {
-                var sfId = s.manager.user.userObject.getSFIdFromHref(href);
+                var s = obj.store;
+                var sfId = obj.id;
                 var shared = Util.find(s.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
                 if (!sfId || !shared[sfId]) { return; }
                 var sf = JSON.parse(JSON.stringify(shared[sfId]));
                 sf.password = password;
+                sf.channel = secret.channel;
+                sf.href = '/drive/#'+Hash.getEditHashFromKeys(secret); // XXX encrypt
+                sf.roHref = '/drive/#'+Hash.getViewHashFromKeys(secret);
                 SF.load({
                     network: network,
                     store: s,
