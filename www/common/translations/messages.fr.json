@@ -1221,5 +1221,9 @@
     "team_title": "Équipe : {0}",
     "team_quota": "Limite de stockage de votre équipe",
     "drive_quota": "Votre limite de stockage",
-    "settings_codeBrackets": "Fermer automatiquement les parenthèses"
+    "settings_codeBrackets": "Fermer automatiquement les parenthèses",
+    "team_viewers": "Lecteurs",
+    "drive_sfPassword": "Votre dossier partagé {0} n'est plus disponible. Il a soit été supprimé par son propriétaire ou il est protégé par un nouveau mot de passe. Vous pouvez supprimer ce dossier de votre CryptDrive ou retrouver l'accès en tapant le nouveau mot de passe.",
+    "drive_sfPasswordError": "Mot de passe incorrect",
+    "password_error_seed": "Pad introuvable !<br>Cette erreur peut provenir de deux facteurs. Soit un mot de passe a été ajouté ou modifié, soit le pad a été supprimé par son propriétaire."
 }
