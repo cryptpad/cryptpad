@@ -374,7 +374,7 @@ define([
 
         var isOwner = Object.keys(privateData.teams || {}).filter(function (id) {
             return privateData.teams[id].owner;
-        }).length >= Constants.MAX_TEAMS_OWNED; // && !privateData.devMode;
+        }).length >= Constants.MAX_TEAMS_OWNED && !privateData.devMode;
 
         var getWarningBox = function () {
             return h('div.alert.alert-warning', {

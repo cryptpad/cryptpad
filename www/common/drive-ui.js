@@ -4481,7 +4481,7 @@ define([
                 onClose: cb
             });
         };
-        if (typeof (deprecated) === "object") {
+        if (typeof (deprecated) === "object" && APP.editable) {
             Object.keys(deprecated).forEach(function (fId) {
                 var data = deprecated[fId];
                 var sfId = manager.user.userObject.getSFIdFromHref(data.href);

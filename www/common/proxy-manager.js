@@ -508,7 +508,12 @@ define([
             if (isNew) {
                 return void cb({ error: 'ENOTFOUND' });
             }
+            var parsed = Hash.parsePadUrl(href);
+            var secret = Hash.getSecrets(parsed.type, parsed.hash, newPassword);
             data.password = newPassword;
+            data.channel = secret.channel;
+            data.href = '/drive/#'+Hash.getEditHashFromKeys(secret); // XXX encrypt
+            data.roHref = '/drive/#'+Hash.getViewHashFromKeys(secret);
             _addSharedFolder(Env, {
                 path: ['root'],
                 folderData: data,

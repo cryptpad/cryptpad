@@ -957,9 +957,7 @@ define([
                     href: href,
                     oldChannel: oldChannel,
                     password: newPassword
-                }, waitFor(function (obj) {
-                    console.error(obj);
-                }));
+                }, waitFor());
                 return;
             }
             pad.leavePad({
