@@ -1531,8 +1531,7 @@ define([
         Store.leavePad = function (clientId, data, cb) {
             var channel = channels[data.channel];
             if (!channel || !channel.cpNf) { return void cb ({error: 'EINVAL'}); }
-            channel.cpNf.stop();
-            delete channels[data.channel];
+            Store.dropChannel(data.channel);
             cb();
         };
         Store.sendPadMsg = function (clientId, data, cb) {
@@ -1850,7 +1849,7 @@ define([
         // Clients management
         var driveEventClients = [];
 
-        var dropChannel = function (chanId) {
+        var dropChannel = Store.dropChannel = function (chanId) {
             try {
                 store.messenger.leavePad(chanId);
             } catch (e) { console.error(e); }

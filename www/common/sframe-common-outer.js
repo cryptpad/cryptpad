@@ -174,7 +174,16 @@ define([
                 var parsed = Utils.Hash.parsePadUrl(window.location.href);
                 var todo = function () {
                     secret = Utils.secret = Utils.Hash.getSecrets(parsed.type, void 0, password);
-                    Cryptpad.getShareHashes(secret, waitFor(function (err, h) { hashes = h; }));
+                    Cryptpad.getShareHashes(secret, waitFor(function (err, h) {
+                        hashes = h;
+                        if (password && !parsed.hashData.password) {
+                            var ohc = window.onhashchange;
+                            window.onhashchange = function () {};
+                            window.location.hash = h.fileHash || h.editHash || h.viewHash || window.location.hash;
+                            window.onhashchange = ohc;
+                            ohc({reset: true});
+                        }
+                    }));
                 };
 
                 if (!parsed.hashData) { // No hash, no need to check for a password
