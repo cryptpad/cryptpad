@@ -587,7 +587,7 @@ define([
                 }
                 todo();
             });
-            if (!(isMe && myRole === 2 && !otherOwners)) {
+            if (!(isMe && myRole === 3 && !otherOwners)) {
                 $actions.append(demote);
             }
         }
