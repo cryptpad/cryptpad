@@ -2087,10 +2087,7 @@ define([
             var cryptKey = Hash.encodeBase64(secret.keys && secret.keys.cryptKey);
             var src = origin + Hash.getBlobPathFromHex(hexFileName);
             common.getFileSize(hexFileName, function (e, data) {
-                if (e || !data) {
-                    displayDefault();
-                    return void console.error(e || "404 avatar");
-                }
+                if (e || !data) { return void displayDefault(); }
                 if (typeof data !== "number") { return void displayDefault(); }
                 if (Util.bytesToMegabytes(data) > 0.5) { return void displayDefault(); }
                 var $img = $('<media-tag>').appendTo($container);
