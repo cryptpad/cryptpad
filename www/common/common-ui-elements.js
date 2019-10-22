@@ -564,14 +564,18 @@ define([
                         newPassword,
                         passwordOk
                     ]);
+                    var pLocked = false;
                     $(passwordOk).click(function () {
                         var newPass = $(newPassword).find('input').val();
                         if (data.password === newPass ||
                             (!data.password && !newPass)) {
                             return void UI.alert(Messages.properties_passwordSame);
                         }
+                        if (pLocked) { return; }
+                        pLocked = true;
                         UI.confirm(changePwConfirm, function (yes) {
-                            if (!yes) { return; }
+                            if (!yes) { pLocked = false; return; }
+                            $(passwordOk).html('').append(h('span.fa.fa-spinner.fa-spin', {style: 'margin-left: 0'}));
                             sframeChan.query("Q_PAD_PASSWORD_CHANGE", {
                                 teamId: typeof(owned) !== "boolean" ? owned : undefined,
                                 href: data.href || data.roHref,
@@ -579,6 +583,8 @@ define([
                             }, function (err, data) {
                                 if (err || data.error) {
                                     console.error(err || data.error);
+                                    pLocked = false;
+                                    $(passwordOk).text(Messages.properties_changePasswordButton);
                                     return void UI.alert(Messages.properties_passwordError);
                                 }
                                 UI.findOKButton().click();
