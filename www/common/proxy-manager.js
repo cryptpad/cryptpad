@@ -49,6 +49,9 @@ define([
     var deprecateProxy = function (Env, id, channel) {
         Env.unpinPads([channel], function () {});
         Env.user.userObject.deprecateSharedFolder(id);
+        if (Env.Store && Env.Store.refreshDriveUI) {
+            Env.Store.refreshDriveUI();
+        }
     };
 
     /*

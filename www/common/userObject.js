@@ -385,8 +385,8 @@ define([
             var result;
             var noPassword = function (str) {
                 if (!str) { return; }
-                var value = str.replace(/\/p\/?/, '/');
-                return Hash.getRelativeHref(value);
+                var parsed = Hash.parsePadUrl(str);
+                return parsed.getUrl().replace(/\/p\/?/, '/');
             };
             var href = noPassword(_href);
             getFiles([FILES_DATA]).some(function (id) {
@@ -403,8 +403,8 @@ define([
             var result;
             var noPassword = function (str) {
                 if (!str) { return; }
-                var value = str.replace(/\/p\/?/, '/');
-                return Hash.getRelativeHref(value);
+                var parsed = Hash.parsePadUrl(str);
+                return parsed.getUrl().replace(/\/p\/?/, '/');
             };
             var href = noPassword(_href);
             getFiles([SHARED_FOLDERS]).some(function (id) {

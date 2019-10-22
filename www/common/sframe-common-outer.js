@@ -215,8 +215,15 @@ define([
                                     if (wrongPasswordStored) {
                                         // Store the correct password
                                         nThen(function (w) {
+                                            // XXX noPasswordStored: return; ?
                                             Cryptpad.setPadAttribute('password', password, w(), parsed.getUrl());
                                             Cryptpad.setPadAttribute('channel', secret.channel, w(), parsed.getUrl());
+                                            if (parsed.hashData.mode === 'edit') {
+                                                var href = window.location.pathname + '#' + Utils.Hash.getEditHashFromKeys(secret);
+                                                Cryptpad.setPadAttribute('href', href, w(), parsed.getUrl());
+                                                var roHref = window.location.pathname + '#' + Utils.Hash.getViewHashFromKeys(secret);
+                                                Cryptpad.setPadAttribute('roHref', roHref, w(), parsed.getUrl());
+                                            }
                                         }).nThen(correctPassword);
                                     } else {
                                         correctPassword();
@@ -244,10 +251,19 @@ define([
                     }
 
                     password = val;
-                    Cryptpad.getFileSize(window.location.href, password, waitFor(function (e, size) {
-                        if (size !== 0) {
-                            return void todo();
-                        }
+                    if (parsed.type === "file") {
+                        // `isNewChannel` doesn't work for files (not a channel)
+                        // `getFileSize` is not adapted to channels because of metadata
+                        Cryptpad.getFileSize(window.location.href, password, waitFor(function (e, size) {
+                            if (size !== 0) { return void todo(); }
+                            // Wrong password or deleted file?
+                            askPassword(true);
+                        }));
+                        return;
+                    }
+                    // Not a file, so we can use `isNewChannel`
+                    Cryptpad.isNewChannel(window.location.href, password, waitFor(function(e, isNew) {
+                        if (!isNew) { return void todo(); }
                         if (parsed.hashData.mode === 'view' && (val || !parsed.hashData.password)) {
                             // Error, wrong password stored, the view seed has changed with the password
                             // password will never work
