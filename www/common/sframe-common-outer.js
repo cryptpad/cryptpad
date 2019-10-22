@@ -263,7 +263,7 @@ define([
                         password = val;
                     }), parsed.getUrl());
                 }).nThen(function (w) {
-                    if (!password && sessionStorage.newPadPassword) {
+                    if (!password && !stored && sessionStorage.newPadPassword) {
                         password = sessionStorage.newPadPassword;
                         delete sessionStorage.newPadPassword;
                     }
