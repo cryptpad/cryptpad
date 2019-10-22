@@ -1221,5 +1221,9 @@
     "team_title": "Team: {0}",
     "team_quota": "Your team's storage limit",
     "drive_quota": "Your storage limit",
-    "settings_codeBrackets": "Auto-close brackets"
+    "settings_codeBrackets": "Auto-close brackets",
+    "team_viewers": "Viewers",
+    "drive_sfPassword": "Your shared folder {0} is no longer available. It has either been deleted by its owner or it is now protected with a new password. You can remove this folder from your CryptDrive, or recover access using the new password.",
+    "drive_sfPasswordError": "Wrong password",
+    "password_error_seed": "Pad not found!<br>This error can be caused by two factors: either a password was added/changed, or the pad has been deleted from the server."
 }
