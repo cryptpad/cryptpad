@@ -71,19 +71,21 @@ define([
             cb(null, clone(data[attr]));
         };
 
-        exp.pushData = function (data, cb) {
+        exp.pushData = function (_data, cb) {
             if (typeof cb !== "function") { cb = function () {}; }
             if (readOnly) { return void cb('EFORBIDDEN'); }
             var id = Util.createRandomInteger();
+            var data = clone(_data);
             // If we were given an edit link, encrypt its value if needed
             if (data.href) { data.href = exp.cryptor.encrypt(data.href); }
             files[FILES_DATA][id] = data;
             cb(null, id);
         };
 
-        exp.pushSharedFolder = function (data, cb) {
+        exp.pushSharedFolder = function (_data, cb) {
             if (typeof cb !== "function") { cb = function () {}; }
             if (readOnly) { return void cb('EFORBIDDEN'); }
+            var data = clone(_data);
 
             // Check if we already have this shared folder in our drive
             var exists;
@@ -476,6 +478,9 @@ define([
             files.migrateRo = 1;
             var next = function () {
                 var copy = JSON.parse(JSON.stringify(files));
+                exp.reencrypt(null, config.editKey, copy);
+                // XXX test migration again
+                /*
                 Object.keys(copy[FILES_DATA]).forEach(function (id) {
                     var data = copy[FILES_DATA][id] || {};
                     // If this pad has a visible href, encrypt it
@@ -490,7 +495,7 @@ define([
                     if (data.href && data.roHref && !data.fileType && data.href.indexOf('#') !== -1) {
                         data.href = exp.cryptor.encrypt(data.href);
                     }
-                });
+                });*/
                 copy.version = 2;
                 delete copy.migrateRo;
 

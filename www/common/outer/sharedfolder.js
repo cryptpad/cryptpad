@@ -116,6 +116,7 @@ define([
                 sf.teams.push({
                     cb: cb,
                     store: store,
+                    secondaryKey: secondaryKey,
                     id: id
                 });
                 if (handler) { handler(id, sf.rt); }
@@ -126,16 +127,17 @@ define([
                 teams: [{
                     cb: cb,
                     store: store,
+                    secondaryKey: secondaryKey,
                     id: id
                 }],
-                readOnly: Boolean(secondaryKey)
+                readOnly: !Boolean(secondaryKey)
             };
 
             var owners = data.owners;
             var listmapConfig = {
                 data: {},
                 channel: secret.channel,
-                readOnly: Boolean(secondaryKey),
+                readOnly: !Boolean(secondaryKey),
                 crypto: Crypto.createEncryptor(secret.keys),
                 userName: 'sharedFolder',
                 logLevel: 1,
@@ -158,7 +160,7 @@ define([
                 }
                 sf.teams.forEach(function (obj) {
                     var leave = function () { SF.leave(secret.channel, teamId); };
-                    var uo = obj.store.manager.addProxy(obj.id, rt, leave, secondaryKey);
+                    var uo = obj.store.manager.addProxy(obj.id, rt, leave, obj.secondaryKey);
                     SF.checkMigration(secondaryKey, rt.proxy, uo, function () {
                         obj.cb(sf.rt, info.metadata);
                     });
@@ -171,10 +173,8 @@ define([
                     if (info.error === "EDELETED" ) {
                         try {
                             // Deprecate the shared folder from each team
-                            // XXX We can't deprecate a read-only proxy: the read-only seed will change...
-                            // We can only remove it
+                            // We can only hide it
                             sf.teams.forEach(function (obj) {
-                                console.log(obj.store.id, obj.store, obj.id);
                                 obj.store.manager.deprecateProxy(obj.id, secret.channel);
                             });
                         } catch (e) {}
@@ -186,6 +186,7 @@ define([
             if (handler) { handler(id, rt); }
         });
     };
+
 
     SF.upgrade = function (channel, secret) {
         var sf = allSharedFolders[channel];
@@ -235,17 +236,21 @@ define([
         }
         var nt = nThen;
         sf.teams.forEach(function (obj) {
-            // XXX if we're a viewer in this team, we can't update the keys
             nt = nt(function (waitFor) {
                 var s = obj.store;
                 var sfId = obj.id;
+                // We can't update the password of a shared folder in a read-only team
+                if (s.manager.user.userObject.readOnly) {
+                    // Just deprecate the folder so that inner can stop displaying a folder no longer available
+                    if (s.manager.folders[sfId]) {
+                        s.manager.folders[sfId].proxy = { deprecated: true };
+                    }
+                    return;
+                }
                 var shared = Util.find(s.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
                 if (!sfId || !shared[sfId]) { return; }
                 var sf = JSON.parse(JSON.stringify(shared[sfId]));
                 sf.password = password;
-                sf.channel = secret.channel;
-                sf.href = '/drive/#'+Hash.getEditHashFromKeys(secret); // XXX encrypt
-                sf.roHref = '/drive/#'+Hash.getViewHashFromKeys(secret);
                 SF.load({
                     network: network,
                     store: s,
@@ -256,7 +261,9 @@ define([
                 s.rpc.pin([secret.channel], waitFor());
             }).nThen;
         });
-        nt(cb);
+        nt(function () {
+            cb();
+        });
     };
 
     /* loadSharedFolders

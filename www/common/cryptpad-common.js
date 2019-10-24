@@ -6,6 +6,7 @@ define([
     '/common/common-messaging.js',
     '/common/common-constants.js',
     '/common/common-feedback.js',
+    '/common/userObject.js',
     '/common/outer/local-store.js',
     '/common/outer/worker-channel.js',
     '/common/outer/login-block.js',
@@ -13,7 +14,7 @@ define([
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
 ], function (Config, Messages, Util, Hash,
-            Messaging, Constants, Feedback, LocalStore, Channel, Block,
+            Messaging, Constants, Feedback, UserObject, LocalStore, Channel, Block,
             AppConfig, Nthen) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
@@ -158,7 +159,7 @@ define([
         });
     };
     common.addSharedFolder = function (teamId, secret, cb) {
-        var href = secret.keys && secret.keys.editKeyStr ? '/drive/#' + Hash.getEditHashFromKeys(secret) : undefined;
+        var href = (secret.keys && secret.keys.editKeyStr) ? '/drive/#' + Hash.getEditHashFromKeys(secret) : undefined;
         postMessage("ADD_SHARED_FOLDER", {
             teamId: teamId,
             path: ['root'],
@@ -878,6 +879,8 @@ define([
             initialState: isSharedFolder ? '{}' : undefined
         };
 
+        var cryptgetVal;
+
         Nthen(function (waitFor) {
             if (parsed.hashData && parsed.hashData.password) {
                 common.getPadAttribute('password', waitFor(function (err, password) {
@@ -946,13 +949,22 @@ define([
                     waitFor.abort();
                     return void cb({ error: err });
                 }
-                Crypt.put(newHash, val, waitFor(function (err) {
-                    if (err) {
-                        waitFor.abort();
-                        return void cb({ error: err });
-                    }
-                }), optsPut);
+                cryptgetVal = val;
+                if (isSharedFolder) {
+                    var parsed = JSON.parse(val || '{}');
+                    var oldKey = parsed.version === 2 && oldSecret.keys.secondaryKey;
+                    var newKey = newSecret.keys.secondaryKey;
+                    UserObject.reencrypt(oldKey, newKey, parsed);
+                    cryptgetVal = JSON.stringify(parsed);
+                }
             }), optsGet);
+        }).nThen(function (waitFor) {
+            Crypt.put(newHash, cryptgetVal, waitFor(function (err) {
+                if (err) {
+                    waitFor.abort();
+                    return void cb({ error: err });
+                }
+            }), optsPut);
         }).nThen(function (waitFor) {
             if (isSharedFolder) {
                 postMessage("UPDATE_SHARED_FOLDER_PASSWORD", {
@@ -1514,7 +1526,6 @@ define([
                 noWorker = localStorage.CryptPad_noWorkers === '1';
                 console.error('WebWorker/SharedWorker state forced to ' + !noWorker);
             }
-            noWorker = true;
             Nthen(function (waitFor2) {
                 if (Worker) {
                     var w = waitFor2();

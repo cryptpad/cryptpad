@@ -15,6 +15,8 @@ define([
     var TEMPLATE = module.TEMPLATE = "template";
     var SHARED_FOLDERS = module.SHARED_FOLDERS = "sharedFolders";
     var SHARED_FOLDERS_TEMP = module.SHARED_FOLDERS_TEMP = "sharedFoldersTemp"; // Maybe deleted or new password
+    var FILES_DATA = module.FILES_DATA = Constants.storageKey;
+    var OLD_FILES_DATA = module.OLD_FILES_DATA = Constants.oldStorageKey;
 
     // Create untitled documents when no name is given
     var getLocaleDate = function () {
@@ -66,6 +68,37 @@ define([
         return pad.roHref;
     };
 
+    module.reencrypt = function (oldKey, newKey, obj) {
+        obj = obj || {};
+        var oldCryptor = createCryptor(oldKey);
+        var newCryptor = createCryptor(newKey);
+        Object.keys(obj[FILES_DATA]).forEach(function (id) {
+            var data = obj[FILES_DATA][id] || {};
+            // If this pad has a visible href, encrypt it
+            // "&& data.roHref" is here to make sure this is not a "file"
+            if (data.href && data.roHref && !data.fileType) {
+                var _href = oldCryptor.decrypt(data.href);
+                data.href = newCryptor.encrypt(_href);
+            }
+        });
+        Object.keys(obj[SHARED_FOLDERS] || {}).forEach(function (id) {
+            var data = obj[SHARED_FOLDERS][id] || {};
+            // If this folder has a visible href, encrypt it
+            if (data.href) {
+                var _href = oldCryptor.decrypt(data.href);
+                data.href = newCryptor.encrypt(_href);
+            }
+        });
+        Object.keys(obj[SHARED_FOLDERS_TEMP] || {}).forEach(function (id) {
+            var data = obj[SHARED_FOLDERS_TEMP][id] || {};
+            // If this folder has a visible href, encrypt it
+            if (data.href) {
+                var _href = oldCryptor.decrypt(data.href);
+                data.href = newCryptor.encrypt(_href);
+            }
+        });
+    };
+
     module.init = function (files, config) {
         var exp = {};
 
@@ -74,18 +107,19 @@ define([
         exp.setReadOnly = function (state, key) {
             config.editKey = key;
             createCryptor(key);
+            exp.readOnly = state;
             if (exp._setReadOnly) {
                 // Change outer
                 exp._setReadOnly(state);
             }
         };
+        exp.readOnly = config.readOnly;
+        exp.reencrypt = module.reencrypt;
 
         exp.getDefaultName = module.getDefaultName;
 
         var sframeChan = config.sframeChan;
 
-        var FILES_DATA = module.FILES_DATA = exp.FILES_DATA = Constants.storageKey;
-        var OLD_FILES_DATA = module.OLD_FILES_DATA = exp.OLD_FILES_DATA = Constants.oldStorageKey;
         var NEW_FOLDER_NAME = Messages.fm_newFolder || 'New folder';
         var NEW_FILE_NAME = Messages.fm_newFile || 'New file';
 
@@ -95,6 +129,8 @@ define([
         exp.TEMPLATE = TEMPLATE;
         exp.SHARED_FOLDERS = SHARED_FOLDERS;
         exp.SHARED_FOLDERS_TEMP = SHARED_FOLDERS_TEMP;
+        exp.FILES_DATA = FILES_DATA;
+        exp.OLD_FILES_DATA = OLD_FILES_DATA;
 
         var sharedFolder = exp.sharedFolder = config.sharedFolder;
         exp.id = config.id;

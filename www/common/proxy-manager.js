@@ -52,6 +52,13 @@ define([
 
     // Password may have changed
     var deprecateProxy = function (Env, id, channel) {
+        if (Env.user.userObject.readOnly) {
+            // In a read-only team, we can't deprecate a shared folder
+            if (Env.folders[id]) {
+                Env.folders[id].proxy = { deprecated: true };
+            }
+            return void Env.Store.refreshDriveUI();
+        }
         Env.unpinPads([channel], function () {});
         Env.user.userObject.deprecateSharedFolder(id);
         if (Env.Store && Env.Store.refreshDriveUI) {
@@ -554,7 +561,8 @@ define([
             var secret = Hash.getSecrets(parsed.type, parsed.hash, newPassword);
             data.password = newPassword;
             data.channel = secret.channel;
-            data.href = '/drive/#'+Hash.getEditHashFromKeys(secret); // XXX encrypt
+            var _href = '/drive/#'+Hash.getEditHashFromKeys(secret);
+            data.href = Env.user.userObject.cryptor.encrypt(_href);
             data.roHref = '/drive/#'+Hash.getViewHashFromKeys(secret);
             _addSharedFolder(Env, {
                 path: ['root'],
