@@ -76,6 +76,12 @@ define([
 
         var parsed = Hash.parsePadUrl(href);
         var secret = Hash.getSecrets('drive', parsed.hash, data.password);
+        // If we don' have valid keys, abort and remove the proxy to make sure
+        // we don't block the drive permanently
+        if (!secret.keys) {
+            store.manager.deprecateProxy(id);
+            return void cb(null);
+        }
         var secondaryKey = secret.keys.secondaryKey;
 
         // If we try to load an existing shared folder (isNew === false) but this folder
@@ -232,21 +238,13 @@ define([
         var sf = allSharedFolders[oldChannel];
         if (!sf) { return void cb({ error: 'ENOTFOUND' }); }
         if (sf.rt && sf.rt.stop) {
-            sf.rt.stop();
+            try { sf.rt.stop(); } catch (e) {}
         }
         var nt = nThen;
         sf.teams.forEach(function (obj) {
             nt = nt(function (waitFor) {
                 var s = obj.store;
                 var sfId = obj.id;
-                // We can't update the password of a shared folder in a read-only team
-                if (s.manager.user.userObject.readOnly) {
-                    // Just deprecate the folder so that inner can stop displaying a folder no longer available
-                    if (s.manager.folders[sfId]) {
-                        s.manager.folders[sfId].proxy = { deprecated: true };
-                    }
-                    return;
-                }
                 var shared = Util.find(s.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
                 if (!sfId || !shared[sfId]) { return; }
                 var sf = JSON.parse(JSON.stringify(shared[sfId]));

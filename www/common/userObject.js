@@ -106,7 +106,8 @@ define([
 
         exp.setReadOnly = function (state, key) {
             config.editKey = key;
-            createCryptor(key);
+            exp.cryptor = createCryptor(key);
+            exp.cryptor.k = Math.random();
             exp.readOnly = state;
             if (exp._setReadOnly) {
                 // Change outer

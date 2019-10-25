@@ -3803,7 +3803,8 @@ define([
             }
 
             if (manager.isSharedFolder(el)) {
-                delete data.roHref;
+                var ro = folders[el] && folders[el].version >= 2;
+                if (!ro) { delete data.roHref; }
                 //data.noPassword = true;
                 //data.noEditPassword = true;
                 data.noExpiration = true;

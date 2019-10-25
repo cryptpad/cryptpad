@@ -59,7 +59,7 @@ define([
             }
             return void Env.Store.refreshDriveUI();
         }
-        Env.unpinPads([channel], function () {});
+        if (channel) { Env.unpinPads([channel], function () {}); }
         Env.user.userObject.deprecateSharedFolder(id);
         if (Env.Store && Env.Store.refreshDriveUI) {
             Env.Store.refreshDriveUI();
@@ -200,11 +200,12 @@ define([
         var obj = Env.folders[id].proxy.metadata || {};
         for (var k in Env.user.proxy[UserObject.SHARED_FOLDERS][id] || {}) {
             var data = JSON.parse(JSON.stringify(Env.user.proxy[UserObject.SHARED_FOLDERS][id][k]));
-            if (data.href && data.href.indexOf('#') === -1) {
+            if (k === "href" && data.indexOf('#') === -1) {
                 try {
-                    data.href = Env.user.userObject.cryptor.decrypt(data.href);
+                    data = Env.user.userObject.cryptor.decrypt(data);
                 } catch (e) {}
             }
+            if (k === "href" && data.indexOf('#') === -1) { data = undefined; }
             obj[k] = data;
         }
         return obj;
@@ -561,8 +562,9 @@ define([
             var secret = Hash.getSecrets(parsed.type, parsed.hash, newPassword);
             data.password = newPassword;
             data.channel = secret.channel;
-            var _href = '/drive/#'+Hash.getEditHashFromKeys(secret);
-            data.href = Env.user.userObject.cryptor.encrypt(_href);
+            if (secret.keys.editKeyStr) {
+                data.href = '/drive/#'+Hash.getEditHashFromKeys(secret);
+            }
             data.roHref = '/drive/#'+Hash.getViewHashFromKeys(secret);
             _addSharedFolder(Env, {
                 path: ['root'],

@@ -67,6 +67,9 @@ define([
                     if (manager && oldIds.indexOf(fId) === -1) {
                         manager.addProxy(fId, { proxy: folders[fId] }, null, secret.keys.secondaryKey);
                     }
+                    var readOnly = !secret.keys.editKeyStr;
+                    if (!manager || !manager.folders[fId]) { return; }
+                    manager.folders[fId].userObject.setReadOnly(readOnly, secret.keys.secondaryKey);
                 }));
             });
         }).nThen(function () {

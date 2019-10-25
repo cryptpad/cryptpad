@@ -41,12 +41,18 @@ define([
                             team.manager.user.userObject.getHref(data) : data.href;
                     var parsed = Hash.parsePadUrl(href);
                     var secret = Hash.getSecrets(parsed.type, parsed.hash, o);
-                    SF.updatePassword(ctx.Store, {
-                        oldChannel: secret.channel,
-                        password: n,
-                        href: href
-                    }, ctx.store.network, function () {
-                        console.log('Shared folder password changed');
+                    // We've received a new password, we should update it locally
+                    // NOTE: this is an async call because new password means new roHref!
+                    // We need to wait for the new roHref in the proxy before calling the handlers
+                    // because a read-only team will use it when connecting to the new channel
+                    setTimeout(function () {
+                        SF.updatePassword(ctx.Store, {
+                            oldChannel: secret.channel,
+                            password: n,
+                            href: href
+                        }, ctx.store.network, function () {
+                            console.log('Shared folder password changed');
+                        });
                     });
                     return false;
                 }
