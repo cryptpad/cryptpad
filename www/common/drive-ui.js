@@ -1798,6 +1798,11 @@ define([
             if (!manager.isFile(element)) { return; }
 
             var data = manager.getFileData(element);
+
+            if (!Object.keys(data).length) {
+                return true;
+            }
+
             var href = data.href || data.roHref;
             if (!data) { return void logError("No data for the file", element); }
 
@@ -1958,10 +1963,14 @@ define([
                 if (isTrash) { return; }
                 openFile(root[key]);
             });
+            var invalid;
             if (isFolder) {
-                addFolderData(element, key, $element);
+                invalid = addFolderData(element, key, $element);
             } else {
-                addFileData(element, $element);
+                invalid = addFileData(element, $element);
+            }
+            if (invalid) {
+                return;
             }
             $element.addClass(liClass);
             var droppable = !isTrash && !APP.$content.data('readOnlyFolder');

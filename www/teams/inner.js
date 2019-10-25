@@ -61,6 +61,14 @@ define([
                 sframeChan.query('Q_DRIVE_GETOBJECT', {
                     sharedFolder: fId
                 }, waitFor(function (err, newObj) {
+                    if (newObj && newObj.deprecated) {
+                        delete folders[fId];
+                        delete drive.sharedFolders[fId];
+                        if (manager && manager.folders) {
+                            delete manager.folders[fId];
+                        }
+                        return;
+                    }
                     folders[fId] = folders[fId] || {};
                     copyObjectValue(folders[fId], newObj);
                     folders[fId].readOnly = !secret.keys.secondaryKey;

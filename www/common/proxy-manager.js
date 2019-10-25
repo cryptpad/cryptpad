@@ -54,9 +54,9 @@ define([
     var deprecateProxy = function (Env, id, channel) {
         if (Env.user.userObject.readOnly) {
             // In a read-only team, we can't deprecate a shared folder
-            if (Env.folders[id]) {
-                Env.folders[id].proxy = { deprecated: true };
-            }
+            // Use a empty object with a deprecated flag...
+            var lm = { proxy: { deprecated: true } };
+            addProxy(Env, id, lm, function () {});
             return void Env.Store.refreshDriveUI();
         }
         if (channel) { Env.unpinPads([channel], function () {}); }
