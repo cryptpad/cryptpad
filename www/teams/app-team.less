@@ -138,6 +138,11 @@
         }
         .cp-team-roster {
             .avatar_main(50px);
+            .cp-app-team-roster-header {
+                button:not(:last-child) {
+                    margin-right: 5px;
+                }
+            }
             .cp-team-roster-member {
                 display: flex;
                 align-items: center;
@@ -182,6 +187,26 @@
                     }
                 }
             }
+        }
+    }
+
+    #cp-teams-roster-dialog {
+        table {
+            width: 100%;
+            table-layout: fixed;
+            &.cp-teams-generic {
+                margin-bottom: 30px;
+            }
+        }
+        p {
+            text-align: left;
+        }
+        ul {
+            text-align: left;
+            padding-left: 30px;
+        }
+        li {
+            font-weight: bold;
         }
     }
 }

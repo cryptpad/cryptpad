@@ -798,6 +798,25 @@ define([
         cb(members);
     };
 
+    // Return folders with edit rights available to everybody (decrypted pad href)
+    var getEditableFolders = function (ctx, data, cId, cb) {
+        var teamId = data.teamId;
+        if (!teamId) { return void cb({error: 'EINVAL'}); }
+        var team = ctx.teams[teamId];
+        if (!team) { return void cb ({error: 'ENOENT'}); }
+        var folders = team.manager.folders || {};
+        var ids = Object.keys(folders).filter(function (id) {
+            return !folders[id].proxy.version;
+        });
+        cb(ids.map(function (id) {
+            var uo = Util.find(team, ['user', 'userObject']);
+            return {
+                name: Util.find(folders, [id, 'proxy', 'metadata', 'title']),
+                path: uo ? uo.findFile(id)[0] : []
+            };
+        }));
+    };
+
     var getTeamMetadata = function (ctx, data, cId, cb) {
         var teamId = data.teamId;
         if (!teamId) { return void cb({error: 'EINVAL'}); }
@@ -1378,6 +1397,9 @@ define([
             }
             if (cmd === 'CREATE_TEAM') {
                 return void createTeam(ctx, data, clientId, cb);
+            }
+            if (cmd === 'GET_EDITABLE_FOLDERS') {
+                return void getEditableFolders(ctx, data, clientId, cb);
             }
         };
 
