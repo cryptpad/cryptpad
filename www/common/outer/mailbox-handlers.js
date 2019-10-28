@@ -439,14 +439,13 @@ define([
         });
         if (!teamId) { return void cb(true); }
 
-        var dismiss = false;
         try {
             var module = ctx.store.modules['team'];
             // changeMyRights returns true if we can't change our rights
-            dismiss = module.changeMyRights(teamId, content.state, content.teamData);
+            module.changeMyRights(teamId, content.state, content.teamData);
         } catch (e) { console.error(e); }
 
-        cb(dismiss);
+        cb(true);
     };
 
 
