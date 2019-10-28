@@ -164,7 +164,7 @@ define([
                     var ed = $(el).attr('data-ed');
                     if (!ed) { return; }
                     if (teamOwner && teams[teamOwner] && teams[teamOwner].edPublic === ed) { me = true; }
-                    if (ed === edPublic) { me = true; }
+                    if (ed === edPublic && !teamOwner) { me = true; }
                     return ed;
                 }).filter(function (x) { return x; });
                 NThen(function (waitFor) {
@@ -195,7 +195,8 @@ define([
                     }));
                 }).nThen(function (waitFor) {
                     sel.forEach(function (el) {
-                        var friend = friends[$(el).attr('data-curve')];
+                        var curve = $(el).attr('data-curve');
+                        var friend = curve === user.curvePublic ? user : friends[curve];
                         if (!friend) { return; }
                         common.mailbox.sendTo("RM_OWNER", {
                             channel: channel,
@@ -264,7 +265,10 @@ define([
                 var sel = $sel.toArray();
                 if (!sel.length) { return; }
                 var toAdd = sel.map(function (el) {
-                    var friend = friends[$(el).attr('data-curve')];
+                    var curve = $(el).attr('data-curve');
+                    // If the pad is woned by a team, we can transfer ownership to ourselves
+                    if (curve === user.curvePublic && teamOwner) { return priv.edPublic; }
+                    var friend = friends[curve];
                     if (!friend) { return; }
                     return friend.edPublic;
                 }).filter(function (x) { return x; });
@@ -340,7 +344,8 @@ define([
                     }
                 }).nThen(function (waitFor) {
                     sel.forEach(function (el) {
-                        var friend = friends[$(el).attr('data-curve')];
+                        var curve = $(el).attr('data-curve');
+                        var friend = curve === user.curvePublic ? user : friends[curve];
                         if (!friend) { return; }
                         common.mailbox.sendTo("ADD_OWNER", {
                             channel: channel,
