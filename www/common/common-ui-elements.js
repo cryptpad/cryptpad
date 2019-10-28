@@ -430,6 +430,7 @@ define([
                 } else {
                     Object.keys(priv.teams || {}).some(function (id) {
                         var team = priv.teams[id] || {};
+                        if (team.viewer) { return; }
                         if (data.owners.indexOf(team.edPublic) === -1) { return; }
                         owned = id;
                         return true;

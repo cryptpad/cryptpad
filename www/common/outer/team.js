@@ -1283,7 +1283,9 @@ define([
                     owner: teams[id].owner,
                     name: teams[id].metadata.name,
                     edPublic: Util.find(teams[id], ['keys', 'drive', 'edPublic']),
-                    avatar: Util.find(teams[id], ['metadata', 'avatar'])
+                    avatar: Util.find(teams[id], ['metadata', 'avatar']),
+                    viewer: !Util.find(teams[id], ['keys', 'drive', 'edPrivate']),
+
                 };
                 if (safe && ctx.teams[id]) {
                     t[id].secondaryKey = ctx.teams[id].secondaryKey;

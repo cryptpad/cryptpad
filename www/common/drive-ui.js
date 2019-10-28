@@ -2819,7 +2819,7 @@ define([
             return $container;
         };
         var createGhostIcon = function ($list) {
-            if (APP.$content.data('readOnlyFolder')) { return; }
+            if (APP.$content.data('readOnlyFolder') || !APP.editable) { return; }
             var isInRoot = currentPath[0] === ROOT;
             var $element = $('<li>', {
                 'class': 'cp-app-drive-element-row cp-app-drive-element-grid cp-app-drive-new-ghost'
