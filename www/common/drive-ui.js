@@ -3752,7 +3752,7 @@ define([
                 data.sharedFolder = true;
             }
 
-            if (manager.isFile(el) && data.roHref) { // Only for pads!
+            if ((manager.isFile(el) && data.roHref) || manager.isSharedFolder(el)) { // Only for pads!
                 sframeChan.query('Q_GET_PAD_METADATA', {
                     channel: data.channel
                 }, function (err, val) {
