@@ -509,7 +509,7 @@ define([
             if (data.href || data.roHref) {
                 parsed = Hash.parsePadUrl(data.href || data.roHref);
             }
-            if (owned && data.roHref && parsed.type !== 'drive' && parsed.hashData.type === 'pad') {
+            if (owned && parsed.hashData.type === 'pad') {
                 var manageOwners = h('button.no-margin', Messages.owner_openModalButton);
                 $(manageOwners).click(function () {
                     data.teamId = typeof(owned) !== "boolean" ? owned : undefined;

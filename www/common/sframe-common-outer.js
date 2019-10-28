@@ -495,18 +495,25 @@ define([
             });
 
             sframeChan.on('Q_ACCEPT_OWNERSHIP', function (data, cb) {
-                var _data = {
-                    password: data.password,
-                    href: data.href,
-                    channel: data.channel,
-                    title: data.title,
-                    owners: data.metadata.owners,
-                    expire: data.metadata.expire,
-                    forceSave: true
-                };
-                Cryptpad.setPadTitle(_data, function (err) {
-                    cb({error: err});
-                });
+                var parsed = Utils.Hash.parsePadUrl(data.href);
+                if (parsed.type === 'drive') {
+                    // Shared folder
+                    var secret = Utils.Hash.getSecrets(parsed.type, parsed.hash, data.password);
+                    Cryptpad.addSharedFolder(null, secret, cb);
+                } else {
+                    var _data = {
+                        password: data.password,
+                        href: data.href,
+                        channel: data.channel,
+                        title: data.title,
+                        owners: data.metadata.owners,
+                        expire: data.metadata.expire,
+                        forceSave: true
+                    };
+                    Cryptpad.setPadTitle(_data, function (err) {
+                        cb({error: err});
+                    });
+                }
 
                 // Also add your mailbox to the metadata object
                 var padParsed = Utils.Hash.parsePadUrl(data.href);
