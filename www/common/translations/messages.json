@@ -965,7 +965,7 @@
     "creation_newPadModalDescription": "Click on a pad type to create it. You can also press <b>Tab</b> to select the type and press <b>Enter</b> to confirm.",
     "creation_newPadModalDescriptionAdvanced": "You can check the box (or press <b>Space</b> to change its value) if you want to display the pad creation screen (for owned pads, expiring pads, etc.).",
     "creation_newPadModalAdvanced": "Display the pad creation screen",
-    "password_info": "The pad you're trying to open is protected with a password. Enter the correct password to access its content.",
+    "password_info": "The pad you're trying to open no longer exist or is protected with a password. Enter the correct password to access its content.",
     "password_error": "Pad not found!<br>This error can be caused by two factors: either the password in invalid, or the pad has been deleted from the server.",
     "password_placeholder": "Type the password here...",
     "password_submit": "Submit",

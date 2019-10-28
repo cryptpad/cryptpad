@@ -280,7 +280,7 @@
                     nodeItem.dragfn = element.drag;
                     nodeItem.dragendfn = element.dragend;
                     nodeItem.dropfn = element.drop;
-                    __onclickHandler(nodeItem);
+                    __onclickHandler(nodeItemText);
                     __onColorClickHandler(nodeItem, "item");
                     board.appendChild(nodeItem);
                     // send event that board has changed
@@ -395,17 +395,15 @@
                             contentBoard.appendChild(nodeItem);
                         }
                         //footer board
-                        var footerBoard = document.createElement('footer');
                         //add button
                         var addBoardItem = document.createElement('button');
-                        $(addBoardItem).addClass("kanban-additem btn btn-default fa fa-plus");
-                        footerBoard.appendChild(addBoardItem);
+                        $(addBoardItem).addClass("kanban-title-button btn btn-default fa fa-plus");
+                        headerBoard.appendChild(addBoardItem);
                         __onAddItemClickHandler(addBoardItem);
 
                         //board assembly
                         boardNode.appendChild(headerBoard);
                         boardNode.appendChild(contentBoard);
-                        boardNode.appendChild(footerBoard);
                         //board add
                         self.container.appendChild(boardNode);
                     }
@@ -509,13 +507,13 @@
                     var addBoard = document.createElement('div');
                     addBoard.id = 'kanban-addboard';
                     addBoard.setAttribute('class', 'fa fa-plus');
-                    boardContainerOuter.appendChild(addBoard);
 
                     self.container = boardContainer;
                     //add boards
                     self.addBoards(self.options.boards);
                     //appends to container
                     self.element.appendChild(boardContainerOuter);
+                    self.element.appendChild(addBoard);
 
                     // send event that board has changed
                     self.onChange();

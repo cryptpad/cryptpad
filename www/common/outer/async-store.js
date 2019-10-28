@@ -552,7 +552,7 @@ define([
         // Get the metadata for sframe-common-outer
         Store.getMetadata = function (clientId, app, cb) {
             var disableThumbnails = Util.find(store.proxy, ['settings', 'general', 'disableThumbnails']);
-            var teams = store.modules['team']  && store.modules['team'].getTeamsData(app);
+            var teams = (store.modules['team'] && store.modules['team'].getTeamsData(app)) || {};
             var metadata = {
                 // "user" is shared with everybody via the userlist
                 user: {

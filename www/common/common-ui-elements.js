@@ -164,7 +164,7 @@ define([
                     var ed = $(el).attr('data-ed');
                     if (!ed) { return; }
                     if (teamOwner && teams[teamOwner] && teams[teamOwner].edPublic === ed) { me = true; }
-                    if (ed === edPublic) { me = true; }
+                    if (ed === edPublic && !teamOwner) { me = true; }
                     return ed;
                 }).filter(function (x) { return x; });
                 NThen(function (waitFor) {
@@ -195,7 +195,8 @@ define([
                     }));
                 }).nThen(function (waitFor) {
                     sel.forEach(function (el) {
-                        var friend = friends[$(el).attr('data-curve')];
+                        var curve = $(el).attr('data-curve');
+                        var friend = curve === user.curvePublic ? user : friends[curve];
                         if (!friend) { return; }
                         common.mailbox.sendTo("RM_OWNER", {
                             channel: channel,
@@ -264,7 +265,10 @@ define([
                 var sel = $sel.toArray();
                 if (!sel.length) { return; }
                 var toAdd = sel.map(function (el) {
-                    var friend = friends[$(el).attr('data-curve')];
+                    var curve = $(el).attr('data-curve');
+                    // If the pad is woned by a team, we can transfer ownership to ourselves
+                    if (curve === user.curvePublic && teamOwner) { return priv.edPublic; }
+                    var friend = friends[curve];
                     if (!friend) { return; }
                     return friend.edPublic;
                 }).filter(function (x) { return x; });
@@ -340,7 +344,8 @@ define([
                     }
                 }).nThen(function (waitFor) {
                     sel.forEach(function (el) {
-                        var friend = friends[$(el).attr('data-curve')];
+                        var curve = $(el).attr('data-curve');
+                        var friend = curve === user.curvePublic ? user : friends[curve];
                         if (!friend) { return; }
                         common.mailbox.sendTo("ADD_OWNER", {
                             channel: channel,
@@ -505,7 +510,7 @@ define([
             if (data.href || data.roHref) {
                 parsed = Hash.parsePadUrl(data.href || data.roHref);
             }
-            if (owned && data.roHref && parsed.type !== 'drive' && parsed.hashData.type === 'pad') {
+            if (owned && parsed.hashData.type === 'pad') {
                 var manageOwners = h('button.no-margin', Messages.owner_openModalButton);
                 $(manageOwners).click(function () {
                     data.teamId = typeof(owned) !== "boolean" ? owned : undefined;
@@ -2782,7 +2787,9 @@ define([
 
     UIElements.createNewPadModal = function (common) {
         // if in drive, show new pad modal instead
-        if ($("body.cp-app-drive").length !== 0) { return void $(".cp-app-drive-element-row.cp-app-drive-new-ghost").click(); }
+        if ($(".cp-app-drive-element-row.cp-app-drive-new-ghost").length !== 0) {
+            return void $(".cp-app-drive-element-row.cp-app-drive-new-ghost").click();
+        }
 
         var $modal = UIElements.createModal({
             id: 'cp-app-toolbar-creation-dialog',
