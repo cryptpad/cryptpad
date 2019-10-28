@@ -49,7 +49,6 @@ define([
         return userObject;
     };
 
-    // XXX: Remove a shared folder from the list
     var removeProxy = function (Env, id) {
         var f = Env.folders[id];
         if (!f) { return; }
@@ -63,11 +62,13 @@ define([
             // In a read-only team, we can't deprecate a shared folder
             // Use a empty object with a deprecated flag...
             var lm = { proxy: { deprecated: true } };
+            removeProxy(Env, id);
             addProxy(Env, id, lm, function () {});
             return void Env.Store.refreshDriveUI();
         }
         if (channel) { Env.unpinPads([channel], function () {}); }
         Env.user.userObject.deprecateSharedFolder(id);
+        removeProxy(Env, id);
         if (Env.Store && Env.Store.refreshDriveUI) {
             Env.Store.refreshDriveUI();
         }
@@ -1065,10 +1066,13 @@ define([
             settings: data.settings,
             user: {
                 proxy: proxy,
-                userObject: UserObject.init(proxy, uoConfig)
             },
             folders: {}
         };
+        uoConfig.removeProxy = function (id) {
+            removeProxy(Env, id);
+        };
+        Env.user.userObject = UserObject.init(proxy, uoConfig);
 
         var callWithEnv = function (f) {
             return function () {

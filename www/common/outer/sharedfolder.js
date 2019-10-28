@@ -98,7 +98,7 @@ define([
 
         var parsed = Hash.parsePadUrl(href);
         var secret = Hash.getSecrets('drive', parsed.hash, data.password);
-        // If we don' have valid keys, abort and remove the proxy to make sure
+        // If we don't have valid keys, abort and remove the proxy to make sure
         // we don't block the drive permanently
         if (!secret.keys) {
             store.manager.deprecateProxy(id);

@@ -168,6 +168,7 @@ define([
                     if (channelId) { toClean.push(channelId); }
                     if (exp.isSharedFolder(id)) {
                         delete files[SHARED_FOLDERS][id];
+                        if (config.removeProxy) { config.removeProxy(id); }
                     } else {
                         spliceFileData(id);
                     }
