@@ -280,7 +280,7 @@
                     nodeItem.dragfn = element.drag;
                     nodeItem.dragendfn = element.dragend;
                     nodeItem.dropfn = element.drop;
-                    __onclickHandler(nodeItem);
+                    __onclickHandler(nodeItemText);
                     __onColorClickHandler(nodeItem, "item");
                     board.appendChild(nodeItem);
                     // send event that board has changed
@@ -397,8 +397,7 @@
                         //footer board
                         //add button
                         var addBoardItem = document.createElement('button');
-                        addBoardItem.setAttribute('title', 'Add new item');
-                        $(addBoardItem).addClass("btn btn-default fa fa-plus");
+                        $(addBoardItem).addClass("kanban-title-button btn btn-default fa fa-plus");
                         headerBoard.appendChild(addBoardItem);
                         __onAddItemClickHandler(addBoardItem);
 
