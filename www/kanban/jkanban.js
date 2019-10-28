@@ -280,7 +280,7 @@
                     nodeItem.dragfn = element.drag;
                     nodeItem.dragendfn = element.dragend;
                     nodeItem.dropfn = element.drop;
-                    __onclickHandler(nodeItem);
+                    __onclickHandler(nodeItemText);
                     __onColorClickHandler(nodeItem, "item");
                     board.appendChild(nodeItem);
                     // send event that board has changed
@@ -395,17 +395,15 @@
                             contentBoard.appendChild(nodeItem);
                         }
                         //footer board
-                        var footerBoard = document.createElement('footer');
                         //add button
                         var addBoardItem = document.createElement('button');
-                        $(addBoardItem).addClass("kanban-additem btn btn-default fa fa-plus");
-                        footerBoard.appendChild(addBoardItem);
+                        $(addBoardItem).addClass("kanban-title-button btn btn-default fa fa-plus");
+                        headerBoard.appendChild(addBoardItem);
                         __onAddItemClickHandler(addBoardItem);
 
                         //board assembly
                         boardNode.appendChild(headerBoard);
                         boardNode.appendChild(contentBoard);
-                        boardNode.appendChild(footerBoard);
                         //board add
                         self.container.appendChild(boardNode);
                     }
