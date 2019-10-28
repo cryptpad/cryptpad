@@ -17,7 +17,7 @@ define(['/customize/application_config.js'], function (AppConfig) {
         displayPadCreationScreen: 'displayPadCreationScreen',
         deprecatedKey: 'deprecated',
         MAX_TEAMS_SLOTS: AppConfig.maxTeamsSlots || 3,
-        MAX_TEAMS_OWNED: AppConfig.maxTeamsOwned || 1,
+        MAX_TEAMS_OWNED: AppConfig.maxOwnedTeams || 1,
         // Sub
         plan: 'CryptPad_plan',
         // Apps

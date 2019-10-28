@@ -164,7 +164,7 @@ define(function() {
     // We're limiting the number of teams each user is able to own to 1 in order to make sure
     // users don't use "fake" teams (1 member) just to increase their storage limit.
     // You can change the value here.
-    // config.maxTeamsOwned = 1;
+    // config.maxOwnedTeams = 1;
 
     return config;
 });
