@@ -77,7 +77,7 @@ define([
             // If this pad has a visible href, encrypt it
             // "&& data.roHref" is here to make sure this is not a "file"
             if (data.href && data.roHref && !data.fileType) {
-                var _href = oldCryptor.decrypt(data.href);
+                var _href = (data.href && data.href.indexOf('#') === -1) ? oldCryptor.decrypt(data.href) : data.href;
                 data.href = newCryptor.encrypt(_href);
             }
         });
@@ -85,7 +85,7 @@ define([
             var data = obj[SHARED_FOLDERS][id] || {};
             // If this folder has a visible href, encrypt it
             if (data.href) {
-                var _href = oldCryptor.decrypt(data.href);
+                var _href = (data.href && data.href.indexOf('#') === -1) ? oldCryptor.decrypt(data.href) : data.href;
                 data.href = newCryptor.encrypt(_href);
             }
         });
@@ -93,7 +93,7 @@ define([
             var data = obj[SHARED_FOLDERS_TEMP][id] || {};
             // If this folder has a visible href, encrypt it
             if (data.href) {
-                var _href = oldCryptor.decrypt(data.href);
+                var _href = (data.href && data.href.indexOf('#') === -1) ? oldCryptor.decrypt(data.href) : data.href;
                 data.href = newCryptor.encrypt(_href);
             }
         });
@@ -101,6 +101,10 @@ define([
 
     module.init = function (files, config) {
         var exp = {};
+
+        if (false && !files.version) { // XXX if we remove false, old shared folders won't encrypt new hrefs
+            config.editKey = undefined;
+        }
 
         exp.cryptor = createCryptor(config.editKey);
 

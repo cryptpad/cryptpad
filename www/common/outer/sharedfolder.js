@@ -63,6 +63,28 @@ define([
         });
     };
 
+    // XXX only needed if we want a manual migration from the share modal...
+    SF.migrate = function (channel) {
+        var sf = allSharedFolders[channel];
+        if (!sf) { return; }
+        var clients = sf.teams;
+        if (!Array.isArray(clients) || !clients.length) { return; }
+        var c = clients[0];
+        // No secondaryKey? ==> already migrated ==> abort
+        if (!c.secondaryKey) { return; }
+        var f = Util.find(c, ['store', 'manager', 'folders', c.id]);
+        // Can't find the folder: abort
+        if (!f) { return; }
+        // Already migrated: abort
+        if (!f.proxy || f.proxy.version) { return; }
+        f.userObject.migrateReadOnly(function () {
+            clients.forEach(function (obj) {
+                var uo = Util.find(obj, ['store', 'manager', 'folders', obj.id, 'userObject']);
+                uo.setReadOnly(false, obj.secondarykey);
+            });
+        });
+    };
+
     SF.load = function (config, id, data, _cb) {
         var cb = Util.once(_cb);
         var network = config.network;

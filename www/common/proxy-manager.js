@@ -39,6 +39,13 @@ define([
             userObject: userObject,
             leave: leave
         };
+        if (false) { // XXX allow shared folder migration while using it
+            // NOTE: this is not needed if we always use the editKey in userObject, even with old version
+            var path = proxy.drive ? ['drive', 'version'] : ['version'];
+            proxy.on('change', path, function () {
+                userObject.setReadOnly(false, editKey);
+            });
+        }
         return userObject;
     };
 

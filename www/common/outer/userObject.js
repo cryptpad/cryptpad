@@ -478,28 +478,13 @@ define([
             files.migrateRo = 1;
             var next = function () {
                 var copy = JSON.parse(JSON.stringify(files));
-                exp.reencrypt(null, config.editKey, copy);
-                // XXX test migration again
-                /*
-                Object.keys(copy[FILES_DATA]).forEach(function (id) {
-                    var data = copy[FILES_DATA][id] || {};
-                    // If this pad has a visible href, encrypt it
-                    // "&& data.roHref" is here to make sure this is not a "file"
-                    if (data.href && data.roHref && !data.fileType && data.href.indexOf('#') !== -1) {
-                        data.href = exp.cryptor.encrypt(data.href);
-                    }
+                exp.reencrypt(config.editKey, config.editKey, copy);
+                Object.keys(copy).forEach(function (k) {
+                    files[k] = copy[k];
                 });
-                Object.keys(copy[SHARED_FOLDERS] || {}).forEach(function (id) {
-                    var data = copy[SHARED_FOLDERS][id] || {};
-                    // If this folder has a visible href, encrypt it
-                    if (data.href && data.roHref && !data.fileType && data.href.indexOf('#') !== -1) {
-                        data.href = exp.cryptor.encrypt(data.href);
-                    }
-                });*/
-                copy.version = 2;
-                delete copy.migrateRo;
+                files.version = 2;
+                delete files.migrateRo;
 
-                files = copy;
                 onSync(cb);
             };
             onSync(next);
