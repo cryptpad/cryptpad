@@ -1528,8 +1528,12 @@ define([
                             }
                             UI.confirm(msg, function (yes) {
                                 if (!yes) { return; }
-                                sframeChan.query('Q_MOVE_TO_TRASH', null, function (err) {
-                                    if (err) { return void callback(err); }
+                                sframeChan.query('Q_MOVE_TO_TRASH', null, function (err, obj) {
+                                    err = err || (obj && obj.error);
+                                    if (err) {
+                                        callback(err);
+                                        return void UI.warn(Messages.fm_forbidden);
+                                    }
                                     var cMsg = common.isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
                                     var msg = common.fixLinks($('<div>').html(cMsg));
                                     UI.alert(msg);

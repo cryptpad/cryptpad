@@ -986,17 +986,23 @@ define([
         };
         Store.moveToTrash = function (clientId, data, cb) {
             var href = Hash.getRelativeHref(data.href);
+            var allErrors = true;
             nThen(function (waitFor) {
                 getAllStores().forEach(function (s) {
                     var deleted = s.userObject.forget(href);
                     if (!deleted) { return; }
+                    allErrors = false;
                     var send = s.id ? s.sendEvent : sendDriveEvent;
                     send('DRIVE_CHANGE', {
                         path: ['drive', UserObject.FILES_DATA]
                     }, clientId);
                     onSync(s.id, waitFor());
                 });
-            }).nThen(cb);
+            }).nThen(function () {
+                cb({
+                    error: allErrors ? 'FORBIDDEN' : undefined
+                });
+            });
         };
         Store.setPadTitle = function (clientId, data, cb) {
             var title = data.title;

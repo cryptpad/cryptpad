@@ -124,7 +124,7 @@ define([
             var data = Env.user.proxy[UserObject.SHARED_FOLDERS][id];
             if (data && !editable) { data = JSON.parse(JSON.stringify(data)); }
             // If it's not a shared folder, check the pads
-            if (!data) { Env.user.userObject.getFileData(id, editable); }
+            if (!data) { data = Env.user.userObject.getFileData(id, editable); }
             ret.push({
                 data: data,
                 userObject: Env.user.userObject
