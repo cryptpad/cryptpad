@@ -317,7 +317,6 @@ define([
                                     teamId: obj.id
                                 }, waitFor(function (err) {
                                     if (err) { return void console.error(err); }
-                                    console.warn(obj.id);
                                 }));
                             });
                         }));

@@ -615,10 +615,13 @@ define([
         };
 
         // Get drive ids of files from their channel ids
-        exp.findChannels = function (channels) {
+        exp.findChannels = function (channels, includeSharedFolders) {
             var allFilesList = files[FILES_DATA];
-            return getFiles([FILES_DATA]).filter(function (k) {
-                var data = allFilesList[k];
+            var sfList = files[SHARED_FOLDERS];
+            var paths = [FILES_DATA];
+            if (includeSharedFolders) { paths.push(SHARED_FOLDERS); }
+            return getFiles(paths).filter(function (k) {
+                var data = allFilesList[k] || sfList[k] || {};
                 return channels.indexOf(data.channel) !== -1;
             });
         };

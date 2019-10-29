@@ -119,9 +119,14 @@ define([
     // it's a cloned object (NOTE: href should never be edited directly)
     var findChannel = function (Env, channel, editable) {
         var ret = [];
-        Env.user.userObject.findChannels([channel]).forEach(function (id) {
+        Env.user.userObject.findChannels([channel], true).forEach(function (id) {
+            // Check in shared folders, then clone if needed
+            var data = Env.user.proxy[UserObject.SHARED_FOLDERS][id];
+            if (data && !editable) { data = JSON.parse(JSON.stringify(data)); }
+            // If it's not a shared folder, check the pads
+            if (!data) { Env.user.userObject.getFileData(id, editable); }
             ret.push({
-                data: Env.user.userObject.getFileData(id, editable),
+                data: data,
                 userObject: Env.user.userObject
             });
         });
