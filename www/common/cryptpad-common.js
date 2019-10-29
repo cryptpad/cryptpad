@@ -1023,6 +1023,51 @@ define([
         });
     };
 
+    common.changeBlobPassword = function (Crypt, Crypto, data, cb) {
+        var href = data.href;
+        var newPassword = data.password;
+        var teamId = data.teamId;
+        if (!href) { return void cb({ error: 'EINVAL_HREF' }); }
+        var parsed = Hash.parsePadUrl(href);
+        if (!parsed.hash) { return void cb({ error: 'EINVAL_HREF' }); }
+        if (parsed.hashData.type !== 'file') { return void cb({ error: 'EINVAL_TYPE' }); }
+
+        if (parsed.hashData.version >= 2) {
+            newSecret = Hash.getSecrets(parsed.type, parsed.hash, newPassword);
+            if (!(newSecret.keys && newSecret.keys.editKeyStr)) {
+                return void cb({error: 'EAUTH'});
+            }
+            newHash = Hash.getEditHashFromKeys(newSecret);
+        } else {
+            newHash = Hash.createRandomHash(parsed.type, newPassword);
+            newSecret = Hash.getSecrets(parsed.type, newHash, newPassword);
+        }
+        var newHref = '/' + parsed.type + '/#' + newHash;
+
+        /*
+            1. get old password
+            2. get owners
+        */
+        var oldPassword;
+        var oldSecret;
+        var oldChannel;
+        var oldMetadata;
+        Nthen(function (waitFor) {
+            if (parsed.hashData && parsed.hashData.password) {
+                common.getPadAttribute('password', waitFor(function (err, password) {
+                    oldPassword = password || '';
+                }), href);
+            }
+        }).nThen(function (waitFor) {
+            oldSecret = Hash.getSecrets(parsed.type, parsed.hash, optsGet.password);
+            oldChannel = oldSecret.channel;
+            common.getPadMetadata({channel: oldChannel}, waitFor(function (metadata) {
+                oldMetadata = metadata;
+            }));
+        }).nThen(function (waitFor) {
+        });
+    };
+
     common.changeUserPassword = function (Crypt, edPublic, data, cb) {
         if (!edPublic) {
             return void cb({
