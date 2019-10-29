@@ -77,7 +77,7 @@ define([
             var id = Util.createRandomInteger();
             var data = clone(_data);
             // If we were given an edit link, encrypt its value if needed
-            if (data.href) { data.href = exp.cryptor.encrypt(data.href); }
+            if (data.href && data.href.indexOf('#') !== -1) { data.href = exp.cryptor.encrypt(data.href); }
             files[FILES_DATA][id] = data;
             cb(null, id);
         };
@@ -107,7 +107,7 @@ define([
                 return void cb("EAUTH");
             }
             var id = Util.createRandomInteger();
-            if (data.href) { data.href = exp.cryptor.encrypt(data.href); }
+            if (data.href && data.href.indexOf('#') !== -1) { data.href = exp.cryptor.encrypt(data.href); }
             files[SHARED_FOLDERS][id] = data;
             cb(null, id);
         };
