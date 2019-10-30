@@ -7,6 +7,82 @@ define([
     var Nacl = window.nacl;
     var module = {};
 
+    module.uploadU8 =function (common, data, cb) {
+        var teamId = data.teamId;
+        var u8 = data.u8;
+        var metadata = data.metadata;
+        var key = data.key;
+
+        var onError = data.onError || function () {};
+        var onPending = data.onPending || function () {};
+        var updateProgress = data.updateProgress || function () {};
+        var owned = data.owned;
+        var id = data.id;
+
+        var next = FileCrypto.encrypt(u8, metadata, key);
+
+        var estimate = FileCrypto.computeEncryptedSize(u8.length, metadata);
+
+        var sendChunk = function (box, cb) {
+            var enc = Nacl.util.encodeBase64(box);
+            common.uploadChunk(teamId, enc, function (e, msg) {
+                cb(e, msg);
+            });
+        };
+
+        var actual = 0;
+        var again = function (err, box) {
+            if (err) { onError(err); }
+            if (box) {
+                actual += box.length;
+                var progressValue = (actual / estimate * 100);
+                progressValue = Math.min(progressValue, 100);
+                updateProgress(progressValue);
+
+                return void sendChunk(box, function (e) {
+                    if (e) { return console.error(e); }
+                    next(again);
+                });
+            }
+
+            if (actual !== estimate) {
+                console.error('Estimated size does not match actual size');
+            }
+
+            // if not box then done
+            common.uploadComplete(teamId, id, owned, function (e) {
+                if (e) { return void console.error(e); }
+                var uri = ['', 'blob', id.slice(0,2), id].join('/');
+                console.log("encrypted blob is now available as %s", uri);
+
+
+
+                cb();
+            });
+        };
+
+        common.uploadStatus(teamId, estimate, function (e, pending) {
+            if (e) {
+                console.error(e);
+                onError(e);
+                return;
+            }
+
+            if (pending) {
+                return void onPending(function () {
+                    // if the user wants to cancel the pending upload to execute that one
+                    common.uploadCancel(teamId, estimate, function (e) {
+                        if (e) {
+                            return void console.error(e);
+                        }
+                        next(again);
+                    });
+                });
+            }
+            next(again);
+        });
+    };
+
     module.upload = function (file, noStore, common, updateProgress, onComplete, onError, onPending) {
         var u8 = file.blob; // This is not a blob but a uint8array
         var metadata = file.metadata;
@@ -50,85 +126,36 @@ define([
                 metadata.owners = [edPublic];
             }));
         }).nThen(function () {
-            var next = FileCrypto.encrypt(u8, metadata, key);
+            module.uploadU8(common, {
+                teamId: teamId,
+                u8: u8,
+                metadata: metadata,
+                key: key,
+                id: id,
+                owned: owned,
+                onError: onError,
+                onPending: onPending,
+                updateProgress: updateProgress,
+            }, function () {
+                if (noStore) { return void onComplete(href); }
 
-            var estimate = FileCrypto.computeEncryptedSize(u8.length, metadata);
-
-            var sendChunk = function (box, cb) {
-                var enc = Nacl.util.encodeBase64(box);
-                common.uploadChunk(teamId, enc, function (e, msg) {
-                    cb(e, msg);
+                var title = metadata.name;
+                var data = {
+                    teamId: teamId,
+                    title: title || "",
+                    href: href,
+                    path: path,
+                    password: password,
+                    channel: id,
+                    owners: metadata.owners,
+                    forceSave: forceSave
+                };
+                common.setPadTitle(data, function (err) {
+                    if (err) { return void console.error(err); }
+                    onComplete(href);
+                    common.setPadAttribute('fileType', metadata.type, null, href);
+                    common.setPadAttribute('owners', metadata.owners, null, href);
                 });
-            };
-
-            var actual = 0;
-            var again = function (err, box) {
-                if (err) { throw new Error(err); }
-                if (box) {
-                    actual += box.length;
-                    var progressValue = (actual / estimate * 100);
-                    progressValue = Math.min(progressValue, 100);
-                    updateProgress(progressValue);
-
-                    return void sendChunk(box, function (e) {
-                        if (e) { return console.error(e); }
-                        next(again);
-                    });
-                }
-
-                if (actual !== estimate) {
-                    console.error('Estimated size does not match actual size');
-                }
-
-                // if not box then done
-                common.uploadComplete(teamId, id, owned, function (e) {
-                    if (e) { return void console.error(e); }
-                    var uri = ['', 'blob', id.slice(0,2), id].join('/');
-                    console.log("encrypted blob is now available as %s", uri);
-
-
-                    var title = metadata.name;
-
-                    if (noStore) { return void onComplete(href); }
-
-                    var data = {
-                        teamId: teamId,
-                        title: title || "",
-                        href: href,
-                        path: path,
-                        password: password,
-                        channel: id,
-                        owners: metadata.owners,
-                        forceSave: forceSave
-                    };
-                    common.setPadTitle(data, function (err) {
-                        if (err) { return void console.error(err); }
-                        onComplete(href);
-                        common.setPadAttribute('fileType', metadata.type, null, href);
-                        common.setPadAttribute('owners', metadata.owners, null, href);
-                    });
-                });
-            };
-
-            common.uploadStatus(teamId, estimate, function (e, pending) {
-                if (e) {
-                    console.error(e);
-                    onError(e);
-                    return;
-                }
-
-                if (pending) {
-                    return void onPending(function () {
-                        // if the user wants to cancel the pending upload to execute that one
-                        common.uploadCancel(teamId, estimate, function (e) {
-                            if (e) {
-                                return void console.error(e);
-                            }
-                            next(again);
-                        });
-                    });
-                }
-                next(again);
             });
         });
 

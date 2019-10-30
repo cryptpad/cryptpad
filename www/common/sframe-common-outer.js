@@ -991,6 +991,21 @@ define([
                 });
             });
 
+            sframeChan.on('Q_BLOB_PASSWORD_CHANGE', function (data, cb) {
+                data.href = data.href || window.location.href;
+                var onPending = function () {
+                    // XXX
+                };
+                var updateProgress = function (p) {
+                    // XXX
+                    console.log(p);
+                };
+                Cryptpad.changeBlobPassword(data, {
+                    onPending: onPending,
+                    updateProgress: updateProgress
+                }, cb);
+            });
+
             sframeChan.on('Q_PAD_PASSWORD_CHANGE', function (data, cb) {
                 data.href = data.href || window.location.href;
                 Cryptpad.changePadPassword(Cryptget, Crypto, data, cb);

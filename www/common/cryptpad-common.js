@@ -1023,7 +1023,7 @@ define([
         });
     };
 
-    common.changeBlobPassword = function (Crypt, Crypto, data, cb) {
+    common.changeBlobPassword = function (data, handlers, cb) {
         var href = data.href;
         var newPassword = data.password;
         var teamId = data.teamId;
@@ -1032,26 +1032,34 @@ define([
         if (!parsed.hash) { return void cb({ error: 'EINVAL_HREF' }); }
         if (parsed.hashData.type !== 'file') { return void cb({ error: 'EINVAL_TYPE' }); }
 
+        var newSecret;
+        var newHash;
+
         if (parsed.hashData.version >= 2) {
             newSecret = Hash.getSecrets(parsed.type, parsed.hash, newPassword);
-            if (!(newSecret.keys && newSecret.keys.editKeyStr)) {
+            if (!(newSecret.keys && newSecret.keys.fileKeyStr)) {
                 return void cb({error: 'EAUTH'});
             }
-            newHash = Hash.getEditHashFromKeys(newSecret);
+            newHash = Hash.getFileHashFromKeys(newSecret);
         } else {
             newHash = Hash.createRandomHash(parsed.type, newPassword);
             newSecret = Hash.getSecrets(parsed.type, newHash, newPassword);
         }
         var newHref = '/' + parsed.type + '/#' + newHash;
+        var fileHost = Config.fileHost || window.location.origin || '';
 
         /*
             1. get old password
             2. get owners
         */
         var oldPassword;
-        var oldSecret;
+        var decrypted;
         var oldChannel;
-        var oldMetadata;
+        var warning;
+
+        var FileCrypto;
+        var MediaTag;
+        var Upload;
         Nthen(function (waitFor) {
             if (parsed.hashData && parsed.hashData.password) {
                 common.getPadAttribute('password', waitFor(function (err, password) {
@@ -1059,12 +1067,91 @@ define([
                 }), href);
             }
         }).nThen(function (waitFor) {
-            oldSecret = Hash.getSecrets(parsed.type, parsed.hash, optsGet.password);
-            oldChannel = oldSecret.channel;
-            common.getPadMetadata({channel: oldChannel}, waitFor(function (metadata) {
-                oldMetadata = metadata;
+            require([
+                '/file/file-crypto.js',
+                '/common/media-tag.js',
+                '/common/outer/upload.js',
+                '/bower_components/tweetnacl/nacl-fast.min.js'
+            ], waitFor(function (_FileCrypto, _MT, _Upload) {
+                FileCrypto = _FileCrypto;
+                MediaTag = _MT;
+                Upload = _Upload;
             }));
         }).nThen(function (waitFor) {
+            var oldSecret = Hash.getSecrets(parsed.type, parsed.hash, oldPassword);
+            oldChannel = oldSecret.channel;
+            var src = fileHost + Hash.getBlobPathFromHex(oldChannel);
+            var key = oldSecret.keys && oldSecret.keys.cryptKey;
+            var cryptKey = window.nacl.util.encodeBase64(key);
+
+            var mt = document.createElement('media-tag');
+            mt.setAttribute('src', src);
+            mt.setAttribute('data-crypto-key', 'cryptpad:'+cryptKey);
+
+            MediaTag(mt).on('complete', waitFor(function (_decrypted) {
+                decrypted = _decrypted;
+            })).on('error', function (err) {
+                waitFor.abort();
+                cb({error: err});
+                console.error(err);
+            });
+        }).nThen(function (waitFor) {
+            var reader = new FileReader();
+            reader.readAsArrayBuffer(decrypted.content);
+            reader.onloadend = waitFor(function() {
+                decrypted.u8 = new Uint8Array(reader.result);
+            });
+        }).nThen(function (waitFor) {
+            var key = newSecret.keys && newSecret.keys.cryptKey;
+
+            var onError = function (err) {
+                waitFor.abort();
+                cb({error: err});
+            };
+            Upload.uploadU8(common, {
+                teamId: teamId,
+                u8: decrypted.u8,
+                metadata: decrypted.metadata,
+                key: key,
+                id: newSecret.channel,
+                owned: true,
+                onError: onError,
+                onPending: handlers.onPending,
+                updateProgress: handlers.updateProgress,
+            }, waitFor());
+        }).nThen(function (waitFor) {
+            // Set the new password to our pad data
+            common.setPadAttribute('password', newPassword, waitFor(function (err) {
+                if (err) { warning = true; }
+            }), href);
+            common.setPadAttribute('channel', newSecret.channel, waitFor(function (err) {
+                if (err) { warning = true; }
+            }), href);
+            if (parsed.hashData.password && newPassword) { return; } // same hash
+            common.setPadAttribute('href', newHref, waitFor(function (err) {
+                if (err) { warning = true; }
+            }), href);
+        }).nThen(function (waitFor) {
+            // delete the old pad
+            common.removeOwnedChannel({
+                channel: oldChannel,
+                teamId: teamId
+            }, waitFor(function (obj) {
+                if (obj && obj.error) {
+                    waitFor.abort();
+                    return void cb(obj);
+                }
+            }));
+            postMessage("CHANGE_PAD_PASSWORD_PIN", {
+                oldChannel: oldChannel,
+                channel: newSecret.channel
+            }, waitFor());
+        }).nThen(function () {
+            cb({
+                warning: warning,
+                hash: newHash,
+                href: newHref,
+            });
         });
     };
 

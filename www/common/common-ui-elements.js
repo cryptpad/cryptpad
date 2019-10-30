@@ -79,8 +79,10 @@ define([
                     waitFor.abort();
                     return void cb(err || 'EEMPTY');
                 }
-                delete val.owners;
-                delete val.expire;
+                if (!val.fileType) {
+                    delete val.owners;
+                    delete val.expire;
+                }
                 Util.extend(data, val);
                 if (data.href) { data.href = base + data.href; }
                 if (data.roHref) { data.roHref = base + data.roHref; }
@@ -549,11 +551,12 @@ define([
                     $d.append(password);
                 }
 
-                if (!data.noEditPassword && owned && parsed.hashData.type === 'pad' && parsed.type !== "sheet") { // FIXME SHEET fix password change for sheets
+                if (!data.noEditPassword && owned && parsed.type !== "sheet") { // FIXME SHEET fix password change for sheets
                     var sframeChan = common.getSframeChannel();
                     var changePwTitle = Messages.properties_changePassword;
                     var changePwConfirm = Messages.properties_confirmChange;
                     var isSharedFolder = parsed.type === 'drive';
+                    var isFile = parsed.hashData.type === 'file';
                     if (!hasPassword) {
                         changePwTitle = Messages.properties_addPassword;
                         changePwConfirm = Messages.properties_confirmNew;
@@ -581,7 +584,8 @@ define([
                         UI.confirm(changePwConfirm, function (yes) {
                             if (!yes) { pLocked = false; return; }
                             $(passwordOk).html('').append(h('span.fa.fa-spinner.fa-spin', {style: 'margin-left: 0'}));
-                            sframeChan.query("Q_PAD_PASSWORD_CHANGE", {
+                            var q = isFile ? 'Q_BLOB_PASSWORD_CHANGE' : 'Q_PAD_PASSWORD_CHANGE';
+                            sframeChan.query(q, {
                                 teamId: typeof(owned) !== "boolean" ? owned : undefined,
                                 href: data.href || data.roHref,
                                 password: newPass
@@ -593,6 +597,9 @@ define([
                                     return void UI.alert(Messages.properties_passwordError);
                                 }
                                 UI.findOKButton().click();
+                                if (isFile) {
+                                    return void UI.alert(Messages.properties_passwordSuccess);
+                                }
                                 // If we didn't have a password, we have to add the /p/
                                 // If we had a password and we changed it to a new one, we just have to reload
                                 // If we had a password and we removed it, we have to remove the /p/
