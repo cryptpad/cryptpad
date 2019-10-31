@@ -3590,6 +3590,7 @@ define([
                     }
                     return void UI.warn(Messages.autostore_error);
                 }
+                $(document).trigger('cpPadStored');
                 delete autoStoreModal[priv.channel];
                 modal.delete();
                 UIElements.displayCrowdfunding(common);
