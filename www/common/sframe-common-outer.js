@@ -993,12 +993,13 @@ define([
 
             sframeChan.on('Q_BLOB_PASSWORD_CHANGE', function (data, cb) {
                 data.href = data.href || window.location.href;
-                var onPending = function () {
-                    // XXX
+                var onPending = function (cb) {
+                    sframeChan.query('Q_BLOB_PASSWORD_CHANGE_PENDING', null, function (err, obj) {
+                        if (obj && obj.cancel) { cb(); }
+                    });
                 };
                 var updateProgress = function (p) {
-                    // XXX
-                    console.log(p);
+                    sframeChan.event('EV_BLOB_PASSWORD_CHANGE_PROGRESS', p);
                 };
                 Cryptpad.changeBlobPassword(data, {
                     onPending: onPending,

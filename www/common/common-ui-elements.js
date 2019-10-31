@@ -553,13 +553,15 @@ define([
 
                 if (!data.noEditPassword && owned && parsed.type !== "sheet") { // FIXME SHEET fix password change for sheets
                     var sframeChan = common.getSframeChannel();
-                    var changePwTitle = Messages.properties_changePassword;
-                    var changePwConfirm = Messages.properties_confirmChange;
-                    var isSharedFolder = parsed.type === 'drive';
+
                     var isFile = parsed.hashData.type === 'file';
+                    var isSharedFolder = parsed.type === 'drive';
+
+                    var changePwTitle = Messages.properties_changePassword;
+                    var changePwConfirm = isFile ? Messages.properties_confirmChangeFile : Messages.properties_confirmChange;
                     if (!hasPassword) {
                         changePwTitle = Messages.properties_addPassword;
-                        changePwConfirm = Messages.properties_confirmNew;
+                        changePwConfirm = isFile ? Messages.properties_confirmNewFile : Messages.properties_confirmNew;
                     }
                     $('<label>', {'for': 'cp-app-prop-change-password'})
                         .text(changePwTitle).appendTo($d);
@@ -585,20 +587,44 @@ define([
                             if (!yes) { pLocked = false; return; }
                             $(passwordOk).html('').append(h('span.fa.fa-spinner.fa-spin', {style: 'margin-left: 0'}));
                             var q = isFile ? 'Q_BLOB_PASSWORD_CHANGE' : 'Q_PAD_PASSWORD_CHANGE';
+
+                            // If this is a file password change, register to the upload events:
+                            // * if there is a pending upload, ask if we shoudl interrupt
+                            // * display upload progress
+                            var onPending;
+                            var onProgress;
+                            if (isFile) {
+                                onPending = sframeChan.on('Q_BLOB_PASSWORD_CHANGE_PENDING', function (data, cb) {
+                                    onPending.stop();
+                                    UI.confirm(Messages.upload_uploadPending, function (yes) {
+                                        cb({cancel: yes});
+                                    });
+                                });
+                                onProgress = sframeChan.on('EV_BLOB_PASSWORD_CHANGE_PROGRESS', function (data) {
+                                    if (typeof (data) !== "number") { return; }
+                                    var p = Math.round(data);
+                                    $(passwordOk).text(p + '%');
+                                });
+                            }
+
                             sframeChan.query(q, {
                                 teamId: typeof(owned) !== "boolean" ? owned : undefined,
                                 href: data.href || data.roHref,
                                 password: newPass
                             }, function (err, data) {
+                                $(passwordOk).text(Messages.properties_changePasswordButton);
+                                pLocked = false;
                                 if (err || data.error) {
                                     console.error(err || data.error);
-                                    pLocked = false;
-                                    $(passwordOk).text(Messages.properties_changePasswordButton);
                                     return void UI.alert(Messages.properties_passwordError);
                                 }
                                 UI.findOKButton().click();
                                 if (isFile) {
-                                    return void UI.alert(Messages.properties_passwordSuccess);
+                                    onProgress.stop();
+                                    $(passwordOk).text(Messages.properties_changePasswordButton);
+                                    var alertMsg = data.warning ? Messages.properties_passwordWarningFile
+                                                                : Messages.properties_passwordSuccessFile;
+                                    return void UI.alert(alertMsg, undefined, {force: true});
                                 }
                                 // If we didn't have a password, we have to add the /p/
                                 // If we had a password and we changed it to a new one, we just have to reload
