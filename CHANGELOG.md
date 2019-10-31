@@ -1,3 +1,37 @@
+# Elasmotherium release notes
+
+## Goals
+
+This is a small release, focused on bug fixes and UI improvements, while we're finalizing bigger team-centric features planned for the next release.
+
+## Update notes
+
+This is a pretty basic release:
+
+1. stop your server
+2. pull the latest source code
+3. restart your server
+
+## Features
+
+* Media elements (images, videos, pdf, etc.) will now display a placeholder while they're being downloaded and decrypted.
+* Media elements deleted from the server by their owner will now display a "broken/missing" image.
+* The "auto-close brackets" option in the Code and Slide applications can now be disabled from the user settings.
+* "Add item" and "Add board" buttons in Kanban have been moved to improve usability with small screens.
+* The "transfer ownership" feature for pads has been extended to shared folders. It is now possible to offer ownership of a shared folder to a friend.
+* For administrators
+  * Better sorting of support tickets in the administration panel. Unanswered messages will be displayed first.
+  * Add team configuration options in `customize/application_config.js`
+    * `maxTeamsSlots` defines the maximum number of teams a user can join (default is 3). Teams may significantly increase the loading time of pages and we consider 3 to be a good balance between usability and performances.
+    * `maxOwnedTeams` defines the number of teams a user can own (default is 1). This number prevent users to create many teams only to increase their storage limit.
+
+## Bug fixes
+
+* The "pad creation modal" (Ctrl+E) is now working everywhere in the drive.
+* We've fixed the share button for unregistered users (https://github.com/xwiki-labs/cryptpad/issues/457).
+* We've fixed an issue with newly created kanban items replacing existing ones.
+* Transfering/offering pad ownership from a team to yourself is now working properly.
+
 # Dodo release (v3.3.0)
 
 ## Goals
