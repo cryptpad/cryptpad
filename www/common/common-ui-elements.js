@@ -495,7 +495,7 @@ define([
                 data: _owners,
                 large: true
             }, function () {});
-            if (_ownersGrid) {
+            if (_ownersGrid && Object.keys(_owners).length) {
                 $d.append(_ownersGrid.div);
             } else {
                 $d.append([
