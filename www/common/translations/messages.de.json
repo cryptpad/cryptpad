@@ -1225,5 +1225,9 @@
     "team_viewers": "Betrachter",
     "drive_sfPassword": "Dein geteilter Ordner {0} ist nicht mehr verfügbar. Entweder wurde er von seinem Eigentümer gelöscht oder er ist nun mit einem neuen Passwort geschützt. Du kannst den Ordner aus deinem CryptDrive entfernen oder den Zugriff durch Eingabe des neuen Passworts wiederherstellen.",
     "drive_sfPasswordError": "Falsches Passwort",
-    "password_error_seed": "Pad nicht gefunden!<br>Dieser Fehler kann zwei Ursachen haben: Entweder wurde ein Passwort gesetzt/geändert oder das Pad wurde vom Server gelöscht."
+    "password_error_seed": "Pad nicht gefunden!<br>Dieser Fehler kann zwei Ursachen haben: Entweder wurde ein Passwort gesetzt/geändert oder das Pad wurde vom Server gelöscht.",
+    "properties_confirmChangeFile": "Bist du sicher? Benutzer, die das neue Passwort nicht kennen, werden den Zugriff auf die Datei verlieren.",
+    "properties_confirmNewFile": "Bist du sicher? Durch das Hinzufügen eines Passwortes wird sich der Link für die Datei ändern. Benutzer, die das Passwort nicht kennen, werden den Zugriff auf die Datei verlieren.",
+    "properties_passwordWarningFile": "Das Passwort wurde erfolgreich geändert. Allerdings konnten die Daten in deinem CryptDrive nicht aktualisiert werden. Möglicherweise musst die alte Version der Datei manuell entfernen.",
+    "properties_passwordSuccessFile": "Das Passwort wurde erfolgreich geändert."
 }
