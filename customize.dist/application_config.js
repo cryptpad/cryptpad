@@ -6,5 +6,8 @@
    but you should not change it directly (/common/application_config_internal.js)
 */
 define(['/common/application_config_internal.js'], function (AppConfig) {
+    // Example: If you want to remove the survey link in the menu:
+    // AppConfig.surveyURL = "";
+
     return AppConfig;
 });
