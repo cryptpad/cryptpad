@@ -1810,7 +1810,6 @@ define([
             var $name = $('<span>', {'class': 'cp-app-drive-element-name'}).text(name);
             $element.append($name);
             $element.append($state);
-            $element.attr('title', name);
 
             // display the thumbnail
             // if the thumbnail has already been displayed once, do not reload it, keep the same url
