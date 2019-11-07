@@ -61,7 +61,7 @@ define([
             // Href exists and is encrypted
             var d = cryptor.decrypt(pad.href);
             // If we can decrypt, return the decrypted value, otherwise continue and return roHref
-            if (d.indexOf('#') !== -1) {
+            if (d && d.indexOf('#') !== -1) {
                 return d;
             }
         }
@@ -69,7 +69,7 @@ define([
     };
 
     module.reencrypt = function (oldKey, newKey, obj) {
-        obj = obj || {};
+        if (!obj) { return void console.error("Nothing to reencrypt"); }
         var oldCryptor = createCryptor(oldKey);
         var newCryptor = createCryptor(newKey);
         Object.keys(obj[FILES_DATA]).forEach(function (id) {
@@ -78,6 +78,7 @@ define([
             // "&& data.roHref" is here to make sure this is not a "file"
             if (data.href && data.roHref && !data.fileType) {
                 var _href = (data.href && data.href.indexOf('#') === -1) ? oldCryptor.decrypt(data.href) : data.href;
+                if (!_href) { return; }
                 data.href = newCryptor.encrypt(_href);
             }
         });
@@ -86,6 +87,7 @@ define([
             // If this folder has a visible href, encrypt it
             if (data.href) {
                 var _href = (data.href && data.href.indexOf('#') === -1) ? oldCryptor.decrypt(data.href) : data.href;
+                if (!_href) { return; }
                 data.href = newCryptor.encrypt(_href);
             }
         });
@@ -94,6 +96,7 @@ define([
             // If this folder has a visible href, encrypt it
             if (data.href) {
                 var _href = (data.href && data.href.indexOf('#') === -1) ? oldCryptor.decrypt(data.href) : data.href;
+                if (!_href) { return; }
                 data.href = newCryptor.encrypt(_href);
             }
         });
