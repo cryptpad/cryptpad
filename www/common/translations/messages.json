@@ -1229,5 +1229,6 @@
     "properties_confirmChangeFile": "Are you sure? Users without the new password will lose access to this file.",
     "properties_confirmNewFile": "Are you sure? Adding a password will change this file's URL. Users without the password will lose access to this file.",
     "properties_passwordWarningFile": "The password was successfully changed but we were unable to update your CryptDrive with the new data. You may have to remove the old version of the file manually.",
-    "properties_passwordSuccessFile": "The password was successfully changed."
+    "properties_passwordSuccessFile": "The password was successfully changed.",
+    "driveOfflineError": "Your connection to CryptPad has been lost. Changes to this pad will not be saved in your CryptDrive. Please close all CryptPad tabs and try again in a new window. "
 }
