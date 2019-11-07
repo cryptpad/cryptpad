@@ -448,12 +448,18 @@
                 padding: 0 10px;
                 position: relative;
                 &.contains-nav {
-                    padding-bottom: 50px;
-                }
-                nav {
-                    position: absolute;
-                    bottom: 0;
-                    right: 0;
+                    nav {
+                        position: relative;
+                        bottom: 0;
+                        right: 0;
+                        button {
+                            margin: 0 !important;
+                            &:not(:first-child) {
+                                margin-left: 8px !important;
+                                margin-top: 6px !important;
+                            }
+                        }
+                    }
                 }
                 &:first-child {
                     border-right: 1px solid @alertify-fore;
