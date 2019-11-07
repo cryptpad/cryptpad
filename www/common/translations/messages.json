@@ -1225,5 +1225,10 @@
     "team_viewers": "Viewers",
     "drive_sfPassword": "Your shared folder {0} is no longer available. It has either been deleted by its owner or it is now protected with a new password. You can remove this folder from your CryptDrive, or recover access using the new password.",
     "drive_sfPasswordError": "Wrong password",
-    "password_error_seed": "Pad not found!<br>This error can be caused by two factors: either a password was added/changed, or the pad has been deleted from the server."
+    "password_error_seed": "Pad not found!<br>This error can be caused by two factors: either a password was added/changed, or the pad has been deleted from the server.",
+    "properties_confirmChangeFile": "Are you sure? Users without the new password will lose access to this file.",
+    "properties_confirmNewFile": "Are you sure? Adding a password will change this file's URL. Users without the password will lose access to this file.",
+    "properties_passwordWarningFile": "The password was successfully changed but we were unable to update your CryptDrive with the new data. You may have to remove the old version of the file manually.",
+    "properties_passwordSuccessFile": "The password was successfully changed.",
+    "driveOfflineError": "Your connection to CryptPad has been lost. Changes to this pad will not be saved in your CryptDrive. Please close all CryptPad tabs and try again in a new window. "
 }

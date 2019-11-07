@@ -1225,5 +1225,10 @@
     "team_viewers": "Lecteurs",
     "drive_sfPassword": "Votre dossier partagé {0} n'est plus disponible. Il a soit été supprimé par son propriétaire ou il est protégé par un nouveau mot de passe. Vous pouvez supprimer ce dossier de votre CryptDrive ou retrouver l'accès en tapant le nouveau mot de passe.",
     "drive_sfPasswordError": "Mot de passe incorrect",
-    "password_error_seed": "Pad introuvable !<br>Cette erreur peut provenir de deux facteurs. Soit un mot de passe a été ajouté ou modifié, soit le pad a été supprimé par son propriétaire."
+    "password_error_seed": "Pad introuvable !<br>Cette erreur peut provenir de deux facteurs. Soit un mot de passe a été ajouté ou modifié, soit le pad a été supprimé par son propriétaire.",
+    "properties_confirmChangeFile": "Êtes-vous sûr ? Les utilisateurs ne connaissant pas le nouveau mot de passe perdront l'accès au fichier.",
+    "properties_confirmNewFile": "Êtes-vous sûr ? Ajouter un mot de passe changera l'URL de ce fichier. Les utilisateurs ne connaissant pas le nouveau mot de passe perdront l'accès au fichier.",
+    "properties_passwordWarningFile": "Le mot de passe a été modifié avec succès mais nous n'avons pas réussi à mettre à jour votre CryptDrive avec les nouvelles informations. Vous devrez peut-être supprimer manuellement l'ancienne version de ce fichier.",
+    "properties_passwordSuccessFile": "Le mot de passe a été modifié avec succès.",
+    "driveOfflineError": "Votre connexion à CryptPad a été perdue. Les modifications dans ce pad ne seront pas stockées dans votre CryptDrive. Veuillez fermer tous vos onglets CryptPad et ré-essayer dans une nouvelle fenêtre. "
 }

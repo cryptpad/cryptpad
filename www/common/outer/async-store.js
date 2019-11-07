@@ -1000,6 +1000,9 @@ define([
             }).nThen(cb);
         };
         Store.setPadTitle = function (clientId, data, cb) {
+            if (store.offline) {
+                return void cb({ error: 'OFFLINE' });
+            }
             var title = data.title;
             var href = data.href;
             var channel = data.channel;
@@ -1811,6 +1814,10 @@ define([
             if (!cmdData || !cmdData.cmd) { return; }
             //var data = cmdData.data;
             var s = getStore(cmdData.teamId);
+            if (s.offline) {
+              broadcast([], 'NETWORK_DISCONNECT');
+              return void cb({ error: 'OFFLINE' });
+            }
             var cb2 = function (data2) {
                 // Send the CHANGE event to all the stores because the command may have
                 // affected data from a shared folder used by multiple teams.
@@ -2237,9 +2244,11 @@ define([
             });
 
             rt.proxy.on('disconnect', function () {
+                store.offline = true;
                 broadcast([], 'NETWORK_DISCONNECT');
             });
             rt.proxy.on('reconnect', function (info) {
+                store.offline = false;
                 broadcast([], 'NETWORK_RECONNECT', {myId: info.myId});
             });
 
