@@ -16,13 +16,13 @@
             align-items: center;
 
             max-width: 100%;
-            margin: 3px;
+            margin: 4px;
             box-sizing: border-box;
-            border-top: 1px solid #999;
+            border-radius: 3px;
             background: white;
             position: relative;
             text-align: center;
-            width: ~"calc(100% - 6px)";
+            width: ~"calc(100% - 8px)";
             height: 35px;
             line-height: 25px;
             overflow: hidden;
@@ -35,7 +35,7 @@
                 top: 0;
                 z-index: 1; // .usage
                 &.cp-limit-usage-normal {
-                    background: @colortheme_green;
+                    background: lighten(@colortheme_green, 15%);
                 }
                 &.cp-limit-usage-warning {
                     background: orange;
@@ -46,11 +46,10 @@
             }
             .cp-limit-usage-text {
                 position: relative;
-                color: grey;
-                text-shadow: 1px 0 2px white, 0 1px 2px white, -1px 0 2px white, 0 -1px 2px white;
+                color: @cryptpad_text_col;
                 z-index: 2; // .usageText
                 font-size: @colortheme_app-font-size;
-                font-weight: bold;
+                
             }
         }
         .cp-limit-buttons {
@@ -58,11 +57,13 @@
             flex-wrap: wrap;
             justify-content: space-around;
             justify-content: space-evenly;
+            padding: 2px;
             a {
                 height: 25px;
                 display: inline-flex;
                 align-items: center;
                 min-width: 200px;
+                margin: 2px;
                 width: 50%;
                 padding-top: 0;
                 padding-bottom: 0;
