@@ -74,6 +74,12 @@ define([
                 path: p
             });
         });
+        proxy.on('disconnect', function () {
+            team.offline = true;
+        });
+        proxy.on('reconnect', function (info) {
+            team.offline = false;
+        });
     };
 
     var closeTeam = function (ctx, teamId) {

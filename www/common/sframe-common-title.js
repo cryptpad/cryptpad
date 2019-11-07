@@ -64,10 +64,13 @@ define([
             sframeChan.query('Q_SET_PAD_TITLE_IN_DRIVE', {
                 title: title,
                 defaultTitle: defaultTitle
-            }, function (err) {
+            }, function (err, obj) {
+                err = err || (obj && obj.error);
                 if (err === 'E_OVER_LIMIT') {
                     return void UI.alert(Messages.pinLimitNotPinned, null, true);
-                } else if (err) { return; }
+                } else if (err) {
+                    return UI.alert(Messages.driveOfflineError);
+                }
                 evTitleChange.fire(title);
                 if (titleUpdated) {
                     titleUpdated(undefined, title);
