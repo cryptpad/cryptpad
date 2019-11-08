@@ -1888,9 +1888,16 @@ define([
                     var $password = $passwordIcon.clone().appendTo($state);
                     $password.attr('title', Messages.fm_passwordProtected || '');
                 }
+                if (hrefData.hashData && hrefData.hashData.mode === 'view') {
+                    var $ro = $readonlyIcon.clone().appendTo($state);
+                    $ro.attr('title', Messages.readonly);
+                }
 
                 var $shared = $sharedIcon.clone().appendTo($state);
                 $shared.attr('title', Messages.fm_canBeShared);
+            } else if ($content.data('readOnlyFolder') || APP.readOnly) {
+                var $ro = $readonlyIcon.clone().appendTo($state);
+                $ro.attr('title', Messages.readonly);
             }
 
             var sf = manager.hasSubfolder(element);
@@ -2559,6 +2566,10 @@ define([
                     viewHash: ro && roParsed.hash,
                 }
             });
+            // If we're a viewer and this is an old shared folder (no read-only mode), we
+            // can't share the read-only URL and we don't have access to the edit one.
+            // We should hide the share button.
+            if (!modal) { return; }
             modal = UI.dialog.tabs(modal);
             $shareBlock.click(function () {
                 UI.openCustomModal(modal, {
@@ -4079,7 +4090,6 @@ define([
                     var roParsed = Hash.parsePadUrl(data.roHref);
                     var padType = parsed.type || roParsed.type;
                     var ro = !sf || (folders[el] && folders[el].version >= 2);
-                    console.log(folders[el]);
                     var padData = {
                         teamId: APP.team,
                         origin: APP.origin,
