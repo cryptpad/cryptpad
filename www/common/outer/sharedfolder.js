@@ -22,10 +22,6 @@ define([
     // No version: visible edit
     // Version 2: encrypted edit links
     SF.checkMigration = function (secondaryKey, proxy, uo, cb) {
-        if (true) { // XXX remove this block to enable migration at load time
-            // FIXME history
-            return void cb();
-        }
         var drive = proxy.drive || proxy;
         // View access: can't migrate
         if (!secondaryKey) { return void cb(); }
@@ -127,9 +123,13 @@ define([
                 setTimeout(function () {
                     var leave = function () { SF.leave(secret.channel, teamId); };
                     var uo = store.manager.addProxy(id, sf.rt, leave, secondaryKey);
+                    /*
+                    // NOTE: Shared folder migration, disable for now
                     SF.checkMigration(secondaryKey, sf.rt.proxy, uo, function () {
                         cb(sf.rt, sf.metadata);
                     });
+                    */
+                    cb(sf.rt, sf.metadata);
                 });
                 sf.teams.push({
                     cb: cb,
@@ -189,9 +189,13 @@ define([
                 sf.teams.forEach(function (obj) {
                     var leave = function () { SF.leave(secret.channel, teamId); };
                     var uo = obj.store.manager.addProxy(obj.id, rt, leave, obj.secondaryKey);
+                    /*
+                    // NOTE: Shared folder migration, disable for now
                     SF.checkMigration(secondaryKey, rt.proxy, uo, function () {
                         obj.cb(sf.rt, info.metadata);
                     });
+                    */
+                    obj.cb(sf.rt, info.metadata);
                 });
                 sf.metadata = info.metadata;
                 sf.ready = true;
