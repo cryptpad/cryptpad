@@ -1841,7 +1841,9 @@ define([
             var $name = $('<span>', {'class': 'cp-app-drive-element-name'}).text(name);
             $element.append($name);
             $element.append($state);
-            $element.attr('title', name);
+            if (getViewMode() === 'grid') {
+                $element.attr('title', name);
+            }
 
             // display the thumbnail
             // if the thumbnail has already been displayed once, do not reload it, keep the same url
@@ -2536,7 +2538,6 @@ define([
 
             // Custom style:
             $block.find('button').addClass('cp-app-drive-toolbar-new');
-            $block.find('button').attr('title', Messages.fm_newButtonTitle);
 
             addNewPadHandlers($block, isInRoot);
 
@@ -2843,7 +2844,6 @@ define([
             }).prepend($addIcon.clone()).appendTo($list);
             $element.append($('<span>', {'class': 'cp-app-drive-element-name'})
                 .text(Messages.fm_newFile));
-            $element.attr('title', Messages.fm_newFile);
             $element.click(function () {
                 var $modal = UIElements.createModal({
                     id: 'cp-app-drive-new-ghost-dialog',
