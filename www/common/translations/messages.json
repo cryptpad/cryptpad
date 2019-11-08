@@ -73,6 +73,7 @@
     "upgrade": "Upgrade",
     "upgradeTitle": "Upgrade your account to increase the storage limit",
     "upgradeAccount": "Upgrade account",
+    "storageStatus": "Storage:<br /><b>{0}</b> used out of <b>{1}</b>",
     "MB": "MB",
     "GB": "GB",
     "KB": "KB",

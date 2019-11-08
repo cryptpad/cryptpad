@@ -7,27 +7,25 @@
     .cp-limit-container {
         @colortheme_green: #5cb85c;
         display: inline-flex;
-        flex-flow: column-reverse;
+        flex-flow: column;
         width: 100%;
-        margin-top: 20px;
+        margin: 20px 0px;
         .cp-limit-bar {
             display: inline-flex;
             justify-content: center;
             align-items: center;
-
             max-width: 100%;
-            margin: 4px;
+            margin: 5px;
             box-sizing: border-box;
             border-radius: 3px;
             background: white;
             position: relative;
             text-align: center;
-            width: ~"calc(100% - 8px)";
-            height: 35px;
-            line-height: 25px;
+            width: ~"calc(100% - 10px)";
+            height: 10px;
             overflow: hidden;
             .cp-limit-usage {
-                height: 100%;
+                height: 10px;
                 display: inline-block;
                 background: blue;
                 position: absolute;
@@ -35,7 +33,7 @@
                 top: 0;
                 z-index: 1; // .usage
                 &.cp-limit-usage-normal {
-                    background: lighten(@colortheme_green, 15%);
+                    background: @colortheme_green;
                 }
                 &.cp-limit-usage-warning {
                     background: orange;
@@ -44,26 +42,26 @@
                     background: red;
                 }
             }
-            .cp-limit-usage-text {
-                position: relative;
-                color: @cryptpad_text_col;
-                z-index: 2; // .usageText
-                font-size: @colortheme_app-font-size;
-                
-            }
         }
+
+        .cp-limit-usage-text {
+            color: @cryptpad_text_col;
+            margin-left: 5px;
+            z-index: 2; // .usageText
+            font-size: @colortheme_app-font-size-small; 
+        }
+                
         .cp-limit-buttons {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-around;
             justify-content: space-evenly;
-            //padding: 2px;
             a {
                 height: 25px;
                 display: inline-flex;
                 align-items: center;
                 min-width: 150px;
-                margin: 2px;
+                margin: 3px 5px;
                 width: 50%;
                 padding-top: 0;
                 padding-bottom: 0;

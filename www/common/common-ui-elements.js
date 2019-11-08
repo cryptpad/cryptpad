@@ -2259,13 +2259,14 @@ define([
                 prettyUsage = Messages._getKey('formattedMB', [usage]);
                 prettyLimit = Messages._getKey('formattedMB', [limit]);
             }
-
+            
             if (quota < 0.8) { $usage.addClass('cp-limit-usage-normal'); }
             else if (quota < 1) { $usage.addClass('cp-limit-usage-warning'); }
             else { $usage.addClass('cp-limit-usage-above'); }
             var $text = $('<span>', {'class': 'cp-limit-usage-text'});
-            $text.text(usage + ' / ' + prettyLimit);
-            $limit.append($usage).append($text);
+            $text.html(Messages._getKey('storageStatus', [prettyUsage, prettyLimit]));
+            $container.prepend($text);
+            $limit.append($usage);
         };
 
         var updateUsage = Util.notAgainForAnother(function () {
