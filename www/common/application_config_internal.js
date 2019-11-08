@@ -11,7 +11,7 @@ define(function() {
      * redirected to the drive.
      * You should never remove the drive from this list.
      */
-    config.availablePadTypes = ['drive', 'team', 'pad', 'sheet', 'code', 'slide', 'poll', 'kanban', 'whiteboard',
+    config.availablePadTypes = ['drive', 'teams', 'pad', 'sheet', 'code', 'slide', 'poll', 'kanban', 'whiteboard',
                                 /*'oodoc', 'ooslide',*/ 'file', 'todo', 'contacts'];
     /* The registered only types are apps restricted to registered users.
      * You should never remove apps from this list unless you know what you're doing. The apps
@@ -20,7 +20,7 @@ define(function() {
      * users and these users will be redirected to the login page if they still try to access
      * the app
      */
-    config.registeredOnlyTypes = ['team', 'file', 'contacts', 'oodoc', 'ooslide', 'sheet', 'notifications'];
+    config.registeredOnlyTypes = ['teams', 'file', 'contacts', 'oodoc', 'ooslide', 'sheet', 'notifications'];
 
     /* CryptPad is available is multiple languages, but only English and French are maintained
      * by the developers. The other languages may be outdated, and any missing string for a langauge
@@ -106,6 +106,7 @@ define(function() {
         ooslide: 'fa-file-powerpoint-o',
         sheet: 'fa-file-excel-o',
         drive: 'fa-hdd-o',
+        teams: 'fa-users',
     };
 
     // Ability to create owned pads and expiring pads through a new pad creation screen.
@@ -146,14 +147,24 @@ define(function() {
     // Workers allow us to run the websockets connection and open the user drive in a separate thread.
     // SharedWorkers allow us to load only one websocket and one user drive for all the browser tabs,
     // making it much faster to open new tabs.
-    // Warning: This is an experimental feature. It will be enabled by default once we're sure it's stable.
     config.disableWorkers = false;
 
-    // Shared folder are in a beta-test state. They are likely to disappear from a user's drive
-    // spontaneously, resulting in the deletion of the entire folder's content.
-    // We highly recommend to keep them disabled until they are stable enough to be enabled
-    // by default by the CryptPad developers.
-    config.disableSharedFolders = false;
+    config.surveyURL = "https://survey.cryptpad.fr/index.php/672782";
+
+    // Teams are always loaded during the initial loading screen (for the first tab only if
+    // SharedWorkers are available). Allowing users to be members of multiple teams can
+    // make them have a very slow loading time. To avoid impacting the user experience
+    // significantly, we're limiting the number of teams per user to 3 by default.
+    // You can change this value here.
+    //config.maxTeamsSlots = 3;
+
+    // Each team is considered as a registered user by the server. Users and teams are indistinguishable
+    // in the database so teams will offer the same storage limits as users by default.
+    // It means that each team created by a user can increase their storage limit by +100%.
+    // We're limiting the number of teams each user is able to own to 1 in order to make sure
+    // users don't use "fake" teams (1 member) just to increase their storage limit.
+    // You can change the value here.
+    // config.maxOwnedTeams = 1;
 
     return config;
 });

@@ -922,7 +922,6 @@ MessengerUI, Messages) {
         var pads_options = [];
         Config.availablePadTypes.forEach(function (p) {
             if (p === 'drive') { return; }
-            if (p === 'team') { return; }
             if (!Common.isLoggedIn() && Config.registeredOnlyTypes &&
                 Config.registeredOnlyTypes.indexOf(p) !== -1) { return; }
             pads_options.push({

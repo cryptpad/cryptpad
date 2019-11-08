@@ -892,6 +892,7 @@ define([
 
         // Arrow keys to modify the selection
         var onWindowKeydown = function (e) {
+            if (!$content.is(':visible')) { return; }
             var $searchBar = $tree.find('#cp-app-drive-tree-search-input');
             if (document.activeElement && document.activeElement.nodeName === 'INPUT') { return; }
             if ($searchBar.is(':focus') && $searchBar.val()) { return; }
@@ -1136,6 +1137,9 @@ define([
                     if (!$element.is('.cp-border-color-file')) {
                         //hide.push('download');
                         hide.push('openincode');
+                    }
+                    if ($element.is('.cp-border-color-sheet')) {
+                        hide.push('download');
                     }
                     if ($element.is('.cp-app-drive-element-file')) {
                         // No folder in files
@@ -2263,7 +2267,7 @@ define([
             var arr = [];
             AppConfig.availablePadTypes.forEach(function (type) {
                 if (type === 'drive') { return; }
-                if (type === 'team') { return; }
+                if (type === 'teams') { return; }
                 if (type === 'contacts') { return; }
                 if (type === 'todo') { return; }
                 if (type === 'file') { return; }
@@ -3245,6 +3249,11 @@ define([
             if (!isVirtual && typeof(root) === "undefined") {
                 log(Messages.fm_unknownFolderError);
                 debug("Unable to locate the selected directory: ", path);
+                if (path.length === 1 && path[0] === ROOT) {
+                    // Somehow we can't display ROOT. We should abort now because we'll
+                    // end up in an infinite loop
+                    return void UI.warn(Messages.fm_error_cantPin); // Internal server error, please reload...
+                }
                 var parentPath = path.slice();
                 parentPath.pop();
                 _displayDirectory(parentPath, true);
@@ -3384,9 +3393,17 @@ define([
                 }
             });*/
 
+            // If the selected element is not visible, scroll to make it visible, otherwise scroll to
+            // the previous scroll position
             var $sel = findSelectedElements();
             if ($sel.length) {
-                $sel[0].scrollIntoView();
+                var _top = $sel[0].getBoundingClientRect().top;
+                var _topContent = $content[0].getBoundingClientRect().top;
+                if ((_topContent + s + $content.height() - 20) < _top) {
+                    $sel[0].scrollIntoView();
+                } else {
+                    $content.scrollTop(s);
+                }
             } else {
                 $content.scrollTop(s);
             }
@@ -3721,6 +3738,10 @@ define([
                 data.roHref = base + data.roHref;
             }
 
+            if (currentPath[0] === TEMPLATE) {
+                data.isTemplate = true;
+            }
+
             if (manager.isSharedFolder(el)) {
                 delete data.roHref;
                 //data.noPassword = true;
@@ -3731,7 +3752,7 @@ define([
                 data.sharedFolder = true;
             }
 
-            if (manager.isFile(el) && data.roHref) { // Only for pads!
+            if ((manager.isFile(el) && data.roHref) || manager.isSharedFolder(el)) { // Only for pads!
                 sframeChan.query('Q_GET_PAD_METADATA', {
                     channel: data.channel
                 }, function (err, val) {

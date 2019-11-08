@@ -82,9 +82,11 @@ define([
     // All occurences are returned, in drive or shared folders
     var findChannel = function (Env, channel) {
         var ret = [];
-        Env.user.userObject.findChannels([channel]).forEach(function (id) {
+        Env.user.userObject.findChannels([channel], true).forEach(function (id) {
+            var data = Env.user.proxy[UserObject.SHARED_FOLDERS][id] ||
+                        Env.user.userObject.getFileData(id);
             ret.push({
-                data: Env.user.userObject.getFileData(id),
+                data: data,
                 userObject: Env.user.userObject
             });
         });

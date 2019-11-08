@@ -477,6 +477,7 @@ define([
             sending: false,
             messages: [],
             clients: data.clients || [],
+            onUserlistUpdate: data.onUserlistUpdate || function () {},
             mapId: {},
         };
 
@@ -584,10 +585,32 @@ define([
         });
     };
 
+    var getOnlineList = function (ctx, chanId) {
+        var channel = ctx.channels[chanId];
+        if (!channel) { return; }
+        var online = []; // Store online members to avoid duplicates
+
+        // Add ourselves
+        var myData = createData(ctx.store.proxy, false);
+        online.push(myData.curvePublic);
+
+        channel.wc.members.forEach(function (nId) {
+            if (nId === ctx.store.network.historyKeeper) { return; }
+            var data = channel.mapId[nId] || {};
+            if (!data.curvePublic) { return; }
+            if (online.indexOf(data.curvePublic) !== -1) { return; }
+            online.push(data.curvePublic);
+        });
+        return online;
+    };
+
     // Display green status if one member is not me
     var getStatus = function (ctx, chanId, cb) {
         var channel = ctx.channels[chanId];
         if (!channel) { return void cb('NO_SUCH_CHANNEL'); }
+        if (channel.onUserlistUpdate) {
+            channel.onUserlistUpdate();
+        }
         var proxy = ctx.store.proxy;
         var online = channel.wc.members.some(function (nId) {
             if (nId === ctx.store.network.historyKeeper) { return; }
@@ -781,7 +804,7 @@ define([
         openChannel(ctx, chanData);
     };
 
-    var openTeamChat = function (ctx, clientId, data, _cb) {
+    var openTeamChat = function (ctx, clientId, data, onUpdate, _cb) {
         var chatData = data;
         var chanId = chatData.channel;
         var secret = chatData.secret;
@@ -820,6 +843,7 @@ define([
                 return encryptor.decrypt(msg, vKey);
             },
             clients: [clientId],
+            onUserlistUpdate: onUpdate,
             onReady: cb
         };
         openChannel(ctx, chanData);
@@ -875,7 +899,6 @@ define([
         var messenger = {};
         var store = cfg.store;
         if (AppConfig.availablePadTypes.indexOf('contacts') === -1) { return; }
-        if (!store.loggedIn || !store.proxy.edPublic) { return; }
         var ctx = {
             store: store,
             updateMetadata: cfg.updateMetadata,
@@ -883,7 +906,8 @@ define([
             emit: emit,
             friendsClients: [],
             channels: {},
-            validateKeys: {}
+            validateKeys: {},
+            range_requests: {}
         };
 
 
@@ -927,6 +951,10 @@ define([
             onFriendRemoved(ctx, curvePublic, chanId);
         };
 
+        messenger.getOnlineList = function (chanId) {
+            return getOnlineList(ctx, chanId);
+        };
+
         messenger.storeValidateKey = function (chan, key) {
             ctx.validateKeys[chan] = key;
         };
@@ -945,8 +973,8 @@ define([
             });
         };
 
-        messenger.openTeamChat = function (data, cId, cb) {
-            openTeamChat(ctx, cId, data, cb);
+        messenger.openTeamChat = function (data, onUpdate, cId, cb) {
+            openTeamChat(ctx, cId, data, onUpdate, cb);
         };
 
         messenger.removeClient = function (clientId) {
@@ -963,9 +991,6 @@ define([
             }
             if (cmd === 'GET_USERLIST') {
                 return void getUserList(ctx, data, cb);
-            }
-            if (cmd === 'OPEN_TEAM_CHAT') {
-                return void openTeamChat(ctx, clientId, data, cb);
             }
             if (cmd === 'OPEN_PAD_CHAT') {
                 return void openPadChat(ctx, clientId, data, cb);

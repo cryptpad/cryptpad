@@ -1,3 +1,82 @@
+# Elasmotherium release notes
+
+## Goals
+
+This is a small release, focused on bug fixes and UI improvements, while we're finalizing bigger team-centric features planned for the next release.
+
+## Update notes
+
+This is a pretty basic release:
+
+1. stop your server
+2. pull the latest source code
+3. restart your server
+
+## Features
+
+* Media elements (images, videos, pdf, etc.) will now display a placeholder while they're being downloaded and decrypted.
+* Media elements deleted from the server by their owner will now display a "broken/missing" image.
+* The "auto-close brackets" option in the Code and Slide applications can now be disabled from the user settings.
+* "Add item" and "Add board" buttons in Kanban have been moved to improve usability with small screens.
+* The "transfer ownership" feature for pads has been extended to shared folders. It is now possible to offer ownership of a shared folder to a friend.
+* For administrators
+  * Better sorting of support tickets in the administration panel. Unanswered messages will be displayed first.
+  * Add team configuration options in `customize/application_config.js`
+    * `maxTeamsSlots` defines the maximum number of teams a user can join (default is 3). Teams may significantly increase the loading time of pages and we consider 3 to be a good balance between usability and performances.
+    * `maxOwnedTeams` defines the number of teams a user can own (default is 1). This number prevent users to create many teams only to increase their storage limit.
+
+## Bug fixes
+
+* The "pad creation modal" (Ctrl+E) is now working everywhere in the drive.
+* We've fixed the share button for unregistered users (https://github.com/xwiki-labs/cryptpad/issues/457).
+* We've fixed an issue with newly created kanban items replacing existing ones.
+* Transfering/offering pad ownership from a team to yourself is now working properly.
+
+# Dodo release (v3.3.0)
+
+## Goals
+
+We've continued to prioritize the development of team-centric features in CryptPad. This release was focused on stabilizing the code for Teams and making them available to the users.
+
+## Update notes
+
+This is a pretty basic release:
+
+1. stop your server
+2. pull the latest source code
+3. install the latest serverside dependencies with `npm install`
+4. install the latest clientside dependencies with `bower update`
+5. restart your server
+
+Note: we've updated our Nginx configuration to fix any missing trailing slash in the URL for the newest applications: https://github.com/xwiki-labs/cryptpad/commit/d4e5b98c140c28417e008379ec7af7cdc235792b
+
+## Features
+
+* You can now create _Teams_ in CryptPad. They're available from a new _Teams_ application and provide a full CryptDrive that can be shared between multiple users.
+  * Each team has a list of members. There are currently 3 different access level for team members:
+    * Members: can add, delete and edit pads from the team
+    * Admins: can also invite their CryptPad friends to the team, kick members and promote members as "Admin"
+    * Owners: can also promote admins as "Owner", change the team name or avatar and delete the team
+  * Each team has its own storage limit (50 MB by default, the same as user accounts).
+  * A chat is available to all the team members
+  * Pads created from the team's drive will be stored in this drive. If they are created as _owned_ pads, they will be ownedcc by the team.
+  * You can share pads or folders from your drive with one of your teams and you can store pads or folders from your team to your personal drive.
+  * Each user can be a member of up to 3 teams. A user can't create a new Team if they are already _Owner_ of another one.
+* We've done some server improvements to save CPU usage.
+* We've also improved to the messenger module to save CPU and memory in the client.
+* The support panel (administrator side) now provides more debugging information about the users who ask for help
+* A link to the new CryptPad survey (https://survey.cryptpad.fr/index.php/672782?lang=en) has been added to the user menu
+  * This link can be changed or removed using the "surveyURL" key in `/customize/application_config.js`. An empty value will remove the link from the menu.
+
+## Bug fixes
+
+* We've fixed an issue preventing users to remove owned empty channels from the server
+* Adding and editing new items to the kanban boards will now update the correct item from the board
+* We've fixed an issue with shared folders loaded by unregistered users
+* The default title is now always set in newly created polls
+* Desktop notifications will now be displayed only once per connection to the server and not once per CryptPad tab in the browser
+* The button to download a spreadsheet from the drive has been removed. This feature is not available yet and the button was doing nothing.
+
 # Chilihueque release (v3.2.0)
 
 ## Goals

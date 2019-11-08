@@ -92,8 +92,10 @@
             * {
                 max-width:100%;
             }
-            iframe[type="application/pdf"] {
-                max-height:50vh;
+            iframe[src$=".pdf"] {
+                width: 100%;
+                height: 80vh;
+                max-height: 90vh;
             }
         }
         .markdown_main();

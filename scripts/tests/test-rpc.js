@@ -3,7 +3,7 @@
 var Client = require("../../lib/client/");
 var Crypto = require("../../www/bower_components/chainpad-crypto");
 var Mailbox = Crypto.Mailbox;
-var Nacl = require("tweetnacl");
+var Nacl = require("tweetnacl/nacl-fast");
 var nThen = require("nthen");
 var Pinpad = require("../../www/common/pinpad");
 var Rpc = require("../../www/common/rpc");
@@ -389,6 +389,108 @@ nThen(function  (w) {
         if (err) { return void console.error(err); }
     }));
 }).nThen(function (w) {
+    var data = {};
+    data[alice.curveKeys.curvePublic] = {
+        role: "OWNER",
+    };
+
+    alice.roster.describe(data, w(function (err) {
+        if (!err) {
+            console.log("Members should not be able to add themselves as owners!");
+            process.exit(1);
+        }
+        console.log("Alice failed to promote herself to owner, as expected");
+    }));
+}).nThen(function (w) {
+    var data = {};
+    data[alice.curveKeys.curvePublic] = {
+        role: "ADMIN",
+    };
+
+    alice.roster.describe(data, w(function (err) {
+        if (!err) {
+            console.log("Members should not be able to add themselves as admins!");
+            process.exit(1);
+        }
+        console.log("Alice failed to promote herself to admin, as expected");
+    }));
+}).nThen(function (w) {
+    var data = {};
+    data[alice.curveKeys.curvePublic] = {
+        test: true,
+    };
+    alice.roster.describe(data, w(function (err) {
+        if (err) {
+            console.log("Unexpected error while describing an arbitrary attribute");
+            process.exit(1);
+        }
+    }));
+}).nThen(function (w) {
+    var state = alice.roster.getState();
+
+    var alice_state = state.members[alice.curveKeys.curvePublic];
+    //console.log(alice_state);
+
+    if (typeof(alice_state.test) !== 'boolean') {
+        console.error("Arbitrary boolean attribute was not set");
+        process.exit(1);
+    }
+
+    var data = {};
+    data[alice.curveKeys.curvePublic] = {
+        test: null,
+    };
+    alice.roster.describe(data, w(function (err) {
+        if (err) {
+            console.error(err);
+            console.error("Expected removal of arbitrary attribute to be successfully applied");
+            console.log(alice.roster.getState());
+            process.exit(1);
+        }
+    }));
+}).nThen(function (w) {
+    var data = {};
+    data[alice.curveKeys.curvePublic] = {
+        notifications: null,
+    };
+    alice.roster.describe(data, w(function (err) {
+        if (!err) {
+            console.error("Expected deletion of notifications channel to fail");
+            process.exit(1);
+        }
+        if (err !== 'INVALID_NOTIFICATIONS') {
+            console.log("UNEXPECTED ERROR 1231241245");
+            console.error(err);
+            process.exit(1);
+        }
+        console.log("Deletion of notifications channel failed as expected");
+    }));
+}).nThen(function (w) {
+    var data = {};
+    data[alice.curveKeys.curvePublic] = {
+        displayName: null,
+    };
+    alice.roster.describe(data, w(function (err) {
+        if (!err) {
+            console.error("Expected deletion of displayName to fail");
+            process.exit(1);
+        }
+        if (err !== 'INVALID_DISPLAYNAME') {
+            console.log("UNEXPECTED ERROR 12352623465");
+            console.error(err);
+            process.exit(1);
+        }
+        console.log("Deletion of displayName failed as expected");
+    }));
+}).nThen(function (w) {
+    alice.roster.checkpoint(w(function (err) {
+        if (!err) {
+            console.error("Members should not be able to send checkpoints!");
+            process.exit(0);
+        }
+        console.error("checkpoint by member failed as expected");
+    }));
+}).nThen(function (w) {
     console.log("STATE =", JSON.stringify(oscar.roster.getState(), null, 2));
 
     // oscar describes the team
@@ -399,10 +501,6 @@ nThen(function  (w) {
         if (err) { return void console.log(err); }
         console.log("STATE =", JSON.stringify(oscar.roster.getState(), null, 2));
     }));
-}).nThen(function () {
-
-
-
 }).nThen(function (w) {
     // oscar sends a checkpoint
     oscar.roster.checkpoint(w(function (err) {
@@ -426,6 +524,50 @@ nThen(function  (w) {
             return void console.error(err);
         }
         console.log("Promoted Alice to ADMIN");
+    }));
+}).nThen(function (w) {
+    var data = {};
+    data[bob.curveKeys.curvePublic] = {
+        notifications: Hash.createChannelId(),
+        displayName: "BORB",
+    };
+
+    alice.roster.add(data, w(function (err) {
+        if (err === 'ALREADY_PRESENT' || err === 'NO_CHANGE') {
+            return void console.log("Duplicate add command failed as expected");
+        }
+        if (err) {
+            console.error("Unexpected error", err);
+            process.exit(1);
+        }
+        if (!err) {
+            console.log("Duplicate add succeeded unexpectedly");
+            process.exit(1);
+        }
+    }));
+}).nThen(function (w) {
+    alice.roster.checkpoint(w(function (err) {
+        if (!err) { return; }
+        console.error("Checkpoint by an admin failed unexpectedly");
+        console.error(err);
+        process.exit(1);
+    }));
+}).nThen(function (w) {
+    oscar.roster.checkpoint(w(function (err) {
+        if (!err) { return; }
+        console.error("Checkpoint by an owner failed unexpectedly");
+        console.error(err);
+        process.exit(1);
+    }));
+}).nThen(function (w) {
+    alice.roster.remove([
+        oscar.curveKeys.curvePublic,
+    ], w(function (err) {
+        if (!err) {
+            console.error("Removal of owner by admin succeeded unexpectedly");
+            process.exit(1);
+        }
+        console.log("Removal of owner by admin failed as expected");
     }));
 }).nThen(function (w) {
     // bob finally connects, this time with the lastKnownHash provided by oscar
@@ -456,14 +598,121 @@ nThen(function  (w) {
         });
     }));
 }).nThen(function (w) {
+    var bogus = {};
+    var curveKeys = makeCurveKeys();
+    bogus[curveKeys.curvePublic] = {
+        displayName: "chewbacca",
+        notifications: Hash.createChannelId(),
+    };
+    bob.roster.add(bogus, w(function (err) {
+        if (!err) {
+            console.error("Expected 'add' by member to fail");
+            process.exit(1);
+        }
+        console.log("'add' by member failed as expected");
+    }));
+}).nThen(function (w) {
+    bob.roster.remove([
+        alice.curveKeys.curvePublic,
+    ], w(function (err) {
+        if (!err) {
+            console.error("Removal of admin by member succeeded unexpectedly");
+            process.exit(1);
+        }
+        console.log("Removal of admin by member failed as expected");
+    }));
+}).nThen(function (w) {
     bob.roster.remove([
         oscar.curveKeys.curvePublic,
-        alice.curveKeys.curvePublic
+        //alice.curveKeys.curvePublic
     ], w(function (err) {
         if (err) { return void console.log("command failed as expected"); }
         w.abort();
         console.log("Expected command to fail!");
         process.exit(1);
+    }));
+}).nThen(function (w) {
+    var data = {};
+    data[bob.curveKeys.curvePublic] = {
+        displayName: 'BORB',
+    };
+
+    bob.roster.describe(data, w(function (err) {
+        if (err) {
+            console.error("self-description by a member failed unexpectedly");
+            process.exit(1);
+        }
+    }));
+}).nThen(function (w) {
+    var data = {};
+    data[oscar.curveKeys.curvePublic] = {
+        displayName: 'NULL',
+    };
+
+    bob.roster.describe(data, w(function (err) {
+        if (!err) {
+            console.error("description of an owner by a member succeeded unexpectedly");
+            process.exit(1);
+        }
+        console.log("description of an owner by a member failed as expected");
+    }));
+}).nThen(function (w) {
+    var data = {};
+    data[alice.curveKeys.curvePublic] = {
+        displayName: 'NULL',
+    };
+
+    bob.roster.describe(data, w(function (err) {
+        if (!err) {
+            console.error("description of an admin by a member succeeded unexpectedly");
+            process.exit(1);
+        }
+        console.log("description of an admin by a member failed as expected");
+    }));
+}).nThen(function (w) {
+    var data = {};
+    data[bob.curveKeys.curvePublic] = {
+        displayName: "NULL",
+    };
+
+    alice.roster.describe(data, w(function (err) {
+        if (err) {
+            console.error("Description of member by admin failed unexpectedly");
+            console.error(err);
+            process.exit(1);
+        }
+    }));
+}).nThen(function (w) {
+    alice.roster.metadata({
+        name: "BEST TEAM",
+        topic: "Champions de monde!",
+        cheese: "Camembert",
+    }, w(function (err) {
+        if (err) {
+            console.error("Metadata change by admin failed unexpectedly");
+            console.error(err);
+            process.exit(1);
+        }
+    }));
+}).nThen(function (w) {
+    bob.roster.metadata({
+        name: "WORST TEAM",
+        topic: "not a good team",
+    }, w(function (err) {
+        if (!err) {
+            console.error("Metadata change by member should have failed");
+            process.exit(1);
+        }
+    }));
+}).nThen(function (w) {
+    oscar.roster.metadata({
+        cheese: null, // delete a field that you don't want presenet
+    }, w(function (err) {
+        if (err) {
+            console.error(err);
+            process.exit(1);
+        }
+
     }));
 }).nThen(function (w) {
     alice.roster.remove([bob.curveKeys.curvePublic], w(function (err) {

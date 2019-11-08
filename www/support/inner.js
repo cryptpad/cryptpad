@@ -236,6 +236,10 @@ define([
         APP.$rightside = $('<div>', {id: 'cp-sidebarlayout-rightside'}).appendTo(APP.$container);
         var sFrameChan = common.getSframeChannel();
         sFrameChan.onReady(waitFor());
+        common.getPinUsage(null, waitFor(function (err, data) {
+            if (err) { return void console.error(err); }
+            APP.pinUsage = data;
+        }));
     }).nThen(function (/*waitFor*/) {
         createToolbar();
         metadataMgr = common.getMetadataMgr();
@@ -244,7 +248,7 @@ define([
 
         APP.origin = privateData.origin;
         APP.readOnly = privateData.readOnly;
-        APP.support = Support.create(common, false);
+        APP.support = Support.create(common, false, APP.pinUsage);
 
         // Content
         var $rightside = APP.$rightside;

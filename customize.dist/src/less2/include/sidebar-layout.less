@@ -31,7 +31,39 @@
             .cp-sidebarlayout-categories {
                 flex: 1;
                 .cp-sidebarlayout-category {
+                    display: flex;
+                    align-items: center;
                     .leftside-menu-category_main();
+                }
+            }
+            &.cp-leftside-narrow {
+                transition: width 0.2s;
+                width: 55px;
+                .cp-sidebarlayout-category {
+                    display: flex;
+                    max-width: 100%;
+                    align-items: center;
+                    .fa, .cptools {
+                        margin-right: 0;
+                        flex: 0;
+                    }
+                    span.cp-sidebarlayout-category-name {
+                        padding-left: 5px;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        min-width: 0;
+                        display: none;
+                    }
+                }
+                &:hover {
+                    transition: width 0.5s;
+                    width: 250px;
+                    .cp-sidebarlayout-category {
+                        span.cp-sidebarlayout-category-name {
+                            display: inline;
+                        }
+                    }
                 }
             }
         }

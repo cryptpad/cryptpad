@@ -25,6 +25,12 @@ var store;
 var pins;
 var Log;
 var blobs;
+
+var startTime = +new Date();
+var msSinceStart = function ()  {
+    return (+new Date()) - startTime;
+};
+
 nThen(function (w) {
     // load the store which will be used for iterating over channels
     // and performing operations like archival and deletion
@@ -57,6 +63,8 @@ nThen(function (w) {
         }
         blobs = _;
     }));
+}).nThen(function () {
+    Log.info("EVICT_TIME_TO_LOAD_PINS", msSinceStart());
 }).nThen(function (w) {
     // this block will iterate over archived channels and removes them
     // if they've been in cold storage for longer than your configured archive time
@@ -276,6 +284,8 @@ nThen(function (w) {
     };
 
     store.listChannels(handler, w(done));
+}).nThen(function () {
+    Log.info("EVICT_TIME_TO_RUN_SCRIPT", msSinceStart());
 }).nThen(function () {
     // the store will keep this script running if you don't shut it down
     store.shutdown();

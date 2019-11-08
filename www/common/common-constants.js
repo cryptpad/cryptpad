@@ -1,4 +1,4 @@
-define(function () {
+define(['/customize/application_config.js'], function (AppConfig) {
     return {
         // localStorage
         userHashKey: 'User_hash',
@@ -16,6 +16,8 @@ define(function () {
         tokenKey: 'loginToken',
         displayPadCreationScreen: 'displayPadCreationScreen',
         deprecatedKey: 'deprecated',
+        MAX_TEAMS_SLOTS: AppConfig.maxTeamsSlots || 3,
+        MAX_TEAMS_OWNED: AppConfig.maxOwnedTeams || 1,
         // Sub
         plan: 'CryptPad_plan',
         // Apps

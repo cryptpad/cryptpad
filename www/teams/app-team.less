@@ -1,0 +1,188 @@
+@import (reference) '../../customize/src/less2/include/framework.less';
+@import (reference) '../../customize/src/less2/include/drive.less';
+@import (reference) '../../customize/src/less2/include/messenger.less';
+@import (reference) '../../customize/src/less2/include/sidebar-layout.less';
+@import (reference) "../../customize/src/less2/include/tools.less";
+
+
+&.cp-app-team {
+    .framework_min_main(
+        @bg-color: @colortheme_teams-bg,
+        @warn-color: @colortheme_teams-warn,
+        @color: @colortheme_teams-color
+    );
+
+    .drive_main();
+    .messenger_main();
+    .sidebar-layout_main();
+
+    @roster-bg-color: #efefef;
+
+    #cp-sidebarlayout-container {
+        @media screen and (max-width: 900px) {
+            .cp-app-drive-toolbar-leftside {
+                .cp-dropdown-button-title span:last-child {
+                    display: none;
+                }
+                .cp-toolbar-share-button span:last-child {
+                    display: none;
+                }
+            }
+        }
+        div#cp-sidebarlayout-leftside {
+            background-color: #e0e0e0;
+        }
+        div#cp-sidebarlayout-rightside.cp-rightside-drive {
+            padding: 0;
+            & > .cp-team-chat {
+                display: flex;
+                height: 100%;
+                margin: 0;
+                .cp-app-contacts-container {
+                    height: 100%;
+                }
+            }
+            & > .cp-team-drive {
+                display: flex;
+                height: 100%;
+                margin: 0;
+                .cp-app-drive-container {
+                    height: 100%;
+                }
+            }
+            .cp-limit-buttons {
+                display: none;
+            }
+        }
+
+        .cp-leftside-narrow {
+            .cp-avatar {
+                overflow: visible;
+            }
+        }
+        .cp-team-cat-header {
+            justify-content: center;
+            .avatar_main(30px);
+            .cp-avatar {
+                justify-content: center;
+                font-size: 20px;
+            }
+            media-tag, .cp-avatar-default {
+                margin-right: 3px;
+            }
+            media-tag {
+                order: -1;
+            }
+            cursor: default !important;
+            font-size: 18px;
+            &:hover {
+                background-color: transparent !important;
+            }
+            span.cp-sidebarlayout-category-name {
+                padding-left: 5px;
+            }
+        }
+        .cp-team-cat-chat {
+            span.cp-team-chat-notification {
+                color: red;
+            }
+        }
+
+        .cp-team-list {
+            .cp-team-list-container {
+                display: flex;
+                align-items: center;
+                justify-content: space-evenly;
+                flex-wrap: wrap;
+            }
+            .cp-team-list-team {
+                .tools_unselectable();
+                background-color: @roster-bg-color;
+                display: flex;
+                align-items: center;
+                flex-flow: column;
+                width: 300px;
+                max-width: 90%;
+                height: 400px;
+                padding: 20px;
+                margin: 5px;
+                .cp-team-list-avatar {
+                    .avatar_main(200px);
+                }
+                .cp-team-list-name {
+                    flex: 1;
+                    min-width: 0;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    max-width: 500px;
+                    font-size: 25px;
+                    display: inline-flex;
+                    align-items: center;
+                    &.empty {
+                        white-space: initial;
+                        text-align: center;
+                    }
+                }
+                .cp-team-list-open {
+                    width: 100%;
+                }
+            }
+        }
+        .cp-team-avatar {
+            .avatar_main(300px);
+            .cp-avatar img {
+                max-width: 100%;
+                max-height: 100%;
+            }
+        }
+        .cp-team-roster {
+            .avatar_main(50px);
+            .cp-team-roster-member {
+                display: flex;
+                align-items: center;
+                margin: 5px;
+                padding: 2px;
+                max-width: 500px;
+                background-color: @roster-bg-color;
+                &:hover {
+                    background-color: darken(@roster-bg-color, 5%);
+                }
+                .cp-avatar {
+                    margin-right: 10px;
+                }
+                .cp-team-member-status {
+                    margin-left: 5px;
+                    width: 5px;
+                    height: 50px;
+                    display: inline-block;
+                    background-color: red;
+                    &.online {
+                        background-color: green;
+                    }
+                }
+                .cp-team-member-name {
+                    flex: 1;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    .tools_unselectable();
+                }
+                .cp-team-member-actions {
+                    .fa {
+                        height: 25px;
+                        width: 25px;
+                        display: inline-flex;
+                        justify-content: center;
+                        align-items: center;
+                        cursor: pointer;
+                        &:hover {
+                            background-color: darken(@roster-bg-color, 10%);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
