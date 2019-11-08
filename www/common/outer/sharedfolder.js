@@ -122,13 +122,14 @@ define([
                 // The shared folder is already loaded, return its data
                 setTimeout(function () {
                     var leave = function () { SF.leave(secret.channel, teamId); };
-                    var uo = store.manager.addProxy(id, sf.rt, leave, secondaryKey);
                     /*
+                    var uo = store.manager.addProxy(id, sf.rt, leave, secondaryKey);
                     // NOTE: Shared folder migration, disable for now
                     SF.checkMigration(secondaryKey, sf.rt.proxy, uo, function () {
                         cb(sf.rt, sf.metadata);
                     });
                     */
+                    store.manager.addProxy(id, sf.rt, leave, secondaryKey);
                     cb(sf.rt, sf.metadata);
                 });
                 sf.teams.push({
@@ -188,13 +189,14 @@ define([
                 }
                 sf.teams.forEach(function (obj) {
                     var leave = function () { SF.leave(secret.channel, teamId); };
-                    var uo = obj.store.manager.addProxy(obj.id, rt, leave, obj.secondaryKey);
                     /*
+                    var uo = obj.store.manager.addProxy(obj.id, rt, leave, obj.secondaryKey);
                     // NOTE: Shared folder migration, disable for now
                     SF.checkMigration(secondaryKey, rt.proxy, uo, function () {
                         obj.cb(sf.rt, info.metadata);
                     });
                     */
+                    obj.store.manager.addProxy(obj.id, rt, leave, obj.secondaryKey);
                     obj.cb(sf.rt, info.metadata);
                 });
                 sf.metadata = info.metadata;
