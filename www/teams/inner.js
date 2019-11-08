@@ -741,7 +741,7 @@ define([
             };
             // Global rights
             var rows = [];
-            var firstRow = ['', Messages.share_linkView, Messages.share_linkEdit,
+            var firstRow = [Messages.teams_table_role, Messages.share_linkView, Messages.share_linkEdit,
                                 Messages.teams_table_admins, Messages.teams_table_owners];
             rows.push(h('tr', makeRow(firstRow, true)));
             rows.push(h('tr', makeRow([Messages.team_viewers, 'x', '', '', ''])));
@@ -752,28 +752,38 @@ define([
 
             var content = [
                 h('h4', Messages.teams_table_generic),
-                h('p', Messages.teams_table_genericHint),
+                h('p', [
+                    Messages.teams_table_generic_view,
+                    h('br'),
+                    Messages.teams_table_generic_edit,
+                    h('br'),
+                    Messages.teams_table_generic_admin,
+                    h('br'),
+                    Messages.teams_table_generic_own,
+                    h('br')
+                ]),
                 t
             ];
 
             APP.module.execCommand('GET_EDITABLE_FOLDERS', {
                 teamId: APP.team
             }, function (arr) {
-                console.log(arr);
                 if (!Array.isArray(arr) || !arr.length) {
                     return void $blockContainer.find('.cp-modal').append(content);
                 }
-                content.push(h('h4', Messages.teams_table_specific));
+                content.push(h('h5', Messages.teams_table_specific));
                 content.push(h('p', Messages.teams_table_specificHint));
                 var paths = arr.map(function (obj) {
                     obj.path.push(obj.name);
                     return h('li', obj.path.join('/'));
                 });
                 content.push(h('ul', paths));
+                /*
                 var rows = [];
                 rows.push(h('tr', makeRow(firstRow, true)));
                 rows.push(h('tr', makeRow([Messages.team_viewers, 'x', 'x', '', ''])));
                 content.push(h('table', rows));
+                */
                 $blockContainer.find('.cp-modal').append(content);
             });
         });
