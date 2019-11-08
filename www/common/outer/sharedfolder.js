@@ -59,7 +59,7 @@ define([
         });
     };
 
-    // XXX only needed if we want a manual migration from the share modal...
+    // SFMIGRATION: only needed if we want a manual migration from the share modal...
     SF.migrate = function (channel) {
         var sf = allSharedFolders[channel];
         if (!sf) { return; }

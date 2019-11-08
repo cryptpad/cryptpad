@@ -105,10 +105,6 @@ define([
     module.init = function (files, config) {
         var exp = {};
 
-        if (false && !files.version) { // XXX if we remove false, old shared folders won't encrypt new hrefs
-            config.editKey = undefined;
-        }
-
         exp.cryptor = createCryptor(config.editKey);
 
         exp.setReadOnly = function (state, key) {
