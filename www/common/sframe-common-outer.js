@@ -511,7 +511,7 @@ define([
                     path: initialPathInDrive // Where to store the pad if we don't have it in our drive
                 };
                 Cryptpad.setPadTitle(data, function (err) {
-                    cb(err);
+                    cb({error: err});
                 });
             });
             sframeChan.on('EV_SET_TAB_TITLE', function (newTabTitle) {
