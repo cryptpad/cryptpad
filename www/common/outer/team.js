@@ -104,7 +104,7 @@ define([
         proxy.on('disconnect', function () {
             team.offline = true;
         });
-        proxy.on('reconnect', function (info) {
+        proxy.on('reconnect', function (/* info */) {
             team.offline = false;
         });
     };
