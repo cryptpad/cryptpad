@@ -480,13 +480,19 @@ define([
             var next = function () {
                 var copy = JSON.parse(JSON.stringify(files));
                 exp.reencrypt(config.editKey, config.editKey, copy);
-                Object.keys(copy).forEach(function (k) {
-                    files[k] = copy[k];
-                });
-                files.version = 2;
-                delete files.migrateRo;
+                setTimeout(function () {
+                    if (files.version >= 2) {
+                        // Already migrated by another user while we were re-encrypting
+                        return void cb();
+                    }
+                    Object.keys(copy).forEach(function (k) {
+                        files[k] = copy[k];
+                    });
+                    files.version = 2;
+                    delete files.migrateRo;
 
-                onSync(cb);
+                    onSync(cb);
+                }, 1000);
             };
             onSync(next);
         };

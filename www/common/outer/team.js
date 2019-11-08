@@ -1309,6 +1309,9 @@ define([
                 if (safe && ctx.teams[id]) {
                     t[id].secondaryKey = ctx.teams[id].secondaryKey;
                 }
+                if (ctx.teams[id]) {
+                    t[id].hasSecondaryKey = Boolean(ctx.teams[id].secondaryKey);
+                }
             });
             return t;
         };

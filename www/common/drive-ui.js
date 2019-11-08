@@ -1122,6 +1122,10 @@ define([
                 paths.forEach(function (p) {
                     var path = p.path;
                     var $element = p.element;
+
+                    if (APP.$content.data('readOnlyFolder') &&
+                            manager.isSubpath(path, currentPath)) { editable = false; }
+
                     if (!$element.closest("#cp-app-drive-tree").length) {
                         hide.push('expandall');
                         hide.push('collapseall');
@@ -1266,6 +1270,7 @@ define([
             var filtered = [];
             show.forEach(function (className) {
                 var $el = $contextMenu.find('.cp-app-drive-context-' + className);
+                if ((!APP.editable || !editable) && $el.is('.cp-app-drive-context-editable')) { return; }
                 if ((!APP.editable || !editable) && $el.is('.cp-app-drive-context-editable')) { return; }
                 if (filter($el, className)) { return; }
                 $el.parent('li').show();
@@ -1876,6 +1881,7 @@ define([
             if (!element || !manager.isFolder(element)) { return; }
             // The element with the class '.name' is underlined when the 'li' is hovered
             var $state = $('<span>', {'class': 'cp-app-drive-element-state'});
+            var $ro;
             if (manager.isSharedFolder(element)) {
                 var data = manager.getSharedFolderData(element);
                 key = data && data.title ? data.title : key;
@@ -1888,9 +1894,16 @@ define([
                     var $password = $passwordIcon.clone().appendTo($state);
                     $password.attr('title', Messages.fm_passwordProtected || '');
                 }
+                if (hrefData.hashData && hrefData.hashData.mode === 'view') {
+                    $ro = $readonlyIcon.clone().appendTo($state);
+                    $ro.attr('title', Messages.readonly);
+                }
 
                 var $shared = $sharedIcon.clone().appendTo($state);
                 $shared.attr('title', Messages.fm_canBeShared);
+            } else if ($content.data('readOnlyFolder') || APP.readOnly) {
+                $ro = $readonlyIcon.clone().appendTo($state);
+                $ro.attr('title', Messages.readonly);
             }
 
             var sf = manager.hasSubfolder(element);
@@ -2559,6 +2572,10 @@ define([
                     viewHash: ro && roParsed.hash,
                 }
             });
+            // If we're a viewer and this is an old shared folder (no read-only mode), we
+            // can't share the read-only URL and we don't have access to the edit one.
+            // We should hide the share button.
+            if (!modal) { return; }
             modal = UI.dialog.tabs(modal);
             $shareBlock.click(function () {
                 UI.openCustomModal(modal, {
@@ -4079,7 +4096,6 @@ define([
                     var roParsed = Hash.parsePadUrl(data.roHref);
                     var padType = parsed.type || roParsed.type;
                     var ro = !sf || (folders[el] && folders[el].version >= 2);
-                    console.log(folders[el]);
                     var padData = {
                         teamId: APP.team,
                         origin: APP.origin,
