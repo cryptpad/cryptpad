@@ -31,6 +31,33 @@ define([
 
     var registerChangeEvents = function (ctx, team, proxy, fId) {
         if (!team) { return; }
+        if (!fId) {
+            // Listen for shared folder password change
+            proxy.on('change', ['drive', UserObject.SHARED_FOLDERS], function (o, n, p) {
+                if (p.length > 3 && p[3] === 'password') {
+                    var id = p[2];
+                    var data = proxy.drive[UserObject.SHARED_FOLDERS][id];
+                    var href = team.manager.user.userObject.getHref ?
+                            team.manager.user.userObject.getHref(data) : data.href;
+                    var parsed = Hash.parsePadUrl(href);
+                    var secret = Hash.getSecrets(parsed.type, parsed.hash, o);
+                    // We've received a new password, we should update it locally
+                    // NOTE: this is an async call because new password means new roHref!
+                    // We need to wait for the new roHref in the proxy before calling the handlers
+                    // because a read-only team will use it when connecting to the new channel
+                    setTimeout(function () {
+                        SF.updatePassword(ctx.Store, {
+                            oldChannel: secret.channel,
+                            password: n,
+                            href: href
+                        }, ctx.store.network, function () {
+                            console.log('Shared folder password changed');
+                        });
+                    });
+                    return false;
+                }
+            });
+        }
         proxy.on('change', [], function (o, n, p) {
             if (fId) {
                 // Pin the new pads
@@ -82,6 +109,7 @@ define([
         try { team.listmap.stop(); } catch (e) {}
         try { team.roster.stop(); } catch (e) {}
         team.proxy = {};
+        team.stopped = true;
         delete ctx.teams[teamId];
         delete ctx.store.proxy.teams[teamId];
         ctx.emit('LEAVE_TEAM', teamId, team.clients);
@@ -141,8 +169,10 @@ define([
             roster: roster
         };
 
+        // Subscribe to events
         if (cId) { team.clients.push(cId); }
 
+        // Listen for roster changes
         roster.on('change', function () {
             var state = roster.getState();
             var me = Util.find(ctx, ['store', 'proxy', 'curvePublic']);
@@ -159,16 +189,19 @@ define([
             rosterData.lastKnownHash = hash;
         });
 
+        // Update metadata
         var state = roster.getState();
         var teamData = Util.find(ctx, ['store', 'proxy', 'teams', id]);
         if (teamData) { teamData.metadata = state.metadata; }
 
+        // Broadcast an event to all the tabs displaying this team
         team.sendEvent = function (q, data, sender) {
             ctx.emit(q, data, team.clients.filter(function (cId) {
                 return cId !== sender;
             }));
         };
 
+        // Provide team chat keys to the messenger app
         team.getChatData = function () {
             var chatKeys = keys.chat || {};
             var hash = chatKeys.edit || chatKeys.view;
@@ -178,13 +211,15 @@ define([
                 teamId: id,
                 channel: secret.channel,
                 secret: secret,
-                validateKey: secret.keys.validateKey
+                validateKey: chatKeys.validateKey
             };
         };
 
+        var secret;
         team.pin = function (data, cb) { return void cb({error: 'EFORBIDDEN'}); };
         team.unpin = function (data, cb) { return void cb({error: 'EFORBIDDEN'}); };
         nThen(function (waitFor) {
+            // Init Team RPC
             if (!keys.drive.edPrivate) { return; }
             initRpc(ctx, team, keys.drive, waitFor(function (err) {
                 if (err) { return; }
@@ -208,14 +243,18 @@ define([
                 };
             }));
         }).nThen(function () {
-            var loadSharedFolder = function (id, data, cb) {
+            // Create the proxy manager
+            var loadSharedFolder = function (id, data, cb, isNew) {
                 SF.load({
+                    isNew: isNew,
                     network: ctx.store.network,
-                    store: team
-                }, id, data, function (id, rt) {
-                    cb(id, rt);
-                });
+                    store: team,
+                    isNewChannel: ctx.Store.isNewChannel
+                }, id, data, cb);
             };
+            var teamData = ctx.store.proxy.teams[team.id];
+            var hash = teamData.hash || teamData.roHash;
+            secret = Hash.getSecrets('team', hash, teamData.password);
             var manager = team.manager = ProxyManager.create(proxy.drive, {
                 onSync: function (cb) { ctx.Store.onSync(id, cb); },
                 edPublic: keys.drive.edPublic,
@@ -224,7 +263,8 @@ define([
                 loadSharedFolder: loadSharedFolder,
                 settings: {
                     drive: Util.find(ctx.store, ['proxy', 'settings', 'drive'])
-                }
+                },
+                Store: ctx.Store
             }, {
                 outer: true,
                 removeOwnedChannel: function (channel, cb) {
@@ -245,13 +285,19 @@ define([
                 log: function (msg) {
                     // broadcast to all drive apps
                     team.sendEvent("DRIVE_LOG", msg);
-                }
+                },
+                rt: team.realtime,
+                editKey: secret.keys.secondaryKey,
+                readOnly: Boolean(!secret.keys.secondaryKey)
             });
+            team.secondaryKey = secret && secret.keys.secondaryKey;
             team.userObject = manager.user.userObject;
             team.userObject.fixFiles();
         }).nThen(function (waitFor) {
+            // Load the shared folders
             ctx.teams[id] = team;
             registerChangeEvents(ctx, team, proxy);
+            SF.checkMigration(team.secondaryKey, proxy, team.userObject, waitFor());
             SF.loadSharedFolders(ctx.Store, ctx.store.network, team, team.userObject, waitFor);
         }).nThen(function () {
             if (!team.rpc) { return; }
@@ -288,10 +334,20 @@ define([
     var openChannel = function (ctx, teamData, id, _cb) {
         var cb = Util.once(_cb);
 
-        var secret = Hash.getSecrets('team', teamData.hash, teamData.password);
+        var hash = teamData.hash || teamData.roHash;
+        var secret = Hash.getSecrets('team', hash, teamData.password);
         var crypto = Crypto.createEncryptor(secret.keys);
 
+        if (!teamData.roHash) {
+            teamData.roHash = Hash.getViewHashFromKeys(secret);
+        }
+
         var keys = teamData.keys;
+        if (!keys.chat.validateKey && keys.chat.edit) {
+            var chatSecret = Hash.getSecrets('chat', keys.chat.edit);
+            keys.chat.validateKey = chatSecret.keys.validateKey;
+        }
+
 
         var roster;
         var lm;
@@ -365,6 +421,7 @@ define([
             }, waitFor(function (err, _roster) {
                 if (err) {
                     waitFor.abort();
+                    console.error(err);
                     return void cb({error: 'ROSTER_ERROR'});
                 }
                 roster = _roster;
@@ -413,6 +470,7 @@ define([
         var password = Hash.createChannelId();
         var hash = Hash.createRandomHash('team', password);
         var secret = Hash.getSecrets('team', hash, password);
+        var roHash = Hash.getViewHashFromKeys(secret);
         var keyPair = Nacl.sign.keyPair(); // keyPair.secretKey , keyPair.publicKey
 
         var rosterSeed = Crypto.Team.createSeed();
@@ -502,6 +560,7 @@ define([
             };
             var lm = Listmap.create(config);
             var proxy = lm.proxy;
+            proxy.version = 2; // No migration needed
             proxy.on('ready', function () {
                 // Store keys in our drive
                 var keys = {
@@ -512,6 +571,7 @@ define([
                     chat: {
                         edit: chatHashes.editHash,
                         view: chatHashes.viewHash,
+                        validateKey: chatSecret.keys.validateKey,
                         channel: chatSecret.channel
                     },
                     roster: {
@@ -524,6 +584,7 @@ define([
                     owner: true,
                     channel: secret.channel,
                     hash: hash,
+                    roHash: roHash,
                     password: password,
                     keys: keys,
                     //members: membersHashes.editHash,
@@ -659,7 +720,7 @@ define([
 
     var joinTeam = function (ctx, data, cId, cb) {
         var team = data.team;
-        if (!team.hash || !team.channel || !team.password
+        if (!(team.hash || team.roHash) || !team.channel || !team.password
             || !team.keys || !team.metadata) { return void cb({error: 'EINVAL'}); }
         var id = Util.createRandomInteger();
         ctx.store.proxy.teams[id] = team;
@@ -735,6 +796,25 @@ define([
         });
 
         cb(members);
+    };
+
+    // Return folders with edit rights available to everybody (decrypted pad href)
+    var getEditableFolders = function (ctx, data, cId, cb) {
+        var teamId = data.teamId;
+        if (!teamId) { return void cb({error: 'EINVAL'}); }
+        var team = ctx.teams[teamId];
+        if (!team) { return void cb ({error: 'ENOENT'}); }
+        var folders = team.manager.folders || {};
+        var ids = Object.keys(folders).filter(function (id) {
+            return !folders[id].proxy.version;
+        });
+        cb(ids.map(function (id) {
+            var uo = Util.find(team, ['user', 'userObject']);
+            return {
+                name: Util.find(folders, [id, 'proxy', 'metadata', 'title']),
+                path: uo ? uo.findFile(id)[0] : []
+            };
+        }));
     };
 
     var getTeamMetadata = function (ctx, data, cId, cb) {
@@ -918,6 +998,97 @@ define([
         });
     };
 
+    var getInviteData = function (ctx, teamId, edit) {
+        var teamData = Util.find(ctx, ['store', 'proxy', 'teams', teamId]);
+        if (!teamData) { return {}; }
+        var data = Util.clone(teamData);
+        if (!edit) {
+            // Delete edit keys
+            delete data.hash;
+            delete data.keys.drive.edPrivate;
+            delete data.keys.chat.edit;
+        }
+        // Delete owner key
+        delete data.owner;
+        return data;
+    };
+
+    // Update my edit rights in listmap (only upgrade) and userObject (upgrade and downgrade)
+    // We also need to propagate the changes to the shared folders
+    var updateMyRights = function (ctx, teamId, hash) {
+        if (!teamId) { return true; }
+        var teamData = Util.find(ctx, ['store', 'proxy', 'teams', teamId]);
+        if (!teamData) { return true; }
+        var team = ctx.teams[teamId];
+
+        var secret = Hash.getSecrets('team', hash || teamData.roHash, teamData.password);
+        // Upgrade the listmap if we can
+        SF.upgrade(teamData.channel, secret);
+        // Set the new readOnly value in userObject
+        if (team.userObject) {
+            team.userObject.setReadOnly(!secret.keys.secondaryKey, secret.keys.secondaryKey);
+        }
+
+        // Upgrade the shared folders
+        var folders = Util.find(team, ['proxy', 'drive', 'sharedFolders']);
+        Object.keys(folders || {}).forEach(function (sfId) {
+            var data = team.manager.getSharedFolderData(sfId);
+            var parsed = Hash.parsePadUrl(data.href || data.roHref);
+            var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
+            SF.upgrade(secret.channel, secret);
+            var uo = Util.find(team, ['manager', 'folders', sfId, 'userObject']);
+            if (uo) {
+                uo.setReadOnly(!secret.keys.secondaryKey, secret.keys.secondaryKey);
+            }
+        });
+        ctx.updateMetadata();
+        ctx.emit('ROSTER_CHANGE_RIGHTS', teamId, team.clients);
+    };
+
+    var changeMyRights = function (ctx, teamId, state, data) {
+        if (!teamId) { return true; }
+        var teamData = Util.find(ctx, ['store', 'proxy', 'teams', teamId]);
+        if (!teamData) { return true; }
+        var team = ctx.teams[teamId];
+        if (!team) { return true; }
+
+        if (teamData.channel !== data.channel || teamData.password !== data.password) { return true; }
+
+        if (state) {
+            teamData.hash = data.hash;
+            teamData.keys.drive.edPrivate = data.keys.drive.edPrivate;
+            teamData.keys.chat.edit = data.keys.chat.edit;
+
+            var secret = Hash.getSecrets('team', data.hash, teamData.password);
+            team.secondaryKey = secret && secret.keys.secondaryKey;
+        } else {
+            delete teamData.hash;
+            delete teamData.keys.drive.edPrivate;
+            delete teamData.keys.chat.edit;
+            delete team.secondaryKey;
+        }
+
+        updateMyRights(ctx, teamId, data.hash);
+    };
+    var changeEditRights = function (ctx, teamId, user, state, cb) {
+        if (!teamId) { return void cb({error: 'EINVAL'}); }
+        var teamData = Util.find(ctx, ['store', 'proxy', 'teams', teamId]);
+        if (!teamData) { return void cb ({error: 'ENOENT'}); }
+        var team = ctx.teams[teamId];
+        if (!team) { return void cb ({error: 'ENOENT'}); }
+
+        // Send mailbox to offer ownership
+        var myData = Messaging.createData(ctx.store.proxy, false);
+        ctx.store.mailbox.sendTo("TEAM_EDIT_RIGHTS", {
+            state: state,
+            teamData: getInviteData(ctx, teamId, state),
+            user: myData
+        }, {
+            channel: user.notifications,
+            curvePublic: user.curvePublic
+        }, cb);
+    };
+
     var describeUser = function (ctx, data, cId, cb) {
         var teamId = data.teamId;
         if (!teamId) { return void cb({error: 'EINVAL'}); }
@@ -931,11 +1102,25 @@ define([
         // It it is an ownership revocation, we have to set it in pad metadata first
         if (user.role === "OWNER" && data.data.role !== "OWNER") {
             revokeOwnership(ctx, teamId, user, function (err) {
-                if (!err) { return; }
+                if (!err) { return void cb(); }
                 console.error(err);
                 return void cb({error: err});
             });
             return;
+        }
+
+        // Viewer to editor
+        if (user.role === "VIEWER" && data.data.role !== "VIEWER") {
+            changeEditRights(ctx, teamId, user, true, function (err) {
+                return void cb({error: err});
+            });
+        }
+
+        // Editor to viewer
+        if (user.role !== "VIEWER" && data.data.role === "VIEWER") {
+            changeEditRights(ctx, teamId, user, false, function (err) {
+                return void cb({error: err});
+            });
         }
 
         var obj = {};
@@ -944,15 +1129,6 @@ define([
             if (err) { return void cb({error: err}); }
             cb();
         });
-    };
-
-    // TODO send guest keys only in the future
-    var getInviteData = function (ctx, teamId) {
-        var teamData = Util.find(ctx, ['store', 'proxy', 'teams', teamId]);
-        if (!teamData) { return {}; }
-        var data = Util.clone(teamData);
-        delete data.owner;
-        return data;
     };
 
     var inviteToTeam = function (ctx, data, cId, cb) {
@@ -969,6 +1145,7 @@ define([
 
         var obj = {};
         obj[user.curvePublic] = user;
+        obj[user.curvePublic].role = 'VIEWER';
         team.roster.add(obj, function (err) {
             if (err && err !== 'NO_CHANGE') { return void cb({error: err}); }
             ctx.store.mailbox.sendTo('INVITE_TO_TEAM', {
@@ -1094,9 +1271,21 @@ define([
             if (err) { return; }
         }));
 
+        // Listen for changes in our access rights (if another worker receives edit access)
+        ctx.store.proxy.on('change', ['teams'], function (o, n, p) {
+            if (p[2] !== 'hash') { return; }
+            updateMyRights(ctx, p[1], n);
+        });
+        ctx.store.proxy.on('remove', ['teams'], function (o, p) {
+            if (p[2] !== 'hash') { return; }
+            updateMyRights(ctx, p[1]);
+        });
+
+
         Object.keys(teams).forEach(function (id) {
             ctx.onReadyHandlers[id] = [];
-            openChannel(ctx, teams[id], id, waitFor(function () {
+            openChannel(ctx, teams[id], id, waitFor(function (err) {
+                if (err) { return void console.error(err); }
                 console.debug('Team '+id+' ready');
             }));
         });
@@ -1104,15 +1293,25 @@ define([
         team.getTeam = function (id) {
             return ctx.teams[id];
         };
-        team.getTeamsData = function () {
+        team.getTeamsData = function (app) {
             var t = {};
+            var safe = false;
+            if (['drive', 'teams', 'settings'].indexOf(app) !== -1) { safe = true; }
             Object.keys(teams).forEach(function (id) {
                 t[id] = {
                     owner: teams[id].owner,
                     name: teams[id].metadata.name,
                     edPublic: Util.find(teams[id], ['keys', 'drive', 'edPublic']),
-                    avatar: Util.find(teams[id], ['metadata', 'avatar'])
+                    avatar: Util.find(teams[id], ['metadata', 'avatar']),
+                    viewer: !Util.find(teams[id], ['keys', 'drive', 'edPrivate']),
+
                 };
+                if (safe && ctx.teams[id]) {
+                    t[id].secondaryKey = ctx.teams[id].secondaryKey;
+                }
+                if (ctx.teams[id]) {
+                    t[id].hasSecondaryKey = Boolean(ctx.teams[id].secondaryKey);
+                }
             });
             return t;
         };
@@ -1135,6 +1334,9 @@ define([
                 if (err && err !== 'NO_CHANGE') { console.error(err); }
             });
 
+        };
+        team.changeMyRights = function (id, edit, teamData) {
+            changeMyRights(ctx, id, edit, teamData);
         };
         team.updateMyData = function (data) {
             Object.keys(ctx.teams).forEach(function (id) {
@@ -1198,6 +1400,9 @@ define([
             }
             if (cmd === 'CREATE_TEAM') {
                 return void createTeam(ctx, data, clientId, cb);
+            }
+            if (cmd === 'GET_EDITABLE_FOLDERS') {
+                return void getEditableFolders(ctx, data, clientId, cb);
             }
         };
 

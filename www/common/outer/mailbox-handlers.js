@@ -249,13 +249,13 @@ define([
         if (msg.author !== content.user.curvePublic) { return void cb(true); }
 
         var channel = content.channel;
-        var res = ctx.store.manager.findChannel(channel);
+        var res = ctx.store.manager.findChannel(channel, true);
 
         var title;
         res.forEach(function (obj) {
             if (obj.data && !obj.data.href) {
                 if (!title) { title = obj.data.filename || obj.data.title; }
-                obj.data.href = content.href;
+                obj.userObject.setHref(channel, null, content.href);
             }
         });
 
@@ -414,6 +414,40 @@ define([
 
         cb(false);
     };
+
+    handlers['TEAM_EDIT_RIGHTS'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+
+        if (msg.author !== content.user.curvePublic) { return void cb(true); }
+        if (!content.teamData) {
+            console.log('Remove invalid notification');
+            return void cb(true);
+        }
+
+        // Make sure we are a member of this team
+        var myTeams = Util.find(ctx, ['store', 'proxy', 'teams']) || {};
+        var teamId;
+        var team;
+        Object.keys(myTeams).some(function (k) {
+            var _team = myTeams[k];
+            if (_team.channel === content.teamData.channel) {
+                teamId = k;
+                team = _team;
+                return true;
+            }
+        });
+        if (!teamId) { return void cb(true); }
+
+        try {
+            var module = ctx.store.modules['team'];
+            // changeMyRights returns true if we can't change our rights
+            module.changeMyRights(teamId, content.state, content.teamData);
+        } catch (e) { console.error(e); }
+
+        cb(true);
+    };
+
 
 
     return {

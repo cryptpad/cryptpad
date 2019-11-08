@@ -19,81 +19,218 @@ define([
 
     var allSharedFolders = {};
 
-    SF.load = function (config, id, data, cb) {
+    // No version: visible edit
+    // Version 2: encrypted edit links
+    SF.checkMigration = function (secondaryKey, proxy, uo, cb) {
+        var drive = proxy.drive || proxy;
+        // View access: can't migrate
+        if (!secondaryKey) { return void cb(); }
+        // Already migrated: nothing to do
+        if (drive.version >= 2) { return void cb(); }
+        // Not yet migrating: migrate
+        if (!drive.migrateRo) { return void uo.migrateReadOnly(cb); }
+        // Already migrating: wait for the end...
+        var done = false;
+        var to;
+        var it = setInterval(function () {
+            if (drive.version >= 2) {
+                done = true;
+                clearTimeout(to);
+                clearInterval(it);
+                return void cb();
+            }
+        }, 100);
+        to = setTimeout(function () {
+            clearInterval(it);
+            uo.migrateReadOnly(function () {
+                done = true;
+                cb();
+            });
+        }, 20000);
+        var path = proxy.drive ? ['drive', 'version'] : ['version'];
+        proxy.on('change', path, function () {
+            if (done) { return; }
+            if (drive.version >= 2) {
+                done = true;
+                clearTimeout(to);
+                clearInterval(it);
+                cb();
+            }
+        });
+    };
+
+    // SFMIGRATION: only needed if we want a manual migration from the share modal...
+    SF.migrate = function (channel) {
+        var sf = allSharedFolders[channel];
+        if (!sf) { return; }
+        var clients = sf.teams;
+        if (!Array.isArray(clients) || !clients.length) { return; }
+        var c = clients[0];
+        // No secondaryKey? ==> already migrated ==> abort
+        if (!c.secondaryKey) { return; }
+        var f = Util.find(c, ['store', 'manager', 'folders', c.id]);
+        // Can't find the folder: abort
+        if (!f) { return; }
+        // Already migrated: abort
+        if (!f.proxy || f.proxy.version) { return; }
+        f.userObject.migrateReadOnly(function () {
+            clients.forEach(function (obj) {
+                var uo = Util.find(obj, ['store', 'manager', 'folders', obj.id, 'userObject']);
+                uo.setReadOnly(false, obj.secondarykey);
+            });
+        });
+    };
+
+    SF.load = function (config, id, data, _cb) {
+        var cb = Util.once(_cb);
         var network = config.network;
         var store = config.store;
-        var teamId = store.id || -1;
+        var isNew = config.isNew;
+        var isNewChannel = config.isNewChannel;
+        var teamId = store.id;
         var handler = store.handleSharedFolder;
 
-        var parsed = Hash.parsePadUrl(data.href);
+        var href = store.manager.user.userObject.getHref(data);
+
+        var parsed = Hash.parsePadUrl(href);
         var secret = Hash.getSecrets('drive', parsed.hash, data.password);
-
-        var sf = allSharedFolders[secret.channel];
-        if (sf && sf.ready && sf.rt) {
-            // The shared folder is already loaded, return its data
-            setTimeout(function () {
-                var leave = function () { SF.leave(secret.channel, teamId); };
-                store.manager.addProxy(id, sf.rt.proxy, leave);
-                cb(sf.rt, sf.metadata);
-            });
-            sf.team.push(teamId);
-            if (handler) { handler(id, sf.rt); }
-            return sf.rt;
+        // If we don't have valid keys, abort and remove the proxy to make sure
+        // we don't block the drive permanently
+        if (!secret.keys) {
+            store.manager.deprecateProxy(id);
+            return void cb(null);
         }
-        if (sf && sf.queue && sf.rt) {
-            // The shared folder is loading, add our callbacks to the queue
-            sf.queue.push({
-                cb: cb,
-                store: store,
-                id: id
-            });
-            sf.team.push(teamId);
-            if (handler) { handler(id, sf.rt); }
-            return sf.rt;
-        }
+        var secondaryKey = secret.keys.secondaryKey;
 
-        sf = allSharedFolders[secret.channel] = {
-            queue: [{
-                cb: cb,
-                store: store,
-                id: id
-            }],
-            team: [store.id || -1]
-        };
-
-        var owners = data.owners;
-        var listmapConfig = {
-            data: {},
-            channel: secret.channel,
-            readOnly: false,
-            crypto: Crypto.createEncryptor(secret.keys),
-            userName: 'sharedFolder',
-            logLevel: 1,
-            ChainPad: ChainPad,
-            classic: true,
-            network: network,
-            metadata: {
-                validateKey: secret.keys.validateKey || undefined,
-                owners: owners
+        // If we try to load an existing shared folder (isNew === false) but this folder
+        // doesn't exist in the database, abort and cb
+        nThen(function (waitFor) {
+            isNewChannel(null, { channel: secret.channel }, waitFor(function (obj) {
+                if (obj.isNew && !isNew) {
+                    store.manager.deprecateProxy(id, secret.channel);
+                    waitFor.abort();
+                    return void cb(null);
+                }
+            }));
+        }).nThen(function () {
+            var sf = allSharedFolders[secret.channel];
+            if (sf && sf.readOnly && secondaryKey) {
+                // We were in readOnly mode and now we know the edit keys!
+                SF.upgrade(secret.channel, secret);
             }
-        };
-        var rt = sf.rt = Listmap.create(listmapConfig);
-        rt.proxy.on('ready', function (info) {
-            if (!sf.queue) {
+            if (sf && sf.ready && sf.rt) {
+                // The shared folder is already loaded, return its data
+                setTimeout(function () {
+                    var leave = function () { SF.leave(secret.channel, teamId); };
+                    /*
+                    var uo = store.manager.addProxy(id, sf.rt, leave, secondaryKey);
+                    // NOTE: Shared folder migration, disable for now
+                    SF.checkMigration(secondaryKey, sf.rt.proxy, uo, function () {
+                        cb(sf.rt, sf.metadata);
+                    });
+                    */
+                    store.manager.addProxy(id, sf.rt, leave, secondaryKey);
+                    cb(sf.rt, sf.metadata);
+                });
+                sf.teams.push({
+                    cb: cb,
+                    store: store,
+                    id: id
+                });
+                if (handler) { handler(id, sf.rt); }
                 return;
             }
-            sf.queue.forEach(function (obj) {
-                var leave = function () { SF.leave(secret.channel, teamId); };
-                obj.store.manager.addProxy(obj.id, rt.proxy, leave);
-                obj.cb(rt, info.metadata);
+            if (sf && !sf.ready && sf.rt) {
+                // The shared folder is loading, add our callbacks to the queue
+                sf.teams.push({
+                    cb: cb,
+                    store: store,
+                    secondaryKey: secondaryKey,
+                    id: id
+                });
+                if (handler) { handler(id, sf.rt); }
+                return;
+            }
+
+            sf = allSharedFolders[secret.channel] = {
+                teams: [{
+                    cb: cb,
+                    store: store,
+                    secondaryKey: secondaryKey,
+                    id: id
+                }],
+                readOnly: !Boolean(secondaryKey)
+            };
+
+            var owners = data.owners;
+            var listmapConfig = {
+                data: {},
+                channel: secret.channel,
+                readOnly: !Boolean(secondaryKey),
+                crypto: Crypto.createEncryptor(secret.keys),
+                userName: 'sharedFolder',
+                logLevel: 1,
+                ChainPad: ChainPad,
+                classic: true,
+                network: network,
+                metadata: {
+                    validateKey: secret.keys.validateKey || undefined,
+                    owners: owners
+                }
+            };
+            var rt = sf.rt = Listmap.create(listmapConfig);
+            rt.proxy.on('ready', function (info) {
+                if (isNew && !Object.keys(rt.proxy).length) {
+                    // New Shared folder: no migration required
+                    rt.proxy.version = 2;
+                }
+                if (!sf.teams) {
+                    return;
+                }
+                sf.teams.forEach(function (obj) {
+                    var leave = function () { SF.leave(secret.channel, teamId); };
+                    /*
+                    var uo = obj.store.manager.addProxy(obj.id, rt, leave, obj.secondaryKey);
+                    // NOTE: Shared folder migration, disable for now
+                    SF.checkMigration(secondaryKey, rt.proxy, uo, function () {
+                        obj.cb(sf.rt, info.metadata);
+                    });
+                    */
+                    obj.store.manager.addProxy(obj.id, rt, leave, obj.secondaryKey);
+                    obj.cb(sf.rt, info.metadata);
+                });
+                sf.metadata = info.metadata;
+                sf.ready = true;
             });
-            sf.leave = info.leave;
-            sf.metadata = info.metadata;
-            sf.ready = true;
-            delete sf.queue;
+            rt.proxy.on('error', function (info) {
+                if (info && info.error) {
+                    if (info.error === "EDELETED" ) {
+                        try {
+                            // Deprecate the shared folder from each team
+                            // We can only hide it
+                            sf.teams.forEach(function (obj) {
+                                obj.store.manager.deprecateProxy(obj.id, secret.channel);
+                            });
+                        } catch (e) {}
+                        delete allSharedFolders[secret.channel];
+                    }
+                }
+            });
+
+            if (handler) { handler(id, rt); }
         });
-        if (handler) { handler(id, rt); }
-        return rt;
+    };
+
+
+    SF.upgrade = function (channel, secret) {
+        var sf = allSharedFolders[channel];
+        if (!sf || !sf.readOnly) { return; }
+        if (!sf.rt.setReadOnly) { return; }
+
+        if (!secret.keys || !secret.keys.editKeyStr) { return; }
+        var crypto = Crypto.createEncryptor(secret.keys);
+        sf.readOnly = false;
+        sf.rt.setReadOnly(false, crypto);
     };
 
     SF.leave = function (channel, teamId) {
@@ -101,8 +238,14 @@ define([
         if (!sf) { return; }
         var clients = sf.teams;
         if (!Array.isArray(clients)) { return; }
-        var idx = clients.indexOf(teamId);
-        if (idx === -1) { return; }
+        var idx;
+        clients.some(function (obj, i) {
+            if (obj.store.id === teamId) {
+                idx = i;
+                return true;
+            }
+        });
+        if (typeof (idx) === "undefined") { return; }
         // Remove the selected team
         clients.splice(idx, 1);
 
@@ -113,6 +256,42 @@ define([
         }
     };
 
+    // Update the password locally
+    SF.updatePassword = function (Store, data, network, cb) {
+        var oldChannel = data.oldChannel;
+        var href = data.href;
+        var password = data.password;
+        var parsed = Hash.parsePadUrl(href);
+        var secret = Hash.getSecrets(parsed.type, parsed.hash, password);
+        var sf = allSharedFolders[oldChannel];
+        if (!sf) { return void cb({ error: 'ENOTFOUND' }); }
+        if (sf.rt && sf.rt.stop) {
+            try { sf.rt.stop(); } catch (e) {}
+        }
+        var nt = nThen;
+        sf.teams.forEach(function (obj) {
+            nt = nt(function (waitFor) {
+                var s = obj.store;
+                var sfId = obj.id;
+                var shared = Util.find(s.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
+                if (!sfId || !shared[sfId]) { return; }
+                var sf = JSON.parse(JSON.stringify(shared[sfId]));
+                sf.password = password;
+                SF.load({
+                    network: network,
+                    store: s,
+                    isNewChannel: Store.isNewChannel
+                }, sfId, sf, waitFor());
+                if (!s.rpc) { return; }
+                s.rpc.unpin([oldChannel], waitFor());
+                s.rpc.pin([secret.channel], waitFor());
+            }).nThen;
+        });
+        nt(function () {
+            cb();
+        });
+    };
+
     /* loadSharedFolders
         load all shared folder stored in a given drive
         - store: user or team main store
@@ -121,35 +300,13 @@ define([
     */
     SF.loadSharedFolders = function (Store, network, store, userObject, waitFor) {
         var shared = Util.find(store.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
-        // Check if any of our shared folder is expired or deleted by its owner.
-        // If we don't check now, Listmap will create an empty proxy if it no longer exists on
-        // the server.
         nThen(function (waitFor) {
-            var checkExpired = Object.keys(shared).map(function (fId) {
-                return shared[fId].channel;
-            });
-            Store.getDeletedPads(null, {list: checkExpired}, waitFor(function (chans) {
-                if (chans && chans.error) { return void console.error(chans.error); }
-                if (!Array.isArray(chans) || !chans.length) { return; }
-                var toDelete = [];
-                Object.keys(shared).forEach(function (fId) {
-                    if (chans.indexOf(shared[fId].channel) !== -1
-                        && toDelete.indexOf(fId) === -1) {
-                        toDelete.push(fId);
-                    }
-                });
-                toDelete.forEach(function (fId) {
-                    var paths = userObject.findFile(Number(fId));
-                    userObject.delete(paths, waitFor(), true);
-                    delete shared[fId];
-                });
-            }));
-        }).nThen(function (waitFor) {
             Object.keys(shared).forEach(function (id) {
                 var sf = shared[id];
                 SF.load({
                     network: network,
-                    store: store
+                    store: store,
+                    isNewChannel: Store.isNewChannel
                 }, id, sf, waitFor());
             });
         }).nThen(waitFor());

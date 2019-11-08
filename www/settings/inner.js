@@ -959,12 +959,12 @@ define([
             $(list).appendTo(errors);
             errs.forEach(function (err) {
                 if (!err.data) { return; }
-                var href = err.data.href || err.data.roHref;
+                var href = (err.data.href && err.data.href.indexOf('#') !== -1) ? err.data.href : err.data.roHref;
                 $(h('div', [
                     h('div.title', err.data.filename || err.data.title),
                     h('div.link', [
                         h('a', {
-                            href: err.data.href || err.data.roHref,
+                            href: href,
                             target: '_blank'
                         }, privateData.origin + href)
                     ]),

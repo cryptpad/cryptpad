@@ -857,6 +857,7 @@ var removeOwnedChannel = function (Env, channelId, unsafeKey, cb) {
                     if (err) {
                         return void cb("E_PROOF_REMOVAL");
                     }
+                    cb();
                 });
             }
 
@@ -869,6 +870,7 @@ var removeOwnedChannel = function (Env, channelId, unsafeKey, cb) {
                 if (err) {
                     return void cb("E_PROOF_REMOVAL");
                 }
+                cb();
             });
         });
     }

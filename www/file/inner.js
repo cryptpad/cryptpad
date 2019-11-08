@@ -106,9 +106,12 @@ define([
                 // Add pad attributes when the file is saved in the drive
                 Title.onTitleChange(function () {
                     var owners = metadata.owners;
-                    if (owners) {
-                        common.setPadAttribute('owners', owners);
-                    }
+                    if (owners) { common.setPadAttribute('owners', owners); }
+                    common.setPadAttribute('fileType', metadata.type);
+                });
+                $(document).on('cpPadStored', function () {
+                    var owners = metadata.owners;
+                    if (owners) { common.setPadAttribute('owners', owners); }
                     common.setPadAttribute('fileType', metadata.type);
                 });
 

@@ -2,11 +2,11 @@ define([
     '/customize/application_config.js',
     '/common/common-util.js',
     '/common/common-hash.js',
-    '/common/common-realtime.js',
     '/common/common-constants.js',
     '/common/outer/userObject.js',
-    '/customize/messages.js'
-], function (AppConfig, Util, Hash, Realtime, Constants, OuterFO, Messages) {
+    '/customize/messages.js',
+    '/bower_components/chainpad-crypto/crypto.js',
+], function (AppConfig, Util, Hash, Constants, OuterFO, Messages, Crypto) {
     var module = {};
 
     var ROOT = module.ROOT = "root";
@@ -14,6 +14,9 @@ define([
     var TRASH = module.TRASH = "trash";
     var TEMPLATE = module.TEMPLATE = "template";
     var SHARED_FOLDERS = module.SHARED_FOLDERS = "sharedFolders";
+    var SHARED_FOLDERS_TEMP = module.SHARED_FOLDERS_TEMP = "sharedFoldersTemp"; // Maybe deleted or new password
+    var FILES_DATA = module.FILES_DATA = Constants.storageKey;
+    var OLD_FILES_DATA = module.OLD_FILES_DATA = Constants.oldStorageKey;
 
     // Create untitled documents when no name is given
     var getLocaleDate = function () {
@@ -29,14 +32,98 @@ define([
         return name;
     };
 
+    var createCryptor = module.createCryptor = function (key) {
+        var cryptor = {};
+        if (!key) {
+            cryptor.encrypt = function (x) { return x; };
+            cryptor.decrypt = function (x) { return x; };
+            return cryptor;
+        }
+        try {
+            var c = Crypto.createEncryptor(key);
+            cryptor.encrypt = function (href) {
+                // Never encrypt blob href, they are always read-only
+                if (href.slice(0,7) === '/file/#') { return href; }
+                return c.encrypt(href);
+            };
+            cryptor.decrypt = c.decrypt;
+        } catch (e) {
+            console.error(e);
+        }
+        return cryptor;
+    };
+    module.getHref = function (pad, cryptor) {
+        if (pad.href && pad.href.indexOf('#') !== -1) {
+            // Href exists and is not encrypted: return href
+            return pad.href;
+        }
+        if (pad.href) {
+            // Href exists and is encrypted
+            var d = cryptor.decrypt(pad.href);
+            // If we can decrypt, return the decrypted value, otherwise continue and return roHref
+            if (d && d.indexOf('#') !== -1) {
+                return d;
+            }
+        }
+        return pad.roHref;
+    };
+
+    module.reencrypt = function (oldKey, newKey, obj) {
+        if (!obj) { return void console.error("Nothing to reencrypt"); }
+        var oldCryptor = createCryptor(oldKey);
+        var newCryptor = createCryptor(newKey);
+        Object.keys(obj[FILES_DATA]).forEach(function (id) {
+            var data = obj[FILES_DATA][id] || {};
+            // If this pad has a visible href, encrypt it
+            // "&& data.roHref" is here to make sure this is not a "file"
+            if (data.href && data.roHref && !data.fileType) {
+                var _href = (data.href && data.href.indexOf('#') === -1) ? oldCryptor.decrypt(data.href) : data.href;
+                if (!_href) { return; }
+                data.href = newCryptor.encrypt(_href);
+            }
+        });
+        Object.keys(obj[SHARED_FOLDERS] || {}).forEach(function (id) {
+            var data = obj[SHARED_FOLDERS][id] || {};
+            // If this folder has a visible href, encrypt it
+            if (data.href) {
+                var _href = (data.href && data.href.indexOf('#') === -1) ? oldCryptor.decrypt(data.href) : data.href;
+                if (!_href) { return; }
+                data.href = newCryptor.encrypt(_href);
+            }
+        });
+        Object.keys(obj[SHARED_FOLDERS_TEMP] || {}).forEach(function (id) {
+            var data = obj[SHARED_FOLDERS_TEMP][id] || {};
+            // If this folder has a visible href, encrypt it
+            if (data.href) {
+                var _href = (data.href && data.href.indexOf('#') === -1) ? oldCryptor.decrypt(data.href) : data.href;
+                if (!_href) { return; }
+                data.href = newCryptor.encrypt(_href);
+            }
+        });
+    };
+
     module.init = function (files, config) {
         var exp = {};
+
+        exp.cryptor = createCryptor(config.editKey);
+
+        exp.setReadOnly = function (state, key) {
+            config.editKey = key;
+            exp.cryptor = createCryptor(key);
+            exp.cryptor.k = Math.random();
+            exp.readOnly = state;
+            if (exp._setReadOnly) {
+                // Change outer
+                exp._setReadOnly(state);
+            }
+        };
+        exp.readOnly = config.readOnly;
+        exp.reencrypt = module.reencrypt;
+
         exp.getDefaultName = module.getDefaultName;
 
         var sframeChan = config.sframeChan;
 
-        var FILES_DATA = module.FILES_DATA = exp.FILES_DATA = Constants.storageKey;
-        var OLD_FILES_DATA = module.OLD_FILES_DATA = exp.OLD_FILES_DATA = Constants.oldStorageKey;
         var NEW_FOLDER_NAME = Messages.fm_newFolder || 'New folder';
         var NEW_FILE_NAME = Messages.fm_newFile || 'New file';
 
@@ -45,6 +132,9 @@ define([
         exp.TRASH = TRASH;
         exp.TEMPLATE = TEMPLATE;
         exp.SHARED_FOLDERS = SHARED_FOLDERS;
+        exp.SHARED_FOLDERS_TEMP = SHARED_FOLDERS_TEMP;
+        exp.FILES_DATA = FILES_DATA;
+        exp.OLD_FILES_DATA = OLD_FILES_DATA;
 
         var sharedFolder = exp.sharedFolder = config.sharedFolder;
         exp.id = config.id;
@@ -90,6 +180,10 @@ define([
             a[TEMPLATE] = [];
             a[SHARED_FOLDERS] = {};
             return a;
+        };
+
+        var getHref = exp.getHref = function (pad) {
+            return module.getHref(pad, exp.cryptor);
         };
 
         var type = function (dat) {
@@ -205,9 +299,25 @@ define([
         };
 
         // Get data from AllFiles (Cryptpad_RECENTPADS)
-        var getFileData = exp.getFileData = function (file) {
+        var getFileData = exp.getFileData = function (file, editable) {
             if (!file) { return; }
-            return files[FILES_DATA][file] || {};
+            var data = files[FILES_DATA][file] || {};
+            if (!editable) {
+                data = JSON.parse(JSON.stringify(data));
+                if (data.href && data.href.indexOf('#') === -1) {
+                    // Encrypted href: decrypt it if we can, otherwise remove it
+                    if (config.editKey) {
+                        try {
+                            data.href = exp.cryptor.decrypt(data.href);
+                        } catch (e) {
+                            delete data.href;
+                        }
+                    } else {
+                        delete data.href;
+                    }
+                }
+            }
+            return data;
         };
 
         exp.getFolderData = function (folder) {
@@ -379,11 +489,17 @@ define([
             return Util.deduplicateString(ret);
         };
 
-        var getIdFromHref = exp.getIdFromHref = function (href) {
+        var getIdFromHref = exp.getIdFromHref = function (_href) {
             var result;
+            var noPassword = function (str) {
+                if (!str) { return; }
+                var parsed = Hash.parsePadUrl(str);
+                return parsed.getUrl().replace(/\/p\/?/, '/');
+            };
+            var href = noPassword(_href);
             getFiles([FILES_DATA]).some(function (id) {
-                if (files[FILES_DATA][id].href === href ||
-                    files[FILES_DATA][id].roHref === href) {
+                if (noPassword(getHref(files[FILES_DATA][id])) === href ||
+                    noPassword(files[FILES_DATA][id].roHref) === href) {
                     result = id;
                     return true;
                 }
@@ -391,11 +507,17 @@ define([
             return result;
         };
 
-        exp.getSFIdFromHref = function (href) {
+        exp.getSFIdFromHref = function (_href) {
             var result;
+            var noPassword = function (str) {
+                if (!str) { return; }
+                var parsed = Hash.parsePadUrl(str);
+                return parsed.getUrl().replace(/\/p\/?/, '/');
+            };
+            var href = noPassword(_href);
             getFiles([SHARED_FOLDERS]).some(function (id) {
-                if (files[SHARED_FOLDERS][id].href === href ||
-                    files[SHARED_FOLDERS][id].roHref === href) {
+                if (noPassword(getHref(files[SHARED_FOLDERS][id])) === href ||
+                    noPassword(files[SHARED_FOLDERS][id].roHref) === href) {
                     result = id;
                     return true;
                 }

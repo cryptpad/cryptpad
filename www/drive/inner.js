@@ -3,6 +3,7 @@ define([
     '/common/toolbar3.js',
     '/common/drive-ui.js',
     '/common/common-util.js',
+    '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/common-feedback.js',
     '/bower_components/nthen/index.js',
@@ -19,6 +20,7 @@ define([
     Toolbar,
     DriveUI,
     Util,
+    Hash,
     UI,
     Feedback,
     nThen,
@@ -41,14 +43,30 @@ define([
         var oldIds = Object.keys(folders);
         nThen(function (waitFor) {
             Object.keys(drive.sharedFolders).forEach(function (fId) {
+                var sfData = drive.sharedFolders[fId] || {};
+                var href = (sfData.href && sfData.href.indexOf('#') !== -1) ? sfData.href : sfData.roHref;
+                var parsed = Hash.parsePadUrl(href);
+                var secret = Hash.getSecrets('drive', parsed.hash, sfData.password);
                 sframeChan.query('Q_DRIVE_GETOBJECT', {
                     sharedFolder: fId
                 }, waitFor(function (err, newObj) {
+                    if (!APP.loggedIn && APP.newSharedFolder) {
+                        if (!newObj || !Object.keys(newObj).length) {
+                            // Empty anon drive: deleted
+                            var msg = Messages.deletedError + '<br>' + Messages.errorRedirectToHome;
+                            setTimeout(function () { UI.errorLoadingScreen(msg, false, function () {}); });
+                            APP.newSharedFolder = null;
+                        }
+                    }
                     folders[fId] = folders[fId] || {};
                     copyObjectValue(folders[fId], newObj);
+                    folders[fId].readOnly = !secret.keys.secondaryKey;
                     if (manager && oldIds.indexOf(fId) === -1) {
-                        manager.addProxy(fId, folders[fId]);
+                        manager.addProxy(fId, { proxy: folders[fId] }, null, secret.keys.secondaryKey);
                     }
+                    var readOnly = !secret.keys.editKeyStr;
+                    if (!manager || !manager.folders[fId]) { return; }
+                    manager.folders[fId].userObject.setReadOnly(readOnly, secret.keys.secondaryKey);
                 }));
             });
         }).nThen(function () {
@@ -60,7 +78,10 @@ define([
             copyObjectValue(obj, newObj);
             if (!APP.loggedIn && APP.newSharedFolder) {
                 obj.drive.sharedFolders = obj.drive.sharedFolders || {};
-                obj.drive.sharedFolders[APP.newSharedFolder] = {};
+                obj.drive.sharedFolders[APP.newSharedFolder] = {
+                    href: APP.anonSFHref,
+                    password: APP.anonSFPassword
+                };
             }
             cb();
         });
@@ -95,6 +116,8 @@ define([
             }));
             SFCommon.create(waitFor(function (c) { common = c; }));
         }).nThen(function (waitFor) {
+            $('#cp-app-drive-connection-state').text(Messages.disconnected);
+            $('#cp-app-drive-edition-state').text(Messages.readonly);
             var privReady = Util.once(waitFor());
             var metadataMgr = common.getMetadataMgr();
             if (JSON.stringify(metadataMgr.getPrivateData()) !== '{}') {
@@ -119,6 +142,8 @@ define([
             var privateData = metadataMgr.getPrivateData();
             if (privateData.newSharedFolder) {
                 APP.newSharedFolder = privateData.newSharedFolder;
+                APP.anonSFHref = privateData.anonSFHref;
+                APP.anonSFPassword = privateData.password;
             }
 
             var sframeChan = common.getSframeChannel();
@@ -198,7 +223,7 @@ define([
             };
 
             // Add a "Burn this drive" button
-            if (!APP.loggedIn) {
+            if (!APP.loggedIn && !APP.readOnly) {
                 APP.$burnThisDrive = common.createButton(null, true).click(function () {
                     UI.confirm(Messages.fm_burnThisDrive, function (yes) {
                         if (!yes) { return; }

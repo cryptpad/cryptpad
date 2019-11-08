@@ -118,6 +118,16 @@ define([], function () {
 #cp-loading-password-prompt .cp-password-form button:hover {
     background-color: #326599;
 }
+#cp-loading-password-prompt ::placeholder {
+    color: #d9d9d9;
+    opacity: 1;
+}
+#cp-loading-password-prompt :-ms-input-placeholder {
+    color: #d9d9d9;
+}
+#cp-loading-password-prompt ::-ms-input-placeholder {
+    color: #d9d9d9;
+}
 #cp-loading .cp-loading-spinner-container {
   position: relative;
   height: 100px;

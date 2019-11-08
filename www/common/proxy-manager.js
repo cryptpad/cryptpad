@@ -2,9 +2,10 @@ define([
     '/common/userObject.js',
     '/common/common-util.js',
     '/common/common-hash.js',
+    '/common/outer/sharedfolder.js',
     '/customize/messages.js',
     '/bower_components/nthen/index.js',
-], function (UserObject, Util, Hash, Messages, nThen) {
+], function (UserObject, Util, Hash, SF, Messages, nThen) {
 
 
     var getConfig = function (Env) {
@@ -14,29 +15,56 @@ define([
     };
 
     // Add a shared folder to the list
-    var addProxy = function (Env, id, proxy, leave) {
+    var addProxy = function (Env, id, lm, leave, editKey) {
         var cfg = getConfig(Env);
         cfg.sharedFolder = true;
         cfg.id = id;
-        var userObject = UserObject.init(proxy, cfg);
+        cfg.editKey = editKey;
+        cfg.rt = lm.realtime;
+        cfg.readOnly = Boolean(!editKey);
+        var userObject = UserObject.init(lm.proxy, cfg);
         if (userObject.fixFiles) {
             // Only in outer
             userObject.fixFiles();
         }
+        var proxy = lm.proxy;
+        if (proxy.metadata && proxy.metadata.title) {
+            var sf = Env.user.proxy[UserObject.SHARED_FOLDERS][id];
+            if (sf) {
+                sf.lastTitle = proxy.metadata.title;
+            }
+        }
         Env.folders[id] = {
-            proxy: proxy,
+            proxy: lm.proxy,
             userObject: userObject,
             leave: leave
         };
         return userObject;
     };
 
-    // TODO: Remove a shared folder from the list
     var removeProxy = function (Env, id) {
         var f = Env.folders[id];
         if (!f) { return; }
         f.leave();
         delete Env.folders[id];
+    };
+
+    // Password may have changed
+    var deprecateProxy = function (Env, id, channel) {
+        if (Env.user.userObject.readOnly) {
+            // In a read-only team, we can't deprecate a shared folder
+            // Use a empty object with a deprecated flag...
+            var lm = { proxy: { deprecated: true } };
+            removeProxy(Env, id);
+            addProxy(Env, id, lm, function () {});
+            return void Env.Store.refreshDriveUI();
+        }
+        if (channel) { Env.unpinPads([channel], function () {}); }
+        Env.user.userObject.deprecateSharedFolder(id);
+        removeProxy(Env, id);
+        if (Env.Store && Env.Store.refreshDriveUI) {
+            Env.Store.refreshDriveUI();
+        }
     };
 
     /*
@@ -80,11 +108,16 @@ define([
 
     // Return files data objects associated to a channel for setPadTitle
     // All occurences are returned, in drive or shared folders
-    var findChannel = function (Env, channel) {
+    // If "editable" is true, the data returned is a proxy, otherwise
+    // it's a cloned object (NOTE: href should never be edited directly)
+    var findChannel = function (Env, channel, editable) {
         var ret = [];
         Env.user.userObject.findChannels([channel], true).forEach(function (id) {
-            var data = Env.user.proxy[UserObject.SHARED_FOLDERS][id] ||
-                        Env.user.userObject.getFileData(id);
+            // Check in shared folders, then clone if needed
+            var data = Env.user.proxy[UserObject.SHARED_FOLDERS][id];
+            if (data && !editable) { data = JSON.parse(JSON.stringify(data)); }
+            // If it's not a shared folder, check the pads
+            if (!data) { data = Env.user.userObject.getFileData(id, editable); }
             ret.push({
                 data: data,
                 userObject: Env.user.userObject
@@ -94,7 +127,7 @@ define([
             Env.folders[fId].userObject.findChannels([channel]).forEach(function (id) {
                 ret.push({
                     fId: fId,
-                    data: Env.folders[fId].userObject.getFileData(id),
+                    data: Env.folders[fId].userObject.getFileData(id, editable),
                     userObject: Env.folders[fId].userObject
                 });
             });
@@ -102,6 +135,8 @@ define([
         return ret;
     };
     // Return files data objects associated to a given href for setPadAttribute...
+    // If "editable" is true, the data returned is a proxy, otherwise
+    // it's a cloned object (NOTE: href should never be edited directly)
     var findHref = function (Env, href) {
         var ret = [];
         var id = Env.user.userObject.getIdFromHref(href);
@@ -156,15 +191,32 @@ define([
         return ret;
     };
 
-    var _getFileData = function (Env, id) {
+    var _getFileData = function (Env, id, editable) {
         var userObjects = _getUserObjects(Env);
         var data = {};
         userObjects.some(function (uo) {
-            data = uo.getFileData(id);
-            if (Object.keys(data).length) { return true; }
+            data = uo.getFileData(id, editable);
+            if (data && Object.keys(data).length) { return true; }
         });
         return data;
     };
+
+    var getSharedFolderData = function (Env, id) {
+        if (!Env.folders[id]) { return {}; }
+        var obj = Env.folders[id].proxy.metadata || {};
+        for (var k in Env.user.proxy[UserObject.SHARED_FOLDERS][id] || {}) {
+            var data = JSON.parse(JSON.stringify(Env.user.proxy[UserObject.SHARED_FOLDERS][id][k]));
+            if (k === "href" && data.indexOf('#') === -1) {
+                try {
+                    data = Env.user.userObject.cryptor.decrypt(data);
+                } catch (e) {}
+            }
+            if (k === "href" && data.indexOf('#') === -1) { data = undefined; }
+            obj[k] = data;
+        }
+        return obj;
+    };
+
 
     // Transform an absolute path into a path relative to the correct shared folder
     var _resolvePath = function (Env, path) {
@@ -279,11 +331,6 @@ define([
                 filesData[f] = userObject.getFileData(f);
             });
 
-            // TODO RO
-            // Encrypt  or decrypt edit link here
-            // filesData.forEach(function (d) { d.href = encrypt(d.href); });
-
-
             data.push({
                 el: el,
                 data: filesData,
@@ -297,6 +344,21 @@ define([
         });
 
         return data;
+    };
+
+    var getEditHash = function (Env, channel) {
+        var res = findChannel(Env, channel);
+        var stronger;
+        res.some(function (obj) {
+            if (!obj || !obj.data || !obj.data.href) { return; }
+            var parsed = Hash.parsePadUrl(obj.data.href);
+            var parsedHash = parsed.hashData;
+            if (!parsedHash || parsedHash.mode === 'view') { return; }
+            // We've found an edit hash!
+            stronger = parsed.hash;
+            return true;
+        });
+        return stronger;
     };
 
     /*
@@ -436,7 +498,14 @@ define([
             Env.pinPads([folderData.channel], waitFor());
         }).nThen(function (waitFor) {
             // 1. add the shared folder to our list of shared folders
+            // NOTE: pushSharedFolder will encrypt the href directly in the object if needed
             Env.user.userObject.pushSharedFolder(folderData, waitFor(function (err, folderId) {
+                if (err === "EEXISTS" && folderData.href && folderId) {
+                    var parsed = Hash.parsePadUrl(folderData.href);
+                    var secret = Hash.getSecrets('drive', parsed.hash, folderData.password);
+                    SF.upgrade(secret.channel, secret);
+                    Env.folders[folderId].userObject.setReadOnly(false, secret.keys.secondaryKey);
+                }
                 if (err) {
                     waitFor.abort();
                     return void cb(err);
@@ -449,6 +518,11 @@ define([
 
             // 2b. load the proxy
             Env.loadSharedFolder(id, folderData, waitFor(function (rt, metadata) {
+                if (!rt) {
+                    waitFor.abort();
+                    return void cb({ error: 'EDELETED' });
+                }
+
                 if (!rt.proxy.metadata) { // Creating a new shared folder
                     rt.proxy.metadata = { title: data.name || Messages.fm_newFolder };
                 }
@@ -458,12 +532,55 @@ define([
                     if (metadata.owners) { fData.owners = metadata.owners; }
                     if (metadata.expire) { fData.expire = +metadata.expire; }
                 }
-            }));
+            }), !Boolean(data.folderData));
         }).nThen(function () {
             Env.onSync(function () {
                 cb(id);
             });
         });
+    };
+
+    var _restoreSharedFolder = function (Env, _data, cb) {
+        var fId = _data.id;
+        var newPassword = _data.password;
+        var temp = Util.find(Env, ['user', 'proxy', UserObject.SHARED_FOLDERS_TEMP]);
+        var data = temp && temp[fId];
+        if (!data) { return void cb({ error: 'EINVAL' }); }
+        if (!Env.Store) { return void cb({ error: 'ESTORE' }); }
+        var href = Env.user.userObject.getHref ? Env.user.userObject.getHref(data) : data.href;
+        var isNew = false;
+        nThen(function (waitFor) {
+            Env.Store.isNewChannel(null, {
+                href: href,
+                password: newPassword
+            }, waitFor(function (obj) {
+                if (!obj || obj.error) {
+                    isNew = false;
+                    return;
+                }
+                isNew = obj.isNew;
+            }));
+        }).nThen(function () {
+            if (isNew) {
+                return void cb({ error: 'ENOTFOUND' });
+            }
+            var parsed = Hash.parsePadUrl(href);
+            var secret = Hash.getSecrets(parsed.type, parsed.hash, newPassword);
+            data.password = newPassword;
+            data.channel = secret.channel;
+            if (secret.keys.editKeyStr) {
+                data.href = '/drive/#'+Hash.getEditHashFromKeys(secret);
+            }
+            data.roHref = '/drive/#'+Hash.getViewHashFromKeys(secret);
+            _addSharedFolder(Env, {
+                path: ['root'],
+                folderData: data,
+            }, function () {
+                delete temp[fId];
+                Env.onSync(cb);
+            });
+        });
+
     };
 
     // convert a folder to a Shared Folder
@@ -572,6 +689,13 @@ define([
             return void cb({error: 'E_NOTFOUND'});
         }
 
+        // Deleted or password changed for a shared folder
+        if (data.paths.length === 1 && data.paths[0][0] === UserObject.SHARED_FOLDERS_TEMP) {
+            var temp = Util.find(Env, ['user', 'proxy', UserObject.SHARED_FOLDERS_TEMP]);
+            delete temp[data.paths[0][1]];
+            return void Env.onSync(cb);
+        }
+
         var toUnpin = [];
         var ownedRemoved;
         nThen(function (waitFor)  {
@@ -668,6 +792,7 @@ define([
             var el = Env.user.userObject.find(resolved.path);
             if (Env.user.userObject.isSharedFolder(el) && Env.folders[el]) {
                 Env.folders[el].proxy.metadata.title = data.newName;
+                Env.user.proxy[UserObject.SHARED_FOLDERS][el].lastTitle = data.value;
                 return void cb();
             }
         }
@@ -701,6 +826,8 @@ define([
                 _addFolder(Env, data, cb); break;
             case 'addSharedFolder':
                 _addSharedFolder(Env, data, cb); break;
+            case 'restoreSharedFolder':
+                _restoreSharedFolder(Env, data, cb); break;
             case 'convertFolderToSharedFolder':
                 _convertFolderToSharedFolder(Env, data, cb); break;
             case 'delete':
@@ -722,6 +849,9 @@ define([
         if (!data.attr || !data.attr.trim()) { return void cb("E_INVAL_ATTR"); }
         var sfId = Env.user.userObject.getSFIdFromHref(data.href);
         if (sfId) {
+            if (data.attr === "href") {
+                data.value = Env.user.userObject.cryptor.encrypt(data.value);
+            }
             Env.user.proxy[UserObject.SHARED_FOLDERS][sfId][data.attr] = data.value;
         }
         var datas = findHref(Env, data.href);
@@ -927,16 +1057,20 @@ define([
             pinPads: data.pin,
             unpinPads: data.unpin,
             onSync: data.onSync,
+            Store: data.Store,
             loadSharedFolder: data.loadSharedFolder,
             cfg: uoConfig,
             edPublic: data.edPublic,
             settings: data.settings,
             user: {
                 proxy: proxy,
-                userObject: UserObject.init(proxy, uoConfig)
             },
             folders: {}
         };
+        uoConfig.removeProxy = function (id) {
+            removeProxy(Env, id);
+        };
+        Env.user.userObject = UserObject.init(proxy, uoConfig);
 
         var callWithEnv = function (f) {
             return function () {
@@ -949,6 +1083,7 @@ define([
             // Manager
             addProxy: callWithEnv(addProxy),
             removeProxy: callWithEnv(removeProxy),
+            deprecateProxy: callWithEnv(deprecateProxy),
             addSharedFolder: callWithEnv(_addSharedFolder),
             // Drive
             command: callWithEnv(onCommand),
@@ -956,12 +1091,14 @@ define([
             setPadAttribute: callWithEnv(setPadAttribute),
             getTagsList: callWithEnv(getTagsList),
             getSecureFilesList: callWithEnv(getSecureFilesList),
+            getSharedFolderData: callWithEnv(getSharedFolderData),
             // Store
             getChannelsList: callWithEnv(getChannelsList),
             addPad: callWithEnv(addPad),
             // Tools
             findChannel: callWithEnv(findChannel),
             findHref: callWithEnv(findHref),
+            getEditHash: callWithEnv(getEditHash),
             user: Env.user,
             folders: Env.folders
         };
@@ -1015,6 +1152,15 @@ define([
                 name: data.name,
                 owned: data.owned,
                 password: data.password
+            }
+        }, cb);
+    };
+    var restoreSharedFolderInner = function (Env, fId, password, cb) {
+        return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
+            cmd: "restoreSharedFolder",
+            data: {
+                id: fId,
+                password: password
             }
         }, cb);
     };
@@ -1125,15 +1271,6 @@ define([
         return Env.user.userObject.getOwnedPads(Env.edPublic);
     };
 
-    var getSharedFolderData = function (Env, id) {
-        if (!Env.folders[id]) { return {}; }
-        var obj = Env.folders[id].proxy.metadata || {};
-        for (var k in Env.user.proxy[UserObject.SHARED_FOLDERS][id] || {}) {
-            obj[k] = Env.user.proxy[UserObject.SHARED_FOLDERS][id][k];
-        }
-        return obj;
-    };
-
     var getFolderData = function (Env, path) {
         var resolved = _resolvePath(Env, path);
         if (!resolved || !resolved.userObject) { return {}; }
@@ -1230,6 +1367,7 @@ define([
             emptyTrash: callWithEnv(emptyTrashInner),
             addFolder: callWithEnv(addFolderInner),
             addSharedFolder: callWithEnv(addSharedFolderInner),
+            restoreSharedFolder: callWithEnv(restoreSharedFolderInner),
             convertFolderToSharedFolder: callWithEnv(convertFolderToSharedFolderInner),
             delete: callWithEnv(deleteInner),
             restore: callWithEnv(restoreInner),

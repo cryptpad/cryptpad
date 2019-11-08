@@ -466,6 +466,7 @@
             padding: 0.25em 0.75em;
             margin: 1em;
             background: @drive_info-box-bg;
+            cursor: default;
             span {
                 cursor: pointer;
                 float: right;
@@ -977,6 +978,29 @@
         .cp-app-drive-toolbar-filler {
             flex: 1;
         }
+    }
+
+    #cp-app-drive-edition-state {
+        height: @variables_bar-height;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: lighten(@colortheme_drive-bg, 32%);
+        color: black;
+        font-weight: bold;
+        text-transform: uppercase;
+        cursor: default;
+    }
+    #cp-app-drive-connection-state {
+        height: @variables_bar-height;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #eb675e;
+        color: white;
+        font-weight: bold;
+        text-transform: uppercase;
+        cursor: default;
     }
 }
 

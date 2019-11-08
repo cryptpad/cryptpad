@@ -420,68 +420,6 @@ Version 1
     };
 
     // STORAGE
-    Hash.findWeaker = function (href, channel, recents) {
-        var parsed = parsePadUrl(href);
-        if (!parsed.hash) { return false; }
-        // We can't have a weaker hash if we're already in view mode
-        if (parsed.hashData && parsed.hashData.mode === 'view') { return; }
-        var weaker;
-        Object.keys(recents).some(function (id) {
-            var pad = recents[id];
-            if (pad.href || !pad.roHref) {
-                // This pad has an edit link, so it can't be weaker
-                return;
-            }
-            var p = parsePadUrl(pad.roHref);
-            if (p.type !== parsed.type) { return; } // Not the same type
-            if (p.hash === parsed.hash) { return; } // Same hash, not stronger
-            if (channel !== pad.channel) { return; } // Not the same channel
-
-            var pHash = p.hashData;
-            var parsedHash = parsed.hashData;
-            if (!parsedHash || !pHash) { return; }
-
-            // We don't have stronger/weaker versions of files or users
-            if (pHash.type !== 'pad' && parsedHash.type !== 'pad') { return; }
-
-            if (pHash.version !== parsedHash.version) { return; }
-            if (pHash.mode === 'view' && parsedHash.mode === 'edit') {
-                weaker = pad;
-                return true;
-            }
-            return;
-        });
-        return weaker;
-    };
-    Hash.findStronger = function (href, channel, recents) {
-        var parsed = parsePadUrl(href);
-        if (!parsed.hash) { return false; }
-        var parsedHash = parsed.hashData;
-
-        // We can't have a stronger hash if we're already in edit mode
-        if (!parsedHash || parsedHash.mode === 'edit') { return; }
-
-        // We don't have stronger/weaker versions of files or users
-        if (parsedHash.type !== 'pad') { return; }
-
-        var stronger;
-        Object.keys(recents).some(function (id) {
-            var pad = recents[id];
-
-            // Not the same channel? reject
-            if (channel !== pad.channel) { return; }
-
-            // If this pad doesn't have an edit link, it can't be stronger
-            if (!pad.href || !pad.roHref) { return; }
-
-            // This is a pad with an EDIT href and using the same channel as our target
-            // ==> it is stronger
-            stronger = pad;
-            return true;
-        });
-        return stronger;
-    };
-
     Hash.hrefToHexChannelId = function (href, password) {
         var parsed = Hash.parsePadUrl(href);
         if (!parsed || !parsed.hash) { return; }

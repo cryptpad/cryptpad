@@ -144,7 +144,10 @@ var upload_cancel = function (Env, safeKey, fileSize, cb) {
     var session = Env.getSession(safeKey);
     session.pendingUploadSize = fileSize;
     session.currentUploadSize = 0;
-    if (session.blobstage) { session.blobstage.close(); }
+    if (session.blobstage) {
+        session.blobstage.close();
+        delete session.blobstage;
+    }
 
     var path = makeStagePath(Env, safeKey);
 

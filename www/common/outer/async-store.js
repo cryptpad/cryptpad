@@ -74,7 +74,6 @@ define([
             }).nThen(function () { cb(); });
         };
 
-        // OKTEAM
         Store.get = function (clientId, data, cb) {
             var s = getStore(data.teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
@@ -454,7 +453,7 @@ define([
 
         Store.isNewChannel = function (clientId, data, cb) {
             if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
-            var channelId = Hash.hrefToHexChannelId(data.href, data.password);
+            var channelId = data.channel || Hash.hrefToHexChannelId(data.href, data.password);
             store.anon_rpc.send("IS_NEW_CHANNEL", channelId, function (e, response) {
                 if (e) { return void cb({error: e}); }
                 if (response && response.length && typeof(response[0]) === 'boolean') {
@@ -551,9 +550,9 @@ define([
         };
 
         // Get the metadata for sframe-common-outer
-        Store.getMetadata = function (clientId, data, cb) {
+        Store.getMetadata = function (clientId, app, cb) {
             var disableThumbnails = Util.find(store.proxy, ['settings', 'general', 'disableThumbnails']);
-            var teams = (store.modules['team'] && store.modules['team'].getTeamsData()) || {};
+            var teams = (store.modules['team'] && store.modules['team'].getTeamsData(app)) || {};
             var metadata = {
                 // "user" is shared with everybody via the userlist
                 user: {
@@ -987,17 +986,23 @@ define([
         };
         Store.moveToTrash = function (clientId, data, cb) {
             var href = Hash.getRelativeHref(data.href);
+            var allErrors = true;
             nThen(function (waitFor) {
                 getAllStores().forEach(function (s) {
                     var deleted = s.userObject.forget(href);
                     if (!deleted) { return; }
+                    allErrors = false;
                     var send = s.id ? s.sendEvent : sendDriveEvent;
                     send('DRIVE_CHANGE', {
                         path: ['drive', UserObject.FILES_DATA]
                     }, clientId);
                     onSync(s.id, waitFor());
                 });
-            }).nThen(cb);
+            }).nThen(function () {
+                cb({
+                    error: allErrors ? 'FORBIDDEN' : undefined
+                });
+            });
         };
         Store.setPadTitle = function (clientId, data, cb) {
             var title = data.title;
@@ -1045,7 +1050,7 @@ define([
                 if (data.teamId && s.id !== data.teamId) { return; }
                 if (storeLocally && s.id) { return; }
 
-                var res = s.manager.findChannel(channel);
+                var res = s.manager.findChannel(channel, true);
                 if (res.length) {
                     sendTo.push(s.id);
                 }
@@ -1081,7 +1086,7 @@ define([
                     // If all of the weaker ones were in the trash, add the stronger to ROOT
                     obj.userObject.restoreHref(href);
                 }
-                pad.href = href;
+                obj.userObject.setHref(channel, null, href);
             });
 
             // Pads owned by us ("us" can be a user or a team) that are not in our "main" drive
@@ -1266,21 +1271,17 @@ define([
 
         // Get hashes for the share button
         // If we can find a stronger hash
-        Store.getStrongerHash = function (clientId, data, cb) {
-            var found = getAllStores().some(function (s) {
-                var allPads = Util.find(s.proxy, ['drive', 'filesData']) || {};
+        Store.getStrongerHash = function (clientId, data, _cb) {
+            var cb = Util.once(_cb);
 
-                // If we have a stronger version in drive, add it and add a redirect button
-                var stronger = Hash.findStronger(data.href, data.channel, allPads);
+            var found = getAllStores().some(function (s) {
+                var stronger = s.manager.getEditHash(data.channel);
                 if (stronger) {
-                    var parsed2 = Hash.parsePadUrl(stronger.href);
-                    cb(parsed2.hash);
+                    cb(stronger);
                     return true;
                 }
             });
-            if (!found) {
-                cb();
-            }
+            if (!found) { cb(); }
         };
 
         // Universal
@@ -1474,7 +1475,7 @@ define([
                 onMetadataUpdate: function (metadata) {
                     channel.data = metadata || {};
                     getAllStores().forEach(function (s) {
-                        var allData = s.manager.findChannel(data.channel);
+                        var allData = s.manager.findChannel(data.channel, true);
                         allData.forEach(function (obj) {
                             obj.data.owners = metadata.owners;
                             obj.data.atime = +new Date();
@@ -1531,8 +1532,7 @@ define([
         Store.leavePad = function (clientId, data, cb) {
             var channel = channels[data.channel];
             if (!channel || !channel.cpNf) { return void cb ({error: 'EINVAL'}); }
-            channel.cpNf.stop();
-            delete channels[data.channel];
+            Store.dropChannel(data.channel);
             cb();
         };
         Store.sendPadMsg = function (clientId, data, cb) {
@@ -1545,6 +1545,20 @@ define([
                 return void cb();
             }
             channel.sendMessage(msg, clientId, cb);
+        };
+
+        // Unpin and pin the new channel in all team when changing a pad password
+        Store.changePadPasswordPin = function (clientId, data, cb) {
+            var oldChannel = data.oldChannel;
+            var channel = data.channel;
+            nThen(function (waitFor) {
+                getAllStores().forEach(function (s) {
+                    var allData = s.manager.findChannel(channel);
+                    if (!allData.length) { return; }
+                    s.rpc.unpin([oldChannel], waitFor());
+                    s.rpc.pin([channel], waitFor());
+                });
+            }).nThen(cb);
         };
 
         // requestPadAccess is used to check if we have a way to contact the owner
@@ -1640,7 +1654,7 @@ define([
 
                 // Update owners and expire time in the drive
                 getAllStores().forEach(function (s) {
-                    var allData = s.manager.findChannel(data.channel);
+                    var allData = s.manager.findChannel(data.channel, true);
                     var changed = false;
                     allData.forEach(function (obj) {
                         if (Sortify(obj.data.owners) !== Sortify(metadata.owners)) {
@@ -1778,21 +1792,24 @@ define([
                 }
             };
         };
-        Store.loadSharedFolder = function (teamId, id, data, cb) {
+        Store.loadSharedFolder = function (teamId, id, data, cb, isNew) {
             var s = getStore(teamId);
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
-            var rt = SF.load({
+            SF.load({
+                isNew: isNew,
                 network: store.network,
-                store: s
+                store: s,
+                isNewChannel: Store.isNewChannel
             }, id, data, cb);
-            return rt;
         };
-        var loadSharedFolder = function (id, data, cb) {
-            Store.loadSharedFolder(null, id, data, cb);
+        var loadSharedFolder = function (id, data, cb, isNew) {
+            Store.loadSharedFolder(null, id, data, cb, isNew);
         };
         Store.loadSharedFolderAnon = function (clientId, data, cb) {
-            Store.loadSharedFolder(null, data.id, data.data, function () {
-                cb();
+            Store.loadSharedFolder(null, data.id, data.data, function (rt) {
+                cb({
+                    error: rt ? undefined : 'EDELETED'
+                });
             });
         };
         Store.addSharedFolder = function (clientId, data, cb) {
@@ -1804,6 +1821,9 @@ define([
                 }, clientId);
                 cb(id);
             });
+        };
+        Store.updateSharedFolderPassword = function (clientId, data, cb) {
+            SF.updatePassword(Store, data, store.network, cb);
         };
 
         // Drive
@@ -1830,7 +1850,7 @@ define([
         // Clients management
         var driveEventClients = [];
 
-        var dropChannel = function (chanId) {
+        var dropChannel = Store.dropChannel = function (chanId) {
             try {
                 store.messenger.leavePad(chanId);
             } catch (e) { console.error(e); }
@@ -1889,6 +1909,27 @@ define([
             });
         };
         registerProxyEvents = function (proxy, fId) {
+            if (!fId) {
+                // Listen for shared folder password change
+                proxy.on('change', ['drive', UserObject.SHARED_FOLDERS], function (o, n, p) {
+                    if (p.length > 3 && p[3] === 'password') {
+                        var id = p[2];
+                        var data = proxy.drive[UserObject.SHARED_FOLDERS][id];
+                        var href = store.manager.user.userObject.getHref ?
+                                store.manager.user.userObject.getHref(data) : data.href;
+                        var parsed = Hash.parsePadUrl(href);
+                        var secret = Hash.getSecrets(parsed.type, parsed.hash, o);
+                        SF.updatePassword(Store, {
+                            oldChannel: secret.channel,
+                            password: n,
+                            href: href
+                        }, store.network, function () {
+                            console.log('Shared folder password changed');
+                        });
+                        return false;
+                    }
+                });
+            }
             proxy.on('change', [], function (o, n, p) {
                 if (fId) {
                     // Pin the new pads
@@ -2022,6 +2063,15 @@ define([
         /////////////////////// Init /////////////////////////////////////
         //////////////////////////////////////////////////////////////////
 
+        Store.refreshDriveUI = function () {
+            getAllStores().forEach(function (_s) {
+                var send = _s.id ? _s.sendEvent : sendDriveEvent;
+                send('DRIVE_CHANGE', {
+                    path: ['drive', UserObject.FILES_DATA]
+                });
+            });
+        };
+
         var onReady = function (clientId, returned, cb) {
             var proxy = store.proxy;
             var unpin = function (data, cb) {
@@ -2039,7 +2089,8 @@ define([
                 pin: pin,
                 unpin: unpin,
                 loadSharedFolder: loadSharedFolder,
-                settings: proxy.settings
+                settings: proxy.settings,
+                Store: Store
             }, {
                 outer: true,
                 removeOwnedChannel: function (channel, cb) { Store.removeOwnedChannel('', channel, cb); },
@@ -2048,7 +2099,8 @@ define([
                 log: function (msg) {
                     // broadcast to all drive apps
                     sendDriveEvent("DRIVE_LOG", msg);
-                }
+                },
+                rt: store.realtime
             });
             var userObject = store.userObject = manager.user.userObject;
             addSharedFolderHandler();

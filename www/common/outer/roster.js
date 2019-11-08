@@ -14,7 +14,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
                     user0CurveKey: {
                         notifications: "", // required
                         displayName: "", // required
-                        role: "OWNER|ADMIN|MEMBER", // MEMBER if not specified
+                        role: "OWNER|ADMIN|MEMBER|VIEWER", // VIEWER if not specified
                         profile: "",
                         title: ""
                     },
@@ -53,7 +53,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
     };
 
     var isValidRole = function (role) {
-        return ['OWNER', 'ADMIN', 'MEMBER'].indexOf(role) !== -1;
+        return ['OWNER', 'ADMIN', 'MEMBER', 'VIEWER'].indexOf(role) !== -1;
     };
 
     var canAddRole = function (author, role, members) {
@@ -65,8 +65,8 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
 
         // owners can add any valid role they want
         if (authorRole === 'OWNER') { return true; }
-        // admins can add other admins or members
-        if (authorRole === "ADMIN") { return ['ADMIN', 'MEMBER'].indexOf(role) !== -1; }
+        // admins can add other admins or members or viewers
+        if (authorRole === "ADMIN") { return ['ADMIN', 'MEMBER', 'VIEWER'].indexOf(role) !== -1; }
         // (MEMBER, other) can't add anyone of any role
         return false;
     };
@@ -105,7 +105,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         // owners can remove anyone they want
         if (authorRole === 'OWNER') { return true; }
         // admins can remove other admins or members
-        if (authorRole === "ADMIN") { return ["ADMIN", "MEMBER"].indexOf(role) !== -1; }
+        if (authorRole === "ADMIN") { return ["ADMIN", "MEMBER", "VIEWER"].indexOf(role) !== -1; }
         // MEMBERS and non-members cannot remove anyone of any role
         return false;
     };

@@ -95,9 +95,7 @@ define([
                 if (msg.content.isTemplate) {
                     common.sessionStorage.put(Constants.newPadPathKey, ['template'], waitFor());
                 }
-                if (msg.content.password) {
-                    common.sessionStorage.put('newPadPassword', msg.content.password, waitFor());
-                }
+                common.sessionStorage.put('newPadPassword', msg.content.password || '', waitFor());
             }).nThen(function () {
                 todo();
             });

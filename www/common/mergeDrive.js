@@ -27,6 +27,7 @@ define([
             if (parsed) {
                 var proxy = proxyData.proxy;
                 var oldFo = FO.init(parsed.drive, {
+                    readOnly: false,
                     loggedIn: true,
                     outer: true
                 });
@@ -38,7 +39,7 @@ define([
                         var data = oldFo.getFileData(id);
                         var channel = data.channel;
 
-                        var datas = manager.findChannel(channel, true);
+                        var datas = manager.findChannel(channel);
                         // Do not migrate a pad if we already have it, it would create a duplicate
                         // in the drive
                         if (datas.length !== 0) {
@@ -49,7 +50,9 @@ define([
                             // We want to merge an edit pad: check if we have the same channel
                             // but read-only and upgrade it in that case
                             datas.forEach(function (pad) {
-                                if (pad.data && !pad.data.href) { pad.data.href = data.href; }
+                                if (pad.data && !pad.data.href) {
+                                    pad.userObject.setHref(channel, null, data.href);
+                                }
                             });
                             return;
                         }

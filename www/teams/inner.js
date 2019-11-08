@@ -11,6 +11,7 @@ define([
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/proxy-manager.js',
+    '/common/userObject.js',
     '/common/hyperscript.js',
     '/customize/application_config.js',
     '/common/messenger-ui.js',
@@ -32,6 +33,7 @@ define([
     nThen,
     SFCommon,
     ProxyManager,
+    UserObject,
     h,
     AppConfig,
     MessengerUI,
@@ -52,14 +54,30 @@ define([
         var oldIds = Object.keys(folders);
         nThen(function (waitFor) {
             Object.keys(drive.sharedFolders).forEach(function (fId) {
+                var sfData = drive.sharedFolders[fId] || {};
+                var href = UserObject.getHref(sfData, APP.cryptor);
+                var parsed = Hash.parsePadUrl(href);
+                var secret = Hash.getSecrets('drive', parsed.hash, sfData.password);
                 sframeChan.query('Q_DRIVE_GETOBJECT', {
                     sharedFolder: fId
                 }, waitFor(function (err, newObj) {
+                    if (newObj && newObj.deprecated) {
+                        delete folders[fId];
+                        delete drive.sharedFolders[fId];
+                        if (manager && manager.folders) {
+                            delete manager.folders[fId];
+                        }
+                        return;
+                    }
                     folders[fId] = folders[fId] || {};
                     copyObjectValue(folders[fId], newObj);
+                    folders[fId].readOnly = !secret.keys.secondaryKey;
                     if (manager && oldIds.indexOf(fId) === -1) {
-                        manager.addProxy(fId, folders[fId]);
+                        manager.addProxy(fId, { proxy: folders[fId] }, null, secret.keys.secondaryKey);
                     }
+                    var readOnly = !secret.keys.editKeyStr;
+                    if (!manager || !manager.folders[fId]) { return; }
+                    manager.folders[fId].userObject.setReadOnly(readOnly, secret.keys.secondaryKey);
                 }));
             });
         }).nThen(function () {
@@ -69,15 +87,35 @@ define([
     var updateObject = function (sframeChan, obj, cb) {
         sframeChan.query('Q_DRIVE_GETOBJECT', null, function (err, newObj) {
             copyObjectValue(obj, newObj);
-            if (!driveAPP.loggedIn && driveAPP.newSharedFolder) {
-                obj.drive.sharedFolders = obj.drive.sharedFolders || {};
-                obj.drive.sharedFolders[driveAPP.newSharedFolder] = {};
-            }
             cb();
         });
     };
 
     var setEditable = DriveUI.setEditable;
+
+    var closeTeam = function (common, cb) {
+        var sframeChan = common.getSframeChannel();
+        APP.module.execCommand('SUBSCRIBE', null, function () {
+            sframeChan.query('Q_SET_TEAM', null, function (err) {
+                if (err) { return void console.error(err); }
+                if (APP.drive && APP.drive.close) { APP.drive.close(); }
+                $('.cp-toolbar-title-value').text(Messages.type.teams);
+                sframeChan.event('EV_SET_TAB_TITLE', Messages.type.teams);
+                APP.team = null;
+                APP.teamEdPublic = null;
+                APP.drive = null;
+                APP.cryptor = null;
+                APP.buildUI(common);
+                if (APP.usageBar) {
+                    APP.usageBar.stop();
+                    APP.usageBar = null;
+                }
+                if (cb) {
+                    cb(common);
+                }
+            });
+        });
+    };
 
     var mainCategories = {
         'list': [
@@ -93,23 +131,7 @@ define([
     var teamCategories = {
         'back': {
             onClick: function (common) {
-                var sframeChan = common.getSframeChannel();
-                APP.module.execCommand('SUBSCRIBE', null, function () {
-                    sframeChan.query('Q_SET_TEAM', null, function (err) {
-                        if (err) { return void console.error(err); }
-                        if (APP.drive && APP.drive.close) { APP.drive.close(); }
-                        $('.cp-toolbar-title-value').text(Messages.type.teams);
-                        sframeChan.event('EV_SET_TAB_TITLE', Messages.type.teams);
-                        APP.team = null;
-                        APP.teamEdPublic = null;
-                        APP.drive = null;
-                        APP.buildUI(common);
-                        if (APP.usageBar) {
-                            APP.usageBar.stop();
-                            APP.usageBar = null;
-                        }
-                    });
-                });
+                closeTeam(common);
             }
         },
         'drive': [
@@ -242,6 +264,8 @@ define([
     // Team APP
 
     var loadTeam = function (common, id) {
+        var metadataMgr = common.getMetadataMgr();
+        var privateData = metadataMgr.getPrivateData();
         var sframeChan = common.getSframeChannel();
         var proxy = {};
         var folders = {};
@@ -260,13 +284,18 @@ define([
                 $limitContainer.attr('title', Messages.team_quota);
             }, true);
             driveAPP.team = id;
+
+            // Provide secondaryKey
+            var teamData = (privateData.teams || {})[id] || {};
+            driveAPP.readOnly = !teamData.secondaryKey;
             var drive = DriveUI.create(common, {
                 proxy: proxy,
                 folders: folders,
                 updateObject: updateObject,
                 updateSharedFolders: updateSharedFolders,
                 APP: driveAPP,
-                edPublic: APP.teamEdPublic
+                edPublic: APP.teamEdPublic,
+                editKey: teamData.secondaryKey
             });
             APP.drive = drive;
             driveAPP.refresh = drive.refresh;
@@ -306,8 +335,26 @@ define([
     });
 
     var MAX_TEAMS_SLOTS = Constants.MAX_TEAMS_SLOTS;
-    var refreshList = function (common, cb) {
+    var openTeam = function (common, id, team) {
         var sframeChan = common.getSframeChannel();
+        APP.module.execCommand('SUBSCRIBE', id, function () {
+            var t = Messages._getKey('team_title', [Util.fixHTML(team.metadata.name)]);
+            sframeChan.query('Q_SET_TEAM', id, function (err) {
+                if (err) { return void console.error(err); }
+                // Change title
+                $('.cp-toolbar-title-value').text(t);
+                sframeChan.event('EV_SET_TAB_TITLE', t);
+                // Get secondary key
+                var secret = Hash.getSecrets('team', team.hash || team.roHash, team.password);
+                APP.cryptor = UserObject.createCryptor(secret.keys.secondaryKey);
+                // Load data
+                APP.team = id;
+                APP.teamEdPublic = Util.find(team, ['keys', 'drive', 'edPublic']);
+                buildUI(common, true, team.owner);
+            });
+        });
+    };
+    var refreshList = function (common, cb) {
         var content = [];
         APP.module.execCommand('LIST_TEAMS', null, function (obj) {
             if (!obj) { return; }
@@ -343,19 +390,7 @@ define([
                 ]));
                 common.displayAvatar($(avatar), team.metadata.avatar, team.metadata.name);
                 $(btn).click(function () {
-                    APP.module.execCommand('SUBSCRIBE', id, function () {
-                        var t = Messages._getKey('team_title', [Util.fixHTML(team.metadata.name)]);
-                        sframeChan.query('Q_SET_TEAM', id, function (err) {
-                            if (err) { return void console.error(err); }
-                            // Change title
-                            $('.cp-toolbar-title-value').text(t);
-                            sframeChan.event('EV_SET_TAB_TITLE', t);
-                            // Load data
-                            APP.team = id;
-                            APP.teamEdPublic = Util.find(team, ['keys', 'drive', 'edPublic']);
-                            buildUI(common, true, team.owner);
-                        });
-                    });
+                    openTeam(common, id, team);
                 });
             });
             content.push(h('div.cp-team-list-container', list));
@@ -374,7 +409,7 @@ define([
 
         var isOwner = Object.keys(privateData.teams || {}).filter(function (id) {
             return privateData.teams[id].owner;
-        }).length >= Constants.MAX_TEAMS_OWNED; // && !privateData.devMode;
+        }).length >= Constants.MAX_TEAMS_OWNED && !privateData.devMode;
 
         var getWarningBox = function () {
             return h('div.alert.alert-warning', {
@@ -439,6 +474,8 @@ define([
                 h('div#cp-app-drive-tree'),
                 h('div#cp-app-drive-content-container', [
                     h('div#cp-app-drive-toolbar'),
+                    h('div#cp-app-drive-connection-state', {style: "display: none;"}, Messages.disconnected),
+                    h('div#cp-app-drive-edition-state', {style: "display: none;"}, Messages.readonly),
                     h('div#cp-app-drive-content', {tabindex:2})
                 ])
             ])
@@ -462,7 +499,7 @@ define([
         });
     };
 
-    var ROLES = ['MEMBER', 'ADMIN', 'OWNER'];
+    var ROLES = ['VIEWER', 'MEMBER', 'ADMIN', 'OWNER'];
     var describeUser = function (common, curvePublic, data, icon) {
         APP.module.execCommand('DESCRIBE_USER', {
             teamId: APP.team,
@@ -500,10 +537,11 @@ define([
         var actions = h('span.cp-team-member-actions');
         var $actions = $(actions);
         var isMe = me && me.curvePublic === data.curvePublic;
-        var myRole = me ? (ROLES.indexOf(me.role) || 0) : -1;
-        var theirRole = ROLES.indexOf(data.role) || 0;
+        var myRole = me ? (ROLES.indexOf(me.role) || 1) : -1;
+        var theirRole = ROLES.indexOf(data.role);
+        var ADMIN = ROLES.indexOf('ADMIN');
         // If they're an admin and I am an owner, I can promote them to owner
-        if (!isMe && myRole > theirRole && theirRole === 1 && !data.pending) {
+        if (!isMe && myRole > theirRole && theirRole === ADMIN && !data.pending) {
             var promoteOwner = h('span.fa.fa-angle-double-up', {
                 title: Messages.team_rosterPromoteOwner
             });
@@ -525,28 +563,28 @@ define([
             });
             $actions.append(promoteOwner);
         }
-        // If they're a member and I have a higher role than them, I can promote them to admin
-        if (!isMe && myRole > theirRole && theirRole === 0 && !data.pending) {
+        // If they're a viewer/member and I have a higher role than them, I can promote them to admin
+        if (!isMe && myRole >= ADMIN && theirRole < ADMIN && !data.pending) {
             var promote = h('span.fa.fa-angle-double-up', {
                 title: Messages.team_rosterPromote
             });
             $(promote).click(function () {
                 $(promote).hide();
                 describeUser(common, data.curvePublic, {
-                    role: 'ADMIN'
+                    role: ROLES[theirRole + 1]
                 }, promote);
             });
             $actions.append(promote);
         }
         // If I'm not a member and I have an equal or higher role than them, I can demote them
         // (if they're not already a MEMBER)
-        if (myRole >= theirRole && theirRole > 0 && !data.pending) {
+        if (myRole >= theirRole && myRole >= ADMIN && theirRole > 0 && !data.pending) {
             var demote = h('span.fa.fa-angle-double-down', {
                 title: Messages.team_rosterDemote
             });
             $(demote).click(function () {
                 var todo = function () {
-                    var role = ROLES[theirRole - 1] || 'MEMBER';
+                    var role = ROLES[theirRole - 1] || 'VIEWER';
                     $(demote).hide();
                     describeUser(common, data.curvePublic, {
                         role: role
@@ -560,13 +598,13 @@ define([
                 }
                 todo();
             });
-            if (!(isMe && myRole === 2 && !otherOwners)) {
+            if (!(isMe && myRole === 3 && !otherOwners)) {
                 $actions.append(demote);
             }
         }
-        // If I'm not a member and I have an equal or higher role than them, I can remove them
+        // If I'm at least an admin and I have an equal or higher role than them, I can remove them
         // Note: we can't remove owners, we have to demote them first
-        if (!isMe && myRole > 0 && myRole >= theirRole && theirRole !== 2) {
+        if (!isMe && myRole >= ADMIN && myRole >= theirRole && theirRole !== ROLES.indexOf('OWNER')) {
             var remove = h('span.fa.fa-times', {
                 title: Messages.team_rosterKick
             });
@@ -632,6 +670,12 @@ define([
         }).map(function (k) {
             return makeMember(common, roster[k], me);
         });
+        var viewers = Object.keys(roster).filter(function (k) {
+            if (roster[k].pending) { return; }
+            return roster[k].role === "VIEWER";
+        }).map(function (k) {
+            return makeMember(common, roster[k], me);
+        });
         var pending = Object.keys(roster).filter(function (k) {
             if (!roster[k].pending) { return; }
             return roster[k].role === "MEMBER" || !roster[k].role;
@@ -666,7 +710,7 @@ define([
             $header.append(invite);
         }
 
-        if (me && (me.role === 'ADMIN' || me.role === 'MEMBER')) {
+        if (me && (me.role !== 'OWNER')) {
             var leave = h('button.btn.btn-danger', Messages.team_leaveButton);
             $(leave).click(function () {
                 UI.confirm(Messages.team_leaveConfirm, function (yes) {
@@ -683,6 +727,58 @@ define([
             $header.append(leave);
         }
 
+        var table = h('button.btn.btn-primary', Messages.teams_table);
+        $(table).click(function (e) {
+            e.stopPropagation();
+            var $blockContainer = UIElements.createModal({
+                id: 'cp-teams-roster-dialog',
+            }).show();
+
+            var makeRow = function (arr, first) {
+                return arr.map(function (val) {
+                    return h(first ? 'th' : 'td', val);
+                });
+            };
+            // Global rights
+            var rows = [];
+            var firstRow = ['', Messages.share_linkView, Messages.share_linkEdit,
+                                Messages.teams_table_admins, Messages.teams_table_owners];
+            rows.push(h('tr', makeRow(firstRow, true)));
+            rows.push(h('tr', makeRow([Messages.team_viewers, 'x', '', '', ''])));
+            rows.push(h('tr', makeRow([Messages.team_members, 'x', 'x', '', ''])));
+            rows.push(h('tr', makeRow([Messages.team_admins, 'x', 'x', 'x', ''])));
+            rows.push(h('tr', makeRow([Messages.team_owner, 'x', 'x', 'x', 'x'])));
+            var t = h('table.cp-teams-generic', rows);
+
+            var content = [
+                h('h4', Messages.teams_table_generic),
+                h('p', Messages.teams_table_genericHint),
+                t
+            ];
+
+            APP.module.execCommand('GET_EDITABLE_FOLDERS', {
+                teamId: APP.team
+            }, function (arr) {
+                console.log(arr);
+                if (!Array.isArray(arr) || !arr.length) {
+                    return void $blockContainer.find('.cp-modal').append(content);
+                }
+                content.push(h('h4', Messages.teams_table_specific));
+                content.push(h('p', Messages.teams_table_specificHint));
+                var paths = arr.map(function (obj) {
+                    obj.path.push(obj.name);
+                    return h('li', obj.path.join('/'));
+                });
+                content.push(h('ul', paths));
+                var rows = [];
+                rows.push(h('tr', makeRow(firstRow, true)));
+                rows.push(h('tr', makeRow([Messages.team_viewers, 'x', 'x', '', ''])));
+                content.push(h('table', rows));
+                $blockContainer.find('.cp-modal').append(content);
+            });
+        });
+        $header.append(table);
+
         var noPending = pending.length ? '' : '.cp-hidden';
 
         return [
@@ -693,6 +789,8 @@ define([
             h('div', admins),
             h('h3', Messages.team_members),
             h('div', members),
+            h('h3', Messages.team_viewers || 'VIEWERS'),
+            h('div', viewers),
             h('h3'+noPending, Messages.team_pending),
             h('div'+noPending, pending)
         ];
@@ -716,7 +814,8 @@ define([
             common.setTeamChat(obj.channel);
             MessengerUI.create($(container), common, {
                 chat: $('.cp-team-cat-chat'),
-                team: true
+                team: true,
+                readOnly: obj.readOnly
             });
             cb(content);
         });
@@ -880,6 +979,21 @@ define([
         ]);
     }, true);
 
+    var redrawTeam = function (common) {
+        if (!APP.team) { return; }
+        var teamId = APP.team;
+        APP.module.execCommand('LIST_TEAMS', null, function (obj) {
+            if (!obj) { return; }
+            if (obj.error) { return void console.error(obj.error); }
+            var team = obj[teamId];
+            if (!team) { return; }
+            closeTeam(common, function () {
+                openTeam(common, teamId, team);
+            });
+        });
+    };
+
+
     var main = function () {
         var common;
         var readOnly;
@@ -911,9 +1025,6 @@ define([
             common.setTabTitle(Messages.type.teams);
 
             // Drive data
-            if (privateData.newSharedFolder) {
-                driveAPP.newSharedFolder = privateData.newSharedFolder;
-            }
             driveAPP.disableSF = !privateData.enableSF && AppConfig.disableSharedFolders;
 
             // Toolbar
@@ -947,6 +1058,10 @@ define([
                     if (Number(APP.team) === Number(data)) {
                         redrawRoster(common);
                     }
+                    return;
+                }
+                if (ev === 'ROSTER_CHANGE_RIGHTS') {
+                    redrawTeam(common);
                     return;
                 }
             };

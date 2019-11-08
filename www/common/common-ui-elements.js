@@ -79,8 +79,10 @@ define([
                     waitFor.abort();
                     return void cb(err || 'EEMPTY');
                 }
-                delete val.owners;
-                delete val.expire;
+                if (!val.fileType) {
+                    delete val.owners;
+                    delete val.expire;
+                }
                 Util.extend(data, val);
                 if (data.href) { data.href = base + data.href; }
                 if (data.roHref) { data.roHref = base + data.roHref; }
@@ -434,6 +436,7 @@ define([
                 } else {
                     Object.keys(priv.teams || {}).some(function (id) {
                         var team = priv.teams[id] || {};
+                        if (team.viewer) { return; }
                         if (data.owners.indexOf(team.edPublic) === -1) { return; }
                         owned = id;
                         return true;
@@ -492,7 +495,7 @@ define([
                 data: _owners,
                 large: true
             }, function () {});
-            if (_ownersGrid) {
+            if (_ownersGrid && Object.keys(_owners).length) {
                 $d.append(_ownersGrid.div);
             } else {
                 $d.append([
@@ -548,13 +551,17 @@ define([
                     $d.append(password);
                 }
 
-                if (!data.noEditPassword && owned && parsed.hashData.type === 'pad' && parsed.type !== "sheet") { // FIXME SHEET fix password change for sheets
+                if (!data.noEditPassword && owned && parsed.type !== "sheet") { // FIXME SHEET fix password change for sheets
                     var sframeChan = common.getSframeChannel();
+
+                    var isFile = parsed.hashData.type === 'file';
+                    var isSharedFolder = parsed.type === 'drive';
+
                     var changePwTitle = Messages.properties_changePassword;
-                    var changePwConfirm = Messages.properties_confirmChange;
+                    var changePwConfirm = isFile ? Messages.properties_confirmChangeFile : Messages.properties_confirmChange;
                     if (!hasPassword) {
                         changePwTitle = Messages.properties_addPassword;
-                        changePwConfirm = Messages.properties_confirmNew;
+                        changePwConfirm = isFile ? Messages.properties_confirmNewFile : Messages.properties_confirmNew;
                     }
                     $('<label>', {'for': 'cp-app-prop-change-password'})
                         .text(changePwTitle).appendTo($d);
@@ -567,23 +574,58 @@ define([
                         newPassword,
                         passwordOk
                     ]);
+                    var pLocked = false;
                     $(passwordOk).click(function () {
                         var newPass = $(newPassword).find('input').val();
                         if (data.password === newPass ||
                             (!data.password && !newPass)) {
                             return void UI.alert(Messages.properties_passwordSame);
                         }
+                        if (pLocked) { return; }
+                        pLocked = true;
                         UI.confirm(changePwConfirm, function (yes) {
-                            if (!yes) { return; }
-                            sframeChan.query("Q_PAD_PASSWORD_CHANGE", {
+                            if (!yes) { pLocked = false; return; }
+                            $(passwordOk).html('').append(h('span.fa.fa-spinner.fa-spin', {style: 'margin-left: 0'}));
+                            var q = isFile ? 'Q_BLOB_PASSWORD_CHANGE' : 'Q_PAD_PASSWORD_CHANGE';
+
+                            // If this is a file password change, register to the upload events:
+                            // * if there is a pending upload, ask if we shoudl interrupt
+                            // * display upload progress
+                            var onPending;
+                            var onProgress;
+                            if (isFile) {
+                                onPending = sframeChan.on('Q_BLOB_PASSWORD_CHANGE_PENDING', function (data, cb) {
+                                    onPending.stop();
+                                    UI.confirm(Messages.upload_uploadPending, function (yes) {
+                                        cb({cancel: yes});
+                                    });
+                                });
+                                onProgress = sframeChan.on('EV_BLOB_PASSWORD_CHANGE_PROGRESS', function (data) {
+                                    if (typeof (data) !== "number") { return; }
+                                    var p = Math.round(data);
+                                    $(passwordOk).text(p + '%');
+                                });
+                            }
+
+                            sframeChan.query(q, {
                                 teamId: typeof(owned) !== "boolean" ? owned : undefined,
                                 href: data.href || data.roHref,
                                 password: newPass
                             }, function (err, data) {
+                                $(passwordOk).text(Messages.properties_changePasswordButton);
+                                pLocked = false;
                                 if (err || data.error) {
+                                    console.error(err || data.error);
                                     return void UI.alert(Messages.properties_passwordError);
                                 }
                                 UI.findOKButton().click();
+                                if (isFile) {
+                                    onProgress.stop();
+                                    $(passwordOk).text(Messages.properties_changePasswordButton);
+                                    var alertMsg = data.warning ? Messages.properties_passwordWarningFile
+                                                                : Messages.properties_passwordSuccessFile;
+                                    return void UI.alert(alertMsg, undefined, {force: true});
+                                }
                                 // If we didn't have a password, we have to add the /p/
                                 // If we had a password and we changed it to a new one, we just have to reload
                                 // If we had a password and we removed it, we have to remove the /p/
@@ -593,7 +635,9 @@ define([
                                     }, {force: true});
                                 }
                                 return void UI.alert(Messages.properties_passwordSuccess, function () {
-                                    common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
+                                    if (!isSharedFolder) {
+                                        common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
+                                    }
                                 }, {force: true});
                             });
                         });
@@ -623,7 +667,7 @@ define([
     };
     var getPadProperties = function (common, data, cb) {
         var $d = $('<div>');
-        if (!data || (!data.href && !data.roHref)) { return void cb(void 0, $d); }
+        if (!data) { return void cb(void 0, $d); }
 
         if (data.href) {
             $('<label>', {'for': 'cp-app-prop-link'}).text(Messages.editShare).appendTo($d);
@@ -871,6 +915,7 @@ define([
             // config.teamId only exists when we're trying to share a pad from a team drive
             // In this case, we don't want to share the pad with the current team
             if (config.teamId && config.teamId === id) { return; }
+            if (!teamsData[id].hasSecondaryKey) { return; }
             var t = teamsData[id];
             teams[t.edPublic] = {
                 notifications: true,
@@ -984,7 +1029,7 @@ define([
         var hashes = config.hashes;
         var common = config.common;
 
-        if (!hashes) { return; }
+        if (!hashes || (!hashes.editHash && !hashes.viewHash)) { return; }
 
         // Share link tab
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
@@ -992,7 +1037,12 @@ define([
         var friendsList = hasFriends ? createShareWithFriends(config, onFriendShare) : undefined;
         var friendsUIClass = hasFriends ? '.cp-share-columns' : '';
 
-        var mainShareColumn = h('div.cp-share-column.contains-nav', [
+        var content = [];
+        var sfContent = [
+            h('label', Messages.sharedFolders_share),
+            h('br'),
+        ];
+        var shareContent = [
             h('label', Messages.share_linkAccess),
             h('br'),
             UI.createRadio('cp-share-editable', 'cp-share-editable-true',
@@ -1000,18 +1050,21 @@ define([
             UI.createRadio('cp-share-editable', 'cp-share-editable-false',
                            Messages.share_linkView, false, { mark: {tabindex:1} }),
             h('br'),
+        ];
+        var padContent = [
             h('label', Messages.share_linkOptions),
             h('br'),
             UI.createCheckbox('cp-share-embed', Messages.share_linkEmbed, false, { mark: {tabindex:1} }),
             UI.createCheckbox('cp-share-present', Messages.share_linkPresent, false, { mark: {tabindex:1} }),
             h('br'),
-            UI.dialog.selectable('', { id: 'cp-share-link-preview', tabindex: 1 }),
-        ]);
+        ];
+        if (config.sharedFolder) { Array.prototype.push.apply(content, sfContent); }
+        Array.prototype.push.apply(content, shareContent);
+        if (!config.sharedFolder) { Array.prototype.push.apply(content, padContent); }
+        content.push(UI.dialog.selectable('', { id: 'cp-share-link-preview', tabindex: 1 }));
+
+        var mainShareColumn = h('div.cp-share-column.contains-nav', content);
         var link = h('div.cp-share-modal' + friendsUIClass);
-        if (!hashes.editHash) {
-            $(link).find('#cp-share-editable-false').attr('checked', true);
-            $(link).find('#cp-share-editable-true').removeAttr('checked').attr('disabled', true);
-        }
         var saveValue = function () {
             var edit = Util.isChecked($(link).find('#cp-share-editable-true'));
             var embed = Util.isChecked($(link).find('#cp-share-embed'));
@@ -1050,20 +1103,31 @@ define([
                 if (success) { UI.log(Messages.shareSuccess); }
             },
             keys: [13]
-        }, {
-            className: 'primary',
-            name: Messages.share_linkOpen,
-            onClick: function () {
-                saveValue();
-                var v = getLinkValue();
-                window.open(v);
-            },
-            keys: [[13, 'ctrl']]
         }];
+        if (!config.sharedFolder) {
+            shareButtons.push({
+                className: 'primary',
+                name: Messages.share_linkOpen,
+                onClick: function () {
+                    saveValue();
+                    var v = getLinkValue();
+                    window.open(v);
+                },
+                keys: [[13, 'ctrl']]
+            });
+        }
 
         var $link = $(link);
         $(mainShareColumn).append(UI.dialog.getButtons(shareButtons, config.onClose)).appendTo($link);
         $(friendsList).appendTo($link);
+
+        if (!hashes.editHash) {
+            $(link).find('#cp-share-editable-false').attr('checked', true);
+            $(link).find('#cp-share-editable-true').removeAttr('checked').attr('disabled', true);
+        } else if (!hashes.viewHash) {
+            $(link).find('#cp-share-editable-false').removeAttr('checked').attr('disabled', true);
+            $(link).find('#cp-share-editable-true').attr('checked', true);
+        }
 
         $(link).find('#cp-share-link-preview').val(getLinkValue());
         $(link).find('input[type="radio"], input[type="checkbox"]').on('change', function () {
@@ -1126,7 +1190,7 @@ define([
         }
         common.getAttribute(['general', 'share'], function (err, val) {
             val = val || {};
-            if (val.edit === false || !hashes.editHash) {
+            if ((val.edit === false && hashes.viewHash) || !hashes.editHash) {
                 $(link).find('#cp-share-editable-false').prop('checked', true);
                 $(link).find('#cp-share-editable-true').prop('checked', false);
             } else {
@@ -1135,12 +1199,17 @@ define([
             }
             if (val.embed) { $(link).find('#cp-share-embed').prop('checked', true); }
             if (val.present) { $(link).find('#cp-share-present').prop('checked', true); }
+            if (config.sharedFolder) {
+                delete val.embed;
+                delete val.present;
+            }
             $(link).find('#cp-share-link-preview').val(getLinkValue(val));
         });
         common.getMetadataMgr().onChange(function () {
             // "hashes" is only available is the secure "share" app
-            hashes = common.getMetadataMgr().getPrivateData().hashes;
-            if (!hashes) { return; }
+            var _hashes = common.getMetadataMgr().getPrivateData().hashes;
+            if (!_hashes) { return; }
+            hashes = _hashes;
             $(link).find('#cp-share-link-preview').val(getLinkValue());
         });
         return tabs;
@@ -1241,47 +1310,6 @@ define([
             });
         }
         return tabs;
-    };
-    UIElements.createSFShareModal = function (config) {
-        var origin = config.origin;
-        var pathname = config.pathname;
-        var hashes = config.hashes;
-
-        if (!hashes.editHash) { throw new Error("You must provide a valid hash"); }
-        var url = origin + pathname + '#' + hashes.editHash;
-
-        // Share link tab
-        var hasFriends = Object.keys(config.friends || {}).length !== 0;
-        var friendsList = hasFriends ? createShareWithFriends(config) : undefined;
-        var friendsUIClass = hasFriends ? '.cp-share-columns' : '';
-        var mainShareColumn = h('div.cp-share-column.contains-nav', [
-            h('div.cp-share-column', [
-                h('label', Messages.sharedFolders_share),
-                h('br'),
-                hasFriends ? h('p', Messages.share_description) : undefined,
-                UI.dialog.selectable(url, { id: 'cp-share-link-preview', tabindex: 1 })
-            ])
-        ]);
-        var link = h('div.cp-share-modal' + friendsUIClass);
-        var linkButtons = [{
-            className: 'cancel',
-            name: Messages.cancel,
-            onClick: function () {},
-            keys: [27]
-        }];
-        var shareButtons = [{
-            className: 'primary',
-            name: Messages.share_linkCopy,
-            onClick: function () {
-                var success = Clipboard.copy(url);
-                if (success) { UI.log(Messages.shareSuccess); }
-            },
-            keys: [13]
-        }];
-        var $link = $(link);
-        $(mainShareColumn).append(UI.dialog.getButtons(shareButtons, config.onClose)).appendTo($link);
-        $(friendsList).appendTo($link);
-        return UI.dialog.customModal(link, {buttons: linkButtons});
     };
 
     UIElements.createInviteTeamModal = function (config) {
@@ -1533,8 +1561,12 @@ define([
                             }
                             UI.confirm(msg, function (yes) {
                                 if (!yes) { return; }
-                                sframeChan.query('Q_MOVE_TO_TRASH', null, function (err) {
-                                    if (err) { return void callback(err); }
+                                sframeChan.query('Q_MOVE_TO_TRASH', null, function (err, obj) {
+                                    err = err || (obj && obj.error);
+                                    if (err) {
+                                        callback(err);
+                                        return void UI.warn(Messages.fm_forbidden);
+                                    }
                                     var cMsg = common.isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
                                     var msg = common.fixLinks($('<div>').html(cMsg));
                                     UI.alert(msg);
@@ -2081,10 +2113,7 @@ define([
             var cryptKey = Hash.encodeBase64(secret.keys && secret.keys.cryptKey);
             var src = origin + Hash.getBlobPathFromHex(hexFileName);
             common.getFileSize(hexFileName, function (e, data) {
-                if (e || !data) {
-                    displayDefault();
-                    return void console.error(e || "404 avatar");
-                }
+                if (e || !data) { return void displayDefault(); }
                 if (typeof data !== "number") { return void displayDefault(); }
                 if (Util.bytesToMegabytes(data) > 0.5) { return void displayDefault(); }
                 var $img = $('<media-tag>').appendTo($container);
@@ -3561,6 +3590,7 @@ define([
                     }
                     return void UI.warn(Messages.autostore_error);
                 }
+                $(document).trigger('cpPadStored');
                 delete autoStoreModal[priv.channel];
                 modal.delete();
                 UIElements.displayCrowdfunding(common);
