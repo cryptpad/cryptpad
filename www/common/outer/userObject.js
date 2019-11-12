@@ -113,9 +113,13 @@ define([
         };
 
         exp.deprecateSharedFolder = function (id) {
+            if (readOnly) { return; }
             var data = files[SHARED_FOLDERS][id];
             if (!data) { return; }
-            files[SHARED_FOLDERS_TEMP][id] = JSON.parse(JSON.stringify(data));
+            var ro = !data.href || exp.cryptor.decrypt(data.href).indexOf('#') === -1;
+            if (!ro) {
+                files[SHARED_FOLDERS_TEMP][id] = JSON.parse(JSON.stringify(data));
+            }
             var paths = exp.findFile(Number(id));
             exp.delete(paths, null, true);
             delete files[SHARED_FOLDERS][id];
