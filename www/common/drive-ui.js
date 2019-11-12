@@ -534,7 +534,7 @@ define([
         APP.hideDuplicateOwned = Util.find(priv, ['settings', 'drive', 'hideDuplicate']);
         APP.closed = false;
 
-        var $readOnly = $('#cp-app-drive-edition-state');
+        var $readOnly = $(h('div#cp-app-drive-edition-state.cp-app-drive-content-info-box', Messages.readonly));
 
         var updateObject = driveConfig.updateObject;
         var updateSharedFolders = driveConfig.updateSharedFolders;
@@ -2169,6 +2169,7 @@ define([
 
 
         var createInfoBox = function (path) {
+            if (APP.readOnly || $content.data('readOnlyFolder')) { return; }
             var $box = $('<div>', {'class': 'cp-app-drive-content-info-box'});
             var msg;
             switch (path[0]) {
@@ -3362,13 +3363,11 @@ define([
             var readOnlyFolder = false;
             if (APP.readOnly) {
                 // Read-only drive (team?)
-                $readOnly.show();
+                $content.prepend($readOnly.clone());
             } else if (folders[sfId] && folders[sfId].readOnly) {
                 // If readonly shared folder...
-                $readOnly.show();
+                $content.prepend($readOnly.clone());
                 readOnlyFolder = true;
-            } else {
-                $readOnly.hide();
             }
             $content.data('readOnlyFolder', readOnlyFolder);
 

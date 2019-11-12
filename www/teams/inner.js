@@ -485,7 +485,6 @@ define([
                 h('div#cp-app-drive-content-container', [
                     h('div#cp-app-drive-toolbar'),
                     h('div#cp-app-drive-connection-state', {style: "display: none;"}, Messages.disconnected),
-                    h('div#cp-app-drive-edition-state', {style: "display: none;"}, Messages.readonly),
                     h('div#cp-app-drive-content', {tabindex:2})
                 ])
             ])
