@@ -1230,5 +1230,6 @@
     "properties_confirmNewFile": "Êtes-vous sûr ? Ajouter un mot de passe changera l'URL de ce fichier. Les utilisateurs ne connaissant pas le nouveau mot de passe perdront l'accès au fichier.",
     "properties_passwordWarningFile": "Le mot de passe a été modifié avec succès mais nous n'avons pas réussi à mettre à jour votre CryptDrive avec les nouvelles informations. Vous devrez peut-être supprimer manuellement l'ancienne version de ce fichier.",
     "properties_passwordSuccessFile": "Le mot de passe a été modifié avec succès.",
-    "driveOfflineError": "Votre connexion à CryptPad a été perdue. Les modifications dans ce pad ne seront pas stockées dans votre CryptDrive. Veuillez fermer tous vos onglets CryptPad et ré-essayer dans une nouvelle fenêtre. "
+    "driveOfflineError": "Votre connexion à CryptPad a été perdue. Les modifications dans ce pad ne seront pas stockées dans votre CryptDrive. Veuillez fermer tous vos onglets CryptPad et ré-essayer dans une nouvelle fenêtre. ",
+    "storageStatus": ""
 }
