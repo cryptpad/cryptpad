@@ -1003,10 +1003,10 @@
     "debug_getGraph": "Code für die Generierung eines Graphen dieses Dokuments anzeigen",
     "debug_getGraphWait": "Der Graph wird generiert... Bitte warten.",
     "debug_getGraphText": "Dies ist der DOT-Code für die Generierung eines Graphen des Dokumentverlaufs:",
-    "fm_passwordProtected": "Dieses Dokument ist mit einem Passwort geschützt",
+    "fm_passwordProtected": "Passwortgeschützt",
     "mdToolbar_toc": "Inhaltsverzeichnis",
     "markdown_toc": "Inhalt",
-    "fm_expirablePad": "Dieses Pad läuft am {0} aus",
+    "fm_expirablePad": "Läuft aus: {0}",
     "button_newsheet": "Neue Tabelle",
     "admin_authError": "Nur Administratoren können auf diese Seite zugreifen",
     "admin_cat_general": "Allgemein",
@@ -1229,5 +1229,9 @@
     "properties_confirmChangeFile": "Bist du sicher? Benutzer, die das neue Passwort nicht kennen, werden den Zugriff auf die Datei verlieren.",
     "properties_confirmNewFile": "Bist du sicher? Durch das Hinzufügen eines Passwortes wird sich der Link für die Datei ändern. Benutzer, die das Passwort nicht kennen, werden den Zugriff auf die Datei verlieren.",
     "properties_passwordWarningFile": "Das Passwort wurde erfolgreich geändert. Allerdings konnten die Daten in deinem CryptDrive nicht aktualisiert werden. Möglicherweise musst die alte Version der Datei manuell entfernen.",
-    "properties_passwordSuccessFile": "Das Passwort wurde erfolgreich geändert."
+    "properties_passwordSuccessFile": "Das Passwort wurde erfolgreich geändert.",
+    "driveOfflineError": "Die Verbindung zu CryptPad ist verloren gegangen. Änderungen an diesem Pad werden nicht in deinem CryptDrive gespeichert. Bitte schließe alle CryptPad-Tabs und versuche es in einem neuen Fenster erneut. ",
+    "storageStatus": "Speicher:<br /><b>{0}</b> von <b>{1}</b> belegt",
+    "teams_table": "Rollen",
+    "teams_table_generic": "Rollen und Berechtigungen"
 }
