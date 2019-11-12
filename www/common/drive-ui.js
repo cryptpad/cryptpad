@@ -1917,7 +1917,9 @@ define([
             var $files = $('<span>', {
                 'class': 'cp-app-drive-element-files cp-app-drive-element-list'
             }).text(files);
-            $span.attr('title', key);
+            if (getViewMode() === 'grid') {
+                $span.attr('title', key);
+            }
             $span.append($name).append($state).append($subfolders).append($files);
         };
 
