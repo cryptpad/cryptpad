@@ -1035,6 +1035,10 @@ define([
             team.userObject.setReadOnly(!secret.keys.secondaryKey, secret.keys.secondaryKey);
         }
 
+        if (!secret.keys.secondaryKey && team.rpc) {
+            team.rpc.destroy();
+        }
+
         // Upgrade the shared folders
         var folders = Util.find(team, ['proxy', 'drive', 'sharedFolders']);
         Object.keys(folders || {}).forEach(function (sfId) {
