@@ -1231,5 +1231,16 @@
     "properties_passwordWarningFile": "Le mot de passe a été modifié avec succès mais nous n'avons pas réussi à mettre à jour votre CryptDrive avec les nouvelles informations. Vous devrez peut-être supprimer manuellement l'ancienne version de ce fichier.",
     "properties_passwordSuccessFile": "Le mot de passe a été modifié avec succès.",
     "driveOfflineError": "Votre connexion à CryptPad a été perdue. Les modifications dans ce pad ne seront pas stockées dans votre CryptDrive. Veuillez fermer tous vos onglets CryptPad et ré-essayer dans une nouvelle fenêtre. ",
-    "storageStatus": ""
+    "storageStatus": "Stockage : <br /><b>{0}</b> utilisés sur <b>{1}</b>",
+    "teams_table": "Rôles",
+    "teams_table_generic": "Rôles et permissions",
+    "teams_table_generic_view": "Voir : accéder aux dossiers et pads (lecture seule).",
+    "teams_table_generic_edit": "Éditeur : créer, modifier et supprimer des dossiers et pads.",
+    "teams_table_generic_admin": "Gérer les membres : inviter et révoquer les membres, changer les rôles jusqu'à Administrateur.",
+    "teams_table_generic_own": "Gérer l'équipe : changer le nom et l'avatar de l'équipe, ajouter ou révoquer les propriétaires de l'équipe, supprimer l'équipe.",
+    "teams_table_specific": "Exceptions",
+    "teams_table_specificHint": "Dans ces dossiers partagés qui sont d'une version antérieure, les lecteurs peuvent modifier les pads existants. Les pads créés ou copiés dans ces dossiers auront les permissions standard.",
+    "teams_table_admins": "Gérer les membres",
+    "teams_table_owners": "Gérer l'équipe",
+    "teams_table_role": "Rôle"
 }
