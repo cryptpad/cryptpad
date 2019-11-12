@@ -80,6 +80,16 @@ define([
                     manager.folders[fId].userObject.setReadOnly(readOnly, secret.keys.secondaryKey);
                 }));
             });
+            // Remove from memory folders that have been deleted from the drive remotely
+            oldIds.forEach(function (fId) {
+                if (!drive.sharedFolders[fId]) {
+                    delete folders[fId];
+                    delete drive.sharedFolders[fId];
+                    if (manager && manager.folders) {
+                        delete manager.folders[fId];
+                    }
+                }
+            });
         }).nThen(function () {
             cb();
         });

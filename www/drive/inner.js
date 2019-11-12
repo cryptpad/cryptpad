@@ -58,6 +58,14 @@ define([
                             APP.newSharedFolder = null;
                         }
                     }
+                    if (newObj && newObj.deprecated) {
+                        delete folders[fId];
+                        delete drive.sharedFolders[fId];
+                        if (manager && manager.folders) {
+                            delete manager.folders[fId];
+                        }
+                        return;
+                    }
                     folders[fId] = folders[fId] || {};
                     copyObjectValue(folders[fId], newObj);
                     folders[fId].readOnly = !secret.keys.secondaryKey;
@@ -68,6 +76,15 @@ define([
                     if (!manager || !manager.folders[fId]) { return; }
                     manager.folders[fId].userObject.setReadOnly(readOnly, secret.keys.secondaryKey);
                 }));
+            });
+            oldIds.forEach(function (fId) {
+                if (!drive.sharedFolders[fId]) {
+                    delete folders[fId];
+                    delete drive.sharedFolders[fId];
+                    if (manager && manager.folders) {
+                        delete manager.folders[fId];
+                    }
+                }
             });
         }).nThen(function () {
             cb();
