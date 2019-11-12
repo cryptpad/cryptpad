@@ -1231,5 +1231,16 @@
     "properties_confirmNewFile": "Are you sure? Adding a password will change this file's URL. Users without the password will lose access to this file.",
     "properties_passwordWarningFile": "The password was successfully changed but we were unable to update your CryptDrive with the new data. You may have to remove the old version of the file manually.",
     "properties_passwordSuccessFile": "The password was successfully changed.",
-    "driveOfflineError": "Your connection to CryptPad has been lost. Changes to this pad will not be saved in your CryptDrive. Please close all CryptPad tabs and try again in a new window. "
+    "driveOfflineError": "Your connection to CryptPad has been lost. Changes to this pad will not be saved in your CryptDrive. Please close all CryptPad tabs and try again in a new window. ",
+    "teams_table": "Roles",
+    "teams_table_generic": "Roles and permissions",
+    "teams_table_generic_view": "View: access folders and pads (read-only).",
+    "teams_table_generic_edit": "Edit: create, modify, and delete folders and pads.",
+    "teams_table_generic_admin": "Manage Members: invite and revoke members, change member roles up to Admin.",
+    "teams_table_generic_own": "Manage Team: change team name and avatar, add or remove Owners, change team subscription, delete team.",
+    "teams_table_specific": "Exceptions",
+    "teams_table_specificHint": "These are older shared folders where viewers still have permission to edit existing pads. Pads created or copied into these folders will have standard permissions.",
+    "teams_table_admins": "Manage members",
+    "teams_table_owners": "Manage team",
+    "teams_table_role": "Role"
 }
