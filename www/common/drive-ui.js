@@ -3364,7 +3364,7 @@ define([
             if (APP.readOnly) {
                 // Read-only drive (team?)
                 $content.prepend($readOnly.clone());
-            } else if (folders[sfId] && folders[sfId].readOnly) {
+            } else if (sfId && folders[sfId] && folders[sfId].readOnly) {
                 // If readonly shared folder...
                 $content.prepend($readOnly.clone());
                 readOnlyFolder = true;

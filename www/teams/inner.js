@@ -297,7 +297,7 @@ define([
 
             // Provide secondaryKey
             var teamData = (privateData.teams || {})[id] || {};
-            driveAPP.readOnly = !teamData.secondaryKey;
+            driveAPP.readOnly = !teamData.hasSecondaryKey;
             var drive = DriveUI.create(common, {
                 proxy: proxy,
                 folders: folders,
