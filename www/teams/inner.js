@@ -754,7 +754,7 @@ define([
         });
         var pending = Object.keys(roster).filter(function (k) {
             if (!roster[k].pending) { return; }
-            return roster[k].role === "MEMBER" || !roster[k].role;
+            return roster[k].role === "VIEWER" || !roster[k].role;
         }).map(function (k) {
             return makeMember(common, roster[k], me);
         });
