@@ -1233,5 +1233,14 @@
     "driveOfflineError": "Die Verbindung zu CryptPad ist verloren gegangen. Änderungen an diesem Pad werden nicht in deinem CryptDrive gespeichert. Bitte schließe alle CryptPad-Tabs und versuche es in einem neuen Fenster erneut. ",
     "storageStatus": "Speicher:<br /><b>{0}</b> von <b>{1}</b> belegt",
     "teams_table": "Rollen",
-    "teams_table_generic": "Rollen und Berechtigungen"
+    "teams_table_generic": "Rollen und Berechtigungen",
+    "teams_table_generic_view": "Ansehen: Zugriff auf Ordner und Pads (nur Lesen)",
+    "teams_table_generic_edit": "Bearbeiten: Erstellen, Ändern und Löschen von Ordnern und Pads",
+    "teams_table_generic_admin": "Mitglieder verwalten: Einladen und Entfernen von Mitgliedern, Ändern von Benutzerrollen bis maximal Admin",
+    "teams_table_generic_own": "Team verwalten: Ändern von Namen und Avatar des Teams, Hinzufügen oder Entfernen von Eigentümerschaften des Teams, Löschung des Teams",
+    "teams_table_specific": "Ausnahmen",
+    "teams_table_specificHint": "Dies sind ältere geteilte Ordner, wo Benutzer noch Bearbeitungsrechte haben. Für hier erstellte oder hierhin kopierte Pads gelten Standard-Berechtigungen.",
+    "teams_table_admins": "Mitglieder verwalten",
+    "teams_table_owners": "Team verwalten",
+    "teams_table_role": "Rolle"
 }
