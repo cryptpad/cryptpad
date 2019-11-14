@@ -1007,6 +1007,11 @@ define([
                 }, cb);
             });
 
+            sframeChan.on('Q_OO_PASSWORD_CHANGE', function (data, cb) {
+                data.href = data.href || window.location.href;
+                Cryptpad.changeOOPassword(data, cb);
+            });
+
             sframeChan.on('Q_PAD_PASSWORD_CHANGE', function (data, cb) {
                 data.href = data.href || window.location.href;
                 Cryptpad.changePadPassword(Cryptget, Crypto, data, cb);

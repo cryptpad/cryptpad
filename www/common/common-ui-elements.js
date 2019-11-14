@@ -551,9 +551,10 @@ define([
                     $d.append(password);
                 }
 
-                if (!data.noEditPassword && owned && parsed.type !== "sheet") { // FIXME SHEET fix password change for sheets
+                if (!data.noEditPassword && owned) { // FIXME SHEET fix password change for sheets
                     var sframeChan = common.getSframeChannel();
 
+                    var isOO = parsed.type === 'sheet';
                     var isFile = parsed.hashData.type === 'file';
                     var isSharedFolder = parsed.type === 'drive';
 
@@ -586,7 +587,8 @@ define([
                         UI.confirm(changePwConfirm, function (yes) {
                             if (!yes) { pLocked = false; return; }
                             $(passwordOk).html('').append(h('span.fa.fa-spinner.fa-spin', {style: 'margin-left: 0'}));
-                            var q = isFile ? 'Q_BLOB_PASSWORD_CHANGE' : 'Q_PAD_PASSWORD_CHANGE';
+                            var q = isFile ? 'Q_BLOB_PASSWORD_CHANGE' :
+                                        (isOO ? 'Q_OO_PASSWORD_CHANGE' : 'Q_PAD_PASSWORD_CHANGE');
 
                             // If this is a file password change, register to the upload events:
                             // * if there is a pending upload, ask if we shoudl interrupt

@@ -1692,7 +1692,7 @@ define([
         // GET_FULL_HISTORY from sframe-common-outer
         Store.getFullHistory = function (clientId, data, cb) {
             var network = store.network;
-            var hkn = network.historyKeeper;
+            var hk = network.historyKeeper;
             //var crypto = Crypto.createEncryptor(data.keys);
             // Get the history messages and send them to the iframe
             var parse = function (msg) {
@@ -1709,6 +1709,7 @@ define([
                 var parsed = parse(msg);
                 if (parsed[0] === 'FULL_HISTORY_END') {
                     cb(msgs);
+                    network.off('message', onMsg);
                     completed = true;
                     return;
                 }
@@ -1725,12 +1726,68 @@ define([
                 }
             };
             network.on('message', onMsg);
-            network.sendto(hkn, JSON.stringify(['GET_FULL_HISTORY', data.channel, data.validateKey]));
+            network.sendto(hk, JSON.stringify(['GET_FULL_HISTORY', data.channel, data.validateKey]));
+        };
+
+        Store.getHistory = function (clientId, data, cb) {
+            var network = store.network;
+            var hk = network.historyKeeper;
+
+            var parse = function (msg) {
+                try {
+                    return JSON.parse(msg);
+                } catch (e) {
+                    return null;
+                }
+            };
+
+            var msgs = [];
+            var completed = false;
+            var onMsg = function (msg, sender) {
+                if (completed) { return; }
+                if (sender !== hk) { return; }
+                var parsed = parse(msg);
+
+                // Ignore the metadata message
+                if (parsed.validateKey && parsed.channel) { return; }
+                if (parsed.error && parsed.channel) {
+                    if (parsed.channel === data.channel) {
+                        network.off('message', onMsg);
+                        completed = true;
+                        cb({error: parsed.error});
+                    }
+                    return;
+                }
+
+                // End of history: cb
+                if (parsed.state === 1 && parsed.channel) {
+                    if (parsed.channel !== data.channel) { return; }
+                    cb(msgs);
+                    network.off('message', onMsg);
+                    completed = true;
+                    return;
+                }
+
+                msg = parsed[4];
+                // Keep only the history for our channel
+                if (parsed[3] !== data.channel) { return; }
+                if (msg) {
+                    msg = msg.replace(/cp\|(([A-Za-z0-9+\/=]+)\|)?/, '');
+                    msgs.push(msg);
+                }
+            };
+            network.on('message', onMsg);
+
+            var cfg = {
+                lastKnownHash: data.lastKnownHash
+            };
+            var msg = ['GET_HISTORY', data.channel, cfg];
+            network.sendto(hk, JSON.stringify(msg));
         };
 
         Store.getHistoryRange = function (clientId, data, cb) {
             var network = store.network;
-            var hkn = network.historyKeeper;
+            var hk = network.historyKeeper;
             var parse = function (msg) {
                 try {
                     return JSON.parse(msg);
@@ -1778,7 +1835,7 @@ define([
             };
 
             network.on('message', onMsg);
-            network.sendto(hkn, JSON.stringify(['GET_HISTORY_RANGE', data.channel, {
+            network.sendto(hk, JSON.stringify(['GET_HISTORY_RANGE', data.channel, {
                 from: data.lastKnownHash,
                 cpCount: 2,
                 txid: txid
