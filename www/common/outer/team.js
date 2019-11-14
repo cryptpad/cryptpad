@@ -57,6 +57,14 @@ define([
                     return false;
                 }
             });
+            proxy.on('disconnect', function () {
+                team.offline = true;
+                team.sendEvent('NETWORK_DISCONNECT');
+            });
+            proxy.on('reconnect', function () {
+                team.offline = false;
+                team.sendEvent('NETWORK_RECONNECT');
+            });
         }
         proxy.on('change', [], function (o, n, p) {
             if (fId) {
@@ -100,12 +108,6 @@ define([
                 old: o,
                 path: p
             });
-        });
-        proxy.on('disconnect', function () {
-            team.offline = true;
-        });
-        proxy.on('reconnect', function (/* info */) {
-            team.offline = false;
         });
     };
 
@@ -1363,6 +1365,10 @@ define([
             removeClient(ctx, clientId);
         };
         team.execCommand = function (clientId, obj, cb) {
+            if (ctx.store.offline) {
+                return void cb({ error: 'OFFLINE' });
+            }
+
             var cmd = obj.cmd;
             var data = obj.data;
             if (cmd === 'SUBSCRIBE') {

@@ -368,6 +368,7 @@ define([
         var content = [];
         APP.module.execCommand('LIST_TEAMS', null, function (obj) {
             if (!obj) { return; }
+            if (obj.error === "OFFLINE") { return UI.alert(Messages.driveOfflineError); }
             if (obj.error) { return void console.error(obj.error); }
             var list = [];
             var keys = Object.keys(obj).slice(0,3);
@@ -453,6 +454,7 @@ define([
                 name: name
             }, function (obj) {
                 if (obj && obj.error) {
+                    if (obj.error === "OFFLINE") { return UI.alert(Messages.driveOfflineError); }
                     console.error(obj.error);
                     $spinner.hide();
                     return void UI.warn(Messages.error);
@@ -1125,10 +1127,10 @@ define([
                 toolbar.failed();
                 if (!noAlert) { UI.alert(Messages.common_connectionLost, undefined, true); }
             };
-            var onReconnect = function (info) {
+            var onReconnect = function () {
                 setEditable(true);
                 if (APP.team && driveAPP.refresh) { driveAPP.refresh(); }
-                toolbar.reconnecting(info.myId);
+                toolbar.reconnecting();
                 UI.findOKButton().click();
             };
 
@@ -1138,9 +1140,8 @@ define([
             sframeChan.on('EV_NETWORK_DISCONNECT', function () {
                 onDisconnect();
             });
-            sframeChan.on('EV_NETWORK_RECONNECT', function (data) {
-                // data.myId;
-                onReconnect(data);
+            sframeChan.on('EV_NETWORK_RECONNECT', function () {
+                onReconnect();
             });
             common.onLogout(function () { setEditable(false); });
         });
