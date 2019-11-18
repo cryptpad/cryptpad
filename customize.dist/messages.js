@@ -14,6 +14,7 @@ var map = {
     'ru': 'Русский',
     //'te': 'తెలుగు',
     'zh': '繁體中文',
+    //'nl': 'Nederlands'
 };
 
 var messages = {};

@@ -80,6 +80,16 @@ define([
                     manager.folders[fId].userObject.setReadOnly(readOnly, secret.keys.secondaryKey);
                 }));
             });
+            // Remove from memory folders that have been deleted from the drive remotely
+            oldIds.forEach(function (fId) {
+                if (!drive.sharedFolders[fId]) {
+                    delete folders[fId];
+                    delete drive.sharedFolders[fId];
+                    if (manager && manager.folders) {
+                        delete manager.folders[fId];
+                    }
+                }
+            });
         }).nThen(function () {
             cb();
         });
@@ -287,7 +297,7 @@ define([
 
             // Provide secondaryKey
             var teamData = (privateData.teams || {})[id] || {};
-            driveAPP.readOnly = !teamData.secondaryKey;
+            driveAPP.readOnly = !teamData.hasSecondaryKey;
             var drive = DriveUI.create(common, {
                 proxy: proxy,
                 folders: folders,
@@ -475,7 +485,6 @@ define([
                 h('div#cp-app-drive-content-container', [
                     h('div#cp-app-drive-toolbar'),
                     h('div#cp-app-drive-connection-state', {style: "display: none;"}, Messages.disconnected),
-                    h('div#cp-app-drive-edition-state', {style: "display: none;"}, Messages.readonly),
                     h('div#cp-app-drive-content', {tabindex:2})
                 ])
             ])
@@ -745,7 +754,7 @@ define([
         });
         var pending = Object.keys(roster).filter(function (k) {
             if (!roster[k].pending) { return; }
-            return roster[k].role === "MEMBER" || !roster[k].role;
+            return roster[k].role === "VIEWER" || !roster[k].role;
         }).map(function (k) {
             return makeMember(common, roster[k], me);
         });

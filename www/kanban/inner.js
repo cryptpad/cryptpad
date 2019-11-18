@@ -152,6 +152,9 @@ define([
                         e.preventDefault();
                         e.stopPropagation();
                         save();
+                        if (!$input.val()) { return; }
+                        if (!$(el).closest('.kanban-item').is(':last-child')) { return; }
+                        $(el).closest('.kanban-board').find('.kanban-title-button.fa-plus').click();
                         return;
                     }
                     if (e.which === 27) {
@@ -301,6 +304,8 @@ define([
                         e.preventDefault();
                         e.stopPropagation();
                         save();
+                        if (!$input.val()) { return; }
+                        $(el).closest('.kanban-board').find('.kanban-title-button.fa-plus').click();
                         return;
                     }
                     if (e.which === 27) {
