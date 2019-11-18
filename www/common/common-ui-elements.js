@@ -570,7 +570,7 @@ define([
                         style: 'flex: 1;'
                     });
                     var passwordOk = h('button', Messages.properties_changePasswordButton);
-                    var changePass = h('span.cp-password-container', [
+                    var changePass = h('span.cp-password-change-container', [
                         newPassword,
                         passwordOk
                     ]);
