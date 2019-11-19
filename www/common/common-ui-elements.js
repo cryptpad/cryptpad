@@ -1199,7 +1199,7 @@ define([
             title: Messages.share_linkCategory,
             content: frameLink
         }, {
-            title: "Contacts",
+            title: Messages.share_contactCategory,
             content: frameContacts
         }, {
             title: Messages.share_embedCategory,
