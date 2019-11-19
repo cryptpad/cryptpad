@@ -309,7 +309,9 @@ define([
                     isNewChannel: Store.isNewChannel
                 }, id, sf, waitFor());
             });
-        }).nThen(waitFor());
+        }).nThen(function () {
+            setTimeout(waitFor());
+        });
     };
 
     return SF;
