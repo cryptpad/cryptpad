@@ -21,7 +21,8 @@ define([
 
     // No version: visible edit
     // Version 2: encrypted edit links
-    SF.checkMigration = function (secondaryKey, proxy, uo, cb) {
+    SF.checkMigration = function (secondaryKey, proxy, uo, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb));
         var drive = proxy.drive || proxy;
         // View access: can't migrate
         if (!secondaryKey) { return void cb(); }
