@@ -1152,12 +1152,12 @@ define([
 
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
         var onFriendShare = Util.mkEvent();
-        var friendsList = hasFriends ? createShareWithFriends(config, onFriendShare) : undefined;
+        var friendsList = hasFriends ? createShareWithFriends(config, onFriendShare) : h('p', Messages.share_noContacts);
         // var friendsUIClass = hasFriends ? '.cp-share-columns' : '';
 
         onFriendShare.reg(saveValue);
 
-        contactsAccessRights = createAccessRights('contact-rights');
+        var contactsAccessRights = hasFriends ? createAccessRights('contact-rights') : '';
         var contacts = h('.cp-share-modal', contactsAccessRights);
         var $contacts = $(contacts);
 

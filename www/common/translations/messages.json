@@ -988,6 +988,7 @@
     "share_linkOpen": "Open in new tab",
     "share_linkCopy": "Copy to clipboard",
     "share_contactCategory": "Contacts",
+    "share_noContacts": "You have no friends, learn how to get some. // XXX", 
     "share_embedCategory": "Embed",
     "share_mediatagCopy": "Copy mediatag to clipboard",
     "loading_pad_1": "Initializing pad",
