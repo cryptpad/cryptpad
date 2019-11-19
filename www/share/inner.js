@@ -59,9 +59,7 @@ define([
                 }
             });
             $('button.cancel').click(); // Close any existing alertify
-            UI.openCustomModal(UI.dialog.tabs(modal), {
-                wide: _wide
-            });
+            UI.openCustomModal(UI.dialog.tabs(modal));
         };
         sframeChan.on('EV_SHARE_REFRESH', function (data) {
             createShareDialog(data);
