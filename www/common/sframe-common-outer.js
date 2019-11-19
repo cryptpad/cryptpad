@@ -223,7 +223,6 @@ define([
                                 if (wrongPasswordStored) {
                                     // Store the correct password
                                     nThen(function (w) {
-                                        // XXX noPasswordStored: return; ?
                                         Cryptpad.setPadAttribute('password', password, w(), parsed.getUrl());
                                         Cryptpad.setPadAttribute('channel', secret.channel, w(), parsed.getUrl());
                                         if (parsed.hashData.mode === 'edit') {
