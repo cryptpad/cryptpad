@@ -3463,19 +3463,24 @@ define([
         (cb || function () {})();
     };
 
-    UIElements.displayPasswordPrompt = function (common, isError) {
+    UIElements.displayPasswordPrompt = function (common, cfg, isError) {
         var error;
         if (isError) { error = setHTML(h('p.cp-password-error'), Messages.password_error); }
         var info = h('p.cp-password-info', Messages.password_info);
         var password = UI.passwordInput({placeholder: Messages.password_placeholder});
         var button = h('button', Messages.password_submit);
+        cfg = cfg || {};
+
+        if (cfg.value && !isError) {
+            $(password).find('.cp-password-input').val(cfg.value);
+        }
 
         var submit = function () {
             var value = $(password).find('.cp-password-input').val();
             UI.addLoadingScreen();
             common.getSframeChannel().query('Q_PAD_PASSWORD_VALUE', value, function (err, data) {
                 if (!data) {
-                    UIElements.displayPasswordPrompt(common, true);
+                    UIElements.displayPasswordPrompt(common, cfg, true);
                 }
             });
         };
