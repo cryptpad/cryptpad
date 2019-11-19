@@ -4035,6 +4035,7 @@ define([
             common.mailbox.sendTo("INVITE_TO_TEAM_ANSWER", {
                 answer: yes,
                 teamChannel: msg.content.team.channel,
+                teamName: teamName,
                 user: {
                     displayName: user.name,
                     avatar: user.avatar,
