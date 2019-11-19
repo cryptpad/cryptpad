@@ -1032,7 +1032,7 @@ define([
 
         if (!hashes || (!hashes.editHash && !hashes.viewHash)) { return; }
 
-        function createAccessRights(group_name) {
+        var createAccessRights = function (group_name) {
             var rights = [
                 h('label', Messages.share_linkAccess),
                 h('br'),
@@ -1049,7 +1049,6 @@ define([
         };
 
         // Share link tab
-
         var content = [];
         var sfContent = [
             h('label', Messages.sharedFolders_share),
@@ -1090,12 +1089,15 @@ define([
             var parsed = Hash.parsePadUrl(href);
             return origin + parsed.getUrl({embed: embed, present: present});
         };
-        var linkButtons = [{
+
+        var cancelButton = {
             className: 'cancel',
             name: Messages.cancel,
             onClick: function () {},
             keys: [27]
-        }];
+        };
+
+        var linkButtons = [cancelButton];
         var shareButtons = [{
             className: 'primary',
             name: Messages.share_linkCopy,
@@ -1108,8 +1110,8 @@ define([
             keys: [13]
         }];
         if (!config.sharedFolder) {
-            shareButtons.push({
-                className: 'primary',
+            shareButtons.unshift({
+                className: 'secondary', // XXX style this diferently than cancel
                 name: Messages.share_linkOpen,
                 onClick: function () {
                     saveValue();
@@ -1121,7 +1123,6 @@ define([
         }
 
         var $link = $(link);
-        $link.append(UI.dialog.getButtons(shareButtons, config.onClose));
         
         if (!hashes.editHash) {
             $(link).find('#cp-share-editable-false').attr('checked', true);
@@ -1135,6 +1136,12 @@ define([
         $(link).find('input[type="radio"], input[type="checkbox"]').on('change', function () {
             $(link).find('#cp-share-link-preview').val(getLinkValue());
         });
+
+        // $link.append(UI.dialog.getButtons(shareButtons, config.onClose));
+        shareButtons.forEach(function(button){
+            linkButtons.push(button);
+        });
+        console.log(linkButtons);
 
         var frameLink = UI.dialog.customModal(link, {
             buttons: linkButtons,
@@ -1156,8 +1163,10 @@ define([
 
         $(friendsList).appendTo($contacts);
 
+        var contactButtons = [cancelButton]
+
         var frameContacts = UI.dialog.customModal(contacts, {
-            buttons: linkButtons,
+            buttons: contactButtons,
             onClose: config.onClose,
         });
 
@@ -1174,12 +1183,8 @@ define([
             h('br'),
             UI.dialog.selectable(getEmbedValue())
         ]);
-        var embedButtons = [{
-            className: 'cancel',
-            name: Messages.cancel,
-            onClick: function () {},
-            keys: [27]
-        }, {
+        var embedButtons = [
+            cancelButton, {
             className: 'primary',
             name: Messages.share_linkCopy,
             onClick: function () {
