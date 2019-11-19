@@ -25,10 +25,6 @@ define([
 
     var Nacl = window.nacl;
 
-    var initializeTeams = function (ctx, cb) {
-        cb();
-    };
-
     var registerChangeEvents = function (ctx, team, proxy, fId) {
         if (!team) { return; }
         if (!fId) {
@@ -338,7 +334,7 @@ define([
     };
 
     var openChannel = function (ctx, teamData, id, _cb) {
-        var cb = Util.once(_cb);
+        var cb = Util.once(Util.mkAsync(_cb));
 
         var hash = teamData.hash || teamData.roHash;
         var secret = Hash.getSecrets('team', hash, teamData.password);
@@ -1276,10 +1272,6 @@ define([
         };
 
         var teams = store.proxy.teams = store.proxy.teams || {};
-
-        initializeTeams(ctx, waitFor(function (err) {
-            if (err) { return; }
-        }));
 
         // Listen for changes in our access rights (if another worker receives edit access)
         ctx.store.proxy.on('change', ['teams'], function (o, n, p) {
