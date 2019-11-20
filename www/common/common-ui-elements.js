@@ -1123,10 +1123,14 @@ define([
         // update values for link preview when radio btns change
         $(link).find('#cp-share-link-preview').val(getLinkValue());
         $(rights).find('input[type="radio"]').on('change', function () {
-            $(link).find('#cp-share-link-preview').val(getLinkValue());
+            $(link).find('#cp-share-link-preview').val(getLinkValue({
+                embed: Util.isChecked($(link).find('#cp-share-embed'))
+            }));
         });
         $(link).find('input[type="checkbox"]').on('change', function () {
-            $(link).find('#cp-share-link-preview').val(getLinkValue());
+            $(link).find('#cp-share-link-preview').val(getLinkValue({
+                embed: Util.isChecked($(link).find('#cp-share-embed'))
+            }));
         });
 
         var frameLink = UI.dialog.customModal(link, {
@@ -1292,7 +1296,6 @@ define([
                 className: 'primary',
                 name: Messages.share_linkCopy,
                 onClick: function () {
-                    saveValue();
                     var v = getLinkValue();
                     var success = Clipboard.copy(v);
                     if (success) { UI.log(Messages.shareSuccess); }
