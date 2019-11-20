@@ -932,7 +932,7 @@ define([
         }, refreshButtons);
         $div.append(teamsList.div);
 
-        var shareButtons = [{
+        var shareButton = {
             className: 'primary cp-share-with-friends',
             name: Messages.share_withFriends,
             onClick: function () {
@@ -992,7 +992,7 @@ define([
                 }
             },
             keys: [13]
-        }];
+        };
 
         common.getAttribute(['general', 'share-friends'], function (err, val) {
             order = val || [];
@@ -1017,10 +1017,12 @@ define([
             // Display them
             $(friendDiv).find('.cp-usergrid-grid').detach();
             $(friendDiv).append(h('div.cp-usergrid-grid', others));
-            $div.append(UI.dialog.getButtons(shareButtons, config.onClose));
             refreshButtons();
         });
-        return div;
+        return {
+            content: div,
+            button: shareButton
+        };
     };
 
     /// Share Modal Creation 
@@ -1146,11 +1148,16 @@ define([
 
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
         var onFriendShare = Util.mkEvent();
-        var friendsList = hasFriends ? createShareWithFriends(config, onFriendShare) : h('p', Messages.share_noContacts);
-        // var friendsUIClass = hasFriends ? '.cp-share-columns' : '';
+        var friendsObject = hasFriends ? createShareWithFriends(config, onFriendShare) : {
+            content: h('p', Messages.share_noContacts)
+        };
+        var friendsList = friendsObject.content;
+
 
         onFriendShare.reg(saveValue);
 
+      
+      
         // XXX Don't display access rights if no contacts 
         /// var contactsAccessRights = hasFriends ? createAccessRights('contact-rights') : '';
         var contacts = h('div.cp-share-modal');
@@ -1158,7 +1165,8 @@ define([
 
         $(friendsList).appendTo($contacts);
 
-        var contactButtons = [makeCancelButton()]
+        var contactButtons = [makeCancelButton(),
+                             friendsObject.button];
 
         var frameContacts = UI.dialog.customModal(contacts, {
             buttons: contactButtons,
@@ -1240,6 +1248,7 @@ define([
         });
         return tabs;
     };
+
     UIElements.createFileShareModal = function (config) {
         var origin = config.origin;
         var pathname = config.pathname;
@@ -1337,6 +1346,7 @@ define([
         }
         return tabs;
     };
+
 
     UIElements.createInviteTeamModal = function (config) {
         var common = config.common;
