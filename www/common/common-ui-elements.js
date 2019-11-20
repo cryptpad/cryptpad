@@ -1270,49 +1270,65 @@ define([
         if (!hashes.fileHash) { throw new Error("You must provide a file hash"); }
         var url = origin + pathname + '#' + hashes.fileHash;
 
-
-        // Share link tab
-        var hasFriends = Object.keys(config.friends || {}).length !== 0;
-        var friendsList = hasFriends ? createShareWithFriends(config) : undefined;
-        var friendsUIClass = hasFriends ? '.cp-share-columns' : '';
-        var mainShareColumn = h('div.cp-share-column.contains-nav', [
-            h('div.cp-share-column', [
-                hasFriends ? h('p', Messages.share_description) : undefined,
-                UI.dialog.selectable('', { id: 'cp-share-link-preview' }),
-            ]),
-        ]);
-        var link = h('div.cp-share-modal' + friendsUIClass);
         var getLinkValue = function () { return url; };
-        $(mainShareColumn).find('#cp-share-link-preview').val(getLinkValue());
-        var linkButtons = [{
-            className: 'cancel',
+
+        var makeCancelButton = function() {
+            return {className: 'cancel',
             name: Messages.cancel,
             onClick: function () {},
-            keys: [27]
-        }];
-        var shareButtons = [{
-            className: 'primary',
-            name: Messages.share_linkCopy,
-            onClick: function () {
-                var v = getLinkValue();
-                var success = Clipboard.copy(v);
-                if (success) { UI.log(Messages.shareSuccess); }
-            },
-            keys: [13]
-        }];
+            keys: [27]};
+        };
 
-        var $link = $(link);
-        $(mainShareColumn).append(UI.dialog.getButtons(shareButtons, config.onClose)).appendTo($link);
-        $(friendsList).appendTo($link);
+        // Share link tab
+        var linkContent = [
+            UI.dialog.selectable(getLinkValue(), { id: 'cp-share-link-preview', tabindex: 1 })
+        ];
+
+        var link = h('div.cp-share-modal', linkContent);
+
+        var linkButtons = [
+            makeCancelButton(),
+            {
+                className: 'primary',
+                name: Messages.share_linkCopy,
+                onClick: function () {
+                    saveValue();
+                    var v = getLinkValue();
+                    var success = Clipboard.copy(v);
+                    if (success) { UI.log(Messages.shareSuccess); }
+              },
+              keys: [13]
+            }
+        ];
 
         var frameLink = UI.dialog.customModal(link, {
             buttons: linkButtons,
             onClose: config.onClose,
         });
 
+        // share with contacts tab 
+        var hasFriends = Object.keys(config.friends || {}).length !== 0;
+
+        var friendsObject = hasFriends ? createShareWithFriends(config, null, getLinkValue) : {
+            content: h('p', Messages.share_noContacts),
+            button: {}
+        };
+        var friendsList = friendsObject.content;
+
+        var contactsContent = h('div.cp-share-modal');
+        $(contactsContent).append(friendsList);
+
+        var contactButtons = [makeCancelButton(),
+                             friendsObject.button];
+
+        var frameContacts = UI.dialog.customModal(contactsContent, {
+            buttons: contactButtons,
+            onClose: config.onClose,
+        });
+
+
         // Embed tab
         var embed = h('div.cp-share-modal', [
-            h('h3', Messages.fileEmbedTitle),
             h('p', Messages.fileEmbedScript),
             h('br'),
             UI.dialog.selectable(common.getMediatagScript()),
@@ -1345,6 +1361,9 @@ define([
             title: Messages.share_linkCategory,
             content: frameLink
         }, {
+            title: Messages.share_contactCategory,
+            content: frameContacts
+        }, {
             title: Messages.share_embedCategory,
             content: frameEmbed
         }];
@@ -1355,7 +1374,8 @@ define([
                 pathname: pathname
             });
         }
-        return tabs;
+        var modal = UI.dialog.tabs(tabs);
+        return modal;
     };
 
 
