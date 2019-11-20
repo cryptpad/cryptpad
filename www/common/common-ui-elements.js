@@ -1222,6 +1222,8 @@ define([
                 pathname: pathname
             });
         }
+
+        var modal = UI.dialog.tabs(tabs);
         common.getAttribute(['general', 'share'], function (err, val) {
             val = val || {};
             if ((val.edit === false && hashes.viewHash) || !hashes.editHash) {
@@ -1246,7 +1248,7 @@ define([
             hashes = _hashes;
             $(link).find('#cp-share-link-preview').val(getLinkValue());
         });
-        return tabs;
+        return modal;
     };
 
     UIElements.createFileShareModal = function (config) {

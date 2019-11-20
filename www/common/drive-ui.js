@@ -2560,7 +2560,6 @@ define([
             if (!parsed.hash && !roParsed.hash) { return void console.error("Invalid href: "+(data.href || data.roHref)); }
             var friends = common.getFriends();
             var teams = common.getMetadataMgr().getPrivateData().teams;
-            var _wide = Object.keys(friends).length || Object.keys(teams).length;
             var ro = folders[id] && folders[id].version >= 2;
             var modal = UIElements.createShareModal({
                 teamId: APP.team,
@@ -2580,11 +2579,8 @@ define([
             // can't share the read-only URL and we don't have access to the edit one.
             // We should hide the share button.
             if (!modal) { return; }
-            modal = UI.dialog.tabs(modal);
             $shareBlock.click(function () {
-                UI.openCustomModal(modal, {
-                    wide: _wide
-                });
+                UI.openCustomModal(modal);
             });
             $container.append($shareBlock);
         };
@@ -4054,7 +4050,6 @@ define([
                 var parsed, modal;
                 var friends = common.getFriends();
                 var teams = common.getMetadataMgr().getPrivateData().teams;
-                var _wide = Object.keys(friends).length || Object.keys(teams).length;
 
                 if (manager.isFolder(el) && !manager.isSharedFolder(el)) { // Folder
                     // if folder is inside SF
@@ -4119,7 +4114,6 @@ define([
                     };
                     modal = padType === 'file' ? UIElements.createFileShareModal(padData)
                                             : UIElements.createShareModal(padData);
-                    modal = UI.dialog.tabs(modal);
                     UI.openCustomModal(modal);
                 }
             }
