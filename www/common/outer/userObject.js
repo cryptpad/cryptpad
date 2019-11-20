@@ -45,6 +45,8 @@ define([
             var ids = id ? [id] : exp.findChannels([channel]);
             ids.forEach(function (i) {
                 var data = exp.getFileData(i, true);
+                var oldHref = exp.getHref(data);
+                if (oldHref === href) { return; }
                 data.href = exp.cryptor.encrypt(href);
             });
         };

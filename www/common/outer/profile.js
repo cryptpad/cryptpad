@@ -20,11 +20,11 @@ define([
                 }
                 profile.edit = Hash.getEditHashFromKeys(secret);
                 profile.view = Hash.getViewHashFromKeys(secret);
-                cb();
+                setTimeout(cb);
             });
             return;
         }
-        cb();
+        setTimeout(cb);
     };
 
     var openChannel = function (ctx) {
