@@ -877,7 +877,7 @@ define([
             return friends[c].curvePublic.slice(0,8);
         });
 
-        var div = h('div.cp-share-column.contains-nav');
+        var div = h('div.contains-nav');
         var $div = $(div);
         // Replace "copy link" by "share with friends" if at least one friend is selected
         // Also create the "share with friends" button if it doesn't exist
@@ -1067,6 +1067,7 @@ define([
         // XXX remove LESS code for cp-share-columns if not using anymore
         //var mainShareColumn = h('div.cp-share-column.contains-nav', content);
         var link = h('div.cp-share-modal', content);
+
         var saveValue = function () {
             var edit = Util.isChecked($(link).find('#cp-share-editable-true'));
             var embed = Util.isChecked($(link).find('#cp-share-embed'));
@@ -1090,27 +1091,17 @@ define([
             return origin + parsed.getUrl({embed: embed, present: present});
         };
 
-        var cancelButton = {
-            className: 'cancel',
+        var makeCancelButton = function() {
+            return {className: 'cancel',
             name: Messages.cancel,
             onClick: function () {},
-            keys: [27]
+            keys: [27]};
         };
 
-        var linkButtons = [cancelButton];
-        var shareButtons = [{
-            className: 'primary',
-            name: Messages.share_linkCopy,
-            onClick: function () {
-                saveValue();
-                var v = getLinkValue();
-                var success = Clipboard.copy(v);
-                if (success) { UI.log(Messages.shareSuccess); }
-            },
-            keys: [13]
-        }];
+        var linkButtons = [makeCancelButton()];
+
         if (!config.sharedFolder) {
-            shareButtons.unshift({
+            linkButtons.push({
                 className: 'secondary', // XXX style this diferently than cancel
                 name: Messages.share_linkOpen,
                 onClick: function () {
@@ -1120,7 +1111,19 @@ define([
                 },
                 keys: [[13, 'ctrl']]
             });
-        }
+        };
+
+        linkButtons.push({
+                className: 'primary',
+                name: Messages.share_linkCopy,
+                onClick: function () {
+                    saveValue();
+                    var v = getLinkValue();
+                    var success = Clipboard.copy(v);
+                    if (success) { UI.log(Messages.shareSuccess); }
+                },
+                keys: [13]}
+        );
 
         var $link = $(link);
         
@@ -1138,10 +1141,6 @@ define([
         });
 
         // $link.append(UI.dialog.getButtons(shareButtons, config.onClose));
-        shareButtons.forEach(function(button){
-            linkButtons.push(button);
-        });
-        console.log(linkButtons);
 
         var frameLink = UI.dialog.customModal(link, {
             buttons: linkButtons,
@@ -1163,7 +1162,7 @@ define([
 
         $(friendsList).appendTo($contacts);
 
-        var contactButtons = [cancelButton]
+        var contactButtons = [makeCancelButton()]
 
         var frameContacts = UI.dialog.customModal(contacts, {
             buttons: contactButtons,
@@ -1184,7 +1183,7 @@ define([
             UI.dialog.selectable(getEmbedValue())
         ]);
         var embedButtons = [
-            cancelButton, {
+            makeCancelButton(), {
             className: 'primary',
             name: Messages.share_linkCopy,
             onClick: function () {

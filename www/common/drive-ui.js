@@ -4120,9 +4120,7 @@ define([
                     modal = padType === 'file' ? UIElements.createFileShareModal(padData)
                                             : UIElements.createShareModal(padData);
                     modal = UI.dialog.tabs(modal);
-                    UI.openCustomModal(modal, {
-                        wide: _wide
-                    });
+                    UI.openCustomModal(modal);
                 }
             }
             else if ($this.hasClass('cp-app-drive-context-savelocal')) {
