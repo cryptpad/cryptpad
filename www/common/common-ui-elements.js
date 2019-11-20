@@ -1165,11 +1165,11 @@ define([
             });
             return '<iframe src="' + url + '"></iframe>';
         };
-        var embedContent = h('div.cp-share-modal', [
+        var embedContent = [
             h('p', Messages.viewEmbedTag),
             h('br'),
-            UI.dialog.selectable(getEmbedValue())
-        ]);
+            UI.dialog.selectable(getEmbedValue(), { id: 'cp-embed-link-preview', tabindex: 1 })
+        ];
         var embedButtons = [
             makeCancelButton(), {
             className: 'primary',
@@ -1181,7 +1181,16 @@ define([
             },
             keys: [13]
         }];
-        var frameEmbed = UI.dialog.customModal(embedContent, {
+
+        var embed = h('div.cp-share-modal', embedContent);
+
+        // update values for link preview when radio btns change
+        $(embed).find('#cp-embed-link-preview').val(getEmbedValue());
+        $(rights).find('input[type="radio"]').on('change', function () {
+            $(embed).find('#cp-embed-link-preview').val(getEmbedValue());
+        });
+
+        var frameEmbed = UI.dialog.customModal(embed, {
             buttons: embedButtons,
             onClose: config.onClose,
         });
