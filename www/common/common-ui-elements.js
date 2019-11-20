@@ -864,7 +864,7 @@ define([
     };
 
 
-    var createShareWithFriends = function (config, onShare) {
+    var createShareWithFriends = function (config, onShare, linkGetter) {
         var common = config.common;
         var sframeChan = common.getSframeChannel();
         var title = config.title;
@@ -936,7 +936,8 @@ define([
             className: 'primary cp-share-with-friends',
             name: Messages.share_withFriends,
             onClick: function () {
-                var href = Hash.getRelativeHref($('#cp-share-link-preview').val());
+                var href = Hash.getRelativeHref(linkGetter());
+                console.log(href);
                 var $friends = $div.find('.cp-usergrid-user.cp-selected');
                 $friends.each(function (i, el) {
                     var curve = $(el).attr('data-curve');
@@ -1025,7 +1026,7 @@ define([
         };
     };
 
-    /// Share Modal Creation 
+    /// Share Modal Creation XXX remove this flag
     UIElements.createShareModal = function (config) {
         var origin = config.origin;
         var pathname = config.pathname;
@@ -1137,7 +1138,7 @@ define([
 
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
         var onFriendShare = Util.mkEvent();
-        var friendsObject = hasFriends ? createShareWithFriends(config, onFriendShare) : {
+        var friendsObject = hasFriends ? createShareWithFriends(config, onFriendShare, getLinkValue) : {
             content: h('p', Messages.share_noContacts),
             button: {}
         };
