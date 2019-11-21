@@ -191,6 +191,10 @@ define([
             if (!tab.content || !tab.title) { return; }
             var content = h('div.alertify-tabs-content', tab.content);
             var title = h('span.alertify-tabs-title', tab.title);
+            if (tab.icon) {
+                var icon = h('i', {class: 'fa ' + tab.icon});
+                $(title).prepend(' ').prepend(icon);
+            };
             $(title).click(function () {
                 titles.forEach(function (t) { $(t).removeClass('alertify-tabs-active'); });
                 contents.forEach(function (c) { $(c).removeClass('alertify-tabs-content-active'); });
