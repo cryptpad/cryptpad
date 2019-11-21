@@ -83,7 +83,7 @@ define([
     };
 
     SF.load = function (config, id, data, _cb) {
-        var cb = Util.once(_cb);
+        var cb = Util.once(Util.mkAsync(_cb));
         var network = config.network;
         var store = config.store;
         var isNew = config.isNew;
@@ -189,7 +189,7 @@ define([
                     return;
                 }
                 sf.teams.forEach(function (obj) {
-                    var leave = function () { SF.leave(secret.channel, teamId); };
+                    var leave = function () { SF.leave(secret.channel, obj.store.id); };
                     /*
                     var uo = obj.store.manager.addProxy(obj.id, rt, leave, obj.secondaryKey);
                     // NOTE: Shared folder migration, disable for now
@@ -301,6 +301,7 @@ define([
     */
     SF.loadSharedFolders = function (Store, network, store, userObject, waitFor) {
         var shared = Util.find(store.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
+        var w = waitFor();
         nThen(function (waitFor) {
             Object.keys(shared).forEach(function (id) {
                 var sf = shared[id];
@@ -311,7 +312,7 @@ define([
                 }, id, sf, waitFor());
             });
         }).nThen(function () {
-            setTimeout(waitFor());
+            setTimeout(w);
         });
     };
 
