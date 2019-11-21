@@ -209,14 +209,14 @@
             }
 
             ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-                color: darken(@alertify-input-fg, 15%);
+                color: @cryptpad_color_grey;
                 opacity: 1; /* Firefox */
             }
             :-ms-input-placeholder { /* Internet Explorer 10-11 */
-                color: darken(@alertify-input-fg, 15%);
+                color: @cryptpad_color_grey;
             }
             ::-ms-input-placeholder { /* Microsoft Edge */
-                color: darken(@alertify-input-fg, 15%);
+                color: @cryptpad_color_grey;
             }
             input:not(.form-control), textarea {
                 background-color: @alertify-input-fg;
@@ -226,6 +226,11 @@
                 width: 100%;
                 font-size: 100%;
                 padding: @alertify_padding-base;
+                &[readonly="readonly"]{
+                    background-color: @alertify-light-bg;
+                    color: @cryptpad_text_col;
+                    border-color: @alertify-input-fg;
+                }
             }
 
             span.cp-password-container {
