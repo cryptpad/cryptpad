@@ -2,7 +2,7 @@
 
 Cryptpad includes support for building a Docker image and running it to provide a Cryptpad instance. You can manage the container manually, or let Docker Compose manage it for you.
 
-A full tutorial is available [on the Cryptpad Github wiki](https://github.com/xwiki-labs/cryptpad/wiki/Docker-(with-Nginx-and-Traefik)). This document provides a brief overview.
+A full tutorial is available [on the Cryptpad Github wiki](https://github.com/xwiki-labs/cryptpad/wiki/Docker). This document provides a brief overview.
 
 ## Features
 
