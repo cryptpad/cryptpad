@@ -507,7 +507,8 @@
             }
         }
         .cp-toolbar-top {
-            @media screen and (max-width: @browser_media-medium-screen) {
+            @media screen and (max-width: @browser_media-medium-screen),
+                   screen and (max-height: 500px) {
                 flex-wrap: wrap;
                 height: @toolbar_line-height;
                 .cp-pad-not-pinned {
