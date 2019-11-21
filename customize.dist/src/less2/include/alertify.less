@@ -264,7 +264,7 @@
                 display: inline-block;
                 align-items: center;
                 padding: 0 6px;
-                //margin: 6px 8px;
+                margin: 6px 8px;
                 line-height: 36px;
                 min-height: 36px;
                 white-space: nowrap;
@@ -344,9 +344,9 @@
                 padding: @alertify_padding-base;
                 text-align: right;
                 button{
-                    margin:0px;
+                    margin:0px !important; // XXX was not overriding the button margin
                     &:not(:last-child) {
-                        margin-right: @alertify_padding-base;
+                        margin-right: @alertify_padding-base !important;
                       }
                 }
             }
