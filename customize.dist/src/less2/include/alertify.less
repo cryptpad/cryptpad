@@ -17,13 +17,14 @@
 
     @alertify-btn-fg: @alertify-fore;
 
+    @alertify-light-bg: fade(@alertify-fore, 25%);
     @alertify-bg: @colortheme_modal-dim;
     @alertify-fg: @alertify-fore;
 
     @alertify-input-bg: @colortheme_modal-input;
     @alertify-input-fg: @colortheme_modal-input-fg;
 
-    @alertify_padding-base: @variables_padding;
+    @alertify_padding-base: 8px; // XXX to align tab contents with buttons.  could change @variables-padding: 12px
     @alertify_box-shadow: @variables_shadow;
 
     // Logs to show that something has happened
@@ -158,33 +159,44 @@
                 margin-bottom: @alertify_padding-base;
                 margin: 0;
                 overflow: auto;
+                &.access-rights{
+                    .radio-group{
+                        display: flex;
+                        flex-direction: row;
+                        .cp-radio{
+                            margin-right: 30px;
+                        }
+                    }
+                }
             }
             .alertify-tabs {
                 max-height: 100%;
                 display: flex;
                 flex-flow: column;
                 .alertify-tabs-titles {
-                    height: 30px;
+                    height: 40px;
                     display: flex;
                     border-bottom: 1px solid @alertify-fore;
-                    margin-bottom: 20px;
+                    margin-bottom: 10px;
                     box-sizing: content-box;
                     span {
                         font-size: 20px;
-                        height: 30px;
-                        line-height: 30px;
+                        height: 40px;
+                        line-height: 40px;
                         box-sizing: border-box;
                         padding: 0 15px;
                         border-left: 1px solid lighten(@alertify-base, 10%);
                         border-right: 1px solid lighten(@alertify-base, 10%);
                         cursor: pointer;
+                        &:hover {
+                            background-color: @alertify-light-bg;
+                        }
                     }
                     span.alertify-tabs-active {
                         background-color: @alertify-fore;
                         border-left: 1px solid @alertify-fore;
                         border-right: 1px solid @alertify-fore;
                         color: @alertify-base;
-                        font-weight: bold;
                         cursor: default;
                     }
                 }

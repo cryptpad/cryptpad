@@ -899,7 +899,7 @@ define([
             delete friends[curve];
         });
 
-        var friendsList = UIElements.getUserGrid(Messages.share_linkFriends, {
+        var friendsList = UIElements.getUserGrid(null, {
             common: common,
             data: friends,
             noFilter: false
@@ -1038,17 +1038,16 @@ define([
         var parsed = Hash.parsePadUrl(pathname);
         var canPresent = ['code', 'slide'].indexOf(parsed.type) !== -1;
 
-        var rights = h('div.msg', [
+        var rights = h('div.msg.access-rights', [
             h('label', Messages.share_linkAccess),
             h('br'),
+            h('div.radio-group',[
             UI.createRadio('accessRights', 'cp-share-editable-false',
                            Messages.share_linkView, true, { mark: {tabindex:1} }),
             canPresent ? UI.createRadio('accessRights', 'cp-share-present',
                             Messages.share_linkPresent, false, { mark: {tabindex:1} }) : undefined,
             UI.createRadio('accessRights', 'cp-share-editable-true',
-                           Messages.share_linkEdit, false, { mark: {tabindex:1} }),
-        
-            h('br'),
+                           Messages.share_linkEdit, false, { mark: {tabindex:1} })])
         ]);
 
 
@@ -1203,12 +1202,15 @@ define([
         // Create modal
         var tabs = [{
             title: Messages.share_linkCategory,
+            icon: "fa-link",
             content: frameLink
         }, {
             title: Messages.share_contactCategory,
+            icon: "fa-address-book",
             content: frameContacts
         }, {
             title: Messages.share_embedCategory,
+            icon: "fa-code",
             content: frameEmbed
         }];
         if (typeof(AppConfig.customizeShareOptions) === 'function') {
