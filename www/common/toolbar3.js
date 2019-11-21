@@ -533,7 +533,7 @@ MessengerUI, Messages) {
         Common.getSframeChannel().event('EV_SHARE_OPEN', {
             hidden: true
         });
-        $shareBlock.ready(function () { // XXX put .click back when done
+        $shareBlock.click(function () { 
             var title = (config.title && config.title.getTitle && config.title.getTitle())
                         || (config.title && config.title.defaultName)
                         || "";
