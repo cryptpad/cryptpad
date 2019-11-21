@@ -24,7 +24,7 @@
     @alertify-input-bg: @colortheme_modal-input;
     @alertify-input-fg: @colortheme_modal-input-fg;
 
-    @alertify_padding-base: 8px; // XXX to align tab contents with buttons.  could change @variables-padding: 12px
+    @alertify_padding-base: @variables_padding; // XXX to align tab contents with buttons.  could change @variables-padding: 12px
     @alertify_box-shadow: @variables_shadow;
 
     // Logs to show that something has happened
@@ -219,10 +219,9 @@
                 color: darken(@alertify-input-fg, 15%);
             }
             input:not(.form-control), textarea {
-                background-color: @alertify-input-bg;
-                color: @alertify-input-fg;
-                border: 0px;
-
+                background-color: @alertify-input-fg;
+                color: @alertify-input-bg;
+                border: 1px solid @alertify-input-bg;
                 margin-bottom: 15px;
                 width: 100%;
                 font-size: 100%;
@@ -241,6 +240,7 @@
                     margin: 0 !important;
                 }
             }
+
 
             input[type="checkbox"], input[type="radio"] {
                 width: auto;
@@ -264,7 +264,7 @@
                 display: inline-block;
                 align-items: center;
                 padding: 0 6px;
-                margin: 6px 8px;
+                //margin: 6px 8px;
                 line-height: 36px;
                 min-height: 36px;
                 white-space: nowrap;
@@ -340,12 +340,15 @@
                 }
             }
 
-            button.btn {
-                margin: 6px 4px;
-            }
-
             nav {
+                padding: @alertify_padding-base;
                 text-align: right;
+                button{
+                    margin:0px;
+                    &:not(:last-child) {
+                        margin-right: @alertify_padding-base;
+                      }
+                }
             }
         }
     }
