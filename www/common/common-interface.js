@@ -192,7 +192,7 @@ define([
             var content = h('div.alertify-tabs-content', tab.content);
             var title = h('span.alertify-tabs-title', tab.title);
             if (tab.icon) {
-                var icon = h('i', {class: 'fa ' + tab.icon});
+                var icon = h('i', {class: tab.icon});
                 $(title).prepend(' ').prepend(icon);
             };
             $(title).click(function () {

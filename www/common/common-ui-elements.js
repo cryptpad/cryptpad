@@ -1202,15 +1202,15 @@ define([
         // Create modal
         var tabs = [{
             title: Messages.share_linkCategory,
-            icon: "fa-link",
+            icon: "fa fa-link",
             content: frameLink
         }, {
             title: Messages.share_contactCategory,
-            icon: "fa-address-book",
+            icon: "fa fa-address-book",
             content: frameContacts
         }, {
             title: Messages.share_embedCategory,
-            icon: "fa-code",
+            icon: "fa fa-code",
             content: frameEmbed
         }];
         if (typeof(AppConfig.customizeShareOptions) === 'function') {
