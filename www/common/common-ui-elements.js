@@ -1038,7 +1038,7 @@ define([
         var parsed = Hash.parsePadUrl(pathname);
         var canPresent = ['code', 'slide'].indexOf(parsed.type) !== -1;
 
-        var rights = h('div.msg.access-rights', [
+        var rights = h('div.msg.cp-inline-radio-group', [
             h('label', Messages.share_linkAccess),
             h('br'),
             h('div.radio-group',[
