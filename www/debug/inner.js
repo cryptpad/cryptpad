@@ -439,7 +439,12 @@ define([
             console.log(doc);
         };
 
-        config.onLocal = function () { };
+        var toRestore;
+
+        config.onLocal = function () {
+            if (!toRestore) { return; }
+            cpNfInner.chainpad.contentUpdate(toRestore);
+        };
 
         config.onInit = function (info) {
             Title = common.createTitle({});
@@ -463,6 +468,7 @@ define([
                 onRemote: config.onRemote,
                 setHistory: setHistory,
                 applyVal: function (val) {
+                    toRestore = val;
                     displayDoc(JSON.parse(val) || {});
                 },
                 $toolbar: $bar,
