@@ -1241,5 +1241,6 @@
     "teams_table_admins": "Gérer les membres",
     "teams_table_owners": "Gérer l'équipe",
     "teams_table_role": "Rôle",
-    "share_contactCategory": "Contacts"
+    "share_contactCategory": "Contacts",
+    "pad_wordCount": "Mots : {0}"
 }
