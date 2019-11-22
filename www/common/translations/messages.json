@@ -1241,5 +1241,6 @@
     "teams_table_specificHint": "These are older shared folders where viewers still have permission to edit existing pads. Pads created or copied into these folders will have standard permissions.",
     "teams_table_admins": "Manage members",
     "teams_table_owners": "Manage team",
-    "teams_table_role": "Role"
+    "teams_table_role": "Role",
+    "pad_wordCount": "Words: {0}"
 }
