@@ -348,7 +348,8 @@ define([
             if (!b.name || !b.onClick) { return; }
             var button = h('button', { tabindex: '1', 'class': b.className || '' }, b.name);
             $(button).click(function () {
-                b.onClick();
+                var noClose = b.onClick();
+                if (noClose) { return; }
                 var $modal = $(button).parents('.alertify').first();
                 if ($modal.length && $modal[0].closeModal) {
                     $modal[0].closeModal(function () {
