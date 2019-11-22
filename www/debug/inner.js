@@ -441,8 +441,8 @@ define([
 
         var toRestore;
 
-        config.onLocal = function () {
-            if (!toRestore) { return; }
+        config.onLocal = function (a, restore) {
+            if (!toRestore || !restore) { return; }
             cpNfInner.chainpad.contentUpdate(toRestore);
         };
 
@@ -464,7 +464,9 @@ define([
 
             /* add a history button */
             var histConfig = {
-                onLocal: config.onLocal,
+                onLocal: function () {
+                    config.onLocal(null, true);
+                },
                 onRemote: config.onRemote,
                 setHistory: setHistory,
                 applyVal: function (val) {
