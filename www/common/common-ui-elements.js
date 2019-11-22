@@ -1101,6 +1101,7 @@ define([
                     embed: Util.isChecked($(link).find('#cp-share-embed'))
                   });
                   window.open(v);
+                  return true;
               },
               keys: [[13, 'ctrl']]
             },
