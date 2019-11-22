@@ -683,6 +683,8 @@ define([
             }));
         }
 
+        // XXX problem with the hardcoded ": " here
+        // possibly duplicate translation keys 
         if (data.tags && Array.isArray(data.tags)) {
             $d.append(h('div.cp-app-prop', [Messages.fm_prop_tagsList, ': ', h('span.cp-app-prop-content', data.tags.join(', '))]));
         }
