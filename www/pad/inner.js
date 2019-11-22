@@ -616,6 +616,8 @@ define([
             var patch = (DD).diff(inner, userDocStateDom);
             (DD).apply(inner, patch);
 
+            editor.fire('cp-wc'); // Update word count
+
             // Restore cursor position
             var newText = inner.outerHTML;
             var ops = ChainPad.Diff.diff(oldText, newText);
@@ -835,8 +837,19 @@ define([
         inner.addEventListener('input', function () {
             framework.localChange();
             updateCursor();
+            editor.fire('cp-wc'); // Update word count
         });
         editor.on('change', framework.localChange);
+
+        var wordCount = h('span.cp-app-pad-wordCount');
+        $('.cke_toolbox_main').append(wordCount);
+        editor.on('cp-wc-update', function (event) {
+            if (!editor.wordCount || typeof (editor.wordCount.wordCount) === "undefined") {
+                wordCount.innerText = '';
+                return;
+            }
+            wordCount.innerText = Messages._getKey('pad_wordCount', [editor.wordCount.wordCount]);
+        });
 
         // export the typing tests to the window.
         // call like `test = easyTest()`

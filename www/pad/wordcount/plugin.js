@@ -17,43 +17,8 @@ CKEDITOR.plugins.add("wordcount",
                 lastWordCount = -1,
                 lastCharCount = -1,
                 lastParagraphs = -1,
-                limitReachedNotified = false,
-                limitRestoredNotified = false,
                 timeoutId = 0,
                 notification = null;
-
-
-            var dispatchEvent = function(type, currentLength, maxLength) {
-                if (typeof document.dispatchEvent == 'undefined') {
-                    return;
-                }
-
-                type = 'ckeditor.wordcount.' + type;
-
-                var cEvent;
-                var eventInitDict = {
-                    bubbles: false,
-                    cancelable: true,
-                    detail: {
-                        currentLength: currentLength,
-                        maxLength: maxLength
-                    }
-                };
-
-                try {
-                    cEvent = new CustomEvent(type, eventInitDict);
-                } catch (o_O) {
-                    cEvent = document.createEvent('CustomEvent');
-                    cEvent.initCustomEvent(
-                        type,
-                        eventInitDict.bubbles,
-                        eventInitDict.cancelable,
-                        eventInitDict.detail
-                    );
-                }
-
-                document.dispatchEvent(cEvent);
-            };
 
             // Default Config
             var defaultConfig = {
@@ -75,25 +40,6 @@ CKEDITOR.plugins.add("wordcount",
 
                 // Filter
                 filter: null,
-
-                // How long to show the 'paste' warning
-                pasteWarningDuration: 0,
-
-                //DisAllowed functions
-                wordCountGreaterThanMaxLengthEvent: function(currentLength, maxLength) {
-                    dispatchEvent('wordCountGreaterThanMaxLengthEvent', currentLength, maxLength);
-                },
-                charCountGreaterThanMaxLengthEvent: function(currentLength, maxLength) {
-                    dispatchEvent('charCountGreaterThanMaxLengthEvent', currentLength, maxLength);
-                },
-
-                //Allowed Functions
-                wordCountLessThanMaxLengthEvent: function(currentLength, maxLength) {
-                    dispatchEvent('wordCountLessThanMaxLengthEvent', currentLength, maxLength);
-                },
-                charCountLessThanMaxLengthEvent: function(currentLength, maxLength) {
-                    dispatchEvent('charCountLessThanMaxLengthEvent', currentLength, maxLength);
-                }
             };
 
             // Get Config & Lang
@@ -159,14 +105,6 @@ CKEDITOR.plugins.add("wordcount",
             var format = defaultFormat;
 
             bbcodePluginLoaded = typeof editor.plugins.bbcode != 'undefined';
-
-            function counterId(editorInstance) {
-                return "cke_wordcount_" + editorInstance.name;
-            }
-
-            function counterElement(editorInstance) {
-                return document.getElementById(counterId(editorInstance));
-            }
 
             function strip(html) {
                 if (bbcodePluginLoaded) {
@@ -270,38 +208,7 @@ CKEDITOR.plugins.add("wordcount",
                 return (words.length);
             }
 
-            function limitReached(editorInstance, notify) {
-                limitReachedNotified = true;
-                limitRestoredNotified = false;
-
-                if (!config.warnOnLimitOnly) {
-                    if (config.hardLimit) {
-                        editorInstance.execCommand('undo');
-                    }
-                }
-
-                if (!notify) {
-                    counterElement(editorInstance).className = "cke_path_item cke_wordcountLimitReached";
-                    editorInstance.fire("limitReached", { firedBy: "wordCount.limitReached" }, editor);
-                }
-            }
-
-            function limitRestored(editorInstance) {
-                limitRestoredNotified = true;
-                limitReachedNotified = false;
-
-                if (!config.warnOnLimitOnly) {
-                    editorInstance.fire('saveSnapshot');
-                }
-
-                counterElement(editorInstance).className = "cke_path_item";
-            }
-
             function updateCounter(editorInstance) {
-                if (!counterElement(editorInstance)) {
-                    return;
-                }
-
                 var paragraphs = 0,
                     wordCount = 0,
                     charCount = 0,
@@ -357,12 +264,6 @@ CKEDITOR.plugins.add("wordcount",
                 (editorInstance.config.wordcount || (editorInstance.config.wordcount = {})).wordCount = wordCount;
                 (editorInstance.config.wordcount || (editorInstance.config.wordcount = {})).charCount = charCount;
 
-                if (CKEDITOR.env.gecko) {
-                    counterElement(editorInstance).innerHTML = html;
-                } else {
-                    counterElement(editorInstance).innerText = html;
-                }
-
                 if (charCount == lastCharCount && wordCount == lastWordCount && paragraphs == lastParagraphs) {
                     if (charCount == config.maxCharCount || wordCount == config.maxWordCount || paragraphs > config.maxParagraphs) {
                         editorInstance.fire('saveSnapshot');
@@ -390,21 +291,6 @@ CKEDITOR.plugins.add("wordcount",
                     lastParagraphs = paragraphs;
                 }
 
-                // Check for word limit and/or char limit
-                if ((config.maxWordCount > -1 && wordCount > config.maxWordCount && deltaWord > 0) ||
-                    (config.maxCharCount > -1 && charCount > config.maxCharCount && deltaChar > 0) ||
-                    (config.maxParagraphs > -1 && paragraphs > config.maxParagraphs && deltaParagraphs > 0)) {
-
-                    limitReached(editorInstance, limitReachedNotified);
-                } else if ((config.maxWordCount == -1 || wordCount <= config.maxWordCount) &&
-                    (config.maxCharCount == -1 || charCount <= config.maxCharCount) &&
-                    (config.maxParagraphs == -1 || paragraphs <= config.maxParagraphs)) {
-
-                    limitRestored(editorInstance);
-                } else {
-                    editorInstance.fire('saveSnapshot');
-                }
-
                 // update instance
                 editorInstance.wordCount =
                 {
@@ -412,25 +298,7 @@ CKEDITOR.plugins.add("wordcount",
                     wordCount: wordCount,
                     charCount: charCount
                 };
-
-
-                // Fire Custom Events
-                if (config.charCountGreaterThanMaxLengthEvent && config.charCountLessThanMaxLengthEvent) {
-                    if (charCount > config.maxCharCount && config.maxCharCount > -1) {
-                        config.charCountGreaterThanMaxLengthEvent(charCount, config.maxCharCount);
-                    } else {
-                        config.charCountLessThanMaxLengthEvent(charCount, config.maxCharCount);
-                    }
-                }
-
-                if (config.wordCountGreaterThanMaxLengthEvent && config.wordCountLessThanMaxLengthEvent) {
-                    if (wordCount > config.maxWordCount && config.maxWordCount > -1) {
-                        config.wordCountGreaterThanMaxLengthEvent(wordCount, config.maxWordCount);
-
-                    } else {
-                        config.wordCountLessThanMaxLengthEvent(wordCount, config.maxWordCount);
-                    }
-                }
+                editor.fire('cp-wc-update');
 
                 return true;
             }
@@ -451,146 +319,12 @@ CKEDITOR.plugins.add("wordcount",
                 return false;
             }
 
-            editor.on("key",
-                function(event) {
-                    if (editor.mode === "source") {
-                        clearTimeout(timeoutId);
-                        timeoutId = setTimeout(
-                            updateCounter.bind(this, event.editor),
-                            250
-                        );
-                    }
-                },
-                editor,
-                null,
-                100);
-
-            editor.on("change",
-                function(event) {
-                    var ms = isCloseToLimits() ? 5 : 250;
-                    clearTimeout(timeoutId);
-                    timeoutId = setTimeout(
-                        updateCounter.bind(this, event.editor),
-                        ms
-                    );
-                },
-                editor,
-                null,
-                100);
-
-            editor.on("uiSpace",
-                function(event) {
-                    if (editor.elementMode === CKEDITOR.ELEMENT_MODE_INLINE) {
-                        if (event.data.space == "top") {
-                            event.data.html += "<div class=\"cke_wordcount\" style=\"\"" +
-                                " title=\"" +
-                                editor.lang.wordcount.title +
-                                "\"" +
-                                "><span id=\"" +
-                                counterId(event.editor) +
-                                "\" class=\"cke_path_item\">&nbsp;</span></div>";
-                        }
-                    } else {
-                        if (event.data.space == "bottom") {
-                            event.data.html += "<div class=\"cke_wordcount\" style=\"\"" +
-                                " title=\"" +
-                                editor.lang.wordcount.title +
-                                "\"" +
-                                "><span id=\"" +
-                                counterId(event.editor) +
-                                "\" class=\"cke_path_item\">&nbsp;</span></div>";
-                        }
-                    }
-
-                },
-                editor,
-                null,
-                100);
-
-            editor.on("dataReady",
-                function(event) {
-                    updateCounter(event.editor);
-                },
-                editor,
-                null,
-                100);
-
-            editor.on("paste",
-                function(event) {
-                    if (!config.warnOnLimitOnly && (config.maxWordCount > 0 || config.maxCharCount > 0 || config.maxParagraphs > 0)) {
-
-                        // Check if pasted content is above the limits
-                        var wordCount = -1,
-                            charCount = -1,
-                            paragraphs = -1;
-
-                        // BeforeGetData and getData events are fired when calling
-                        // getData(). We can prevent this by passing true as an
-                        // argument to getData(). This allows us to fire the events
-                        // manually with additional event data: firedBy. This additional
-                        // data helps differentiate calls to getData() made by
-                        // wordCount plugin from calls made by other plugins/code.
-                        event.editor.fire("beforeGetData", { firedBy: "wordCount.onPaste" }, event.editor);
-                        var text = event.editor.getData(true);
-                        event.editor.fire("getData", { dataValue: text, firedBy: "wordCount.onPaste" }, event.editor);
-
-                        text += event.data.dataValue;
-
-                        if (config.showCharCount) {
-                            charCount = countCharacters(text);
-                        }
-
-                        if (config.showWordCount) {
-                            wordCount = countWords(text);
-                        }
-
-                        if (config.showParagraphs) {
-                            paragraphs = countParagraphs(text);
-                        }
-
-
-                        // Instantiate the notification when needed and only have one instance
-                        if (notification === null) {
-                            notification = new CKEDITOR.plugins.notification(event.editor,
-                                {
-                                    message: event.editor.lang.wordcount.pasteWarning,
-                                    type: 'warning',
-                                    duration: config.pasteWarningDuration
-                                });
-                        }
-
-                        if (config.maxCharCount > 0 && charCount > config.maxCharCount && config.hardLimit) {
-                            if (!notification.isVisible()) {
-                                notification.show();
-                            }
-                            event.cancel();
-                        }
-
-                        if (config.maxWordCount > 0 && wordCount > config.maxWordCount && config.hardLimit) {
-                            if (!notification.isVisible()) {
-                                notification.show();
-                            }
-                            event.cancel();
-                        }
-
-                        if (config.maxParagraphs > 0 && paragraphs > config.maxParagraphs && config.hardLimit) {
-                            if (!notification.isVisible()) {
-                                notification.show();
-                            }
-                            event.cancel();
-                        }
-                    }
-                },
-                editor,
-                null,
-                100);
-
-            editor.on("afterPaste",
-                function(event) {
-                    updateCounter(event.editor);
-                },
-                editor,
-                null,
-                100);
+            editor.on('cp-wc', function(event) {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(
+                    updateCounter.bind(this, event.editor),
+                    250
+                );
+            }, editor, null, 250);
         }
     });
