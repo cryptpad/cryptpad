@@ -949,6 +949,7 @@ define([
                 };
                 Ckeditor.plugins.addExternal('mediatag','/pad/', 'mediatag-plugin.js');
                 Ckeditor.plugins.addExternal('blockbase64','/pad/', 'disable-base64.js');
+                Ckeditor.plugins.addExternal('wordcount','/pad/wordcount/', 'plugin.js');
                 module.ckeditor = editor = Ckeditor.replace('editor1', {
                     customConfig: '/customize/ckeditor-config.js',
                 });
