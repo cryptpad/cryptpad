@@ -146,7 +146,7 @@ define([
             type: 'text',
             'class': 'cp-text-input',
         }, opt);
-        return h('input', attrs);
+        return h('p.msg', h('input', attrs));
     };
 
     dialog.nav = function (content) {
