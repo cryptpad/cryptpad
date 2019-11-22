@@ -1142,7 +1142,7 @@ define([
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
         var onFriendShare = Util.mkEvent();
         var friendsObject = hasFriends ? createShareWithFriends(config, onFriendShare, getLinkValue) : {
-            content: h('p', Messages.share_noContacts),
+            content: h('p', Messages.team_noFriend),
             button: {}
         };
         var friendsList = friendsObject.content;
