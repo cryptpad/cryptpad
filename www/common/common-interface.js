@@ -1007,6 +1007,7 @@ define([
             if (e.which === 32) {
                 e.stopPropagation();
                 e.preventDefault();
+                if ($(input).is(':checked')) { return; }
                 $(input).prop('checked', !$(input).is(':checked'));
                 $(input).change();
             }
