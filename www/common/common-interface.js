@@ -146,7 +146,7 @@ define([
             type: 'text',
             'class': 'cp-text-input',
         }, opt);
-        return h('input', attrs);
+        return h('p.msg', h('input', attrs));
     };
 
     dialog.nav = function (content) {
@@ -191,6 +191,10 @@ define([
             if (!tab.content || !tab.title) { return; }
             var content = h('div.alertify-tabs-content', tab.content);
             var title = h('span.alertify-tabs-title', tab.title);
+            if (tab.icon) {
+                var icon = h('i', {class: tab.icon});
+                $(title).prepend(' ').prepend(icon);
+            }
             $(title).click(function () {
                 titles.forEach(function (t) { $(t).removeClass('alertify-tabs-active'); });
                 contents.forEach(function (c) { $(c).removeClass('alertify-tabs-content-active'); });
@@ -344,7 +348,8 @@ define([
             if (!b.name || !b.onClick) { return; }
             var button = h('button', { tabindex: '1', 'class': b.className || '' }, b.name);
             $(button).click(function () {
-                b.onClick();
+                var noClose = b.onClick();
+                if (noClose) { return; }
                 var $modal = $(button).parents('.alertify').first();
                 if ($modal.length && $modal[0].closeModal) {
                     $modal[0].closeModal(function () {

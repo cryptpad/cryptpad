@@ -15,6 +15,7 @@
 @import (reference) "./messenger.less";
 @import (reference) "./cursor.less";
 @import (reference) "./usergrid.less";
+@import (reference) "./modals-ui-elements.less";
 
 .framework_main(@bg-color, @warn-color, @color) {
     --LessLoader_require: LessLoader_currentFile();
@@ -32,6 +33,7 @@
         @color: @color
     );
     .alertify_main();
+    .modals-ui-elements_main();
     .corner_main();
     .contextmenu_main();
     .fileupload_main();
@@ -70,6 +72,7 @@
     );
     .fileupload_main();
     .alertify_main();
+    .modals-ui-elements_main();
     .corner_main();
     .contextmenu_main();
     .tippy_main();
