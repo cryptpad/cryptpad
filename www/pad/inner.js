@@ -843,7 +843,7 @@ define([
 
         var wordCount = h('span.cp-app-pad-wordCount');
         $('.cke_toolbox_main').append(wordCount);
-        editor.on('cp-wc-update', function (event) {
+        editor.on('cp-wc-update', function () {
             if (!editor.wordCount || typeof (editor.wordCount.wordCount) === "undefined") {
                 wordCount.innerText = '';
                 return;
