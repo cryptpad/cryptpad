@@ -38,8 +38,6 @@ define([
                                           : UIElements.createShareModal;
 
             var friends = common.getFriends();
-            var teams = priv.teams;
-            var _wide = Object.keys(friends).length || Object.keys(teams).length;
 
             var modal = f({
                 origin: origin,

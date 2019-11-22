@@ -918,7 +918,6 @@ define([
             name: Messages.share_withFriends,
             onClick: function () {
                 var href = Hash.getRelativeHref(linkGetter());
-                console.log(href);
                 var $friends = $div.find('.cp-usergrid-user.cp-selected');
                 $friends.each(function (i, el) {
                     var curve = $(el).attr('data-curve');
@@ -1007,7 +1006,6 @@ define([
         };
     };
 
-    /// Share Modal Creation XXX remove this flag
     UIElements.createShareModal = function (config) {
         var origin = config.origin;
         var pathname = config.pathname;
@@ -1031,10 +1029,11 @@ define([
                            Messages.share_linkEdit, false, { mark: {tabindex:1} })])
         ]);
 
+        var $rights = $(rights);
 
         var saveValue = function () {
-            var edit = Util.isChecked($(rights).find('#cp-share-editable-true'));
-            var present = Util.isChecked($(rights).find('#cp-share-present'));
+            var edit = Util.isChecked($rights.find('#cp-share-editable-true'));
+            var present = Util.isChecked($rights.find('#cp-share-present'));
             common.setAttribute(['general', 'share'], {
                 edit: edit,
                 present: present
@@ -1043,9 +1042,9 @@ define([
         
         var getLinkValue = function (initValue) {
             var val = initValue || {};
-            var edit = val.edit !== undefined ? val.edit : Util.isChecked($(rights).find('#cp-share-editable-true'));
+            var edit = val.edit !== undefined ? val.edit : Util.isChecked($rights.find('#cp-share-editable-true'));
             var embed = val.embed;
-            var present = val.present !== undefined ? val.present : Util.isChecked($(rights).find('#cp-share-present'));
+            var present = val.present !== undefined ? val.present : Util.isChecked($rights.find('#cp-share-present'));
             var hash = (!hashes.viewHash || (edit && hashes.editHash)) ? hashes.editHash : hashes.viewHash;
             var href = origin + pathname + '#' + hash;
             var parsed = Hash.parsePadUrl(href);
@@ -1053,10 +1052,12 @@ define([
         };
 
         var makeCancelButton = function() {
-            return {className: 'cancel',
-            name: Messages.cancel,
-            onClick: function () {},
-            keys: [27]};
+            return {
+                className: 'cancel',
+                name: Messages.cancel,
+                onClick: function () {},
+                keys: [27]
+            };
         };
 
         // Share link tab
@@ -1070,6 +1071,7 @@ define([
         linkContent.push(UI.dialog.selectable('', { id: 'cp-share-link-preview', tabindex: 1 }));
 
         var link = h('div.cp-share-modal', linkContent);
+        var $link = $(link);
 
         var linkButtons = [
             makeCancelButton(),
@@ -1079,9 +1081,10 @@ define([
               onClick: function () {
                   saveValue();
                   var v = getLinkValue({
-                    embed: Util.isChecked($(link).find('#cp-share-embed'))
+                    embed: Util.isChecked($link.find('#cp-share-embed'))
                   });
                   window.open(v);
+                  return true;
               },
               keys: [[13, 'ctrl']]
             },
@@ -1091,7 +1094,7 @@ define([
               onClick: function () {
                   saveValue();
                   var v = getLinkValue({
-                    embed: Util.isChecked($(link).find('#cp-share-embed'))
+                    embed: Util.isChecked($link.find('#cp-share-embed'))
                   });
                   var success = Clipboard.copy(v);
                   if (success) { UI.log(Messages.shareSuccess); }
@@ -1101,15 +1104,15 @@ define([
           ];
 
         // update values for link preview when radio btns change
-        $(link).find('#cp-share-link-preview').val(getLinkValue());
-        $(rights).find('input[type="radio"]').on('change', function () {
-            $(link).find('#cp-share-link-preview').val(getLinkValue({
-                embed: Util.isChecked($(link).find('#cp-share-embed'))
+        $link.find('#cp-share-link-preview').val(getLinkValue());
+        $rights.find('input[type="radio"]').on('change', function () {
+            $link.find('#cp-share-link-preview').val(getLinkValue({
+                embed: Util.isChecked($link.find('#cp-share-embed'))
             }));
         });
-        $(link).find('input[type="checkbox"]').on('change', function () {
-            $(link).find('#cp-share-link-preview').val(getLinkValue({
-                embed: Util.isChecked($(link).find('#cp-share-embed'))
+        $link.find('input[type="checkbox"]').on('change', function () {
+            $link.find('#cp-share-link-preview').val(getLinkValue({
+                embed: Util.isChecked($link.find('#cp-share-embed'))
             }));
         });
 
@@ -1123,7 +1126,7 @@ define([
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
         var onFriendShare = Util.mkEvent();
         var friendsObject = hasFriends ? createShareWithFriends(config, onFriendShare, getLinkValue) : {
-            content: h('p', Messages.share_noContacts),
+            content: h('p', Messages.team_noFriend),
             button: {}
         };
         var friendsList = friendsObject.content;
@@ -1131,7 +1134,6 @@ define([
         onFriendShare.reg(saveValue);
 
         // XXX Don't display access rights if no contacts 
-        /// var contactsAccessRights = hasFriends ? createAccessRights('contact-rights') : '';
         var contactsContent = h('div.cp-share-modal');
         $(contactsContent).append(friendsList);
 
@@ -1171,7 +1173,7 @@ define([
 
         // update values for link preview when radio btns change
         $(embed).find('#cp-embed-link-preview').val(getEmbedValue());
-        $(rights).find('input[type="radio"]').on('change', function () {
+        $rights.find('input[type="radio"]').on('change', function () {
             $(embed).find('#cp-embed-link-preview').val(getEmbedValue());
         });
 
@@ -1208,41 +1210,41 @@ define([
         // XXX
         // disable edit share options if you don't have edit rights 
         if (!hashes.editHash) {
-            $(rights).find('#cp-share-editable-false').attr('checked', true);
-            $(rights).find('#cp-share-editable-true').removeAttr('checked').attr('disabled', true);
+            $rights.find('#cp-share-editable-false').attr('checked', true);
+            $rights.find('#cp-share-editable-true').removeAttr('checked').attr('disabled', true);
         } else if (!hashes.viewHash) {
-            $(rights).find('#cp-share-editable-false').removeAttr('checked').attr('disabled', true);
-            $(rights).find('#cp-share-present').removeAttr('checked').attr('disabled', true);
-            $(rights).find('#cp-share-editable-true').attr('checked', true);
+            $rights.find('#cp-share-editable-false').removeAttr('checked').attr('disabled', true);
+            $rights.find('#cp-share-present').removeAttr('checked').attr('disabled', true);
+            $rights.find('#cp-share-editable-true').attr('checked', true);
         }
 
         common.getAttribute(['general', 'share'], function (err, val) {
             val = val || {};
             if (val.present && canPresent) {
-                $(rights).find('#cp-share-editable-false').prop('checked', false);
-                $(rights).find('#cp-share-editable-true').prop('checked', false);
-                $(rights).find('#cp-share-present').prop('checked', true);
+                $rights.find('#cp-share-editable-false').prop('checked', false);
+                $rights.find('#cp-share-editable-true').prop('checked', false);
+                $rights.find('#cp-share-present').prop('checked', true);
             } else if ((val.edit === false && hashes.viewHash) || !hashes.editHash) {
-                $(rights).find('#cp-share-editable-false').prop('checked', true);
-                $(rights).find('#cp-share-editable-true').prop('checked', false);
-                $(rights).find('#cp-share-present').prop('checked', false);
+                $rights.find('#cp-share-editable-false').prop('checked', true);
+                $rights.find('#cp-share-editable-true').prop('checked', false);
+                $rights.find('#cp-share-present').prop('checked', false);
             } else {
-                $(rights).find('#cp-share-editable-true').prop('checked', true);
-                $(rights).find('#cp-share-editable-false').prop('checked', false);
-                $(rights).find('#cp-share-present').prop('checked', false);
+                $rights.find('#cp-share-editable-true').prop('checked', true);
+                $rights.find('#cp-share-editable-false').prop('checked', false);
+                $rights.find('#cp-share-present').prop('checked', false);
             }
             delete val.embed;
             if (!canPresent) {
                 delete val.present;
             }
-            $(link).find('#cp-share-link-preview').val(getLinkValue(val));
+            $link.find('#cp-share-link-preview').val(getLinkValue(val));
         });
         common.getMetadataMgr().onChange(function () {
             // "hashes" is only available is the secure "share" app
             var _hashes = common.getMetadataMgr().getPrivateData().hashes;
             if (!_hashes) { return; }
             hashes = _hashes;
-            $(link).find('#cp-share-link-preview').val(getLinkValue());
+            $link.find('#cp-share-link-preview').val(getLinkValue());
         });
         return modal;
     };
@@ -1281,7 +1283,8 @@ define([
                 onClick: function () {
                     var v = getLinkValue();
                     var success = Clipboard.copy(v);
-                    if (success) { UI.log(Messages.shareSuccess); }
+                    if (success) { UI.log(Messages.shareSuccess); 
+                }
               },
               keys: [13]
             }
