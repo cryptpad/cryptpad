@@ -2559,7 +2559,6 @@ define([
             var roParsed = Hash.parsePadUrl(data.roHref) || {};
             if (!parsed.hash && !roParsed.hash) { return void console.error("Invalid href: "+(data.href || data.roHref)); }
             var friends = common.getFriends();
-            var teams = common.getMetadataMgr().getPrivateData().teams;
             var ro = folders[id] && folders[id].version >= 2;
             var modal = UIElements.createShareModal({
                 teamId: APP.team,
@@ -4049,7 +4048,6 @@ define([
                 el = manager.find(paths[0].path);
                 var parsed, modal;
                 var friends = common.getFriends();
-                var teams = common.getMetadataMgr().getPrivateData().teams;
 
                 if (manager.isFolder(el) && !manager.isSharedFolder(el)) { // Folder
                     // if folder is inside SF

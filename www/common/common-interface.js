@@ -194,7 +194,7 @@ define([
             if (tab.icon) {
                 var icon = h('i', {class: tab.icon});
                 $(title).prepend(' ').prepend(icon);
-            };
+            }
             $(title).click(function () {
                 titles.forEach(function (t) { $(t).removeClass('alertify-tabs-active'); });
                 contents.forEach(function (c) { $(c).removeClass('alertify-tabs-content-active'); });
