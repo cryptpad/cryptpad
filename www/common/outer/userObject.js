@@ -167,7 +167,6 @@ define([
                         if (fd.rtChannel) {
                             removeOwnedChannel(fd.rtChannel, function () {});
                         }
-                        // XXX fd.lastVersion to delete the encrypted cp?
                     }
                     if (fd.lastVersion) { toClean.push(Hash.hrefToHexChannelId(fd.lastVersion)); }
                     if (fd.rtChannel) { toClean.push(fd.rtChannel); }
