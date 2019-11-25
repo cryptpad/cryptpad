@@ -789,7 +789,7 @@ define([
         });
 
         var div = h('div.cp-usergrid-container' + noOthers, [
-            h('label', label),
+            label ? h('label', label) : undefined,
             h('div.cp-usergrid-filter', (config.noFilter || config.noSelect) ? undefined : [
                 inputFilter,
                 buttonSelect,
