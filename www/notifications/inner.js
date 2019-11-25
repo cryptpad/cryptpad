@@ -93,6 +93,10 @@ define([
                     return ud.content.hash === data.content.hash;
                 });
                 notifsData.push(data);
+                if (data.content.msg.type === 'REQUEST_PAD_ACCESS') { return; } // FIXME find a way to display this notifications wihtout knowing the title
+                if (data.content.msg.type === 'INVITE_TO_TEAM_ANSWER') { console.log(data); }
+                if (data.content.msg.type === 'INVITE_TO_TEAM_ANSWER'
+                    && !data.content.msg.content.teamName) { return; } // FIXME find a way to display this notifications wihtout knowing the team name
                 var el = common.mailbox.createElement(data);
                 var time = new Date(data.content.time);
                 $(el).find(".cp-notification-content").append(h("span.notification-time", time.toLocaleString()));

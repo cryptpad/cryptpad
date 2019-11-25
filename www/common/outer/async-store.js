@@ -575,7 +575,8 @@ define([
                     support: Util.find(store.proxy, ['mailboxes', 'support', 'channel']),
                     pendingFriends: store.proxy.friends_pending || {},
                     supportPrivateKey: Util.find(store.proxy, ['mailboxes', 'supportadmin', 'keys', 'curvePrivate']),
-                    teams: teams
+                    teams: teams,
+                    plan: account.plan
                 }
             };
             cb(JSON.parse(JSON.stringify(metadata)));

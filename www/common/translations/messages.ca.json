@@ -170,7 +170,6 @@
     "viewOpenTitle": "Obre aquest document en mode només de lectura en una pestanya nova",
     "fileShare": "Copia l'enllaç",
     "getEmbedCode": "Obté el codi d'incrustat",
-    "viewEmbedTitle": "Inscrusta el document en una pàgina externa",
     "viewEmbedTag": "Per incrustar aquest document, poseu aquest iframe allà on vulgueu de la vostra pàgina. Podeu donar-li l'estil desitjat utilitzant els atributs CSS o HTML.",
     "fileEmbedTitle": "Incrusta el fitxer en una pàgina externa",
     "fileEmbedScript": "Per incrustar aquest fitxer, poseu aquest script un cop a la vostra pàgina per carregar l'Etiqueta Multimèdia:",

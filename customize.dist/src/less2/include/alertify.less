@@ -17,6 +17,7 @@
 
     @alertify-btn-fg: @alertify-fore;
 
+    @alertify-light-bg: fade(@alertify-fore, 25%);
     @alertify-bg: @colortheme_modal-dim;
     @alertify-fg: @alertify-fore;
 
@@ -164,27 +165,29 @@
                 display: flex;
                 flex-flow: column;
                 .alertify-tabs-titles {
-                    height: 30px;
+                    height: 40px;
                     display: flex;
                     border-bottom: 1px solid @alertify-fore;
-                    margin-bottom: 20px;
+                    margin-bottom: 10px;
                     box-sizing: content-box;
                     span {
                         font-size: 20px;
-                        height: 30px;
-                        line-height: 30px;
+                        height: 40px;
+                        line-height: 40px;
                         box-sizing: border-box;
                         padding: 0 15px;
                         border-left: 1px solid lighten(@alertify-base, 10%);
                         border-right: 1px solid lighten(@alertify-base, 10%);
                         cursor: pointer;
+                        &:hover {
+                            background-color: @alertify-light-bg;
+                        }
                     }
                     span.alertify-tabs-active {
                         background-color: @alertify-fore;
                         border-left: 1px solid @alertify-fore;
                         border-right: 1px solid @alertify-fore;
                         color: @alertify-base;
-                        font-weight: bold;
                         cursor: default;
                     }
                 }
@@ -206,24 +209,28 @@
             }
 
             ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-                color: darken(@alertify-input-fg, 15%);
+                color: @cryptpad_color_grey;
                 opacity: 1; /* Firefox */
             }
             :-ms-input-placeholder { /* Internet Explorer 10-11 */
-                color: darken(@alertify-input-fg, 15%);
+                color: @cryptpad_color_grey;
             }
             ::-ms-input-placeholder { /* Microsoft Edge */
-                color: darken(@alertify-input-fg, 15%);
+                color: @cryptpad_color_grey;
             }
             input:not(.form-control), textarea {
-                background-color: @alertify-input-bg;
-                color: @alertify-input-fg;
-                border: 0px;
-
+                background-color: @alertify-input-fg;
+                color: @cryptpad_text_col;
+                border: 1px solid @alertify-input-bg;
                 margin-bottom: 15px;
                 width: 100%;
                 font-size: 100%;
                 padding: @alertify_padding-base;
+                &[readonly] {
+                    background-color: @alertify-light-bg;
+                    color: @cryptpad_text_col;
+                    border-color: @alertify-input-fg;
+                }
             }
 
             span.cp-password-container {
@@ -238,6 +245,7 @@
                     margin: 0 !important;
                 }
             }
+
 
             input[type="checkbox"], input[type="radio"] {
                 width: auto;
@@ -274,10 +282,14 @@
                 border-radius: 0;
 
                 color: @alertify-btn-fg;
-                border: 1px solid @colortheme_alertify-cancel-border;
+                border: 1px solid @alertify-btn-fg;
 
                 &.no-margin {
                     margin: 0;
+                }
+
+                &:hover, &:active {
+                    background-color: @alertify-light-bg;
                 }
 
                 &.safe, &.danger {
@@ -313,9 +325,15 @@
                     }
                 }
 
-                &:hover, &:active {
-                    background-color: contrast(@colortheme_modal-bg, darken(@colortheme_alertify-cancel, 10%), lighten(@colortheme_alertify-cancel, 10%));
+                &.cancel {
+                    border-color: @colortheme_alertify-cancel-border;
+                    color: @colortheme_alertify-cancel-border;
+                    &:hover, &:hover {
+                        background-color: fade(@colortheme_alertify-cancel-border, 25%);
+                    }
                 }
+
+
 
                 &:focus {
                     //border: 1px dotted @alertify-base;
@@ -337,12 +355,15 @@
                 }
             }
 
-            button.btn {
-                margin: 6px 4px;
-            }
-
             nav {
+                padding: @alertify_padding-base;
                 text-align: right;
+                button {
+                    margin: 0px !important;
+                    &:not(:last-child) {
+                        margin-right: @alertify_padding-base !important;
+                      }
+                }
             }
         }
     }

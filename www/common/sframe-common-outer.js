@@ -206,7 +206,7 @@ define([
                 //        2c: 'view' pad and '/p/' and a wrong password stored --> the seed is incorrect
                 //        2d: 'view' pad and '/p/' and password never stored (security feature) --> password-prompt
 
-                var askPassword = function (wrongPasswordStored) {
+                var askPassword = function (wrongPasswordStored, cfg) {
                     // Ask for the password and check if the pad exists
                     // If the pad doesn't exist, it means the password isn't correct
                     // or the pad has been deleted
@@ -249,11 +249,14 @@ define([
                         // Not a file, so we can use `isNewChannel`
                         Cryptpad.isNewChannel(window.location.href, password, next);
                     });
-                    sframeChan.event("EV_PAD_PASSWORD");
+                    sframeChan.event("EV_PAD_PASSWORD", cfg);
                 };
 
                 var done = waitFor();
                 var stored = false;
+                var passwordCfg = {
+                    value: ''
+                };
                 nThen(function (w) {
                     Cryptpad.getPadAttribute('title', w(function (err, data) {
                         stored = (!err && typeof (data) === "string");
@@ -263,7 +266,7 @@ define([
                     }), parsed.getUrl());
                 }).nThen(function (w) {
                     if (!password && !stored && sessionStorage.newPadPassword) {
-                        password = sessionStorage.newPadPassword;
+                        passwordCfg.value = sessionStorage.newPadPassword;
                         delete sessionStorage.newPadPassword;
                     }
 
@@ -273,7 +276,7 @@ define([
                         Cryptpad.getFileSize(window.location.href, password, w(function (e, size) {
                             if (size !== 0) { return void todo(); }
                             // Wrong password or deleted file?
-                            askPassword(true);
+                            askPassword(true, passwordCfg);
                         }));
                         return;
                     }
@@ -292,7 +295,7 @@ define([
                             return void todo();
                         }
                         // Wrong password or deleted file?
-                        askPassword(true);
+                        askPassword(true, passwordCfg);
                     }));
                 }).nThen(done);
             }
@@ -363,7 +366,6 @@ define([
                             donateURL: Cryptpad.donateURL,
                             upgradeURL: Cryptpad.upgradeURL
                         },
-                        plan: localStorage[Utils.Constants.plan],
                         isNewFile: isNewFile,
                         isDeleted: isNewFile && window.location.hash.length > 0,
                         forceCreationScreen: forceCreationScreen,

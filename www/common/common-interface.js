@@ -146,7 +146,7 @@ define([
             type: 'text',
             'class': 'cp-text-input',
         }, opt);
-        return h('input', attrs);
+        return h('p.msg', h('input', attrs));
     };
 
     dialog.nav = function (content) {
@@ -191,6 +191,10 @@ define([
             if (!tab.content || !tab.title) { return; }
             var content = h('div.alertify-tabs-content', tab.content);
             var title = h('span.alertify-tabs-title', tab.title);
+            if (tab.icon) {
+                var icon = h('i', {class: tab.icon});
+                $(title).prepend(' ').prepend(icon);
+            }
             $(title).click(function () {
                 titles.forEach(function (t) { $(t).removeClass('alertify-tabs-active'); });
                 contents.forEach(function (c) { $(c).removeClass('alertify-tabs-content-active'); });
@@ -344,7 +348,8 @@ define([
             if (!b.name || !b.onClick) { return; }
             var button = h('button', { tabindex: '1', 'class': b.className || '' }, b.name);
             $(button).click(function () {
-                b.onClick();
+                var noClose = b.onClick();
+                if (noClose) { return; }
                 var $modal = $(button).parents('.alertify').first();
                 if ($modal.length && $modal[0].closeModal) {
                     $modal[0].closeModal(function () {
@@ -590,9 +595,10 @@ define([
         }, opts);
 
         var input = h('input.cp-password-input', attributes);
-        var reveal = UI.createCheckbox('cp-password-reveal', Messages.password_show);
+        //var reveal = UI.createCheckbox('cp-password-reveal', Messages.password_show);
         var eye = h('span.fa.fa-eye.cp-password-reveal');
 
+        /*
         $(reveal).find('input').on('change', function () {
             if($(this).is(':checked')) {
                 $(input).prop('type', 'text');
@@ -602,26 +608,41 @@ define([
             $(input).prop('type', 'password');
             $(input).focus();
         });
+        */
 
-        $(eye).mousedown(function () {
-            $(input).prop('type', 'text');
-            $(input).focus();
-        }).mouseup(function(){
-            $(input).prop('type', 'password');
-            $(input).focus();
-        }).mouseout(function(){
-            $(input).prop('type', 'password');
-            $(input).focus();
-        });
         if (displayEye) {
+            $(eye).mousedown(function () {
+                $(input).prop('type', 'text');
+                $(input).focus();
+            }).mouseup(function(){
+                $(input).prop('type', 'password');
+                $(input).focus();
+            }).mouseout(function(){
+                $(input).prop('type', 'password');
+                $(input).focus();
+            });
+        } else {
+            $(eye).click(function () {
+                if ($(this).hasClass('fa-eye')) {
+                    $(input).prop('type', 'text');
+                    $(input).focus();
+                    $(this).removeClass('fa-eye').addClass('fa-eye-slash');
+                    return;
+                }
+                $(input).prop('type', 'password');
+                $(input).focus();
+                $(this).removeClass('fa-eye-slash').addClass('fa-eye');
+            });
+        }
+        /*if (displayEye) {
             $(reveal).hide();
         } else {
             $(eye).hide();
-        }
+        }*/
 
         return h('span.cp-password-container', [
             input,
-            reveal,
+            //reveal,
             eye
         ]);
     };
@@ -991,6 +1012,7 @@ define([
             if (e.which === 32) {
                 e.stopPropagation();
                 e.preventDefault();
+                if ($(input).is(':checked')) { return; }
                 $(input).prop('checked', !$(input).is(':checked'));
                 $(input).change();
             }

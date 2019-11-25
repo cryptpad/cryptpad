@@ -399,18 +399,24 @@ define([
             try {
                 var el = getSelectedElement();
                 var input = $(el).is('input') ? el : $(el).find('input')[0];
-                var $item = $(el).closest('.kanban-item');
+                if (!input) { return; }
+                var $input = $(input);
 
-                var pos = kanban.findElementPosition($item[0]);
-                var board = $item.closest('.kanban-board').attr('data-id');
-                var val = ($(input).val && $(input).val()) || '';
+                var pos;
+                var $item = $(el).closest('.kanban-item');
+                if ($item.length) {
+                    pos = kanban.findElementPosition($item[0]);
+                }
+                var board = $input.closest('.kanban-board').attr('data-id');
+                var val = ($input.val && $input.val()) || '';
                 var start = input.selectionStart;
                 var end = input.selectionEnd;
+
 
                 var boardEl = kanban.options.boards.find(function (b) {
                     return b.id === board;
                 });
-                var oldVal = boardEl.item[pos] || {};
+                var oldVal = ((pos ? boardEl.item[pos] : boardEl) || {}).title;
 
                 return {
                     board: board,
@@ -418,7 +424,7 @@ define([
                     value: val,
                     start: start,
                     end: end,
-                    oldValue: oldVal.title
+                    oldValue: oldVal
                 };
             } catch (e) {
                 return {};
@@ -431,9 +437,25 @@ define([
                 });
                 if (!boardEl) { return; }
 
+                var $board = $('.kanban-board[data-id="'+data.board+'"');
+
+                // Editing a board title...
+                if (!data.pos && $board.length) {
+                    if (boardEl.title !== data.oldValue) { return; }
+                    $board.find('.kanban-title-board').click();
+                    var $boardInput = $board.find('.kanban-title-board input');
+                    $boardInput.val(data.value);
+                    $boardInput[0].selectionStart = data.start;
+                    $boardInput[0].selectionEnd = data.end;
+                    return;
+                }
+                // Editing a deleted board title: abort
+                if (!data.pos) {
+                    return;
+                }
+
                 // An item was added: add a new item
                 if (!data.oldValue) {
-                    var $board = $('.kanban-board[data-id="'+data.board+'"');
                     $board.find('.kanban-title-button.fa-plus').click();
                     var $newInput = $board.find('.kanban-item:last-child input');
                     $newInput.val(data.value);
