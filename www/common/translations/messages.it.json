@@ -169,7 +169,6 @@
     "viewOpenTitle": "Apri questo pad in modalità solo lettura in una nuova finestra",
     "fileShare": "Copia il link",
     "getEmbedCode": "Mostra il codice per embedding",
-    "viewEmbedTitle": "Fai l'embed di questo pad in una pagina esterna",
     "viewEmbedTag": "Per fare l'embed di questo pad, includi questo iframe nella tua pagina dovunque tu voglia. Puoi modificarne lo stile con gli attributi HTML o CSS.",
     "fileEmbedTitle": "Fai l'embed di questo file in una pagina esterna",
     "fileEmbedScript": "Per fare l'embed di questo file, includi questo script una volta nella tua pagina per caricare il Media Tag:",

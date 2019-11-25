@@ -274,10 +274,10 @@ define([
                 APP.toolbar.failed();
                 if (!noAlert) { UI.alert(Messages.common_connectionLost, undefined, true); }
             };
-            var onReconnect = function (info) {
+            var onReconnect = function () {
                 setEditable(true);
                 if (drive.refresh) { drive.refresh(); }
-                APP.toolbar.reconnecting(info.myId);
+                APP.toolbar.reconnecting();
                 UI.findOKButton().click();
             };
 
@@ -287,9 +287,8 @@ define([
             sframeChan.on('EV_NETWORK_DISCONNECT', function () {
                 onDisconnect();
             });
-            sframeChan.on('EV_NETWORK_RECONNECT', function (data) {
-                // data.myId;
-                onReconnect(data);
+            sframeChan.on('EV_NETWORK_RECONNECT', function () {
+                onReconnect();
             });
             common.onLogout(function () { setEditable(false); });
         });

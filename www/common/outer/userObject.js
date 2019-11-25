@@ -45,6 +45,8 @@ define([
             var ids = id ? [id] : exp.findChannels([channel]);
             ids.forEach(function (i) {
                 var data = exp.getFileData(i, true);
+                var oldHref = exp.getHref(data);
+                if (oldHref === href) { return; }
                 data.href = exp.cryptor.encrypt(href);
             });
         };
@@ -165,7 +167,6 @@ define([
                         if (fd.rtChannel) {
                             removeOwnedChannel(fd.rtChannel, function () {});
                         }
-                        // XXX fd.lastVersion to delete the encrypted cp?
                     }
                     if (fd.lastVersion) { toClean.push(Hash.hrefToHexChannelId(fd.lastVersion)); }
                     if (fd.rtChannel) { toClean.push(fd.rtChannel); }

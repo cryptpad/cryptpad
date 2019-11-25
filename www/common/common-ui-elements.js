@@ -570,7 +570,7 @@ define([
                         style: 'flex: 1;'
                     });
                     var passwordOk = h('button', Messages.properties_changePasswordButton);
-                    var changePass = h('span.cp-password-container', [
+                    var changePass = h('span.cp-password-change-container', [
                         newPassword,
                         passwordOk
                     ]);
@@ -788,8 +788,8 @@ define([
             placeholder: Messages.share_filterFriend
         });
 
-        var div = h('div.cp-usergrid-container' + noOthers, [
-            h('label', label),
+        var div = h('div.cp-usergrid-container' + noOthers + (config.large?'.large':''), [
+            label ? h('label', label) : undefined,
             h('div.cp-usergrid-filter', (config.noFilter || config.noSelect) ? undefined : [
                 inputFilter,
                 buttonSelect,
@@ -1207,7 +1207,6 @@ define([
         var modal = UI.dialog.tabs(tabs);
         $(modal).find('.alertify-tabs-titles').after(rights);
 
-        // XXX
         // disable edit share options if you don't have edit rights 
         if (!hashes.editHash) {
             $rights.find('#cp-share-editable-false').attr('checked', true);
@@ -3522,19 +3521,24 @@ define([
         (cb || function () {})();
     };
 
-    UIElements.displayPasswordPrompt = function (common, isError) {
+    UIElements.displayPasswordPrompt = function (common, cfg, isError) {
         var error;
         if (isError) { error = setHTML(h('p.cp-password-error'), Messages.password_error); }
         var info = h('p.cp-password-info', Messages.password_info);
         var password = UI.passwordInput({placeholder: Messages.password_placeholder});
         var button = h('button', Messages.password_submit);
+        cfg = cfg || {};
+
+        if (cfg.value && !isError) {
+            $(password).find('.cp-password-input').val(cfg.value);
+        }
 
         var submit = function () {
             var value = $(password).find('.cp-password-input').val();
             UI.addLoadingScreen();
             common.getSframeChannel().query('Q_PAD_PASSWORD_VALUE', value, function (err, data) {
                 if (!data) {
-                    UIElements.displayPasswordPrompt(common, true);
+                    UIElements.displayPasswordPrompt(common, cfg, true);
                 }
             });
         };
@@ -4089,6 +4093,7 @@ define([
             common.mailbox.sendTo("INVITE_TO_TEAM_ANSWER", {
                 answer: yes,
                 teamChannel: msg.content.team.channel,
+                teamName: teamName,
                 user: {
                     displayName: user.name,
                     avatar: user.avatar,

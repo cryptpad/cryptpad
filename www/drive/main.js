@@ -94,8 +94,8 @@ define([
             Cryptpad.onNetworkDisconnect.reg(function () {
                 sframeChan.event('EV_NETWORK_DISCONNECT');
             });
-            Cryptpad.onNetworkReconnect.reg(function (data) {
-                sframeChan.event('EV_NETWORK_RECONNECT', data);
+            Cryptpad.onNetworkReconnect.reg(function () {
+                sframeChan.event('EV_NETWORK_RECONNECT');
             });
             Cryptpad.drive.onLog.reg(function (msg) {
                 sframeChan.event('EV_DRIVE_LOG', msg);

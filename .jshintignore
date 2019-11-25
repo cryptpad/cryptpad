@@ -19,6 +19,7 @@ www/pad/wysiwygarea-plugin.js
 www/pad/mediatag-plugin.js
 www/pad/mediatag-plugin-dialog.js
 www/pad/disable-base64.js
+www/pad/wordcount/
 
 www/kanban/jkanban.js
 www/common/jscolor.js

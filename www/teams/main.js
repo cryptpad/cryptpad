@@ -69,14 +69,21 @@ define([
             Cryptpad.onNetworkDisconnect.reg(function () {
                 sframeChan.event('EV_NETWORK_DISCONNECT');
             });
-            Cryptpad.onNetworkReconnect.reg(function (data) {
-                sframeChan.event('EV_NETWORK_RECONNECT', data);
+            Cryptpad.onNetworkReconnect.reg(function () {
+                sframeChan.event('EV_NETWORK_RECONNECT');
             });
             Cryptpad.universal.onEvent.reg(function (obj) {
                 // Intercept events for the team drive and send them the required way
-                if (obj.type !== 'team' ||
-                    ['DRIVE_CHANGE', 'DRIVE_LOG', 'DRIVE_REMOVE'].indexOf(obj.data.ev) === -1) { return; }
-                sframeChan.event('EV_'+obj.data.ev, obj.data.data);
+                if (obj.type !== 'team') { return; }
+                if (['DRIVE_CHANGE', 'DRIVE_LOG', 'DRIVE_REMOVE'].indexOf(obj.data.ev) !== -1) {
+                    sframeChan.event('EV_'+obj.data.ev, obj.data.data);
+                }
+                if (obj.data.ev === 'NETWORK_RECONNECT') {
+                    sframeChan.event('EV_NETWORK_RECONNECT');
+                }
+                if (obj.data.ev === 'NETWORK_DISCONNECT') {
+                    sframeChan.event('EV_NETWORK_DISCONNECT');
+                }
             });
         };
         SFCommonO.start({

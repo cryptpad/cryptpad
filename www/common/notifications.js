@@ -294,7 +294,8 @@ define([
 
         // Display the notification
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
-        var teamName = Util.fixHTML(Util.find(msg, ['content', 'team', 'metadata', 'name']) || '');
+        var teamName = Util.fixHTML(Util.find(msg, ['content', 'team', 'metadata', 'name']) || '') ||
+                        Util.fixHTML(Util.find(msg, ['content', 'teamName']));
         var key = 'team_' + (msg.content.answer ? 'accept' : 'decline') + 'Invitation';
         content.getFormatText = function () {
             return Messages._getKey(key, [name, teamName]);

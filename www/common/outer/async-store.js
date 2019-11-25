@@ -575,7 +575,8 @@ define([
                     support: Util.find(store.proxy, ['mailboxes', 'support', 'channel']),
                     pendingFriends: store.proxy.friends_pending || {},
                     supportPrivateKey: Util.find(store.proxy, ['mailboxes', 'supportadmin', 'keys', 'curvePrivate']),
-                    teams: teams
+                    teams: teams,
+                    plan: account.plan
                 }
             };
             cb(JSON.parse(JSON.stringify(metadata)));
@@ -1835,8 +1836,9 @@ define([
             //var data = cmdData.data;
             var s = getStore(cmdData.teamId);
             if (s.offline) {
-              broadcast([], 'NETWORK_DISCONNECT');
-              return void cb({ error: 'OFFLINE' });
+                var send = s.id ? s.sendEvent : sendDriveEvent;
+                send('NETWORK_DISCONNECT');
+                return void cb({ error: 'OFFLINE' });
             }
             var cb2 = function (data2) {
                 // Send the CHANGE event to all the stores because the command may have
@@ -2291,17 +2293,18 @@ define([
                 if (path[0] === 'drive' && path[1] === "migrate" && value === 1) {
                     rt.network.disconnect();
                     rt.realtime.abort();
-                    broadcast([], 'NETWORK_DISCONNECT');
+                    sendDriveEvent('NETWORK_DISCONNECT');
                 }
             });
 
+            // Proxy handlers (reconnect only called when the proxy is ready)
             rt.proxy.on('disconnect', function () {
                 store.offline = true;
-                broadcast([], 'NETWORK_DISCONNECT');
+                sendDriveEvent('NETWORK_DISCONNECT');
             });
-            rt.proxy.on('reconnect', function (info) {
+            rt.proxy.on('reconnect', function () {
                 store.offline = false;
-                broadcast([], 'NETWORK_RECONNECT', {myId: info.myId});
+                sendDriveEvent('NETWORK_RECONNECT');
             });
 
             // Ping clients regularly to make sure one tab was not closed without sending a removeClient()
