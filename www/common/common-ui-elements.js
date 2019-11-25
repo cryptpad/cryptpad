@@ -683,29 +683,20 @@ define([
             }));
         }
 
+        // XXX problem with the hardcoded ": " here
+        // possibly duplicate translation keys 
         if (data.tags && Array.isArray(data.tags)) {
-            $('<label>', {'for': 'cp-app-prop-tags'}).text(Messages.fm_prop_tagsList).appendTo($d);
-            $d.append(UI.dialog.selectable(data.tags.join(', '), {
-                id: 'cp-app-prop-tags',
-            }));
+            $d.append(h('div.cp-app-prop', [Messages.fm_prop_tagsList, h('br'), h('span.cp-app-prop-content', data.tags.join(', '))]));
         }
 
         if (data.ctime) {
-            $('<label>', {'for': 'cp-app-prop-ctime'}).text(Messages.fm_creation)
-                .appendTo($d);
-            $d.append(UI.dialog.selectable(new Date(data.ctime).toLocaleString(), {
-                id: 'cp-app-prop-ctime',
-            }));
+            $d.append(h('div.cp-app-prop', [Messages.fm_creation,  h('br'), h('span.cp-app-prop-content', new Date(data.ctime).toLocaleString())]));
         }
 
         if (data.atime) {
-            $('<label>', {'for': 'cp-app-prop-atime'}).text(Messages.fm_lastAccess)
-                .appendTo($d);
-            $d.append(UI.dialog.selectable(new Date(data.atime).toLocaleString(), {
-                id: 'cp-app-prop-atime',
-            }));
+            $d.append(h('div.cp-app-prop', [Messages.fm_lastAccess,  h('br'), h('span.cp-app-prop-content', new Date(data.atime).toLocaleString())]));
         }
-
+        
         if (common.isLoggedIn()) {
             // check the size of this file...
             var bytes = 0;
@@ -727,15 +718,7 @@ define([
                 var KB = Util.bytesToKilobytes(bytes);
 
                 var formatted = Messages._getKey('formattedKB', [KB]);
-                $('<br>').appendTo($d);
-
-                $('<label>', {
-                    'for': 'cp-app-prop-size'
-                }).text(Messages.fc_sizeInKilobytes).appendTo($d);
-
-                $d.append(UI.dialog.selectable(formatted, {
-                    id: 'cp-app-prop-size',
-                }));
+                $d.append(h('div.cp-app-prop', [Messages.upload_size, h('br'), h('span.cp-app-prop-content', formatted)]));
 
         if (data.sharedFolder && false) {
             $('<label>', {'for': 'cp-app-prop-channel'}).text('Channel ID').appendTo($d);
