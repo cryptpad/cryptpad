@@ -718,7 +718,7 @@ define([
                 var KB = Util.bytesToKilobytes(bytes);
 
                 var formatted = Messages._getKey('formattedKB', [KB]);
-                $d.append(h('div.cp-app-prop', [Messages.fc_sizeInKilobytes, h('br'), h('span.cp-app-prop-content', formatted)]));
+                $d.append(h('div.cp-app-prop', [Messages.upload_size, h('br'), h('span.cp-app-prop-content', formatted)]));
 
         if (data.sharedFolder && false) {
             $('<label>', {'for': 'cp-app-prop-channel'}).text('Channel ID').appendTo($d);
