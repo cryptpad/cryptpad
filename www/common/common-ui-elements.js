@@ -1078,7 +1078,7 @@ define([
         var linkButtons = [
             makeCancelButton(),
             !config.sharedFolder && {
-              className: 'secondary', // XXX style this diferently than cancel
+              className: 'secondary',
               name: Messages.share_linkOpen,
               onClick: function () {
                   saveValue();
