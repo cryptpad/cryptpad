@@ -282,10 +282,14 @@
                 border-radius: 0;
 
                 color: @alertify-btn-fg;
-                border: 1px solid @colortheme_alertify-cancel-border;
+                border: 1px solid @alertify-btn-fg;
 
                 &.no-margin {
                     margin: 0;
+                }
+
+                &:hover, &:active {
+                    background-color: @alertify-light-bg;
                 }
 
                 &.safe, &.danger {
@@ -321,9 +325,15 @@
                     }
                 }
 
-                &:hover, &:active {
-                    background-color: contrast(@colortheme_modal-bg, darken(@colortheme_alertify-cancel, 10%), lighten(@colortheme_alertify-cancel, 10%));
+                &.cancel{
+                    border-color: @colortheme_alertify-cancel-border;
+                    color: @colortheme_alertify-cancel-border;
+                    &:hover, &:hover{
+                        background-color: fade(@colortheme_alertify-cancel-border, 25%);
+                    }
                 }
+
+
 
                 &:focus {
                     //border: 1px dotted @alertify-base;
