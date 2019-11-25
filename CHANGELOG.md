@@ -1,4 +1,43 @@
-# Elasmotherium release notes
+# FalklandWolf release (3.5.0)
+
+## Goals
+
+This release features work that we've been planning for a long time centered around sharing collections of documents in a more granular way.
+
+This is our first release since David Benqué joined our team, so in addition to these team-centric updates we also worked on integrating some UI/UX improvements.
+
+## Update notes
+
+Updating to 3.5.0 from 3.4.0 is simple.
+
+1. stop your server
+2. pull the latest code via git
+3. run `bower update`
+4. restart your server
+
+## Features
+
+* We restyled some elements throughout the platform:
+  * our tooltips have a sleeker flat design
+  * the quota bar which appears in the drive, teams, and settings pages has also been improved
+  * we've begun improving the look and feel of various popup dialogs
+* We've added support for password-change for owned uploaded files and owned shared folders:
+  * changing passwords for encrypted files means that the original file will be removed from the server and a new file will be encrypted with a new key and uploaded to a new location on the server. References to the original file will be broken. This includes links, media-tags embedded within pads, and items in other users' drives or shared folders to which you do not have access.
+  * the process is very similar for shared folders stored in users' CryptDrives, except that users will have the opportunity to enter the new password when they visit the platform.
+* We're very happy to finally introduce the notion of _read-only shared folders_. While we've had the capacity to make shared folders read-only for some time, it was only in the same sense as pads were read-only.
+  * This is to say that while a viewer cannot modify the document, any links to encrypted documents within that document would confer their natural editing rights to viewers, making it possible to accidentally leak access when a single pad was shared.
+  * Our new read-only shared folders encrypt the editing keys for the documents they contain, such that only those with the ability to change the folder structure itself have the inherent capacity to edit the documents contained within. We think this is more intuitive than the alternative, but it took a lot of work to make it happen!
+  * Unfortunately, older shared folders created before this release will already contain the cryptographic keys which confer editing rights. Pads which are added to shared folders from this release onward will have the keys for their editing rights encrypted. We'll offer the ability for owners to migrate these shared folders in an upcoming release once we've added the ability to selectively trim document history.
+* Similarly, we've introduced the notion of _viewers_ in teams. Viewers are listed in the team roster and have the ability to view the contents of the team's drive, but not to edit them or add new documents.
+  * Unfortunately, the notion of viewers is also complicated by the fact that documents added to team drives or shared folders in team drives did not have their editing keys encrypted. The first team member to open the team drive since we've deployed this release will run a migration that will encrypt the keys saved within the team drive, however, the encryption keys will remain in the drive's history until we develop a means of selectively trimming history.
+
+## Bug fixes
+
+* We discovered and fixed some bugs in the serverside code responsible for handling some aspects of file upload related to starting a new upload after having cancelled a previous session.
+* We also identified a regression in Our _slides_ app related to the rendering of `<br>` tags, such as you might create with a `****` sequence in the corresponding markdown. This was introduced with some overly broad CSS that was intended to style our notifications page. We've since made the notifications styles more specific such that they can't interfere with other applications.
+* We've become aware of some mysterious behaviour in Firefox that seems to cause some tabs or functionality to reconnect to the server after going offline while other aspects of the platform did not. Until now we've always assumed that users were connected or not, and this partial connection has revealed some bugs in our implementation. Consequently, we've begun adding some measures to detect odd behaviour if it occurs. We expect to have determined the cause of this behaviour and to have proposed a solution by our next release.
+
+# Elasmotherium release (3.4.0)
 
 ## Goals
 

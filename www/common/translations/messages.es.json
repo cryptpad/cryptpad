@@ -496,7 +496,6 @@
     "kanban_removeItemConfirm": "Estás seguro que quieres eliminar este ítem?",
     "printBackgroundNoValue": "<em>No se muestra fondo de pantalla</em>",
     "getEmbedCode": "Obtener el código insertado",
-    "viewEmbedTitle": "Insertar la nota en una página externa",
     "viewEmbedTag": "Para insertar esta nota, incluya este iframe en su página donde usted quiera. Puede darle estilo usando CSS o atributos HTML.",
     "fileEmbedTitle": "Insertar el archivo en una pagina externa",
     "fileEmbedScript": "Para insertar este archivo, incluya este código una vez en su página para cargar el Etiqueta de Media:",
