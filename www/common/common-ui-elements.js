@@ -686,15 +686,15 @@ define([
         // XXX problem with the hardcoded ": " here
         // possibly duplicate translation keys 
         if (data.tags && Array.isArray(data.tags)) {
-            $d.append(h('div.cp-app-prop', [Messages.fm_prop_tagsList, ': ', h('span.cp-app-prop-content', data.tags.join(', '))]));
+            $d.append(h('div.cp-app-prop', [Messages.fm_prop_tagsList, h('br'), h('span.cp-app-prop-content', data.tags.join(', '))]));
         }
 
         if (data.ctime) {
-            $d.append(h('div.cp-app-prop', [Messages.fm_creation, ': ', h('span.cp-app-prop-content', new Date(data.ctime).toLocaleString())]));
+            $d.append(h('div.cp-app-prop', [Messages.fm_creation,  h('br'), h('span.cp-app-prop-content', new Date(data.ctime).toLocaleString())]));
         }
 
         if (data.atime) {
-            $d.append(h('div.cp-app-prop', [Messages.fm_lastAccess, ': ', h('span.cp-app-prop-content', new Date(data.atime).toLocaleString())]));
+            $d.append(h('div.cp-app-prop', [Messages.fm_lastAccess,  h('br'), h('span.cp-app-prop-content', new Date(data.atime).toLocaleString())]));
         }
         
         if (common.isLoggedIn()) {
@@ -718,7 +718,7 @@ define([
                 var KB = Util.bytesToKilobytes(bytes);
 
                 var formatted = Messages._getKey('formattedKB', [KB]);
-                $d.append(h('div.cp-app-prop', [Messages.fc_sizeInKilobytes, ': ', h('span.cp-app-prop-content', formatted)]));
+                $d.append(h('div.cp-app-prop', [Messages.fc_sizeInKilobytes, h('br'), h('span.cp-app-prop-content', formatted)]));
 
         if (data.sharedFolder && false) {
             $('<label>', {'for': 'cp-app-prop-channel'}).text('Channel ID').appendTo($d);
