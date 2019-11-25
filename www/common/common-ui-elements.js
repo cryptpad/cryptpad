@@ -1207,7 +1207,6 @@ define([
         var modal = UI.dialog.tabs(tabs);
         $(modal).find('.alertify-tabs-titles').after(rights);
 
-        // XXX
         // disable edit share options if you don't have edit rights 
         if (!hashes.editHash) {
             $rights.find('#cp-share-editable-false').attr('checked', true);
