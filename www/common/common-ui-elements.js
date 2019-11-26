@@ -788,8 +788,8 @@ define([
             placeholder: Messages.share_filterFriend
         });
 
-        var div = h('div.cp-usergrid-container' + noOthers, [
-            h('label', label),
+        var div = h('div.cp-usergrid-container' + noOthers + (config.large?'.large':''), [
+            label ? h('label', label) : undefined,
             h('div.cp-usergrid-filter', (config.noFilter || config.noSelect) ? undefined : [
                 inputFilter,
                 buttonSelect,
