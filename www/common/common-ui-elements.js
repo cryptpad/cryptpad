@@ -685,8 +685,6 @@ define([
             }));
         }
 
-        // XXX problem with the hardcoded ": " here
-        // possibly duplicate translation keys 
         if (data.tags && Array.isArray(data.tags)) {
             $d.append(h('div.cp-app-prop', [Messages.fm_prop_tagsList, h('br'), h('span.cp-app-prop-content', data.tags.join(', '))]));
         }
@@ -698,7 +696,7 @@ define([
         if (data.atime) {
             $d.append(h('div.cp-app-prop', [Messages.fm_lastAccess,  h('br'), h('span.cp-app-prop-content', new Date(data.atime).toLocaleString())]));
         }
-        
+
         if (common.isLoggedIn()) {
             // check the size of this file...
             var bytes = 0;
@@ -792,8 +790,8 @@ define([
             placeholder: Messages.share_filterFriend
         });
 
-        var div = h('div.cp-usergrid-container' + noOthers, [
-            h('label', label),
+        var div = h('div.cp-usergrid-container' + noOthers + (config.large?'.large':''), [
+            label ? h('label', label) : undefined,
             h('div.cp-usergrid-filter', (config.noFilter || config.noSelect) ? undefined : [
                 inputFilter,
                 buttonSelect,
@@ -1043,7 +1041,7 @@ define([
                 present: present
             });
         };
-        
+
         var getLinkValue = function (initValue) {
             var val = initValue || {};
             var edit = val.edit !== undefined ? val.edit : Util.isChecked($rights.find('#cp-share-editable-true'));
@@ -1080,7 +1078,7 @@ define([
         var linkButtons = [
             makeCancelButton(),
             !config.sharedFolder && {
-              className: 'secondary', // XXX style this diferently than cancel
+              className: 'secondary',
               name: Messages.share_linkOpen,
               onClick: function () {
                   saveValue();
@@ -1125,7 +1123,7 @@ define([
             onClose: config.onClose,
         });
 
-        // Share with contacts tab 
+        // Share with contacts tab
 
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
         var onFriendShare = Util.mkEvent();
@@ -1137,7 +1135,7 @@ define([
 
         onFriendShare.reg(saveValue);
 
-        // XXX Don't display access rights if no contacts 
+        // XXX Don't display access rights if no contacts
         var contactsContent = h('div.cp-share-modal');
         $(contactsContent).append(friendsList);
 
@@ -1174,11 +1172,12 @@ define([
         }];
 
         var embed = h('div.cp-share-modal', embedContent);
+        var $embed = $(embed);
 
         // update values for link preview when radio btns change
-        $(embed).find('#cp-embed-link-preview').val(getEmbedValue());
+        $embed.find('#cp-embed-link-preview').val(getEmbedValue());
         $rights.find('input[type="radio"]').on('change', function () {
-            $(embed).find('#cp-embed-link-preview').val(getEmbedValue());
+            $embed.find('#cp-embed-link-preview').val(getEmbedValue());
         });
 
         var frameEmbed = UI.dialog.customModal(embed, {
@@ -1211,8 +1210,7 @@ define([
         var modal = UI.dialog.tabs(tabs);
         $(modal).find('.alertify-tabs-titles').after(rights);
 
-        // XXX
-        // disable edit share options if you don't have edit rights 
+        // disable edit share options if you don't have edit rights
         if (!hashes.editHash) {
             $rights.find('#cp-share-editable-false').attr('checked', true);
             $rights.find('#cp-share-editable-true').removeAttr('checked').attr('disabled', true);
@@ -1287,7 +1285,7 @@ define([
                 onClick: function () {
                     var v = getLinkValue();
                     var success = Clipboard.copy(v);
-                    if (success) { UI.log(Messages.shareSuccess); 
+                    if (success) { UI.log(Messages.shareSuccess);
                 }
               },
               keys: [13]
@@ -1299,7 +1297,7 @@ define([
             onClose: config.onClose,
         });
 
-        // share with contacts tab 
+        // share with contacts tab
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
 
         var friendsObject = hasFriends ? createShareWithFriends(config, null, getLinkValue) : {
@@ -1373,7 +1371,6 @@ define([
         var modal = UI.dialog.tabs(tabs);
         return modal;
     };
-
 
     UIElements.createInviteTeamModal = function (config) {
         var common = config.common;
@@ -2351,7 +2348,7 @@ define([
                 prettyUsage = Messages._getKey('formattedMB', [usage]);
                 prettyLimit = Messages._getKey('formattedMB', [limit]);
             }
-            
+
             if (quota < 0.8) { $usage.addClass('cp-limit-usage-normal'); }
             else if (quota < 1) { $usage.addClass('cp-limit-usage-warning'); }
             else { $usage.addClass('cp-limit-usage-above'); }
@@ -3531,15 +3528,16 @@ define([
         if (isError) { error = setHTML(h('p.cp-password-error'), Messages.password_error); }
         var info = h('p.cp-password-info', Messages.password_info);
         var password = UI.passwordInput({placeholder: Messages.password_placeholder});
+        var $password = $(password);
         var button = h('button', Messages.password_submit);
         cfg = cfg || {};
 
         if (cfg.value && !isError) {
-            $(password).find('.cp-password-input').val(cfg.value);
+            $password.find('.cp-password-input').val(cfg.value);
         }
 
         var submit = function () {
-            var value = $(password).find('.cp-password-input').val();
+            var value = $password.find('.cp-password-input').val();
             UI.addLoadingScreen();
             common.getSframeChannel().query('Q_PAD_PASSWORD_VALUE', value, function (err, data) {
                 if (!data) {
@@ -3547,7 +3545,7 @@ define([
                 }
             });
         };
-        $(password).find('.cp-password-input').on('keydown', function (e) { if (e.which === 13) { submit(); } });
+        $password.find('.cp-password-input').on('keydown', function (e) { if (e.which === 13) { submit(); } });
         $(button).on('click', function () { submit(); });
 
 
@@ -3561,7 +3559,7 @@ define([
         ]);
         UI.errorLoadingScreen(block);
 
-        $(password).find('.cp-password-input').focus();
+        $password.find('.cp-password-input').focus();
     };
 
     var crowdfundingState = false;

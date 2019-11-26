@@ -595,54 +595,38 @@ define([
         }, opts);
 
         var input = h('input.cp-password-input', attributes);
-        //var reveal = UI.createCheckbox('cp-password-reveal', Messages.password_show);
         var eye = h('span.fa.fa-eye.cp-password-reveal');
 
-        /*
-        $(reveal).find('input').on('change', function () {
-            if($(this).is(':checked')) {
-                $(input).prop('type', 'text');
-                $(input).focus();
-                return;
-            }
-            $(input).prop('type', 'password');
-            $(input).focus();
-        });
-        */
+        var $eye = $(eye);
+        var $input = $(input);
 
         if (displayEye) {
-            $(eye).mousedown(function () {
-                $(input).prop('type', 'text');
-                $(input).focus();
+            $eye.mousedown(function () {
+                $input.prop('type', 'text');
+                $input.focus();
             }).mouseup(function(){
-                $(input).prop('type', 'password');
-                $(input).focus();
+                $input.prop('type', 'password');
+                $input.focus();
             }).mouseout(function(){
-                $(input).prop('type', 'password');
-                $(input).focus();
+                $input.prop('type', 'password');
+                $input.focus();
             });
         } else {
-            $(eye).click(function () {
-                if ($(this).hasClass('fa-eye')) {
-                    $(input).prop('type', 'text');
-                    $(input).focus();
-                    $(this).removeClass('fa-eye').addClass('fa-eye-slash');
+            $eye.click(function () {
+                if ($eye.hasClass('fa-eye')) {
+                    $input.prop('type', 'text');
+                    $input.focus();
+                    $eye.removeClass('fa-eye').addClass('fa-eye-slash');
                     return;
                 }
-                $(input).prop('type', 'password');
-                $(input).focus();
-                $(this).removeClass('fa-eye-slash').addClass('fa-eye');
+                $input.prop('type', 'password');
+                $input.focus();
+                $eye.removeClass('fa-eye-slash').addClass('fa-eye');
             });
         }
-        /*if (displayEye) {
-            $(reveal).hide();
-        } else {
-            $(eye).hide();
-        }*/
 
         return h('span.cp-password-container', [
             input,
-            //reveal,
             eye
         ]);
     };
@@ -685,12 +669,6 @@ define([
 
     var LOADING = 'cp-loading';
 
-    /*var getRandomTip = function () {
-        if (!Messages.tips || !Object.keys(Messages.tips).length) { return ''; }
-        var keys = Object.keys(Messages.tips);
-        var rdm = Math.floor(Math.random() * keys.length);
-        return Messages.tips[keys[rdm]];
-    };*/
     var loading = {
         error: false,
         driveState: 0,
@@ -700,7 +678,7 @@ define([
         config = config || {};
         var loadingText = config.loadingText;
         var todo = function () {
-            var $loading = $('#' + LOADING); //.show();
+            var $loading = $('#' + LOADING);
             $loading.css('display', '');
             $loading.removeClass('cp-loading-hidden');
             $('.cp-loading-spinner-container').show();
@@ -963,19 +941,21 @@ define([
         $.extend(markOpts, opts.mark || {});
 
         var input = h('input', inputOpts);
+        var $input = $(input);
         var mark = h('span.cp-checkmark-mark', markOpts);
+        var $mark = $(mark);
         var label = h('span.cp-checkmark-label', labelTxt);
 
-        $(mark).keydown(function (e) {
+        $mark.keydown(function (e) {
             if (e.which === 32) {
                 e.stopPropagation();
                 e.preventDefault();
-                $(input).prop('checked', !$(input).is(':checked'));
-                $(input).change();
+                $input.prop('checked', !$input.is(':checked'));
+                $input.change();
             }
         });
 
-        $(input).change(function () { $(mark).focus(); });
+        $input.change(function () { $mark.focus(); });
 
         return h('label.cp-checkmark', labelOpts, [
             input,
@@ -1049,28 +1029,30 @@ define([
             setHTML(h('div.cp-corner-footer'), footer)
         ]);
 
+        var $popup = $(popup);
+
         $(minimize).click(function () {
-            $(popup).addClass('cp-minimized');
+            $popup.addClass('cp-minimized');
         });
         $(maximize).click(function () {
-            $(popup).removeClass('cp-minimized');
+            $popup.removeClass('cp-minimized');
         });
 
         if (opts.hidden) {
-            $(popup).addClass('cp-minimized');
+            $popup.addClass('cp-minimized');
         }
         if (opts.big) {
-            $(popup).addClass('cp-corner-big');
+            $popup.addClass('cp-corner-big');
         }
 
         var hide = function () {
-            $(popup).hide();
+            $popup.hide();
         };
         var show = function () {
-            $(popup).show();
+            $popup.show();
         };
         var deletePopup = function () {
-            $(popup).remove();
+            $popup.remove();
         };
 
         $('body').append(popup);

@@ -12,6 +12,12 @@
             flex-wrap: wrap;
             margin-bottom: 6px;
         }
+        &:not(.large) {
+            .cp-usergrid-grid {
+                margin: -3px;
+                margin-bottom: 6px;
+            }
+        }
         &.cp-usergrid-empty {
             .cp-usergrid-grid, .cp-usergrid-filter {
                 display: none;
@@ -42,16 +48,11 @@
             justify-content: center;
             align-items: center;
             padding: 5px;
-            margin-bottom: 6px;
-            margin-right: 6px;
+            margin: 3px;
             cursor: default;
             transition: order 0.5s, background-color 0.5s;
             margin-top: 1px;
             .tools_unselectable();
-
-            &:nth-child(6n) {
-                margin-right: 0;
-            }
 
             &.cp-selected {
                 background-color: @colortheme_alertify-primary;
@@ -79,6 +80,7 @@
                 width: 140px;
                 height: 35px;
                 flex-flow: row;
+                margin: 0;
                 margin-right: 15px;
                 margin-bottom: 1px;
                 &:nth-child(3n) {
