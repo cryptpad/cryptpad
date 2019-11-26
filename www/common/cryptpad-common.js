@@ -1285,27 +1285,35 @@ define([
             var newCrypto = Crypto.createEncryptor(newSecret.keys);
             var oldCrypto = Crypto.createEncryptor(oldSecret.keys);
             var cps = Util.find(cryptgetVal, ['content', 'hashes']);
-            var lastCp = cps.length ? cps[cps.length - 1] : {};
+            var l = Object.keys(cps).length;
+            var lastCp = l ? cps[l] : {};
+            cryptgetVal.content.hashes = {};
             common.getHistory({
                 channel: oldRtChannel,
                 lastKnownHash: lastCp.hash
             }, waitFor(function (obj) {
                 if (obj && obj.error) {
                     waitFor.abort();
-                    return void cb(obj);
+                    console.error(obj);
+                    return void cb(obj.error);
                 }
                 var msgs = obj;
                 newHistory = msgs.map(function (str) {
                     try {
-                        var d = oldCrypto.decrypt(msg, true, true);
+                        var d = oldCrypto.decrypt(str, true, true);
                         return newCrypto.encrypt(d);
                     } catch (e) {
+                        console.log(e);
                         waitFor.abort();
                         return void cb({error: e});
                     }
                 });
                 // Update last knwon hash in cryptgetVal
-                if (lastCp) { lastCp.hash = msgs[0].slice(0, 64); }
+                if (lastCp) {
+                    lastCp.hash = newHistory[0].slice(0, 64);
+                    lastCp.index = 50;
+                    cryptgetVal.content.hashes[1] =  lastCp;
+                }
                 common.onlyoffice.execCommand({
                     cmd: 'REENCRYPT',
                     data: {
@@ -1316,7 +1324,8 @@ define([
                 }, waitFor(function (obj) {
                     if (obj && obj.error) {
                         waitFor.abort();
-                        return void cb(obj);
+                        console.warn(obj);
+                        return void cb(obj.error);
                     }
                 }));
             }));
@@ -1324,7 +1333,7 @@ define([
             // The new rt channel is ready
             // The blob uses its own encryption and doesn't need to be reencrypted
             cryptgetVal.content.channel = newRtChannel;
-            Crypt.put(newHash, cryptgetVal, waitFor(function (err) {
+            Crypt.put(newHash, JSON.stringify(cryptgetVal), waitFor(function (err) {
                 if (err) {
                     waitFor.abort();
                     return void cb({ error: err });
@@ -1364,7 +1373,8 @@ define([
             }, waitFor(function (obj) {
                 if (obj && obj.error) {
                     waitFor.abort();
-                    return void cb(obj);
+                    console.info(obj);
+                    return void cb(obj.error);
                 }
                 common.removeOwnedChannel({
                     channel: oldRtChannel,
