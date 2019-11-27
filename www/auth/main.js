@@ -1,12 +1,16 @@
 define([
     'jquery',
-    '/common/cryptpad-common.js',
+    '/common/cryptget.js',
+    '/common/pinpad.js',
     '/common/common-constants.js',
     '/common/outer/local-store.js',
+    '/common/outer/login-block.js',
+    '/common/outer/network-config.js',
     '/common/test.js',
     '/bower_components/nthen/index.js',
+    '/bower_components/netflux-websocket/netflux-client.js',
     '/bower_components/tweetnacl/nacl-fast.min.js'
-], function ($, Cryptpad, Constants, LocalStore, Test, nThen) {
+], function ($, Crypt, Pinpad, Constants, LocalStore, Block, NetConfig, Test, nThen, Netflux) {
     var Nacl = window.nacl;
 
     var signMsg = function (msg, privKey) {
@@ -27,9 +31,55 @@ define([
                                           sessionStorage[Constants.userHashKey];
 
     var proxy;
+    var rpc;
+    var network;
+    var rpcError;
+
+    var loadProxy = function (hash) {
+        nThen(function (waitFor) {
+            Crypt.get(hash, waitFor(function (err, val) {
+                if (err) {
+                    waitFor.abort();
+                    console.error(err);
+                }
+                try {
+                    var parsed = JSON.parse(val);
+                    proxy = parsed;
+                } catch (e) {
+                    console.log("Can't parse user drive", e);
+                }
+            });
+        }).nThen(function (waitFor) {
+            var wsUrl = NetConfig.getWebsocketURL();
+            var w = waitFor();
+            Netflux.connect(wsUrl).then(function (network) {
+                network = _network;
+                w();
+            }, function (err) {
+                rpcError = err;
+                console.error(err);
+                waitFor.abort();
+            });
+        }).nThen(function (waitFor) {
+            Pinpad.create(network, proxy, waitFor(function (e, call) {
+                if (e) {
+                    rpcError = e;
+                    return void waitFor.abort();
+                }
+                rpc = call;
+            }));
+        }).nThen(function () {
+            console.log('IFRAME READY');
+            Test(function () {
+                // This is only here to maybe trigger an error.
+                window.drive = proxy['drive'];
+                Test.passed();
+            });
+        });
+    };
 
     var whenReady = function (cb) {
-        if (proxy) { return void cb(); }
+        if (proxy && (rpc || rpcError)) { return void cb(); }
         console.log('CryptPad not ready...');
         setTimeout(function () {
             whenReady(cb);
@@ -50,6 +100,8 @@ define([
                 ret.error = "UNAUTH_DOMAIN";
             } else if (!LocalStore.isLoggedIn()) {
                 ret.error = "NOT_LOGGED_IN";
+            } else if ('LOGIN') {
+                // XXX Display login modal....
             } else {
                 return void whenReady(function () {
                     var sig = signMsg(data.data, proxy.edPrivate);
@@ -63,7 +115,14 @@ define([
             }
         } else if (data.cmd === 'UPDATE_LIMIT') {
             return void whenReady(function () {
-                Cryptpad.updatePinLimit(function (e, limit, plan, note) {
+                if (rpcError) {
+                    // XXX
+                    // Tell the user on accounts that there was an issue and they need to wait maximum 24h or contact an admin
+                }
+                rpc.updatePinLimits(function (e, limit, plan, note) {
+                    if (e) {
+                        // XXX same as above
+                    }
                     ret.res = [limit, plan, note];
                     srcWindow.postMessage(JSON.stringify(ret), domain);
                 });
@@ -74,18 +133,8 @@ define([
         srcWindow.postMessage(JSON.stringify(ret), domain);
     });
 
-    nThen(function (waitFor) {
-        Cryptpad.ready(waitFor());
-    }).nThen(function (waitFor) {
-        Cryptpad.getUserObject(null, waitFor(function (obj) {
-            proxy = obj;
-        }));
-    }).nThen(function () {
-        console.log('IFRAME READY');
-        Test(function () {
-            // This is only here to maybe trigger an error.
-            window.drive = proxy['drive'];
-            Test.passed();
-        });
-    });
+    var userHash = LocalStore.getUserHash();
+    if (userHash) {
+        loadProxy(userHash);
+    }
 });
