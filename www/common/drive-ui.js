@@ -79,7 +79,7 @@ define([
     var faColor = 'cptools-palette';
     var faTrash = 'fa-trash';
     var faDelete = 'fa-eraser';
-    var faProperties = 'fa-database';
+    var faProperties = 'fa-info-circle';
     var faTags = 'fa-hashtag';
     var faUploadFiles = 'cptools-file-upload';
     var faUploadFolder = 'cptools-folder-upload';
