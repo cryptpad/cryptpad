@@ -41,6 +41,7 @@ define([
                 if (err) {
                     waitFor.abort();
                     console.error(err);
+                    return;
                 }
                 try {
                     var parsed = JSON.parse(val);
@@ -48,11 +49,11 @@ define([
                 } catch (e) {
                     console.log("Can't parse user drive", e);
                 }
-            });
+            }));
         }).nThen(function (waitFor) {
             var wsUrl = NetConfig.getWebsocketURL();
             var w = waitFor();
-            Netflux.connect(wsUrl).then(function (network) {
+            Netflux.connect(wsUrl).then(function (_network) {
                 network = _network;
                 w();
             }, function (err) {
@@ -69,7 +70,6 @@ define([
                 rpc = call;
             }));
         }).nThen(function () {
-            console.log('IFRAME READY');
             Test(function () {
                 // This is only here to maybe trigger an error.
                 window.drive = proxy['drive'];
@@ -95,13 +95,15 @@ define([
         console.log('CP receiving', data);
         if (data.cmd === 'PING') {
             ret.res = 'PONG';
+        } else if (data.cmd === 'LOGIN') {
+            UI.alert('okok');
+            return;
+            // XXX Display login modal....
         } else if (data.cmd === 'SIGN') {
             if (!AUTHORIZED_DOMAINS.filter(function (x) { return x.test(domain); }).length) {
                 ret.error = "UNAUTH_DOMAIN";
             } else if (!LocalStore.isLoggedIn()) {
                 ret.error = "NOT_LOGGED_IN";
-            } else if ('LOGIN') {
-                // XXX Display login modal....
             } else {
                 return void whenReady(function () {
                     var sig = signMsg(data.data, proxy.edPrivate);
