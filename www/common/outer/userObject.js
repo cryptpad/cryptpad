@@ -818,7 +818,7 @@ define([
                     }
 
                     // Fix href
-                    if (href && href.slice(0,1) !== '/') { el.href = exp.cryptor.encrypt(Hash.getRelativeHref(el.href)); }
+                    if (href && href.slice(0,1) !== '/') { el.href = exp.cryptor.encrypt(Hash.getRelativeHref(href)); }
                     // Fix creation time
                     if (!el.ctime) { el.ctime = el.atime; }
                     // Fix title
