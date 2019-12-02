@@ -1,4 +1,5 @@
 @import (reference) "./tools.less";
+@import (reference) "./colortheme-all.less";
 .avatar_vars(
     @width: 30px
 ) {
@@ -35,10 +36,11 @@
         }
         .cp-avatar-default {
             .tools_unselectable();
-            background: white;
-            color: black;
+            background: rgb(160, 160, 160); // XXX testing 
+            color: @cryptpad_text_col; // XXX testing 
             font-size: @avatar-font-size;
             font-size: var(--avatar-font-size);
+            text-transform: capitalize;
         }
         media-tag {
             min-height: @avatar-width;

@@ -10,12 +10,12 @@
         .cp-usergrid-grid {
             display: flex;
             flex-wrap: wrap;
+            margin: -3px;
             margin-bottom: 6px;
-        }
-        &:not(.large) {
-            .cp-usergrid-grid {
-                margin: -3px;
-                margin-bottom: 6px;
+            max-height: 130px;
+            overflow: auto;
+            @media screen and (max-height: 515px) {
+                max-height: unset; // remove double scrollbar
             }
         }
         &.cp-usergrid-empty {
@@ -30,13 +30,13 @@
                 min-width: 0;
                 margin-bottom: 0 !important;
                 height: 38px;
-                margin: 6px 8px 6px 0px;
+                margin: 6px 0px;
                 &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
                     color: @cryptpad_color_grey;
                     opacity: 1; /* Firefox */
                 }
             }
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             &:empty {
                 margin: 0;
                 display: none;
@@ -54,7 +54,6 @@
             justify-content: center;
             align-items: center;
             padding: 5px;
-            margin: 3px;
             cursor: default;
             transition: order 0.5s, background-color 0.5s;
             margin-top: 1px;
@@ -64,10 +63,21 @@
                 background-color: @colortheme_alertify-primary;
                 color: @colortheme_alertify-primary-text;
                 order: -1 !important;
+                .cp-usergrid-avatar {
+                    media-tag, .cp-avatar-default {
+                        opacity: 0.7;
+                    }
+                }
             }
             .cp-usergrid-user-avatar {
                 min-height: 40px;
             }
+            &:not(.large) {
+                .cp-usergrid-user-name {
+                    display: none;
+                }
+            }
+
             .cp-usergrid-user-name {
                 overflow: hidden;
                 white-space: nowrap;
@@ -75,23 +85,32 @@
                 width: 100%;
                 text-align: center;
                 line-height: 18px;
+                flex: 1;
             }
-            border: 1px solid @colortheme_alertify-primary;
 
             &:not(.large) {
-                .avatar_main(40px);
+                .avatar_main(60px);
             }
             &.large {
                 .avatar_main(25px);
-                width: 140px;
+                width: 145px;
                 height: 35px;
                 flex-flow: row;
-                margin: 0;
-                margin-right: 15px;
-                margin-bottom: 1px;
-                &:nth-child(3n) {
-                    margin-right: 0;
+                margin: 3px;
+                flex-basis: calc(33.3333333% - 6px);
+                flex-shrink: 1;
+                min-width: 0;
+                .cp-usergrid-user-name {
+                    margin-left: 5px;
+                    text-align: left;
+                    color: @cryptpad_text_col;
                 }
+            }
+            &.cp-selected {
+                .cp-usergrid-user-name {
+                    color: @colortheme_alertify-primary-text;
+                }
+                
             }
         }
     }

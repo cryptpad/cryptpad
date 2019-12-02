@@ -791,9 +791,7 @@ define([
         var div = h('div.cp-usergrid-container' + noOthers + (config.large?'.large':''), [
             label ? h('label', label) : undefined,
             h('div.cp-usergrid-filter', (config.noFilter || config.noSelect) ? undefined : [
-                inputFilter,
-                buttonSelect,
-                buttonDeselect
+                inputFilter
             ]),
         ]);
         var $div = $(div);
@@ -880,10 +878,21 @@ define([
             delete friends[curve];
         });
 
+        var x = new Array(50).fill('test'); // XXX fake friend generator 
+        x.forEach(function (el, i) { 
+            friends[i] = {
+                edPublic: i,
+                curvePublic: i,
+                displayName: i + " pizza" // Hash.createChannelId()
+            };
+        }); // XXX
+  
+
         var friendsList = UIElements.getUserGrid(null, {
             common: common,
             data: friends,
-            noFilter: false
+            noFilter: false,
+            large: true
         }, refreshButtons);
         var friendDiv = friendsList.div;
         $div.append(friendDiv);
@@ -909,6 +918,7 @@ define([
         var teamsList = UIElements.getUserGrid(Messages.share_linkTeam, {
             common: common,
             noFilter: true,
+            large: true,
             data: teams
         }, refreshButtons);
         $div.append(teamsList.div);
