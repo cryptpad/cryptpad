@@ -84,7 +84,7 @@ define([
 
     var defaultCode = renderer.code;
     renderer.code = function (code, language) {
-        if (language === 'mermaid' && code.match(/^(graph|pie|gantt|sequenceDiagram|classDiagram|gitGraph)/))) {
+        if (language === 'mermaid' && code.match(/^(graph|pie|gantt|sequenceDiagram|classDiagram|gitGraph)/)) {
             return '<pre class="mermaid">'+code+'</pre>';
         } else {
             return defaultCode.apply(renderer, arguments);
