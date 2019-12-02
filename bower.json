@@ -51,6 +51,7 @@
     "requirejs-plugins": "^1.0.3"
   },
   "resolutions": {
-    "bootstrap": "^v4.0.0"
+    "bootstrap": "^v4.0.0",
+    "jquery": "2.2.4"
   }
 }
