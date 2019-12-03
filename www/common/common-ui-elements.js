@@ -1075,7 +1075,7 @@ define([
         var hasPassword = parsedHref.hashData.password;
         if (hasPassword) {
             linkContent.push(h('div.alert.alert-danger', [h('i.fa.fa-lock'), 
-            ' ', 'has password']))
+            ' ', Messages.share_linkPasswordAlert]))
         };
 
         linkContent.push(UI.dialog.selectable('', { id: 'cp-share-link-preview', tabindex: 1 }));
