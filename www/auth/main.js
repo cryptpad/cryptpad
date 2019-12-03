@@ -6,11 +6,12 @@ define([
     '/common/outer/local-store.js',
     '/common/outer/login-block.js',
     '/common/outer/network-config.js',
+    '/customize/login.js',
     '/common/test.js',
     '/bower_components/nthen/index.js',
     '/bower_components/netflux-websocket/netflux-client.js',
     '/bower_components/tweetnacl/nacl-fast.min.js'
-], function ($, Crypt, Pinpad, Constants, LocalStore, Block, NetConfig, Test, nThen, Netflux) {
+], function ($, Crypt, Pinpad, Constants, LocalStore, Block, NetConfig, Login, Test, nThen, Netflux) {
     var Nacl = window.nacl;
 
     var signMsg = function (msg, privKey) {
@@ -96,9 +97,16 @@ define([
         if (data.cmd === 'PING') {
             ret.res = 'PONG';
         } else if (data.cmd === 'LOGIN') {
-            UI.alert('okok');
+            Login.loginOrRegister(data.data.name, data.data.password, false, false, function (err, res) {
+                if (err) {
+                    ret.error = 'LOGIN_ERROR'
+                    srcWindow.postMessage(JSON.stringify(ret), domain);
+                    return;
+                }
+                loadProxy(LocalStore.getUserHash());
+                srcWindow.postMessage(JSON.stringify(ret), domain);
+            });
             return;
-            // XXX Display login modal....
         } else if (data.cmd === 'SIGN') {
             if (!AUTHORIZED_DOMAINS.filter(function (x) { return x.test(domain); }).length) {
                 ret.error = "UNAUTH_DOMAIN";
