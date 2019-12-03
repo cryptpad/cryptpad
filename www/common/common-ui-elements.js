@@ -147,6 +147,7 @@ define([
                         : Messages.owner_removeText;
             var removeCol = UIElements.getUserGrid(msg, {
                 common: common,
+                large: true,
                 data: _owners,
                 noFilter: true
             }, function () {
@@ -238,6 +239,7 @@ define([
             });
             var addCol = UIElements.getUserGrid(Messages.owner_addText, {
                 common: common,
+                large: true,
                 data: _friends
             }, function () {
                 //console.log(arguments);
@@ -254,6 +256,7 @@ define([
             });
             var teamsList = UIElements.getUserGrid(Messages.owner_addTeamText, {
                 common: common,
+                large: true,
                 noFilter: true,
                 data: teamsData
             }, function () {});
