@@ -4187,7 +4187,16 @@ define([
                 }
                 getProperties(el, function (e, $prop) {
                     if (e) { return void logError(e); }
-                    UI.alert($prop[0], undefined, true);
+                    var modal = UI.dialog.customModal($prop[0], {
+                        buttons: [{
+                            className: 'secondary',
+                            name: Messages.okButton,
+                            onClick: function () {},
+                            keys: [13]
+                        }],
+                        onClose: config.onClose,
+                    });
+                    UI.openCustomModal(modal);
                 });
             }
             else if ($this.hasClass("cp-app-drive-context-hashtag")) {
