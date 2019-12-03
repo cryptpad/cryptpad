@@ -1068,6 +1068,16 @@ define([
             UI.createCheckbox('cp-share-embed', Messages.share_linkEmbed, false, { mark: {tabindex:1} }),
             h('br'),
         ];
+        // check if the pad is password protection 
+        var hash = hashes.editHash || hashes.viewHash;
+        var href = origin + pathname + '#' + hash;
+        var parsedHref = Hash.parsePadUrl(href);
+        var hasPassword = parsedHref.hashData.password;
+        if (hasPassword) {
+            linkContent.push(h('div.alert.alert-danger', [h('i.fa.fa-lock'), 
+            ' ', 'has password']))
+        };
+
         linkContent.push(UI.dialog.selectable('', { id: 'cp-share-link-preview', tabindex: 1 }));
 
         var link = h('div.cp-share-modal', linkContent);
