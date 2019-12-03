@@ -737,12 +737,22 @@ define([
     UIElements.getProperties = function (common, data, cb) {
         var c1;
         var c2;
+        var button = [{
+            className: 'primary',
+            name: Messages.okButton,
+            onClick: function () {},
+            keys: [13]
+        }];
         NThen(function (waitFor) {
             getPadProperties(common, data, waitFor(function (e, c) {
-                c1 = c[0];
+                c1 = UI.dialog.customModal(c[0], {
+                    buttons: button
+                });
             }));
             getRightsProperties(common, data, waitFor(function (e, c) {
-                c2 = c[0];
+                c2 = UI.dialog.customModal(c[0], {
+                    buttons: button
+                });
             }));
         }).nThen(function () {
             var tabs = UI.dialog.tabs([{
@@ -1767,7 +1777,7 @@ define([
                             if (e) { return void console.error(e); }
                             UIElements.getProperties(common, data, function (e, $prop) {
                                 if (e) { return void console.error(e); }
-                                UI.alert($prop[0], undefined, true);
+                                UI.openCustomModal($prop[0]);
                             });
                         });
                     });
