@@ -891,16 +891,6 @@ define([
             delete friends[curve];
         });
 
-        var x = new Array(50).fill('test'); // XXX fake friend generator 
-        x.forEach(function (el, i) { 
-            friends[i] = {
-                edPublic: i,
-                curvePublic: i,
-                displayName: i + " pizza" // Hash.createChannelId()
-            };
-        }); // XXX
-  
-
         var friendsList = UIElements.getUserGrid(null, {
             common: common,
             data: friends,
