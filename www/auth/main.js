@@ -38,6 +38,16 @@ define([
 
     var loadProxy = function (hash) {
         nThen(function (waitFor) {
+            var wsUrl = NetConfig.getWebsocketURL();
+            var w = waitFor();
+            Netflux.connect(wsUrl).then(function (_network) {
+                network = _network;
+                w();
+            }, function (err) {
+                rpcError = err;
+                console.error(err);
+            });
+        }).nThen(function (waitFor) {
             Crypt.get(hash, waitFor(function (err, val) {
                 if (err) {
                     waitFor.abort();
@@ -50,19 +60,11 @@ define([
                 } catch (e) {
                     console.log("Can't parse user drive", e);
                 }
-            }));
-        }).nThen(function (waitFor) {
-            var wsUrl = NetConfig.getWebsocketURL();
-            var w = waitFor();
-            Netflux.connect(wsUrl).then(function (_network) {
-                network = _network;
-                w();
-            }, function (err) {
-                rpcError = err;
-                console.error(err);
-                waitFor.abort();
+            }), {
+                network: network
             });
         }).nThen(function (waitFor) {
+            if (!network) { return void waitFor.abort(); }
             Pinpad.create(network, proxy, waitFor(function (e, call) {
                 if (e) {
                     rpcError = e;
@@ -97,9 +99,9 @@ define([
         if (data.cmd === 'PING') {
             ret.res = 'PONG';
         } else if (data.cmd === 'LOGIN') {
-            Login.loginOrRegister(data.data.name, data.data.password, false, false, function (err, res) {
+            Login.loginOrRegister(data.data.name, data.data.password, false, false, function (err) {
                 if (err) {
-                    ret.error = 'LOGIN_ERROR'
+                    ret.error = 'LOGIN_ERROR';
                     srcWindow.postMessage(JSON.stringify(ret), domain);
                     return;
                 }
@@ -128,6 +130,8 @@ define([
                 if (rpcError) {
                     // Tell the user on accounts that there was an issue and they need to wait maximum 24h or contact an admin
                     ret.warning = true;
+                    srcWindow.postMessage(JSON.stringify(ret), domain);
+                    return;
                 }
                 rpc.updatePinLimits(function (e, limit, plan, note) {
                     if (e) {
