@@ -1027,6 +1027,12 @@ define([
 
         if (!hashes || (!hashes.editHash && !hashes.viewHash)) { return; }
 
+        // check if the pad is password protected 
+        var hash = hashes.editHash || hashes.viewHash;
+        var href = origin + pathname + '#' + hash;
+        var parsedHref = Hash.parsePadUrl(href);
+        var hasPassword = parsedHref.hashData.password;
+
         var parsed = Hash.parsePadUrl(pathname);
         var canPresent = ['code', 'slide'].indexOf(parsed.type) !== -1;
 
@@ -1081,17 +1087,14 @@ define([
             UI.createCheckbox('cp-share-embed', Messages.share_linkEmbed, false, { mark: {tabindex:1} }),
             h('br'),
         ];
-        // check if the pad is password protection 
-        var hash = hashes.editHash || hashes.viewHash;
-        var href = origin + pathname + '#' + hash;
-        var parsedHref = Hash.parsePadUrl(href);
-        var hasPassword = parsedHref.hashData.password;
+        
+        linkContent.push(UI.dialog.selectable('', { id: 'cp-share-link-preview', tabindex: 1 }));
+
+        // Show alert if the pad is password protected
         if (hasPassword) {
-            linkContent.push(h('div.alert.alert-danger', [h('i.fa.fa-lock'), 
+            linkContent.push(h('div.alert.alert-primary', [h('i.fa.fa-lock'), 
             ' ', Messages.share_linkPasswordAlert]))
         };
-
-        linkContent.push(UI.dialog.selectable('', { id: 'cp-share-link-preview', tabindex: 1 }));
 
         var link = h('div.cp-share-modal', linkContent);
         var $link = $(link);
@@ -1158,7 +1161,16 @@ define([
 
         // XXX Don't display access rights if no contacts
         var contactsContent = h('div.cp-share-modal');
-        $(contactsContent).append(friendsList);
+        var $contactsContent = $(contactsContent);
+        
+        $contactsContent.append(friendsList);
+        
+        // Show alert if the pad is password protected
+        if (hasPassword) {
+            $contactsContent.append(h('div.alert.alert-primary', [h('i.fa.fa-unlock'), 
+            ' ', Messages.share_contactPasswordAlert]))
+        };
+
 
         var contactButtons = [makeCancelButton(),
                              friendsObject.button];
