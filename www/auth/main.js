@@ -126,12 +126,12 @@ define([
         } else if (data.cmd === 'UPDATE_LIMIT') {
             return void whenReady(function () {
                 if (rpcError) {
-                    // XXX
                     // Tell the user on accounts that there was an issue and they need to wait maximum 24h or contact an admin
+                    ret.warning = true;
                 }
                 rpc.updatePinLimits(function (e, limit, plan, note) {
                     if (e) {
-                        // XXX same as above
+                        ret.warning = true;
                     }
                     ret.res = [limit, plan, note];
                     srcWindow.postMessage(JSON.stringify(ret), domain);
