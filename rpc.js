@@ -228,13 +228,15 @@ var truthyKeys = function (O) {
     });
 };
 
-var getChannelList = function (Env, publicKey, cb) {
+var getChannelList = function (Env, publicKey, _cb) {
+    var cb = Util.once(Util.mkAsync(_cb));
     loadUserPins(Env, publicKey, function (pins) {
         cb(truthyKeys(pins));
     });
 };
 
-var getFileSize = function (Env, channel, cb) {
+var getFileSize = function (Env, channel, _cb) {
+    var cb = Util.once(Util.mkAsync(_cb));
     if (!isValidId(channel)) { return void cb('INVALID_CHAN'); }
     if (channel.length === 32) {
         if (typeof(Env.msgStore.getChannelSize) !== 'function') {
