@@ -416,20 +416,40 @@ var getDeletedPads = function (Env, channels, cb) {
 
 const batchTotalSize = BatchRead("GET_TOTAL_SIZE");
 var getTotalSize = function (Env, publicKey, cb) {
-    batchTotalSize(publicKey, cb, function (done) {
-        var bytes = 0;
-        return void getChannelList(Env, publicKey, function (channels) {
-            if (!channels) { return done('INVALID_PIN_LIST'); } // unexpected
+    var unescapedKey = unescapeKeyCharacters(publicKey);
+    var limit = Env.limits[unescapedKey];
 
-            nThen(function (w) {
-                channels.forEach(function (channel) { // TODO semaphore?
-                    getFileSize(Env, channel, w(function (e, size) {
-                        if (!e) { bytes += size; }
+    batchTotalSize(publicKey, cb, function (done) {
+        var channels = [];
+        var bytes = 0;
+        nThen(function (waitFor) {
+            // Get the channels list for our users
+            getChannelList(Env, publicKey, waitFor(function (_channels) {
+                if (!_channels) { return done('INVALID_PIN_LIST'); }
+                Array.prototype.push.apply(channels, _channels);
+            }));
+            // Get the channels list for users sharing our quota
+            if (limit && Array.isArray(limit.users) && limit.users.length > 1) {
+                limit.users.forEach(function (key) {
+                    if (key === unescapedKey) { return; } // Don't count ourselves twice
+                    getChannelList(Env, key, waitFor(function (_channels) {
+                        if (!_channels) { return; } // Broken user, don't count their quota
+                        Array.prototype.push.apply(channels, _channels);
                     }));
                 });
-            }).nThen(function () {
-                done(void 0, bytes);
+            }
+        }).nThen(function (waitFor) {
+            // Get size of the channels (without duplicate)
+            var list = [];
+            channels.forEach(function (channel) { // TODO semaphore?
+                if (list.indexOf(channel) !== -1) { return; }
+                list.push(channel);
+                getFileSize(Env, channel, waitFor(function (e, size) {
+                    if (!e) { bytes += size; }
+                }));
             });
+        }).nThen(function () {
+            done(void 0, bytes);
         });
     });
 };
@@ -552,7 +572,21 @@ var updateLimits = function (Env, config, publicKey, cb /*:(?string, ?any[])=>vo
         cb(e);
     });
 
-    req.end(body);
+    var str = '{"URKfpoOMxeSD2v144vfFIrhwR4cfhqn5l+hPPIqtY8U=":{"limit":16106127360,"note":"","plan":"global","users":["URKfpoOMxeSD2v144vfFIrhwR4cfhqn5l+hPPIqtY8U=","45b3UTJpt9CVcOjix7ra8BDEnhLn3YHg+4PadLBHweo="]},"45b3UTJpt9CVcOjix7ra8BDEnhLn3YHg+4PadLBHweo=":{"limit":16106127360,"note":"","plan":"global","users":["URKfpoOMxeSD2v144vfFIrhwR4cfhqn5l+hPPIqtY8U=","45b3UTJpt9CVcOjix7ra8BDEnhLn3YHg+4PadLBHweo="]}}';
+    var json = JSON.parse(str);
+    Env.limits = json;
+    applyCustomLimits(Env, config);
+    var l;
+    if (userId) {
+        var limit = Env.limits[userId];
+        l = limit && typeof limit.limit === "number" ?
+                [limit.limit, limit.plan, limit.note] : [defaultLimit, '', ''];
+    }
+    setTimeout(function () {
+        cb(void 0, l);
+    });
+
+    //req.end(body);
 };
 
 var getLimit = function (Env, publicKey, cb) {
