@@ -147,6 +147,7 @@ define([
                         : Messages.owner_removeText;
             var removeCol = UIElements.getUserGrid(msg, {
                 common: common,
+                large: true,
                 data: _owners,
                 noFilter: true
             }, function () {
@@ -238,6 +239,7 @@ define([
             });
             var addCol = UIElements.getUserGrid(Messages.owner_addText, {
                 common: common,
+                large: true,
                 data: _friends
             }, function () {
                 //console.log(arguments);
@@ -254,6 +256,7 @@ define([
             });
             var teamsList = UIElements.getUserGrid(Messages.owner_addTeamText, {
                 common: common,
+                large: true,
                 noFilter: true,
                 data: teamsData
             }, function () {});
@@ -737,12 +740,22 @@ define([
     UIElements.getProperties = function (common, data, cb) {
         var c1;
         var c2;
+        var button = [{
+            className: 'primary',
+            name: Messages.okButton,
+            onClick: function () {},
+            keys: [13]
+        }];
         NThen(function (waitFor) {
             getPadProperties(common, data, waitFor(function (e, c) {
-                c1 = c[0];
+                c1 = UI.dialog.customModal(c[0], {
+                    buttons: button
+                });
             }));
             getRightsProperties(common, data, waitFor(function (e, c) {
-                c2 = c[0];
+                c2 = UI.dialog.customModal(c[0], {
+                    buttons: button
+                });
             }));
         }).nThen(function () {
             var tabs = UI.dialog.tabs([{
@@ -791,9 +804,7 @@ define([
         var div = h('div.cp-usergrid-container' + noOthers + (config.large?'.large':''), [
             label ? h('label', label) : undefined,
             h('div.cp-usergrid-filter', (config.noFilter || config.noSelect) ? undefined : [
-                inputFilter,
-                buttonSelect,
-                buttonDeselect
+                inputFilter
             ]),
         ]);
         var $div = $(div);
@@ -883,7 +894,8 @@ define([
         var friendsList = UIElements.getUserGrid(null, {
             common: common,
             data: friends,
-            noFilter: false
+            noFilter: false,
+            large: true
         }, refreshButtons);
         var friendDiv = friendsList.div;
         $div.append(friendDiv);
@@ -909,6 +921,7 @@ define([
         var teamsList = UIElements.getUserGrid(Messages.share_linkTeam, {
             common: common,
             noFilter: true,
+            large: true,
             data: teams
         }, refreshButtons);
         $div.append(teamsList.div);
@@ -1769,7 +1782,7 @@ define([
                             if (e) { return void console.error(e); }
                             UIElements.getProperties(common, data, function (e, $prop) {
                                 if (e) { return void console.error(e); }
-                                UI.alert($prop[0], undefined, true);
+                                UI.openCustomModal($prop[0]);
                             });
                         });
                     });
