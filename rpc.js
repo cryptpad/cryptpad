@@ -419,13 +419,19 @@ var getTotalSize = function (Env, publicKey, cb) {
     var unescapedKey = unescapeKeyCharacters(publicKey);
     var limit = Env.limits[unescapedKey];
 
-    batchTotalSize(publicKey, cb, function (done) {
+    // Get a common key if multiple users share the same quota, otherwise take the public key
+    var batchKey = (limit && Array.isArray(limit.users)) ? limit.users.join('') : publicKey;
+
+    batchTotalSize(batchKey, cb, function (done) {
         var channels = [];
         var bytes = 0;
         nThen(function (waitFor) {
-            // Get the channels list for our users
+            // Get the channels list for our user account
             getChannelList(Env, publicKey, waitFor(function (_channels) {
-                if (!_channels) { return done('INVALID_PIN_LIST'); }
+                if (!_channels) {
+                    waitFor.abort();
+                    return done('INVALID_PIN_LIST');
+                }
                 Array.prototype.push.apply(channels, _channels);
             }));
             // Get the channels list for users sharing our quota
@@ -439,8 +445,8 @@ var getTotalSize = function (Env, publicKey, cb) {
                 });
             }
         }).nThen(function (waitFor) {
-            // Get size of the channels (without duplicate)
-            var list = [];
+            // Get size of the channels
+            var list = []; // Contains the channels already counted in the quota to avoid duplicates
             channels.forEach(function (channel) { // TODO semaphore?
                 if (list.indexOf(channel) !== -1) { return; }
                 list.push(channel);
@@ -572,21 +578,7 @@ var updateLimits = function (Env, config, publicKey, cb /*:(?string, ?any[])=>vo
         cb(e);
     });
 
-    var str = '{"URKfpoOMxeSD2v144vfFIrhwR4cfhqn5l+hPPIqtY8U=":{"limit":16106127360,"note":"","plan":"global","users":["URKfpoOMxeSD2v144vfFIrhwR4cfhqn5l+hPPIqtY8U=","45b3UTJpt9CVcOjix7ra8BDEnhLn3YHg+4PadLBHweo="]},"45b3UTJpt9CVcOjix7ra8BDEnhLn3YHg+4PadLBHweo=":{"limit":16106127360,"note":"","plan":"global","users":["URKfpoOMxeSD2v144vfFIrhwR4cfhqn5l+hPPIqtY8U=","45b3UTJpt9CVcOjix7ra8BDEnhLn3YHg+4PadLBHweo="]}}';
-    var json = JSON.parse(str);
-    Env.limits = json;
-    applyCustomLimits(Env, config);
-    var l;
-    if (userId) {
-        var limit = Env.limits[userId];
-        l = limit && typeof limit.limit === "number" ?
-                [limit.limit, limit.plan, limit.note] : [defaultLimit, '', ''];
-    }
-    setTimeout(function () {
-        cb(void 0, l);
-    });
-
-    //req.end(body);
+    req.end(body);
 };
 
 var getLimit = function (Env, publicKey, cb) {
