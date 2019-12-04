@@ -1088,7 +1088,7 @@ define([
             h('br'),
         ];
         
-        linkContent.push(UI.dialog.selectable('', { id: 'cp-share-link-preview', tabindex: 1 }));
+        linkContent.push(UI.dialog.selectableArea('', { id: 'cp-share-link-preview', tabindex: 1, rows:3}));
 
         // Show alert if the pad is password protected
         if (hasPassword) {
