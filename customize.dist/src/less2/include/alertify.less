@@ -222,7 +222,7 @@
                 background-color: @alertify-input-fg;
                 color: @cryptpad_text_col;
                 border: 1px solid @alertify-input-bg;
-                margin-bottom: 15px;
+                margin: @alertify_padding-base 0px;
                 width: 100%;
                 font-size: 100%;
                 padding: @alertify_padding-base;
@@ -365,6 +365,7 @@
 
             nav {
                 padding: @alertify_padding-base;
+                padding-top: 0px;
                 text-align: right;
                 button {
                     margin: 0px !important;
@@ -518,7 +519,7 @@
         }
     }
     .alert {
-        margin: 5px 0px;
+        margin: 0px 0px @alertify_padding-base 0px;
         font-size: 12px;
         padding: 5px;
         border-radius: 0px;
@@ -529,6 +530,15 @@
             a {
                 color: @alertify-fg;
                 text-decoration: underline;
+            }
+        }
+        &.dismissable {
+            display: flex;
+            align-items: center;
+            span.fa-times {
+                font-size: @colortheme_app-font-size;
+                margin-left: 20px;
+                cursor: pointer;
             }
         }
     }

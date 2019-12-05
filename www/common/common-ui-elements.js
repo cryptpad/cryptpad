@@ -1097,7 +1097,6 @@ define([
             h('br'),
         ] : [
             UI.createCheckbox('cp-share-embed', Messages.share_linkEmbed, false, { mark: {tabindex:1} }),
-            h('br'),
         ];
         
         linkContent.push(UI.dialog.selectableArea('', { id: 'cp-share-link-preview', tabindex: 1, rows:3}));
