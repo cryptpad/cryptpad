@@ -1110,6 +1110,12 @@ define([
             ]));
         }
 
+        // Show alert if user has not dismissed it in the past
+        linkContent.push(h('div.alert.alert-danger.dismissable', [
+            h('span.cp-inline-alert-text', Messages.share_linkWarning),
+            h('span.fa.fa-times')
+        ]));
+
         var link = h('div.cp-share-modal', linkContent);
         var $link = $(link);
 
