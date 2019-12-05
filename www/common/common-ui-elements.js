@@ -1105,8 +1105,8 @@ define([
                 h('i.fa.fa-lock'), ' ', 
                 Messages.share_linkPasswordAlert, h('br'),
                 makeFaqLink()
-            ]))
-        };
+            ]));
+        }
 
         var link = h('div.cp-share-modal', linkContent);
         var $link = $(link);
@@ -1183,8 +1183,8 @@ define([
                 h('i.fa.fa-unlock'), ' ', 
                 Messages.share_contactPasswordAlert, h('br'),
                 makeFaqLink()
-            ]))
-        };
+            ]));
+        }
 
 
         var contactButtons = [makeCancelButton(),
@@ -1213,8 +1213,8 @@ define([
                 h('i.fa.fa-lock'), ' ', 
                 Messages.share_embedPasswordAlert, h('br'),
                 makeFaqLink()
-            ]))
-        };
+            ]));
+        }
 
         var embedButtons = [
             makeCancelButton(), {
