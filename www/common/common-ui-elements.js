@@ -1033,6 +1033,12 @@ define([
         var parsedHref = Hash.parsePadUrl(href);
         var hasPassword = parsedHref.hashData.password;
 
+        var faqLink = h('a', {href: '#'}, Messages.passwordFaqLink);
+        $(faqLink).click(function () {
+            console.log(config.origin + "/faq.html#security-pad_password");
+            common.openURL(config.origin + "/faq.html#security-pad_password");
+        });
+
         var parsed = Hash.parsePadUrl(pathname);
         var canPresent = ['code', 'slide'].indexOf(parsed.type) !== -1;
 
@@ -1192,6 +1198,17 @@ define([
             h('br'),
             UI.dialog.selectable(getEmbedValue(), { id: 'cp-embed-link-preview', tabindex: 1 })
         ];
+
+        // Show alert if the pad is password protected
+        // 
+        if (hasPassword) {
+            embedContent.push(h('div.alert.alert-primary', [
+                h('i.fa.fa-lock'), ' ', 
+                Messages.share_embedPasswordAlert, ' ',
+                faqLink
+            ]))
+        };
+
         var embedButtons = [
             makeCancelButton(), {
             className: 'primary',
