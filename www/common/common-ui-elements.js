@@ -1204,8 +1204,7 @@ define([
         };
         var embedContent = [
             h('p', Messages.viewEmbedTag),
-            h('br'),
-            UI.dialog.selectable(getEmbedValue(), { id: 'cp-embed-link-preview', tabindex: 1 })
+            UI.dialog.selectableArea(getEmbedValue(), { id: 'cp-embed-link-preview', tabindex: 1, rows: 3})
         ];
 
         // Show alert if the pad is password protected
