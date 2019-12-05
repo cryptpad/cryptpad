@@ -1033,11 +1033,14 @@ define([
         var parsedHref = Hash.parsePadUrl(href);
         var hasPassword = parsedHref.hashData.password;
 
-        var faqLink = h('a', {href: '#'}, Messages.passwordFaqLink);
-        $(faqLink).click(function () {
-            console.log(config.origin + "/faq.html#security-pad_password");
-            common.openURL(config.origin + "/faq.html#security-pad_password");
-        });
+        var makeFaqLink = function () {
+            var link = h('a', {href: '#'}, Messages.passwordFaqLink);
+            $(link).click(function () {
+                common.openURL(config.origin + "/faq.html#security-pad_password");
+            });
+            return link;
+        };
+        
 
         var parsed = Hash.parsePadUrl(pathname);
         var canPresent = ['code', 'slide'].indexOf(parsed.type) !== -1;
@@ -1098,8 +1101,11 @@ define([
 
         // Show alert if the pad is password protected
         if (hasPassword) {
-            linkContent.push(h('div.alert.alert-primary', [h('i.fa.fa-lock'), 
-            ' ', Messages.share_linkPasswordAlert]))
+            linkContent.push(h('div.alert.alert-primary', [
+                h('i.fa.fa-lock'), ' ', 
+                Messages.share_linkPasswordAlert, ' ',
+                makeFaqLink()
+            ]))
         };
 
         var link = h('div.cp-share-modal', linkContent);
@@ -1173,8 +1179,11 @@ define([
         
         // Show alert if the pad is password protected
         if (hasPassword) {
-            $contactsContent.append(h('div.alert.alert-primary', [h('i.fa.fa-unlock'), 
-            ' ', Messages.share_contactPasswordAlert]))
+            $contactsContent.append(h('div.alert.alert-primary', [
+                h('i.fa.fa-lock'), ' ', 
+                Messages.share_contactPasswordAlert, ' ',
+                makeFaqLink()
+            ]))
         };
 
 
@@ -1200,12 +1209,11 @@ define([
         ];
 
         // Show alert if the pad is password protected
-        // 
         if (hasPassword) {
             embedContent.push(h('div.alert.alert-primary', [
                 h('i.fa.fa-lock'), ' ', 
                 Messages.share_embedPasswordAlert, ' ',
-                faqLink
+                makeFaqLink()
             ]))
         };
 
