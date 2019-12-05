@@ -488,6 +488,20 @@ define([
                     Cryptpad.storeInTeam(data, cb);
                 });
 
+                sframeChan.on('EV_GOTO_URL', function (url) {
+                    if (url) {
+                        window.location.href = url;
+                    } else {
+                        window.location.reload();
+                    }
+                });
+
+                sframeChan.on('EV_OPEN_URL', function (url) {
+                    if (url) {
+                        window.open(url);
+                    }
+                });
+
             };
             addCommonRpc(sframeChan);
 
@@ -954,20 +968,6 @@ define([
                         data: data
                     });
                 });
-            });
-
-            sframeChan.on('EV_GOTO_URL', function (url) {
-                if (url) {
-                    window.location.href = url;
-                } else {
-                    window.location.reload();
-                }
-            });
-
-            sframeChan.on('EV_OPEN_URL', function (url) {
-                if (url) {
-                    window.open(url);
-                }
             });
 
             sframeChan.on('Q_PIN_GET_USAGE', function (teamId, cb) {
