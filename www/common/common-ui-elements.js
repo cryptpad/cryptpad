@@ -1098,7 +1098,7 @@ define([
         ] : [
             UI.createCheckbox('cp-share-embed', Messages.share_linkEmbed, false, { mark: {tabindex:1} }),
         ];
-        
+        linkContent.push(h('div.cp-spacer'))
         linkContent.push(UI.dialog.selectableArea('', { id: 'cp-share-link-preview', tabindex: 1, rows:3}));
 
         // Show alert if the pad is password protected
