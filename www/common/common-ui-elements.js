@@ -1034,7 +1034,10 @@ define([
         var hasPassword = parsedHref.hashData.password;
 
         var makeFaqLink = function () {
-            var link = h('a', {href: '#'}, [h('i.fa.fa-question-circle'), ' ', Messages.passwordFaqLink]);
+            var link = h('span', [
+                h('i.fa.fa-question-circle'), ' ',
+                h('a', {href: '#'}, Messages.passwordFaqLink)
+            ]);
             $(link).click(function () {
                 common.openURL(config.origin + "/faq.html#security-pad_password");
             });
