@@ -1034,7 +1034,7 @@ define([
         var hasPassword = parsedHref.hashData.password;
 
         var makeFaqLink = function () {
-            var link = h('a', {href: '#'}, Messages.passwordFaqLink);
+            var link = h('a', {href: '#'}, [h('i.fa.fa-question-circle'), ' ', Messages.passwordFaqLink]);
             $(link).click(function () {
                 common.openURL(config.origin + "/faq.html#security-pad_password");
             });
@@ -1103,7 +1103,7 @@ define([
         if (hasPassword) {
             linkContent.push(h('div.alert.alert-primary', [
                 h('i.fa.fa-lock'), ' ', 
-                Messages.share_linkPasswordAlert, ' ',
+                Messages.share_linkPasswordAlert, h('br'),
                 makeFaqLink()
             ]))
         };
@@ -1180,8 +1180,8 @@ define([
         // Show alert if the pad is password protected
         if (hasPassword) {
             $contactsContent.append(h('div.alert.alert-primary', [
-                h('i.fa.fa-lock'), ' ', 
-                Messages.share_contactPasswordAlert, ' ',
+                h('i.fa.fa-unlock'), ' ', 
+                Messages.share_contactPasswordAlert, h('br'),
                 makeFaqLink()
             ]))
         };
@@ -1211,7 +1211,7 @@ define([
         if (hasPassword) {
             embedContent.push(h('div.alert.alert-primary', [
                 h('i.fa.fa-lock'), ' ', 
-                Messages.share_embedPasswordAlert, ' ',
+                Messages.share_embedPasswordAlert, h('br'),
                 makeFaqLink()
             ]))
         };
