@@ -121,6 +121,11 @@ text.actor {
   font-size: 11px;
   text-height: 14px;
 }
+.sectionTitle, .titleText {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
 /* Grid and axis */
 .grid .tick {
   stroke: lightgrey;
