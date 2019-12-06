@@ -458,6 +458,29 @@ define([
         }
     };
 
+    var muteUser = function (ctx, data, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb));
+        var proxy = ctx.store.proxy;
+        var muted = proxy.mutedUsers = proxy.mutedUsers || {};
+        if (muted[data.curvePublic]) { return void cb(); }
+        muted[data.curvePublic] = data;
+        cb();
+    };
+    var unmuteUser = function (ctx, curvePublic, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb));
+        var proxy = ctx.store.proxy;
+        var muted = proxy.mutedUsers = proxy.mutedUsers || {};
+        delete muted[curvePublic];
+        cb();
+    };
+    var getMutedUsers = function (ctx, cb) {
+        var proxy = ctx.store.proxy;
+        if (cb) {
+            return void cb(proxy.mutedUsers || {});
+        }
+        return proxy.mutedUsers || {};
+    };
+
     var openChannel = function (ctx, data) {
         var proxy = ctx.store.proxy;
         var network = ctx.store.network;
@@ -990,6 +1013,9 @@ define([
             if (cmd === 'GET_ROOMS') {
                 return void getRooms(ctx, data, cb);
             }
+            if (cmd === 'GET_MUTED_USERS') {
+                return void getMutedUsers(ctx, cb);
+            }
             if (cmd === 'GET_USERLIST') {
                 return void getUserList(ctx, data, cb);
             }
@@ -1001,6 +1027,12 @@ define([
             }
             if (cmd === 'REMOVE_FRIEND') {
                 return void removeFriend(ctx, data, cb);
+            }
+            if (cmd === 'MUTE_USER') {
+                return void muteUser(ctx, data, cb);
+            }
+            if (cmd === 'UNMUTE_USER') {
+                return void unmuteUser(ctx, data, cb);
             }
             if (cmd === 'GET_STATUS') {
                 return void getStatus(ctx, data, cb);

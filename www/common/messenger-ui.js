@@ -3,9 +3,10 @@ define([
     '/customize/messages.js',
     '/common/common-util.js',
     '/common/common-interface.js',
+    '/common/common-ui-elements.js',
     '/common/hyperscript.js',
     '/common/diffMarked.js',
-], function ($, Messages, Util, UI, h, DiffMd) {
+], function ($, Messages, Util, UI, UIElements, h, DiffMd) {
     'use strict';
 
     var debug = console.log;
@@ -67,8 +68,9 @@ define([
                 h('div.cp-app-contacts-category-content')
             ]),
             h('div.cp-app-contacts-friends.cp-app-contacts-category', [
-                h('div.cp-app-contacts-category-content'),
+                h('div.cp-app-contacts-category-content.cp-contacts-friends'),
                 h('h2.cp-app-contacts-category-title', Messages.contacts_friends),
+                h('button.cp-app-contacts-muted-button', Messages.contacts_manageMuted || 'MANAGE MUTED') // XXX
             ]),
             h('div.cp-app-contacts-rooms.cp-app-contacts-category', [
                 h('div.cp-app-contacts-category-content'),
@@ -486,6 +488,15 @@ define([
             }
         };
 
+        var muteUser = function (data) {
+            execCommand('MUTE_USER', {
+                curvePublic: data.curvePublic,
+                name: data.displayName || data.name,
+                avatar: data.avatar
+            }, function (e /*, removed */) {
+                if (e) { return void console.error(e); }
+            });
+        };
         var removeFriend = function (curvePublic) {
             execCommand('REMOVE_FRIEND', curvePublic, function (e /*, removed */) {
                 if (e) { return void console.error(e); }
@@ -529,13 +540,16 @@ define([
                 if (!channel.isFriendChat) { return; }
                 var curvePublic = channel.curvePublic;
                 var friend = contactsData[curvePublic] || friendData;
-                UI.confirm(Messages._getKey('contacts_confirmRemove', [
-                    Util.fixHTML(friend.name)
-                ]), function (yes) {
+                var muteBox = UI.createCheckbox('cp-contacts-mute', Messages.contacts_mute, false);
+                var content = h('div', [
+                    h('p', Messages._getKey('contacts_confirmRemove', [Util.fixHTML(friend.name)])),
+                    muteBox
+                ]);
+                UI.confirm(content, function (yes) {
                     if (!yes) { return; }
-                    removeFriend(curvePublic, function (e) {
-                        if (e) { return void console.error(e); }
-                    });
+                    var mute = Util.isChecked($(content).find('#cp-contacts-mute'));
+                    muteUser(friend);
+                    removeFriend(curvePublic);
                     // TODO remove friend from userlist ui
                     // FIXME seems to trigger EJOINED from netflux-websocket (from server);
                     // (tried to join a channel in which you were already present)
@@ -804,6 +818,40 @@ define([
 
                 debug('rooms: ' + JSON.stringify(rooms));
                 rooms.forEach(initializeRoom);
+            });
+
+            execCommand('GET_MUTED_USERS', null, function (err, muted) {
+                if (err) { return void console.error(err); }
+
+                if (!muted || Object.keys(muted).length === 0) { return; }
+
+                var $button = $userlist.find('.cp-app-contacts-muted-button');
+                var rows = Object.keys(muted).map(function (curve) {
+                    var data = muted[curve];
+                    var avatar = h('div.cp-avatar');
+                    var button = h('td', h('i.fa.fa-times', {title: Messages.contacts_unmute}));
+                    UIElements.displayAvatar(common, $(avatar), data.avatar, data.name);
+                    $(button).click(function () {
+                        execCommand('UNMUTE_USER', {
+                            curvePublic: curve,
+                        }, function (e /*, removed */) {
+                            if (e) { return void console.error(e); }
+                            $(button).closest('tr').remove();
+                        });
+                    });
+                    return h('tr', [
+                        h('td', avatar),
+                        h('td', data.name),
+                        button
+                    ]);
+                });
+                var content = h('div', [
+                    h('p', Messages.contacts_mutedUsers),
+                    h('table', rows)
+                ]);
+                $button.click(function () {
+                    UI.alert(content);
+                }).show();
             });
 
             $container.removeClass('cp-app-contacts-initializing');
