@@ -123,7 +123,6 @@ text.actor {
 }
 .sectionTitle, .titleText {
     font-weight: bold;
-    text-decoration: underline;
 }
 
 /* Grid and axis */
