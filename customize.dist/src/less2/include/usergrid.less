@@ -6,7 +6,9 @@
     --LessLoader_require: LessLoader_currentFile();
 };
 & {
+    
     .cp-usergrid-container {
+        margin-bottom: 12px; // XXX add margin at bottom of user grids 
         .cp-usergrid-grid {
             display: flex;
             flex-wrap: wrap;
@@ -28,10 +30,9 @@
             input {
                 flex: 1;
                 min-width: 0;
-                margin-top: 0 !important;
+                margin: 0;
                 margin-bottom: 0 !important;
                 height: 38px;
-                margin: 6px 0px;
                 &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
                     color: @cryptpad_color_grey;
                     opacity: 1; /* Firefox */
@@ -54,6 +55,7 @@
             justify-content: center;
             align-items: center;
             padding: 5px;
+            margin: 3px;
             cursor: default;
             transition: order 0.5s, background-color 0.5s;
             margin-top: 1px;
@@ -72,11 +74,6 @@
             .cp-usergrid-user-avatar {
                 min-height: 40px;
             }
-            &:not(.large) {
-                .cp-usergrid-user-name {
-                    display: none;
-                }
-            }
 
             .cp-usergrid-user-name {
                 overflow: hidden;
@@ -89,7 +86,7 @@
             }
 
             &:not(.large) {
-                .avatar_main(60px);
+                .avatar_main(40px);
             }
             &.large {
                 .avatar_main(25px);

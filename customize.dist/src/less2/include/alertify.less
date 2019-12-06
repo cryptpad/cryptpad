@@ -159,8 +159,8 @@
                 margin-bottom: @alertify_padding-base;
                 margin: 0;
                 overflow: auto;
-                label{
-                    margin-bottom: 0px;
+                :last-child{
+                    margin-bottom: 0;
                 }
             }
             .alertify-tabs {
@@ -368,7 +368,6 @@
 
             nav {
                 padding: @alertify_padding-base;
-                padding-top: 0px;
                 text-align: right;
                 button {
                     margin: 0px !important;
@@ -521,6 +520,7 @@
             overflow-x: auto;
         }
     }
+    // Bootstrap Alerts 
     .alert {
         margin: 0px 0px @alertify_padding-base 0px;
         font-size: 12px;

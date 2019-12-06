@@ -795,8 +795,6 @@ define([
 
         var noOthers = icons.length === 0 ? '.cp-usergrid-empty' : '';
 
-        var buttonSelect = h('button', Messages.share_selectAll);
-        var buttonDeselect = h('button', Messages.share_deselectAll);
         var inputFilter = h('input', {
             placeholder: Messages.share_filterFriend
         });
@@ -817,22 +815,7 @@ define([
                 $div.find('.cp-usergrid-user:not(.cp-selected):not([data-name*="'+name+'"])').hide();
             }
         };
-
         $(inputFilter).on('keydown keyup change', redraw);
-
-        $(buttonSelect).click(function () {
-            $div.find('.cp-usergrid-user:not(.cp-selected):visible').addClass('cp-selected');
-            onSelect();
-        });
-        $(buttonDeselect).click(function () {
-            $div.find('.cp-usergrid-user.cp-selected').removeClass('cp-selected').each(function (i, el) {
-                var order = $(el).attr('data-order');
-                if (!order) { return; }
-                $(el).attr('style', 'order:'+order);
-            });
-            redraw();
-            onSelect();
-        });
 
         $(div).append(h('div.cp-usergrid-grid', icons));
         if (!config.noSelect) {
@@ -1035,7 +1018,7 @@ define([
 
         var makeFaqLink = function () {
             var link = h('span', [
-                h('i.fa.fa-question-circle'), ' ',
+                h('i.fa.fa-question-circle'), ' ', // XXX remove and make it a margin
                 h('a', {href: '#'}, Messages.passwordFaqLink)
             ]);
             $(link).click(function () {
@@ -1098,13 +1081,13 @@ define([
         ] : [
             UI.createCheckbox('cp-share-embed', Messages.share_linkEmbed, false, { mark: {tabindex:1} }),
         ];
-        linkContent.push(h('div.cp-spacer'))
+        linkContent.push(h('div.cp-spacer'));
         linkContent.push(UI.dialog.selectableArea('', { id: 'cp-share-link-preview', tabindex: 1, rows:3}));
 
         // Show alert if the pad is password protected
         if (hasPassword) {
             linkContent.push(h('div.alert.alert-primary', [
-                h('i.fa.fa-lock'), ' ', 
+                h('i.fa.fa-lock'), ' ',  // XXX remove and make it a margin
                 Messages.share_linkPasswordAlert, h('br'),
                 makeFaqLink()
             ]));
@@ -1187,7 +1170,7 @@ define([
         // Show alert if the pad is password protected
         if (hasPassword) {
             $contactsContent.append(h('div.alert.alert-primary', [
-                h('i.fa.fa-unlock'), ' ', 
+                h('i.fa.fa-unlock'), ' ',  // XXX remove and make it a margin
                 Messages.share_contactPasswordAlert, h('br'),
                 makeFaqLink()
             ]));
@@ -1317,6 +1300,7 @@ define([
         return modal;
     };
 
+    // XXX add password messages to file share
     UIElements.createFileShareModal = function (config) {
         var origin = config.origin;
         var pathname = config.pathname;
@@ -1387,10 +1371,8 @@ define([
         // Embed tab
         var embed = h('div.cp-share-modal', [
             h('p', Messages.fileEmbedScript),
-            h('br'),
             UI.dialog.selectable(common.getMediatagScript()),
             h('p', Messages.fileEmbedTag),
-            h('br'),
             UI.dialog.selectable(common.getMediatagFromHref(fileData)),
         ]);
         var embedButtons = [{
