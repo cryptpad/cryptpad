@@ -1002,7 +1002,7 @@ define([
         });
         return {
             content: div,
-            button: shareButton
+            buttons: [shareButton]
         };
     };
 
@@ -1125,10 +1125,42 @@ define([
 
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
         var onFriendShare = Util.mkEvent();
-        var friendsObject = hasFriends ? createShareWithFriends(config, onFriendShare, getLinkValue) : {
-            content: h('p', Messages.team_noFriend),
-            button: {}
+
+        var noContactsMessage = function(){
+            if (common.isLoggedIn()) {
+                return {
+                    content: h('p', Messages.share_noContactsLoggedIn),
+                    buttons: [{
+                        className: 'primary',
+                        name: Messages.share_copyProfileLink,
+                        onClick: function () {
+                            // XXX copy profile link
+                        },
+                        keys: [13]
+                      }]
+                }
+            } else {
+                return {
+                    content: h('p', Messages.share_noContactsNotLoggedIn),
+                    buttons: [{
+                        className: 'primary',
+                        name: Messages.login_register,
+                        onClick: function () {
+                            // XXX link to register
+                        }
+                      }, {
+                        className: 'primary',
+                        name: Messages.login_login,
+                        onClick: function () {
+                            // XXX link to log in
+                        }
+                      }
+                      ]
+                }
+            }
         };
+
+        var friendsObject = hasFriends ? createShareWithFriends(config, onFriendShare, getLinkValue) : noContactsMessage();
         var friendsList = friendsObject.content;
 
         onFriendShare.reg(saveValue);
@@ -1137,9 +1169,10 @@ define([
         var contactsContent = h('div.cp-share-modal');
         $(contactsContent).append(friendsList);
 
-        var contactButtons = [makeCancelButton(),
-                             friendsObject.button];
-
+        console.log(friendsObject.content);
+        var contactButtons = friendsObject.buttons;
+        contactButtons.unshift(makeCancelButton());
+                             
         var frameContacts = UI.dialog.customModal(contactsContent, {
             buttons: contactButtons,
             onClose: config.onClose,
