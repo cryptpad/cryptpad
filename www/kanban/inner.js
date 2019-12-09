@@ -286,7 +286,7 @@ define([
                 kanban.inEditMode = true;
                 // create a form to enter element
                 var boardId = $(el.parentNode.parentNode).attr("data-id");
-                var $item = $('<div>', {'class': 'kanban-item'});
+                var $item = $('<div>', {'class': 'kanban-item new-item'});
                 var $input = getInput().val(name).appendTo($item);
                 kanban.addForm(boardId, $item[0]);
                 $input.focus();
