@@ -1092,10 +1092,29 @@ define([
             ]));
         }
 
-        linkContent.push(h('div.alert.alert-warning.dismissable', [
-            h('span.cp-inline-alert-text', Messages.share_linkWarning),
-            h('span.fa.fa-times') // XXX dismiss message and remember 
-        ]));
+        // warning about sharing links 
+        var localStore = window.cryptpadStore;
+        var dismissButton = h('span.fa.fa-times'); 
+        var shareLinkWarning = h('div.alert.alert-warning.dismissable', 
+            { style: 'display: none;' }, 
+            [ 
+                h('span.cp-inline-alert-text', Messages.share_linkWarning),
+                dismissButton
+            ]);
+        linkContent.push(shareLinkWarning);
+
+        localStore.get('hide-alert-shareLinkWarning', function (val) {
+            if (val === '1') { return; }
+            $(shareLinkWarning).show();
+
+            $(dismissButton).on('click', function () {
+                localStore.put('hide-alert-shareLinkWarning', '1');
+                $(shareLinkWarning).remove();
+            });
+
+        });
+          
+        
 
         var link = h('div.cp-share-modal', linkContent);
         var $link = $(link);
@@ -1347,10 +1366,27 @@ define([
             ]));
         }
 
-        linkContent.push(h('div.alert.alert-warning.dismissable', [
-            h('span.cp-inline-alert-text', Messages.share_linkWarning),
-            h('span.fa.fa-times') // XXX dismiss message and remember 
-        ]));
+        // warning about sharing links 
+        var localStore = window.cryptpadStore;
+        var dismissButton = h('span.fa.fa-times'); 
+        var shareLinkWarning = h('div.alert.alert-warning.dismissable', 
+            { style: 'display: none;' }, 
+            [ 
+                h('span.cp-inline-alert-text', Messages.share_linkWarning),
+                dismissButton
+            ]);
+        linkContent.push(shareLinkWarning);
+
+        localStore.get('hide-alert-shareLinkWarning', function (val) {
+            if (val === '1') { return; }
+            $(shareLinkWarning).show();
+
+            $(dismissButton).on('click', function () {
+                localStore.put('hide-alert-shareLinkWarning', '1');
+                $(shareLinkWarning).remove();
+            });
+
+        });
 
         var link = h('div.cp-share-modal', linkContent);
 
