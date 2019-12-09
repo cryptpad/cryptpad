@@ -1131,7 +1131,7 @@ define([
                 return {
                     content: h('p', Messages.share_noContactsLoggedIn),
                     buttons: [{
-                        className: 'primary',
+                        className: 'secondary',
                         name: Messages.share_copyProfileLink,
                         onClick: function () {
                             // XXX copy profile link
@@ -1143,13 +1143,13 @@ define([
                 return {
                     content: h('p', Messages.share_noContactsNotLoggedIn),
                     buttons: [{
-                        className: 'primary',
+                        className: 'secondary',
                         name: Messages.login_register,
                         onClick: function () {
                             // XXX link to register
                         }
                       }, {
-                        className: 'primary',
+                        className: 'secondary',
                         name: Messages.login_login,
                         onClick: function () {
                             // XXX link to log in
@@ -1169,7 +1169,6 @@ define([
         var contactsContent = h('div.cp-share-modal');
         $(contactsContent).append(friendsList);
 
-        console.log(friendsObject.content);
         var contactButtons = friendsObject.buttons;
         contactButtons.unshift(makeCancelButton());
                              
