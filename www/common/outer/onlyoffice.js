@@ -220,8 +220,9 @@ define([
 
         ctx.store.anon_rpc.send("IS_NEW_CHANNEL", channel, function (e, response) {
             if (e) { return void cb({error: e}); }
+            var isNew;
             if (response && response.length && typeof(response[0]) === 'boolean') {
-                var isNew = response[0];
+                isNew = response[0];
             } else {
                 cb({error: 'INVALID_RESPONSE'});
             }

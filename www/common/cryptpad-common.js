@@ -1155,7 +1155,8 @@ define([
         });
     };
 
-    common.changeOOPassword = function (data, cb) {
+    common.changeOOPassword = function (data, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb));
         var href = data.href;
         var newPassword = data.password;
         var teamId = data.teamId;
@@ -1166,7 +1167,6 @@ define([
 
         var warning = false;
         var newHash, newRoHref;
-        var oldChannel;
         var oldSecret;
         var oldMetadata;
         var oldRtChannel;
@@ -1186,7 +1186,6 @@ define([
 
         var Crypt, Crypto;
         var cryptgetVal;
-        var lastCp;
         var optsPut = {
             password: newPassword,
             metadata: {
@@ -1298,7 +1297,7 @@ define([
                     return void cb(obj.error);
                 }
                 var msgs = obj;
-                newHistory = msgs.map(function (str) {
+                var newHistory = msgs.map(function (str) {
                     try {
                         var d = oldCrypto.decrypt(str, true, true);
                         return newCrypto.encrypt(d);
