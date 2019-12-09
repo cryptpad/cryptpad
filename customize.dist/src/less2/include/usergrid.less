@@ -8,7 +8,7 @@
 & {
     
     .cp-usergrid-container {
-        margin-bottom: 12px; // XXX add margin at bottom of user grids 
+        margin-bottom: 12px !important; // even when last child of .msg
         .cp-usergrid-grid {
             display: flex;
             flex-wrap: wrap;
@@ -100,6 +100,7 @@
                 .cp-usergrid-user-name {
                     margin-left: 5px;
                     text-align: left;
+                    line-height: 150%;
                     color: @cryptpad_text_col;
                 }
             }
