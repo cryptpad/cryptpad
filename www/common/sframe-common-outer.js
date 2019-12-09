@@ -484,6 +484,11 @@ define([
                     Cryptpad.mailbox.execCommand(data, cb);
                 });
 
+                sframeChan.on('Q_SET_LOGIN_REDIRECT', function (data, cb) {
+                    sessionStorage.redirectTo = window.location.href;
+                    cb();
+                });
+
                 sframeChan.on('Q_STORE_IN_TEAM', function (data, cb) {
                     Cryptpad.storeInTeam(data, cb);
                 });
@@ -632,11 +637,6 @@ define([
 
             sframeChan.on('EV_NOTIFY', function (data) {
                 Notifier.notify(data);
-            });
-
-            sframeChan.on('Q_SET_LOGIN_REDIRECT', function (data, cb) {
-                sessionStorage.redirectTo = window.location.href;
-                cb();
             });
 
             sframeChan.on('Q_MOVE_TO_TRASH', function (data, cb) {

@@ -1006,6 +1006,49 @@ define([
         };
     };
 
+    var noContactsMessage = function(common){
+        var metadataMgr = common.getMetadataMgr();
+        var data = metadataMgr.getUserData();
+        var origin = metadataMgr.getPrivateData().origin;
+        if (common.isLoggedIn()) {
+            return {
+                content: h('p', Messages.share_noContactsLoggedIn),
+                buttons: [{
+                    className: 'secondary',
+                    name: Messages.share_copyProfileLink,
+                    onClick: function () {
+                        var profile = data.profile ? (origin + '/profile/#' + data.profile) : '';
+                        var success = Clipboard.copy(profile);
+                        if (success) { UI.log(Messages.shareSuccess); }
+                    },
+                    keys: [13]
+                  }]
+            };
+        } else {
+            return {
+                content: h('p', Messages.share_noContactsNotLoggedIn),
+                buttons: [{
+                    className: 'secondary',
+                    name: Messages.login_register,
+                    onClick: function () {
+                        common.setLoginRedirect(function () {
+                            common.openURL('/login/');
+                        });
+                    }
+                  }, {
+                    className: 'secondary',
+                    name: Messages.login_login,
+                    onClick: function () {
+                        common.setLoginRedirect(function () {
+                            common.openURL('/register/');
+                        });
+                    }
+                  }
+                  ]
+            };
+        }
+    };
+
     UIElements.createShareModal = function (config) {
         var origin = config.origin;
         var pathname = config.pathname;
@@ -1126,41 +1169,8 @@ define([
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
         var onFriendShare = Util.mkEvent();
 
-        var noContactsMessage = function(){
-            if (common.isLoggedIn()) {
-                return {
-                    content: h('p', Messages.share_noContactsLoggedIn),
-                    buttons: [{
-                        className: 'secondary',
-                        name: Messages.share_copyProfileLink,
-                        onClick: function () {
-                            // XXX copy profile link
-                        },
-                        keys: [13]
-                      }]
-                };
-            } else {
-                return {
-                    content: h('p', Messages.share_noContactsNotLoggedIn),
-                    buttons: [{
-                        className: 'secondary',
-                        name: Messages.login_register,
-                        onClick: function () {
-                            // XXX link to register
-                        }
-                      }, {
-                        className: 'secondary',
-                        name: Messages.login_login,
-                        onClick: function () {
-                            // XXX link to log in
-                        }
-                      }
-                      ]
-                };
-            }
-        };
 
-        var friendsObject = hasFriends ? createShareWithFriends(config, onFriendShare, getLinkValue) : noContactsMessage();
+        var friendsObject = hasFriends ? createShareWithFriends(config, onFriendShare, getLinkValue) : noContactsMessage(common);
         var friendsList = friendsObject.content;
 
         onFriendShare.reg(saveValue);
@@ -1332,17 +1342,14 @@ define([
         // share with contacts tab
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
 
-        var friendsObject = hasFriends ? createShareWithFriends(config, null, getLinkValue) : {
-            content: h('p', Messages.share_noContacts),
-            button: {}
-        };
+        var friendsObject = hasFriends ? createShareWithFriends(config, null, getLinkValue) : noContactsMessage(common);
         var friendsList = friendsObject.content;
 
         var contactsContent = h('div.cp-share-modal');
         $(contactsContent).append(friendsList);
 
-        var contactButtons = [makeCancelButton(),
-                             friendsObject.button];
+        var contactButtons = friendsObject.buttons;
+        contactButtons.unshift(makeCancelButton());
 
         var frameContacts = UI.dialog.customModal(contactsContent, {
             buttons: contactButtons,
