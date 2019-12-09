@@ -127,6 +127,18 @@ define([
         return input;
     };
 
+    dialog.selectableArea = function (value, opt) {
+        var attrs = merge({
+            readonly: 'readonly',
+        }, opt);
+
+        var input = h('textarea', attrs);
+        $(input).val(value).click(function () {
+            input.select();
+        });
+        return input;
+    };
+
     dialog.okButton = function (content, classString) {
         var sel = typeof(classString) === 'string'? 'button.ok.' + classString:'button.ok.primary';
         return h(sel, { tabindex: '2', }, content || Messages.okButton);
