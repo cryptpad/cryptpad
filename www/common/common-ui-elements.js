@@ -1138,7 +1138,7 @@ define([
                         },
                         keys: [13]
                       }]
-                }
+                };
             } else {
                 return {
                     content: h('p', Messages.share_noContactsNotLoggedIn),
@@ -1156,7 +1156,7 @@ define([
                         }
                       }
                       ]
-                }
+                };
             }
         };
 
