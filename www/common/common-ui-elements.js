@@ -1018,7 +1018,7 @@ define([
 
         var makeFaqLink = function () {
             var link = h('span', [
-                h('i.fa.fa-question-circle'), ' ', // XXX remove and make it a margin
+                h('i.fa.fa-question-circle'), 
                 h('a', {href: '#'}, Messages.passwordFaqLink)
             ]);
             $(link).click(function () {
@@ -1033,7 +1033,6 @@ define([
 
         var rights = h('div.msg.cp-inline-radio-group', [
             h('label', Messages.share_linkAccess),
-            h('br'),
             h('div.radio-group',[
             UI.createRadio('accessRights', 'cp-share-editable-false',
                            Messages.share_linkView, true, { mark: {tabindex:1} }),
@@ -1087,7 +1086,7 @@ define([
         // Show alert if the pad is password protected
         if (hasPassword) {
             linkContent.push(h('div.alert.alert-primary', [
-                h('i.fa.fa-lock'), ' ',  // XXX remove and make it a margin
+                h('i.fa.fa-lock'), 
                 Messages.share_linkPasswordAlert, h('br'),
                 makeFaqLink()
             ]));
@@ -1170,7 +1169,7 @@ define([
         // Show alert if the pad is password protected
         if (hasPassword) {
             $contactsContent.append(h('div.alert.alert-primary', [
-                h('i.fa.fa-unlock'), ' ',  // XXX remove and make it a margin
+                h('i.fa.fa-unlock'),
                 Messages.share_contactPasswordAlert, h('br'),
                 makeFaqLink()
             ]));
@@ -1300,7 +1299,6 @@ define([
         return modal;
     };
 
-    // XXX add password messages to file share
     UIElements.createFileShareModal = function (config) {
         var origin = config.origin;
         var pathname = config.pathname;
@@ -1317,7 +1315,7 @@ define([
 
         var makeFaqLink = function () {
             var link = h('span', [
-                h('i.fa.fa-question-circle'), ' ', // XXX remove and make it a margin
+                h('i.fa.fa-question-circle'), 
                 h('a', {href: '#'}, Messages.passwordFaqLink)
             ]);
             $(link).click(function () {
@@ -1343,7 +1341,7 @@ define([
         // Show alert if the pad is password protected
         if (hasPassword) {
             linkContent.push(h('div.alert.alert-primary', [
-                h('i.fa.fa-lock'), ' ',  // XXX remove and make it a margin
+                h('i.fa.fa-lock'),
                 Messages.share_linkPasswordAlert, h('br'),
                 makeFaqLink()
             ]));
@@ -1392,7 +1390,7 @@ define([
         // Show alert if the pad is password protected
         if (hasPassword) {
             $contactsContent.append(h('div.alert.alert-primary', [
-                h('i.fa.fa-unlock'), ' ',  // XXX remove and make it a margin
+                h('i.fa.fa-unlock'), 
                 Messages.share_contactPasswordAlert, h('br'),
                 makeFaqLink()
             ]));
