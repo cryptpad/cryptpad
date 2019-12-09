@@ -1708,6 +1708,7 @@ define([
             var onMsg = function (msg) {
                 if (completed) { return; }
                 var parsed = parse(msg);
+                if (!parsed) { return; }
                 if (parsed[0] === 'FULL_HISTORY_END') {
                     cb(msgs);
                     network.off('message', onMsg);
@@ -1748,6 +1749,7 @@ define([
                 if (completed) { return; }
                 if (sender !== hk) { return; }
                 var parsed = parse(msg);
+                if (!parsed) { return; }
 
                 // Ignore the metadata message
                 if (parsed.validateKey && parsed.channel) { return; }
