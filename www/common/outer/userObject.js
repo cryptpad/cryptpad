@@ -769,18 +769,18 @@ define([
                         continue;
                     }
 
-                    var href;
+                    var decryptedHref;
                     try {
-                        href = el.href && ((el.href.indexOf('#') !== -1) ? el.href : exp.cryptor.decrypt(el.href));
+                        decryptedHref = el.href && ((el.href.indexOf('#') !== -1) ? el.href : exp.cryptor.decrypt(el.href));
                     } catch (e) {}
 
-                    if (href && href.indexOf('#') === -1) {
+                    if (decryptedHref && decryptedHref.indexOf('#') === -1) {
                         // If we can't decrypt the href, it means we don't have the correct secondaryKey and we're in readOnly mode:
                         // abort now, we won't be able to fix anything anyway
                         continue;
                     }
 
-                    var parsed = Hash.parsePadUrl(href || el.roHref);
+                    var parsed = Hash.parsePadUrl(decryptedHref || el.roHref);
                     var secret;
 
                     // Clean invalid hash
@@ -797,9 +797,9 @@ define([
                     }
 
                     // If we have an edit link, check the view link
-                    if (href && parsed.hashData.type === "pad" && parsed.hashData.version) {
+                    if (decryptedHref && parsed.hashData.type === "pad" && parsed.hashData.version) {
                         if (parsed.hashData.mode === "view") {
-                            el.roHref = href;
+                            el.roHref = decryptedHref;
                             delete el.href;
                         } else if (!el.roHref) {
                             secret = Hash.getSecrets(parsed.type, parsed.hash, el.password);
@@ -818,7 +818,9 @@ define([
                     }
 
                     // Fix href
-                    if (href && href.slice(0,1) !== '/') { el.href = exp.cryptor.encrypt(Hash.getRelativeHref(el.href)); }
+                    if (decryptedHref && decryptedHref.slice(0,1) !== '/') {
+                        el.href = exp.cryptor.encrypt(Hash.getRelativeHref(decryptedHref));
+                    }
                     // Fix creation time
                     if (!el.ctime) { el.ctime = el.atime; }
                     // Fix title

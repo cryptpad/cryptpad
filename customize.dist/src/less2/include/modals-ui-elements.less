@@ -1,12 +1,16 @@
 @import (reference) "./colortheme-all.less";
-
+@import (reference) "./variables.less";
 .modals-ui-elements_main() {
     --LessLoader_require: LessLoader_currentFile();
 }
 & {
+    .cp-spacer {
+        height: @variables_padding;
+    }
     // Share modal
     .msg.cp-inline-radio-group {
         overflow: unset !important;
+        padding: 0px @variables_padding;
         .radio-group {
             display: flex;
             flex-direction: row;

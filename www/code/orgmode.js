@@ -6,22 +6,24 @@ define([
 
     CodeMirror.defineSimpleMode("orgmode", {
         start: [
-            {regex: /^(^\*{1,6}\s)(TODO|DOING|WAITING|NEXT){0,1}(CANCELLED|CANCEL|DEFERRED|DONE|REJECTED|STOP|STOPPED){0,1}(.*)$/, token: ["header org-level-star", "header org-todo", "header org-done", "header"]},
+            {regex: /(\*\s)(TODO|DOING|WAITING|NEXT|PENDING|)(CANCELLED|CANCELED|CANCEL|DONE|REJECTED|STOP|STOPPED|)(\s+\[\#[A-C]\]\s+|)(.*?)(?:(\s{10,}|))(\:[\S]+\:|)$/, sol: true, token: ["header level1 org-level-star","header level1 org-todo","header level1 org-done", "header level1 org-priority", "header level1", "header level1 void", "header level1 comment"]},
+            {regex: /(\*{1,}\s)(TODO|DOING|WAITING|NEXT|PENDING|)(CANCELLED|CANCELED|CANCEL|DEFERRED|DONE|REJECTED|STOP|STOPPED|)(\s+\[\#[A-C]\]\s+|)(.*?)(?:(\s{10,}|))(\:[\S]+\:|)$/, sol: true, token: ["header org-level-star","header org-todo","header org-done", "header org-priority", "header", "header void", "header comment"]},
             {regex: /(\+[^\+]+\+)/, token: ["strikethrough"]},
             {regex: /(\*[^\*]+\*)/, token: ["strong"]},
             {regex: /(\/[^\/]+\/)/, token: ["em"]},
             {regex: /(\_[^\_]+\_)/, token: ["link"]},
             {regex: /(\~[^\~]+\~)/, token: ["comment"]},
             {regex: /(\=[^\=]+\=)/, token: ["comment"]},
-            {regex: /\[\[[^\[\]]*\]\[[^\[\]]*\]\]/, token: "url"}, // links
-            {regex: /\[[xX\s]?\]/, token: 'qualifier'}, // checkbox
-            {regex: /\#\+BEGIN_[A-Z]*/, token: "comment", next: "env"}, // comments
-            {regex: /:?[A-Z_]+\:.*/, token: "comment"}, // property drawers
-            {regex: /(\#\+[A-Z_]*)(\:.*)/, token: ["keyword", 'qualifier']}, // environments
-            {regex: /(CLOCK\:|SHEDULED\:)(\s.+)/, token: ["comment", "keyword"]}
+            {regex: /\[\[[^\[\]]+\]\[[^\[\]]+\]\]/, token: "org-url"}, // links
+            {regex: /\[\[[^\[\]]+\]\]/, token: "org-image"}, // image
+            {regex: /\[[xX\s\-\_]\]/, token: 'qualifier org-toggle'}, // checkbox
+            {regex: /\#\+(?:(BEGIN|begin))_[a-zA-Z]*/, token: "comment", next: "env", sol: true}, // comments
+            {regex: /:?[A-Z_]+\:.*/, token: "comment", sol: true}, // property drawers
+            {regex: /(\#\+[a-zA-Z_]*)(\:.*)/, token: ["keyword", 'qualifier'], sol: true}, // environments
+            {regex: /(CLOCK\:|SHEDULED\:|DEADLINE\:)(\s.+)/, token: ["comment", "keyword"]}
         ],
         env: [
-            {regex: /.*?\#\+END_[A-Z]*/, token: "comment", next: "start"},
+            {regex: /\#\+(?:(END|end))_[a-zA-Z]*/, token: "comment", next: "start", sol: true},
             {regex: /.*/, token: "comment"}
         ]
     });

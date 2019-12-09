@@ -79,7 +79,7 @@ define([
     var faColor = 'cptools-palette';
     var faTrash = 'fa-trash';
     var faDelete = 'fa-eraser';
-    var faProperties = 'fa-database';
+    var faProperties = 'fa-info-circle';
     var faTags = 'fa-hashtag';
     var faUploadFiles = 'cptools-file-upload';
     var faUploadFolder = 'cptools-folder-upload';
@@ -4187,7 +4187,7 @@ define([
                 }
                 getProperties(el, function (e, $prop) {
                     if (e) { return void logError(e); }
-                    UI.alert($prop[0], undefined, true);
+                    UI.openCustomModal($prop[0]);
                 });
             }
             else if ($this.hasClass("cp-app-drive-context-hashtag")) {

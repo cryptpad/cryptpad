@@ -1,3 +1,39 @@
+# GoldenFrog release (3.6.0)
+
+## Goals
+
+We're following up our last few releases of major core developments with an effort to improve reliability in some unstable areas and make some superficial tweaks to improve usability of some critical interfaces.
+
+## Update notes
+
+Update to 3.6.0 from 3.5.0 using the normal update procedure:
+
+1. stop your server
+2. pull the latest code via git
+3. run `bower update`
+4. restart your server
+
+## Features
+
+* We've introduced a word-count feature in our rich text editor.
+* The "share modal" which is accessible from both the "right-click menu" in the drive and the sharing button in the toolbar has been redesigned:
+  * different means of sharing access to documents have been split into different tabs to present users with less information to process
+  * each sharing method has an associated icon to make their actions easier to recognize at a glance
+  * various UI elements have been restyled to make their purpose and importance more obvious
+    * cancel buttons have a grey border to draw less attention
+    * OK buttons have a blue or grey background depending on whether they are active
+    * secondary buttons like "preview" have only a thin blue border so that they don't draw attention away from the primary button
+    * read-only text fields have a subtler appearance since they are shown primarily for the purpose of previewing your action
+    * text input fields (such as search) have a light background to suggest that you can use them
+* We've made a minor adjustment to some of our styles for small screen to detect when a screen is very short in addition to when it is very narrow. As a result it should be somewhat easier to use on-screen keyboards.
+
+## Bug fixes
+
+* We found and fixed a subtle race condition which caused teams' quotas to be calculated incorrectly in certain circumstances.
+* A minor bug in our login process caused users with premium accounts to incorrectly see an entry in their user menu as linking to our 'pricing' page instead of their 'subscription' management tools. This has since been fixed.
+* We noticed that some of the rendered messages in the history mode of the notifications panel could fail to display text for some message types. These incorrect messages will be hidden from view wherever it is impossible to decide what should be displayed. We plan to address the issue in a deeper way in the near future.
+* We've become aware of some odd behaviour in long-lived sessions where tabs seem to lose their connection to the sharedWorker which is common to all tabs open in a particular browser session. As far as we can tell the bug only affects Firefox browser. Unfortunately, debugging sharedWorkers in Firefox has been broken for a number of major versions, so we haven't been able to determine the cause of the issue. Until we're able to determine the underlying cause we've added extra checks to detect when particular features become isolated from the worker, where previously we assumed that if the worker was connected to the server then everything was behaving correctly. We recommend that you reload the tab if you notice that aspects of your shared folders or drives (for users or teams) display a read-only warning while your other tabs are behaving normally.
+
 # FalklandWolf release (3.5.0)
 
 ## Goals

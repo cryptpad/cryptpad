@@ -7,6 +7,10 @@
     "type": "git",
     "url": "git://github.com/xwiki-labs/cryptpad.git"
   },
+  "funding": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/cryptpad"
+  },
   "dependencies": {
     "chainpad-crypto": "^0.2.2",
     "chainpad-server": "^3.0.5",

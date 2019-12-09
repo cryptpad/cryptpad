@@ -84,7 +84,7 @@ define([
 
     var defaultCode = renderer.code;
     renderer.code = function (code, language) {
-        if (language === 'mermaid' && (code.match(/^sequenceDiagram/) || code.match(/^graph/))) {
+        if (language === 'mermaid' && code.match(/^(graph|pie|gantt|sequenceDiagram|classDiagram|gitGraph)/)) {
             return '<pre class="mermaid">'+code+'</pre>';
         } else {
             return defaultCode.apply(renderer, arguments);
@@ -197,7 +197,6 @@ define([
         'APPLET',
         'VIDEO', // privacy implications of videos are the same as images
         'AUDIO', // same with audio
-        'SVG'
     ];
     var unsafeTag = function (info) {
         /*if (info.node && $(info.node).parents('media-tag').length) {
@@ -307,8 +306,39 @@ define([
 
         var Dom = domFromHTML($('<div>').append($div).html());
         $content[0].normalize();
-        $content.find('pre.mermaid[data-processed="true"]').remove();
+
+        var mermaid_source = [];
+        var mermaid_cache = {};
+
+        // iterate over the unrendered mermaid inputs, caching their source as you go
+        $(newDomFixed).find('pre.mermaid').each(function (index, el) {
+            if (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3) {
+                var src = el.childNodes[0].wholeText;
+                el.setAttribute('mermaid-source', src);
+                mermaid_source[index] = src;
+            }
+        });
+
+        // iterate over rendered mermaid charts
+        $content.find('pre.mermaid:not([processed="true"])').each(function (index, el) {
+            // retrieve the attached source code which it was drawn
+            var src = el.getAttribute('mermaid-source');
+
+            // check if that source exists in the set of charts which are about to be rendered
+            if (mermaid_source.indexOf(src) === -1) {
+                // if it's not, then you can remove it
+                if (el.parentNode && el.parentNode.children.length) {
+                    el.parentNode.removeChild(el);
+                }
+            } else if (el.childNodes.length === 1 && el.childNodes[0].nodeType !== 3) {
+                // otherwise, confirm that the content of the rendered chart is not a text node
+                // and keep a copy of it
+                mermaid_cache[src] = el.childNodes[0];
+            }
+        });
+
         var oldDom = domFromHTML($content[0].outerHTML);
+
         var patch = makeDiff(oldDom, Dom, id);
         if (typeof(patch) === 'string') {
             throw new Error(patch);
@@ -348,8 +378,32 @@ define([
                 var target = document.getElementById($a.attr('data-href'));
                 if (target) { target.scrollIntoView(); }
             });
+
+            // loop over mermaid elements in the rendered content
+            $content.find('pre.mermaid').each(function (index, el) {
+                // since you've simply drawn the content that was supplied via markdown
+                // you can assume that the index of your rendered charts matches that
+                // of those in the markdown source. 
+                var src = mermaid_source[index];
+                el.setAttribute('mermaid-source', src);
+                var cached = mermaid_cache[src];
+
+                // check if you had cached a pre-rendered instance of the supplied source
+                if (typeof(cached) !== 'object') { return; }
+
+                // if there's a cached rendering, empty out the contained source code
+                // which would otherwise be drawn again.
+                // apparently this is the fastest way to empty out an element
+                while (el.firstChild) { el.removeChild(el.firstChild); } //el.innerHTML = '';
+                // insert the cached graph
+                el.appendChild(cached);
+                // and set a flag indicating that this graph need not be reprocessed
+                el.setAttribute('data-processed', true);
+            });
+
             try {
-                Mermaid.init();
+                // finally, draw any graphs which have changed and were thus not cached
+                Mermaid.init(undefined, $content.find('pre.mermaid:not([data-processed="true"])'));
             } catch (e) { console.error(e); }
         }
     };

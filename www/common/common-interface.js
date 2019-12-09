@@ -127,6 +127,18 @@ define([
         return input;
     };
 
+    dialog.selectableArea = function (value, opt) {
+        var attrs = merge({
+            readonly: 'readonly',
+        }, opt);
+
+        var input = h('textarea', attrs);
+        $(input).val(value).click(function () {
+            input.select();
+        });
+        return input;
+    };
+
     dialog.okButton = function (content, classString) {
         var sel = typeof(classString) === 'string'? 'button.ok.' + classString:'button.ok.primary';
         return h(sel, { tabindex: '2', }, content || Messages.okButton);
@@ -187,7 +199,8 @@ define([
     dialog.tabs = function (tabs) {
         var contents = [];
         var titles = [];
-        tabs.forEach(function (tab) {
+        var active = 0;
+        tabs.forEach(function (tab, i) {
             if (!tab.content || !tab.title) { return; }
             var content = h('div.alertify-tabs-content', tab.content);
             var title = h('span.alertify-tabs-title', tab.title);
@@ -203,10 +216,11 @@ define([
             });
             titles.push(title);
             contents.push(content);
+            if (tab.active) { active = i; }
         });
         if (contents.length) {
-            $(contents[0]).addClass('alertify-tabs-content-active');
-            $(titles[0]).addClass('alertify-tabs-active');
+            $(contents[active]).addClass('alertify-tabs-content-active');
+            $(titles[active]).addClass('alertify-tabs-active');
         }
         return h('div.alertify-tabs', [
             h('div.alertify-tabs-titles', titles),
