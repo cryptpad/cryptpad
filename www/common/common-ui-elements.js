@@ -1311,6 +1311,21 @@ define([
         if (!hashes.fileHash) { throw new Error("You must provide a file hash"); }
         var url = origin + pathname + '#' + hashes.fileHash;
 
+        // check if the file is password protected 
+        var parsedHref = Hash.parsePadUrl(url);
+        var hasPassword = parsedHref.hashData.password;
+
+        var makeFaqLink = function () {
+            var link = h('span', [
+                h('i.fa.fa-question-circle'), ' ', // XXX remove and make it a margin
+                h('a', {href: '#'}, Messages.passwordFaqLink)
+            ]);
+            $(link).click(function () {
+                common.openURL(config.origin + "/faq.html#security-pad_password");
+            });
+            return link;
+        };
+
         var getLinkValue = function () { return url; };
 
         var makeCancelButton = function() {
@@ -1322,8 +1337,22 @@ define([
 
         // Share link tab
         var linkContent = [
-            UI.dialog.selectable(getLinkValue(), { id: 'cp-share-link-preview', tabindex: 1 })
+            UI.dialog.selectableArea(getLinkValue(), { id: 'cp-share-link-preview', tabindex: 1, rows:2 })
         ];
+
+        // Show alert if the pad is password protected
+        if (hasPassword) {
+            linkContent.push(h('div.alert.alert-primary', [
+                h('i.fa.fa-lock'), ' ',  // XXX remove and make it a margin
+                Messages.share_linkPasswordAlert, h('br'),
+                makeFaqLink()
+            ]));
+        }
+
+        linkContent.push(h('div.alert.alert-warning.dismissable', [
+            h('span.cp-inline-alert-text', Messages.share_linkWarning),
+            h('span.fa.fa-times') // XXX dismiss message and remember 
+        ]));
 
         var link = h('div.cp-share-modal', linkContent);
 
@@ -1357,7 +1386,17 @@ define([
         var friendsList = friendsObject.content;
 
         var contactsContent = h('div.cp-share-modal');
-        $(contactsContent).append(friendsList);
+        var $contactsContent = $(contactsContent);
+        $contactsContent.append(friendsList);
+
+        // Show alert if the pad is password protected
+        if (hasPassword) {
+            $contactsContent.append(h('div.alert.alert-primary', [
+                h('i.fa.fa-unlock'), ' ',  // XXX remove and make it a margin
+                Messages.share_contactPasswordAlert, h('br'),
+                makeFaqLink()
+            ]));
+        }
 
         var contactButtons = [makeCancelButton(),
                              friendsObject.button];
@@ -1375,6 +1414,16 @@ define([
             h('p', Messages.fileEmbedTag),
             UI.dialog.selectable(common.getMediatagFromHref(fileData)),
         ]);
+
+        // Show alert if the pad is password protected
+        if (hasPassword) {
+            embed.append(h('div.alert.alert-primary', [
+                h('i.fa.fa-lock'), ' ', 
+                Messages.share_embedPasswordAlert, h('br'),
+                makeFaqLink()
+            ]));
+        }
+
         var embedButtons = [{
             className: 'cancel',
             name: Messages.cancel,
