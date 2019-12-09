@@ -147,6 +147,7 @@ define([
                         : Messages.owner_removeText;
             var removeCol = UIElements.getUserGrid(msg, {
                 common: common,
+                large: true,
                 data: _owners,
                 noFilter: true
             }, function () {
@@ -238,6 +239,7 @@ define([
             });
             var addCol = UIElements.getUserGrid(Messages.owner_addText, {
                 common: common,
+                large: true,
                 data: _friends
             }, function () {
                 //console.log(arguments);
@@ -254,6 +256,7 @@ define([
             });
             var teamsList = UIElements.getUserGrid(Messages.owner_addTeamText, {
                 common: common,
+                large: true,
                 noFilter: true,
                 data: teamsData
             }, function () {});
@@ -551,9 +554,10 @@ define([
                     $d.append(password);
                 }
 
-                if (!data.noEditPassword && owned && parsed.type !== "sheet") { // FIXME SHEET fix password change for sheets
+                if (!data.noEditPassword && owned) { // FIXME SHEET fix password change for sheets
                     var sframeChan = common.getSframeChannel();
 
+                    var isOO = parsed.type === 'sheet';
                     var isFile = parsed.hashData.type === 'file';
                     var isSharedFolder = parsed.type === 'drive';
 
@@ -586,7 +590,8 @@ define([
                         UI.confirm(changePwConfirm, function (yes) {
                             if (!yes) { pLocked = false; return; }
                             $(passwordOk).html('').append(h('span.fa.fa-spinner.fa-spin', {style: 'margin-left: 0'}));
-                            var q = isFile ? 'Q_BLOB_PASSWORD_CHANGE' : 'Q_PAD_PASSWORD_CHANGE';
+                            var q = isFile ? 'Q_BLOB_PASSWORD_CHANGE' :
+                                        (isOO ? 'Q_OO_PASSWORD_CHANGE' : 'Q_PAD_PASSWORD_CHANGE');
 
                             // If this is a file password change, register to the upload events:
                             // * if there is a pending upload, ask if we shoudl interrupt
@@ -737,12 +742,22 @@ define([
     UIElements.getProperties = function (common, data, cb) {
         var c1;
         var c2;
+        var button = [{
+            className: 'primary',
+            name: Messages.okButton,
+            onClick: function () {},
+            keys: [13]
+        }];
         NThen(function (waitFor) {
             getPadProperties(common, data, waitFor(function (e, c) {
-                c1 = c[0];
+                c1 = UI.dialog.customModal(c[0], {
+                    buttons: button
+                });
             }));
             getRightsProperties(common, data, waitFor(function (e, c) {
-                c2 = c[0];
+                c2 = UI.dialog.customModal(c[0], {
+                    buttons: button
+                });
             }));
         }).nThen(function () {
             var tabs = UI.dialog.tabs([{
@@ -782,8 +797,6 @@ define([
 
         var noOthers = icons.length === 0 ? '.cp-usergrid-empty' : '';
 
-        var buttonSelect = h('button', Messages.share_selectAll);
-        var buttonDeselect = h('button', Messages.share_deselectAll);
         var inputFilter = h('input', {
             placeholder: Messages.share_filterFriend
         });
@@ -791,9 +804,7 @@ define([
         var div = h('div.cp-usergrid-container' + noOthers + (config.large?'.large':''), [
             label ? h('label', label) : undefined,
             h('div.cp-usergrid-filter', (config.noFilter || config.noSelect) ? undefined : [
-                inputFilter,
-                buttonSelect,
-                buttonDeselect
+                inputFilter
             ]),
         ]);
         var $div = $(div);
@@ -806,22 +817,7 @@ define([
                 $div.find('.cp-usergrid-user:not(.cp-selected):not([data-name*="'+name+'"])').hide();
             }
         };
-
         $(inputFilter).on('keydown keyup change', redraw);
-
-        $(buttonSelect).click(function () {
-            $div.find('.cp-usergrid-user:not(.cp-selected):visible').addClass('cp-selected');
-            onSelect();
-        });
-        $(buttonDeselect).click(function () {
-            $div.find('.cp-usergrid-user.cp-selected').removeClass('cp-selected').each(function (i, el) {
-                var order = $(el).attr('data-order');
-                if (!order) { return; }
-                $(el).attr('style', 'order:'+order);
-            });
-            redraw();
-            onSelect();
-        });
 
         $(div).append(h('div.cp-usergrid-grid', icons));
         if (!config.noSelect) {
@@ -883,7 +879,8 @@ define([
         var friendsList = UIElements.getUserGrid(null, {
             common: common,
             data: friends,
-            noFilter: false
+            noFilter: false,
+            large: true
         }, refreshButtons);
         var friendDiv = friendsList.div;
         $div.append(friendDiv);
@@ -909,6 +906,7 @@ define([
         var teamsList = UIElements.getUserGrid(Messages.share_linkTeam, {
             common: common,
             noFilter: true,
+            large: true,
             data: teams
         }, refreshButtons);
         $div.append(teamsList.div);
@@ -1057,12 +1055,29 @@ define([
 
         if (!hashes || (!hashes.editHash && !hashes.viewHash)) { return; }
 
+        // check if the pad is password protected 
+        var hash = hashes.editHash || hashes.viewHash;
+        var href = origin + pathname + '#' + hash;
+        var parsedHref = Hash.parsePadUrl(href);
+        var hasPassword = parsedHref.hashData.password;
+
+        var makeFaqLink = function () {
+            var link = h('span', [
+                h('i.fa.fa-question-circle'), 
+                h('a', {href: '#'}, Messages.passwordFaqLink)
+            ]);
+            $(link).click(function () {
+                common.openURL(config.origin + "/faq.html#security-pad_password");
+            });
+            return link;
+        };
+        
+
         var parsed = Hash.parsePadUrl(pathname);
         var canPresent = ['code', 'slide'].indexOf(parsed.type) !== -1;
 
         var rights = h('div.msg.cp-inline-radio-group', [
             h('label', Messages.share_linkAccess),
-            h('br'),
             h('div.radio-group',[
             UI.createRadio('accessRights', 'cp-share-editable-false',
                            Messages.share_linkView, true, { mark: {tabindex:1} }),
@@ -1109,9 +1124,42 @@ define([
             h('br'),
         ] : [
             UI.createCheckbox('cp-share-embed', Messages.share_linkEmbed, false, { mark: {tabindex:1} }),
-            h('br'),
         ];
-        linkContent.push(UI.dialog.selectable('', { id: 'cp-share-link-preview', tabindex: 1 }));
+        linkContent.push(h('div.cp-spacer'));
+        linkContent.push(UI.dialog.selectableArea('', { id: 'cp-share-link-preview', tabindex: 1, rows:3}));
+
+        // Show alert if the pad is password protected
+        if (hasPassword) {
+            linkContent.push(h('div.alert.alert-primary', [
+                h('i.fa.fa-lock'), 
+                Messages.share_linkPasswordAlert, h('br'),
+                makeFaqLink()
+            ]));
+        }
+
+        // warning about sharing links 
+        var localStore = window.cryptpadStore;
+        var dismissButton = h('span.fa.fa-times'); 
+        var shareLinkWarning = h('div.alert.alert-warning.dismissable', 
+            { style: 'display: none;' }, 
+            [ 
+                h('span.cp-inline-alert-text', Messages.share_linkWarning),
+                dismissButton
+            ]);
+        linkContent.push(shareLinkWarning);
+
+        localStore.get('hide-alert-shareLinkWarning', function (val) {
+            if (val === '1') { return; }
+            $(shareLinkWarning).show();
+
+            $(dismissButton).on('click', function () {
+                localStore.put('hide-alert-shareLinkWarning', '1');
+                $(shareLinkWarning).remove();
+            });
+
+        });
+          
+        
 
         var link = h('div.cp-share-modal', linkContent);
         var $link = $(link);
@@ -1177,7 +1225,19 @@ define([
 
         // XXX Don't display access rights if no contacts
         var contactsContent = h('div.cp-share-modal');
-        $(contactsContent).append(friendsList);
+        var $contactsContent = $(contactsContent);
+        
+        $contactsContent.append(friendsList);
+        
+        // Show alert if the pad is password protected
+        if (hasPassword) {
+            $contactsContent.append(h('div.alert.alert-primary', [
+                h('i.fa.fa-unlock'),
+                Messages.share_contactPasswordAlert, h('br'),
+                makeFaqLink()
+            ]));
+        }
+
 
         var contactButtons = friendsObject.buttons;
         contactButtons.unshift(makeCancelButton());
@@ -1196,9 +1256,18 @@ define([
         };
         var embedContent = [
             h('p', Messages.viewEmbedTag),
-            h('br'),
-            UI.dialog.selectable(getEmbedValue(), { id: 'cp-embed-link-preview', tabindex: 1 })
+            UI.dialog.selectableArea(getEmbedValue(), { id: 'cp-embed-link-preview', tabindex: 1, rows: 3})
         ];
+
+        // Show alert if the pad is password protected
+        if (hasPassword) {
+            embedContent.push(h('div.alert.alert-primary', [
+                h('i.fa.fa-lock'), ' ', 
+                Messages.share_embedPasswordAlert, h('br'),
+                makeFaqLink()
+            ]));
+        }
+
         var embedButtons = [
             makeCancelButton(), {
             className: 'primary',
@@ -1303,6 +1372,21 @@ define([
         if (!hashes.fileHash) { throw new Error("You must provide a file hash"); }
         var url = origin + pathname + '#' + hashes.fileHash;
 
+        // check if the file is password protected 
+        var parsedHref = Hash.parsePadUrl(url);
+        var hasPassword = parsedHref.hashData.password;
+
+        var makeFaqLink = function () {
+            var link = h('span', [
+                h('i.fa.fa-question-circle'), 
+                h('a', {href: '#'}, Messages.passwordFaqLink)
+            ]);
+            $(link).click(function () {
+                common.openURL(config.origin + "/faq.html#security-pad_password");
+            });
+            return link;
+        };
+
         var getLinkValue = function () { return url; };
 
         var makeCancelButton = function() {
@@ -1314,8 +1398,39 @@ define([
 
         // Share link tab
         var linkContent = [
-            UI.dialog.selectable(getLinkValue(), { id: 'cp-share-link-preview', tabindex: 1 })
+            UI.dialog.selectableArea(getLinkValue(), { id: 'cp-share-link-preview', tabindex: 1, rows:2 })
         ];
+
+        // Show alert if the pad is password protected
+        if (hasPassword) {
+            linkContent.push(h('div.alert.alert-primary', [
+                h('i.fa.fa-lock'),
+                Messages.share_linkPasswordAlert, h('br'),
+                makeFaqLink()
+            ]));
+        }
+
+        // warning about sharing links 
+        var localStore = window.cryptpadStore;
+        var dismissButton = h('span.fa.fa-times'); 
+        var shareLinkWarning = h('div.alert.alert-warning.dismissable', 
+            { style: 'display: none;' }, 
+            [ 
+                h('span.cp-inline-alert-text', Messages.share_linkWarning),
+                dismissButton
+            ]);
+        linkContent.push(shareLinkWarning);
+
+        localStore.get('hide-alert-shareLinkWarning', function (val) {
+            if (val === '1') { return; }
+            $(shareLinkWarning).show();
+
+            $(dismissButton).on('click', function () {
+                localStore.put('hide-alert-shareLinkWarning', '1');
+                $(shareLinkWarning).remove();
+            });
+
+        });
 
         var link = h('div.cp-share-modal', linkContent);
 
@@ -1346,7 +1461,17 @@ define([
         var friendsList = friendsObject.content;
 
         var contactsContent = h('div.cp-share-modal');
-        $(contactsContent).append(friendsList);
+        var $contactsContent = $(contactsContent);
+        $contactsContent.append(friendsList);
+
+        // Show alert if the pad is password protected
+        if (hasPassword) {
+            $contactsContent.append(h('div.alert.alert-primary', [
+                h('i.fa.fa-unlock'), 
+                Messages.share_contactPasswordAlert, h('br'),
+                makeFaqLink()
+            ]));
+        }
 
         var contactButtons = friendsObject.buttons;
         contactButtons.unshift(makeCancelButton());
@@ -1360,12 +1485,20 @@ define([
         // Embed tab
         var embed = h('div.cp-share-modal', [
             h('p', Messages.fileEmbedScript),
-            h('br'),
             UI.dialog.selectable(common.getMediatagScript()),
             h('p', Messages.fileEmbedTag),
-            h('br'),
             UI.dialog.selectable(common.getMediatagFromHref(fileData)),
         ]);
+
+        // Show alert if the pad is password protected
+        if (hasPassword) {
+            embed.append(h('div.alert.alert-primary', [
+                h('i.fa.fa-lock'), ' ', 
+                Messages.share_embedPasswordAlert, h('br'),
+                makeFaqLink()
+            ]));
+        }
+
         var embedButtons = [{
             className: 'cancel',
             name: Messages.cancel,
@@ -1800,7 +1933,7 @@ define([
                             if (e) { return void console.error(e); }
                             UIElements.getProperties(common, data, function (e, $prop) {
                                 if (e) { return void console.error(e); }
-                                UI.alert($prop[0], undefined, true);
+                                UI.openCustomModal($prop[0]);
                             });
                         });
                     });

@@ -1155,6 +1155,242 @@ define([
         });
     };
 
+    common.changeOOPassword = function (data, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb));
+        var href = data.href;
+        var newPassword = data.password;
+        var teamId = data.teamId;
+        if (!href) { return void cb({ error: 'EINVAL_HREF' }); }
+        var parsed = Hash.parsePadUrl(href);
+        if (!parsed.hash) { return void cb({ error: 'EINVAL_HREF' }); }
+        if (parsed.type !== 'sheet') { return void cb({ error: 'EINVAL_TYPE' }); }
+
+        var warning = false;
+        var newHash, newRoHref;
+        var oldSecret;
+        var oldMetadata;
+        var oldRtChannel;
+        var privateData;
+        var padData;
+
+        var newSecret;
+        if (parsed.hashData.version >= 2) {
+            newSecret = Hash.getSecrets(parsed.type, parsed.hash, newPassword);
+            if (!(newSecret.keys && newSecret.keys.editKeyStr)) {
+                return void cb({error: 'EAUTH'});
+            }
+            newHash = Hash.getEditHashFromKeys(newSecret);
+        }
+        var newHref = '/' + parsed.type + '/#' + newHash;
+        var newRtChannel = Hash.createChannelId();
+
+        var Crypt, Crypto;
+        var cryptgetVal;
+        var optsPut = {
+            password: newPassword,
+            metadata: {
+                validateKey: newSecret.keys.validateKey
+            },
+        };
+
+        Nthen(function (waitFor) {
+            common.getPadAttribute('', waitFor(function (err, _data) {
+                padData = _data;
+            }), href);
+        }).nThen(function (waitFor) {
+            oldSecret = Hash.getSecrets(parsed.type, parsed.hash, padData.password);
+
+            require([
+                '/common/cryptget.js',
+                '/bower_components/chainpad-crypto/crypto.js',
+            ], waitFor(function (_Crypt, _Crypto) {
+                Crypt = _Crypt;
+                Crypto = _Crypto;
+            }));
+
+            common.getPadMetadata({channel: oldSecret.channel}, waitFor(function (metadata) {
+                oldMetadata = metadata;
+            }));
+            common.getMetadata(waitFor(function (err, data) {
+                if (err) {
+                    waitFor.abort();
+                    return void cb({ error: err });
+                }
+                privateData = data.priv;
+            }));
+        }).nThen(function (waitFor) {
+            // Check if we're allowed to change the password
+            var owners = oldMetadata.owners;
+            optsPut.metadata.owners = owners;
+            var edPublic = teamId ? (privateData.teams[teamId] || {}).edPublic : privateData.edPublic;
+            var isOwner = Array.isArray(owners) && edPublic && owners.indexOf(edPublic) !== -1;
+            if (!isOwner) {
+                // We're not an owner, we shouldn't be able to change the password!
+                waitFor.abort();
+                return void cb({ error: 'EPERM' });
+            }
+
+            var mailbox = oldMetadata.mailbox;
+            if (mailbox) {
+                // Create the encryptors to be able to decrypt and re-encrypt the mailboxes
+                var oldCrypto = Crypto.createEncryptor(oldSecret.keys);
+                var newCrypto = Crypto.createEncryptor(newSecret.keys);
+
+                var m;
+                if (typeof(mailbox) === "string") {
+                    try {
+                        m = newCrypto.encrypt(oldCrypto.decrypt(mailbox, true, true));
+                    } catch (e) {}
+                } else if (mailbox && typeof(mailbox) === "object") {
+                    m = {};
+                    Object.keys(mailbox).forEach(function (ed) {
+                        try {
+                            m[ed] = newCrypto.encrypt(oldCrypto.decrypt(mailbox[ed], true, true));
+                        } catch (e) {
+                            console.error(e);
+                        }
+                    });
+                }
+                optsPut.metadata.mailbox = m;
+            }
+
+            var expire = oldMetadata.expire;
+            if (expire) {
+                optsPut.metadata.expire = (expire - (+new Date())) / 1000; // Lifetime in seconds
+            }
+
+            // Get last cp (cryptget)
+            Crypt.get(parsed.hash, waitFor(function (err, val) {
+                if (err) {
+                    waitFor.abort();
+                    return void cb({ error: err });
+                }
+                try {
+                    cryptgetVal = JSON.parse(val);
+                    if (!cryptgetVal.content) {
+                        waitFor.abort();
+                        return void cb({ error: 'INVALID_CONTENT' });
+                    }
+                } catch (e) {
+                    waitFor.abort();
+                    return void cb({ error: 'CANT_PARSE' });
+                }
+            }), {
+                password: padData.password
+            });
+        }).nThen(function (waitFor) {
+            // Re-encrypt rtchannel
+            oldRtChannel = Util.find(cryptgetVal, ['content', 'channel']);
+            var newCrypto = Crypto.createEncryptor(newSecret.keys);
+            var oldCrypto = Crypto.createEncryptor(oldSecret.keys);
+            var cps = Util.find(cryptgetVal, ['content', 'hashes']);
+            var l = Object.keys(cps).length;
+            var lastCp = l ? cps[l] : {};
+            cryptgetVal.content.hashes = {};
+            common.getHistory({
+                channel: oldRtChannel,
+                lastKnownHash: lastCp.hash
+            }, waitFor(function (obj) {
+                if (obj && obj.error) {
+                    waitFor.abort();
+                    console.error(obj);
+                    return void cb(obj.error);
+                }
+                var msgs = obj;
+                var newHistory = msgs.map(function (str) {
+                    try {
+                        var d = oldCrypto.decrypt(str, true, true);
+                        return newCrypto.encrypt(d);
+                    } catch (e) {
+                        console.log(e);
+                        waitFor.abort();
+                        return void cb({error: e});
+                    }
+                });
+                // Update last knwon hash in cryptgetVal
+                if (lastCp) {
+                    lastCp.hash = newHistory[0].slice(0, 64);
+                    lastCp.index = 50;
+                    cryptgetVal.content.hashes[1] =  lastCp;
+                }
+                common.onlyoffice.execCommand({
+                    cmd: 'REENCRYPT',
+                    data: {
+                        channel: newRtChannel,
+                        msgs: newHistory,
+                        metadata: optsPut.metadata
+                    }
+                }, waitFor(function (obj) {
+                    if (obj && obj.error) {
+                        waitFor.abort();
+                        console.warn(obj);
+                        return void cb(obj.error);
+                    }
+                }));
+            }));
+        }).nThen(function (waitFor) {
+            // The new rt channel is ready
+            // The blob uses its own encryption and doesn't need to be reencrypted
+            cryptgetVal.content.channel = newRtChannel;
+            Crypt.put(newHash, JSON.stringify(cryptgetVal), waitFor(function (err) {
+                if (err) {
+                    waitFor.abort();
+                    return void cb({ error: err });
+                }
+            }), optsPut);
+        }).nThen(function (waitFor) {
+            pad.leavePad({
+                channel: oldSecret.channel
+            }, waitFor());
+            pad.onDisconnectEvent.fire(true);
+        }).nThen(function (waitFor) {
+            // Set the new password to our pad data
+            common.setPadAttribute('password', newPassword, waitFor(function (err) {
+                if (err) { warning = true; }
+            }), href);
+            common.setPadAttribute('channel', newSecret.channel, waitFor(function (err) {
+                if (err) { warning = true; }
+            }), href);
+            common.setPadAttribute('rtChannel', newRtChannel, waitFor(function (err) {
+                if (err) { warning = true; }
+            }), href);
+            var viewHash = Hash.getViewHashFromKeys(newSecret);
+            newRoHref = '/' + parsed.type + '/#' + viewHash;
+            common.setPadAttribute('roHref', newRoHref, waitFor(function (err) {
+                if (err) { warning = true; }
+            }), href);
+
+            if (parsed.hashData.password && newPassword) { return; } // same hash
+            common.setPadAttribute('href', newHref, waitFor(function (err) {
+                if (err) { warning = true; }
+            }), href);
+        }).nThen(function (waitFor) {
+            // delete the old pad
+            common.removeOwnedChannel({
+                channel: oldSecret.channel,
+                teamId: teamId
+            }, waitFor(function (obj) {
+                if (obj && obj.error) {
+                    waitFor.abort();
+                    console.info(obj);
+                    return void cb(obj.error);
+                }
+                common.removeOwnedChannel({
+                    channel: oldRtChannel,
+                    teamId: teamId
+                }, waitFor());
+            }));
+        }).nThen(function () {
+            cb({
+                warning: warning,
+                hash: newHash,
+                href: newHref,
+                roHref: newRoHref
+            });
+        });
+    };
+
+
     common.changeUserPassword = function (Crypt, edPublic, data, cb) {
         if (!edPublic) {
             return void cb({
@@ -1349,6 +1585,9 @@ define([
 
     common.getFullHistory = function (data, cb) {
         postMessage("GET_FULL_HISTORY", data, cb, {timeout: 180000});
+    };
+    common.getHistory = function (data, cb) {
+        postMessage("GET_HISTORY", data, cb, {timeout: 180000});
     };
     common.getHistoryRange = function (data, cb) {
         postMessage("GET_HISTORY_RANGE", data, cb);

@@ -493,6 +493,20 @@ define([
                     Cryptpad.storeInTeam(data, cb);
                 });
 
+                sframeChan.on('EV_GOTO_URL', function (url) {
+                    if (url) {
+                        window.location.href = url;
+                    } else {
+                        window.location.reload();
+                    }
+                });
+
+                sframeChan.on('EV_OPEN_URL', function (url) {
+                    if (url) {
+                        window.open(url);
+                    }
+                });
+
             };
             addCommonRpc(sframeChan);
 
@@ -956,20 +970,6 @@ define([
                 });
             });
 
-            sframeChan.on('EV_GOTO_URL', function (url) {
-                if (url) {
-                    window.location.href = url;
-                } else {
-                    window.location.reload();
-                }
-            });
-
-            sframeChan.on('EV_OPEN_URL', function (url) {
-                if (url) {
-                    window.open(url);
-                }
-            });
-
             sframeChan.on('Q_PIN_GET_USAGE', function (teamId, cb) {
                 Cryptpad.isOverPinLimit(teamId, function (err, overLimit, data) {
                     cb({
@@ -1006,6 +1006,11 @@ define([
                     onPending: onPending,
                     updateProgress: updateProgress
                 }, cb);
+            });
+
+            sframeChan.on('Q_OO_PASSWORD_CHANGE', function (data, cb) {
+                data.href = data.href || window.location.href;
+                Cryptpad.changeOOPassword(data, cb);
             });
 
             sframeChan.on('Q_PAD_PASSWORD_CHANGE', function (data, cb) {

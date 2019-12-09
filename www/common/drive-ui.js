@@ -4187,7 +4187,7 @@ define([
                 }
                 getProperties(el, function (e, $prop) {
                     if (e) { return void logError(e); }
-                    UI.alert($prop[0], undefined, true);
+                    UI.openCustomModal($prop[0]);
                 });
             }
             else if ($this.hasClass("cp-app-drive-context-hashtag")) {
