@@ -1030,7 +1030,7 @@ define([
                     name: Messages.login_register,
                     onClick: function () {
                         common.setLoginRedirect(function () {
-                            common.openURL('/login/');
+                            common.gotoURL('/register/');
                         });
                     }
                   }, {
@@ -1038,7 +1038,7 @@ define([
                     name: Messages.login_login,
                     onClick: function () {
                         common.setLoginRedirect(function () {
-                            common.openURL('/register/');
+                            common.gotoURL('/login/');
                         });
                     }
                   }
