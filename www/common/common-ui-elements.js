@@ -876,7 +876,7 @@ define([
             delete friends[curve];
         });
 
-        var friendsList = UIElements.getUserGrid(null, {
+        var friendsList = UIElements.getUserGrid(Messages.share_linkFriends, {
             common: common,
             data: friends,
             noFilter: false,

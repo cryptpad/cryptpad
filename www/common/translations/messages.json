@@ -1093,7 +1093,7 @@
     "share_selectAll": "Select all",
     "share_deselectAll": "Deselect all",
     "share_filterFriend": "Search by name",
-    "share_linkFriends": "Share with friends",
+    "share_linkFriends": "Share with contacts",
     "share_withFriends": "Share",
     "notifications_dismiss": "Dismiss",
     "fm_info_sharedFolderHistory": "This is only the history of your shared folder: <b>{0}</b><br/>Your CryptDrive will stay in read-only mode while you navigate.",

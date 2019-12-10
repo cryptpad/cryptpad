@@ -1076,7 +1076,7 @@
     "share_selectAll": "Tout",
     "share_deselectAll": "Aucun",
     "share_filterFriend": "Rechercher par nom",
-    "share_linkFriends": "Partager avec des amis",
+    "share_linkFriends": "Partager avec des contacts",
     "share_withFriends": "Partager",
     "notifications_dismiss": "Cacher",
     "fm_info_sharedFolderHistory": "Vous regardez l'historique de votre dossier partagé <b>{0}</b><br/>Votre CryptDrive restera en lecture seule pendant la navigation.",
