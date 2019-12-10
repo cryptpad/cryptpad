@@ -3803,10 +3803,20 @@ define([
             });
         };
 
+        var modal;
+        var mute = UIElements.createMuteButton(common, msg.content, function () {
+            // Mute = auto-reject friend request
+            var $modal = modal && $(modal) && $(modal).closest('div.alertify');
+            if ($modal && $modal.length && $modal[0].closeModal) {
+                $modal[0].closeModal(function () {});
+            }
+            return void todo(false); // XXX false is reject. We can also "dismiss"...
+        });
         var content = h('div.cp-share-modal', [
-            setHTML(h('p'), text)
+            setHTML(h('p'), text),
+            h('p', mute)
         ]);
-        UI.proposal(content, todo);
+        modal = UI.proposal(content, todo);
     };
 
     UIElements.displayAddOwnerModal = function (common, data) {
@@ -4146,6 +4156,29 @@ define([
         };
 
         UI.proposal(div, todo);
+    };
+
+    UIElements.createMuteButton = function (common, data, cb) {
+        cb = cb || function () {};
+        var button = h('i.fa.fa-bell-slash-o', {
+            title: Messages.notifications_muteUserTitle
+        });
+        var module = common.makeUniversal('messenger');
+        $(button).click(function () {
+            UI.confirm(Messages.notifications_muteUserConfirm, function (yes) {
+                if (!yes) { return; }
+                module.execCommand('MUTE_USER', {
+                    curvePublic: data.curvePublic,
+                    name: data.displayName || data.name,
+                    avatar: data.avatar
+                }, function (e) {
+                    cb(e);
+                    if (e) { return void UI.warn(Messages.error); }
+                    UI.log(Messages.success);
+                });
+            });
+        });
+        return button;
     };
 
     return UIElements;

@@ -458,12 +458,22 @@ define([
         }
     };
 
+    var getAllClients = function (ctx) {
+        var all = [];
+        Array.prototype.push.apply(all, ctx.friendsClients);
+        Object.keys(ctx.channels).forEach(function (id) {
+            Array.prototype.push.apply(all, ctx.channels[id].clients);
+        });
+        return Util.deduplicateString(all);
+    };
+
     var muteUser = function (ctx, data, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
         var proxy = ctx.store.proxy;
         var muted = proxy.mutedUsers = proxy.mutedUsers || {};
         if (muted[data.curvePublic]) { return void cb(); }
         muted[data.curvePublic] = data;
+        ctx.emit('UPDATE_MUTED', null, getAllClients(ctx));
         cb();
     };
     var unmuteUser = function (ctx, curvePublic, _cb) {
@@ -471,7 +481,8 @@ define([
         var proxy = ctx.store.proxy;
         var muted = proxy.mutedUsers = proxy.mutedUsers || {};
         delete muted[curvePublic];
-        cb();
+        ctx.emit('UPDATE_MUTED', null, getAllClients(ctx));
+        cb(Object.keys(muted).length);
     };
     var getMutedUsers = function (ctx, cb) {
         var proxy = ctx.store.proxy;
@@ -687,7 +698,14 @@ define([
         nThen(function (waitFor) {
             // Load or get all friends channels
             Object.keys(friends).forEach(function (key) {
-                if (key === 'me') { return; }
+                if (key === 'me') {
+                    // At some point a bug inserted a friend's channel into our "me" data.
+                    // This led to displaying our name instead of our friend's name in the
+                    // contacts app. The following line is here to prevent this issue to happen
+                    // again.
+                    delete friends.me.channel;
+                    return;
+                }
                 var friend = clone(friends[key]);
                 if (typeof(friend) !== 'object') { return; }
                 if (!friend.channel) { return; }
@@ -910,15 +928,6 @@ define([
         });
     };
 
-    var getAllClients = function (ctx) {
-        var all = [];
-        Array.prototype.push.apply(all, ctx.friendsClients);
-        Object.keys(ctx.channels).forEach(function (id) {
-            Array.prototype.push.apply(all, ctx.channels[id].clients);
-        });
-        return Util.deduplicateString(all);
-    };
-
     Msg.init = function (cfg, waitFor, emit) {
         var messenger = {};
         var store = cfg.store;
@@ -934,6 +943,9 @@ define([
             range_requests: {}
         };
 
+        store.proxy.on('change', ['mutedUsers'], function () {
+            ctx.emit('UPDATE_MUTED', null, getAllClients(ctx));
+        });
 
         ctx.store.network.on('message', function(msg, sender) {
             onDirectMessage(ctx, msg, sender);
@@ -965,6 +977,12 @@ define([
             var channel = friend.channel;
             if (!channel) { return; }
 
+            // Already friend? don't load the channel a second time
+            var chanId = friend.channel;
+            var chan = ctx.channels[chanId];
+            if (chan) { return; }
+
+            // Load the channel and add the friend to the contacts app
             loadFriend(ctx, null, friend, function () {
                 emit('FRIEND', {
                     curvePublic: friend.curvePublic,

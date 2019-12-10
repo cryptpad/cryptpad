@@ -1253,6 +1253,10 @@ define([
             if (friend) { return void cb({error: 'ALREADY_FRIEND'}); }
             if (!data.notifications || !data.curvePublic) { return void cb({error: 'INVALID_USER'}); }
 
+            // Unmute this user when we send them a friend request
+            var muted = store.proxy.mutedUsers || {};
+            delete muted[data.curvePublic];
+
             store.proxy.friends_pending = store.proxy.friends_pending || {};
 
             var twoDaysAgo = +new Date() - (2 * 24 * 3600 * 1000);
