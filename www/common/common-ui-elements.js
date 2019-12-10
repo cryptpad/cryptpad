@@ -1575,6 +1575,7 @@ define([
         var list = UIElements.getUserGrid(Messages.team_pickFriends, {
             common: common,
             data: config.friends,
+            large: true
         }, refreshButton);
         $div = $(list.div);
         refreshButton();
