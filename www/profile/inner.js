@@ -178,9 +178,6 @@ define([
 
     var addFriendRequest = function ($container) {
         if (!APP.readOnly || !APP.common.isLoggedIn()) { return; }
-        APP.$friend = $('<button>', {
-            'class': 'btn btn-success cp-app-profile-friend-request',
-        });
         APP.$friend = $(h('div.cp-app-profile-friend-container'));
         $container.append(APP.$friend);
     };
@@ -195,9 +192,45 @@ define([
 
         APP.$friend.html('');
 
+        var module = common.makeUniversal('messenger');
+        var name = Util.fixHTML(data.name) || Messages.anonymous;
+
         var friends = common.getMetadataMgr().getPrivateData().friends;
+        // This is a friend: display the "friend" message and an "unfriend" button
         if (friends[data.curvePublic]) {
-            APP.$friend.append(h('p.cp-app-profile-friend', Messages._getKey('profile_friend', [data.name || Messages.anonymous])));
+            // Add friend message
+            APP.$friend.append(h('p.cp-app-profile-friend', Messages._getKey('profile_friend', [name])));
+            if (!friends[data.curvePublic].notifications) { return; }
+            // Add unfriend button
+            var $unfriendButton = $('<button>', {
+                'class': 'btn btn-danger cp-app-profile-friend-request',
+            }).text(Messages.contacts_remove).appendTo(APP.$friend);
+            $unfriendButton.click(function () {
+                // Unfriend confirm + mute checkbox
+                var muteBox = UI.createCheckbox('cp-contacts-mute', Messages.contacts_mute, false);
+                var content = h('div', [
+                    UI.setHTML(h('p'), Messages._getKey('contacts_confirmRemove', [name])),
+                    muteBox
+                ]);
+                UI.confirm(content, function (yes) {
+                    if (!yes) { return; }
+                    // Mute if necessary
+                    var mute = Util.isChecked($(content).find('#cp-contacts-mute'));
+                    if (mute) {
+                        module.execCommand('MUTE_USER', {
+                            curvePublic: data.curvePublic,
+                            name: name,
+                            avatar: data.avatar
+                        }, function (e /*, removed */) {
+                            if (e) { return void console.error(e); }
+                        });
+                    }
+                    // And unfriend
+                    module.execCommand('REMOVE_FRIEND', data.curvePublic, function (e) {
+                        if (e) { return void console.error(e); }
+                    });
+                });
+            });
             return;
         }
 
@@ -215,11 +248,13 @@ define([
             return;
         }
 
+        // Pending friend (we've sent a friend request)
         var pendingFriends = APP.common.getPendingFriends(); // Friend requests sent
         if (pendingFriends[data.curvePublic]) {
             $button.attr('disabled', 'disabled').text(Messages.profile_friendRequestSent);
             return;
         }
+        // This is not a friend yet: we can send a friend request or mute them
         $button.text(Messages._getKey('userlist_addAsFriendTitle', [data.name || Messages.anonymous]))
             .click(function () {
                 APP.common.sendFriendRequest({
@@ -229,6 +264,29 @@ define([
                     $button.attr('disabled', 'disabled').text(Messages.profile_friendRequestSent);
                 });
             });
+
+        // Add mute/unmute buttons
+        var $mute = $(h('div')).appendTo(APP.$friend);
+        module.execCommand('GET_MUTED_USERS', null, function (muted) {
+            if (!muted || typeof(muted) !== "object") { return; }
+            var isMuted = muted[data.curvePublic];
+            if (isMuted) {
+                var $unmuteButton = $('<button>', {
+                    'class': 'btn btn-danger cp-app-profile-friend-request',
+                }).text(Messages.contacts_unmute || 'UNMUTE').appendTo($mute);
+                $unmuteButton.click(function () {
+                    module.execCommand('UNMUTE_USER', data.curvePublic, function (e) {
+                        if (e) { return void console.error(e); }
+                        refreshFriendRequest(data);
+                    });
+                });
+                return;
+            }
+            var button = UIElements.createMuteButton(common, data, function () {
+                refreshFriendRequest(data);
+            });
+            $mute.append(button);
+        });
     };
 
     var displayAvatar = function (val) {

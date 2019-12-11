@@ -4174,7 +4174,6 @@ define([
                 }, function (e) {
                     cb(e);
                     if (e) { return void UI.warn(Messages.error); }
-                    UI.log(Messages.success);
                 });
             });
         });

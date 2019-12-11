@@ -542,7 +542,7 @@ define([
                 var friend = contactsData[curvePublic] || friendData;
                 var muteBox = UI.createCheckbox('cp-contacts-mute', Messages.contacts_mute, false);
                 var content = h('div', [
-                    h('p', Messages._getKey('contacts_confirmRemove', [Util.fixHTML(friend.name)])),
+                    UI.setHTML(h('p'), Messages._getKey('contacts_confirmRemove', [Util.fixHTML(friend.name)])),
                     muteBox
                 ]);
                 UI.confirm(content, function (yes) {
@@ -553,7 +553,7 @@ define([
                     // TODO remove friend from userlist ui
                     // FIXME seems to trigger EJOINED from netflux-websocket (from server);
                     // (tried to join a channel in which you were already present)
-                }, undefined, true);
+                });
             });
 
             if (friendData.avatar && avatars[friendData.avatar]) {

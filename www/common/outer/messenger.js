@@ -428,20 +428,21 @@ define([
         }
 
         var channel = ctx.channels[data.channel];
-        if (!channel) {
-            return void cb({error: "NO_SUCH_CHANNEL"});
-        }
 
         // Unfriend with mailbox
         if (ctx.store.mailbox && data.curvePublic && data.notifications) {
             Messaging.removeFriend(ctx.store, curvePublic, function (obj) {
                 if (obj && obj.error) { return void cb({error:obj.error}); }
+                ctx.updateMetadata();
                 cb(obj);
             });
             return;
         }
 
         // Unfriend with channel
+        if (!channel) {
+            return void cb({error: "NO_SUCH_CHANNEL"});
+        }
         try {
             var msg = [Types.unfriend, proxy.curvePublic, +new Date()];
             var msgStr = JSON.stringify(msg);
