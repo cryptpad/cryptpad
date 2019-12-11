@@ -200,6 +200,41 @@ define([
         }));
     };
 
+    var reencrypt = function (ctx, data, cId, cb) {
+        var channel = data.channel;
+        var network = ctx.store.network;
+
+        var onOpen = function (wc) {
+            var hk = network.historyKeeper;
+            var cfg = {
+                metadata: data.metadata
+            };
+            var msg = ['GET_HISTORY', wc.id, cfg];
+            network.sendto(hk, JSON.stringify(msg));
+            data.msgs.forEach(function (msg) {
+                wc.bcast(msg);
+            });
+            wc.leave();
+            cb();
+        };
+
+        ctx.store.anon_rpc.send("IS_NEW_CHANNEL", channel, function (e, response) {
+            if (e) { return void cb({error: e}); }
+            var isNew;
+            if (response && response.length && typeof(response[0]) === 'boolean') {
+                isNew = response[0];
+            } else {
+                cb({error: 'INVALID_RESPONSE'});
+            }
+            if (!isNew) { return void cb({error: 'EEXISTS'}); }
+
+            // Channel is new: we can push our reencrypted history
+            network.join(channel).then(onOpen, function (err) {
+                return void cb({error: err});
+            });
+        });
+    };
+
     var leaveChannel = function (ctx, padChan) {
         // Leave channel and prevent reconnect when we leave a pad
         Object.keys(ctx.channels).some(function (ooChan) {
@@ -266,6 +301,9 @@ define([
             }
             if (cmd === 'OPEN_CHANNEL') {
                 return void openChannel(ctx, data, clientId, cb);
+            }
+            if (cmd === 'REENCRYPT') {
+                return void reencrypt(ctx, data, clientId, cb);
             }
         };
 

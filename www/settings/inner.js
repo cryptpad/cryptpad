@@ -51,6 +51,7 @@ define([
             'cp-settings-info-block',
             'cp-settings-displayname',
             'cp-settings-language-selector',
+            'cp-settings-resettips',
             'cp-settings-logout-everywhere',
             'cp-settings-autostore',
             'cp-settings-userfeedback',
@@ -67,7 +68,6 @@ define([
         ],
         'drive': [
             'cp-settings-drive-duplicate',
-            'cp-settings-resettips',
             'cp-settings-thumbnails',
             'cp-settings-drive-backup',
             'cp-settings-drive-import-local',
@@ -835,7 +835,7 @@ define([
         var localStore = window.cryptpadStore;
         $button.click(function () {
             Object.keys(localStore.store).forEach(function (k) {
-                if(k.slice(0, 9) === "hide-info") {
+                if(/^(hide-(info|alert))/.test(k)) {
                     localStore.put(k, null);
                 }
             });

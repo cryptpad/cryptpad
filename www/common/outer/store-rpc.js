@@ -73,6 +73,7 @@ define([
             JOIN_PAD: Store.joinPad,
             LEAVE_PAD: Store.leavePad,
             GET_FULL_HISTORY: Store.getFullHistory,
+            GET_HISTORY: Store.getHistory,
             GET_HISTORY_RANGE: Store.getHistoryRange,
             IS_NEW_CHANNEL: Store.isNewChannel,
             REQUEST_PAD_ACCESS: Store.requestPadAccess,

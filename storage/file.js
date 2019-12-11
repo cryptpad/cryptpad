@@ -102,7 +102,9 @@ var getMetadataAtPath = function (Env, path, _cb) {
 var closeChannel = function (env, channelName, cb) {
     if (!env.channels[channelName]) { return void cb(); }
     try {
-        env.channels[channelName].writeStream.close();
+        if (typeof(Util.find(env, [ 'channels', channelName, 'writeStream', 'close'])) === 'function') {
+            env.channels[channelName].writeStream.close();
+        }
         delete env.channels[channelName];
         env.openFiles--;
         cb();
