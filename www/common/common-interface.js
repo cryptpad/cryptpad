@@ -461,7 +461,7 @@ define([
         opt = opt || {};
 
         var inputBlock = opt.password ? UI.passwordInput() : dialog.textInput();
-        var input = opt.password ? $(inputBlock).find('input')[0] : inputBlock;
+        var input = $(inputBlock).is('input') ? inputBlock : $(inputBlock).find('input')[0];
         input.value = typeof(def) === 'string'? def: '';
 
         var message;
