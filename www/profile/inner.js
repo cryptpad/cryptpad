@@ -361,6 +361,17 @@ define([
     var refreshDescription = function (data) {
         var val = Marked(data.description || "");
         APP.$description.html(val);
+        APP.$description.off('click');
+        APP.$description.click(function (e) {
+            if (!e.target) { return; }
+            var $t = $(e.target);
+            if ($t.is('a') || $t.parents('a').length) {
+                e.preventDefault();
+                var $a = $t.is('a') ? $t : $t.parents('a').first();
+                var href = $a.attr('href');
+                common.openUnsafeURL(href);
+            }
+        });
         APP.$descriptionEdit.find('span').text(val === "" ? Messages.profile_addDescription : Messages.profile_editDescription);
         if (!APP.editor) { return; }
         APP.editor.setValue(data.description || "");
