@@ -1251,5 +1251,8 @@
     "share_linkPasswordAlert": "This item is password protected. When you send the link the recipient will have to enter the password.",
     "share_contactPasswordAlert": "This item is password protected. Because you are sharing it with a CryptPad contact, the recipient will not have to enter the password.",
     "share_embedPasswordAlert": "This item is password protected. When you embed this pad, viewers will be asked for the password.",
-    "passwordFaqLink": "Read more about passwords"
+    "passwordFaqLink": "Read more about passwords",
+    "share_noContactsLoggedIn": "You are not connected with anyone on CryptPad yet. Share the link to your profile for people to send you contact requests.",
+    "share_copyProfileLink": "Copy profile link",
+    "share_noContactsNotLoggedIn": "Log in or register to see your existing contacts and add new ones."
 }
