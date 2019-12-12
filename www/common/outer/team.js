@@ -1259,6 +1259,17 @@ define([
         ctx.store.messenger.openTeamChat(team.getChatData(), onUpdate, cId, cb);
     };
 
+    var createInviteLink = function (ctx, data, cId, cb) {
+        var team = ctx.teams[data.teamId];
+        // var roster = team.roster;
+        // var name = data.name;
+        // var password = data.password;
+        // var msg = data.message;
+        cb({
+            error: 'NOT_IMPLEMENTED'
+        });
+    };
+
     Team.init = function (cfg, waitFor, emit) {
         var team = {};
         var store = cfg.store;
@@ -1411,6 +1422,9 @@ define([
             }
             if (cmd === 'GET_EDITABLE_FOLDERS') {
                 return void getEditableFolders(ctx, data, clientId, cb);
+            }
+            if (cmd === 'CREATE_INVITE_LINK') {
+                return void createInviteLink(ctx, data, clientId, cb);
             }
         };
 

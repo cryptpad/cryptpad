@@ -1611,9 +1611,7 @@ define([
                 buttons: contactsButtons
             };
         };
-        hasFriends = false;
         var friendsObject = hasFriends ? getContacts() : noContactsMessage(common);
-        console.log(friendsObject);
         var friendsList = friendsObject.content;
         var contactsButtons = friendsObject.buttons;
         contactsButtons.unshift({
@@ -1631,10 +1629,67 @@ define([
             buttons: contactsButtons,
         });
 
+        var linkName, linkPassword, linkMessage;
+        var linKError;
         // Invite from link
         var linkContent = h('div.cp-share-modal', [
+            h('p', 'XXX Invite link description...'), // XXX
+            linkError = h('div.alert.alert-danger', {style : 'display: none;'}),
+            linkName = h('input', {
+                placeholder: 'name...' // XXX
+            }),
+            h('br'),
+            linkPassword = UI.passwordInput({
+                id: 'cp-teams-invite-password',
+                placeholder: 'password...' // XXX
+            }),
+            h('br'),
+            linkMessage = h('textarea', {
+                placeholder: 'note...'
+            })
         ]);
-        var linkButtons = [];
+        var process = function () {
+            $(linkError).text('').hide();
+            var name = $(linkName).val();
+            var pw = $(linkPassword).val();
+            var msg = $(linkMessage).val();
+            if (!name || !name.trim()) {
+                $(linkError).text('empty name...').show(); // XXX
+                return true;
+            }
+            var bytes;
+            nThen(function (waitFor) {
+                // Scrypt
+            }).nThen(function (waitFor) {
+                module.execCommand('CREATE_INVITE_LINK', {
+                    name: name,
+                    password: pw,
+                    message: msg,
+                    // send scrypt result
+                    teamId: config.teamId,
+                }, waitFor(function (obj) {
+                    if (obj && obj.error) {
+                        waitFor.abort();
+                        return void $(linkError).text('ERROR '+obj.error).show(); // XXX
+                    }
+                    // Display result here
+                }));
+            });
+            return true;
+        };
+        var linkButtons = [{
+            className: 'cancel',
+            name: Messages.cancel,
+            onClick: function () {},
+            keys: [27]
+        }, {
+            className: 'primary',
+            name: 'CREATE LINK', // XXX
+            onClick: function () {
+                return process();
+            },
+            keys: [13]
+        }];
 
         var frameLink = UI.dialog.customModal(linkContent, {
             buttons: linkButtons,
