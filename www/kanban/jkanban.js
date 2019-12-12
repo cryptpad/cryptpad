@@ -151,9 +151,6 @@
                                 return handle.classList.contains('kanban-item');
                             },
                             accepts: function (el, target, source, sibling) {
-                                if (sibling === null) {
-                                    return false;
-                                }
                                 if (self.options.readOnly) { return false; }
                                 return true;
                             },
