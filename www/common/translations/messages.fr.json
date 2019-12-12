@@ -1251,5 +1251,8 @@
     "share_linkPasswordAlert": "Cet élément est protégé par un mot de passe. Quand vous partagez le lien, le destinataire doit saisir le mot de passe.",
     "share_contactPasswordAlert": "Cet élément est protégé par un mot de passe. Quand vous le partagez avec un contact CryptPad, le destinataire n'a pas a saisir le mot de passe.",
     "share_embedPasswordAlert": "Cet élément est protégé par un mot de passe. Quand vous l'intégrez à une page, les visiteurs doivent saisir le mot de passe.",
-    "passwordFaqLink": "En lire plus sur les mots de passe"
+    "passwordFaqLink": "En lire plus sur les mots de passe",
+    "share_noContactsLoggedIn": "Vous n'avez pas encore ajouté de contacts sur CryptPad. Partagez le lien de votre profil pour que l'on vous envoie des demandes de contact.",
+    "share_copyProfileLink": "Copier le lien du profil",
+    "share_noContactsNotLoggedIn": "Connectez-vous ou enregistrez-vous pour voir vos contacts ou en ajouter de nouveaux."
 }
