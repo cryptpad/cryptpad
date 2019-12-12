@@ -1559,6 +1559,7 @@ define([
 
         var module = config.module || common.makeUniversal('team');
 
+        // Invite contacts
         var $div;
         var refreshButton = function () {
             if (!$div) { return; }
@@ -1572,48 +1573,87 @@ define([
                 $btn.prop('disabled', 'disabled');
             }
         };
-        var list = UIElements.getUserGrid(Messages.team_pickFriends, {
-            common: common,
-            data: config.friends,
-            large: true
-        }, refreshButton);
-        $div = $(list.div);
-        refreshButton();
+        var getContacts = function () {
+            var list = UIElements.getUserGrid(Messages.team_pickFriends, {
+                common: common,
+                data: config.friends,
+                large: true
+            }, refreshButton);
+            var div = h('div.contains-nav');
+            var $div = $(div);
+            $div.append(list.div);
+            var contactsButtons = [{
+                className: 'primary',
+                name: Messages.team_inviteModalButton,
+                onClick: function () {
+                    var $sel = $div.find('.cp-usergrid-user.cp-selected');
+                    var sel = $sel.toArray();
+                    if (!sel.length) { return; }
 
-        var buttons = [{
+                    sel.forEach(function (el) {
+                        var curve = $(el).attr('data-curve');
+                        module.execCommand('INVITE_TO_TEAM', {
+                            teamId: config.teamId,
+                            user: config.friends[curve]
+                        }, function (obj) {
+                            if (obj && obj.error) {
+                                console.error(obj.error);
+                                return UI.warn(Messages.error);
+                            }
+                        });
+                    });
+                },
+                keys: [13]
+            }];
+
+            return {
+                content: div,
+                buttons: contactsButtons
+            };
+        };
+        hasFriends = false;
+        var friendsObject = hasFriends ? getContacts() : noContactsMessage(common);
+        console.log(friendsObject);
+        var friendsList = friendsObject.content;
+        var contactsButtons = friendsObject.buttons;
+        contactsButtons.unshift({
             className: 'cancel',
             name: Messages.cancel,
             onClick: function () {},
             keys: [27]
-        }, {
-            className: 'primary',
-            name: Messages.team_inviteModalButton,
-            onClick: function () {
-                var $sel = $div.find('.cp-usergrid-user.cp-selected');
-                var sel = $sel.toArray();
-                if (!sel.length) { return; }
+        });
 
-                sel.forEach(function (el) {
-                    var curve = $(el).attr('data-curve');
-                    module.execCommand('INVITE_TO_TEAM', {
-                        teamId: config.teamId,
-                        user: config.friends[curve]
-                    }, function (obj) {
-                        if (obj && obj.error) {
-                            console.error(obj.error);
-                            return UI.warn(Messages.error);
-                        }
-                    });
-                });
-            },
-            keys: [13]
-        }];
-
-        var content = h('div', [
-            list.div
+        var contactsContent = h('div.cp-share-modal', [
+            friendsList
         ]);
 
-        var modal = UI.dialog.customModal(content, {buttons: buttons});
+        var frameContacts = UI.dialog.customModal(contactsContent, {
+            buttons: contactsButtons,
+        });
+
+        // Invite from link
+        var linkContent = h('div.cp-share-modal', [
+        ]);
+        var linkButtons = [];
+
+        var frameLink = UI.dialog.customModal(linkContent, {
+            buttons: linkButtons,
+        });
+
+        // Create modal
+        var tabs = [{
+            title: Messages.share_contactCategory,
+            icon: "fa fa-address-book",
+            content: frameContacts,
+            active: hasFriends
+        }, {
+            title: Messages.share_linkCategory,
+            icon: "fa fa-link",
+            content: frameLink,
+            active: !hasFriends
+        }];
+
+        var modal = UI.dialog.tabs(tabs);
         UI.openCustomModal(modal);
     };
 
