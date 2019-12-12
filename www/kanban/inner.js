@@ -184,6 +184,9 @@ define([
                 var save = function () {
                     // Store the value
                     var name = $input.val();
+                    if (!name || !name.trim()) {
+                        return kanban.onChange();
+                    }
                     // Remove the input
                     $(el).text(name);
                     // Save the value for the correct board
