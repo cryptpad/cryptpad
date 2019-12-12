@@ -1261,6 +1261,7 @@ define([
 
     var createInviteLink = function (ctx, data, cId, cb) {
         var team = ctx.teams[data.teamId];
+        team = team;
         // var roster = team.roster;
         // var name = data.name;
         // var password = data.password;

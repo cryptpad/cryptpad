@@ -1630,7 +1630,7 @@ define([
         });
 
         var linkName, linkPassword, linkMessage;
-        var linKError;
+        var linkError;
         // Invite from link
         var linkContent = h('div.cp-share-modal', [
             h('p', 'XXX Invite link description...'), // XXX
@@ -1658,8 +1658,10 @@ define([
                 return true;
             }
             var bytes;
-            nThen(function (waitFor) {
+            NThen(function (waitFor) {
                 // Scrypt
+                waitFor()(); // jshint
+                bytes = bytes;
             }).nThen(function (waitFor) {
                 module.execCommand('CREATE_INVITE_LINK', {
                     name: name,
