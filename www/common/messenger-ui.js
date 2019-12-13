@@ -70,7 +70,7 @@ define([
             h('div.cp-app-contacts-friends.cp-app-contacts-category', [
                 h('div.cp-app-contacts-category-content.cp-contacts-friends'),
                 h('h2.cp-app-contacts-category-title', Messages.contacts_friends),
-                h('button.cp-app-contacts-muted-button', Messages.contacts_manageMuted || 'MANAGE MUTED') // XXX
+                h('button.btn.btn-secondary.cp-app-contacts-muted-button', Messages.contacts_manageMuted || 'MANAGE MUTED') // XXX
             ]),
             h('div.cp-app-contacts-rooms.cp-app-contacts-category', [
                 h('div.cp-app-contacts-category-content'),
@@ -510,6 +510,9 @@ define([
                 title: room.name
             });
 
+            var mute = h('span.cp-app-contacts-remove.fa.fa-bell-slash-o.cp-mute-icon', {
+                title: Messages.contacts_mute || 'mute'
+            });
             var remove = h('span.cp-app-contacts-remove.fa.fa-user-times', {
                 title: Messages.contacts_remove
             });
@@ -522,8 +525,11 @@ define([
             });
             var rightCol = h('span.cp-app-contacts-right-col', [
                 h('span.cp-app-contacts-name', [room.name]),
-                room.isFriendChat ? remove :
-                    (room.isPadChat || room.isTeamChat) ? undefined : leaveRoom,
+                h('span.cp-app-contacts-icons', [
+                    room.isFriendChat ? mute : undefined,
+                    room.isFriendChat ? remove :
+                        (room.isPadChat || room.isTeamChat) ? undefined : leaveRoom,
+                ])
             ]);
 
             var friendData = room.isFriendChat ? userlist[0] : {};
@@ -534,21 +540,27 @@ define([
                 if (friendData.profile) { window.open(origin + '/profile/#' + friendData.profile); }
             });
 
+            $(mute).click(function (e) {
+                e.stopPropagation();
+                var channel = state.channels[id];
+                if (!channel.isFriendChat) { return; }
+                var curvePublic = channel.curvePublic;
+                var friend = contactsData[curvePublic] || friendData;
+                $(mute).hide();
+                muteUser(friend);
+            });
+
             $(remove).click(function (e) {
                 e.stopPropagation();
                 var channel = state.channels[id];
                 if (!channel.isFriendChat) { return; }
                 var curvePublic = channel.curvePublic;
                 var friend = contactsData[curvePublic] || friendData;
-                var muteBox = UI.createCheckbox('cp-contacts-mute', Messages.contacts_mute, false);
                 var content = h('div', [
                     UI.setHTML(h('p'), Messages._getKey('contacts_confirmRemove', [Util.fixHTML(friend.name)])),
-                    muteBox
                 ]);
                 UI.confirm(content, function (yes) {
                     if (!yes) { return; }
-                    var mute = Util.isChecked($(content).find('#cp-contacts-mute'));
-                    if (mute) { muteUser(friend); }
                     removeFriend(curvePublic);
                     // TODO remove friend from userlist ui
                     // FIXME seems to trigger EJOINED from netflux-websocket (from server);
@@ -819,25 +831,30 @@ define([
 
                 var rows = Object.keys(muted).map(function (curve) {
                     var data = muted[curve];
-                    var avatar = h('div.cp-avatar');
-                    var button = h('td', h('i.fa.fa-times', {title: Messages.contacts_unmute}));
+                    var avatar = h('span.cp-avatar');
+                    var button = h('button.btn.btn-secondary', [
+                        h('i.fa.fa-ban'),
+                        Messages.contacts_unmute || 'unmute'
+                    ]);
                     UIElements.displayAvatar(common, $(avatar), data.avatar, data.name);
                     $(button).click(function () {
                         execCommand('UNMUTE_USER', curve, function (e, data) {
                             if (e) { return void console.error(e); }
-                            $(button).closest('tr').remove();
+                            $(button).closest('div').remove();
                             if (!data) { $button.hide(); }
+                            $('.cp-app-contacts-friend[data-user="'+curve+'"]')
+                                .find('.cp-mute-icon').show();
                         });
                     });
-                    return h('tr', [
-                        h('td', avatar),
-                        h('td', data.name),
+                    return h('div.cp-contacts-muted-user', [
+                        h('span', avatar),
+                        h('span', data.name),
                         button
                     ]);
                 });
                 var content = h('div', [
-                    h('p', Messages.contacts_mutedUsers),
-                    h('table', rows)
+                    h('h4', Messages.contacts_mutedUsers || 'Muted users...'),
+                    h('div.cp-contacts-muted-table', rows)
                 ]);
                 $button.off('click');
                 $button.click(function () {

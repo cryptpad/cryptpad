@@ -10,6 +10,8 @@
     );
     .sidebar-layout_main();
 
+    @cp-profile-is-your-friend: #777;
+
     display: flex;
     flex-flow: column;
     #cp-app-profile-header {
@@ -112,6 +114,14 @@
         }
     }
 
+    .cp-app-profile-friend {
+        display: flex;
+        align-items: center;
+        color: @cp-profile-is-your-friend;
+        .fa {
+            margin-right: 0.2em;
+        }
+    }
     .cp-app-profile-friend-request {
         flex: 0;
         width: 400px;

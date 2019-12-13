@@ -199,49 +199,40 @@ define([
         // This is a friend: display the "friend" message and an "unfriend" button
         if (friends[data.curvePublic]) {
             // Add friend message
-            APP.$friend.append(h('p.cp-app-profile-friend', Messages._getKey('profile_friend', [name])));
+            APP.$friend.append(h('p.cp-app-profile-friend', [
+                h('i.fa.fa-address-book'),
+                Messages._getKey('profile_friend', [name])
+            ]));
             if (!friends[data.curvePublic].notifications) { return; }
             // Add unfriend button
-            var $unfriendButton = $('<button>', {
-                'class': 'btn btn-danger cp-app-profile-friend-request',
-            }).text(Messages.contacts_remove).appendTo(APP.$friend);
-            $unfriendButton.click(function () {
-                // Unfriend confirm + mute checkbox
-                var muteBox = UI.createCheckbox('cp-contacts-mute', Messages.contacts_mute, false);
+            var unfriendButton = h('button.btn.btn-primary.cp-app-profile-friend-request', [
+                h('i.fa.fa-user-times'),
+                Messages.contacts_remove
+            ]);
+            $(unfriendButton).click(function () {
+                // Unfriend confirm
                 var content = h('div', [
-                    UI.setHTML(h('p'), Messages._getKey('contacts_confirmRemove', [name])),
-                    muteBox
+                    UI.setHTML(h('p'), Messages._getKey('contacts_confirmRemove', [name]))
                 ]);
                 UI.confirm(content, function (yes) {
                     if (!yes) { return; }
-                    // Mute if necessary
-                    var mute = Util.isChecked($(content).find('#cp-contacts-mute'));
-                    if (mute) {
-                        module.execCommand('MUTE_USER', {
-                            curvePublic: data.curvePublic,
-                            name: name,
-                            avatar: data.avatar
-                        }, function (e /*, removed */) {
-                            if (e) { return void console.error(e); }
-                        });
-                    }
-                    // And unfriend
                     module.execCommand('REMOVE_FRIEND', data.curvePublic, function (e) {
                         if (e) { return void console.error(e); }
                     });
                 });
-            });
+            }).appendTo(APP.$friend);
             return;
         }
 
-        var $button = $('<button>', {
-            'class': 'btn btn-success cp-app-profile-friend-request',
-        }).appendTo(APP.$friend);
+        var button = h('button.btn.btn-success.cp-app-profile-friend-request', [
+            h('i.fa.fa-user-plus'),
+        ]);
+        var $button = $(button).appendTo(APP.$friend);
 
         // If this curve has sent us a friend request, we should not be able to sent it to them
         var friendRequests = common.getFriendRequests();
         if (friendRequests[data.curvePublic]) {
-            $button.html(Messages._getKey('friendRequest_received', [data.name || Messages.anonymous]))
+            $button.append(Messages._getKey('friendRequest_received', [data.name || Messages.anonymous]))
                 .click(function () {
                 UIElements.displayFriendRequestModal(common, friendRequests[data.curvePublic]);
             });
@@ -251,41 +242,70 @@ define([
         // Pending friend (we've sent a friend request)
         var pendingFriends = APP.common.getPendingFriends(); // Friend requests sent
         if (pendingFriends[data.curvePublic]) {
-            $button.attr('disabled', 'disabled').text(Messages.profile_friendRequestSent);
+            $button.attr('disabled', 'disabled').append(Messages.profile_friendRequestSent);
             return;
         }
-        // This is not a friend yet: we can send a friend request or mute them
+        // This is not a friend yet: we can send a friend request
         $button.text(Messages._getKey('userlist_addAsFriendTitle', [data.name || Messages.anonymous]))
             .click(function () {
                 APP.common.sendFriendRequest({
                     curvePublic: data.curvePublic,
                     notifications: data.notifications
                 }, function () {
-                    $button.attr('disabled', 'disabled').text(Messages.profile_friendRequestSent);
+                    $button.attr('disabled', 'disabled').append(Messages.profile_friendRequestSent);
                 });
             });
+    };
+
+    var addMuteButton = function ($container) {
+        if (!APP.readOnly || !APP.common.isLoggedIn()) { return; }
+        APP.$mute = $(h('div.cp-app-profile-mute-container'));
+        $container.append(APP.$mute);
+    };
+    var refreshMute = function (data) {
+        if (!APP.$mute) { return; }
+
+        var me = common.getMetadataMgr().getUserData().curvePublic;
+        if (data.curvePublic === me) {
+            APP.$mute.remove();
+            return;
+        }
+
 
         // Add mute/unmute buttons
-        var $mute = $(h('div')).appendTo(APP.$friend);
+        var $mute = APP.$mute;
+        var module = common.makeUniversal('messenger');
         module.execCommand('GET_MUTED_USERS', null, function (muted) {
             if (!muted || typeof(muted) !== "object") { return; }
+            $mute.html('');
             var isMuted = muted[data.curvePublic];
             if (isMuted) {
-                var $unmuteButton = $('<button>', {
-                    'class': 'btn btn-danger cp-app-profile-friend-request',
-                }).text(Messages.contacts_unmute || 'UNMUTE').appendTo($mute);
-                $unmuteButton.click(function () {
+                var unmuteButton = h('button.btn.btn-secondary.cp-app-profile-friend-request', [
+                    h('i.fa.fa-ban'),
+                    Messages.contacts_unmute || 'unmute'
+                ]);
+                $(unmuteButton).click(function () {
                     module.execCommand('UNMUTE_USER', data.curvePublic, function (e) {
-                        if (e) { return void console.error(e); }
-                        refreshFriendRequest(data);
+                        if (e) { return void UI.warn(Messages.error); }
+                        refreshMute(data);
                     });
-                });
+                }).appendTo($mute);
                 return;
             }
-            var button = UIElements.createMuteButton(common, data, function () {
-                refreshFriendRequest(data);
-            });
-            $mute.append(button);
+            var muteButton = h('button.btn.btn-danger.cp-app-profile-friend-request', [
+                h('i.fa.fa-ban'),
+                Messages.contacts_mute || 'mute'
+            ]);
+            $(muteButton).click(function () {
+                module.execCommand('MUTE_USER', {
+                    curvePublic: data.curvePublic,
+                    name: data.displayName || data.name,
+                    avatar: data.avatar
+                }, function (e) {
+                    if (e) { return void UI.warn(Messages.error); }
+                    refreshMute(data);
+                });
+            }).appendTo($mute);
         });
     };
 
@@ -443,6 +463,7 @@ define([
             addDisplayName($rightside);
             addLink($rightside);
             addFriendRequest($rightside);
+            addMuteButton($rightside);
             addDescription(APP.$rightside);
             addViewButton(APP.$rightside);
             APP.initialized = true;
@@ -456,6 +477,7 @@ define([
         refreshLink(data);
         refreshDescription(data);
         refreshFriendRequest(data);
+        refreshMute(data);
     };
 
     var createToolbar = function () {
