@@ -1262,13 +1262,20 @@ define([
     var createInviteLink = function (ctx, data, cId, cb) {
         var team = ctx.teams[data.teamId];
         team = team;
-        // var roster = team.roster;
-        // var name = data.name;
-        // var password = data.password;
-        // var msg = data.message;
+        /*
+        var roster = team.roster;
+        var name = data.name;
+        var password = data.password;
+        var msg = data.message;
+        var href = data.href;
+        var bytes64 = data.bytes64;
+        */
+        return void cb();
+        /*
         cb({
             error: 'NOT_IMPLEMENTED'
         });
+        */
     };
 
     Team.init = function (cfg, waitFor, emit) {

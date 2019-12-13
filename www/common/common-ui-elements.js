@@ -14,11 +14,14 @@ define([
     '/customize/application_config.js',
     '/customize/pages.js',
     '/bower_components/nthen/index.js',
+
+    '/bower_components/scrypt-async/scrypt-async.js',
     'css!/customize/fonts/cptools/style.css',
     '/bower_components/croppie/croppie.min.js',
     'css!/bower_components/croppie/croppie.css',
 ], function ($, Config, Util, Hash, Language, UI, Constants, Feedback, h, MediaTag, Clipboard,
              Messages, AppConfig, Pages, NThen) {
+    var Scrypt = window.scrypt;
     var UIElements = {};
 
     // Configure MediaTags to use our local viewer
@@ -1557,6 +1560,8 @@ define([
         var team = privateData.teams[config.teamId];
         if (!team) { return void UI.warn(Messages.error); }
 
+        var origin = privateData.origin;
+
         var module = config.module || common.makeUniversal('team');
 
         // Invite contacts
@@ -1629,52 +1634,91 @@ define([
             buttons: contactsButtons,
         });
 
-        var linkName, linkPassword, linkMessage;
-        var linkError;
+        var linkName, linkPassword, linkMessage, linkError, linkSpinText;
+        var linkForm, linkSpin, linkResult;
         // Invite from link
         var linkContent = h('div.cp-share-modal', [
             h('p', 'XXX Invite link description...'), // XXX
             linkError = h('div.alert.alert-danger', {style : 'display: none;'}),
-            linkName = h('input', {
-                placeholder: 'name...' // XXX
-            }),
-            h('br'),
-            linkPassword = UI.passwordInput({
-                id: 'cp-teams-invite-password',
-                placeholder: 'password...' // XXX
-            }),
-            h('br'),
-            linkMessage = h('textarea', {
-                placeholder: 'note...'
-            })
+            linkForm = h('div.cp-teams-invite-form', [
+                linkName = h('input', {
+                    placeholder: 'name...' // XXX
+                }),
+                h('br'),
+                linkPassword = UI.passwordInput({
+                    id: 'cp-teams-invite-password',
+                    placeholder: 'password...' // XXX
+                }),
+                h('br'),
+                linkMessage = h('textarea', {
+                    placeholder: 'note...'
+                })
+            ]),
+            linkSpin = h('div', {
+                style: 'display: none;'
+            }, [
+                h('i.fa.fa-spinner.fa-spin'),
+                linkSpinText = h('span', 'Scrypt...') // XXX
+            ]),
+            linkResult = h('div', {
+                style: 'display: none;'
+            }, h('textarea', {
+                readonly: 'readonly'
+            }))
         ]);
+        var $linkContent = $(linkContent);
+        var href;
         var process = function () {
+            var $nav = $linkContent.closest('.alertify').find('nav');
             $(linkError).text('').hide();
             var name = $(linkName).val();
             var pw = $(linkPassword).val();
             var msg = $(linkMessage).val();
+            var hash = Hash.createRandomHash('invite', pw);
+            var hashData = Hash.parseTypeHash('invite', hash);
+            href = origin + '/teams/#' + hash;
+            console.log(hashData);
             if (!name || !name.trim()) {
                 $(linkError).text('empty name...').show(); // XXX
                 return true;
             }
-            var bytes;
+            var bytes64;
             NThen(function (waitFor) {
-                // Scrypt
-                waitFor()(); // jshint
-                bytes = bytes;
+                $(linkForm).hide();
+                $(linkSpin).show();
+                $nav.find('button.cp-teams-invite-create').prop('disabled', 'disabled');
+                setTimeout(waitFor(), 150);
             }).nThen(function (waitFor) {
+                // Scrypt
+                Scrypt(hashData.key,
+                    (pw || '') + (AppConfig.loginSalt || ''), // salt
+                    8, // memoryCost (n)
+                    1024, // block size parameter (r)
+                    192, // dkLen
+                    200, // interruptStep
+                    waitFor(function (_bytes) {
+                        bytes64 = _bytes;
+                    }),
+                    'base64'); // format, could be 'base64'
+            }).nThen(function (waitFor) {
+                $(linkSpinText).text('Add invite link to team'); // XXX
                 module.execCommand('CREATE_INVITE_LINK', {
                     name: name,
                     password: pw,
                     message: msg,
-                    // send scrypt result
+                    bytes64: bytes64,
+                    href: href,
                     teamId: config.teamId,
                 }, waitFor(function (obj) {
                     if (obj && obj.error) {
                         waitFor.abort();
+                        $(linkSpin).hide();
                         return void $(linkError).text('ERROR '+obj.error).show(); // XXX
                     }
                     // Display result here
+                    $(linkSpin).hide();
+                    $(linkResult).show().find('textarea').text(href);
+                    $nav.find('button.cp-teams-invite-copy').prop('disabled', '');
                 }));
             });
             return true;
@@ -1685,17 +1729,27 @@ define([
             onClick: function () {},
             keys: [27]
         }, {
-            className: 'primary',
+            className: 'primary cp-teams-invite-create',
             name: 'CREATE LINK', // XXX
             onClick: function () {
                 return process();
             },
             keys: [13]
+        }, {
+            className: 'primary cp-teams-invite-copy',
+            name: 'COPY LINK', // XXX
+            onClick: function () {
+                if (!href) { return; }
+                var success = Clipboard.copy(href);
+                if (success) { UI.log(Messages.shareSuccess); }
+            },
+            keys: []
         }];
 
         var frameLink = UI.dialog.customModal(linkContent, {
             buttons: linkButtons,
         });
+        $(frameLink).find('.cp-teams-invite-copy').prop('disabled', 'disabled');
 
         // Create modal
         var tabs = [{
