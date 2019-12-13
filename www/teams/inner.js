@@ -15,6 +15,7 @@ define([
     '/common/hyperscript.js',
     '/customize/application_config.js',
     '/common/messenger-ui.js',
+    '/common/invitation.js',
     '/customize/messages.js',
 
     '/bower_components/scrypt-async/scrypt-async.min.js',
@@ -38,6 +39,7 @@ define([
     h,
     AppConfig,
     MessengerUI,
+    InviteInner,
     Messages)
 {
     var APP = {};
@@ -1045,6 +1047,7 @@ define([
         var hash = common.getMetadataMgr().getPrivateData().teamInviteHash;
         var hashData = Hash.parseTypeHash('invite', hash);
         var password = hashData.password;
+        var seeds = InviteInner.deriveSeeds(hashData.key);
 
         var div;
 
@@ -1059,7 +1062,8 @@ define([
                 ]));
                 setTimeout(waitFor(), 150);
             }).nThen(function (waitFor) {
-                Scrypt(hashData.key,
+                // XXX ansuz InviteInner.deriveBytes
+                Scrypt(seeds.scrypt,
                     (pw || '') + (AppConfig.loginSalt || ''), // salt
                     8, // memoryCost (n)
                     1024, // block size parameter (r)
@@ -1073,7 +1077,7 @@ define([
                 APP.module.execCommand('GET_LINK_DATA', {
                     bytes64: bytes64,
                     hash: hash,
-                    pw: pw,
+                    password: pw,
                 }, waitFor(function () {
                     $div.empty();
                     // TODO
