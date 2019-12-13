@@ -3,6 +3,7 @@
 @import (reference) "./variables.less";
 @import (reference) "./avatar.less";
 @import (reference) "./tools.less";
+@import (reference) "./buttons.less";
 
 .alertify_main() {
     --LessLoader_require: LessLoader_currentFile();
@@ -260,100 +261,7 @@
                 }
             }
 
-            button:not(.btn):not(.pure-button):not(.md-button):not(.mdl-button) {
-
-                background-color: @colortheme_alertify-cancel;
-                box-sizing: border-box;
-                position: relative;
-                outline: 0;
-                display: inline-block;
-                align-items: center;
-                padding: 0 6px;
-                margin: 6px 8px;
-                line-height: 36px;
-                min-height: 36px;
-                white-space: nowrap;
-                min-width: 88px;
-                text-align: center;
-                text-transform: uppercase;
-                font-size: 14px;
-                text-decoration: none;
-                cursor: pointer;
-                border-radius: 0;
-
-                color: @alertify-btn-fg;
-                border: 1px solid @alertify-btn-fg;
-
-                &.no-margin {
-                    margin: 0;
-                }
-
-                &:hover, &:active {
-                    background-color: @alertify-light-bg;
-                }
-
-                &.safe, &.danger {
-                    color: @colortheme_old-base;
-                    white-space: normal;
-                    font-weight: bold;
-                }
-                &.danger {
-                    background-color: @colortheme_alertify-red;
-                    border-color: @colortheme_alertify-red-border;
-                    color: @colortheme_alertify-red-color;
-                    &:hover, &:active {
-                        background-color: contrast(@colortheme_modal-bg, darken(@colortheme_alertify-red, 10%), lighten(@colortheme_alertify-red, 10%));
-                    }
-                }
-
-                &.safe {
-                    background-color: @colortheme_alertify-green;
-                    border-color: @colortheme_alertify-green-border;
-                    color: @colortheme_alertify-green-color;
-                    &:hover, &:active {
-                        background-color: contrast(@colortheme_modal-bg, darken(@colortheme_alertify-green, 10%), lighten(@colortheme_alertify-green, 10%));
-                    }
-                }
-
-                &.primary {
-                    background-color: @colortheme_alertify-primary;
-                    color: @colortheme_alertify-primary-text;
-                    border-color: @colortheme_alertify-primary-border;
-                    font-weight: bold;
-                    &:hover, &:active {
-                        background-color: contrast(@colortheme_modal-bg, darken(@colortheme_alertify-primary, 10%), lighten(@colortheme_alertify-primary, 10%));
-                    }
-                }
-
-                &.cancel {
-                    border-color: @colortheme_alertify-cancel-border;
-                    color: @colortheme_alertify-cancel-border;
-                    &:hover, &:hover {
-                        background-color: fade(@colortheme_alertify-cancel-border, 25%);
-                    }
-                }
-
-
-
-                &:focus {
-                    //border: 1px dotted @alertify-base;
-                    box-shadow: 0px 0px 5px @colortheme_alertify-primary;
-                    outline: none;
-                }
-                &::-moz-focus-inner {
-                    border: 0;
-                }
-
-                &:disabled {
-                    cursor: not-allowed !important;
-                    background-color: @colortheme_alertify-disabled;
-                    color: @colortheme_alertify-disabled-text;
-                    border-color: @colortheme_alertify-disabled-border;
-                    &:hover, &:active {
-                        background-color: @colortheme_alertify-disabled;
-                    }
-                }
-            }
+            .buttons_main();
 
             nav {
                 padding: @alertify_padding-base;

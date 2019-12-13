@@ -14,6 +14,8 @@ define([
 
     var MessengerUI = {};
 
+    var mutedUsers = {};
+
     var dataQuery = function (id) {
         return '[data-key="' + id + '"]';
     };
@@ -70,7 +72,7 @@ define([
             h('div.cp-app-contacts-friends.cp-app-contacts-category', [
                 h('div.cp-app-contacts-category-content.cp-contacts-friends'),
                 h('h2.cp-app-contacts-category-title', Messages.contacts_friends),
-                h('button.btn.btn-secondary.cp-app-contacts-muted-button', Messages.contacts_manageMuted || 'MANAGE MUTED') // XXX
+                h('button.cp-app-contacts-muted-button', Messages.contacts_manageMuted || 'MANAGE MUTED') // XXX
             ]),
             h('div.cp-app-contacts-rooms.cp-app-contacts-category', [
                 h('div.cp-app-contacts-category-content'),
@@ -510,8 +512,16 @@ define([
                 title: room.name
             });
 
+
+            var curve;
+            if (room.isFriendChat) {
+                var __channel = state.channels[id];
+                curve = __channel.curvePublic;
+            }
+
             var mute = h('span.cp-app-contacts-remove.fa.fa-bell-slash-o.cp-mute-icon', {
-                title: Messages.contacts_mute || 'mute'
+                title: Messages.contacts_mute || 'mute',
+                style: (curve && mutedUsers[curve]) ? 'display: none;' : undefined
             });
             var remove = h('span.cp-app-contacts-remove.fa.fa-user-times', {
                 title: Messages.contacts_remove
@@ -821,6 +831,7 @@ define([
         var updateMutedList = function () {
             execCommand('GET_MUTED_USERS', null, function (err, muted) {
                 if (err) { return void console.error(err); }
+                mutedUsers = muted;
 
                 var $button = $userlist.find('.cp-app-contacts-muted-button');
 
@@ -830,9 +841,11 @@ define([
                 }
 
                 var rows = Object.keys(muted).map(function (curve) {
+                    $('.cp-app-contacts-friend[data-user="'+curve+'"]')
+                        .find('.cp-mute-icon').hide();
                     var data = muted[curve];
                     var avatar = h('span.cp-avatar');
-                    var button = h('button.btn.btn-secondary', [
+                    var button = h('button', [
                         h('i.fa.fa-ban'),
                         Messages.contacts_unmute || 'unmute'
                     ]);
