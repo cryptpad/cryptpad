@@ -3,22 +3,49 @@ var factory = function (Util, Cred, nThen) {
     nThen = nThen; // XXX
     var Invite = {};
 
-/* 
-    TODO key derivation
+/*  INPUTS
 
-    scrypt(seed, passwd) => {
-        curve: {
-            private,
-            public,
-        },
-        ed: {
-            private,
-            public,
-        }
-        cryptKey,
-        channel
-    }
+    * password (for scrypt)
+    * message (personal note)
+    * link hash
+    * bytes64 (scrypt output)
+    * preview_hash
+
 */
+
+
+/*  DERIVATIONS
+
+    * components corresponding to www/common/invitation.js
+    * preview_hash => components
+      * channel
+      * cryptKey
+    * b64_bytes
+      * curvePrivate => curvePublic
+      * edSeed => edPrivate => edPublic
+
+*/
+
+
+/*  IO / FUNCTIONALITY
+
+    * creator
+      * generate a random signKey (prevent writes to preview channel)
+      * encrypt and upload the preview content
+        * via CryptGet
+        * owned by:
+          * the ephemeral edPublic
+          * the invite creator
+      * create a roster entry for the invitation
+        * with encrypted notes for the creator
+    * redeemer
+      * get the preview content
+      * redeem the invite
+        * add yourself to the roster
+        * add the team to your proxy-manager
+
+*/
+
 
     var BYTES_REQUIRED = 256;
 

@@ -10,6 +10,7 @@ define([
     '/common/outer/roster.js',
     '/common/common-messaging.js',
     '/common/common-feedback.js',
+    '/common/outer/invitation.js',
 
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
@@ -19,7 +20,7 @@ define([
     '/bower_components/saferphore/index.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
 ], function (Util, Hash, Constants, Realtime,
-             ProxyManager, UserObject, SF, Roster, Messaging, Feedback,
+             ProxyManager, UserObject, SF, Roster, Messaging, Feedback, Invite,
              Listmap, Crypto, CpNetflux, ChainPad, nThen, Saferphore) {
     var Team = {};
 
@@ -1259,7 +1260,9 @@ define([
         ctx.store.messenger.openTeamChat(team.getChatData(), onUpdate, cId, cb);
     };
 
+    // XXX ansuz
     var createInviteLink = function (ctx, data, cId, cb) {
+        Invite = Invite;
         var team = ctx.teams[data.teamId];
         team = team;
         /*
@@ -1277,6 +1280,7 @@ define([
         });
         */
     };
+    // XXX ansuz
     var getLinkData = function (ctx, data, cId, cb) {
         /*
         var password = data.password;

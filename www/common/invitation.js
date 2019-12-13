@@ -1,5 +1,5 @@
 (function () {
-var factory = function (/* Util, Cred, nThen */) {
+var factory = function (Hash, Nacl/*, Util, Cred, nThen */) {
     var Invite = {};
 
     /* XXX ansuz
@@ -20,12 +20,13 @@ var factory = function (/* Util, Cred, nThen */) {
     Invite.deriveSeeds = function (key) {
         var seeds = {};
 
-        var scrypt_seed;
-        var preview_secrets;
+/*
         var preview_channel;
         var preview_cryptKey;
+*/
+        var preview_secrets;
         (function () {
-            var b64_seed = hashData.key;
+            var b64_seed = key;
             if (typeof(b64_seed) !== 'string') {
                 return console.error('invite seed is not a string');
             }
@@ -46,28 +47,32 @@ var factory = function (/* Util, Cred, nThen */) {
     // seed => bytes64
     Invite.deriveBytes = function (scrypt_seed, cb) {
         // XXX do scrypt stuff...
-
+        cb = cb;
     };
 
     Invite.derivePreviewHash = function (preview_seed) {
-
+        preview_seed = preview_seed;
     };
 
     return Invite;
 };
     if (typeof(module) !== 'undefined' && module.exports) {
         module.exports = factory(
+            require("../common-hash"),
+            require("tweetnacl/nacl-fast"),
             require("../common-util"),
             require("../common-credential.js"),
             require("nthen")
         );
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
         define([
+            '/common/common-hash.js',
             '/common/common-util.js',
             '/common/common-credential.js',
             '/bower_components/nthen/index.js',
-        ], function (Util, Cred, nThen) {
-            return factory(Util, nThen);
+            '/bower_components/tweetnacl/nacl-fast.min.js',
+        ], function (Hash, Util, Cred, nThen) {
+            return factory(Hash, window.nacl, Util, Cred, nThen);
         });
     }
 }());

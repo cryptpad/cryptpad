@@ -1650,7 +1650,7 @@ define([
                     placeholder: 'password...' // XXX
                 }),
                 h('br'),
-                linkMessage = h('textarea', {
+                linkMessage = h('textarea', { // XXX ansuz hitting enter submits...
                     placeholder: 'note...' // XXX
                 })
             ]),
