@@ -17,6 +17,7 @@ define([
     '/common/messenger-ui.js',
     '/customize/messages.js',
 
+    '/bower_components/scrypt-async/scrypt-async.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/teams/app-team.less',
@@ -42,6 +43,7 @@ define([
     var APP = {};
     var driveAPP = {};
     //var SHARED_FOLDER_NAME = Messages.fm_sharedFolderName;
+    var Scrypt = window.scrypt;
 
     var copyObjectValue = function (objRef, objToCopy) {
         for (var k in objRef) { delete objRef[k]; }
@@ -137,6 +139,9 @@ define([
         'general': [
             'cp-team-info',
         ],
+        'link': [
+            'cp-team-link',
+        ],
     };
     var teamCategories = {
         'back': {
@@ -179,8 +184,10 @@ define([
         var $categories = $('<div>', {'class': 'cp-sidebarlayout-categories'})
                             .appendTo(APP.$leftside);
 
+        var hash = common.getMetadataMgr().getPrivateData().teamInviteHash;
+
         var categories = team ? teamCategories : mainCategories;
-        var active = team ? 'drive' : 'list';
+        var active = team ? 'drive' : (hash ? 'link' : 'list');
 
         if (team && APP.team) {
             var $category = $('<div>', {'class': 'cp-sidebarlayout-category cp-team-cat-header'}).appendTo($categories);
@@ -1012,6 +1019,90 @@ define([
         ]);
     }, true);
 
+    makeBlock('link', function (common, cb) {
+        // XXX get team data first or login first?
+        if (!driveAPP.loggedIn) {
+            var anonLogin, anonRegister;
+            var anonContent = h('div', [
+                h('p', "You've been invited to a team. Only registered users can join a team. Login or register..."), // XXX
+                h('div', [
+                    anonLogin = h('button.btn.btn-primary', Messages.login_login),
+                    anonRegister = h('button.btn.btn-secondary', Messages.login_register),
+                ])
+            ]);
+            $(anonLogin).click(function () {
+                common.setLoginRedirect(function () {
+                    common.gotoURL('/login/');
+                });
+            });
+            $(anonRegister).click(function () {
+                common.setLoginRedirect(function () {
+                    common.gotoURL('/register/');
+                });
+            });
+            return void cb(anonContent);
+        }
+        var hash = common.getMetadataMgr().getPrivateData().teamInviteHash;
+        var hashData = Hash.parseTypeHash('invite', hash);
+        var password = hashData.password;
+
+        var div;
+
+        var process = function (pw) {
+            var $div = $(div);
+            $div.empty();
+            var bytes64;
+            nThen(function (waitFor) {
+                $div.append(h('div', [
+                    h('i.fa.fa-spin.fa-spinner'),
+                    h('span', 'Scrypt...') // XXX
+                ]));
+                setTimeout(waitFor(), 150);
+            }).nThen(function (waitFor) {
+                Scrypt(hashData.key,
+                    (pw || '') + (AppConfig.loginSalt || ''), // salt
+                    8, // memoryCost (n)
+                    1024, // block size parameter (r)
+                    192, // dkLen
+                    200, // interruptStep
+                    waitFor(function (_bytes) {
+                        bytes64 = _bytes;
+                    }),  
+                    'base64'); // format, could be 'base64'
+            }).nThen(function (waitFor) {
+                APP.module.execCommand('GET_LINK_DATA', {
+                    bytes64: bytes64,
+                    hash: hash,
+                    pw: pw,
+                }, waitFor(function () {
+                    $div.empty();
+                    // TODO
+                    // Accept/decline/decide later UI
+                }));
+            });
+        };
+
+        var content = [];
+        if (password) {
+            // XXX XXX
+            content.push(h('p', "You've been invited to join a CryptPad Team, but the person who created the invitation protected it with a secret passphrase that they expect you to know."));
+            content.push(h('p', "Entering the correct phrase will decrypt the team's info and allow you to accept or decline the invitation."));
+            var pwInput = UI.passwordInput();
+            content.push(pwInput);
+            var submitPw = h('button.btn.btn-secondary', Messages.password_submit);
+            $(submitPw).click(function () {
+                var val = $(pwInput).find('input').val();
+                if (!val) { return; }
+                process(val);
+            });
+            content.push(submitPw);
+        }
+        div = h('div', content);
+        cb(div);
+
+        if (!password) { process(); }
+    });
+
     var redrawTeam = function (common) {
         if (!APP.team) { return; }
         var teamId = APP.team;
@@ -1053,7 +1144,7 @@ define([
             readOnly = driveAPP.readOnly = metadataMgr.getPrivateData().readOnly;
 
             driveAPP.loggedIn = common.isLoggedIn();
-            if (!driveAPP.loggedIn) { throw new Error('NOT_LOGGED_IN'); }
+            //if (!driveAPP.loggedIn) { throw new Error('NOT_LOGGED_IN'); }
 
             common.setTabTitle(Messages.type.teams);
 
@@ -1102,6 +1193,22 @@ define([
             APP.module = common.makeUniversal('team', {
                 onEvent: onEvent
             });
+
+            var hash = privateData.teamInviteHash;
+            if (!hash && !driveAPP.loggedIn) {
+                UI.alert(Messages.mustLogin, function () {
+                    common.setLoginRedirect(function () {
+                        common.gotoURL('/login/');
+                    });
+                }, {forefront: true});
+                return;
+            }
+            if (!hash) {
+                delete mainCategories.link;
+            } else if (!driveAPP.loggedIn) {
+                delete mainCategories.list;
+                delete mainCategories.create;
+            }
 
             $('body').css('display', '');
             loadMain(common);

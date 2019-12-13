@@ -1267,7 +1267,7 @@ define([
         var name = data.name;
         var password = data.password;
         var msg = data.message;
-        var href = data.href;
+        var hash = data.hash;
         var bytes64 = data.bytes64;
         */
         return void cb();
@@ -1277,6 +1277,20 @@ define([
         });
         */
     };
+    var getLinkData = function (ctx, data, cId, cb) {
+        /*
+        var password = data.password;
+        var hash = data.hash;
+        var bytes64 = data.bytes64;
+        */
+        return void cb();
+        /*
+        cb({
+            error: 'NOT_IMPLEMENTED'
+        });
+        */
+    };
+
 
     Team.init = function (cfg, waitFor, emit) {
         var team = {};
@@ -1433,6 +1447,9 @@ define([
             }
             if (cmd === 'CREATE_INVITE_LINK') {
                 return void createInviteLink(ctx, data, clientId, cb);
+            }
+            if (cmd === 'GET_LINK_DATA') {
+                return void getLinkData(ctx, data, clientId, cb);
             }
         };
 

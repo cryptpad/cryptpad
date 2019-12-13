@@ -1651,7 +1651,7 @@ define([
                 }),
                 h('br'),
                 linkMessage = h('textarea', {
-                    placeholder: 'note...'
+                    placeholder: 'note...' // XXX
                 })
             ]),
             linkSpin = h('div', {
@@ -1677,7 +1677,6 @@ define([
             var hash = Hash.createRandomHash('invite', pw);
             var hashData = Hash.parseTypeHash('invite', hash);
             href = origin + '/teams/#' + hash;
-            console.log(hashData);
             if (!name || !name.trim()) {
                 $(linkError).text('empty name...').show(); // XXX
                 return true;
@@ -1707,7 +1706,7 @@ define([
                     password: pw,
                     message: msg,
                     bytes64: bytes64,
-                    href: href,
+                    hash: hash,
                     teamId: config.teamId,
                 }, waitFor(function (obj) {
                     if (obj && obj.error) {
