@@ -1636,7 +1636,9 @@ define([
 
         var linkName, linkPassword, linkMessage, linkError, linkSpinText;
         var linkForm, linkSpin, linkResult;
+        var linkWarning;
         // Invite from link
+        var dismissButton = h('span.fa.fa-times');
         var linkContent = h('div.cp-share-modal', [
             h('p', 'XXX Invite link description...'), // XXX
             linkError = h('div.alert.alert-danger', {style : 'display: none;'}),
@@ -1645,11 +1647,21 @@ define([
                     placeholder: 'name...' // XXX
                 }),
                 h('br'),
+                h('div.cp-teams-invite-block', [
+                    h('span', 'password protection...'), // XXX
+                    h('a.cp-teams-help.fa.fa-question-circle', {
+                        href: origin + '/faq.html#security-pad_password',
+                        target: "_blank",
+                        'data-tippy-placement': "right"
+                    })
+                ]), // XXX
                 linkPassword = UI.passwordInput({
                     id: 'cp-teams-invite-password',
                     placeholder: 'password...' // XXX
                 }),
-                h('br'),
+                h('div.cp-teams-invite-block',
+                    h('span', 'add a note') // XXX
+                ),
                 linkMessage = h('textarea', { // XXX ansuz hitting enter submits...
                     placeholder: 'note...' // XXX
                 })
@@ -1664,8 +1676,24 @@ define([
                 style: 'display: none;'
             }, h('textarea', {
                 readonly: 'readonly'
-            }))
+            })),
+            linkWarning = h('div.cp-teams-invite-alert.alert.alert-warning.dismissable', {
+                style: "display: none;"
+            }, [
+                h('span.cp-inline-alert-text', 'Warning...'),
+                dismissButton
+            ]) // XXX
         ]);
+        var localStore = window.cryptpadStore;
+        localStore.get('hide-alert-teamInvite', function (val) {
+            if (val === '1') { return; }
+            $(linkWarning).show();
+
+            $(dismissButton).on('click', function () {
+                localStore.put('hide-alert-teamInvite', '1');
+                $(linkWarning).remove();
+            });
+        });
         var $linkContent = $(linkContent);
         var href;
         var process = function () {
