@@ -18,7 +18,6 @@ define([
     '/common/invitation.js',
     '/customize/messages.js',
 
-    '/bower_components/scrypt-async/scrypt-async.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/teams/app-team.less',
@@ -45,7 +44,6 @@ define([
     var APP = {};
     var driveAPP = {};
     //var SHARED_FOLDER_NAME = Messages.fm_sharedFolderName;
-    var Scrypt = window.scrypt;
 
     var copyObjectValue = function (objRef, objToCopy) {
         for (var k in objRef) { delete objRef[k]; }
@@ -1062,17 +1060,10 @@ define([
                 ]));
                 setTimeout(waitFor(), 150);
             }).nThen(function (waitFor) {
-                // XXX ansuz InviteInner.deriveBytes
-                Scrypt(seeds.scrypt,
-                    (pw || '') + (AppConfig.loginSalt || ''), // salt
-                    8, // memoryCost (n)
-                    1024, // block size parameter (r)
-                    192, // dkLen
-                    200, // interruptStep
-                    waitFor(function (_bytes) {
-                        bytes64 = _bytes;
-                    }),  
-                    'base64'); // format, could be 'base64'
+                var salt = InviteInner.deriveSalt(pw, AppConfig.loginSalt);
+                InviteInner.deriveBytes(seeds.scrypt, salt, waitFor(function (bytes) {
+                    bytes64 = bytes;
+                }));
             }).nThen(function (waitFor) {
                 APP.module.execCommand('GET_LINK_DATA', {
                     bytes64: bytes64,
