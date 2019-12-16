@@ -66,9 +66,9 @@ var factory = function (Hash, Nacl, Scrypt/*, Util, Cred, nThen */) {
         define([
             '/common/common-hash.js',
             '/bower_components/tweetnacl/nacl-fast.min.js',
-            '/bower_components/scrypt_async/scrypt-async.min.js',
+            '/bower_components/scrypt-async/scrypt-async.min.js',
         ], function (Hash /*, Nacl, Scrypt */) {
-            return factory(Hash, window.nacl, window.Scrypt);
+            return factory(Hash, window.nacl, window.scrypt);
         });
     }
 }());
