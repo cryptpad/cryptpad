@@ -306,6 +306,7 @@ define([
                     refreshMute(data);
                 });
             }).appendTo($mute);
+            $(h('p', Messages.contacts_muteInfo)).appendTo($mute);
         });
     };
 
