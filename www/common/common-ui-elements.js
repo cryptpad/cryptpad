@@ -1677,6 +1677,7 @@ define([
             }, h('textarea', {
                 readonly: 'readonly'
             })),
+            linkError = h('div.alert.alert-danger.cp-teams-invite-alert', {style : 'display: none;'}),
             linkWarning = h('div.cp-teams-invite-alert.alert.alert-warning.dismissable', {
                 style: "display: none;"
             }, [
