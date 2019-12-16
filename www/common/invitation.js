@@ -44,6 +44,16 @@ var factory = function (Hash, Crypt, Nacl, Scrypt/*, Util, Cred, nThen */) {
     };
 
     Invite.getPreviewContent = function (seeds, cb) {
+        setTimeout(function () {
+            cb(void 0, {
+                author: {
+                    displayName: 'Bob',
+                    curvePublic: 'pewpewpew'
+                },
+                team: 'CryptPad',
+                message: 'Hello bob'
+            });
+        });
         /*
         var secrets = Invite.derivePreviewSecrets(seeds);
         secrets = secrets;
@@ -84,7 +94,7 @@ var factory = function (Hash, Crypt, Nacl, Scrypt/*, Util, Cred, nThen */) {
             '/common/common-hash.js',
             '/common/cryptget.js',
             '/bower_components/tweetnacl/nacl-fast.min.js',
-            '/bower_components/scrypt_async/scrypt-async.min.js',
+            '/bower_components/scrypt-async/scrypt-async.min.js',
         ], function (Hash, Crypt /*, Nacl, Scrypt */) {
             return factory(Hash, Crypt, window.nacl, window.Scrypt);
         });
