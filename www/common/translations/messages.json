@@ -779,6 +779,10 @@
             "crypto": {
                 "q": "What cryptography do you use?",
                 "a": "CryptPad is based upon two open-source cryptography libraries: <a href='https://github.com/dchest/tweetnacl-js' target='_blank'>tweetnacl.js</a> and <a href='https://github.com/dchest/scrypt-async-js' target='_blank'>scrypt-async.js</a>.<br><br>Scrypt is a <em>password-based key derivation algorithm</em>. We use it to turn your username and password into a unique keyring which secures access to your CryptDrive such that only you can access your list of pads.<br><br>We use the <em>xsalsa20-poly1305</em> and <em>x25519-xsalsa20-poly1305</em> cyphers provided by tweetnacl to encrypt pads and chat history, respectively."
+            },
+            "pad_password": {
+                "q": "What happens when I protect a pad/folder with a password?",
+                "a": "You can protect any pad or shared folder with a password when you create it. You can also use the properties menu to set/change/remove a password at any time.<br><br>Pad and shared folder passwords are intended to protect the link when you share it over potentially insecure channels such as email or text message. If someone intercepts your link but does not have the password they will not be able to read your document.<br><br>When sharing within CryptPad with your contacts or teams, communications are encrypted and we assume you want them to access your document. Therefore the password is remembered and sent with the pad when you share it. The recipient, or yourself, are <b>not</b> asked for it when they open the document."
             }
         },
         "usability": {
@@ -1089,7 +1093,7 @@
     "share_selectAll": "Select all",
     "share_deselectAll": "Deselect all",
     "share_filterFriend": "Search by name",
-    "share_linkFriends": "Share with friends",
+    "share_linkFriends": "Share with contacts",
     "share_withFriends": "Share",
     "notifications_dismiss": "Dismiss",
     "fm_info_sharedFolderHistory": "This is only the history of your shared folder: <b>{0}</b><br/>Your CryptDrive will stay in read-only mode while you navigate.",
@@ -1164,7 +1168,7 @@
     "owner_request_declined": "{0} has declined your offer to be an owner of <b>{1}</b>",
     "owner_removed": "{0} has removed your ownership of <b>{1}</b>",
     "owner_removedPending": "{0} has canceled your ownership offer for <b>{1}</b>",
-    "share_linkTeam": "Share with a team",
+    "share_linkTeam": "Add to team drive",
     "team_pickFriends": "Choose which friends to invite to this team",
     "team_inviteModalButton": "Invite",
     "team_noFriend": "You haven't connected with any friends on CryptPad yet.",
@@ -1242,5 +1246,18 @@
     "teams_table_admins": "Manage members",
     "teams_table_owners": "Manage team",
     "teams_table_role": "Role",
-    "pad_wordCount": "Words: {0}"
+    "pad_wordCount": "Words: {0}",
+    "share_linkWarning": "This link contains the keys to your document. Recipients will gain non-revokable access to your content.",
+    "share_linkPasswordAlert": "This item is password protected. When you send the link the recipient will have to enter the password.",
+    "share_contactPasswordAlert": "This item is password protected. Because you are sharing it with a CryptPad contact, the recipient will not have to enter the password.",
+    "share_embedPasswordAlert": "This item is password protected. When you embed this pad, viewers will be asked for the password.",
+    "passwordFaqLink": "Read more about passwords",
+    "share_noContactsLoggedIn": "You are not connected with anyone on CryptPad yet. Share the link to your profile for people to send you contact requests.",
+    "share_copyProfileLink": "Copy profile link",
+    "share_noContactsNotLoggedIn": "Log in or register to see your existing contacts and add new ones.",
+    "contacts_mute": "Mute",
+    "contacts_unmute": "Unmute",
+    "contacts_manageMuted": "Manage muted",
+    "contacts_mutedUsers": "Muted accounts",
+    "contacts_muteInfo": "You will not receive any notifications or messages from muted users.<br>They will not know you have muted them. "
 }

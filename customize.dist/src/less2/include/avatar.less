@@ -1,9 +1,12 @@
 @import (reference) "./tools.less";
+@import (reference) "./colortheme-all.less";
 .avatar_vars(
     @width: 30px
 ) {
     @avatar-width: @width;
     @avatar-font-size: @width / 1.2;
+    @avatar-default-bg: #D9D8D8;
+    @avatar-default-fg: darken(@avatar-default-bg, 40%);
 }
 .avatar_main(@width: 30px) {
     --LessLoader_require: LessLoader_currentFile();
@@ -30,16 +33,16 @@
 
             justify-content: center;
             align-items: center;
-            border-radius: 4px;
             overflow: hidden;
             box-sizing: content-box;
         }
         .cp-avatar-default {
             .tools_unselectable();
-            background: white;
-            color: black;
+            background: @avatar-default-bg;
+            color: @avatar-default-fg;
             font-size: @avatar-font-size;
             font-size: var(--avatar-font-size);
+            text-transform: capitalize;
         }
         media-tag {
             min-height: @avatar-width;

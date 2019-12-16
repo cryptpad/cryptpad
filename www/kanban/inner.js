@@ -184,6 +184,9 @@ define([
                 var save = function () {
                     // Store the value
                     var name = $input.val();
+                    if (!name || !name.trim()) {
+                        return kanban.onChange();
+                    }
                     // Remove the input
                     $(el).text(name);
                     // Save the value for the correct board
@@ -286,7 +289,7 @@ define([
                 kanban.inEditMode = true;
                 // create a form to enter element
                 var boardId = $(el.parentNode.parentNode).attr("data-id");
-                var $item = $('<div>', {'class': 'kanban-item'});
+                var $item = $('<div>', {'class': 'kanban-item new-item'});
                 var $input = getInput().val(name).appendTo($item);
                 kanban.addForm(boardId, $item[0]);
                 $input.focus();

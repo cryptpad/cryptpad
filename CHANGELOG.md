@@ -1,3 +1,50 @@
+# HimalayanQuail (3.7.0)
+
+## Goals
+
+As we are getting closer to the end of our CryptPad Teams project we planned to spend this release addressing some of the difficulties that users have reported regarding the usage of our newer social features.
+
+## Update notes
+
+This release includes an upgrade to a newer version of JQuery which mitigates a minor vulnerability which could have contributed to the presence of an XSS attack. We weren't using the affected methods in the library, but there's no harm in updating as it will protect against the vulnerability affecting user data in the future.
+
+We've also made some non-critical fixes to the server code, so you'll need to restart after pulling the latest code to take advantage of these improvements.
+
+Update to 3.7.0 from 3.6.0 using the normal update procedure:
+
+1. stop your server
+2. pull the latest code via git
+3. run `bower update`
+4. restart your server
+
+If you're using an up-to-date version of NPM you should find that running `npm update` prints a notice that one of the packages you've installed is seeking funding. Entering `npm fund` will print information about our OpenCollective funding campaign. If you're running a slightly older version of NPM and you wish to support CryptPad's development you can do so by visiting https://opencollective.com/cryptpad .
+
+## Features
+
+* Many users have contacted us via support tickets to ask how to add contacts on the platform. The easiest way is to share the link to your profile page. Once on that page registered users will be able to send a contact request which will appear in your notification tray. Because we believe you shouldn't have to read a manual to use CryptPad (and because we want to minimize how much time we spend answering support tickets) we've integrated this tip into the UI itself. Users that don't have any contacts on the platform will hopefully notice that the sharing menu's contacts tab now prompts them with this information, followed by a button to copy their profile page's URL to their clipboard.
+* We've made a lot of other small changes that we hope will have a big impact on the usability of the sharing menu:
+  * the "Link" section of the modal which includes the URL generated from your chosen access rights has been restyled so that the URL is displayed in a multiline textarea so that users can better see the URL changing as they play with the other controls
+  * both the "Contacts" and "Link" section include short, unintrusive hints about how passwords interact with the different sharing methods:
+    * when sharing via a URL we indicate that the recipient will need to enter a password, allowing for the URL to be sent over an insecure channel without leaking your document's content
+    * when sharing directly with a contact via their encrypted mailbox the password is transferred automatically, since it is assumed that you intend for the recipient to gain access and the platform provides a secure channel through which all the relevant information can be delivered
+    * this information is only included in cases when the document is protected with a password to limit the amount of information the user has to process to complete their task
+  * we include brief and dismissable warning within the menu which indicates that URLs provide non-revocable access to documents so that new users of the platform understand the consequences of sharing
+  * in general we've tried to make the appearance of the modal more appealing and intuitive so that users naturally discover and adopt the workflows which are the most conducive to their privacy and security
+* Our premium accounts platform authenticates that you are logged in on a given CryptPad instance by loading it in an iframe and requesting that it use one of your account's cryptographic keys to sign a message. Unfortunately, this process could be quite slow as it would load your CryptDrive and other information related to account, and some users reported that their browser timed out on this process. We've addressed this by loading only the account information required to prove your identity.
+* We've also included some changes to CryptPad's server to allow users to share quotas between multiple accounts, though we still have work to do to make this behaviour functional on the web client.
+* Spreadsheets now support password change!
+* Kanban boards now render long column titles in a much more intuitive way, wrapping the text instead of truncating it.
+* Our code editor now features support for Gantt charts in markdown mode via an improved Mermaidjs integration. We've also slowed down the rendering cycle so that updates are displayed once you stop typing for 400ms instead of 150ms, and improved the rendering methods so that all mermaid-generated charts are only redrawn if they have changed since the last time they were rendered. This results in a smoother reading experience while permitting other users to continue to edit the document.
+* Finally, after a review of the code responsible for sanitizing the markdown code which we render as HTML, we've decided to remove SVG tags from our sanitizer's filter. This means that you can write SVG markup in the input field and see it rendered, in case you're into that kind of thing.
+
+## Bug fixes
+
+* It seems our "contacts" app broke along with the 3.5.0 release and nobody reported it. The regression was introduced when we made some changes to the teams chat integration. We've addressed the issue so that you can once again use the contacts app to chat directly with friends.
+* We've found and fixed a "memory puddle" (a non-critical memory leak which was automatically mopped up every now and then). The fix probably won't have much noticeable impact but the server is now a little bit more correct
+* We stumbled across a bug which wiped out the contents of a Kanban board and caused the application to crash if you navigated to the affected version of the document in history mode. If you notice that one of your documents was affected please contact us and we'll write a guide instructing you how to recover your content.
+* We've found a few bugs lurking in our server which could have caused the amount of data stored in users' drives to be calculated incorrectly under very unlikely circumstances. We've fixed the issue and addressed a number of similar asynchrony-related code paths which should mitigate similar issues in the future.
+* Lastly, we spotted some flaws in the code responsible for encrypting pad credentials in shared folders and teams such that viewers don't automatically gain access to the editing keys of a document when they should only have view access. There weren't any access control vulnerabilities, but an error was thrown under rare circumstances which could prevent affected users' drives from loading. We've guarded against the cause and made it such that any affected users will automatically repair their damaged drives.
+
 # GoldenFrog release (3.6.0)
 
 ## Goals
