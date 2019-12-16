@@ -1254,5 +1254,10 @@
     "passwordFaqLink": "En lire plus sur les mots de passe",
     "share_noContactsLoggedIn": "Vous n'avez pas encore ajouté de contacts sur CryptPad. Partagez le lien de votre profil pour que l'on vous envoie des demandes de contact.",
     "share_copyProfileLink": "Copier le lien du profil",
-    "share_noContactsNotLoggedIn": "Connectez-vous ou enregistrez-vous pour voir vos contacts ou en ajouter de nouveaux."
+    "share_noContactsNotLoggedIn": "Connectez-vous ou enregistrez-vous pour voir vos contacts ou en ajouter de nouveaux.",
+    "contacts_mute": "Masquer",
+    "contacts_unmute": "Réafficher",
+    "contacts_manageMuted": "Comptes masqués",
+    "contacts_mutedUsers": "Comptes masqués",
+    "contacts_muteInfo": "Vous ne receverez plus de notifications ou de messages si vous masquez ce compte.<br>L'utilisateur ne sera pas informé que vous l'avez masqué. "
 }
