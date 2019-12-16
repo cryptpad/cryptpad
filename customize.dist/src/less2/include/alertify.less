@@ -219,21 +219,6 @@
             ::-ms-input-placeholder { /* Microsoft Edge */
                 color: @cryptpad_color_grey;
             }
-            input:not(.form-control), textarea {
-                background-color: @alertify-input-fg;
-                color: @cryptpad_text_col;
-                border: 1px solid @alertify-input-bg;
-                margin-bottom: 15px;
-                width: 100%;
-                font-size: 100%;
-                padding: @alertify_padding-base;
-                &[readonly] {
-                    background-color: @alertify-light-bg;
-                    color: @cryptpad_text_col;
-                    border-color: @alertify-input-fg;
-                }
-            }
-
             span.cp-password-container {
                 display: flex;
                 align-items: center;
@@ -262,6 +247,17 @@
             }
 
             .buttons_main();
+            input:not(.form-control), textarea {
+                margin-bottom: 15px;
+            }
+
+            button {
+                display: inline-block;
+                position: relative;
+                margin: 6px 8px;
+                min-height: 36px;
+                min-width: 88px;
+            }
 
             nav {
                 padding: @alertify_padding-base;

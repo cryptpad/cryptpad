@@ -66,8 +66,9 @@
             }
         }
         button {
+            min-width: 40px;
             height: 40px;
-            margin: 5px;
+            margin: 5px !important;
         }
     }
     .cp-app-profile-resizer {
@@ -110,7 +111,7 @@
             display: none;
         }
         & > button:empty {
-            margin-left: 25px;
+            margin-left: 25px !important;
         }
     }
 
@@ -136,9 +137,6 @@
         margin-bottom: 20px;
         float: right;
         margin-left: 5px;
-        &> span {
-            margin-left: 10px;
-        }
     }
     #cp-app-profile-description {
         position: relative;
@@ -174,13 +172,6 @@
                 font-family: inherit;
                 font-size: inherit;
                 line-height: inherit;
-            }
-        }
-        .cp-app-profile-description-edit {
-            & > button {
-                span {
-                    margin-left: 10px;
-                }
             }
         }
     }
