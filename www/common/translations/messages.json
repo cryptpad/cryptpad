@@ -1267,5 +1267,7 @@
     "team_inviteLinkNoteMsg": "This message will be shown before the recipient decides whether to join this team.",
     "team_inviteLinkLoading": "Generating your link",
     "team_inviteLinkWarning": "The first person to access this link will be able to join this team and view its contents. Share it carefully.",
-    "team_inviteLinkErrorName": "Please give this invitation a name"
+    "team_inviteLinkErrorName": "Please give this invitation a name",
+    "team_inviteLinkCreate": "CREATE LINK",
+    "team_inviteLinkCopy": "COPY LINK"
 }
