@@ -1640,15 +1640,14 @@ define([
         // Invite from link
         var dismissButton = h('span.fa.fa-times');
         var linkContent = h('div.cp-share-modal', [
-            h('p', 'XXX Invite link description...'), // XXX
-            linkError = h('div.alert.alert-danger', {style : 'display: none;'}),
+            h('p', Messages.team_inviteLinkTitle ), // XXX
             linkForm = h('div.cp-teams-invite-form', [
                 linkName = h('input', {
-                    placeholder: 'name...' // XXX
+                    placeholder:  Messages.team_inviteLinkTempName // XXX
                 }),
                 h('br'),
                 h('div.cp-teams-invite-block', [
-                    h('span', 'password protection...'), // XXX
+                    h('span', Messages.team_inviteLinkSetPassword), // XXX
                     h('a.cp-teams-help.fa.fa-question-circle', {
                         href: origin + '/faq.html#security-pad_password',
                         target: "_blank",
@@ -1657,20 +1656,19 @@ define([
                 ]), // XXX
                 linkPassword = UI.passwordInput({
                     id: 'cp-teams-invite-password',
-                    placeholder: 'password...' // XXX
+                    placeholder: Messages.login_password // XXX
                 }),
                 h('div.cp-teams-invite-block',
-                    h('span', 'add a note') // XXX
+                    h('span', Messages.team_inviteLinkNote) // XXX
                 ),
-                linkMessage = h('textarea', { // XXX ansuz hitting enter submits...
-                    placeholder: 'note...' // XXX
+                    placeholder: Messages.team_inviteLinkNoteMsg, // XXX
                 })
             ]),
             linkSpin = h('div', {
                 style: 'display: none;'
             }, [
                 h('i.fa.fa-spinner.fa-spin'),
-                linkSpinText = h('span', 'Scrypt...') // XXX
+                linkSpinText = h('span', Messages.team_inviteLinkLoading) // XXX
             ]),
             linkResult = h('div', {
                 style: 'display: none;'
@@ -1680,7 +1678,7 @@ define([
             linkWarning = h('div.cp-teams-invite-alert.alert.alert-warning.dismissable', {
                 style: "display: none;"
             }, [
-                h('span.cp-inline-alert-text', 'Warning...'),
+                h('span.cp-inline-alert-text', Messages.team_inviteLinkWarning),
                 dismissButton
             ]) // XXX
         ]);
@@ -1706,7 +1704,7 @@ define([
             var hashData = Hash.parseTypeHash('invite', hash);
             href = origin + '/teams/#' + hash;
             if (!name || !name.trim()) {
-                $(linkError).text('empty name...').show(); // XXX
+                $(linkError).text(Messages.team_inviteLinkErrorName).show(); // XXX
                 return true;
             }
             var bytes64;
