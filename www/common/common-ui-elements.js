@@ -14,14 +14,14 @@ define([
     '/customize/application_config.js',
     '/customize/pages.js',
     '/bower_components/nthen/index.js',
+    '/common/invitation.js',
 
     '/bower_components/scrypt-async/scrypt-async.js',
     'css!/customize/fonts/cptools/style.css',
     '/bower_components/croppie/croppie.min.js',
     'css!/bower_components/croppie/croppie.css',
 ], function ($, Config, Util, Hash, Language, UI, Constants, Feedback, h, MediaTag, Clipboard,
-             Messages, AppConfig, Pages, NThen) {
-    var Scrypt = window.scrypt;
+             Messages, AppConfig, Pages, NThen, InviteInner) {
     var UIElements = {};
 
     // Configure MediaTags to use our local viewer
@@ -1681,6 +1681,10 @@ define([
                 $(linkError).text('empty name...').show(); // XXX
                 return true;
             }
+
+            var seeds = InviteInner.deriveSeeds(hashData.key);
+            var salt = InviteInner.deriveSalt(pw, AppConfig.loginSalt);
+
             var bytes64;
             NThen(function (waitFor) {
                 $(linkForm).hide();
@@ -1688,17 +1692,9 @@ define([
                 $nav.find('button.cp-teams-invite-create').prop('disabled', 'disabled');
                 setTimeout(waitFor(), 150);
             }).nThen(function (waitFor) {
-                // Scrypt
-                Scrypt(hashData.key,
-                    (pw || '') + (AppConfig.loginSalt || ''), // salt
-                    8, // memoryCost (n)
-                    1024, // block size parameter (r)
-                    192, // dkLen
-                    200, // interruptStep
-                    waitFor(function (_bytes) {
-                        bytes64 = _bytes;
-                    }),
-                    'base64'); // format, could be 'base64'
+                InviteInner.deriveBytes(seeds.scrypt, salt, waitFor(function (_bytes) {
+                    bytes64 = _bytes;
+                }));
             }).nThen(function (waitFor) {
                 $(linkSpinText).text('Add invite link to team'); // XXX
                 module.execCommand('CREATE_INVITE_LINK', {
@@ -1708,6 +1704,7 @@ define([
                     bytes64: bytes64,
                     hash: hash,
                     teamId: config.teamId,
+                    seeds: seeds,
                 }, waitFor(function (obj) {
                     if (obj && obj.error) {
                         waitFor.abort();

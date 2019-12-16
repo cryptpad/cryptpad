@@ -1053,26 +1053,45 @@ define([
             var $div = $(div);
             $div.empty();
             var bytes64;
+
             nThen(function (waitFor) {
-                $div.append(h('div', [
-                    h('i.fa.fa-spin.fa-spinner'),
-                    h('span', 'Scrypt...') // XXX
-                ]));
-                setTimeout(waitFor(), 150);
+                // XXX show something while we're waiting for the invite preview content
+                waitFor = waitFor;
             }).nThen(function (waitFor) {
-                var salt = InviteInner.deriveSalt(pw, AppConfig.loginSalt);
-                InviteInner.deriveBytes(seeds.scrypt, salt, waitFor(function (bytes) {
-                    bytes64 = bytes;
-                }));
-            }).nThen(function (waitFor) {
-                APP.module.execCommand('GET_LINK_DATA', {
-                    bytes64: bytes64,
-                    hash: hash,
-                    password: pw,
-                }, waitFor(function () {
-                    $div.empty();
-                    // TODO
-                    // Accept/decline/decide later UI
+                InviteInner.getPreviewContent(seeds, waitFor(function (err, json) {
+                    json = json; // XXX {message: "", author: "", ???}
+                    if (err) {
+                        // XXX handle errors
+                    }
+                    // XXX show invite preview content
+
+                    var button = h('button', 'XXX');
+                    button.onclick = function () {
+                        nThen(function (waitFor) {
+                            $div.append(h('div', [
+                                h('i.fa.fa-spin.fa-spinner'),
+                                h('span', 'Scrypt...') // XXX
+                            ]));
+                            setTimeout(waitFor(), 150);
+                        }).nThen(function (waitFor) {
+                            var salt = InviteInner.deriveSalt(pw, AppConfig.loginSalt);
+                            InviteInner.deriveBytes(seeds.scrypt, salt, waitFor(function (bytes) {
+                                bytes64 = bytes;
+                            }));
+                        }).nThen(function (waitFor) {
+                            APP.module.execCommand('GET_LINK_DATA', {
+                                bytes64: bytes64,
+                                hash: hash,
+                                password: pw,
+                            }, waitFor(function () {
+                                $div.empty();
+                                // TODO
+                                // Accept/decline/decide later UI
+                            }));
+                        });
+                    };
+
+                    $div.append(button);
                 }));
             });
         };

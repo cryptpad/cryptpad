@@ -42,6 +42,18 @@ var factory = function (Hash, Nacl, Scrypt/*, Util, Cred, nThen */) {
             cb,
             'base64'); // format, could be 'base64'
     };
+
+    Invite.getPreviewContent = function (seeds, cb) {
+        var secrets = Invite.derivePreviewSecrets(seeds);
+        secrets = secrets;
+        cb("NOT_IMPLEMENTED"); // XXX cryptget
+    };
+
+    // XXX remember to pin invites...
+    Invite.setPreviewContent = function (seeds, cb) {
+        cb = cb;
+    };
+
     return Invite;
 };
     if (typeof(module) !== 'undefined' && module.exports) {
