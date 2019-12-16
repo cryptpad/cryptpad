@@ -1725,7 +1725,7 @@ define([
                     bytes64 = _bytes;
                 }));
             }).nThen(function (waitFor) {
-                $(linkSpinText).text('Add invite link to team'); // XXX
+                $(linkSpinText).text(Messages.team_inviteLinkAdding); // XXX
                 module.execCommand('CREATE_INVITE_LINK', {
                     name: name,
                     password: pw,
@@ -1755,14 +1755,14 @@ define([
             keys: [27]
         }, {
             className: 'primary cp-teams-invite-create',
-            name: 'CREATE LINK', // XXX
+            name: Messages.team_inviteLinkCreate, // XXX
             onClick: function () {
                 return process();
             },
             keys: [13]
         }, {
             className: 'primary cp-teams-invite-copy',
-            name: 'COPY LINK', // XXX
+            name: Messages.team_inviteLinkCopy, // XXX
             onClick: function () {
                 if (!href) { return; }
                 var success = Clipboard.copy(href);
