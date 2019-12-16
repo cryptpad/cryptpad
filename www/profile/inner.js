@@ -281,7 +281,7 @@ define([
             var isMuted = muted[data.curvePublic];
             if (isMuted) {
                 var unmuteButton = h('button.btn.btn-secondary.cp-app-profile-friend-request', [
-                    h('i.fa.fa-ban'),
+                    h('i.fa.fa-bell'),
                     Messages.contacts_unmute || 'unmute'
                 ]);
                 $(unmuteButton).click(function () {
@@ -293,7 +293,7 @@ define([
                 return;
             }
             var muteButton = h('button.btn.btn-danger.cp-app-profile-friend-request', [
-                h('i.fa.fa-ban'),
+                h('i.fa.fa-bell-slash'),
                 Messages.contacts_mute || 'mute'
             ]);
             $(muteButton).click(function () {
