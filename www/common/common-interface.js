@@ -127,6 +127,18 @@ define([
         return input;
     };
 
+    dialog.selectableArea = function (value, opt) {
+        var attrs = merge({
+            readonly: 'readonly',
+        }, opt);
+
+        var input = h('textarea', attrs);
+        $(input).val(value).click(function () {
+            input.select();
+        });
+        return input;
+    };
+
     dialog.okButton = function (content, classString) {
         var sel = typeof(classString) === 'string'? 'button.ok.' + classString:'button.ok.primary';
         return h(sel, { tabindex: '2', }, content || Messages.okButton);
@@ -463,7 +475,7 @@ define([
         opt = opt || {};
 
         var inputBlock = opt.password ? UI.passwordInput() : dialog.textInput();
-        var input = opt.password ? $(inputBlock).find('input')[0] : inputBlock;
+        var input = $(inputBlock).is('input') ? inputBlock : $(inputBlock).find('input')[0];
         input.value = typeof(def) === 'string'? def: '';
 
         var message;

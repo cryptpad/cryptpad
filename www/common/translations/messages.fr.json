@@ -761,6 +761,10 @@
             "crypto": {
                 "q": "Quelle cryptographie utilisez-vous ?",
                 "a": "CryptPad est basé sur deux librairies open-source de cryptographie : <a href=\"https://github.com/dchest/tweetnacl-js\" target=\"_blank\">tweetnacl.js</a> et <a href=\"https://github.com/dchest/scrypt-async-js\" target=\"_blank\">scrypt-async.js</a>.<br><b>Scrypt</b> est une <em>fonction de dérivation de clé</em> basée sur un mot de passe. Nous l'utilisons pour transformer votre nom d'utilisateur et votre mot de passe en un unique ensemble de clés qui sécurise l'accès à votre CryptDrive afin que vous seul puissiez accéder à votre liste de pads.<br>Nous utilisons les outils de chiffrement <em>xsalsa20-poly1305</em> et <em>x25519-xsalsa20-poly1305</em> fournis par <b>tweetnacl</b> pour chiffrer vos pads et l'historique du chat respectivement."
+            },
+            "pad_password": {
+                "q": "Que se passe t'il quand je protège un pad/dossier avec un mot de passe ?",
+                "a": "Vous pouvez protéger tout nouveau pad ou dossier avec un mot de passe. Vous pouvez aussi utiliser le menu <em>propriétés</em> pour ajouter/changer/supprimer un mot de passe par la suite. <br><br>Les mots de passe sur les pads et dossiers partagés sont faits pour protéger les liens quand ils sont envoyés de manière non sécurisée (par exemple par email ou SMS). Si quelqu'un intercepte le lien sans avoir le mot de passe,  ils n'auront pas accès à votre document.<br><br>Quand vous partagez avec vos contacts ou équipes sur CryptPad, les communications sont chiffrées et nous partons du principe que vous voulez donner l'accès. C'est pourquoi le mot de passe est alors stocké et envoyé avec le pad quand vous l'envoyez. Les destinataires, ou vous même, n'ont <b>pas</b> a le donner pour ouvrir le document."
             }
         },
         "usability": {
@@ -1072,7 +1076,7 @@
     "share_selectAll": "Tout",
     "share_deselectAll": "Aucun",
     "share_filterFriend": "Rechercher par nom",
-    "share_linkFriends": "Partager avec des amis",
+    "share_linkFriends": "Partager avec des contacts",
     "share_withFriends": "Partager",
     "notifications_dismiss": "Cacher",
     "fm_info_sharedFolderHistory": "Vous regardez l'historique de votre dossier partagé <b>{0}</b><br/>Votre CryptDrive restera en lecture seule pendant la navigation.",
@@ -1162,7 +1166,7 @@
     "owner_removed": "{0} a supprimé vos droits de propriétaire de <b>{1}</b>",
     "owner_removedPending": "{0} a annulé l'offre de co-propriété reçue pour <b>{1}</b>",
     "padNotPinnedVariable": "Ce pad va expirer après {4} jours d'inactivité, {0}connectez-vous{1} ou {2}enregistrez-vous{3} pour le préserver.",
-    "share_linkTeam": "Partager avec une équipe",
+    "share_linkTeam": "Ajouter au CryptDrive d'une équipe",
     "team_pickFriends": "Choisissez les amis à inviter dans cette équipe",
     "team_inviteModalButton": "Inviter",
     "team_noFriend": "Vous n'avez pas encore ajouté d'ami sur CryptPad.",
@@ -1242,5 +1246,18 @@
     "teams_table_owners": "Gérer l'équipe",
     "teams_table_role": "Rôle",
     "share_contactCategory": "Contacts",
-    "pad_wordCount": "Mots : {0}"
+    "pad_wordCount": "Mots : {0}",
+    "share_linkWarning": "Ce lien contient les clés de votre document. Le destinataire aura un accès irrévocable à votre contenu.",
+    "share_linkPasswordAlert": "Cet élément est protégé par un mot de passe. Quand vous partagez le lien, le destinataire doit saisir le mot de passe.",
+    "share_contactPasswordAlert": "Cet élément est protégé par un mot de passe. Quand vous le partagez avec un contact CryptPad, le destinataire n'a pas a saisir le mot de passe.",
+    "share_embedPasswordAlert": "Cet élément est protégé par un mot de passe. Quand vous l'intégrez à une page, les visiteurs doivent saisir le mot de passe.",
+    "passwordFaqLink": "En lire plus sur les mots de passe",
+    "share_noContactsLoggedIn": "Vous n'avez pas encore ajouté de contacts sur CryptPad. Partagez le lien de votre profil pour que l'on vous envoie des demandes de contact.",
+    "share_copyProfileLink": "Copier le lien du profil",
+    "share_noContactsNotLoggedIn": "Connectez-vous ou enregistrez-vous pour voir vos contacts ou en ajouter de nouveaux.",
+    "contacts_mute": "Masquer",
+    "contacts_unmute": "Réafficher",
+    "contacts_manageMuted": "Comptes masqués",
+    "contacts_mutedUsers": "Comptes masqués",
+    "contacts_muteInfo": "Vous ne receverez plus de notifications ou de messages si vous masquez ce compte.<br>L'utilisateur ne sera pas informé que vous l'avez masqué. "
 }

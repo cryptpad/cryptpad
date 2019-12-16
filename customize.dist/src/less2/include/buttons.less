@@ -23,6 +23,15 @@
         }
     }
 
+    textarea {
+        overflow: hidden;
+        padding: 8px;
+        &[readonly] {
+            resize: none;
+        }
+    }
+
+
     button:not(.pure-button):not(.md-button):not(.mdl-button) {
 
         background-color: @colortheme_alertify-cancel;

@@ -160,6 +160,9 @@
                 margin-bottom: @alertify_padding-base;
                 margin: 0;
                 overflow: auto;
+                :last-child {
+                    margin-bottom: 0;
+                }
             }
             .alertify-tabs {
                 max-height: 100%;
@@ -219,6 +222,7 @@
             ::-ms-input-placeholder { /* Microsoft Edge */
                 color: @cryptpad_color_grey;
             }
+
             span.cp-password-container {
                 display: flex;
                 align-items: center;
@@ -411,6 +415,34 @@
         .cp-usergrid-grid {
             max-height: 225px;
             overflow-x: auto;
+        }
+    }
+    // Bootstrap Alerts
+    .alert {
+        margin: 0px 0px @alertify_padding-base 0px;
+        font-size: 12px;
+        padding: 5px;
+        border-radius: 0px;
+        i {
+            margin-right: 10px;
+        }
+        &.alert-primary {
+            background-color: @alertify-base;
+            color: @alertify-fg;
+            border-color: @alertify-fg;
+            a {
+                color: @alertify-fg;
+                text-decoration: underline;
+            }
+        }
+        &.dismissable {
+            display: flex;
+            align-items: center;
+            span.fa-times {
+                font-size: @colortheme_app-font-size;
+                margin-left: 20px;
+                cursor: pointer;
+            }
         }
     }
 }

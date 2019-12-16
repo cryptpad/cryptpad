@@ -131,7 +131,7 @@ define([
             if (['markdown', 'gfm'].indexOf(CodeMirror.highlightMode) === -1) { return; }
             if (!$previewButton.is('.cp-toolbar-button-active')) { return; }
             forceDrawPreview();
-        }, 150);
+        }, 400);
 
         var previewTo;
         $previewButton.click(function () {
