@@ -490,6 +490,18 @@ define([
             }
         };
 
+        var unmuteUser = function (curve) {
+            execCommand('UNMUTE_USER', curve, function (e, data) {
+                if (e) { return void console.error(e); }
+                var $button = $('.cp-contacts-muted-user').find('button[data-user="'+curve+'"]');
+                $button.closest('div').remove();
+                if (!data) { $button.hide(); }
+                $('.cp-app-contacts-friend[data-user="'+curve+'"]')
+                    .find('.cp-unmute-icon').show();
+                $('.cp-app-contacts-friend[data-user="'+curve+'"]')
+                    .find('.cp-mute-icon').show();
+            });
+        };
         var muteUser = function (data) {
             execCommand('MUTE_USER', {
                 curvePublic: data.curvePublic,
@@ -519,7 +531,11 @@ define([
                 curve = __channel.curvePublic;
             }
 
-            var mute = h('span.cp-app-contacts-remove.fa.fa-bell-slash-o.cp-mute-icon', {
+            var unmute = h('span.cp-app-contacts-remove.fa.fa-bell.cp-unmute-icon', {
+                title: Messages.contacts_unmute || 'unmute',
+                style: (curve && mutedUsers[curve]) ? undefined : 'display: none;'
+            });
+            var mute = h('span.cp-app-contacts-remove.fa.fa-bell-slash.cp-mute-icon', {
                 title: Messages.contacts_mute || 'mute',
                 style: (curve && mutedUsers[curve]) ? 'display: none;' : undefined
             });
@@ -537,6 +553,7 @@ define([
                 h('span.cp-app-contacts-name', [room.name]),
                 h('span.cp-app-contacts-icons', [
                     room.isFriendChat ? mute : undefined,
+                    room.isFriendChat ? unmute : undefined,
                     room.isFriendChat ? remove :
                         (room.isPadChat || room.isTeamChat) ? undefined : leaveRoom,
                 ])
@@ -550,6 +567,16 @@ define([
                 if (friendData.profile) { window.open(origin + '/profile/#' + friendData.profile); }
             });
 
+            $(unmute).click(function (e) {
+                e.stopPropagation();
+                var channel = state.channels[id];
+                if (!channel.isFriendChat) { return; }
+                var curvePublic = channel.curvePublic;
+                $(mute).show();
+                $(unmute).hide();
+                unmuteUser(curvePublic);
+            });
+
             $(mute).click(function (e) {
                 e.stopPropagation();
                 var channel = state.channels[id];
@@ -557,6 +584,7 @@ define([
                 var curvePublic = channel.curvePublic;
                 var friend = contactsData[curvePublic] || friendData;
                 $(mute).hide();
+                $(unmute).show();
                 muteUser(friend);
             });
 
@@ -845,12 +873,15 @@ define([
                         .find('.cp-mute-icon').hide();
                     var data = muted[curve];
                     var avatar = h('span.cp-avatar');
-                    var button = h('button', [
+                    var button = h('button', {
+                        'data-user': curve
+                    }, [
                         h('i.fa.fa-ban'),
                         Messages.contacts_unmute || 'unmute'
                     ]);
                     UIElements.displayAvatar(common, $(avatar), data.avatar, data.name);
                     $(button).click(function () {
+                        unmuteUser(curve, button);
                         execCommand('UNMUTE_USER', curve, function (e, data) {
                             if (e) { return void console.error(e); }
                             $(button).closest('div').remove();
