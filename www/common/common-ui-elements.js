@@ -1661,7 +1661,9 @@ define([
                 h('div.cp-teams-invite-block',
                     h('span', Messages.team_inviteLinkNote) // XXX
                 ),
+                linkMessage = h('textarea.cp-teams-invite-message', { // XXX ansuz hitting enter submits...
                     placeholder: Messages.team_inviteLinkNoteMsg, // XXX
+                    rows: 3
                 })
             ]),
             linkSpin = h('div', {
