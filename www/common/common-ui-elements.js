@@ -1666,7 +1666,7 @@ define([
                     rows: 3
                 })
             ]),
-            linkSpin = h('div', {
+            linkSpin = h('div.cp-teams-invite-spinner', {
                 style: 'display: none;'
             }, [
                 h('i.fa.fa-spinner.fa-spin'),
