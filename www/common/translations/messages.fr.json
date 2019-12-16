@@ -1254,5 +1254,20 @@
     "passwordFaqLink": "En lire plus sur les mots de passe",
     "share_noContactsLoggedIn": "Vous n'avez pas encore ajouté de contacts sur CryptPad. Partagez le lien de votre profil pour que l'on vous envoie des demandes de contact.",
     "share_copyProfileLink": "Copier le lien du profil",
-    "share_noContactsNotLoggedIn": "Connectez-vous ou enregistrez-vous pour voir vos contacts ou en ajouter de nouveaux."
+    "share_noContactsNotLoggedIn": "Connectez-vous ou enregistrez-vous pour voir vos contacts ou en ajouter de nouveaux.",
+    "contacts_mute": "Masquer",
+    "contacts_unmute": "Réafficher",
+    "contacts_manageMuted": "Comptes masqués",
+    "contacts_mutedUsers": "Comptes masqués",
+    "contacts_muteInfo": "Vous ne receverez plus de notifications ou de messages si vous masquez ce compte.<br>L'utilisateur ne sera pas informé que vous l'avez masqué. ",
+    "team_inviteLinkTitle": "Créer une invitation personnalisée à cette équipe",
+    "team_inviteLinkTempName": "Nom temporaire (apparaît dans la liste des invitations en cours)",
+    "team_inviteLinkSetPassword": "Protégez le lien avec un mot de passe (recommandé)",
+    "team_inviteLinkNote": "Ajoutez un message personnalisé",
+    "team_inviteLinkNoteMsg": "Ce message sera affiché avant que le destinataire décide de rejoindre cette équipe.",
+    "team_inviteLinkLoading": "Lien en cours de création",
+    "team_inviteLinkWarning": "La première personne qui accédera à ce lien pourra devenir membre de l'équipe et voir son contenu. Partagez le avec prudence.",
+    "team_inviteLinkErrorName": "Merci de donner un nom à cette invitation",
+    "team_inviteLinkCreate": "CRÉER LIEN",
+    "team_inviteLinkCopy": "COPIER LIEN"
 }

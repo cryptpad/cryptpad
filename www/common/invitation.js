@@ -96,7 +96,7 @@ var factory = function (Hash, Crypt, Nacl, Scrypt/*, Util, Cred, nThen */) {
             '/bower_components/tweetnacl/nacl-fast.min.js',
             '/bower_components/scrypt-async/scrypt-async.min.js',
         ], function (Hash, Crypt /*, Nacl, Scrypt */) {
-            return factory(Hash, Crypt, window.nacl, window.Scrypt);
+            return factory(Hash, Crypt, window.nacl, window.scrypt);
         });
     }
 }());
