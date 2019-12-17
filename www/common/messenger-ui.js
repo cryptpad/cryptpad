@@ -878,7 +878,7 @@ define([
                     var button = h('button', {
                         'data-user': curve
                     }, [
-                        h('i.fa.fa-ban'),
+                        h('i.fa.fa-bell'),
                         Messages.contacts_unmute || 'unmute'
                     ]);
                     UIElements.displayAvatar(common, $(avatar), data.avatar, data.name);
