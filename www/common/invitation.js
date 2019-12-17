@@ -43,7 +43,7 @@ var factory = function (Hash, Crypt, Nacl, Scrypt/*, Util, Cred, nThen */) {
             'base64'); // format, could be 'base64'
     };
 
-    Invite.getPreviewContent = function (seeds, cb) {
+    Invite.getPreviewContent = function (seeds, cryptgetOpts, cb) {
         setTimeout(function () {
             cb(void 0, {
                 author: {
@@ -67,7 +67,7 @@ var factory = function (Hash, Crypt, Nacl, Scrypt/*, Util, Cred, nThen */) {
                 console.error(e);
                 cb(e);
             }
-        });
+        }, cryptgetOpts);
 //        cb("NOT_IMPLEMENTED"); // XXX cryptget
     };
 

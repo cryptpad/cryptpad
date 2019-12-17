@@ -33,7 +33,7 @@ define([
         var secret = Hash.getSecrets('pad', hash, opt.password);
         if (!secret.keys) { secret.keys = secret.key; } // support old hashses
         var config = {
-            websocketURL: NetConfig.getWebsocketURL(),
+            websocketURL: NetConfig.getWebsocketURL(opt.origin),
             channel: secret.channel,
             validateKey: secret.keys.validateKey || undefined,
             crypto: Crypto.createEncryptor(secret.keys),

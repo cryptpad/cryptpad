@@ -1032,7 +1032,8 @@ define([
     };
 
     makeBlock('link', function (common, cb) {
-        var hash = common.getMetadataMgr().getPrivateData().teamInviteHash;
+        var privateData = common.getMetadataMgr().getPrivateData();
+        var hash = privateData.teamInviteHash;
         var hashData = Hash.parseTypeHash('invite', hash);
         var password = hashData.password;
         var seeds = InviteInner.deriveSeeds(hashData.key);
@@ -1083,7 +1084,9 @@ define([
         };
 
         nThen(function (waitFor) {
-            InviteInner.getPreviewContent(seeds, waitFor(function (err, json) {
+            InviteInner.getPreviewContent(seeds, {
+                origin: privateData.origin
+            }, waitFor(function (err, json) {
                 if (err) {
                     // XXX handle errors
                 }
