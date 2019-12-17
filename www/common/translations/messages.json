@@ -1259,5 +1259,15 @@
     "contacts_unmute": "Unmute",
     "contacts_manageMuted": "Manage muted",
     "contacts_mutedUsers": "Muted accounts",
-    "contacts_muteInfo": "You will not receive any notifications or messages from muted users.<br>They will not know you have muted them. "
+    "contacts_muteInfo": "You will not receive any notifications or messages from muted users.<br>They will not know you have muted them. ",
+    "team_inviteLinkTitle": "Create a personalized invitation to this team",
+    "team_inviteLinkTempName": "temporary name (visible in pending invitations list)",
+    "team_inviteLinkSetPassword": "Protect the link with a password (recommended)",
+    "team_inviteLinkNote": "Add a personal message",
+    "team_inviteLinkNoteMsg": "This message will be shown before the recipient decides whether to join this team.",
+    "team_inviteLinkLoading": "Generating your link",
+    "team_inviteLinkWarning": "The first person to access this link will be able to join this team and view its contents. Share it carefully.",
+    "team_inviteLinkErrorName": "Please give this invitation a name",
+    "team_inviteLinkCreate": "CREATE LINK",
+    "team_inviteLinkCopy": "COPY LINK"
 }
