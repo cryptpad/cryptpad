@@ -1054,8 +1054,10 @@ define([
             h('i.fa.fa-spin.fa-spinner')
         ]);
         var $div = $(div);
+        var errorBlock;
         cb([
             h('h2', 'Team invitation'), // XXX
+            errorBlock = h('div.alert.alert-danger', {style: 'display: none;'}),
             div
         ]);
         var inviteDiv = h('div');
@@ -1100,6 +1102,11 @@ define([
                 origin: privateData.origin
             }, waitFor(function (err, json) {
                 if (err) {
+                    // err === DELETED: different message?
+                    $(errorBlock).text('ERROR'+err).show(); // XXX
+                    waitFor.abort();
+                    $div.empty();
+                    return;
                     // XXX handle errors
                 }
                 json = json; // XXX {message: "", author: "", ???}
