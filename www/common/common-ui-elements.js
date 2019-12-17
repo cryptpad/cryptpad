@@ -1718,7 +1718,8 @@ define([
             NThen(function (waitFor) {
                 $(linkForm).hide();
                 $(linkSpin).show();
-                $nav.find('button.cp-teams-invite-create').prop('disabled', 'disabled');
+                $nav.find('button.cp-teams-invite-create').hide();
+                $nav.find('button.cp-teams-invite-copy').show()
                 setTimeout(waitFor(), 150);
             }).nThen(function (waitFor) {
                 InviteInner.deriveBytes(seeds.scrypt, salt, waitFor(function (_bytes) {
@@ -1738,7 +1739,7 @@ define([
                     if (obj && obj.error) {
                         waitFor.abort();
                         $(linkSpin).hide();
-                        return void $(linkError).text('ERROR '+obj.error).show(); // XXX
+                        return void $(linkError).text(Messages.team_inviteLinkError+obj.error).show(); // XXX
                     }
                     // Display result here
                     $(linkSpin).hide();
@@ -1774,7 +1775,7 @@ define([
         var frameLink = UI.dialog.customModal(linkContent, {
             buttons: linkButtons,
         });
-        $(frameLink).find('.cp-teams-invite-copy').prop('disabled', 'disabled');
+        $(frameLink).find('.cp-teams-invite-copy').prop('disabled', 'disabled').hide();
 
         // Create modal
         var tabs = [{
