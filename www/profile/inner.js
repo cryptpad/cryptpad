@@ -286,7 +286,7 @@ define([
                 ]);
                 $(unmuteButton).click(function () {
                     module.execCommand('UNMUTE_USER', data.curvePublic, function (e) {
-                        if (e) { return void UI.warn(Messages.error); }
+                        if (e) { console.error(e); return void UI.warn(Messages.error); }
                         refreshMute(data);
                     });
                 }).appendTo($mute);
@@ -302,7 +302,7 @@ define([
                     name: data.displayName || data.name,
                     avatar: data.avatar
                 }, function (e) {
-                    if (e) { return void UI.warn(Messages.error); }
+                    if (e) { console.error(e); return void UI.warn(Messages.error); }
                     refreshMute(data);
                 });
             }).appendTo($mute);
@@ -383,7 +383,7 @@ define([
     };
 
     var addDescription = function ($container) {
-        var $block = $('<div>', {id: DESCRIPTION_ID}).appendTo($container);
+        var $block = $('<div>', {id: DESCRIPTION_ID, class:'cp-sidebarlayout-element'}).appendTo($container);
 
         APP.$description = $('<div>', {'class': 'cp-app-profile-description-rendered'}).appendTo($block);
         APP.$descriptionEdit = $();
@@ -469,7 +469,7 @@ define([
         APP.$container.find('#'+CREATE_ID).remove();
 
         if (!APP.initialized) {
-            var $header = $('<div>', {id: HEADER_ID}).appendTo(APP.$rightside);
+            var $header = $('<div>', {id: HEADER_ID, class:'cp-sidebarlayout-element'}).appendTo(APP.$rightside);
             addAvatar($header);
             var $rightside = $('<div>', {id: HEADER_RIGHT_ID}).appendTo($header);
             addDisplayName($rightside);
@@ -477,7 +477,7 @@ define([
             addFriendRequest($rightside);
             addMuteButton($rightside);
             addDescription(APP.$rightside);
-            addViewButton(APP.$rightside);
+            addViewButton($rightside);
             APP.initialized = true;
             createLeftside();
         }

@@ -479,8 +479,9 @@ define([
         refreshCreate(common, cb);
     });
 
-    makeBlock('drive', function (common, cb) {
+    makeBlock('drive', function (common, cb, $div) {
         $('div.cp-team-drive').empty();
+        $div.removeClass('cp-sidebarlayout-element'); // Don't apply buttons and input styles from sidebarlayout
         var content = [
             h('div.cp-app-drive-container', {tabindex:0}, [
                 h('div#cp-app-drive-tree'),
