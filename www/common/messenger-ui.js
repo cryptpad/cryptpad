@@ -72,7 +72,7 @@ define([
             h('div.cp-app-contacts-friends.cp-app-contacts-category', [
                 h('button.cp-app-contacts-muted-button',[
                     h('i.fa.fa-bell-slash'),
-                    Messages.contacts_manageMuted || 'MANAGE MUTED' // XXX
+                    Messages.contacts_manageMuted
                 ]), 
                 h('div.cp-app-contacts-category-content.cp-contacts-friends')
             ]),
