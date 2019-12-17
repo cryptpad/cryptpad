@@ -1719,7 +1719,7 @@ define([
                 $(linkForm).hide();
                 $(linkSpin).show();
                 $nav.find('button.cp-teams-invite-create').hide();
-                $nav.find('button.cp-teams-invite-copy').show()
+                $nav.find('button.cp-teams-invite-copy').show();
                 setTimeout(waitFor(), 150);
             }).nThen(function (waitFor) {
                 InviteInner.deriveBytes(seeds.scrypt, salt, waitFor(function (_bytes) {
@@ -1737,8 +1737,11 @@ define([
                     seeds: seeds,
                 }, waitFor(function (obj) {
                     if (obj && obj.error) {
-                        waitFor.abort();
+                        waitFor.abort(); 
                         $(linkSpin).hide();
+                        $(linkForm).show(); // XXX DB: check this is the right place to put things back 
+                        $nav.find('button.cp-teams-invite-create').show();
+                        $nav.find('button.cp-teams-invite-copy').hide();
                         return void $(linkError).text(Messages.team_inviteLinkError+obj.error).show(); // XXX
                     }
                     // Display result here
