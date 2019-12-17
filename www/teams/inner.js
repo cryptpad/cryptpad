@@ -1019,17 +1019,96 @@ define([
         ]);
     }, true);
 
+    var displayUser = function (common, data) {
+        var friends = common.getMetadataMgr().getPrivateData().friends;
+        var verified = false;
+        if (friends[data.curvePublic]) { verified = true; }
+        var avatar = h('span.cp-teams-invite-from-avatar.cp-avatar');
+        UIElements.displayAvatar(common, $(avatar), data.avatar, data.displayName);
+        return h('div.cp-teams-invite-from-author', [
+            avatar,
+            h('span.cp-teams-invite-from-name', data.displayName)
+        ]);
+    };
+
     makeBlock('link', function (common, cb) {
-        // XXX get team data first or login first?
-        if (!driveAPP.loggedIn) {
+        var hash = common.getMetadataMgr().getPrivateData().teamInviteHash;
+        var hashData = Hash.parseTypeHash('invite', hash);
+        var password = hashData.password;
+        var seeds = InviteInner.deriveSeeds(hashData.key);
+
+        var div = h('div', [
+            h('i.fa.fa-spin.fa-spinner')
+        ]);
+        var $div = $(div);
+        cb([
+            h('h2', 'Team invitation'), // XXX
+            div
+        ]);
+        var inviteDiv = h('div');
+        var $inviteDiv = $(inviteDiv);
+
+        var process = function (pw) {
+            $inviteDiv.empty();
+            var bytes64;
+
+
+            var button = h('button', 'XXX');
+            button.onclick = function () {
+                nThen(function (waitFor) {
+                    $inviteDiv.append(h('div', [
+                        h('i.fa.fa-spin.fa-spinner'),
+                        h('span', 'Scrypt...') // XXX
+                    ]));
+                    setTimeout(waitFor(), 150);
+                }).nThen(function (waitFor) {
+                    var salt = InviteInner.deriveSalt(pw, AppConfig.loginSalt);
+                    InviteInner.deriveBytes(seeds.scrypt, salt, waitFor(function (bytes) {
+                        bytes64 = bytes;
+                    }));
+                }).nThen(function (waitFor) {
+                    APP.module.execCommand('GET_LINK_DATA', {
+                        bytes64: bytes64,
+                        hash: hash,
+                        password: pw,
+                    }, waitFor(function () {
+                        $div.empty();
+                        // TODO
+                        // Accept/decline/decide later UI
+                    }));
+                });
+            };
+
+            $inviteDiv.append(button);
+        };
+
+        nThen(function (waitFor) {
+            InviteInner.getPreviewContent(seeds, waitFor(function (err, json) {
+                if (err) {
+                    // XXX handle errors
+                }
+                json = json; // XXX {message: "", author: "", ???}
+                $div.empty();
+                $div.append(h('div.cp-teams-invite-from', [
+                    'From', // XXX
+                    displayUser(common, json.author)
+                ]));
+                $div.append(UI.setHTML(h('p.cp-teams-invite-to'), 'Bob has invited you to join the team <b>CryptPad</b>')); // XXX
+                $div.append(h('div.cp-teams-invite-message', [
+                    UI.dialog.selectableArea(json.message || '')
+                ]));
+            }));
+        }).nThen(function (waitFor) {
+            // If you're logged in, move on to the next nThen
+            if (driveAPP.loggedIn) { return; }
+
+            // If you're not logged in, display the login buttons
             var anonLogin, anonRegister;
-            var anonContent = h('div', [
-                h('p', "You've been invited to a team. Only registered users can join a team. Login or register..."), // XXX
-                h('div', [
-                    anonLogin = h('button.btn.btn-primary', Messages.login_login),
-                    anonRegister = h('button.btn.btn-secondary', Messages.login_register),
-                ])
-            ]);
+            $div.append(h('p', 'Please log in or register to accept this invitation...')); // XXX
+            $div.append(h('div', [
+                anonLogin = h('button.btn.btn-primary', Messages.login_login),
+                anonRegister = h('button.btn.btn-secondary', Messages.login_register),
+            ]));
             $(anonLogin).click(function () {
                 common.setLoginRedirect(function () {
                     common.gotoURL('/login/');
@@ -1040,81 +1119,29 @@ define([
                     common.gotoURL('/register/');
                 });
             });
-            return void cb(anonContent);
-        }
-        var hash = common.getMetadataMgr().getPrivateData().teamInviteHash;
-        var hashData = Hash.parseTypeHash('invite', hash);
-        var password = hashData.password;
-        var seeds = InviteInner.deriveSeeds(hashData.key);
+            waitFor.abort();
+        }).nThen(function () {
+            $div.append($inviteDiv);
+        }).nThen(function (waitFor) {
+            // If there is no password, move on to the next block
+            if (!password) { return; }
 
-        var div;
-
-        var process = function (pw) {
-            var $div = $(div);
-            $div.empty();
-            var bytes64;
-
-            nThen(function (waitFor) {
-                // XXX show something while we're waiting for the invite preview content
-                waitFor = waitFor;
-            }).nThen(function (waitFor) {
-                InviteInner.getPreviewContent(seeds, waitFor(function (err, json) {
-                    json = json; // XXX {message: "", author: "", ???}
-                    if (err) {
-                        // XXX handle errors
-                    }
-                    // XXX show invite preview content
-
-                    var button = h('button', 'XXX');
-                    button.onclick = function () {
-                        nThen(function (waitFor) {
-                            $div.append(h('div', [
-                                h('i.fa.fa-spin.fa-spinner'),
-                                h('span', 'Scrypt...') // XXX
-                            ]));
-                            setTimeout(waitFor(), 150);
-                        }).nThen(function (waitFor) {
-                            var salt = InviteInner.deriveSalt(pw, AppConfig.loginSalt);
-                            InviteInner.deriveBytes(seeds.scrypt, salt, waitFor(function (bytes) {
-                                bytes64 = bytes;
-                            }));
-                        }).nThen(function (waitFor) {
-                            APP.module.execCommand('GET_LINK_DATA', {
-                                bytes64: bytes64,
-                                hash: hash,
-                                password: pw,
-                            }, waitFor(function () {
-                                $div.empty();
-                                // TODO
-                                // Accept/decline/decide later UI
-                            }));
-                        });
-                    };
-
-                    $div.append(button);
-                }));
-            });
-        };
-
-        var content = [];
-        if (password) {
-            // XXX XXX
-            content.push(h('p', "You've been invited to join a CryptPad Team, but the person who created the invitation protected it with a secret passphrase that they expect you to know."));
-            content.push(h('p', "Entering the correct phrase will decrypt the team's info and allow you to accept or decline the invitation."));
+            // If there is a password, display the password prompt
+            $inviteDiv.append(h('p', 'Please enter the invitation password to continue...')); // XXX
             var pwInput = UI.passwordInput();
-            content.push(pwInput);
             var submitPw = h('button.btn.btn-secondary', Messages.password_submit);
             $(submitPw).click(function () {
                 var val = $(pwInput).find('input').val();
                 if (!val) { return; }
                 process(val);
             });
-            content.push(submitPw);
-        }
-        div = h('div', content);
-        cb(div);
-
-        if (!password) { process(); }
+            $inviteDiv.append(pwInput);
+            $inviteDiv.append(submitPw);
+            waitFor.abort();
+        }).nThen(function () {
+            // No password, display the invitation proposal
+            process('');
+        });
     });
 
     var redrawTeam = function (common) {

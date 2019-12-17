@@ -1,5 +1,5 @@
 (function () {
-var factory = function (Hash, Nacl, Scrypt/*, Util, Cred, nThen */) {
+var factory = function (Hash, Crypt, Nacl, Scrypt/*, Util, Cred, nThen */) {
     var Invite = {};
 
     Invite.deriveSeeds = function (seed) {
@@ -44,14 +44,40 @@ var factory = function (Hash, Nacl, Scrypt/*, Util, Cred, nThen */) {
     };
 
     Invite.getPreviewContent = function (seeds, cb) {
+        setTimeout(function () {
+            cb(void 0, {
+                author: {
+                    displayName: 'Bob',
+                    curvePublic: 'pewpewpew'
+                },
+                team: 'CryptPad',
+                message: 'Hello bob'
+            });
+        });
+        /*
         var secrets = Invite.derivePreviewSecrets(seeds);
         secrets = secrets;
-        cb("NOT_IMPLEMENTED"); // XXX cryptget
+        */
+        var hash = Invite.derivePreviewHash(seeds);
+        Crypt.get(hash, function (err, val) {
+            if (err) { return void cb(err); }
+            try {
+                cb(void 0, JSON.parse(val));
+            } catch (e) {
+                console.error(e);
+                cb(e);
+            }
+        });
+//        cb("NOT_IMPLEMENTED"); // XXX cryptget
     };
 
     // XXX remember to pin invites...
     Invite.setPreviewContent = function (seeds, cb) {
-        cb = cb;
+        var hash = Invite.derivePreviewHash(seeds);
+        Crypt.put(hash, '', function (err) { // value?
+            cb(err);
+        });
+        //cb = cb;
     };
 
     return Invite;
@@ -59,16 +85,18 @@ var factory = function (Hash, Nacl, Scrypt/*, Util, Cred, nThen */) {
     if (typeof(module) !== 'undefined' && module.exports) {
         module.exports = factory(
             require("../common-hash"),
+            require("../cryptget"), // XXX npm cryptget?
             require("tweetnacl/nacl-fast"),
             require("scrypt-async")
         );
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
         define([
             '/common/common-hash.js',
+            '/common/cryptget.js',
             '/bower_components/tweetnacl/nacl-fast.min.js',
             '/bower_components/scrypt-async/scrypt-async.min.js',
-        ], function (Hash /*, Nacl, Scrypt */) {
-            return factory(Hash, window.nacl, window.scrypt);
+        ], function (Hash, Crypt /*, Nacl, Scrypt */) {
+            return factory(Hash, Crypt, window.nacl, window.scrypt);
         });
     }
 }());
