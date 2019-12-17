@@ -138,6 +138,15 @@ define([
         if (membersChannel) { list.push(membersChannel); }
         if (mailboxChannel) { list.push(mailboxChannel); }
 
+        var state = store.roster.getState();
+        if (state.members) {
+            Object.keys(state.members).forEach(function (curve) {
+                var m = state.members[curve];
+                if (m.inviteChannel) { list.push(m.inviteChannel); }
+                if (m.previewChannel) { list.push(m.previewChannel); }
+            });
+        }
+
         list.sort();
         return list;
     };
@@ -1317,6 +1326,9 @@ define([
                 /// XXX callback if error
             */
         }).nThen(function (w) {
+            team.pin([inviteKeys.channel, previewKeys.channel], function (obj) {
+                if (obj && obj.error) { console.error(obj.error); }
+            });
             Invite.createRosterEntry(team.roster, {
                 curvePublic: ephemeralKeys.curvePublic,
                 content: {
