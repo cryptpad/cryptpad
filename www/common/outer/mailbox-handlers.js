@@ -12,6 +12,13 @@ define([
     var handlers = {};
     var removeHandlers = {};
 
+    var isMuted = function (ctx, data) {
+        var muted = ctx.store.proxy.mutedUsers || {};
+        var curvePublic = Util.find(data, ['msg', 'author']);
+        if (!curvePublic) { return false; }
+        return Boolean(muted[curvePublic]);
+    };
+
     // Store the friend request displayed to avoid duplicates
     var friendRequest = {};
     handlers['FRIEND_REQUEST'] = function (ctx, box, data, cb) {
@@ -20,6 +27,8 @@ define([
         if (data.msg.author !== data.msg.content.curvePublic) {
             return void cb(true);
         }
+
+        if (isMuted(ctx, data)) { return void cb(true); }
 
         // Don't show duplicate friend request: if we already have a friend request
         // in memory from the same user, dismiss the new one
@@ -30,10 +39,22 @@ define([
         // If the user is already in our friend list, automatically accept the request
         if (Messaging.getFriend(ctx.store.proxy, data.msg.author) ||
             ctx.store.proxy.friends_pending[data.msg.author]) {
+            delete ctx.store.proxy.friends_pending[data.msg.author];
             Messaging.acceptFriendRequest(ctx.store, data.msg.content, function (obj) {
                 if (obj && obj.error) {
                     return void cb();
                 }
+                Messaging.addToFriendList({
+                    proxy: ctx.store.proxy,
+                    realtime: ctx.store.realtime,
+                    pinPads: ctx.pinPads
+                }, data.msg.content, function (err) {
+                    if (err) { console.error(err); }
+                    if (ctx.store.messenger) {
+                        ctx.store.messenger.onFriendAdded(data.msg.content);
+                    }
+                });
+                ctx.updateMetadata();
                 cb(true);
             });
             return;
@@ -170,6 +191,8 @@ define([
         var content = msg.content;
         // content.name, content.title, content.href, content.password
 
+        if (isMuted(ctx, data)) { return void cb(true); }
+
         var channel = Hash.hrefToHexChannelId(content.href, content.password);
         var parsed = Hash.parsePadUrl(content.href);
         var mode = parsed.hashData && parsed.hashData.mode || 'n/a';
@@ -212,6 +235,9 @@ define([
         supportMessage = true;
         cb();
     };
+    removeHandlers['SUPPORT_MESSAGE'] = function () {
+        supportMessage = false;
+    };
 
     // Incoming edit rights request: add data before sending it to inner
     handlers['REQUEST_PAD_ACCESS'] = function (ctx, box, data, cb) {
@@ -219,6 +245,8 @@ define([
         var content = msg.content;
 
         if (msg.author !== content.user.curvePublic) { return void cb(true); }
+
+        if (isMuted(ctx, data)) { return void cb(true); }
 
         var channel = content.channel;
         var res = ctx.store.manager.findChannel(channel);
@@ -270,6 +298,9 @@ define([
         var content = msg.content;
 
         if (msg.author !== content.user.curvePublic) { return void cb(true); }
+
+        if (isMuted(ctx, data)) { return void cb(true); }
+
         if (!content.teamChannel && !(content.href && content.title && content.channel)) {
             console.log('Remove invalid notification');
             return void cb(true);
@@ -327,6 +358,9 @@ define([
         var content = msg.content;
 
         if (msg.author !== content.user.curvePublic) { return void cb(true); }
+
+        if (isMuted(ctx, data)) { return void cb(true); }
+
         if (!content.team) {
             console.log('Remove invalid notification');
             return void cb(true);

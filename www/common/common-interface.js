@@ -592,6 +592,7 @@ define([
         }];
         var modal = dialog.customModal(content, {buttons: buttons});
         UI.openCustomModal(modal);
+        return modal;
     };
 
     UI.log = function (msg) {

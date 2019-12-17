@@ -428,20 +428,21 @@ define([
         }
 
         var channel = ctx.channels[data.channel];
-        if (!channel) {
-            return void cb({error: "NO_SUCH_CHANNEL"});
-        }
 
         // Unfriend with mailbox
         if (ctx.store.mailbox && data.curvePublic && data.notifications) {
             Messaging.removeFriend(ctx.store, curvePublic, function (obj) {
                 if (obj && obj.error) { return void cb({error:obj.error}); }
+                ctx.updateMetadata();
                 cb(obj);
             });
             return;
         }
 
         // Unfriend with channel
+        if (!channel) {
+            return void cb({error: "NO_SUCH_CHANNEL"});
+        }
         try {
             var msg = [Types.unfriend, proxy.curvePublic, +new Date()];
             var msgStr = JSON.stringify(msg);
@@ -456,6 +457,40 @@ define([
         } catch (e) {
             cb({error: e});
         }
+    };
+
+    var getAllClients = function (ctx) {
+        var all = [];
+        Array.prototype.push.apply(all, ctx.friendsClients);
+        Object.keys(ctx.channels).forEach(function (id) {
+            Array.prototype.push.apply(all, ctx.channels[id].clients);
+        });
+        return Util.deduplicateString(all);
+    };
+
+    var muteUser = function (ctx, data, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb));
+        var proxy = ctx.store.proxy;
+        var muted = proxy.mutedUsers = proxy.mutedUsers || {};
+        if (muted[data.curvePublic]) { return void cb(); }
+        muted[data.curvePublic] = data;
+        ctx.emit('UPDATE_MUTED', null, getAllClients(ctx));
+        cb();
+    };
+    var unmuteUser = function (ctx, curvePublic, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb));
+        var proxy = ctx.store.proxy;
+        var muted = proxy.mutedUsers = proxy.mutedUsers || {};
+        delete muted[curvePublic];
+        ctx.emit('UPDATE_MUTED', null, getAllClients(ctx));
+        cb(Object.keys(muted).length);
+    };
+    var getMutedUsers = function (ctx, cb) {
+        var proxy = ctx.store.proxy;
+        if (cb) {
+            return void cb(proxy.mutedUsers || {});
+        }
+        return proxy.mutedUsers || {};
     };
 
     var openChannel = function (ctx, data) {
@@ -664,7 +699,14 @@ define([
         nThen(function (waitFor) {
             // Load or get all friends channels
             Object.keys(friends).forEach(function (key) {
-                if (key === 'me') { return; }
+                if (key === 'me') {
+                    // At some point a bug inserted a friend's channel into our "me" data.
+                    // This led to displaying our name instead of our friend's name in the
+                    // contacts app. The following line is here to prevent this issue to happen
+                    // again.
+                    delete friends.me.channel;
+                    return;
+                }
                 var friend = clone(friends[key]);
                 if (typeof(friend) !== 'object') { return; }
                 if (!friend.channel) { return; }
@@ -887,15 +929,6 @@ define([
         });
     };
 
-    var getAllClients = function (ctx) {
-        var all = [];
-        Array.prototype.push.apply(all, ctx.friendsClients);
-        Object.keys(ctx.channels).forEach(function (id) {
-            Array.prototype.push.apply(all, ctx.channels[id].clients);
-        });
-        return Util.deduplicateString(all);
-    };
-
     Msg.init = function (cfg, waitFor, emit) {
         var messenger = {};
         var store = cfg.store;
@@ -911,6 +944,9 @@ define([
             range_requests: {}
         };
 
+        store.proxy.on('change', ['mutedUsers'], function () {
+            ctx.emit('UPDATE_MUTED', null, getAllClients(ctx));
+        });
 
         ctx.store.network.on('message', function(msg, sender) {
             onDirectMessage(ctx, msg, sender);
@@ -942,6 +978,12 @@ define([
             var channel = friend.channel;
             if (!channel) { return; }
 
+            // Already friend? don't load the channel a second time
+            var chanId = friend.channel;
+            var chan = ctx.channels[chanId];
+            if (chan) { return; }
+
+            // Load the channel and add the friend to the contacts app
             loadFriend(ctx, null, friend, function () {
                 emit('FRIEND', {
                     curvePublic: friend.curvePublic,
@@ -990,6 +1032,9 @@ define([
             if (cmd === 'GET_ROOMS') {
                 return void getRooms(ctx, data, cb);
             }
+            if (cmd === 'GET_MUTED_USERS') {
+                return void getMutedUsers(ctx, cb);
+            }
             if (cmd === 'GET_USERLIST') {
                 return void getUserList(ctx, data, cb);
             }
@@ -1001,6 +1046,12 @@ define([
             }
             if (cmd === 'REMOVE_FRIEND') {
                 return void removeFriend(ctx, data, cb);
+            }
+            if (cmd === 'MUTE_USER') {
+                return void muteUser(ctx, data, cb);
+            }
+            if (cmd === 'UNMUTE_USER') {
+                return void unmuteUser(ctx, data, cb);
             }
             if (cmd === 'GET_STATUS') {
                 return void getStatus(ctx, data, cb);

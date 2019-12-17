@@ -435,8 +435,6 @@
             return mediaObject;
         }
 
-        mediaObject.tag.innerHTML = '<img style="width: 100px; height: 100px;">';
-
         // Download the encrypted blob
         download(src, function (err, u8Encrypted) {
             if (err) {

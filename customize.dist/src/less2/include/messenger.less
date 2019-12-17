@@ -78,6 +78,9 @@
                 .cp-app-contacts-name {
                     white-space: nowrap;
                 }
+                .cp-app-contacts-icons {
+                    text-align: right;
+                }
             }
             &:hover {
                 background-color: rgba(0,0,0,0.3);
@@ -89,6 +92,7 @@
         .cp-app-contacts-remove {
             cursor: pointer;
             width: 20px;
+            text-align: center;
             &:hover {
                 color: darken(@color, 20%);
             }
@@ -119,6 +123,15 @@
                     & ~ .cp-app-contacts-category-title {
                         display: none;
                     }
+                }
+            }
+            .cp-app-contacts-muted-button {
+                margin: 10px;
+                border: 0;
+                display: none;
+                order: 3;
+                .fa-bell-slash {
+                    margin-right: 10px;
                 }
             }
         }
