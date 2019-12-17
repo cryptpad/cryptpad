@@ -4,7 +4,7 @@ var factory = function (Util, Cred, nThen, Nacl) {
     var Invite = {};
 
     var encode64 = Nacl.util.encodeBase64;
-    var decode64 = Nacl.util.decode64;
+    var decode64 = Nacl.util.decodeBase64;
 
     // ed and curve keys can be random...
     Invite.generateKeys = function () {
