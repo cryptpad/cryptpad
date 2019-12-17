@@ -493,15 +493,8 @@ define([
         };
 
         var unmuteUser = function (curve) {
-            execCommand('UNMUTE_USER', curve, function (e, data) {
+            execCommand('UNMUTE_USER', curve, function (e) {
                 if (e) { return void console.error(e); }
-                var $button = $('.cp-contacts-muted-user').find('button[data-user="'+curve+'"]');
-                $button.closest('div').remove();
-                if (!data) { $button.hide(); }
-                $('.cp-app-contacts-friend[data-user="'+curve+'"]')
-                    .find('.cp-unmute-icon').show();
-                $('.cp-app-contacts-friend[data-user="'+curve+'"]')
-                    .find('.cp-mute-icon').show();
             });
         };
         var muteUser = function (data) {
@@ -569,7 +562,7 @@ define([
                 if (friendData.profile) { window.open(origin + '/profile/#' + friendData.profile); }
             });
 
-            $(unmute).click(function (e) {
+            $(unmute).on('click dblclick', function (e) {
                 e.stopPropagation();
                 var channel = state.channels[id];
                 if (!channel.isFriendChat) { return; }
@@ -579,7 +572,7 @@ define([
                 unmuteUser(curvePublic);
             });
 
-            $(mute).click(function (e) {
+            $(mute).on('click dblclick', function (e) {
                 e.stopPropagation();
                 var channel = state.channels[id];
                 if (!channel.isFriendChat) { return; }
@@ -865,6 +858,10 @@ define([
 
                 var $button = $userlist.find('.cp-app-contacts-muted-button');
 
+                $('.cp-app-contacts-friend[data-user]')
+                    .find('.cp-mute-icon').show();
+                $('.cp-app-contacts-friend[data-user]')
+                    .find('.cp-unmute-icon').hide();
                 if (!muted || Object.keys(muted).length === 0) {
                     $button.hide();
                     return;
@@ -873,6 +870,8 @@ define([
                 var rows = Object.keys(muted).map(function (curve) {
                     $('.cp-app-contacts-friend[data-user="'+curve+'"]')
                         .find('.cp-mute-icon').hide();
+                    $('.cp-app-contacts-friend[data-user="'+curve+'"]')
+                        .find('.cp-unmute-icon').show();
                     var data = muted[curve];
                     var avatar = h('span.cp-avatar');
                     var button = h('button', {
