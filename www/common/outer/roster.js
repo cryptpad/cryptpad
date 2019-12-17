@@ -775,6 +775,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             Object.keys(data).forEach(function (curve) {
                 if (!isValidId(curve) || isMap(ref.state.members[curve])) { return delete data[curve]; }
             });
+console.error('SENDING INVITE');
 
             send(['INVITE', data], cb);
         };

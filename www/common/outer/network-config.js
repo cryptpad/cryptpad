@@ -10,7 +10,7 @@ define([
 
         var l = window.location;
         if (origin && window && window.document) {
-            var l = document.createElement("a");
+            l = document.createElement("a");
             l.href = origin;
         }
         var protocol = l.protocol.replace(/http/, 'ws');
