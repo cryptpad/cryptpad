@@ -1254,5 +1254,10 @@
     "passwordFaqLink": "Mehr über Passwörter erfahren",
     "share_noContactsLoggedIn": "Du hast noch keine Kontakte bei CryptPad. Teile den Link zu deinem Profil, damit andere dir Kontaktanfragen senden können.",
     "share_copyProfileLink": "Profil-Link kopieren",
-    "share_noContactsNotLoggedIn": "Logge dich ein oder registriere dich, um deine Kontakte zu sehen und neue hinzuzufügen."
+    "share_noContactsNotLoggedIn": "Logge dich ein oder registriere dich, um deine Kontakte zu sehen und neue hinzuzufügen.",
+    "contacts_mute": "",
+    "contacts_unmute": "",
+    "contacts_manageMuted": "",
+    "contacts_mutedUsers": "",
+    "contacts_muteInfo": ""
 }
