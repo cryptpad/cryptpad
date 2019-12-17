@@ -763,7 +763,16 @@ define([
         });
         var pending = Object.keys(roster).filter(function (k) {
             if (!roster[k].pending) { return; }
+            if (roster[k].inviteChannel) { return; }
             return roster[k].role === "MEMBER" || roster[k].role === "VIEWER" || !roster[k].role;
+        }).map(function (k) {
+            return makeMember(common, roster[k], me);
+        });
+        var links = Object.keys(roster).filter(function (k) {
+            if (!roster[k].pending) { return; }
+            if (!roster[k].inviteChannel) { return; }
+            roster[k].curvePublic = k; // XXX "if (!data.curvePublic) { return; }" in makeMember
+            return roster[k].role === "VIEWER" || !roster[k].role;
         }).map(function (k) {
             return makeMember(common, roster[k], me);
         });
@@ -820,6 +829,7 @@ define([
         $header.append(table);
 
         var noPending = pending.length ? '' : '.cp-hidden';
+        var noLinks = links.length ? '' : '.cp-hidden';
 
         return [
             header,
@@ -832,7 +842,9 @@ define([
             h('h3', Messages.team_viewers || 'VIEWERS'),
             h('div', viewers),
             h('h3'+noPending, Messages.team_pending),
-            h('div'+noPending, pending)
+            h('div'+noPending, pending),
+            h('h3'+noLinks, Messages.team_links),
+            h('div'+noLinks, links)
         ];
     };
     makeBlock('roster', function (common, cb) {
