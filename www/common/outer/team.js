@@ -1261,9 +1261,14 @@ define([
     };
 
     // XXX ansuz
-    var createInviteLink = function (ctx, data, cId, cb) {
-        Invite = Invite;
+    var createInviteLink = function (ctx, data, cId, _cb) {
+        var cb = Util.mkAsync(Util.once(_cb));
+
         var team = ctx.teams[data.teamId];
+
+        var seeds = data.seeds; // {scrypt, preview}
+        var bytes64 = data.bytes64;
+
         team = team;
         /*
         var roster = team.roster;
@@ -1271,15 +1276,78 @@ define([
         var password = data.password;
         var msg = data.message;
         var hash = data.hash;
-        var bytes64 = data.bytes64;
         */
-        return void cb();
-        /*
-        cb({
-            error: 'NOT_IMPLEMENTED'
+
+        // derive { channel, cryptKey} for the preview content channel
+        var previewKeys = Invite.derivePreviewKeys(seeds.preview);
+
+        // derive {channel, cryptkey} for the invite content channel
+        var inviteKeys = Invite.deriveInviteKeys(bytes64);
+
+        // randomly generate ephemeral keys for ownership of the above content
+        // and a placeholder in the roster
+        var ephemeralKeys = Invite.generateKeys();
+
+        nThen(function (w) {
+            w = w;
+            // XXX Invite.createPreviewContent
+            // XXX cryptput the preview content
+            /*  PUT
+                {
+                    message: data.message,
+                    // XXX authorName
+                    // XXX authorInfo {
+                        profile,
+                        etc,
+                    }
+                }
+                /// XXX callback if error
+            */
+
+            // Invite.createInviteContent
+            // XXX cryptput the secret team credentials
+            /* PUT
+                {
+                    ephemeralKeys.edPrivate,
+                    ephemeralKeys.curvePrivate,
+                    teamData: {
+                        ...
+                    }
+                }
+                /// XXX callback if error
+            */
+        }).nThen(function (w) {
+            Invite.createRosterEntry(team.roster, {
+                curvePublic: ephemeralKeys.curvePublic,
+                content: {
+                    displayName: data.name,
+                    pending: true,
+                    inviteChannel: inviteKeys.channel, // XXX keep this channel pinned until the invite is accepted
+                    previewChannel: previewKeys.channel, // XXX keep this channel pinned until the invite is accepted
+
+                    // XXX encrypt the following data for your own curvePublic
+                    // XXX and implement UI for interacting with it
+                      // remind yourself of the password used
+                      // bypass scrypt with bytes64 to revover other keys
+                    // { password, bytes64, hash}
+                }
+            }, w(function (err) {
+                if (err) {
+                    w.abort();
+                    cb(err);
+                }
+            }));
+        }).nThen(function () {
+            // call back empty if everything worked
+            cb();
+            /*
+            cb({
+                error: 'NOT_IMPLEMENTED'
+            });
+            */
         });
-        */
     };
+
     // XXX ansuz
     var getLinkData = function (ctx, data, cId, cb) {
         /*
@@ -1455,6 +1523,7 @@ define([
             if (cmd === 'GET_LINK_DATA') {
                 return void getLinkData(ctx, data, clientId, cb);
             }
+            // XXX ansuz
         };
 
         return team;

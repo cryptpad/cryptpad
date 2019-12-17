@@ -437,7 +437,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         // so you must already be in the members list
         if (!isMap(members[author])) { throw new Error("INSUFFICIENT_PERMISSIONS"); }
         // and your membership must indicate that you are 'pending'
-        if (!members[author].pending) { throw new Errror("ALREADY_PRESENT"); }
+        if (!members[author].pending) { throw new Error("ALREADY_PRESENT"); }
 
         // args should be a string
         if (typeof(args) !== 'string') { throw new Error("INVALID_ARGS"); }
