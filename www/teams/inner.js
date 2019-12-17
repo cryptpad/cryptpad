@@ -1060,41 +1060,47 @@ define([
             errorBlock = h('div.alert.alert-danger', {style: 'display: none;'}),
             div
         ]);
-        var inviteDiv = h('div');
+        var declineButton = h('button.btn.btn-danger', Messages.friendRequest_decline);
+        var acceptButton = h('button.btn.btn-primary', 'JOIN TEAM'); // XXX
+        var inviteDiv = h('div', [
+            h('nav', [
+                declineButton,
+                acceptButton
+            ])
+        ]);
         var $inviteDiv = $(inviteDiv);
+
+        $(declineButton).click(function() {
+            
+        });
 
         var process = function (pw) {
             $inviteDiv.empty();
             var bytes64;
 
 
-            var button = h('button', 'XXX');
-            button.onclick = function () {
-                nThen(function (waitFor) {
-                    $inviteDiv.append(h('div', [
-                        h('i.fa.fa-spin.fa-spinner'),
-                        h('span', 'Scrypt...') // XXX
-                    ]));
-                    setTimeout(waitFor(), 150);
-                }).nThen(function (waitFor) {
-                    var salt = InviteInner.deriveSalt(pw, AppConfig.loginSalt);
-                    InviteInner.deriveBytes(seeds.scrypt, salt, waitFor(function (bytes) {
-                        bytes64 = bytes;
-                    }));
-                }).nThen(function (waitFor) {
-                    APP.module.execCommand('GET_LINK_DATA', {
-                        bytes64: bytes64,
-                        hash: hash,
-                        password: pw,
-                    }, waitFor(function () {
-                        $div.empty();
-                        // TODO
-                        // Accept/decline/decide later UI
-                    }));
-                });
-            };
-
-            $inviteDiv.append(button);
+            nThen(function (waitFor) {
+                $inviteDiv.append(h('div', [
+                    h('i.fa.fa-spin.fa-spinner'),
+                    h('span', 'Scrypt...') // XXX
+                ]));
+                setTimeout(waitFor(), 150);
+            }).nThen(function (waitFor) {
+                var salt = InviteInner.deriveSalt(pw, AppConfig.loginSalt);
+                InviteInner.deriveBytes(seeds.scrypt, salt, waitFor(function (bytes) {
+                    bytes64 = bytes;
+                }));
+            }).nThen(function (waitFor) {
+                APP.module.execCommand('GET_LINK_DATA', {
+                    bytes64: bytes64,
+                    hash: hash,
+                    password: pw,
+                }, waitFor(function () {
+                    $div.empty();
+                    // TODO
+                    // Accept/decline/decide later UI
+                }));
+            });
         };
 
         nThen(function (waitFor) {
@@ -1149,20 +1155,22 @@ define([
             if (!password) { return; }
 
             // If there is a password, display the password prompt
-            $inviteDiv.append(h('p', 'Please enter the invitation password to continue...')); // XXX
             var pwInput = UI.passwordInput();
-            var submitPw = h('button.btn.btn-secondary', Messages.password_submit);
-            $(submitPw).click(function () {
+            $(acceptButton).click(function () {
                 var val = $(pwInput).find('input').val();
                 if (!val) { return; }
                 process(val);
             });
-            $inviteDiv.append(pwInput);
-            $inviteDiv.append(submitPw);
+            $inviteDiv.prepend(h('div', [
+                h('p', 'Please enter the invitation password to continue...'),
+                pwInput
+            ])); // XXX
             waitFor.abort();
         }).nThen(function () {
             // No password, display the invitation proposal
-            process('');
+            $(acceptButton).click(function () {
+                process('');
+            });
         });
     });
 
