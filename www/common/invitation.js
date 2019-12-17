@@ -2,8 +2,9 @@
 var factory = function (Hash, Crypt, Nacl, Scrypt/*, Util, Cred, nThen */) {
     var Invite = {};
 
-    Invite.deriveSeeds = function (seed) {
+    Invite.deriveSeeds = function (safeSeed) {
         // take the hash of the provided seed
+        seed = safeSeed.replace(/\-/g, '/');
         var u8_seed = Nacl.hash(Nacl.util.decodeBase64(seed));
 
         // hash the first half again for scrypt's input
