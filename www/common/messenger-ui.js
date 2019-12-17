@@ -70,9 +70,11 @@ define([
                 h('div.cp-app-contacts-category-content')
             ]),
             h('div.cp-app-contacts-friends.cp-app-contacts-category', [
-                h('div.cp-app-contacts-category-content.cp-contacts-friends'),
-                h('h2.cp-app-contacts-category-title', Messages.contacts_friends),
-                h('button.cp-app-contacts-muted-button', Messages.contacts_manageMuted || 'MANAGE MUTED') // XXX
+                h('button.cp-app-contacts-muted-button',[
+                    h('i.fa.fa-bell-slash'),
+                    Messages.contacts_manageMuted || 'MANAGE MUTED' // XXX
+                ]), 
+                h('div.cp-app-contacts-category-content.cp-contacts-friends')
             ]),
             h('div.cp-app-contacts-rooms.cp-app-contacts-category', [
                 h('div.cp-app-contacts-category-content'),
