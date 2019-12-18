@@ -1508,7 +1508,7 @@ define([
                 }));
             }));
         }).nThen(function () {
-            joinTeam(ctx, inviteContent.teamData, cId, cb)
+            joinTeam(ctx, inviteContent.teamData, cId, cb);
         });
     };
 

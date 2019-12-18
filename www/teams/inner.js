@@ -1081,7 +1081,6 @@ define([
 
             var spinnerText;
             var $spinner;
-            var inviteContent;
             nThen(function (waitFor) {
                 $inviteDiv.append(h('div', [
                     h('i.fa.fa-spin.fa-spinner'),
@@ -1117,7 +1116,6 @@ define([
                     });
 
                 }));
-            }).nThen(function (waitFor) {
             });
         };
 
