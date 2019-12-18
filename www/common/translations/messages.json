@@ -1267,7 +1267,18 @@
     "team_inviteLinkNoteMsg": "This message will be shown before the recipient decides whether to join this team.",
     "team_inviteLinkLoading": "Generating your link",
     "team_inviteLinkWarning": "The first person to access this link will be able to join this team and view its contents. Share it carefully.",
-    "team_inviteLinkErrorName": "Please give this invitation a name",
-    "team_inviteLinkCreate": "CREATE LINK",
-    "team_inviteLinkCopy": "COPY LINK"
+    "team_inviteLinkErrorName": "Please add a name for the person you're inviting. They can change it later. ",
+    "team_inviteLinkCreate": "Create link",
+    "team_inviteLinkCopy": "Copy link",
+    "Messages": {
+        "team_inviteFrom": "From:"
+    },
+    "team_inviteFromMsg": "{0} has invited you to join the team <b>{1}</b>",
+    "team_invitePleaseLogin": "Please log in or register to accept this invitation.",
+    "team_inviteEnterPassword": "Please enter the invitation password to continue.",
+    "team_invitePasswordLoading": "Decrypting invitation",
+    "team_inviteJoin": "Join team",
+    "team_inviteTitle": "Team invitation",
+    "team_inviteGetData": "Getting team data",
+    "team_cat_link": "Invitation Link"
 }
