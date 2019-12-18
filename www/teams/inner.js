@@ -1179,7 +1179,8 @@ define([
                 ]));                
                 $div.append(UI.setHTML(h('p.cp-teams-invite-to'),
                     Messages._getKey('team_inviteFromMsg',
-                    [json.author.displayName, json.teamName]))); // XXX
+                    [Util.fixHTML(json.author.displayName), 
+                    Util.fixHTML(json.teamName)]))); // XXX
                 if (json.message) {
                     $div.append(h('div.cp-teams-invite-message', json.message));
                 }
