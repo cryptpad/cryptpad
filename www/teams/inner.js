@@ -1040,7 +1040,6 @@ define([
     }, true);
 
     var displayUser = function (common, data) {
-        var friends = common.getMetadataMgr().getPrivateData().friends;
         var avatar = h('span.cp-teams-invite-from-avatar.cp-avatar');
         UIElements.displayAvatar(common, $(avatar), data.avatar, data.displayName);
         return h('div.cp-teams-invite-from-author', [
@@ -1049,7 +1048,7 @@ define([
         ]);
     };
 
-    refreshLink = function (common, cb) {
+    refreshLink = function (common, cb, wrongPassword) {
         if (!mainCategories.link) { return; }
         var privateData = common.getMetadataMgr().getPrivateData();
         var hash = privateData.teamInviteHash;
@@ -1072,7 +1071,9 @@ define([
         var errorBlock;
         var c = [
             h('h2', Messages.team_inviteTitle || 'Team invitation'), // XXX
-            errorBlock = h('div.alert.alert-danger', {style: 'display: none;'}),
+            errorBlock = h('div.alert.alert-danger',
+                                wrongPassword ? undefined : {style: 'display: none;'},
+                                wrongPassword ? Messages.drive_sfPasswordError : undefined),
             div
         ];
         // "cb" will put the content into the UI.
@@ -1126,6 +1127,15 @@ define([
                         // XXX if DELETED, password prompt again?
                         console.error(obj.error);
                         waitFor.abort();
+                        if (obj.error === 'INVALID_INVITE_CONTENT') {
+                            // Wrong password...
+                            var $divLink = $('div.cp-team-link').empty();
+                            if ($divLink.length) {
+                                refreshLink(common, function (content) {
+                                    $divLink.append(content);
+                                }, true);
+                            }
+                        }
                         return;
                     }
                     // No error: join successful!
