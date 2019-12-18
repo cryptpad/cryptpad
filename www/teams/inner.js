@@ -1072,14 +1072,14 @@ define([
         var $div = $(div);
         var errorBlock;
         var c = [
-            h('h2', 'Team invitation'), // XXX
+            h('h2', Messages.team_inviteTitle || 'Team invitation'), // XXX
             errorBlock = h('div.alert.alert-danger', {style: 'display: none;'}),
             div
         ];
         cb(c);
 
         var declineButton = h('button.btn.btn-danger', Messages.friendRequest_decline);
-        var acceptButton = h('button.btn.btn-primary', 'JOIN TEAM'); // XXX
+        var acceptButton = h('button.btn.btn-primary', Messages.team_inviteJoin || 'JOIN TEAM'); // XXX
         var inviteDiv = h('div', [
             h('nav', [
                 declineButton,
@@ -1102,7 +1102,7 @@ define([
             nThen(function (waitFor) {
                 $inviteDiv.append(h('div', [
                     h('i.fa.fa-spin.fa-spinner'),
-                    spinnerText = h('span', 'Scrypt...') // XXX
+                    spinnerText = h('span', Messages.team_invitePasswordLoading || 'Scrypt...') // XXX
                 ]));
                 $spinner = $(spinnerText);
                 setTimeout(waitFor(), 150);
@@ -1112,7 +1112,7 @@ define([
                     bytes64 = bytes;
                 }));
             }).nThen(function (waitFor) {
-                $spinner.text('get team data'); // XXX
+                $spinner.text(Messages.team_inviteGetData || 'get team data'); // XXX
                 APP.module.execCommand('ACCEPT_LINK_INVITATION', {
                     bytes64: bytes64,
                     hash: hash,
@@ -1166,7 +1166,7 @@ define([
                 if (json && json.error) { // XXX this is failing with "team is disabled"
                     // XXX APP.module is not ready yet?
                     // err === DELETED: different message?
-                    $(errorBlock).text('ERROR'+json.error).show(); // XXX
+                    $(errorBlock).text(Messages.error + json.error).show(); // XXX
                     waitFor.abort();
                     $div.empty();
                     return;
@@ -1174,11 +1174,15 @@ define([
                 }
                 $div.empty();
                 $div.append(h('div.cp-teams-invite-from', [
-                    'From: ', // XXX
+                    Messages.team_inviteFrom || 'From:', // XXX
                     displayUser(common, json.author)
-                ]));
-                $div.append(UI.setHTML(h('p.cp-teams-invite-to'), 'Bob has invited you to join the team <b>CryptPad</b>')); // XXX
-                $div.append(h('div.cp-teams-invite-message', json.message || ''));
+                ]));                
+                $div.append(UI.setHTML(h('p.cp-teams-invite-to'),
+                    Messages._getKey('team_inviteFromMsg',
+                    [json.author.displayName, json.teamName]))); // XXX
+                if (json.message) {
+                    $div.append(h('div.cp-teams-invite-message', json.message));
+                }
             }));
         }).nThen(function (waitFor) {
             // If you're logged in, move on to the next nThen
@@ -1186,7 +1190,7 @@ define([
 
             // If you're not logged in, display the login buttons
             var anonLogin, anonRegister;
-            $div.append(h('p', 'Please log in or register to accept this invitation...')); // XXX
+            $div.append(h('p', Messages.team_invitePleaseLogin || 'Please log in or register to accept this invitation...')); // XXX
             $div.append(h('div', [
                 anonLogin = h('button.btn.btn-primary', Messages.login_login),
                 anonRegister = h('button.btn.btn-secondary', Messages.login_register),
@@ -1216,9 +1220,9 @@ define([
                 process(val);
             });
             $inviteDiv.prepend(h('div.cp-teams-invite-password', [
-                h('p', 'Please enter the invitation password to continue...'),
+                h('p', Messages.team_inviteEnterPassword || 'Please enter the invitation password to continue...'), // XXX
                 pwInput
-            ])); // XXX
+            ])); 
             waitFor.abort();
         }).nThen(function () {
             // No password, display the invitation proposal
