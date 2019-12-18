@@ -748,24 +748,28 @@ define([
         var me = roster[userData.curvePublic] || {};
         var owner = Object.keys(roster).filter(function (k) {
             if (roster[k].pending) { return; }
+            roster[k].curvePublic = k;
             return roster[k].role === "OWNER" || roster[k].pendingOwner;
         }).map(function (k) {
             return makeMember(common, roster[k], me, roster);
         });
         var admins = Object.keys(roster).filter(function (k) {
             if (roster[k].pending) { return; }
+            roster[k].curvePublic = k;
             return roster[k].role === "ADMIN";
         }).map(function (k) {
             return makeMember(common, roster[k], me);
         });
         var members = Object.keys(roster).filter(function (k) {
             if (roster[k].pending) { return; }
+            roster[k].curvePublic = k;
             return roster[k].role === "MEMBER" || !roster[k].role;
         }).map(function (k) {
             return makeMember(common, roster[k], me);
         });
         var viewers = Object.keys(roster).filter(function (k) {
             if (roster[k].pending) { return; }
+            roster[k].curvePublic = k;
             return roster[k].role === "VIEWER";
         }).map(function (k) {
             return makeMember(common, roster[k], me);
@@ -773,6 +777,7 @@ define([
         var pending = Object.keys(roster).filter(function (k) {
             if (!roster[k].pending) { return; }
             if (roster[k].inviteChannel) { return; }
+            roster[k].curvePublic = k;
             return roster[k].role === "MEMBER" || roster[k].role === "VIEWER" || !roster[k].role;
         }).map(function (k) {
             return makeMember(common, roster[k], me);
@@ -780,6 +785,7 @@ define([
         var links = Object.keys(roster).filter(function (k) {
             if (!roster[k].pending) { return; }
             if (!roster[k].inviteChannel) { return; }
+            roster[k].curvePublic = k;
             return roster[k].role === "VIEWER" || !roster[k].role;
         }).map(function (k) {
             return makeMember(common, roster[k], me);

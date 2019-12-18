@@ -143,8 +143,8 @@ define([
         if (state.members) {
             Object.keys(state.members).forEach(function (curve) {
                 var m = state.members[curve];
-                if (m.inviteChannel) { list.push(m.inviteChannel); }
-                if (m.previewChannel) { list.push(m.previewChannel); }
+                if (m.inviteChannel && m.pending) { list.push(m.inviteChannel); }
+                if (m.previewChannel && m.pending) { list.push(m.previewChannel); }
             });
         }
 
@@ -1485,6 +1485,7 @@ define([
 
     var acceptLinkInvitation = function (ctx, data, cId, cb) {
         var inviteContent;
+        var rosterState;
         nThen(function (waitFor) {
             // Get team keys and ephemeral keys
             getInviteContent(ctx, data, cId, waitFor(function (obj) {
