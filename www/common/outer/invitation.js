@@ -1,6 +1,5 @@
 (function () {
-var factory = function (Util, Cred, nThen, Nacl) {
-    nThen = nThen; // XXX
+var factory = function (Util, Cred, Nacl) {
     var Invite = {};
 
     var encode64 = Nacl.util.encodeBase64;
@@ -92,10 +91,9 @@ var factory = function (Util, Cred, nThen, Nacl) {
         define([
             '/common/common-util.js',
             '/common/common-credential.js',
-            '/bower_components/nthen/index.js',
             '/bower_components/tweetnacl/nacl-fast.min.js',
-        ], function (Util, Cred, nThen) {
-            return factory(Util, Cred, nThen, window.nacl);
+        ], function (Util, Cred) {
+            return factory(Util, Cred, window.nacl);
         });
     }
 }());
