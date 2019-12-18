@@ -217,6 +217,7 @@ define([
             if (key === 'chat') { $category.append($('<span>', {'class': 'fa fa-comments'})); }
             if (key === 'drive') { $category.append($('<span>', {'class': 'fa fa-hdd-o'})); }
             if (key === 'admin') { $category.append($('<span>', {'class': 'fa fa-cogs'})); }
+            if (key === 'link') { $category.append($('<span>', {'class': 'fa fa-envelope'})); }
 
             if (key === active) {
                 $category.addClass('cp-leftside-active');
@@ -1156,7 +1157,7 @@ define([
             // Get preview content.
             var sframeChan = common.getSframeChannel();
             sframeChan.query('Q_ANON_GET_PREVIEW_CONTENT', { seeds: seeds }, waitFor(function (json) {
-                if (json && json.error) { // XXX this is failing with "team is disabled"
+                if (json && json.error) {
                     // XXX APP.module is not ready yet?
                     // err === DELETED: different message?
                     $(errorBlock).text(Messages.error + json.error).show(); // XXX
@@ -1169,7 +1170,7 @@ define([
                 $div.append(h('div.cp-teams-invite-from', [
                     Messages.team_inviteFrom || 'From:', // XXX
                     displayUser(common, json.author)
-                ]));                
+                ]));
                 $div.append(UI.setHTML(h('p.cp-teams-invite-to'),
                     Messages._getKey('team_inviteFromMsg',
                     [Util.fixHTML(json.author.displayName), 
