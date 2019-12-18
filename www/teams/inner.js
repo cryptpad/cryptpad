@@ -435,7 +435,7 @@ define([
             }, isOwner ? Messages.team_maxOwner : Messages._getKey('team_maxTeams', [MAX_TEAMS_SLOTS]));
         };
 
-        if (Object.keys(privateData.teams || {}).length >= 3 || isOwner) {
+        if (Object.keys(privateData.teams || {}).length >= Constants.MAX_TEAMS_SLOTS || isOwner) {
             content.push(getWarningBox());
             return void cb(content);
         }
@@ -478,6 +478,12 @@ define([
                     $spinner.hide();
                     $('div.cp-team-cat-list').click();
                 });
+                var $divLink = $('div.cp-team-link').empty();
+                if ($divLink.length) {
+                    refreshLink(common, function (content) {
+                        $divLink.append(content);
+                    });
+                }
             });
         });
         cb(content);
@@ -1043,23 +1049,33 @@ define([
         ]);
     };
 
-    makeBlock('link', function (common, cb) {
+    var refreshLink = function (common, cb) {
         var privateData = common.getMetadataMgr().getPrivateData();
         var hash = privateData.teamInviteHash;
         var hashData = Hash.parseTypeHash('invite', hash);
         var password = hashData.password;
         var seeds = InviteInner.deriveSeeds(hashData.key);
 
+        if (Object.keys(privateData.teams || {}).length >= Constants.MAX_TEAMS_SLOTS) {
+            return void cb([
+                h('div.alert.alert-danger', {
+                    role: 'alert'
+                }, Messages._getKey('team_maxTeams', [Constants.MAX_TEAMS_SLOTS]))
+            ]);
+        }
+
         var div = h('div', [
             h('i.fa.fa-spin.fa-spinner')
         ]);
         var $div = $(div);
         var errorBlock;
-        cb([
+        var c = [
             h('h2', 'Team invitation'), // XXX
             errorBlock = h('div.alert.alert-danger', {style: 'display: none;'}),
             div
-        ]);
+        ];
+        cb(c);
+
         var declineButton = h('button.btn.btn-danger', Messages.friendRequest_decline);
         var acceptButton = h('button.btn.btn-primary', 'JOIN TEAM'); // XXX
         var inviteDiv = h('div', [
@@ -1112,8 +1128,18 @@ define([
                     refreshList(common, function (content) {
                         $div.append(content);
                         $('div.cp-team-cat-list').click();
-                        // XXX REMOVE INVITATION TAB
+                        var $divLink = $('div.cp-team-link').empty();
+                        if ($divLink.length) {
+                            $divLink.remove();
+                            $('div.cp-team-cat-link').remove();
+                        }
                     });
+                    var $divCreate = $('div.cp-team-create');
+                    if ($divCreate.length) {
+                        refreshCreate(common, function (content) {
+                            $divCreate.empty().append(content);
+                        });
+                    }
 
                 }));
             });
@@ -1187,6 +1213,10 @@ define([
                 process('');
             });
         });
+        return c;
+    };
+    makeBlock('link', function (common, cb) {
+        refreshLink(common, cb);
     });
 
     var redrawTeam = function (common) {
@@ -1304,6 +1334,12 @@ define([
                 if ($div.length) {
                     refreshList(common, function (content) {
                         $div.empty().append(content);
+                    });
+                }
+                var $divLink = $('div.cp-team-link').empty();
+                if ($divLink.length) {
+                    refreshLink(common, function (content) {
+                        $divLink.append(content);
                     });
                 }
                 var $divCreate = $('div.cp-team-create');
