@@ -232,7 +232,7 @@ define([
         // If this curve has sent us a friend request, we should not be able to sent it to them
         var friendRequests = common.getFriendRequests();
         if (friendRequests[data.curvePublic]) {
-            $button.append(Messages._getKey('friendRequest_received', [data.name || Messages.anonymous]))
+            $button.append(Messages._getKey('friendRequest_received', [name || Messages.anonymous]))
                 .click(function () {
                 UIElements.displayFriendRequestModal(common, friendRequests[data.curvePublic]);
             });
