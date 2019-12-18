@@ -675,6 +675,10 @@ define([
                 Cryptpad.messaging.answerFriendRequest(data, cb);
             });
 
+            sframeChan.on('Q_ANON_GET_PREVIEW_CONTENT', function (data, cb) {
+                Cryptpad.anonGetPreviewContent(data, cb);
+            });
+
             // History
             sframeChan.on('Q_GET_FULL_HISTORY', function (data, cb) {
                 var crypto = Crypto.createEncryptor(secret.keys);

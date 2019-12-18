@@ -1149,8 +1149,18 @@ define([
         };
 
         nThen(function (waitFor) {
-            // XXX XXX Check number of teams first!
-            APP.module.execCommand("GET_PREVIEW_CONTENT", {
+            // Get preview content.
+            // Use the team module if we're logged in, or sframeChan if we're not
+            var f = function (data, cb) {
+                if (driveAPP.loggedIn) {
+                    return void APP.module.execCommand('GET_PREVIEW_CONTENT', data, cb);
+                }
+                var sframeChan = common.getSframeChannel();
+                sframeChan.query('Q_ANON_GET_PREVIEW_CONTENT', data, function (err, json) {
+                    cb(json);
+                });
+            };
+            f({
                 seeds: seeds,
             }, waitFor(function (json) {
                 if (json && json.error) { // XXX this is failing with "team is disabled"

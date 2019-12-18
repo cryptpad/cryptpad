@@ -1684,6 +1684,10 @@ define([
         return team;
     };
 
+    Team.anonGetPreviewContent = function (cfg, data, cb) {
+        getPreviewContent(cfg, data, null, cb);
+    };
+
     return Team;
 });
 

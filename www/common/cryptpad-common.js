@@ -779,6 +779,11 @@ define([
         postMessage("SEND_FRIEND_REQUEST", data, cb);
     };
 
+    // Team
+    common.anonGetPreviewContent = function (data, cb) {
+        postMessage("ANON_GET_PREVIEW_CONTENT", data, cb);
+    };
+
     // Onlyoffice
     var onlyoffice = common.onlyoffice = {};
     onlyoffice.execCommand = function (data, cb) {

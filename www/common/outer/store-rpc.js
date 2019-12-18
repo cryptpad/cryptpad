@@ -60,6 +60,8 @@ define([
             // Messaging
             ANSWER_FRIEND_REQUEST: Store.answerFriendRequest,
             SEND_FRIEND_REQUEST: Store.sendFriendRequest,
+            // Team invitation
+            ANON_GET_PREVIEW_CONTENT: Store.anonGetPreviewContent,
             // OnlyOffice
             OO_COMMAND: Store.onlyoffice.execCommand,
             // Cursor
