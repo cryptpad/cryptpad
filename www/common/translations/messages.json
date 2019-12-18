@@ -1261,7 +1261,7 @@
     "contacts_mutedUsers": "Muted accounts",
     "contacts_muteInfo": "You will not receive any notifications or messages from muted users.<br>They will not know you have muted them. ",
     "team_inviteLinkTitle": "Create a personalized invitation to this team",
-    "team_inviteLinkTempName": "temporary name (visible in pending invitations list)",
+    "team_inviteLinkTempName": "Temporary name (visible in pending invitations list)",
     "team_inviteLinkSetPassword": "Protect the link with a password (recommended)",
     "team_inviteLinkNote": "Add a personal message",
     "team_inviteLinkNoteMsg": "This message will be shown before the recipient decides whether to join this team.",
