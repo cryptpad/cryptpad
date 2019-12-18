@@ -1485,7 +1485,6 @@ define([
 
     var acceptLinkInvitation = function (ctx, data, cId, cb) {
         var inviteContent;
-        var rosterState;
         nThen(function (waitFor) {
             // Get team keys and ephemeral keys
             getInviteContent(ctx, data, cId, waitFor(function (obj) {
