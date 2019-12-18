@@ -451,7 +451,6 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
 
         // copy the new profile from the old one
         members[curve] = Util.clone(members[author]);
-        members[curve].curvePublic = curve;
         // and erase the old one
         delete members[author];
         return true;
@@ -776,7 +775,6 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             Object.keys(data).forEach(function (curve) {
                 if (!isValidId(curve) || isMap(ref.state.members[curve])) { return delete data[curve]; }
             });
-console.error('SENDING INVITE');
 
             send(['INVITE', data], cb);
         };

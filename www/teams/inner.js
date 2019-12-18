@@ -217,6 +217,7 @@ define([
             if (key === 'chat') { $category.append($('<span>', {'class': 'fa fa-comments'})); }
             if (key === 'drive') { $category.append($('<span>', {'class': 'fa fa-hdd-o'})); }
             if (key === 'admin') { $category.append($('<span>', {'class': 'fa fa-cogs'})); }
+            if (key === 'link') { $category.append($('<span>', {'class': 'fa fa-envelope'})); }
 
             if (key === active) {
                 $category.addClass('cp-leftside-active');
@@ -493,8 +494,9 @@ define([
         refreshCreate(common, cb);
     });
 
-    makeBlock('drive', function (common, cb) {
+    makeBlock('drive', function (common, cb, $div) {
         $('div.cp-team-drive').empty();
+        $div.removeClass('cp-sidebarlayout-element'); // Don't apply buttons and input styles from sidebarlayout
         var content = [
             h('div.cp-app-drive-container', {tabindex:0}, [
                 h('div#cp-app-drive-tree'),
@@ -778,7 +780,6 @@ define([
         var links = Object.keys(roster).filter(function (k) {
             if (!roster[k].pending) { return; }
             if (!roster[k].inviteChannel) { return; }
-            roster[k].curvePublic = k; // XXX "if (!data.curvePublic) { return; }" in makeMember
             return roster[k].role === "VIEWER" || !roster[k].role;
         }).map(function (k) {
             return makeMember(common, roster[k], me);
@@ -1076,9 +1077,13 @@ define([
             errorBlock = h('div.alert.alert-danger', {style: 'display: none;'}),
             div
         ];
+        // "cb" will put the content into the UI.
+        // We're displaying a spinner while we're cryptgetting the preview content
         cb(c);
 
-        var declineButton = h('button.btn.btn-danger', Messages.friendRequest_decline);
+        var declineButton = h('button.btn.btn-danger', {
+            style: 'display: none;'
+        }, Messages.friendRequest_decline);
         var acceptButton = h('button.btn.btn-primary', Messages.team_inviteJoin || 'JOIN TEAM'); // XXX
         var inviteDiv = h('div', [
             h('nav', [
@@ -1150,20 +1155,9 @@ define([
 
         nThen(function (waitFor) {
             // Get preview content.
-            // Use the team module if we're logged in, or sframeChan if we're not
-            var f = function (data, cb) {
-                if (driveAPP.loggedIn) {
-                    return void APP.module.execCommand('GET_PREVIEW_CONTENT', data, cb);
-                }
-                var sframeChan = common.getSframeChannel();
-                sframeChan.query('Q_ANON_GET_PREVIEW_CONTENT', data, function (err, json) {
-                    cb(json);
-                });
-            };
-            f({
-                seeds: seeds,
-            }, waitFor(function (json) {
-                if (json && json.error) { // XXX this is failing with "team is disabled"
+            var sframeChan = common.getSframeChannel();
+            sframeChan.query('Q_ANON_GET_PREVIEW_CONTENT', { seeds: seeds }, waitFor(function (json) {
+                if (json && json.error) {
                     // XXX APP.module is not ready yet?
                     // err === DELETED: different message?
                     $(errorBlock).text(Messages.error + json.error).show(); // XXX
@@ -1176,7 +1170,7 @@ define([
                 $div.append(h('div.cp-teams-invite-from', [
                     Messages.team_inviteFrom || 'From:', // XXX
                     displayUser(common, json.author)
-                ]));                
+                ]));
                 $div.append(UI.setHTML(h('p.cp-teams-invite-to'),
                     Messages._getKey('team_inviteFromMsg',
                     [Util.fixHTML(json.author.displayName), 

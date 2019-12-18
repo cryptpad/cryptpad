@@ -446,7 +446,6 @@ define([
                 // If we've been kicked, don't try to update our data, we'll close everything
                 // in the next nThen part
                 var state = roster.getState();
-                console.error(state);
                 var me = Util.find(ctx, ['store', 'proxy', 'curvePublic']);
                 if (!state.members[me]) { return; }
 
@@ -1280,6 +1279,8 @@ define([
         var seeds = data.seeds; // {scrypt, preview}
         var bytes64 = data.bytes64;
 
+        if (!teamId || !team) { return void cb({error: 'EINVAL'}); }
+
         var roster = team.roster;
 
         var teamName;
@@ -1312,12 +1313,16 @@ define([
             var putOpts = {
                 initialState: '{}',
                 network: ctx.store.network,
+                metadata: {
+                    owners: [ctx.store.proxy.edPublic, ephemeralKeys.edPublic]
+                }
             };
 
             (function () {
                 // a random signing keypair to prevent further writes to the channel
                 // we don't need to remember it cause we're only writing once
                 var sign = Invite.generateSignPair(); // { validateKey, signKey}
+                putOpts.metadata.validateKey = sign.validateKey;
 
                 // visible with only the invite link
                 var previewContent = {
@@ -1325,7 +1330,6 @@ define([
                     message: message,
                     author: Messaging.createData(ctx.store.proxy, false),
                     displayName: name,
-                    curvePublic: ephemeralKeys.curvePublic,
                 };
 
                 var cryptput_config = {
@@ -1352,6 +1356,7 @@ define([
                 // a different random signing key so that the server can't correlate these documents
                 // as components of an invite
                 var sign = Invite.generateSignPair(); // { validateKey, signKey}
+                putOpts.metadata.validateKey = sign.validateKey;
 
                 // available only with the link and the content
                 var inviteContent = {
@@ -1486,13 +1491,16 @@ define([
             // Accept the roster invitation: relplace our ephemeral keys with our user keys
             var rosterData = Util.find(inviteContent, ['teamData', 'keys', 'roster']);
             var myKeys = inviteContent.ephemeral;
+            if (!rosterData || !myKeys) {
+                waitFor.abort();
+                return void cb({error: 'INVALID_INVITE_CONTENT'});
+            }
             var rosterKeys = Crypto.Team.deriveMemberKeys(rosterData.edit, myKeys);
             Roster.create({
                 network: ctx.store.network,
                 channel: rosterData.channel,
                 keys: rosterKeys,
                 anon_rpc: ctx.store.anon_rpc,
-                lastKnownHash: rosterData.lastKnownHash, // XXX Can we trust this user?
             }, waitFor(function (err, roster) {
                 if (err) {
                     waitFor.abort();

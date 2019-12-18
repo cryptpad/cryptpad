@@ -10,8 +10,15 @@
     );
     .sidebar-layout_main();
 
+    @cp-profile-is-your-friend: #777;
+
     display: flex;
     flex-flow: column;
+
+    #cp-sidebarlayout-leftside {
+        display: none !important;
+    }
+
     #cp-app-profile-header {
         display: flex;
         #cp-app-profile-rightside {
@@ -64,8 +71,9 @@
             }
         }
         button {
+            min-width: 40px;
             height: 40px;
-            margin: 5px;
+            margin: 5px !important;
         }
     }
     .cp-app-profile-resizer {
@@ -108,10 +116,18 @@
             display: none;
         }
         & > button:empty {
-            margin-left: 25px;
+            margin-left: 25px !important;
         }
     }
 
+    .cp-app-profile-friend {
+        display: flex;
+        align-items: center;
+        color: @cp-profile-is-your-friend;
+        .fa {
+            margin-right: 0.2em;
+        }
+    }
     .cp-app-profile-friend-request {
         flex: 0;
         width: 400px;
@@ -124,11 +140,7 @@
     }
     .cp-app-profile-viewprofile-button {
         margin-bottom: 20px;
-        float: right;
-        margin-left: 5px;
-        &> span {
-            margin-left: 10px;
-        }
+        width: 300px;
     }
     #cp-app-profile-description {
         position: relative;
@@ -166,13 +178,6 @@
                 line-height: inherit;
             }
         }
-        .cp-app-profile-description-edit {
-            & > button {
-                span {
-                    margin-left: 10px;
-                }
-            }
-        }
     }
     #cp-app-profile-create {
         height: 100%;
@@ -180,6 +185,13 @@
         flex-flow: column;
         align-items: center;
         justify-content: center;
+    }
+    .cp-app-profile-mute-container {
+        margin-top: 5px;
+        p {
+            margin-top: 5px;
+            font-size: 13px;
+        }
     }
 }
 
