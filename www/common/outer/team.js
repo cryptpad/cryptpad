@@ -11,6 +11,7 @@ define([
     '/common/common-messaging.js',
     '/common/common-feedback.js',
     '/common/outer/invitation.js',
+    '/common/cryptget.js',
 
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
@@ -20,7 +21,7 @@ define([
     '/bower_components/saferphore/index.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
 ], function (Util, Hash, Constants, Realtime,
-             ProxyManager, UserObject, SF, Roster, Messaging, Feedback, Invite,
+             ProxyManager, UserObject, SF, Roster, Messaging, Feedback, Invite, Crypt,
              Listmap, Crypto, CpNetflux, ChainPad, nThen, Saferphore) {
     var Team = {};
 
@@ -1273,17 +1274,25 @@ define([
     var createInviteLink = function (ctx, data, cId, _cb) {
         var cb = Util.mkAsync(Util.once(_cb));
 
+        var teamId = data.teamId;
         var team = ctx.teams[data.teamId];
-
         var seeds = data.seeds; // {scrypt, preview}
         var bytes64 = data.bytes64;
 
-        team = team;
-        /*
         var roster = team.roster;
+
+        var teamName;
+        try {
+            teamName = roster.getState().metadata.name;
+        } catch (err) {
+            return void cb("TEAM_NAME_ERR");
+        }
+
+        var message = data.message;
         var name = data.name;
+
+        /*
         var password = data.password;
-        var msg = data.message;
         var hash = data.hash;
         */
 
@@ -1298,33 +1307,81 @@ define([
         var ephemeralKeys = Invite.generateKeys();
 
         nThen(function (w) {
-            w = w;
-            // XXX Invite.createPreviewContent
-            // XXX cryptput the preview content
-            /*  PUT
-                {
-                    message: data.message,
-                    // XXX authorName
-                    // XXX authorInfo {
-                        profile,
-                        etc,
-                    }
-                }
-                /// XXX callback if error
-            */
 
-            // Invite.createInviteContent
-            // XXX cryptput the secret team credentials
-            /* PUT
-                {
-                    ephemeralKeys.edPrivate,
-                    ephemeralKeys.curvePrivate,
-                    teamData: {
-                        ...
+            var putOpts = {
+                initialState: '{}',
+                network: ctx.store.network,
+            };
+
+            (function () {
+                // a random signing keypair to prevent further writes to the channel
+                // we don't need to remember it cause we're only writing once
+                var sign = Invite.generateSignPair(); // { validateKey, signKey}
+
+                // visible with only the invite link
+                var previewContent = {
+                    teamName: teamName,
+                    message: message,
+                    author: Messaging.createData(ctx.store.proxy, false),
+                    displayName: name,
+                    curvePublic: ephemeralKeys.curvePublic,
+                };
+
+                var cryptput_config = {
+                    channel: previewKeys.channel,
+                    type: 'pad',
+                    version: 2,
+                    keys: { // what would normally be provided by getSecrets
+                        cryptKey: previewKeys.cryptKey,
+                        validateKey: sign.validateKey, // sent to historyKeeper
+                        signKey: sign.signKey, // b64EdPrivate
+                    },
+                };
+
+                Crypt.put(cryptput_config, JSON.stringify(previewContent), w(function (err /*, doc */) {
+                    if (err) {
+                        console.error("CRYPTPUT_ERR", err);
+                        w.abort();
+                        return void cb("SET_PREVIEW_CONTENT");
                     }
-                }
-                /// XXX callback if error
-            */
+                }), putOpts);
+            }());
+
+            (function () {
+                // a different random signing key so that the server can't correlate these documents
+                // as components of an invite
+                var sign = Invite.generateSignPair(); // { validateKey, signKey}
+
+                // available only with the link and the content
+                var inviteContent = {
+                    teamData: getInviteData(ctx, teamId, false),
+                    ephemeral: {
+                        edPublic: ephemeralKeys.edPublic,
+                        edPrivate: ephemeralKeys.edPrivate,
+                        curvePublic: ephemeralKeys.curvePublic,
+                        curvePrivate: ephemeralKeys.curvePrivate,
+                    },
+                };
+
+                var cryptput_config = {
+                    channel: previewKeys.channel,
+                    type: 'pad',
+                    version: 2,
+                    keys: {
+                        cryptKey: inviteKeys.cryptKey,
+                        validateKey: sign.validateKey,
+                        signKey: sign.signKey,
+                    },
+                };
+
+                Crypt.put(cryptput_config, JSON.stringify(inviteContent), w(function (err /*, doc */) {
+                    if (err) {
+                        console.error("CRYPTPUT_ERR", err);
+                        w.abort();
+                        return void cb("SET_PREVIEW_CONTENT");
+                    }
+                }), putOpts);
+            }());
         }).nThen(function (w) {
             team.pin([inviteKeys.channel, previewKeys.channel], function (obj) {
                 if (obj && obj.error) { console.error(obj.error); }
@@ -1332,6 +1389,7 @@ define([
             Invite.createRosterEntry(team.roster, {
                 curvePublic: ephemeralKeys.curvePublic,
                 content: {
+                    curvePublic: ephemeralKeys.curvePublic,
                     displayName: data.name,
                     pending: true,
                     inviteChannel: inviteKeys.channel, // XXX keep this channel pinned until the invite is accepted
@@ -1352,27 +1410,64 @@ define([
         }).nThen(function () {
             // call back empty if everything worked
             cb();
-            /*
-            cb({
-                error: 'NOT_IMPLEMENTED'
-            });
-            */
         });
     };
 
-    // XXX ansuz
-    var getLinkData = function (ctx, data, cId, cb) {
-        /*
-        var password = data.password;
-        var hash = data.hash;
-        var bytes64 = data.bytes64;
-        */
-        return void cb();
-        /*
-        cb({
-            error: 'NOT_IMPLEMENTED'
+    var getPreviewContent = function (ctx, data, cId, cb) {
+        var seeds = data.seeds;
+        var previewKeys;
+        try {
+            previewKeys = Invite.derivePreviewKeys(seeds.preview);
+        } catch (err) {
+            return void cb("INVALID_SEEDS");
+        }
+        Crypt.get({ // secrets
+            channel: previewKeys.channel,
+            type: 'pad',
+            version: 2,
+            keys: {
+                cryptKey: previewKeys.cryptKey,
+            },
+        }, function (err, val) {
+            if (err) { return void cb(err); }
+            if (!val) { return void cb('DELETED'); }
+
+            var json = Util.tryParse(val);
+            if (!json) { return void cb("parseError"); }
+            console.error("JSON", json);
+            cb(void 0, json);
+        }, { // cryptget opts
+            network: ctx.store.network,
+            initialState: '{}',
         });
-        */
+    };
+
+    var getInviteContent = function (ctx, data, cId, cb) {
+        var bytes64 = data.bytes64;
+        var previewKeys;
+        try {
+            previewKeys = Invite.deriveInviteKeys(bytes64);
+        } catch (err) {
+            return void cb("INVALID_SEEDS");
+        }
+        Crypt.get({ // secrets
+            channel: previewKeys.channel,
+            type: 'pad',
+            version: 2,
+            keys: {
+                cryptKey: previewKeys.cryptKey,
+            },
+        }, function (err, val) {
+            if (err) { return void cb(err); }
+            if (!val) { return void cb('DELETED'); }
+
+            var json = Util.tryParse(val);
+            if (!json) { return void cb("parseError"); }
+            cb(void 0, json);
+        }, { // cryptget opts
+            network: ctx.store.network,
+            initialState: '{}',
+        });
     };
 
 
@@ -1532,10 +1627,12 @@ define([
             if (cmd === 'CREATE_INVITE_LINK') {
                 return void createInviteLink(ctx, data, clientId, cb);
             }
-            if (cmd === 'GET_LINK_DATA') {
-                return void getLinkData(ctx, data, clientId, cb);
+            if (cmd === 'GET_INVITE_CONTENT') {
+                return void getInviteContent(ctx, data, clientId, cb);
             }
-            // XXX ansuz
+            if (cmd === 'GET_PREVIEW_CONTENT') {
+                return void getPreviewContent(ctx, data, clientId, cb);
+            }
         };
 
         return team;

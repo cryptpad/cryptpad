@@ -29,8 +29,15 @@ define([
     };
 
     var makeConfig = function (hash, opt) {
+        var secret;
+        if (typeof(hash) === 'string') {
         // We can't use cryptget with a file or a user so we can use 'pad' as hash type
-        var secret = Hash.getSecrets('pad', hash, opt.password);
+            secret = Hash.getSecrets('pad', hash, opt.password);
+        } else if (typeof(hash) === 'object') {
+            // we may want to just supply options directly
+            // and this is the easiest place to do it
+            secret = hash;
+        }
         if (!secret.keys) { secret.keys = secret.key; } // support old hashses
         var config = {
             websocketURL: NetConfig.getWebsocketURL(opt.origin),
@@ -109,8 +116,9 @@ define([
 
             Realtime.whenRealtimeSyncs(realtime, function () {
                 clearTimeout(to);
+                var doc = realtime.getAuthDoc();
                 realtime.abort();
-                finish(Session, void 0);
+                finish(Session, void 0, doc);
             });
         };
         overwrite(config, opt);
