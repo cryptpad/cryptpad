@@ -1041,8 +1041,6 @@ define([
 
     var displayUser = function (common, data) {
         var friends = common.getMetadataMgr().getPrivateData().friends;
-        var verified = false;
-        if (friends[data.curvePublic]) { verified = true; }
         var avatar = h('span.cp-teams-invite-from-avatar.cp-avatar');
         UIElements.displayAvatar(common, $(avatar), data.avatar, data.displayName);
         return h('div.cp-teams-invite-from-author', [
