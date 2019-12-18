@@ -420,6 +420,7 @@ define([
         refreshList(common, cb);
     });
 
+    var refreshLink = function () {}; // placeholder
     var refreshCreate = function (common, cb) {
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
@@ -1049,7 +1050,7 @@ define([
         ]);
     };
 
-    var refreshLink = function (common, cb) {
+    refreshLink = function (common, cb) {
         var privateData = common.getMetadataMgr().getPrivateData();
         var hash = privateData.teamInviteHash;
         var hashData = Hash.parseTypeHash('invite', hash);
