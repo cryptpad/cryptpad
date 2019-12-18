@@ -1076,7 +1076,7 @@ define([
         var $div = $(div);
         var errorBlock;
         var c = [
-            h('h2', Messages.team_inviteTitle || 'Team invitation'), // XXX
+            h('h2', Messages.team_inviteTitle),
             errorBlock = h('div.alert.alert-danger',
                                 wrongPassword ? undefined : {style: 'display: none;'},
                                 wrongPassword ? Messages.drive_sfPasswordError : undefined),
@@ -1089,7 +1089,7 @@ define([
         var declineButton = h('button.btn.btn-danger', {
             style: 'display: none;'
         }, Messages.friendRequest_decline);
-        var acceptButton = h('button.btn.btn-primary', Messages.team_inviteJoin || 'JOIN TEAM'); // XXX
+        var acceptButton = h('button.btn.btn-primary', Messages.team_inviteJoin);
         var inviteDiv = h('div', [
             h('nav', [
                 declineButton,
@@ -1112,7 +1112,7 @@ define([
             nThen(function (waitFor) {
                 $inviteDiv.append(h('div', [
                     h('i.fa.fa-spin.fa-spinner'),
-                    spinnerText = h('span', Messages.team_invitePasswordLoading || 'Scrypt...') // XXX
+                    spinnerText = h('span', Messages.team_invitePasswordLoading || 'Scrypt...')
                 ]));
                 $spinner = $(spinnerText);
                 setTimeout(waitFor(), 150);
@@ -1122,7 +1122,7 @@ define([
                     bytes64 = bytes;
                 }));
             }).nThen(function (waitFor) {
-                $spinner.text(Messages.team_inviteGetData || 'get team data'); // XXX
+                $spinner.text(Messages.team_inviteGetData);
                 APP.module.execCommand('ACCEPT_LINK_INVITATION', {
                     bytes64: bytes64,
                     hash: hash,
@@ -1172,23 +1172,21 @@ define([
             var sframeChan = common.getSframeChannel();
             sframeChan.query('Q_ANON_GET_PREVIEW_CONTENT', { seeds: seeds }, waitFor(function (err, json) {
                 if (json && json.error) {
-                    // XXX APP.module is not ready yet?
                     // err === DELETED: different message?
                     $(errorBlock).text(Messages.error + json.error).show(); // XXX
                     waitFor.abort();
                     $div.empty();
                     return;
-                    // XXX handle errors
                 }
                 $div.empty();
                 $div.append(h('div.cp-teams-invite-from', [
-                    Messages.team_inviteFrom || 'From:', // XXX
+                    Messages.team_inviteFrom || 'From:',
                     displayUser(common, json.author)
                 ]));
                 $div.append(UI.setHTML(h('p.cp-teams-invite-to'),
                     Messages._getKey('team_inviteFromMsg',
-                    [Util.fixHTML(json.author.displayName), 
-                    Util.fixHTML(json.teamName)]))); // XXX
+                    [Util.fixHTML(json.author.displayName),
+                    Util.fixHTML(json.teamName)])));
                 if (json.message) {
                     $div.append(h('div.cp-teams-invite-message', json.message));
                 }
@@ -1199,7 +1197,7 @@ define([
 
             // If you're not logged in, display the login buttons
             var anonLogin, anonRegister;
-            $div.append(h('p', Messages.team_invitePleaseLogin || 'Please log in or register to accept this invitation...')); // XXX
+            $div.append(h('p', Messages.team_invitePleaseLogin || 'Please log in or register to accept this invitation...'));
             $div.append(h('div', [
                 anonLogin = h('button.btn.btn-primary', Messages.login_login),
                 anonRegister = h('button.btn.btn-secondary', Messages.login_register),
@@ -1229,7 +1227,7 @@ define([
                 process(val);
             });
             $inviteDiv.prepend(h('div.cp-teams-invite-password', [
-                h('p', Messages.team_inviteEnterPassword || 'Please enter the invitation password to continue...'), // XXX
+                h('p', Messages.team_inviteEnterPassword),
                 pwInput
             ])); 
             waitFor.abort();

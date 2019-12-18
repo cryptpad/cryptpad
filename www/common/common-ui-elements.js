@@ -1639,30 +1639,30 @@ define([
         // Invite from link
         var dismissButton = h('span.fa.fa-times');
         var linkContent = h('div.cp-share-modal', [
-            h('p', Messages.team_inviteLinkTitle ), // XXX
+            h('p', Messages.team_inviteLinkTitle ),
             linkError = h('div.alert.alert-danger.cp-teams-invite-alert', {style : 'display: none;'}),
             linkForm = h('div.cp-teams-invite-form', [
                 linkName = h('input', {
-                    placeholder:  Messages.team_inviteLinkTempName // XXX
+                    placeholder:  Messages.team_inviteLinkTempName
                 }),
                 h('br'),
                 h('div.cp-teams-invite-block', [
-                    h('span', Messages.team_inviteLinkSetPassword), // XXX
+                    h('span', Messages.team_inviteLinkSetPassword),
                     h('a.cp-teams-help.fa.fa-question-circle', {
                         href: origin + '/faq.html#security-pad_password',
                         target: "_blank",
                         'data-tippy-placement': "right"
                     })
-                ]), // XXX
+                ]),
                 linkPassword = UI.passwordInput({
                     id: 'cp-teams-invite-password',
-                    placeholder: Messages.login_password // XXX
+                    placeholder: Messages.login_password
                 }),
                 h('div.cp-teams-invite-block',
-                    h('span', Messages.team_inviteLinkNote) // XXX
+                    h('span', Messages.team_inviteLinkNote)
                 ),
-                linkMessage = h('textarea.cp-teams-invite-message', { // XXX ansuz hitting enter submits...
-                    placeholder: Messages.team_inviteLinkNoteMsg, // XXX
+                linkMessage = h('textarea.cp-teams-invite-message', {
+                    placeholder: Messages.team_inviteLinkNoteMsg,
                     rows: 3
                 })
             ]),
@@ -1670,7 +1670,7 @@ define([
                 style: 'display: none;'
             }, [
                 h('i.fa.fa-spinner.fa-spin'),
-                linkSpinText = h('span', Messages.team_inviteLinkLoading) // XXX
+                linkSpinText = h('span', Messages.team_inviteLinkLoading)
             ]),
             linkResult = h('div', {
                 style: 'display: none;'
@@ -1682,7 +1682,7 @@ define([
             }, [
                 h('span.cp-inline-alert-text', Messages.team_inviteLinkWarning),
                 dismissButton
-            ]) // XXX
+            ])
         ]);
         $(linkMessage).keydown(function (e) {
             if (e.which === 13) {
@@ -1711,7 +1711,7 @@ define([
             var hashData = Hash.parseTypeHash('invite', hash);
             href = origin + '/teams/#' + hash;
             if (!name || !name.trim()) {
-                $(linkError).text(Messages.team_inviteLinkErrorName).show(); // XXX
+                $(linkError).text(Messages.team_inviteLinkErrorName).show();
                 return true;
             }
 
@@ -1763,14 +1763,14 @@ define([
             keys: [27]
         }, {
             className: 'primary cp-teams-invite-create',
-            name: Messages.team_inviteLinkCreate, // XXX
+            name: Messages.team_inviteLinkCreate,
             onClick: function () {
                 return process();
             },
             keys: []
         }, {
             className: 'primary cp-teams-invite-copy',
-            name: Messages.team_inviteLinkCopy, // XXX
+            name: Messages.team_inviteLinkCopy,
             onClick: function () {
                 if (!href) { return; }
                 var success = Clipboard.copy(href);

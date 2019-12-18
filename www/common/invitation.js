@@ -1,5 +1,5 @@
 (function () {
-var factory = function (Hash, Util, Crypt, Nacl, Scrypt/*, Cred, nThen */) {
+var factory = function (Util, Nacl, Scrypt) {
     var Invite = {};
 
     Invite.deriveSeeds = function (safeSeed) {
@@ -38,21 +38,17 @@ var factory = function (Hash, Util, Crypt, Nacl, Scrypt/*, Cred, nThen */) {
 };
     if (typeof(module) !== 'undefined' && module.exports) {
         module.exports = factory(
-            require("../common-hash"),
             require("../common-util"),
-            require("../cryptget"), // XXX npm cryptget?
             require("tweetnacl/nacl-fast"),
             require("scrypt-async")
         );
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
         define([
-            '/common/common-hash.js',
             '/common/common-util.js',
-            '/common/cryptget.js',
             '/bower_components/tweetnacl/nacl-fast.min.js',
             '/bower_components/scrypt-async/scrypt-async.min.js',
-        ], function (Hash, Util, Crypt /*, Nacl, Scrypt */) {
-            return factory(Hash, Util, Crypt, window.nacl, window.scrypt);
+        ], function (Util) {
+            return factory(Util, window.nacl, window.scrypt);
         });
     }
 }());
