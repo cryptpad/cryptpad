@@ -1735,14 +1735,14 @@ define([
                     hash: hash,
                     teamId: config.teamId,
                     seeds: seeds,
-                }, waitFor(function (error) {
-                    if (error) {
+                }, waitFor(function (obj) {
+                    if (obj && obj.error) {
                         waitFor.abort(); 
                         $(linkSpin).hide();
                         $(linkForm).show(); // XXX DB: check this is the right place to put things back 
                         $nav.find('button.cp-teams-invite-create').show();
                         $nav.find('button.cp-teams-invite-copy').hide();
-                        return void $(linkError).text(Messages.team_inviteLinkError+error).show(); // XXX
+                        return void $(linkError).text(Messages.team_inviteLinkError+obj.error).show(); // XXX
                     }
                     // Display result here
                     $(linkSpin).hide();

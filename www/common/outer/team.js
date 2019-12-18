@@ -1285,7 +1285,7 @@ define([
         try {
             teamName = roster.getState().metadata.name;
         } catch (err) {
-            return void cb("TEAM_NAME_ERR");
+            return void cb({ error: "TEAM_NAME_ERR" });
         }
 
         var message = data.message;
@@ -1342,7 +1342,7 @@ define([
                     if (err) {
                         console.error("CRYPTPUT_ERR", err);
                         w.abort();
-                        return void cb("SET_PREVIEW_CONTENT");
+                        return void cb({ error: "SET_PREVIEW_CONTENT" });
                     }
                 }), putOpts);
             }());
@@ -1378,7 +1378,7 @@ define([
                     if (err) {
                         console.error("CRYPTPUT_ERR", err);
                         w.abort();
-                        return void cb("SET_PREVIEW_CONTENT");
+                        return void cb({ error: "SET_PREVIEW_CONTENT" });
                     }
                 }), putOpts);
             }());
@@ -1419,7 +1419,7 @@ define([
         try {
             previewKeys = Invite.derivePreviewKeys(seeds.preview);
         } catch (err) {
-            return void cb("INVALID_SEEDS");
+            return void cb({ error: "INVALID_SEEDS" });
         }
         Crypt.get({ // secrets
             channel: previewKeys.channel,
@@ -1429,13 +1429,13 @@ define([
                 cryptKey: previewKeys.cryptKey,
             },
         }, function (err, val) {
-            if (err) { return void cb(err); }
-            if (!val) { return void cb('DELETED'); }
+            if (err) { return void cb({ error: err }); }
+            if (!val) { return void cb({ error: 'DELETED' }); }
 
             var json = Util.tryParse(val);
-            if (!json) { return void cb("parseError"); }
+            if (!json) { return void cb({ error: "parseError" }); }
             console.error("JSON", json);
-            cb(void 0, json);
+            cb(json);
         }, { // cryptget opts
             network: ctx.store.network,
             initialState: '{}',
@@ -1448,7 +1448,7 @@ define([
         try {
             previewKeys = Invite.deriveInviteKeys(bytes64);
         } catch (err) {
-            return void cb("INVALID_SEEDS");
+            return void cb({ error: "INVALID_SEEDS" });
         }
         Crypt.get({ // secrets
             channel: previewKeys.channel,
@@ -1458,12 +1458,12 @@ define([
                 cryptKey: previewKeys.cryptKey,
             },
         }, function (err, val) {
-            if (err) { return void cb(err); }
-            if (!val) { return void cb('DELETED'); }
+            if (err) { return void cb({error: err}); }
+            if (!val) { return void cb({error: 'DELETED'}); }
 
             var json = Util.tryParse(val);
-            if (!json) { return void cb("parseError"); }
-            cb(void 0, json);
+            if (!json) { return void cb({error: "parseError"}); }
+            cb(json);
         }, { // cryptget opts
             network: ctx.store.network,
             initialState: '{}',

@@ -1079,11 +1079,15 @@ define([
             var bytes64;
 
 
+            var spinnerText;
+            var $spinner;
+            var inviteContent;
             nThen(function (waitFor) {
                 $inviteDiv.append(h('div', [
                     h('i.fa.fa-spin.fa-spinner'),
-                    h('span', 'Scrypt...') // XXX
+                    spinnerText = h('span', 'Scrypt...') // XXX
                 ]));
+                $spinner = $(spinnerText);
                 setTimeout(waitFor(), 150);
             }).nThen(function (waitFor) {
                 var salt = InviteInner.deriveSalt(pw, AppConfig.loginSalt);
@@ -1091,26 +1095,35 @@ define([
                     bytes64 = bytes;
                 }));
             }).nThen(function (waitFor) {
+                $spinner.text('get team data'); // XXX
                 APP.module.execCommand('GET_INVITE_CONTENT', {
                     bytes64: bytes64,
                     hash: hash,
                     password: pw,
-                }, waitFor(function () {
-                    $div.empty();
+                }, waitFor(function (obj) {
+                    if (obj && obj.error) {
+                        // Wrong password or other error...
+                        // XXX if DELETED, password prompt again?
+                        console.error(obj.error);
+                        waitFor.abort();
+                        return;
+                    }
+                    inviteContent = obj;
                     // TODO
                     // Accept/decline/decide later UI
                 }));
+            }).nThen(function (waitFor) {
             });
         };
 
         nThen(function (waitFor) {
             APP.module.execCommand("GET_PREVIEW_CONTENT", {
                 seeds: seeds,
-            }, waitFor(function (err, json) {
-                if (err) { // XXX this is failing with "team is disabled"
+            }, waitFor(function (json) {
+                if (json && jsoN.error) { // XXX this is failing with "team is disabled"
                     // XXX APP.module is not ready yet?
                     // err === DELETED: different message?
-                    $(errorBlock).text('ERROR'+err).show(); // XXX
+                    $(errorBlock).text('ERROR'+json.error).show(); // XXX
                     waitFor.abort();
                     $div.empty();
                     return;
