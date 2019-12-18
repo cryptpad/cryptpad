@@ -1491,13 +1491,16 @@ define([
             // Accept the roster invitation: relplace our ephemeral keys with our user keys
             var rosterData = Util.find(inviteContent, ['teamData', 'keys', 'roster']);
             var myKeys = inviteContent.ephemeral;
+            if (!rosterData || !myKeys) {
+                waitFor.abort();
+                return void cb({error: 'INVALID_INVITE_CONTENT'});
+            }
             var rosterKeys = Crypto.Team.deriveMemberKeys(rosterData.edit, myKeys);
             Roster.create({
                 network: ctx.store.network,
                 channel: rosterData.channel,
                 keys: rosterKeys,
                 anon_rpc: ctx.store.anon_rpc,
-                lastKnownHash: rosterData.lastKnownHash, // XXX Can we trust this user?
             }, waitFor(function (err, roster) {
                 if (err) {
                     waitFor.abort();
