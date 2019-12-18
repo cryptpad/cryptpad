@@ -1474,6 +1474,7 @@ define([
     var acceptLinkInvitation = function (ctx, data, cId, cb) {
         var inviteContent;
         nThen(function (waitFor) {
+            // Get team keys and ephemeral keys
             getInviteContent(ctx, data, cId, waitFor(function (obj) {
                 if (obj && obj.error) {
                     waitFor.abort();
@@ -1482,6 +1483,7 @@ define([
                 inviteContent = obj;
             }));
         }).nThen(function (waitFor) {
+            // Accept the roster invitation: relplace our ephemeral keys with our user keys
             var rosterData = Util.find(inviteContent, ['teamData', 'keys', 'roster']);
             var myKeys = inviteContent.ephemeral;
             var rosterKeys = Crypto.Team.deriveMemberKeys(rosterData.edit, myKeys);
@@ -1508,7 +1510,10 @@ define([
                 }));
             }));
         }).nThen(function () {
-            joinTeam(ctx, inviteContent.teamData, cId, cb);
+            // Add the team to our list and join...
+            joinTeam(ctx, {
+                team: inviteContent.teamData
+            }, cId, cb);
         });
     };
 
