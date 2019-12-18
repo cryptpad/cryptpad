@@ -299,7 +299,7 @@ define([
             $(muteButton).click(function () {
                 module.execCommand('MUTE_USER', {
                     curvePublic: data.curvePublic,
-                    name: data.displayName || data.name,
+                    name: Util.fixHTML(data.displayName || data.name),
                     avatar: data.avatar
                 }, function (e) {
                     if (e) { console.error(e); return void UI.warn(Messages.error); }
