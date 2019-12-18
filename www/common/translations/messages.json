@@ -1270,9 +1270,7 @@
     "team_inviteLinkErrorName": "Please add a name for the person you're inviting. They can change it later. ",
     "team_inviteLinkCreate": "Create link",
     "team_inviteLinkCopy": "Copy link",
-    "Messages": {
-        "team_inviteFrom": "From:"
-    },
+    "team_inviteFrom": "From:",
     "team_inviteFromMsg": "{0} has invited you to join the team <b>{1}</b>",
     "team_invitePleaseLogin": "Please log in or register to accept this invitation.",
     "team_inviteEnterPassword": "Please enter the invitation password to continue.",

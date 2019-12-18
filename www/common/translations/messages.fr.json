@@ -1270,9 +1270,7 @@
     "team_inviteLinkErrorName": "Merci de remplir un nom de la personne que vous invitez. Ce nom pourra être changé . ",
     "team_inviteLinkCreate": "Créer le lien",
     "team_inviteLinkCopy": "Copier le lien",
-    "Messages": {
-        "team_inviteFrom": "De :"
-    },
+    "team_inviteFrom": "De :",
     "team_inviteFromMsg": "{0} vous a invité à rejoindre l'équipe <b>{1}</b>",
     "team_invitePleaseLogin": "Merci de vous inscrire ou de vous connecter pour accepter cette invitation.",
     "team_inviteEnterPassword": "Entrez le mot de passe pour continuer.",
