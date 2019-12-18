@@ -1310,18 +1310,18 @@ define([
 
         nThen(function (w) {
 
-            var putOpts = {
-                initialState: '{}',
-                network: ctx.store.network,
-                metadata: {
-                    owners: [ctx.store.proxy.edPublic, ephemeralKeys.edPublic]
-                }
-            };
 
             (function () {
                 // a random signing keypair to prevent further writes to the channel
                 // we don't need to remember it cause we're only writing once
                 var sign = Invite.generateSignPair(); // { validateKey, signKey}
+                var putOpts = {
+                    initialState: '{}',
+                    network: ctx.store.network,
+                    metadata: {
+                        owners: [ctx.store.proxy.edPublic, ephemeralKeys.edPublic]
+                    }
+                };
                 putOpts.metadata.validateKey = sign.validateKey;
 
                 // visible with only the invite link
@@ -1356,6 +1356,13 @@ define([
                 // a different random signing key so that the server can't correlate these documents
                 // as components of an invite
                 var sign = Invite.generateSignPair(); // { validateKey, signKey}
+                var putOpts = {
+                    initialState: '{}',
+                    network: ctx.store.network,
+                    metadata: {
+                        owners: [ctx.store.proxy.edPublic, ephemeralKeys.edPublic]
+                    }
+                };
                 putOpts.metadata.validateKey = sign.validateKey;
 
                 // available only with the link and the content
