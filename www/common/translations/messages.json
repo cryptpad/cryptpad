@@ -1280,5 +1280,6 @@
     "team_inviteJoin": "Join team",
     "team_inviteTitle": "Team invitation",
     "team_inviteGetData": "Getting team data",
-    "team_cat_link": "Invitation Link"
+    "team_cat_link": "Invitation Link",
+    "team_links": "Invitation Links"
 }
