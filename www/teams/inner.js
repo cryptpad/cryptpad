@@ -184,7 +184,7 @@ define([
         var $categories = $('<div>', {'class': 'cp-sidebarlayout-categories'})
                             .appendTo(APP.$leftside);
 
-        var hash = common.getMetadataMgr().getPrivateData().teamInviteHash;
+        var hash = common.getMetadataMgr().getPrivateData().teamInviteHash && mainCategories.link;
 
         var categories = team ? teamCategories : mainCategories;
         var active = team ? 'drive' : (hash ? 'link' : 'list');
@@ -1051,6 +1051,7 @@ define([
     };
 
     refreshLink = function (common, cb) {
+        if (!mainCategories.link) { return; }
         var privateData = common.getMetadataMgr().getPrivateData();
         var hash = privateData.teamInviteHash;
         var hashData = Hash.parseTypeHash('invite', hash);
@@ -1133,6 +1134,7 @@ define([
                         if ($divLink.length) {
                             $divLink.remove();
                             $('div.cp-team-cat-link').remove();
+                            delete mainCategories.link;
                         }
                     });
                     var $divCreate = $('div.cp-team-create');

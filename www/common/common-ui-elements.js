@@ -1701,7 +1701,7 @@ define([
             var $nav = $linkContent.closest('.alertify').find('nav');
             $(linkError).text('').hide();
             var name = $(linkName).val();
-            var pw = $(linkPassword).val();
+            var pw = $(linkPassword).find('input').val();
             var msg = $(linkMessage).val();
             var hash = Hash.createRandomHash('invite', pw);
             var hashData = Hash.parseTypeHash('invite', hash);
