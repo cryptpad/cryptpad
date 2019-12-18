@@ -16,7 +16,6 @@ define([
     '/bower_components/nthen/index.js',
     '/common/invitation.js',
 
-    '/bower_components/scrypt-async/scrypt-async.js',
     'css!/customize/fonts/cptools/style.css',
     '/bower_components/croppie/croppie.min.js',
     'css!/bower_components/croppie/croppie.css',
