@@ -1641,6 +1641,7 @@ define([
         var dismissButton = h('span.fa.fa-times');
         var linkContent = h('div.cp-share-modal', [
             h('p', Messages.team_inviteLinkTitle ), // XXX
+            linkError = h('div.alert.alert-danger.cp-teams-invite-alert', {style : 'display: none;'}),
             linkForm = h('div.cp-teams-invite-form', [
                 linkName = h('input', {
                     placeholder:  Messages.team_inviteLinkTempName // XXX
@@ -1677,7 +1678,6 @@ define([
             }, h('textarea', {
                 readonly: 'readonly'
             })),
-            linkError = h('div.alert.alert-danger.cp-teams-invite-alert', {style : 'display: none;'}),
             linkWarning = h('div.cp-teams-invite-alert.alert.alert-warning.dismissable', {
                 style: "display: none;"
             }, [
@@ -1735,14 +1735,14 @@ define([
                     hash: hash,
                     teamId: config.teamId,
                     seeds: seeds,
-                }, waitFor(function (obj) {
-                    if (obj && obj.error) {
+                }, waitFor(function (error) {
+                    if (error) {
                         waitFor.abort(); 
                         $(linkSpin).hide();
                         $(linkForm).show(); // XXX DB: check this is the right place to put things back 
                         $nav.find('button.cp-teams-invite-create').show();
                         $nav.find('button.cp-teams-invite-copy').hide();
-                        return void $(linkError).text(Messages.team_inviteLinkError+obj.error).show(); // XXX
+                        return void $(linkError).text(Messages.team_inviteLinkError+error).show(); // XXX
                     }
                     // Display result here
                     $(linkSpin).hide();
