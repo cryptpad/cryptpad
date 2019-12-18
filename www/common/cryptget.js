@@ -102,7 +102,7 @@ define([
         opt = opt || {};
 
         var config = makeConfig(hash, opt);
-        var Session = { cb: cb, };
+        var Session = { cb: cb, hasNetwork: Boolean(opt.network) };
 
         config.onReady = function (info) {
             var realtime = Session.session = info.realtime;
