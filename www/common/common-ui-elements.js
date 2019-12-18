@@ -4157,7 +4157,7 @@ define([
         };
 
         var content = h('div.cp-share-modal', [
-            setHTML(h('p'), text)
+            setHTML(h('p'), text),
         ]);
         UI.proposal(content, todo);
     };

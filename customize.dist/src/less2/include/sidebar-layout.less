@@ -1,5 +1,6 @@
 @import (reference) "/customize/src/less2/include/colortheme-all.less";
 @import (reference) "/customize/src/less2/include/leftside-menu.less";
+@import (reference) "/customize/src/less2/include/buttons.less";
 
 @sidebar_button-width: 400px;
 
@@ -95,9 +96,11 @@
                     }
                 }
                 margin-bottom: 20px;
+            .buttons_main();
             }
             [type="text"], [type="password"], button {
                 vertical-align: middle;
+                min-width: 40px;
                 height: 40px;
                 box-sizing: border-box;
             }
@@ -106,12 +109,12 @@
                 width: @sidebar_button-width;
                 input {
                     flex: 1;
-                    border-radius: 0.25em 0 0 0.25em;
+                    //border-radius: 0.25em 0 0 0.25em;
                     border: 1px solid #adadad;
                     border-right: 0px;
                 }
                 button {
-                    border-radius: 0 0.25em 0.25em 0;
+                    //border-radius: 0 0.25em 0.25em 0;
                     //border: 1px solid #adadad;
                     border-left: 0px;
                 }
@@ -120,12 +123,22 @@
                 margin: 10px 0;
             }
             button.btn {
+                margin: 0 5px 0 0;
+            }
+            span.cp-password-container {
+                margin-bottom: 1px;
+            }
+/*
+            button.btn {
                 @button-bg: @colortheme_sidebar-button-bg;
                 @button-red-bg: @colortheme_sidebar-button-red-bg;
                 @button-alt-bg: @colortheme_sidebar-button-alt-bg;
                 background-color: @button-bg;
                 border-color: darken(@button-bg, 10%);
                 color: white;
+                .fa {
+                    margin-right: 0.2em;
+                }
                 &:hover {
                     background-color: darken(@button-bg, 10%);
                 }
@@ -146,6 +159,7 @@
                     }
                 }
             }
+*/
         }
     }
 }
