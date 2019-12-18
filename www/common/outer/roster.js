@@ -384,7 +384,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             }
             // reject commandws wehere the members are not proper objects
             if (!isMap(args[curve])) { throw new Error("INVALID_CONTENT"); }
-            if (members[curve]) { throw new Error("ARLEADY_PRESNET"); }
+            if (members[curve]) { throw new Error("ARLEADY_PRESENT"); }
 
             var data = args[curve];
             // if no role was provided, assume VIEWER
