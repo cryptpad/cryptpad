@@ -18,16 +18,6 @@ var factory = function (Hash, Util, Crypt, Nacl, Scrypt/*, Cred, nThen */) {
         };
     };
 
-    Invite.derivePreviewHash = function (seeds) {
-        return '#/2/invite/view/' +
-            Nacl.util.encodeBase64(seeds.preview.slice(0, 18)).replace('/', '-')
-            + '/';
-    };
-
-    Invite.derivePreviewSecrets = function (seeds) {
-        return Hash.getSecrets('pad', Invite.derivePreviewHash(seeds));
-    };
-
     Invite.deriveSalt = function (password, instance_salt) {
         return (password || '') + (instance_salt || '');
     };
@@ -42,44 +32,6 @@ var factory = function (Hash, Util, Crypt, Nacl, Scrypt/*, Cred, nThen */) {
             200, // interruptStep
             cb,
             'base64'); // format, could be 'base64'
-    };
-
-    Invite.getPreviewContent = function (seeds, cryptgetOpts, _cb) {
-        var cb = Util.once(Util.mkAsync(_cb));
-        // XXX test data
-        cb(void 0, {
-            author: {
-                displayName: 'Bob',
-                curvePublic: 'pewpewpew'
-            },
-            team: 'CryptPad',
-            message: 'Hello bob'
-        });
-        /*
-        var secrets = Invite.derivePreviewSecrets(seeds);
-        secrets = secrets;
-        */
-        var hash = Invite.derivePreviewHash(seeds);
-        Crypt.get(hash, function (err, val) {
-            if (err) { return void cb(err); }
-            if (!val) { return void cb('DELETED'); }
-            try {
-                cb(void 0, JSON.parse(val));
-            } catch (e) {
-                console.error(e);
-                cb(e);
-            }
-        }, cryptgetOpts);
-//        cb("NOT_IMPLEMENTED"); // XXX cryptget
-    };
-
-    // XXX remember to pin invites...
-    Invite.setPreviewContent = function (seeds, cb) {
-        var hash = Invite.derivePreviewHash(seeds);
-        Crypt.put(hash, '', function (err) { // value?
-            cb(err);
-        });
-        //cb = cb;
     };
 
     return Invite;
