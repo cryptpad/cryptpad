@@ -1135,13 +1135,11 @@ define([
                 }
                 $div.empty();
                 $div.append(h('div.cp-teams-invite-from', [
-                    'From', // XXX
+                    'From: ', // XXX
                     displayUser(common, json.author)
                 ]));
                 $div.append(UI.setHTML(h('p.cp-teams-invite-to'), 'Bob has invited you to join the team <b>CryptPad</b>')); // XXX
-                $div.append(h('div.cp-teams-invite-message', [
-                    UI.dialog.selectableArea(json.message || '')
-                ]));
+                $div.append(h('div.cp-teams-invite-message', json.message || ''));
             }));
         }).nThen(function (waitFor) {
             // If you're logged in, move on to the next nThen
@@ -1178,7 +1176,7 @@ define([
                 if (!val) { return; }
                 process(val);
             });
-            $inviteDiv.prepend(h('div', [
+            $inviteDiv.prepend(h('div.cp-teams-invite-password', [
                 h('p', 'Please enter the invitation password to continue...'),
                 pwInput
             ])); // XXX
