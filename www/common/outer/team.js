@@ -1270,7 +1270,6 @@ define([
         ctx.store.messenger.openTeamChat(team.getChatData(), onUpdate, cId, cb);
     };
 
-    // XXX ansuz
     var createInviteLink = function (ctx, data, cId, _cb) {
         var cb = Util.mkAsync(Util.once(_cb));
 
@@ -1405,14 +1404,8 @@ define([
                     curvePublic: ephemeralKeys.curvePublic,
                     displayName: data.name,
                     pending: true,
-                    inviteChannel: inviteKeys.channel, // XXX keep this channel pinned until the invite is accepted
-                    previewChannel: previewKeys.channel, // XXX keep this channel pinned until the invite is accepted
-
-                    // XXX encrypt the following data for your own curvePublic
-                    // XXX and implement UI for interacting with it
-                      // remind yourself of the password used
-                      // bypass scrypt with bytes64 to revover other keys
-                    // { password, bytes64, hash}
+                    inviteChannel: inviteKeys.channel,
+                    previewChannel: previewKeys.channel,
                 }
             }, w(function (err) {
                 if (err) {
