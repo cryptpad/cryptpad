@@ -1091,7 +1091,7 @@ define([
                     bytes64 = bytes;
                 }));
             }).nThen(function (waitFor) {
-                APP.module.execCommand('GET_LINK_DATA', {
+                APP.module.execCommand('GET_INVITE_CONTENT', {
                     bytes64: bytes64,
                     hash: hash,
                     password: pw,
@@ -1104,10 +1104,11 @@ define([
         };
 
         nThen(function (waitFor) {
-            InviteInner.getPreviewContent(seeds, {
-                origin: privateData.origin
+            APP.module.execCommand("GET_PREVIEW_CONTENT", {
+                seeds: seeds,
             }, waitFor(function (err, json) {
-                if (err) {
+                if (err) { // XXX this is failing with "team is disabled"
+                    // XXX APP.module is not ready yet?
                     // err === DELETED: different message?
                     $(errorBlock).text('ERROR'+err).show(); // XXX
                     waitFor.abort();
@@ -1115,7 +1116,6 @@ define([
                     return;
                     // XXX handle errors
                 }
-                json = json; // XXX {message: "", author: "", ???}
                 $div.empty();
                 $div.append(h('div.cp-teams-invite-from', [
                     'From', // XXX

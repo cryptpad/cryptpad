@@ -18,11 +18,19 @@ var factory = function (Util, Cred, nThen, Nacl) {
         };
     };
 
+    Invite.generateSignPair = function () {
+        var ed = Nacl.sign.keyPair();
+        return {
+            validateKey: encode64(ed.publicKey),
+            signKey: encode64(ed.secretKey),
+        };
+    };
+
     var b64ToChannelKeys = function (b64) {
         var dispense = Cred.dispenser(decode64(b64));
         return {
             channel: Util.uint8ArrayToHex(dispense(16)),
-            cryptKey: encode64(dispense(Nacl.secretbox.keyLength)),
+            cryptKey: dispense(Nacl.secretbox.keyLength),
         };
     };
 
@@ -35,35 +43,6 @@ var factory = function (Util, Cred, nThen, Nacl) {
     // unless the message contains secrets.
     // derived from the link seed alone.
     Invite.derivePreviewKeys = b64ToChannelKeys;
-
-    // what the invite link alone will allow you to see
-    Invite.createPreviewContent = function (data, keys, cb) {
-        cb = cb;
-        /*  should include:
-        {
-            message: "", // personal message
-            author: "", // author public key
-            from: "", // author pretty name
-        }
-        */
-    };
-
-    // the remaining data available with the invite link + password
-    Invite.createInviteContent = function (data, keys, cb) {
-        cb = cb;
-        /*  should include:
-        {
-            teamData: {
-                // everything you need to join the team
-
-            },
-            ephemeral: {
-                curve: "", // for the roster
-                ed: "" // for deleting the preview content
-            }
-        }
-        */
-    };
 
     Invite.createRosterEntry = function (roster, data, cb) {
         var toInvite = {};
