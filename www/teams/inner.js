@@ -1156,7 +1156,7 @@ define([
         nThen(function (waitFor) {
             // Get preview content.
             var sframeChan = common.getSframeChannel();
-            sframeChan.query('Q_ANON_GET_PREVIEW_CONTENT', { seeds: seeds }, waitFor(function (json) {
+            sframeChan.query('Q_ANON_GET_PREVIEW_CONTENT', { seeds: seeds }, waitFor(function (err, json) {
                 if (json && json.error) {
                     // XXX APP.module is not ready yet?
                     // err === DELETED: different message?
