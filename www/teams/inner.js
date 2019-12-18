@@ -779,7 +779,6 @@ define([
         var links = Object.keys(roster).filter(function (k) {
             if (!roster[k].pending) { return; }
             if (!roster[k].inviteChannel) { return; }
-            roster[k].curvePublic = k; // XXX "if (!data.curvePublic) { return; }" in makeMember
             return roster[k].role === "VIEWER" || !roster[k].role;
         }).map(function (k) {
             return makeMember(common, roster[k], me);
@@ -1077,9 +1076,13 @@ define([
             errorBlock = h('div.alert.alert-danger', {style: 'display: none;'}),
             div
         ];
+        // "cb" will put the content into the UI.
+        // We're displaying a spinner while we're cryptgetting the preview content
         cb(c);
 
-        var declineButton = h('button.btn.btn-danger', Messages.friendRequest_decline);
+        var declineButton = h('button.btn.btn-danger', {
+            style: 'display: none;'
+        }, Messages.friendRequest_decline);
         var acceptButton = h('button.btn.btn-primary', Messages.team_inviteJoin || 'JOIN TEAM'); // XXX
         var inviteDiv = h('div', [
             h('nav', [
@@ -1151,19 +1154,8 @@ define([
 
         nThen(function (waitFor) {
             // Get preview content.
-            // Use the team module if we're logged in, or sframeChan if we're not
-            var f = function (data, cb) {
-                if (driveAPP.loggedIn) {
-                    return void APP.module.execCommand('GET_PREVIEW_CONTENT', data, cb);
-                }
-                var sframeChan = common.getSframeChannel();
-                sframeChan.query('Q_ANON_GET_PREVIEW_CONTENT', data, function (err, json) {
-                    cb(json);
-                });
-            };
-            f({
-                seeds: seeds,
-            }, waitFor(function (json) {
+            var sframeChan = common.getSframeChannel();
+            sframeChan.query('Q_ANON_GET_PREVIEW_CONTENT', { seeds: seeds }, waitFor(function (json) {
                 if (json && json.error) { // XXX this is failing with "team is disabled"
                     // XXX APP.module is not ready yet?
                     // err === DELETED: different message?
