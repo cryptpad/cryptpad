@@ -1685,6 +1685,11 @@ define([
                 dismissButton
             ]) // XXX
         ]);
+        $(linkMessage).keydown(function (e) {
+            if (e.which === 13) {
+                e.stopPropagation();
+            }
+        });
         var localStore = window.cryptpadStore;
         localStore.get('hide-alert-teamInvite', function (val) {
             if (val === '1') { return; }
@@ -1763,7 +1768,7 @@ define([
             onClick: function () {
                 return process();
             },
-            keys: [13]
+            keys: []
         }, {
             className: 'primary cp-teams-invite-copy',
             name: Messages.team_inviteLinkCopy, // XXX
