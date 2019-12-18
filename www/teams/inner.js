@@ -1096,7 +1096,7 @@ define([
                 }));
             }).nThen(function (waitFor) {
                 $spinner.text('get team data'); // XXX
-                APP.module.execCommand('GET_INVITE_CONTENT', {
+                APP.module.execCommand('ACCEPT_LINK_INVITATION', {
                     bytes64: bytes64,
                     hash: hash,
                     password: pw,
@@ -1108,19 +1108,25 @@ define([
                         waitFor.abort();
                         return;
                     }
-                    inviteContent = obj;
-                    // TODO
-                    // Accept/decline/decide later UI
+                    // No error: join successful!
+                    var $div = $('div.cp-team-list').empty();
+                    refreshList(common, function (content) {
+                        $div.append(content);
+                        $('div.cp-team-cat-list').click();
+                        // XXX REMOVE INVITATION TAB
+                    });
+
                 }));
             }).nThen(function (waitFor) {
             });
         };
 
         nThen(function (waitFor) {
+            // XXX XXX Check number of teams first!
             APP.module.execCommand("GET_PREVIEW_CONTENT", {
                 seeds: seeds,
             }, waitFor(function (json) {
-                if (json && jsoN.error) { // XXX this is failing with "team is disabled"
+                if (json && json.error) { // XXX this is failing with "team is disabled"
                     // XXX APP.module is not ready yet?
                     // err === DELETED: different message?
                     $(errorBlock).text('ERROR'+json.error).show(); // XXX

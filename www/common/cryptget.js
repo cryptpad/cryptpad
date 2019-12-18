@@ -112,7 +112,7 @@ define([
 
             var to = setTimeout(function () {
                 cb(new Error("Timeout"));
-            }, 5000);
+            }, 15000);
 
             Realtime.whenRealtimeSyncs(realtime, function () {
                 clearTimeout(to);

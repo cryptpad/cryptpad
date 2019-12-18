@@ -446,6 +446,7 @@ define([
                 // If we've been kicked, don't try to update our data, we'll close everything
                 // in the next nThen part
                 var state = roster.getState();
+                console.error(state);
                 var me = Util.find(ctx, ['store', 'proxy', 'curvePublic']);
                 if (!state.members[me]) { return; }
 
@@ -1364,7 +1365,7 @@ define([
                 };
 
                 var cryptput_config = {
-                    channel: previewKeys.channel,
+                    channel: inviteKeys.channel,
                     type: 'pad',
                     version: 2,
                     keys: {
@@ -1470,6 +1471,46 @@ define([
         });
     };
 
+    var acceptLinkInvitation = function (ctx, data, cId, cb) {
+        var inviteContent;
+        nThen(function (waitFor) {
+            getInviteContent(ctx, data, cId, waitFor(function (obj) {
+                if (obj && obj.error) {
+                    waitFor.abort();
+                    return void cb(obj);
+                }
+                inviteContent = obj;
+            }));
+        }).nThen(function (waitFor) {
+            var rosterData = Util.find(inviteContent, ['teamData', 'keys', 'roster']);
+            var myKeys = inviteContent.ephemeral;
+            var rosterKeys = Crypto.Team.deriveMemberKeys(rosterData.edit, myKeys);
+            Roster.create({
+                network: ctx.store.network,
+                channel: rosterData.channel,
+                keys: rosterKeys,
+                anon_rpc: ctx.store.anon_rpc,
+                lastKnownHash: rosterData.lastKnownHash, // XXX Can we trust this user?
+            }, waitFor(function (err, roster) {
+                if (err) {
+                    waitFor.abort();
+                    console.error(err);
+                    return void cb({error: 'ROSTER_ERROR'});
+                }
+                var myData = Messaging.createData(ctx.store.proxy, false);
+                roster.accept(myData.curvePublic, waitFor(function (err) {
+                    if (err) {
+                        waitFor.abort();
+                        console.error(err);
+                        return void cb({error: 'ACCEPT_ERROR'});
+                    }
+                    roster.stop();
+                }));
+            }));
+        }).nThen(function () {
+            joinTeam(ctx, inviteContent.teamData, cId, cb)
+        });
+    };
 
     Team.init = function (cfg, waitFor, emit) {
         var team = {};
@@ -1627,11 +1668,11 @@ define([
             if (cmd === 'CREATE_INVITE_LINK') {
                 return void createInviteLink(ctx, data, clientId, cb);
             }
-            if (cmd === 'GET_INVITE_CONTENT') {
-                return void getInviteContent(ctx, data, clientId, cb);
-            }
             if (cmd === 'GET_PREVIEW_CONTENT') {
                 return void getPreviewContent(ctx, data, clientId, cb);
+            }
+            if (cmd === 'ACCEPT_LINK_INVITATION') {
+                return void acceptLinkInvitation(ctx, data, clientId, cb);
             }
         };
 
