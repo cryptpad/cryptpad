@@ -446,7 +446,6 @@ define([
                 // If we've been kicked, don't try to update our data, we'll close everything
                 // in the next nThen part
                 var state = roster.getState();
-                console.error(state);
                 var me = Util.find(ctx, ['store', 'proxy', 'curvePublic']);
                 if (!state.members[me]) { return; }
 
