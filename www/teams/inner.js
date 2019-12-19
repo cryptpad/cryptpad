@@ -1127,6 +1127,7 @@ define([
                     password: pw,
                 }, waitFor(function (obj) {
                     if (obj && obj.error) {
+                        console.error(obj.error);
                         // Wrong password or other error...
                         waitFor.abort();
                         if (obj.error === 'INVALID_INVITE_CONTENT') {

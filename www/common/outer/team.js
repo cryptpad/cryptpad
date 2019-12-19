@@ -1489,6 +1489,17 @@ define([
                 inviteContent = obj;
             }));
         }).nThen(function (waitFor) {
+            // Check if you're already a member of this team
+            var chan = Util.find(inviteContent, ['teamData', 'channel']);
+            var myTeams = ctx.store.proxy.teams || {};
+            var isMember = Object.keys(myTeams).some(function (k) {
+                var t = myTeams[k];
+                return t.channel === chan;
+            });
+            if (isMember) {
+                waitFor.abort();
+                return void cb({error: 'ALREADY_MEMBER'});
+            }
             // Accept the roster invitation: relplace our ephemeral keys with our user keys
             var rosterData = Util.find(inviteContent, ['teamData', 'keys', 'roster']);
             var myKeys = inviteContent.ephemeral;
@@ -1512,12 +1523,12 @@ define([
                 var state = roster.getState();
                 rosterState = state.members[myKeys.curvePublic];
                 roster.accept(myData.curvePublic, waitFor(function (err) {
+                    roster.stop();
                     if (err) {
                         waitFor.abort();
                         console.error(err);
                         return void cb({error: 'ACCEPT_ERROR'});
                     }
-                    roster.stop();
                 }));
             }));
         }).nThen(function () {
