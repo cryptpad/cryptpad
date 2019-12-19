@@ -729,9 +729,7 @@ define([
             actions,
             status,
         ];
-        var div = h('div.cp-team-roster-member', {
-            title: data.displayName
-        }, content);
+        var div = h('div.cp-team-roster-member', content);
         if (data.profile) {
             $(div).dblclick(function (e) {
                 e.preventDefault();

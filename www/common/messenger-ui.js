@@ -516,7 +516,6 @@ define([
             var roomEl = h('div.cp-app-contacts-friend.cp-avatar', {
                 'data-key': id,
                 'data-user': room.isFriendChat ? userlist[0].curvePublic : '',
-                title: room.name
             });
 
 
@@ -889,6 +888,9 @@ define([
                             if (!data) { $button.hide(); }
                             $('.cp-app-contacts-friend[data-user="'+curve+'"]')
                                 .find('.cp-mute-icon').show();
+                            if ($('.cp-contacts-muted-table').find('.cp-contacts-muted-user').length === 0) {
+                                UI.findOKButton().click();
+                            }
                         });
                     });
                     return h('div.cp-contacts-muted-user', [
@@ -898,7 +900,7 @@ define([
                     ]);
                 });
                 var content = h('div', [
-                    h('h4', Messages.contacts_mutedUsers || 'Muted users...'),
+                    h('h4', Messages.contacts_mutedUsers),
                     h('div.cp-contacts-muted-table', rows)
                 ]);
                 $button.off('click');
