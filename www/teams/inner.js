@@ -1173,7 +1173,7 @@ define([
             sframeChan.query('Q_ANON_GET_PREVIEW_CONTENT', { seeds: seeds }, waitFor(function (err, json) {
                 if (json && json.error) {
                     // err === DELETED: different message?
-                    $(errorBlock).text(Messages.error + json.error).show(); // XXX
+                    $(errorBlock).text(Messages.team_inviteInvalidLinkError).show();
                     waitFor.abort();
                     $div.empty();
                     return;

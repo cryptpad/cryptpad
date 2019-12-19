@@ -1743,10 +1743,10 @@ define([
                     if (obj && obj.error) {
                         waitFor.abort(); 
                         $(linkSpin).hide();
-                        $(linkForm).show(); // XXX DB: check this is the right place to put things back 
+                        $(linkForm).show();
                         $nav.find('button.cp-teams-invite-create').show();
                         $nav.find('button.cp-teams-invite-copy').hide();
-                        return void $(linkError).text(Messages.team_inviteLinkError+obj.error).show(); // XXX
+                        return void $(linkError).text(Messages.team_inviteLinkError).show();
                     }
                     // Display result here
                     $(linkSpin).hide();
