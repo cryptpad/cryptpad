@@ -1,4 +1,51 @@
-# HimalayanQuail (3.7.0)
+# IsolobodonPortoricensis release (3.8.0)
+
+We had some trouble finding an extinct animal whose name started with "I", and we had to resort to using a scientific name.
+Despite this long name, this was a very short release cycle.
+It's the last release of 2019, so we hope you like it!
+
+## Goals
+
+During this release cycle we prioritized the mitigation of some social abuse vectors and the ability to invite users to a team via a link.
+We have more improvements planned for both features, but we wanted to release what we had before the end of the year as our team is taking a little time off to recharge for 2020.
+
+## Update notes
+
+This is a small and simple release. We made a very minor improvement to the server which will require a restart, but everything will still work if you choose not to.
+
+Update from 3.7.0 to 3.8.0 with the following procedure:
+
+1. Take your server down
+2. Get the latest code with `git pull origin master`
+3. Bring your server back up
+
+Or if you've set up your admin interface:
+
+1. Pull the latest code
+2. Click the admin panel's "Flush cache" button
+
+## Features
+
+* We updated a bunch of styles to improve the platform's visual consistency:
+  * prettier buttons
+  * elimination of rounded corners on buttons, text inputs, and password inputs
+* We've fixed the default styles on embedded media while their content is loading
+* The button to add a user as a contact on their profile page now has a more prominent position at the top of the page
+* Users also have the option of muting other people via their profile page.
+  * these users will not know that you've muted them.
+  * you can review the complete list of all the people you've muted on your contacts page
+  * you can mute or unmute from the contacts page as well as their profile
+  * changes to a user's mute status propagate across pages in real-time
+* Some of our Finnish-speaking users have become contributors via our weblate instance (https://weblate.cryptpad.fr/)
+  * we're always looking for more translators to help more people protect their data, so don't hesitate to contact us if you want to help
+* Finally, it's now possible to invite users to a team by creating and sharing a personalized one-time-use link.
+  * team owners and admins can try it out via their teams' "Members" tab
+
+## Bug fixes
+
+* We've fixed a few subtle bugs where various contact status and our one-to-one chat functionality could get into a bad state.
+
+# HimalayanQuail release (3.7.0)
 
 ## Goals
 
