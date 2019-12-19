@@ -1279,5 +1279,7 @@
     "team_inviteTitle": "Team-Einladung",
     "team_inviteGetData": "Team-Daten werden abgerufen",
     "team_cat_link": "Einladungslink",
-    "team_links": "Einladungslinks"
+    "team_links": "Einladungslinks",
+    "team_inviteInvalidLinkError": "Dieser Einladungslink ist ungültig.",
+    "team_inviteLinkError": "Bei der Erstellung des Links ist ein Fehler aufgetreten."
 }
