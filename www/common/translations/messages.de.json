@@ -1267,7 +1267,17 @@
     "team_inviteLinkNoteMsg": "Diese Nachricht wird angezeigt, bevor der Empfänger entscheidet, ob er diesem Team beitreten möchte.",
     "team_inviteLinkLoading": "Dein Link wird generiert",
     "team_inviteLinkWarning": "Die erste Person, die auf diesen Link zugreift, kann diesem Team beitreten und dessen Inhalte einsehen. Teile ihn sorgfältig.",
-    "team_inviteLinkErrorName": "Bitte gib der Einladung einen Namen",
+    "team_inviteLinkErrorName": "Bitte gib einen Namen für die eingeladene Person ein. Er kann später geändert werden. ",
     "team_inviteLinkCreate": "Link erstellen",
-    "team_inviteLinkCopy": "Link kopieren"
+    "team_inviteLinkCopy": "Link kopieren",
+    "team_inviteFrom": "Von:",
+    "team_inviteFromMsg": "{0} hat dich ins Team <b>{1}</b> eingeladen",
+    "team_invitePleaseLogin": "Bitte logge dich ein oder registriere dich, um diese Einladung anzunehmen.",
+    "team_inviteEnterPassword": "Bitte gib das Passwort für die Einladung ein, um fortzufahren.",
+    "team_invitePasswordLoading": "Einladung wird entschlüsselt",
+    "team_inviteJoin": "Team beitreten",
+    "team_inviteTitle": "Team-Einladung",
+    "team_inviteGetData": "Team-Daten werden abgerufen",
+    "team_cat_link": "Einladungslink",
+    "team_links": "Einladungslinks"
 }
