@@ -1137,7 +1137,11 @@ define([
                                     $divLink.append(content);
                                 }, true);
                             }
+                            return;
                         }
+                        $(errorBlock).text(Messages.team_inviteInvalidLinkError).show();
+                        $(div).empty();
+                        $inviteDiv.empty();
                         return;
                     }
                     // No error: join successful!
