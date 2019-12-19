@@ -292,7 +292,7 @@ define([
                 }).appendTo($mute);
                 return;
             }
-            var muteButton = h('button.btn.btn-danger.cp-app-profile-friend-request', [
+            var muteButton = h('button.btn.btn-danger-outline.cp-app-profile-friend-request', [
                 h('i.fa.fa-bell-slash'),
                 Messages.contacts_mute || 'mute'
             ]);
