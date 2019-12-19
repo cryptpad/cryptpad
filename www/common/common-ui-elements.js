@@ -1730,7 +1730,6 @@ define([
                     bytes64 = _bytes;
                 }));
             }).nThen(function (waitFor) {
-                $(linkSpinText).text(Messages.team_inviteLinkAdding); // XXX
                 module.execCommand('CREATE_INVITE_LINK', {
                     name: name,
                     password: pw,
@@ -2257,12 +2256,12 @@ define([
         for (var k in actions) {
             $('<button>', {
                 'data-type': k,
-                'class': 'fa ' + actions[k].icon,
+                'class': 'pure-button fa ' + actions[k].icon,
                 title: Messages['mdToolbar_' + k] || k
             }).click(onClick).appendTo($toolbar);
         }
         $('<button>', {
-            'class': 'fa fa-question cp-markdown-help',
+            'class': 'pure-button fa fa-question cp-markdown-help',
             title: Messages.mdToolbar_help
         }).click(function () {
             var href = Messages.mdToolbar_tutorial;

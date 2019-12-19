@@ -137,7 +137,7 @@ define([
         }, Messages.profile_addLink);
         APP.$linkEdit = $(button);
         $block.append(button);
-        var save = h('button.btn.btn-success', Messages.settings_save);
+        var save = h('button.btn.btn-primary', Messages.settings_save);
         var text = h('input');
         var code = h('div.cp-app-profile-link-code', [
             text,
@@ -149,7 +149,7 @@ define([
         $block.append(div);
         $(button).click(function () {
             $(text).val(APP.$link.attr('href'));
-            $(code).show();
+            $(code).css('display', 'flex');
             APP.editor.refresh();
             $(button).hide();
         });
