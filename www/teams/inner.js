@@ -1167,8 +1167,7 @@ define([
             // Get preview content.
             var sframeChan = common.getSframeChannel();
             sframeChan.query('Q_ANON_GET_PREVIEW_CONTENT', { seeds: seeds }, waitFor(function (err, json) {
-                if (json && json.error) {
-                    // err === DELETED: different message?
+                if (json && (json.error || !Object.keys(json).length)) {
                     $(errorBlock).text(Messages.team_inviteInvalidLinkError).show();
                     waitFor.abort();
                     $div.empty();
@@ -1193,7 +1192,7 @@ define([
 
             // If you're not logged in, display the login buttons
             var anonLogin, anonRegister;
-            $div.append(h('p', Messages.team_invitePleaseLogin || 'Please log in or register to accept this invitation...'));
+            $div.append(h('p', Messages.team_invitePleaseLogin));
             $div.append(h('div', [
                 anonLogin = h('button.btn.btn-primary', Messages.login_login),
                 anonRegister = h('button.btn.btn-secondary', Messages.login_register),
