@@ -1279,5 +1279,7 @@
     "team_inviteTitle": "Team invitation",
     "team_inviteGetData": "Getting team data",
     "team_cat_link": "Invitation Link",
-    "team_links": "Invitation Links"
+    "team_links": "Invitation Links",
+    "team_inviteInvalidLinkError": "This invitation link is not valid.",
+    "team_inviteLinkError": "There was an error while creating the link."
 }
