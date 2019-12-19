@@ -1478,6 +1478,7 @@ define([
 
     var acceptLinkInvitation = function (ctx, data, cId, cb) {
         var inviteContent;
+        var rosterState;
         nThen(function (waitFor) {
             // Get team keys and ephemeral keys
             getInviteContent(ctx, data, cId, waitFor(function (obj) {
@@ -1508,6 +1509,8 @@ define([
                     return void cb({error: 'ROSTER_ERROR'});
                 }
                 var myData = Messaging.createData(ctx.store.proxy, false);
+                var state = roster.getState();
+                rosterState = state.members[myKeys.curvePublic];
                 roster.accept(myData.curvePublic, waitFor(function (err) {
                     if (err) {
                         waitFor.abort();
@@ -1518,6 +1521,21 @@ define([
                 }));
             }));
         }).nThen(function () {
+            var tempRpc = {};
+            initRpc(ctx, tempRpc, inviteContent.ephemeral, function (err) {
+                if (err) { return; }
+                var rpc = tempRpc.rpc;
+                if (rosterState.inviteChannel) {
+                    rpc.removeOwnedChannel(rosterState.inviteChannel, function (err) {
+                        if (err) { console.error(err); }
+                    });
+                }
+                if (rosterState.previewChannel) {
+                    rpc.removeOwnedChannel(rosterState.previewChannel, function (err) {
+                        if (err) { console.error(err); }
+                    });
+                }
+            });
             // Add the team to our list and join...
             joinTeam(ctx, {
                 team: inviteContent.teamData
