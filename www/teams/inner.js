@@ -1130,8 +1130,6 @@ define([
                 }, waitFor(function (obj) {
                     if (obj && obj.error) {
                         // Wrong password or other error...
-                        // XXX if DELETED, password prompt again?
-                        console.error(obj.error);
                         waitFor.abort();
                         if (obj.error === 'INVALID_INVITE_CONTENT') {
                             // Wrong password...

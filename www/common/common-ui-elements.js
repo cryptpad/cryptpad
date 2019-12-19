@@ -1730,7 +1730,6 @@ define([
                     bytes64 = _bytes;
                 }));
             }).nThen(function (waitFor) {
-                $(linkSpinText).text(Messages.team_inviteLinkAdding); // XXX
                 module.execCommand('CREATE_INVITE_LINK', {
                     name: name,
                     password: pw,
