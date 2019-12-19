@@ -25,6 +25,7 @@
             flex: 1;
             display: flex;
             flex-flow: column;
+            align-items: start;
         }
     }
     #cp-app-profile-avatar {
@@ -80,8 +81,6 @@
         text-align: center;
     }
     #cp-app-profile-displayname, #cp-app-profile-link {
-        width: 100%;
-        height: 40px;
         margin: 10px 0;
         input {
             width: 100%;
@@ -114,6 +113,14 @@
         }
         .cp-app-profile-link-code {
             display: none;
+            min-width: 500px;
+            input {
+                flex: 1;
+                min-width: 0;
+            }
+            button {
+                height: 48px !important;
+            }
         }
         & > button:empty {
             margin-left: 25px !important;
@@ -139,8 +146,7 @@
         float: right;
     }
     .cp-app-profile-viewprofile-button {
-        margin-bottom: 20px;
-        width: 300px;
+        margin-bottom: 5px !important;
     }
     #cp-app-profile-description {
         position: relative;
