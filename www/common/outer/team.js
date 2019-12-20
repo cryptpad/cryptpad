@@ -1440,7 +1440,6 @@ define([
 
             var json = Util.tryParse(val);
             if (!json) { return void cb({ error: "parseError" }); }
-            console.error("JSON", json);
             cb(json);
         }, { // cryptget opts
             network: ctx.store.network,

@@ -1059,6 +1059,7 @@ define([
         var hashData = Hash.parseTypeHash('invite', hash);
         var password = hashData.password;
         var seeds = InviteInner.deriveSeeds(hashData.key);
+        var sframeChan = common.getSframeChannel();
 
         if (Object.keys(privateData.teams || {}).length >= Constants.MAX_TEAMS_SLOTS) {
             return void cb([
@@ -1146,6 +1147,7 @@ define([
                         return;
                     }
                     // No error: join successful!
+                    sframeChan.event('EV_SET_HASH', '');
                     var $div = $('div.cp-team-list').empty();
                     refreshList(common, function (content) {
                         $div.append(content);
@@ -1170,7 +1172,6 @@ define([
 
         nThen(function (waitFor) {
             // Get preview content.
-            var sframeChan = common.getSframeChannel();
             sframeChan.query('Q_ANON_GET_PREVIEW_CONTENT', { seeds: seeds }, waitFor(function (err, json) {
                 if (json && (json.error || !Object.keys(json).length)) {
                     $(errorBlock).text(Messages.team_inviteInvalidLinkError).show();
