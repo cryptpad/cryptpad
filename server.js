@@ -214,7 +214,7 @@ app.get('/api/config', function(req, res){
             // FIXME don't send websocketURL if websocketPath is provided. deprecated.
             websocketURL:'ws' + ((useSecureWebsockets) ? 's' : '') + '://' + host + ':' +
                 websocketPort + '/cryptpad_websocket',
-            httpUnsafeOrigin: config.httpUnsafeOrigin,
+            httpUnsafeOrigin: config.httpUnsafeOrigin.replace(/^\s*/, ''),
             adminEmail: config.adminEmail,
             adminKeys: admins,
             inactiveTime: config.inactiveTime,

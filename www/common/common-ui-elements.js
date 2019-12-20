@@ -14,11 +14,13 @@ define([
     '/customize/application_config.js',
     '/customize/pages.js',
     '/bower_components/nthen/index.js',
+    '/common/invitation.js',
+
     'css!/customize/fonts/cptools/style.css',
     '/bower_components/croppie/croppie.min.js',
     'css!/bower_components/croppie/croppie.css',
 ], function ($, Config, Util, Hash, Language, UI, Constants, Feedback, h, MediaTag, Clipboard,
-             Messages, AppConfig, Pages, NThen) {
+             Messages, AppConfig, Pages, NThen, InviteInner) {
     var UIElements = {};
 
     // Configure MediaTags to use our local viewer
@@ -1557,8 +1559,11 @@ define([
         var team = privateData.teams[config.teamId];
         if (!team) { return void UI.warn(Messages.error); }
 
+        var origin = privateData.origin;
+
         var module = config.module || common.makeUniversal('team');
 
+        // Invite contacts
         var $div;
         var refreshButton = function () {
             if (!$div) { return; }
@@ -1572,48 +1577,226 @@ define([
                 $btn.prop('disabled', 'disabled');
             }
         };
-        var list = UIElements.getUserGrid(Messages.team_pickFriends, {
-            common: common,
-            data: config.friends,
-            large: true
-        }, refreshButton);
-        $div = $(list.div);
-        refreshButton();
+        var getContacts = function () {
+            var list = UIElements.getUserGrid(Messages.team_pickFriends, {
+                common: common,
+                data: config.friends,
+                large: true
+            }, refreshButton);
+            var div = h('div.contains-nav');
+            var $div = $(div);
+            $div.append(list.div);
+            var contactsButtons = [{
+                className: 'primary',
+                name: Messages.team_inviteModalButton,
+                onClick: function () {
+                    var $sel = $div.find('.cp-usergrid-user.cp-selected');
+                    var sel = $sel.toArray();
+                    if (!sel.length) { return; }
 
-        var buttons = [{
+                    sel.forEach(function (el) {
+                        var curve = $(el).attr('data-curve');
+                        module.execCommand('INVITE_TO_TEAM', {
+                            teamId: config.teamId,
+                            user: config.friends[curve]
+                        }, function (obj) {
+                            if (obj && obj.error) {
+                                console.error(obj.error);
+                                return UI.warn(Messages.error);
+                            }
+                        });
+                    });
+                },
+                keys: [13]
+            }];
+
+            return {
+                content: div,
+                buttons: contactsButtons
+            };
+        };
+        var friendsObject = hasFriends ? getContacts() : noContactsMessage(common);
+        var friendsList = friendsObject.content;
+        var contactsButtons = friendsObject.buttons;
+        contactsButtons.unshift({
+            className: 'cancel',
+            name: Messages.cancel,
+            onClick: function () {},
+            keys: [27]
+        });
+
+        var contactsContent = h('div.cp-share-modal', [
+            friendsList
+        ]);
+
+        var frameContacts = UI.dialog.customModal(contactsContent, {
+            buttons: contactsButtons,
+        });
+
+        var linkName, linkPassword, linkMessage, linkError, linkSpinText;
+        var linkForm, linkSpin, linkResult;
+        var linkWarning;
+        // Invite from link
+        var dismissButton = h('span.fa.fa-times');
+        var linkContent = h('div.cp-share-modal', [
+            h('p', Messages.team_inviteLinkTitle ),
+            linkError = h('div.alert.alert-danger.cp-teams-invite-alert', {style : 'display: none;'}),
+            linkForm = h('div.cp-teams-invite-form', [
+                linkName = h('input', {
+                    placeholder:  Messages.team_inviteLinkTempName
+                }),
+                h('br'),
+                h('div.cp-teams-invite-block', [
+                    h('span', Messages.team_inviteLinkSetPassword),
+                    h('a.cp-teams-help.fa.fa-question-circle', {
+                        href: origin + '/faq.html#security-pad_password',
+                        target: "_blank",
+                        'data-tippy-placement': "right"
+                    })
+                ]),
+                linkPassword = UI.passwordInput({
+                    id: 'cp-teams-invite-password',
+                    placeholder: Messages.login_password
+                }),
+                h('div.cp-teams-invite-block',
+                    h('span', Messages.team_inviteLinkNote)
+                ),
+                linkMessage = h('textarea.cp-teams-invite-message', {
+                    placeholder: Messages.team_inviteLinkNoteMsg,
+                    rows: 3
+                })
+            ]),
+            linkSpin = h('div.cp-teams-invite-spinner', {
+                style: 'display: none;'
+            }, [
+                h('i.fa.fa-spinner.fa-spin'),
+                linkSpinText = h('span', Messages.team_inviteLinkLoading)
+            ]),
+            linkResult = h('div', {
+                style: 'display: none;'
+            }, h('textarea', {
+                readonly: 'readonly'
+            })),
+            linkWarning = h('div.cp-teams-invite-alert.alert.alert-warning.dismissable', {
+                style: "display: none;"
+            }, [
+                h('span.cp-inline-alert-text', Messages.team_inviteLinkWarning),
+                dismissButton
+            ])
+        ]);
+        $(linkMessage).keydown(function (e) {
+            if (e.which === 13) {
+                e.stopPropagation();
+            }
+        });
+        var localStore = window.cryptpadStore;
+        localStore.get('hide-alert-teamInvite', function (val) {
+            if (val === '1') { return; }
+            $(linkWarning).show();
+
+            $(dismissButton).on('click', function () {
+                localStore.put('hide-alert-teamInvite', '1');
+                $(linkWarning).remove();
+            });
+        });
+        var $linkContent = $(linkContent);
+        var href;
+        var process = function () {
+            var $nav = $linkContent.closest('.alertify').find('nav');
+            $(linkError).text('').hide();
+            var name = $(linkName).val();
+            var pw = $(linkPassword).find('input').val();
+            var msg = $(linkMessage).val();
+            var hash = Hash.createRandomHash('invite', pw);
+            var hashData = Hash.parseTypeHash('invite', hash);
+            href = origin + '/teams/#' + hash;
+            if (!name || !name.trim()) {
+                $(linkError).text(Messages.team_inviteLinkErrorName).show();
+                return true;
+            }
+
+            var seeds = InviteInner.deriveSeeds(hashData.key);
+            var salt = InviteInner.deriveSalt(pw, AppConfig.loginSalt);
+
+            var bytes64;
+            NThen(function (waitFor) {
+                $(linkForm).hide();
+                $(linkSpin).show();
+                $nav.find('button.cp-teams-invite-create').hide();
+                $nav.find('button.cp-teams-invite-copy').show();
+                setTimeout(waitFor(), 150);
+            }).nThen(function (waitFor) {
+                InviteInner.deriveBytes(seeds.scrypt, salt, waitFor(function (_bytes) {
+                    bytes64 = _bytes;
+                }));
+            }).nThen(function (waitFor) {
+                module.execCommand('CREATE_INVITE_LINK', {
+                    name: name,
+                    password: pw,
+                    message: msg,
+                    bytes64: bytes64,
+                    hash: hash,
+                    teamId: config.teamId,
+                    seeds: seeds,
+                }, waitFor(function (obj) {
+                    if (obj && obj.error) {
+                        waitFor.abort(); 
+                        $(linkSpin).hide();
+                        $(linkForm).show();
+                        $nav.find('button.cp-teams-invite-create').show();
+                        $nav.find('button.cp-teams-invite-copy').hide();
+                        return void $(linkError).text(Messages.team_inviteLinkError).show();
+                    }
+                    // Display result here
+                    $(linkSpin).hide();
+                    $(linkResult).show().find('textarea').text(href);
+                    $nav.find('button.cp-teams-invite-copy').prop('disabled', '');
+                }));
+            });
+            return true;
+        };
+        var linkButtons = [{
             className: 'cancel',
             name: Messages.cancel,
             onClick: function () {},
             keys: [27]
         }, {
-            className: 'primary',
-            name: Messages.team_inviteModalButton,
+            className: 'primary cp-teams-invite-create',
+            name: Messages.team_inviteLinkCreate,
             onClick: function () {
-                var $sel = $div.find('.cp-usergrid-user.cp-selected');
-                var sel = $sel.toArray();
-                if (!sel.length) { return; }
-
-                sel.forEach(function (el) {
-                    var curve = $(el).attr('data-curve');
-                    module.execCommand('INVITE_TO_TEAM', {
-                        teamId: config.teamId,
-                        user: config.friends[curve]
-                    }, function (obj) {
-                        if (obj && obj.error) {
-                            console.error(obj.error);
-                            return UI.warn(Messages.error);
-                        }
-                    });
-                });
+                return process();
             },
-            keys: [13]
+            keys: []
+        }, {
+            className: 'primary cp-teams-invite-copy',
+            name: Messages.team_inviteLinkCopy,
+            onClick: function () {
+                if (!href) { return; }
+                var success = Clipboard.copy(href);
+                if (success) { UI.log(Messages.shareSuccess); }
+            },
+            keys: []
         }];
 
-        var content = h('div', [
-            list.div
-        ]);
+        var frameLink = UI.dialog.customModal(linkContent, {
+            buttons: linkButtons,
+        });
+        $(frameLink).find('.cp-teams-invite-copy').prop('disabled', 'disabled').hide();
 
-        var modal = UI.dialog.customModal(content, {buttons: buttons});
+        // Create modal
+        var tabs = [{
+            title: Messages.share_contactCategory,
+            icon: "fa fa-address-book",
+            content: frameContacts,
+            active: hasFriends
+        }, {
+            title: Messages.share_linkCategory,
+            icon: "fa fa-link",
+            content: frameLink,
+            active: !hasFriends
+        }];
+
+        var modal = UI.dialog.tabs(tabs);
         UI.openCustomModal(modal);
     };
 
@@ -2073,12 +2256,12 @@ define([
         for (var k in actions) {
             $('<button>', {
                 'data-type': k,
-                'class': 'fa ' + actions[k].icon,
+                'class': 'pure-button fa ' + actions[k].icon,
                 title: Messages['mdToolbar_' + k] || k
             }).click(onClick).appendTo($toolbar);
         }
         $('<button>', {
-            'class': 'fa fa-question cp-markdown-help',
+            'class': 'pure-button fa fa-question cp-markdown-help',
             title: Messages.mdToolbar_help
         }).click(function () {
             var href = Messages.mdToolbar_tutorial;
@@ -3977,7 +4160,7 @@ define([
         };
 
         var content = h('div.cp-share-modal', [
-            setHTML(h('p'), text)
+            setHTML(h('p'), text),
         ]);
         UI.proposal(content, todo);
     };

@@ -231,10 +231,14 @@ Version 1
         }
         if (['invite'].indexOf(type) !== -1) {
             parsed.type = 'invite';
-            if (hashArr[1] && hashArr[1] === '1') {
-                parsed.version = 1;
-                parsed.channel = hashArr[2];
-                parsed.pubkey = hashArr[3].replace(/-/g, '/');
+            if (hashArr[1] && hashArr[1] === '2') {
+                parsed.version = 2;
+                parsed.app = hashArr[2];
+                parsed.mode = hashArr[3];
+                parsed.key = hashArr[4];
+
+                options = hashArr.slice(5);
+                parsed.password = options.indexOf('p') !== -1;
                 return parsed;
             }
             return parsed;

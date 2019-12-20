@@ -15,6 +15,7 @@ define([
     '/common/hyperscript.js',
     '/customize/application_config.js',
     '/common/messenger-ui.js',
+    '/common/invitation.js',
     '/customize/messages.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -37,6 +38,7 @@ define([
     h,
     AppConfig,
     MessengerUI,
+    InviteInner,
     Messages)
 {
     var APP = {};
@@ -137,6 +139,9 @@ define([
         'general': [
             'cp-team-info',
         ],
+        'link': [
+            'cp-team-link',
+        ],
     };
     var teamCategories = {
         'back': {
@@ -179,8 +184,10 @@ define([
         var $categories = $('<div>', {'class': 'cp-sidebarlayout-categories'})
                             .appendTo(APP.$leftside);
 
+        var hash = common.getMetadataMgr().getPrivateData().teamInviteHash && mainCategories.link;
+
         var categories = team ? teamCategories : mainCategories;
-        var active = team ? 'drive' : 'list';
+        var active = team ? 'drive' : (hash ? 'link' : 'list');
 
         if (team && APP.team) {
             var $category = $('<div>', {'class': 'cp-sidebarlayout-category cp-team-cat-header'}).appendTo($categories);
@@ -210,6 +217,7 @@ define([
             if (key === 'chat') { $category.append($('<span>', {'class': 'fa fa-comments'})); }
             if (key === 'drive') { $category.append($('<span>', {'class': 'fa fa-hdd-o'})); }
             if (key === 'admin') { $category.append($('<span>', {'class': 'fa fa-cogs'})); }
+            if (key === 'link') { $category.append($('<span>', {'class': 'fa fa-envelope'})); }
 
             if (key === active) {
                 $category.addClass('cp-leftside-active');
@@ -413,6 +421,7 @@ define([
         refreshList(common, cb);
     });
 
+    var refreshLink = function () {}; // placeholder
     var refreshCreate = function (common, cb) {
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
@@ -428,7 +437,7 @@ define([
             }, isOwner ? Messages.team_maxOwner : Messages._getKey('team_maxTeams', [MAX_TEAMS_SLOTS]));
         };
 
-        if (Object.keys(privateData.teams || {}).length >= 3 || isOwner) {
+        if (Object.keys(privateData.teams || {}).length >= Constants.MAX_TEAMS_SLOTS || isOwner) {
             content.push(getWarningBox());
             return void cb(content);
         }
@@ -471,6 +480,12 @@ define([
                     $spinner.hide();
                     $('div.cp-team-cat-list').click();
                 });
+                var $divLink = $('div.cp-team-link').empty();
+                if ($divLink.length) {
+                    refreshLink(common, function (content) {
+                        $divLink.append(content);
+                    });
+                }
             });
         });
         cb(content);
@@ -479,8 +494,9 @@ define([
         refreshCreate(common, cb);
     });
 
-    makeBlock('drive', function (common, cb) {
+    makeBlock('drive', function (common, cb, $div) {
         $('div.cp-team-drive').empty();
+        $div.removeClass('cp-sidebarlayout-element'); // Don't apply buttons and input styles from sidebarlayout
         var content = [
             h('div.cp-app-drive-container', {tabindex:0}, [
                 h('div#cp-app-drive-tree'),
@@ -713,9 +729,7 @@ define([
             actions,
             status,
         ];
-        var div = h('div.cp-team-roster-member', {
-            title: data.displayName
-        }, content);
+        var div = h('div.cp-team-roster-member', content);
         if (data.profile) {
             $(div).dblclick(function (e) {
                 e.preventDefault();
@@ -732,31 +746,45 @@ define([
         var me = roster[userData.curvePublic] || {};
         var owner = Object.keys(roster).filter(function (k) {
             if (roster[k].pending) { return; }
+            roster[k].curvePublic = k;
             return roster[k].role === "OWNER" || roster[k].pendingOwner;
         }).map(function (k) {
             return makeMember(common, roster[k], me, roster);
         });
         var admins = Object.keys(roster).filter(function (k) {
             if (roster[k].pending) { return; }
+            roster[k].curvePublic = k;
             return roster[k].role === "ADMIN";
         }).map(function (k) {
             return makeMember(common, roster[k], me);
         });
         var members = Object.keys(roster).filter(function (k) {
             if (roster[k].pending) { return; }
+            roster[k].curvePublic = k;
             return roster[k].role === "MEMBER" || !roster[k].role;
         }).map(function (k) {
             return makeMember(common, roster[k], me);
         });
         var viewers = Object.keys(roster).filter(function (k) {
             if (roster[k].pending) { return; }
+            roster[k].curvePublic = k;
             return roster[k].role === "VIEWER";
         }).map(function (k) {
             return makeMember(common, roster[k], me);
         });
         var pending = Object.keys(roster).filter(function (k) {
             if (!roster[k].pending) { return; }
+            if (roster[k].inviteChannel) { return; }
+            roster[k].curvePublic = k;
             return roster[k].role === "MEMBER" || roster[k].role === "VIEWER" || !roster[k].role;
+        }).map(function (k) {
+            return makeMember(common, roster[k], me);
+        });
+        var links = Object.keys(roster).filter(function (k) {
+            if (!roster[k].pending) { return; }
+            if (!roster[k].inviteChannel) { return; }
+            roster[k].curvePublic = k;
+            return roster[k].role === "VIEWER" || !roster[k].role;
         }).map(function (k) {
             return makeMember(common, roster[k], me);
         });
@@ -813,6 +841,7 @@ define([
         $header.append(table);
 
         var noPending = pending.length ? '' : '.cp-hidden';
+        var noLinks = links.length ? '' : '.cp-hidden';
 
         return [
             header,
@@ -825,7 +854,9 @@ define([
             h('h3', Messages.team_viewers || 'VIEWERS'),
             h('div', viewers),
             h('h3'+noPending, Messages.team_pending),
-            h('div'+noPending, pending)
+            h('div'+noPending, pending),
+            h('h3'+noLinks, Messages.team_links),
+            h('div'+noLinks, links)
         ];
     };
     makeBlock('roster', function (common, cb) {
@@ -1012,6 +1043,206 @@ define([
         ]);
     }, true);
 
+    var displayUser = function (common, data) {
+        var avatar = h('span.cp-teams-invite-from-avatar.cp-avatar');
+        UIElements.displayAvatar(common, $(avatar), data.avatar, data.displayName);
+        return h('div.cp-teams-invite-from-author', [
+            avatar,
+            h('span.cp-teams-invite-from-name', data.displayName)
+        ]);
+    };
+
+    refreshLink = function (common, cb, wrongPassword) {
+        if (!mainCategories.link) { return; }
+        var privateData = common.getMetadataMgr().getPrivateData();
+        var hash = privateData.teamInviteHash;
+        var hashData = Hash.parseTypeHash('invite', hash);
+        var password = hashData.password;
+        var seeds = InviteInner.deriveSeeds(hashData.key);
+
+        if (Object.keys(privateData.teams || {}).length >= Constants.MAX_TEAMS_SLOTS) {
+            return void cb([
+                h('div.alert.alert-danger', {
+                    role: 'alert'
+                }, Messages._getKey('team_maxTeams', [Constants.MAX_TEAMS_SLOTS]))
+            ]);
+        }
+
+        var div = h('div', [
+            h('i.fa.fa-spin.fa-spinner')
+        ]);
+        var $div = $(div);
+        var errorBlock;
+        var c = [
+            h('h2', Messages.team_inviteTitle),
+            errorBlock = h('div.alert.alert-danger',
+                                wrongPassword ? undefined : {style: 'display: none;'},
+                                wrongPassword ? Messages.drive_sfPasswordError : undefined),
+            div
+        ];
+        // "cb" will put the content into the UI.
+        // We're displaying a spinner while we're cryptgetting the preview content
+        cb(c);
+
+        var declineButton = h('button.btn.btn-danger', {
+            style: 'display: none;'
+        }, Messages.friendRequest_decline);
+        var acceptButton = h('button.btn.btn-primary', Messages.team_inviteJoin);
+        var inviteDiv = h('div', [
+            h('nav', [
+                declineButton,
+                acceptButton
+            ])
+        ]);
+        var $inviteDiv = $(inviteDiv);
+
+        $(declineButton).click(function() {
+            
+        });
+
+        var process = function (pw) {
+            $inviteDiv.empty();
+            var bytes64;
+
+
+            var spinnerText;
+            var $spinner;
+            nThen(function (waitFor) {
+                $inviteDiv.append(h('div', [
+                    h('i.fa.fa-spin.fa-spinner'),
+                    spinnerText = h('span', Messages.team_invitePasswordLoading || 'Scrypt...')
+                ]));
+                $spinner = $(spinnerText);
+                setTimeout(waitFor(), 150);
+            }).nThen(function (waitFor) {
+                var salt = InviteInner.deriveSalt(pw, AppConfig.loginSalt);
+                InviteInner.deriveBytes(seeds.scrypt, salt, waitFor(function (bytes) {
+                    bytes64 = bytes;
+                }));
+            }).nThen(function (waitFor) {
+                $spinner.text(Messages.team_inviteGetData);
+                APP.module.execCommand('ACCEPT_LINK_INVITATION', {
+                    bytes64: bytes64,
+                    hash: hash,
+                    password: pw,
+                }, waitFor(function (obj) {
+                    if (obj && obj.error) {
+                        console.error(obj.error);
+                        // Wrong password or other error...
+                        waitFor.abort();
+                        if (obj.error === 'INVALID_INVITE_CONTENT') {
+                            // Wrong password...
+                            var $divLink = $('div.cp-team-link').empty();
+                            if ($divLink.length) {
+                                refreshLink(common, function (content) {
+                                    $divLink.append(content);
+                                }, true);
+                            }
+                            return;
+                        }
+                        $(errorBlock).text(Messages.team_inviteInvalidLinkError).show();
+                        $(div).empty();
+                        $inviteDiv.empty();
+                        return;
+                    }
+                    // No error: join successful!
+                    var $div = $('div.cp-team-list').empty();
+                    refreshList(common, function (content) {
+                        $div.append(content);
+                        $('div.cp-team-cat-list').click();
+                        var $divLink = $('div.cp-team-link').empty();
+                        if ($divLink.length) {
+                            $divLink.remove();
+                            $('div.cp-team-cat-link').remove();
+                            delete mainCategories.link;
+                        }
+                    });
+                    var $divCreate = $('div.cp-team-create');
+                    if ($divCreate.length) {
+                        refreshCreate(common, function (content) {
+                            $divCreate.empty().append(content);
+                        });
+                    }
+
+                }));
+            });
+        };
+
+        nThen(function (waitFor) {
+            // Get preview content.
+            var sframeChan = common.getSframeChannel();
+            sframeChan.query('Q_ANON_GET_PREVIEW_CONTENT', { seeds: seeds }, waitFor(function (err, json) {
+                if (json && (json.error || !Object.keys(json).length)) {
+                    $(errorBlock).text(Messages.team_inviteInvalidLinkError).show();
+                    waitFor.abort();
+                    $div.empty();
+                    return;
+                }
+                $div.empty();
+                $div.append(h('div.cp-teams-invite-from', [
+                    Messages.team_inviteFrom || 'From:',
+                    displayUser(common, json.author)
+                ]));
+                $div.append(UI.setHTML(h('p.cp-teams-invite-to'),
+                    Messages._getKey('team_inviteFromMsg',
+                    [Util.fixHTML(json.author.displayName),
+                    Util.fixHTML(json.teamName)])));
+                if (json.message) {
+                    $div.append(h('div.cp-teams-invite-message', json.message));
+                }
+            }));
+        }).nThen(function (waitFor) {
+            // If you're logged in, move on to the next nThen
+            if (driveAPP.loggedIn) { return; }
+
+            // If you're not logged in, display the login buttons
+            var anonLogin, anonRegister;
+            $div.append(h('p', Messages.team_invitePleaseLogin));
+            $div.append(h('div', [
+                anonLogin = h('button.btn.btn-primary', Messages.login_login),
+                anonRegister = h('button.btn.btn-secondary', Messages.login_register),
+            ]));
+            $(anonLogin).click(function () {
+                common.setLoginRedirect(function () {
+                    common.gotoURL('/login/');
+                });
+            });
+            $(anonRegister).click(function () {
+                common.setLoginRedirect(function () {
+                    common.gotoURL('/register/');
+                });
+            });
+            waitFor.abort();
+        }).nThen(function () {
+            $div.append($inviteDiv);
+        }).nThen(function (waitFor) {
+            // If there is no password, move on to the next block
+            if (!password) { return; }
+
+            // If there is a password, display the password prompt
+            var pwInput = UI.passwordInput();
+            $(acceptButton).click(function () {
+                var val = $(pwInput).find('input').val();
+                if (!val) { return; }
+                process(val);
+            });
+            $inviteDiv.prepend(h('div.cp-teams-invite-password', [
+                h('p', Messages.team_inviteEnterPassword),
+                pwInput
+            ])); 
+            waitFor.abort();
+        }).nThen(function () {
+            // No password, display the invitation proposal
+            $(acceptButton).click(function () {
+                process('');
+            });
+        });
+        return c;
+    };
+    makeBlock('link', function (common, cb) {
+        refreshLink(common, cb);
+    });
+
     var redrawTeam = function (common) {
         if (!APP.team) { return; }
         var teamId = APP.team;
@@ -1053,7 +1284,7 @@ define([
             readOnly = driveAPP.readOnly = metadataMgr.getPrivateData().readOnly;
 
             driveAPP.loggedIn = common.isLoggedIn();
-            if (!driveAPP.loggedIn) { throw new Error('NOT_LOGGED_IN'); }
+            //if (!driveAPP.loggedIn) { throw new Error('NOT_LOGGED_IN'); }
 
             common.setTabTitle(Messages.type.teams);
 
@@ -1103,6 +1334,22 @@ define([
                 onEvent: onEvent
             });
 
+            var hash = privateData.teamInviteHash;
+            if (!hash && !driveAPP.loggedIn) {
+                UI.alert(Messages.mustLogin, function () {
+                    common.setLoginRedirect(function () {
+                        common.gotoURL('/login/');
+                    });
+                }, {forefront: true});
+                return;
+            }
+            if (!hash) {
+                delete mainCategories.link;
+            } else if (!driveAPP.loggedIn) {
+                delete mainCategories.list;
+                delete mainCategories.create;
+            }
+
             $('body').css('display', '');
             loadMain(common);
 
@@ -1111,6 +1358,12 @@ define([
                 if ($div.length) {
                     refreshList(common, function (content) {
                         $div.empty().append(content);
+                    });
+                }
+                var $divLink = $('div.cp-team-link').empty();
+                if ($divLink.length) {
+                    refreshLink(common, function (content) {
+                        $divLink.append(content);
                     });
                 }
                 var $divCreate = $('div.cp-team-create');

@@ -10,6 +10,8 @@ define([
     '/common/outer/roster.js',
     '/common/common-messaging.js',
     '/common/common-feedback.js',
+    '/common/outer/invitation.js',
+    '/common/cryptget.js',
 
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
@@ -19,7 +21,7 @@ define([
     '/bower_components/saferphore/index.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
 ], function (Util, Hash, Constants, Realtime,
-             ProxyManager, UserObject, SF, Roster, Messaging, Feedback,
+             ProxyManager, UserObject, SF, Roster, Messaging, Feedback, Invite, Crypt,
              Listmap, Crypto, CpNetflux, ChainPad, nThen, Saferphore) {
     var Team = {};
 
@@ -136,6 +138,15 @@ define([
         if (chatChannel) { list.push(chatChannel); }
         if (membersChannel) { list.push(membersChannel); }
         if (mailboxChannel) { list.push(mailboxChannel); }
+
+        var state = store.roster.getState();
+        if (state.members) {
+            Object.keys(state.members).forEach(function (curve) {
+                var m = state.members[curve];
+                if (m.inviteChannel && m.pending) { list.push(m.inviteChannel); }
+                if (m.previewChannel && m.pending) { list.push(m.previewChannel); }
+            });
+        }
 
         list.sort();
         return list;
@@ -1259,6 +1270,290 @@ define([
         ctx.store.messenger.openTeamChat(team.getChatData(), onUpdate, cId, cb);
     };
 
+    var createInviteLink = function (ctx, data, cId, _cb) {
+        var cb = Util.mkAsync(Util.once(_cb));
+
+        var teamId = data.teamId;
+        var team = ctx.teams[data.teamId];
+        var seeds = data.seeds; // {scrypt, preview}
+        var bytes64 = data.bytes64;
+
+        if (!teamId || !team) { return void cb({error: 'EINVAL'}); }
+
+        var roster = team.roster;
+
+        var teamName;
+        try {
+            teamName = roster.getState().metadata.name;
+        } catch (err) {
+            return void cb({ error: "TEAM_NAME_ERR" });
+        }
+
+        var message = data.message;
+        var name = data.name;
+
+        /*
+        var password = data.password;
+        var hash = data.hash;
+        */
+
+        // derive { channel, cryptKey} for the preview content channel
+        var previewKeys = Invite.derivePreviewKeys(seeds.preview);
+
+        // derive {channel, cryptkey} for the invite content channel
+        var inviteKeys = Invite.deriveInviteKeys(bytes64);
+
+        // randomly generate ephemeral keys for ownership of the above content
+        // and a placeholder in the roster
+        var ephemeralKeys = Invite.generateKeys();
+
+        nThen(function (w) {
+
+
+            (function () {
+                // a random signing keypair to prevent further writes to the channel
+                // we don't need to remember it cause we're only writing once
+                var sign = Invite.generateSignPair(); // { validateKey, signKey}
+                var putOpts = {
+                    initialState: '{}',
+                    network: ctx.store.network,
+                    metadata: {
+                        owners: [ctx.store.proxy.edPublic, ephemeralKeys.edPublic]
+                    }
+                };
+                putOpts.metadata.validateKey = sign.validateKey;
+
+                // visible with only the invite link
+                var previewContent = {
+                    teamName: teamName,
+                    message: message,
+                    author: Messaging.createData(ctx.store.proxy, false),
+                    displayName: name,
+                };
+
+                var cryptput_config = {
+                    channel: previewKeys.channel,
+                    type: 'pad',
+                    version: 2,
+                    keys: { // what would normally be provided by getSecrets
+                        cryptKey: previewKeys.cryptKey,
+                        validateKey: sign.validateKey, // sent to historyKeeper
+                        signKey: sign.signKey, // b64EdPrivate
+                    },
+                };
+
+                Crypt.put(cryptput_config, JSON.stringify(previewContent), w(function (err /*, doc */) {
+                    if (err) {
+                        console.error("CRYPTPUT_ERR", err);
+                        w.abort();
+                        return void cb({ error: "SET_PREVIEW_CONTENT" });
+                    }
+                }), putOpts);
+            }());
+
+            (function () {
+                // a different random signing key so that the server can't correlate these documents
+                // as components of an invite
+                var sign = Invite.generateSignPair(); // { validateKey, signKey}
+                var putOpts = {
+                    initialState: '{}',
+                    network: ctx.store.network,
+                    metadata: {
+                        owners: [ctx.store.proxy.edPublic, ephemeralKeys.edPublic]
+                    }
+                };
+                putOpts.metadata.validateKey = sign.validateKey;
+
+                // available only with the link and the content
+                var inviteContent = {
+                    teamData: getInviteData(ctx, teamId, false),
+                    ephemeral: {
+                        edPublic: ephemeralKeys.edPublic,
+                        edPrivate: ephemeralKeys.edPrivate,
+                        curvePublic: ephemeralKeys.curvePublic,
+                        curvePrivate: ephemeralKeys.curvePrivate,
+                    },
+                };
+
+                var cryptput_config = {
+                    channel: inviteKeys.channel,
+                    type: 'pad',
+                    version: 2,
+                    keys: {
+                        cryptKey: inviteKeys.cryptKey,
+                        validateKey: sign.validateKey,
+                        signKey: sign.signKey,
+                    },
+                };
+
+                Crypt.put(cryptput_config, JSON.stringify(inviteContent), w(function (err /*, doc */) {
+                    if (err) {
+                        console.error("CRYPTPUT_ERR", err);
+                        w.abort();
+                        return void cb({ error: "SET_PREVIEW_CONTENT" });
+                    }
+                }), putOpts);
+            }());
+        }).nThen(function (w) {
+            team.pin([inviteKeys.channel, previewKeys.channel], function (obj) {
+                if (obj && obj.error) { console.error(obj.error); }
+            });
+            Invite.createRosterEntry(team.roster, {
+                curvePublic: ephemeralKeys.curvePublic,
+                content: {
+                    curvePublic: ephemeralKeys.curvePublic,
+                    displayName: data.name,
+                    pending: true,
+                    inviteChannel: inviteKeys.channel,
+                    previewChannel: previewKeys.channel,
+                }
+            }, w(function (err) {
+                if (err) {
+                    w.abort();
+                    cb(err);
+                }
+            }));
+        }).nThen(function () {
+            // call back empty if everything worked
+            cb();
+        });
+    };
+
+    var getPreviewContent = function (ctx, data, cId, cb) {
+        var seeds = data.seeds;
+        var previewKeys;
+        try {
+            previewKeys = Invite.derivePreviewKeys(seeds.preview);
+        } catch (err) {
+            return void cb({ error: "INVALID_SEEDS" });
+        }
+        Crypt.get({ // secrets
+            channel: previewKeys.channel,
+            type: 'pad',
+            version: 2,
+            keys: {
+                cryptKey: previewKeys.cryptKey,
+            },
+        }, function (err, val) {
+            if (err) { return void cb({ error: err }); }
+            if (!val) { return void cb({ error: 'DELETED' }); }
+
+            var json = Util.tryParse(val);
+            if (!json) { return void cb({ error: "parseError" }); }
+            console.error("JSON", json);
+            cb(json);
+        }, { // cryptget opts
+            network: ctx.store.network,
+            initialState: '{}',
+        });
+    };
+
+    var getInviteContent = function (ctx, data, cId, cb) {
+        var bytes64 = data.bytes64;
+        var previewKeys;
+        try {
+            previewKeys = Invite.deriveInviteKeys(bytes64);
+        } catch (err) {
+            return void cb({ error: "INVALID_SEEDS" });
+        }
+        Crypt.get({ // secrets
+            channel: previewKeys.channel,
+            type: 'pad',
+            version: 2,
+            keys: {
+                cryptKey: previewKeys.cryptKey,
+            },
+        }, function (err, val) {
+            if (err) { return void cb({error: err}); }
+            if (!val) { return void cb({error: 'DELETED'}); }
+
+            var json = Util.tryParse(val);
+            if (!json) { return void cb({error: "parseError"}); }
+            cb(json);
+        }, { // cryptget opts
+            network: ctx.store.network,
+            initialState: '{}',
+        });
+    };
+
+    var acceptLinkInvitation = function (ctx, data, cId, cb) {
+        var inviteContent;
+        var rosterState;
+        nThen(function (waitFor) {
+            // Get team keys and ephemeral keys
+            getInviteContent(ctx, data, cId, waitFor(function (obj) {
+                if (obj && obj.error) {
+                    waitFor.abort();
+                    return void cb(obj);
+                }
+                inviteContent = obj;
+            }));
+        }).nThen(function (waitFor) {
+            // Check if you're already a member of this team
+            var chan = Util.find(inviteContent, ['teamData', 'channel']);
+            var myTeams = ctx.store.proxy.teams || {};
+            var isMember = Object.keys(myTeams).some(function (k) {
+                var t = myTeams[k];
+                return t.channel === chan;
+            });
+            if (isMember) {
+                waitFor.abort();
+                return void cb({error: 'ALREADY_MEMBER'});
+            }
+            // Accept the roster invitation: relplace our ephemeral keys with our user keys
+            var rosterData = Util.find(inviteContent, ['teamData', 'keys', 'roster']);
+            var myKeys = inviteContent.ephemeral;
+            if (!rosterData || !myKeys) {
+                waitFor.abort();
+                return void cb({error: 'INVALID_INVITE_CONTENT'});
+            }
+            var rosterKeys = Crypto.Team.deriveMemberKeys(rosterData.edit, myKeys);
+            Roster.create({
+                network: ctx.store.network,
+                channel: rosterData.channel,
+                keys: rosterKeys,
+                anon_rpc: ctx.store.anon_rpc,
+            }, waitFor(function (err, roster) {
+                if (err) {
+                    waitFor.abort();
+                    console.error(err);
+                    return void cb({error: 'ROSTER_ERROR'});
+                }
+                var myData = Messaging.createData(ctx.store.proxy, false);
+                var state = roster.getState();
+                rosterState = state.members[myKeys.curvePublic];
+                roster.accept(myData.curvePublic, waitFor(function (err) {
+                    roster.stop();
+                    if (err) {
+                        waitFor.abort();
+                        console.error(err);
+                        return void cb({error: 'ACCEPT_ERROR'});
+                    }
+                }));
+            }));
+        }).nThen(function () {
+            var tempRpc = {};
+            initRpc(ctx, tempRpc, inviteContent.ephemeral, function (err) {
+                if (err) { return; }
+                var rpc = tempRpc.rpc;
+                if (rosterState.inviteChannel) {
+                    rpc.removeOwnedChannel(rosterState.inviteChannel, function (err) {
+                        if (err) { console.error(err); }
+                    });
+                }
+                if (rosterState.previewChannel) {
+                    rpc.removeOwnedChannel(rosterState.previewChannel, function (err) {
+                        if (err) { console.error(err); }
+                    });
+                }
+            });
+            // Add the team to our list and join...
+            joinTeam(ctx, {
+                team: inviteContent.teamData
+            }, cId, cb);
+        });
+    };
+
     Team.init = function (cfg, waitFor, emit) {
         var team = {};
         var store = cfg.store;
@@ -1412,9 +1707,22 @@ define([
             if (cmd === 'GET_EDITABLE_FOLDERS') {
                 return void getEditableFolders(ctx, data, clientId, cb);
             }
+            if (cmd === 'CREATE_INVITE_LINK') {
+                return void createInviteLink(ctx, data, clientId, cb);
+            }
+            if (cmd === 'GET_PREVIEW_CONTENT') {
+                return void getPreviewContent(ctx, data, clientId, cb);
+            }
+            if (cmd === 'ACCEPT_LINK_INVITATION') {
+                return void acceptLinkInvitation(ctx, data, clientId, cb);
+            }
         };
 
         return team;
+    };
+
+    Team.anonGetPreviewContent = function (cfg, data, cb) {
+        getPreviewContent(cfg, data, null, cb);
     };
 
     return Team;

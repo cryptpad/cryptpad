@@ -3,6 +3,7 @@
 @import (reference) '../../customize/src/less2/include/messenger.less';
 @import (reference) '../../customize/src/less2/include/sidebar-layout.less';
 @import (reference) "../../customize/src/less2/include/tools.less";
+@import (reference) "../../customize/src/less2/include/colortheme.less";
 
 
 &.cp-app-team {
@@ -138,7 +139,11 @@
         }
         .cp-team-roster {
             .avatar_main(50px);
+            .cp-hidden {
+                display: none;
+            }
             .cp-app-team-roster-header {
+                margin-bottom: 20px;
                 button:not(:last-child) {
                     margin-right: 5px;
                 }
@@ -186,6 +191,35 @@
                         }
                     }
                 }
+            }
+        }
+        .cp-team-link {
+            max-width: 550px;
+            .cp-teams-invite-from {
+                display: flex;
+                margin-bottom: 20px;
+                .cp-teams-invite-from-author {
+                    display: flex;
+                    margin-left: 10px;
+                    .cp-teams-invite-from-avatar { 
+                        .avatar_main(25px);
+                        margin: 0px 5px;
+                    }
+                }
+            }
+            .cp-teams-invite-message {
+                background-color: fade(@colortheme_logo-2, 25%);
+                color: @cryptpad_text_col;
+                resize: none;
+                width: 100%;
+                padding: 12px;
+                margin-bottom: 20px;
+            }
+            .cp-teams-invite-password {
+                margin-bottom: 20px;
+            }
+            i.fa.fa-spin.fa-spinner {
+                margin-right: 10px;
             }
         }
     }

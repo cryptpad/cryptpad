@@ -29,11 +29,18 @@ define([
     };
 
     var makeConfig = function (hash, opt) {
+        var secret;
+        if (typeof(hash) === 'string') {
         // We can't use cryptget with a file or a user so we can use 'pad' as hash type
-        var secret = Hash.getSecrets('pad', hash, opt.password);
+            secret = Hash.getSecrets('pad', hash, opt.password);
+        } else if (typeof(hash) === 'object') {
+            // we may want to just supply options directly
+            // and this is the easiest place to do it
+            secret = hash;
+        }
         if (!secret.keys) { secret.keys = secret.key; } // support old hashses
         var config = {
-            websocketURL: NetConfig.getWebsocketURL(),
+            websocketURL: NetConfig.getWebsocketURL(opt.origin),
             channel: secret.channel,
             validateKey: secret.keys.validateKey || undefined,
             crypto: Crypto.createEncryptor(secret.keys),
@@ -95,7 +102,7 @@ define([
         opt = opt || {};
 
         var config = makeConfig(hash, opt);
-        var Session = { cb: cb, };
+        var Session = { cb: cb, hasNetwork: Boolean(opt.network) };
 
         config.onReady = function (info) {
             var realtime = Session.session = info.realtime;
@@ -105,12 +112,13 @@ define([
 
             var to = setTimeout(function () {
                 cb(new Error("Timeout"));
-            }, 5000);
+            }, 15000);
 
             Realtime.whenRealtimeSyncs(realtime, function () {
                 clearTimeout(to);
+                var doc = realtime.getAuthDoc();
                 realtime.abort();
-                finish(Session, void 0);
+                finish(Session, void 0, doc);
             });
         };
         overwrite(config, opt);

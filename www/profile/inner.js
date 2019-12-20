@@ -137,7 +137,7 @@ define([
         }, Messages.profile_addLink);
         APP.$linkEdit = $(button);
         $block.append(button);
-        var save = h('button.btn.btn-success', Messages.settings_save);
+        var save = h('button.btn.btn-primary', Messages.settings_save);
         var text = h('input');
         var code = h('div.cp-app-profile-link-code', [
             text,
@@ -149,7 +149,7 @@ define([
         $block.append(div);
         $(button).click(function () {
             $(text).val(APP.$link.attr('href'));
-            $(code).show();
+            $(code).css('display', 'flex');
             APP.editor.refresh();
             $(button).hide();
         });
@@ -178,9 +178,6 @@ define([
 
     var addFriendRequest = function ($container) {
         if (!APP.readOnly || !APP.common.isLoggedIn()) { return; }
-        APP.$friend = $('<button>', {
-            'class': 'btn btn-success cp-app-profile-friend-request',
-        });
         APP.$friend = $(h('div.cp-app-profile-friend-container'));
         $container.append(APP.$friend);
     };
@@ -195,40 +192,122 @@ define([
 
         APP.$friend.html('');
 
+        var module = common.makeUniversal('messenger');
+        var name = Util.fixHTML(data.name) || Messages.anonymous;
+
         var friends = common.getMetadataMgr().getPrivateData().friends;
+        // This is a friend: display the "friend" message and an "unfriend" button
         if (friends[data.curvePublic]) {
-            APP.$friend.append(h('p.cp-app-profile-friend', Messages._getKey('profile_friend', [data.name || Messages.anonymous])));
+            // Add friend message
+            APP.$friend.append(h('p.cp-app-profile-friend', [
+                h('i.fa.fa-address-book'),
+                Messages._getKey('profile_friend', [name])
+            ]));
+            if (!friends[data.curvePublic].notifications) { return; }
+            // Add unfriend button
+            var unfriendButton = h('button.btn.btn-primary.cp-app-profile-friend-request', [
+                h('i.fa.fa-user-times'),
+                Messages.contacts_remove
+            ]);
+            $(unfriendButton).click(function () {
+                // Unfriend confirm
+                var content = h('div', [
+                    UI.setHTML(h('p'), Messages._getKey('contacts_confirmRemove', [name]))
+                ]);
+                UI.confirm(content, function (yes) {
+                    if (!yes) { return; }
+                    module.execCommand('REMOVE_FRIEND', data.curvePublic, function (e) {
+                        if (e) { return void console.error(e); }
+                    });
+                });
+            }).appendTo(APP.$friend);
             return;
         }
 
-        var $button = $('<button>', {
-            'class': 'btn btn-success cp-app-profile-friend-request',
-        }).appendTo(APP.$friend);
+        var button = h('button.btn.btn-success.cp-app-profile-friend-request', [
+            h('i.fa.fa-user-plus'),
+        ]);
+        var $button = $(button).appendTo(APP.$friend);
 
         // If this curve has sent us a friend request, we should not be able to sent it to them
         var friendRequests = common.getFriendRequests();
         if (friendRequests[data.curvePublic]) {
-            $button.html(Messages._getKey('friendRequest_received', [data.name || Messages.anonymous]))
+            $button.append(Messages._getKey('friendRequest_received', [name || Messages.anonymous]))
                 .click(function () {
                 UIElements.displayFriendRequestModal(common, friendRequests[data.curvePublic]);
             });
             return;
         }
 
+        // Pending friend (we've sent a friend request)
         var pendingFriends = APP.common.getPendingFriends(); // Friend requests sent
         if (pendingFriends[data.curvePublic]) {
-            $button.attr('disabled', 'disabled').text(Messages.profile_friendRequestSent);
+            $button.attr('disabled', 'disabled').append(Messages.profile_friendRequestSent);
             return;
         }
+        // This is not a friend yet: we can send a friend request
         $button.text(Messages._getKey('userlist_addAsFriendTitle', [data.name || Messages.anonymous]))
             .click(function () {
                 APP.common.sendFriendRequest({
                     curvePublic: data.curvePublic,
                     notifications: data.notifications
                 }, function () {
-                    $button.attr('disabled', 'disabled').text(Messages.profile_friendRequestSent);
+                    $button.attr('disabled', 'disabled').append(Messages.profile_friendRequestSent);
                 });
             });
+    };
+
+    var addMuteButton = function ($container) {
+        if (!APP.readOnly || !APP.common.isLoggedIn()) { return; }
+        APP.$mute = $(h('div.cp-app-profile-mute-container'));
+        $container.append(APP.$mute);
+    };
+    var refreshMute = function (data) {
+        if (!APP.$mute) { return; }
+
+        var me = common.getMetadataMgr().getUserData().curvePublic;
+        if (data.curvePublic === me) {
+            APP.$mute.remove();
+            return;
+        }
+
+
+        // Add mute/unmute buttons
+        var $mute = APP.$mute;
+        var module = common.makeUniversal('messenger');
+        module.execCommand('GET_MUTED_USERS', null, function (muted) {
+            if (!muted || typeof(muted) !== "object") { return; }
+            $mute.html('');
+            var isMuted = muted[data.curvePublic];
+            if (isMuted) {
+                var unmuteButton = h('button.btn.btn-secondary.cp-app-profile-friend-request', [
+                    h('i.fa.fa-bell'),
+                    Messages.contacts_unmute || 'unmute'
+                ]);
+                $(unmuteButton).click(function () {
+                    module.execCommand('UNMUTE_USER', data.curvePublic, function (e) {
+                        if (e) { console.error(e); return void UI.warn(Messages.error); }
+                        refreshMute(data);
+                    });
+                }).appendTo($mute);
+                return;
+            }
+            var muteButton = h('button.btn.btn-danger-outline.cp-app-profile-friend-request', [
+                h('i.fa.fa-bell-slash'),
+                Messages.contacts_mute || 'mute'
+            ]);
+            $(muteButton).click(function () {
+                module.execCommand('MUTE_USER', {
+                    curvePublic: data.curvePublic,
+                    name: Util.fixHTML(data.displayName || data.name),
+                    avatar: data.avatar
+                }, function (e) {
+                    if (e) { console.error(e); return void UI.warn(Messages.error); }
+                    refreshMute(data);
+                });
+            }).appendTo($mute);
+            $(UI.setHTML(h('p'), Messages.contacts_muteInfo)).appendTo($mute);
+        });
     };
 
     var displayAvatar = function (val) {
@@ -304,7 +383,7 @@ define([
     };
 
     var addDescription = function ($container) {
-        var $block = $('<div>', {id: DESCRIPTION_ID}).appendTo($container);
+        var $block = $('<div>', {id: DESCRIPTION_ID, class:'cp-sidebarlayout-element'}).appendTo($container);
 
         APP.$description = $('<div>', {'class': 'cp-app-profile-description-rendered'}).appendTo($block);
         APP.$descriptionEdit = $();
@@ -361,6 +440,17 @@ define([
     var refreshDescription = function (data) {
         var val = Marked(data.description || "");
         APP.$description.html(val);
+        APP.$description.off('click');
+        APP.$description.click(function (e) {
+            if (!e.target) { return; }
+            var $t = $(e.target);
+            if ($t.is('a') || $t.parents('a').length) {
+                e.preventDefault();
+                var $a = $t.is('a') ? $t : $t.parents('a').first();
+                var href = $a.attr('href');
+                common.openUnsafeURL(href);
+            }
+        });
         APP.$descriptionEdit.find('span').text(val === "" ? Messages.profile_addDescription : Messages.profile_editDescription);
         if (!APP.editor) { return; }
         APP.editor.setValue(data.description || "");
@@ -379,14 +469,15 @@ define([
         APP.$container.find('#'+CREATE_ID).remove();
 
         if (!APP.initialized) {
-            var $header = $('<div>', {id: HEADER_ID}).appendTo(APP.$rightside);
+            var $header = $('<div>', {id: HEADER_ID, class:'cp-sidebarlayout-element'}).appendTo(APP.$rightside);
             addAvatar($header);
             var $rightside = $('<div>', {id: HEADER_RIGHT_ID}).appendTo($header);
             addDisplayName($rightside);
             addLink($rightside);
             addFriendRequest($rightside);
+            addMuteButton($rightside);
             addDescription(APP.$rightside);
-            addViewButton(APP.$rightside);
+            addViewButton($rightside);
             APP.initialized = true;
             createLeftside();
         }
@@ -398,6 +489,7 @@ define([
         refreshLink(data);
         refreshDescription(data);
         refreshFriendRequest(data);
+        refreshMute(data);
     };
 
     var createToolbar = function () {

@@ -84,6 +84,7 @@ define([
         var myData = createData(store.proxy, false);
         if (store.proxy.friends) {
             store.proxy.friends.me = myData;
+            delete store.proxy.friends.me.channel;
         }
         if (store.modules['team']) {
             store.modules['team'].updateMyData(myData);

@@ -37,6 +37,7 @@ define([
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
         var teamId;
+        var hash = window.location.hash.slice(1);
         var addRpc = function (sframeChan, Cryptpad) {
             sframeChan.on('Q_SET_TEAM', function (data, cb) {
                 teamId = data;
@@ -86,11 +87,23 @@ define([
                 }
             });
         };
+        var getSecrets = function (Cryptpad, Utils, cb) {
+            var Hash = Utils.Hash;
+            var hash = Hash.createRandomHash('profile');
+            var secret = Hash.getSecrets('team', hash);
+            cb(null, secret);
+        };
+        var addData = function (meta) {
+            if (!hash) { return; }
+            meta.teamInviteHash = hash;
+        };
         SFCommonO.start({
+            getSecrets: getSecrets,
             noHash: true,
             noRealtime: true,
             //driveEvents: true,
             addRpc: addRpc,
+            addData: addData,
             isDrive: true, // Used for history...
         });
     });

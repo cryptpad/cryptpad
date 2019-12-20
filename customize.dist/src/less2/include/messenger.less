@@ -78,6 +78,9 @@
                 .cp-app-contacts-name {
                     white-space: nowrap;
                 }
+                .cp-app-contacts-icons {
+                    text-align: right;
+                }
             }
             &:hover {
                 background-color: rgba(0,0,0,0.3);
@@ -89,6 +92,7 @@
         .cp-app-contacts-remove {
             cursor: pointer;
             width: 20px;
+            text-align: center;
             &:hover {
                 color: darken(@color, 20%);
             }
@@ -121,8 +125,30 @@
                     }
                 }
             }
+            .cp-app-contacts-muted-button {
+                margin: 10px;
+                border: 0;
+                display: none;
+                order: 3;
+                .fa-bell-slash {
+                    margin-right: 10px;
+                }
+            }
         }
     }
+
+    .cp-contacts-muted-table {
+        .cp-contacts-muted-user {
+            margin-bottom: 5px;
+            .cp-avatar {
+                margin-right: 10px;
+            }
+            button {
+                margin-right: 0px;
+            }
+        }
+    }
+
     #cp-app-contacts-container.cp-app-contacts-inapp {
         #cp-app-contacts-friendlist {
             display: none;

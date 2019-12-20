@@ -364,6 +364,98 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         return changed;
     };
 
+    commands.INVITE = function (args, author, roster) {
+        // an invitation is created with an ephemeral curve public key
+        // that key is ultimately given to the user you'd like on your team
+        // that user can exploit their possession of the public key to remove
+        // the pending invitation with their actual data.
+        if (!isMap(args)) { throw new Error('INVALID_ARGS'); }
+        if (!roster.internal.initialized) { throw new Error("UNINITIALIED"); }
+        if (typeof(roster.state.members) === 'undefined') {
+            throw new Error("CANNOT+INVITE_TO_UNINITIALIED_ROSTER");
+        }
+
+        var members = roster.state.members;
+
+        Object.keys(args).forEach(function (curve) {
+            if (!isValidId(curve)) {
+                console.log(curve, curve.length);
+                throw new Error("INVALID_CURVE_KEY");
+            }
+            // reject commandws wehere the members are not proper objects
+            if (!isMap(args[curve])) { throw new Error("INVALID_CONTENT"); }
+            if (members[curve]) { throw new Error("ARLEADY_PRESENT"); }
+
+            var data = args[curve];
+            // if no role was provided, assume VIEWER
+            if (typeof(data.role) !== 'string') { data.role = "VIEWER"; }
+
+            // assume that invitations are 'pending' unless stated otherwise
+            if (typeof(data.pending) === 'undefined') { data.pending = true; }
+
+            if (!canAddRole(author, data.role, members)) {
+                throw new Error("INSUFFICIENT_PERMISSIONS");
+            }
+
+            if (typeof(data.displayName) !== 'string' || !data.displayName) { throw new Error("DISPLAYNAME_REQUIRED"); }
+            //if (typeof(data.notifications) !== 'string') { throw new Error("NOTIFICATIONS_REQUIRED"); }
+        });
+
+
+        /*
+            {
+                <ephemeralCurveKey>: {
+                    role: ??? || 'VIEWER',
+                    displayName: '',
+                    pending: true,
+                }
+            }
+        */
+
+        var changed = false;
+
+        Object.keys(args).forEach(function (curve) {
+            changed = true;
+            members[curve] = args[curve];
+        });
+
+        return changed;
+    };
+
+    commands.ACCEPT = function (args, author, roster) {
+        if (!roster.internal.initialized) { throw new Error("UNINITIALIED"); }
+        if (typeof(roster.state.members) === 'undefined') {
+            throw new Error("CANNOT_ADD_TO_UNINITIALIED_ROSTER");
+        }
+
+        // an ACCEPT command replaces a pending invitation's curve key with a new one
+        // after which the invited member can use their actual curve key to describe themselves
+
+        // the author must have been invited already...
+        var members = roster.state.members;
+
+        // so you must already be in the members list
+        if (!isMap(members[author])) { throw new Error("INSUFFICIENT_PERMISSIONS"); }
+        // and your membership must indicate that you are 'pending'
+        if (!members[author].pending) { throw new Error("ALREADY_PRESENT"); }
+
+        // args should be a string
+        if (typeof(args) !== 'string') { throw new Error("INVALID_ARGS"); }
+        // ...and a valid curve key
+        if (!isValidId(args)) { throw new Error("INVALID_CURVE_KEY"); }
+
+        var curve = args;
+
+        // and the curve key must not already be a member
+        if (typeof(members[curve]) !== 'undefined') { throw new Error("MEMBER_ALREADY_PRESENT"); }
+
+        // copy the new profile from the old one
+        members[curve] = Util.clone(members[author]);
+        // and erase the old one
+        delete members[author];
+        return true;
+    };
+
     var handleCommand = function (content, author, roster) {
         if (!(Array.isArray(content) && typeof(author) === 'string')) {
             throw new Error("INVALID ARGUMENTS");
@@ -669,6 +761,31 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
                 if (data[k] === metadata[k]) { delete data[k]; }
             });
             send(['METADATA', data], cb);
+        };
+
+        // supports multiple invite
+        roster.invite = function (_data, _cb) {
+            var cb = Util.once(Util.mkAsync(_cb));
+            var state = ref.state;
+            if (!state) { return cb("UNINITIALIZED"); }
+            if (!ref.internal.initialized) { return cb("UNINITIALIZED"); }
+            if (!isMap(_data)) { return void cb("INVALID_ARGUMENTS"); }
+            var data = Util.clone(_data);
+
+            Object.keys(data).forEach(function (curve) {
+                if (!isValidId(curve) || isMap(ref.state.members[curve])) { return delete data[curve]; }
+            });
+
+            send(['INVITE', data], cb);
+        };
+
+        roster.accept = function (_data, _cb) {
+            var cb = Util.once(Util.mkAsync(_cb));
+            if (typeof(_data) !== 'string' || !isValidId(_data)) {
+                return void cb("INVALID_ARGUMENTS");
+            }
+
+            send([ 'ACCEPT', _data ], cb);
         };
 
         nThen(function (w) {

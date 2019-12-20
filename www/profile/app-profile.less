@@ -10,14 +10,22 @@
     );
     .sidebar-layout_main();
 
+    @cp-profile-is-your-friend: #777;
+
     display: flex;
     flex-flow: column;
+
+    #cp-sidebarlayout-leftside {
+        display: none !important;
+    }
+
     #cp-app-profile-header {
         display: flex;
         #cp-app-profile-rightside {
             flex: 1;
             display: flex;
             flex-flow: column;
+            align-items: start;
         }
     }
     #cp-app-profile-avatar {
@@ -64,16 +72,15 @@
             }
         }
         button {
+            min-width: 40px;
             height: 40px;
-            margin: 5px;
+            margin: 5px !important;
         }
     }
     .cp-app-profile-resizer {
         text-align: center;
     }
     #cp-app-profile-displayname, #cp-app-profile-link {
-        width: 100%;
-        height: 40px;
         margin: 10px 0;
         input {
             width: 100%;
@@ -106,15 +113,30 @@
         }
         .cp-app-profile-link-code {
             display: none;
+            min-width: 500px;
+            input {
+                flex: 1;
+                min-width: 0;
+            }
+            button {
+                height: 48px !important;
+            }
         }
         & > button:empty {
-            margin-left: 25px;
+            margin-left: 25px !important;
         }
     }
 
+    .cp-app-profile-friend {
+        display: flex;
+        align-items: center;
+        color: @cp-profile-is-your-friend;
+        .fa {
+            margin-right: 0.2em;
+        }
+    }
     .cp-app-profile-friend-request {
         flex: 0;
-        width: 400px;
         margin-top: 10px;
     }
 
@@ -123,12 +145,7 @@
         float: right;
     }
     .cp-app-profile-viewprofile-button {
-        margin-bottom: 20px;
-        float: right;
-        margin-left: 5px;
-        &> span {
-            margin-left: 10px;
-        }
+        margin-bottom: 5px !important;
     }
     #cp-app-profile-description {
         position: relative;
@@ -166,13 +183,6 @@
                 line-height: inherit;
             }
         }
-        .cp-app-profile-description-edit {
-            & > button {
-                span {
-                    margin-left: 10px;
-                }
-            }
-        }
     }
     #cp-app-profile-create {
         height: 100%;
@@ -180,6 +190,13 @@
         flex-flow: column;
         align-items: center;
         justify-content: center;
+    }
+    .cp-app-profile-mute-container {
+        margin-top: 5px;
+        p {
+            margin-top: 5px;
+            font-size: 13px;
+        }
     }
 }
 

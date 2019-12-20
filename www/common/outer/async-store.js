@@ -1273,6 +1273,12 @@ define([
             });
         };
 
+        Store.anonGetPreviewContent = function (clientId, data, cb) {
+            Team.anonGetPreviewContent({
+                store: store
+            }, data, cb);
+        };
+
         // Get hashes for the share button
         // If we can find a stronger hash
         Store.getStrongerHash = function (clientId, data, _cb) {

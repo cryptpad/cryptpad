@@ -3,15 +3,18 @@ define([
     '/customize/messages.js',
     '/common/common-util.js',
     '/common/common-interface.js',
+    '/common/common-ui-elements.js',
     '/common/hyperscript.js',
     '/common/diffMarked.js',
-], function ($, Messages, Util, UI, h, DiffMd) {
+], function ($, Messages, Util, UI, UIElements, h, DiffMd) {
     'use strict';
 
     var debug = console.log;
     debug = function () {};
 
     var MessengerUI = {};
+
+    var mutedUsers = {};
 
     var dataQuery = function (id) {
         return '[data-key="' + id + '"]';
@@ -67,8 +70,11 @@ define([
                 h('div.cp-app-contacts-category-content')
             ]),
             h('div.cp-app-contacts-friends.cp-app-contacts-category', [
-                h('div.cp-app-contacts-category-content'),
-                h('h2.cp-app-contacts-category-title', Messages.contacts_friends),
+                h('button.cp-app-contacts-muted-button',[
+                    h('i.fa.fa-bell-slash'),
+                    Messages.contacts_manageMuted
+                ]), 
+                h('div.cp-app-contacts-category-content.cp-contacts-friends')
             ]),
             h('div.cp-app-contacts-rooms.cp-app-contacts-category', [
                 h('div.cp-app-contacts-category-content'),
@@ -184,7 +190,7 @@ define([
         markup.message = function (msg) {
             if (msg.type !== 'MSG') { return; }
             var curvePublic = msg.author;
-            var name = typeof msg.name !== "undefined" ?
+            var name = (typeof msg.name !== "undefined" || !contactsData[msg.author]) ?
                             (msg.name || Messages.anonymous) :
                             contactsData[msg.author].displayName;
             var d = msg.time ? new Date(msg.time) : undefined;
@@ -486,6 +492,20 @@ define([
             }
         };
 
+        var unmuteUser = function (curve) {
+            execCommand('UNMUTE_USER', curve, function (e) {
+                if (e) { return void console.error(e); }
+            });
+        };
+        var muteUser = function (data) {
+            execCommand('MUTE_USER', {
+                curvePublic: data.curvePublic,
+                name: data.displayName || data.name,
+                avatar: data.avatar
+            }, function (e /*, removed */) {
+                if (e) { return void console.error(e); }
+            });
+        };
         var removeFriend = function (curvePublic) {
             execCommand('REMOVE_FRIEND', curvePublic, function (e /*, removed */) {
                 if (e) { return void console.error(e); }
@@ -496,9 +516,23 @@ define([
             var roomEl = h('div.cp-app-contacts-friend.cp-avatar', {
                 'data-key': id,
                 'data-user': room.isFriendChat ? userlist[0].curvePublic : '',
-                title: room.name
             });
 
+
+            var curve;
+            if (room.isFriendChat) {
+                var __channel = state.channels[id];
+                curve = __channel.curvePublic;
+            }
+
+            var unmute = h('span.cp-app-contacts-remove.fa.fa-bell.cp-unmute-icon', {
+                title: Messages.contacts_unmute || 'unmute',
+                style: (curve && mutedUsers[curve]) ? undefined : 'display: none;'
+            });
+            var mute = h('span.cp-app-contacts-remove.fa.fa-bell-slash.cp-mute-icon', {
+                title: Messages.contacts_mute || 'mute',
+                style: (curve && mutedUsers[curve]) ? 'display: none;' : undefined
+            });
             var remove = h('span.cp-app-contacts-remove.fa.fa-user-times', {
                 title: Messages.contacts_remove
             });
@@ -511,8 +545,12 @@ define([
             });
             var rightCol = h('span.cp-app-contacts-right-col', [
                 h('span.cp-app-contacts-name', [room.name]),
-                room.isFriendChat ? remove :
-                    (room.isPadChat || room.isTeamChat) ? undefined : leaveRoom,
+                h('span.cp-app-contacts-icons', [
+                    room.isFriendChat ? mute : undefined,
+                    room.isFriendChat ? unmute : undefined,
+                    room.isFriendChat ? remove :
+                        (room.isPadChat || room.isTeamChat) ? undefined : leaveRoom,
+                ])
             ]);
 
             var friendData = room.isFriendChat ? userlist[0] : {};
@@ -523,23 +561,43 @@ define([
                 if (friendData.profile) { window.open(origin + '/profile/#' + friendData.profile); }
             });
 
+            $(unmute).on('click dblclick', function (e) {
+                e.stopPropagation();
+                var channel = state.channels[id];
+                if (!channel.isFriendChat) { return; }
+                var curvePublic = channel.curvePublic;
+                $(mute).show();
+                $(unmute).hide();
+                unmuteUser(curvePublic);
+            });
+
+            $(mute).on('click dblclick', function (e) {
+                e.stopPropagation();
+                var channel = state.channels[id];
+                if (!channel.isFriendChat) { return; }
+                var curvePublic = channel.curvePublic;
+                var friend = contactsData[curvePublic] || friendData;
+                $(mute).hide();
+                $(unmute).show();
+                muteUser(friend);
+            });
+
             $(remove).click(function (e) {
                 e.stopPropagation();
                 var channel = state.channels[id];
                 if (!channel.isFriendChat) { return; }
                 var curvePublic = channel.curvePublic;
                 var friend = contactsData[curvePublic] || friendData;
-                UI.confirm(Messages._getKey('contacts_confirmRemove', [
-                    Util.fixHTML(friend.name)
-                ]), function (yes) {
+                var content = h('div', [
+                    UI.setHTML(h('p'), Messages._getKey('contacts_confirmRemove', [Util.fixHTML(friend.name)])),
+                ]);
+                UI.confirm(content, function (yes) {
                     if (!yes) { return; }
-                    removeFriend(curvePublic, function (e) {
-                        if (e) { return void console.error(e); }
-                    });
+                    removeFriend(curvePublic);
                     // TODO remove friend from userlist ui
                     // FIXME seems to trigger EJOINED from netflux-websocket (from server);
                     // (tried to join a channel in which you were already present)
-                }, undefined, true);
+                });
             });
 
             if (friendData.avatar && avatars[friendData.avatar]) {
@@ -792,6 +850,65 @@ define([
         // var onJoinRoom
         // var onLeaveRoom
 
+        var updateMutedList = function () {
+            execCommand('GET_MUTED_USERS', null, function (err, muted) {
+                if (err) { return void console.error(err); }
+                mutedUsers = muted;
+
+                var $button = $userlist.find('.cp-app-contacts-muted-button');
+
+                $('.cp-app-contacts-friend[data-user]')
+                    .find('.cp-mute-icon').show();
+                $('.cp-app-contacts-friend[data-user]')
+                    .find('.cp-unmute-icon').hide();
+                if (!muted || Object.keys(muted).length === 0) {
+                    $button.hide();
+                    return;
+                }
+
+                var rows = Object.keys(muted).map(function (curve) {
+                    $('.cp-app-contacts-friend[data-user="'+curve+'"]')
+                        .find('.cp-mute-icon').hide();
+                    $('.cp-app-contacts-friend[data-user="'+curve+'"]')
+                        .find('.cp-unmute-icon').show();
+                    var data = muted[curve];
+                    var avatar = h('span.cp-avatar');
+                    var button = h('button', {
+                        'data-user': curve
+                    }, [
+                        h('i.fa.fa-bell'),
+                        Messages.contacts_unmute || 'unmute'
+                    ]);
+                    UIElements.displayAvatar(common, $(avatar), data.avatar, data.name);
+                    $(button).click(function () {
+                        unmuteUser(curve, button);
+                        execCommand('UNMUTE_USER', curve, function (e, data) {
+                            if (e) { return void console.error(e); }
+                            $(button).closest('div').remove();
+                            if (!data) { $button.hide(); }
+                            $('.cp-app-contacts-friend[data-user="'+curve+'"]')
+                                .find('.cp-mute-icon').show();
+                            if ($('.cp-contacts-muted-table').find('.cp-contacts-muted-user').length === 0) {
+                                UI.findOKButton().click();
+                            }
+                        });
+                    });
+                    return h('div.cp-contacts-muted-user', [
+                        h('span', avatar),
+                        h('span', data.name),
+                        button
+                    ]);
+                });
+                var content = h('div', [
+                    h('h4', Messages.contacts_mutedUsers),
+                    h('div.cp-contacts-muted-table', rows)
+                ]);
+                $button.off('click');
+                $button.click(function () {
+                    UI.alert(content);
+                }).show();
+            });
+        };
 
         var ready = false;
         var onMessengerReady = function () {
@@ -805,6 +922,8 @@ define([
                 debug('rooms: ' + JSON.stringify(rooms));
                 rooms.forEach(initializeRoom);
             });
+
+            updateMutedList();
 
             $container.removeClass('cp-app-contacts-initializing');
         };
@@ -880,6 +999,10 @@ define([
             }
             if (cmd === 'UPDATE_DATA') {
                 onUpdateData(data);
+                return;
+            }
+            if (cmd === 'UPDATE_MUTED') {
+                updateMutedList();
                 return;
             }
             if (cmd === 'MESSAGE') {

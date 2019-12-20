@@ -1,5 +1,7 @@
 @import (reference) '../../customize/src/less2/include/framework.less';
 @import (reference) '../../customize/src/less2/include/messenger.less';
+@import (reference) '../../customize/src/less2/include/avatar.less';
+@import (reference) '../../customize/src/less2/include/buttons.less';
 
 // body
 &.cp-app-contacts {
@@ -16,6 +18,22 @@
     #cp-toolbar {
         display: flex; // We need this to remove a 3px border at the bottom of the toolbar
     }
+
+    .cp-app-contacts-friends {
+        .buttons_main();
+    }
+    .cp-contacts-muted-table {
+        .avatar_main(50px);
+        .cp-contacts-muted-user {
+            display: flex;
+            align-items: center;
+            span:nth-child(2) {
+                flex: 1;
+            }
+        }
+    }
+
+
 
     .messenger_main();
 }

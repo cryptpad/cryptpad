@@ -184,12 +184,12 @@
                     &:checked {
                         & + label {
                             font-weight: bold;
-                            background-color: lighten(@colortheme_loading-bg, 20%);
+                            background-color: @colortheme_logo-2;
                             cursor: default;
-                            border: 1px solid #c1158e;
+                            border: 1px solid @colortheme_logo-2;
                             color: @colortheme_loading-color;
                             &:hover {
-                                background-color: lighten(@colortheme_loading-bg, 20%);
+                                background-color: @colortheme_logo-2;
                             }
                         }
                     }
@@ -203,10 +203,11 @@
                     height: 50px;
                     padding: 5px;
                     margin: 0 20px;
-                    border: 1px solid black;
+                    color: @colortheme_logo-2;
+                    border: 1px solid @colortheme_logo-2;
                     cursor: pointer;
                     &:hover {
-                        background-color: lighten(@colortheme_loading-bg, 10%);
+                        background-color: lighten(@colortheme_logo-2, 35%);
                     }
                 }
                 .fa {
@@ -235,6 +236,7 @@
                     }
                     input {
                         width: 70px;
+                        padding: 0 5px;
                     }
                     select {
                         width: 100px;
