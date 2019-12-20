@@ -1552,9 +1552,6 @@ define([
         var common = config.common;
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
 
-        if (!hasFriends) {
-            return void UI.alert(Messages.team_noFriend);
-        }
         var privateData = common.getMetadataMgr().getPrivateData();
         var team = privateData.teams[config.teamId];
         if (!team) { return void UI.warn(Messages.error); }
