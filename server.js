@@ -13,9 +13,6 @@ var nThen = require("nthen");
 
 var config = require("./lib/load-config");
 
-var websocketPort = config.websocketPort || config.httpPort;
-var useSecureWebsockets = config.useSecureWebsockets || false;
-
 // This is stuff which will become available to replify
 const debuggableStore = new WeakMap();
 const debuggable = function (name, x) {
@@ -211,9 +208,6 @@ app.get('/api/config', function(req, res){
             removeDonateButton: (config.removeDonateButton === true),
             allowSubscriptions: (config.allowSubscriptions === true),
             websocketPath: config.useExternalWebsocket ? undefined : config.websocketPath,
-            // FIXME don't send websocketURL if websocketPath is provided. deprecated.
-            websocketURL:'ws' + ((useSecureWebsockets) ? 's' : '') + '://' + host + ':' +
-                websocketPort + '/cryptpad_websocket',
             httpUnsafeOrigin: config.httpUnsafeOrigin.replace(/^\s*/, ''),
             adminEmail: config.adminEmail,
             adminKeys: admins,
@@ -327,10 +321,6 @@ var nt = nThen(function (w) {
     historyKeeper = HK.create(hkConfig);
 }).nThen(function () {
     if (config.useExternalWebsocket) { return; }
-    if (websocketPort !== config.httpPort) {
-        log.debug("setting up a new websocket server");
-        wsConfig = { port: websocketPort};
-    }
     var wsSrv = new WebSocketServer(wsConfig);
     NetfluxSrv.run(wsSrv, config, historyKeeper);
 });

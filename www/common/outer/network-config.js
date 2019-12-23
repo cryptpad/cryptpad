@@ -4,7 +4,6 @@ define([
     var Config = {};
 
     Config.getWebsocketURL = function (origin) {
-        if (!ApiConfig.websocketPath) { return ApiConfig.websocketURL; }
         var path = ApiConfig.websocketPath;
         if (/^ws{1,2}:\/\//.test(path)) { return path; }
 
