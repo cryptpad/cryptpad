@@ -97,15 +97,17 @@ module.exports = {
 
     httpUnsafeOrigin: domain,
 
-    /*  your server's websocket url is configurable
-     *  (default: '/cryptpad_websocket')
+    /*  Your CryptPad server will share this value with clients
+     *  via its /api/config endpoint.
      *
-     *  websocketPath can be relative, of the form '/path/to/websocket'
-     *  or absolute, specifying a particular URL
+     *  If you want to host your API and asset servers on different hosts
+     *  specify a URL for your API server websocket endpoint, like so:
+     *  wss://api.yourdomain.com/cryptpad_websocket
      *
-     *  'wss://cryptpad.fr:3000/cryptpad_websocket'
+     *  Otherwise, leave this commented and your clients will use the default
+     *  websocket (wss://yourdomain.com/cryptpad_websocket)
      */
-    websocketPath: '/cryptpad_websocket',
+    //externalWebsocketPath: 'wss://api.yourdomain.com/cryptpad_websocket
 
     /*  CryptPad can be configured to send customized HTTP Headers
      *  These settings may vary widely depending on your needs

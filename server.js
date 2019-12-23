@@ -166,7 +166,7 @@ app.get('/api/config', function(req, res){
             },
             removeDonateButton: (config.removeDonateButton === true),
             allowSubscriptions: (config.allowSubscriptions === true),
-            websocketPath: config.websocketPath,
+            websocketPath: config.externalWebsocketPath,
             httpUnsafeOrigin: config.httpUnsafeOrigin.replace(/^\s*/, ''),
             adminEmail: config.adminEmail,
             adminKeys: admins,
@@ -234,7 +234,7 @@ var nt = nThen(function (w) {
         log = config.log = _log;
     }));
 }).nThen(function (w) {
-    if (config.useExternalWebsocket) {
+    if (config.externalWebsocketPath) {
         // if you plan to use an external websocket server
         // then you don't need to load any API services other than the logger.
         // Just abort.
