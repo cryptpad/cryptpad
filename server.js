@@ -3,7 +3,6 @@
 */
 var Express = require('express');
 var Http = require('http');
-var Https = require('https');
 var Fs = require('fs');
 var WebSocketServer = require('ws').Server;
 var NetfluxSrv = require('./node_modules/chainpad-server/NetfluxWebsocketSrv');
@@ -32,8 +31,6 @@ debuggable('config', config);
 var Storage = require(config.storage||'./storage/file');
 
 var app = debuggable('app', Express());
-
-var httpsOpts;
 
 // mode can be FRESH (default), DEV, or PACKAGE
 
@@ -162,29 +159,6 @@ app.use("/customize.dist", Express.static(__dirname + '/customize.dist'));
 app.use(/^\/[^\/]*$/, Express.static('customize'));
 app.use(/^\/[^\/]*$/, Express.static('customize.dist'));
 
-if (config.privKeyAndCertFiles) {
-    var privKeyAndCerts = '';
-    config.privKeyAndCertFiles.forEach(function (file) {
-        privKeyAndCerts = privKeyAndCerts + Fs.readFileSync(file);
-    });
-    var array = privKeyAndCerts.split('\n-----BEGIN ');
-    for (var i = 1; i < array.length; i++) { array[i] = '-----BEGIN ' + array[i]; }
-    var privKey;
-    for (var i = 0; i < array.length; i++) {
-        if (array[i].indexOf('PRIVATE KEY-----\n') !== -1) {
-            privKey = array[i];
-            array.splice(i, 1);
-            break;
-        }
-    }
-    if (!privKey) { throw new Error("cannot find private key"); }
-    httpsOpts = {
-        cert: array.shift(),
-        key: privKey,
-        ca: array
-    };
-}
-
 var admins = [];
 try {
     admins = (config.adminKeys || []).map(function (k) {
@@ -244,7 +218,7 @@ app.use(function (req, res, next) {
     send404(res, custom_four04_path);
 });
 
-var httpServer = httpsOpts ? Https.createServer(httpsOpts, app) : Http.createServer(app);
+var httpServer = Http.createServer(app);
 
 httpServer.listen(config.httpPort,config.httpAddress,function(){
     var host = config.httpAddress;

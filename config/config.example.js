@@ -124,15 +124,6 @@ module.exports = {
     padContentSecurity: baseCSP.join('; ') +
         "script-src 'self' 'unsafe-eval' 'unsafe-inline'" + domain,
 
-    /* it is recommended that you serve CryptPad over https
-     * the filepaths below are used to configure your certificates
-     */
-    //privKeyAndCertFiles: [
-    //  '/etc/apache2/ssl/my_secret.key',
-    //  '/etc/apache2/ssl/my_public_cert.crt',
-    //  '/etc/apache2/ssl/my_certificate_authorities_cert_chain.ca'
-    //],
-
     /*  Main pages
      *  add exceptions to the router so that we can access /privacy.html
      *  and other odd pages
