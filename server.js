@@ -166,7 +166,7 @@ app.get('/api/config', function(req, res){
             },
             removeDonateButton: (config.removeDonateButton === true),
             allowSubscriptions: (config.allowSubscriptions === true),
-            websocketPath: config.useExternalWebsocket ? undefined : config.websocketPath,
+            websocketPath: config.websocketPath,
             httpUnsafeOrigin: config.httpUnsafeOrigin.replace(/^\s*/, ''),
             adminEmail: config.adminEmail,
             adminKeys: admins,
@@ -234,7 +234,13 @@ var nt = nThen(function (w) {
         log = config.log = _log;
     }));
 }).nThen(function (w) {
-    if (config.useExternalWebsocket) { return; }
+    if (config.useExternalWebsocket) {
+        // if you plan to use an external websocket server
+        // then you don't need to load any API services other than the logger.
+        // Just abort.
+        w.abort();
+        return;
+    }
     Storage.create(config, w(function (_store) {
         config.store = _store;
     }));
@@ -264,7 +270,6 @@ var nt = nThen(function (w) {
         rpc = _rpc;
     }));
 }).nThen(function () {
-    if (config.useExternalWebsocket) { return; }
     var HK = require('./historyKeeper.js');
     var hkConfig = {
         tasks: config.tasks,
@@ -275,7 +280,6 @@ var nt = nThen(function (w) {
     };
     historyKeeper = HK.create(hkConfig);
 }).nThen(function () {
-    if (config.useExternalWebsocket) { return; }
     var wsSrv = new WebSocketServer(wsConfig);
     NetfluxSrv.run(wsSrv, config, historyKeeper);
 });
