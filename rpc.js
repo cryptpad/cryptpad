@@ -1369,7 +1369,6 @@ type NetfluxWebsocketSrvContext_t = {
 */
 RPC.create = function (
     config /*:Config_t*/,
-    debuggable /*:<T>(string, T)=>T*/,
     cb /*:(?Error, ?Function)=>void*/
 ) {
     Log = config.log;
@@ -1404,8 +1403,6 @@ RPC.create = function (
     } catch (e) {
         console.error("Can't parse admin keys. Please update or fix your config.js file!");
     }
-
-    debuggable('rpc_env', Env);
 
     var Sessions = Env.Sessions;
     var paths = Env.paths;

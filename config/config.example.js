@@ -359,14 +359,6 @@ module.exports = {
      */
     logFeedback: false,
 
-    /* You can get a repl for debugging the server if you want it.
-     * to enable this, specify the debugReplName and then you can
-     * connect to it with `nc -U /tmp/repl/<your name>.sock`
-     * If you run multiple cryptpad servers, you need to use different
-     * repl names.
-     */
-    //debugReplName: "cryptpad"
-
     /* =====================
      *      DEPRECATED
      * ===================== */

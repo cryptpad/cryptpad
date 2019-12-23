@@ -20,7 +20,6 @@
     "netflux-websocket": "^0.1.20",
     "nthen": "0.1.8",
     "pull-stream": "^3.6.1",
-    "replify": "^1.2.0",
     "saferphore": "0.0.1",
     "sortify": "^1.0.4",
     "stream-to-pull-stream": "^1.7.2",

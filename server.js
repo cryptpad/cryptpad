@@ -12,25 +12,10 @@ var nThen = require("nthen");
 
 var config = require("./lib/load-config");
 
-// This is stuff which will become available to replify
-const debuggableStore = new WeakMap();
-const debuggable = function (name, x) {
-    if (name in debuggableStore) {
-        try { throw new Error(); } catch (e) {
-            console.error('cannot add ' + name + ' more than once [' + e.stack + ']');
-        }
-    } else {
-        debuggableStore[name] = x;
-    }
-    return x;
-};
-debuggable('global', global);
-debuggable('config', config);
-
 // support multiple storage back ends
 var Storage = require(config.storage||'./storage/file');
 
-var app = debuggable('app', Express());
+var app = Express();
 
 // mode can be FRESH (default), DEV, or PACKAGE
 
@@ -275,7 +260,7 @@ var nt = nThen(function (w) {
     if (typeof(config.rpc) !== 'string') { return; }
     // load pin store...
     var Rpc = require(config.rpc);
-    Rpc.create(config, debuggable, w(function (e, _rpc) {
+    Rpc.create(config, w(function (e, _rpc) {
         if (e) {
             w.abort();
             throw e;
@@ -298,7 +283,3 @@ var nt = nThen(function (w) {
     var wsSrv = new WebSocketServer(wsConfig);
     NetfluxSrv.run(wsSrv, config, historyKeeper);
 });
-
-if (config.debugReplName) {
-    require('replify')({ name: config.debugReplName, app: debuggableStore });
-}
