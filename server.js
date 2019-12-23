@@ -5,7 +5,7 @@ var Express = require('express');
 var Http = require('http');
 var Fs = require('fs');
 var WebSocketServer = require('ws').Server;
-var NetfluxSrv = require('./node_modules/chainpad-server/NetfluxWebsocketSrv');
+var NetfluxSrv = require('chainpad-server/NetfluxWebsocketSrv');
 var Package = require('./package.json');
 var Path = require("path");
 var nThen = require("nthen");
@@ -13,7 +13,7 @@ var nThen = require("nthen");
 var config = require("./lib/load-config");
 
 // support multiple storage back ends
-var Storage = require(config.storage||'./storage/file');
+var Storage = require('./storage/file');
 
 var app = Express();
 
@@ -256,11 +256,7 @@ var nt = nThen(function (w) {
         }, 1000 * 60 * 5); // run every five minutes
     }));
 }).nThen(function (w) {
-    config.rpc = typeof(config.rpc) === 'undefined'? './rpc.js' : config.rpc;
-    if (typeof(config.rpc) !== 'string') { return; }
-    // load pin store...
-    var Rpc = require(config.rpc);
-    Rpc.create(config, w(function (e, _rpc) {
+    require("./rpc").create(config, w(function (e, _rpc) {
         if (e) {
             w.abort();
             throw e;

@@ -272,7 +272,6 @@ module.exports = {
      */
     openFileLimit: 2048,
 
-
     /* =====================
      *   DATABASE VOLUMES
      * ===================== */
@@ -358,34 +357,6 @@ module.exports = {
      *  to false if you'd like to exclude feedback from your logs.
      */
     logFeedback: false,
-
-    /* =====================
-     *      DEPRECATED
-     * ===================== */
-    /*
-        You have the option of specifying an alternative storage adaptor.
-        These status of these alternatives are specified in their READMEs,
-        which are available at the following URLs:
-
-        mongodb: a noSQL database
-            https://github.com/xwiki-labs/cryptpad-mongo-store
-        amnesiadb: in memory storage
-            https://github.com/xwiki-labs/cryptpad-amnesia-store
-        leveldb: a simple, fast, key-value store
-            https://github.com/xwiki-labs/cryptpad-level-store
-        sql: an adaptor for a variety of sql databases via knexjs
-            https://github.com/xwiki-labs/cryptpad-sql-store
-
-        For the most up to date solution, use the default storage adaptor.
-    */
-    storage: './storage/file',
-
-    /*  CryptPad's socket server can be extended to respond to RPC calls
-     *  you can configure it to respond to custom RPC calls if you like.
-     *  provide the path to your RPC module here, or `false` if you would
-     *  like to disable the RPC interface completely
-     */
-    rpc: './rpc.js',
 
     /*  CryptPad supports verbose logging
      *  (false by default)
