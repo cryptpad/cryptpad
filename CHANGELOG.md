@@ -1,3 +1,17 @@
+# J release (3.9.0)
+
+## Goals
+
+* simplify server configuration by dropping support for unused features
+  * drop `websocketPath` `websocketURL` and `useExternalWebsockets`
+  * use `externalWebsocketURL` to replace all of these
+
+## Update notes
+
+## Features
+
+## Bug fixes
+
 # IsolobodonPortoricensis release (3.8.0)
 
 We had some trouble finding an extinct animal whose name started with "I", and we had to resort to using a scientific name.

@@ -107,7 +107,7 @@ module.exports = {
      *  Otherwise, leave this commented and your clients will use the default
      *  websocket (wss://yourdomain.com/cryptpad_websocket)
      */
-    //externalWebsocketPath: 'wss://api.yourdomain.com/cryptpad_websocket
+    //externalWebsocketURL: 'wss://api.yourdomain.com/cryptpad_websocket
 
     /*  CryptPad can be configured to send customized HTTP Headers
      *  These settings may vary widely depending on your needs
