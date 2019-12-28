@@ -67,7 +67,11 @@ define([
                 var file = e.target.files[0];
                 var reader = new FileReader();
                 reader.onload = function (e) { f(e.target.result, file); };
-                reader.readAsText(file, type);
+                if (cfg && cfg.binary) {
+                   reader.readAsArrayBuffer(file, type);
+                } else {
+                   reader.readAsText(file, type);
+               }
             });
         };
     };
@@ -1853,9 +1857,9 @@ define([
                     // Old import button, used in settings
                     button
                     .click(common.prepareFeedback(type))
-                    .click(importContent('text/plain', function (content, file) {
+                    .click(importContent((data && data.binary) ? 'application/octet-stream' : 'text/plain', function (content, file) {
                         callback(content, file);
-                    }, {accept: data ? data.accept : undefined}));
+                    }, {accept: data ? data.accept : undefined, binary: data ? data.binary : undefined }));
                 //}
                 break;
             case 'upload':

@@ -730,6 +730,100 @@ define([
             });
         };
 
+        var x2tInitialized = false;
+        var x2tInit = function(x2t) {
+            console.log("x2t mount");
+      	    // x2t.FS.mount(x2t.MEMFS, {} , '/');
+	    x2t.FS.mkdir('/working');
+            console.log("x2t mount done");
+	}
+
+	/*
+ 		Converting Data
+
+ 		This function converts a data in a specific format to the outputformat
+ 		The filename extension needs to represent the input format
+ 		Example: fileName=cryptpad.bin outputFormat=xlsx
+	*/
+	var x2tConvertDataInternal = function(x2t, data, fileName, outputFormat) {
+ 		console.log("Converting Data for " + fileName + " to " + outputFormat);
+ 		// writing file to mounted working disk (in memory)
+ 		x2t.FS.writeFile('/working/' + fileName, data);
+ 		var params = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+      			   + "<TaskQueueDataConvert xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">"
+      		+ "<m_sFileFrom>/working/" + fileName + "</m_sFileFrom>"
+      		+ "<m_sFileTo>/working/" + fileName + "." + outputFormat + "</m_sFileTo>"
+      		+ "<m_bIsNoBase64>false</m_bIsNoBase64>"
+      		+ "</TaskQueueDataConvert>"
+ 		// writing params file to mounted working disk (in memory)
+    		x2t.FS.writeFile('/working/params.xml', params);
+ 		// running conversion
+    		x2t.ccall("runX2T", ["number"], ["string"], ["/working/params.xml"]);
+ 		// reading output file from working disk (in memory)
+    		var result = x2t.FS.readFile('/working/' + fileName + "." + outputFormat);
+                return result;
+	}
+
+        var x2tSaveAndConvertDataInternal = function(x2t, data, filename, extension, finalFilename) {
+                var xlsData = x2tConvertDataInternal(x2t, data, filename, extension);
+                var blob = new Blob([xlsData], {type: "application/bin;charset=utf-8"});
+                saveAs(blob, finalFilename);
+        }
+
+        var x2tSaveAndConvertData = function(data, filename, extension, finalFilename) {
+                  // Perform the x2t conversion
+                  require(['/common/onlyoffice/x2t/x2t.js'], function() {
+                   var x2t = Module;
+                   x2t.run();
+                   if (x2tInitialized) {
+                        console.log("x2t runtime already initialized");
+                        x2tSaveAndConvertDataInternal(x2t, data, filename, extension, finalFilename);
+                   }
+                   
+                   x2t.onRuntimeInitialized = function() {
+                        console.log("x2t in runtime initialized");
+ 			// Init x2t js module
+ 			x2tInit(x2t);
+                        x2tInitialized = true;
+                        x2tSaveAndConvertDataInternal(x2t, data, filename, extension, finalFilename);
+                   }
+		 });
+        }
+
+
+        var exportXLSXFile = function() {
+            var text = getContent();
+            var suggestion = Title.suggestTitle(Title.defaultTitle);
+            UI.prompt(Messages.exportPrompt,
+                Util.fixFileName(suggestion) + '.xlsx', function (filename) {
+                  if (!(typeof(filename) === 'string' && filename)) { return; }
+                     x2tSaveAndConvertData(text, "filename.bin", "xlsx", filename);
+                 });
+        };
+
+        var importXLSXFile = function(content, filename) {
+            var file = getFileType();
+            // Perform the x2t conversion
+            require(['/common/onlyoffice/x2t/x2t.js'], function() {
+                var x2t = Module;
+                x2t.run();
+                if (x2tInitialized) {
+                      console.log("x2t runtime already initialized");
+                      var convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(content), file.title, "bin");
+                      importFile(convertedContent);
+                }
+
+                x2t.onRuntimeInitialized = function() {
+                        console.log("x2t in runtime initialized");
+                        // Init x2t js module
+                        x2tInit(x2t);
+                        x2tInitialized = true;
+                        var convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(content), file.title, "bin");
+                        importFile(convertedContent);
+                }
+             });
+        }
+
         var importFile = function(content) {
             // Abort if there is another real user in the channel (history keeper excluded)
             var m = metadataMgr.getChannelMembers().slice().filter(function (nId) {
@@ -912,8 +1006,14 @@ define([
             var $export = common.createButton('export', true, {}, exportFile);
             $export.appendTo($rightside);
 
+            var $exportXLSX = common.createButton('export', true, {}, exportXLSXFile);
+            $exportXLSX.appendTo($rightside);
+
             var $import = common.createButton('import', true, {}, importFile);
             $import.appendTo($rightside);
+
+            var $importXLSX = common.createButton('import', true, { accept: ["xlsx"], types: ["xlsx"], binary : true }, importXLSXFile);
+            $importXLSX.appendTo($rightside);
 
             if (common.isLoggedIn()) {
                 common.createButton('hashtag', true).appendTo($rightside);
