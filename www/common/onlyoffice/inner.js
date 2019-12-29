@@ -805,12 +805,11 @@ define([
         var x2tConvertData = function (x2t, data, filename, extension) {
            var convertedContent;
            if (filename.endsWith(".ods")) {
-             convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(data), "test.ods", "xlsx");
-	     convertedContent = x2tConvertDataInternal(x2t, convertedContent, "test.xlsx", extension);
+             convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(data), filename, "xlsx");
+	     return x2tConvertDataInternal(x2t, convertedContent, filename + ".xlsx", extension);
            } else {
-             convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(data), filename, extension);
+             return x2tConvertDataInternal(x2t, new Uint8Array(data), filename, extension);
            }
-           return convertedContent;
         }
 
         var importXLSXFile = function(content, filename) {
