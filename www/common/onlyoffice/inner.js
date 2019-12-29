@@ -801,15 +801,28 @@ define([
                  });
         };
 
+
+        var x2tConvertData = function (x2t, data, filename, extension) {
+           var convertedContent;
+           if (filename.endsWith(".ods")) {
+             convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(data), "test.ods", "xlsx");
+	     convertedContent = x2tConvertDataInternal(x2t, convertedContent, "test.xlsx", extension);
+           } else {
+             convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(data), filename, extension);
+           }
+           return convertedContent;
+        }
+
         var importXLSXFile = function(content, filename) {
-            var file = getFileType();
             // Perform the x2t conversion
+            console.log("Filename");
+            console.log(filename);
             require(['/common/onlyoffice/x2t/x2t.js'], function() {
                 var x2t = Module;
                 x2t.run();
                 if (x2tInitialized) {
                       console.log("x2t runtime already initialized");
-                      var convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(content), file.title, "bin");
+                      var convertedContent = x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin");
                       importFile(convertedContent);
                 }
 
@@ -818,7 +831,7 @@ define([
                         // Init x2t js module
                         x2tInit(x2t);
                         x2tInitialized = true;
-                        var convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(content), file.title, "bin");
+                        var convertedContent = x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin");
                         importFile(convertedContent);
                 }
              });
