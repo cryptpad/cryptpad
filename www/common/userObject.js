@@ -43,10 +43,20 @@ define([
             var c = Crypto.createEncryptor(key);
             cryptor.encrypt = function (href) {
                 // Never encrypt blob href, they are always read-only
-                if (href.slice(0,7) === '/file/#') { return href; }
-                return c.encrypt(href);
+                try {
+                    if (href.slice(0,7) === '/file/#') { return href; }
+                    return c.encrypt(href);
+                } catch (e) {
+                    return;
+                }
             };
-            cryptor.decrypt = c.decrypt;
+            cryptor.decrypt = function (msg) {
+                try {
+                    return c.decrypt(msg);
+                } catch (e) {
+                    return;
+                }
+            };
         } catch (e) {
             console.error(e);
         }
