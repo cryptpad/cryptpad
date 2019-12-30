@@ -299,12 +299,12 @@ module.exports = {
      *  Pin requests are stored in a pin-store. The location of this store is
      *  defined here.
      */
-    pinPath: './pins',
+    pinPath: './data/pins',
 
     /*  if you would like the list of scheduled tasks to be stored in
         a custom location, change the path below:
     */
-    taskPath: './tasks',
+    taskPath: './data/tasks',
 
     /*  if you would like users' authenticated blocks to be stored in
         a custom location, change the path below:
@@ -319,7 +319,7 @@ module.exports = {
     /*  CryptPad stores incomplete blobs in a 'staging' area until they are
      *  fully uploaded. Set its location here.
      */
-    blobStagingPath: './blobstage',
+    blobStagingPath: './data/blobstage',
 
     /* CryptPad supports logging events directly to the disk in a 'logs' directory
      * Set its location here, or set it to false (or nothing) if you'd rather not log

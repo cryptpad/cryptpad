@@ -28,11 +28,8 @@ VOLUME /cryptpad/cfg
 VOLUME /cryptpad/datastore
 VOLUME /cryptpad/customize
 VOLUME /cryptpad/blobstage
-VOLUME /cryptpad/pins
-VOLUME /cryptpad/tasks
 VOLUME /cryptpad/block
 VOLUME /cryptpad/blob
-VOLUME /cryptpad/blobstage
 VOLUME /cryptpad/data
 
 # Copy cryptpad and tini from the build container
