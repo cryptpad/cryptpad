@@ -1639,6 +1639,11 @@ define([
             h('p', Messages.team_inviteLinkTitle ),
             linkError = h('div.alert.alert-danger.cp-teams-invite-alert', {style : 'display: none;'}),
             linkForm = h('div.cp-teams-invite-form', [
+                // autofill: 'off' was insufficient
+                // adding these two fake inputs confuses firefox and prevents unwanted form autofill
+                h('input', { type: 'text', style: 'display: none'}),
+                h('input', { type: 'password', style: 'display: none'}),
+
                 linkName = h('input', {
                     placeholder:  Messages.team_inviteLinkTempName
                 }),
