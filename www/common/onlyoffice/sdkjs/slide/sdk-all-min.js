@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Ascensio System SIA 2012-2019. All rights reserved
+ * Copyright (C) Ascensio System SIA 2012-2020. All rights reserved
  *
  * https://www.onlyoffice.com/
  *
@@ -11484,7 +11484,7 @@ function isRealObject(obj)
 		if (window['IS_NATIVE_EDITOR'])
 		{
 			var stream = window["native"]["openFileCommand"](sFileUrl, changesUrl, Signature);
- 
+
             //получаем url к папке с файлом
             var url;
             var nIndex = sFileUrl.lastIndexOf("/");
@@ -11496,7 +11496,7 @@ function isRealObject(obj)
             } else {
                 bError = true;
             }
- 
+
             bEndLoadFile = true;
             onEndOpen();
 		}
@@ -12384,6 +12384,10 @@ function isRealObject(obj)
 
 	function UploadImageFiles(files, documentId, documentUserId, jwt, callback)
 	{
+           // CryptPad: we need to take control of the upload
+           window.parent.APP.UploadImageFiles(files, documentId, documentUserId, jwt, callback);
+           return;
+
 		if (files.length > 0)
 		{
 			var url = sUploadServiceLocalUrl + '/' + documentId + '/' + documentUserId + '/' + g_oDocumentUrls.getMaxIndex();
@@ -15594,6 +15598,7 @@ window["AscDesktopEditor_Save"] = function()
         window["AscDesktopEditor"]["OnSave"]();
     }
 };
+
 /*
  * (c) Copyright Ascensio System SIA 2010-2018
  *
@@ -21398,7 +21403,16 @@ CCollaborativeEditingBase.prototype.Clear_NewImages = function()
 };
 CCollaborativeEditingBase.prototype.Add_NewImage = function(Url)
 {
-    this.m_aNewImages.push( Url );
+    // CryptPad - Modify URL for local loading
+    var that = this;
+    if (Url.indexOf("#src=")!=-1) {
+      window.parent.APP.getImageURL(Url, function(url) {
+        that.m_aNewImages.push( Url );
+      });
+    } else {
+        this.m_aNewImages.push( Url );
+    }
+    // CryptPad - End modification
 };
 //-----------------------------------------------------------------------------------
 // Функции для работы с массивом m_aDC
@@ -24305,9 +24319,32 @@ function (window, undefined)
 	baseEditorsApi.prototype._addImageUrl                        = function()
 	{
 	};
+	// CRYPTPAD
+	// This method is necessary to add the loaded images to the list of loaded images
+	// The code is in slide/api.js
+	baseEditorsApi.prototype.asc_addImageCallback                = function(res)
+        {
+        };
 	baseEditorsApi.prototype.asc_addImage                        = function()
 	{
 		var t = this;
+
+                // CryptPad: we need to take control of the upload
+		// t.sync_StartAction(c_oAscAsyncActionType.BlockInteraction, c_oAscAsyncAction.UploadImage);
+		// This method calls back to the cryptpad onlyoffice inner.js to load the cryptad file dialog
+                window.parent.APP.AddImage(function(res) {
+			// This method adds the loaded image to the list of  loaded images
+			t.asc_addImageCallback(res);
+			// This method activats the image
+			t._addImageUrl([res.url]);
+			// t.sync_EndAction(c_oAscAsyncActionType.BlockInteraction, c_oAscAsyncAction.UploadImage);
+		}, function() {
+			// t.sync_EndAction(c_oAscAsyncActionType.BlockInteraction, c_oAscAsyncAction.UploadImage);
+			t.sendEvent("asc_onError", error, c_oAscError.Level.NoCritical);
+		});
+		return;
+		// Cryptpad end
+
 		AscCommon.ShowImageFileDialog(this.documentId, this.documentUserId, this.CoAuthoringApi.get_jwt(), function(error, files)
 		{
 			t._uploadCallback(error, files);
@@ -31278,6 +31315,16 @@ background-repeat: no-repeat;\
 	{
 		return this.WordControl.m_oLogicDocument.canUnGroup();
 	};
+
+        // CRYPTPAD
+        // This method is necessary to add the loaded images to the list of loaded images
+        asc_docs_api.prototype.asc_addImageCallback = function(res)
+        {
+               g_oDocumentUrls.addImageUrl(res.name, res.url)
+        }
+        asc_docs_api.prototype.asyncImageEndLoadedBackground = function(_image)
+        {
+        };
 
 	asc_docs_api.prototype._addImageUrl = function(urls)
 	{

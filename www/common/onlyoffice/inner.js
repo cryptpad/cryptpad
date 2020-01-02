@@ -227,11 +227,11 @@ define([
         // loadable by users joining after the checkpoint
         var fixSheets = function () {
             try {
+                var editor = window.frames[0].editor;
                 // if we are not in the sheet app
                 // we should not call this code
-                if (!editor.GetSheets)
+                if (typeof editor.GetSheets === 'undefined')
                    return;
-                var editor = window.frames[0].editor;
                 var s = editor.GetSheets();
                 if (s.length === 0) { return; }
                 var wb = s[0].worksheet.workbook;
@@ -735,15 +735,15 @@ define([
                       FileCrypto.decrypt(u8, Nacl.util.decodeBase64(data.key), function (err, res) {
                          if (err || !res.content) { console.log("cryptpad decode fail");  return APP.AddImageErrorCallback(err); }
                          var url = URL.createObjectURL(res.content);
-                         var name = data.name + "#src=" + data.src + ",key=" + data.key + ",name=" + data.name;
+                         var hiddendata = "#src=" + encodeURIComponent(data.src) + ",key=" + encodeURIComponent(data.key) + ",name=" + encodeURIComponent(data.name);
+                         var name = data.name + hiddendata;
                          console.log("CRYPTPAD success add " + name);
                          APP.AddImageSuccessCallback({
                                          name: name,
                                          metadata: res.metadata,
                                          content: res.content,
-                                         url: url
+                                         url: url + hiddendata
                                      });
-                         makeCheckpoint();
                       });
                  });
               }
@@ -760,16 +760,18 @@ define([
 
             APP.getImageURL = function(name, callback) {
               var data = {};
-              var params = name.substring(name.lastIndexOf("#") + 1).split(",");
+              var hiddendata = name.substring(name.lastIndexOf("#") + 1);
+              var params = hiddendata.split(",");
 
               for (var i in params) {
                 var item = params[i].split("=");
-                data[item[0]] = item[1];
+                data[item[0]] = decodeURIComponent(item[1]);
               }
               Util.fetch(data.src, function (err, u8) {
                    FileCrypto.decrypt(u8, Nacl.util.decodeBase64(data.key), function (err, res) {
                       if (err || !res.content) { return APP.AddImageErrorCallback(err); }
-                      var url = URL.createObjectURL(res.content);
+                      var url = URL.createObjectURL(res.content) + "#" + hiddendata;
+                      window.frames[0].AscCommon.g_oDocumentUrls.addImageUrl(data.name + "#" + hiddendata, url);
                       callback(url);
                    });
               });
