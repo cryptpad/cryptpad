@@ -18,6 +18,7 @@ define([
     '/common/outer/worker-channel.js',
 
     '/bower_components/file-saver/FileSaver.min.js',
+    '/common/sframe-common-file.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -39,9 +40,11 @@ define([
     EmptyCell,
     EmptyDoc,
     EmptySlide,
-    Channel)
+    Channel,
+    SFCFile)
 {
     var saveAs = window.saveAs;
+    var Nacl = window.nacl;
 
     var APP = window.APP = {
         $: $
@@ -224,6 +227,10 @@ define([
         // loadable by users joining after the checkpoint
         var fixSheets = function () {
             try {
+                // if we are not in the sheet app
+                // we should not call this code
+                if (!editor.GetSheets)
+                   return;
                 var editor = window.frames[0].editor;
                 var s = editor.GetSheets();
                 if (s.length === 0) { return; }
@@ -697,9 +704,9 @@ define([
                                   '#fm-btn-save { display: none !important; }' +
                                   '#panel-settings-general tr.autosave { display: none !important; }' +
                                   '#panel-settings-general tr.coauth { display: none !important; }' +
-                                  '#header { display: none !important; }' +
-                                  '#id-toolbar-full-placeholder-btn-insertimage { display: none; }' +
-                                  '#id-toolbar-full-placeholder-btn-insertequation { display: none; }';
+                                  '#header { display: none !important; }';
+                                  // + '#id-toolbar-full-placeholder-btn-insertimage { display: none; }' +
+                                  // '#id-toolbar-full-placeholder-btn-insertequation { display: none; }';
                         $('<style>').text(css).appendTo($tb);
                         if (UI.findOKButton().length) {
                             UI.findOKButton().on('focusout', function () {
@@ -713,6 +720,61 @@ define([
                 var ifr = document.getElementsByTagName('iframe')[0];
                 if (ifr) { ifr.remove(); }
             };
+
+            common.initFilePicker({
+              onSelect: function (data) {
+                 if (data.type !== 'file') {
+                     console.log("Unexpected data type picked " + data.type);
+                     return;
+                 }
+                 if (data.type !== 'file') { console.log('unhandled embed type ' + data.type); return; }
+                 var privateDat = cpNfInner.metadataMgr.getPrivateData();
+                 var origin = privateDat.fileHost || privateDat.origin;
+                 var src = data.src; //  = origin + data.src;
+                 Util.fetch(data.src, function (err, u8) {
+                      FileCrypto.decrypt(u8, Nacl.util.decodeBase64(data.key), function (err, res) {
+                         if (err || !res.content) { console.log("cryptpad decode fail");  return APP.AddImageErrorCallback(err); }
+                         var url = URL.createObjectURL(res.content);
+                         var name = data.name + "#src=" + data.src + ",key=" + data.key + ",name=" + data.name;
+                         console.log("CRYPTPAD success add " + name);
+                         APP.AddImageSuccessCallback({
+                                         name: name,
+                                         metadata: res.metadata,
+                                         content: res.content,
+                                         url: url
+                                     });
+                         makeCheckpoint();
+                      });
+                 });
+              }
+            });
+
+            APP.AddImage = function(cb1, cb2) {
+              APP.AddImageSuccessCallback = cb1;
+              APP.AddImageErrorCallback = cb2;
+              common.openFilePicker({
+                types: ['file'],
+                where: ['root']
+              });
+            }
+
+            APP.getImageURL = function(name, callback) {
+              var data = {};
+              var params = name.substring(name.lastIndexOf("#") + 1).split(",");
+
+              for (var i in params) {
+                var item = params[i].split("=");
+                data[item[0]] = item[1];
+              }
+              Util.fetch(data.src, function (err, u8) {
+                   FileCrypto.decrypt(u8, Nacl.util.decodeBase64(data.key), function (err, res) {
+                      if (err || !res.content) { return APP.AddImageErrorCallback(err); }
+                      var url = URL.createObjectURL(res.content);
+                      callback(url);
+                   });
+              });
+            }
+
             APP.docEditor = new window.DocsAPI.DocEditor("cp-app-oo-placeholder", APP.ooconfig);
             ooLoaded = true;
             makeChannel();
@@ -863,6 +925,10 @@ define([
             };
             APP.FM.handleFile(blob, data);
         };
+
+
+
+
 
         var loadLastDocument = function () {
             var lastCp = getLastCp();
