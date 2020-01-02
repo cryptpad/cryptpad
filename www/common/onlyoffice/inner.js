@@ -49,7 +49,7 @@ define([
     var APP = window.APP = {
         $: $
     };
-
+    var mediasContent = {};
     var CHECKPOINT_INTERVAL = 50;
     var DISPLAY_RESTORE_BUTTON = false;
 
@@ -737,6 +737,12 @@ define([
                          var url = URL.createObjectURL(res.content);
                          var hiddendata = "#src=" + encodeURIComponent(data.src) + ",key=" + encodeURIComponent(data.key) + ",name=" + encodeURIComponent(data.name);
                          var name = data.name + hiddendata;
+                         // store media content for potential export
+                         var reader = new FileReader();
+			 reader.onloadend = (event) => {
+    				mediasContent[name] = reader.result;
+			 }
+			 reader.readAsArrayBuffer(res.content);
                          console.log("CRYPTPAD success add " + name);
                          APP.AddImageSuccessCallback({
                                          name: name,
@@ -771,6 +777,12 @@ define([
                    FileCrypto.decrypt(u8, Nacl.util.decodeBase64(data.key), function (err, res) {
                       if (err || !res.content) { return APP.AddImageErrorCallback(err); }
                       var url = URL.createObjectURL(res.content) + "#" + hiddendata;
+                      // store media content for potential export
+                      var reader = new FileReader();
+                      reader.onloadend = (event) => {
+                             mediasContent[data.name + "#" + hiddendata] = reader.result;
+                      }
+                      reader.readAsArrayBuffer(res.content);
                       window.frames[0].AscCommon.g_oDocumentUrls.addImageUrl(data.name + "#" + hiddendata, url);
                       callback(url);
                    });
@@ -799,6 +811,7 @@ define([
             console.log("x2t mount");
       	    // x2t.FS.mount(x2t.MEMFS, {} , '/');
 	    x2t.FS.mkdir('/working');
+            x2t.FS.mkdir('/working/media');
             console.log("x2t mount done");
 	}
 
@@ -813,6 +826,22 @@ define([
  		console.log("Converting Data for " + fileName + " to " + outputFormat);
  		// writing file to mounted working disk (in memory)
  		x2t.FS.writeFile('/working/' + fileName, data);
+
+                // Adding images
+                for (var mediaFileName in window.frames[0].AscCommon.g_oDocumentUrls.urls) {
+                  var mediaFileName = mediaFileName.substring(6);
+                  if (mediasContent[mediaFileName]) { 
+                    console.log("Writing media data " + mediaFileName);
+                    console.log("Data");
+                    var fileData = mediasContent[mediaFileName];
+                    console.log(fileData);
+		    x2t.FS.writeFile('/working/media/' + mediaFileName, new Uint8Array(fileData));
+		    x2t.FS.writeFile('/working/media/myimage.png', new Uint8Array(fileData));
+                  } else {
+                    console.log("Could not find media content for " + mediaFileName);
+                  }
+                }
+
  		var params = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
       			   + "<TaskQueueDataConvert xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">"
       		+ "<m_sFileFrom>/working/" + fileName + "</m_sFileFrom>"
@@ -858,10 +887,17 @@ define([
         var exportXLSXFile = function() {
             var text = getContent();
             var suggestion = Title.suggestTitle(Title.defaultTitle);
+            var ext="xlsx";
+            var type = common.getMetadataMgr().getPrivateData().ooType;
+            if (type==="ooslide")
+              ext = "pptx";
+            else if (type==="oodoc")
+              ext = "docx";
+              
             UI.prompt(Messages.exportPrompt,
-                Util.fixFileName(suggestion) + '.xlsx', function (filename) {
+                Util.fixFileName(suggestion) + '.' + ext, function (filename) {
                   if (!(typeof(filename) === 'string' && filename)) { return; }
-                     x2tSaveAndConvertData(text, "filename.bin", "xlsx", filename);
+                     x2tSaveAndConvertData(text, "filename.bin", ext, filename);
                  });
         };
 
