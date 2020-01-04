@@ -88,7 +88,7 @@ define([
         // This structure is used for caching media data and blob urls for each media cryptpad url
         var mediasData = {};
 
-        var getMediaSources = function() {
+        var getMediasSources = APP.getMediasSources =  function() {
            if (!content.mediasSources) {
              content.mediasSources = {}
            }
@@ -745,7 +745,7 @@ define([
                  var name = data.name;
 
                  // Add image to the list
-                 var mediasSources = getMediaSources();
+                 var mediasSources = getMediasSources();
                  mediasSources[name] = data;
 
                  APP.getImageURL(name, function(url) {
@@ -758,25 +758,6 @@ define([
               }
             });
 
-/*
-                 Util.fetch(data.src, function (err, u8) {
-                      FileCrypto.decrypt(u8, Nacl.util.decodeBase64(data.key), function (err, res) {
-                         if (err || !res.content) { console.log("cryptpad decode fail");  return APP.AddImageErrorCallback(err); }
-                         var url = URL.createObjectURL(res.content);
-                         var hiddendata = "#src=" + encodeURIComponent(data.src) + ",key=" + encodeURIComponent(data.key) + ",name=" + encodeURIComponent(data.name);
-                         var name = data.name + hiddendata;
-                         // store media content for potential export
-                         var reader = new FileReader();
-			 reader.onloadend = (event) => {
-    				mediasContent[name] = reader.result;
-			 }
-			 reader.readAsArrayBuffer(res.content);
-                      });
-                 });
-              }
-            });
-*/
-
             APP.AddImage = function(cb1, cb2) {
               APP.AddImageSuccessCallback = cb1;
               APP.AddImageErrorCallback = cb2;
@@ -787,7 +768,7 @@ define([
             }
 
             APP.getImageURL = function(name, callback) {
-              var mediasSources = getMediaSources();
+              var mediasSources = getMediasSources();
               var data = mediasSources[name];
 
               if (typeof data === 'undefined') {
@@ -804,14 +785,17 @@ define([
               }
 
               Util.fetch(data.src, function (err, u8) {
+                try {
+                   console.log("Decrypt with key " + data.key);
                    FileCrypto.decrypt(u8, Nacl.util.decodeBase64(data.key), function (err, res) {
-                      if (err || !res.content) { callback(""); }
+                      if (err || !res.content) { console.log("Decrypting failed"); callback(""); }
                       var blobUrl = URL.createObjectURL(res.content);
                       // store media blobUrl and content for cache and export
                       var mediaData = { blobUrl : blobUrl, content : "" };
                       mediasData[data.src] = mediaData;
                       var reader = new FileReader();
                       reader.onloadend = (event) => {
+                             console.log("MediaData set");
                              mediaData.content = reader.result;
                       }
                       reader.readAsArrayBuffer(res.content);
@@ -819,6 +803,10 @@ define([
                       window.frames[0].AscCommon.g_oDocumentUrls.addImageUrl(data.name, blobUrl);
                       callback(blobUrl);
                    });
+                } catch(e) {
+                   console.log("Exception decrypting image " + data.name);
+                   callback("");
+                }
               });
             }
 
@@ -863,16 +851,14 @@ define([
                 // Adding images
                 for (var mediaFileName in window.frames[0].AscCommon.g_oDocumentUrls.urls) {
                   var mediaFileName = mediaFileName.substring(6);
-                  var mediasSources = getMediaSources();
+                  var mediasSources = getMediasSources();
                   var mediaSource = mediasSources[mediaFileName];
                   var mediaData = (typeof mediaSource === 'undefined') ? mediaSource :  mediasData[mediaSource.src];
                   if (typeof mediaData !== 'undefined') {
                     console.log("Writing media data " + mediaFileName);
                     console.log("Data");
                     var fileData = mediaData.content;
-                    console.log(fileData);
 		    x2t.FS.writeFile('/working/media/' + mediaFileName, new Uint8Array(fileData));
-		    x2t.FS.writeFile('/working/media/myimage.png', new Uint8Array(fileData));
                   } else {
                     console.log("Could not find media content for " + mediaFileName);
                   }
@@ -889,14 +875,21 @@ define([
  		// running conversion
     		x2t.ccall("runX2T", ["number"], ["string"], ["/working/params.xml"]);
  		// reading output file from working disk (in memory)
-    		var result = x2t.FS.readFile('/working/' + fileName + "." + outputFormat);
+                try {
+    		 var result = x2t.FS.readFile('/working/' + fileName + "." + outputFormat);
+                } catch (e) {
+                 console.log("Failed reading converted file");
+                 return "";
+                }
                 return result;
 	}
 
         var x2tSaveAndConvertDataInternal = function(x2t, data, filename, extension, finalFilename) {
                 var xlsData = x2tConvertDataInternal(x2t, data, filename, extension);
-                var blob = new Blob([xlsData], {type: "application/bin;charset=utf-8"});
-                saveAs(blob, finalFilename);
+                if (xlsData!="") {
+                  var blob = new Blob([xlsData], {type: "application/bin;charset=utf-8"});
+                  saveAs(blob, finalFilename);
+                }
         }
 
         var x2tSaveAndConvertData = function(data, filename, extension, finalFilename) {
@@ -937,15 +930,84 @@ define([
                  });
         };
 
+        var x2tImportImagesInternal = function(x2t, images, i, callback) {
+            if (i>=images.length) {
+              callback();
+            } else {
+              console.log("Import image " + i);
+              var handleFileData = {
+        	name: images[i],
+                mediasSources: getMediasSources(),
+        	callback: function() {
+                  console.log("next image");
+                  x2tImportImagesInternal(x2t, images, i+1, callback);
+                },
+      	      };
+              var filePath = "/working/media/" + images[i];
+              console.log("Import filename " + filePath);
+              var fileData = x2t.FS.readFile("/working/media/" + images[i], { encoding : "binary" });
+              console.log("Importing data");
+              console.log("Buffer");
+              console.log(fileData.buffer);
+              var blob = new Blob([fileData.buffer], {type: 'image/png'});
+              blob.name = images[i];
+	      APP.FMImages.handleFile(blob, handleFileData);
+            }
+        }
 
-        var x2tConvertData = function (x2t, data, filename, extension) {
+        var x2tImportImages = function (x2t, callback) {
+          if (!APP.FMImages) {
+            var fmConfigImages = {
+              noHandlers: true,
+              noStore: true,
+              body: $('body'),
+  			onUploaded: function (ev, data) {
+       				if (!ev.callback) { return; }
+                                console.log("Image uploaded at " + data.url);
+                                var parsed = Hash.parsePadUrl(data.url);
+                                if (parsed.type === 'file') {
+                                   var secret = Hash.getSecrets('file', parsed.hash, data.password);
+                                   var fileHost = privateData.fileHost || privateData.origin;
+                                   var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
+                                   var key = Hash.encodeBase64(secret.keys.cryptKey);
+				   console.log("Final src: " + src);
+                                   ev.mediasSources[ev.name] = { name : ev.name, src : src, key : key };
+                                }
+    				ev.callback();
+  			}
+	     };
+             APP.FMImages = common.createFileManager(fmConfigImages);
+           }
+
+           // Import Images
+           console.log("Import Images");
+           var files = x2t.FS.readdir("/working/media/");
+           var images = [];
+           files.forEach(file => {
+    		if (file!="." && file!="..")
+                  images.push(file);
+  	   });
+           x2tImportImagesInternal(x2t, images, 0, function() {
+              console.log("Sync media sources elements");
+              console.log(getMediasSources());
+              APP.onLocal();
+              console.log("Import Images finalized");
+              callback();
+           });
+        }
+ 
+
+        var x2tConvertData = function (x2t, data, filename, extension, callback) {
            var convertedContent;
            if (filename.endsWith(".ods")) {
              convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(data), filename, "xlsx");
-	     return x2tConvertDataInternal(x2t, convertedContent, filename + ".xlsx", extension);
+	     convertedContent = x2tConvertDataInternal(x2t, convertedContent, filename + ".xlsx", extension);
            } else {
-             return x2tConvertDataInternal(x2t, new Uint8Array(data), filename, extension);
+	     convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(data), filename, extension);
            }
+           x2tImportImages(x2t, function() {
+             callback(convertedContent);
+           });
         }
 
         var importXLSXFile = function(content, filename) {
@@ -957,17 +1019,19 @@ define([
                 x2t.run();
                 if (x2tInitialized) {
                       console.log("x2t runtime already initialized");
-                      var convertedContent = x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin");
-                      importFile(convertedContent);
+                      x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin", function(convertedContent) {
+                         importFile(convertedContent);
+                      });
                 }
 
                 x2t.onRuntimeInitialized = function() {
-                        console.log("x2t in runtime initialized");
-                        // Init x2t js module
-                        x2tInit(x2t);
-                        x2tInitialized = true;
-                        var convertedContent = x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin");
-                        importFile(convertedContent);
+                    console.log("x2t in runtime initialized");
+                    // Init x2t js module
+                    x2tInit(x2t);
+                    x2tInitialized = true;
+                    var convertedContent = x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin", function(convertedContent) {
+                         importFile(convertedContent);
+		    });
                 }
              });
         }
@@ -980,6 +1044,9 @@ define([
             if (m.length > 1) {
                 return void UI.alert(Messages.oo_cantUpload);
             }
+            if (content=="") {
+                return void UI.alert(Messages.oo_cantUpload);
+            }
             var blob = new Blob([content], {type: 'plain/text'});
             var file = getFileType();
             blob.name = (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
