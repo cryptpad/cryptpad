@@ -25877,6 +25877,7 @@ function (window, undefined)
 		// This method calls back to the cryptpad onlyoffice inner.js to load the cryptad file dialog
                 window.parent.APP.AddImage(function(res) {
 			// This method adds the loaded image to the list of  loaded images
+                        console.log("AddImageCallback");
 			t.asc_addImageCallback(res);
 			// This method activats the image
 			t._addImageUrl([res.url]);
