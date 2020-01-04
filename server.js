@@ -92,6 +92,8 @@ var setHeaders = (function () {
             const h = [
                     /^\/pad(2)?\/inner\.html.*/,
                     /^\/sheet\/inner\.html.*/,
+                    /^\/ooslide\/inner\.html.*/,
+                    /^\/oodoc\/inner\.html.*/,
                     /^\/common\/onlyoffice\/.*\/index\.html.*/
                 ].some((regex) => {
                     return regex.test(req.url)
