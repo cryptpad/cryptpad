@@ -49,7 +49,8 @@ define([
     var APP = window.APP = {
         $: $
     };
-    var mediasContent = {};
+
+
     var CHECKPOINT_INTERVAL = 50;
     var DISPLAY_RESTORE_BUTTON = false;
 
@@ -74,7 +75,8 @@ define([
         var config = {};
         var content = {
             hashes: {},
-            ids: {}
+            ids: {},
+            mediasSources: {}
         };
         var oldHashes = {};
         var oldIds = {};
@@ -82,6 +84,16 @@ define([
         var myUniqueOOId;
         var myOOId;
         var sessionId = Hash.createChannelId();
+
+        // This structure is used for caching media data and blob urls for each media cryptpad url
+        var mediasData = {};
+
+        var getMediaSources = function() {
+           if (!content.mediasSources) {
+             content.mediasSources = {}
+           }
+           return content.mediasSources;
+        }
 
         var getId = function () {
             return metadataMgr.getNetfluxId() + '-' + privateData.clientId;
@@ -730,7 +742,23 @@ define([
                  if (data.type !== 'file') { console.log('unhandled embed type ' + data.type); return; }
                  var privateDat = cpNfInner.metadataMgr.getPrivateData();
                  var origin = privateDat.fileHost || privateDat.origin;
-                 var src = data.src; //  = origin + data.src;
+                 var name = data.name;
+
+                 // Add image to the list
+                 var mediasSources = getMediaSources();
+                 mediasSources[name] = data;
+
+                 APP.getImageURL(name, function(url) {
+                         console.log("CRYPTPAD success add " + name);
+                         APP.AddImageSuccessCallback({
+                           name: name,
+                           url: url
+                         });
+                 });
+              }
+            });
+
+/*
                  Util.fetch(data.src, function (err, u8) {
                       FileCrypto.decrypt(u8, Nacl.util.decodeBase64(data.key), function (err, res) {
                          if (err || !res.content) { console.log("cryptpad decode fail");  return APP.AddImageErrorCallback(err); }
@@ -743,17 +771,11 @@ define([
     				mediasContent[name] = reader.result;
 			 }
 			 reader.readAsArrayBuffer(res.content);
-                         console.log("CRYPTPAD success add " + name);
-                         APP.AddImageSuccessCallback({
-                                         name: name,
-                                         metadata: res.metadata,
-                                         content: res.content,
-                                         url: url + hiddendata
-                                     });
                       });
                  });
               }
             });
+*/
 
             APP.AddImage = function(cb1, cb2) {
               APP.AddImageSuccessCallback = cb1;
@@ -765,28 +787,37 @@ define([
             }
 
             APP.getImageURL = function(name, callback) {
-              var data = {};
-              var hiddendata = name.substring(name.lastIndexOf("#") + 1);
-              var params = hiddendata.split(",");
+              var mediasSources = getMediaSources();
+              var data = mediasSources[name];
 
-              for (var i in params) {
-                var item = params[i].split("=");
-                data[item[0]] = decodeURIComponent(item[1]);
+              if (typeof data === 'undefined') {
+                 console.log("CryptPad - could not find matching media for " + name);
+                 callback("");
+                 return;
+              }
+
+              var blobUrl = (typeof mediasData[data.src] === 'undefined') ? "" : mediasData[data.src].src;
+              if (blobUrl != "") {
+                 console.log("CryptPad Image already loaded " + blobUrl);
+                 callback(blobUrl);
+                 return;
               }
 
               Util.fetch(data.src, function (err, u8) {
                    FileCrypto.decrypt(u8, Nacl.util.decodeBase64(data.key), function (err, res) {
-                      if (err || !res.content) { callback(); }
-                      var url = URL.createObjectURL(res.content) + "#" + hiddendata;
-                      // store media content for potential export
+                      if (err || !res.content) { callback(""); }
+                      var blobUrl = URL.createObjectURL(res.content);
+                      // store media blobUrl and content for cache and export
+                      var mediaData = { blobUrl : blobUrl, content : "" };
+                      mediasData[data.src] = mediaData;
                       var reader = new FileReader();
                       reader.onloadend = (event) => {
-                             mediasContent[data.name + "#" + hiddendata] = reader.result;
+                             mediaData.content = reader.result;
                       }
                       reader.readAsArrayBuffer(res.content);
-                      console.log("Adding CryptPad Image " + data.name + ": " +  url);
-                      window.frames[0].AscCommon.g_oDocumentUrls.addImageUrl(data.name + "#" + hiddendata, url);
-                      callback(url);
+                      console.log("Adding CryptPad Image " + data.name + ": " +  blobUrl);
+                      window.frames[0].AscCommon.g_oDocumentUrls.addImageUrl(data.name, blobUrl);
+                      callback(blobUrl);
                    });
               });
             }
@@ -832,10 +863,13 @@ define([
                 // Adding images
                 for (var mediaFileName in window.frames[0].AscCommon.g_oDocumentUrls.urls) {
                   var mediaFileName = mediaFileName.substring(6);
-                  if (mediasContent[mediaFileName]) { 
+                  var mediasSources = getMediaSources();
+                  var mediaSource = mediasSources[mediaFileName];
+                  var mediaData = (typeof mediaSource === 'undefined') ? mediaSource :  mediasData[mediaSource.src];
+                  if (typeof mediaData !== 'undefined') {
                     console.log("Writing media data " + mediaFileName);
                     console.log("Data");
-                    var fileData = mediasContent[mediaFileName];
+                    var fileData = mediaData.content;
                     console.log(fileData);
 		    x2t.FS.writeFile('/working/media/' + mediaFileName, new Uint8Array(fileData));
 		    x2t.FS.writeFile('/working/media/myimage.png', new Uint8Array(fileData));
@@ -1220,6 +1254,7 @@ define([
                 }
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
             }
+
             if (content.ids) {
                 handleNewIds(oldIds, content.ids);
                 oldIds = JSON.parse(JSON.stringify(content.ids));

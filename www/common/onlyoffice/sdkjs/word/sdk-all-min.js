@@ -21543,16 +21543,6 @@ CCollaborativeEditingBase.prototype.Clear_NewImages = function()
 CCollaborativeEditingBase.prototype.Add_NewImage = function(Url)
 {
     this.m_aNewImages.push( Url );
-    // CryptPad - Modify URL for local loading
-    /* 
-    console.log("Add Image " + Url);
-    if (Url.indexOf("#src=")!=-1) {
-      window.parent.APP.getImageURL(Url, function(url) {
-        console.log("CryptPad Image " + url);
-      });
-    }
-    */ 
-    // CryptPad - End modification
 };
 //-----------------------------------------------------------------------------------
 // Функции для работы с массивом m_aDC
