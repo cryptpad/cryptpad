@@ -773,9 +773,10 @@ define([
                 var item = params[i].split("=");
                 data[item[0]] = decodeURIComponent(item[1]);
               }
+
               Util.fetch(data.src, function (err, u8) {
                    FileCrypto.decrypt(u8, Nacl.util.decodeBase64(data.key), function (err, res) {
-                      if (err || !res.content) { return APP.AddImageErrorCallback(err); }
+                      if (err || !res.content) { callback(); }
                       var url = URL.createObjectURL(res.content) + "#" + hiddendata;
                       // store media content for potential export
                       var reader = new FileReader();
@@ -783,6 +784,7 @@ define([
                              mediasContent[data.name + "#" + hiddendata] = reader.result;
                       }
                       reader.readAsArrayBuffer(res.content);
+                      console.log("Adding CryptPad Image " + data.name + ": " +  url);
                       window.frames[0].AscCommon.g_oDocumentUrls.addImageUrl(data.name + "#" + hiddendata, url);
                       callback(url);
                    });
