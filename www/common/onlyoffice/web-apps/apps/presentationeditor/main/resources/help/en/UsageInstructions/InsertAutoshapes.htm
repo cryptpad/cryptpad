@@ -6,15 +6,19 @@
 		<meta name="description" content="Add an autoshape to your presentation and adjust its properties." />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
         <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
 			<h1>Insert and format autoshapes</h1>
             <h3>Insert an autoshape</h3>
 			<p>To <b>add</b> an autoshape on a slide,</p>
 			<ol>
 				<li>in the slide list on the left, select the slide you want to add the autoshape to,</li>
-				<li>click the <b>Insert Autoshape</b> <img alt="Insert Autoshape icon" src="../images/insertautoshape.png" /> icon at the top toolbar,</li>
+				<li>click the  <img alt="Shape icon" src="../images/insertautoshape.png" /> <b>Shape</b> icon at the <b>Home</b> or <b>Insert</b> tab of the top toolbar,</li>
 				<li>select one of the available autoshape groups: Basic Shapes, Figured Arrows, Math, Charts, Stars & Ribbons, Callouts, Buttons, Rectangles, Lines,</li>
 				<li>click on the necessary autoshape within the selected group,</li>
 				<li>in the slide editing area, place the mouse cursor where you want the shape to be put,
@@ -26,8 +30,8 @@
 			</ol>
 			<hr />
             <h3>Adjust autoshape settings</h3>
-			<p>Some of the autoshape settings can be altered using the <b>Shape Settings</b> tab of the right sidebar. To activate it click the autoshape and choose the <b>Shape Settings</b> <img alt="Shape Settings icon" src="../images/shape_settings_icon.png" /> icon on the right. Here you can change the following properties:</p>
-			<p><img class="floatleft"alt="Shape Settings tab" src="../images/shapesettingstab.png" /></p>
+			<p>Some of the autoshape settings can be altered using the <b>Shape settings</b> tab of the right sidebar. To activate it click the autoshape and choose the <b>Shape settings</b> <img alt="Shape settings icon" src="../images/shape_settings_icon.png" /> icon on the right. Here you can change the following properties:</p>
+			<p><img class="floatleft"alt="Shape settings tab" src="../images/shapesettingstab.png" /></p>
 			<ul  style="margin-left: 280px;">
 			<li><b>Fill</b> - use this section to select the autoshape fill. You can choose the following options:
 			<ul>
@@ -46,11 +50,26 @@
                 <li>To change the stroke <b>type</b>, select the necessary option from the corresponding dropdown list (a solid line is applied by default, you can change it to one of the available dashed lines).</li>
     			</ul>
 			</li>
+                <li>
+                    <b>Rotation</b> is used to rotate the shape by 90 degrees clockwise or counterclockwise as well as to flip the shape horizontally or vertically. Click one of the buttons:
+                    <ul>
+                        <li><img alt="Rotate counterclockwise icon" src="../images/rotatecounterclockwise.png" /> to rotate the shape by 90 degrees counterclockwise</li>
+                        <li><img alt="Rotate clockwise icon" src="../images/rotateclockwise.png" /> to rotate the shape by 90 degrees clockwise</li>
+                        <li><img alt="Flip horizontally icon" src="../images/fliplefttoright.png" /> to flip the shape horizontally (left to right)</li>
+                        <li><img alt="Flip vertically icon" src="../images/flipupsidedown.png" /> to flip the shape vertically (upside down)</li>
+                    </ul>
+                </li>
 			</ul>
 			<hr />
 			<p>To change the <b>advanced settings</b> of the autoshape, right-click the shape and select the <b>Shape Advanced Settings</b> option from the contextual menu or left-click it and press the <b>Show advanced settings</b> link at the right sidebar. The shape properties window will be opened:</p>
             <p><img alt="Shape Properties - Size tab" src="../images/shape_properties1.png" /></p>
-			<p>The <b>Size</b> tab allows to change the autoshape <b>Width</b> and/or <b>Height</b>. If the <b>Constant Proportions</b> <img alt="Constant Proportions icon" src="../images/constantproportions.png" /> button is clicked (in this case it looks like this <img alt="Constant Proportions icon activated" src="../images/constantproportionsactivated.png" />), the width and height will be changed together preserving the original autoshape aspect ratio.</p>
+			<p>The <b>Size</b> tab allows to change the autoshape <b>Width</b> and/or <b>Height</b>. If the <b>Constant proportions</b> <img alt="Constant proportions icon" src="../images/constantproportions.png" /> button is clicked (in this case it looks like this <img alt="Constant proportions icon activated" src="../images/constantproportionsactivated.png" />), the width and height will be changed together preserving the original autoshape aspect ratio.</p>
+            <p><img alt="Shape - Advanced Settings" src="../images/shape_properties5.png" /></p>
+            <p>The <b>Rotation</b> tab contains the following parameters:</p>
+            <ul>
+                <li><b>Angle</b> - use this option to rotate the shape by an exactly specified angle. Enter the necessary value measured in degrees into the field or adjust it using the arrows on the right. </li>
+                <li><b>Flipped</b> - check the <b>Horizontally</b> box to flip the shape horizontally (left to right) or check the <b>Vertically</b> box to flip the shape vertically (upside down).</li>
+            </ul>
             <p><img alt="Shape Properties - Weights & Arrows tab" src="../images/shape_properties.png" /></p>
 			<p>The <b>Weights & Arrows</b> tab contains the following parameters:</p>
 			<ul>
@@ -83,19 +102,19 @@
             <p><img alt="Shape Properties - Alternative Text tab" src="../images/shape_properties4.png" /></p>
             <p>The <b>Alternative Text</b> tab allows to specify a <b>Title</b> and <b>Description</b> which will be read to the people with vision or cognitive impairments to help them better understand what information there is in the shape.</p>
             <hr />
-			<p>To <b>replace</b> the added autoshape, left-click it and use the <b>Change Autoshape</b> drop-down list at the <b>Shape Settings</b> tab of the right sidebar.</p>
+			<p>To <b>replace</b> the added autoshape, left-click it and use the <b>Change Autoshape</b> drop-down list at the <b>Shape settings</b> tab of the right sidebar.</p>
 			<p>To <b>delete</b> the added autoshape, left-click it and press the <b>Delete</b> key on the keyboard.</p>
 			<p>To learn how to <b>align</b> an autoshape on the slide or <b>arrange</b> several autoshapes, refer to the <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">Align and arrange objects on a slide</a> section.</p>
             <hr />
             <h3>Join autoshapes using connectors</h3>
             <p>You can connect autoshapes using lines with connection points to demonstrate dependencies between the objects (e.g. if you want to create a flowchart). To do that,</p>
             <ol>
-                <li>click the <b>Insert Autoshape</b> <img alt="Insert Autoshape icon" src="../images/insertautoshape.png" /> icon at the top toolbar,</li>
+                <li>click the  <img alt="Shape icon" src="../images/insertautoshape.png" /> <b>Shape</b> icon at the <b>Home</b> or <b>Insert</b> tab of the top toolbar,</li>
                 <li>
                     select the <b>Lines</b> group from the menu,
                     <p><img alt="Shapes - Lines" src="../images/connectors.png" /></p>
                 </li>
-                <li>click the necessary shape within the selected group (excepting the last three shapes which are not connectors, namely <em>shape 10</em>, <em>11</em> and <em>12</em>),</li>
+                <li>click the necessary shape within the selected group (excepting the last three shapes which are not connectors, namely <em>Curve</em>, <em>Scribble</em> and <em>Freeform</em>),</li>
                 <li>
                     hover the mouse cursor over the first autoshape and click one of the connection points <img alt="Connection point icon" src="../images/connectionpoint.png" /> that appear on the shape outline,
                     <p><img alt="Using connectors" src="../images/connectors_firstshape.png" /></p>

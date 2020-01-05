@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insérer une lettrine</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Insert a drop cap and adjust its frame properties to make your document look more expressive." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insérer une lettrine</h1>
+			<p>Une <b>Lettrine</b> est une lettre initiale du paragraphe, elle est plus grande que les autres lettres et occupe une hauteur supérieure à la ligne courante.</p>
+			<p>Pour ajouter une lettrine,</p>
+			<ol>
+				<li>placez le curseur à l'intérieur du paragraphe dans lequel vous voulez insérer une lettrine,</li>
+                <li>passez à l'onglet <b>Insérer</b> de la barre d'outils supérieure,</li>
+				<li>cliquez sur l'icône <b>Insérer une lettrine</b> sur la barre d'outils supérieure,</li>
+				<li>sélectionnez l'option nécessaire dans la liste déroulante :<ul>
+				    <li><b>Dans le texte</b> <img alt="Insérer une lettrine - Dans le texte" src="../images/dropcap_text.png" /> - pour insérer une lettrine dans le paragraphe.</li>
+				    <li><b>Dans la marge</b> <img alt="Insérer une lettrine - Dans la marge" src="../images/dropcap_margin.png" /> - pour placer une lettrine dans la marge gauche.</li>
+				    </ul>
+				</li>
+			</ol>
+			<p><img class="floatleft" alt="Exemple de la lettrine" src="../images/dropcap_example.png" />La lettre initiale du paragraphe sélectionné sera transformée en une lettrine. Si vous avez besoin d'ajouter quelques lettres, vous pouvez le faire manuellement : sélectionnez la lettrine et tapez les lettres nécessaires.</p>
+			<p>Pour régler l'apparence de la lettrine (par exemple, taille de police, type, style de décoration ou couleur), sélectionnez la lettre et utilisez les icônes correspondantes sur la barre d'outils supérieure.</p>
+			<p>La lettrine sélectionnée est entourée par un <b>cadre</b> (un conteneur utilisé pour positionner la lettrine sur la page). Vous pouvez facilement changer la taille du cadre en faisant glisser ses bordures ou changer sa position en utilisant l'icône <img alt="Flèche" src="../images/arrow.png" /> qui apparaît si vous positionnez le curseur sur le cadre.</p>
+			<p>Pour supprimer la lettrine ajoutée, sélectionnez-la, cliquez sur l'icône <img alt="Insérer une lettrine" src="../images/insert_dropcap_icon.png" /> <b>Insérer une lettrine</b> de la barre d'outils supérieure et choisissez l'option <b>Aucune</b> <img alt="Insérer une lettrine - Aucune" src="../images/dropcap_none.png" /> dans la liste déroulante.</p>
+			<hr />
+			<p>Pour modifier les paramètres de la lettrine ajoutée, sélectionnez-la, cliquez sur l'icône de la barre d'outils supérieure <b>Insérer une lettrine</b> et choisissez l'option <b>Paramètres de la lettrine</b> dans la liste déroulante. La fenêtre <b>Lettrine - Paramètres avancés</b> s'ouvre :</p>
+            <p><img alt="Lettrine - Paramètres avancés" src="../images/dropcap_properties_1.png" /></p>
+			<p>L'onglet <b>Lettrine</b> vous permet de régler les paramètres suivants :</p>
+			    <ul>
+			    <li><b>Position</b> sert à changer l'emplacement de la lettrine. Sélectionnez l'option <b>Dans le texte</b> ou <b>Dans la marge</b>, ou cliquez sur <b>Aucune</b> pour supprimer la lettrine.</li>
+			    <li><b>Police</b> sert à sélectionner la police dans la liste des polices disponibles.</li>
+			    <li><b>Hauteur des lignes</b> sert à spécifier le nombre des lignes occupées par la lettrine. Il est possible de sélectionner de 1 à 10 lignes.</li>
+			    <li><b>Distance du texte</b> sert à spécifier l'espace entre le texte du paragraphe et la bordure droite du cadre qui entoure la lettrine.</li>
+			    </ul>
+            <p><img alt="Lettrine - Paramètres avancés" src="../images/dropcap_properties_2.png" /></p>
+			<p>L'onglet <b>Bordures et remplissage</b> vous permet d'ajouter une bordure autour de la lettrine et de régler ses paramètres. Ils sont les suivants :</p>
+			<ul>
+				<li>Paramètres de la <b>Bordure</b> (taille, couleur, sa présence ou absence) - définissez la taille des bordures, sélectionnez leur couleur et choisissez les bordures auxquelles (en haut, en bas, à gauche, à droite ou quelques unes à la fois) vous voulez appliquer ces paramètres.</li>
+				<li><b>Couleur d'arrère-plan</b> - choisissez la couleur pour l'arrère-plan de la lettrine.</li>
+			</ul>
+            <p><img alt="Lettrine - Paramètres avancés" src="../images/dropcap_properties_3.png" /></p>
+			<p>L'onglet <b>Marges</b> vous permet de définir la distance entre la lettrine et les bordures <b>En haut</b>, <b>En bas</b>, <b>A gauche</b> et <b>A droite</b> autour d'elle (si les bordures ont été préalablement ajoutées).</p>
+			<hr />
+			<p>Après avoir ajouté la lettrine vous pouvez également changer les paramètres du <b>Cadre</b>. Pour y accéder, cliquez droit à l'intérieur du cadre et sélectionnez l'option <b>Paramètres avancées du cadre</b> du menu contextuel. La fenêtre <b>Cadre - Paramètres avancés</b> s'ouvre :</p> 
+            <p><img alt="Cadre - Paramètres avancés" src="../images/frame_properties_1.png" /></p>
+			<p>L'onglet <b>Cadre</b> vous permet de régler les paramètres suivants :</p>
+			<ul>
+				<li><b>Position</b> sert à sélectionner une des styles d'habillage <b>Aligné</b> ou <b>Flottant</b>. Ou vous pouvez cliquer sur <b>Aucune</b> pour supprimer le cadre.</li>
+				<li><b>Largeur</b> et <b>Hauteur</b> servent à changer la taille du cadre. L'option <b>Auto</b> vous permet de régler la taille du cadre automatiquement en l'ajustant à la lettrine à l'intérieur. L'option <b>Exactement</b> vous permet de spécifier les valeurs fixes. L'option <b>Au moins</b> est utilisée pour définir la hauteur minimale (si vous changez la taille du cadre, la hauteur du cadre change en conséquence, mais elle ne peut pas être inférieure à la valeur spécifiée).</li>
+				<li><b>Horizontal</b> sert à définir la <b>position</b> exacte du cadre des unités sélectionnées <b>par rapport à</b> la marge, la page ou la colonne, ou à aligner le cadre (à gauche, au centre ou à droite) <b>par rapport à</b> un des points de référence. Vous pouvez également définir la <b>Distance du texte</b> horizontale c'est-à-dire l'espace entre les bordures verticales du cadre et le texte du paragraphe.</li>
+				<li><b>Vertical</b> sert à définir la <b>position</b> exacte du cadre des unités sélectionnées <b>par rapport à</b> la marge, la page ou le paragraphe, ou à aligner le cadre (en haut, au centre ou en bas) <b>par rapport à</b> un des points de référence. Vous pouvez également définir la <b>Distance du texte</b> verticale c'est-à-dire l'espace entre les bordures horizontales et le texte du paragraphe.</li>
+				<li><b>Déplacer avec le texte</b> contrôle si la litterine se déplace comme le paragraphe auquel elle est liée.</li>
+			</ul><!--<img alt="Frame - Advanced Settings" src="../images/Frame_properties_2.png" />--><p>Les onglets <b>Bordures et remplissage</b> et <b>Marges</b> permettent de définir les mêmes paramètres que dans les onglets de la fenêtre <b>Lettrine - Paramètres avancés</b>.</p><!--<img alt="Frame - Advanced Settings" src="../images/Frame_properties_3.png" />
+			<p>The <b>Margins</b> tab allows to set just the same parameters as at the tab of the same name in the <b>Drop Cap - Advanced Settings</b> window.</p>--></div>
+	</body>
+</html>

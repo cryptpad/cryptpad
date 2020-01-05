@@ -1,20 +1,25 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 	<head>
-		<title>Функция QUARTILE (КВАРТИЛЬ)</title>
+		<title>Функция КВАРТИЛЬ</title>
 		<meta charset="utf-8" />
 		<meta name="description" content="" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
-			<h1>Функция QUARTILE (КВАРТИЛЬ)</h1>
-			<p>Функция <b>QUARTILE</b> - это одна из статистических функций. Анализирует диапазон данных и возвращает квартиль.</p>
-			<p>Синтаксис функции <b>QUARTILE</b>:</p> 
-			<p style="text-indent: 150px;"><b><em>QUARTILE(array , result-category)</em></b></p> 
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Поиск" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Функция КВАРТИЛЬ</h1>
+			<p>Функция <b>КВАРТИЛЬ</b> - это одна из статистических функций. Анализирует диапазон данных и возвращает квартиль.</p>
+			<p>Синтаксис функции <b>КВАРТИЛЬ</b>:</p> 
+			<p style="text-indent: 150px;"><b><em>КВАРТИЛЬ(массив;часть)</em></b></p> 
 			<p><em>где</em></p>
-			<p style="text-indent: 50px;"><b><em>array</em></b> (массив) - выбранный диапазон ячеек для анализа,</p>
-				<p style="text-indent: 50px;"><b><em>result-category</em></b> - значение квартиля, которое требуется вернуть; числовое значение, введенное вручную или находящееся в ячейке, на которую дается ссылка. Квартиль может иметь одно из следующих значений:</p>
+			<p style="text-indent: 50px;"><b><em>массив</em></b> - выбранный диапазон ячеек для анализа,</p>
+				<p style="text-indent: 50px;"><b><em>часть</em></b> - значение квартиля, которое требуется вернуть; числовое значение, введенное вручную или находящееся в ячейке, на которую дается ссылка. Квартиль может иметь одно из следующих значений:</p>
 			<table style="width: 40%">
 				<tr>
 					<td><b>Числовое значение</b></td>
@@ -42,7 +47,7 @@
 				</tr>
 				
 			</table>
-			<p>Чтобы применить функцию <b>QUARTILE</b>,</p>
+			<p>Чтобы применить функцию <b>КВАРТИЛЬ</b>,</p>
 			<ol>
 			<li>выделите ячейку, в которой требуется отобразить результат,</li>
 			<li>щелкните по значку <b>Вставить функцию</b> <img alt="Значок Вставить функцию" src="../images/insertfunction.png" />, расположенному на верхней панели инструментов,
@@ -50,12 +55,12 @@
 				<br />или щелкните по значку <img alt="Значок Функция" src="../images/function.png" /> перед строкой формул,
 			</li>
 			<li>выберите из списка группу функций <b>Статистические</b>,</li>
-			<li>щелкните по функции <b>QUARTILE</b>,</li>
-			<li>введите требуемые аргументы, разделяя их запятыми,</li>
+			<li>щелкните по функции <b>КВАРТИЛЬ</b>,</li>
+			<li>введите требуемые аргументы через точку с запятой,</li>
 			<li>нажмите клавишу <b>Enter</b>.</li>
 			</ol>
 			<p>Результат будет отображен в выбранной ячейке.</p>
-			<p style="text-indent: 150px;"><img alt="Функция QUARTILE" src="../images/quartile.png" /></p>
+			<p style="text-indent: 150px;"><img alt="Функция КВАРТИЛЬ" src="../images/quartile.png" /></p>
 		</div>
 	</body>
 </html>

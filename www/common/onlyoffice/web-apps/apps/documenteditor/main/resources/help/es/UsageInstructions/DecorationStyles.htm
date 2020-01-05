@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Aplique estilos de letra</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Apply font decoration styles: increment/decrement values, bold, italic, underline, strikeout, superscript/subscript" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Aplique estilos de letra</h1>
+			<p>Puede aplicar varios estilos de letra usando los iconos correspondientes que se sitúan en la pestaña de <b>Inicio</b> en la barra de herramientas superior.</p>
+			<p class="note"><b>Nota</b>: Si quiere aplicar el formato al texto existente ya en documento, selecciónelo con el ratón o <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">use el teclado</a> y aplique el formato.</p>
+			<table>
+				<tr>
+					<td>Negrita</td>
+					<td><img alt="Negrita" src="../images/bold.png" /></td>
+					<td>Se usa para poner la letra en negrita dándole más peso.</td>
+				</tr>
+				<tr>
+					<td>Cursiva</td>
+					<td><img alt="Cursiva" src="../images/italic.png" /></td>
+					<td>Pone la letra en cursiva dándole el plano inclinado a la derecha.</td>
+				</tr>
+				<tr>
+					<td>Subrayado</td>
+					<td><img alt="Subrayado" src="../images/underline.png" /></td>
+					<td>Subraya un fragmento del texto seleccionado.</td>
+				</tr>
+				<tr>
+					<td>Tachado</td>
+					<td><img alt="Tachado" src="../images/strike.png" /></td>
+					<td>Se usa para tachar el fragmento del texto seleccionado con una línea que va a través de las letras.</td>
+				</tr>
+				<tr>
+					<td>Subíndice</td>
+					<td><img alt="Subíndice" src="../images/sup.png" /></td>
+					<td>Se usa para poner el fragmento del texto seleccionado en letras pequeñas y ponerlo en la parte baja de la línea del texto, por ejemplo como en fracciones.</td>
+				</tr>
+				<tr>
+					<td>Sobreíndice</td>
+					<td><img alt="Sobreíndice" src="../images/sub.png" /></td>
+					<td>Se usa para poner el fragmento del texto seleccionado en letras pequeñas y ponerlo en la parte superior de la línea del texto, como en fórmulas químicas.</td>
+				</tr>
+			</table>
+			<p>Para acceder a ajustes avanzados de letra, haga clic con el botón derecho y seleccione la opción <b>Ajustes avanzados de párrafo</b> en el menú o use el enlace <b>Mostrar ajustes avanzados</b> en la barra derecha lateral. Se abrirá la ventana <b>Párrafo-Ajustes avanzados</b>, aquí necesita pasar a la sección <b>Letra</b>.</p>
+			<p>Aquí puede usar los estilos de decoración y ajustes de letra:</p>
+			<ul>
+				<li><b>Tachado</b> se usa para tachar el texto con una línea que va por el centro de las letras.</li>
+				<li><b>Doble tachado</b> se usa para tachar el texto con dos líneas que van por el centro de las letras.</li>
+				<li><b>Sobreíndice</b> se usa para poner el texto en letras pequeñas y ponerlo en la parte superior del texto, por ejemplo como en fracciones.</li>
+				<li><b>Subíndice</b> se usa para poner el texto en letras pequeñas y meterlo en la parte baja de la línea del texto, por ejemplo como en formulas químicas.</li>
+				<li><b>Minúsculas</b> se usa para poner todas las letras en minúsculas.</li>
+				<li><b>Mayúsculas</b> se usa para poner todas las letras en mayúsculas.</li>
+				<li><b>Espaciado</b> se usa para establecer un espaciado entre caracteres.</li>
+				<li><b>Posición</b> se usa para establecer la posición de caracteres en una línea.</li>
+			</ul>
+			<p><img alt="Ajustes de Párrafo Avanzados - Fuente" src="../images/paradvsettings_font.png" /></p>
+		</div>
+	</body>
+</html>

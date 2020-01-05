@@ -6,15 +6,20 @@
 		<meta name="description" content="Add a chart to your spreadsheet and adjust its position, size and properties" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
         <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
 			<h1>Insert chart</h1>
             <h3>Insert a chart</h3>
 			<p>To insert a chart into the speadsheet,</p>
 			<ol>
 				<li>Select the cell range that contain the data you wish to use for the chart,</li>
-				<li>Click the <b>Insert Chart</b> <img alt="Insert Chart icon" src="../images/chart.png" /> icon at the top toolbar,</li>
+                <li>switch to the <b>Insert</b> tab of the top toolbar,</li>
+				<li>Click the <img alt="Chart icon" src="../images/chart.png" /> <b>Chart</b> icon at the top toolbar,</li>
                 <li>
                     Select a chart <b>Type</b> you wish to insert: Column, Line, Pie, Bar, Area, XY (Scatter), or Stock.
                     <p class="note"><b>Note</b>: for <b>Column</b>, <b>Line</b>, <b>Pie</b>, or <b>Bar</b> charts, a 3D format is also available.</p>
@@ -26,7 +31,7 @@
             <ol>
                 <li>select the chart with the mouse,</li>
                 <li>
-                    click the <b>Chart Settings</b> <img alt="Chart Settings icon" src="../images/chart.png" /> icon at the right sidebar,
+                    click the <b>Chart settings</b> <img alt="Chart settings icon" src="../images/chartsettingsicon.png" /> icon at the right sidebar,
                     <p><img alt="Chart Settings Right-Side Panel window" src="../images/chartsettings.png" /></p>
                 </li>
                 <li>open the <b>Type</b> drop-down list and select the type you need,</li>
@@ -177,17 +182,17 @@
             				
             <h3>Edit chart elements</h3>
             <p>To edit the chart <b>Title</b>, select the default text with the mouse and type in your own one instead.</p>
-            <p>To change the font formatting within text elements, such as the chart title, axes titles, legend entries, data labels etc., select the necessary text element by left-clicking it. Then use icons on the top toolbar to change the font <a href="../UsageInstructions/FontTypeSizeStyle.htm" onclick="onhyperlinkclick(this)">type, style, size, or color</a>.</p>
+            <p>To change the font formatting within text elements, such as the chart title, axes titles, legend entries, data labels etc., select the necessary text element by left-clicking it. Then use icons at the <b>Home</b> tab of the top toolbar to change the font <a href="../UsageInstructions/FontTypeSizeStyle.htm" onclick="onhyperlinkclick(this)">type, style, size, or color</a>.</p>
             <p>To delete a chart element, select it by left-clicking and press the <b>Delete</b> key on the keyboard.</p>
-            <p>You can also rotate 3D charts using the mouse. Left-click within the plot area and hold the mouse button until a blue dashed box appears. Drag the cursor without releasing the mouse button to change the 3D chart orientation.</p>
+            <p>You can also rotate 3D charts using the mouse. Left-click within the plot area and hold the mouse button. Drag the cursor without releasing the mouse button to change the 3D chart orientation.</p>
             <p><img alt="3D chart" src="../images/3dchart.png" /></p>
-            <p>When the chart is selected, the <b>Shape Settings</b> <img alt="Shape Settings icon" src="../images/shape_settings_icon.png" /> icon is also available on the right, since a shape is used as a background for the chart. You can click this icon to open the <a href="InsertAutoshapes.htm" onclick="onhyperlinkclick(this)">Shape Settings</a> tab at the right sidebar and adjust the shape <b>Fill</b> and <b>Stroke</b>. Note that you cannot change the shape type.</p>
+            <p>When the chart is selected, the <b>Shape settings</b> <img alt="Shape settings icon" src="../images/shape_settings_icon.png" /> icon is also available on the right, since a shape is used as a background for the chart. You can click this icon to open the <a href="InsertAutoshapes.htm" onclick="onhyperlinkclick(this)">Shape Settings</a> tab at the right sidebar and adjust the shape <b>Fill</b> and <b>Stroke</b>. Note that you cannot change the shape type.</p>
             <p>If necessary, you can <a href="ManipulateObjects.htm" onclick="onhyperlinkclick(this)">change the chart size and position</a>.</p>
             <p>To delete the inserted chart, click it and press the <b>Delete</b> key.</p>
             
             <h3>Edit sparklines</h3>
             <p>Sparkline is a little chart that fits in one cell. Sparklines can be useful if you want to visually represent information for each row or column in large data sets. This makes it easier to show trends in multiple data series. </p>
-            <p>If your spreadsheet contains existing sparklines created using some other application, you can change sparkline properties. To do that, select the cell that contains a sparkline with the mouse and click the <b>Chart Settings</b> <img alt="Chart Settings icon" src="../images/chart.png" /> icon at the right sidebar. If the selected sparkline is included into a sparkline group, the changes will be applied to all sparklines in the group.</p>
+            <p>If your spreadsheet contains existing sparklines created using some other application, you can change sparkline properties. To do that, select the cell that contains a sparkline with the mouse and click the <b>Chart settings</b> <img alt="Chart settings icon" src="../images/chartsettingsicon.png" /> icon at the right sidebar. If the selected sparkline is included into a sparkline group, the changes will be applied to all sparklines in the group.</p>
             <p><img alt="Chart Settings Right-Side Panel window" src="../images/right_sparkline.png" /></p>
             <ul>
                 <li>Use the <b>Type</b> drop-down list to select one of the available sparkline types:

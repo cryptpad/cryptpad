@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Bilder einfügen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add an image to your spreadsheet and adjust its position and size" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Bilder einfügen</h1>
+			<p>Im Tabellenkalkulationseditor, können Sie Bilder in den gängigen Formaten in Ihre Tabelle einfügen. Die folgenden Formate werden unterstützt: <b>BMP</b>, <b>GIF</b>, <b>JPEG</b>, <b>JPG</b>, <b>PNG</b>.</p>
+            <h3>Ein Bild einfügen</h3>
+            <p>Ein Bild in die Tabelle einfügen:</p>
+			<ol>
+				<li>Positionieren Sie den Cursor an der Stelle, an der Sie das Bild einfügen möchten.</li>
+                <li>Wechseln Sie in der oberen Symbolleiste auf die Registerkarte <b>Einfügen</b>.</li>
+				<li>Klicken Sie auf das Symbol <img alt="Bild" src="../images/image.png" /> <b>Bild</b> in der oberen Symbolleiste.</li>
+				<li>Wählen Sie eine der folgenden Optionen um das Bild hochzuladen:<ul>
+						<li>Mit der Option <b>Bild aus Datei</b> öffnen Sie das Standarddialogfenster zur Dateiauswahl. Durchsuchen Sie die Festplatte Ihres Computers nach der gewünschten Bilddatei und klicken Sie auf <b>Öffnen</b>.</li>
+						<li>Mit der Option <b>Bild aus URL</b> öffnen Sie das Fenster zum Eingeben der erforderlichen Webadresse, wenn Sie die Adresse eingegeben haben, klicken Sie auf <b>OK</b>.</li>
+					</ul>
+				</li>
+			</ol>
+            <p>Das Bild wird dem Tabellenblatt hinzugefügt.</p>
+            <h3>Bildeinstellungen anpassen</h3>
+            <p>Wenn Sie das Bild hinzugefügt haben, können Sie <a href="ManipulateObjects.htm" onclick="onhyperlinkclick(this)">Größe und Position</a> ändern.</p>
+            <p>Genau Bildmaße festlegen:</p>
+            <ol>
+                <li>Wählen Sie das gewünschte Bild mit der Maus aus</li>
+                <li>Klicken Sie auf das Symbol <b>Bildeinstellungen</b> <img alt="Bildeinstellungen" src="../images/image_settings_icon.png" /> auf der rechten Seitenleiste<p><img alt="Dialogfenster Bildeinstellungen in der rechten Seitenleiste" src="../images/imagesettings.png" /></p>
+                </li>
+                <li>Legen Sie im Bereich <b>Größe</b> die erforderlichen Werte für <b>Breite</b> und <b>Höhe</b> fest. Wenn Sie die Funktion <b>Seitenverhältnis sperren</b> <img alt="Seitenverhältnis sperren" src="../images/constantproportions.png" /> aktivieren (in diesem Fall sieht das Symbol so aus <img alt="Symbol Seitenverhältnis sperren aktiviert" src="../images/constantproportionsactivated.png" />), werden Breite und Höhe gleichmäßig geändert und das ursprüngliche Bildseitenverhältnis wird beibehalten. Um die Standardgröße des hinzugefügten Bildes wiederherzustellen, klicken Sie auf <b>Standardgröße</b>.</li>
+            </ol>
+            <p>Ein eingefügtes Bild ersetzen:</p>
+			<ol>
+				<li>Wählen Sie das gewünschte Bild mit der Maus aus.</li>
+				<li>Klicken Sie auf das Symbol <b>Bildeinstellungen</b> <img alt="Bildeinstellungen" src="../images/image_settings_icon.png" /> auf der rechten Seitenleiste</li>
+				<li>Wählen Sie in der Gruppe <b>Bild ersetzen</b> die gewünschte Option: <b>Bild aus Datei</b> oder <b>Bild aus URL</b> - und wählen Sie das entsprechende Bild aus.<p class="note"><b>Hinweis</b>: Alternativ können Sie mit der rechten Maustaste auf das Bild klicken, wählen Sie dann im Kontextmenü die Option <b>Bild ersetzen</b>.</p>
+                </li>
+			</ol>
+			<p>Das ausgewählte Bild wird ersetzt.</p>
+            <p>Wenn Sie das Bild ausgewählt haben, ist rechts auch das Symbol <b>Formeinstellungen</b> <img alt="Formeinstellungen" src="../images/shape_settings_icon.png" /> verfügbar. Klicken Sie auf dieses Symbol, um die Registerkarte <b>Formeinstellungen</b> in der rechten Seitenleiste zu öffnen und passen Sie Form, <a href="../UsageInstructions/InsertAutoshapes.htm#shape_stroke" onclick="onhyperlinkclick(this)"><b>Linientyp</b></a>, Größe und Farbe an oder ändern Sie die Form und wählen Sie im Menü <b>AutoForm ändern</b> eine neue Form aus. Die Form des Bildes ändert sich entsprechend Ihrer Auswahl.</p>
+            <p><img alt="Registerkarte Formeinstellungen" src="../images/right_image_shape.png" /></p>
+            <p>Um die erweiterte Einstellungen des Bildes zu ändern, klicken Sie mit der rechten Maustaste auf das Bild und wählen Sie die Option <b>Bild - Erweiterte Einstellungen</b> im Rechtsklickmenü oder klicken Sie einfach in der rechten Seitenleiste auf <b>Erweiterte Einstellungen anzeigen</b>. Das Fenster mit den Bildeigenschaften wird geöffnet:</p>
+            <p><img alt="Bild - Erweiterte Einstellungen" src="../images/imageadvancedsettings.png" /></p>
+            <p>Die Registerkarte <b>Alternativtext</b> ermöglicht die Eingabe eines <b>Titels</b> und einer <b>Beschreibung</b>, die Personen mit Sehbehinderungen oder kognitiven Beeinträchtigungen vorgelesen werden kann, damit sie besser verstehen können, welche Informationen im Bild enthalten sind.</p>
+			<p>Um das gewünschte Bild zu löschen, klicken Sie darauf und drücken Sie die Taste <b>ENTF</b> auf Ihrer Tastatur.</p>
+		</div>
+	</body>
+</html>

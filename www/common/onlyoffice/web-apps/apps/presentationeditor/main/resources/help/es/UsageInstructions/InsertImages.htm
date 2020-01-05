@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Inserte y ajuste imágenes</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add an image to your presentation and adjust its size and position." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Inserte y ajuste imágenes</h1>
+            <h3>Inserte una imagen</h3>
+			<p>En el editor de presentaciones, usted puede insertar las imágenes en su presentación con los formatos más populares. Los siguientes formatos de imágenes son compatibles: <b>BMP</b>, <b>GIF</b>, <b>JPEG</b>, <b>JPG</b>, <b>PNG</b>.</p>
+			<p>Para <b>añadir</b> una imagen a una diapositiva,</p>
+			<ol>
+				<li>en la lista de diapositivas a la izquierda, seleccione la diapositiva a la que usted quiere añadir una imagen,</li>
+				<li>haga clic en el icono <img alt="Icono Imagen" src="../images/image.png" /> <b>Imagen</b> en la pestaña de <b>Inicio</b> o <b>Insertar</b> en la barra de herramientas superior,</li>
+				<li>seleccione una de las opciones siguientes para cargar la imagen:<ul>
+						<li>la opción <b>Imagen desde Archivo</b> abrirá la ventana de diálogo para la selección de archivo. Navegue el disco duro de su ordenador para encontrar un archivo correspondiente y haga clic en el botón <b>Abrir</b></li>
+						<li>la opción <b>Imagen desde URL</b> abrirá la ventana donde usted puede introducir la dirección web de la imagen correspondiente; después haga clic en el botón <b>OK</b></li>
+					</ul>
+				</li>
+				<li>una vez que la imagen esté añadida, usted puede <a href="../UsageInstructions/ManipulateObjects.htm" onclick="onhyperlinkclick(this)">cambiar su tamaño y posición</a>.</li>
+			</ol>
+			<hr />
+            <h3>Ajustes de ajuste de imagen</h3>
+			<p>Al hacer clic izquierdo en una imagen y elegir el icono <img alt="Icono Ajustes de imagen" src="../images/image_settings_icon.png" /> <b>Ajustes de imagen</b>  a la derecha, la barra derecha lateral se activa. Esta incluye las siguientes secciones:</p><img alt="Pestaña de ajustes de imagen" src="../images/imagesettingstab.png" /><p><b>Tamaño</b> - se usa para ver el <b>Ancho</b> y <b>Altura</b> de la imagen actual o para restaurar el tamaño <b>predeterminado</b> si es necesario.</p>
+			<p><b>Reemplazar imagen</b> - se usa para cargar otra imagen en vez de la actual seleccionando la fuente deseada. Usted puede seleccionar una de las siguientes opciones: <b>De archivo</b> o <b>De URL</b>. La opción <b>Reemplazar Imagen</b> también está disponible en el menú de clic derecho.</p>
+            <p>Cuando se selecciona la imagen, el icono <b>Ajustes de forma</b> <img alt="Icono Ajustes de forma" src="../images/shape_settings_icon.png" /> también está disponible a la derecha. Puede hacer clic en este icono para abrir la pestaña<b>Ajustes de forma</b> en la barra de tareas derecha y ajustar la forma, tipo de <a href="../UsageInstructions/InsertAutoshapes.htm#shape_stroke" onclick="onhyperlinkclick(this)"><b>estilo</b></a>, tamaño y color así como cambiar el tipo de forma seleccionando otra forma del menú <b>Cambiar autoforma</b>. La forma de la imagen cambiará correspondientemente.</p>
+            <p><img alt="Pestaña Ajustes de forma" src="../images/right_image_shape.png" /></p>
+			<hr />
+			<p>Para cambiar los <b>ajustes avanzados</b> de la imagen, haga clic con el botón derecho en la imagen y seleccione la opción <b>Ajustes avanzados de imagen</b> en el menú contextual o haga clic izquierdo sobre la imagen y pulse el enlace <b>Mostrar ajustes avanzados</b> en la barra lateral de la derecha. Se abrirá la ventana con propiedades de la imagen:</p>
+            <p><img alt="Propiedades de imagen" src="../images/image_properties.png" /></p>
+			<p>La pestaña <b>Posición</b> le permite ajustar las siguientes propiedades de imagen:</p>
+			<ul>
+				<li><b>Tamaño</b> - use esta opción para cambiar el ancho/altura de la imagen. Si hace clic en el botón <b>proporciones constantes</b>  (en este caso estará así <img alt="Icono de proporciones constantes activado" src="../images/constantproportionsactivated.png" />), el ancho y la altura se cambiarán manteniendo la relación de aspecto original de la imagen. Para recuperar el tamaño predeterminado de la imagen añadida, pulse el botón <b>Tamaño Predeterminado</b>.</li>
+				<li><b>Posición</b> - use esta opción para cambiar la posición de imagen en la diapositiva (la posición se calcula respecto a las partes superior e izquierda de la diapositiva).</li>
+			</ul>
+            <p><img alt="Propiedades de imagen" src="../images/image_properties1.png" /></p>
+            <p>La pestaña de <b>Texto Alternativo</b> permite especificar un <b>Título</b> y <b>Descripción</b> que se leerán a las personas con problemas de visión o cognitivos para ayudarles a entender mejor la información de la forma.</p>			
+			<hr />
+			<p>Para <b>borrar</b> la imagen que se añadido, haga clic izquierdo sobre la imagen y pulse la tecla <b>Delete</b> en el teclado.</p>
+			<p>Para saber como <b>alinear</b> una imagen en la diapositiva u <b>organizar</b> varias imágenes, consulte la sección <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">Alinee y organice objetos en una diapositiva</a>.</p>
+		</div>
+	</body>
+</html>

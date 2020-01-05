@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Gérer des feuilles de calcul</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Manage sheets in Spreadsheet Editor: insert, delete, rename, copy and move." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Gérer des feuilles de calcul</h1>
+			<p>Par défaut, un classeur nouvellement créé contient trois feuilles de calcul. Le moyen le plus simple d'en ajouter une est de cliquer sur le bouton <img alt="Bouton plus" src="../images/plus.png" /> situé à la droite des boutons de <b>Navigation de feuille</b> dans le coin inférieur gauche.</p>
+			<p>Une autre façon d'<b>ajouter une nouvelle feuille</b> est de :</p>
+			<ol>
+			<li>faites un clic droit sur l'onglet de la feuille de calcul après laquelle vous souhaitez insérer une nouvelle feuille,</li>
+			<li>sélectionnez l'option <b>Insérer</b> depuis le menu contextuel.</li>
+			</ol>
+			<p>Une nouvelle feuille de caclul sera insérée après la feuille sélectionnée.</p>
+			<p><b>Pour activer la feuille requise</b>, utilisez les onglets de la feuille dans le coin inférieur gauche de chaque feuille de calcul.</p>
+			<p class="note"><b>Remarque</b> : pour trouver la feuille que vous cherchez si vous en avez beaucoup, utilisez les boutons de <b>Navigation de feuille</b> situés dans le coin inférieur gauche.</p>
+			<p><b>Pour supprimer une feuille de calcul :</b></p>
+			<ol>
+				<li>faites un clic droit sur l'onglet de la feuille de calcul à supprimer,</li>
+				<li>sélectionnez l'option <b>Supprimer</b> depuis le menu contextuel.</li>
+			</ol>
+			<p>La feuille de calcul sélectionnée sera supprimée à partir du classeur actuel.</p>
+			<p><b>Pour renommer une feuille de calcul :</b></p>
+			<ol>
+				<li>faites un clic droit sur l'onglet de la feuille de calcul à renommer,</li>
+				<li>sélectionnez l'option <b>Renommer</b> depuis le menu contextuel,</li>
+				<li>saisissez le <b>Nom de la feuille</b> dans la fenêtre de dialogue et cliquez sur le bouton <b>OK</b>.</li>
+			</ol>
+			<p>Le nom de la feuille de calcul sélectionnée sera modifiée.</p>
+			<p><b>Pour copier une feuille de calcul :</b></p>
+			<ol>
+				<li>faites un clic droit sur l'onglet de la feuille de calcul à copier,</li>
+				<li>sélectionnez l'option <b>Copier</b> depuis le menu contextuel,</li>
+				<li>sélectionnez la feuille de calcul avant laquelle vous souhaitez insérer la copie ou utilisez l'option <b>Copier à la fin</b> pour insérer la feuille de calcul copiée après toutes les feuilles existantes,</li>
+				<li>cliquez sur le bouton <b>OK</b> pour confirmer votre choix.</li>
+			</ol>
+			<p>La feuille de calcul sélectionnée sera copiée et insérée à l'endroit choisi.</p>
+			<p><b>Pour déplacer une feuille de calcul :</b></p>
+			<ol>
+				<li>faites un clic droit sur l'onglet de la feuille de calcul à déplacer,</li>
+				<li>sélectionnez l'option <b>Déplacer</b> depuis le menu contextuel,</li>
+				<li>sélectionnez la feuille de calcul avant laquelle vous souhaitez insérer la feuille de calcul sélectionnée ou utilisez l'option <b>Déplacer à la fin</b> pour déplacer la feuille de caclul sélectionnée après toutes les feuilles existantes,</li>
+				<li>cliquez sur le bouton <b>OK</b> pour confirmer votre choix.</li>
+			</ol>
+			<p>Ou tout simplement <b>faites glisser</b> l'onglet de la feuille de calcul et <b>déposez-le</b> là où vous voulez. La feuille de calcul sélectionnée sera déplacée.</p>
+			<p>Si vous avez beaucoup de feuilles de calcul, pour faciliter le travail vous pouvez masquer certains d'entre eux dont vous n'avez pas besoin pour l'instant. Pour le faire,</p>
+			<ol>
+				<li>faites un clic droit sur l'onglet de la feuille de calcul à masquer,</li>
+				<li>sélectionnez l'option <b>Masquer</b> depuis le menu contextuel.</li>
+			</ol>
+			<p>Pour afficher l'onglet de la feuille de calcul masquée, faites un clic droit sur n'importe quel onglet de la feuille, ouvrez la liste <b>Masquée</b> et sélectionnez le nom de la feuille de calcul dont l'onglet vous souhaitez afficher.</p>
+			<p>Pour différencier les feuilles, vous pouvez <b>affecter différentes couleurs aux onglets de la feuille</b>. Pour le faire,</p>
+			<ol>
+				<li>faites un clic droit sur l'onglet de la feuille de calcul à colorer,</li>
+                <li>sélectionnez l'option <b>Couleur d'onglet</b> depuis le menu contextuel.</li>
+				<li>sélectionnez une couleur dans les palettes disponibles<p><img alt="Palette" src="../images/palette.png" /></p>
+					<ul>
+						<li><b>Couleurs de thème</b> - les couleurs qui correspondent à la palette de couleurs sélectionnée du classeur.</li>
+						<li><b>Couleurs standard</b> - le jeu de couleurs par défaut.</li>
+						<li><b>Couleur personnalisée</b> - choisissez cette option si il n'y a pas la couleur recherchée dans les palettes disponibles. Sélectionnez la gamme de couleurs nécessaire en déplaçant le curseur vertical et définissez la couleur spécifique en faisant glisser le sélecteur de couleur dans le grand champ de couleur carré. Une fois que vous sélectionnez une couleur avec le sélecteur de couleur, les valeurs de couleur appropriées RGB et sRGB seront affichées dans les champs à droite. Vous pouvez également spécifier une couleur sur la base du modèle de couleur RGB (RVB) en entrant les valeurs numériques nécessaires dans les champs <b>R</b>, <b>G</b>, <b>B</b> (rouge, vert, bleu) ou saisir le code hexadécimal dans le champ sRGB marqué par le signe <b>#</b>. La couleur sélectionnée apparaît dans la case de prévisualisation <b>Nouveau</b>. Si l'objet a déjà été rempli d'une couleur personnalisée, cette couleur sera affichée dans la case <b>Actuel</b> afin que vous puissiez comparer les couleurs originales et modifiées. Lorsque la couleur est spécifiée, cliquez sur le bouton <b>Ajouter</b> :<p><img alt="Palette - Couleur personnalisée" src="../images/palette_custom.png" /></p>
+						<p>La couleur personnalisée sera appliquée à l’élément sélectionné et ajoutée dans la palette <b>Couleur personnalisée</b>.</p>
+						</li>
+						</ul>
+					</li>
+			</ol>
+		</div>
+	</body>
+</html>

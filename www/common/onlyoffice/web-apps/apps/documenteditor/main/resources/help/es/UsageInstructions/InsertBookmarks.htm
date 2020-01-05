@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Añada marcadores</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Bookmarks allow to quickly jump to a certain position in the current document or add a link to this location within the document." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Añada marcadores</h1>
+            <p>Los marcadores permiten saltar rápidamente hacia cierta posición en el documento actual o añadir un enlace a esta ubicación dentro del documento.</p>
+			<p>Para añadir un marcador dentro de un documento:</p>
+			<ol>
+                <li>coloque el puntero del ratón al inicio del pasaje de texto donde desea agregar el marcador,</li>
+                <li>cambie a la pestaña <b>Referencias</b> en la barra de herramientas superior,</li>
+                <li>haga clic en el icono <img alt="Icono marcador" src="../images/bookmark.png" /> <b>Marcador</b>en la barra de herramientas superior,</li>
+				<li>en la ventana de <b>Marcadores</b> que se abre, introduzca el <b>Nombre del marcador</b> y haga clic en el botón <b>Agregar</b> - se añadirá un marcador a la lista de marcadores mostrada a continuación,<p class="note"><b>Nota</b>: el nombre del marcador debe comenzar con una letra, pero también debe contener números. El nombre del marcador no puede contener espacios, pero sí el carácter guión bajo "_".</p>
+                    <p><img alt="Ventana de marcadores" src="../images/bookmark_window.png" /></p>
+                </li>
+			</ol>
+            <p>Para ir a uno de los marcadores añadidos dentro del texto del documento:</p>
+            <ol>
+                <li>haga clic en el icono <img alt="Icono marcador" src="../images/bookmark.png" /> <b> marcador </b> en la pestaña de <b>Referencias</b> de la barra de herramientas superior,</li>
+                <li>en la ventana <b>Marcadores</b> que se abre, seleccione el marcador al que desea ir. Para encontrar el fácilmente el marcador requerido puede ordenar la lista de marcadores por <b>Nombre</b> o <b>Ubicación</b> del marcador dentro del texto del documento,</li>
+                <li>marque la opción <b>Marcadores ocultos</b> para mostrar los marcadores ocultos en la lista (por ej. los marcadores creados automáticamente por el programa cuando añade referencias a cierta parte del documento. Por ejemplo, si usted crea un hiperenlace a cierto encabezado dentro del documento, el editor de documentos automáticamente crea un marcador oculto hacia el destino de este enlace).</li>
+                <li>haga clic en el botón <b>Ir a</b> - el puntero será posicionado en la ubicación dentro del documento donde el marcador seleccionado ha sido añadido,</li>
+                <li>haga clic en el botón <b>Cerrar</b> para cerrar la ventana.</li>
+            </ol>
+            <p>Para eliminar un marcador seleccione el mismo en la lista de marcadores y use el botón <b>Eliminar</b>.</p>
+            <p>Para aprender cómo usar marcadores al crear enlaces por favor revise la sección sobre <a href="../UsageInstructions/AddHyperlinks.htm" onclick="onhyperlinkclick(this)">Añadir hiperenlaces</a>.</p>
+
+		</div>
+	</body>
+</html>

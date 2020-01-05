@@ -23,9 +23,11 @@
                 key: 'key',
                 vkey: 'vkey',
                 info: {
-                    author: 'author name',
+                    author: 'author name', // must be deprecated, use owner instead
+                    owner: 'owner name',
                     folder: 'path to document',
-                    created: '<creation date>',
+                    created: '<creation date>', // must be deprecated, use uploaded instead
+                    uploaded: '<uploaded date>',
                     sharingSettings: [
                         {
                             user: 'user name',
@@ -43,7 +45,10 @@
                     print: <can print>, // default = true
                     rename: <can rename>, // default = false
                     changeHistory: <can change history>, // default = false
-                    comment: <can comment in view mode> // default = edit
+                    comment: <can comment in view mode> // default = edit,
+                    modifyFilter: <can add, remove and save filter in the spreadsheet> // default = true
+                    modifyContentControl: <can modify content controls in documenteditor> // default = true
+                   fillForms:  <can edit forms in view mode> // default = edit || review
                 }
             },
             editorConfig: {
@@ -54,11 +59,13 @@
                 canBackToFolder: <can return to folder> - deprecated. use "customization.goback" parameter,
                 createUrl: 'create document url', 
                 sharingSettingsUrl: 'document sharing settings url',
-                fileChoiceUrl: 'mail merge sources url',
+                fileChoiceUrl: 'source url', // for mail merge or image from storage
                 callbackUrl: <url for connection between sdk and portal>,
-                mergeFolderUrl: 'folder for saving merged file',
+                mergeFolderUrl: 'folder for saving merged file', // must be deprecated, use saveAsUrl instead
+                saveAsUrl: 'folder for saving files'
                 licenseUrl: <url for license>,
                 customerId: <customer id>,
+                region: <regional settings> // can be 'en-us' or lang code
 
                 user: {
                     id: 'user id',
@@ -86,8 +93,6 @@
                         imageEmbedded: url,
                         url: http://...
                     },
-                    backgroundColor: 'header background color',
-                    textColor: 'header text color',
                     customer: {
                         name: 'SuperPuper',
                         address: 'New-York, 125f-25',
@@ -103,7 +108,8 @@
                     },
                     goback: {
                         url: 'http://...',
-                        text: 'Go to London'
+                        text: 'Go to London',
+                        blank: true
                     },
                     chat: true,
                     comments: true,
@@ -111,17 +117,21 @@
                     compactToolbar: false,
                     leftMenu: true,
                     rightMenu: true,
+                    hideRightMenu: false, // hide or show right panel on first loading
                     toolbar: true,
-                    header: true,
                     statusBar: true,
                     autosave: true,
                     forcesave: false,
                     commentAuthorOnly: false,
-                    showReviewChanges: false
+                    showReviewChanges: false,
+                    help: true,
+                    compactHeader: false,
+                    toolbarNoTabs: false,
+                    toolbarHideFileName: false,
+                    reviewDisplay: 'original'
                 },
                 plugins: {
-                    autoStartGuid: 'asc.{FFE1F462-1EA2-4391-990D-4CC84940B754}',
-                    url: '../../../../sdkjs-plugins/',
+                    autostart: ['asc.{FFE1F462-1EA2-4391-990D-4CC84940B754}'],
                     pluginsData: [
                         "helloworld/config.json",
                         "chess/config.json",
@@ -131,7 +141,6 @@
                 }
             },
             events: {
-                'onReady': <application ready callback>, // deprecated
                 'onAppReady': <application ready callback>,
                 'onBack': <back to folder callback>,
                 'onDocumentStateChange': <document state changed callback>
@@ -166,11 +175,11 @@
                 }
             },
             events: {
-                'onReady': <application ready callback>, // deprecated
                 'onAppReady': <application ready callback>,
                 'onBack': <back to folder callback>,
                 'onError': <error callback>,
-                'onDocumentReady': <document ready callback>
+                'onDocumentReady': <document ready callback>,
+                'onWarning': <warning callback>
             }
         }
     */
@@ -187,10 +196,16 @@
         _config.editorConfig.canHistoryRestore = _config.events && !!_config.events.onRequestRestore;
         _config.editorConfig.canSendEmailAddresses = _config.events && !!_config.events.onRequestEmailAddresses;
         _config.editorConfig.canRequestEditRights = _config.events && !!_config.events.onRequestEditRights;
+        _config.editorConfig.canRequestClose = _config.events && !!_config.events.onRequestClose;
+        _config.editorConfig.canRename = _config.events && !!_config.events.onRequestRename;
+        _config.editorConfig.canMakeActionLink = _config.events && !!_config.events.onMakeActionLink;
+        _config.editorConfig.canRequestUsers = _config.events && !!_config.events.onRequestUsers;
+        _config.editorConfig.canRequestSendNotify = _config.events && !!_config.events.onRequestSendNotify;
+        _config.editorConfig.mergeFolderUrl = _config.editorConfig.mergeFolderUrl || _config.editorConfig.saveAsUrl;
+        _config.editorConfig.canRequestSaveAs = _config.events && !!_config.events.onRequestSaveAs;
+        _config.editorConfig.canRequestInsertImage = _config.events && !!_config.events.onRequestInsertImage;
+        _config.editorConfig.canRequestMailMergeRecipients = _config.events && !!_config.events.onRequestMailMergeRecipients;
         _config.frameEditorId = placeholderId;
-
-        _config.events && !!_config.events.onReady && console.log("Obsolete: The onReady event is deprecated. Please use onAppReady instead.");
-        _config.events && (_config.events.onAppReady = _config.events.onAppReady || _config.events.onReady);
 
         var onMouseUp = function (evt) {
             _processMouse(evt);
@@ -358,10 +373,12 @@
             if (!!result && result.length) {
                 if (result[1] == 'desktop') {
                     _config.editorConfig.targetApp = result[1];
-                    _config.editorConfig.canBackToFolder = false;
-                    _config.editorConfig.canUseHistory = false;
+                    // _config.editorConfig.canBackToFolder = false;
                     if (!_config.editorConfig.customization) _config.editorConfig.customization = {};
                     _config.editorConfig.customization.about = false;
+                    _config.editorConfig.customization.compactHeader = false;
+
+                    if ( window.AscDesktopEditor ) window.AscDesktopEditor.execCommand('webapps:events', 'loading');
                 }
             }
         })();
@@ -496,6 +513,15 @@
             });
         };
 
+        var _setActionLink = function (data) {
+            _sendCommand({
+                command: 'setActionLink',
+                data: {
+                    url: data
+                }
+            });
+        };
+
         var _processMailMerge = function(enabled, message) {
             _sendCommand({
                 command: 'processMailMerge',
@@ -506,9 +532,45 @@
             });
         };
 
-        var _downloadAs = function() {
+        var _downloadAs = function(data) {
             _sendCommand({
-                command: 'downloadAs'
+                command: 'downloadAs',
+                data: data
+            });
+        };
+
+        var _setUsers = function(data) {
+            _sendCommand({
+                command: 'setUsers',
+                data: data
+            });
+        };
+
+        var _showSharingSettings = function(data) {
+            _sendCommand({
+                command: 'showSharingSettings',
+                data: data
+            });
+        };
+
+        var _setSharingSettings = function(data) {
+            _sendCommand({
+                command: 'setSharingSettings',
+                data: data
+            });
+        };
+
+        var _insertImage = function(data) {
+            _sendCommand({
+                command: 'insertImage',
+                data: data
+            });
+        };
+
+        var _setMailMergeRecipients = function(data) {
+            _sendCommand({
+                command: 'setMailMergeRecipients',
+                data: data
             });
         };
 
@@ -545,12 +607,18 @@
             refreshHistory      : _refreshHistory,
             setHistoryData      : _setHistoryData,
             setEmailAddresses   : _setEmailAddresses,
+            setActionLink       : _setActionLink,
             processMailMerge    : _processMailMerge,
             downloadAs          : _downloadAs,
             serviceCommand      : _serviceCommand,
             attachMouseEvents   : _attachMouseEvents,
             detachMouseEvents   : _detachMouseEvents,
-            destroyEditor       : _destroyEditor
+            destroyEditor       : _destroyEditor,
+            setUsers            : _setUsers,
+            showSharingSettings : _showSharingSettings,
+            setSharingSettings  : _setSharingSettings,
+            insertImage         : _insertImage,
+            setMailMergeRecipients: _setMailMergeRecipients
         }
     };
 
@@ -653,7 +721,7 @@
             app = appMap[config.documentType.toLowerCase()];
         } else
         if (!!config.document && typeof config.document.fileType === 'string') {
-            var type = /^(?:(xls|xlsx|ods|csv|xlst|xlsy|gsheet|xlsm|xlt|xltm|xltx)|(pps|ppsx|ppt|pptx|odp|pptt|ppty|gslides|pot|potm|potx|ppsm|pptm))$/
+            var type = /^(?:(xls|xlsx|ods|csv|xlst|xlsy|gsheet|xlsm|xlt|xltm|xltx|fods|ots)|(pps|ppsx|ppt|pptx|odp|pptt|ppty|gslides|pot|potm|potx|ppsm|pptm|fodp|otp))$/
                             .exec(config.document.fileType);
             if (type) {
                 if (typeof type[1] === 'string') app = appMap['spreadsheet']; else
@@ -706,6 +774,13 @@
         iframe.allowFullscreen = true;
         iframe.setAttribute("allowfullscreen",""); // for IE11
         iframe.setAttribute("onmousewheel",""); // for Safari on Mac
+		
+		if (config.type == "mobile")
+		{
+			iframe.style.position = "fixed";
+            iframe.style.overflow = "hidden";
+            document.body.style.overscrollBehaviorY = "contain";
+		}
         return iframe;
     }
 

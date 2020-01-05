@@ -6,21 +6,25 @@
         <meta name="description" content="Insert text objects such as text boxes and Text Art to make your text more impressive" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
         <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
 			<h1>Insert text objects</h1>
             <p>To make your text more emphatic and draw attention to a specific part of the document, you can insert a text box (a rectangular frame that allows to enter text within it) or a Text Art object (a text box with a predefined font style and color that allows to apply some text effects).</p>
 			<h3>Add a text object</h3>
             <p>You can add a text object anywhere on the page. To do that:</p>
             <ol>
-                <li>click the <b>Insert Text</b> <img alt="Insert Text icon" src="../images/inserttexticon.png" /> icon at the top toolbar,</li>
+                <li>switch to the <b>Insert</b> tab of the top toolbar,</li>
                 <li>select the necessary text object type:
                 <ul>
-                    <li>select the <b>Insert text box</b> option from the menu, then click where you want to insert the text box, hold the mouse button and drag the text box border to specify its size. When you release the mouse button, the insertion point will appear in the added text box, allowing you to enter your text.
-                        <p class="note"><b>Note</b>: it's also possible to insert a text box by clicking the <b>Insert Autoshape</b> <img alt="Insert Autoshape icon" src="../images/insertautoshape.png" /> icon at the top toolbar and selecting the <img alt="Insert Text autoshape" src="../images/text_autoshape.png" /> shape from the <b>Basic Shapes</b> group.</p>
+                    <li>to add a text box, click the <img alt="Text Box icon" src="../images/inserttexticon.png" /> <b>Text Box</b> icon at the top toolbar, then click where you want to insert the text box, hold the mouse button and drag the text box border to specify its size. When you release the mouse button, the insertion point will appear in the added text box, allowing you to enter your text.
+                    <p class="note"><b>Note</b>: it's also possible to insert a text box by clicking the <img alt="Shape icon" src="../images/insertautoshape.png" /> <b>Shape</b> icon at the top toolbar and selecting the <img alt="Insert Text autoshape" src="../images/text_autoshape.png" /> shape from the <b>Basic Shapes</b> group.</p>
                     </li>
-                    <li>select the <b>Insert Text Art</b> option from the menu, then click on the desired style template – the Text Art object will be added at the current cursor position. Select the default text within the text box with the mouse and replace it with your own text.</li>
+                    <li>to add a Text Art object, click the <img alt="Text Art icon" src="../images/inserttextarticon.png" /> <b>Text Art</b> icon at the top toolbar, then click on the desired style template – the Text Art object will be added at the current cursor position. Select the default text within the text box with the mouse and replace it with your own text.</li>
                 </ul>
                 </li>
                 <li>click outside of the text object to apply the changes and return to the document.</li>
@@ -33,14 +37,14 @@
             <p><img alt="Text box selected" src="../images/textbox_boxselected.png" /></p>
             <ul>
                 <li>to <a href="../UsageInstructions/InsertAutoshapes.htm#shape_resize" onclick="onhyperlinkclick(this)">resize, move, rotate</a> the text box use the special handles on the edges of the shape.</li>
-                <li>to edit the text box <a href="../UsageInstructions/InsertAutoshapes.htm#shape_fill" onclick="onhyperlinkclick(this)">fill</a>, <a href="../UsageInstructions/InsertAutoshapes.htm#shape_stroke" onclick="onhyperlinkclick(this)">stroke</a>, <a href="../UsageInstructions/InsertAutoshapes.htm#shape_wrapping" onclick="onhyperlinkclick(this)">wrapping style</a> or <b>replace</b> the rectangular box with a different shape, click the <b>Shape Settings</b> <img alt="Shape Settings icon" src="../images/shape_settings_icon.png" /> icon on the right sidebar and use the corresponding options.</li>                
-                <li>to <b>align</b> the text box on the page, <b>arrange</b> text boxes as related to other objects, change a <b>wrapping style</b> or access the shape <b>advanced settings</b>, right-click on the text box border and use the <a href="../UsageInstructions/InsertAutoshapes.htm#shape_rightclickmenu" onclick="onhyperlinkclick(this)">contextual menu options</a>.</li>
+                <li>to edit the text box <a href="../UsageInstructions/InsertAutoshapes.htm#shape_fill" onclick="onhyperlinkclick(this)">fill</a>, <a href="../UsageInstructions/InsertAutoshapes.htm#shape_stroke" onclick="onhyperlinkclick(this)">stroke</a>, <a href="../UsageInstructions/InsertAutoshapes.htm#shape_wrapping" onclick="onhyperlinkclick(this)">wrapping style</a> or <b>replace</b> the rectangular box with a different shape, click the <b>Shape settings</b> <img alt="Shape settings icon" src="../images/shape_settings_icon.png" /> icon on the right sidebar and use the corresponding options.</li>                
+                <li>to <b>align</b> the text box on the page, <b>arrange</b> text boxes as related to other objects, <b>rotate or flip</b> a text box, change a <b>wrapping style</b> or access the shape <b>advanced settings</b>, right-click on the text box border and use the <a href="../UsageInstructions/InsertAutoshapes.htm#shape_rightclickmenu" onclick="onhyperlinkclick(this)">contextual menu options</a>. To learn more on how to arrange and align objects you can refer to <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">this page</a>.</li>
             </ul>
             <h3>Format the text within the text box</h3>
             <p>Click the text within the text box to be able to change its properties. When the text is selected, the text box borders are displayed as dashed lines.</p>
             <p><img alt="Text selected" src="../images/textbox_textselected.png" /></p>
             <p class="note"><b>Note</b>: it's also possible to change text formatting when the text box (not the text itself) is selected. In such a case, any changes will be applied to all the text within the text box. Some font formatting options (font type, size, color and decoration styles) can be applied to a previously selected portion of the text separately.</p>
-            <p>To <b>rotate</b> the text within the text box, right-click the text, select the <b>Text Direction</b> option and then choose one of the available options: <b>Horizontal</b> (is selected by default), <b>Rotate at 90°</b> (sets a vertical direction, from top to bottom) or <b>Rotate at 270°</b> (sets a vertical direction, from bottom to top).</p>
+            <p>To <b>rotate</b> the text within the text box, right-click the text, select the <b>Text Direction</b> option and then choose one of the available options: <b>Horizontal</b> (is selected by default), <b>Rotate Text Down</b> (sets a vertical direction, from top to bottom) or <b>Rotate Text Up</b> (sets a vertical direction, from bottom to top).</p>
             <p>To <b>align the text vertically</b> within the text box, right-click the text, select the <b>Vertical Alignment</b> option and then choose one of the available options: <b>Align Top</b>, <b>Align Center</b> or <b>Align Bottom</b>.</p>
             <p>Other formatting options that you can apply are the same as the ones for regular text. Please refer to the corresponding help sections to learn more about the necessary operation. You can:</p>
             <ul>
@@ -49,10 +53,10 @@
                 <li>set <a href="../UsageInstructions/LineSpacing.htm" onclick="onhyperlinkclick(this)">line spacing</a>, change <a href="../UsageInstructions/ParagraphIndents.htm" onclick="onhyperlinkclick(this)">paragraph indents</a>, adjust <a href="../UsageInstructions/SetTabStops.htm" onclick="onhyperlinkclick(this)">tab stops</a> for the multi-line text within the text box</li>
                 <li>insert a <a href="../UsageInstructions/AddHyperlinks.htm" onclick="onhyperlinkclick(this)">hyperlink</a></li>
             </ul>
-            <p>You can also click the <b>Text Art Settings</b> <img alt="Text Art Settings icon" src="../images/textart_settings_icon.png" /> icon on the right sidebar and change some style parameters.</p>
+            <p>You can also click the <b>Text Art settings</b> <img alt="Text Art settings icon" src="../images/textart_settings_icon.png" /> icon on the right sidebar and change some style parameters.</p>
             <h3>Edit a Text Art style</h3>
-            <p>Select a text object and click the <b>Text Art Settings</b> <img alt="Text Art Settings icon" src="../images/textart_settings_icon.png" /> icon on the right sidebar.</p>
-            <p><img alt="Text Art Setting tab" src="../images/right_textart.png" /></p>
+            <p>Select a text object and click the <b>Text Art settings</b> <img alt="Text Art settings icon" src="../images/textart_settings_icon.png" /> icon on the right sidebar.</p>
+            <p><img alt="Text Art setting tab" src="../images/right_textart.png" /></p>
             <p>Change the applied text style selecting a new <b>Template</b> from the gallery. You can also change the basic style additionally by selecting a different font type, size etc.</p>
             <p>Change the font <b>Fill</b>. You can choose the following options:</p>
             <ul>

@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Effacer un texte ou une mise en forme d'une cellule</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Clear the text or the format within your worksheet, copy cell format" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Effacer un texte ou une mise en forme d'une cellule</h1>
+            <h3>Effacer la mise en forme</h3>
+			<p>Vous pouvez supprimer rapidement le texte ou la mise en forme de la cellule sélectionnée. Pour le faire,</p>
+			<ol>
+				<li>sélectionnez une cellule, une plage de cellules avec la souris ou la feuille de calcul entière en utilisant la combinaison de touches <b>Ctrl+A</b>,<p class="note"><b>Remarque</b> : vous pouvez également sélectionner plusieurs cellules ou plages non adjacentes en maintenant la touche <b>Ctrl</b> enfoncée tout en sélectionnant les cellules/plages à l'aide de la souris.</p>
+                </li>
+				<li>cliquez sur l'icône <b>Effacer</b> <img alt="Effacer" src="../images/clear.png" /> située dans l'onglet <b>Accueil</b> de la barre d'outils supérieure et sélectionnez une des options disponibles :<ul>
+				<li>utilisez l'option <b>Tout</b> si vous souhaitez effacer complètement le contenu des cellules de la plage sélectionnée y compris le texte, la mise en forme, la fonction etc ;</li>
+				<li>utilisez l'option <b>Texte</b> si vous souhaitez effacer le texte des cellules de la plage sélectionnée ;</li>
+				<li>utilisez l'option <b>Format</b> si vous souhaitez effacer la mise en forme des cellules de la plage séletionnée. Le texte et les fonctions, s'ils sont présents, seront gardés.</li>
+                <li>utilisez l'option <b>Commentaires</b> si vous souhaitez retirer les commentaires de la plage sélectionnée ;</li>
+                <li>utilisez l'option <b>Hyperliens</b> si vous souhaitez retirer les liens hypertexte de la plage sélectionnée.</li>
+				</ul>
+                <p class="note"><b>Remarque</b> : toutes ces options sont également disponibles dans le menu contextuel.</p>
+				</li>
+			</ol>
+            <h3>Copier la mise en forme de cellule</h3>
+            <p>Vous pouvez rapidement copier une certaine mise en forme de cellule et l'appliquer à d'autres cellules.</p>
+            <p>Pour appliquer la mise en forme copiée à une seule cellule ou plusieurs cellules adjacentes,</p>
+            <ol>
+                <li>sélectionnez la cellule/plage de cellules dont vous souhaitez copier la mise en forme avec la souris ou <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">en utilisant le clavier</a>,</li>
+                <li>cliquez sur l'icône <b>Copier le style</b> <img alt="Copier le style" src="../images/copystyle.png" /> dans l'onglet <b>Accueil</b> de la barre d'outils supérieure ( le pointeur de la souris aura la forme suivante <img alt="Pointeur de la souris lors du collage du style" src="../images/paste_style.png" />),</li>
+                <li>sélectionnez la cellule/plage de cellules à laquelle vous souhaitez appliquer la même mise en forme.</li>
+            </ol>
+            <p>Pour appliquer la mise en forme copiée à plusieurs cellules ou plages non adjacentes,</p>
+            <ol>
+                <li>sélectionnez la cellule/plage de cellules dont vous souhaitez copier la mise en forme avec la souris ou <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">en utilisant le clavier</a>,</li>
+                <li>double-cliquez sur l'icône <b>Copier le style</b> <img alt="Copier le style" src="../images/copystyle.png" /> dans l'onglet <b>Accueil</b> de la barre d'outils supérieure (le pointeur de la souris ressemblera à ceci <img alt="Pointeur de la souris lors du collage du style" src="../images/paste_style.png" /> et l'icône <b>Copier le style</b> restera sélectionnée : ),</li>
+                <li>cliquez sur des cellules individuelles ou sélectionnez les plages de cellules une par une pour appliquer le même format à chacune d'elles,</li>
+                <li>pour quitter ce mode, cliquez à nouveau sur l'icône <b>Copier le style</b> <img alt="Multiples copies de styles" src="../images/copystyle_selected.png" /> ou appuyez sur la touche <b>Échap</b> du clavier.</li>
+            </ol>
+		</div>
+	</body>
+</html>

@@ -5,14 +5,20 @@
 		<meta charset="utf-8" />
 		<meta name="description" content="Create bulleted and numbered lists in the presentation" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
 			<h1>Create lists</h1>
 			<p>To create a list in your presentation,</p>
 			<ol>
 				<li>place the cursor to the position within the text box where a list will be started (this can be a new line or the already entered text),</li>
-				<li>select the list type you would like to start:
+                <li>switch to the <b>Home</b> tab of the top toolbar,</li>
+                <li>select the list type you would like to start:
 					<ul>
 						<li><b>Unordered list</b> with markers is created using the <b>Bullets</b> <img alt="Unordered List icon" src="../images/bullets.png" /> icon situated at the top toolbar</li>
 						<li><b>Ordered list</b> with digits or letters is created using the <b>Numbering</b> <img alt="Ordered List icon" src="../images/numbering.png" /> icon situated at the top toolbar

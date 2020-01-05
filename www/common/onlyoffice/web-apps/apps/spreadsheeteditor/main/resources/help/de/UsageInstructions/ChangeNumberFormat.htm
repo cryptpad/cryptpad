@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Zahlenformat ändern</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Change the number format to display the numbers in the most convenient way" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Zahlenformat ändern</h1>
+            <h3>Zahlenformat anwenden:</h3>
+			<p>Sie können das Zahlenformat einfach ändern, also die Art, wie die eingegebenen Zahlen in Ihrer Tabelle angezeigt werden. Gehen Sie dazu vor wie folgt:</p>
+			<ol>
+				<li>Wählen Sie eine Zelle, einen Zellenbereich oder das ganze Arbeitsblatt mithilfe der Tastenkombination <b>STRG+A</b> aus.<p class="note"><b>Hinweis</b>: Sie können auch mehrere nicht angrenzende Zellen oder Zellbereiche auswählen. Halten Sie dazu die Taste <b>STRG</b> gedrückt und wählen Sie die gewünschten Zellen/Bereiche mit der Maus aus.</p>
+                </li>
+				<li>Klicken Sie auf die Menüleiste <b>Zahlenformat</b> <img alt="Formatieren" src="../images/generalformat.png" /> in der Registerkarte <b>Start</b> auf der oberen Symbolleiste und wählen Sie das gewünschte Zahlenformat:<ul>
+						<li><b>Allgemein</b> - die als Zahlen eingegebenen Daten möglichst kompakt ohne zusätzliche Zeichen darstellen.</li>
+						<li><b>Zahl</b> - die Zahlen werden mit 0-30 Stellen hinter dem Komma angezeigt, wobei zwischen jeder Gruppe von drei Stellen vor dem Komma ein Tausendertrennzeichen eingefügt wird.</li><!--<li><b>Integer</b> - is used to display the numbers as an integer,</li>--><li><b>Wissenschaftlich</b> (Exponent) - um die Zahlen bei der Umwandlung in eine Zahlenfolge im Format <em>d.dddE+ddd</em> oder <em>d.dddE-ddd</em> kurz zu halten, wobei jedes <em>d</em> eine Zahl von 0 bis 9 ist.</li>
+                        <li><b>Buchhaltungszahlenformat</b> - Währungswerte werden mit dem Standardwährungssymbol und zwei Dezimalstellen angezeigt. Um ein anderes Währungssymbol zu verwenden oder die Anzahl der Dezimalstellen zu ändern, befolgen Sie die <a href="../UsageInstructions/ChangeNumberFormat.htm#customize" onclick="onhyperlinkclick(this)">nachstehende Anleitung</a>. Im Gegensatz zum Format <b>Währung</b> richtet das Format <b>Buchhaltung</b> Währungssymbole an der linken Seite der Zelle aus, stellt Nullwerte als Bindestriche dar und zeigt negative Werte in Klammern an.<p><img alt="Buchhaltungs- und Währungszahlenformate" src="../images/accounting_currency.png" /></p>
+                            <p class="note"><b>Hinweis</b>: Sie können das Zahlenformat <b>Buchhaltung</b> auf die ausgewählten Daten anwenden, indem Sie in der oberen Symbolleiste in der Registerkarte <b>Start</b> auf das Symbol <b>Buchhaltungungszahlenformat</b> <img alt="Buchhaltungszahlenformat" src="../images/accountingstyle.png" /> klicken und das erforderliche Währungszeichen auswählen: <b>&#36;</b> $ Dollar, <b>&amp;euro;</b> Euro, <b>&amp;pound</b> Pfund, <b>&amp;rubel</b> Rubel, <b>&amp;yen</b> Yen.</p>
+                        </li>
+                        <li><b>Währung</b> - dient zur Anzeige von Währungswerten mit dem Standardwährungssymbol und zwei Dezimalstellen. Um ein anderes Währungssymbol zu verwenden oder die Anzahl der Dezimalstellen zu ändern, befolgen Sie die <a href="../UsageInstructions/ChangeNumberFormat.htm#customize" onclick="onhyperlinkclick(this)">nachstehende Anleitung</a>. Im Gegensatz zum Format <b>Buchhaltung</b> platziert das Format <b>Währung</b> ein Währungssymbol direkt vor der ersten Ziffer und zeigt negative Werte mit dem negativen Vorzeichen (-) an.</li>
+						<li><b>Datum</b> - Daten anzeigen. Für die Anzeige von Daten stehen Ihnen die folgenden Formate zur Verfügung: MM-TT-JJ; MM-TT-JJJJ.</li>
+						<li><b>Zeit</b> - Uhrzeiten anzeigen. Für die Anzeige von Uhrzeiten stehen Ihnen die folgenden Formate zur Verfügung: HH:MM; HH:MM:ss.</li>
+						<li><b>Prozent</b> - wird genutzt, um die Daten als Prozentzahl mit dem Zeichen <b>%</b> darzustellen.<p class="note"><b>Hinweis</b>: Um Ihre Daten als Prozente zu formatieren, können Sie auch auf der oberen Symbolleiste in der Registerkarte <b>Start</b> auf das Symbol <b>Prozent</b> <img alt="Zahlen als Prozent" src="../images/percentstyle.png" /> klicken.</p>
+						</li>
+                        <li><b>Bruch</b>- Zahlen als gewöhnliche Brüche statt als Dezimalzahlen anzeigen.</li>
+						<li><b>Text</b> - nummerische Werte als Klartext mit der möglichsten Exaktheit darstellen.</li>
+                        <li><b>Weitere Formate</b> - bereits verwendeten Zahlenformate anpassen und zusätzliche Parameter angeben (siehe Beschreibung unten).</li>
+					</ul>
+				</li>
+				<li>Anzahl der Dezimalstellen ändern:<ul>
+				        <li>Über das Symbol <b>Dezimalstelle hinzufügen</b> <img alt="Dezimalstelle hinzufügen" src="../images/increasedecimal.png" /> auf der oberen Symbolleiste in der Registerkarte <b>Start</b>, können Sie weitere Dezimalstellen hinzufügen.</li>
+				        <li>Über das Symbol <b>Dezimalstelle löschen</b> <img alt="Dezimalstellen löschen" src="../images/decreasedecimal.png" /> auf der oberen Symbolleiste in der Registerkarte <b>Start</b> können Sie Dezimalstellen löschen.</li>
+				    </ul>
+				 </li>
+			</ol>
+            <h3 id="customize">Zahlenformat anpassen</h3>
+            <p>Sie können das angewendete Zahlenformat folgendermaßen anpassen:</p>
+			<ol>
+                <li>Wählen Sie die Zellen aus, für die Sie das Zahlenformat anpassen möchten.</li>
+                <li>Klicken Sie in der Registerkarte <b>Start</b> auf das Symbol <b>Zahlenformat</b> <img alt="Formatieren" src="../images/generalformat.png" />, um die Liste mit verfügbaren Optionen zu öffnen.</li>
+                <li>Wählen Sie die Option <b>Weitere Formate</b>.</li>
+                <li>Passen Sie die verfügbaren Parameter im Fenster <b>Zahlenformate</b> an. Die Optionen unterscheiden sich abhängig vom jeweiligen Zahlenformat, das auf die ausgewählten Zellen angewendet wird. Über die Liste <b>Kategorie</b> können Sie das Zahlenformat ändern.<p><img alt="Zahlenformat" src="../images/numberformatwindow.png" /></p>  
+                <ul>
+                    <li>Für das <b>Zahlenformat</b> können Sie die Anzahl der <b>Dezimalpunkte</b> bestimmen, festlegen, ob das  verwendet werden soll oder nicht und eines der verfügbaren <b>Formate</b> zum Anzeigen negativer Werte auswählen.</li>
+                    <li>Für die Formate <b>Wissenschaftlich</b> und <b>Prozent</b> können Sie die Anzahl der <b>Dezimalstellen</b> festlegen.</li>
+                    <li>Für die Formate <b>Buchhaltung</b> und <b>Währung</b> können Sie die Anzahl der <b>Dezimalstellen</b> festlegen und eines der verfügbaren <b>Währungssymbole</b> und das <b>Format</b> für die Anzeige von negativen Werten auswählen.</li>
+                    <li>Für das Format von <b>Datum</b> stehen Ihnen folgende Optionen zur Verfügung: <em>15.4</em>, <em>15.4.06</em>, <em>15.04.06</em>, <em>15.4.2006</em>, <em>15.4.06 0:00</em>, <em>15.4.06 12:00 AM</em>, <em>A</em>, <em>April 15 2006</em>, <em>15-Apr</em>, <em>15-Apr-06</em>, <em>Apr-06</em>, <em>April-06</em>, <em>A-06</em>, <em>06-Apr</em>, <em>15-Apr-2006</em>, <em>2006-Apr-15</em>, <em>06-Apr-15</em>, <em>15.Apr</em>, <em>15.Apr.06</em>, <em>Apr.06</em>, <em>April.06</em>, <em>A.06</em>, <em>06.Apr</em>, <em>15.Apr.2006</em>, <em>2006.Apr.15</em>, <em>06.Apr.15</em>, <em>15 Apr</em>, <em>15 Apr 06</em>, <em>Apr 06</em>, <em>April 06</em>, <em>A 06</em>, <em>06 Apr</em>, <em>15 Apr 2006</em>, <em>2006 Apr 15</em>, <em>06 Apr 15</em>, <em>06.4.15</em>, <em>06.04.15</em>, <em>2006.4.15</em>.</li>
+                    <li>Für das Format von <b>Zeit</b> stehen Ihnen folgende Optionen zur Verfügung: <em>12:48:58 PM</em>, <em>12:48</em>, <em>12:48 PM</em>, <em>12:48:58</em>, <em>48:57,6</em>, <em>36:48:58</em>.</li>
+                    <li>Für das Format von <b>Bruch</b> stehen Ihnen folgende Optionen zur Verfügung: <em>Bis zu eine Ziffer (1/3)</em>, <em>bis zu zwei Ziffern (12/25)</em>, <em>bis zu drei Ziffern (131/135)</em>, <em>als Halbe (1/2)</em>, <em>als Viertel (2/4)</em>, <em>als Achtel (4/8)</em>, <em>als Sechzehntel (8/16)</em>, <em>als Zehntel (5/10)</em>, <em>als Hundertstel (50/100)</em>.</li>
+                </ul>
+                </li>
+                <li>Klicken Sie auf <b>OK</b>, um die Änderungen anzuwenden.</li>
+            </ol>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Ajouter des liens hypertextes</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add hyperlinks to a word or text fragment leading to an external website or another worksheet" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Ajouter des liens hypertextes</h1>
+			<p>Pour ajouter un lien hypertexte,</p>
+			<ol>
+				<li>sélectionnez une cellule où un lien hypertexte sera ajouté,</li>
+                <li>passez à l'onglet <b>Insertion</b> de la barre d'outils supérieure,</li>
+				<li>cliquez sur l'icône <b>Ajouter un lien hypertexte</b> <img alt="Icône Ajouter un lien hypertexte" src="../images/addhyperlink.png" /> sur la barre d'outils supérieure ou sélectionnez la même option du menu contextuel,</li>
+				<li>dans la fenêtre ouverte spécifiez les paramètres du lien hypertexte :<ul>
+					<li><!--<b>Type de lien</b> ---> sélectionnez un type de lien que vous souhaitez insérer <!--depuis la liste déroulante--> :
+                    <p>Utilisez l'option <b>Lien externe</b> et entrez une URL au format <em>http://www.example.com</em> dans le champ <b>Lien vers</b> si vous avez besoin d'ajouter un lien hypertexte menant vers un site externe.</p>
+                    <p><img alt="Fenêtre Paramètres de lien hypertexte" src="../images/hyperlinkwindow.png" /></p>
+                    <p>Utilisez l'option <b>Plage de données interne</b> et sélectionnez une feuille et une plage dans les champs ci-dessous si vous avez besoin d'ajouter un lien hypertexte menant à une plage de cellules dans le même classeur.</p>
+                    <p><img alt="Fenêtre Paramètres de lien hypertexte" src="../images/internallink.png" /></p>
+                    </li>
+					<li><b>Afficher</b> - entrez un texte qui sera cliquable et mène vers l'adresse indiquée dans le champ supérieur.<p class="note"><b>Remarque</b> : si la cellule sélectionnée contient déjà des données, elles seront automatiquement affichées dans ce champ.</p>
+					</li>
+					<li><b>Texte de l'infobulle</b> - entrez un texte qui sera visible dans une petite fenêtre contextuelle offrant une courte note ou étiquette lorsque vous placez le curseur sur un lien hypertexte.</li>
+				</ul>
+				</li>
+				<li>cliquez sur le bouton <b>OK</b>.</li>
+			</ol>
+			<p>Si vous placez le curseur sur le lien hypertexte ajouté, vous allez voir le texte de l'infobulle spécifié. Pour suivre le lien, appuyez sur la touche <b>Ctrl</b> et cliquez sur le lien dans votre feuile de calcul.</p>
+			<p>Pour supprimer le lien hypertexte ajouté, activez la cellule contenant le lien hypertexte ajouté et appuyez sur la touche <b>Suppr</b> ou cliquez avec le bouton droit sur la cellule et sélectionnez l'option <b>Effacer tout</b> dans la liste déroulante.</p>
+		</div>
+	</body>
+</html>

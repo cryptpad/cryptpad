@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>PROGNOSE.ETS.KONFINT-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>PROGNOSE.ETS.KONFINT-Funktion</h1>
+			<p>Die Funktion <b>PROGNOSE.ETS.KONFINT</b> gehört zur Gruppe der statistischen Funktionen. Sie gibt ein Konfidenzintervall für den prognostizierten Wert an einem festgelegten Zieldatum zurück.</p>
+			<p>Die Formelsyntax der Funktion <b>PROGNOSE.ETS.KONFINT</b> ist:</p> 
+			<p style="text-indent: 150px;"><b><em>PROGNOSE.ETS.KONFINT(Ziel_Datum;Werte;Zeitachse;[Konfidenz_Niveau];[Saisonalität];[Datenvollständigkeit];[Aggregation])</em></b></p> 
+			<p><em>Dabei gilt:</em></p>
+				<p style="text-indent: 50px;"><b><em>Ziel_Datum</em></b> ist der Datenpunkt, für den ein Wert vorhergesagt werden soll. Das Zieldatum muss nach dem Ende der historischen <b><em>Zeitachse</em></b> liegen.</p>
+				<p style="text-indent: 50px;"><b><em>Werte</em></b> sind die historischen Werte, für die die nächsten Punkte vorhergesagt werden sollen.</p>
+                <p style="text-indent: 50px;"><b><em>Zeitachse</em></b> ist ein Bereich von Datums- / Zeitwerten, die den historischen Werten entsprechen. Die Bereiche von <b><em>Zeitachse</em></b> müssen die gleiche Größe aufweisen wie <b><em>Werte</em></b>. Die Daten auf der Zeitachse müssen konsistente Abstände haben und dürfen nicht null sein (allerdings können bis zu 30% der fehlenden Werte gemäß dem Argument <b><em>Datenvollständigkeit</em></b> verarbeitet werden und doppelte Werte können gemäß dem Argument <b><em>Aggregation</em></b> aggregiert werden).</p>
+                <p style="text-indent: 50px;"><b><em>Konfidenz_Niveau</em></b> ist ein numerischer Wert größer 0 und kleiner 1, der ein Konfidenzniveau für das berechnete Konfidenzintervall angibt Dieses Argument ist optional. Fehlt das Argument, verwendet die Funktion den Standardwert 0,95.</p>
+                <p style="text-indent: 50px;"><b><em>Saisonalität</em></b> ist ein numerischer Wert, der angibt, mit welcher Methode die Saisonalität ermittelt werden soll. Dieses Argument ist optional. Die möglichen Werte sind in der nachstehenden Tabelle aufgeführt.</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Zahlenwert</b></td>
+                    <td><b>Verhalten</b></td>
+                </tr>
+                <tr>
+                    <td>1 oder nicht angegeben</td>
+                    <td>Die Saisonalität wird automatisch erkannt. Für die Länge des saisonalen Musters verwendet die Funktion positive, ganzzahlige Werte.</td>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>Es liegt keine Saisonalität vor, die Vorhersage wird also linear sein.</td>
+                </tr>
+                <tr>
+                    <td>Eine ganze Zahl, die größer oder gleich 2 ist.</td>
+                    <td>Für die Länge des saisonalen Musters verwendet die Funktion die angegebene Zahl.</td>
+                </tr>
+            </table>
+                <p style="text-indent: 50px;"><b><em>Datenvollständigkeit</em></b> ist ein numerischer Wert, der angibt, wie die fehlenden Datenpunkte im Datenbereich <b><em>Zeitachse</em></b> verarbeitet werden sollen. Dieses Argument ist optional. Die möglichen Werte sind in der nachstehenden Tabelle aufgeführt.</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Zahlenwert</b></td>
+                    <td><b>Verhalten</b></td>
+                </tr>
+                <tr>
+                    <td>1 oder nicht angegeben</td>
+                    <td>Fehlende Punkte werden als Durchschnitt der benachbarten Punkte berechnet.</td>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>Fehlende Punkte werden als Nullen behandelt.</td>
+                </tr>
+            </table>
+                <p style="text-indent: 50px;"><b><em>Aggregation</em></b> ist ein numerischer Wert, der angibt, welche Funktion verwendet werden soll, um identische Zeitwerte im Datenbereich <b><em>Zeitachse</em></b> zu aggregieren. Dieses Argument ist optional. Die möglichen Werte sind in der nachstehenden Tabelle aufgeführt.</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Zahlenwert</b></td>
+                    <td><b>Funktion</b></td>
+                </tr>
+                <tr>
+                    <td>1 oder nicht angegeben</td>
+                    <td><a href="../Functions/average.htm" onclick="onhyperlinkclick(this)">MITTELWERT</a></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td><a href="../Functions/count.htm" onclick="onhyperlinkclick(this)">ANZAHL</a></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td><a href="../Functions/counta.htm" onclick="onhyperlinkclick(this)">ANZAHL2</a></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td><a href="../Functions/max.htm" onclick="onhyperlinkclick(this)">MAX</a></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td><a href="../Functions/median.htm" onclick="onhyperlinkclick(this)">MEDIAN</a></td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td><a href="../Functions/min.htm" onclick="onhyperlinkclick(this)">MIN</a></td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td><a href="../Functions/sum.htm" onclick="onhyperlinkclick(this)">SUMME</a></td>
+                </tr>
+            </table> 
+			<p>Anwendung der Funktion <b>PROGNOSE.ETS.KONFINT</b>:</p>
+			<ol>
+			<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie in einer gewählten Zelle mit der rechten Maustaste und wählen Sie die Option <b>Funktion einfügen</b> aus dem Menü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
+			<li>Wählen Sie die Gruppe <b>Statistische</b> Funktionen aus der Liste aus.</li>
+			<li>Klicken Sie auf die Funktion <b>PROGNOSE.ETS.KONFINT</b>.</li>
+			<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.</li>
+			<li>Drücken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+			<p style="text-indent: 150px;"><img alt="PROGNOSE.ETS.KONFINT-Funktion" src="../images/forecast-ets-confint.png" /></p>
+		</div>
+	</body>
+</html>

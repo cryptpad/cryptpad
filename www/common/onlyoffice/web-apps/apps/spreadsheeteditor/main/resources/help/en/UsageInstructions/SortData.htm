@@ -6,9 +6,13 @@
 		<meta name="description" content="Sort your data in ascending or descending order in a spreadsheet" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
         <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
 			<h1>Sort and filter data</h1>
 			<h3>Sort Data</h3>
 			<p>You can quickly sort your data in a spreadsheet using one of the available options:</p>
@@ -20,9 +24,9 @@
 			<ol>
 				<li>select a range of cells you wish to sort (you can select a single cell in a range to sort the entire range),
                 </li>
-				<li>click the <b>Sort Ascending</b> <img alt="Sort Ascending icon" src="../images/sortatoz.png" /> icon situated at the top toolbar to sort your data in ascending order,
+				<li>click the <b>Sort ascending</b> <img alt="Sort ascending icon" src="../images/sortatoz.png" /> icon situated at the <b>Home</b> tab of the top toolbar to sort your data in ascending order,
 					<br />OR<br />
-					click the <b>Sort Descending</b> <img alt="Sort Descending icon" src="../images/sortztoa.png" /> icon situated at the top toolbar to sort your data in descending order.
+					click the <b>Sort descending</b> <img alt="Sort descending icon" src="../images/sortztoa.png" /> icon situated at the <b>Home</b> tab of the top toolbar to sort your data in descending order.
 				</li>
 			</ol>
             <p class="note"><b>Note</b>: if you select a single column/row within a cell range or a part of the column/row, you will be asked if you want to expand the selection to include adjacent cells or sort the selected data only.</p>
@@ -40,13 +44,13 @@
                 </li>
             </ol>            
                         
-			<h3>Filter Data</h3>
+			<h3 id="filter">Filter Data</h3>
 			<p>To display only the rows that meet certain criteria and hide other ones, make use of the <b>Filter</b> option.</p>
             <b>To enable a filter,</b>
             <ol>
                 <li>Select a range of cells containing data to filter (you can select a single cell in a range to filter the entire range),</li>
                 <li>
-                    Click the <b>Filter</b> <img alt="Filter icon" src="../images/sortandfilter.png" /> icon situated at the top toolbar.
+                    Click the <b>Filter</b> <img alt="Filter icon" src="../images/sortandfilter.png" /> icon situated at the <b>Home</b> tab of the top toolbar.
                     <p>The drop-down arrow <img alt="Drop-Down Arrow" src="../images/dropdownarrow.png" /> will appear in the first cell of each column of the selected cell range. It means that the filter is enabled.</p>
                 </li>
             </ol>
@@ -138,7 +142,7 @@
 			<p>To facilitate the work with your data <b>Spreadsheet Editor</b> allows you to apply a table template to a selected cell range automatically enabling the filter. To do that,</p>
 			<ol>
 				<li>select a range of cells you need to format,</li>
-				<li>click the <b>Format as Table Template</b> <img alt="Format as Table Template" src="../images/tabletemplate.png" /> icon situated at the top toolbar.</li>
+				<li>click the <b>Format as table template</b> <img alt="Format as table template" src="../images/tabletemplate.png" /> icon situated at the <b>Home</b> tab of the top toolbar.</li>
 				<li>select the template you need in the gallery,</li>
 				<li>in the opened pop-up window check the range of cells to be formatted as a table,</li>
 				<li>check the <b>Title</b> if you wish the table headers to be included in the selected range of cells, otherwise the header row will be added at the top while the selected range of cells will be moved one row down,</li>
@@ -146,8 +150,10 @@
 			</ol>
 			<p>The template will be applied to the selected range of cells and you will be able to edit the table headers and apply the filter to work with your data.</p>
             <p class="note"><b>Note</b>: once you create a new formatted table, a <a href="UseNamedRanges.htm" onclick="onhyperlinkclick(this)">default name</a> (<em>Table1</em>, <em>Table2</em> etc.) will be automatically assigned to the table. You can change this name making it more meaningful and use it for further work.</p> 
-            <p>Some of the table settings can be altered using the <b>Table Settings</b> tab of the right sidebar that opens if you select at least one cell within the table with the mouse and click the <b>Table Settings</b> <img alt="Table Settings icon" src="../images/table_settings_icon.png" /> icon on the right.</p>
-            <p><img alt="Table Settings tab" src="../images/tablesettingstab.png" /></p>
+            <p>If you enter a new value in a cell below the table last row (if the table does not have the Total row) or in a cell to the right of the table last column, the formatted table will be automatically extended to include a new row or column. If you do not want to expand the table, click the <img alt="Paste Special" src="../images/pastespecialbutton.png" /> button that appears and select the <b>Undo table autoexpansion</b> option. Once you undo this action, the <b>Redo table autoexpansion</b> option will be available in this menu.</p>
+            <p><img alt="Undo table autoexpansion" src="../images/undoautoexpansion.png" /></p>
+            <p>Some of the table settings can be altered using the <b>Table settings</b> tab of the right sidebar that opens if you select at least one cell within the table with the mouse and click the <b>Table settings</b> <img alt="Table settings icon" src="../images/table_settings_icon.png" /> icon on the right.</p>
+            <p><img alt="Table settings tab" src="../images/tablesettingstab.png" /></p>
             <p>The <b>Rows</b> and <b>Columns</b> sections on the top allow you to emphasize certain rows/columns applying a specific formatting to them, or highlight different rows/columns with the different background colors to clearly distinguish them. The following options are available:</p>
             <ul>
                 <li><b>Header</b> - allows to display the header row.</li>
@@ -163,6 +169,8 @@
                 Depending on the options checked in the <b>Rows</b> and/or <b>Columns</b> sections above, the templates set will be displayed differently. For example, if you've checked the <b>Header</b> option in the <b>Rows</b> section and the <b>Banded</b> option in the <b>Columns</b> section, the displayed templates list will include only templates with the header row and banded columns enabled:
             </p>
             <p><img alt="Templates list" src="../images/templateslist.png" /></p>
+            <p>If you want to clear the current table style (background color, borders etc.) without removing the table itself, apply the <b>None</b> template from the template list:</p>
+            <p><img alt="None templates" src="../images/nonetemplate.png" /></p>
             <p>The <b>Resize table</b> section allows you to change the cell range the table formatting is applied to. Click the <b>Select Data</b> button - a new pop-up window will open. Change the link to the cell range in the entry field or select the necessary cell range on the worksheet with the mouse and click the <b>OK</b> button.</p>
             <p><img alt="Resize table" src="../images/resizetable.png" /></p>
             <p>The <b>Rows & Columns</b> <img alt="Rows & Columns" src="../images/rowsandcolumns.png" /> section allows you to perform the following operations:</p>
@@ -172,7 +180,7 @@
                 <li><b>Delete</b> a row, column (depending on the cursor position or the selection), or the entire table.</li>
             </ul>
             <p class="note"><b>Note</b>: the options of the <b>Rows & Columns</b> section are also accessible from the <b>right-click menu</b>.</p>
-            <p>The <b>Convert to range</b> button can be used if you want to transform the table into a regular data range removing the filter but preserving the table style (i.e. cell and font colors etc.). Once you apply this option, the <b>Table Settings</b> tab at the right sidebar will be unavailable.</p>
+            <p>The <b>Convert to range</b> button can be used if you want to transform the table into a regular data range removing the filter but preserving the table style (i.e. cell and font colors etc.). Once you apply this option, the <b>Table settings</b> tab at the right sidebar will be unavailable.</p>
             <p>To change the advanced table properties, use the <b>Show advanced settings</b> link at the right sidebar. The table properties window will open:</p>
             <p><img alt="Table - Advanced Settings" src="../images/tableadvancedsettings.png" /></p>
             <p>The <b>Alternative Text</b> tab allows to specify a <b>Title</b> and <b>Description</b> which will be read to the people with vision or cognitive impairments to help them better understand what information there is in the table.</p>
@@ -192,14 +200,14 @@
             <p>You can also proceed in the following way:</p>
 				<ol>
 					<li>select the range of cells containing the filtered data,</li>
-					<li>click the <b>Clear Filter</b> <img alt="Clear Filter icon" src="../images/clearfilter.png" /> icon situated at the top toolbar.</li>
+					<li>click the <b>Clear filter</b> <img alt="Clear filter icon" src="../images/clearfilter.png" /> icon situated at the <b>Home</b> tab of the top toolbar.</li>
 				</ol>
             <p>The filter will remain enabled, but all the applied filter parameters will be removed, and the <b>Filter</b> <img alt="Filter button" src="../images/filterbutton.png" /> buttons in the first cells of the columns will change into the drop-down arrows <img alt="Drop-Down Arrow" src="../images/dropdownarrow.png" />.</p>
             <h3>Remove Filter</h3>
             <p>To remove the filter,</p>
             <ol>
                 <li>select the range of cells containing the filtered data,</li>
-                <li>click the <b>Filter</b> <img alt="Filter icon" src="../images/sortandfilter.png" /> icon situated at the top toolbar.</li>
+                <li>click the <b>Filter</b> <img alt="Filter icon" src="../images/sortandfilter.png" /> icon situated at the <b>Home</b> tab of the top toolbar.</li>
             </ol>
             <p>The filter will be disabled, and the drop-down arrows <img alt="Drop-Down Arrow" src="../images/dropdownarrow.png" /> will disappear from the first cells of the columns.</p>
 		</div>

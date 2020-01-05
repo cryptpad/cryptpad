@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Utiliser les plages nommées</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Use named ranges to simplify working with formulas" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Utiliser les plages nommées</h1>
+            <p>Les noms sont des notations significatives pouvant être affectées à une cellule ou à une plage de cellules et utilisées pour simplifier l'utilisation de formules. En créant une formule, vous pouvez insérer un nom comme argument au lieu d'utiliser une référence à une plage de cellules. Par exemple, si vous affectez le nom <em>Revenu_Annuel</em> à une plage de cellules, il sera possible d'entrer <em>=SUM(Revenu_Annuel)</em> au lieu de <em>=SUM(B1:B12)</em>. Sous une telle forme, les formules deviennent plus claires. Cette fonctionnalité peut également être utile dans le cas où beaucoup de formules se réfèrent à une même plage de cellules. Si l'adresse de plage est modifiée, vous pouvez effectuer la correction en une seule fois à l'aide du Gestionnaire de noms au lieu de modifier toutes les formules une par une.</p>
+			<p>Deux types de noms peuvent être utilisés :</p>
+            <ul>
+                <li><b>Nom défini</b> - nom arbitraire que vous pouvez spécifier pour une certaine plage de cellules.</li>
+                <li><b>Nom de tableau</b> - nom par défaut attribué automatiquement à un <a href="SortData.htm#tabletemplate" onclick="onhyperlinkclick(this)">nouveau tableau formaté</a> (<em>Table1</em>, <em>Table2</em>, etc.). Ce type de nom peut être modifié ultérieurement.</li>
+            </ul>
+            <p>Les noms sont également classés par <b>Portée</b>, c'est-à-dire par l'emplacement où un nom est reconnu. La portée d'un nom peut être étendue à l'ensemble du classeur (il sera reconnu pour n'importe quelle feuille de calcul dans ce classeur) ou à une feuille de calcul distincte (il sera reconnu pour la feuille de calcul spécifiée uniquement). Chaque nom doit être unique dans sa portée, les mêmes noms peuvent être utilisés dans des portées différentes.</p>
+            <h3>Créer de nouveaux noms</h3>
+			<p>Pour créer un nouveau nom défini pour une sélection :</p>
+			<ol>
+			<li>Sélectionnez une cellule ou une plage de cellules à laquelle vous souhaitez attribuer un nom.</li>
+			<li>Ouvrez une nouvelle fenêtre de nom d'une manière appropriée :<ul>
+                    <li>Cliquez avec le bouton droit sur la sélection et choisissez l'option <b>Définir le nom</b> dans le menu contextuel,</li>
+                    <li>ou cliquez sur l'icône <b>Plages nommées</b> <img alt="Icône Plages nommées" src="../images/namedranges.png" /> dans l'onglet <b>Accueil</b> de la barre d'outils supérieure et sélectionnez l'option <b>Nouveau nom</b> dans le menu.</li>
+                </ul>
+                <p>La fenêtre <b>Nouveau nom</b> s'ouvrira :</p>
+                <p><img alt="Fenêtre Nouveau nom" src="../images/newnamewindow.png" /></p>
+            </li>
+            <li>Entrez le <b>Nom</b> nécessaire dans le champ de saisie de texte.<p class="note"><b>Remarque</b> : un nom ne peut pas commencer à partir d'un nombre, contenir des espaces ou des signes de ponctuation. Les tirets bas (_) sont autorisés. La casse n'a pas d'importance.</p>   
+            </li>
+            <li>Indiquez la <b>Portée</b> du nom. La portée étendue au <em>Classeur</em> est sélectionnée par défaut, mais vous pouvez spécifier une feuille de calcul individuelle en la sélectionnant dans la liste.</li>
+            <li>Vérifiez l'adresse de la <b>Plage de données</b> sélectionnée. Si nécessaire, vous pouvez la changer. Cliquez sur le bouton <b>Sélectionner les données</b> - la fenêtre <b>Sélectionner la plage de données</b> s'ouvre.<p><img alt="Fenêtre sélectionner la plage de données" src="../images/selectdatarange.png" /></p>   
+            <p>Modifiez le lien à la plage de cellules dans le champ de saisie ou sélectionnez une nouvelle plage dans la feuille de calcul avec la souris et cliquez sur <b>OK</b>.</p> 
+            </li>
+            <li>Cliquez sur <b>OK</b> pour enregistrer le nouveau nom.</li>
+			</ol>
+            <p>Pour créer rapidement un nouveau nom pour la plage de cellules sélectionnée, vous pouvez également entrer le nom souhaité dans la zone de nom située à gauche de la barre de formule et appuyer sur <b>Entrée</b>. Un nom créé de cette manière a sa portée étendue au <em>Classeur</em>.</p>
+            <p><img alt="Boîte de nom" src="../images/namefield.png" /></p>
+			<h3>Gérer les noms</h3>
+            <p>Tous les noms existants sont accessibles via le <b>Gestionnaire de noms</b>. Pour l'ouvrir :</p>
+            <ul>
+                <li>cliquez sur l'icône <b>Plages nommées</b> <img alt="Icône Plages nommées" src="../images/namedranges.png" /> dans l'onglet <b>Accueil</b> de la barre d'outils supérieure et sélectionnez l'option <b>Gestionnaire de noms</b> dans le menu,</li>
+                <li>ou cliquez sur la flèche dans le champ Nom et sélectionnez l'option <b>Gestionnaire</b>.</li>
+            </ul>
+            <p>La fenêtre <b>Gestionnaire de noms</b> s'ouvre:</p>
+            <p><img alt="Fenêtre Gestionnaire de noms" src="../images/namemanagerwindow.png" /></p>
+            <p>Pour plus de commodité, vous pouvez filtrer les noms en sélectionnant la catégorie de nom que vous voulez afficher : <b>Tous</b>, <b>Noms définis</b>, <b>Noms de tableaux</b>, <b>Noms étendus à la feuille</b> ou <b>Noms étendus au classeur</b>. Les noms appartenant à la catégorie sélectionnée seront affichés dans la liste, les autres noms seront cachés.</p>
+            <p>Pour modifier l'ordre de tri de la liste affichée, vous pouvez cliquer sur les titres <b>Plages nommées</b> ou <b>Étendue</b> dans cette fenêtre.</p>
+            <p><b>Pour modifier un nom</b>, sélectionnez-le dans la liste et cliquez sur le bouton <b>Modifier</b>. La fenêtre <b>Modifier le nom</b> s'ouvre :</p>
+            <p><img alt="Fenêtre Modifier le nom" src="../images/editnamewindow.png" /></p>
+            <p>Pour un nom défini, vous pouvez modifier le nom et la plage de données auxquels il fait référence. Pour un nom de tableau, vous pouvez uniquement changer le nom. Lorsque toutes les modifications nécessaires sont apportées, cliquez sur <b>OK</b> pour les appliquer. Pour annuler les modifications, cliquez sur <b>Annuler</b>. Si le nom modifié est utilisé dans une formule, la formule sera automatiquement modifiée en conséquence.</p>
+            <p><b>Pour supprimer un nom</b>, sélectionnez-le dans la liste et cliquez sur le bouton <b>Suppr</b>.</p>
+            <p class="note"><b>Remarque</b> : si vous supprimez un nom utilisé dans une formule, la formule ne fonctionnera plus (elle retournera l'erreur <em>#NAME?</em>).</p>  
+            <p>Vous pouvez également créer un nouveau nom dans la fenêtre <b>Gestionnaire de noms</b> en cliquant sur le bouton <b>Nouveau</b>.</p>
+			<h3 id="usingnames">Utiliser des noms lorsque vous travaillez avec la feuille de calcul</h3>
+            <p><b>Pour naviguer rapidement entre les plages de cellules</b>, vous pouvez cliquer sur la flèche dans la boite de nom et sélectionner le nom voulu dans la liste des noms. La plage de données correspondant à ce nom sera sélectionnée dans la feuille de calcul.</p>
+            <p><img alt="Liste de noms" src="../images/namelist.png" /></p>
+            <p class="note"><b>Remarque</b> : la liste de noms affiche les noms définis et les noms de tableaux étendus à la feuille de calcul en cours ou à l'ensemble du classeur.</p>
+            <p><b>Pour ajouter un nom en tant que argument d'une formule</b> :</p>
+            <ol>
+                <li>Placez le point d'insertion où vous devez ajouter un nom.</li>
+                <li>Effectuez l'une des actions suivantes :<ul>
+                        <li>Entrez manuellement le nom de la plage nommée choisie à l'aide du clavier. Une fois que vous avez tapé les lettres initiales, la liste <b>Autocomplétion de formule</b> sera affichée. Au fur et à mesure que vous tapez, les éléments (formules et noms) correspondant aux caractères saisis sont affichés. Vous pouvez sélectionner le nom voulu dans la liste et l'insérer dans la formule en double-cliquant dessus ou en appuyant sur la touche <b>Tabulation</b>.</li>
+                        <li>ou cliquez sur l'icône <b>Plages nommées</b> <img alt="Icône Plages nommées" src="../images/namedranges.png" /> dans l'onglet <b>Accueil</b> de la barre d'outils supérieure, sélectionnez l'option <b>Coller le nom</b> dans le menu, choisissez le nom voulu dans la fenêtre <b>Coller le nom</b> et cliquez sur <b>OK</b> :<p><img alt="Fenêtre Coller le nom" src="../images/pastenamewindow.png" /></p>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+            <p class="note"><b>Remarque</b> : la fenêtre <b>Coller le nom</b> affiche les noms et les noms de tableaux définis dans la feuille de calcul en cours et dans l'ensemble du classeur.</p>  
+		</div>
+	</body>
+</html>

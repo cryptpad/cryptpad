@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insérer des formes automatiques</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add an autoshape to your document and adjust its properties." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insérer des formes automatiques</h1>
+            <h3>Insérer une forme automatique</h3>
+			<p>Pour insérer une forme automatique à votre document,</p>
+			<ol>
+                <li>passez à l'onglet <b>Insérer</b> de la barre d'outils supérieure,</li>
+				<li>cliquez sur l'icône <img alt="Insérer une forme automatique" src="../images/insertautoshape.png" /> <b>Forme</b>  de la barre d'outils supérieure,</li>
+				<li>sélectionnez l'un des groupes des formes automatiques disponibles : Formes de base, Flèches figurées, Maths, Graphiques, Étoiles et rubans, Légendes, Boutons, Rectangles, Lignes,</li>
+				<li>cliquez sur la forme automatique nécessaire du groupe sélectionné,</li>
+				<li>placez le curseur de la souris là où vous voulez insérer la forme,</li>
+				<li>après avoir ajouté la forme automatique vous pouvez modifier sa taille, sa position et ses propriétés.<p class="note"><b>Remarque</b>: pour ajouter une légende à la forme, assurez-vous que la forme est sélectionnée et commencez à taper le texte. Le texte que vous ajoutez fait partie de la forme (ainsi si vous déplacez ou faites pivoter la forme, le texte change de position lui aussi).</p>
+				</li>
+			</ol>
+            <h3>Déplacer et redimensionner des formes automatiques</h3>
+            <p id ="shape_resize"><img class="floatleft" alt="Modifier les formes automatiques" src="../images/reshaping.png" />Pour modifier la taille de la forme automatique, faites glisser les petits carreaux <img alt="Icône Carreaux" src="../images/resize_square.png" /> situés sur les bords de la forme. Pour garder les proportions de la forme automatique sélectionnée lors du redimensionnement, maintenez la touche <b>Maj</b> enfoncée et faites glisser l'une des icônes de coin.</pid>
+			<p>Lors de la modification des formes, par exemple des flèches figurées ou les légendes, l'icône jaune en forme de diamant <img alt="Icône jaune en forme de diamant" src="../images/yellowdiamond.png" /> est aussi disponible. Elle permet d'ajuster certains aspects de la forme, par exemple, la longueur de la pointe d'une flèche.</p>
+			<p>Pour modifier la position de la forme automatique, utilisez l'icône <img alt="Flèche" src="../images/arrow.png" /> qui apparaît si vous placez le curseur de votre souris sur la forme. Faites glisser la forme à la position nécessaire sans relâcher le bouton de la souris. Lorsque vous déplacez la forme automatique, des lignes de guidage s'affichent pour vous aider à positionner l'objet sur la page avec précision (si un style d'habillage autre que aligné est sélectionné). Pour déplacer la forme automatique de trois incréments, maintenez la touche <b>Ctrl</b> enfoncée et utilisez les flèches du clavier. Pour déplacer la forme automatique strictement horizontallement / verticallement et l'empêcher de se déplacer dans une direction perpendiculaire, maintenez la touche <b>Maj</b> enfoncée lors du déplacement.</p>
+			<p>Pour faire pivoter la forme automatique, placez le curseur de la souris sur la poignée de rotation ronde <img alt="Poignée de rotation" src="../images/greencircle.png" /> et faites-la glisser vers la droite ou la gauche. Pour limiter la rotation de l'angle à des incréments de 15 degrés, maintenez la touche <b>Maj</b> enfoncée.</p>
+			<hr />
+            <h3>Régler les paramètres de la forme automatique</h3>
+            <p id ="shape_rightclickmenu">Pour aligner et organiser les formes automatiques, utilisez le menu contextuel. Les options du menu sont les suivantes :</p>
+			<ul>
+                <li><b>Couper, Copier, Coller</b> - les options nécessaires pour couper ou coller le texte / l'objet sélectionné et coller un passage de texte précedement coupé / copié ou un objet à la position actuelle du curseur.</li>
+                <li><b>Organiser</b> sert à placer la forme automatique choisie au premier plan, envoyer à fond, avancer ou reculer ainsi que grouper ou dégrouper les formes pour effectuer des opérations avec plusieurs formes à la fois. Pour en savoir plus sur l'organisation des objets, vous pouvez vous référer à <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">cette page</a>.</li>
+				<li><b>Aligner</b> sert à aligner la forme à gauche, au centre, à droite, en haut, au milieu, en bas. Pour en savoir plus sur l'alignement des objets, vous pouvez vous référer à <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">cette page</a>.</li>
+				<li><b>Style d'habillage</b> sert à sélectionner un des styles d'habillage - aligné sur le texte, carré, rapproché, au travers, haut et bas, devant le texte, derrière le texte - ou modifier le contour de l'habillage. L'option <b>Modifier les limites du renvoi à la ligne</b> n'est disponible qu'au cas où vous sélectionnez le style d'habillage autre que 'aligné sur le texte'. Faites glisser les points d'habillage pour personnaliser les limites. Pour créer un nouveau point d'habillage, cliquez sur la ligne rouge et faites-la glisser vers la position désirée. <img alt="Modifier les limites du renvoi à la ligne" src="../images/wrap_boundary.png" /></li>
+				<li><b>Paramètres avancés</b> sert à ouvrir la fenêtre 'Forme - Paramètres avancés'.</li>
+			</ul>
+			<hr />
+			<p>Certains paramètres de la forme automatique peuvent être modifiés en utilisant l'onglet <b>Paramètres de la forme</b> de la barre latérale droite. Pour l'activer, sélectionnez la forme ajoutée avec la souris et sélectionnez l'icône <b>Paramètres de la forme</b> <img alt="Paramètres de la forme" src="../images/shape_settings_icon.png" /> à droite. Vous pouvez y modifier les paramètres suivants :</p>
+			<ul>
+			<li  id="shape_fill"><b>Remplissage</b> - utilisez cette section pour sélectionner le remplissage de la forme automatique. Les options disponibles sont les suivantes :<ul>
+				<li><b>Couleur</b> - sélectionnez cette option pour spécifier la couleur unie à remplir l'espace intérieur de la forme automatique sélectionnée.<p><img alt="Couleur" src="../images/fill_color.png" /></p>
+				<p id="color">Cliquez sur la case de couleur et sélectionnez la couleur voulue à partir de l'<a href="../UsageInstructions/ChangeColorScheme.htm" onclick="onhyperlinkclick(this)">ensemble de couleurs</a> disponibles ou spécifiez n'importe quelle couleur de votre choix :</p>
+				</li>
+				<li><b>Dégradé</b> - sélectionnez cette option pour specifier deux couleurs pour créer une transition douce entre elles et remplir la forme.<p><img alt="Dégradé" src="../images/fill_gradient.png" /></p>
+				    <ul>
+				    <li><b>Style</b> - choisissez une des options disponibles : <b>Linéaire</b> (la transition se fait selon un axe horizontal/vertical ou en diagonale, sous l'angle de 45 degrés) ou <b>Radial</b> (la transition se fait autour d'un point, les couleurs se fondent progressivement du centre aux bords en formant un cercle).</li>
+				    <li><b>Direction</b> - choisissez un modèle du menu. Si vous avez sélectionné le style <b>Linéaire</b>, vous pouvez choisir une des directions suivantes : du haut à gauche vers le bas à droite, du haut en bas, du haut à droite vers le bas à gauche, de droite à gauche, du bas à droite vers le haut à gauche, du bas en haut, du bas à gauche vers le haut à droite, de gauche à droite. Si vous avez choisi le style <b>Radial</b>, il n'est disponible qu'un seul modèle.</li>
+				    <li><b>Dégradé</b> - cliquez sur le curseur de dégradé gauche <img alt="Curseur" src="../images/gradientslider.png" /> au-dessous de la barre de dégradé pour activer la palette de couleurs qui correspond à la première couleur. Cliquez sur la palette de couleurs à droite pour sélectionner la première couleur. Faites glisser le curseur pour définir le point de dégradé c'est-à-dire le point quand une couleur se fond dans une autre. Utilisez le curseur droit au-dessous de la barre de dégradé pour spécifier la deuxième couleur et définir le point de dégradé.</li>
+				    </ul>			
+				</li>
+				<li><b>Image ou texture</b> - sélectionnez cette option pour utiliser une image ou une texture prédéfinie en tant que arrière-plan de la forme.<p><img alt="Image ou texture" src="../images/fill_picture.png" /></p>
+					<ul>
+						<li>Si vous souhaitez utiliser une image en tant que arrière-plan de la forme, vous pouvez ajouter l'image <b>D'un fichier</b> en la sélectionnant sur le disque dur de votre ordinateur ou <b>D'une URL</b> en insérant l'adresse URL appropriée dans la fenêtre ouverte.</li>
+						<li>Si vous souhaitez utiliser une texture en tant que arrière-plan de la forme, utilisez le menu déroulant <b>D'une texture</b> et sélectionnez le préréglage de la texture voulue.<p>Actuellement, les textures suivantes sont disponibles : Toile, Carton, Tissu foncé, Grain, Granit, Papier gris, Tricot, Cuir, Papier brun, Papyrus, Bois.</p>
+						</li>
+					</ul>
+					<ul>
+						<li>Si l'<b>Image</b> sélectionnée est plus grande ou plus petite que la forme automatique, vous pouvez choisir parmi les options : <b>Étirement</b> ou <b>Mosaïque</b> depuis la liste déroulante.<p>L'option <b>Étirement</b> permet de régler la taille de l'image pour l'adapter à la taille de la forme automatique afin qu'elle puisse remplir tout l'espace uniformément.</p>
+						<p>L'option <b>Mosaïque</b> permet d'afficher seulement une partie de l'image plus grande en gardant ses dimensions d'origine, ou de répéter l'image plus petite en conservant ses dimensions initiales sur la surface de la forme automatique afin qu'elle puisse remplir tout l'espace uniformément.</p>
+						<p class="note"><b>Remarque</b> : tout préréglage <b>Texture</b> sélectionné remplit l'espace de façon uniforme, mais vous pouvez toujours appliquer l'effet <b>Étirement</b> si nécessaire.</p>
+						</li>
+					</ul>
+				</li>
+				<li><b>Modèle</b> - sélectionnez cette option pour sélectionner le modèle à deux couleurs composé des éléments répétés.<p><img alt="Modèle" src="../images/fill_pattern.png" /></p>
+				    <ul>
+				        <li><b>Modèle</b> - sélectionnez un des modèles prédéfinis du menu.</li>
+				        <li><b>Couleur de premier plan</b> - cliquez sur cette palette de couleurs pour changer la couleur des éléments du modèle.</li>
+				        <li><b>Couleur d'arrière-plan</b> - cliquez sur cette palette de couleurs pour changer de l'arrière-plan du modèle.</li>
+				    </ul>			
+				</li>
+				<li><b>Pas de remplissage</b> - sélectionnez cette option si vous ne voulez pas utiliser de remplissage.</li>
+			</ul>
+			</li>
+			</ul>
+			<p><img class="floatleft" alt="Paramètres de la forme automatique" src="../images/right_autoshape.png" /></p>
+			<ul style="margin-left: 280px;">			
+			<li><b>Opacité</b> - utilisez cette section pour régler le niveau d'<b>Opacité</b> des formes automatiques en faisant glisser le curseur ou en saisissant la valeur de pourcentage à la main. La valeur par défaut est <b>100%</b>. Elle correspond à l'opacité complète. La valeur <b>0%</b> correspond à la transparence totale.</li>
+			<li id="shape_stroke"><b>Contour</b> - utilisez cette section pour changer la largeur et la couleur du contour de la forme automatique.<ul>
+				<li>Pour modifier la largeur du trait, sélectionnez une des options disponibles depuis la liste déroulante <b>Taille</b>. Les options disponibles sont les suivantes : 0,5 pt, 1 pt, 1,5 pt, 2,25 pt, 3 pt, 4,5 pt, 6 pt ou <b>Pas de ligne</b> si vous ne voulez pas utiliser de contour.</li>
+				<li>Pour changer la <b>couleur</b> du contour, cliquez sur la case colorée et <a href="../UsageInstructions/ChangeColorScheme.htm" onclick="onhyperlinkclick(this)">sélectionnez la couleur voulue</a>.</li>
+                <li>Pour modifier le <b>type</b> de contour, sélectionnez l'option voulue dans la liste déroulante correspondante (une ligne continue est appliquée par défaut, vous pouvez la remplacer par l'une des lignes pointillées disponibles).</li>
+				</ul>
+			</li>
+			<li><b>Style d'habillage</b> - utilisez cette section pour sélectionner un des styles d'habillage - aligné sur le texte, carré, rapproché, au travers, haut et bas, devant le texte, derrière le texte (pour en savoir plus, consultez la section des paramètres avancés ci-dessous).</li>
+			<li><b>Modifier la forme</b> - utilisez cette section pour remplacer la forme automatique insérée par une autre sélectionnée de la liste déroulante.</li>
+			</ul>
+			<hr />
+			<p>Pour changer les <b>paramètres avancés</b> de la forme automatique, cliquez sur la forme avec le bouton droit et sélectionnez l'option <b>Paramètres avancés</b> dans le menu ou utilisez le lien <b>Afficher paramètres avancés</b> sur la barre latérale droite. La fenêtre "Forme - Paramètres avancés" s'ouvre :</p>
+            <p><img alt="Forme - Paramètres avancés" src="../images/shape_properties.png" /></p>
+			<p>L'onglet <b>Taille</b> vous permet de régler les paramètres suivants :</p>
+			<ul>
+				<li><b>Largeur</b> - utilisez l'une de ces options pour modifier la largeur de la forme automatique.<ul>
+                    <li><b>Absolue</b> - spécifiez une valeur exacte mesurée en unités absolues, c.-à-d. <b>Centimètres</b>/<b>Points</b>/<b>Pouces</b> (selon l'option spécifiée dans l'onglet <b>Fichier</b> -&gt; <b>Paramètres avancés...</b>).</li>
+                    <li><b>Relatif</b> - spécifiez un pourcentage <b>relatif à</b> la largeur de la <em>marge de gauche</em>, la <em>marge</em> (c'est-à-dire la distance entre les marges gauche et droite), la largeur de la <em>page</em> ou la largeur de la <em>marge de droite</em>.</li>
+                </ul>
+                </li>
+                <li><b>Hauteur</b> - utilisez l'une de ces options pour modifier la hauteur de la forme automatique.<ul>
+                        <li><b>Absolue</b> - spécifiez une valeur exacte mesurée en unités absolues, c.-à-d. <b>Centimètres</b>/<b>Points</b>/<b>Pouces</b> (selon l'option spécifiée dans l'onglet <b>Fichier</b> -&gt; <b>Paramètres avancés...</b>).</li>
+                        <li><b>Relatif</b> - spécifiez un pourcentage <b>relatif à</b> la <em>marge</em> (c'est-à-dire la distance entre les marges supérieure et inférieure), la hauteur de la <em>marge inférieure</em>, la hauteur de la <em>page</em> ou la hauteur de la <em>marge supérieure</em>.</li>
+                    </ul>
+                </li>
+                <li>Si l'option <b>Verrouiller le ratio d'aspect</b> est cochée, la largeur et la hauteur seront modifiées en conservant le ratio d'aspect original.</li>
+			</ul>
+            <p id="shape_wrapping"><img alt="Forme - Paramètres avancés" src="../images/shape_properties_1.png" /></p>
+			<p>L'onglet <b>Habillage du texte</b> contient les paramètres suivants :</p>
+			<ul>
+				<li><b>Style d'habillage</b> - utilisez cette option pour changer la façon dont la forme est positionnée par rapport au texte : elle peut faire partie du texte (si vous sélectionnez le style 'aligné sur le texte') ou être contournée par le texte de tous les côtés (si vous sélectionnez l'un des autres styles).<ul>
+				    <li><p><img alt="Style d'habillage - Aligné sur le texte" src="../images/wrappingstyle_inline.png" /> <b>Aligné</b> sur le texte - la forme fait partie du texte, comme un caractère, ainsi si le texte est déplacé, la forme est déplacée elle aussi. Dans ce cas-là les options de position ne sont pas accessibles.</p>
+				    <p>Si vous sélectionnez un des styles suivants, vous pouvez déplacer l'image indépendamment du texte et définir sa position exacte :</p>
+				    </li>
+				    <li><p><img alt="Style d'habillage - Carré" src="../images/wrappingstyle_square.png" /> <b>Carré</b> - le texte est ajusté autour des bords de la forme.</p></li>
+				    <li><p><img alt="Style d'habillage - Rapproché" src="../images/wrappingstyle_tight.png" /> <b>Rapproché</b> - le texte est ajusté sur le contour de la forme.</p></li>
+				    <li><p><img alt="Style d'habillage - Au travers" src="../images/wrappingstyle_through.png" /> <b>Au travers</b> - le texte est ajusté autour des bords de la forme et occupe l'espace vide à l'intérieur d'elle. Pour créer l'effet, utilisez l'option <b>Modifier les limites du renvoi à la ligne</b> du menu contextuel.</p></li>
+				    <li><p><img alt="Style d'habillage - Haut et bas" src="../images/wrappingstyle_topandbottom.png" /> <b>Haut et bas</b> - le texte est ajusté en haut et en bas de la forme.</p></li>
+				    <li><p><img alt="Style d'habillage - Devant le texte" src="../images/wrappingstyle_infront.png" /> <b>Devant</b> le texte - la forme est affichée sur le texte.</p></li>
+				    <li><p><img alt="Style d'habillage - Derrière le texte" src="../images/wrappingstyle_behind.png" /> <b>Derrière</b> le texte - le texte est affiché sur la forme.</p></li>
+				    </ul>
+				</li>
+			</ul>
+			<p>Si vous avez choisi le style carré, rapproché, au travers, haut et bas, vous avez la possibilité de configurer des paramètres supplémentaires - <b>Distance du texte</b> de tous les côtés (haut, bas, droit, gauche).</p>
+            <p id="position"><img alt="Forme - Paramètres avancés" src="../images/shape_properties_2.png" /></p>
+			<p>L'onglet <b>Position</b> n'est disponible qu'au cas où vous choisissez le style d'habillage autre que 'aligné sur le texte'. Il contient les paramètres suivants qui varient selon le type d'habillage sélectionné :</p>
+			<ul>
+                <li>La section <b>Horizontal</b> vous permet de sélectionner l'un des trois types de positionnement de forme automatique suivants :<ul>
+                        <li><b>Alignement</b> (gauche, centre, droite) <b>par rapport</b> au caractère, à la colonne, à la marge de gauche, à la marge, à la page ou à la marge de droite,</li>
+                        <li><b>Position</b> absolue mesurée en unités absolues, c.-à-d. <b>Centimètres</b>/<b>Points</b>/<b>Pouces</b> (selon l'option spécifiée dans l'onglet <b>Fichier</b> -&gt; <b>Paramètres avancés...</b>) <b>à droite</b> du caractère, de la colonne, de la marge de gauche, de la marge, de la page ou de la marge de droite,</li>
+                        <li><b>Position relative</b> mesurée en pourcentage <b>par rapport</b> à la marge gauche, à la marge, à la page ou à la marge de droite.</li>
+                    </ul>
+                </li>
+                <li>La section <b>Vertical</b> vous permet de sélectionner l'un des trois types de positionnement de forme automatique suivants :<ul>
+                        <li><b>Alignement</b> (haut, centre, bas) <b>par rapport</b> à la ligne, à la marge, à la marge inférieure, au paragraphe, à la page ou à la marge supérieure,</li>
+                        <li><b>Position</b> absolue mesurée en unités absolues, c.-à-d. <b>Centimètres</b>/<b>Points</b>/<b>Pouces</b> (selon l'option spécifiée dans l'onglet <b>Fichier</b> -&gt; <b>Paramètres avancés...</b>) <b>sous</b> la ligne, la marge, la marge inférieure, le paragraphe, la page la marge supérieure,</li>
+                        <li><b>Position relative</b> mesurée en pourcentage <b>par rapport</b> à la marge, à la marge inférieure, à la page ou à la marge supérieure.</li>
+                    </ul>
+                </li>
+                <li><b>Déplacer avec le texte</b> détermine si la forme automatique se déplace en même temps que le texte sur lequel elle est alignée.</li>
+				<li><b>Chevauchement</b> détermine si deux formes automatiques sont fusionnées en une seule ou se chevauchent si vous les faites glisser les unes près des autres sur la page.</li>
+			</ul>
+			<p><img alt="Forme - Paramètres avancés" src="../images/shape_properties_3.png" /></p>
+			<p>L'onglet <b>Paramètres de la forme</b> contient les paramètres suivants :</p>
+			<ul>
+				<li><b>Style de ligne</b> - ce groupe d'options vous permet de spécifier les paramètres suivants :<ul>
+				<li><b>Type d'extrémité</b> - cette option permet de définir le style de l'extrémité de la ligne, par conséquent elle peut être appliquée seulement aux formes avec un contour ouvert telles que des lignes, des polylignes etc.:<ul>
+					<li><b>Plat</b> - les points finaux seront plats.</li>
+					<li><b>Arrondi</b> - les points finaux seront arrondis.</li>
+					<li><b>Carré</b> - les points finaux seront carrés.</li>
+					</ul>
+				</li>
+				<li><b>Type de jointure</b> - cette option permet de définir le style de l'intersection de deux lignes : par exemple, une polyligne, les coins du triangle ou le contour du rectangle :<ul>
+					<li><b>Arrondi</b> - le coin sera arrondi.</li>
+					<li><b>Biseauté</b> - le coin sera coupé d'une manière angulaire.</li>
+					<li><b>Onglet</b> - l'angle sera aiguisé. Bien adapté pour les formes à angles nets.</li>
+					</ul>
+					<p class="note"><b>Remarque</b> : l'effet sera plus visible si vous utilisez un contour plus épais.</p>
+				</li>
+				</ul>
+				</li>
+				<li><b>Flèches</b> - ce groupe d'options est disponible pour les formes du groupe <b>Lignes</b>. Il permet de définir le <b>Style de début</b> et <b>Style de fin</b> aussi bien que la <b>Taille</b> des flèches en sélectionnant l'option appropriée de la liste déroulante.</li>
+			</ul>
+            <p><img alt="Forme - Paramètres avancés" src="../images/shape_properties_4.png" /></p>
+			<p>L'onglet <b>Marges</b> vous permet de changer les marges internes <b>En haut</b>, <b>En bas</b>, <b>A gauche</b> et <b>A droite</b> (c'est-à-dire la distance entre le texte à l'intérieur de la forme et les bordures de la forme automatique).</p>
+            <p class="note"><b>Remarque</b> : cet onglet n'est disponible que si du texte est ajouté dans la forme automatique, sinon l'onglet est désactivé.</p>
+            <p><img alt="Forme - Paramètres avancés" src="../images/shape_properties_5.png" /></p>
+            <p>L'onglet <b>Texte de remplacement</b> permet de spécifier un <b>Titre</b> et une <b>Description</b> qui sera lue aux personnes avec des déficiences cognitives ou visuelles pour les aider à mieux comprendre l'information de la forme.</p>
+		</div>
+	</body>
+</html>

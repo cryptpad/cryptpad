@@ -5,9 +5,14 @@
 		<meta charset="utf-8" />
 		<meta name="description" content="Change paragraph indents: the first line offset from the left part of the page as well as the paragraph offset from the left and right sides of the page" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
 			<h1>Change paragraph indents</h1>
 			<p>In Document Editor, you can change the first line offset from the left part of the page as well as the paragraph offset from the left and right sides of the page.</p>
 			<p>To do that,</p>
@@ -19,7 +24,7 @@
 					<p><img alt="Paragraph Advanced Settings - Indents &amp; Placement" src="../images/paradvsettings_indents.png" /></p>
 				</li>
 			</ol>
-			<p>To quickly change the paragraph offset from the left side of the page, you can also use the respective icons at the top toolbar: <b>Decrease Indent</b> <img alt="Decrease Indent" src="../images/decreaseindent.png" /> and <b>Increase Indent</b> <img alt="Increase Indent" src="../images/increaseindent.png" />.</p>
+			<p>To quickly change the paragraph offset from the left side of the page, you can also use the respective icons at the <b>Home</b> tab of the top toolbar: <b>Decrease indent</b> <img alt="Decrease indent" src="../images/decreaseindent.png" /> and <b>Increase indent</b> <img alt="Increase indent" src="../images/increaseindent.png" />.</p>
 			<p>You can also use the horizontal <b>ruler</b> to set indents.</p>
 			<img alt="Ruler - Indent markers" src="../images/indents_ruler.png" />
 			<p>Select the necessary paragraph(s) and drag the indent markers along the ruler.</p>

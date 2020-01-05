@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Tabellen einfügen und formatieren</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add a table to your presentation and adjust its properties" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Tabellen einfügen und formatieren</h1>
+            <h3>Eine Tabelle einfügen</h3>
+			<p>Eine Tabelle in eine Folie einfügen:</p>
+			<ol>
+				<li>Wählen Sie die gewünschte Folie aus, in die Sie eine Tabelle einfügen möchten.</li>
+                <li>Wechseln Sie in der oberen Symbolleiste auf die Registerkarte <b>Einfügen</b>.</li>
+				<li>Klicken Sie auf das Symbol <img alt="Tabelle" src="../images/inserttable.png" /> <b>Tabelle</b>.</li>
+				<li>Wählen Sie die gewünschte Option für die Erstellung einer Tabelle:<ul>
+						<li><p>Tabelle mit einer vordefinierten Zellenanzahl (maximal 10 x 8 Zellen)</p>
+						<p>Wenn Sie schnell eine Tabelle erstellen möchten, wählen Sie einfach die Anzahl der Zeilen (maximal 8) und Spalten (maximal 10) aus.</p></li>
+						<li><p>Eine benutzerdefinierte Tabelle</p>
+						<p>Wenn Sie eine Tabelle mit mehr als 10 x 8 Zellen benötigen, wählen Sie die Option <b>Benutzerdefinierte Tabelle einfügen</b>. Geben Sie nun im geöffneten Fenster die gewünschte Anzahl der Zeilen und Spalten an und klicken Sie anschließend auf <b>OK</b>.</p></li>
+					</ul>
+				</li>
+				<li>Wenn Sie eine Tabelle eingefügt haben, können Sie Eigenschaften und Position verändern.</li>
+			</ol>
+			<p>Sie können die <a href="../UsageInstructions/ManipulateObjects.htm" onclick="onhyperlinkclick(this)">Position der Tabelle</a> auf der Folie bestimmen, indem Sie diese vertikal oder horizontal verschieben.</p>
+			<hr />
+            <h3>Tabelleneinstellungen anpassen</h3><img class="floatleft"alt="Registerkarte Tabelleneinstellungen" src="../images/tablesettingstab.png" /><p>Die meisten Tabelleneigenschaften sowie die Struktur, können Sie in der rechten Seitenleiste ändern. Um diese zu aktivieren, klicken Sie auf die Tabelle und wählen Sie rechts das Symbol <b>Tabelleneinstellungen</b> <img alt="Tabelleneinstellungen" src="../images/table_settings_icon.png" /> aus.</p>
+			<p>In den Abschnitten <b>Zeilen</b> und <b>Spalten</b>, haben Sie die Möglichkeit, bestimmte Zeilen/Spalten hervorzuheben, eine bestimmte Formatierung anzuwenden oder die Zeilen/Spalten in den verschiedenen Hintergrundfarben einzufärben, um sie klar zu unterscheiden. Folgende Auswahlmöglichkeiten stehen zur Verfügung:</p>
+			<ul style="margin-left: 280px;">
+				<li><b>Kopfzeile</b> - die erste Zeile der Tabelle wird durch eine bestimmte Formatierung hervorgehoben.</li>
+				<li><b>Ergebniszeile</b> - die letzte Zeile der Tabelle wird durch eine bestimmte Formatierung hervorgehoben.</li>
+				<li><b>Gebänderte Zeilen</b> - gerade und ungerade Zeilen werden unterschiedlich formatiert.</li>
+				<li><b>Erste Spalte</b> - die erste Spalte der Tabelle wird durch eine bestimmte Formatierung hervorgehoben.</li>
+				<li><b>Letzte Spalte</b> - die letzte Spalte der Tabelle wird durch eine bestimmte Formatierung hervorgehoben.</li>
+				<li><b>Gebänderte Spalten</b> - gerade und ungerade Spalten werden unterschiedlich formatiert.</li>
+			</ul>
+			<p>Im Abschnitt <b>Aus Vorlage wählen</b> können Sie einen vordefinierten Tabellenstil auswählen. Jede Vorlage kombiniert bestimmte Formatierungsparameter, wie Hintergrundfarbe, Rahmenstil, Zellen-/Spaltenformat usw. Abhängig von den in den Abschnitten <b>Zeilen</b> oder <b>Spalten</b> ausgewählten Optionen, werden die Vorlagen unterschiedlich dargestellt. Wenn Sie zum Beispiel die Option <b>Kopfzeile</b> im Abschnitt <b>Zeilen</b> und die Option <b>Gebänderte Spalten</b> im Abschnitt <b>Spalten</b> aktiviert haben, enthält die angezeigte Vorlagenliste nur Vorlagen mit Kopfzeile und gebänderten Spalten:</p>
+			<p><img alt="Vorlagenliste" src="../images/templateslist.png" /></p>
+			<p>Im Abschnitt <b>Rahmenstil</b> können Sie die angewandte Formatierung ändern, die der gewählten Vorlage entspricht. Sie können die ganze Tabelle auswählen oder einen bestimmten Zellenbereich, dessen Formatierung Sie ändern möchten, und alle Parameter manuell bestimmen.</p>
+			<ul>
+				<li><b>Rahmen</b> - legen Sie die Stärke des Rahmens in der Liste <img alt="Liste Rahmenstärke" src="../images/bordersize.png" /> fest (oder wählen Sie die Option <b>Kein Rahmen</b>) sowie den gewünschten Rahmenstil und wählen Sie die <b>Rahmenfarbe</b> aus den verfügbaren Paletten aus:<p><img alt="Liste Rahmenstil" src="../images/bordertype.png" /></p>
+				<p class="note"><b>Hinweis</b>: Wenn Sie eine Vorlage ohne Rahmen oder die Option <b>Ohne Rahmen</b> auswählen oder auf das Symbol <img alt="Ohne Rahmen" src="../images/noborders.png" /> klicken, werden die Rahmenlinien auf der Folie durch eine gepunktete Linie dargestellt.</p>
+				</li>
+				<li><b>Hintergrundfarbe</b> - wählen Sie eine Farbe für den Hintergrund innerhalb der ausgewählten Zellen.</li>
+			</ul>
+			<p>Im Abschnitt <b>Zeilen &amp; Spalten</b> <img alt="Zeilen &amp; Spalten" src="../images/rowsandcolumns.png" /> können Sie folgende Vorgänge durchzuführen:</p>
+			<ul>
+				<li><b>Auswählen</b> - eine Zeile, Spalte, Zelle (abhängig von der Cursorposition) oder die ganze Tabelle auswählen.</li>
+				<li><b>Einfügen</b> eine neue Zeile unter oder über der ausgewählten Zeile bzw. eine neue Spalte links oder rechts von der ausgewählten Spalte einfügen.</li>
+				<li><b>Löschen</b> eine Zeile, Spalte, Zelle (abhängig von der Cursorposition) oder die ganze Tabelle löschen.</li>
+				<li><b>Zellen verbinden</b> - die ausgewählten Zellen in einer Zelle zusammenführen.</li>
+				<li><b>Zelle teilen...</b> - die ausgewählte Zelle in mehrere Zellen oder Spalten teilen. Diese Option öffnet das folgende Fenster:<p><img alt="Fenster Zelle teilen" src="../images/split_cells.png" /></p>
+				<p>Geben Sie die gewünschte <b>Spaltenanzahl</b> und <b>Zeilenanzahl</b> für die Teilung der ausgewählten Zelle an und klicken Sie auf <b>OK</b>.</p>
+				</li>
+			</ul>
+			<p class="note"><b>Hinweis</b>: die Optionen im Abschnitt <b>Zeilen &amp; Spalten</b> sind auch über das <b>Rechtsklickmenü</b> zugänglich.</p>
+			<hr />
+			<p>Um die erweiterten Tabelleneigenschaften zu ändern, klicken Sie mit der rechten Maustaste auf die Tabelle und wählen Sie die Option <b>Tabelle - Erweiterte Eigenschaften</b> im Rechtsklickmenü oder klicken Sie auf den Link <b>Erweiterte Einstellungen anzeigen</b> in der rechten Seitenleiste. Das Fenster mit den Tabelleneigenschaften wird geöffnet:</p>
+			<p><img alt="Tabelleneigenschaften" src="../images/table_properties.png" /></p>
+			<p>Im Reiter <b>Seitenränder</b> können Sie den Abstand zwischen dem Text in den Zellen und dem Zellenrand festlegen:</p>
+			<ul>
+				<li>Geben Sie die gewünschten Werte für die <b>Zellenränder</b> manuell ein oder</li>
+				<li>aktivieren Sie das Kästchen <b>Standardränder nutzen</b>, um die voreingestellten Werte zu nutzen (auf Wunsch können diese angepasst werden).</li>
+			</ul>
+            <p><img alt="Tabelleneigenschaften" src="../images/table_properties1.png" /></p>
+            <p>Die Registerkarte <b>Alternativtext</b> ermöglicht die Eingabe eines <b>Titels</b> und einer <b>Beschreibung</b>, die Personen mit Sehbehinderungen oder kognitiven Beeinträchtigungen vorgelesen werden kann, damit sie besser verstehen können, welche Informationen in der Tabelle enthalten sind.</p>
+			<hr />
+			<p>Um den <b>eingegebenen Text</b> in den Zellen zu formatieren, nutzen Sie die <a href="../UsageInstructions/InsertText.htm#formatfont" onclick="onhyperlinkclick(this)">Symbole in der Registerkarte <b>Start</b> in der oberen Symbolleiste</a>. Im <b>Rechtsklickmenü</b> stehen Ihnen zwei zusätzliche Optionen zur Verfügung:</p>
+			<ul>
+			    <li><b>Textausrichtung in Zellen</b> - ermöglicht Ihnen den gewünschten Typ der vertikalen Textausrichtung in den gewählten Zellen festzulegen: <b>Oben ausrichten</b>, <b>Vertikal zentrieren</b> oder <b>Unten ausrichten</b>.</li>
+			    <li><b>Hyperlink</b> - einen Hyperlink in die ausgewählte Zelle einfügen.</li>
+			</ul>									
+		</div>
+	</body>
+</html>

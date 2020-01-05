@@ -1,0 +1,226 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Inserte gráfico</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add a chart to your spreadsheet and adjust its position, size and properties" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Inserte gráfico</h1>
+            <h3>Inserte un gráfico</h3>
+			<p>Para insertar un gráfico en una hoja de cálculo,</p>
+			<ol>
+				<li>Seleccione un rango de celdas que contiene datos que usted quiere usar en su gráfico,</li>
+                <li>cambie a la pestaña <b>Insertar</b> en la barra de herramientas superior,</li>
+				<li>Haga clic en el icono <b>Gráfico</b> <img alt="Icono Gráfico" src="../images/chart.png" /> en la barra de herramientas superior,</li>
+                <li>Seleccione el <b>Tipo</b> de gráfico que quiere insertar: Columna, Línea, Pastel, Barras, Áreas, XY (disperso), o Cotizaciones.<p class="note"><b>Nota</b>: para los gráficos de <b>Columnas</b>, <b>Líneas</b>, <b>Circular</b> o <b>Barras</b>, también está disponible un formato 3D.</p>
+                </li>
+            </ol>
+            <p>Después, la imagen se añadirá a su hoja de cálculo.</p>
+            <h3>Ajuste la configuración de gráficos</h3>
+            <p>Aquí usted puede cambiar los ajustes de gráfico siguientes: Para cambiar el tipo de gráfico,</p>
+            <ol>
+                <li>seleccione el gráfico con el ratón,</li>
+                <li>pulse el icono <b>Ajustes de gráfico</b> <img alt="Icono ajustes de gráfico" src="../images/chartsettingsicon.png" />  en la barra derecha lateral,<p><img alt="Ventana Ajustes de gráfico Panel derecho" src="../images/chartsettings.png" /></p>
+                </li>
+                <li>abra la lista desplegable de <b>Tipo</b> y seleccione el tipo que necesita:</li>
+                <li>abra la lista desplegable de  <b>Estilo</b> de abajo y seleccione el estilo que mejor le convenga.</li>
+            </ol>
+            <p>El tipo y estilo del gráfico seleccionado se cambiarán. Si necesita editar los datos usados para crear el gráfico,</p>
+            <ol>
+                <li>haga clic el enlace <b>Mostrar ajustes Avanzados</b> situado en el panel de la derecha, o elija la opción <b>Ajustes Avanzados de gráfico</b> del menú contextual, o haga clic doble en el gráfico,</li>
+                <li>en la ventana <b>Gráfico - ajustes avanzados</b> haga todos los cambios necesarios,</li>
+                <li>haga clic en el botón <b>OK</b> para confirmar sus cambios y cerrar la ventana.</li>
+            </ol>   
+            <p>Puede encontrar más abajo la descripción de los ajustes del gráfico que se pueden editar usando la ventana <b>Gráfico - ajustes avanzados</b>.</p>
+					<p>La pestaña <b>Tipo y datos</b> le permite seleccionar el tipo de gráfico, su estilo y también los datos.</p>
+						<ul>
+							<li>Cambie el <b>Tipo</b> del gráfico seleccionando una de las opciones disponibles: Columna, Línea, Pastel, Barras, Áreas, XY (disperso), o Cotizaciones.</li>
+							<li>Compruebe el <b>Rango de datos</b> y modifíquelo, si es necesario, pulsando el botón <b>Selección de datos</b> e introduciendo el rango de datos deseado en el formato siguiente: <em>Sheet1!A1:B4</em>.</li>
+							<li>Elija el modo de arreglar los datos. Puede seleccionar <b>Serie de datos</b> para el eje X: <b>en filas</b> o <b>en columnas</b>.</li> 
+						</ul>
+						<p><img alt="Gráfico - Ajustes avanzados" src="../images/chartwindow.png" /></p>
+
+						<p>La pestaña <b>Diseño</b> le permite cambiar el diseño de elementos del gráfico.</p>
+							<ul>
+								<li>Especifique la posición del <b>Título de gráfico</b> respecto a su gráfico seleccionando la opción necesaria en la lista desplegable:<ul>
+									<li><b>Ninguno</b> - si no quiere mostrar el título de gráfico,</li> 
+									<li><b>Superposición</b> - si quiere que el gráfico superponga el título,</li> 
+									<li><b>Sin superposición</b> - si quiere que el título se muestre arriba del gráfico.</li>
+									</ul></li>
+								<li>Especifique la posición de la <b>Leyenda</b> respecto a su gráfico seleccionando la opción necesaria en la lista desplegable:<ul>
+                                        <li><b>Ninguno</b> para no mostrar una leyenda,</li>
+                                        <li><b>Inferior</b> - si quiere que la leyenda se alinee en la parte inferior del área del gráfico,</li>
+                                        <li><b>Superior</b> - si quiere que la leyenda se alinee en la parte superior del área del gráfico,</li>
+                                        <li><b>Derecho</b> - si quiere que la leyenda se alinee en la parte derecha del área del gráfico,</li>
+                                        <li><b>Izquierdo</b> - si quiere que la leyenda se alinee en la parte izquierda del área del gráfico,</li>
+                                        <li><b>Superposición a la izquierda</b> - si quiere superponer y centrar la leyenda en la parte derecha del área del gráfico,</li>
+                                        <li><b>Superposición a la derecha</b> - si quiere superponer y centrar la leyenda en la parte izquierda del área del gráfico.</li>
+                                    </ul>
+								</li>
+								<li>Especifique si quiere mostrar o no el <b>Título de eje horizontal</b> seleccionando la opción correspondiente en la lista desplegable:<br /><ul>
+                                        <li><b>Ninguno</b> - si no quiere mostrar el título del eje horizontal, Las siguientes opciones varían dependiendo del tipo de gráfico seleccionado.<ul>
+                                                <li>Para los gráficos de <b>Columnas/Barras</b>, usted puede elegir las opciones siguientes: <b>Ninguno</b>, <b>Centrado</b>, <b>Interior Inferior</b>, <b>Interior Superior</b>, <b>Exterior Superior</b>.</li>
+                                                <li>Para los gráficos <b>Línea/ Puntos XY (Esparcido)/Cotizaciones</b>, puede seleccionar las siguientes opciones: <b>Ninguno</b>, <b>Centrado</b>, <b>Izquierda</b>, <b>Derecha</b>, <b>Superior</b>, <b>Inferior</b>.</li>
+                                                <li>Para los gráficos <b>Circulares</b>, puede elegir las siguientes opciones: <b>Ninguno</b>, <b>Centrado</b>, <b>Ajustar al ancho</b>, <b>Interior Superior</b>, <b>Exterior Superior</b>.</li>
+                                                <li>Para los gráfico <b>Área</b>, así como los gráficos <b>3D</b> <b>Columnas</b>, <b>Líneas</b> y <b>Barras</b>, puede elegir las siguientes opciones: <b>Ninguno</b>, <b>Centrado</b>.</li>
+                                            </ul>
+                                        </li>
+                                        <li>seleccione los datos que usted quiere añadir a sus etiquetas marcando las casillas correspondientes: <b>Nombre de serie</b>, <b>Nombre de categoría</b>, <b>Valor</b>,</li>									
+										<li>Introduzca un carácter (coma, punto y coma, etc.) que quiera usar para separar varias etiquetas en el campo de entrada <b>Separador de Etiquetas de Datos</b>.</li>
+									</ul>
+								</li>
+                                <li><b>Líneas</b> - se usa para elegir un estilo de línea para <b>gráficos de Línea/Punto XY (Esparcido)</b>. Usted puede seleccionar las opciones siguientes: <b>Recto</b> para usar líneas rectas entre puntos de datos, <b>Uniforme</b> para usar curvas uniformes entre puntos de datos, o <b>Nada</b> para no mostrar líneas.</li>
+                                <li><b>Marcadores</b> - se usa para especificar si los marcadores se deben mostrar (si la casilla se verifica) o no (si la casilla no se verifica) para <b>gráficos de Línea/Puntos XY (Esparcidos)</b>.<p class="note"><b>Nota</b>: las opciones de <b>Líneas</b> y <b>Marcadores</b> solo están disponibles para <b>gráficos de líneas</b> y <b>Puntos XY (Esparcidos)</b>.</p>
+                                </li>
+                                <li>La sección de <b>Ajustes del eje</b> permite especificar si desea mostrar <b>Ejes Horizontales/Verticales</b> o no, seleccionando la opción <b>Mostrar</b> o <b>Esconder</b> de la lista despegable. También puede especificar los parámetros <b>Título de Ejes Horizontal/Vertical</b>:<ul>
+                                        <li>Especifique si quiere mostrar o no el <b>Título de eje horizontal</b> seleccionando la opción correspondiente en la lista desplegable:<ul>
+                                                <li><b>Ninguno</b> - si no quiere mostrar el título del eje horizontal,</li>
+                                                <li><b>Sin superposición</b> - si quiere mostrar el título debajo del eje horizontal.</li>
+                                            </ul>
+                                        </li>
+                                        <li>Especifique la orientación del <b>Título de eje vertical</b> seleccionando la opción correspondiente en la lista desplegable:<ul>
+                                                <li><b>Ninguno</b> - si no quiere mostrar el título del eje vertical,</li>
+                                                <li><b>Girado</b> - si quiere que el título se muestre de arriba hacia abajo a la izquierda del eje vertical,</li>
+                                                <li><b>Horizontal</b> - si quiere que el título se muestre de abajo hacia arriba a la izquierda del eje vertical.</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>Elija la opción necesaria para <b>Líneas de cuadrícula horizontales/verticales</b> en la lista desplegable: <b>Principal</b>, <b>Menor</b>, o <b>Principal y menor</b>. También, usted puede ocultar las líneas cuadrículas usando la opción <b>Ninguno</b>.<p class="note"><b>Nota</b>: las secciones <b>Ajustes de ejes</b> y <b>Líneas de cuadrícula</b> estarán desactivadas para los <b>Gráficos circulares</b> porque los gráficos de este tipo no tienen ejes y líneas cuadrículas.</p>
+                                </li>
+							</ul>
+
+							<p><img alt="Gráfico-ajustes avanzados:" src="../images/chartwindow1.png" /></p>
+
+                    <p class="note"><b>Nota</b>: las pestañas <b>Eje vertical/horizontal</b> estarán desactivadas para <b>Gráficos circulares</b> porque los gráficos de este tipo no tienen ejes.</p>
+                    <p>La pestaña <b>Eje vertical</b> le permite cambiar los parámetros del eje vertical que también se llama eje de valor o eje y que muestra los valores numéricos. Tenga en cuenta que para los <b>Gráficos de barras</b> el eje vertical será el eje de categoría que muestra etiquetas de texto, y que más, en este caso las opciones de la pestaña <b>Eje vertical</b> corresponderán a unas descritas en la siguiente sección. Para los <b>gráficos de punto</b>, los dos ejes son los ejes de valor.</p>
+                    <ul>
+                        <li>La sección <b>Parámetros de eje</b> permite fijar los parámetros siguientes:<ul>
+                                <li><b>Valor mínimo</b> - se usa para especificar el valor mínimo en el comienzo del eje vertical. La opción <b>Auto</b> está seleccionada de manera predeterminada, en este caso el valor mínimo se calcula automáticamente en función del rango de celdas seleccionado. Usted puede seleccionar la opción <b>Corregido</b> en la lista desplegable y especificar un valor diferente en la entrada del campo a la derecha.</li>
+                                <li><b>Valor máximo</b> - se usa para especificar el valor máximo en el final de eje vertical. La opción <b>Auto</b> está seleccionada de manera predeterminada, en este caso el valor máximo se calcula automáticamente en función del rango de celdas seleccionado. Usted puede seleccionar la opción <b>Corregido</b> en la lista desplegable y especificar un valor diferente en la entrada del campo a la derecha.</li>
+                                <li><b>Intersección con eje</b> - se usa para especificar un punto en el eje vertical donde el eje horizontal lo debe cruzar. La opción <b>Auto</b> está seleccionada de manera predeterminada, en este caso el valor del punto de intersección de ejes se calcula automáticamente en función del rango de celdas seleccionado. Usted puede seleccionar la opción <b>Valor</b> en la lista desplegable y especificar un valor diferente en el campo a la derecha o fijar el <b>Valor máximo/mínimo</b> del punto de intersección de ejes en el eje vertical.</li>
+                                <li><b>Unidades de visualización</b> - se usa para determinar una representación de valores numéricos a lo largo del eje vertical. Esta opción puede servirle si usted trabaja con números grandes y quiere que los valores en el eje se muestren de modo más compacto y legible (por ejemplo el número 50 000 puede ser escrito como 50 usando la unidad de visualización <b>Miles</b>). Seleccione unidades deseadas en la lista desplegable: <b>Cientos</b>, <b>Miles</b>, <b>10 000</b>, <b>100 000</b>, <b>Millones</b>, <b>10 000 000</b>, <b>100 000 000</b>, <b>Miles de millones</b>, <b>Billones</b>, o seleccione la opción <b>Ninguno</b> para volver a las unidades por defecto.</li>
+                                <li><b>Valores en orden inverso</b> - se usa para mostrar valores en sentido contrario. Cuando la casilla está desactivada el valor mínimo está en la parte inferior y el valor máximo en la parte superior del eje. Cuando la casilla está activada, los valores se ordenan de la parte superior a la parte inferior.</li>
+                            </ul>
+                        </li>
+                        <li>La sección <b>Parámetros de marcas de graduación</b> permite ajustar la posición de marcas de graduación en el eje vertical. Las marcas de graduación principales son las divisiones más grandes de escala con las etiquetas que muestran valores numéricos. Las marcas de graduación menores son las subdivisiones de escala colocadas entre las marcas de graduación principales y no tienen etiquetas. Las marcas de graduación también definen donde pueden mostrarse las líneas de graduación, si la opción correspondiente está elejida en la pestaña <b>Diseño</b>. En las listas desplegables <b>Tipo principal/menor</b> usted puede seleccionar las opciones de disposición siguientes:<ul>
+                                <li><b>Ninguno</b> - si no quiere que se muestren las marcas de graduación principales/menores,</li>
+                                <li><b>Intersección</b> - si quiere mostrar las marcas de graduación principales/menores en ambas partes del eje,</li>
+                                <li><b>Dentro</b> - si quiere mostrar las marcas de graduación principales/menores dentro del eje,</li>
+                                <li><b>Fuera</b> - si quiere mostrar las marcas de graduación principales/menores fuera del eje.</li>
+                            </ul>
+                        </li>
+                        <li>La sección <b>Parámetros de etiqueta</b> permite ajustar la posición de marcas de graduación principales que muestran valores. Para especificar <b>Posición de etiqueta</b> respecto al eje vertical, seleccione la opción necesaria en la lista desplegable:<ul>
+                                <li><b>Ninguno</b> - si no quiere que se muestren etiquetas de las marcas de graduación,</li>
+                                <li><b>Bajo</b> - si quiere que etiquetas de las marcas de graduación se muestren a la izquierda del gráfico,</li>
+                                <li><b>Alto</b> - si quiere que etiquetas de las marcas de graduación se muestren a la derecha del gráfico,</li>
+                                <li><b>Al lado de eje</b> - si quiere que etiquetas de las marcas de graduación se muestren al lado del eje.</li>
+                            </ul>
+                        </li>
+                    </ul>
+							<p><img alt="Gráfico-Ajustes avanzados:" src="../images/chartwindow2.png" /></p>
+						
+                    <p>La pestaña <b>Eje horizontal</b> le permite cambiar los parámetros del eje horizontal que también se llama el eje de categorías o el eje x que muestra etiquetas de texto. Tenga en cuenta que para el eje horizontal sea el valor del eje que muestra valores numéricos para el <b>Gráfico de barras</b>, y que más en este caso las opciones de la pestaña <b>Eje horizontal</b> corresponderán a unas descritas en la sección anterior. Para los <b>gráficos de punto XY (esparcido)</b>, los dos ejes son los ejes de valor.</p>
+                    <ul>
+                        <li>La sección <b>Parámetros de eje</b> permite fijar los parámetros siguientes:<ul>
+                                <li><b>Intersección con eje</b> - se usa para especificar un punto en el eje horizontal donde el eje vertical lo debe cruzar. La opción <b>Auto</b> está seleccionada de manera predeterminada, en este caso el valor del punto de intersección de ejes se calcula automáticamente en función del rango de celdas seleccionado. Usted puede seleccionar la opción <b>Valor</b> en la lista desplegable y especificar un valor diferente en el campo a la derecha o fijar el <b>Valor máximo/mínimo</b> (que corresponde a la primera y última categoría) del punto de intersección de ejes en el eje horizontal.</li>
+                                <li><b>Posición de eje</b> - se usa para especificar donde las etiquetas de texto del eje deben colocarse: <b>Marcas de graduación</b> o <b>Entre marcas de graduación</b>.</li>
+                                <li><b>Valores en orden inverso</b> - se usa para mostrar valores en sentido contrario. Cuando la casilla está desactivada las categorías se muestran de izquierda a derecha. Cuando la casilla está activada, las categorías se ordenan de derecha a izquierda.</li>
+                            </ul>
+                        </li>
+                        <li>La sección <b>Parámetros de marcas de graduación</b> permite ajustar la posición de las marcas de graduación en el eje horizontal. Las marcas de graduación principales son las divisiones más grandes de escala con las etiquetas que muestran valores numéricos. Las marcas de graduación menores son las subdivisiones de escala colocadas entre las marcas de graduación principales y no tienen etiquetas. Las marcas de graduación también definen donde pueden mostrarse las líneas de graduación, si la opción correspondiente está elejida en la pestaña <b>Diseño</b>. Usted puede ajustar los parámetros de marcas de graduación siguientes:<ul>
+                                <li><b>Tipo principal/menor</b> - se usa para especificar las opciones de disposición siguientes: <b>Ninguno</b> - si no quiere que se muestren marcas de graduación principales/menores, <b>Intersección</b> - si quiere mostrar marcas de graduación principales/menores en ambas partes del eje, <b>Dentro</b> - si quiere mostrar las marcas de graduación principales/menores dentro del eje, <b>Fuera</b> - si quiere mostrar las marcas de graduación principales/menores fuera del eje.</li>
+                                <li><b>Intervalo entre marcas</b> - se usa para especificar cuantas categorías deben mostrarse entre dos marcas de graduación vecinas.</li>
+                            </ul>
+                        </li>
+                        <li>La sección <b>Parámetros de etiqueta</b> permite ajustar posición de etiquetas que muestran categorías.<ul>
+                                <li><b>Posición de etiqueta</b> - se usa para especificar donde las etiquetas deben colocarse respecto al eje horizontal. Seleccione la opción necesaria en la lista desplegable: <b>Ninguno</b> - si no quiere que se muestren las etiquetas de categorías, <b>Bajo</b> - si quiere mostrar las etiquetas de categorías debajo del gráfico, <b>Alto</b> - si quiere mostrar las etiquetas de categorías arriba del gráfico, <b>Al lado de eje</b> - si quiere mostrar las etiquetas de categorías al lado de eje.</li>
+                                <li><b>Distancia entre eje y etiqueta</b> - se usa para especificar la distancia entre el eje y una etiqueta. Usted puede especificar el valor necesario en el campo correspondiente. Cuanto más valor esté fijado, mas será la distancia entre el eje y etiquetas.</li>
+                                <li><b>Intervalo entre etiquetas</b> - se usa para especificar con que frecuencia deben colocarse las etiquetas. La opción <b>Auto</b> está seleccionada de manera predeterminada, en este caso las etiquetas se muestran para cada categoría. Usted puede seleccionar la opción <b>Manualmente</b> en la lista desplegable y especificar el valor necesario en el campo correspondiente a la derecha. Por ejemplo, introduzca 2 para mostrar etiquetas para cada segunda categoría.</li>
+                            </ul>
+                        </li>
+                    </ul>
+					<p><img alt="Gráfico - Ajustes Avanzados:" src="../images/chartwindow3.png" /></p>
+            <p>La pestaña de <b>Texto Alternativo</b> permite especificar un <b>Título</b> y <b>Descripción</b> que se leerán a las personas con problemas de visión o cognitivos para ayudarles a entender mejor la información del gráfico.</p>
+            <p><img alt="Gráfico-Ajustes avanzados:" src="../images/chartwindow4.png" /></p>
+            				
+            <h3>Editar elementos del gráfico</h3>
+            <p>Para editar el <b>Título</b> del gráfico, seleccione el texto predeterminado con el ratón y escriba el suyo propio en su lugar.</p>
+            <p>Para cambiar el formato del tipo de letra de texto dentro de elementos, como el título del gráfico, títulos de ejes, leyendas, etiquetas de datos etc, seleccione los elementos del texto apropiados haciendo clic izquierdo en estos. Luego use los iconos en la pestaña de <b>Inicio</b> en la barra de herramientas superior para cambiar el <a href="../UsageInstructions/FontTypeSizeStyle.htm" onclick="onhyperlinkclick(this)">tipo, estilo, tamano o color</a> de la letra.</p>
+            <p>Para borrar un elemento del gráfico, púlselo haciendo clic izquierdo y haga clic en la tecla <b>Borrar</b> en su teclado.</p>
+            <p>También puede rotar gráficos 3D usando el ratón. Haga clic izquierdo en el área del gráfico y mantenga el botón del ratón presionado. Arrastre el cursor sin soltar el botón del ratón para cambiar la orientación del gráfico en 3D.</p>
+            <p><img alt="Gráfico 3D" src="../images/3dchart.png" /></p>
+            <p>Una vez seleccionado el gráfico, el icono <b>Ajustes de forma</b> <img alt="Icono Ajustes de forma" src="../images/shape_settings_icon.png" /> está disponible a la derecha, porque la forma se usa como el fondo para el gráfico. Usted puede pulsar este icono para abrir la pestaña <a href="InsertAutoshapes.htm" onclick="onhyperlinkclick(this)">Ajustes de forma</a> en la barra lateral derecha y ajustar <b>Relleno</b> y <b>Trazo</b> de la forma. Note por favor, que usted no puede cambiar el tipo de forma.</p>
+            <p>Si es necesario, puede <a href="ManipulateObjects.htm" onclick="onhyperlinkclick(this)">cambiar la posición y tamaño del gráfico</a>.</p>
+            <p>Para borrar el gráfico insertado, haga clic en este y pulse la tecla <b>Delete</b>.</p>
+            
+            <h3>Editar Sparklines</h3>
+            <p>Las sparklines son gráficos pequeños que caben en una celda. Las Sparklines se pueden usar si quiere visualizar información representada para cada fila o columna en conjuntos de datos grandes. Esto hace más fácil mostrar tendencias en un conjunto de varios datos.</p>
+            <p>Si su hoja de cálculo contiene sparklines existentes creados usando otra aplicación, puede cambiar las propiedades de la sparkline. Para hacer esto, seleccione la celda que contiene la sparkline con el ratón y pulse el icono <b>Ajustes de gráfico</b> <img alt="Icono ajustes de gráfico" src="../images/chartsettingsicon.png" /> en la barra derecha lateral, Si la sparkline seleccionada se incluye en un grupo de sparkline, los cambios se pueden aplicar a todas las sparklines en el grupo.</p>
+            <p><img alt="Ventana Ajustes de gráfico Panel derecho" src="../images/right_sparkline.png" /></p>
+            <ul>
+                <li>Use la lista despegable <b>Tipo</b> para seleccionar uno de los tipos de sparkline disponibles:<ul>
+                    <li><b>Columna</b> - este tipo es similar a un <b>Gráfico de columna</b> regular.</li>
+                    <li><b>Linear</b> - este tipo es similar a un <b>Gráfico de columna</b> regular.</li>
+                    <li><b>Ganar/perder</b> - este tipo se usa para representar datos que incluyen tanto valores positivos como negativos.</li>
+                </ul>
+                </li>
+                <li>En la sección de <b>Estilo</b>, puede hacer lo siguiente:<ul>
+                    <li>seleccione el estilo que mejor le convenga de la lista despegable <b>Plantilla</b>.</li>
+                    <li>elija el <b>Color</b> necesario para la sparkline.</li>
+                    <li>elija la <b>Línea de trazo</b> necesaria (disponible solo para el tipo <b>Linear</b>).</li>
+                </ul>
+                </li>
+                <li>La sección <b>Mostrar</b> permite seleccionar qué elementos de la sparkline quiere remarcar para hacerlos más visibles. Verifique la casilla a la izquierda del elemento para remarcarlo y seleccione el color necesario haciendo clic en el cuadro de color:<ul>
+                    <li><b>Punto Alto</b> - para destacar puntos que representan valor mínimos,</li>
+                    <li><b>Punto Bajo</b> - para destacar puntos que representan valor mínimos,</li>
+                    <li><b>Punto Negativo</b> - para destacar puntos que representan valores negativos,</li>
+                    <li><b>Primer/Último Punto</b> - para destacar el punto que representa el valor primero/último,</li>
+                    <li><b>Marcadores</b> (disponible solo en el tipo <b>Linear</b>) - para destacar todos los valores.</li>
+                </ul>
+                </li>
+            </ul>
+            <p>Haga clic en el enlace <b>Mostrar ajustes avanzados</b> situado a la derecha del panel lateral para abrir la ventana <b> Ajustes Avanzados de Sparkline</b>.</p>
+            <p><img alt="Ventana Ajustes Avanzados de Sparkline" src="../images/sparklinewindow.png" /></p>
+            <p>La pestaña <b>Tipo y datos</b> le permite cambiar el <b>Tipo</b> y <b>Estilo</b> de sparklines así como especificar los ajustes de visualización <b>Celdas ocultas y vacías</b>:</p>
+            <ul>
+                <li><b>Mostrar celdas vacías como</b> - esta opción permite controlar la forma en la que sparklines se muestran si algunas celdas en un rango de datos están vacías. Seleccione la opción necesaria de la lista:<ul>
+                    <li><b>Brechas</b> - para mostrar la sparkline con brechas en lugar de los datos que faltan,</li>
+                    <li><b>Cero</b> - para mostrar las sparklines como si el valor en una celda vacía fuera cero,</li>
+                    <li><b>Conectar puntos de dato con líneas</b> (disponible solo para el tipo <b>Linear</b>) - para ignorar celdas vacías y mostrar una línea conectada con los puntos de datos.</li>
+                </ul>
+                </li>
+                <li><b>Mostrar datos en filas y columnas ocultas</b> - verifique esta casilla si queire incluir valores de las celdas ocultas en sparklines.</li>
+            </ul>
+            <p><img alt="Ventana Ajustes Avanzados de Sparkline" src="../images/sparklinewindow2.png" /></p>
+            <p>La pestaña de <b>Opciones de Eje</b> le permite especificar los siguientes parámetros de <b>Eje</b>:</p>
+            <ul>
+                <li>En la sección de <b>Eje Horizontal</b>, los siguientes parámetros están disponibles:<ul>
+                        <li><b>Mostrar Eje</b> - verifique esta casilla para mostrar los ejes horizontales. Si los datos de origen contienen valores negativos, esta opción le ayuda a mostrarlos de forma más vívida.</li>
+                        <li><b>Orden Inverso</b> - verifique esta casilla para mostrar datos en una secuencia inversa.</li>
+                    </ul>
+                </li>
+                <li>En la sección de <b>Eje Vertical</b>, los siguientes parámetros están disponibles:<ul>
+                        <li><b>Valor Mínimo/Máximo</b><ul>
+                            <li><b>Auto para cada uno/a</b> - esta opción se selecciona por defecto. Permite usar los valores mínimo/máximo para cada sparkline. Los valores mínimo/máximo se toman de la serie de datos separado que se usan para trazar cada sparkline. el valor máximo para cada sparkline se pondrá arriba de la celda, y el valor mínimo estará abajo.<p><img alt="Auto para cada uno/a" src="../images/autoforeach.png" /></p>
+                            </li>
+                            <li><b>Mismo para todo</b> - esta opción permite usar el mismo valor máximo/mínimo para el grupo entero de sparkline. Los valores mínimo/máximo se toman de la serie de datos separado que se usan para trazar el grupo de sparkline. Los valores máximo/mínimo de cada sparkline se nivelan en relación con el valor más alto/más bajo dentro del rango. si selecciona esta opción, será más fácil comparar varios sparklines.<p><img alt="Mismo para todo" src="../images/sameforall.png" /></p>
+                            </li>
+                            <li><b>Fijado</b> - esta opción permite establecer un valor mínimo/máximo personalizado. Los valores que son más bajos o más altos de los especificados no se muestran en las sparklines.</li>
+                        </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            
+		</div>
+	</body>
+</html>

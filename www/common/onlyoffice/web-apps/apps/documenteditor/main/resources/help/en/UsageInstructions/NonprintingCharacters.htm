@@ -5,12 +5,17 @@
 		<meta charset="utf-8" />
 		<meta name="description" content="Show or hide nonprinting characters while formatting text, creating tables, and editing documents" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
 			<h1>Show/hide nonprinting characters</h1>
 			<p>Nonprinting characters help you edit a document. They indicate the presence of various types of formatting, but they do not print with the document, even when they are displayed on the screen.</p>
-			<p>To show or hide nonprinting characters, click the <b>Nonprinting Characters</b> <img alt="Nonprinting Characters" src="../images/nonprintingcharacters.png" /> icon at the top toolbar.</p>
+			<p>To show or hide nonprinting characters, click the <b>Nonprinting characters</b> <img alt="Nonprinting characters" src="../images/nonprintingcharacters.png" /> icon at the <b>Home</b> tab of the top toolbar. Alternatively, you can use the <em>Ctrl+Shift+Num8</em> key combination.</p>
 			<p>Nonprinting characters include:</p>
 			<table>
 				<tr>
@@ -41,17 +46,17 @@
 				<tr>
 					<td>Page breaks</td>
 					<td><img alt="Page break" src="../images/pagebreak.png" /></td>
-					<td>Inserted when you use the <b>Insert Page or Section Break</b> <img alt="Insert Page or Section Break" src="../images/pagebreak1.png" /> icon at the top toolbar and then select the <b>Insert Page Break</b> option, or select the <b>Page break before</b> option in the right-click menu or advanced settings window.</td>
+					<td>Inserted when you use the <img alt="Breaks icon" src="../images/pagebreak1.png" /> <b>Breaks</b> icon at the <b>Insert</b> or <b>Layout</b> tab of the top toolbar and then select the <b>Insert Page Break</b> option, or select the <b>Page break before</b> option in the right-click menu or advanced settings window.</td>
 				</tr>
 				<tr>
 					<td>Section breaks</td>
 					<td><img alt="Section break" src="../images/sectionbreak.png" /></td>
-					<td>Inserted when you use the <b>Insert Page or Section Break</b> <img alt="Insert Page or Section Break" src="../images/pagebreak1.png" /> icon at the top toolbar and then select one of the <b>Insert Section Break</b> submenu options (the section break indicator differs depending on which option is selected: Next Page, Continuous Page, Even Page or Odd Page).</td>
+					<td>Inserted when you use the <img alt="Breaks icon" src="../images/pagebreak1.png" /> <b>Breaks</b> icon at the <b>Insert</b> or <b>Layout</b> tab of the top toolbar and then select one of the <b>Insert Section Break</b> submenu options (the section break indicator differs depending on which option is selected: Next Page, Continuous Page, Even Page or Odd Page).</td>
 				</tr>
                 <tr>
                     <td>Column breaks</td>
                     <td><img alt="Column break" src="../images/columnbreak.png" /></td>
-                    <td>Inserted when you use the <b>Insert Page or Section Break</b> <img alt="Insert Page or Section Break" src="../images/pagebreak1.png" /> icon at the top toolbar and then select the <b>Insert Column Break</b> option.</td>
+                    <td>Inserted when you use the <img alt="Breaks icon" src="../images/pagebreak1.png" /> <b>Breaks</b> icon at the <b>Insert</b> or <b>Layout</b> tab of the top toolbar and then select the <b>Insert Column Break</b> option.</td>
                 </tr>
 				<tr>
 					<td>End-of-cell and end-of row markers in tables</td>

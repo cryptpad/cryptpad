@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insérer des équations</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Insert equations and mathematical symbols." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insérer des équations</h1>
+            <p><b>Document Editor</b> vous permet de créer des équations à l'aide des modèles intégrés, de les modifier, d'insérer des caractères spéciaux (à savoir des opérateurs mathématiques, des lettres grecques, des accents, etc.).</p>
+            <h3>Ajouter une nouvelle équation</h3>
+            <p>Pour insérer une équation depuis la galerie,</p>
+			<ol>
+				<li>placez le curseur à l'intérieur de la ligne choisie,</li>
+                <li>passez à l'onglet <b>Insérer</b> de la barre d'outils supérieure,</li>
+				<li>cliquez sur la flèche vers le bas à côté de l'icône <img alt="icône Équation" src="../images/insertequationicon.png" /> <b>Équation</b> sur la barre d'outils supérieure,</li>
+				<li>sélectionnez la catégorie d'équation souhaitée dans la liste déroulante : Les catégories suivantes sont actuellement disponibles : <em>Symboles</em>, <em>Fractions</em>, <em>Scripts</em>, <em>Radicaux</em>, <em>Intégrales</em>, <em>Grands opérateurs</em>, <em>Crochets</em>, <em>Fonctions</em>, <em>Accentuations</em>, <em>Limites et logarithmes</em>, <em>Opérateurs</em>, <em>Matrices</em>,</li>
+                <li>cliquez sur le symbole/l'équation voulu(e) dans l'ensemble de modèles correspondant.</li>
+			</ol>
+            <p>La boîte de symbole/équation sélectionnée sera insérée à la position du curseur. Si la ligne sélectionnée est vide, l'équation sera centrée. Pour aligner une telle équation à gauche ou à droite, cliquez sur la boîte d'équation et utilisez l'icône <img alt="icône Aligner à gauche" src="../images/alignleft.png" /> ou <img alt="icône Aligner à droite" src="../images/alignright.png" /> dans l'onglet <b>Accueil</b> de la barre d'outils supérieure.</p><img alt="Équation Insérée" src="../images/insertedequation.png" /><p>Chaque modèle d'équation comporte un ensemble d'emplacements. Un emplacement est une position pour chaque élément qui compose l'équation. Un emplacement vide (également appelé un espace réservé) a un contour en pointillé <img alt="Espace Réservé" src="../images/equationplaceholder.png" />. Vous devez remplir tous les espaces réservés en spécifiant les valeurs nécessaires.</p>
+            <p class="note"><b>Remarque</b> : pour commencer à créer une équation, vous pouvez également utiliser le raccourci clavier <b>Alt + =</b>.</p>
+            <h3>Entrer des valeurs</h3>
+            <p>Le <b>point d'insertion</b> spécifie où le prochain caractère que vous entrez apparaîtra. Pour positionner le point d'insertion avec précision, cliquez dans un espace réservé et utilisez les flèches du clavier pour déplacer le point d'insertion d'un caractère vers la gauche/la droite ou d'une ligne vers le haut/bas.</p>
+            <p>Si vous devez créer un espace réservé sous l'emplacement avec le point d'insertion dans le modèle sélectionné, appuyez sur <b>Entrée</b>.</p><img alt="Équation éditée" src="../images/newslot.png" /><p>Une fois le point d'insertion positionné, vous pouvez remplir l'espace réservé :<ul>
+                <li>entrez la valeur numérique/littérale souhaitée à l'aide du clavier,</li>
+                <li>insérer un caractère spécial à l'aide de la palette <b>Symboles</b> dans le menu <img alt="icône Équation" src="../images/insertequationicon.png" /> <b>Équation</b> de l'onglet <b>Insertion</b> de la barre d'outils supérieure,</li>
+                <li>ajoutez un autre modèle d'équation à partir de la palette pour créer une équation imbriquée complexe. La taille de l'équation primaire sera automatiquement ajustée pour s'adapter à son contenu. La taille des éléments de l'équation imbriquée dépend de la taille de l'espace réservé de l'équation primaire, mais elle ne peut pas être inférieure à la taille de sous-indice.</li>                
+            </ul>
+            </p>
+            <p><img alt="Équation éditée" src="../images/nestedfraction.png" /></p>
+            <p>Pour ajouter de nouveaux éléments d'équation, vous pouvez également utiliser les <b>options du menu contextuel</b> :</p>
+            <ul>
+                <li>Pour ajouter un nouvel argument avant ou après celui existant dans les <em>Crochets</em>, vous pouvez cliquer avec le bouton droit sur l'argument existant et sélectionner l'option <b>Insérer un argument avant/après</b> dans le menu.</li>
+                <li>Pour ajouter une nouvelle équation dans les <em>Cas</em> avec plusieurs conditions du groupe <em>Crochets</em> (ou des équations d'autres types, si vous avez déjà ajouté de nouveaux espaces en appuyant sur <b>Entrée</b>), vous pouvez cliquer avec le bouton droit de la souris sur un espace réservé vide ou une équation entrée et sélectionner l'option <b>Insérer une équation avant/après</b> dans le menu.</li>
+                <li>Pour ajouter une nouvelle ligne ou une colonne dans une <em>Matrice</em>, vous pouvez cliquer avec le bouton droit de la souris sur un espace réservé, sélectionner l'option <b>Insérer</b> dans le menu, puis sélectionner <b>Ligne au-dessus/en dessous</b> ou <b>Colonne à gauche/à droite</b>.</li>
+            </ul>
+            <p class="note"><b>Remarque</b> : actuellement, les équations ne peuvent pas être entrées en utilisant le format linéaire, c'est-à-dire <b>\sqrt(4&amp;x^3)</b>.</p>
+            <p>Lorsque vous entrez les valeurs des expressions mathématiques, vous n'avez pas besoin d'utiliser la <b>Barre d'espace</b> car les espaces entre les caractères et les signes des opérations sont définis automatiquement.</p>
+            <p>Si l'équation est trop longue et ne tient pas en une seule ligne, le saut de ligne automatique se produit pendant que vous tapez. Vous pouvez également insérer un saut de ligne à une position spécifique en cliquant avec le bouton droit sur un opérateur mathématique et en sélectionnant l'option <b>Insérer un saut manuel</b> dans le menu. L'opérateur sélectionné va commencer une nouvelle ligne. Une fois le saut de ligne manuel ajouté, vous pouvez appuyer sur la touche <b>Tab</b> pour aligner la nouvelle ligne avec n'importe quel opérateur mathématique de la ligne précédente. Pour supprimer le saut de ligne manuel ajouté, cliquez avec le bouton droit sur l'opérateur mathématique qui commence une nouvelle ligne et sélectionnez l'option <b>Supprimer un saut manuel</b>.</p>
+            <h3>Mise en forme des équations</h3>
+            <p>Pour augmenter ou diminuer la <b>taille de la police</b> d'équation, cliquez n'importe où dans la boîte d'équation et utilisez les boutons <img alt="Incrémenter la taille de la police" src="../images/larger.png" /> et <img alt="Décrémenter la taille de la police" src="../images/smaller.png" /> de l'onglet <b>Accueil</b> de la barre d'outils supérieure ou sélectionnez la taille de police nécessaire dans la liste. Tous les éléments d'équation changeront en conséquence.</p>
+            <p>Les lettres de l'équation sont en italique par défaut. Si nécessaire, vous pouvez changer le <b>style de police</b> (<em>gras, italique, barré</em>) ou la <b>couleur</b> pour une équation entière ou une portion. Le style <em>souligné</em> peut être appliqué uniquement à l'équation entière et non aux caractères individuels. Sélectionnez la partie de l'équation voulue en cliquant et en faisant glisser. La partie sélectionnée sera surlignée en bleu. Utilisez ensuite les boutons nécessaires dans l'onglet <b>Accueil</b> de la barre d'outils supérieure pour formater la sélection. Par exemple, vous pouvez supprimer le format italique pour les mots ordinaires qui ne sont pas des variables ou des constantes.</p><img alt="Équation éditée" src="../images/formatastext.png" /><p>Pour modifier certains éléments d'équation, vous pouvez également utiliser les <b>options du menu contextuel</b> :</p>
+            <ul><li>Pour modifier le format des <em>Fractions</em>, vous pouvez cliquer sur une fraction avec le bouton droit de la souris et sélectionner l'option <b>Changer en fraction en biais/linéaire/empilée</b> dans le menu (les options disponibles varient en fonction du type de fraction sélectionné). <!--The <b>Remove/Add fraction bar</b> option is also available for stacked fractions.--></li>
+                <li>Pour modifier la position des <em>Scripts</em> par rapport au texte, vous pouvez faire un clic droit sur l'équation contenant des scripts et sélectionner l'option <b>Scripts avant/après le texte</b> dans le menu.</li>
+                <li>Pour modifier la taille des arguments pour <em>Scripts, Radicaux, Intégrales, Grands opérateurs, Limites et Logarithmes, Opérateurs</em> ainsi que pour les accolades supérieures/inférieures et les Modèles avec des caractères de regroupement du groupe <em>Accentuations</em>, vous pouvez cliquer avec le bouton droit sur l'argument que vous souhaitez modifier. sélectionnez l'option <b>Augmenter/Diminuer la taille de l'argument</b> dans le menu.</li>
+                <li>Pour spécifier si un espace libre vide doit être affiché ou non pour un <em>Radical</em>, vous pouvez cliquer avec le bouton droit de la souris sur le radical et sélectionner l'option <b>Masquer/Afficher le degré</b> dans le menu.</li>
+                <li>Pour spécifier si un espace réservé de limite vide doit être affiché ou non pour une <em>Intégrale</em> ou un <em>Grand opérateur</em>, vous pouvez cliquer sur l'équation avec le bouton droit de la souris et sélectionner l'option <b>Masquer/Afficher la limite supérieure/inférieure</b> dans le menu.</li>
+                <li>Pour modifier la position des limites relative au signe d'intégrale ou d'opérateur pour les <em>Intégrales</em> ou les <em>Grands opérateurs</em>, vous pouvez cliquer avec le bouton droit sur l'équation et sélectionner l'option <b>Modifier l'emplacement des limites</b> dans le menu. Les limites peuvent être affichées à droite du signe de l'opérateur (sous forme d'indices et d'exposants) ou directement au-dessus et au-dessous du signe de l'opérateur.</li>
+                <li>Pour modifier la position des limites par rapport au texte des <em>Limites et des Logarithmes</em> et des modèles avec des caractères de regroupement du groupe <em>Accentuations</em>, vous pouvez cliquer avec le bouton droit sur l'équation et sélectionner l'option <b>Limites sur/sous le texte</b> dans le menu.</li>
+                <li>Pour choisir lequel des <em>Crochets</em> doit être affiché, vous pouvez cliquer avec le bouton droit de la souris sur l'expression qui s'y trouve et sélectionner l'option <b>Masquer/Afficher les parenthèses ouvrantes/fermantes</b> dans le menu.</li>
+                <li>Pour contrôler la taille des <em>Crochets</em>, vous pouvez cliquer avec le bouton droit sur l'expression qui s'y trouve. L'option <b>Étirer les parenthèses</b> est sélectionnée par défaut afin que les parenthèses puissent croître en fonction de l'expression qu'elles contiennent, mais vous pouvez désélectionner cette option pour empêcher l'étirement des parenthèses. Lorsque cette option est activée, vous pouvez également utiliser l'option <b>Faire correspondre les crochets à la hauteur de l'argument</b>.</li>
+                <li>Pour modifier la position du caractère par rapport au texte des accolades ou des barres supérieures/inférieures du groupe <em>Accentuations</em>, vous pouvez cliquer avec le bouton droit sur le modèle et sélectionner l'option <b>Caractère/Barre sur/sous le texte</b> dans le menu.</li>
+                <li>Pour choisir les bordures à afficher pour une <em>Formule encadrée</em> du groupe <em>Accentuations</em>, vous pouvez cliquer sur l'équation avec le bouton droit de la souris et sélectionner l'option <b>Propriétés de bordure</b> dans le menu, puis sélectionner <b>Masquer/Afficher bordure supérieure/inférieure/gauche/droite</b> ou <b>Ajouter/Masquer ligne horizontale/verticale/diagonale</b>.</li>
+                <li>Pour spécifier si un espace réservé vide doit être affiché ou non pour une <em>Matrice</em>, vous pouvez cliquer avec le bouton droit de la souris sur le radical et sélectionner l'option <b>Masquer/Afficher l'espace réservé</b> dans le menu.</li>
+            </ul>
+            <p>Pour aligner certains éléments d'équation, vous pouvez utiliser les <b>options du menu contextuel</b> :</p>
+            <ul>
+                <li>Pour aligner des équations dans les <em>Cas</em> avec plusieurs conditions du groupe <em>Crochets</em> (ou des équations d'autres types, si vous avez déjà ajouté de nouveaux espaces en appuyant sur <b>Entrée</b>), vous pouvez cliquer avec le bouton droit de la souris sur une équation, sélectionner l'option <b>Alignement</b> dans le menu, puis sélectionnez le type d'alignement : <b>Haut</b>, <b>Centre</b> ou <b>Bas</b></li>
+                <li>Pour aligner une <em>Matrice</em> verticalement, vous pouvez cliquer avec le bouton droit sur la matrice, sélectionner l'option <b>Alignement de Matrice</b> dans le menu, puis sélectionner le type d'alignement : <b>Haut</b>, <b>Centre</b> ou <b>Bas</b></li>
+                <li>Pour aligner les éléments d'une colonne <em>Matrice</em> horizontalement, vous pouvez cliquer avec le bouton droit sur la colonne, sélectionner l'option <b>Alignement de Colonne</b> dans le menu, puis sélectionner le type d'alignement : <b>Gauche</b>, <b>Centre</b> ou <b>Droite</b>.</li>
+            </ul>
+            <h3>Supprimer les éléments d'une équation</h3>
+            <p>Pour supprimer une partie de l'équation, sélectionnez la partie que vous souhaitez supprimer en faisant glisser la souris ou en maintenant la touche <b>Maj</b> enfoncée et en utilisant les boutons fléchés, puis appuyez sur la touche <b>Suppr</b> du clavier.</p>
+            <p>Un emplacement ne peut être supprimé qu'avec le modèle auquel il appartient.</p>
+            <p>Pour supprimer toute l'équation, sélectionnez-la complètement en faisant glisser la souris ou en double-cliquant sur la boîte d'équation et en appuyant sur la touche <b>Suppr</b> du clavier.</p><img alt="Supprimer l'équation" src="../images/deleteequation.png" /><p>Pour supprimer certains éléments d'équation, vous pouvez également utiliser les <b>options du menu contextuel</b> :</p>
+            <ul>
+                <li>Pour supprimer un <em>Radical</em>, vous pouvez faire un clic droit dessus et sélectionner l'option <b>Supprimer radical</b> dans le menu.</li>
+                <li>Pour supprimer un <em>Indice</em> et/ou un <em>Exposant</em>, vous pouvez cliquer avec le bouton droit sur l'expression qui les contient et sélectionner l'option <b>Supprimer indice/exposant</b> dans le menu. Si l'expression contient des scripts qui  viennent avant le texte, l'option <b>Supprimer les scripts</b> est disponible.</li>
+                <li>Pour supprimer des <em>Crochets</em>, vous pouvez cliquer avec le bouton droit de la souris sur l'expression qu'ils contiennent et sélectionner l'option <b>Supprimer les caractères englobants</b> ou <b>Supprimer les caractères et séparateurs englobants</b> dans le menu.</li>
+                <li>Si l'expression contenue dans les <em>Crochets</em> comprend plus d'un argument, vous pouvez cliquer avec le bouton droit de la souris sur l'argument que vous voulez supprimer et sélectionner l'option <b>Supprimer l'argument</b> dans le menu.</li>
+                <li>Si les <em>Crochets</em> contiennent plus d'une équation (c'est-à-dire des <em>Cas</em> avec plusieurs conditions), vous pouvez cliquer avec le bouton droit sur l'équation que vous souhaitez supprimer et sélectionner l'option <b>Supprimer l'équation</b> dans le menu. Cette option est également disponible pour les équations d'autres types si vous avez déjà ajouté de nouveaux espaces réservés en appuyant sur <b>Entrée</b>.</li>
+                <li>Pour supprimer une <em>Limite</em>, vous pouvez faire un clic droit dessus et sélectionner l'option <b>Supprimer limite</b> dans le menu.</li>
+                <li>Pour supprimer une <em>Accentuation</em>, vous pouvez cliquer avec le bouton droit de la souris et sélectionner l'option <b>Supprimer le caractère d'accentuation</b>, <b>Supprimer le caractère</b> ou <b>Supprimer la barre</b> dans le menu (les options disponibles varient en fonction de l'accent sélectionné).</li>
+                <li>Pour supprimer une ligne ou une colonne d'une <em>Matrice</em>, vous pouvez cliquer avec le bouton droit de la souris sur l'espace réservé dans la ligne/colonne à supprimer, sélectionner l'option <b>Supprimer</b> dans le menu, puis sélectionner <b>Supprimer la ligne/Colonne</b>.</li>
+            </ul>
+		</div>
+	</body>
+</html>

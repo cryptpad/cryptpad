@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>ZÄHLENWENNS-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>ZÄHLENWENNS-Funktion</h1>
+			<p>Die Funktion <b>ZÄHLENWENNS</b> gehört zur Gruppe der statistischen Funktionen. Sie zählt die Anzahl der Zellen, die bestimmte Kriterien erfüllen.</p>
+			<p>Die Formelsyntax der Funktion <b>ZÄHLENWENNS</b> ist:</p> 
+			<p style="text-indent: 150px;"><b><em>ZÄHLENWENNS(Kriterienbereich1;Kriterien1;[Kriterienbereich2; Kriterien2]…)</em></b></p> 
+			<p><em>Dabei gilt:</em></p> 
+			<p style="text-indent: 50px;"><b><em>Kriterien_Bereich1</em></b> ist der erste gewählte Zellenbereich, auf den die <em>Kriterien1</em> angewendet werden sollen. Dieses Argument ist zwingend erforderlich.</p>
+            <p style="text-indent: 50px;"><b><em>Kriterien1</em></b> ist die erste zu erfüllende Bedingung. Sie wird auf <em>Kriterien_Bereich1</em> angewendet und verwendet, um die zu zählenden Zellen in <em>Kriterien_Bereich1</em> zu bestimmen. Der Wert kann manuell eingegeben werden oder ist in die Zelle eingeschlossen, auf die Sie Bezug nehmen. Dieses Argument ist zwingend erforderlich.</p>
+            <p style="text-indent: 50px;"><b><em>Kriterien_Bereich2; Kriterien2,...</em></b> sind zusätzliche Zellenbereiche und ihre jeweiligen Kriterien. Diese Argumente sind optional. Sie können bis zu 127 Bereiche und entsprechende Kriterien hinzufügen.</p>
+			<p class="note"><b>Hinweis</b>: Bei der Angabe von Kriterien können Sie Platzhalterzeichen verwenden. Das Fragezeichen &quot;?&quot; kann ein beliebiges einzelnes Zeichen ersetzen und der Stern &quot;*&quot; kann anstelle einer beliebigen Anzahl von Zeichen verwendet werden. Wenn Sie ein Fragezeichen oder ein Sternchen suchen, geben Sie vor dem Zeichen eine Tilde (~) ein.</p>
+			<p>Anwendung der Funktion <b>ZÄHLENWENNS</b>:</p>
+			<ol>
+			<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
+			<li>Wählen Sie die Gruppe <b>Statistische</b> Funktionen aus der Liste aus.</li>
+			<li>Klicken sie auf die Funktion <b>ZÄHLENWENNS</b>.</li>
+			<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.</li>
+			<li>Drücken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+			<p style="text-indent: 150px;"><img alt="ZÄHLENWENNS-Funktion" src="../images/countifs.png" /></p>
+		</div>
+	</body>
+</html>

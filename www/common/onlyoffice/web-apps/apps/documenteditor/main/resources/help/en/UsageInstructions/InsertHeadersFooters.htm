@@ -6,13 +6,18 @@
 		<meta name="description" content="Insert headers and footers into your document, add different headers and footer to the first page or odd and even pages" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
         <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
 			<h1>Insert headers and footers</h1>
 			<p>To add a header or footer to your document or edit the existing one,</p>
 			<ol>
-				<li>click the <b>Edit Header or Footer</b> <img alt="Edit Header or Footer icon" src="../images/headerfooter.png" /> icon at the top toolbar,</li>
+                <li>switch to the <b>Insert</b> tab of the top toolbar,</li>
+				<li>click the <img alt="Header/Footer icon" src="../images/headerfooter.png" /> <b>Header/Footer</b> icon at the top toolbar,</li>
 				<li>select one of the following options:
 					<ul>
 						<li><b>Edit Header</b> to insert or edit the header text.</li>

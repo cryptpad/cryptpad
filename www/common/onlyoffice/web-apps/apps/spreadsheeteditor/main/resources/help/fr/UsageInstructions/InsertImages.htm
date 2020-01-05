@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insérer des images</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add an image to your spreadsheet and adjust its position and size" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insérer des images</h1>
+			<p>Spreadsheet Editor vous permet d'insérer des images aux formats populaires. Les formats d'image pris en charge sont les suivants : <b>BMP</b>, <b>GIF</b>, <b>JPEG</b>, <b>JPG</b>, <b>PNG</b>.</p>
+            <h3>Insérer une image</h3>
+            <p>Pour insérer une image dans la feuille de calcul,</p>
+			<ol>
+				<li>placez le curseur là où vous voulez insérer l'image,</li>
+                <li>passez à l'onglet <b>Insertion</b> de la barre d'outils supérieure,</li>
+				<li>cliquez sur l'icône <img alt="icône Image" src="../images/image.png" /> <b>Image</b>de la barre d'outils supérieure,</li>
+				<li>sélectionnez l'une des options suivantes pour charger l'image :<ul>
+						<li>l'option <b>Image à partir d'un fichier</b> ouvre la fenêtre de dialogue standard pour sélectionner le fichier. Sélectionnez le fichier de votre choix sur le disque dur de votre ordinateur et cliquez sur le bouton <b>Ouvrir</b></li>
+						<li>l'option <b>Image à partir d'une URL</b> ouvre la fenêtre où vous pouvez saisir l'adresse Web de l'image et cliquer sur le bouton <b>OK</b></li>
+					</ul>
+				</li>
+			</ol>
+            <p>Après cela, l'image sera ajoutée à la feuille de calcul.</p>
+            <h3>Régler les paramètres de l'image</h3>
+            <p>une fois l'image ajoutée, vous pouvez <a href="ManipulateObjects.htm" onclick="onhyperlinkclick(this)">modifier sa taille et sa position</a>.</p>
+            <p>Pour spécifier les dimensions exactes de l'image :</p>
+            <ol>
+                <li>sélectionnez l'image que vous voulez redimensionner avec la souris,</li>
+                <li>cliquez sur l'icône <b>Paramètres de l'image</b> <img alt="Paramètres de l'image" src="../images/image_settings_icon.png" /> sur la barre latérale droite,<p><img alt="Fenêtre Paramètres de l'image du panneau latéral droit" src="../images/imagesettings.png" /></p>
+                </li>
+                <li>Dans la section <b>Taille</b>, définissez les valeurs <b>Largeur</b> et <b>Hauteur</b> requises. Si le bouton <b>Proportions constantes</b> <img alt="Icône Proportions constantes" src="../images/constantproportions.png" /> est cliqué(auquel cas il ressemble à ceci <img alt="Icône Proportions constantes activée" src="../images/constantproportionsactivated.png" />), les proportions d'image originales sera gardées lors de la modification de la largeur/hauteur. Pour rétablir la taille par défaut de l'image ajoutée, cliquez sur le bouton <b>Par défaut</b>.</li>
+            </ol>
+            <p>Pour remplacer l'image insérée,</p>
+			<ol>
+				<li>sélectionnez l'image insérée avec la souris,</li>
+				<li>cliquez sur l'icône <b>Paramètres de l'image</b> <img alt="Paramètres de l'image" src="../images/image_settings_icon.png" /> sur la barre latérale droite,</li>
+				<li>dans la section <b>Remplacer l'image</b> cliquez sur le bouton approprié : <b>D'un fichier</b> ou <b>D'une URL</b> et sélectionnez l'image désirée.<p class="note"><b>Remarque</b> : vous pouvez également cliquer avec le bouton droit sur l'image et utiliser l'option <b>Remplacer l'image</b> dans le menu contextuel.</p>
+                </li>
+			</ol>
+			<p>L'image sélectionnée sera remplacée.</p>
+            <p>Lorsque l'image est sélectionnée, l'icône <img alt="Paramètres de la forme" src="../images/shape_settings_icon.png" /> <b>Paramètres de forme</b> est également disponible sur la droite. Vous pouvez cliquer sur cette icône pour ouvrir l'onglet <b>Paramètres de forme</b> dans la barre latérale droite et ajuster le type de <a href="../UsageInstructions/InsertAutoshapes.htm#shape_stroke" onclick="onhyperlinkclick(this)"><b>contour</b></a>, la taille et la couleur ainsi que le type de forme en sélectionnant une autre forme dans le menu <b>Modifier la forme automatique</b>. La forme de l'image changera en conséquence.</p>
+            <p><img alt="Onglet Paramètres de la forme" src="../images/right_image_shape.png" /></p>
+            <p>Pour modifier les paramètres avancés, cliquez sur l'image avec le bouton droit de la souris et sélectionnez <b>Paramètres avancés</b> du menu contextuel ou cliquez sur le lien de la barre latérale droite <b>Afficher paramètres avancés</b>. La fenêtre des propriétés de l'image sera ouverte :</p>
+            <p><img alt="Image - Paramètres avancés" src="../images/imageadvancedsettings.png" /></p>
+            <p>L'onglet <b>Texte de remplacement</b> permet de spécifier un <b>Titre</b> et une <b>Description</b> qui sera lue aux personnes avec des déficiences cognitives ou visuelles pour les aider à mieux comprendre l'information de l'image.</p>
+			<p>Pour supprimer une image insérée, sélectionnez-la avec la souris et appuyez sur la touche <b>Supprimer</b>.</p>
+		</div>
+	</body>
+</html>

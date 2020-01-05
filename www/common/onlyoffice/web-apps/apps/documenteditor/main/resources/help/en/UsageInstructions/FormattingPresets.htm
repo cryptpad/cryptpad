@@ -5,18 +5,23 @@
 		<meta charset="utf-8" />
         <meta name="description" content="Apply formatting styles: normal, heading, quote, list, etc." />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
 			<h1>Apply formatting styles</h1>
             <p>Each formatting style is a set of predefined formatting options: (font size, color, line spacing, alignment etc.). The styles allow you to quickly format different parts of the document (headings, subheadings, lists, normal text, quotes) instead of applying several formatting options individually each time. This also ensures a consistent appearance throughout the entire document. A style can be applied to the whole paragraph only.</p>
 			<h3>Use default styles</h3>
             <p>To apply one of the available text formatting styles,</p>
 			<ol>
 				<li>place the cursor within the paragraph you need, or select several paragraphs you want to apply one of the formatting styles to,</li>
-				<li>select the needed style from the style gallery on the right at the top toolbar.</li>
+				<li>select the needed style from the style gallery on the right at the <b>Home</b> tab of the top toolbar.</li>
 			</ol>
-			<p>The following formatting styles are available: normal, no spacing, heading 1-9, title, subtitle, quote, intense quote, list paragraph.</p>
+			<p>The following formatting styles are available: normal, no spacing, heading 1-9, title, subtitle, quote, intense quote, list paragraph, footer, header, footnote text.</p>
 			<p><img alt="Formatting styles" src="../images/formattingpresets.png" /></p>
             <h3>Edit existing styles and create new ones</h3>
             <p><b>To change an existing style:</b></p>

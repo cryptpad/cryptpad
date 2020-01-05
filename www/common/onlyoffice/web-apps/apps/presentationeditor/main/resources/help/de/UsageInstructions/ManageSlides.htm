@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Folien verwalten</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add new blank slides, duplicate, move or delete them" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Folien verwalten</h1>
+			<p>Standardmäßig besteht eine neu erstellte Präsentation aus einer leeren <em>Titelfolie</em>. Sie haben nun die Möglichkeit neue Folien zu erstellen, eine Folie zu kopieren, um sie an anderer Stelle in der Folienliste einzufügen, Folien zu duplizieren, Folien mit dem Cursor in eine andere Position zu ziehen, um die Reihenfolge zu verändern, überflüssige Folien zu löschen, ausgewählte Folien auszublenden.</p>
+			<p><b>Erstellen einer neuen Folie mit <em>Titel und Inhalt:</em></b></p>
+			<ul>
+				<li>Klicken Sie in der oberen Symbolleiste in den Registerkarten <b>Start</b> oder <b>Einfügen</b> auf das Symbol <img alt="Folie hinzufügen" src="../images/addslide.png" /> <b>Folie hinzufügen</b> oder</li>
+				<li>klicken Sie mit der rechten Maustaste auf eine beliebige Folie und wählen Sie die Option <b>Neue Folie</b> im Kontextmenü aus oder</li>
+                <li>nutzen Sie die Tastenkombination <b>STRG+V</b>.</li>
+			</ul>
+            <p><b>Erstellen einer neuen Folie mit einem anderen Layout:</b></p>
+            <ol>
+                <li>Klicken Sie in der oberen Symbolleiste in den Registerkarten <b>Start</b> oder <b>Einfügen</b> auf den Pfeil neben dem Symbol <img alt="Folie hinzufügen" src="../images/addslide.png" /> <b>Folie hinzufügen</b>.</li>
+                <li>Wählen Sie eine Folie mit dem gewünschten Layout im Menü aus.<p class="note"><b>Hinweis</b>: Sie können das Layout der hinzugefügten Folie jederzeit ändern. Weitere Informationen finden Sie im Abschnitt <a href="../UsageInstructions/SetSlideParameters.htm#changelayout" onclick="onhyperlinkclick(this)">Folienparameter festlegen</a>.</p>
+                </li>
+            </ol>
+			<p>Die neue Folie wird vor der aktuell mit dem Cursor markierten Folie eingefügt.</p>
+			<p><b>Eine Folie duplizieren:</b></p>
+			<ol>
+				<li>Klicken Sie in der Folienliste mit der rechten Maustaste auf die gewünschte Folie.</li>
+				<li>Wählen Sie die Option <b>Folie duplizieren</b> im Kontextmenü.</li>
+			</ol>
+			<p>Die duplizierte Folie wird nach der gewählten Folie in die Folienliste eingefügt.</p>
+			<p><b>Eine Folie kopieren:</b></p>
+			<ol>
+				<li>Wählen Sie die gewünschte Folie in der Folienliste aus.</li>
+				<li>Drücken Sie die Tasten <b>STRG+C</b>.</li>
+				<li>Wählen Sie die Folie in der Liste aus, hinter der Sie die kopierte Folie einfügen wollen.</li>
+				<li>Drücken Sie die Tasten <b>STRG+V</b>.</li>
+			</ol>
+			<p><b>Eine vorhandene Folie verschieben:</b></p>
+			<ol>
+				<li>Klicken Sie mit der linken Maustaste auf die entsprechende Folie.</li>
+				<li>Ziehen Sie die Folie nun mit dem Mauszeiger an die gewünschte Stelle, ohne die Maustaste loszulassen (eine horizontale Linie zeigt eine neue Position an).</li>
+			</ol>
+			<p><b>Eine überflüssige Folie löschen:</b></p>
+			<ol>
+				<li>Klicken Sie in der Liste mit den vorhandenen Folien mit der rechten Maustaste auf die überflüssige Folie.</li>
+				<li>Wählen Sie die Option <b>Folie löschen</b> im Kontextmenü.</li>
+			</ol>
+            <p><b>Eine Folie ausblenden:</b></p>
+            <ol>
+                <li>Klicken Sie in der Liste mit den vorhandenen Folien mit der rechten Maustaste auf die Folie, die Sie ausblenden möchten.</li>
+                <li>Wählen Sie die Option <b>Folie ausblenden</b> im Kontextmenü.</li>
+            </ol>
+            <p>Die Foliennummer, die der entsprechenden Folie entspricht, wird durchgestrichen. Um die ausgeblendete Folie wieder normal darzustellen, klicken Sie erneut auf die Option <b>Folie ausblenden</b>.</p>
+            <p><img alt="Ausgeblendete Folie" src="../images/hidden_slide.png" /></p>
+            <p class="note"><b>Hinweis</b>: Nutzen Sie diese Option, wenn Sie Ihrer Zielgruppe bestimmte Folien nicht grundsätzlich vorführen wollen, aber diese bei Bedarf dennoch einbinden können. Wenn Sie die Präsentation in der <a href="../UsageInstructions/PreviewPresentation.htm#presenter" onclick="onhyperlinkclick(this)"><b>Referentenansicht</b> starten</a>, werden alle vorhandenen Folien in der Liste angezeigt, wobei die Foliennummern der ausgeblendeten Folien durchgestrichen sind. Wenn Sie anderen eine ausgeblendete Folie zeigen möchten, klicken Sie in der Folienliste mit der Maus auf die Folie - die Folie wird angezeigt.</p>
+            <p><b>Alle vorhandenen Folien auswählen:</b></p>
+			<ol>
+				<li>Klicken Sie mit der rechten Maustaste auf eine beliebige Folie in der Folienliste.</li>
+				<li>Wählen Sie die Option <b>Alle wählen</b> im Kontextmenü.</li>
+			</ol>
+			<p><b>Mehrere Folien auswählen:</b></p>
+			<ol>
+				<li>Drücken Sie die Taste <b>STRG</b> und halten Sie diese gedrückt.</li>
+				<li>Wählen Sie die gewünschten Folien in der Folienliste aus.</li>
+			</ol>
+            <p class="note"><b>Hinweis</b>: Alle Tastenkombinationen zum navigieren und einrichten von Folien verwendet werden können, finden Sie auf der Seite <a href="../HelpfulHints/KeyboardShortcuts.htm#manageslides" onclick="onhyperlinkclick(this)">Tastenkombinationen</a>.</p>
+		</div>
+	</body>
+</html>

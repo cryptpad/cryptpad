@@ -1,0 +1,223 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Inserte gráficos</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add a chart to your document and adjust its position, size and properties" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Inserte gráficos</h1>
+            <h3>Inserte un gráfico</h3>
+			<p>Para insertar un gráfico en su documento,</p>
+			<ol>
+				<li>coloque el cursor en el lugar donde quiere insertar un gráfico,</li>
+                <li>cambie a la pestaña <b>Insertar</b> de la barra de herramientas superior,</li>
+				<li>pulse el <img alt="Icono gráfico" src="../images/insertchart.png" /> icono <b>Gráfico</b> en la barra de herramientas superior,</li>
+				<li>Seleccione el tipo de gráfico de las diferentes opciones disponibles -  Columnas, Líneas, Pastel, Barras, Área, XY (dispersa), o Cotizaciones,<p class="note"><b>Nota</b>: para los gráficos de <b>Columna</b>, <b>Línea</b>, <b>Pastel</b> o <b>Barras</b>, un formato en 3D también se encuentra disponible.</p>
+                </li>
+				<li>después aparecerá la ventana <b>Editor de gráfico</b> donde puede introducir los datos necesarios en las celdas usando los siguientes controles:<ul>
+						<li><img alt="Copiar" src="../images/copy.png" /> y <img alt="Pegar" src="../images/paste.png" /> para copiar y pegar los datos copiados</li>
+						<li><img alt="Deshacer" src="../images/undo.png" /> y <img alt="Rehacer" src="../images/redo.png" /> para deshacer o rehacer acciones</li>
+						<li><img alt="Inserte una función" src="../images/insertfunction.png" /> para insertar una función</li>
+						<li><img alt="Disminuir decimales" src="../images/decreasedec.png" /> y <img alt="Aumentar decimales" src="../images/increasedec.png" /> para disminuir o aumentar decimales</li>
+						<li><img alt="Formato de número" src="../images/numberformat.png" /> para cambiar el formato del número, es decir, la manera en que los números introducidos se muestran en las celdas</li>
+					</ul>
+					<p><img alt="Ventana Editor de gráfico" src="../images/charteditor.png" /></p>
+				</li>
+				<li>cambie los ajustes de gráfico pulsando el botón <b>Editar gráfico</b> situado en la ventana <b>Editor de gráfico</b>. Se abrirá la ventana <b>Gráfico - Ajustes avanzados</b>.<p><img alt="Gráfico - ventana de Ajustes Avanzados" src="../images/chartsettings.png" /></p>
+                    <p>La pestaña <b>Tipo y datos</b> le permite seleccionar el tipo de gráfico, su estilo y también los datos.</p>
+                    <ul>
+                        <li>Seleccione un <b>Tipo</b> de gráfico que quiere aplicar: Columna, Línea, Pastel, Barras, Áreas, XY (disperso), o Cotizaciones.</li>
+                        <li>Compruebe el <b>Rango de datos</b> y modifíquelo, si es necesario, pulsando el botón <b>Selección de datos</b> e introduciendo el rango de datos deseado en el formato siguiente: <em>Sheet1!A1:B4</em>.</li>
+                        <li>Elija el modo de arreglar los datos. Puede seleccionar <b>Serie de datos</b> para el eje X: <b>en filas</b> o <b>en columnas</b>.</li>
+                    </ul>
+					<p><img alt="Ventana Gráfico - ajustes avanzados" src="../images/chartsettings2.png" /></p>
+                    <p>La pestaña <b>Diseño</b> le permite cambiar el diseño de elementos del gráfico.</p>
+                    <ul>
+                        <li>Especifique la posición del <b>Título del gráfico</b> respecto a su gráfico seleccionando la opción necesaria en la lista desplegable:<ul>
+                                <li><b>Ninguno</b> - si no quiere mostrar el título de gráfico,</li>
+                                <li><b>Superposición</b> - si quiere que el gráfico superponga el título,</li>
+                                <li><b>Sin superposición</b> - si quiere que el título se muestre arriba del gráfico.</li>
+                            </ul>
+                        </li>
+                        <li>Especifique la posición de la <b>Leyenda</b> respecto a su gráfico seleccionando la opción necesaria en la lista desplegable:<ul>
+                                <li><b>Ninguna</b> - si no quiere que se muestre una leyenda,</li>
+                                <li><b>Inferior</b> - si quiere que la leyenda se alinee en la parte inferior del área del gráfico,</li>
+                                <li><b>Superior</b> - si quiere que la leyenda se alinee en la parte superior del área del gráfico,</li>
+                                <li><b>Derecho</b> - si quiere que la leyenda se alinee en la parte derecha del área del gráfico,</li>
+                                <li><b>Izquierdo</b> - si quiere que la leyenda se alinee en la parte izquierda del área del gráfico,</li>
+                                <li><b>Superposición a la izquierda</b> - si quiere superponer y centrar la leyenda en la parte derecha del área del gráfico,</li>
+                                <li><b>Superposición a la derecha</b> - si quiere superponer y centrar la leyenda en la parte izquierda del área del gráfico.</li>
+                            </ul>
+                        </li>
+                        <li>Especifique si quiere mostrar o no el <b>Título de eje horizontal</b> seleccionando la opción correspondiente en la lista desplegable:<br /><ul>
+                                <li><b>Ninguno</b> - si no quiere mostrar el título del eje horizontal, Las siguientes opciones varían dependiendo del tipo de gráfico seleccionado.<ul>
+                                    <li>Para los gráficos <b>Columnas/Barras</b>, usted puede elegir las opciones siguientes: <b>Ninguno</b>, <b>Centrado</b>, <b>Interior Inferior</b>, <b>Interior Superior</b>, <b>Exterior Superior</b>.</li>
+                                    <li>Para los gráficos <b>Línea/ Puntos XY (Esparcido)/Cotizaciones</b>, puede seleccionar las siguientes opciones: <b>Ninguno</b>, <b>Centrado</b>, <b>Izquierda</b>, <b>Derecha</b>, <b>Superior</b>, <b>Inferior</b>.</li>
+                                    <li>Para los gráficos <b>Circulares</b>, puede elegir las siguientes opciones: <b>Ninguno</b>, <b>Centrado</b>, <b>Ajustar al ancho</b>, <b>Interior Superior</b>, <b>Exterior Superior</b>.</li>
+                                    <li>Para los gráfico <b>Área</b>, así como los gráficos <b>3D</b> <b>Columnas</b>, <b>Líneas</b> y <b>Barras</b>, puede elegir las siguientes opciones: <b>Ninguno</b>, <b>Centrado</b>.</li>
+                                </ul>
+                                </li>
+                                <li>seleccione los datos que usted quiere añadir a sus etiquetas marcando las casillas correspondientes: <b>Nombre de serie</b>, <b>Nombre de categoría</b>, <b>Valor</b>,</li>
+                                <li>Introduzca un carácter (coma, punto y coma, etc.) que quiera usar para separar varias etiquetas en el campo de entrada <b>Separador de Etiquetas de Datos</b>.</li>
+                            </ul>
+                        </li>
+                        <li><b>Líneas</b> - se usa para elegir un estilo de línea para <b>gráficos de Línea/Punto XY (Esparcido)</b>. Usted puede seleccionar las opciones siguientes: <b>Recto</b> para usar líneas rectas entre puntos de datos, <b>Uniforme</b> para usar curvas uniformes entre puntos de datos, o <b>Nada</b> para no mostrar líneas.</li>
+                        <li><b>Marcadores</b> - se usa para especificar si los marcadores se deben mostrar (si la casilla se verifica) o no (si la casilla no se verifica) para <b>gráficos de Línea/Puntos XY (Esparcidos)</b>.<p class="note"><b>Nota</b>: las opciones de <b>Líneas</b> y <b>Marcadores</b> solo están disponibles para <b>gráficos de líneas</b> y <b>Puntos XY (Esparcidos)</b>.</p>
+                        </li>
+                        <li>La sección de <b>Ajustes del eje</b> permite especificar si desea mostrar <b>Ejes Horizontales/Verticales</b> o no, seleccionando la opción <b>Mostrar</b> o <b>Esconder</b> de la lista despegable. También puede especificar los parámetros <b>Título de Ejes Horizontal/Vertical</b>:<ul>
+                                <li>Especifique si quiere mostrar o no el <b>Título de eje horizontal</b> seleccionando la opción correspondiente en la lista desplegable:<ul>
+                                        <li><b>Ninguna</b> - si no quiere mostrar un título del eje horizontal,</li>
+                                        <li><b>Sin superposición</b> - si quiere mostrar el título debajo del eje horizontal.</li>
+                                    </ul>
+                                </li>
+                                <li>Especifique la orientación del <b>Título de eje vertical</b> seleccionando la opción correspondiente en la lista desplegable:<ul>
+                                        <li><b>Ninguna</b> - si no quiere mostrar el título del eje vertical,</li>
+                                        <li><b>Girada</b> - si quiere que el título se muestre de arriba hacia abajo a la izquierda del eje vertical,</li>
+                                        <li><b>Horizontal</b> - si quiere que el título se muestre de abajo hacia arriba a la izquierda del eje vertical.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>Elija la opción necesaria para <b>Líneas de cuadrícula horizontales/verticales</b> en la lista desplegable: <b>Principal</b>, <b>Menor</b>, o <b>Principal y menor</b>. También, usted puede ocultar las líneas de cuadrícula usando la opción <b>Ninguno</b>.<p class="note"><b>Nota</b>: las secciones <b>Ajustes de eje</b> y <b>Líneas de cuadrícula</b> estarán desactivadas para <b>Gráficos circulares</b> porque los gráficos de este tipo no tienen ejes y líneas de cuadrículas.</p>
+                        </li>
+                    </ul>
+                    <p><img alt="Ventana Gráfico - ajustes avanzados" src="../images/chartsettings3.png" /></p>
+                    <p class="note"><b>Nota</b>: las pestañas <b>Eje vertical/horizontal</b> estarán desactivadas para <b>Gráficos circulares</b> porque los gráficos de este tipo no tienen ejes.</p>
+                <p>La pestaña <b>Eje vertical</b> le permite cambiar los parámetros del eje vertical que también se llama eje de valor o eje y que muestra los valores numéricos. Tenga en cuenta, que para los ejes verticales habrá una categoría ejes que mostrará etiquetas de texto para los <b>Gráficos de barras</b> por lo tanto en este caso las opciones de la pestaña <b>Eje vertical</b> corresponderán a las descritas en la siguiente sección. Para los <b>gráficos de punto</b>, los dos ejes son los ejes de valor.</p>
+                <ul>
+                    <li>La sección <b>Parámetros de eje</b> permite fijar los parámetros siguientes:<ul>
+                        <li><b>Valor mínimo</b> - se usa para especificar el valor mínimo en el comienzo del eje vertical. La opción <b>Auto</b> está seleccionada de manera predeterminada, en este caso el valor mínimo se calcula automáticamente en función del rango de celdas seleccionado. Usted puede seleccionar la opción <b>Corregido</b> en la lista desplegable y especificar un valor diferente en el campo a la derecha.</li>
+                        <li><b>Valor máximo</b> - se usa para especificar el valor máximo en el final de eje vertical. La opción <b>Auto</b> está seleccionada de manera predeterminada, en este caso el valor máximo se calcula automáticamente en función del rango de celdas seleccionado. Usted puede seleccionar la opción <b>Corregido</b> en la lista desplegable y especificar un valor diferente en el campo a la derecha.</li>
+                        <li><b>Intersección con eje</b> - se usa para especificar un punto en el eje vertical donde el eje horizontal lo debe cruzar. La opción <b>Auto</b> está seleccionada de manera predeterminada, en este caso el valor de punto de intersección de ejes se calcula automáticamente en función del rango de datos seleccionado. Usted puede seleccionar la opción <b>Valor</b> en la lista desplegable y especificar un valor diferente en el campo a la derecha o fijar el <b>Valor máximo/mínimo</b> del punto de intersección de ejes en el eje vertical.</li>
+                        <li><b>Unidades de visualización</b> - se usa para determinar una representación de valores numéricos a lo largo del eje vertical. Esta opción puede servirle si usted trabaja con números grandes y quiere que los valores en el eje se muestren de modo más compacto y legible (por ejemplo el número 50 000 puede ser escrito como 50 usando la unidad de visualización <b>Miles</b>). Seleccione unidades deseadas en la lista desplegable: <b>Cientos</b>, <b>Miles</b>, <b>10 000</b>, <b>100 000</b>, <b>Millones</b>, <b>10 000 000</b>, <b>100 000 000</b>, <b>Miles de millones</b>, <b>Billones</b>, o seleccione la opción <b>Ninguno</b> para volver a las unidades por defecto.</li>
+                        <li><b>Valores en orden inverso</b> - se usa para mostrar valores en sentido contrario. Cuando la casilla está desactivada el valor mínimo está en la parte inferior y el valor máximo en la parte superior del eje. Cuando la casilla está activada, los valores se ordenan de la parte superior a la parte inferior.</li>
+                    </ul>
+                    </li>
+                    <li>La sección <b>Parámetros de marcas de graduación</b> permite ajustar la posición de las marcas de graduación en el eje vertical. Las marcas de graduación principales son las divisiones más grandes de escala con las etiquetas que muestran valores numéricos. Las marcas de graduación menores son las subdivisiones de escala colocadas entre las marcas de graduación principales y no tienen etiquetas. Las marcas de graduación también definen donde pueden mostrarse las líneas de graduación, si la opción correspondiente está elejida en la pestaña <b>Diseño</b>. En las listas desplegables <b>Tipo principal/menor</b> usted puede seleccionar las opciones de disposición siguientes:<ul>                        
+                            <li><b>Ninguna</b> - si no quiere que se muestren las marcas de graduación principales/menores,</li>
+                            <li><b>Intersección</b> - si quiere mostrar las marcas de graduación principales/menores en ambas partes del eje,</li>
+                            <li><b>Dentro</b> - si quiere mostrar las marcas de graduación principales/menores dentro del eje,</li>
+                            <li><b>Fuera</b> - si quiere mostrar las marcas de graduación principales/menores fuera del eje.</li>                                                
+                    </ul>
+                    </li>
+                    <li>La sección <b>Parámetros de etiqueta</b> permite ajustar la posición de marcas de graduación principales que muestran valores. Para especificar <b>Posición de etiqueta</b> respecto al eje vertical, seleccione la opción necesaria en la lista desplegable:<ul>
+                        <li><b>Ninguno</b> - si no quiere que se muestren etiquetas de las marcas de graduación,</li>
+                        <li><b>Bajo</b> - si quiere que etiquetas de las marcas de graduación se muestren a la izquierda del gráfico,</li>
+                        <li><b>Alto</b> - si quiere que etiquetas de las marcas de graduación se muestren a la derecha del gráfico,</li>
+                        <li><b>Al lado de eje</b> - si quiere que etiquetas de las marcas de graduación se muestren al lado del eje.</li>
+                    </ul>
+                    </li>
+                </ul>
+                    <p><img alt="Ventana Gráfico - ajustes avanzados" src="../images/chartsettings4.png" /></p>
+                    <p>La pestaña <b>Eje horizontal</b> le permite cambiar los parámetros del eje horizontal que también se llama el eje de categorías o el eje x que muestra etiquetas de texto. Tenga en cuenta que el eje horizontal para el <b>Gráfico de barras</b> será el valor del eje de mostrará valores numéricos, y que más en este caso las opciones de la pestaña <b>Eje horizontal</b> corresponderán a las descritas en la sección anterior. Para los <b>gráficos de punto XY (esparcido)</b>, los dos ejes son los ejes de valor.</p>
+                    <ul>
+                        <li>La sección <b>Parámetros de eje</b> permite fijar los parámetros siguientes:<ul>
+                                <li><b>Intersección con eje</b> - se usa para especificar un punto en el eje horizontal donde el eje vertical lo debe cruzar. La opción <b>Auto</b> está seleccionada de manera predeterminada, en este caso el valor del punto de intersección de los ejes se calcula automáticamente en función del rango de datos seleccionado. Usted puede seleccionar la opción <b>Valor</b> en la lista desplegable y especificar un valor diferente en el campo a la derecha o fijar el <b>Valor máximo/mínimo</b> (que corresponde a la primera y última categoría) del punto de intersección de ejes en el eje horizontal.</li>
+                                <li><b>Posición del eje</b> - se usa para especificar donde las etiquetas de texto del eje deben colocarse: <b>Marcas de graduación</b> o <b>Entre marcas de graduación</b>.</li>
+                                <li><b>Valores en orden inverso</b> - se usa para mostrar valores en sentido contrario. Cuando la casilla está desactivada las categorías se muestran de izquierda a derecha. Cuando la casilla está activada, las categorías se ordenan de derecha a izquierda.</li>
+                            </ul>
+                        </li>
+                        <li>La sección <b>Parámetros de marcas de graduación</b> permite ajustar la posición de las marcas de graduación en el eje horizontal. Las marcas de graduación principales son las divisiones más grandes de escala con las etiquetas que muestran valores numéricos. Las marcas de graduación menores son las subdivisiones de escala colocadas entre las marcas de graduación principales y no tienen etiquetas. Las marcas de graduación también definen donde pueden mostrarse las líneas de graduación, si la opción correspondiente está elejida en la pestaña <b>Diseño</b>. Usted puede ajustar los parámetros de marcas de graduación siguientes:<ul>
+                                <li><b>Tipo principal/menor</b> - se usa para especificar las opciones de disposición siguientes: <b>Ninguna</b> - si no quiere que se muestren marcas de graduación principales/menores, <b>Intersección</b> - si quiere mostrar marcas de graduación principales/menores en ambas partes del eje, <b>Dentro</b> - si quiere mostrar las marcas de graduación principales/menores dentro del eje, <b>Fuera</b> - si quiere mostrar las marcas de graduación principales/menores fuera del eje.</li>
+                                <li><b>Intervalo entre marcas</b> - se usa para especificar cuantas categorías deben mostrarse entre dos marcas de graduación vecinas.</li>
+                            </ul>
+                        </li>
+                        <li>La sección <b>Parámetros de etiqueta</b> permite ajustar posición de etiquetas que muestran categorías.<ul>
+                            <li><b>Posición de etiqueta</b> - se usa para especificar donde las etiquetas deben colocarse respecto al eje horizontal. Seleccione la opción necesaria en la lista desplegable: <b>Ninguno</b> - si no quiere que se muestren las etiquetas de categorías, <b>Bajo</b> - si quiere mostrar las etiquetas de categorías debajo del gráfico, <b>Alto</b> - si quiere mostrar las etiquetas de categorías arriba del gráfico, <b>Al lado de eje</b> - si quiere mostrar las etiquetas de categorías al lado de eje.</li>
+                            <li><b>Distancia entre eje y etiqueta</b> - se usa para especificar la distancia entre el eje y una etiqueta. Usted puede especificar el valor necesario en el campo correspondiente. Cuanto más valor esté fijado, mas será la distancia entre el eje y las etiquetas.</li>
+                            <li><b>Intervalo entre etiquetas</b> - se usa para especificar con que frecuencia deben colocarse las etiquetas. La opción <b>Auto</b> está seleccionada de manera predeterminada, en este caso las etiquetas se muestran para cada categoría. Usted puede seleccionar la opción <b>Manualmente</b> en la lista desplegable y especificar el valor necesario en el campo correspondiente a la derecha. Por ejemplo, introduzca 2 para mostrar etiquetas para cada segunda categoría, etc.</li>
+                        </ul>
+                        </li>
+                    </ul>
+                    <p><img alt="Gráfico - Ajustes Avanzados:" src="../images/chartsettings5.png" /></p>
+                    <p>La pestaña de <b>Texto Alternativo</b> permite especificar un <b>Título</b> y <b>Descripción</b> que se leerán a las personas con problemas de visión o cognitivos para ayudarles a entender mejor la información del gráfico.</p>
+                    </li>
+			</ol>
+			<hr />
+            <h3>Mover y cambiar el tamaño de gráficos</h3>
+			<p><img class="floatleft" alt="Desplazar gráfico" src="../images/moving_chart.png" /> Una vez añadido el gráfico, puede cambiar su tamaño y posición. Para cambiar el tamaño de gráfico, arrastre pequeños cuadrados <img alt="Icono Cuadrado" src="../images/resize_square.png" /> situados en sus bordes. Para mantener las proporciones originales del gráfico seleccionado, mientras redimensionamiento mantenga apretada la tecla <b>Shift</b> y arrastre uno de los iconos de la esquina.</p>
+			<p>Para cambiar la posición de gráfico, use el <img alt="Flecha" src="../images/arrow.png" /> icono que aparece cuando mantiene el cursor de su ratón sobre el gráfico. Arrastre el gráfico a la posición necesaria manteniendo apretado el botón del ratón. Cuando mueve el gráfico, las líneas guía se muestran para ayudarle a colocar el objeto en la página más precisamente.</p>
+			<hr />
+            <h3>Editar elementos del gráfico</h3>
+            <p>Para editar el gráfico <b>Título</b> seleccione el texto predeterminado con el ratón y escriba el suyo propio en su lugar.</p>
+            <p>Para cambiar el formato del tipo de letra de texto dentro de elementos, como el título del gráfico, títulos de ejes, leyendas, etiquetas de datos etc, seleccione los elementos del texto apropiados haciendo clic izquierdo en estos. Luego, use los iconos en la pestaña <b>Inicio</b> en la barra de herramientas superior para cambiar el <a href="../UsageInstructions/FontTypeSizeColor.htm" onclick="onhyperlinkclick(this)">tipo, tamaño, color</a> de la fuente o su <a href="../UsageInstructions/DecorationStyles.htm" onclick="onhyperlinkclick(this)">estilo decorativo</a>.</p>
+            <p>Para borrar un elemento del gráfico, haga clic en él con el ratón izquierdo y seleccione la tecla <b>Borrar</b> en su teclado.</p>
+            <p>También puede rotar gráficos 3D usando el ratón. Haga clic izquierdo en el área del gráfico y mantenga el botón del ratón presionado. Arrastre el cursor sin soltar el botón del ratón para cambiar la orientación del gráfico en 3D.</p>
+            <p><img alt="Gráfico 3D" src="../images/3dchart.png" /></p>
+            <hr />
+            <h3>Ajustes de gráfico</h3>
+            <p><img class="floatleft" alt="Pestaña Ajustes de gráfico" src="../images/right_chart.png" /></p>
+			<p>Puede cambiar algunos ajustes usando la pestaña <b>Ajustes de gráfico</b> en la barra derecha lateral. Para activarla, pulse el gráfico y elija el icono <b>Ajustes de gráfico</b> a la derecha. Aquí usted puede cambiar las siguientes propiedades:</p>
+			<ul style="margin-left: 280px;">
+				<li><b>Tamaño</b> - se usa para ver los <b>Ancho</b> y <b>Altura</b> del gráfico actual.</li>
+				<li><b>Justificación de texto</b> se usa para seleccionar un estilo de ajuste de texto de los disponibles - alineado, cuadrado, estrecho, a través, superior e inferior, adelante, detrás (para obtener más información lea la descripción de ajustes avanzados más abajo).</li>
+				<li><b>Cambiar tipo de gráfico</b> - se usa para cambiar el tipo o estilo del gráfico seleccionado.<p>Para seleccionar los <b>Estilos</b> de gráfico necesarios, use el segundo menú despegable en la sección de <b>Cambiar Tipo de Gráfico</b>.</p>
+                </li>
+				<li><b>Editar datos</b> - se usa para abrir la ventana 'Editor de gráfico'.<p class="note"><b>Nota</b>: si quiere abrir la ventana 'Editor de gráfico', haga doble clic sobre el gráfico en el documento.</p>
+                </li>
+			</ul>
+			<p>También puede encontrar unas opciones en el <b>menú contextual</b>. Las opciones del menú son:</p>
+			<ul style="margin-left: 280px;">
+                <li><b>Cortar, Copiar, Pegar</b> - opciones estándar usadas para cortar, copiar un texto/objeto seleccionado y pegar un pasaje de texto u objeto anteriormente cortado/copiado a una posición de cursor actual.</li>
+				<li><b>Arreglar</b> - se usa para traer el gráfico seleccionado al primer plano, enviarlo al fondo, traerlo adelante o enviarlo atrás, así como para agrupar o des-agrupar gráficos para realizar operaciones con unos gráficos a la vez. Para saber más sobre cómo organizar objetos puede visitar <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">esta página</a>.</li>
+				<li><b>Alinear</b> - se usa para alinear el gráfico a la izquierda, al centro, a la derecha, en la parte superior, al medio, en la parte inferior. Para saber más sobre cómo alinear objetos puede visitar esta página.</li>
+				<li><b>Ajuste de texto</b> - se usa para seleccionar un estilo de ajuste de texto - alineado, cuadrado, estrecho, a través, superior e inferior, adelante, detrás. La opción <b>Editar límite de ajuste</b> no está disponible para los gráficos.</li>
+				<li><b>Editar datos</b> - se usa para abrir la ventana 'Editor de gráfico'.</li>
+				<li><b>Ajustes avanzados</b> - se usa para abrir la ventana 'Gráfico - Ajustes avanzados'.</li>
+			</ul>	
+			<p>Una vez seleccionado el gráfico, el icono <b>Ajustes de forma</b>  también está disponible a la derecha, porque la forma se usa como el fondo para el gráfico. Puede pulsar este icono para abrir la pestaña <b>Ajustes de forma</b> en la barra lateral derecha y ajustar <b><a href="../UsageInstructions/InsertAutoshapes.htm#shape_fill" onclick="onhyperlinkclick(this)">Relleno</a></b> , <a href="../UsageInstructions/InsertAutoshapes.htm#shape_fill" onclick="onhyperlinkclick(this)">Trazo</a> y<b> Estilo de Justificación</b> de la forma. Note por favor, que no puede cambiar el tipo de forma.</p>
+			<hr />
+			<p>Para cambiar ajustes avanzados del gráfico, pulse el gráfico necesario con el botón derecho del ratón y seleccione la opción <b>Ajustes avanzados</b> en el menú contextual o solo haga clic en el enlace <b>Mostrar ajustes avanzados</b> en la barra lateral de la derecha. La ventana con propiedades del gráfico se abrirá:</p>
+			<p><img alt="Gráfico-ajustes avanzados: Tamaño" src="../images/chart_properties.png" /></p>
+			<p>La sección <b>Tamaño</b> contiene los parámetros siguientes:</p>
+			<ul>
+				<li><b>Ancho</b> y <b>Altura</b> - use estas opciones para cambiar ancho/altura de autoforma. Si el botón <b>Proporciones constantes</b> <img alt="Icono Proporciones constantes" src="../images/constantproportions.png" /> está apretado (en este caso estará así <img alt="Icono Proporciones constantes activado" src="../images/constantproportionsactivated.png" />), se cambiarán el ancho y altura preservando la relación original de aspecto de gráfico.</li>
+			</ul>
+			<p><img alt="Gráfico-ajustes avanzados: Ajuste de texto" src="../images/chart_properties_1.png" /></p>
+			<p>La sección <b>Ajuste de texto</b> contiene los parámetros siguientes:</p>
+			<ul>
+				<li><b>Ajuste de texto</b> - use esta opción para cambiar la posición del gráfico en relativo al texto: puede ser una parte de texto (si usted seleccione estilo alineado) o rodeado por texto (si selecciona uno de los otros estilos).<ul>
+				    <li><p><img alt="Ajuste de texto - alineado" src="../images/wrappingstyle_inline.png" /> <b>Alineado</b> - el gráfico se considera una parte del texto, como un carácter, así cuando se mueva el texto, el gráfico se moverá también. En este caso no se puede acceder a las opciones de posición.</p>
+				    <p>Si selecciona uno de estos estilos, el gráfico se moverá de forma independiente al texto:</p>
+				    </li>
+				    <li><p><img alt="Ajuste de texto - cuadrado" src="../images/wrappingstyle_square.png" /> <b>Cuadrado</b> - el texto rodea una caja rectangular que limita el gráfico.</p></li>
+				    <li><p><img alt="Ajuste de texto - estrecho" src="../images/wrappingstyle_tight.png" /> <b>Estrecho</b> - el texto rodea los bordes reales del gráfico.</p></li>
+				    <li><p><img alt="Ajuste de texto - a través" src="../images/wrappingstyle_through.png" /> <b>A través</b> - el texto rodea los bordes y rellene el espacio en blanco del gráfico.</p></li>
+				    <li><p><img alt="Estilo de ajuste- superior e inferior" src="../images/wrappingstyle_topandbottom.png" /> <b>Superior e inferior</b> - el texto se sitúa solo arriba y debajo del gráfico.</p></li>
+				    <li><p><img alt="Estilo de ajuste - adelante" src="../images/wrappingstyle_infront.png" /> <b>Adelante</b> - el gráfico solapa el texto.</p></li>
+				    <li><p><img alt="Ajuste de texto - detrás" src="../images/wrappingstyle_behind.png" /> <b>Detrás</b> - el texto solapa el gráfico.</p></li>
+				    </ul>
+				</li>
+			</ul>
+			<p>Si usted selecciona el estilo cuadrado, estrecho, a través, o superior e inferior, usted podrá establecer unos parámetros adicionales - <b>distancia del texto</b> en todas partes (superior, inferior, izquierda, derecha).</p>
+            <p id="position"><img alt="Gráfico-ajustes avanzados: Posición" src="../images/chart_properties_2.png" /></p>
+            <p>La sección <b>Posición</b> estará disponible si selecciona cualquier ajuste de texto excepto alineado. Esta pestaña contiene los siguientes parámetros, los cuales dependen del estilo del ajuste del texto seleccionado:</p>
+			<ul>
+                <li>La sección Horizontal permite seleccionar uno de los siguientes tres tipos de posición de gráficos:<ul>
+                        <li><b>Alineación </b> (izquierda, centro, derecha) <b>en relación con</b> el carácter, columna, margen izquierdo, margen, margen de la página o margen derecho,</li>
+                        <li>La <b>Posición</b> absoluta se mide en unidades absolutas, por ejemplo, <b>Centímetros</b>/<b>Puntos</b> (dependiendo de la opción especificada en la pestaña de <b>Archivo</b>  -&gt; <b>Ajustes Avanzados...</b>)<b> a la derecha del</b> carácter, columna, margen izquierdo, margen, margen de la página o margen derecho,</li>
+                        <li>La <b>Posición relativa</b> se mide en porcentajes relativos al margen izquierdo, margen, margen de la página o margen derecho.</li>
+                    </ul>
+                </li>
+                <li>La sección <b>Vertical</b> permite seleccionar uno de los siguientes tres tipos de posición de gráficos:<ul>
+                        <li><b>Alineación </b> (arriba, centro, abajo) <b>en relación con</b> la línea, margen, margen del fondo, párrafo, margen de la página o margen de arriba,</li>
+                        <li>La <b>Posición</b> absoluta se mide en unidades absolutas, por ejemplo, <b>Centímetros</b>/<b>Puntos</b> (dependiendo de la opción especificada en la pestaña de <b>Archivo</b>  -&gt; <b>Ajustes Avanzados...</b>) <b>debajo</b> de la línea, margen, margen del fondo, párrafo, margen de la página o margen de arriba,</li>
+                        <li>La <b>Posición relativa</b> se mide en porcentajes <b>relativos al</b> margen, margen del fondo, párrafo, margen de la página o margen de arriba,</li>
+                    </ul>
+                </li>
+				<li>La opción <b>Desplazar objeto con texto</b> controla si el gráfico insertado en el texto se mueve junto con este si el texto se mueve.</li>
+				<li>La opción <b>Superposición</b> controla si dos gráficos se sobreponen o no cuando usted los arrastra uno cerca del otro en la página.</li>
+			</ul>
+            <p><img alt="Gráfico - Ajustes Avanzados" src="../images/chart_properties_3.png" /></p>
+            <p>La pestaña de <b>Texto Alternativo</b> permite especificar un <b>Título</b> y <b>Descripción</b> que se leerán a las personas con problemas de visión o cognitivos para ayudarles a entender mejor la información del gráfico.</p>
+		</div>
+	</body>
+</html>

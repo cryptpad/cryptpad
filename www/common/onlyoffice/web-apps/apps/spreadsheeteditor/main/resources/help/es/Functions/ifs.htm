@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Función SI.CONJUNTO</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Función SI.CONJUNTO</h1>
+			<p>La función <b>SI.CONJUNTO</b> es una función lógica. es utilizada para comprobar si se cumplen una o varias condiciones y devuelve un valor que corresponde a la primera condición VERDADERA</p>
+			<p>La sintaxis de la función <b>SI.CONJUNTO</b> es:</p> 
+			<p style="text-indent: 150px;"><b><em>SI.CONJUNTO(prueba_lógica1, valor_si_verdadero1, [ prueba_lógica2 , valor_si_verdadero2 ] , … )</em></b></p> 
+			<p><em>donde</em></p>
+            <p style="text-indent: 50px;"><b><em>prueba_lógica1</em></b> es la primera condición que debe evaluarse como VERDADERA o FALSA.</p>
+            <p style="text-indent: 50px;"><b><em>valor_si_verdadero1</em></b> es el valor que devuelve si la variable <b><em>prueba_lógica1</em></b> es VERDADERO.</p>
+            <p style="text-indent: 50px;"><b><em>prueba_lógica2, valor_si_verdadero2, ...</em></b> son condiciones y valores adicionales a devolver. Estos argumentos son opcionales. Puede consultar hasta 127 condiciones.</p>
+            <p>Los valores pueden introducirse manualmente o incluirse en las celdas a las que usted hace referencia.</p>
+            <p>Para aplicar la función <b>SI.CONJUNTO</b>,</p>
+			<ol>
+			<li>seleccione la celda donde usted quiere mostrar el resultado,</li>
+			<li>haga clic en el icono <b>Insertar función</b> <img alt="Icono insertar función" src="../images/insertfunction.png" /> que se sitúa en la barra de herramientas superior, <br />o haga clic derecho en la сelda seleccionada y elija la opción <b>Insertar Función</b> en el menú, <br />o haga clic en el <img alt="Icono función" src="../images/function.png" />icono que se sitúa en la barra de fórmulas,</li>
+			<li>seleccione grupo de funciones <b>Lógico</b> en la lista,</li>
+			<li>pulse la función <b>SI.CONJUNTO</b>,</li>
+			<li>introduzca los argumentos correspondientes separados por comas</li>
+			<li>pulse el botón <b>Enter</b>.</li>
+			</ol>
+			<p>El resultado se mostrará en la celda elegida.</p>
+			<p><em>Por ejemplo:</em></p>
+			<p>Hay los siguientes argumentos: <em>prueba_lógica1</em> = <b>A1&lt;100</b>, <em>valor_si_verdadero1</em> = <b>1</b>, <em>prueba_lógica2</em> = <b>A1&gt;100</b>, <em>valor_si_verdadero2</em> = <b>2</b>, donde <b>A1</b> is <b>120</b>. Esta expresión lógica es <b>VERDADERA</b> y por eso la función devuelve <b>2</b>.</p>
+			<p style="text-indent: 150px;"><img alt="Función SI.CONJUNTO" src="../images/ifs.png" /></p>
+		</div>
+	</body>
+</html>

@@ -719,8 +719,8 @@ var wasmMemory;
 // In the wasm backend, we polyfill the WebAssembly object,
 // so this creates a (non-native-wasm) table for us.
 var wasmTable = new WebAssembly.Table({
-  'initial': 58765,
-  'maximum': 58765 + 0,
+  'initial': 63857,
+  'maximum': 63857 + 0,
   'element': 'anyfunc'
 });
 
@@ -1313,11 +1313,11 @@ function updateGlobalBufferAndViews(buf) {
 }
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 15470352,
+    STACK_BASE = 17838800,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 10227472,
-    DYNAMIC_BASE = 15470352,
-    DYNAMICTOP_PTR = 10226512;
+    STACK_MAX = 12595920,
+    DYNAMIC_BASE = 17838800,
+    DYNAMICTOP_PTR = 12594960;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1872,12 +1872,12 @@ var tempI64;
 // === Body ===
 
 var ASM_CONSTS = {
-  52684: function() {FS.mkdir('/working'); FS.mount(NODEFS, { root: '.' }, '/working');},  
- 8594176: function() {throw 'Canceled!'},  
- 8594315: function() {postMessage({cmd : 'processQueuedMainThreadWork'})},  
- 8594366: function($0) {if (!ENVIRONMENT_IS_PTHREAD) { if (!PThread.pthreads[$0] || !PThread.pthreads[$0].worker) { return 0; } PThread.pthreads[$0].worker.postMessage({cmd : 'processThreadQueue'}); } else { postMessage({targetThread : $0, cmd : 'processThreadQueue'}); } return 1;},  
- 8594734: function() {return !!(Module['canvas'])},  
- 8594770: function() {noExitRuntime = true}
+  55680: function() {FS.mkdir('/working'); FS.mount(NODEFS, { root: '.' }, '/working');},  
+ 10774936: function() {throw 'Canceled!'},  
+ 10775075: function() {postMessage({cmd : 'processQueuedMainThreadWork'})},  
+ 10775126: function($0) {if (!ENVIRONMENT_IS_PTHREAD) { if (!PThread.pthreads[$0] || !PThread.pthreads[$0].worker) { return 0; } PThread.pthreads[$0].worker.postMessage({cmd : 'processThreadQueue'}); } else { postMessage({targetThread : $0, cmd : 'processThreadQueue'}); } return 1;},  
+ 10775494: function() {return !!(Module['canvas'])},  
+ 10775530: function() {noExitRuntime = true}
 };
 
 // Avoid creating a new array
@@ -1909,7 +1909,7 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
 
 
 
-// STATICTOP = STATIC_BASE + 10226448;
+// STATICTOP = STATIC_BASE + 12594896;
 /* global initializers */ if (!ENVIRONMENT_IS_PTHREAD) __ATINIT__.push({ func: function() { ___wasm_call_ctors() } });
 
 
@@ -1990,17 +1990,17 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
   }
   Module["__ZN12CPdfRenderer14SetThemesPlaceERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE"] = __ZN12CPdfRenderer14SetThemesPlaceERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE;
 
-  function __ZN12CPdfRenderer15OnlineWordToPdfERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_(
+  function __ZN12CPdfRenderer15OnlineWordToPdfERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_RKb(
   ) {
-  err('missing function: _ZN12CPdfRenderer15OnlineWordToPdfERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_'); abort(-1);
+  err('missing function: _ZN12CPdfRenderer15OnlineWordToPdfERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_RKb'); abort(-1);
   }
-  Module["__ZN12CPdfRenderer15OnlineWordToPdfERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_"] = __ZN12CPdfRenderer15OnlineWordToPdfERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_;
+  Module["__ZN12CPdfRenderer15OnlineWordToPdfERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_RKb"] = __ZN12CPdfRenderer15OnlineWordToPdfERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_RKb;
 
-  function __ZN12CPdfRenderer25OnlineWordToPdfFromBinaryERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_(
+  function __ZN12CPdfRenderer25OnlineWordToPdfFromBinaryERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_RKb(
   ) {
-  err('missing function: _ZN12CPdfRenderer25OnlineWordToPdfFromBinaryERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_'); abort(-1);
+  err('missing function: _ZN12CPdfRenderer25OnlineWordToPdfFromBinaryERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_RKb'); abort(-1);
   }
-  Module["__ZN12CPdfRenderer25OnlineWordToPdfFromBinaryERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_"] = __ZN12CPdfRenderer25OnlineWordToPdfFromBinaryERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_;
+  Module["__ZN12CPdfRenderer25OnlineWordToPdfFromBinaryERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_RKb"] = __ZN12CPdfRenderer25OnlineWordToPdfFromBinaryERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_RKb;
 
   function __ZN12CPdfRendererC1EPN7NSFonts17IApplicationFontsEb(
   ) {
@@ -2154,7 +2154,7 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
   Module["ERRNO_CODES"] = ERRNO_CODES;
   
   
-  var __main_thread_futex_wait_address=10227456;
+  var __main_thread_futex_wait_address=12595904;
   Module["__main_thread_futex_wait_address"] = __main_thread_futex_wait_address;function _emscripten_futex_wake(addr, count) {
       if (addr <= 0 || addr > HEAP8.length || addr&3 != 0 || count < 0) return -28;
       if (count == 0) return 0;
@@ -2225,7 +2225,7 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
         if (ENVIRONMENT_IS_PTHREAD) return undefined;
   
   
-        PThread.mainThreadBlock = 10226672;
+        PThread.mainThreadBlock = 12595120;
   
         for (var i = 0; i < 244/4; ++i) HEAPU32[PThread.mainThreadBlock/4+i] = 0;
   
@@ -2238,7 +2238,7 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
         HEAP32[((headPtr)>>2)]=headPtr;
   
         // Allocate memory for thread-local storage.
-        var tlsMemory = 10226928;
+        var tlsMemory = 12595376;
         for (var i = 0; i < 128; ++i) HEAPU32[tlsMemory/4+i] = 0;
         Atomics.store(HEAPU32, (PThread.mainThreadBlock + 116 ) >> 2, tlsMemory); // Init thread-local-storage memory array.
         Atomics.store(HEAPU32, (PThread.mainThreadBlock + 52 ) >> 2, PThread.mainThreadBlock); // Main thread ID.
@@ -5858,7 +5858,7 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
 
 
   function _emscripten_get_sbrk_ptr() {
-      return 10226512;
+      return 12594960;
     }
   Module["_emscripten_get_sbrk_ptr"] = _emscripten_get_sbrk_ptr;
 
@@ -6668,11 +6668,11 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
   Module["_gettimeofday"] = _gettimeofday;
 
   
-  var ___tm_current=10226528;
+  var ___tm_current=12594976;
   Module["___tm_current"] = ___tm_current;
   
   
-  var ___tm_timezone=(stringToUTF8("GMT", 10226576, 4), 10226576);
+  var ___tm_timezone=(stringToUTF8("GMT", 12595024, 4), 12595024);
   Module["___tm_timezone"] = ___tm_timezone;function _gmtime_r(time, tmPtr) {
       var date = new Date(HEAP32[((time)>>2)]*1000);
       HEAP32[((tmPtr)>>2)]=date.getUTCSeconds();
@@ -7680,7 +7680,7 @@ function intArrayToString(array) {
 // ASM_LIBRARY EXTERN PRIMITIVES: Int8Array,Int32Array
 
 var asmGlobalArg = {};
-var asmLibraryArg = { "_ZN12CPdfRenderer10SaveToFileERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE": __ZN12CPdfRenderer10SaveToFileERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE, "_ZN12CPdfRenderer11SetPasswordERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE": __ZN12CPdfRenderer11SetPasswordERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE, "_ZN12CPdfRenderer13SetDocumentIDERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE": __ZN12CPdfRenderer13SetDocumentIDERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE, "_ZN12CPdfRenderer13SetTempFolderERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE": __ZN12CPdfRenderer13SetTempFolderERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE, "_ZN12CPdfRenderer14SetThemesPlaceERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE": __ZN12CPdfRenderer14SetThemesPlaceERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE, "_ZN12CPdfRenderer15OnlineWordToPdfERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_": __ZN12CPdfRenderer15OnlineWordToPdfERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_, "_ZN12CPdfRenderer25OnlineWordToPdfFromBinaryERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_": __ZN12CPdfRenderer25OnlineWordToPdfFromBinaryERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_, "_ZN12CPdfRendererC1EPN7NSFonts17IApplicationFontsEb": __ZN12CPdfRendererC1EPN7NSFonts17IApplicationFontsEb, "_ZN12CPdfRendererD1Ev": __ZN12CPdfRendererD1Ev, "_ZN14NSDoctRenderer13CDoctrenderer18GetImagesInChangesEv": __ZN14NSDoctRenderer13CDoctrenderer18GetImagesInChangesEv, "_ZN14NSDoctRenderer13CDoctrenderer7ExecuteERKNSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEERS7_": __ZN14NSDoctRenderer13CDoctrenderer7ExecuteERKNSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEERS7_, "_ZN14NSDoctRenderer13CDoctrendererC1ERKNSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEE": __ZN14NSDoctRenderer13CDoctrendererC1ERKNSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEE, "_ZN14NSDoctRenderer13CDoctrendererD1Ev": __ZN14NSDoctRenderer13CDoctrendererD1Ev, "_ZN14NSHtmlRenderer17CASCHTMLRenderer316CreateOfficeFileENSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEERKS7_": __ZN14NSHtmlRenderer17CASCHTMLRenderer316CreateOfficeFileENSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEERKS7_, "_ZN14NSHtmlRenderer17CASCHTMLRenderer39CloseFileEb": __ZN14NSHtmlRenderer17CASCHTMLRenderer39CloseFileEb, "_ZN14NSHtmlRenderer17CASCHTMLRenderer3C1Ev": __ZN14NSHtmlRenderer17CASCHTMLRenderer3C1Ev, "_ZN14NSHtmlRenderer17CASCHTMLRenderer3D1Ev": __ZN14NSHtmlRenderer17CASCHTMLRenderer3D1Ev, "_ZN23CFileDownloader_privateC1ENSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEEb": __ZN23CFileDownloader_privateC1ENSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEEb, "_ZN8CXpsFileC1EPN7NSFonts17IApplicationFontsE": __ZN8CXpsFileC1EPN7NSFonts17IApplicationFontsE, "_ZN9CDjVuFileC1EPN7NSFonts17IApplicationFontsE": __ZN9CDjVuFileC1EPN7NSFonts17IApplicationFontsE, "_ZN9CHtmlFile10ConvertMhtERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_S8_": __ZN9CHtmlFile10ConvertMhtERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_S8_, "_ZN9CHtmlFile11ConvertEpubERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEERS6_S8_S8_": __ZN9CHtmlFile11ConvertEpubERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEERS6_S8_S8_, "_ZN9CHtmlFile7ConvertERKNSt3__26vectorINS0_12basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEENS5_IS7_EEEERKS7_SD_": __ZN9CHtmlFile7ConvertERKNSt3__26vectorINS0_12basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEENS5_IS7_EEEERKS7_SD_, "_ZN9CHtmlFileC1Ev": __ZN9CHtmlFileC1Ev, "_ZN9CHtmlFileD1Ev": __ZN9CHtmlFileD1Ev, "_ZN9PdfReader10CPdfReader8GetErrorEv": __ZN9PdfReader10CPdfReader8GetErrorEv, "_ZN9PdfReader10CPdfReaderC1EPN7NSFonts17IApplicationFontsE": __ZN9PdfReader10CPdfReaderC1EPN7NSFonts17IApplicationFontsE, "__assert_fail": ___assert_fail, "__call_main": ___call_main, "__clock_gettime": ___clock_gettime, "__cxa_allocate_exception": ___cxa_allocate_exception, "__cxa_atexit": ___cxa_atexit, "__cxa_rethrow": ___cxa_rethrow, "__cxa_throw": ___cxa_throw, "__lock": ___lock, "__map_file": ___map_file, "__syscall10": ___syscall10, "__syscall12": ___syscall12, "__syscall183": ___syscall183, "__syscall192": ___syscall192, "__syscall195": ___syscall195, "__syscall196": ___syscall196, "__syscall220": ___syscall220, "__syscall221": ___syscall221, "__syscall3": ___syscall3, "__syscall39": ___syscall39, "__syscall4": ___syscall4, "__syscall40": ___syscall40, "__syscall5": ___syscall5, "__syscall54": ___syscall54, "__syscall85": ___syscall85, "__syscall91": ___syscall91, "__unlock": ___unlock, "abort": _abort, "atexit": _atexit, "emscripten_asm_const_iii": _emscripten_asm_const_iii, "emscripten_check_blocking_allowed": _emscripten_check_blocking_allowed, "emscripten_conditional_set_current_thread_status": _emscripten_conditional_set_current_thread_status, "emscripten_futex_wait": _emscripten_futex_wait, "emscripten_futex_wake": _emscripten_futex_wake, "emscripten_get_now": _emscripten_get_now, "emscripten_get_sbrk_ptr": _emscripten_get_sbrk_ptr, "emscripten_has_threading_support": _emscripten_has_threading_support, "emscripten_is_main_browser_thread": _emscripten_is_main_browser_thread, "emscripten_is_main_runtime_thread": _emscripten_is_main_runtime_thread, "emscripten_longjmp": _emscripten_longjmp, "emscripten_memcpy_big": _emscripten_memcpy_big, "emscripten_receive_on_main_thread_js": _emscripten_receive_on_main_thread_js, "emscripten_resize_heap": _emscripten_resize_heap, "emscripten_set_canvas_element_size": _emscripten_set_canvas_element_size, "emscripten_set_current_thread_status": _emscripten_set_current_thread_status, "emscripten_set_thread_name": _emscripten_set_thread_name, "emscripten_syscall": _emscripten_syscall, "emscripten_webgl_create_context": _emscripten_webgl_create_context, "environ_get": _environ_get, "environ_sizes_get": _environ_sizes_get, "exit": _exit, "fd_close": _fd_close, "fd_read": _fd_read, "fd_seek": _fd_seek, "fd_write": _fd_write, "getTempRet0": _getTempRet0, "gettimeofday": _gettimeofday, "gmtime": _gmtime, "initPthreadsJS": initPthreadsJS, "invoke_ii": invoke_ii, "invoke_iii": invoke_iii, "invoke_iiii": invoke_iiii, "invoke_iiiii": invoke_iiiii, "invoke_iiiiii": invoke_iiiiii, "invoke_v": invoke_v, "invoke_vi": invoke_vi, "invoke_vii": invoke_vii, "invoke_viii": invoke_viii, "invoke_viiii": invoke_viiii, "invoke_viiiii": invoke_viiiii, "invoke_viiiiii": invoke_viiiiii, "invoke_viiiiiiiii": invoke_viiiiiiiii, "memory": wasmMemory, "mktime": _mktime, "pthread_cleanup_pop": _pthread_cleanup_pop, "pthread_cleanup_push": _pthread_cleanup_push, "pthread_create": _pthread_create, "pthread_self": _pthread_self, "saveSetjmp": _saveSetjmp, "setTempRet0": _setTempRet0, "strftime_l": _strftime_l, "sysconf": _sysconf, "system": _system, "table": wasmTable, "testSetjmp": _testSetjmp, "time": _time, "times": _times };
+var asmLibraryArg = { "_ZN12CPdfRenderer10SaveToFileERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE": __ZN12CPdfRenderer10SaveToFileERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE, "_ZN12CPdfRenderer11SetPasswordERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE": __ZN12CPdfRenderer11SetPasswordERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE, "_ZN12CPdfRenderer13SetDocumentIDERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE": __ZN12CPdfRenderer13SetDocumentIDERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE, "_ZN12CPdfRenderer13SetTempFolderERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE": __ZN12CPdfRenderer13SetTempFolderERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE, "_ZN12CPdfRenderer14SetThemesPlaceERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE": __ZN12CPdfRenderer14SetThemesPlaceERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEE, "_ZN12CPdfRenderer15OnlineWordToPdfERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_RKb": __ZN12CPdfRenderer15OnlineWordToPdfERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_RKb, "_ZN12CPdfRenderer25OnlineWordToPdfFromBinaryERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_RKb": __ZN12CPdfRenderer25OnlineWordToPdfFromBinaryERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_RKb, "_ZN12CPdfRendererC1EPN7NSFonts17IApplicationFontsEb": __ZN12CPdfRendererC1EPN7NSFonts17IApplicationFontsEb, "_ZN12CPdfRendererD1Ev": __ZN12CPdfRendererD1Ev, "_ZN14NSDoctRenderer13CDoctrenderer18GetImagesInChangesEv": __ZN14NSDoctRenderer13CDoctrenderer18GetImagesInChangesEv, "_ZN14NSDoctRenderer13CDoctrenderer7ExecuteERKNSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEERS7_": __ZN14NSDoctRenderer13CDoctrenderer7ExecuteERKNSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEERS7_, "_ZN14NSDoctRenderer13CDoctrendererC1ERKNSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEE": __ZN14NSDoctRenderer13CDoctrendererC1ERKNSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEE, "_ZN14NSDoctRenderer13CDoctrendererD1Ev": __ZN14NSDoctRenderer13CDoctrendererD1Ev, "_ZN14NSHtmlRenderer17CASCHTMLRenderer316CreateOfficeFileENSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEERKS7_": __ZN14NSHtmlRenderer17CASCHTMLRenderer316CreateOfficeFileENSt3__212basic_stringIwNS1_11char_traitsIwEENS1_9allocatorIwEEEERKS7_, "_ZN14NSHtmlRenderer17CASCHTMLRenderer39CloseFileEb": __ZN14NSHtmlRenderer17CASCHTMLRenderer39CloseFileEb, "_ZN14NSHtmlRenderer17CASCHTMLRenderer3C1Ev": __ZN14NSHtmlRenderer17CASCHTMLRenderer3C1Ev, "_ZN14NSHtmlRenderer17CASCHTMLRenderer3D1Ev": __ZN14NSHtmlRenderer17CASCHTMLRenderer3D1Ev, "_ZN23CFileDownloader_privateC1ENSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEEb": __ZN23CFileDownloader_privateC1ENSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEEb, "_ZN8CXpsFileC1EPN7NSFonts17IApplicationFontsE": __ZN8CXpsFileC1EPN7NSFonts17IApplicationFontsE, "_ZN9CDjVuFileC1EPN7NSFonts17IApplicationFontsE": __ZN9CDjVuFileC1EPN7NSFonts17IApplicationFontsE, "_ZN9CHtmlFile10ConvertMhtERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_S8_": __ZN9CHtmlFile10ConvertMhtERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEES8_S8_, "_ZN9CHtmlFile11ConvertEpubERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEERS6_S8_S8_": __ZN9CHtmlFile11ConvertEpubERKNSt3__212basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEERS6_S8_S8_, "_ZN9CHtmlFile7ConvertERKNSt3__26vectorINS0_12basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEENS5_IS7_EEEERKS7_SD_": __ZN9CHtmlFile7ConvertERKNSt3__26vectorINS0_12basic_stringIwNS0_11char_traitsIwEENS0_9allocatorIwEEEENS5_IS7_EEEERKS7_SD_, "_ZN9CHtmlFileC1Ev": __ZN9CHtmlFileC1Ev, "_ZN9CHtmlFileD1Ev": __ZN9CHtmlFileD1Ev, "_ZN9PdfReader10CPdfReader8GetErrorEv": __ZN9PdfReader10CPdfReader8GetErrorEv, "_ZN9PdfReader10CPdfReaderC1EPN7NSFonts17IApplicationFontsE": __ZN9PdfReader10CPdfReaderC1EPN7NSFonts17IApplicationFontsE, "__assert_fail": ___assert_fail, "__call_main": ___call_main, "__clock_gettime": ___clock_gettime, "__cxa_allocate_exception": ___cxa_allocate_exception, "__cxa_atexit": ___cxa_atexit, "__cxa_rethrow": ___cxa_rethrow, "__cxa_throw": ___cxa_throw, "__lock": ___lock, "__map_file": ___map_file, "__syscall10": ___syscall10, "__syscall12": ___syscall12, "__syscall183": ___syscall183, "__syscall192": ___syscall192, "__syscall195": ___syscall195, "__syscall196": ___syscall196, "__syscall220": ___syscall220, "__syscall221": ___syscall221, "__syscall3": ___syscall3, "__syscall39": ___syscall39, "__syscall4": ___syscall4, "__syscall40": ___syscall40, "__syscall5": ___syscall5, "__syscall54": ___syscall54, "__syscall85": ___syscall85, "__syscall91": ___syscall91, "__unlock": ___unlock, "abort": _abort, "atexit": _atexit, "emscripten_asm_const_iii": _emscripten_asm_const_iii, "emscripten_check_blocking_allowed": _emscripten_check_blocking_allowed, "emscripten_conditional_set_current_thread_status": _emscripten_conditional_set_current_thread_status, "emscripten_futex_wait": _emscripten_futex_wait, "emscripten_futex_wake": _emscripten_futex_wake, "emscripten_get_now": _emscripten_get_now, "emscripten_get_sbrk_ptr": _emscripten_get_sbrk_ptr, "emscripten_has_threading_support": _emscripten_has_threading_support, "emscripten_is_main_browser_thread": _emscripten_is_main_browser_thread, "emscripten_is_main_runtime_thread": _emscripten_is_main_runtime_thread, "emscripten_longjmp": _emscripten_longjmp, "emscripten_memcpy_big": _emscripten_memcpy_big, "emscripten_receive_on_main_thread_js": _emscripten_receive_on_main_thread_js, "emscripten_resize_heap": _emscripten_resize_heap, "emscripten_set_canvas_element_size": _emscripten_set_canvas_element_size, "emscripten_set_current_thread_status": _emscripten_set_current_thread_status, "emscripten_set_thread_name": _emscripten_set_thread_name, "emscripten_syscall": _emscripten_syscall, "emscripten_webgl_create_context": _emscripten_webgl_create_context, "environ_get": _environ_get, "environ_sizes_get": _environ_sizes_get, "exit": _exit, "fd_close": _fd_close, "fd_read": _fd_read, "fd_seek": _fd_seek, "fd_write": _fd_write, "getTempRet0": _getTempRet0, "gettimeofday": _gettimeofday, "gmtime": _gmtime, "initPthreadsJS": initPthreadsJS, "invoke_ii": invoke_ii, "invoke_iii": invoke_iii, "invoke_iiii": invoke_iiii, "invoke_iiiii": invoke_iiiii, "invoke_iiiiii": invoke_iiiiii, "invoke_v": invoke_v, "invoke_vi": invoke_vi, "invoke_vii": invoke_vii, "invoke_viii": invoke_viii, "invoke_viiii": invoke_viiii, "invoke_viiiii": invoke_viiiii, "invoke_viiiiii": invoke_viiiiii, "invoke_viiiiiiiii": invoke_viiiiiiiii, "memory": wasmMemory, "mktime": _mktime, "pthread_cleanup_pop": _pthread_cleanup_pop, "pthread_cleanup_push": _pthread_cleanup_push, "pthread_create": _pthread_create, "pthread_self": _pthread_self, "saveSetjmp": _saveSetjmp, "setTempRet0": _setTempRet0, "strftime_l": _strftime_l, "sysconf": _sysconf, "system": _system, "table": wasmTable, "testSetjmp": _testSetjmp, "time": _time, "times": _times };
 var asm = createWasm();
 var real____wasm_call_ctors = asm["__wasm_call_ctors"];
 asm["__wasm_call_ctors"] = function() {
@@ -8228,6 +8228,13 @@ asm["dynCall_viiiiiiiiii"] = function() {
   return real_dynCall_viiiiiiiiii.apply(null, arguments);
 };
 
+var real_dynCall_iiiji = asm["dynCall_iiiji"];
+asm["dynCall_iiiji"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return real_dynCall_iiiji.apply(null, arguments);
+};
+
 var real_dynCall_i = asm["dynCall_i"];
 asm["dynCall_i"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
@@ -8324,13 +8331,6 @@ asm["dynCall_viddddiii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return real_dynCall_viddddiii.apply(null, arguments);
-};
-
-var real_dynCall_viiiddi = asm["dynCall_viiiddi"];
-asm["dynCall_viiiddi"] = function() {
-  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
-  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return real_dynCall_viiiddi.apply(null, arguments);
 };
 
 var real_dynCall_vidddddd = asm["dynCall_vidddddd"];
@@ -8858,6 +8858,12 @@ var dynCall_viiiiiiiiii = Module["dynCall_viiiiiiiiii"] = function() {
   return Module["asm"]["dynCall_viiiiiiiiii"].apply(null, arguments)
 };
 
+var dynCall_iiiji = Module["dynCall_iiiji"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return Module["asm"]["dynCall_iiiji"].apply(null, arguments)
+};
+
 var dynCall_i = Module["dynCall_i"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
@@ -8940,12 +8946,6 @@ var dynCall_viddddiii = Module["dynCall_viddddiii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return Module["asm"]["dynCall_viddddiii"].apply(null, arguments)
-};
-
-var dynCall_viiiddi = Module["dynCall_viiiddi"] = function() {
-  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
-  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_viiiddi"].apply(null, arguments)
 };
 
 var dynCall_vidddddd = Module["dynCall_vidddddd"] = function() {

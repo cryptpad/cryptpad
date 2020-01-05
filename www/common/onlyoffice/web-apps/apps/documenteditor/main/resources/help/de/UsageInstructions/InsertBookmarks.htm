@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Lesezeichen hinzufügen</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Bookmarks allow to quickly jump to a certain position in the current document or add a link to this location within the document." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Lesezeichen hinzufügen</h1>
+            <p>Lesezeichen ermöglichen den schnellen Wechsel zu einer bestimmten Position im aktuellen Dokument oder das Hinzufügen eines Links an dieser Position im Dokument.</p>
+			<p>Einfügen eines Lesezeichens:</p>
+			<ol>
+                <li>Positionieren Sie den Mauszeiger an den Anfang der Textpassage, in die das Lesezeichen eingefügt werden soll.</li>
+                <li>Wechseln Sie in der oberen Symbolleiste auf die Registerkarte <b>Verweise</b>.</li>
+                <li>Klicken Sie in der oberen Symbolleiste auf das Symbol <img alt="Lesezeichen" src="../images/bookmark.png" /> <b>Lesezeichen</b>.</li>
+				<li>Geben Sie im sich öffnenden Fenster <b>Lesezeichen</b> den <b>Namen des Lesezeichens</b> ein und klicken Sie auf die Schaltfläche <b>Hinzufügen</b> - das Lesezeichen wird der unten angezeigten Lesezeichenliste hinzugefügt.<p class="note"><b>Hinweis</b>: Der Name des Lesezeichens sollte mit einem Buchstaben beginnen, er kann jedoch auch Zahlen enthalten. Der Name des Lesezeichens darf keine Leerzeichen enthalten, ein Unterstrich "_" ist jedoch möglich.</p>
+                    <p><img alt="Fenster Lesezeichen" src="../images/bookmark_window.png" /></p>
+                </li>
+			</ol>
+            <p>So wechseln Sie zu einem der hinzugefügten Lesezeichen im Dokumenttext:</p>
+            <ol>
+                <li>Klicken Sie in der oberen Symbolleiste unter der Registerkarte <b>Verweise</b> auf das Symbol <img alt="Lesezeichen" src="../images/bookmark.png" /> <b>Lesezeichen</b>.</li>
+                <li>Wählen Sie im sich öffnenden Fenster <b>Lesezeichen</b> das Lesezeichen aus, zu dem Sie springen möchten. Um das erforderliche Lesezeichen in der Liste zu finden, können Sie die Liste nach <b>Name</b> oder <b>Position</b> eines Lesezeichens im Dokumenttext sortieren.</li>
+                <li>Aktivieren Sie die Option <b>Versteckte Lesezeichen</b>, um ausgeblendete Lesezeichen in der Liste anzuzeigen (z. B. die vom Programm automatisch erstellten Lesezeichen, wenn Sie Verweise auf einen bestimmten Teil des Dokuments hinzufügen. Wenn Sie beispielsweise einen Hyperlink zu einer bestimmten Überschrift innerhalb des Dokuments erstellen, erzeugt der Dokumenteditor automatisch ein ausgeblendetes Lesezeichen für das Ziel dieses Links).</li>
+                <li>Klicken Sie auf die Schaltfläche <b>Gehe zu</b> - der Cursor wird an der Stelle innerhalb des Dokuments positioniert, an der das ausgewählte Lesezeichen hinzugefügt wurde,</li>
+                <li>klicken Sie auf die Schaltfläche <b>Schließen</b>, um das Dialogfenster zu schließen.</li>
+            </ol>
+            <p>Um ein Lesezeichen zu löschen, wählen Sie den entsprechenden Namen aus der Liste der Lesezeichen aus und klicken Sie auf <b>Löschen</b>.</p>
+            <p>Informationen zum Verwenden von Lesezeichen beim Erstellen von Links finden Sie im Abschnitt <a href="../UsageInstructions/AddHyperlinks.htm" onclick="onhyperlinkclick(this)">Hyperlinks hinzufügen</a>.</p>
+
+		</div>
+	</body>
+</html>

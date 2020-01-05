@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insérer les sauts de section</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Insert section breaks to use different formatting for each section of the document" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insérer les sauts de section</h1>
+			<p>Les sauts de section vous permettent d'appliquer des mises en page et mises en formes différentes pour de certaines parties de votre document. Par exemple, vous pouvez utiliser des <a href="../UsageInstructions/InsertHeadersFooters.htm" onclick="onhyperlinkclick(this)">en-têtes et pieds de page</a>, des <a href="../UsageInstructions/InsertPageNumbers.htm" onclick="onhyperlinkclick(this)">numérotations des pages</a>, des <a href="../UsageInstructions/SetPageParameters.htm" onclick="onhyperlinkclick(this)">marges, la taille, l'orientation, ou le numéro de colonne</a> individuels pour chaque section séparée.</p>
+			<p class="note"><b>Remarque</b> : un saut de section inséré définit la mise en page de la partie précédente du document.</p>
+			<p>Pour insérer un saut de section à la position actuelle du curseur :</p>
+			<ol>
+				<li>cliquez sur l'icône <img alt="icône Saut de section" src="../images/pagebreak1.png" /> <b>Saut de section</b> dans l'onglet <b>Insérer</b> ou <b>Disposition</b> de la barre d'outils supérieure,</li>
+				<li>sélectionnez l'option <b>Insérer un saut de section</b></li>
+				<li>sélectionnez le type du saut de section nécessaire:<ul>
+				<li><b>Page suivante</b> - pour commencer une nouvelle section sur la page suivante</li>
+				<li><b>Page continue</b> - pour commencer une nouvelle section sur la page actuelle</li>
+				<li><b>Page paire</b> - pour commencer une nouvelle section sur la page suivante paire</li>
+				<li><b>Page impaire</b> - pour commencer une nouvelle section sur la page suivante impaire</li>
+				</ul>
+				</li>
+			</ol>
+			<p>Des sauts d'une section ajoutés sont indiqués dans votre document par un double trait pointillé: <img alt="Section break" src="../images/sectionbreak.png" /></p>
+			<p>Si vous ne voyez pas de sauts de section insérés, cliquez sur l'icône <img alt="icône Caractères non imprimables" src="../images/nonprintingcharacters.png" /> de l'onglet <b>Accueil</b> sur la barre d'outils supérieure pour les afficher.</p>
+			<p>Pour supprimer un saut de section, sélectionnez-le avec le souris et appuyez sur la touche <b>Supprimer</b>. Lorsque vous supprimez un saut de section, la mise en forme de cette section sera également supprimée, car un saut de section définit la mise en forme de la section précédente. La partie du document qui précède le saut de section supprimé acquiert la mise en forme de la partie qui la suive.</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Afficher les informations sur le document</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="View document title, author, location, creation date, persons with the rights to view or edit the document, and statistics" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Afficher les informations sur le document</h1>
+			<p>Pour accéder aux informations détaillées sur le document actuellement édité, cliquez sur l'onglet <b>Fichier</b> de la barre d'outils supérieure et sélectionnez l'option <b>Informations sur le document...</b>.</p>
+			<h3>Informations générales</h3>
+            <p>Les informations sur le document comprennent le titre du document, l'auteur, l'emplacement, la date de création et les statistiques : le nombre de pages, de paragraphes, de mots, de symboles et de symboles avec des espaces.</p>
+            <div class="onlineDocumentFeatures">
+                <p class="note"><b>Remarque</b> : Les éditeurs en ligne vous permettent de modifier le titre du document directement à partir de l'interface de l'éditeur. Pour ce faire, cliquez sur l'onglet <b>Fichier</b> de la barre d'outils supérieure et sélectionnez l'option <b>Renommer...</b>, puis entrez le <b>Nom de fichier</b> voulu dans la nouvelle fenêtre qui s'ouvre et cliquez sur <b>OK</b>.</p>
+            </div>  
+                <div class="onlineDocumentFeatures">
+                    <h3>Informations d'autorisation</h3>
+                    <p class="note"><b>Remarque</b> : cette option n'est pas disponible pour les utilisateurs disposant des autorisations en <b>Lecture seule</b>.</p>
+                    <p>Pour savoir qui a le droit d'afficher ou de modifier le document, sélectionnez l'option <b>Droits d'accès...</b> dans la barre latérale de gauche.</p>
+                    <p>Si vous avez l'accès complet à cette présentation, vous pouvez également changer les droits d'accès actuels en cliquant sur le bouton <b>Changer les droits d'accès</b> dans la section <b>Personnes qui ont des droits</b>.</p>
+                    <h3>Historique des versions</h3>
+                    <p class="note"><b>Remarque</b> : cette option n'est pas disponible pour les comptes gratuits ou les utilisateurs ne disposant que des autorisations en lecture seule.</p>
+                    <p>Pour afficher toutes les modifications apportées à ce document, sélectionnez l'option <b>Historique des versions</b> dans la barre latérale de gauche. Il est également possible d'ouvrir l'historique des versions à l'aide de l'icône <img alt="Icône Historique des versions" src="../images/versionhistoryicon.png" /> <b>Historique des versions</b> de l'onglet <b>Collaboration</b> de la barre d'outils supérieure. Vous verrez la liste des versions de ce document (changements majeurs) et des révisions (modifications mineures) avec l'indication de l'auteur de chaque version/révision et la date et l'heure de création. Pour les versions de document, le numéro de version est également spécifié (par exemple ver.<em> 2</em>). Pour savoir exactement quels changements ont été apportés à chaque version/révision, vous pouvez voir celle qui vous intéresse en cliquant dessus dans la barre latérale de gauche. Les modifications apportées par l'auteur de la version/révision sont marquées avec la couleur qui est affichée à côté du nom de l'auteur dans la barre latérale gauche. Vous pouvez utiliser le lien <b>Restaurer</b> sous la version/révision sélectionnée pour la restaurer. <!--To hide the list of the revisions within a certain version, use the <img alt="Collapse icon" src="../images/collapse.png" /> icon next to the version. To display revisions again, use the <img alt="Expand icon" src="../images/expand.png" /> icon.--></p>
+                    <p><img alt="Historique des versions" src="../images/versionhistory.png" /></p>
+                    <p>Pour revenir à la version actuelle du document, utilisez l'option <b>Fermer l'historique</b> en haut de la liste des versions.</p>
+                </div>
+                <p>Pour fermer l'onglet <b>Fichier</b> et reprendre le travail sur votre document, sélectionnez l'option <b>Retour au document</b>.</p>
+            </div>
+	</body>
+</html>

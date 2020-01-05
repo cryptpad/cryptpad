@@ -5,9 +5,14 @@
 		<meta charset="utf-8" />
 		<meta name="description" content="Set paragraph line spacing in your document" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
 			<h1>Set paragraph line spacing</h1>
 			<p>In Document Editor, you can set the line height for the text lines within the paragraph as well as the margins between the current and the preceding or the subsequent paragraph.</p>
 			<p>To do that,</p>
@@ -29,7 +34,7 @@
 					</ul>
 				</li>
 			</ol>
-			<p>To quickly change the current paragraph line spacing, you can also use the <b>Paragraph Line Spacing</b> <img alt="Paragraph Line Spacing" src="../images/linespacing.png" /> icon at the top toolbar selecting the needed value from the list: 1.0, 1.15, 1.5, 2.0, 2.5, or 3.0 lines.</p>
+			<p>To quickly change the current paragraph line spacing, you can also use the <b>Paragraph line spacing</b> <img alt="Paragraph line spacing" src="../images/linespacing.png" /> icon at the <b>Home</b> tab of the top toolbar selecting the needed value from the list: 1.0, 1.15, 1.5, 2.0, 2.5, or 3.0 lines.</p>
 		</div>
 	</body>
 </html>

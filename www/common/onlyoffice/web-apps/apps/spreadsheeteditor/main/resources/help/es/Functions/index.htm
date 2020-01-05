@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Función INDICE</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Función INDICE</h1>
+			<p>La función <b>INDICE</b> es una función de búsqueda y referencia. Se usa para devolver un valor dentro de un rango de celdas basándose en un número de fila y columna especificado. La función <b>INDICE</b> tiene dos formas. <!--The array form is used to return a value within a single range of cells. The reference form is used to return a value within an array that contains several ranges of cells.--></p>
+			<p>La sintaxis de la función <b>INDICE</b> en la forma de conjunto es:</p> 
+			<p style="text-indent: 150px;"><b><em>INDICE(conjunto, [número-fila][, [número-columna]])</em></b></p> 
+            <p>La sintaxis de la función <b>INDICE</b> en la forma de referencia es:</p>
+            <p style="text-indent: 150px;"><b><em>INDICE(referencia, [número-fila][, [número-columna][, [número-área]]])</em></b></p>
+            <p><em>donde</em></p> 
+            <p style="text-indent: 50px;"><em><b>conjunto</b></em> es un rango de celdas.</p>
+            <p style="text-indent: 50px;"><em><b>referencia</b></em> es una referencia a un rango de celdas<!--or several ranges enclosed in parentheses and separated by commas-->.</p>
+            <p style="text-indent: 50px;"><em><b>número-fila</b></em> es un número de fila al que quiere devolver un valor. Si se omite, el <em><b>número-columna</b></em> es obligatorio.</p>
+			<p style="text-indent: 50px;"><em><b>Número-columna</b></em> es un número de columna al que quiere devolver un valor. Si se omite, el <em><b>número-fila</b></em> es obligatorio.</p>
+            <p style="text-indent: 50px;"><em><b>Número-área</b></em> es un área a usar en casa de que el conjunto contenga varios rangos. Es un argumento opcional. Si se omite, la función asumirá que el <b><em>número-área</em></b> es igual a 1.</p>
+			<p>Los argumentos pueden ser introducidos manualmente o incluidos en las celdas a las que usted hace referencia.</p>
+			<p>Para aplicar la función <b>INDICE</b>,</p>
+			<ol>
+			<li>seleccione la celda donde usted quiere ver el resultado,</li>
+			<li>pulse el icono <b>Insertar función</b> <img alt="Icono insertar función" src="../images/insertfunction.png" /> que se sitúa en la barra de herramientas superior, <br />o haga clic derecho en la сelda seleccionada y elija la opción <b>Insertar función</b> en el menú, <br />o pulse el icono <img alt="Icono función" src="../images/function.png" /> que se sitúa en la barra de fórmulas,</li>
+			<li>seleccione el grupo de funciones <b>Búsqueda y referencia</b> en la lista,</li>
+			<li>haga clic en la función <b>INDICE</b>,</li>
+			<li>introduzca los argumentos correspondientes separados por comas,</li>
+			<li>pulse el botón <b>Enter</b>.</li>
+			</ol>
+			<p>El resultado se mostrará en la celda elegida.</p>
+			<p style="text-indent: 150px;"><img alt="Función INDICE" src="../images/index_1.png" /></p>
+		</div>
+	</body>
+</html>

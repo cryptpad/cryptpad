@@ -5,20 +5,26 @@
 		<meta charset="utf-8" />
 		<meta name="description" content="Insert equations and mathematical symbols." />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
 			<h1>Insert equations</h1>
             <p><b>Document Editor</b> allows you to build equations using the built-in templates, edit them, insert special characters (including mathematical operators, Greek letters, accents etc.).</p>
             <h3>Add a new equation</h3>
             <p>To insert an equation from the gallery,</p>
 			<ol>
 				<li>put the cursor within the necessary line ,</li>
-				<li>click the arrow next to the <b>Insert Equation</b> <img alt="Insert Equation icon" src="../images/insertequationicon.png" /> icon at the top toolbar,</li>
+                <li>switch to the <b>Insert</b> tab of the top toolbar,</li>
+				<li>click the arrow next to the <img alt="Equation icon" src="../images/insertequationicon.png" /> <b>Equation</b> icon at the top toolbar,</li>
 				<li>in the opened drop-down list select the equation category you need. The following categories are currently available: <em>Symbols</em>, <em>Fractions</em>, <em>Scripts</em>, <em>Radicals</em>, <em>Integrals</em>, <em>Large Operators</em>, <em>Brackets</em>, <em>Functions</em>, <em>Accents</em>, <em>Limits and Logarithms</em>, <em>Operators</em>, <em>Matrices</em>,</li>
                 <li>click the certain symbol/equation in the corresponding set of templates.</li>
 			</ol>
-            <p>The selected symbol/equation box will be inserted at the cursor position. If the selected line is empty, the equation will be centered. To align such an equation left or right, click on the equation box and use the <img alt="Align Left icon" src="../images/alignleft.png" /> or <img alt="Align Right icon" src="../images/alignright.png" /> icon at the top toolbar.</p>
+            <p>The selected symbol/equation box will be inserted at the cursor position. If the selected line is empty, the equation will be centered. To align such an equation left or right, click on the equation box and use the <img alt="Align Left icon" src="../images/alignleft.png" /> or <img alt="Align Right icon" src="../images/alignright.png" /> icon at the <b>Home</b> tab of the top toolbar.</p>
             <img alt="Inserted Equation" src="../images/insertedequation.png" />
             <p>Each equation template represents a set of slots. Slot is a position for each element that makes up the equation. An empty slot (also called as a placeholder) has a dotted outline <img alt="Equation Placeholder" src="../images/equationplaceholder.png" />. You need to fill in all the placeholders specifying the necessary values.</p>
             <p class="note"><b>Note</b>: to start creating an equation, you can also use the <b>Alt + =</b> keyboard shortcut.</p>
@@ -29,7 +35,7 @@
             <p>Once the insertion point is positioned, you can fill in the placeholder:
             <ul>
                 <li>enter the desired numeric/literal value using the keyboard,</li>
-                <li>insert a special character using the <b>Symbols</b> palette from the <b>Insert Equation</b> <img alt="Insert Equation icon" src="../images/insertequationicon.png" /> menu on the top toolbar,</li>
+                <li>insert a special character using the <b>Symbols</b> palette from the <img alt="Equation icon" src="../images/insertequationicon.png" /> <b>Equation</b> menu at the <b>Insert</b> tab of the top toolbar,</li>
                 <li>add another equation template from the palette to create a complex nested equation. The size of the primary equation will be automatically adjusted to fit its content. The size of the nested equation elements depends on the primary equation placeholder size, but it cannot be smaller than the sub-subscript size.</li>                
             </ul>
             </p>
@@ -44,8 +50,8 @@
             <p>When entering the values of the mathematical expressions, you do not need to use <b>Spacebar</b> as the spaces between the characters and signs of operations are set automatically.</p>
             <p>If the equation is too long and does not fit to a single line, automatic line breaking occurs as you type. You can also insert a line break in a specific position by right-clicking on a mathematical operator and selecting the <b>Insert manual break</b> option from the menu. The selected operator will start a new line. Once the manual line break is added, you can press the <b>Tab</b> key to align the new line to any math operator of the previous line. To delete the added manual line break, right-click on the mathematical operator that starts a new line and select the <b>Delete manual break</b> option.</p>
             <h3>Format equations</h3>
-            <p>To increase or decrease the equation <b>font size</b>, click anywhere within the equation box and use the <img alt="Increment font size" src="../images/larger.png" /> and <img alt="Decrement font size" src="../images/smaller.png" /> buttons on the top toolbar or select the necessary font size from the list. All the equation elements will change correspondingly.</p>
-            <p>The letters within the equation are italicized by default. If necessary, you can change the <b>font style</b> (<em>bold, italic, strikeout</em>) or <b>color</b> for a whole equation or its part. The <em>underlined</em> style can be applied to the entire equation only, not to individual characters. Select the necessary part of the equation by clicking and dragging. The selected part will be highlighted blue. Then use the necessary buttons on the top toolbar to format the selection. For example, you can remove the italic format for ordinary words that are not variables or constants.</p>
+            <p>To increase or decrease the equation <b>font size</b>, click anywhere within the equation box and use the <img alt="Increment font size" src="../images/larger.png" /> and <img alt="Decrement font size" src="../images/smaller.png" /> buttons at the <b>Home</b> tab of the top toolbar or select the necessary font size from the list. All the equation elements will change correspondingly.</p>
+            <p>The letters within the equation are italicized by default. If necessary, you can change the <b>font style</b> (<em>bold, italic, strikeout</em>) or <b>color</b> for a whole equation or its part. The <em>underlined</em> style can be applied to the entire equation only, not to individual characters. Select the necessary part of the equation by clicking and dragging. The selected part will be highlighted blue. Then use the necessary buttons at the <b>Home</b> tab of the top toolbar to format the selection. For example, you can remove the italic format for ordinary words that are not variables or constants.</p>
             <img alt="Edited Equation" src="../images/formatastext.png" />
             <p>To modify some equation elements you can also use the <b>right-click menu options</b>:</p>
             <ul><li>To change the <em>Fractions</em> format, you can right-click on a fraction and select the <b>Change to skewed/linear/stacked fraction</b> option from the menu (the available options differ depending on the selected fraction type). <!--The <b>Remove/Add fraction bar</b> option is also available for stacked fractions.--></li>

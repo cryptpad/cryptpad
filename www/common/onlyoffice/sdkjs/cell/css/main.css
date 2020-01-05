@@ -119,21 +119,25 @@
  * --------------------------------------------------------
  */
 
-#ce-canvas-outer {
+#ce-canvas-outer,
+#ce-canvas-outer-menu {
 	position: absolute;
 	border: 0;
 	overflow: hidden;
 }
 
 #ce-canvas,
-#ce-canvas-overlay {
+#ce-canvas-overlay,
+#ce-canvas-menu,
+#ce-canvas-overlay-menu {
 	border: 0;
 	position: absolute;
 	left: 0;
 	top: 0;
 }
 
-#ce-cursor {
+#ce-cursor,
+#ce-cursor-menu {
 	position: absolute;
 	background-color: #000;
 	width: 1px;

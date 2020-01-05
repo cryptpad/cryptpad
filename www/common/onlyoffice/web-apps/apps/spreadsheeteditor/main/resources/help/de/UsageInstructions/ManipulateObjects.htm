@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Objekte formatieren</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Move, rotate, resize, reshape and arrange autoshapes, images, charts." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Objekte formatieren</h1>
+			<p>Sie können die Größe von in Ihrem Arbeitsblatt eingefügten AutoFormen, Bildern und Diagrammen ändern und diese verschieben, drehen und anordnen.</p>
+			<h3>Größe von Objekten ändern</h3>
+			<p>Um die <b>Größe</b> von AutoFormen, Bildern oder Diagrammen zu ändern, ziehen Sie mit der Maus an den kleinen Quadraten <img alt="Quadrat" src="../images/resize_square.png" /> an den Rändern des entsprechenden Objekts. Um das ursprünglichen Seitenverhältnis der ausgewählten Objekte während der Größenänderung beizubehalten, halten Sie Taste <b>UMSCHALT</b> gedrückt und ziehen Sie an einem der Ecksymbole.</p>
+			<p class="note"><b>Hinweis</b>: Sie können die Größe des eingefügten Diagramms oder Bildes auch über die rechte Seitenleiste ändern, dieses wird aktiviert, sobald Sie das gewünschte Objekt ausgewählt haben. Um diese zu öffnen, klicken Sie rechts auf das Symbol <b>Diagrammeinstellungen</b> <img alt="Diagrammeinstellungen" src="../images/chartsettingsicon.png" /> oder das Symbol <b>Bildeinstellungen</b> <img alt="Bildeinstellungen" src="../images/image_settings_icon.png" />.<p><img alt="Seitenverhältnis sperren" src="../images/maintain_proportions.png" /></p>
+			<h3>Objekte verschieben</h3>
+			<p>Um die Position von <b>AutoFormen, Bildern und Diagrammen</b> zu ändern, nutzen Sie das Symbol <img alt="Pfeil" src="../images/arrow.png" />, das eingeblendet wird, wenn Sie den Mauszeiger über die AutoForm bewegen. Ziehen Sie das Objekt in die gewünschten Position, ohne die Maustaste loszulassen. Um ein Objekt in 1-Pixel-Stufen zu verschieben, halten Sie die Taste <b>STRG</b> gedrückt und verwenden Sie die Pfeile auf der Tastatur. Um ein Objekt strikt horizontal/vertikal zu bewegen und zu verhindern, dass es sich perpendikular bewegt, halten Sie die <b>UMSCHALT</b>-Taste beim Ziehen gedrückt.</p>
+			<h3>Objekte drehen</h3>
+			<p>Um <b>die Form oder das Bild</b> zu drehen, bewegen Sie den Cursor über den Drehpunkt <img alt="Drehpunkt" src="../images/greencircle.png" /> und ziehen Sie diesen im oder gegen den Uhrzeigersinn. Um ein Objekt in 15-Grad-Stufen zu drehen, halten Sie die <b>UMSCHALT</b>-Taste bei der Drehung gedrückt.</p>
+			<h3>Die Form einer AutoForm ändern</h3>
+			<p>Bei der Änderung einiger Formen, z.B. geformte Pfeile oder Legenden, ist auch dieses gelbe diamantförmige Symbol <img alt="Gelber Diamant" src="../images/yellowdiamond.png" /> verfügbar. Über dieses Symbol können verschiedene Komponenten einer Form geändert werden, z.B. die Länge des Pfeilkopfes.</p>
+			<p><img alt="Form einer AutoForm ändern" src="../images/reshaping.png" /></p>
+            <h3>Objekte ausrichten</h3>
+            <p>Um ausgewählte Objekte mit einem gleichbleibenden Verhältnis zueinander <b>auszurichten</b>, halten Sie die Taste <b>STRG</b> gedrückt und wählen Sie die Objekte mit der Maus aus. Klicken Sie dann in der oberen Symbolleiste unter der Registerkarte <b>Layout</b> auf das Symbol <img alt="Ausrichten" src="../images/align_toptoolbar.png" /> <b>Ausrichten</b> und wählen Sie den gewünschten Ausrichtungstyp aus der Liste aus:</p>
+            <ul>
+                <li><b>Linksbündig Ausrichten</b> <img alt="Linksbündig ausrichten" src="../images/alignobjectleft.png" /> - Objekte linksbünding in gleichbleibendem Verhältnis zueinander ausrichten,</li>
+                <li><b>Zentrieren</b> <img alt="Zentriert ausrichten" src="../images/alignobjectcenter.png" /> - Objekte in gleichbleibendem Verhältnis zueinander zentriert ausrichten,</li>
+                <li><b>Rechtsbündig Ausrichten</b> <img alt="Rechtsbündig ausrichten" src="../images/alignobjectright.png" /> - Objekte rechtsbündig in gleichbleibendem Verhältnis zueinander ausrichten,</li>
+                <li><b>Oben ausrichten</b> <img alt="Oben ausrichten" src="../images/alignobjecttop.png" /> - Objekte in gleichbleibendem Verhältnis zueinander oben ausrichten,</li>
+                <li><b>Zentrieren</b> <img alt="Mittig ausrichten" src="../images/alignobjectmiddle.png" /> - Objekte in gleichbleibendem Verhältnis zueinander mittig ausrichten,</li>
+                <li><b>Unten ausrichten</b> <img alt="Unten ausrichten" src="../images/alignobjectbottom.png" /> - Objekte in gleichbleibendem Verhältnis zueinander unten ausrichten.</li>
+            </ul>
+            <h3>Objekte gruppieren</h3>
+            <p>Um die Form von mehreren Objekten gleichzeitig und gleichmäßig zu verändern, können Sie diese <b>Gruppieren</b>. Halten Sie dazu die Taste <b>STRG</b> gedrückt und wählen Sie die Objekte mit der Maus aus. Klicken Sie dann in der oberen Symbolleiste unter der Registerkarte <b>Layout</b> auf das Symbol <img alt="Gruppieren" src="../images/group_toptoolbar.png" /> <b>Gruppieren</b> und wählen Sie die gewünschte Option aus der Liste aus:</p>
+            <ul>
+                <li><b>Gruppieren</b> <img alt="Gruppieren" src="../images/group.png" /> - um mehrere Objekte zu einer Gruppe zusammenzufügen, so dass sie gleichzeitig rotiert, verschoben, skaliert, ausgerichtet, angeordnet, kopiert, eingefügt und formatiert werden können, wie ein einzelnes Objekt.</li>
+                <li><b>Gruppierung aufheben</b> <img alt="Gruppierung aufheben" src="../images/ungroup.png" /> - um die ausgewählte Gruppe der zuvor gruppierten Objekte aufzulösen.</li>
+            </ul>
+            <p>Alternativ können Sie mit der rechten Maustaste auf die ausgewählten Objekte klicken, wählen Sie anschließend im Kontextmenü die Option <b>Gruppieren</b> oder <b>Gruppierung aufheben</b> aus.</p>
+            <p><img alt="Objekte gruppieren" src="../images/grouping.png" /></p>
+            <h3 id="arrange">Objekte anordnen</h3>
+            <p>Um ausgewählte <b>Objekte anzuordnen</b> (z.B. die Reihenfolge bei einer Überlappung zu ändern), klicken Sie auf das Smbol <img alt="Eine Ebene nach vorne" src="../images/bringforward_toptoolbar.png" /> <b>eine Ebene nach vorne</b> oder <img alt="Eine Ebene nach hinten" src="../images/sendbackward_toptoolbar.png" /> <b>eine Ebene nach hinten</b> in der Registerkarte <b>Layout</b> und wählen Sie die gewünschte Anordnung aus der Liste aus.</p>
+            <p>Um das/die ausgewählte(n) Objekt(e) nach vorne zu bringen, klicken Sie auf das Symbol <img alt="Eine Ebene nach vorne" src="../images/bringforward_toptoolbar.png" /> <b>Eine Ebene nach vorne</b> in der Registerkarte <b>Layout</b> und wählen Sie den gewünschten Ausrichtungstyp aus der Liste aus:</p>
+            <ul>
+                <li><b>In den Vordergrund</b> <img alt="In den Vordergrund" src="../images/bringtofront.png" /> - Objekt(e) in den Vordergrund bringen,</li>
+                <li><b>Eine Ebene nach vorne</b> <img alt="Eine Ebene nach vorne" src="../images/bringforward.png" /> - um ausgewählte Objekte eine Ebene nach vorne zu schieben.</li>
+            </ul>
+            <p>Um das/die ausgewählte(n) Objekt(e) nach hinten zu verschieben, klicken Sie auf den Pfeil <img alt="Eine Ebene nach hinten" src="../images/sendbackward_toptoolbar.png" /> <b>nach hinten verschieben</b> in der Registerkarte <b>Layout</b> und wählen Sie den gewünschten Ausrichtungstyp aus der Liste aus:</p>
+            <ul>
+                <li><b>In den Hintergrund</b> <img alt="In den Hintergrund" src="../images/sendtoback.png" /> - um ein Objekt/Objekte in den Hintergrund zu schieben.</li>
+                <li><b>Eine Ebene nach hinten</b> <img alt="Eine Ebene nach hinten" src="../images/sendbackward.png" /> - um ausgewählte Objekte nur eine Ebene nach hinten zu schieben.</li>
+            </ul>			
+		</div>
+	</body>
+</html>

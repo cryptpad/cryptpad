@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fonction RECHERCHEV</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Fonction RECHERCHEV</h1>
+			<p>La fonction <b>RECHERCHEV</b> est l'une des fonctions de recherche et de référence. Elle est utilisée pour effectuer la recherche verticale d'une valeur dans la première colonne à gauche d'un tableau et retourner la valeur qui se trouve dans la même ligne à la base d'un numéro d'index de colonne spécifié.</p>
+			<p>La syntaxe de la fonction <b>RECHERCHEV</b> est :</p> 
+			<p style="text-indent: 150px;"><b><em>RECHERCHEV (lookup-value, table-array, col-index-num[, [range-lookup-flag]])</em></b></p> 
+			<p><em>où</em></p> 
+			<p style="text-indent: 50px;"><b><em>lookup-value</em></b> est une valeur à chercher.</p>
+			<p style="text-indent: 50px;"><b><em>table-array</em></b> ce sont deux ou plusieurs colonnes contenant des données triées dans l'ordre croissant.</p> 
+			<p style="text-indent: 50px;"><b><em>col-index-num</em></b> est un numéro de colonne dans <b><em>table-array</em></b>, une valeur numérique supérieure ou égale à 1 mais inférieure au nombre de colonnes dans <b>table-array</b>.</p> 
+			<p style="text-indent: 50px;"><b><em>range-lookup-flag</em></b> est une valeur logique TRUE (vrai) ou FALSE (faux). C'est un argument facultatif. Entrez FALSE (faux) pour trouver une correspondance exacte. Au cas où il n'y a pas de valeur qui correspond strictement à <b><em>lookup-value</em></b>, alors la fonction choisit la valeur plus grande et proche à <b><em>lookup-value</em></b>.<p class="note"><b>Remarque </b>: si <b><em>range-lookup-flag</em></b> est FALSE (faux), mais aucune correspondance n'est trouvée, alors la fonction renvoie l'erreur <b>#N/A</b>.</p>
+			<p>Pour appliquer la fonction <b>RECHERCHEV</b>,</p>
+			<ol>
+			<li>sélectionnez la cellule où vous souhaitez afficher le résultat,</li>
+			<li>cliquez sur l'icône <b>Insérer une fonction</b> <img alt="Icône Insérer une fonction" src="../images/insertfunction.png" /> située sur la barre d'outils supérieure, <br />ou cliquez avec le bouton droit sur la cellule sélectionnée et sélectionnez l'option <b>Insérer une fonction</b> depuis le menu, <br />ou cliquez sur l'icône <img alt="Icône Fonction" src="../images/function.png" /> située sur la barre de formule,</li>
+			<li>sélectionnez le groupe de fonctions <b>Recherche et référence</b> depuis la liste,</li>
+			<li>cliquez sur la fonction <b>RECHERCHEV</b>,</li>
+			<li>insérez les arguments nécessaires en les séparant par des virgules,</li>
+			<li>appuyez sur la touche <b>Entrée</b>.</li>
+			</ol>
+			<p>Le résultat sera affiché dans la cellule sélectionnée.</p>
+			<p style="text-indent: 150px;"><img alt="Fonction RECHERCHEV" src="../images/vlookup.png" /></p>
+		</div>
+	</body>
+</html>

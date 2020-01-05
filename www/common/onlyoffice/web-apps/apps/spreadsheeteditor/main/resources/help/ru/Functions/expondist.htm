@@ -1,23 +1,28 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 	<head>
-		<title>Функция EXPONDIST (ЭКСПРАСП)</title>
+		<title>Функция ЭКСПРАСП</title>
 		<meta charset="utf-8" />
 		<meta name="description" content="" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
-			<h1>Функция EXPONDIST (ЭКСПРАСП)</h1>
-			<p>Функция <b>EXPONDIST</b> - это одна из статистических функций. Возвращает экспоненциальное распределение.</p>
-			<p>Синтаксис функции <b>EXPONDIST</b>:</p> 
-			<p style="text-indent: 150px;"><b><em>EXPONDIST(x, lambda, cumulative-flag)</em></b></p> 
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Поиск" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Функция ЭКСПРАСП</h1>
+			<p>Функция <b>ЭКСПРАСП</b> - это одна из статистических функций. Возвращает экспоненциальное распределение.</p>
+			<p>Синтаксис функции <b>ЭКСПРАСП</b>:</p> 
+			<p style="text-indent: 150px;"><b><em>ЭКСПРАСП(x;лямбда;интегральная)</em></b></p> 
 			<p><em>где</em></p> 
 				<p style="text-indent: 50px;"><b><em>x</em></b> - значение функции; числовое значение, большее или равное 0,</p>
-				<p style="text-indent: 50px;"><b><em>lambda</em></b> (лямбда) - значение параметра; числовое значение больше 0,</p> 
-				<p style="text-indent: 50px;"><b><em>cumulative-flag</em></b> - форма возвращаемой функции; логическое значение: TRUE (ИСТИНА) или FALSE (ЛОЖЬ). Если аргумент <b><em>cumulative-flag</em></b> имеет значение TRUE (ИСТИНА), функция EXPONDIST возвращает интегральную функцию распределения. Если этот аргумент имеет значение FALSE (ЛОЖЬ), функция EXPONDIST возвращает функцию плотности распределения.</p>
+				<p style="text-indent: 50px;"><b><em>лямбда</em></b> - значение параметра; числовое значение больше 0,</p> 
+				<p style="text-indent: 50px;"><b><em>интегральная</em></b> - форма возвращаемой функции; логическое значение: ИСТИНА или ЛОЖЬ. Если аргумент <b><em>интегральная</em></b> имеет значение ИСТИНА, функция ЭКСПРАСП возвращает интегральную функцию распределения. Если этот аргумент имеет значение ЛОЖЬ, функция ЭКСПРАСП возвращает функцию плотности распределения.</p>
 				<p>Эти значения можно ввести вручную или использовать в качестве аргументов ссылки на ячейки.</p>
-			<p>Чтобы применить функцию <b>EXPONDIST</b>,</p>
+			<p>Чтобы применить функцию <b>ЭКСПРАСП</b>,</p>
 			<ol>
 			<li>выделите ячейку, в которой требуется отобразить результат,</li>
 			<li>щелкните по значку <b>Вставить функцию</b> <img alt="Значок Вставить функцию" src="../images/insertfunction.png" />, расположенному на верхней панели инструментов,
@@ -25,12 +30,12 @@
 				<br />или щелкните по значку <img alt="Значок Функция" src="../images/function.png" /> перед строкой формул,
 			</li>
 			<li>выберите из списка группу функций <b>Статистические</b>,</li>
-			<li>щелкните по функции <b>EXPONDIST</b>,</li>
-			<li>введите требуемые аргументы, разделяя их запятыми,</li>
+			<li>щелкните по функции <b>ЭКСПРАСП</b>,</li>
+			<li>введите требуемые аргументы через точку с запятой,</li>
 			<li>нажмите клавишу <b>Enter</b>.</li>
 			</ol>
 			<p>Результат будет отображен в выбранной ячейке.</p>
-			<p style="text-indent: 150px;"><img alt="Функция EXPONDIST" src="../images/expondist.png" /></p>
+			<p style="text-indent: 150px;"><img alt="Функция ЭКСПРАСП" src="../images/expondist.png" /></p>
 		</div>
 	</body>
 </html>

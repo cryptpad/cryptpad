@@ -5,11 +5,16 @@
 		<meta charset="utf-8" />
         <meta name="description" content="Use Mail Merge to create a lot of personalized letters and send them to recipients" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
 			<h1>Use Mail Merge</h1>
-            <p class="note"><b>Note</b>: this option is available for paid versions only.</p>
+            <p class="note"><b>Note</b>: this option is available in the <em>online version</em> only.</p>
 			<p>The <b>Mail Merge</b> feature is used to create a set of documents combining a common content which is taken from a text document and some individual components (variables, such as names, greetings etc.) taken from a spreadsheet (for example, a customer list). It can be useful if you need to create a lot of personalized letters and send them to recipients.</p>
 			<p>To start working with the <b>Mail Merge</b> feature,</p>
             <ol>
@@ -18,11 +23,11 @@
                     <li>A data source used for the mail merge must be an <b>.xlsx</b> spreadsheet stored on your portal. Open an existing spreadsheet or create a new one and make sure that it meets the following requirements.
                     <p>The spreadsheet should have a header row with the column titles, as values in the first cell of each column will designate merge fields (i.e. variables that you can insert into the text). Each column should contain a set of actual values for a variable. Each row in the spreadsheet should correspond to a separate record (i.e. a set of values that belongs to a certain recipient). During the merge process, a copy of the main document will be created for each record and each merge field inserted into the main text will be replaced with an actual value from the corresponding column. If you are goung to send results by email, the spreadsheet must also include a column with the recipients' email addresses.</p>
                     </li>
-                    <li>Open an existing text document or create a new one. It must contain the main text which will be the same for each version of the merged document. Click the <b>Mail Merge</b> <img alt="Mail Merge icon" src="../images/mailmergeicon.png" /> icon on the top toolbar.</li>
+                    <li>Open an existing text document or create a new one. It must contain the main text which will be the same for each version of the merged document. Click the <b>Mail Merge</b> <img alt="Mail Merge icon" src="../images/mailmergeicon.png" /> icon at the <b>Home</b> tab of the top toolbar.</li>
                     <li>The <b>Select Data Source</b> window will open. It displays the list of all your <b>.xlsx</b> spreadsheets stored in the <b>My Documents</b> section. To navigate between other <b>Documents</b> module sections use the menu in the left part of the window. Select the file you need and click <b>OK</b>.</li>
                 </ol>
-                <p>Once the data source is loaded, the <b>Mail Merge Setting</b> tab will be available on the right sidebar.</p>
-                <p><img alt="Mail Merge Setting tab" src="../images/right_mailmerge.png" /></p>
+                <p>Once the data source is loaded, the <b>Mail Merge setting</b> tab will be available on the right sidebar.</p>
+                <p><img alt="Mail Merge setting tab" src="../images/right_mailmerge.png" /></p>
                 </li>
                 <li><b>Verify or change the recipients list</b>
                 <ol>
@@ -32,7 +37,7 @@
                     <li>Here you can add new information, edit or delete the existing data, if necessary. To simplify working with data, you can use the icons on the top of the window:
                     <ul>
                         <li><img alt="Copy" src="../images/copy.png" /> and <img alt="Paste" src="../images/paste.png" /> - to copy and paste the copied data</li>
-                        <li><img alt="Undo" src="../images/undo.png" /> and <img alt="Redo" src="../images/redo.png" /> - to undo and redo undone actions</li>
+                        <li><img alt="Undo" src="../images/undo1.png" /> and <img alt="Redo" src="../images/redo1.png" /> - to undo and redo undone actions</li>
                         <li><img alt="Sort Lowest to Highest icon" src="../images/sortatoz.png" /> and <img alt="Sort Highest to Lowest icon" src="../images/sortztoa.png" /> - to sort your data within a selected range of cells in ascending or descending order</li>
                         <li><img alt="Filter icon" src="../images/sortandfilter.png" /> - to enable the filter for the previously selected range of cells or to remove the applied filter</li>
                         <li><img alt="Clear Filter icon" src="../images/clearfilter.png" /> - to clear all the applied filter parameters

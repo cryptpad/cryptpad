@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Copier/coller les données, annuler/rétablir vos actions</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Perform the basic operations with the presentation: copy, paste, undo, redo" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Copier/coller les données, annuler/rétablir vos actions</h1>
+            <h3>Utiliser les opérations de base du presse-papiers</h3>
+			<p>Pour couper, copier et coller les objets sélectionnés (diapositives, passages de texte, formes automatiques) de votre présentation ou annuler/rétablir vos actions, utilisez les icônes correspondantes sur la barre d'outils supérieure :</p>
+            <ul>
+                <li><b>Couper</b> – sélectionnez un objet et utilisez l'option <b>Couper</b> du menu contextuel pour effacer la sélection et l'envoyer dans le presse-papiers de l'ordinateur. Les données coupées peuvent être insérées ensuite à un autre endroit de la même présentation</li>
+                <li><b>Copier</b> – sélectionnez un objet et utilisez l'option <b>Copier</b> dans le menu contextuel, ou l'icône <b>Copier</b> <img alt="Icône Copier" src="../images/copy.png" /> de la barre d'outils supérieure pour copier la sélection dans le presse-papiers de l'ordinateur. L'objet copié peut être inséré ensuite à un autre endroit dans la même présentation.</li>
+                <li><b>Coller</b> – trouvez l'endroit dans votre présentation où vous voulez coller l'objet précédemment copié et utilisez l'option <b>Coller</b> du menu contextuel ou l'icône <b>Coller</b> <img alt="Icône Coller" src="../images/paste.png" /> de la barre d'outils supérieure. L'objet sera inséré à la position actuelle du curseur. L'objet peut être copié depuis la même présentation.</li>
+            </ul>    
+            <p>Vous pouvez aussi utiliser les combinaisons de touches suivantes pour effectuer les opérations nécessaires :</p>
+                    <ul>
+                        <li><b>Ctrl+C</b> pour copier ;</li>
+                        <li><b>Ctrl+V</b> pour coller ;</li>
+                        <li><b>Ctrl+X</b> pour couper.</li>
+                    </ul>
+            <h3>Utiliser la fonctionnalité Collage spécial</h3>
+            <p>Une fois le texte copié collé, le bouton <b>Collage spécial</b> <img alt="Collage spécial" src="../images/pastespecialbutton.png" /> apparaît à côté du passage de texte inséré. Cliquez sur ce bouton pour sélectionner l'option de collage requise.</p>
+            <p>Lors du collage de passages de texte, les options suivantes sont disponibles:</p>
+            <ul>
+                <li><em>Utiliser le thème de destination</em> - permet d'appliquer la mise en forme spécifiée par le thème de la présentation en cours. Cette option est utilisée par défaut.</li>
+                <li><em>Garder la mise en forme de la source</em> - permet de conserver la mise en forme de la source des données copiées.</li>
+                <li><em>Image</em> - permet de coller le texte en tant qu'image afin qu'il ne puisse pas être modifié.</li>
+                <li><em>Conserver le texte uniquement</em> - permet de coller le texte sans  sa mise en forme d'origine.</li>
+            </ul>
+            <p><img alt="Options de collage" src="../images/pastespecial.png" /></p>
+            <p>Lorsque vous collez des objets (formes automatiques, graphiques, tableaux), les options suivantes sont disponibles:</p>
+            <ul>
+                <li><em>Utiliser le thème de destination</em> - permet d'appliquer la mise en forme spécifiée par le thème de la présentation en cours. Cette option est utilisée par défaut.</li>
+                <li><em>Image</em> - permet de coller l'objet en tant qu'image afin qu'il ne puisse pas être modifié.</li>
+            </ul>
+            <h3>Utiliser les opérations Annuler/Rétablir</h3>
+            <p>Pour annuler / rétablir les actions, utilisez les icônes correspondantes de la barre d'outils supérieure ou les raccourcis clavier :</p>
+            <ul>
+                <li><b>Annuler</b> – utilisez l'icône <b>Annuler</b> <img alt="Icône Annuler" src="../images/undo.png" /> pour annuler la dernière action effectuée.</li>
+                <li><b>Rétablir</b> – utilisez l'icône <b>Rétablir</b> <img alt="Icône Rétablir" src="../images/redo.png" /> pour rétablir la dernière action annulée.<p>Vous pouvez aussi utiliser la combinaison de touches <b>Ctrl+Z</b> pour annuler ou pour rétablir <b>Ctrl+Y</b>.</p>
+                </li>
+            </ul>
+			
+		</div>
+	</body>
+</html>

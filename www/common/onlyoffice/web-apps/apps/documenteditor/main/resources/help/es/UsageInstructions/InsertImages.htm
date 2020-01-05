@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Inserte imágenes</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add an image to your document and adjust its position and properties" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Inserte imágenes</h1>
+			<p>En el editor de documentos, usted puede insertar imágenes de formatos más populares en su documento. Los siguientes formatos de imágenes son compatibles: <b>BMP</b>, <b>GIF</b>, <b>JPEG</b>, <b>JPG</b>, <b>PNG</b>.</p>
+            <h3>Inserte una imagen</h3>
+            <p>Para insertar una imagen en texto de su documento,</p>
+			<ol>
+				<li>ponga el cursor en un lugar donde quiera que aparezca la imagen,</li>
+                <li>cambie a la pestaña <b>Insertar</b> en la barra de herramientas superior,</li>
+				<li>haga clic en el icono <img alt="Icono Imagen" src="../images/image.png" /> <b>Imagen</b> en la barra de herramientas superior,</li>
+				<li>seleccione una de las opciones siguientes para cargar la imagen:<ul>
+						<li>la opción <b>Imagen desde Archivo</b> abrirá la ventana de diálogo para la selección de archivo. Navegue el disco duro de su ordenador para encontrar un archivo correspondiente y haga clic en el botón <b>Abrir</b></li>
+						<li>la opción <b>Imagen desde URL</b> abrirá la ventana donde usted puede introducir la dirección web de la imagen correspondiente; después haga clic en el botón <b>OK</b></li>
+					</ul>
+				</li>
+				<li>una vez añadida la imagen cambie su tamaño, parámetros y posición.</li>
+			</ol>
+            <h3>Mover y cambiar el tamaño de imágenes</h3>
+			<p><img class="floatleft" alt="Mover imagen" src="../images/moving_image.png" /> Para cambiar el tamaño de la imagen, arrastre pequeños cuadrados <img alt="Icono cuadrado" src="../images/resize_square.png" /> situados en sus bordes. Para mantener las proporciones originales de una imagen seleccionada mientras el proceso de redimensionamiento, mantenga apretada la tecla <b>Shift</b> y arrastre uno de los iconos de la esquina.</p>
+			<p>Para cambiar la posición de la imagen, use el <img alt="Flecha" src="../images/arrow.png" /> icono  que aparece cuando usted mantiene cursor del ratón sobre la imagen. Arrastre la imagen a la posición necesaria apretando el botón del ratón.</p>
+			<p>Cuando mueve la imagen, las línes guía se muestran para ayudarle a colocar el objeto en la página más precisamente.</p>
+			<p>Para girar la imagen, mantenga el cursor del ratón encima del controlador de giro <img alt="Controlador de giro" src="../images/greencircle.png" />  y arrástrelo en la dirección de las manecillas o en el sentido contrario. Para limitar el ángulo de rotación hasta un incremento de 15 grados, mantenga apretada la tecla <b>Shift</b> mientras rota.</p>
+            <p class="note"><b>Nota</b>: la lista de atajos de teclado que puede ser usada al trabajar con objetos está disponible <a href="../HelpfulHints/KeyboardShortcuts.htm#workwithobjects" onclick="onhyperlinkclick(this)">aquí</a>.</p>
+            <hr />
+            <h3>Ajustes de ajuste de imagen</h3>
+			<p><img class="floatleft" alt="Pestaña de ajustes de imagen" src="../images/right_image.png" /> Se puede cambiar unos ajustes de la imagen usando la pestaña <b>Ajustes de imagen</b> en la barra derecha lateral. Para activarla pulse la imagen y elija el <img alt="Icono Ajustes de imagen" src="../images/image_settings_icon.png" /> icono <b>Ajustes de imagen</b>  a la derecha. Aquí usted puede cambiar los siguientes ajustes:</p>
+			<ul style="margin-left: 280px;">
+				<li><b>Tamaño</b> - se usa para ver el <b>Ancho</b> y <b>Altura</b> de la imagen. Si es necesario, puede restaurar el tamaño por defecto de la imagen si hace clic en el botón de <b>Tamaño por Defecto</b>. El botón <b>Ajustar al Margen</b> le permite volver a dar tamaño a la imagen, para que ocupe todo el espacio entre el margen de la página izquierdo y derecho.</li>
+				<li><b>Ajuste de texto</b> - se usa para seleccionar el estilo de ajuste de texto de los disponibles - alineado, cuadrado, estrecho, a través, superior e inferior, adelante, detrás (para obtener más información lea la descripción de ajustes avanzados debajo).</li>
+				<li><b>Reemplazar Imagen</b> se usa para reemplazar la imagen actual cargando otra <b>Desde Archivo</b> o <b>Desde URL</b>.</li>
+			</ul>
+            <p>También puede encontrar estas opciones en el <b>menú contextual</b>. Aquí tiene las opciones:</p>
+			<ul style="margin-left: 280px;">
+                <li><b>Cortar, Copiar, Pegar</b> - opciones estándar usadas para cortar, copiar un texto/objeto seleccionado y pegar un pasaje de texto u objeto anteriormente cortado/copiado a una posición de cursor actual.</li>
+				<li><b>Arreglar</b> - se usa para traer al primer plano la imagen seleccionada, enviarla al fondo, traerla adelante o enviarla atrás. Para saber más sobre cómo organizar objetos puede visitar <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">esta página</a>.</li>
+				<li><b>Alinear</b> - se usa para alinear la imagen a la izquierda, al centro, a la derecha, en la parte superior, al medio, en la parte inferior. Para saber más sobre cómo alinear objetos puede visitar esta página.</li>
+				<li><b>Ajuste de texto</b> se usa para seleccionar el ajuste de texto de los estilos disponibles - alineado, cuadrado, estrecho, a través, superior e inferior, adelante, detrás - o editar límite de ajuste. La opción <b>Editar límite de ajuste</b> estará disponible solo si selecciona cualquier ajuste de texto excepto alineado. Arrastre puntos de ajuste para personalizar el borde. Para crear un punto de ajuste nuevo, haga clic en cualquier lugar de la línea roja y arrástrela a la posición necesaria. <img alt="Editar límite de ajuste" src="../images/wrap_boundary.png" /></li>
+				<li><b>Predeterminado</b> - se usa para cambiar el tamaño actual de la imagen al tamaño predeterminado.</li>
+                <li><b>Reemplazar Imagen</b> se usa para reemplazar la imagen actual cargando otra <b>Desde Archivo</b> o <b>Desde URL</b>.</li>
+				<li><b>Ajustes avanzados</b> - se usa para abrir la ventana 'Imagen - Ajustes avanzados'.</li>
+			</ul>
+            <p><img class="floatleft" alt="Pestaña Ajustes de forma" src="../images/right_image_shape.png" /> Cuando se selecciona la imagen, el icono <b>Ajustes de forma</b> <img alt="Icono Ajustes de forma" src="../images/shape_settings_icon.png" /> también está disponible a la derecha. Puede hacer clic en este icono para abrir la pestaña<b>Ajustes de forma</b> en la barra de tareas derecha y ajustar la forma, tipo de <a href="../UsageInstructions/InsertAutoshapes.htm#shape_stroke" onclick="onhyperlinkclick(this)"><b>estilo</b></a>, tamaño y color así como cambiar el tipo de forma seleccionando otra forma del menú <b>Cambiar autoforma</b>. La forma de la imagen cambiará correspondientemente.</p>
+			<hr />
+			<p>Para cambiar los ajustes avanzados, haga clic derecho sobre la imagen y seleccione la opción <b>Ajustes avanzados</b> en el menú contextual o pulse el enlace <b>Mostrar ajustes avanzados</b> en la derecha barra lateral. Se abrirá la ventana con parámetros de la imagen:</p>
+			<p><img alt="Imagen - ajustes avanzados: Tamaño" src="../images/image_properties.png" /></p>
+			<p>La sección <b>Tamaño</b> contiene los parámetros siguientes:</p>
+			<ul>
+				<li><b>Ancho</b> y <b>Altura</b> - use estas opciones para cambiar ancho o altura de la imagen. Si hace clic en el botón <b>proporciones constantes</b>  (en este caso estará así <img alt="Icono de proporciones constantes activado" src="../images/constantproportionsactivated.png" />), el ancho y la altura se cambiarán manteniendo la relación de aspecto original de la imagen. Para recuperar el tamaño predeterminado de la imagen añadida, pulse el botón <b>Tamaño Predeterminado</b>.</li>
+			</ul>
+			<p><img alt="Imagen - ajustes avanzados: Ajuste de texto" src="../images/image_properties_1.png" /></p>
+			<p>La sección <b>Ajuste de texto</b> contiene los parámetros siguientes:</p>
+			<ul>
+				<li><b>Ajuste de texto</b> - use esta opción para cambiar la posición de la imagen en relativo al texto: puede ser una parte de texto (si usted seleccione estilo alineado) o rodeada por texto (si selecciona uno de los otros estilos).<ul>
+				    <li><p><img alt="Ajuste de texto - alineado" src="../images/wrappingstyle_inline.png" /> <b>Alineado</b> - la imagen se considera una parte del texto, como un carácter, así cuando se mueva el texto, la imagen se moverá también. En este caso no se puede acceder a las opciones de posición.</p>
+				    <p>Si seleccione uno de estos estilos, la imagen se moverá independientemente del texto:</p>
+				    </li>
+				    <li><p><img alt="Ajuste de texto - cuadrado" src="../images/wrappingstyle_square.png" /> <b>Cuadrado</b> - el texto rodea una caja rectangular que limita la imagen.</p></li>
+				    <li><p><img alt="Ajuste de texto - estrecho" src="../images/wrappingstyle_tight.png" /> <b>Estrecho</b> - el texto rodea los bordes reales de la imagen.</p></li>
+				    <li><p><img alt="Ajuste de texto - a través" src="../images/wrappingstyle_through.png" /> <b>A través</b> - el texto rodea los bordes y rellene el espacio en blanco de la imagen. Para que se muestre este efecto, utilice la opción <b>Editar límite de ajuste</b> en el menú contextual.</p></li>
+				    <li><p><img alt="Estilo de justificación - superior e inferior" src="../images/wrappingstyle_topandbottom.png" /> <b>Superior e inferior</b> - el texto se sitúa solo arriba y debajo de la imagen.</p></li>
+				    <li><p><img alt="Estilo de justificación- adelante" src="../images/wrappingstyle_infront.png" /> <b>Adelante</b> - la imagen solapa el texto.</p></li>
+				    <li><p><img alt="Ajuste de texto - detrás" src="../images/wrappingstyle_behind.png" /> <b>Detrás</b> - el texto solapa la imagen.</p></li>
+				    </ul>
+				</li>
+			</ul>
+			<p>Si usted selecciona el estilo cuadrado, estrecho, a través, o superior e inferior, usted podrá establecer unos parámetros adicionales - <b>distancia del texto</b> en todas partes (superior, inferior, izquierda, derecha).</p>
+            <p id="position"><img alt="Imagen - ajustes avanzados: Posición" src="../images/image_properties_2.png" /></p>
+            <p>La sección <b>Posición</b> estará disponible si selecciona cualquier ajuste de texto excepto alineado. Esta pestaña contiene los siguientes parámetros varían dependiendo del estilo del ajuste del texto seleccionado:</p>
+			<ul>
+                <li>La sección <b>Horizontal</b> permite seleccionar uno de los siguientes tres tipos de posición de autoformas:<ul>
+                        <li><b>Alineación</b> (izquierda, centro, derecha) <b>en relación al</b> carácter, columna, margen izquierdo, margen, página o margen derecho,</li>
+                        <li>La <b>Posición</b> absoluta se mide en unidades absolutas, por ejemplo, <b>Centímetros</b>/<b>Puntos</b> (dependiendo de la opción especificada en la pestaña de <b>Archivo</b> -&gt; <b>Ajustes avanzados...</b>) <b>a la derecha del</b> carácter, columna, margen izquierdo, margen, página o margen derecho,</li>
+                        <li>La <b>Posición relativa</b> se mide en porcentajes <b>relativos al</b> margen izquierdo, margen, página o margen derecho.</li>
+                    </ul>
+                </li>
+                <li>La sección <b>Vertical</b> permite seleccionar uno de los siguientes tres tipos de posición de imágenes:<ul>
+                        <li><b>Alineación </b> (arriba, centro, abajo) <b>en relación con</b> la línea, margen, margen del fondo, párrafo, margen de la página o margen de arriba,</li>
+                        <li>La <b>Posición</b> absoluta se mide en unidades absolutas, por ejemplo, <b>Centímetros</b>/<b>Puntos</b> (dependiendo de la opción especificada en la pestaña de <b>Archivo</b>  -&gt; <b>Ajustes Avanzados...</b>) <b>debajo</b> de la línea, margen, margen del fondo, párrafo, margen de la página o margen de arriba,</li>
+                        <li>La <b>Posición relativa</b> se mide en porcentajes <b>relativos al</b> margen, margen del fondo, párrafo, margen de la página o margen de arriba,</li>
+                    </ul>
+                </li>
+                <li>La opción <b>Desplazar objeto con texto</b> controla si la imagen insertada en el texto se mueve junto con ello si el texto se mueve.</li>
+				<li>La opción <b>Superposición</b> controla si dos imágenes sobreponen o no cuando usted las arrastra una cerca de la otra en la página.</li>
+			</ul>
+            <p><img alt="Imagen - ajustes avanzados" src="../images/image_properties_3.png" /></p>
+            <p>La pestaña de <b>Texto Alternativo</b> permite especificar un <b>Título</b> y <b>Descripción</b> que se leerán a las personas con problemas de visión o cognitivos para ayudarles a entender mejor la información de la forma.</p>
+		</div>
+	</body>
+</html>

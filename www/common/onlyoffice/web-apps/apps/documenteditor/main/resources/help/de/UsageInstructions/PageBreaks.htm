@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Seitenumbrüche einfügen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Insert page breaks and keep lines together" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Seitenumbrüche einfügen</h1>
+			<p>Im Dokumenteneditor können Sie einen Seitenumbruch einfügen, um eine neue Seite zu beginnen und die Optionen der Seitennummerierung einzustellen.</p>
+			<p>Um an der aktuellen Cursorposition einen Seitenumbruch einzufügen, klicken Sie in der oberen Menüleiste auf das Symbol <img alt="Umbrüche" src="../images/pagebreak1.png" /> <b>Umbrüche</b> in den Registerkarten <b>Einfügen</b> oder <b>Layout</b> oder klicken Sie auf den Pfeil neben diesem Symbol und wählen Sie die Option <b>Seitenumbruch einfügen</b> aus dem Menü aus.</p>
+			<p>Einen Seitenumbruch vor einem ausgewählten Absatz einfügen (der Absatz beginnt erst am Anfang der neuen Seite):</p>
+			<ul>
+				<li>Klicken Sie mit der rechten Maustaste und wählen Sie im Kontextmenü die Option <b>Seitenumbruch oberhalb</b> oder</li>
+				<li>klicken Sie mit der rechten Maustaste und wählen Sie im Kontextmenü die Option <b>Absatz - Erweiterte Einstellungen</b> im Menü aus oder nutzen Sie den Link <b>Erweiterte Einstellungen anzeigen</b> in der rechten Seitenleiste und aktivieren Sie im geöffneten Fenster <b>Absatz - Erweiterte Einstellungen</b> das Kästchen <b>Seitenumbruch oberhalb</b>.</li>
+			</ul>
+			<p>Zeilen zusammenhalten, so dass nur ganze Absätze auf die neue Seite verschoben werden (d.h. kein Seitenumbruch zwischen den Zeilen eines einzelnen Absatzes):</p>
+			<ul>
+				<li>Klicken Sie mit der rechten Maustaste und wählen Sie die Option <b>Absatz zusammenhalten</b> im Menü aus oder</li>
+				<li>klicken Sie mit der rechten Maustaste und wählen Sie die Option <b>Absatz - Erweiterte Einstellungen</b> oder nutzen Sie den Link <b>Erweiterte Einstellungen anzeigen</b> in der rechten Seitenleiste und aktivieren Sie das Feld <b>Absatz zusammenhalten</b> im geöffneten Fenster <b>Absatz - Erweiterte Einstellungen</b>.</li>
+			</ul>
+			<p>Im Fenster <b>Absatz - Erweiterte Einstellungen</b> gibt es noch zwei weitere Optionen für Seitenumbrüche:</p>
+			<ul>
+			    <li><b>Nicht vom nächsten trennen</b> - der gewählte und der nachfolgende Absatz werden zusammengehalten und der Umbruch erfolgt erst nach dem nächsten Absatz.</li>
+			    <li><b>Absatzkontrolle</b> - ist standardmäßig ausgewählt und wird genutzt, um zu vermeiden, dass eine einzelne Zeile aus einem Abschnitt (die erste oder die letzte) an den Anfang oder das Ende einer anderen Seite verschoben werden.</li>
+			</ul>
+			<p><img alt="Absatz - Erweiterte Einstellungen: Einzüge &amp; Position" src="../images/paradvsettings_indents.png" /></p>
+		</div>
+	</body>
+</html>

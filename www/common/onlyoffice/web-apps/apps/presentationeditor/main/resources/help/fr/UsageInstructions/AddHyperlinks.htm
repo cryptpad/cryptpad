@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Ajouter des liens hypertextes</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add hyperlinks to a word or text fragment leading to an external website or to another slide in the same presentation" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Ajouter des liens hypertextes</h1>
+			<p>Pour ajouter un lien hypertexte,</p>
+			<ol>
+				<li>placez le curseur dans le bloc de texte à une position où vous voulez ajouter un lien hypertexte,</li>
+                <li>passez à l'onglet <b>Insertion</b> de la barre d'outils supérieure,</li>
+				<li>cliquez sur l'icône <b>Ajouter un lien hypertexte</b> <img alt="Icône Ajouter un lien hypertexte" src="../images/addhyperlink.png" /> de la barre d'outils supérieure,</li>
+				<li>dans la fenêtre ouverte précisez les paramètres du lien hypertexte :<ul>
+				    <li><!--<b>Type de lien</b> ---> sélectionnez un type de lien à insérer <!--depuis la liste déroulante--> :<ul>
+				    <li>Utilisez l'option <b>Lien externe</b> et entrez une URL au format http://www.example.com dans le champ <b>Lien vers</b> si vous avez besoin d'ajouter un lien hypertexte menant vers un site externe.<p><img alt="Fenêtre Paramètres du lien hypertexte" src="../images/hyperlinkwindow.png" /></p>
+				    </li>
+				    <li>Utilisez l'option <b>Emplacement dans cette présentation</b> et sélectionnez l'une des options si vous avez besoin d'ajouter un lien hypertexte menant à une certaine diapositive dans la même présentation. Les options disponibles sont les suivantes : Diapositive suivante, Diapositive précédente, Première diapositive, Dernière diapositive, Diapositive dont les numéro est indiqué.<p><img alt="Fenêtre Paramètres du lien hypertexte" src="../images/hyperlinkwindow2.png" /></p>
+				    </li>
+				    </ul>
+				    </li>
+					<li><b>Afficher</b> - entrez un texte qui sera cliquable et mène vers l'adresse web / à la diapositive spécifiée dans le champ supérieur.</li>
+					<li><b>Texte de l'infobulle</b> - entrez un texte qui sera visible dans une petite fenêtre contextuelle offrant une courte note ou étiquette lorsque vous placez le curseur sur un lien hypertexte.</li>
+				</ul>
+				</li>
+				<li>Cliquez sur le bouton <b>OK</b>.</li>
+			</ol>
+			<p>Pour ajouter un lien hypertexte, vous pouvez également cliquer avec le bouton droit de la souris et sélectionner l'option <b>Lien hypertexte</b> ou utiliser la combinaison des touches <b>Ctrl+K</b>.</p>
+			<p class="note"><b>Remarque</b> : il est également possible de sélectionner un caractère, mot, une combinaison de mots avec la souris ou <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">à l'aide du clavier</a> et cliquer sur l'icône <b>Ajouter un lien hypertexte</b> <img alt="Icône Ajouter un lien hypertexte" src="../images/addhyperlink.png" /> dans l'onglet <b>Insertion</b> de la barre d'outils supérieure ou cliquer avec le bouton droit de la souris sur la sélection et choisir l'option <b>Lien hypertexte</b> dans le menu. Après quoi la fenêtre affichée ci-dessus s'ouvre avec le champ <b>Afficher</b> rempli du texte que vous avez sélectionné.</p>
+			<p>Si vous placez le curseur sur le lien hypertexte ajouté, vous verrez l'info-bulle contenant le texte que vous avez spécifié. Pour suivre le lien, appuyez sur la touche <b>CTRL</b> et cliquez sur le lien dans votre présentation.</p>
+			<p>Pour modifier ou supprimer le lien hypertexte ajouté, cliquez sur le lien avec le bouton droit de la souris, sélectionnez l'option <b>Lien hypertexte</b> dans le menu contextuel et ensuite l'action à effectuer - <b>Modifier le lien hypertexte</b> ou <b>Supprimer le lien hypertexte</b>.</p>
+		</div>
+	</body>
+</html>

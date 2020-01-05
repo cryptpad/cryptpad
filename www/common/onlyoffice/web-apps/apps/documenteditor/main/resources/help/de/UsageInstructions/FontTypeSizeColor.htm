@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Schriftart, -größe und -farbe festlegen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Change the following text formatting parameters: font type, size, and color" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Schriftart, -größe und -farbe festlegen</h1>
+			<p>Sie können Schriftart, Größe und Farbe der Schrift mithilfe der entsprechenden Symbole in der Registerkarte <b>Start</b> auf der oberen Symbolleiste festlegen.</p>
+			<p class="note"><b>Hinweis</b>: Wenn Sie die Formatierung auf Text anwenden möchten, der bereits im Dokument vorhanden ist, wählen Sie diesen mit der Maus oder <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">mithilfe der Tastatur</a> aus und legen Sie die gewünschte Formatierung fest.</p>
+			<table>
+				<tr>
+					<td>Schriftart</td>
+					<td><img alt="Schriftart" src="../images/fontfamily.png" /></td>
+					<td>Wird verwendet, um eine Schriftart aus der Liste mit den verfügbaren Schriftarten zu wählen.</td>
+				</tr>
+				<tr>
+					<td>Schriftgröße</td>
+					<td><img alt="Schriftgröße" src="../images/fontsize.png" /></td>
+					<td>Wird verwendet, um eine Schriftgröße aus der Liste zu wählen oder manuell einzugeben.</td>
+				</tr>
+                <tr>
+                    <td>Schrift vergrößern</td>
+                    <td><img alt="Schrift vergrößern" src="../images/larger.png" /></td>
+                    <td>Wird verwendet, um die Schriftgröße mit jedem Klicken auf das Symbol um einen Punkt zu vergrößern.</td>
+                </tr>
+                <tr>
+                    <td>Schrift verkleinern</td>
+                    <td><img alt="Schrift verkleinern" src="../images/smaller.png" /></td>
+                    <td>Wird verwendet, um die Schriftgröße mit jedem Klicken auf das Symbol um einen Punkt zu verkleinern.</td>
+                </tr>
+				<tr>
+					<td>Texthervorhebungsfarbe</td>
+					<td><img alt="Texthervorhebungsfarbe" src="../images/highlightcolor.png" /></td>
+					<td>Wird verwendet, um den Hintergrund für einzelne Sätze, Phrasen, Wörter oder sogar Zeichen durch Hinzufügen eines Farbbandes zu markieren, das den Effekt eines Textmarker um den Text herum imitiert. Wählen Sie dazu den gewünschten Text aus und klicken Sie anschließend auf den Abwärtspfeil neben dem Symbol, um eine Farbe auf der Palette auszuwählen (diese Farbeinstellung ist unabhängig vom ausgewählten <b>Farbschema</b> und enthält 16 Farben) - die Farbe wird auf den ausgewählten Text angewendet. Alternativ können Sie zuerst eine Hervorhebungsfarbe auswählen und dann den Text mit der Maus auswählen - der Mauszeiger sieht in diesem Fall so aus <img alt="Mauszeiger bei der Texthervorhebung" src="../images/highlight_color_mouse_pointer.png" /> und Sie können mehrere verschiedene Teile Ihres Textes nacheinander markieren. Um die Hervorhebung zu beenden, klicken Sie einfach erneut auf das Symbol. Um die Markierungsfarbe zu löschen, klicken Sie auf die Option <b>Keine Füllung</b>. Bei <b>Hervorhebungen</b> werden nur die Zeichen hinterlegt, im Gegensatz zu <a href="../UsageInstructions/BackgroundColor.htm" onclick="onhyperlinkclick(this)"><b>Hintergrundfarbe,</b></a> <img alt="Hintergrundfarbe Absatz" src="../images/backgroundcolor.png" /> die auf den gesamten Absatz angewendet wird und auch Leerräume im Absatz farblich hinterlegt.</td>
+				</tr>
+				<tr>
+					<td>Schriftfarbe</td>
+					<td><img alt="Schriftfarbe" src="../images/fontcolor.png" /></td>
+					<td>Wird verwendet, um die Farbe der Buchstaben/Zeichen im Text zu ändern. Standardmäßig wird die Schriftfarbe in einem neuen leeren Dokument automatisch festgelegt, als schwarze Schrift auf weißem Hintergrund. Wenn Sie die Hintergrundfarbe auf schwarz ändern, wechselt die Schriftfarbe automatisch auf weiß, damit sie weiter zu erkennen ist. Um eine andere Farbe auszuwählen, klicken Sie auf den Abwärtspfeil neben dem Symbol und wählen Sie eine Farbe aus den verfügbaren Paletten aus (die angezeigten <b>Designfarben</b> sind abhängig vom ausgewählten <a href="../UsageInstructions/ChangeColorScheme.htm" onclick="onhyperlinkclick(this)">Farbschema</a>. Wenn Sie die Standardschriftfarbe geändert haben, können Sie die Standardfarbe für die ausgewählte Textpassage über die Option <b>Automatisch</b> in der Gruppe Farbpaletten wiederherstellen.</td>
+				</tr>
+			</table>
+			<p class="note"><b>Hinweis</b>: Weitere Informationen zum Umgang mit Farbpaletten finden Sie auf <a href="../UsageInstructions/ChangeColorScheme.htm" onclick="onhyperlinkclick(this)">dieser Seite</a>.</p>
+		</div>
+	</body>
+</html>

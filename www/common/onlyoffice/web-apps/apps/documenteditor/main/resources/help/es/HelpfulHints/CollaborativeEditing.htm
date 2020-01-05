@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Edición Colaborativa de Documentos</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Tips on collaborative editing" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Edición Colaborativa de Documentos</h1>
+        <p><b>Editor de Documentos</b> le ofrece la posibilidad de trabajar en el documento en colaboración con otros usuarios. Esta función incluye:</p>
+        <ul>
+            <li class="onlineDocumentFeatures">acceso simultáneo de multi-usuarios al documento editado</li>
+            <li class="onlineDocumentFeatures">indicación visual de pasajes que se están editando por otros usuarios</li>
+            <li class="onlineDocumentFeatures">visualización de cambios en tiempo real o sincronización de cambios al pulsar un botón</li>
+            <li class="onlineDocumentFeatures">chat para compartir ideas respecto a las partes particulares de documento</li>
+            <li>comentarios que contienen la descripción de una tarea o un problema que hay que resolver</li>
+        </ul>
+        <div class="onlineDocumentFeatures">
+        <h3>Co-edición</h3>
+        <p><b>Editor de documentos</b> permite seleccionar uno de los dos modos de co-edición disponibles. <b>Rápido</b> se usa de forma predeterminada y muestra los cambios hechos por otros usuarios en tiempo real. <b>Estricto</b> se selecciona para ocultar los cambios de otros usuarios hasta que usted haga clic en el icono <b>Guardar</b> <img alt="Icono Guardar" src="../images/saveupdate.png" /> para guardar sus propios cambios y aceptar los cambios hechos por otros usuarios. El modo se puede seleccionar en los <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Ajustes Avanzados</a>. También es posible elegir el modo necesario utilizando el icono <img alt="Icono del modo de Co-edición" src="../images/coeditingmode.png" /> <b>Modo de Co-edición</b> en la pestaña <b>Colaboración</b> de la barra de herramientas superior:</p>
+        <p><img alt="Menú del modo de Co-edición" src="../images/coeditingmodemenu.png" /></p>
+        <p>Cuando un documento se está editando por varios usuarios simultáneamente en el modo <b>Estricto</b>, los pasajes de texto editados aparecen marcados con línea discontinua de diferentes colores. Al poner el cursor del ratón sobre uno de los pasajes editados se muestra el nombre del usuario que está editandolo en este momento. El modo <b>Rápido</b> mostrará las acciones y los nombres de los coeditores cuando ellos están editando el texto.</p>
+        <p>El número de los usuarios que están trabajando en el documento actual se especifica en la esquina inferior izquierda del encabezado para editar - <img alt="Icono Número de usuarios" src="../images/usersnumber.png" />. Si quiere ver quién está editando el archivo en ese preciso momento, pulse este icono o abrir el panel <b>Chat</b> con la lista completa de los usuarios.</p>
+        <p>Cuando ningún usuario esté viendo o editando el archivo, el icono en el encabezado del editar se verá así <img alt="Gestionar derechos de acceso de documentos" src="../images/access_rights.png" /> permitiéndole gestionar qué usuarios tienen acceso a los derechos del archivo desde el documento: invite a nuevos usuarios dándoles permiso para editar, leer, o revisar el documento, o niegue el acceso a los derechos del archivo a usuarios. Haga clic en este icono para manejar acceso al archivo; este se puede realizar cuando no hay otros usuarios que están viendo o co-editando el documento en este momento y cuando hay otros usuarios y el icono parece como <img alt="Icono Número de usuarios" src="../images/usersnumber.png" />. También es posible establecer derechos de acceso utilizando el icono <img alt="Icono de comparitr" src="../images/sharingicon.png" /> <b>Compartir</b> en la pestaña <b>Colaboración</b> de la barra de herramientas superior:</p>
+        <p>Cuando uno de los usuarios guarda sus cambios al hacer clic en el icono <img alt="Icono Guardar" src="../images/savewhilecoediting.png" />, los otros verán una nota dentro de la barra de estado indicando que hay actualizaciones. Para guardar los cambios que usted ha realizado, y que así otros usuarios puedan verlos y obtener las actualizaciones guardadas por sus co-editores, haga clic en el icono <img alt="Icono Guardar" src="../images/saveupdate.png" /> en la esquina superior izquierda de la barra de herramientas superior. Las actualizaciones se resaltarán para que usted pueda verificar qué se ha cambiado de forma concreta.</p>
+        <p>Puede especificar qué cambios se requiere resaltar durante el proceso de co-edición si hace clic en la pestaña d la barra de herramientas superior, selecciona la opción <b>Ajustes Avanzados...</b> y elija entre <b>Ver ningunos</b>, <b>Ver todo</b> y <b>Ver últimos</b> cambios de colaboración en tiempo real. Seleccionando la opción <b>Ver todo</b>, todos los cambios hechos durante la sesión actual serán resaltados. Seleccinando la opción <b>Ver últimos</b>, solo tales cambios que han sido introducidos desde la última vez que hizo clic en el icono <img alt="Icono Guardar" src="../images/saveupdate.png" /> se resaltarán. Seleccionando la opción <b>Ver ningunos</b>, los cambios hechos durante la sesión actual no serán resaltados.</p>
+        <h3 id="chat">Chat</h3>
+        <p>Usted puede usar esta herramienta para coordinar el proceso de co-edición sobre la marcha, por ejemplo, para asignar los párrafos a cada compañero de trabajo y especificar, que párrafo va a editar ahora usted.</p>
+        <p>Los mensajes de Chat se almacenan solo durante una sesión. Para discutir el contenido del documento es mejor usar comentarios que se almacenen hasta que decida eliminarlos.</p>
+        <p>Para acceder al chat y dejar un mensaje para otros usuarios,</p>
+        <ol>
+            <li>Haga clic en el <img alt="Icono Chat" src="../images/chaticon.png" /> ícono en la barra de herramientas de la izquierda, o <br /> cambie a la pestaña <b>Colaboración</b> de la barra de herramientas superior y haga clic en el botón de <img alt="Icono Chat" src="../images/chat_toptoolbar.png" /> <b>Chat</b>,</li>
+            <li>introduzca su texto en el campo correspondiente debajo,</li>
+            <li>pulse el botón <b>Enviar</b>.</li>
+        </ol>
+        <p>Todos los mensajes dejados por otros usuarios se mostrarán en el panel a la izquierda. Si hay mensajes nuevos que no ha leído todavía, el icono de chat aparecerá así - <img alt="Icono Chat" src="../images/chaticon_new.png" />.</p>
+        <p>Para cerrar el panel con mensajes de chat, haga clic en el ícono <img alt="Icono Chat" src="../images/chaticon.png" /> en la barra de herramientas de la izquierda o el botón <img alt="Icono Chat" src="../images/chat_toptoolbar.png" /> <b>Chat</b> en la barra de herramientas superior una vez más.</p>
+        </div>
+                <h3 id="comments">Comentarios</h3>
+        <p>Para dejar un comentario,</p>
+        <ol>
+            <li>seleccione un pasaje de texto donde hay un error o problema, en su opinión,</li>
+            <li>Cambie a la pestaña de <b>Insertar</b> o <b>Colaboración</b> en la barra de herramientas superior y haga clic en <img alt="Icono de Comentario" src="../images/comment_toptoolbar.png" /> el botón <b>Comentarios</b>, o use el <img alt="Icono Comentarios" src="../images/commentsicon.png" /> icono en la barra de herramientas de la izquierda para abrir el panel de <b>Comentarios</b> y haga clic en el enlace de <b>Añadir comentarios al Documento</b>, o <br /> haga clic derecho en el pasaje del texto seleccionado y seleccione la opción Añadir Comentario del menú contextual,</li>
+            <li>introduzca el texto necesario,</li>
+            <li>Haga clic en el botón <b>Añadir comentario/Añadir</b>.</li>
+        </ol>
+        <p>El comentario se mostrará en el panel izquierdo. Otro usuario puede contestar al comentario añadido haciendo preguntas o informando sobre el trabajo realizado. Para hacerlo, pulse el enlace <b>Añadir respuesta</b> que se sitúa debajo del comentario.</p>
+        <p>El pasaje de texto que ha comentado será resaltado en el documento. Para ver el comentario solo haga clic dentro de este pasaje. Si tiene que desactivar esta función, pulse lapestana <b>Archivo</b> en la barra de herramientas superior, seleccione la opción <b>Ajustes avanzados...</b> y desmarque la casilla <b>Activar opción de comentarios en tiempo real</b>. En este caso los pasajes comentados serán resaltados solo si hace clic en el icono <img alt="Icono Comentarios" src="../images/commentsicon.png" />.</p>
+        <p>Puede gestionar sus comentarios añadidos de esta manera:</p>
+        <ul>
+            <li>editar los comentarios pulsando en el icono <img alt="Icono Editar" src="../images/editcommenticon.png" />,</li>
+            <li>eliminar los comentarios pulsando en el icono <img alt="Icono Borrar" src="../images/deletecommenticon.png" />,</li>
+            <li>cierre la discusión haciendo clic en el icono <img alt="Icono resolver" src="../images/resolveicon.png" /> si la tarea o el problema que usted ha indicado en su comentario se ha solucionado, después de esto la discusión que usted ha abierto con su comentario obtendrá el estado de resuelta. Para abrir la discusión de nuevo, haga clic en el icono <img alt="Icono Abrir de nuevo" src="../images/resolvedicon.png" />. Si tiene que esconder comentarios resueltos, haga clic en la pestaña de <b>Archivo</b> en la barra de herramientas superior, seleccione la opción <b>Ajustes avanzados...</b> y desmarque la casilla <b>Activar opción de comentarios resueltos</b> y haga clic en <b>Aplicar</b>. En este caso los comentarios resueltos se resaltarán solo si usted hace clic en el icono <img alt="Icono Comentarios" src="../images/commentsicon.png" />.</li>
+        </ul>
+        <p>Si está usando el modo de co-edición<b> Estricto</b>, nuevos comentarios añadidos por otros usuarios serán visibles solo después de hacer clic en el icono <img alt="Icono Guardar" src="../images/saveupdate.png" /> en la esquina superior izquierda de la barra de herramientas superior.</p>
+        <p>Para cerrar el panel con comentarios, haga clic en el icono <img alt="Icono Comentarios" src="../images/commentsicon.png" /> situado en la barra de herramientas izquierda una vez más.</p>
+    </div>
+</body>
+</html>

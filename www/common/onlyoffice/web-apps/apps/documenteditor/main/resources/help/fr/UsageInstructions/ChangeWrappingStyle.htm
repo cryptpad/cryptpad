@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Changer l'habillage du texte</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Change the text wrapping style to specify the way the object is positioned relative to the text." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Changer l'habillage du texte</h1>
+            <p>L'option <b>Style d'habillage</b> détermine la position de l'objet par rapport au texte. Vous pouvez modifier le style d'habillage de texte pour les objets insérés, tels que <a href="../UsageInstructions/InsertAutoshapes.htm" onclick="onhyperlinkclick(this)">les formes</a>, <a href="../UsageInstructions/InsertImages.htm" onclick="onhyperlinkclick(this)">les images</a>, <a href="../UsageInstructions/InsertCharts.htm#" onclick="onhyperlinkclick(this)">les graphiques</a>, <a href="../UsageInstructions/InsertTextObjects.htm" onclick="onhyperlinkclick(this)">les zones de texte</a> ou les <a href="../UsageInstructions/InsertTables.htm" onclick="onhyperlinkclick(this)">tableaux</a>.</p>
+            <h3>Modifier l'habillage de texte pour les formes, les images, les graphiques, les zones de texte</h3>
+            <p>Pour changer le style d'habillage actuellement sélectionné :</p>
+            <ol>
+                <li>sélectionnez un objet séparé sur la page en cliquant dessus. Pour sélectionner un bloc de texte, cliquez sur son bord, pas sur le texte à l'intérieur.</li>
+                <li>ouvrez les paramètres d'habillage du texte :<ul>
+                        <li>Passez à l'onglet <b><b>Disposition</b></b> de la barre d'outils supérieure et cliquez sur la flèche située en regard de l'icône <img alt="l'icône d'habillage" src="../images/wrapping_toptoolbar.png" /> <b>Habillage</b>, ou</li>
+                        <li>cliquez avec le bouton droit sur l'objet et sélectionnez l'option <b>Style d'habillage</b> dans le menu contextuel, ou</li>
+                        <li>cliquez avec le bouton droit sur l'objet, sélectionnez l'option <b>Paramètres avancés</b> et passez à l'onglet <b>Habillage du texte</b> de la fenêtre <b>Paramètres avancés</b> de l'objet.</li>
+                    </ul>
+                </li>
+                <li>sélectionnez le style d'habillage voulu :<ul>
+                        <li>
+                            <p><img alt="Style d'habillage - Aligné sur le texte" src="../images/wrappingstyle_inline_toptoolbar.png" /> <b>Aligné</b> sur le texte - l'image fait partie du texte, comme un caractère, ainsi si le texte est déplacé, l'image est déplacée elle aussi. Dans ce cas-là les options de position ne sont pas accessibles.</p>
+                            <p>Si vous sélectionnez un des styles suivants, vous pouvez déplacer l'image indépendamment du texte et définir sa position exacte :</p>
+                        </li>
+                        <li><p><img alt="Style d'habillage - Carré" src="../images/wrappingstyle_square_toptoolbar.png" /> <b>Carré</b> - le texte est ajusté autour des bords de l'image.</p></li>
+                        <li><p><img alt="Style d'habillage - Rapproché" src="../images/wrappingstyle_tight_toptoolbar.png" /> <b>Rapproché</b> - le texte est ajusté sur le contour de l' image.</p></li>
+                        <li><p><img alt="Style d'habillage - Au travers" src="../images/wrappingstyle_through_toptoolbar.png" /> <b>Au travers</b> - le texte est ajusté autour des bords de l'image et occupe l'espace vide à l'intérieur de celle-ci. Pour créer l'effet, utilisez l'option <b>Modifier les limites du renvoi à la ligne</b> du menu contextuel.</p></li>
+                        <li><p><img alt="Style d'habillage - Haut et bas" src="../images/wrappingstyle_topandbottom_toptoolbar.png" /> <b>Haut et bas</b> - le texte est ajusté en haut et en bas de l'image.</p></li>
+                        <li><p><img alt="Style d'habillage - Devant le texte" src="../images/wrappingstyle_infront_toptoolbar.png" /> <b>Devant</b> le texte - l'image est affichée sur le texte.</p></li>
+                        <li><p><img alt="Style d'habillage - Derrière le texte" src="../images/wrappingstyle_behind_toptoolbar.png" /> <b>Derrière</b> le texte - le texte est affiché sur l'image.</p></li>
+                    </ul>
+                </li>
+            </ol>
+            <p>Si vous avez choisi l'un des styles <b>Carré</b>, <b>Rapproché</b>, <b>Au travers</b>, <b>Haut et bas</b>, vous avez la possibilité de configurer des paramètres supplémentaires - <b>Distance du texte</b> de tous les côtés (haut, bas, droite, gauche). Pour accéder à ces paramètres, cliquez avec le bouton droit sur l'objet, sélectionnez l'option <b>Paramètres avancés</b> et passez à l'onglet <b>Habillage du texte</b> de la fenêtre <b>Paramètres avancés</b> de l'objet. Définissez les valeurs voulues et cliquez sur <b>OK</b>.</p>
+            <p>Si vous sélectionnez un style d'habillage autre que <b>Aligné</b>, l'onglet <b>Position</b> est également disponible dans la fenêtre <b>Paramètres avancés</b> de l'objet. Pour en savoir plus sur ces paramètres, reportez-vous aux pages correspondantes avec les instructions sur la façon de travailler avec des <a href="../UsageInstructions/InsertAutoshapes.htm#position" onclick="onhyperlinkclick(this)">formes</a>, des <a href="../UsageInstructions/InsertImages.htm#position" onclick="onhyperlinkclick(this)">images</a> ou des <a href="../UsageInstructions/InsertCharts.htm#position" onclick="onhyperlinkclick(this)">graphiques</a>.</p>
+            <p>Si vous sélectionnez un style d'habillage autre que <b>Aligné</b>, vous pouvez également modifier la limite d'habillage pour les <b>images</b> ou les <b>formes</b>. Cliquez avec le bouton droit sur l'objet, sélectionnez l'option <b>Style d'habillage</b> dans le menu contextuel et cliquez sur l'option . Faites glisser les points d'habillage pour personnaliser les limites. Pour créer un nouveau point d'habillage, cliquez sur la ligne rouge et faites-la glisser vers la position désirée. <img alt="Modifier les limites du renvoi à la ligne" src="../images/wrap_boundary.png" /></p>
+            <h3>Modifier l'habillage de texte pour les tableaux</h3>
+            <p>Pour les tableaux, les deux styles d'habillage suivants sont disponibles : <b>Tableau aligné</b> et <b>Tableau flottant</b>.</p>
+            <p>Pour changer le style d'habillage actuellement sélectionné :</p>
+            <ol>
+                <li>cliquez avec le bouton droit sur le tableau et sélectionnez l'option <b>Paramètres avancés du tableau</b>,</li>
+                <li>passez à l'onglet <b>Habillage du texte</b> dans la fenêtre <b>Tableau - Paramètres avancés</b> ouverte,</li>
+                <li>sélectionnez l'une des options suivantes :<ul>
+                        <li><b>Tableau aligné</b> est utilisé pour sélectionner le style d’habillage où le texte est interrompu par le tableau ainsi que l'alignement : gauche, au centre, droit.</li>
+                        <li><b>Tableau flottant</b> est utilisé pour sélectionner le style d’habillage où le texte est enroulé autour du tableau.</li>
+                    </ul>
+                </li>
+            </ol>
+            <p>À l'aide de l'onglet <b>Habillage du texte</b> de la fenêtre <b>Tableau - Paramètres avancés</b> vous pouvez également configurer les paramètres suivants :</p>
+            <ul>
+                <li>Pour les tableaux alignés, vous pouvez définir le type d'<b>Alignement</b> du tableau (gauche, centre ou droite) et le <b>Retrait de gauche</b>.</li>
+                <li>Pour les tableaux flottants, vous pouvez spécifier la <b>Distance du texte</b> et la <b>position</b> du tableau dans l'onglet <a href="../UsageInstructions/InsertTables.htm#position" onclick="onhyperlinkclick(this)">Position du tableau</a>.</li>
+            </ul>
+		</div>
+	</body>
+</html>

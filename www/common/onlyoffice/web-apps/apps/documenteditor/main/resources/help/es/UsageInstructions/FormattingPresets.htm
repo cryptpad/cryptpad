@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Aplique estilos predeterminados de formato</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Apply formatting styles: normal, heading, quote, list, etc." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Aplique estilos predeterminados de formato</h1>
+            <p>Cada estilo de formato es un conjunto de opciones de formato predeterminado: (tamaño de letra, color, espaciado, alineamiento, etc.) Los estilos le permiten formatear de forma rápida las distintas partes del documento (encabezados, subtítulos, listas, texto normal, citas) en vez de aplicar varias opciones de forma individual cada vez. Esto también asegura una apariencia consistente en todo el documento. Un estilo se puede aplicar a un solo párrafo.</p>
+			<h3>Uso de estilos por defecto</h3>
+            <p>Para aplicar uno de los estilos predeterminados de formato disponibles,</p>
+			<ol>
+				<li>ponga el cursor en el párrafo que necesita o párrafos a donde usted quiere aplicar uno de los estilos predeterminados,</li>
+				<li>seleccione el estilo en la parte derecha de la galería de estilos en la pestaña de <b>Inicio</b> en la barra de herramientas superior.</li>
+			</ol>
+			<p>Los formatos de estilos disponibles: normal, sin espacios, encabezado 1-9, título, subtítulo, cita, cita intensa, párrafo de lista.</p>
+			<p><img alt="Estilos de formato" src="../images/formattingpresets.png" /></p>
+            <h3>Editar estilos existentes y crear nuevos</h3>
+            <p><b>Para cambiar un estilo existente:</b></p>
+            <ol>
+                <li>Aplique el estilo necesario a un párrafo.</li>
+                <li>Seleccione el texto del párrafo y cambie todos los parámetros de formato que necesite.</li>
+                <li>Guarde los cambios que ha realizado:<ul>
+                    <li>haga clic derecho en el texto editado, seleccione la opción de <b>Formatear como Estilo</b> y luego elija la opción <b>Actualizar Estilo ‘NombreEstilo’</b> (‘NombreEstilo’ corresponde al estilo que ha aplicado en el primer paso),</li>
+                    <li>o seleccione el pasaje del texto editado con el ratón, despliegue el estilo de galería, haga clic derecho en el estilo que quiere cambiar y seleccione la opción <b>Actualizar de la selección</b>.</li>
+                </ul>
+                </li>
+            </ol>
+            <p>Una vez que los estilos se modifiquen, todos los párrafos del documento que se hayan formateado usando este estilo cambiarán su apariencia de forma correspondiente.</p>
+            <p><b>Para crear un estilo completamente nuevo:</b></p>
+            <ol>
+                <li>Formatear un texto de un pasaje según necesite.</li>
+                <li>Seleccione una forma apropiada de estilo:<ul>
+                        <li>haga clic derecho en el texto editado, seleccione la opción de <b>Formatear como Estilo</b> y luego elija la opción de <b>Crear nuevo estilo</b>,</li>
+                        <li>o seleccione el pasaje del texto editado con el ratón, despliegue el estilo de galería, haga clic en la opción de <b>Estilo Nuevo de la selección</b>.</li>
+                    </ul>
+                </li>
+                <li>Fije los parámetros del estilo nuevo en la ventana de <b>Crear un Estilo Nuevo</b> que se abre:<p><img alt="Ventana de Crear un Estilo Nuevo" src="../images/createnewstylewindow.png" /></p>
+                <ul>
+                    <li>Especificar el nombre del estilo nuevo en el texto del campo de acceso.</li>
+                    <li>Seleccione el estilo deseado para el párrafo siguiente de la lista de <b>Estilo del nuevo párrafo</b>.</li>
+                    <li>Pulse el botón <b>OK</b>.</li>
+                </ul>
+                </li>
+            </ol>
+            <p>El estilo creado se añadirá al la galería de estilos.</p>
+            <p><b>Gestione sus estilos personalizados:</b></p>
+            <ul>
+                <li>Para restaurar los ajustes predeterminados de un estilo en concreto que ha cambiado, haga clic derecho en el estilo que quiere restaurar y seleccione la opción <b>Restaurar a predeterminado</b>.</li>
+                <li>Para restaurar los ajustes predeterminados de todos los estilos que ha cambiado, haga clic derecho en cualquier estilo predeterminado en la galería de estilos y seleccione la opción <b>Restaurar todos los estilos predeterminados</b>.<p><img alt="Menú de estilos editado" src="../images/editedstylemenu.png" /></p>
+                </li>
+                <li>Para eliminar uno de los nuevos estilos que ha creado, haga clic derecho en el estilo que quiere eliminar y seleccione la opción de <b>Borrar estilo</b>.</li>
+                <li>Para eliminar todos los estilos nuevos que ha creado, haga clic derecho en cualquier estilo nuevo que ha creado y seleccione la opción de <b>Borrar todos los estilos personalizados</b>.<p><img alt="Menú de estilos personalizados" src="../images/customstylemenu.png" /></p>
+                </li>
+            </ul>
+		</div>
+	</body>
+</html>

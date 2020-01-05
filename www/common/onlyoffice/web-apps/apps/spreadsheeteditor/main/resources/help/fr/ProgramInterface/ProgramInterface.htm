@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Présentation de l'interface utilisateur de Spreadsheet Editor</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Introducing the Spreadsheet Editor user interface" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Présentation de l'interface utilisateur de Spreadsheet Editor</h1>
+			<p><b>Spreadsheet Editor</b> utilise une interface à onglets dans laquelle les commandes d'édition sont regroupées en onglets par fonctionnalité.</p>
+            <p><img alt="Fenêtre de l'éditeur" src="../images/interface/editorwindow.png" /></p>
+            <p>L'interface de l'éditeur est composée des éléments principaux suivants :</p>
+            <ol>
+                <li>L'<b>En-tête de l'éditeur</b> affiche le logo, les onglets de menu, le nom de la feuille de calcul ainsi que trois icônes sur la droite qui permettent de <a href="../HelpfulHints/CollaborativeEditing.htm" onclick="onhyperlinkclick(this)">définir les droits d'accès</a>, de modifier les <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">Paramètres d'affichage</a> et d’accéder aux <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Paramètres avancés</a> de l'éditeur.<p><img alt="Icônes dans l'en-tête de l'éditeur" src="../images/interface/rightpart.png" /></p>
+                </li>
+                <li>La <b>Barre d'outils supérieure</b> affiche un ensemble de commandes d'édition en fonction de l'onglet de menu sélectionné. Actuellement, les onglets suivants sont disponibles : <a href="../ProgramInterface/FileTab.htm" onclick="onhyperlinkclick(this)">Fichier</a>, <a href="../ProgramInterface/HomeTab.htm" onclick="onhyperlinkclick(this)">Accueil</a>, <a href="../ProgramInterface/InsertTab.htm" onclick="onhyperlinkclick(this)">Insertion</a> ,<a href="../ProgramInterface/LayoutTab.htm" onclick="onhyperlinkclick(this)">Mise en page</a>, <a href="../ProgramInterface/PivotTableTab.htm" onclick="onhyperlinkclick(this)">Tableau croisé dynamique</a>, <a href="../ProgramInterface/CollaborationTab.htm" onclick="onhyperlinkclick(this)">Collaboration</a>, <a href="../ProgramInterface/PluginsTab.htm" onclick="onhyperlinkclick(this)">Modules complémentaires</a>.<p>Les options <b>Imprimer</b>, <b>Enregistrer</b>, <b>Copier</b>, <b>Coller</b>, <b>Annuler</b> et <b>Rétablir</b> sont toujours disponibles dans la partie gauche de la <b>Barre d'outils supérieure</b>, quel que soit l'onglet sélectionné.</p>
+                <p><img alt="Icônes dans la barre d'outils supérieure" src="../images/interface/leftpart.png" /></p>
+                </li>
+                <li>La <b>Barre de formule</b> permet d'entrer et de modifier des <a href="../UsageInstructions/InsertFunction.htm" onclick="onhyperlinkclick(this)">formules</a> ou des valeurs dans les cellules. La <b>Barre de formule</b> affiche le contenu de la cellule actuellement sélectionnée.</li>
+                <li>La <b>Barre d'état</b> en bas de la fenêtre de l'éditeur contient des <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">outils de navigation</a> : boutons de navigation de feuille, onglets de feuille et boutons de zoom. La <b>Barre d'état</b> affiche également le nombre d'enregistrements filtrés si vous appliquez un <a href="../UsageInstructions/SortData.htm#filter" onclick="onhyperlinkclick(this)">filtre</a> ou les résultats des <a href="../UsageInstructions/InsertFunction.htm" onclick="onhyperlinkclick(this)">calculs automatiques</a> si vous sélectionnez plusieurs cellules contenant des données.</li>
+                <li>La <b>Barre latérale gauche</b> contient des icônes qui permettent d'utiliser l'outil de <a href="../HelpfulHints/Search.htm" onclick="onhyperlinkclick(this)">Recherche</a>, d'ouvrir les panneaux <a href="../HelpfulHints/CollaborativeEditing.htm#comments" onclick="onhyperlinkclick(this)">Commentaires</a> et <a href="../HelpfulHints/CollaborativeEditing.htm#chat" onclick="onhyperlinkclick(this)">Discussion</a>, de contacter notre équipe de support et d'afficher les informations sur le programme.</li>
+                <li>La barre latérale droite permet d'ajuster les paramètres supplémentaires de différents objets. Lorsque vous sélectionnez un objet particulier sur une diapositive, l'icône correspondante est activée dans la barre latérale droite. Cliquez sur cette icône pour développer la barre latérale droite.</li>
+                <li>La <b>Zone de travail</b> permet d'afficher le contenu du classeur, d'entrer et de modifier les données.</li>
+                <li>Les <b>Barres de défilement</b> horizontales et verticales permettent de faire défiler la feuille actuelle de haut en bas ou de gauche à droite.</li>
+            </ol>
+            <p>Pour plus de commodité, vous pouvez masquer certains composants et les afficher à nouveau lorsque cela est nécessaire. Pour en savoir plus sur l'ajustement des paramètres d'affichage, reportez-vous à <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">cette page</a>.</p>
+           
+		</div>
+	</body>
+</html>
