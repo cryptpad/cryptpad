@@ -3008,7 +3008,7 @@ define([
                 r.paths.forEach(function (path) {
                     if (!r.inSharedFolder &&
                         APP.hideDuplicateOwned && manager.isDuplicateOwned(path)) { return; }
-                    var href = r.data.href;
+                    var href = r.data.href || r.data.roHref;
                     var parsed = Hash.parsePadUrl(href);
                     var $table = $('<table>');
                     var $icon = $('<td>', {'rowspan': '3', 'class': 'cp-app-drive-search-icon'});
