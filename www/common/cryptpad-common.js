@@ -728,7 +728,7 @@ define([
         }).nThen(function () {
             postMessage("SET_PAD_TITLE", {
                 teamId: data.teamId,
-                href: data.href,
+                href: Hash.getRelativeHref(data.href),
                 title: data.title,
                 password: data.password,
                 channel: secret.channel,
