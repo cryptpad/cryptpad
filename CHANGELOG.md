@@ -8,6 +8,10 @@
 
 ## Update notes
 
+* modify default config and docker config
+* review websocket config changes and update accordingly
+* you may want to use the updated nginx config
+
 ## Features
 
 ## Bug fixes
