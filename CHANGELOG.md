@@ -3,14 +3,19 @@
 ## Goals
 
 * simplify server configuration by dropping support for unused features
-  * drop `websocketPath` `websocketURL` and `useExternalWebsockets`
-  * use `externalWebsocketURL` to replace all of these
 
 ## Update notes
 
 * modify default config and docker config
 * review websocket config changes and update accordingly
-* you may want to use the updated nginx config
+* default config.js now nests directories not exposed by nginx in the /data/ directory
+  * this should not affect existing instances set up manually, though anyone running docker should review their setup before updating
+* updated example nginx config uses variables for domains, simplifies sandbox configuration
+* drop support for old websocket configuration style, prefer unified value
+  * drop `websocketPath` `websocketURL` and `useExternalWebsockets`
+  * use `externalWebsocketURL` to replace all of these
+* drop use of `new Buffer`, use `Buffer.from`
+
 
 ## Features
 
