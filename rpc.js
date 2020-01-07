@@ -1062,7 +1062,7 @@ var writeLoginBlock = function (Env, msg, cb) { // FIXME BLOCKS
             // flow is dumb and I need to guard against this which will never happen
             /*:: if (typeof(validatedBlock) === 'undefined') { throw new Error('should never happen'); } */
             /*:: if (typeof(path) === 'undefined') { throw new Error('should never happen'); } */
-            Fs.writeFile(path, new Buffer(validatedBlock), { encoding: "binary", }, function (err) {
+            Fs.writeFile(path, Buffer.from(validatedBlock), { encoding: "binary", }, function (err) {
                 if (err) { return void cb(err); }
                 cb();
             });

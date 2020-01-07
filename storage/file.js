@@ -832,7 +832,7 @@ const messageBin = (env, chanName, msgBin, cb) => {
 
 // append a string to a channel's log as a new line
 var message = function (env, chanName, msg, cb) {
-    messageBin(env, chanName, new Buffer(msg + '\n', 'utf8'), cb);
+    messageBin(env, chanName, Buffer.from(msg + '\n', 'utf8'), cb);
 };
 
 // stream messages from a channel log
