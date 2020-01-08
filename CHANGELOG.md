@@ -53,6 +53,7 @@ Once you have reviewed your configuration files and ensured that they are correc
 
 * We made some minor improvements to the process of redeeming invitation links for teams.
   * invitation links can only be used once, so we remove the hash from the URL bar once you've landed on the redemption page so that reloading after redeeming doesn't indicate that you've used an expired link.
+* [One of our Finnish-speaking contributors](https://weblate.cryptpad.fr/user/ilo/) has translated a very large amount of the platform's text in the last few weeks, making Finnish our fifth most thoroughly translated language!
 
 ## Bug fixes
 
