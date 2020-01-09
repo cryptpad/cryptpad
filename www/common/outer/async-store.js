@@ -1653,7 +1653,7 @@ define([
         };
 
         // Delete a pad received with a burn after reading URL
-        Store.burnPad = function (clientId, data, cb) {
+        Store.burnPad = function (clientId, data) {
             var channel = data.channel;
             var ownerKey = Crypto.b64AddSlashes(data.ownerKey || '');
             if (!channel || !ownerKey) { return void console.error("Can't delete BAR pad"); }
