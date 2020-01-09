@@ -1383,7 +1383,7 @@ define([
                 embed: Util.isChecked($link.find('#cp-share-embed'))
             }));
             // Hide or show the burn after reading alert
-            if (Util.isChecked($rights.find('#cp-share-bar'))) {
+            if (Util.isChecked($rights.find('#cp-share-bar')) && !burnAfterReadingUrl) {
                 $('.cp-alertify-bar-selected').show();
                 // Show burn after reading button
                 $('.alertify').find('.cp-bar').show();
