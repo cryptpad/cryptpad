@@ -9,6 +9,7 @@ define([
     '/common/common-feedback.js',
     '/common/common-realtime.js',
     '/common/common-messaging.js',
+    '/common/pinpad.js',
     '/common/outer/sharedfolder.js',
     '/common/outer/cursor.js',
     '/common/outer/onlyoffice.js',
@@ -26,7 +27,7 @@ define([
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
 ], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
-             Realtime, Messaging,
+             Realtime, Messaging, Pinpad,
              SF, Cursor, OnlyOffice, Mailbox, Profile, Team, Messenger,
              NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, nThen, Saferphore) {
@@ -409,19 +410,17 @@ define([
         var initRpc = function (clientId, data, cb) {
             if (!store.loggedIn) { return cb(); }
             if (store.rpc) { return void cb(account); }
-            require(['/common/pinpad.js'], function (Pinpad) {
-                Pinpad.create(store.network, store.proxy, function (e, call) {
-                    if (e) { return void cb({error: e}); }
+            Pinpad.create(store.network, store.proxy, function (e, call) {
+                if (e) { return void cb({error: e}); }
 
-                    store.rpc = call;
+                store.rpc = call;
 
-                    Store.getPinLimit(null, null, function (obj) {
-                        if (obj.error) { console.error(obj.error); }
-                        account.limit = obj.limit;
-                        account.plan = obj.plan;
-                        account.note = obj.note;
-                        cb(obj);
-                    });
+                Store.getPinLimit(null, null, function (obj) {
+                    if (obj.error) { console.error(obj.error); }
+                    account.limit = obj.limit;
+                    account.plan = obj.plan;
+                    account.note = obj.note;
+                    cb(obj);
                 });
             });
         };
@@ -1651,6 +1650,28 @@ define([
                 curvePublic: data.user.curvePublic
             });
             cb();
+        };
+
+        // Delete a pad received with a burn after reading URL
+        Store.burnPad = function (clientId, data, cb) {
+            var channel = data.channel;
+            var ownerKey = Crypto.b64AddSlashes(data.ownerKey || '');
+            if (!channel || !ownerKey) { return void console.error("Can't delete BAR pad"); }
+            try {
+                var signKey = Hash.decodeBase64(ownerKey);
+                var pair = Crypto.Nacl.sign.keyPair.fromSecretKey(signKey);
+                Pinpad.create(store.network, {
+                    edPublic: Hash.encodeBase64(pair.publicKey),
+                    edPrivate: Hash.encodeBase64(pair.secretKey)
+                }, function (e, rpc) {
+                    if (e) { return void console.error(e); }
+                    rpc.removeOwnedChannel(channel, function (err) {
+                        if (err) { console.error(err); }
+                    });
+                });
+            } catch (e) {
+                console.error(e);
+            }
         };
 
         // Fetch the latest version of the metadata on the server and return it.

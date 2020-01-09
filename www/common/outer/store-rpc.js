@@ -80,6 +80,7 @@ define([
             IS_NEW_CHANNEL: Store.isNewChannel,
             REQUEST_PAD_ACCESS: Store.requestPadAccess,
             GIVE_PAD_ACCESS: Store.givePadAccess,
+            BURN_PAD: Store.burnPad,
             GET_PAD_METADATA: Store.getPadMetadata,
             SET_PAD_METADATA: Store.setPadMetadata,
             CHANGE_PAD_PASSWORD_PIN: Store.changePadPasswordPin,

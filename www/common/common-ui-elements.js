@@ -3978,6 +3978,7 @@ define([
 
     UIElements.onServerError = function (common, err, toolbar, cb) {
         if (["EDELETED", "EEXPIRED"].indexOf(err.type) === -1) { return; }
+        var priv = common.getMetadataMgr().getPrivateData();
         var msg = err.type;
         if (err.type === 'EEXPIRED') {
             msg = Messages.expiredError;
@@ -3985,6 +3986,7 @@ define([
                 msg += Messages.errorCopy;
             }
         } else if (err.type === 'EDELETED') {
+            if (priv.burnAfterReading) { return void cb(); }
             msg = Messages.deletedError;
             if (err.loaded) {
                 msg += Messages.errorCopy;
@@ -4032,6 +4034,26 @@ define([
         UI.errorLoadingScreen(block);
 
         $password.find('.cp-password-input').focus();
+    };
+
+    UIElements.displayBurnAfterReadingPage = function (common, cb) {
+        var info = h('p.cp-password-info', 'XXX Burn after reading'); // XXX
+        var button = h('button', 'Proceed'); // XXX
+
+        $(button).on('click', function () {
+            cb();
+        });
+
+        var block = h('div#cp-loading-burn-after-reading', [
+            info,
+            button
+        ]);
+        UI.errorLoadingScreen(block);
+    };
+    UIElements.getBurnAfterReadingWarning = function (common) {
+        var priv = common.getMetadataMgr().getPrivateData();
+        if (!priv.burnAfterReading) { return; }
+        return h('div.alert.alert-danger.cp-burn-after-reading', 'Pewpewpew'); // XXX
     };
 
     var crowdfundingState = false;
@@ -4090,6 +4112,9 @@ define([
         storePopupState = true;
         if (data && data.stored) { return; } // We won't display the popup for dropped files
         var priv = common.getMetadataMgr().getPrivateData();
+
+        // This pad will be deleted automatically, it shouldn't be stored
+        if (priv.burnAfterReading) { return; }
 
         var typeMsg = priv.pathname.indexOf('/file/') !== -1 ? Messages.autostore_file :
                         priv.pathname.indexOf('/drive/') !== -1 ? Messages.autostore_sf :

@@ -323,6 +323,7 @@ define([
             }
             Utils.crypto = Utils.Crypto.createEncryptor(Utils.secret.keys);
             var parsed = Utils.Hash.parsePadUrl(window.location.href);
+            var burnAfterReading = parsed && parsed.hashData && parsed.hashData.ownerKey;
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Utils.UserObject.getDefaultName(parsed);
             var edPublic, curvePublic, notifications, isTemplate;
@@ -376,6 +377,7 @@ define([
                         fromFileData: Cryptpad.fromFileData ? {
                             title: Cryptpad.fromFileData.title
                         } : undefined,
+                        burnAfterReading: burnAfterReading,
                         storeInTeam: Cryptpad.initialTeam || (Cryptpad.initialPath ? -1 : undefined)
                     };
                     if (window.CryptPad_newSharedFolder) {
@@ -1235,6 +1237,14 @@ define([
                     window.location.hash = hash;
                 };
 
+                if (burnAfterReading) {
+                    Cryptpad.padRpc.onReadyEvent.reg(function () {
+                        Cryptpad.burnPad({
+                            channel: secret.channel,
+                            ownerKey: burnAfterReading
+                        });
+                    });
+                }
                 var cpNfCfg = {
                     sframeChan: sframeChan,
                     channel: secret.channel,
@@ -1358,12 +1368,17 @@ define([
                 });
             });
 
+            sframeChan.on('EV_BURN_AFTER_READING', function () {
+                startRealtime();
+            });
+
             sframeChan.ready();
 
             Utils.Feedback.reportAppUsage();
 
             if (!realtime && !Test.testing) { return; }
             if (isNewFile && cfg.useCreationScreen && !Test.testing) { return; }
+            if (burnAfterReading) { return; }
             //if (isNewFile && Utils.LocalStore.isLoggedIn()
             //    && AppConfig.displayCreationScreen && cfg.useCreationScreen) { return; }
 
