@@ -255,11 +255,11 @@ define([
     }, "test support for trailing slashes in version 1 hash failed to parse");
 
     assert(function (cb) {
-        var secret = Hash.parsePadUrl('/invite/#/1/ilrOtygzDVoUSRpOOJrUuQ/e8jvf36S3chzkkcaMrLSW7PPrz7VDp85lIFNI26dTmr=/');
+        var secret = Hash.parsePadUrl('/invite/#/2/invite/edit/oRE0oLCtEXusRDyin7GyLGcS/p/');
         var hd = secret.hashData;
-        cb(hd.channel === "ilrOtygzDVoUSRpOOJrUuQ" &&
-            hd.pubkey === "e8jvf36S3chzkkcaMrLSW7PPrz7VDp85lIFNI26dTmr=" &&
-            hd.type === 'invite');
+        cb(hd.key === "oRE0oLCtEXusRDyin7GyLGcS" &&
+            hd.password &&
+            hd.app === 'invite');
     }, "test support for invite urls");
 
     // test support for V2
