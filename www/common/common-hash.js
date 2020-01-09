@@ -15,6 +15,19 @@ var factory = function (Util, Crypto, Nacl) {
             .decodeUTF8(JSON.stringify(list))));
     };
 
+    // XXX move this code?
+    Hash.generateSignPair = function (safe) {
+        var ed = Nacl.sign.keyPair();
+        var makeSafe = function (key) {
+            if (!safe) { return key; }
+            return Crypto.b64RemoveSlashes(key).replace(/=+$/g, '');
+        };
+        return {
+            validateKey: makeSafe(encode64(ed.publicKey)),
+            signKey: makeSafe(encode64(ed.secretKey)),
+        };
+    };
+
     var getEditHashFromKeys = Hash.getEditHashFromKeys = function (secret) {
         var version = secret.version;
         var data = secret.keys;
@@ -134,6 +147,17 @@ Version 1
     /code/#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI
 */
 
+    var getOwnerKey = function (hashArr) {
+        var k;
+        // Check if we have a ownerKey for this pad
+        hashArr.some(function (data) {
+            if (data.length === 86) { // XXX 88 characters - 2 trailing "="...
+                k = data;
+                return true;
+            }
+        });
+        return k;
+    };
     var parseTypeHash = Hash.parseTypeHash = function (type, hash) {
         if (!hash) { return; }
         var options;
@@ -158,17 +182,12 @@ Version 1
                 options = hashArr.slice(5);
                 parsed.present = options.indexOf('present') !== -1;
                 parsed.embed = options.indexOf('embed') !== -1;
-                // Check if we have an ownerKey for this pad
-                hashArr.some(function (data) {
-                    if (data.length === 86) { // XXX 88 characters - 2 trailing "="...
-                        parsed.ownerKey = data;
-                        return true;
-                    }
-                });
+                parsed.ownerKey = getOwnerKey(options);
 
                 parsed.getHash = function (opts) {
                     var hash = hashArr.slice(0, 5).join('/') + '/';
-                    if (parsed.ownerKey) { hash += parsed.ownerKey + '/'; }
+                    var owner = typeof(opts.ownerKey) !== "undefined" ? opts.ownerKey : parsed.ownerKey;
+                    if (owner) { hash += owner + '/'; }
                     if (opts.embed) { hash += 'embed/'; }
                     if (opts.present) { hash += 'present/'; }
                     return hash;
@@ -185,17 +204,12 @@ Version 1
                 parsed.password = options.indexOf('p') !== -1;
                 parsed.present = options.indexOf('present') !== -1;
                 parsed.embed = options.indexOf('embed') !== -1;
-                // Check if we have a ownerKey for this pad
-                hashArr.some(function (data) {
-                    if (data.length === 86) { // XXX 88 characters - 2 trailing "="...
-                        parsed.ownerKey = data;
-                        return true;
-                    }
-                });
+                parsed.ownerKey = getOwnerKey(options);
 
                 parsed.getHash = function (opts) {
                     var hash = hashArr.slice(0, 5).join('/') + '/';
-                    if (parsed.ownerKey) { hash += parsed.ownerKey + '/'; }
+                    var owner = typeof(opts.ownerKey) !== "undefined" ? opts.ownerKey : parsed.ownerKey;
+                    if (owner) { hash += owner + '/'; }
                     if (parsed.password) { hash += 'p/'; }
                     if (opts.embed) { hash += 'embed/'; }
                     if (opts.present) { hash += 'present/'; }
@@ -212,6 +226,8 @@ Version 1
                 parsed.version = 1;
                 parsed.channel = hashArr[2].replace(/-/g, '/');
                 parsed.key = hashArr[3].replace(/-/g, '/');
+                options = hashArr.slice(4);
+                parsed.ownerKey = getOwnerKey(options);
                 return parsed;
             }
             if (hashArr[1] && hashArr[1] === '2') { // Version 2
@@ -223,9 +239,12 @@ Version 1
                 parsed.password = options.indexOf('p') !== -1;
                 parsed.present = options.indexOf('present') !== -1;
                 parsed.embed = options.indexOf('embed') !== -1;
+                parsed.ownerKey = getOwnerKey(options);
 
                 parsed.getHash = function (opts) {
                     var hash = hashArr.slice(0, 4).join('/') + '/';
+                    var owner = typeof(opts.ownerKey) !== "undefined" ? opts.ownerKey : parsed.ownerKey;
+                    if (owner) { hash += owner + '/'; }
                     if (parsed.password) { hash += 'p/'; }
                     if (opts.embed) { hash += 'embed/'; }
                     if (opts.present) { hash += 'present/'; }
