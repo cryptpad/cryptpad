@@ -507,6 +507,17 @@ define([
                     }
                 });
 
+                sframeChan.on('Q_GET_PAD_METADATA', function (data, cb) {
+                    if (!data || !data.channel) {
+                        data = {
+                            channel: secret.channel
+                        };
+                    }
+                    Cryptpad.getPadMetadata(data, cb);
+                });
+                sframeChan.on('Q_SET_PAD_METADATA', function (data, cb) {
+                    Cryptpad.setPadMetadata(data, cb);
+                });
             };
             addCommonRpc(sframeChan);
 
@@ -1168,18 +1179,6 @@ define([
                         owners: owners
                     }, cb);
                 });
-            });
-
-            sframeChan.on('Q_GET_PAD_METADATA', function (data, cb) {
-                if (!data || !data.channel) {
-                    data = {
-                        channel: secret.channel
-                    };
-                }
-                Cryptpad.getPadMetadata(data, cb);
-            });
-            sframeChan.on('Q_SET_PAD_METADATA', function (data, cb) {
-                Cryptpad.setPadMetadata(data, cb);
             });
 
             if (cfg.messaging) {

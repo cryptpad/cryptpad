@@ -16,15 +16,16 @@ var factory = function (Util, Crypto, Nacl) {
     };
 
     // XXX move this code?
-    Hash.generateSignPair = function (safe) {
+    Hash.generateSignPair = function () {
         var ed = Nacl.sign.keyPair();
         var makeSafe = function (key) {
-            if (!safe) { return key; }
             return Crypto.b64RemoveSlashes(key).replace(/=+$/g, '');
         };
         return {
-            validateKey: makeSafe(encode64(ed.publicKey)),
-            signKey: makeSafe(encode64(ed.secretKey)),
+            validateKey: Hash.encodeBase64(ed.publicKey),
+            signKey: Hash.encodeBase64(ed.secretKey),
+            safeValidateKey: makeSafe(Hash.encodeBase64(ed.publicKey)),
+            safeSignKey: makeSafe(Hash.encodeBase64(ed.secretKey)),
         };
     };
 

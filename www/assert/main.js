@@ -279,6 +279,14 @@ define([
             parsed.hashData.embed &&
             parsed.hashData.password);
     }, "test support for owner key in version 2 hash failed to parse");
+    assert(function (cb) {
+        var secret = Hash.parsePadUrl('/file/#/1/TRplGM-WsVkXR+LkJ0tD3D45A1YFZ-Cy/eO4RJwh8yHEEDhl1aHfuwQ2IzosPBZx-HDaWc1lW+hY=/uPmJDtDJ9okhdIyQ-8zphYlpaAonJDOC6MAcYY6iBwWBQr+XmrQ9uGY9WkApJTfEfAu5QcqaDCw1Ul+JXKcYkA/');
+        return cb(secret.hashData.version === 1 &&
+            secret.hashData.channel === "TRplGM/WsVkXR+LkJ0tD3D45A1YFZ/Cy" &&
+            secret.hashData.key === "eO4RJwh8yHEEDhl1aHfuwQ2IzosPBZx/HDaWc1lW+hY=" &&
+            secret.hashData.ownerKey === "uPmJDtDJ9okhdIyQ-8zphYlpaAonJDOC6MAcYY6iBwWBQr+XmrQ9uGY9WkApJTfEfAu5QcqaDCw1Ul+JXKcYkA" &&
+            !secret.hashData.present);
+    }, "test support for owner key in version 1 file hash failed to parse");
 
     assert(function (cb) {
         var secret = Hash.parsePadUrl('/invite/#/2/invite/edit/oRE0oLCtEXusRDyin7GyLGcS/p/');
