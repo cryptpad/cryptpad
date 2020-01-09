@@ -158,9 +158,17 @@ Version 1
                 options = hashArr.slice(5);
                 parsed.present = options.indexOf('present') !== -1;
                 parsed.embed = options.indexOf('embed') !== -1;
+                // Check if we have an ownerKey for this pad
+                hashArr.some(function (data) {
+                    if (data.length === 86) { // XXX 88 characters - 2 trailing "="...
+                        parsed.ownerKey = data;
+                        return true;
+                    }
+                });
 
                 parsed.getHash = function (opts) {
                     var hash = hashArr.slice(0, 5).join('/') + '/';
+                    if (parsed.ownerKey) { hash += parsed.ownerKey + '/'; }
                     if (opts.embed) { hash += 'embed/'; }
                     if (opts.present) { hash += 'present/'; }
                     return hash;
@@ -177,9 +185,17 @@ Version 1
                 parsed.password = options.indexOf('p') !== -1;
                 parsed.present = options.indexOf('present') !== -1;
                 parsed.embed = options.indexOf('embed') !== -1;
+                // Check if we have a ownerKey for this pad
+                hashArr.some(function (data) {
+                    if (data.length === 86) { // XXX 88 characters - 2 trailing "="...
+                        parsed.ownerKey = data;
+                        return true;
+                    }
+                });
 
                 parsed.getHash = function (opts) {
                     var hash = hashArr.slice(0, 5).join('/') + '/';
+                    if (parsed.ownerKey) { hash += parsed.ownerKey + '/'; }
                     if (parsed.password) { hash += 'p/'; }
                     if (opts.embed) { hash += 'embed/'; }
                     if (opts.present) { hash += 'present/'; }
