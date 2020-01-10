@@ -1322,7 +1322,13 @@ define([
 
         var contactButtons = friendsObject.buttons;
         contactButtons.unshift(makeCancelButton());
-                             
+
+        var onShowContacts = function () {
+            if (!hasFriends) {
+                $rights.hide();
+            }
+        };
+
         var frameContacts = UI.dialog.customModal(contactsContent, {
             buttons: contactButtons,
             onClose: config.onClose,
@@ -1405,13 +1411,16 @@ define([
 
         // Create modal
         var resetTab = function () {
+            $rights.show();
             $rights.find('label.cp-radio').show();
         };
         var tabs = [{
             title: Messages.share_contactCategory,
             icon: "fa fa-address-book",
             content: frameContacts,
-            active: hasFriends
+            active: hasFriends,
+            onShow: onShowContacts,
+            onHide: resetTab
         }, {
             title: Messages.share_linkCategory,
             icon: "fa fa-link",
