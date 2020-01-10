@@ -77,7 +77,7 @@ define([], function () {
     background: #FFF;
     padding: 20px;
     width: 100%;
-    color: #000;
+    color: #3F4141;
     text-align: center;
     display: none;
 }
@@ -93,6 +93,9 @@ define([], function () {
 #cp-loading-password-prompt .cp-password-info {
     text-align: left;
     margin-bottom: 15px;
+}
+p.cp-password-info{
+    text-align: left;
 }
 #cp-loading-password-prompt .cp-password-form {
     display: flex;
@@ -199,6 +202,19 @@ define([], function () {
     border-top-color: transparent;
     animation: spin infinite 3s;
     animation-timing-function: cubic-bezier(.6,0.15,0.4,0.85);
+}
+
+button.primary{
+    border: 1px solid #4591c4;
+    padding: 8px 12px;
+    text-transform: uppercase;
+    background-color: #4591c4;
+    color: white;
+    font-weight: bold;
+}
+
+button.primary:hover{
+    background-color: rgb(52, 118, 162);
 }
 
 */}).toString().slice(14, -3);
