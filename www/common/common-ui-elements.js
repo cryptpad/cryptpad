@@ -1131,7 +1131,7 @@ define([
             UI.createRadio('accessRights', 'cp-share-editable-true',
                            Messages.share_linkEdit, false, { mark: {tabindex:1} })]),
             burnAfterReading = hashes.viewHash ? UI.createRadio('accessRights', 'cp-share-bar',
-                           'BAR', false, { mark: {tabindex:1}, label: {style: "display: none;"} }) : undefined // XXX
+                           'View once and self-destruct', false, { mark: {tabindex:1}, label: {style: "display: none;"} }) : undefined // XXX KEY
         ]);
 
         // Burn after reading
@@ -1140,7 +1140,7 @@ define([
         // the options to generate the BAR url
         var barAlert = h('div.alert.alert-danger.cp-alertify-bar-selected', {
             style: 'display: none;'
-        }, " You have set this pad to self-destruct. Once a recipient opens this pad, it will be permanently deleted from the server. "); // XXX
+        }, " You have set this pad to self-destruct. Once a recipient opens this pad, it will be permanently deleted from the server. "); // XXX KEY
         var channel = Hash.getSecrets('pad', hash, config.password).channel;
         common.getPadMetadata({
             channel: channel
@@ -1182,7 +1182,7 @@ define([
                         cb(url);
                     });
                 }
-                return 'XXX Click on the button below to generate a link'; // XXX
+                return 'Click on the button below to generate a link'; // XXX KEY
             }
             var hash = (!hashes.viewHash || (edit && hashes.editHash)) ? hashes.editHash : hashes.viewHash;
             var href = burnAfterReading ? burnAfterReadingUrl : (origin + pathname + '#' + hash);
@@ -4037,8 +4037,8 @@ define([
     };
 
     UIElements.displayBurnAfterReadingPage = function (common, cb) {
-        var info = h('p.cp-password-info', 'XXX Burn after reading'); // XXX
-        var button = h('button', 'Proceed'); // XXX
+        var info = h('p.cp-password-info', 'This document will self-destruct as soon as you open it. It will be removed form the server, once you close this window you will not be able to access it again. If you are not ready to proceed you can close this window and come back later. '); // XXX KEY
+        var button = h('button.primary', 'Proceed'); // XXX KEY
 
         $(button).on('click', function () {
             cb();
@@ -4053,7 +4053,7 @@ define([
     UIElements.getBurnAfterReadingWarning = function (common) {
         var priv = common.getMetadataMgr().getPrivateData();
         if (!priv.burnAfterReading) { return; }
-        return h('div.alert.alert-danger.cp-burn-after-reading', 'Pewpewpew'); // XXX
+        return h('div.alert.alert-danger.cp-burn-after-reading', 'This pad has been deleted from the server, once you close this window you will not be able to access it again.'); // XXX KEY
     };
 
     var crowdfundingState = false;
