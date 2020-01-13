@@ -759,6 +759,8 @@ var getChannel = function (
     }
 
     if (env.openFiles >= env.openFileLimit) {
+        // FIXME warn if this is the case?
+        // alternatively use graceful-fs to handle lots of concurrent reads
         // if you're running out of open files, asynchronously clean up expired files
         // do it on a shorter timeframe, though (half of normal)
         setTimeout(function () {
