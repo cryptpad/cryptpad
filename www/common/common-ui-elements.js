@@ -4001,6 +4001,8 @@ define([
                 msg += Messages.errorCopy;
             }
         }
+        var sframeChan = common.getSframeChannel();
+        sframeChan.event('EV_SHARE_OPEN', {hidden: true});
         if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
         UI.errorLoadingScreen(msg, true, true);
         (cb || function () {})();

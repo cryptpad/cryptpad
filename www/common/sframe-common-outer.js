@@ -81,8 +81,8 @@ define([
                     });
                     localStorage.CRYPTPAD_URLARGS = ApiConfig.requireConf.urlArgs;
                 }
-                var cache = {};
-                var localStore = {};
+                var cache = window.cpCache = {};
+                var localStore = window.localStore = {};
                 Object.keys(localStorage).forEach(function (k) {
                     if (k.indexOf('CRYPTPAD_CACHE|') === 0) {
                         cache[k.slice(('CRYPTPAD_CACHE|').length)] = localStorage[k];
@@ -1240,6 +1240,8 @@ define([
                 if (burnAfterReading) {
                     Cryptpad.padRpc.onReadyEvent.reg(function () {
                         Cryptpad.burnPad({
+                            password: password,
+                            href: window.location.href,
                             channel: secret.channel,
                             ownerKey: burnAfterReading
                         });
