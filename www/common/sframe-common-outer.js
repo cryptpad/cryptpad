@@ -1240,6 +1240,8 @@ define([
                 if (burnAfterReading) {
                     Cryptpad.padRpc.onReadyEvent.reg(function () {
                         Cryptpad.burnPad({
+                            password: password,
+                            href: window.location.href,
                             channel: secret.channel,
                             ownerKey: burnAfterReading
                         });
