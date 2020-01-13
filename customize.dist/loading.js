@@ -107,6 +107,7 @@ p.cp-password-info{
 }
 
 .cp-password-input{
+    font-size:16px;
     border: 1px solid #4591c4;
     background-color: white;
     border-radius 0;
