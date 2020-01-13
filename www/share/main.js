@@ -60,7 +60,7 @@ define([
                     // Remove the listener once we've received the READY message
                     window.removeEventListener('message', whenReady);
                     // Answer with the requested data
-                    postMsg(JSON.stringify({ txid: data.txid, language: Cryptpad.getLanguage() }));
+                    postMsg(JSON.stringify({ txid: data.txid, language: Cryptpad.getLanguage(), localStore: window.localStore, cache: window.cpCache }));
 
                     // Then start the channel
                     window.addEventListener('message', function (msg) {
@@ -104,6 +104,21 @@ define([
                 sframeChan.onReg('EV_METADATA_UPDATE', updateMeta);
 
                 config.addCommonRpc(sframeChan);
+
+                sframeChan.on('EV_CACHE_PUT', function (x) {
+                    Object.keys(x).forEach(function (k) {
+                        localStorage['CRYPTPAD_CACHE|' + k] = x[k];
+                    });
+                });
+                sframeChan.on('EV_LOCALSTORE_PUT', function (x) {
+                    Object.keys(x).forEach(function (k) {
+                        if (typeof(x[k]) === "undefined") {
+                            delete localStorage['CRYPTPAD_STORE|' + k];
+                            return;
+                        }
+                        localStorage['CRYPTPAD_STORE|' + k] = x[k];
+                    });
+                });
 
                 sframeChan.on('Q_GET_FILES_LIST', function (types, cb) {
                     Cryptpad.getSecureFilesList(types, function (err, data) {
