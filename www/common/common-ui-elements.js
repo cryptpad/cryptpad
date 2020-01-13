@@ -4047,7 +4047,7 @@ define([
 
     UIElements.displayBurnAfterReadingPage = function (common, cb) {
         var info = h('p.cp-password-info', 'This document will self-destruct as soon as you open it. It will be removed form the server, once you close this window you will not be able to access it again. If you are not ready to proceed you can close this window and come back later. '); // XXX KEY
-        var button = h('button.primary', 'Proceed'); // XXX KEY
+        var button = h('button.primary', 'view and delete'); // XXX KEY
 
         $(button).on('click', function () {
             cb();
