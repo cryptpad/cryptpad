@@ -1187,6 +1187,7 @@ define([
         $drawer.append($export);
 
         var helpMenu = common.createHelpMenu(['poll']);
+        $('#cp-app-poll-form').prepend(common.getBurnAfterReadingWarning());
         $('#cp-app-poll-form').prepend(helpMenu.menu);
         $drawer.append(helpMenu.button);
 

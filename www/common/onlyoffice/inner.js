@@ -926,6 +926,7 @@ define([
             $rightside.append($forget);
 
             var helpMenu = common.createHelpMenu(['beta', 'oo']);
+            $('#cp-app-oo-editor').prepend(common.getBurnAfterReadingWarning());
             $('#cp-app-oo-editor').prepend(helpMenu.menu);
             toolbar.$drawer.append(helpMenu.button);
 

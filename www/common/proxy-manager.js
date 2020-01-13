@@ -119,6 +119,7 @@ define([
             // If it's not a shared folder, check the pads
             if (!data) { data = Env.user.userObject.getFileData(id, editable); }
             ret.push({
+                id: id,
                 data: data,
                 userObject: Env.user.userObject
             });
@@ -126,6 +127,7 @@ define([
         Object.keys(Env.folders).forEach(function (fId) {
             Env.folders[fId].userObject.findChannels([channel]).forEach(function (id) {
                 ret.push({
+                    id: id,
                     fId: fId,
                     data: Env.folders[fId].userObject.getFileData(id, editable),
                     userObject: Env.folders[fId].userObject
@@ -1095,9 +1097,11 @@ define([
             // Store
             getChannelsList: callWithEnv(getChannelsList),
             addPad: callWithEnv(addPad),
+            delete: callWithEnv(_delete),
             // Tools
             findChannel: callWithEnv(findChannel),
             findHref: callWithEnv(findHref),
+            findFile: callWithEnv(findFile),
             getEditHash: callWithEnv(getEditHash),
             user: Env.user,
             folders: Env.folders

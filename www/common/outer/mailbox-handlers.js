@@ -482,6 +482,31 @@ define([
         cb(true);
     };
 
+    handlers['OWNED_PAD_REMOVED'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var content = msg.content;
+
+        if (msg.author !== content.user.curvePublic) { return void cb(true); }
+        if (!content.channel) {
+            console.log('Remove invalid notification');
+            return void cb(true);
+        }
+
+        var channel = content.channel;
+        var res = ctx.store.manager.findChannel(channel);
+
+        res.forEach(function (obj) {
+            var paths = ctx.store.manager.findFile(obj.id);
+            ctx.store.manager.delete({
+                paths: paths
+            }, function () {
+                ctx.updateDrive();
+            });
+        });
+
+        cb(true);
+    };
+
 
 
     return {

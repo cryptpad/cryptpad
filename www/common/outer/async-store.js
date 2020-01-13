@@ -9,6 +9,7 @@ define([
     '/common/common-feedback.js',
     '/common/common-realtime.js',
     '/common/common-messaging.js',
+    '/common/pinpad.js',
     '/common/outer/sharedfolder.js',
     '/common/outer/cursor.js',
     '/common/outer/onlyoffice.js',
@@ -26,7 +27,7 @@ define([
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
 ], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
-             Realtime, Messaging,
+             Realtime, Messaging, Pinpad,
              SF, Cursor, OnlyOffice, Mailbox, Profile, Team, Messenger,
              NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, nThen, Saferphore) {
@@ -409,19 +410,17 @@ define([
         var initRpc = function (clientId, data, cb) {
             if (!store.loggedIn) { return cb(); }
             if (store.rpc) { return void cb(account); }
-            require(['/common/pinpad.js'], function (Pinpad) {
-                Pinpad.create(store.network, store.proxy, function (e, call) {
-                    if (e) { return void cb({error: e}); }
+            Pinpad.create(store.network, store.proxy, function (e, call) {
+                if (e) { return void cb({error: e}); }
 
-                    store.rpc = call;
+                store.rpc = call;
 
-                    Store.getPinLimit(null, null, function (obj) {
-                        if (obj.error) { console.error(obj.error); }
-                        account.limit = obj.limit;
-                        account.plan = obj.plan;
-                        account.note = obj.note;
-                        cb(obj);
-                    });
+                Store.getPinLimit(null, null, function (obj) {
+                    if (obj.error) { console.error(obj.error); }
+                    account.limit = obj.limit;
+                    account.plan = obj.plan;
+                    account.note = obj.note;
+                    cb(obj);
                 });
             });
         };
@@ -1653,6 +1652,73 @@ define([
             cb();
         };
 
+        // Delete a pad received with a burn after reading URL
+
+        var notifyOwnerPadRemoved = function (data, obj) {
+            var channel = data.channel;
+            var href = data.href;
+            var parsed = Hash.parsePadUrl(href);
+            var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
+            if (obj && obj.error) { return; }
+            if (!obj.mailbox) { return; }
+
+            // Decrypt the mailbox
+            var crypto = Crypto.createEncryptor(secret.keys);
+            var m = [];
+            try {
+                if (typeof (obj.mailbox) === "string") {
+                    m.push(crypto.decrypt(obj.mailbox, true, true));
+                } else {
+                    Object.keys(obj.mailbox).forEach(function (k) {
+                        m.push(crypto.decrypt(obj.mailbox[k], true, true));
+                    });
+                }
+            } catch (e) {
+                console.error(e);
+            }
+            // Tell all the owners that the pad was deleted from the server
+            var curvePublic = store.proxy.curvePublic;
+            var myData = Messaging.createData(store.proxy, false);
+            m.forEach(function (obj) {
+                var mb = JSON.parse(obj);
+                if (mb.curvePublic === curvePublic) { return; }
+                store.mailbox.sendTo('OWNED_PAD_REMOVED', {
+                    channel: channel,
+                    user: myData
+                }, {
+                    channel: mb.notifications,
+                    curvePublic: mb.curvePublic
+                }, function () {});
+            });
+        };
+
+        Store.burnPad = function (clientId, data) {
+            var channel = data.channel;
+            var ownerKey = Crypto.b64AddSlashes(data.ownerKey || '');
+            if (!channel || !ownerKey) { return void console.error("Can't delete BAR pad"); }
+            try {
+                var signKey = Hash.decodeBase64(ownerKey);
+                var pair = Crypto.Nacl.sign.keyPair.fromSecretKey(signKey);
+                Pinpad.create(store.network, {
+                    edPublic: Hash.encodeBase64(pair.publicKey),
+                    edPrivate: Hash.encodeBase64(pair.secretKey)
+                }, function (e, rpc) {
+                    if (e) { return void console.error(e); }
+                    Store.getPadMetadata(null, {
+                        channel: channel
+                    }, function (md) {
+                        rpc.removeOwnedChannel(channel, function (err) {
+                            if (err) { return void console.error(err); }
+                            // Notify owners that the pad was removed
+                            notifyOwnerPadRemoved(data, md);
+                        });
+                    });
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        };
+
         // Fetch the latest version of the metadata on the server and return it.
         // If the pad is stored in our drive, update the local values of "owners" and "expire"
         Store.getPadMetadata = function (clientId, data, cb) {
@@ -2108,6 +2174,11 @@ define([
                 store: store,
                 updateMetadata: function () {
                     broadcast([], "UPDATE_METADATA");
+                },
+                updateDrive: function () {
+                    sendDriveEvent('DRIVE_CHANGE', {
+                        path: ['drive', 'filesData']
+                    });
                 },
                 pinPads: function (data, cb) { Store.pinPads(null, data, cb); },
             }, waitFor, function (ev, data, clients, _cb) {

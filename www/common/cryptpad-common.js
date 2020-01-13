@@ -847,6 +847,10 @@ define([
         postMessage('GET_PAD_METADATA', data, cb);
     };
 
+    common.burnPad = function (data) {
+        postMessage('BURN_PAD', data);
+    };
+
     common.changePadPassword = function (Crypt, Crypto, data, cb) {
         var href = data.href;
         var newPassword = data.password;
