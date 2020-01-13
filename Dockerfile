@@ -1,7 +1,7 @@
 # We use multi stage builds
 FROM node:12-stretch-slim AS build
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yq git jq python
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yq git jq python curl
 RUN npm install -g bower
 
 # install tini in this stage to avoid the need of jq and python
