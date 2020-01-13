@@ -2175,6 +2175,11 @@ define([
                 updateMetadata: function () {
                     broadcast([], "UPDATE_METADATA");
                 },
+                updateDrive: function () {
+                    sendDriveEvent('DRIVE_CHANGE', {
+                        path: ['drive', 'filesData']
+                    });
+                },
                 pinPads: function (data, cb) { Store.pinPads(null, data, cb); },
             }, waitFor, function (ev, data, clients, _cb) {
                 var cb = Util.once(_cb || function () {});
