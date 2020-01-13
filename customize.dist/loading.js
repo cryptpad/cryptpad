@@ -83,7 +83,7 @@ define([], function () {
     display: none;
 }
 
-#cp-loading-password-prompt .cp-password-error {
+#cp-loading-password-prompt p.cp-password-error {
     color: white;
     background: #9e0000;
     padding: 5px;
@@ -93,6 +93,10 @@ define([], function () {
     text-align: left;
     margin-bottom: 15px;
 }
+#cp-loading-burn-after-reading .cp-password-info {
+    margin-bottom: 15px;
+}
+
 p.cp-password-info{
     text-align: left;
 }
