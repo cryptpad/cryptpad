@@ -1130,8 +1130,8 @@ define([
                             Messages.share_linkPresent, false, { mark: {tabindex:1} }) : undefined,
             UI.createRadio('accessRights', 'cp-share-editable-true',
                            Messages.share_linkEdit, false, { mark: {tabindex:1} })]),
-            burnAfterReading = hashes.viewHash ? UI.createRadio('accessRights', 'cp-share-bar',
-                           'View once and self-destruct', false, { mark: {tabindex:1}, label: {style: "display: none;"} }) : undefined // XXX KEY
+            burnAfterReading = hashes.viewHash ? UI.createRadio('accessRights', 'cp-share-bar', Messages.burnAfterReading_linkBurnAfterReading || 
+                           'View once and self-destruct', false, { mark: {tabindex:1}, label: {style: "display: none;"} }) : undefined // XXX temp KEY
         ]);
 
         // Burn after reading
@@ -1140,7 +1140,7 @@ define([
         // the options to generate the BAR url
         var barAlert = h('div.alert.alert-danger.cp-alertify-bar-selected', {
             style: 'display: none;'
-        }, " You have set this pad to self-destruct. Once a recipient opens this pad, it will be permanently deleted from the server. "); // XXX KEY
+        }, Messages.burnAfterReading_warningLink || " You have set this pad to self-destruct. Once a recipient opens this pad, it will be permanently deleted from the server."); // XXX temp KEY
         var channel = Hash.getSecrets('pad', hash, config.password).channel;
         common.getPadMetadata({
             channel: channel
@@ -1182,7 +1182,7 @@ define([
                         cb(url);
                     });
                 }
-                return 'Click on the button below to generate a link'; // XXX KEY
+                return Messages.burnAfterReading_generateLink || 'Click on the button below to generate a link'; // XXX temp KEY
             }
             var hash = (!hashes.viewHash || (edit && hashes.editHash)) ? hashes.editHash : hashes.viewHash;
             var href = burnAfterReading ? burnAfterReadingUrl : (origin + pathname + '#' + hash);
@@ -4048,8 +4048,8 @@ define([
     };
 
     UIElements.displayBurnAfterReadingPage = function (common, cb) {
-        var info = h('p.cp-password-info', 'This document will self-destruct as soon as you open it. It will be removed form the server, once you close this window you will not be able to access it again. If you are not ready to proceed you can close this window and come back later. '); // XXX KEY
-        var button = h('button.primary', 'Proceed'); // XXX KEY
+        var info = h('p.cp-password-info', Messages.burnAfterReading_warning || 'This document will self-destruct as soon as you open it. It will be removed form the server, once you close this window you will not be able to access it again. If you are not ready to proceed you can close this window and come back later. '); // XXX temp KEY
+        var button = h('button.primary', Messages.burnAfterReading_proceed || 'view and delete'); // XXX temp KEY
 
         $(button).on('click', function () {
             cb();
@@ -4064,7 +4064,7 @@ define([
     UIElements.getBurnAfterReadingWarning = function (common) {
         var priv = common.getMetadataMgr().getPrivateData();
         if (!priv.burnAfterReading) { return; }
-        return h('div.alert.alert-danger.cp-burn-after-reading', 'This pad has been deleted from the server, once you close this window you will not be able to access it again.'); // XXX KEY
+        return h('div.alert.alert-danger.cp-burn-after-reading', Messages.burnAfterReading_warningDeleted || 'This pad has been deleted from the server, once you close this window you will not be able to access it again.'); // XXX temp KEY
     };
 
     var crowdfundingState = false;
