@@ -13,7 +13,8 @@ define([], function () {
   right: 0px;
   background: linear-gradient(to right, #326599 0%, #326599 50%, #4591c4 50%, #4591c4 100%);
   color: #fafafa;
-  font-size: 1.5em;
+  font-size: 1.3em;
+  line-height: 120%;
   opacity: 1;
   display: flex;
   flex-flow: column;
@@ -78,12 +79,10 @@ define([], function () {
     padding: 20px;
     width: 100%;
     color: #3F4141;
-    text-align: center;
+    text-align: left;
     display: none;
 }
-#cp-loading-password-prompt {
-    font-size: 18px;
-}
+
 #cp-loading-password-prompt .cp-password-error {
     color: white;
     background: #9e0000;
@@ -99,22 +98,43 @@ p.cp-password-info{
 }
 #cp-loading-password-prompt .cp-password-form {
     display: flex;
-    justify-content: space-around;
     flex-wrap: wrap;
 }
-#cp-loading-password-prompt .cp-password-form button,
-#cp-loading-password-prompt .cp-password-form .cp-password-input {
+#cp-loading-password-prompt .cp-password-form button{
     background-color: #4591c4;
     color: white;
     border: 1px solid #4591c4;
 }
+
+.cp-password-input{
+    border: 1px solid #4591c4;
+    background-color: white;
+    border-radius 0;
+}
+
+.cp-password-form button{
+    padding: 8px 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+#cp-loading-password-prompt .cp-password-form{
+    width: 100%;
+}
+
 #cp-loading-password-prompt .cp-password-form .cp-password-container {
     flex-shrink: 1;
     min-width: 0;
 }
+
+#cp-loading-password-prompt .cp-password-form .cp-password-container .cp-password-reveal{
+    color: #4591c4;
+    padding: 0px 24px;
+}
+
 #cp-loading-password-prompt .cp-password-form input {
     flex: 1;
-    padding: 0 5px;
+    padding: 12px;
     min-width: 0;
     text-overflow: ellipsis;
 }
@@ -122,7 +142,7 @@ p.cp-password-info{
     background-color: #326599;
 }
 #cp-loading-password-prompt ::placeholder {
-    color: #d9d9d9;
+    color: #999999;
     opacity: 1;
 }
 #cp-loading-password-prompt :-ms-input-placeholder {
@@ -157,7 +177,7 @@ p.cp-password-info{
   background: #222;
   color: #fafafa;
   text-align: center;
-  font-size: 1.5em;
+  font-size: 1.3em;
   opacity: 0.7;
   font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
   padding: 15px;
