@@ -867,36 +867,7 @@ var getMessages = function (env, chanName, handler, cb) {
     });
 };
 
-/*::
-export type ChainPadServer_MessageObj_t = { buff: Buffer, offset: number };
-export type ChainPadServer_Storage_t = {
-    readMessagesBin: (
-        channelName:string,
-        start:number,
-        asyncMsgHandler:(msg:ChainPadServer_MessageObj_t, moreCb:()=>void, abortCb:()=>void)=>void,
-        cb:(err:?Error)=>void
-    )=>void,
-    message: (channelName:string, content:string, cb:(err:?Error)=>void)=>void,
-    messageBin: (channelName:string, content:Buffer, cb:(err:?Error)=>void)=>void,
-    getMessages: (channelName:string, msgHandler:(msg:string)=>void, cb:(err:?Error)=>void)=>void,
-    removeChannel: (channelName:string, cb:(err:?Error)=>void)=>void,
-    closeChannel: (channelName:string, cb:(err:?Error)=>void)=>void,
-    flushUnusedChannels: (cb:()=>void)=>void,
-    getChannelSize: (channelName:string, cb:(err:?Error, size:?number)=>void)=>void,
-    getChannelMetadata: (channelName:string, cb:(err:?Error|string, data:?any)=>void)=>void,
-    clearChannel: (channelName:string, (err:?Error)=>void)=>void
-};
-export type ChainPadServer_Config_t = {
-    verbose?: boolean,
-    filePath?: string,
-    channelExpirationMs?: number,
-    openFileLimit?: number
-};
-*/
-module.exports.create = function (
-    conf /*:ChainPadServer_Config_t*/,
-    cb /*:(store:ChainPadServer_Storage_t)=>void*/
-) {
+module.exports.create = function (conf, cb) {
     var env = {
         root: conf.filePath || './datastore',
         archiveRoot: conf.archivePath || './data/archive',
