@@ -87,7 +87,8 @@ define([
         var mediasData = {};
 
         var getMediasSources = APP.getMediasSources =  function() {
-            return content.mediasSources = content.mediaSources || {};
+            content.mediasSources = content.mediaSources || {};
+            return content.mediasSources;
         };
 
         var getId = function () {
@@ -734,8 +735,6 @@ define([
                         debug("Unexpected data type picked " + data.type);
                         return;
                     }
-                    var privateDat = cpNfInner.metadataMgr.getPrivateData();
-                    var origin = privateDat.fileHost || privateDat.origin;
                     var name = data.name;
 
                     // Add image to the list
@@ -790,10 +789,10 @@ define([
                             var mediaData = { blobUrl : blobUrl, content : "" };
                             mediasData[data.src] = mediaData;
                             var reader = new FileReader();
-                            reader.onloadend = function (event) {
+                            reader.onloadend = function () {
                                 debug("MediaData set");
                                 mediaData.content = reader.result;
-                            }
+                            };
                             reader.readAsArrayBuffer(res.content);
                             debug("Adding CryptPad Image " + data.name + ": " +  blobUrl);
                             window.frames[0].AscCommon.g_oDocumentUrls.addImageUrl(data.name, blobUrl);
@@ -847,8 +846,8 @@ define([
             x2t.FS.writeFile('/working/' + fileName, data);
 
             // Adding images
-            for (var mediaFileName in window.frames[0].AscCommon.g_oDocumentUrls.urls) {
-                var mediaFileName = mediaFileName.substring(6);
+            Object.keys(window.frames[0].AscCommon.g_oDocumentUrls.urls || {}).forEach(function (_mediaFileName) {
+                var mediaFileName = _mediaFileName.substring(6);
                 var mediasSources = getMediasSources();
                 var mediaSource = mediasSources[mediaFileName];
                 var mediaData = mediaSource ? mediasData[mediaSource.src] : undefined;
@@ -860,7 +859,7 @@ define([
                 } else {
                     debug("Could not find media content for " + mediaFileName);
                 }
-            }
+            });
 
             var params =  "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
                         + "<TaskQueueDataConvert xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">"
@@ -873,8 +872,9 @@ define([
             // running conversion
             x2t.ccall("runX2T", ["number"], ["string"], ["/working/params.xml"]);
             // reading output file from working disk (in memory)
+            var result;
             try {
-                var result = x2t.FS.readFile('/working/' + fileName + "." + outputFormat);
+                result = x2t.FS.readFile('/working/' + fileName + "." + outputFormat);
             } catch (e) {
                 debug("Failed reading converted file");
                 return "";
@@ -893,7 +893,7 @@ define([
         var x2tSaveAndConvertData = function(data, filename, extension, finalFilename) {
             // Perform the x2t conversion
             require(['/common/onlyoffice/x2t/x2t.js'], function() {
-                var x2t = Module;
+                var x2t = window.Module;
                 x2t.run();
                 if (x2tInitialized) {
                     debug("x2t runtime already initialized");
@@ -1052,7 +1052,7 @@ define([
             debug("Filename");
             debug(filename);
             require(['/common/onlyoffice/x2t/x2t.js'], function() {
-                var x2t = Module;
+                var x2t = window.Module;
                 x2t.run();
                 if (x2tInitialized) {
                     debug("x2t runtime already initialized");
@@ -1065,7 +1065,7 @@ define([
                     debug("x2t in runtime initialized");
                     // Init x2t js module
                     x2tInit(x2t);
-                    var convertedContent = x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin", function(convertedContent) {
+                    x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin", function(convertedContent) {
                         importFile(convertedContent);
                     });
                 };
