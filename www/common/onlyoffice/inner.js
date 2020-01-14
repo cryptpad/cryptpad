@@ -18,7 +18,6 @@ define([
     '/common/outer/worker-channel.js',
 
     '/bower_components/file-saver/FileSaver.min.js',
-    '/common/sframe-common-file.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -40,8 +39,7 @@ define([
     EmptyCell,
     EmptyDoc,
     EmptySlide,
-    Channel,
-    SFCFile)
+    Channel)
 {
     var saveAs = window.saveAs;
     var Nacl = window.nacl;
@@ -56,7 +54,7 @@ define([
 
     var debug = function (x) {
         if (!window.CP_DEV_MODE) { return; }
-        console.log(x);
+        console.debug(x);
     };
 
     var stringify = function (obj) {
@@ -89,11 +87,8 @@ define([
         var mediasData = {};
 
         var getMediasSources = APP.getMediasSources =  function() {
-           if (!content.mediasSources) {
-             content.mediasSources = {}
-           }
-           return content.mediasSources;
-        }
+            return content.mediasSources = content.mediaSources || {};
+        };
 
         var getId = function () {
             return metadataMgr.getNetfluxId() + '-' + privateData.clientId;
@@ -242,8 +237,7 @@ define([
                 var editor = window.frames[0].editor;
                 // if we are not in the sheet app
                 // we should not call this code
-                if (typeof editor.GetSheets === 'undefined')
-                   return;
+                if (typeof editor.GetSheets === 'undefined') { return; }
                 var s = editor.GetSheets();
                 if (s.length === 0) { return; }
                 var wb = s[0].worksheet.workbook;
@@ -717,6 +711,7 @@ define([
                                   '#panel-settings-general tr.autosave { display: none !important; }' +
                                   '#panel-settings-general tr.coauth { display: none !important; }' +
                                   '#header { display: none !important; }';
+                                  // #asc-gen566 // XXX
                                   // + '#id-toolbar-full-placeholder-btn-insertimage { display: none; }' +
                                   // '#id-toolbar-full-placeholder-btn-insertequation { display: none; }';
                         $('<style>').text(css).appendTo($tb);
@@ -734,81 +729,83 @@ define([
             };
 
             common.initFilePicker({
-              onSelect: function (data) {
-                 if (data.type !== 'file') {
-                     console.log("Unexpected data type picked " + data.type);
-                     return;
-                 }
-                 if (data.type !== 'file') { console.log('unhandled embed type ' + data.type); return; }
-                 var privateDat = cpNfInner.metadataMgr.getPrivateData();
-                 var origin = privateDat.fileHost || privateDat.origin;
-                 var name = data.name;
+                onSelect: function (data) {
+                    if (data.type !== 'file') {
+                        debug("Unexpected data type picked " + data.type);
+                        return;
+                    }
+                    var privateDat = cpNfInner.metadataMgr.getPrivateData();
+                    var origin = privateDat.fileHost || privateDat.origin;
+                    var name = data.name;
 
-                 // Add image to the list
-                 var mediasSources = getMediasSources();
-                 mediasSources[name] = data;
+                    // Add image to the list
+                    var mediasSources = getMediasSources();
+                    mediasSources[name] = data;
 
-                 APP.getImageURL(name, function(url) {
-                         console.log("CRYPTPAD success add " + name);
-                         APP.AddImageSuccessCallback({
-                           name: name,
-                           url: url
-                         });
-                 });
-              }
+                    APP.getImageURL(name, function(url) {
+                        debug("CRYPTPAD success add " + name);
+                        APP.AddImageSuccessCallback({
+                            name: name,
+                            url: url
+                        });
+                    });
+                }
             });
 
             APP.AddImage = function(cb1, cb2) {
-              APP.AddImageSuccessCallback = cb1;
-              APP.AddImageErrorCallback = cb2;
-              common.openFilePicker({
-                types: ['file'],
-                where: ['root']
-              });
-            }
+                APP.AddImageSuccessCallback = cb1;
+                APP.AddImageErrorCallback = cb2;
+                common.openFilePicker({
+                    types: ['file'],
+                    where: ['root']
+                });
+            };
 
             APP.getImageURL = function(name, callback) {
-              var mediasSources = getMediasSources();
-              var data = mediasSources[name];
+                var mediasSources = getMediasSources();
+                var data = mediasSources[name];
 
-              if (typeof data === 'undefined') {
-                 console.log("CryptPad - could not find matching media for " + name);
-                 callback("");
-                 return;
-              }
-
-              var blobUrl = (typeof mediasData[data.src] === 'undefined') ? "" : mediasData[data.src].src;
-              if (blobUrl != "") {
-                 console.log("CryptPad Image already loaded " + blobUrl);
-                 callback(blobUrl);
-                 return;
-              }
-
-              Util.fetch(data.src, function (err, u8) {
-                try {
-                   console.log("Decrypt with key " + data.key);
-                   FileCrypto.decrypt(u8, Nacl.util.decodeBase64(data.key), function (err, res) {
-                      if (err || !res.content) { console.log("Decrypting failed"); callback(""); }
-                      var blobUrl = URL.createObjectURL(res.content);
-                      // store media blobUrl and content for cache and export
-                      var mediaData = { blobUrl : blobUrl, content : "" };
-                      mediasData[data.src] = mediaData;
-                      var reader = new FileReader();
-                      reader.onloadend = (event) => {
-                             console.log("MediaData set");
-                             mediaData.content = reader.result;
-                      }
-                      reader.readAsArrayBuffer(res.content);
-                      console.log("Adding CryptPad Image " + data.name + ": " +  blobUrl);
-                      window.frames[0].AscCommon.g_oDocumentUrls.addImageUrl(data.name, blobUrl);
-                      callback(blobUrl);
-                   });
-                } catch(e) {
-                   console.log("Exception decrypting image " + data.name);
-                   callback("");
+                if (typeof data === 'undefined') {
+                    debug("CryptPad - could not find matching media for " + name);
+                    return void callback("");
                 }
-              });
-            }
+
+                var blobUrl = (typeof mediasData[data.src] === 'undefined') ? "" : mediasData[data.src].src;
+                if (blobUrl) {
+                    debug("CryptPad Image already loaded " + blobUrl);
+                    return void callback(blobUrl);
+                }
+
+                Util.fetch(data.src, function (err, u8) {
+                    try {
+                        debug("Decrypt with key " + data.key);
+                        FileCrypto.decrypt(u8, Nacl.util.decodeBase64(data.key), function (err, res) {
+                            if (err || !res.content) {
+                                debug("Decrypting failed");
+                                return void callback("");
+                            }
+
+                            var blobUrl = URL.createObjectURL(res.content);
+                            // store media blobUrl and content for cache and export
+                            var mediaData = { blobUrl : blobUrl, content : "" };
+                            mediasData[data.src] = mediaData;
+                            var reader = new FileReader();
+                            reader.onloadend = function (event) {
+                                debug("MediaData set");
+                                mediaData.content = reader.result;
+                            }
+                            reader.readAsArrayBuffer(res.content);
+                            debug("Adding CryptPad Image " + data.name + ": " +  blobUrl);
+                            window.frames[0].AscCommon.g_oDocumentUrls.addImageUrl(data.name, blobUrl);
+                            callback(blobUrl);
+                        });
+                    } catch (e) {
+                        debug("Exception decrypting image " + data.name);
+                        console.error(e);
+                        callback("");
+                    }
+                });
+            };
 
             APP.docEditor = new window.DocsAPI.DocEditor("cp-app-oo-placeholder", APP.ooconfig);
             ooLoaded = true;
@@ -829,212 +826,195 @@ define([
 
         var x2tInitialized = false;
         var x2tInit = function(x2t) {
-            console.log("x2t mount");
+            debug("x2t mount");
             // x2t.FS.mount(x2t.MEMFS, {} , '/');
-        x2t.FS.mkdir('/working');
+            x2t.FS.mkdir('/working');
             x2t.FS.mkdir('/working/media');
-            console.log("x2t mount done");
-    }
+            x2tInitialized = true;
+            debug("x2t mount done");
+        };
 
-    /*
-        Converting Data
+        /*
+            Converting Data
 
-        This function converts a data in a specific format to the outputformat
-        The filename extension needs to represent the input format
-        Example: fileName=cryptpad.bin outputFormat=xlsx
-    */
-    var x2tConvertDataInternal = function(x2t, data, fileName, outputFormat) {
-        console.log("Converting Data for " + fileName + " to " + outputFormat);
-        // writing file to mounted working disk (in memory)
-        x2t.FS.writeFile('/working/' + fileName, data);
+            This function converts a data in a specific format to the outputformat
+            The filename extension needs to represent the input format
+            Example: fileName=cryptpad.bin outputFormat=xlsx
+        */
+        var x2tConvertDataInternal = function(x2t, data, fileName, outputFormat) {
+            debug("Converting Data for " + fileName + " to " + outputFormat);
+            // writing file to mounted working disk (in memory)
+            x2t.FS.writeFile('/working/' + fileName, data);
 
-                // Adding images
-                for (var mediaFileName in window.frames[0].AscCommon.g_oDocumentUrls.urls) {
-                  var mediaFileName = mediaFileName.substring(6);
-                  var mediasSources = getMediasSources();
-                  var mediaSource = mediasSources[mediaFileName];
-                  var mediaData = (typeof mediaSource === 'undefined') ? mediaSource :  mediasData[mediaSource.src];
-                  if (typeof mediaData !== 'undefined') {
-                    console.log("Writing media data " + mediaFileName);
-                    console.log("Data");
+            // Adding images
+            for (var mediaFileName in window.frames[0].AscCommon.g_oDocumentUrls.urls) {
+                var mediaFileName = mediaFileName.substring(6);
+                var mediasSources = getMediasSources();
+                var mediaSource = mediasSources[mediaFileName];
+                var mediaData = mediaSource ? mediasData[mediaSource.src] : undefined;
+                if (mediaData) {
+                    debug("Writing media data " + mediaFileName);
+                    debug("Data");
                     var fileData = mediaData.content;
-            x2t.FS.writeFile('/working/media/' + mediaFileName, new Uint8Array(fileData));
-                  } else {
-                    console.log("Could not find media content for " + mediaFileName);
-                  }
+                    x2t.FS.writeFile('/working/media/' + mediaFileName, new Uint8Array(fileData));
+                } else {
+                    debug("Could not find media content for " + mediaFileName);
                 }
+            }
 
-        var params = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-                   + "<TaskQueueDataConvert xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">"
-            + "<m_sFileFrom>/working/" + fileName + "</m_sFileFrom>"
-            + "<m_sFileTo>/working/" + fileName + "." + outputFormat + "</m_sFileTo>"
-            + "<m_bIsNoBase64>false</m_bIsNoBase64>"
-            + "</TaskQueueDataConvert>"
-        // writing params file to mounted working disk (in memory)
+            var params =  "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+                        + "<TaskQueueDataConvert xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">"
+                        + "<m_sFileFrom>/working/" + fileName + "</m_sFileFrom>"
+                        + "<m_sFileTo>/working/" + fileName + "." + outputFormat + "</m_sFileTo>"
+                        + "<m_bIsNoBase64>false</m_bIsNoBase64>"
+                        + "</TaskQueueDataConvert>";
+            // writing params file to mounted working disk (in memory)
             x2t.FS.writeFile('/working/params.xml', params);
-        // running conversion
+            // running conversion
             x2t.ccall("runX2T", ["number"], ["string"], ["/working/params.xml"]);
-        // reading output file from working disk (in memory)
-                try {
-             var result = x2t.FS.readFile('/working/' + fileName + "." + outputFormat);
-                } catch (e) {
-                 console.log("Failed reading converted file");
-                 return "";
-                }
-                return result;
-    }
+            // reading output file from working disk (in memory)
+            try {
+                var result = x2t.FS.readFile('/working/' + fileName + "." + outputFormat);
+            } catch (e) {
+                debug("Failed reading converted file");
+                return "";
+            }
+            return result;
+        };
 
         var x2tSaveAndConvertDataInternal = function(x2t, data, filename, extension, finalFilename) {
-                var xlsData = x2tConvertDataInternal(x2t, data, filename, extension);
-                if (xlsData!="") {
-                  var blob = new Blob([xlsData], {type: "application/bin;charset=utf-8"});
-                  saveAs(blob, finalFilename);
-                }
-        }
+            var xlsData = x2tConvertDataInternal(x2t, data, filename, extension);
+            if (xlsData) {
+                var blob = new Blob([xlsData], {type: "application/bin;charset=utf-8"});
+                saveAs(blob, finalFilename);
+            }
+        };
 
         var x2tSaveAndConvertData = function(data, filename, extension, finalFilename) {
-                  // Perform the x2t conversion
-                  require(['/common/onlyoffice/x2t/x2t.js'], function() {
-                   var x2t = Module;
-                   x2t.run();
-                   if (x2tInitialized) {
-                        console.log("x2t runtime already initialized");
-                        x2tSaveAndConvertDataInternal(x2t, data, filename, extension, finalFilename);
-                   }
-                   
-                   x2t.onRuntimeInitialized = function() {
-                        console.log("x2t in runtime initialized");
-            // Init x2t js module
-            x2tInit(x2t);
-                        x2tInitialized = true;
-                        x2tSaveAndConvertDataInternal(x2t, data, filename, extension, finalFilename);
-                   }
-         });
-        }
+            // Perform the x2t conversion
+            require(['/common/onlyoffice/x2t/x2t.js'], function() {
+                var x2t = Module;
+                x2t.run();
+                if (x2tInitialized) {
+                    debug("x2t runtime already initialized");
+                    x2tSaveAndConvertDataInternal(x2t, data, filename, extension, finalFilename);
+                }
+
+                x2t.onRuntimeInitialized = function() {
+                    debug("x2t in runtime initialized");
+                    // Init x2t js module
+                    x2tInit(x2t);
+                    x2tSaveAndConvertDataInternal(x2t, data, filename, extension, finalFilename);
+                };
+            });
+        };
 
 
         var exportXLSXFile = function() {
             var text = getContent();
             var suggestion = Title.suggestTitle(Title.defaultTitle);
-            var ext="xlsx";
+            var ext = "xlsx";
             var type = common.getMetadataMgr().getPrivateData().ooType;
-            if (type==="ooslide")
-              ext = "pptx";
-            else if (type==="oodoc")
-              ext = "docx";
-              
-            UI.prompt(Messages.exportPrompt,
-                Util.fixFileName(suggestion) + '.' + ext, function (filename) {
-                  if (!(typeof(filename) === 'string' && filename)) { return; }
-                     x2tSaveAndConvertData(text, "filename.bin", ext, filename);
-                 });
+            if (type==="ooslide") {
+                ext = "pptx";
+            } else if (type==="oodoc") {
+                ext = "docx";
+            }
+
+            UI.prompt(Messages.exportPrompt, Util.fixFileName(suggestion) + '.' + ext, function (filename) {
+                if (!(typeof(filename) === 'string' && filename)) { return; }
+                x2tSaveAndConvertData(text, "filename.bin", ext, filename);
+            });
         };
 
         var x2tImportImagesInternal = function(x2t, images, i, callback) {
-            if (i>=images.length) {
-              callback();
+            if (i >= images.length) {
+                callback();
             } else {
-              console.log("Import image " + i);
-              var handleFileData = {
-            name: images[i],
-                mediasSources: getMediasSources(),
-            callback: function() {
-                  console.log("next image");
-                  x2tImportImagesInternal(x2t, images, i+1, callback);
-                },
-              };
-              var filePath = "/working/media/" + images[i];
-              console.log("Import filename " + filePath);
-              var fileData = x2t.FS.readFile("/working/media/" + images[i], { encoding : "binary" });
-              console.log("Importing data");
-              console.log("Buffer");
-              console.log(fileData.buffer);
-              var blob = new Blob([fileData.buffer], {type: 'image/png'});
-              blob.name = images[i];
-          APP.FMImages.handleFile(blob, handleFileData);
+                debug("Import image " + i);
+                var handleFileData = {
+                    name: images[i],
+                    mediasSources: getMediasSources(),
+                    callback: function() {
+                        debug("next image");
+                        x2tImportImagesInternal(x2t, images, i+1, callback);
+                    },
+                };
+                var filePath = "/working/media/" + images[i];
+                debug("Import filename " + filePath);
+                var fileData = x2t.FS.readFile("/working/media/" + images[i], { encoding : "binary" });
+                debug("Importing data");
+                debug("Buffer");
+                debug(fileData.buffer);
+                var blob = new Blob([fileData.buffer], {type: 'image/png'});
+                blob.name = images[i];
+                APP.FMImages.handleFile(blob, handleFileData);
             }
-        }
+        };
 
         var x2tImportImages = function (x2t, callback) {
-          if (!APP.FMImages) {
-            var fmConfigImages = {
-              noHandlers: true,
-              noStore: true,
-              body: $('body'),
-            onUploaded: function (ev, data) {
-                    if (!ev.callback) { return; }
-                                console.log("Image uploaded at " + data.url);
-                                var parsed = Hash.parsePadUrl(data.url);
-                                if (parsed.type === 'file') {
-                                   var secret = Hash.getSecrets('file', parsed.hash, data.password);
-                                   var fileHost = privateData.fileHost || privateData.origin;
-                                   var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
-                                   var key = Hash.encodeBase64(secret.keys.cryptKey);
-                   console.log("Final src: " + src);
-                                   ev.mediasSources[ev.name] = { name : ev.name, src : src, key : key };
-                                }
-                    ev.callback();
+            if (!APP.FMImages) {
+                var fmConfigImages = {
+                    noHandlers: true,
+                    noStore: true,
+                    body: $('body'),
+                    onUploaded: function (ev, data) {
+                        if (!ev.callback) { return; }
+                        debug("Image uploaded at " + data.url);
+                        var parsed = Hash.parsePadUrl(data.url);
+                        if (parsed.type === 'file') {
+                            var secret = Hash.getSecrets('file', parsed.hash, data.password);
+                            var fileHost = privateData.fileHost || privateData.origin;
+                            var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
+                            var key = Hash.encodeBase64(secret.keys.cryptKey);
+                            debug("Final src: " + src);
+                            ev.mediasSources[ev.name] = { name : ev.name, src : src, key : key };
+                        }
+                        ev.callback();
+                    }
+                };
+                APP.FMImages = common.createFileManager(fmConfigImages);
             }
-         };
-             APP.FMImages = common.createFileManager(fmConfigImages);
-           }
 
-           // Import Images
-           console.log("Import Images");
-           var files = x2t.FS.readdir("/working/media/");
-           var images = [];
-           files.forEach(file => {
-            if (file!="." && file!="..")
-                  images.push(file);
-       });
-           x2tImportImagesInternal(x2t, images, 0, function() {
-              console.log("Sync media sources elements");
-              console.log(getMediasSources());
-              APP.onLocal();
-              console.log("Import Images finalized");
-              callback();
-           });
-        }
- 
+            // Import Images
+            debug("Import Images");
+            var files = x2t.FS.readdir("/working/media/");
+            var images = [];
+            files.forEach(function (file) {
+                if (file !== "." && file !== "..") {
+                    images.push(file);
+                }
+            });
+            x2tImportImagesInternal(x2t, images, 0, function() {
+                debug("Sync media sources elements");
+                debug(getMediasSources());
+                APP.onLocal();
+                debug("Import Images finalized");
+                callback();
+            });
+        };
+
 
         var x2tConvertData = function (x2t, data, filename, extension, callback) {
-           var convertedContent;
-           if (filename.endsWith(".ods")) {
-             convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(data), filename, "xlsx");
-         convertedContent = x2tConvertDataInternal(x2t, convertedContent, filename + ".xlsx", extension);
-           } else {
-         convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(data), filename, extension);
-           }
-           x2tImportImages(x2t, function() {
-             callback(convertedContent);
-           });
-        }
-
-        var importXLSXFile = function(content, filename) {
-            // Perform the x2t conversion
-            console.log("Filename");
-            console.log(filename);
-            require(['/common/onlyoffice/x2t/x2t.js'], function() {
-                var x2t = Module;
-                x2t.run();
-                if (x2tInitialized) {
-                      console.log("x2t runtime already initialized");
-                      x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin", function(convertedContent) {
-                         importFile(convertedContent);
-                      });
-                }
-
-                x2t.onRuntimeInitialized = function() {
-                    console.log("x2t in runtime initialized");
-                    // Init x2t js module
-                    x2tInit(x2t);
-                    x2tInitialized = true;
-                    var convertedContent = x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin", function(convertedContent) {
-                         importFile(convertedContent);
+            var convertedContent;
+            // Convert from ODF format:
+            // first convert to Office format then to the selected extension
+            if (filename.endsWith(".ods")) {
+                convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(data), filename, "xlsx");
+                convertedContent = x2tConvertDataInternal(x2t, convertedContent, filename + ".xlsx", extension);
+            } else if (filename.endsWith(".odt")) {
+                convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(data), filename, "docx");
+                convertedContent = x2tConvertDataInternal(x2t, convertedContent, filename + ".docx", extension);
+            } else if (filename.endsWith(".odp")) {
+                convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(data), filename, "pptx");
+                convertedContent = x2tConvertDataInternal(x2t, convertedContent, filename + ".pptx", extension);
+            } else {
+                convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(data), filename, extension);
+            }
+            x2tImportImages(x2t, function() {
+                callback(convertedContent);
             });
-                }
-             });
-        }
+        };
 
         var importFile = function(content) {
             // Abort if there is another real user in the channel (history keeper excluded)
@@ -1044,7 +1024,7 @@ define([
             if (m.length > 1) {
                 return void UI.alert(Messages.oo_cantUpload);
             }
-            if (content=="") {
+            if (!content) {
                 return void UI.alert(Messages.oo_cantUpload);
             }
             var blob = new Blob([content], {type: 'plain/text'});
@@ -1053,7 +1033,7 @@ define([
             var uploadedCallback = function() {
                 UI.confirm(Messages.oo_uploaded, function (yes) {
                     try {
-                         window.frames[0].editor.setViewModeDisconnect();
+                        window.frames[0].editor.setViewModeDisconnect();
                     } catch (e) {}
                     if (!yes) { return; }
                     common.gotoURL();
@@ -1067,9 +1047,30 @@ define([
             APP.FM.handleFile(blob, data);
         };
 
+        var importXLSXFile = function(content, filename) {
+            // Perform the x2t conversion
+            debug("Filename");
+            debug(filename);
+            require(['/common/onlyoffice/x2t/x2t.js'], function() {
+                var x2t = Module;
+                x2t.run();
+                if (x2tInitialized) {
+                    debug("x2t runtime already initialized");
+                    x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin", function(convertedContent) {
+                        importFile(convertedContent);
+                    });
+                }
 
-
-
+                x2t.onRuntimeInitialized = function() {
+                    debug("x2t in runtime initialized");
+                    // Init x2t js module
+                    x2tInit(x2t);
+                    var convertedContent = x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin", function(convertedContent) {
+                        importFile(convertedContent);
+                    });
+                };
+            });
+        };
 
         var loadLastDocument = function () {
             var lastCp = getLastCp();
@@ -1139,7 +1140,7 @@ define([
                     JSON.parse(content);
                     return true;
                 } catch (e) {
-                    console.log("Failed to parse, rejecting patch");
+                    debug("Failed to parse, rejecting patch");
                     return false;
                 }
             }
@@ -1151,7 +1152,7 @@ define([
                     window.frames[0].editor.setViewModeDisconnect(true);
                 } catch (e) {}
             }
-            console.log(state);
+            debug(state);
         };
 
         var stringifyInner = function () {
