@@ -190,6 +190,7 @@ define([
 
     var mkHelpMenu = function (framework) {
         var $toolbarContainer = $('.cke_toolbox_main');
+        $toolbarContainer.before(framework._.sfCommon.getBurnAfterReadingWarning());
         var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
         $toolbarContainer.before(helpMenu.menu);
 

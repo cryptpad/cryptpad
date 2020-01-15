@@ -422,6 +422,7 @@ proxy.mailboxes = {
             store: store,
             pinPads: cfg.pinPads,
             updateMetadata: cfg.updateMetadata,
+            updateDrive: cfg.updateDrive,
             emit: emit,
             clients: [],
             boxes: {},

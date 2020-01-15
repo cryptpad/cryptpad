@@ -917,60 +917,79 @@ define([
             className: 'primary cp-share-with-friends',
             name: Messages.share_withFriends,
             onClick: function () {
-                var href = Hash.getRelativeHref(linkGetter());
-                var $friends = $div.find('.cp-usergrid-user.cp-selected');
-                $friends.each(function (i, el) {
-                    var curve = $(el).attr('data-curve');
-                    // Check if the selected element is a friend or a team
-                    if (curve) { // Friend
-                        if (!curve || !friends[curve]) { return; }
-                        var friend = friends[curve];
-                        if (!friend.notifications || !friend.curvePublic) { return; }
-                        common.mailbox.sendTo("SHARE_PAD", {
-                            href: href,
-                            password: config.password,
-                            isTemplate: config.isTemplate,
-                            name: myName,
-                            title: title
-                        }, {
-                            channel: friend.notifications,
-                            curvePublic: friend.curvePublic
-                        });
+                var href;
+                NThen(function (waitFor) {
+                    var w = waitFor();
+                    // linkGetter can be async if this is a burn after reading URL
+                    var res = linkGetter({}, function (url) {
+                        if (!url) {
+                            waitFor.abort();
+                            return;
+                        }
+                        console.warn('BAR');
+                        href = url;
+                        setTimeout(w);
+                    });
+                    if (res && /^http/.test(res)) {
+                        href = Hash.getRelativeHref(res);
+                        setTimeout(w);
                         return;
                     }
-                    // Team
-                    var ed = $(el).attr('data-ed');
-                    var team = teams[ed];
-                    if (!team) { return; }
-                    sframeChan.query('Q_STORE_IN_TEAM', {
-                        href: href,
-                        password: config.password,
-                        path: config.isTemplate ? ['template'] : undefined,
-                        title: title,
-                        teamId: team.id
-                    }, function (err) {
-                        if (err) { return void console.error(err); }
+                }).nThen(function () {
+                    var $friends = $div.find('.cp-usergrid-user.cp-selected');
+                    $friends.each(function (i, el) {
+                        var curve = $(el).attr('data-curve');
+                        // Check if the selected element is a friend or a team
+                        if (curve) { // Friend
+                            if (!curve || !friends[curve]) { return; }
+                            var friend = friends[curve];
+                            if (!friend.notifications || !friend.curvePublic) { return; }
+                            common.mailbox.sendTo("SHARE_PAD", {
+                                href: href,
+                                password: config.password,
+                                isTemplate: config.isTemplate,
+                                name: myName,
+                                title: title
+                            }, {
+                                channel: friend.notifications,
+                                curvePublic: friend.curvePublic
+                            });
+                            return;
+                        }
+                        // Team
+                        var ed = $(el).attr('data-ed');
+                        var team = teams[ed];
+                        if (!team) { return; }
+                        sframeChan.query('Q_STORE_IN_TEAM', {
+                            href: href,
+                            password: config.password,
+                            path: config.isTemplate ? ['template'] : undefined,
+                            title: title,
+                            teamId: team.id
+                        }, function (err) {
+                            if (err) { return void console.error(err); }
+                        });
                     });
-                });
 
-                UI.findCancelButton().click();
+                    UI.findCancelButton().click();
 
-                // Update the "recently shared with" array:
-                // Get the selected curves
-                var curves = $friends.toArray().map(function (el) {
-                    return ($(el).attr('data-curve') || '').slice(0,8);
-                }).filter(function (x) { return x; });
-                // Prepend them to the "order" array
-                Array.prototype.unshift.apply(order, curves);
-                order = Util.deduplicateString(order);
-                // Make sure we don't have "old" friends and save
-                order = order.filter(function (curve) {
-                    return smallCurves.indexOf(curve) !== -1;
+                    // Update the "recently shared with" array:
+                    // Get the selected curves
+                    var curves = $friends.toArray().map(function (el) {
+                        return ($(el).attr('data-curve') || '').slice(0,8);
+                    }).filter(function (x) { return x; });
+                    // Prepend them to the "order" array
+                    Array.prototype.unshift.apply(order, curves);
+                    order = Util.deduplicateString(order);
+                    // Make sure we don't have "old" friends and save
+                    order = order.filter(function (curve) {
+                        return smallCurves.indexOf(curve) !== -1;
+                    });
+                    common.setAttribute(['general', 'share-friends'], order);
+                    if (onShare) {
+                        onShare.fire();
+                    }
                 });
-                common.setAttribute(['general', 'share-friends'], order);
-                if (onShare) {
-                    onShare.fire();
-                }
             },
             keys: [13]
         };
@@ -1049,6 +1068,29 @@ define([
         }
     };
 
+    var makeBurnAfterReadingUrl = function (common, href, channel, cb) {
+        var keyPair = Hash.generateSignPair();
+        var parsed = Hash.parsePadUrl(href);
+        console.error(href, parsed);
+        var newHref = parsed.getUrl({
+            ownerKey: keyPair.safeSignKey
+        });
+        var sframeChan = common.getSframeChannel();
+        NThen(function (waitFor) {
+            sframeChan.query('Q_SET_PAD_METADATA', {
+                channel: channel,
+                command: 'ADD_OWNERS',
+                value: [keyPair.validateKey]
+            }, waitFor(function (err) {
+                if (err) {
+                    waitFor.abort();
+                    UI.warn(Messages.error);
+                }
+            }));
+        }).nThen(function () {
+            cb(newHref);
+        });
+    };
     UIElements.createShareModal = function (config) {
         var origin = config.origin;
         var pathname = config.pathname;
@@ -1078,6 +1120,7 @@ define([
         var parsed = Hash.parsePadUrl(pathname);
         var canPresent = ['code', 'slide'].indexOf(parsed.type) !== -1;
 
+        var burnAfterReading;
         var rights = h('div.msg.cp-inline-radio-group', [
             h('label', Messages.share_linkAccess),
             h('div.radio-group',[
@@ -1086,8 +1129,32 @@ define([
             canPresent ? UI.createRadio('accessRights', 'cp-share-present',
                             Messages.share_linkPresent, false, { mark: {tabindex:1} }) : undefined,
             UI.createRadio('accessRights', 'cp-share-editable-true',
-                           Messages.share_linkEdit, false, { mark: {tabindex:1} })])
+                           Messages.share_linkEdit, false, { mark: {tabindex:1} })]),
+            burnAfterReading = hashes.viewHash ? UI.createRadio('accessRights', 'cp-share-bar', Messages.burnAfterReading_linkBurnAfterReading || 
+                           'View once and self-destruct', false, { mark: {tabindex:1}, label: {style: "display: none;"} }) : undefined // XXX temp KEY
         ]);
+
+        // Burn after reading
+        // Check if we are an owner of this pad. If we are, we can show the burn after reading option.
+        // When BAR is selected, display a red message indicating the consequence and add
+        // the options to generate the BAR url
+        var barAlert = h('div.alert.alert-danger.cp-alertify-bar-selected', {
+            style: 'display: none;'
+        }, Messages.burnAfterReading_warningLink || " You have set this pad to self-destruct. Once a recipient opens this pad, it will be permanently deleted from the server."); // XXX temp KEY
+        var channel = Hash.getSecrets('pad', hash, config.password).channel;
+        common.getPadMetadata({
+            channel: channel
+        }, function (obj) {
+            if (!obj || obj.error) { return; }
+            var priv = common.getMetadataMgr().getPrivateData();
+            // Not an owner: don't display the burn after reading option
+            if (!Array.isArray(obj.owners) || obj.owners.indexOf(priv.edPublic) === -1) {
+                $(burnAfterReading).remove();
+                return;
+            }
+            // When the burn after reading option is selected, transform the modal buttons
+            $(burnAfterReading).show();
+        });
 
         var $rights = $(rights);
 
@@ -1100,13 +1167,25 @@ define([
             });
         };
 
-        var getLinkValue = function (initValue) {
+        var burnAfterReadingUrl;
+
+        var getLinkValue = function (initValue, cb) {
             var val = initValue || {};
             var edit = val.edit !== undefined ? val.edit : Util.isChecked($rights.find('#cp-share-editable-true'));
             var embed = val.embed;
             var present = val.present !== undefined ? val.present : Util.isChecked($rights.find('#cp-share-present'));
+            var burnAfterReading = Util.isChecked($rights.find('#cp-share-bar'));
+            if (burnAfterReading && !burnAfterReadingUrl) {
+                if (cb) { // Called from the contacts tab, "share" button
+                    var barHref = origin + pathname + '#' + (hashes.viewHash || hashes.editHash);
+                    return makeBurnAfterReadingUrl(common, barHref, channel, function (url) {
+                        cb(url);
+                    });
+                }
+                return Messages.burnAfterReading_generateLink || 'Click on the button below to generate a link'; // XXX temp KEY
+            }
             var hash = (!hashes.viewHash || (edit && hashes.editHash)) ? hashes.editHash : hashes.viewHash;
-            var href = origin + pathname + '#' + hash;
+            var href = burnAfterReading ? burnAfterReadingUrl : (origin + pathname + '#' + hash);
             var parsed = Hash.parsePadUrl(href);
             return origin + parsed.getUrl({embed: embed, present: present});
         };
@@ -1160,8 +1239,8 @@ define([
             });
 
         });
-          
-        
+
+        linkContent.push($(barAlert).clone()[0]); // Burn after reading
 
         var link = h('div.cp-share-modal', linkContent);
         var $link = $(link);
@@ -1169,7 +1248,7 @@ define([
         var linkButtons = [
             makeCancelButton(),
             !config.sharedFolder && {
-              className: 'secondary',
+              className: 'secondary cp-nobar',
               name: Messages.share_linkOpen,
               onClick: function () {
                   saveValue();
@@ -1180,9 +1259,8 @@ define([
                   return true;
               },
               keys: [[13, 'ctrl']]
-            },
-            {
-              className: 'primary',
+            }, {
+              className: 'primary cp-nobar',
               name: Messages.share_linkCopy,
               onClick: function () {
                   saveValue();
@@ -1193,26 +1271,26 @@ define([
                   if (success) { UI.log(Messages.shareSuccess); }
               },
               keys: [13]
+            }, {
+              className: 'primary cp-bar',
+              name: 'GENERATE LINK',
+              onClick: function () {
+                var barHref = origin + pathname + '#' + (hashes.viewHash || hashes.editHash);
+                makeBurnAfterReadingUrl(common, barHref, channel, function (url) {
+                    burnAfterReadingUrl = url;
+                    $rights.find('input[type="radio"]').trigger('change');
+                });
+                return true;
+              },
+              keys: []
             }
           ];
-
-        // update values for link preview when radio btns change
-        $link.find('#cp-share-link-preview').val(getLinkValue());
-        $rights.find('input[type="radio"]').on('change', function () {
-            $link.find('#cp-share-link-preview').val(getLinkValue({
-                embed: Util.isChecked($link.find('#cp-share-embed'))
-            }));
-        });
-        $link.find('input[type="checkbox"]').on('change', function () {
-            $link.find('#cp-share-link-preview').val(getLinkValue({
-                embed: Util.isChecked($link.find('#cp-share-embed'))
-            }));
-        });
 
         var frameLink = UI.dialog.customModal(link, {
             buttons: linkButtons,
             onClose: config.onClose,
         });
+        $(frameLink).find('.cp-bar').hide();
 
         // Share with contacts tab
 
@@ -1240,10 +1318,17 @@ define([
             ]));
         }
 
+        $(contactsContent).append($(barAlert).clone()); // Burn after reading
 
         var contactButtons = friendsObject.buttons;
         contactButtons.unshift(makeCancelButton());
-                             
+
+        var onShowContacts = function () {
+            if (!hasFriends) {
+                $rights.hide();
+            }
+        };
+
         var frameContacts = UI.dialog.customModal(contactsContent, {
             buttons: contactButtons,
             onClose: config.onClose,
@@ -1282,26 +1367,60 @@ define([
             keys: [13]
         }];
 
+        var onShowEmbed = function () {
+            $rights.find('#cp-share-bar').closest('label').hide();
+            $rights.find('input[type="radio"]:enabled').first().prop('checked', 'checked');
+            $rights.find('input[type="radio"]').trigger('change');
+        };
+
         var embed = h('div.cp-share-modal', embedContent);
         var $embed = $(embed);
-
-        // update values for link preview when radio btns change
-        $embed.find('#cp-embed-link-preview').val(getEmbedValue());
-        $rights.find('input[type="radio"]').on('change', function () {
-            $embed.find('#cp-embed-link-preview').val(getEmbedValue());
-        });
 
         var frameEmbed = UI.dialog.customModal(embed, {
             buttons: embedButtons,
             onClose: config.onClose,
         });
 
+        // update values for link and embed preview when radio btns change
+        $embed.find('#cp-embed-link-preview').val(getEmbedValue());
+        $link.find('#cp-share-link-preview').val(getLinkValue());
+        $rights.find('input[type="radio"]').on('change', function () {
+            $link.find('#cp-share-link-preview').val(getLinkValue({
+                embed: Util.isChecked($link.find('#cp-share-embed'))
+            }));
+            // Hide or show the burn after reading alert
+            if (Util.isChecked($rights.find('#cp-share-bar')) && !burnAfterReadingUrl) {
+                $('.cp-alertify-bar-selected').show();
+                // Show burn after reading button
+                $('.alertify').find('.cp-bar').show();
+                $('.alertify').find('.cp-nobar').hide();
+                return;
+            }
+            $embed.find('#cp-embed-link-preview').val(getEmbedValue());
+            // Hide burn after reading button
+            $('.alertify').find('.cp-nobar').show();
+            $('.alertify').find('.cp-bar').hide();
+            $('.cp-alertify-bar-selected').hide();
+        });
+        $link.find('input[type="checkbox"]').on('change', function () {
+            $link.find('#cp-share-link-preview').val(getLinkValue({
+                embed: Util.isChecked($link.find('#cp-share-embed'))
+            }));
+        });
+
+
         // Create modal
+        var resetTab = function () {
+            $rights.show();
+            $rights.find('label.cp-radio').show();
+        };
         var tabs = [{
             title: Messages.share_contactCategory,
             icon: "fa fa-address-book",
             content: frameContacts,
-            active: hasFriends
+            active: hasFriends,
+            onShow: onShowContacts,
+            onHide: resetTab
         }, {
             title: Messages.share_linkCategory,
             icon: "fa fa-link",
@@ -1310,7 +1429,9 @@ define([
         }, {
             title: Messages.share_embedCategory,
             icon: "fa fa-code",
-            content: frameEmbed
+            content: frameEmbed,
+            onShow: onShowEmbed,
+            onHide: resetTab
         }];
         if (typeof(AppConfig.customizeShareOptions) === 'function') {
             AppConfig.customizeShareOptions(hashes, tabs, {
@@ -3866,6 +3987,7 @@ define([
 
     UIElements.onServerError = function (common, err, toolbar, cb) {
         if (["EDELETED", "EEXPIRED"].indexOf(err.type) === -1) { return; }
+        var priv = common.getMetadataMgr().getPrivateData();
         var msg = err.type;
         if (err.type === 'EEXPIRED') {
             msg = Messages.expiredError;
@@ -3873,11 +3995,14 @@ define([
                 msg += Messages.errorCopy;
             }
         } else if (err.type === 'EDELETED') {
+            if (priv.burnAfterReading) { return void cb(); }
             msg = Messages.deletedError;
             if (err.loaded) {
                 msg += Messages.errorCopy;
             }
         }
+        var sframeChan = common.getSframeChannel();
+        sframeChan.event('EV_SHARE_OPEN', {hidden: true});
         if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
         UI.errorLoadingScreen(msg, true, true);
         (cb || function () {})();
@@ -3920,6 +4045,26 @@ define([
         UI.errorLoadingScreen(block);
 
         $password.find('.cp-password-input').focus();
+    };
+
+    UIElements.displayBurnAfterReadingPage = function (common, cb) {
+        var info = h('p.cp-password-info', Messages.burnAfterReading_warning || 'This document will self-destruct as soon as you open it. It will be removed form the server, once you close this window you will not be able to access it again. If you are not ready to proceed you can close this window and come back later. '); // XXX temp KEY
+        var button = h('button.primary', Messages.burnAfterReading_proceed || 'view and delete'); // XXX temp KEY
+
+        $(button).on('click', function () {
+            cb();
+        });
+
+        var block = h('div#cp-loading-burn-after-reading', [
+            info,
+            button
+        ]);
+        UI.errorLoadingScreen(block);
+    };
+    UIElements.getBurnAfterReadingWarning = function (common) {
+        var priv = common.getMetadataMgr().getPrivateData();
+        if (!priv.burnAfterReading) { return; }
+        return h('div.alert.alert-danger.cp-burn-after-reading', Messages.burnAfterReading_warningDeleted || 'This pad has been deleted from the server, once you close this window you will not be able to access it again.'); // XXX temp KEY
     };
 
     var crowdfundingState = false;
@@ -3978,6 +4123,9 @@ define([
         storePopupState = true;
         if (data && data.stored) { return; } // We won't display the popup for dropped files
         var priv = common.getMetadataMgr().getPrivateData();
+
+        // This pad will be deleted automatically, it shouldn't be stored
+        if (priv.burnAfterReading) { return; }
 
         var typeMsg = priv.pathname.indexOf('/file/') !== -1 ? Messages.autostore_file :
                         priv.pathname.indexOf('/drive/') !== -1 ? Messages.autostore_sf :

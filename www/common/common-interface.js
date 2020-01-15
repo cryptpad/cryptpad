@@ -209,10 +209,16 @@ define([
                 $(title).prepend(' ').prepend(icon);
             }
             $(title).click(function () {
+                var old = tabs[active];
+                if (old.onHide) { old.onHide(); }
                 titles.forEach(function (t) { $(t).removeClass('alertify-tabs-active'); });
                 contents.forEach(function (c) { $(c).removeClass('alertify-tabs-content-active'); });
+                if (tab.onShow) {
+                    tab.onShow();
+                }
                 $(title).addClass('alertify-tabs-active');
                 $(content).addClass('alertify-tabs-content-active');
+                active = i;
             });
             titles.push(title);
             contents.push(content);
