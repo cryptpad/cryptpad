@@ -933,6 +933,16 @@ var removeOwnedChannel = function (Env, channelId, unsafeKey, cb) {
     });
 };
 
+var removeOwnedChannelHistory = function (Env, channelId, unsafeKey, hash, cb) {
+    // XXX validate that the user sending the request owns the channel in question
+    // proceed to call Env.msgStore.trimChannel(channelId, hash, cb) if ok
+    // otherwise reject with INSUFFICIENT_PERMISSIONS
+
+    // XXX if trimChannel calls back without an error
+    // you must also clear the channel's index from historyKeeper cache
+    cb("E_NOT_IMPLEMENTED");
+};
+
 /*  Users should be able to clear their own pin log with an authenticated RPC
 */
 var removePins = function (Env, safeKey, cb) {
@@ -947,6 +957,11 @@ var removePins = function (Env, safeKey, cb) {
 
         cb(err);
     });
+};
+
+var trimPins = function (Env, safeKey, cb) {
+    // XXX trim to latest pin checkpoint
+    cb("NOT_IMPLEMENTED");
 };
 
 /*
@@ -1313,9 +1328,11 @@ var isAuthenticatedCall = function (call) {
         'OWNED_UPLOAD_COMPLETE',
         'UPLOAD_CANCEL',
         'EXPIRE_SESSION',
+        'TRIM_OWNED_CHANNEL_HISTORY',
         'CLEAR_OWNED_CHANNEL',
         'REMOVE_OWNED_CHANNEL',
         'REMOVE_PINS',
+        'TRIM_PINS',
         'WRITE_LOGIN_BLOCK',
         'REMOVE_LOGIN_BLOCK',
         'ADMIN',
@@ -1635,8 +1652,18 @@ RPC.create = function (
                     if (e) { return void Respond(e); }
                     Respond(void 0, "OK");
                 });
+            case 'TRIM_OWNED_CHANNEL_HISTORY':
+                return void removeOwnedChannelHistory(Env, msg[1], publicKey, msg[2], function (e) {
+                    if (e) { return void Respond(e); }
+                    Respond(void 0, 'OK');
+                });
             case 'REMOVE_PINS':
                 return void removePins(Env, safeKey, function (e) {
+                    if (e) { return void Respond(e); }
+                    Respond(void 0, "OK");
+                });
+            case 'TRIM_PINS':
+                return void trimPins(Env, safeKey, function (e) {
                     if (e) { return void Respond(e); }
                     Respond(void 0, "OK");
                 });
