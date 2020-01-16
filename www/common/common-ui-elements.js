@@ -2969,6 +2969,9 @@ define([
             var to;
             $container.on('click', 'a', function () {
                 value = $(this).data('value');
+                var $val = $(this);
+                var textValue = $val.html() || value;
+                $button.find('.cp-dropdown-button-title').html(textValue);
             });
             $container.keydown(function (e) {
                 var $value = $innerblock.find('[data-value].cp-dropdown-element-active:visible');
