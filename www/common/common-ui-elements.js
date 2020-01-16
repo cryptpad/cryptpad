@@ -1303,7 +1303,6 @@ define([
 
         onFriendShare.reg(saveValue);
 
-        // XXX Don't display access rights if no contacts
         var contactsContent = h('div.cp-share-modal');
         var $contactsContent = $(contactsContent);
         
