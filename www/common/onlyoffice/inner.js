@@ -712,25 +712,32 @@ define([
                         "id": String(myOOId), //"c0c3bf82-20d7-4663-bf6d-7fa39c598b1d",
                         "firstname": metadataMgr.getUserData().name || Messages.anonymous,
                     },
-                    "mode": readOnly || lock ? "view" : "edit"
+                    "mode": readOnly || lock ? "view" : "edit",
+                    "lang": (navigator.language || navigator.userLanguage || '').slice(0,2)
                 },
                 "events": {
                     "onAppReady": function(/*evt*/) {
                         var $tb = $('iframe[name="frameEditor"]').contents().find('head');
-                        var css = '#id-toolbar-full .toolbar-group:nth-child(2), #id-toolbar-full .separator:nth-child(3) { display: none; }' +
+                        var css = // Old OO
+                                  '#id-toolbar-full .toolbar-group:nth-child(2), #id-toolbar-full .separator:nth-child(3) { display: none; }' +
                                   '#fm-btn-save { display: none !important; }' +
                                   '#panel-settings-general tr.autosave { display: none !important; }' +
                                   '#panel-settings-general tr.coauth { display: none !important; }' +
                                   '#header { display: none !important; }' +
                                   '#title-doc-name { display: none !important; }' +
-                                  '#asc-gen566 { display: none !important; }' +
-                                  'section[data-tab="ins"] .separator:nth-last-child(2) { display: none !important; }' +
-                                  '#slot-btn-insequation { display: none !important; }' +
-                                  '.toolbar .tabs .ribtab:not(.canedit) { display: none !important; }' +
+                                  // New OO:
+                                  '#asc-gen566 { display: none !important; }' + // Insert image from url
+                                  'section[data-tab="ins"] .separator:nth-last-child(2) { display: none !important; }' + // separator
+                                  '#slot-btn-insequation { display: none !important; }' + // Insert equation
+                                  '.toolbar .tabs .ribtab:not(.canedit) { display: none !important; }' + // Switch collaborative mode
+                                  '#app-title { display: none !important; }' + // OnlyOffice logo + doc title
+                                  '#fm-btn-info { display: none !important; }' + // Author name, doc title, etc. in "File" (menu entry)
+                                  '#panel-info { display: none !important; }' + // Same but content
+                                  '#image-button-from-url { display: none !important; }' + // Inline image settings: replace with url
+                                  '#file-menu-panel .devider { display: none !important; }' + // separator in the "File" menu
+                                  '#file-menu-panel { top: 28px !important; }' + // Position of the "File" menu
+                                  '#left-btn-spellcheck, #left-btn-about { display: none !important; }'+
                                   '';
-                                  // #asc-gen566 // XXX
-                                  // + '#id-toolbar-full-placeholder-btn-insertimage { display: none; }' +
-                                  // '#id-toolbar-full-placeholder-btn-insertequation { display: none; }';
                         $('<style>').text(css).appendTo($tb);
                         if (UI.findOKButton().length) {
                             UI.findOKButton().on('focusout', function () {
