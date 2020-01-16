@@ -87,7 +87,7 @@ define([
         var mediasData = {};
 
         var getMediasSources = APP.getMediasSources =  function() {
-            content.mediasSources = content.mediaSources || {};
+            content.mediasSources = content.mediasSources || {};
             return content.mediasSources;
         };
 
@@ -711,7 +711,12 @@ define([
                                   '#fm-btn-save { display: none !important; }' +
                                   '#panel-settings-general tr.autosave { display: none !important; }' +
                                   '#panel-settings-general tr.coauth { display: none !important; }' +
-                                  '#header { display: none !important; }';
+                                  '#header { display: none !important; }' +
+                                  '#title-doc-name { display: none !important; }' +
+                                  '#asc-gen566 { display: none !important; }' +
+                                  'section[data-tab="ins"] .separator:nth-last-child(2) { display: none !important; }' +
+                                  '#slot-btn-insequation { display: none !important; }' +
+                                  '';
                                   // #asc-gen566 // XXX
                                   // + '#id-toolbar-full-placeholder-btn-insertimage { display: none; }' +
                                   // '#id-toolbar-full-placeholder-btn-insertequation { display: none; }';
