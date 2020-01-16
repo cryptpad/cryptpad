@@ -284,9 +284,9 @@ module.exports.create = function (cfg) {
 
     const storeMessage = function (ctx, channel, msg, isCp, optionalMessageHash) {
         const id = channel.id;
-        const msgBin = Buffer.from(msg + '\n', 'utf8');
 
         queueStorage(id, function (next) {
+            const msgBin = Buffer.from(msg + '\n', 'utf8');
             // Store the message first, and update the index only once it's stored.
             // store.messageBin can be async so updating the index first may
             // result in a wrong cpIndex
