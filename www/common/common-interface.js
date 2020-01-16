@@ -161,6 +161,17 @@ define([
         return h('p.msg', h('input', attrs));
     };
 
+    dialog.textTypeInput = function (dropdown) {
+        var attrs = {
+            type: 'text',
+            'class': 'cp-text-type-input',
+        };
+        return h('p.msg.cp-alertify-type-container', h('div.cp-alertify-type', [
+            h('input', attrs),
+            dropdown // must be a "span"
+        ]));
+    };
+
     dialog.nav = function (content) {
         return h('nav', content || [
             dialog.cancelButton(),
@@ -186,6 +197,7 @@ define([
             });
         };
         return $frame.click(function (e) {
+            $frame.find('.cp-dropdown-content').hide();
             e.stopPropagation();
         })[0];
     };
@@ -480,7 +492,8 @@ define([
         cb = cb || function () {};
         opt = opt || {};
 
-        var inputBlock = opt.password ? UI.passwordInput() : dialog.textInput();
+        var inputBlock = opt.password ? UI.passwordInput() :
+                            (opt.typeInput ? dialog.textTypeInput(opt.typeInput) : dialog.textInput());
         var input = $(inputBlock).is('input') ? inputBlock : $(inputBlock).find('input')[0];
         input.value = typeof(def) === 'string'? def: '';
 

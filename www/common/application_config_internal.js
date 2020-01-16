@@ -20,7 +20,7 @@ define(function() {
      * users and these users will be redirected to the login page if they still try to access
      * the app
      */
-    config.registeredOnlyTypes = ['file', 'contacts', 'oodoc', 'ooslide', 'sheet', 'notifications'];
+    config.registeredOnlyTypes = ['file', 'contacts', 'oodoc', 'ooslide', 'notifications'];
 
     /* CryptPad is available is multiple languages, but only English and French are maintained
      * by the developers. The other languages may be outdated, and any missing string for a langauge

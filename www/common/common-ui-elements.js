@@ -2896,9 +2896,11 @@ define([
         var $button = $('<button>', {
             'class': ''
         }).append($('<span>', {'class': 'cp-dropdown-button-title'}).html(config.text || ""));
-        /*$('<span>', {
-            'class': 'fa fa-caret-down',
-        }).appendTo($button);*/
+        if (config.caretDown) {
+            $('<span>', {
+                'class': 'fa fa-caret-down',
+            }).prependTo($button);
+        }
 
         // Menu
         var $innerblock = $('<div>', {'class': 'cp-dropdown-content'});
@@ -2965,6 +2967,12 @@ define([
         if (config.isSelect) {
             var pressed = '';
             var to;
+            $container.on('click', 'a', function () {
+                value = $(this).data('value');
+                var $val = $(this);
+                var textValue = $val.html() || value;
+                $button.find('.cp-dropdown-button-title').html(textValue);
+            });
             $container.keydown(function (e) {
                 var $value = $innerblock.find('[data-value].cp-dropdown-element-active:visible');
                 if (e.which === 38) { // Up
