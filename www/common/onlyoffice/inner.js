@@ -716,6 +716,7 @@ define([
                                   '#asc-gen566 { display: none !important; }' +
                                   'section[data-tab="ins"] .separator:nth-last-child(2) { display: none !important; }' +
                                   '#slot-btn-insequation { display: none !important; }' +
+                                  '.toolbar .tabs .ribtab:not(.canedit) { display: none !important; }' +
                                   '';
                                   // #asc-gen566 // XXX
                                   // + '#id-toolbar-full-placeholder-btn-insertimage { display: none; }' +
