@@ -3,7 +3,7 @@
 
     // polyfill for atob in case you're using this from node...
     window.atob = window.atob || function (str) { return Buffer.from(str, 'base64').toString('binary'); }; // jshint ignore:line
-    window.btoa = window.btoa || function (str) { return new Buffer(str, 'binary').toString('base64'); }; // jshint ignore:line
+    window.btoa = window.btoa || function (str) { return Buffer.from(str, 'binary').toString('base64'); }; // jshint ignore:line
 
     Util.slice = function (A, start, end) {
         return Array.prototype.slice.call(A, start, end);

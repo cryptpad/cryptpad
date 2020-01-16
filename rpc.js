@@ -1062,7 +1062,7 @@ var writeLoginBlock = function (Env, msg, cb) { // FIXME BLOCKS
             // flow is dumb and I need to guard against this which will never happen
             /*:: if (typeof(validatedBlock) === 'undefined') { throw new Error('should never happen'); } */
             /*:: if (typeof(path) === 'undefined') { throw new Error('should never happen'); } */
-            Fs.writeFile(path, new Buffer(validatedBlock), { encoding: "binary", }, function (err) {
+            Fs.writeFile(path, Buffer.from(validatedBlock), { encoding: "binary", }, function (err) {
                 if (err) { return void cb(err); }
                 cb();
             });
@@ -1369,7 +1369,6 @@ type NetfluxWebsocketSrvContext_t = {
 */
 RPC.create = function (
     config /*:Config_t*/,
-    debuggable /*:<T>(string, T)=>T*/,
     cb /*:(?Error, ?Function)=>void*/
 ) {
     Log = config.log;
@@ -1404,8 +1403,6 @@ RPC.create = function (
     } catch (e) {
         console.error("Can't parse admin keys. Please update or fix your config.js file!");
     }
-
-    debuggable('rpc_env', Env);
 
     var Sessions = Env.Sessions;
     var paths = Env.paths;

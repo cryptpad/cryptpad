@@ -1,3 +1,66 @@
+# JamaicanMonkey release (3.9.0)
+
+## Goals
+
+Over time we've added many small configuration values to CryptPad's `config/config.js`.
+As the number of possible variations grew it became increasingly difficult to test the platform and to provide clear documentation.
+Ultimately this has made the platform more difficult to understand and consequently to host.
+
+This release features relatively few bug fixes or features.
+Instead, we took the calm period of the northern winter holidays to simplify the process of running a server and to begin working on some comprehensive documentation.
+
+## Update notes
+
+We have chosen to drop support for a number of parameters which we believe are not widely used.
+Read the following list carefully before updating, as you could be relying on behaviour which no longer exists.
+
+* Due to reasons of security and performance we have long advised that administrators make their instance available only over HTTPS provided by a reverse proxy such as nginx instead of loading TLS certificates via the node process itself. We have removed the option of serving HTTPS traffic directly from node by removing all support for HTTPS in this process.
+* Over the years many administrators have had to migrate their instance from one machine to another and have had difficulty identifying which directories were responsible for storing user data. We are beginning to migrate all user-generated data from the repository's root into the `data` directory as a new default, allowing for admins to migrate content by copying this single directory.
+  * for the time being we have not moved anything which is exposed directly over HTTPS since that complicates the upgrade process by requiring all configuration changes to be made simultaneously.
+  * the modifications we've made only affect the _default configuration_ provided by `config/config.example.js`, existing instances which have copied this file to `config/config.js` will not be affected.
+  * only the following values have been modified:
+    * `pinPath`
+    * `taskPath`
+    * `blobStagingPath`
+* We have modified the Dockerfile volume list to reflect the changes to these default paths. If you are using docker you will have to either:
+  * revert their removal or
+  * move the affected directories into the `data` directory and update your live config file to reflect their new location
+* Please note that we do our team does not use docker, that it was included in the main repository as a community contribution, and that we are not committed to supporting its configuration since we do not test it.
+  * Our official policy is to provide an up-to-date set of configuration files reflecting the state of our production installation on [CryptPad.fr](https://cryptpad.fr) using Debian, nginx, and systemd.
+  * we are actively working on improving our documentation for this particular configuration and we plan to close issues for other configurations as being outside of the project's scope.
+* We've updated our example nginx configuration file, located at `cryptpad/docs/example.nginx.conf`.
+  * in addition to a great number of comments, it now makes use of variables configure the domains referenced by the CSP headers which are required to take advantage of all of CryptPad's security features.
+* Prompted by warnings from recent nodejs versions we are updating our recommended version to v12.14.0 which is at the time of this writing the latest Long Term Support version.
+  * you may need to update to successfully launch your server.
+  * as always, we recommend using nvm to manage nodejs installation.
+* We have dropped support for a number of experimental features:
+  * replify (which allowed admins to modify their server at runtime using a REPL connected via a named socket)
+  * heapdump (which provided snapshots of the server's memory if it crashed)
+  * configurable RPC files as a configuration parameter
+* Finally, we've replaced a number of websocket configuration values (`websocketURL`, `websocketPath`, `useExternalWebsockets`, and `useSecureWebsockets`) with one optional value (`externalWebsocketURL`) in config.js
+  * if your instance is configured in the default manner you shouldn't actually need this value, as it will default to using `/cryptpad_websocket`.
+  * if you have configured your instance to serve all static assets over one domain and to host your API server on another, set `externalWebsocketURL` to `wss://your-domain.tld/cryptpad_websocket` or whatever URL will be correctly forwarded to your API server.
+
+Once you have reviewed your configuration files and ensured that they are correct, update to 3.9.0 with the following steps:
+
+1. take your server down
+2. get the latest code with `git pull origin master`
+3. install some required serverside dependency with `npm update`
+4. (optionally) update clientside dependencies with `bower update`
+5. bring your server back up
+
+## Features
+
+* We made some minor improvements to the process of redeeming invitation links for teams.
+  * invitation links can only be used once, so we remove the hash from the URL bar once you've landed on the redemption page so that reloading after redeeming doesn't indicate that you've used an expired link.
+* [One of our Finnish-speaking contributors](https://weblate.cryptpad.fr/user/ilo/) has translated a very large amount of the platform's text in the last few weeks, making Finnish our fifth most thoroughly translated language!
+
+## Bug fixes
+
+* We noticed and fixed a style regression which incorrectly removed the scrollbar from some textareas
+* We also found that it was possible to corrupt the href of an item in a team's drive if you first shared a pad with your team then transferred ownership, the link stored in the team's drive would have its domain concatenated together twice.
+* The type value of read-only pads displayed as search results in user and team drives was incorrect but is now correctly inferred.
+
 # IsolobodonPortoricensis release (3.8.0)
 
 We had some trouble finding an extinct animal whose name started with "I", and we had to resort to using a scientific name.

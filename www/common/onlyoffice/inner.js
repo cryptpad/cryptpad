@@ -597,7 +597,9 @@ define([
                 ooChannel.cpIndex++;
                 ooChannel.lastHash = hash;
                 // Check if a checkpoint is needed
-                if (ooChannel.cpIndex % CHECKPOINT_INTERVAL === 0) {
+                var lastCp = getLastCp();
+                if (common.isLoggedIn() && (ooChannel.cpIndex % CHECKPOINT_INTERVAL === 0 ||
+                            (ooChannel.cpIndex - lastCp.index) > CHECKPOINT_INTERVAL)) {
                     makeCheckpoint();
                 }
                 // Remove my lock
@@ -686,7 +688,7 @@ define([
         var startOO = function (blob, file) {
             if (APP.ooconfig) { return void console.error('already started'); }
             var url = URL.createObjectURL(blob);
-            var lock = readOnly || !common.isLoggedIn();
+            var lock = readOnly;// || !common.isLoggedIn();
 
             // Config
             APP.ooconfig = {
@@ -1276,6 +1278,7 @@ define([
             $rightside.append($forget);
 
             var helpMenu = common.createHelpMenu(['beta', 'oo']);
+            $('#cp-app-oo-editor').prepend(common.getBurnAfterReadingWarning());
             $('#cp-app-oo-editor').prepend(helpMenu.menu);
             toolbar.$drawer.append(helpMenu.button);
 

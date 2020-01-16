@@ -4,8 +4,7 @@ define([
     var Config = {};
 
     Config.getWebsocketURL = function (origin) {
-        if (!ApiConfig.websocketPath) { return ApiConfig.websocketURL; }
-        var path = ApiConfig.websocketPath;
+        var path = ApiConfig.websocketPath || '/cryptpad_websocket';
         if (/^ws{1,2}:\/\//.test(path)) { return path; }
 
         var l = window.location;

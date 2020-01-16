@@ -254,12 +254,46 @@ define([
             !secret.hashData.present);
     }, "test support for trailing slashes in version 1 hash failed to parse");
 
+    // test support for ownerKey
     assert(function (cb) {
-        var secret = Hash.parsePadUrl('/invite/#/1/ilrOtygzDVoUSRpOOJrUuQ/e8jvf36S3chzkkcaMrLSW7PPrz7VDp85lIFNI26dTmr=/');
+        var secret = Hash.parsePadUrl('/pad/#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI/present/uPmJDtDJ9okhdIyQ-8zphYlpaAonJDOC6MAcYY6iBwWBQr+XmrQ9uGY9WkApJTfEfAu5QcqaDCw1Ul+JXKcYkA/embed');
+        return cb(secret.hashData.version === 1 &&
+            secret.hashData.mode === "edit" &&
+            secret.hashData.channel === "3Ujt4F2Sjnjbis6CoYWpoQ" &&
+            secret.hashData.key === "usn4+9CqVja8Q7RZOGTfRgqI" &&
+            secret.hashData.ownerKey === "uPmJDtDJ9okhdIyQ-8zphYlpaAonJDOC6MAcYY6iBwWBQr+XmrQ9uGY9WkApJTfEfAu5QcqaDCw1Ul+JXKcYkA" &&
+            secret.hashData.embed &&
+            secret.hashData.present);
+    }, "test support for owner key in version 1 hash failed to parse");
+    assert(function (cb) {
+        var parsed = Hash.parsePadUrl('/pad/#/2/pad/edit/oRE0oLCtEXusRDyin7GyLGcS/p/uPmJDtDJ9okhdIyQ-8zphYlpaAonJDOC6MAcYY6iBwWBQr+XmrQ9uGY9WkApJTfEfAu5QcqaDCw1Ul+JXKcYkA/embed');
+        var secret = Hash.getSecrets('pad', parsed.hash);
+        return cb(parsed.hashData.version === 2 &&
+            parsed.hashData.mode === "edit" &&
+            parsed.hashData.type === "pad" &&
+            parsed.hashData.key === "oRE0oLCtEXusRDyin7GyLGcS" &&
+            secret.channel === "d8d51b4aea863f3f050f47f8ad261753" &&
+            window.nacl.util.encodeBase64(secret.keys.cryptKey) === "0Ts1M6VVEozErV2Nx/LTv6Im5SCD7io2LlhasyyBPQo=" &&
+            secret.keys.validateKey === "f5A1FM9Gp55tnOcM75RyHD1oxBG9ZPh9WDA7qe2Fvps=" &&
+            parsed.hashData.ownerKey === "uPmJDtDJ9okhdIyQ-8zphYlpaAonJDOC6MAcYY6iBwWBQr+XmrQ9uGY9WkApJTfEfAu5QcqaDCw1Ul+JXKcYkA" &&
+            parsed.hashData.embed &&
+            parsed.hashData.password);
+    }, "test support for owner key in version 2 hash failed to parse");
+    assert(function (cb) {
+        var secret = Hash.parsePadUrl('/file/#/1/TRplGM-WsVkXR+LkJ0tD3D45A1YFZ-Cy/eO4RJwh8yHEEDhl1aHfuwQ2IzosPBZx-HDaWc1lW+hY=/uPmJDtDJ9okhdIyQ-8zphYlpaAonJDOC6MAcYY6iBwWBQr+XmrQ9uGY9WkApJTfEfAu5QcqaDCw1Ul+JXKcYkA/');
+        return cb(secret.hashData.version === 1 &&
+            secret.hashData.channel === "TRplGM/WsVkXR+LkJ0tD3D45A1YFZ/Cy" &&
+            secret.hashData.key === "eO4RJwh8yHEEDhl1aHfuwQ2IzosPBZx/HDaWc1lW+hY=" &&
+            secret.hashData.ownerKey === "uPmJDtDJ9okhdIyQ-8zphYlpaAonJDOC6MAcYY6iBwWBQr+XmrQ9uGY9WkApJTfEfAu5QcqaDCw1Ul+JXKcYkA" &&
+            !secret.hashData.present);
+    }, "test support for owner key in version 1 file hash failed to parse");
+
+    assert(function (cb) {
+        var secret = Hash.parsePadUrl('/invite/#/2/invite/edit/oRE0oLCtEXusRDyin7GyLGcS/p/');
         var hd = secret.hashData;
-        cb(hd.channel === "ilrOtygzDVoUSRpOOJrUuQ" &&
-            hd.pubkey === "e8jvf36S3chzkkcaMrLSW7PPrz7VDp85lIFNI26dTmr=" &&
-            hd.type === 'invite');
+        cb(hd.key === "oRE0oLCtEXusRDyin7GyLGcS" &&
+            hd.password &&
+            hd.app === 'invite');
     }, "test support for invite urls");
 
     // test support for V2

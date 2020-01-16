@@ -284,7 +284,7 @@ module.exports.create = function (cfg) {
 
     const storeMessage = function (ctx, channel, msg, isCp, optionalMessageHash) {
         const id = channel.id;
-        const msgBin = new Buffer(msg + '\n', 'utf8');
+        const msgBin = Buffer.from(msg + '\n', 'utf8');
 
         queueStorage(id, function (next) {
             // Store the message first, and update the index only once it's stored.

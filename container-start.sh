@@ -17,9 +17,6 @@ sedeasy() {
 }
 
 # Configure
-[ -n "$USE_SSL" ] && echo "Using secure websockets: $USE_SSL" \
-  && sedeasy "useSecureWebsockets: [^,]*," "useSecureWebsockets: ${USE_SSL}," cfg/config.js
-
 [ -n "$STORAGE" ] && echo "Using storage adapter: $STORAGE" \
   && sedeasy "storage: [^,]*," "storage: ${STORAGE}," cfg/config.js
 

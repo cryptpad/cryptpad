@@ -41,7 +41,7 @@ nThen((waitFor) => {
         pinned = Pins.calculateFromLog(content.toString('utf8'), f);
     }));
 }).nThen((waitFor) => {
-    Pinned.load(waitFor((d) => {
+    Pinned.load(waitFor((err, d) => {
         data = Object.keys(d);
     }), {
         exclude: [edPublic + '.ndjson']

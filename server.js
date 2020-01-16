@@ -3,40 +3,19 @@
 */
 var Express = require('express');
 var Http = require('http');
-var Https = require('https');
 var Fs = require('fs');
 var WebSocketServer = require('ws').Server;
-var NetfluxSrv = require('./node_modules/chainpad-server/NetfluxWebsocketSrv');
+var NetfluxSrv = require('chainpad-server/NetfluxWebsocketSrv');
 var Package = require('./package.json');
 var Path = require("path");
 var nThen = require("nthen");
 
 var config = require("./lib/load-config");
 
-var websocketPort = config.websocketPort || config.httpPort;
-var useSecureWebsockets = config.useSecureWebsockets || false;
-
-// This is stuff which will become available to replify
-const debuggableStore = new WeakMap();
-const debuggable = function (name, x) {
-    if (name in debuggableStore) {
-        try { throw new Error(); } catch (e) {
-            console.error('cannot add ' + name + ' more than once [' + e.stack + ']');
-        }
-    } else {
-        debuggableStore[name] = x;
-    }
-    return x;
-};
-debuggable('global', global);
-debuggable('config', config);
-
 // support multiple storage back ends
-var Storage = require(config.storage||'./storage/file');
+var Storage = require('./storage/file');
 
-var app = debuggable('app', Express());
-
-var httpsOpts;
+var app = Express();
 
 // mode can be FRESH (default), DEV, or PACKAGE
 
@@ -166,29 +145,6 @@ app.use("/customize.dist", Express.static(__dirname + '/customize.dist'));
 app.use(/^\/[^\/]*$/, Express.static('customize'));
 app.use(/^\/[^\/]*$/, Express.static('customize.dist'));
 
-if (config.privKeyAndCertFiles) {
-    var privKeyAndCerts = '';
-    config.privKeyAndCertFiles.forEach(function (file) {
-        privKeyAndCerts = privKeyAndCerts + Fs.readFileSync(file);
-    });
-    var array = privKeyAndCerts.split('\n-----BEGIN ');
-    for (var i = 1; i < array.length; i++) { array[i] = '-----BEGIN ' + array[i]; }
-    var privKey;
-    for (var i = 0; i < array.length; i++) {
-        if (array[i].indexOf('PRIVATE KEY-----\n') !== -1) {
-            privKey = array[i];
-            array.splice(i, 1);
-            break;
-        }
-    }
-    if (!privKey) { throw new Error("cannot find private key"); }
-    httpsOpts = {
-        cert: array.shift(),
-        key: privKey,
-        ca: array
-    };
-}
-
 var admins = [];
 try {
     admins = (config.adminKeys || []).map(function (k) {
@@ -211,10 +167,7 @@ app.get('/api/config', function(req, res){
             },
             removeDonateButton: (config.removeDonateButton === true),
             allowSubscriptions: (config.allowSubscriptions === true),
-            websocketPath: config.useExternalWebsocket ? undefined : config.websocketPath,
-            // FIXME don't send websocketURL if websocketPath is provided. deprecated.
-            websocketURL:'ws' + ((useSecureWebsockets) ? 's' : '') + '://' + host + ':' +
-                websocketPort + '/cryptpad_websocket',
+            websocketPath: config.externalWebsocketURL,
             httpUnsafeOrigin: config.httpUnsafeOrigin.replace(/^\s*/, ''),
             adminEmail: config.adminEmail,
             adminKeys: admins,
@@ -251,7 +204,7 @@ app.use(function (req, res, next) {
     send404(res, custom_four04_path);
 });
 
-var httpServer = httpsOpts ? Https.createServer(httpsOpts, app) : Http.createServer(app);
+var httpServer = Http.createServer(app);
 
 httpServer.listen(config.httpPort,config.httpAddress,function(){
     var host = config.httpAddress;
@@ -282,7 +235,13 @@ var nt = nThen(function (w) {
         log = config.log = _log;
     }));
 }).nThen(function (w) {
-    if (config.useExternalWebsocket) { return; }
+    if (config.externalWebsocketURL) {
+        // if you plan to use an external websocket server
+        // then you don't need to load any API services other than the logger.
+        // Just abort.
+        w.abort();
+        return;
+    }
     Storage.create(config, w(function (_store) {
         config.store = _store;
     }));
@@ -304,11 +263,7 @@ var nt = nThen(function (w) {
         }, 1000 * 60 * 5); // run every five minutes
     }));
 }).nThen(function (w) {
-    config.rpc = typeof(config.rpc) === 'undefined'? './rpc.js' : config.rpc;
-    if (typeof(config.rpc) !== 'string') { return; }
-    // load pin store...
-    var Rpc = require(config.rpc);
-    Rpc.create(config, debuggable, w(function (e, _rpc) {
+    require("./rpc").create(config, w(function (e, _rpc) {
         if (e) {
             w.abort();
             throw e;
@@ -316,7 +271,6 @@ var nt = nThen(function (w) {
         rpc = _rpc;
     }));
 }).nThen(function () {
-    if (config.useExternalWebsocket) { return; }
     var HK = require('./historyKeeper.js');
     var hkConfig = {
         tasks: config.tasks,
@@ -327,15 +281,6 @@ var nt = nThen(function (w) {
     };
     historyKeeper = HK.create(hkConfig);
 }).nThen(function () {
-    if (config.useExternalWebsocket) { return; }
-    if (websocketPort !== config.httpPort) {
-        log.debug("setting up a new websocket server");
-        wsConfig = { port: websocketPort};
-    }
     var wsSrv = new WebSocketServer(wsConfig);
     NetfluxSrv.run(wsSrv, config, historyKeeper);
 });
-
-if (config.debugReplName) {
-    require('replify')({ name: config.debugReplName, app: debuggableStore });
-}

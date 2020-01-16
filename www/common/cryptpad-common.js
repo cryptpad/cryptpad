@@ -728,7 +728,7 @@ define([
         }).nThen(function () {
             postMessage("SET_PAD_TITLE", {
                 teamId: data.teamId,
-                href: data.href,
+                href: Hash.getRelativeHref(data.href),
                 title: data.title,
                 password: data.password,
                 channel: secret.channel,
@@ -845,6 +845,10 @@ define([
     };
     common.getPadMetadata = function (data, cb) {
         postMessage('GET_PAD_METADATA', data, cb);
+    };
+
+    common.burnPad = function (data) {
+        postMessage('BURN_PAD', data);
     };
 
     common.changePadPassword = function (Crypt, Crypto, data, cb) {

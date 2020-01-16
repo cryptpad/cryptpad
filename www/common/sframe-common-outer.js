@@ -81,8 +81,8 @@ define([
                     });
                     localStorage.CRYPTPAD_URLARGS = ApiConfig.requireConf.urlArgs;
                 }
-                var cache = {};
-                var localStore = {};
+                var cache = window.cpCache = {};
+                var localStore = window.localStore = {};
                 Object.keys(localStorage).forEach(function (k) {
                     if (k.indexOf('CRYPTPAD_CACHE|') === 0) {
                         cache[k.slice(('CRYPTPAD_CACHE|').length)] = localStorage[k];
@@ -323,6 +323,7 @@ define([
             }
             Utils.crypto = Utils.Crypto.createEncryptor(Utils.secret.keys);
             var parsed = Utils.Hash.parsePadUrl(window.location.href);
+            var burnAfterReading = parsed && parsed.hashData && parsed.hashData.ownerKey;
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Utils.UserObject.getDefaultName(parsed);
             var edPublic, curvePublic, notifications, isTemplate;
@@ -376,6 +377,7 @@ define([
                         fromFileData: Cryptpad.fromFileData ? {
                             title: Cryptpad.fromFileData.title
                         } : undefined,
+                        burnAfterReading: burnAfterReading,
                         storeInTeam: Cryptpad.initialTeam || (Cryptpad.initialPath ? -1 : undefined)
                     };
                     if (window.CryptPad_newSharedFolder) {
@@ -507,6 +509,17 @@ define([
                     }
                 });
 
+                sframeChan.on('Q_GET_PAD_METADATA', function (data, cb) {
+                    if (!data || !data.channel) {
+                        data = {
+                            channel: secret.channel
+                        };
+                    }
+                    Cryptpad.getPadMetadata(data, cb);
+                });
+                sframeChan.on('Q_SET_PAD_METADATA', function (data, cb) {
+                    Cryptpad.setPadMetadata(data, cb);
+                });
             };
             addCommonRpc(sframeChan);
 
@@ -1170,18 +1183,6 @@ define([
                 });
             });
 
-            sframeChan.on('Q_GET_PAD_METADATA', function (data, cb) {
-                if (!data || !data.channel) {
-                    data = {
-                        channel: secret.channel
-                    };
-                }
-                Cryptpad.getPadMetadata(data, cb);
-            });
-            sframeChan.on('Q_SET_PAD_METADATA', function (data, cb) {
-                Cryptpad.setPadMetadata(data, cb);
-            });
-
             if (cfg.messaging) {
                 Notifier.getPermission();
 
@@ -1236,6 +1237,16 @@ define([
                     window.location.hash = hash;
                 };
 
+                if (burnAfterReading) {
+                    Cryptpad.padRpc.onReadyEvent.reg(function () {
+                        Cryptpad.burnPad({
+                            password: password,
+                            href: window.location.href,
+                            channel: secret.channel,
+                            ownerKey: burnAfterReading
+                        });
+                    });
+                }
                 var cpNfCfg = {
                     sframeChan: sframeChan,
                     channel: secret.channel,
@@ -1359,12 +1370,17 @@ define([
                 });
             });
 
+            sframeChan.on('EV_BURN_AFTER_READING', function () {
+                startRealtime();
+            });
+
             sframeChan.ready();
 
             Utils.Feedback.reportAppUsage();
 
             if (!realtime && !Test.testing) { return; }
             if (isNewFile && cfg.useCreationScreen && !Test.testing) { return; }
+            if (burnAfterReading) { return; }
             //if (isNewFile && Utils.LocalStore.isLoggedIn()
             //    && AppConfig.displayCreationScreen && cfg.useCreationScreen) { return; }
 

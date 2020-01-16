@@ -103,7 +103,7 @@ define([
                     ])*/
                 ])
             ]),
-            h('div.cp-version-footer', "CryptPad v3.8.0 (IsolobodonPortoricensis)")
+            h('div.cp-version-footer', "CryptPad v3.9.0 (JamaicanMonkey)")
         ]);
     };
 

@@ -1035,6 +1035,7 @@ define([
         var teamData = Util.find(ctx, ['store', 'proxy', 'teams', teamId]);
         if (!teamData) { return true; }
         var team = ctx.teams[teamId];
+        if (!team) { return true; }
 
         var secret = Hash.getSecrets('team', hash || teamData.roHash, teamData.password);
         // Upgrade the listmap if we can
@@ -1440,7 +1441,6 @@ define([
 
             var json = Util.tryParse(val);
             if (!json) { return void cb({ error: "parseError" }); }
-            console.error("JSON", json);
             cb(json);
         }, { // cryptget opts
             network: ctx.store.network,

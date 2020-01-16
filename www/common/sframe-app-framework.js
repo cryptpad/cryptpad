@@ -6,9 +6,11 @@ define([
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/customize/messages.js',
+    '/common/hyperscript.js',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
+    '/common/common-ui-elements.js',
     '/common/common-thumbnail.js',
     '/common/common-feedback.js',
     '/customize/application_config.js',
@@ -26,9 +28,11 @@ define([
     nThen,
     SFCommon,
     Messages,
+    h,
     Util,
     Hash,
     UI,
+    UIElements,
     Thumb,
     Feedback,
     AppConfig,
@@ -408,10 +412,36 @@ define([
             var $export = common.createButton('export', true, {}, function () {
                 var ext = (typeof(extension) === 'function') ? extension() : extension;
                 var suggestion = title.suggestTitle('cryptpad-document');
+                ext = ext || '.txt';
+                var types = [{
+                    tag: 'a',
+                    attributes: {
+                        'data-value': ext,
+                        'href': '#'
+                    },
+                    content: ext
+                }, {
+                    tag: 'a',
+                    attributes: {
+                        'data-value': '',
+                        'href': '#'
+                    },
+                    content: '&nbsp;'
+                }];
+                var dropdownConfig = {
+                    text: ext, // Button initial text
+                    caretDown: true,
+                    options: types, // Entries displayed in the menu
+                    isSelect: true,
+                    initialValue: ext,
+                    common: common
+                };
+                var $select = UIElements.createDropdown(dropdownConfig);
                 UI.prompt(Messages.exportPrompt,
-                    Util.fixFileName(suggestion) + ext, function (filename)
+                    Util.fixFileName(suggestion), function (filename)
                 {
                     if (!(typeof(filename) === 'string' && filename)) { return; }
+                    filename = filename + $select.getValue();
                     if (async) {
                         fe(function (blob) {
                             SaveAs(blob, filename);
@@ -420,6 +450,8 @@ define([
                     }
                     var blob = fe();
                     SaveAs(blob, filename);
+                }, {
+                    typeInput: $select[0]
                 });
             });
             toolbar.$drawer.append($export);

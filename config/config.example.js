@@ -97,15 +97,17 @@ module.exports = {
 
     httpUnsafeOrigin: domain,
 
-    /*  your server's websocket url is configurable
-     *  (default: '/cryptpad_websocket')
+    /*  Your CryptPad server will share this value with clients
+     *  via its /api/config endpoint.
      *
-     *  websocketPath can be relative, of the form '/path/to/websocket'
-     *  or absolute, specifying a particular URL
+     *  If you want to host your API and asset servers on different hosts
+     *  specify a URL for your API server websocket endpoint, like so:
+     *  wss://api.yourdomain.com/cryptpad_websocket
      *
-     *  'wss://cryptpad.fr:3000/cryptpad_websocket'
+     *  Otherwise, leave this commented and your clients will use the default
+     *  websocket (wss://yourdomain.com/cryptpad_websocket)
      */
-    websocketPath: '/cryptpad_websocket',
+    //externalWebsocketURL: 'wss://api.yourdomain.com/cryptpad_websocket
 
     /*  CryptPad can be configured to send customized HTTP Headers
      *  These settings may vary widely depending on your needs
@@ -123,15 +125,6 @@ module.exports = {
     // CKEditor and OnlyOffice require significantly more lax content security policy in order to function.
     padContentSecurity: baseCSP.join('; ') +
         "script-src 'self' 'unsafe-eval' 'unsafe-inline'" + domain,
-
-    /* it is recommended that you serve CryptPad over https
-     * the filepaths below are used to configure your certificates
-     */
-    //privKeyAndCertFiles: [
-    //  '/etc/apache2/ssl/my_secret.key',
-    //  '/etc/apache2/ssl/my_public_cert.crt',
-    //  '/etc/apache2/ssl/my_certificate_authorities_cert_chain.ca'
-    //],
 
     /*  Main pages
      *  add exceptions to the router so that we can access /privacy.html
@@ -281,7 +274,6 @@ module.exports = {
      */
     openFileLimit: 2048,
 
-
     /* =====================
      *   DATABASE VOLUMES
      * ===================== */
@@ -307,12 +299,12 @@ module.exports = {
      *  Pin requests are stored in a pin-store. The location of this store is
      *  defined here.
      */
-    pinPath: './pins',
+    pinPath: './data/pins',
 
     /*  if you would like the list of scheduled tasks to be stored in
         a custom location, change the path below:
     */
-    taskPath: './tasks',
+    taskPath: './data/tasks',
 
     /*  if you would like users' authenticated blocks to be stored in
         a custom location, change the path below:
@@ -327,7 +319,7 @@ module.exports = {
     /*  CryptPad stores incomplete blobs in a 'staging' area until they are
      *  fully uploaded. Set its location here.
      */
-    blobStagingPath: './blobstage',
+    blobStagingPath: './data/blobstage',
 
     /* CryptPad supports logging events directly to the disk in a 'logs' directory
      * Set its location here, or set it to false (or nothing) if you'd rather not log
@@ -367,42 +359,6 @@ module.exports = {
      *  to false if you'd like to exclude feedback from your logs.
      */
     logFeedback: false,
-
-    /* You can get a repl for debugging the server if you want it.
-     * to enable this, specify the debugReplName and then you can
-     * connect to it with `nc -U /tmp/repl/<your name>.sock`
-     * If you run multiple cryptpad servers, you need to use different
-     * repl names.
-     */
-    //debugReplName: "cryptpad"
-
-    /* =====================
-     *      DEPRECATED
-     * ===================== */
-    /*
-        You have the option of specifying an alternative storage adaptor.
-        These status of these alternatives are specified in their READMEs,
-        which are available at the following URLs:
-
-        mongodb: a noSQL database
-            https://github.com/xwiki-labs/cryptpad-mongo-store
-        amnesiadb: in memory storage
-            https://github.com/xwiki-labs/cryptpad-amnesia-store
-        leveldb: a simple, fast, key-value store
-            https://github.com/xwiki-labs/cryptpad-level-store
-        sql: an adaptor for a variety of sql databases via knexjs
-            https://github.com/xwiki-labs/cryptpad-sql-store
-
-        For the most up to date solution, use the default storage adaptor.
-    */
-    storage: './storage/file',
-
-    /*  CryptPad's socket server can be extended to respond to RPC calls
-     *  you can configure it to respond to custom RPC calls if you like.
-     *  provide the path to your RPC module here, or `false` if you would
-     *  like to disable the RPC interface completely
-     */
-    rpc: './rpc.js',
 
     /*  CryptPad supports verbose logging
      *  (false by default)
