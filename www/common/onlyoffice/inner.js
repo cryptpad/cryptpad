@@ -356,7 +356,6 @@ define([
             sframeChan.on('EV_OO_EVENT', function (obj) {
                 switch (obj.ev) {
                     case 'READY':
-                        rtChannel.ready = true;
                         break;
                     case 'LEAVE':
                         removeClient(obj.data);
@@ -505,8 +504,8 @@ define([
                 buildVersion: "5.2.6",
                 buildNumber: 2,
                 licenseType: 3,
-                "g_cAscSpellCheckUrl": "/spellchecker",
-                "settings":{"spellcheckerUrl":"/spellchecker","reconnection":{"attempts":50,"delay":2000}}
+                //"g_cAscSpellCheckUrl": "/spellchecker",
+                //"settings":{"spellcheckerUrl":"/spellchecker","reconnection":{"attempts":50,"delay":2000}}
             });
             // Open the document
             send({
@@ -648,7 +647,18 @@ define([
                             send({ type: "message" });
                             break;
                         case "saveChanges":
+                            // We're sending our changes to netflux
                             handleChanges(obj, send);
+                            try {
+                                var docs = window.frames[0].AscCommon.g_oDocumentUrls.urls || {};
+                                var mediasSources = getMediasSources();
+                                Object.keys(mediasSources).forEach(function (name) {
+                                    if (!docs['media/'+name]) {
+                                        delete mediasSources[name];
+                                    }
+                                });
+                                APP.onLocal();
+                            } catch (e) {}
                             break;
                         case "unLockDocument":
                             if (obj.releaseLocks && content.locks && content.locks[getId()]) {
@@ -746,12 +756,15 @@ define([
                     // Add image to the list
                     var mediasSources = getMediasSources();
                     mediasSources[name] = data;
+                    APP.onLocal();
 
-                    APP.getImageURL(name, function(url) {
-                        debug("CRYPTPAD success add " + name);
-                        APP.AddImageSuccessCallback({
-                            name: name,
-                            url: url
+                    APP.realtime.onSettle(function () {
+                        APP.getImageURL(name, function(url) {
+                            debug("CRYPTPAD success add " + name);
+                            APP.AddImageSuccessCallback({
+                                name: name,
+                                url: url
+                            });
                         });
                     });
                 }
