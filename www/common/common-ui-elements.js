@@ -1307,7 +1307,6 @@ define([
 
         onFriendShare.reg(saveValue);
 
-        // XXX Don't display access rights if no contacts
         var contactsContent = h('div.cp-share-modal');
         var $contactsContent = $(contactsContent);
         
@@ -2973,6 +2972,9 @@ define([
             var to;
             $container.on('click', 'a', function () {
                 value = $(this).data('value');
+                var $val = $(this);
+                var textValue = $val.html() || value;
+                $button.find('.cp-dropdown-button-title').html(textValue);
             });
             $container.keydown(function (e) {
                 var $value = $innerblock.find('[data-value].cp-dropdown-element-active:visible');
