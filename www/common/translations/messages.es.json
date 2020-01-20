@@ -12,7 +12,8 @@
         "todo": "Lista de tareas",
         "file": "Archivo",
         "media": "Media",
-        "sheet": "Hoja (Beta)"
+        "sheet": "Hoja (Beta)",
+        "teams": "Equipos"
     },
     "disconnected": "Desconectado",
     "synchronizing": "Sincronizando",
@@ -260,7 +261,12 @@
         "indent": "Cuando editas listas, puedes usar tab o shift+tab para incrementar o decrementar la sangría.",
         "store": "Cada vez que visitas un pad con una sesión iniciada se guardará en tu CryptDrive.",
         "marker": "Puedes resaltar texto en un pad utilizando el \"marcador\" en el menú de estílo.",
-        "driveUpload": "Los usuarios registrados pueden subir archivos cifrados arrastrándolos hacia CryptDrive."
+        "driveUpload": "Los usuarios registrados pueden subir archivos cifrados arrastrándolos hacia CryptDrive.",
+        "filenames": "Puede renombrar los archivos de su CryptDrive, este nombre es sólo para usted.",
+        "drive": "Los usuarios conectados pueden organizar sus archivos en su CryptDrive, a los que se puede acceder desde el icono del CryptPad situado en la parte superior izquierda de todos los pads.",
+        "profile": "Los usuarios registrados pueden crear un perfil desde el menú de usuario en la parte superior derecha.",
+        "avatars": "Puedes subir un avatar en tu perfil. La gente lo verá cuando colabores en un pad.",
+        "tags": "Etiquete sus pads e inicie una búsqueda con # en su CryptDrive para encontrarlos"
     },
     "feedback_about": "Si estas leyendo esto, quizás sientas curiosidad por saber por qué CryptPad solicita páginas cuando realizas algunas acciones",
     "feedback_privacy": "Nos importa tu privacidad, y al mismo tiempo queremos que CryptPad sea muy fácil de usar. Utilizamos este archivo para conocer las funcionalidades que importan a nuestros usuarios, pidiéndolo con un parametro que nos dice qué acción fue realizada.",
@@ -814,6 +820,10 @@
             "crypto": {
                 "q": "¿Qué criptografía usas?",
                 "a": "CryptPad se basa en dos bibliotecas de criptografía de código abierto: <a href='https://github.com/dchest/tweetnacl-js' target='_blank'> tweetnacl.js </a> y <a href = 'https : //github.com/dchest/scrypt-async-js 'target =' _ blank '> scrypt-async.js </a>. <br> <br> Scrypt es un <em> algoritmo de derivación de clave basado en contraseña < / em>. Lo usamos para convertir su nombre de usuario y contraseña en un llavero único que asegura el acceso a su CryptDrive de modo que solo usted pueda acceder a su lista de almohadillas. <br> <br> Utilizamos <em> xsalsa20-poly1305 </em> y <em> x25519-xsalsa20-poly1305 </em> cifrados proporcionados por tweetnacl para cifrar los pads y el historial de chat, respectivamente."
+            },
+            "pad_password": {
+                "q": "¿Qué sucede cuando protejo un pad/carpeta con una contraseña?",
+                "a": "Puede proteger cualquier bloc o carpeta compartida con una contraseña al crearla. También puede utilizar el menú de propiedades para establecer/cambiar/eliminar una contraseña en cualquier momento.<br><br>Las contraseñas del pad y de la carpeta compartida están pensadas para proteger el enlace cuando lo comparta a través de canales potencialmente inseguros como el correo electrónico o los mensajes de texto. Si alguien intercepta su enlace pero no tiene la contraseña, no podrá leer su documento.<br><br>Al compartir dentro de CryptPad con sus contactos o equipos, las comunicaciones se cifran y suponemos que desea que accedan a su documento. Por lo tanto, la contraseña se recuerda y se envía con el pad cuando lo comparte. Al destinatario, o a usted mismo, se le pide <b>not</b> cuando abre el documento."
             }
         },
         "usability": {
@@ -903,7 +913,8 @@
         "slide": {
             "markdown": "Escriba diapositivas en <a href=\"http://www.markdowntutorial.com/\"> Reducción </a> y sepárelas con una línea que contenga <code> --- </code>",
             "present": "Comenzar la presentación usando el <span class=\"fa fa-play-circle\"></span> botón",
-            "colors": "Cambia el texto y el color de fondo usando el <span class=\"fa fa-i-cursor\"></span> y <span class=\"fa fa-square\"></span> botones"
+            "colors": "Cambia el texto y el color de fondo usando el <span class=\"fa fa-i-cursor\"></span> y <span class=\"fa fa-square\"></span> botones",
+            "settings": "Cambiar los ajustes de las diapositivas (fondo, transiciones, números de página, etc.) con el botón <span class=\"fa fa fa-cog\"></span> en el submenú <span class=\"fa fa-ellipsis-h\"></span>"
         },
         "poll": {
             "decisions": "Crea decisiones en privado entre verdaderos amigos",
@@ -913,7 +924,20 @@
         },
         "whiteboard": {
             "colors": "Haga doble clic en los colores para modificar su paleta",
-            "mode": "Deshabilite el modo de dibujo para arrastrar y estirar trazos"
+            "mode": "Deshabilite el modo de dibujo para arrastrar y estirar trazos",
+            "embed": "Incrusta imágenes de tu disco <span class=\"fa fa-file-image-o\"></span> o de tu CryptDrive <span class=\"fa fa-image\"></span> y expórtalas como PNG a tu disco <span class=\"fa fa-download\"></span> o a tu CryptDrive <span class=\"fa fa-cloud-upload\"></span>"
+        },
+        "kanban": {
+            "add": "Añada nuevas placas usando el botón <span class=\"fa fa-plus\"></span> en la esquina superior derecha",
+            "task": "Mover objetos arrastrándolos y soltándolos de un tablero a otro",
+            "color": "Cambie los colores haciendo clic en la parte coloreada junto a los títulos de los tableros"
         }
-    }
+    },
+    "storageStatus": "Almacenamiento:<br /><b>{0}</b> utilizado de <b>{1}</b>",
+    "settings_cursorColorTitle": "Color del cursor",
+    "mdToolbar_button": "Mostrar u ocultar la barra de herramientas de rebajas",
+    "creation_404": "Esta almohadilla ya no existe. Utilice el siguiente formulario para crear un nuevo pad.",
+    "creation_ownedTitle": "Tipo de pad",
+    "creation_owned1": "Un pad <b>propio</b> puede ser eliminado del servidor cuando el propietario lo desee. Al eliminar un pad propio se elimina de los CryptDrives de otros usuarios.",
+    "creation_owned2": "Un pad <b>open</b> no tiene dueño y por lo tanto, no puede ser eliminado del servidor a menos que haya llegado a su tiempo de expiración."
 }

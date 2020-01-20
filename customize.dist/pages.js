@@ -1,9 +1,10 @@
 define([
     '/common/hyperscript.js',
     '/common/common-language.js',
+    '/customize/application_config.js',
     '/customize/messages.js',
     'jquery',
-], function (h, Language, Msg, $) {
+], function (h, Language, AppConfig, Msg, $) {
     var Pages = {};
 
     Pages.setHTML = function (e, html) {
@@ -58,6 +59,8 @@ define([
         return h('a', attrs, text);
     };
 
+    var imprintUrl = AppConfig.imprint && (typeof(AppConfig.imprint) === "boolean" ?
+                        '/imprint.html' : AppConfig.imprint);
     Pages.infopageFooter = function () {
         return h('footer', [
             h('div.container', [
@@ -94,6 +97,7 @@ define([
                     footerCol('footer_legal', [
                         footLink('/terms.html', 'footer_tos'),
                         footLink('/privacy.html', 'privacy'),
+                        AppConfig.imprint ? footLink(imprintUrl, 'imprint') : undefined,
                     ]),
                     /*footerCol('footer_contact', [
                         footLink('https://riot.im/app/#/room/#cryptpad:matrix.org', null, 'Chat'),
