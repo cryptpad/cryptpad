@@ -747,7 +747,7 @@ define([
                                   '#file-menu-panel .devider { display: none !important; }' + // separator in the "File" menu
                                   '#file-menu-panel { top: 28px !important; }' + // Position of the "File" menu
                                   '#left-btn-spellcheck, #left-btn-about { display: none !important; }'+
-                                  '';
+                                  'div.btn-users.dropdown-toggle { display: none; !important }';
                         $('<style>').text(css).appendTo($tb);
                         if (UI.findOKButton().length) {
                             UI.findOKButton().on('focusout', function () {
