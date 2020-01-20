@@ -6,11 +6,15 @@
 		<meta name="description" content="Apply font decoration styles: increment/decrement values, bold, italic, underline, strikeout, superscript/subscript" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
         <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
 			<h1>Apply font decoration styles</h1>
-			<p>You can apply various font decoration styles using the corresponding icons situated at the top toolbar.</p>
+			<p>You can apply various font decoration styles using the corresponding icons situated at the <b>Home</b> tab of the top toolbar.</p>
 			<p class="note"><b>Note</b>: in case you want to apply the formatting to the text already present in the document, select it with the mouse or <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">using the keyboard</a> and apply the formatting.</p>
 			<table>
 				<tr>
@@ -53,8 +57,10 @@
 				<li><b>Subscript</b> is used to make the text smaller and place it to the lower part of the text line, e.g. as in chemical formulas.</li>
 				<li><b>Small caps</b> is used to make all letters lower case.</li>
 				<li><b>All caps</b> is used to make all letters upper case.</li>
-				<li><b>Spacing</b> is used to set the space between the characters.</li>
-				<li><b>Position</b> is used to set the characters position in the line.</li>
+				<li><b>Spacing</b> is used to set the space between the characters. Increase the default value to apply the <b>Expanded</b> spacing, or decrease the default value to apply the <b>Condensed</b> spacing. Use the arrow buttons or enter the necessary value in the box.</li>
+				<li><b>Position</b> is used to set the characters position (vertical offset) in the line. Increase the default value to move characters upwards, or decrease the default value to move characters downwards. Use the arrow buttons or enter the necessary value in the box.
+                <p>All the changes will be displayed in the preview field below.</p>
+                </li>
 			</ul>
 			<p><img alt="Paragraph Advanced Settings - Font" src="../images/paradvsettings_font.png" /></p>
 		</div>

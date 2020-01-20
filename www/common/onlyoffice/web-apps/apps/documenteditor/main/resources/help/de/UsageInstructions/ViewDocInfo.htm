@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Dokumenteigenschaften anzeigen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="View document title, author, location, creation date, persons with the rights to view or edit the document, and statistics" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Dokumenteigenschaften anzeigen</h1>
+			<p>Um detaillierte Informationen über das aktuelle Dokument einzusehen, wechseln Sie in die Registerkarte <b>Datei</b> und wählen Sie die Option <b>Dokumenteigenschaften...</b>.</p>
+			<h3>Allgemeine Eigenschaften</h3>
+            <p>Die allgemeinen Dokumenteigenschaften beinhalten den Titel, Autor, Speicherort, das Erstelldatum und die folgenden Statistiken: Anzahl der Seiten, Absätze, Wörter, Zeichen, Buchstaben (mit Leerzeichen).</p>
+            <div class="onlineDocumentFeatures">
+                <p class="note"><b>Hinweis</b>: Sie können den Namen des Dokuments direkt über die Oberfläche des Editors ändern. Klicken Sie dazu in der oberen Menüleiste auf die Registerkarte <b>Datei</b> und wählen Sie die Option <b>Umbenennen...</b>, geben Sie den neuen <b>Dateinamen</b> an und klicken Sie auf <b>OK</b>.</p>
+            </div>  
+                <div class="onlineDocumentFeatures">
+                    <h3>Zugriffsrechte</h3>
+                    <p class="note"><b>Hinweis</b>: Diese Option steht im <b>schreibgeschützten</b> Modus nicht zur Verfügung.</p>
+                    <p>Um einzusehen, wer das Recht hat, das Dokument anzuzeigen oder zu bearbeiten, wählen Sie die Option <b>Zugriffsrechte...</b> in der linken Seitenleiste.</p>
+                    <p>Sie können die aktuell ausgewählten Zugriffsrechte auch ändern, klicken Sie dazu im Abschnitt <b>Personen mit Berechtigungen</b> auf die Schaltfläche <b>Zugriffsrechte ändern</b>.</p>
+                    <h3>Versionsverlauf</h3>
+                    <p class="note"><b>Hinweis</b>: Diese Option steht für kostenlose Konten und im <b>schreibgeschützten</b> Modus nicht zur Verfügung.</p>
+                    <p>Um alle Änderungen an diesem Dokument anzuzeigen, wählen Sie die Option <b>Versionsverlauf</b> in der linken Seitenleiste. Sie können den Versionsverlauf auch über das Symbol <img alt="Versionsverlauf" src="../images/versionhistoryicon.png" /> <b>Versionsverlauf</b> in der Registerkarte <b>Zusammenarbeit</b> öffnen. Sie sehen eine Liste mit allen Dokumentversionen (Hauptänderungen) und Revisionen (geringfügige Änderungen), unter Angabe aller jeweiligen Autoren sowie Erstellungsdatum und -zeit. Für Dokumentversionen wird auch die Versionsnummer angegeben (z.B. <em>Ver. 2</em>). Für eine detaillierte Anzeige der jeweiligen Änderungen in jeder einzelnen Version/Revision, können Sie die gewünschte Version anzeigen, indem Sie in der linken Seitenleiste darauf klicken. Die vom Autor der Version/Revision vorgenommenen Änderungen sind mit der Farbe markiert, die neben dem Autorennamen in der linken Seitenleiste angezeigt wird. Über den unterhalb der gewählten Version/Revision angezeigten Link <b>Wiederherstellen</b>, gelangen Sie in die jeweilige Version. <!--To hide the list of the revisions within a certain version, use the <img alt="Collapse icon" src="../images/collapse.png" /> icon next to the version. To display revisions again, use the <img alt="Expand icon" src="../images/expand.png" /> icon.--></p>
+                    <p><img alt="Versionsverlauf" src="../images/versionhistory.png" /></p>
+                    <p>Um zur aktuellen Version des Dokuments zurückzukehren, klicken Sie oben in der Liste mit Versionen auf <b>Verlauf schließen</b>.</p>
+                </div>
+                <p>Um das Fenster <b>Datei</b> zu schließen und zur Dokumentbearbeitung zurückzukehren, klicken sie auf <b>Menü schließen</b>.</p>
+            </div>
+	</body>
+</html>

@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Inserte tablas y deles formato</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add a table to your presentation and adjust its properties" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Inserte tablas y deles formato</h1>
+            <h3>Inserte una tabla</h3>
+			<p>Para insertar una tabla en una diapositiva,</p>
+			<ol>
+				<li>seleccione la diapositiva donde usted quiere añadir una tabla,</li>
+                <li>cambie a la pestaña <b>Insertar</b> en la barra de herramientas superior,</li>
+				<li>Haga clic en el icono <img alt="Icono tabla" src="../images/inserttable.png" /> <b>Tabla</b> en la barra de herramientas superior,</li>
+				<li>seleccione la opción para crear una tabla:<ul>
+						<li><p>o una tabla con un número de celdas predefinido (máximo de 10 por 8 celdas)</p>
+						<p>Si usted quiere añadir una tabla de forma rápida, seleccione el número de filas (8 máximo) y columnas (10 máximo).</p></li>
+						<li><p>o una tabla personalizada</p>
+						<p>En caso de que usted necesite una tabla de más de 10 por 8 celdas, seleccione la opción <b>Insertar tabla personalizada</b> y se abrirá la ventana donde usted puede introducir el número necesario de filas y columnas, respectivamente, después pulse el botón <b>OK</b>.</p></li>
+					</ul>
+				</li>
+				<li>una vez que la tabla se ha añadido, usted puede cambiar sus parámetros y posición.</li>
+			</ol>
+            <p>Para cambiar el tamaño de una tabla, arrastre las manijas <img alt="Icono cuadrado" src="../images/resize_square.png" /> situadas en sus bordes hasta que la tabla alcance el tamaño necesario.</p>
+            <p><img alt="Cambie de tamaño a la tabla" src="../images/resizetable.png" /></p>
+            <p>También se puede modificar manualmente el ancho de una columna determinada o la altura de una línea. Mueva el cursor del ratón sobre el borde derecho de la columna para que el cursor se convierta en la flecha bidireccional. <img alt="El cursor del ratón cuando cambia el ancho de la columna" src="../images/changecolumnwidth.png" /> y arrastre el borde hacia la izquierda o hacia la derecha para establecer el ancho necesario. Para cambiar la anchura de una sola columna de forma manual, mueva el cursor del ratón sobre el borde inferior de la fila hasta que el cursor cambie a una flecha con doble sentido <img alt="El cursor del ratón cuando cambia el ancho de la columna" src="../images/changerowheight.png" /> y arrástrelo hacia arriba o hacia abajo.</p>
+			<p>Usted puede especificar <a href="../UsageInstructions/ManipulateObjects.htm" onclick="onhyperlinkclick(this)">posición de tabla</a> arrastrándola verticalmente o horizontalmente.</p>
+			<hr />
+            <h3>Ajustes de tablas</h3><img class="floatleft"alt="Pestaña Ajustes de tablas" src="../images/tablesettingstab.png" /><p>Es posible cambiar la mayoría de las propiedades de la tabla y también su estructura usando la derecha barra lateral. Para activarla haga clic en la tabla y elija el icono <img alt="Icono Ajustes de tabla" src="../images/table_settings_icon.png" /> <b>Ajustes de tabla</b> a la derecha.</p>
+			<p>Las secciones <b>Filas</b> y <b>Columnas</b> en la parte superior le permiten seleccionar ciertas filas/columnas aplicando algún formato a ellas, o rellenar filas/columnas con los colores de fondo distintos para poder distinguirlas de forma clara. Las siguientes opciones están disponibles:</p>
+			<ul style="margin-left: 280px;">
+				<li><b>Encabezado</b> - resalta la fila superior de la tabla dándole un formato especial.</li>
+				<li><b>Total</b> - resalta la fila inferior de la tabla dándole un formato especial.</li>
+				<li><b>Con bandas</b> - activa el color de fondo para las filas impares y pares.</li>
+				<li><b>Primero</b> - resalta la columna del extremo izquierdo de la tabla dándole un formato especial.</li>
+				<li><b>Último</b> - resalta la columna del extremo derecho de la tabla dándole un formato especial.</li>
+				<li><b>Con bandas</b> - activa el color de fondo diferente para las columnas pares y impares.</li>
+			</ul>
+			<p>La sección <b>Seleccionar de plantilla</b> le permite elegir uno de los estilos de tablas predefinidos. Cada plantilla combina ciertos parámetros de formato: color de fondo, estilo de bordes, bandas de fila/columna, etc. El conjunto de plantillas varía dependiendo de las opciones marcadas en la secciones <b>Filas</b> y/o <b>Columnas</b> de arriba, las plantillas serán mostradas de manera diferente. Por ejemplo, si marca la opción <b>Encabezado</b> en la sección <b>Filas</b> y la opción <b>Con bandas</b> en la sección <b>Columnas</b>, en la lista habrá solo plantillas que coinciden con su solicitud:</p>
+			<p><img alt="Lista de plantillas" src="../images/templateslist.png" /></p>
+			<p>La sección <b>Estilo de bordes</b> le permite cambiar el formato aplicado que corresponde a la plantilla seleccionada. Usted puede seleccionar toda la tabla o varias celdas para cambiar el formato y establecer todos los parámetros manualmente.</p>
+			<ul>
+				<li>Parámetros de <b>Borde</b> - establezca el ancho del borde usando la lista <img alt="Lista de tamaño de borde" src="../images/bordersize.png" /> (o elija la opción <b>Sin bordes</b>), seleccione el <b>Color</b> en las paletas disponibles y determine la forma en la que quiere aplicar este ajuste para mostrarlos en celdas pulsando los iconos:<p><img alt="Iconos Tipo de Borde" src="../images/bordertype.png" /></p>
+				</li>
+				<li><b>Color de fondo</b> - seleccione el color de fondo dentro de las celdas seleccionadas.</li>
+			</ul>
+			<p>La sección <img alt="Filas y columnas" src="../images/rowsandcolumns.png" /> <b>Filas y columnas</b>  le permite realizar las operaciones siguientes:</p>
+			<ul>
+				<li><b>Seleccionar</b> una fila, columna, celda (depende de la posición del cursor), o toda la tabla.</li>
+				<li><b>Insertar</b> una nueva fila arriba o debajo de la fila seleccionada y también una nueva columna a la izquierda o a la derecha de la columna seleccionada.</li>
+				<li><b>Borrar</b> una fila, columna (depende de la posición del cursor o de la selección), o toda la tabla.</li>
+				<li><b>Unir celdas</b> - para unir las celdas seleccionadas en una sola celda.</li>
+				<li><b>Dividir celda...</b> - para dividir la celda seleccionada previamente en un número de filas y columnas concreto. Esta opción abra la ventana siguiente:<p><img alt="Ventana dividir celdas" src="../images/split_cells.png" /></p>
+				<p>Introduzca el <b>Número de columnas</b> y <b>Número de filas</b> en los que la celda seleccionada debe separarse y pulse el botón <b>OK</b>.</p>
+				</li>
+			</ul>
+			<p class="note"><b>Nota</b>: las opciones de la sección <b>Filas y columnas</b> también están disponibles en el <b>menú contextual</b>.</p>
+            <p>La sección de <b>tamaño de celda</b> se usa para ajustar el ancho y alto de la celda actualmente seleccionada. En esta sección, usted también puede <b>Distribuir filas</b> para que todas las celdas seleccionadas tengan la misma altura o <b>Distribuir columnas</b> para que todas las celdas seleccionadas tengan el mismo ancho. Las opciones de la sección <b>Distribuir filas/columnas</b> también están disponibles en el <b>menú de clic derecho</b>.</p>
+			<hr />
+			<p>Para cambiar los ajustes avanzados de la tabla, haga clic sobre la tabla con el botón derecho del ratón y seleccione la opción <b>Ajustes avanzados de tabla</b> en el menú contextual o haga clic en el enlace <b>Mostrar ajustes avanzados</b> en la barra lateral derecha. Se abrirá la ventana con los parámetros de la tabla:</p>
+			<p><img alt="Parámetros de la tabla" src="../images/table_properties.png" /></p>
+			<p>La pestaña <b>Márgenes</b> le permite ajustar el espacio entre el texto dentro de las celdas y el borde de la celda:</p>
+			<ul>
+				<li>introduzca los valores de <b>Márgenes de celda</b> manualmente, o</li>
+				<li>marque la casilla <b>Usar márgenes predeterminados</b> para aplicar los valores predeterminados (si es necesario, los valores predeterminados también pueden ajustarse).</li>
+			</ul>
+            <p><img alt="Propiedades de la tabla" src="../images/table_properties1.png" /></p>
+            <p>La pestaña de <b>Texto Alternativo</b> permite especificar un <b>Título</b> y <b>Descripción</b> que se leerá a las personas con deficiencias de visión o cognitivas para ayudarles a entender mejor la información que hay en la tabla.</p>
+			<hr />
+			<p>Para <b>dar un formato al texto introducido</b> dentro de las celdas de la tabla, usted puede usar los <a href="../UsageInstructions/InsertText.htm#formatfont" onclick="onhyperlinkclick(this)">iconos en la pestaña de <b> Inicio</b> en la barra de herramientas superior</a>. El <b>menú contextual</b>, que aparece cuando usted hace clic sobre la tabla con el botón derecho del ratón, proporciona dos opciones adicionales:</p>
+			<ul>
+			    <li><b>Alineación vertical de celda</b> - le permite establecer el tipo preferido de alineación vertical de texto en las celdas seleccionadas: <b>Alinear en la parte superior</b>, <b>Alinear al centro</b>, o <b>Alinear en la parte inferior</b>.</li>
+			    <li><b>Hiperenlace</b> - le permite insertar un hiperenlace en la celda seleccionada.</li>
+			</ul>									
+		</div>
+	</body>
+</html>

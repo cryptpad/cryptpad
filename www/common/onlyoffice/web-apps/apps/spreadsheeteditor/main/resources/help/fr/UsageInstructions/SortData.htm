@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Trier et filtrer les données</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Sort your data in ascending or descending order in a spreadsheet" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Trier et filtrer les données</h1>
+			<h3>Trier les données</h3>
+			<p>Vous pouvez trier rapidement vos données dans une feuille de calcul en utilisant l'une des options disponibles :</p>
+			<ul>
+			<li><b>Croissant</b> sert à trier vos données dans l'ordre croissant - De A à Z par ordre alphabétique ou de plus petit au plus grand pour les données numériques.</li>
+			<li><b>Décroissant</b> sert à trier vos données dans l'ordre décroissant - De Z à A par ordre alphabétique ou de plus grand au plus petit pour les données numériques.</li>
+			</ul>
+			<p>Pour trier vos données,</p>
+			<ol>
+				<li>sélectionner une plage de cellules que vous souhaitez trier (vous pouvez sélectionner une seule cellule dans une plage pour trier toute la plage),</li>
+				<li>cliquez sur l'icône <b>Trier de A à Z</b> <img alt="Trier de A à Z" src="../images/sortatoz.png" /> située dans l'onglet <b>Accueil</b> de la barre d'outils supérieure pour trier les données dans l'ordre croissant, <br />OU<br /> cliquez sur l'icône <b>Trier de Z à A</b> <img alt="Trier de Z à A" src="../images/sortztoa.png" /> située dans l'onglet  de barre d'outils supérieure pour trier les données dans l'ordre décroissant.</li>
+			</ol>
+            <p class="note"><b>Remarque</b> : si vous sélectionnez une seule colonne/ligne dans une plage de cellules ou une partie de la colonne/ligne, il vous sera demandé si vous souhaitez étendre la sélection pour inclure des cellules adjacentes ou trier uniquement les données sélectionnées.</p>
+			<p>Vous pouvez également trier vos données en utilisant les options du <b>menu contextuel</b>. Cliquez avec le bouton droit sur la plage de cellules sélectionnée, sélectionnez l'option <b>Trier</b> dans le menu, puis sélectionnez l'option <b>de A à Z</b> ou <b>de Z à A</b> dans le sous-menu.</p>
+            <p>Il est également possible de trier les données par une couleur en utilisant le menu contextuel :</p>
+            <ol>
+                <li>faites un clic droit sur une cellule contenant la couleur que vous voulez utiliser pour trier vos données,</li>
+                <li>sélectionnez l'option <b>Trier</b> dans le menu,</li>
+                <li>sélectionnez l'option voulue dans le sous-menu :<ul>
+                        <li><b>Couleur de cellule sélectionnée en haut</b> - pour afficher les entrées avec la même couleur de fond de cellule en haut de la colonne,</li>
+                        <li><b>Couleur de police sélectionnée en haut</b> - pour afficher les entrées avec la même couleur de police en haut de la colonne.</li>
+                    </ul>
+                </li>
+            </ol>            
+                        
+			<h3 id="filter">Filtrer les données</h3>
+			<p>Pour afficher uniquement les lignes qui répondent aux certains critères utilisez l'option <b>Filtrer</b>.</p><b>Pour activer un filtre,</b><ol>
+                <li>Sélectionnez une plage de cellules contenant des données à filtrer (vous pouvez sélectionner une seule cellule dans une plage pour filtrer toute la plage),</li>
+                <li>Cliquez sur l'icône <b>Filtrer</b> <img alt="icône Filtrer" src="../images/sortandfilter.png" /> dans l'onglet <b>Accueil</b> de la barre d'outils supérieure.<p>La flèche de déroulement <img alt="Flèche de déroulement" src="../images/dropdownarrow.png" /> apparaît dans la première cellule de chaque colonne de la plage de cellules sélectionnée. Cela signifie que le filtre est activé.</p>
+                </li>
+            </ol>
+            <p><b>Pour appliquer un filtre,</b></p>
+            <ol>
+                <li>Cliquez sur la flèche déroulante <img alt="Flèche de déroulement" src="../images/dropdownarrow.png" />. La liste d'options de <b>Filtrage</b> s'ouvre:<p><img alt="Fenêtre de filtre" src="../images/filterwindow.png" /></p>
+                </li>
+                <li>
+                <p>Ajuster les paramètres du filtre. Vous pouvez procéder de l'une des trois manières suivantes : sélectionnez les données à afficher, filtrez les données selon certains critères ou filtrez les données par couleur.</p>
+                    <ul>
+                        <li><b>Sélectionner les données à afficher</b><p>Décochez les cases à côté des données à masquer. Pour votre facilité toutes les données dans la fenêtre <b>Filtre</b> sont triées dans l'ordre croissant.</p>
+                            <p class="note"><b>Remarque</b> : la case à cocher <b>{Vides}</b> correspond aux cellules vides. Elle est disponible si la plage de cellules sélectionnée contient au moins une cellule vide.</p>
+                            <p>Pour faciliter le processus utilisez le champ de recherche. Entrez votre requête, entièrement ou partiellement, dans le champ <!--and press the Enter key--> - les valeurs qui incluent ces caractères seront affichées dans la liste ci-dessous. Les deux options suivantes seront également disponibles :</p>
+                            <ul>
+                                <li><b>Sélectionner tous les résultats de la recherche</b> - est cochée par défaut. Elle permet de sélectionner toutes les valeurs qui correspondent à votre requête dans la liste.</li>
+                                <li><b>Ajouter la sélection actuelle au filtre</b> - si vous cochez cette case, les valeurs sélectionnées ne seront pas masquées lorsque vous appliquerez le filtre.</li>
+                            </ul>
+                            <p>Après avoir sélectionné toutes les données nécessaires, cliquez sur le bouton <b>OK</b> dans la liste des options de <b>Filtrage</b> pour appliquer le filtre.</p>
+                        </li>
+                        <li><b>Filtrer les données selon certains critères</b><p>En fonction des données contenues dans la colonne sélectionnée, vous pouvez choisir le <b>Filtre numérique</b> ou l'option <b>Filtre textuel</b> dans la partie droite de la liste options de <b>Filtrage</b>, puis sélectionner l'une des options dans le sous-menu :</p>
+                            <ul>
+                                <li>Pour le <b>Filtre numérique</b>, les options suivantes sont disponibles : <em>Égal à...</em>, <em>N'est pas égal à...</em>, <em>Supérieur à...</em>, <em>Supérieur ou égal à...</em>, <em>Inférieur à...</em>, <em>Inférieur ou égal à...</em>, <em>Entre</em>, <em>Top 10</em>, <em>Au-dessus de la moyenne</em>, <em>En-dessous de la moyenne</em>, <em>Filtre personnalisé...</em>.</li>
+                                <li>Pour le <b>Filtre textuel</b>, les options suivantes sont disponibles : <em>Égal à...</em>, <em>N'est pas égal à...</em>, <em>Commence par...</em>, <em>Ne commence pas par...</em>, <em>Se termine par...</em>, <em>Ne se termine pas par...</em>, <em>Contient...</em>, <em>Ne contient pas...</em>, <em>Filtre personnalisé...</em>.</li>
+                            </ul>
+                            <p>Après avoir sélectionné l'une des options ci-dessus (à l'exception des options <em>Top 10</em> et <em>Au-dessus/En-dessous de la moyenne</em>), la fenêtre <b>Filtre personnalisé</b> s'ouvre. Le critère correspondant sera sélectionné dans la liste déroulante supérieure. Spécifiez la valeur nécessaire dans le champ situé à droite.</p>
+                            <p>Pour ajouter un critère supplémentaire, utilisez le bouton de commande <b>Et</b> si vous avez besoin de données qui satisfont aux deux critères ou cliquez sur le bouton de commande <b>Ou</b> si l'un des critères ou les deux peuvent être satisfaits. Sélectionnez ensuite le deuxième critère dans la liste déroulante inférieure et entrez la valeur nécessaire sur la droite.</p>
+                            <p>Cliquez sur <b>OK</b> pour appliquer le filtre.</p>
+                            <p><img alt="Fenêtre de filtre personnalisé" src="../images/customfilterwindow.png" /></p>
+                            <p>Si vous choisissez l'option <em>Filtre personnalisé...</em> dans la liste des options de <b>Filtre numérique/textuel</b>, le premier critère n'est pas sélectionné automatiquement, vous pouvez le définir vous-même.</p>
+                            <p>Si vous choisissez l'option <em>Top 10</em> dans la liste des options de <b>Filtre numérique</b>, une nouvelle fenêtre s'ouvrira :</p>
+                            <p><img alt="Fenêtre de filtrage Top 10" src="../images/topten.png" /></p>
+                            <p>La première liste déroulante permet de choisir si vous souhaitez afficher les valeurs les plus élevées (<b>Haut</b>) ou les plus basses (<b>Bas</b>). Le deuxième champ permet de spécifier le nombre d'entrées de la liste ou le pourcentage du nombre total d'entrées que vous souhaitez afficher (vous pouvez entrer un nombre compris entre 1 et 500). La troisième liste déroulante permet de définir des unités de mesure : <b>Article</b> ou <b>Pourcentage</b>. Une fois les paramètres nécessaires définis, cliquez sur <b>OK</b> pour appliquer le filtre.</p>
+                            <p>Si vous choisissez l'option <em>Au-dessus/En-dessous</em> de la moyenne dans la liste des options de <b>Filtre numérique</b>, le filtre sera appliqué à l'instant.</p>
+                        </li>
+                        <li><b>Filtrer les données par couleur</b><p>Si la plage de cellules que vous souhaitez filtrer contient des cellules que vous avez formatées en modifiant leur arrière-plan ou leur couleur de police (manuellement ou en utilisant des styles prédéfinis), vous pouvez utiliser l'une des options suivantes :</p>
+                            <ul>
+                                <li><b>Filtrer par couleur des cellules</b> - pour n'afficher que les entrées avec une certaine couleur de fond de cellule et masquer les autres,</li>
+                                <li><b>Filtrer par couleur de police</b> - pour afficher uniquement les entrées avec une certaine couleur de police de cellule et masquer les autres.</li>
+                            </ul>
+                            <p>Lorsque vous sélectionnez l'option souhaitée, une palette contenant les couleurs utilisées dans la plage de cellules sélectionnée s'ouvre. Choisissez l'une des couleurs pour appliquer le filtre.</p>
+                            <p><img alt="Filtrer les données par couleur" src="../images/filterbycolor.png" /></p>
+                        </li>
+                    </ul>
+                    <p>Le bouton <b>Filtre</b> <img alt="Bouton de filtre" src="../images/filterbutton.png" /> apparaîtra dans la première cellule de la colonne. Cela signifie que le filtre est activé. Le nombre d'enregistrements filtrés sera affiché dans la barre d'état (par exemple <em>25 des 80 enregistrements filtrés</em>).</p>
+                    <p class="note"><b>Remarque</b> : lorsque le filtre est appliqué, les lignes filtrées ne peuvent pas être modifiées lors du remplissage automatique, du formatage ou de la suppression du contenu visible. De telles actions affectent uniquement les lignes visibles, les lignes masquées par le filtre restent inchangées. Lorsque vous copiez et collez les données filtrées, seules les lignes visibles peuvent être copiées et collées. Ceci n'est pas équivalent aux lignes masquées manuellement qui sont affectées par toutes les actions similaires.</p>
+                </li>
+			</ol>
+            <h3>Trier les données filtrées</h3>
+            <p>Vous pouvez définir l'<b>ordre de tri</b> des données que vous avez activées ou auxquelles vous avez appliqué un filtre. Cliquez sur la flèche de la liste déroulante <img alt="Flèche de déroulement" src="../images/dropdownarrow.png" /> ou sur le bouton <b>Filtre</b> <img alt="Bouton de filtre" src="../images/filterbutton.png" /> et sélectionnez l'une des options dans la liste des options de <b>Filtrage</b> :</p>
+                <ul>
+                    <li><b>Trier du plus petit au plus grand</b> - permet de trier vos données dans l'ordre croissant, en affichant la valeur la plus basse en haut de la colonne,</li>
+                    <li><b>Trier du plus grand au plus petit</b> - permet de trier vos données dans l'ordre décroissant, en affichant la valeur la plus élevée en haut de la colonne,</li>
+                    <li><b>Trier par couleur des cellules</b> - permet de sélectionner l'une des couleurs et d'afficher les entrées avec la même couleur de fond de cellule en haut de la colonne,</li>
+                    <li><b>Trier par couleur de police</b> - permet de sélectionner l'une des couleurs et d'afficher les entrées avec la même couleur de police en haut de la colonne.</li>
+                </ul>
+                <p>Les deux dernières options peuvent être utilisées si la plage de cellules que vous souhaitez trier contient des cellules que vous avez formatées en modifiant leur arrière-plan ou la couleur de leur police (manuellement ou en utilisant des styles prédéfinis).</p>
+            <p>Le sens du tri sera indiqué par une flèche dans les boutons du filtre.</p>
+            <ul>
+                <li>si les données sont triées par ordre croissant, la flèche déroulante dans la première cellule de la colonne ressemble à ceci : <img alt="Flèche de déroulement" src="../images/lowesttohighest.png" /> et le bouton <b>Filtre</b> ressemble à ceci : <img alt="Bouton de filtre" src="../images/lowesttohighest1.png" />.</li>
+                <li>Si les données sont triées par ordre décroissant, la flèche déroulante dans la première cellule de la colonne ressemble à ceci: <img alt="Flèche de déroulement" src="../images/highesttolowest.png" /> et le bouton <b>Filtre</b> ressemble à ceci : <img alt="Bouton de filtre" src="../images/highesttolowest1.png" />.</li>
+            </ul>
+            <p>Vous pouvez également trier rapidement les données par couleur en utilisant les options du menu contextuel :</p>
+            <ol>
+                <li>faites un clic droit sur une cellule contenant la couleur que vous voulez utiliser pour trier vos données,</li>
+                <li>sélectionnez l'option <b>Trier</b> dans le menu,</li>
+                <li>sélectionnez l'option voulue dans le sous-menu :<ul>
+                        <li><b>Couleur de cellule sélectionnée en haut</b> - pour afficher les entrées avec la même couleur de fond de cellule en haut de la colonne,</li>
+                        <li><b>Couleur de police sélectionnée en haut</b> - pour afficher les entrées avec la même couleur de police en haut de la colonne.</li>
+                    </ul>
+                </li>
+            </ol>
+            <h3>Filtrer par le contenu de la cellule sélectionnée</h3>
+            <p>Vous pouvez également filtrer rapidement vos données par le contenu de la cellule sélectionnée en utilisant les options du <b>menu contextuel</b>. Cliquez avec le bouton droit sur une cellule, sélectionnez l'option <b>Filtre</b> dans le menu, puis sélectionnez l'une des options disponibles :</p>
+			<ul>
+                <li><b>Filtrer par valeur de la cellule sélectionnée</b> - pour n'afficher que les entrées ayant la même valeur que la cellule sélectionnée.</li>
+                <li><b>Filtrer par couleur de cellule</b> - pour n'afficher que les entrées ayant la même couleur de fond de cellule que la cellule sélectionnée.</li>
+                <li><b>Filtrer par couleur de police</b> - pour n'afficher que les entrées ayant la même couleur de police de cellule que la cellule sélectionnée.</li>
+            </ul>
+            <h3 id="tabletemplate">Mettre en forme avec un modèle de tableau</h3>
+			<p>Pour faciliter le travail avec vos données, <b>Spreadsheet Editor</b> vous permet d'appliquer un modèle de tableau à une plage de cellules sélectionnée en activant automatiquement le filtre. Pour le faire,</p>
+			<ol>
+				<li>sélectionnez une plage de cellules à mettre en forme,</li>
+				<li>cliquez sur l'icône <b>Mettre en forme avec un modèle de tableau</b> <img alt="Mettre en forme avec un modèle de tableau" src="../images/tabletemplate.png" />située dans l'onglet <b>Accueil</b> de la barre d'outils supérieure.</li>
+				<li>Sélectionnez le modèle souhaité dans la galerie,</li>
+				<li>dans la fenêtre contextuelle ouverte, vérifiez la plage de cellules à mettre en forme comme un tableau,</li>
+				<li>Cochez la case <b>Titre</b> si vous souhaitez inclure les en-têtes de tableau dans la plage de cellules sélectionnée, sinon la ligne d'en-tête sera ajoutée en haut tandis que la plage de cellules sélectionnée sera déplacée d'une ligne vers le bas,</li>
+				<li>cliquez sur le bouton <b>OK</b> pour appliquer le modèle sélectionné.</li>
+			</ol>
+			<p>Le modèle sera appliqué à la plage de cellules sélectionnée et vous serez en mesure d'éditer les en-têtes de tableau et d'appliquer le filtre pour travailler avec vos données.</p>
+            <p class="note"><b>Remarque</b> : une fois que vous avez créé un nouveau tableau, un <a href="UseNamedRanges.htm" onclick="onhyperlinkclick(this)">nom par défaut</a> (<em>Tableau1</em>, <em>Tableau2</em>, etc.) lui sera automatiquement affecté. Vous pouvez changer ce nom pour le rendre plus significatif et l'utiliser pour d'autres travaux.</p> 
+            <p>Si vous entrez une nouvelle valeur dans une cellule sous la dernière ligne du tableau (si le tableau n'a pas la ligne Total) ou dans une cellule à droite de la dernière colonne du tableau, la table formatée sera automatiquement étendue pour inclure une nouvelle ligne ou colonne. Si vous ne souhaitez pas étendre le tableau, cliquez sur le bouton <img alt="Collage spécial" src="../images/pastespecialbutton.png" /> qui s'affiche et sélectionnez l'option <b>Annuler l'expansion automatique du tableau</b>. Une fois cette action annulée, l'option <b>Rétablir l’expansion automatique du tableau</b> sera disponible dans ce menu.</p>
+            <p><img alt="Annuler l'expansion automatique du tableau" src="../images/undoautoexpansion.png" /></p>
+            <p>Certains paramètres du tableau peuvent être modifiés dans l'onglet <b>Paramètres du tableau</b> de la barre latérale droite qui s'ouvre si vous sélectionnez au moins une cellule du tableau avec la souris et cliquez sur l'icône <b>Paramètres du tableau</b> <img alt="Icône Paramètres du tableau" src="../images/table_settings_icon.png" /> sur la droite.</p>
+            <p><img alt="Onglet Icône Paramètres du tableau" src="../images/tablesettingstab.png" /></p>
+            <p>Les sections <b>Lignes</b> et <b>Colonnes</b> en haut vous permettent de mettre en évidence certaines lignes/colonnes en leur appliquant une mise en forme spécifique ou de mettre en évidence différentes lignes/colonnes avec les différentes couleurs d'arrière-plan pour les distinguer clairement. Les options suivantes sont disponibles :</p>
+            <ul>
+                <li><b>En-tête</b> - permet d'afficher la ligne d'en-tête.</li>
+                <li><b>Total</b> - ajoute la ligne <b>Résumé</b> en bas du tableau.</li>
+                <li><b>En bandes</b> - permet l'alternance des couleurs d'arrière-plan pour les lignes paires et impaires.</li>
+                <li><b>Bouton Filtre</b> - permet d'afficher les flèches déroulantes <img alt="Flèche de déroulement" src="../images/dropdownarrow.png" /> dans les cellules de la ligne d'en-tête. Cette option est uniquement disponible lorsque l'option <b>En-tête</b> est sélectionnée.</li>
+                <li><b>Première</b> - accentue la colonne la plus à gauche du tableau avec un formatage spécial.</li>
+                <li><b>Dernière</b> - accentue la colonne la plus à droite du tableau avec un formatage spécial.</li>
+                <li><b>En bandes</b> - permet l'alternance des couleurs d'arrière-plan pour les colonnes paires et impaires.</li>
+            </ul>
+            <p>La section <b>Sélectionner à partir d'un modèle</b> vous permet de choisir l'un des styles de tableaux prédéfinis. Chaque modèle combine certains paramètres de formatage, tels qu'une couleur d'arrière-plan, un style de bordure, des lignes/colonnes en bandes, etc. Selon les options cochées dans les sections <b>Lignes</b> et/ou <b>Colonnes</b> ci-dessus, l'ensemble de modèles sera affiché différemment. Par exemple, si vous avez coché l'option <b>En-tête</b> dans la section <b>Lignes</b> et l'option <b>En bandes</b> dans la section <b>Colonnes</b>, la liste des modèles affichés inclura uniquement les modèles avec la ligne d'en-tête et les colonnes en bandes activées :</p>
+            <p><img alt="Liste des modèles" src="../images/templateslist.png" /></p>
+            <p>Si vous souhaitez effacer le style de tableau actuel (couleur d'arrière-plan, bordures, etc.) sans supprimer le tableau lui-même, appliquez le modèle <b>Aucun</b> à partir de la liste des modèles:</p>
+            <p><img alt="Modèle Aucun" src="../images/nonetemplate.png" /></p>
+            <p>La section <b>Redimensionner le tableau</b> vous permet de modifier la plage de cellules auxquelles la mise en forme du tableau est appliquée. Cliquez sur le bouton <b>Sélectionner les données</b> - une nouvelle fenêtre s'ouvrira. Modifiez le lien vers la plage de cellules dans le champ de saisie ou sélectionnez la plage de cellules nécessaire dans la feuille de calcul avec la souris et cliquez sur le bouton <b>OK</b>.</p>
+            <p><img alt="Redimensionner le tableau" src="../images/resizetable.png" /></p>
+            <p>La section <b>Lignes et colonnes</b> <img alt="Lignes et colonnes" src="../images/rowsandcolumns.png" /> vous permet d'effectuer les opérations suivantes :</p>
+            <ul>
+                <li><b>Sélectionner</b> une ligne, une colonne, toutes les données de colonnes à l'exclusion de la ligne d'en-tête ou la table entière incluant la ligne d'en-tête.</li>
+                <li><b>Insérer</b> une nouvelle ligne au-dessus ou en dessous de celle sélectionnée ainsi qu'une nouvelle colonne à gauche ou à droite de celle sélectionnée.</li>
+                <li><b>Supprimer</b> une ligne, une colonne (en fonction de la position du curseur ou de la sélection) ou la totalité du tableau.</li>
+            </ul>
+            <p class="note"><b>Remarque</b> : les options de la section <b>Lignes et colonnes</b> sont également accessibles depuis le <b>menu contextuel</b>.</p>
+            <p>Le bouton <b>Convertir en plage</b> peut être utilisé si vous souhaitez transformer le tableau en une plage de données normale en supprimant le filtre tout en préservant le style de la table (c'est-à-dire les couleurs de cellule et de police, etc.). Une fois que vous aurez appliqué cette option, l'onglet <b>Paramètres du tableau</b> dans la barre latérale droite sera indisponible.</p>
+            <p>Pour changer les paramètres avancés du tableau, cliquez sur le lien <b>Afficher les paramètres avancés</b> sur la barre latérale droite. La fenêtre Propriétés du tableau s'ouvre :</p>
+            <p><img alt="Tableau - Paramètres avancés" src="../images/tableadvancedsettings.png" /></p>
+            <p>L'onglet <b>Texte de remplacement</b> permet de spécifier un <b>Titre</b> et une <b>Description</b> qui sera lue aux personnes avec des déficiences cognitives ou visuelles pour les aider à mieux comprendre l'information du tableau.</p>
+            <h3>Appliquer à nouveau le filtre</h3>
+            <p>Si les données filtrées ont été modifiées, vous pouvez actualiser le filtre pour afficher un résultat à jour :</p>
+            <ol>
+                <li>cliquez sur le bouton <b>Filtrer</b> <img alt="Bouton de filtre" src="../images/filterbutton.png" /> dans la première cellule de la colonne contenant les données filtrées,</li>
+                <li>sélectionnez l'option <b>Réappliquer</b> dans la liste des options de <b>Filtrage</b> qui s'ouvre.</li>
+            </ol>
+            <p>Vous pouvez également cliquer avec le bouton droit sur une cellule dans la colonne contenant les données filtrées et sélectionner l'option <b>Réappliquer</b> dans le menu contextuel.</p>
+            <h3>Effacer le filtre</h3>
+			<p>Pour effacer le filtre,</p>
+            <ol>
+                <li>cliquez sur le bouton <b>Filtrer</b> <img alt="Bouton de filtre" src="../images/filterbutton.png" /> dans la première cellule de la colonne contenant les données filtrées,</li>
+                <li>sélectionnez l'option <b>Effacer</b> dans la liste d'options de <b>Filtrage</b> qui s'ouvre.</li>
+            </ol>
+            <p>Vous pouvez également procéder de la manière suivante :</p>
+				<ol>
+					<li>sélectionner la plage de cellules contenant les données filtrées,</li>
+					<li>cliquez sur l'icône <b>Effacer le filtre</b> <img alt="Icône Effacer le filtre" src="../images/clearfilter.png" /> située dans l'onglet <b>Accueil</b> de la barre d'outils supérieure.</li>
+				</ol>
+            <p>Le filtre restera activé, mais tous les paramètres de filtre appliqués seront supprimés et les boutons <b>Filtrer</b> <img alt="Bouton de filtre" src="../images/filterbutton.png" /> dans les premières cellules des colonnes seront remplacés par les flèches déroulantes <img alt="Flèche de déroulement" src="../images/dropdownarrow.png" />.</p>
+            <h3>Supprimer le filtre</h3>
+            <p>Pour enlever le filtre,</p>
+            <ol>
+                <li>sélectionner la plage de cellules contenant les données filtrées,</li>
+                <li>cliquez sur l'icône <b>Filtrer</b> <img alt="icône Filtrer" src="../images/sortandfilter.png" /> située dans l'onglet <b>Accueil</b> de la barre d'outils supérieure.</li>
+            </ol>
+            <p>Le filtre sera désactivé et les flèches déroulantes <img alt="Flèche de déroulement" src="../images/dropdownarrow.png" /> disparaîtront des premières cellules des colonnes.</p>
+		</div>
+	</body>
+</html>

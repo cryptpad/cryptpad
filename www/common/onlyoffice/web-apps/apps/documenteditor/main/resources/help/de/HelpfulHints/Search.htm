@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Suchen und Ersetzen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The description of the document search and replace function in Document Editor" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Suchen und Ersetzen</h1>
+			<p>Wenn Sie im aktuellen Dokument nach Zeichen, Wörtern oder Phrasen suchen möchten, klicken Sie auf das <img alt="Suche" src="../images/searchicon.png" /> Symbol in der linken Seitenleiste.</p>
+			<p>Die Dialogbox <b>Suchen und Ersetzen</b> wird geöffnet:</p>
+            <p><img alt="Dialogbox Suchen und Ersetzen" src="../images/search_window.png" /></p>
+			<ol>
+			<li>Geben Sie Ihre Suchanfrage in das entsprechende Eingabefeld ein.</li>
+			<li>Legen Sie Ihre Suchparameter fest, klicken Sie dazu auf das <img alt="Symbol Suchoptionen" src="../images/search_options.png" /> Symbol und markieren Sie die gewünschten Optionen:<ul>
+			<li><b>Groß-/Kleinschreibung beachten</b> - ist diese Funktion aktiviert, werden nur Ergebnisse mit der selben Schreibweise wie in Ihrer Suchanfrage gefiltert (lautet Ihre Anfrage z.B. 'Editor' und diese Option ist markiert, werden Wörter wie 'editor' oder 'EDITOR' usw. nicht gefunden). Um die Option auszuschalten, deaktivieren Sie das Kontrollkästchen.</li>
+			<li><b>Ergebnisse markieren</b> - alle gefundenen Vorkommen auf einmal markiert. Um diese Option auszuschalten und die Markierung zu entfernen, deaktivieren Sie das Kontrollkästchen.</li>
+			</ul>
+			</li>			
+			<li>Klicken Sie auf einen der <b>Pfeiltasten</b> in der unteren rechten Ecke der Dialogbox. Die Suche wird entweder in Richtung des Dokumentenanfangs (klicken Sie auf <img alt="Linkspfeil" src="../images/searchupbutton.png" />) oder in Richtung des Dokumentenendes (klicken Sie auf <img alt="Rechtspfeil" src="../images/searchdownbutton.png" />) durchgeführt.<p class="note"><b>Hinweis</b>: wenn die Option <b>Ergebnisse markieren</b> aktiviert ist, können Sie mit den Pfeilen durch die markierten Ergebnisse navigieren.</p>
+			</li>
+			</ol>
+			<p>Das erste Ergebnis der Suchanfrage in der ausgewählten Richtung, wird auf der Seite markiert. Falls es sich dabei nicht um die gewünschte Textstelle handelt, klicken Sie den Pfeil erneut an, um das nächste Vorkommen der eingegebenen Zeichen zu finden.</p> 
+			<p>Um ein oder mehrere Ergebnisse <b>zu ersetzen</b>, klicken Sie unter den Pfeiltasten auf die Schaltfläche <b>Ersetzen</b>. Die Dialogbox <b>Suchen und Ersetzen</b> öffnet sich:</p>
+            <p><img alt="Dialogbox Suchen und Ersetzen" src="../images/search_replace_window.png" /></p>
+			<ol>
+			<li>Geben Sie den gewünschten Ersatztext in das untere Eingabefeld ein.</li>			
+			<li>Klicken Sie auf <b>Ersetzen</b>, um das aktuell ausgewählte Ergebnis zu ersetzen oder auf <b>Alle ersetzen</b>, um alle gefundenen Ergebnisse zu ersetzen.</li>
+			</ol>
+            <p>Um das Feld ersetzen zu verbergen, klicken Sie auf den Link <b>Ersetzen verbergen</b>.</p>
+		</div>
+	</body>
+</html>

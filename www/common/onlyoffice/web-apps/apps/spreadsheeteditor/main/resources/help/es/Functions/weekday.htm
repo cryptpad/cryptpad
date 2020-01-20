@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Función DIASEM</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Función DIASEM</h1>
+			<p>La función <b>DIASEM</b> es una función de fecha y hora. Se usa para determinar qué día de la semana corresponde a una fecha especificada.</p>
+			<p>La sintaxis de la función <b>DIASEM</b> es:</p> 
+			<p style="text-indent: 150px;"><b><em>DIASEM(valor-de-serie [,díadesemana-empezar-marcador])</em></b></p> 
+			<p><em>donde</em></p> 
+			<p style="text-indent: 50px;"><b><em>valor-de-serie</em></b> es un número que representa la fecha del día que usted intenta encontrar. El número se introduce usando la función <a href="Date.htm" onclick="onhyperlinkclick(this)">Fecha</a> o cualquier otra función de fecha y hora.</p>
+			<p style="text-indent: 50px;"><b><em>díadesemana-empezar-marcador</em></b> es el valor numérico que se usa para determinar el tipo del valor que se tiene que devolver. Puede ser uno de los siguientes:</p>
+			<table style="width: 40%">
+				<tr>
+					<td><b>Valor numérico</b></td>
+					<td><b>Explicación</b></td>
+				</tr>
+				<tr>
+					<td>1 u omitido</td>
+					<td>Devuelve un número de 1 (Domingo) a 7 (Sábado)</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>Devuelve un número de 1 (Lunes) a 7 (Domingo).</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>Devuelve un número de 0 (Lunes) a 6 (Domingo).</td>
+				</tr>
+			</table>
+			<ol>
+			<li>seleccione la celda donde usted quiere ver el resultado,</li>
+			<li>pulse el icono <b>Insertar función</b> <img alt="Icono insertar función" src="../images/insertfunction.png" /> que se sitúa en la barra de herramientas superior, <br />o haga clic derecho en la сelda seleccionada y elija la opción <b>Insertar función</b> en el menú, <br />o pulse el icono <img alt="Icono función" src="../images/function.png" /> que se sitúa en la barra de fórmulas,</li>
+			<li>seleccione el grupo de funciones <b>Fecha y hora</b> en la lista,</li>
+			<li>haga clic en la función <b>DIASEM</b>,</li>
+			<li>introduzca los argumentos correspondientes separados por comas,</li>
+			<li>pulse el botón <b>Enter</b>.</li>
+			</ol>
+			<p>El resultado se mostrará en la celda elegida.</p>
+			<p style="text-indent: 150px;"><img alt="Función DIASEM" src="../images/weekday.png" /></p>
+		</div>
+	</body>
+</html>

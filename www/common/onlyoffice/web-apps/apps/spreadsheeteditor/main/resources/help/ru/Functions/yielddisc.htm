@@ -1,29 +1,34 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 	<head>
-		<title>Функция YIELDDISC (ДОХОДСКИДКА)</title>
+		<title>Функция ДОХОДСКИДКА</title>
 		<meta charset="utf-8" />
 		<meta name="description" content="" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
         <div class="mainpart">
-            <h1>Функция YIELDDISC (ДОХОДСКИДКА)</h1>
-            <p>Функция <b>YIELDDISC</b> - это одна из финансовых функций. Используется для вычисления годовой доходности по ценной бумаге, на которую дается скидка.</p>
-            <p>Синтаксис функции <b>YIELDDISC</b>:</p>
-            <p style="text-indent: 150px;"><b><em>YIELDDISC(settlement, maturity, pr, redemption[, [basis]])</em></b></p>
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Поиск" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Функция ДОХОДСКИДКА</h1>
+            <p>Функция <b>ДОХОДСКИДКА</b> - это одна из финансовых функций. Используется для вычисления годовой доходности по ценной бумаге, на которую дается скидка.</p>
+            <p>Синтаксис функции <b>ДОХОДСКИДКА</b>:</p>
+            <p style="text-indent: 150px;"><b><em>ДОХОДСКИДКА(дата_согл;дата_вступл_в_силу;цена;погашение;[базис])</em></b></p>
             <p><em>где</em></p>
-            <p style="text-indent: 50px;"><b><em>settlement</em></b> - это дата покупки ценной бумаги.</p>
-            <p style="text-indent: 50px;"><b><em>maturity</em></b> - это дата истечения срока действия ценной бумаги (дата погашения).</p>
-            <p style="text-indent: 50px;"><b><em>pr</em></b> - это цена покупки ценной бумаги в расчете на 100 рублей номинальной стоимости.
+            <p style="text-indent: 50px;"><b><em>дата_согл</em></b> - это дата покупки ценной бумаги.</p>
+            <p style="text-indent: 50px;"><b><em>дата_вступл_в_силу</em></b> - это дата истечения срока действия ценной бумаги (дата погашения).</p>
+            <p style="text-indent: 50px;"><b><em>цена</em></b> - это цена покупки ценной бумаги в расчете на 100 рублей номинальной стоимости.
               <p style="text-indent: 50px;">
                 <b>
-                  <em>redemption</em>
+                  <em>погашение</em>
                 </b> - это выкупная стоимость ценной бумаги в расчете на 100 рублей номинальной стоимости.
               </p>
           <p style="text-indent: 50px;">
             <b>
-              <em>basis</em>
+              <em>базис</em>
             </b> - это используемый способ расчета количества дней; числовое значение от 0 до 4. Это необязательный аргумент. Он может принимать одно из следующих значений:
           </p>
           <table style="width: 40%">
@@ -57,11 +62,11 @@
             </tr>
           </table>
           <p class="note">
-            <b>Примечание:</b> даты должны быть введены с помощью функции DATE.
+            <b>Примечание:</b> даты должны быть введены с помощью функции ДАТА.
           </p>
           <p>Значения могут быть введены вручную или находиться в ячейке, на которую дается ссылка.</p>
           <p>
-            Чтобы применить функцию <b>YIELDDISC</b>,
+            Чтобы применить функцию <b>ДОХОДСКИДКА</b>,
           </p>
           <ol>
             <li>выделите ячейку, в которой требуется отобразить результат,</li>
@@ -74,15 +79,15 @@
               выберите из списка группу функций <b>Финансовые</b>,
             </li>
             <li>
-              щелкните по функции <b>YIELDDISC</b>,
+              щелкните по функции <b>ДОХОДСКИДКА</b>,
             </li>
-            <li>введите требуемые аргументы, разделяя их запятыми,</li>
+            <li>введите требуемые аргументы через точку с запятой,</li>
             <li>
               нажмите клавишу <b>Enter</b>.
             </li>
           </ol>
           <p>Результат будет отображен в выделенной ячейке.</p>  
-          <p style="text-indent: 150px;"><img alt="Функция YIELDDISC" src="../images/yielddisc.png" /></p>
+          <p style="text-indent: 150px;"><img alt="Функция ДОХОДСКИДКА" src="../images/yielddisc.png" /></p>
         </div>
 	</body>
 </html>

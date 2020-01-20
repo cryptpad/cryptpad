@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Obtenga vista previa de su presentación</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Preview your presentation" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Obtenga vista previa de su presentación</h1>
+            <h3>Empezar la vista previa</h3>
+			<p>Para visualizar la presentación que está editando actualmente, puede:</p>
+            <ul>
+                <li>hacer clic en el icono <img alt="Icono iniciar presentación" src="../images/startpreview.png" /> <b>Empezar presentación</b> en la pestaña de <b>Inicio</b> en la barra de herramientas superior o en la parte izquierda de la barra de estado, o</li>
+                <li>seleccionar una diapositiva en concreto dentro de la lisa de diapositivas a la izquierda, hacer clic derecho en esta y elegir la opción <b>Empezar presentación</b> en el menú contextual.</li>
+            </ul>
+            <p>La vista previa empezará desde la diapositiva elegida.</p>
+            <p>También puede hacer clic en la flecha de al lado del icono <img alt="Icono iniciar presentación" src="../images/startpreview.png" /> <b>Empezar presentación</b> en la pestaña de <b>Inicio</b> en la barra de herramientas superior y seleccionar una de las opciones siguientes:</p>
+            <ul>
+                <li><b>Mostrar desde el principio</b> - para empezar la vista previa desde la primera diapositiva,</li>
+                <li><b>Mostrar desde la diapositiva seleccionada actualmente</b> - para empezar la vista previa desde la diapositiva seleccionada actualmente,</li>
+                <li><b>Mostrar vista previa en presentador</b> - para empezar la vista previa en el modo <b>Presentador</b> que permite mostrar la presentación a su público sin notas en las diapositivas mientras visualiza la presentación con las notas de diapositivas en otra pantalla.</li>
+                <li><b>Mostrar ajustes</b> - para abrir una ventana de ajustes que permite elegir una sola opción: <b>Repite continuamente hasta que se presiona la tecla ‘Esc’</b>. Valide esta opción si es necesario y haga clic en <b>OK</b>. Si valida esta opción, la presentación se mostrará hasta que presione la tecla de <b>Escape</b> en el teclado, por ejemplo, cuando llegue a la última diapositiva de la presentación, será capaz de volver a la primera diapositiva etc. Si esta opción está desactivada, una vez que llegue a la última diapositiva de la presentación, una pantalla negra aparecerá informando que la presentación se ha acabado y que puede salir de la <b>Vista previa</b>  <p><img alt="Ventana de ajustes de presentación" src="../images/showsettings.png" /></p>
+                </li>
+            </ul>
+            <h3>Usar el modo de vista previa</h3>
+            <p>En el modo <b>Vista previa</b>, puede usar los siguientes controles en la esquina inferior izquierda.</p>
+            <p><img alt="Controles del modo de vista previa" src="../images/preview_mode.png" /></p>
+            <ul>
+                <li>el botón <img alt="Icono diapositiva anterior" src="../images/previousslide.png" /> de <b>Diapositiva anterior</b> permite volver a la diapositiva anterior.</li>
+                <li>el botón <img alt="Icono detener presentación" src="../images/pausepresentation.png" /> <b>Pausar presentación</b> permite parar la vista previa. Cuando presiona el botón, se convierte en el botón <img alt="Icono iniciar presentación" src="../images/startpresentation.png" />.</li>
+                <li>el botón <img alt="Icono iniciar presentación" src="../images/startpresentation.png" /> <b>Empezar presentación</b> permite volver a la vista previa. Cuando presiona el botón, se convierte en el botón <img alt="Icono detener presentación" src="../images/pausepresentation.png" />.</li>
+                <li>el botón <img alt="Icono diapositiva siguiente" src="../images/nextslide.png" /> de <b>Diapositiva siguiente</b> le permite ir a la siguiente diapositiva.</li>
+                <li>el <b>indicador del número de diapositiva</b> muestra el número de diapositiva actual así como el número total de diapositivas en la presentación. Para pasar a una cierta diapositiva en el modo de vista previa, pulse el <b>Indicador del número de diapositiva</b> e introduzca el número de diapositiva correspondiente en la ventana abierta y presione <b>Enter</b>.</li>
+                <li>el botón <img alt="Icono pantalla completa" src="../images/fullscreen.png" /> <b>Pantalla completa</b> le permite cambiar al modo de pantalla completa.</li>
+                <li>el botón <img alt="Icono salir de pantalla completa" src="../images/exitfullscreen.png" /> <b>Salir de la pantalla completa</b> le permite salir del modo de pantalla completa.</li>
+                <li>el botón <img alt="Icono cerrar vista previa" src="../images/closepreview.png" /> de <b>Cerrar presentación</b> le permite salir del modo de vista previa.</li>
+            </ul>
+			<p>También puede <a href="../HelpfulHints/KeyboardShortcuts.htm#preview" onclick="onhyperlinkclick(this)">usar los atajos de teclado</a> para navegar entre diapositivas en el modo de vista previa.</p>
+            <h3 id="presenter">Usar el modo presentador</h3>
+            <p>En el modo <b>Presentador</b>, puede ver sus presentaciones con notas de diapositivas en una ventana separada, mientras la muestra sin notas en una pantalla diferente. Las notas para cada diapositiva se muestran debajo del área de vista previa de diapositivas.</p>
+            <p>Para navegar entre diapositivas puede usar los botones <img alt="Icono diapositiva anterior" src="../images/previousslide.png" /> y <img alt="Icono diapositiva siguiente" src="../images/nextslide.png" /> o hacer clic en las diapositivas en la lista de la izquierda. Los números ocultos de las diapositivas están tachados en la lista de diapositivas de la izquierda. Si quiere mostrar una diapositiva marcada como oculta, haga clic en esta en la lista de diapositivas a la izquierda - la diapositiva aparecerá.</p>
+            <p>Puede usar los controles siguientes en la parte inferior del área de vista previa de las diapositivas:</p>
+            <p><img alt="Controles del modo de presentador" src="../images/presenter_mode.png" /></p>
+            <ul>
+                <li>El <b>Temporizador</b> muestra el tiempo transcurrido de la presentación en el formato <em>hh.mm.ss</em>.</li>
+                <li>el botón <img alt="Icono detener presentación" src="../images/pausepresentation.png" /> <b>Pausar presentación</b> permite parar la vista previa. Cuando presiona el botón, se convierte en el botón <img alt="Icono iniciar presentación" src="../images/startpresentation.png" />.</li>
+                <li>el botón <img alt="Icono iniciar presentación" src="../images/startpresentation.png" /> <b>Empezar presentación</b> permite volver a la vista previa. Cuando presiona el botón, se convierte en el botón <img alt="Icono detener presentación" src="../images/pausepresentation.png" />.</li>
+                <li>el botón <b>Restablecer</b> permite reiniciar el tiempo transcurrido de la presentación.</li>
+                <li>el botón <img alt="Icono diapositiva anterior" src="../images/previousslide.png" /> de <b>Diapositiva anterior</b> permite volver a la diapositiva anterior.</li>
+                <li>el botón <img alt="Icono diapositiva siguiente" src="../images/nextslide.png" /> de <b>Diapositiva siguiente</b> le permite ir a la siguiente diapositiva.</li>
+                <li>el <b>indicador del número de diapositiva</b> muestra el número de diapositiva actual así como el número total de diapositivas en la presentación.</li>
+                <li>el botón <img alt="Icono puntero" src="../images/pointer.png" /> <b>Puntero</b> le permite destacar elementos en la pantalla mientras está mostrando la presentación. Cuando está opción está desactivada, el botón se muestra así: <img alt="Icono puntero" src="../images/pointer_enabled.png" />. Para señalar elementos ponga el cursor del ratón encima del área de la vista previa de la diapositiva y mueva el puntero alrededor de la diapositiva. El puntero estará así: <img alt="Icono puntero" src="../images/pointer_screen.png" />. Para desactivar esta opción haga clic en el botón <img alt="Icono puntero" src="../images/pointer_enabled.png" /> de nuevo.</li>
+                <li>el botón <b>Terminar presentación</b> le permite salir del modo <b>Presentador</b>.</li>
+            </ul>			
+		</div>
+	</body>
+</html>

@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Enregistrer / télécharger / imprimer votre document</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Save, download and print your documents in various formats" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Enregistrer /<span class="onlineDocumentFeatures"> télécharger /</span> imprimer votre document</h1>
+			<p>Par défaut, quand vous travaillez <b>Document Editor</b> enregistre automatiquement votre fichier toutes les 2 secondes visant à prévenir la perte des données au cas d'une fermeture inattendue de l'éditeur.<span class="onlineDocumentFeatures"> Si vous co-éditez le fichier en mode <b>Rapide</b>, le minuteur récupère les mises à jour 25 fois par seconde et enregistre les modifications si elles ont été effectuées. Si vous co-éditez le fichier en mode <b>Strict</b>, les modifications sont automatiquement enregistrées toutes les 10 minutes. Si nécessaire, vous pouvez facilement changer la périodicité de l'enregistrement automatique ou même désactiver cette fonction sur la page <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Paramètres avancés</a>.</span></p>
+			<p>Pour enregistrer votre document actuel à la main,</p>
+			<ul>
+				<li>cliquez sur l'icône <b>Enregistrer</b> <img alt="icône Enregistrer" src="../images/save.png" /> sur la barre d'outils supérieure, ou</li>
+				<li>utilisez la combinaison des touches <b>Ctrl+S</b>, ou</li>
+				<li>Passez à l'onglet <b>Fichier</b> de la barre d'outils supérieure et sélectionnez l'option <b>Enregistrer</b>.</li>
+			</ul>
+			<div class="onlineDocumentFeatures">
+			<p>Pour télécharger le document courant sur le disque dur de votre ordinateur,</p>
+			<ol>
+				<li>cliquez sur l'onglet <b>Fichier</b> de la barre d'outils supérieure,</li>
+				<li>sélectionnez l'option <b>Télécharger comme</b>,</li>
+				<li>sélectionnez l'un des formats disponibles selon vos besoins : DOCX, PDF, TXT, ODT, RTF, HTML.</li>
+			</ol>
+			</div>
+			<p>Pour imprimer le document actif,</p>
+			<ul>
+				<li>cliquez sur l'icône <b>Imprimer</b> <img alt="icône Imprimer" src="../images/print.png" /> sur la barre d'outils supérieure, ou</li>
+				<li>utilisez la combinaison des touches <b>Ctrl+P</b>, ou</li>
+				<li>cliquez sur l'onglet <b>Fichier</b> de la barre d'outils supérieure et sélectionnez l'option <b>Imprimer</b>.</li>
+			</ul>
+			<p class="onlineDocumentFeatures">Après cela, un fichier PDF sera généré sur la base du document édité. Vous pouvez l'ouvrir et l'imprimer, ou l'enregistrer sur le disque dur de l'ordinateur ou sur un support amovible pour l'imprimer plus tard.</p>
+		</div>
+	</body>
+</html>

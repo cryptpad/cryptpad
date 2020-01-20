@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Maneje hojas</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Manage sheets in Spreadsheet Editor: insert, delete, rename, copy and move." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Maneje hojas</h1>
+			<p>De manera predeterminada una hoja de cálculo creada tiene una sola hoja. El modo más sencillo de añadir una hoja nueva es hacer clic en el botón <img alt="Botón Más" src="../images/plus.png" /> a la derecha de los botones de <b>Navegación de hoja</b> en la esquina izquierda inferior.</p>
+			<p>Otro modo de <b>añadir una hoja</b>:</p>
+			<ol>
+			<li>haga clic derecho en la pestaña de hoja después de la que usted quiere insertar una hoja nueva,</li>
+			<li>seleccione la opción <b>Insertar</b> en el menú contextual.</li>
+			</ol>
+			<p>Una hoja nueva se insertará después de la seleccionada.</p>
+			<p><b>Para activar la hoja necesaria</b> use las pestañas de hojas en la esquina izquierda inferior.</p>
+			<p class="note"><b>Nota</b>: si tiene muchas hojas que buscar use los botones de <b>Navegación por hojas</b> que se sitúan en la esquina izquierda inferior.</p>
+			<p><b>Para borrar una hoja innecesaria:</b></p>
+			<ol>
+				<li>haga clic derecho en la pestaña de hoja que usted quiere borrar,</li>
+				<li>seleccione la opción <b>Borrar</b> del menú contextual.</li>
+			</ol>
+			<p>Una hoja seleccionada será borrada de la hoja de cálculo actual.</p>
+			<p><b>Para cambiar de nombre a una hoja existente:</b></p>
+			<ol>
+				<li>haga clic derecho en la pestaña de hoja a la que usted quiere cambiar el nombre,</li>
+				<li>seleccione la opción <b>Cambiar de nombre</b> del menú contextual,</li>
+				<li>introduzca <b>Nombre de hoja</b> en el cuadro de diálogo y pulse <b>OK</b>.</li>
+			</ol>
+			<p>El nombre de la hoja seleccionada se cambiará.</p>
+			<p><b>Para copiar una hoja existente:</b></p>
+			<ol>
+				<li>haga clic derecho en la pestaña de hoja que usted quiere copiar,</li>
+				<li>seleccione la opción <b>Copiar</b> del menú contextual,</li>
+				<li>seleccione una hoja antes de la que usted quiere para insertar una hoja copiada o use la opción <b>Copiar al final</b> para insertar la hoja copiada después de  todas las hojas existentes,</li>
+				<li>pulse el botón <b>OK</b> para confirmar su elección.</li>
+			</ol>
+			<p>La hoja elegida será copiada e insertada en el lugar seleccionado.</p>
+			<p><b>Para desplazar una hoja existente:</b></p>
+			<ol>
+				<li>haga clic derecho en la pestaña de hoja que usted quiere desplazar,</li>
+				<li>seleccione la opción <b>Mover</b> del menú contextual,</li>
+				<li>seleccione una hoja antes de la que usted quiere para insertar una hoja seleccionada o use la opción <b>Mover al final</b> para desplazar la hoja seleccionada después de todas las hojas existentes,</li>
+				<li>pulse el botón <b>OK</b> para confirmar su elección.</li>
+			</ol>
+			<p>O <b>arrastre</b> la pestaña de hoja necesaria y <b>suéltela</b> en una ubicación nueva. La hoja seleccionada será desplazada.</p>
+			<p>Si tiene muchas hojas, usted puede ocultar las que no son necesarias en ese momento para facilitar su trabajo. Para hacerlo,</p>
+			<ol>
+				<li>haga clic derecho en la pestaña de hoja que usted quiere ocultar,</li>
+				<li>seleccione la opción <b>Ocultar</b> del menú contextual,</li>
+			</ol>
+			<p><b>Para mostrar la pestaña de hoja ocultada</b>, haga clic derecho en cualquier pestaña, abra la lista <b>Ocultado</b> y seleccione una hoja de cálculo que usted quiere mostrar.</p>
+			<p>Para diferenciar las hojas usted puede <b>asignar colores diferentes a las pestañas</b>. Para hacerlo,</p>
+			<ol>
+				<li>haga clic derecho en la pestaña que quiere colorear,</li>
+                <li>seleccione la opción <b>Color de pestaña</b> en el menú contextual,</li>
+				<li>seleccione el color necesario de las paletas disponibles<p><img alt="Paleta" src="../images/palette.png" /></p>
+					<ul>
+						<li><b>Colores de tema</b> - los colores que corresponden a la combinación de colores de la hoja de cálculo.</li>
+						<li><b>Colores estándar</b> - el conjunto de colores predeterminado.</li>
+						<li><b>Color personalizado</b> - pulse este enlace si en las paletas disponibles no encuentra el color necesario. Seleccione el rango de colores necesario moviendo el deslizante de color vertical y establezca el color arrastrando el selector de color dentro del campo de color cuadrado. Una vez seleccionado un color, usted verá los valores RGB y sRGB correspondientes en los campos a la derecha. Usted también puede especificar un color basándose en el modelo de color RGB introduciendo necesarios valores numéricos en los campos <b>R</b>, <b>G</b>, <b>B</b> (red-rojo, green-verde, blue-azul) o introduzca el código hexadecimal sRGB en el campo marcado con el signo <b>#</b>. El color seleccionado se mostrará en el rectángulo <b>Nuevo</b>. Si el objeto se rellenó de un colo personalizado, este color se muestra en el rectángulo <b>Actual</b> para que usted pueda comparar los colores originales con los modificados. Una vez especificado el color, pulse el botón <b>Añadir</b>:<p><img alt="Paleta - Color personalizado" src="../images/palette_custom.png" /></p>
+						<p>El color personalizado se aplicará a la pestaña seleccionada y se añadirá a la paleta <b>Color personalizado</b>.</p>
+						</li>
+						</ul>
+					</li>
+			</ol>
+		</div>
+	</body>
+</html>

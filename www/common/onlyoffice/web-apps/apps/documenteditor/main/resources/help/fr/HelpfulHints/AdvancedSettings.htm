@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Paramètres avancés de Document Editor</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="The advanced settings of Document Editor" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Paramètres avancés de Document Editor</h1>
+        <p><b>Document Editor</b> vous permet de modifier ses paramètres avancés. Pour y accéder, cliquez sur l'onglet <b>Fichier</b> dans la barre d'outils supérieure et sélectionnez l'option <b>Paramètres avancés...</b>. Vous pouvez également utiliser l'icône <img alt="Paramètres avancés" src="../images/advanced_settings_icon.png" /> dans le coin supérieur droit de l'onglet <b>Accueil</b> de la barre d'outils supérieure.</p>
+        <p>Les paramètres avancés sont les suivants :</p>
+        <ul>
+            <li><b>Commentaires en temps réel</b> sert à activer / désactiver les commentaires en temps réel.<ul>
+                <li><b>Activer l'affichage des commentaires</b> - si cette option est désactivée, les passages commentés seront mis en surbrillance uniquement si vous cliquez sur l'icône <b>Commentaires</b> <img alt="Icône Commentaires" src="../images/commentsicon.png" /> de la barre latérale gauche.</li>
+                <li><b>Activer l'affichage des commentaires résolus</b> - si vous désactivez cette fonctionnalité, les commentaires résolus seront masqués dans le texte du document. Vous ne pourrez voir ces commentaires que si vous cliquez sur l'icône <b>Commentaires</b> <img alt="Icône Commentaires" src="../images/commentsicon.png" /> dans la barre latérale de gauche.</li>
+            </ul>
+            </li>
+            <li><b>Vérification orthographique</b> sert à activer/désactiver la vérification orthographique.</li>
+            <li><b>Entrée alternative</b> sert à activer / désactiver les hiéroglyphes.</li>
+            <li><b>Guides d'alignement</b> est utilisé pour activer/désactiver les guides d'alignement qui apparaissent lorsque vous déplacez des objets et vous permettent de les positionner précisément sur la page.</li>
+            <li class="onlineDocumentFeatures"><b>Enregistrement automatique</b> sert à spécifier la fréquence de l'enregistrement des changements apportés lors de l'édition.</li>
+            <li class="onlineDocumentFeatures"><b>Mode de co-édition</b> permet de sélectionner l'affichage des modifications effectuées lors de la co-édition :<ul>
+                    <li>Par défaut, le mode <b>Rapide</b> est sélectionné, les utilisateurs qui participent à la co-édition du document verront les changements en temps réel tandis qu'ils sont faits par d'autres utilisateurs.</li>
+                    <li>Si vous préférez ne pas voir les changements des autres utilisateurs (pour ne pas vous déranger, ou pour toute autre raison), sélectionnez le mode <b>Strict</b> et tous les changements apparaîtront seulement après que vous ayez cliqué sur l'icône <b>Enregistrer</b> <img alt="Icône Enregistrer" src="../images/saveupdate.png" /> pour vous informer que d'autres utilisateurs ont effectué des changements.</li>
+                </ul>
+            </li>
+            <li class="onlineDocumentFeatures"><b>Changements de collaboration en temps réel</b> sert à spécifier quels sont les changements que vous souhaitez mettre en surbrillance lors de l'édition collaborative :<ul>
+                    <li>En sélectionnant <b>N'afficher aucune modification</b>, aucune des modifications effectuées au cours de la session ne sera mise en surbrillance.</li>
+                    <li>L'option <b>Tout</b> sélectionnée, toutes les modifications effectuées au cours de la session seront mises en surbrillance.</li>
+                    <li>En sélectionnant <b>Afficher les modifications récentes</b>, seules les modifications effectuées depuis la dernière fois que vous avez cliqué sur l'icône <b>Enregistrer</b> <img alt="Icône Enregistrer" src="../images/saveupdate.png" /> seront mises en surbrillance. Cette option n'est disponible que lorsque le mode <b>Strict</b> est sélectionné.</li>
+                </ul>
+            </li>
+            <li><b>Valeur du zoom par défaut</b> sert à définir la valeur de zoom par défaut en la sélectionnant de la liste des options disponibles de 50% à 200%. Vous pouvez également choisir l'option <b>Ajuster à la page</b> ou <b>Ajuster à la largeur</b>.</li>
+            <li><b>Hinting</b> sert à sélectionner le type d'affichage de la police dans Document Editor :<ul>
+                    <li>Choisissez <b>comme Windows</b> si vous aimez la façon dont les polices sont habituellement affichées sous Windows, c'est à dire en utilisant la police de Windows.</li>
+                    <li>Choisissez <b>comme OS X</b> si vous aimez la façon dont les polices sont habituellement affichées sous Mac, c'est à dire sans hinting.</li>
+                    <li>Choisissez <b>Natif</b> si vous voulez que votre texte sera affiché avec les hintings intégrés dans les fichiers de polices.</li>
+                </ul>
+            </li>
+            <li><b>Unité de mesure</b> sert à spécifier les unités de mesure utilisées sur les règles et dans les fenêtres de paramètres pour les paramètres tels que largeur, hauteur, espacement, marges etc. Vous pouvez choisir l'option <b>Centimètre</b> ou <b>Point</b>.</li>
+        </ul>
+        <p>Pour enregistrer les paramètres modifiés, cliquez sur le bouton <b>Appliquer</b>.</p>
+    </div>
+</body>
+</html>

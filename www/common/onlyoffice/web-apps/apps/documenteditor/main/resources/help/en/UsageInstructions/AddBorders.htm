@@ -5,9 +5,14 @@
 		<meta charset="utf-8" />
 		<meta name="description" content="Add borders to your document selecting their style" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
 			<h1>Add borders</h1>
 			<p>To add borders to a paragraph, page, or the whole document,</p>
 			<ol>

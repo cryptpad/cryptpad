@@ -972,16 +972,22 @@ define([
                     if (!data) { return; }
                     // Don't pin pads owned by someone else
                     if (_ownedByOther(Env, data.owners)) { return; }
-                    // Don't push duplicates
+                    // Pin onlyoffice checkpoints
                     if (data.lastVersion) {
                         var otherChan = Hash.hrefToHexChannelId(data.lastVersion);
                         if (result.indexOf(otherChan) === -1) {
                             result.push(otherChan);
                         }
                     }
+                    // Pin onlyoffice realtime patches
                     if (data.rtChannel && result.indexOf(data.rtChannel) === -1) {
                         result.push(data.rtChannel);
                     }
+                    // Pin onlyoffice images
+                    if (data.ooImages && Array.isArray(data.ooImages)) {
+                        Array.prototype.push.apply(result, data.ooImages);
+                    }
+                    // Pin the pad
                     if (result.indexOf(data.channel) === -1) {
                         result.push(data.channel);
                     }

@@ -66,8 +66,14 @@ define([
             $files.on('change', function (e) {
                 var file = e.target.files[0];
                 var reader = new FileReader();
-                reader.onload = function (e) { f(e.target.result, file); };
-                reader.readAsText(file, type);
+                var parsed = file && file.name && /.+\.([^.]+)$/.exec(file.name);
+                var ext = parsed && parsed[1];
+                reader.onload = function (e) { f(e.target.result, file, ext); };
+                if (cfg && cfg.binary && cfg.binary.indexOf(ext) !== -1) {
+                   reader.readAsArrayBuffer(file, type);
+                } else {
+                   reader.readAsText(file, type);
+               }
             });
         };
     };
@@ -1978,9 +1984,10 @@ define([
                     // Old import button, used in settings
                     button
                     .click(common.prepareFeedback(type))
-                    .click(importContent('text/plain', function (content, file) {
-                        callback(content, file);
-                    }, {accept: data ? data.accept : undefined}));
+                    .click(importContent((data && data.binary) ? 'application/octet-stream' : 'text/plain', callback, {
+                        accept: data ? data.accept : undefined,
+                        binary: data ? data.binary : undefined
+                    }));
                 //}
                 break;
             case 'upload':

@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Créer des listes</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Create bulleted and numbered lists in the document changing the lists outline" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Créer des listes</h1>
+			<p>Pour créer une liste dans votre document,</p>
+			<ol>
+				<li>placez le curseur à la position où vous voulez commencer la liste ( une nouvelle ligne ou le texte déjà saisi),</li>
+                <li>passez à l'onglet <b>Accueil</b> de la barre d'outils supérieure,</li>
+				<li>sélectionnez le type de liste à créer :<ul>
+						<li><b>Liste à puces</b> avec des marqueurs. Pour la créer, utilisez l'icône <b>Puces</b> <img alt="Icône Liste à puces" src="../images/bullets.png" /> de la barre d'outils supérieure</li>
+						<li><b>Liste numérotée</b> avec des chiffres ou des lettres. Pour la créer, utilisez l'icône <b>Numérotation</b> <img alt="Icône Liste numérotée" src="../images/numbering.png" /> de la barre d'outils supérieure<p class="note"><b>Remarque</b> : cliquez sur la flèche vers le bas à côté de l'icône <b>Puces</b> ou <b>Numérotation</b> pour sélectionner le format de puces ou de numérotation souhaité.</p>
+						</li>
+					</ul>
+				</li>
+				<li>appuyez sur la touche <b>Entrée</b> à la fin de la ligne pour ajouter un nouvel élément à la liste. Pour terminer la liste, appuyez sur la touche <b>Retour arrière</b> et continuez le travail.</li>
+			</ol>
+            <p>Le programme crée également des listes numérotées automatiquement lorsque vous entrez le chiffre 1 avec un point ou une parenthèse suivis d’un espace : <b>1.</b>, <b>1)</b>. Les listes à puces peuvent être créées automatiquement lorsque vous saisissez les caractères <b>-</b>, <b>*</b> suivis d’un espace.</p>
+            <p>Vous pouvez aussi changer le retrait du texte dans les listes et leur imbrication en utilisant les icônes <b>Liste multi-niveaux</b> <img alt="Icône Liste multi-niveaux" src="../images/outline.png" />, <b>Réduire le retrait</b> <img alt="Réduire le retrait" src="../images/decreaseindent.png" />, et <b>Augmenter le retrait</b> <img alt="Augmenter le retrait" src="../images/increaseindent.png" /> sur la barre d'outils supérieure.</p>
+			<p class="note"><b>Remarque</b>: les paramètres supplémentaires du retrait et de l'espacemente peuvent être modifiés à l'aide de la barre latérale droite et la fenêtre des paramètres avancés. Pour en savoir plus, consultez les pages <a href="ParagraphIndents.htm" onclick="onhyperlinkclick(this)">Modifier le retrait des paragraphes</a> et <a href="LineSpacing.htm" onclick="onhyperlinkclick(this)">Régler l'interligne du paragraphe</a>.</p>
+
+            <h3>Joindre et séparer des listes</h3>
+            <p>Pour joindre une liste à la précédente :</p>
+            <ol>
+                <li>cliquez avec le bouton droit sur le premier élément de la seconde liste,</li>
+                <li>utilisez l'option <b>Joindre à la liste précédente</b> du menu contextuel.</li>
+            </ol>
+            <p>Les listes seront jointes et la numérotation se poursuivra conformément à la numérotation de la première liste.</p>
+
+            <p>Pour séparer une liste :</p>
+            <ol>
+                <li>cliquez avec le bouton droit de la souris sur l'élément de la liste où vous voulez commencer une nouvelle liste,</li>
+                <li>sélectionnez l'option <b>Séparer la liste</b> du menu contextuel.</li>
+            </ol>
+            <p>La liste sera séparée et la numérotation dans la deuxième liste recommencera.</p>
+
+            <h3>Modifier la numérotation</h3>
+            <p>Poursuivre la numérotation séquentielle dans la deuxième liste selon la numérotation de la liste précédente :</p>
+            <ol>
+                <li>cliquez avec le bouton droit sur le premier élément de la seconde liste,</li>
+                <li>sélectionnez l'option <b>Continuer la numérotation</b> du menu contextuel.</li>
+            </ol>
+            <p>La numérotation se poursuivra conformément à la numérotation de la première liste.</p>
+
+            <p>Pour définir une certaine valeur initiale de numérotation :</p>
+            <ol>
+                <li>cliquez avec le bouton droit de la souris sur l'élément de la liste où vous souhaitez appliquer une nouvelle valeur de numérotation,</li>
+                <li>sélectionnez l'option <b>Définit la valeur de la numérotation</b> du menu contextuel,</li>
+                <li>dans une nouvelle fenêtre qui s'ouvre, définissez la valeur numérique voulue et cliquez sur le bouton <b>OK</b>.</li>
+            </ol>
+		</div>
+	</body>
+</html>

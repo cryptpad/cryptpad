@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>FORECAST.ETS.CONFINT Function</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>FORECAST.ETS.CONFINT Function</h1>
+			<p>The <b>FORECAST.ETS.CONFINT</b> function is one of the statistical functions. It is used to return a confidence interval for the forecast value at the specified target date.</p>
+			<p>The <b>FORECAST.ETS.CONFINT</b> function syntax is:</p> 
+			<p style="text-indent: 150px;"><b><em>FORECAST.ETS.CONFINT(target_date, values, timeline, [confidence_level], [seasonality], [data_completion], [aggregation])</em></b></p> 
+			<p><em>where</em></p>
+				<p style="text-indent: 50px;"><b><em>target_date</em></b> is a date for which you want to predict a new value. Must be after the last date in the <b><em>timeline</em></b>.</p>
+				<p style="text-indent: 50px;"><b><em>values</em></b> is a range of the historical values for which you want to predict a new point.</p>
+                <p style="text-indent: 50px;"><b><em>timeline</em></b> is a range of date/time values that correspond to the historical values. The <b><em>timeline</em></b> range must be of the same size as the <b><em>values</em></b> range. Date/time values must have a constant step between them (although up to 30% of missing values can be processed as specified by the <b><em>data_completion</em></b> argument and duplicate values can be aggregated as specified by the <b><em>aggregation</em></b> argument).</p>
+                <p style="text-indent: 50px;"><b><em>confidence_level</em></b> is a numeric value between 0 and 1 (exclusive) that specifies the confidence level for the calculated confidence interval. It is an optional argument. If it is omitted, the default value of 0.95 is used.</p>
+                <p style="text-indent: 50px;"><b><em>seasonality</em></b> is a numeric value that specifies which method should be used to detect the seasonality. It is an optional argument. The possible values are listed in the table below.</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Numeric value</b></td>
+                    <td><b>Behavior</b></td>
+                </tr>
+                <tr>
+                    <td>1 or omitted</td>
+                    <td>Seasonality is detected automatically. Positive, whole numbers are used for the length of the seasonal pattern.</td>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>No seasonality, the prediction will be linear.</td>
+                </tr>
+                <tr>
+                    <td>an integer greater than or equal to 2</td>
+                    <td>The specified number is used for the length of the seasonal pattern.</td>
+                </tr>
+            </table>
+                <p style="text-indent: 50px;"><b><em>data_completion</em></b> is a numeric value that specifies how to process the missing data points in the <b><em>timeline</em></b> data range. It is an optional argument. The possible values are listed in the table below.</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Numeric value</b></td>
+                    <td><b>Behavior</b></td>
+                </tr>
+                <tr>
+                    <td>1 or omitted</td>
+                    <td>Missing points are calculated as the average of the neighbouring points.</td>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>Missing points are treated as zero values.</td>
+                </tr>
+            </table>
+                <p style="text-indent: 50px;"><b><em>aggregation</em></b> is a numeric value that specifies which function should be used to aggregate identical time values in the <b><em>timeline</em></b> data range. It is an optional argument. The possible values are listed in the table below.</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Numeric value</b></td>
+                    <td><b>Function</b></td>
+                </tr>
+                <tr>
+                    <td>1 or omitted</td>
+                    <td><a href="../Functions/average.htm" onclick="onhyperlinkclick(this)">AVERAGE</a></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td><a href="../Functions/count.htm" onclick="onhyperlinkclick(this)">COUNT</a></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td><a href="../Functions/counta.htm" onclick="onhyperlinkclick(this)">COUNTA</a></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td><a href="../Functions/max.htm" onclick="onhyperlinkclick(this)">MAX</a></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td><a href="../Functions/median.htm" onclick="onhyperlinkclick(this)">MEDIAN</a></td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td><a href="../Functions/min.htm" onclick="onhyperlinkclick(this)">MIN</a></td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td><a href="../Functions/sum.htm" onclick="onhyperlinkclick(this)">SUM</a></td>
+                </tr>
+            </table> 
+			<p>To apply the <b>FORECAST.ETS.CONFINT</b> function,</p>
+			<ol>
+			<li>select the cell where you wish to display the result,</li>
+			<li>click the <b>Insert function</b> <img alt="Insert function icon" src="../images/insertfunction.png" /> icon situated at the top toolbar,
+				<br />or right-click within a selected cell and select the <b>Insert Function</b> option from the menu,
+				<br />or click the <img alt="Function icon" src="../images/function.png" /> icon situated at the formula bar,
+			</li>
+			<li>select the <b>Statistical</b> function group from the list,</li>
+			<li>click the <b>FORECAST.ETS.CONFINT</b> function,</li>
+			<li>enter the required arguments separating them by commas,</li>
+			<li>press the <b>Enter</b> button.</li>
+			</ol>
+			<p>The result will be displayed in the selected cell.</p>
+			<p style="text-indent: 150px;"><img alt="FORECAST.ETS.CONFINT Function" src="../images/forecast-ets-confint.png" /></p>
+		</div>
+	</body>
+</html>

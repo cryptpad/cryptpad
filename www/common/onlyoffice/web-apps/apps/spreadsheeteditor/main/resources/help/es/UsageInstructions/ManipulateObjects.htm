@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Maneje objetos</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Move, rotate, resize, reshape and arrange autoshapes, images, charts." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Maneje objetos</h1>
+			<p>Usted puede cambiar el tamaño, desplazar, girar y organizar autoformas, imágenes y gráficos insertados en su hoja de cálculo.</p>
+			<h3>Cambiar el tamaño de objetos</h3>
+			<p>Para cambiar el <b>tamaño</b> de autoforma/imagen/gráfico, arrastre los pequeños cuadrados <img alt="Icono cuadrado" src="../images/resize_square.png" /> situados en los bordes de la imagen/autoforma. Para mantener las proporciones originales del objeto seleccionado mientras cambia de tamaño, mantenga apretada la tecla <b>Shift</b> y arrastre uno de los iconos de las esquinas.</p>
+			<p class="note"><b>Nota</b>: para cambiar el tamaño del gráfico o imagen insertado usted también puede usar la derecha barra lateral que se activará cuando seleccione el objeto necesario. Para abrirla, pulse el icono <b>Ajustes de gráfico</b> <img alt="Icono ajustes de gráfico" src="../images/chartsettingsicon.png" /> o <b>Ajustes de imagen</b> <img alt="Icono Ajustes de imagen" src="../images/image_settings_icon.png" /> a la derecha.<p><img alt="Mantener proporciones" src="../images/maintain_proportions.png" /></p>
+			<h3>Mueve objetos</h3>
+			<p>Para cambiar la <b>posición</b> de autoforma/imagen/gráfico, utilice el icono <img alt="Flecha" src="../images/arrow.png" /> que aparece si mantiene cursor de su ratón sobre el objeto. Arrastre el objeto a la posición necesaria sin soltar el botón de ratón. Para desplazar el objeto en incrementos de un píxel, mantenga apretada la tecla <b>Ctrl</b> y use las flechas en el teclado. Para desplazar los objetos horizontalmente o verticalmente, y para que no se muevan en una dirección perpendicular, mantenga la tecla <b>Shift</b> apretada al arrastrar el objeto.</p>
+			<h3>Gire objetos</h3>
+			<p>Para <b>girar</b> la autoforma/imagen, mantenga el cursor del ratón sobre el controlador de giro <img alt="Controlador de giro" src="../images/greencircle.png" /> y arrástrelo en la dirección de las agujas del reloj o en el sentido contrario. Para limitar el ángulo de rotación hasta un incremento de 15 grados, mantenga apretada la tecla <b>Shift</b> mientras rota.</p>
+			<h3>Cambie forma de autoformas</h3>
+			<p>Al modificar unas formas, por ejemplo flechas o llamadas, puede notar el icono rombo amarillo <img alt="Icono rombo amarillo" src="../images/yellowdiamond.png" />. Le permite ajustar unos aspectos de forma, por ejemplo, la longitud de la punta de flecha.</p>
+			<p><img alt="Cambiar una autoforma" src="../images/reshaping.png" /></p>
+            <h3>Alinear objetos</h3>
+            <p>Para <b>alinear</b> los objetos seleccionados en relación a sí mismos, mantenga pulsada la tecla <b>Ctrl</b> mientras selecciona los objetos con el ratón, luego haga clic en el icono <img alt="Icono Alinear" src="../images/align_toptoolbar.png" /> <b>Alinear</b> en la pestaña <b>Diseño</b> en la barra de herramientas superior y seleccione el tipo de alineación requerida de la lista:</p>
+            <ul>
+                <li><b>Alinear a la Izquierda</b> <img alt="Icono alinear a la izquierda" src="../images/alignobjectleft.png" /> - para alinear los objetos del lado izquierdo en relación a sí mismos,</li>
+                <li><b>Alinear al Centro </b> <img alt="Icono alinear al centro" src="../images/alignobjectcenter.png" /> - para alinear los objetos por su centro en relación a sí mismos,</li>
+                <li><b>Alinear a la Derecha</b> <img alt="Icono alinear a la derecha" src="../images/alignobjectright.png" /> - para alinear los objetos del lado derecho en relación a sí mismos,</li>
+                <li><b>Alinear Arriba</b> <img alt="Icono Alinear arriba" src="../images/alignobjecttop.png" /> - para alinear los objetos por el lado superior en relación a sí mismos,</li>
+                <li><b>Alinear al Medio </b> <img alt="Icono Alinear al medio" src="../images/alignobjectmiddle.png" /> - para alinear los objetos por el medio en relación a sí mismos,</li>
+                <li><b>Alinear al Fondo</b> <img alt="Icono Alinear abajo" src="../images/alignobjectbottom.png" /> - para alinear los objetos por el lado inferior en relación a sí mismos.</li>
+            </ul>
+            <h3>Agrupe varios objetos</h3>
+            <p>Para manejar varios objetos a la vez, usted puede <b>agrupar</b>los. Mantenga pulsada la tecla <b>Ctrl</b> mientras selecciona los objetos con el ratón, luego haga clic en la flecha junto al icono <img alt="Icono Agrupar" src="../images/group_toptoolbar.png" /> <b>Agrupar</b> en la pestaña <b>Diseño</b> en la barra de herramientas superior y seleccione la opción necesaria en la lista:</p>
+            <ul>
+                <li><b>Agrupar</b>  - para unir varios objetos al grupo para que sea posible girarlos, desplazarlos, cambiar el tamaño y formato, alinearlos, arreglarlos, copiarlos y pegarlos como si fuera un solo objeto.</li>
+                <li><b>Desagrupar</b> <img alt="Icono Desagrupar" src="../images/ungroup.png" /> - para desagrupar el grupo de los objetos previamente seleccionados.</li>
+            </ul>
+            <p>También puede hacer clic derecho en los objetos seleccionados y escoger la opción <b>Agrupar</b> o <b>Desagrupar</b> del menú contextual.</p>
+            <p><img alt="Agrupe varios objetos" src="../images/grouping.png" /></p>
+            <h3 id="arrange">Organizar varios objetos</h3>
+            <p>Para <b>organizar</b> objetos (por ejemplo cambiar su orden cuando unos objetos sobreponen uno al otro), pulse los <img alt="Icono Traer adelante" src="../images/bringforward_toptoolbar.png" /> iconos <b>Adelantar</b> y <img alt="Icono Mandar atrás" src="../images/sendbackward_toptoolbar.png" />  <b>Enviar atrás</b> en la barra de herramientas superior de <b>Diseño</b> y seleccione el tipo de disposición necesaria en la lista:</p>
+            <p>Para mover el (los) objeto(s) seleccionado(s) hacia delante, haga clic en el <img alt="Icono Traer adelante" src="../images/bringforward_toptoolbar.png" /> icono <b>Mover hacia delante</b> en la barra de herramientas superior de <b>Formato</b> y seleccione el tipo de organización necesaria de la lista:</p>
+            <ul>
+                <li><b>Traer al frente</b> <img alt="Icono Traer al frente" src="../images/bringtofront.png" /> - para desplazar el objeto (o varios objetos) delante de los otros,</li>
+                <li><b>Traer adelante</b> <img alt="Icono Traer adelante" src="../images/bringforward.png" /> - para desplazar el objeto (o varios objetos) en un punto hacia delante de otros objetos.</li>
+            </ul>
+            <p>Para mover el (los) objeto(s) seleccionado(s) hacia detrás, haga clic en la flecha de al lado del <img alt="Icono Enviar atrás" src="../images/sendbackward_toptoolbar.png" /> icono <b>Mover hacia detrás</b> en la pestaña <b>Formato</b> en la barra de herramientas superior y seleccione el tipo de organización necesaria en la lista:</p>
+            <ul>
+                <li><b>Enviar al fondo</b>  <img alt="Icono Enviar al fondo" src="../images/sendtoback.png" />- para desplazar el objeto (o varios objetos) detrás de los otros,</li>
+                <li><b>Enviar atrás</b> <img alt="Icono Enviar atrás" src="../images/sendbackward.png" /> - para desplazar el objeto (o varios objetos) en un punto hacia atrás de otros objetos.</li>
+            </ul>			
+		</div>
+	</body>
+</html>

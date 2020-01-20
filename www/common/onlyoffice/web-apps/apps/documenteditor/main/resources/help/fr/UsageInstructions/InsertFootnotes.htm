@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insérer les notes de bas de page</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Insert footnotes to provide explanations for some terms or make references to the sources" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insérer les notes de bas de page</h1>
+            <p>Vous pouvez ajouter des notes de bas de page pour fournir des explications ou des commentaires sur certaines phrases ou termes utilisés dans votre texte, faire des références aux sources, etc.</p>
+			<p>Pour insérer une note de bas de page dans votre document,</p>
+			<ol>
+                <li>positionnez le point d'insertion à la fin du passage de texte auquel vous souhaitez ajouter une note de bas de page,</li>
+                <li>passez à l'onglet <b>Références</b> de la barre d'outils supérieure,</li>
+				<li>cliquez sur l'icône <img alt="Icône note de bas de page" src="../images/addfootnote.png" /> <b>Note de bas de page</b> dans la barre d'outils supérieure ou<br/> cliquez sur la flèche en regard de l'icône  et sélectionnez l'option  dans le menu,<p>La marque de note de bas de page (c'est-à-dire le caractère en exposant qui indique une note de bas de page) apparaît dans le texte du document et le point d'insertion se déplace vers le bas de la page actuelle.</p>
+                </li>
+				<li>tapez le texte de la note de bas de page.</li>
+			</ol>
+            <p>Répétez les opérations mentionnées ci-dessus pour ajouter les notes de bas de page suivantes à d'autres passages de texte dans le document. Les notes de bas de page sont numérotées automatiquement.</p>
+            <p><img alt="Notes de bas de page" src="../images/footnotesadded.png" /></p>
+            <p>Si vous placez le pointeur de la souris sur la marque de la note de bas de page dans le texte du document, une petite fenêtre contextuelle avec le texte de la note apparaît.</p>
+            <p><img alt="Texte de la note" src="../images/footnotetext.png" /></p>
+            <p>Pour naviguer facilement entre les notes de bas de page ajoutées dans le texte du document,</p>
+            <ol>
+                <li>cliquez sur la flèche à côté de l'icône <img alt="Icône Note de bas de page" src="../images/addfootnote.png" /> <b>Note de bas de page</b> dans l'onglet <b>Références</b> de la barre d'outils supérieure,</li>
+                <li>dans la section <b>Aller aux notes de bas de page</b>, utilisez la flèche <img alt="icône note de bas de page suivante" src="../images/previousfootnote.png" /> pour accéder à la note de bas de page précédente ou la flèche <img alt="icône note de bas de page précédente" src="../images/nextfootnote.png" /> pour accéder à la note de bas de page suivante.</li>
+            </ol>
+            <hr />
+			<p>Pour modifier les paramètres des notes de bas de page,</p>
+			<ol>
+				<li>cliquez sur la flèche à côté de l'icône <img alt="Icône Note de bas de page" src="../images/addfootnote.png" /> <b>Note de bas de page</b> dans l'onglet <b>Références</b> de la barre d'outils supérieure,</li>
+                <li>sélectionnez l'option <b>Paramètres des notes</b> du menu contextuel,</li>
+				<li>changez les paramètres actuels dans la fenêtre <b>Paramètres de Notes</b> qui s'ouvre :<p><img alt="Fenêtre Paramètres d'impression" src="../images/footnotes_settings.png" /></p>
+				<ul>
+				<li>Définissez l'<b>Emplacement</b> des notes de bas de page sur la page en sélectionnant l'une des options disponibles :<ul>
+                        <li><b>Bas de la page</b> - pour positionner les notes de bas de page au bas de la page (cette option est sélectionnée par défaut).</li>
+                        <li><b>Sous le texte</b> - pour positionner les notes de bas de page plus près du texte. Cette option peut être utile dans les cas où la page contient un court texte.</li>
+                    </ul>
+                </li>
+                <li>Ajuster le <b>Format</b> des notes de bas de page :<ul>
+                        <li><b>Format de numérotation</b> - sélectionnez le format de numérotation voulu parmi ceux disponibles : <em>1, 2, 3,...</em>, <em>a, b, c,...</em>, <em>A, B, C,...</em>, <em>i, ii, iii,...</em>, <em>I, II, III,...</em>.</li>
+                        <li><b>Commencer par</b> - utilisez les flèches pour définir le numéro ou la lettre par laquelle vous voulez commencer à numéroter.</li>
+                        <li><b>Numérotation</b> - sélectionnez un moyen de numéroter vos notes de bas de page :<ul>
+                            <li><b>Continu</b> - pour numéroter les notes de bas de page de manière séquentielle dans tout le document,</li>
+                            <li><b>Redémarrer à chaque section</b> - pour commencer la numérotation des notes de bas de page avec le numéro 1 (ou un autre caractère spécifié) au début de chaque section,</li>
+                            <li><b>Redémarrer à chaque page</b> - pour commencer la numérotation des notes de bas de page avec le numéro 1 (ou un autre caractère spécifié) au début de chaque page.</li>
+                        </ul>
+                        </li>
+                        <li><b>Marque personnalisée</b> - définissez un caractère spécial ou un mot que vous souhaitez utiliser comme marque de note de bas de page (par exemple, * ou Note1). Entrez le caractère/mot choisie dans le champ de saisie de texte et cliquez sur le bouton <b>Insérer</b> en bas de la fenêtre <b>Paramètres de Notes</b>.</li>
+                    </ul>
+                </li>
+                <li>Utilisez la liste déroulante <b>Appliquer les modifications à</b> pour sélectionner si vous souhaitez appliquer les paramètres de notes spécifiés au <b>Document entier</b> ou à la <b>Section en cours</b> uniquement.<p class="note"><b>Remarque</b> : pour utiliser différentes mises en forme de notes de bas de page dans des parties distinctes du document, vous devez d'abord ajouter des <a href="../UsageInstructions/SectionBreaks.htm" onclick="onhyperlinkclick(this)">sauts de section</a>.</p>
+                </li>
+				</ul>
+				</li>
+                <li>Lorsque vous êtes prêt, cliquez sur le bouton <b>Appliquer</b>.</li>
+			</ol>
+            
+            <hr />
+            <p>Pour supprimer une seule note de bas de page, positionnez le point d'insertion directement avant le repère de note de bas de page dans le texte du document et appuyez sur <b>Suppr</b>. Les autres notes de bas de page seront automatiquement renumérotées.</p>
+            <p>Pour supprimer toutes les notes de bas de page du document,</p>
+            <ol>
+                <li>cliquez sur la flèche à côté de l'icône <img alt="Icône Note de bas de page" src="../images/addfootnote.png" /> <b>Note de bas de page</b> dans l'onglet <b>Références</b> de la barre d'outils supérieure,</li>
+                <li>sélectionnez l'option <b>Supprimer toutes les notes</b> du menu contextuel,</li>
+            </ol>
+		</div>
+	</body>
+</html>

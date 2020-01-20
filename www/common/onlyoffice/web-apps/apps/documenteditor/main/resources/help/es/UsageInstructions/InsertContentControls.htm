@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insertar controles de contenido</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Insert content controls to create a form with input fields that can be filled in by other users, or protect some parts of the document from being edited or deleted" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insertar controles de contenido</h1>
+            <p>Utilizar los controles de contenido puede crear un formulario con campos de entrada que pueden ser rellenados por otros usuarios, o proteger algunas partes del documento para que no sean editadas o eliminadas. Los controles de contenido son objetos que contienen texto que se puede formatear. Los controles de contenido de texto sin formato no pueden contener más de un párrafo, mientras que los controles de contenido de texto enriquecido pueden contener varios párrafos, listas y objetos (imágenes, formas, tablas, etc.).</p>
+			<h3>Insertar controles de contenido</h3>
+            <p>Para crear un nuevo <b>control de contenido de texto simple</b>,</p>
+            <ol>
+                <li>posicione el punto de inserción dentro de una línea del texto donde desea que se añada el control, <br />o seleccione un pasaje de texto que desee que se convierta en el control del contenido.</li>
+                <li>cambie a la pestaña <b>Insertar</b> en la barra de herramientas superior,</li>
+                <li>haga clic en la flecha al lado del icono <img alt="Icono de controles de contenido" src="../images/insertccicon.png" /> <b>Controles de contenido</b>.</li>
+                <li>escoja la opción <b>Insertar control de contenido de texto simple</b> del menú.</li>
+            </ol>
+            <p>El control se insertará en el punto de inserción dentro de una línea del texto existente. Los controles de contenido del texto plano no permiten añadir saltos de línea y no pueden contener otros objetos como imágenes, tablas, etc.</p>
+            <p><img alt="Control de contenido de texto nuevo simple" src="../images/addedcontentcontrol.png" /></p>
+            <p>Para crear un nuevo <b>control de contenido de texto enriquecido</b>,</p>
+            <ol>
+                <li>posicione el punto de inserción al final de un párrafo después del que desee que se añada el control, <br />o seleccione uno o más de los pasajes de texto existentes que desea que se conviertan en el control del contenido.</li>
+                <li>cambie a la pestaña <b>Insertar</b> en la barra de herramientas superior,</li>
+                <li>haga clic en la flecha al lado del icono <img alt="Icono de controles de contenido" src="../images/insertccicon.png" /> <b>Controles de contenido</b>.</li>
+                <li>escoja la opción <b>Insertar control de contenido de texto enriquecido</b> del menú.</li>
+            </ol>
+            <p>El control se insertará en un nuevo párrafo. Los controles de contenido de texto enriquecido permiten añadir saltos de línea, es decir, pueden contener varios párrafos, así como algunos objetos, como imágenes, tablas, otros controles de contenido, etc.</p>
+            <p><img alt="Control de contenido de texto enriquecido" src="../images/richtextcontentcontrol.png" /></p>
+            <p class="note"><b>Nota</b>: El borde del control de contenido es visible solo cuando se selecciona el control. Los bordes no aparecen en una versión impresa.</p>
+            <h3>Moviendo controles de contenido</h3>
+            <p>Los controles pueden ser <b>movidos</b> a otro lugar del documento: haga clic en el botón situado a la izquierda del borde de control para seleccionar el control y arrástrelo sin soltar el botón del ratón a otra posición del texto del documento.</p>
+            <p><img alt="Moviendo controles de contenido" src="../images/movecontentcontrol.png" /></p>
+            <p>Usted también puede <b>copiar y pegar</b> controles de contenido: seleccione el control necesario y utilice las combinaciones de teclas <b>Ctrl+C/Ctrl+V</b>.</p>
+            <h3>Editando los controles de contenido</h3>
+            <p>Reemplace el texto predeterminado dentro del control ("Su texto aquí") con el suyo propio: seleccione el texto predeterminado y escriba un nuevo texto o copie un pasaje de texto desde cualquier lugar y péguelo en el control de contenido.</p>
+            <p>El texto dentro del control de contenido de cualquier tipo (tanto de texto sin formato como de texto enriquecido) puede formatearse utilizando los iconos de la barra de herramientas superior: usted puede ajustar <a href="../UsageInstructions/FontTypeSizeColor.htm" onclick="onhyperlinkclick(this)">tipo, tamaño y color de fuente</a>, aplicar <a href="../UsageInstructions/DecorationStyles.htm" onclick="onhyperlinkclick(this)">estilos de decoración</a> y <a href="../UsageInstructions/FormattingPresets.htm" onclick="onhyperlinkclick(this)">preajustes de formato</a>. También es posible usar la ventana de <b>Párrafo - Ajustes avanzados</b> accesible desde el menú contextual o desde la barra de tareas derecha para cambiar las propiedades del texto. El texto dentro de los controles de contenido de texto enriquecido se puede formatear como un texto normal del documento, es decir, se puede establecer <a href="../UsageInstructions/LineSpacing.htm" onclick="onhyperlinkclick(this)">interlineado</a>, cambiar <a href="../UsageInstructions/ParagraphIndents.htm" onclick="onhyperlinkclick(this)">indentaciones de párrafo</a>, ajustar <a href="../UsageInstructions/SetTabStops.htm" onclick="onhyperlinkclick(this)">topes de tabulaciones</a>.</p>
+            <h3>Cambiando la configuración del control de contenido</h3>
+            <p>Para abrir las configuraciones de la tabla de contenidos, puede proceder de las siguientes maneras:</p>
+            <ul>
+                <li>Seleccione el control de contenido necesario y haga clic en la flecha situada junto al icono <img alt="Icono de controles de contenido" src="../images/insertccicon.png" /> <b>Controles de contenido</b> en la barra de tareas superior y seleccione la opción de <b>Ajustes de Control</b> del menú.</li>
+                <li>Haga clic con el botón derecho en cualquier parte del control de contenido y use la opción <b>Ajustes de control de contenido</b> del menú contextual.</li>
+            </ul>
+            <p>Se abrirá una nueva ventana donde podrá ajustar los siguientes ajustes:</p>
+            <p><img alt="Ventana de ajustes de control de contenido" src="../images/ccsettingswindow.png" /></p>
+            <ul>
+                <li>Especifique el <b>Título</b> o <b>Etiqueta</b> del control de contenido en los campos correspondientes. El título será mostrado cuando el control esté seleccionado en el documento. Las etiquetas se usan para identificar el contenido de los controles de manera que pueda hacer referencia a ellos en su código.</li>
+                <li>Escoja si desea mostrar el control de contenido con una <b>Casilla entorno</b> o no. Utilice la opción <b>Ninguno</b> para mostrar el control sin una casilla entorno. Si selecciona la opción <b>Casilla entorno</b>, usted puede escoger el <b>Color</b> de esta casilla empleando el campo a continuación.</li>
+                <li>Proteja el control de contenido para que no sea eliminado o editado usando la opción de la sección <b>Bloqueando</b>:<ul>
+                    <li><b>No se puede eliminar el control de contenido</b> - marque esta casilla para proteger el control de contenido de ser eliminado.</li>
+                    <li><b>No se puede editar el contenido</b> - marque esta casilla para proteger el contenido de ser editado.</li>
+                </ul>
+                </li>
+            </ul>
+            <p>Haga clic en el botón <b>OK</b> dentro de las ventanas de ajustes para aplicar los cambios.</p>
+            <p>También es posible resaltar los controles de contenido con un color específico. Para resaltar los controles con un color:</p>
+            <ol>
+                <li>Haga clic en el botón a la izquierda del borde del control para seleccionarlo,</li>
+                <li>Haga clic en la flecha junto al icono de <img alt="Icono de controles de contenido" src="../images/insertccicon.png" /> <b>Controles de Contenido</b> en la barra de herramientas superior,</li>
+                <li>Seleccione la opción <b>Ajustes de Resaltado</b> en el menú,</li>
+                <li>Seleccione el color necesario de la paleta provista: <b>Colores del Tema</b>, <b>Colores Estándar</b> o especifique un nuevo <b>Color Personalizado</b>. Para quitar el resaltado de color previamente aplicado, utilice la opción <b>Sin resaltado</b>.</li>
+            </ol>
+            <p>Las opciones de resaltado seleccionadas serán aplicadas a todos los controles de contenido en el documento.</p>
+            <h3>Removiendo controles de contenido</h3>
+            <p>Para eliminar un control y dejar todo su contenido, haga clic en el control de contenido para seleccionarlo y, a continuación, proceda de una de las siguientes maneras:</p>
+            <ul>
+                <li>Haga clic en la flecha al lado del icono <img alt="Icono de controles de contenido" src="../images/insertccicon.png" /> <b>Controles de contenidos</b> en la barra de tareas superior y seleccione la opción <b>Remover control de contenido</b> del menú.</li>
+                <li>Haga clic derecho en el control de contenido y use la opción de <b>Eliminar control de contenido</b> del menú contextual,</li>
+            </ul>
+            <p>Para eliminar un control y todo su contenido, seleccione el control necesario y pulse la tecla <b>Borrar</b> en el teclado.</p>
+                        
+		</div>
+	</body>
+</html>

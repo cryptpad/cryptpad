@@ -5,13 +5,19 @@
 		<meta charset="utf-8" />
 		<meta name="description" content="Insert page breaks and keep lines together" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
 			<h1>Insert page breaks</h1>
-			<p>In Document Editor, you can add the page break to start a new page and adjust pagination options.</p>
-			<p>To insert a page break at the current cursor position click the <b>Insert Page or Section break</b> <img alt="Insert Page or Section break" src="../images/pagebreak1.png" /> icon at the top toolbar or click the arrow next to this icon and select the <b>Insert Page Break</b> option from the menu.</p>
-			<p>To insert a page break before the selected paragraph i.e. to start this paragraph at the top of a new page:</p>
+			<p>In Document Editor, you can add a page break to start a new page, insert a blank page and adjust pagination options.</p>
+			<p>To insert a page break at the current cursor position click the <img alt="Breaks icon" src="../images/pagebreak1.png" /> <b>Breaks</b> icon at the <b>Insert</b> or <b>Layout</b> tab of the top toolbar or click the arrow next to this icon and select the <b>Insert Page Break</b> option from the menu. You can also use the <b>Ctrl+Enter</b> key combination.</p>
+			<p>To insert a blank page at the current cursor position click the <img alt="Blank page icon" src="../images/blankpage.png" /> <b>Blank Page</b> icon at the <b>Insert</b> tab of the top toolbar. This inserts two page breaks that creates a blank page.</p>
+            <p>To insert a page break before the selected paragraph i.e. to start this paragraph at the top of a new page:</p>
 			<ul>
 				<li>click the right mouse button and select the <b>Page break before</b> option in the menu, or</li>
 				<li>click the right mouse button, select the <b>Paragraph Advanced Settings</b> option in the menu or use the <b>Show advanced settings</b> link at the right sidebar, and check the <b>Page break before</b> box in the opened <b>Paragraph - Advanced Settings</b> window.

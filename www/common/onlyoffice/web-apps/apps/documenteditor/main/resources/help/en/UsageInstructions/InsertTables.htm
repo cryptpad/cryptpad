@@ -5,15 +5,21 @@
 		<meta charset="utf-8" />
 		<meta name="description" content="Add a table to your document and adjust its properties" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
 			<h1>Insert tables</h1>
             <h3>Insert a table</h3>
 			<p>To insert a table into the document text,</p>
 			<ol>
 				<li>place the cursor where you want the table to be put,</li>
-				<li>click the <b>Insert Table</b> <img alt="Insert Table icon" src="../images/table.png" /> icon at the top toolbar,</li>
+                <li>switch to the <b>Insert</b> tab of the top toolbar,</li>
+				<li>click the <img alt="Table icon" src="../images/table.png" /> <b>Table</b> icon at the top toolbar,</li>
 				<li>select the option to create a table:
 					<ul>
 						<li><p>either a table with predefined number of cells (10 by 8 cells maximum)</p>
@@ -24,9 +30,23 @@
 						</li>
 					</ul>
 				</li>
-				<li>once the table is added you can change its properties and position.</li>
+				<li>once the table is added you can change its properties, size and position.</li>
 			</ol>
-			<hr />
+            <p>To resize a table, hover the mouse cursor over the <img alt="Square icon" src="../images/resizetable_handle.png" /> handle in its lower right corner and drag it until the table reaches the necessary size.</p>
+            <p><img alt="Resize table" src="../images/resizetable.png" /></p>
+            <p>You can also manually change the width of a certain column or the height of a row. Move the mouse cursor over the right border of the column so that the cursor turns into the bidirectional arrow <img alt="Mouse Cursor when changing column width" src="../images/changecolumnwidth.png" /> and drag the border to the left or right to set the necessary width. To change the height of a single row manually, move the mouse cursor over the bottom border of the row so that the cursor turns into the bidirectional arrow <img alt="Mouse Cursor when changing row height" src="../images/changerowheight.png" /> and drag the border up or down.</p>
+            <p>To move a table, hold down the <img alt="Select table handle" src="../images/movetable_handle.png" /> handle in its upper left corner and drag it to the necessary place in the document.</p>
+            <hr />
+            <h3>Select a table or its part</h3>
+            <p>To select an entire table, click the <img alt="Select table handle" src="../images/movetable_handle.png" /> handle in its upper left corner.</p>
+            <p>To select a certain cell, move the mouse cursor to the left side of the necessary cell so that the cursor turns into the black arrow <img alt="Select cell" src="../images/selectcellpointer.png" />, then left-click.</p>
+            <p>To select a certain row, move the mouse cursor to the left border of the table next to the necessary row so that the cursor turns into the horizontal black arrow <img alt="Select row" src="../images/selectrowpointer.png" />, then left-click.</p>
+            <p>To select a certain column, move the mouse cursor to the top border of the necessary column so that the cursor turns into the downward black arrow <img alt="Select column" src="../images/selectcolumnpointer.png" />, then left-click.</p>
+            <p>It's also possible to select a cell, row, column or table using options from the contextual menu or from the <b>Rows & Columns</b> section at the right sidebar.</p>
+            <p class="note">
+                <b>Note</b>: to move around in a table you can use <a href="../HelpfulHints/KeyboardShortcuts.htm#workwithtables" onclick="onhyperlinkclick(this)">keyboard shortcuts</a>.
+            </p>
+            <hr />
             <h3>Adjust table settings</h3>
 			<p>Some of the table properties as well as its structure can be altered using the right-click menu. The menu options are:</p>
 			<ul>
@@ -36,10 +56,10 @@
 				<li><b>Delete</b> is used to delete a row, column or table.</li>
 				<li><b>Merge Cells</b> is available if two or more cells are selected and is used to merge them.</li>
 				<li><b>Split Cell...</b> is used to open a window where you can select the needed number of columns and rows the cell will be split in.</li>
-				<li><b>Cell Vertical Alignment</b> is used to align the text top, center or bottom in the selected cell.</li>
-                <li><b>Text Direction</b> - is used to change the text orientation in a cell. You can place the text horizontally, vertically from top to bottom (<b>Rotate at 90°</b>), or vertically from bottom to top (<b>Rotate at 270°</b>).</li>
-				<li><b>Wrapping Style - Inline</b> is used to select the inline style (when the text is broken by the table) as well as the alignment: left, center, right.</li>
-				<li><b>Wrapping Style - Flow</b> is used to select the flow style when the text is wrapped around the table.</li>
+				<li><b>Distribute rows</b> is used to adjust the selected cells so that they have the same height without changing the overall table height.</li>
+                <li><b>Distribute columns</b> is used to adjust the selected cells so that they have the same width without changing the overall table width.</li>
+                <li><b>Cell Vertical Alignment</b> is used to align the text top, center or bottom in the selected cell.</li>
+                <li><b>Text Direction</b> - is used to change the text orientation in a cell. You can place the text horizontally, vertically from top to bottom (<b>Rotate Text Down</b>), or vertically from bottom to top (<b>Rotate Text Up</b>).</li>
 				<li><b>Table Advanced Settings</b> is used to open the 'Table - Advanced Settings' window.</li>
 				<li><b>Hyperlink</b> is used to insert a hyperlink.</li>
 				<li><b>Paragraph Advanced Settings</b> is used to open the 'Paragraph - Advanced Settings' window.</li>
@@ -64,9 +84,10 @@
 				</li>
 				<li><p><b>Select from Template</b> is used to choose a table template from the available ones.</p></li>
 				<li><p><b>Borders Style</b> is used to select the border size, color, style as well as background color.</p></li>
-				<li><p><b>Wrapping Style</b> is used to select between two text wrapping styles - inline and flow.</p></li>
 				<li><p><b>Rows &amp; Columns</b> is used to perform some operations with the table: select, delete, insert rows and columns, merge cells, split a cell.</p></li>
-				<li><p><b>Repeat as header row at the top of each page</b> is used to insert the same header row at the top of each page in long tables.</p></li>
+                <li><p><b>Cell Size</b> is used to adjust the width and height of the currently selected cell. In this section, you can also <b>Distribute rows</b> so that all the selected cells have equal height or <b>Distribute columns</b> so that all the selected cells have equal width.</p></li>
+                <li><p><b>Add formula</b> is used to <a href="../UsageInstructions/AddFormulasInTables.htm" onclick="onhyperlinkclick(this)">insert a formula</a> into the selected table cell.</p></li>
+                <li><p><b>Repeat as header row at the top of each page</b> is used to insert the same header row at the top of each page in long tables.</p></li>
 				<li><p><b>Show advanced settings</b> is used to open the 'Table - Advanced Settings' window.</p></li>
 			</ul>
 			<hr />
@@ -119,14 +140,14 @@
                     <b>Border</b> parameters (size, color and presence or absence) - set the border size, select its color and choose the way it will be displayed in the cells.
                     <p class="note">
                         <b>Note</b>: in case you select not to show table borders clicking the <img alt="No borders" src="../images/noborders.png" /> button or deselecting all the borders manually on the diagram, they will be indicated by a dotted line in the document.
-                        To make them disappear at all, click the <b>Nonprinting Characters</b> <img alt="Nonprinting Characters" src="../images/nonprintingcharacters.png" /> icon at the top toolbar and select the <b>Hidden Table Borders</b> option.
+                        To make them disappear at all, click the <b>Nonprinting characters</b> <img alt="Nonprinting characters" src="../images/nonprintingcharacters.png" /> icon at the <b>Home</b> tab of the top toolbar and select the <b>Hidden Table Borders</b> option.
                     </p>
                 </li>
                 <li><b>Cell Background</b> - the color for the background within the cells (available only if one or more cells are selected or the <b>Allow spacing between cells</b> option is selected at the <b>Table</b> tab).</li>
                 <li><b>Table Background</b> - the color for the table background or the space background between the cells in case the <b>Allow spacing between cells</b> option is selected at the <b>Table</b> tab.</li>
             </ul>
-            <p><img alt="Table - Advanced Settings" src="../images/table_properties_4.png" /></p>
-			<p>The <b>Table Position</b> tab is available only if the <b>Flow</b> option at the <b>Text Wrapping</b> tab is selected and contains the following parameters:</p>
+            <p id="position"><img alt="Table - Advanced Settings" src="../images/table_properties_4.png" /></p>
+			<p>The <b>Table Position</b> tab is available only if the <b>Flow table</b> option at the <b>Text Wrapping</b> tab is selected and contains the following parameters:</p>
 			<ul>
 				<li><b>Horizontal</b> parameters include the table <b>alignment</b> (left, center, right) <b>relative to</b> margin, page or text as well as the table <b>position to the right of</b> margin, page or text.</li>
 				<li><b>Vertical</b> parameters include the table <b>alignment</b> (top, center, bottom) <b>relative to</b> margin, page or text as well as the table <b>position below</b> margin, page or text.</li>
@@ -140,12 +161,12 @@
             <p><img alt="Table - Advanced Settings" src="../images/table_properties_2.png" /></p>
             <p>The <b>Text Wrapping</b> tab contains the following parameters:</p>
             <ul>
-                <li>Text <b>wrapping style</b> - <b>Inline</b> or <b>Flow</b>. Use the necessary option to change the way the table is positioned relative to the text: it will either be a part of the text (in case you select the inline style) or bypassed by it from all sides (if you select the flow style).</li>
+                <li>Text <b>wrapping style</b> - <b>Inline table</b> or <b>Flow table</b>. Use the necessary option to change the way the table is positioned relative to the text: it will either be a part of the text (in case you select the inline table) or bypassed by it from all sides (if you select the flow table).</li>
                 <li>
-                    After you select the wrapping style, the additional wrapping parameters can be set both for inline and flow wrapping style:
+                    After you select the wrapping style, the additional wrapping parameters can be set both for inline and flow tables:
                     <ul>
-                        <li>For the inline style, you can specify the table <b>alignment</b> and <b>indent from left</b>.</li>
-                        <li>For the flow style, you can specify the <b>distance from text</b> and table <b>position</b> at the <b>Table Position</b> tab.</li>
+                        <li>For the inline table, you can specify the table <b>alignment</b> and <b>indent from left</b>.</li>
+                        <li>For the flow table, you can specify the <b>distance from text</b> and table <b>position</b> at the <b>Table Position</b> tab.</li>
                     </ul>
                 </li>
             </ul>

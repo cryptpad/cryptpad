@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fonctions de recherche et remplacement</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The description of the search and replace functions in Spreadsheet Editor" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Fonctions de recherche et remplacement</h1>
+			<p>Pour rechercher les caractères, mots ou phrases requis utilisés dans le document en cours de l'édition, cliquez sur l'icône <img alt="Icône Recherche" src="../images/searchicon.png" /> située sur la barre latérale gauche.</p>
+            <p>Si vous souhaitez rechercher/remplacer des valeurs dans une certaine zone de la feuille en cours uniquement, sélectionnez la plage de cellules nécessaire, puis cliquez sur l'icône <img alt="Icône Recherche" src="../images/searchicon.png" />.</p>
+			<p>La fenêtre <b>Rechercher et remplacer</b> s'ouvre :</p><img alt="Fenêtre Rechercher et remplacer" src="../images/search_window.png" /><ol>
+			<li>Saisissez votre enquête dans le champ correspondant.</li>
+			<li>Spécifiez les options de recherche en cliquant sur l'icône <img alt="Icône Options de recherche" src="../images/advanced_settings_icon.png" /> en regard du champ de saisie et en vérifiant les options nécessaires :<ul>
+				<li><b>Respecter la casse</b> sert à trouver les occurrences saisies de la même casse (par exemple, si votre enquête est 'Editeur' et cette option est sélectionnée, les mots tels que 'éditeur' ou 'EDITEUR' etc. ne seront pas trouvés).</li>
+                <li><b>Contenu de la cellule entière</b> - est utilisé pour trouver uniquement les cellules qui ne contiennent pas d'autres caractères que ceux spécifiés dans votre recherche (par exemple si vous cherchez '56' et que cette option est sélectionnée, les cellules contenant des données telles que '0,56' ou '156' etc. ne seront pas considérées).</li>
+				<li><b>Dans</b> - permet de rechercher dans la <b>Feuille</b> active uniquement ou dans l'ensemble du <b>Classeur</b>. Si vous souhaitez effectuer une recherche dans la zone sélectionnée sur la feuille, assurez-vous que l'option <b>Feuille</b> est sélectionnée.</li>
+				<li><b>Recherche</b> - est utilisé pour spécifier la direction dans laquelle vous souhaitez rechercher : à droite <b>par lignes</b> ou en bas <b>par colonnes</b>.</li>
+				<li><b>Regarder dans</b> - est utilisé pour spécifier si vous voulez rechercher la <b>Valeur</b> des cellules ou leurs <b>Formules</b> sous-jacentes.</li>
+			</ul>
+			</li>
+			<li>Cliquez sur un des boutons à flèche sur la droite. La recherche sera effectuée vers le début de la présentation (si vous cliquez sur le bouton <img alt="Bouton Rechercher vers le haut" src="../images/searchupbutton.png" />) ou vers la fin de la présentation (si vous cliquez sur le bouton <img alt="Bouton Rechercher vers le bas" src="../images/searchdownbutton.png" />) à partir de la position actuelle.</li>
+			</ol>
+			<p>La première occurrence des caractères requis dans la direction choisie sera surlignée sur la page. Si ce n'est pas le mot que vous cherchez, cliquez sur le bouton à flèche encore une fois pour trouver l'occurrence suivante des caractères saisis.</p> 
+			<p><b>Pour remplacer</b> une ou plusieurs occurrences des caractères saisis, cliquez sur le bouton <b>Remplacer</b> au-dessous des boutons à flèche. La fenêtre <b>Rechercher et remplacer</b> change :</p><img alt="Fenêtre Rechercher et remplacer" src="../images/search_replace_window.png" /><ol>
+			<li>Saisissez le texte du replacement dans le champ au-dessous.</li>
+			<li>Cliquez sur le bouton <b>Remplacer</b> pour remplacer l'occurrence actuellement sélectionnée ou le bouton <b>Remplacer tout</b> pour remplacer toutes occurrences trouvées.</li>
+			</ol>
+            <p>Pour masquer le champ de remplacement, cliquez sur le lien <b>Masquer le remplacement</b>.</p>
+		</div>
+	</body>
+</html>

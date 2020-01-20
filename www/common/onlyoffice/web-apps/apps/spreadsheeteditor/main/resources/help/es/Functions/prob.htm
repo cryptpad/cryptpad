@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Función PROBABILIDAD</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Función PROBABILIDAD</h1>
+			<p>La función <b>PROBABILIDAD</b> es una función estadística. Se usa para devolver la probabilidad que tiene valores en el rango y están entre el límite inferior y límite superior.</p>
+			<p>La sintaxis de la función <b>PROBABILIDAD</b> es:</p> 
+			<p style="text-indent: 150px;"><b><em>PROBABILIDAD(x-rango, rango-probabilidad, límite-inferior[, límite-superior])</em></b></p> 
+			<p><em>donde</em></p>
+				<p style="text-indent: 50px;"><b><em>x-rango</em></b> es el rango de celdas seleccionado que contiene valores numéricos con los que usted quiere asociar las probabilidades.</p>
+				<p style="text-indent: 50px;"><b><em>rango-probabilidad</em></b> es un conjunto de probabilidades asociadas con valores en <b><em>x-rango</em></b>, el rango de celdas seleccionado que contiene valores numéricos mayor que 0 pero menor que 1. La suma de los valores en <b><em>rango-probabilidad</em></b> debe ser igual a 1, si no la función devolverá el error <b>#NUM!</b>.</p>
+				<p class="note"><b>Nota</b>: <b><em>x-rango</em></b> debe contener el mismo número de elementos que <b><em>rango-probabilidad</em></b>.</p>
+				<p style="text-indent: 50px;"><b><em>límite-inferior</em></b> es el límite inferior del valor, un valor numérico introducido manualmente o incluido en la celda a la que usted hace referencia.</p>
+				<p style="text-indent: 50px;"><b><em>límite-superior</em></b> es el límite superior del valor, un valor numérico introducido manualmente o incluido en la celda a la que usted hace referencia. Es un argumento opcional. Si se omite, la probabilidad será igual a <b><em>lower-limit</em></b>.</p>
+			<p>Para aplicar la función <b>PROBABILIDAD</b>,</p>
+			<ol>
+			<li>seleccione la celda donde usted quiere ver el resultado,</li>
+			<li>pulse el icono <b>Insertar función</b> <img alt="Icono insertar función" src="../images/insertfunction.png" /> que se sitúa en la barra de herramientas superior, <br />o haga clic derecho en la сelda seleccionada y elija la opción <b>Insertar función</b> en el menú, <br />o pulse el icono <img alt="Icono función" src="../images/function.png" /> que se sitúa en la barra de fórmulas,</li>
+			<li>seleccione el grupo de funciones <b>Estadísticas</b> en la lista,</li>
+			<li>haga clic en la función <b>PROBABILIDAD</b>,</li>
+			<li>introduzca los argumentos correspondientes separados por comas,</li>
+			<li>pulse el botón <b>Enter</b>.</li>
+			</ol>
+			<p>El resultado se mostrará en la celda elegida.</p>
+			<p style="text-indent: 150px;"><img alt="Función PROBABILIDAD" src="../images/prob.png" /></p>
+		</div>
+	</body>
+</html>

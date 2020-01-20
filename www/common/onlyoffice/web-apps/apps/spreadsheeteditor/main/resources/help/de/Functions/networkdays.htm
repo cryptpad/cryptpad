@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>NETTOARBEITSTAGE-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>NETTOARBEITSTAGE-Funktion</h1>
+			<p>Die Funktion <b>NETTOARBEITSTAGE</b> gehört zur Gruppe der Daten- und Zeitfunktionen. Sie gibt die Anzahl der Arbeitstage in einem Zeitintervall zurück (Ausgangsdatum und Enddatum). Nicht zu den Arbeitstagen gezählt werden Wochenenden sowie die Tage, die als Feiertage angegeben sind.</p>
+			<p>Die Formelsyntax der Funktion <b>NETTOARBEITSTAGE</b> ist:</p> 
+			<p style="text-indent: 150px;"><b><em>NETTOARBEITSTAGE(Ausgangsdatum;Enddatum;[Freie_Tage])</em></b></p> 
+			<p>Dabei gilt:</p> 
+				<p style="text-indent: 50px;"><b><em>Ausgangsdatum</em></b> ist das erste Datum des Zeitraums, der mit der Funktion <a href="Date.htm" onclick="onhyperlinkclick(this)">Datum</a> oder einer anderen Datums- und Uhrzeitfunktion eingegeben wurde.</p>
+				<p style="text-indent: 50px;"><b><em>Enddatum</em></b> ist eine Zahl, die das letzte Datum des Zeitraums darstellt, das mit der Funktion <a href="Date.htm" onclick="onhyperlinkclick(this)">Datum</a> oder einer anderen Datums- und Uhrzeitfunktion eingegeben wurde.</p>
+            <p style="text-indent: 50px;"><b><em>Freie_Tage</em></b> ist eine optionale Liste einer oder mehrerer Datumsangaben, die alle Arten von arbeitsfreien Tagen repräsentieren kann, die aus dem Arbeitskalender ausgeschlossen werden sollen. Sie können dieses Argument mit der Funktion <a href="Date.htm" onclick="onhyperlinkclick(this)">Datum</a> oder einer anderen Datums- und Uhrzeitfunktion eingeben oder einen Zellbereich mit Daten angeben.</p>
+			<p>Anwendung der Funktion <b>NETTOARBEITSTAGE</b>:</p>
+			<ol>
+			<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
+			<li>Wählen Sie die Funktionsgruppe <b>Datums- und Uhrzeitfunktionen</b> aus der Liste aus.</li>
+			<li>Klicken Sie auf die Funktion <b>NETTOARBEITSTAGE</b>.</li>
+			<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.</li>
+			<li>Drücken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+			<p style="text-indent: 150px;"><img alt="NETTOARBEITSTAGE-Funktion" src="../images/networkdays.png" /></p>
+		</div>
+	</body>
+</html>

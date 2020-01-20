@@ -5,17 +5,22 @@
 		<meta charset="utf-8" />
 		<meta name="description" content="Fill the added objects with color, picture or texture, select colors for the slide background, autoshape fill and stroke, font." />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
 			<h1>Fill objects and select colors</h1>
 			<p>You can apply different fills for the slide, autoshape and Text Art font background.</p>
 			<ol>
 			<li>Select an object
                 <ul>
-                    <li>To change the slide background fill, select the necessary slides in the slide list. The <img alt="Slide Settings Icon" src="../images/slide_settings_icon.png" /> <b>Slide Settings</b> tab will be activated at the the right sidebar.</li>
-                    <li>To change the autoshape fill, left-click the necessary autoshape. The <img alt="Shape Settings Icon" src="../images/shape_settings_icon.png" /> <b>Shape Settings</b> tab will be activated at the the right sidebar.</li>
-                    <li>To change the Text Art font fill, left-click the necessary text object. The <img alt="Text Art Settings Icon" src="../images/textart_settings_icon.png" /> <b>Text Art Settings</b> tab will be activated at the the right sidebar.</li>
+                    <li>To change the slide background fill, select the necessary slides in the slide list. The <img alt="Slide settings Icon" src="../images/slide_settings_icon.png" /> <b>Slide settings</b> tab will be activated at the the right sidebar.</li>
+                    <li>To change the autoshape fill, left-click the necessary autoshape. The <img alt="Shape settings Icon" src="../images/shape_settings_icon.png" /> <b>Shape settings</b> tab will be activated at the the right sidebar.</li>
+                    <li>To change the Text Art font fill, left-click the necessary text object. The <img alt="Text Art settings Icon" src="../images/textart_settings_icon.png" /> <b>Text Art settings</b> tab will be activated at the the right sidebar.</li>
                 </ul>
 			</li>
 			<li>Set the necessary fill type</li>

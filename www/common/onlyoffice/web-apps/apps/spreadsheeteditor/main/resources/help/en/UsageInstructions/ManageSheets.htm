@@ -5,9 +5,14 @@
 		<meta charset="utf-8" />
         <meta name="description" content="Manage sheets in Spreadsheet Editor: insert, delete, rename, copy and move." />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
 			<h1>Manage sheets</h1>
 			<p>By default a newly created spreadsheet has a single sheet. The most simple way to add a new one is to click the <img alt="Plus button" src="../images/plus.png" /> button located to the right of the <b>Sheet Navigation</b> buttons in the left lower corner.</p>
 			<p>Another way to <b>add a new sheet</b> is to:</p>

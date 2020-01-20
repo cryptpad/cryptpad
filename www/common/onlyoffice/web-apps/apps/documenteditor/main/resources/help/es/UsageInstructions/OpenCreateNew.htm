@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Cree un documento nuevo o abra el documento existente</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Open a recently edited document, create a new one, or return to the list of existing documents" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Cree un documento nuevo o abra el documento existente</h1>
+			<p>Cuando usted ha terminado de trabajar con un documento, usted puede dirigirse al documento que ha sido editado últimamente, crear un documento nuevo, o volver a la lista de documentos existentes.</p>
+			<p>Para crear un documento nuevo,</p>
+			<ol>
+				<li>haga clic en la pestaña <b>Archivo</b> de la barra de herramientas superior,</li>
+				<li>seleccione la opción <b>Crear nuevo</b>. <!--Here you can choose whether to create a <b>blank</b> text document or use one of the available document <b>templates</b>: contract, letter, list, or plan.--></li>
+			</ol>
+			<p>Para abrir el documento últimamente editado con el editor de documentos,</p>
+			<ol>
+				<li>haga clic en la pestaña <b>Archivo</b> de la barra de herramientas superior,</li>
+				<li>seleccione la opción <b>Abrir reciente</b>,</li>
+				<li>elija el documento necesario de la lista de documentos últimamente editados.</li>
+			</ol>
+			<p>Para volver a la lista de documentos existente, haga clic en el <img alt="Ir a Documentos" src="../images/gotodocuments.png" /> icono de <b>Ir a Documentos</b> en la parte derecha del encabezado del editor. De forma alternativa, puede cambiar a la pestaña de <b>Archivo</b> en la barra de herramientas y seleccionar la opción de <b>Ir a Documentos</b>.</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>TEILERGEBNIS-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>TEILERGEBNIS-Funktion</h1>
+			<p>Die Funktion <b>TEILERGEBNIS</b> gehört zur Gruppe der mathematischen und trigonometrischen Funktionen. Sie gibt ein Teilergebnis in einer Liste oder Datenbank zurück.</p>
+			<p>Die Formelsyntax der Funktion <b>TEILERGEBNIS</b> ist:</p> 
+			<p style="text-indent: 150px;"><b><em>TEILERGEBNIS(Funktion;Bezug1;[Bezug2];...)</em></b></p> 
+			<p><em>Dabei gilt:</em></p> 
+			<p style="text-indent: 50px;"><b><em>Funktion</em></b> ist ein numerischer Wert, der angibt, welche Funktion für die Zwischensumme verwendet werden soll. Die möglichen Werte sind in der nachstehenden Tabelle aufgeführt. Für <em>Funktion</em> 1 bis 11 schließt <b>TEILERGEBNIS</b> die Werte von manuell ausgeblendeten Zeilen ein. Für <em>Funktion</em> 101 bis 111 schließt <b>TEILERGEBNIS</b> die Werte von manuell ausgeblendeten Zeilen aus. Herausgefilterte Zellen werden immer ausgeschlossen.</p> 
+			<p style="text-indent: 50px;"><b><em>Bezug1;[Bezug2];...</em></b> sind die benannten Bereiche oder Bezüge, für den/die Sie das Teilergebnis berechnen möchten.</p>
+			<table style="width: 40%">
+				<tr>
+					<td><b>Funktion<br />(ausgeblendete Werte eingeschlossen)</b></td>
+                    <td><b>Funktion <br />(ausgeblendete Werte ignoriert)</b></td>
+					<td><b>Funktion</b></td>
+				</tr>
+				<tr>
+					<td>1</td>
+                    <td>101</td>
+					<td><a href="../Functions/average.htm" onclick="onhyperlinkclick(this)">MITTELWERT</a></td>
+				</tr>
+                <tr>
+                    <td>2</td>
+                    <td>102</td>
+                    <td><a href="../Functions/count.htm" onclick="onhyperlinkclick(this)">ANZAHL</a></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>103</td>
+                    <td><a href="../Functions/counta.htm" onclick="onhyperlinkclick(this)">ANZAHL2</a></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>104</td>
+                    <td><a href="../Functions/max.htm" onclick="onhyperlinkclick(this)">MAX</a></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>105</td>
+                    <td><a href="../Functions/min.htm" onclick="onhyperlinkclick(this)">MIN</a></td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>106</td>
+                    <td><a href="../Functions/product.htm" onclick="onhyperlinkclick(this)">PRODUKT</a></td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>107</td>
+                    <td><a href="../Functions/stdev.htm" onclick="onhyperlinkclick(this)">STABW</a></td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>108</td>
+                    <td><a href="../Functions/stdevp.htm" onclick="onhyperlinkclick(this)">STABWN</a></td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>109</td>
+                    <td><a href="../Functions/sum.htm" onclick="onhyperlinkclick(this)">SUMME</a></td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>110</td>
+                    <td><a href="../Functions/var.htm" onclick="onhyperlinkclick(this)">VARIANZ</a></td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>111</td>
+                    <td><a href="../Functions/varp.htm" onclick="onhyperlinkclick(this)">VARIANZEN</a></td>
+                </tr>
+			</table>
+			<p>Anwendung der Funktion <b>TEILERGEBNIS</b>:</p>
+			<ol>
+			<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
+			<li>Wählen Sie die Gruppe <b>Mathematische und trigonometrische</b> Funktionen aus der Liste aus.</li>
+			<li>Klicken Sie auf die Funktion <b>TEILERGEBNIS</b>.</li>
+			<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.</li>
+			<li>Drücken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+			<p style="text-indent: 150px;"><img alt="TEILERGEBNIS-Funktion" src="../images/subtotal.png" /></p>
+            <p>Die folgende Abbildung zeigt das Ergebnis der Funktion <b>TEILERGEBNIS</b>, wenn mehrere Zellen ausgeblendet sind.</p>
+            <p style="text-indent: 150px;"><img alt="TEILERGEBNIS-Funktion" src="../images/subtotal2.png" /></p>
+		</div>
+	</body>
+</html>

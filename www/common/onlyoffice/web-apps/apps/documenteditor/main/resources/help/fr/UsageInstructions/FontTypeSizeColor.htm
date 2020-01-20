@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Définir le type de police, la taille et la couleur</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Change the following text formatting parameters: font type, size, and color" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Définir le type de police, la taille et la couleur</h1>
+			<p>Vous pouvez sélectionner le type, la taille et la couleur de police à l'aide des icônes correspondantes situées dans l'onglet <b>Accueil</b> de la barre d'outils supérieure.</p>
+			<p class="note"><b>Remarque</b> : si vous voulez appliquer la mise en forme au texte déjà saisi, sélectionnez-le avec la souris ou <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">en utilisant le clavier</a> et appliquez la mise en forme.</p>
+			<table>
+				<tr>
+					<td>Nom de la police</td>
+					<td><img alt="Nom de la police" src="../images/fontfamily.png" /></td>
+					<td>Sert à sélectionner l'une des polices disponibles dans la liste.</td>
+				</tr>
+				<tr>
+					<td>Taille de la police</td>
+					<td><img alt="Taille de la police" src="../images/fontsize.png" /></td>
+					<td>Sert à sélectionner la taille de la police parmi les valeurs disponibles dans la liste déroulante, ou la saisir à la main dans le champ de la taille de police.</td>
+				</tr>
+                <tr>
+                    <td>Incrémenter la taille de la police</td>
+                    <td><img alt="Incrémenter la taille de la police" src="../images/larger.png" /></td>
+                    <td>Sert à modifier la taille de la police en la randant plus grande à un point chaque fois que vous appuyez sur le bouton.</td>
+                </tr>
+                <tr>
+                    <td>Décrémenter la taille de la police</td>
+                    <td><img alt="Décrémenter la taille de la police" src="../images/smaller.png" /></td>
+                    <td>Sert à modifier la taille de la police en la randant plus petite à un point chaque fois que vous appuyez sur le bouton.</td>
+                </tr>
+				<tr>
+					<td>Couleur de surlignage</td>
+					<td><img alt="Couleur de surlignage" src="../images/highlightcolor.png" /></td>
+					<td>Est utilisé pour marquer des phrases, des fragments, des mots ou même des caractères séparés en ajoutant une bande de couleur qui imite l'effet du surligneur sur le texte. Vous pouvez sélectionner la partie voulue du texte, puis cliquer sur la flèche vers le bas à côté de l'icône pour sélectionner une couleur dans la palette (ce jeu de couleurs ne dépend pas du <b>Jeu de couleurs</b> sélectionné et comprend 16 couleurs). La couleur sera appliquée à la sélection. Alternativement, vous pouvez d'abord choisir une couleur de surbrillance et ensuite commencer à sélectionner le texte avec la souris - le pointeur de la souris ressemblera à ceci <img alt="Pointeur de la souris pendant le surlignage" src="../images/highlight_color_mouse_pointer.png" /> et vous serez en mesure de surligner plusieurs parties différentes de votre texte de manière séquentielle. Arrêter de surligne, cliquez à nouveau sur l'icône. Pour effacer la couleur de surbrillance, choisissez l'option <b>Pas de remplissage</b>. La <b>Couleur de surlignage</b> est différente de la <a href="../UsageInstructions/BackgroundColor.htm" onclick="onhyperlinkclick(this)"><b>Couleur de fond</b></a> <img alt="Icône Сouleur d'arrière plan d'un paragraphe" src="../images/backgroundcolor.png" /> car cette dernière est appliquée au paragraphe entier et remplit complètement l’espace du paragraphe de la marge de page gauche à la marge de page droite.</td>
+				</tr>
+				<tr>
+					<td>Couleur de police</td>
+					<td><img alt="Couleur de police" src="../images/fontcolor.png" /></td>
+					<td>Sert à changer la couleur des lettres /characters dans le texte. Par défaut, la couleur de police automatique est définie dans un nouveau document vide. Elle s'affiche comme la police noire sur l'arrière-plan blanc. Si vous choisissez le noir comme la couleur d'arrière-plan, la couleur de la police se change automatiquement à la couleur blanche pour que le texte soit visible. Pour choisir une autre couleur, cliquez sur la flèche vers le bas située à côté de l'icône et sélectionnez une couleur disponible dans les palettes (les couleurs de la palette <b>Couleurs de thème</b> dépend du <a href="../UsageInstructions/ChangeColorScheme.htm" onclick="onhyperlinkclick(this)">jeu de couleurs</a> sélectionné). Après avoir modifié la couleur de police par défaut, vous pouvez utiliser l'option <b>Automatique</b> dans la fenêtre des palettes de couleurs pour restaurer rapidement la couleur automatique pour le fragment du texte sélectionné.</td>
+				</tr>
+			</table>
+			<p class="note"><b>Remarque</b>: pour en savoir plus sur l'utilisation des palettes de couleurs, consultez <a href="../UsageInstructions/ChangeColorScheme.htm" onclick="onhyperlinkclick(this)">cette page</a>.</p>
+		</div>
+	</body>
+</html>

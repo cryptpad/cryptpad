@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Aperçu de la présentation</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Preview your presentation" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Aperçu de la présentation</h1>
+            <h3>Démarrer l'aperçu</h3>
+			<p>Pour afficher un aperçu de la présentation en cours de l'édition :</p>
+            <ul>
+                <li>cliquez sur l'icône <b>Démarrer le diaporama</b> <img alt="icône Démarrer l'affichage de l'aperçu" src="../images/startpreview.png" /> dans l'onglet <b>Accueil</b> de la barre d'outils supérieure ou sur le côté gauche de la barre d'état, ou</li>
+                <li>sélectionnez une diapositive dans la liste à gauche, cliquez dessus avec le bouton droit de la souris et choisissez l'option <b>Démarrer le diaporama</b> dans le menu contextuel.</li>
+            </ul>
+            <p>L'aperçu commencera à partir de la diapositive actuellement sélectionnée.</p>
+            <p>Vous pouvez également cliquer sur la flèche à côté de l'icône <b>Démarrer le diaporama</b> <img alt="icône Démarrer l'affichage de l'aperçu" src="../images/startpreview.png" /> dans l'onglet <b>Accueil</b> de la barre d'outils supérieure et sélectionner l'une des options disponibles :</p>
+            <ul>
+                <li><b>Afficher depuis le début</b> - pour commencer l'aperçu à partir de la toute première diapositive,</li>
+                <li><b>Afficher à partir de la diapositive actuelle</b> - pour démarrer l'aperçu depuis la diapositive actuellement sélectionnée,</li>
+                <li><b>Afficher le mode Présentateur</b> - pour lancer l'aperçu en mode <b>Présentateur</b>, ce qui permet d'afficher la présentation à votre audience sans les notes de diapositives tout en affichant la présentation avec les notes sur un moniteur différent.</li>
+                <li><b>Afficher les paramètres</b> - pour ouvrir une fenêtre de paramètres qui permet de définir une seule option : <b>Boucler en continu jusqu'à ce que "Echap" soit pressé</b>. Cochez cette option si nécessaire et cliquez sur <b>OK</b>. Si vous activez cette option, la présentation s'affichera jusqu'à ce que vous appuyiez sur la touche <b>Echap</b> du clavier, c'est-à-dire que lorsque la dernière diapositive de la présentation sera atteinte, vous pourrez revenir à la première diapositive à nouveau. Si vous désactivez cette option Une fois la dernière diapositive de la présentation atteinte, un écran noir apparaît pour vous informer que la présentation est terminée et vous pourrez quitter l'<b>Aperçu</b>.<p><img alt="Fenêtre Paramètres d'affichage" src="../images/showsettings.png" /></p>
+                </li>
+            </ul>
+            <h3>Utiliser le mode Aperçu</h3>
+            <p>En mode <b>Aperçu</b>, vous pouvez utiliser les contrôles suivants dans le coin inférieur gauche :</p>
+            <p><img alt="Contrôles du mode Aperçu" src="../images/preview_mode.png" /></p>
+            <ul>
+                <li>le bouton <b>Diapositive précédente</b> <img alt="Icône Diapositive précédente" src="../images/previousslide.png" /> vous permet de revenir à la diapositive précédente.</li>
+                <li>le bouton <b>Mettre en pause la présentation</b> <img alt="Icône Mettre en pause la présentation" src="../images/pausepresentation.png" /> vous permet d'arrêter l'aperçu. Lorsque le bouton est enfoncé, il devient le bouton <img alt="icône Démarrer la présentation" src="../images/startpresentation.png" />.</li>
+                <li>le bouton <b>Démarrer la présentation</b> <img alt="icône Démarrer la présentation" src="../images/startpresentation.png" /> vous permet de reprendre l'aperçu. Lorsque le bouton est enfoncé, il devient le bouton <img alt="Icône Mettre en pause la présentation" src="../images/pausepresentation.png" />.</li>
+                <li>le bouton <b>Diapositive suivante</b> <img alt="icône Diapositive suivante" src="../images/nextslide.png" /> vous permet d'avancer à la diapositive suivante.</li>
+                <li>l'<b>Indicateur de numéro de diapositive</b> affiche le numéro de diapositive en cours ainsi que le nombre total de diapositives dans la présentation. Pour aller à une certaine diapositive en mode aperçu, cliquez sur l'<b>Indicateur de numéro de diapositive</b>, entrez le numéro de diapositive nécessaire dans la fenêtre ouverte et appuyez sur <b>Entrée</b>.</li>
+                <li>le bouton <b>Plein écran</b> <img alt="Icône Plein écran" src="../images/fullscreen.png" /> vous permet de passer en mode plein écran.</li>
+                <li>le bouton <b>Quitter le plein écran</b> <img alt="Icône Quitter le plein écran" src="../images/exitfullscreen.png" /> vous permet de quitter le mode plein écran.</li>
+                <li>le bouton <b>Fermer le diaporama</b> <img alt="Icône Fermer le diaporama" src="../images/closepreview.png" /> vous permet de quitter le mode aperçu.</li>
+            </ul>
+			<p>Vous pouvez également <a href="../HelpfulHints/KeyboardShortcuts.htm#preview" onclick="onhyperlinkclick(this)">utiliser les raccourcis clavier</a> pour naviguer entre les diapositives en mode Aperçu.</p>
+            <h3 id="presenter">Utiliser le mode Présentateur</h3>
+            <p>En mode <b>Présentateur</b>, vous pouvez afficher vos présentations avec des notes de diapositives dans une fenêtre séparée, tout en les affichant sans notes sur un moniteur différent. Les notes de chaque diapositive s'affichent sous la zone d'aperçu de la diapositive.</p>
+            <p>Pour naviguer entre les diapositives, vous pouvez utiliser les boutons <img alt="icône Diapositive suivante" src="../images/previousslide.png" /> et <img alt="icône Diapositive précédente" src="../images/nextslide.png" /> ou cliquer sur les diapos dans la liste à gauche. Les numéros de diapositives masquées sont barrés dans la liste à gauche. Si vous souhaitez afficher une diapositive masquée aux autres, il suffit de cliquer dessus dans la liste à gauche - la diapositive s'affichera.</p>
+            <p>Vous pouvez utiliser les contrôles suivants sous la zone d'aperçu de diapositive :</p>
+            <p><img alt="Commandes du mode Présentateur" src="../images/presenter_mode.png" /></p>
+            <ul>
+                <li>le <b>Chronomètre</b> affiche le temps écoulé de la présentation au format <em>hh.mm.ss</em>.</li>
+                <li>le bouton <b>Mettre en pause la présentation</b> <img alt="Icône Mettre en pause la présentation" src="../images/pausepresentation.png" /> vous permet d'arrêter l'aperçu. Lorsque le bouton est enfoncé, il devient le bouton <img alt="icône Démarrer la présentation" src="../images/startpresentation.png" />.</li>
+                <li>le bouton <b>Démarrer la présentation</b> <img alt="icône Démarrer la présentation" src="../images/startpresentation.png" /> vous permet de reprendre l'aperçu. Lorsque le bouton est enfoncé, il devient le bouton <img alt="Icône Mettre en pause la présentation" src="../images/pausepresentation.png" />.</li>
+                <li>le bouton <b>Réinitialiser</b> permet de réinitialiser le temps écoulé de la présentation.</li>
+                <li>le bouton <b>Diapositive précédente</b> <img alt="Icône Diapositive précédente" src="../images/previousslide.png" /> vous permet de revenir à la diapositive précédente.</li>
+                <li>le bouton <b>Diapositive suivante</b> <img alt="icône Diapositive suivante" src="../images/nextslide.png" /> vous permet d'avancer à la diapositive suivante.</li>
+                <li>l'<b>Indicateur de numéro de diapositive</b> affiche le numéro de diapositive en cours ainsi que le nombre total de diapositives dans la présentation.</li>
+                <li>le bouton <b>Pointeur</b> <img alt="Icône Pointeur" src="../images/pointer.png" /> vous permet de mettre en évidence quelque chose sur l'écran lors de l'affichage de la présentation. Lorsque cette option est activée, le bouton ressemble à ceci : <img alt="Icône Pointeur" src="../images/pointer_enabled.png" />. Pour pointer vers certains objets, placez le pointeur de votre souris sur la zone d'aperçu de la diapositive et déplacez le pointeur sur la diapositive. Le pointeur aura l'apparence suivante : <img alt="Icône Pointeur" src="../images/pointer_screen.png" />. Pour désactiver cette option, cliquez à nouveau sur le bouton <img alt="Icône Pointeur" src="../images/pointer_enabled.png" />.</li>
+                <li>le bouton <b>Fin du diaporama</b> vous permet de quitter le mode <b>Présentateur</b>.</li>
+            </ul>			
+		</div>
+	</body>
+</html>

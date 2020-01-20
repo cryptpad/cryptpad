@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Objekte ausfüllen und Farben auswählen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Fill the added objects with color, picture or texture, select colors for the slide background, autoshape fill and stroke, font." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Objekte ausfüllen und Farben auswählen</h1>
+			<p>Sie haben die Möglichkeit für Folien, AutoFormen und DekoSchriften verschiedene Füllfarben und Hintergründe zu verwenden.</p>
+			<ol>
+			<li>Wählen Sie ein Objekt<ul>
+                    <li>Um die Hintergrundfarbe einer Folie zu ändern, wählen Sie die gewünschte Folie in der Folienliste aus. Die Registerkarte <img alt="Folieneinstellungen" src="../images/slide_settings_icon.png" /> <b>Folieneinstellungen</b> wird in der rechten Menüleiste aktiviert.</li>
+                    <li>Um die Füllung einer AutoForm zu ändern, klicken Sie mit der linken Maustaste auf die gewünschte AutoForm. Die Registerkarte <img alt="Formeinstellungen" src="../images/shape_settings_icon.png" /> <b>Folieneinstellungen</b> wird in der rechten Menüleiste aktiviert.</li>
+                    <li>Um die Füllung einer DekoSchrift zu ändern, klicken Sie mit der linken Maustaste auf das gewünschte Textfeld. Die Registerkarte <img alt="TextArt-Einstellungen" src="../images/textart_settings_icon.png" /> <b>Folieneinstellungen</b> wird in der rechten Menüleiste aktiviert.</li>
+                </ul>
+			</li>
+			<li>Gewünschte Füllung festlegen</li>
+			<li>Passen Sie die Eigenschaften der gewählten Füllung an (eine detaillierte Beschreibung für jeden Füllungstyp finden Sie im weiteren Verlauf)<p class="note"><b>Hinweis</b>: für AutoFormen und TextArt können Sie unabhängig vom gewählten Füllungstyp die gewünschte <b>Transparenz</b> festlegen, schieben Sie den Schieberegler in die gewünschte Position oder geben Sie manuelle den Prozentwert ein. Der Standardwert ist <b>100%</b>. 100% entspricht dabei völliger Undurchsichtigkeit. Der Wert <b>0%</b> entspricht der vollen Transparenz.</p>
+			</li>
+			</ol>			
+			<p><b>Die folgenden Füllungstypen sind verfügbar:</b></p>
+			<ul>
+				<li><b>Einfarbige Füllung</b> - wählen Sie diese Option, um die Volltonfarbe festzulegen, mit der Sie die innere Fläche der ausgewählten Folie/Form ausfüllen möchten.<p><img alt="Einfarbige Füllung" src="../images/fill_color.png" /></p>
+				<p>Klicken Sie auf das Farbfeld unten und wählen Sie die gewünschte Farbe aus den verfügbaren Farbpaletten aus oder legen Sie eine beliebige Farbe fest:</p>
+			        <p><img alt="Paletten" src="../images/palettes.png" /></p>
+			        <ul>
+			        <li><b>Designfarben</b> - die Farben, die dem gewählten Farbschema der Präsentation entsprechen. Sobald Sie ein anderes Thema oder ein anderes Farbschema anwenden, ändert sich die Einstellung für die <b>Designfarben</b>.</li>
+			        <li><b>Standardfarben</b> - die festgelegten Standardfarben.</li>
+			        <li><b>Benutzerdefinierte Farbe</b> - klicken Sie auf diese Option, wenn Ihre gewünschte Farbe nicht in der Palette mit verfügbaren Farben enthalten ist. Wählen Sie den gewünschten Farbbereich mit dem vertikalen Schieberegler aus und legen Sie dann die gewünschte Farbe fest, indem Sie den Farbwähler innerhalb des großen quadratischen Farbfelds an die gewünschte Position ziehen. Sobald Sie eine Farbe mit dem Farbwähler bestimmt haben, werden die entsprechenden RGB- und sRGB-Farbwerte in den Feldern auf der rechten Seite angezeigt. Sie können eine Farbe auch anhand des RGB-Farbmodells bestimmen, indem Sie die gewünschten nummerischen Werte in den Feldern <b>R</b>, <b>G</b>, <b>B</b> (Rot, Grün, Blau) festlegen oder den sRGB-Hexadezimalcode in das Feld mit dem <b>#</b>-Zeichen eingeben. Die gewählte Farbe erscheint im Vorschaufeld <b>Neu</b>. Wenn das Objekt vorher mit einer benutzerdefinierten Farbe gefüllt war, wird diese Farbe im Feld <b>Aktuell</b> angezeigt, so dass Sie die Originalfarbe und die Zielfarbe vergleichen könnten. Wenn Sie die Farbe festgelegt haben, klicken Sie auf <b>Hinzufügen</b>.<p><img alt="Palette - Benutzerdefinierte Farbe" src="../images/palette_custom.png" /></p>
+			        <p>Die benutzerdefinierte Farbe wird auf das Objekt angewandt und in die Palette <b>Benutzerdefinierte Farbe</b> hinzugefügt.</p>			        
+			        </li>			        
+			        </ul>
+			    <p class="note"><b>Hinweis</b>: es sind die gleichen Farbtypen, die Ihnen bei der Auswahl der <b>Strichfarbe für AutoFormen</b>, <b>Schriftfarbe</b> oder bei der Farbänderung des <b>Tabellenhintergrunds und -rahmens</b> zur Verfügung stehen.</p>
+				</li>
+			</ul>
+				<hr />
+			<ul>				
+				<li><b>Füllung mit Farbverlauf</b> - wählen Sie diese Option, um die Form mit zwei Farben zu füllen, die sanft ineinander übergehen.<p><img class="floatleft"alt="Füllung mit Farbverlauf" src="../images/fill_gradient.png" /></p>
+				    <ul style="margin-left: 280px;">
+				    <li><b>Stil</b> - wählen Sie eine der verfügbaren Optionen: <b>Linear</b> (Farben ändern sich linear, d.h. entlang der horizontalen/vertikalen Achse oder diagonal in einem 45-Grad Winkel) oder <b>Radial</b> (Farben ändern sich kreisförmig vom Zentrum zu den Kanten).</li>
+				    <li><b>Richtung</b> - wählen Sie eine Vorlage aus dem Menü. Wenn der Farbverlauf <b>Linear</b> ausgewählt ist, sind die folgenden Richtungen verfügbar: von oben links nach unten rechts, von oben nach unten, von oben rechts nach unten links, von rechts nach links, von unten rechts nach oben links, von unten nach oben, von unten links nach oben rechts, von links nach rechts. Wenn der Farbverlauf <b>Radial</b> ausgewählt ist, steht nur eine Vorlage zur Verfügung.</li>
+				    <li><b>Farbverlauf</b> - klicken Sie auf den linken Schieberegler <img alt="Schieberegler" src="../images/gradientslider.png" /> unter der Farbverlaufsleiste, um das Farbfeld für die erste Farbe zu aktivieren. Klicken Sie auf das Farbfeld auf der rechten Seite, um die erste Farbe in der Farbpalette auszuwählen. Nutzen Sie den rechten Schieberegler unter der Farbverlaufsleiste, um den Wechselpunkt festzulegen, an dem eine Farbe in die andere übergeht. Nutzen Sie den rechten Schieberegler unter der Farbverlaufsleiste, um die zweite Farbe anzugeben und den Wechselpunkt festzulegen.</li>
+				    </ul>			
+				</li>
+			</ul>
+				<hr />
+			<ul>
+				<li><b>Bild- oder Texturfüllung</b> - wählen Sie diese Option, um ein Bild oder eine vorgegebene Textur als Hintergrund für eine Form/Folie zu benutzen.<p><img class="floatleft"alt="Bild- oder Texturfüllung" src="../images/fill_picture.png" /></p>
+				    <ul style="margin-left: 280px;">
+				    <li>Wenn Sie ein Bild als Hintergrund für eine Form/Folie verwenden möchten, können Sie das Bild <b>Aus Datei</b> einfügen, geben Sie dazu in dem geöffneten Fenster den Speicherort auf Ihrem Computer an, oder <b>Aus URL</b>, geben Sie die entsprechende Webadresse in das geöffnete Fenster ein.</li>
+				    <li>Wenn Sie eine Textur als Hintergrund für eine Form bzw. Folie verwenden möchten, öffnen Sie die Liste <b>Aus Textur</b> und wählen Sie die gewünschte Texturvoreinstellung.<p>Aktuell stehen die folgenden Texturen zur Verfügung: Canvas, Carton, Dark Fabric, Grain, Granite, Grey Paper, Knit, Leather, Brown Paper, Papyrus, Wood.</p>
+				    </li>
+				    </ul>
+			        <ul style="margin-left: 280px;">
+			        <li>Wenn das gewählte <b>Bild</b> kleiner oder größer als die AutoForm oder Folie ist, können Sie die Option <b>Strecken</b> oder <b>Kacheln</b> aus dem Listenmenü auswählen.<p>Die Option <b>Strecken</b> ermöglicht Ihnen die Größe des Bildes so anzupassen, dass es die Folie oder AutoForm vollständig ausfüllen kann.</p>
+			        <p>Die Option <b>Kacheln</b> ermöglicht Ihnen nur einen Teil des größeren Bildes zu verwenden und die Originalgröße für diesen Teil beizubehalten oder ein kleineres Bild unter Beibehaltung der Originalgröße zu wiederholen und durch diese Wiederholungen die gesamte Fläche der Folie oder AutoForm auszufüllen.</p>
+			        <p class="note"><b>Hinweis</b>: Jede Voreinstellung für <b>Texturfüllungen</b> ist dahingehend festgelegt, den gesamten Bereich auszufüllen, aber Sie können nach Bedarf auch den Effekt <b>Strecken</b> anwenden.</p>
+			        </li>
+			        </ul>			
+				</li>
+			</ul>
+				<hr />
+			<ul>
+				<li><b>Muster</b> - wählen Sie diese Option, um die Form/Folie mit einem zweifarbigen Design zu füllen, dass aus regelmäßig wiederholten Elementen besteht.<p><img class="floatleft"alt="Füllungsmuster" src="../images/fill_pattern.png" /></p>
+				    <ul style="margin-left: 280px;">
+				        <li><b>Muster</b> - wählen Sie eine der Designvorgaben aus dem Menü aus.</li>
+				        <li><b>Vordergrundfarbe</b> - klicken Sie auf dieses Farbfeld, um die Farbe der Musterelemente zu ändern.</li>
+				        <li><b>Hintergrundfarbe</b> - klicken Sie auf dieses Farbfeld, um die Farbe des Hintergrundmusters zu ändern.</li>
+				    </ul>			
+				</li>
+			</ul>
+				<hr />
+			<ul>
+				<li><b>Keine Füllung</b> - wählen Sie diese Option, wenn Sie keine Füllung verwenden möchten.</li>
+			</ul>
+		</div>
+	</body>
+</html>

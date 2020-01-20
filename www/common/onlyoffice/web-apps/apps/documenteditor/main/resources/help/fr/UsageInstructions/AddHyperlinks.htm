@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Ajouter des liens hypertextes</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add hyperlinks to a word or text fragment leading to an external website" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Ajouter des liens hypertextes</h1>
+			<p>Pour ajouter un lien hypertexte,</p>
+			<ol>
+				<li>placez le curseur là où vous voulez insérer un lien hypertexte,</li>
+                <li>passez à l'onglet <b>Insertion</b> ou <b>Références</b> de la barre d'outils supérieure,</li>
+				<li>cliquez sur l'icône <b>Ajouter un lien hypertexte</b> <img alt="Icône Ajouter un lien hypertexte" src="../images/addhyperlink.png" /> de la barre d'outils supérieure,</li>
+				<li>dans la fenêtre ouverte précisez les paramètres du lien hypertexte :<ul>
+                        <li>Sélectionnez le type de lien que vous voulez insérer :<p>Utilisez l'option <b>Lien externe</b> et entrez une URL au format <em>http://www.example.com</em> dans le champ <b>Lien vers</b> si vous avez besoin d'ajouter un lien hypertexte menant vers un site externe.</p>
+                            <p><img alt="Fenêtre Paramètres de lien hypertexte" src="../images/hyperlinkwindow.png" /></p>
+                            <p>Utilisez l'option <b>Emplacement dans le document</b> et sélectionnez l'un des <a href="../UsageInstructions/FormattingPresets.htm" onclick="onhyperlinkclick(this)">titres</a> existants dans le texte du document ou l'un des <a href="../UsageInstructions/InsertBookmarks.htm" onclick="onhyperlinkclick(this)">marque-pages</a> précédemment ajoutés si vous devez ajouter un lien hypertexte menant à un certain emplacement dans le même document.</p>
+                            <p><img alt="Fenêtre Paramètres de lien hypertexte" src="../images/hyperlinkwindow1.png" /></p>
+                        </li>
+                        <li><b>Afficher</b> - entrez un texte qui sera cliquable et amènera à l'adresse Web indiquée dans le champ supérieur.</li>
+                        <li><b>Texte de l'infobulle</b> - entrez un texte qui sera visible dans une petite fenêtre contextuelle offrant une courte note ou étiquette lorsque vous placez le curseur sur un lien hypertexte.</li>
+                    </ul>
+				</li>
+				<li>Cliquez sur le bouton <b>OK</b>.</li>
+			</ol>
+            <p>Pour ajouter un lien hypertexte, vous pouvez également utiliser la combinaison des touches <b>Ctrl+K</b> ou cliquer avec le bouton droit  à l’emplacement choisi et sélectionner l'option <b>Lien hypertexte</b> du menu contextuel.</p>
+			<p class="note"><b>Note</b> : il est également possible de sélectionner un caractère, un mot, une combinaison de mots, un passage de texte avec la souris ou <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">en utilisant le clavier</a>, puis d'ouvrir la fenêtre <b>Paramètres de lien hypertexte</b> comme décrit ci-dessus. Dans ce cas, le champ <b>Afficher</b> sera rempli avec le fragment de texte que vous avez sélectionné.</p>
+			<p>Si vous placez le curseur sur le lien hypertexte ajouté, vous verrez l'info-bulle contenant le texte que vous avez spécifié. Pour suivre le lien appuyez sur la touche <b>CTRL</b> et cliquez sur le lien dans votre document.</p>
+			<p>Pour modifier ou supprimer le lien hypertexte ajouté, cliquez-le droit, sélectionnez l'option <b>Lien hypertexte</b> et l'opération à effectuer - <b>Modifier le lien hypertexte</b> ou <b>Supprimer le lien hypertexte</b>.</p>
+		</div>
+	</body>
+</html>

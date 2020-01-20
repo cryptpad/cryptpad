@@ -5,9 +5,14 @@
 		<meta charset="utf-8" />
 		<meta name="description" content="" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
 			<h1>ADDRESS Function</h1>
 			<p>The <b>ADDRESS</b> function is one of the lookup and reference functions. It is used to return a text representation of a cell address.</p>
 			<p>The <b>ADDRESS</b> function syntax is:</p> 
@@ -38,13 +43,13 @@
 					<td>Relative referencing</td>
 				</tr>
 			</table>
-			<p><em><b>A1-ref-type-flag</b></em> is an optional logical value: TRUE or FALSE. If it is set to TRUE or omitted, the function will analyse <b><em>ref-text</em></b> as an A1-style reference. If it is set to FALSE, the function will interpret <b><em>ref-text</em></b> as an R1C1-style reference.</p>
+			<p><em><b>A1-ref-type-flag</b></em> is an optional logical value: TRUE or FALSE. If it is set to TRUE or omitted, the function will return an A1-style reference. If it is set to FALSE, the function will return an R1C1-style reference.</p>
 			<p><em><b>sheet name</b></em> is the name of the sheet to use in a cell address. It's an optional value. If it is omitted, the function will return the cell address without the sheet name indicated.</p>
 			<p>These arguments can be entered manually or included into the cells you make reference to.</p>
 			<p>To apply the <b>ADDRESS</b> function,</p>
 			<ol>
 			<li>select the cell where you wish to display the result,</li>
-			<li>click the <b>Insert Function</b> <img alt="Insert Function icon" src="../images/insertfunction.png" /> icon situated at the top toolbar,
+			<li>click the <b>Insert function</b> <img alt="Insert function icon" src="../images/insertfunction.png" /> icon situated at the top toolbar,
 				<br />or right-click within a selected cell and select the <b>Insert Function</b> option from the menu,
 				<br />or click the <img alt="Function icon" src="../images/function.png" /> icon situated at the formula bar,
 			</li>

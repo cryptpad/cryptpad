@@ -1,24 +1,29 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 	<head>
-		<title>Функция EFFECT (ЭФФЕКТ)</title>
+		<title>Функция ЭФФЕКТ</title>
 		<meta charset="utf-8" />
 		<meta name="description" content="" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
-			<h1>Функция EFFECT (ЭФФЕКТ)</h1>
-			<p>Функция <b>EFFECT</b> - это одна из финансовых функций. Используется для вычисления эффективной (фактической) годовой процентной ставки по ценной бумаге 
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Поиск" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Функция ЭФФЕКТ</h1>
+			<p>Функция <b>ЭФФЕКТ</b> - это одна из финансовых функций. Используется для вычисления эффективной (фактической) годовой процентной ставки по ценной бумаге 
       исходя из указанной номинальной годовой процентной ставки и количества периодов в году, за которые начисляются сложные проценты.</p>
-			<p>Синтаксис функции <b>EFFECT</b>:</p> 
-			<p style="text-indent: 150px;"><b><em>EFFECT(nominal-rate, npery)</em></b></p> 
+			<p>Синтаксис функции <b>ЭФФЕКТ</b>:</p> 
+			<p style="text-indent: 150px;"><b><em>ЭФФЕКТ(номинальная_ставка;кол_пер)</em></b></p> 
 			<p><em>где</em></p> 
-				<p style="text-indent: 50px;"><b><em>nominal-rate</em></b> - это номинальная годовая процентная ставка по ценной бумаге.</p> 
-				<p style="text-indent: 50px;"><b><em>npery</em></b> - это количество периодов в году, за которые начисляются сложные проценты.</p>
+				<p style="text-indent: 50px;"><b><em>номинальная_ставка</em></b> - это номинальная годовая процентная ставка по ценной бумаге.</p> 
+				<p style="text-indent: 50px;"><b><em>кол_пер</em></b> - это количество периодов в году, за которые начисляются сложные проценты.</p>
       <p>Числовые значения могут быть введены вручную или находиться в ячейке, на которую дается ссылка.</p>
       <p>
-        Чтобы применить функцию <b>EFFECT</b>,
+        Чтобы применить функцию <b>ЭФФЕКТ</b>,
       </p>
       <ol>
         <li>выделите ячейку, в которой требуется отобразить результат,</li>
@@ -31,15 +36,15 @@
           выберите из списка группу функций <b>Финансовые</b>,
         </li>
         <li>
-          щелкните по функции <b>EFFECT</b>,
+          щелкните по функции <b>ЭФФЕКТ</b>,
         </li>
-        <li>введите требуемые аргументы, разделяя их запятыми,</li>
+        <li>введите требуемые аргументы через точку с запятой,</li>
         <li>
           нажмите клавишу <b>Enter</b>.
         </li>
       </ol>
       <p>Результат будет отображен в выделенной ячейке.</p>      
-			<p style="text-indent: 150px;"><img alt="Функция EFFECT" src="../images/effect.png" /></p>
+			<p style="text-indent: 150px;"><img alt="Функция ЭФФЕКТ" src="../images/effect.png" /></p>
 		</div>
 	</body>
 </html>

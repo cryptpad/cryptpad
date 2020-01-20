@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Textobjekte einfügen</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Insert text objects such as text boxes and Text Art to make your text more impressive" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Textobjekte einfügen</h1>
+            <p>Um Ihren Text lesbarer zu gestalten und die Aufmerksamkeit auf einen bestimmten Teil des Dokuments zu lenken, können Sie ein Textfeld (rechteckigen Rahmen, in den ein Text eingegeben werden kann) oder ein TextArt-Textfeld (Textfeld mit einer vordefinierten Schriftart und Farbe, das die Anwendung von Texteffekten ermöglicht) einfügen.</p>
+			<h3>Textobjekt einfügen</h3>
+            <p>Sie können überall auf der Seite ein Textobjekt einfügen. Folgen Sie dafür den folgenden Schritten:</p>
+            <ol>
+                <li>Wechseln Sie in der oberen Symbolleiste auf die Registerkarte <b>Einfügen</b>.</li>
+                <li>Wählen Sie das gewünschten Textobjekt aus:<ul>
+                    <li>Um ein Textfeld hinzuzufügen, klicken Sie in der oberen Symbolleiste auf das Symbol <img alt="Textfeld" src="../images/inserttexticon.png" /> <b>Textfeld</b> und dann auf die Stelle, an der Sie das Textfeld einfügen möchten. Halten Sie die Maustaste gedrückt, und ziehen Sie den Rahmen des Textfelds in die gewünschte Größe. Wenn Sie die Maustaste loslassen, erscheint die Einfügemarke im hinzugefügten Textfeld und Sie können Ihren Text eingeben.<p class="note"><b>Hinweis</b>: alternativ können Sie ein Textfeld einfügen, in dem Sie in der oberen Symbolleiste auf <img alt="Form" src="../images/insertautoshape.png" /> <b>Form</b> klicken und das Symbol <img alt="Textautoform einfügen" src="../images/text_autoshape.png" /> aus der Gruppe <b>Standardformen</b> auswählen.</p>
+                    </li>
+                    <li>Um ein TextArt-Objekt einzufügen, klicken Sie auf das Symbol <img alt="TextArt" src="../images/inserttextarticon.png" /> <b>TextArt</b> in der oberen Symbolleiste und klicken Sie dann auf die gewünschte Stilvorlage - das TextArt-Objekt wird an der aktuellen Cursorposition eingefügt. Markieren Sie den Standardtext innerhalb des Textfelds mit der Maus und ersetzen Sie diesen durch Ihren eigenen Text.</li>
+                </ul>
+                </li>
+                <li>Klicken Sie in einen Bereich außerhalb des Text-Objekts, um die Änderungen anzuwenden und zum Dokument zurückzukehren.</li>
+            </ol>
+            <p>Der auf solcher Weise hinzugefügte Text wird Bestandteil der AutoForm (wenn Sie die AutoForm verschieben oder drehen, wird der Text mit ihr verschoben oder gedreht).</p>
+            <p>Da ein eingefügtes Textobjekt einen rechteckigen Rahmen mit Text darstellt (TextArt-Objekte haben standardmäßig unsichtbare Rahmen) und dieser Rahmen eine allgemeine AutoForm ist, können Sie sowohl die Form als auch die Texteigenschaften ändern.</p>
+            <p>Um das hinzugefügte Text-Objekt zu löschen, klicken Sie auf den Rand des Textfelds und drücken Sie die Taste <b>ENTF</b> auf der Tastatur. Dadurch wird auch der Text im Textfeld gelöscht.</p>
+            <h3>Textfeld formatieren</h3>
+            <p>Wählen Sie das entsprechende Textfeld durch anklicken der Rahmenlinien aus, um die Eigenschaften zu verändern. Wenn das Textfeld markiert ist, werden alle Rahmenlinien als durchgezogene Linien und nicht gestrichelt angezeigt.</p>
+            <p><img alt="Markiertes Textfeld" src="../images/textbox_boxselected.png" /></p>
+            <ul>
+                <li>Sie können das Textfeld mithilfe der speziellen Ziehpunkte an den Ecken der Form <a href="../UsageInstructions/InsertAutoshapes.htm#shape_resize" onclick="onhyperlinkclick(this)">verschieben, drehen und die Größe ändern</a>.</li>
+                <li>Um das Textfeld zu bearbeiten <a href="../UsageInstructions/InsertAutoshapes.htm#shape_fill" onclick="onhyperlinkclick(this)">mit einer Füllung zu versehen</a>, <a href="../UsageInstructions/InsertAutoshapes.htm#shape_stroke" onclick="onhyperlinkclick(this)">Rahmenlinien zu ändern</a>, <a href="../UsageInstructions/InsertAutoshapes.htm#shape_wrapping" onclick="onhyperlinkclick(this)">den Textumbruch zu formatieren</a> oder das <b>rechteckige Feld</b> mit einer anderen Form zu ersetzen, klicken Sie in der rechten Seitenleiste auf <b>Formeinstellungen</b> <img alt="Formeinstellungen" src="../images/shape_settings_icon.png" /> und nutzen Sie die entsprechenden Optionen.</li>                
+                <li>Um das Textfeld auf der Seite <b>auszurichten</b>, Textfelder mit andern Objekten zu <b>verknüpfen</b>, den <b>Umbruchstil</b> zu ändern oder auf <b>Formen - Erweiterte Einstellungen</b> zuzugreifen, klicken Sie mit der rechten Maustaste auf den Feldrand und öffnen Sie so das <a href="../UsageInstructions/InsertAutoshapes.htm#shape_rightclickmenu" onclick="onhyperlinkclick(this)">Kontextmenü</a>. Weitere Informationen zum Ausrichten und Anordnen von Objekten finden Sie auf <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">dieser Seite</a>.</li>
+            </ul>
+            <h3>Text im Textfeld formatieren</h3>
+            <p>Markieren Sie den Text im Textfeld, um die Eigenschaften zu verändern. Wenn der Text markiert ist, werden alle Rahmenlinien als durchgezogene Linien angezeigt.</p>
+            <p><img alt="Markierter Text" src="../images/textbox_textselected.png" /></p>
+            <p class="note"><b>Hinweis</b>: Es ist auch möglich, die Textformatierung zu ändern, wenn das Textfeld (nicht der Text selbst) ausgewählt ist. In einem solchen Fall werden alle Änderungen auf den gesamten Text im Textfeld angewandt. Einige Schriftformatierungsoptionen (Schriftart, -größe, -farbe und -stile) können separat auf einen zuvor ausgewählten Teil des Textes angewendet werden.</p>
+            <p>Um den Text innerhalb des Textfeldes zu <b>drehen</b>, klicken Sie mit der rechten Maus auf den Text, klicken Sie auf <b>Textausrichtung</b> und wählen Sie eine der verfügbaren Optionen: <b>Horizontal</b> (Standardeinstellung), <b>Text um 90° drehen</b> (vertikale Ausrichtung von oben nach unten) oder <b>Text um 270° drehen</b> (vertikale Ausrichtung von unten nach oben).</p>
+            <p>Um den Text innerhalb des Textfeldes <b>vertikal auszurichten</b>, klicken Sie mit der rechten Maus auf den Text, wählen Sie die Option <b>vertikale Textausrichtung</b> und klicken Sie auf eine der verfügbaren Optionen: <b>Oben ausrichten</b>, <b>Zentriert ausrichten</b> oder <b>Unten ausrichten</b>.</p>
+            <p>Die andere Formatierungsoptionen, die Ihnen zur Verfügung stehen, sind die gleichen wie für normalen Text. Bitte lesen Sie die entsprechenden Hilfeabschnitte, um mehr über die erforderlichen Vorgänge zu erfahren. Sie können:</p>
+            <ul>
+                <li>den Text im Textfeld <a href="../UsageInstructions/AlignText.htm" onclick="onhyperlinkclick(this)">horizontal ausrichten</a></li>
+                <li><a href="../UsageInstructions/FontTypeSizeColor.htm" onclick="onhyperlinkclick(this)">Schriftart, Größe und Farbe</a> festlegen und <a href="../UsageInstructions/DecorationStyles.htm" onclick="onhyperlinkclick(this)">DekoSchriften</a> und <a href="../UsageInstructions/FormattingPresets.htm" onclick="onhyperlinkclick(this)">Formatierungsvorgaben</a> anwenden</li>
+                <li><a href="../UsageInstructions/LineSpacing.htm" onclick="onhyperlinkclick(this)">Zeilenabstände</a> festlegen, <a href="../UsageInstructions/ParagraphIndents.htm" onclick="onhyperlinkclick(this)">Absatzeinzüge</a> ändern und die <a href="../UsageInstructions/SetTabStops.htm" onclick="onhyperlinkclick(this)">Tabulatoren</a> für den mehrzeiligen Text innerhalb des Textfelds anpassen</li>
+                <li>einen <a href="../UsageInstructions/AddHyperlinks.htm" onclick="onhyperlinkclick(this)">Hyperlink</a> einfügen</li>
+            </ul>
+            <p>Sie können auch in der rechten Seitenleiste auf das Symbol <b>TextArt-Einstellungen</b> <img alt="TextArt-Einstellungen" src="../images/textart_settings_icon.png" /> klicken und die gewünschten Stilparameter ändern.</p>
+            <h3>TextArt-Stil bearbeiten</h3>
+            <p>Wählen Sie ein Textobjekt aus und klicken Sie in der rechten Seitenleiste auf das Symbol <b>TextArt-Einstellungen</b> <img alt="TextArt-Einstellungen" src="../images/textart_settings_icon.png" />.</p>
+            <p><img alt="Gruppe TextArt-Einstellungen" src="../images/right_textart.png" /></p>
+            <p>Ändern Sie den angewandten Textstil, indem Sie eine neue <b>Vorlage</b> aus der Galerie auswählen. Sie können den Grundstil außerdem ändern, indem Sie eine andere Schriftart, Größe usw. auswählen.</p>
+            <p><b>Füllung</b> der Schriftart ändern. Folgende Optionen stehen Ihnen zur Verfügung:</p>
+            <ul>
+                <li><b>Farbfüllung</b> - wählen Sie die Volltonfarbe für den Innenbereich der Buchstaben aus.<p><img alt="Einfarbige Füllung" src="../images/fill_color.png" /></p>
+                    <p id="color">Klicken Sie auf das Farbfeld unten und wählen Sie die gewünschte Farbe aus den verfügbaren <a href="../UsageInstructions/ChangeColorScheme.htm" onclick="onhyperlinkclick(this)">Farbpaletten</a> aus oder legen Sie eine beliebige Farbe fest:</p>
+                </li>
+                <li><b>Farbverlauf</b> - wählen Sie diese Option, um die Buchstaben mit zwei Farben zu füllen, die sanft ineinander übergehen.<p><img alt="Farbverlauf" src="../images/fill_gradient.png" /></p>
+                    <ul>
+                        <li><b>Stil</b> - wählen Sie eine der verfügbaren Optionen: <b>Linear</b> (Farben ändern sich linear, d.h. entlang der horizontalen/vertikalen Achse oder diagonal in einem 45-Grad Winkel) oder <b>Radial</b> (Farben ändern sich kreisförmig vom Zentrum zu den Kanten).</li>
+                        <li><b>Richtung</b> - wählen Sie eine Vorlage aus dem Menü aus. Wenn der Farbverlauf <b>Linear</b> ausgewählt ist, sind die folgenden Richtungen verfügbar: von oben links nach unten rechts, von oben nach unten, von oben rechts nach unten links, von rechts nach links, von unten rechts nach oben links, von unten nach oben, von unten links nach oben rechts, von links nach rechts. Wenn der Farbverlauf <b>Radial</b> ausgewählt ist, steht nur eine Vorlage zur Verfügung.</li>
+                        <li><b>Farbverlauf</b> - klicken Sie auf den linken Schieberegler <img alt="Schieberegler" src="../images/gradientslider.png" /> unter der Farbverlaufsleiste, um das Farbfeld für die erste Farbe zu aktivieren. Klicken Sie auf das Farbfeld auf der rechten Seite, um die erste Farbe in der Farbpalette auszuwählen. Nutzen Sie den rechten Schieberegler unter der Farbverlaufsleiste, um den Wechselpunkt festzulegen, an dem eine Farbe in die andere übergeht. Nutzen Sie den rechten Schieberegler unter der Farbverlaufsleiste, um die zweite Farbe anzugeben und den Wechselpunkt festzulegen.</li>
+                    </ul>
+                    <p class="note"><b>Hinweis</b>: Ist eine dieser beiden Optionen ausgewählt, haben Sie zusätzlich die Wahl, die <b>Transparenz</b> der Füllung festzulegen, ziehen Sie dazu den Schieberegler in die gewünschte Position oder geben Sie den Prozentwert manuell ein. Der Standardwert beträgt <b>100%</b>. Also volle Deckkraft. Der Wert <b>0%</b> steht für vollständige Transparenz.</p>
+                </li>
+                <li><b>Keine Füllung</b> - wählen Sie diese Option, wenn Sie keine Füllung verwenden möchten.</li>
+            </ul>
+            <p><b>Schriftstärke, -farbe und -stil</b> anpassen.</p>
+            <ul>
+                <li>Um die Strichstärke zu ändern, wählen Sie eine der verfügbaren Optionen im Listenmenü <b>Größe</b> aus. Die verfügbaren Optionen sind: 0,5 Pt., 1 Pt., 1,5 Pt., 2,25 Pt., 3 Pt., 4,5 Pt., 6 Pt. Alternativ können Sie die Option <b>Keine Linie</b> auswählen, wenn Sie keine Umrandung wünschen.</li>
+                <li>Um die <b>Konturfarbe</b> zu ändern, klicken Sie auf das farbige Feld und wählen Sie die <a href="../UsageInstructions/ChangeColorScheme.htm" onclick="onhyperlinkclick(this)">gewünschte Farbe</a> aus.</li>
+                <li>Um den <b>Stil der Kontur</b> zu ändern, wählen Sie die gewünschte Option aus der entsprechenden Dropdown-Liste aus (standardmäßig wird eine durchgezogene Linie verwendet, diese können Sie in eine der verfügbaren gestrichelten Linien ändern).</li>
+            </ul>
+            <p>Wenden Sie einen Texteffekt an, indem Sie aus der <b>Galerie</b> mit den verfügbaren Vorlagen die gewünschte Formatierung auswählen. Sie können den Grad der Textverzerrung anpassen, indem Sie den rosafarbenen, rautenförmigen Griff in die gewünschte Position ziehen.</p>
+            <p><img alt="Texteffekte" src="../images/textart_transformation.png" /></p>
+		</div>
+	</body>
+</html>

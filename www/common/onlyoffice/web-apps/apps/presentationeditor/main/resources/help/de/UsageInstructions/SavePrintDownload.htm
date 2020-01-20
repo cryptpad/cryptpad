@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Präsentation speichern/drucken/herunterladen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Save, print and download your presentations in various formats" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+            <h1>Präsentation speichern/drucken<span class="onlineDocumentFeatures">/herunterladen</span></h1>
+            <p>Standardmäßig speichert wird Ihre Datei im <b>Präsentationseditor</b> während der Bearbeitung automatisch alle 2 Sekunden gespeichert, um Datenverluste im Falle eines unerwarteten Programmabsturzes zu verhindern. <span class="onlineDocumentFeatures">Wenn Sie die Datei im <b>Schnellmodus</b> co-editieren, fordert der Timer 25 Mal pro Sekunde Aktualisierungen an und speichert vorgenommene Änderungen. </span><span class="onlineDocumentFeatures">Wenn Sie die Datei im Modus <b>Strikt</b> co-editieren, werden Änderungen automatisch alle 10 Minuten gespeichert. </span><span class="onlineDocumentFeatures">Sie können den bevorzugten Co-Modus nach Belieben auswählen oder die Funktion <b>AutoSave</b> auf der Seite <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Erweiterte Einstellungen</a> deaktivieren.</span></p>
+            <p>Aktuelle Präsentation manuell speichern:</p>
+            <ul>
+                <li>Klicken Sie in der oberen Symbolleiste auf das Symbol <b>Speichern</b> <img alt="Speichern" src="../images/save.png" /> oder</li>
+                <li>nutzen Sie die Tastenkombination <b>STRG+S</b> oder</li>
+                <li>wechseln Sie in der oberen Menüleiste in die Registerkarte <b>Datei</b> und wählen Sie die Option <b>Speichern</b>.</li>
+            </ul>
+            <p>Aktuelle Präsentation drucken:</p>
+            <ul>
+                <li>Klicken Sie in der oberen Symbolleiste auf das Symbol <b>Drucken</b> <img alt="Symbol Drucken" src="../images/print.png" /> oder</li>
+                <li>nutzen Sie die Tastenkombination <b>STRG+P</b> oder</li>
+                <li>wechseln Sie in der oberen Menüleiste in die Registerkarte <b>Datei</b> und wählen Sie die Option <b>Drucken</b>.</li>
+            </ul>
+            <div class="onlineDocumentFeatures">
+                <p>Danach wird basierend auf der Präsentation eine PDF-Datei erstellt. Diese können Sie öffnen und drucken oder auf der Festplatte des Computers oder einem Wechseldatenträger speichern und später drucken.</p>
+                <p>Aktuelle Präsentation auf dem PC speichern:</p>
+                <ol>
+                    <li>Klicken Sie in der oberen Menüleiste auf die Registerkarte <b>Datei</b>.</li>
+                    <li>Wählen Sie die Option <b>Herunterladen als</b>.</li>
+                    <li>Wählen Sie das gewünschte Format aus: PPTX, PDF oder ODP.</li>
+                </ol>
+            </div>
+        </div>
+	</body>
+</html>

@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Kalkulationstabelle speichern/drucken/herunterladen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Save, print and download your spreadsheet in various formats" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Kalkulationstabelle speichern/drucken/<span class="onlineDocumentFeatures">herunterladen</span></h1>
+			<p>Standardmäßig speichert der <b>Editor</b> Ihre Datei während der Bearbeitung automatisch alle 2 Sekunden, um Datenverluste im Falle eines unerwarteten Schließen des Programmes zu verhindern. <span class="onlineDocumentFeatures">Wenn Sie die Datei im <b>Schnellmodus</b> co-editieren, fordert der Timer 25 Mal pro Sekunde Aktualisierungen an und speichert vorgenommene Änderungen. </span><span class="onlineDocumentFeatures">Wenn Sie die Datei im Modus <b>Strikt</b> co-editieren, werden Änderungen automatisch alle 10 Minuten gespeichert. </span><span class="onlineDocumentFeatures">Sie können den bevorzugten Co-Modus nach Belieben auswählen oder die Funktion <b>AutoSave</b> auf der Seite <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Erweiterte Einstellungen</a> deaktivieren.</span></p>
+			<p>Aktuelle Kalkulationstabelle manuell speichern:</p>
+			<ul>
+				<li>Klicken Sie auf das Symbol <b>Speichern</b> <img alt="Speichern" src="../images/save.png" /> auf der oberen Symbolleiste oder</li>
+				<li>drücken Sie die Tasten <b>STRG+S</b> oder</li>
+				<li>wechseln Sie in der oberen Menüleiste in die Registerkarte <b>Datei</b> und wählen Sie die Option <b>Speichern</b>.</li>
+			</ul>
+            <div class="onlineDocumentFeatures">
+			<p>Aktuelle Kalkulationstabelle auf dem PC speichern:</p>
+			<ol>
+				<li>Klicken Sie in der oberen Menüleiste auf die Registerkarte <b>Datei</b>.</li>
+				<li>Wählen Sie die Option <b>Herunterladen als...</b>.</li>
+				<li>Wählen Sie das gewünschte Format aus: XLSX, PDF, ODS, CSV.<p class="note"><b>Hinweis</b>: Wenn Sie das Format CSV auswählen, werden alle Funktionen (Schriftformatierung, Formeln usw.), mit Ausnahme des einfachen Texts, nicht in der CSV-Datei beibehalten. Wenn Sie mit dem Speichern fortfahren, öffnet sich das Fenster <b>CSV-Optionen auswählen</b>. Standardmäßig wird <em>Unicode (UTF-8)</em> als <b>Codierungstyp</b> verwendet. Das <b>Standardtrennzeichen</b> ist das <em>Komma</em> (,), aber die folgenden Optionen sind ebenfalls verfügbar: <em>Semikolon</em> (;), <em>Doppelpunkt</em> (:), <em>Tab</em>, <em>Leerzeichen</em> und <em>Sonstige</em> (mit dieser Option können Sie ein benutzerdefiniertes Trennzeichen festlegen).</p>
+                </li>
+			</ol>
+            </div>
+			<p>Aktuelle Kalkulationstabelle drucken:</p>
+			<ul>
+				<li>Klicken Sie in der oberen Symbolleiste auf das Symbol <b>Drucken</b> <img alt="Drucken" src="../images/print.png" /> oder</li>
+				<li>nutzen Sie die Tastenkombination <b>STRG+P</b> oder</li>
+				<li>wechseln Sie in der oberen Menüleiste in die Registerkarte <b>Datei</b> und wählen Sie die Option <b>Drucken</b>.</li>
+			</ul>
+			<p>Im Fenster <b>Druckeinstellungen</b> können Sie die Standarddruckeinstellungen ändern. Klicken Sie am unteren Rand des Fensters auf die Schaltfläche <b>Details anzeigen</b>, um alle Parameter anzuzeigen.</p>
+            <p class="note"><b>Hinweis</b>: Sie können die Druckeinstellungen auch auf der Seite <b>Erweiterte Einstellungen...</b> ändern: Klicken Sie auf das Symbol <b>Datei</b> in der oberen Symbolleiste und wählen Sie <b>Erweiterte Einstellungen...</b> &gt;&gt; <b>Seiteneinstellungen</b>:<br />Einige dieser Einstellungen (<b>Seitenränder</b>, <b>Seitenausrichtung</b> und <b>Seitengröße</b>) sind auch in der Registerkarte <b>Layout</b> auf der oberen Symbolleiste verfügbar.</p>
+			<p><img alt="Druckeinstellungen" src="../images/printsettingswindow.png" /></p>
+			<p>Hier können Sie die folgenden Parameter festlegen:</p>
+			<ul>
+			<li><b>Druckbereich</b> - geben Sie an, was Sie drucken möchten: das gesamte <b>aktive Blatt</b>, die gesamte <b>Arbeitsmappe</b> oder einen vorher gewählten Zellenbereich (<b>Auswahl</b>).</li>
+			<li><b>Blatteinstellungen</b> - legen Sie für jedes einzelne Blatt individuelle Druckeinstellungen fest, wenn Sie vorher die Option <b>Arbeitsmappe</b> in der Menüliste für den <b>Druckbereich</b> ausgewählt haben.</li>
+            <li><b>Seitenformat</b> - wählen Sie eine der verfügbaren Größen aus der Menüliste aus.</li>
+			<li><b>Seitenorientierung</b> - wählen Sie die Option <b>Hochformat</b>, wenn Sie vertikal auf der Seite drucken möchten, oder die Option <b>Querformat</b>, um horizontal zu drucken.</li>
+			<li><b>Skalierung</b> - wenn Sie nicht möchten, dass anhängende Spalten oder Zeilen auf einer zweiten Seite gedruckt werden, können Sie den Inhalt des Blatts auf eine Seite verkleinern, indem Sie die entsprechende Option auswählen: <b>Tabelle auf eine Seite anpassen</b>, <b>Alle Spalten auf einer Seite</b> oder <b>Alle Zeilen auf einer Seite</b>. Wenn Sie keine Anpassung vornehmen wollen, wählen Sie die Option <b>Keine Skalierung</b>.</li>
+            <li><b>Ränder</b> - geben Sie den Abstand zwischen der Blattdaten und den Rändern der gedruckten Seite an, indem Sie die Standardgrößen in den Feldern <b>Oben</b>, <b>Unten</b>, <b>Links</b> und <b>Rechts</b> ändern.</li>
+			<li><b>Drucken</b> - geben Sie die Blattelemente an, die gedruckt werden sollen, indem Sie die entsprechenden Felder aktivieren: <b>Gitternetzlinien drucken</b> und <b>Zellen- und Spaltenüberschriften drucken</b>.</li>
+			</ul>
+			<p class="onlineDocumentFeatures">Wenn Sie alle Parameter festgelegt haben klicken sie auf <b>OK</b>, um die Änderungen zu übernehmen, schließen Sie das Fenster und starten Sie den Druckvorgang. Danach wird basierend auf der Kalkulationstabelle eine PDF-Datei erstellt. Diese können Sie öffnen und drucken oder auf der Festplatte des Computers oder einem Wechseldatenträger speichern und später drucken.</p>
+			
+		</div>
+	</body>
+</html>

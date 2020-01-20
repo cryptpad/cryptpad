@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Ansichtseinstellungen und Navigationswerkzeuge</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The description of view settings and navigation tools: sheet navigation buttons, sheet tabs, scrollbars, zoom." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Ansichtseinstellungen und Navigationswerkzeuge</h1>
+			<p>Um Ihnen das Ansehen und Auswählen von Zellen in einem großen Tabellenblatt zu erleichtern, bietet Ihnen der <b>Tabelleneditor</b> verschiedene Navigationswerkzeuge: verstellbare Leisten, Bildlaufleisten, Navigationsschaltflächen, Blattregister und Zoom.</p>
+			<h3>Ansichtseinstellungen anpassen</h3>
+			<p>Um die Standardanzeigeeinstellung anzupassen und den günstigsten Modus für die Arbeit mit dem Tabellenblatt festzulegen, wechseln Sie in die Registerkarte <b>Start</b>, klicken auf das Symbol <b>Ansichtseinstellungen</b> <img alt="Ansichtseinstellungen" src="../images/viewsettingsicon.png" /> und wählen Sie, welche Oberflächenelemente ein- oder ausgeblendet werden sollen. Folgende Optionen stehen Ihnen im Menü <b>Ansichtseinstellungen</b> zur Verfügung:</p>
+			<ul>
+                <li><b>Symbolleiste ausblenden</b> - die obere Symbolleiste und die zugehörigen Befehle werden ausgeblendet, während die Registerkarten weiterhin angezeigt werden. Ist diese Option aktiviert, können Sie jede beliebige Registerkarte anklicken, um die Symbolleiste anzuzeigen. Die Symbolleiste wird angezeigt bis Sie in einen Bereich außerhalb der Leiste klicken. Um den Modus zu deaktivieren, wechseln Sie in die Registerkarte <b>Start</b>, klicken Sie auf das Symbol <b>Ansichtseinstellungen</b> <img alt="Ansichtseinstellungen" src="../images/viewsettingsicon.png" /> und klicken Sie erneut auf <b>Symbolleiste ausblenden</b>. Die Symbolleiste ist wieder fixiert.<p class="note"><b>Hinweis</b>: Alternativ können Sie einen Doppelklick auf einer beliebigen Registerkarte ausführen, um die obere Symbolleiste zu verbergen oder wieder einzublenden.</p>
+                </li>
+			<li><b>Formelleiste ausblenden</b> - die unter der oberen Symbolleiste angezeigte Bearbeitungsleiste für die Eingabe und Vorschau von Formeln und Inhalten wird ausgeblendet. Um die ausgeblendete <b>Bearbeitungsleiste</b> wieder einzublenden, klicken Sie erneut auf diese Option.</li>
+			<li><b>Überschriften ausblenden</b> - die Spaltenüberschrift oben und die Zeilenüberschrift auf der linken Seite im Arbeitsblatt, werden ausgeblendet. Um die ausgeblendeten <b>Überschriften</b> wieder einzublenden, klicken Sie erneut auf diese Option.</li>
+			<li><b>Rasterlinien ausblenden</b> - die Linien um die Zellen werden ausgeblendet. Um die ausgeblendeten <b>Rasterlinien</b> wieder einzublenden, klicken Sie erneut auf diese Option.</li>
+			<li><b>Zellen fixieren</b> - alle Zellen oberhalb der aktiven Zeile und alle Spalten links von der aktiven Zeile werden eingefroren, so dass sie beim Scrollen sichtbar bleiben. Um die Fixierung aufzuheben, klicken Sie mit der rechten Maustaste an eine beliebige Stelle im Tabellenblatt und wählen Sie die Option <b>Fixierung aufheben</b> aus dem Menü aus.</li>
+			</ul>
+            <p>Die rechte Seitenleiste ist standartmäßig verkleinert. Um sie zu erweitern, wählen Sie ein beliebiges Objekt (z. B. Bild, Diagramm, Form) oder eine Textpassage aus und klicken Sie auf das Symbol des aktuell aktivierten Tabs auf der rechten Seite. Um die Seitenleiste wieder zu minimieren, klicken Sie erneut auf das Symbol.</p>
+			<p>Sie haben die Möglichkeit die Größe eines geöffneten <b>Kommentar-</b> oder <b>Chatfeldes</b> zu verändern. Bewegen Sie den Mauszeiger über den Rand der linken Seitenleiste, bis der Cursor als Zweirichtungs-Pfeil angezeigt wird und ziehen Sie den Rand nach rechts, um das Feld zu verbreitern. Um die ursprüngliche Breite wiederherzustellen, ziehen Sie den Rand nach links.</p>
+			<h3>Verwendung der Navigationswerkzeuge</h3>
+			<p>Mithilfe der folgenden Werkzeuge können Sie durch Ihr Tabellenblatt navigieren:</p>
+			<p>Mit den <b>Bildlaufleisten</b> (unten oder auf der rechten Seite) können Sie im aktuellen Tabellenblatt nach oben und unten und nach links und rechts scrollen. Mithilfe der Bildlaufleisten durch ein Tabellenblatt navigieren:</p>
+			<ul>
+			<li>Klicken Sie auf die oben/unten oder rechts/links Pfeile auf den Bildlaufleisten.</li>
+			<li>Ziehen Sie das Bildlauffeld.</li>
+			<li>Klicken Sie in einen beliebigen Bereich auf der jeweiligen Bildlaufleiste.</li>
+			</ul>
+			<p>Sie können auch mit dem <b>Scrollrad</b> auf Ihrer Maus durch das Dokument scrollen.</p>
+			<p>Die Schaltflächen für die <b>Blattnavigation</b> befinden sich in der linken unteren Ecke und dienen dazu zwischen den einzelnen Tabellenblättern in der aktuellen Kalkulationstabelle zu wechseln.</p> 
+			<ul>
+			<li>Klicken Sie auf die Schaltfläche <b>Zum ersten Blatt scrollen,</b> <img alt="Schaltfläche Erstes Blatt" src="../images/firstsheet.png" /> um das erste Blatt der aktuellen Tabelle zu aktivieren.</li>
+			<li>Klicken Sie auf die Schaltfläche <b>Zum vorherigen Blatt scrollen</b><img alt="Schaltfläche Vorheriges Blatt" src="../images/previoussheet.png" />, um das vorherige Blatt der aktuellen Tabelle zu aktivieren.</li>
+			<li>Klicken Sie auf die Schaltfläche <b>Zum nächsten Blatt scrollen,</b> <img alt="Schaltfläche Nächstes Blatt" src="../images/nextsheet.png" /> um das nächste Blatt der aktuellen Tabelle zu aktivieren.</li>
+			<li>Klicken Sie auf die Schaltfläche <b>Letztes Blatt,</b> <img alt="Schaltfläche Letztes Blatt" src="../images/lastsheet.png" /> um das letzte Blatt der aktuellen Tabelle zu aktivieren.</li>
+			</ul>
+			<p>Sie können das gewünschte Blatt aktivieren, indem Sie unten neben der Schaltfläche für die <b>Blattnavigation</b> auf das entsprechende <b>Blattregister</b> klicken.</p>
+			<p>Die <b>Zoom-Funktion</b> befindet sich in der rechten unteren Ecke und dient zum Vergrößern und Verkleinern des aktuellen Tabellenblatts. Um den in Prozent angezeigten aktuellen Zoomwert zu ändern, klicken Sie darauf und wählen Sie eine der verfügbaren Zoomoptionen aus der Liste oder klicken Sie auf <b>Vergrößern</b> <img alt="Vergrößern" src="../images/zoomin.png" /> oder <b>Verkleinern</b> <img alt="Verkleinern" src="../images/zoomout.png" />. Die Zoom-Einstellungen sind auch im Listenmenü <b>Ansichtseinstellungen</b> <img alt="Ansichtseinstellungen" src="../images/viewsettingsicon.png" /> verfügbar.</p>
+		</div>
+	</body>
+</html>

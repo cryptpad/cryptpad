@@ -1,13 +1,18 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 	<head>
 		<title>Управление листами</title>
 		<meta charset="utf-8" />
 		<meta name="description" content="Управляйте листами в онлайн-редакторе электронных таблиц: вставляйте, удаляйте, переименовывайте, копируйте и перемещайте." />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Поиск" type="text" onkeypress="doSearch(event)">
+            </div>
 			<h1>Управление листами</h1>
 			<p>По умолчанию новая созданная электронная таблица содержит один лист. Проще всего добавить новый лист, нажав на кнопку <img alt="Кнопка Плюс" src="../images/plus.png" /> справа от кнопок <b>Навигации по листам</b> в левом нижнем углу.</p>
 			<p>Есть другой способ <b>добавления нового листа</b>:</p>

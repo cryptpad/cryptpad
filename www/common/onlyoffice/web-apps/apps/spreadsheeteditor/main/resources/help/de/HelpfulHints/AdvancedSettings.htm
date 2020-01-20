@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Erweiterte Einstellungen des Kalkulationstabelleneditors</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The advanced settings of Spreadsheet Editor" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Erweiterte Einstellungen des Kalkulationstabelleneditors</h1>
+			<p>Über die Funktion erweiterte Einstellungen können Sie die Grundeinstellungen im <b>Kalkulationstabelleneditor</b> ändern. Klicken Sie dazu in der oberen Symbolleiste auf die Registerkarte <b>Datei</b> und wählen Sie die Option <b>Erweiterte Einstellungen...</b>. Sie können auch auf das Symbol <b>Einstellungen anzeigen</b> <img alt="Einstellungen anzeigen" src="../images/viewsettingsicon.png" /> rechts neben der Kopfzeile des Editors klicken und die Option <b>Erweiterte Einstellungen</b> auswählen.</p>
+			<p>Die erweiterten Einstellungen sind:</p>
+			<ul>
+                <li><b>Kommentaranzeige</b> - zum Ein-/Ausschalten der Option Live-Kommentar:<ul>
+                        <li><b>Anzeige von Kommentaren aktivieren</b> - wenn Sie diese Funktion deaktivieren, werden die kommentierten Zellen nur hervorgehoben, wenn Sie in der linken Seitenleiste auf das Symbol <b>Kommentare</b> <img alt="Kommentare" src="../images/commentsicon.png" /> klicken.</li>
+                        <li><b>Anzeige der aufgelösten Kommentare aktivieren</b> - diese Funktion ist standardmäßig deaktiviert, sodass die aufgelösten Kommentare im Arbeitsblatt verborgen werden. Sie können diese Kommentare nur ansehen, wenn Sie in der linken Seitenleiste auf das Symbol <b>Kommentare</b> <img alt="Kommentare" src="../images/commentsicon.png" /> klicken. Wenn die aufgelösten Kommentare auf dem Arbeitsblatt angezeigt werden sollen, müssen Sie diese Option aktivieren.</li>
+                    </ul>
+                </li>
+                <li class="onlineDocumentFeatures"><b>AutoSave</b> - automatisches Speichern von Änderungen während der Bearbeitung ein-/ausschalten.</li>
+                <li>Der <b>Referenzstil</b> wird verwendet, um den <b>R1C1-Referenzstil</b> ein- oder auszuschalten Diese Option ist standardmäßig ausgewählt und es wird der <b>Referenzstil A1</b> verwendet.<p>Wenn der <b>Referenzstil A1</b> verwendet wird, werden Spalten durch Buchstaben und Zeilen durch Zahlen gekennzeichnet. Wenn Sie die Zelle in Zeile 3 und Spalte 2 auswählen, sieht die Adresse in der Box links neben der Formelleiste folgendermaßen aus: <b>B3</b>. Wenn der <b>Referenzstil R1C1</b> verwendet wird, werden sowohl Spalten als auch Zeilen durch Zahlen gekennzeichnet. Wenn Sie die Zelle am Schnittpunkt von Zeile 3 und Spalte 2 auswählen, sieht die Adresse folgendermaßen aus: <b>R3C2</b>. Buchstabe R gibt die Zeilennummer und Buchstabe C die Spaltennummer an.</p>
+                <p><img alt="Aktive Zelle" src="../images/activecell.png" /></p>
+                <p>Wenn Sie sich auf andere Zellen mit dem <b>Referenzstil R1C1</b> beziehen, wird der Verweis auf eine Zielzelle basierend auf der Entfernung von einer aktiven Zelle gebildet. Wenn Sie beispielsweise die Zelle in Zeile 5 und Spalte 1 auswählen und auf die Zelle in Zeile 3 und Spalte 2 verweisen, lautet der Bezug <b>R[-2]C[1]</b>. Zahlen in eckigen Klammern geben die Position der Zelle an, auf die Sie in Relation mit der aktuellen Zellenposition verweisen, d. h. die Zielzelle ist 2 Zeilen höher und 1 Spalte weiter rechts als die aktive Zelle. Wenn Sie die Zelle in Zeile 1 und Spalte 2 auswählen und auf die gleiche Zelle in Zeile 3 und Spalte 2 verweisen, lautet der Bezug <b>R[2]C</b>, d. h. die Zielzelle ist 2 Zeilen tiefer aber in der gleichen Spalte wie die aktive Zelle.</p>
+                <p><img alt="Relativer Bezug" src="../images/relativereference.png" /></p>
+                </li>
+                <li class="onlineDocumentFeatures"><b>Co-Bearbeitung</b> - Anzeige der während der Co-Bearbeitung vorgenommenen Änderungen:<ul>
+                        <li>Standardmäßig ist der <b>Schnellmodus</b> aktiviert. Die Benutzer, die das Dokuments gemeinsam bearbeiten, sehen die Änderungen in Echtzeit, sobald sie von anderen Benutzern vorgenommen wurden.</li>
+                        <li>Wenn Sie die Änderungen von anderen Benutzern nicht einsehen möchten (um Störungen zu vermeiden oder aus einem anderen Grund), wählen Sie den Modus <b>Strikt</b> und alle Änderungen werden erst angezeigt, nachdem Sie auf das Symbol <b>Speichern</b> <img alt="Speichern" src="../images/saveupdate.png" /> geklickt haben, dass Sie darüber informiert, dass Änderungen von anderen Benutzern vorliegen.</li>
+                    </ul>
+                </li>
+                <li><b>Standard-Zoomwert</b> - Einrichten des Standard-Zoomwerts aus der Liste der verfügbaren Optionen von 50 % bis 200 %.</li>
+				<li><b>Hinting</b> - Auswahl der Schriftartdarstellung im Tabelleneditor:<ul>
+						<li>Wählen Sie <b>Wie Windows</b>, wenn Ihnen die Art gefällt, wie die Schriftarten unter Windows gewöhnlich angezeigt werden, d.h. mit Windows-artigen Hints.</li>
+						<li>Wählen Sie <b>Wie OS X</b>, wenn Ihnen die Art gefällt, wie die Schriftarten auf einem Mac gewöhnlich angezeigt werden, d.h. ohne Hints.</li>
+						<li>Wählen Sie <b>Eingebettet</b>, wenn Sie möchten, dass Ihr Text mit den Hints angezeigt wird, die in Schriftartdateien eingebettet sind.</li>
+					</ul>
+				</li>
+				<li><b>Maßeinheiten</b> - geben Sie an, welche Einheiten verwendet werden, um Elemente wie Breite, Höhe, Abstand, Ränder usw. anzugeben. Sie können die Optionen <b>Zentimeter</b>, <b>Punkt</b> oder <b>Zoll</b> wählen.</li>
+                <li><b>Formelsprache</b> - Sprache für die Anzeige und Eingabe von Formelnamen festlegen.</li>
+                <li><b>Regionale Einstellungen</b> - Standardanzeigeformat für Währung und Datum und Uhrzeit auswählen.</li>
+			</ul>
+			<p>Um die vorgenommenen Änderungen zu speichern, klicken Sie auf <b>Übernehmen</b>.</p>
+		</div>
+	</body>
+</html>

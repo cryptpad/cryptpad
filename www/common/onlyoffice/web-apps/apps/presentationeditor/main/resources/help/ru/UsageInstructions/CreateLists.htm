@@ -1,17 +1,23 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 	<head>
 		<title>Создание списков</title>
 		<meta charset="utf-8" />
 		<meta name="description" content="Создайте маркированные и нумерованные списки в презентации" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Поиск" type="text" onkeypress="doSearch(event)">
+        </div>
 			<h1>Создание списков</h1>
 			<p>Для создания списка в презентации:</p>
 			<ol>
 				<li>установите курсор в том месте внутри текстового поля, где начнется список (это может быть новая строка или уже введенный текст),</li>
+                <li>перейдите на вкладку <b>Главная</b> верхней панели инструментов,</li>
 				<li>выберите тип списка, который вы хотите создать:
 					<ul>
 						<li><b>Неупорядоченный список</b> с маркерами создается с помощью значка <b>Маркированный список</b> <img alt="Значок Маркированный список" src="../images/bullets.png" />, расположенного на верхней панели инструментов</li>

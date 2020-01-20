@@ -7,6 +7,8 @@ define([
     '/common/common-interface.js',
     '/common/common-hash.js',
     '/common/common-util.js',
+    '/common/common-ui-elements.js',
+    '/common/hyperscript.js',
     '/api/config',
     '/customize/messages.js',
     '/customize/application_config.js',
@@ -31,6 +33,8 @@ define([
     UI,
     Hash,
     Util,
+    UIElements,
+    h,
     ApiConfig,
     Messages,
     AppConfig,
@@ -42,17 +46,19 @@ define([
     Channel)
 {
     var saveAs = window.saveAs;
+    var Nacl = window.nacl;
 
     var APP = window.APP = {
         $: $
     };
+
 
     var CHECKPOINT_INTERVAL = 50;
     var DISPLAY_RESTORE_BUTTON = false;
 
     var debug = function (x) {
         if (!window.CP_DEV_MODE) { return; }
-        console.log(x);
+        console.debug(x);
     };
 
     var stringify = function (obj) {
@@ -60,6 +66,7 @@ define([
     };
 
     var toolbar;
+
 
     var andThen = function (common) {
         var Title;
@@ -71,7 +78,8 @@ define([
         var config = {};
         var content = {
             hashes: {},
-            ids: {}
+            ids: {},
+            mediasSources: {}
         };
         var oldHashes = {};
         var oldIds = {};
@@ -79,6 +87,14 @@ define([
         var myUniqueOOId;
         var myOOId;
         var sessionId = Hash.createChannelId();
+
+        // This structure is used for caching media data and blob urls for each media cryptpad url
+        var mediasData = {};
+
+        var getMediasSources = APP.getMediasSources =  function() {
+            content.mediasSources = content.mediasSources || {};
+            return content.mediasSources;
+        };
 
         var getId = function () {
             return metadataMgr.getNetfluxId() + '-' + privateData.clientId;
@@ -225,6 +241,9 @@ define([
         var fixSheets = function () {
             try {
                 var editor = window.frames[0].editor;
+                // if we are not in the sheet app
+                // we should not call this code
+                if (typeof editor.GetSheets === 'undefined') { return; }
                 var s = editor.GetSheets();
                 if (s.length === 0) { return; }
                 var wb = s[0].worksheet.workbook;
@@ -255,9 +274,11 @@ define([
             APP.realtime.onSettle(function () {
                 fixSheets();
                 UI.log(Messages.saved);
-                if (ev.callback) {
-                    return void ev.callback();
-                }
+                APP.realtime.onSettle(function () {
+                    if (ev.callback) {
+                        return void ev.callback();
+                    }
+                });
             });
             sframeChan.query('Q_OO_COMMAND', {
                 cmd: 'UPDATE_HASH',
@@ -342,7 +363,6 @@ define([
             sframeChan.on('EV_OO_EVENT', function (obj) {
                 switch (obj.ev) {
                     case 'READY':
-                        rtChannel.ready = true;
                         break;
                     case 'LEAVE':
                         removeClient(obj.data);
@@ -473,6 +493,7 @@ define([
             ooChannel.queue.forEach(function (data) {
                 Array.prototype.push.apply(changes, data.msg.changes);
             });
+            ooChannel.lastHash = getLastCp().hash;
             send({
                 type: "authChanges",
                 changes: changes
@@ -491,8 +512,8 @@ define([
                 buildVersion: "5.2.6",
                 buildNumber: 2,
                 licenseType: 3,
-                "g_cAscSpellCheckUrl": "/spellchecker",
-                "settings":{"spellcheckerUrl":"/spellchecker","reconnection":{"attempts":50,"delay":2000}}
+                //"g_cAscSpellCheckUrl": "/spellchecker",
+                //"settings":{"spellcheckerUrl":"/spellchecker","reconnection":{"attempts":50,"delay":2000}}
             });
             // Open the document
             send({
@@ -636,7 +657,18 @@ define([
                             send({ type: "message" });
                             break;
                         case "saveChanges":
+                            // We're sending our changes to netflux
                             handleChanges(obj, send);
+                            try {
+                                var docs = window.frames[0].AscCommon.g_oDocumentUrls.urls || {};
+                                var mediasSources = getMediasSources();
+                                Object.keys(mediasSources).forEach(function (name) {
+                                    if (!docs['media/'+name]) {
+                                        delete mediasSources[name];
+                                    }
+                                });
+                                APP.onLocal();
+                            } catch (e) {}
                             break;
                         case "unLockDocument":
                             if (obj.releaseLocks && content.locks && content.locks[getId()]) {
@@ -690,18 +722,32 @@ define([
                         "id": String(myOOId), //"c0c3bf82-20d7-4663-bf6d-7fa39c598b1d",
                         "firstname": metadataMgr.getUserData().name || Messages.anonymous,
                     },
-                    "mode": readOnly || lock ? "view" : "edit"
+                    "mode": readOnly || lock ? "view" : "edit",
+                    "lang": (navigator.language || navigator.userLanguage || '').slice(0,2)
                 },
                 "events": {
                     "onAppReady": function(/*evt*/) {
                         var $tb = $('iframe[name="frameEditor"]').contents().find('head');
-                        var css = '#id-toolbar-full .toolbar-group:nth-child(2), #id-toolbar-full .separator:nth-child(3) { display: none; }' +
+                        var css = // Old OO
+                                  '#id-toolbar-full .toolbar-group:nth-child(2), #id-toolbar-full .separator:nth-child(3) { display: none; }' +
                                   '#fm-btn-save { display: none !important; }' +
                                   '#panel-settings-general tr.autosave { display: none !important; }' +
                                   '#panel-settings-general tr.coauth { display: none !important; }' +
                                   '#header { display: none !important; }' +
-                                  '#id-toolbar-full-placeholder-btn-insertimage { display: none; }' +
-                                  '#id-toolbar-full-placeholder-btn-insertequation { display: none; }';
+                                  '#title-doc-name { display: none !important; }' +
+                                  // New OO:
+                                  '#asc-gen566 { display: none !important; }' + // Insert image from url
+                                  'section[data-tab="ins"] .separator:nth-last-child(2) { display: none !important; }' + // separator
+                                  '#slot-btn-insequation { display: none !important; }' + // Insert equation
+                                  '.toolbar .tabs .ribtab:not(.canedit) { display: none !important; }' + // Switch collaborative mode
+                                  '#app-title { display: none !important; }' + // OnlyOffice logo + doc title
+                                  '#fm-btn-info { display: none !important; }' + // Author name, doc title, etc. in "File" (menu entry)
+                                  '#panel-info { display: none !important; }' + // Same but content
+                                  '#image-button-from-url { display: none !important; }' + // Inline image settings: replace with url
+                                  '#file-menu-panel .devider { display: none !important; }' + // separator in the "File" menu
+                                  '#file-menu-panel { top: 28px !important; }' + // Position of the "File" menu
+                                  '#left-btn-spellcheck, #left-btn-about { display: none !important; }'+
+                                  'div.btn-users.dropdown-toggle { display: none; !important }';
                         $('<style>').text(css).appendTo($tb);
                         if (UI.findOKButton().length) {
                             UI.findOKButton().on('focusout', function () {
@@ -715,20 +761,341 @@ define([
                 var ifr = document.getElementsByTagName('iframe')[0];
                 if (ifr) { ifr.remove(); }
             };
+
+            common.initFilePicker({
+                onSelect: function (data) {
+                    if (data.type !== 'file') {
+                        debug("Unexpected data type picked " + data.type);
+                        return;
+                    }
+                    var name = data.name;
+
+                    // Add image to the list
+                    var mediasSources = getMediasSources();
+                    mediasSources[name] = data;
+                    APP.onLocal();
+
+                    APP.realtime.onSettle(function () {
+                        APP.getImageURL(name, function(url) {
+                            debug("CRYPTPAD success add " + name);
+                            APP.AddImageSuccessCallback({
+                                name: name,
+                                url: url
+                            });
+                        });
+                    });
+                }
+            });
+
+            APP.AddImage = function(cb1, cb2) {
+                APP.AddImageSuccessCallback = cb1;
+                APP.AddImageErrorCallback = cb2;
+                common.openFilePicker({
+                    types: ['file'],
+                    where: ['root']
+                });
+            };
+
+            APP.getImageURL = function(name, callback) {
+                var mediasSources = getMediasSources();
+                var data = mediasSources[name];
+
+                if (typeof data === 'undefined') {
+                    debug("CryptPad - could not find matching media for " + name);
+                    return void callback("");
+                }
+
+                var blobUrl = (typeof mediasData[data.src] === 'undefined') ? "" : mediasData[data.src].src;
+                if (blobUrl) {
+                    debug("CryptPad Image already loaded " + blobUrl);
+                    return void callback(blobUrl);
+                }
+
+                Util.fetch(data.src, function (err, u8) {
+                    try {
+                        debug("Decrypt with key " + data.key);
+                        FileCrypto.decrypt(u8, Nacl.util.decodeBase64(data.key), function (err, res) {
+                            if (err || !res.content) {
+                                debug("Decrypting failed");
+                                return void callback("");
+                            }
+
+                            var blobUrl = URL.createObjectURL(res.content);
+                            // store media blobUrl and content for cache and export
+                            var mediaData = { blobUrl : blobUrl, content : "" };
+                            mediasData[data.src] = mediaData;
+                            var reader = new FileReader();
+                            reader.onloadend = function () {
+                                debug("MediaData set");
+                                mediaData.content = reader.result;
+                            };
+                            reader.readAsArrayBuffer(res.content);
+                            debug("Adding CryptPad Image " + data.name + ": " +  blobUrl);
+                            window.frames[0].AscCommon.g_oDocumentUrls.addImageUrl(data.name, blobUrl);
+                            callback(blobUrl);
+                        });
+                    } catch (e) {
+                        debug("Exception decrypting image " + data.name);
+                        console.error(e);
+                        callback("");
+                    }
+                });
+            };
+
             APP.docEditor = new window.DocsAPI.DocEditor("cp-app-oo-placeholder", APP.ooconfig);
             ooLoaded = true;
             makeChannel();
         };
 
+        var x2tInitialized = false;
+        var x2tInit = function(x2t) {
+            debug("x2t mount");
+            // x2t.FS.mount(x2t.MEMFS, {} , '/');
+            x2t.FS.mkdir('/working');
+            x2t.FS.mkdir('/working/media');
+            x2tInitialized = true;
+            debug("x2t mount done");
+        };
 
-        var exportFile = function() {
+        /*
+            Converting Data
+
+            This function converts a data in a specific format to the outputformat
+            The filename extension needs to represent the input format
+            Example: fileName=cryptpad.bin outputFormat=xlsx
+        */
+        var x2tConvertDataInternal = function(x2t, data, fileName, outputFormat) {
+            debug("Converting Data for " + fileName + " to " + outputFormat);
+            // writing file to mounted working disk (in memory)
+            x2t.FS.writeFile('/working/' + fileName, data);
+
+            // Adding images
+            Object.keys(window.frames[0].AscCommon.g_oDocumentUrls.urls || {}).forEach(function (_mediaFileName) {
+                var mediaFileName = _mediaFileName.substring(6);
+                var mediasSources = getMediasSources();
+                var mediaSource = mediasSources[mediaFileName];
+                var mediaData = mediaSource ? mediasData[mediaSource.src] : undefined;
+                if (mediaData) {
+                    debug("Writing media data " + mediaFileName);
+                    debug("Data");
+                    var fileData = mediaData.content;
+                    x2t.FS.writeFile('/working/media/' + mediaFileName, new Uint8Array(fileData));
+                } else {
+                    debug("Could not find media content for " + mediaFileName);
+                }
+            });
+
+            var params =  "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+                        + "<TaskQueueDataConvert xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">"
+                        + "<m_sFileFrom>/working/" + fileName + "</m_sFileFrom>"
+                        + "<m_sFileTo>/working/" + fileName + "." + outputFormat + "</m_sFileTo>"
+                        + "<m_bIsNoBase64>false</m_bIsNoBase64>"
+                        + "</TaskQueueDataConvert>";
+            // writing params file to mounted working disk (in memory)
+            x2t.FS.writeFile('/working/params.xml', params);
+            // running conversion
+            x2t.ccall("runX2T", ["number"], ["string"], ["/working/params.xml"]);
+            // reading output file from working disk (in memory)
+            var result;
+            try {
+                result = x2t.FS.readFile('/working/' + fileName + "." + outputFormat);
+            } catch (e) {
+                debug("Failed reading converted file");
+                UI.removeModals();
+                UI.warn(Messages.error);
+                return "";
+            }
+            return result;
+        };
+
+        var x2tSaveAndConvertDataInternal = function(x2t, data, filename, extension, finalFilename) {
+            var type = common.getMetadataMgr().getPrivateData().ooType;
+            var xlsData;
+            if (type === "sheet" && extension !== 'xlsx') {
+                xlsData = x2tConvertDataInternal(x2t, data, filename, 'xlsx');
+                filename += '.xlsx';
+            } else if (type === "ooslide" && extension !== "pptx") {
+                xlsData = x2tConvertDataInternal(x2t, data, filename, 'pptx');
+                filename += '.pptx';
+            } else if (type === "oodoc" && extension !== "docx") {
+                xlsData = x2tConvertDataInternal(x2t, data, filename, 'docx');
+                filename += '.docx';
+            }
+            xlsData = x2tConvertDataInternal(x2t, data, filename, extension);
+            if (xlsData) {
+                var blob = new Blob([xlsData], {type: "application/bin;charset=utf-8"});
+                UI.removeModals();
+                saveAs(blob, finalFilename);
+            }
+        };
+
+        var x2tSaveAndConvertData = function(data, filename, extension, finalFilename) {
+            // Perform the x2t conversion
+            require(['/common/onlyoffice/x2t/x2t.js'], function() {
+                var x2t = window.Module;
+                x2t.run();
+                if (x2tInitialized) {
+                    debug("x2t runtime already initialized");
+                    x2tSaveAndConvertDataInternal(x2t, data, filename, extension, finalFilename);
+                }
+
+                x2t.onRuntimeInitialized = function() {
+                    debug("x2t in runtime initialized");
+                    // Init x2t js module
+                    x2tInit(x2t);
+                    x2tSaveAndConvertDataInternal(x2t, data, filename, extension, finalFilename);
+                };
+            });
+        };
+
+
+        var exportXLSXFile = function() {
             var text = getContent();
             var suggestion = Title.suggestTitle(Title.defaultTitle);
-            UI.prompt(Messages.exportPrompt,
-                Util.fixFileName(suggestion) + '.bin', function (filename) {
+            var ext = ['.xlsx', /*'.ods',*/ '.bin'];
+            var type = common.getMetadataMgr().getPrivateData().ooType;
+            var warning = '';
+            if (type==="ooslide") {
+                ext = ['.pptx', /*'.odp',*/ '.bin'];
+            } else if (type==="oodoc") {
+                ext = ['.docx', /*'.odt',*/ '.bin'];
+            }
+
+            if (typeof(Atomics) === "undefined") {
+                ext = ['.bin'];
+                warning = '<div class="alert alert-info">'+Messages.oo_exportChrome+'</div>';
+            }
+
+            var types = ext.map(function (val) {
+                return {
+                    tag: 'a',
+                    attributes: {
+                        'data-value': val,
+                        href: '#'
+                    },
+                    content: val
+                };
+            });
+            var dropdownConfig = {
+                text: ext[0], // Button initial text
+                caretDown: true,
+                options: types, // Entries displayed in the menu
+                isSelect: true,
+                initialValue: ext[0],
+                common: common
+            };
+            var $select = UIElements.createDropdown(dropdownConfig);
+
+            UI.prompt(Messages.exportPrompt+warning, Util.fixFileName(suggestion), function (filename) {
+                // $select.getValue()
                 if (!(typeof(filename) === 'string' && filename)) { return; }
-                var blob = new Blob([text], {type: "application/bin;charset=utf-8"});
-                saveAs(blob, filename);
+                var ext = ($select.getValue() || '').slice(1);
+                if (ext === 'bin') {
+                    var blob = new Blob([text], {type: "application/bin;charset=utf-8"});
+                    saveAs(blob, filename+'.bin');
+                    return;
+                }
+
+                var content = h('div.cp-oo-x2tXls', [
+                    h('span.fa.fa-spin.fa-spinner'),
+                    h('span', Messages.oo_exportInProgress)
+                ]);
+                UI.openCustomModal(UI.dialog.customModal(content, {buttons: []}));
+
+                setTimeout(function () {
+                    x2tSaveAndConvertData(text, "filename.bin", ext, filename+'.'+ext);
+                }, 100);
+            }, {
+                typeInput: $select[0]
+            }, true);
+        };
+
+        var x2tImportImagesInternal = function(x2t, images, i, callback) {
+            if (i >= images.length) {
+                callback();
+            } else {
+                debug("Import image " + i);
+                var handleFileData = {
+                    name: images[i],
+                    mediasSources: getMediasSources(),
+                    callback: function() {
+                        debug("next image");
+                        x2tImportImagesInternal(x2t, images, i+1, callback);
+                    },
+                };
+                var filePath = "/working/media/" + images[i];
+                debug("Import filename " + filePath);
+                var fileData = x2t.FS.readFile("/working/media/" + images[i], { encoding : "binary" });
+                debug("Importing data");
+                debug("Buffer");
+                debug(fileData.buffer);
+                var blob = new Blob([fileData.buffer], {type: 'image/png'});
+                blob.name = images[i];
+                APP.FMImages.handleFile(blob, handleFileData);
+            }
+        };
+
+        var x2tImportImages = function (x2t, callback) {
+            if (!APP.FMImages) {
+                var fmConfigImages = {
+                    noHandlers: true,
+                    noStore: true,
+                    body: $('body'),
+                    onUploaded: function (ev, data) {
+                        if (!ev.callback) { return; }
+                        debug("Image uploaded at " + data.url);
+                        var parsed = Hash.parsePadUrl(data.url);
+                        if (parsed.type === 'file') {
+                            var secret = Hash.getSecrets('file', parsed.hash, data.password);
+                            var fileHost = privateData.fileHost || privateData.origin;
+                            var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
+                            var key = Hash.encodeBase64(secret.keys.cryptKey);
+                            debug("Final src: " + src);
+                            ev.mediasSources[ev.name] = { name : ev.name, src : src, key : key };
+                        }
+                        ev.callback();
+                    }
+                };
+                APP.FMImages = common.createFileManager(fmConfigImages);
+            }
+
+            // Import Images
+            debug("Import Images");
+            var files = x2t.FS.readdir("/working/media/");
+            var images = [];
+            files.forEach(function (file) {
+                if (file !== "." && file !== "..") {
+                    images.push(file);
+                }
+            });
+            x2tImportImagesInternal(x2t, images, 0, function() {
+                debug("Sync media sources elements");
+                debug(getMediasSources());
+                APP.onLocal();
+                debug("Import Images finalized");
+                callback();
+            });
+        };
+
+
+        var x2tConvertData = function (x2t, data, filename, extension, callback) {
+            var convertedContent;
+            // Convert from ODF format:
+            // first convert to Office format then to the selected extension
+            if (filename.endsWith(".ods")) {
+                convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(data), filename, "xlsx");
+                convertedContent = x2tConvertDataInternal(x2t, convertedContent, filename + ".xlsx", extension);
+            } else if (filename.endsWith(".odt")) {
+                convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(data), filename, "docx");
+                convertedContent = x2tConvertDataInternal(x2t, convertedContent, filename + ".docx", extension);
+            } else if (filename.endsWith(".odp")) {
+                convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(data), filename, "pptx");
+                convertedContent = x2tConvertDataInternal(x2t, convertedContent, filename + ".pptx", extension);
+            } else {
+                convertedContent = x2tConvertDataInternal(x2t, new Uint8Array(data), filename, extension);
+            }
+            x2tImportImages(x2t, function() {
+                callback(convertedContent);
             });
         };
 
@@ -738,15 +1105,21 @@ define([
                 return nId.length === 32;
             });
             if (m.length > 1) {
+                UI.removeModals();
                 return void UI.alert(Messages.oo_cantUpload);
             }
+            if (!content) {
+                UI.removeModals();
+                return void UI.alert(Messages.oo_invalidFormat);
+            }
             var blob = new Blob([content], {type: 'plain/text'});
             var file = getFileType();
             blob.name = (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
             var uploadedCallback = function() {
+                UI.removeModals();
                 UI.confirm(Messages.oo_uploaded, function (yes) {
                     try {
-                         window.frames[0].editor.setViewModeDisconnect();
+                        window.frames[0].editor.setViewModeDisconnect();
                     } catch (e) {}
                     if (!yes) { return; }
                     common.gotoURL();
@@ -758,6 +1131,41 @@ define([
                 callback: uploadedCallback
             };
             APP.FM.handleFile(blob, data);
+        };
+
+        var importXLSXFile = function(content, filename, ext) {
+            // Perform the x2t conversion
+            debug("Filename");
+            debug(filename);
+            if (ext === "bin") {
+                return void importFile(content);
+            }
+            var div = h('div.cp-oo-x2tXls', [
+                h('span.fa.fa-spin.fa-spinner'),
+                h('span', Messages.oo_importInProgress)
+            ]);
+            UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
+            setTimeout(function () {
+                require(['/common/onlyoffice/x2t/x2t.js'], function() {
+                    var x2t = window.Module;
+                    x2t.run();
+                    if (x2tInitialized) {
+                        debug("x2t runtime already initialized");
+                        x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin", function(convertedContent) {
+                            importFile(convertedContent);
+                        });
+                    }
+
+                    x2t.onRuntimeInitialized = function() {
+                        debug("x2t in runtime initialized");
+                        // Init x2t js module
+                        x2tInit(x2t);
+                        x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin", function(convertedContent) {
+                            importFile(convertedContent);
+                        });
+                    };
+                });
+            }, 100);
         };
 
         var loadLastDocument = function () {
@@ -828,7 +1236,7 @@ define([
                     JSON.parse(content);
                     return true;
                 } catch (e) {
-                    console.log("Failed to parse, rejecting patch");
+                    debug("Failed to parse, rejecting patch");
                     return false;
                 }
             }
@@ -840,7 +1248,7 @@ define([
                     window.frames[0].editor.setViewModeDisconnect(true);
                 } catch (e) {}
             }
-            console.log(state);
+            debug(state);
         };
 
         var stringifyInner = function () {
@@ -852,6 +1260,23 @@ define([
             return stringify(obj);
         };
 
+        var pinImages = function () {
+            if (content.mediasSources) {
+                var toPin = Object.keys(content.mediasSources || {}).map(function (id) {
+                    var data = content.mediasSources[id] || {};
+                    var src = data.src;
+                    if (!src) { return; }
+                    // Remove trailing slash
+                    if (src.slice(-1) === '/') {
+                        src = src.slice(0, -1);
+                    }
+                    // Extract the channel id from the source href
+                    return src.slice(src.lastIndexOf('/') + 1);
+                }).filter(Boolean);
+                sframeChan.query('EV_OO_PIN_IMAGES', toPin);
+            }
+        };
+
         APP.getContent = function () { return content; };
 
         APP.onLocal = config.onLocal = function () {
@@ -861,6 +1286,7 @@ define([
             // Update metadata
             var content = stringifyInner();
             APP.realtime.contentUpdate(content);
+            pinImages();
         };
 
         config.onInit = function (info) {
@@ -911,11 +1337,11 @@ define([
                 }).attr('title', 'Restore last checkpoint').appendTo($rightside);
             }
 
-            var $export = common.createButton('export', true, {}, exportFile);
-            $export.appendTo($rightside);
+            var $exportXLSX = common.createButton('export', true, {}, exportXLSXFile);
+            $exportXLSX.appendTo($rightside);
 
-            var $import = common.createButton('import', true, {}, importFile);
-            $import.appendTo($rightside);
+            var $importXLSX = common.createButton('import', true, { accept: [".bin", ".ods", ".xlsx"], binary : ["ods", "xlsx"] }, importXLSXFile);
+            $importXLSX.appendTo($rightside);
 
             if (common.isLoggedIn()) {
                 common.createButton('hashtag', true).appendTo($rightside);
@@ -1005,6 +1431,7 @@ define([
                 }
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
             }
+
             if (content.ids) {
                 handleNewIds(oldIds, content.ids);
                 oldIds = JSON.parse(JSON.stringify(content.ids));
@@ -1013,6 +1440,7 @@ define([
                 handleNewLocks(oldLocks, content.locks);
                 oldLocks = JSON.parse(JSON.stringify(content.locks));
             }
+            pinImages();
         };
 
         config.onAbort = function () {

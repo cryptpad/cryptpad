@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Función DIRECCIÓN</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Función DIRECCIÓN</h1>
+			<p>La función <b>DIRECCIÓN</b> es una función de búsqueda y referencia. Se usa para devolver la dirección de una celda expresada como un valor numérico.</p>
+			<p>La sintaxis de la función <b>DIRECCIÓN</b> es:</p> 
+			<p style="text-indent: 150px;"><b><em>DIRECCIÓN(fila-número, col-número[ , [ref-tipo] [, [A1-ref-tipo-indicador] [, nombre de la hoja]]])</em></b></p> 
+			<p><em>donde</em></p> 
+			<p style="text-indent: 50px;"><em><b>fila-número</b></em> es un número de fila usado en la dirección de una celda.</p>
+			<p style="text-indent: 50px;"><em><b>col-número</b></em> es un número de columna usado en la dirección de una celda.</p>
+			<p style="text-indent: 50px;"><em><b>ref-tipo</b></em> es un tipo de referencia. Puede ser uno de los valores siguientes:</p>
+				<table style="width: 40%">
+				<tr>
+					<td><b>Valor numérico</b></td>
+					<td><b>Significado</b></td>
+				</tr>
+				<tr>
+					<td>1 u omitido</td>
+					<td>Referencia absoluta</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>Fila absoluta; columna relativa</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>Fila relativa; columna absoluta</td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>Referencia relativa</td>
+				</tr>
+			</table>
+			<p><em><b>A1-ref-tipo-indicador</b></em> es un valor lógico opcional: VERDADERO o FALSO. Si se establece en VERDADERO u omitido, el estilo de referencia de <b><em>ref-texto</em></b> será A1. Si se establece en FALSO, el estilo de referencia de <b><em>ref-texto</em></b> será R1C1.</p>
+			<p><em><b>nombre de la hoja</b></em> es el nombre de la hoja usado en la dirección de la celda. es un argumento opcional. Si se omite, la función devolverá la dirección de la celda sin nombre de la hoja.</p>
+			<p>Los argumentos pueden ser introducidos manualmente o incluidos en las celdas a las que usted hace referencia.</p>
+			<p>Para aplicar la función <b>DIRECCIÓN</b>,</p>
+			<ol>
+			<li>seleccione la celda donde usted quiere ver el resultado,</li>
+			<li>haga clic en el icono <b>Insertar función</b> <img alt="Icono insertar función" src="../images/insertfunction.png" /> situado en la barra de herramientas superior, <br />o haga clic derecho en la сelda seleccionada y elija la opción <b>Insertar función</b> en el menú, <br />o pulse el icono <img alt="Icono función" src="../images/function.png" /> situado en la barra de fórmulas,</li>
+			<li>seleccione el grupo de funciones <b>Búsqueda y referencia</b> en la lista,</li>
+			<li>pulse la función <b>DIRECCIÓN</b>,</li>
+			<li>introduzca los argumentos requeridos separándolos con comas,</li>
+			<li>pulse el botón <b>Enter</b>.</li>
+			</ol>
+			<p>El resultado se mostrará en la celda elegida.</p>
+			<p style="text-indent: 150px;"><img alt="Función DIRECCIÓN" src="../images/address.png" /></p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Combine celdas</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Merge some cells into one and split the previously merged cell" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Combine celdas</h1>
+			<p>Usted puede unir dos o más celdas adyacentes en una. Para hacerlo,</p>
+			<ol>
+			<li>seleccione dos celdas o un rango de celdas usando el ratón,<p class="note"><b>Nota</b>: las celdas seleccionadas <b>DEBEN</b> ser adyacentes.</p>
+			</li>
+			<li>haga clic en el icono <b>Combinar</b> <img alt="Icono Combinar" src="../images/merge.png" /> situado en la pestaña de <b>Inicio</b> en la barra de herramientas superior y seleccione una de las opciones disponibles:<p class="note"><b>Nota</b>: solo los datos de la celda superior izquierda del rango seleccionado permanecerán en la celda unida. Los datos en otras celdas del rango seleccionado se eliminarán.</p>
+			<ul>
+			<li>si usted selecciona la opción <b>Combinar y Centrar</b>, las celdas del rango seleccionado se combinarán y los datos se centrarán en las celdas combinadas;</li>
+			<li>si usted selecciona la opción <b>Combinar Horizontalmente</b>, las celdas de cada fila del rango seleccionado se combinarán y los datos se alinearán a la izquierda de las celdas combinadas;</li>
+			<li>si usted selecciona la opción <b>Combinar Celdas</b>, las celdas del rango seleccionado se combinarán y los datos se alinearán de forma vertical en la parte de abajo y de forma horizontal por la parte izquierda.</li>
+			</ul>
+			</li>
+			</ol>
+			<p>Para dividir la celda anteriormente combinada use la opción <b>Dividir celdas</b> de la lista desplegable <b>Combinar</b>. Los datos de la celda unida se mostrarán en la celda superior izquierda.</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insérer ou supprimer des cellules, des lignes et des colonnes</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Insert or delete cells, rows, and columns, hide or show rows or columns, change row height and column width" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insérer ou supprimer des cellules, des lignes et des colonnes</h1>
+			<p>Vous pouvez insérer des cellules vides au-dessus ou à gauche de la cellule sélectionnée dans une feuille de calcul. Vous pouvez également insérer une ligne entière au-dessus de la ligne sélectionnée ou une colonne à gauche de la colonne sélectionnée. Pour faciliter la visualisation d'une grande quantité d'informations, vous pouvez masquer certaines lignes ou colonnes et les afficher à nouveau. Il est également possible de spécifier une certaine hauteur de ligne et largeur de colonne.</p>
+			<h3>Insérer une cellule, une ligne ou une colonne</h3>
+            <p><b>Pour insérer une cellule vide à gauche de la cellule sélectionnée :</b></p>
+			<ol>
+				<li>cliquez avec le bouton droit sur la cellule à gauche de laquelle vous souhaitez insérer une nouvelle cellule,</li>
+				<li>cliquez sur l'icône <b>Insérer des cellules</b> <img alt="Insérer des cellules" src="../images/insertcells.png" /> située dans l'onglet <b>Accueil</b> de la barre d'outils supérieure ou sélectionnez l'élément <b>Insérer</b> dans le menu contextuel et utilisez l'option <b>Décaler les cellules à droite</b>.</li>
+			</ol>
+			<p>Le programme déplacera la cellule sélectionnée vers la droite pour insérer une cellule vide.</p>
+			<p><b>Pour insérer une cellule vide au-dessus de la cellule sélectionnée :</b></p>
+			<ol>
+				<li>cliquez avec le bouton droit sur la cellule au-dessus de laquelle vous souhaitez insérer une nouvelle cellule,</li>
+				<li>cliquez sur l'icône <b>Insérer des cellules</b> <img alt="Insérer des cellules" src="../images/insertcells.png" /> située dans l'onglet <b>Accueil</b> de la barre d'outils supérieure ou sélectionnez l'élément <b>Insérer</b> dans le menu contextuel et utilisez l'option <b>Décaler les cellules en bas</b>.</li>
+			</ol>
+			<p>Le programme déplacera la cellule sélectionnée vers le bas pour insérer une cellule vide.</p>
+			<p><b>Pour insérer une ligne entière :</b></p>
+			<ol>
+				<li>sélectionnez une ligne entière ou une cellule de la ligne au-dessus de laquelle vous souhaitez insérer une nouvelle ligne,<p class="note"><b>Remarque</b> : pour insérer plusieurs lignes, sélectionnez le même nombre de lignes que vous souhaitez insérer.</p>
+				</li>
+				<li>cliquez sur l'icône <b>Insérer des cellules</b> <img alt="Insérer des cellules" src="../images/insertcells.png" /> située dans l'onglet <b>Accueil</b> de la barre d'outils supérieure et utilisez l'option <b>Ligne entière</b>, <br />ou cliquez avec le bouton droit sur la cellule sélectionnée, sélectionnez l'élément <b>Insérer</b> dans le menu contextuel, puis choisissez l'option <b>Ligne entière</b>, <br />ou cliquez avec le bouton droit sur la(les) ligne(s) sélectionnée(s) et utilisez l'option <b>Insérer en haut</b> du menu contextuel.</li>
+			</ol>
+			<p>Le programme déplacera la ligne séléctionnée vers le bas pour insérer une nouvelle ligne.</p>
+			<p><b>Pour insérer une colonne entière :</b></p>
+			<ol>
+				<li>cliquez avec le bouton droit sur la colonne à gauche de laquelle vous souhaitez insérer une nouvelle colonne,<p class="note"><b>Remarque</b> : pour insérer plusieurs colonnes, sélectionnez le même nombre de colonnes que vous souhaitez insérer.</p>
+				</li>
+				<li>cliquez sur l'icône <b>Insérer des cellules</b> <img alt="Insérer des cellules" src="../images/insertcells.png" /> située dans l'onglet <b>Accueil</b> de la barre d'outils supérieure et utilisez l'option <b>Colonne entière</b>, <br />ou cliquez avec le bouton droit sur la cellule sélectionnée, sélectionnez l'élément <b>Insérer</b> dans le menu contextuel, puis choisissez l'option <b>Colonne entière</b>, <br />ou cliquez avec le bouton droit sur la(les) ligne(s) sélectionnée(s) et utilisez l'option <b>Insérer à gauche</b> du menu contextuel.</li>
+			</ol>
+			<p>Le programme déplacera la colonne séléctionnée à droite pour insérer une nouvelle colonne.</p>
+            <h3>Masquer et afficher les lignes et les colonnes</h3>
+            <p><b>Pour masquer une ligne ou une colonne :</b></p>
+            <ol>
+                <li>sélectionnez les lignes ou les colonnes que vous souhaitez masquer,</li>
+                <li>Cliquez avec le bouton droit sur les lignes ou les colonnes sélectionnées et utilisez l'option <b>Masquer</b> dans le menu contextuel.</li>
+            </ol>
+            <p><b>Pour afficher les lignes ou colonnes masquées</b>, sélectionnez les lignes visibles au-dessus et en dessous des lignes cachées ou des colonnes visibles à gauche et à droite des colonnes masquées, cliquez dessus avec le bouton droit de la souris et utilisez l'option <b>Afficher</b> dans le menu contextuel.</p>
+            <h3>Changer la largeur de colonne et la hauteur de ligne</h3>
+            <p>La <b>largeur de colonne</b> détermine le nombre de caractères avec une mise en forme par défaut qui peuvent être affichés dans une cellule de la colonne. La valeur par défaut est de 8,43 symboles. Pour la changer :</p>
+            <ol>
+                <li>sélectionnez les colonnes que vous souhaitez modifier,</li>
+                <li>Cliquez avec le bouton droit sur les colonnes sélectionnées et utilisez l'option <b>Définir la largeur de colonne</b> dans le menu contextuel,</li>
+                <li>Style - choisissez une des options disponibles :<ul>
+                        <li>sélectionnez l'option <b>Ajuster automatiquement la largeur de colonne</b> pour ajuster automatiquement la largeur de chaque colonne en fonction de son contenu, ou</li>
+                        <li>sélectionnez l'option <b>Largeur de colonne personnalisée</b> et spécifiez une nouvelle valeur comprise entre 0 et 255 dans la fenêtre <b>Largeur de colonne personnalisée</b>, puis cliquez sur <b>OK</b>.<p><img alt="Fenêtre Largeur de colonne personnalisée" src="../images/columnwidth.png" /></p>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+            <p>Pour modifier manuellement la largeur d'une seule colonne, déplacez le curseur de la souris sur la bordure droite de l'en-tête de la colonne afin que le curseur devienne la flèche bidirectionnelle <img alt="Curseur de la souris lors de la modification de la largeur d'une colonne" src="../images/changecolumnwidthcursor.png" />. Faites glisser la bordure vers la gauche ou la droite pour définir une largeur personnalisée ou double-cliquez sur la souris pour modifier automatiquement la largeur de la colonne en fonction de son contenu.</p>
+            <p><img alt="Changer la largeur de colonne" src="../images/changecolumnwidth.png" /></p>
+            <p>La valeur de hauteur de ligne par défaut est 14,25 points. Pour la changer :</p>
+            <ol>
+                <li>sélectionnez les lignes que vous souhaitez modifier,</li>
+                <li>Cliquez avec le bouton droit sur les lignes sélectionnées et utilisez l'option <b>Définir la hauteur de ligne</b> dans le menu contextuel,</li>
+                <li>Style - choisissez une des options disponibles :<ul>
+                        <li>sélectionnez l'option <b>Ajuster automatiquement la hauteur de ligne</b> pour ajuster automatiquement la hauteur de chaque ligne en fonction de son contenu, ou</li>
+                        <li>sélectionnez l'option <b>Hauteur de ligne personnalisée</b> et spécifiez une nouvelle valeur comprise entre 0 et 408,75 dans la fenêtre <b>Hauteur de ligne personnalisée</b>, puis cliquez sur <b>OK</b>.<p><img alt="Fenêtre Hauteur de ligne personnalisée" src="../images/rowheight.png" /></p>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+            <p>Pour modifier manuellement la hauteur d'une seule ligne, faites glisser la bordure inférieure de l'en-tête de ligne.</p>
+            <h3>Pour supprimer une cellule, une ligne ou une colonne :</h3>
+            <p><b>sélectionnez les cellules, les lignes et les colonnes à supprimer et cliquez avec le bouton droit,</b></p>
+			<ol>
+			<li>sélectionnez les cellules, les lignes ou les colonnes que vous souhaitez supprimer,</li>
+			<li>cliquez sur l'icône <b>Supprimer les cellules</b> <img alt="Supprimer des cellules" src="../images/deletecells.png" /> située dans l'onglet <b>Accueil</b> de la barre d'outils supérieure ou sélectionnez l'élément <b>Supprimer</b> dans le menu contextuel et sélectionnez l'option appropriée : <br />si vous utilisez l'option <b>Déplacer les cellules vers la gauche</b> une cellule à droite de la cellule supprimée sera déplacée vers la gauche ; <br />si vous utilisez l'option <b>Décaler les cellules vers le haut</b> une cellule au-dessous de la cellule supprimée sera déplacée vers le haut ; <br />si vous utilisez l'option <b>Ligne entière</b> une ligne au-dessous de la ligne sélectionnée sera déplacée vers le haut ; <br />si vous utilisez l'option <b>Colonne entière</b> une colonne à droite de la colonne sélectionnée sera déplacée vers la gauche ;</li>
+			</ol>
+			<p>Vous pouvez toujours restaurer les données supprimées en utilisant l'icône <b>Annuler</b> <img alt="Icône Annuler" src="../images/undo.png" /> située sur la barre d'outils supérieure.</p>
+		</div>
+	</body>
+</html>

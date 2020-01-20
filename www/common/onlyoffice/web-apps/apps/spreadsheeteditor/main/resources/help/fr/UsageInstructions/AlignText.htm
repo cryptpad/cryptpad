@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Aligner les données dans une cellule</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Everything that pertains to the data alignment in cells" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Aligner les données dans une cellule</h1>
+			<p>Vous pouvez aligner vos données horizontalement ou verticalement ou même les faire pivoter. Pour le faire, sélectionnez une cellule, une plage de cellules ou la feuille de calcul toute entière en utilisant les touches <b>Ctrl+A</b> et effectuez une des opérations en utilisant les icônes situées sur la barre d'outils supérieure. Vous pouvez également sélectionner plusieurs cellules ou plages non adjacentes en maintenant la touche <b>Ctrl</b> enfoncée tout en sélectionnant les cellules/plages à l'aide de la souris. Effectuez ensuite l'une des opérations suivantes à l'aide des icônes situées dans l'onglet <b>Accueil</b> de la barre d'outils supérieure.</p>
+			<ul>
+				<li>Appliquez un des types d'alignement horizontal,<ul>
+						<li>cliquez sur l'icône <b>Aligner à gauche</b> <img alt="Icône Aligner à gauche" src="../images/alignleft.png" /> pour aligner les données sur le bord gauche de la cellule (le bord droit reste non aligné) ;</li>
+						<li>cliquez sur l'icône <b>Aligner au centre</b> <img alt="Icône Aligner au centre" src="../images/aligncenter.png" /> pour aligner les données par le centre de la cellule (les bords droit et gauche restent non alignés) ;</li>
+						<li>cliquez sur l'icône <b>Aligner à droite</b> <img alt="Icône Aligner à droite" src="../images/alignright.png" /> pour aligner les données sur le bord droit de la cellule (le bord gauche reste non aligné) ;</li>
+						<li>cliquez sur l'icône <b>Justifié</b> <img alt="icône Justifié" src="../images/justify.png" /> pour aligner vos données sur le bord gauche et droit de la cellule (un espacement supplémentaire est ajouté si nécessaire pour garder l'alignement).</li>
+					</ul>
+				</li>
+				<li>Changez l'alignement vertical des données,<ul>
+						<li>cliquez sur l'icône <b>Aligner en haut</b> <img alt="icône Aligner en haut" src="../images/aligntop.png" /> pour aligner vos données sur le bord supérieur de la cellule ;</li>
+						<li>cliquez sur l'icône <b>Aligner au milieu</b> <img alt="icône Aligner au milieu" src="../images/alignmiddle.png" /> pour aligner vos données au milieu de la cellule ;</li>
+						<li>cliquez sur l'icône <b>Aligner en bas</b> <img alt="icône Aligner en bas" src="../images/alignbottom.png" /> pour aligner vos données sur le bord inférieur de la cellule.</li>
+					</ul>
+				</li>
+				<li>Changez l'angle des données en cliquant sur l'icône <b>Orientation</b> <img alt="Icône Orientation" src="../images/orientation.png" /> et en choisissant l'une des options :<ul>
+						<li>utilisez l'option <b>Texte horizontal</b> <img alt="Texte horizontal" src="../images/horizontaltext.png" /> pour positionner le texte à l'horizontale (par défaut),</li>
+						<li>utilisez l'option <b>Rotation dans le sens inverse des aiguilles d'une montre</b> <img alt="Rotation dans le sens inverse des aiguilles d'une montre" src="../images/anglecounterclockwise.png" /> pour positionner le texte du coin inférieur gauche au coin supérieur droit d'une cellule,</li>
+						<li>utilisez l'option <b>Rotation dans le sens des aiguilles d'une montre</b> <img alt="Rotation dans le sens des aiguilles d'une montre" src="../images/angleclockwise.png" /> pour positionner le texte du coin supérieur gauche au coin inférieur droit d'une cellule,</li>
+						<li>utilisez l'option <b>Rotation du texte vers le haut</b> <img alt="Rotation du texte vers le haut" src="../images/rotateup.png" /> pour positionner le texte de bas en haut d'une cellule,</li>
+						<li>utilisez l'option <b>Rotation du texte vers le bas</b> <img alt="Rotation du texte vers le bas" src="../images/rotatedown.png" /> pour positionner le texte de haut en bas d'une cellule.</li>
+					</ul>
+				</li>
+				<li>Adaptez vos données à la largeur de la colonne en cliquant sur l'icône <b>Renvoyer à la ligne automatiquement</b> <img alt="icône Renvoyer à la ligne automatiquement" src="../images/wraptext.png" />.<p class="note"><b>Remarque</b> : si vous modifiez la largeur de la colonne, les données seront automatiquement ajustées en conséquence.</li>
+			</ul>
+		</div>
+	</body>
+</html>

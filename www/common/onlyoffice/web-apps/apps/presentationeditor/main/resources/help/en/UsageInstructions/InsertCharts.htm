@@ -6,15 +6,20 @@
 		<meta name="description" content="Add a chart to your presentation and adjust its properties" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
         <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
 			<h1>Insert and edit charts</h1>
             <h3>Insert a chart</h3>
 			<p><b>To insert a chart</b> into your presentation,</p>
             <ol>
                 <li>put the cursor at the place where you want to add a chart,</li>
-                <li>click the <b>Insert Chart</b> <img alt="Insert Chart icon" src="../images/insertchart.png" /> icon at the top toolbar,</li>
+                <li>switch to the <b>Insert</b> tab of the top toolbar,</li>
+                <li>click the <img alt="Chart icon" src="../images/insertchart.png" /> <b>Chart</b> icon at the top toolbar,</li>
                 <li>select the needed chart type from the available ones - Column, Line, Pie, Bar, Area, XY (Scatter), Stock,
                 <p class="note"><b>Note</b>: for <b>Column</b>, <b>Line</b>, <b>Pie</b>, or <b>Bar</b> charts, a 3D format is also available.</p>
                 </li>
@@ -22,7 +27,7 @@
                     after that the <b>Chart Editor</b> window will appear where you can enter the necessary data into the cells using the following controls:
                     <ul>
                         <li><img alt="Copy" src="../images/copy.png" /> and <img alt="Paste" src="../images/paste.png" /> for copying and pasting the copied data</li>
-                        <li><img alt="Undo" src="../images/undo.png" /> and <img alt="Redo" src="../images/redo.png" /> for undoing and redoing actions</li>
+                        <li><img alt="Undo" src="../images/undo1.png" /> and <img alt="Redo" src="../images/redo1.png" /> for undoing and redoing actions</li>
                         <li><img alt="Insert function" src="../images/insertfunction.png" /> for inserting a function</li>
                         <li><img alt="Decrease decimal" src="../images/decreasedec.png" /> and <img alt="Increase decimal" src="../images/increasedec.png" /> for decreasing and increasing decimal places</li>
                         <li><img alt="Number format" src="../images/numberformat.png" /> for changing the number format, i.e. the way the numbers you enter appear in cells</li>
@@ -176,20 +181,22 @@
 			<hr />
             <h3>Edit chart elements</h3>
             <p>To edit the chart <b>Title</b>, select the default text with the mouse and type in your own one instead.</p>
-            <p>To change the font formatting within text elements, such as the chart title, axes titles, legend entries, data labels etc., select the necessary text element by left-clicking it. Then use icons on the top toolbar to change the font <a href="../UsageInstructions/InsertText.htm#formatfont" onclick="onhyperlinkclick(this)">type, style, size, or color</a>.</p>
+            <p>To change the font formatting within text elements, such as the chart title, axes titles, legend entries, data labels etc., select the necessary text element by left-clicking it. Then use icons at the <b>Home</b> tab of the top toolbar to change the font <a href="../UsageInstructions/InsertText.htm#formatfont" onclick="onhyperlinkclick(this)">type, style, size, or color</a>.</p>
             <p>To delete a chart element, select it by left-clicking and press the <b>Delete</b> key on the keyboard.</p>
-            <p>You can also rotate 3D charts using the mouse. Left-click within the plot area and hold the mouse button until a blue dashed box appears. Drag the cursor without releasing the mouse button to change the 3D chart orientation.</p>
+            <p>You can also rotate 3D charts using the mouse. Left-click within the plot area and hold the mouse button. Drag the cursor without releasing the mouse button to change the 3D chart orientation.</p>
             <p><img alt="3D chart" src="../images/3dchart.png" /></p>
             <hr />
             <h3>Adjust chart settings</h3>
 			<img class="floatleft"alt="Chart tab" src="../images/charttab.png" />
-			<p>The chart size, type and style as well as data used to create the chart can be altered using the right sidebar. To activate it click the chart and choose the <b>Chart Settings</b> <img alt="Chart Settings icon" src="../images/chart_settings_icon.png" /> icon on the right.</p>
-			<p>The <b>Size</b> section allows you to change the chart width and/or height. If the <b>Constant Proportions</b> <img alt="Constant Proportions icon" src="../images/constantproportions.png" /> button is clicked (in this case it looks like this <img alt="Constant Proportions icon activated" src="../images/constantproportionsactivated.png" />), the width and height will be changed together preserving the original chart aspect ratio.</p>
+			<p>The chart size, type and style as well as data used to create the chart can be altered using the right sidebar. To activate it click the chart and choose the <b>Chart settings</b> <img alt="Chart settings icon" src="../images/chart_settings_icon.png" /> icon on the right.</p>
+			<p>The <b>Size</b> section allows you to change the chart width and/or height. If the <b>Constant proportions</b> <img alt="Constant proportions icon" src="../images/constantproportions.png" /> button is clicked (in this case it looks like this <img alt="Constant proportions icon activated" src="../images/constantproportionsactivated.png" />), the width and height will be changed together preserving the original chart aspect ratio.</p>
 			<p>The <b>Change Chart Type</b> section allows you to change the selected chart type and/or style using the corresponding drop-down menu. </p>
 			<p>To select the necessary chart <b>Style</b>, use the second drop-down menu in the <b>Change Chart Type</b> section.</p>            
             <p>The <b>Edit Data</b> button allows you to open the <b>Chart Editor</b> window and start editing data as described above.</p>
             <p class="note"><b>Note</b>: to quickly open the 'Chart Editor' window you can also double-click the chart on the slide.</p>
-            <p>When the chart is selected, the <b>Shape Settings</b> <img alt="Shape Settings icon" src="../images/shape_settings_icon.png" /> icon is also available on the right, since a shape is used as a background for the chart. You can click this icon to open the <a href="InsertAutoshapes.htm" onclick="onhyperlinkclick(this)">Shape Settings</a> tab at the right sidebar and adjust the shape <b>Fill</b> and <b>Stroke</b>. Note that you cannot change the shape type.</p>
+            <p>The <b>Show advanced settings</b> option at the right sidebar allows to open the <b>Chart - Advanced Settings</b> window where you can set the alternative text:</p>
+            <p><img alt="Chart Advanced Settings window" src="../images/chartsettings6.png" /></p>
+            <p>When the chart is selected, the <b>Shape settings</b> <img alt="Shape settings icon" src="../images/shape_settings_icon.png" /> icon is also available on the right, since a shape is used as a background for the chart. You can click this icon to open the <a href="InsertAutoshapes.htm" onclick="onhyperlinkclick(this)">Shape settings</a> tab at the right sidebar and adjust the shape <b>Fill</b> and <b>Stroke</b>. Note that you cannot change the shape type.</p>
 			<hr />
 			<p>To <b>delete</b> the inserted chart, left-click it and press the <b>Delete</b> key on the keyboard.</p>
             <p>To learn how to <b>align</b> a chart on the slide or <b>arrange</b> several objects, refer to the <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">Align and arrange objects on a slide</a> section.</p>

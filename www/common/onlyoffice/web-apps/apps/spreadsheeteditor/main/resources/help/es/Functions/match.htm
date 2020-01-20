@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Función COINCIDIR</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Función COINCIDIR</h1>
+			<p>La función <b>COINCIDIR</b> es una función de búsqueda y referencia. Se usa para devolver una posición relativa a un objeto especificado en un rango de celdas.</p>
+			<p>La sintaxis de la función <b>COINCIDIR</b> es:</p> 
+			<p style="text-indent: 150px;"><b><em>COINCIDIR(valor-buscar, conjunto-buscar[ , [tipo-coincidir]])</em></b></p> 
+			<p><em>donde</em></p> 
+			<p style="text-indent: 50px;"><em><b>valor-buscar</b></em> es un valor en el <em><b>conjunto-buscar</b></em> para buscar. Puede ser un valor numérico, lógico o de texto, o una referencia de celda.</p>
+			<p style="text-indent: 50px;"><em><b>conjunto-buscar</b></em> es una sola columna o fila que tiene que analizar.</p>
+			<p style="text-indent: 50px;"><em><b>tipo-coincidir</b></em> es un tipo de coincidencia. Es un argumento opcional. Puede ser uno de los valores siguientes:</p>
+				<table style="width: 40%">
+				<tr>
+					<td><b>Valor numérico</b></td>
+					<td><b>Significado</b></td>
+				</tr>
+				<tr>
+					<td>1 u omitido</td>
+					<td>Los valores deben organizarse en orden ascendiente. Si la coincidencia exacta no se encuentra, la función devolverá el valor más grande que sea menor que el <em><b>valor-buscar</b></em>.</td>
+				</tr>
+				<tr>
+					<td>0</td>
+					<td>Los valores pueden organizarse en cualquier orden. Si la coincidencia exacta no se encuentra, la función devolverá el error #N/A.</td>
+				</tr>
+				<tr>
+					<td>-1</td>
+					<td>Los valores deben organizarse en orden descendiente. Si la coincidencia exacta no se encuentra, la función devolverá el valor más pequeño que sea mayor que el <em><b>valor-buscar</b></em>.</td>
+				</tr>
+			</table>
+			<p>Para aplicar la función <b>COINCIDIR</b>,</p>
+			<ol>
+			<li>seleccione la celda donde usted quiere ver el resultado,</li>
+			<li>pulse el icono <b>Insertar función</b> <img alt="Icono insertar función" src="../images/insertfunction.png" /> que se sitúa en la barra de herramientas superior, <br />o haga clic derecho en la сelda seleccionada y elija la opción <b>Insertar función</b> en el menú, <br />o pulse el icono <img alt="Icono función" src="../images/function.png" /> que se sitúa en la barra de fórmulas,</li>
+			<li>seleccione el grupo de funciones <b>Búsqueda y referencia</b> en la lista,</li>
+			<li>haga clic en la función <b>COINCIDIR</b>,</li>
+			<li>introduzca los argumentos requeridos separándolos por comas,</li>
+			<li>pulse el botón <b>Enter</b>.</li>
+			</ol>
+			<p>El resultado se mostrará en la celda elegida.</p>
+			<p style="text-indent: 150px;"><img alt="Función COINCIDIR" src="../images/match.png" /></p>
+		</div>
+	</body>
+</html>

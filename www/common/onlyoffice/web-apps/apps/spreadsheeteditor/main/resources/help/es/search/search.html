@@ -1,0 +1,238 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>Resultados de búsqueda</title>
+        <meta charset="utf-8" />
+        <meta name="description" content="Resultados de búsqueda" />
+        <link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script src="js/jquery.min.js"></script>
+        <script src="indexes.js"></script>
+        <script src="js/lunr.js"></script>
+        <script src="js/lunr-languages/lunr.stemmer.support.js"></script>
+        <script src="js/lunr-languages/lunr.multi.js"></script>
+        <script src="js/lunr-languages/lunr.es.js"></script>
+
+        <style type="text/css">
+            ul {
+                padding-left: 15px;
+                margin-top: 20px;
+            }
+
+            li {
+                list-style-type: decimal;
+                line-height: 1.5em;
+                padding-bottom: 1.5em;
+            }
+
+            li a {
+                font-family: 'Open Sans',sans-serif,Arial;
+                font-size: 1.2em;
+            }
+
+            li p {
+                margin: 0.5em 0;
+            }
+
+            li p.info {
+                color: #999;
+                font-size: 0.9em;
+                font-style: italic;
+            }
+
+            li a span {
+                background: yellow;
+            }
+
+            li p span {
+                background: yellow;
+            }
+
+        </style>
+    </head>
+    <body>
+        <script>
+            (function() {
+                var getParameterByName = function(name, url) {
+                    if (!url) url = window.location.href;
+                    name = name.replace(/[\[\]]/g, "\\$&");
+                    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                        results = regex.exec(url);
+                    if (!results) return null;
+                    if (!results[2]) return '';
+                    return decodeURIComponent(results[2].replace(/\+/g, " "));
+                };
+
+                var getInfoById = function(id) {
+                    var objects = $.grep(indexes, function(e){ return e.id == id; });
+
+                    if (objects.length > 0) {
+                        return objects[0]
+                    }
+
+                    return null;
+                };
+
+                var uniqueArray = function(array) {
+                    return array.map(JSON.stringify).reverse().filter(function (e, i, a) {
+                        return a.indexOf(e, i+1) === -1;
+                    }).reverse().map(JSON.parse)
+                };
+
+                var higtlightTitles = function(result, info, positions) {
+                    var elements = positions.map(function(position) {
+                        return $('<li>')
+                            .append(
+                                $('<a>', {
+                                    href: "../" + result.ref,
+                                    html: [
+                                        info.title.slice(0, position[0]),
+                                        "<span>",
+                                        info.title.slice(position[0], position[0] + position[1]),
+                                        "</span>",
+                                        info.title.slice(position[0] + position[1])
+                                    ].join(''),
+                                    onclick: "onhyperlinkclick(this)"
+                               })
+                            )
+                            .append($('<p>').text(info.body.substring(0, 250) + "..."))
+                    });
+
+                    return elements;
+                };
+
+                var higtlightBodyes = function(result, info, positions) {
+                    var elements = positions.map(function(position) {
+                        var html = [
+                            info.body.slice(0, position[0]),
+                            "<span>",
+                            info.body.slice(position[0], position[0] + position[1]),
+                            "</span>",
+                            info.body.slice(position[0] + position[1])
+                        ].join('');
+
+                        var sentences = html.split("."),
+                            displayBody = "",
+                            sentenceCount = 0,
+                            commonLength = 0;
+
+
+                        $(sentences).each(function(index, sentence) {
+                            commonLength += sentence.length;
+
+                            if (commonLength > position[0]) {
+                                sentenceCount++;
+                                displayBody += sentence + ".";
+                            }
+
+                            if (commonLength > 450 && sentenceCount > 2) {
+                                displayBody = displayBody.substring(0, 450) + "...";
+                                return false;
+                            }
+                        });
+
+                        
+                        return $('<li>')
+                            .append(
+                                $('<a>', {
+                                    href: "../" + result.ref,
+                                    html: info.title.substring(0, 150),
+                                    onclick: "onhyperlinkclick(this)"
+                               })
+                            )
+                            .append(
+                                $('<p>')
+                                    .html(displayBody)
+                            )
+                    });
+
+                    return elements;
+                };
+
+                var processSearch = function() {
+                    var self = this,
+                        query = getParameterByName("query");
+
+                    if (query !== null && query.length > 0) {
+                        var parameterisedPlugin = function (builder, fields) {
+                            fields.forEach(function (field) {
+                                builder.field(field)
+                            })
+                        }
+
+                        var idx = lunr(function () {
+                            this.use(lunr.multiLanguage('en', 'es'))
+                            this.ref('id')
+                            this.field('title', {boost: 10})
+                            this.field('body')
+                            this.metadataWhitelist = ['position']
+                            this.use(parameterisedPlugin, ['title', 'body']);
+
+                            indexes.forEach(function (doc) {
+                              this.add(doc)
+                            }, this)
+                        });
+
+                        var results = idx.search(query),
+                            resultsCount = 0;
+
+                        if (results.length > 0) {
+                            $("#search-results").append(
+                                results.map(function(result) {
+                                    var displayInfo = getInfoById(result.ref);
+                                    if (displayInfo) {
+                                        var elements = []
+
+                                        Object.keys(result.matchData.metadata).forEach(function (term) {
+                                            Object.keys(result.matchData.metadata[term]).forEach(function (fieldName) {
+                                                if (fieldName == "title") {
+                                                    var positions = uniqueArray(result.matchData.metadata[term][fieldName].position);
+                                                    elements = elements.concat(higtlightTitles(result, displayInfo, positions));
+                                                } else if (fieldName == "body") {
+                                                    var positions = uniqueArray(result.matchData.metadata[term][fieldName].position);
+                                                    elements = elements.concat(higtlightBodyes(result, displayInfo, positions));
+                                                }
+                                            })
+                                        })
+
+                                        resultsCount += elements.length;
+
+                                        return elements.map(function(element) {
+                                            return $("<div>").append(element).html()
+                                        }).join('');
+                                    }
+                                })
+                            )
+                            $(".subtitle").html("Resultados de búsqueda: " + resultsCount);
+                        } else {
+                            $(".subtitle").html("No hay resultados de búsqueda");
+                        }
+
+                        $("h1").text("Resultados de búsqueda");
+                    } else {
+                        $("h1").text("Resultados de búsqueda");
+                        $(".subtitle").html("No hay resultados de búsqueda");
+                    }
+                }
+
+                $(document).ready(function() {
+                    setTimeout(processSearch, 50);
+                });
+            })();
+
+            function doSearch(e) {
+                if (e.keyCode == 13) {
+                    document.location.href = 'search.html?query=' + document.getElementById('search').value;
+                }
+            }
+        </script>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Búsqueda...</h1>
+            <span class="subtitle"></span>
+            <ul id="search-results"></ul>
+        </div>
+    </body>
+</html>

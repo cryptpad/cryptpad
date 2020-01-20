@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fusionner des cellules</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Merge some cells into one and split the previously merged cell" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Fusionner des cellules</h1>
+			<p>Vous pouvez fusionner deux ou plusieurs cellules adjacentes en une seule. Pour le faire,</p>
+			<ol>
+			<li>sélectionnez deux cellules ou une plage de cellules avec la souris,<p class="note"><b>Remarque</b> : les cellules sélectionnées <b>DOIVENT</b> être adjacentes.</p>
+			</li>
+			<li>cliquez sur l'icône <b>Fusionner</b> <img alt="icône Fusionner" src="../images/merge.png" /> située dans l'onglet <b>Accueil</b> de la barre d'outils supérieure et sélectionnez une des options disponibles :<p class="note"><b>Remarque</b> : ce ne sont que les données dans la cellule supérieure gauche de la plage sélectionnée qui seront gardées dans la cellule fusionnée. Les données de toutes les autres cellules de la plage sélectionnée seront supprimées.</p>
+			<ul>
+			<li>si vous sélectionnez l'option <b>Fusionner et centrer</b> les cellules de la plage sélectionnée seront fusionnées et les données seront centrées dans les cellules fusionnées ;</li>
+			<li>si vous sélectionnez l'option <b>Fusionner</b> les cellules de chaque ligne de la plage sélectionnée seront fusionnées et les données seront alignées à gauche des cellules fusionnées ;</li>
+			<li>si vous sélectionnez l'option <b>Fusionner les cellules</b> les cellules de la plage sélectionnée seront fusionnées et les données seront alignées en bas à gauche.</li>
+			</ul>
+			</li>
+			</ol>
+			<p>Pour fractionner la cellule fusionnée utilisez l'option <b>Annuler Fusionner les cellules</b> depuis la liste déroulante <b>Fusionner</b>. Les données de la cellule fusionnée seront affichées dans la cellule supérieure gauche.</p>
+		</div>
+	</body>
+</html>

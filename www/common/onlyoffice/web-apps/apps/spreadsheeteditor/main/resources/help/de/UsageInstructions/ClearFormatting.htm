@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Text oder Zellformatierung löschen,Zellenformat kopieren</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Clear the text or the format within your worksheet, copy cell format" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Text oder Zellformatierung löschen,Zellenformat kopieren</h1>
+            <h3>Formatierung löschen</h3>
+			<p>Sie können den Text oder das Format einer bestimmten Zelle schnell löschen. Führen Sie dazu folgende Schritte aus:</p>
+			<ol>
+				<li>Wählen Sie eine Zelle, einen Zellenbereich oder das ganze Arbeitsblatt mithilfe der Tastenkombination <b>STRG+A</b> aus.<p class="note"><b>Hinweis</b>: Sie können auch mehrere nicht angrenzende Zellen oder Zellbereiche auswählen. Halten Sie dazu die Taste <b>STRG</b> gedrückt und wählen Sie die gewünschten Zellen/Bereiche mit der Maus aus.</p>
+                </li>
+				<li>Klicken Sie auf das Symbol <b>Löschen</b> <img alt="Löschen" src="../images/clear.png" /> auf der oberen Symbolleiste in der Registerkarte <b>Start</b> und wählen Sie eine der verfügbaren Optionen:<ul>
+				<li><b>Alle</b> - um alle Zelleninhalte zu löschen: Text, Format, Funktion usw.</li>
+				<li><b>Text</b> - um den Text im gewählten Zellenbereich zu löschen.</li>
+				<li><b>Format</b> - um die Formatierung im gewählten Zellenbereich zu löschen. Text und Funktionen bleiben erhalten.</li>
+                <li><b>Kommentare</b> - um die Kommentare im gewählten Zellenbereich zu löschen.</li>
+                <li><b>Hyperlinks</b> - um die Hyperlinks im gewählten Zellenbereich zu löschen.</li>
+				</ul>
+                <p class="note"><b>Hinweis</b>: Die zuvor genannten Optionen sind auch im Rechtsklickmenü verfügbar.</p>
+				</li>
+			</ol>
+            <h3>Zellformatierung kopieren</h3>
+            <p>Sie können ein bestimmtes Zellenformat schnell kopieren und auf andere Zellen anwenden.</p>
+            <p>Eine kopierte Formatierung auf eine einzelne Zelle oder mehrere benachbarte Zellen anwenden:</p>
+            <ol>
+                <li>Wählen Sie die Zelle/den Zellbereich, dessen Formatierung Sie kopieren möchten, mit der Maus oder <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">mithilfe der Tastatur</a> aus.</li>
+                <li>Klicken Sie in der oberen Symbolleiste unter der Registerkarte <b>Start</b> auf das Symbol <b>Format übertragen</b> <img alt="Format übertragen" src="../images/copystyle.png" /> (der Mauszeiger ändert sich wie folgt <img alt="Mauszeiger bei der Übertragung der Formatierung" src="../images/paste_style.png" />).</li>
+                <li>Wählen Sie die Zelle/den Zellbereich auf die/den Sie die Formatierung übertragen möchten.</li>
+            </ol>
+            <p>Eine kopierte Formatierung auf mehrere nicht benachbarte Zellen anwenden:</p>
+            <ol>
+                <li>Wählen Sie die Zelle/den Zellbereich, dessen Formatierung Sie kopieren möchten, mit der Maus oder <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">mithilfe der Tastatur</a> aus.</li>
+                <li>Führen Sie in der oberen Symbolleiste unter der Registerkarte <b>Start</b> einen Doppelklick auf das Symbol <img alt="Format übertragen" src="../images/copystyle.png" /> <b>Format übertragen</b> aus (der Mauszeiger ändert sich wie folgt <img alt="Mauszeiger bei der Übertragung der Formatierung" src="../images/paste_style.png" /> und das Symbol <b>Format übertragen</b> bleibt ausgewählt: <img alt="Format auf mehrere Zellen übertragen" src="../images/copystyle_selected.png" /></li>
+                <li>KKlicken Sie auf einzelne Zellen oder wählen Sie Zellenbereiche nacheinander aus, um allen dasselbe Format zuzuweisen.</li>
+                <li>Wenn Sie den Modus beenden möchten, klicken Sie erneut auf das Symbol <b>Format übertragen</b> <img alt="Format auf mehrere Zellen übertragen" src="../images/copystyle_selected.png" /> oder drücken Sie die <b>ESC-Taste</b> auf Ihrer Tastatur.</li>
+            </ol>
+		</div>
+	</body>
+</html>

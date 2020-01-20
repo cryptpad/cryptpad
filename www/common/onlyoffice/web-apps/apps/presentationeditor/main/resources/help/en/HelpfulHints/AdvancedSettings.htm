@@ -5,19 +5,25 @@
 		<meta charset="utf-8" />
 		<meta name="description" content="The advanced settings of Presentation Editor" />
 		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
 	</head>
 	<body>
 		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
 		<h1>Advanced Settings of Presentation Editor</h1>
-			<p><b>Presentation Editor</b> lets you change its advanced settings. To access them, click the <b>File</b> <img alt="File icon" src="../images/file.png" /> icon at the left sidebar and select the <b>Advanced Settings...</b> option. You can also use the <img alt="Advanced Settings icon" src="../images/advanced_settings_icon.png" /> icon in the right upper corner of the top toolbar.</p>
+			<p><b>Presentation Editor</b> lets you change its advanced settings. To access them, open the <b>File</b> tab at the top toolbar and select the <b>Advanced Settings...</b> option. You can also click the <b>View settings</b> <img alt="View settings icon" src="../images/viewsettingsicon.png" /> icon on the right side of the editor header and select the <b>Advanced settings</b> option.</p>
 			<p>The advanced settings are:</p>
 			<ul>
+                <li><b>Spell Checking</b> is used to turn on/off the spell checking option.</li>
 				<li><b>Alternate Input</b> is used to turn on/off hieroglyphs.</li>
                 <li><b>Alignment Guides</b> is used to turn on/off alignment guides that appear when you move objects and allow you to position them on the slide precisely.</li>
-				<li class="onlineDocumentFeatures"><b>Autosave</b> is used to turn on/off automatic saving of changes you make while editing.</li>
+                <li><span class="onlineDocumentFeatures"><b>Autosave</b> is used in the <em>online version</em> to turn on/off automatic saving of changes you make while editing.</span> <span class="desktopDocumentFeatures"><b>Autorecover</b> - is used in the <em>desktop version</em> to turn on/off the option that allows to automatically recover documents in case of the unexpected program closing.</span></li>
                 <li class="onlineDocumentFeatures"><b>Co-editing Mode</b> is used to select the display of the changes made during the co-editing:
                     <ul>
-                        <li>By default the <b>Fast</b> mode is selected, the users who take part in the document co-editing will see the changes in realtime once they are made by other users.</li>
+                        <li>By default the <b>Fast</b> mode is selected, the users who take part in the document co-editing will see the changes in real time once they are made by other users.</li>
                         <li>If you prefer not to see other user changes (so that they do not disturb you, or for some other reason), select the <b>Strict</b> mode and all the changes will be shown only after you click the <b>Save</b> <img alt="Save icon" src="../images/saveupdate.png" /> icon notifying you that there are changes from other users.</li>
                     </ul>
                 </li>

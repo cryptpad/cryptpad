@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Inserte imágenes</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add an image to your spreadsheet and adjust its position and size" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Inserte imágenes</h1>
+			<p>El editor de hojas de cálculo le permite insertar imágenes de los formatos más populares en su hoja de cálculo. Los siguientes formatos de imágenes son compatibles: <b>BMP</b>, <b>GIF</b>, <b>JPEG</b>, <b>JPG</b>, <b>PNG</b>.</p>
+            <h3>Inserte una imagen</h3>
+            <p>Para insertar una imagen en la hoja de cálculo,</p>
+			<ol>
+				<li>ponga el cursor en un lugar donde quiera que aparezca la imagen,</li>
+                <li>cambie a la pestaña <b>Insertar</b> en la barra de herramientas superior,</li>
+				<li>haga clic en el icono <img alt="Icono Imagen" src="../images/image.png" /> <b>Imagen</b> en la barra de herramientas superior,</li>
+				<li>seleccione una de las opciones siguientes para cargar la imagen:<ul>
+						<li>la opción <b>Imagen desde archivo</b> abrirá la ventana de diálogo para la selección de archivo. Navegue el disco duro de su ordenador para encontrar un archivo correspondiente y haga clic en el botón <b>Abrir</b></li>
+						<li>la opción <b>Imagen desde URL</b> abrirá la ventana donde usted puede introducir la dirección web de la imagen correspondiente; después haga clic en el botón <b>OK</b></li>
+					</ul>
+				</li>
+			</ol>
+            <p>Después, la imagen se añadirá a su hoja de cálculo.</p>
+            <h3>Ajustes de imagen</h3>
+            <p>Una vez añadida la imagen usted puede <a href="ManipulateObjects.htm" onclick="onhyperlinkclick(this)">cambiar su tamaño y posición.</a></p>
+            <p>Para especificar las dimensiones exactas de la imagen:</p>
+            <ol>
+                <li>seleccione la imagen a la que usted quiere cambiar el tamaño con el ratón,</li>
+                <li>pulse el icono <b>Ajustes de imagen</b> <img alt="Icono Ajustes de imagen" src="../images/image_settings_icon.png" /> en la barra derecha lateral,<p><img alt="Ventana Ajustes de imagen Panel derecho" src="../images/imagesettings.png" /></p>
+                </li>
+                <li>En la sección <b>Tamaño</b>, establezca los valores de <b>Ancho</b> y <b>Altura</b> necesarios. Si hace clic en el botón <b>proporciones constantes</b>  (en este caso estará así <img alt="Icono de proporciones constantes activado" src="../images/constantproportionsactivated.png" />), el ancho y la altura se cambiarán manteniendo la relación de aspecto original de la imagen. Para recuperar el tamaño predeterminado de la imagen añadida, pulse el botón <b>Tamaño Predeterminado</b>.</li>
+            </ol>
+            <p>Para reemplazar la imagen insertada,</p>
+			<ol>
+				<li>seleccione la imagen que usted quiere reemplazar con el ratón,</li>
+				<li>pulse el icono <b>Ajustes de imagen</b> <img alt="Icono Ajustes de imagen" src="../images/image_settings_icon.png" /> en la barra derecha lateral,</li>
+				<li>en la sección <b>Reemplazar imagen</b> pulse el botón necesario: <b>De archivo</b> o <b>De URL</b> y seleccione la imagen deseada.<p class="note"><b>Nota</b>: también puede hacer clic derecho en la imagen y usar la opción <b>Reemplazar imagen</b> del menú contextual.</p>
+                </li>
+			</ol>
+			<p>La imagen seleccionada será reemplazada.</p>
+            <p>Cuando se selecciona la imagen, el icono <b>Ajustes de forma</b> <img alt="Icono Ajustes de forma" src="../images/shape_settings_icon.png" /> también está disponible a la derecha. Puede hacer clic en este icono para abrir la pestaña<b>Ajustes de forma</b> en la barra de tareas derecha y ajustar la forma, tipo de <a href="../UsageInstructions/InsertAutoshapes.htm#shape_stroke" onclick="onhyperlinkclick(this)"><b>estilo</b></a>, tamaño y color así como cambiar el tipo de forma seleccionando otra forma del menú <b>Cambiar autoforma</b>. La forma de la imagen cambiará correspondientemente.</p>
+            <p><img alt="Pestaña Ajustes de forma" src="../images/right_image_shape.png" /></p>
+            <p>Para cambiar los ajustes avanzados, haga clic derecho sobre la imagen y seleccione la opción <b>Ajustes avanzados</b> en el menú contextual o pulse el enlace <b>Mostrar ajustes avanzados</b> en la derecha barra lateral. Se abrirá la ventana con parámetros de la imagen:</p>
+            <p><img alt="Imagen - ajustes avanzados" src="../images/imageadvancedsettings.png" /></p>
+            <p>La pestaña de <b>Texto Alternativo</b> permite especificar un <b>Título</b> y <b>Descripción</b> que se leerán a las personas con problemas de visión o cognitivos para ayudarles a entender mejor la información de la forma.</p>
+			<p>Para borrar la imagen insertada, haga clic en esta y pulse la tecla <b>Eliminar</b>.</p>
+		</div>
+	</body>
+</html>

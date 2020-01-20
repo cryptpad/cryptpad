@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Establezca tipo,tamaño y color de letra</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Change the following text formatting parameters: font type, size, and color" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Establezca tipo,tamaño y color de letra</h1>
+			<p>Puede seleccionar el tipo, tamaño y color de la letra usando los iconos correspondientes que están disponibles en la pestaña de <b>Inicio</b> en la barra de herramientas superior.</p>
+			<p class="note"><b>Nota</b>: si quiere aplicar el formato al texto existente en el documento, selecciónelo con el ratón o <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">use el teclado</a> y aplique el formato.</p>
+			<table>
+				<tr>
+					<td>Fuente</td>
+					<td><img alt="Fuente" src="../images/fontfamily.png" /></td>
+					<td>Se usa para elegir una letra en la lista de letras disponibles.</td>
+				</tr>
+				<tr>
+					<td>Tamaño de letra</td>
+					<td><img alt="Tamaño de letra" src="../images/fontsize.png" /></td>
+					<td>Se usa para elegir un tamaño de la letra en el menú desplegable, también puede introducirlo a mano en el campo de tamaño de letra.</td>
+				</tr>
+                <tr>
+                    <td>Aumentar tamaño de letra</td>
+                    <td><img alt="Aumentar tamaño de letra" src="../images/larger.png" /></td>
+                    <td>Se usa para cambiar el tamaño de letra, y se hace más grande cada vez que pulsa el icono.</td>
+                </tr>
+                <tr>
+                    <td>Reducir tamaño de letra</td>
+                    <td><img alt="Reducir tamaño de letra" src="../images/smaller.png" /></td>
+                    <td>Se usa para cambiar el tamaño de letra, y se hace más pequeño cada vez que pulsa el botón.</td>
+                </tr>
+				<tr>
+					<td>Color de resaltado</td>
+					<td><img alt="Color de resaltado" src="../images/highlightcolor.png" /></td>
+					<td>Se usa para separar oraciones, frases, palabras, o caracteres añadiendo una banda de colores que imita el efecto de marcador en el texto. Puede seleccionar una parte necesaria del texto y después hacer clic en la flecha hacia abajo al lado del icono para seleccionar un color en la paleta (este conjunto de colores no depende de la <b>Combinación de colores</b> seleccionada e incluye 16 colores) - el color se aplica a la selección de texto. O, elija el color de resaltado y seleccione el texto con el ratón - el cursor del ratón será así <img alt="Cursor del ratón" src="../images/highlight_color_mouse_pointer.png" /> y será capaz de resaltar distintas partes de su texto de forma secuencial. Para terminar el proceso pulse este icono una vez más. Para limpar el color de resaltado, seleccione la opción <b>Sin relleno</b>. <b>Color de resaltado</b> difiere del <a href="../UsageInstructions/BackgroundColor.htm" onclick="onhyperlinkclick(this)"><b>Color de fondo</b></a>  <img alt="Icono de Color de fondo de párrafo" src="../images/backgroundcolor.png" /> porque el segundo se aplica a todo el párrafo y rellena completamente todo el espacio de párrafo del margen izquierdo al margen derecho de la página.</td>
+				</tr>
+				<tr>
+					<td>Color de letra</td>
+					<td><img alt="Color de letra" src="../images/fontcolor.png" /></td>
+					<td>Se usa para cambiar el color de letras/caracteres del texto. Por defecto, el color de letra automático se fija en un documento en blanco nuevo. Se muestra como letra negra en el fondo blanco. Si usted cambia el color de fondo al negro, el color de fondo se cambiará automáticamente al blanco para que se pueda ver el texto. Para elegir otro color, pulse la flecha hacia abajo y seleccione un color en las paletas disponibles (los colores de la paleta <b>Colores de tema</b> dependen de la <a href="../UsageInstructions/ChangeColorScheme.htm" onclick="onhyperlinkclick(this)">combinación de colores</a>). Después de cambiar el color de fondo predeterminado, usted puede usar la opción <b>Automático</b> en la ventana con paletas de colores para restaurar el color automático de un fragmento de texto seleccionado.</td>
+				</tr>
+			</table>
+			<p class="note"><b>Nota</b>: para saber más sobre cómo trabajar con paletas de colores, consulte <a href="../UsageInstructions/ChangeColorScheme.htm" onclick="onhyperlinkclick(this)">esta página</a>.</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insérer et mettre en forme des tableaux</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add a table to your presentation and adjust its properties" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insérer et mettre en forme des tableaux</h1>
+            <h3>Insérer un tableau</h3>
+			<p>Pour insérer un tableau sur une diapositive,</p>
+			<ol>
+				<li>sélectionnez la diapositive où le tableau sera ajouté,</li>
+                <li>passez à l'onglet <b>Insertion</b> de la barre d'outils supérieure,</li>
+				<li>cliquez sur l'icône <b>Insérer un tableau</b> <img alt="icône Insérer un tableau" src="../images/inserttable.png" /> sur la la barre d'outils supérieure,</li>
+				<li>sélectionnez une des options pour créer le tableau :<ul>
+						<li><p>soit un tableau avec le nombre prédéfini de cellules (10 par 8 cellules maximum)</p>
+						<p>Si vous voulez ajouter rapidement un tableau, il vous suffit de sélectionner le nombre de lignes (8 au maximum) et de colonnes (10 au maximum).</p></li>
+						<li><p>soit un tableau personnalisé</p>
+						<p>Si vous avez besoin d'un tableau de plus de 10 par 8 cellules, sélectionnez l'option <b>Insérer un tableau personnalisé</b> pour ouvrir la fenêtre et spécifiez le nombre nécessaire de lignes et de colonnes, ensuite cliquez sur le bouton <b>OK</b>.</p></li>
+					</ul>
+				</li>
+				<li>après avoir ajouté le tableau, vous pouvez modifier ses propriétés et sa position.</li>
+			</ol>
+			<p>Vous pouvez spécifier la <a href="../UsageInstructions/ManipulateObjects.htm" onclick="onhyperlinkclick(this)">position du tableau</a> sur la diapositive en le faisant glisser verticalement ou horizontalement.</p>
+			<hr />
+            <h3>Ajuster les paramètres du tableau</h3><img class="floatleft"alt="Onglet Paramètres du tableau" src="../images/tablesettingstab.png" /><p>Certaines paramètres du tableau ainsi que sa structure peuvent être modifiés à l'aide de la barre latérale droite. Pour l'activer, cliquez sur le tableau et sélectionnez l'icône <b>Paramètres du tableau</b> <img alt="Paramètres du tableau" src="../images/table_settings_icon.png" /> à droite.</p>
+			<p>Les sections <b>Lignes</b> et <b>Colonnes</b> situées en haut vous permettent de mettre en évidence certaines lignes/colonnes en leur appliquant une mise en forme spécifique ou de mettre en évidence différentes lignes/colonnes avec des couleurs d'arrière-plan différentes pour les distinguer clairement. Les options suivantes sont disponibles :</p>
+			<ul style="margin-left: 280px;">
+				<li><b>En-tête</b> - accentue la ligne la plus haute du tableau avec un formatage spécial.</li>
+				<li><b>Total</b> -accentue la ligne la plus basse du tableau avec un formatage spécial.</li>
+				<li><b>En bandes</b> - permet l'alternance des couleurs d'arrière-plan pour les lignes paires et impaires.</li>
+				<li><b>Première</b> - accentue la colonne la plus à gauche du tableau avec un formatage spécial.</li>
+				<li><b>Dernière</b> - accentue la colonne la plus à droite du tableau avec un formatage spécial.</li>
+				<li><b>En bandes</b> - permet l'alternance des couleurs d'arrière-plan pour les colonnes paires et impaires.</li>
+			</ul>
+			<p>La section <b>Sélectionner à partir d'un modèle</b> vous permet de choisir l'un des styles de tableaux prédéfinis. Chaque modèle combine certains paramètres de formatage, tels qu'une couleur d'arrière-plan, un style de bordure, des lignes/colonnes en bandes, etc. Selon les options cochées dans les sections <b>Lignes</b> et/ou <b>Colonnes</b> ci-dessus, l'ensemble de modèles sera affiché différemment. Par exemple, si vous avez coché l'option <b>En-tête</b> dans la section <b>Lignes</b> et l'option <b>Bandes</b> dans la section <b>Colonnes</b>, la liste des modèles affichés inclura uniquement les modèles avec la ligne d'en-tête et les colonnes en bandes activées :</p>
+			<p><img alt="Liste des modèles" src="../images/templateslist.png" /></p>
+			<p>La section <b>Style de bordure</b> vous permet de modifier la mise en forme appliquée qui correspond au modèle sélectionné. Vous pouvez sélectionner toute la table ou une certaine plage de cellules dont vous souhaitez modifier la mise en forme et définir tous les paramètres manuellement.</p>
+			<ul>
+				<li>Paramètres de <b>Bordure</b> - définissez la largeur de la bordure en utilisant la liste <img alt="Liste des tailles" src="../images/bordersize.png" /> (ou choisissez l'option <b>Aucune bordure</b>), sélectionnez sa <b>Couleur</b> dans les palettes disponibles et déterminez la façon dont elle sera affichée dans les cellules en cliquant sur les icônes :<p><img alt="Icônes Type de bordure" src="../images/bordertype.png" /></p>
+				<p class="note"><b>Remarque</b> : si vous choisissez de ne pas afficher les bordures du tableau en choisissant un modèle approprié, en cliquant sur le bouton <img alt="Pas de bordures" src="../images/noborders.png" /> ou en sélectionnant l'option <b>Aucune bordure</b> les bordures seront indiquées par une ligne pointillée.</p>
+				</li>
+				<li><b>Couleur d'arrière-plan</b> - sélectionnez la couleur de l'arrière-plan dans les cellules sélectionnées.</li>
+			</ul>
+			<p>La section <b>Lignes et colonnes</b> <img alt="Lignes et colonnes" src="../images/rowsandcolumns.png" /> vous permet d'effectuer les opérations suivantes :</p>
+			<ul>
+				<li><b>Sélectionner</b> une ligne, une colonne, une cellule (en fonction de la position du curseur) ou la totalité du tableau.</li>
+				<li><b>Insérer</b> une nouvelle ligne au-dessus ou en dessous de celle sélectionnée ainsi qu'une nouvelle colonne à gauche ou à droite de celle sélectionnée.</li>
+				<li><b>Supprimer</b> une ligne, une colonne (en fonction de la position du curseur ou de la sélection) ou la totalité du tableau.</li>
+				<li><b>Fusionner les cellules</b> - pour fusionner les cellules précédemment sélectionnées en une seule.</li>
+				<li><b>Fractionner la cellule...</b> - scinder une cellule précédemment sélectionnée en un certain nombre de lignes et de colonnes. Cette option ouvre la fenêtre suivante :<p><img alt="Fenêtre Scinder les cellules" src="../images/split_cells.png" /></p>
+				<p>Entrez le <b><b>Nombre de colonnes</b></b> et le <b>Nombre de lignes</b> en lesquelles la cellule sélectionnée doit être divisée et appuyez sur <b>OK</b>.</p>
+				</li>
+			</ul>
+			<p class="note"><b>Remarque</b> : les options de la section <b>Lignes et Colonnes</b> sont également accessibles depuis le <b>menu contextuel</b>.</p>
+			<hr />
+			<p>Pour modifier les paramètres avancés du tableau, cliquez sur le tableau avec le clic droit de la souris et sélectionnez l'option <b>Paramètres avancés du tableau</b> du menu contextuel ou utilisez le lien <b>Afficher les paramètres avancés</b> sur la barre latérale droite. La fenêtre Propriétés du tableau s'ouvre :</p>
+			<p><img alt="Propriétés du tableau" src="../images/table_properties.png" /></p>
+			<p>La section <b>Marges de cellule</b> permet d'ajuster l'espace entre le texte dans les cellules et la bordure de la cellule :</p>
+			<ul>
+				<li>entrez manuellement les valeurs de <b>Marges de cellule</b>, ou</li>
+				<li>Cochez la case <b>Utiliser les marges par défaut</b> pour appliquer les valeurs prédéfinies (si nécessaire, elles peuvent également être ajustées).</li>
+			</ul>
+            <p><img alt="Propriétés du tableau" src="../images/table_properties1.png" /></p>
+            <p>L'onglet <b>Texte de remplacement</b> permet de spécifier un <b>Titre</b> et une <b>Description</b> qui sera lue aux personnes avec des déficiences cognitives ou visuelles pour les aider à mieux comprendre l'information du tableau.</p>
+			<hr />
+			<p>Pour <b>mettre en forme le texte entré</b> dans les cellules du tableau, vous pouvez utiliser les <a href="../UsageInstructions/InsertText.htm#formatfont" onclick="onhyperlinkclick(this)">icônes dans l'onglet <b>Accueil</b> de la barre d'outils supérieure</a>. Le <b>menu contextuel</b> qui s'affiche lorsque vous cliquez sur la table avec le bouton droit de la souris inclut deux options supplémentaires:</p>
+			<ul>
+			    <li><b>Alignement vertical des cellules</b> - vous permet de définir le type préféré d'alignement vertical du texte dans les cellules sélectionnées : <b>Aligner en haut</b>, <b>Aligner au centre</b> ou <b>Aligner en bas</b>.</li>
+			    <li><b>Lien hypertexte</b> - vous permet d'insérer un lien hypertexte dans la cellule sélectionnée.</li>
+			</ul>									
+		</div>
+	</body>
+</html>

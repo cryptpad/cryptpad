@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Inserte tablas</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add a table to your document and adjust its properties" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Inserte tablas</h1>
+            <h3>Inserte una tabla</h3>
+			<p>Para añadir una tabla al texto del documento,</p>
+			<ol>
+				<li>ponga el cursor en un lugar donde usted quiere insertar la tabla,</li>
+                <li>cambie a la pestaña <b>Insertar</b> de la barra de herramientas superior,</li>
+				<li>pulse el <img alt="Icono tabla" src="../images/table.png" /> icono <b>Tabla</b> en la barra de herramientas superior,</li>
+				<li>seleccione la opción para crear una tabla:<ul>
+						<li><p>tanto una tabla con un número de celdas predefinido (máximo de 10 por 8 celdas)</p>
+						<p>Si usted quiere añadir una tabla de forma rápida, seleccione el número de filas (8 máximo) y columnas (10 máximo).</p></li>
+						<li><p>o una tabla personalizada</p>
+						<p>En caso de que usted necesite una tabla de más de 10 por 8 celdas, seleccione la opción <b>Insertar tabla personalizada</b> y se abrirá la ventana donde usted puede introducir el número necesario de filas y columnas, respectivamente, después pulse el botón <b>OK</b>.</p>
+						<p><img alt="Tabla personalizada" src="../images/customtable.png" /></p>
+						</li>
+					</ul>
+				</li>
+				<li>una vez añadida la tabla usted puede cambiar sus propiedades, tamaño y posición.</li>
+			</ol>
+            <p>Para cambiar el tamaño de una tabla, pase el cursor del ratón sobre la manija <img alt="Icono cuadrado" src="../images/resizetable_handle.png" /> en su esquina inferior derecha y arrástrela hasta que la tabla alcance el tamaño necesario.</p>
+            <p><img alt="Cambie de tamaño a la tabla" src="../images/resizetable.png" /></p>
+            <p>También se puede modificar manualmente el ancho de una columna determinada o la altura de una línea. Mueva el cursor del ratón sobre el borde derecho de la columna para que el cursor se convierta en la flecha bidireccional. <img alt="El cursor del ratón cuando cambia el ancho de la columna" src="../images/changecolumnwidth.png" /> y arrastre el borde hacia la izquierda o hacia la derecha para establecer el ancho necesario. Para cambiar la anchura de una sola columna de forma manual, mueva el cursor del ratón sobre el borde inferior de la fila hasta que el cursor cambie a una flecha con doble sentido <img alt="El cursor del ratón cuando cambia el ancho de la columna" src="../images/changerowheight.png" /> y arrástrelo hacia arriba o hacia abajo.</p>
+            <p>Para mover una tabla, mantenga pulsada la manija <img alt="Seleccione el icono de la tabla." src="../images/movetable_handle.png" /> en su esquina superior izquierda y arrástrela hasta el lugar necesario en el documento.</p>
+            <hr />
+            <h3>Seleccionar una tabla o su parte</h3>
+            <p>Para seleccionar una tabla completa, haga clic en el <img alt="Seleccione el icono de la tabla." src="../images/movetable_handle.png" /> icono en su esquina superior izquierda.</p>
+            <p>Para seleccionar una celda determinada, mueva el cursor del ratón a la parte izquierda de la celda necesaria para que el cursor se convierta en la flecha negra <img alt="Seleccionar la celda" src="../images/selectcellpointer.png" />, luego haga clic izquierdo.</p>
+            <p>Para seleccionar una fila determinada, mueva el cursor del ratón al borde izquierdo de la tabla junto a la fila necesaria para que el cursor se convierta en la flecha negra <img alt="Seleccionar fila" src="../images/selectrowpointer.png" />, luego haga clic izquierdo.</p>
+            <p>Para seleccionar una columna determinada, mueva el cursor del ratón al borde superior de la columna necesaria para que el cursor se convierta en la flecha negra <img alt="Seleccionar columna" src="../images/selectcolumnpointer.png" />, luego haga clic izquierdo.</p>
+            <p>También es posible seleccionar una celda, fila, columna o tabla utilizando las opciones del menú contextual o de la sección <b>Filas y Columnas</b> en la barra de tareas derecha.</p>
+            <hr />
+            <h3>Ajustes de tablas</h3>
+			<p>Unos parámetros de la tabla y también su estructura pueden ser cambiados usando el menú contextual: Aquí tiene las opciones:</p>
+			<ul>
+				<li><b>Cortar, Copiar, Pegar</b> - opciones estándar usadas para cortar, copiar un texto/objeto seleccionado y pegar un pasaje de texto u objeto anteriormente cortado/copiado a una posición de cursor actual.</li>
+                <li><b>Seleccionar</b> se usa para seleccionar una fila, columna, celda o tabla.</li>
+				<li><b>Insertar</b> se usa para insertar una fila arriba o debajo de la fila donde usted ha colocado cursor o para insertar una columna al lado izquierdo o derecho de la columna donde usted ha colocado el cursor.</li>
+				<li><b>Borrar</b> se usa para borrar una fila, columna o tabla.</li>
+				<li><b>Unir celdas</b> está disponible si usted ha seleccionado dos o más celdas, se usa para unirlas.</li>
+				<li><b>Dividir celda...</b> se usa para abrir una ventana donde usted puede seleccionar el número necesario de columnas y filas para dividir la celda.</li>
+				<li><b>Distribuir filas</b> se utiliza para ajustar las celdas seleccionadas para que tengan la misma altura sin cambiar la altura total de la tabla.</li>
+                <li><b>Distribuir columnas</b> se utiliza para ajustar las celdas seleccionadas para que tengan el mismo ancho sin cambiar el ancho total de la tabla.</li>
+                <li><b>Alineación vertical de celda</b> se usa para alinear la parte superior central o inferior de un texto en la celda seleccionada.</li>
+                <li><b>Dirección del Texto</b> - se usa para cambiar la orientación del texto en una celda. Puede poner el texto de forma horizontal, vertical de arriba hacia abajo (<b>Rotación a 90°</b>), o vertical de abajo a arriba (<b>Rotación a 270°</b>).</li>
+				<li><b>Ajustes avanzados de tabla</b> se usa para abrir la ventana 'Tabla - Ajustes avanzados'.</li>
+				<li><b>Hiperenlace</b> se usa para insertar un hiperenlace.</li>
+				<li><b>Párrafo</b> se usa para mantener las líneas juntas o abrir la ventana 'Párrafo - Ajustes avanzados'.</li>
+			</ul>
+			<hr />
+			<p><img class="floatleft"alt="Barra derecha lateral - Ajustes de tabla" src="../images/right_table.png" /></p>
+			<p>Usted también puede cambiar los parámetros de tabla usando la barra derecha lateral:</p>
+			<ul style="margin-left: 280px;">
+				<li><p>Se usan <b>Filas</b> y <b>Columnas</b> para seleccionar las partes de una tabla para que sean resaltadas.</p>
+					<p>Para filas:</p>
+					<ul>
+						<li><i>Encabezado</i> - para resaltar la primera fila</li>
+						<li><i>Total</i> - para resaltar la última fila</li>
+						<li><i>Con bandas</i> - para resaltar cualquier otra fila</li>
+					</ul>
+					<p>Para columnas:</p>
+					<ul>
+						<li><i>Primera</i> - para resaltar la primera columna</li>
+						<li><i>Última</i> - para resaltar la última columna</li>
+						<li><i>Con bandas</i> - para resaltar cualquier otra columna</li>
+					</ul>
+				</li>
+				<li><p><b>Seleccionar de plantilla</b> se usa para elegir la plantilla de tabla de las disponibles.</p></li>
+				<li><p><b>Estilo de bordes</b> se usa para seleccionar el tamaño, color, estilo de bordes y también el color de fondo.</p></li>
+				<li><p><b>Filas &amp; columnas</b> se usa para realizar unas operaciones con la tabla: seleccionar, borrar, insertar filas y columnas, unir celdas, dividir una celda.</p></li>
+                <li><p><b>Tamaño de celda</b> se usa para ajustar el ancho y alto de la celda actualmente seleccionada. En esta sección, usted también puede <b>Distribuir filas</b> para que todas las celdas seleccionadas tengan la misma altura o <b>Distribuir columnas</b> para que todas las celdas seleccionadas tengan el mismo ancho.</p></li>
+				<li><p><b>Repetir con una fila de encabezado en la parte superior</b> se usa para insertar el mismo encabezado en la parte superior de cada página en las tablas largas.</p></li>
+				<li><p><b>Mostrar ajustes avanzados</b> se usa para abrir la ventana 'Tabla - Ajustes avanzados'.</p></li>
+			</ul>
+			<hr />
+			<p>Para cambiar los ajustes avanzados de una tabla, haga clic con el botón derecho sobre la tabla y seleccione la opción <b>Ajustes avanzados de tabla</b> en el menú contextual o use el enlace <b>Mostrar ajustes avanzados</b> en la derecha barra lateral. Se abrirá la ventana con propiedades:</p>
+            <p><img alt="Tabla - ajustes avanzados" src="../images/table_properties_1.png" /></p>
+            <p>La pestaña de <b>Tabla</b> le permite cambiar las propiedades de la tabla entera.</p>
+            <ul>
+                <li>La sección del <b>Tamaño de la tabla</b> contiene los parámetros siguientes:<ul>
+                    <li><b>Ancho</b> - de forma predeterminada, el ancho de la tabla se ajusta de manera automática para ajustarse al ancho de la página, es decir, la tabla ocupa todo el espacio entre el margen izquierdo y derecho de la página. Puede verificar esta casilla y especificar el ancho necesario de la tabla de forma manual.</li>
+                    <li><b>Medida en</b> - permite especificar si quiere ajustar el ancho de la tabla en unidades absolutas, por ejemplo, <b>Centímetros</b>/<b>Puntos</b> (dependiendo de la opción especificada en la pestaña de <b>Archivo</b> -&gt; <b>Ajustes Avanzados</b>...) o en <b>Porcentaje</b> del ancho general de la página.<p class="note"><b>Nota</b>: también puede ajustar el tamaño de la tabla manualmente cambiando altura de fila y ancho de columna. Mueva el cursor del ratón sobre el borde de fila/columna hasta que conviértase en una flecha bidireccional y arrastre el borde. También puede usar los <img alt="Tabla - marcador de ancho de columna" src="../images/columnwidthmarker.png" /> marcadores  en la regla horizontal para cambiar el ancho de la columna y los marcadores <img alt="Table - Row Height Marker" src="../images/rowheightmarker.png" /> en la regla vertical para cambiar la altura de fila.</p>
+                    </li>
+                    <li><b>Cambiar tamaño automáticamente para ajustar a contenido</b> - activa el cambio automático de ancho de cada columna de acuerdo con el texto dentro de celdas.</li>
+                </ul>
+                </li>
+                <li><b>Márgenes predeterminados</b> - el espacio entre el texto en celdas y el borde de celdas que se utiliza de manera predeterminada.</li>
+                <li>La sección <b>Opciones</b> le permite cambiar los parámetros siguientes:<ul>
+                    <li><b>Permitir espacio entre celdas</b> - el espacio entre celdas que será llenado de color <b>Fondo de tabla</b> .</li>
+                </ul>
+                </li>
+            </ul>
+            <p><img alt="Tabla - ajustes avanzados" src="../images/table_properties_5.png" /></p>
+            <p>La pestaña <b>Celda</b> permite cambiar las propiedades de celdas individuales. Primero, tiene que seleccionar las celdas en las que quiere aplicar los cambios o seleccionar la tabla por completo para cambiar propiedades de todas sus celdas.</p>
+            <ul>
+                <li>La sección de <b>Tamaño de Celda</b> contiene los siguientes parámetros:<ul>
+                        <li><b>Ancho preferido</b> - permite ajustar el ancho de la celda que desee. Este es el amano que una celda aspira a ajustarse, pero en algunos casos, no será posible hacerlo al valor exacto. Por ejemplo, si el texto dentro de una celda excede el ancho especificado, se partirá en la línea siguiente para que la anchura de la celda preferida permanezca sin cambiar, pero si inserta una columna nueva, el ancho preferido se reducirá.</li>
+                        <li><b>Medida en</b> - permite especificar si quiere ajustar el ancho de la tabla en unidades absolutas, por ejemplo, <b>Centímetros</b>/<b>Puntos</b> (dependiendo de la opción especificada en la pestaña de <b>Archivo</b> -&gt; <b>Ajustes Avanzados</b>...) o en <b>Porcentaje</b> del ancho general de la página.<p class="note"><b>Nota</b>: también puede ajustar el ancho de la celda de forma manual. Para aumentar o disminuir el ancho de una celda en una columna más que al ancho de la columna en general, seleccione la celda necesaria y mueva el cursor del ratón por su borde derecho hasta que se vuelva en una flecha con doble sentido, luego arrastre el borde. Para cambiar el ancho de todas las celdas en una columna, use los <img alt="Tabla - marcador de ancho de columna" src="../images/columnwidthmarker.png" /> marcadores en la regla horizontal para cambiar el ancho de la columna.</p>
+                        </li>
+                    </ul>
+                </li>
+                <li>La sección de <b>Márgenes de celda</b> le permite ajustar el espacio entre el texto de las celdas y el borde de la celda. Por defecto, los valores estándares se usan (los valores por defecto también se pueden alterar en la pestaña de <b>Tabla</b>, pero puede no validar la casilla <b>Usar márgenes de defecto</b> e introducir los valores necesarios de forma manual.</li>
+                <li>La sección <b>Opciones de celda</b> permite cambiar los parámetros siguientes:<ul>
+                        <li>La opción <b>Ajuste de Texto</b> está disponible por defecto. Permite ajustar el texto dentro de una celda que excede su anchura en la línea siguiente, expandiendo la altura de la fila y manteniendo la anchura de la columna sin cambiar.</li>
+                    </ul>
+                </li>
+            </ul>
+            <p><img alt="Tabla - ajustes avanzados" src="../images/table_properties_3.png" /></p>
+            <p>La pestaña <b>Bordes &amp; fondo</b> contiene los parámetros siguientes:</p>
+            <ul>
+                <li>Parámetros de <b>Borde</b> (tamaño, color, presencia o ausencia) - establezca el tamaño, seleccione el color de borde y elija como se muestra en las celdas.<p class="note"><b>Nota</b>: si desea ocultar los bordes de la tabla pulse el <img alt="Sin bordes" src="../images/noborders.png" /> botón o cancele la selección de todos los bordes manualmente en una diagrama, en el documento los bordes se indicarán con una línea de puntos. Si quiere eliminarlos completamente, haga clic en el icono <b>Caracteres no imprimibles</b> <img alt="Caracteres no imprimibles" src="../images/nonprintingcharacters.png" /> en la pestaña de <b>Inicio</b> en la barra de herramientas superior y seleccione la opción <b>Bordes de Tabla Ocultos</b>.</p>
+                </li>
+                <li><b>Fondo de celda</b> - el color de fondo en celdas (disponible solo si usted ha seleccionado dos o más celdas o si la opción <b>Permitir espacio entre celdas</b> está activada en la sección <b>Ancho y espacios</b>).</li>
+                <li><b>Fondo de tabla</b> - el color de fondo de una tabla o de espacio entre las celdas, está disponible si la opción <b>Permitir espacio entre celdas</b> está activada en la sección <b>Ancho y espacios</b>.</li>
+            </ul>
+            <p id="position"><img alt="Tabla - ajustes avanzados" src="../images/table_properties_4.png" /></p>
+			<p>La sección <b>Posición de Tabla</b> está disponible solo si la opción <b>Tabla de Flujo</b> en la tabla <b>Ajuste de Texto</b> está activada y contiene los parámetros siguientes:</p>
+			<ul>
+				<li>Los parámetros <b>Horizontal</b> consisten en <b>alineación</b> de la tabla (izquierdo, al centro, derecho) <b>en relación a</b> margen, página o texto y también posición de la tabla <b>a la derecha de</b> margen, página o texto.</li>
+				<li>Los parámetros <b>Vertical</b> consisten en <b>alineación</b> de la tabla (superior, al centro, inferior) <b>en relación a</b> margen, página o texto y también posición de la tabla <b>debajo de</b> margen, página o texto.</li>
+				<li>La sección <b>Opciones</b> permite cambiar los parámetros siguientes:<ul>
+                    <li>La opción <b>Desplazar objeto con texto</b> controla si la tabla insertada en el texto se mueve junto con ello si el texto se mueve.</li>
+                    <li>La opción <b>Superposición</b> controla si dos tablas se unen en una tabla grande o sobreponen cuando usted las arrastra una cerca de la otra en la página.</li>
+                </ul>
+                </li>                
+			</ul>            
+            <p><img alt="Tabla - ajustes avanzados" src="../images/table_properties_2.png" /></p>
+            <p>La sección <b>Ajuste de texto</b> contiene los parámetros siguientes:</p>
+            <ul>
+                <li>Texto <b>Estilo de ajuste</b> - <b>Tabla en línea</b> o <b>Tabla de Flujo</b>. Use la opción necesaria para cambiar la posición en que la tabla está relacionada con el texto: puede ser una parte del texto (si selecciona estilo en línea) o rodeada por texto (si selecciona tabla de flujo).</li>
+                <li>Cuando usted seleccione el estilo de flujo, los parámetros adicionales del estilo de flujo pueden aplicarse para los dos estilos de texto - en línea y flujo:<ul>
+                        <li>Para el estilo en línea usted puede especificar <b>alineación</b> y <b>sangría a la izquierda</b>.</li>
+                        <li>Para el estilo de flujo, usted puede especificar <b>distancia del texto</b> y <b>posición</b> en la pestaña <b>Posición de Tabla</b>.</li>
+                    </ul>
+                </li>
+            </ul>
+            <p><img alt="Tabla - ajustes avanzados" src="../images/table_properties_6.png" /></p>
+            <p>La pestaña de <b>Texto Alternativo</b> permite especificar un <b>Título</b> y <b>Descripción</b> que se leerán a las personas con problemas de visión o cognitivos para ayudarles a entender mejor la información de la forma.</p>
+                        
+		</div>
+	</body>
+</html>

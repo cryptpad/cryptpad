@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Corte/copie/pegue datos</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Cut/copy/paste data using the keyboard shortcuts" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+            <h1>Corte/copie/pegue datos</h1>
+            <h3>Use operaciones de portapapeles básicas</h3>
+            <p>Para cortar, copiar y pegar datos en la hoja de cálculo actual use el menú contextual o use los iconos correspondientes en la barra de herramientas superior,</p>
+            <ul>
+                <li><p><b>Cortar</b> - seleccione datos y use la opción <b>Cortar</b> del menú contextual para borrar los datos seleccionados y enviarlo al portapapeles de su ordenador. Luego los datos borrados se pueden insertar en otro lugar de la misma hoja de cálculo.</p></li>
+                <li><p><b>Copiar</b> - seleccione un dato y use el icono <b>Copiar</b> <img alt="Icono copiar" src="../images/copy.png" /> en la barra de herramientas superior o haga clic con el botón derecho y seleccione la opción <b>Copiar</b> en el menú para enviar el dato seleccionado a la memoria portapapeles de su ordenador. Luego los datos copiados se pueden introducir en otro lugar de la misma hoja de cálculo.</p></li>
+                <li><p><b>Pegar</b> - seleccione un lugar y use el icono <b>Pegar</b> <img alt="Icono pegar" src="../images/paste.png" /> en la barra de herramientas superior o haga clic con el botón derecho y seleccione la opción <b>Pegar</b> en el menú para introducir el dato anteriormente copiado/cortado del portapapeles de su ordenador en la posición actual del cursor. Los datos se pueden copiar anteriormente de la misma hoja de cálculo.</p>
+                </li>
+            </ul>
+            <p>Para copiar o pegar datos de/a otra hoja de cálculo u otro programa, use las combinaciones de teclas siguientes:</p>
+            <ul>
+                <li>La combinación de las teclas <b>Ctrl+X</b> para cortar.</li>
+                <li>La combinación de las teclas <b>Ctrl+C</b> para copiar;</li>
+                <li>la combinación de las teclas <b>Ctrl+V</b> para pegar.</li>
+            </ul>
+            <p class="note"><b>Nota</b>: en vez de cortar y pegar los datos en la misma hoja de cálculo, seleccione la celda/rango de celdas necesario, matenga el cursor del ratón sobre el borde de selección para que se convierta en el icono <img alt="Icono flecha" src="../images/arrow.png" />, después arrastre y suelte la selección a una posición necesaria.</p>
+            <h3>Use la característica de Pegar Especial</h3>
+            <p>una vez que el texto copiado se ha pegado, el <img alt="Pegado Especial" src="../images/pastespecialbutton.png" /> botón de <b>Pegado Especial</b> aparece al lado de la esquina derecha inferior de la celda/rango de celdas insertadas. Haga clic en el botón para seleccionar la opción de pegado necesaria.</p>
+            <p>Cuando pegue una celda/rango de celdas con datos formateados, las siguientes opciones están disponibles:</p>
+            <ul>
+                <li><em>Pegar</em> - permite pegar todo el contenido de las celdas incluyendo el formato de los datos. Esta opción se selecciona por defecto.</li>
+                <li>Las opciones siguientes se pueden usar si los datos copiados contienen fórmulas:<ul>
+                        <li><em>Fórmula de solo copiado</em> - permite pegar fórmulas sin pegar el formato de datos.</li>
+                        <li><em>Fórmula + formato de número</em> - permite pegar fórmulas usando el formato en números.</li>
+                        <li><em>Fórmula + todo el formato</em> - permite pegar fórmulas con todo el formato de datos.</li>
+                        <li><em>Fórmula sin bordes</em> - permite pegar fórmulas con todo el formato de datos excepto los bordes de las celdas.</li>
+                        <li><em>Fórmula + ancho de columna</em> - permite pegar fórmulas con todo el formato de datos y ajustar el ancho de la columna original para el rango de celdas al que ha pegado los datos.</li>
+                    </ul>
+                </li>
+                <li>Las siguientes opciones permiten pegar el resultado que la fórmula copiada devuelve sin pegar la fórmula.<ul>
+                        <li><em>Valor solo copiado</em> - permite pegar los resultados de las fórmulas sin pegar el formato de datos.</li>
+                        <li><em>Valor + formato de número</em> - permite pegar el resultado de fórmulas usando el formato en números.</li>
+                        <li><em>Valor + todo el formato</em> - permite pegar el resultado de fórmulas con todo el formato de datos.</li>
+                    </ul>
+                </li>
+                <li><em>Pegar solo el formato</em> - permite pegar solo el formato de la celda sin pegar el contenido de la celda.</li>
+                <li><em>Trasladar</em> - permite pegar datos cambiando columnas en filas y filas en columnas. Esta opción está disponible para rangos de datos regulares, pero no para tablas con formato.</li>
+            </ul>
+            <p><img alt="Opciones de pegado" src="../images/pastespecial.png" /></p>
+            <p>Cuando pegue los contenidos de una sola celda o algo del texto dentro de autoformas, las siguientes opciones estarán disponibles:</p>
+            <ul>
+                <li><em>Formato de origen</em> - permite mantener el formato de origen de los datos copiados.</li>
+                <li><em>Formato de destino</em> - permite aplicar el formato que ya se ha usado para la celda/autoforma a la que pegaste los datos.</li>
+            </ul>
+            <h3>Use la opción de relleno automático</h3>
+            <p>Para rellenar varias celdas con los mismos datos use la opción <b>Relleno automático</b>:</p>
+            <ol>
+                <li>seleccione una celda/rango de celdas con los datos necesarios,</li>
+                <li>mueva el cursor del ratón sobre el controlador de relleno en la esquina derecha inferior de la celda. El cursor se convertirá en una cruz negra:<p><img alt="Relleno Automático" src="../images/autofill.png" /></p>
+                </li>
+                <li>arrastre el controlador sobre celdas adyacentes que usted quiere rellenar con los datos seleccionados.</li>
+            </ol>
+            <p class="note"><b>Nota</b>: si usted quiere crear un serie de números (por ejemplo 1, 2, 3, 4...; 2, 4, 6, 8... etc.) o fechas, introduzca por lo menos dos valores para iniciar y extienda la serie seleccionando estas celdas y arrastrando el controlador de relleno.</p>
+            <h3>Rellene celdas en la columna con valores de texto</h3>
+            <p>Si una columna en su hoja de cálculo contiene varios valores de texto, puede de forma fácil reemplazar cualquier valor dentro de esta columna o rellenar la celda vacía que viene después seleccionando una que ya tenga valores de texto.</p>
+            <p>Haga clic derecho en la celda correspondiente y elija la opción <b>Seleccione de la lista desplegable</b> en el menú contextual.</p>
+            <p><img alt="Seleccione de la lista desplegable" src="../images/selectfromlist.png" /></p>
+            <p>Seleccione uno de los valores de texto disponibles para reemplazar el actual o rellene una celda vacía.</p>
+        </div>
+	</body>
+</html>

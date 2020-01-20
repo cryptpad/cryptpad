@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Establezca tipo, tamaño y color de letra</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Change the following formatting parameters: font type, size, style, and colors" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Establezca tipo, tamaño y color de letra</h1>
+			<p>Usted puede seleccionar el tipo y tamaño de letra, aplicar uno de los estilos y cambiar el color de fondo y color de letra usando los iconos correspondientes que se sitúan en la pestaña de <b>Inicio</b> en la barra de herramientas superior.</p>
+			<p class="note"><b>Nota</b>: en el caso de que quiera aplicar el formato de los datos ya presente en la hoja de cálculo, seleccione este con el ratón o <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">usando el teclado</a> y aplique el formato. Si usted quiere aplicar el formato a varias celdas o rango de celdas no adyacentes, mantenga presionada la tecla <b>Ctrl</b> mientras selecciona las celdas/rangos con el ratón.</p>
+			<table>
+				<tr>
+					<td>Fuente</td>
+					<td><img alt="Fuente" src="../images/fontfamily.png" /></td>
+					<td>Se usa para elegir una letra en la lista de letras disponibles.</td>
+				</tr>
+				<tr>
+					<td>Tamaño de letra</td>
+					<td><img alt="Tamaño de letra" src="../images/fontsize.png" /></td>
+					<td>Se usa para elegir un tamaño de letra en el menú desplegable, también se puede introducir a mano en el campo de tamaño de letra.</td>
+				</tr>
+				<tr>
+					<td>Aumentar tamaño de letra</td>
+					<td><img alt="Tamaño de letra" src="../images/larger.png" /></td>
+					<td>Se usa para cambiar el tamaño de letra, se hace más grande cada vez que pulsa el icono.</td>
+				</tr>
+				<tr>
+					<td>Reducir tamaño de letra</td>
+					<td><img alt="Tamaño de letra" src="../images/smaller.png" /></td>
+					<td>Se usa para cambiar el tamaño de letra, se hace más pequeño cada vez que pulsa el icono.</td>
+				</tr>
+				<tr>
+					<td>Negrita</td>
+					<td><img alt="Negrita" src="../images/bold.png" /></td>
+					<td>Pone la letra en negrita dándole más peso.</td>
+				</tr>
+				<tr>
+					<td>Cursiva</td>
+					<td><img alt="Cursiva" src="../images/italic.png" /></td>
+					<td>Pone la letra en cursiva dándole un plano inclinado a la derecha.</td>
+				</tr>
+				<tr>
+					<td>Subrayado</td>
+					<td><img alt="Subrayado" src="../images/underline.png" /></td>
+					<td>Subraya un fragmento del texto seleccionado.</td>
+				</tr>
+                <tr>
+                    <td>Tachado</td>
+                    <td><img alt="Tachado" src="../images/strike.png" /></td>
+                    <td>Se usa para tachar el fragmento del texto seleccionado con una línea que va a través de las letras.</td>
+                </tr>
+                <tr>
+                    <td>Subíndice/Sobreíndice</td>
+                    <td><img alt="Subíndice" src="../images/subscripticon.png" /></td>
+                    <td>Permite seleccionar la opción <b>Sobreíndice</b> o <b>Subíndice</b>. <b>Sobreíndice</b> - se usa para poner el texto en letras pequeñas y ponerlas en la parte superior del texto, por ejemplo como en fracciones. <b>Subíndice</b> - se usa para poner el texto en letras pequeñas y ponerlo en la parte baja de la línea del texto, por ejemplo como en formulas químicas.</td>
+                </tr>
+                <tr>
+					<td>Color de letra</td>
+					<td><img alt="Color de letra" src="../images/fontcolor.png" /></td>
+					<td>Se usa para cambiar el color de letras/caracteres en celdas.</td>
+				</tr>
+				<tr>
+					<td>Color de fondo</td>
+					<td><img alt="Color de fondo" src="../images/backgroundcolor.png" /></td>
+					<td>Se usa para cambiar el color de fondo de la celda.</td>
+				</tr>
+				<tr>
+					<td>Cambie combinación de colores</td>
+					<td><img alt="Cambie combinación de colores" src="../images/changecolorscheme.png" /></td>
+					<td>Se usa para cambiar la paleta de color predeterminada para elementos de una hoja de cálculo (letra, color de fondo, gráficos y elementos de gráfico) seleccionando una de las disponibles: <b>Office</b>, <b>Escala de grises</b>, <b>Vértice</b>, <b>Aspecto</b>, <b>Civil</b>, <b>Concurrencia</b>, <b>Equidad</b>, <b>Flujo</b>, <b>Fundición</b>, <b>Intermedio</b>, <b>Metro</b>, <b>Módulo</b>, <b>Opulento</b>, <b>Mirador</b>, <b>Origen</b>, <b>Papel</b>, <b>Solsticio</b>, <b>Técnico</b>, <b>Viajes</b>, <b>Urbano</b>, o <b>Brío</b>.</td>
+				</tr>
+			</table>
+			<p><p class="note"><b>Nota</b>: es también posible aplicar uno de los formatos predeterminados seleccionando la celda a la que usted quiere dar formato y eligiendo un formato deseado en la pestaña de <b>Inicio</b> en la barra de herramientas superior:<br /><br /> <img alt="Formateo de ajustes preestablecidos" src="../images/presets.png" /></p>
+			<p>Para cambiar color de letra/fondo,</p>
+			<ol>
+			<li>seleccione caracteres/celdas usando el ratón o toda la hoja de cálculo usando la combinación de las teclas <b>Ctrl+A</b>,</li>
+				<li>pulse el icono correspondiente en la barra de herramientas superior,</li>
+				<li>seleccione el color necesario en las paletas disponibles<p><img alt="Paleta" src="../images/palette.png" /></p>
+					<ul>
+						<li><b>Colores de tema</b> - los colores que corresponden a la combinación de colores seleccionada de la hoja de cálculo.</li>
+						<li><b>Colores estándar</b> - el conjunto de colores predeterminado.</li>
+						<li><b>Color personalizado</b> - pulse este título si en las paletas disponibles no hay el color necesario. Seleccione el rango de colores necesario moviendo el deslizante de color vertical y establezca el color arrastrando el selector de color dentro del campo de color cuadrado. Una vez seleccionado un color, usted verá los valores RGB y sRGB correspondientes en los campos a la derecha. Usted también puede especificar un color basándose en el modelo de color RGB introduciendo los valores numéricos necesarios en los campos <b>R</b>, <b>G</b>, <b>B</b> (red-rojo, green-verde, blue-azul) o introducir el código hexadecimal sRGB en el campo marcado con el signo <b>#</b>. El color seleccionado se mostrará en el rectángulo <b>Nuevo</b>. Si el objeto se rellenó de otro color personalizado, previamente, este color se muestra en el rectángulo <b>Actual</b> para que usted pueda comparar los colores originales y los modificados. Una vez especificado el color, pulse el botón <b>Añadir</b>:<p><img alt="Paleta - Color personalizado" src="../images/palette_custom.png" /></p>
+						<p>El color personalizado se aplicará al texto/celda seleccionado y se añadirá a la paleta <b>Color personalizado</b>.</p>
+						</li>
+						</ul>
+					</li>
+			</ol>
+			<p>Para eliminar el color de fondo de una cierta celda,</p>
+			<ol>
+				<li>seleccione una celda, un rango de celdas con el ratón o toda la hoja de cálculo usando la combinación de las teclas <b>Ctrl+A</b>,</li>
+				<li>pulse el icono <b>Color de fondo</b> <img alt="Color de fondo" src="../images/backgroundcolor.png" /> en la pestaña de <b>Inicio</b> barra de herramientas superior,</li>
+				<li>seleccione el icono <img alt="Sin relleno" src="../images/nofill.png" />.</li>
+			</ol>
+		</div>
+	</body>
+</html>
