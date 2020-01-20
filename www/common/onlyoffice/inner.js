@@ -1260,6 +1260,23 @@ define([
             return stringify(obj);
         };
 
+        var pinImages = function () {
+            if (content.mediasSources) {
+                var toPin = Object.keys(content.mediasSources || {}).map(function (id) {
+                    var data = content.mediasSources[id] || {};
+                    var src = data.src;
+                    if (!src) { return; }
+                    // Remove trailing slash
+                    if (src.slice(-1) === '/') {
+                        src = src.slice(0, -1);
+                    }
+                    // Extract the channel id from the source href
+                    return src.slice(src.lastIndexOf('/') + 1);
+                }).filter(Boolean);
+                sframeChan.query('EV_OO_PIN_IMAGES', toPin);
+            }
+        };
+
         APP.getContent = function () { return content; };
 
         APP.onLocal = config.onLocal = function () {
@@ -1269,6 +1286,7 @@ define([
             // Update metadata
             var content = stringifyInner();
             APP.realtime.contentUpdate(content);
+            pinImages();
         };
 
         config.onInit = function (info) {
@@ -1422,6 +1440,7 @@ define([
                 handleNewLocks(oldLocks, content.locks);
                 oldLocks = JSON.parse(JSON.stringify(content.locks));
             }
+            pinImages();
         };
 
         config.onAbort = function () {
