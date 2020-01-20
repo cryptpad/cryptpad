@@ -32,6 +32,13 @@ define(function() {
      */
     //config.availableLanguages = ['en', 'fr', 'de'];
 
+    /* You can display a link to the imprint (legal notice) of your website in the static pages
+     * footer. To do so, you can either set the following value to `true` and create an imprint.html page
+     * in the `customize` directory. You can also set it to an absolute URL if your imprint page already exists.
+     */
+    config.imprint = false;
+    // config.imprint = true;
+    // config.imprint = 'https://xwiki.com/en/company/legal-notice';
 
     /*  Cryptpad apps use a common API to display notifications to users
      *  by default, notifications are hidden after 5 seconds
