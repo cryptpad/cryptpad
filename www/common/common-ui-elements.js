@@ -4055,7 +4055,7 @@ define([
     };
 
     UIElements.displayBurnAfterReadingPage = function (common, cb) {
-        var info = h('p.cp-password-info', Messages.burnAfterReading_warning);
+        var info = h('p.cp-password-info', Messages.burnAfterReading_warningAccess);
         var button = h('button.primary', Messages.burnAfterReading_proceed);
 
         $(button).on('click', function () {
