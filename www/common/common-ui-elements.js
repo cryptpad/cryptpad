@@ -1099,7 +1099,7 @@ define([
 
         if (!hashes || (!hashes.editHash && !hashes.viewHash)) { return; }
 
-        // check if the pad is password protected 
+        // check if the pad is password protected
         var hash = hashes.editHash || hashes.viewHash;
         var href = origin + pathname + '#' + hash;
         var parsedHref = Hash.parsePadUrl(href);
@@ -1107,7 +1107,7 @@ define([
 
         var makeFaqLink = function () {
             var link = h('span', [
-                h('i.fa.fa-question-circle'), 
+                h('i.fa.fa-question-circle'),
                 h('a', {href: '#'}, Messages.passwordFaqLink)
             ]);
             $(link).click(function () {
@@ -1115,7 +1115,7 @@ define([
             });
             return link;
         };
-        
+
 
         var parsed = Hash.parsePadUrl(pathname);
         var canPresent = ['code', 'slide'].indexOf(parsed.type) !== -1;
@@ -1130,8 +1130,8 @@ define([
                             Messages.share_linkPresent, false, { mark: {tabindex:1} }) : undefined,
             UI.createRadio('accessRights', 'cp-share-editable-true',
                            Messages.share_linkEdit, false, { mark: {tabindex:1} })]),
-            burnAfterReading = hashes.viewHash ? UI.createRadio('accessRights', 'cp-share-bar', Messages.burnAfterReading_linkBurnAfterReading || 
-                           'View once and self-destruct', false, { mark: {tabindex:1}, label: {style: "display: none;"} }) : undefined // XXX temp KEY
+            burnAfterReading = hashes.viewHash ? UI.createRadio('accessRights', 'cp-share-bar', Messages.burnAfterReading_linkBurnAfterReading,
+                            false, { mark: {tabindex:1}, label: {style: "display: none;"} }) : undefined
         ]);
 
         // Burn after reading
@@ -1140,7 +1140,7 @@ define([
         // the options to generate the BAR url
         var barAlert = h('div.alert.alert-danger.cp-alertify-bar-selected', {
             style: 'display: none;'
-        }, Messages.burnAfterReading_warningLink || " You have set this pad to self-destruct. Once a recipient opens this pad, it will be permanently deleted from the server."); // XXX temp KEY
+        }, Messages.burnAfterReading_warningLink);
         var channel = Hash.getSecrets('pad', hash, config.password).channel;
         common.getPadMetadata({
             channel: channel
@@ -1182,7 +1182,7 @@ define([
                         cb(url);
                     });
                 }
-                return Messages.burnAfterReading_generateLink || 'Click on the button below to generate a link'; // XXX temp KEY
+                return Messages.burnAfterReading_generateLink;
             }
             var hash = (!hashes.viewHash || (edit && hashes.editHash)) ? hashes.editHash : hashes.viewHash;
             var href = burnAfterReading ? burnAfterReadingUrl : (origin + pathname + '#' + hash);
@@ -1212,18 +1212,18 @@ define([
         // Show alert if the pad is password protected
         if (hasPassword) {
             linkContent.push(h('div.alert.alert-primary', [
-                h('i.fa.fa-lock'), 
+                h('i.fa.fa-lock'),
                 Messages.share_linkPasswordAlert, h('br'),
                 makeFaqLink()
             ]));
         }
 
-        // warning about sharing links 
+        // warning about sharing links
         var localStore = window.cryptpadStore;
-        var dismissButton = h('span.fa.fa-times'); 
-        var shareLinkWarning = h('div.alert.alert-warning.dismissable', 
-            { style: 'display: none;' }, 
-            [ 
+        var dismissButton = h('span.fa.fa-times');
+        var shareLinkWarning = h('div.alert.alert-warning.dismissable',
+            { style: 'display: none;' },
+            [
                 h('span.cp-inline-alert-text', Messages.share_linkWarning),
                 dismissButton
             ]);
@@ -1305,9 +1305,9 @@ define([
 
         var contactsContent = h('div.cp-share-modal');
         var $contactsContent = $(contactsContent);
-        
+
         $contactsContent.append(friendsList);
-        
+
         // Show alert if the pad is password protected
         if (hasPassword) {
             $contactsContent.append(h('div.alert.alert-primary', [
@@ -1348,7 +1348,7 @@ define([
         // Show alert if the pad is password protected
         if (hasPassword) {
             embedContent.push(h('div.alert.alert-primary', [
-                h('i.fa.fa-lock'), ' ', 
+                h('i.fa.fa-lock'), ' ',
                 Messages.share_embedPasswordAlert, h('br'),
                 makeFaqLink()
             ]));
@@ -1494,13 +1494,13 @@ define([
         if (!hashes.fileHash) { throw new Error("You must provide a file hash"); }
         var url = origin + pathname + '#' + hashes.fileHash;
 
-        // check if the file is password protected 
+        // check if the file is password protected
         var parsedHref = Hash.parsePadUrl(url);
         var hasPassword = parsedHref.hashData.password;
 
         var makeFaqLink = function () {
             var link = h('span', [
-                h('i.fa.fa-question-circle'), 
+                h('i.fa.fa-question-circle'),
                 h('a', {href: '#'}, Messages.passwordFaqLink)
             ]);
             $(link).click(function () {
@@ -1532,12 +1532,12 @@ define([
             ]));
         }
 
-        // warning about sharing links 
+        // warning about sharing links
         var localStore = window.cryptpadStore;
-        var dismissButton = h('span.fa.fa-times'); 
-        var shareLinkWarning = h('div.alert.alert-warning.dismissable', 
-            { style: 'display: none;' }, 
-            [ 
+        var dismissButton = h('span.fa.fa-times');
+        var shareLinkWarning = h('div.alert.alert-warning.dismissable',
+            { style: 'display: none;' },
+            [
                 h('span.cp-inline-alert-text', Messages.share_linkWarning),
                 dismissButton
             ]);
@@ -1589,7 +1589,7 @@ define([
         // Show alert if the pad is password protected
         if (hasPassword) {
             $contactsContent.append(h('div.alert.alert-primary', [
-                h('i.fa.fa-unlock'), 
+                h('i.fa.fa-unlock'),
                 Messages.share_contactPasswordAlert, h('br'),
                 makeFaqLink()
             ]));
@@ -1615,7 +1615,7 @@ define([
         // Show alert if the pad is password protected
         if (hasPassword) {
             embed.append(h('div.alert.alert-primary', [
-                h('i.fa.fa-lock'), ' ', 
+                h('i.fa.fa-lock'), ' ',
                 Messages.share_embedPasswordAlert, h('br'),
                 makeFaqLink()
             ]));
@@ -1862,7 +1862,7 @@ define([
                     seeds: seeds,
                 }, waitFor(function (obj) {
                     if (obj && obj.error) {
-                        waitFor.abort(); 
+                        waitFor.abort();
                         $(linkSpin).hide();
                         $(linkForm).show();
                         $nav.find('button.cp-teams-invite-create').show();
@@ -4055,8 +4055,8 @@ define([
     };
 
     UIElements.displayBurnAfterReadingPage = function (common, cb) {
-        var info = h('p.cp-password-info', Messages.burnAfterReading_warning || 'This document will self-destruct as soon as you open it. It will be removed form the server, once you close this window you will not be able to access it again. If you are not ready to proceed you can close this window and come back later. '); // XXX temp KEY
-        var button = h('button.primary', Messages.burnAfterReading_proceed || 'view and delete'); // XXX temp KEY
+        var info = h('p.cp-password-info', Messages.burnAfterReading_warning);
+        var button = h('button.primary', Messages.burnAfterReading_proceed);
 
         $(button).on('click', function () {
             cb();
@@ -4071,7 +4071,7 @@ define([
     UIElements.getBurnAfterReadingWarning = function (common) {
         var priv = common.getMetadataMgr().getPrivateData();
         if (!priv.burnAfterReading) { return; }
-        return h('div.alert.alert-danger.cp-burn-after-reading', Messages.burnAfterReading_warningDeleted || 'This pad has been deleted from the server, once you close this window you will not be able to access it again.'); // XXX temp KEY
+        return h('div.alert.alert-danger.cp-burn-after-reading', Messages.burnAfterReading_warningDeleted);
     };
 
     var crowdfundingState = false;
