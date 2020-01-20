@@ -1000,7 +1000,7 @@ define([
                     h('span.fa.fa-spin.fa-spinner'),
                     h('span', Messages.oo_exportInProgress)
                 ]);
-                var modal = UI.openCustomModal(UI.dialog.customModal(content, {buttons: []}));
+                UI.openCustomModal(UI.dialog.customModal(content, {buttons: []}));
 
                 setTimeout(function () {
                     x2tSaveAndConvertData(text, "filename.bin", ext, filename+'.'+ext);
@@ -1144,7 +1144,7 @@ define([
                 h('span.fa.fa-spin.fa-spinner'),
                 h('span', Messages.oo_importInProgress)
             ]);
-            var modal = UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
+            UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
             setTimeout(function () {
                 require(['/common/onlyoffice/x2t/x2t.js'], function() {
                     var x2t = window.Module;
