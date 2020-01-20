@@ -8,6 +8,7 @@ define([
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/common-ui-elements.js',
+    '/common/hyperscript.js',
     '/api/config',
     '/customize/messages.js',
     '/customize/application_config.js',
@@ -33,6 +34,7 @@ define([
     Hash,
     Util,
     UIElements,
+    h,
     ApiConfig,
     Messages,
     AppConfig,
@@ -64,6 +66,7 @@ define([
     };
 
     var toolbar;
+
 
     var andThen = function (common) {
         var Title;
@@ -898,6 +901,8 @@ define([
                 result = x2t.FS.readFile('/working/' + fileName + "." + outputFormat);
             } catch (e) {
                 debug("Failed reading converted file");
+                UI.removeModals();
+                UI.warn(Messages.error);
                 return "";
             }
             return result;
@@ -919,6 +924,7 @@ define([
             xlsData = x2tConvertDataInternal(x2t, data, filename, extension);
             if (xlsData) {
                 var blob = new Blob([xlsData], {type: "application/bin;charset=utf-8"});
+                UI.removeModals();
                 saveAs(blob, finalFilename);
             }
         };
@@ -957,7 +963,7 @@ define([
 
             if (typeof(Atomics) === "undefined") {
                 ext = ['.bin'];
-                warning = 'Use chrome'; // XXX tell the user they can export as Office format with Chrome?
+                warning = '<div class="alert alert-info">'+Messages.oo_exportChrome+'</div>';
             }
 
             var types = ext.map(function (val) {
@@ -980,8 +986,7 @@ define([
             };
             var $select = UIElements.createDropdown(dropdownConfig);
 
-            var warningText = warning ? ('<br>' + warning) : '';
-            UI.prompt(Messages.exportPrompt+warningText, Util.fixFileName(suggestion), function (filename) {
+            UI.prompt(Messages.exportPrompt+warning, Util.fixFileName(suggestion), function (filename) {
                 // $select.getValue()
                 if (!(typeof(filename) === 'string' && filename)) { return; }
                 var ext = ($select.getValue() || '').slice(1);
@@ -991,7 +996,15 @@ define([
                     return;
                 }
 
-                x2tSaveAndConvertData(text, "filename.bin", ext, filename+'.'+ext);
+                var content = h('div.cp-oo-x2tXls', [
+                    h('span.fa.fa-spin.fa-spinner'),
+                    h('span', Messages.oo_exportInProgress)
+                ]);
+                var modal = UI.openCustomModal(UI.dialog.customModal(content, {buttons: []}));
+
+                setTimeout(function () {
+                    x2tSaveAndConvertData(text, "filename.bin", ext, filename+'.'+ext);
+                }, 100);
             }, {
                 typeInput: $select[0]
             }, true);
@@ -1092,15 +1105,18 @@ define([
                 return nId.length === 32;
             });
             if (m.length > 1) {
+                UI.removeModals();
                 return void UI.alert(Messages.oo_cantUpload);
             }
             if (!content) {
-                return void UI.alert(Messages.error); // XXX?
+                UI.removeModals();
+                return void UI.alert(Messages.oo_invalidFormat);
             }
             var blob = new Blob([content], {type: 'plain/text'});
             var file = getFileType();
             blob.name = (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
             var uploadedCallback = function() {
+                UI.removeModals();
                 UI.confirm(Messages.oo_uploaded, function (yes) {
                     try {
                         window.frames[0].editor.setViewModeDisconnect();
@@ -1124,25 +1140,32 @@ define([
             if (ext === "bin") {
                 return void importFile(content);
             }
-            require(['/common/onlyoffice/x2t/x2t.js'], function() {
-                var x2t = window.Module;
-                x2t.run();
-                if (x2tInitialized) {
-                    debug("x2t runtime already initialized");
-                    x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin", function(convertedContent) {
-                        importFile(convertedContent);
-                    });
-                }
+            var div = h('div.cp-oo-x2tXls', [
+                h('span.fa.fa-spin.fa-spinner'),
+                h('span', Messages.oo_importInProgress)
+            ]);
+            var modal = UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
+            setTimeout(function () {
+                require(['/common/onlyoffice/x2t/x2t.js'], function() {
+                    var x2t = window.Module;
+                    x2t.run();
+                    if (x2tInitialized) {
+                        debug("x2t runtime already initialized");
+                        x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin", function(convertedContent) {
+                            importFile(convertedContent);
+                        });
+                    }
 
-                x2t.onRuntimeInitialized = function() {
-                    debug("x2t in runtime initialized");
-                    // Init x2t js module
-                    x2tInit(x2t);
-                    x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin", function(convertedContent) {
-                        importFile(convertedContent);
-                    });
-                };
-            });
+                    x2t.onRuntimeInitialized = function() {
+                        debug("x2t in runtime initialized");
+                        // Init x2t js module
+                        x2tInit(x2t);
+                        x2tConvertData(x2t, new Uint8Array(content), filename.name, "bin", function(convertedContent) {
+                            importFile(convertedContent);
+                        });
+                    };
+                });
+            }, 100);
         };
 
         var loadLastDocument = function () {

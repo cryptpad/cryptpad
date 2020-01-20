@@ -5067,7 +5067,7 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
         node.stream_ops = stream_ops;
         return node;
       },createPreloadedFile:function(parent, name, url, canRead, canWrite, onload, onerror, dontCreateFile, canOwn, preFinish) {
-        Browser.init(); // XXX perhaps this method should move onto Browser?
+        Browser.init(); // perhaps this method should move onto Browser?
         // TODO we should allow people to just pass in a complete filename instead
         // of parent and name being that we just join them anyways
         var fullname = name ? PATH_FS.resolve(PATH.join2(parent, name)) : parent;

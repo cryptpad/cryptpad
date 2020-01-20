@@ -55,6 +55,10 @@ define([
         return $('button.ok').last();
     };
 
+    UI.removeModals = function () {
+        $('div.alertify').remove();
+    };
+
     var listenForKeys = UI.listenForKeys = function (yes, no, el) {
         var handler = function (e) {
             e.stopPropagation();
@@ -375,6 +379,7 @@ define([
 
     dialog.getButtons = function (buttons, onClose) {
         if (!Array.isArray(buttons)) { return void console.error('Not an array'); }
+        if (!buttons.length) { return; }
         var navs = [];
         buttons.forEach(function (b) {
             if (!b.name || !b.onClick) { return; }
