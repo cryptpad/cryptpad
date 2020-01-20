@@ -7,6 +7,7 @@ define([
     '/common/common-interface.js',
     '/common/common-hash.js',
     '/common/common-util.js',
+    '/common/common-ui-elements.js',
     '/api/config',
     '/customize/messages.js',
     '/customize/application_config.js',
@@ -31,6 +32,7 @@ define([
     UI,
     Hash,
     Util,
+    UIElements,
     ApiConfig,
     Messages,
     AppConfig,
@@ -269,9 +271,11 @@ define([
             APP.realtime.onSettle(function () {
                 fixSheets();
                 UI.log(Messages.saved);
-                if (ev.callback) {
-                    return void ev.callback();
-                }
+                APP.realtime.onSettle(function () {
+                    if (ev.callback) {
+                        return void ev.callback();
+                    }
+                });
             });
             sframeChan.query('Q_OO_COMMAND', {
                 cmd: 'UPDATE_HASH',
@@ -486,6 +490,7 @@ define([
             ooChannel.queue.forEach(function (data) {
                 Array.prototype.push.apply(changes, data.msg.changes);
             });
+            ooChannel.lastHash = getLastCp().hash;
             send({
                 type: "authChanges",
                 changes: changes
@@ -839,18 +844,6 @@ define([
             makeChannel();
         };
 
-
-        var exportFile = function() {
-            var text = getContent();
-            var suggestion = Title.suggestTitle(Title.defaultTitle);
-            UI.prompt(Messages.exportPrompt,
-                Util.fixFileName(suggestion) + '.bin', function (filename) {
-                if (!(typeof(filename) === 'string' && filename)) { return; }
-                var blob = new Blob([text], {type: "application/bin;charset=utf-8"});
-                saveAs(blob, filename);
-            });
-        };
-
         var x2tInitialized = false;
         var x2tInit = function(x2t) {
             debug("x2t mount");
@@ -911,7 +904,19 @@ define([
         };
 
         var x2tSaveAndConvertDataInternal = function(x2t, data, filename, extension, finalFilename) {
-            var xlsData = x2tConvertDataInternal(x2t, data, filename, extension);
+            var type = common.getMetadataMgr().getPrivateData().ooType;
+            var xlsData;
+            if (type === "sheet" && extension !== 'xlsx') {
+                xlsData = x2tConvertDataInternal(x2t, data, filename, 'xlsx');
+                filename += '.xlsx';
+            } else if (type === "ooslide" && extension !== "pptx") {
+                xlsData = x2tConvertDataInternal(x2t, data, filename, 'pptx');
+                filename += '.pptx';
+            } else if (type === "oodoc" && extension !== "docx") {
+                xlsData = x2tConvertDataInternal(x2t, data, filename, 'docx');
+                filename += '.docx';
+            }
+            xlsData = x2tConvertDataInternal(x2t, data, filename, extension);
             if (xlsData) {
                 var blob = new Blob([xlsData], {type: "application/bin;charset=utf-8"});
                 saveAs(blob, finalFilename);
@@ -941,18 +946,55 @@ define([
         var exportXLSXFile = function() {
             var text = getContent();
             var suggestion = Title.suggestTitle(Title.defaultTitle);
-            var ext = "xlsx";
+            var ext = ['.xlsx', /*'.ods',*/ '.bin'];
             var type = common.getMetadataMgr().getPrivateData().ooType;
+            var warning = '';
             if (type==="ooslide") {
-                ext = "pptx";
+                ext = ['.pptx', /*'.odp',*/ '.bin'];
             } else if (type==="oodoc") {
-                ext = "docx";
+                ext = ['.docx', /*'.odt',*/ '.bin'];
             }
 
-            UI.prompt(Messages.exportPrompt, Util.fixFileName(suggestion) + '.' + ext, function (filename) {
-                if (!(typeof(filename) === 'string' && filename)) { return; }
-                x2tSaveAndConvertData(text, "filename.bin", ext, filename);
+            if (typeof(Atomics) === "undefined") {
+                ext = ['.bin'];
+                warning = 'Use chrome'; // XXX tell the user they can export as Office format with Chrome?
+            }
+
+            var types = ext.map(function (val) {
+                return {
+                    tag: 'a',
+                    attributes: {
+                        'data-value': val,
+                        href: '#'
+                    },
+                    content: val
+                };
             });
+            var dropdownConfig = {
+                text: ext[0], // Button initial text
+                caretDown: true,
+                options: types, // Entries displayed in the menu
+                isSelect: true,
+                initialValue: ext[0],
+                common: common
+            };
+            var $select = UIElements.createDropdown(dropdownConfig);
+
+            var warningText = warning ? ('<br>' + warning) : '';
+            UI.prompt(Messages.exportPrompt+warningText, Util.fixFileName(suggestion), function (filename) {
+                // $select.getValue()
+                if (!(typeof(filename) === 'string' && filename)) { return; }
+                var ext = ($select.getValue() || '').slice(1);
+                if (ext === 'bin') {
+                    var blob = new Blob([text], {type: "application/bin;charset=utf-8"});
+                    saveAs(blob, filename+'.bin');
+                    return;
+                }
+
+                x2tSaveAndConvertData(text, "filename.bin", ext, filename+'.'+ext);
+            }, {
+                typeInput: $select[0]
+            }, true);
         };
 
         var x2tImportImagesInternal = function(x2t, images, i, callback) {
@@ -1053,7 +1095,7 @@ define([
                 return void UI.alert(Messages.oo_cantUpload);
             }
             if (!content) {
-                return void UI.alert(Messages.oo_cantUpload);
+                return void UI.alert(Messages.error); // XXX?
             }
             var blob = new Blob([content], {type: 'plain/text'});
             var file = getFileType();
@@ -1075,10 +1117,13 @@ define([
             APP.FM.handleFile(blob, data);
         };
 
-        var importXLSXFile = function(content, filename) {
+        var importXLSXFile = function(content, filename, ext) {
             // Perform the x2t conversion
             debug("Filename");
             debug(filename);
+            if (ext === "bin") {
+                return void importFile(content);
+            }
             require(['/common/onlyoffice/x2t/x2t.js'], function() {
                 var x2t = window.Module;
                 x2t.run();
@@ -1251,21 +1296,11 @@ define([
                 }).attr('title', 'Restore last checkpoint').appendTo($rightside);
             }
 
-            var $export = common.createButton('export', true, {}, exportFile);
-            $export.appendTo($rightside);
+            var $exportXLSX = common.createButton('export', true, {}, exportXLSXFile);
+            $exportXLSX.appendTo($rightside);
 
-            if (typeof(Atomics) !== "undefined") {
-                var $exportXLSX = common.createButton('export', true, {}, exportXLSXFile);
-                $exportXLSX.appendTo($rightside);
-            }
-
-            var $import = common.createButton('import', true, {}, importFile);
-            $import.appendTo($rightside);
-
-            if (typeof(Atomics) !== "undefined") {
-                var $importXLSX = common.createButton('import', true, { accept: ["xlsx"], types: ["xlsx"], binary : true }, importXLSXFile);
-                $importXLSX.appendTo($rightside);
-            }
+            var $importXLSX = common.createButton('import', true, { accept: [".bin", ".ods", ".xlsx"], binary : ["ods", "xlsx"] }, importXLSXFile);
+            $importXLSX.appendTo($rightside);
 
             if (common.isLoggedIn()) {
                 common.createButton('hashtag', true).appendTo($rightside);
