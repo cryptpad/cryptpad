@@ -1,0 +1,259 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insert chart</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add a chart to your spreadsheet and adjust its position, size and properties" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Insert chart</h1>
+            <h3>Insert a chart</h3>
+			<p>To insert a chart into the speadsheet,</p>
+			<ol>
+				<li>Select the cell range that contain the data you wish to use for the chart,</li>
+				<li>Click the <b>Insert Chart</b> <img alt="Insert Chart icon" src="../images/chart.png" /> icon at the top toolbar,</li>
+                <li>
+                    Select a chart <b>Type</b> you wish to insert: Column, Line, Pie, Bar, Area, XY (Scatter), or Stock.
+                    <p class="note"><b>Note</b>: for <b>Column</b>, <b>Line</b>, <b>Pie</b>, or <b>Bar</b> charts, a 3D format is also available.</p>
+                </li>
+            </ol>
+            <p>After that the chart will be added to the worksheet. </p>
+            <h3>Adjust the chart settings</h3>
+            <p>Now you can change the inserted chart settings. To change the chart type,</p>
+            <ol>
+                <li>select the chart with the mouse,</li>
+                <li>
+                    click the <b>Chart Settings</b> <img alt="Chart Settings icon" src="../images/chart.png" /> icon at the right sidebar,
+                    <p><img alt="Chart Settings Right-Side Panel window" src="../images/chartsettings.png" /></p>
+                </li>
+                <li>open the <b>Type</b> drop-down list and select the type you need,</li>
+                <li>open the <b>Style</b> drop-down list below and select the style which suits you best.</li>
+            </ol>
+            <p>The selected chart type and style will be changed. If you need to edit the data used to create the chart,</p>
+            <ol>
+                <li>click the <b>Show advanced settings</b> link situated at the right-side panel, or choose the <b>Chart Advanced Settings</b> option from the right-click menu, or just double-click the chart,</li>
+                <li>in the opened <b>Chart - Advanced Settings</b> window make all the necessary changes,</li>
+                <li>click the <b>OK</b> button to apply the changes and close the window.</li>
+            </ol>   
+            <p>The description of the chart settings that can be edited using the <b>Chart - Advanced Settings</b> window you can find below.</p>
+					<p>The <b>Type &amp Data</b> tab allows you to change the chart type as well as the data you wish to use to create a chart.</p>
+						<ul>
+							<li>Change the chart <b>Type</b> selecting one of the available options: Column, Line, Pie, Bar, Area, XY (Scatter), or Stock.</li>
+							<li>Check the selected <b>Data Range</b> and modify it, if necessary, clicking the <b>Select Data</b> button and entering the desired data range in the following format: <em>Sheet1!A1:B4</em>.</li>
+							<li>Choose the way to arrange the data. You can either select the <b>Data series</b> to be used on the X axis: <b>in rows</b> or <b>in columns</b>.</li> 
+						</ul>
+						<p><img alt="Chart - Advanced Settings" src="../images/chartwindow.png" /></p>
+
+						<p>The <b>Layout</b> tab allows you to change the layout of chart elements.</p>
+							<ul>
+								<li>Specify the <b>Chart Title</b> position in regard to your chart selecting the necessary option from the drop-down list:
+									<ul>
+									<li><b>None</b> to not display a chart title,</li> 
+									<li><b>Overlay</b> to overlay and center a title on the plot area,</li> 
+									<li><b>No Overlay</b> to display the title above the plot area.</li>
+									</ul></li>
+								<li>Specify the <b>Legend</b> position in regard to your chart selecting the necessary option from the drop-down list: 
+                                    <ul>
+                                        <li><b>None</b> to not display a legend,</li>
+                                        <li><b>Bottom</b> to display the legend and align it to the bottom of the plot area,</li>
+                                        <li><b>Top</b> to display the legend and align it to the top of the plot area,</li>
+                                        <li><b>Right</b> to display the legend and align it to the right of the plot area,</li>
+                                        <li><b>Left</b> to display the legend and align it to the left of the plot area,</li>
+                                        <li><b>Left Overlay</b> to overlay and center the legend to the left on the plot area,</li>
+                                        <li><b>Right Overlay</b> to overlay and center the legend to the right on the plot area.</li>
+                                    </ul>
+								</li>
+								<li>Specify the <b>Data Labels</b> (i.e. text labels that represent exact values of data points) parameters:<br />
+									<ul>
+                                        <li>specify the <b>Data Labels</b> position relative to the data points selecting the necessary option from the drop-down list. The available options vary depending on the selected chart type.
+                                            <ul>
+                                                <li>For <b>Column/Bar</b> charts, you can choose the following options: <b>None</b>, <b>Center</b>, <b>Inner Bottom</b>, <b>Inner Top</b>, <b>Outer Top</b>.</li>
+                                                <li>For <b>Line/XY (Scatter)/Stock</b> charts, you can choose the following options: <b>None</b>, <b>Center</b>, <b>Left</b>, <b>Right</b>, <b>Top</b>, <b>Bottom</b>.</li>
+                                                <li>For <b>Pie</b> charts, you can choose the following options: <b>None</b>, <b>Center</b>, <b>Fit to Width</b>, <b>Inner Top</b>, <b>Outer Top</b>.</li>
+                                                <li>For <b>Area</b> charts as well as for <b>3D</b> <b>Column</b>, <b>Line</b> and <b>Bar</b> charts, you can choose the following options: <b>None</b>, <b>Center</b>.</li>
+                                            </ul>
+                                        </li>
+                                        <li>select the data you wish to include into your labels checking the corresponding boxes: <b>Series Name</b>, <b>Category Name</b>, <b>Value</b>,</li>									
+										<li>enter a character (comma, semicolon etc.) you wish to use for separating several labels into the <b>Data Labels Separator</b> entry field.</li>
+									</ul>
+								</li>
+                                <li><b>Lines</b> - is used to choose a line style for <b>Line/XY (Scatter) charts</b>. You can choose one of the following options: <b>Straight</b> to use straight lines between data points, <b>Smooth</b> to use smooth curves between data points, or <b>None</b> to not display lines.</li>
+                                <li>
+                                    <b>Markers</b> - is used to specify whether the markers should be displayed (if the box is checked) or not (if the box is unchecked) for <b>Line/XY (Scatter) charts</b>.
+                                    <p class="note"><b>Note</b>: the <b>Lines</b> and <b>Markers</b> options are available for <b>Line charts</b> and <b>XY (Scatter) charts</b> only.</p>
+                                </li>
+                                <li>The <b>Axis Settings</b> section allows to specify if you wish to display <b>Horizontal/Vertical Axis</b> or not selecting the <b>Show</b> or <b>Hide</b> option from the drop-down list. You can also specify <b>Horizontal/Vertical Axis Title</b> parameters:
+                                    <ul>
+                                        <li>
+                                            Specify if you wish to display the <b>Horizontal Axis Title</b> or not selecting the necessary option from the drop-down list:
+                                            <ul>
+                                                <li><b>None</b> to not display a horizontal axis title,</li>
+                                                <li><b>No Overlay</b> to display the title below the horizontal axis.</li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            Specify the <b>Vertical Axis Title</b> orientation selecting the necessary option from the drop-down list:
+                                            <ul>
+                                                <li><b>None</b> to not display a vertical axis title,</li>
+                                                <li><b>Rotated</b> to display the title from bottom to top to the left of the vertical axis,</li>
+                                                <li><b>Horizontal</b> to display the title horizontally to the left of the vertical axis.</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>The <b>Gridlines</b> section allows to specify which of the <b>Horizontal/Vertical Gridlines</b> you wish to display selecting the necessary option from the drop-down list: <b>Major</b>, <b>Minor</b>, or <b>Major and Minor</b>. You can hide the gridlines at all using the <b>None</b> option.
+                                        <p class="note"><b>Note</b>: the <b>Axis Settings</b> and <b>Gridlines</b> sections will be disabled for <b>Pie charts</b> since charts of this type have no axes and gridlines.</p>
+                                </li>
+							</ul>
+
+							<p><img alt="Chart - Advanced Settings" src="../images/chartwindow1.png" /></p>
+
+                    <p class="note"><b>Note</b>: the <b>Vertical/Horizontal Axis</b> tabs will be disabled for <b>Pie charts</b> since charts of this type have no axes.</p>
+                    <p>The <b>Vertical Axis</b> tab allows you to change the parameters of the vertical axis also referred to as the values axis or y-axis which displays numeric values. Note that the vertical axis will be the category axis which displays text labels for the <b>Bar charts</b>, therefore in this case the <b>Vertical Axis</b> tab options will correspond to the ones described in the next section. For the <b>XY (Scatter) charts</b>, both axes are value axes.</p>
+                    <ul>
+                        <li>
+                            The <b>Axis Options</b> section allows to set the following parameters:
+                            <ul>
+                                <li><b>Minimum Value</b> - is used to specify a lowest value displayed at the vertical axis start. The <b>Auto</b> option is selected by default, in this case the minimum value is calculated automatically depending on the selected data range. You can select the <b>Fixed</b> option from the drop-down list and specify a different value in the entry field on the right.</li>
+                                <li><b>Maximum Value</b> - is used to specify a highest value displayed at the vertical axis end. The <b>Auto</b> option is selected by default, in this case the maximum value is calculated automatically depending on the selected data range. You can select the <b>Fixed</b> option from the drop-down list and specify a different value in the entry field on the right.</li>
+                                <li><b>Axis Crosses</b> - is used to specify a point on the vertical axis where the horizontal axis should cross it. The <b>Auto</b> option is selected by default, in this case the axes intersection point value is calculated automatically depending on the selected data range. You can select the <b>Value</b> option from the drop-down list and specify a different value in the entry field on the right, or set the axes intersection point at the <b>Minimum/Maximum Value</b> on the vertical axis.</li>
+                                <li><b>Display Units</b> - is used to determine a representation of the numeric values along the vertical axis. This option can be useful if you're working with great numbers and wish the values on the axis to be displayed in more compact and readable way (e.g. you can represent 50 000 as 50 by using the <b>Thousands</b> display units). Select desired units from the drop-down list: <b>Hundreds</b>, <b>Thousands</b>, <b>10 000</b>, <b>100 000</b>, <b>Millions</b>, <b>10 000 000</b>, <b>100 000 000</b>, <b>Billions</b>, <b>Trillions</b>, or choose the <b>None</b> option to return to the default units.</li>
+                                <li><b>Values in reverse order</b> - is used to display values in an opposite direction. When the box is unchecked, the lowest value is at the bottom and the highest value is at the top of the axis. When the box is checked, the values are ordered from top to bottom.</li>
+                            </ul>
+                        </li>
+                        <li>
+                            The <b>Tick Options</b> section allows to adjust the appearance of tick marks on the vertical scale. Major tick marks are the larger scale divisions which can have labels displaying numeric values. Minor tick marks are the scale subdivisions which are placed between the major tick marks and have no labels. Tick marks also define where gridlines can be displayed, if the corresponding option is set at the <b>Layout</b> tab. The <b>Major/Minor Type</b> drop-down lists contain the following placement options:
+                            <ul>
+                                <li><b>None</b> to not display major/minor tick marks,</li>
+                                <li><b>Cross</b> to display major/minor tick marks on both sides of the axis,</li>
+                                <li><b>In</b> to display major/minor tick marks inside the axis,</li>
+                                <li><b>Out</b> to display major/minor tick marks outside the axis.</li>
+                            </ul>
+                        </li>
+                        <li>
+                            The <b>Label Options</b> section allows to adjust the appearance of major tick mark labels which display values. To specify a <b>Label Position</b> in regard to the vertical axis, select the necessary option from the drop-down list:
+                            <ul>
+                                <li><b>None</b> to not display tick mark labels,</li>
+                                <li><b>Low</b> to display tick mark labels to the left of the plot area,</li>
+                                <li><b>High</b> to display tick mark labels to the right of the plot area,</li>
+                                <li><b>Next to axis</b> to display tick mark labels next to the axis.</li>
+                            </ul>
+                        </li>
+                    </ul>
+							<p><img alt="Chart - Advanced Settings" src="../images/chartwindow2.png" /></p>
+						
+                    <p>The <b>Horizontal Axis</b> tab allows you to change the parameters of the horizontal axis also referred to as the categories axis or x-axis which displays text labels. Note that the horizontal axis will be the value axis which displays numeric values for the <b>Bar charts</b>, therefore in this case the <b>Horizontal Axis</b> tab options will correspond to the ones described in the previous section. For the <b>XY (Scatter) charts</b>, both axes are value axes.</p>
+                    <ul>
+                        <li>
+                            The <b>Axis Options</b> section allows to set the following parameters:
+                            <ul>
+                                <li><b>Axis Crosses</b> - is used to specify a point on the horizontal axis where the vertical axis should cross it. The <b>Auto</b> option is selected by default, in this case the axes intersection point value is calculated automatically depending on the selected data range. You can select the <b>Value</b> option from the drop-down list and specify a different value in the entry field on the right, or set the axes intersection point at the <b>Minimum/Maximum Value</b> (that corresponds to the first and last category) on the horizontal axis.</li>
+                                <li><b>Axis Position</b> - is used to specify where the axis text labels should be placed: <b>On Tick Marks</b> or <b>Between Tick Marks</b>.</li>
+                                <li><b>Values in reverse order</b> - is used to display categories in an opposite direction. When the box is unchecked, categories are displayed from left to right. When the box is checked, the categories are ordered from right to left.</li>
+                            </ul>
+                        </li>
+                        <li>
+                            The <b>Tick Options</b> section allows to adjust the appearance of tick marks on the horizontal scale. Major tick marks are the larger divisions which can have labels displaying category values. Minor tick marks are the smaller divisions which are placed between the major tick marks and have no labels. Tick marks also define where gridlines can be displayed, if the corresponding option is set at the <b>Layout</b> tab. You can adjust the following tick mark parameters:
+                            <ul>
+                                <li><b>Major/Minor Type</b> - is used to specify the following placement options: <b>None</b> to not display major/minor tick marks, <b>Cross</b> to display major/minor tick marks on both sides of the axis, <b>In</b> to display major/minor tick marks inside the axis, <b>Out</b> to display major/minor tick marks outside the axis.</li>
+                                <li><b>Interval between Marks</b> - is used to specify how many categories should be displayed between two adjacent tick marks.</li>
+                            </ul>
+                        </li>
+                        <li>
+                            The <b>Label Options</b> section allows to adjust the appearance of labels which display categories.
+                            <ul>
+                                <li><b>Label Position</b> - is used to specify where the labels should be placed in regard to the horizontal axis. Select the necessary option from the drop-down list: <b>None</b> to not display category labels, <b>Low</b> to display category labels at the bottom of the plot area, <b>High</b> to display category labels at the top of the plot area, <b>Next to axis</b> to display category labels next to the axis.</li>
+                                <li><b>Axis Label Distance</b> - is used to specify how closely the labels should be placed to the axis. You can specify the necessary value in the entry field. The more the value you set, the more the distance between the axis and labels is.</li>
+                                <li><b>Interval between Labels</b> - is used to specify how often the labels should be displayed. The <b>Auto</b> option is selected by default, in this case labels are displayed for every category. You can select the <b>Manual</b> option from the drop-down list and specify the necessary value in the entry field on the right. For example, enter 2 to display labels for every other category etc.</li>
+                            </ul>
+                        </li>
+                    </ul>
+					<p><img alt="Chart - Advanced Settings" src="../images/chartwindow3.png" /></p>
+            <p>The <b>Alternative Text</b> tab allows to specify a <b>Title</b> and <b>Description</b> which will be read to the people with vision or cognitive impairments to help them better understand what information there is in the chart.</p>
+            <p><img alt="Chart - Advanced Settings" src="../images/chartwindow4.png" /></p>
+            				
+            <h3>Edit chart elements</h3>
+            <p>To edit the chart <b>Title</b>, select the default text with the mouse and type in your own one instead.</p>
+            <p>To change the font formatting within text elements, such as the chart title, axes titles, legend entries, data labels etc., select the necessary text element by left-clicking it. Then use icons on the top toolbar to change the font <a href="../UsageInstructions/FontTypeSizeStyle.htm" onclick="onhyperlinkclick(this)">type, style, size, or color</a>.</p>
+            <p>To delete a chart element, select it by left-clicking and press the <b>Delete</b> key on the keyboard.</p>
+            <p>You can also rotate 3D charts using the mouse. Left-click within the plot area and hold the mouse button until a blue dashed box appears. Drag the cursor without releasing the mouse button to change the 3D chart orientation.</p>
+            <p><img alt="3D chart" src="../images/3dchart.png" /></p>
+            <p>When the chart is selected, the <b>Shape Settings</b> <img alt="Shape Settings icon" src="../images/shape_settings_icon.png" /> icon is also available on the right, since a shape is used as a background for the chart. You can click this icon to open the <a href="InsertAutoshapes.htm" onclick="onhyperlinkclick(this)">Shape Settings</a> tab at the right sidebar and adjust the shape <b>Fill</b> and <b>Stroke</b>. Note that you cannot change the shape type.</p>
+            <p>If necessary, you can <a href="ManipulateObjects.htm" onclick="onhyperlinkclick(this)">change the chart size and position</a>.</p>
+            <p>To delete the inserted chart, click it and press the <b>Delete</b> key.</p>
+            
+            <h3>Edit sparklines</h3>
+            <p>Sparkline is a little chart that fits in one cell. Sparklines can be useful if you want to visually represent information for each row or column in large data sets. This makes it easier to show trends in multiple data series. </p>
+            <p>If your spreadsheet contains existing sparklines created using some other application, you can change sparkline properties. To do that, select the cell that contains a sparkline with the mouse and click the <b>Chart Settings</b> <img alt="Chart Settings icon" src="../images/chart.png" /> icon at the right sidebar. If the selected sparkline is included into a sparkline group, the changes will be applied to all sparklines in the group.</p>
+            <p><img alt="Chart Settings Right-Side Panel window" src="../images/right_sparkline.png" /></p>
+            <ul>
+                <li>Use the <b>Type</b> drop-down list to select one of the available sparkline types:
+                <ul>
+                    <li><b>Column</b> - this type is similar to a regular <b>Column Chart</b>.</li>
+                    <li><b>Line</b> - this type is similar to a regular <b>Line Chart</b>.</li>
+                    <li><b>Win/Loss</b> - this type is suitable for representing data that include both positive and negative values.</li>
+                </ul>
+                </li>
+                <li>In the <b>Style</b> section, you can do the following:
+                <ul>
+                    <li>select the style which suits you best from the <b>Template</b> drop-down list.</li>
+                    <li>choose the necessary <b>Color</b> for the sparkline.</li>
+                    <li>choose the necessary <b>Line Weight</b> (available for the <b>Line</b> type only).</li>
+                </ul>
+                </li>
+                <li>The <b>Show</b> section allows to select which sparkline elements you want to highlight so that make them clearly visible. Check the box to the left of the element to be highlighted and select the necessary color clicking the colored box:
+                <ul>
+                    <li><b>High Point</b> - to highlight points that represent maximum values,</li>
+                    <li><b>Low Point</b> - to highlight points that represent minimum values,</li>
+                    <li><b>Negative Point</b> - to highlight points that represent negative values,</li>
+                    <li><b>First/Last Point</b> - to highlight the point that represents the first/last value,</li>
+                    <li><b>Markers</b> (available for the <b>Line</b> type only) - to highlight all values.</li>
+                </ul>
+                </li>
+            </ul>
+            <p>Click the <b>Show advanced settings</b> link situated at the right-side panel to open the <b>Sparkline - Advanced Settings</b> window.</p>
+            <p><img alt="Sparkline Advanced Settings window" src="../images/sparklinewindow.png" /></p>
+            <p>The <b>Type &amp Data</b> tab allows you to change the sparkline <b>Type</b> and <b>Style</b> as well as specify the <b>Hidden and Empty cells</b> display settings:</p>
+            <ul>
+                <li><b>Show empty cells as</b> - this option allows to control how sparklines are displayed if some cells in a data range are empty. Select the necessary option from the list:
+                <ul>
+                    <li><b>Gaps</b> - to display the sparkline with gaps in place of missing data,</li>
+                    <li><b>Zero</b> - to display the sparkline as if the value in an empty cell was zero,</li>
+                    <li><b>Connect data points with line</b> (available for the <b>Line</b> type only) - to ignore empty cells and display a connecting line between data points.</li>
+                </ul>
+                </li>
+                <li><b>Show data in hidden rows and columns</b> - check this box if you want to include values from the hidden cells into sparklines.</li>
+            </ul>
+            <p><img alt="Sparkline Advanced Settings window" src="../images/sparklinewindow2.png" /></p>
+            <p>The <b>Axis Options</b> tab allows you to specify the following <b>Horizontal/Vertical Axis</b> parameters:</p>
+            <ul>
+                <li>In the <b>Horizontal Axis</b> section, the following parameters are available:
+                    <ul>
+                        <li><b>Show axis</b> - check this box to display the horizontal axis. If the source data contain negative values, this option helps to display them more vividly.</li>
+                        <li><b>Reverse order</b> - check this box to display data in the reverse sequence.</li>
+                    </ul>
+                </li>
+                <li>
+                    In the <b>Vertical Axis</b> section, the following parameters are available:
+                    <ul>
+                        <li><b>Minimum/Maximum Value</b> 
+                        <ul>
+                            <li><b>Auto for Each</b> - this option is selected by default. It allows to use own minimum/maximum values for each sparkline. The minimum/maximum values are taken from the separate data series that are used to plot each sparkline. The maximum value for each sparkline will be located on the top of the cell, and the minimum value will be on the bottom.
+                                <p><img alt="Auto for Each" src="../images/autoforeach.png" /></p>
+                            </li>
+                            <li><b>Same for All</b> - this option allows to use the same minimum/maximum value for the entire sparkline group. The minimum/maximum values are taken from the whole data range that is used to plot the sparkline group. The maximum/minimum values for each sparkline will be scaled relative to the highest/lowest value within the range. If you select this option, it will be easier to compare several sparklines.
+                                <p><img alt="Same for All" src="../images/sameforall.png" /></p>
+                            </li>
+                            <li><b>Fixed</b> - this option allows to set a custom minimum/maximum value. The values which are lower or higher than the specified ones are not displayed in the sparklines.</li>
+                        </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            
+		</div>
+	</body>
+</html>

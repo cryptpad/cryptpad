@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>ADDRESS Function</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>ADDRESS Function</h1>
+			<p>The <b>ADDRESS</b> function is one of the lookup and reference functions. It is used to return a text representation of a cell address.</p>
+			<p>The <b>ADDRESS</b> function syntax is:</p> 
+			<p style="text-indent: 150px;"><b><em>ADDRESS(row-number, col-number[ , [ref-type] [, [A1-ref-type-flag] [, sheet name]]])</em></b></p> 
+			<p><em>where</em></p> 
+			<p style="text-indent: 50px;"><em><b>row-number</b></em> is a row number to use in a cell address.</p>
+			<p style="text-indent: 50px;"><em><b>col-number</b></em> is a column number to use in a cell address.</p>
+			<p style="text-indent: 50px;"><em><b>ref-type</b></em> is a type of reference. It can be one of the following numeric values:</p>
+				<table style="width: 40%">
+				<tr>
+					<td><b>Numeric value</b></td>
+					<td><b>Meaning</b></td>
+				</tr>
+				<tr>
+					<td>1 or omitted</td>
+					<td>Absolute referencing</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>Absolute row; relative column</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>Relative row; absolute column</td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>Relative referencing</td>
+				</tr>
+			</table>
+			<p><em><b>A1-ref-type-flag</b></em> is an optional logical value: TRUE or FALSE. If it is set to TRUE or omitted, the function will analyse <b><em>ref-text</em></b> as an A1-style reference. If it is set to FALSE, the function will interpret <b><em>ref-text</em></b> as an R1C1-style reference.</p>
+			<p><em><b>sheet name</b></em> is the name of the sheet to use in a cell address. It's an optional value. If it is omitted, the function will return the cell address without the sheet name indicated.</p>
+			<p>These arguments can be entered manually or included into the cells you make reference to.</p>
+			<p>To apply the <b>ADDRESS</b> function,</p>
+			<ol>
+			<li>select the cell where you wish to display the result,</li>
+			<li>click the <b>Insert Function</b> <img alt="Insert Function icon" src="../images/insertfunction.png" /> icon situated at the top toolbar,
+				<br />or right-click within a selected cell and select the <b>Insert Function</b> option from the menu,
+				<br />or click the <img alt="Function icon" src="../images/function.png" /> icon situated at the formula bar,
+			</li>
+			<li>select the <b>Lookup and Reference</b> function group from the list,</li>
+			<li>click the <b>ADDRESS</b> function,</li>
+			<li>enter the required arguments separating them by comma,</li>
+			<li>press the <b>Enter</b> button.</li>
+			</ol>
+			<p>The result will be displayed in the selected cell.</p>
+			<p style="text-indent: 150px;"><img alt="ADDRESS Function" src="../images/address.png" /></p>
+		</div>
+	</body>
+</html>

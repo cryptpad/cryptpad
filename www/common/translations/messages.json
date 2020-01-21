@@ -12,7 +12,7 @@
         "media": "Media",
         "todo": "Todo",
         "contacts": "Contacts",
-        "sheet": "Sheet (Beta)",
+        "sheet": "Sheet",
         "teams": "Teams"
     },
     "button_newpad": "New Rich Text pad",
@@ -1291,5 +1291,8 @@
     "oo_exportChrome": "Export to Microsoft Office formats is currently only available in Google Chrome.",
     "oo_invalidFormat": "This file cannot be imported",
     "oo_importInProgress": "Import in Progress",
-    "oo_exportInProgress": "Export in progress"
+    "oo_exportInProgress": "Export in progress",
+    "oo_sheetMigration_loading": "Upgrading your spreadsheet to the latest version",
+    "oo_sheetMigration_complete": "Updated version available, press OK to reload.",
+    "oo_sheetMigration_anonymousEditor": "Editing this spreadsheet is disabled for anonymous users until it is upgraded to the latest version by a registered user."
 }

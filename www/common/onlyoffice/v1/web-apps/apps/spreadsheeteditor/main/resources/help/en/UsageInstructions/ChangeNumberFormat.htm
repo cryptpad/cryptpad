@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Change number format</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Change the number format to display the numbers in the most convenient way" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Change number format</h1>
+            <h3>Apply a number format</h3>
+			<p>You can easily change the number format, i.e. the way the numbers you enter appear in your spreadsheet. To do that, </p>
+			<ol>
+				<li>select a cell, a range of cells with the mouse or the whole worksheet by pressing the <b>Ctrl+A</b> key combination,
+                <p class="note"><b>Note</b>: you can also select multiple non-adjacent cells or cell ranges holding down the <b>Ctrl</b> key while selecting cells/ranges with the mouse.</p>
+                </li>
+				<li>click the <b>General Format</b> <img alt="General Format button" src="../images/generalformat.png" /> button situated at the top toolbar and select the number format you wish to apply:
+					<ul>
+						<li><b>General</b> - is used to display the data you enter as plain numbers in the most compact way without any additional signs,</li>
+						<li><b>Number</b> - is used to display the numbers with 0-30 digits after the decimal point where a thousand separator is added between each group of three digits before the decimal point,</li>
+						<!--<li><b>Integer</b> - is used to display the numbers as an integer,</li>-->
+						<li><b>Scientific</b> (exponential) - is used to keep short the numbers converting in a string of type <em>d.dddE+ddd</em> or <em>d.dddE-ddd</em> where each <em>d</em> is a digit 0 to 9,</li>
+                        <li><b>Accounting</b> - is used to display monetary values with the default currency symbol and two decimal places. To apply another currency symbol or number of decimal places, follow the <a href="../UsageInstructions/ChangeNumberFormat.htm#customize" onclick="onhyperlinkclick(this)">instructions below</a>. Unlike the <b>Currency</b> format, the <b>Accounting</b> format aligns currency symbols by the left side of the cell, represents zero values as dashes and displays negative values in parentheses.
+                            <p><img alt="Accounting and Currency number formats" src="../images/accounting_currency.png" /></p>
+                            <p class="note"><b>Note</b>: to quickly apply the <b>Accounting</b> format to the selected data, you can also click the <b>Accounting Style</b> <img alt="Accounting Style icon" src="../images/accountingstyle.png" /> icon at the top toolbar and select the necessary currency symbol: one of the following currency symbols: <b>&#36;</b> Dollar, <b>&euro;</b> Euro, <b>&pound</b> Pound, <b>&#8381;</b> Rouble, <b>&yen</b> Yen.</p>
+                        </li>
+                        <li><b>Currency</b> - is used to display monetary values with the default currency symbol and two decimal places. To apply another currency symbol or number of decimal places, follow the <a href="../UsageInstructions/ChangeNumberFormat.htm#customize" onclick="onhyperlinkclick(this)">instructions below</a>. Unlike the <b>Accounting</b> format, the <b>Currency</b> format places a currency symbol directly before the first digit and displays negative values with the negative sign (-).</li>
+						<li><b>Date</b> - is used to display dates<!--. You can select one of the following date formats: <em>MM-dd-yy</em>, <em>MM-dd-yyyy</em>, <em>dd-MM-yy</em>, <em>dd-MM-yyyy</em>, <em>dd-MMM-yyyy</em>, <em>dd-MMM</em>, <em>MMM-yy</em>-->,</li>
+						<li><b>Time</b> - is used to display time<!--. You can select one of the following time formats: <em>HH:mm</em>, <em>HH:MM:ss</em>, <em>hh:mm tt</em>, <em>hh:mm:ss tt</em>, <em>[h]:mm:ss</em>-->,</li>
+						<li><b>Persentage</b> - is used to display the data as a percentage accompanied by a percent sign <b>%</b>,
+							<p class="note"><b>Note</b>: to quickly apply the percent style to your data you can also use the <b>Percent Style</b> <img alt="Percent Style icon" src="../images/percentstyle.png" /> icon at the top toolbar.</p>
+						</li>
+                        <li><b>Fraction</b> - is used to display the numbers as common fractions rather than decimals.</li>
+						<li><b>Text</b> - is used to display the numeric values as a plain text with as much precision as available.</li>
+                        <li><b>More formats</b> - is used to customize the already applied number formats specifying additional parameters (see the description below).</li>
+					</ul>
+				</li>
+				<li>change the number of decimal places, if needed:
+				    <ul>
+				        <li>use the <b>Increase Decimal</b> <img alt="Increase Decimal icon" src="../images/increasedecimal.png" /> icon situated at the top toolbar to display more digits after the decimal point,</li>
+				        <li>use the <b>Decrease Decimal</b> <img alt="Decrease Decimal icon" src="../images/decreasedecimal.png" /> icon situated at the top toolbar to display fewer digits after the decimal point.</li>
+				    </ul>
+				 </li>
+			</ol>
+            <h3 id="customize">Customize the number format</h3>
+            <p>You can customize the applied number format in the following way:</p>
+			<ol>
+                <li>select the cells you want to customize the number format for,</li>
+                <li>click the <b>General Format</b> <img alt="General Format button" src="../images/generalformat.png" /> button at the top toolbar,</li>
+                <li>select the <b>More formats</b> option,</li>
+                <li>in the <b>Number Format</b> window that opens, adjust the available parameters. The options differ depending on the number format that is applied to the selected cells. You can use the <b>Category</b> list to change the number format.
+                <p><img alt="Number Format window" src="../images/numberformatwindow.png" /></p>  
+                <ul>
+                    <li>for the <b>Number</b> format, you can set the number of <b>Decimal</b> points, specify if you want to <b>Use 1000 separator</b> or not and choose one of the available <b>Formats</b> for displaying negative values.</li>
+                    <li>for the <b>Scientific</b> and <b>Persentage</b> formats, you can set the number of <b>Decimal</b> points.</li>
+                    <li>for the <b>Accounting</b> and <b>Currency</b> formats, you can set the number of <b>Decimal</b> points, choose one of the available currency <b>Symbols</b> and one of the available <b>Formats</b> for displaying negative values.</li>
+                    <li>for the <b>Date</b> format, you can select one of the available date formats: <em>4/15</em>, <em>4/15/06</em>, <em>04/15/06</em>, <em>4/15/2006</em>, <em>4/15/06 0:00</em>, <em>4/15/06 12:00 AM</em>, <em>A</em>, <em>April 15 2006</em>, <em>15-Apr</em>, <em>15-Apr-06</em>, <em>Apr-06</em>, <em>April-06</em>, <em>A-06</em>, <em>15 Apr 2006</em>, <em>15/Apr</em>, <em>15/Apr/06</em>, <em>Apr/06</em>, <em>April/06</em>, <em>A/06</em>, <em>15/Apr/2006</em>, <em>15 Apr</em>, <em>15 Apr 06</em>, <em>Apr 06</em>, <em>April 06</em>, <em>A 06</em>, <em>15 Apr 2006</em>.</li>
+                    <li>for the <b>Time</b> format, you can select one of the available time formats: <em>12:48:58 PM</em>, <em>12:48</em>, <em>12:48 PM</em>, <em>12:48:58</em>, <em>48:57.6</em>, <em>36:48:58</em>.</li>
+                    <li>for the <b>Fraction</b> format, you can select one of the available formats: <em>Up to one digit (1/3)</em>, <em>Up to two digits (12/25)</em>, <em>Up to three digits (131/135)</em>, <em>As halves (1/2)</em>, <em>As fourths (2/4)</em>, <em>As eighths (4/8)</em>, <em>As sixteenths (8/16)</em>, <em>As tenths (5/10)</em> , <em>As hundredths (50/100)</em>.</li>
+                </ul>
+                </li>
+                <li>click the <b>OK</b> button to apply the changes.</li>
+            </ol>
+		</div>
+	</body>
+</html>

@@ -1287,5 +1287,9 @@
     "burnAfterReading_generateLink": "Klicke auf die Schaltfläche unten, um einen Link zu generieren.",
     "burnAfterReading_warningAccess": "Dieses Dokument wird sich selbst zerstören. Wenn du die Schaltfläche unten anklickst, kannst du dir den Inhalt einmal anzeigen lassen. Anschließend wird er endgültig gelöscht. Wenn du das Fenster schließt, kannst du nicht mehr auf den Inhalt zugreifen. Solltest du darauf nicht vorbereitet sein, schließe das Fenster und komme später zurück.",
     "burnAfterReading_proceed": "Ansehen und Löschen",
-    "burnAfterReading_warningDeleted": "Dieses Pad wurde endgültig gelöscht. Nachdem du das Fenster geschlossen hast, wirst du darauf nicht mehr zugreifen können."
+    "burnAfterReading_warningDeleted": "Dieses Pad wurde endgültig gelöscht. Nachdem du das Fenster geschlossen hast, wirst du darauf nicht mehr zugreifen können.",
+    "oo_exportChrome": "",
+    "oo_invalidFormat": "",
+    "oo_importInProgress": "",
+    "oo_exportInProgress": ""
 }

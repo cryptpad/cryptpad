@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insert text objects</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Insert text objects such as text boxes and Text Art to draw attention to a specific part of the spreadsheet" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Insert text objects</h1>
+            <p>To draw attention to a specific part of the spreadsheet, you can insert a text box (a rectangular frame that allows to enter text within it) or a Text Art object (a text box with a predefined font style and color that allows to apply some text effects).</p>
+			<h3>Add a text object</h3>
+            <p>You can add a text object anywhere on the worksheet. To do that:</p>
+            <ol>
+                <li>click the <b>Insert Text</b> <img alt="Insert Text icon" src="../images/inserttexticon.png" /> icon at the top toolbar,</li>
+                <li>select the necessary text object type:
+                <ul>
+                    <li>select the <b>Insert text box</b> option from the menu, then click where you want to insert the text box, hold the mouse button and drag the text box border to specify its size. When you release the mouse button, the insertion point will appear in the added text box, allowing you to enter your text.
+                        <p class="note"><b>Note</b>: it's also possible to insert a text box by clicking the <b>Insert Autoshape</b> <img alt="Insert Autoshape icon" src="../images/insertautoshape.png" /> icon at the top toolbar and selecting the <img alt="Insert Text autoshape" src="../images/text_autoshape.png" /> shape from the <b>Basic Shapes</b> group.</p>
+                    </li>
+                    <li>select the <b>Insert Text Art</b> option from the menu, then click on the desired style template – the Text Art object will be added in the center of the worksheet. Select the default text within the text box with the mouse and replace it with your own text.</li>
+                </ul>
+                </li>
+                <li>click outside of the text object to apply the changes and return to the worksheet.</li>
+            </ol>
+            <p>The text within the text object is a part of the latter (when you move or rotate the text object, the text moves or rotates with it).</p>
+            <p>As an inserted text object represents a rectangular frame with text in it (Text Art objects have invisible text box borders by default) and this frame is a common autoshape, you can change both the shape and text properties.</p>
+            <p>To delete the added text object, click on the text box border and press the <b>Delete</b> key on the keyboard. The text within the text box will also be deleted.</p>
+            <h3>Format a text box</h3>
+            <p>Select the text box clicking on its border to be able to change its properties. When the text box is selected, its borders are displayed as solid (not dashed) lines.</p>
+            <p><img alt="Text box selected" src="../images/textbox_boxselected.png" /></p>
+            <ul>
+                <li>to <a href="ManipulateObjects.htm" onclick="onhyperlinkclick(this)">resize, move, rotate</a> the text box use the special handles on the edges of the shape.</li>
+                <li>to edit the text box <a href="InsertAutoshapes.htm#shape_fill" onclick="onhyperlinkclick(this)">fill</a>, <a href="InsertAutoshapes.htm#shape_stroke" onclick="onhyperlinkclick(this)">stroke</a>, <b>replace</b> the rectangular box with a different shape, or access the <a href="InsertAutoshapes.htm#shape_advanced" onclick="onhyperlinkclick(this)">shape advanced settings</a>, click the <b>Shape Settings</b> <img alt="Shape Settings icon" src="../images/shape_settings_icon.png" /> icon on the right sidebar and use the corresponding options.</li>                
+                <li>to <a href="ManipulateObjects.htm#arrange" onclick="onhyperlinkclick(this)">arrange</a> text boxes as related to other objects, right-click on the text box border and use the contextual menu options.</li>
+                <li>to create <b>columns of text</b> within the text box, right-click on the text box border, click the <b>Shape Advanced Settings</b> option and switch to the <a href="../UsageInstructions/InsertAutoshapes.htm#columns" onclick="onhyperlinkclick(this)"><b>Columns</b></a> tab in the <b>Shape - Advanced Settings</b> window.</li>
+            </ul>
+            <h3 id="textbox_textformatting">Format the text within the text box</h3>
+            <p>Click the text within the text box to be able to change its properties. When the text is selected, the text box borders are displayed as dashed lines.</p>
+            <p><img alt="Text selected" src="../images/textbox_textselected.png" /></p>
+            <p class="note"><b>Note</b>: it's also possible to change text formatting when the text box (not the text itself) is selected. In such a case, any changes will be applied to all the text within the text box. Some font formatting options (font type, size, color and decoration styles) can be applied to a previously selected portion of the text separately.</p>
+            <ul>
+                <li>Adjust <b>font formatting settings</b> (change the font type, size, color and apply decoration styles) using the <a href="../UsageInstructions/FontTypeSizeStyle.htm" onclick="onhyperlinkclick(this)">corresponding icons</a> situated at the top toolbar. Some additional font settings can be also altered at the <b>Font</b> tab of the paragraph properties window. To access it, right-click the text in the text box and select the <b>Text Advanced Settings</b> option.</li>
+                <li><b>Align the text horizontally</b> within the text box using the <a href="../UsageInstructions/AlignText.htm" onclick="onhyperlinkclick(this)">corresponding icons</a> situated at the top toolbar.</li>
+                <li><b>Align the text vertically</b> within the text box using the <a href="../UsageInstructions/AlignText.htm" onclick="onhyperlinkclick(this)">corresponding icons</a> situated at the top toolbar. You can also right-click the text, select the <b>Vertical Alignment</b> option and then choose one of the available options: <b>Align Top</b>, <b>Align Center</b> or <b>Align Bottom</b>.</li>
+                <li><b>Rotate</b> the text within the text box. To do that, right-click the text, select the <b>Text Direction</b> option and then choose one of the available options: <b>Horizontal</b> (is selected by default), <b>Rotate at 90°</b> (sets a vertical direction, from top to bottom) or <b>Rotate at 270°</b> (sets a vertical direction, from bottom to top).</li>
+                <li>Create a <b>bulleted or numbered list</b>. To do that, right-click the text, select the <b>Bullets and Numbering</b> option from the contextual menu and then choose one of the available bullet characters or numbering styles.
+                <p><img alt="Bullets and numbering" src="../images/bulletsandnumbering.png" /></p></li>
+                <li>Insert a <a href="../UsageInstructions/AddHyperlinks.htm" onclick="onhyperlinkclick(this)">hyperlink</a>.</li>
+                <li><b>Set line and paragraph spacing</b> for the multi-line text within the text box using the <b>Text Settings</b> tab of the right sidebar that opens if you click the <b>Text Settings</b> <img alt="Text Settings icon" src="../images/textsettings.png" /> icon. Here you can set the line height for the text lines within the paragraph as well as the margins between the current and the preceding or the subsequent paragraph.
+                    <p><img alt="Text Settings tab" src="../images/textsettingstab.png" /></p>
+                    <ul>
+                        <li><b>Line Spacing</b> - set the line height for the text lines within the paragraph. You can select among three options: <b>at least</b> (sets the minimum line spacing that is needed to fit the largest font or graphic on the line), <b>multiple</b> (sets line spacing that can be expressed in numbers greater than 1), <b>exactly</b> (sets fixed line spacing). You can specify the necessary value in the field on the right.</li>
+                        <li><b>Paragraph Spacing</b> - set the amount of space between paragraphs.
+                            <ul>
+                                <li><b>Before</b> - set the amount of space before the paragraph.</li>
+                                <li><b>After</b> - set the amount of space after the paragraph.</li>
+                            </ul>
+                        </li>                        
+                    </ul>
+                </li>
+                <li>Change the <b>advanced settings</b> of the paragraph (you can adjust <b>paragraph indents</b> and <b>tab stops</b> for the multi-line text within the text box and apply some <b>font formatting settings</b>). Put the cursor within the paragraph you need - the <b>Text Settings</b> tab will be activated at the right sidebar. Click the <b>Show advanced settings</b> link. The paragraph properties window will be opened:
+                    <p><img alt="Paragraph Properties - Indents & Placement tab" src="../images/textadvancedsettings1.png" /></p>
+                    <p>The <b>Indents & Placement</b> tab allows to change the <b>first line</b> offset from the left internal margin of the text box as well as the paragraph offset from the <b>left</b> and <b>right</b> internal margins of the text box.</p>
+                    <p><img alt="Paragraph Properties - Font tab" src="../images/textadvancedsettings2.png" /></p>
+                    <p>The <b>Font</b> tab contains the following parameters:</p>
+                    <ul>
+                        <li><b>Strikethrough</b> is used to make the text struck out with the line going through the letters.</li>
+                        <li><b>Double strikethrough</b> is used to make the text struck out with the double line going through the letters.</li>
+                        <li><b>Superscript</b> is used to make the text smaller and place it to the upper part of the text line, e.g. as in fractions.</li>
+                        <li><b>Subscript</b> is used to make the text smaller and place it to the lower part of the text line, e.g. as in chemical formulas.</li>
+                        <li><b>Small caps</b> is used to make all letters lower case.</li>
+                        <li><b>All caps</b> is used to make all letters upper case.</li>
+                        <li><b>Character Spacing</b> is used to set the space between the characters.</li>
+                    </ul>
+                    <p><img alt="Paragraph Properties - Tab tab" src="../images/textadvancedsettings3.png" /></p>
+                    <p>The <b>Tab</b> tab allows to change tab stops i.e. the position the cursor advances to when you press the <b>Tab</b> key on the keyboard.</p>
+                    <ul>
+                        <li><b>Tab Position</b> - is used to set custom tab stops. Enter the necessary value in this box, adjust it more precisely using the arrow buttons and click the <b>Specify</b> button. Your custom tab position will be added to the list in the field below.</li>
+                        <li><b>Default Tab</b> is set at 1.25 cm. You can decrease or increase this value using the arrow buttons or enter the necessary one in the box.</li>
+                        <li>
+                            <b>Alignment</b> - is used to set the necessary alignment type for each of the tab positions in the list above. Select the necessary tab position in the list, choose the <b>Left</b>, <b>Center</b> or <b>Right</b> radiobutton and click the <b>Specify</b> button.
+                            <ul>
+                                <li><b>Left</b> - lines up your text by the left side at the tab stop position; the text moves to the right from the tab stop as you type. </li>
+                                <li><b>Center</b> - centres the text at the tab stop position. </li>
+                                <li><b>Right</b> - lines up your text by the right side at the tab stop position; the text moves to the left from the tab stop as you type. </li>
+                            </ul>
+                            <p>To delete tab stops from the list select a tab stop and click the <b>Remove</b> or <b>Remove All</b> button.</p>
+                        </li>
+                    </ul>
+                </li>
+            </ul>            
+            <h3>Edit a Text Art style</h3>
+            <p>Select a text object and click the <b>Text Art Settings</b> <img alt="Text Art Settings icon" src="../images/textart_settings_icon.png" /> icon on the right sidebar.</p>
+            <p><img alt="Text Art Setting tab" src="../images/right_textart.png" /></p>
+            <ul>
+                <li>Change the applied text style selecting a new <b>Template</b> from the gallery. You can also change the basic style additionally by selecting a different font type, size etc.</li>
+                <li>Change the font <a href="InsertAutoshapes.htm#shape_fill" onclick="onhyperlinkclick(this)">fill</a> and <a href="InsertAutoshapes.htm#shape_stroke" onclick="onhyperlinkclick(this)">stroke</a>. The available options are the same as the ones for autoshapes.</li>
+                <li>Apply a text effect by selecting the necessary text transformation type from the <b>Transform</b> gallery. You can adjust the degree of the text distortion by dragging the pink diamond-shaped handle.</li>
+            </ul>
+            <p><img alt="Text Art Transformation" src="../images/textart_transformation.png" /></p>
+		</div>
+	</body>
+</html>

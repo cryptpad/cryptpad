@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>PRICEMAT Function</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+	</head>
+	<body>
+        <div class="mainpart">
+            <h1>PRICEMAT Function</h1>
+            <p>The <b>PRICEMAT</b> function is one of the financial functions. It is used to calculate the price per $100 par value for a security that pays interest at maturity.</p>
+            <p>The <b>PRICEMAT</b> function syntax is:</p>
+            <p style="text-indent: 150px;"><b><em>PRICEMAT(settlement, maturity, issue, rate, yld[, [basis]])</em></b></p>
+            <p><em>where</em></p>
+            <p style="text-indent: 50px;"><b><em>settlement</em></b> is the date when the security is purchased.</p>
+            <p style="text-indent: 50px;"><b><em>maturity</em></b> is the date when the security expires.</p>
+            <p style="text-indent: 50px;"><b><em>issue</em></b> is the issue date of the security.</p>
+            <p style="text-indent: 50px;"><b><em>rate</em></b> is the security interest rate at the issue date.</p>
+            <p style="text-indent: 50px;"><b><em>yld</em></b> is the annual yield of the security.</p>
+            <p style="text-indent: 50px;"><b><em>basis</em></b> is the day count basis to use, a numeric value greater than or equal to 0, but less than or equal to 4. It is an optional argument. It can be one of the following:</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Numeric value</b></td>
+                    <td><b>Count basis</b></td>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>US (NASD) 30/360</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Actual/actual</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Actual/360</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Actual/365</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>European 30/360</td>
+                </tr>
+            </table>
+            <p class="note"><b>Note:</b> dates must be entered by using the DATE function.</p>
+            <p>The values can be entered manually or included into the cell you make reference to.</p>
+            <p>To apply the <b>PRICEMAT</b> function,</p>
+            <ol>
+                <li>select the cell where you wish to display the result,</li>
+                <li>
+                    click the <b>Insert Function</b> <img alt="Insert Function icon" src="../images/insertfunction.png" /> icon situated at the top toolbar,
+                    <br />or right-click within a selected cell and select the <b>Insert Function</b> option from the menu,
+                    <br />or click the <img alt="Function icon" src="../images/function.png" /> icon situated at the formula bar,
+                </li>
+                <li>select the <b>Financial</b> function group from the list,</li>
+                <li>click the <b>PRICEMAT</b> function,</li>
+                <li>enter the required arguments separating them by commas,</li>
+                <li>press the <b>Enter</b> button.</li>
+            </ol>
+            <p>The result will be displayed in the selected cell.</p>
+            <p style="text-indent: 150px;"><img alt="PRICEMAT Function" src="../images/pricemat.png" /></p>
+        </div>
+	</body>
+</html>

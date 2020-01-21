@@ -1,0 +1,207 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Sort and filter data</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Sort your data in ascending or descending order in a spreadsheet" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Sort and filter data</h1>
+			<h3>Sort Data</h3>
+			<p>You can quickly sort your data in a spreadsheet using one of the available options:</p>
+			<ul>
+			<li><b>Ascending</b> is used to sort your data in ascending order - A to Z alphabetically or smallest to largest for numerical data.</li>
+			<li><b>Descending</b> is used to sort your data in descending order - Z to A alphabetically or largest to smallest for numerical data.</li>
+			</ul>
+			<p>To sort your data,</p>
+			<ol>
+				<li>select a range of cells you wish to sort (you can select a single cell in a range to sort the entire range),
+                </li>
+				<li>click the <b>Sort Ascending</b> <img alt="Sort Ascending icon" src="../images/sortatoz.png" /> icon situated at the top toolbar to sort your data in ascending order,
+					<br />OR<br />
+					click the <b>Sort Descending</b> <img alt="Sort Descending icon" src="../images/sortztoa.png" /> icon situated at the top toolbar to sort your data in descending order.
+				</li>
+			</ol>
+            <p class="note"><b>Note</b>: if you select a single column/row within a cell range or a part of the column/row, you will be asked if you want to expand the selection to include adjacent cells or sort the selected data only.</p>
+			<p>You can also sort your data using the <b>contextual menu</b> options. Right-click the selected range of cells, select the <b>Sort</b> option from the menu and then select <b>Ascending</b> or <b>Descending</b> option from the submenu.</p>
+            <p>It's also possible to sort the data by a color using the contextual menu:</p>
+            <ol>
+                <li>right-click a cell containing the color you want to sort your data by,</li>
+                <li>select the <b>Sort</b> option from the menu,</li>
+                <li>
+                    select the necessary option from the submenu:
+                    <ul>
+                        <li><b>Selected Cell Color on top</b> - to display the entries with the same cell background color on the top of the column,</li>
+                        <li><b>Selected Font Color on top</b> - to display the entries with the same font color on the top of the column.</li>
+                    </ul>
+                </li>
+            </ol>            
+                        
+			<h3>Filter Data</h3>
+			<p>To display only the rows that meet certain criteria and hide other ones, make use of the <b>Filter</b> option.</p>
+            <b>To enable a filter,</b>
+            <ol>
+                <li>Select a range of cells containing data to filter (you can select a single cell in a range to filter the entire range),</li>
+                <li>
+                    Click the <b>Filter</b> <img alt="Filter icon" src="../images/sortandfilter.png" /> icon situated at the top toolbar.
+                    <p>The drop-down arrow <img alt="Drop-Down Arrow" src="../images/dropdownarrow.png" /> will appear in the first cell of each column of the selected cell range. It means that the filter is enabled.</p>
+                </li>
+            </ol>
+            <p><b>To apply a filter,</b></p>
+            <ol>
+                <li>Click the drop-down arrow <img alt="Drop-Down Arrow" src="../images/dropdownarrow.png" />. The <b>Filter</b> option list will open: 
+                <p><img alt="Filter window" src="../images/filterwindow.png" /></p>
+                </li>
+                <li>
+                <p>Adjust the filter parameters. You can proceed in one of the following three ways: select the data to display, filter data by certain criteria or filter data by color.</p>
+                    <ul>
+                        <li>
+                            <b>Select the data to display</b>
+                            <p>Uncheck the boxes near the data you need to hide. For your convenience all the data wintin the <b>Filter</b> option list are sorted in ascending order.</p>
+                            <p class="note"><b>Note</b>: the <b>{Blanks}</b> check box corresponds to the empty cells. It is available if the selected range of cells contains at least one empty cell.</p>
+                            <p>To facilitate the process make use of the search field on the top. Enter your query, entirely or partially, in the field <!--and press the Enter key--> - the values that include these characters will be displayed in the list below. The following two options will also be available:</p>
+                            <ul>
+                                <li><b>Select All Search Results</b> - is checked by default. It allows to select all the values that correspond to your query in the list.</li>
+                                <li><b>Add current selection to filter</b> - if you check this box, the selected values will not be hidden when you apply the filter.</li>
+                            </ul>
+                            <p>After you select all the necessary data, click the <b>OK</b> button in the <b>Filter</b> option list to apply the filter.</p>
+                        </li>
+                        <li>
+                            <b>Filter data by certain criteria</b>
+                            <p>Depending on the data contained in the selected column, you can choose either the <b>Number filter</b> or the <b>Text filter</b> option in the right part of the <b>Filter</b> options list, and then select one of the options from the submenu:</p>
+                            <ul>
+                                <li>For the <b>Number filter</b> the following options are available: <em>Equals...</em>, <em>Does not equal...</em>, <em>Greater than...</em>, <em>Greater than or equal to...</em>, <em>Less than...</em>, <em>Less than or equal to...</em>, <em>Between</em>, <em>Top 10</em>, <em>Above Average</em>, <em>Below Average</em>, <em>Custom Filter...</em>.</li>
+                                <li>For the <b>Text filter</b> the following options are available: <em>Equals...</em>, <em>Does not equal...</em>, <em>Begins with...</em>, <em>Does not begin with...</em>, <em>Ends with...</em>, <em>Does not end with...</em>, <em>Contains...</em>, <em>Does not contain...</em>, <em>Custom Filter...</em>.</li>
+                            </ul>
+                            <p>After you select one of the above options (apart from the <em>Top 10</em> and <em>Above/Below Average</em> ones), the <b>Custom Filter</b> window will open. The corresponding criterion will be selected in the upper drop-down list. Enter the necessary value in the field on the right.</p>
+                            <p>To add one more criterion, use the <b>And</b> radiobutton if you need the data to satisfy both criteria or click the <b>Or</b> radiobutton if either or both criteria can be satisfied. Then select the second criterion from the lower drop-down list and enter the necessary value on the right.</p>
+                            <p>Click <b>OK</b> to apply the filter.</p>
+                            <p><img alt="Custom Filter window" src="../images/customfilterwindow.png" /></p>
+                            <p>If you choose the <em>Custom Filter...</em> option from the <b>Number/Text filter</b> option list, the first criterion is not selected automatically, you can set it yourself.</p>
+                            <p>If you choose the <em>Top 10</em> option from the <b>Number filter</b> option list, a new window will open:</p>
+                            <p><img alt="Top 10 AutoFilter window" src="../images/topten.png" /></p>
+                            <p>The first drop-down list allows to choose if you wish to display the highest (<b>Top</b>) or lowest (<b>Bottom</b>) values. The second field allows to specify how many entries from the list or which percent of the overall entries number you want to display (you can enter a number from 1 to 500). The third drop-down list allows to set units of measure: <b>Item</b> or <b>Percent</b>. Once the necessary parameters are set, click <b>OK</b> to apply the filter.</p>
+                            <p>If you choose the <em>Above/Below Average</em> option from the <b>Number filter</b> option list, the filter will be applied right now.</p>
+                        </li>
+                        <li>
+                            <b>Filter data by color</b>
+                            <p>If the cell range you want to filter contains some cells you have formatted changing their background or font color (manually or using predefined styles), you can use one of the following options:</p>
+                            <ul>
+                                <li><b>Filter by cells color</b> - to display only the entries with a certain cell background color and hide other ones,</li>
+                                <li><b>Filter by font color</b> - to display only the entries with a certain cell font color and hide other ones.</li>
+                            </ul>
+                            <p>When you select the necessary option, a palette that contains colors used in the selected cell range will open. Choose one of the colors to apply the filter.</p>
+                            <p><img alt="Filter data by color" src="../images/filterbycolor.png" /></p>
+                        </li>
+                    </ul>
+                    <p>The <b>Filter</b> <img alt="Filter button" src="../images/filterbutton.png" /> button will appear in the first cell of the column. It means that the filter is applied. The number of filtered records will be displayed at the status bar (e.g. <em>25 of 80 records filtered</em>).</p>
+                    <p class="note"><b>Note</b>: when the filter is applied, the rows that are filtered out cannot be modified when autofilling, formatting, deleting the visible contents. Such actions affect the visible rows only, the rows that are hidden by the filter remain unchanged. When copying and pasting the filtered data, only visible rows can be copied and pasted. This is not equivalent to manually hidden rows which are affected by all similar actions.</p>
+                </li>
+			</ol>
+            <h3>Sort filtered data</h3>
+            <p>You can set the <b>sorting order</b> of the data you have enabled or applied filter for. Click the drop-down arrow <img alt="Drop-Down Arrow" src="../images/dropdownarrow.png" /> or the <b>Filter</b> <img alt="Filter button" src="../images/filterbutton.png" /> button and select one of the options in the <b>Filter</b> option list:</p>
+                <ul>
+                    <li><b>Sort Lowest to Highest</b> - allows to sort your data in ascending order, displaying the lowest value on the top of the column,</li>
+                    <li><b>Sort Highest to Lowest</b> - allows to sort your data in descending order, displaying the highest value on the top of the column,</li>
+                    <li><b>Sort by cells color</b> - allows to select one of the colors and display the entries with the same cell background color on the top of the column,</li>
+                    <li><b>Sort by font color</b> - allows to select one of the colors and display the entries with the same font color on the top of the column.</li>
+                </ul>
+                <p>The latter two options can be used if the cell range you want to sort contains some cells you have formatted changing their background or font color (manually or using predefined styles).</p>
+            <p>The sorting direction will be indicated by an arrow in the filter buttons.</p>
+            <ul>
+                <li>if the data is sorted in ascending order, the drop-down arrow in the first cell of the column looks like this: <img alt="Drop-down arrow" src="../images/lowesttohighest.png" /> and the <b>Filter</b> button looks the following way: <img alt="Filter button" src="../images/lowesttohighest1.png" />.</li>
+                <li>if the data is sorted in descending order, the drop-down arrow in the first cell of the column looks like this: <img alt="Drop-down arrow" src="../images/highesttolowest.png" /> and the <b>Filter</b> button looks the following way: <img alt="Filter button" src="../images/highesttolowest1.png" />.</li>
+            </ul>
+            <p>You can also quickly sort the data by a color using the contextual menu options:</p>
+            <ol>
+                <li>right-click a cell containing the color you want to sort your data by,</li>
+                <li>select the <b>Sort</b> option from the menu,</li>
+                <li>
+                    select the necessary option from the submenu:
+                    <ul>
+                        <li><b>Selected Cell Color on top</b> - to display the entries with the same cell background color on the top of the column,</li>
+                        <li><b>Selected Font Color on top</b> - to display the entries with the same font color on the top of the column.</li>
+                    </ul>
+                </li>
+            </ol>
+            <h3>Filter by the selected cell contents</h3>
+            <p>You can also quickly filter your data by the selected cell contents using the <b>contextual</b> menu options. Right-click a cell, select the <b>Filter</b> option from the menu and then select one of the available options:</p>
+			<ul>
+                <li><b>Filter by Selected cell's value</b> - to display only the entries with the same value as the selected cell contains.</li>
+                <li><b>Filter by cell's color</b> - to display only the entries with the same cell background color as the selected cell has.</li>
+                <li><b>Filter by font color</b> - to display only the entries with the same cell font color as the selected cell has.</li>
+            </ul>
+            <h3 id="tabletemplate">Format as Table Template</h3>
+			<p>To facilitate the work with your data <b>Spreadsheet Editor</b> allows you to apply a table template to a selected cell range automatically enabling the filter. To do that,</p>
+			<ol>
+				<li>select a range of cells you need to format,</li>
+				<li>click the <b>Format as Table Template</b> <img alt="Format as Table Template" src="../images/tabletemplate.png" /> icon situated at the top toolbar.</li>
+				<li>select the template you need in the gallery,</li>
+				<li>in the opened pop-up window check the range of cells to be formatted as a table,</li>
+				<li>check the <b>Title</b> if you wish the table headers to be included in the selected range of cells, otherwise the header row will be added at the top while the selected range of cells will be moved one row down,</li>
+				<li>click the <b>OK</b> button to apply the selected template.</li>
+			</ol>
+			<p>The template will be applied to the selected range of cells and you will be able to edit the table headers and apply the filter to work with your data.</p>
+            <p class="note"><b>Note</b>: once you create a new formatted table, a <a href="UseNamedRanges.htm" onclick="onhyperlinkclick(this)">default name</a> (<em>Table1</em>, <em>Table2</em> etc.) will be automatically assigned to the table. You can change this name making it more meaningful and use it for further work.</p> 
+            <p>Some of the table settings can be altered using the <b>Table Settings</b> tab of the right sidebar that opens if you select at least one cell within the table with the mouse and click the <b>Table Settings</b> <img alt="Table Settings icon" src="../images/table_settings_icon.png" /> icon on the right.</p>
+            <p><img alt="Table Settings tab" src="../images/tablesettingstab.png" /></p>
+            <p>The <b>Rows</b> and <b>Columns</b> sections on the top allow you to emphasize certain rows/columns applying a specific formatting to them, or highlight different rows/columns with the different background colors to clearly distinguish them. The following options are available:</p>
+            <ul>
+                <li><b>Header</b> - allows to display the header row.</li>
+                <li><b>Total</b> - adds the <b>Summary</b> row at the bottom of the table.</li>
+                <li><b>Banded</b> - enables the background color alternation for odd and even rows.</li>
+                <li><b>Filter button</b> - allows to display the drop-down arrows <img alt="Drop-Down Arrow" src="../images/dropdownarrow.png" /> in the header row cells. This option is only available when the <b>Header</b> option is selected.</li>
+                <li><b>First</b> - emphasizes the leftmost column in the table with a special formatting.</li>
+                <li><b>Last</b> - emphasizes the rightmost column in the table with a special formatting.</li>
+                <li><b>Banded</b> - enables the background color alternation for odd and even columns.</li>
+            </ul>
+            <p>
+                The <b>Select From Template</b> section allows you to choose one of the predefined tables styles. Each template combines certain formatting parameters, such as a background color, border style, row/column banding etc.
+                Depending on the options checked in the <b>Rows</b> and/or <b>Columns</b> sections above, the templates set will be displayed differently. For example, if you've checked the <b>Header</b> option in the <b>Rows</b> section and the <b>Banded</b> option in the <b>Columns</b> section, the displayed templates list will include only templates with the header row and banded columns enabled:
+            </p>
+            <p><img alt="Templates list" src="../images/templateslist.png" /></p>
+            <p>The <b>Resize table</b> section allows you to change the cell range the table formatting is applied to. Click the <b>Select Data</b> button - a new pop-up window will open. Change the link to the cell range in the entry field or select the necessary cell range on the worksheet with the mouse and click the <b>OK</b> button.</p>
+            <p><img alt="Resize table" src="../images/resizetable.png" /></p>
+            <p>The <b>Rows & Columns</b> <img alt="Rows & Columns" src="../images/rowsandcolumns.png" /> section allows you to perform the following operations:</p>
+            <ul>
+                <li><b>Select</b> a row, column, all columns data excluding the header row, or the entire table including the header row.</li>
+                <li><b>Insert</b> a new row above or below the selected one as well as a new column to the left or to the right of the selected one.</li>
+                <li><b>Delete</b> a row, column (depending on the cursor position or the selection), or the entire table.</li>
+            </ul>
+            <p class="note"><b>Note</b>: the options of the <b>Rows & Columns</b> section are also accessible from the <b>right-click menu</b>.</p>
+            <p>The <b>Convert to range</b> button can be used if you want to transform the table into a regular data range removing the filter but preserving the table style (i.e. cell and font colors etc.). Once you apply this option, the <b>Table Settings</b> tab at the right sidebar will be unavailable.</p>
+            <p>To change the advanced table properties, use the <b>Show advanced settings</b> link at the right sidebar. The table properties window will open:</p>
+            <p><img alt="Table - Advanced Settings" src="../images/tableadvancedsettings.png" /></p>
+            <p>The <b>Alternative Text</b> tab allows to specify a <b>Title</b> and <b>Description</b> which will be read to the people with vision or cognitive impairments to help them better understand what information there is in the table.</p>
+            <h3>Reapply Filter</h3>
+            <p>If the filtered data has been changed, you can refresh the filter to display an up-to-date result:</p>
+            <ol>
+                <li>click the <b>Filter</b> <img alt="Filter button" src="../images/filterbutton.png" /> button in the first cell of the column that contains the filtered data,</li>
+                <li>select the <b>Reapply</b> option in the <b>Filter</b> option list that opens.</li>
+            </ol>
+            <p>You can also right-click a cell within the column that contains the filtered data and select the <b>Reapply</b> option from the contextual menu.</p>
+            <h3>Clear Filter</h3>
+			<p>To clear the filter,</p>
+            <ol>
+                <li>click the <b>Filter</b> <img alt="Filter button" src="../images/filterbutton.png" /> button in the first cell of the column that contains the filtered data,</li>
+                <li>select the <b>Clear</b> option in the <b>Filter</b> option list that opens.</li>
+            </ol>
+            <p>You can also proceed in the following way:</p>
+				<ol>
+					<li>select the range of cells containing the filtered data,</li>
+					<li>click the <b>Clear Filter</b> <img alt="Clear Filter icon" src="../images/clearfilter.png" /> icon situated at the top toolbar.</li>
+				</ol>
+            <p>The filter will remain enabled, but all the applied filter parameters will be removed, and the <b>Filter</b> <img alt="Filter button" src="../images/filterbutton.png" /> buttons in the first cells of the columns will change into the drop-down arrows <img alt="Drop-Down Arrow" src="../images/dropdownarrow.png" />.</p>
+            <h3>Remove Filter</h3>
+            <p>To remove the filter,</p>
+            <ol>
+                <li>select the range of cells containing the filtered data,</li>
+                <li>click the <b>Filter</b> <img alt="Filter icon" src="../images/sortandfilter.png" /> icon situated at the top toolbar.</li>
+            </ol>
+            <p>The filter will be disabled, and the drop-down arrows <img alt="Drop-Down Arrow" src="../images/dropdownarrow.png" /> will disappear from the first cells of the columns.</p>
+		</div>
+	</body>
+</html>
