@@ -8,6 +8,7 @@ www/common/jquery-ui/
 www/common/onlyoffice/sdkjs
 www/common/onlyoffice/web-apps
 www/common/onlyoffice/x2t
+www/common/onlyoffice/v1
 
 server.js
 www/common/old-media-tag.js
