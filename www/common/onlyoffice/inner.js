@@ -773,7 +773,13 @@ define([
                                   '#file-menu-panel { top: 28px !important; }' + // Position of the "File" menu
                                   '#left-btn-spellcheck, #left-btn-about { display: none !important; }'+
                                   'div.btn-users.dropdown-toggle { display: none; !important }';
+                        if (readOnly) {
+                            css += '#toolbar { display: none !important; }';
+                        }
                         $('<style>').text(css).appendTo($tb);
+                        setTimeout(function () {
+                            $(window).trigger('resize');
+                        });
                         if (UI.findOKButton().length) {
                             UI.findOKButton().on('focusout', function () {
                                 window.setTimeout(function () { UI.findOKButton().focus(); });
