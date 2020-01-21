@@ -535,16 +535,6 @@ define([
                 type: "documentOpen",
                 data: {"type":"open","status":"ok","data":{"Editor.bin":obj.openCmd.url}}
             });
-            if (APP.migrate && !readOnly) {
-                var div = h('div.cp-oo-x2tXls', [
-                    h('span.fa.fa-spin.fa-spinner'),
-                    h('span', Messages.oo_sheetMigration_loading)
-                ]);
-                UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
-                setTimeout(function () {
-                    makeCheckpoint(true);
-                }, 1000);
-            }
             // Update current index
             var last = ooChannel.queue.pop();
             if (last) { ooChannel.lastHash = last.hash; }
@@ -786,6 +776,18 @@ define([
                             });
                         }
                     },
+                    "onDocumentReady": function () {
+                        if (APP.migrate && !readOnly) {
+                            var div = h('div.cp-oo-x2tXls', [
+                                h('span.fa.fa-spin.fa-spinner'),
+                                h('span', Messages.oo_sheetMigration_loading)
+                            ]);
+                            UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
+                            setTimeout(function () {
+                                makeCheckpoint(true);
+                            }, 1000);
+                        }
+                    }
                 }
             };
             window.onbeforeunload = function () {
