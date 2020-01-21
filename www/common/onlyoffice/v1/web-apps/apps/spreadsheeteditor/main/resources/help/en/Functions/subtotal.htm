@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>SUBTOTAL Function</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>SUBTOTAL Function</h1>
+			<p>The <b>SUBTOTAL</b> function is one of the math and trigonometry functions. The function is used to return a subtotal in a list or database.</p>
+			<p>The <b>SUBTOTAL</b> function syntax is:</p> 
+			<p style="text-indent: 150px;"><b><em>SUBTOTAL(function-number, argument-list)</em></b></p> 
+			<p><em>where</em></p> 
+			<p style="text-indent: 50px;"><b><em>function-number</em></b> is a numeric value that specifies which function to use for the subtotal. The possible values are listed in the table below. For the <em>function-number</em> arguments 1 to 11, the <b>SUBTOTAL</b> function includes values of the rows that have been hidden manually. For the <em>function-number</em> arguments 101 to 111, the <b>SUBTOTAL</b> function ignores values of the rows that have been hidden manually. Values hidden by the filter are always excluded.</p> 
+			<p style="text-indent: 50px;"><b><em>argument-list</em></b> is a reference to the cell range containing the values for which you want the subtotal.</p>
+			<table style="width: 40%">
+				<tr>
+					<td><b>function-number<br />(includes hidden values)</b></td>
+                    <td><b>function-number<br />(excludes hidden values)</b></td>
+					<td><b>Function</b></td>
+				</tr>
+				<tr>
+					<td>1</td>
+                    <td>101</td>
+					<td><a href="../Functions/average.htm" onclick="onhyperlinkclick(this)">AVERAGE</a></td>
+				</tr>
+                <tr>
+                    <td>2</td>
+                    <td>102</td>
+                    <td><a href="../Functions/count.htm" onclick="onhyperlinkclick(this)">COUNT</a></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>103</td>
+                    <td><a href="../Functions/counta.htm" onclick="onhyperlinkclick(this)">COUNTA</a></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>104</td>
+                    <td><a href="../Functions/max.htm" onclick="onhyperlinkclick(this)">MAX</a></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>105</td>
+                    <td><a href="../Functions/min.htm" onclick="onhyperlinkclick(this)">MIN</a></td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>106</td>
+                    <td><a href="../Functions/product.htm" onclick="onhyperlinkclick(this)">PRODUCT</a></td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>107</td>
+                    <td><a href="../Functions/stdev.htm" onclick="onhyperlinkclick(this)">STDEV</a></td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>108</td>
+                    <td><a href="../Functions/stdevp.htm" onclick="onhyperlinkclick(this)">STDEVP</a></td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>109</td>
+                    <td><a href="../Functions/sum.htm" onclick="onhyperlinkclick(this)">SUM</a></td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>110</td>
+                    <td><a href="../Functions/var.htm" onclick="onhyperlinkclick(this)">VAR</a></td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>111</td>
+                    <td><a href="../Functions/varp.htm" onclick="onhyperlinkclick(this)">VARP</a></td>
+                </tr>
+			</table>
+			<p>To apply the <b>SUBTOTAL</b> function,</p>
+			<ol>
+			<li>select the cell where you wish to display the result,</li>
+			<li>click the <b>Insert Function</b> <img alt="Insert Function icon" src="../images/insertfunction.png" /> icon situated at the top toolbar,
+				<br />or right-click within a selected cell and select the <b>Insert Function</b> option from the menu,
+				<br />or click the <img alt="Function icon" src="../images/function.png" /> icon situated at the formula bar,
+			</li>
+			<li>select the <b>Math and trigonometry</b> function group from the list,</li>
+			<li>click the <b>SUBTOTAL</b> function,</li>
+			<li>enter the required arguments separating them by comma,</li>
+			<li>press the <b>Enter</b> button.</li>
+			</ol>
+			<p>The result will be displayed in the selected cell.</p>
+			<p style="text-indent: 150px;"><img alt="SUBTOTAL Function" src="../images/subtotal.png" /></p>
+            <p>The figure below displays the result returned by the <b>SUBTOTAL</b> function when several rows are hidden.</p>
+            <p style="text-indent: 150px;"><img alt="SUBTOTAL Function" src="../images/subtotal2.png" /></p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Функция SUBTOTAL (ПРОМЕЖУТОЧНЫЕ.ИТОГИ)</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Функция SUBTOTAL (ПРОМЕЖУТОЧНЫЕ.ИТОГИ)</h1>
+			<p>Функция <b>SUBTOTAL</b> - это одна из математических и тригонометрических функций. Возвращает промежуточный итог в список или базу данных.</p>
+			<p>Синтаксис функции <b>SUBTOTAL</b>:</p> 
+			<p style="text-indent: 150px;"><b><em>SUBTOTAL(function-number, argument-list)</em></b></p> 
+			<p><em>где</em></p> 
+			<p style="text-indent: 50px;"><b><em>function-number</em></b> - числовое значение, которое обозначает функцию, используемую для расчета промежуточных итогов. Допустимые значения приведены в таблице ниже. При использовании аргументов <em>function-number</em> от 1 до 11 функция <b>SUBTOTAL</b> учитывает значения строк, которые были скрыты вручную. При использовании аргументов <em>function-number</em> от 101 до 111 функция <b>SUBTOTAL</b> не учитывает значения строк, которые были скрыты вручную. Значения, скрытые фильтром, исключаются всегда.</p> 
+			<p style="text-indent: 50px;"><b><em>argument-list</em></b> - ссылка на диапазон ячеек, содержащих значения, для которых требуется вычислить промежуточные итоги.</p>
+			<table style="width: 40%">
+				<tr>
+					<td><b>function-number<br />(с учетом скрытых значений)</b></td>
+                    <td><b>function-number<br />(без учета скрытых значений)</b></td>
+					<td><b>Функция</b></td>
+				</tr>
+				<tr>
+					<td>1</td>
+                    <td>101</td>
+					<td><a href="../Functions/average.htm" onclick="onhyperlinkclick(this)">AVERAGE (СРЗНАЧ)</a></td>
+				</tr>
+                <tr>
+                    <td>2</td>
+                    <td>102</td>
+                    <td><a href="../Functions/count.htm" onclick="onhyperlinkclick(this)">COUNT (СЧЁТ)</a></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>103</td>
+                    <td><a href="../Functions/counta.htm" onclick="onhyperlinkclick(this)">COUNTA (СЧЁТЗ)</a></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>104</td>
+                    <td><a href="../Functions/max.htm" onclick="onhyperlinkclick(this)">MAX (МАКС)</a></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>105</td>
+                    <td><a href="../Functions/min.htm" onclick="onhyperlinkclick(this)">MIN (МИН)</a></td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>106</td>
+                    <td><a href="../Functions/product.htm" onclick="onhyperlinkclick(this)">PRODUCT (ПРОИЗВЕД)</a></td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>107</td>
+                    <td><a href="../Functions/stdev.htm" onclick="onhyperlinkclick(this)">STDEV (СТАНДОТКЛОН)</a></td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>108</td>
+                    <td><a href="../Functions/stdevp.htm" onclick="onhyperlinkclick(this)">STDEVP (СТАНДОТКЛОНП)</a></td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>109</td>
+                    <td><a href="../Functions/sum.htm" onclick="onhyperlinkclick(this)">SUM (СУММ)</a></td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>110</td>
+                    <td><a href="../Functions/var.htm" onclick="onhyperlinkclick(this)">VAR (ДИСП)</a></td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>111</td>
+                    <td><a href="../Functions/varp.htm" onclick="onhyperlinkclick(this)">VARP (ДИСПР)</a></td>
+                </tr>
+			</table>
+			<p>Чтобы применить функцию  <b>SUBTOTAL</b>,</p>
+            <ol>
+                <li>выделите ячейку, в которой требуется отобразить результат,</li>
+                <li>
+                    щелкните по значку <b>Вставить функцию</b> <img alt="Значок Вставить функцию" src="../images/insertfunction.png" />, расположенному на верхней панели инструментов,
+                    <br />или щелкните правой кнопкой мыши по выделенной ячейке и выберите в меню команду <b>Вставить функцию</b>,
+                    <br />или щелкните по значку <img alt="Значок Функция" src="../images/function.png" /> перед строкой формул,
+                </li>
+                <li>выберите из списка группу функций <b>Математические</b>,</li>
+                <li>щелкните по функции <b>SUBTOTAL</b>,</li>
+                <li>введите требуемые аргументы, разделяя их запятыми,</li>
+                <li>нажмите клавишу <b>Enter</b>.</li>
+            </ol>
+            <p>Результат будет отображен в выбранной ячейке.</p>
+			<p style="text-indent: 150px;"><img alt="Функция SUBTOTAL" src="../images/subtotal.png" /></p>
+            <p>На следующем изображении показан результат, возвращаемый функцией <b>SUBTOTAL</b>, если несколько строк скрыто.</p>
+            <p style="text-indent: 150px;"><img alt="Функция SUBTOTAL" src="../images/subtotal2.png" /></p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insert images</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add an image to your document and adjust its position and properties" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Insert images</h1>
+			<p>In Document Editor, you can insert images in the most popular formats into your document. The following image formats are supported: <b>BMP</b>, <b>GIF</b>, <b>JPEG</b>, <b>JPG</b>, <b>PNG</b>.</p>
+            <h3>Insert an image</h3>
+            <p>To insert an image into the document text,</p>
+			<ol>
+				<li>place the cursor where you want the image to be put,</li>
+				<li>click the <b>Insert Image</b> <img alt="Insert Image icon" src="../images/image.png" /> icon at the top toolbar,</li>
+				<li>select one of the following options to load the image:
+					<ul>
+						<li>the <b>Picture from File</b> option will open the standard Windows dialog window for file selection. Browse your computer hard disk drive for the necessary file and click the <b>Open</b> button</li>
+						<li>the <b>Picture from URL</b> option will open the window where you can enter the necessary image web address and click the <b>OK</b> button</li>
+					</ul>
+				</li>
+				<li>once the image is added you can change its size, properties, and position.</li>
+			</ol>
+            <h3>Move and resize images</h3>
+			<p><img class="floatleft" alt="Moving image" src="../images/moving_image.png" />To change the image size, drag small squares <img alt="Square icon" src="../images/resize_square.png" /> situated on its edges. To maintain the original proportions of the selected image while resizing, hold down the <b>Shift</b> key and drag one of the corner icons.</p>
+			<p>To alter the image position, use the <img alt="Arrow" src="../images/arrow.png" /> icon that appears after hovering your mouse cursor over the image. Drag the image to the necessary position without releasing the mouse button.</p>
+			<p>When you move the image, guide lines are displayed to help you position the object on the page precisely (if a wrapping style other than inline is selected).</p>
+			<p>To rotate the image, hover the mouse cursor over the rotation handle <img alt="Rotation handle" src="../images/greencircle.png" /> and drag it clockwise or counterclockwise. To constrain the rotation angle to 15 degree increments, hold down the <b>Shift</b> key while rotating.</p>
+			<hr />
+            <h3>Adjust image settings</h3>
+			<p><img class="floatleft" alt="Image Settings tab" src="../images/right_image.png" />Some of the image settings can be altered using the <b>Image Settings</b> tab of the right sidebar. To activate it click the image and choose the <b>Image Settings</b> <img alt="Image Settings icon" src="../images/image_settings_icon.png" /> icon on the right. Here you can change the following properties:</p>
+			<ul style="margin-left: 280px;">
+				<li><b>Size</b> is used to view the current image <b>Width</b> and <b>Height</b> or restore the image <b>Default Size</b> if necessary.</li>
+				<li><b>Wrapping Style</b> is used to select a text wrapping style from the available ones - inline, square, tight, through, top and bottom, in front, behind (for more information see the advanced settings description below).</li>
+				<li><b>Replace Image</b> is used to replace the current image loading another one from file or URL.</li>
+			</ul>			
+			<p>Some of these options you can also find in the <b>right-click menu</b>. The menu options are:</p>
+			<ul style="margin-left: 280px;">
+                <li><b>Cut, Copy, Paste</b> - standard options which are used to cut or copy a selected text/object and paste a previously cut/copied text passage or object to the current cursor position.</li>
+				<li><b>Arrange</b> is used to bring the selected image to foreground, send to background, move forward or backward as well as group or ungroup images to perform operations with several of them at once.</li>
+				<li><b>Align</b> is used to align the image left, center, right, top, middle, bottom.</li>
+				<li><b>Wrapping Style</b> is used to select a text wrapping style from the available ones - inline, square, tight, through, top and bottom, in front, behind - or edit the wrap boundary. The <b>Edit Wrap Boundary</b> option is available only if you select a wrapping style other than Inline. Drag wrap points to customize the boundary. To create a new wrap point, click anywhere on the red line and drag it to the necessary position. <img alt="Editing Wrap Boundary" src="../images/wrap_boundary.png" /></li>
+				<li><b>Default Size</b> is used to change the current image size to the default one.</li>
+				<li><b>Image Advanced Settings</b> is used to open the 'Image - Advanced Settings' window.</li>
+			</ul>
+			<hr />
+			<p>To change its advanced settings, click the image with the right mouse button and select the <b>Image Advanced Settings</b> option from the right-click menu or just click the <b>Show advanced settings</b> link at the right sidebar. The image properties window will open:</p>
+			<p><img alt="Image - Advanced Settings: Size" src="../images/image_properties.png" /></p>
+			<p>The <b>Size</b> tab contains the following parameters:</p>
+			<ul>
+				<li><b>Width</b> and <b>Height</b> - use these options to change the image width and/or height. If the <b>Constant Proportions</b> <img alt="Constant Proportions icon" src="../images/constantproportions.png" /> button is clicked (in this case it looks like this <img alt="Constant Proportions icon activated" src="../images/constantproportionsactivated.png" />), the width and height will be changed together preserving the original image aspect ratio. To restore the default size of the added image, click the <b>Default Size</b> button.</li>
+			</ul>
+			<p><img alt="Image - Advanced Settings: Text Wrapping" src="../images/image_properties_1.png" /></p>
+			<p>The <b>Text Wrapping</b> tab contains the following parameters:</p>
+			<ul>
+				<li><b>Wrapping Style</b> - use this option to change the way the image is positioned relative to the text: it will either be a part of the text (in case you select the inline style) or bypassed by it from all sides (if you select one of the other styles).
+				<ul>
+				    <li><p><img alt="Wrapping Style - Inline" src="../images/wrappingstyle_inline.png" /> <b>Inline</b> - the image is considered to be a part of the text, like a character, so when the text moves, the image moves as well. In this case the positioning options are inaccessible.</p>
+				    <p>If one of the following styles is selected, the image can be moved independently of the text and positioned on the page exactly:</p>
+				    </li>
+				    <li><p><img alt="Wrapping Style - Square" src="../images/wrappingstyle_square.png" /> <b>Square</b> - the text wraps the rectangular box that bounds the image.</p></li>
+				    <li><p><img alt="Wrapping Style - Tight" src="../images/wrappingstyle_tight.png" /> <b>Tight</b> - the text wraps the actual image edges.</p></li>
+				    <li><p><img alt="Wrapping Style - Through" src="../images/wrappingstyle_through.png" /> <b>Through</b> - the text wraps around the image edges and fills in the open white space within the image. So that the effect can appear, use the <b>Edit Wrap Boundary</b> option from the right-click menu.</p></li>
+				    <li><p><img alt="Wrapping Style - Top and Bottom" src="../images/wrappingstyle_topandbottom.png" /> <b>Top and Bottom</b> - the text is only above and below the image.</p></li>
+				    <li><p><img alt="Wrapping Style - In Front" src="../images/wrappingstyle_infront.png" /> <b>In Front</b> - the image overlaps the text.</p></li>
+				    <li><p><img alt="Wrapping Style - Behind" src="../images/wrappingstyle_behind.png" /> <b>Behind</b> - the text overlaps the image.</p></li>
+				    </ul>
+				</li>
+			</ul>
+			<p>If you select the square, tight, through, or top and bottom style, you will be able to set up some additional parameters - <b>distance from text</b> at all sides (top, bottom, left, right).</p>
+			<p><img alt="Image - Advanced Settings: Position" src="../images/image_properties_2.png" /></p>
+			<p>The <b>Position</b> tab is available only if you select a wrapping style other than inline. This tab contains the following parameters that vary depending on the selected wrapping style:</p>
+			<ul>
+                <li>
+                    The <b>Horizontal</b> section allows you to select one of the following three image positioning types:
+                    <ul>
+                        <li><b>Alignment</b> (left, center, right) <b>relative to</b> character, column, left margin, margin, page or right margin,</li>
+                        <li>Absolute <b>Position</b> measured in absolute units i.e. <b>Centimeters</b>/<b>Points</b>/<b>Inches</b> (depending on the option specified at the <b>File</b> -> <b>Advanced Settings...</b> tab) <b>to the right of</b> character, column, left margin, margin, page or right margin,</li>
+                        <li><b>Relative position</b> measured in percent <b>relative to</b> the left margin, margin, page or right margin.</li>
+                    </ul>
+                </li>
+                <li>
+                    The <b>Vertical</b> section allows you to select one of the following three image positioning types:
+                    <ul>
+                        <li><b>Alignment</b> (top, center, bottom) <b>relative to</b> line, margin, bottom margin, paragraph, page or top margin,</li>
+                        <li>Absolute <b>Position</b> measured in absolute units i.e. <b>Centimeters</b>/<b>Points</b>/<b>Inches</b> (depending on the option specified at the <b>File</b> -> <b>Advanced Settings...</b> tab) <b>below</b> line, margin, bottom margin, paragraph, page or top margin,</li>
+                        <li><b>Relative position</b> measured in percent <b>relative to</b> the margin, bottom margin, page or top margin.</li>
+                    </ul>
+                </li>
+                <li><b>Move object with text</b> controls whether the image moves as the text to which it is anchored moves.</li>
+				<li><b>Allow overlap</b> controls whether two images overlap or not if you drag them near each other on the page.</li>
+			</ul>
+            <p><img alt="Image - Advanced Settings" src="../images/image_properties_3.png" /></p>
+            <p>The <b>Alternative Text</b> tab allows to specify a <b>Title</b> and <b>Description</b> which will be read to the people with vision or cognitive impairments to help them better understand what information there is in the image.</p>
+		</div>
+	</body>
+</html>

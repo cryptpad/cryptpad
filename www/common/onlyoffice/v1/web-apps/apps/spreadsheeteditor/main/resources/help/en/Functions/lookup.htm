@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>LOOKUP Function</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>LOOKUP Function</h1>
+			<p>The <b>LOOKUP</b> function is one of the lookup and reference functions. It is used to return a value from a selected range (row or column containing the data in ascending order).</p>
+			<p>The <b>LOOKUP</b> function syntax is:</p> 
+			<p style="text-indent: 150px;"><b><em>LOOKUP(lookup-value, lookup-vector, result-vector)</em></b></p> 
+			<p><em>where</em></p> 
+				<p style="text-indent: 50px;"><b><em>lookup-value</em></b> is a value to search for.</p> 
+				<p style="text-indent: 50px;"><b><em>lookup-vector</em></b> is a single row or column containing data sorted in ascending order.</p> 
+				<p style="text-indent: 50px;"><b><em>lookup-result</em></b> is a single row or column of data that is the same size as the <b><em>lookup-vector</em></b>.</p> 
+			<p>The function searches for the <b><em>lookup-value</em></b> in the <b><em>lookup-vector</em></b> and returns the value from the same position in the <b><em>lookup-result</em></b>.</p>
+			<p class="note"><b>Note</b>: if the <b>lookup-value</b> is smaller than all of the values in the <b>lookup-vector</b>, the function will return the <b>#N/A</b> error. If there is not a value that strictly matches the <b>lookup-value</b>, the function chooses the largest value in the <b>lookup-vector</b> that is less than or equal to the value.</p>
+			<p>To apply the <b>LOOKUP</b> function,</p>
+			<ol>
+			<li>select the cell where you wish to display the result,</li>
+			<li>click the <b>Insert Function</b> <img alt="Insert Function icon" src="../images/insertfunction.png" /> icon situated at the top toolbar,
+				<br />or right-click within a selected cell and select the <b>Insert Function</b> option from the menu,
+				<br />or click the <img alt="Function icon" src="../images/function.png" /> icon situated at the formula bar,
+			</li>
+			<li>select the <b>Lookup and Reference</b> function group from the list,</li>
+			<li>click the <b>LOOKUP</b> function,</li>
+			<li>enter the required arguments separating them by comma,</li>
+			<li>press the <b>Enter</b> button.</li>
+			</ol>
+			<p>The result will be displayed in the selected cell.</p>
+			<p style="text-indent: 150px;"><img alt="LOOKUP Function" src="../images/lookup.png" /></p>
+		</div>
+	</body>
+</html>

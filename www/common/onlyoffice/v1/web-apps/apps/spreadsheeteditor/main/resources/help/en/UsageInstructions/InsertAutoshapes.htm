@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insert and format autoshapes</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add an autoshape to your spreadsheet and adjust its properties." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Insert and format autoshapes</h1>
+			<h3>Insert an autoshape</h3>
+			<p>To add an autoshape to your spreadsheet,</p>
+			<ol>
+				<li>click the <b>Insert Autoshape</b> <img alt="Insert Autoshape icon" src="../images/insertautoshape.png" /> icon at the top toolbar,</li>
+				<li>select one of the available autoshape groups: basic shapes, figured arrows, math, charts, stars &amp; ribbons, callouts, buttons, rectangles, lines,</li>
+				<li>click the necessary autoshape within the selected group,</li>
+				<li>place the mouse cursor where you want the shape to be put,</li>
+				<li>once the autoshape is added you can <a href="ManipulateObjects.htm" onclick="onhyperlinkclick(this)">change its size and position</a> as well as its settings.
+			</ol>
+			<h3>Adjust the autoshape settings</h3>
+			<p>Some of the autoshape settings can be altered using the <b>Shape Settings</b> tab of the right sidebar that opens if you select the inserted autoshape with the mouse and click the <b>Shape Settings</b> <img alt="Shape Settings icon" src="../images/shape_settings_icon.png" />  icon. Here you can change the following settings:</p>
+			<ul>
+			<li id="shape_fill"><b>Fill</b> - use this section to select the autoshape fill. You can choose the following options:
+			<ul>
+				<li><b>Color Fill</b> - select this option to specify the solid color you want to fill the inner space of the selected autoshape with.
+				<p><img alt="Color Fill" src="../images/fill_color.png" /></p>
+				<p id="color">Click the colored box below and select the necessary color from the available color sets or specify any color you like:</p>
+					<ul>
+						<li><b>Theme Colors</b> - the colors that correspond to the selected color scheme of the document.</li>
+						<li><b>Standard Colors</b> - the default colors set.</li>
+						<li><b>Custom Color</b> - click this caption if there is no needed color in the available palettes. Select the necessary colors range moving the vertical color slider and set the specific color dragging the color picker within the large square color field. Once you select a color with the color picker, the appropriate RGB and sRGB color values will be displayed in the fields on the right. You can also specify a color on the base of the RGB color model entering the necessary numeric values into the <b>R</b>, <b>G</b>, <b>B</b> (red, green, blue) fields or enter the sRGB hexadecimal code into the field marked with the <b>#</b> sign. The selected color appears in the <b>New</b> preview box. If the object was previously filled with any custom color, this color is displayed in the <b>Current</b> box so you can compare the original and modified colors. When the color is specified, click the <b>Add</b> button. The custom color will be applied to your autoshape and added to the <b>Custom color</b> palette.</p>
+						</li>
+					</ul>
+				</li>
+				<li><b>Gradient Fill</b> - fill the shape with two colors which smoothly change from one to another.
+				<p><img alt="Gradient Fill" src="../images/fill_gradient.png" /></p>
+				    <ul>
+				    <li><b>Style</b> - choose one of the available options: <b>Linear</b> (colors change in a straight line i.e. along a horizontal/vertical axis or diagonally at a 45 degree angle) or <b>Radial</b> (colors change in a circular path from the center to the edges).</li>
+				    <li><b>Direction</b> - choose a template from the menu. If the <b>Linear</b> gradient is selected, the following directions are available : top-left to bottom-right, top to bottom, top-right to bottom-left, right to left, bottom-right to top-left, bottom to top, bottom-left to top-right, left to right. If the <b>Radial</b> gradient is selected, only one template is available.</li>
+				    <li><b>Gradient</b> - click on the left slider <img alt="Slider" src="../images/gradientslider.png" /> under the gradient bar to activate the color box which corresponds to the first color. Click on the color box on the right to choose the first color in the palette. Drag the slider to set the gradient stop i.e. the point where one color changes into another. Use the right slider under the gradient bar to specify the second color and set the gradient stop.</li>
+				    </ul>			
+				</li>
+				<li><b>Picture or Texture</b> - select this option to use an image or a predefined texture as the shape background.
+				<p><img alt="Picture or Texture Fill" src="../images/fill_picture.png" /></p>
+					<ul>
+						<li>If you wish to use an image as a background for the shape, you can add an image <b>From File</b> selecting it on your computer HDD or <b>From URL</b> inserting the appropriate URL address into the opened window.</li>
+						<li>If you wish to use a texture as a background for the shape, open the <b>From Texture</b> menu and select the necessary texture preset.
+						<p>Currently, the following textures are available: canvas, carton, dark fabric, grain, granite, grey paper, knit, leather, brown paper, papyrus, wood.</p>
+						</li>
+					</ul>
+					<ul>
+						<li>In case the selected <b>Picture</b> has less or more dimensions than the autoshape has, you can choose the <b>Stretch</b> or <b>Tile</b> setting from the dropdown list.
+						<p>The <b>Stretch</b> option allows you to adjust the image size to fit the autoshape size so that it could fill the space completely.</p>
+						<p>The <b>Tile</b> option allows you to display only a part of the bigger image keeping its original dimensions or repeat the smaller image keeping its original dimensions over the autoshape surface so that it could fill the space completely.</p>
+						<p class="note"><b>Note</b>: any selected <b>Texture</b> preset fills the space completely, but you can apply the <b>Stretch</b> effect if necessary.</p>
+						</li>
+					</ul>
+				</li>
+				<li><b>Pattern</b> - select this option to fill the shape with a two-colored design composed of regularly repeated elements.
+				<p><img alt="Pattern Fill" src="../images/fill_pattern.png" /></p>
+						<ul>
+							<li><b>Pattern</b> - select one of the predefined designs from the menu.</li>
+							<li><b>Foreground color</b> - click this color box to change the color of the pattern elements.</li>
+							<li><b>Background color</b> - click this color box to change the color of the pattern background.</li>
+						</ul>
+				</li>
+				<li><b>No Fill</b> - select this option if you don't want to use any fill.</li>
+			</ul>
+			</li>
+			<li><b>Opacity</b> - use this section to set an <b>Opacity</b> level dragging the slider or entering the percent value manually. The default value is <b>100%</b>. It corresponds to the full opacity. The <b>0%</b> value corresponds to the full transparency.</li>
+			<li id="shape_stroke"><b>Stroke</b> - use this section to change the autoshape stroke width, color or type.
+				<ul>
+				<li>To change the stroke width, select one of the available options from the <b>Size</b> dropdown list. The available options are: 0.5 pt, 1 pt, 1.5 pt, 2.25 pt, 3 pt, 4.5 pt, 6 pt. Alternatively, select the <b>No Line</b> option if you don't want to use any stroke.</li>
+				<li>To change the stroke <b>color</b>, click on the colored box below and select the necessary color.</li>
+                <li>To change the stroke <b>type</b>, select the necessary option from the corresponding dropdown list (a solid line is applied by default, you can change it to one of the available dashed lines).</li>
+				</ul>
+			</li>
+			<li><b>Change Autoshape</b> - use this section to replace the current autoshape with another one selected from the dropdown list.</li>
+			</ul>
+			<hr />
+            <p id="shape_advanced">To change the <b>advanced settings</b> of the autoshape, use the <b>Show advanced settings</b> link at the right sidebar. The 'Shape - Advanced Settings' window will open:</p>
+            <p><img alt="Shape - Advanced Settings" src="../images/shape_properties.png" /></p>
+            <p>The <b>Size</b> tab contains the following parameters:</p>
+			<ul>
+				<li><b>Width</b> and <b>Height</b> - use these options to change the autoshape width and/or height. If the <b>Constant Proportions</b> <img alt="Constant Proportions icon" src="../images/constantproportions.png" /> button is clicked (in this case it looks like this <img alt="Constant Proportions icon activated" src="../images/constantproportionsactivated.png" />), the width and height will be changed together preserving the original shape aspect ratio.</li>
+			</ul>
+			<p><img alt="Shape - Advanced Settings" src="../images/shape_properties_1.png" /></p>
+			<p>The <b>Weights&amp;Arrows</b> tab contains the following parameters:</p>
+			<ul>
+				<li><b>Line Style</b> - this option group allows to specify the following parameters:
+				<ul>
+				<li><b>Cap Type</b> - this option allows to set the style for the end of the line, therefore it can be applied only to the shapes with the open outline, such as lines, polylines etc.: 
+					<ul>
+					<li><b>Flat</b> - the end points will be flat.</li>
+					<li><b>Round</b> - the end points will be rounded.</li>
+					<li><b>Square</b> - the end points will be square.</li>
+					</ul>
+				</li>
+				<li><b>Join Type</b> - this option allows to set the style for the intersection of two lines, for example, it can affect a polyline or the corners of the triangle or rectangle outline:
+					<ul>
+					<li><b>Round</b> - the corner will be rounded.</li>
+					<li><b>Bevel</b> - the corner will be cut off angularly.</li>
+					<li><b>Miter</b> - the corner will be pointed. It goes well to shapes with sharp angles.</li>
+					</ul>
+					<p class="note"><b>Note</b>: the effect will be more noticeable if you use a large outline width.</p>
+				</li>
+				</ul>
+				</li>
+				<li><b>Arrows</b> - this option group is available if a shape from the <b>Lines</b> shape group is selected. It allows to set the arrow <b>Start</b> and <b>End Style</b> and <b>Size</b> by selecting the appropriate option from the dropdown lists.</li>
+			</ul>
+            <p><img alt="Shape - Advanced Settings" src="../images/shape_properties_2.png" /></p>
+			<p>The <b>Text Padding</b> tab allows to change the autoshape <b>Top</b>, <b>Bottom</b>, <b>Left</b> and <b>Right</b> internal margins (i.e. the distance between the text within the shape and the autoshape borders).</p>
+            <p class="note"><b>Note</b>: this tab is only available if text is added within the autoshape, otherwise the tab is disabled.</p>
+            <p id="columns"><img alt="Shape Properties - Columns tab" src="../images/shape_properties_4.png" /></p>
+            <p>The <b>Columns</b> tab allows to add columns of text within the autoshape specifying the necessary <b>Number of columns</b> (up to 16) and <b>Spacing between columns</b>. Once you click <b>OK</b>, the text that already exists or any other text you enter within the autoshape will appear in columns and will flow from one column to another.</p>
+            <p><img alt="Shape - Advanced Settings" src="../images/shape_properties_3.png" /></p>
+            <p>The <b>Alternative Text</b> tab allows to specify a <b>Title</b> and <b>Description</b> which will be read to the people with vision or cognitive impairments to help them better understand what information there is in the shape.</p>            
+		    <hr />
+			<h3>Insert and format text within the autoshape</h3>
+			<p>To insert a text into the autoshape select the shape with the mouse and start typing your text. The text you add in this way becomes a part of the autoshape (when you move or rotate the shape, the text moves or rotates with it).</p>
+            <p>All the formatting options you can apply to the text within the autoshape are listed <a href="InsertTextObjects.htm#textbox_textformatting" onclick="onhyperlinkclick(this)">here</a>.</p>
+            <hr />
+            <h3>Join autoshapes using connectors</h3>
+            <p>You can connect autoshapes using lines with connection points to demonstrate dependencies between the objects (e.g. if you want to create a flowchart). To do that,</p>
+            <ol>
+                <li>click the <b>Insert Autoshape</b> <img alt="Insert Autoshape icon" src="../images/insertautoshape.png" /> icon at the top toolbar,</li>
+                <li>select the <b>Lines</b> group from the menu,
+                <p><img alt="Shapes - Lines" src="../images/connectors.png" /></p>
+                </li>
+                <li>click the necessary shape within the selected group (excepting the last three shapes which are not connectors, namely <em>shape 10</em>, <em>11</em> and <em>12</em>),</li>
+                <li>hover the mouse cursor over the first autoshape and click one of the connection points <img alt="Connection point icon" src="../images/connectionpoint.png" /> that appear on the shape outline,
+                <p><img alt="Using connectors" src="../images/connectors_firstshape.png" /></p>
+                </li>
+                <li>drag the mouse cursor towards the second autoshape and click the necessary connection point on its outline.
+                <p><img alt="Using connectors" src="../images/connectors_secondshape.png" /></p>
+                </li>
+            </ol>
+            <p>If you move the joined autoshapes, the connector remains attached to the shapes and moves together with them. </p>
+            <p><img alt="Moving joined shapes" src="../images/connectors_moveshape.png" /></p>
+            <p>You can also detach the connector from the shapes and then attach it to any other connection points.</p>
+		</div>
+	</body>
+</html>
