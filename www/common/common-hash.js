@@ -15,7 +15,6 @@ var factory = function (Util, Crypto, Nacl) {
             .decodeUTF8(JSON.stringify(list))));
     };
 
-    // XXX move this code?
     Hash.generateSignPair = function () {
         var ed = Nacl.sign.keyPair();
         var makeSafe = function (key) {
@@ -152,7 +151,7 @@ Version 1
         var k;
         // Check if we have a ownerKey for this pad
         hashArr.some(function (data) {
-            if (data.length === 86) { // XXX 88 characters - 2 trailing "="...
+            if (data.length === 86) {
                 k = data;
                 return true;
             }

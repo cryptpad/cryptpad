@@ -17,7 +17,6 @@ var factory = function (Util, Cred, Nacl) {
         };
     };
 
-    // XXX move this function?
     Invite.generateSignPair = function () {
         var ed = Nacl.sign.keyPair();
         return {
