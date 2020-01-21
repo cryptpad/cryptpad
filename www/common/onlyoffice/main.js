@@ -64,8 +64,8 @@ define([
                 var owners, expire;
                 nThen(function (waitFor) {
                     if (Utils.rtConfig) {
-                        owners = Utils.rtConfig.owners;
-                        expire = Utils.rtConfig.expire;
+                        owners = Utils.Util.find(Utils.rtConfig, ['metadata', 'owners']);
+                        expire = Utils.Util.find(Utils.rtConfig, ['metadata', 'expire']);
                         return;
                     }
                     Cryptpad.getPadAttribute('owners', waitFor(function (err, res) {

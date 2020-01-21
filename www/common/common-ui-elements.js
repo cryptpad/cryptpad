@@ -932,7 +932,6 @@ define([
                             waitFor.abort();
                             return;
                         }
-                        console.warn('BAR');
                         href = url;
                         setTimeout(w);
                     });
@@ -1077,12 +1076,17 @@ define([
     var makeBurnAfterReadingUrl = function (common, href, channel, cb) {
         var keyPair = Hash.generateSignPair();
         var parsed = Hash.parsePadUrl(href);
-        console.error(href, parsed);
         var newHref = parsed.getUrl({
             ownerKey: keyPair.safeSignKey
         });
         var sframeChan = common.getSframeChannel();
+        var rtChannel;
         NThen(function (waitFor) {
+            if (parsed.type !== "sheet") { return; }
+            common.getPadAttribute('rtChannel', waitFor(function (err, chan) {
+                rtChannel = chan;
+            }));
+        }).nThen(function (waitFor) {
             sframeChan.query('Q_SET_PAD_METADATA', {
                 channel: channel,
                 command: 'ADD_OWNERS',
@@ -1093,6 +1097,17 @@ define([
                     UI.warn(Messages.error);
                 }
             }));
+            if (rtChannel) {
+                sframeChan.query('Q_SET_PAD_METADATA', {
+                    channel: rtChannel,
+                    command: 'ADD_OWNERS',
+                    value: [keyPair.validateKey]
+                }, waitFor(function (err) {
+                    if (err) {
+                        console.error(err);
+                    }
+                }));
+            }
         }).nThen(function () {
             cb(newHref);
         });

@@ -1395,6 +1395,10 @@ define([
                 Title.updateTitle(Title.defaultTitle);
             }
 
+            if (metadataMgr.getPrivateData().burnAfterReading && content && content.channel) {
+                sframeChan.event('EV_BURN_PAD', content.channel);
+            }
+
             openRtChannel(function () {
                 setMyId();
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));

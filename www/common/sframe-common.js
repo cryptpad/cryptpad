@@ -354,7 +354,7 @@ define([
             key: key,
             href: href
         }, function (err, res) {
-            cb (err || res.error, res.data);
+            cb(err || res.error, res && res.data);
         });
     };
     funcs.setPadAttribute = function (key, value, cb, href) {
