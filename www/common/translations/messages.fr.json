@@ -1287,5 +1287,9 @@
     "burnAfterReading_generateLink": "Cliquer sur le bouton ci-dessous pour générer un lien.",
     "burnAfterReading_warningAccess": "Ce document s'autodétruira dès son ouverture. Lorsque vous cliquez sur le bouton ci-dessous, vous verrez le contenu une fois avant qu'il ne soit définitivement supprimé. Lorsque vous fermerez cette fenêtre, vous ne pourrez plus y accéder. Si vous n'êtes pas prêt à continuer, vous pouvez fermer cette fenêtre et revenir plus tard.",
     "burnAfterReading_proceed": "voir et supprimer",
-    "burnAfterReading_warningDeleted": "Ce pad a été définitivement supprimé, si vous fermez cette fenêtre vous ne pourrez plus y accéder."
+    "burnAfterReading_warningDeleted": "Ce pad a été définitivement supprimé, si vous fermez cette fenêtre vous ne pourrez plus y accéder.",
+    "oo_exportChrome": "L'exportation aux formats Microsoft Office n'est disponible que dans le navigateur Google Chrome pour le moment.",
+    "oo_invalidFormat": "Ce fichier ne peut pas être importé",
+    "oo_importInProgress": "Importation en cours",
+    "oo_exportInProgress": "Exportation en cours"
 }
