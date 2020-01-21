@@ -70,6 +70,7 @@ var setHeaders = (function () {
         return function (req, res) {
             const h = [
                     /^\/pad(2)?\/inner\.html.*/,
+                    /^\/common\/onlyoffice\/.*\/index\.html.*/,
                     /^\/sheet\/inner\.html.*/,
                     /^\/ooslide\/inner\.html.*/,
                     /^\/oodoc\/inner\.html.*/,
