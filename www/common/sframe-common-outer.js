@@ -520,6 +520,33 @@ define([
                 sframeChan.on('Q_SET_PAD_METADATA', function (data, cb) {
                     Cryptpad.setPadMetadata(data, cb);
                 });
+
+                sframeChan.on('Q_GET_PAD_ATTRIBUTE', function (data, cb) {
+                    var href;
+                    if (readOnly && hashes.editHash) {
+                        // If we have a stronger hash, use it for pad attributes
+                        href = window.location.pathname + '#' + hashes.editHash;
+                    }
+                    if (data.href) { href = data.href; }
+                    Cryptpad.getPadAttribute(data.key, function (e, data) {
+                        cb({
+                            error: e,
+                            data: data
+                        });
+                    }, href);
+                });
+                sframeChan.on('Q_SET_PAD_ATTRIBUTE', function (data, cb) {
+                    var href;
+                    if (readOnly && hashes.editHash) {
+                        // If we have a stronger hash, use it for pad attributes
+                        href = window.location.pathname + '#' + hashes.editHash;
+                    }
+                    if (data.href) { href = data.href; }
+                    Cryptpad.setPadAttribute(data.key, data.value, function (e) {
+                        cb({error:e});
+                    }, href);
+                });
+
             };
             addCommonRpc(sframeChan);
 
@@ -749,32 +776,6 @@ define([
             });
 
             // Store
-            sframeChan.on('Q_GET_PAD_ATTRIBUTE', function (data, cb) {
-                var href;
-                if (readOnly && hashes.editHash) {
-                    // If we have a stronger hash, use it for pad attributes
-                    href = window.location.pathname + '#' + hashes.editHash;
-                }
-                if (data.href) { href = data.href; }
-                Cryptpad.getPadAttribute(data.key, function (e, data) {
-                    cb({
-                        error: e,
-                        data: data
-                    });
-                }, href);
-            });
-            sframeChan.on('Q_SET_PAD_ATTRIBUTE', function (data, cb) {
-                var href;
-                if (readOnly && hashes.editHash) {
-                    // If we have a stronger hash, use it for pad attributes
-                    href = window.location.pathname + '#' + hashes.editHash;
-                }
-                if (data.href) { href = data.href; }
-                Cryptpad.setPadAttribute(data.key, data.value, function (e) {
-                    cb({error:e});
-                }, href);
-            });
-
             sframeChan.on('Q_DRIVE_GETDELETED', function (data, cb) {
                 Cryptpad.getDeletedPads(data, function (err, obj) {
                     if (err) { return void console.error(err); }
@@ -1180,6 +1181,14 @@ define([
                         owner: owner,
                         owners: owners
                     }, cb);
+                });
+            });
+
+            sframeChan.on('EV_BURN_PAD', function (channel) {
+                if (!burnAfterReading) { return; }
+                Cryptpad.burnPad({
+                    channel: channel,
+                    ownerKey: burnAfterReading
                 });
             });
 
