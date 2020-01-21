@@ -55,6 +55,7 @@ define([
 
     var CHECKPOINT_INTERVAL = 50;
     var DISPLAY_RESTORE_BUTTON = false;
+    var NEW_VERSION = 2;
 
     var debug = function (x) {
         if (!window.CP_DEV_MODE) { return; }
@@ -79,7 +80,8 @@ define([
         var content = {
             hashes: {},
             ids: {},
-            mediasSources: {}
+            mediasSources: {},
+            version: NEW_VERSION
         };
         var oldHashes = {};
         var oldIds = {};
@@ -270,11 +272,21 @@ define([
             };
             oldHashes = JSON.parse(JSON.stringify(content.hashes));
             content.saveLock = undefined;
+            // If this is a migration, set the new version
+            if (APP.migrate) {
+                delete content.migration;
+                content.version = NEW_VERSION;
+            }
             APP.onLocal();
             APP.realtime.onSettle(function () {
                 fixSheets();
                 UI.log(Messages.saved);
                 APP.realtime.onSettle(function () {
+                    if (APP.migrate) {
+                        UI.alert("RELOAD", function () { // XXX
+                            common.gotoURL();
+                        });
+                    }
                     if (ev.callback) {
                         return void ev.callback();
                     }
@@ -313,6 +325,7 @@ define([
             APP.FM.handleFile(blob, data);
         };
         var makeCheckpoint = function (force) {
+            if (!common.isLoggedIn()) { return; }
             var locked = content.saveLock;
             if (!locked || !isUserOnline(locked) || force) {
                 content.saveLock = myOOId;
@@ -520,6 +533,11 @@ define([
                 type: "documentOpen",
                 data: {"type":"open","status":"ok","data":{"Editor.bin":obj.openCmd.url}}
             });
+            if (APP.migrate && !readOnly) {
+                setTimeout(function () {
+                    makeCheckpoint(true);
+                }, 1000);
+            }
             // Update current index
             var last = ooChannel.queue.pop();
             if (last) { ooChannel.lastHash = last.hash; }
@@ -696,7 +714,7 @@ define([
         var startOO = function (blob, file) {
             if (APP.ooconfig) { return void console.error('already started'); }
             var url = URL.createObjectURL(blob);
-            var lock = readOnly;// || !common.isLoggedIn();
+            var lock = readOnly || APP.migrate;
 
             // Config
             APP.ooconfig = {
@@ -1360,7 +1378,7 @@ define([
             });
             $rightside.append($forget);
 
-            var helpMenu = common.createHelpMenu(['beta', 'oo']);
+            var helpMenu = APP.helpMenu = common.createHelpMenu(['beta', 'oo']);
             $('#cp-app-oo-editor').prepend(common.getBurnAfterReadingWarning());
             $('#cp-app-oo-editor').prepend(helpMenu.menu);
             toolbar.$drawer.append(helpMenu.button);
@@ -1402,6 +1420,28 @@ define([
                 Title.updateTitle(Title.defaultTitle);
             }
 
+            var version = '';
+            // Old version detected: use the old OO and start the migration if we can
+            if (content && !content.version) {
+                version = 'v1/';
+                APP.migrate = true;
+                // Registedred users can start the migration
+                if (common.isLoggedIn()) {
+                    content.migration = true;
+                    APP.onLocal();
+                } else {
+                    var msg = h('div.alert.alert-warning.cp-burn-after-reading', "PEZPEZPEZ"); // XXX
+                    $(APP.helpMenu).after(h);
+                    readOnly = true;
+                }
+            }
+
+            var s = h('script', {
+                type:'text/javascript',
+                src: '/common/onlyoffice/'+version+'web-apps/apps/api/documents/api.js'
+            });
+            $('#cp-app-oo-editor').append(s);
+
             if (metadataMgr.getPrivateData().burnAfterReading && content && content.channel) {
                 sframeChan.event('EV_BURN_PAD', content.channel);
             }
@@ -1423,6 +1463,7 @@ define([
             });
         };
 
+        var reloadPopup = false;
         config.onRemote = function () {
             if (initializing) { return; }
             var userDoc = APP.realtime.getUserDoc();
@@ -1430,6 +1471,9 @@ define([
             if (json.metadata) {
                 metadataMgr.updateMetadata(json.metadata);
             }
+
+            var wasMigrating = content.migration;
+
             content = json.content;
             if (content.hashes) {
                 var latest = getLastCp(true);
@@ -1450,6 +1494,15 @@ define([
             if (content.locks) {
                 handleNewLocks(oldLocks, content.locks);
                 oldLocks = JSON.parse(JSON.stringify(content.locks));
+            }
+            if (content.migration) {
+                setEditable(false);
+            }
+            if (wasMigrating && !content.migration && !reloadPopup) {
+                reloadPopup = true;
+                UI.alert("RELOAD pewpew", function () { // XXX
+                    common.gotoURL();
+                });
             }
             pinImages();
         };
