@@ -1,0 +1,190 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insert autoshapes</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add an autoshape to your document and adjust its properties." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Insert autoshapes</h1>
+            <h3>Insert an autoshape</h3>
+			<p>To add an autoshape to your document,</p>
+			<ol>
+				<li>click the <b>Insert Autoshape</b> <img alt="Insert Autoshape icon" src="../images/insertautoshape.png" /> icon at the top toolbar,</li>
+				<li>select one of the available autoshape groups: basic shapes, figured arrows, math, charts, stars &amp; ribbons, callouts, buttons, rectangles, lines,</li>
+				<li>click the necessary autoshape within the selected group,</li>
+				<li>place the mouse cursor where you want the shape to be put,</li>
+				<li>once the autoshape is added you can change its size, position and properties.
+				<p class="note"><b>Note</b>: to add a caption within the autoshape make sure the shape is selected on the page and start typing your text. The text you add in this way becomes a part of the autoshape (when you move or rotate the shape, the text moves or rotates with it).</p>
+				</li>
+			</ol>
+            <h3>Move and resize autoshapes</h3>
+            <p id ="shape_resize"><img class="floatleft" alt="Reshaping autoshape" src="../images/reshaping.png" />To change the autoshape size, drag small squares <img alt="Square icon" src="../images/resize_square.png" /> situated on the shape edges. To maintain the original proportions of the selected autoshape while resizing, hold down the <b>Shift</b> key and drag one of the corner icons.</pid>
+			<p>When modifying some shapes, for example figured arrows or callouts, the yellow diamond-shaped <img alt="Yellow diamond icon" src="../images/yellowdiamond.png" /> icon is also available. It allows you to adjust some aspects of the shape, for example, the length of the head of an arrow.</p>
+			<p>To alter the autoshape position, use the <img alt="Arrow" src="../images/arrow.png" /> icon that appears after hovering your mouse cursor over the autoshape. Drag the autoshape to the necessary position without releasing the mouse button. 
+			When you move the autoshape, guide lines are displayed to help you position the object on the page precisely (if a wrapping style other than inline is selected).
+			To move the autoshape by three-pixel increments, hold down the <b>Ctrl</b> key and use the keybord arrows. 
+			To move the autoshape strictly horizontally/vertically and prevent it from moving in a perpendicular direction, hold down the <b>Shift</b> key when dragging.</p>
+			<p>To rotate the autoshape, hover the mouse cursor over the rotation handle <img alt="Rotation handle" src="../images/greencircle.png" /> and drag it clockwise or counterclockwise. To constrain the rotation angle to 15 degree increments, hold down the <b>Shift</b> key while rotating.</p>
+			<hr />
+            <h3>Adjust autoshape settings</h3>
+            <p id ="shape_rightclickmenu">To align and arrange autoshapes, use the <b>right-click menu</b>. The menu options are:</p>
+			<ul>
+                <li><b>Cut, Copy, Paste</b> - standard options which are used to cut or copy a selected text/object and paste a previously cut/copied text passage or object to the current cursor position.</li>
+                <li><b>Arrange</b> is used to bring the selected autoshape to foreground, send to background, move forward or backward as well as group or ungroup shapes to perform operations with several of them at once.</li>
+				<li><b>Align</b> is used to align the shape left, center, right, top, middle, bottom.</li>
+				<li><b>Wrapping Style</b> is used to select a text wrapping style from the available ones - inline, square, tight, through, top and bottom, in front, behind - or edit the wrap boundary. The <b>Edit Wrap Boundary</b> option is available only if you select a wrapping style other than Inline. Drag wrap points to customize the boundary. To create a new wrap point, click anywhere on the red line and drag it to the necessary position. <img alt="Editing Wrap Boundary" src="../images/wrap_boundary.png" /></li>
+				<li><b>Shape Advanced Settings</b> is used to open the 'Shape - Advanced Settings' window.</li>
+			</ul>
+			<hr />
+			<p>Some of the autoshape settings can be altered using the <b>Shape Settings</b> tab of the right sidebar. To activate it click the shape and choose the <b>Shape Settings</b> <img alt="Shape Settings icon" src="../images/shape_settings_icon.png" /> icon on the right. Here you can change the following properties:</p>
+			<ul>
+			<li  id="shape_fill"><b>Fill</b> - use this section to select the autoshape fill. You can choose the following options:
+			<ul>
+				<li><b>Color Fill</b> - select this option to specify the solid color you want to fill the inner space of the selected autoshape with.
+				<p><img alt="Color Fill" src="../images/fill_color.png" /></p>
+				<p id="color">Click the colored box below and select the necessary color from the available <a href="../UsageInstructions/ChangeColorScheme.htm" onclick="onhyperlinkclick(this)">color sets</a> or specify any color you like:</p>
+				</li>
+				<li><b>Gradient Fill</b> - select this option to fill the shape with two colors which smoothly change from one to another.
+				<p><img alt="Gradient Fill" src="../images/fill_gradient.png" /></p>
+				    <ul>
+				    <li><b>Style</b> - choose one of the available options: <b>Linear</b> (colors change in a straight line i.e. along a horizontal/vertical axis or diagonally at a 45 degree angle) or <b>Radial</b> (colors change in a circular path from the center to the edges).</li>
+				    <li><b>Direction</b> - choose a template from the menu. If the <b>Linear</b> gradient is selected, the following directions are available: top-left to bottom-right, top to bottom, top-right to bottom-left, right to left, bottom-right to top-left, bottom to top, bottom-left to top-right, left to right. If the <b>Radial</b> gradient is selected, only one template is available.</li>
+				    <li><b>Gradient</b> - click on the left slider <img alt="Slider" src="../images/gradientslider.png" /> under the gradient bar to activate the color box which corresponds to the first color. Click on the color box on the right to choose the first color in the palette. Drag the slider to set the gradient stop i.e. the point where one color changes into another. Use the right slider under the gradient bar to specify the second color and set the gradient stop.</li>
+				    </ul>			
+				</li>
+				<li><b>Picture or Texture</b> - select this option to use an image or a predefined texture as the shape background.
+				<p><img alt="Picture or Texture Fill" src="../images/fill_picture.png" /></p>
+					<ul>
+						<li>If you wish to use an image as a background for the shape, you can add an image <b>From File</b> selecting it on your computer HDD or <b>From URL</b> inserting the appropriate URL address into the opened window.</li>
+						<li>If you wish to use a texture as a background for the shape, open the <b>From Texture</b> menu and select the necessary texture preset.
+						<p>Currently, the following textures are available: canvas, carton, dark fabric, grain, granite, grey paper, knit, leather, brown paper, papyrus, wood.</p>
+						</li>
+					</ul>
+					<ul>
+						<li>In case the selected <b>Picture</b> has less or more dimensions than the autoshape has, you can choose the <b>Stretch</b> or <b>Tile</b> setting from the dropdown list.
+						<p>The <b>Stretch</b> option allows you to adjust the image size to fit the autoshape size so that it could fill the space completely.</p>
+						<p>The <b>Tile</b> option allows you to display only a part of the bigger image keeping its original dimensions or repeat the smaller image keeping its original dimensions over the autoshape surface so that it could fill the space completely.</p>
+						<p class="note"><b>Note</b>: any selected <b>Texture</b> preset fills the space completely, but you can apply the <b>Stretch</b> effect if necessary.</p>
+						</li>
+					</ul>
+				</li>
+				<li><b>Pattern</b> - select this option to fill the shape with a two-colored design composed of regularly repeated elements.
+				<p><img alt="Pattern Fill" src="../images/fill_pattern.png" /></p>
+				    <ul>
+				        <li><b>Pattern</b> - select one of the predefined designs from the menu.</li>
+				        <li><b>Foreground color</b> - click this color box to change the color of the pattern elements.</li>
+				        <li><b>Background color</b> - click this color box to change the color of the pattern background.</li>
+				    </ul>			
+				</li>
+				<li><b>No Fill</b> - select this option if you don't want to use any fill.</li>
+			</ul>
+			</li>
+			</ul>
+			<p><img class="floatleft" alt="Autoshape Settings tab" src="../images/right_autoshape.png" /></p>
+			<ul style="margin-left: 280px;">			
+			<li><b>Opacity</b> - use this section to set an <b>Opacity</b> level dragging the slider or entering the percent value manually. The default value is <b>100%</b>. It corresponds to the full opacity. The <b>0%</b> value corresponds to the full transparency.</li>
+			<li id="shape_stroke"><b>Stroke</b> - use this section to change the autoshape stroke width, color or type.
+				<ul>
+				<li>To change the stroke width, select one of the available options from the <b>Size</b> dropdown list. The available options are: 0.5 pt, 1 pt, 1.5 pt, 2.25 pt, 3 pt, 4.5 pt, 6 pt. Alternatively, select the <b>No Line</b> option if you don't want to use any stroke.</li>
+				<li>To change the stroke <b>color</b>, click on the colored box below and <a href="../UsageInstructions/ChangeColorScheme.htm" onclick="onhyperlinkclick(this)">select the necessary color</a>.</li>
+                <li>To change the stroke <b>type</b>, select the necessary option from the corresponding dropdown list (a solid line is applied by default, you can change it to one of the available dashed lines).</li>
+				</ul>
+			</li>
+			<li><b>Wrapping Style</b> - use this section to select a text wrapping style from the available ones - inline, square, tight, through, top and bottom, in front, behind (for more information see the advanced settings description below).</li>
+			<li><b>Change Autoshape</b> - use this section to replace the current autoshape with another one selected from the dropdown list.</li>
+			</ul>
+			<hr />
+			<p>To change the <b>advanced settings</b> of the autoshape, right-click it and select the <b>Advanced Settings</b> option in the menu or use the <b>Show advanced settings</b> link at the right sidebar. The 'Shape - Advanced Settings' window will open:</p>
+            <p><img alt="Shape - Advanced Settings" src="../images/shape_properties.png" /></p>
+			<p>The <b>Size</b> tab contains the following parameters:</p>
+			<ul>
+				<li><b>Width</b> - use one of these options to change the autoshape width.
+                <ul>
+                    <li><b>Absolute</b> - specify an exact value measured in absolute units i.e. <b>Centimeters</b>/<b>Points</b>/<b>Inches</b> (depending on the option specified at the <b>File</b> -> <b>Advanced Settings...</b> tab).</li>
+                    <li><b>Relative</b> - specify a percentage <b>relative to</b> the <em>left margin</em> width, the <em>margin</em> (i.e. the distance between the left and right margins), the <em>page</em> width, or the <em>right margin</em> width.</li>
+                </ul>
+                </li>
+                <li><b>Height</b> - use one of these options to change the autoshape height.
+                    <ul>
+                        <li><b>Absolute</b> - specify an exact value measured in absolute units i.e. <b>Centimeters</b>/<b>Points</b>/<b>Inches</b> (depending on the option specified at the <b>File</b> -> <b>Advanced Settings...</b> tab).</li>
+                        <li><b>Relative</b> - specify a percentage <b>relative to</b> the <em>margin</em> (i.e. the distance between the top and bottom margins), the <em>bottom margin</em> height, the <em>page</em> height, or the <em>top margin</em> height.</li>
+                    </ul>
+                </li>
+                <li>If the <b>Lock aspect ratio</b> option is checked, the width and height will be changed together preserving the original shape aspect ratio.</li>
+			</ul>
+            <p id="shape_wrapping"><img alt="Shape - Advanced Settings" src="../images/shape_properties_1.png" /></p>
+			<p>The <b>Text Wrapping</b> tab contains the following parameters:</p>
+			<ul>
+				<li><b>Wrapping Style</b> - use this option to change the way the shape is positioned relative to the text: it will either be a part of the text (in case you select the inline style) or bypassed by it from all sides (if you select one of the other styles).
+				<ul>
+				    <li><p><img alt="Wrapping Style - Inline" src="../images/wrappingstyle_inline.png" /> <b>Inline</b> - the shape is considered to be a part of the text, like a character, so when the text moves, the shape moves as well. In this case the positioning options are inaccessible.</p>
+				    <p>If one of the following styles is selected, the shape can be moved independently of the text and positioned on the page exactly:</p>
+				    </li>
+				    <li><p><img alt="Wrapping Style - Square" src="../images/wrappingstyle_square.png" /> <b>Square</b> - the text wraps the rectangular box that bounds the shape.</p></li>
+				    <li><p><img alt="Wrapping Style - Tight" src="../images/wrappingstyle_tight.png" /> <b>Tight</b> - the text wraps the actual shape edges.</p></li>
+				    <li><p><img alt="Wrapping Style - Through" src="../images/wrappingstyle_through.png" /> <b>Through</b> - the text wraps around the shape edges and fills in the open white space within the shape. So that the effect can appear, use the <b>Edit Wrap Boundary</b> option from the right-click menu.</p></li>
+				    <li><p><img alt="Wrapping Style - Top and Bottom" src="../images/wrappingstyle_topandbottom.png" /> <b>Top and Bottom</b> - the text is only above and below the shape.</p></li>
+				    <li><p><img alt="Wrapping Style - In Front" src="../images/wrappingstyle_infront.png" /> <b>In Front</b> - the shape overlaps the text.</p></li>
+				    <li><p><img alt="Wrapping Style - Behind" src="../images/wrappingstyle_behind.png" /> <b>Behind</b> - the text overlaps the shape.</p></li>
+				    </ul>
+				</li>
+			</ul>
+			<p>If you select the square, tight, through, or top and bottom style you will be able to set up some additional parameters - <b>distance from text</b> at all sides (top, bottom, left, right).</p>
+			<p><img alt="Shape - Advanced Settings" src="../images/shape_properties_2.png" /></p>
+			<p>The <b>Position</b> tab is available only if you select a wrapping style other than inline. This tab contains the following parameters that vary depending on the selected wrapping style:</p>
+			<ul>
+                <li>
+                    The <b>Horizontal</b> section allows you to select one of the following three autoshape positioning types:
+                    <ul>
+                        <li><b>Alignment</b> (left, center, right) <b>relative to</b> character, column, left margin, margin, page or right margin,</li>
+                        <li>Absolute <b>Position</b> measured in absolute units i.e. <b>Centimeters</b>/<b>Points</b>/<b>Inches</b> (depending on the option specified at the <b>File</b> -> <b>Advanced Settings...</b> tab) <b>to the right of</b> character, column, left margin, margin, page or right margin,</li>
+                        <li><b>Relative position</b> measured in percent <b>relative to</b> the left margin, margin, page or right margin.</li>
+                    </ul>
+                </li>
+                <li>
+                    The <b>Vertical</b> section allows you to select one of the following three autoshape positioning types:
+                    <ul>
+                        <li><b>Alignment</b> (top, center, bottom) <b>relative to</b> line, margin, bottom margin, paragraph, page or top margin,</li>
+                        <li>Absolute <b>Position</b> measured in absolute units i.e. <b>Centimeters</b>/<b>Points</b>/<b>Inches</b> (depending on the option specified at the <b>File</b> -> <b>Advanced Settings...</b> tab) <b>below</b> line, margin, bottom margin, paragraph, page or top margin,</li>
+                        <li><b>Relative position</b> measured in percent <b>relative to</b> the margin, bottom margin, page or top margin.</li>
+                    </ul>
+                </li>
+                <li><b>Move object with text</b> controls whether the autoshape moves as the text to which it is anchored moves.</li>
+				<li><b>Allow overlap</b> controls whether two autoshapes overlap or not if you drag them near each other on the page.</li>
+			</ul>
+			<p><img alt="Shape - Advanced Settings" src="../images/shape_properties_3.png" /></p>
+			<p>The <b>Shape Settings</b> tab contains the following parameters:</p>
+			<ul>
+				<li><b>Line Style</b> - this option group allows to specify the following parameters:
+				<ul>
+				<li><b>Cap Type</b> - this option allows to set the style for the end of the line, therefore it can be applied only to the shapes with the open outline, such as lines, polylines etc.: 
+					<ul>
+					<li><b>Flat</b> - the end points will be flat.</li>
+					<li><b>Round</b> - the end points will be rounded.</li>
+					<li><b>Square</b> - the end points will be square.</li>
+					</ul>
+				</li>
+				<li><b>Join Type</b> - this option allows to set the style for the intersection of two lines, for example, it can affect a polyline or the corners of the triangle or rectangle outline:
+					<ul>
+					<li><b>Round</b> - the corner will be rounded.</li>
+					<li><b>Bevel</b> - the corner will be cut off angularly.</li>
+					<li><b>Miter</b> - the corner will be pointed. It goes well to shapes with sharp angles.</li>
+					</ul>
+					<p class="note"><b>Note</b>: the effect will be more noticeable if you use a large outline width.</p>
+				</li>
+				</ul>
+				</li>
+				<li><b>Arrows</b> - this option group is available if a shape from the <b>Lines</b> shape group is selected. It allows to set the arrow <b>Start</b> and <b>End Style</b> and <b>Size</b> by selecting the appropriate option from the dropdown lists.</li>
+			</ul>
+            <p><img alt="Shape - Advanced Settings" src="../images/shape_properties_4.png" /></p>
+			<p>The <b>Text Padding</b> tab allows to change the autoshape <b>Top</b>, <b>Bottom</b>, <b>Left</b> and <b>Right</b> internal margins (i.e. the distance between the text within the shape and the autoshape borders).</p>
+            <p class="note"><b>Note</b>: this tab is only available if text is added within the autoshape, otherwise the tab is disabled.</p>
+            <p><img alt="Shape - Advanced Settings" src="../images/shape_properties_5.png" /></p>
+            <p>The <b>Alternative Text</b> tab allows to specify a <b>Title</b> and <b>Description</b> which will be read to the people with vision or cognitive impairments to help them better understand what information there is in the shape.</p>
+		</div>
+	</body>
+</html>

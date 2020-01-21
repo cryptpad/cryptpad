@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insert equations</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Insert equations and mathematical symbols." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Insert equations</h1>
+            <p><b>Spreadsheet Editor</b> allows you to build equations using the built-in templates, edit them, insert special characters (including mathematical operators, Greek letters, accents etc.).</p>
+            <h3>Add a new equation</h3>
+            <p>To insert an equation from the gallery,</p>
+			<ol>
+				<li>click the arrow next to the <b>Insert Equation</b> <img alt="Insert Equation icon" src="../images/insertequationicon.png" /> icon at the top toolbar,</li>
+				<li>in the opened drop-down list select the equation category you need. The following categories are currently available: <em>Symbols</em>, <em>Fractions</em>, <em>Scripts</em>, <em>Radicals</em>, <em>Integrals</em>, <em>Large Operators</em>, <em>Brackets</em>, <em>Functions</em>, <em>Accents</em>, <em>Limits and Logarithms</em>, <em>Operators</em>, <em>Matrices</em>,</li>
+                <li>click the certain symbol/equation in the corresponding set of templates.</li>
+			</ol>
+            <p>The selected symbol/equation will be added to the worksheet.</p>
+            <img alt="Inserted Equation" src="../images/insertedequation.png" />
+            <p>The upper left corner of the equation box will coincide with the upper left corner of the currently selected cell, but the equation box can be freely <b>moved, resized or rotated</b> on the sheet. To do that click on the equation box border (it will be displayed as a solid line) and use <a href="ManipulateObjects.htm" onclick="onhyperlinkclick(this)">corresponding handles</a>.</p>
+            <p>Each equation template represents a set of slots. Slot is a position for each element that makes up the equation. An empty slot (also called as a placeholder) has a dotted outline <img alt="Equation Placeholder" src="../images/equationplaceholder.png" />. You need to fill in all the placeholders specifying the necessary values.</p>
+            <h3>Enter values</h3>
+            <p>The <b>insertion point</b> specifies where the next character you enter will appear. To position the insertion point precisely, click within a placeholder and use the keyboard arrows to move the insertion point by one character left/right.</p>
+            <img alt="Edited Equation" src="../images/newslot.png" />
+            <p>Once the insertion point is positioned, you can fill in the placeholder:
+            <ul>
+                <li>enter the desired numeric/literal value using the keyboard,</li>
+                <li>insert a special character using the <b>Symbols</b> palette from the <b>Insert Equation</b> <img alt="Insert Equation icon" src="../images/insertequationicon.png" /> menu on the top toolbar,</li>
+                <li>add another equation template from the palette to create a complex nested equation. The size of the primary equation will be automatically adjusted to fit its content. The size of the nested equation elements depends on the primary equation placeholder size, but it cannot be smaller than the sub-subscript size.</li>                
+            </ul>
+            </p>
+            <p><img alt="Edited Equation" src="../images/nestedfraction.png" /></p>
+            <p>To add some new equation elements you can also use the <b>right-click menu options</b>:</p>
+            <ul>
+                <li>To add a new argument that goes before or after the existing one within <em>Brackets</em>, you can right-click on the existing argument and select the <b>Insert argument before/after</b> option from the menu.</li>
+                <li>To add a new equation within <em>Cases</em> with several conditions from the <em>Brackets</em> group, you can right-click on an empty placeholder or entered equation within it and select the <b>Insert equation before/after</b> option from the menu.</li>
+                <li>To add a new row or a column in a <em>Matrix</em>, you can right-click on a placeholder within it, select the <b>Insert</b> option from the menu, then select <b>Row Above/Below</b> or <b>Column Left/Right</b>.</li>
+            </ul>
+            <p class="note"><b>Note</b>: currently, equations cannot be entered using the linear format, i.e. <b>\sqrt(4&x^3)</b>.</p>
+            <p>When entering the values of the mathematical expressions, you do not need to use <b>Spacebar</b> as the spaces between the characters and signs of operations are set automatically.</p>
+            <p>If the equation is too long and does not fit to a single line within the equation box, automatic line breaking occurs as you type. You can also insert a line break in a specific position by right-clicking on a mathematical operator and selecting the <b>Insert manual break</b> option from the menu. The selected operator will start a new line. To delete the added manual line break, right-click on the mathematical operator that starts a new line and select the <b>Delete manual break</b> option.</p>
+            <h3>Format equations</h3>
+            <p>By default, the equation within the equation box is horizontally centered and vertically aligned to the top of the equation box. To change its horizontal/vertical alignment, put the cursor within the the equation box (the equation box borders will be displayed as dashed lines) and use the <a href="../UsageInstructions/AlignText.htm" onclick="onhyperlinkclick(this)">corresponding icons</a> at the top toolbar.</p>
+            <p>To increase or decrease the equation <b>font size</b>, click anywhere within the equation box and use the <img alt="Increment font size" src="../images/larger.png" /> and <img alt="Decrement font size" src="../images/smaller.png" /> buttons on the top toolbar or select the necessary font size from the list. All the equation elements will change correspondingly.</p>
+            <p>The letters within the equation are italicized by default. If necessary, you can change the <b>font style</b> (<em>bold, italic, strikeout</em>) or <b>color</b> for a whole equation or its part. The <em>underlined</em> style can be applied to the entire equation only, not to individual characters. Select the necessary part of the equation by clicking and dragging. The selected part will be highlighted blue. Then use the necessary buttons on the top toolbar to format the selection. For example, you can remove the italic format for ordinary words that are not variables or constants.</p>
+            <img alt="Edited Equation" src="../images/formatastext.png" />
+            <p>To modify some equation elements you can also use the <b>right-click menu options</b>:</p>
+            <ul><li>To change the <em>Fractions</em> format, you can right-click on a fraction and select the <b>Change to skewed/linear/stacked fraction</b> option from the menu (the available options differ depending on the selected fraction type). <!--The <b>Remove/Add fraction bar</b> option is also available for stacked fractions.--></li>
+                <li>To change the <em>Scripts</em> position relating to text, you can right-click on the equation that includes scripts and select the <b>Scripts before/after text</b> option from the menu.</li>
+                <li>To change the argument size for <em>Scripts, Radicals, Integrals, Large Operators, Limits and Logarithms, Operators</em> as well as for overbraces/underbraces and templates with grouping characters from the <em>Accents</em> group, you can right-click on the argument you want to change and select the <b>Increase/Decrease argument size</b> option from the menu.</li>
+                <li>To specify whether an empty degree placeholder should be displayed or not for a <em>Radical</em>, you can right-click on the radical and select the <b>Hide/Show degree</b> option from the menu.</li>
+                <li>To specify whether an empty limit placeholder should be displayed or not for an <em>Integral</em> or <em>Large Operator</em>, you can right-click on the equation and select the <b>Hide/Show top/bottom limit</b> option from the menu.</li>
+                <li>To change the limits position relating to the integral or operator sign for <em>Integrals</em> or <em>Large Operators</em>, you can right-click on the equation and select the <b>Change limits location</b> option from the menu. The limits can be displayed to the right of the operator sign (as subscripts and superscripts) or directly above and below the operator sign.</li>
+                <li>To change the limits position relating to text for <em>Limits and Logarithms</em> and templates with grouping characters from the <em>Accents</em> group, you can right-click on the equation and select the <b>Limit over/under text</b> option from the menu.</li>
+                <li>To choose which of the <em>Brackets</em> should be displayed, you can right-click on the expression within them and select the <b>Hide/Show opening/closing bracket</b> option from the menu.</li>
+                <li>To control the <em>Brackets</em> size, you can right-click on the expression within them. The <b>Stretch brackets</b> option is selected by default so that the brackets can grow according to the expression within them, but you can deselect this option to prevent brackets from stretching. When this option is activated, you can also use the <b>Match brackets to argument height</b> option.</li>
+                <li>To change the character position relating to text for overbraces/underbraces or overbars/underbars from the <em>Accents</em> group, you can right-click on the template and select the <b>Char/Bar over/under text</b> option from the menu.</li>
+                <li>To choose which borders should be displayed for a <em>Boxed formula</em> from the <em>Accents</em> group, you can right-click on the equation and select the <b>Border properties</b> option from the menu, then select <b>Hide/Show top/bottom/left/right border</b> or <b>Add/Hide horizontal/vertical/diagonal line</b>.</li>
+                <li>To specify whether empty placeholders should be displayed or not for a <em>Matrix</em>, you can right-click on it and select the <b>Hide/Show placeholder</b> option from the menu.</li>
+            </ul>
+            <p>To align some equation elements you can use the <b>right-click menu options</b>:</p>
+            <ul>
+                <li>To align equations within <em>Cases</em> with several conditions from the <em>Brackets</em> group, you can right-click on an equation, select the <b>Alignment</b> option from the menu, then select the alignment type: <b>Top</b>, <b>Center</b>, or <b>Bottom</b>.</li>
+                <li>To align a <em>Matrix</em> vertically, you can right-click on the matrix, select the <b>Matrix Alignment</b> option from the menu, then select the alignment type: <b>Top</b>, <b>Center</b>, or <b>Bottom</b>.</li>
+                <li>To align elements within a <em>Matrix</em> column horizontally, you can right-click on a placeholder within the column, select the <b>Column Alignment</b> option from the menu, then select the alignment type: <b>Left</b>, <b>Center</b>, or <b>Right</b>.</li>
+            </ul>
+            <h3>Delete equation elements</h3>
+            <p>To delete a part of the equation, select the part you want to delete by dragging the mouse or holding down the <b>Shift</b> key and using the arrow buttons, then press the <b>Delete</b> key on the keyboard.</p>
+            <p>A slot can only be deleted together with the template it belongs to.</p>
+            <p>To delete the entire equation, click on the equation box border (it will be displayed as a solid line) and and press the <b>Delete</b> key on the keyboard.</p>
+            <img alt="Delete Equation" src="../images/deleteequation.png" />
+            <p>To delete some equation elements you can also use the <b>right-click menu options</b>:</p>
+            <ul>
+                <li>To delete a <em>Radical</em>, you can right-click on it and select the <b>Delete radical</b> option from the menu.</li>
+                <li>To delete a <em>Subscript</em> and/or <em>Superscript</em>, you can right-click on the expression that contains them and select the <b>Remove subscript/superscript</b> option from the menu. If the expression contains scripts that go before text, the <b>Remove scripts</b> option is available.</li>
+                <li>To delete <em>Brackets</em>, you can right-click on the expression within them and select the <b>Delete enclosing characters</b> or <b>Delete enclosing characters and separators</b> option from the menu.</li>
+                <li>If the expression within <em>Brackets</em> inclides more than one argument, you can right-click on the argument you want to delete and select the <b>Delete argument</b> option from the menu.</li>
+                <li>If <em>Brackets</em> enclose more than one equation (i.e. <em>Cases</em> with several conditions), you can right-click on the equation you want to delete and select the <b>Delete equation</b> option from the menu.</li>
+                <li>To delete a <em>Limit</em>, you can right-click on it and select the <b>Remove limit</b> option from the menu.</li>
+                <li>To delete an <em>Accent</em>, you can right-click on it and select the <b>Remove accent character</b>, <b>Delete char</b> or <b>Remove bar</b> option from the menu (the available options differ depending on the selected accent).</li>
+                <li>To delete a row or a column of a <em>Matrix</em>, you can right-click on the placeholder within the row/column you need to delete, select the <b>Delete</b> option from the menu, then select <b>Delete Row/Column</b>.</li>
+            </ul>
+		</div>
+	</body>
+</html>

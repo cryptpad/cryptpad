@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Функция ERROR.TYPE (ТИП.ОШИБКИ)</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Функция ERROR.TYPE (ТИП.ОШИБКИ)</h1>
+			<p>Функция <b>ERROR.TYPE</b> - это одна из информационных функций. Она возвращает числовое представление одной из существующих ошибок. </p>
+			<p>Синтаксис функции <b>ERROR.TYPE</b>:</p> 
+			<p style="text-indent: 150px;"><b><em>ERROR.TYPE(value)</em></b></p> 
+			<p>где <b><em>value</em></b> (значение) - это значение ошибки, введенное вручную или находящееся в ячейке, на которую дается ссылка. Возможно одно из следующих значений ошибок:</p>
+			<table>
+				<tr>
+					<td><b>Значение ошибки</b></td>
+					<td><b>Числовое представление</b></td>
+				</tr>
+				<tr>
+					<td>#NULL!</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>#DIV/0!</td>
+					<td>2</td>
+				</tr>
+				<tr>
+					<td>#VALUE!</td>
+					<td>3</td>
+				</tr>
+				<tr>
+					<td>#REF!</td>
+					<td>4</td>
+				</tr>
+				<tr>
+					<td>#NAME?</td>
+					<td>5</td>
+				</tr>
+				<tr>
+					<td>#NUM!</td>
+					<td>6</td>
+				</tr>
+				<tr>
+					<td>#N/A</td>
+					<td>7</td>
+				</tr>
+				<tr>
+					<td>#GETTING_DATA</td>
+					<td>8</td>
+				</tr>
+				<tr>
+					<td>Другое</td>
+					<td>#N/A</td>
+				</tr>
+			</table>
+			<p>Чтобы применить функцию <b>ERROR.TYPE</b>,</p>
+			<ol>
+			<li>выделите ячейку, в которой требуется отобразить результат,</li>
+			<li>щелкните по значку <b>Вставить функцию</b> <img alt="Значок Вставить функцию" src="../images/insertfunction.png" />, расположенному на верхней панели инструментов,
+				<br />или щелкните правой кнопкой мыши по выделенной ячейке и выберите в меню команду <b>Вставить функцию</b>,
+				<br />или щелкните по значку <img alt="Значок Функция" src="../images/function.png" /> перед строкой формул,
+			</li>
+			<li>выберите из списка группу функций <b>Информационные</b>,</li>
+			<li>щелкните по функции <b>ERROR.TYPE</b>,</li>
+			<li>введите требуемый аргумент,</li>
+			<li>нажмите клавишу <b>Enter</b>.</li>
+			</ol>
+			<p>Результат будет отображен в выбранной ячейке.</p>
+			<p style="text-indent: 150px;"><img alt="Функция ERROR.TYPE" src="../images/error.type.png" /></p>
+		</div>
+	</body>
+</html>

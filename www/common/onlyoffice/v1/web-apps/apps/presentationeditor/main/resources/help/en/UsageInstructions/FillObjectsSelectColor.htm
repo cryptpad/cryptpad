@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fill objects and select colors</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Fill the added objects with color, picture or texture, select colors for the slide background, autoshape fill and stroke, font." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Fill objects and select colors</h1>
+			<p>You can apply different fills for the slide, autoshape and Text Art font background.</p>
+			<ol>
+			<li>Select an object
+                <ul>
+                    <li>To change the slide background fill, select the necessary slides in the slide list. The <img alt="Slide Settings Icon" src="../images/slide_settings_icon.png" /> <b>Slide Settings</b> tab will be activated at the the right sidebar.</li>
+                    <li>To change the autoshape fill, left-click the necessary autoshape. The <img alt="Shape Settings Icon" src="../images/shape_settings_icon.png" /> <b>Shape Settings</b> tab will be activated at the the right sidebar.</li>
+                    <li>To change the Text Art font fill, left-click the necessary text object. The <img alt="Text Art Settings Icon" src="../images/textart_settings_icon.png" /> <b>Text Art Settings</b> tab will be activated at the the right sidebar.</li>
+                </ul>
+			</li>
+			<li>Set the necessary fill type</li>
+			<li>Adjust the selected fill properties (see the detailed description below for each fill type)
+			<p class="note"><b>Note</b>: for the autoshapes and Text Art font, regardless of the selected fill type, you can also set an <b>Opacity</b> level dragging the slider or entering the percent value manually. The default value is <b>100%</b>. It corresponds to the full opacity. The <b>0%</b> value corresponds to the full transparency.</p>
+			</li>
+			</ol>			
+			<p><b>The following fill types are available:</b></p>
+			<ul>
+				<li><b>Color Fill</b> - select this option to specify the solid color you want to fill the inner space of the selected shape/slide with.
+				<p><img alt="Color Fill" src="../images/fill_color.png" /></p>
+				<p>Click on the colored box below and select the necessary color from the available color sets or specify any color you like:</p>
+			        <p><img alt="Palettes" src="../images/palettes.png" /></p>
+			        <ul>
+			        <li><b>Theme Colors</b> - the colors that correspond to the selected theme/color scheme of the presentation. Once you apply a different theme or color scheme, the <b>Theme Colors</b> set will change.</li>
+			        <li><b>Standard Colors</b> - the default colors set.</li>
+			        <li><b>Custom Color</b> - click on this caption if there is no needed color in the available palettes. Select the necessary colors range moving the vertical color slider and set the specific color dragging the color picker within the large square color field. Once you select a color with the color picker, the appropriate RGB and sRGB color values will be displayed in the fields on the right. You can also specify a color on the base of the RGB color model entering the necessary numeric values into the <b>R</b>, <b>G</b>, <b>B</b> (Red, Green, Blue) fields or enter the sRGB hexadecimal code into the field marked with the <b>#</b> sign. The selected color appears in the <b>New</b> preview box. If the object was previously filled with any custom color, this color is displayed in the <b>Current</b> box so you can compare the original and modified colors. When the color is specified, click the <b>Add</b> button:
+			        <p><img alt="Palette - Custom Color" src="../images/palette_custom.png" /></p>
+			        <p>The custom color will be applied to your object and added to the <b>Custom color</b> palette of the menu.</p>			        
+			        </li>			        
+			        </ul>
+			    <p class="note"><b>Note</b>: just the same color types you can use when selecting the <b>color of the autoshape stroke</b>, adjusting the <b>font color</b>, or changing the <b>table background or border color</b>.</p>
+				</li>
+			</ul>
+				<hr />
+			<ul>				
+				<li><b>Gradient Fill</b> - select this option to fill the slide/shape with two colors which smoothly change from one to another.
+				<p><img class="floatleft"alt="Gradient Fill" src="../images/fill_gradient.png" /></p>
+				    <ul style="margin-left: 280px;">
+				    <li><b>Style</b> - choose one of the available options: <b>Linear</b> (colors change in a straight line i.e. along a horizontal/vertical axis or diagonally at a 45 degree angle) or <b>Radial</b> (colors change in a circular path from the center to the edges).</li>
+				    <li><b>Direction</b> - choose a template from the menu. If the <b>Linear</b> gradient is selected, the following directions are available : top-left to bottom-right, top to bottom, top-right to bottom-left, right to left, bottom-right to top-left, bottom to top, bottom-left to top-right, left to right. If the <b>Radial</b> gradient is selected, only one template is available.</li>
+				    <li><b>Gradient</b> - click on the left slider <img alt="Slider" src="../images/gradientslider.png" /> under the gradient bar to activate the color box which corresponds to the first color. Click on the color box on the right to choose the first color in the palette. Drag the slider to set the gradient stop i.e. the point where one color changes into another. Use the right slider under the gradient bar to specify the second color and set the gradient stop.</li>
+				    </ul>			
+				</li>
+			</ul>
+				<hr />
+			<ul>
+				<li><b>Picture or Texture</b> - select this option to use an image or a predefined texture as the shape/slide background.
+				<p><img class="floatleft"alt="Picture or Texture Fill" src="../images/fill_picture.png" /></p>
+				    <ul style="margin-left: 280px;">
+				    <li>If you wish to use an image as a backgroung for the shape/slide, you can add an image <b>From File</b> selecting it on your computer HDD or <b>From URL</b> inserting the appropriate URL address in the opened window.
+				    </li>
+				    <li>If you wish to use a texture as a backgroung for the shape/slide, drop-down the <b>From Texture</b> menu and select the necessary texture preset.
+				    <p>Currently, the following textures are available: Canvas, Carton, Dark Fabric, Grain, Granite, Grey Paper, Knit, Leather, Brown Paper, Papyrus, Wood.</p>
+				    </li>
+				    </ul>
+			        <ul style="margin-left: 280px;">
+			        <li>In case the selected <b>Picture</b> has less or more dimensions than the autoshape or slide has, you can choose the <b>Stretch</b> or <b>Tile</b> setting from the drop-down list.
+			        <p>The <b>Stretch</b> option allows to adjust the image size to fit the slide or autoshape size so that it could fill the space completely.</p>
+			        <p>The <b>Tile</b> option allows to display only a part of the bigger image keeping its original dimensions, or repeat the smaller image keeping its original dimensions over the slide or autoshape surface so that it could fill the space completely.</p>
+			        <p class="note"><b>Note</b>: any selected <b>Texture</b> preset fills the space completely, but you can apply the <b>Stretch</b> effect if necessary.</p>
+			        </li>
+			        </ul>			
+				</li>
+			</ul>
+				<hr />
+			<ul>
+				<li><b>Pattern</b> - select this option to fill the slide/shape with a two-colored design composed of regularly repeated elements.
+				<p><img class="floatleft"alt="Pattern Fill" src="../images/fill_pattern.png" /></p>
+				    <ul style="margin-left: 280px;">
+				        <li><b>Pattern</b> - select one of the predefined designs from the menu.</li>
+				        <li><b>Foreground color</b> - click this color box to change the color of the pattern elements.</li>
+				        <li><b>Background color</b> - click this color box to change the color of the pattern background.</li>
+				    </ul>			
+				</li>
+			</ul>
+				<hr />
+			<ul>
+				<li><b>No Fill</b> - select this option if you don't want to use any fill.</li>
+			</ul>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insert and format autoshapes</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add an autoshape to your presentation and adjust its properties." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Insert and format autoshapes</h1>
+            <h3>Insert an autoshape</h3>
+			<p>To <b>add</b> an autoshape on a slide,</p>
+			<ol>
+				<li>in the slide list on the left, select the slide you want to add the autoshape to,</li>
+				<li>click the <b>Insert Autoshape</b> <img alt="Insert Autoshape icon" src="../images/insertautoshape.png" /> icon at the top toolbar,</li>
+				<li>select one of the available autoshape groups: Basic Shapes, Figured Arrows, Math, Charts, Stars & Ribbons, Callouts, Buttons, Rectangles, Lines,</li>
+				<li>click on the necessary autoshape within the selected group,</li>
+				<li>in the slide editing area, place the mouse cursor where you want the shape to be put,
+				<p class="note"><b>Note</b>: you can click and drag to stretch the shape.</p>
+				</li>
+				<li>once the autoshape is added you can <a href="../UsageInstructions/ManipulateObjects.htm" onclick="onhyperlinkclick(this)">change its size, position</a> and properties.
+				<p class="note"><b>Note</b>: to add a caption within the autoshape make sure the shape is selected on the slide and start typing your text. The text you add in this way becomes a part of the autoshape (when you move or rotate the shape, the text moves or rotates with it).</p>
+				</li>
+			</ol>
+			<hr />
+            <h3>Adjust autoshape settings</h3>
+			<p>Some of the autoshape settings can be altered using the <b>Shape Settings</b> tab of the right sidebar. To activate it click the autoshape and choose the <b>Shape Settings</b> <img alt="Shape Settings icon" src="../images/shape_settings_icon.png" /> icon on the right. Here you can change the following properties:</p>
+			<p><img class="floatleft"alt="Shape Settings tab" src="../images/shapesettingstab.png" /></p>
+			<ul  style="margin-left: 280px;">
+			<li><b>Fill</b> - use this section to select the autoshape fill. You can choose the following options:
+			<ul>
+				<li><b>Color Fill</b> - to specify the solid color you want to apply to the selected shape.</li>
+				<li><b>Gradient Fill</b> - to fill the shape with two colors which smoothly change from one to another.</li>
+				<li><b>Picture or Texture</b> - to use an image or a predefined texture as the shape background.</li>
+				<li><b>Pattern</b> - to fill the shape with a two-colored design composed of regularly repeated elements.</li>
+				<li><b>No Fill</b> - select this option if you don't want to use any fill.</li>
+			</ul>
+			<p>For more detailed information on these options please refer to the <a href="../UsageInstructions/FillObjectsSelectColor.htm" onclick="onhyperlinkclick(this)">Fill objects and select colors</a> section.</p>
+			</li>
+			<li id="shapestroke"><b>Stroke</b> - use this section to change the autoshape stroke width, color or type.
+    			<ul>
+    			<li>To change the stroke <b>width</b>, select one of the available options from the <b>Size</b> drop-down list. The available options are: 0.5 pt, 1 pt, 1.5 pt, 2.25 pt, 3 pt, 4.5 pt, 6 pt. Or select the <b>No Line</b> option if you don't want to use any stroke.</li>
+    			<li>To change the stroke <b>color</b>, click on the colored box below and <a href="../UsageInstructions/FillObjectsSelectColor.htm" onclick="onhyperlinkclick(this)">select the necessary color</a>. You can use the selected <b>theme color</b>, a <b>standard color</b> or choose a <b>custom color</b>.</li>
+                <li>To change the stroke <b>type</b>, select the necessary option from the corresponding dropdown list (a solid line is applied by default, you can change it to one of the available dashed lines).</li>
+    			</ul>
+			</li>
+			</ul>
+			<hr />
+			<p>To change the <b>advanced settings</b> of the autoshape, right-click the shape and select the <b>Shape Advanced Settings</b> option from the contextual menu or left-click it and press the <b>Show advanced settings</b> link at the right sidebar. The shape properties window will be opened:</p>
+            <p><img alt="Shape Properties - Size tab" src="../images/shape_properties1.png" /></p>
+			<p>The <b>Size</b> tab allows to change the autoshape <b>Width</b> and/or <b>Height</b>. If the <b>Constant Proportions</b> <img alt="Constant Proportions icon" src="../images/constantproportions.png" /> button is clicked (in this case it looks like this <img alt="Constant Proportions icon activated" src="../images/constantproportionsactivated.png" />), the width and height will be changed together preserving the original autoshape aspect ratio.</p>
+            <p><img alt="Shape Properties - Weights & Arrows tab" src="../images/shape_properties.png" /></p>
+			<p>The <b>Weights & Arrows</b> tab contains the following parameters:</p>
+			<ul>
+				<li><b>Line Style</b> - this option group allows to specify the following parameters:
+				<ul>
+				<li><b>Cap Type</b> - this option allows to set the style for the end of the line, therefore it can be applied only to the shapes with the open outline, such as lines, polylines etc.: 
+				    <ul>
+				    <li><b>Flat</b> - the end points will be flat.</li>
+				    <li><b>Round</b> - the end points will be rounded.</li>
+				    <li><b>Square</b> - the end points will be square.</li>
+				    </ul>
+				</li>
+				<li><b>Join Type</b> - this option allows to set the style for the intersection of two lines, for example, it can affect a polyline or the corners of the triangle or rectangle outline:
+    				<ul>
+    				<li><b>Round</b> - the corner will be rounded.</li>
+    				<li><b>Bevel</b> - the corner will be cut off angularly.</li>
+    				<li><b>Miter</b> - the corner will be pointed. It goes well to shapes with sharp angles.</li>
+    				</ul>
+    				<p class="note"><b>Note</b>: the effect will be more noticeable if you use a large outline width.</p>
+				</li>
+				</ul>
+				</li>
+				<li><b>Arrows</b> - this option group is available if a shape from the <b>Lines</b> shape group is selected. It allows to set the arrow <b>Start</b> and <b>End Style</b> and <b>Size</b> by selecting the appropriate option from the drop-down lists.</li>
+			</ul>
+            <p id="internalmargins"><img alt="Shape Properties - Text Padding tab" src="../images/shape_properties3.png" /></p>
+			<p>The <b>Text Padding</b> tab allows to change the autoshape <b>Top</b>, <b>Bottom</b>, <b>Left</b> and <b>Right</b> internal margins (i.e. the distance between the text within the shape and the autoshape borders).</p>
+            <p class="note"><b>Note</b>: this tab is only available if text is added within the autoshape, otherwise the tab is disabled.</p>
+            <p id ="columns"><img alt="Shape Properties - Columns tab" src="../images/shape_properties2.png" /></p>
+            <p>The <b>Columns</b> tab allows to add columns of text within the autoshape specifying the necessary <b>Number of columns</b> (up to 16) and <b>Spacing between columns</b>. Once you click <b>OK</b>, the text that already exists or any other text you enter within the autoshape will appear in columns and will flow from one column to another.</p>
+            <p><img alt="Shape Properties - Alternative Text tab" src="../images/shape_properties4.png" /></p>
+            <p>The <b>Alternative Text</b> tab allows to specify a <b>Title</b> and <b>Description</b> which will be read to the people with vision or cognitive impairments to help them better understand what information there is in the shape.</p>
+            <hr />
+			<p>To <b>replace</b> the added autoshape, left-click it and use the <b>Change Autoshape</b> drop-down list at the <b>Shape Settings</b> tab of the right sidebar.</p>
+			<p>To <b>delete</b> the added autoshape, left-click it and press the <b>Delete</b> key on the keyboard.</p>
+			<p>To learn how to <b>align</b> an autoshape on the slide or <b>arrange</b> several autoshapes, refer to the <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">Align and arrange objects on a slide</a> section.</p>
+            <hr />
+            <h3>Join autoshapes using connectors</h3>
+            <p>You can connect autoshapes using lines with connection points to demonstrate dependencies between the objects (e.g. if you want to create a flowchart). To do that,</p>
+            <ol>
+                <li>click the <b>Insert Autoshape</b> <img alt="Insert Autoshape icon" src="../images/insertautoshape.png" /> icon at the top toolbar,</li>
+                <li>
+                    select the <b>Lines</b> group from the menu,
+                    <p><img alt="Shapes - Lines" src="../images/connectors.png" /></p>
+                </li>
+                <li>click the necessary shape within the selected group (excepting the last three shapes which are not connectors, namely <em>shape 10</em>, <em>11</em> and <em>12</em>),</li>
+                <li>
+                    hover the mouse cursor over the first autoshape and click one of the connection points <img alt="Connection point icon" src="../images/connectionpoint.png" /> that appear on the shape outline,
+                    <p><img alt="Using connectors" src="../images/connectors_firstshape.png" /></p>
+                </li>
+                <li>
+                    drag the mouse cursor towards the second autoshape and click the necessary connection point on its outline.
+                    <p><img alt="Using connectors" src="../images/connectors_secondshape.png" /></p>
+                </li>
+            </ol>
+            <p>If you move the joined autoshapes, the connector remains attached to the shapes and moves together with them. </p>
+            <p><img alt="Moving joined shapes" src="../images/connectors_moveshape.png" /></p>
+            <p>You can also detach the connector from the shapes and then attach it to any other connection points.</p>
+		</div>
+	</body>
+</html>

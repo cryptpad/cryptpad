@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insert images</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add an image to your spreadsheet and adjust its position and size" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Insert images</h1>
+			<p>Spreadsheet Editor allows you to insert images in the most popular formats into your worksheet. The following image formats are supported: <b>BMP</b>, <b>GIF</b>, <b>JPEG</b>, <b>JPG</b>, <b>PNG</b>.</p>
+            <h3>Insert an image</h3>
+            <p>To insert an image into the spreadsheet,</p>
+			<ol>
+				<li>place the cursor where you want the image to be put,</li>
+				<li>click the <b>Insert Image</b> <img alt="Insert Image icon" src="../images/image.png" /> icon at the top toolbar,</li>
+				<li>select one of the following options to load the image:
+					<ul>
+						<li>the <b>Picture from File</b> option will open the standard Windows dialog window for file selection. Browse your computer hard disk drive for the necessary file and click the <b>Open</b> button</li>
+						<li>the <b>Picture from URL</b> option will open the window where you can enter the necessary image web address and click the <b>OK</b> button</li>
+					</ul>
+				</li>
+			</ol>
+            <p>After that the image will be added to the worksheet.</p>
+            <h3>Adjust the image settings</h3>
+            <p>Once the image is added you can <a href="ManipulateObjects.htm" onclick="onhyperlinkclick(this)">change its size and position</a>.</p>
+            <p>To specify exact image dimensions:</p>
+            <ol>
+                <li>select the image you wish to resize with the mouse,</li>
+                <li>
+                    click the <b>Image Settings</b> <img alt="Image Settings icon" src="../images/image_settings_icon.png" /> icon at the right sidebar,
+                    <p><img alt="Image Settings Right-Side Panel window" src="../images/imagesettings.png" /></p>
+                </li>
+                <li>in the <b>Size</b> section, set the necessary <b>Width</b> and <b>Height</b> values. If the <b>Constant Proportions</b> <img alt="Constant Proportions icon" src="../images/constantproportions.png" /> button is clicked (in this case it looks like this <img alt="Constant Proportions icon activated" src="../images/constantproportionsactivated.png" />), the width and height will be changed together preserving the original image aspect ratio. To restore the default size of the added image, click the <b>Default Size</b> button.</li>
+            </ol>
+            <p>To replace the inserted image,</p>
+			<ol>
+				<li>select the image you wish to replace with the mouse,</li>
+				<li>click the <b>Image Settings</b> <img alt="Image Settings icon" src="../images/image_settings_icon.png" /> icon at the right sidebar,</li>
+				<li>in the <b>Replace Image</b> section click the button you need: <b>From File</b> or <b>From URL</b> and select the desired image.</li>
+			</ol>
+			<p>The selected image will be replaced.</p>
+            <p>To change its advanced settings, click the image with the right mouse button and select the <b>Image Advanced Settings</b> option from the right-click menu or just click the <b>Show advanced settings</b> link at the right sidebar. The image properties window will open:</p>
+            <p><img alt="Image - Advanced Settings" src="../images/imageadvancedsettings.png" /></p>
+            <p>The <b>Alternative Text</b> tab allows to specify a <b>Title</b> and <b>Description</b> which will be read to the people with vision or cognitive impairments to help them better understand what information there is in the image.</p>
+			<p>To delete the inserted image, click it and press the <b>Delete</b> key.</p>
+		</div>
+	</body>
+</html>

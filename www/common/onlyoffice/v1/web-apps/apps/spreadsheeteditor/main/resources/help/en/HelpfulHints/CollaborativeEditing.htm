@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Collaborative Spreadsheet Editing</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Tips on collaborative editing" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+		<h1>Collaborative Spreadsheet Editing</h1>
+			<p><b>Spreadsheet Editor</b> offers you the possibility to work at a spreadsheet collaboratively with other users. This feature includes:</p>
+			<ul>
+				<li class="onlineDocumentFeatures">simultaneous multi-user access to the edited spreadsheet</li>
+				<li class="onlineDocumentFeatures">visual indication of cells that are being edited by other users</li>
+				<li class="onlineDocumentFeatures">synchronization of changes with one button click</li>
+				<li class="onlineDocumentFeatures">chat to share ideas concerning particular spreadsheet parts</li>
+				<li>comments containing the description of a task or problem that should be solved</li>
+			</ul>
+            <div class="onlineDocumentFeatures">
+                <h3>Co-editing</h3>
+                <p><b>Spreadsheet Editor</b> allows to select one of the two available co-editing modes. <b>Fast</b> is used by default and shows the changes made by other users in realtime. <b>Strict</b> is selected to hide other user changes until you click the <b>Save</b> <img alt="Save icon" src="../images/saveupdate.png" /> icon to save your own changes and accept the changes made by others. The mode can be selected in the <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Advanced Settings</a>.</p>
+                <p>When a document is being edited by several users simultaneously in the <b>Strict</b> mode, the edited cells as well as the tab of the sheet where these cells are situated are marked with dashed lines of different colors. By hovering the mouse cursor over one of the edited cells, the name of the user who is editing it at the moment is displayed. The <b>Fast</b> mode will show the actions and the names of the co-editors once they are editing the text.</p>
+                <p>The number of users who are working at the current document is specified in the right lower corner at the status bar - <img alt="Number of users icon" src="../images/usersnumber.png" />. If you want to see who exactly are editing the file now, you can open the <b>Chat</b> panel with the full list of the users.</p>
+                <p>When no users are viewing or editing the file, the icon in the status bar will look like <img alt="Manage document access rights icon" src="../images/access_rights.png" /> allowing you to manage the users who have access to the file right from the document: invite new users giving them either full or read-only access, or denying some users access rights to the file. Click this icon to manage the access to the file; this can be done both when there are no other users who view or co-edit the document at the moment and when there are other users and the icon looks like <img alt="Number of users icon" src="../images/usersnumber.png" />.</p>
+                <p>As soon as one of the users saves his/her changes by clicking the <img alt="Save icon" src="../images/savewhilecoediting.png" /> icon, the others will see a note in the upper left corner stating that they have updates. To save the changes you made, so that other users can view them, and get the updates saved by your co-editors, click the <img alt="Save icon" src="../images/saveupdate.png" /> icon in the left upper corner of the top toolbar.</p>
+                <h3>Chat</h3>
+                <p>You can use this tool to coordinate the co-editing process on-the-fly, for example, to arrange with your collaborators about who is doing what, which paragraph you are going to edit now etc.</p>
+                <p>The chat messages are stored during one session only. To discuss the document content it is better to use comments which are stored until you decide to delete them.</p>
+                <p>To access the chat and leave a message for other users,</p>
+                <ol>
+                    <li>click the <img alt="Chat icon" src="../images/chaticon.png" /> icon at the left sidebar,</li>
+                    <li>enter your text into the corresponding field below,</li>
+                    <li>press the <b>Send</b> button.</li>
+                </ol>
+                <p>All the messages left by users will be displayed on the panel on the left. If there are new messages you haven't read yet, the chat icon will look like this - <img alt="Chat icon" src="../images/chaticon_new.png" />.</p>
+                <p>To close the panel with chat messages, click the <img alt="Chat icon" src="../images/chaticon.png" /> icon once again.</p>
+            </div>
+              <h3>Comments</h3>
+                <p>To leave a comment,</p>
+                <ol>
+                    <li>select a cell where you think there is an error or problem,</li>
+                    <li>
+                        use the <img alt="Comments icon" src="../images/commentsicon.png" /> icon at the left sidebar to open the <b>Comments</b> panel and click the <b>Add Comment to Document</b> link, or<br />
+                        right-click within the selected cell and select the <b>Add Сomment</b> option from the menu,
+                    </li>
+                    <li>enter the needed text,</li>
+                    <li>click the <b>Add Comment</b>/<b>Add</b> button.</li>
+                </ol>
+                <p>The comment will be seen on the panel on the left. The orange triangle will appear in the upper right corner of the cell you commented. If you need to disable this feature, click the <img alt="File icon" src="../images/file.png" /> icon, select the <b>Advanced Settings...</b> option and uncheck the <b>Turn on display of the comments</b> box. In this case the commented cells will be marked only if you click the <img alt="Comments icon" src="../images/commentsicon.png" /> icon.</p>
+                <p>To view the comment, just click within the cell. You or any other user can answer to the added comment asking questions or reporting on the work he/she has done. For this purpose, use the <b>Add Reply</b> link.</p>
+                <p>You can manage the comments you added in the following way:</p>
+                <ul>
+                    <li>edit them by clicking the <img alt="Edit icon" src="../images/editcommenticon.png" /> icon,</li>
+                    <li>delete them by clicking the <img alt="Delete icon" src="../images/deletecommenticon.png" /> icon,</li>
+                    <li>close the discussion by clicking the <img alt="Resolve icon" src="../images/resolveicon.png" /> icon if the task or problem you stated in your comment was solved, after that the discussion you opened with your comment gets the resolved status. To open it again, click the <img alt="Open again icon" src="../images/resolvedicon.png" /> icon. If you want to hide resolved comments, click the <img alt="File icon" src="../images/file.png" /> icon, select the <b>Advanced Settings...</b> option and uncheck the <b>Turn on display of the resolved comments</b> box. In this case the resolved comments will be highlighted only if you click the <img alt="Comments icon" src="../images/commentsicon.png" /> icon.</li>
+                </ul>
+                <p>If you are using the <b>Strict</b> co-editing mode, new comments added by other users will become visible only after you click the <img alt="Save icon" src="../images/saveupdate.png" /> icon in the left upper corner of the top toolbar.</p>
+                <p>To close the panel with comments, click the <img alt="Comments icon" src="../images/commentsicon.png" /> icon once again.</p>
+            </div>
+	</body>
+</html>

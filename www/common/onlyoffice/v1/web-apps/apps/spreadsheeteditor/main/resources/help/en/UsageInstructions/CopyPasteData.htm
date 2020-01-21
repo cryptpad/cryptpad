@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Cut/copy/paste data</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Cut/copy/paste data using the keyboard shortcuts" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+	</head>
+	<body>
+        <div class="mainpart">
+            <h1>Cut/copy/paste data</h1>
+            <h3>Use basic clipboard operations</h3>
+            <p>To cut, copy and paste data in the current spreadsheet make use of the right-click menu or use the corresponding icons at the top toolbar,</p>
+            <ul>
+                <li><p><b>Cut</b> - select data and use the <b>Cut</b> option from the right-click menu to delete the selected data and send them to the computer clipboard memory. The cut data can be later inserted to another place in the same spreadsheet.</p></li>
+                <li><p><b>Copy</b> - select data and either use the <b>Copy</b> <img alt="Copy icon" src="../images/copy.png" /> icon at the top toolbar or right-click and select the <b>Copy</b> option from the menu to send the selected data to the computer clipboard memory. The copied data can be later inserted to another place in the same spreadsheet.</p></li>
+                <li><p><b>Paste</b> - select a place and either use the <b>Paste</b> <img alt="Paste icon" src="../images/paste.png" /> icon at the top toolbar or right-click and select the <b>Paste</b> option to insert the previously copied/cut data from the computer clipboard memory to the current cursor position. The data can be previously copied from the same spreadsheet.</p>
+                </li>
+            </ul>
+            <p>To copy or paste data from/into another spreadsheet or some other program use the following key combinations:</p>
+            <ul>
+                <li><b>Ctrl+X</b> key combination for cutting;</li>
+                <li><b>Ctrl+C</b> key combination for copying;</li>
+                <li><b>Ctrl+V</b> key combination for pasting.</li>
+            </ul>
+            <p class="note"><b>Note</b>: instead of cutting and pasting data within the same worksheet you can select the necessary cell/range of cells, hover the mouse cursor over the selection border so that it turns into the <img alt="Arrow icon" src="../images/arrow.png" /> icon and drag and drop the selection to the necessary position.</p>
+            <h3>Use the Paste Special feature</h3>
+            <p>Once the copied data is pasted, the <b>Paste Special</b> <img alt="Paste Special" src="../images/pastespecialbutton.png" /> button appears next to the lower right corner of the inserted cell/cell range. Click this button to select the necessary paste option. </p>
+            <p>When pasting a cell/cell range with formatted data, the following options are available:</p>
+            <ul>
+                <li><em>Paste</em> - allows to paste all the cell contents including data formatting. This option is selected by default.</li>
+                <li>
+                    The following options can be used if the copied data contains formulas: 
+                    <ul>
+                        <li><em>Paste only formula</em> - allows to paste formulas without pasting the data formatting.</li>
+                        <li><em>Formula + number format</em> - allows to paste formulas with the formatting applied to numbers.</li>
+                        <li><em>Formula + all formatting</em> - allows to paste formulas with all the data formatting.</li>
+                        <li><em>Formula without borders</em> - allows to paste formulas with the all the data formatting excepting cell borders.</li>
+                        <li><em>Formula + column width</em> - allows to paste formulas with all the data formatting and set the source column width for the cell range you paste the data to.</li>
+                    </ul>
+                </li>
+                <li>
+                    The following options allow to paste the result that the copied formula returns without pasting the formula itself:
+                    <ul>
+                        <li><em>Paste only value</em> - allows to paste the formula results without pasting the data formatting.</li>
+                        <li><em>Value + number format</em> - allows to paste the formula results with the formatting applied to numbers.</li>
+                        <li><em>Value + all formatting</em> - allows to paste the formula results with all the data formatting.</li>
+                    </ul>
+                </li>
+                <li><em>Paste only formatting</em> - allows to paste the cell formatting only without pasting the cell contents.</li>
+                <li><em>Transpose</em> - allows to paste data changing columns to rows and rows to columns. This option is available for regular data ranges, but not for formatted tables.</li>
+            </ul>
+            <p><img alt="Paste options" src="../images/pastespecial.png" /></p>
+            <p>When pasting the contents of a single cell or some text within autoshapes, the following options are available:</p>
+            <ul>
+                <li><em>Source formatting</em> - allows to keep the source formatting of the copied data.</li>
+                <li><em>Destination formatting</em> - allows to apply the formatting that is already used for the cell/autoshape you paste the data to.</li>
+            </ul>
+            <h3>Use the Auto Fill option</h3>
+            <p>To quickly fill multiple cells with the same data use the <b>Auto Fill</b> option:</p>
+            <ol>
+                <li>select a cell/range of cells containing the necessary data,</li>
+                <li>move the mouse cursor over the fill handle in the right lower corner of the cell. The cursor will turn into the black cross:
+                <p><img alt="Auto Fill" src="../images/autofill.png" /></p>
+                </li>
+                <li>drag the handle over the adjacent cells you want to fill with the selected data.</li>
+            </ol>
+            <p class="note"><b>Note</b>: if you need to create a series of numbers (such as 1, 2, 3, 4...; 2, 4, 6, 8... etc.) or dates, you can enter at least two starting values and quickly extend the series selecting these cells and dragging the fill handle. </p>
+            <h3>Fill cells in the column with text values</h3>
+            <p>If a column in your spreadsheet contains some text values, you can easily replace any value within this column or fill the next blank cell selecting one of already existing text values.</p>
+            <p>Right-click the necessary cell and choose the <b>Select from drop-down list</b> option in the contextual menu.</p>
+            <p><img alt="Select from drop-down list" src="../images/selectfromlist.png" /></p>
+            <p>Select one of the available text values to replace the current one or fill an empty cell.</p>
+        </div>
+	</body>
+</html>
