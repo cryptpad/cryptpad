@@ -1140,6 +1140,9 @@ define([
             if (ext === "bin") {
                 return void importFile(content);
             }
+            if (typeof(Atomics) === "undefined") {
+                return void UI.alert(Messages.oo_invalidFormat);
+            }
             var div = h('div.cp-oo-x2tXls', [
                 h('span.fa.fa-spin.fa-spinner'),
                 h('span', Messages.oo_importInProgress)
@@ -1340,7 +1343,11 @@ define([
             var $exportXLSX = common.createButton('export', true, {}, exportXLSXFile);
             $exportXLSX.appendTo($rightside);
 
-            var $importXLSX = common.createButton('import', true, { accept: [".bin", ".ods", ".xlsx"], binary : ["ods", "xlsx"] }, importXLSXFile);
+            var accept = [".bin", ".ods", ".xlsx"];
+            if (typeof(Atomics) === "undefined") {
+                accept = ['.bin'];
+            }
+            var $importXLSX = common.createButton('import', true, { accept: accept, binary : ["ods", "xlsx"] }, importXLSXFile);
             $importXLSX.appendTo($rightside);
 
             if (common.isLoggedIn()) {
