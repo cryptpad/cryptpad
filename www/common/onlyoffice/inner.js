@@ -963,7 +963,7 @@ define([
 
             if (typeof(Atomics) === "undefined") {
                 ext = ['.bin'];
-                warning = '<div class="alert alert-info">'+Messages.oo_exportChrome+'</div>';
+                warning = '<div class="alert alert-info cp-alert-top">'+Messages.oo_exportChrome+'</div>';
             }
 
             var types = ext.map(function (val) {
