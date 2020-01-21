@@ -1287,5 +1287,9 @@
     "burnAfterReading_generateLink": "Click on the button below to generate a link.",
     "burnAfterReading_warningAccess": "This document will self-destruct. When you click the button below you will see the content once before it is permanently deleted. When you close this window you will not be able to access it again. If you are not ready to proceed you can close this window and come back later.",
     "burnAfterReading_proceed": "view and delete",
-    "burnAfterReading_warningDeleted": "This pad has been permanently deleted, once you close this window you will not be able to access it again."
+    "burnAfterReading_warningDeleted": "This pad has been permanently deleted, once you close this window you will not be able to access it again.",
+    "oo_exportChrome": "Export to Microsoft Office formats is currently only available in Google Chrome.",
+    "oo_invalidFormat": "This file cannot be imported",
+    "oo_importInProgress": "Import in Progress",
+    "oo_exportInProgress": "Export in progress"
 }
