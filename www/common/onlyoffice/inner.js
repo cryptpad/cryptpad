@@ -1234,17 +1234,18 @@ define([
             };
             xhr.send(null);
         };
-        var loadDocument = function (newPad) {
+        var loadDocument = function (noCp, useNewDefault) {
             if (ooLoaded) { return; }
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var file = getFileType();
-            if (!newPad) {
+            if (!noCp) {
+                // Load latest checkpoint
                 return void loadLastDocument();
             }
             var newText;
             switch (type) {
                 case 'sheet' :
-                    newText = EmptyCell();
+                    newText = EmptyCell(useNewDefault);
                     break;
                 case 'oodoc':
                     newText = EmptyDoc();
@@ -1465,10 +1466,11 @@ define([
                 sframeChan.event('EV_BURN_PAD', content.channel);
             }
 
+            var useNewDefault = content.version && content.version >= 2;
             openRtChannel(function () {
                 setMyId();
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
-                loadDocument(newDoc);
+                loadDocument(newDoc, useNewDefault);
                 initializing = false;
                 setEditable(!readOnly);
                 UI.removeLoadingScreen();
