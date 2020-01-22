@@ -81,7 +81,7 @@ define([
             hashes: {},
             ids: {},
             mediasSources: {},
-            version: NEW_VERSION
+            version: privateData.ooForceVersion ? Number(privateData.ooForceVersion) : NEW_VERSION
         };
         var oldHashes = {};
         var oldIds = {};
@@ -1437,7 +1437,11 @@ define([
 
             var version = '';
             // Old version detected: use the old OO and start the migration if we can
-            if (content && !content.version) {
+            if (privateData.ooForceVersion) {
+                if (privateData.ooForceVersion === "1") {
+                    version = "v1/";
+                }
+            } else if (content && (!content.version || content.version === 1)) {
                 version = 'v1/';
                 APP.migrate = true;
                 // Registedred users can start the migration
