@@ -113,7 +113,7 @@ define([
             if (types.indexOf('file') !== -1 && common.isLoggedIn()) {
                 var f = (filters && filters.filter) || {};
                 delete data.accept;
-                if (f.fileType) {
+                if (Array.isArray(f.fileType)) {
                     data.accept = f.fileType.map(function (val) {
                         if (/^[a-z]+\/$/.test(val)) {
                             val += '*';
