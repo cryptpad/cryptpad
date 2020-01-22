@@ -1,3 +1,58 @@
+# Kouprey release (3.10.0)
+
+## Goals
+
+For this release we aimed to finish the last major feature of our CryptPad Teams project as well as some long-awaited features that we've planned to demo at FOSDEM 2020.
+
+## Update notes
+
+The CryptPad repository's _docs_ directory now includes a _systemd service file_ which you can use to ensure that CryptPad stays up and running. We're working on some step-by-step documentation to describe how to make use of it, but for now you can probably find some instructions by searching the web.
+
+We've also updated the provided example.nginx.conf to include a minor but important change to the CSP settings for our OnlyOffice spreadsheet integration.
+
+Up until now we have not been deleting unowned encrypted files from our server. As of this release `cryptpad/scripts/evict-inactive.js` includes logic to identify inactive, unpinned files. Identified files are first moved to your instance's _archive_ directory for a configurable period, after which they are deleted. This script is not run automatically, so if you haven't configured a cron job to run periodically then inactive files will not be removed. We recommend running the script once per day at a time when you expect your server to be relatively idle, since it consumes a non-negligible amount of server resources.
+
+Finally, in case you live in a political jurisdiction that requires web site administrators to display their legal information, we've made it easier to add a link to a custom page. See `cryptpad/www/common/application_config_internal.js` for details, particularly the comments above `config.imprint`.
+
+To update from v3.9.0:
+
+1. update the CSP settings in your reverse proxy's configuration file to match those in nginx.example.conf
+  * don't forget to reload your server to ensure that your changes are deployed
+2. stop your API server
+3. pull the latest server/client code with `git pull origin master`
+4. install the latest clientside dependencies with `bower update`
+5. relaunch your server
+
+## Features
+
+* Owned pads can now be shared in _self-destruct_ mode as an additional option in the _access rights_ section of the _share menu_.
+  * to use self-destructing pads:
+    1. select `View once and self-destruct`
+    2. share the _self-destructing pad link_ directly with a contact or create and copy a link
+    3. recipients who open the link will land on a warning page informing them about what is about to happen
+    4. once they click through the link, they'll see the content and automatically delete it from the server
+    5. opening the same link a second time will not yield any content
+  * note that deletion affects the original document that you choose to share. It does not create a copy
+* We no longer consider spreadsheets to be a BETA application!
+  * we've been using them for some time and while there are still points to improve we consider them stable enough for regular use
+  * this change in status is due to a few big updates:
+    1. we've integrated a recent version of OnlyOffice in which a number of bugs were fixed
+    2. we've enabled the use of spreadsheets for unregistered users, though registration is still free and will provide a better experience
+    3. it's now possible to upload encrypted images into your spreadsheets, in case you're the type of person that puts images in spreadsheets
+    4. you can also import and export spreadsheets between CryptPad's internal format and XLSX. This conversion is run entirely in your browser, so your documents stay private. Unfortunately it relies on some new features that are not available in all browsers. Chrome currently supports it, and we expect Firefox to enable support as of February 11th, 2020
+* Finally, we've continued to receive contributions from our numerous translators (via https://weblate.cryptpad.fr) in the following languages (alphabetical order):
+  * Catalan
+  * Finnish
+  * German
+  * Italian
+  * Spanish
+
+## Bug fixes
+
+* We found and fixed an incorrect usage of the pinned-data API in `scripts/check-account-deletion.js`.
+* We also updated an incorrect client-side test in /assert/.
+* A minor bug in our CSS caching system caused some content to be unnecessarily recompiled. We've implemented a fix which should speed up loading time.
+
 # JamaicanMonkey release (3.9.0)
 
 ## Goals
