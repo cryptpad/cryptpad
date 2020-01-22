@@ -674,16 +674,22 @@ define([
                         case "saveChanges":
                             // We're sending our changes to netflux
                             handleChanges(obj, send);
-                            try {
-                                var docs = window.frames[0].AscCommon.g_oDocumentUrls.urls || {};
-                                var mediasSources = getMediasSources();
-                                Object.keys(mediasSources).forEach(function (name) {
-                                    if (!docs['media/'+name]) {
-                                        delete mediasSources[name];
-                                    }
-                                });
-                                APP.onLocal();
-                            } catch (e) {}
+                            // If we're alone, clean up the medias
+                            var m = metadataMgr.getChannelMembers().slice().filter(function (nId) {
+                                return nId.length === 32;
+                            });
+                            if (m.length === 1 && !APP.loadingImage) {
+                                try {
+                                    var docs = window.frames[0].AscCommon.g_oDocumentUrls.urls || {};
+                                    var mediasSources = getMediasSources();
+                                    Object.keys(mediasSources).forEach(function (name) {
+                                        if (!docs['media/'+name]) {
+                                            delete mediasSources[name];
+                                        }
+                                    });
+                                    APP.onLocal();
+                                } catch (e) {}
+                            }
                             break;
                         case "unLockDocument":
                             if (obj.releaseLocks && content.locks && content.locks[getId()]) {
@@ -829,6 +835,7 @@ define([
                 });
             };
 
+            APP.loadingImage = 0;
             APP.getImageURL = function(name, callback) {
                 var mediasSources = getMediasSources();
                 var data = mediasSources[name];
@@ -844,10 +851,16 @@ define([
                     return void callback(blobUrl);
                 }
 
+                APP.loadingImage++;
                 Util.fetch(data.src, function (err, u8) {
+                    if (err) {
+                        APP.loadingImage--;
+                        return void console.error(err);
+                    }
                     try {
                         debug("Decrypt with key " + data.key);
                         FileCrypto.decrypt(u8, Nacl.util.decodeBase64(data.key), function (err, res) {
+                            APP.loadingImage--;
                             if (err || !res.content) {
                                 debug("Decrypting failed");
                                 return void callback("");
@@ -868,6 +881,7 @@ define([
                             callback(blobUrl);
                         });
                     } catch (e) {
+                        APP.loadingImage--;
                         debug("Exception decrypting image " + data.name);
                         console.error(e);
                         callback("");
