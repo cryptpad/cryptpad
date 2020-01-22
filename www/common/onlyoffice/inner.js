@@ -678,7 +678,7 @@ define([
                             var m = metadataMgr.getChannelMembers().slice().filter(function (nId) {
                                 return nId.length === 32;
                             });
-                            if (m.length === 1 && !APP.loadingImage) {
+                            if (m.length === 1 && APP.loadingImage <= 0) {
                                 try {
                                     var docs = window.frames[0].AscCommon.g_oDocumentUrls.urls || {};
                                     var mediasSources = getMediasSources();
@@ -867,19 +867,21 @@ define([
                                 return void callback("");
                             }
 
-                            var blobUrl = URL.createObjectURL(res.content);
-                            // store media blobUrl and content for cache and export
-                            var mediaData = { blobUrl : blobUrl, content : "" };
-                            mediasData[data.src] = mediaData;
-                            var reader = new FileReader();
-                            reader.onloadend = function () {
-                                debug("MediaData set");
-                                mediaData.content = reader.result;
-                            };
-                            reader.readAsArrayBuffer(res.content);
-                            debug("Adding CryptPad Image " + data.name + ": " +  blobUrl);
-                            window.frames[0].AscCommon.g_oDocumentUrls.addImageUrl(data.name, blobUrl);
-                            callback(blobUrl);
+                            try {
+                                var blobUrl = URL.createObjectURL(res.content);
+                                // store media blobUrl and content for cache and export
+                                var mediaData = { blobUrl : blobUrl, content : "" };
+                                mediasData[data.src] = mediaData;
+                                var reader = new FileReader();
+                                reader.onloadend = function () {
+                                    debug("MediaData set");
+                                    mediaData.content = reader.result;
+                                };
+                                reader.readAsArrayBuffer(res.content);
+                                debug("Adding CryptPad Image " + data.name + ": " +  blobUrl);
+                                window.frames[0].AscCommon.g_oDocumentUrls.addImageUrl(data.name, blobUrl);
+                                callback(blobUrl);
+                            } catch (e) {}
                         });
                     } catch (e) {
                         APP.loadingImage--;
