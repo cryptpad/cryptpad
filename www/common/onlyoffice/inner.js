@@ -831,7 +831,11 @@ define([
                 APP.AddImageErrorCallback = cb2;
                 common.openFilePicker({
                     types: ['file'],
-                    where: ['root']
+                    where: ['root'],
+                    filter: {
+                        fileType: ['image/']
+                    }
+
                 });
             };
 
