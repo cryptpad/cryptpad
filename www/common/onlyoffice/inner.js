@@ -855,7 +855,8 @@ define([
                 Util.fetch(data.src, function (err, u8) {
                     if (err) {
                         APP.loadingImage--;
-                        return void console.error(err);
+                        console.error(err);
+                        return void callback("");
                     }
                     try {
                         debug("Decrypt with key " + data.key);
