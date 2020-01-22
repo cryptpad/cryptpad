@@ -1288,8 +1288,11 @@
     "burnAfterReading_warningAccess": "Dieses Dokument wird sich selbst zerstören. Wenn du die Schaltfläche unten anklickst, kannst du dir den Inhalt einmal anzeigen lassen. Anschließend wird er endgültig gelöscht. Wenn du das Fenster schließt, kannst du nicht mehr auf den Inhalt zugreifen. Solltest du darauf nicht vorbereitet sein, schließe das Fenster und komme später zurück.",
     "burnAfterReading_proceed": "Ansehen und Löschen",
     "burnAfterReading_warningDeleted": "Dieses Pad wurde endgültig gelöscht. Nachdem du das Fenster geschlossen hast, wirst du darauf nicht mehr zugreifen können.",
-    "oo_exportChrome": "",
-    "oo_invalidFormat": "",
-    "oo_importInProgress": "",
-    "oo_exportInProgress": ""
+    "oo_exportChrome": "Der Export in Formate von Microsoft Office ist derzeit nur in Google Chrome verfügbar.",
+    "oo_invalidFormat": "Diese Datei kann nicht importiert werden",
+    "oo_importInProgress": "Import wird durchgeführt",
+    "oo_exportInProgress": "Export wird durchgeführt",
+    "oo_sheetMigration_loading": "Deine Tabelle wird auf die neueste Version aktualisiert",
+    "oo_sheetMigration_complete": "Eine aktualisierte Version ist verfügbar. Klicke auf OK, um neu zu laden.",
+    "oo_sheetMigration_anonymousEditor": "Die Bearbeitung dieser Tabelle ist für anonyme Benutzer deaktiviert, bis sie von einem registrierten Benutzer auf die neueste Version aktualisiert wird."
 }
