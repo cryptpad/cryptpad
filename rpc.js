@@ -278,6 +278,24 @@ var getMetadata = function (Env, channel, cb) {
     });
 };
 
+// E_NO_OWNERS
+var hasOwners = function (metadata) {
+    return Boolean(metadata && Array.isArray(metadata.owners));
+};
+
+var hasPendingOwners = function (metadata) {
+    return Boolean(metadata && Array.isArray(metadata.pending_owners));
+};
+
+// INSUFFICIENT_PERMISSIONS
+var isOwner = function (metadata, unsafeKey) {
+    return metadata.owners.indexOf(unsafeKey) !== -1;
+};
+
+var isPendingOwner = function (metadata, unsafeKey) {
+    return metadata.pending_owners.indexOf(unsafeKey) !== -1;
+};
+
 /* setMetadata
     - write a new line to the metadata log if a valid command is provided
     - data is an object: {
@@ -300,16 +318,16 @@ var setMetadata = function (Env, data, unsafeKey, cb) {
                 cb(err);
                 return void next();
             }
-            if (!(metadata && Array.isArray(metadata.owners))) {
+            if (!hasOwners(metadata)) {
                 cb('E_NO_OWNERS');
                 return void next();
             }
 
             // Confirm that the channel is owned by the user in question
-            // or the user is accepting a pending ownerhsip offer
-            if (metadata.pending_owners && Array.isArray(metadata.pending_owners) &&
-                        metadata.pending_owners.indexOf(unsafeKey) !== -1 &&
-                        metadata.owners.indexOf(unsafeKey) === -1) {
+            // or the user is accepting a pending ownership offer
+            if (hasPendingOwners(metadata) &&
+                isPendingOwner(metadata, unsafeKey) &&
+                        !isOwner(metadata, unsafeKey)) {
 
                 // If you are a pending owner, make sure you can only add yourelf as an owner
                 if ((command !== 'ADD_OWNERS' && command !== 'RM_PENDING_OWNERS')
@@ -319,8 +337,8 @@ var setMetadata = function (Env, data, unsafeKey, cb) {
                     cb('INSUFFICIENT_PERMISSIONS');
                     return void next();
                 }
-
-            } else if (metadata.owners.indexOf(unsafeKey) === -1) {
+                // XXX wacky fallthrough is hard to read
+            } else if (!isOwner(metadata, unsafeKey)) {
                 cb('INSUFFICIENT_PERMISSIONS');
                 return void next();
             }
@@ -817,12 +835,11 @@ var clearOwnedChannel = function (Env, channelId, unsafeKey, cb) {
 
     getMetadata(Env, channelId, function (err, metadata) {
         if (err) { return void cb(err); }
-        if (!(metadata && Array.isArray(metadata.owners))) { return void cb('E_NO_OWNERS'); }
+        if (!hasOwners(metadata)) { return void cb('E_NO_OWNERS'); }
         // Confirm that the channel is owned by the user in question
-        if (metadata.owners.indexOf(unsafeKey) === -1) {
+        if (!isOwner(metadata, unsafeKey)) {
             return void cb('INSUFFICIENT_PERMISSIONS');
         }
-        // FIXME COLDSTORAGE
         return void Env.msgStore.clearChannel(channelId, function (e) {
             cb(e);
         });
@@ -905,8 +922,8 @@ var removeOwnedChannel = function (Env, channelId, unsafeKey, cb) {
 
     getMetadata(Env, channelId, function (err, metadata) {
         if (err) { return void cb(err); }
-        if (!(metadata && Array.isArray(metadata.owners))) { return void cb('E_NO_OWNERS'); }
-        if (metadata.owners.indexOf(unsafeKey) === -1) {
+        if (!hasOwners(metadata)) { return void cb('E_NO_OWNERS'); }
+        if (!isOwner(metadata, unsafeKey)) {
             return void cb('INSUFFICIENT_PERMISSIONS');
         }
         // if the admin has configured data retention...
