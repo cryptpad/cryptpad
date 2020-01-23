@@ -1,0 +1,190 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Inserte su texto y dele formato</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Insert and Format your Text" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Inserte su texto y dele formato</h1>
+			<h3>Inserte su texto</h3>
+			<p>Usted puede añadir un texto nuevo de dos modos:</p>
+			    <ul>
+			        <li>Añada un pasaje de texto al marcador de texto correspondiente provisto en el diseño de diapositiva. Para hecerlo coloque el cursor en el marcador de texto y introduzca su texto o péguelo usando la combinación de las teclas <b>Ctrl+V</b> en lugar del texto predeterminado.</li>
+			        <li>Añada un pasaje de texto al cualquier lugar de una diapositiva. Puede insertar una casilla de texto (un marco rectangular que permita introducir texto) o un objeto de Arte de texto (una casilla de texto con un estilo de letra y color predeterminado que permite aplicar algunos efectos de texto). Dependiendo del tipo de objeto con texto necesario puede hacer lo siguiente:<ul>
+                                    <li>Para añadir un cuadro de texto, haga clic en el <img alt="Icono de Cuadro de Texto" src="../images/inserttexticon.png" /> icono de <b>Cuadro de Texto</b> en la pestaña <b>Inicio</b> o <b>Insertar</b> en la barra de herramientas superior, luego haga clic donde quiera para insertar el cuadro de texto, mantenga el botón del ratón y arrastre el borde del cuadro de texto para especificar su tamaño. Cuando suelte el botón del ratón, el punto de inserción aparecerá en el cuadro de texto añadido, permitiendo introducir su texto.<p class="note">Nota: también es posible insertar un cuadro de texto haciendo clic en el <img alt="Icono forma" src="../images/insertautoshape.png" /> icono de <b>Forma</b> en la barra de herramientas superior y seleccionando la forma <img alt="Inserte Texto en una autoforma" src="../images/text_autoshape.png" /> del grupo <b>Formas Básicas</b>.</p>
+                                    </li>
+                                    <li>para añadir un objeto de Arte de Texto, haga clic en el <img alt="Icono de Arte de Texto" src="../images/inserttextarticon.png" /> icono <b>Arte Texto</b> en la pestaña <b>Insertar</b> en la barra de herramientas superior, luego haga clic en la plantilla del estilo deseada - el objeto de Arte de Texto se añadirá en la posición del cursor actual. Seleccione el texto por defecto dentro del cuadro de texto con el ratón y reemplázelo con su texto.</li>
+                                </ul>
+			        </li>
+                    <li>Añada un pasaje de texto dentro de una autoforma. Seleccione una forma y empiece a escribir su texto.</li>
+			    </ul>
+            <p>Haga clic fuera del objeto con texto para aplicar los cambios y vuelva a la diapositiva.</p>
+            <p>El texto dentro del texto del objeto es parte de este último (cuando usted mueva o gira el texto del objeto, el texto realiza las mismas acciones).</p>
+            <p>A la vez que un objeto con texto insertado representa un marco rectangular (con bordes de texto invisibles de manera predeterminada) con texto en este y este marco es una autoforma común, se puede cambiar tanto la forma como las propiedades del texto.</p>
+            <p>Para eliminar el objeto de texto añadido, haga clic en el borde del cuadro de texto y presione la tecla <b>Borrar</b> en el teclado. el texto dentro del cuadro de texto también se eliminará.</p>
+            <h3>Formatee un cuadro de texto</h3>
+            <p>Seleccione el cuadro de texto haciendo clic en sus bordes para ser capaz de cambiar sus propiedades. Cuando el cuadro de texto está seleccionado, sus bordes se muestran con líneas sólidas (no con puntos).</p>
+            <p><img alt="Cuadro de Texto seleccionado" src="../images/textbox_boxselected.png" /></p>
+			<ul>
+                <li>para cambiar el <a href="../UsageInstructions/ManipulateObjects.htm" onclick="onhyperlinkclick(this)">tamaño, mover, rotar</a> el cuadro de texto use las manillas especiales en los bordes de la forma.</li>
+                <li>para editar el <a href="../UsageInstructions/FillObjectsSelectColor.htm" onclick="onhyperlinkclick(this)">relleno</a>, <a href="../UsageInstructions/InsertAutoshapes.htm#shapestroke" onclick="onhyperlinkclick(this)">trazo</a> del cuadro de texto, <b>reemplace</b> el cuadro rectangular con una forma distinta, o acceda a los <a href="InsertAutoshapes.htm" onclick="onhyperlinkclick(this)">ajustes avanzados de forma</a>, haga clic en el <img alt="Icono Ajustes de forma" src="../images/shape_settings_icon.png" /> icono de <b>Ajustes de forma</b> a la derecha de la barra de herramientas y use las opciones correspondientes.</li>
+                <li><a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">para alinear un cuadro de texto en la diapositiva u organizar</a> cuadros de texto según se relacionan con otros objetos, haga clic derecho en el borde del cuadro del texto y use las opciones del menú contextual.</li>
+                <li>para crear <b>columnas de texto</b> dentro del cuadro de texto, haga clic derecho en el borde del cuadro de texto, haga clic en la opción <b>Ajustes avanzados de Formas</b> y cambie a la pestaña <a href="../UsageInstructions/InsertAutoshapes.htm#columns" onclick="onhyperlinkclick(this)"><b>Columnas</b></a> en la ventana <b>Forma - Ajustes avanzados</b>.</li>
+            </ul>
+            <h3 id="formattext">Formatee su texto en el cuadro de texto</h3>
+            <p>Haga clic en el texto dentro del cuadro de texto para ser capaz de cambiar sus propiedades. Cuando el texto está seleccionado, los bordes del cuadro de texto se muestran con líneas con puntos.</p>
+            <p><img alt="Texto seleccionado" src="../images/textbox_textselected.png" /></p>
+            <p class="note"><b>Nota</b>: también es posible cambiar el formato de texto cuando el cuadrado de texto (no el texto) se selecciona. En este caso, cualquier cambio se aplicará a todo el texto dentro del cuadrado de texto. Algunas opciones de formateo de letra (tipo de letra, tamaño, color y estilo de diseño) se pueden aplicar a una porción previamente seleccionada del texto de forma separada.</p>
+            <p><b>Alinee su texto en el bloque de texto</b></p>
+			<p>Se puede alinear el texto horizontalmente de cuatro modos: a la izquierda, a la derecha, al centro o justificado. Para hacerlo:</p>
+			<ol>
+				<li>coloque el cursor en la posición donde usted quiere aplicar alineación (puede ser una línea nueva o el texto ya introducido),</li>
+				<li>desplegar la lista <img alt="Icono alineación horizontal" src="../images/horizontalalign.png" /> <b>Formato de número</b> en la pestaña de <b>Inicio</b> en la barra de herramientas superior,</li>
+				<li>seleccione el tipo de alineación que usted desea aplicar:<ul>
+						<li>la opción <b>Alinear texto a la izquierda</b> <img alt="Icono alinear a la izquierda" src="../images/alignleft.png" /> le permite alinear su texto por la parte izquierda del bloque de texto (la parte derecha permanece sin alineación).</li>
+						<li>la opción <b>Centrar texto</b> <img alt="Icono alinear al centro" src="../images/aligncenter.png" /> le permite alinear su texto por el centro del bloque de texto (las partes derecha e izquierda permanecen sin alineación).</li>
+						<li>la opción <b>Alinear texto a la derecha</b> <img alt="Icono alinear a la derecha" src="../images/alignright.png" /> le permite alinear su texto por la parte derecha del bloque de texto (la parte izquierda permanece sin alineación).</li>
+						<li>la opción <b>Justificar</b> <img alt="Icono justificar" src="../images/justify.png" /> le permite alinear su texto por las dos partes derecha e izquierda del bloque de texto (el espacio adicional se añade donde es necesario para mantener la alineación).</li>
+					</ul>
+				</li>
+			</ol>
+			<p>Se puede alinear el texto verticalmente de tres modos: en la parte superior, al medio o en la parte inferior. Para hacerlo:</p>
+			<ol>
+				<li>coloque el cursor en la posición donde usted quiere aplicar alineación (puede ser una línea nueva o el texto ya introducido),</li>
+				<li>desplegar la lista <img alt="Icono alineación vertical" src="../images/verticalalign.png" /> <b>Alineación vertical</b> en la pestaña de <b>Inicio</b> en la barra de herramientas superior,</li>
+				<li>seleccione el tipo de alineación que usted desea aplicar:<ul>
+						<li>la opción <b>Alinear texto en la parte superior</b> <img alt="Icono Alinear arriba" src="../images/aligntop.png" /> le permite alinear su texto por la parte superior del bloque de texto.</li>
+						<li>la opción <b>Alinear texto al medio</b> <img alt="Icono Alinear al medio" src="../images/alignmiddle.png" /> le permite alinear su texto por el centro del bloque de texto.</li>
+						<li>la opción <b>Alinear texto en la parte inferior</b> <img alt="Icono Alinear abajo" src="../images/alignbottom.png" /> le permite alinear su texto por la parte inferior del bloque de texto.</li>
+					</ul>
+				</li>
+			</ol>
+            <hr />
+            <p><b>Cambie la dirección del texto</b></p>
+            <p>Para <b>rotar</b> el texto dentro del cuadro del texto, haga clic derecho en el texto, seleccione la opción de <b>Dirección del Texto</b> y luego elija una de las siguientes opciones disponibles: <b>Horizontal</b> (se selecciona de manera predeterminada), <b>Rote a 90°</b> (fija la dirección vertical, de arriba a abajo) o <b>Rote a 270°</b> (fija la dirección vertical, de abajo a arriba).</p>
+			<hr />
+			<p id="formatfont"><b>Ajuste el tipo de letra, su tamaño, color y aplique los estilos de decoración</b></p>
+			<p>Usted puede seleccionar el tipo de letra, su tamaño, color y también aplicar estilos de letra diferentes usando los iconos correspondientes situados en la pestaña de <b>Inicio</b> en la barra de herramientas superior.</p>
+			<p class="note"><b>Nota</b>: si usted quiere aplicar el formato al texto que ya existe en la presentación, selecciónelo con el ratón o <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">usando el teclado</a> y aplique el formato necesario.</p>
+			<table>
+				<tr>
+					<td>Fuente</td>
+					<td><img alt="Fuente" src="../images/fontfamily.png" /></td>
+					<td>Se usa para elegir una letra en la lista de letras disponibles.</td>
+				</tr>
+				<tr>
+					<td>Tamaño de letra</td>
+					<td><img alt="Tamaño de letra" src="../images/fontsize.png" /></td>
+					<td>Se usa para elegir un tamaño de la letra en el menú desplegable, también se puede introducirlo a mano en el campo de tamaño de letra.</td>
+				</tr>
+				<tr>
+					<td>Color de letra</td>
+					<td><img alt="Color de letra" src="../images/fontcolor.png" /></td>
+					<td>Se usa para cambiar el color de letras/caracteres del texto. Para <a href="../UsageInstructions/FillObjectsSelectColor.htm" onclick="onhyperlinkclick(this)">seleccionar el color</a> pulse la flecha hacia abajo al lado del icono.</td>
+				</tr>
+				<tr>
+					<td>Negrita</td>
+					<td><img alt="Negrita" src="../images/bold.png" /></td>
+					<td>Pone la letra en negrita dándole más peso.</td>
+				</tr>
+				<tr>
+					<td>Cursiva</td>
+					<td><img alt="Cursiva" src="../images/italic.png" /></td>
+					<td>Pone la letra en cursiva dándole el plano inclinado a la derecha.</td>
+				</tr>
+				<tr>
+					<td>Subrayado</td>
+					<td><img alt="Subrayado" src="../images/underline.png" /></td>
+					<td>Subraya un fragmento del texto seleccionado.</td>
+				</tr>
+				<tr>
+					<td>Tachado</td>
+					<td><img alt="Tachado" src="../images/strike.png" /></td>
+					<td>Se usa para tachar el fragmento del texto seleccionado con una línea que va a través de las letras.</td>
+				</tr>
+				<tr>
+					<td>Subíndice</td>
+					<td><img alt="Subíndice" src="../images/sup.png" /></td>
+					<td>Se usa para poner el fragmento del texto seleccionado en letras pequeñas y ponerlo en la parte baja de la línea del texto, por ejemplo como en fórmulas químicas.</td>
+				</tr>
+				<tr>
+					<td>Sobreíndice</td>
+					<td><img alt="Sobreíndice" src="../images/sub.png" /></td>
+					<td>Se usa para poner el fragmento del texto seleccionado en letras pequeñas y ponerlo en la parte superior de la línea del texto, por ejemplo como en fracciones.</td>
+				</tr>
+			</table>
+			<p><b>Establezca espaciado de línea y cambie sangrías de párrafo</b></p>
+			<p>En el editor de presentaciones, usted puede establecer la altura de línea para las líneas de texto dentro de un párrafo y también margenes entre el párrafo corriente y precedente o el párrafo posterior.</p>
+			<p><img class="floatleft"alt="Pestaña Ajustes de forma" src="../images/textsettingstab.png" /></p>
+			<p>Para hacerlo,</p>
+			<ol style="margin-left: 280px;">
+				<li>coloque el cursor sobre el párrafo necesario, o seleccione unos párrafos con el ratón,</li>
+				<li>use los campos correspondientes de la pestaña <b>Ajustes de texto</b> <img alt="Icono de ajustes de Texto" src="../images/text_settings_icon.png" /> en la barra lateral derecha para alcanzar los resultados deseados:<ul>
+						<li><b>Espaciado de línea</b> - establece la altura de línea para las líneas de texto dentro de un párrafo. Usted puede elegir entre tres opciones: <b>por lo menos</b> (establece el espaciado de línea mínimo para que la letra más grande o cualquiera gráfica pueda encajar en una línea), <b>múltiple</b> (establece el espaciado de línea que puede ser expresado en números mayores que 1), <b>exacto</b> (establece el espaciado de línea fijo). Usted puede especificar el valor necesario en el campo correspondiente de la derecha.</li>
+						<li><b>Espaciado de Párrafo</b> - ajusta la cantidad de espacio entre párrafos.<ul>
+                            <li><b>Antes</b> - establece la cantidad de espacio antes de párrafo.</li>
+                            <li><b>Después</b> - establece la cantidad de espacio después de párrafo.</li>
+                        </ul>
+                        </li>                        
+					</ul>
+				</li>
+			</ol>
+			<p>Para cambiar espaciado de línea actual rápidamente, usted también puede usar el icono <b>Espaciado de línea</b> <img alt="Espaciado de línea" src="../images/linespacing.png" /> en la pestaña de <b>Inicio</b> en la barra de herramientas superior eligiendo el valor necesario en la lista: 1.0, 1.15, 1.5, 2.0, 2.5, o 3.0 líneas.</p>
+		    <p>Para cambiar desplazamiento contra la parte derecha del bloque de texto, coloque el cursor encima del párrafo necesario, o seleccione unos párrafos con el ratón y use los iconos correspondientes en la pestaña de <b>Inicio</b> en la barra de herramientas superior: <b>Reducir sangría</b> <img alt="Disminuir sangría" src="../images/decreaseindent.png" /> y <b>Aumentar sangría</b> <img alt="Aumentar sangría" src="../images/increaseindent.png" />.</p>
+		    <hr />
+		    <p>Usted también puede cambiar los <b>ajustes avanzados</b> del párrafo. Coloque el cursor en el párrafo necesario - se activará la pestaña <b>Ajustes de texto</b> <img alt="Icono de ajustes de Texto" src="../images/text_settings_icon.png" /> en la barra derecha lateral. Pulse el enlace <b>Mostrar ajustes avanzados</b>. Se abrirá la ventana de propiedades:</p><img alt="Propiedades de párrafo - sangrías y disposición" src="../images/textadvancedsettings1.png" /><p>La pestaña <b>Sangrías y disposición</b> permite cambiar el offset del <a href="../UsageInstructions/InsertAutoshapes.htm#internalmargins" onclick="onhyperlinkclick(this)">margen interno</a> izquierdo de un bloque de texto y también el offset del párrafo de los márgenes internos <b>izquierdo</b> y <b>derecho</b> de un bloque de texto.</p>
+            <p>Usted también puede usar la <b>regla</b> horizontal para establecer sangrías.</p><img alt="Regla - marcadores de sangría" src="../images/indents_ruler.png" /><p>Seleccione los párrafos necesarios y arrastre los marcadores de sangría a lo largo de la regla.</p>
+            <ul>
+                <li>El marcador de <b>sangría de primera línea</b> <img alt="Marcador de sangría de primera línea" src="../images/firstline_indent.png" /> se usa para poner el offset desde el margen interno izquierdo del bloque de texto para la primera línea de un párrafo.</li>
+                <li>El marcador de <b>sangría francesa</b> <img alt="Marcador de sangría francesa" src="../images/hanging.png" /> se usa para poner el offset desde el margen interno izquierdo del bloque de texto para la línea segunda y líneas posteriores líneas de un párrafo.</li>
+                <li>El marcador de <b>sangría izquierda</b> <img alt="Marcador de sangría francesa" src="../images/leftindent.png" /> se usa para poner el offset de un párrafo desde el margen interno izquierdo del bloque de texto.</li>
+                <li>El marcador de <b>sangría derecha</b>  <img alt="Marcador de sangría derecha" src="../images/right_indent.png" /> se usa para poner el offset de un párrafo desde el margen interno derecho del bloque de texto.</li>
+            </ul>
+            <p class="note"><b>Nota</b>: si no ve las reglas, cambie a la pestaña de <b>Inicio</b> en la barra de herramientas superior, haga clic en el icono <b>Mostrar ajustes</b> <img alt="Icono Mostrar ajustes" src="../images/viewsettingsicon.png" /> en la esquina superior derecha y des-verifique la opción <b>Ocultar Reglas</b> para mostrarlas.</p><img alt="Propiedades de párrafo - letra" src="../images/textadvancedsettings2.png" /><p>La pestaña <b>Letra</b> contiene los parámetros siguientes:</p>
+			<ul>
+				<li><b>Tachado</b> - se usa para tachar el texto con una línea que va por el centro de las letras.</li>
+				<li><b>Doble tachado</b> - se usa para tachar el texto con dos líneas que van por el centro de las letras.</li>
+				<li><b>Sobreíndice</b> - se usa para poner el texto en letras pequeñas y meterlo en la parte superior del texto, por ejemplo como en fracciones.</li>
+				<li><b>Subíndice</b> - se usa para poner el texto en letras pequeñas y meterlo en la parte baja de la línea del texto, por ejemplo como en formulas químicas.</li>
+				<li><b>Mayúsculas pequeñas</b> - se usa para poner todas las letras en minúsculas.</li>
+				<li><b>Mayúsculas</b> - se usa para poner todas las letras en mayúsculas.</li>
+				<li><b>Espaciado entre caracteres</b> - se usa para establecer un espaciado entre caracteres.</li>
+			</ul><img alt="Propiedades de párrafo - Pestaña Tab" src="../images/textadvancedsettings3.png" /><p>La pestaña <b>Tab</b> permite cambiar tabulaciones, a saber, la posición que avanza el cursor al pulsar la tecla <b>Tab</b> en el teclado.</p>
+			<ul>
+			    <li><b>Posición de tab</b> - se usa para establecer los tabuladores personalizados. Introduzca el valor necesario en este campo, ajústelo de forma más precisa usando los botones de flechas y pulse el botón <b>Especificar</b>. Su posición de tab personalizada se añadirá a la lista en el campo debajo.</li>
+			    <li><b>Predeterminado</b> se fijó a 1.25 cm. Usted puede aumentar o disminuir este valor usando los botones de flechas o introducir el botón necesario en el campo.</li>
+			    <li><b>Alineación</b> - se usa para establecer el tipo de alineación necesario para cada posición de tab en la lista de arriba. Seleccione la posición de tab necesaria en la lista, elija la opción <b>Izquierdo</b>, <b>Al centro</b> o <b>Derecho</b> y pulse el botón <b>Especificar</b>.<ul>
+			            <li><b>Izquierdo</b> - alinea su texto por la parte izquierda en la posición de tabulador; el texto mueve a la derecha del tabulador cuando usted escribe. El tabulador se indicará en el control deslizante horizontal con el marcador <img alt="Marcador de tabulador izquierdo" src="../images/tabstopleft_marker.png" />.</li>
+			            <li><b>Al centro</b> - centra el texto en la posición de tabulador. El tabulador se indicará en el control deslizante horizontal con el marcador <img alt="Marcador de tabulador central" src="../images/tabstopcenter_marker.png" />.</li>
+			            <li><b>Derecho</b> - alinea su texto por la parte derecha en la posición de tabulador; el texto mueve a la izquierda del tabulador cuando usted escribe. El tabulador se indicará en el control deslizante horizontal con el marcador <img alt="Marcador de tabulador derecho" src="../images/tabstopright_marker.png" />.</li>
+			        </ul>
+			        <p>Para borrar los tabuladores de la lista, seleccione el tabulador y pulse el botón <b>Eliminar</b> o <b>Eliminar todo</b>.</p>
+			    </li>
+			</ul>
+            <p>Para fijar los tabuladores, usted puede utilizar la regla horizontal:</p>
+            <ol>
+                <li>Seleccione un tipo de tabulador pulsando el botón  en la esquina izquierda superior del área de trabajo para elegir el tipo de tabulador necesario: <b>Izquierdo</b> , <b>Centro</b> , <b>Derecho</b> .</li>
+                <li>Haga clic en el borde inferior de la regla donde usted quiere colocar el tabulador. Arrástrelo a lo largo de la regla para cambiar su posición. Para eliminar el tabulador añadido arrástrelo fuera de la regla.<p><img alt="Regla Horizontal con los tabuladores añadidos" src="../images/tabstops_ruler.png" /></p>
+                    <p class="note"><b>Nota</b>: si no ve las reglas, cambie a la pestaña de <b>Inicio</b> en la barra de herramientas superior, haga clic en el icono <b>Mostrar ajustes</b> <img alt="Icono Mostrar ajustes" src="../images/viewsettingsicon.png" /> en la esquina superior derecha y des-verifique la opción <b>Ocultar Reglas</b> para mostrarlas.</p>
+                </li>
+            </ol>
+            <h3>Editar un estilo de Texto de Arte</h3>
+            <p>Seleccione un objeto de texto y haga clic en el <img alt="Icono de ajustes Arte de Texto" src="../images/textart_settings_icon.png" /> icono <b>Ajustes de Arte de Texto</b> en la barra lateral.</p>
+            <p><img alt="Pestaña Ajustes de Texto de Arte" src="../images/right_textart.png" /></p>
+            <ul>
+                <li>Cambie el estilo de texto aplicado seleccionando una nueva <b>Plantilla</b> de la galería. También puede cambiar los estilos básicos adicionales seleccionando un tipo de letra o tamaño diferente.</li>
+                <li>Cambie el <a href="../UsageInstructions/FillObjectsSelectColor.htm" onclick="onhyperlinkclick(this)">relleno</a> y <a href="../UsageInstructions/InsertAutoshapes.htm#shapestroke" onclick="onhyperlinkclick(this)">trazo</a> de la letra. Las opciones disponibles son las mismas que para las autoformas.</li>
+                <li>Aplique un efecto de texto seleccionando el texto necesario para el tipo de transformación de la galería de <b>Transformar</b>. Puede ajustar el grado de la distorsión del texto si arrastra la manivela con forma de diamante rosa.</li>
+            </ul>
+            <p><img alt="Transformación del Texto de Arte" src="../images/textart_transformation.png" /></p>
+		</div>
+	</body>
+</html>

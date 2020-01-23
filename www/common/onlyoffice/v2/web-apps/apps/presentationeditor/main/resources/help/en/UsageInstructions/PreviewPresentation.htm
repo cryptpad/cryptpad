@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Preview your presentation</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Preview your presentation" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Preview your presentation</h1>
+            <h3>Start the preview</h3>
+			<p>To preview your currently edited presentation, you can:</p>
+            <ul>
+                <li>click the <b>Start slideshow</b> <img alt="Start slideshow icon" src="../images/startpreview.png" /> icon at the <b>Home</b> tab of the top toolbar or on the left side of the status bar, or</li>
+                <li>select a certain slide within the slide list on the left, right-click it and choose the <b>Start Slideshow</b> option from the contextual menu.</li>
+            </ul>
+            <p>The preview will start from the currently selected slide. </p>
+            <p>You can also click the arrow next to the <b>Start slideshow</b> <img alt="Start slideshow icon" src="../images/startpreview.png" /> icon at the <b>Home</b> tab of the top toolbar and select one of the available options:</p>
+            <ul>
+                <li><b>Show from Beginning</b> - to start the preview from the very first slide,</li>
+                <li><b>Show from Current slide</b> - to start the preview from the currently selected slide,</li>
+                <li><b>Show presenter view</b> - to start the preview in the <b>Presenter</b> mode that allows to demonstrate the presentation to your audience without slide notes while viewing the presentation with the slide notes on a different monitor.</li>
+                <li><b>Show Settings</b> - to open a settings window that allows to set only one option: <b>Loop continuously until 'Esc' is pressed</b>. Check this option if necessary and click <b>OK</b>. If you enable this option, the presentation will be displayed until you press the <b>Escape</b> key on the keyboard, i.e. when the last slide of the presentation is reached, you will be able to go to the first slide again etc. If you disable this option, once the last slide of the presentation is reached, a black screen appears informing you that the presentation is finished and you can exit from the <b>Preview</b>.
+                <p><img alt="Show Settings window" src="../images/showsettings.png" /></p>
+                </li>
+            </ul>
+            <h3>Use the Preview mode</h3>
+            <p>In the <b>Preview</b> mode, you can use the following controls at the bottom left corner:</p>
+            <p><img alt="Preview Mode controls" src="../images/preview_mode.png" /></p>
+            <ul>
+                <li>the <b>Previous slide</b> <img alt="Previous slide icon" src="../images/previousslide.png" /> button allows you to return to the preceding slide.</li>
+                <li>the <b>Pause presentation</b> <img alt="Pause presentation icon" src="../images/pausepresentation.png" /> button allows you to stop previewing. When the button is pressed, it turns into the <img alt="Start presentation icon" src="../images/startpresentation.png" /> button.</li>
+                <li>the <b>Start presentation</b> <img alt="Start presentation icon" src="../images/startpresentation.png" /> button allows you to resume previewing. When the button is pressed, it turns into the <img alt="Pause presentation icon" src="../images/pausepresentation.png" /> button.</li>
+                <li>the <b>Next slide</b> <img alt="Next slide icon" src="../images/nextslide.png" /> button allows you to advance the following slide.</li>
+                <li>the <b>Slide number indicator</b> displays the current slide number as well as the overall number of slides in the presentation. To go to a certain slide in the preview mode, click on the <b>Slide number indicator</b>, enter the necessary slide number in the opened window and press <b>Enter</b>.</li>
+                <li>the <b>Full screen</b> <img alt="Full screen icon" src="../images/fullscreen.png" /> button allows you to switch to full screen mode.</li>
+                <li>the <b>Exit full screen</b> <img alt="Exit full screen icon" src="../images/exitfullscreen.png" /> button allows you to exit full screen mode.</li>
+                <li>the <b>Close slideshow</b> <img alt="Close slideshow icon" src="../images/closepreview.png" /> button allows you to exit the preview mode.</li>
+            </ul>
+			<p>You can also <a href="../HelpfulHints/KeyboardShortcuts.htm#preview" onclick="onhyperlinkclick(this)">use the keyboard shortcuts</a> to navigate between the slides in the preview mode.</p>
+            <h3 id="presenter">Use the Presenter mode</h3>
+            <p>In the <b>Presenter</b> mode, you can view your presentations with slide notes in a separate window, while demonstrating it without notes on a different monitor. The notes for each slide are displayed below the slide preview area.</p>
+            <p>To navigate between slides you can use the <img alt="Previous Slide icon" src="../images/previousslide.png" /> and <img alt="Next Slide icon" src="../images/nextslide.png" /> buttons or click slides in the list on the left. The hidden slide numbers are crossed out in the slide list on the left. If you wish to show a slide marked as hidden to others, just click it in the slide list on the left - the slide will be displayed.</p>
+            <p>You can use the following controls below the slide preview area:</p>
+            <p><img alt="Presenter Mode controls" src="../images/presenter_mode.png" /></p>
+            <ul>
+                <li>the <b>Timer</b> displays the elapsed time of the presentation in the <em>hh.mm.ss</em> format.</li>
+                <li>the <b>Pause presentation</b> <img alt="Pause presentation icon" src="../images/pausepresentation.png" /> button allows you to stop previewing. When the button is pressed, it turns into the <img alt="Start presentation icon" src="../images/startpresentation.png" /> button.</li>
+                <li>the <b>Start presentation</b> <img alt="Start presentation icon" src="../images/startpresentation.png" /> button allows you to resume previewing. When the button is pressed, it turns into the <img alt="Pause presentation icon" src="../images/pausepresentation.png" /> button.</li>
+                <li>the <b>Reset</b> button allows to reset the elapsed time of the presentation.</li>
+                <li>the <b>Previous slide</b> <img alt="Previous slide icon" src="../images/previousslide.png" /> button allows you to return to the preceding slide.</li>
+                <li>the <b>Next slide</b> <img alt="Next slide icon" src="../images/nextslide.png" /> button allows you to advance the following slide.</li>
+                <li>the <b>Slide number indicator</b> displays the current slide number as well as the overall number of slides in the presentation.</li>
+                <li>the <b>Pointer</b> <img alt="Pointer icon" src="../images/pointer.png" /> button allows you to highlight something on the screen when showing the presentation. When this option is enabled, the button looks like this: <img alt="Pointer icon" src="../images/pointer_enabled.png" />. To point to some objects hover your mouse pointer over the slide preview area and move the pointer around the slide. The pointer will look the following way: <img alt="Pointer icon" src="../images/pointer_screen.png" />. To disable this option, click the <img alt="Pointer icon" src="../images/pointer_enabled.png" /> button once again.</li>
+                <li>the <b>End slideshow</b> button allows you to exit the <b>Presenter</b> mode.</li>
+            </ul>			
+		</div>
+	</body>
+</html>

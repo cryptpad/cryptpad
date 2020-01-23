@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Función DIAS360</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Función DIAS360</h1>
+			<p>La función <b>DIAS360</b> es una función de fecha y hora. Se usa para devolver el número de días entre dos fechas (fecha de inicio y fecha final) basadas en un año de 360 días usando uno de los métodos de cálculo (europeo o norteamericano).</p>
+			<p>La sintaxis de la función <b>DIAS360</b>:</p> 
+			<p style="text-indent: 150px;"><b><em>DIAS360(fecha-inicio, fecha-final [,método-marcador])</em></b></p> 
+			<p><em>donde</em></p> 
+			<p style="text-indent: 50px;"><b><em>fecha-inicio</em></b> y <b><em>fecha-final</em></b> son dos fechas entre las cuales usted quiere calcular el número de días. </p>
+			<p style="text-indent: 50px;"><b><em>método-marcador</em></b> es un valor lógico opcional:  <b>VERDADERO</b> o <b>FALSO</b>.  Si se establece en <b>VERDADERO</b>, se realizará el cálculo por el método europeo, según este método las fechas de inicio y final que caen en el 31 de un mes vuelven a ser iguales al 30 del mismo mes.<br /> Si es <b>FALSO</b> o se omite, se realizará el cálculo por el método norteamericano, según este método si la fecha de inicio es el último día de un mes, esta  volverá a ser igual al 30 del mismo mes.  Si la fecha final es el último día de un mes y la fecha de inicio es anterior al 30 de un mes, la fecha final volverá a ser igual al 1 del próximo mes.  Si no, la fecha final volverá a ser igual al 30 del mismo mes. </p> 
+			<p>Para aplicar la función <b>DIAS360</b>,</p>
+			<ol>
+			<li>seleccione la celda donde usted quiere ver el resultado,</li>
+			<li>pulse el icono <b>Insertar función</b> <img alt="Icono insertar función" src="../images/insertfunction.png" /> que se sitúa en la barra de herramientas superior, <br />o haga clic derecho en la сelda seleccionada y elija la opción <b>Insertar función</b> en el menú, <br />o pulse el icono <img alt="Icono función" src="../images/function.png" /> que se sitúa en la barra de fórmulas,</li>
+			<li>seleccione el grupo de funciones <b>Fecha y hora</b> en la lista,</li>
+			<li>haga clic en la función <b>DIAS360</b>,</li>
+			<li>introduzca los argumentos correspondientes separados por comas,</li>
+			<li>pulse el botón <b>Enter</b>.</li>
+			</ol>
+			<p>El resultado se mostrará en la celda elegida.</p>
+			<p style="text-indent: 150px;"><img alt="Función DIAS360" src="../images/days360.png" /></p>
+		</div>
+	</body>
+</html>

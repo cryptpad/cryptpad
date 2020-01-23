@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Create forms</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Insert rich text content controls to create a form with input fields that can be filled in by other users, or protect some parts of the document from being edited or deleted" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Create forms</h1>
+            <p>Using rich text content controls you can create a form with input fields that can be filled in by other users, or protect some parts of the document from being edited or deleted. Rich text content controls are objects containing text that can be formatted. Inline controls cannot contain more than one paragraph, while floating controls can contain several paragraphs, lists, and objects (images, shapes, tables etc.). </p>
+			<h3>Adding controls</h3>
+            <p>To create a new <b>inline</b> control,</p>
+            <ol>
+                <li>position the insertion point within a line of the text where you want the control to be added,<br />or select a text passage you want to become the control contents.</li>
+                <li>press <b>Shift+F1</b></li>
+            </ol>
+            <p>The control will be inserted at the insertion point within a line of the existing text. Inline controls do not allow adding line breaks and cannot contain other objects such as images, tables etc.</p>
+            <p><img alt="New inline content control" src="../images/addedcontentcontrol.png" /></p>
+            <p>To create a new <b>floating</b> control,</p>
+            <ol>
+                <li>position the insertion point at the end of a paragraph after which you want the control to be added,<br />or select one or more of the existing paragraphs you want to become the control contents.</li>
+                <li>press <b>Shift+F2</b></li>
+            </ol>
+            <p>The control will be inserted in a new paragraph. Floating controls allow adding line breaks, i.e. can contain multiple paragraphs as well as some objects, such as images, tables, other content controls etc.</p>
+            <p><img alt="Floating content control" src="../images/floatingcontentcontrol.png" /></p>
+            <p class="note"><b>Note</b>: The content control border is visible when the control is selected only. The borders do not appear on a printed version.</p>
+            <h3>Moving controls</h3>
+            <p>Controls can be <b>moved</b> to another place in the document: click the button to the left of the control border to select the control and drag it without releasing the mouse button to another position in the document text.</p>
+            <p><img alt="Moving content control" src="../images/movecontentcontrol.png" /></p>
+            <p>You can also <b>copy and paste</b> inline controls: select the necessary control and use the <b>Ctrl+C/Ctrl+V</b> key combinations.</p>
+            <h3>Editing control contents</h3>
+            <p>To switch to the control editing mode, press <b>Shift+F9</b>. You will be able to navigate between the controls only using the keyboard arrow buttons. <!--To exit from this mode and be able to edit regular text in your document--></p>
+            <p>Replace the default text within the control ("Your text here") with your own one: select the default text, press the <b>Delete</b> key and type in a new text or copy a text passage from anywhere and paste it into the content control.</p>
+            <p>Text within the rich text content control of any type (both inline and floating) can be formatted using the icons on the top toolbar: you can adjust the <a href="../UsageInstructions/FontTypeSizeColor.htm" onclick="onhyperlinkclick(this)">font type, size, color</a>, apply <a href="../UsageInstructions/DecorationStyles.htm" onclick="onhyperlinkclick(this)">decoration styles</a> and <a href="../UsageInstructions/FormattingPresets.htm" onclick="onhyperlinkclick(this)">formatting presets</a>. It's also possible to use the <b>Paragraph - Advanced settings</b> window accessible from the contextual menu or from the right sidebar to change the text properties. Text within floating controls can be formatted like a regular text of the document, i.e. you can set <a href="../UsageInstructions/LineSpacing.htm" onclick="onhyperlinkclick(this)">line spacing</a>, change <a href="../UsageInstructions/ParagraphIndents.htm" onclick="onhyperlinkclick(this)">paragraph indents</a>, adjust <a href="../UsageInstructions/SetTabStops.htm" onclick="onhyperlinkclick(this)">tab stops</a>.</p>
+            <h3>Protecting controls</h3>
+            <p>You can prevent users from editing or deleting some individual content controls. Use one of the following keyboard shortcuts:</p>
+            <ul>
+                <li>To protect a control from being edited (but not from being deleted), select the necessary control and press <b>Shift+F6</b></li>
+                <li>To protect a control from being deleted (but not from being edited), select the necessary control and press <b>Shift+F7</b></li>
+                <li>To protect a control from being both edited and deleted, select the necessary control and press <b>Shift+F8</b></li>
+                <li>To disable the protection from editing/deleting, select the necessary control and press <b>Shift+F5</b></li>
+            </ul>
+            <h3>Removing controls</h3>
+            <p>If you do not need a control anymore, you can use one of the following keyboard shortcuts:</p>
+            <ul>
+                <li>To remove a control and all its contents, select the necessary control and press <b>Shift+F3</b></li>
+                <li>To remove a control and leave all its contents, select the necessary control and press <b>Shift+F4</b></li>
+            </ul>
+            
+		</div>
+	</body>
+</html>

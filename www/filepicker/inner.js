@@ -111,6 +111,16 @@ define([
 
             //If file, display the upload button
             if (types.indexOf('file') !== -1 && common.isLoggedIn()) {
+                var f = (filters && filters.filter) || {};
+                delete data.accept;
+                if (Array.isArray(f.fileType)) {
+                    data.accept = f.fileType.map(function (val) {
+                        if (/^[a-z]+\/$/.test(val)) {
+                            val += '*';
+                        }
+                        return val;
+                    });
+                }
                 $filter.append(common.createButton('upload', false, data));
             }
 

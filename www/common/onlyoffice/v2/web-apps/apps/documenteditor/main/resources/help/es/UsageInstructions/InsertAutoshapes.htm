@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Inserte autoformas</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add an autoshape to your document and adjust its properties." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Inserte autoformas</h1>
+            <h3>Inserte un autoforma</h3>
+			<p>Para añadir un autoforma a su documento,</p>
+			<ol>
+                <li>cambie a la pestaña <b>Insertar</b> de la barra de herramientas superior,</li>
+				<li>pulse el <img alt="Icono forma" src="../images/insertautoshape.png" /> icono <b>Forma</b> en la barra de herramientas superior,</li>
+				<li>seleccione uno de los grupos de autoformas disponibles: formas básicas, formas de flechas, matemáticas, gráficos, cintas y estrellas, leyendas, botones, rectángulos, líneas,</li>
+				<li>elija un autoforma necesaria dentro del grupo seleccionado,</li>
+				<li>coloque el cursor del ratón en el lugar donde quiere insertar la forma,</li>
+				<li>una vez añadida autoforma, cambie su tamaño, posición, y parámetros.<p class="note"><b>Nota</b>: para añadir una leyenda al autoforma asegúrese que la forma está seleccionada y empiece a introducir su texto. El texto introducido de tal modo forma la parte del autoforma (cuando usted mueva o gira el autoforma, el texto realiza las mismas acciones).</p>
+				</li>
+			</ol>
+            <h3>Mover y cambiar el tamaño de gráficos</h3>
+            <p id ="shape_resize">Para cambiar el tamaño de autoforma, arrastre pequeños cuadrados <img alt="Icono cuadrado" src="../images/resize_square.png" /> situados en los bordes de la autoforma. Para mantener las proporciones originales de la autoforma seleccionada mientras cambia de tamaño, mantenga apretada la tecla <b>Shift</b> y arrastre uno de los iconos de la esquina.</pid>
+			<p>Al modificar unas formas, por ejemplo flechas o leyendas, el icono de un rombo amarillo también estará disponible<img alt="Icono rombo amarillo" src="../images/yellowdiamond.png" />. Esta función le permite a usted ajustar unos aspectos de la forma, por ejemplo, la longitud de la punta de flecha.</p>
+			<p>Para cambiar la posición de la autoforma, use el <img alt="Flecha" src="../images/arrow.png" /> icono  que aparecerá si mantiene el cursor de su ratón sobre el autoforma. Arrastre la autoforma a la posición necesaria apretando el botón del ratón. Cuando mueve la autoforma, las líneas guía se muestran para ayudarle a colocar el objeto en la página de forma más precisa. Para desplazar la autoforma en incrementos de tres píxeles, mantenga apretada la tecla <b>Ctrl</b> y use las flechas en el teclado. Para desplazar el autoforma solo horizontalmente/verticalmente y evitar que se mueva en dirección perpendicular, al arrastrar mantenga apretada la tecla <b>Shift</b>.</p>
+			<p>Para girar la autoforma, mantenga el cursor sobre el controlador de giro y arrástrelo en la dirección de las manecillas <img alt="Controlador de giro" src="../images/greencircle.png" /> de reloj o en el sentido contrario. Para limitar el ángulo de rotación hasta el incremento de 15 grados, mantenga apretada la tecla <b>Shift</b> mientras rota.</p>
+			<hr />
+            <h3>Ajuste la configuración de la autoforma</h3>
+            <p id ="shape_rightclickmenu">Para alinear y arreglar autoformas, use el menú contextual: Las opciones del menú son las siguientes:</p>
+			<ul>
+                <li><b>Cortar, Copiar, Pegar</b> - opciones estándar usadas para cortar, copiar un texto/objeto seleccionado y pegar un pasaje de texto u objeto anteriormente cortado/copiado a una posición de cursor actual.</li>
+                <li><b>Arreglar</b> se usa para traer al primer plano la autoforma seleccionada, enviarla al fondo, traerla adelante o enviarla atrás. También agrupar o desagrupar autoformas para realizar operaciones con varias imágenes a la vez. Para saber más sobre cómo organizar objetos puede visitar <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">esta página</a>.</li>
+				<li><b>Alinear</b> se usa para alinear la autoforma a la izquierda, al centro, a la derecha, en la parte superior, al medio, en la parte inferior. Para saber más sobre cómo alinear objetos puede visitar esta página.</li>
+				<li><b>Ajuste de texto</b> se usa para seleccionar el ajuste de texto de los estilos disponibles - alineado, cuadrado, estrecho, a través, superior e inferior, adelante, detrás - o editar límite de ajuste. La opción <b>Editar límites de ajuste</b> estará disponible solo si selecciona cualquier ajuste de texto excepto Alineado. Arrastre puntos de ajuste para personalizar el borde. Para crear un punto de ajuste nuevo, haga clic en cualquier lugar de la línea roja y arrástrela a la posición necesaria. <img alt="Editar límite de ajuste" src="../images/wrap_boundary.png" /></li>
+				<li><b>Ajustes avanzados</b> se usa para abrir la ventana 'Imagen - Ajustes avanzados'.</li>
+			</ul>
+			<hr />
+			<p>Se puede cambiar algunos parámetros de la autoforma usando la pestaña <b>Ajustes de forma</b> en la derecha barra lateral. Para activarla haga clic en la autoforma y elija el icono <b>Ajustes de forma</b> <img alt="Icono Ajustes de forma" src="../images/shape_settings_icon.png" /> a la derecha. Aquí puede cambiar los ajustes siguientes:</p>
+			<ul>
+			<li  id="shape_fill"><b>Relleno</b> - utilice esta sección para seleccionar el relleno de la autoforma. Puede seleccionar las opciones siguientes:<ul>
+				<li><b>Color de relleno</b> - seleccione esta opción para especificar el color que quiere aplicar al espacio interior del autoforma seleccionada.<p><img alt="Color de relleno" src="../images/fill_color.png" /></p>
+				<p id="color">Pulse la casilla de color debajo y seleccione el color necesario en <a href="../UsageInstructions/ChangeColorScheme.htm" onclick="onhyperlinkclick(this)">el conjunto de colores</a> o especifique algún color deseado:</p>
+				</li>
+				<li><b>Relleno degradado</b> - seleccione esta opción para rellenar la forma de dos colores que de forma sutil cambian de un color a otro.<p><img alt="Relleno degradado" src="../images/fill_gradient.png" /></p>
+				    <ul>
+				    <li><b>Estilo</b> - elija una de las opciones disponibles: <b>Lineal</b> (colores cambian por una línea recta por ejemplo por un eje horizontal/vertical o por una línea diagonal que forma un ángulo recto) o <b>Radial</b> (colores cambian por una trayectoria circular del centro a los bordes).</li>
+				    <li><b>Dirección</b> - elija una plantilla en el menú. Si selecciona la gradiente <b>Lineal</b>, las siguientes direcciones serán disponible: de la parte superior izquierda a la inferior derecha, de la parte superior a la inferior, de la parte superior derecha a la inferior izquierda, de la parte derecha a la izquierda,de la parte inferior derecha a la superior izquierda, de la parte inferior a la superior, de la parte inferior izquierda a la superior derecha, de la parte izquierda a la derecha. Si selecciona la gradiente <b>Radial</b>, solo una plantilla estará disponible.</li>
+				    <li><b>Gradiente</b> - utilice el control deslizante izquierdo <img alt="Control deslizante" src="../images/gradientslider.png" /> debajo de la barra de gradiente para activar la casilla de color que corresponde al primer color. Pulse la casilla de color para elegir el primer color. Arrastre el control deslizante para establecer el punto de degradado - el punto donde un color cambia a otro color. Utilice el control deslizante derecho debajo de la barra de gradiente para especificar el segundo color y establecer el punto de degradado.</li>
+				    </ul>			
+				</li>
+				<li><b>Imagen o textura</b> - seleccione esta opción para usar una imagen o textura predefinida como el fondo de forma.<p><img alt="Relleno de imagen o textura" src="../images/fill_picture.png" /></p>
+					<ul>
+						<li>Si quiere usar una imagen de fondo de autoforma, usted puede añadir una imagen <b>De archivo</b> seleccionándolo en el disco duro de su ordenador o <b>De URL</b> insertando la dirección URL apropiada en la ventana abierta.</li>
+						<li>Si quiere usar una textura como fondo de forma, abra el menú <b>de textura</b> y seleccione la variante más apropiada.<p>Ahora puede seleccionar las siguientes texturas: lienzo, algodón, tela oscura, grano, granito, papel gris, tejido, piel, papel marrón, papiro, madera.</p>
+						</li>
+					</ul>
+					<ul>
+						<li>Si la <b>imagen</b> seleccionada tiene más o menos dimensiones que la autoforma, puede seleccionar la opción <b>Estirar</b> o <b>Mosaico</b> en la lista desplegable.<p>La opción <b>Estirar</b> le permite ajustar el tamaño de imagen al tamaño de la autoforma para que la imagen ocupe el espacio completamente.</p>
+						<p>La opción <b>Mosaico</b> le permite mostrar solo una parte de imagen más grande manteniendo su extensión original o repetir la imagen más pequeña manteniendo su dimensión original para que se rellene todo el espacio completamente.</p>
+						<p class="note"><b>Nota</b>: cualquier <b>Textura</b> predeterminada ocupa el espacio completamente, pero puede aplicar el efecto <b>Estirar</b> si es necesario.</p>
+						</li>
+					</ul>
+				</li>
+				<li><b>Patrón</b> - seleccione esta opción para rellenar la forma del diseño de dos colores que está compuesto de los elementos repetidos.<p><img alt="Rellene de patrón" src="../images/fill_pattern.png" /></p>
+				    <ul>
+				        <li><b>Patrón</b> - seleccione uno de los diseños predeterminados en el menú.</li>
+				        <li><b>Color de primer plano</b> - pulse esta casilla de color para cambiar el color de elementos de patrón.</li>
+				        <li><b>Color de fondo</b> - pulse esta casilla de color para cambiar el color de fondo de patrón.</li>
+				    </ul>			
+				</li>
+				<li><b>Sin relleno</b> - seleccione esta opción si no desea usar ningún relleno.</li>
+			</ul>
+			</li>
+			</ul>
+			<p><img class="floatleft" alt="pestaña Ajustes de autoforma" src="../images/right_autoshape.png" /></p>
+			<ul style="margin-left: 280px;">			
+			<li><b>Opacidad</b> - use esta sección para establecer la nivel de <b>Opacidad</b> arrastrando el control deslizante o introduciendo el valor porcentual manualmente. El valor predeterminado es <b>100%</b>. Esto corresponde a la capacidad completa. El valor <b>0%</b> corresponde a la plena transparencia.</li>
+			<li id="shape_stroke"><b>Trazo</b> - use esta sección para cambiar el color, ancho o tipo del trazo del autoforma.<ul>
+				<li>Para cambiar el ancho de trazo, seleccione una de las opciones disponibles en la lista desplegable <b>Tamaño</b>. Las opciones disponibles: 0.5 pt, 1 pt, 1.5 pt, 2.25 pt, 3 pt, 4.5 pt, 6 pt. Alternativamente, seleccione la opción <b>Sin línea</b> si no quiere usar ningún trazo.</li>
+				<li>Para cambiar el <b>color</b> del trazo, pulse el rectángulo de color debajo y <a href="../UsageInstructions/ChangeColorScheme.htm" onclick="onhyperlinkclick(this)">seleccione el color necesario</a>.</li>
+                <li>Para cambiar el <b>tipo</b> de trazo, pulse la casilla de color debajo y seleccione el color necesario de la lista despegable (una línea sólida se aplicará de forma predeterminada, puede cambiarla a una que está disponible con guiones).</li>
+				</ul>
+			</li>
+			<li><b>Ajuste de texto</b> - use esta sección para seleccionar el estilo de ajuste de texto en la lista de los que están disponibles - alineado, cuadrado, estrecho, a través, superior e inferior, adelante, detrás (para obtener más información lea la descripción de ajustes avanzados más adelante).</li>
+			<li><b>Cambiar autoforma</b> - use esta sección para reemplazar la autoforma actual con la otra seleccionada en la lista desplegable.</li>
+			</ul>
+			<hr />
+			<p>Para cambiar los <b>ajustes avanzados</b> de laautoforma, haga clic con el botón derecho sobre la autoforma y seleccione la opción <b>Ajustes avanzados</b> en el menú o use el enlace <b>Mostrar ajustes avanzados</b> en la barra derecha lateral. Se abrirá la ventana 'Forma - Ajustes avanzados':</p>
+            <p><img alt="Forma - Ajustes avanzados" src="../images/shape_properties.png" /></p>
+			<p>La sección <b>Tamaño</b> contiene los parámetros siguientes:</p>
+			<ul>
+				<li><b>Ancho</b> - usa una de estas opciones para cambiar el ancho de la autoforma.<ul>
+                    <li><b>Absoluto</b> - especifica un valor específico que se mide en valores absolutos por ejemplo <b>Centímetros</b>/<b>Puntos</b> (dependiendo de la opción especificada en la pestaña de <b>Archivo</b> -&gt; <b>Ajustes Avanzados...</b>).</li>
+                    <li><b>Relativo</b> - especifica un porcentaje <b>relativo al</b> <em>margen izquierdo</em> ancho, el <em>margen</em> (por ejemplo, la distancia entre los márgenes izquierdos y derechos), el ancho de la <em>página</em>, o el ancho del <em>margen derecho</em>.</li>
+                </ul>
+                </li>
+                <li><b>Altura</b> - usa una de estas opciones para cambiar la altura de la autoforma.<ul>
+                        <li><b>Absoluto</b> - especifica un valor específico que se mide en valores absolutos; por ejemplo <b>Centímetros</b>/<b>Puntos</b> (dependiendo en la opción especificada en la pestaña de <b>Archivo</b> -&gt; <b>Ajustes Avanzados...</b>).</li>
+                        <li><b>Relativo</b> - especifica un porcentaje <b>en relación al</b> <em>margen</em> (por ejemplo, la distancia entre los márgenes de arriba y de abajo), la altura del <em>margen de abajo</em>, la altura de la <em>página</em>, o la altura del <em>margen de arriba</em>.</li>
+                    </ul>
+                </li>
+                <li>Si la opción de <b>Bloquear la relación de aspecto</b> está activada, la altura y anchura se cambiarán juntas, preservando la forma original del radio de aspecto.</li>
+			</ul>
+            <p id="shape_wrapping"><img alt="Forma - Ajustes avanzados" src="../images/shape_properties_1.png" /></p>
+			<p>La sección <b>Ajuste de texto</b> contiene los parámetros siguientes:</p>
+			<ul>
+				<li><b>Ajuste de texto</b> - use esta opción para cambiar la posición de la forma en relación al texto: puede ser una parte de texto (si usted selecciona el estilo alineado) o rodeada por texto (si selecciona uno de los otros estilos).<ul>
+				    <li><p><img alt="Ajuste de texto - alineado" src="../images/wrappingstyle_inline.png" /> <b>Alineado</b> - la forma se considera una parte del texto, como un carácter, así cuando se mueva el texto, la forma se moverá también. En este caso no se puede acceder a las opciones de posición.</p>
+				    <p>Si selecciona uno de estos estilos, la forma se moverá independientemente del texto:</p>
+				    </li>
+				    <li><p><img alt="Ajuste de texto - cuadrado" src="../images/wrappingstyle_square.png" /> <b>Cuadrado</b> - el texto rodea una caja rectangular que limita la forma.</p></li>
+				    <li><p><img alt="Ajuste de texto - estrecho" src="../images/wrappingstyle_tight.png" /> <b>Estrecho</b> - el texto rodea los bordes reales de la forma.</p></li>
+				    <li><p><img alt="Ajuste de texto - a través" src="../images/wrappingstyle_through.png" /> <b>A través</b> - el texto rodea los bordes y rellena el espacio en blanco de la forma. Para que se muestre este efecto, utilice la opción <b>Editar límite de ajuste</b> en el menú contextual.</p></li>
+				    <li><p><img alt="Ajuste de texto - superior e inferior" src="../images/wrappingstyle_topandbottom.png" /> <b>Superior e inferior</b> - el texto se sitúa solo arriba y debajo de la forma.</p></li>
+				    <li><p><img alt="Ajuste de texto - adelante" src="../images/wrappingstyle_infront.png" /> <b>Adelante</b> - la forma solapa el texto.</p></li>
+				    <li><p><img alt="Ajuste de texto - detrás" src="../images/wrappingstyle_behind.png" /> <b>Detrás</b> - el texto solapa la forma.</p></li>
+				    </ul>
+				</li>
+			</ul>
+			<p>Si usted selecciona el estilo cuadrado, estrecho, a través, o superior e inferior, usted podrá establecer unos parámetros adicionales - <b>distancia del texto</b> en todas partes (superior, inferior, izquierda, derecha).</p>
+            <p id="position"><img alt="Forma - Ajustes avanzados" src="../images/shape_properties_2.png" /></p>
+			<p>La sección <b>Posición</b> estará disponible si selecciona cualquier ajuste de texto excepto alineado. Esta pestaña contiene los parámetros siguientes que dependen del estilo de ajuste del texto seleccionado:</p>
+			<ul>
+                <li>La sección <b>Horizontal</b> permite seleccionar uno de los siguientes tres tipos de posición de autoformas:<ul>
+                        <li><b>Alineación</b> (izquierda, centro, derecha) <b>en relación al</b> carácter, columna, margen izquierdo, margen, página o margen derecho,</li>
+                        <li>La <b>Posición</b> absoluta se mide en unidades absolutas, por ejemplo, <b>Centímetros</b>/<b>Puntos</b> (dependiendo de la opción especificada en la pestaña de <b>Archivo</b> -&gt; <b>Ajustes avanzados...</b>) <b>a la derecha del</b> carácter, columna, margen izquierdo, margen, página o margen derecho,</li>
+                        <li>La <b>Posición relativa</b> se mide en porcentajes <b>relativos al</b> margen izquierdo, margen, página o margen derecho.</li>
+                    </ul>
+                </li>
+                <li>La sección <b>Vertical</b> permite seleccionar uno de los siguientes tres tipos de posición de autoformas:<ul>
+                        <li><b>Alineación </b> (arriba, centro, abajo) <b>en relación con</b> la línea, margen, margen del fondo, párrafo, margen de la página o margen de arriba,</li>
+                        <li>La <b>Posición</b> absoluta se mide en unidades absolutas, por ejemplo, <b>Centímetros</b>/<b>Puntos</b> (dependiendo de la opción especificada en la pestaña de <b>Archivo</b>  -&gt; <b>Ajustes Avanzados...</b>) <b>debajo</b> de la línea, margen, margen del fondo, párrafo, margen de la página o margen de arriba,</li>
+                        <li>La <b>Posición relativa</b> se mide en porcentajes <b>relativos al</b> margen, margen del fondo, párrafo, margen de la página o margen de arriba,</li>
+                    </ul>
+                </li>
+                <li>La opción <b>Desplazar objeto con texto</b> controla si la forma insertada en el texto se mueve a la vez que el texto cuando este se mueve.</li>
+				<li>La opción <b>Superposición</b> controla si dos formas sobreponen o no cuando usted las arrastra una cerca de la otra en la página.</li>
+			</ul>
+			<p><img alt="Forma - Ajustes avanzados" src="../images/shape_properties_3.png" /></p>
+			<p>La sección <b>Ajustes de forma</b> contiene los parámetros siguientes:</p>
+			<ul>
+				<li><b>Estilo de línea</b> - este grupo de opciones permite especificar los parámetros siguientes:<ul>
+				<li><b>Tipo de remate</b> - esta opción le permite establecer el estilo para el final de la línea, se aplica solo a las formas con contorno abierto, como líneas, polilíneas etc.:<ul>
+					<li><b>Plano</b> - los extremos serán planos.</li>
+					<li><b>Redondeado</b> - los extremos serán redondeados.</li>
+					<li><b>Cuadrado</b> - los extremos serán cuadrados.</li>
+					</ul>
+				</li>
+				<li><b>Tipo de combinación</b> - esta opción le permite establecer el estilo de intersección de dos líneas, por ejemplo, puede afectar a polilínea o esquinas de triángulo o contorno de triángulo:<ul>
+					<li><b>Redondeado</b> - la esquina será redondeada.</li>
+					<li><b>Biselado</b> - la esquina será sesgada.</li>
+					<li><b>Ángulo</b> - la esquina será puntiaguda. Vale para ángulos agudos.</li>
+					</ul>
+					<p class="note"><b>Nota</b>: el efecto será más visible si usa una mucha anchura de contorno.</p>
+				</li>
+				</ul>
+				</li>
+				<li><b>Flechas</b> - esta sección está disponible para el grupo de autoformas <b>Líneas</b>. Le permite seleccionar el estilo y tamaño <b>Inicial</b> y <b>Final</b> eligiendo la opción apropiada en la lista desplegable.</li>
+			</ul>
+            <p><img alt="Forma - Ajustes avanzados" src="../images/shape_properties_4.png" /></p>
+			<p>La pestaña <b>Márgenes interiores</b> permite cambiar los márgenes internos <b>superiores</b>, <b>inferiores</b>, <b>izquierdos</b> y <b>derechos</b> (es decir, la distancia entre el texto y los bordes del autoforma dentro del autoforma).</p>
+            <p class="note"><b>Nota</b>: la pestaña está disponible solo si un texto se añada en autoforma, si no, la pestaña está desactivada.</p>
+            <p><img alt="Forma - Ajustes avanzados" src="../images/shape_properties_5.png" /></p>
+            <p>La pestaña de <b>Texto Alternativo</b> permite especificar un <b>Título</b> y <b>Descripción</b> que se leerán a las personas con problemas de visión o cognitivos para ayudarles a entender mejor la información de la forma.</p>
+		</div>
+	</body>
+</html>

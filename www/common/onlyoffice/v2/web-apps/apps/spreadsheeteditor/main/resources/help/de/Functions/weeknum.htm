@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>KALENDERWOCHE-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>KALENDERWOCHE-Funktion</h1>
+			<p>Die Funktion <b>KALENDERWOCHE</b> gehört zur Gruppe der Daten- und Zeitfunktionen. Sie wandelt eine fortlaufende Zahl in eine Zahl um, die angibt, in welche Woche eines Jahres das angegebene Datum fällt</p>
+			<p>Die Formelsyntax der Funktion <b>KALENDERWOCHE</b> ist:</p> 
+			<p style="text-indent: 150px;"><b><em>KALENDERWOCHE(Fortlaufende_Zahl;[Zahl_Typ])</em></b></p> 
+			<p><em>Dabei gilt:</em></p> 
+			<p style="text-indent: 50px;"><b><em>Fortlaufende_Zahl</em></b> ist das Datum innerhalb der Woche. Das Argument sollte mithilfe der Funktion <a href="Date.htm" onclick="onhyperlinkclick(this)">DATUM</a> oder einer anderen Datums- und Uhrzeitfunktion eingegeben werden.</p>
+			<p style="text-indent: 50px;"><b><em>Zahl_Typ</em></b> ist eine Zahl, die verwendet wird, um den Typ des Werts zu bestimmen, der zurückgegeben werden soll. Mögliche Zahl_Typen:</p>
+			<table style="width: 40%">
+				<tr>
+					<td><b>Zahlenwert</b></td>
+					<td><b>Wochenanfang</b></td>
+				</tr>
+				<tr>
+					<td>1 oder nicht angegeben</td>
+					<td>Sonntag (von Sonntag bis Samstag)</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>Montag (von Montag bis Sonntag)</td>
+				</tr>
+			</table>
+			<p>Anwendung der Funktion <b>KALENDERWOCHE</b>:</p>
+			<ol>
+			<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
+			<li>Wählen Sie die Gruppe <b>Datums- und Uhrzeitfunktionen</b> aus der Liste aus.</li>
+			<li>Klicken Sie auf die Funktion <b>KALENDERWOCHE</b>.</li>
+			<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.</li>
+			<li>Drücken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+			<p style="text-indent: 150px;"><img alt="KALENDERWOCHE-Funktion" src="../images/weeknum.png" /></p>
+		</div>
+	</body>
+</html>

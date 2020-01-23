@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Cut/copy/paste data</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Cut/copy/paste data using the keyboard shortcuts" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+            <h1>Cut/copy/paste data</h1>
+            <h3>Use basic clipboard operations</h3>
+            <p>To cut, copy and paste data in the current spreadsheet make use of the right-click menu or use the corresponding icons available at any tab of the top toolbar,</p>
+            <ul>
+                <li><p><b>Cut</b> - select data and use the <b>Cut</b> option from the right-click menu to delete the selected data and send them to the computer clipboard memory. <span class="onlineDocumentFeatures">The cut data can be later inserted to another place in the same spreadsheet.</span></p></li>
+                <li><p><b>Copy</b> - select data and either use the <b>Copy</b> <img alt="Copy icon" src="../images/copy.png" /> icon at the top toolbar or right-click and select the <b>Copy</b> option from the menu to send the selected data to the computer clipboard memory. <span class="onlineDocumentFeatures">The copied data can be later inserted to another place in the same spreadsheet.</span></p></li>
+                <li><p><b>Paste</b> - select a place and either use the <b>Paste</b> <img alt="Paste icon" src="../images/paste.png" /> icon at the top toolbar or right-click and select the <b>Paste</b> option to insert the previously copied/cut data from the computer clipboard memory to the current cursor position. <span class="onlineDocumentFeatures">The data can be previously copied from the same spreadsheet.</span></p>
+                </li>
+            </ul>
+            <p><span class="onlineDocumentFeatures">In the <em>online version</em>, the following key combinations are only used to copy or paste data from/into another spreadsheet or some other program,</span> <span class="desktopDocumentFeatures">in the <em>desktop version</em>, both the corresponding buttons/menu options and key combinations can be used for any copy/paste operations:</span></p>
+            <ul>
+                <li><b>Ctrl+X</b> key combination for cutting;</li>
+                <li><b>Ctrl+C</b> key combination for copying;</li>
+                <li><b>Ctrl+V</b> key combination for pasting.</li>
+            </ul>
+            <p class="note"><b>Note</b>: instead of cutting and pasting data within the same worksheet you can select the necessary cell/range of cells, hover the mouse cursor over the selection border so that it turns into the <img alt="Arrow icon" src="../images/arrow.png" /> icon and drag and drop the selection to the necessary position.</p>
+            <h3>Use the Paste Special feature</h3>
+            <p>Once the copied data is pasted, the <b>Paste Special</b> <img alt="Paste Special" src="../images/pastespecialbutton.png" /> button appears next to the lower right corner of the inserted cell/cell range. Click this button to select the necessary paste option. </p>
+            <p>When pasting a cell/cell range with formatted data, the following options are available:</p>
+            <ul>
+                <li><em>Paste</em> - allows to paste all the cell contents including data formatting. This option is selected by default.</li>
+                <li>
+                    The following options can be used if the copied data contains formulas: 
+                    <ul>
+                        <li><em>Paste only formula</em> - allows to paste formulas without pasting the data formatting.</li>
+                        <li><em>Formula + number format</em> - allows to paste formulas with the formatting applied to numbers.</li>
+                        <li><em>Formula + all formatting</em> - allows to paste formulas with all the data formatting.</li>
+                        <li><em>Formula without borders</em> - allows to paste formulas with the all the data formatting excepting cell borders.</li>
+                        <li><em>Formula + column width</em> - allows to paste formulas with all the data formatting and set the source column width for the cell range you paste the data to.</li>
+                    </ul>
+                </li>
+                <li>
+                    The following options allow to paste the result that the copied formula returns without pasting the formula itself:
+                    <ul>
+                        <li><em>Paste only value</em> - allows to paste the formula results without pasting the data formatting.</li>
+                        <li><em>Value + number format</em> - allows to paste the formula results with the formatting applied to numbers.</li>
+                        <li><em>Value + all formatting</em> - allows to paste the formula results with all the data formatting.</li>
+                    </ul>
+                </li>
+                <li><em>Paste only formatting</em> - allows to paste the cell formatting only without pasting the cell contents.</li>
+                <li><em>Transpose</em> - allows to paste data changing columns to rows and rows to columns. This option is available for regular data ranges, but not for formatted tables.</li>
+            </ul>
+            <p><img alt="Paste options" src="../images/pastespecial.png" /></p>
+            <p>When pasting the contents of a single cell or some text within autoshapes, the following options are available:</p>
+            <ul>
+                <li><em>Source formatting</em> - allows to keep the source formatting of the copied data.</li>
+                <li><em>Destination formatting</em> - allows to apply the formatting that is already used for the cell/autoshape you paste the data to.</li>
+            </ul>
+            <p>When pasting delimited text copied from a <b>.txt</b> file, the following options are available:</p>
+            <p class="note">The delimited text can contain several records where each record corresponds to a single table row. Each record can contain several text values separated with a delimiters (such as comma, semicolon, colon, tab, space or some other character). The file should be saved as a plain text <b>.txt</b> file.</p>
+            <ul>
+                <li><em>Keep text only</em> - allows to paste text values into a single column where each cell contents corresponds to a row in a source text file.</li>
+                <li><em>Use text import wizard</em> - allows to open the <b>Text Import Wizard</b> which helps to easily split the text values into multiple columns where each text value separated by a delimiter will be placed into a separate cell.
+                <p>When the <b>Text Import Wizard</b> window opens, select the text delimiter used in the delimited data from the <b>Delimiter</b> drop-down list. The data splitted into columns will be displayed in the <b>Preview</b> field below. If you are satisfied with the result, press the <b>OK</b> button.</p>
+                </li>
+            </ul>
+            <p><img alt="Text import wizard" src="../images/textimportwizard.png" /></p>
+            <p>If you pasted delimited data from a source that is not a plain text file (e.g. text copied from a web page etc.), or if you applied the <em>Keep text only</em> feature and now want to split the data from a single column into several columns, you can use the <b>Text to Columns</b> option. </p>
+            <p>To split data into multiple columns:</p>
+            <ol>
+                <li>Select the necessary cell or column that contains data with delimiters.</li>
+                <li>Click the <b>Text to columns</b> button at the right-side panel. The <b>Text to Columns Wizard</b> opens.</li>
+                <li>In the <b>Delimiter</b> drop-down list, select the delimiter used in the delimited data, preview the result in the field below and click <b>OK</b>.</li>
+            </ol>
+            <p>After that, each text value separated by the delimiter will be located in a separate cell.</p>
+            <p class="note">If there is some data in the cells to the right of the column you want to split, the data will be overwritten.</p>
+            <h3>Use the Auto Fill option</h3>
+            <p>To quickly fill multiple cells with the same data use the <b>Auto Fill</b> option:</p>
+            <ol>
+                <li>select a cell/range of cells containing the necessary data,</li>
+                <li>move the mouse cursor over the fill handle in the right lower corner of the cell. The cursor will turn into the black cross:
+                <p><img alt="Auto Fill" src="../images/autofill.png" /></p>
+                </li>
+                <li>drag the handle over the adjacent cells you want to fill with the selected data.</li>
+            </ol>
+            <p class="note"><b>Note</b>: if you need to create a series of numbers (such as 1, 2, 3, 4...; 2, 4, 6, 8... etc.) or dates, you can enter at least two starting values and quickly extend the series selecting these cells and dragging the fill handle. </p>
+            <h3>Fill cells in the column with text values</h3>
+            <p>If a column in your spreadsheet contains some text values, you can easily replace any value within this column or fill the next blank cell selecting one of already existing text values.</p>
+            <p>Right-click the necessary cell and choose the <b>Select from drop-down list</b> option in the contextual menu.</p>
+            <p><img alt="Select from drop-down list" src="../images/selectfromlist.png" /></p>
+            <p>Select one of the available text values to replace the current one or fill an empty cell.</p>
+            
+        </div>
+	</body>
+</html>

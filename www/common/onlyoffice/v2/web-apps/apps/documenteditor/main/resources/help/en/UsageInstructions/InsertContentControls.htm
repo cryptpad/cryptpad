@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insert content controls</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Insert content controls to create a form with input fields that can be filled in by other users, or protect some parts of the document from being edited or deleted" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insert content controls</h1>
+            <p>Using content controls you can create a form with input fields that can be filled in by other users, or protect some parts of the document from being edited or deleted. Content controls are objects containing text that can be formatted. Plain text content controls cannot contain more than one paragraph, while rich text content controls can contain several paragraphs, lists, and objects (images, shapes, tables etc.). </p>
+			<h3>Adding content controls</h3>
+            <p>To create a new <b>plain text content control</b>,</p>
+            <ol>
+                <li>position the insertion point within a line of the text where you want the control to be added,<br />or select a text passage you want to become the control contents.</li>
+                <li>switch to the <b>Insert</b> tab of the top toolbar.</li>
+                <li>click the arrow next to the <img alt="Content Controls icon" src="../images/insertccicon.png" /> <b>Content Controls</b> icon.</li>
+                <li>choose the <b>Insert plain text content control</b> option from the menu.</li>
+            </ol>
+            <p>The control will be inserted at the insertion point within a line of the existing text. Plain text content controls do not allow adding line breaks and cannot contain other objects such as images, tables etc.</p>
+            <p><img alt="New plain text content control" src="../images/addedcontentcontrol.png" /></p>
+            <p>To create a new <b>rich text content control</b>,</p>
+            <ol>
+                <li>position the insertion point at the end of a paragraph after which you want the control to be added,<br />or select one or more of the existing paragraphs you want to become the control contents.</li>
+                <li>switch to the <b>Insert</b> tab of the top toolbar.</li>
+                <li>click the arrow next to the <img alt="Content Controls icon" src="../images/insertccicon.png" /> <b>Content Controls</b> icon.</li>
+                <li>choose the <b>Insert rich text content control</b> option from the menu.</li>
+            </ol>
+            <p>The control will be inserted in a new paragraph. Rich text content controls allow adding line breaks, i.e. can contain multiple paragraphs as well as some objects, such as images, tables, other content controls etc.</p>
+            <p><img alt="Rich text content control" src="../images/richtextcontentcontrol.png" /></p>
+            <p class="note"><b>Note</b>: The content control border is visible when the control is selected only. The borders do not appear on a printed version.</p>
+            <h3>Moving content controls</h3>
+            <p>Controls can be <b>moved</b> to another place in the document: click the button to the left of the control border to select the control and drag it without releasing the mouse button to another position in the document text.</p>
+            <p><img alt="Moving content control" src="../images/movecontentcontrol.png" /></p>
+            <p>You can also <b>copy and paste</b> content controls: select the necessary control and use the <b>Ctrl+C/Ctrl+V</b> key combinations.</p>
+            <h3>Editing content controls</h3>
+            <p>Replace the default text within the control ("Your text here") with your own one: select the default text, and type in a new text or copy a text passage from anywhere and paste it into the content control.</p>
+            <p>Text within the content control of any type (both plain text and rich text content controls) can be formatted using the icons on the top toolbar: you can adjust the <a href="../UsageInstructions/FontTypeSizeColor.htm" onclick="onhyperlinkclick(this)">font type, size, color</a>, apply <a href="../UsageInstructions/DecorationStyles.htm" onclick="onhyperlinkclick(this)">decoration styles</a> and <a href="../UsageInstructions/FormattingPresets.htm" onclick="onhyperlinkclick(this)">formatting presets</a>. It's also possible to use the <b>Paragraph - Advanced settings</b> window accessible from the contextual menu or from the right sidebar to change the text properties. Text within rich text content controls can be formatted like a regular text of the document, i.e. you can set <a href="../UsageInstructions/LineSpacing.htm" onclick="onhyperlinkclick(this)">line spacing</a>, change <a href="../UsageInstructions/ParagraphIndents.htm" onclick="onhyperlinkclick(this)">paragraph indents</a>, adjust <a href="../UsageInstructions/SetTabStops.htm" onclick="onhyperlinkclick(this)">tab stops</a>.</p>
+            <h3>Changing content control settings</h3>
+            <p>To open the content control settings, you can proceed in the following ways:</p>
+            <ul>
+                <li>Select the necessary content control, click the arrow next to the <img alt="Content Controls icon" src="../images/insertccicon.png" /> <b>Content Controls</b> icon at the top toolbar and select the <b>Control Settings</b> option from the menu.</li>
+                <li>Right-click anywhere within the content control and use the <b>Content control settings</b> option from the contextual menu.</li>
+            </ul>
+            <p>A new window will open where you can adjust the following settings:</p>
+            <p><img alt="Content Control settings window" src="../images/ccsettingswindow.png" /></p>
+            <ul>
+                <li>Specify the content control <b>Title</b> or <b>Tag</b> in the corresponding fields. The title will be displayed when the control is selected in the document. Tags are used to identify content controls so that you can make reference to them in your code. </li>
+                <li>Choose if you want to display the content control with a <b>Bounding box</b> or not. Use the <b>None</b> option to display the control without the bounding box. If you select the <b>Bounding box</b> option, you can choose this box <b>Color</b> using the field below. Click the <b>Apply to All</b> button to apply the spesified <b>Appearance</b> settings to all the content controls in the document.</li>
+                <li>Protect the content control from being deleted or edited using the option from the <b>Locking</b> section:
+                <ul>
+                    <li><b>Content control cannot be deleted</b> - check this box to protect the content control from being deleted.</li>
+                    <li><b>Contents cannot be edited</b> - check this box to protect the contents of the content control from being edited.</li>
+                </ul>
+                </li>
+            </ul>
+            <p>Click the <b>OK</b> button within the settings window to apply the changes.</p>
+            <p>It's also possible to highlight content controls with a certain color. To highlight controls with a color:</p>
+            <ol>
+                <li>Click the button to the left of the control border to select the control,</li>
+                <li>Click the arrow next to the <img alt="Content Controls icon" src="../images/insertccicon.png" /> <b>Content Controls</b> icon at the top toolbar,</li>
+                <li>Select the <b>Highlight Settings</b> option from the menu,</li>
+                <li>Select the necessary color on the available palettes: <b>Theme Colors</b>, <b>Standard Colors</b> or specify a new <b>Custom Color</b>. To remove previously applied color highlighting, use the <b>No highlighting</b> option.</li>
+            </ol>
+            <p>The selected highlight options will be applied to all the content controls in the document.</p>
+            <h3>Removing content controls</h3>
+            <p>To remove a control and leave all its contents, click the content control to select it, then proceed in one of the following ways:</p>
+            <ul>
+                <li>Click the arrow next to the <img alt="Content Controls icon" src="../images/insertccicon.png" /> <b>Content Controls</b> icon at the top toolbar and select the <b>Remove content control</b> option from the menu.</li>
+                <li>Right-click the content control and use the <b>Remove content control</b> option from the contextual menu.</li>
+            </ul>
+            <p>To remove a control and all its contents, select the necessary control and press the <b>Delete</b> key on the keyboard.</p>
+                        
+		</div>
+	</body>
+</html>

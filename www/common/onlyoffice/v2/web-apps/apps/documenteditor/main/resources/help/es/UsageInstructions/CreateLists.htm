@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Cree listas</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Create bulleted and numbered lists in the document changing the lists outline" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Cree listas</h1>
+			<p>Para crear una lista en su documento,</p>
+			<ol>
+				<li>Ponga el cursor en un lugar donde quiera empezar una lista (puede ser una línea nueva o texto ya introducido),</li>
+                <li>cambie a la pestaña <b>Inicio</b> de la barra de herramientas,</li>
+				<li>seleccione el tipo de lista que quiere crear:<ul>
+						<li>La <b>Lista desordenada</b> con marcadores puede ser creada usando el icono <b>Viñetas</b> <img alt="Icono de lista desordenada" src="../images/bullets.png" /> que se sitúa en la barra de herramientas superior</li>
+						<li>La <b>Lista ordenada</b> con números o letras se puede crear usando el icono <img alt="Icono de lista ordenada" src="../images/numbering.png" /> <b>Numeración</b> que se sitúa en la barra de herramientas superior<p class="note"><b>Nota</b>: haga clic en la flecha hacia abajo junto al icono <b>Viñetas</b> o <b>Numeración</b> para seleccionar el aspecto de la lista.</p>
+						</li>
+					</ul>
+				</li>
+				<li>ahora cada vez que usted pulse la tecla <b>Enter</b> al final de la línea, un elemento nuevo de una lista ordenada o desordenada aparecerá. Para para esto, pulse la tecla <b>Backspace</b> y continúe con el texto de párrafo común.</li>
+			</ol>
+            <p>El programa también crea listas numeradas automáticamente cuando introduce el número 1 seguido de un punto o paréntesis y un espacio: <b>1.</b>, <b>1)</b>. Las listas con viñetas pueden ser creadas automáticamente cuando introduce los caracteres <b>-</b>, <b>*</b> seguidos de un espacio.</p>
+            <p>También puede la cambiar sangría del texto en las listas y su anidamiento usando los iconos de <b>Lista ordenada</b> <img alt="Icono de lista ordenada" src="../images/outline.png" />, <b>Reducir sangría</b> <img alt="Icono Disminuir sangría" src="../images/decreaseindent.png" />, y <b>Aumentar sangría</b> <img alt="Icono Aumentar sangría" src="../images/increaseindent.png" /> en la pestaña de <b>Inicio</b> de la barra de herramientas superior.</p>
+			<p class="note"><b>Nota</b>: la sangría adicional y los parámetros de espacio se pueden cambiar en la barra lateral de la derecha y en la ventana de ajustes avanzados. Para obtener más información lea las secciones <a href="ParagraphIndents.htm" onclick="onhyperlinkclick(this)">Cambie sangrías de párrafo</a> y <a href="LineSpacing.htm" onclick="onhyperlinkclick(this)">Establezca líneas de espacio de párrafo</a>.</p>
+
+            <h3>Una y separe listas</h3>
+            <p>Para unir una lista con la anterior:</p>
+            <ol>
+                <li>haga clic en el primer elemento de la segunda lista con el botón derecho del ratón.</li>
+                <li>utilice la opción <b>Unir a lista previa</b> desde el menú contextual.</li>
+            </ol>
+            <p>Las listas serán unidas y la numeración continuará de acuerdo con la numeración de la primera lista.</p>
+
+            <p>Para separar una lista:</p>
+            <ol>
+                <li>haga clic en el elemento de la lista en que desea empezar una nueva lista con el botón derecho del ratón,</li>
+                <li>utilice la opción <b>Separar lista</b> desde el menú contextual.</li>
+            </ol>
+            <p>La lista será separada, y la numeración en la segunda lista empezará de nuevo.</p>
+
+            <h3>Cambiar numeración.</h3>
+            <p>Para continuar la secuenciación numeral en la segunda lista de acuerdo con la numeración anterior:</p>
+            <ol>
+                <li>haga clic en el primer elemento de la segunda lista con el botón derecho del ratón,</li>
+                <li>utilice la opción <b>Continuar numeración</b> desde el menú contextual.</li>
+            </ol>
+            <p>La numeración continuará de acuerdo con la numeración de la primera lista.</p>
+
+            <p>Para establecer un valor inicial de numeración:</p>
+            <ol>
+                <li>haga clic en el primer elemento donde desea aplicar un nuevo valor de numeración con el botón derecho del ratón,</li>
+                <li>utilice la opción <b>Establecer valor de numeración</b> desde el menú contextual,</li>
+                <li>en la nueva ventana que se muestra, establezca el valor numérico necesario y haga clic en el botón <b>OK</b>.</li>
+            </ol>
+		</div>
+	</body>
+</html>

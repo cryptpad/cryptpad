@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Introduciendo el Editor de Documento Interfaz de Usuario</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Introducing the Document Editor user interface" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Introduciendo el Editor de Documento Interfaz de Usuario</h1>
+			<p>El <b>Editor del Documento</b> usa un interfaz intercalada donde los comandos de edición se agrupan en pestañas de forma funcional.</p>
+            <p><img alt="Ventana Editor" src="../images/interface/editorwindow.png" /></p>
+            <p>El interfaz de edición consiste en los siguientes elementos principales:</p>
+            <ol>
+                <li>El <b>Editor de Encabezado</b> muestra el logo, pestañas de menú, nombre del documento así como tres iconos a la derecha que permiten <a href="../HelpfulHints/CollaborativeEditing.htm" onclick="onhyperlinkclick(this)">ajustar los derechos de acceso</a>, regresar a la lista de Documentos, configurar los <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">Ajustes de Visualización</a> y acceder al editor de <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Ajustes Avanzados</a>.<p><img alt="Iconos en el encabezado del editor" src="../images/interface/rightpart.png" /></p>
+                </li>
+                <li>La <b>Barra de herramientas superior</b> muestra un conjunto de comandos para editar dependiendo de la pestaña del menú que se ha seleccionado. Actualmente, las siguientes pestañas están disponibles: <a href="../ProgramInterface/FileTab.htm" onclick="onhyperlinkclick(this)">Archivo</a>, <a href="../ProgramInterface/HomeTab.htm" onclick="onhyperlinkclick(this)">Inicio</a>, <a href="../ProgramInterface/InsertTab.htm" onclick="onhyperlinkclick(this)">Insertar</a>, <a href="../ProgramInterface/LayoutTab.htm" onclick="onhyperlinkclick(this)">Diseño</a>, <a href="../ProgramInterface/ReferencesTab.htm" onclick="onhyperlinkclick(this)">Referencias</a>, <a href="../ProgramInterface/ReviewTab.htm" onclick="onhyperlinkclick(this)">Colaboración</a>, <a href="../ProgramInterface/PluginsTab.htm" onclick="onhyperlinkclick(this)">Plugins</a>.<p>Las opciones de <b>Imprimir</b>, <b>Guardar</b>, <b>Copiar</b>, <b>Pegar</b>, <b>Deshacer</b> y <b>Rehacer</b> están siempre disponibles en la parte izquierda de la <b>Barra de Herramientas</b>, independientemente de la pestaña seleccionada.</p>
+                <p><img alt="Iconos en la barra de herramientas superior" src="../images/interface/leftpart.png" /></p>
+                </li>
+                <li><b>Estatus de Barras</b> al final de la ventana de edición contiene el indicador de la numeración de páginas, muestra algunas notificaciones (como «Todos los cambios se han guardado»), permite <a href="../HelpfulHints/SpellChecking.htm" onclick="onhyperlinkclick(this)">ajustar el idioma del texto, mostar revisión de ortografía</a>, activar el <a href="../HelpfulHints/Review.htm" onclick="onhyperlinkclick(this)">modo de rastrear cambios</a>, ajustar el <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">zoom</a>.</li>
+                <li>La <b>barra de herramientas izquierda</b> contiene iconos que permiten el uso de la herramienta de <a href="../HelpfulHints/Search.htm" onclick="onhyperlinkclick(this)">Buscar y Reemplazar</a>, abrir el panel de <a href="../HelpfulHints/CollaborativeEditing.htm#comments" onclick="onhyperlinkclick(this)">Comentarios</a>, <a href="../HelpfulHints/CollaborativeEditing.htm#chat" onclick="onhyperlinkclick(this)">Chat</a> y and <a href="../UsageInstructions/CreateTableOfContents.htm#navigation" onclick="onhyperlinkclick(this)">Navegación</a> contactar a nuestro equipo de soporte y mostrar la información sobre el programa.</li>
+                <li>La <b>Barra lateral derecha</b> permite ajustar parámetros adicionales de objetos distintos. Cuando selecciona un objeto en particular en el texto, el icono correspondiente se activa en la barra lateral derecha. Haga clic en este icono para expandir la barra lateral derecha.</li>
+                <li>Las <b>Reglas</b> horizontales y verticales permiten alinear el texto y otros elementos en un documento, establecer márgenes, tabuladores y sangrados de párrafos.</li>
+                <li>El <b>área de trabajo</b> permite ver el contenido del documento, introducir y editar datos.</li>
+                <li>La <b>barra de desplazamiento</b> a la derecha permite desplazarte arriba y abajo en documentos de varias páginas.</li>
+            </ol>
+            <p>Para su conveniencia, puede ocultar varios componentes y mostrarlos de nuevo cuando sea necesario. Para aprender más sobre cómo ajustar los ajustes de vista vaya a  <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">esta página</a>.</p>
+           
+		</div>
+	</body>
+</html>

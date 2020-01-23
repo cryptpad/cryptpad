@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Rellene objetos y seleccione colores</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Fill the added objects with color, picture or texture, select colors for the slide background, autoshape fill and stroke, font." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Rellene objetos y seleccione colores</h1>
+			<p>Usted puede aplicar rellenos distintos al fondo de diapositivas, autoformas y Text Art.</p>
+			<ol>
+			<li>Seleccione un objeto<ul>
+                    <li>Para cambiar el relleno de fondo de una diapositiva, seleccione las diapositivas necesarias en la lista de diapositivas. La pestaña <img alt="Icono Ajustes de diapositiva" src="../images/slide_settings_icon.png" /> <b>Ajustes de diapositiva</b> se activará en la barra derecha lateral.</li>
+                    <li>Para cambiar el relleno de autoformas, haga clic izquierdo en el autoforma necesaria. La pestaña <img alt="Icono Ajustes de forma" src="../images/shape_settings_icon.png" /> <b>Ajustes de diapositiva</b> se activará en la barra derecha lateral.</li>
+                    <li>Para cambiar el relleno del Texto de Arte, haga clic izquierdo en el objeto de texto necesario. La pestaña <img alt="Icono de ajustes de Text Art" src="../images/textart_settings_icon.png" /> <b>Ajustes de Text Art</b> se activará en la barra derecha lateral.</li>
+                </ul>
+			</li>
+			<li>Elija el tipo de relleno deseado</li>
+			<li>Ajuste las propiedades de relleno seleccionadas (vea la descripción detallada de cada tipo de relleno)<p class="note"><b>Nota</b>: para el tipo de letra de las autoformas y Text Art, independientemente del tipo de relleno seleccionado, usted también puede establecer el nivel de <b>Opacidad</b> arrastrando el control deslizante o introduciendo el valor manualmente. El valor predeterminado es <b>100%</b>. Esto corresponde a una opacidad completa. El valor <b>0%</b> corresponde a plena transparencia.</p>
+			</li>
+			</ol>			
+			<p><b>Son los tipos de relleno disponibles:</b></p>
+			<ul>
+				<li><b>Color de relleno</b> - seleccione esta opción para especificar el color que usted quiere aplicar a la parte interna de una diapositiva/autoforma seleccionada.<p><img alt="Color de relleno" src="../images/fill_color.png" /></p>
+				<p>Haga clic en el cuadro coloreado de debajo y seleccione el color necesario en la paleta de colores o especifique cualquier color que le guste:</p>
+			        <p><img alt="Paletas" src="../images/palettes.png" /></p>
+			        <ul>
+			        <li><b>Colores de tema</b> - los colores que corresponden a la combinación de colores seleccionada en la presentación. Una vez que aplica un tema o combinación de colores nuevo, el conjunto de <b>Colores de tema</b> se cambiará.</li>
+			        <li><b>Colores estándar</b> - el conjunto de colores predeterminado.</li>
+			        <li><b>Color personalizado</b> - pulse esta leyenda si no hay ningún color que usted necesita en las paletas disponibles. Seleccione el rango de colores necesario moviendo el deslizante de color vertical y establezca el color arrastrando el selector de color dentro del campo de color cuadrado. Una vez seleccionado un color, verá los valores RGB y sRGB correspondientes en los campos a la derecha. Usted también puede especificar un color basándose en el modelo de color RGB introduciendo los valores numéricos necesarios en los campos <b>R</b>, <b>G</b>, <b>B</b> (red-rojo, green-verde, blue-azul) o introduzca el código hexadecimal sRGB en el campo marcado con el signo <b>#</b>. El color seleccionado se mostrará en el cuadro de visualización previa <b>Nuevo</b>. Si el objeto se rellenó con otro color personalizado, este color se muestra en el cuadro <b>Actual</b> para que pueda comparar el color original con los modificados. Una vez especificado el color, haga clic en el botón <b>Añadir</b>:<p><img alt="Paleta - Color personalizado" src="../images/palette_custom.png" /></p>
+			        <p>El color personalizado se aplicará a su objeto y se añadirá a la paleta <b>Color personalizado</b> del menú.</p>			        
+			        </li>			        
+			        </ul>
+			    <p class="note"><b>Nota</b>: los mismos colores que puede usar cuando selecciona el <b>color de trazo de la autoforma</b>, cambiando el <b>color de fondo</b>, o el <b>color de fondo de tabla</b>.</p>
+				</li>
+			</ul>
+				<hr />
+			<ul>				
+				<li><b>Relleno degradado</b> - seleccione esta opción para rellenar una diapositiva/forma con dos colores que cambian de uno a otro de forma progresiva.<p><img class="floatleft"alt="Relleno degradado" src="../images/fill_gradient.png" /></p>
+				    <ul style="margin-left: 280px;">
+				    <li><b>Estilo</b> - elija una de las opciones disponibles: <b>Lineal</b> (los colores cambian en línea recta; por ejemplo, sobre un eje horizontal/vertical o por una línea diagonal que forma un ángulo de 45 grados) o <b>Radial</b> (los colores cambian por una trayectoria circular del centro a los bordes).</li>
+				    <li><b>Dirección</b> - elija una plantilla en el menú. Si selecciona la gradiente <b>Lineal</b>, las siguientes direcciones estarán disponibles: de la parte superior izquierda a la inferior derecha, de la parte superior a la inferior, de la parte superior derecha a la inferior izquierda, de la parte derecha a la izquierda,de la parte inferior derecha a la superior izquierda, de la parte inferior a la superior, de la parte inferior izquierda a la superior derecha, de la parte izquierda a la derecha. Si selecciona la gradiente <b>Radial</b>, solo una plantilla estará disponible.</li>
+				    <li><b>Gradiente</b> - haga clic en el control deslizante izquierdo <img alt="Control deslizante" src="../images/gradientslider.png" /> debajo de la barra de gradiente para activar la casilla de color que corresponde al primer color. Haga clic en la casilla de color a la derecha para elegir el primer color en la paleta. Arrastre el control deslizante para establecer el punto de degradado - el punto donde un color cambie a otro. Utilice el control deslizante derecho debajo de la barra de gradiente para especificar el segundo color y establecer el punto de degradado.</li>
+				    </ul>			
+				</li>
+			</ul>
+				<hr />
+			<ul>
+				<li><b>Imagen o textura</b> - seleccione esta opción para usar una imagen o textura predefinida como el fondo de una diapositiva/autoforma.<p><img class="floatleft"alt="Relleno de imagen o textura" src="../images/fill_picture.png" /></p>
+				    <ul style="margin-left: 280px;">
+				    <li>Si usted desea usar una imagen como fondo de una diapositiva/autoforma, puede añadir una imagen <b>De archivo</b> de su ordenador HDD o <b>De URL</b> introduciendo la dirección de URL apropiada en la ventana abierta.</li>
+				    <li>Si usted quiere usar una textura como fondo de una diapositiva/autoforma, despliegue el menú <b>De textura</b> y seleccione la textura necesaria.<p>En estos momentos, las siguientes texturas están disponibles: Lienzo, Algodón, Tela oscura, Grano, Granito, Papel gris, Tejido, Piel, Papel marrón, Papiro, Madera.</p>
+				    </li>
+				    </ul>
+			        <ul style="margin-left: 280px;">
+			        <li>En caso de que la <b>Imagen</b> seleccionada tenga más o menos dimensiones que la autoforma o la diapositiva, usted puede seleccionar la opción <b>Estirar</b> o <b>Mosaico</b> en la lista desplegable.<p>La opción <b>Estirar</b> le permite ajustar el tamaño de imagen al tamaño de la diapositiva o la autoforma para que la imagen pueda ocupar todo el espacio.</p>
+			        <p>La opción <b>Mosaico</b> le permite mostrar solo una parte de la imagen más grande manteniendo su tamaño original, o repetir las imágenes pequeñas manteniendo su tamaño original para que ocupen todo el espacio de la diapositiva o la autoforma.</p>
+			        <p class="note"><b>Nota</b>: cualquiera <b>Textura</b> predeterminada ocupa el espacio completamente, pero usted puede aplicar el efecto <b>Estirar</b> si es necesario.</p>
+			        </li>
+			        </ul>			
+				</li>
+			</ul>
+				<hr />
+			<ul>
+				<li><b>Patrón</b> - seleccione esta opción para rellenar una diapositiva/forma con un diseño de dos colores que está compuesto por elementos repetidos de forma regular.<p><img class="floatleft"alt="Relleno de patrón" src="../images/fill_pattern.png" /></p>
+				    <ul style="margin-left: 280px;">
+				        <li><b>Patrón</b> - seleccione uno de los diseños predeterminados en el menú.</li>
+				        <li><b>Color de primer plano</b> - pulse esta casilla de color para cambiar el color de elementos de patrón.</li>
+				        <li><b>Color de fondo</b> - pulse esta casilla de color para cambiar el color de fondo de patrón.</li>
+				    </ul>			
+				</li>
+			</ul>
+				<hr />
+			<ul>
+				<li><b>Sin relleno</b> - seleccione esta opción si no desea usar ningún relleno.</li>
+			</ul>
+		</div>
+	</body>
+</html>

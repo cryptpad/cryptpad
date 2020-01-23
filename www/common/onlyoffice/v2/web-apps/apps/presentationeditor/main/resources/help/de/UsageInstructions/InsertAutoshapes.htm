@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>AutoFormen einfügen und formatieren</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add an autoshape to your presentation and adjust its properties." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>AutoFormen einfügen und formatieren</h1>
+            <h3>AutoForm einfügen</h3>
+			<p>Eine AutoForm in eine Folie <b>einfügen</b>:</p>
+			<ol>
+				<li>Wählen Sie in der Folienliste links die Folie aus, der Sie eine AutoForm hinzufügen wollen.</li>
+				<li>Klicken Sie in der oberen Symbolleiste in den Registerkarten <b>Start</b> oder <b>Einfügen</b> auf <img alt="Form" src="../images/insertautoshape.png" /> <b>Form</b>.</li>
+				<li>Wählen Sie eine der verfügbaren Gruppen von AutoFormen: Standardformen, geformte Pfeile, Mathematik, Diagramme, Sterne &amp; Bänder, Legenden, Buttons, Rechtecke, Linien.</li>
+				<li>Klicken Sie auf in der gewählten Gruppe auf die gewünschte AutoForm.</li>
+				<li>Positionieren Sie den Mauszeiger an der Stelle, an der Sie eine Form hinzufügen möchten.<p class="note"><b>Hinweis</b>: Sie können klicken und ziehen, um die Form auszudehnen.</p>
+				</li>
+				<li>Sobald die AutoForm hinzugefügt ist, können Sie <a href="../UsageInstructions/ManipulateObjects.htm" onclick="onhyperlinkclick(this)">ihre Größe, Position</a> und Eigenschaften ändern.<p class="note"><b>Hinweis</b>: Um eine Bildunterschrift innerhalb der AutoForm hinzuzufügen, wählen Sie die Form auf der Folie aus und geben Sie den Text ein. Ein solcher Text wird Bestandteil der AutoForm (wenn Sie die AutoForm verschieben oder drehen, wird der Text ebenfalls verschoben oder gedreht).</p>
+				</li>
+			</ol>
+			<hr />
+            <h3>Einstellungen der AutoForm anpassen</h3>
+			<p>Einige Eigenschaften der AutoFormen können in der Registerkarte <b>Formeinstellungen</b> in der rechten Seitenleiste geändert werden. Klicken Sie dazu auf die AutoForm und wählen Sie das Symbol <b>Formeinstellungen</b> <img alt="Formeinstellungen" src="../images/shape_settings_icon.png" /> in der rechten Seitenleiste aus. Hier können die folgenden Eigenschaften geändert werden:</p>
+			<p><img class="floatleft"alt="Registerkarte Formeinstellungen" src="../images/shapesettingstab.png" /></p>
+			<ul  style="margin-left: 280px;">
+			<li><b>Füllung</b> - zum Ändern der Füllung einer AutoForm. Folgende Optionen stehen Ihnen zur Verfügung:<ul>
+				<li><b>Farbfüllung</b> - um die homogene Farbe zu bestimmen, mit der Sie die gewählte Form füllen wollen.</li>
+				<li><b>Füllung mit Farbverlauf</b> - um die Form mit einem sanften Übergang von einer Farbe zu einer anderen zu füllen.</li>
+				<li><b>Bild oder Textur</b> - um ein Bild oder eine vorgegebene Textur als Hintergrund der Form zu nutzen.</li>
+				<li><b>Muster</b> - um die Form mit dem zweifarbigen Design zu füllen, das aus regelmäsig wiederholten Elementen besteht.</li>
+				<li><b>Keine Füllung</b> - wählen Sie diese Option, wenn Sie keine Füllung verwenden möchten.</li>
+			</ul>
+			<p>Weitere Informationen zu diesen Optionen finden Sie im Abschnitt <a href="../UsageInstructions/FillObjectsSelectColor.htm" onclick="onhyperlinkclick(this)">Objekte ausfüllen und Farben auswählen</a>.</p>
+			</li>
+			<li id="shapestroke"><b>Strich</b> - in dieser Gruppe können Sie Strichbreite und -farbe der AutoForm ändern.<ul>
+    			<li>Um die <b>Breite</b> zu ändern, wählen Sie eine der verfügbaren Optionen im Listenmenü <b>Göße</b> aus. Die folgenden Optionen stehen Ihnen zur Verfügung: 0,5 Pt., 1 Pt., 1,5 Pt., 2,25 Pt., 3 Pt., 4,5 Pt., 6 Pt. Alternativ können Sie die Option <b>Keine Linie</b> auswählen, wenn Sie keine Umrandung wünschen.</li>
+    			<li>Um die <b>Form</b> zu ändern, klicken Sie auf das gefärbte Feld und <a href="../UsageInstructions/FillObjectsSelectColor.htm" onclick="onhyperlinkclick(this)">wählen Sie die gewünschte Farbe</a>. Sie können die gewählte <b>Designfarbe</b>, eine <b>Standardfarbe</b> oder eine <b>benutzerdefinierte Farbe</b> auswählen.</li>
+                <li>Um die <b>Art der Linie</b> zu ändern, klicken Sie auf das Farbfeld unten und wählen Sie die gewünschte Farbe.</li>
+    			</ul>
+			</li>
+			</ul>
+			<hr />
+			<p>Um die <b>erweiterte Einstellungen</b> der AutoForm zu ändern, klicken Sie mit der rechten Maustaste auf die Form und wählen Sie die Option <b>Form - erweiterte Einstellungen</b> im Menü aus, oder klicken Sie in der rechten Seitenleiste auf die Verknüpfung <b>Erweiterte Einstellungen anzeigen</b>. Das Fenster mit den Formeigenschaften wird geöffnet:</p>
+            <p><img alt="Formeigenschaften - Registerkarte Größe" src="../images/shape_properties1.png" /></p>
+			<p>Über die Registerkarte <b>Größe</b> können Sie die <b>Breite</b> bzw. <b>Höhe</b> der AutoForm ändern. Wenn Sie die Funktion <b>Seitenverhältnis sperren</b> <img alt="Seitenverhältnis sperren" src="../images/constantproportions.png" /> aktivieren (in diesem Fall sieht das Symbol so aus <img alt="Symbol Seitenverhältnis sperren aktiviert" src="../images/constantproportionsactivated.png" />), werden Breite und Höhe gleichmäßig geändert und das ursprüngliche Deitenverhältnis der AutoForm wird beibehalten.</p>
+            <p><img alt="Formeigenschaften - Registerkarte Stärken &amp; Pfeile" src="../images/shape_properties.png" /></p>
+			<p>Die Registerkarte <b>Stärken &amp; Pfeile</b> enthält folgende Parameter:</p>
+			<ul>
+				<li><b>Linienart</b> - diese Option erlaubt Ihnen, die folgenden Parameter zu bestimmen:<ul>
+				<li><b>Abschlusstyp</b> - damit bestimmen Sie den Stil des Linienabschlusses, deswegen kann diese Option nur auf die Formen mit offener Kontur, wie Linien, Polylineen usw. angewandt werden:<ul>
+				    <li><b>Flach</b> - flacher Abschluss</li>
+				    <li><b>Rund</b> - runder Abschluss</li>
+				    <li><b>Quadratisch</b> - quadratisches Linienende</li>
+				    </ul>
+				</li>
+				<li><b>Anschlusstyp</b> - legen Sie die Art der Verknüpfung von zwei Linien fest, z.B. kann diese Option auf Polylinien oder die Ecken von Dreiecken bzw. Vierecken angewendet werden:<ul>
+    				<li><b>Rund</b> - die Ecke wird abgerundet.</li>
+    				<li><b>Schräge Kante</b> - die Ecke wird schräg abgeschnitten.</li>
+    				<li><b>Winkel</b> - spitze Ecke Dieser Typ passt gut bei AutoFormen mit spitzen Winkeln.</li>
+    				</ul>
+    				<p class="note"><b>Hinweis</b>: Der Effekt wird auffälliger, wenn Sie eine hohe Konturbreite nutzen.</p>
+				</li>
+				</ul>
+				</li>
+				<li><b>Pfeile</b> - diese Option ist verfügbar, wenn eine Form aus der Gruppe <b>Linien</b> ausgewählt ist. Dadurch können Sie die Form von <b>Startpfeil</b> und <b>Endpfeil</b> festlegen und die jeweilige <b>Größe</b> bestimmen. Wählen Sie dazu einfach die gewünschte Option aus der Liste aus.</li>
+			</ul>
+            <p id="internalmargins"><img alt="Formeigenschaften - Registerkarte Ränder" src="../images/shape_properties3.png" /></p>
+			<p>Über die Registerkarte <b>Textränder</b> können Sie die <b>oberen</b>, <b>unteren</b>, <b>linken</b> und <b>rechten</b> inneren Ränder der AutoForm ändern (also den Abstand zwischen dem Text innerhalb der Form und dem Rahmen der AutoForm).</p>
+            <p class="note"><b>Hinweis</b>: diese Registerkarte ist nur verfügbar, wenn der AutoForm ein Text hinzugefügt wurde, ansonsten wird die Registerkarte ausgeblendet.</p>
+            <p id ="columns"><img alt="Formeigenschaften - Spalten" src="../images/shape_properties2.png" /></p>
+            <p>Über die Registerkarte <b>Spalten</b> ist es möglich, der AutoForm Textspalten hinzuzufügen und die gewünschte <b>Anzahl der Spalten</b> (bis zu 16) und den <b>Abstand zwischen den Spalten</b> festzulegen. Wenn Sie auf <b>OK</b> klicken, erscheint der bereits vorhandene Text oder jeder beliebige Text den Sie in die AutoForm eingeben, in den Spalten und geht flüssig von einer Spalte in die nächste über.</p>
+            <p><img alt="Formeigenschaften - Alternativtext" src="../images/shape_properties4.png" /></p>
+            <p>Die Registerkarte <b>Alternativtext</b> ermöglicht die Eingabe eines <b>Titels</b> und einer <b>Beschreibung</b>, die Personen mit Sehbehinderungen oder kognitiven Beeinträchtigungen vorgelesen werden kann, damit sie besser verstehen können, welche Informationen in der Form enthalten sind.</p>
+            <hr />
+			<p>Um die hinzugefügte AutoForm zu <b>ersetzen</b>, klicken Sie diese mit der linken Maustaste an, wechseln Sie in die Registerkarte <b>Formeinstellungen</b> in der rechten Seitenleiste und wählen Sie unter <b>AutoForm ändern</b> in der Liste die gewünschte Form aus.</p>
+			<p>Um die hinzugefügte AutoForm zu <b>löschen</b>, klicken Sie dieses mit der linken Maustaste an und drücken Sie die Taste <b>Entfernen</b> auf Ihrer Tastatur.</p>
+			<p>Um mehr über die <b>Ausrichtung</b> einer AuftoForm auf einer Folie zu erfahren oder mehrere AutoFormen <b>anzuordnen</b>, lesen Sie den Abschnitt <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">Objekte auf einer Folie ausrichten und anordnen</a>.</p>
+            <hr />
+            <h3>AutoFormen mithilfe von Verbindungen verbinden</h3>
+            <p>Sie können Autoformen mithilfe von Linien mit Verbindungspunkten verbinden, um Abhängigkeiten zwischen Objekten zu demonstrieren (z.B. wenn Sie ein Flussdiagramm erstellen wollen). Verbindungen erstellen:</p>
+            <ol>
+                <li>Klicken Sie in der oberen Symbolleiste in den Registerkarten <b>Start</b> oder <b>Einfügen</b> auf <img alt="Form" src="../images/insertautoshape.png" /> <b>Form</b>.</li>
+                <li>Wählen Sie die Gruppe <b>Linien</b> im Menü aus.<p><img alt="Formen - Linien" src="../images/connectors.png" /></p>
+                </li>
+                <li>Klicken Sie auf die gewünschte Form in der ausgewählten Gruppe aus (ausgenommen die letzten drei Formen, die keine Verbindungen sind, nämlich <em>Form 10</em>, <em>11</em> und <em>12</em>).</li>
+                <li>Bewegen Sie den Mauszeiger über die erste AutoForm und klicken Sie auf einen der Verbindungspunkte <img alt="Verbindungspunkt" src="../images/connectionpoint.png" />, die auf dem Umriss der Form zu sehen sind.<p><img alt="Verbindungen setzen" src="../images/connectors_firstshape.png" /></p>
+                </li>
+                <li>Bewegen Sie den Mauszeiger in Richtung der zweiten AutoForm und klicken Sie auf den gewünschten Verbindungspunkt auf dem Umriss der form.<p><img alt="Verbindungen setzen" src="../images/connectors_secondshape.png" /></p>
+                </li>
+            </ol>
+            <p>Wenn Sie die verbundenen AutoFormen verschieben, bleiben die Verbindungen an die Form gebunden und bewegen sich mit den Formen zusammen.</p>
+            <p><img alt="Verbundene AutoFormen verschieben" src="../images/connectors_moveshape.png" /></p>
+            <p>Alternativ können Sie die Verbindungen auch von den Form lösen und an andere Verbindungspunkte anbinden.</p>
+		</div>
+	</body>
+</html>

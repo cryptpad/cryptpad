@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Inserte una letra mayúscula</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Insert a drop cap and adjust its frame properties to make your document look more expressive." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Inserte una letra mayúscula</h1>
+			<p>La <b>letra mayúscula</b> es la primera letra de un párrafo que es más grande que las otras y ocupa unas líneas en altura.</p>
+			<p>Para añadir una letra mayúscula,</p>
+			<ol>
+				<li>coloque el cursor en el párrafo necesario,</li>
+                <li>cambie a la pestaña <b>Insertar</b> de la barra de herramientas superior,</li>
+				<li>Haga clic en el icono <img alt="Icono Insertar mayúscula" src="../images/insert_dropcap_icon.png" /> <b>Insertar mayúscula</b>  en la barra de herramientas superior,</li>
+				<li>en la lista desplegable abierta seleccione la opción necesaria:<ul>
+				    <li><b>En texto</b>  - para colocar la letra capital en el párrafo.</li>
+				    <li><b>En margen</b>  - para colocar la letra mayúscula en el margen izquierdo.</li>
+				    </ul>
+				</li>
+			</ol>
+			<p><img class="floatleft" alt="Ejemplo de letra mayúscula" src="../images/dropcap_example.png" /> El primer carácter del párrafo seleccionado se convertirá en una letra mayúscula. Si es necesario que la letra mayúscula incluya también otros caracteres, añádelos manualmente: seleccione la letra mayúscula y introduzca otras letras necesarias.</p>
+			<p>Para ajustar el aspecto de la letra mayúscula ( tamaño, tipo de letra, estilo de decoración o color), seleccione la letra y utilice los iconos correspondientes en la pestaña de <b>Inicio</b> barra de herramientas superior.</p>
+			<p>Cuando la letra mayúscula está seleccionada, está rodeada por un <b>marco</b> (se usa para colocar la letra mayúscula en la página). Puede de forma rápida cambiar el tamaño del marco arrastrando sus bordes o desplazarlo usando el <img alt="Flecha" src="../images/arrow.png" /> icono que aparecerá si mantiene cursor del ratón encima del marco.</p>
+			<p>Para borrar la letra mayúscula añadida, selecciónela, pulse el icono <img alt="Icono Insertar mayúscula" src="../images/insert_dropcap_icon.png" /> <b>Insertar letra mayúscula</b> en la pestaña <b>Insertar</b> en la barra de herramientas superior y elija la opción <b>Nada</b> <img alt="Insertar letra mayúscula - Nada" src="../images/dropcap_none.png" /> en la lista desplegable.</p>
+			<hr />
+			<p>Para ajustar los parámetros de la letra mayúscula añadida, selecciónela, pulse el <img alt="Icono Insertar mayúscula" src="../images/insert_dropcap_icon.png" /> icono <b>Insertar letra mayúscula</b> en la barra de herramientas superior y elija la opción <b>Ajustes de letra capital</b> en la lista desplegable. Se abrirá la ventana <b>Letra capital-ajustes avanzados</b>:</p>
+            <p><img alt="Letra capital - Ajustes avanzados" src="../images/dropcap_properties_1.png" /></p>
+			<p>La pestaña <b>letra capital</b> permite establecer los parámetros siguientes:</p>
+			    <ul>
+			    <li><b>Posición</b> - se usa para cambiar la posición de la letra capital. Seleccione la opción <b>En texto</b> o <b>En margen</b>, o pulse la opción <b>Ningún</b> para borrar la letra capital.</li>
+			    <li><b>Letra</b> - se usa para seleccionar uno de los tipos de letra disponibles.</li>
+			    <li><b>Altura en filas</b> - se usa para especificar cuantas líneas ocupa la letra capital. Es posible seleccionar un valor de 1 a 10.</li>
+			    <li><b>Distancia del texto</b> - se usa para especificar el espacio entre un texto y el borde derecho del marco que rodea la letra capital.</li>
+			    </ul>
+            <p><img alt="Letra capital - Ajustes avanzados" src="../images/dropcap_properties_2.png" /></p>
+			<p>La pestaña <b>Bordes y relleno</b> permite añadir un borde a la letra capital y ajustar sus parámetros. Aquí están los parámetros:</p>
+			<ul>
+				<li>Parámetros de <b>borde</b> (tamaño, color y presencia o ausencia) - establezca el tamaño del borde, seleccione su color y elija los bordes (superior, inferior, izquierdo, derecho o la combinación) a los que usted quiere aplicar los cambios.</li>
+				<li><b>Color de fondo</b> - elija el color de fondo de la letra capital.</li>
+			</ul>
+            <p><img alt="Letra capital - Ajustes avanzados" src="../images/dropcap_properties_3.png" /></p>
+			<p>La pestaña <b>Márgenes</b> permite establecer la distancia entre la letra capital y los bordes <b>superior</b>, <b>inferior</b>, <b>izquierdo</b> y <b>derecho</b> que la rodean (si se han añadido anteriormente).</p>
+			<hr />
+			<p>Una vez añadida la letra capital usted también puede cambiar los parámetros de <b>Marco</b>. Para acceder a ellos, haga clic derecho en el marco y seleccione la opción <b>Ajustes avanzados de marco</b> en el menú. Se abrirá la ventana <b>Marco - ajustes avanzados</b>:</p> 
+            <p><img alt="Marco - ajustes avanzados" src="../images/frame_properties_1.png" /></p>
+			<p>La pestaña <b>Marco</b> permite establecer los parámetros siguientes:</p>
+			<ul>
+				<li><b>Posición</b> - se usa para seleccionar la posición del marco en un texto <b>flotante</b> o <b>de flujo</b>. O usted puede seleccionar la opción <b>Ningún</b> para borrar el marco.</li>
+				<li><b>Ancho</b> y <b>Altura</b> - se usan para cambiar dimensiones del marco. La opción <b>Auto</b> permite automáticamente establecer el tamaño del marco para que la letra capital lo ajuste. La opción <b>Exacto</b> permite especificar los valores fijos. La opción <b>Por lo menos</b> se usa para establecer el valor de altura mínimo (si usted cambia el tamaño de la letra capital, la altura del marco se cambiará también, pero no puede ser menos que el valor especificado).</li>
+				<li>Parámetros <b>horizontales</b> - se usan para establecer la <b>posición</b> exacta del marco <b>en relación a</b> margen, página o columna en una unidad de medida seleccionada, o alinear el marco (izquierdo, al centro o derecho) <b>en relación a</b> uno de los puntos enumerados. Usted también puede establecer <b>Distancia del texto</b> horizontal, a saber, el espacio entre los bordes del marco verticales y el texto de párrafo.</li>
+				<li>Los parámetros <b>verticales</b> se usan para establecer la <b>posición</b> exacta del marco <b>en relación a</b> margen, página o columna en una unidad de medida seleccionada, o alinear el marco (izquierdo, al centro o derecho) <b>en relación a</b> uno de los puntos enumerados. También puede establecer <b>Distancia del texto</b> es decir, el espacio entre los bordes del marco verticales y horizontales y el texto de párrafo.</li>
+				<li><b>Desplazar con texto</b> - se usa para especificar si el marco mueve también cuando mueve el párrafo al que se refiere el marco.</li>
+			</ul><!--<img alt="Frame - Advanced Settings" src="../images/Frame_properties_2.png" />--><p>Usando las pestañas <b>Bordes y relleno</b> y <b>Márgenes</b> usted puede estableсer los mismos parámetros que en la ventana <b>Ajustes avanzados - letra capital</b>.</p><!--<img alt="Frame - Advanced Settings" src="../images/Frame_properties_3.png" />
+			<p>The <b>Margins</b> tab allows to set just the same parameters as at the tab of the same name in the <b>Drop Cap - Advanced Settings</b> window.</p>--></div>
+	</body>
+</html>

@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Onglet Modules complémentaires</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Présentation de l'interface utilisateur de Spreadsheet Editor - Onglet Modules complémentaires" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Onglet Modules complémentaires</h1>
+            <p>L'onglet <b>Modules complémentaires</b> permet d'accéder à des fonctions d'édition avancées à l'aide de composants tiers disponibles. Ici vous pouvez également utiliser des macros pour simplifier les opérations de routine.</p>
+            <p><img alt="Onglet Modules complémentaires" src="../images/interface/pluginstab.png" /></p>
+            <p>Le bouton <b>Macros</b> permet d'ouvrir la fenêtre où vous pouvez créer vos propres macros et les exécuter. Pour en savoir plus sur les macros, veuillez vous référer à la <a target="_blank" href="https://api.onlyoffice.com/plugin/macros" onclick="onhyperlinkclick(this)">documentation de notre API</a>.</p>
+            <p>Actuellement, les modules suivants sont disponibles :</p>		
+            <ul>
+                <li><b>ClipArt</b> permet d'ajouter des images de la collection clipart dans votre classeur,</li>
+                <li><b>Éditeur photo</b> permet d'éditer des images : recadrer, redimensionner, appliquer des effets, etc.</li>
+                <li><b>Table de symboles</b> permet d'insérer des symboles spéciaux dans votre texte,</li>
+                <li><b>Traducteur</b> permet de traduire le texte sélectionné dans d'autres langues,</li>
+                <li><b>YouTube</b> permet d'intégrer des vidéos YouTube dans votre classeur.</li>
+            </ul>
+            <p>Pour en savoir plus sur les modules complémentaires, veuillez vous référer à la <a target="_blank" href="https://api.onlyoffice.com/plugin/basic" onclick="onhyperlinkclick(this)">documentation de notre API</a>. Tous les exemples de modules open source actuellement disponibles sont disponibles sur <a target="_blank" href="https://github.com/ONLYOFFICE/sdkjs-plugins" onclick="onhyperlinkclick(this)">GitHub</a>.</p>
+		</div>
+	</body>
+</html>

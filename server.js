@@ -70,8 +70,10 @@ var setHeaders = (function () {
         return function (req, res) {
             const h = [
                     /^\/pad(2)?\/inner\.html.*/,
+                    /^\/common\/onlyoffice\/.*\/index\.html.*/,
                     /^\/sheet\/inner\.html.*/,
-                    /^\/common\/onlyoffice\/.*\/index\.html.*/
+                    /^\/ooslide\/inner\.html.*/,
+                    /^\/oodoc\/inner\.html.*/,
                 ].some((regex) => {
                     return regex.test(req.url)
                 }) ? padHeaders : headers;

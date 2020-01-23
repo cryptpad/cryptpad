@@ -38,6 +38,7 @@ define([
     }).nThen(function (/*waitFor*/) {
         var addData = function (obj) {
             obj.ooType = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
+            obj.ooForceVersion = localStorage.CryptPad_ooVersion || sessionStorage.CryptPad_ooVersion || "";
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
             sframeChan.on('Q_OO_SAVE', function (data, cb) {
@@ -64,8 +65,8 @@ define([
                 var owners, expire;
                 nThen(function (waitFor) {
                     if (Utils.rtConfig) {
-                        owners = Utils.rtConfig.owners;
-                        expire = Utils.rtConfig.expire;
+                        owners = Utils.Util.find(Utils.rtConfig, ['metadata', 'owners']);
+                        expire = Utils.Util.find(Utils.rtConfig, ['metadata', 'expire']);
                         return;
                     }
                     Cryptpad.getPadAttribute('owners', waitFor(function (err, res) {
@@ -86,6 +87,32 @@ define([
                             validateKey: Utils.secret.keys.validateKey
                         }
                     }, cb);
+                });
+            });
+            sframeChan.on('EV_OO_PIN_IMAGES', function (list) {
+                Cryptpad.getPadAttribute('ooImages', function (err, res) {
+                    if (err) { return; }
+                    if (!res || !Array.isArray(res)) { res = []; }
+                    var toPin = [];
+                    var toUnpin = [];
+                    res.forEach(function (id) {
+                        if (list.indexOf(id) === -1) {
+                            toUnpin.push(id);
+                        }
+                    });
+                    list.forEach(function (id) {
+                        if (res.indexOf(id) === -1) {
+                            toPin.push(id);
+                        }
+                    });
+                    toPin = Utils.Util.deduplicateString(toPin);
+                    toUnpin = Utils.Util.deduplicateString(toUnpin);
+                    Cryptpad.pinPads(toPin, function () {});
+                    Cryptpad.unpinPads(toUnpin, function () {});
+                    if (!toPin.length && !toUnpin.length) { return; }
+                    Cryptpad.setPadAttribute('ooImages', list, function (err) {
+                        if (err) { console.error(err); }
+                    });
                 });
             });
             sframeChan.on('Q_OO_COMMAND', function (obj, cb) {

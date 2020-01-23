@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>NETTOARBEITSTAGE.INTL-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>NETTOARBEITSTAGE.INTL-Funktion</h1>
+			<p>Die Funktion <b>NETTOARBEITSTAGE.INTL</b> gehört zur Gruppe der Daten- und Zeitfunktionen. Sie gibt die Anzahl der vollen Arbeitstage zwischen zwei Datumsangaben zurück. Dabei werden Parameter verwendet, um anzugeben, welche und wie viele Tage auf Wochenenden fallen.</p>
+			<p>Die Formelsyntax der Funktion <b>NETTOARBEITSTAGE.INTL</b> ist:</p> 
+			<p style="text-indent: 150px;"><b><em>NETTOARBEITSTAGE.INTL(Ausgangsdatum;Enddatum;[Wochenende];[Freie_Tage])</em></b></p> 
+			<p>Dabei gilt:</p> 
+				<p style="text-indent: 50px;"><b><em>Ausgangsdatum</em></b> ist das erste Datum des Zeitraums, der mit der Funktion <a href="Date.htm" onclick="onhyperlinkclick(this)">Datum</a> oder einer anderen Datums- und Uhrzeitfunktion eingegeben wurde.</p>
+				<p style="text-indent: 50px;"><b><em>Enddatum</em></b> ist eine Zahl, die das letzte Datum des Zeitraums darstellt, das mit der Funktion <a href="Date.htm" onclick="onhyperlinkclick(this)">Datum</a> oder einer anderen Datums- und Uhrzeitfunktion eingegeben wurde.</p>
+				<p style="text-indent: 50px;"><b><em>Wochenende</em></b> ist ein optionales Argument, eine Wochenendnummer oder eine Zeichenfolge, die als Wochenenden zu betrachten sind. Mit Wochenendnummernwerten werden die folgenden Wochenendtage angegeben:</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Wochenendnummer</b></td>
+                    <td><b>Wochenendtage</b></td>
+                </tr>
+                <tr>
+                    <td>1 oder nicht angegeben</td>
+                    <td>Samstag, Sonntag</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Sonntag, Montag</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Montag, Dienstag</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Dienstag, Mittwoch</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Mittwoch, Donnerstag</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Donnerstag, Freitag</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Freitag, Samstag</td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>Nur Sonntag</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>Nur Montag</td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td>Nur Dienstag</td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td>Nur Mittwoch</td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td>Nur Donnerstag</td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td>Nur Freitag</td>
+                </tr>
+                <tr>
+                    <td>17</td>
+                    <td>Nur Samstag</td>
+                </tr>
+            </table>
+            <p style="text-indent: 50px;">Wochenendzeichenfolgenwerte setzen sich immer aus sieben Zeichen zusammen. Jedes Zeichen in der Zeichenfolge stellt einen Wochentag dar, beginnend mit Montag. 0 steht für einen Arbeitstag und 1 steht für einen arbeitsfreien Tag. <em>0000011</em> ergibt z. B. ein Wochenende (Samstag und Sonntag). Die Zeichenfolge <em>&quot;1111111&quot;</em> ist ungültig.</p>
+            <p style="text-indent: 50px;"><b><em>Freie_Tage</em></b> ist eine optionale Gruppe von Datumsangaben die zusätzlich zu <b><em>Wochenende</em></b> aus dem Arbeitskalender ausgeschlossen werden sollen. Sie können dieses Argument mit der Funktion <a href="Date.htm" onclick="onhyperlinkclick(this)">Datum</a> oder einer anderen Datums- und Uhrzeitfunktion eingeben oder einen Zellbereich mit Daten angeben.</p>
+			<p>Anwendung der Funktion <b>NETTOARBEITSTAGE.INTL</b>:</p>
+			<ol>
+			<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
+			<li>Wählen Sie die Gruppe <b>Datums- und Uhrzeitfunktionen</b> aus der Liste aus.</li>
+			<li>Klicken Sie auf die Funktion <b>NETTOARBEITSTAGE.INTL</b>.</li>
+			<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.</li>
+			<li>Drücken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+			<p style="text-indent: 150px;"><img alt="NETTOARBEITSTAGE.INTL-Funktion" src="../images/networkdays-intl.png" /></p>
+		</div>
+	</body>
+</html>

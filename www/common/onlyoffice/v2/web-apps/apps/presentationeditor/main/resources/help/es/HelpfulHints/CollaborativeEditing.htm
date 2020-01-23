@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Edición de presentación en colaboración</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Tips on collaborative editing" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Edición de presentación en colaboración</h1>
+			<p><b>El editor de presentaciones</b> le ofrece la posibilidad de trabajar en una presentación en colaboración con otros usuarios. Esta función incluye:</p>
+			<ul>
+				<li class="onlineDocumentFeatures">acceso simultáneo de varios usuarios a la presentación editada</li>
+				<li class="onlineDocumentFeatures">indicación visual de objetos que otros usuarios están editando</li>
+				<li class="onlineDocumentFeatures">visualización de cambios en tiempo real o sincronización de cambios al pulsar un botón</li>
+				<li class="onlineDocumentFeatures">chat para compartir ideas sobre partes en concreto de una presentación</li>
+				<li>comentarios que contienen la descripción de una tarea o un problema que hay que resolver</li>
+			</ul>
+            <div class="onlineDocumentFeatures">
+                <h3>Co-edición</h3>
+                <p>El <b>Editor de Presentación</b> permite seleccionar uno de los dos modos de co-edición disponibles. <b>Rápido</b> se usa de forma predeterminada y muestra los cambios hechos por otros usuarios en tiempo real. <b>Estricto</b> se selecciona para ocultar los cambios de otros usuarios hasta que usted haga clic en el icono <b>Guardar</b> <img alt="Icono Guardar" src="../images/saveupdate.png" /> para guardar sus propios cambios y aceptar los cambios hechos por otros usuarios. El modo se puede seleccionar en los <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Ajustes Avanzados</a>. También es posible elegir el modo necesario utilizando el icono <img alt="Icono del modo de Co-edición" src="../images/coeditingmode.png" /> <b>Modo de Co-edición</b> en la pestaña <b>Colaboración</b> de la barra de herramientas superior:</p>
+                <p><img alt="Menú del modo de Co-edición" src="../images/coeditingmodemenu.png" /></p>
+                <p>Cuando una presentación se está editando por varios usuarios simultáneamente en el modo <b>Estricto</b>, los objetos editados (autoformas, objetos de texto, tablas, imágenes, gráficos) aparecen marcados con línea discontinua de diferentes colores. El objeto que está editando se rodea con una línea discontinua de color verde. Las líneas rojas discontinuas indican que los objetos se están editando por otros usuarios. Al poner el cursor del ratón sobre uno de los pasajes editados se muestra el nombre del usuario que está editandolo en este momento. El modo <b>Rápido</b> mostrará las acciones y los nombres de los coeditores cuando ellos están editando el texto.</p>
+                <p>El número de usuarios que están trabajando en la presentación actual se especifica en la parte derecha del encabezado de editor -<img alt="Icono Número de usuarios" src="../images/usersnumber.png" /> . Si quiere ver quién está editando el archivo en ese preciso momento, pulse este icono o abrir el panel <b>Chat</b> con la lista completa de los usuarios.</p>
+                <p>Cuando ningún usuario está viendo o editando el archivo, el icono en el encabezado del editor estará así <img alt="Gestionar derechos de acceso de documentos" src="../images/access_rights.png" />, y le permitirá a usted organizar los usuarios que tienen acceso al archivo desde el documento: invitar a nuevos usuarios y otorgarles acceso completo o de solo lectura, o niegue a algunos usuarios los derechos de acceso al archivo. Haga clic en este icono para manejar acceso al archivo; este se puede realizar cuando no hay otros usuarios que están viendo o co-editando el documento en este momento y cuando hay otros usuarios y el icono parece como <img alt="Icono Número de usuarios" src="../images/usersnumber.png" />. También es posible establecer derechos de acceso utilizando el icono <img alt="Icono de comparitr" src="../images/sharingicon.png" /> <b>Compartir</b> en la pestaña <b>Colaboración</b> de la barra de herramientas superior:</p>
+                <p>Cuando uno de los usuarios guarda sus cambios al hacer clic en el icono <img alt="Icono Guardar" src="../images/savewhilecoediting.png" />, los otros verán una nota dentro de la barra de estado indicando que hay actualizaciones. Para guardar los cambios que usted ha realizado, y que así otros usuarios puedan verlos y obtener las actualizaciones guardadas por sus co-editores, haga clic en el icono <img alt="Icono Guardar" src="../images/saveupdate.png" /> en la esquina superior izquierda de la barra de herramientas superior. Las actualizaciones se resaltarán para que usted pueda verificar qué se ha cambiado de forma concreta.</p>
+                <h3>Chat</h3>
+                <p>Usted puede usar esta herramienta para coordinar el proceso de co-edición sobre la marcha, por ejemplo, para asignar los párrafos a cada compañero de trabajo y especificar, que párrafo va a editar ahora usted.</p>
+                <p>Los mensajes de Chat se almacenan solo durante una sesión. Para discutir el contenido del documento es mejor usar comentarios que se almacenen hasta que decida eliminarlos.</p>
+                <p>Para acceder al chat y dejar un mensaje para otros usuarios,</p>
+                <ol>
+                    <li>Haga clic en el <img alt="Icono Chat" src="../images/chaticon.png" /> ícono en la barra de herramientas de la izquierda, o <br /> cambie a la pestaña <b>Colaboración</b> de la barra de herramientas superior y haga clic en el botón de <img alt="Icono Chat" src="../images/chat_toptoolbar.png" /> <b>Chat</b>,</li>
+                    <li>introduzca su texto en el campo correspondiente debajo,</li>
+                    <li>pulse el botón <b>Enviar</b>.</li>
+                </ol>
+                <p>Todos los mensajes dejados por otros usuarios se mostrarán en el panel a la izquierda. Si hay mensajes nuevos que no ha leído todavía, el icono de chat aparecerá así - <img alt="Icono Chat" src="../images/chaticon_new.png" />.</p>
+                <p>Para cerrar el panel con mensajes de chat, haga clic en el ícono <img alt="Icono Chat" src="../images/chaticon.png" /> en la barra de herramientas de la izquierda o el botón <img alt="Icono Chat" src="../images/chat_toptoolbar.png" /> <b>Chat</b> en la barra de herramientas superior una vez más.</p>
+            </div>
+            <h3>Comentarios</h3>
+                <p>Para dejar un comentario a un objeto determinado (cuadro de texto, forma, etc.):</p>
+                <ol>
+                    <li>seleccione un objeto que en su opinión tiene un error o problema,</li>
+                    <li>cambie a la pestaña <b>Insertar</b> o <b>Colaboración</b> de la barra de herramientas superior y haga clic en el botón <img alt="Icono de Comentario" src="../images/comment_toptoolbar.png" /> <b>Comentario</b>, o haga <br /> clic derecho en el objeto seleccioando y seleccione la opción <b>Añadir Comentario</b> del menú,<br /></li>
+                    <li>introduzca el texto necesario,</li>
+                    <li>Haga clic en el botón <b>Añadir comentario/Añadir</b>.</li>
+                </ol>
+                <p>El objeto que usted ha comentado será marcado con el icono <img alt="Icono objeto comentado" src="../images/added_comment_icon.png" />. Para ver el comentario, solo pulse este icono.</p>
+                <p>Para agregar un comentario a una determinada diapositiva, seleccione la diapositiva y utilice el botón <img alt="Icono de Comentario" src="../images/comment_toptoolbar.png" /> <b>Comentario</b> en la pestaña <b>Insertar</b> o <b>Colaborar</b> de la barra de herramientas superior. El comentario agregado se mostrará en la esquina superior izquierda de la diapositiva.</p>
+                <p>Para crear un comentario a nivel de presentación que no esté relacionado con un determinado objeto o diapositiva, haga clic en el icono <img alt="Icono Comentarios" src="../images/commentsicon.png" /> en la barra de herramientas izquierda para abrir el panel <b>Comentarios</b> y usar el enlace <b>Añadir Comentario al Documento</b>. Los comentarios a nivel de presentación se pueden ver en el panel <b>Comentarios</b>. Los comentarios relacionados con objetos y diapositivas también están disponibles aquí.</p>
+                <p>Otro usuario puede contestar al comentario añadido haciendo preguntas o informando sobre el trabajo realizado. Para hacerlo, pulse el enlace <b>Añadir respuesta</b> que se sitúa debajo del comentario.</p>
+                <p>Puede gestionar sus comentarios añadidos de esta manera:</p>
+                <ul>
+                    <li>editar los comentarios pulsando en el icono <img alt="Icono Editar" src="../images/editcommenticon.png" />,</li>
+                    <li>eliminar los comentarios pulsando en el icono <img alt="Icono Borrar" src="../images/deletecommenticon.png" />,</li>
+                    <li>cierre la discusión haciendo clic en el icono <img alt="Icono resolver" src="../images/resolveicon.png" /> si la tarea o el problema que usted ha indicado en su comentario se ha solucionado, después de esto la discusión que usted ha abierto con su comentario obtendrá el estado de resuelta. Para abrir la discusión de nuevo, haga clic en el icono <img alt="Icono Abrir de nuevo" src="../images/resolvedicon.png" />.</li>
+                </ul>
+                <p>Nuevos comentarios añadidos por otros usuarios se harán visibles solo después de hacer clic en el icono <img alt="Icono Guardar" src="../images/saveupdate.png" /> en la esquina superior izquierda de la barra superior de herramientas.</p>
+                <p>Para cerrar el panel con comentarios, haga clic en el icono <img alt="Icono Comentarios" src="../images/commentsicon.png" /> situado en la barra de herramientas izquierda una vez más.</p>
+            </div>
+	</body>
+</html>

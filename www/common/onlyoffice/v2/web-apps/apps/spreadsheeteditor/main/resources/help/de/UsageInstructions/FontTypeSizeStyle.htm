@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Schriftart, -größe und -farbe festlegen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Change the following formatting parameters: font type, size, style, and colors" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Schriftart, -größe und -farbe festlegen</h1>
+			<p>Mithilfe der entsprechenden Symbole in der Registerkarte <b>Start</b> auf der oberen Symbolleiste können Sie Schriftart und Größe auswählen, einen DekoStil auf die Schrift anwenden und die Farben der Schrift und des Hintergrunds ändern.</p>
+			<p class="note"><b>Hinweis</b>: Wenn Sie die Formatierung auf Daten anwenden möchten, die bereits im Tabellenblatt vorhanden sind, wählen Sie diese mit der Maus oder <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">mithilfe der Tastatur</a> aus und legen Sie die gewünschte Formatierung für die ausgewählten Daten fest. Wenn Sie mehrere nicht angrenzende Zellen oder Zellbereiche formatieren wollen, halten Sie die Taste <b>STRG</b> gedrückt und wählen Sie die gewünschten Zellen/Zellenbereiche mit der Maus aus.</p>
+			<table>
+				<tr>
+					<td>Schriftart</td>
+					<td><img alt="Schriftart" src="../images/fontfamily.png" /></td>
+					<td>Wird verwendet, um eine Schriftart aus der Liste mit den verfügbaren Schriftarten zu wählen.</td>
+				</tr>
+				<tr>
+					<td>Schriftgröße</td>
+					<td><img alt="Schriftgröße" src="../images/fontsize.png" /></td>
+					<td>Über diese Option kann der gewünschte Wert für die Schriftgröße aus einer List ausgewählt werden oder manuell in das dafür vorgesehene Feld eingegeben werden.</td>
+				</tr>
+				<tr>
+					<td>Schrift vergrößern</td>
+					<td><img alt="Schriftgröße" src="../images/larger.png" /></td>
+					<td>Bei jedem Klick auf das Symbol wird die Schrift um 1 Punkt vergrößert.</td>
+				</tr>
+				<tr>
+					<td>Schrift verkleinern</td>
+					<td><img alt="Schriftgröße" src="../images/smaller.png" /></td>
+					<td>Bei jedem Klick auf das Symbol wird die Schrift um 1 Punkt verkleinert.</td>
+				</tr>
+				<tr>
+					<td>Fett</td>
+					<td><img alt="Fett" src="../images/bold.png" /></td>
+					<td>Der gewählte Textabschnitt wird durch fette Schrift hervorgehoben.</td>
+				</tr>
+				<tr>
+					<td>Kursiv</td>
+					<td><img alt="Kursiv" src="../images/italic.png" /></td>
+					<td>Der gewählte Textabschnitt wird durch die Schrägstellung der Zeichen hervorgehoben.</td>
+				</tr>
+				<tr>
+					<td>Unterstrichen</td>
+					<td><img alt="Unterstrichen" src="../images/underline.png" /></td>
+					<td>Der gewählten Textabschnitt wird mit einer Linie unterstrichen.</td>
+				</tr>
+                <tr>
+                    <td>Durchgestrichen</td>
+                    <td><img alt="Durchgestrichen" src="../images/strike.png" /></td>
+                    <td>Der gewählten Textabschnitt wird mit einer Linie durchgestrichen.</td>
+                </tr>
+                <tr>
+                    <td>Tiefgestellt/Hochgestellt</td>
+                    <td><img alt="Tiefgestellt" src="../images/subscripticon.png" /></td>
+                    <td>Auswählen der Option <b>Hochgestellt</b> oder <b>Tiefgestellt</b>. <b>Hochgestellt</b> - Text verkleinern und hochstellen, wie beispielsweise in Brüchen. <b>Tiefgestellt</b> - Text verkleinern und tiefstellen, wie beispielsweise in chemischen Formeln.</td>
+                </tr>
+                <tr>
+					<td>Schriftfarbe</td>
+					<td><img alt="Schriftfarbe" src="../images/fontcolor.png" /></td>
+					<td>Die Farbe von Buchstaben/Zeichen in Zellen ändern.</td>
+				</tr>
+				<tr>
+					<td>Hintergrundfarbe</td>
+					<td><img alt="Hintergrundfarbe" src="../images/backgroundcolor.png" /></td>
+					<td>Farbe des Zellenhintergrunds ändern.</td>
+				</tr>
+				<tr>
+					<td>Farbschema ändern</td>
+					<td><img alt="Farbschema ändern" src="../images/changecolorscheme.png" /></td>
+					<td>Wird verwendet, um die Standardfarbpalette für Arbeitsblattelemente (Schriftart, Hintergrund, Diagramme und Diagrammelemente) zu ändern, indem Sie eine der verfügbaren Schemata auswählen: <b>Office</b>, <b>Graustufen</b>, <b>Apex</b>, <b>Aspect</b>, <b>Civic</b>, <b>Concourse</b>, <b>Equity</b>, <b>Flow</b>, <b>Foundry</b>, <b>Median</b>, <b>Metro</b>, <b>Module</b>, <b>Odulent</b>, <b>Oriel</b>, <b>Origin</b>, <b>Papier</b>, <b>Solstice</b>, <b>Technic</b>, <b>Trek</b>, <b>Urban</b>, oder <b>Verve</b>.</td>
+				</tr>
+			</table>
+			<p><p class="note"><b>Hinweis</b>: Sie können auch eine der Formatierungsvoreinstellungen anwenden. Wählen Sie dazu die Zelle aus, die Sie formatieren möchten und wählen Sie dann die gewünschte Voreinstellung aus der Liste auf der Registerkarte <b>Start</b> in der oberen Symbolleiste:<br /><br /> <img alt="Voreinstellungen Formatierung" src="../images/presets.png" /></p>
+			<p>Schriftart/Hintergrundfarbe ändern:</p>
+			<ol>
+			<li>Wählen Sie eine Zelle oder mehrere Zellen aus oder das ganze Blatt, mithilfe der Tastenkombination <b>Strg+A</b>.</li>
+				<li>Klicken Sie auf der oberen Symbolleiste auf das entsprechende Symbol.</li>
+				<li>Wählen Sie eine beliebige Farbe auf den verfügbaren Paletten aus.<p><img alt="Palette" src="../images/palette.png" /></p>
+					<ul>
+						<li><b>Designfarben</b> - die Farben, die dem gewählten Farbschema der Tabelle entsprechen.</li>
+						<li><b>Standardfarben</b> - die voreingestellten Standardfarben.</li>
+						<li><b>Benutzerdefinierte Farbe</b> - klicken Sie auf diese Option, wenn Ihre gewünschte Farbe nicht in der Palette mit verfügbaren Farben enthalten ist. Wählen Sie den gewünschten Farbbereich aus, indem Sie den vertikalen Farbregler verschieben und die entsprechende Farbe festlegen, indem Sie den Farbwähler innerhalb des großen quadratischen Farbfelds ziehen. Sobald Sie eine Farbe mit dem Farbwähler bestimmt haben, werden die entsprechenden RGB- und sRGB-Farbwerte in den Feldern auf der rechten Seite angezeigt. Sie können eine Farbe auch anhand des RGB-Farbmodells bestimmen, indem Sie die gewünschten nummerischen Werte in den Feldern <b>R</b>, <b>G</b>, <b>B</b> (Rot, Grün, Blau) festlegen oder den sRGB-Hexadezimalcode in das Feld mit dem <b>#</b>-Zeichen eingeben. Die gewählte Farbe erscheint im Vorschaufeld <b>Neu</b>. Wenn das Objekt vorher mit einer benutzerdefinierten Farbe gefüllt war, wird diese Farbe im Feld <b>Aktuell</b> angezeigt, so dass Sie die Originalfarbe und die Zielfarbe vergleichen könnten. Wenn Sie die Farbe festgelegt haben, klicken Sie auf <b>Hinzufügen</b>.<p><img alt="Palette - Benutzerdefinierte Farbe" src="../images/palette_custom.png" /></p>
+						<p>Die benutzerdefinierte Farbe wird auf die Daten angewandt und zur Palette <b>Benutzerdefinierte Farbe</b> hinzugefügt.</p>
+						</li>
+						</ul>
+					</li>
+			</ol>
+			<p>Die Hintergrundfarbe in einer bestimmten Zelle löschen:</p>
+			<ol>
+				<li>Wählen Sie eine Zelle, einen Zellenbereich oder das ganze Blatt mithilfe der Tastenkombination <b>STRG+A</b> aus.</li>
+				<li>Klicken Sie in der Registerkarte <b>Start</b> in der oberen Symbolleiste auf das Symbol <b>Hintergrundfarbe</b> <img alt="Hintergrundfarbe" src="../images/backgroundcolor.png" />.</li>
+				<li>Wählen Sie das Symbol <img alt="Keine Füllung" src="../images/nofill.png" />.</li>
+			</ol>
+		</div>
+	</body>
+</html>

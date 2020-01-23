@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Seitenzahlen einfügen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Insert page numbers to navigate through your document easier" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Seitenzahlen einfügen</h1>
+			<p>Seitenzahlen in ein Dokument einfügen:</p>
+			<ol>
+                <li>Wechseln Sie in der oberen Symbolleiste auf die Registerkarte <b>Einfügen</b>.</li>
+                <li>Klicken Sie in der oberen Symbolleiste auf das Symbol <b>Kopf- und Fußzeile bearbeiten</b> <img alt="Kopf-/Fußzeile bearbeiten" src="../images/headerfooter.png" />.</li>
+				<li>Klicken Sie auf <b>Seitenzahl einfügen</b>.</li>
+				<li>Wählen Sie eine der folgenden Optionen:<ul>
+						<li>Wählen Sie die Position der Seitenzahl aus, um zu jeder Dokumentseite eine Seitenzahl hinzuzufügen.</li>
+						<li>Um an der aktuellen Cursorposition eine Seitenzahl einzufügen, wählen Sie die Option <b>An aktueller Position</b>.</li>
+					</ul>
+				</li>
+			</ol>
+            <p>Anzahl der Seiten einfügen (z.B. wenn Sie den Eintrag <em>Seite X von Y</em> erstellen möchten):</p>
+            <ol>
+                <li>Platzieren Sie den Cursor an die Position an der Sie die Anzahl der Seiten einfügen wollen.</li>
+                <li>Klicken Sie in der oberen Symbolleiste auf das Symbol <b>Kopf- und Fußzeile bearbeiten</b> <img alt="Kopf-/Fußzeile bearbeiten" src="../images/headerfooter.png" />.</li>
+                <li>Wählen Sie die Option <b>Anzahl der Seiten einfügen</b>.</li>
+            </ol>
+			<hr />
+			<p>Einstellungen der Seitenzahlen ändern:</p>
+			<ol>
+				<li>Klicken Sie zweimal auf die hinzugefügte Seitenzahl.</li>
+				<li>Ändern Sie die aktuellen Parameter in der rechten Seitenleiste:<p><img alt="Rechte Seitenleiste - Kopf- und Fußzeileneinstellungen" src="../images/right_headerfooter.png" /></p>
+				<ul>
+				<li>Legen Sie die aktuelle <b>Position</b> der Seitenzahlen auf der Seite sowie im Verhältnis zum oberen und unteren Teil der Seite fest.</li>
+				<li>Wenn Sie der ersten Seite eine andere Zahl zuweisen wollen oder als dem restlichen Dokument oder keine Seitenzahl auf der ersten Seite einfügen wollen, aktivieren Sie die Option <b>Erste Seite anders</b>.</li>
+				<li>Wenn Sie geraden und ungeraden Seiten unterschiedliche Seitenzahlen hinzufügen wollen, aktivieren Sie die Option <b>Gerade &amp; ungerade Seiten unterschiedlich</b>.</li>
+				<li>Die Option <b>Mit vorheriger verknüpfen</b> ist verfügbar, wenn Sie zuvor <a href="../UsageInstructions/SectionBreaks.htm" onclick="onhyperlinkclick(this)">Abschnitte</a> in Ihr Dokument eingefügt haben. Sind keine Abschnitte vorhanden, ist die Option ausgeblendet. Außerdem ist diese Option auch für den allerersten Abschnitt nicht verfügbar (oder wenn eine Kopf- oder Fußzeile ausgewählt ist, die zu dem ersten Abschnitt gehört). Standardmäßig ist dieses Kontrollkästchen aktiviert, sodass auf alle Abschnitte die vereinheitlichte Nummerierung angewendet wird. Wenn Sie einen Kopf- oder Fußzeilenbereich auswählen, sehen Sie, dass der Bereich mit der Verlinkung <b>Wie vorherige</b> markiert ist. Deaktivieren Sie das Kontrollkästchen <b>Wie vorherige</b>, um in jedem Abschnitt des Dokuments eine andere Seitennummerierung anzuwenden. Die Markierung <b>Wie vorherige</b> wird nicht mehr angezeigt.</li>
+				</ul>
+				<p><img alt="Wie vorherige Markierung" src="../images/sameasprevious_label.png" /></p>
+				</li>
+			</ol>
+			<p>Um zur Dokumentbearbeitung zurückzukehren, führen Sie einen Doppelklick im Arbeitsbereich aus.</p>
+		</div>
+	</body>
+</html>

@@ -15,6 +15,8 @@ var inactiveTime = +new Date() - (config.inactiveTime * 24 * 3600 * 1000);
 // files which were archived before this date can be considered safe to remove
 var retentionTime = +new Date() - (config.archiveRetentionTime * 24 * 3600 * 1000);
 
+var retainData = Boolean(config.retainData);
+
 var getNewestTime = function (stats) {
     return stats[['atime', 'ctime', 'mtime'].reduce(function (a, b) {
         return stats[b] > stats[a]? b: a;
@@ -116,6 +118,8 @@ nThen(function (w) {
     store.listArchivedChannels(handler, w(done));
 }).nThen(function (w) {
     if (typeof(config.archiveRetentionTime) !== "number") { return; }
+// Iterate over archive blob ownership proofs and remove them
+// if they are older than the specified retention time
     var removed = 0;
     blobs.list.archived.proofs(function (err, item, next) {
         if (err) {
@@ -138,6 +142,8 @@ nThen(function (w) {
     }));
 }).nThen(function (w) {
     if (typeof(config.archiveRetentionTime) !== "number") { return; }
+// Iterate over archived blobs and remove them
+// if they are older than the specified retention time
     var removed = 0;
     blobs.list.archived.blobs(function (err, item, next) {
         if (err) {
@@ -158,29 +164,57 @@ nThen(function (w) {
     }, w(function () {
         Log.info('EVICT_ARCHIVED_BLOBS_REMOVED', removed);
     }));
-/*  TODO find a reliable metric for determining the activity of blobs...
 }).nThen(function (w) {
-    var blobCount = 0;
-    var lastHour = 0;
+// iterate over blobs and remove them
+// if they have not been accessed within the specified retention time
+    var removed = 0;
     blobs.list.blobs(function (err, item, next) {
-        blobCount++;
         if (err) {
             Log.error("EVICT_BLOB_LIST_BLOBS_ERROR", err);
             return void next();
         }
         if (pins[item.blobId]) { return void next(); }
         if (item && getNewestTime(item) > retentionTime) { return void next(); }
-        // TODO determine when to retire blobs
-        console.log(item);
-        next();
+
+        if (!retainData) {
+            return void blobs.remove.blob(item.blobId, function (err) {
+                if (err) {
+                    Log.error("EVICT_BLOB_ERROR", {
+                        error: err,
+                        item: item,
+                    });
+                    return void next();
+                }
+                Log.info("EVICT_BLOB_INACTIVE", {
+                    item: item,
+                });
+                removed++;
+                next();
+            });
+        }
+
+        blobs.archive.blob(item.blobId, function (err) {
+            if (err) {
+                Log.error("EVICT_ARCHIVE_BLOB_ERROR", {
+                    error: err,
+                    item: item,
+                });
+                return void next();
+            }
+            Log.info("EVICT_ARCHIVE_BLOB", {
+                item: item,
+            });
+            removed++;
+            next();
+        });
     }, w(function () {
-        console.log("Listed %s blobs", blobCount);
-        console.log("Listed %s blobs accessed in the last hour", lastHour);
+        Log.info('EVICT_BLOBS_REMOVED', removed);
     }));
 }).nThen(function (w) {
-    var proofCount = 0;
+// iterate over blob proofs and remove them
+// if they don't correspond to a pinned or active file
+    var removed = 0;
     blobs.list.proofs(function (err, item, next) {
-        proofCount++;
         if (err) {
             next();
             return void Log.error("EVICT_BLOB_LIST_PROOFS_ERROR", err);
@@ -205,13 +239,13 @@ nThen(function (w) {
                 if (err) {
                     return Log.error("EVICT_BLOB_PROOF_LONELY_ERROR", item);
                 }
+                removed++;
                 return Log.info("EVICT_BLOB_PROOF_LONELY", item);
             });
         });
-    }, function () {
-        console.log("Listed %s blob proofs", proofCount);
-    });
-*/
+    }, w(function () {
+        Log.info("EVICT_BLOB_PROOFS_REMOVED", removed);
+    }));
 }).nThen(function (w) {
     var removed = 0;
     var channels = 0;

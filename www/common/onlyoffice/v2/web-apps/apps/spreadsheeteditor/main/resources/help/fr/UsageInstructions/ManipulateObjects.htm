@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Manipuler des objets</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Move, rotate, resize, reshape and arrange autoshapes, images, charts." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Manipuler des objets</h1>
+			<p>Vous pouvez redimensionner, déplacer, faire pivoter et arranger des formes, des images et des graphiques insérés dans votre classeur.</p>
+			<h3>Redimensionner des objets</h3>
+			<p>Pour changer la <b>taille</b> d'une forme automatique/image/graphique, faites glisser les petits carreaux <img alt="Icône Carreaux" src="../images/resize_square.png" /> situés sur les bords de l'objet. Pour garder les proportions de l'objet sélectionné lors du redimensionnement, maintenez la touche <b>Maj</b> enfoncée et faites glisser l'une des icônes de coin.</p>
+			<p class="note"><b>Remarque</b> : pour redimensionner des graphiques et des images vous pouvez également utiliser la barre latérale droite. Pour l'activer il vous suffit de sélectionner un objet avec la souris. Pour l'ouvrir, cliquez sur l'icône <b>Paramètres du graphique</b> <img alt="Paramètres du graphique" src="../images/chartsettingsicon.png" /> ou <b>Paramètres de l'image</b> <img alt="Paramètres de l'image" src="../images/image_settings_icon.png" /> à droite.<p><img alt="Conserver les proportions" src="../images/maintain_proportions.png" /></p>
+			<h3>Déplacer des objets</h3>
+			<p>Pour modifier la <b>position</b> d'une forme automatique/image/graphique, utilisez l'icône <img alt="Flèche" src="../images/arrow.png" /> qui apparaît si vous placez le curseur de votre souris sur l'objet. Faites glisser l'objet vers la position nécessaire sans relâcher le bouton de la souris. Pour déplacer l'objet par incrément équivaut à un pixel, maintenez la touche <b>Ctrl</b> enfoncée et utilisez les flèches du clavier. Pour déplacer l'objet strictement à l'horizontale/verticale et l'empêcher de se déplacer dans une direction perpendiculaire, maintenez la touche <b>Maj</b> enfoncée lors du glissement.</p>
+			<h3>Faire pivoter des objets</h3>
+			<p>Pour <b>faire pivoter</b> une forme automatique/image, placez le curseur de la souris sur la poignée de rotation <img alt="Poignée de rotation" src="../images/greencircle.png" /> et faites-la glisser vers la droite ou vers la gauche. Pour limiter la rotation de l'angle à des incréments de 15 degrés, maintenez la touche <b>Maj</b> enfoncée.</p>
+			<h3>Modifier des formes automatiques</h3>
+			<p>Lors de la modification des formes, par exemple des Flèches figurées ou les légendes, l'icône jaune en forme de diamant <img alt="Icône jaune en forme de diamant" src="../images/yellowdiamond.png" /> est aussi disponible. Elle vous permet d'ajuster certains aspects de la forme, par exemple, la longueur de la pointe d'une flèche.</p>
+			<p><img alt="Modifier les formes automatiques" src="../images/reshaping.png" /></p>
+            <h3>Aligner des objets</h3>
+            <p>Pour <b>aligner</b> les objets sélectionnés les uns par rapport aux autres, maintenez la touche <b>Ctrl</b> enfoncée tout en sélectionnant les objets avec la souris, puis cliquez sur l'icône <img alt="icône Aligner" src="../images/align_toptoolbar.png" /> <b>Aligner</b> dans l'onglet <b>Mise en page</b> de la barre d'outils supérieure et sélectionnez le type d'alignement souhaité dans la liste :</p>
+            <ul>
+                <li><b>Aligner à gauche</b> <img alt="icône Aligner à gauche" src="../images/alignobjectleft.png" /> - pour aligner la gauche de tous les objets les uns par rapport aux autres,</li>
+                <li><b>Aligner au centre</b><img alt="icône Aligner au centre" src="../images/alignobjectcenter.png" /> - pour aligner tous les objets au centre les uns par rapport aux autres,</li>
+                <li><b>Aligner à droite</b> <img alt="icône Aligner à droite" src="../images/alignobjectright.png" /> - pour aligner la droite de tous les objets les uns par rapport aux autres,</li>
+                <li><b>Aligner en haut</b> <img alt="icône Aligner en haut" src="../images/alignobjecttop.png" /> - pour aligner le haut de tous les objets les uns par rapport aux autres,</li>
+                <li><b>Aligner au milieu</b><img alt="icône Aligner au milieu" src="../images/alignobjectmiddle.png" /> - pour aligner tous les objets au milieu les uns par rapport aux autres,</li>
+                <li><b>Aligner en bas</b> <img alt="icône Aligner en bas" src="../images/alignobjectbottom.png" /> - pour aligner le bas de tous les objets les uns par rapport aux autres.</li>
+            </ul>
+            <h3>Grouper plusieurs objets</h3>
+            <p>Pour manipuler plusieurs objets à la fois, vous pouvez les <b>grouper</b>. Maintenez la touche <b>Ctrl</b> enfoncée tout en sélectionnant les objets avec la souris, puis cliquez sur la flèche à côté de l'icône <img alt="icône Grouper" src="../images/group_toptoolbar.png" /> <b>Grouper</b> dans l'onglet <b>Mise en page</b> de la barre d'outils supérieure et sélectionnez l'option voulue depuis la liste :</p>
+            <ul>
+                <li><b>Grouper</b> <img alt="icône Grouper" src="../images/group.png" /> - pour combiner plusieurs objets de sorte que vous puissiez les faire pivoter, déplacer, redimensionner, aligner, organiser, copier, coller, mettre en forme simultanément comme un objet unique.</li>
+                <li><b>Dissocier</b> <img alt="icône Dissocier" src="../images/ungroup.png" /> - pour dissocier le groupe sélectionné d'objets préalablement combinés.</li>
+            </ul>
+            <p>Vous pouvez également cliquer avec le bouton droit sur les objets sélectionnés et choisir l'option <b>Grouper</b> ou <b>Dégrouper</b> dans le menu contextuel.</p>
+            <p><img alt="Grouper plusieurs objets" src="../images/grouping.png" /></p>
+            <h3 id="arrange">Arranger plusieurs objets</h3>
+            <p>Pour <b>ordonner</b> l’objet ou les objets sélectionnés (c'est à dire pour modifier leur ordre lorsque plusieurs objets se chevauchent), vous pouvez utiliser les icônes <img alt="icône Avancer d'un plan" src="../images/bringforward_toptoolbar.png" /> <b>Avancer</b> et <img alt="icône Reculer d'un plan" src="../images/sendbackward_toptoolbar.png" /> <b>Reculer</b> dans l'onglet <b>Mise en page</b> de la barre d'outils supérieure et sélectionner le type d'ordre voulu dans la liste.</p>
+            <p>Pour déplacer un ou plusieurs objets sélectionnés vers l'avant, cliquez sur la flèche en regard de l'icône <img alt="icône Avancer d'un plan" src="../images/bringforward_toptoolbar.png" /> <b>Avancer</b> dans l'onglet <b>Mise en page</b> de la barre d'outils supérieure et sélectionnez le type d'arrangement nécessaire dans la liste :</p>
+            <ul>
+                <li><b>Mettre au premier plan</b> <img alt="icône Mettre au premier plan" src="../images/bringtofront.png" /> - pour déplacer les objets devant tous les autres objets,</li>
+                <li><b>Avancer d'un plan</b> <img alt="icône Avancer d'un plan" src="../images/bringforward.png" /> - pour déplacer les objets d'un niveau en avant par rapport à d'autres objets.</li>
+            </ul>
+            <p>Pour déplacer un ou plusieurs objets sélectionnés vers l'arrière, cliquez sur la flèche en regard de l'icône <img alt="icône Reculer d'un plan" src="../images/sendbackward_toptoolbar.png" /> <b>Reculer</b> dans l'onglet <b>Mise en page</b> de la barre d'outils supérieure et sélectionnez le type d'arrangement nécessaire dans la liste :</p>
+            <ul>
+                <li><b>Mettre en arrière-plan</b> <img alt="icône Mettre en arrière-plan" src="../images/sendtoback.png" /> - pour déplacer les objets derrière tous les autres objets,</li>
+                <li><b>Reculer d'un plan</b>  - pour déplacer les objets d'un niveau en arrière par rapport à d'autres objets.</li>
+            </ul>			
+		</div>
+	</body>
+</html>

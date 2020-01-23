@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fonction RECHERCHE</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Fonction RECHERCHE</h1>
+			<p>La fonction <b>RECHERCHE</b> est l'une des fonctions de recherche et de référence. Elle est utilisée pour renvoyer une valeur à partir d'une plage sélectionnée (ligne ou colonne contenant les données dans l'ordre croissant).</p>
+			<p>La syntaxe de la fonction <b>RECHERCHE</b> est :</p> 
+			<p style="text-indent: 150px;"><b><em>RECHERCHE(lookup-value, lookup-vector, result-vector)</em></b></p> 
+			<p><em>où</em></p> 
+				<p style="text-indent: 50px;"><b><em>lookup-value</em></b> est une valeur à chercher.</p> 
+				<p style="text-indent: 50px;"><b><em>lookup-vector</em></b> est une ligne ou une colonne contenant des données classées par ordre croissant.</p> 
+				<p style="text-indent: 50px;"><b><em>lookup-result</em></b> est une ligne ou une colonne contenant des données qui est de la même taille que <b><em>lookup-vector</em></b>.</p> 
+			<p>La fonction cherche <b><em>lookup-value</em></b> dans <b><em>lookup-vector</em></b> et renvoie la valeur qui se trouve dans la même position dans <b><em>lookup-result</em></b>.</p>
+			<p class="note"><b>Remarque</b> : si <b>lookup-value</b> est plus petite que toutes les valeurs dans <b>lookup-vector</b>, la fonction renvoie l'erreur <b>#N/A</b>. S'il n'y a pas de valeur qui correspond strictement à <b>lookup-value</b>, la fonction choisit la plus grande valeur dans <b>lookup-vector</b> qui est inférieure ou égale à la valeur.</p>
+			<p>Pour appliquer la fonction <b>RECHERCHE</b>,</p>
+			<ol>
+			<li>sélectionnez la cellule où vous souhaitez afficher le résultat,</li>
+			<li>cliquez sur l'icône <b>Insérer une fonction</b> <img alt="Icône Insérer une fonction" src="../images/insertfunction.png" /> située sur la barre d'outils supérieure, <br />ou cliquez avec le bouton droit sur la cellule sélectionnée et sélectionnez l'option <b>Insérer une fonction</b> depuis le menu, <br />ou cliquez sur l'icône <img alt="Icône Fonction" src="../images/function.png" /> située sur la barre de formule,</li>
+			<li>sélectionnez le groupe de fonctions <b>Recherche et référence</b> depuis la liste,</li>
+			<li>cliquez sur la fonction <b>RECHERCHE</b>,</li>
+			<li>insérez les arguments nécessaires en les séparant par des virgules,</li>
+			<li>appuyez sur la touche <b>Entrée</b>.</li>
+			</ol>
+			<p>Le résultat sera affiché dans la cellule sélectionnée.</p>
+			<p style="text-indent: 150px;"><img alt="Fonction RECHERCHE" src="../images/lookup.png" /></p>
+		</div>
+	</body>
+</html>

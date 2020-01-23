@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Appliquer les styles de police</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Apply font decoration styles: increment/decrement values, bold, italic, underline, strikeout, superscript/subscript" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Appliquer les styles de police</h1>
+			<p>Vous pouvez appliquer différents styles de police à l'aide des icônes correspondantes situées dans l'onglet <b>Accueil</b> de la barre d'outils supérieure.</p>
+			<p class="note"><b>Remarque</b> : si vous voulez appliquer la mise en forme au texte déjà saisi, sélectionnez-le avec la souris ou <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">en utilisant le clavier</a> et appliquez la mise en forme.</p>
+			<table>
+				<tr>
+					<td>Gras</td>
+					<td><img alt="Gras" src="../images/bold.png" /></td>
+					<td>Sert à mettre la police en gras pour lui donner plus de poids.</td>
+				</tr>
+				<tr>
+					<td>Italique</td>
+					<td><img alt="Italique" src="../images/italic.png" /></td>
+					<td>Sert à mettre la police en italique pour lui donner une certaine inclinaison à droite.</td>
+				</tr>
+				<tr>
+					<td>Souligné</td>
+					<td><img alt="Souligné" src="../images/underline.png" /></td>
+					<td>Sert à souligner le texte avec la ligne qui passe sous les lettres.</td>
+				</tr>
+				<tr>
+					<td>Barré</td>
+					<td><img alt="Barré" src="../images/strike.png" /></td>
+					<td>Sert à barrer le texte par la ligne passant par les lettres.</td>
+				</tr>
+				<tr>
+					<td>Exposant</td>
+					<td><img alt="Exposant" src="../images/sup.png" /></td>
+					<td>Sert à rendre le texte plus petit et le déplacer vers la partie supérieure de la ligne du texte, par exemple comme dans les fractions.</td>
+				</tr>
+				<tr>
+					<td>Indice</td>
+					<td><img alt="Indice" src="../images/sub.png" /></td>
+					<td>Sert à rendre le texte plus petit et le déplacer vers la partie inférieure de la ligne du texte, par exemple comme dans les formules chimiques.</td>
+				</tr>
+			</table>
+			<p>Pour accéder aux paramètres avancés de la police, cliquez avec le bouton droit de la souris et sélectionnez l'option <b>Paramètres avancés du paragraphe</b> du menu contextuel ou utilisez le lien <b>Afficher les paramètres avancés</b> sur la barre latérale droite. Dans la fenêtre <b>Paragraphe - Paramètres avancés</b> ouverte passez à l'onglet <b>Police</b>.</p>
+			<p>Ici vous pouvez utiliser les styles de décoration de police et les paramètres suivants :</p>
+			<ul>
+				<li><b>Barré</b> sert à barrer le texte par la ligne passant par les lettres.</li>
+				<li><b>Barré double</b> sert à barrer le texte par la ligne double passant par les lettres.</li>
+				<li><b>Exposant</b> sert à rendre le texte plus petit et le déplacer vers la partie supérieure de la ligne du texte, par exemple comme dans les fractions.</li>
+				<li><b>Indice</b> sert à rendre le texte plus petit et le déplacer vers la partie inférieure de la ligne du texte, par exemple comme dans les formules chimiques.</li>
+				<li><b>Petites majuscules</b> sert à mettre toutes les lettres en petite majuscule.</li>
+				<li><b>Majuscules</b> sert à mettre toutes les lettres en majuscule.</li>
+				<li><b>Espacement</b> sert à définir l'espace entre les caractères.</li>
+				<li><b>Position</b> sert à définir la position des caractères dans la ligne.</li>
+			</ul>
+			<p><img alt="Paramètres avancés du paragraphe - Police" src="../images/paradvsettings_font.png" /></p>
+		</div>
+	</body>
+</html>

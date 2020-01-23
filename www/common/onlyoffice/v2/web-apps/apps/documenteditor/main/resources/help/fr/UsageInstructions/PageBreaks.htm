@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insérer des sauts de page</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Insert page breaks and keep lines together" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insérer des sauts de page</h1>
+			<p>En utilisant Document Editor, vous pouvez ajouter le saut de page pour commencer une nouvelle page et régler les options de pagination.</p>
+			<p>Pour insérer un saut de page à la position actuelle du curseur, cliquez sur l'icône <img alt="Icône Sauts de page" src="../images/pagebreak1.png" /> <b>Sauts de page</b> de l'onglet <b>Insérer</b> ou <b>Disposition</b> de la barre d'outils supérieure ou cliquez sur la flèche en regard de cette icône et sélectionnez l'option <b>Insérer un saut de page</b> dans le menu.</p>
+			<p>Pour insérer un saut de page avant le paragraphe sélectionné c'est-à-dire pour commencer ce paragraphe en haut d'une nouvelle page :</p>
+			<ul>
+				<li>cliquez avec le bouton droit de la souris et sélectionnez l'option <b>Saut de page avant</b> du menu contextuel, ou</li>
+				<li>cliquez avec le bouton droit de la souris, sélectionnez l'option <b>Paramètres avancés du paragraphe</b> du menu contextuel ou utilisez le lien <b>Afficher les paramètres avancés</b> sur la barre latérale droite et cochez la case <b>Saut de page avant</b> dans la fenêtre <b>Paragraphe - Paramètres avancés</b> ouverte.</li>
+			</ul>
+			<p>Pour garder les lignes solidaires de sorte que seuleument des paragraphes entiers seront placés sur la nouvelle page (c'est-à-dire il n'y aura aucun saut de page entre les lignes dans un seul paragraphe),</p>
+			<ul>
+				<li>cliquez avec le bouton droit de la souris et sélectionnez l'option <b>Lignes solidaires</b> du menu contextuel, ou</li>
+				<li>cliquez avec le bouton droit de la souris, sélectionnez l'option <b>Paramètres avancés du paragraphe</b> du menu contextuel ou utilisez le lien <b>Afficher paramètres avancés</b> sur la barre latérale droite et cochez la case <b>Lignes solidaires</b> dans la fenêtre <b>Paragraphe - Paramètres avancés</b> ouverte.</li>
+			</ul>
+			<p>La fenêtre <b>Paragraphe - Paramètres avancés</b> vous permet de définir deux autres options de pagination :</p>
+			<ul>
+			    <li><b>Paragraphes solidaires</b> sert à empêcher l’application du saut de page entre le paragraphe sélectionné et celui-ci qui le suit.</li>
+			    <li><b>Éviter orphelines</b> est sélectionné par défaut et sert à empêcher l’application d'une ligne (première ou dernière) d'un paragraphe en haut ou en bas d'une page.</li>
+			</ul>
+			<p><img alt="Paramètres du paragraphe avancés - Retraits et emplacement" src="../images/paradvsettings_indents.png" /></p>
+		</div>
+	</body>
+</html>

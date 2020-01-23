@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Función DIA.LAB</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Función DIA.LAB</h1>
+			<p>La función <b>DIA.LAB</b> es una función de fecha y hora. Se usa para devolver la fecha que viene unos días (el número especificado) (day-offset) antes o después de la fecha de inicio especificada sin contar los fines de semana y fiestas.</p>
+			<p>La sintaxis de la función <b>DIA.LAB</b> es:</p> 
+			<p style="text-indent: 150px;"><b><em>DIA.LAB(fecha-empiece, día-offset [,vacaciones])</em></b></p> 
+			<p><em>donde</em></p> 
+			<p style="text-indent: 50px;"><b><em>fecha-empiece</em></b> es el número que representa la primera fecha del periodo. El número se introduce usando la función <a href="Date.htm" onclick="onhyperlinkclick(this)">Fecha</a> o cualquier otra función de fecha y hora.</p>
+			<p style="text-indent: 50px;"><b><em>día-offset</em></b> es el número de un día laboral antes o después de <b><em>fecha-empiece</em></b>. Si <b><em>día-offset</em></b> es negativo, la función devolverá el ordinal de la fecha que va antes de <b>fecha-empiece</b> especificada. Si <b><em>día-offset</em></b> es positivo, la función devolverá el ordinal de la fecha que va después de <b>fecha-empiece</b> especificada.</p>
+            <p style="text-indent: 50px;"><b><em>vacaciones</em></b> es un argumento opcional que especifica qué fechas además  además de los fines de semana son no laborables. Puede introducir estos usando la función <a href="Date.htm" onclick="onhyperlinkclick(this)">Fecha</a> u otras funciones de fecha y hora, o especificando una referencia a un rango de celdas que contienen fechas.</p>
+			<p>Para aplicar la función <b>DIA.LAB</b>,</p>
+			<ol>
+			<li>seleccione la celda donde usted quiere ver el resultado,</li>
+			<li>pulse el icono <b>Insertar función</b> <img alt="Icono insertar función" src="../images/insertfunction.png" /> que se sitúa en la barra de herramientas superior, <br />o haga clic derecho en la сelda seleccionada y elija la opción <b>Insertar función</b> en el menú, <br />o pulse el icono <img alt="Icono función" src="../images/function.png" /> que se sitúa en la barra de fórmulas,</li>
+			<li>seleccione el grupo de funciones <b>Fecha y hora</b> en la lista,</li>
+			<li>pulse la función <b>DIA.LAB</b>,</li>
+			<li>introduzca los argumentos correspondientes separados por comas,</li>
+			<li>pulse el botón <b>Enter</b>.</li>
+			</ol>
+			<p>El resultado se mostrará en la celda elegida.</p>
+			<p style="text-indent: 150px;"><img alt="Función DIA.LAB" src="../images/workday.png" /></p>
+		</div>
+	</body>
+</html>

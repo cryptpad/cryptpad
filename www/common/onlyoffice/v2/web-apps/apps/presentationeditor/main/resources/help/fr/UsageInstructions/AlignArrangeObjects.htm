@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Aligner et organiser des objets dans une diapositive</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Align and arrange text boxes, autoshapes, images and charts on a slide." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Aligner et organiser des objets dans une diapositive</h1>
+			<p>Les <b>formes automatiques, images, graphiques</b> et <b>blocs de texte</b> ajoutés peuvent être alignés, regroupés, triés, répartis horizontalement et verticalement dans une diapositive. Pour effectuer une de ces actions, premièrement sélectionnez un objet ou plusieurs objets dans la zone de travail. Pour sélectionner plusieurs objets, maintenez la touche <b>Ctrl</b> enfoncée et cliquez avec le bouton gauche sur les objets nécessaires. Pour sélectionner un bloc de texte, cliquez sur son bord, pas sur le texte à l'intérieur. Après quoi vous pouvez utiliser soit les icônes de la barre d'outils supérieure décrites ci-après soit les options similaires du menu contextuel.</p>
+			<h3>Aligner des objets</h3>
+            <p>Pour <b>aligner</b> l'(les) objet(s) sélectionné(s), cliquez sur l'icône <b>Aligner la forme</b> <img alt="icône Aligner une forme" src="../images/alignshape.png" /> dans l'onglet <b>Accueil</b> de la barre d'outils supérieure et sélectionnez le type d'alignement nécessaire dans la liste :</p>
+			    <ul>
+			    <li><b>Aligner à gauche</b> <img alt="icône Aligner à gauche" src="../images/alignobjectleft.png" /> - pour aligner les objets horizontalement sur le côté gauche de la diapositive,</li>
+			    <li><b>Aligner au centre</b> <img alt="icône Aligner au centre" src="../images/alignobjectcenter.png" /> - pour aligner les objets horizontalement au centre de la diapositive,</li>
+			    <li><b>Aligner à droite</b> <img alt="icône Aligner à droite" src="../images/alignobjectright.png" /> - pour aligner les objets horizontalement sur le côté droit de la diapositive,</li>
+			    <li><b>Aligner en haut</b> <img alt="icône Aligner en haut" src="../images/alignobjecttop.png" /> - pour aligner les objets verticalement sur le côté supérieur de la diapositive,</li>
+			    <li><b>Aligner au milieu</b> <img alt="icône Aligner au milieu" src="../images/alignobjectmiddle.png" /> - pour aligner les objets verticalement au centre de la diapositive,</li>
+			    <li><b>Aligner en bas</b> <img alt="icône Aligner en bas" src="../images/alignobjectbottom.png" /> - pour aligner les objets verticalement sur le côté inférieur de la diapositive.</li>
+			    </ul>
+			<p>Pour <b>distribuer</b> deux ou plusieurs objets sélectionnés horizontalement ou verticalement<!--so that the equal distance appears between them-->, cliquez sur l'icône <b>Aligner la forme</b> <img alt="icône Aligner une forme" src="../images/alignshape.png" /> dans l'onglet <b>Accueil</b> de la barre d'outils supérieure et sélectionnez l'option nécessaire depuis la liste :</p>
+			    <ul>
+			    <li><b>Distribuer horizontalement</b> <img alt="icône Distribuer horizontalement" src="../images/distributehorizontally.png" /> - <!--to distribute objects evenly between the most left and most right objects on a slide-->pour aligner les objets sélectionnés par leurs centres (du côté droit au gauche) au centre horizontal de la diapositive</li>
+			    <li><b>Distribuer verticalement</b> <img alt="icône Distribuer verticalement" src="../images/distributevertically.png" /> - <!--to distribute objects evenly between the most top and most bottom objects on a slide-->pour aligner les objets sélectionnés par leurs centres (du haut vers le bas) au centre vertical de la diapositive.</li>
+			    </ul>
+            <h3>Organiser des objets</h3>
+		    <p>Pour <b>organiser</b> les objets sélectionnés (c'est à dire pour modifier leur ordre lorsque plusieurs objets se chevauchent), cliquez sur l'icône <b>Organiser une forme</b> <img alt="icône Organiser une forme" src="../images/arrangeshape.png" /> dans l'onglet <b>Accueil</b> de la barre d'outils supérieure et sélectionnez le type nécessaire depuis la liste :</p>
+			    <ul>
+			    <li><b>Mettre au premier plan</b> <img alt="icône Mettre au premier plan" src="../images/bringtofront.png" /> - pour déplacer les objets devant tous les autres objets,</li>
+			    <li><b>Mettre en arrière-plan</b> <img alt="icône Mettre en arrière-plan" src="../images/sendtoback.png" /> - pour déplacer les objets derrière tous les autres objets,</li>
+			    <li><b>Avancer d'un plan</b> <img alt="icône Avancer d'un plan" src="../images/bringforward.png" /> - pour déplacer les objets d'un niveau en avant par rapport à d'autres objets.</li>
+			    <li><b>Reculer d'un plan</b> <img alt="icône Reculer d'un plan" src="../images/sendbackward.png" /> - pour déplacer les objets d'un niveau en arrière par rapport à d'autres objets.</li>
+			    </ul>
+			<p>Pour <b>grouper</b> deux ou plusieurs objets sélectionnés ou les <b>dissocier</b>, cliquez sur l'icône <b>Organiser une forme</b> <img alt="icône Organiser une forme" src="../images/arrangeshape.png" /> dans l'onglet <b>Accueil</b> de la barre d'outils supérieure et sélectionnez l'option nécessaire depuis la liste :</p>
+			    <ul>
+			    <li><b>Grouper</b> <img alt="icône Grouper" src="../images/group.png" /> - pour combiner plusieurs objets de sorte que vous puissiez les faire pivoter, déplacer, redimensionner, aligner, organiser, copier, coller, mettre en forme simultanément comme un objet unique.</li>
+			    <li><b>Dissocier</b> <img alt="icône Dissocier" src="../images/ungroup.png" /> - pour dissocier le groupe sélectionné d'objets préalablement combinés.</li>
+			    </ul>
+		</div>
+	</body>
+</html>

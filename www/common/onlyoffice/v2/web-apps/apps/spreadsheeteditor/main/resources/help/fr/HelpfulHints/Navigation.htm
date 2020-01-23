@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Paramètres d'affichage et outils de navigation</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The description of view settings and navigation tools: sheet navigation buttons, sheet tabs, scrollbars, zoom." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Paramètres d'affichage et outils de navigation</h1>
+			<p>Pour vous aider à visualiser et sélectionner des cellules dans un grand classeur, <b>Spreadsheet Editor</b> propose plusieurs outils de navigation : les barres de défilement, les boutons de défilement , les onglets de classeur et le zoom.</p>
+			<h3>Régler les paramètres d'affichage</h3>
+			<p>Pour régler les paramètres d'affichage par défaut et définir le mode le plus convenable de travailler avec la feuille de calcul, passez à l'onglet <b>Accueil</b> de la barre d'outils supérieure, cliquez sur l'icône <b>Paramètres d'affichage</b> <img alt="Icône Paramètres d'affichage" src="../images/viewsettingsicon.png" /> de la barre d'outils et sélectionnez les éléments de l'interface à afficher/masquer. Vous pouvez choisir une des options suivantes de la liste déroulante <b>Paramètres d'affichage</b> :</p>
+			<ul>
+                <li><b>Masquer la barre d'outils</b> - masque la barre d'outils supérieure contenant les commandes pendant que les onglets restent visibles. Lorsque cette option est activée, vous pouvez cliquer sur n'importe quel onglet pour afficher la barre d'outils. La barre d'outils est affichée jusqu'à ce que vous cliquiez n'importe où à l'extérieur. Pour désactiver ce mode, passez à l'onglet <b>Accueil</b>, puis cliquez sur l'icône <b>Paramètres d'affichage</b> <img alt="Icône Paramètres d'affichage" src="../images/viewsettingsicon.png" /> et cliquez de nouveau sur l'option <b>Masquer la barre d'outils</b>. La barre d'outils supérieure sera affichée tout le temps.<p class="note"><b>Remarque</b> : vous pouvez également double-cliquer sur un onglet pour masquer la barre d'outils supérieure ou l'afficher à nouveau.</p>
+                </li>
+			<li><b>Masquer la barre de formule</b> sert à masquer la barre qui se situe au-dessous de la barre d'outils supérieure, utilisée pour saisir et réviser la formule et son contenu. Pour afficher la <b>Barre de formule</b> masquée cliquez sur cette option encore une fois.</li>
+			<li><b>Masquer les en-têtes</b> sert à masquer les en-têtes des colonnes en haut et les en-têtes des lignes à gauche de la feuille de calcul. Pour afficher les <b>En-têtes</b> masqués cliquez sur cette option encore une fois.</li>
+			<li><b>Masquer le quadrillage</b> sert à masquer les lignes autour des cellules. Pour afficher le <b>Quadrillage</b> masqué cliquez sur cette option encore une fois.</li>
+			<li><b>Figer les volets</b> - fige toutes les lignes au-dessus de la cellule active et toutes les colonnes à gauche de la cellule active afin qu'elles restent visibles lorsque vous faites défiler la feuille vers la droite ou vers le bas. Pour débloquer les volets, cliquez à nouveau sur cette option ou cliquez avec le bouton droit n'importe où dans la feuille de calcul et sélectionnez l'option <b>Libérer les volets</b> dans le menu.</li>
+			</ul>
+            <p>La barre latérale droite est minimisée par défaut. Pour l'agrandir, sélectionnez un objet (par exemple, image, graphique, forme) et cliquez sur l'icône de l'onglet actuellement activé sur la droite. Pour réduire la barre latérale droite, cliquez à nouveau sur l'icône.</p>
+			<p>Vous pouvez également modifier la taille du panneau <b>Commentaires</b> ou <b>Chat</b> ouvert en utilisant un simple glisser-déposer : placez le curseur de la souris sur le bord gauche de la barre latérale. Quand il se transforme dans la flèche bidirectionnelle, faites glisser le bord à droite pour augmenter la largeur de la barre latérale. Pour rétablir sa largeur originale faites glisser le bord à droite.</p>
+			<h3>Utiliser les outils de navigation</h3>
+			<p>Pour naviguer à travers votre classeur, utilisez les outils suivants :</p>
+			<p>Les <b>barres de défilement</b> (horizontale et verticale) servent à faire défiler la feuille de calcul actuelle vers le haut /le bas et vers la gauche/la droite. Pour naviguer dans une feuille de calcul à l'aide des barres de défilement :</p>
+			<ul>
+			<li>cliquez sur la flèche vers le haut/bas ou vers la droite/gauche sur la barre de défilement ;</li>
+			<li>faites glisser la case de défilement ;</li>
+			<li>cliquez n'importe où à gauche/à droite ou en haut/en bas de la case de défilement sur la barre de défilement.</li>
+			</ul>
+			<p>Vous pouvez également utiliser la <b>molette de la souris</b> pour faire défiler votre feuille de calcul vers le haut ou vers le bas.</p>
+			<p>Les boutons de <b>Navigation des feuilles</b> sont situés dans le coin inférieur gauche et servent à faire défiler la liste de feuilles vers la droite/gauche et à naviguer parmi les onglets des feuilles.</p> 
+			<ul>
+			<li>cliquez sur le bouton <b>Défiler à la première feuille</b> <img alt="Bouton Défiler à la première feuille" src="../images/firstsheet.png" /> pour faire défiler la liste de feuilles jusqu'à la première feuille calcul du classeur actuel ;</li>
+			<li>cliquez sur le bouton <b>Défiler vers la gauche</b> <img alt="Bouton Première feuille" src="../images/previoussheet.png" /> pour faire défiler vers la gauche la liste de feuilles du classeur actuel ;</li>
+			<li>cliquez sur le bouton <b>Défiler vers la droite</b> <img alt="Bouton Feuille précédente" src="../images/nextsheet.png" /> pour faire défiler vers la droite la liste de feuilles du classeur actuel ;</li>
+			<li>cliquez sur le bouton <b>Défiler à la dernière feuille</b> <img alt="Bouton Feuille suivante" src="../images/lastsheet.png" /> pour faire défiler la liste de feuilles jusqu'à la dernière feuille calcul du classeur actuel.</li>
+			</ul>
+			<p>Pour activer la feuille appropriée, cliquez sur son <b>Onglet de feuille</b> en bas à côté des boutons de <b>Navigation des feuilles</b>.</p>
+			<p>Les boutons <b>Zoom</b> sont situés en bas à droite et servent à faire un zoom avant ou un zoom arrière. Pour chager la valeur actuelle du zoom qui est affichée en pourcentage, cliquez dessus et choisissez une des options disponibles depuis la liste ou utilisez les boutons <b>Zoom avant</b> <img alt="Bouton Zoom avant" src="../images/zoomin.png" /> ou <b>Zoom arrière</b> <img alt="Bouton Zoom arrière" src="../images/zoomout.png" />. Les paramètres de zoom sont aussi accessibles de la liste déroulante <b>Paramètres d'affichage</b> <img alt="Icône Paramètres d'affichage" src="../images/viewsettingsicon.png" />.</p>
+		</div>
+	</body>
+</html>

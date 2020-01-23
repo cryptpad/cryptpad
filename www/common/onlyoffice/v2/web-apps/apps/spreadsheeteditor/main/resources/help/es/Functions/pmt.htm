@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Función PAGO</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Función PAGO</h1>
+			<p>La función <b>PAGO</b> es una función financiera. Se usa para calcular la cantidad de pago para un préstamo basado en un tipo de interés especificado y en un programa de pagos constante.</p>
+			<p>La sintaxis de la función <b>PAGO</b> es:</p> 
+			<p style="text-indent: 150px;"><b><em>PAGO(tasa, nper, pv [, [fv] [,[tipo]]])</em></b></p> 
+			<p><em>donde</em></p> 
+				<p style="text-indent: 50px;"><b><em>tasa</em></b> es el tipo de interés.</p>
+				<p style="text-indent: 50px;"><b><em>nper</em></b> es un número de pagos.</p> 
+				<p style="text-indent: 50px;"><b><em>pv</em></b> es un valor actual.</p>
+				<p style="text-indent: 50px;"><b><em>fv</em></b> es un valor de pago futuro, es decir, una suma que se queda después del último pago realizado. Es un argumento opcional. Si se omite, <b><em>fv</em></b> será igual a 0.</p>
+				<p style="text-indent: 50px;"><b><em>tipo</em></b> es el periodo cuando los pagos vencen. Es un argumento opcional. Si se establece a 0 o se omite, el pago debe efectuarse al final de periodo. Si se establece <b><em>tipo</em></b> a 1, el pago debe efectuarse al principio del periodo.</p>
+				<p class="note"><b>Nota:</b> pago en efectivo (como depósitos en cuentas) se representa en números negativos; efectivo recibido (como cheques de dividendos) se representa en números positivos. Unidades de medida para <em>tasa</em> y <em>nper</em> deben ser consistentes: use N%/12 para <em>tasa</em> y N*12 para <em>nper</em> en caso de los pagos mensuales, N%/4 para <em>tasa</em> y N*4 para <em>nper</em> en caso de los pagos trimestrales, N% para <em>tasa</em> y N para <em>nper</em> en caso de los pagos anuales.</p>
+			<p>Los valores numéricos pueden introducirse a mano o incluirse en la celda a la que usted hace referencia.</p>
+			<p>Para aplicar la función <b>PAGO</b>,</p>
+			<ol>
+			<li>seleccione la celda donde usted quiere ver el resultado,</li>
+			<li>pulse el icono <b>Insertar función</b> <img alt="Icono insertar función" src="../images/insertfunction.png" /> que se sitúa en la barra de herramientas superior, <br />o haga clic derecho en la сelda seleccionada y elija la opción <b>Insertar función</b> en el menú, <br />o pulse el icono <img alt="Icono función" src="../images/function.png" /> que se sitúa en la barra de fórmulas,</li>
+			<li>seleccione el grupo de funciones <b>Financiero</b> en la lista,</li>
+			<li>haga clic en la función <b>PAGO</b>,</li>
+			<li>introduzca los argumentos correspondientes separados por comas,</li>
+			<li>pulse el botón <b>Enter</b>.</li>
+			</ol>
+			<p>El resultado se mostrará en la celda elegida.</p>
+			<p style="text-indent: 150px;"><img alt="Función PAGO" src="../images/pmt.png" /></p>
+		</div>
+	</body>
+</html>

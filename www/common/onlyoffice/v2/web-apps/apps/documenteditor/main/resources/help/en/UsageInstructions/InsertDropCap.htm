@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insert a drop cap</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Insert a drop cap and adjust its frame properties to make your document look more expressive." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insert a drop cap</h1>
+			<p>A <b>Drop cap</b> is the first letter of a paragraph that is much larger than others and takes up several lines in height.</p>
+			<p>To add a drop cap,</p>
+			<ol>
+				<li>put the cursor within the paragraph you need,</li>
+                <li>switch to the <b>Insert</b> tab of the top toolbar,</li>
+				<li>click the <img alt="Drop Cap icon" src="../images/insert_dropcap_icon.png" /> <b>Drop Cap</b> icon at the top toolbar,</li>
+				<li>in the opened drop-down list select the option you need:
+				    <ul>
+				    <li><b>In Text</b> <img alt="Insert Drop Cap - In Text" src="../images/dropcap_text.png" /> - to place the drop cap within the paragraph.</li>
+				    <li><b>In Margin</b> <img alt="Insert Drop Cap - In Margin" src="../images/dropcap_margin.png" /> - to place the drop cap in the left margin.</li>
+				    </ul>
+				</li>
+			</ol>
+			<p><img class="floatleft" alt="Drop Cap example" src="../images/dropcap_example.png" />The first character of the selected paragraph will be transformed into a drop cap. If you need the drop cap to include some more characters, add them manually: select the drop cap and type in other letters you need.</p>
+			<p>To adjust the drop cap appearance (i.e. font size, type, decoration style or color), select the letter and use the corresponding icons at the <b>Home</b> tab of the top toolbar.</p>
+			<p>When the drop cap is selected, it's surrounded by a <b>frame</b> (a container used to position the drop cap on the page). You can quickly change the frame size dragging its borders or change its position using the <img alt="Arrow" src="../images/arrow.png" /> icon that appears after hovering your mouse cursor over the frame.</p>
+			<p>To delete the added drop cap, select it, click the <img alt="Drop Cap icon" src="../images/insert_dropcap_icon.png" /> <b>Drop Cap</b> icon at the <b>Insert</b> tab of the top toolbar and choose the <b>None</b> <img alt="Insert Drop Cap - None" src="../images/dropcap_none.png" /> option from the drop-down list.</p>
+			<hr />
+			<p>To adjust the added drop cap parameters, select it, click the <img alt="Drop Cap icon" src="../images/insert_dropcap_icon.png" /> <b>Drop Cap</b> icon at the <b>Insert</b> tab of the top toolbar and choose the <b>Drop Cap Settings</b> option from the drop-down list. The <b>Drop Cap - Advanced Settings</b> window will open:</p>
+            <p><img alt="Drop Cap - Advanced Settings" src="../images/dropcap_properties_1.png" /></p>
+			<p>The <b>Drop Cap</b> tab allows to set the following parameters:</p>
+			    <ul>
+			    <li><b>Position</b> - is used to change the drop cap placement. Select the <b>In Text</b> or <b>In Margin</b> option, or click <b>None</b> to delete the drop cap.</li>
+			    <li><b>Font</b> - is used to select one of the fonts from the list of the available ones.</li>
+			    <li><b>Height in rows</b> - is used to specify how many lines the drop cap should span. It's possible to select a value from 1 to 10.</li>
+			    <li><b>Distance from text</b> - is used to specify the amount of space between the text of the paragraph and the right border of the frame that surrounds the drop cap.</li>
+			    </ul>
+            <p><img alt="Drop Cap - Advanced Settings" src="../images/dropcap_properties_2.png" /></p>
+			<p>The <b>Borders &amp; Fill</b> tab allows to add a border around the drop cap and adjust its parameters. They are the following:</p>
+			<ul>
+				<li><b>Border</b> parameters (size, color and presence or absence) - set the border size, select its color and choose the borders (top, bottom, left, right or their combination) you want to apply these settings to.</li>
+				<li><b>Background color</b> - choose the color for the drop cap background.</li>
+			</ul>
+            <p><img alt="Drop Cap - Advanced Settings" src="../images/dropcap_properties_3.png" /></p>
+			<p>The <b>Margins</b> tab allows to set the distance between the drop cap and the <b>Top</b>, <b>Bottom</b>, <b>Left</b> and <b>Right</b> borders around it (if the borders have previously been added).</p>
+			<hr />
+			<p>Once the drop cap is added you can also change the <b>Frame</b> parameters. To access them, right click within the frame and select the <b>Frame Advanced Settings</b> from the menu. The <b>Frame - Advanced Settings</b> window will open:</p> 
+            <p><img alt="Frame - Advanced Settings" src="../images/frame_properties_1.png" /></p>
+			<p>The <b>Frame</b> tab allows to set the following parameters:</p>
+			<ul>
+				<li><b>Position</b> -  is used to select the <b>Inline</b> or <b>Flow</b> wrapping style. Or you can click <b>None</b> to delete the frame.</li>
+				<li><b>Width</b> and <b>Height</b> - are used to change the frame dimensions. The <b>Auto</b> option allows to automatically adjust the frame size to fit the drop cap in it. The <b>Exactly</b> option allows to specify fixed values. The <b>At least</b> option is used to set the minimum height value (if you change the drop cap size, the frame height changes accordingly, but it cannot be less than the specified value).</li>
+				<li><b>Horizontal</b> parameters are used either to set the frame exact <b>position</b> in the selected units of measurement <b>relative to</b> a margin, page or column, or to align the frame (left, center or right) <b>relative to</b> one of these reference points. You can also set the horizontal <b>Distance from text</b> i.e. the amount of space between the vertical frame borders and the text of the paragraph.</li>
+				<li><b>Vertical</b> parameters are used either to set the frame exact <b>position</b> in the selected units of measurement <b>relative to</b> a margin, page or paragraph, or to align the frame (top, center or bottom) <b>relative to</b> one of these reference points. You can also set the vertical <b>Distance from text</b> i.e. the amount of space between the horizontal frame borders and the text of the paragraph.</li>
+				<li><b>Move with text</b> - controls whether the frame moves as the paragraph to which it is anchored moves.</li>
+			</ul>
+			<!--<img alt="Frame - Advanced Settings" src="../images/Frame_properties_2.png" />-->
+			<p>The <b>Borders &amp; Fill</b> and <b>Margins</b> tabs allow to set just the same parameters as at the tabs of the same name in the <b>Drop Cap - Advanced Settings</b> window.</p>
+			<!--<img alt="Frame - Advanced Settings" src="../images/Frame_properties_3.png" />
+			<p>The <b>Margins</b> tab allows to set just the same parameters as at the tab of the same name in the <b>Drop Cap - Advanced Settings</b> window.</p>-->
+		</div>
+	</body>
+</html>

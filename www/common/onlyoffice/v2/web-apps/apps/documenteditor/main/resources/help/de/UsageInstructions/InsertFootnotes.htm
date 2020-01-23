@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fußnoten einfügen</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Insert footnotes to provide explanations for some terms or make references to the sources" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Fußnoten einfügen</h1>
+            <p>Sie haben die Möglichkeit Fußnoten einzufügen, um Kommentare zu bestimmten Sätzen oder Begriffen in Ihrem Text einzufügen, Referenzen und Quellen anzugeben usw.</p>
+			<p>Eine Fußnote einfügen:</p>
+			<ol>
+                <li>Positionieren Sie den Einfügepunkt am Ende der Textpassage, der Sie eine Fußnote hinzufügen möchten.</li>
+                <li>Wechseln Sie in der oberen Symbolleiste auf die Registerkarte <b>Verweise</b>.</li>
+				<li>Klicken Sie auf das Symbol <img alt="Fußnote" src="../images/addfootnote.png" /> <b>Fußnote</b> in der oberen Symbolleiste oder<br/> klicken Sie auf den Pfeil neben dem Symbol <img alt="Fußnote" src="../images/addfootnote.png" /> <b>Fußnote</b> und wählen Sie die Option <b>Fußnote einfügen</b> aus dem Menü aus.<p>Das Fußnotenzeichen (d.h. das hochgestellte Zeichen, das eine Fußnote anzeigt) wird im Dokumenttext angezeigt und die Textmarke springt an das unteren Ende der aktuellen Seite.</p>
+                </li>
+				<li>Geben Sie den Text der Fußnote ein.</li>
+			</ol>
+            <p>Wiederholen Sie den beschriebenen Vorgang, um weitere Fußnoten für andere Textpassagen in Ihrem Dokument hinzuzufügen. Die Fußnoten werden automatisch nummeriert.</p>
+            <p><img alt="Fußnoten" src="../images/footnotesadded.png" /></p>
+            <p>Wenn Sie den Mauszeiger über das Fußnotenzeichen bewegen, öffnet sich ein kleines Popup-Fenster mit dem Fußnotentext.</p>
+            <p><img alt="Fußnotentext" src="../images/footnotetext.png" /></p>
+            <p>Um zwischen den hinzugefügten Fußnoten im Dokumenttext zu navigieren,</p>
+            <ol>
+                <li>klicken Sie auf der Registerkarte <b>Verweise</b> in der oberen Symbolleiste auf den Pfeil neben dem Symbol <img alt="Fußnote" src="../images/addfootnote.png" /> <b>Fußnote</b>.</li>
+                <li>Navigieren Sie nun im Abschnitt <b>Zu Fußnoten wechseln</b> über die Pfeile <img alt="Vorherige Fußnote" src="../images/previousfootnote.png" /> und <img alt="Nächste Fußnote" src="../images/nextfootnote.png" /> zur nächsten oder zur vorherigen Fußnote.</li>
+            </ol>
+            <hr />
+			<p>Einstellungen der Fußnoten ändern:</p>
+			<ol>
+				<li>Klicken Sie auf der Registerkarte <b>Verweise</b> in der oberen Symbolleiste auf den Pfeil neben dem Symbol <img alt="Fußnote" src="../images/addfootnote.png" /> <b>Fußnote</b>.</li>
+                <li>Wählen Sie die Option <b>Einstellungen Fußnoten</b> aus dem Menü aus.</li>
+				<li>Ändern Sie im Fenster <b>Einstellungen Fußnoten</b> die aktuellen Parameter:<p><img alt="Fenster Fußnoteneinstellungen" src="../images/footnotes_settings.png" /></p>
+				<ul>
+				<li>Legen Sie die <b>Position</b> der Fußnoten auf der Seite fest, indem Sie eine der verfügbaren Optionen auswählen:<ul>
+                        <li><b>Seitenende</b> - um Fußnoten am unteren Seitenrand zu positionieren (diese Option ist standardmäßig ausgewählt).</li>
+                        <li><b>Unter dem Text</b> - um Fußnoten dicht am entsprechenden Textabschnitt zu positionieren. Diese Option ist nützlich, wenn eine Seite nur einen kurzen Textabschnitt enthält.</li>
+                    </ul>
+                </li>
+                <li><b>Format</b> der Fußnoten anpassen:<ul>
+                        <li><b>Zahlenformat</b> - wählen Sie das gewünschte Format aus der Liste mit verfügbaren Formaten aus: <em>1, 2, 3,...</em>, <em>a, b, c,...</em>, <em>A, B, C,...</em>, <em>i, ii, iii,...</em>, <em>I, II, III,...</em>.</li>
+                        <li><b>Beginnen mit</b> - über die Pfeiltasten können Sie festlegen, bei welchem Buchstaben oder welcher Zahl Sie beginnen möchten.</li>
+                        <li><b>Nummerierung</b> - wählen Sie aus, auf welche Weise Sie Ihre Fußnoten nummerieren möchten:<ul>
+                            <li><b>Fortlaufend</b> - um Fußnoten im gesamten Dokument fortlaufend zu nummerieren.</li>
+                            <li><b>Jeder Abschnitt neu</b> - die Nummerierung der Fußnoten beginnt in jedem neuen Abschnitt wieder bei 1 (oder einem anderen festgelegten Wert).</li>
+                            <li><b>Jede Seite neu</b> - die Nummerierung der Fußnoten beginnt auf jeder neuen Seite wieder bei 1 (oder einem anderen festgelegten Wert).</li>
+                        </ul>
+                        </li>
+                        <li><b>Benutzerdefinierte Markierung</b> - Legen Sie ein Sonderzeichen oder ein Wort fest, das Sie als Fußnotenzeichen verwenden möchten (z. B. * oder Note1). Geben Sie das gewünschte Wort/Zeichen in das dafür vorgesehene Feld ein und klicken Sie auf <b>Einfügen</b> im Fenster <b>Fußnoteneinstellungen</b>.</li>
+                    </ul>
+                </li>
+                <li>Legen Sie in der Dropdown-Liste <b>Änderungen anwenden auf</b> auf fest, ob Sie die angegebenen Fußnoteneinstellungen auf das <b>gesamte Dokument</b> oder nur den <b>aktuellen Abschnitt</b> anwenden wollen.<p class="note"><b>Hinweis</b>: Um unterschiedliche Fußnotenformatierungen in verschiedenen Teilen des Dokuments zu verwenden, müssen Sie zunächst <a href="../UsageInstructions/SectionBreaks.htm" onclick="onhyperlinkclick(this)">Abschnittsumbrüche einfügen</a>.</p>
+                </li>
+				</ul>
+				</li>
+                <li>Wenn Sie fertig sind, klicken Sie auf <b>Übernehmen</b>.</li>
+			</ol>
+            
+            <hr />
+            <p>Um eine einzelne Fußnote zu entfernen, positionieren Sie den Einfügepunkt direkt vor der Fußnotenmarkierung und drücken Sie auf <b>ENTF</b>. Andere Fußnoten werden automatisch neu nummeriert.</p>
+            <p>Um alle Fußnoten in einem Dokument zu entferen,</p>
+            <ol>
+                <li>Klicken Sie auf der Registerkarte <b>Verweise</b> in der oberen Symbolleiste auf den Pfeil neben dem Symbol <img alt="Fußnote" src="../images/addfootnote.png" /> <b>Fußnote</b>.</li>
+                <li>Wählen Sie die Option <b>Alle Fußnoten löschen</b> aus dem Menü aus.</li>
+            </ol>
+		</div>
+	</body>
+</html>

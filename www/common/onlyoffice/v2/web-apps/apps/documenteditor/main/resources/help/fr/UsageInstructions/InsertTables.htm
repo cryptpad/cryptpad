@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insérer des tableaux</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add a table to your document and adjust its properties" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insérer des tableaux</h1>
+            <h3>Insérer un tableau</h3>
+			<p>Pour insérer un tableau dans le texte de votre document,</p>
+			<ol>
+				<li>placez le curseur à l'endroit où vous voulez insérer le tableau,</li>
+                <li>passez à l'onglet <b>Insérer</b> de la barre d'outils supérieure,</li>
+				<li>cliquez sur l'icône <b>Insérer un tableau</b> <img alt="icône Insérer un tableau" src="../images/table.png" /> sur la la barre d'outils supérieure,</li>
+				<li>sélectionnez une des options pour créer le tableau :<ul>
+						<li><p>soit un tableau avec le nombre prédéfini de cellules (10 par 8 cellules maximum)</p>
+						<p>Si vous voulez ajouter rapidement un tableau, il vous suffit de sélectionner le nombre de lignes (8 au maximum) et de colonnes (10 au maximum).</p></li>
+						<li><p>soit un tableau personnalisé</p>
+						<p>Si vous avez besoin d'un tableau de plus de 10 par 8 cellules, sélectionnez l'option <b>Insérer un tableau personnalisé</b> pour ouvrir la fenêtre et spécifiez le nombre nécessaire de lignes et de colonnes, ensuite cliquez sur le bouton <b>OK</b>.</p>
+						<p><img alt="Tableau personnalisé" src="../images/customtable.png" /></p>
+						</li>
+					</ul>
+				</li>
+				<li>après avoir ajouté le tableau, vous pouvez modifier ses propriétés, sa taille et sa position.</li>
+			</ol>
+            <p>Pour redimensionner un tableau, placez le curseur de la souris sur la poignée <img alt="Icône Carreaux" src="../images/resizetable_handle.png" /> dans son coin inférieur droit et faites-la glisser jusqu'à ce que la taille du tableau soit atteinte.</p>
+            <p><img alt="Redimensionner le tableau" src="../images/resizetable.png" /></p>
+            <p>Vous pouvez également modifier manuellement la largeur d'une certaine colonne ou la hauteur d'une ligne. Déplacez le curseur de la souris sur la bordure droite de la colonne de sorte que le curseur se transforme en flèche bidirectionnelle <img alt="Curseur de la souris lors de la modification de la largeur d'une colonne" src="../images/changecolumnwidth.png" /> et faites glisser la bordure vers la gauche ou la droite pour définir la largeur nécessaire. Pour modifier manuellement la hauteur d'une seule ligne, déplacez le curseur de la souris sur la bordure inférieure de la ligne afin que le curseur devienne la flèche bidirectionnelle <img alt="Curseur de la souris lors de la modification de la hauteur d'une ligne" src="../images/changerowheight.png" /> et déplacez la bordure vers le haut ou le bas.</p>
+            <p>Pour déplacer une table, maintenez la poignée <img alt="Poignée Sélectionner un tableau" src="../images/movetable_handle.png" /> dans son coin supérieur gauche et faites-la glisser à l'endroit voulu dans le document.</p>
+            <hr />
+            <h3>Sélectionnez un tableau ou une portion de tableau</h3>
+            <p>Pour sélectionner un tableau entier, cliquez sur la poignée <img alt="Poignée Sélectionner un tableau" src="../images/movetable_handle.png" /> dans son coin supérieur gauche.</p>
+            <p>Pour sélectionner une certaine cellule, déplacez le curseur de la souris sur le côté gauche de la cellule nécessaire pour que le curseur devienne la flèche noire <img alt="Sélectionner la cellule" src="../images/selectcellpointer.png" />, puis cliquez avec le bouton gauche de la souris.</p>
+            <p>Pour sélectionner une certaine ligne, déplacez le curseur de la souris sur la bordure gauche du tableau à côté de la ligne voulue pour que le curseur devienne la flèche noire horizontale <img alt="Sélectionner une ligne" src="../images/selectrowpointer.png" />, puis cliquez avec le bouton gauche de la souris.</p>
+            <p>Pour sélectionner une certaine colonne, déplacez le curseur de la souris sur la bordure supérieure de la colonne voulue pour que le curseur se transforme en flèche noire dirigée vers le bas <img alt="Sélectionner une colonne" src="../images/selectcolumnpointer.png" />, puis cliquez avec le bouton gauche de la souris.</p>
+            <p>Il est également possible de sélectionner une cellule, une ligne, une colonne ou un tableau à l'aide des options du menu contextuel ou de la section <b>Lignes et colonnes</b> de la barre latérale droite.</p>
+            <hr />
+            <h3>Ajuster les paramètres du tableau</h3>
+			<p>Certaines paramètres du tableau ainsi que sa structure peuvent être modifiés à l'aide du menu contextuel. Les options du menu sont les suivantes :</p>
+			<ul>
+				<li><b>Couper, Copier, Coller</b> - les options nécessaires pour couper ou coller le texte / l'objet sélectionné et coller un passage de texte précedement coupé / copié ou un objet à la position actuelle du curseur.</li>
+                <li><b>Sélectionner</b> sert à sélectionner une ligne, une colonne, une cellule ou un tableau.</li>
+				<li><b>Insérer</b> sert à insérer une ligne au-dessus ou en dessous de la ligne où le curseur est placé ainsi qu'insérer une colonne à gauche ou à droite de la сolonne à la position actuelle du curseur.</li>
+				<li><b>Supprimer</b> sert à supprimer une ligne, une colonne ou un tableau.</li>
+				<li><b>Fusionner les cellules</b> est disponible si deux ou plusieurs cellules sont sélectionnées et est utilisé pour les fusionner.</li>
+				<li><b>Fractionner la cellule...</b> sert à ouvrir la fenêtre où vous pouvez sélectionner le nombre nécessaire de colonnes et de lignes de la cellule qui doit être divisée.</li>
+				<li><b>Distribuer les lignes</b> est utilisé pour ajuster les cellules sélectionnées afin qu'elles aient la même hauteur sans changer la hauteur globale du tableau.</li>
+                <li><b>Distribuer les colonnes</b> est utilisé pour ajuster les cellules sélectionnées afin qu'elles aient la même largeur sans modifier la largeur globale du tableau.</li>
+                <li><b>Alignement vertical de cellule</b> sert à aligner le texte en haut, au centre ou en bas de la cellule sélectionnée.</li>
+                <li><b>Orientation du texte</b> - sert à modifier l'orientation du texte dans une cellule. Vous pouvez placer le texte horisontallement, verticallement de haut en bas (<b>Rotation 90°</b>), ou verticcalement de bas en haut (<b>Rotation 270°</b>).</li>
+				<li><b>Paramètres avancés du tableau</b> sert à ouvrir la fenêtre 'Tableau - Paramètres avancés'.</li>
+				<li><b>Lien hypertexte</b> sert à insérer un lien hypertexte.</li>
+				<li><b>Paramètres avancés du paragraphe-</b> sert à ouvrir la fenêtre 'Paragraphe - Paramètres avancés'.</li>
+			</ul>
+			<hr />
+			<p><img class="floatleft"alt="Barre latérale droite - Paramètres du tableau" src="../images/right_table.png" /></p>
+			<p>Vous pouvez également modifier les propriétés du tableau en utilisant la barre latérale droite :</p>
+			<ul style="margin-left: 280px;">
+				<li><p><b>Lignes</b> et <b>Colonnes</b> servent à sélectionner les parties du tableau à souligner.</p>
+					<p>Pour les lignes :</p>
+					<ul>
+						<li><i>En-tête</i> - pour souligner la première ligne</li>
+						<li><i>Total</i> - pour souligner la dernière ligne</li>
+						<li><i>À bandes</i> - pour souligner chaque deuxième ligne</li>
+					</ul>
+					<p>Pour les colonnes :</p>
+					<ul>
+						<li><i>Premier</i> - pour souligner la première colonne</li>
+						<li><i>Dernier</i> - pour souligner la dernière colonne</li>
+						<li><i>À bandes</i> - pour souligner chaque deuxième colonne</li>
+					</ul>
+				</li>
+				<li><p><b>Sélectionner à partir d'un modèle</b> sert à choisir un modèle de tableau à partir de ceux qui sont disponibles.</p></li>
+				<li><p><b>Style des bordures</b> sert à sélectionner la taille de la bordure, la couleur, le style ainsi que la couleur d'arrière-plan.</p></li>
+				<li><p><b>Lignes &amp; colonnes</b> sert à effectuer certaines opérations avec le tableau : sélectionner, supprimer, insérer des lignes et des colonnes, fusionner des cellules, fractionner une cellule.</p></li>
+                <li><p><b>Taille de cellule</b> est utilisée pour ajuster la largeur et la hauteur de la cellule actuellement sélectionnée. Dans cette section, vous pouvez également <b>Distribuer les lignes</b> afin que toutes les cellules sélectionnées aient la même hauteur ou <b>Distribuer les colonnes</b> de sorte que toutes les cellules sélectionnées aient la même largeur.</p></li>
+				<li><p><b>Répéter en haut de chaque page en tant que ligne d'en-tête</b> sert à insérer la même rangée d'en-tête en haut de chaque page dans les tableaux longs.</p></li>
+				<li><p><b>Afficher les paramètres avancés</b> sert à ouvrir la fenêtre 'Tableau - Paramètres avancés'.</p></li>
+			</ul>
+			<hr />
+			<p>Pour modifier les paramètres du tableau avancés, cliquez sur le tableau avec le clic droit de la souris et sélectionnez l'option <b>Paramètres avancés du tableau</b> du menu contextuel ou utilisez le lien <b>Afficher les paramètres avancés</b> sur la barre latérale droite. La fenêtre Propriétés du tableau s'ouvre :</p>
+            <p><img alt="Tableau - Paramètres avancés" src="../images/table_properties_1.png" /></p>
+            <p>L'onglet <b>Tableau</b> permet de modifier les paramètres de tout le tableau.</p>
+            <ul>
+                <li>La section <b>Taille du tableau</b> contient les paramètres suivants :<ul>
+                    <li><b>Largeur</b> - par défaut, la largeur du tableau est ajustée automatiquement à la largeur de la page, c-à-d le tableau occupe tout l'espace entre la marge gauche et la marge droite de la page. Vous pouvez cocher cette case et spécifier la largeur du tableau manuellement.</li>
+                    <li><b>Mesure en</b> - permet de définir la largeur du tableau en unités absolues c-à-d <b>Centimètres</b>/<b>Points</b>/<b>Pouces</b> (selon l'option choisie dans l'onglet <b>Fichier</b> -&gt; <b>Paramètres avancés...</b> tab) ou en <b>Pour cent</b> de la largeur totale de la page.<p class="note"><b>Remarque</b>: vous pouvez aussi ajuster la taille du tableau manuellement en changeant la hauteur des lignes et la largeur des colonnes. Déplacez le curseur de la souris sur la bordure de la ligne/ de la colonne jusqu'à ce qu'elle se transforme en flèche bidirectionnelle et faites glisser la bordure. Vous pouvez aussi utiliser les marqueurs sur la règle horizontale pour changer la largeur de la colonne et les marqueurs sur la règle verticale pour modifier la hauteur de la ligne.</p>
+                    </li>
+                    <li><b>Redimensionner automatiquement pour ajuster au contenu</b> - permet de changer automatiquement la largeur de chaque colonne selon le texte dans ses cellules.</li>
+                </ul>
+                </li>
+                <li>La section <b>Marges des cellules par défaut</b> permet de changer l'espace entre le texte dans les cellules et la bordure de la cellule utilisé par défaut.</li>
+                <li>La section <b>Options</b> permet de modifier les paramètres suivants :<ul>
+                    <li><b>Espacement entre les cellules</b> - l'espacement des cellules qui sera rempli par la couleur de l'<b>Arrière-plan de tableau</b>.</li>
+                </ul>
+                </li>
+            </ul>
+            <p><img alt="Tableau - Paramètres avancés" src="../images/table_properties_5.png" /></p>
+            <p>L'onglet <b>Cellule</b> permet de modifier les paramètres des cellules individuelles. D'abord vous devez sélectionner la cellule à appliquer les modifications ou sélectionner le tableau à modifier les propriétés de toutes ses cellules.</p>
+            <ul>
+                <li>La section <b>Taille de la cellule</b> contient les paramètres suivants :<ul>
+                        <li><b>Largeur préférée</b> - permet de définir la largeur de la cellule par défaut. C'est la taille à laquelle la cellule essaie de correspondre, mais dans certains cas ce n'est pas possible se s'adapter à cette valeur exacte. Par exemple, si le texte dans une cellule dépasse la largeur spécifiée, il sera rompu par la ligne suivante de sorte que la largeur de cellule préférée reste intacte, mais si vous insérez une nouvelle colonne, la largeur préférée sera réduite.</li>
+                        <li><b>Mesure en</b> - permet de définir la largeur de la cellule en unités absolues c-à-d <b>Centimètres</b>/<b>Points</b>/<b>Pouces</b> (selon l'option spécifiée dans l'onglet <b>Fichier</b> -&gt; <b>Paramètres avancés...</b>) ou en <b>Pour cent</b> de la largeur totale du tableau.<p class="note"><b>Remarque </b>: vous pouvez aussi définir la largeur de la cellule manuellement. Pour rendre une cellule plus large ou plus étroite dans une colonne, sélectionnez la cellule nécessaire et déplacez le curseur de la souris sur sa bordure droite jusqu'à ce qu'elle se transforme en flèche bidirectionnelle, puis faites glisser la bordure. Pour modifier la largeur de toutes les cellules d'une colonne, utilisez les marqueurs  sur la règle horizontale pour modifier la largeur de la colonne.</p>
+                        </li>
+                    </ul>
+                </li>
+                <li>La section <b>Marges de la cellule</b> permet d'ajuster l'espace entre le texte dans les cellules et la bordure de la cellule. Par défaut, les valeurs standard sont utilisées (les valeurs par défaut peuvent être modifiées également en utilisant l'onglet <b>Tableau</b>), mais vous pouvez désactiver l'option <b>Utiliser marges par défaut</b> et entrer les valeurs nécessaires manuellement.</li>
+                <li>La section <b>Option de la cellule</b> permet de modifier le paramètre suivant :<ul>
+                        <li>L'option <b>Envelopper le texte</b> est activée par défaut. Il permet d'envelopper le texte dans une cellule qui dépasse sa largeur sur la ligne suivante en agrandissant la hauteur de la rangée et en gardant la largeur de la colonne inchangée.</li>
+                    </ul>
+                </li>
+            </ul>
+            <p><img alt="Tableau - Paramètres avancés" src="../images/table_properties_3.png" /></p>
+            <p>L'onglet <b>Bordures &amp; arrière-plan</b> contient les paramètres suivants:</p>
+            <ul>
+                <li>Les paramètres de la <b>Bordure</b> (taille, couleur, présence ou absence) - définissez la taille de la bordure, sélectionnez sa couleur et choisissez la façon d'affichage dans les cellules.<p class="note"><b>Remarque</b> : si vous choisissez de ne pas afficher les bordures du tableau en cliquant sur le bouton <img alt="Pas de bordures" src="../images/noborders.png" /> ou en désélectionnant toutes les bordures manuellement sur le diagramme, les bordures seront indiquées par une ligne pointillée. Pour les faire disparaître, cliquez sur l'icône <b>Caractères non imprimables</b> <img alt="Caractères non imprimables" src="../images/nonprintingcharacters.png" /> sur la barre d'outils supérieure et sélectionnez l'option <b>Bordures du tableau cachées</b>.</p>
+                </li>
+                <li><b>Fond de la cellule</b> - la couleur d'arrière plan dans les cellules (disponible uniquement si une ou plusieurs cellules sont sélectionnées ou l'option <b>Espacement entre les cellules</b> est sélectionnée dans l'onglet <b>Tableau</b> ).</li>
+                <li><b>Fond du tableau</b> - la couleur d'arrière plan du tableau ou le fond de l'espacement entre les cellules dans le cas où l'option <b>Espacement entre les cellules</b> est chosie dans l'onglet <b>Tableau</b>.</li>
+            </ul>
+            <p id="position"><img alt="Tableau - Paramètres avancés" src="../images/table_properties_4.png" /></p>
+			<p>L'onglet <b>Position du tableau</b> est disponible uniquement si l'option <b>Flottant</b> de l'onglet <b>Habillage du texte</b> est sélectionnée et contient les paramètres suivants :</p>
+			<ul>
+				<li><b>Horizontal</b> sert à régler l'<b>alignment</b> du tableau (à gauche, au centre, à droite) <b>par rapport à</b> la marge, la page ou le texte aussi bien que la <b>position à droite de</b> la marge, la page ou le texte.</li>
+				<li><b>Vertical</b> sert à régler l'<b>alignment</b> du tableau (à gauche, au centre, à droite) <b>par rapport à</b> la marge, la page ou le texte aussi bien que la <b>position en dessous</b> de la marge, la page ou le texte.</li>
+				<li>La section <b>Options</b> permet de modifier les paramètres suivants :<ul>
+                    <li><b>Déplacer avec le texte</b> contrôle si la tableau se déplace comme le texte dans lequel il est inséré.</li>
+                    <li><b>Autoriser le chevauchement</b> sert à déterminer si deux tableaux sont fusionnés en un seul grand tableau ou se chevauchent si vous les faites glisser les uns près des autres sur la page.</li>
+                </ul>
+                </li>                
+			</ul>            
+            <p><img alt="Tableau - Paramètres avancés" src="../images/table_properties_2.png" /></p>
+            <p>L'onglet <b>Habillage du texte</b> contient les paramètres suivants :</p>
+            <ul>
+                <li><b>Style d'habillage</b> du texte - <b>Tableau aligné</b> ou <b>Tableau flottant</b>. Utilisez l'option voulue pour changer la façon de positionner le tableau par rapport au texte : soit il sera une partie du texte ( si vous avez choisi le style aligné), soit il sera entouré par le texte de tous les côtés (si vous avez choisi le style flottant).</li>
+                <li>Après avoir sélectionné le style d'habillage, les paramètres d'habillage supplémentaires peuvent être définis pour les tableaux alignés et flottants :<ul>
+                        <li>Pour les tableaux alignés, vous pouvez spécifier l'<b>Alignement</b> du tableau et le <b>Retrait à gauche</b>.</li>
+                        <li>Pour les tableaux flottants, vous pouvez spécifier la <b>distance du texte</b> et la <b>position</b> du tableau dans l'onglet <b>Position du tableau</b>.</li>
+                    </ul>
+                </li>
+            </ul>
+            <p><img alt="Tableau - Paramètres avancés" src="../images/table_properties_6.png" /></p>
+            <p>L'onglet <b>Texte de remplacement</b> permet de spécifier un <b>Titre</b> et une <b>Description</b> qui sera lue aux personnes avec des déficiences cognitives ou visuelles pour les aider à mieux comprendre l'information du tableau.</p>
+                        
+		</div>
+	</body>
+</html>

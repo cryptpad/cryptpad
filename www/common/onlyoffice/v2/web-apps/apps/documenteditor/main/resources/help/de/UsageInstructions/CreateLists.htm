@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Listen erstellen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Create bulleted and numbered lists in the document changing the lists outline" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Listen erstellen</h1>
+			<p>Liste in einem Dokument erstellen:</p>
+			<ol>
+				<li>Bewegen Sie den Cursor an die Stelle, wo Sie die Liste beginnen möchten (dabei kann es sich um eine neue Zeile handeln oder eine bereits vorhandene).</li>
+                <li>Wechseln Sie in der oberen Symbolleiste auf die Registerkarte <b>Start</b>.</li>
+				<li>Wählen Sie den gewünschten Listentyp aus:<ul>
+						<li><b>Aufzählung</b> mit Markern - klicken Sie in der oberen Symbolleiste auf das Symbol <b>Aufzählungszeichen</b> <img alt="Aufzählungszeichen" src="../images/bullets.png" /></li>
+						<li><b>Nummerierte Liste</b> mit Zahlen oder Buchstaben - klicken Sie in der oberen Symbolleiste auf das Symbol <b>Nummerierte Liste</b> <img alt="Nummerierte Liste" src="../images/numbering.png" /><p class="note"><b>Hinweis</b>: Mit dem schwarzen Pfeil neben dem Symbol <b>Aufzählungszeichen</b> oder <b>Nummerierung</b>, können Sie das Format der Liste näher bestimmen.</p>
+						</li>
+					</ul>
+				</li>
+				<li>Jedes Mal, wenn Sie nun am Zeilenende die <b>Eingabetaste</b> drücken, erscheint eine neue Aufzählung oder eine neue Position der nummerierten Liste. Um die Liste zu beenden, drücken Sie die <b>Rücktaste</b> und fahren Sie mit einem üblichen Textabsatz fort.</li>
+			</ol>
+            <p>Das Programm erstellt automatisch nummerierte Listen, wenn Sie die Ziffer 1 mit einem Punkt oder einer Klammer und einem Leerzeichen eingeben: <b>1.</b>, <b>1)</b>. Listen mit Aufzählungszeichen können automatisch erstellt werden, wenn Sie die Zeichen <b>-</b>, <b>*</b> mit einem nachfolgenden Leerzeichen eingeben.</p>
+            <p>Sie können den Texteinzug in den Listen und die dazugehörigen Verschachtelung ändern. Klicken Sie dazu auf in der oberen Symbolleiste auf der Registerkarte <b>Start</b> auf <b>Mehrstufige Liste</b> <img alt="Mehrstufige Liste" src="../images/outline.png" />, <b>Einzung verkleinern</b> <img alt="Einzug verkleinern" src="../images/decreaseindent.png" /> und <b>Einzug vergrößern</b> <img alt="Einzug vergrößern" src="../images/increaseindent.png" />.</p>
+			<p class="note"><b>Hinweis</b>: Die zusätzlichen Einzugs- und Abstandparameter können im rechten Seitenbereich und im Fenster mit den erweiterten Einstellungen geändert werden. Weitere Informationen dazu erhalten Sie in den Abschnitten <a href="ParagraphIndents.htm" onclick="onhyperlinkclick(this)">Absatzeinzüge ändern</a> und <a href="LineSpacing.htm" onclick="onhyperlinkclick(this)">Zeilenabstand festlegen</a>.</p>
+
+            <h3>Listen verbinden und trennen</h3>
+            <p>Eine Liste mit der vorherigen Liste zusammenfügen:</p>
+            <ol>
+                <li>Klicken Sie mit der rechten Maustaste auf den ersten Eintrag der zweiten Liste.</li>
+                <li>Wählen Sie im Kontextmenü die Option <b>Mit vorheriger Liste verbinden</b>.</li>
+            </ol>
+            <p>Die Listen werden zusammengefügt und die Nummerierung wird gemäß der ersten Listennummerierung fortgesetzt.</p>
+
+            <p>Eine Liste trennen:</p>
+            <ol>
+                <li>Klicken Sie mit der rechten Maustaste auf das Listenelement, mit dem Sie eine neue Liste beginnen möchten.</li>
+                <li>Wählen Sie im Kontextmenü die Option <b>Liste trennen</b>.</li>
+            </ol>
+            <p>Die Liste wird getrennt und die Nummerierung in der zweiten Liste beginnt von vorne.</p>
+
+            <h3>Nummerierung ändern</h3>
+            <p>So können Sie die fortlaufende Nummerierung in der zweiten Liste gemäß der vorherigen Listennummerierung fortsetzen:</p>
+            <ol>
+                <li>Klicken Sie mit der rechten Maustaste auf den ersten Eintrag der zweiten Liste.</li>
+                <li>Wählen Sie im Kontextmenü die Option <b>Fortlaufende Nummerierung</b>.</li>
+            </ol>
+            <p>Die Nummerierung wird gemäß der ersten Listennummerierung fortgesetzt.</p>
+
+            <p>Einen individuellen Anfangswert für die Nummerierung festlegen:</p>
+            <ol>
+                <li>Klicken Sie mit der rechten Maustaste auf das Listenelement, dem Sie einen neuen Nummerierungswert zuweisen möchten.</li>
+                <li>Wählen Sie im Kontextmenü die Option <b>Nummerierungswert festlegen</b>.</li>
+                <li>Legen Sie im sich nun öffnenden Fester den gewünschten Zahlenwert fest und klicken Sie dann auf <b>OK</b>.</li>
+            </ol>
+		</div>
+	</body>
+</html>

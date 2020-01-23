@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insérer et mettre en forme des formes automatiques</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add an autoshape to your presentation and adjust its properties." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insérer et mettre en forme des formes automatiques</h1>
+            <h3>Insérer une forme automatique</h3>
+			<p>Pour <b>ajouter</b> une forme automatique à une diapositive,</p>
+			<ol>
+				<li>sélectionnez la diapositive à laquelle vous voulez ajouter une forme automatique dans la liste des diapositives à gauche.</li>
+				<li>cliquez sur l'icône <img alt="Insérer une forme automatique" src="../images/insertautoshape.png" /> <b>Forme</b> dans l'onglet <b>Accueil</b> ou <b>Insertion</b> de la barre d'outils supérieure,</li>
+				<li>sélectionnez l'un des groupes de formes automatiques disponibles : Formes de base, Flèches figurées, Mathématiques, Graphiques, Étoiles et rubans, Légendes, Boutons, Rectangles, Lignes,</li>
+				<li>cliquez sur la forme automatique voulue du groupe sélectionné,</li>
+				<li>dans la zone d'édition de la diapositive, placez le curseur de la souris là où vous voulez insérer la forme,<p class="note"><b>Remarque</b> : vous pouvez cliquer et faire glisser pour étirer la forme.</p>
+				</li>
+				<li>après avoir ajouté la forme automatique vous pouvez modifier <a href="../UsageInstructions/ManipulateObjects.htm" onclick="onhyperlinkclick(this)">sa taille, sa position</a> et ses propriétés.<p class="note"><b>Remarque</b> : pour ajouter une légende à la forme, assurez-vous que la forme est sélectionnée et commencez à taper le texte. Le texte que vous ajoutez fait partie de la forme (ainsi si vous déplacez ou faites pivoter la forme, le texte change de position lui aussi).</p>
+				</li>
+			</ol>
+			<hr />
+            <h3>Modifier les paramètres de la forme automatique</h3>
+			<p>Certains paramètres de la forme automatique peuvent être modifiés en utilisant l'onglet <b>Paramètres de la forme</b> de la barre latérale droite. Pour l'activer, sélectionnez la forme ajoutée avec la souris et sélectionnez l'icône <b>Paramètres de la forme</b> <img alt="Paramètres de la forme" src="../images/shape_settings_icon.png" /> à droite. Vous y pouvez modifier les paramètres suivants :</p>
+			<p><img class="floatleft"alt="Onglet Paramètres de la forme" src="../images/shapesettingstab.png" /></p>
+			<ul  style="margin-left: 280px;">
+			<li><b>Remplissage</b> - utilisez cette section pour sélectionner le remplissage de la forme automatique. Les options disponibles sont les suivantes :<ul>
+				<li><b>Couleur</b> - sélectionnez cette option pour spécifier la couleur unie à appliquer aux diapositives sélectionnées.</li>
+				<li><b>Dégradé</b> - sélectionnez cette option pour spécifier deux couleurs et remplir la forme avec une transition douce entre elles.</li>
+				<li><b>Image ou texture</b> - sélectionnez cette option pour utiliser une image ou une texture prédéfinie en tant que arrière-plan de la forme.</li>
+				<li><b>Motif</b> - sélectionnez cette option pour choisir un modèle à deux couleurs composé d'éléments répétés.</li>
+				<li><b>Pas de remplissage</b> - sélectionnez cette option si vous ne voulez pas utiliser de remplissage.</li>
+			</ul>
+			<p>Pour en savoir plus consultez le chapitre <a href="../UsageInstructions/FillObjectsSelectColor.htm" onclick="onhyperlinkclick(this)">Remplir les objets et sélectionner les couleurs</a>.</p>
+			</li>
+			<li id="shapestroke"><b>Contour</b> - utilisez cette section pour changer la largeur et la couleur du contour de la forme automatique.<ul>
+    			<li>Pour modifier la <b>largeur</b> du contour, sélectionnez une des options disponibles depuis la liste déroulante <b>Taille</b>. Les options disponibles sont les suivantes : 0,5 pt, 1 pt, 1,5 pt, 2,25 pt, 3 pt, 4,5 pt, 6 pt ou <b>Pas de ligne</b> si vous ne voulez pas de contour.</li>
+    			<li>Pour changer la <b>couleur</b> du contour, cliquez sur la case colorée et <a href="../UsageInstructions/FillObjectsSelectColor.htm" onclick="onhyperlinkclick(this)">sélectionnez la couleur voulue</a>. Vous pouvez utiliser la <b>couleur de thème</b> sélectionnée, une <b>couleur standard</b> ou choisir une <b>couleur personnalisée</b>.</li>
+                <li>Pour modifier le type de <b>contour</b>, sélectionnez l'option nécessaire dans la liste déroulante appropriée (une ligne continue est appliquée par défaut, vous pouvez choisir une des lignes pointillées disponibles).</li>
+    			</ul>
+			</li>
+			</ul>
+			<hr />
+			<p>Pour changer les <b>paramètres avancés</b> de la forme automatique, cliquez sur la forme avec le bouton droit et sélectionnez l'option <b>Paramètres avancés</b> dans le menu contextuel ou cliquez avec le bouton gauche et utilisez le lien <b>Afficher paramètres avancés</b> sur la barre latérale droite. La fenêtre Propriétés de la forme s'ouvre :</p>
+            <p><img alt="Paramètres de la forme - onglet Taille" src="../images/shape_properties1.png" /></p>
+			<p>L'onglet <b>Taille</b> vous permet de modifier la <b>Largeur</b> et/ou la <b>Hauteur</b> de la forme automatique. Si le bouton <b>Proportions constantes</b> <img alt="Icône Proportions constantes" src="../images/constantproportions.png" /> est activé (auquel cas il ressemble à ceci <img alt="Icône Proportions constantes activée" src="../images/constantproportionsactivated.png" />), la largeur et la hauteur seront changées en même temps et le ratio d'aspect de la forme automatique originale sera préservé.</p>
+            <p><img alt="Paramètres de la forme - onglet Poids et flèches" src="../images/shape_properties.png" /></p>
+			<p>L'onglet <b>Poids et flèches</b> contient les paramètres suivants :</p>
+			<ul>
+				<li><b>Style de ligne</b> - ce groupe d'options vous permet de spécifier les paramètres suivants :<ul>
+				<li><b>Type de lettrine</b> - cette option permet de définir le style de la fin de la ligne, ainsi elle peut être appliquée seulement aux formes avec un contour ouvert telles que les lignes, polylignes etc. :<ul>
+				    <li><b>Plat</b> - les points finaux seront plats.</li>
+				    <li><b>Arrondi</b> - les points finaux seront arrondis.</li>
+				    <li><b>Carré</b> - les points finaux seront carrés.</li>
+				    </ul>
+				</li>
+				<li><b>Type de jointure</b> - cette option permet de définir le style de l'intersection de deux lignes, par exemple, une polyligne ou les coins du triangle ou le contour du rectangle :<ul>
+    				<li><b>Arrondi</b> - le coin sera arrondi.</li>
+    				<li><b>Plaque</b> - le coin sera coupé d'une manière angulaire.</li>
+    				<li><b>Onglet</b> - l'angle sera aiguisé. Bien adapté pour les formes à angles vifs.</li>
+    				</ul>
+    				<p class="note"><b>Remarque</b> : l'effet sera plus visible si vous utilisez un contour plus épais.</p>
+				</li>
+				</ul>
+				</li>
+				<li><b>Flèches</b> - ce groupe d'options est disponible pour les formes du groupe <b>Lignes</b>. Il permet de définir le <b>Style de début</b> et <b>Style de fin</b> aussi bien que la <b>Taille</b> des flèches en sélectionnant l'option appropriée des listes déroulantes.</li>
+			</ul>
+            <p id="internalmargins"><img alt="Paramètres de la forme - onglet Marge de texte" src="../images/shape_properties3.png" /></p>
+			<p>L'onglet <b>Marges</b> vous permet de changer les marges internes <b>En haut</b>, <b>En bas</b>, <b>A gauche</b> et <b>A droite</b> (c'est-à-dire la distance entre le texte à l'intérieur de la forme et les bordures de la forme automatique).</p>
+            <p class="note"><b>Remarque</b> : cet onglet n'est disponible que si tu texte est ajouté dans la forme automatique, sinon l'onglet est désactivé.</p>
+            <p id ="columns"><img alt="Paramètres de la forme - onglet Colonnes" src="../images/shape_properties2.png" /></p>
+            <p>L'onglet <b>Colonnes</b> permet d'ajouter des colonnes de texte dans la forme automatique en spécifiant le <b>Nombre de colonnes</b> nécessaires (jusqu'à 16) et l'<b>Espacement entre les colonnes</b>. Une fois que vous avez cliqué sur <b>OK</b>, le texte qui existe déjà ou tout autre texte que vous entrez dans la forme automatique apparaîtra dans les colonnes et circulera d'une colonne à l'autre.</p>
+            <p><img alt="Paramètres de la forme - onglet Texte alternatif" src="../images/shape_properties4.png" /></p>
+            <p>L'onglet <b>Texte de remplacement</b> permet de spécifier un <b>Titre</b> et une <b>Description</b> qui sera lue aux personnes avec des déficiences cognitives ou visuelles pour les aider à mieux comprendre l'information de la forme.</p>
+            <hr />
+			<p>Pour <b>remplacer</b> la forme automatique, cliquez dessus avec le bouton gauche de la souris et utilisez la liste déroulante <b>Modifier la forme automatique</b> dans l'onglet <b>Paramètres de forme</b> de la barre latérale droite.</p>
+			<p>Pour <b>supprimer</b> la forme automatique ajoutée, cliquez avec le bouton gauche de la souris et appuyez sur la touche <b>Suppr</b>.</p>
+			<p>Pour apprendre à <b>aligner</b> une forme automatique sur la diapositive ou à <b>organiser</b> plusieurs formes, reportez-vous à la section <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">Aligner et organiser les objets dans une diapositive</a>.</p>
+            <hr />
+            <h3>Joindre des formes automatiques à l'aide de connecteurs</h3>
+            <p>Vous pouvez connecter des formes automatiques à l'aide de lignes munies de points de connexion pour démontrer les dépendances entre les objets (par exemple, si vous souhaitez créer un diagramme). Pour le faire,</p>
+            <ol>
+                <li>cliquez sur l'icône <img alt="Insérer une forme automatique" src="../images/insertautoshape.png" /> <b>Forme</b> dans l'onglet <b>Accueil</b> ou <b>Insertion</b> de la barre d'outils supérieure,</li>
+                <li>sélectionnez le groupe <b>Lignes</b> dans le menu,<p><img alt="Formes - Lignes" src="../images/connectors.png" /></p>
+                </li>
+                <li>cliquez sur la forme souhaitée dans le groupe sélectionné (à l'exception des trois dernières formes qui ne sont pas des connecteurs, à savoir les <em>formes 10</em>, <em>11</em> et <em>12</em>),</li>
+                <li>passez le curseur de la souris sur la première forme automatique et cliquez sur l'un des points de connexions <img alt="Icône Point de connexion" src="../images/connectionpoint.png" /> apparaissant sur le contour,<p><img alt="Utiliser des connecteurs" src="../images/connectors_firstshape.png" /></p>
+                </li>
+                <li>faites glisser le curseur de la souris vers la deuxième forme automatique et cliquez sur le point de connexion voulu sur son contour.<p><img alt="Utiliser des connecteurs" src="../images/connectors_secondshape.png" /></p>
+                </li>
+            </ol>
+            <p>Si vous déplacez les formes automatiques jointes, le connecteur reste attaché aux formes et se déplace avec elles.</p>
+            <p><img alt="Déplacer des formes jointes" src="../images/connectors_moveshape.png" /></p>
+            <p>Vous pouvez également détacher le connecteur des formes, puis l'attacher à d'autres points de connexion.</p>
+		</div>
+	</body>
+</html>

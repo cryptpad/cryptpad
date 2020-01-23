@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Paramètres avancés de Spreadsheet Editor</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The advanced settings of Spreadsheet Editor" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Paramètres avancés de Spreadsheet Editor</h1>
+			<p><b>Spreadsheet Editor</b> vous permet de modifier ses paramètres avancés. Pour y accéder, ouvrez l'onglet <b>Fichier</b> de la barre d'outils supérieure et sélectionnez l'option <b>Paramètres avancés...</b>. Vous pouvez également cliquer sur l'icône <b>Paramètres d'affichage</b> <img alt="Icône Paramètres d'affichage" src="../images/viewsettingsicon.png" /> sur le côté droit de l'en-tête de l'éditeur et sélectionner l'option <b>Paramètres avancés</b>.</p>
+			<p>Les paramètres avancés sont les suivants :</p>
+			<ul>
+                <li><b>Commentaires en temps réel</b> sert à activer / désactiver les commentaires en temps réel.<ul>
+                        <li><b>Activer l'affichage des commentaires</b> - Si cette option est désactivée, les cellules commentées seront mises en surbrillance uniquement si vous cliquez sur l'icône <b>Commentaires</b> <img alt="Icône Commentaires" src="../images/commentsicon.png" /> de la barre latérale gauche.</li>
+                        <li><b>Activer l'affichage des commentaires résolus</b> - cette fonction est désactivée par défaut pour que les commentaires résolus soient masqués sur la feuille. Vous ne pourrez voir ces commentaires que si vous cliquez sur l'icône <b>Commentaires</b> <img alt="Icône Commentaires" src="../images/commentsicon.png" /> dans la barre latérale de gauche. Activez cette option si vous voulez afficher les commentaires résolus sur la feuille.</li>
+                    </ul>
+                </li>
+                <li class="onlineDocumentFeatures"><b>Enregistrement automatique</b> sert à spécifier la fréquence de l'enregistrement des changements apportés lors de l'édition.</li>
+                <li><b>Style de référence</b> est utilisé pour activer/désactiver le <b>style de référence R1C1</b>. Par défaut, cette option est désactivée et le <b>style de référence A1</b> est utilisé.<p>Lorsque le <b>style de référence A1</b> est utilisé, les colonnes sont désignées par des lettres et les lignes par des chiffres. Si vous sélectionnez la cellule située dans la rangée 3 et la colonne 2, son adresse affichée dans la case à gauche de la barre de formule ressemble à ceci : <b>B3</b>. Si le <b>style de référence R1C1</b> est activé, les lignes et les colonnes sont désignées par des numéros. Si vous sélectionnez la cellule à l'intersection de la ligne 3 et de la colonne 2, son adresse ressemblera à ceci : <b>R3C2</b>. La lettre R indique le numéro de ligne et la lettre C le numéro de colonne.</p>
+                <p><img alt="Cellule active" src="../images/activecell.png" /></p>
+                <p>Si vous vous référez à d'autres cellules en utilisant le <b>style de référence R1C1</b>, la référence à une cellule cible est formée en fonction de la distance à partir de la cellule active. Par exemple, lorsque vous sélectionnez la cellule de la ligne 5 et de la colonne 1 et faites référence à la cellule de la ligne 3 et de la colonne 2, la référence est <b>R[-2]C[1]</b>. Les chiffres entre crochets désignent la position de la cellule à laquelle vous vous référez par rapport à la position actuelle de la cellule, c'est-à-dire que la cellule cible est à 2 lignes plus haut et 1 colonne à droite de la cellule active. Si vous sélectionnez la cellule de la ligne 1 et de la colonne 2 et que vous vous référez à la même cellule de la ligne 3 et de la colonne 2, la référence est <b>R[2]C</b>, c'est-à-dire que la cellule cible est à 2 lignes en dessous de la cellule active et dans la même colonne.</p>
+                <p><img alt="Référence relative" src="../images/relativereference.png" /></p>
+                </li>
+                <li class="onlineDocumentFeatures">Le <b>Mode de co-édition</b> permet de sélectionner l'affichage des modifications effectuées lors de la co-édition :<ul>
+                        <li>Par défaut, le mode <b>Rapide</b> est sélectionné, les utilisateurs qui participent à la co-édition du document verront les changements en temps réel une fois qu'ils sont faits par d'autres utilisateurs.</li>
+                        <li>Si vous préférez ne pas voir d'autres changements d'utilisateur (pour ne pas vous déranger, ou pour toute autre raison), sélectionnez le mode <b>Strict</b> et tous les changements apparaîtront seulement après avoir cliqué sur l'icône <b>Enregistrer</b> <img alt="Icône Enregistrer" src="../images/saveupdate.png" /> pour vous informer qu'il y a des changements effectués par d'autres utilisateurs.</li>
+                    </ul>
+                </li>
+                <li><b>Valeur du zoom par défaut</b> sert à définir la valeur de zoom par défaut en la sélectionnant de la liste des options disponibles de 50% à 200%.</li>
+				<li><b>Hinting</b> sert à sélectionner le type d'affichage de la police dans Spreadsheet Editor :<ul>
+						<li>Choisissez <b>comme Windows</b> si vous aimez la façon dont les polices sont habituellement affichées sous Windows, c'est à dire en utilisant la police de Windows.</li>
+						<li>Choisissez <b>comme OS X</b> si vous aimez la façon dont les polices sont habituellement affichées sous Mac, c'est à dire sans hinting.</li>
+						<li>Choisissez <b>Natif</b> si vous voulez que votre texte sera affiché avec les hintings intégrés dans les fichiers de polices.</li>
+					</ul>
+				</li>
+				<li><b>Unité de mesure</b> sert à spécifier les unités de mesure utilisées pour mesurer les paramètres tels que largeur, hauteur, espacement, marges etc. Vous pouvez choisir l'option <b>Centimètre</b> ou <b>Point</b>.</li>
+                <li><b>Langue des formules</b> est utilisé pour sélectionner la langue d'affichage et de saisie des noms de formules.</li>
+                <li><b>Paramètres régionaux</b> est utilisé pour sélectionner le format d'affichage par défaut pour la devise, la date et l'heure.</li>
+			</ul>
+			<p>Pour enregistrer les paramètres modifiés, cliquez sur le bouton <b>Appliquer</b>.</p>
+		</div>
+	</body>
+</html>

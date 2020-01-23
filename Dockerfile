@@ -1,7 +1,7 @@
 # We use multi stage builds
-FROM node:10-stretch-slim AS build
+FROM node:12-stretch-slim AS build
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yq git jq python
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yq git jq python curl
 RUN npm install -g bower
 
 # install tini in this stage to avoid the need of jq and python
@@ -16,7 +16,7 @@ RUN npm install --production \
     && npm install -g bower \
     && bower install --allow-root
 
-FROM node:10-stretch-slim
+FROM node:12-stretch-slim
 
 # You want USE_SSL=true if not putting cryptpad behind a proxy
 ENV USE_SSL=false

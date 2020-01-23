@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>TEXTJOIN Function</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>TEXTJOIN Function</h1>
+			<p>The <b>TEXTJOIN</b> function is one of the text and data functions. Is used to combine the text from multiple ranges and/or strings, and includes a delimiter you specify between each text value that will be combined; if the delimiter is an empty text string, this function will effectively concatenate the ranges. This function is similar to the <b>CONCAT</b> function, but the difference is that the <b>CONCAT</b> function cannot accept a delimiter.</p>
+			<p>The <b>TEXTJOIN</b> function syntax is:</p> 
+			<p style="text-indent: 150px;"><b><em>TEXTJOIN(delimiter, ignore_empty, text1 [, text2], …)</em></b></p> 
+			<p>where</p>
+            <p style="text-indent: 50px;"><b><em>delimiter</em></b> is the delimiter to be inserted between the text values. Can be specified as a text string enclosed by double quotes (e.g. <b>","</b> (comma), <b>" "</b> (space), <b>"\"</b> (backslash) etc.) or as a reference to a cell or range of cells.</p>
+            <p style="text-indent: 50px;"><b><em>ignore_empty</em></b> is a logical value that specifies whether empty cells should be ignored. When the value is set to TRUE, empty cells are ignored.</p>
+            <p style="text-indent: 50px;"><b><em>text1(2)</em></b> is up to 252 data values. Each value can be a text string or a reference to a range of cells.</p>
+            <p>To apply the <b>TEXTJOIN</b> function,</p>
+			<ol>
+			<li>select the cell where you wish to display the result,</li>
+			<li>click the <b>Insert function</b> <img alt="Insert function icon" src="../images/insertfunction.png" /> icon situated at the top toolbar,
+				<br />or right-click within a selected cell and select the <b>Insert Function</b> option from the menu,
+				<br />or click the <img alt="Function icon" src="../images/function.png" /> icon situated at the formula bar,
+			</li>
+			<li>select the <b>Text and data</b> function group from the list,</li>
+			<li>click the <b>TEXTJOIN</b> function,</li>
+			<li>enter the required arguments separating them by commas,</li>
+			<li>press the <b>Enter</b> button.</li>
+			</ol>
+			<p>The result will be displayed in the selected cell.</p>
+			<p style="text-indent: 150px;"><img alt="TEXTJOIN Function" src="../images/textjoin.png" /></p>
+		</div>
+	</body>
+</html>

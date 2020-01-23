@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Pestaña Archivo</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Introducing the Document Editor user interface - File tab" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Pestaña Archivo</h1>
+            <p>La pestaña <b>Archivo</b> permite realizar algunas operaciones básicas en la carpeta actual.</p>
+            <p><img alt="Pestaña Archivo" src="../images/interface/filetab.png" /></p>
+            <p>Al usar esta pestaña podrás:</p>
+            <ul>
+                <li><a href="../UsageInstructions/SavePrintDownload.htm" onclick="onhyperlinkclick(this)">salvar</a> el archivo actual (en caso de <b>Guardado automático</b> esta opción no está disponible), <a href="../UsageInstructions/SavePrintDownload.htm" onclick="onhyperlinkclick(this)">descargar, imprimir</a> o <a href="../UsageInstructions/ViewDocInfo.htm" onclick="onhyperlinkclick(this)">cambiar el nombre</a>,</li>
+                <li><a href="../UsageInstructions/OpenCreateNew.htm" onclick="onhyperlinkclick(this)">crear</a> un documento nuevo o abrir un documente que se ha editado de forma reciente,</li>
+                <li>ver <a href="../UsageInstructions/ViewDocInfo.htm" onclick="onhyperlinkclick(this)">información general</a> del documento,</li>
+                <li>gestionar <a href="../UsageInstructions/ViewDocInfo.htm" onclick="onhyperlinkclick(this)">derechos de acceso</a>,</li>
+                <li>seguir el <a href="../UsageInstructions/ViewDocInfo.htm" onclick="onhyperlinkclick(this)">historial de versiones</a>,</li>
+                <li>acceder al editor de <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Ajustes Avanzados</a>,</li>
+                <li>Volver a la lista del Documento.</li>
+            </ul>
+		</div>
+	</body>
+</html>

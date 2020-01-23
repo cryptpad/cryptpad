@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Textumbruch ändern</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Change the text wrapping style to specify the way the object is positioned relative to the text." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Textumbruch ändern</h1>
+            <p>Die Option <b>Textumbruch</b> legt fest, wie ein Objekt relativ zum Text positioniert wird. Sie können den Umbruchstil für eingefügt Objekte ändern, wie beispielsweise <a href="../UsageInstructions/InsertAutoshapes.htm" onclick="onhyperlinkclick(this)">Formen</a>, <a href="../UsageInstructions/InsertImages.htm" onclick="onhyperlinkclick(this)">Bilder</a>, <a href="../UsageInstructions/InsertCharts.htm#" onclick="onhyperlinkclick(this)">Diagramme</a>, <a href="../UsageInstructions/InsertTextObjects.htm" onclick="onhyperlinkclick(this)">Textfelder</a> oder <a href="../UsageInstructions/InsertTables.htm" onclick="onhyperlinkclick(this)">Tabellen</a>.</p>
+            <h3>Textumbruch für Formen, Bilder, Diagramme oder Tabellen ändern</h3>
+            <p>Ändern des aktuellen Umbruchstils:</p>
+            <ol>
+                <li>Wählen Sie über einen Linksklick ein einzelnes Objekt auf der Seite aus. Um ein Textfeld auszuwählen, klicken Sie auf den Rahmen und nicht auf den darin befindlichen Text.</li>
+                <li>Öffnen Sie die Einstellungen für den Textumbruch:<ul>
+                        <li>Wechseln Sie in der oberen Symbolleiste in die Registerkarte <b>Layout</b> und klicken Sie auf das den Pfeil neben dem Symbol <img alt="Textumbruch" src="../images/wrapping_toptoolbar.png" /> <b>Textumbruch</b> oder</li>
+                        <li>klicken Sie mit der rechten Maustaste auf das Objekt und wählen Sie die Option <b>Textumbruch</b> im Kontextmenü aus oder</li>
+                        <li>klicken Sie mit der rechten Maustaste auf das Objekt, wählen Sie die Option <b>Erweiterte Einstellungen</b> und wechseln Sie im Fenster <b>Erweitere Einstellungen</b> in die Gruppe <b>Textumbruch</b>.</li>
+                    </ul>
+                </li>
+                <li>Wählen Sie den gewünschten Umbruchstil aus:<ul>
+                        <li>
+                            <p><img alt="Textumbruch - Mit Text verschieben" src="../images/wrappingstyle_inline_toptoolbar.png" /> <b>Mit Text verschieben</b> - das Bild wird als Teil vom Text behandelt und wenn der Text verschoben wird, wird auch das Bild verschoben. In diesem Fall sind die Positionsoptionen nicht verfügbar.</p>
+                            <p>Falls einer der folgenden Stile gewählt ist, kann das Bild unabhängig vom Text verschoben werden und genau auf der Seite positioniert werden:</p>
+                        </li>
+                        <li><p><img alt="Textumbruch - Quadrat" src="../images/wrappingstyle_square_toptoolbar.png" /> <b>Quadrat</b> - der Text bricht um den rechteckigen Kasten, der das Bild begrenzt.</p></li>
+                        <li><p><img alt="Textumbruch - Eng" src="../images/wrappingstyle_tight_toptoolbar.png" /> <b>Eng</b> - der Text bricht um die Bildkanten um.</p></li>
+                        <li><p><img alt="Textumbruch - Transparent" src="../images/wrappingstyle_through_toptoolbar.png" /> <b>Transparent</b> - der Text bricht um die Bildkanten um und füllt den offenen weißen Raum innerhalb des Bildes. Wählen Sie für diesen Effekt die Option <b>Umbruchsgrenze bearbeiten</b> aus dem Rechtsklickmenü aus.</p></li>
+                        <li><p><img alt="Textumbruch - Oben und unten" src="../images/wrappingstyle_topandbottom_toptoolbar.png" /> <b>Oben und unten</b> - der Text ist nur oberhalb und unterhalb des Bildes.</p></li>
+                        <li><p><img alt="Textumbruch - Vorne" src="../images/wrappingstyle_infront_toptoolbar.png" /> <b>Vor den Text</b> - das Bild überlappt mit dem Text.</p></li>
+                        <li><p><img alt="Textumbruch - Hinten" src="../images/wrappingstyle_behind_toptoolbar.png" /> <b>Hinter den Text</b> - der Text überlappt sich mit dem Bild.</p></li>
+                    </ul>
+                </li>
+            </ol>
+            <p>Wenn Sie die Formate <b>Quadrat</b>, <b>Eng</b>, <b>Transparent</b> oder <b>Oben und unten</b> auswählen, haben Sie die Möglichkeit zusätzliche Parameter festzulegen - <b>Abstand vom Text</b> auf allen Seiten (oben, unten, links, rechts). Klicken Sie dazu mit der rechten Maustaste auf das Objekt, wählen Sie die Option <b>Erweiterte Einstellungen</b> und wechseln Sie im Fenster <b>Erweiterte Einstellungen</b> in die Gruppe <b>Textumbruch</b>. Wählen Sie die gewünschten Werte und klicken Sie auf <b>OK</b>.</p>
+            <p>Wenn Sie die Option <b>Position auf der Seite fixieren</b> wählen, steht Ihnen im Fenster <b>Erweiterte Einstellungen</b> auch die Gruppe <b>Position</b> zur Verfügung. Weitere Informationen zu diesen Parametern finden Sie auf den entsprechenden Seiten mit Anweisungen zum Umgang mit <a href="../UsageInstructions/InsertAutoshapes.htm#position" onclick="onhyperlinkclick(this)">Formen</a>, <a href="../UsageInstructions/InsertImages.htm#position" onclick="onhyperlinkclick(this)">Bildern</a> oder <a href="../UsageInstructions/InsertCharts.htm#position" onclick="onhyperlinkclick(this)">Diagrammen</a>.</p>
+            <p>Wenn Sie die Option <b>Position auf der Seite fixieren</b> wählen, haben Sie außerdem die Möglichkeit, die Umbruchränder für <b>Bilder</b> oder <b>Formen</b> zu bearbeiten. Klicken Sie mit der rechten Maustaste auf das Objekt, wählen Sie die Option <b>Textumbruch</b> im Kontextmenü aus und klicken Sie auf <b>Bearbeitung der Umbruchsgrenze</b>. Ziehen Sie die Umbruchpunkte, um die Grenze benutzerdefiniert anzupassen. Um einen neuen Rahmenpunkt zu erstellen, klicken Sie auf eine beliebige Stelle auf der roten Linie und ziehen Sie diese an die gewünschte Position. <img alt="Umbruchgrenze bearbeiten" src="../images/wrap_boundary.png" /></p>
+            <h3>Textumbruch für Tabellen ändern</h3>
+            <p>Für <a href="../UsageInstructions/InsertTables.htm" onclick="onhyperlinkclick(this)">Tabellen</a> stehen die folgenden Umbruchstile zur Verfügung: <b>Mit Text verschieben</b> und <b>Umgebend</b>.</p>
+            <p>Ändern des aktuellen Umbruchstils:</p>
+            <ol>
+                <li>Klicken Sie mit der rechten Maustaste auf die Tabelle und wählen Sie die Option <b>Tabelle-Erweiterte Einstellungen</b>.</li>
+                <li>Wechseln Sie nun im Fenster <b>Tabelle - Erweiterte Einstellungen</b> in die Gruppe <b>Textumbruch</b> und</li>
+                <li>wählen Sie eine der folgenden Optionen:<ul>
+                        <li><b>Textumbruch - Mit Text in Zeile</b>: der Text wird durch die Tabelle umgebrochen, außerdem können Sie die Ausrichtung wählen: linksbündig, zentriert, rechtsbündig.</li>
+                        <li><b>Textumbruch - Umgebend</b>: bei diesem Format wird die Tabelle innerhalb des Textes eingefügt und entsprechend an allen Seiten vom Text umgeben.</li>
+                    </ul>
+                </li>
+            </ol>
+            <p>Über die Gruppe <b>Textumbruch</b> im Fenster <b>Tabelle - Erweiterte Einstellungen</b>, können Sie außerdem die folgenden Parameter einrichten.</p>
+            <ul>
+                <li>Für Tabellen, die mit dem Text verschoben werden, können Sie die <b>Ausrichtung</b> der Tabelle festlegen (linksbündig, zentriert, rechtsbündig) sowie den <b>Einzug</b> vom linken Seitenrand.</li>
+                <li>Für Tabellen, deren Position auf einer Seite fixiert ist, können Sie den <b>Abstand vom Text</b> sowie die <b>Tabellenposition</b> in der Gruppe <a href="../UsageInstructions/InsertTables.htm#position" onclick="onhyperlinkclick(this)">Tabellenposition</a> festlegen.</li>
+            </ul>
+		</div>
+	</body>
+</html>

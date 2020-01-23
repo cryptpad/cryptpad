@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Create lists</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Create bulleted and numbered lists in the document changing the lists outline" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Create lists</h1>
+			<p>To create a list in your document,</p>
+			<ol>
+				<li>place the cursor to the position where a list will be started (this can be a new line or the already entered text),</li>
+                <li>switch to the <b>Home</b> tab of the top toolbar,</li>
+				<li>select the list type you would like to start:
+					<ul>
+						<li><b>Unordered list</b> with markers is created using the <b>Bullets</b> <img alt="Unordered List icon" src="../images/bullets.png" /> icon situated at the top toolbar</li>
+						<li><b>Ordered list</b> with digits or letters is created using the <b>Numbering</b> <img alt="Ordered List icon" src="../images/numbering.png" /> icon situated at the top toolbar
+							<p class="note"><b>Note</b>: click the downward arrow next to the <b>Bullets</b> or <b>Numbering</b> icon to select how the list is going to look like.</p>
+						</li>
+					</ul>
+				</li>
+				<li>now each time you press the <b>Enter</b> key at the end of the line a new ordered or unordered list item will appear. To stop that, press the <b>Backspace</b> key and continue with the common text paragraph.</li>
+			</ol>
+            <p>The program also creates numbered lists automatically when you enter digit 1 with a dot or a bracket and a space after it: <b>1.</b>, <b>1)</b>. Bulleted lists can be created automatically when you enter the <b>-</b>, <b>*</b> characters and a space after them.</p>
+            <p>You can also change the text indentation in the lists and their nesting using the <b>Multilevel list</b> <img alt="Multilevel list icon" src="../images/outline.png" />, <b>Decrease indent</b> <img alt="Decrease indent icon" src="../images/decreaseindent.png" />, and <b>Increase indent</b> <img alt="Increase indent icon" src="../images/increaseindent.png" /> icons at the <b>Home</b> tab of the top toolbar.</p>
+			<p class="note"><b>Note</b>: the additional indentation and spacing parameters can be changed at the right sidebar and in the advanced settings window. To learn more about it, read the <a href="ParagraphIndents.htm" onclick="onhyperlinkclick(this)">Change paragraph indents</a> and <a href="LineSpacing.htm" onclick="onhyperlinkclick(this)">Set paragraph line spacing</a> section.</p>
+
+            <h3>Join and separate lists</h3>
+            <p>To join a list to the preceding one:</p>
+            <ol>
+                <li>click the first item of the second list with the right mouse button,</li>
+                <li>use the <b>Join to previous list</b> option from the contextual menu.</li>
+            </ol>
+            <p>The lists will be joined and the numbering will continue in accordance with the first list numbering.</p>
+
+            <p>To separate a list:</p>
+            <ol>
+                <li>click the list item where you want to begin a new list with the right mouse button,</li>
+                <li>use the <b>Separate list</b> option from the contextual menu.</li>
+            </ol>
+            <p>The list will be separated, and the numbering in the second list will begin anew.</p>
+
+            <h3>Change numbering</h3>
+            <p>To continue sequential numbering in the second list according to the previous list numbering:</p>
+            <ol>
+                <li>click the first item of the second list with the right mouse button,</li>
+                <li>use the <b>Continue numbering</b> option from the contextual menu.</li>
+            </ol>
+            <p>The numbering will continue in accordance with the first list numbering.</p>
+
+            <p>To set a certain numbering initial value:</p>
+            <ol>
+                <li>click the list item where you want to apply a new numbering value with the right mouse button,</li>
+                <li>use the <b>Set numbering value</b> option from the contextual menu,</li>
+                <li>in a new window that opens, set the necessary numeric value and click the <b>OK</b> button.</li>
+            </ol>
+		</div>
+	</body>
+</html>

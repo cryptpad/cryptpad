@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Inserte saltos de sección</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Insert section breaks to use different formatting for each section of the document" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Inserte saltos de sección</h1>
+			<p>La opción saltos de sección le permite aplicar un diseño o formato diferente a las ciertas partes de su documento. Por ejemplo, usted puede usar <a href="../UsageInstructions/InsertHeadersFooters.htm" onclick="onhyperlinkclick(this)">encabezados y pies de página</a>, <a href="../UsageInstructions/InsertPageNumbers.htm" onclick="onhyperlinkclick(this)">numeración de páginas</a>, <a href="../UsageInstructions/SetPageParameters.htm" onclick="onhyperlinkclick(this)">márgenes, tamaño, u orientación</a> para cada sección separada.</p>
+			<p class="note"><b>Nota</b>: un salto de sección insertado define un formato del parte precedente del documento.</p>
+			<p>Para insertar un salto de sección en la posición actual del cursor:</p>
+			<ol>
+				<li>haga clic en el <img alt="Icono de saltos" src="../images/pagebreak1.png" /> icono <b>Saltos</b> en la pestaña de <b>Insertar</b> o <b>Diseño</b> en la barra de herramientas superior,</li>
+				<li>seleccione el menú <b>Insertar salto de sección</b></li>
+				<li>seleccione el tipo necesario:<ul>
+				<li><b>Página siguiente</b> - para empezar una sección nueva de la página siguiente</li>
+				<li><b>Página continua</b> - para empezar una sección nueva de la página actual</li>
+				<li><b>Página par</b> - para empezar una sección nueva de la siguiente página par</li>
+				<li><b>Página impar</b> - para empezar una sección nueva de la siguiente página impar</li>
+				</ul>
+				</li>
+			</ol>
+			<p>Los saltos de sección añadidos se indican con una línea de puntos doble: <img alt="Saltos de sección" src="../images/sectionbreak.png" /></p>
+			<p>Si no ve los saltos de sección insertados, pulse el <img alt="Icono Caracteres no imprimibles" src="../images/nonprintingcharacters.png" /> icono en la pestaña de <b>Inicio</b> en la barra de herramientas superior para mostrarlos.</p>
+			<p>Para eliminar un salto de página selecciónelo con el ratón y pulse la tecla <b>Delete</b>. Dado que un salto de sección define el formato de sección precedente, si usted elimina un salto de sección, el formato de sección se eliminará también. La parte del documento que precede un salto de sección obtiene el formato de la parte que lo sigue.</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Namensbereiche verwenden</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Use named ranges to simplify working with formulas" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Namensbereiche verwenden</h1>
+            <p>Namen sind sinnvolle Kennzeichnungen, die für eine Zelle oder einen Zellbereich zugewiesen werden können und die das Arbeiten mit Formeln vereinfachen. Wenn Sie eine Formel erstellen, können Sie einen Namen als Argument eingeben, anstatt einen Verweis auf einen Zellbereich zu erstellen. Wenn Sie z. B. den Namen <em>Jahreseinkommen</em> für einen Zellbereich vergeben, können Sie <em>SUMME(Jahreseinkommen)</em> eingeben, anstelle von <em>SUMME (B1: B12)</em>. Auf diese Art werden Formeln übersichtlicher. Diese Funktion kann auch nützlich sein, wenn viele Formeln auf ein und denselben Zellbereich verweisen. Wenn die Bereichsadresse geändert wird, können Sie die Korrektur einmal mithilfe des Namensverwaltung vornehmen, anstatt alle Formeln einzeln zu bearbeiten.</p>
+			<p>Es gibt zwei Arten von Namen, die verwendet werden können:</p>
+            <ul>
+                <li><b>Definierter Name</b> - ein beliebiger Name, den Sie für einen bestimmten Zellbereich angeben können.</li>
+                <li><b>Tabellenname</b> - ein Standardname, der einer <a href="SortData.htm#tabletemplate" onclick="onhyperlinkclick(this)">neu formatierten Tabelle</a> automatisch zugewiesen wird (<em>Tabelle1</em>, <em>Tabelle2</em> usw.). Sie können den Namen später bearbeiten.</li>
+            </ul>
+            <p>Namen werden auch nach <b>Bereich</b> klassifiziert, d. h. der Ort, an dem ein Name erkannt wird. Ein Name kann für die gesamte Arbeitsmappe (wird für jedes Arbeitsblatt in dieser Arbeitsmappe erkannt) oder für ein separates Arbeitsblatt (wird nur für das angegebene Arbeitsblatt erkannt) verwendet werden. Jeder Name muss innerhalb eines Geltungsbereichs eindeutig sein, dieselben Namen können innerhalb verschiedener Bereiche verwendet werden.</p>
+            <h3>Neue Namen erstellen</h3>
+			<p>So erstellen Sie einen neuen definierten Namen für eine Auswahl:</p>
+			<ol>
+			<li>Wählen Sie eine Zelle oder einen Zellbereich aus, dem Sie einen Namen zuweisen möchten.</li>
+			<li>Öffnen Sie ein neues Namensfenster:<ul>
+                    <li>Klicken Sie mit der rechten Maustaste auf die Auswahl und wählen Sie die Option <b>Namen definieren</b> im Kontextmenü aus.</li>
+                    <li>klicken Sie auf das Symbol <b>Benannte Bereiche</b> <img alt="Benannte Bereiche" src="../images/namedranges.png" /> auf der Registerkarte <b>Start</b> in der oberen Symbolleiste und wählen Sie die Option <b>Neuer Name</b> aus dem Menü aus.</li>
+                </ul>
+                <p>Das Fenster <b>Neuer Name</b> wird geöffnet:</p>
+                <p><img alt="Neuer Name" src="../images/newnamewindow.png" /></p>
+            </li>
+            <li>Geben Sie den gewünschten <b>Namen</b> in das dafür vorgesehene Texteingabefeld ein.<p class="note"><b>Hinweis</b>: ein Name darf nicht von einer Nummer ausgehen und keine Leerzeichen oder Satzzeichen enthalten. Unterstriche (_) sind erlaubt. Groß- und Kleinschreibung wird nicht beachtet.</p>   
+            </li>
+            <li>Legen Sie den <b>Bereich</b> für den Namen fest. Der Bereich <em>Arbeitsmappe</em> ist standardmäßig ausgewählt, Sie können jedoch auch ein einzelnes Arbeitsblatt aus der Liste auswählen.</li>
+            <li>Überprüfen Sie die Angabe für den ausgewählten <b>Datenbereich</b>. Nehmen Sie Änderungen vor, falls erforderlich. Klicken Sie auf die Schaltfläche <b>Daten auswählen</b> - das Fenster <b>Datenbereich auswählen</b> wird geöffnet.<p><img alt="Datenbereich auswählen" src="../images/selectdatarange.png" /></p>   
+            <p>Ändern Sie im Eingabefeld die Verknüpfung zum Zellbereich oder wählen Sie mit der Maus einen neuen Bereich im Arbeitsblatt aus und klicken Sie dann auf <b>OK</b></p> 
+            </li>
+            <li>Klicken Sie auf <b>OK</b>, um den Namen zu speichern.</li>
+			</ol>
+            <p>Um schnell einen neuen Namen für den ausgewählten Zellenbereich zu erstellen, können Sie auch den gewünschten Namen in das Namensfeld links neben der Bearbeitungsleiste eingeben und die <b>EINGABETASTE</b> drücken. Ein solchermaßen erstellter Name wird der <em>Arbeitsmappe</em> zugeordnet.</p>
+            <p><img alt="Namensfeld" src="../images/namefield.png" /></p>
+			<h3>Namen verwalten</h3>
+            <p>Über den <b>Namens-Manger</b> können Sie die vorhandenen Namen einsehen und verwalten. Namens-Manager öffnen:</p>
+            <ul>
+                <li>Klicken Sie auf das Symbol <b>Benannte Bereiche</b> <img alt="Benannte Bereiche" src="../images/namedranges.png" /> auf der Registerkarte <b>Start</b> in der oberen Symbolleiste und wählen Sie die Option <b>Namens-Manger</b> aus dem Menü aus,</li>
+                <li>oder klicken Sie auf den Pfeil im Namensfeld und wählen Sie die Option <b>Namens-Manager</b>.</li>
+            </ul>
+            <p>Das Fenster <b>Namens-Manger</b> wird geöffnet:</p>
+            <p><img alt="Namens-Manger" src="../images/namemanagerwindow.png" /></p>
+            <p>Zu Ihrer Bequemlichkeit können Sie die Namen filtern, indem Sie die Namenskategorie auswählen, die angezeigt werden soll: <b>Alle</b>, <b>Definierten Namen</b>, <b>Tabellennamen</b>, <b>Im Arbeitsblatt festgelegte Namensbereiche</b> oder <b>In der Arbeitsmappe festgelegte Namensbereiche</b>. Die Namen, die zu der ausgewählten Kategorie gehören, werden in der Liste angezeigt, die anderen Namen werden ausgeblendet.</p>
+            <p>Um die Sortierreihenfolge für die angezeigte Liste zu ändern, klicken Sie im Fenster auf die Optionen <b>Benannte Bereiche</b> oder <b>Bereich</b>.</p>
+            <p><b>Namen bearbeiten</b>: wählen Sie den entsprechenden Namen aus der Liste aus und klicken Sie auf <b>Bearbeiten</b>. Das Fenster <b>Namen bearbeiten</b> wird geöffnet:</p>
+            <p><img alt="Namen bearbeiten" src="../images/editnamewindow.png" /></p>
+            <p>Für einen definierten Namen können Sie den Namen und den Datenbereich (Bezug) ändern. Bei Tabellennamen können Sie nur den Namen ändern. Wenn Sie alle notwendigen Änderungen durchgeführt haben, klicken Sie auf <b>Ok</b>, um die Änderungen anzuwenden. Um die Änderungen zu verwerfen, klicken Sie auf <b>Abbrechen</b>. Wenn der bearbeitete Name in einer Formel verwendet wird, wird die Formel automatisch entsprechend geändert.</p>
+            <p><b>Namen löschen</b>: wählen Sie den entsprechenden Namen aus der Liste aus und klicken Sie auf <b>Löschen</b>.</p>
+            <p class="note"><b>Hinweis</b>: wenn Sie einen Namen löschen, der in einer Formel verwendet wird, kann die Formel nicht länger funktionieren (die Formel gibt den Fehlerwert <em>#NAME?</em> zurück).</p>  
+            <p>Sie können im Fenster <b>Names-Manager</b> auch einen neuen Namen erstellen, klicken Sie dazu auf die Schaltfläche <b>Neu</b>.</p>
+			<h3 id="usingnames">Namen bei die Bearbeitung der Tabelle verwenden</h3>
+            <p>Um <b>schnell zwischen Zellenbereichen zu wechseln</b>, klicken Sie auf den Pfeil im Namensfeld und wählen Sie den gewünschten Namen aus der Namensliste aus - der Datenbereich, der diesem Namen entspricht, wird auf dem Arbeitsblatt ausgewählt.</p>
+            <p><img alt="Namensliste" src="../images/namelist.png" /></p>
+            <p class="note"><b>Hinweis</b>: in der Namensliste werden die definierten Namen und Tabellennamen angezeigt, die für das aktuelle Arbeitsblatt und die gesamte Arbeitsmappe festgelegt sind.</p>
+            <p><b>In einer Formel einen Namen als Argument hinzufügen</b>:</p>
+            <ol>
+                <li>Platzieren Sie die Einfügemarke an der Stelle, an der Sie einen Namen hinzufügen möchten.</li>
+                <li>Wählen Sie eine der folgenden Optionen:<ul>
+                        <li>Geben Sie den Namen des erforderlichen benannten Bereichs manuell über die Tastatur ein. Sobald Sie die Anfangsbuchstaben eingegeben haben, wird die Liste <b>Formel automatisch vervollständigen</b> angezeigt. Während der Eingabe werden die Elemente (Formeln und Namen) angezeigt, die den eingegebenen Zeichen entsprechen. Um den gewünschten Namen aus der Liste auszuwählen und diesen in die Formel einzufügen, klicken Sie mit einem Doppelklick auf den Namen oder drücken Sie die <b>TAB</b>-Taste,</li>
+                        <li>oder klicken Sie auf das Symbol <b>Benannte Bereiche</b> <img alt="Benannte Bereiche" src="../images/namedranges.png" /> auf der Registerkarte <b>Start</b> in der oberen Symbolleiste und wählen Sie die Option <b>Namen einfügen</b> aus dem Menü aus, wählen Sie den gewünschten Namen im Fenster <b>Namen einfügen</b> aus und klicken Sie auf <b>OK</b>.<p><img alt="Namen einfügen" src="../images/pastenamewindow.png" /></p>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+            <p class="note"><b>Hinweis</b>: im Fenster <b>Namen einfügen</b> werden die definierten Namen und Tabellennamen angezeigt, die für das aktuelle Arbeitsblatt und die gesamte Arbeitsmappe festgelegt sind.</p>  
+		</div>
+	</body>
+</html>

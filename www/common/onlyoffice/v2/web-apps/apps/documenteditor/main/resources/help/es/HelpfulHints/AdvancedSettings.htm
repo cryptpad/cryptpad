@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Ajustes avanzados del editor de documentos</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="The advanced settings of Document Editor" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Ajustes avanzados del editor de documentos</h1>
+        <p><b>El editor de documentos</b> le permite cambiar los ajustes avanzados. Para acceder a ellos, pulse la pestaña <b>Archivo</b> en la barra de herramientas superior y seleccione la opción <b>Ajustes avanzados...</b>. También puede usar el <img alt="Icono de Ajustes avanzados" src="../images/advanced_settings_icon.png" /> icono en la esquina derecha de arriba en la pestaña de <b>Inicio</b> en la barra de herramientas superior.</p>
+        <p>Los ajustes avanzados son:</p>
+        <ul>
+            <li>La <b>Demostración de Comentarios</b> se usa para activar/desactivar la opción de comentar en tiempo real.<ul>
+                <li><b>Active la demostración de los comentarios</b> -Si desactiva esta opción, los pasajes comentados se resaltarán solo si hace clic en el icono <b>Comentarios</b> <img alt="Icono Comentarios" src="../images/commentsicon.png" /> en la barra de herramientas de la parte izquierda.</li>
+                <li><b>Active la demostración de los comentarios resueltos</b> - Si desactiva esta función, los comentarios resueltos se esconderán en el texto del documento. Será capaz de ver estos comentarios solo si hace clic en el <img alt="Icono Comentarios" src="../images/commentsicon.png" /> icono de <b>Comentarios</b> en la barra de herramientas de la parte izquierda.</li>
+            </ul>
+            </li>
+            <li>La <b>Corrección ortográfica</b> se usa para activar/desactivar la opción de corrección ortográfica.</li>
+            <li>La <b>Entrada alternativa</b> se usa para activar/desactivar jeroglíficos.</li>
+            <li>La <b>Guía de alineación</b> se usa para activar/desactivar las guías de alineación que aparecen cuando mueve objetos y le permite posicionarlos en la página de forma precisa.</li>
+            <li class="onlineDocumentFeatures">El <b>Guardado automático</b> se usa para activar/desactivar el guardado automático de cambios mientras está editando.</li>
+            <li class="onlineDocumentFeatures"><b>El Modo Co-edición</b> se usa para seleccionar la visualización de los cambios hechos durante la co-edición:<ul>
+                    <li>De forma predeterminada se selecciona el modo <b>Rápido</b>, los usuarios que participan en el documento co-editando verán los cambios en tiempo real una vez que los otros usuarios los realicen.</li>
+                    <li>Si prefiere no ver los cambios de otros usuarios (para que no le moleste, o por otros motivos), seleccione el modo <b>Estricto</b> y todos los cambios se mostrarán solo después de hacer clic en el <img alt="Icono Guardar" src="../images/saveupdate.png" /> icono <b>Guardar</b>, y le notificará que hay cambios de otros usuarios.</li>
+                </ul>
+            </li>
+            <li class="onlineDocumentFeatures">Los <b>Cambios colaborativos a tiempo real</b> se usan para especificar los cambios que quiere que destaquen durante la fase de co-edición:<ul>
+                    <li>Al seleccionar la opción <b>Ver ningunos</b>, los cambios hechos durante la sesión actual no se destacarán.</li>
+                    <li>Al seleccionar la opción <b>Ver todo</b>, todos los cambios hechos durante la sesión actual se destacarán.</li>
+                    <li>Al seleccionar la opción <b>Ver últimos</b>, solo tales cambios producidos desde la última vez que hiciste clic en el <img alt="Icono Guardar" src="../images/saveupdate.png" /> icono <b>Guardar</b> se resaltarán. Esta opción solo está disponible cuando el modo de co-edición <b>Estricto</b> está seleccionado.</li>
+                </ul>
+            </li>
+            <li>El <b>Valor de zoom predeterminado</b> se usa para establecer el valor de zoom predeterminado seleccionándolo en la lista de las opciones disponibles, desde un 50% hasta un 200%. También puede elegir la opción <b>Ajustar a la página</b> o <b>Ajustar al ancho</b>.</li>
+            <li>La <b>Optimización de fuentes</b> se usa para seleccionar el tipo de letra que se muestra en el editor de documentos:<ul>
+                    <li>Elija <b>Como Windows</b> si le gusta cómo se muestran los tipos de letra en Windows (usando la optimización de fuentes de Windows).</li>
+                    <li>Elija <b>Como OS X</b> si le gusta cómo se muestran los tipos de letra en Mac (sin optimización de fuentes).</li>
+                    <li>Elija <b>Nativo</b> si quiere que su texto se muestre con sugerencias incorporadas en archivos de fuentes.</li>
+                </ul>
+            </li>
+            <li>La <b>Unidad de medida</b> se usa para especificar qué unidades se usan en las reglas y las ventanas de propiedades para medir ancho, altura, espaciado, márgenes y otros parámetros de elementos. Puede seleccionar la opción <b>Centímetro</b> o <b>Punto</b>.</li>
+        </ul>
+        <p>Para guardar los cambios realizados, pulse el botón <b>Aplicar</b>.</p>
+    </div>
+</body>
+</html>

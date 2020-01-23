@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Функция АГРЕГАТ</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Поиск" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Функция АГРЕГАТ</h1>
+			<p>Функция <b>АГРЕГАТ</b> - это одна из математических и тригонометрических функций. Возвращает агрегатный результат вычислений по списку или базе данных. С помощью функции <b>АГРЕГАТ</b> можно применять различные агрегатные функции к списку или базе данных с возможностью пропускать скрытые строки и значения ошибок.</p>
+			<p>Синтаксис функции <b>АГРЕГАТ</b>:</p> 
+			<p style="text-indent: 150px;"><b><em>АГРЕГАТ(номер_функции;параметры;ссылка1;[ссылка2];...)</em></b></p> 
+			<p><em>где</em></p> 
+			<p style="text-indent: 50px;"><b><em>номер_функции</em></b> числовое значение, которое обозначает используемую функцию. Допустимые значения приведены в таблице ниже.</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>номер_функции<br /></b></td>
+                    <td><b>Функция</b></td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td><a href="../Functions/average.htm" onclick="onhyperlinkclick(this)">СРЗНАЧ</a></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td><a href="../Functions/count.htm" onclick="onhyperlinkclick(this)">СЧЁТ</a></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td><a href="../Functions/counta.htm" onclick="onhyperlinkclick(this)">СЧЁТЗ</a></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td><a href="../Functions/max.htm" onclick="onhyperlinkclick(this)">МАКС</a></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td><a href="../Functions/min.htm" onclick="onhyperlinkclick(this)">МИН</a></td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td><a href="../Functions/product.htm" onclick="onhyperlinkclick(this)">ПРОИЗВЕД</a></td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td><a href="../Functions/stdev-s.htm" onclick="onhyperlinkclick(this)">СТАНДОТКЛОН.В</a></td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td><a href="../Functions/stdev-p.htm" onclick="onhyperlinkclick(this)">СТАНДОТКЛОН.Г</a></td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td><a href="../Functions/sum.htm" onclick="onhyperlinkclick(this)">СУММ</a></td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td><a href="../Functions/var-s.htm" onclick="onhyperlinkclick(this)">ДИСП.В</a></td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td><a href="../Functions/var-p.htm" onclick="onhyperlinkclick(this)">ДИСП.Г</a></td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td><a href="../Functions/median.htm" onclick="onhyperlinkclick(this)">МЕДИАНА</a></td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td><a href="../Functions/mode-sngl.htm" onclick="onhyperlinkclick(this)">МОДА.ОДН</a></td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td><a href="../Functions/large.htm" onclick="onhyperlinkclick(this)">НАИБОЛЬШИЙ</a></td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td><a href="../Functions/small.htm" onclick="onhyperlinkclick(this)">НАИМЕНЬШИЙ</a></td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td><a href="../Functions/percentile-inc.htm" onclick="onhyperlinkclick(this)">ПРОЦЕНТИЛЬ.ВКЛ</a></td>
+                </tr>
+                <tr>
+                    <td>17</td>
+                    <td><a href="../Functions/quartile-inc.htm" onclick="onhyperlinkclick(this)">КВАРТИЛЬ.ВКЛ</a></td>
+                </tr>
+                <tr>
+                    <td>18</td>
+                    <td><a href="../Functions/percentile-exc.htm" onclick="onhyperlinkclick(this)">ПРОЦЕНТИЛЬ.ИСКЛ</a></td>
+                </tr>
+                <tr>
+                    <td>19</td>
+                    <td><a href="../Functions/quartile-exc.htm" onclick="onhyperlinkclick(this)">КВАРТИЛЬ.ИСКЛ</a></td>
+                </tr>
+            </table> 
+			<p style="text-indent: 50px;"><b><em>параметры</em></b> - числовое значение, определяющее, какие значения следует пропускать. Допустимые значения приведены в таблице ниже.</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Числовое значение<br /></b></td>
+                    <td><b>Поведение</b></td>
+                </tr>
+                <tr>
+                    <td>0 или опущен</td>
+                    <td>Пропускать вложенные функции <a href="../Functions/subtotal.htm" onclick="onhyperlinkclick(this)">ПРОМЕЖУТОЧНЫЕ.ИТОГИ</a> и АГРЕГАТ</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Пропускать скрытые строки и вложенные функции <a href="../Functions/subtotal.htm" onclick="onhyperlinkclick(this)">ПРОМЕЖУТОЧНЫЕ.ИТОГИ</a> и АГРЕГАТ</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Пропускать значения ошибок и вложенные функции <a href="../Functions/subtotal.htm" onclick="onhyperlinkclick(this)">ПРОМЕЖУТОЧНЫЕ.ИТОГИ</a> и АГРЕГАТ</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Пропускать скрытые строки, значения ошибок и вложенные функции <a href="../Functions/subtotal.htm" onclick="onhyperlinkclick(this)">ПРОМЕЖУТОЧНЫЕ.ИТОГИ</a> и АГРЕГАТ</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Не пропускать ничего</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Пропускать скрытые строки</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Пропускать значения ошибок</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Пропускать скрытые строки и значения ошибок</td>
+                </tr>
+            </table>
+            <p style="text-indent: 50px;"><b><em>ссылка1(2)</em></b> - это до 253 числовых значений или ссылка на диапазон ячеек, содержащий значения, для которых требуется найти агрегированное значение.</p>
+            <p class="note"><b>Примечание:</b> если вы хотите использовать одну из следующих функций: <a href="../Functions/large.htm" onclick="onhyperlinkclick(this)">НАИБОЛЬШИЙ</a>, <a href="../Functions/small.htm" onclick="onhyperlinkclick(this)">НАИМЕНЬШИЙ</a>, <a href="../Functions/percentile-inc.htm" onclick="onhyperlinkclick(this)">ПРОЦЕНТИЛЬ.ВКЛ</a>, <a href="../Functions/quartile-inc.htm" onclick="onhyperlinkclick(this)">КВАРТИЛЬ.ВКЛ</a>, <a href="../Functions/percentile-exc.htm" onclick="onhyperlinkclick(this)">ПРОЦЕНТИЛЬ.ИСКЛ</a> или <a href="../Functions/quartile-exc.htm" onclick="onhyperlinkclick(this)">КВАРТИЛЬ.ИСКЛ</a>, аргумент <b><em>ссылка1</em></b> должен быть ссылкой на диапазон ячеек, а аргумент <b><em>ссылка2</em></b> должен быть вторым аргументом, требуемым для этих функций (<b><em>k</em></b> или <b><em>часть</em></b>).</p>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Функция<br /></b></td>
+                    <td><b>Синтаксис</b></td>
+                </tr>
+                <tr>
+                    <td><a href="../Functions/large.htm" onclick="onhyperlinkclick(this)">НАИБОЛЬШИЙ</a></td>
+                    <td>НАИБОЛЬШИЙ(массив;k)</td>
+                </tr>
+                <tr>
+                    <td><a href="../Functions/small.htm" onclick="onhyperlinkclick(this)">НАИМЕНЬШИЙ</a></td>
+                    <td>НАИМЕНЬШИЙ(массив;k)</td>
+                </tr>
+                <tr>
+                    <td><a href="../Functions/percentile-inc.htm" onclick="onhyperlinkclick(this)">ПРОЦЕНТИЛЬ.ВКЛ</a></td>
+                    <td>ПРОЦЕНТИЛЬ.ВКЛ(массив;k)</td>
+                </tr>
+                <tr>
+                    <td><a href="../Functions/quartile-inc.htm" onclick="onhyperlinkclick(this)">КВАРТИЛЬ.ВКЛ</a></td>
+                    <td>КВАРТИЛЬ.ВКЛ(массив;часть)</td>
+                </tr>
+                <tr>
+                    <td><a href="../Functions/percentile-exc.htm" onclick="onhyperlinkclick(this)">ПРОЦЕНТИЛЬ.ИСКЛ</a></td>
+                    <td>ПРОЦЕНТИЛЬ.ИСКЛ(массив;k)</td>
+                </tr>
+                <tr>
+                    <td><a href="../Functions/quartile-exc.htm" onclick="onhyperlinkclick(this)">КВАРТИЛЬ.ИСКЛ</a></td>
+                    <td>КВАРТИЛЬ.ИСКЛ(массив;часть)</td>
+                </tr>
+            </table>
+            <p>Чтобы применить функцию <b>АГРЕГАТ</b>,</p>
+			<ol>
+                <li>выделите ячейку, в которой требуется отобразить результат,</li>
+                <li>
+                    щелкните по значку <b>Вставить функцию</b> <img alt="Значок Вставить функцию" src="../images/insertfunction.png" />, расположенному на верхней панели инструментов,
+                    <br />или щелкните правой кнопкой мыши по выделенной ячейке и выберите в меню команду <b>Вставить функцию</b>,
+                    <br />или щелкните по значку <img alt="Значок Функция" src="../images/function.png" /> перед строкой формул,
+                </li>
+                <li>выберите из списка группу функций <b>Математические</b>,</li>
+                <li>щелкните по функции <b>АГРЕГАТ</b>,</li>
+                <li>введите требуемые аргументы через точку с запятой,</li>
+                <li>нажмите клавишу <b>Enter</b>.</li>
+			</ol>
+			<p>Результат будет отображен в выбранной ячейке.</p>
+            <p>На следующем изображении показан результат, возвращаемый функцией <b>АГРЕГАТ</b>, если применяется функция <b>СУММ</b>.</p>
+			<p style="text-indent: 150px;"><img alt="Функция АГРЕГАТ" src="../images/aggregate.png" /></p>
+            <p>На следующем изображении показан результат, возвращаемый функцией <b>АГРЕГАТ</b>, если применяется функция <b>НАИБОЛЬШИЙ</b>, <b><em>ссылка1</em></b> - это ссылка на диапазон ячеек, а аргумент <b><em>k</em></b> равен 2. Функция возвращает второе наибольшее значение в диапазоне A1-A4.</p>
+            <p style="text-indent: 150px;"><img alt="Функция АГРЕГАТ" src="../images/aggregate2.png" /></p>
+		</div>
+	</body>
+</html>

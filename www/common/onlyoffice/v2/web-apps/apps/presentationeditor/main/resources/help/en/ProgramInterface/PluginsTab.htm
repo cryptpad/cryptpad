@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Plugins tab</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Introducing the Presentation Editor user interface - Plugins tab" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Plugins tab</h1>
+            <p>The <b>Plugins</b> tab allows to access advanced editing features using available third-party components. Here you can also use macros to simplify routine operations.</p>
+            <div class="onlineDocumentFeatures">
+                <p>Online Presentation Editor window:</p>
+                <p><img alt="Plugins tab" src="../images/interface/pluginstab.png" /></p>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>Desktop Presentation Editor window:</p>
+                <p><img alt="Plugins tab" src="../images/interface/desktop_pluginstab.png" /></p>
+            </div>
+            <p class="desktopDocumentFeatures">The <b>Settings</b> button allows to open the window where you can view and manage all installed plugins and add your own ones.</p>
+            <p>The <b>Macros</b> button allows to open the window where you can create your own macros and run them. To learn more about macros you can refer to our <a target="_blank" href="https://api.onlyoffice.com/plugin/macros" onclick="onhyperlinkclick(this)">API Documentation</a>.</p>
+            <p>Currently, the following plugins are available:</p>		
+            <ul>
+                <li><b>ClipArt</b> allows to add images from the clipart collection into your presentation,</li>
+                <li><b>Highlight code</b> allows to highlight syntax of the code selecting the necessary language, style, background color,</li>
+                <li><b>PhotoEditor</b> allows to edit images: crop, resize them, apply effects etc.,</li>
+                <li><b>Symbol Table</b> allows to insert special symbols into your text,</li>
+                <li><b>Thesaurus</b> allows to search for synonyms and antonyms of a word and replace it with the selected one,</li>
+                <li><b>Translator</b> allows to translate the selected text into other languages,</li>
+                <li><b>YouTube</b> allows to embed YouTube videos into your presentation.</li>
+            </ul>
+            <p>To learn more about plugins please refer to our <a target="_blank" href="https://api.onlyoffice.com/plugin/basic" onclick="onhyperlinkclick(this)">API Documentation</a>. All the currently existing open source plugin examples are available on <a target="_blank" href="https://github.com/ONLYOFFICE/sdkjs-plugins" onclick="onhyperlinkclick(this)">GitHub</a>.</p>
+		</div>
+	</body>
+</html>

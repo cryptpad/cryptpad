@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Enregistrer/imprimer/télécharger votre classeur</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Save, print and download your spreadsheet in various formats" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Enregistrer/imprimer<span class="onlineDocumentFeatures">/télécharger</span> votre classeur</h1>
+			<p>Par défaut, quand vous travaillez <b>Spreadsheet Editor</b> enregistre automatiquement votre fichier chaque 10 minutes visant à prévenir la perte des données au cas d'une fermeture inespérée de l'éditeur. <span class="onlineDocumentFeatures">Si vous co-éditez le fichier en mode <b>Rapide</b>, le minuteur récupère les mises à jour 25 fois par seconde et enregistre les modifications si elles ont été effectuées. Lorsque le fichier est co-édité en mode <b>Strict</b>, les modifications sont automatiquement sauvegardées à des intervalles de 10 minutes. Si nécessaire, vous pouvez facilement changer la périodicité de l'enregistrement automatique ou même désactiver cette fonction sur la page <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Paramètres avancés</a>.</span></p>
+			<p>Pour enregistrer votre classeur manuellement,</p>
+			<ul>
+				<li>cliquez sur l'icône <b>Enregistrer</b> <img alt="Icône Enregistrer" src="../images/save.png" /> sur la barre d'outils supérieure, ou</li>
+				<li>utilisez la combinaison des touches <b>Ctrl+S</b>, ou</li>
+				<li>cliquez sur l'onglet <b>Fichier</b> de la barre d'outils supérieure et sélectionnez l'option <b>Enregistrer</b>.</li>
+			</ul>
+            <div class="onlineDocumentFeatures">
+			<p>Pour télécharger la feuille de calcul qui en résulte sur le disque dur de votre ordinateur,</p>
+			<ol>
+				<li>cliquez sur l'onglet <b>Fichier</b> de la barre d'outils supérieure,</li>
+				<li>sélectionnez l'option <b>Télécharger comme</b>,</li>
+				<li>sélectionnez l'un des formats disponibles selon vos besoins : XLSX, ODS, CSV, HTML.<p class="note"><b>Remarque</b> : si vous sélectionnez le format CSV, toutes les fonctionnalités (formatage de police, formules, etc.) à l'exception du texte brut ne seront pas conservées dans le fichier CSV. Si vous continuez à enregistrer, la fenêtre <b>Choisir les options CSV</b> s'ouvre. Par défaut, <em>Unicode (UTF-8)</em> est utilisé comme type d'<b>Encodage</b>. Le <b>Séparateur</b> par défaut est la <em>virgule</em> (,), mais les options suivantes sont également disponibles : <em>point-virgule</em> ( ;), <em>deux-points</em> ( :), <em>tabulation</em>, <em>espace</em> et <em>autre</em> (cette option vous permet de définir un caractère séparateur personnalisé).</p>
+                </li>
+			</ol>
+            </div>
+			<p>Pour imprimer votre classeur actuel,</p>
+			<ul>
+				<li>cliquez sur l'icône <b>Imprimer</b> <img alt="Icône Imprimer" src="../images/print.png" /> sur la barre d'outils supérieure, ou</li>
+				<li>utilisez la combinaison des touches <b>Ctrl+P</b>, ou</li>
+				<li>cliquez sur l'onglet <b>Fichier</b> de la barre d'outils supérieure et sélectionnez l'option <b>Imprimer</b>.</li>
+			</ul>
+			<p>La fenètre <b>Paramètres d'impression</b> s'ouvre et vous pourrez changer les paramètres d'impression par défaut. Cliquez sur le bouton <b>Afficher les détails</b> en bas de la fenêtre pour afficher tous les paramètres.</p>
+            <p class="note"><b>Remarque</b> : vous pouvez également ajuster les paramètres d'impression sur la page <b>Paramètres avancés...</b> : cliquez sur l'onglet <b>Fichier</b> de la barre d'outils supérieure et suivez <b>Paramètres avancés...</b> &gt;&gt; <b>Paramètres de la page</b>.<br />Certains de ces paramètres (<b>Marges</b>, <b>Orientation</b> et <b>Taille</b> de la page) sont également disponibles dans l'onglet <b>Mise en page</b> de la barre d'outils supérieure.</p>
+			<p><img alt="fenêtre Paramètres d'impression" src="../images/printsettingswindow.png" /></p>
+			<p>Vous pouvez y régler les paramètres suivants :</p>
+			<ul>
+			<li><b>Étendue d'impression</b> - spécifiez les éléments à imprimer : toute la <b>Feuille active</b>, <b>Toutes les feuilles</b> de votre classeur ou une plage de cellules déjà sélectionnée (<b>Sélection</b>),</li>
+			<li><b>Paramètres de feuille</b> - spécifiez les paramètres d'impression individuels pour chaque feuille séparée, si vous avez sélectionné l'option <b>Toutes les feuilles</b> dans la liste déroulante <b>Plage d'impression</b>,</li>
+            <li><b>Taille de la page</b> - sélectionnez une des tailles disponibles depuis la liste déroulante,</li>
+			<li><b>Orientation de la page</b> - choisissez l'option <b>Portrait</b> si vous souhaitez imprimer le contenu en orientation verticale, ou utilisez l'option <b>Paysage</b> pour l'imprimer en orientation horizontale,</li>
+			<li><b>Mise à l'échelle</b> - si vous ne souhaitez pas que certaines colonnes ou lignes soient imprimées sur une deuxième page, vous pouvez réduire le contenu de la feuille pour l'adapter à une page en sélectionnant l'option correspondante : <b>Ajuster la feuille sur une page</b>, <b>Ajuster toutes les colonnes sur une page</b> ou <b>Ajuster toutes les lignes sur une page</b>. Laissez l'option <b>Taille réelle</b> pour imprimer la feuille sans l'ajuster,</li>
+            <li><b>Marges</b> - spécifiez la distance entre les données de la feuille de calcul et les bords de la page imprimée en modifiant les paramètres prédéfinis dans les champs <b>Haut</b>, <b>Bas</b>, <b>Gauche</b> et <b>Droit</b>,</li>
+			<li><b>Imprimer</b> - spécifiez les éléments à imprimer en cochant les cases correspondantes : <b>Imprimer le quadrillage</b> et <b>Imprimer les titres de lignes et de colonnes</b>.</li>
+			</ul>
+			<p class="onlineDocumentFeatures">Lorsque les paramètres sont définis, cliquez sur le bouton <b>Enregistrer et imprimer</b> pour appliquer les modifications et fermer la fenêtre. Un fichier PDF sera généré à la base de la feuille de calcul modifiée. Vous pouvez l'ouvrir et l'imprimer, ou l'enregistrer sur le disque dur de l'ordinateur ou sur un support amovible pour l'imprimer plus tard.</p>
+			
+		</div>
+	</body>
+</html>

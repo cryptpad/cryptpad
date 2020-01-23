@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>TAGE360-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>TAGE360-Funktion</h1>
+			<p>Die Funktion <b>TAGE360</b> gehört zur Gruppe der Daten- und Zeitfunktionen. Sie berechnet die Anzahl der Tage zwischen zwei Datumsangaben ausgehend von einem Jahr, das 360 Tage hat</p>
+			<p>Die Formelsyntax der Funktion <b>TAGE360</b> ist:</p> 
+			<p style="text-indent: 150px;"><b><em>TAGE360(Ausgangsdatum;Enddatum;[Methode])</em></b></p> 
+			<p><em>Dabei gilt:</em></p> 
+			<p style="text-indent: 50px;"><b><em>Ausgangsdatum</em></b> und <b><em>Enddatum</em></b> sind die beiden Datumswerte, für die Sie die dazwischen liegenden Tage berechnen möchten.</p>
+			<p style="text-indent: 50px;"><b><em>Methode</em></b> ist ein optionaler Wahrheitswert. <b>WAHR</b> oder <b>FALSCH</b>. Für <b>WAHR</b> wird die Berechnung basierend auf der Europäischen Methode durchgeführt. Jedes Ausgangs- und Enddatum, das auf den 31. Tag eines Monats fällt, wird zum 30. Tag desselben Monats.<br /> Für <b>FALSCH</b> oder keinen Wert wird, die Berechnung basierend auf der US-Methode durchgeführt. Ist das Ausgangsdatum der letzte Tag eines Monats wird es zum 30. Tag dieses Monats. Ist das Enddatum der letzte Tag eines Monats und das Ausgangsdatum ein Datum vor dem 30. Tag eines Monats, wird das Enddatum zum 1. Tag des darauffolgenden Monats. In allen anderen Fällen wird das Enddatum zum 30. Tag desselben Monats.</p> 
+			<p>Anwendung der Funktion <b>TAGE360</b>:</p>
+			<ol>
+			<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
+			<li>Wählen Sie die Gruppe <b>Datums- und Uhrzeitfunktionen</b> aus der Liste aus.</li>
+			<li>Klicken Sie auf die Funktion <b>TAGE360</b>.</li>
+			<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas.</li>
+			<li>Drücken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+			<p style="text-indent: 150px;"><img alt="TAGE360-Funktion" src="../images/days360.png" /></p>
+		</div>
+	</body>
+</html>

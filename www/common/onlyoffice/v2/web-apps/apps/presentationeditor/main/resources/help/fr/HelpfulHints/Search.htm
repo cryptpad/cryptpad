@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fonction de recherche</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The description of the search function in Presentation Editor" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Fonction de recherche</h1>
+			<p><b>Pour rechercher</b> des caractères, des mots ou des phrases dans la présentation actuelle, cliquez sur l'icône <img alt="Icône Recherche" src="../images/searchicon.png" /> située sur la barre latérale gauche.</p>
+			<p>La fenêtre <b>Recherche</b> s'ouvre :</p><img alt="fenêtre Recherche" src="../images/search_window.png" /><ol>
+			<li>Saisissez votre enquête dans le champ correspondant.</li>
+			<li>Cliquez sur un des <b>boutons à flèche</b> à droite. La recherche sera effectuée vers le début de la présentation (si vous cliquez sur le bouton <img alt="Flèche gauche" src="../images/searchupbutton.png" />) ou vers la fin de la présentation (si vous cliquez sur le bouton <img alt="Flèche droite" src="../images/searchdownbutton.png" />) à partir de la position actuelle.</li>
+			</ol>
+			<p>La première diapositive contenant les caractères saisis dans la direction sélectionnée sera activée dans la liste des diapositives et affichée avec les caractères requis dans la zone de travail. Si ce n'est pas la diapositive que vous cherchez, cliquez sur le bouton à flèche encore une fois pour passer à la diapositive suivante contenant les caractères saisis.</p> 
+		</div>
+	</body>
+</html>

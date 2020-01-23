@@ -1,0 +1,23 @@
+[Unit]
+Description=CryptPad API server
+
+[Service]
+ExecStart=/home/cryptpad/.nvm/versions/node/v12.14.0/bin/node /home/cryptpad/cryptpad/server.js
+# modify to match the location of your cryptpad repository
+WorkingDirectory=/home/cryptpad/cryptpad
+
+Restart=always
+# Restart service after 10 seconds if node service crashes
+RestartSec=2
+
+# Output to syslog
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=cryptpad
+User=cryptpad
+Group=cryptpad
+# modify to match your working directory
+Environment='PWD="/home/cryptpad/cryptpad/cryptpad"'
+
+[Install]
+WantedBy=multi-user.target
