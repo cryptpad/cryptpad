@@ -198,7 +198,13 @@ Version 1
                 parsed.version = 2;
                 parsed.app = hashArr[2];
                 parsed.mode = hashArr[3];
-                parsed.key = hashArr[4];
+
+                // Check if the key is a channel ID
+                if (/^[a-f0-9]{32,34}$/.test(hashArr[4])) {
+                    parsed.channel = hashArr[4];
+                } else {
+                    parsed.key = hashArr[4];
+                }
 
                 options = hashArr.slice(5);
                 parsed.password = options.indexOf('p') !== -1;
@@ -345,7 +351,7 @@ Version 1
             secret.version = 2;
             secret.type = type;
         };
-        if (!secretHash && !window.location.hash) { //!/#/.test(window.location.href)) {
+        if (!secretHash) {
             generate();
             return secret;
         } else {
@@ -355,12 +361,7 @@ Version 1
                 if (!type) { throw new Error("getSecrets with a hash requires a type parameter"); }
                 parsed = parseTypeHash(type, secretHash);
                 hash = secretHash;
-            } else {
-                var pHref = parsePadUrl(window.location.href);
-                parsed = pHref.hashData;
-                hash = pHref.hash;
             }
-            //var hash = secretHash || window.location.hash.slice(1);
             if (hash.length === 0) {
                 generate();
                 return secret;
