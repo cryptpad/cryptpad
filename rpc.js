@@ -1318,6 +1318,16 @@ var getActiveSessions = function (Env, ctx, cb) {
     cb (void 0, [total, ips.length]);
 };
 
+var shutdown = function (Env, ctx, cb) {
+    return void cb('E_NOT_IMPLEMENTED');
+    //clearInterval(Env.sessionExpirationInterval);
+    // XXX set a flag to prevent incoming database writes
+    // XXX disconnect all users and reject new connections
+    // XXX wait until all pending writes are complete
+    // then process.exit(0);
+    // and allow system functionality to restart the server
+};
+
 var adminCommand = function (Env, ctx, publicKey, config, data, cb) {
     var admins = Env.admins;
     if (admins.indexOf(publicKey) === -1) {
@@ -1336,6 +1346,8 @@ var adminCommand = function (Env, ctx, publicKey, config, data, cb) {
         case 'FLUSH_CACHE':
             config.flushCache();
             return cb(void 0, true);
+        case 'SHUTDOWN':
+            return shutdown(Env, ctx, cb);
         default:
             return cb('UNHANDLED_ADMIN_COMMAND');
     }
@@ -1806,7 +1818,8 @@ RPC.create = function (config, cb) {
     }).nThen(function () {
         cb(void 0, rpc);
         // expire old sessions once per minute
-        setInterval(function () {
+        // XXX allow for graceful shutdown
+        Env.sessionExpirationInterval = setInterval(function () {
             expireSessions(Sessions);
         }, SESSION_EXPIRATION_TIME);
     });
