@@ -1411,24 +1411,7 @@ var upload_status = function (Env, safeKey, filesize, _cb) { // FIXME FILES
     });
 };
 
-/*::
-const flow_Config = require('./config.example.js');
-type Config_t = typeof(flow_Config);
-import type { ChainPadServer_Storage_t } from './storage/file.js'
-type NetfluxWebsocketSrvContext_t = {
-    store: ChainPadServer_Storage_t,
-    getHistoryOffset: (
-        ctx: NetfluxWebsocketSrvContext_t,
-        channelName: string,
-        lastKnownHash: ?string,
-        cb: (err: ?Error, offset: ?number)=>void
-    )=>void
-};
-*/
-RPC.create = function (
-    config /*:Config_t*/,
-    cb /*:(?Error, ?Function)=>void*/
-) {
+RPC.create = function (config, cb) {
     Log = config.log;
 
     // load pin-store...
@@ -1445,7 +1428,7 @@ RPC.create = function (
         Sessions: {},
         paths: {},
         msgStore: config.store,
-        pinStore: (undefined /*:any*/),
+        pinStore: undefined,
         pinnedPads: {},
         evPinnedPadsReady: mkEvent(true),
         limits: {},
@@ -1782,11 +1765,7 @@ RPC.create = function (
         handleMessage(true);
     };
 
-    var rpc = function (
-        ctx /*:NetfluxWebsocketSrvContext_t*/,
-        data /*:Array<Array<any>>*/,
-        respond /*:(?string, ?Array<any>)=>void*/)
-    {
+    var rpc = function (ctx, data, respond) {
         try {
             return rpc0(ctx, data, respond);
         } catch (e) {
