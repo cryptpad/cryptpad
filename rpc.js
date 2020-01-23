@@ -323,6 +323,14 @@ var setMetadata = function (Env, data, unsafeKey, cb) {
                 return void next();
             }
 
+            // if you are a pending owner and not an owner
+                // you can either ADD_OWNERS, or RM_PENDING_OWNERS
+                    // and you should only be able to add yourself as an owner
+                // everything else should be rejected
+            // else if you are not an owner
+                // you should be rejected
+            // else write the command
+
             // Confirm that the channel is owned by the user in question
             // or the user is accepting a pending ownership offer
             if (hasPendingOwners(metadata) &&
@@ -337,7 +345,9 @@ var setMetadata = function (Env, data, unsafeKey, cb) {
                     cb('INSUFFICIENT_PERMISSIONS');
                     return void next();
                 }
-                // XXX wacky fallthrough is hard to read
+                // FIXME wacky fallthrough is hard to read
+                // we could pass this off to a writeMetadataCommand function
+                // and make the flow easier to follow
             } else if (!isOwner(metadata, unsafeKey)) {
                 cb('INSUFFICIENT_PERMISSIONS');
                 return void next();
