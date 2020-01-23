@@ -961,13 +961,27 @@ var removeOwnedChannel = function (Env, channelId, unsafeKey, cb) {
 };
 
 var removeOwnedChannelHistory = function (Env, channelId, unsafeKey, hash, cb) {
-    // XXX validate that the user sending the request owns the channel in question
-    // proceed to call Env.msgStore.trimChannel(channelId, hash, cb) if ok
-    // otherwise reject with INSUFFICIENT_PERMISSIONS
+    nThen(function (w) {
+        getMetadata(Env, channelId, w(function (err, metadata) {
+            if (err) { return void cb(err); }
+            if (!hasOwners(metadata)) {
+                w.abort();
+                return void cb('E_NO_OWNERS');
+            }
+            if (!isOwner(metadata, unsafeKey)) {
+                w.abort();
+                return void cb("INSUFFICIENT_PERMISSIONS");
+            }
+            // else fall through to the next block
+        }));
+    }).nThen(function () {
+        Env.msgStore.trimChannel(channelId, hash, function (err) {
+            if (err) { return void cb(err); }
 
-    // XXX if trimChannel calls back without an error
-    // you must also clear the channel's index from historyKeeper cache
-    cb("E_NOT_IMPLEMENTED");
+
+            // XXX you must also clear the channel's index from historyKeeper cache
+        });
+    });
 };
 
 /*  Users should be able to clear their own pin log with an authenticated RPC
