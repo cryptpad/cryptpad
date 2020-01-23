@@ -278,7 +278,6 @@ var nt = nThen(function (w) {
         rpc: rpc,
         store: config.store,
         log: log,
-        retainData: Boolean(config.retainData),
     };
     historyKeeper = HK.create(hkConfig);
 }).nThen(function () {

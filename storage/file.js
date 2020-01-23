@@ -555,9 +555,6 @@ var listChannels = function (root, handler, cb) {
 // to an equivalent location in the cold storage directory
 var archiveChannel = function (env, channelName, cb) {
     // TODO close channels before archiving them?
-    if (!env.retainData) {
-        return void cb("ARCHIVES_DISABLED");
-    }
 
     // ctime is the most reliable indicator of when a file was archived
     // because it is used to indicate changes to the files metadata
@@ -875,7 +872,6 @@ module.exports.create = function (conf, cb) {
     var env = {
         root: conf.filePath || './datastore',
         archiveRoot: conf.archivePath || './data/archive',
-        retainData: conf.retainData,
         channels: { },
         channelExpirationMs: conf.channelExpirationMs || 30000,
         verbose: conf.verbose,
