@@ -264,7 +264,7 @@ var nt = nThen(function (w) {
         }, 1000 * 60 * 5); // run every five minutes
     }));
 }).nThen(function (w) {
-    require("./rpc").create(config, w(function (e, _rpc) {
+    require("./lib/rpc").create(config, w(function (e, _rpc) {
         if (e) {
             w.abort();
             throw e;
@@ -272,7 +272,7 @@ var nt = nThen(function (w) {
         rpc = _rpc;
     }));
 }).nThen(function () {
-    var HK = require('./historyKeeper.js');
+    var HK = require('./lib/historyKeeper.js');
     var hkConfig = {
         tasks: config.tasks,
         rpc: rpc,
