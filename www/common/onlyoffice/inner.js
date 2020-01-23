@@ -227,9 +227,13 @@ define([
             cpIndex: 0
         };
 
+        var getEditor = function () {
+            return window.frames[0].editor || window.frames[0].editorCell;
+        };
+
         var getContent = function () {
             try {
-                return window.frames[0].editor.asc_nativeGetFile();
+                return getEditor().asc_nativeGetFile();
             } catch (e) {
                 console.error(e);
                 return;
@@ -242,7 +246,7 @@ define([
         // loadable by users joining after the checkpoint
         var fixSheets = function () {
             try {
-                var editor = window.frames[0].editor;
+                var editor = getEditor();
                 // if we are not in the sheet app
                 // we should not call this code
                 if (typeof editor.GetSheets === 'undefined') { return; }
@@ -1173,7 +1177,7 @@ define([
                 UI.removeModals();
                 UI.confirm(Messages.oo_uploaded, function (yes) {
                     try {
-                        window.frames[0].editor.setViewModeDisconnect();
+                        getEditor().setViewModeDisconnect();
                     } catch (e) {}
                     if (!yes) { return; }
                     common.gotoURL();
@@ -1303,7 +1307,7 @@ define([
         var setEditable = function (state) {
             if (!state) {
                 try {
-                    window.frames[0].editor.setViewModeDisconnect(true);
+                    getEditor().setViewModeDisconnect(true);
                 } catch (e) {}
             }
             debug(state);
