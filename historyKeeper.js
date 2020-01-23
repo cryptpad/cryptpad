@@ -974,6 +974,12 @@ module.exports.create = function (cfg) {
         }
     };
 
+    const directMessageCommands = {
+        GET_HISTORY: handleGetHistory,
+        GET_HISTORY_RANGE: handleGetHistoryRange,
+        GET_FULL_HISTORY: handleGetFullHistory,
+    };
+
     /*  onDirectMessage
         * exported for use by the netflux-server
         * parses and handles all direct messages directed to the history keeper
@@ -996,16 +1002,11 @@ module.exports.create = function (cfg) {
         // have to abort later (once we know the expiration time)
         if (checkExpired(ctx, parsed[1])) { return; }
 
-        if (parsed[0] === 'GET_HISTORY') {
-            return void handleGetHistory(ctx, seq, user, parsed);
-        }
-        if (parsed[0] === 'GET_HISTORY_RANGE') {
-            return void handleGetHistoryRange(ctx, seq, user, parsed);
-        }
-        if (parsed[0] === 'GET_FULL_HISTORY') {
-            return void handleGetFullHistory(ctx, seq, user, parsed);
-        }
-        return void handleRPC(ctx, seq, user, parsed);
+        // look up the appropriate command in the map of commands or fall back to RPC
+        var command = directMessageCommands[parsed[0]] || handleRPC;
+
+        // run the command with the standard function signature
+        command(ctx, seq, user, parsed);
     };
 
     return {
