@@ -1399,10 +1399,18 @@ define([
             $exportXLSX.appendTo($rightside);
 
             var accept = [".bin", ".ods", ".xlsx"];
+            if (type === "ooslide") {
+                accept = ['.bin', '.odp', '.pptx'];
+            } else if (type === "oodoc") {
+                accept = ['.bin', '.odt', '.docx'];
+            }
             if (typeof(Atomics) === "undefined") {
                 accept = ['.bin'];
             }
-            var $importXLSX = common.createButton('import', true, { accept: accept, binary : ["ods", "xlsx"] }, importXLSXFile);
+            var $importXLSX = common.createButton('import', true, {
+                accept: accept,
+                binary : ["ods", "xlsx", "odt", "docx", "odp", "pptx"]
+            }, importXLSXFile);
             $importXLSX.appendTo($rightside);
 
             if (common.isLoggedIn()) {
