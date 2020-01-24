@@ -40,6 +40,7 @@
     "package": "PACKAGE=1 node server.js",
     "lint": "jshint --config .jshintrc --exclude-path .jshintignore . && ./node_modules/lesshint/bin/lesshint -c ./.lesshintrc ./customize.dist/src/less2/",
     "lint:js": "jshint --config .jshintrc --exclude-path .jshintignore .",
+    "lint:server": "jshint --config .jshintrc lib",
     "lint:less": "./node_modules/lesshint/bin/lesshint -c ./.lesshintrc ./customize.dist/src/less2/",
     "flow": "./node_modules/.bin/flow",
     "test": "node scripts/TestSelenium.js",
