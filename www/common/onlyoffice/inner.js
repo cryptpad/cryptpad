@@ -1398,6 +1398,7 @@ define([
             var $exportXLSX = common.createButton('export', true, {}, exportXLSXFile);
             $exportXLSX.appendTo($rightside);
 
+            var type = common.getMetadataMgr().getPrivateData().ooType;
             var accept = [".bin", ".ods", ".xlsx"];
             if (type === "ooslide") {
                 accept = ['.bin', '.odp', '.pptx'];
