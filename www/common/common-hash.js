@@ -60,6 +60,18 @@ var factory = function (Util, Crypto, Nacl) {
             return '/2/' + secret.type + '/view/' + Crypto.b64RemoveSlashes(data.viewKeyStr) + '/' + pass;
         }
     };
+    Hash.getHiddenHashFromKeys = function (type, secret, opts) {
+        var mode = (secret.keys && secret.keys.editKeyStr) ? 'edit' : 'view';
+        var pass = secret.password ? 'p/' : '';
+        var hash =  '/2/' + secret.type + '/' + mode + '/' + secret.channel + '/' + pass;
+        var href = '/' + type + '/#' + hash;
+        var parsed = Hash.parsePadUrl(href);
+        if (parsed.hashData && parsed.hashData.getHash) {
+            return parsed.hashData.getHash(opts || {});
+        }
+        return hash;
+    };
+
     var getFileHashFromKeys = Hash.getFileHashFromKeys = function (secret) {
         var version = secret.version;
         var data = secret.keys;
@@ -192,6 +204,13 @@ Version 1
                     if (opts.present) { hash += 'present/'; }
                     return hash;
                 };
+                parsed.getOptions = function () {
+                    return {
+                        embed: parsed.embed,
+                        present: parsed.present,
+                        ownerKey: parsed.ownerKey
+                    };
+                };
                 return parsed;
             }
             if (hashArr[1] && hashArr[1] === '2') { // Version 2
@@ -220,6 +239,13 @@ Version 1
                     if (opts.embed) { hash += 'embed/'; }
                     if (opts.present) { hash += 'present/'; }
                     return hash;
+                };
+                parsed.getOptions = function () {
+                    return {
+                        embed: parsed.embed,
+                        present: parsed.present,
+                        ownerKey: parsed.ownerKey
+                    };
                 };
                 return parsed;
             }
@@ -255,6 +281,13 @@ Version 1
                     if (opts.embed) { hash += 'embed/'; }
                     if (opts.present) { hash += 'present/'; }
                     return hash;
+                };
+                parsed.getOptions = function () {
+                    return {
+                        embed: parsed.embed,
+                        present: parsed.present,
+                        ownerKey: parsed.ownerKey
+                    };
                 };
                 return parsed;
             }
@@ -308,6 +341,10 @@ Version 1
             var hash = ret.hashData.getHash(options);
             url += '#' + hash;
             return url;
+        };
+        ret.getOptions = function () {
+            if (!ret.hashData || !ret.hashData.getOptions) { return {}; }
+            return ret.hashData.getOptions();
         };
 
         if (!/^https*:\/\//.test(href)) {
@@ -497,8 +534,9 @@ Version 1
             if (typeof(parsed.hashData.version) === "undefined") { return; }
             // pads and files should have a base64 (or hex) key
             if (parsed.hashData.type === 'pad' || parsed.hashData.type === 'file') {
-                if (!parsed.hashData.key) { return; }
-                if (!/^[a-zA-Z0-9+-/=]+$/.test(parsed.hashData.key)) { return; }
+                if (!parsed.hashData.key && !parsed.hashData.channel) { return; }
+                if (parsed.hashData.key && !/^[a-zA-Z0-9+-/=]+$/.test(parsed.hashData.key)) { return; }
+                if (parsed.hashData.channel && !/^[a-f0-9]{32,34}$/.test(parsed.hashData.channel)) { return; }
             }
         }
         return true;

@@ -50,6 +50,7 @@ define([
             GET_TEMPLATES: Store.getTemplates,
             GET_SECURE_FILES_LIST: Store.getSecureFilesList,
             GET_PAD_DATA: Store.getPadData,
+            GET_PAD_DATA_FROM_CHANNEL: Store.getPadDataFromChannel,
             GET_STRONGER_HASH: Store.getStrongerHash,
             INCREMENT_TEMPLATE_USE: Store.incrementTemplateUse,
             GET_SHARED_FOLDER: Store.getSharedFolder,

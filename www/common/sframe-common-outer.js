@@ -30,6 +30,11 @@ define([
         var password;
         var initialPathInDrive;
 
+        var currentPad = {
+            href: cfg.href || window.location.href,
+            hash: cfg.hash || window.location.hash
+        };
+
         nThen(function (waitFor) {
             // Load #2, the loading screen is up so grab whatever you need...
             require([
@@ -134,11 +139,12 @@ define([
                         });
                     }
                 }), {
-                    driveEvents: cfg.driveEvents
+                    driveEvents: cfg.driveEvents,
+                    currentPad: currentPad
                 });
             }));
         }).nThen(function (waitFor) {
-            if (!Utils.Hash.isValidHref(window.location.href)) {
+            if (!Utils.Hash.isValidHref(currentPad.href)) {
                 waitFor.abort();
                 return void sframeChan.event('EV_LOADING_ERROR', 'INVALID_HASH');
             }
@@ -171,11 +177,12 @@ define([
                     });
                 }));
             } else {
-                var parsed = Utils.Hash.parsePadUrl(window.location.href);
+                var parsed = Utils.Hash.parsePadUrl(currentPad.href);
                 var todo = function () {
-                    secret = Utils.secret = Utils.Hash.getSecrets(parsed.type, void 0, password);
+                    secret = Utils.secret = Utils.Hash.getSecrets(parsed.type, parsed.hash, password);
                     Cryptpad.getShareHashes(secret, waitFor(function (err, h) {
                         hashes = h;
+                        /* XXX this won't happen again: we don't need to update the rendered hash
                         if (password && !parsed.hashData.password) {
                             var ohc = window.onhashchange;
                             window.onhashchange = function () {};
@@ -183,6 +190,7 @@ define([
                             window.onhashchange = ohc;
                             ohc({reset: true});
                         }
+                        */
                     }));
                 };
 
@@ -241,13 +249,13 @@ define([
                         if (parsed.type === "file") {
                             // `isNewChannel` doesn't work for files (not a channel)
                             // `getFileSize` is not adapted to channels because of metadata
-                            Cryptpad.getFileSize(window.location.href, password, function (e, size) {
+                            Cryptpad.getFileSize(currentPad.href, password, function (e, size) {
                                 next(e, size === 0);
                             });
                             return;
                         }
                         // Not a file, so we can use `isNewChannel`
-                        Cryptpad.isNewChannel(window.location.href, password, next);
+                        Cryptpad.isNewChannel(currentPad.href, password, next);
                     });
                     sframeChan.event("EV_PAD_PASSWORD", cfg);
                 };
@@ -257,7 +265,60 @@ define([
                 var passwordCfg = {
                     value: ''
                 };
+
+                // Hidden hash: can't find the channel in our drives: abort
+                var noPadData = function (err) {
+                    console.error(err);
+                    // XXX Display error screen in inner
+                };
+                // Hidden hash: can't find requestd edit URL in our drives: ask
+                var badPadData = function (cb) {
+                    // If we requested edit but we only know view: ???
+                    setTimeout(function () {
+                        cb(true);
+                    }); // XXX ask in inner?
+                };
+
+                var newHref;
                 nThen(function (w) {
+                    if (!parsed.hashData.key && parsed.hashData.channel) {
+                        Cryptpad.getPadDataFromChannel({
+                            channel: parsed.hashData.channel,
+                            edit: parsed.hashData.mode === 'edit'
+                        }, w(function (err, res) {
+                            // Error while getting data? abort
+                            if (err || !res || res.error) {
+                                w.abort();
+                                return void noPadData(err || (!res ? 'EINVAL' : res.error));
+                            }
+                            // No data found? abort
+                            if (!Object.keys(res).length) {
+                                w.abort();
+                                return void noPadData('NO_RESULT');
+                            }
+                            // Data found but weaker? warn
+                            if (parsed.hashData.mode === 'edit' && !res.href) {
+                                return void badPadData(w(function (load) {
+                                    if (!load) {
+                                        w.abort();
+                                        return;
+                                    }
+                                    newHref = res.roHref;
+                                }));
+                            }
+                            // We have good data, keep the hash in memory
+                            newHref = res.href;
+                        }));
+                    }
+                }).nThen(function (w) {
+                    if (newHref) {
+                        // Get the options (embed, present, etc.) of the hidden hash
+                        // Use the same options in the full hash
+                        var opts = parsed.getOptions();
+                        parsed = Utils.Hash.parsePadUrl(newHref);
+                        currentPad.href = parsed.getUrl(opts);
+                        currentPad.hash = parsed.hashData && parsed.hashData.getHash(opts);
+                    }
                     Cryptpad.getPadAttribute('title', w(function (err, data) {
                         stored = (!err && typeof (data) === "string");
                     }));
@@ -273,7 +334,7 @@ define([
                     if (parsed.type === "file") {
                         // `isNewChannel` doesn't work for files (not a channel)
                         // `getFileSize` is not adapted to channels because of metadata
-                        Cryptpad.getFileSize(window.location.href, password, w(function (e, size) {
+                        Cryptpad.getFileSize(currentPad.href, password, w(function (e, size) {
                             if (size !== 0) { return void todo(); }
                             // Wrong password or deleted file?
                             askPassword(true, passwordCfg);
@@ -281,7 +342,7 @@ define([
                         return;
                     }
                     // Not a file, so we can use `isNewChannel`
-                    Cryptpad.isNewChannel(window.location.href, password, w(function(e, isNew) {
+                    Cryptpad.isNewChannel(currentPad.href, password, w(function(e, isNew) {
                         if (!isNew) { return void todo(); }
                         if (parsed.hashData.mode === 'view' && (password || !parsed.hashData.password)) {
                             // Error, wrong password stored, the view seed has changed with the password
@@ -305,10 +366,12 @@ define([
             }
         }).nThen(function (waitFor) {
             // Check if the pad exists on server
-            if (!window.location.hash) { isNewFile = true; return; }
+            if (!currentPad.hash) { isNewFile = true; return; }
 
             if (realtime) {
-                Cryptpad.isNewChannel(window.location.href, password, waitFor(function (e, isNew) {
+                // TODO we probably don't need to check again for password-protected pads
+                // (we use isNewChannel to test the password...)
+                Cryptpad.isNewChannel(currentPad.href, password, waitFor(function (e, isNew) {
                     if (e) { return console.error(e); }
                     isNewFile = Boolean(isNew);
                 }));
@@ -322,7 +385,7 @@ define([
                 readOnly = false;
             }
             Utils.crypto = Utils.Crypto.createEncryptor(Utils.secret.keys);
-            var parsed = Utils.Hash.parsePadUrl(window.location.href);
+            var parsed = Utils.Hash.parsePadUrl(currentPad.href);
             var burnAfterReading = parsed && parsed.hashData && parsed.hashData.ownerKey;
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Utils.UserObject.getDefaultName(parsed);
@@ -342,7 +405,7 @@ define([
                         notifications = metaObj.user.notifications;
                     }));
                     if (typeof(isTemplate) === "undefined") {
-                        Cryptpad.isTemplate(window.location.href, waitFor(function (err, t) {
+                        Cryptpad.isTemplate(currentPad.href, waitFor(function (err, t) {
                             if (err) { console.log(err); }
                             isTemplate = t;
                         }));
@@ -368,7 +431,7 @@ define([
                             upgradeURL: Cryptpad.upgradeURL
                         },
                         isNewFile: isNewFile,
-                        isDeleted: isNewFile && window.location.hash.length > 0,
+                        isDeleted: isNewFile && currentPad.hash.length > 0,
                         forceCreationScreen: forceCreationScreen,
                         password: password,
                         channel: secret.channel,
@@ -487,7 +550,7 @@ define([
                 });
 
                 sframeChan.on('Q_SET_LOGIN_REDIRECT', function (data, cb) {
-                    sessionStorage.redirectTo = window.location.href;
+                    sessionStorage.redirectTo = currentPad.href;
                     cb();
                 });
 
@@ -570,7 +633,16 @@ define([
                     channel: secret.channel,
                     path: initialPathInDrive // Where to store the pad if we don't have it in our drive
                 };
-                Cryptpad.setPadTitle(data, function (err) {
+                Cryptpad.setPadTitle(data, function (err, obj) {
+                    if (!err && !(obj && obj.notStored)) {
+                        // Pad is stored: hide the hash
+                        var opts = parsed.getOptions();
+                        var hash = Utils.Hash.getHiddenHashFromKeys(parsed.type, secret, opts);
+                        if (window.history && window.history.replaceState) {
+                            if (!/^#/.test(hash)) { hash = '#' + hash; }
+                            window.history.replaceState({}, window.document.title, hash);
+                        }
+                    }
                     cb({error: err});
                 });
             });
@@ -580,6 +652,9 @@ define([
             });
 
             sframeChan.on('EV_SET_HASH', function (hash) {
+                // In this case, we want to set the hash for the next page reload
+                // This hash is a category for the sidebar layout apps
+                // No need to store it in memory
                 window.location.hash = hash;
             });
 
@@ -801,15 +876,19 @@ define([
 
             // Present mode URL
             sframeChan.on('Q_PRESENT_URL_GET_VALUE', function (data, cb) {
-                var parsed = Utils.Hash.parsePadUrl(window.location.href);
+                var parsed = Utils.Hash.parsePadUrl(currentPad.href);
                 cb(parsed.hashData && parsed.hashData.present);
             });
             sframeChan.on('EV_PRESENT_URL_SET_VALUE', function (data) {
-                var parsed = Utils.Hash.parsePadUrl(window.location.href);
-                window.location.href = parsed.getUrl({
-                    embed: parsed.hashData.embed,
-                    present: data
-                });
+                // Update the rendered hash and the full hash with the "present" settings
+                var opts = parsed.getOptions();
+                opts.present = data;
+                // Full hash
+                currentPad.href = parsed.getUrl(opts);
+                if (parsed.hashData) { currentPad.hash = parsed.hashData.getHash(opts); }
+                // Rendered (maybe hidden) hash
+                var hiddenParsed = Utils.Hash.parsePadUrl(window.location.href);
+                window.location.href = hiddenParsed.getUrl(opts);
             });
 
 
@@ -1011,7 +1090,7 @@ define([
             });
 
             sframeChan.on('Q_BLOB_PASSWORD_CHANGE', function (data, cb) {
-                data.href = data.href || window.location.href;
+                data.href = data.href || currentPad.href;
                 var onPending = function (cb) {
                     sframeChan.query('Q_BLOB_PASSWORD_CHANGE_PENDING', null, function (err, obj) {
                         if (obj && obj.cancel) { cb(); }
@@ -1027,12 +1106,12 @@ define([
             });
 
             sframeChan.on('Q_OO_PASSWORD_CHANGE', function (data, cb) {
-                data.href = data.href || window.location.href;
+                data.href = data.href || currentPad.href;
                 Cryptpad.changeOOPassword(data, cb);
             });
 
             sframeChan.on('Q_PAD_PASSWORD_CHANGE', function (data, cb) {
-                data.href = data.href || window.location.href;
+                data.href = data.href || currentPad.href;
                 Cryptpad.changePadPassword(Cryptget, Crypto, data, cb);
             });
 
@@ -1234,7 +1313,11 @@ define([
             var startRealtime = function (rtConfig) {
                 rtConfig = rtConfig || {};
                 rtStarted = true;
+
                 var replaceHash = function (hash) {
+                    // XXX Always put the full hash here.
+                    // The pad has just been created but is not stored yet. We'll switch
+                    // to hidden hash once the pad is stored
                     if (window.history && window.history.replaceState) {
                         if (!/^#/.test(hash)) { hash = '#' + hash; }
                         window.history.replaceState({}, window.document.title, hash);
@@ -1250,7 +1333,7 @@ define([
                     Cryptpad.padRpc.onReadyEvent.reg(function () {
                         Cryptpad.burnPad({
                             password: password,
-                            href: window.location.href,
+                            href: currentPad.href,
                             channel: secret.channel,
                             ownerKey: burnAfterReading
                         });
@@ -1265,7 +1348,7 @@ define([
                     readOnly: readOnly,
                     crypto: Crypto.createEncryptor(secret.keys),
                     onConnect: function () {
-                        if (window.location.hash && window.location.hash !== '#') {
+                        if (currentPad.hash && currentPad.hash !== '#') {
                             /*window.location = parsed.getUrl({
                                 present: parsed.hashData.present,
                                 embed: parsed.hashData.embed
@@ -1278,11 +1361,11 @@ define([
                 };
 
                 nThen(function (waitFor) {
-                    if (isNewFile && cfg.owned && !window.location.hash) {
+                    if (isNewFile && cfg.owned && !currentPad.hash) {
                         Cryptpad.getMetadata(waitFor(function (err, m) {
                             cpNfCfg.owners = [m.priv.edPublic];
                         }));
-                    } else if (isNewFile && !cfg.useCreationScreen && window.location.hash) {
+                    } else if (isNewFile && !cfg.useCreationScreen && currentPad.hash) {
                         console.log("new file with hash in the address bar in an app without pcs and which requires owners");
                         sframeChan.onReady(function () {
                             sframeChan.query("EV_LOADING_ERROR", "DELETED");
@@ -1309,11 +1392,13 @@ define([
                 var ohc = window.onhashchange;
                 window.onhashchange = function () {};
                 window.location.hash = newHash;
+                currentPad.hash = newHash;
+                currentPad.href = '/' + parsed.type + '/#' + newHash;
                 window.onhashchange = ohc;
                 ohc({reset: true});
 
                 // Update metadata values and send new metadata inside
-                parsed = Utils.Hash.parsePadUrl(window.location.href);
+                parsed = Utils.Hash.parsePadUrl(currentPad.href);
                 defaultTitle = Utils.UserObject.getDefaultName(parsed);
                 hashes = Utils.Hash.getHashes(secret);
                 readOnly = false;
