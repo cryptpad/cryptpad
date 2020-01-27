@@ -1037,6 +1037,10 @@ define([
             var href = data.href || data.roHref;
             var parsed = Hash.parsePadUrl(href);
             var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
+            if (isRo && secret.keys && secret.keys.editKeyStr) {
+                delete secret.keys.editKeyStr;
+                delete secret.key;
+            }
             var hash = Hash.getHiddenHashFromKeys(parsed.type, secret);
             var hiddenHref = Hash.hashToHref(hash, parsed.type);
             // XXX hidden hash: use settings

@@ -383,7 +383,7 @@ Version 1
         return '/' + type + '/#' + hash;
     };
     Hash.hrefToHref = function (href) {
-        var parsed = parsedPadUrl(href);
+        var parsed = Hash.parsePadUrl(href);
         return parsed.hash;
     };
 
