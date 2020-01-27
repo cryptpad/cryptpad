@@ -4602,10 +4602,10 @@ define([
             var f = priv.friends[curve];
             $verified.append(h('span.fa.fa-certificate'));
             var $avatar = $(h('span.cp-avatar')).appendTo($verified);
-            $verified.append(h('p', Messages._getKey('requestEdit_fromFriend', [f.displayName])));
+            $verified.append(h('p', Messages._getKey('isContact', [f.displayName])));
             common.displayAvatar($avatar, f.avatar, f.displayName);
         } else {
-            $verified.append(Messages._getKey('requestEdit_fromStranger', [name]));
+            $verified.append(Messages._getKey('isNotContact', [name]));
         }
         return verified;
     };

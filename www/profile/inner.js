@@ -201,7 +201,7 @@ define([
             // Add friend message
             APP.$friend.append(h('p.cp-app-profile-friend', [
                 h('i.fa.fa-address-book'),
-                Messages._getKey('profile_friend', [name])
+                Messages._getKey('isContact', [name])
             ]));
             if (!friends[data.curvePublic].notifications) { return; }
             // Add unfriend button
