@@ -4,16 +4,11 @@
 var Express = require('express');
 var Http = require('http');
 var Fs = require('fs');
-var WebSocketServer = require('ws').Server;
-var NetfluxSrv = require('chainpad-server/NetfluxWebsocketSrv');
 var Package = require('./package.json');
 var Path = require("path");
 var nThen = require("nthen");
 
 var config = require("./lib/load-config");
-
-// support multiple storage back ends
-var Storage = require('./storage/file');
 
 var app = Express();
 
@@ -69,11 +64,9 @@ var setHeaders = (function () {
     if (Object.keys(headers).length) {
         return function (req, res) {
             const h = [
-                    /^\/pad(2)?\/inner\.html.*/,
+                    /^\/pad\/inner\.html.*/,
                     /^\/common\/onlyoffice\/.*\/index\.html.*/,
-                    /^\/sheet\/inner\.html.*/,
-                    /^\/ooslide\/inner\.html.*/,
-                    /^\/oodoc\/inner\.html.*/,
+                    /^\/(sheet|ooslide|oodoc)\/inner\.html.*/,
                 ].some((regex) => {
                     return regex.test(req.url)
                 }) ? padHeaders : headers;
@@ -116,11 +109,6 @@ app.use(function (req, res, next) {
 });
 
 app.use(Express.static(__dirname + '/www'));
-
-Fs.exists(__dirname + "/customize", function (e) {
-    if (e) { return; }
-    console.log("Cryptpad is customizable, see customize.dist/readme.md for details");
-});
 
 // FIXME I think this is a regression caused by a recent PR
 // correct this hack without breaking the contributor's intended behaviour.
@@ -207,80 +195,36 @@ app.use(function (req, res, next) {
 
 var httpServer = Http.createServer(app);
 
-httpServer.listen(config.httpPort,config.httpAddress,function(){
-    var host = config.httpAddress;
-    var hostName = !host.indexOf(':') ? '[' + host + ']' : host;
-
-    var port = config.httpPort;
-    var ps = port === 80? '': ':' + port;
-
-    console.log('[%s] server available http://%s%s', new Date().toISOString(), hostName, ps);
-});
-if (config.httpSafePort) {
-    Http.createServer(app).listen(config.httpSafePort, config.httpAddress);
-}
-
-var wsConfig = { server: httpServer };
-
-var rpc;
-var historyKeeper;
-
-var log;
-
-// Initialize logging, the the store, then tasks, then rpc, then history keeper and then start the server
-var nt = nThen(function (w) {
-    // set up logger
-    var Logger = require("./lib/log");
-    //console.log("Loading logging module");
-    Logger.create(config, w(function (_log) {
-        log = config.log = _log;
+nThen(function (w) {
+    Fs.exists(__dirname + "/customize", w(function (e) {
+        if (e) { return; }
+        console.log("Cryptpad is customizable, see customize.dist/readme.md for details");
     }));
 }).nThen(function (w) {
-    if (config.externalWebsocketURL) {
-        // if you plan to use an external websocket server
-        // then you don't need to load any API services other than the logger.
-        // Just abort.
-        w.abort();
-        return;
+    httpServer.listen(config.httpPort,config.httpAddress,function(){
+        var host = config.httpAddress;
+        var hostName = !host.indexOf(':') ? '[' + host + ']' : host;
+
+        var port = config.httpPort;
+        var ps = port === 80? '': ':' + port;
+
+        console.log('[%s] server available http://%s%s', new Date().toISOString(), hostName, ps);
+    });
+
+    if (config.httpSafePort) {
+        Http.createServer(app).listen(config.httpSafePort, config.httpAddress, w());
     }
-    Storage.create(config, w(function (_store) {
-        config.store = _store;
-    }));
-}).nThen(function (w) {
-    var Tasks = require("./storage/tasks");
-    Tasks.create(config, w(function (e, tasks) {
-        if (e) {
-            throw e;
-        }
-        config.tasks = tasks;
-        if (config.disableIntegratedTasks) { return; }
-        setInterval(function () {
-            tasks.runAll(function (err) {
-                if (err) {
-                    // either TASK_CONCURRENCY or an error with tasks.list
-                    // in either case it is already logged.
-                }
-            });
-        }, 1000 * 60 * 5); // run every five minutes
-    }));
-}).nThen(function (w) {
-    require("./lib/rpc").create(config, w(function (e, _rpc) {
-        if (e) {
-            w.abort();
-            throw e;
-        }
-        rpc = _rpc;
-    }));
 }).nThen(function () {
-    var HK = require('./lib/historyKeeper.js');
-    var hkConfig = {
-        tasks: config.tasks,
-        rpc: rpc,
-        store: config.store,
-        log: log,
-    };
-    historyKeeper = HK.create(hkConfig);
-}).nThen(function () {
-    var wsSrv = new WebSocketServer(wsConfig);
-    NetfluxSrv.run(wsSrv, config, historyKeeper);
+    var wsConfig = { server: httpServer };
+
+    // Initialize logging then start the API server
+    require("./lib/log").create(config, function (_log) {
+        config.log = _log;
+        config.httpServer = httpServer;
+
+        if (config.externalWebsocketURL) { return; }
+        require("./lib/api").create(config);
+    });
 });
+
+
