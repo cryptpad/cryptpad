@@ -1208,6 +1208,7 @@ define([
         Store.getPadDataFromChannel = function (clientId, obj, cb) {
             var channel = obj.channel;
             var edit = obj.edit;
+            var isFile = obj.file;
             var res;
             var viewRes;
             getAllStores().some(function (s) {
@@ -1217,7 +1218,7 @@ define([
                     if (!pad || !pad.data) { return; }
                     var data = pad.data;
                     // We've found a match: return the value and stop the loops
-                    if ((edit && data.href) || (!edit && data.roHref)) {
+                    if ((edit && data.href) || (!edit && data.roHref) || isFile) {
                         res = data;
                         return true;
                     }

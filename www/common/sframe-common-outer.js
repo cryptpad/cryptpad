@@ -284,7 +284,8 @@ define([
                     if (!parsed.hashData.key && parsed.hashData.channel) {
                         Cryptpad.getPadDataFromChannel({
                             channel: parsed.hashData.channel,
-                            edit: parsed.hashData.mode === 'edit'
+                            edit: parsed.hashData.mode === 'edit',
+                            file: parsed.hashData.type === 'file'
                         }, w(function (err, res) {
                             // Error while getting data? abort
                             if (err || !res || res.error) {

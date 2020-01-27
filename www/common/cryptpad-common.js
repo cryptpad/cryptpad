@@ -51,7 +51,7 @@ define([
 
     // Store the href in memory
     // This is a placeholder value overriden in common.ready from sframe-common-outer
-    var currentPad = {
+    var currentPad = common.currentPad = {
         href: window.location.href
     };
 
@@ -763,7 +763,7 @@ define([
     };
     // Get data about a given channel: use with hidden hashes
     common.getPadDataFromChannel = function (obj, cb) {
-        if (!obj || !obj.channel || !obj.edit) { return void cb('EINVAL'); }
+        if (!obj || !obj.channel) { return void cb('EINVAL'); }
         postMessage("GET_PAD_DATA_FROM_CHANNEL", obj, function (data) {
             cb(void 0, data);
         });
@@ -1795,7 +1795,7 @@ define([
         rdyCfg = rdyCfg || {};
 
         if (rdyCfg.currentPad) {
-            currentPad = rdyCfg.currentPad;
+            currentPad = common.currentPad = rdyCfg.currentPad;
         }
 
         if (initialized) {

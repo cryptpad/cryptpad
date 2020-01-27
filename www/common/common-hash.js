@@ -60,10 +60,14 @@ var factory = function (Util, Crypto, Nacl) {
             return '/2/' + secret.type + '/view/' + Crypto.b64RemoveSlashes(data.viewKeyStr) + '/' + pass;
         }
     };
+
     Hash.getHiddenHashFromKeys = function (type, secret, opts) {
-        var mode = ((secret.keys && secret.keys.editKeyStr) || secret.key) ? 'edit' : 'view';
+        var mode = ((secret.keys && secret.keys.editKeyStr) || secret.key) ? 'edit/' : 'view/';
         var pass = secret.password ? 'p/' : '';
-        var hash =  '/3/' + type + '/' + mode + '/' + secret.channel + '/' + pass;
+
+        if (secret.keys && secret.keys.fileKeyStr) { mode = ''; }
+
+        var hash =  '/3/' + type + '/' + mode + secret.channel + '/' + pass;
         var href = '/' + type + '/#' + hash;
         var parsed = Hash.parsePadUrl(href);
         if (parsed.hashData && parsed.hashData.getHash) {
@@ -175,6 +179,14 @@ Version 1
         var options = [];
         var parsed = {};
         var hashArr = fixDuplicateSlashes(hash).split('/');
+
+        var addOptions = function () {
+            parsed.password = options.indexOf('p') !== -1;
+            parsed.present = options.indexOf('present') !== -1;
+            parsed.embed = options.indexOf('embed') !== -1;
+            parsed.ownerKey = getOwnerKey(options);
+        };
+
         if (['media', 'file', 'user', 'invite'].indexOf(type) === -1) {
             parsed.type = 'pad';
             parsed.getHash = function () { return hash; };
@@ -202,12 +214,6 @@ Version 1
                 if (opts.embed) { hash += 'embed/'; }
                 if (opts.present) { hash += 'present/'; }
                 return hash;
-            };
-            var addOptions = function () {
-                parsed.password = options.indexOf('p') !== -1;
-                parsed.present = options.indexOf('present') !== -1;
-                parsed.embed = options.indexOf('embed') !== -1;
-                parsed.ownerKey = getOwnerKey(options);
             };
 
             if (hashArr[1] && hashArr[1] === '1') { // Version 1
@@ -248,41 +254,53 @@ Version 1
         parsed.getHash = function () { return hashArr.join('/'); };
         if (['media', 'file'].indexOf(type) !== -1) {
             parsed.type = 'file';
+
+            parsed.getOptions = function () {
+                return {
+                    embed: parsed.embed,
+                    present: parsed.present,
+                    ownerKey: parsed.ownerKey
+                };
+            };
+
+            parsed.getHash = function (opts) {
+                var hash = hashArr.slice(0, 4).join('/') + '/';
+                var owner = typeof(opts.ownerKey) !== "undefined" ? opts.ownerKey : parsed.ownerKey;
+                if (owner) { hash += owner + '/'; }
+                if (parsed.password) { hash += 'p/'; }
+                if (opts.embed) { hash += 'embed/'; }
+                if (opts.present) { hash += 'present/'; }
+                return hash;
+            };
+
             if (hashArr[1] && hashArr[1] === '1') {
                 parsed.version = 1;
                 parsed.channel = hashArr[2].replace(/-/g, '/');
                 parsed.key = hashArr[3].replace(/-/g, '/');
                 options = hashArr.slice(4);
-                parsed.ownerKey = getOwnerKey(options);
+                addOptions();
                 return parsed;
             }
+
             if (hashArr[1] && hashArr[1] === '2') { // Version 2
                 parsed.version = 2;
                 parsed.app = hashArr[2];
                 parsed.key = hashArr[3];
 
                 options = hashArr.slice(4);
-                parsed.password = options.indexOf('p') !== -1;
-                parsed.present = options.indexOf('present') !== -1;
-                parsed.embed = options.indexOf('embed') !== -1;
-                parsed.ownerKey = getOwnerKey(options);
+                addOptions();
 
-                parsed.getHash = function (opts) {
-                    var hash = hashArr.slice(0, 4).join('/') + '/';
-                    var owner = typeof(opts.ownerKey) !== "undefined" ? opts.ownerKey : parsed.ownerKey;
-                    if (owner) { hash += owner + '/'; }
-                    if (parsed.password) { hash += 'p/'; }
-                    if (opts.embed) { hash += 'embed/'; }
-                    if (opts.present) { hash += 'present/'; }
-                    return hash;
-                };
-                parsed.getOptions = function () {
-                    return {
-                        embed: parsed.embed,
-                        present: parsed.present,
-                        ownerKey: parsed.ownerKey
-                    };
-                };
+                return parsed;
+            }
+
+            if (hashArr[1] && hashArr[1] === '3') { // Version 3: hidden hash
+                parsed.version = 3;
+                parsed.app = hashArr[2];
+                parsed.channel = hashArr[3];
+
+                options = hashArr.slice(4);
+                addOptions();
+
                 return parsed;
             }
             return parsed;
