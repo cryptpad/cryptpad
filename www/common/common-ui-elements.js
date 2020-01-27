@@ -1140,8 +1140,13 @@ define([
 
         var parsed = Hash.parsePadUrl(pathname);
         var canPresent = ['code', 'slide'].indexOf(parsed.type) !== -1;
+        var canBAR = parsed.type !== 'drive';
 
-        var burnAfterReading;
+        var burnAfterReading = (hashes.viewHash && canBAR) ?
+                    UI.createRadio('accessRights', 'cp-share-bar', Messages.burnAfterReading_linkBurnAfterReading, false, {
+                        mark: {tabindex:1},
+                        label: {style: "display: none;"}
+                    }) : undefined
         var rights = h('div.msg.cp-inline-radio-group', [
             h('label', Messages.share_linkAccess),
             h('div.radio-group',[
@@ -1151,8 +1156,7 @@ define([
                             Messages.share_linkPresent, false, { mark: {tabindex:1} }) : undefined,
             UI.createRadio('accessRights', 'cp-share-editable-true',
                            Messages.share_linkEdit, false, { mark: {tabindex:1} })]),
-            burnAfterReading = hashes.viewHash ? UI.createRadio('accessRights', 'cp-share-bar', Messages.burnAfterReading_linkBurnAfterReading,
-                            false, { mark: {tabindex:1}, label: {style: "display: none;"} }) : undefined
+            burnAfterReading
         ]);
 
         // Burn after reading
@@ -1174,7 +1178,9 @@ define([
                 return;
             }
             // When the burn after reading option is selected, transform the modal buttons
-            $(burnAfterReading).show();
+            $(burnAfterReading).css({
+                display: 'flex'
+            });
         });
 
         var $rights = $(rights);
