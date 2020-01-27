@@ -12,7 +12,7 @@
         "media": "Medien",
         "todo": "Aufgaben",
         "contacts": "Kontakte",
-        "sheet": "Tabelle (Beta)",
+        "sheet": "Tabelle",
         "teams": "Teams"
     },
     "button_newpad": "Neues Rich-Text-Pad",
@@ -92,7 +92,7 @@
     "exportButtonTitle": "Exportiere dieses Pad in eine lokale Datei",
     "exportPrompt": "Wie möchtest du die Datei nennen?",
     "changeNamePrompt": "Ändere deinen Namen (oder lasse dieses Feld leer, um anonym zu bleiben): ",
-    "user_rename": "Bearbeite deinen Anzeigename",
+    "user_rename": "Anzeigename ändern",
     "user_displayName": "Anzeigename",
     "user_accountName": "Kontoname",
     "clickToEdit": "Zum Bearbeiten klicken",
@@ -278,8 +278,8 @@
     "userlist_addAsFriendTitle": "Benutzer \"{0}\" eine Freundschaftsanfrage senden",
     "contacts_title": "Kontakte",
     "contacts_addError": "Fehler bei dem Hinzufügen des Kontakts zur Liste",
-    "contacts_added": "Verbindungseinladung angenommen.",
-    "contacts_rejected": "Verbindungseinladung abgelehnt",
+    "contacts_added": "Kontaktanfrage akzeptiert.",
+    "contacts_rejected": "Kontaktanfrage abgelehnt",
     "contacts_request": "Benutzer <em>{0}</em> möchte dich als Kontakt hinzufügen. <b>Annehmen<b>?",
     "contacts_send": "Senden",
     "contacts_remove": "Diesen Kontakt entfernen",
@@ -1100,7 +1100,7 @@
     "support_formMessage": "Gib deine Nachricht ein...",
     "support_cat_tickets": "Vorhandene Tickets",
     "support_listTitle": "Support-Tickets",
-    "support_listHint": "Hier ist die Liste der an die Administratoren gesendeten Tickets und der dazugehörigen Antworten. Ein geschlossenes Ticket kann nicht wieder geöffnet werden, du musst ein Ticket eröffnen. Du kannst geschlossene Tickets ausblenden, aber sie werden weiterhin für die Administratoren sichtbar sein.",
+    "support_listHint": "Hier ist die Liste der an die Administratoren gesendeten Tickets und der dazugehörigen Antworten. Ein geschlossenes Ticket kann nicht wieder geöffnet werden, du kannst jedoch ein neues Ticket eröffnen. Du kannst geschlossene Tickets ausblenden, aber sie werden weiterhin für die Administratoren sichtbar sein.",
     "support_answer": "Antworten",
     "support_close": "Ticket schließen",
     "support_remove": "Ticket entfernen",
@@ -1294,5 +1294,6 @@
     "oo_exportInProgress": "Export wird durchgeführt",
     "oo_sheetMigration_loading": "Deine Tabelle wird auf die neueste Version aktualisiert",
     "oo_sheetMigration_complete": "Eine aktualisierte Version ist verfügbar. Klicke auf OK, um neu zu laden.",
-    "oo_sheetMigration_anonymousEditor": "Die Bearbeitung dieser Tabelle ist für anonyme Benutzer deaktiviert, bis sie von einem registrierten Benutzer auf die neueste Version aktualisiert wird."
+    "oo_sheetMigration_anonymousEditor": "Die Bearbeitung dieser Tabelle ist für anonyme Benutzer deaktiviert, bis sie von einem registrierten Benutzer auf die neueste Version aktualisiert wird.",
+    "imprint": "Impressum"
 }
