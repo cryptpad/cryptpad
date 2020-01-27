@@ -142,6 +142,12 @@ define([
                     driveEvents: cfg.driveEvents,
                     currentPad: currentPad
                 });
+
+                if (window.history && window.history.replaceState && currentPad.hash) {
+                    var nHash = currentPad.hash;
+                    if (!/^#/.test(nHash)) { nHash = '#' + nHash; }
+                    window.history.replaceState({}, window.document.title, nHash);
+                }
             }));
         }).nThen(function (waitFor) {
             if (!Utils.Hash.isValidHref(window.location.href)) {
