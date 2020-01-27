@@ -51,6 +51,12 @@ define([
                 // Add a shared folder!
                 Cryptpad.addSharedFolder(null, secret, function (id) {
                     window.CryptPad_newSharedFolder = id;
+
+                    // Clear the hash now that the secrets have been generated
+                    if (window.history && window.history.replaceState && hash) {
+                        window.history.replaceState({}, window.document.title, '#');
+                    }
+
                     cb();
                 });
                 return;
@@ -58,7 +64,7 @@ define([
                 var id = Utils.Util.createRandomInteger();
                 window.CryptPad_newSharedFolder = id;
                 var data = {
-                    href: Utils.Hash.getRelativeHref(href),
+                    href: Utils.Hash.getRelativeHref(Cryptpad.currentPad.href),
                     password: secret.password
                 };
                 return void Cryptpad.loadSharedFolder(id, data, cb);
@@ -119,9 +125,9 @@ define([
                 sframeChan.event('EV_DRIVE_REMOVE', data);
             });
         };
-        var addData = function (meta) {
+        var addData = function (meta, Cryptpad) {
             if (!window.CryptPad_newSharedFolder) { return; }
-            meta.anonSFHref = href;
+            meta.anonSFHref = Cryptpad.currentPad.href;
         };
         SFCommonO.start({
             hash: hash,

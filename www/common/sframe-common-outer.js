@@ -642,7 +642,8 @@ define([
                 };
                 Cryptpad.setPadTitle(data, function (err, obj) {
                     if (!err && !(obj && obj.notStored)) {
-                        // Pad is stored: hide the hash
+                        // No error and the pad was correctly stored
+                        // hide the hash
                         var opts = parsed.getOptions();
                         var hash = Utils.Hash.getHiddenHashFromKeys(parsed.type, secret, opts);
                         if (window.history && window.history.replaceState) {
@@ -677,6 +678,16 @@ define([
                     forceSave: true
                 };
                 Cryptpad.setPadTitle(data, function (err) {
+                    if (!err && !(obj && obj.notStored)) {
+                        // No error and the pad was correctly stored
+                        // hide the hash
+                        var opts = parsed.getOptions();
+                        var hash = Utils.Hash.getHiddenHashFromKeys(parsed.type, secret, opts);
+                        if (window.history && window.history.replaceState) {
+                            if (!/^#/.test(hash)) { hash = '#' + hash; }
+                            window.history.replaceState({}, window.document.title, hash);
+                        }
+                    }
                     cb({error: err});
                 });
             });
