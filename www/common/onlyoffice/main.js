@@ -24,7 +24,7 @@ define([
         // Hidden hash
         hash = window.location.hash;
         href = window.location.href;
-        if (window.history && window.history.replaceState) {
+        if (window.history && window.history.replaceState && hash) {
             window.history.replaceState({}, window.document.title, '#');
         }
         document.getElementById('sbox-iframe').setAttribute('src',
