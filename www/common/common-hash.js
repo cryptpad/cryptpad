@@ -68,10 +68,9 @@ var factory = function (Util, Crypto, Nacl) {
         if (secret.keys && secret.keys.fileKeyStr) { mode = ''; }
 
         var hash =  '/3/' + type + '/' + mode + secret.channel + '/' + pass;
-        var href = '/' + type + '/#' + hash;
-        var parsed = Hash.parsePadUrl(href);
-        if (parsed.hashData && parsed.hashData.getHash) {
-            return parsed.hashData.getHash(opts || {});
+        var hashData = Hash.parseTypeHash(type, hash);
+        if (hashData && hashData.getHash) {
+            return hashData.getHash(opts || {});
         }
         return hash;
     };
@@ -378,6 +377,14 @@ Version 1
         ret.hash = href.slice(idx + 2);
         ret.hashData = parseTypeHash(ret.type, ret.hash);
         return ret;
+    };
+
+    Hash.hashToHref = function (hash, type) {
+        return '/' + type + '/#' + hash;
+    };
+    Hash.hrefToHref = function (href) {
+        var parsed = parsedPadUrl(href);
+        return parsed.hash;
     };
 
     Hash.getRelativeHref = function (href) {
