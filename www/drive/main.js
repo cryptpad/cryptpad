@@ -91,7 +91,7 @@ define([
                     cb(obj);
                 });
             });
-            sframeChan.on('EV_DRIVE_SET_HASH', function (hash) {
+            sframeChan.on('EV_DRIVE_SET_HASH', function (/*hash*/) {
                 // Update the hash in the address bar
                 // XXX Hidden hash: don't put the shared folder href in the address bar
                 /*
