@@ -30,7 +30,7 @@ define([
         var password;
         var initialPathInDrive;
 
-        var currentPad = {
+        var currentPad = window.CryptPad_location = {
             href: cfg.href || window.location.href,
             hash: cfg.hash || window.location.hash
         };

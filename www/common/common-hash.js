@@ -61,9 +61,9 @@ var factory = function (Util, Crypto, Nacl) {
         }
     };
     Hash.getHiddenHashFromKeys = function (type, secret, opts) {
-        var mode = (secret.keys && secret.keys.editKeyStr) ? 'edit' : 'view';
+        var mode = ((secret.keys && secret.keys.editKeyStr) || secret.key) ? 'edit' : 'view';
         var pass = secret.password ? 'p/' : '';
-        var hash =  '/2/' + secret.type + '/' + mode + '/' + secret.channel + '/' + pass;
+        var hash =  '/3/' + type + '/' + mode + '/' + secret.channel + '/' + pass;
         var href = '/' + type + '/#' + hash;
         var parsed = Hash.parsePadUrl(href);
         if (parsed.hashData && parsed.hashData.getHash) {
@@ -172,12 +172,19 @@ Version 1
     };
     var parseTypeHash = Hash.parseTypeHash = function (type, hash) {
         if (!hash) { return; }
-        var options;
+        var options = [];
         var parsed = {};
         var hashArr = fixDuplicateSlashes(hash).split('/');
         if (['media', 'file', 'user', 'invite'].indexOf(type) === -1) {
             parsed.type = 'pad';
             parsed.getHash = function () { return hash; };
+            parsed.getOptions = function () {
+                return {
+                    embed: parsed.embed,
+                    present: parsed.present,
+                    ownerKey: parsed.ownerKey
+                };
+            };
             if (hash.slice(0,1) !== '/' && hash.length >= 56) { // Version 0
                 // Old hash
                 parsed.channel = hash.slice(0, 32);
@@ -185,6 +192,24 @@ Version 1
                 parsed.version = 0;
                 return parsed;
             }
+
+            // Version >= 1: more hash options
+            parsed.getHash = function (opts) {
+                var hash = hashArr.slice(0, 5).join('/') + '/';
+                var owner = typeof(opts.ownerKey) !== "undefined" ? opts.ownerKey : parsed.ownerKey;
+                if (owner) { hash += owner + '/'; }
+                if (parsed.password) { hash += 'p/'; }
+                if (opts.embed) { hash += 'embed/'; }
+                if (opts.present) { hash += 'present/'; }
+                return hash;
+            };
+            var addOptions = function () {
+                parsed.password = options.indexOf('p') !== -1;
+                parsed.present = options.indexOf('present') !== -1;
+                parsed.embed = options.indexOf('embed') !== -1;
+                parsed.ownerKey = getOwnerKey(options);
+            };
+
             if (hashArr[1] && hashArr[1] === '1') { // Version 1
                 parsed.version = 1;
                 parsed.mode = hashArr[2];
@@ -192,61 +217,30 @@ Version 1
                 parsed.key = Crypto.b64AddSlashes(hashArr[4]);
 
                 options = hashArr.slice(5);
-                parsed.present = options.indexOf('present') !== -1;
-                parsed.embed = options.indexOf('embed') !== -1;
-                parsed.ownerKey = getOwnerKey(options);
+                addOptions();
 
-                parsed.getHash = function (opts) {
-                    var hash = hashArr.slice(0, 5).join('/') + '/';
-                    var owner = typeof(opts.ownerKey) !== "undefined" ? opts.ownerKey : parsed.ownerKey;
-                    if (owner) { hash += owner + '/'; }
-                    if (opts.embed) { hash += 'embed/'; }
-                    if (opts.present) { hash += 'present/'; }
-                    return hash;
-                };
-                parsed.getOptions = function () {
-                    return {
-                        embed: parsed.embed,
-                        present: parsed.present,
-                        ownerKey: parsed.ownerKey
-                    };
-                };
                 return parsed;
             }
             if (hashArr[1] && hashArr[1] === '2') { // Version 2
                 parsed.version = 2;
                 parsed.app = hashArr[2];
                 parsed.mode = hashArr[3];
-
-                // Check if the key is a channel ID
-                if (/^[a-f0-9]{32,34}$/.test(hashArr[4])) {
-                    parsed.channel = hashArr[4];
-                } else {
-                    parsed.key = hashArr[4];
-                }
+                parsed.key = hashArr[4];
 
                 options = hashArr.slice(5);
-                parsed.password = options.indexOf('p') !== -1;
-                parsed.present = options.indexOf('present') !== -1;
-                parsed.embed = options.indexOf('embed') !== -1;
-                parsed.ownerKey = getOwnerKey(options);
+                addOptions();
 
-                parsed.getHash = function (opts) {
-                    var hash = hashArr.slice(0, 5).join('/') + '/';
-                    var owner = typeof(opts.ownerKey) !== "undefined" ? opts.ownerKey : parsed.ownerKey;
-                    if (owner) { hash += owner + '/'; }
-                    if (parsed.password) { hash += 'p/'; }
-                    if (opts.embed) { hash += 'embed/'; }
-                    if (opts.present) { hash += 'present/'; }
-                    return hash;
-                };
-                parsed.getOptions = function () {
-                    return {
-                        embed: parsed.embed,
-                        present: parsed.present,
-                        ownerKey: parsed.ownerKey
-                    };
-                };
+                return parsed;
+            }
+            if (hashArr[1] && hashArr[1] === '3') { // Version 3: hidden hash
+                parsed.version = 3;
+                parsed.app = hashArr[2];
+                parsed.mode = hashArr[3];
+                parsed.channel = hashArr[4];
+
+                options = hashArr.slice(5);
+                addOptions();
+
                 return parsed;
             }
             return parsed;
@@ -536,7 +530,6 @@ Version 1
             if (parsed.hashData.type === 'pad' || parsed.hashData.type === 'file') {
                 if (!parsed.hashData.key && !parsed.hashData.channel) { return; }
                 if (parsed.hashData.key && !/^[a-zA-Z0-9+-/=]+$/.test(parsed.hashData.key)) { return; }
-                if (parsed.hashData.channel && !/^[a-f0-9]{32,34}$/.test(parsed.hashData.channel)) { return; }
             }
         }
         return true;
