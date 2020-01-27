@@ -144,7 +144,7 @@ define([
                 });
             }));
         }).nThen(function (waitFor) {
-            if (!Utils.Hash.isValidHref(currentPad.href)) {
+            if (!Utils.Hash.isValidHref(window.location.href)) {
                 waitFor.abort();
                 return void sframeChan.event('EV_LOADING_ERROR', 'INVALID_HASH');
             }
