@@ -1294,5 +1294,6 @@
     "oo_exportInProgress": "Export in progress",
     "oo_sheetMigration_loading": "Upgrading your spreadsheet to the latest version",
     "oo_sheetMigration_complete": "Updated version available, press OK to reload.",
-    "oo_sheetMigration_anonymousEditor": "Editing this spreadsheet is disabled for anonymous users until it is upgraded to the latest version by a registered user."
+    "oo_sheetMigration_anonymousEditor": "Editing this spreadsheet is disabled for anonymous users until it is upgraded to the latest version by a registered user.",
+    "imprint": "Legal notice"
 }
