@@ -52,15 +52,15 @@ define([
             'cp-settings-displayname',
             'cp-settings-language-selector',
             'cp-settings-resettips',
-            'cp-settings-logout-everywhere',
-            'cp-settings-userfeedback',
             'cp-settings-change-password',
             'cp-settings-migrate',
             'cp-settings-delete'
         ],
         'security': [ // XXX
+            'cp-settings-logout-everywhere',
             'cp-settings-autostore',
             'cp-settings-safe-links',
+            'cp-settings-userfeedback',
         ],
         'creation': [
             'cp-settings-creation-owned',
