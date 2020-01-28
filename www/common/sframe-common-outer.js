@@ -274,8 +274,7 @@ define([
 
                 // Hidden hash: can't find the channel in our drives: abort
                 var noPadData = function (err) {
-                    console.error(err);
-                    // XXX Display error screen in inner
+                    sframeChan.event("EV_PAD_NODATA", err);
                 };
                 // Hidden hash: can't find requestd edit URL in our drives: ask
                 var badPadData = function (cb) {
