@@ -438,14 +438,24 @@ define([
                 parentEl.push(id);
                 return;
             }
-            // Add to root if path is ROOT or if no path
+            // Add to root if no path
             var filesList = exp.getFiles([ROOT, TRASH, 'hrefArray']);
-            if (path && exp.isPathIn(newPath, [ROOT]) || filesList.indexOf(id) === -1) {
-                parentEl = exp.find(newPath || [ROOT]);
+            if (filesList.indexOf(id) === -1 && !newPath) {
+                newPath = [ROOT];
+            }
+            // Add to root
+            if (path && exp.isPathIn(newPath, [ROOT])) {
+                var parentEl = exp.find(newPath);
                 if (parentEl) {
                     var newName = exp.getAvailableName(parentEl, Hash.createChannelId());
                     parentEl[newName] = id;
                     return;
+                } else {
+                    parentEl = exp.find([ROOT]);
+                    newPath.slice(1).forEach(function (folderName) {
+                        parentEl = parentEl[folderName] = parentEl[folderName] || {};
+                    });
+                    parentEl[Hash.createChannelId()] = id;
                 }
             }
         };
