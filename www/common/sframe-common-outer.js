@@ -398,6 +398,7 @@ define([
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Utils.UserObject.getDefaultName(parsed);
             var edPublic, curvePublic, notifications, isTemplate;
+            var settings = {};
             var forceCreationScreen = cfg.useCreationScreen &&
                                       sessionStorage[Utils.Constants.displayPadCreationScreen];
             delete sessionStorage[Utils.Constants.displayPadCreationScreen];
@@ -411,6 +412,7 @@ define([
                         edPublic = metaObj.priv.edPublic; // needed to create an owned pad
                         curvePublic = metaObj.user.curvePublic;
                         notifications = metaObj.user.notifications;
+                        settings = metaObj.priv.settings;
                     }));
                     if (typeof(isTemplate) === "undefined") {
                         Cryptpad.isTemplate(currentPad.href, waitFor(function (err, t) {
@@ -647,7 +649,8 @@ define([
                         // hide the hash
                         var opts = parsed.getOptions();
                         var hash = Utils.Hash.getHiddenHashFromKeys(parsed.type, secret, opts);
-                        if (window.history && window.history.replaceState) {
+                        var useUnsafe = Utils.Util.find(settings, ['security', 'unsafeLinks']);
+                        if (!useUnsafe && window.history && window.history.replaceState) {
                             if (!/^#/.test(hash)) { hash = '#' + hash; }
                             window.history.replaceState({}, window.document.title, hash);
                         }
@@ -684,7 +687,8 @@ define([
                         // hide the hash
                         var opts = parsed.getOptions();
                         var hash = Utils.Hash.getHiddenHashFromKeys(parsed.type, secret, opts);
-                        if (window.history && window.history.replaceState) {
+                        var useUnsafe = Utils.Util.find(settings, ['security', 'unsafeLinks']);
+                        if (!useUnsafe && window.history && window.history.replaceState) {
                             if (!/^#/.test(hash)) { hash = '#' + hash; }
                             window.history.replaceState({}, window.document.title, hash);
                         }
