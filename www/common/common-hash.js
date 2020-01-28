@@ -382,7 +382,7 @@ Version 1
     Hash.hashToHref = function (hash, type) {
         return '/' + type + '/#' + hash;
     };
-    Hash.hrefToHref = function (href) {
+    Hash.hrefToHash = function (href) {
         var parsed = Hash.parsePadUrl(href);
         return parsed.hash;
     };
