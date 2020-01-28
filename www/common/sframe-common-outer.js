@@ -288,9 +288,10 @@ define([
                 var newHref;
                 nThen(function (w) {
                     if (!parsed.hashData.key && parsed.hashData.channel) {
+                        var edit = parsed.hashData.mode === 'edit';
                         Cryptpad.getPadDataFromChannel({
                             channel: parsed.hashData.channel,
-                            edit: parsed.hashData.mode === 'edit',
+                            edit: edit,
                             file: parsed.hashData.type === 'file'
                         }, w(function (err, res) {
                             // Error while getting data? abort
@@ -304,7 +305,7 @@ define([
                                 return void noPadData('NO_RESULT');
                             }
                             // Data found but weaker? warn
-                            if (parsed.hashData.mode === 'edit' && !res.href) {
+                            if (edit && !res.href) {
                                 return void badPadData(w(function (load) {
                                     if (!load) {
                                         w.abort();
@@ -314,7 +315,7 @@ define([
                                 }));
                             }
                             // We have good data, keep the hash in memory
-                            newHref = res.href;
+                            newHref = edit ? res.href : (res.roHref || res.href);
                         }));
                     }
                 }).nThen(function (w) {
