@@ -288,31 +288,30 @@ define([
 
                 var newHref;
                 nThen(function (w) {
-                    if (!parsed.hashData.key && parsed.hashData.channel) {
-                        var edit = parsed.hashData.mode === 'edit';
-                        Cryptpad.getPadDataFromChannel({
-                            channel: parsed.hashData.channel,
-                            edit: edit,
-                            file: parsed.hashData.type === 'file'
-                        }, w(function (err, res) {
-                            // Error while getting data? abort
-                            if (err || !res || res.error) {
-                                w.abort();
-                                return void noPadData(err || (!res ? 'EINVAL' : res.error));
-                            }
-                            // No data found? abort
-                            if (!Object.keys(res).length) {
-                                w.abort();
-                                return void noPadData('NO_RESULT');
-                            }
-                            // Data found but weaker? warn
-                            if (edit && !res.href) {
-                                newHref = res.roHref;
-                            }
-                            // We have good data, keep the hash in memory
-                            newHref = edit ? res.href : (res.roHref || res.href);
-                        }));
-                    }
+                    if (parsed.hashData.key || !parsed.hashData.channel) { return; }
+                    var edit = parsed.hashData.mode === 'edit';
+                    Cryptpad.getPadDataFromChannel({
+                        channel: parsed.hashData.channel,
+                        edit: edit,
+                        file: parsed.hashData.type === 'file'
+                    }, w(function (err, res) {
+                        // Error while getting data? abort
+                        if (err || !res || res.error) {
+                            w.abort();
+                            return void noPadData(err || (!res ? 'EINVAL' : res.error));
+                        }
+                        // No data found? abort
+                        if (!Object.keys(res).length) {
+                            w.abort();
+                            return void noPadData('NO_RESULT');
+                        }
+                        // Data found but weaker? warn
+                        if (edit && !res.href) {
+                            newHref = res.roHref;
+                        }
+                        // We have good data, keep the hash in memory
+                        newHref = edit ? res.href : (res.roHref || res.href);
+                    }));
                 }).nThen(function (w) {
                     if (newHref) {
                         // Get the options (embed, present, etc.) of the hidden hash
