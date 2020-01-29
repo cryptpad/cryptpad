@@ -845,6 +845,7 @@ define([
     pad.onConnectEvent = Util.mkEvent();
     pad.onErrorEvent = Util.mkEvent();
     pad.onMetadataEvent = Util.mkEvent();
+    pad.onChannelDeleted = Util.mkEvent();
 
     pad.requestAccess = function (data, cb) {
         postMessage("REQUEST_PAD_ACCESS", data, cb);
@@ -1753,6 +1754,7 @@ define([
         PAD_CONNECT: common.padRpc.onConnectEvent.fire,
         PAD_ERROR: common.padRpc.onErrorEvent.fire,
         PAD_METADATA: common.padRpc.onMetadataEvent.fire,
+        CHANNEL_DELETED: common.padRpc.onChannelDeleted.fire,
         // Drive
         DRIVE_LOG: common.drive.onLog.fire,
         DRIVE_CHANGE: common.drive.onChange.fire,
@@ -1896,7 +1898,7 @@ define([
                 anonHash: LocalStore.getFSHash(),
                 localToken: tryParsing(localStorage.getItem(Constants.tokenKey)), // TODO move this to LocalStore ?
                 language: common.getLanguage(),
-                driveEvents: rdyCfg.driveEvents // Boolean
+                driveEvents: true //rdyCfg.driveEvents // Boolean
             };
             // if a pad is created from a file
             if (sessionStorage[Constants.newPadFileData]) {

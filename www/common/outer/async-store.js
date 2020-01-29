@@ -1232,6 +1232,23 @@ define([
             cb(res || viewRes || {});
         };
 
+        // Hidden hash: if a pad is deleted, we may have to switch back to full hash
+        // in some tabs
+        Store.checkDeletedPad = function (channel) {
+            if (!channel) { return; }
+
+            // Check if the pad is still stored in one of our drives
+            Store.getPadDataFromChannel(null, {
+                channel: channel,
+                isFile: true // we don't care if it's view or edit
+            }, function (res) {
+                // If it is stored, abort
+                if (Object.keys(res).length) { return; }
+                // Otherwise, tell all the tabs that this channel was deleted and give them the hrefs
+                broadcast([], "CHANNEL_DELETED", channel);
+            });
+        };
+
         // Messaging (manage friends from the userlist)
         Store.answerFriendRequest = function (clientId, obj, cb) {
             var value = obj.value;
@@ -2126,6 +2143,12 @@ define([
                             Store.unpinPads(null, toUnpin, function (obj) { console.error(obj); });
                         }
                     }
+                }
+                if (o && !n && Array.isArray(p) && (p[0] === UserObject.FILES_DATA ||
+                    (p[0] === 'drive' && p[1] === UserObject.FILES_DATA))) {
+                    setTimeout(function () {
+                        Store.checkDeletedPad(o && o.channel);
+                    });
                 }
                 sendDriveEvent('DRIVE_CHANGE', {
                     id: fId,

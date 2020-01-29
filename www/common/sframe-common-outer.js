@@ -1324,7 +1324,16 @@ define([
                 }
             } catch (e) {}
 
-
+            // If our channel was deleted from all of our drives, sitch back to full hash
+            // in the address bar
+            Cryptpad.padRpc.onChannelDeleted.reg(function (channel) {
+                if (channel !== secret.channel) { return; }
+                var ohc = window.onhashchange;
+                window.onhashchange = function () {};
+                window.location.href = currentPad.href;
+                window.onhashchange = ohc;
+                ohc({reset: true});
+            });
 
             // Join the netflux channel
             var rtStarted = false;
