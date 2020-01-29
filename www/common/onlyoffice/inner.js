@@ -1578,6 +1578,7 @@ define([
             if (info.state) {
                 UI.findOKButton().click();
                 offline = false;
+                // XXX allow reconnect or not?
                 /*UI.confirm(Messages.oo_reconnect, function (yes) {
                     if (!yes) { return; }
                     common.gotoURL();
