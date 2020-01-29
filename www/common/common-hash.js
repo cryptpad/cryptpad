@@ -193,7 +193,8 @@ Version 1
                 return {
                     embed: parsed.embed,
                     present: parsed.present,
-                    ownerKey: parsed.ownerKey
+                    ownerKey: parsed.ownerKey,
+                    password: parsed.password
                 };
             };
             if (hash.slice(0,1) !== '/' && hash.length >= 56) { // Version 0
@@ -209,7 +210,7 @@ Version 1
                 var hash = hashArr.slice(0, 5).join('/') + '/';
                 var owner = typeof(opts.ownerKey) !== "undefined" ? opts.ownerKey : parsed.ownerKey;
                 if (owner) { hash += owner + '/'; }
-                if (parsed.password) { hash += 'p/'; }
+                if (parsed.password || opts.password) { hash += 'p/'; }
                 if (opts.embed) { hash += 'embed/'; }
                 if (opts.present) { hash += 'present/'; }
                 return hash;
@@ -258,7 +259,8 @@ Version 1
                 return {
                     embed: parsed.embed,
                     present: parsed.present,
-                    ownerKey: parsed.ownerKey
+                    ownerKey: parsed.ownerKey,
+                    password: parsed.password
                 };
             };
 
@@ -266,7 +268,7 @@ Version 1
                 var hash = hashArr.slice(0, 4).join('/') + '/';
                 var owner = typeof(opts.ownerKey) !== "undefined" ? opts.ownerKey : parsed.ownerKey;
                 if (owner) { hash += owner + '/'; }
-                if (parsed.password) { hash += 'p/'; }
+                if (parsed.password || opts.password) { hash += 'p/'; }
                 if (opts.embed) { hash += 'embed/'; }
                 if (opts.present) { hash += 'present/'; }
                 return hash;

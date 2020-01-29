@@ -188,15 +188,24 @@ define([
                     secret = Utils.secret = Utils.Hash.getSecrets(parsed.type, parsed.hash, password);
                     Cryptpad.getShareHashes(secret, waitFor(function (err, h) {
                         hashes = h;
-                        /* XXX this won't happen again: we don't need to update the rendered hash
+                        // Update the rendered hash and the full hash with the "password" settings
                         if (password && !parsed.hashData.password) {
+                            var opts = parsed.getOptions();
+                            opts.password = true;
+
+                            // Full hash
+                            currentPad.href = parsed.getUrl(opts);
+                            if (parsed.hashData) {
+                                currentPad.hash = parsed.hashData.getHash(opts);
+                            }
+                            // Rendered (maybe hidden) hash
+                            var renderedParsed = Utils.Hash.parsePadUrl(window.location.href);
                             var ohc = window.onhashchange;
                             window.onhashchange = function () {};
-                            window.location.hash = h.fileHash || h.editHash || h.viewHash || window.location.hash;
+                            window.location.href = renderedParsed.getUrl(opts);
                             window.onhashchange = ohc;
                             ohc({reset: true});
                         }
-                        */
                     }));
                 };
 
@@ -276,13 +285,6 @@ define([
                 var noPadData = function (err) {
                     sframeChan.event("EV_PAD_NODATA", err);
                 };
-                // Hidden hash: can't find requestd edit URL in our drives: ask
-                var badPadData = function (cb) {
-                    // If we requested edit but we only know view: ???
-                    setTimeout(function () {
-                        cb(true);
-                    }); // XXX ask in inner?
-                };
 
                 var newHref;
                 nThen(function (w) {
@@ -305,13 +307,7 @@ define([
                             }
                             // Data found but weaker? warn
                             if (edit && !res.href) {
-                                return void badPadData(w(function (load) {
-                                    if (!load) {
-                                        w.abort();
-                                        return;
-                                    }
-                                    newHref = res.roHref;
-                                }));
+                                newHref = res.roHref;
                             }
                             // We have good data, keep the hash in memory
                             newHref = edit ? res.href : (res.roHref || res.href);
@@ -1337,7 +1333,6 @@ define([
                 rtStarted = true;
 
                 var replaceHash = function (hash) {
-                    // XXX Always put the full hash here.
                     // The pad has just been created but is not stored yet. We'll switch
                     // to hidden hash once the pad is stored
                     if (window.history && window.history.replaceState) {
