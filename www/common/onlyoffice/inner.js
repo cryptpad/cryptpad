@@ -1306,7 +1306,7 @@ define([
         };
 
         var setEditable = function (state) {
-            $('#cp-app-oo-editor').find('#cp-app-oo-offline').remove();;
+            $('#cp-app-oo-editor').find('#cp-app-oo-offline').remove();
             try {
                 window.frames[0].editor.asc_setViewMode(!state);
                 //window.frames[0].editor.setViewModeDisconnect(true);

@@ -1132,7 +1132,7 @@ define([
             spin: spin,
             hide: hide,
             done: done
-        }
+        };
     };
 
     return UI;

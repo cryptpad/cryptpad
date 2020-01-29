@@ -603,7 +603,7 @@ define([
 
             UI.addTooltips();
 
-            ctx.sframeChan.on("EV_PAD_NODATA", function (err) {
+            ctx.sframeChan.on("EV_PAD_NODATA", function () {
                 UI.errorLoadingScreen(Messages.safeLinks_error);
             });
 
