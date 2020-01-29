@@ -601,12 +601,6 @@ define([
             });
         };
         var handleChanges = function (obj, send) {
-            // Allow the changes
-            send({
-                type: "unSaveLock",
-                index: ooChannel.cpIndex,
-                time: +new Date()
-            });
             // Send the changes
             rtChannel.sendMsg({
                 type: "saveChanges",
@@ -616,6 +610,15 @@ define([
                 excelAdditionalInfo: null
             }, null, function (err, hash) {
                 if (err) { return void console.error(err); }
+                // Call unSaveLock to tell onlyoffice that the patch was sent.
+                // It will allow you to make changes to another cell.
+                // If there is an error and unSaveLock is not called, onlyoffice
+                // will try to send the patch again
+                send({
+                    type: "unSaveLock",
+                    index: ooChannel.cpIndex,
+                    time: +new Date()
+                });
                 // Increment index and update latest hash
                 ooChannel.cpIndex++;
                 ooChannel.lastHash = hash;
@@ -748,7 +751,9 @@ define([
                 },
                 "events": {
                     "onAppReady": function(/*evt*/) {
-                        var $tb = $('iframe[name="frameEditor"]').contents().find('head');
+                        var $iframe = $('iframe[name="frameEditor"]').contents();
+                        $iframe.prop('tabindex', '-1');
+                        var $tb = $iframe.find('head');
                         var css = // Old OO
                                   '#id-toolbar-full .toolbar-group:nth-child(2), #id-toolbar-full .separator:nth-child(3) { display: none; }' +
                                   '#fm-btn-save { display: none !important; }' +
@@ -1301,10 +1306,13 @@ define([
         };
 
         var setEditable = function (state) {
+            $('#cp-app-oo-editor').find('#cp-app-oo-offline').remove();;
+            try {
+                window.frames[0].editor.asc_setViewMode(!state);
+                //window.frames[0].editor.setViewModeDisconnect(true);
+            } catch (e) {}
             if (!state) {
-                try {
-                    window.frames[0].editor.setViewModeDisconnect(true);
-                } catch (e) {}
+                $('#cp-app-oo-editor').append(h('div#cp-app-oo-offline'));
             }
             debug(state);
         };
@@ -1569,10 +1577,11 @@ define([
             setEditable(info.state);
             if (info.state) {
                 UI.findOKButton().click();
-                UI.confirm(Messages.oo_reconnect, function (yes) {
+                offline = false;
+                /*UI.confirm(Messages.oo_reconnect, function (yes) {
                     if (!yes) { return; }
                     common.gotoURL();
-                });
+                });*/
             } else {
                 offline = true;
                 UI.findOKButton().click();
