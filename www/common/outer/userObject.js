@@ -445,7 +445,7 @@ define([
             }
             // Add to root
             if (path && exp.isPathIn(newPath, [ROOT])) {
-                var parentEl = exp.find(newPath);
+                parentEl = exp.find(newPath);
                 if (parentEl) {
                     var newName = exp.getAvailableName(parentEl, Hash.createChannelId());
                     parentEl[newName] = id;
