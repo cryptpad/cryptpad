@@ -1104,5 +1104,36 @@ define([
         };
     };
 
+    UI.makeSpinner = function ($container) {
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide();
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide();
+
+        var spin = function () {
+            $ok.hide();
+            $spinner.show();
+        };
+        var hide = function () {
+            $ok.hide();
+            $spinner.hide();
+        };
+        var done = function () {
+            $ok.show();
+            $spinner.hide();
+        };
+
+        if ($container && $container.append) {
+            $container.append($ok);
+            $container.append($spinner);
+        }
+
+        return {
+            ok: $ok[0],
+            spinner: $spinner[0],
+            spin: spin,
+            hide: hide,
+            done: done
+        }
+    };
+
     return UI;
 });

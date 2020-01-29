@@ -49,6 +49,12 @@ define([
         account: {},
     };
 
+    // Store the href in memory
+    // This is a placeholder value overriden in common.ready from sframe-common-outer
+    var currentPad = common.currentPad = {
+        href: window.location.href
+    };
+
     // COMMON
     common.getLanguage = function () {
         return Messages._languageUsed;
@@ -374,7 +380,7 @@ define([
 
 
     common.getMetadata = function (cb) {
-        var parsed = Hash.parsePadUrl(window.location.href);
+        var parsed = Hash.parsePadUrl(currentPad.href);
         postMessage("GET_METADATA", parsed && parsed.type, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
@@ -394,7 +400,7 @@ define([
 
     common.setPadAttribute = function (attr, value, cb, href) {
         cb = cb || function () {};
-        href = Hash.getRelativeHref(href || window.location.href);
+        href = Hash.getRelativeHref(href || currentPad.href);
         postMessage("SET_PAD_ATTRIBUTE", {
             href: href,
             attr: attr,
@@ -405,7 +411,7 @@ define([
         });
     };
     common.getPadAttribute = function (attr, cb, href) {
-        href = Hash.getRelativeHref(href || window.location.href);
+        href = Hash.getRelativeHref(href || currentPad.href);
         if (!href) {
             return void cb('E404');
         }
@@ -505,7 +511,7 @@ define([
     };
 
     common.saveAsTemplate = function (Cryptput, data, cb) {
-        var p = Hash.parsePadUrl(window.location.href);
+        var p = Hash.parsePadUrl(currentPad.href);
         if (!p.type) { return; }
         // PPP: password for the new template?
         var hash = Hash.createRandomHash(p.type);
@@ -543,7 +549,7 @@ define([
         var href = data.href;
 
         var parsed = Hash.parsePadUrl(href);
-        var parsed2 = Hash.parsePadUrl(window.location.href);
+        var parsed2 = Hash.parsePadUrl(currentPad.href);
         if(!parsed) { throw new Error("Cannot get template hash"); }
         postMessage("INCREMENT_TEMPLATE_USE", href);
 
@@ -601,7 +607,7 @@ define([
         var fileHost = Config.fileHost || window.location.origin;
         var data = common.fromFileData;
         var parsed = Hash.parsePadUrl(data.href);
-        var parsed2 = Hash.parsePadUrl(window.location.href);
+        var parsed2 = Hash.parsePadUrl(currentPad.href);
         var hash = parsed.hash;
         var name = data.title;
         var secret = Hash.getSecrets('file', hash, data.password);
@@ -660,7 +666,7 @@ define([
 
     // Forget button
     common.moveToTrash = function (cb, href) {
-        href = href || window.location.href;
+        href = href || currentPad.href;
         postMessage("MOVE_TO_TRASH", { href: href }, cb);
     };
 
@@ -668,7 +674,7 @@ define([
     common.setPadTitle = function (data, cb) {
         if (!data || typeof (data) !== "object") { return cb ('Data is not an object'); }
 
-        var href = data.href || window.location.href;
+        var href = data.href || currentPad.href;
         var parsed = Hash.parsePadUrl(href);
         if (!parsed.hash) { return cb ('Invalid hash'); }
         data.href = parsed.getUrl({present: parsed.present});
@@ -698,7 +704,7 @@ define([
                 if (obj.error !== "EAUTH") { console.log("unable to set pad title"); }
                 return void cb(obj.error);
             }
-            cb();
+            cb(null, obj);
         });
     };
 
@@ -752,6 +758,13 @@ define([
     // Get a template href from its id
     common.getPadData = function (id, cb) {
         postMessage("GET_PAD_DATA", id, function (data) {
+            cb(void 0, data);
+        });
+    };
+    // Get data about a given channel: use with hidden hashes
+    common.getPadDataFromChannel = function (obj, cb) {
+        if (!obj || !obj.channel) { return void cb('EINVAL'); }
+        postMessage("GET_PAD_DATA_FROM_CHANNEL", obj, function (data) {
             cb(void 0, data);
         });
     };
@@ -832,6 +845,7 @@ define([
     pad.onConnectEvent = Util.mkEvent();
     pad.onErrorEvent = Util.mkEvent();
     pad.onMetadataEvent = Util.mkEvent();
+    pad.onChannelDeleted = Util.mkEvent();
 
     pad.requestAccess = function (data, cb) {
         postMessage("REQUEST_PAD_ACCESS", data, cb);
@@ -1608,7 +1622,7 @@ define([
             hashes = Hash.getHashes(secret);
             return void cb(null, hashes);
         }
-        var parsed = Hash.parsePadUrl(window.location.href);
+        var parsed = Hash.parsePadUrl(currentPad.href);
         if (!parsed.type || !parsed.hashData) { return void cb('E_INVALID_HREF'); }
         hashes = Hash.getHashes(secret);
 
@@ -1679,7 +1693,7 @@ define([
         LocalStore.logout();
 
         // redirect them to log in, and come back when they're done.
-        sessionStorage.redirectTo = window.location.href;
+        sessionStorage.redirectTo = currentPad.href;
         window.location.href = '/login/';
     };
 
@@ -1740,6 +1754,7 @@ define([
         PAD_CONNECT: common.padRpc.onConnectEvent.fire,
         PAD_ERROR: common.padRpc.onErrorEvent.fire,
         PAD_METADATA: common.padRpc.onMetadataEvent.fire,
+        CHANNEL_DELETED: common.padRpc.onChannelDeleted.fire,
         // Drive
         DRIVE_LOG: common.drive.onLog.fire,
         DRIVE_CHANGE: common.drive.onChange.fire,
@@ -1780,6 +1795,11 @@ define([
 
     return function (f, rdyCfg) {
         rdyCfg = rdyCfg || {};
+
+        if (rdyCfg.currentPad) {
+            currentPad = common.currentPad = rdyCfg.currentPad;
+        }
+
         if (initialized) {
             return void setTimeout(function () { f(void 0, env); });
         }
@@ -1878,7 +1898,7 @@ define([
                 anonHash: LocalStore.getFSHash(),
                 localToken: tryParsing(localStorage.getItem(Constants.tokenKey)), // TODO move this to LocalStore ?
                 language: common.getLanguage(),
-                driveEvents: rdyCfg.driveEvents // Boolean
+                driveEvents: true //rdyCfg.driveEvents // Boolean
             };
             // if a pad is created from a file
             if (sessionStorage[Constants.newPadFileData]) {

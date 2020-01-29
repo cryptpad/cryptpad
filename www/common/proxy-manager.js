@@ -771,6 +771,9 @@ define([
             toUnpin.forEach(function (chan) {
                 if (toKeep.indexOf(chan) === -1) {
                     unpinList.push(chan);
+
+                    // Check if need need to restore a full hash (hidden hash deleted from drive)
+                    Env.Store.checkDeletedPad(chan);
                 }
             });
 
@@ -783,7 +786,16 @@ define([
     };
     // Empty the trash (main drive only)
     var _emptyTrash = function (Env, data, cb) {
-        Env.user.userObject.emptyTrash(cb);
+        Env.user.userObject.emptyTrash(function (err, toClean) {
+            cb();
+
+            // Check if need need to restore a full hash (hidden hash deleted from drive)
+            if (!Array.isArray(toClean)) { return; }
+            var toCheck = Util.deduplicateString(toClean);
+            toCheck.forEach(function (chan) {
+                Env.Store.checkDeletedPad(chan);
+            });
+        });
     };
     // Rename files or folders
     var _rename = function (Env, data, cb) {

@@ -93,6 +93,12 @@ define([
                     }
                 }
             }
+            if (o && !n && Array.isArray(p) && (p[0] === UserObject.FILES_DATA ||
+                (p[0] === 'drive' && p[1] === UserObject.FILES_DATA))) {
+                setTimeout(function () {
+                    ctx.Store.checkDeletedPad(o && o.channel);
+                });
+            }
             team.sendEvent('DRIVE_CHANGE', {
                 id: fId,
                 old: o,

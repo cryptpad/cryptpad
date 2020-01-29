@@ -1029,15 +1029,28 @@ define([
             return ret;
         };
 
-        var openFile = function (el, href) {
-            if (!href) {
-                var data = manager.getFileData(el);
-                if (!data || (!data.href && !data.roHref)) {
-                    return void logError("Missing data for the file", el, data);
-                }
-                href = data.href || data.roHref;
+        var openFile = function (el, isRo) {
+            var data = manager.getFileData(el);
+            if (!data || (!data.href && !data.roHref)) {
+                return void logError("Missing data for the file", el, data);
             }
-            window.open(APP.origin + href);
+            var href = isRo ? data.roHref : (data.href || data.roHref);
+            var priv = metadataMgr.getPrivateData();
+            var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
+            if (useUnsafe) {
+                return void window.open(APP.origin + href);
+            }
+
+            // Get hidden hash
+            var parsed = Hash.parsePadUrl(href);
+            var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
+            if (isRo && secret.keys && secret.keys.editKeyStr) {
+                delete secret.keys.editKeyStr;
+                delete secret.key;
+            }
+            var hash = Hash.getHiddenHashFromKeys(parsed.type, secret);
+            var hiddenHref = Hash.hashToHref(hash, parsed.type);
+            window.open(APP.origin + hiddenHref);
         };
 
         var refresh = APP.refresh = function () {
@@ -3034,7 +3047,7 @@ define([
                         $icon.append(getFileIcon(r.id));
                         $type.text(Messages.type[parsed.type] || parsed.type);
                         $title.click(function () {
-                            openFile(null, r.data.href);
+                            openFile(r.id);
                         });
                         $atimeName.text(Messages.fm_lastAccess);
                         $atime.text(new Date(r.data.atime).toLocaleString());
@@ -3944,15 +3957,12 @@ define([
                         // ANON_SHARED_FOLDER
                         el = manager.find(paths[0].path.slice(1), APP.newSharedFolder);
                     }
-                    var href;
                     if (manager.isPathIn(p.path, [FILES_DATA])) {
-                        href = el.roHref;
+                        el = p.path[1];
                     } else {
                         if (!el || manager.isFolder(el)) { return; }
-                        var data = manager.getFileData(el);
-                        href = data.roHref;
                     }
-                    openFile(null, href);
+                    openFile(el, true);
                 });
             }
             else if ($this.hasClass('cp-app-drive-context-openincode')) {

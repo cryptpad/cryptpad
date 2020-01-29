@@ -1016,8 +1016,12 @@ define([
 
             if (title.trim() === "") { title = UserObject.getDefaultName(p); }
 
-            if (AppConfig.disableAnonymousStore && !store.loggedIn) { return void cb(); }
-            if (p.type === "debug") { return void cb(); }
+            if (AppConfig.disableAnonymousStore && !store.loggedIn) {
+                return void cb({ notStored: true });
+            }
+            if (p.type === "debug") {
+                return void cb({ notStored: true });
+            }
 
             var channelData = Store.channels && Store.channels[channel];
 
@@ -1108,7 +1112,7 @@ define([
                     postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {
                         autoStore: autoStore
                     });
-                    return void cb();
+                    return void cb({ notStored: true });
                 } else {
                     var roHref;
                     if (h.mode === "view") {
@@ -1187,7 +1191,9 @@ define([
             });
             cb(list);
         };
-        // Get the first pad we can find in any of our managers and return its file data
+
+        // Get the first pad we can find in any of our drives and return its file data
+        // NOTE: This is currently only used for template: this won't search inside shared folders
         Store.getPadData = function (clientId, id, cb) {
             var res = {};
             getAllStores().some(function (s) {
@@ -1199,6 +1205,49 @@ define([
             cb(res);
         };
 
+        Store.getPadDataFromChannel = function (clientId, obj, cb) {
+            var channel = obj.channel;
+            var edit = obj.edit;
+            var isFile = obj.file;
+            var res;
+            var viewRes;
+            getAllStores().some(function (s) {
+                var chans = s.manager.findChannel(channel);
+                if (!Array.isArray(chans)) { return; }
+                return chans.some(function (pad) {
+                    if (!pad || !pad.data) { return; }
+                    var data = pad.data;
+                    // We've found a match: return the value and stop the loops
+                    if ((edit && data.href) || (!edit && data.roHref) || isFile) {
+                        res = data;
+                        return true;
+                    }
+                    // We've found a weaker match: store it for now
+                    if (edit && !viewRes && data.roHref) {
+                        viewRes = data;
+                    }
+                });
+            });
+            // Call back with the best value we can get
+            cb(res || viewRes || {});
+        };
+
+        // Hidden hash: if a pad is deleted, we may have to switch back to full hash
+        // in some tabs
+        Store.checkDeletedPad = function (channel) {
+            if (!channel) { return; }
+
+            // Check if the pad is still stored in one of our drives
+            Store.getPadDataFromChannel(null, {
+                channel: channel,
+                isFile: true // we don't care if it's view or edit
+            }, function (res) {
+                // If it is stored, abort
+                if (Object.keys(res).length) { return; }
+                // Otherwise, tell all the tabs that this channel was deleted and give them the hrefs
+                broadcast([], "CHANNEL_DELETED", channel);
+            });
+        };
 
         // Messaging (manage friends from the userlist)
         Store.answerFriendRequest = function (clientId, obj, cb) {
@@ -2094,6 +2143,12 @@ define([
                             Store.unpinPads(null, toUnpin, function (obj) { console.error(obj); });
                         }
                     }
+                }
+                if (o && !n && Array.isArray(p) && (p[0] === UserObject.FILES_DATA ||
+                    (p[0] === 'drive' && p[1] === UserObject.FILES_DATA))) {
+                    setTimeout(function () {
+                        Store.checkDeletedPad(o && o.channel);
+                    });
                 }
                 sendDriveEvent('DRIVE_CHANGE', {
                     id: fId,
