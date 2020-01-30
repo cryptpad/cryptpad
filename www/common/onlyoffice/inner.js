@@ -52,7 +52,6 @@ define([
         $: $
     };
 
-
     var CHECKPOINT_INTERVAL = 50;
     var DISPLAY_RESTORE_BUTTON = false;
     var NEW_VERSION = 2;
@@ -91,6 +90,7 @@ define([
         var myUniqueOOId;
         var myOOId;
         var sessionId = Hash.createChannelId();
+        var cpNfInner;
 
         // This structure is used for caching media data and blob urls for each media cryptpad url
         var mediasData = {};
@@ -589,15 +589,21 @@ define([
             oldLocks = JSON.parse(JSON.stringify(content.locks));
             // Remove old locks
             deleteOfflineLocks();
+            // Prepare callback
+            if (cpNfInner) {
+                var onPatchSent = function () {
+                    cpNfInner.offPatchSent(onPatchSent);
+                    // Answer to our onlyoffice
+                    send({
+                        type: "getLock",
+                        locks: getLock()
+                    });
+                };
+                cpNfInner.onPatchSent(onPatchSent);
+            }
             // Commit
             APP.onLocal();
-            APP.realtime.onSettle(function () {
-                // Answer to our onlyoffice
-                send({
-                    type: "getLock",
-                    locks: getLock()
-                });
-            });
+            APP.realtime.sync();
         };
 
         var parseChanges = function (changes) {
@@ -1335,7 +1341,6 @@ define([
 
         var initializing = true;
         var $bar = $('#cp-toolbar');
-        var cpNfInner;
 
         config = {
             patchTransformer: ChainPad.SmartJSONTransformer,
