@@ -56,6 +56,7 @@ define([
     var CHECKPOINT_INTERVAL = 50;
     var DISPLAY_RESTORE_BUTTON = false;
     var NEW_VERSION = 2;
+    var PENDING_TIMEOUT = 30000;
 
     var debug = function (x) {
         if (!window.CP_DEV_MODE) { return; }
@@ -76,6 +77,7 @@ define([
         var privateData = metadataMgr.getPrivateData();
         var readOnly = false;
         var offline = false;
+        var pendingChanges = {};
         var config = {};
         var content = {
             hashes: {},
@@ -100,6 +102,18 @@ define([
 
         var getId = function () {
             return metadataMgr.getNetfluxId() + '-' + privateData.clientId;
+        };
+
+        var setEditable = function (state) {
+            $('#cp-app-oo-editor').find('#cp-app-oo-offline').remove();
+            try {
+                window.frames[0].editor.asc_setViewMode(!state);
+                //window.frames[0].editor.setViewModeDisconnect(true);
+            } catch (e) {}
+            if (!state) {
+                $('#cp-app-oo-editor').append(h('div#cp-app-oo-offline'));
+            }
+            debug(state);
         };
 
         var deleteOffline = function () {
@@ -600,7 +614,30 @@ define([
                 };
             });
         };
+
         var handleChanges = function (obj, send) {
+            // Add a new entry to the pendingChanges object.
+            // If we can't send the patch within 30s, force a page reload
+            var uid = Util.uid();
+            pendingChanges[uid] = setTimeout(function () {
+                // If we're offline, force a reload on reconnect
+                if (offline) {
+                    pendingChanges.force = true;
+                    return;
+                }
+
+                // We're online: force a reload now
+                setEditable(false);
+                UI.alert(Messages.realtime_unrecoverableError, function () {
+                    common.gotoURL();
+                });
+
+            }, PENDING_TIMEOUT);
+            if (offline) {
+                pendingChanges.force = true;
+                return;
+            }
+
             // Send the changes
             rtChannel.sendMsg({
                 type: "saveChanges",
@@ -609,7 +646,13 @@ define([
                 locks: [content.locks[getId()]],
                 excelAdditionalInfo: null
             }, null, function (err, hash) {
-                if (err) { return void console.error(err); }
+                if (err) {
+                    return void console.error(err);
+                }
+                if (pendingChanges[uid]) {
+                    clearTimeout(pendingChanges[uid]);
+                    delete pendingChanges[uid];
+                }
                 // Call unSaveLock to tell onlyoffice that the patch was sent.
                 // It will allow you to make changes to another cell.
                 // If there is an error and unSaveLock is not called, onlyoffice
@@ -662,10 +705,12 @@ define([
                             break;
                         case "isSaveLock":
                             // TODO ping the server to check if we're online first?
-                            send({
-                                type: "saveLock",
-                                saveLock: false
-                            });
+                            if (!offline) {
+                                send({
+                                    type: "saveLock",
+                                    saveLock: false
+                                });
+                            }
                             break;
                         case "getLock":
                             handleLock(obj, send);
@@ -1305,18 +1350,6 @@ define([
             }
         };
 
-        var setEditable = function (state) {
-            $('#cp-app-oo-editor').find('#cp-app-oo-offline').remove();
-            try {
-                window.frames[0].editor.asc_setViewMode(!state);
-                //window.frames[0].editor.setViewModeDisconnect(true);
-            } catch (e) {}
-            if (!state) {
-                $('#cp-app-oo-editor').append(h('div#cp-app-oo-offline'));
-            }
-            debug(state);
-        };
-
         var stringifyInner = function () {
             var obj = {
                 content: content,
@@ -1574,16 +1607,19 @@ define([
         };
 
         config.onConnectionChange = function (info) {
-            setEditable(info.state);
             if (info.state) {
+                // If we tried to send changes while we were offline, force a page reload
                 UI.findOKButton().click();
+                if (Object.keys(pendingChanges).length) {
+                    return void UI.confirm(Messages.oo_reconnect, function (yes) {
+                        if (!yes) { return; }
+                        common.gotoURL();
+                    });
+                }
+                setEditable(true);
                 offline = false;
-                // XXX allow reconnect or not?
-                /*UI.confirm(Messages.oo_reconnect, function (yes) {
-                    if (!yes) { return; }
-                    common.gotoURL();
-                });*/
             } else {
+                setEditable(false);
                 offline = true;
                 UI.findOKButton().click();
                 UI.alert(Messages.common_connectionLost, undefined, true);
