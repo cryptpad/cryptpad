@@ -587,15 +587,17 @@ define([
             var myId = getId();
             content.locks[myId] = msg;
             oldLocks = JSON.parse(JSON.stringify(content.locks));
-            // Answer to our onlyoffice
-            send({
-                type: "getLock",
-                locks: getLock()
-            });
             // Remove old locks
             deleteOfflineLocks();
             // Commit
             APP.onLocal();
+            APP.realtime.onSettle(function () {
+                // Answer to our onlyoffice
+                send({
+                    type: "getLock",
+                    locks: getLock()
+                });
+            });
         };
 
         var parseChanges = function (changes) {
