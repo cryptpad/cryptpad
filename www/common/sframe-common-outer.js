@@ -31,6 +31,7 @@ define([
         var initialPathInDrive;
 
         var currentPad = window.CryptPad_location = {
+            app: '',
             href: cfg.href || window.location.href,
             hash: cfg.hash || window.location.hash
         };
@@ -172,6 +173,8 @@ define([
                 });
             });
 
+            var parsed = Utils.Hash.parsePadUrl(currentPad.href);
+            currentPad.app = parsed.type;
             if (cfg.getSecrets) {
                 var w = waitFor();
                 // No password for drive, profile and todo
@@ -183,7 +186,6 @@ define([
                     });
                 }));
             } else {
-                var parsed = Utils.Hash.parsePadUrl(currentPad.href);
                 var todo = function () {
                     secret = Utils.secret = Utils.Hash.getSecrets(parsed.type, parsed.hash, password);
                     Cryptpad.getShareHashes(secret, waitFor(function (err, h) {
@@ -460,7 +462,7 @@ define([
                         additionalPriv.registeredOnly = true;
                     }
 
-                    if (['debug', 'profile'].indexOf(parsed.type) !== -1) {
+                    if (['debug', 'profile'].indexOf(currentPad.app) !== -1) {
                         additionalPriv.hashes = hashes;
                     }
 
