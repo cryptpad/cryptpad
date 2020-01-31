@@ -2283,6 +2283,7 @@ define([
                 Store.pinPads(null, data, cb);
             };
             if (!proxy.settings) { proxy.settings = {}; }
+            if (!proxy.friends_pending) { proxy.friends_pending = {}; }
             var manager = store.manager = ProxyManager.create(proxy.drive, {
                 onSync: function (cb) { onSync(null, cb); },
                 edPublic: proxy.edPublic,
