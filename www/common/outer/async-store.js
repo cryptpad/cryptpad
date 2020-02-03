@@ -17,6 +17,7 @@ define([
     '/common/outer/profile.js',
     '/common/outer/team.js',
     '/common/outer/messenger.js',
+    '/common/outer/history.js',
     '/common/outer/network-config.js',
     '/customize/application_config.js',
 
@@ -28,7 +29,7 @@ define([
     '/bower_components/saferphore/index.js',
 ], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
              Realtime, Messaging, Pinpad,
-             SF, Cursor, OnlyOffice, Mailbox, Profile, Team, Messenger,
+             SF, Cursor, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
              NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, nThen, Saferphore) {
 
@@ -38,8 +39,6 @@ define([
         var broadcast = function () {};
         var sendDriveEvent = function () {};
         var registerProxyEvents = function () {};
-
-        var storeHash, storeChannel;
 
         var store = window.CryptPad_AsyncStore = {
             modules: {}
@@ -149,13 +148,7 @@ define([
         };
 
         var getUserChannelList = function () {
-            // start with your userHash...
-            var userHash = storeHash;
-            if (!userHash) { return null; }
-
-            // No password for drive
-            var secret = Hash.getSecrets('drive', userHash);
-            var userChannel = secret.channel;
+            var userChannel = store.driveChannel;
             if (!userChannel) { return null; }
 
             // Get the list of pads' channel ID in your drive
@@ -304,7 +297,7 @@ define([
                 teamId = data.teamId;
             }
 
-            if (channel === storeChannel && !force) {
+            if (channel === store.driveChannel && !force) {
                 return void cb({error: 'User drive removal blocked!'});
             }
 
@@ -703,11 +696,9 @@ define([
 
         Store.deleteAccount = function (clientId, data, cb) {
             var edPublic = store.proxy.edPublic;
-            // No password for drive
-            var secret = Hash.getSecrets('drive', storeHash);
             Store.anonRpcMsg(clientId, {
                 msg: 'GET_METADATA',
-                data: secret.channel
+                data: store.driveChannel
             }, function (data) {
                 var metadata = data[0];
                 // Owned drive
@@ -727,7 +718,7 @@ define([
                     }).nThen(function (waitFor) {
                         // Delete Drive
                         Store.removeOwnedChannel(clientId, {
-                            channel: secret.channel,
+                            channel: store.driveChannel,
                             force: true
                         }, waitFor());
                     }).nThen(function () {
@@ -743,7 +734,7 @@ define([
                 var toSign = {
                     intent: 'Please delete my account.'
                 };
-                toSign.drive = secret.channel;
+                toSign.drive = store.driveChannel;
                 toSign.edPublic = edPublic;
                 var signKey = Crypto.Nacl.util.decodeBase64(store.proxy.edPrivate);
                 var proof = Crypto.Nacl.sign.detached(Crypto.Nacl.util.decodeUTF8(Sortify(toSign)), signKey);
@@ -2073,6 +2064,7 @@ define([
                 store.mailbox.removeClient(clientId);
             } catch (e) { console.error(e); }
             Object.keys(store.modules).forEach(function (key) {
+                if (!store.modules[key].removeClient) { return; }
                 try {
                     store.modules[key].removeClient(clientId);
                 } catch (e) { console.error(e); }
@@ -2334,6 +2326,7 @@ define([
                 store.messenger = store.modules['messenger'];
                 loadUniversal(Profile, 'profile', waitFor);
                 loadUniversal(Team, 'team', waitFor);
+                loadUniversal(History, 'history', waitFor);
                 cleanFriendRequests();
             }).nThen(function () {
                 var requestLogin = function () {
@@ -2435,13 +2428,12 @@ define([
 
         var connect = function (clientId, data, cb) {
             var hash = data.userHash || data.anonHash || Hash.createRandomHash('drive');
-            storeHash = hash;
             if (!hash) {
                 return void cb({error: '[Store.init] Unable to find or create a drive hash. Aborting...'});
             }
             // No password for drive
             var secret = Hash.getSecrets('drive', hash);
-            storeChannel = secret.channel;
+            store.driveChannel = secret.channel;
             var listmapConfig = {
                 data: {},
                 websocketURL: NetConfig.getWebsocketURL(),
