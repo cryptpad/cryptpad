@@ -9,6 +9,7 @@ define([
     var requireConfig = RequireConfig();
 
     // Loaded in load #2
+    var hash, href;
     nThen(function (waitFor) {
         DomReady.onReady(waitFor());
     }).nThen(function (waitFor) {
@@ -19,6 +20,14 @@ define([
         };
         window.rc = requireConfig;
         window.apiconf = ApiConfig;
+
+        // Hidden hash
+        hash = window.location.hash;
+        href = window.location.href;
+        if (window.history && window.history.replaceState && hash) {
+            window.history.replaceState({}, window.document.title, '#');
+        }
+
         document.getElementById('sbox-iframe').setAttribute('src',
             ApiConfig.httpSafeOrigin + '/poll/inner.html?' + requireConfig.urlArgs +
                 '#' + encodeURIComponent(JSON.stringify(req)));
@@ -37,6 +46,8 @@ define([
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
         SFCommonO.start({
+            hash: hash,
+            href: href,
             useCreationScreen: true,
             messaging: true
         });

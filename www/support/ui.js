@@ -170,7 +170,9 @@ define([
         var privateData = metadataMgr.getPrivateData();
 
         // Check content.sender to see if it comes from us or from an admin
-        var fromMe = content.sender && content.sender.edPublic === privateData.edPublic;
+        var senderKey = content.sender && content.sender.edPublic;
+        var fromMe = senderKey === privateData.edPublic;
+        var fromAdmin = ctx.adminKeys.indexOf(senderKey) !== -1;
 
         var userData = h('div.cp-support-showdata', [
             Messages.support_showData,
@@ -183,7 +185,7 @@ define([
         });
 
         var name = Util.fixHTML(content.sender.name) || Messages.anonymous;
-        return h('div.cp-support-list-message', {
+        return h('div.cp-support-list-message' + (fromAdmin? '.cp-support-fromadmin': ''), {
             'data-hash': hash
         }, [
             h('div.cp-support-message-from' + (fromMe ? '.cp-support-fromme' : ''), [
@@ -219,6 +221,7 @@ define([
             common: common,
             isAdmin: isAdmin,
             pinUsage: pinUsage || false,
+            adminKeys: Array.isArray(ApiConfig.adminKeys)?  ApiConfig.adminKeys.slice(): [],
         };
 
         ui.sendForm = function (id, form, dest) {

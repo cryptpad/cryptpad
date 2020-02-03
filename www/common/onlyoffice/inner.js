@@ -52,10 +52,10 @@ define([
         $: $
     };
 
-
     var CHECKPOINT_INTERVAL = 50;
     var DISPLAY_RESTORE_BUTTON = false;
     var NEW_VERSION = 2;
+    var PENDING_TIMEOUT = 30000;
 
     var debug = function (x) {
         if (!window.CP_DEV_MODE) { return; }
@@ -76,6 +76,7 @@ define([
         var privateData = metadataMgr.getPrivateData();
         var readOnly = false;
         var offline = false;
+        var pendingChanges = {};
         var config = {};
         var content = {
             hashes: {},
@@ -89,6 +90,7 @@ define([
         var myUniqueOOId;
         var myOOId;
         var sessionId = Hash.createChannelId();
+        var cpNfInner;
 
         // This structure is used for caching media data and blob urls for each media cryptpad url
         var mediasData = {};
@@ -100,6 +102,18 @@ define([
 
         var getId = function () {
             return metadataMgr.getNetfluxId() + '-' + privateData.clientId;
+        };
+
+        var setEditable = function (state) {
+            $('#cp-app-oo-editor').find('#cp-app-oo-offline').remove();
+            try {
+                window.frames[0].editor.asc_setViewMode(!state);
+                //window.frames[0].editor.setViewModeDisconnect(true);
+            } catch (e) {}
+            if (!state) {
+                $('#cp-app-oo-editor').append(h('div#cp-app-oo-offline'));
+            }
+            debug(state);
         };
 
         var deleteOffline = function () {
@@ -573,15 +587,23 @@ define([
             var myId = getId();
             content.locks[myId] = msg;
             oldLocks = JSON.parse(JSON.stringify(content.locks));
-            // Answer to our onlyoffice
-            send({
-                type: "getLock",
-                locks: getLock()
-            });
             // Remove old locks
             deleteOfflineLocks();
+            // Prepare callback
+            if (cpNfInner) {
+                var onPatchSent = function () {
+                    cpNfInner.offPatchSent(onPatchSent);
+                    // Answer to our onlyoffice
+                    send({
+                        type: "getLock",
+                        locks: getLock()
+                    });
+                };
+                cpNfInner.onPatchSent(onPatchSent);
+            }
             // Commit
             APP.onLocal();
+            APP.realtime.sync();
         };
 
         var parseChanges = function (changes) {
@@ -600,13 +622,30 @@ define([
                 };
             });
         };
+
         var handleChanges = function (obj, send) {
-            // Allow the changes
-            send({
-                type: "unSaveLock",
-                index: ooChannel.cpIndex,
-                time: +new Date()
-            });
+            // Add a new entry to the pendingChanges object.
+            // If we can't send the patch within 30s, force a page reload
+            var uid = Util.uid();
+            pendingChanges[uid] = setTimeout(function () {
+                // If we're offline, force a reload on reconnect
+                if (offline) {
+                    pendingChanges.force = true;
+                    return;
+                }
+
+                // We're online: force a reload now
+                setEditable(false);
+                UI.alert(Messages.realtime_unrecoverableError, function () {
+                    common.gotoURL();
+                });
+
+            }, PENDING_TIMEOUT);
+            if (offline) {
+                pendingChanges.force = true;
+                return;
+            }
+
             // Send the changes
             rtChannel.sendMsg({
                 type: "saveChanges",
@@ -615,7 +654,22 @@ define([
                 locks: [content.locks[getId()]],
                 excelAdditionalInfo: null
             }, null, function (err, hash) {
-                if (err) { return void console.error(err); }
+                if (err) {
+                    return void console.error(err);
+                }
+                if (pendingChanges[uid]) {
+                    clearTimeout(pendingChanges[uid]);
+                    delete pendingChanges[uid];
+                }
+                // Call unSaveLock to tell onlyoffice that the patch was sent.
+                // It will allow you to make changes to another cell.
+                // If there is an error and unSaveLock is not called, onlyoffice
+                // will try to send the patch again
+                send({
+                    type: "unSaveLock",
+                    index: ooChannel.cpIndex,
+                    time: +new Date()
+                });
                 // Increment index and update latest hash
                 ooChannel.cpIndex++;
                 ooChannel.lastHash = hash;
@@ -659,10 +713,12 @@ define([
                             break;
                         case "isSaveLock":
                             // TODO ping the server to check if we're online first?
-                            send({
-                                type: "saveLock",
-                                saveLock: false
-                            });
+                            if (!offline) {
+                                send({
+                                    type: "saveLock",
+                                    saveLock: false
+                                });
+                            }
                             break;
                         case "getLock":
                             handleLock(obj, send);
@@ -748,7 +804,9 @@ define([
                 },
                 "events": {
                     "onAppReady": function(/*evt*/) {
-                        var $tb = $('iframe[name="frameEditor"]').contents().find('head');
+                        var $iframe = $('iframe[name="frameEditor"]').contents();
+                        $iframe.prop('tabindex', '-1');
+                        var $tb = $iframe.find('head');
                         var css = // Old OO
                                   '#id-toolbar-full .toolbar-group:nth-child(2), #id-toolbar-full .separator:nth-child(3) { display: none; }' +
                                   '#fm-btn-save { display: none !important; }' +
@@ -1283,7 +1341,6 @@ define([
 
         var initializing = true;
         var $bar = $('#cp-toolbar');
-        var cpNfInner;
 
         config = {
             patchTransformer: ChainPad.SmartJSONTransformer,
@@ -1298,15 +1355,6 @@ define([
                     return false;
                 }
             }
-        };
-
-        var setEditable = function (state) {
-            if (!state) {
-                try {
-                    window.frames[0].editor.setViewModeDisconnect(true);
-                } catch (e) {}
-            }
-            debug(state);
         };
 
         var stringifyInner = function () {
@@ -1398,11 +1446,20 @@ define([
             var $exportXLSX = common.createButton('export', true, {}, exportXLSXFile);
             $exportXLSX.appendTo($rightside);
 
+            var type = common.getMetadataMgr().getPrivateData().ooType;
             var accept = [".bin", ".ods", ".xlsx"];
+            if (type === "ooslide") {
+                accept = ['.bin', '.odp', '.pptx'];
+            } else if (type === "oodoc") {
+                accept = ['.bin', '.odt', '.docx'];
+            }
             if (typeof(Atomics) === "undefined") {
                 accept = ['.bin'];
             }
-            var $importXLSX = common.createButton('import', true, { accept: accept, binary : ["ods", "xlsx"] }, importXLSXFile);
+            var $importXLSX = common.createButton('import', true, {
+                accept: accept,
+                binary : ["ods", "xlsx", "odt", "docx", "odp", "pptx"]
+            }, importXLSXFile);
             $importXLSX.appendTo($rightside);
 
             if (common.isLoggedIn()) {
@@ -1557,14 +1614,19 @@ define([
         };
 
         config.onConnectionChange = function (info) {
-            setEditable(info.state);
             if (info.state) {
+                // If we tried to send changes while we were offline, force a page reload
                 UI.findOKButton().click();
-                UI.confirm(Messages.oo_reconnect, function (yes) {
-                    if (!yes) { return; }
-                    common.gotoURL();
-                });
+                if (Object.keys(pendingChanges).length) {
+                    return void UI.confirm(Messages.oo_reconnect, function (yes) {
+                        if (!yes) { return; }
+                        common.gotoURL();
+                    });
+                }
+                setEditable(true);
+                offline = false;
             } else {
+                setEditable(false);
                 offline = true;
                 UI.findOKButton().click();
                 UI.alert(Messages.common_connectionLost, undefined, true);

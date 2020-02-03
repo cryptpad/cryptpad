@@ -603,6 +603,10 @@ define([
 
             UI.addTooltips();
 
+            ctx.sframeChan.on("EV_PAD_NODATA", function () {
+                UI.errorLoadingScreen(Messages.safeLinks_error);
+            });
+
             ctx.sframeChan.on("EV_PAD_PASSWORD", function (cfg) {
                 UIElements.displayPasswordPrompt(funcs, cfg);
             });

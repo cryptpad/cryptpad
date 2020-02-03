@@ -52,13 +52,15 @@ define([
             'cp-settings-displayname',
             'cp-settings-language-selector',
             'cp-settings-resettips',
-            'cp-settings-logout-everywhere',
-            'cp-settings-autostore',
-            'cp-settings-userfeedback',
             'cp-settings-change-password',
             'cp-settings-migrate',
-            'cp-settings-backup',
             'cp-settings-delete'
+        ],
+        'security': [ // XXX
+            'cp-settings-logout-everywhere',
+            'cp-settings-autostore',
+            'cp-settings-safe-links',
+            'cp-settings-userfeedback',
         ],
         'creation': [
             'cp-settings-creation-owned',
@@ -114,6 +116,24 @@ define([
     }
 
     var create = {};
+
+    var makeBlock = function (key, getter, full) {
+        var safeKey = key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
+
+        create[key] = function () {
+            var $div = $('<div>', {'class': 'cp-settings-' + key + ' cp-sidebarlayout-element'});
+            if (full) {
+                $('<label>').text(Messages['settings_'+safeKey+'Title'] || key).appendTo($div);
+                $('<span>', {'class': 'cp-sidebarlayout-description'})
+                    .text(Messages['settings_'+safeKey+'Hint'] || 'Coming soon...').appendTo($div);
+            }
+            getter(function (content) {
+                $div.append(content);
+            }, $div);
+            return $div;
+        };
+    };
+
 
     // Account settings
 
@@ -546,6 +566,35 @@ define([
 
         return $div;
     };
+
+    // Security
+
+    makeBlock('safe-links', function (cb) {
+        // XXX settings_safeLinksTitle, settings_safeLinksHint, settings_safeLinksCheckbox
+
+        var $cbox = $(UI.createCheckbox('cp-settings-safe-links',
+                                   Messages.settings_safeLinksCheckbox,
+                                   true, { label: {class: 'noTitle'} }));
+
+        var spinner = UI.makeSpinner($cbox);
+
+        var $checkbox = $cbox.find('input').on('change', function () {
+            spinner.spin();
+            var val = !$checkbox.is(':checked');
+            common.setAttribute(['security', 'unsafeLinks'], val, function () {
+                spinner.done();
+            });
+        });
+
+        common.getAttribute(['security', 'unsafeLinks'], function (e, val) {
+            if (e) { return void console.error(e); }
+            if (!val) {
+                $checkbox.attr('checked', 'checked');
+            }
+        });
+
+        cb($cbox);
+    }, true);
 
     // Pad Creation settings
 
@@ -1578,6 +1627,7 @@ define([
             if (key === 'code') { $category.append($('<span>', {'class': 'fa fa-file-code-o' })); }
             if (key === 'pad') { $category.append($('<span>', {'class': 'fa fa-file-word-o' })); }
             if (key === 'creation') { $category.append($('<span>', {'class': 'fa fa-plus-circle' })); }
+            if (key === 'security') { $category.append($('<span>', {'class': 'fa fa-lock' })); }
             if (key === 'subscription') { $category.append($('<span>', {'class': 'fa fa-star-o' })); }
 
             if (key === active) {
@@ -1596,9 +1646,10 @@ define([
                 showCategories(categories[key]);
             });
 
-            $category.append(Messages['settings_cat_'+key]);
+            $category.append(Messages['settings_cat_'+key] || key);
         });
         showCategories(categories[active]);
+        common.setHash(active);
     };
 
 

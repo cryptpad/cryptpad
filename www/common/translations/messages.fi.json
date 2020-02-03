@@ -11,7 +11,7 @@
         "media": "Media",
         "todo": "Tehtävälista",
         "contacts": "Yhteystiedot",
-        "sheet": "Taulukko (Beta)",
+        "sheet": "Taulukko",
         "teams": "Teams"
     },
     "button_newpad": "Uusi Teksti-padi",
@@ -619,7 +619,7 @@
     "about_intro": "CryptPadia kehittää Pariisissa, Ranskassa ja Iasissa, Romaniassa toimiva<a href=\"http://xwiki.com\">XWiki SAS</a>-pienyrityksen tutkimusryhmä. CryptPadin parissa työskentelee kolme ryhmän ydinjäsentä ja lisäksi joitakin avustajia XWiki SAS:n sisältä ja ulkopuolelta.",
     "about_core": "Ydinkehittäjät",
     "about_contributors": "Tärkeät avustajat",
-    "main_info": "<h2>Luottamuksellista yhteistyötä</h2>Jaetut dokumentit mahdollistavat ideoiden jakamisen samalla kun <strong>nollatietoperiaate</strong>-teknologia suojaa yksityisyytesi - <strong>jopa meiltä</strong>.",
+    "main_info": "<h2>Luottamuksellista yhteistyötä</h2> Jaa ideoita yhdessä jaettujen dokumenttien avulla.<strong>Nollatieto</strong>-teknologia turvaa yksityisyytesi - <strong>jopa meiltä</strong>.",
     "main_catch_phrase": "Pilvipalvelu nollatietoperiaatteella",
     "main_footerText": "CryptPadin avulla voit nopeasti luoda kollaboratiivisia dokumentteja muistiinpanoja ja yhteistä ideointia varten.",
     "footer_applications": "Sovellukset",
@@ -665,8 +665,6 @@
     "requestEdit_button": "Pyydä muokkausoikeutta",
     "requestEdit_dialog": "Haluatko varmasti pyytää padin omistajalta muokkausoikeutta?",
     "requestEdit_confirm": "{1} on pyytänyt oikeutta muokata padia <b>{0}</b>. Haluatko myöntää muokkausoikeuden?",
-    "requestEdit_fromFriend": "Olet kaveri käyttäjän {0} kanssa",
-    "requestEdit_fromStranger": "<b>Et ole</b> käyttäjän {0} kaveri",
     "requestEdit_viewPad": "Avaa padi uudessa välilehdessä",
     "later": "Päätä myöhemmin",
     "requestEdit_request": "{1} haluaa muokata padia <b>{0}</b>",
@@ -695,7 +693,6 @@
     "share_linkTeam": "Lisää tiimin CryptDriveen",
     "team_pickFriends": "Valitse tiimiin kutsuttavat kaverit",
     "team_inviteModalButton": "Kutsu",
-    "team_noFriend": "Sinulla ei ole vielä kavereita CryptPadissa.",
     "drive_sfPassword": "Jaettu kansiosi {0} ei ole enää saatavilla. Se on joko poistettu omistajansa toimesta tai sille on asetettu uusi salasana. Voit poistaa tämän kansion CryptDrivestasi tai palauttaa käyttöoikeuden käyttämällä uutta salasanaa.",
     "drive_sfPasswordError": "Väärä salasana",
     "password_error_seed": "Padia ei löytynyt!<br>Tämä virhe voi johtua kahdesta syystä: joko padiin on lisätty tai vaihdettu salasana, tai padi on poistettu palvelimelta.",
@@ -876,8 +873,198 @@
         "keywords": {
             "title": "Avainsanat",
             "pad": {
-                "q": "Mikä on padi?"
+                "q": "Mikä on padi?",
+                "a": "<em>Padi</em> on <a href='http://etherpad.org/' target='_blank'>Etherpad-projektin</a> popularisoima termi reaaliaikaiselle kollaboratiiviselle editorille.\nSe tarkoittaa selaimessa muokattavaa dokumenttia, jossa muiden käyttäjien tekemät muutokset näkyvät lähes välittömästi."
+            },
+            "owned": {
+                "q": "Mikä on omistettu padi?",
+                "a": "<em>Omistettu padi</em> on padi, jolla on erityisesti määritelty <em>omistaja</em>, jonka palvelin tunnistaa <em>julkisen salausavaimen</em> perusteella. Padin omistaja voi poistaa omistamansa padit palvelimelta, jolloin muut yhteiskäyttäjät eivät voi enää käyttää niitä riippumatta siitä, olivatko ne tallennettuna heidän henkilökohtaisiin CryptDriveihinsa."
+            },
+            "expiring": {
+                "q": "Mikä on vanheneva padi?",
+                "a": "<em>Vanheneva padi</em> on padi, jolle on määritelty vanhenemisajankohta, jolloin padi poistetaan automaattisesti palvelimelta. Vanhenevat padit voidaan määritellä säilymään minkä tahansa ajan yhdestä tunnista 100 kuukauteen. Vanheneva padi ja sen historia muuttuvat vanhenemishetkellä pysyvästi käyttökelvottomiksi, vaikka padia muokattaisiinkin silloin.<br><br>Jos padi on määritelty vanhenevaksi, voit tarkastaa sen vanhenemisajan padin <em>ominaisuuksista</em> joko CryptDrivessa padin kohdalla hiiren oikealla painikkeella aukeavasta valikosta tai käyttämällä <em>Ominaisuudet-valikkoa</em> sovelluksen työkalupalkista."
+            },
+            "tag": {
+                "q": "Miten voin käyttää tunnisteita?",
+                "a": "Voit lisätä padeihin ja ladattuihin tiedostoihin tunnisteita CryptDrivessa tai käyttää <em>Tunniste</em>-painiketta  (<span class='fa fa-hashtag'></span>) minkä tahansa editorin työkalupalkista. Hae padeja ja tiedostoja CryptDriven hakupalkista käyttämällä ristikkomerkillä alkavaa hakusanaa (esimerkiksi <em>#crypto</em>)."
+            },
+            "template": {
+                "q": "Mikä on mallipohja?",
+                "a": "Mallipohja on padi, jolla voit määritellä luotavan padin oletussisällön luodessasi toista samantyyppistä padia. Voit muuttaa minkä tahansa olemassaolevan padin mallipohjaksi siirtämällä sen <em>Mallipohjat</em>-osastoon CryptDrivessasi. Voit myös tehdä padista mallipohjana käytettävän kopion klikkaamalla Mallipohja-painiketta  (<span class='fa fa-bookmark'></span>)  editorin työkalupalkista."
+            },
+            "abandoned": {
+                "q": "Mikä on hylätty padi?",
+                "a": "<em>Hylätty padi</em> on padi, jota ei ole kiinnitetty yhdenkään rekisteröityneen käyttäjän CryptDriveen ja jota ei ole muokattu kuuteen kuukauteen. Hylätyt dokumentit poistetaan palvelimelta automaattisesti."
+            }
+        },
+        "privacy": {
+            "title": "Yksityisyys",
+            "different": {
+                "q": "Miten CryptPad eroaa muista padeja tarjoavista palveluista?",
+                "a": "CryptPad salaa padeihin tekemäsi muutokset ennen niiden lähettämistä palvelimelle, joten emme voi lukea, mitä kirjoitat."
+            },
+            "me": {
+                "q": "Mitä palvelin tietää minusta?",
+                "a": "Palvelimen ylläpitäjät näkevät CryptPadia käyttävien ihmisten IP-osoitteet. Emme pidä kirjaa siitä, mitkä osoitteet vierailevat missäkin padeissa. Tämä olisi kuitenkin teknisesti mahdollista, vaikka emme pääsekään tarkastelemaan padien salaamatonta sisältöä. Jos pelkäät meidän analysoivan näitä tietoja, on parasta olettaa meidän keräävän niitä, sillä emme voi todistaa, ettemme tee niin.<br><br>Keräämme käyttäjiltämme joitakin perustason telemetriatietoja, kuten käytetyn laitteen näytön koon ja tietoja useimmin käytetyistä painikkeista. Nämä auttavat meitä parantamaan CryptPadia, mutta jos et halua lähettää telemetriatietoja CryptPadille, voit <strong>jättäytyä pois tietojen keräämisestä ottamalla rastin pois <em>Salli käyttäjäpalaute</em>-ruudusta</strong>.<br><br>Pidämme kirjaa siitä, mitä padeja käyttäjät säilyttävät CryptDriveissaan pystyäksemme asettamaan tallennustilarajoituksia. Emme kuitenkaan tiedä näiden padien tyyppiä tai sisältöä. Tallennustilakiintiöt määritellään käyttäjien julkisten salausavainten perusteella, mutta emme yhdistä käyttäjien nimiä tai sähköpostiosoitteita näihin avaimiin.<br><br>Saadaksesi lisätietoja aiheesta voit tutustua kirjoittamaamme <a href='https://blog.cryptpad.fr/2017/07/07/cryptpad-analytics-what-we-cant-know-what-we-must-know-what-we-want-to-know/' target='_blank'>blogikirjoitukseen</a>."
+            },
+            "register": {
+                "q": "Jos rekisteröidyn, tietääkö palvelin minusta enemmän?",
+                "a": "Emme vaadi käyttäjiltä sähköpostiosoitteen vahvistusta, eikä palvelin saa tietää rekisteröitymisen yhteydessä edes käyttäjänimeäsi tai salasanaasi. Sen sijaan rekisteröitymis- ja sisäänkirjautumislomakkeet luovat antamastasi syötteestä uniikin avainrenkaan, ja palvelin saa tietoonsa ainoastaan kryptografisen allekirjoituksesi. Käytämme tätä tietoa yksityiskohtien, kuten tallennustilan käytön valvomiseen ja siten tallennustilakiintiöiden ylläpitämiseen.<br><br>Käytämme <em>palaute</em>-toimintoa kertoaksemme palvelimelle, että IP-osoitteestasi on luotu käyttäjätili. Tämä auttaa meitä pitämään kirjaa CryptPadiin rekisteröityneiden käyttäjien määrästä ja maantieteellisestä sijainnista, jotta voimme paremmin arvioida, mitä kieliä palvelumme kannattaisi tukea.<br><br>Rekisteröityneet käyttäjät kertovat palvelimelle, mitä padeja he säilyttävät CryptDriveissaan. Tämä on tarpeen, että kyseisiä padeja ei todeta hylätyiksi ja siten poisteta käyttämättömyyden takia."
+            },
+            "other": {
+                "q": "Mitä yhteistyökumppanit saavat tietää minusta?",
+                "a": "Muokatessasi padia jonkun toisen kanssa kaikki yhteydet kulkevat palvelimen kautta, joten vain me saamme tietää IP-osoitteesi. Muut käyttäjät näkevät näyttönimesi, avatar-kuvasi, linkin profiiliisi (jos olet luonut sellaisen) ja <em>julkisen salausavaimesi</em> (jota käytetään yhteyksien salaamiseen)."
+            },
+            "anonymous": {
+                "q": "Tekeekö CryptPad minusta anonyymin?",
+                "a": "Vaikka CryptPad on suunniteltu tietämään sinusta niin vähän kuin mahdollista, se ei tarjoa vahvaa anonymiteettisuojaa. Palvelimemme tietävät IP-osoitteesi, mutta voit halutessasi piilottaa sen käyttämällä CryptPadia Tor-verkosta. Pelkkä Tor-verkon käyttäminen ilman muutoksia verkkokäyttäytymiseesi ei takaa anonymiteettiä, sillä palvelin tunnistaa käyttäjät uniikkien salaustunnisteiden perusteella. Jos käytät samaa käyttäjätunnusta Tor-verkosta ja sen ulkopuolelta, istuntosi voidaan yhdistää sinuun.<br><br>Käyttäjille, joiden yksityisyysvaatimukset ovat matalammat - toisin kuin monet muut palvelut, CryptPad ei vaadi käyttäjiä tunnistautumaan nimellä, puhelinnumerolla tai sähköpostiosoitteella."
+            },
+            "policy": {
+                "q": "Onko teillä tietosuojakäytäntö?",
+                "a": "Kyllä! Se löytyy <a href='/privacy.html' target='_blank'>täältä</a>."
+            }
+        },
+        "security": {
+            "pad_password": {
+                "q": "Mitä tapahtuu, kun suojaan padin tai kansion salasanalla?",
+                "a": "Voit suojata minkä tahansa padin tai jaetun kansion salasanalla luodessasi sen. Voit myös käyttää Ominaisuudet-valikkoa asettaaksesi, vaihtaaksesi tai poistaaksesi salasanan milloin tahansa.<br><br>Padien ja jaettujen kansioiden salasanat on tarkoitettu suojaamaan linkkiä jakaessasi sitä mahdollisesti turvattomien kanavien, kuten sähköpostin tai tekstiviestin kautta. Jos joku onnistuu kaappaamaan linkkisi, mutta ei tiedä sen salasanaa, ei hän pääse lukemaan dokumenttiasi.<br><br>Kun jaat sisältöä CryptPadin sisällä yhteystietojesi tai tiimiesi kanssa, tiedonsiirto on salattua ja oletamme, että haluat heidän pääsevän käyttämään dokumenttiasi. Siksi salasana tallennetaan ja lähetetään padin mukana jakaessasi sitä CryptPadin sisällä. Vastaanottajalta tai sinulta itseltäsi <b>ei</b> pyydetä salasanaa dokumenttia avatessa."
+            },
+            "title": "Turvallisuus",
+            "proof": {
+                "q": "Miten käytätte nollatietotodistuksia (Zero Knowledge Proofs)?",
+                "a": "Käyttäessämme termiä \"nollatieto\" (Zero Knowledge) emme viittaa <em>nollatietotodistuksiin</em> (Zero Knowledge Proofs) vaan <em>nollatieto-verkkopalveluihin</em> (Zero Knowledge Web Services). Nollatieto-verkkopalvelut salaavat käyttäjän datan tämän selaimessa niin, ettei palvelin pääse missään vaiheessa käsittelemään salaamatonta dataa tai salausavaimia.<br><br>Olemme keränneet listan muista nollatietopalveluista <a href='https://blog.cryptpad.fr/2017/02/20/Time-to-Encrypt-the-Cloud/#Other-Zero-Knowledge-Services'>tänne</a>."
+            },
+            "why": {
+                "q": "Miksi minun kannattaisi käyttää CryptPadia?",
+                "a": "Mielestämme pilvipalveluiden ei tarvitse päästä lukemaan dataasi, jotta voit jakaa sen ystäviesi ja kollegoidesi kanssa. Jos käytät yhteistyöhön jotakin muuta palvelua, eikä palvelu erikseen ilmoita, ettei se pääse käsiksi tietoihisi, on hyvin todennäköistä, että tietojasi käytetään kaupallisiin tarkoituksiin."
+            },
+            "compromised": {
+                "q": "Suojaako CryptPad minua, jos laitteeni tietoturva on vaarantunut?",
+                "a": "Jos laitteesi varastetaan, CryptPad voi kirjata sinut ulos kaikista muista laitteista, paitsi nykyisestä laitteestasi. Tehdäksesi niin mene <strong>Asetukset</strong>-sivulle ja valitse <strong>Kirjaudu ulos kaikkialta</strong>. Kaikki muut tilillesi kirjautuneet aktiiviset laitteet kirjautuvat välittömästi ulos. Ne laitteet, joilla CryptPadia on käytetty aiemmin kirjautuvat ulos seuraavan sivunlatauksen yhteydessä.<br><br>Tällä hetkellä <em>etäuloskirjautuminen</em> on toteutettu selainpohjaisesti palvelimen sijaan. Näin ollen se ei suojaa sinua valtiollisilta toimijoilta, mutta on riittävä, jos unohdit kirjautua ulos CryptPadista käytettyäsi jaettua tietokonetta."
+            },
+            "crypto": {
+                "q": "Mitä kryptografisia menetelmiä käytätte?",
+                "a": "CryptPad perustuu kahteen avoimen lähdekoodin kryptografiakirjastoon: <a href='https://github.com/dchest/tweetnacl-js' target='_blank'>tweetnacl.js:n</a> ja <a href='https://github.com/dchest/scrypt-async-js' target='_blank'>scrypt-async.js:n</a>. <br><br>Scrypt on <em>salasanapohjainen avaimenmuodostusalgoritmi</em>. Käytämme sitä muuntaaksemme käyttäjätunnuksesi ja salasanasi uniikiksi avainrenkaaksi, joka turvaa pääsyn CryptDriveesi niin, että ainoastaan sinä pääset käsiksi padilistaasi. <br><br>Käytämme vastaavasti tweetnacl:n tarjoamia <em>xsalsa20-poly1305</em>- ja <em>x25519-xsalsa20-poly1305</em>-salakirjoitusjärjestelmiä salaamaan padeja ja keskusteluhistoriaa."
+            }
+        },
+        "usability": {
+            "title": "Käytettävyys",
+            "register": {
+                "q": "Mitä hyötyä rekisteröitymisestä on minulle?",
+                "a": "Rekisteröityneille käyttäjille on tarjolla joitakin toimintoja, jotka eivät ole saatavilla rekisteröitymättömille käyttäjille. Löydät nämä toiminnot <a href='/features.html' target='_blank'>luomastamme kaaviosta</a>."
+            },
+            "share": {
+                "q": "Miten jaan salattuja padeja kavereideni kanssa?",
+                "a": "CryptPad laittaa URL-osoitteessa padisi salaisen salausavaimen <em>#</em>-merkin jälkeen. Tämän merkin jälkeen laitettuja tietoja ei lähetetä palvelimelle, joten emme pääse koskaan käyttämään salausavaimiasi. Jakaessasi linkin padiin jaat oikeuden lukea ja käyttää sitä."
+            },
+            "remove": {
+                "q": "Poistin padin tai tiedoston CryptDrivestani, mutta sen sisältö on yhä käytettävissä. Miten voin poistaa sen?",
+                "a": "Ainoastaan <em>omistettuja padeja</em> (otettu käyttöön helmikuussa 2018) voi poistaa. Lisäksi nämä padit voi poistaa ainoastaan niiden <em>omistaja</em> eli henkilö, joka alun perin loi kyseisen padin. Jos et ole luonut kyseistä padia, joudut pyytämään sen omistajaa poistamaan sen puolestasi. Omistamiesi padien poistaminen onnistuu CryptDrivessa <strong>klikkaamalla padia hiiren oikealla painikkeella</strong> ja valitsemalla <strong>Poista palvelimelta</strong>."
+            },
+            "forget": {
+                "q": "Mitä tapahtuu, jos unohdan salasanani?",
+                "a": "Valitettavasti se, että pystyisimme palauttamaan käyttöoikeuden salattuihin padeihisi tarkoittaisi myös sitä, että pääsisimme itse käsiksi niiden sisältöön. Jos et kirjoittanut käyttäjätunnustasi ja salasanaasi ylös etkä muista kumpaakaan, voit mahdollisesti palauttaa padisi selaimesi historiaa suodattamalla."
+            },
+            "change": {
+                "q": "Entä jos haluan vaihtaa salasanani?",
+                "a": "Voit vaihtaa CryptPad-salasanasi Tilin asetukset-sivulta."
+            },
+            "devices": {
+                "q": "Olen kirjautunut sisään kahdella laitteella, ja näen kaksi eri CryptDrivea. Miten tämä on mahdollista?",
+                "a": "On todennäköistä, että olet rekisteröitynyt samalla käyttäjänimellä kahdesti eri salasanoja käyttäen. CryptPad-palvelin tunnistaa sinut kryptografisen allekirjoituksesi perusteella käyttäjänimen sijaan, joten se ei voi estää muita rekisteröitymästä samalla käyttäjänimellä. Tästä johtuen jokaisella käyttäjätilillä on ainutlaatuinen käyttäjänimen ja salasanan yhdistelmä. Sisäänkirjautuneet käyttäjät voivat nähdä käyttäjänimensä Asetukset-sivun ylälaidassa."
+            },
+            "folder": {
+                "q": "Voinko jakaa kokonaisia kansioita CryptDrivestani?",
+                "a": "Kyllä, voit luoda <em>jaetun kansion</em> CryptDrivestasi ja jakaa kerralla kaikki sen sisältämät padit."
+            },
+            "feature": {
+                "q": "Voitteko lisätä CryptPadiin tarvitsemani ominaisuuden?",
+                "a": "Monet CryptPadin ominaisuuksista ovat olemassa, koska käyttäjämme ovat toivoneet niitä. <a href='https://cryptpad.fr/contact.html' target='_blank'>Yhteystiedot-sivumme</a>  kertoo, millä tavoin meihin saa yhteyden.<br><br>Valitettavasti emme voi taata, että pystymme toteuttamaan kaikki käyttäjiemme ehdotukset. Jos jokin tietty ominaisuus on kriittinen organisaatiosi kannalta, voit sponsoroida kehitystä varmistaaksesi sen toteutumisen. Ota yhteyttä osoitteeseen  <a href='mailto:sales@cryptpad.fr' target='_blank'>sales@cryptpad.fr</a> saadaksesi lisätietoja.<br><br>Vaikka kehitystyön sponsorointi ei olisikaan mahdollista, olemme silti kiinnostuneita palautteesta, joka auttaa meitä parantamaan CryptPadia. Ota meihin milloin tahansa yhteyttä yllä luetelluilla tavoilla."
+            }
+        },
+        "other": {
+            "title": "Muita kysymyksiä",
+            "pay": {
+                "q": "Miksi minun täytyisi maksaa, kun niin monet toiminnot ovat ilmaisia?",
+                "a": "Annamme tukijoillemme lisätallennustilaa ja mahdollisuuden kasvattaa kavereiden tallennustilakiintiöitä (<a href='https://accounts.cryptpad.fr/#/faq' target='_blank'>lue lisää</a>).<br><br>Näiden lyhytaikaisten etujen lisäksi premium-tilaus auttaa rahoittamaan CryptPadin jatkuvaa, aktiivista kehitystyötä. Tähän kuuluu bugien korjaamista, uusien ominaisuuksien lisäämistä ja CryptPad-instanssien pystyttämisen ja ylläpidon helpottamista. Lisäksi autat näyttämään muille palveluntarjoajille, että ihmiset ovat valmiita tukemaan yksityisyyttä parantavia teknologioita. Toivomme, että käyttäjätietojen myymiseen perustuvat liiketoimintamallit jäävät lopulta menneeseen.<br><br>Lopuksi, tarjoamme suurimman osan CryptPadin toiminnallisuudesta ilmaiseksi, koska uskomme yksityisyyden kuuluvan kaikille - ei vain niille, joilla on varaa maksaa siitä. Tukemalla meitä autat tarjoamaan heikommassa asemassa oleville väestöille pääsyn näihin peruspalveluihin."
+            },
+            "goal": {
+                "q": "Mitkä ovat tavoitteenne?",
+                "a": "Kehittämällä yksityisyyttä kunnioittavaa kollaboraatioteknologiaa toivomme nostavamme käyttäjien odotuksia pilvipalveluiden yksityisyyden suhteen. Toivomme, että työmme rohkaisee muita palveluntarjoajia pyrkimään samaan tai parempaan lopputulokseen. Optimismistamme huolimatta tiedämme, että suuri osa webistä rahoitetaan kohdistetulla mainonnalla. Tehtävää on paljon enemmän, kuin mihin pystymme yksin - arvostamme yhteisömme tarjoamaa mainostusta, tukea ja panosta tavoitteidemme saavuttamisessa."
+            },
+            "jobs": {
+                "q": "Etsittekö työntekijöitä?",
+                "a": "Kyllä! Esittäydy meille sähköpostilla osoitteeseen <a href='mailto:jobs@xwiki.com' target='_blank'>jobs@xwiki.com</a>."
+            },
+            "host": {
+                "q": "Voitteko auttaa minua perustamaan oman CryptPad-instanssini?",
+                "a": "Tarjoamme mielellämme tukea organisaatiosi sisäiselle CryptPad-instanssille. Ota yhteyttä osoitteeseen <a href='mailto:sales@cryptpad.fr' target='_blank'>sales@cryptpad.fr</a> saadaksesi lisätietoja."
+            },
+            "revenue": {
+                "q": "Kuinka voin osallistua tulojen jakamiseen?",
+                "a": "Jos ylläpidät omaa CryptPad-instanssiasi, haluaisit ottaa käyttöön maksulliset käyttäjätilit ja jakaa tulot CryptPadin kehittäjien kanssa, palvelimesi täytyy määritellä kumppanipalveluksi.<br><br>CryptPad-asennushakemistosi <em>config.example.js</em>-tiedostosta pitäisi löytyä ohjeet tämän palvelun käyttöönottoon. Sinun tulee myös ottaa yhteyttä osoitteeseen <a href='mailto:sales@cryptpad.fr'>sales@cryptpad.fr</a> varmistaaksesi, että palvelimesi HTTPS-määritykset ovat kunnossa ja sopiaksesi käytettävistä maksutavoista."
             }
         }
-    }
+    },
+    "policy_howweuse_p1": "Käytämme näitä tietoja suunnitellaksemme CryptPadin mainostusta ja arvioidaksemme aiempien kampanjoiden onnistumista. Sijaintitietosi puolestaan kertovat meille, mitä kieliä CryptPadin tulisi mahdollisesti tukea englannin lisäksi.",
+    "tos_title": "CryptPad-käyttöehdot",
+    "tos_legal": "Älä ole pahantahtoinen, väärinkäyttäjä tai tee mitään laitonta.",
+    "tos_availability": "Toivomme sinun pitävän tätä palvelua hyödyllisenä, mutta emme voi taata sen saatavuutta tai suorituskykyä. Viethän tietosi säännöllisesti muualle talteen.",
+    "tos_e2ee": "CryptPad-sisältöä voi lukea tai muokata kuka tahansa, joka pystyy arvaamaan tai muuten saamaan käsiinsä padin katkelmatunnisteen. Suosittelemme käyttämään päästä päähän salattuja viestintämenetelmiä linkkien jakamiseen, emmekä ota vastuuta tilanteissa, joissa sellainen linkki pääsee vuotamaan.",
+    "tos_logs": "Selaimesi palvelimelle tarjoama metadata voidaan kerätä palvelun ylläpitämistä varten.",
+    "tos_3rdparties": "Emme luovuta yksilöityä dataa kolmansille osapuolille, ellei meillä ole lakisääteistä velvollisuutta tehdä niin.",
+    "four04_pageNotFound": "Etsimääsi sivua ei löytynyt.",
+    "updated_0_header_logoTitle": "Siirry CryptDriveesi",
+    "header_logoTitle": "Siirry CryptDriveesi",
+    "header_homeTitle": "Siirry CryptPad-kotisivulle",
+    "help": {
+        "title": "Näin pääset alkuun",
+        "generic": {
+            "more": "Tutustu <a href=\"/faq.html\" target=\"_blank\">usein kysyttyihin kysymyksiin</a> saadaksesi lisätietoja CryptPadin toiminnallisuudesta",
+            "share": "Käytä Jaa-valikkoa (<span class=\"fa fa-shhare-alt\"></span>) luodaksesi linkin, jonka kautta yhteistyökumppanit pääsevät katselemaan tai muokkaamaan padia",
+            "save": "Kaikki tekemäsi muutokset synkronoidaan automaattisesti, joten sinun ei tarvitse koskaan tallentaa"
+        },
+        "text": {
+            "formatting": "Voit näyttää tai piilottaa Tekstin muotoilu-työkalupalkin klikkaamalla <span class=\"fa fa-caret-down\"></span> tai <span class=\"fa fa-caret-up\"></span>-painikkeita",
+            "embed": "Rekisteröityneet käyttäjät voivat upottaa kuvan tai CryptDriveen tallennetun tiedoston <span class=\"fa fa-image\"></span> avulla",
+            "history": "Voit käyttää <em>historiaa</em> <span class=\"fa fa-history\"></span> katsellaksesi tai palauttaaksesi aiempia versioita"
+        },
+        "pad": {
+            "export": "Voit viedä sisältösi PDF-tiedostoon Tekstin muotoilu-työkalupalkin <span class=\"fa fa-print\"></span> -painikkeella"
+        },
+        "code": {
+            "modes": "Käytä <span class=\"fa fa-ellipsis-h\"></span> -alavalikon pudotusvalikoita vaihtaaksesi syntaksin korostustilaa tai väriteemoja"
+        },
+        "beta": {
+            "warning": "Tämä editori on edelleen <strong>koekäytössä</strong>, voit ilmoittaa löytämäsi bugit <a href=\"https://github.com/xwiki-labs/cryptpad/issues/\" target=\"_blank\">asianhallintajärjestelmäämme</a>"
+        },
+        "oo": {
+            "access": "Käyttö on rajattu ainoastaan rekisteröityneille käyttäjille, yhteistyökumppanien tulee kirjautua sisään"
+        },
+        "slide": {
+            "markdown": "Kirjoita diat <a href=\"http://www.markdowntutorial.com/\">Markdown-kielellä</a> ja erota ne toisistaan <code>---</code> -rivillä",
+            "present": "Aloita esitys <span class=\"fa fa-play-circle\"></span> -painikkeella",
+            "settings": "Muuta dian asetuksia (taustakuvaa, siirtymiä, sivunumeroita jne.) <span class=\"fa fa-ellipsis-h\"></span> -alavalikon <span class=\"fa fa-cog\"></span> -painikkeella",
+            "colors": "Vaihda tekstin ja taustan väriä <span class=\"fa fa-i-cursor\"></span> ja <span class=\"fa fa-square\"></span> -painikkeilla"
+        },
+        "poll": {
+            "decisions": "Tee päätöksiä luotettujen ystävien kesken",
+            "options": "Ehdota vaihtoehtoja ja tuo ilmi mielipiteesi",
+            "choices": "Napsauta sarakkeesi soluja valitaksesi kyllä- (<strong>✔</strong>), ehkä- (<strong>~</strong>), tai ei (<strong>✖</strong>) -vaihtoehdon",
+            "submit": "Napsauta <strong>Lähetä</strong> tehdäksesi valintasi näkyviksi muille"
+        },
+        "whiteboard": {
+            "colors": "Kaksoisnapsauta värejä muokataksesi väripalettiasi",
+            "mode": "Ota piirtotila pois käytöstä vetääksesi ja venyttääksesi viivoja",
+            "embed": "Upota kuvia kovalevyltäsi <span class=\"fa fa-file-image-o\"></span> tai CryptDrivestasi <span class=\"fa fa-image\"></span> ja vie ne PNG-tiedostomuodossa kovalevyllesi <span class=\"fa fa-download\"></span> tai CryptDriveesi <span class=\"fa fa-cloud-upload\"></span>"
+        },
+        "kanban": {
+            "add": "Lisää uusia tauluja oikeassa yläkulmassa olevalla <span class=\"fa fa-plus\"></span> -painikkeella",
+            "task": "Siirrä kohtia raahaamalla ja pudottamalla ne yhdestä taulusta toiseen",
+            "color": "Vaihda värejä napsauttamalla taulun otsikon vieressä olevaa värillistä osaa"
+        }
+    },
+    "driveReadmeTitle": "Mikä on CryptPad?",
+    "readme_welcome": "Tervetuloa CryptPadiin!",
+    "readme_p1": "Tervetuloa CryptPadiin, täällä voit tehdä muistiinpanoja yksin tai ystäviesi kanssa."
 }

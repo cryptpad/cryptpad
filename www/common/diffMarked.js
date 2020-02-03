@@ -55,7 +55,6 @@ define([
             var a = h('a.cp-md-toc-link', {
                 href: '#',
                 'data-href': obj.id,
-                title: obj.title
             });
             a.innerHTML = obj.title;
             content.push(h('p.cp-md-toc-'+level, ['• ',  a]));
