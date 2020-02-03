@@ -12,7 +12,7 @@ define([
         var edPublic = Util.find(ctx.store, ['proxy', 'edPublic']);
 
         // Drive
-        var driveOwned = (Util.find(ctx.store, ['driveMetadata', 'owners']) || []).indexOf(edpublic) !== -1;
+        var driveOwned = (Util.find(ctx.store, ['driveMetadata', 'owners']) || []).indexOf(edPublic) !== -1;
         if (driveOwned) {
             channels.push(ctx.store.driveChannel);
         }
@@ -81,6 +81,8 @@ define([
             // TODO: check if owner first?
             channels.forEach(function (chan) {
                 size += Math.floor(Math.random()*1000) * 1024; // XXX
+                chan = chan; // XXX
+                waitFor = waitFor; // XXX
                 /*
                 var channel = chan;
                 var lastKnownHash;
@@ -125,6 +127,8 @@ define([
 
         nThen(function (waitFor) {
             channels.forEach(function (chan) {
+                chan = chan; // XXX
+                waitFor = waitFor; // XXX
                 /*
                 rpc.trimHistory(chan, waitFor(function (err) {
                     if (err) {
@@ -138,7 +142,7 @@ define([
         }).nThen(function () {
             // Only one channel and warning: error
             if (channels.length === 1 && warning.length) {
-                return void cb({error: err});
+                return void cb({error: warning[0]});
             }
             cb({
                 warning: warning.length ? warning : undefined
