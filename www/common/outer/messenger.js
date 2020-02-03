@@ -893,6 +893,8 @@ define([
     };
 
     var clearOwnedChannel = function (ctx, id, cb) {
+        // XXX clients is undefined if you try to clear history from contacts
+        // while not using workers
         var channel = ctx.clients[id];
         if (!channel) { return void cb({error: 'NO_CHANNEL'}); }
         if (!ctx.store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
