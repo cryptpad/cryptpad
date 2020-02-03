@@ -73,7 +73,7 @@ define([
             'cp-settings-thumbnails',
             'cp-settings-drive-backup',
             'cp-settings-drive-import-local',
-            'cp-settings-drive-reset'
+            //'cp-settings-drive-reset'
         ],
         'cursor': [
             'cp-settings-cursor-color',
@@ -1197,6 +1197,7 @@ define([
         return $div;
     };
 
+    /*
     create['drive-reset'] = function () {
         var $div = $('<div>', {'class': 'cp-settings-drive-reset cp-sidebarlayout-element'});
         $('<label>').text(Messages.settings_resetNewTitle).appendTo($div);
@@ -1220,6 +1221,7 @@ define([
 
         return $div;
     };
+    */
 
     // Cursor settings
 
