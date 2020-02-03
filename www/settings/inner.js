@@ -1199,7 +1199,8 @@ define([
     };
 
     makeBlock('trim-history', function (cb) {
-        // XXX settings_trimHistoryTitle, settings_trimHistoryHint, settings_trimHistoryButton
+        if (!common.isLoggedIn()) { return; }
+        // XXX settings_trimHistoryTitle, settings_trimHistoryHint, settings_trimHistoryButton, settings_trimHistoryError
         // XXX trimHistory_confirm
 
         var spinner = UI.makeSpinner();
@@ -1214,17 +1215,42 @@ define([
             spinner.spinner
         ]);
 
-        Messages.trimHistory_currentSize = 'Abcd: <b>{0}</b>'; // XXX
+        Messages.trimHistory_currentSize = 'Size XXX: <b>{0}</b>'; // XXX
 
+        var $button = $(button);
         var size;
         nThen(function (waitFor) {
-            size = UIElements.prettySize(1024*12); // XXX get size
+            APP.history.execCommand('GET_HISTORY_SIZE', {
+                account: true,
+                channels: []
+            }, waitFor(function (obj) {
+                if (obj && obj.error) {
+                    waitFor.abort();
+                    var error = h('div.alert.alert-danger', Messages.settings_trimHistoryError || 'error'); // XXX
+                    $(content).empty().append(error);
+                    return;
+                }
+                size = UIElements.prettySize(Number(obj.size));
+            }));
         }).nThen(function () {
             $(currentSize).html(Messages._getKey('trimHistory_currentSize', [size]));
-            $(button).click(function () {
+            $button.click(function () {
                 UI.confirm(Messages.trimHistory_confirm, function (yes) {
                     if (!yes) { return; }
+
+                    $button.remove();
                     spinner.spin();
+                    APP.history.execCommand('TRIM_HISTORY', {
+                        account: true,
+                        channels: []
+                    }, function (obj) {
+                        if (obj && obj.error) {
+                            // XXX what are the possible errors?
+                            return;
+                        }
+                        spinner.hide();
+                        $(content).append(h('div.alert.alert-success', Messages.settings_trimHistorySuccess || 'ok')); // XXX
+                    });
                 });
             }).prop('disabled', '');
         });
@@ -1716,6 +1742,7 @@ define([
         };
         APP.toolbar = Toolbar.create(configTb);
         APP.toolbar.$rightside.hide();
+        APP.history = common.makeUniversal('history');
 
         // Content
         var $rightside = APP.$rightside;
@@ -1733,6 +1760,7 @@ define([
             if (!Array.isArray(categories[cat])) { continue; }
             categories[cat].forEach(addItem);
         }
+
 
         // TODO RPC
         //obj.proxy.on('change', [], refresh);
