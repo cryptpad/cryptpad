@@ -34,6 +34,9 @@
     };
 
     Util.mkAsync = function (f) {
+        if (typeof(f) !== 'function') {
+            throw new Error('EXPECTED_FUNCTION');
+        }
         return function () {
             var args = Array.prototype.slice.call(arguments);
             setTimeout(function () {
