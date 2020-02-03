@@ -4097,52 +4097,68 @@ define([
     };
 
     var crowdfundingState = false;
-    UIElements.displayCrowdfunding = function (common) {
+    UIElements.displayCrowdfunding = function (common, force) {
         if (crowdfundingState) { return; }
-        if (AppConfig.disableCrowdfundingMessages) { return; }
         var priv = common.getMetadataMgr().getPrivateData();
+
+
+        var todo = function () {
+            crowdfundingState = true;
+            // Display the popup
+            var text = Messages.crowdfunding_popup_text;
+            var yes = h('button.cp-corner-primary', [
+                h('span.fa.fa-external-link'),
+                'OpenCollective'
+            ]);
+            var no = h('button.cp-corner-cancel', Messages.crowdfunding_popup_no);
+            var actions = h('div', [no, yes]);
+
+            var dontShowAgain = function () {
+                common.setAttribute(['general', 'crowdfunding'], false);
+                Feedback.send('CROWDFUNDING_NEVER');
+            };
+
+            var modal = UI.cornerPopup(text, actions, null, {
+                big: true,
+                alt: true,
+                dontShowAgain: dontShowAgain
+            });
+
+            $(yes).click(function () {
+                modal.delete();
+                common.openURL(priv.accounts.donateURL);
+                Feedback.send('CROWDFUNDING_YES');
+            });
+            $(modal.popup).find('a').click(function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                modal.delete();
+                common.openURL(priv.accounts.donateURL);
+                Feedback.send('CROWDFUNDING_LINK');
+            });
+            $(no).click(function () {
+                modal.delete();
+                Feedback.send('CROWDFUNDING_NO');
+            });
+        };
+
+        if (force) {
+            crowdfundingState = true;
+            return void todo();
+        }
+
+        if (AppConfig.disableCrowdfundingMessages) { return; }
         if (priv.plan) { return; }
 
         crowdfundingState = true;
-        setTimeout(function () {
-            common.getAttribute(['general', 'crowdfunding'], function (err, val) {
-                if (err || val === false) { return; }
-                common.getSframeChannel().query('Q_GET_PINNED_USAGE', null, function (err, obj) {
-                    var quotaMb = obj.quota / (1024 * 1024);
-                    if (quotaMb < 10) { return; }
-                    // Display the popup
-                    var text = Messages.crowdfunding_popup_text;
-                    var yes = h('button.cp-corner-primary', Messages.crowdfunding_popup_yes);
-                    var no = h('button.cp-corner-primary', Messages.crowdfunding_popup_no);
-                    var never = h('button.cp-corner-cancel', Messages.crowdfunding_popup_never);
-                    var actions = h('div', [yes, no, never]);
-
-                    var modal = UI.cornerPopup(text, actions, null, {big: true});
-
-                    $(yes).click(function () {
-                        modal.delete();
-                        common.openURL(priv.accounts.donateURL);
-                        Feedback.send('CROWDFUNDING_YES');
-                    });
-                    $(modal.popup).find('a').click(function (e) {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        modal.delete();
-                        common.openURL(priv.accounts.donateURL);
-                        Feedback.send('CROWDFUNDING_LINK');
-                    });
-                    $(no).click(function () {
-                        modal.delete();
-                        Feedback.send('CROWDFUNDING_NO');
-                    });
-                    $(never).click(function () {
-                        modal.delete();
-                        common.setAttribute(['general', 'crowdfunding'], false);
-                        Feedback.send('CROWDFUNDING_NEVER');
-                    });
-                });
+        common.getAttribute(['general', 'crowdfunding'], function (err, val) {
+            if (err || val === false) { return; }
+            common.getSframeChannel().query('Q_GET_PINNED_USAGE', null, function (err, obj) {
+                var quotaMb = obj.quota / (1024 * 1024);
+                if (quotaMb < 10) { return; }
+                todo();
             });
-        }, 5000);
+        });
     };
 
     var storePopupState = false;
@@ -4164,7 +4180,7 @@ define([
 
         var hide = h('button.cp-corner-cancel', Messages.autostore_hide);
         var store = h('button.cp-corner-primary', Messages.autostore_store);
-        var actions = h('div', [store, hide]);
+        var actions = h('div', [hide, store]);
 
         var initialHide = data && data.autoStore && data.autoStore === -1;
         var modal = UI.cornerPopup(text, actions, footer, {hidden: initialHide});
