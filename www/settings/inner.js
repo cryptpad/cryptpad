@@ -1200,8 +1200,10 @@ define([
 
     makeBlock('trim-history', function (cb) {
         if (!common.isLoggedIn()) { return; }
-        // XXX settings_trimHistoryTitle, settings_trimHistoryHint, settings_trimHistoryButton, settings_trimHistoryError
-        // XXX trimHistory_confirm
+        // XXX settings_trimHistoryTitle, settings_trimHistoryHint, settings_trimHistoryButton, trimHistoryError
+        // XXX trimHistorySuccess, trimHistory_confirm
+
+        if (!privateData.isDriveOwned) { return; } // XXX
 
         var spinner = UI.makeSpinner();
         var button = h('button.btn.btn-danger-alt', {
@@ -1226,8 +1228,9 @@ define([
             }, waitFor(function (obj) {
                 if (obj && obj.error) {
                     waitFor.abort();
-                    var error = h('div.alert.alert-danger', Messages.settings_trimHistoryError || 'error'); // XXX
+                    var error = h('div.alert.alert-danger', Messages.trimHistoryError || 'error'); // XXX
                     $(content).empty().append(error);
+                    // TODO: obj.warning?
                     return;
                 }
                 size = UIElements.prettySize(Number(obj.size));
@@ -1248,8 +1251,9 @@ define([
                             // XXX what are the possible errors?
                             return;
                         }
+                        // TODO: obj.warning?
                         spinner.hide();
-                        $(content).append(h('div.alert.alert-success', Messages.settings_trimHistorySuccess || 'ok')); // XXX
+                        $(content).append(h('div.alert.alert-success', Messages.trimHistorySuccess || 'ok')); // XXX
                     });
                 });
             }).prop('disabled', '');

@@ -12,7 +12,10 @@ define([
         var edPublic = Util.find(ctx.store, ['proxy', 'edPublic']);
 
         // Drive
-        channels.push(ctx.store.driveChannel);
+        var driveOwned = (Util.find(ctx.store, ['driveMetadata', 'owners']) || []).indexOf(edpublic) !== -1;
+        if (driveOwned) {
+            channels.push(ctx.store.driveChannel);
+        }
 
         // Profile
         var profile = ctx.store.proxy.profile;
@@ -56,13 +59,14 @@ define([
         var channels = data.channels;
         if (!Array.isArray(channels)) { return void cb({ error: 'EINVAL' }); }
 
+        var warning = [];
+
         // If account trim history, get the correct channels here
         if (data.account) {
             channels = getAccountChannels(ctx);
         }
 
         var size = 0;
-        var warning = false;
         nThen(function (waitFor) {
             // TODO: check if owner first?
             channels.forEach(function (chan) {
@@ -79,7 +83,7 @@ define([
                     lastKnownHash: lastKnownHash
                 }, waitFor(function (err, value) {
                     if (err) {
-                        warning = true;
+                        warning.push(err);
                         return;
                     }
                     size += value;
@@ -88,7 +92,7 @@ define([
             });
         }).nThen(function () {
             cb({
-                warning: warning,
+                warning: warning.length ? warning : undefined,
                 size: size
             });
         });
@@ -99,28 +103,33 @@ define([
         var channels = data.channels;
         if (!Array.isArray(channels)) { return void cb({ error: 'EINVAL' }); }
 
+        var warning = [];
+
         // If account trim history, get the correct channels here
         if (data.account) {
             channels = getAccountChannels(ctx);
         }
 
-        var warning = false;
         nThen(function (waitFor) {
             channels.forEach(function (chan) {
                 /*
                 ctx.store.rpc.trimHistory(chan, waitFor(function (err) {
                     if (err) {
-                        warning = err;
+                        chanWarning = true;
+                        warning.push(err);
                         return;
                     }
                 }));
                 */ // XXX TODO
             });
         }).nThen(function () {
-            if (channels.length === 1 && warning) {
+            // Only one channel and warning: error
+            if (channels.length === 1 && warning.length) {
                 return void cb({error: err});
             }
-            cb({ warning: warning });
+            cb({
+                warning: warning.length ? warning : undefined
+            });
         });
     };
 
