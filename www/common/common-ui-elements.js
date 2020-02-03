@@ -689,6 +689,9 @@ define([
         var $d = $('<div>');
         if (!data) { return void cb(void 0, $d); }
 
+        var priv = common.getMetadataMgr().getPrivateData();
+        var edPublic = priv.edPublic;
+
         if (data.href) {
             $('<label>', {'for': 'cp-app-prop-link'}).text(Messages.editShare).appendTo($d);
             $d.append(UI.dialog.selectable(data.href, {
@@ -715,13 +718,29 @@ define([
             $d.append(h('div.cp-app-prop', [Messages.fm_lastAccess,  h('br'), h('span.cp-app-prop-content', new Date(data.atime).toLocaleString())]));
         }
 
+        var owned = false;
         if (common.isLoggedIn()) {
+            if (Array.isArray(data.owners)) {
+                if (data.owners.indexOf(edPublic) !== -1) {
+                    owned = true;
+                } else {
+                    Object.keys(priv.teams || {}).some(function (id) {
+                        var team = priv.teams[id] || {};
+                        if (team.viewer) { return; }
+                        if (data.owners.indexOf(team.edPublic) === -1) { return; }
+                        owned = id;
+                        return true;
+                    });
+                }
+            }
             // check the size of this file...
             var bytes = 0;
+            var historyBytes;
+            var chan = [data.channel];
+            if (data.rtChannel) { chan.push(data.rtChannel); }
+            if (data.lastVersion) { chan.push(Hash.hrefToHexChannelId(data.lastVersion)); }
+            var history = common.makeUniversal('history');
             NThen(function (waitFor) {
-                var chan = [data.channel];
-                if (data.rtChannel) { chan.push(data.rtChannel); }
-                if (data.lastVersion) { chan.push(Hash.hrefToHexChannelId(data.lastVersion)); }
                 chan.forEach(function (c) {
                     common.getFileSize(c, waitFor(function (e, _bytes) {
                         if (e) {
@@ -731,20 +750,79 @@ define([
                         bytes += _bytes;
                     }));
                 });
+
+                if (!owned) { return; }
+                history.execCommand('GET_HISTORY_SIZE', {
+                    pad: true,
+                    channels: chan.filter(function (c) { return c.length === 32; }),
+                    teamId: typeof(owned) === "number" && owned
+                }, waitFor(function (obj) {
+                    if (obj && obj.error) { return; }
+                    historyBytes = obj.size;
+                }));
             }).nThen(function () {
                 if (bytes === 0) { return void cb(void 0, $d); }
-                var KB = Util.bytesToKilobytes(bytes);
+                var formatted = UIElements.prettySize(bytes);
 
-                var formatted = Messages._getKey('formattedKB', [KB]);
-                $d.append(h('div.cp-app-prop', [Messages.upload_size, h('br'), h('span.cp-app-prop-content', formatted)]));
+                historyBytes = Math.floor(0.2*bytes); // XXX test data
 
-        if (data.sharedFolder && false) {
-            $('<label>', {'for': 'cp-app-prop-channel'}).text('Channel ID').appendTo($d);
-            if (AppConfig.pinBugRecovery) { $d.append(h('p', AppConfig.pinBugRecovery)); }
-            $d.append(UI.dialog.selectable(data.channel, {
-                id: 'cp-app-prop-link',
-            }));
-        }
+                if (!owned || !historyBytes || historyBytes > bytes) {
+                    $d.append(h('div.cp-app-prop', [Messages.upload_size, h('br'), h('span.cp-app-prop-content', formatted)]));
+                    return void cb(void 0, $d);
+                }
+
+                Messages.historyTrim_historySize = 'History: {0}'; // XXX
+                Messages.historyTrim_contentsSize = 'Contents: {0}'; // XXX
+
+                var p = Math.round((historyBytes / bytes) * 100);
+                var historyPrettySize = UIElements.prettySize(historyBytes);
+                var contentsPrettySize = UIElements.prettySize(bytes - historyBytes);
+                var button;
+                var spinner = UI.makeSpinner();
+                var size = h('div.cp-app-prop', [
+                    Messages.upload_size,
+                    h('br'),
+                    h('div.cp-app-prop-size-container', [
+                        h('div.cp-app-prop-size-history', { style: 'width:'+p+'%;' })
+                    ]),
+                    h('div.cp-app-prop-size-legend', [
+                        h('div.cp-app-prop-history-size', [
+                            h('span.cp-app-prop-history-size-color'),
+                            h('span.cp-app-prop-content', Messages._getKey('historyTrim_historySize', [historyPrettySize]))
+                        ]),
+                        h('div.cp-app-prop-contents-size', [
+                            h('span.cp-app-prop-contents-size-color'),
+                            h('span.cp-app-prop-content', Messages._getKey('historyTrim_contentsSize', [contentsPrettySize]))
+                        ]),
+                    ]),
+                    button = h('button.btn.btn-danger-alt.no-margin', Messages.trimHistory_button || 'test'), // XXX
+                    spinner.spinner
+                ]);
+                $d.append(size);
+
+                var $button = $(button);
+                $button.click(function () {
+                    UI.confirm(Messages.trimHistory_confirm, function (yes) {
+                        if (!yes) { return; }
+
+                        $button.remove();
+                        spinner.spin();
+                        history.execCommand('TRIM_HISTORY', {
+                            pad: true,
+                            channels: chan.filter(function (c) { return c.length === 32; }),
+                            teamId: typeof(owned) === "number" && owned
+                        }, function (obj) {
+                            if (obj && obj.error) {
+                                console.error(obj.error);
+                                // XXX what are the possible errors?
+                                return;
+                            }
+                            // TODO: obj.warning?
+                            spinner.hide();
+                            $(size).append(h('div.alert.alert-success', Messages.trimHistory_success || 'ok')); // XXX
+                        });
+                    });
+                });
 
                 cb(void 0, $d);
             });

@@ -39,7 +39,6 @@ define([
         // Shared folders owned by me
         var sf = ctx.store.proxy[UserObject.SHARED_FOLDERS];
         if (sf) {
-            console.log(sf);
             var sfChannels = Object.keys(sf).map(function (fId) {
                 var data = sf[fId];
                 if (!data || !data.owners) { return; }
@@ -47,17 +46,28 @@ define([
                 if (!isOwner) { return; }
                 return data.channel;
             }).filter(Boolean);
-            console.log(sfChannels);
             Array.prototype.push.apply(channels, sfChannels);
         }
 
         return channels;
     };
 
+    var getRpc = function (ctx, teamId) {
+        if (!teamId) { return ctx.store.rpc; }
+        var teams = ctx.store.modules['team'];
+        if (!teams) { return; }
+        var team = teams.getTeam(teamId);
+        if (!team) { return; }
+        return team.rpc;
+    };
+
     commands.GET_HISTORY_SIZE = function (ctx, data, cId, cb) {
         if (!ctx.store.loggedIn || !ctx.store.rpc) { return void cb({ error: 'INSUFFICIENT_PERMISSIONS' }); }
         var channels = data.channels;
         if (!Array.isArray(channels)) { return void cb({ error: 'EINVAL' }); }
+
+        var rpc = getRpc(ctx, data.teamid);
+        if (!rpc) { return void cb({ error: 'ENORPC'}); }
 
         var warning = [];
 
@@ -78,7 +88,7 @@ define([
                     channel = chan.channel;
                     lastKnownHash = chan.lastKnownHash;
                 }
-                ctx.store.rpc.getHistorySize({
+                rpc.getHistorySize({
                     channel: channel,
                     lastKnownHash: lastKnownHash
                 }, waitFor(function (err, value) {
@@ -103,6 +113,9 @@ define([
         var channels = data.channels;
         if (!Array.isArray(channels)) { return void cb({ error: 'EINVAL' }); }
 
+        var rpc = getRpc(ctx, data.teamid);
+        if (!rpc) { return void cb({ error: 'ENORPC'}); }
+
         var warning = [];
 
         // If account trim history, get the correct channels here
@@ -113,7 +126,7 @@ define([
         nThen(function (waitFor) {
             channels.forEach(function (chan) {
                 /*
-                ctx.store.rpc.trimHistory(chan, waitFor(function (err) {
+                rpc.trimHistory(chan, waitFor(function (err) {
                     if (err) {
                         chanWarning = true;
                         warning.push(err);
