@@ -955,7 +955,9 @@ var trimChannel = function (env, channelName, hash, _cb) {
         var handler = function (msgObj, readMore, abort) {
             if (ABORT) { return void abort(); }
             // the first message might be metadata... ignore it if so
-            if (i++ === 0 && msgObj.buff.indexOf('{') === 0) { return; }
+            if (i++ === 0 && msgObj.buff.indexOf('{') === 0) {
+                return readMore();
+            }
 
             if (retain) {
                 // if this flag is set then you've already found
@@ -973,6 +975,9 @@ var trimChannel = function (env, channelName, hash, _cb) {
             if (msgHash === hash) {
                 // everything from this point on should be retained
                 retain = true;
+                return void tempStream.write(msgObj.buff, function () {
+                    readMore();
+                });
             }
         };
 
