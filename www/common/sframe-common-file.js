@@ -182,13 +182,6 @@ define([
             }
         };
 
-        var prettySize = function (bytes) {
-            var kB = Util.bytesToKilobytes(bytes);
-            if (kB < 1024) { return kB + Messages.KB; }
-            var mB = Util.bytesToMegabytes(bytes);
-            return mB + Messages.MB;
-        };
-
         queue.next = function () {
             if (queue.queue.length === 0) {
                 clearTimeout(queue.to);
@@ -251,7 +244,7 @@ define([
             // name
             $('<td>').append($link).appendTo($tr);
             // size
-            $('<td>').text(prettySize(estimate)).appendTo($tr);
+            $('<td>').text(UIElements.prettySize(estimate)).appendTo($tr);
             // progress
             $('<td>', {'class': 'cp-fileupload-table-progress'}).append($progressContainer).appendTo($tr);
             // cancel

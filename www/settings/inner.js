@@ -73,6 +73,7 @@ define([
             'cp-settings-thumbnails',
             'cp-settings-drive-backup',
             'cp-settings-drive-import-local',
+            'cp-settings-trim-history'
             //'cp-settings-drive-reset'
         ],
         'cursor': [
@@ -1196,6 +1197,40 @@ define([
 
         return $div;
     };
+
+    makeBlock('trim-history', function (cb) {
+        // XXX settings_trimHistoryTitle, settings_trimHistoryHint, settings_trimHistoryButton
+        // XXX trimHistory_confirm
+
+        var spinner = UI.makeSpinner();
+        var button = h('button.btn.btn-danger-alt', {
+            disabled: 'disabled'
+        }, Messages.trimHistoryButton || 'test'); // XXX
+        var currentSize = h('p', $(spinner.spinner).clone()[0]);
+        var content = h('div', [
+            currentSize,
+            button,
+            spinner.ok,
+            spinner.spinner
+        ]);
+
+        Messages.trimHistory_currentSize = 'Abcd: <b>{0}</b>'; // XXX
+
+        var size;
+        nThen(function (waitFor) {
+            size = UIElements.prettySize(1024*12); // XXX get size
+        }).nThen(function () {
+            $(currentSize).html(Messages._getKey('trimHistory_currentSize', [size]));
+            $(button).click(function () {
+                UI.confirm(Messages.trimHistory_confirm, function (yes) {
+                    if (!yes) { return; }
+                    spinner.spin();
+                });
+            }).prop('disabled', '');
+        });
+
+        cb(content);
+    }, true);
 
     /*
     create['drive-reset'] = function () {
