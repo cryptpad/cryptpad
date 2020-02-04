@@ -115,7 +115,8 @@
             border-color: @colortheme_alertify-red;
             color: @colortheme_alertify-red;
             &:hover, &:active {
-                background-color: lighten(@colortheme_alertify-red, 35%);
+                color: @colortheme_alertify-red-color;
+                background-color: contrast(@colortheme_modal-bg, darken(@colortheme_alertify-red, 10%), lighten(@colortheme_alertify-red, 10%));
             }
         }
 
