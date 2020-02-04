@@ -1208,7 +1208,7 @@ define([
         var spinner = UI.makeSpinner();
         var button = h('button.btn.btn-danger-alt', {
             disabled: 'disabled'
-        }, Messages.trimHistory_button || 'test'); // XXX
+        }, Messages.trimHistory_button || 'delete history... xxx'); // XXX
         var currentSize = h('p', $(spinner.spinner).clone()[0]);
         var content = h('div', [
             currentSize,
@@ -1238,7 +1238,10 @@ define([
         }).nThen(function () {
             $(currentSize).html(Messages._getKey('trimHistory_currentSize', [size]));
             $button.click(function () {
-                UI.confirm(Messages.trimHistory_confirm, function (yes) {
+                //UI.confirm(Messages.trimHistory_confirm, function (yes) {
+                UI.confirmButton(button, {
+                    classes: 'btn-danger'
+                }, function (yes) {
                     if (!yes) { return; }
 
                     $button.remove();

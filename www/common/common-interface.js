@@ -593,6 +593,59 @@ define([
             }
         });
     };
+    UI.confirmButton = function (originalBtn, config, _cb) {
+        config = config || {};
+        cb = Util.once(Util.mkAsync(_cb));
+
+        var classes = 'btn ' + (config.classes || 'btn-primary');
+
+        var button = h('button', {
+            "class": classes,
+            title: config.title || ''
+        }, Messages.areYouSure || "Are you sure?"); // XXX
+        var $button = $(button);
+
+        var div = h('div', {
+            "class": config.classes || ''
+        });
+        var timer = h('div.cp-button-timer', div);
+
+        var content = h('div.cp-button-confirm', [
+            button,
+            timer
+        ]);
+
+        var to;
+
+        var done = function (res) {
+            cb(res);
+            clearTimeout(to);
+            $(content).remove();
+            $(originalBtn).show();
+        };
+
+        $button.click(function () {
+            done(true);
+        });
+
+        var TIMEOUT = 3000;
+        var INTERVAL = 10;
+        var i = 1;
+
+        var todo = function () {
+            var p = 100 * ((TIMEOUT - (i * INTERVAL)) / TIMEOUT);
+            if (i++ * INTERVAL >= TIMEOUT) {
+                done(false);
+                return;
+            }
+            $(div).css('width', p+'%');
+            to = setTimeout(todo, INTERVAL);
+        };
+        to = setTimeout(todo, INTERVAL);
+
+        $(originalBtn).hide().after(content);
+    };
+
 
     UI.proposal = function (content, cb) {
         var buttons = [{
