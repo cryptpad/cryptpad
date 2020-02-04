@@ -1203,7 +1203,7 @@ define([
         // XXX settings_trimHistoryTitle, settings_trimHistoryHint, trimHistory_button, trimHistory_error
         // XXX trimHistory_success, trimHistory_confirm
 
-        if (!privateData.isDriveOwned) { return; } // XXX
+        //if (!privateData.isDriveOwned) { return; } // XXX
 
         var spinner = UI.makeSpinner();
         var button = h('button.btn.btn-danger-alt', {

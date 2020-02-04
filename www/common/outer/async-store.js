@@ -429,10 +429,12 @@ define([
             });
         };
 
-        Store.getFileSize = function (clientId, data, cb) {
+        Store.getFileSize = function (clientId, data, _cb) {
+            var cb = Util.once(Util.mkAsync(_cb));
+
             if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
 
-            var channelId = Hash.hrefToHexChannelId(data.href, data.password);
+            var channelId = data.channel || Hash.hrefToHexChannelId(data.href, data.password);
             store.anon_rpc.send("GET_FILE_SIZE", channelId, function (e, response) {
                 if (e) { return void cb({error: e}); }
                 if (response && response.length && typeof(response[0]) === 'number') {
@@ -1761,7 +1763,9 @@ define([
 
         // Fetch the latest version of the metadata on the server and return it.
         // If the pad is stored in our drive, update the local values of "owners" and "expire"
-        Store.getPadMetadata = function (clientId, data, cb) {
+        Store.getPadMetadata = function (clientId, data, _cb) {
+            var cb = Util.once(Util.mkAsync(_cb));
+
             if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }
             store.anon_rpc.send('GET_METADATA', data.channel, function (err, obj) {
                 if (err) { return void cb({error: err}); }
@@ -1843,7 +1847,9 @@ define([
             network.sendto(hk, JSON.stringify(['GET_FULL_HISTORY', data.channel, data.validateKey]));
         };
 
-        Store.getHistory = function (clientId, data, cb) {
+        Store.getHistory = function (clientId, data, _cb, full) {
+            var cb = Util.once(Util.mkAsync(_cb));
+
             var network = store.network;
             var hk = network.historyKeeper;
 

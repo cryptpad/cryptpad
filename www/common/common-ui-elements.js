@@ -764,8 +764,6 @@ define([
                 if (bytes === 0) { return void cb(void 0, $d); }
                 var formatted = UIElements.prettySize(bytes);
 
-                historyBytes = Math.floor(0.2*bytes); // XXX test data
-
                 if (!owned || !historyBytes || historyBytes > bytes) {
                     $d.append(h('div.cp-app-prop', [Messages.upload_size, h('br'), h('span.cp-app-prop-content', formatted)]));
                     return void cb(void 0, $d);
