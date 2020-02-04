@@ -739,6 +739,7 @@ module.exports.create = function (cfg) {
         var config = parsed[2];
         var metadata = {};
         var lastKnownHash;
+        var txid;
 
         // clients can optionally pass a map of attributes
         // if the channel already exists this map will be ignored
@@ -746,6 +747,7 @@ module.exports.create = function (cfg) {
         if (config && typeof config === "object" && !Array.isArray(parsed[2])) {
             lastKnownHash = config.lastKnownHash;
             metadata = config.metadata || {};
+            txid = config.txid;
             if (metadata.expire) {
                 metadata.expire = +metadata.expire * 1000 + (+new Date());
             }
@@ -796,11 +798,12 @@ module.exports.create = function (cfg) {
                 msgCount++;
                 // avoid sending the metadata message a second time
                 if (isMetadataMessage(msg) && metadata_cache[channelName]) { return readMore(); }
+                if (txid) { msg[0] = txid; }
                 sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(msg)], readMore);
             }, (err) => {
                 if (err && err.code !== 'ENOENT') {
                     if (err.message !== 'EINVAL') { Log.error("HK_GET_HISTORY", err); }
-                    const parsedMsg = {error:err.message, channel: channelName};
+                    const parsedMsg = {error:err.message, channel: channelName, txid: txid};
                     sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(parsedMsg)]);
                     return;
                 }
@@ -848,7 +851,7 @@ module.exports.create = function (cfg) {
                 }
 
                 // End of history message:
-                let parsedMsg = {state: 1, channel: channelName};
+                let parsedMsg = {state: 1, channel: channelName, txid: txid};
                 sendMsg(ctx, user, [0, HISTORY_KEEPER_ID, 'MSG', user.id, JSON.stringify(parsedMsg)]);
             });
         });

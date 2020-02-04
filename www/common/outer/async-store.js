@@ -1855,6 +1855,8 @@ define([
                 }
             };
 
+            var txid = Math.floor(Math.random() * 1000000);
+
             var msgs = [];
             var completed = false;
             var onMsg = function (msg, sender) {
@@ -1862,6 +1864,8 @@ define([
                 if (sender !== hk) { return; }
                 var parsed = parse(msg);
                 if (!parsed) { return; }
+
+                if (parsed.txid && parsed.txid !== txid) { return; }
 
                 // Ignore the metadata message
                 if (parsed.validateKey && parsed.channel) { return; }
@@ -1883,9 +1887,20 @@ define([
                     return;
                 }
 
-                msg = parsed[4];
+                if (Array.isArray(parsed) && parsed[0] && parsed[0] !== txid) { return; }
+
                 // Keep only the history for our channel
                 if (parsed[3] !== data.channel) { return; }
+                // If we want the full messages, push the parsed data
+                if (parsed[4] && full) {
+                    msgs.push({
+                        msg: msg,
+                        hash: parsed[4].slice(0,64)
+                    });
+                    return;
+                }
+                // Otherwise, push the messages
+                msg = parsed[4];
                 if (msg) {
                     msg = msg.replace(/cp\|(([A-Za-z0-9+\/=]+)\|)?/, '');
                     msgs.push(msg);
@@ -1894,6 +1909,7 @@ define([
             network.on('message', onMsg);
 
             var cfg = {
+                txid: txid,
                 lastKnownHash: data.lastKnownHash
             };
             var msg = ['GET_HISTORY', data.channel, cfg];
