@@ -105,6 +105,8 @@ define([
                     return void cb({error: 'EINVAL'});
                 }
 
+                if (!obj.length) { return; }
+
                 hash = obj[0].hash;
                 var messages = obj.map(function(data) {
                     return data.msg;
@@ -161,6 +163,7 @@ define([
                         return;
                     }
                     size += obj.size;
+                    if (!obj.hash) { return; }
                     res.push({
                         channel: channel,
                         hash: obj.hash
@@ -188,7 +191,9 @@ define([
 
         nThen(function (waitFor) {
             channels.forEach(function (obj) {
+                console.warn(obj); // XXX
                 rpc.trimHistory(obj, waitFor(function (err) {
+                    console.error(obj.channel, arguments); // XXX
                     if (err) {
                         warning.push(err);
                         return;
