@@ -160,6 +160,9 @@ var createUser = function (config, cb) {
             wc.leave();
         }));
     }).nThen(function (w) {
+        // give the server time to write your mailbox data before checking that it's correct
+        setTimeout(w(), 500);
+    }).nThen(function (w) {
         // confirm that you own your mailbox
         user.anonRpc.send("GET_METADATA", user.mailboxChannel, w(function (err, data) {
             if (err) {
