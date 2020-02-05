@@ -959,17 +959,17 @@ var trimChannel = function (env, channelName, hash, _cb) {
                 return readMore();
             }
 
+            var s_msg = msgObj.buff.toString('utf8');
             if (retain) {
                 // if this flag is set then you've already found
                 // the message you were looking for.
                 // write it to your temp buffer and keep going
-                return void tempStream.write(msgObj.buff, function () {
+                return void tempStream.write(s_msg + '\n', function () {
                     readMore();
                 });
             }
 
-            var msg = Util.tryParse(msgObj.buff.toString('utf8'));
-
+            var msg = Util.tryParse(s_msg);
             var msgHash = Extras.getHash(msg[4]);
 
             if (msgHash === hash) {
