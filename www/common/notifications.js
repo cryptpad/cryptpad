@@ -29,7 +29,9 @@ define([
     handlers['FRIEND_REQUEST'] = function (common, data) {
         var content = data.content;
         var msg = content.msg;
-        var name = Util.fixHTML(msg.content.displayName) || Messages.anonymous;
+        var userData = msg.content.user || msg.content;
+        var name = Util.fixHTML(userData.displayName) || Messages.anonymous;
+        msg.content = { user: userData };
 
         // Display the notification
         content.getFormatText = function () {
@@ -37,7 +39,7 @@ define([
         };
 
         // Check authenticity
-        if (msg.author !== msg.content.curvePublic) { return; }
+        if (msg.author !== userData.curvePublic) { return; }
 
         // if not archived, add handlers
         if (!content.archived) {
@@ -51,7 +53,11 @@ define([
     handlers['FRIEND_REQUEST_ACCEPTED'] = function (common, data) {
         var content = data.content;
         var msg = content.msg;
-        var name = Util.fixHTML(msg.content.name) || Messages.anonymous;
+        var userData = typeof(msg.content.user) === "object" ? msg.content.user : {
+            displayName: msg.content.name,
+            curvePublic: msg.content.user
+        };
+        var name = Util.fixHTML(userData.displayName) || Messages.anonymous;
         content.getFormatText = function () {
             return Messages._getKey('friendRequest_accepted', [name]);
         };
@@ -63,7 +69,11 @@ define([
     handlers['FRIEND_REQUEST_DECLINED'] = function (common, data) {
         var content = data.content;
         var msg = content.msg;
-        var name = Util.fixHTML(msg.content.name) || Messages.anonymous;
+        var userData = typeof(msg.content.user) === "object" ? msg.content.user : {
+            displayName: msg.content.name,
+            curvePublic: msg.content.user
+        };
+        var name = Util.fixHTML(userData.displayName) || Messages.anonymous;
         content.getFormatText = function () {
             return Messages._getKey('friendRequest_declined', [name]);
         };

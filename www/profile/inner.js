@@ -570,6 +570,29 @@ define([
             return;
         }
 
+        if (!common.isLoggedIn()) {
+            var login = h('button.cp-corner-primary', Messages.login_login);
+            var register = h('button.cp-corner-primary', Messages.login_register);
+            var cancel = h('button.cp-corner-cancel', Messages.cancel);
+            var actions = h('div', [cancel, register, login]);
+            var modal = UI.cornerPopup(Messages.profile_login || "You need to log in to add this user to your contacts", actions, '', {alt: true}); // XXX
+            $(register).click(function () {
+                common.setLoginRedirect(function () {
+                    common.gotoURL('/register/');
+                });
+                modal.delete();
+            });
+            $(login).click(function () {
+                common.setLoginRedirect(function () {
+                    common.gotoURL('/login/');
+                });
+                modal.delete();
+            });
+            $(cancel).click(function () {
+                modal.delete();
+            });
+        }
+
         var listmapConfig = {
             data: {},
             common: common,
