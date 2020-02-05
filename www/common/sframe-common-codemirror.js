@@ -62,15 +62,16 @@ define([
         });
 
         editor._noCursorUpdate = false;
-        editor.state.focused = true;
+        editor.scrollTo(scroll.left, scroll.top);
+
+        if (!editor.state.focused) { return; }
+
         if(selects[0] === selects[1]) {
             editor.setCursor(posToCursor(selects[0], remoteDoc));
         }
         else {
             editor.setSelection(posToCursor(selects[0], remoteDoc), posToCursor(selects[1], remoteDoc));
         }
-
-        editor.scrollTo(scroll.left, scroll.top);
     };
 
     module.getHeadingText = function (editor) {
