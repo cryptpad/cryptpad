@@ -56,6 +56,21 @@ define([
         });
     };
 
+    var dcAlert;
+    UIElements.disconnectAlert = function () {
+        if (dcAlert && $(dcAlert.element).length) { return; }
+        dcAlert = UI.alert(Messages.common_connectionLost, undefined, true);
+    };
+    UIElements.reconnectAlert = function () {
+        if (!dcAlert) { return; }
+        if (!dcAlert.delete) {
+            dcAlert = undefined;
+            return;
+        }
+        dcAlert.delete();
+        dcAlert = undefined;
+    };
+
     var importContent = function (type, f, cfg) {
         return function () {
             var $files = $('<input>', {type:"file"});
@@ -212,15 +227,7 @@ define([
                         common.mailbox.sendTo("RM_OWNER", {
                             channel: channel,
                             title: data.title,
-                            pending: pending,
-                            user: {
-                                displayName: user.name,
-                                avatar: user.avatar,
-                                profile: user.profile,
-                                notifications: user.notifications,
-                                curvePublic: user.curvePublic,
-                                edPublic: priv.edPublic
-                            }
+                            pending: pending
                         }, {
                             channel: friend.notifications,
                             curvePublic: friend.curvePublic
@@ -363,15 +370,7 @@ define([
                             channel: channel,
                             href: data.href,
                             password: data.password,
-                            title: data.title,
-                            user: {
-                                displayName: user.name,
-                                avatar: user.avatar,
-                                profile: user.profile,
-                                notifications: user.notifications,
-                                curvePublic: user.curvePublic,
-                                edPublic: priv.edPublic
-                            }
+                            title: data.title
                         }, {
                             channel: friend.notifications,
                             curvePublic: friend.curvePublic
@@ -4097,52 +4096,68 @@ define([
     };
 
     var crowdfundingState = false;
-    UIElements.displayCrowdfunding = function (common) {
+    UIElements.displayCrowdfunding = function (common, force) {
         if (crowdfundingState) { return; }
-        if (AppConfig.disableCrowdfundingMessages) { return; }
         var priv = common.getMetadataMgr().getPrivateData();
+
+
+        var todo = function () {
+            crowdfundingState = true;
+            // Display the popup
+            var text = Messages.crowdfunding_popup_text;
+            var yes = h('button.cp-corner-primary', [
+                h('span.fa.fa-external-link'),
+                'OpenCollective'
+            ]);
+            var no = h('button.cp-corner-cancel', Messages.crowdfunding_popup_no);
+            var actions = h('div', [no, yes]);
+
+            var dontShowAgain = function () {
+                common.setAttribute(['general', 'crowdfunding'], false);
+                Feedback.send('CROWDFUNDING_NEVER');
+            };
+
+            var modal = UI.cornerPopup(text, actions, null, {
+                big: true,
+                alt: true,
+                dontShowAgain: dontShowAgain
+            });
+
+            $(yes).click(function () {
+                modal.delete();
+                common.openURL(priv.accounts.donateURL);
+                Feedback.send('CROWDFUNDING_YES');
+            });
+            $(modal.popup).find('a').click(function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                modal.delete();
+                common.openURL(priv.accounts.donateURL);
+                Feedback.send('CROWDFUNDING_LINK');
+            });
+            $(no).click(function () {
+                modal.delete();
+                Feedback.send('CROWDFUNDING_NO');
+            });
+        };
+
+        if (force) {
+            crowdfundingState = true;
+            return void todo();
+        }
+
+        if (AppConfig.disableCrowdfundingMessages) { return; }
         if (priv.plan) { return; }
 
         crowdfundingState = true;
-        setTimeout(function () {
-            common.getAttribute(['general', 'crowdfunding'], function (err, val) {
-                if (err || val === false) { return; }
-                common.getSframeChannel().query('Q_GET_PINNED_USAGE', null, function (err, obj) {
-                    var quotaMb = obj.quota / (1024 * 1024);
-                    if (quotaMb < 10) { return; }
-                    // Display the popup
-                    var text = Messages.crowdfunding_popup_text;
-                    var yes = h('button.cp-corner-primary', Messages.crowdfunding_popup_yes);
-                    var no = h('button.cp-corner-primary', Messages.crowdfunding_popup_no);
-                    var never = h('button.cp-corner-cancel', Messages.crowdfunding_popup_never);
-                    var actions = h('div', [yes, no, never]);
-
-                    var modal = UI.cornerPopup(text, actions, null, {big: true});
-
-                    $(yes).click(function () {
-                        modal.delete();
-                        common.openURL(priv.accounts.donateURL);
-                        Feedback.send('CROWDFUNDING_YES');
-                    });
-                    $(modal.popup).find('a').click(function (e) {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        modal.delete();
-                        common.openURL(priv.accounts.donateURL);
-                        Feedback.send('CROWDFUNDING_LINK');
-                    });
-                    $(no).click(function () {
-                        modal.delete();
-                        Feedback.send('CROWDFUNDING_NO');
-                    });
-                    $(never).click(function () {
-                        modal.delete();
-                        common.setAttribute(['general', 'crowdfunding'], false);
-                        Feedback.send('CROWDFUNDING_NEVER');
-                    });
-                });
+        common.getAttribute(['general', 'crowdfunding'], function (err, val) {
+            if (err || val === false) { return; }
+            common.getSframeChannel().query('Q_GET_PINNED_USAGE', null, function (err, obj) {
+                var quotaMb = obj.quota / (1024 * 1024);
+                if (quotaMb < 10) { return; }
+                todo();
             });
-        }, 5000);
+        });
     };
 
     var storePopupState = false;
@@ -4164,7 +4179,7 @@ define([
 
         var hide = h('button.cp-corner-cancel', Messages.autostore_hide);
         var store = h('button.cp-corner-primary', Messages.autostore_store);
-        var actions = h('div', [store, hide]);
+        var actions = h('div', [hide, store]);
 
         var initialHide = data && data.autoStore && data.autoStore === -1;
         var modal = UI.cornerPopup(text, actions, footer, {hidden: initialHide});
@@ -4319,7 +4334,8 @@ define([
 
     UIElements.displayFriendRequestModal = function (common, data) {
         var msg = data.content.msg;
-        var text = Messages._getKey('contacts_request', [Util.fixHTML(msg.content.displayName)]);
+        var userData = msg.content.user;
+        var text = Messages._getKey('contacts_request', [Util.fixHTML(userData.displayName)]);
 
         var todo = function (yes) {
             common.getSframeChannel().query("Q_ANSWER_FRIEND_REQUEST", {
@@ -4346,7 +4362,6 @@ define([
 
     UIElements.displayAddOwnerModal = function (common, data) {
         var priv = common.getMetadataMgr().getPrivateData();
-        var user = common.getMetadataMgr().getUserData();
         var sframeChan = common.getSframeChannel();
         var msg = data.content.msg;
 
@@ -4381,15 +4396,7 @@ define([
                 href: msg.content.href,
                 password: msg.content.password,
                 title: msg.content.title,
-                answer: yes,
-                user: {
-                    displayName: user.name,
-                    avatar: user.avatar,
-                    profile: user.profile,
-                    notifications: user.notifications,
-                    curvePublic: user.curvePublic,
-                    edPublic: priv.edPublic
-                }
+                answer: yes
             }, {
                 channel: msg.content.user.notifications,
                 curvePublic: msg.content.user.curvePublic
@@ -4470,7 +4477,6 @@ define([
     };
     UIElements.displayAddTeamOwnerModal = function (common, data) {
         var priv = common.getMetadataMgr().getPrivateData();
-        var user = common.getMetadataMgr().getUserData();
         var sframeChan = common.getSframeChannel();
         var msg = data.content.msg;
 
@@ -4487,15 +4493,7 @@ define([
             common.mailbox.sendTo("ADD_OWNER_ANSWER", {
                 teamChannel: msg.content.teamChannel,
                 title: msg.content.title,
-                answer: yes,
-                user: {
-                    displayName: user.name,
-                    avatar: user.avatar,
-                    profile: user.profile,
-                    notifications: user.notifications,
-                    curvePublic: user.curvePublic,
-                    edPublic: priv.edPublic
-                }
+                answer: yes
             }, {
                 channel: msg.content.user.notifications,
                 curvePublic: msg.content.user.curvePublic
@@ -4611,8 +4609,6 @@ define([
     };
 
     UIElements.displayInviteTeamModal = function (common, data) {
-        var priv = common.getMetadataMgr().getPrivateData();
-        var user = common.getMetadataMgr().getUserData();
         var msg = data.content.msg;
 
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
@@ -4633,15 +4629,7 @@ define([
             common.mailbox.sendTo("INVITE_TO_TEAM_ANSWER", {
                 answer: yes,
                 teamChannel: msg.content.team.channel,
-                teamName: teamName,
-                user: {
-                    displayName: user.name,
-                    avatar: user.avatar,
-                    profile: user.profile,
-                    notifications: user.notifications,
-                    curvePublic: user.curvePublic,
-                    edPublic: priv.edPublic
-                }
+                teamName: teamName
             }, {
                 channel: msg.content.user.notifications,
                 curvePublic: msg.content.user.curvePublic

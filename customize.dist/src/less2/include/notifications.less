@@ -8,6 +8,7 @@
     @notif-height: 50px;
     .cp-notifications-container {
         max-width: 300px;
+        width: 300px;
         display: flex;
         flex-flow: column;
         & hr {
@@ -16,6 +17,14 @@
         .cp-notification {
             min-height: @notif-height;
             display: flex;
+            .cp-avatar {
+                .avatar_main(30px);
+                padding: 0 5px;
+                cursor: pointer;
+                &:hover {
+                    background-color: rgba(0,0,0,0.1);
+                }
+            }
             .cp-notification-content {
                 flex: 1;
                 align-items: stretch;

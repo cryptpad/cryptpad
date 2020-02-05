@@ -10,7 +10,7 @@
     @alertify-input-fg: @colortheme_modal-input-fg;
 
     input:not(.form-control), textarea {
-        background-color: @alertify-input-fg;
+        // background-color: @alertify-input-fg;
         color: @cryptpad_text_col;
         border: 1px solid @alertify-input-bg;
         width: 100%;
@@ -21,6 +21,10 @@
             color: @cryptpad_text_col;
             border-color: @alertify-input-fg;
         }
+    }
+
+    input:not(.form-control) {
+        height: @variables_input-height;
     }
 
     div.cp-alertify-type {

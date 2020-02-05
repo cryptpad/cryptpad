@@ -491,6 +491,11 @@ define([
             $ok.focus();
             Notifier.notify();
         });
+
+        return {
+            element: frame,
+            delete: close
+        };
     };
 
     UI.prompt = function (msg, def, cb, opt, force) {
@@ -1050,38 +1055,35 @@ define([
         return radio;
     };
 
+    var corner = {
+        queue: [],
+        state: false
+    };
     UI.cornerPopup = function (text, actions, footer, opts) {
         opts = opts || {};
 
-        var minimize = h('div.cp-corner-minimize.fa.fa-window-minimize');
-        var maximize = h('div.cp-corner-maximize.fa.fa-window-maximize');
+        var dontShowAgain = h('div.cp-corner-dontshow', [
+            h('span.fa.fa-times'),
+            Messages.dontShowAgain || "Don't show again" // XXX
+        ]);
+
         var popup = h('div.cp-corner-container', [
-            minimize,
-            maximize,
-            h('div.cp-corner-filler', { style: "width:110px;" }),
-            h('div.cp-corner-filler', { style: "width:80px;" }),
-            h('div.cp-corner-filler', { style: "width:60px;" }),
-            h('div.cp-corner-filler', { style: "width:40px;" }),
-            h('div.cp-corner-filler', { style: "width:20px;" }),
             setHTML(h('div.cp-corner-text'), text),
             h('div.cp-corner-actions', actions),
-            setHTML(h('div.cp-corner-footer'), footer)
+            setHTML(h('div.cp-corner-footer'), footer),
+            opts.dontShowAgain ? dontShowAgain : undefined
         ]);
 
         var $popup = $(popup);
-
-        $(minimize).click(function () {
-            $popup.addClass('cp-minimized');
-        });
-        $(maximize).click(function () {
-            $popup.removeClass('cp-minimized');
-        });
 
         if (opts.hidden) {
             $popup.addClass('cp-minimized');
         }
         if (opts.big) {
             $popup.addClass('cp-corner-big');
+        }
+        if (opts.alt) {
+            $popup.addClass('cp-corner-alt');
         }
 
         var hide = function () {
@@ -1092,9 +1094,28 @@ define([
         };
         var deletePopup = function () {
             $popup.remove();
+            if (!corner.queue.length) {
+                corner.state = false;
+                return;
+            }
+            setTimeout(function () {
+                $('body').append(corner.queue.pop());
+            }, 5000);
         };
 
-        $('body').append(popup);
+        $(dontShowAgain).click(function () {
+            deletePopup();
+            if (typeof(opts.dontShowAgain) === "function") {
+                opts.dontShowAgain();
+            }
+        });
+
+        if (corner.state) {
+            corner.queue.push(popup);
+        } else {
+            corner.state = true;
+            $('body').append(popup);
+        }
 
         return {
             popup: popup,

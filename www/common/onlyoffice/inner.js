@@ -1606,17 +1606,10 @@ define([
             pinImages();
         };
 
-        config.onAbort = function () {
-            // inform of network disconnect
-            setEditable(false);
-            toolbar.failed();
-            UI.alert(Messages.common_connectionLost, undefined, true);
-        };
-
         config.onConnectionChange = function (info) {
             if (info.state) {
                 // If we tried to send changes while we were offline, force a page reload
-                UI.findOKButton().click();
+                UIElements.reconnectAlert();
                 if (Object.keys(pendingChanges).length) {
                     return void UI.confirm(Messages.oo_reconnect, function (yes) {
                         if (!yes) { return; }
@@ -1629,7 +1622,7 @@ define([
                 setEditable(false);
                 offline = true;
                 UI.findOKButton().click();
-                UI.alert(Messages.common_connectionLost, undefined, true);
+                UIElements.disconnectAlert();
             }
         };
 

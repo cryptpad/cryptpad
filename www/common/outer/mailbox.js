@@ -2,11 +2,12 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-realtime.js',
+    '/common/common-messaging.js',
     '/common/notify.js',
     '/common/outer/mailbox-handlers.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-crypto/crypto.js',
-], function (Util, Hash, Realtime, Notify, Handlers, CpNetflux, Crypto) {
+], function (Util, Hash, Realtime, Messaging, Notify, Handlers, CpNetflux, Crypto) {
     var Mailbox = {};
 
     var TYPES = [
@@ -95,6 +96,12 @@ proxy.mailboxes = {
         if (!anonRpc) { return void cb({error: "anonymous rpc session not ready"}); }
 
         var crypto = Crypto.Mailbox.createEncryptor(keys);
+
+        // Always send your data
+        if (typeof(msg) === "object" && !msg.user) {
+            var myData = Messaging.createData(ctx.store.proxy, false);
+            msg.user = myData;
+        }
 
         var text = JSON.stringify({
             type: type,
@@ -187,6 +194,11 @@ proxy.mailboxes = {
             history: [], // All the hashes loaded from the server in corretc order
             content: {}, // Content of the messages that should be displayed
             sendMessage: function (msg) { // To send a message to our box
+                // Always send your data
+                if (typeof(msg) === "object" && !msg.user) {
+                    var myData = Messaging.createData(ctx.store.proxy, false);
+                    msg.user = myData;
+                }
                 try {
                     msg = JSON.stringify(msg);
                 } catch (e) {

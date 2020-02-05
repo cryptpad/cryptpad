@@ -5,6 +5,7 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
+    '/common/common-ui-elements.js',
     '/common/common-feedback.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
@@ -22,6 +23,7 @@ define([
     Util,
     Hash,
     UI,
+    UIElements,
     Feedback,
     nThen,
     SFCommon,
@@ -272,13 +274,13 @@ define([
                 setEditable(false);
                 if (drive.refresh) { drive.refresh(); }
                 APP.toolbar.failed();
-                if (!noAlert) { UI.alert(Messages.common_connectionLost, undefined, true); }
+                if (!noAlert) { UIElements.disconnectAlert(); }
             };
             var onReconnect = function () {
                 setEditable(true);
                 if (drive.refresh) { drive.refresh(); }
                 APP.toolbar.reconnecting();
-                UI.findOKButton().click();
+                UIElements.reconnectAlert();
             };
 
             sframeChan.on('EV_DRIVE_LOG', function (msg) {
