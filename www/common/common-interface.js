@@ -600,7 +600,7 @@ define([
     };
     UI.confirmButton = function (originalBtn, config, _cb) {
         config = config || {};
-        cb = Util.once(Util.mkAsync(_cb));
+        var cb = Util.once(Util.mkAsync(_cb));
 
         var classes = 'btn ' + (config.classes || 'btn-primary');
 
