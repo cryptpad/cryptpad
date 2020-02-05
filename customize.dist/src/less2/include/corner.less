@@ -137,7 +137,9 @@
         button {
             padding: 5px;
             color: @corner-white;
-            margin-left: 10px;
+            &:not(:first-child) {
+                margin-left: 10px;
+            }
             outline: none;
             text-transform: uppercase;
             border: 1px solid @corner-white;
