@@ -739,6 +739,7 @@ define([
             if (data.rtChannel) { chan.push(data.rtChannel); }
             if (data.lastVersion) { chan.push(Hash.hrefToHexChannelId(data.lastVersion)); }
             var history = common.makeUniversal('history');
+            var trimChannels = [];
             NThen(function (waitFor) {
                 chan.forEach(function (c) {
                     common.getFileSize(c, waitFor(function (e, _bytes) {
@@ -758,6 +759,7 @@ define([
                 }, waitFor(function (obj) {
                     if (obj && obj.error) { return; }
                     historyBytes = obj.size;
+                    trimChannels = obj.channels;
                 }));
             }).nThen(function () {
                 if (bytes === 0) { return void cb(void 0, $d); }
@@ -806,7 +808,7 @@ define([
                         spinner.spin();
                         history.execCommand('TRIM_HISTORY', {
                             pad: true,
-                            channels: chan.filter(function (c) { return c.length === 32; }),
+                            channels: trimChannels,
                             teamId: typeof(owned) === "number" && owned
                         }, function (obj) {
                             if (obj && obj.error) {
@@ -814,7 +816,6 @@ define([
                                 // XXX what are the possible errors?
                                 return;
                             }
-                            // TODO: obj.warning?
                             spinner.hide();
                             $(size).append(h('div.alert.alert-success', Messages.trimHistory_success || 'ok')); // XXX
                         });

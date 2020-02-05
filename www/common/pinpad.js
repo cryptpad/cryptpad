@@ -125,6 +125,17 @@ var factory = function (Util, Rpc) {
                 });
             };
 
+            exp.trimHistory = function (data, _cb) {
+                var cb = Util.once(Util.mkAsync(_cb));
+                if (typeof(data) !== 'object' || !data.channel || !data.hash) {
+                    return void cb('INVALID_ARGUMENTS');
+                }
+                rpc.send('TRIM_HISTORY', data, function (e) {
+                    if (e) { return cb(e); }
+                    cb();
+                });
+            };
+
             exp.clearOwnedChannel = function (channel, cb) {
                 if (typeof(channel) !== 'string' || channel.length !== 32) {
                     return void cb('INVALID_ARGUMENTS');

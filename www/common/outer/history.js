@@ -163,13 +163,14 @@ define([
                     size += obj.size;
                     res.push({
                         channel: channel,
-                        lastKnownHash: obj.hash
+                        hash: obj.hash
                     });
                 }));
             });
         }).nThen(function () {
             cb({
                 warning: warning.length ? warning : undefined,
+                channels: res,
                 size: size
             });
         });
@@ -185,24 +186,14 @@ define([
 
         var warning = [];
 
-        // If account trim history, get the correct channels here
-        if (data.account) {
-            channels = getAccountChannels(ctx);
-        }
-
         nThen(function (waitFor) {
-            channels.forEach(function (chan) {
-                chan = chan; // XXX
-                waitFor = waitFor; // XXX
-                /*
-                rpc.trimHistory(chan, waitFor(function (err) {
+            channels.forEach(function (obj) {
+                rpc.trimHistory(obj, waitFor(function (err) {
                     if (err) {
-                        chanWarning = true;
                         warning.push(err);
                         return;
                     }
                 }));
-                */ // XXX TODO
             });
         }).nThen(function () {
             // Only one channel and warning: error

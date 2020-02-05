@@ -1221,6 +1221,7 @@ define([
 
         var $button = $(button);
         var size;
+        var channels = [];
         nThen(function (waitFor) {
             APP.history.execCommand('GET_HISTORY_SIZE', {
                 account: true,
@@ -1230,9 +1231,9 @@ define([
                     waitFor.abort();
                     var error = h('div.alert.alert-danger', Messages.trimHistory_error || 'error'); // XXX
                     $(content).empty().append(error);
-                    // TODO: obj.warning?
                     return;
                 }
+                channels = obj.channels;
                 size = UIElements.prettySize(Number(obj.size));
             }));
         }).nThen(function () {
@@ -1247,14 +1248,12 @@ define([
                     $button.remove();
                     spinner.spin();
                     APP.history.execCommand('TRIM_HISTORY', {
-                        account: true,
-                        channels: []
+                        channels: channels
                     }, function (obj) {
                         if (obj && obj.error) {
                             // XXX what are the possible errors?
                             return;
                         }
-                        // TODO: obj.warning?
                         spinner.hide();
                         $(content).append(h('div.alert.alert-success', Messages.trimHistory_success || 'ok')); // XXX
                     });
