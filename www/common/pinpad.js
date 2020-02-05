@@ -89,18 +89,6 @@ var factory = function (Util, Rpc) {
                 });
             };
 
-            // get the total stored size of a channel's patches (in bytes)
-            exp.getFileSize = function (file, cb) {
-                rpc.send('GET_FILE_SIZE', file, function (e, response) {
-                    if (e) { return void cb(e); }
-                    if (response && response.length && typeof(response[0]) === 'number') {
-                        return void cb(void 0, response[0]);
-                    } else {
-                        cb('INVALID_RESPONSE');
-                    }
-                });
-            };
-
             // get the combined size of all channels (in bytes) for all the
             // channels which the server has pinned for your publicKey
             exp.getFileListSize = function (cb) {

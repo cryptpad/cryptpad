@@ -1,5 +1,6 @@
 @import (reference) '../../customize/src/less2/include/framework.less';
 @import (reference) '../../customize/src/less2/include/sidebar-layout.less';
+@import (reference) '../../customize/src/less2/include/avatar.less';
 
 &.cp-app-notifications {
 
@@ -84,6 +85,14 @@
                     color: #777;
                     &:only-child {
                         display: block;
+                    }
+                }
+                .cp-avatar {
+                    .avatar_main(48px);
+                    padding: 0 10px;
+                    cursor: pointer;
+                    &:hover {
+                        background-color: rgba(0,0,0,0.1);
                     }
                 }
                 &.cp-app-notification-archived {

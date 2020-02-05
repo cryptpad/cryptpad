@@ -1260,15 +1260,15 @@ define([
 
             // If we accept the request, add the friend to the list
             if (value) {
-                Messaging.acceptFriendRequest(store, msg.content, function (obj) {
+                Messaging.acceptFriendRequest(store, msg.content.user, function (obj) {
                     if (obj && obj.error) { return void cb(obj); }
                     Messaging.addToFriendList({
                         proxy: store.proxy,
                         realtime: store.realtime,
                         pinPads: function (data, cb) { Store.pinPads(null, data, cb); },
-                    }, msg.content, function (err) {
+                    }, msg.content.user, function (err) {
                         if (store.messenger) {
-                            store.messenger.onFriendAdded(msg.content);
+                            store.messenger.onFriendAdded(msg.content.user);
                         }
                         broadcast([], "UPDATE_METADATA");
                         if (err) { return void cb({error: err}); }
@@ -1278,12 +1278,7 @@ define([
                 return;
             }
             // Otherwise, just remove the notification
-            store.mailbox.sendTo('DECLINE_FRIEND_REQUEST', {
-                displayName: store.proxy['cryptpad.username']
-            }, {
-                channel: msg.content.notifications,
-                curvePublic: msg.content.curvePublic
-            }, function (obj) {
+            Messaging.declineFriendRequest(store, msg.content.user, function (obj) {
                 broadcast([], "UPDATE_METADATA");
                 cb(obj);
             });
@@ -1305,8 +1300,9 @@ define([
             store.proxy.friends_pending[data.curvePublic] = +new Date();
             broadcast([], "UPDATE_METADATA");
 
-            var myData = Messaging.createData(store.proxy);
-            store.mailbox.sendTo('FRIEND_REQUEST', myData, {
+            store.mailbox.sendTo('FRIEND_REQUEST', {
+                user: Messaging.createData(store.proxy)
+            }, {
                 channel: data.notifications,
                 curvePublic: data.curvePublic
             }, function (obj) {
@@ -1642,11 +1638,8 @@ define([
             // If send is true, send the request to the owner.
             if (owner) {
                 if (data.send) {
-                    var myData = Messaging.createData(store.proxy);
-                    delete myData.channel;
                     store.mailbox.sendTo('REQUEST_PAD_ACCESS', {
-                        channel: data.channel,
-                        user: myData
+                        channel: data.channel
                     }, {
                         channel: owner.notifications,
                         curvePublic: owner.curvePublic
@@ -1680,13 +1673,10 @@ define([
                 }
             })) { return void cb({error: 'ENOTFOUND'}); }
 
-            var myData = Messaging.createData(store.proxy);
-            delete myData.channel;
             store.mailbox.sendTo("GIVE_PAD_ACCESS", {
                 channel: channel,
                 href: href,
-                title: title,
-                user: myData
+                title: title
             }, {
                 channel: data.user.notifications,
                 curvePublic: data.user.curvePublic
@@ -1720,13 +1710,11 @@ define([
             }
             // Tell all the owners that the pad was deleted from the server
             var curvePublic = store.proxy.curvePublic;
-            var myData = Messaging.createData(store.proxy, false);
             m.forEach(function (obj) {
                 var mb = JSON.parse(obj);
                 if (mb.curvePublic === curvePublic) { return; }
                 store.mailbox.sendTo('OWNED_PAD_REMOVED', {
-                    channel: channel,
-                    user: myData
+                    channel: channel
                 }, {
                     channel: mb.notifications,
                     curvePublic: mb.curvePublic

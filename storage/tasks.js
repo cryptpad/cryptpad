@@ -202,22 +202,6 @@ var expire = function (env, task, cb) {
     var Log = env.log;
     var args = task.slice(2);
 
-    if (!env.retainData) {
-        Log.info('DELETION_SCHEDULED_EXPIRATION', {
-            task: task,
-        });
-        env.store.removeChannel(args[0], function (err) {
-            if (err) {
-                Log.error('DELETION_SCHEDULED_EXPIRATION_ERROR', {
-                    task: task,
-                    error: err,
-                });
-            }
-            cb();
-        });
-        return;
-    }
-
     Log.info('ARCHIVAL_SCHEDULED_EXPIRATION', {
         task: task,
     });
@@ -381,7 +365,6 @@ Tasks.create = function (config, cb) {
         root: config.taskPath || './tasks',
         log: config.log,
         store: config.store,
-        retainData: Boolean(config.retainData),
     };
 
     // make sure the path exists...
