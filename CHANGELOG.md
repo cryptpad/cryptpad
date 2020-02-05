@@ -1,3 +1,42 @@
+# L release (3.11.0)
+
+## Goals
+
+* major server refactor to prepare for:
+  * trim-history
+  * allow lists
+
+## Update notes
+
+* dropped support for retainData
+  * archives are on by default
+* you will need a new chainpad server
+
+## Features
+
+* restyled corner popup
+* cool new scheduler library
+  * operations on channels are queued
+* trim-history rpc
+* unified historykeeper and rpc
+* more visible styles for unanswered support tickets
+* hidden hashes/safe links
+  * new "security" tab in settings
+* queue'd popups
+  * reconnect alert
+* link to user profile in notifications
+* prompt anonymous users to register when viewing a profile
+* spreadsheets
+  * reconnecting spreadsheets
+  * faster spreadsheets
+* don't hijack chat cursor
+* friends are now "contacts"
+
+## Bug fixes
+
+* friend request/accept race condition
+* throw errors in 'mkAsync' if no function is passed
+
 # Kouprey release (3.10.0)
 
 ## Goals
