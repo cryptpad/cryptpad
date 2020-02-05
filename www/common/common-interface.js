@@ -491,6 +491,11 @@ define([
             $ok.focus();
             Notifier.notify();
         });
+
+        return {
+            element: frame,
+            delete: close
+        };
     };
 
     UI.prompt = function (msg, def, cb, opt, force) {

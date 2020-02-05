@@ -396,9 +396,9 @@ define([
             if (state === STATE.DELETED) { return; }
             stateChange(info.state ? STATE.INITIALIZING : STATE.DISCONNECTED, info.permanent);
             /*if (info.state) {
-                UI.findOKButton().click();
+                UIElements.reconnectAlert();
             } else {
-                UI.alert(Messages.common_connectionLost, undefined, true);
+                UIElements.disconnectAlert();
             }*/
         };
 

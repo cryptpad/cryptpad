@@ -56,6 +56,21 @@ define([
         });
     };
 
+    var dcAlert;
+    UIElements.disconnectAlert = function () {
+        if (dcAlert && $(dcAlert.element).length) { return; }
+        dcAlert = UI.alert(Messages.common_connectionLost, undefined, true);
+    };
+    UIElements.reconnectAlert = function () {
+        if (!dcAlert) { return; }
+        if (!dcAlert.delete) {
+            dcAlert = undefined;
+            return;
+        }
+        dcAlert.delete();
+        dcAlert = undefined;
+    };
+
     var importContent = function (type, f, cfg) {
         return function () {
             var $files = $('<input>', {type:"file"});
