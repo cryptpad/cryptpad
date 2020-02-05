@@ -55,9 +55,7 @@ define([
         var createElement = mailbox.createElement = function (data) {
             var notif;
             var avatar;
-            var type = Util.find(data, ['content', 'msg', 'type']);
-            var userData = ['FRIEND_REQUEST'].indexOf(type) !== -1 ? Util.find(data, ['content', 'msg', 'content'])
-                                : Util.find(data, ['content', 'msg', 'content', 'user']);
+            var userData = Util.find(data, ['content', 'msg', 'content', 'user']);
             if (userData && typeof(userData) === "object" && userData.profile) {
                 avatar = h('span.cp-avatar');
                 Common.displayAvatar($(avatar), userData.avatar, userData.displayName || userData.name);
@@ -65,9 +63,6 @@ define([
                     e.stopPropagation();
                     Common.openURL(Hash.hashToHref(userData.profile, 'profile'));
                 });
-            } else {
-            console.warn(data);
-                
             }
             notif = h('div.cp-notification', {
                 'data-hash': data.content.hash

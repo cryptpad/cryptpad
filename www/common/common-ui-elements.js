@@ -212,15 +212,7 @@ define([
                         common.mailbox.sendTo("RM_OWNER", {
                             channel: channel,
                             title: data.title,
-                            pending: pending,
-                            user: {
-                                displayName: user.name,
-                                avatar: user.avatar,
-                                profile: user.profile,
-                                notifications: user.notifications,
-                                curvePublic: user.curvePublic,
-                                edPublic: priv.edPublic
-                            }
+                            pending: pending
                         }, {
                             channel: friend.notifications,
                             curvePublic: friend.curvePublic
@@ -363,15 +355,7 @@ define([
                             channel: channel,
                             href: data.href,
                             password: data.password,
-                            title: data.title,
-                            user: {
-                                displayName: user.name,
-                                avatar: user.avatar,
-                                profile: user.profile,
-                                notifications: user.notifications,
-                                curvePublic: user.curvePublic,
-                                edPublic: priv.edPublic
-                            }
+                            title: data.title
                         }, {
                             channel: friend.notifications,
                             curvePublic: friend.curvePublic
@@ -4335,7 +4319,8 @@ define([
 
     UIElements.displayFriendRequestModal = function (common, data) {
         var msg = data.content.msg;
-        var text = Messages._getKey('contacts_request', [Util.fixHTML(msg.content.displayName)]);
+        var userData = msg.content.user;
+        var text = Messages._getKey('contacts_request', [Util.fixHTML(userData.displayName)]);
 
         var todo = function (yes) {
             common.getSframeChannel().query("Q_ANSWER_FRIEND_REQUEST", {
@@ -4362,7 +4347,6 @@ define([
 
     UIElements.displayAddOwnerModal = function (common, data) {
         var priv = common.getMetadataMgr().getPrivateData();
-        var user = common.getMetadataMgr().getUserData();
         var sframeChan = common.getSframeChannel();
         var msg = data.content.msg;
 
@@ -4397,15 +4381,7 @@ define([
                 href: msg.content.href,
                 password: msg.content.password,
                 title: msg.content.title,
-                answer: yes,
-                user: {
-                    displayName: user.name,
-                    avatar: user.avatar,
-                    profile: user.profile,
-                    notifications: user.notifications,
-                    curvePublic: user.curvePublic,
-                    edPublic: priv.edPublic
-                }
+                answer: yes
             }, {
                 channel: msg.content.user.notifications,
                 curvePublic: msg.content.user.curvePublic
@@ -4486,7 +4462,6 @@ define([
     };
     UIElements.displayAddTeamOwnerModal = function (common, data) {
         var priv = common.getMetadataMgr().getPrivateData();
-        var user = common.getMetadataMgr().getUserData();
         var sframeChan = common.getSframeChannel();
         var msg = data.content.msg;
 
@@ -4503,15 +4478,7 @@ define([
             common.mailbox.sendTo("ADD_OWNER_ANSWER", {
                 teamChannel: msg.content.teamChannel,
                 title: msg.content.title,
-                answer: yes,
-                user: {
-                    displayName: user.name,
-                    avatar: user.avatar,
-                    profile: user.profile,
-                    notifications: user.notifications,
-                    curvePublic: user.curvePublic,
-                    edPublic: priv.edPublic
-                }
+                answer: yes
             }, {
                 channel: msg.content.user.notifications,
                 curvePublic: msg.content.user.curvePublic
@@ -4627,8 +4594,6 @@ define([
     };
 
     UIElements.displayInviteTeamModal = function (common, data) {
-        var priv = common.getMetadataMgr().getPrivateData();
-        var user = common.getMetadataMgr().getUserData();
         var msg = data.content.msg;
 
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
@@ -4649,15 +4614,7 @@ define([
             common.mailbox.sendTo("INVITE_TO_TEAM_ANSWER", {
                 answer: yes,
                 teamChannel: msg.content.team.channel,
-                teamName: teamName,
-                user: {
-                    displayName: user.name,
-                    avatar: user.avatar,
-                    profile: user.profile,
-                    notifications: user.notifications,
-                    curvePublic: user.curvePublic,
-                    edPublic: priv.edPublic
-                }
+                teamName: teamName
             }, {
                 channel: msg.content.user.notifications,
                 curvePublic: msg.content.user.curvePublic
