@@ -975,10 +975,11 @@ var trimChannel = function (env, channelName, hash, _cb) {
             if (msgHash === hash) {
                 // everything from this point on should be retained
                 retain = true;
-                return void tempStream.write(msgObj.buff, function () {
+                return void tempStream.write(s_msg + '\n', function () {
                     readMore();
                 });
             }
+            readMore();
         };
 
         readMessagesBin(env, channelName, 0, handler, w(function (err) {
