@@ -72,9 +72,6 @@ define([
                     cb(obj);
                 });
             });
-            sframeChan.on('EV_DRIVE_SET_HASH', function () {
-                return;
-            });
             Cryptpad.onNetworkDisconnect.reg(function () {
                 sframeChan.event('EV_NETWORK_DISCONNECT');
             });

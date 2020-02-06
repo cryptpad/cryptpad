@@ -3386,10 +3386,7 @@ define([
             if (sfId) {
                 var sfData = manager.getSharedFolderData(sfId);
                 var parsed = Hash.parsePadUrl(sfData.href);
-                sframeChan.event('EV_DRIVE_SET_HASH', parsed.hash || '');
                 createShareButton(sfId, $toolbar.find('.cp-app-drive-toolbar-leftside'));
-            } else {
-                sframeChan.event('EV_DRIVE_SET_HASH', '');
             }
 
 
