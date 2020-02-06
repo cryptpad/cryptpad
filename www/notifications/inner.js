@@ -101,7 +101,11 @@ define([
                 var time = new Date(data.content.time);
                 $(el).find(".cp-notification-content").append(h("span.notification-time", time.toLocaleString()));
                 $(el).addClass("cp-app-notification-archived");
-                $(el).toggle(!isDataUnread);
+                if (isDataUnread) {
+                    $(el).hide();
+                } else {
+                    $(el).css('display', 'flex');
+                }
                 $(notifsList).append(el);
             }
         };
@@ -140,7 +144,7 @@ define([
                 addNotification(data, el);
             },
             onViewed: function (data) {
-                $('.cp-app-notification-archived[data-hash="' + data.hash + '"]').show();
+                $('.cp-app-notification-archived[data-hash="' + data.hash + '"]').css('display', 'flex');
             }
         });
 
