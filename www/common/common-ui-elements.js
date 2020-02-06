@@ -813,12 +813,13 @@ define([
                             channels: trimChannels,
                             teamId: typeof(owned) === "number" && owned
                         }, function (obj) {
+                            spinner.hide();
                             if (obj && obj.error) {
                                 console.error(obj.error);
                                 // XXX what are the possible errors?
+                                $(size).append(h('div.alert.alert-danger', Messages.trimHistory_error || 'error')); // XXX
                                 return;
                             }
-                            spinner.hide();
                             $(size).append(h('div.alert.alert-success', Messages.trimHistory_success || 'ok')); // XXX
                         });
                     });
