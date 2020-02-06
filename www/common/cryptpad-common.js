@@ -1037,6 +1037,7 @@ define([
                 }, waitFor());
             }
         }).nThen(function () {
+            common.drive.onChange.fire({path: ['drive', Constants.storageKey]});
             cb({
                 warning: warning,
                 hash: newHash,
@@ -1170,6 +1171,7 @@ define([
                 channel: newSecret.channel
             }, waitFor());
         }).nThen(function () {
+            common.drive.onChange.fire({path: ['drive', Constants.storageKey]});
             cb({
                 warning: warning,
                 hash: newHash,
@@ -1404,6 +1406,7 @@ define([
                 }, waitFor());
             }));
         }).nThen(function () {
+            common.drive.onChange.fire({path: ['drive', Constants.storageKey]});
             cb({
                 warning: warning,
                 hash: newHash,

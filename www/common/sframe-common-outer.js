@@ -1125,12 +1125,12 @@ define([
             });
 
             sframeChan.on('Q_OO_PASSWORD_CHANGE', function (data, cb) {
-                data.href = data.href || currentPad.href;
+                data.href = data.href;
                 Cryptpad.changeOOPassword(data, cb);
             });
 
             sframeChan.on('Q_PAD_PASSWORD_CHANGE', function (data, cb) {
-                data.href = data.href || currentPad.href;
+                data.href = data.href;
                 Cryptpad.changePadPassword(Cryptget, Crypto, data, cb);
             });
 
