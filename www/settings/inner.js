@@ -1201,7 +1201,7 @@ define([
     makeBlock('trim-history', function (cb) {
         if (!common.isLoggedIn()) { return; }
         // XXX settings_trimHistoryTitle, settings_trimHistoryHint, trimHistory_button, trimHistory_error
-        // XXX trimHistory_success, trimHistory_confirm
+        // XXX trimHistory_success, trimHistory_confirm, trimHistory_noHistory
 
         //if (!privateData.isDriveOwned) { return; } // XXX
 
@@ -1237,6 +1237,10 @@ define([
                 size = UIElements.prettySize(Number(obj.size));
             }));
         }).nThen(function () {
+            if (!size || size < 1024) {
+                $(currentSize).html(Messages.trimHistory_noHistory || 'no history...')); // XXX
+                return;
+            }
             $(currentSize).html(Messages._getKey('trimHistory_currentSize', [size]));
             $button.click(function () {
                 //UI.confirm(Messages.trimHistory_confirm, function (yes) {
@@ -1255,6 +1259,8 @@ define([
                             return;
                         }
                         spinner.hide();
+                        // XXX redraw this block instead of displaying a green message?
+                        $(currentSize).remove();
                         $(content).append(h('div.alert.alert-success', Messages.trimHistory_success || 'ok')); // XXX
                     });
                 });

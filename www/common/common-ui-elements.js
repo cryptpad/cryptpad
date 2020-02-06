@@ -765,7 +765,7 @@ define([
                 if (bytes === 0) { return void cb(void 0, $d); }
                 var formatted = UIElements.prettySize(bytes);
 
-                if (!owned || !historyBytes || historyBytes > bytes) {
+                if (!owned || !historyBytes || historyBytes > bytes || historyBytes < 0) {
                     $d.append(h('div.cp-app-prop', [Messages.upload_size, h('br'), h('span.cp-app-prop-content', formatted)]));
                     return void cb(void 0, $d);
                 }
@@ -801,7 +801,9 @@ define([
 
                 var $button = $(button);
                 $button.click(function () {
-                    UI.confirm(Messages.trimHistory_confirm, function (yes) {
+                    UI.confirmButton(button, {
+                        classes: 'btn-danger'
+                    }, function (yes) {
                         if (!yes) { return; }
 
                         $button.remove();
