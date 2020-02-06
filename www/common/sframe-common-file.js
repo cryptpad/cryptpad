@@ -227,7 +227,7 @@ define([
             var $tr = $('<tr>', {id: id}).appendTo($table);
             var $lines = $table.find('tr[id]');
             if ($lines.length > 5) {
-                $lines.slice(0, $lines.length - 5).remove();
+                //$lines.slice(0, $lines.length - 5).remove();
             }
 
             var $cancel = $('<span>', {'class': 'cp-fileupload-table-cancel-button fa fa-times'}).click(function () {
