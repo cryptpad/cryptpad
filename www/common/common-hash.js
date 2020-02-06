@@ -62,7 +62,9 @@ var factory = function (Util, Crypto, Nacl) {
     };
 
     Hash.getHiddenHashFromKeys = function (type, secret, opts) {
-        var mode = ((secret.keys && secret.keys.editKeyStr) || secret.key) ? 'edit/' : 'view/';
+        opts = opts || {};
+        var canEdit = (secret.keys && secret.keys.editKeyStr) || secret.key;
+        var mode = (!opts.view && canEdit) ? 'edit/' : 'view/';
         var pass = secret.password ? 'p/' : '';
 
         if (secret.keys && secret.keys.fileKeyStr) { mode = ''; }

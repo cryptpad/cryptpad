@@ -1044,11 +1044,9 @@ define([
             // Get hidden hash
             var parsed = Hash.parsePadUrl(href);
             var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
-            if (isRo && secret.keys && secret.keys.editKeyStr) {
-                delete secret.keys.editKeyStr;
-                delete secret.key;
-            }
-            var hash = Hash.getHiddenHashFromKeys(parsed.type, secret);
+            var opts = {};
+            if (isRo) { opts.view = true; }
+            var hash = Hash.getHiddenHashFromKeys(parsed.type, secret, opts);
             var hiddenHref = Hash.hashToHref(hash, parsed.type);
             window.open(APP.origin + hiddenHref);
         };

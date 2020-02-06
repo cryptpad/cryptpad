@@ -638,17 +638,26 @@ define([
                                                                 : Messages.properties_passwordSuccessFile;
                                     return void UI.alert(alertMsg, undefined, {force: true});
                                 }
-                                // If we didn't have a password, we have to add the /p/
-                                // If we had a password and we changed it to a new one, we just have to reload
-                                // If we had a password and we removed it, we have to remove the /p/
+
+                                // Pad password changed: update the href
+                                // Use hidden hash if needed (we're an owner of this pad so we know it is stored)
+                                var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
+                                var href = data.href || data.roHref;
+                                if (!useUnsafe) {
+                                    var newParsed = Hash.parsePadUrl(href);
+                                    var newSecret = Hash.getSecrets(newParsed.type, newParsed.hash, newPass);
+                                    var newHash = Hash.getHiddenHashFromKeys(parsed.type, newSecret, {});
+                                    href = Hash.hashToHref(newHash, parsed.type);
+                                }
+
                                 if (data.warning) {
                                     return void UI.alert(Messages.properties_passwordWarning, function () {
-                                        common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
+                                        common.gotoURL(href);
                                     }, {force: true});
                                 }
                                 return void UI.alert(Messages.properties_passwordSuccess, function () {
                                     if (!isSharedFolder) {
-                                        common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
+                                        common.gotoURL(href);
                                     }
                                 }, {force: true});
                             });
