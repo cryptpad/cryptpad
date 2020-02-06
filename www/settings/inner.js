@@ -1238,7 +1238,7 @@ define([
             }));
         }).nThen(function () {
             if (!size || size < 1024) {
-                $(currentSize).html(Messages.trimHistory_noHistory || 'no history...')); // XXX
+                $(currentSize).html(Messages.trimHistory_noHistory || 'no history...'); // XXX
                 return;
             }
             $(currentSize).html(Messages._getKey('trimHistory_currentSize', [size]));
