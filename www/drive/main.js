@@ -97,18 +97,6 @@ define([
                     cb(obj);
                 });
             });
-            sframeChan.on('EV_DRIVE_SET_HASH', function (/*hash*/) {
-                // Update the hash in the address bar
-                // XXX Hidden hash: don't put the shared folder href in the address bar
-                /*
-                if (!Utils.LocalStore.isLoggedIn()) { return; }
-                var ohc = window.onhashchange;
-                window.onhashchange = function () {};
-                window.location.hash = hash || '';
-                window.onhashchange = ohc;
-                ohc({reset:true});
-                */
-            });
             Cryptpad.onNetworkDisconnect.reg(function () {
                 sframeChan.event('EV_NETWORK_DISCONNECT');
             });
