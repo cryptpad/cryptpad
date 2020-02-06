@@ -1234,14 +1234,14 @@ define([
                     return;
                 }
                 channels = obj.channels;
-                size = UIElements.prettySize(Number(obj.size));
+                size = Number(obj.size);
             }));
         }).nThen(function () {
             if (!size || size < 1024) {
                 $(currentSize).html(Messages.trimHistory_noHistory || 'no history...'); // XXX
                 return;
             }
-            $(currentSize).html(Messages._getKey('trimHistory_currentSize', [size]));
+            $(currentSize).html(Messages._getKey('trimHistory_currentSize', [UIElements.prettySize(size)]));
             $button.click(function () {
                 //UI.confirm(Messages.trimHistory_confirm, function (yes) {
                 UI.confirmButton(button, {
