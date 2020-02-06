@@ -3384,8 +3384,6 @@ define([
                 createNewButton(isInRoot, $toolbar.find('.cp-app-drive-toolbar-leftside'));
             }
             if (sfId) {
-                var sfData = manager.getSharedFolderData(sfId);
-                var parsed = Hash.parsePadUrl(sfData.href);
                 createShareButton(sfId, $toolbar.find('.cp-app-drive-toolbar-leftside'));
             }
 
