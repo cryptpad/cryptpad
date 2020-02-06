@@ -121,8 +121,13 @@
                 border: 1px solid black;
             }
             .cp-settings-language-selector {
+                #cp-language-selector {
+                    display: inline;
+                }
                 button.btn {
                     width: @sidebar_button-width;
+                    max-width: 100%;
+                    margin: 0 !important;
                     background-color: @colortheme_sidebar-button-alt-bg;
                     border-color: #adadad;
                     color: black;
@@ -149,6 +154,7 @@
             .cp-settings-info-block {
                 [type="text"] {
                     width: @sidebar_button-width;
+                    max-width: 100%;
                 }
             }
 
