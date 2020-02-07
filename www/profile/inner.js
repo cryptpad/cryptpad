@@ -575,7 +575,7 @@ define([
             var register = h('button.cp-corner-primary', Messages.login_register);
             var cancel = h('button.cp-corner-cancel', Messages.cancel);
             var actions = h('div', [cancel, register, login]);
-            var modal = UI.cornerPopup(Messages.profile_login || "You need to log in to add this user to your contacts", actions, '', {alt: true}); // XXX
+            var modal = UI.cornerPopup(Messages.profile_login, actions, '', {alt: true});
             $(register).click(function () {
                 common.setLoginRedirect(function () {
                     common.gotoURL('/register/');

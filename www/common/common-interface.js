@@ -1064,7 +1064,7 @@ define([
 
         var dontShowAgain = h('div.cp-corner-dontshow', [
             h('span.fa.fa-times'),
-            Messages.dontShowAgain || "Don't show again" // XXX
+            Messages.dontShowAgain
         ]);
 
         var popup = h('div.cp-corner-container', [
