@@ -535,8 +535,8 @@
     "settings_creationSkipFalse": "Display",
     "settings_templateSkip": "Skip the template selection modal",
     "settings_templateSkipHint": "When you create a new empty pad, if you have stored templates for this type of pad, a modal appears to ask if you want to use a template. Here you can choose to never show this modal and so to never use a template.",
-    "settings_ownDriveTitle": "Enable latest account features",
-    "settings_ownDriveHint": "For technical reasons, older accounts do not have access to all of our latest features. A free upgrade to a new account will prepare your CryptDrive for upcoming features without disrupting your usual activities.",
+    "settings_ownDriveTitle": "Update Account",
+    "settings_ownDriveHint": "Older accounts do not have access to the latest features, due to technical reasons. A free update will enable current features, and prepare your CryptDrive for future updates.",
     "settings_ownDriveButton": "Upgrade your account",
     "settings_ownDriveConfirm": "Upgrading your account may take some time. You will need to log back in on all your devices. Are you sure?",
     "settings_ownDrivePending": "Your account is being upgraded. Please do not close or reload this page until the process has completed.",
@@ -1293,5 +1293,12 @@
     "oo_sheetMigration_loading": "Upgrading your spreadsheet to the latest version",
     "oo_sheetMigration_complete": "Updated version available, press OK to reload.",
     "oo_sheetMigration_anonymousEditor": "Editing this spreadsheet is disabled for anonymous users until it is upgraded to the latest version by a registered user.",
-    "imprint": "Legal notice"
+    "imprint": "Legal notice",
+    "settings_cat_security": "Confidentiality",
+    "settings_safeLinksTitle": "Safe Links",
+    "settings_safeLinksCheckbox": "Enable safe links",
+    "safeLinks_error": "This link does not give you access to the document",
+    "dontShowAgain": "Don't show again",
+    "profile_login": "You need to log in to add this user to your contacts",
+    "settings_safeLinksHint": "CryptPad includes the keys to decrypt your pads in their links. Anyone with access to your browsing history can potentially read your data. This includes intrusive browser extensions and browsers that sync your history across devices. Enabling \"safe links\" prevents the keys from entering your browsing history or being displayed in your address bar whenever possible. We strongly recommend that you enable this feature and use the {0} Share menu."
 }
