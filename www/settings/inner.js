@@ -56,7 +56,7 @@ define([
             'cp-settings-migrate',
             'cp-settings-delete'
         ],
-        'security': [ // XXX
+        'security': [
             'cp-settings-logout-everywhere',
             'cp-settings-autostore',
             'cp-settings-safe-links',
