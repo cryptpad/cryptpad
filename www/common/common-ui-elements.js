@@ -3753,7 +3753,7 @@ define([
         ]);
 
         var settings = h('div.cp-creation-remember', [
-            UI.createCheckbox('cp-creation-remember', Messages.creation_saveSettings, false),
+            UI.createCheckbox('cp-creation-remember', Messages.dontShowAgain, false),
             createHelper('/settings/#creation', Messages.creation_settings),
             h('div.cp-creation-remember-help.cp-creation-slider', [
                 h('span.fa.fa-exclamation-circle.cp-creation-warning'),

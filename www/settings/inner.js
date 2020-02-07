@@ -570,7 +570,6 @@ define([
     // Security
 
     makeBlock('safe-links', function (cb) {
-        // XXX settings_safeLinksTitle, settings_safeLinksHint, settings_safeLinksCheckbox
 
         var $cbox = $(UI.createCheckbox('cp-settings-safe-links',
                                    Messages.settings_safeLinksCheckbox,

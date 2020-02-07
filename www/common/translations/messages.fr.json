@@ -522,8 +522,8 @@
     "settings_creationSkipFalse": "Afficher",
     "settings_templateSkip": "Passer la fenêtre de choix d'un modèle",
     "settings_templateSkipHint": "Quand vous créez un nouveau pad, et si vous possédez des modèles pour ce type de pad, une fenêtre peut apparaître pour demander si vous souhaitez importer un modèle. Ici vous pouvez choisir de ne jamais montrer cette fenêtre et donc de ne jamais utiliser de modèle.",
-    "settings_ownDriveTitle": "Activer les dernières fonctionnalités du compte",
-    "settings_ownDriveHint": "Pour des raisons techniques, les comptes utilisateurs les plus anciens n'ont pas accès à toutes les fonctionnalités. Une mise à niveau gratuite permet de préparer votre CryptDrive pour les nouveautés à venir sans perturber vos activités habituelles.",
+    "settings_ownDriveTitle": "Mise à jour du compte",
+    "settings_ownDriveHint": "Les comptes plus anciens n'ont pas accès aux dernières fonctionnalités, pour des raisons techniques. Une mise à niveau gratuite permet d'activer les fonctionnalités actuelles et de préparer votre CryptDrive pour les futures mises à jour.",
     "settings_ownDriveButton": "Mettre à niveau votre compte",
     "settings_ownDriveConfirm": "La mise à niveau peut prendre du temps. Vous devrez vous reconnecter sur tous vos appareils. Voulez-vous continuer ?",
     "settings_ownDrivePending": "Votre compte est en train d'être mis à jour. Veuillez ne pas fermer ou recharger cette page avant que le traitement soit terminé.",
@@ -1293,5 +1293,12 @@
     "oo_sheetMigration_anonymousEditor": "L'édition de cette feuille de calcul est désactivée pour les utilisateurs anonymes jusqu'à ce qu'elle soit mise à jour par un utilisateur enregistré.",
     "imprint": "Mentions légales",
     "isContact": "{0} est dans vos contacts",
-    "isNotContact": "{0} n'est <b>pas</b> dans vos contacts"
+    "isNotContact": "{0} n'est <b>pas</b> dans vos contacts",
+    "settings_safeLinksHint": "CryptPad inclut dans ses liens les clés permettant de décrypter vos pads. Toute personne ayant accès à votre historique de navigation peut potentiellement lire vos données. Cela inclut les extensions de navigateur intrusives et les navigateurs qui synchronisent votre historique entre les appareils. L'activation des \"liens sécurisés\" empêche les clés d'entrer dans votre historique de navigation ou d'être affichées dans votre barre d'adresse quand cela est possible. Nous vous recommandons vivement d'activer cette fonction et d'utiliser le menu {0} Partager.",
+    "profile_login": "Vous devez vous connecter pour ajouter cet utilisateur à vos contacts",
+    "dontShowAgain": "Ne plus demander",
+    "safeLinks_error": "Le lien utilisé ne permet pas d'ouvrir ce document",
+    "settings_safeLinksCheckbox": "Activer les liens sécurisés",
+    "settings_safeLinksTitle": "Liens Sécurisés",
+    "settings_cat_security": "Confidentialité"
 }
