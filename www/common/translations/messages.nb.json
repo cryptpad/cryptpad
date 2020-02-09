@@ -193,7 +193,6 @@
     "crowdfunding_button": "Støtt CryptPad",
     "crowdfunding_popup_yes": "Gå til OpenCollective",
     "crowdfunding_popup_no": "Ikke nå",
-    "crowdfunding_popup_never": "Ikke spør igjen takk",
     "markdown_toc": "Innhold",
     "fm_expirablePad": "Denne paden vill utgå på dato den {0}",
     "admin_authError": "Kun admin-tilgang",
