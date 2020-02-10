@@ -38,7 +38,7 @@ define([
             hideDuplicate: true
         },
         general: {
-            allowUserFeedback: true // XXX corner popup in settings?
+            allowUserFeedback: true
         }
     };
 
