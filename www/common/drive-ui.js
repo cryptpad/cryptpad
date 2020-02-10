@@ -1200,6 +1200,7 @@ define([
                             hide.push('collapseall');
                         }
                         containsFolder = true;
+                        hide.push('savelocal');
                         hide.push('openro');
                         hide.push('openincode');
                         hide.push('properties');
