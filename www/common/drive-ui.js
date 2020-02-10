@@ -1175,13 +1175,9 @@ define([
                         } else if ($element.is('.cp-app-drive-element-noreadonly')) {
                             hide.push('openro'); // Remove open 'view' mode
                         }
-                        // if it's not a plain text file
-                        // XXX: there is a bug with this code in anon shared folder, so we disable it
-                        if (APP.loggedIn || !APP.newSharedFolder) {
-                            var metadata = manager.getFileData(manager.find(path));
-                            if (!metadata || !Util.isPlainTextFile(metadata.fileType, metadata.title)) {
-                                hide.push('openincode');
-                            }
+                        var metadata = manager.getFileData(manager.find(path));
+                        if (!metadata || !Util.isPlainTextFile(metadata.fileType, metadata.title)) {
+                            hide.push('openincode');
                         }
                     } else if ($element.is('.cp-app-drive-element-sharedf')) {
                         if (containsFolder) {
@@ -3237,21 +3233,23 @@ define([
             var path = currentPath.slice(1);
             var root = Util.find(data, path);
 
+            var realPath = [ROOT, SHARED_FOLDER].concat(path);
+
             if (manager.hasSubfolder(root)) { $list.append($folderHeader); }
             // display sub directories
             var keys = Object.keys(root);
-            var sortedFolders = sortElements(true, currentPath, keys, null, !getSortFolderDesc());
-            var sortedFiles = sortElements(false, currentPath, keys, APP.store[SORT_FILE_BY], !getSortFileDesc());
+            var sortedFolders = sortElements(true, realPath, keys, null, !getSortFolderDesc());
+            var sortedFiles = sortElements(false, realPath, keys, APP.store[SORT_FILE_BY], !getSortFileDesc());
             sortedFolders.forEach(function (key) {
                 if (manager.isFile(root[key])) { return; }
-                var $element = createElement(currentPath, key, root, true);
+                var $element = createElement(realPath, key, root, true);
                 $element.appendTo($list);
             });
             if (manager.hasFile(root)) { $list.append($fileHeader); }
             // display files
             sortedFiles.forEach(function (key) {
                 if (manager.isFolder(root[key])) { return; }
-                var $element = createElement(currentPath, key, root, false);
+                var $element = createElement(realPath, key, root, false);
                 if (!$element) { return; }
                 $element.appendTo($list);
             });
@@ -3973,6 +3971,14 @@ define([
                     common.sessionStorage.put(Constants.newPadTeamKey, APP.team, waitFor());
                 }).nThen(function () {
                     common.openURL('/code/');
+                    // We need to restore sessionStorage for the next time we want to create a pad from this tab
+                    // NOTE: the 100ms timeout is to fix a race condition in firefox where sessionStorage
+                    //       would be deleted before the new tab was created
+                    setTimeout(function () {
+                        common.sessionStorage.put(Constants.newPadFileData, '', function () {});
+                        common.sessionStorage.put(Constants.newPadPathKey, '', function () {});
+                        common.sessionStorage.put(Constants.newPadTeamKey, '', function () {});
+                    }, 100);
                 });
             }
 
