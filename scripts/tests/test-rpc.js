@@ -160,8 +160,8 @@ var createUser = function (config, cb) {
             wc.leave();
         }));
     }).nThen(function (w) {
-        // give the server time to write your mailbox data before checking that it's correct
-        // XXX chainpad-server sends an ACK before the channel has actually been created
+        // FIXME give the server time to write your mailbox data before checking that it's correct
+        // chainpad-server sends an ACK before the channel has actually been created
         // causing you to think that everything is good.
         // without this timeout the GET_METADATA rpc occasionally returns before
         // the metadata has actually been written to the disk.
