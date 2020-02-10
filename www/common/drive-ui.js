@@ -587,7 +587,7 @@ define([
         var displayedCategories = [ROOT, TRASH, SEARCH, RECENT];
 
         // PCS enabled: display owned pads
-        if (AppConfig.displayCreationScreen) { displayedCategories.push(OWNED); }
+        //if (AppConfig.displayCreationScreen) { displayedCategories.push(OWNED); }
         // Templates enabled: display template category
         if (AppConfig.enableTemplates) { displayedCategories.push(TEMPLATE); }
         // Tags used: display Tags category
@@ -1037,7 +1037,7 @@ define([
             var href = isRo ? data.roHref : (data.href || data.roHref);
             var priv = metadataMgr.getPrivateData();
             var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
-            if (useUnsafe) {
+            if (useUnsafe !== false) { // true of undefined: use unsafe links
                 return void window.open(APP.origin + href);
             }
 
@@ -1204,8 +1204,6 @@ define([
                             hide.push('collapseall');
                         }
                         containsFolder = true;
-                        hide.push('share'); // XXX CONVERT
-                        hide.push('savelocal'); // XXX CONVERT
                         hide.push('openro');
                         hide.push('openincode');
                         hide.push('properties');
@@ -4054,8 +4052,7 @@ define([
 
                 if (manager.isFolder(el) && !manager.isSharedFolder(el)) { // Folder
                     // if folder is inside SF
-                    return UI.warn('ERROR: Temporarily disabled'); // XXX CONVERT
-                    /*if (manager.isInSharedFolder(paths[0].path)) {
+                    if (manager.isInSharedFolder(paths[0].path)) {
                         return void UI.alert(Messages.convertFolderToSF_SFParent);
                     }
                     // if folder already contains SF
@@ -4085,7 +4082,7 @@ define([
                             var owned = Util.isChecked($(convertContent).find('#cp-upload-owned'));
                             manager.convertFolderToSharedFolder(paths[0].path, owned, password, refresh);
                         });
-                    }*/
+                    }
                 } else { // File
                     var sf = manager.isSharedFolder(el);
                     data = sf ? manager.getSharedFolderData(el) : manager.getFileData(el);

@@ -1294,7 +1294,7 @@
     "imprint": "Mentions légales",
     "isContact": "{0} est dans vos contacts",
     "isNotContact": "{0} n'est <b>pas</b> dans vos contacts",
-    "settings_safeLinksHint": "CryptPad inclut dans ses liens les clés permettant de décrypter vos pads. Toute personne ayant accès à votre historique de navigation peut potentiellement lire vos données. Cela inclut les extensions de navigateur intrusives et les navigateurs qui synchronisent votre historique entre les appareils. L'activation des \"liens sécurisés\" empêche les clés d'entrer dans votre historique de navigation ou d'être affichées dans votre barre d'adresse quand cela est possible. Nous vous recommandons vivement d'activer cette fonction et d'utiliser le menu {0} Partager.",
+    "settings_safeLinksHint": "CryptPad inclut dans ses liens les clés permettant de déchiffrer vos pads. Toute personne ayant accès à votre historique de navigation peut potentiellement lire vos données. Cela inclut les extensions de navigateur intrusives et les navigateurs qui synchronisent votre historique entre les appareils. L'activation des \"liens sécurisés\" empêche les clés d'entrer dans votre historique de navigation ou d'être affichées dans votre barre d'adresse quand cela est possible. Nous vous recommandons vivement d'activer cette fonction et d'utiliser le menu {0} Partager.",
     "profile_login": "Vous devez vous connecter pour ajouter cet utilisateur à vos contacts",
     "dontShowAgain": "Ne plus demander",
     "safeLinks_error": "Le lien utilisé ne permet pas d'ouvrir ce document",

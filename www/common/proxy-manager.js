@@ -587,14 +587,10 @@ define([
 
     // convert a folder to a Shared Folder
     var _convertFolderToSharedFolder = function (Env, data, cb) {
-        return void cb({
-            error: 'DISABLED'
-        }); // XXX CONVERT
-        /*var path = data.path;
+        var path = data.path;
         var folderElement = Env.user.userObject.find(path);
         // don't try to convert top-level elements (trash, root, etc) to shared-folders
-        // TODO also validate that you're in root (not templates, etc)
-        if (data.path.length <= 1) {
+        if (path.length <= 1 || path[0] !== UserObject.ROOT) {
             return void cb({
                 error: 'E_INVAL_PATH',
             });
@@ -664,6 +660,21 @@ define([
                 newPath: newPath,
                 copy: false,
             }, waitFor());
+        }).nThen(function (waitFor) {
+            // Move the owned pads from the old folder to root
+            var paths = [];
+            Object.keys(folderElement).forEach(function (el) {
+                if (!Env.user.userObject.isFile(folderElement[el])) { return; }
+                var data = Env.user.userObject.getFileData(folderElement[el]);
+                if (!data || !_ownedByMe(Env, data.owners)) { return; }
+                // This is an owned pad: move it to ROOT before deleting the initial folder
+                paths.push(path.concat(el));
+            });
+            _move(Env, {
+                paths: paths,
+                newPath: [UserObject.ROOT],
+                copy: false,
+            }, waitFor());
         }).nThen(function () {
             // migrate metadata
             var sharedFolderElement = Env.user.proxy[UserObject.SHARED_FOLDERS][SFId];
@@ -680,7 +691,7 @@ define([
             Env.user.userObject.delete([path], function () {
                 cb();
             });
-        });*/
+        });
     };
 
     // Delete permanently some pads or folders

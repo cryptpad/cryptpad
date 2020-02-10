@@ -573,10 +573,11 @@ define([
 
         var $cbox = $(UI.createCheckbox('cp-settings-safe-links',
                                    Messages.settings_safeLinksCheckbox,
-                                   true, { label: {class: 'noTitle'} }));
+                                   false, { label: {class: 'noTitle'} }));
 
         var spinner = UI.makeSpinner($cbox);
 
+        // Checkbox: "Enable safe links"
         var $checkbox = $cbox.find('input').on('change', function () {
             spinner.spin();
             var val = !$checkbox.is(':checked');
@@ -587,7 +588,7 @@ define([
 
         common.getAttribute(['security', 'unsafeLinks'], function (e, val) {
             if (e) { return void console.error(e); }
-            if (!val) {
+            if (val === false) {
                 $checkbox.attr('checked', 'checked');
             }
         });
