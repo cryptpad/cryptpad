@@ -1037,7 +1037,7 @@ define([
             var href = isRo ? data.roHref : (data.href || data.roHref);
             var priv = metadataMgr.getPrivateData();
             var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
-            if (useUnsafe) {
+            if (useUnsafe !== false) { // true of undefined: use unsafe links
                 return void window.open(APP.origin + href);
             }
 

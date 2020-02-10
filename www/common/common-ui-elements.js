@@ -657,7 +657,7 @@ define([
                                 // Use hidden hash if needed (we're an owner of this pad so we know it is stored)
                                 var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
                                 var href = (priv.readOnly && data.roHref) ? data.roHref : data.href;
-                                if (!useUnsafe) {
+                                if (useUnsafe === false) {
                                     var newParsed = Hash.parsePadUrl(href);
                                     var newSecret = Hash.getSecrets(newParsed.type, newParsed.hash, newPass);
                                     var newHash = Hash.getHiddenHashFromKeys(parsed.type, newSecret, {});
