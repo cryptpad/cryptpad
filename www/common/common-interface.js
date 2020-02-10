@@ -70,6 +70,7 @@ define([
                     if (typeof(yes) === 'function') { yes(e); }
                     break;
             }
+            $(el || window).off('keydown', handler);
         };
 
         $(el || window).keydown(handler);
@@ -587,7 +588,7 @@ define([
             $ok.click();
         }, function () {
             $cancel.click();
-        });
+        }, frame);
 
         document.body.appendChild(frame);
         setTimeout(function () {
