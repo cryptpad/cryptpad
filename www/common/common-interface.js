@@ -70,6 +70,7 @@ define([
                     if (typeof(yes) === 'function') { yes(e); }
                     break;
             }
+            $(el || window).off('keydown', handler);
         };
 
         $(el || window).keydown(handler);
@@ -491,6 +492,11 @@ define([
             $ok.focus();
             Notifier.notify();
         });
+
+        return {
+            element: frame,
+            delete: close
+        };
     };
 
     UI.prompt = function (msg, def, cb, opt, force) {
@@ -582,7 +588,7 @@ define([
             $ok.click();
         }, function () {
             $cancel.click();
-        }, ok);
+        }, frame);
 
         document.body.appendChild(frame);
         setTimeout(function () {
@@ -1050,38 +1056,35 @@ define([
         return radio;
     };
 
+    var corner = {
+        queue: [],
+        state: false
+    };
     UI.cornerPopup = function (text, actions, footer, opts) {
         opts = opts || {};
 
-        var minimize = h('div.cp-corner-minimize.fa.fa-window-minimize');
-        var maximize = h('div.cp-corner-maximize.fa.fa-window-maximize');
+        var dontShowAgain = h('div.cp-corner-dontshow', [
+            h('span.fa.fa-times'),
+            Messages.dontShowAgain
+        ]);
+
         var popup = h('div.cp-corner-container', [
-            minimize,
-            maximize,
-            h('div.cp-corner-filler', { style: "width:110px;" }),
-            h('div.cp-corner-filler', { style: "width:80px;" }),
-            h('div.cp-corner-filler', { style: "width:60px;" }),
-            h('div.cp-corner-filler', { style: "width:40px;" }),
-            h('div.cp-corner-filler', { style: "width:20px;" }),
             setHTML(h('div.cp-corner-text'), text),
             h('div.cp-corner-actions', actions),
-            setHTML(h('div.cp-corner-footer'), footer)
+            setHTML(h('div.cp-corner-footer'), footer),
+            opts.dontShowAgain ? dontShowAgain : undefined
         ]);
 
         var $popup = $(popup);
-
-        $(minimize).click(function () {
-            $popup.addClass('cp-minimized');
-        });
-        $(maximize).click(function () {
-            $popup.removeClass('cp-minimized');
-        });
 
         if (opts.hidden) {
             $popup.addClass('cp-minimized');
         }
         if (opts.big) {
             $popup.addClass('cp-corner-big');
+        }
+        if (opts.alt) {
+            $popup.addClass('cp-corner-alt');
         }
 
         var hide = function () {
@@ -1092,15 +1095,65 @@ define([
         };
         var deletePopup = function () {
             $popup.remove();
+            if (!corner.queue.length) {
+                corner.state = false;
+                return;
+            }
+            setTimeout(function () {
+                $('body').append(corner.queue.pop());
+            }, 5000);
         };
 
-        $('body').append(popup);
+        $(dontShowAgain).click(function () {
+            deletePopup();
+            if (typeof(opts.dontShowAgain) === "function") {
+                opts.dontShowAgain();
+            }
+        });
+
+        if (corner.state) {
+            corner.queue.push(popup);
+        } else {
+            corner.state = true;
+            $('body').append(popup);
+        }
 
         return {
             popup: popup,
             hide: hide,
             show: show,
             delete: deletePopup
+        };
+    };
+
+    UI.makeSpinner = function ($container) {
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide();
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide();
+
+        var spin = function () {
+            $ok.hide();
+            $spinner.show();
+        };
+        var hide = function () {
+            $ok.hide();
+            $spinner.hide();
+        };
+        var done = function () {
+            $ok.show();
+            $spinner.hide();
+        };
+
+        if ($container && $container.append) {
+            $container.append($ok);
+            $container.append($spinner);
+        }
+
+        return {
+            ok: $ok[0],
+            spinner: $spinner[0],
+            spin: spin,
+            hide: hide,
+            done: done
         };
     };
 

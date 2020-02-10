@@ -32,6 +32,16 @@ define([
              NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, nThen, Saferphore) {
 
+    // Default settings for new users
+    var NEW_USER_SETTINGS = {
+        drive: {
+            hideDuplicate: true
+        },
+        general: {
+            allowUserFeedback: true
+        }
+    };
+
     var create = function () {
         var Store = window.Cryptpad_Store = {};
         var postMessage = function () {};
@@ -1016,8 +1026,12 @@ define([
 
             if (title.trim() === "") { title = UserObject.getDefaultName(p); }
 
-            if (AppConfig.disableAnonymousStore && !store.loggedIn) { return void cb(); }
-            if (p.type === "debug") { return void cb(); }
+            if (AppConfig.disableAnonymousStore && !store.loggedIn) {
+                return void cb({ notStored: true });
+            }
+            if (p.type === "debug") {
+                return void cb({ notStored: true });
+            }
 
             var channelData = Store.channels && Store.channels[channel];
 
@@ -1108,7 +1122,7 @@ define([
                     postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {
                         autoStore: autoStore
                     });
-                    return void cb();
+                    return void cb({ notStored: true });
                 } else {
                     var roHref;
                     if (h.mode === "view") {
@@ -1187,7 +1201,9 @@ define([
             });
             cb(list);
         };
-        // Get the first pad we can find in any of our managers and return its file data
+
+        // Get the first pad we can find in any of our drives and return its file data
+        // NOTE: This is currently only used for template: this won't search inside shared folders
         Store.getPadData = function (clientId, id, cb) {
             var res = {};
             getAllStores().some(function (s) {
@@ -1199,6 +1215,49 @@ define([
             cb(res);
         };
 
+        Store.getPadDataFromChannel = function (clientId, obj, cb) {
+            var channel = obj.channel;
+            var edit = obj.edit;
+            var isFile = obj.file;
+            var res;
+            var viewRes;
+            getAllStores().some(function (s) {
+                var chans = s.manager.findChannel(channel);
+                if (!Array.isArray(chans)) { return; }
+                return chans.some(function (pad) {
+                    if (!pad || !pad.data) { return; }
+                    var data = pad.data;
+                    // We've found a match: return the value and stop the loops
+                    if ((edit && data.href) || (!edit && data.roHref) || isFile) {
+                        res = data;
+                        return true;
+                    }
+                    // We've found a weaker match: store it for now
+                    if (edit && !viewRes && data.roHref) {
+                        viewRes = data;
+                    }
+                });
+            });
+            // Call back with the best value we can get
+            cb(res || viewRes || {});
+        };
+
+        // Hidden hash: if a pad is deleted, we may have to switch back to full hash
+        // in some tabs
+        Store.checkDeletedPad = function (channel) {
+            if (!channel) { return; }
+
+            // Check if the pad is still stored in one of our drives
+            Store.getPadDataFromChannel(null, {
+                channel: channel,
+                isFile: true // we don't care if it's view or edit
+            }, function (res) {
+                // If it is stored, abort
+                if (Object.keys(res).length) { return; }
+                // Otherwise, tell all the tabs that this channel was deleted and give them the hrefs
+                broadcast([], "CHANNEL_DELETED", channel);
+            });
+        };
 
         // Messaging (manage friends from the userlist)
         Store.answerFriendRequest = function (clientId, obj, cb) {
@@ -1218,15 +1277,15 @@ define([
 
             // If we accept the request, add the friend to the list
             if (value) {
-                Messaging.acceptFriendRequest(store, msg.content, function (obj) {
+                Messaging.acceptFriendRequest(store, msg.content.user, function (obj) {
                     if (obj && obj.error) { return void cb(obj); }
                     Messaging.addToFriendList({
                         proxy: store.proxy,
                         realtime: store.realtime,
                         pinPads: function (data, cb) { Store.pinPads(null, data, cb); },
-                    }, msg.content, function (err) {
+                    }, msg.content.user, function (err) {
                         if (store.messenger) {
-                            store.messenger.onFriendAdded(msg.content);
+                            store.messenger.onFriendAdded(msg.content.user);
                         }
                         broadcast([], "UPDATE_METADATA");
                         if (err) { return void cb({error: err}); }
@@ -1236,12 +1295,7 @@ define([
                 return;
             }
             // Otherwise, just remove the notification
-            store.mailbox.sendTo('DECLINE_FRIEND_REQUEST', {
-                displayName: store.proxy['cryptpad.username']
-            }, {
-                channel: msg.content.notifications,
-                curvePublic: msg.content.curvePublic
-            }, function (obj) {
+            Messaging.declineFriendRequest(store, msg.content.user, function (obj) {
                 broadcast([], "UPDATE_METADATA");
                 cb(obj);
             });
@@ -1263,8 +1317,9 @@ define([
             store.proxy.friends_pending[data.curvePublic] = +new Date();
             broadcast([], "UPDATE_METADATA");
 
-            var myData = Messaging.createData(store.proxy);
-            store.mailbox.sendTo('FRIEND_REQUEST', myData, {
+            store.mailbox.sendTo('FRIEND_REQUEST', {
+                user: Messaging.createData(store.proxy)
+            }, {
                 channel: data.notifications,
                 curvePublic: data.curvePublic
             }, function (obj) {
@@ -1600,11 +1655,8 @@ define([
             // If send is true, send the request to the owner.
             if (owner) {
                 if (data.send) {
-                    var myData = Messaging.createData(store.proxy);
-                    delete myData.channel;
                     store.mailbox.sendTo('REQUEST_PAD_ACCESS', {
-                        channel: data.channel,
-                        user: myData
+                        channel: data.channel
                     }, {
                         channel: owner.notifications,
                         curvePublic: owner.curvePublic
@@ -1638,13 +1690,10 @@ define([
                 }
             })) { return void cb({error: 'ENOTFOUND'}); }
 
-            var myData = Messaging.createData(store.proxy);
-            delete myData.channel;
             store.mailbox.sendTo("GIVE_PAD_ACCESS", {
                 channel: channel,
                 href: href,
-                title: title,
-                user: myData
+                title: title
             }, {
                 channel: data.user.notifications,
                 curvePublic: data.user.curvePublic
@@ -1678,13 +1727,11 @@ define([
             }
             // Tell all the owners that the pad was deleted from the server
             var curvePublic = store.proxy.curvePublic;
-            var myData = Messaging.createData(store.proxy, false);
             m.forEach(function (obj) {
                 var mb = JSON.parse(obj);
                 if (mb.curvePublic === curvePublic) { return; }
                 store.mailbox.sendTo('OWNED_PAD_REMOVED', {
-                    channel: channel,
-                    user: myData
+                    channel: channel
                 }, {
                     channel: mb.notifications,
                     curvePublic: mb.curvePublic
@@ -2095,6 +2142,12 @@ define([
                         }
                     }
                 }
+                if (o && !n && Array.isArray(p) && (p[0] === UserObject.FILES_DATA ||
+                    (p[0] === 'drive' && p[1] === UserObject.FILES_DATA))) {
+                    setTimeout(function () {
+                        Store.checkDeletedPad(o && o.channel);
+                    });
+                }
                 sendDriveEvent('DRIVE_CHANGE', {
                     id: fId,
                     old: o,
@@ -2227,7 +2280,8 @@ define([
                 if (!store.loggedIn) { return void cb(); }
                 Store.pinPads(null, data, cb);
             };
-            if (!proxy.settings) { proxy.settings = {}; }
+            if (!proxy.settings) { proxy.settings = NEW_USER_SETTINGS; }
+            if (!proxy.friends_pending) { proxy.friends_pending = {}; }
             var manager = store.manager = ProxyManager.create(proxy.drive, {
                 onSync: function (cb) { onSync(null, cb); },
                 edPublic: proxy.edPublic,
@@ -2311,13 +2365,7 @@ define([
                     }
                 }
 
-                if (!proxy.settings || !proxy.settings.general ||
-                        typeof(proxy.settings.general.allowUserFeedback) !== 'boolean') {
-                    proxy.settings = proxy.settings || {};
-                    proxy.settings.general = proxy.settings.general || {};
-                    proxy.settings.general.allowUserFeedback = true;
-                }
-                returned.feedback = proxy.settings.general.allowUserFeedback;
+                returned.feedback = Util.find(proxy, ['settings', 'general', 'allowUserFeedback']);
                 Feedback.init(returned.feedback);
 
                 if (typeof(cb) === 'function') { cb(returned); }

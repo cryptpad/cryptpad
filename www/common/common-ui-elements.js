@@ -56,6 +56,21 @@ define([
         });
     };
 
+    var dcAlert;
+    UIElements.disconnectAlert = function () {
+        if (dcAlert && $(dcAlert.element).length) { return; }
+        dcAlert = UI.alert(Messages.common_connectionLost, undefined, true);
+    };
+    UIElements.reconnectAlert = function () {
+        if (!dcAlert) { return; }
+        if (!dcAlert.delete) {
+            dcAlert = undefined;
+            return;
+        }
+        dcAlert.delete();
+        dcAlert = undefined;
+    };
+
     var importContent = function (type, f, cfg) {
         return function () {
             var $files = $('<input>', {type:"file"});
@@ -212,15 +227,7 @@ define([
                         common.mailbox.sendTo("RM_OWNER", {
                             channel: channel,
                             title: data.title,
-                            pending: pending,
-                            user: {
-                                displayName: user.name,
-                                avatar: user.avatar,
-                                profile: user.profile,
-                                notifications: user.notifications,
-                                curvePublic: user.curvePublic,
-                                edPublic: priv.edPublic
-                            }
+                            pending: pending
                         }, {
                             channel: friend.notifications,
                             curvePublic: friend.curvePublic
@@ -363,15 +370,7 @@ define([
                             channel: channel,
                             href: data.href,
                             password: data.password,
-                            title: data.title,
-                            user: {
-                                displayName: user.name,
-                                avatar: user.avatar,
-                                profile: user.profile,
-                                notifications: user.notifications,
-                                curvePublic: user.curvePublic,
-                                edPublic: priv.edPublic
-                            }
+                            title: data.title
                         }, {
                             channel: friend.notifications,
                             curvePublic: friend.curvePublic
@@ -548,21 +547,27 @@ define([
 
             if (!data.noPassword) {
                 var hasPassword = data.password;
+                var $pwLabel = $('<label>', {'for': 'cp-app-prop-password'}).text(Messages.creation_passwordValue)
+                                .hide().appendTo($d);
+                var password = UI.passwordInput({
+                    id: 'cp-app-prop-password',
+                    readonly: 'readonly'
+                });
+                var $password = $(password).hide();
+                var $pwInput = $password.find('.cp-password-input');
+                $pwInput.val(data.password).click(function () {
+                    $pwInput[0].select();
+                });
+                $d.append(password);
+
                 if (hasPassword) {
-                    $('<label>', {'for': 'cp-app-prop-password'}).text(Messages.creation_passwordValue)
-                        .appendTo($d);
-                    var password = UI.passwordInput({
-                        id: 'cp-app-prop-password',
-                        readonly: 'readonly'
-                    });
-                    var $pwInput = $(password).find('.cp-password-input');
-                    $pwInput.val(data.password).click(function () {
-                        $pwInput[0].select();
-                    });
-                    $d.append(password);
+                    $pwLabel.show();
+                    $password.css('display', 'flex');
                 }
 
-                if (!data.noEditPassword && owned) { // FIXME SHEET fix password change for sheets
+                // In the properties, we should have the edit href if we know it.
+                // We should know it because the pad is stored, but it's better to check...
+                if (!data.noEditPassword && owned && data.href) { // FIXME SHEET fix password change for sheets
                     var sframeChan = common.getSframeChannel();
 
                     var isOO = parsed.type === 'sheet';
@@ -622,7 +627,7 @@ define([
 
                             sframeChan.query(q, {
                                 teamId: typeof(owned) !== "boolean" ? owned : undefined,
-                                href: data.href || data.roHref,
+                                href: data.href,
                                 password: newPass
                             }, function (err, data) {
                                 $(passwordOk).text(Messages.properties_changePasswordButton);
@@ -632,24 +637,41 @@ define([
                                     return void UI.alert(Messages.properties_passwordError);
                                 }
                                 UI.findOKButton().click();
-                                if (isFile) {
-                                    onProgress.stop();
+
+                                $pwLabel.show();
+                                $password.css('display', 'flex');
+                                $pwInput.val(newPass);
+
+                                // If the current document is a file or if we're changing the password from a drive,
+                                // we don't have to reload the page at the end.
+                                // Tell the user the password change was successful and abort
+                                if (isFile || priv.app !== parsed.type) {
+                                    if (onProgress && onProgress.stop) { onProgress.stop(); }
                                     $(passwordOk).text(Messages.properties_changePasswordButton);
                                     var alertMsg = data.warning ? Messages.properties_passwordWarningFile
                                                                 : Messages.properties_passwordSuccessFile;
                                     return void UI.alert(alertMsg, undefined, {force: true});
                                 }
-                                // If we didn't have a password, we have to add the /p/
-                                // If we had a password and we changed it to a new one, we just have to reload
-                                // If we had a password and we removed it, we have to remove the /p/
+
+                                // Pad password changed: update the href
+                                // Use hidden hash if needed (we're an owner of this pad so we know it is stored)
+                                var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
+                                var href = (priv.readOnly && data.roHref) ? data.roHref : data.href;
+                                if (useUnsafe === false) {
+                                    var newParsed = Hash.parsePadUrl(href);
+                                    var newSecret = Hash.getSecrets(newParsed.type, newParsed.hash, newPass);
+                                    var newHash = Hash.getHiddenHashFromKeys(parsed.type, newSecret, {});
+                                    href = Hash.hashToHref(newHash, parsed.type);
+                                }
+
                                 if (data.warning) {
                                     return void UI.alert(Messages.properties_passwordWarning, function () {
-                                        common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
+                                        common.gotoURL(href);
                                     }, {force: true});
                                 }
                                 return void UI.alert(Messages.properties_passwordSuccess, function () {
                                     if (!isSharedFolder) {
-                                        common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
+                                        common.gotoURL(href);
                                     }
                                 }, {force: true});
                             });
@@ -3737,7 +3759,7 @@ define([
         ]);
 
         var settings = h('div.cp-creation-remember', [
-            UI.createCheckbox('cp-creation-remember', Messages.creation_saveSettings, false),
+            UI.createCheckbox('cp-creation-remember', Messages.dontShowAgain, false),
             createHelper('/settings/#creation', Messages.creation_settings),
             h('div.cp-creation-remember-help.cp-creation-slider', [
                 h('span.fa.fa-exclamation-circle.cp-creation-warning'),
@@ -4103,52 +4125,68 @@ define([
     };
 
     var crowdfundingState = false;
-    UIElements.displayCrowdfunding = function (common) {
+    UIElements.displayCrowdfunding = function (common, force) {
         if (crowdfundingState) { return; }
-        if (AppConfig.disableCrowdfundingMessages) { return; }
         var priv = common.getMetadataMgr().getPrivateData();
+
+
+        var todo = function () {
+            crowdfundingState = true;
+            // Display the popup
+            var text = Messages.crowdfunding_popup_text;
+            var yes = h('button.cp-corner-primary', [
+                h('span.fa.fa-external-link'),
+                'OpenCollective'
+            ]);
+            var no = h('button.cp-corner-cancel', Messages.crowdfunding_popup_no);
+            var actions = h('div', [no, yes]);
+
+            var dontShowAgain = function () {
+                common.setAttribute(['general', 'crowdfunding'], false);
+                Feedback.send('CROWDFUNDING_NEVER');
+            };
+
+            var modal = UI.cornerPopup(text, actions, null, {
+                big: true,
+                alt: true,
+                dontShowAgain: dontShowAgain
+            });
+
+            $(yes).click(function () {
+                modal.delete();
+                common.openURL(priv.accounts.donateURL);
+                Feedback.send('CROWDFUNDING_YES');
+            });
+            $(modal.popup).find('a').click(function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                modal.delete();
+                common.openURL(priv.accounts.donateURL);
+                Feedback.send('CROWDFUNDING_LINK');
+            });
+            $(no).click(function () {
+                modal.delete();
+                Feedback.send('CROWDFUNDING_NO');
+            });
+        };
+
+        if (force) {
+            crowdfundingState = true;
+            return void todo();
+        }
+
+        if (AppConfig.disableCrowdfundingMessages) { return; }
         if (priv.plan) { return; }
 
         crowdfundingState = true;
-        setTimeout(function () {
-            common.getAttribute(['general', 'crowdfunding'], function (err, val) {
-                if (err || val === false) { return; }
-                common.getSframeChannel().query('Q_GET_PINNED_USAGE', null, function (err, obj) {
-                    var quotaMb = obj.quota / (1024 * 1024);
-                    if (quotaMb < 10) { return; }
-                    // Display the popup
-                    var text = Messages.crowdfunding_popup_text;
-                    var yes = h('button.cp-corner-primary', Messages.crowdfunding_popup_yes);
-                    var no = h('button.cp-corner-primary', Messages.crowdfunding_popup_no);
-                    var never = h('button.cp-corner-cancel', Messages.crowdfunding_popup_never);
-                    var actions = h('div', [yes, no, never]);
-
-                    var modal = UI.cornerPopup(text, actions, null, {big: true});
-
-                    $(yes).click(function () {
-                        modal.delete();
-                        common.openURL(priv.accounts.donateURL);
-                        Feedback.send('CROWDFUNDING_YES');
-                    });
-                    $(modal.popup).find('a').click(function (e) {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        modal.delete();
-                        common.openURL(priv.accounts.donateURL);
-                        Feedback.send('CROWDFUNDING_LINK');
-                    });
-                    $(no).click(function () {
-                        modal.delete();
-                        Feedback.send('CROWDFUNDING_NO');
-                    });
-                    $(never).click(function () {
-                        modal.delete();
-                        common.setAttribute(['general', 'crowdfunding'], false);
-                        Feedback.send('CROWDFUNDING_NEVER');
-                    });
-                });
+        common.getAttribute(['general', 'crowdfunding'], function (err, val) {
+            if (err || val === false) { return; }
+            common.getSframeChannel().query('Q_GET_PINNED_USAGE', null, function (err, obj) {
+                var quotaMb = obj.quota / (1024 * 1024);
+                if (quotaMb < 10) { return; }
+                todo();
             });
-        }, 5000);
+        });
     };
 
     var storePopupState = false;
@@ -4170,7 +4208,7 @@ define([
 
         var hide = h('button.cp-corner-cancel', Messages.autostore_hide);
         var store = h('button.cp-corner-primary', Messages.autostore_store);
-        var actions = h('div', [store, hide]);
+        var actions = h('div', [hide, store]);
 
         var initialHide = data && data.autoStore && data.autoStore === -1;
         var modal = UI.cornerPopup(text, actions, footer, {hidden: initialHide});
@@ -4325,7 +4363,8 @@ define([
 
     UIElements.displayFriendRequestModal = function (common, data) {
         var msg = data.content.msg;
-        var text = Messages._getKey('contacts_request', [Util.fixHTML(msg.content.displayName)]);
+        var userData = msg.content.user;
+        var text = Messages._getKey('contacts_request', [Util.fixHTML(userData.displayName)]);
 
         var todo = function (yes) {
             common.getSframeChannel().query("Q_ANSWER_FRIEND_REQUEST", {
@@ -4352,7 +4391,6 @@ define([
 
     UIElements.displayAddOwnerModal = function (common, data) {
         var priv = common.getMetadataMgr().getPrivateData();
-        var user = common.getMetadataMgr().getUserData();
         var sframeChan = common.getSframeChannel();
         var msg = data.content.msg;
 
@@ -4387,15 +4425,7 @@ define([
                 href: msg.content.href,
                 password: msg.content.password,
                 title: msg.content.title,
-                answer: yes,
-                user: {
-                    displayName: user.name,
-                    avatar: user.avatar,
-                    profile: user.profile,
-                    notifications: user.notifications,
-                    curvePublic: user.curvePublic,
-                    edPublic: priv.edPublic
-                }
+                answer: yes
             }, {
                 channel: msg.content.user.notifications,
                 curvePublic: msg.content.user.curvePublic
@@ -4476,7 +4506,6 @@ define([
     };
     UIElements.displayAddTeamOwnerModal = function (common, data) {
         var priv = common.getMetadataMgr().getPrivateData();
-        var user = common.getMetadataMgr().getUserData();
         var sframeChan = common.getSframeChannel();
         var msg = data.content.msg;
 
@@ -4493,15 +4522,7 @@ define([
             common.mailbox.sendTo("ADD_OWNER_ANSWER", {
                 teamChannel: msg.content.teamChannel,
                 title: msg.content.title,
-                answer: yes,
-                user: {
-                    displayName: user.name,
-                    avatar: user.avatar,
-                    profile: user.profile,
-                    notifications: user.notifications,
-                    curvePublic: user.curvePublic,
-                    edPublic: priv.edPublic
-                }
+                answer: yes
             }, {
                 channel: msg.content.user.notifications,
                 curvePublic: msg.content.user.curvePublic
@@ -4608,17 +4629,15 @@ define([
             var f = priv.friends[curve];
             $verified.append(h('span.fa.fa-certificate'));
             var $avatar = $(h('span.cp-avatar')).appendTo($verified);
-            $verified.append(h('p', Messages._getKey('requestEdit_fromFriend', [f.displayName])));
+            $verified.append(h('p', Messages._getKey('isContact', [f.displayName])));
             common.displayAvatar($avatar, f.avatar, f.displayName);
         } else {
-            $verified.append(Messages._getKey('requestEdit_fromStranger', [name]));
+            $verified.append(Messages._getKey('isNotContact', [name]));
         }
         return verified;
     };
 
     UIElements.displayInviteTeamModal = function (common, data) {
-        var priv = common.getMetadataMgr().getPrivateData();
-        var user = common.getMetadataMgr().getUserData();
         var msg = data.content.msg;
 
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
@@ -4639,15 +4658,7 @@ define([
             common.mailbox.sendTo("INVITE_TO_TEAM_ANSWER", {
                 answer: yes,
                 teamChannel: msg.content.team.channel,
-                teamName: teamName,
-                user: {
-                    displayName: user.name,
-                    avatar: user.avatar,
-                    profile: user.profile,
-                    notifications: user.notifications,
-                    curvePublic: user.curvePublic,
-                    edPublic: priv.edPublic
-                }
+                teamName: teamName
             }, {
                 channel: msg.content.user.notifications,
                 curvePublic: msg.content.user.curvePublic

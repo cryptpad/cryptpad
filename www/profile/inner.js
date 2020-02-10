@@ -201,7 +201,7 @@ define([
             // Add friend message
             APP.$friend.append(h('p.cp-app-profile-friend', [
                 h('i.fa.fa-address-book'),
-                Messages._getKey('profile_friend', [name])
+                Messages._getKey('isContact', [name])
             ]));
             if (!friends[data.curvePublic].notifications) { return; }
             // Add unfriend button
@@ -568,6 +568,29 @@ define([
                 UI.removeLoadingScreen();
             });
             return;
+        }
+
+        if (!common.isLoggedIn()) {
+            var login = h('button.cp-corner-primary', Messages.login_login);
+            var register = h('button.cp-corner-primary', Messages.login_register);
+            var cancel = h('button.cp-corner-cancel', Messages.cancel);
+            var actions = h('div', [cancel, register, login]);
+            var modal = UI.cornerPopup(Messages.profile_login, actions, '', {alt: true});
+            $(register).click(function () {
+                common.setLoginRedirect(function () {
+                    common.gotoURL('/register/');
+                });
+                modal.delete();
+            });
+            $(login).click(function () {
+                common.setLoginRedirect(function () {
+                    common.gotoURL('/login/');
+                });
+                modal.delete();
+            });
+            $(cancel).click(function () {
+                modal.delete();
+            });
         }
 
         var listmapConfig = {

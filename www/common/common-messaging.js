@@ -53,10 +53,18 @@ define([
         return list;
     };
 
+    Msg.declineFriendRequest = function (store, data, cb) {
+        store.mailbox.sendTo('DECLINE_FRIEND_REQUEST', {}, {
+            channel: data.notifications,
+            curvePublic: data.curvePublic
+        }, function (obj) {
+            cb(obj);
+        });
+    };
     Msg.acceptFriendRequest = function (store, data, cb) {
         var friend = getFriend(store.proxy, data.curvePublic) || {};
         var myData = createData(store.proxy, friend.channel || data.channel);
-        store.mailbox.sendTo('ACCEPT_FRIEND_REQUEST', myData, {
+        store.mailbox.sendTo('ACCEPT_FRIEND_REQUEST', { user: myData }, {
             channel: data.notifications,
             curvePublic: data.curvePublic
         }, function (obj) {
@@ -110,7 +118,7 @@ define([
         var proxy = store.proxy;
         var friend = proxy.friends[curvePublic];
         if (!friend) { return void cb({error: 'ENOENT'}); }
-        if (!friend.notifications || !friend.channel) { return void cb({error: 'EINVAL'}); }
+        if (!friend.notifications) { return void cb({error: 'EINVAL'}); }
 
         store.mailbox.sendTo('UNFRIEND', {
             curvePublic: proxy.curvePublic

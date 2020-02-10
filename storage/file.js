@@ -7,6 +7,10 @@ var Path = require("path");
 var nThen = require("nthen");
 var Semaphore = require("saferphore");
 var Util = require("../lib/common-util");
+var Meta = require("../lib/metadata");
+var Extras = require("../lib/hk-util");
+
+const Schedule = require("../lib/schedule");
 const Readline = require("readline");
 const ToPull = require('stream-to-pull-stream');
 const Pull = require('pull-stream');
@@ -35,6 +39,10 @@ var mkMetadataPath = function (env, channelId) {
 
 var mkArchiveMetadataPath = function (env, channelId) {
     return Path.join(env.archiveRoot, 'datastore', channelId.slice(0, 2), channelId) + '.metadata.ndjson';
+};
+
+var mkTempPath = function (env, channelId) {
+    return mkPath(env, channelId) + '.temp';
 };
 
 // pass in the path so we can reuse the same function for archived files
@@ -553,9 +561,6 @@ var listChannels = function (root, handler, cb) {
 // to an equivalent location in the cold storage directory
 var archiveChannel = function (env, channelName, cb) {
     // TODO close channels before archiving them?
-    if (!env.retainData) {
-        return void cb("ARCHIVES_DISABLED");
-    }
 
     // ctime is the most reliable indicator of when a file was archived
     // because it is used to indicate changes to the files metadata
@@ -752,6 +757,8 @@ var getChannel = function (
     }
 
     if (env.openFiles >= env.openFileLimit) {
+        // FIXME warn if this is the case?
+        // alternatively use graceful-fs to handle lots of concurrent reads
         // if you're running out of open files, asynchronously clean up expired files
         // do it on a shorter timeframe, though (half of normal)
         setTimeout(function () {
@@ -867,40 +874,187 @@ var getMessages = function (env, chanName, handler, cb) {
     });
 };
 
-/*::
-export type ChainPadServer_MessageObj_t = { buff: Buffer, offset: number };
-export type ChainPadServer_Storage_t = {
-    readMessagesBin: (
-        channelName:string,
-        start:number,
-        asyncMsgHandler:(msg:ChainPadServer_MessageObj_t, moreCb:()=>void, abortCb:()=>void)=>void,
-        cb:(err:?Error)=>void
-    )=>void,
-    message: (channelName:string, content:string, cb:(err:?Error)=>void)=>void,
-    messageBin: (channelName:string, content:Buffer, cb:(err:?Error)=>void)=>void,
-    getMessages: (channelName:string, msgHandler:(msg:string)=>void, cb:(err:?Error)=>void)=>void,
-    removeChannel: (channelName:string, cb:(err:?Error)=>void)=>void,
-    closeChannel: (channelName:string, cb:(err:?Error)=>void)=>void,
-    flushUnusedChannels: (cb:()=>void)=>void,
-    getChannelSize: (channelName:string, cb:(err:?Error, size:?number)=>void)=>void,
-    getChannelMetadata: (channelName:string, cb:(err:?Error|string, data:?any)=>void)=>void,
-    clearChannel: (channelName:string, (err:?Error)=>void)=>void
+var trimChannel = function (env, channelName, hash, _cb) {
+    var cb = Util.once(Util.mkAsync(_cb));
+    // this function is queued as a blocking action for the relevant channel
+
+    // derive temporary file paths for metadata and log buffers
+    var tempChannelPath = mkTempPath(env, channelName);
+
+    // derive production db paths
+    var channelPath = mkPath(env, channelName);
+    var metadataPath = mkMetadataPath(env, channelName);
+
+    // derive archive paths
+    var archiveChannelPath = mkArchivePath(env, channelName);
+    var archiveMetadataPath = mkArchiveMetadataPath(env, channelName);
+
+    var metadataReference = {};
+
+    var tempStream;
+    var ABORT;
+
+    var cleanUp = function (cb) {
+        if (tempStream && !tempStream.closed) {
+            try {
+                tempStream.close();
+            } catch (err) { }
+        }
+
+        Fse.unlink(tempChannelPath, function (err) {
+            // proceed if deleted or if there was nothing to delete
+            if (!err || err.code === 'ENOENT') { return cb(); }
+            // else abort and call back with the error
+            cb(err);
+        });
+    };
+
+    nThen(function (w) {
+        // close the file descriptor if it is open
+        closeChannel(env, channelName, w(function (err) {
+            if (err) {
+                w.abort();
+                return void cb(err);
+            }
+        }));
+    }).nThen(function (w) {
+        cleanUp(w(function (err) {
+            if (err) {
+                w.abort();
+                cb(err);
+            }
+        }));
+    }).nThen(function (w) {
+        // eat errors since loading the logger here would create a cyclical dependency
+        var lineHandler = Meta.createLineHandler(metadataReference, Util.noop);
+
+        readMetadata(env, channelName, lineHandler, w(function (err) {
+            if (err) {
+                w.abort();
+                return void cb(err);
+            }
+            // if there were no errors just fall through to the next block
+        }));
+    }).nThen(function (w) {
+        // create temp buffer writeStream
+        tempStream = Fs.createWriteStream(tempChannelPath, {
+            flags: 'a',
+        });
+        tempStream.on('open', w());
+        tempStream.on('error', function (err) {
+            w.abort();
+            ABORT = true;
+            cleanUp(function () {
+                cb(err);
+            });
+        });
+    }).nThen(function (w) {
+        var i = 0;
+        var retain = false;
+
+        var handler = function (msgObj, readMore, abort) {
+            if (ABORT) { return void abort(); }
+            // the first message might be metadata... ignore it if so
+            if (i++ === 0 && msgObj.buff.indexOf('{') === 0) {
+                return readMore();
+            }
+
+            var s_msg = msgObj.buff.toString('utf8');
+            if (retain) {
+                // if this flag is set then you've already found
+                // the message you were looking for.
+                // write it to your temp buffer and keep going
+                return void tempStream.write(s_msg + '\n', function () {
+                    readMore();
+                });
+            }
+
+            var msg = Util.tryParse(s_msg);
+            var msgHash = Extras.getHash(msg[4]);
+
+            if (msgHash === hash) {
+                // everything from this point on should be retained
+                retain = true;
+                return void tempStream.write(msgObj.buff, function () {
+                    readMore();
+                });
+            }
+        };
+
+        readMessagesBin(env, channelName, 0, handler, w(function (err) {
+            if (err) {
+                w.abort();
+                return void cleanUp(function () {
+                    // intentionally call back with main error
+                    // not the cleanup error
+                    cb(err);
+                });
+            }
+
+            if (!retain) {
+                // you never found the message you were looking for
+                // this whole operation is invalid...
+                // clean up, abort, and call back with an error
+
+                w.abort();
+                cleanUp(function () {
+                    // intentionally call back with main error
+                    // not the cleanup error
+                    cb('HASH_NOT_FOUND');
+                });
+            }
+        }));
+    }).nThen(function (w) {
+        // copy existing channel to the archive
+        Fse.copy(channelPath, archiveChannelPath, w(function (err) {
+            if (!err || err.code === 'ENOENT') { return; }
+            w.abort();
+            cleanUp(function () {
+                cb(err);
+            });
+        }));
+
+        // copy existing metadaata to the archive
+        Fse.copy(metadataPath, archiveMetadataPath, w(function (err) {
+            if (!err || err.code === 'ENOENT') { return; }
+            w.abort();
+            cleanUp(function () {
+                cb(err);
+            });
+        }));
+    }).nThen(function (w) {
+        // overwrite the existing metadata log with the current metadata state
+        Fs.writeFile(metadataPath, JSON.stringify(metadataReference.meta) + '\n', w(function (err) {
+            // this shouldn't happen, but if it does your channel might be messed up :(
+            if (err) {
+                w.abort();
+                cb(err);
+            }
+        }));
+
+        // overwrite the existing channel with the temp log
+        Fse.move(tempChannelPath, channelPath, {
+            overwrite: true,
+        }, w(function (err) {
+            // this shouldn't happen, but if it does your channel might be messed up :(
+            if (err) {
+                w.abort();
+                cb(err);
+            }
+        }));
+    }).nThen(function () {
+        // clean up and call back with no error
+        // triggering a historyKeeper index cache eviction...
+        cleanUp(function () {
+            cb();
+        });
+    });
 };
-export type ChainPadServer_Config_t = {
-    verbose?: boolean,
-    filePath?: string,
-    channelExpirationMs?: number,
-    openFileLimit?: number
-};
-*/
-module.exports.create = function (
-    conf /*:ChainPadServer_Config_t*/,
-    cb /*:(store:ChainPadServer_Storage_t)=>void*/
-) {
+
+module.exports.create = function (conf, cb) {
     var env = {
         root: conf.filePath || './datastore',
         archiveRoot: conf.archivePath || './data/archive',
-        retainData: conf.retainData,
         channels: { },
         channelExpirationMs: conf.channelExpirationMs || 30000,
         verbose: conf.verbose,
@@ -908,6 +1062,24 @@ module.exports.create = function (
         openFileLimit: conf.openFileLimit || 2048,
     };
     var it;
+
+    /*  our scheduler prioritizes and executes tasks with respect
+        to all other tasks invoked with an identical key
+        (typically the id of the concerned channel)
+
+        it assumes that all tasks can be categorized into three types
+
+        1. unordered tasks such as streaming reads which can take
+           a long time to complete.
+
+        2. ordered tasks such as appending to a file which does not
+           take very long, but where priority is important.
+
+        3. blocking tasks such as rewriting a file where it would be
+           dangerous to perform any other task concurrently.
+
+    */
+    var schedule = env.schedule = Schedule();
 
     nThen(function (w) {
         // make sure the store's directory exists
@@ -928,43 +1100,80 @@ module.exports.create = function (
             // write a new message to a log
             message: function (channelName, content, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
-                message(env, channelName, content, cb);
+                schedule.ordered(channelName, function (next) {
+                    message(env, channelName, content, Util.both(cb, next));
+                });
             },
             // iterate over all the messages in a log
             getMessages: function (channelName, msgHandler, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
-                getMessages(env, channelName, msgHandler, cb);
+                schedule.unordered(channelName, function (next) {
+                    getMessages(env, channelName, msgHandler, Util.both(cb, next));
+                });
             },
 
         // NEWER IMPLEMENTATIONS OF THE SAME THING
             // write a new message to a log
             messageBin: (channelName, content, cb) => {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
-                messageBin(env, channelName, content, cb);
+                schedule.ordered(channelName, function (next) {
+                    messageBin(env, channelName, content, Util.both(cb, next));
+                });
             },
             // iterate over the messages in a log
             readMessagesBin: (channelName, start, asyncMsgHandler, cb) => {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
-                readMessagesBin(env, channelName, start, asyncMsgHandler, cb);
+// FIXME there is a race condition here
+// historyKeeper reads the file to find the byte offset of the first interesting message
+// then calls this function again to read from that point.
+// If this task is in the queue already when the file is read again
+// then that byte offset will have been invalidated
+// and the resulting stream probably won't align with message boundaries.
+// We can evict the cache in the callback but by that point it will be too late.
+// Presumably we'll need to bury some of historyKeeper's logic into a filestore method
+// in order to make index/read sequences atomic.
+// Otherwise, we can add a new task type to the scheduler to take invalidation into account...
+// either method introduces significant complexity.
+                schedule.unordered(channelName, function (next) {
+                    readMessagesBin(env, channelName, start, asyncMsgHandler, Util.both(cb, next));
+                });
             },
 
         // METHODS for deleting data
             // remove a channel and its associated metadata log if present
             removeChannel: function (channelName, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
-                removeChannel(env, channelName, function (err) {
-                    cb(err);
+// FIXME there's another race condition here...
+// when a remove and an append are scheduled in that order
+// the remove will delete the channel's metadata (including its validateKey)
+// then the append will recreate the channel and insert a message.
+// clients that are connected to the channel via historyKeeper should be kicked out
+// however, anyone that connects to that channel in the future will be able to read the
+// signed message, but will not find its validate key...
+// resulting in a junk/unusable document
+                schedule.ordered(channelName, function (next) {
+                    removeChannel(env, channelName, Util.both(cb, next));
                 });
             },
             // remove a channel and its associated metadata log from the archive directory
             removeArchivedChannel: function (channelName, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
-                removeArchivedChannel(env, channelName, cb);
+                schedule.ordered(channelName, function (next) {
+                    removeArchivedChannel(env, channelName, Util.both(cb, next));
+                });
             },
             // clear all data for a channel but preserve its metadata
             clearChannel: function (channelName, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
-                clearChannel(env, channelName, cb);
+                schedule.ordered(channelName, function (next) {
+                    clearChannel(env, channelName, Util.both(cb, next));
+                });
+            },
+            trimChannel: function (channelName, hash, cb) {
+                if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
+                schedule.blocking(channelName, function (next) {
+                    trimChannel(env, channelName, hash, Util.both(cb, next));
+                });
             },
 
             // check if a channel exists in the database
@@ -972,47 +1181,85 @@ module.exports.create = function (
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
                 // construct the path
                 var filepath = mkPath(env, channelName);
-                channelExists(filepath, cb);
+// (ansuz) I'm uncertain whether this task should be unordered or ordered.
+// there's a round trip to the client (and possibly the user) before they decide
+// to act on the information of whether there is already content present in this channel.
+// so it's practically impossible to avoid race conditions where someone else creates
+// some content before you.
+// if that's the case, it's basically impossible that you'd generate the same signing key,
+// and thus historykeeper should reject the signed messages of whoever loses the race.
+// thus 'unordered' seems appropriate.
+                schedule.unordered(channelName, function (next) {
+                    channelExists(filepath, Util.both(cb, next));
+                });
             },
             // check if a channel exists in the archive
             isChannelArchived: function (channelName, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
                 // construct the path
                 var filepath = mkArchivePath(env, channelName);
-                channelExists(filepath, cb);
+// as with the method above, somebody might remove, restore, or overwrite an archive
+// in the time that it takes to answer this query and to execute whatever follows.
+// since it's impossible to win the race every time let's just make this 'unordered'
+                schedule.unordered(channelName, function (next) {
+                    channelExists(filepath, Util.both(cb, next));
+                });
             },
             // move a channel from the database to the archive, along with its metadata
             archiveChannel: function (channelName, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
-                archiveChannel(env, channelName, cb);
+// again, the semantics around archiving and appending are really muddy.
+// so I'm calling this 'unordered' again
+                schedule.unordered(channelName, function (next) {
+                    archiveChannel(env, channelName, Util.both(cb, next));
+                });
             },
             // restore a channel from the archive to the database, along with its metadata
             restoreArchivedChannel: function (channelName, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
-                unarchiveChannel(env, channelName, cb);
+// archive restoration will fail if either a file or its metadata exists in the live db.
+// so I'm calling this 'ordered' to give writes a chance to flush out.
+// accidental conflicts are extremely unlikely since clients check the status
+// of a previously known channel before joining.
+                schedule.ordered(channelName, function (next) {
+                    unarchiveChannel(env, channelName, Util.both(cb, next));
+                });
             },
 
         // METADATA METHODS
             // fetch the metadata for a channel
             getChannelMetadata: function (channelName, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
-                getChannelMetadata(env, channelName, cb);
+// The only thing that can invalid this method's results are channel archival, removal, or trimming.
+// We want it to be fast, so let's make it unordered.
+                schedule.unordered(channelName, function (next) {
+                    getChannelMetadata(env, channelName, Util.both(cb, next));
+                });
             },
             // iterate over lines of metadata changes from a dedicated log
             readDedicatedMetadata: function (channelName, handler, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
-                getDedicatedMetadata(env, channelName, handler, cb);
+// Everything that modifies metadata also updates clients, so this can be 'unordered'
+                schedule.unordered(channelName, function (next) {
+                    getDedicatedMetadata(env, channelName, handler, Util.both(cb, next));
+                });
             },
 
             // iterate over multiple lines of metadata changes
             readChannelMetadata: function (channelName, handler, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
-                readMetadata(env, channelName, handler, cb);
+// same logic as 'readDedicatedMetadata
+                schedule.unordered(channelName, function (next) {
+                    readMetadata(env, channelName, handler, Util.both(cb, next));
+                });
             },
             // write a new line to a metadata log
             writeMetadata: function (channelName, data, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
-                writeMetadata(env, channelName, data, cb);
+// metadata writes are fast and should be applied in order
+                schedule.ordered(channelName, function (next) {
+                    writeMetadata(env, channelName, data, Util.both(cb, next));
+                });
             },
 
         // CHANNEL ITERATION
@@ -1025,13 +1272,22 @@ module.exports.create = function (
 
             getChannelSize: function (channelName, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
-                channelBytes(env, channelName, cb);
+// this method should be really fast and it probably doesn't matter much
+// if we get the size slightly before or after somebody writes a few hundred bytes to it.
+                schedule.ordered(channelName, function (next) {
+                    channelBytes(env, channelName, Util.both(cb, next));
+                });
             },
         // OTHER DATABASE FUNCTIONALITY
             // remove a particular channel from the cache
             closeChannel: function (channelName, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
-                closeChannel(env, channelName, cb);
+// It is most likely the case that the channel is inactive if we are trying to close it,
+// thus it doesn't make much difference whether it's ordered or not.
+// In any case, it will be re-opened if anyone tries to write to it.
+                schedule.ordered(channelName, function (next) {
+                    closeChannel(env, channelName, Util.both(cb, next));
+                });
             },
             // iterate over open channels and close any that are not active
             flushUnusedChannels: function (cb) {
@@ -1039,7 +1295,10 @@ module.exports.create = function (
             },
             // write to a log file
             log: function (channelName, content, cb) {
-                message(env, channelName, content, cb);
+// you probably want the events in your log to be in the correct order.
+                schedule.ordered(channelName, function (next) {
+                    message(env, channelName, content, Util.both(cb, next));
+                });
             },
             // shut down the database
             shutdown: function () {

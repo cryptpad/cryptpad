@@ -9,6 +9,7 @@ define([
     var requireConfig = RequireConfig();
 
     // Loaded in load #2
+    var hash, href;
     nThen(function (waitFor) {
         DomReady.onReady(waitFor());
     }).nThen(function (waitFor) {
@@ -19,6 +20,14 @@ define([
         };
         window.rc = requireConfig;
         window.apiconf = ApiConfig;
+
+        // Hidden hash
+        hash = window.location.hash;
+        href = window.location.href;
+        if (window.history && window.history.replaceState && hash) {
+            window.history.replaceState({}, window.document.title, '#');
+        }
+
         document.getElementById('sbox-iframe').setAttribute('src',
             ApiConfig.httpSafeOrigin + '/drive/inner.html?' + requireConfig.urlArgs +
                 '#' + encodeURIComponent(JSON.stringify(req)));
@@ -37,19 +46,25 @@ define([
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
         var afterSecrets = function (Cryptpad, Utils, secret, cb) {
-            var hash = window.location.hash.slice(1);
-            if (hash && Utils.LocalStore.isLoggedIn()) {
+            var _hash = hash.slice(1);
+            if (_hash && Utils.LocalStore.isLoggedIn()) {
                 // Add a shared folder!
                 Cryptpad.addSharedFolder(null, secret, function (id) {
                     window.CryptPad_newSharedFolder = id;
+
+                    // Clear the hash now that the secrets have been generated
+                    if (window.history && window.history.replaceState && hash) {
+                        window.history.replaceState({}, window.document.title, '#');
+                    }
+
                     cb();
                 });
                 return;
-            } else if (hash) {
+            } else if (_hash) {
                 var id = Utils.Util.createRandomInteger();
                 window.CryptPad_newSharedFolder = id;
                 var data = {
-                    href: Utils.Hash.getRelativeHref(window.location.href),
+                    href: Utils.Hash.getRelativeHref(Cryptpad.currentPad.href),
                     password: secret.password
                 };
                 return void Cryptpad.loadSharedFolder(id, data, cb);
@@ -82,15 +97,6 @@ define([
                     cb(obj);
                 });
             });
-            sframeChan.on('EV_DRIVE_SET_HASH', function (hash) {
-                // Update the hash in the address bar
-                if (!Utils.LocalStore.isLoggedIn()) { return; }
-                var ohc = window.onhashchange;
-                window.onhashchange = function () {};
-                window.location.hash = hash || '';
-                window.onhashchange = ohc;
-                ohc({reset:true});
-            });
             Cryptpad.onNetworkDisconnect.reg(function () {
                 sframeChan.event('EV_NETWORK_DISCONNECT');
             });
@@ -107,11 +113,13 @@ define([
                 sframeChan.event('EV_DRIVE_REMOVE', data);
             });
         };
-        var addData = function (meta) {
+        var addData = function (meta, Cryptpad) {
             if (!window.CryptPad_newSharedFolder) { return; }
-            meta.anonSFHref = window.location.href;
+            meta.anonSFHref = Cryptpad.currentPad.href;
         };
         SFCommonO.start({
+            hash: hash,
+            href: href,
             afterSecrets: afterSecrets,
             noHash: true,
             noRealtime: true,

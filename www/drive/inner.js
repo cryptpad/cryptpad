@@ -5,6 +5,7 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
+    '/common/common-ui-elements.js',
     '/common/common-feedback.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
@@ -22,6 +23,7 @@ define([
     Util,
     Hash,
     UI,
+    UIElements,
     Feedback,
     nThen,
     SFCommon,
@@ -94,7 +96,11 @@ define([
     var updateObject = function (sframeChan, obj, cb) {
         sframeChan.query('Q_DRIVE_GETOBJECT', null, function (err, newObj) {
             copyObjectValue(obj, newObj);
+            // If anon shared folder, make a virtual drive containing this folder
             if (!APP.loggedIn && APP.newSharedFolder) {
+                obj.drive.root = {
+                    sf: APP.newSharedFolder
+                };
                 obj.drive.sharedFolders = obj.drive.sharedFolders || {};
                 obj.drive.sharedFolders[APP.newSharedFolder] = {
                     href: APP.anonSFHref,
@@ -272,13 +278,13 @@ define([
                 setEditable(false);
                 if (drive.refresh) { drive.refresh(); }
                 APP.toolbar.failed();
-                if (!noAlert) { UI.alert(Messages.common_connectionLost, undefined, true); }
+                if (!noAlert) { UIElements.disconnectAlert(); }
             };
             var onReconnect = function () {
                 setEditable(true);
                 if (drive.refresh) { drive.refresh(); }
                 APP.toolbar.reconnecting();
-                UI.findOKButton().click();
+                UIElements.reconnectAlert();
             };
 
             sframeChan.on('EV_DRIVE_LOG', function (msg) {
