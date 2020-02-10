@@ -170,10 +170,14 @@
             flex-flow: column;
             overflow: auto;
             #cp-sidebarlayout-leftside {
-                width: 100%;
+                width: 100% !important; // Override "narrow" mode
+                padding-bottom: 20px;
                 .cp-sidebarlayout-categories {
                     .cp-sidebarlayout-category {
                         margin: 0;
+                        span.cp-sidebar-layout-category-name {
+                            display: inline !important; // override "narrow" mode
+                        }
                     }
                 }
             }
