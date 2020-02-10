@@ -234,6 +234,18 @@ var createUser = function (config, cb) {
                 return void cb(err);
             }
         }));
+    }).nThen(function (w) {
+        // some basic sanity checks...
+        user.rpc.getServerHash(w(function (err, hash) {
+            if (err) {
+                w.abort();
+                return void cb(err);
+            }
+            if (hash !== EMPTY_ARRAY_HASH) {
+                console.error("EXPECTED EMPTY ARRAY HASH");
+                process.exit(1);
+            }
+        }));
     }).nThen(function () {
 
         user.cleanup = function (cb) {
