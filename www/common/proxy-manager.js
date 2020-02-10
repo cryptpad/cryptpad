@@ -689,7 +689,9 @@ define([
 
             // remove folder
             Env.user.userObject.delete([path], function () {
-                cb();
+                cb({
+                    fId: SFId
+                });
             });
         });
     };
