@@ -3345,7 +3345,9 @@ define([
                 // in history mode we want to focus the version number input
                 if (!history.isHistoryMode && !APP.mobile()) {
                     var st = $tree.scrollTop() || 0;
-                    $tree.find('#cp-app-drive-tree-search-input').focus();
+                    if (!$('.alertify').length) {
+                        $tree.find('#cp-app-drive-tree-search-input').focus();
+                    }
                     $tree.scrollTop(st);
                 }
                 $tree.find('#cp-app-drive-tree-search-input')[0].selectionStart = getSearchCursor();
