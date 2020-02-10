@@ -17,6 +17,12 @@
     flex-flow: column;
     font: @colortheme_app-font;
 
+    .cp-sidebarlayout-element {
+        &[class*="cp-settings"] {
+            max-width: 650px;
+        }
+    }
+
     #cp-export-container {
         font-size: 16px;
         display: flex;
