@@ -27,12 +27,15 @@
     .cp-support-list-actions {
         margin: 10px 0px 10px 2px;
     }
-    .cp-support-list-message {
-        &:last-child:not(.cp-support-fromadmin)  {
-            color: @colortheme_cp-red;
-            background-color: lighten(@colortheme_cp-red, 25%);
-            .cp-support-showdata {
-                background-color: lighten(@colortheme_cp-red, 30%);
+
+    .cp-support-list-ticket:not(.cp-support-list-closed) {
+        .cp-support-list-message {
+            &:last-child:not(.cp-support-fromadmin)  {
+                color: @colortheme_cp-red;
+                background-color: lighten(@colortheme_cp-red, 25%);
+                .cp-support-showdata {
+                    background-color: lighten(@colortheme_cp-red, 30%);
+                }
             }
         }
     }
