@@ -587,7 +587,7 @@ define([
             $ok.click();
         }, function () {
             $cancel.click();
-        }, ok);
+        });
 
         document.body.appendChild(frame);
         setTimeout(function () {
