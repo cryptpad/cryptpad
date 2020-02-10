@@ -96,7 +96,11 @@ define([
     var updateObject = function (sframeChan, obj, cb) {
         sframeChan.query('Q_DRIVE_GETOBJECT', null, function (err, newObj) {
             copyObjectValue(obj, newObj);
+            // If anon shared folder, make a virtual drive containing this folder
             if (!APP.loggedIn && APP.newSharedFolder) {
+                obj.drive.root = {
+                    sf: APP.newSharedFolder
+                };
                 obj.drive.sharedFolders = obj.drive.sharedFolders || {};
                 obj.drive.sharedFolders[APP.newSharedFolder] = {
                     href: APP.anonSFHref,

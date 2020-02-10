@@ -1175,13 +1175,9 @@ define([
                         } else if ($element.is('.cp-app-drive-element-noreadonly')) {
                             hide.push('openro'); // Remove open 'view' mode
                         }
-                        // if it's not a plain text file
-                        // XXX: there is a bug with this code in anon shared folder, so we disable it
-                        if (APP.loggedIn || !APP.newSharedFolder) {
-                            var metadata = manager.getFileData(manager.find(path));
-                            if (!metadata || !Util.isPlainTextFile(metadata.fileType, metadata.title)) {
-                                hide.push('openincode');
-                            }
+                        var metadata = manager.getFileData(manager.find(path));
+                        if (!metadata || !Util.isPlainTextFile(metadata.fileType, metadata.title)) {
+                            hide.push('openincode');
                         }
                     } else if ($element.is('.cp-app-drive-element-sharedf')) {
                         if (containsFolder) {
@@ -1204,6 +1200,7 @@ define([
                             hide.push('collapseall');
                         }
                         containsFolder = true;
+                        hide.push('savelocal');
                         hide.push('openro');
                         hide.push('openincode');
                         hide.push('properties');
@@ -1939,6 +1936,44 @@ define([
         };
         var getIcon = UI.getIcon;
 
+        var createShareButton = function (id, $container) {
+            var $shareBlock = $('<button>', {
+                'class': 'cp-toolbar-share-button',
+                title: Messages.shareButton
+            });
+            $sharedIcon.clone().appendTo($shareBlock);
+            $('<span>').text(Messages.shareButton).appendTo($shareBlock);
+            var data = manager.getSharedFolderData(id);
+            var parsed = (data.href && data.href.indexOf('#') !== -1) ? Hash.parsePadUrl(data.href) : {};
+            var roParsed = Hash.parsePadUrl(data.roHref) || {};
+            if (!parsed.hash && !roParsed.hash) { return void console.error("Invalid href: "+(data.href || data.roHref)); }
+            var friends = common.getFriends();
+            var ro = folders[id] && folders[id].version >= 2;
+            var modal = UIElements.createShareModal({
+                teamId: APP.team,
+                origin: APP.origin,
+                pathname: "/drive/",
+                friends: friends,
+                title: data.title,
+                password: data.password,
+                sharedFolder: true,
+                common: common,
+                hashes: {
+                    editHash: parsed.hash,
+                    viewHash: ro && roParsed.hash,
+                }
+            });
+            // If we're a viewer and this is an old shared folder (no read-only mode), we
+            // can't share the read-only URL and we don't have access to the edit one.
+            // We should hide the share button.
+            if (!modal) { return; }
+            $shareBlock.click(function () {
+                UI.openCustomModal(modal);
+            });
+            $container.append($shareBlock);
+            return $shareBlock;
+        };
+
         // Create the "li" element corresponding to the file/folder located in "path"
         var createElement = function (path, elPath, root, isFolder) {
             // Forbid drag&drop inside the trash
@@ -2019,6 +2054,15 @@ define([
                 });
                 delete APP.newFolder;
             }
+
+            if (isSharedFolder && APP.convertedFolder === element) {
+                setTimeout(function () {
+                    var $fakeButton = createShareButton(element, $('<div>'));
+                    if (!$fakeButton) { return; }
+                    $fakeButton.click();
+                }, 100);
+            }
+
             return $element;
         };
 
@@ -2554,43 +2598,6 @@ define([
             addNewPadHandlers($block, isInRoot);
 
             $container.append($block);
-        };
-
-        var createShareButton = function (id, $container) {
-            var $shareBlock = $('<button>', {
-                'class': 'cp-toolbar-share-button',
-                title: Messages.shareButton
-            });
-            $sharedIcon.clone().appendTo($shareBlock);
-            $('<span>').text(Messages.shareButton).appendTo($shareBlock);
-            var data = manager.getSharedFolderData(id);
-            var parsed = (data.href && data.href.indexOf('#') !== -1) ? Hash.parsePadUrl(data.href) : {};
-            var roParsed = Hash.parsePadUrl(data.roHref) || {};
-            if (!parsed.hash && !roParsed.hash) { return void console.error("Invalid href: "+(data.href || data.roHref)); }
-            var friends = common.getFriends();
-            var ro = folders[id] && folders[id].version >= 2;
-            var modal = UIElements.createShareModal({
-                teamId: APP.team,
-                origin: APP.origin,
-                pathname: "/drive/",
-                friends: friends,
-                title: data.title,
-                password: data.password,
-                sharedFolder: true,
-                common: common,
-                hashes: {
-                    editHash: parsed.hash,
-                    viewHash: ro && roParsed.hash,
-                }
-            });
-            // If we're a viewer and this is an old shared folder (no read-only mode), we
-            // can't share the read-only URL and we don't have access to the edit one.
-            // We should hide the share button.
-            if (!modal) { return; }
-            $shareBlock.click(function () {
-                UI.openCustomModal(modal);
-            });
-            $container.append($shareBlock);
         };
 
         var SORT_FOLDER_DESC = 'sortFoldersDesc';
@@ -3237,21 +3244,23 @@ define([
             var path = currentPath.slice(1);
             var root = Util.find(data, path);
 
+            var realPath = [ROOT, SHARED_FOLDER].concat(path);
+
             if (manager.hasSubfolder(root)) { $list.append($folderHeader); }
             // display sub directories
             var keys = Object.keys(root);
-            var sortedFolders = sortElements(true, currentPath, keys, null, !getSortFolderDesc());
-            var sortedFiles = sortElements(false, currentPath, keys, APP.store[SORT_FILE_BY], !getSortFileDesc());
+            var sortedFolders = sortElements(true, realPath, keys, null, !getSortFolderDesc());
+            var sortedFiles = sortElements(false, realPath, keys, APP.store[SORT_FILE_BY], !getSortFileDesc());
             sortedFolders.forEach(function (key) {
                 if (manager.isFile(root[key])) { return; }
-                var $element = createElement(currentPath, key, root, true);
+                var $element = createElement(realPath, key, root, true);
                 $element.appendTo($list);
             });
             if (manager.hasFile(root)) { $list.append($fileHeader); }
             // display files
             sortedFiles.forEach(function (key) {
                 if (manager.isFolder(root[key])) { return; }
-                var $element = createElement(currentPath, key, root, false);
+                var $element = createElement(realPath, key, root, false);
                 if (!$element) { return; }
                 $element.appendTo($list);
             });
@@ -3486,6 +3495,9 @@ define([
             } else {
                 $content.scrollTop(s);
             }
+
+            delete APP.convertedFolder;
+
             appStatus.ready(true);
         };
         var displayDirectory = APP.displayDirectory = function (path, force) {
@@ -3973,6 +3985,14 @@ define([
                     common.sessionStorage.put(Constants.newPadTeamKey, APP.team, waitFor());
                 }).nThen(function () {
                     common.openURL('/code/');
+                    // We need to restore sessionStorage for the next time we want to create a pad from this tab
+                    // NOTE: the 100ms timeout is to fix a race condition in firefox where sessionStorage
+                    //       would be deleted before the new tab was created
+                    setTimeout(function () {
+                        common.sessionStorage.put(Constants.newPadFileData, '', function () {});
+                        common.sessionStorage.put(Constants.newPadPathKey, '', function () {});
+                        common.sessionStorage.put(Constants.newPadTeamKey, '', function () {});
+                    }, 100);
                 });
             }
 
@@ -4080,10 +4100,14 @@ define([
                             if (!res) { return; }
                             var password = $(convertContent).find('#cp-upload-password').val() || undefined;
                             var owned = Util.isChecked($(convertContent).find('#cp-upload-owned'));
-                            manager.convertFolderToSharedFolder(paths[0].path, owned, password, refresh);
+                            manager.convertFolderToSharedFolder(paths[0].path, owned, password, function (err, obj) {
+                                if (err || obj && obj.error) { return void console.error(err || obj.error); }
+                                if (obj && obj.fId) { APP.convertedFolder = obj.fId; }
+                                refresh();
+                            });
                         });
                     }
-                } else { // File
+                } else { // File or shared folder
                     var sf = manager.isSharedFolder(el);
                     data = sf ? manager.getSharedFolderData(el) : manager.getFileData(el);
                     parsed = (data.href && data.href.indexOf('#') !== -1) ? Hash.parsePadUrl(data.href) : {};
