@@ -273,8 +273,6 @@ define([
             var diff = tw - cw;
             if (diff && diff > 0) {
                 $table.css('margin-right', diff+'px');
-            } else {
-                $table.css('margin-right', '');
             }
 
             queue.next();
