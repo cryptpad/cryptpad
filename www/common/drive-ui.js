@@ -587,7 +587,7 @@ define([
         var displayedCategories = [ROOT, TRASH, SEARCH, RECENT];
 
         // PCS enabled: display owned pads
-        if (AppConfig.displayCreationScreen) { displayedCategories.push(OWNED); }
+        //if (AppConfig.displayCreationScreen) { displayedCategories.push(OWNED); }
         // Templates enabled: display template category
         if (AppConfig.enableTemplates) { displayedCategories.push(TEMPLATE); }
         // Tags used: display Tags category
