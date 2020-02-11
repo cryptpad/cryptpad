@@ -206,7 +206,11 @@ define([
             });
         };
 
-        var to;
+        var to = Util.throttle(function () {
+            var $ticket = $div.find('.cp-support-list-ticket[data-id="'+linkedId+'"]');
+            $ticket[0].scrollIntoView();
+            linkedId = undefined;
+        }, 100);
 
         // Register to the "support" mailbox
         common.mailbox.subscribe(['supportadmin'], {
@@ -255,14 +259,7 @@ define([
                 $ticket.append(APP.support.makeMessage(content, hash));
                 reorder();
 
-                if (linkedId) {
-                    clearTimeout(to);
-                    to = setTimeout(function () {
-                        var $ticket = $div.find('.cp-support-list-ticket[data-id="'+linkedId+'"]');
-                        $ticket[0].scrollIntoView();
-                        linkedId = undefined;
-                    }, 100);
-                }
+                if (linkedId) { to(); }
             }
         });
         return $container;
