@@ -458,6 +458,7 @@ define([
                                 UI.removeLoadingScreen(function () {
                                     UI.alert(Messages.login_noSuchUser, function () {
                                         hashing = false;
+                                        $('#password').focus();
                                     });
                                 });
                                 break;
@@ -465,6 +466,7 @@ define([
                                 UI.removeLoadingScreen(function () {
                                     UI.alert(Messages.login_invalUser, function () {
                                         hashing = false;
+                                        $('#password').focus();
                                     });
                                 });
                                 break;
@@ -472,6 +474,7 @@ define([
                                 UI.removeLoadingScreen(function () {
                                     UI.alert(Messages.login_invalPass, function () {
                                         hashing = false;
+                                        $('#password').focus();
                                     });
                                 });
                                 break;
@@ -482,6 +485,7 @@ define([
                                     ]);
                                     UI.alert(warning, function () {
                                         hashing = false;
+                                        $('#password').focus();
                                     });
                                 });
                                 break;

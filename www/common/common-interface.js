@@ -484,7 +484,7 @@ define([
             stopListening(listener);
             cb();
         });
-        listener = listenForKeys(close, close);
+        listener = listenForKeys(close, close, frame);
         var $ok = $(ok).click(close);
 
         document.body.appendChild(frame);
