@@ -174,8 +174,8 @@ define([
                     var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
                     href = privateData.origin + href;
                 } else if (/^#/.test(href)) {
-                    var target = document.getElementById(href.slice(1));
-                    target.scrollIntoView();
+                    var target = document.getElementById('cp-md-0-'+href.slice(1));
+                    if (target) { target.scrollIntoView(); }
                     return;
                 }
                 framework._.sfCommon.openUnsafeURL(href);
