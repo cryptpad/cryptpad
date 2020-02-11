@@ -172,6 +172,12 @@ define([
         if (!supportKey || !APP.privateKey) { return; }
         var $container = makeBlock('support-list');
         var $div = $(h('div.cp-support-container')).appendTo($container);
+
+        var metadataMgr = common.getMetadataMgr();
+        var privateData = metadataMgr.getPrivateData();
+        var cat = privateData.category || '';
+        var linkedId = cat.indexOf('-') !== -1 && cat.slice(8);
+
         var hashesById = {};
 
         var reorder = function () {
@@ -199,6 +205,8 @@ define([
                 $div.find('[data-id="'+id+'"]').css('order', i);
             });
         };
+
+        var to;
 
         // Register to the "support" mailbox
         common.mailbox.subscribe(['supportadmin'], {
@@ -246,6 +254,15 @@ define([
                 }
                 $ticket.append(APP.support.makeMessage(content, hash));
                 reorder();
+
+                if (linkedId) {
+                    clearTimeout(to);
+                    to = setTimeout(function () {
+                        var $ticket = $div.find('.cp-support-list-ticket[data-id="'+linkedId+'"]');
+                        $ticket[0].scrollIntoView();
+                        linkedId = undefined;
+                    }, 100);
+                }
             }
         });
         return $container;
@@ -312,6 +329,9 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
         var active = privateData.category || 'general';
+        if (active.indexOf('-') !== -1) {
+            active = active.split('-')[0];
+        }
         common.setHash(active);
         Object.keys(categories).forEach(function (key) {
             var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);

@@ -5,8 +5,9 @@ define([
     '/common/common-interface.js',
     '/common/common-hash.js',
     '/common/common-util.js',
+    '/common/clipboard.js',
     '/customize/messages.js',
-], function ($, ApiConfig, h, UI, Hash, Util, Messages) {
+], function ($, ApiConfig, h, UI, Hash, Util, Clipboard, Messages) {
 
     var send = function (ctx, id, type, data, dest) {
         var common = ctx.common;
@@ -119,6 +120,10 @@ define([
     };
 
     var makeTicket = function (ctx, $div, content, onHide) {
+        var common = ctx.common;
+        var metadataMgr = common.getMetadataMgr();
+        var privateData = metadataMgr.getPrivateData();
+
         var ticketTitle = content.title + ' (#' + content.id + ')';
         var answer = h('button.btn.btn-primary.cp-support-answer', Messages.support_answer);
         var close = h('button.btn.btn-danger.cp-support-close', Messages.support_close);
@@ -130,10 +135,20 @@ define([
             hide
         ]);
 
+        var url;
+        if (ctx.isAdmin) {
+            url = h('button.btn.btn-primary.fa.fa-clipboard');
+            $(url).click(function () {
+                var link = privateData.origin + privateData.pathname + '#' + 'support-' + content.id;
+                var success = Clipboard.copy(link);
+                if (success) { UI.log(Messages.shareSuccess); }
+            });
+        }
+
         var $ticket = $(h('div.cp-support-list-ticket', {
             'data-id': content.id
         }, [
-            h('h2', ticketTitle),
+            h('h2', [ticketTitle, url]),
             actions
         ]));
 
