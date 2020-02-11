@@ -541,6 +541,7 @@ define([
             h('button.btn.btn-primary', Messages.settings_ownDriveButton)
         ]);
         var $form = $(form);
+        var spinner = UI.makeSpinner($form);
 
         var todo = function () {
             var password = $form.find('#cp-settings-migrate-password').val();
@@ -576,7 +577,6 @@ define([
             }
         });
 
-        var spinner = UI.makeSpinner($div);
 
         cb(form);
     }, true);
