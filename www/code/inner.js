@@ -171,7 +171,7 @@ define([
                 var $a = $t.is('a') ? $t : $t.parents('a').first();
                 var href = $a.attr('href');
                 if (/^\/[^\/]/.test(href)) {
-                    var privateData = common.getMetadataMgr().getPrivateData();
+                    var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
                     href = privateData.origin + href;
                 } else if (/^#/.test(href)) {
                     var target = document.getElementById(href.slice(1));
