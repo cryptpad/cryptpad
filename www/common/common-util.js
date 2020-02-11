@@ -227,6 +227,7 @@
         else if (bytes >= oneMegabyte) { return 'MB'; }
     };
 
+
     // given a path, asynchronously return an arraybuffer
     Util.fetch = function (src, cb, progress) {
         var CB = Util.once(cb);
