@@ -191,9 +191,7 @@ define([
 
         nThen(function (waitFor) {
             channels.forEach(function (obj) {
-                console.warn(obj); // XXX
                 rpc.trimHistory(obj, waitFor(function (err) {
-                    console.error(obj.channel, arguments); // XXX
                     if (err) {
                         warning.push(err);
                         return;

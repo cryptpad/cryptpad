@@ -789,7 +789,11 @@ define([
                 var formatted = UIElements.prettySize(bytes);
 
                 if (!owned || !historyBytes || historyBytes > bytes || historyBytes < 0) {
-                    $d.append(h('div.cp-app-prop', [Messages.upload_size, h('br'), h('span.cp-app-prop-content', formatted)]));
+                    $d.append(h('div.cp-app-prop', [
+                        Messages.upload_size,
+                        h('br'),
+                        h('span.cp-app-prop-content', formatted)
+                    ]));
                     return void cb(void 0, $d);
                 }
 
@@ -838,12 +842,16 @@ define([
                         }, function (obj) {
                             spinner.hide();
                             if (obj && obj.error) {
-                                console.error(obj.error);
-                                // XXX what are the possible errors?
                                 $(size).append(h('div.alert.alert-danger', Messages.trimHistory_error || 'error')); // XXX
                                 return;
                             }
-                            $(size).append(h('div.alert.alert-success', Messages.trimHistory_success || 'ok')); // XXX
+                            $(size).remove();
+                            var formatted = UIElements.prettySize(bytes - historyBytes);
+                            $d.append(h('div.cp-app-prop', [
+                                Messages.upload_size,
+                                h('br'),
+                                h('span.cp-app-prop-content', formatted)
+                            ]));
                         });
                     });
                 });

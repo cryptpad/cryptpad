@@ -1216,24 +1216,28 @@ define([
         return $div;
     };
 
-    makeBlock('trim-history', function (cb) {
-        if (!common.isLoggedIn()) { return; }
-        // XXX settings_trimHistoryTitle, settings_trimHistoryHint, trimHistory_button, trimHistory_error
-        // XXX trimHistory_success, trimHistory_confirm, trimHistory_noHistory
-
-        //if (!privateData.isDriveOwned) { return; } // XXX
-
+    var redrawTrimHistory = function (cb, $div) {
         var spinner = UI.makeSpinner();
         var button = h('button.btn.btn-danger-alt', {
             disabled: 'disabled'
         }, Messages.trimHistory_button || 'delete history... xxx'); // XXX
         var currentSize = h('p', $(spinner.spinner).clone()[0]);
-        var content = h('div', [
+        var content = h('div#cp-settings-trim-container', [
             currentSize,
             button,
             spinner.ok,
             spinner.spinner
         ]);
+
+        if (!privateData.isDriveOwned) {
+            var href = privateData.origin + privateData.pathname + '#' + 'account';
+            $(currentSize).html(Messages.trimHistory_needMigration || 'Need migration <a>Click</a>'); // XXX
+            $(currentSize).find('a').prop('href', href).click(function (e) {
+                e.preventDefault();
+                $('.cp-sidebarlayout-category[data-category="account"]').click();
+            });
+            return void cb(content);
+        }
 
         Messages.trimHistory_currentSize = 'Size XXX: <b>{0}</b>'; // XXX
 
@@ -1273,19 +1277,26 @@ define([
                         channels: channels
                     }, function (obj) {
                         if (obj && obj.error) {
-                            // XXX what are the possible errors?
+                            var error = h('div.alert.alert-danger', Messages.trimHistory_error || 'error'); // XXX
+                            $(content).empty().append(error);
                             return;
                         }
                         spinner.hide();
-                        // XXX redraw this block instead of displaying a green message?
-                        $(currentSize).remove();
-                        $(content).append(h('div.alert.alert-success', Messages.trimHistory_success || 'ok')); // XXX
+                        redrawTrimHistory(cb, $div);
                     });
                 });
             }).prop('disabled', '');
         });
 
+        $div.find('#cp-settings-trim-container').remove();
         cb(content);
+    };
+    makeBlock('trim-history', function (cb, $div) {
+        if (!common.isLoggedIn()) { return; }
+        // XXX settings_trimHistoryTitle, settings_trimHistoryHint, trimHistory_button, trimHistory_error
+        // XXX trimHistory_success, trimHistory_confirm, trimHistory_noHistory
+        // XXX trimHistory_needMigration (clickable <a> tag (no attribute) to go to the "account" part of settings)
+        redrawTrimHistory(cb, $div);
     }, true);
 
     /*
@@ -1713,7 +1724,10 @@ define([
         APP.$usage = $('<div>', {'class': 'usage'}).appendTo(APP.$leftside);
         var active = privateData.category || 'account';
         Object.keys(categories).forEach(function (key) {
-            var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
+            var $category = $('<div>', {
+                'class': 'cp-sidebarlayout-category',
+                'data-category': key
+            }).appendTo($categories);
             if (key === 'account') { $category.append($('<span>', {'class': 'fa fa-user-o'})); }
             if (key === 'drive') { $category.append($('<span>', {'class': 'fa fa-hdd-o'})); }
             if (key === 'cursor') { $category.append($('<span>', {'class': 'fa fa-i-cursor' })); }
