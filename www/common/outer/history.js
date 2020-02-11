@@ -24,6 +24,12 @@ define([
             if (profileChan) { channels.push(profileChan); }
         }
 
+        // Todo
+        if (ctx.store.proxy.todo) {
+            channels.push(Hash.hrefToHexChannelId('/todo/#' + ctx.store.proxy.todo, null));
+        }
+
+
         // Mailboxes
         var mailboxes = ctx.store.proxy.mailboxes;
         if (mailboxes) {

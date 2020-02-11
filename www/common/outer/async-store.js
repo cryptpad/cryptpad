@@ -166,13 +166,17 @@ define([
             // It now includes channels from shared folders
             var list = store.manager.getChannelsList('pin');
 
-            // Get the avatar
+            // Get the avatar & profile
             var profile = store.proxy.profile;
             if (profile) {
                 var profileChan = profile.edit ? Hash.hrefToHexChannelId('/profile/#' + profile.edit, null) : null;
                 if (profileChan) { list.push(profileChan); }
                 var avatarChan = profile.avatar ? Hash.hrefToHexChannelId(profile.avatar, null) : null;
                 if (avatarChan) { list.push(avatarChan); }
+            }
+
+            if (store.proxy.todo) {
+                list.push(Hash.hrefToHexChannelId('/todo/#' + store.proxy.todo, null));
             }
 
             if (store.proxy.friends) {
