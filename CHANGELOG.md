@@ -1,41 +1,48 @@
-# L release (3.11.0)
+# LabradorDuck release (3.11.0)
 
 ## Goals
 
-* major server refactor to prepare for:
-  * trim-history
-  * allow lists
+For this release we aimed to phase in two major features that we've been anticipating for a while: "history trim" and "safe links".
+
+History trim will allow users to remove the old versions of their documents which continue to count against their storage quotas. It will be formally introduced in our next release, even though its server-side components are all ready. We had to reorganize and modify a lot of our server code, so we wanted to wait and make sure there were no regressions in our existing functionality before moving ahead.
+
+We're introducing the concept of "safe links" in CryptPad. Users can continue to share links to documents which include the cryptographic secrets necessary to read or edit them, but whenever possible we will replace those secrets with a document id. This will make it less likely for encryption keys to be exposed to third parties through invasive browser extensions or passive behaviour like history synchronization across devices.
 
 ## Update notes
 
-* dropped support for retainData
-  * archives are on by default
-* you will need a new chainpad server
+This release features a few changes to the server:
+
+1. The "legal notice" feature which we included in the previous release turned out to be incorrect. We've since fixed it. We document this functionality [here](https://github.com/xwiki-labs/cryptpad/blob/e8b905282a2cde826ad9100dcad6b59a50c70e8b/www/common/application_config_internal.js#L35-L41), but you'll need to implement the recommended changes in `cryptpad/customize/application_config.js` for best effect.
+2. We've dropped server-side support for the `retainData` attribute in `cryptpad/config/config.js`. Previously you could configure CryptPad to delete unpinned, inactive data immediately or to move it into an archive for a configurable retention period. We've removed the option to delete data outright, since it introduces additional complexity in the server which we don't regularly test. We also figure that administrators will appreciate this default in the event of a bug which incorrectly flags data as inactive.
+3. We've fixed an incorrect line in [the example nginx configuration file](https://github.com/xwiki-labs/cryptpad/commit/1be01c07eee3431218d0b40a58164f60fec6df31). If you're using nginx as a reverse proxy for your CryptPad instance you should correct this line. It is used to set Content-Security Policy headers for the sandboxed-iframe which provides an additional layer of security for users in the event of a cross-site-scripting (XSS) vulnerability within CryptPad. If you find that your instance stops working after applying this change it is likely that you have not correctly configured your instance to use a secondary domain for its sandbox. See [this section of `cryptpad/config/config.example.js`](https://github.com/xwiki-labs/cryptpad/blob/c388641479128303363d8a4247f64230c08a7264/config/config.example.js#L94-L96) for more information.
+
+Otherwise, deploying the new code should be fairly simple:
+
+1. stop your server
+2. fetch the latest code from the git repository
+3. update your server dependencies with `npm install`
+4. update your clientside dependencies with `bower update`
+5. start your server
 
 ## Features
 
-* restyled corner popup
-* cool new scheduler library
-  * operations on channels are queued
-* trim-history rpc
-* unified historykeeper and rpc
-* more visible styles for unanswered support tickets
-* hidden hashes/safe links
-  * new "security" tab in settings
-* queue'd popups
-  * reconnect alert
-* link to user profile in notifications
-* prompt anonymous users to register when viewing a profile
-* spreadsheets
-  * reconnecting spreadsheets
-  * faster spreadsheets
-* don't hijack chat cursor
-* friends are now "contacts"
+* We've slightly reorganized the _settings_ page to include a new "Confidentiality" section. It includes a checkbox to enable "safe links", which will remove the cryptographic secrets from your documents' URLs whenever possible. It is currently off by default but will most likely default to true in the near future. Otherwise, the settings page has an updated layout which is generally easier to read.
+* We've remove the "Owned pads" category from the CryptDrive application. It was included to provide an overview of pads that you could delete when we first introduced that functionality, however, we've realized that it is generally not very useful.
+* We implemented the ability to convert a regular folder in your drive into a _shared folder_ several months ago, but disabled it when we discovered that it had some bugs. We finally got around to fixing those bugs and so it is officially ready for public use.
+* We've continued to make little changes to improve the discoverability of CryptPad's social features. Unregistered users that view another user's profile are now informed that they can send that profile's owner a contact request once they register.
+* You may remember that CryptPad's contacts used to be called "friends". We've changed this terminology to reflect that you might work with people with whom you do not have a close personal relationship.
+* We analyzed CryptPad for possible vectors for social abuse as a part of our _Teams_ project, sponsored by NLnet foundation. During this audit we identified that the main method for abuse was through the direct messaging/notifications system. We added the ability to mute users, but realized it could be difficult to find the profile page of the person you want to mute. As of this release, any notification triggered by a remote user's actions will include their avatar and a link to their profile. If you find any user's behaviour abusive or annoying you can go straight to their profile and mute them.
+* We've made a small improvements to the admin panel's support ticket view. Tickets which have not received a response are now highlighted in red.
+* The login/register pages had a minor bug where the loading screen was not correctly displayed the second time you tried to enter your password. This was because the key derivation function which unlocks the corresponding user credentials was keeping the CPU busy and preventing an animation from running. It has since been corrected.
+* We've continued to make some small but important changes to various UI elements that are reused throughout the platform. The password field in the _pad properties dialog_ has been tweaked for better color contrast. Similarly, the small notice that pops up in the bottom right hand corner to prompt you to store a pad in your drive has been restyled. We've also implemented a second variation on this popup to display general information not directly related to the current pad. Both of these UI elements better match the general appearance of the rest of the platform and represent a continued effort to improve its visual consistency.
+* The spreadsheet editor has received some attention in the last few weeks as well. It is now able to gracefully resume a session when you reconnect to the server after an interruption. Likewise, the locking system which prevents two users from editing a cell at the same time is now significantly faster, and completely disabled if you're editing alone. Now that it's possible for unregistered users to edit spreadsheets we've had to improve the color contrast for the toolbar message which prompts users to register in order to ensure that a spreadsheet isn't deleted due to inactivity.
+* The "file upload status table" has received some attention as well, in response to [issue 496](https://github.com/xwiki-labs/cryptpad/issues/496). When you upload many files to CryptPad in a row you'll see them all displayed in a table which will include a scrollbar if necessary.
 
 ## Bug fixes
 
-* friend request/accept race condition
-* throw errors in 'mkAsync' if no function is passed
+* [Issue 441](https://github.com/xwiki-labs/cryptpad/issues/441 "Other users writing in pad hiijacks chat window") has been fixed.
+* We found a bug that affected encrypted files saved to your CryptDrive via the right-click menu. The files were saved in an incorrect format and were unusable. They should behave normally now.
+* Finally, we identified a race condition whereby if two users sent each other contact requests at the same time the request might not be accepted correctly. This process should now be much more reliable.
 
 # Kouprey release (3.10.0)
 
