@@ -1168,7 +1168,7 @@ define([
                     UI.createRadio('accessRights', 'cp-share-bar', Messages.burnAfterReading_linkBurnAfterReading, false, {
                         mark: {tabindex:1},
                         label: {style: "display: none;"}
-                    }) : undefined
+                    }) : undefined;
         var rights = h('div.msg.cp-inline-radio-group', [
             h('label', Messages.share_linkAccess),
             h('div.radio-group',[
