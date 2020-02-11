@@ -142,7 +142,13 @@ define([
         if (!$mt || !$mt.is('media-tag')) { return; }
         var chanStr = $mt.attr('src');
         var keyStr = $mt.attr('data-crypto-key');
-        var channel = chanStr.replace(/\/blob\/[0-9a-f]{2}\//i, '');
+        // Remove origin
+        var a = document.createElement('a');
+        a.href = chanStr;
+        var src = a.pathname;
+        // Get channel id
+        var channel = src.replace(/\/blob\/[0-9a-f]{2}\//i, '');
+        // Get key
         var key = keyStr.replace(/cryptpad:/i, '');
         var metadata = $mt[0]._mediaObject._blob.metadata;
         ctx.sframeChan.query('Q_IMPORT_MEDIATAG', {

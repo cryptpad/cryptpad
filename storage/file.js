@@ -1124,7 +1124,7 @@ module.exports.create = function (conf, cb) {
             // iterate over the messages in a log
             readMessagesBin: (channelName, start, asyncMsgHandler, cb) => {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
-// XXX there is a race condition here
+// FIXME there is a race condition here
 // historyKeeper reads the file to find the byte offset of the first interesting message
 // then calls this function again to read from that point.
 // If this task is in the queue already when the file is read again
@@ -1144,7 +1144,7 @@ module.exports.create = function (conf, cb) {
             // remove a channel and its associated metadata log if present
             removeChannel: function (channelName, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
-// XXX there's another race condition here...
+// FIXME there's another race condition here...
 // when a remove and an append are scheduled in that order
 // the remove will delete the channel's metadata (including its validateKey)
 // then the append will recreate the channel and insert a message.

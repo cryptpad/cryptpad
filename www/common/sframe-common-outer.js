@@ -646,7 +646,7 @@ define([
                         var opts = parsed.getOptions();
                         var hash = Utils.Hash.getHiddenHashFromKeys(parsed.type, secret, opts);
                         var useUnsafe = Utils.Util.find(settings, ['security', 'unsafeLinks']);
-                        if (!useUnsafe && window.history && window.history.replaceState) {
+                        if (useUnsafe === false && window.history && window.history.replaceState) {
                             if (!/^#/.test(hash)) { hash = '#' + hash; }
                             window.history.replaceState({}, window.document.title, hash);
                         }
@@ -684,7 +684,7 @@ define([
                         var opts = parsed.getOptions();
                         var hash = Utils.Hash.getHiddenHashFromKeys(parsed.type, secret, opts);
                         var useUnsafe = Utils.Util.find(settings, ['security', 'unsafeLinks']);
-                        if (!useUnsafe && window.history && window.history.replaceState) {
+                        if (useUnsafe === false && window.history && window.history.replaceState) {
                             if (!/^#/.test(hash)) { hash = '#' + hash; }
                             window.history.replaceState({}, window.document.title, hash);
                         }
@@ -1125,12 +1125,12 @@ define([
             });
 
             sframeChan.on('Q_OO_PASSWORD_CHANGE', function (data, cb) {
-                data.href = data.href || currentPad.href;
+                data.href = data.href;
                 Cryptpad.changeOOPassword(data, cb);
             });
 
             sframeChan.on('Q_PAD_PASSWORD_CHANGE', function (data, cb) {
-                data.href = data.href || currentPad.href;
+                data.href = data.href;
                 Cryptpad.changePadPassword(Cryptget, Crypto, data, cb);
             });
 

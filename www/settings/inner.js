@@ -56,7 +56,7 @@ define([
             'cp-settings-migrate',
             'cp-settings-delete'
         ],
-        'security': [ // XXX
+        'security': [
             'cp-settings-logout-everywhere',
             'cp-settings-autostore',
             'cp-settings-safe-links',
@@ -118,6 +118,18 @@ define([
 
     var create = {};
 
+    var SPECIAL_HINTS_HANDLER = {
+        safeLinks: function () {
+            return $('<span>', {'class': 'cp-sidebarlayout-description'})
+                .html(Messages._getKey('settings_safeLinksHint', ['<span class="fa fa-shhare-alt"></span>']));
+        },
+    };
+
+    var DEFAULT_HINT_HANDLER = function (safeKey) {
+        return $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .text(Messages['settings_'+safeKey+'Hint'] || 'Coming soon...');
+    };
+
     var makeBlock = function (key, getter, full) {
         var safeKey = key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
 
@@ -125,8 +137,14 @@ define([
             var $div = $('<div>', {'class': 'cp-settings-' + key + ' cp-sidebarlayout-element'});
             if (full) {
                 $('<label>').text(Messages['settings_'+safeKey+'Title'] || key).appendTo($div);
-                $('<span>', {'class': 'cp-sidebarlayout-description'})
-                    .text(Messages['settings_'+safeKey+'Hint'] || 'Coming soon...').appendTo($div);
+
+                // if this block's hint needs a special renderer, then create it in SPECIAL_HINTS_HANLDER
+                // otherwise the default will be used
+                var hintFunction = (typeof(SPECIAL_HINTS_HANDLER[safeKey]) === 'function')?
+                    SPECIAL_HINTS_HANDLER[safeKey]:
+                    DEFAULT_HINT_HANDLER;
+
+                hintFunction(safeKey).appendTo($div);
             }
             getter(function (content) {
                 $div.append(content);
@@ -571,14 +589,14 @@ define([
     // Security
 
     makeBlock('safe-links', function (cb) {
-        // XXX settings_safeLinksTitle, settings_safeLinksHint, settings_safeLinksCheckbox
 
         var $cbox = $(UI.createCheckbox('cp-settings-safe-links',
                                    Messages.settings_safeLinksCheckbox,
-                                   true, { label: {class: 'noTitle'} }));
+                                   false, { label: {class: 'noTitle'} }));
 
         var spinner = UI.makeSpinner($cbox);
 
+        // Checkbox: "Enable safe links"
         var $checkbox = $cbox.find('input').on('change', function () {
             spinner.spin();
             var val = !$checkbox.is(':checked');
@@ -589,7 +607,7 @@ define([
 
         common.getAttribute(['security', 'unsafeLinks'], function (e, val) {
             if (e) { return void console.error(e); }
-            if (!val) {
+            if (val === false) {
                 $checkbox.attr('checked', 'checked');
             }
         });

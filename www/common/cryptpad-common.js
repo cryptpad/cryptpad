@@ -1037,11 +1037,12 @@ define([
                 }, waitFor());
             }
         }).nThen(function () {
+            common.drive.onChange.fire({path: ['drive', Constants.storageKey]});
             cb({
                 warning: warning,
                 hash: newHash,
                 href: newHref,
-                roHref: newRoHref
+                roHref: newRoHref,
             });
         });
     };
@@ -1170,6 +1171,7 @@ define([
                 channel: newSecret.channel
             }, waitFor());
         }).nThen(function () {
+            common.drive.onChange.fire({path: ['drive', Constants.storageKey]});
             cb({
                 warning: warning,
                 hash: newHash,
@@ -1404,6 +1406,7 @@ define([
                 }, waitFor());
             }));
         }).nThen(function () {
+            common.drive.onChange.fire({path: ['drive', Constants.storageKey]});
             cb({
                 warning: warning,
                 hash: newHash,
@@ -2121,7 +2124,10 @@ define([
                 var parsedNew = Hash.parsePadUrl(newHref);
                 if (parsedOld.hashData && parsedNew.hashData &&
                     parsedOld.getUrl() !== parsedNew.getUrl()) {
-                    if (!parsedOld.hashData.key) { oldHref = newHref; return; }
+                    if (parsedOld.hashData.version !== 3 && !parsedOld.hashData.key) {
+                        oldHref = newHref;
+                        return;
+                    }
                     // If different, reload
                     document.location.reload();
                     return;

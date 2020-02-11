@@ -554,21 +554,27 @@ define([
 
             if (!data.noPassword) {
                 var hasPassword = data.password;
+                var $pwLabel = $('<label>', {'for': 'cp-app-prop-password'}).text(Messages.creation_passwordValue)
+                                .hide().appendTo($d);
+                var password = UI.passwordInput({
+                    id: 'cp-app-prop-password',
+                    readonly: 'readonly'
+                });
+                var $password = $(password).hide();
+                var $pwInput = $password.find('.cp-password-input');
+                $pwInput.val(data.password).click(function () {
+                    $pwInput[0].select();
+                });
+                $d.append(password);
+
                 if (hasPassword) {
-                    $('<label>', {'for': 'cp-app-prop-password'}).text(Messages.creation_passwordValue)
-                        .appendTo($d);
-                    var password = UI.passwordInput({
-                        id: 'cp-app-prop-password',
-                        readonly: 'readonly'
-                    });
-                    var $pwInput = $(password).find('.cp-password-input');
-                    $pwInput.val(data.password).click(function () {
-                        $pwInput[0].select();
-                    });
-                    $d.append(password);
+                    $pwLabel.show();
+                    $password.css('display', 'flex');
                 }
 
-                if (!data.noEditPassword && owned) { // FIXME SHEET fix password change for sheets
+                // In the properties, we should have the edit href if we know it.
+                // We should know it because the pad is stored, but it's better to check...
+                if (!data.noEditPassword && owned && data.href) { // FIXME SHEET fix password change for sheets
                     var sframeChan = common.getSframeChannel();
 
                     var isOO = parsed.type === 'sheet';
@@ -628,7 +634,7 @@ define([
 
                             sframeChan.query(q, {
                                 teamId: typeof(owned) !== "boolean" ? owned : undefined,
-                                href: data.href || data.roHref,
+                                href: data.href,
                                 password: newPass
                             }, function (err, data) {
                                 $(passwordOk).text(Messages.properties_changePasswordButton);
@@ -638,24 +644,41 @@ define([
                                     return void UI.alert(Messages.properties_passwordError);
                                 }
                                 UI.findOKButton().click();
-                                if (isFile) {
-                                    onProgress.stop();
+
+                                $pwLabel.show();
+                                $password.css('display', 'flex');
+                                $pwInput.val(newPass);
+
+                                // If the current document is a file or if we're changing the password from a drive,
+                                // we don't have to reload the page at the end.
+                                // Tell the user the password change was successful and abort
+                                if (isFile || priv.app !== parsed.type) {
+                                    if (onProgress && onProgress.stop) { onProgress.stop(); }
                                     $(passwordOk).text(Messages.properties_changePasswordButton);
                                     var alertMsg = data.warning ? Messages.properties_passwordWarningFile
                                                                 : Messages.properties_passwordSuccessFile;
                                     return void UI.alert(alertMsg, undefined, {force: true});
                                 }
-                                // If we didn't have a password, we have to add the /p/
-                                // If we had a password and we changed it to a new one, we just have to reload
-                                // If we had a password and we removed it, we have to remove the /p/
+
+                                // Pad password changed: update the href
+                                // Use hidden hash if needed (we're an owner of this pad so we know it is stored)
+                                var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
+                                var href = (priv.readOnly && data.roHref) ? data.roHref : data.href;
+                                if (useUnsafe === false) {
+                                    var newParsed = Hash.parsePadUrl(href);
+                                    var newSecret = Hash.getSecrets(newParsed.type, newParsed.hash, newPass);
+                                    var newHash = Hash.getHiddenHashFromKeys(parsed.type, newSecret, {});
+                                    href = Hash.hashToHref(newHash, parsed.type);
+                                }
+
                                 if (data.warning) {
                                     return void UI.alert(Messages.properties_passwordWarning, function () {
-                                        common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
+                                        common.gotoURL(href);
                                     }, {force: true});
                                 }
                                 return void UI.alert(Messages.properties_passwordSuccess, function () {
                                     if (!isSharedFolder) {
-                                        common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
+                                        common.gotoURL(href);
                                     }
                                 }, {force: true});
                             });
@@ -3817,7 +3840,7 @@ define([
         ]);
 
         var settings = h('div.cp-creation-remember', [
-            UI.createCheckbox('cp-creation-remember', Messages.creation_saveSettings, false),
+            UI.createCheckbox('cp-creation-remember', Messages.dontShowAgain, false),
             createHelper('/settings/#creation', Messages.creation_settings),
             h('div.cp-creation-remember-help.cp-creation-slider', [
                 h('span.fa.fa-exclamation-circle.cp-creation-warning'),

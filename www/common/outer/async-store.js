@@ -33,6 +33,16 @@ define([
              NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, nThen, Saferphore) {
 
+    // Default settings for new users
+    var NEW_USER_SETTINGS = {
+        drive: {
+            hideDuplicate: true
+        },
+        general: {
+            allowUserFeedback: true
+        }
+    };
+
     var create = function () {
         var Store = window.Cryptpad_Store = {};
         var postMessage = function () {};
@@ -2284,7 +2294,7 @@ define([
                 if (!store.loggedIn) { return void cb(); }
                 Store.pinPads(null, data, cb);
             };
-            if (!proxy.settings) { proxy.settings = {}; }
+            if (!proxy.settings) { proxy.settings = NEW_USER_SETTINGS; }
             if (!proxy.friends_pending) { proxy.friends_pending = {}; }
             var manager = store.manager = ProxyManager.create(proxy.drive, {
                 onSync: function (cb) { onSync(null, cb); },
@@ -2370,13 +2380,7 @@ define([
                     }
                 }
 
-                if (!proxy.settings || !proxy.settings.general ||
-                        typeof(proxy.settings.general.allowUserFeedback) !== 'boolean') {
-                    proxy.settings = proxy.settings || {};
-                    proxy.settings.general = proxy.settings.general || {};
-                    proxy.settings.general.allowUserFeedback = true;
-                }
-                returned.feedback = proxy.settings.general.allowUserFeedback;
+                returned.feedback = Util.find(proxy, ['settings', 'general', 'allowUserFeedback']);
                 Feedback.init(returned.feedback);
 
                 if (typeof(cb) === 'function') { cb(returned); }
