@@ -48,12 +48,12 @@ define([
 
     var categories = {
         'account': [
+            'cp-settings-own-drive',
             'cp-settings-info-block',
             'cp-settings-displayname',
             'cp-settings-language-selector',
             'cp-settings-resettips',
             'cp-settings-change-password',
-            'cp-settings-migrate',
             'cp-settings-delete'
         ],
         'security': [
@@ -147,6 +147,11 @@ define([
                 hintFunction(safeKey).appendTo($div);
             }
             getter(function (content) {
+                if (content === false) {
+                    $div.remove();
+                    $div = undefined;
+                    return;
+                }
                 $div.append(content);
             }, $div);
             return $div;
@@ -521,19 +526,12 @@ define([
         return $div;
     };
 
-    create['migrate'] = function () {
-        if (privateData.isDriveOwned) { return; }
-        if (!common.isLoggedIn()) { return; }
+    makeBlock('own-drive', function (cb, $div) {
+        if (privateData.isDriveOwned || !common.isLoggedIn()) {
+            return void cb(false);
+        }
 
-        var $div = $('<div>', { 'class': 'cp-settings-migrate cp-sidebarlayout-element'});
-
-        $('<span>', {'class': 'label'}).text(Messages.settings_ownDriveTitle).appendTo($div);
-
-        $('<span>', {'class': 'cp-sidebarlayout-description'})
-            .append(Messages.settings_ownDriveHint).appendTo($div);
-
-        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
-        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
+        $div.addClass('alert alert-warning');
 
         var form = h('div', [
             UI.passwordInput({
@@ -542,13 +540,12 @@ define([
             }, true),
             h('button.btn.btn-primary', Messages.settings_ownDriveButton)
         ]);
-
-        $(form).appendTo($div);
+        var $form = $(form);
 
         var todo = function () {
-            var password = $(form).find('#cp-settings-migrate-password').val();
+            var password = $form.find('#cp-settings-migrate-password').val();
             if (!password) { return; }
-            $spinner.show();
+            spinner.spin();
             UI.confirm(Messages.settings_ownDriveConfirm, function (yes) {
                 if (!yes) { return; }
                 var data = {
@@ -562,16 +559,15 @@ define([
                 sframeChan.query('Q_CHANGE_USER_PASSWORD', data, function (err, obj) {
                     UI.removeLoadingScreen();
                     if (err || obj.error) { return UI.alert(Messages.settings_changePasswordError); }
-                    $ok.show();
-                    $spinner.hide();
+                    spinner.done();
                 });
             });
         };
 
-        $(form).find('button').click(function () {
+        $form.find('button').click(function () {
             todo();
         });
-        $(form).find('input').keydown(function (e) {
+        $form.find('input').keydown(function (e) {
             // Save on Enter
             if (e.which === 13) {
                 e.preventDefault();
@@ -580,11 +576,10 @@ define([
             }
         });
 
-        $spinner.hide().appendTo($div);
-        $ok.hide().appendTo($div);
+        var spinner = UI.makeSpinner($div);
 
-        return $div;
-    };
+        cb(form);
+    }, true);
 
     // Security
 
