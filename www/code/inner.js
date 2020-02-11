@@ -170,6 +170,14 @@ define([
                 e.preventDefault();
                 var $a = $t.is('a') ? $t : $t.parents('a').first();
                 var href = $a.attr('href');
+                if (/^\/[^\/]/.test(href)) {
+                    var privateData = common.getMetadataMgr().getPrivateData();
+                    href = privateData.origin + href;
+                } else if (/^#/.test(href)) {
+                    var target = document.getElementById(href.slice(1));
+                    target.scrollIntoView();
+                    return;
+                }
                 framework._.sfCommon.openUnsafeURL(href);
             }
         });
