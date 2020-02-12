@@ -2033,6 +2033,13 @@ define([
             if (invalid) {
                 return;
             }
+
+            $element.find('.fa').on('mouseenter', function (e) {
+                if ($element[0] && $element[0]._tippy) {
+                    $element[0]._tippy.destroy();
+                }
+                e.stopPropagation();
+            });
             $element.addClass(liClass);
             var droppable = !isTrash && !APP.$content.data('readOnlyFolder');
             addDragAndDropHandlers($element, newPath, isFolder, droppable);
