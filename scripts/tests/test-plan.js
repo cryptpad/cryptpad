@@ -1,3 +1,4 @@
+/*jshint esversion: 6 */
 const Plan = require("../../lib/plan");
 
 var rand_delay = function (f) {
@@ -5,7 +6,7 @@ var rand_delay = function (f) {
 };
 
 var plan = Plan(6).job(1, function (next) {
-    [1,2,3,4,5,6,7,8,9,10,11,12].forEach(function (n, i) {
+    [1,2,3,4,5,6,7,8,9,10,11,12].forEach(function (n) {
         plan.job(0, function (next) {
             rand_delay(function () {
                 console.log("finishing job %s", n);
@@ -23,7 +24,7 @@ var plan = Plan(6).job(1, function (next) {
         200,
         300,
         400
-    ].forEach(function (n, i) {
+    ].forEach(function (n) {
         plan.job(3, function (next) {
             rand_delay(function () {
                 console.log("finishing job %s", n);
