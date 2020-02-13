@@ -68,6 +68,19 @@
         };
     };
 
+    Util.mkTimeout = function (_f, ms) {
+        ms = ms || 0;
+        var f = Util.once(_f);
+
+        var timeout = setTimeout(function () {
+            f('TIMEOUT');
+        }, ms);
+
+        return Util.both(f, function () {
+            clearTimeout(timeout);
+        });
+    };
+
     Util.response = function () {
         var pending = {};
         var timeouts = {};
