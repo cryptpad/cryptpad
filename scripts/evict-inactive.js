@@ -2,7 +2,7 @@ var nThen = require("nthen");
 
 var Store = require("../storage/file");
 var BlobStore = require("../storage/blob");
-var Pinned = require("./pinned");
+var Pins = require("../lib/pins");
 var config = require("../lib/load-config");
 
 // the administrator should have set an 'inactiveTime' in their config
@@ -38,7 +38,7 @@ nThen(function (w) {
         store = _;
     })); // load the list of pinned files so you know which files
     // should not be archived or deleted
-    Pinned.load(w(function (err, _) {
+    Pins.list(w(function (err, _) {
         if (err) {
             w.abort();
             return void console.error(err);
