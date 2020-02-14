@@ -665,7 +665,7 @@ define([
 
             // We have to remove the cursors before getting the content because they split
             // the text nodes and OT/ChainPad would freak out
-            cursors.removeCursors();
+            cursors.removeCursors(inner);
 
             displayMediaTags(framework, inner, mediaTagMap);
             inner.normalize();
