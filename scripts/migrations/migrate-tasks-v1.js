@@ -7,7 +7,7 @@ var config = require("../../lib/load-config");
 // this isn't strictly necessary for what we want to do
 // but the API requires it, and I don't feel like changing that
 // --ansuz
-var FileStorage = require("../../lib/storage/file"));
+var FileStorage = require("../../lib/storage/file");
 
 var tasks;
 nThen(function (w) {

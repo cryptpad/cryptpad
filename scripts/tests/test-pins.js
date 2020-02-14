@@ -30,7 +30,8 @@ var handler = function (ref, id /* safeKey */, pinned) {
     //console.log(ref, id);
 };
 
-Pins.list(function (err, pinned) {
+Pins.list(function (err) {
+    if (err) { return void console.error(err); }
 /*
     for (var id in pinned) {
         console.log(id);
