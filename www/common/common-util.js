@@ -272,8 +272,8 @@
     Util.throttle = function (f, ms) {
         var to;
         var g = function () {
-            window.clearTimeout(to);
-            to = window.setTimeout(Util.bake(f, Util.slice(arguments)), ms);
+            clearTimeout(to);
+            to = setTimeout(Util.bake(f, Util.slice(arguments)), ms);
         };
         return g;
     };

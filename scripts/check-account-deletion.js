@@ -1,7 +1,6 @@
 /* jshint esversion: 6, node: true */
 const Fs = require('fs');
 const nThen = require('nthen');
-const Pinned = require('./pinned');
 const Nacl = require('tweetnacl/nacl-fast');
 const Path = require('path');
 const Pins = require('../lib/pins');
@@ -41,7 +40,7 @@ nThen((waitFor) => {
         pinned = Pins.calculateFromLog(content.toString('utf8'), f);
     }));
 }).nThen((waitFor) => {
-    Pinned.load(waitFor((err, d) => {
+    Pins.list(waitFor((err, d) => {
         data = Object.keys(d);
     }), {
         exclude: [edPublic + '.ndjson']
