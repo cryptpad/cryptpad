@@ -859,10 +859,14 @@ define([
                 }, function (data) {
                     cb({
                         isFull: data.isFull,
-                        messages: data.messages.map(function (msg) {
+                        messages: data.messages.map(function (obj) {
                             // The 3rd parameter "true" means we're going to skip signature validation.
                             // We don't need it since the message is already validated serverside by hk
-                            return crypto.decrypt(msg, true, true);
+                            return {
+                                msg: crypto.decrypt(obj.msg, true, true),
+                                author: obj.author,
+                                time: obj.time
+                            };
                         }),
                         lastKnownHash: data.lastKnownHash
                     });

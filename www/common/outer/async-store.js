@@ -1969,7 +1969,11 @@ define([
                         first = false;
                     }
                     msg = msg.replace(/cp\|(([A-Za-z0-9+\/=]+)\|)?/, '');
-                    msgs.push(msg);
+                    msgs.push({
+                        msg: msg,
+                        author: parsed[2][1],
+                        time: parsed[2][5]
+                    });
                 }
             };
 

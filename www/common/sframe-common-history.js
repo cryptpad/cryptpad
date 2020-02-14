@@ -70,7 +70,11 @@ define([
                 if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
                 lastKnownHash = data.lastKnownHash;
                 isComplete = data.isFull;
-                Array.prototype.unshift.apply(allMessages, data.messages); // Destructive concat
+                var messages = (data.messages || []).map(function (obj) {
+                    return obj.msg;
+                });
+                if (config.debug) { console.log(data.messages); }
+                Array.prototype.unshift.apply(allMessages, messages); // Destructive concat
                 fillChainPad(realtime, allMessages);
                 cb (null, realtime, data.isFull);
             });
