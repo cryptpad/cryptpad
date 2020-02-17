@@ -14,7 +14,7 @@ define([
     '/customize/application_config.js',
     '/customize/pages.js',
     '/bower_components/nthen/index.js',
-    '/common/invitation.js',
+    '/common/inner/invitation.js',
 
     'css!/customize/fonts/cptools/style.css',
     '/bower_components/croppie/croppie.min.js',
@@ -100,33 +100,6 @@ define([
         };
     };
 
-    var getPropertiesData = function (common, cb) {
-        var data = {};
-        NThen(function (waitFor) {
-            var base = common.getMetadataMgr().getPrivateData().origin;
-            common.getPadAttribute('', waitFor(function (err, val) {
-                if (err || !val) {
-                    waitFor.abort();
-                    return void cb(err || 'EEMPTY');
-                }
-                if (!val.fileType) {
-                    delete val.owners;
-                    delete val.expire;
-                }
-                Util.extend(data, val);
-                if (data.href) { data.href = base + data.href; }
-                if (data.roHref) { data.roHref = base + data.roHref; }
-            }));
-            common.getPadMetadata(null, waitFor(function (obj) {
-                if (obj && obj.error) { return; }
-                data.owners = obj.owners;
-                data.expire = obj.expire;
-                data.pending_owners = obj.pending_owners;
-            }));
-        }).nThen(function () {
-            cb(void 0, data);
-        });
-    };
     var createOwnerModal = function (common, data) {
         var friends = common.getFriends(true);
         var sframeChan = common.getSframeChannel();
@@ -436,6 +409,7 @@ define([
         }];
         return UI.dialog.customModal(link, {buttons: linkButtons});
     };
+
     var getRightsProperties = function (common, data, cb) {
         var $div = $('<div>');
         if (!data) { return void cb(void 0, $div); }
@@ -863,6 +837,34 @@ define([
         }
 
 
+    };
+
+    var getPropertiesData = function (common, cb) {
+        var data = {};
+        NThen(function (waitFor) {
+            var base = common.getMetadataMgr().getPrivateData().origin;
+            common.getPadAttribute('', waitFor(function (err, val) {
+                if (err || !val) {
+                    waitFor.abort();
+                    return void cb(err || 'EEMPTY');
+                }
+                if (!val.fileType) {
+                    delete val.owners;
+                    delete val.expire;
+                }
+                Util.extend(data, val);
+                if (data.href) { data.href = base + data.href; }
+                if (data.roHref) { data.roHref = base + data.roHref; }
+            }));
+            common.getPadMetadata(null, waitFor(function (obj) {
+                if (obj && obj.error) { return; }
+                data.owners = obj.owners;
+                data.expire = obj.expire;
+                data.pending_owners = obj.pending_owners;
+            }));
+        }).nThen(function () {
+            cb(void 0, data);
+        });
     };
     UIElements.getProperties = function (common, data, cb) {
         var c1;
