@@ -1,6 +1,6 @@
 var nThen = require("nthen");
 
-var Store = require("../storage/file");
+var Store = require("../lib/storage/file");
 var config = require("../lib/load-config");
 
 var store;

@@ -1,7 +1,7 @@
 var nThen = require("nthen");
 
-var Store = require("../storage/file");
-var BlobStore = require("../storage/blob");
+var Store = require("../lib/storage/file");
+var BlobStore = require("../lib/storage/blob");
 var Pins = require("../lib/pins");
 var config = require("../lib/load-config");
 

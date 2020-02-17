@@ -1,5 +1,5 @@
 var nThen = require("nthen");
-var Tasks = require("../../storage/tasks");
+var Tasks = require("../../lib/storage/tasks");
 var Logger = require("../../lib/log");
 
 var config = require("../../lib/load-config");
@@ -7,7 +7,7 @@ var config = require("../../lib/load-config");
 // this isn't strictly necessary for what we want to do
 // but the API requires it, and I don't feel like changing that
 // --ansuz
-var FileStorage = require("../../" + (config.storage || "./storage/file"));
+var FileStorage = require("../../lib/storage/file");
 
 var tasks;
 nThen(function (w) {
