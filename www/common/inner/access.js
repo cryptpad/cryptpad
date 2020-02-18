@@ -134,7 +134,7 @@ define([
         // Add owners column
         var drawAdd = function () {
             var $div = $(h('div.cp-share-column'));
-            var _friends = JSON.parse(JSON.stringify(friends));
+            var _friends = Util.clone(friends);
             Object.keys(_friends).forEach(function (curve) {
                 if (owners.indexOf(_friends[curve].edPublic) !== -1 ||
                     pending_owners.indexOf(_friends[curve].edPublic) !== -1 ||
@@ -142,7 +142,8 @@ define([
                     delete _friends[curve];
                 }
             });
-            var addCol = UIElements.getUserGrid(Messages.owner_addText, {
+            // XXX if no more friends, display message...
+            var addCol = UIElements.getUserGrid("CONTACTS", { // XXX
                 common: common,
                 large: true,
                 data: _friends
@@ -151,18 +152,20 @@ define([
             });
             $div.append(addCol.div);
 
+            var _teamsData = Util.clone(teamsData);
             Object.keys(teamsData).forEach(function (id) {
                 var t = teamsData[id];
                 t.teamId = id;
                 if (owners.indexOf(t.edPublic) !== -1 || pending_owners.indexOf(t.edPublic) !== -1) {
-                    delete teamsData[id];
+                    delete _teamsData[id];
                 }
             });
-            var teamsList = UIElements.getUserGrid(Messages.owner_addTeamText, {
+            if (!Object.keys(_teamsData).length) { return $div; }
+            var teamsList = UIElements.getUserGrid("TEAMS", { // XXX
                 common: common,
                 large: true,
                 noFilter: true,
-                data: teamsData
+                data: _teamsData
             }, function () {});
             $div.append(teamsList.div);
 
@@ -311,6 +314,291 @@ define([
             divMid,
             div2
         ]);
+        cb(void 0, link);
+    };
+
+    var getAllowTab = function (common, data, opts, _cb) {
+        var cb = Util.once(Util.mkAsync(_cb));
+        opts = opts || {};
+
+        // XXX reload all this data in the "draw" functions
+
+        var friends = common.getFriends(true);
+        var sframeChan = common.getSframeChannel();
+        var priv = common.getMetadataMgr().getPrivateData();
+        var user = common.getMetadataMgr().getUserData();
+        var edPublic = priv.edPublic;
+        var channel = data.channel;
+
+        var owners = data.owners || [];
+        var restricted = data.restricted || false;
+        var allowed = data.allowed || [];
+
+        var teams = priv.teams;
+        var teamsData = Util.tryParse(JSON.stringify(priv.teams)) || {};
+        var teamOwner = data.teamId;
+
+        var redrawAll = function () {};
+
+        var addBtn = h('button.btn.btn-primary.fa.fa-arrow-left');
+
+        var div1 = h('div.cp-share-column.cp-allowlist');
+        var divMid = h('div.cp-share-column-mid.cp-overlay-container', [
+            addBtn,
+            h('div.cp-overlay')
+        ]);
+        var div2 = h('div.cp-share-column.cp-allowlist');
+        var $div1 = $(div1);
+        var $div2 = $(div2);
+
+        // Create modal
+        var link = h('div.cp-share-columns', [
+            div1,
+            divMid,
+            div2
+        ]);
+
+        var setLock = function (locked) {
+            $(link).find('.cp-overlay').toggle(locked);
+        };
+
+        // Remove owner column
+        var drawRemove = function () {
+            // XXX filter with allow list
+            var _allowed = {};
+            var all = Util.deduplicateString(owners.concat(allowed));
+            all.forEach(function (ed) {
+                var f;
+                Object.keys(friends).some(function (c) {
+                    if (friends[c].edPublic === ed) {
+                        f = friends[c];
+                        return true;
+                    }
+                });
+                Object.keys(teams).some(function (id) {
+                    if (teams[id].edPublic === ed) {
+                        f = teams[id];
+                        f.teamId = id;
+                    }
+                });
+                if (ed === edPublic) {
+                    f = f || user;
+                    if (f.name) { f.edPublic = edPublic; }
+                }
+                _allowed[ed] = f || {
+                    displayName: Messages._getKey('owner_unknownUser', [ed]),
+                    edPublic: ed,
+                };
+
+                if (owners.indexOf(ed) !== -1) {
+                    _allowed[ed].notRemovable = true;
+                }
+            });
+
+            var remove = function (el) {
+                // Check selection
+                var $el = $(el);
+                var ed = $el.attr('data-ed');
+                if (!ed) { return; }
+                nThen(function (waitFor) {
+                    var msg = "Are your sure?"; // XXX check existing keys
+                    UI.confirm(msg, waitFor(function (yes) {
+                        if (!yes) {
+                            waitFor.abort();
+                            return;
+                        }
+                    }));
+                }).nThen(function (waitFor) {
+                    // Send the command
+                    sframeChan.query('Q_SET_PAD_METADATA', {
+                        channel: channel,
+                        command: 'RM_ALLOWED',
+                        value: [ed],
+                        teamId: teamOwner
+                    }, waitFor(function (err, res) {
+                        err = err || (res && res.error);
+                        redrawAll(true);
+                        if (err) {
+                            waitFor.abort();
+                            var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
+                                                                          : Messages.error;
+                            return void UI.warn(text);
+                        }
+                        UI.log(Messages.saved);
+                    }));
+                });
+            };
+
+            var cbox = UI.createCheckbox('cp-allowlist', "ENABLE?", restricted); // XXX
+            var $cbox = $(cbox);
+            var spinner = UI.makeSpinner($cbox)
+            var $checkbox = $cbox.find('input').on('change', function () {
+                if (spinner.getState()) {
+                    $checkbox.prop('checked', !$checkbox.prop('checked'));
+                    return;
+                }
+                spinner.spin();
+                var val = $checkbox.is(':checked');
+                sframeChan.query('Q_SET_PAD_METADATA', {
+                    channel: channel,
+                    command: 'RESTRICT_ACCESS',
+                    value: [Boolean(val)],
+                    teamId: teamOwner
+                }, function (err, res) {
+                    err = err || (res && res.error);
+                    redrawAll(true);
+                    if (err) {
+                        spinner.hide();
+                        var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
+                                                                      : Messages.error;
+                        return void UI.warn(text);
+                    }
+                    spinner.done();
+                    UI.log(Messages.saved);
+                });
+            });
+
+
+            var msg = "ALLOW LIST"; // XXX
+            var removeCol = UIElements.getUserGrid(msg, {
+                common: common,
+                large: true,
+                data: _allowed,
+                noSelect: true,
+                list: true,
+                remove: remove
+            }, function () { });
+            $(removeCol.div).addClass('cp-overlay-container').append(h('div.cp-overlay'));
+            return h('div', [
+                h('p', 'Allow list text...'), // XXX
+                cbox,
+                removeCol.div
+            ]);
+        };
+
+        // Add owners column
+        var drawAdd = function () {
+            var $div = $(h('div.cp-share-column'));
+
+            $div.addClass('cp-overlay-container').append(h('div.cp-overlay'));
+
+            var _friends = Util.clone(friends);
+            Object.keys(_friends).forEach(function (curve) {
+                if (owners.indexOf(_friends[curve].edPublic) !== -1 ||
+                    allowed.indexOf(_friends[curve].edPublic) !== -1) {
+                    delete _friends[curve];
+                }
+            });
+            var addCol = UIElements.getUserGrid("CONTACTS", { // XXX
+                common: common,
+                large: true,
+                data: _friends
+            }, function () {
+                //console.log(arguments);
+            });
+            $div.append(addCol.div);
+
+            var _teamsData = Util.clone(teamsData);
+            Object.keys(teamsData).forEach(function (id) {
+                var t = teamsData[id];
+                t.teamId = id;
+                if (owners.indexOf(t.edPublic) !== -1 || allowed.indexOf(t.edPublic) !== -1) {
+                    delete _teamsData[id];
+                }
+            });
+            if (!Object.keys(_teamsData).length) { return $div; }
+            var teamsList = UIElements.getUserGrid("TEAMS", { // XXX
+                common: common,
+                large: true,
+                noFilter: true,
+                data: _teamsData
+            }, function () {});
+            $div.append(teamsList.div);
+
+            return $div;
+        };
+
+        $(addBtn).click(function () {
+            var $div = $div2.find('.cp-share-column');
+            // Check selection
+            var $sel = $div.find('.cp-usergrid-user.cp-selected');
+            var sel = $sel.toArray();
+            if (!sel.length) { return; }
+            var toAdd = sel.map(function (el) {
+                var curve = $(el).attr('data-curve');
+                var teamId = $(el).attr('data-teamid');
+                // If the pad is woned by a team, we can transfer ownership to ourselves
+                if (curve === user.curvePublic && teamOwner) { return priv.edPublic; }
+                var data = friends[curve] || teamsData[teamId];
+                if (!data) { return; }
+                return data.edPublic;
+            }).filter(function (x) { return x; });
+
+            nThen(function (waitFor) {
+                var msg = Messages.owner_addConfirm;
+                UI.confirm(msg, waitFor(function (yes) {
+                    if (!yes) {
+                        waitFor.abort();
+                        return;
+                    }
+                }));
+            }).nThen(function (waitFor) {
+                // Offer ownership to a friend
+                if (toAdd.length) {
+                    // Send the command
+                    sframeChan.query('Q_SET_PAD_METADATA', {
+                        channel: channel,
+                        command: 'ADD_ALLOWED',
+                        value: toAdd,
+                        teamId: teamOwner
+                    }, waitFor(function (err, res) {
+                        err = err || (res && res.error);
+                        redrawAll(true);
+                        if (err) {
+                            waitFor.abort();
+                            var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
+                                                                          : Messages.error;
+                            return void UI.warn(text);
+                        }
+                    }));
+                }
+            }).nThen(function () {
+                UI.log(Messages.saved);
+            });
+        });
+
+        redrawAll = function (reload) {
+            nThen(function (waitFor) {
+                if (!reload) { return; }
+                common.getPadMetadata({
+                    channel: data.channel
+                }, waitFor(function (md) {
+                    data.owners = md.owners;
+                    data.restricted = md.restricted;
+                    data.allowed = md.allowed;
+                }));
+            }).nThen(function () {
+                owners = data.owners || [];
+                restricted = data.restricted || false;
+                allowed = data.allowed || [];
+                $div1.empty();
+                $div2.empty();
+                $div1.append(drawRemove());
+                $div2.append(drawAdd());
+                setLock(!restricted);
+            });
+        };
+        redrawAll();
+
+        var handler = sframeChan.on('EV_RT_METADATA', function (md) {
+            if (!$div1.length) {
+                return void handler.stop();
+            }
+            data.owners = md.owners || [];
+            data.pending_owners = md.pending_owners || [];
+            redrawAll();
+        });
+
         cb(void 0, link);
     };
 
@@ -686,6 +974,15 @@ define([
 
             if (!owned) { return; }
 
+            getAllowTab(common, data, opts, waitFor(function (e, c) {
+                if (e) {
+                    waitFor.abort();
+                    return void cb(e);
+                }
+                tab2 = UI.dialog.customModal(c, {
+                    buttons: button
+                });
+            }));
             getOwnersTab(common, data, opts, waitFor(function (e, c) {
                 if (e) {
                     waitFor.abort();
@@ -704,7 +1001,7 @@ define([
                 title: "ALLOW LIST", // XXX
                 disabled: !owned,
                 icon: "fa fa-list",
-                content: h('div')
+                content: tab2
             }, {
                 title: Messages.creation_owners,
                 disabled: !owned,

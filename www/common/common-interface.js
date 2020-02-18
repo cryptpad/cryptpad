@@ -1184,15 +1184,20 @@ define([
         var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide();
         var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide();
 
+        var state = false;
+
         var spin = function () {
+            state = true;
             $ok.hide();
             $spinner.show();
         };
         var hide = function () {
+            state = false;
             $ok.hide();
             $spinner.hide();
         };
         var done = function () {
+            state = false;
             $ok.show();
             $spinner.hide();
         };
@@ -1203,6 +1208,7 @@ define([
         }
 
         return {
+            getState: function () { return state; },
             ok: $ok[0],
             spinner: $spinner[0],
             spin: spin,

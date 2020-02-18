@@ -348,7 +348,7 @@ define([
             },[
                 avatar,
                 h('span.cp-usergrid-user-name', name),
-                removeBtn
+                data.notRemovable ? undefined : removeBtn
             ]);
             return el;
         }).filter(function (x) { return x; });

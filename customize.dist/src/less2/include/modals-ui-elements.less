@@ -68,6 +68,20 @@
         color: @cryptpad_text_col;
     }
 
+    // Access modal
+    .cp-overlay-container {
+        position: relative;
+        .cp-overlay {
+            position: absolute;
+            background-color: rgba(255,255,255,0.5);
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+    }
+
+
     // teams invite modal
     .cp-teams-invite-block {
         display: flex;
