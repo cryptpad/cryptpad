@@ -1245,7 +1245,7 @@ define([
             }, waitFor(function (obj) {
                 if (obj && obj.error) {
                     waitFor.abort();
-                    var error = h('div.alert.alert-danger', Messages.trimHistory_error || 'error'); // XXX
+                    var error = h('div.alert.alert-danger', Messages.trimHistory_getSizeError);
                     $(content).empty().append(error);
                     return;
                 }
