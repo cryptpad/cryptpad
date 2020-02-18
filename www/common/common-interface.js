@@ -218,14 +218,15 @@ define([
         var titles = [];
         var active = 0;
         tabs.forEach(function (tab, i) {
-            if (!tab.content || !tab.title) { return; }
+            if (!(tab.content || tab.disabled) || !tab.title) { return; }
             var content = h('div.alertify-tabs-content', tab.content);
-            var title = h('span.alertify-tabs-title', tab.title);
+            var title = h('span.alertify-tabs-title'+ (tab.disabled ? '.disabled' : ''), tab.title);
             if (tab.icon) {
                 var icon = h('i', {class: tab.icon});
                 $(title).prepend(' ').prepend(icon);
             }
             $(title).click(function () {
+                if (tab.disabled) { return; }
                 var old = tabs[active];
                 if (old.onHide) { old.onHide(); }
                 titles.forEach(function (t) { $(t).removeClass('alertify-tabs-active'); });
@@ -239,7 +240,7 @@ define([
             });
             titles.push(title);
             contents.push(content);
-            if (tab.active) { active = i; }
+            if (tab.active && !tab.disabled) { active = i; }
         });
         if (contents.length) {
             $(contents[active]).addClass('alertify-tabs-content-active');

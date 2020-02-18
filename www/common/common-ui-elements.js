@@ -284,6 +284,12 @@ define([
     UIElements.getProperties = function (common, opts, cb) {
         var data;
         var content;
+        var button = [{
+            className: 'cancel',
+            name: Messages.filePicker_close,
+            onClick: function () {},
+            keys: [13,27]
+        }];
         NThen(function (waitFor) {
             getPropertiesData(common, opts, waitFor(function (e, _data) {
                 if (e) {
@@ -298,10 +304,17 @@ define([
                     waitFor.abort();
                     return void cb(e);
                 }
-                content = c[0];
+                content = UI.dialog.customModal(c[0], {
+                    buttons: button
+                });
             }));
         }).nThen(function () {
-            var modal = UI.alert(content);
+            var tabs = UI.dialog.tabs([{
+                title: Messages.fc_prop,
+                icon: "fa fa-info-circle",
+                content: content
+            }]);
+            var modal = UI.openCustomModal(tabs);
             cb (void 0, modal);
         });
     };
