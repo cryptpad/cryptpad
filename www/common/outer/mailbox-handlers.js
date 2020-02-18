@@ -494,10 +494,11 @@ define([
         try {
             var module = ctx.store.modules['team'];
             // changeMyRights returns true if we can't change our rights
-            module.changeMyRights(teamId, content.state, content.teamData);
+            module.changeMyRights(teamId, content.state, content.teamData, function (done) {
+                if (!done) { console.error("Can't update team rights"); }
+                cb(true);
+            });
         } catch (e) { console.error(e); }
-
-        cb(true);
     };
 
     handlers['OWNED_PAD_REMOVED'] = function (ctx, box, data, cb) {
