@@ -109,6 +109,29 @@
                     color: @colortheme_alertify-primary-text;
                 }
             }
+            .fa-times {
+                padding-left: 5px;
+                cursor: pointer;
+                height: 100%;
+                line-height: 25px;
+                color: @cryptpad_text_col;
+                &:hover {
+                    color: lighten(@cryptpad_text_col, 10%);
+                }
+            }
+        }
+        &.list {
+            .cp-usergrid-grid {
+                display: block;
+            }
+            .cp-usergrid-user {
+                width: auto;
+                max-width: calc(100% - 6px);
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                display: inline-flex;
+            }
         }
     }
 }

@@ -35,7 +35,6 @@ define([
         var divMid = h('div.cp-share-column-mid', addBtn);
         var div2 = h('div.cp-share-column.cp-ownership');
         var $div1 = $(div1);
-        $divMid = $(divMid);
         var $div2 = $(div2);
 
         // Remove owner column
@@ -65,35 +64,17 @@ define([
                     edPublic: ed,
                 };
             });
-            var msg = pending ? Messages.owner_removePendingText
-                        : Messages.owner_removeText;
-            var removeCol = UIElements.getUserGrid(msg, {
-                common: common,
-                large: true,
-                data: _owners,
-                noFilter: true
-            }, function () {
-            });
-            var $div = $(removeCol.div);
-            // When clicking on the remove button, we check the selected users.
-            // If you try to remove yourself, we'll display an additional warning message
-            var btnMsg = pending ? Messages.owner_removePendingButton : Messages.owner_removeButton;
-            var removeButton = h('button.no-margin', btnMsg);
-            $(removeButton).click(function () {
+
+            var remove = function (el) {
                 // Check selection
-                var $sel = $div.find('.cp-usergrid-user.cp-selected');
-                var sel = $sel.toArray();
-                if (!sel.length) { return; }
                 var me = false;
-                var toRemove = sel.map(function (el) {
-                    var ed = $(el).attr('data-ed');
-                    if (!ed) { return; }
-                    if (teamOwner && teams[teamOwner] && teams[teamOwner].edPublic === ed) { me = true; }
-                    if (ed === edPublic && !teamOwner) { me = true; }
-                    return ed;
-                }).filter(function (x) { return x; });
+                var $el = $(el);
+                var ed = $el.attr('data-ed');
+                if (!ed) { return; }
+                if (teamOwner && teams[teamOwner] && teams[teamOwner].edPublic === ed) { me = true; }
+                if (ed === edPublic && !teamOwner) { me = true; }
                 nThen(function (waitFor) {
-                    var msg = me ? Messages.owner_removeMeConfirm : Messages.owner_removeConfirm;
+                    var msg = me ? Messages.owner_removeMeConfirm : Messages.owner_removeConfirm; // XXX check existing keys
                     UI.confirm(msg, waitFor(function (yes) {
                         if (!yes) {
                             waitFor.abort();
@@ -105,7 +86,7 @@ define([
                     sframeChan.query('Q_SET_PAD_METADATA', {
                         channel: channel,
                         command: pending ? 'RM_PENDING_OWNERS' : 'RM_OWNERS',
-                        value: toRemove,
+                        value: [ed],
                         teamId: teamOwner
                     }, waitFor(function (err, res) {
                         err = err || (res && res.error);
@@ -119,24 +100,34 @@ define([
                         UI.log(Messages.saved);
                     }));
                 }).nThen(function (waitFor) {
-                    sel.forEach(function (el) {
-                        var curve = $(el).attr('data-curve');
-                        var friend = curve === user.curvePublic ? user : friends[curve];
-                        if (!friend) { return; }
-                        common.mailbox.sendTo("RM_OWNER", {
-                            channel: channel,
-                            title: data.title,
-                            pending: pending
-                        }, {
-                            channel: friend.notifications,
-                            curvePublic: friend.curvePublic
-                        }, waitFor());
-                    });
+                    var curve = $el.attr('data-curve');
+                    var friend = curve === user.curvePublic ? user : friends[curve];
+                    if (!friend) { return; }
+                    common.mailbox.sendTo("RM_OWNER", {
+                        channel: channel,
+                        title: data.title,
+                        pending: pending
+                    }, {
+                        channel: friend.notifications,
+                        curvePublic: friend.curvePublic
+                    }, waitFor());
                 }).nThen(function () {
                     redrawAll(true);
                 });
+            };
+
+            var msg = pending ? Messages.owner_removePendingText
+                        : Messages.owner_removeText;
+            var removeCol = UIElements.getUserGrid(msg, {
+                common: common,
+                large: true,
+                data: _owners,
+                noSelect: true,
+                list: true,
+                remove: remove
+            }, function () {
             });
-            $div.append(h('p', removeButton));
+            var $div = $(removeCol.div);
             return $div;
         };
 
@@ -415,7 +406,6 @@ define([
         opts = opts || {};
 
         var priv = common.getMetadataMgr().getPrivateData();
-        var edPublic = priv.edPublic;
 
         var $div = $(h('div.cp-share-columns'));
         if (!data) { return void cb(void 0, $div); }
@@ -445,8 +435,7 @@ define([
                 ]));
             }
 
-            var $pwLabel = $('<label>', {'for': 'cp-app-prop-password'})
-                            .text(Messages.creation_passwordValue).appendTo($d);
+            $('<label>', {'for': 'cp-app-prop-password'}).text(Messages.creation_passwordValue).appendTo($d);
             var password = UI.passwordInput({
                 id: 'cp-app-prop-password',
                 readonly: 'readonly'

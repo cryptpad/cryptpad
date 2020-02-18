@@ -329,7 +329,15 @@ define([
             var name = data.displayName || data.name || Messages.anonymous;
             var avatar = h('span.cp-usergrid-avatar.cp-avatar');
             UIElements.displayAvatar(common, $(avatar), data.avatar, name);
-            return h('div.cp-usergrid-user'+(data.selected?'.cp-selected':'')+(config.large?'.large':''), {
+            var removeBtn, el;
+            if (config.remove) {
+                removeBtn = h('span.fa.fa-times');
+                $(removeBtn).click(function () {
+                    config.remove(el);
+                });
+            }
+
+            el = h('div.cp-usergrid-user'+(data.selected?'.cp-selected':'')+(config.large?'.large':''), {
                 'data-ed': data.edPublic,
                 'data-teamid': data.teamId,
                 'data-curve': data.curvePublic || '',
@@ -339,17 +347,20 @@ define([
                 style: 'order:'+i+';'
             },[
                 avatar,
-                h('span.cp-usergrid-user-name', name)
+                h('span.cp-usergrid-user-name', name),
+                removeBtn
             ]);
+            return el;
         }).filter(function (x) { return x; });
 
         var noOthers = icons.length === 0 ? '.cp-usergrid-empty' : '';
+        var classes = noOthers + (config.large?'.large':'') + (config.list?'.list':'');
 
         var inputFilter = h('input', {
             placeholder: Messages.share_filterFriend
         });
 
-        var div = h('div.cp-usergrid-container' + noOthers + (config.large?'.large':''), [
+        var div = h('div.cp-usergrid-container' + classes, [
             label ? h('label', label) : undefined,
             h('div.cp-usergrid-filter', (config.noFilter || config.noSelect) ? undefined : [
                 inputFilter
