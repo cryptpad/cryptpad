@@ -1297,5 +1297,17 @@
     "safeLinks_error": "Le lien utilisé ne permet pas d'ouvrir ce document",
     "settings_safeLinksCheckbox": "Activer les liens sécurisés",
     "settings_safeLinksTitle": "Liens Sécurisés",
-    "settings_cat_security": "Confidentialité"
+    "settings_cat_security": "Confidentialité",
+    "settings_trimHistoryHint": "Économisez de l'espace de stockage en supprimant l'historique de votre disque et de vos notifications. Cela n'affectera pas l'historique de vos documents. Vous pouvez supprimer l'historique des pads dans leur dialogue de propriétés.",
+    "settings_trimHistoryTitle": "Effacer l'Historique",
+    "trimHistory_noHistory": "Il n'y a pas d'historique à supprimer",
+    "trimHistory_currentSize": "Taille de l'historique : <b>{0}</b>",
+    "trimHistory_needMigration": "Merci de <a>mettre votre CryptDrive à jour</a> pour activer cette fonctionalité.",
+    "trimHistory_success": "L'historique a été effacé",
+    "trimHistory_error": "Erreur lors de la suppression de l'historique",
+    "trimHistory_getSizeError": "Erreur lors du calcul de la taille de l'historique de votre drive",
+    "trimHistory_button": "Effacer l'historique",
+    "historyTrim_contentsSize": "Contenu : {0}",
+    "historyTrim_historySize": "Historique : {0}",
+    "areYouSure": "Êtes-vous sûr ?"
 }
