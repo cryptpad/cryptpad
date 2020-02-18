@@ -1215,7 +1215,7 @@ define([
         var spinner = UI.makeSpinner();
         var button = h('button.btn.btn-danger-alt', {
             disabled: 'disabled'
-        }, Messages.trimHistory_button || 'delete history... xxx'); // XXX
+        }, Messages.trimHistory_button);
         var currentSize = h('p', $(spinner.spinner).clone()[0]);
         var content = h('div#cp-settings-trim-container', [
             currentSize,
@@ -1226,7 +1226,7 @@ define([
 
         if (!privateData.isDriveOwned) {
             var href = privateData.origin + privateData.pathname + '#' + 'account';
-            $(currentSize).html(Messages.trimHistory_needMigration || 'Need migration <a>Click</a>'); // XXX
+            $(currentSize).html(Messages.trimHistory_needMigration);
             $(currentSize).find('a').prop('href', href).click(function (e) {
                 e.preventDefault();
                 $('.cp-sidebarlayout-category[data-category="account"]').click();
@@ -1234,7 +1234,6 @@ define([
             return void cb(content);
         }
 
-        Messages.trimHistory_currentSize = 'Size XXX: <b>{0}</b>'; // XXX
 
         var $button = $(button);
         var size;
@@ -1255,12 +1254,11 @@ define([
             }));
         }).nThen(function () {
             if (!size || size < 1024) {
-                $(currentSize).html(Messages.trimHistory_noHistory || 'no history...'); // XXX
+                $(currentSize).html(Messages.trimHistory_noHistory);
                 return;
             }
             $(currentSize).html(Messages._getKey('trimHistory_currentSize', [UIElements.prettySize(size)]));
             $button.click(function () {
-                //UI.confirm(Messages.trimHistory_confirm, function (yes) {
                 UI.confirmButton(button, {
                     classes: 'btn-danger'
                 }, function (yes) {
@@ -1272,7 +1270,7 @@ define([
                         channels: channels
                     }, function (obj) {
                         if (obj && obj.error) {
-                            var error = h('div.alert.alert-danger', Messages.trimHistory_error || 'error'); // XXX
+                            var error = h('div.alert.alert-danger', Messages.trimHistory_error);
                             $(content).empty().append(error);
                             return;
                         }
@@ -1288,9 +1286,6 @@ define([
     };
     makeBlock('trim-history', function (cb, $div) {
         if (!common.isLoggedIn()) { return; }
-        // XXX settings_trimHistoryTitle, settings_trimHistoryHint, trimHistory_button, trimHistory_error
-        // XXX trimHistory_success, trimHistory_confirm, trimHistory_noHistory
-        // XXX trimHistory_needMigration (clickable <a> tag (no attribute) to go to the "account" part of settings)
         redrawTrimHistory(cb, $div);
     }, true);
 
