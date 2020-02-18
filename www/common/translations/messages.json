@@ -1297,5 +1297,17 @@
     "safeLinks_error": "This link does not give you access to the document",
     "dontShowAgain": "Don't show again",
     "profile_login": "You need to log in to add this user to your contacts",
-    "settings_safeLinksHint": "CryptPad includes the keys to decrypt your pads in their links. Anyone with access to your browsing history can potentially read your data. This includes intrusive browser extensions and browsers that sync your history across devices. Enabling \"safe links\" prevents the keys from entering your browsing history or being displayed in your address bar whenever possible. We strongly recommend that you enable this feature and use the {0} Share menu."
+    "settings_safeLinksHint": "CryptPad includes the keys to decrypt your pads in their links. Anyone with access to your browsing history can potentially read your data. This includes intrusive browser extensions and browsers that sync your history across devices. Enabling \"safe links\" prevents the keys from entering your browsing history or being displayed in your address bar whenever possible. We strongly recommend that you enable this feature and use the {0} Share menu.",
+    "areYouSure": "Are you sure?",
+    "historyTrim_historySize": "History: {0}",
+    "historyTrim_contentsSize": "Contents: {0}",
+    "trimHistory_button": "Delete History",
+    "trimHistory_getSizeError": "Error while calculating the size of your drive's history",
+    "trimHistory_error": "Error while deleting history",
+    "trimHistory_success": "History has been deleted",
+    "trimHistory_needMigration": "Please <a>update your CryptDrive</a> to enable this feature.",
+    "trimHistory_currentSize": "Current history size: <b>{0}</b>",
+    "trimHistory_noHistory": "No history can be deleted",
+    "settings_trimHistoryTitle": "Delete History",
+    "settings_trimHistoryHint": "Save storage space by deleting the history of your drive and notifications. This will not affect the history of your pads. You can  delete the history of pads in their properties dialog."
 }
