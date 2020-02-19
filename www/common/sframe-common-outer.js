@@ -1236,22 +1236,24 @@ define([
             });
             // REQUEST_ACCESS is used both to check IF we can contact an owner (send === false)
             // AND also to send the request if we want (send === true)
-            sframeChan.on('Q_REQUEST_ACCESS', function (send, cb) {
+            sframeChan.on('Q_REQUEST_ACCESS', function (data, cb) {
                 if (readOnly && hashes.editHash) {
                     return void cb({error: 'ALREADYKNOWN'});
                 }
+                var send = data.send;
+                var metadata = data.metadata;
                 var owner, owners;
-                var crypto = Crypto.createEncryptor(secret.keys);
+                var _secret = secret;
+                if (metadata && metadata.roHref) {
+                    var _parsed = Utils.Hash.parsePadUrl(metadata.roHref);
+                    _secret = Utils.Hash.getSecrets(_parsed.type, _parsed.hash, metadata.password);
+                }
+                var crypto = Crypto.createEncryptor(_secret.keys);
                 nThen(function (waitFor) {
                     // Try to get the owner's mailbox from the pad metadata first.
                     // If it's is an older owned pad, check if the owner is a friend
                     // or an acquaintance (from async-store directly in requestAccess)
-                    Cryptpad.getPadMetadata({
-                        channel: secret.channel
-                    }, waitFor(function (obj) {
-                        obj = obj || {};
-                        if (obj.error) { return; }
-
+                    var todo = function (obj) {
                         owners = obj.owners;
 
                         var mailbox;
@@ -1270,6 +1272,17 @@ define([
                                 owner = data;
                             } catch (e) { console.error(e); }
                         }
+                    };
+
+                    // If we already have metadata, use it, otherwise, try to get it
+                    if (metadata) { return void todo(metadata); }
+
+                    Cryptpad.getPadMetadata({
+                        channel: secret.channel
+                    }, waitFor(function (obj) {
+                        obj = obj || {};
+                        if (obj.error) { return; }
+                        todo(obj);
                     }));
                 }).nThen(function () {
                     // If we are just checking (send === false) and there is a mailbox field, cb state true

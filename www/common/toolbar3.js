@@ -574,6 +574,7 @@ MessengerUI, Messages) {
         return $shareBlock;
     };
 
+    /*
     var createRequest = function (toolbar, config) {
         if (!config.metadataMgr) {
             throw new Error("You must provide a `metadataMgr` to display the request access button");
@@ -590,13 +591,13 @@ MessengerUI, Messages) {
         // If we have access to the owner's mailbox, display the button and enable it
         // false => check if we can contact the owner
         // true ==> send the request
-        Common.getSframeChannel().query('Q_REQUEST_ACCESS', false, function (err, obj) {
+        Common.getSframeChannel().query('Q_REQUEST_ACCESS', {send:false}, function (err, obj) {
             if (obj && obj.state) {
                 var locked = false;
                 $requestBlock.show().click(function () {
                     if (locked) { return; }
                     locked = true;
-                    Common.getSframeChannel().query('Q_REQUEST_ACCESS', true, function (err, obj) {
+                    Common.getSframeChannel().query('Q_REQUEST_ACCESS', {send:true}, function (err, obj) {
                         if (obj && obj.state) {
                             UI.log(Messages.requestEdit_sent);
                             $requestBlock.hide();
@@ -614,6 +615,7 @@ MessengerUI, Messages) {
 
         return $requestBlock;
     };
+    */
 
     var createTitle = function (toolbar, config) {
         var $titleContainer = $('<span>', {
@@ -1226,7 +1228,7 @@ MessengerUI, Messages) {
         tb['fileshare'] = createFileShare;
         tb['title'] = createTitle;
         tb['pageTitle'] = createPageTitle;
-        tb['request'] = createRequest;
+        //tb['request'] = createRequest;
         tb['lag'] = $.noop;
         tb['spinner'] = createSpinner;
         tb['state'] = $.noop;

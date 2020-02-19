@@ -65,7 +65,7 @@ define([
                     f = f || user;
                     if (f.name) { f.edPublic = edPublic; }
                 }
-                _owners[ed] = Util.clone(f) || {
+                _owners[ed] = f ? Util.clone(f) : {
                     displayName: Messages._getKey('owner_unknownUser', [ed]),
                     edPublic: ed,
                 };
@@ -395,7 +395,7 @@ define([
                     f = f || user;
                     if (f.name) { f.edPublic = edPublic; }
                 }
-                _allowed[ed] = Util.clone(f) || {
+                _allowed[ed] = f ? Util.clone(f) : {
                     displayName: Messages._getKey('owner_unknownUser', [ed]),
                     edPublic: ed,
                 };
@@ -717,6 +717,7 @@ define([
         opts = opts || {};
 
         var priv = common.getMetadataMgr().getPrivateData();
+        var sframeChan = common.getSframeChannel();
 
         var $div = $(h('div.cp-share-columns'));
         if (!data) { return void cb(void 0, $div); }
@@ -763,8 +764,6 @@ define([
                 // In the properties, we should have the edit href if we know it.
                 // We should know it because the pad is stored, but it's better to check...
                 if (!data.noEditPassword && owned && data.href) { // FIXME SHEET fix password change for sheets
-                    var sframeChan = common.getSframeChannel();
-
                     var isOO = parsed.type === 'sheet';
                     var isFile = parsed.hashData.type === 'file';
                     var isSharedFolder = parsed.type === 'drive';
@@ -881,7 +880,11 @@ define([
             Messages.allow_disabled = 'DISABLED'; // XXX
             Messages.allow_label = 'Allow list: {0}'; // XXX
 
+            var owned = isOwned(common, data);
+            var priv = common.getMetadataMgr().getPrivateData();
+            var edPublic = priv.edPublic;
 
+            // Owners
             var content = [];
             var _ownersGrid = getUserList(common, data.owners);
             if (_ownersGrid && _ownersGrid.div) {
@@ -898,6 +901,41 @@ define([
                 ]));
             }
 
+            // Request edit access
+            if (data.roHref && !data.href) {
+                var requestButton = h('button.btn.btn-secondary.no-margin',
+                                        Messages.requestEdit_button);
+                var requestBlock = h('p', requestButton);
+                var $requestBlock = $(requestBlock).hide();
+                content.push(requestBlock);
+                sframeChan.query('Q_REQUEST_ACCESS', {
+                    send: false,
+                    metadata: data
+                }, function (err, obj) {
+                    // Abort if no mailbox available
+                    if (!(obj && obj.state)) { return; }
+
+                    var spinner = UI.makeSpinner($requestBlock);
+                    $requestBlock.show().find('button').click(function () {
+                        if (spinner.getState()) { return; }
+                        spinner.spin();
+                        sframeChan.query('Q_REQUEST_ACCESS', {
+                            send: true,
+                            metadata: data
+                        }, function (err, obj) {
+                            if (obj && obj.state) {
+                                UI.log(Messages.requestEdit_sent);
+                                $requestBlock.find('button').prop('disabled', true);
+                                spinner.done();
+                            } else {
+                                spinner.hide();
+                            }
+                        });
+                    });
+                });
+            }
+
+            // Allow list
             var state = data.restricted ? Messages.allow_enabled : Messages.allow_disabled;
             content.push(h('label', Messages._getKey('allow_label', [state])));
             if (data.restricted) {
@@ -908,7 +946,6 @@ define([
             return h('div', content);
         };
 
-        var sframeChan = common.getSframeChannel();
         var redraw = function () {
             $div1.empty();
             $div1.append(drawLeft());
@@ -924,6 +961,7 @@ define([
             data.owners = md.owners;
             data.expire = md.expire;
             data.pending_owners = md.pending_owners;
+            data.mailbox = md.mailbox;
             redraw();
         });
         redraw();
@@ -960,6 +998,7 @@ define([
                 data.owners = obj.owners;
                 data.expire = obj.expire;
                 data.pending_owners = obj.pending_owners;
+                data.mailbox = obj.mailbox;
             }));
         }).nThen(function () {
             cb(void 0, data);
