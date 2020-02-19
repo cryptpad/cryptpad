@@ -131,6 +131,10 @@ define([
             return $div;
         };
 
+        // XXX contacts, teams
+        Messages.contacts = "Contacts";
+        Messages.teams = "Teams";
+
         // Add owners column
         var drawAdd = function () {
             var $div = $(h('div.cp-share-column'));
@@ -143,7 +147,7 @@ define([
                 }
             });
             // XXX if no more friends, display message...
-            var addCol = UIElements.getUserGrid("CONTACTS", { // XXX
+            var addCol = UIElements.getUserGrid(Messages.contacts, {
                 common: common,
                 large: true,
                 data: _friends
@@ -161,7 +165,7 @@ define([
                 }
             });
             if (!Object.keys(_teamsData).length) { return $div; }
-            var teamsList = UIElements.getUserGrid("TEAMS", { // XXX
+            var teamsList = UIElements.getUserGrid(Messages.teams, {
                 common: common,
                 large: true,
                 noFilter: true,
@@ -169,9 +173,6 @@ define([
             }, function () {});
             $div.append(teamsList.div);
 
-            // When clicking on the add button, we get the selected users.
-            //var addButton = h('button.no-margin', Messages.owner_addButton); // XXX
-            //$div.append(h('p', addButton));
             return $div;
         };
 
@@ -364,7 +365,6 @@ define([
 
         // Remove owner column
         var drawRemove = function () {
-            // XXX filter with allow list
             var _allowed = {};
             var all = Util.deduplicateString(owners.concat(allowed));
             all.forEach(function (ed) {
@@ -395,13 +395,18 @@ define([
                 }
             });
 
+            // XXX allow_removeConfirm, allow_checkbox, allow_text
+            Messages.allow_removeConfirm = "Are you sure?"; // XXX
+            Messages.allow_checkbox = "Enable allow list"; // XXX
+            Messages.allow_text = 'Pewpewpew'; // XXX
+
             var remove = function (el) {
                 // Check selection
                 var $el = $(el);
                 var ed = $el.attr('data-ed');
                 if (!ed) { return; }
                 nThen(function (waitFor) {
-                    var msg = "Are your sure?"; // XXX check existing keys
+                    var msg = Messages.allow_removeConfirm;
                     UI.confirm(msg, waitFor(function (yes) {
                         if (!yes) {
                             waitFor.abort();
@@ -429,7 +434,7 @@ define([
                 });
             };
 
-            var cbox = UI.createCheckbox('cp-allowlist', "ENABLE?", restricted); // XXX
+            var cbox = UI.createCheckbox('cp-allowlist', Messages.allow_checkbox, restricted);
             var $cbox = $(cbox);
             var spinner = UI.makeSpinner($cbox)
             var $checkbox = $cbox.find('input').on('change', function () {
@@ -459,7 +464,7 @@ define([
             });
 
 
-            var msg = "ALLOW LIST"; // XXX
+            var msg = Messages._getKey('allow_label', ['']);
             var removeCol = UIElements.getUserGrid(msg, {
                 common: common,
                 large: true,
@@ -470,7 +475,7 @@ define([
             }, function () { });
             $(removeCol.div).addClass('cp-overlay-container').append(h('div.cp-overlay'));
             return h('div', [
-                h('p', 'Allow list text...'), // XXX
+                h('p', Messages.allow_text),
                 cbox,
                 removeCol.div
             ]);
@@ -489,7 +494,7 @@ define([
                     delete _friends[curve];
                 }
             });
-            var addCol = UIElements.getUserGrid("CONTACTS", { // XXX
+            var addCol = UIElements.getUserGrid(Messages.contacts, {
                 common: common,
                 large: true,
                 data: _friends
@@ -507,7 +512,7 @@ define([
                 }
             });
             if (!Object.keys(_teamsData).length) { return $div; }
-            var teamsList = UIElements.getUserGrid("TEAMS", { // XXX
+            var teamsList = UIElements.getUserGrid(Messages.teams, {
                 common: common,
                 large: true,
                 noFilter: true,
@@ -994,12 +999,16 @@ define([
                 });
             }));
         }).nThen(function () {
+            // XXX access_main, access_allow
+            Messages.access_main = 'ACCESS'; // XXX
+            Messages.access_allow = 'ALLOW'; // XXX
+
             var tabs = UI.dialog.tabs([{
-                title: "ACCESS", // XXX
+                title: Messages.access_main,
                 icon: "fa fa-unlock-alt",
                 content: tab1
             }, {
-                title: "ALLOW LIST", // XXX
+                title: Messages.access_allow,
                 disabled: !owned,
                 icon: "fa fa-list",
                 content: tab2
