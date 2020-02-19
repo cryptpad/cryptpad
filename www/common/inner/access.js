@@ -853,34 +853,35 @@ define([
             return $d;
         };
         var drawRight = function () {
-            var content = [
-                h('label', Messages.creation_owners),
-            ];
+            // XXX allow_enabled, allow_disabled, allow_label
+            Messages.allow_enabled = 'ENABLED'; // XXX
+            Messages.allow_disabled = 'DISABLED'; // XXX
+            Messages.allow_label = 'Allow list: {0}'; // XXX
+
+
+            var content = [];
             var _ownersGrid = getUserList(common, data.owners);
             if (_ownersGrid && _ownersGrid.div) {
+                content.push(h('label', Messages.creation_owners));
                 content.push(_ownersGrid.div);
             } else {
                 content.push(UI.dialog.selectable(Messages.creation_noOwner, {
                     id: 'cp-app-prop-owners',
                 }));
+                content.push(h('div.cp-app-prop', [
+                    Messages.creation_expiration,
+                    h('br'),
+                    h('span.cp-app-prop-content', expire)
+                ]));
             }
 
-            /*
-            var owned = isOwned(common, data);
-            var parsed = Hash.parsePadUrl(data.href || data.roHref);
-            if (!parsed || !parsed.hashData) { return; }
-            if (owned && parsed.hashData.type === 'pad') {
-                var manageOwners = h('button.no-margin', Messages.owner_openModalButton);
-                $(manageOwners).click(function () {
-                    data.teamId = typeof(owned) !== "boolean" ? owned : undefined;
-                    var modal = createOwnerModal(common, data);
-                    UI.openCustomModal(modal, {
-                        wide: true,
-                    });
-                });
-                $d.append(h('p', manageOwners));
+            var state = data.restricted ? Messages.allow_enabled : Messages.allow_disabled;
+            content.push(h('label', Messages._getKey('allow_label', [state])));
+            if (data.restricted) {
+                var _allowed = Util.deduplicateString(data.owners.concat(data.allowed));
+                var _allowedGrid = getUserList(common, _allowed);
+                content.push(_allowedGrid.div);
             }
-            */
             return h('div', content);
         };
 
