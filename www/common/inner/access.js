@@ -634,7 +634,7 @@ define([
         var priv = common.getMetadataMgr().getPrivateData();
         var edPublic = priv.edPublic;
         var owned = false;
-        if (data.owners && data.owners.length) {
+        if (Array.isArray(data.owners) && data.owners.length) {
             if (data.owners.indexOf(edPublic) !== -1) {
                 owned = true;
             } else {
@@ -898,7 +898,7 @@ define([
 
             // Request edit access
             if (data.roHref && !data.href) {
-                var requestButton = h('button.btn.btn-secondary.no-margin',
+                var requestButton = h('button.btn.btn-secondary.no-margin.cp-access-margin-right',
                                         Messages.requestEdit_button);
                 var requestBlock = h('p', requestButton);
                 var $requestBlock = $(requestBlock).hide();
@@ -929,6 +929,49 @@ define([
                     });
                 });
             }
+
+            // XXX access_muteRequests
+            Messages.access_muteRequests = "Mute access requests for this pad"; // XXX
+
+            // Mute access requests
+            var priv = common.getMetadataMgr().getPrivateData();
+            var edPublic = priv.edPublic;
+            var owned = isOwned(common, data);
+            var canMute = data.mailbox && owned === true && (
+                    (typeof (data.mailbox) === "string" && data.owners[0] === edPublic) ||
+                    data.mailbox[edPublic]);
+            if (owned === true) {
+                var cbox = UI.createCheckbox('cp-access-mute', Messages.access_muteRequests, !canMute);
+                var $cbox = $(cbox);
+                var spinner = UI.makeSpinner($cbox);
+                var $checkbox = $cbox.find('input').on('change', function () {
+                    if (spinner.getState()) {
+                        $checkbox.prop('checked', !$checkbox.prop('checked'));
+                        return;
+                    }
+                    spinner.spin();
+                    var val = $checkbox.is(':checked');
+                    sframeChan.query('Q_UPDATE_MAILBOX', {
+                        metadata: data,
+                        add: !val
+                    }, function (err, res) {
+                        err = err || (res && res.error);
+                        if (err) {
+                            spinner.hide();
+                            var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
+                                                                          : Messages.error;
+                            return void UI.warn(text);
+                        }
+                        spinner.done();
+                        UI.log(Messages.saved);
+                    });
+                });
+                $cbox.find('.cp-checkmark-label').addClass('cp-access-margin-right');
+                $cbox.find('.cp-checkmark-mark')
+                    .after(h('span.fa.fa-bell-slash.cp-access-margin-right'));
+                content.push(h('p', cbox));
+            }
+
 
             // Allow list
             var state = data.restricted ? Messages.allow_enabled : Messages.allow_disabled;

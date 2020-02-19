@@ -1278,7 +1278,7 @@ define([
                     if (metadata) { return void todo(metadata); }
 
                     Cryptpad.getPadMetadata({
-                        channel: secret.channel
+                        channel: _secret.channel
                     }, waitFor(function (obj) {
                         obj = obj || {};
                         if (obj.error) { return; }
@@ -1287,14 +1287,89 @@ define([
                 }).nThen(function () {
                     // If we are just checking (send === false) and there is a mailbox field, cb state true
                     // If there is no mailbox, we'll have to check if an owner is a friend in the worker
+                    /* // XXX
                     if (owner && !send) {
                         return void cb({state: true});
                     }
+                    */
+                    if (!send) { return void cb({state: Boolean(owner)}); }
+
                     Cryptpad.padRpc.requestAccess({
                         send: send,
-                        channel: secret.channel,
+                        channel: _secret.channel,
                         owner: owner,
                         owners: owners
+                    }, cb);
+                });
+            });
+
+            // Add or remove our mailbox from the list if we're an owner
+            sframeChan.on('Q_UPDATE_MAILBOX', function (data, cb) {
+                var metadata = data.metadata;
+                var add = data.add;
+                var _secret = secret;
+                if (metadata && (metadata.href || metadata.roHref)) {
+                    var _parsed = Utils.Hash.parsePadUrl(metadata.href || metadata.roHref);
+                    _secret = Utils.Hash.getSecrets(_parsed.type, _parsed.hash, metadata.password);
+                }
+                var crypto = Crypto.createEncryptor(_secret.keys);
+                nThen(function (waitFor) {
+                    // If we already have metadata, use it, otherwise, try to get it
+                    if (metadata) { return; }
+
+                    Cryptpad.getPadMetadata({
+                        channel: secret.channel
+                    }, waitFor(function (obj) {
+                        obj = obj || {};
+                        if (obj.error) {
+                            waitFor.abort();
+                            return void cb(obj);
+                        }
+                        metadata = obj;
+                    }));
+                }).nThen(function () {
+                    // Get and maybe migrate the existing mailbox object
+                    var owners = metadata.owners;
+                    if (!Array.isArray(owners) || owners.indexOf(edPublic) === -1) {
+                        waitFor.abort();
+                        return void cb({ error: 'INSUFFICIENT_PERMISSIONS' });
+                    }
+
+                    // Remove a mailbox
+                    if (!add) {
+                        // Old format: this is the mailbox of the first owner
+                        if (typeof (metadata.mailbox) === "string" && metadata.mailbox) {
+                            // Not our mailbox? abort
+                            if (owners[0] !== edPublic) {
+                                return void cb({ error: 'INSUFFICIENT_PERMISSIONS' });
+                            }
+                            // Remove it
+                            return void Cryptpad.setPadMetadata({
+                                channel: _secret.channel,
+                                command: 'RM_MAILBOX',
+                                value: []
+                            }, cb);
+                        } else if (metadata.mailbox) { // New format
+                            return void Cryptpad.setPadMetadata({
+                                channel: _secret.channel,
+                                command: 'RM_MAILBOX',
+                                value: [edPublic]
+                            }, cb);
+                        }
+                        return void cb({
+                            error: 'NO_MAILBOX'
+                        });
+                    }
+                    // Add a mailbox
+                    var toAdd = {};
+                    toAdd[edPublic] = crypto.encrypt(JSON.stringify({
+                        notifications: notifications,
+                        curvePublic: curvePublic
+                    }));
+                    Cryptpad.setPadMetadata({
+                        channel: _secret.channel,
+                        command: 'ADD_MAILBOX',
+                        value: toAdd
                     }, cb);
                 });
             });

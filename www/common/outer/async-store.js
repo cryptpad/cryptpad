@@ -1632,6 +1632,7 @@ define([
 
             // If the owner was not is the pad metadata, check if it is a friend.
             // We'll contact the first owner for whom we know the mailbox
+            /* // XXX check mailbox in our contacts is not compatible with the new "mute pad" feature
             if (!owner && Array.isArray(owners)) {
                 var friends = store.proxy.friends || {};
                 // If we have friends, check if an owner is one of them (with a mailbox)
@@ -1648,6 +1649,7 @@ define([
                     });
                 }
             }
+            */
 
             // If send is true, send the request to the owner.
             if (owner) {
