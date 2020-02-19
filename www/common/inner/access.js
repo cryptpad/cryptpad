@@ -11,6 +11,12 @@ define([
              Messages, nThen) {
     var Access = {};
 
+        // XXX contacts, teams, access_noContact
+        Messages.contacts = "Contacts"; // XXX
+        Messages.teams = "Teams"; // XXX
+        Messages.access_noContact = "No other contact to add"; // XXX
+
+
     var getOwnersTab = function (common, data, opts, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
 
@@ -59,7 +65,7 @@ define([
                     f = f || user;
                     if (f.name) { f.edPublic = edPublic; }
                 }
-                _owners[ed] = f || {
+                _owners[ed] = Util.clone(f) || {
                     displayName: Messages._getKey('owner_unknownUser', [ed]),
                     edPublic: ed,
                 };
@@ -131,10 +137,6 @@ define([
             return $div;
         };
 
-        // XXX contacts, teams
-        Messages.contacts = "Contacts";
-        Messages.teams = "Teams";
-
         // Add owners column
         var drawAdd = function () {
             var $div = $(h('div.cp-share-column'));
@@ -147,14 +149,22 @@ define([
                 }
             });
             // XXX if no more friends, display message...
-            var addCol = UIElements.getUserGrid(Messages.contacts, {
-                common: common,
-                large: true,
-                data: _friends
-            }, function () {
-                //console.log(arguments);
-            });
-            $div.append(addCol.div);
+            if (!Object.keys(_friends).length) {
+                $div.append(h('div.cp-app-prop', [
+                    Messages.contacts,
+                    h('br'),
+                    h('span.cp-app-prop-content', Messages.access_noContact)
+                ]));
+            } else {
+                var addCol = UIElements.getUserGrid(Messages.contacts, {
+                    common: common,
+                    large: true,
+                    data: _friends
+                }, function () {
+                    //console.log(arguments);
+                });
+                $div.append(addCol.div);
+            }
 
             var _teamsData = Util.clone(teamsData);
             Object.keys(teamsData).forEach(function (id) {
@@ -385,7 +395,7 @@ define([
                     f = f || user;
                     if (f.name) { f.edPublic = edPublic; }
                 }
-                _allowed[ed] = f || {
+                _allowed[ed] = Util.clone(f) || {
                     displayName: Messages._getKey('owner_unknownUser', [ed]),
                     edPublic: ed,
                 };
@@ -476,7 +486,7 @@ define([
             $(removeCol.div).addClass('cp-overlay-container').append(h('div.cp-overlay'));
             return h('div', [
                 h('p', Messages.allow_text),
-                cbox,
+                h('p', cbox),
                 removeCol.div
             ]);
         };
@@ -494,14 +504,22 @@ define([
                     delete _friends[curve];
                 }
             });
-            var addCol = UIElements.getUserGrid(Messages.contacts, {
-                common: common,
-                large: true,
-                data: _friends
-            }, function () {
-                //console.log(arguments);
-            });
-            $div.append(addCol.div);
+            if (!Object.keys(_friends).length) {
+                $div.append(h('div.cp-app-prop', [
+                    Messages.contacts,
+                    h('br'),
+                    h('span.cp-app-prop-content', Messages.access_noContact)
+                ]));
+            } else {
+                var addCol = UIElements.getUserGrid(Messages.contacts, {
+                    common: common,
+                    large: true,
+                    data: _friends
+                }, function () {
+                    //console.log(arguments);
+                });
+                $div.append(addCol.div);
+            }
 
             var _teamsData = Util.clone(teamsData);
             Object.keys(teamsData).forEach(function (id) {
