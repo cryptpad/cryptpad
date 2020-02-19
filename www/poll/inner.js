@@ -1171,6 +1171,8 @@ define([
         var $forgetPad = common.createButton('forget', true, {}, forgetCb);
         $rightside.append($forgetPad);
 
+        var $access = common.createButton('access', true);
+        $drawer.append($access);
         var $properties = common.createButton('properties', true);
         $drawer.append($properties);
 

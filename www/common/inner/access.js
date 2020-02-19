@@ -940,7 +940,7 @@ define([
             var canMute = data.mailbox && owned === true && (
                     (typeof (data.mailbox) === "string" && data.owners[0] === edPublic) ||
                     data.mailbox[edPublic]);
-            if (owned === true) {
+            if (owned === true) { // XXX not for files
                 var cbox = UI.createCheckbox('cp-access-mute', Messages.access_muteRequests, !canMute);
                 var $cbox = $(cbox);
                 var spinner = UI.makeSpinner($cbox);
@@ -1067,6 +1067,7 @@ define([
             }));
 
             if (!owned) { return; }
+            // XXX if "file" ==> don't show "allow" and "owners"
 
             getAllowTab(common, data, opts, waitFor(function (e, c) {
                 if (e) {

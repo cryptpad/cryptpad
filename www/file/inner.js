@@ -132,6 +132,7 @@ define([
                     title: Title.getTitleConfig(),
                 });
                 toolbar.$rightside.append(common.createButton('forget', true));
+                toolbar.$rightside.append(common.createButton('access', true));
                 toolbar.$rightside.append(common.createButton('properties', true));
                 if (common.isLoggedIn()) {
                     toolbar.$rightside.append(common.createButton('hashtag', true));

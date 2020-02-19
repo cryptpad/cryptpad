@@ -1802,6 +1802,26 @@ define([
                 });
                 updateIcon(data.element.is(':visible'));
                 break;
+            case 'access':
+                button = $('<button>', {
+                    'class': 'fa fa-unlock-alt cp-toolbar-icon-access',
+                    title: "ACCESS", // XXX
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'})
+                .text("ACCESS")) // XXX
+                .click(common.prepareFeedback(type))
+                .click(function () {
+                    common.isPadStored(function (err, data) {
+                        if (!data) {
+                            return void UI.alert(Messages.autostore_notAvailable);
+                        }
+                        require(['/common/inner/access.js'], function (Access) {
+                            Access.getAccessModal(common, {}, function (e) {
+                                if (e) { console.error(e); }
+                            });
+                        });
+                    });
+                });
+                break;
             case 'properties':
                 button = $('<button>', {
                     'class': 'fa fa-info-circle cp-toolbar-icon-properties',
