@@ -186,8 +186,8 @@ define([
             }
 
             var _teamsData = Util.clone(teamsData);
-            Object.keys(teamsData).forEach(function (id) {
-                var t = teamsData[id];
+            Object.keys(_teamsData).forEach(function (id) {
+                var t = _teamsData[id];
                 t.teamId = id;
                 if (owners.indexOf(t.edPublic) !== -1 || pending_owners.indexOf(t.edPublic) !== -1) {
                     delete _teamsData[id];
@@ -534,8 +534,8 @@ define([
             }
 
             var _teamsData = Util.clone(teamsData);
-            Object.keys(teamsData).forEach(function (id) {
-                var t = teamsData[id];
+            Object.keys(_teamsData).forEach(function (id) {
+                var t = _teamsData[id];
                 t.teamId = id;
                 if (owners.indexOf(t.edPublic) !== -1 || allowed.indexOf(t.edPublic) !== -1) {
                     delete _teamsData[id];
