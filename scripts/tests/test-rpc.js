@@ -357,9 +357,142 @@ nThen(function  (w) {
         bob.name = 'bob';
         //console.log("Initialized Bob");
     }));
+}).nThen(function (w) {
+    // restrict access to oscar's mailbox channel
+    oscar.rpc.send('SET_METADATA', {
+        command: 'RESTRICT_ACCESS',
+        channel: oscar.mailboxChannel,
+        value: [ true ]
+    }, w(function (err, response) {
+        if (err) {
+            return void console.log(err);
+        }
+        var metadata = response[0];
+        if (!(metadata && metadata.restricted)) {
+            throw new Error("EXPECTED MAILBOX TO BE RESTRICTED");
+        }
+    }));
+}).nThen(function (w) {
+    // XXX RESTRICT GET_METADATA should fail because alice is not on the allow list
+    // expect INSUFFICIENT_PERMISSIONS
+    alice.anonRpc.send('GET_METADATA', oscar.mailboxChannel, w(function (err) {
+        if (!err) {
+            // XXX RESTRICT alice should not be permitted to read oscar's mailbox's metadata
+        }
+    }));
+}).nThen(function (w) {
+    // add alice to oscar's mailbox's allow list for some reason
+    oscar.rpc.send('SET_METADATA', {
+        command: 'ADD_ALLOWED',
+        channel: oscar.mailboxChannel,
+        value: [
+            alice.edKeys.edPublic
+        ]
+    }, w(function (err /*, metadata */) {
+        if (err) {
+            return void console.error(err);
+        }
+        //console.log('XXX', metadata);
+    }));
+}).nThen(function (w) {
+    oscar.anonRpc.send('GET_METADATA', oscar.mailboxChannel, w(function (err, response) {
+        if (err) {
+            throw new Error("OSCAR SHOULD BE ABLE TO READ HIS OWN METADATA");
+        }
+        var metadata = response && response[0];
+
+        if (!metadata) {
+            throw new Error("EXPECTED METADATA");
+        }
+
+        if (metadata.allowed[0] !== alice.edKeys.edPublic) {
+            throw new Error("EXPECTED ALICE TO BE ON ALLOW LIST");
+        }
+    }));
+}).nThen(function () {
+    // XXX RESTRICT alice should now be able to read oscar's mailbox metadata
+/*
+    alice.anonRpc.send('GET_METADATA', oscar.mailboxChannel, function (err, response) {
+        if (err) {
+            PROBLEM
+        }
+    });
+*/
+}).nThen(function (w) {
+    //throw new Error("boop");
+    // add alice as an owner of oscar's mailbox for some reason
+    oscar.rpc.send('SET_METADATA', {
+        command: 'ADD_OWNERS',
+        channel: oscar.mailboxChannel,
+        value: [
+            alice.edKeys.edPublic
+        ]
+    }, Util.mkTimeout(w(function (err) {
+        if (err === 'TIMEOUT') {
+            throw new Error(err);
+        }
+        if (err) {
+            throw new Error("ADD_OWNERS_FAILURE");
+        }
+    }), 2000));
+}).nThen(function (w)  {
+    // alice should now be able to read oscar's mailbox metadata
+    alice.anonRpc.send('GET_METADATA', oscar.mailboxChannel, w(function (err, response) {
+        if (err) {
+            throw new Error("EXPECTED ALICE TO BE ALLOWED TO READ OSCAR'S METADATA");
+        }
+
+        var metadata = response && response[0];
+        if (!metadata) { throw new Error("EXPECTED METADATA"); }
+        if (metadata.allowed.length !== 0) {
+            throw new Error("EXPECTED AN EMPTY ALLOW LIST");
+        }
+    }));
+}).nThen(function (w) {
+    // disable the access restrictionallow list
+    oscar.rpc.send('SET_METADATA', {
+        command: 'RESTRICT_ACCESS',
+        channel: oscar.mailboxChannel,
+        value: [
+            false
+        ]
+    }, w(function (err) {
+        if (err) {
+            throw new Error("COULD_NOT_DISABLE_RESTRICTED_ACCESS");
+        }
+    }));
+    // add alice to oscar's mailbox's allow list for some reason
+    oscar.rpc.send('SET_METADATA', {
+        command: 'ADD_ALLOWED',
+        channel: oscar.mailboxChannel,
+        value: [
+            bob.edKeys.edPublic
+        ]
+    }, w(function (err) {
+        if (err) {
+            return void console.error(err);
+        }
+    }));
+}).nThen(function (w) {
+    oscar.anonRpc.send('GET_METADATA', oscar.mailboxChannel, w(function (err, response) {
+        if (err) {
+            throw new Error("OSCAR SHOULD BE ABLE TO READ HIS OWN METADATA");
+        }
+        var metadata = response && response[0];
+
+        if (!metadata) {
+            throw new Error("EXPECTED METADATA");
+        }
+
+        if (metadata.allowed[0] !== bob.edKeys.edPublic) {
+            throw new Error("EXPECTED ALICE TO BE ON ALLOW LIST");
+        }
+        if (metadata.restricted) {
+            throw new Error("RESTRICTED_ACCESS_NOT_DISABLED");
+        }
+    }));
 }).nThen(function () {
     //setTimeout(w(), 500);
-
 }).nThen(function (w) {
     // Alice loads the roster...
     var rosterKeys = Crypto.Team.deriveMemberKeys(sharedConfig.rosterSeed, alice.curveKeys);
