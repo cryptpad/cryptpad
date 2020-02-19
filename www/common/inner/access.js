@@ -446,7 +446,7 @@ define([
 
             var cbox = UI.createCheckbox('cp-allowlist', Messages.allow_checkbox, restricted);
             var $cbox = $(cbox);
-            var spinner = UI.makeSpinner($cbox)
+            var spinner = UI.makeSpinner($cbox);
             var $checkbox = $cbox.find('input').on('change', function () {
                 if (spinner.getState()) {
                     $checkbox.prop('checked', !$checkbox.prop('checked'));
@@ -880,10 +880,6 @@ define([
             Messages.allow_disabled = 'DISABLED'; // XXX
             Messages.allow_label = 'Allow list: {0}'; // XXX
 
-            var owned = isOwned(common, data);
-            var priv = common.getMetadataMgr().getPrivateData();
-            var edPublic = priv.edPublic;
-
             // Owners
             var content = [];
             var _ownersGrid = getUserList(common, data.owners);
@@ -894,11 +890,6 @@ define([
                 content.push(UI.dialog.selectable(Messages.creation_noOwner, {
                     id: 'cp-app-prop-owners',
                 }));
-                content.push(h('div.cp-app-prop', [
-                    Messages.creation_expiration,
-                    h('br'),
-                    h('span.cp-app-prop-content', expire)
-                ]));
             }
 
             // Request edit access
