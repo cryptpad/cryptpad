@@ -16,6 +16,25 @@ define([
         Messages.teams = "Teams"; // XXX
         Messages.access_noContact = "No other contact to add"; // XXX
 
+    var evRedrawAll = Util.mkEvent();
+
+    // Override metadata values from data
+    var override = function (data, obj) {
+        data.owners = obj.owners;
+        data.expire = obj.expire;
+        data.pending_owners = obj.pending_owners;
+        data.mailbox = obj.mailbox;
+        data.restricted = obj.restricted;
+        data.allowed = obj.allowed;
+    };
+    var loadMetadata = function (common, data, waitFor, redraw) {
+        common.getPadMetadata({
+            channel: data.channel
+        }, waitFor(function (md) {
+            override(data, md);
+            if (redraw) { evRedrawAll.fire(redraw); }
+        }));
+    };
 
     var getOwnersTab = function (common, data, opts, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
@@ -293,12 +312,7 @@ define([
         redrawAll = function (reload) {
             nThen(function (waitFor) {
                 if (!reload) { return; }
-                common.getPadMetadata({
-                    channel: data.channel
-                }, waitFor(function (md) {
-                    data.owners = md.owners || [];
-                    data.pending_owners = md.pending_owners || [];
-                }));
+                loadMetadata(common, data, waitFor, "owner");
             }).nThen(function () {
                 owners = data.owners || [];
                 pending_owners = data.pending_owners || [];
@@ -310,13 +324,11 @@ define([
         };
         redrawAll();
 
-        var handler = sframeChan.on('EV_RT_METADATA', function (md) {
-            if (!$div1.length) {
-                return void handler.stop();
-            }
-            data.owners = md.owners || [];
-            data.pending_owners = md.pending_owners || [];
-            redrawAll();
+        evRedrawAll.reg(function (type) {
+            if (type === "owner") { return; }
+            setTimeout(function () {
+                redrawAll();
+            });
         });
 
         // Create modal
@@ -593,13 +605,7 @@ define([
         redrawAll = function (reload) {
             nThen(function (waitFor) {
                 if (!reload) { return; }
-                common.getPadMetadata({
-                    channel: data.channel
-                }, waitFor(function (md) {
-                    data.owners = md.owners;
-                    data.restricted = md.restricted;
-                    data.allowed = md.allowed;
-                }));
+                loadMetadata(common, data, waitFor, "allow");
             }).nThen(function () {
                 owners = data.owners || [];
                 restricted = data.restricted || false;
@@ -613,14 +619,11 @@ define([
         };
         redrawAll();
 
-        var handler = sframeChan.on('EV_RT_METADATA', function (md) {
-            if (!$div1.length) {
-                return void handler.stop();
-            }
-            data.owners = md.owners || [];
-            data.restricted = md.restricted;
-            data.allowed = md.allowed;
-            redrawAll();
+        evRedrawAll.reg(function (type) {
+            if (type === "allow") { return; }
+            setTimeout(function () {
+                redrawAll();
+            });
         });
 
         cb(void 0, link);
@@ -938,27 +941,21 @@ define([
             return h('div', content);
         };
 
-        var redraw = function () {
-            $div1.empty();
-            $div1.append(drawLeft());
+        var redraw = function (right) {
+            if (!right) {
+                $div1.empty();
+                $div1.append(drawLeft());
+            }
             $div2.empty();
             $div2.append(drawRight());
         };
-        var handler = sframeChan.on('EV_RT_METADATA', function (md) {
-            if (!$div.length) {
-                handler.stop();
-                return;
-            }
-            md = JSON.parse(JSON.stringify(md));
-            data.owners = md.owners;
-            data.expire = md.expire;
-            data.pending_owners = md.pending_owners;
-            data.mailbox = md.mailbox;
-            data.restricted = md.restricted;
-            data.allowed = md.allowed;
-            redraw();
-        });
         redraw();
+
+        evRedrawAll.reg(function (ownersOrAllow) {
+            setTimeout(function () {
+                redraw(ownersOrAllow);
+            });
+        });
 
         cb(void 0, $div);
     };
@@ -989,12 +986,7 @@ define([
                 channel: opts.channel // optional, fallback to current pad
             }, waitFor(function (obj) {
                 if (obj && obj.error) { console.error(obj.error); return; }
-                data.owners = obj.owners;
-                data.expire = obj.expire;
-                data.pending_owners = obj.pending_owners;
-                data.mailbox = obj.mailbox;
-                data.restricted = obj.restricted;
-                data.allowed = obj.allowed;
+                loadMetadata(common, data, waitFor);
             }));
         }).nThen(function () {
             cb(void 0, data);
@@ -1075,6 +1067,15 @@ define([
                 wide: true
             });
             cb (void 0, modal);
+
+            var sframeChan = common.getSframeChannel();
+            var handler = sframeChan.on('EV_RT_METADATA', function (md) {
+                if (!$(modal).length) {
+                    return void handler.stop();
+                }
+                override(data, Util.clone(md));
+                evRedrawAll.fire();
+            });
         });
     };
 
