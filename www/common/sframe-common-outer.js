@@ -1331,7 +1331,6 @@ define([
                     // Get and maybe migrate the existing mailbox object
                     var owners = metadata.owners;
                     if (!Array.isArray(owners) || owners.indexOf(edPublic) === -1) {
-                        waitFor.abort();
                         return void cb({ error: 'INSUFFICIENT_PERMISSIONS' });
                     }
 
