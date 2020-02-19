@@ -618,7 +618,8 @@ define([
                 return void handler.stop();
             }
             data.owners = md.owners || [];
-            data.pending_owners = md.pending_owners || [];
+            data.restricted = md.restricted;
+            data.allowed = md.allowed;
             redrawAll();
         });
 
@@ -953,6 +954,8 @@ define([
             data.expire = md.expire;
             data.pending_owners = md.pending_owners;
             data.mailbox = md.mailbox;
+            data.restricted = md.restricted;
+            data.allowed = md.allowed;
             redraw();
         });
         redraw();
@@ -990,6 +993,8 @@ define([
                 data.expire = obj.expire;
                 data.pending_owners = obj.pending_owners;
                 data.mailbox = obj.mailbox;
+                data.restricted = obj.restricted;
+                data.allowed = obj.allowed;
             }));
         }).nThen(function () {
             cb(void 0, data);
