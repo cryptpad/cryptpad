@@ -110,7 +110,7 @@ define([
                 window.frames[0].editor.asc_setViewMode(!state);
                 //window.frames[0].editor.setViewModeDisconnect(true);
             } catch (e) {}
-            if (!state) {
+            if (!state && !readOnly) {
                 $('#cp-app-oo-editor').append(h('div#cp-app-oo-offline'));
             }
             debug(state);
