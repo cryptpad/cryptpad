@@ -1067,14 +1067,25 @@ define([
         ctx.emit('ROSTER_CHANGE_RIGHTS', teamId, team.clients);
     };
 
-    var changeMyRights = function (ctx, teamId, state, data) {
-        if (!teamId) { return true; }
+    var changeMyRights = function (ctx, teamId, state, data, cb) {
+        if (!teamId) { return void cb(false); }
         var teamData = Util.find(ctx, ['store', 'proxy', 'teams', teamId]);
-        if (!teamData) { return true; }
+        if (!teamData) { return void cb(false); }
+        var onReady = ctx.onReadyHandlers[teamId];
         var team = ctx.teams[teamId];
-        if (!team) { return true; }
 
-        if (teamData.channel !== data.channel || teamData.password !== data.password) { return true; }
+        if (!team && Array.isArray(onReady)) {
+            onReady.push({
+                cb: function () {
+                    changeMyRights(ctx, teamId, state, data, cb);
+                }
+            });
+            return;
+        }
+
+        if (!team) { return void cb(false); }
+
+        if (teamData.channel !== data.channel || teamData.password !== data.password) { return void cb(false); }
 
         if (state) {
             teamData.hash = data.hash;
@@ -1091,6 +1102,7 @@ define([
         }
 
         updateMyRights(ctx, teamId, data.hash);
+        cb(true);
     };
     var changeEditRights = function (ctx, teamId, user, state, cb) {
         if (!teamId) { return void cb({error: 'EINVAL'}); }
@@ -1632,8 +1644,8 @@ define([
             });
 
         };
-        team.changeMyRights = function (id, edit, teamData) {
-            changeMyRights(ctx, id, edit, teamData);
+        team.changeMyRights = function (id, edit, teamData, cb) {
+            changeMyRights(ctx, id, edit, teamData, cb);
         };
         team.updateMyData = function (data) {
             Object.keys(ctx.teams).forEach(function (id) {
