@@ -416,7 +416,8 @@ define([
                 }
             });
 
-            // XXX allow_removeConfirm, allow_checkbox, allow_text
+            // XXX allow_removeConfirm, allow_checkbox, allow_text, allow_addConfirm
+            Messages.allow_addConfirm = "Are you sure?"; // XXX
             Messages.allow_removeConfirm = "Are you sure?"; // XXX
             Messages.allow_checkbox = "Enable allow list"; // XXX
             Messages.allow_text = 'Pewpewpew'; // XXX
@@ -569,7 +570,7 @@ define([
             }).filter(function (x) { return x; });
 
             nThen(function (waitFor) {
-                var msg = Messages.owner_addConfirm; // XXX change to use allow list here
+                var msg = Messages.allow_addConfirm;
                 UI.confirm(msg, waitFor(function (yes) {
                     if (!yes) {
                         waitFor.abort();
