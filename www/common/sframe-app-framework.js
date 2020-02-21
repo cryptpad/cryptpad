@@ -674,6 +674,9 @@ define([
             $hist.addClass('cp-hidden-if-readonly');
             toolbar.$drawer.append($hist);
 
+            var $copy = common.createButton('copy', true);
+            toolbar.$drawer.append($copy);
+
             if (!cpNfInner.metadataMgr.getPrivateData().isTemplate) {
                 var templateObj = {
                     rt: cpNfInner.chainpad,
