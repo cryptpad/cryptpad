@@ -36,6 +36,27 @@ define([
         }));
     };
 
+    var isOwned = function (common, data) {
+        data = data || {};
+        var priv = common.getMetadataMgr().getPrivateData();
+        var edPublic = priv.edPublic;
+        var owned = false;
+        if (Array.isArray(data.owners) && data.owners.length) {
+            if (data.owners.indexOf(edPublic) !== -1) {
+                owned = true;
+            } else {
+                Object.keys(priv.teams || {}).some(function (id) {
+                    var team = priv.teams[id] || {};
+                    if (team.viewer) { return; }
+                    if (data.owners.indexOf(team.edPublic) === -1) { return; }
+                    owned = id;
+                    return true;
+                });
+            }
+        }
+        return owned;
+    };
+
     var getOwnersTab = function (common, data, opts, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
 
@@ -350,6 +371,7 @@ define([
         var priv = common.getMetadataMgr().getPrivateData();
         var user = common.getMetadataMgr().getUserData();
         var edPublic = priv.edPublic;
+
         var channel = data.channel;
 
         var owners = data.owners || [];
@@ -428,6 +450,7 @@ define([
                 var ed = $el.attr('data-ed');
                 if (!ed) { return; }
                 nThen(function (waitFor) {
+                    /*
                     var msg = Messages.allow_removeConfirm;
                     UI.confirm(msg, waitFor(function (yes) {
                         if (!yes) {
@@ -436,6 +459,7 @@ define([
                         }
                     }));
                 }).nThen(function (waitFor) {
+                    */
                     // Send the command
                     sframeChan.query('Q_SET_PAD_METADATA', {
                         channel: channel,
@@ -570,6 +594,7 @@ define([
             }).filter(function (x) { return x; });
 
             nThen(function (waitFor) {
+                /*
                 var msg = Messages.allow_addConfirm;
                 UI.confirm(msg, waitFor(function (yes) {
                     if (!yes) {
@@ -578,6 +603,7 @@ define([
                     }
                 }));
             }).nThen(function (waitFor) {
+                */
                 // Offer ownership to a friend
                 if (toAdd.length) {
                     // Send the command
@@ -627,27 +653,6 @@ define([
         });
 
         cb(void 0, link);
-    };
-
-    var isOwned = function (common, data) {
-        data = data || {};
-        var priv = common.getMetadataMgr().getPrivateData();
-        var edPublic = priv.edPublic;
-        var owned = false;
-        if (Array.isArray(data.owners) && data.owners.length) {
-            if (data.owners.indexOf(edPublic) !== -1) {
-                owned = true;
-            } else {
-                Object.keys(priv.teams || {}).some(function (id) {
-                    var team = priv.teams[id] || {};
-                    if (team.viewer) { return; }
-                    if (data.owners.indexOf(team.edPublic) === -1) { return; }
-                    owned = id;
-                    return true;
-                });
-            }
-        }
-        return owned;
     };
 
     var getUserList = function (common, list) {
@@ -1060,6 +1065,9 @@ define([
             }));
         }).nThen(function (waitFor) {
             var owned = isOwned(common, data);
+            if (typeof(owned) !== "boolean") {
+                data.teamId = Number(owned);
+            }
             var parsed = Hash.parsePadUrl(data.href || data.roHref);
             disabled = !owned || !parsed.hashData || parsed.hashData.type !== 'pad';
             allowDisabled = parsed.type === 'drive';
