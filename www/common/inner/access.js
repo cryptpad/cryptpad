@@ -981,7 +981,7 @@ define([
             var state = data.restricted ? Messages.allow_enabled : Messages.allow_disabled;
             content.push(h('label', Messages._getKey('allow_label', [state])));
             if (data.restricted) {
-                var _allowed = Util.deduplicateString(data.owners.concat(data.allowed));
+                var _allowed = Util.deduplicateString((data.owners || []).concat(data.allowed));
                 var _allowedGrid = getUserList(common, _allowed);
                 content.push(_allowedGrid.div);
             }
