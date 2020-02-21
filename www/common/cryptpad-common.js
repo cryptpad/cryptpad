@@ -543,7 +543,7 @@ define([
         });
     };
 
-    var fixPadMetadata = function (parsed) {
+    var fixPadMetadata = function (parsed, copy) {
         var meta;
         if (Array.isArray(parsed) && typeof(parsed[3]) === "object") {
             meta = parsed[3].metadata; // pad
@@ -554,6 +554,9 @@ define([
         }
         if (typeof(meta) === "object") {
             meta.defaultTitle = meta.title || meta.defaultTitle;
+            if (copy) {
+                meta.defaultTitle = Messages._getKey('copy_title', [meta.defaultTitle]);
+            }
             meta.title = "";
             delete meta.users;
             delete meta.chat2;
@@ -628,7 +631,7 @@ define([
                     }
                     try {
                         val = JSON.parse(_val);
-                        fixPadMetadata(val);
+                        fixPadMetadata(val, true);
                     } catch (e) {
                         _waitFor.abort();
                         return void cb();
