@@ -1309,5 +1309,7 @@
     "trimHistory_currentSize": "Current history size: <b>{0}</b>",
     "trimHistory_noHistory": "No history can be deleted",
     "settings_trimHistoryTitle": "Delete History",
-    "settings_trimHistoryHint": "Save storage space by deleting the history of your drive and notifications. This will not affect the history of your pads. You can  delete the history of pads in their properties dialog."
+    "settings_trimHistoryHint": "Save storage space by deleting the history of your drive and notifications. This will not affect the history of your pads. You can  delete the history of pads in their properties dialog.",
+    "makeACopy": "Make a copy",
+    "copy_title": "{0} (copy)"
 }
