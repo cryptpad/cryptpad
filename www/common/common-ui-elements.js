@@ -4306,6 +4306,9 @@ define([
         var initialHide = data && data.autoStore && data.autoStore === -1;
         var modal = UI.cornerPopup(text, actions, footer, {hidden: initialHide});
 
+        // Once the store pad popup is created, put the crowdfunding one in the queue
+        UIElements.displayCrowdfunding(common);
+
         autoStoreModal[priv.channel] = modal;
 
         $(modal.popup).find('.cp-corner-footer a').click(function (e) {
@@ -4314,7 +4317,6 @@ define([
         });
 
         $(hide).click(function () {
-            UIElements.displayCrowdfunding(common);
             delete autoStoreModal[priv.channel];
             modal.delete();
         });
@@ -4334,7 +4336,6 @@ define([
                 $(document).trigger('cpPadStored');
                 delete autoStoreModal[priv.channel];
                 modal.delete();
-                UIElements.displayCrowdfunding(common);
                 UI.log(Messages.autostore_saved);
             });
         });

@@ -1148,7 +1148,14 @@ define([
         var deletePopup = function () {
             $popup.remove();
             if (!corner.queue.length) {
-                corner.state = false;
+                // Make sure no other popup is displayed in the next 5s
+                setTimeout(function () {
+                    if (corner.queue.length) {
+                        $('body').append(corner.queue.pop());
+                        return;
+                    }
+                    corner.state = false;
+                }, 5000);
                 return;
             }
             setTimeout(function () {
