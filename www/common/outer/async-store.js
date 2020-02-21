@@ -2089,9 +2089,12 @@ define([
                 store.onlyoffice.removeClient(clientId);
             } catch (e) { console.error(e); }
             try {
-                store.mailbox.removeClient(clientId);
+                if (store.mailbox) {
+                    store.mailbox.removeClient(clientId);
+                }
             } catch (e) { console.error(e); }
             Object.keys(store.modules).forEach(function (key) {
+                if (!store.modules[key]) { return; }
                 if (!store.modules[key].removeClient) { return; }
                 try {
                     store.modules[key].removeClient(clientId);
