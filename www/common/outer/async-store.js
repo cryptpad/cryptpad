@@ -2091,9 +2091,12 @@ define([
                 store.onlyoffice.removeClient(clientId);
             } catch (e) { console.error(e); }
             try {
-                store.mailbox.removeClient(clientId);
+                if (store.mailbox) {
+                    store.mailbox.removeClient(clientId);
+                }
             } catch (e) { console.error(e); }
             Object.keys(store.modules).forEach(function (key) {
+                if (!store.modules[key]) { return; }
                 if (!store.modules[key].removeClient) { return; }
                 try {
                     store.modules[key].removeClient(clientId);
@@ -2337,7 +2340,6 @@ define([
                 initAnonRpc(null, null, waitFor());
                 initRpc(null, null, waitFor());
             }).nThen(function (waitFor) {
-                loadMailbox(waitFor);
                 Migrate(proxy, waitFor(), function (version, progress) {
                     postMessage(clientId, 'LOADING_DRIVE', {
                         state: (2 + (version / 10)),
@@ -2357,6 +2359,7 @@ define([
                 loadUniversal(Profile, 'profile', waitFor);
                 loadUniversal(Team, 'team', waitFor);
                 loadUniversal(History, 'history', waitFor);
+                loadMailbox(waitFor); // XXX make sure we don't have new issues with mailboxes being loaded later
                 cleanFriendRequests();
             }).nThen(function () {
                 var requestLogin = function () {

@@ -179,7 +179,7 @@
     "notifyLeft": "{0} ha abbandonato la sessione collaborativa",
     "ok": "OK",
     "okButton": "OK (Enter)",
-    "cancel": "Cancella",
+    "cancel": "Annulla",
     "cancelButton": "Cancella (Esc)",
     "show_help_button": "Mostra l'aiuto",
     "hide_help_button": "Nascondi l'aiuto",
@@ -298,7 +298,7 @@
     "contacts_confirmRemoveHistory": "Sei sicuro di voler rimuovere permanentemente la cronologia della chat? I dati non possono essere recuperati",
     "contacts_removeHistoryServerError": "C'è stato un errore nella cancellazione della cronologia della chat. Prova di nuovo più tardi",
     "contacts_fetchHistory": "Recupera messaggi precedenti",
-    "contacts_friends": "Amici",
+    "contacts_friends": "Contatti",
     "contacts_rooms": "Stanze",
     "contacts_leaveRoom": "Esci da questa stanza",
     "contacts_online": "Un altro utente di questa stanza è online",
@@ -423,7 +423,7 @@
     "register_whyRegister": "Perché registrarsi?",
     "register_header": "Benvenuto su CryptPad",
     "fm_alert_anonymous": "",
-    "register_writtenPassword": "Ho annotato il mio username e la mia password, procedi",
+    "register_writtenPassword": "Ho annotato il mio nome utente e la mia password, procedi",
     "register_cancel": "Torna indietro",
     "register_warning": "Zero Knowledge significa che non possiamo recuperare i tuoi dati se perdi la tua password.",
     "register_alreadyRegistered": "Questo utente esiste già, vuoi effettuare il log in?",
@@ -461,7 +461,7 @@
     "settings_resetButton": "Rimuovi",
     "settings_reset": "Rimuovi tutti i file e le cartelle dal tuo CryptDrive",
     "settings_resetPrompt": "",
-    "settings_resetDone": "",
+    "settings_resetDone": "Il tuo drive è vuoto adesso!",
     "settings_resetError": "",
     "settings_resetTipsAction": "",
     "settings_resetTips": "",
@@ -516,5 +516,26 @@
     "register_emailWarning1": "Puoi farlo se vuoi, ma non verrà inviato ai nostri server.",
     "register_emailWarning2": "Non sarai in grado di resettare la tua password usando la tua email, a differenza di come puoi fare con molti altri servizi.",
     "register_emailWarning3": "Se hai capito, ma intendi comunque usare la tua email come nome utente, clicca OK.",
-    "oo_sheetMigration_anonymousEditor": "Le modifiche da parte di utenti anonimi a questo foglio di calcolo sono disabilitate finchè un utente registrato non lo aggiorna all'ultima versione."
+    "oo_sheetMigration_anonymousEditor": "Le modifiche da parte di utenti anonimi a questo foglio di calcolo sono disabilitate finchè un utente registrato non lo aggiorna all'ultima versione.",
+    "faq": {
+        "usability": {
+            "devices": {
+                "a": "nome utente"
+            },
+            "forget": {
+                "a": "nome utente"
+            }
+        },
+        "security": {
+            "crypto": {
+                "a": "nome utente"
+            }
+        },
+        "privacy": {
+            "register": {
+                "a": "nome utente"
+            }
+        }
+    },
+    "whatis_zeroknowledge_p2": "Quando ti registri e accedi, il tuo nome utente e la tua password vengono computati in una chiave segreta utilizzando la <a href=\"https://en.wikipedia.org/wiki/Scrypt\">funzione di derivazione scrypt</a>. Ne questa chiave, ne il tuo nome utente o la tua password vengono inviati al server. Infatti sono usati soltanto dal lato client per decriptare il contenuto del tuo CryptDrive, che contiene le chiavi per tutti i pad a cui hai accesso."
 }

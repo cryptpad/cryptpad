@@ -603,13 +603,12 @@ define([
     UI.confirmButton = function (originalBtn, config, _cb) {
         config = config || {};
         var cb = Util.once(Util.mkAsync(_cb));
-
         var classes = 'btn ' + (config.classes || 'btn-primary');
 
         var button = h('button', {
             "class": classes,
             title: config.title || ''
-        }, Messages.areYouSure || "Are you sure?"); // XXX
+        }, Messages.areYouSure);
         var $button = $(button);
 
         var div = h('div', {
@@ -1150,7 +1149,14 @@ define([
         var deletePopup = function () {
             $popup.remove();
             if (!corner.queue.length) {
-                corner.state = false;
+                // Make sure no other popup is displayed in the next 5s
+                setTimeout(function () {
+                    if (corner.queue.length) {
+                        $('body').append(corner.queue.pop());
+                        return;
+                    }
+                    corner.state = false;
+                }, 5000);
                 return;
             }
             setTimeout(function () {
