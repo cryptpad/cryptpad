@@ -1,3 +1,54 @@
+# Megaloceros release (3.12.0)
+
+## Goals
+
+## Update notes
+
+* update to chainpad-listmap (^0.7.0 => ^0.8.1)
+  * which updates chainpad-netflux
+    * which updates netflux-websocket
+* updates to example.nginx.conf
+  * resource: for debugging workers on firefox
+  * connect-src (CSP) updates
+* more performant pin log loader
+  * stream pin log directories on-demand to keep a low memory footprint
+  * fewer logs are streamed in parallel
+  * answer pin queries as soon as possible, avoiding a backlog of requests at startup time
+* deleted some unused code :D
+* updated architecture so that the RPC module can share resources with the historyKeeper
+* moved 'storage' directory out of repository root
+
+## Features
+
+* fancy new confirm-or-timeout button
+* trim history!
+  * for pads
+  * for your whole account
+* introduce txids for getting history so that responses only get interpreted by the part of the client that sent the query
+* fancy new prioritized job scheduler
+  * used for loading pin logs for now
+  * will soon be used for lots of other things (blobs, channels/metadata, tasks)
+* link directly to a support ticket
+* jump/navigate to an anchor in markdown preview with anchor links
+* make a copy of a pad
+  * not spreadsheets yet
+* speed up page loads by loading mailboxes after your drive and teams have finished loading
+* translations contributed:
+  * German
+  * Italian
+* we can now debug workers in firefox!
+
+## Bug fixes
+
+* duplicated text in rich text pads!
+* setMetadata didn't call back if you sent an invalid query, now it calls back with an error
+  * in practice this should not have affected anyone
+* avoid logging unsupported metadata commands more than once
+* bottom-right-corner popup is displayed after 5s
+* fixed interaction with read-only spreadsheets
+* pin todo-list channels
+* fix team permissions where users with greater permissions than "VIEWER" still couldn't edit
+
 # LabradorDuck release (3.11.0)
 
 ## Goals
