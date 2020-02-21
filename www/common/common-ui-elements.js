@@ -2158,6 +2158,17 @@ define([
                 if (data.accept) { $input.attr('accept', data.accept); }
                 button.click(function () { $input.click(); });
                 break;
+            case 'copy':
+                button = $('<button>', {
+                    'class': 'fa fa-clone cp-toolbar-icon-import',
+                    title: Messages.makeACopy,
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.makeACopy));
+                button
+                .click(common.prepareFeedback(type))
+                .click(function () {
+                    sframeChan.query('EV_MAKE_A_COPY');
+                });
+                break;
             case 'importtemplate':
                 if (!AppConfig.enableTemplates) { return; }
                 if (!common.isLoggedIn()) { return; }

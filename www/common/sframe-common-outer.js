@@ -801,6 +801,20 @@ define([
                 Cryptpad.saveAsTemplate(Cryptget.put, data, cb);
             });
 
+            sframeChan.on('EV_MAKE_A_COPY', function () {
+                var data = {
+                    channel: secret.channel,
+                    href: currentPad.href,
+                    password: password,
+                    title: currentTitle
+                };
+                sessionStorage[Utils.Constants.newPadFileData] = JSON.stringify(data);
+                window.open(window.location.pathname);
+                setTimeout(function () {
+                    delete sessionStorage[Utils.Constants.newPadFileData];
+                }, 100);
+            });
+
             // Messaging
             sframeChan.on('Q_SEND_FRIEND_REQUEST', function (data, cb) {
                 Cryptpad.messaging.sendFriendRequest(data, cb);

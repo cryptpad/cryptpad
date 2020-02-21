@@ -543,6 +543,28 @@ define([
         });
     };
 
+    var fixPadMetadata = function (parsed, copy) {
+        var meta;
+        if (Array.isArray(parsed) && typeof(parsed[3]) === "object") {
+            meta = parsed[3].metadata; // pad
+        } else if (parsed.info) {
+            meta = parsed.info; // poll
+        } else {
+            meta = parsed.metadata;
+        }
+        if (typeof(meta) === "object") {
+            meta.defaultTitle = meta.title || meta.defaultTitle;
+            if (copy) {
+                meta.defaultTitle = Messages._getKey('copy_title', [meta.defaultTitle]);
+            }
+            meta.title = "";
+            delete meta.users;
+            delete meta.chat2;
+            delete meta.chat;
+            delete meta.cursor;
+        }
+    };
+
     common.useTemplate = function (data, Crypt, cb, optsPut) {
         // opts is used to overrides options for chainpad-netflux in cryptput
         // it allows us to add owners and expiration time if it is a new file
@@ -576,24 +598,7 @@ define([
                 try {
                     // Try to fix the title before importing the template
                     var parsed = JSON.parse(val);
-                    var meta;
-                    if (Array.isArray(parsed) && typeof(parsed[3]) === "object") {
-                        meta = parsed[3].metadata; // pad
-                    } else if (parsed.info) {
-                        meta = parsed.info; // poll
-                    } else {
-                        meta = parsed.metadata;
-                    }
-                    if (typeof(meta) === "object") {
-                        meta.defaultTitle = meta.title || meta.defaultTitle;
-                        meta.title = "";
-                        delete meta.users;
-                        delete meta.chat2;
-                        delete meta.chat;
-                        delete meta.cursor;
-                        if (data.chat) { meta.chat2 = data.chat; }
-                        if (data.cursor) { meta.cursor = data.cursor; }
-                    }
+                    fixPadMetadata(parsed);
                     val = JSON.stringify(parsed);
                 } catch (e) {
                     console.log("Can't fix template title", e);
@@ -608,58 +613,96 @@ define([
         var data = common.fromFileData;
         var parsed = Hash.parsePadUrl(data.href);
         var parsed2 = Hash.parsePadUrl(currentPad.href);
-        var hash = parsed.hash;
-        var name = data.title;
-        var secret = Hash.getSecrets('file', hash, data.password);
-        var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
-        var key = secret.keys && secret.keys.cryptKey;
 
-        var u8;
-        var res;
-        var mode;
+        if (parsed2.type === 'poll') { optsPut.initialState = '{}'; }
+
         var val;
-        Nthen(function(waitFor) {
-            Util.fetch(src, waitFor(function (err, _u8) {
-                if (err) { return void waitFor.abort(); }
-                u8 = _u8;
-            }));
-        }).nThen(function (waitFor) {
-            require(["/file/file-crypto.js"], waitFor(function (FileCrypto) {
-                FileCrypto.decrypt(u8, key, waitFor(function (err, _res) {
-                    if (err || !_res.content) { return void waitFor.abort(); }
-                    res = _res;
-                }));
-            }));
-        }).nThen(function (waitFor) {
-            var ext = Util.parseFilename(data.title).ext;
-            if (!ext) {
-                mode = "text";
+        Nthen(function(_waitFor) {
+            // If pad, use cryptget
+            if (parsed.hashData && parsed.hashData.type === 'pad') {
+                var optsGet = {
+                    password: data.password,
+                    initialState: parsed.type === 'poll' ? '{}' : undefined
+                };
+                Crypt.get(parsed.hash, _waitFor(function (err, _val) {
+                    if (err) {
+                        _waitFor.abort();
+                        return void cb();
+                    }
+                    try {
+                        val = JSON.parse(_val);
+                        fixPadMetadata(val, true);
+                    } catch (e) {
+                        _waitFor.abort();
+                        return void cb();
+                    }
+                }), optsGet);
                 return;
             }
-            require(["/common/modes.js"], waitFor(function (Modes) {
-                Modes.list.some(function (fType) {
-                    if (fType.ext === ext) {
-                        mode = fType.mode;
-                        return true;
+
+            var name = data.title;
+            var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
+            var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
+            var key = secret.keys && secret.keys.cryptKey;
+            var u8;
+            var res;
+            var mode;
+
+            // Otherwise, it's a text blob "open in code": get blob data & convert format
+            Nthen(function (waitFor) {
+                Util.fetch(src, waitFor(function (err, _u8) {
+                    if (err) {
+                        _waitFor.abort();
+                        return void waitFor.abort();
                     }
-                });
-            }));
-        }).nThen(function (waitFor) {
-            var reader = new FileReader();
-            reader.addEventListener('loadend', waitFor(function (e) {
-                val = {
-                    content: e.srcElement.result,
-                    highlightMode: mode,
-                    metadata: {
-                        defaultTitle: name,
-                        title: name,
-                        type: "code",
-                    },
-                };
-            }));
-            reader.readAsText(res.content);
+                    u8 = _u8;
+                }));
+            }).nThen(function (waitFor) {
+                require(["/file/file-crypto.js"], waitFor(function (FileCrypto) {
+                    FileCrypto.decrypt(u8, key, waitFor(function (err, _res) {
+                        if (err || !_res.content) {
+                            _waitFor.abort();
+                            return void waitFor.abort();
+                        }
+                        res = _res;
+                    }));
+                }));
+            }).nThen(function (waitFor) {
+                var ext = Util.parseFilename(data.title).ext;
+                if (!ext) {
+                    mode = "text";
+                    return;
+                }
+                require(["/common/modes.js"], waitFor(function (Modes) {
+                    Modes.list.some(function (fType) {
+                        if (fType.ext === ext) {
+                            mode = fType.mode;
+                            return true;
+                        }
+                    });
+                }));
+            }).nThen(function (waitFor) {
+                var reader = new FileReader();
+                reader.addEventListener('loadend', waitFor(function (e) {
+                    val = {
+                        content: e.srcElement.result,
+                        highlightMode: mode,
+                        metadata: {
+                            defaultTitle: name,
+                            title: name,
+                            type: "code",
+                        },
+                    };
+                }));
+                reader.readAsText(res.content);
+            }).nThen(_waitFor());
         }).nThen(function () {
-            Crypt.put(parsed2.hash, JSON.stringify(val), cb, optsPut);
+            Crypt.put(parsed2.hash, JSON.stringify(val), function () {
+                cb();
+                Crypt.get(parsed2.hash, function (err, val) {
+                    console.warn(val);
+                });
+            }, optsPut);
         });
 
     };
@@ -1906,6 +1949,9 @@ define([
             // if a pad is created from a file
             if (sessionStorage[Constants.newPadFileData]) {
                 common.fromFileData = JSON.parse(sessionStorage[Constants.newPadFileData]);
+                var _parsed1 = Hash.parsePadUrl(common.fromFileData.href);
+                var _parsed2 = Hash.parsePadUrl(window.location.href);
+                if (_parsed1.type !== _parsed2.type) { delete common.fromFileData; }
                 delete sessionStorage[Constants.newPadFileData];
             }
 

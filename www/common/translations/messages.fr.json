@@ -1309,5 +1309,7 @@
     "trimHistory_button": "Effacer l'historique",
     "historyTrim_contentsSize": "Contenu : {0}",
     "historyTrim_historySize": "Historique : {0}",
-    "areYouSure": "Êtes-vous sûr ?"
+    "areYouSure": "Êtes-vous sûr ?",
+    "copy_title": "{0} (copie)",
+    "makeACopy": "Créer une copie"
 }
