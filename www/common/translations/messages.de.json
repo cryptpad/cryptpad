@@ -1297,5 +1297,17 @@
     "profile_login": "Du musst dich einloggen, um diesen Benutzer zu deinen Kontakten hinzuzufügen",
     "safeLinks_error": "Dieser Link gibt dir keinen Zugriff auf das Dokument",
     "settings_safeLinksCheckbox": "Sichere Links aktivieren",
-    "settings_safeLinksTitle": "Sichere Links"
+    "settings_safeLinksTitle": "Sichere Links",
+    "settings_trimHistoryHint": "Spare Speicherplatz, indem du den Verlauf deines CryptDrives und der Benachrichtigungen löschst. Dies hat keinen Einfluss auf den Verlauf deiner Pads. Du kannst den Verlauf der Pads in deren Eigenschaften-Dialog löschen.",
+    "trimHistory_noHistory": "Kein Verlauf kann gelöscht werden",
+    "settings_trimHistoryTitle": "Verlauf löschen",
+    "trimHistory_currentSize": "Aktuelle Größe des Verlaufs: <b>{0}</b>",
+    "trimHistory_needMigration": "Bitte <a>aktualisiere dein CryptDrive</a>, um diese Funktion zu aktivieren.",
+    "trimHistory_success": "Verlauf wurde gelöscht",
+    "trimHistory_error": "Fehler beim Löschen des Verlaufs",
+    "trimHistory_getSizeError": "Bei der Berechnung der Größe des Verlaufs deines CryptDrives ist ein Fehler aufgetreten",
+    "trimHistory_button": "Verlauf löschen",
+    "historyTrim_contentsSize": "Inhalte: {0}",
+    "historyTrim_historySize": "Verlauf: {0}",
+    "areYouSure": "Bist du sicher?"
 }
