@@ -167,7 +167,6 @@ define([
                     delete _friends[curve];
                 }
             });
-            // XXX if no more friends, display message...
             if (!Object.keys(_friends).length) {
                 $div.append(h('div.cp-app-prop', [
                     Messages.contacts,
@@ -417,7 +416,8 @@ define([
                 }
             });
 
-            // XXX allow_removeConfirm, allow_checkbox, allow_text
+            // XXX allow_removeConfirm, allow_checkbox, allow_text, allow_addConfirm
+            Messages.allow_addConfirm = "Are you sure?"; // XXX
             Messages.allow_removeConfirm = "Are you sure?"; // XXX
             Messages.allow_checkbox = "Enable allow list"; // XXX
             Messages.allow_text = 'Pewpewpew'; // XXX
@@ -570,7 +570,7 @@ define([
             }).filter(function (x) { return x; });
 
             nThen(function (waitFor) {
-                var msg = Messages.owner_addConfirm;
+                var msg = Messages.allow_addConfirm;
                 UI.confirm(msg, waitFor(function (yes) {
                     if (!yes) {
                         waitFor.abort();
@@ -896,6 +896,10 @@ define([
                 }));
             }
 
+            // Stop here for files: no allow list, no access request
+            // Also stop for shared folders
+            if (parsed.hashData.type !== 'pad' || parsed.type === 'drive') { return h('div', content); }
+
             // Request edit access
             if (data.roHref && !data.href) {
                 var requestButton = h('button.btn.btn-secondary.no-margin.cp-access-margin-right',
@@ -940,7 +944,7 @@ define([
             var canMute = data.mailbox && owned === true && (
                     (typeof (data.mailbox) === "string" && data.owners[0] === edPublic) ||
                     data.mailbox[edPublic]);
-            if (owned === true) { // XXX not for files
+            if (owned === true) {
                 var cbox = UI.createCheckbox('cp-access-mute', Messages.access_muteRequests, !canMute);
                 var $cbox = $(cbox);
                 var spinner = UI.makeSpinner($cbox);
@@ -1038,7 +1042,8 @@ define([
     Access.getAccessModal = function (common, opts, cb) {
         var data;
         var tab1, tab2, tab3;
-        var owned = false;
+        var disabled = false;
+        var allowDisabled = false;
         var button = [{
             className: 'cancel',
             name: Messages.filePicker_close,
@@ -1054,7 +1059,10 @@ define([
                 data = _data;
             }));
         }).nThen(function (waitFor) {
-            owned = isOwned(common, data);
+            var owned = isOwned(common, data);
+            var parsed = Hash.parsePadUrl(data.href || data.roHref);
+            disabled = !owned || !parsed.hashData || parsed.hashData.type !== 'pad';
+            allowDisabled = parsed.type === 'drive';
 
             getAccessTab(common, data, opts, waitFor(function (e, c) {
                 if (e) {
@@ -1066,18 +1074,19 @@ define([
                 });
             }));
 
-            if (!owned) { return; }
-            // XXX if "file" ==> don't show "allow" and "owners"
+            if (disabled) { return; }
 
-            getAllowTab(common, data, opts, waitFor(function (e, c) {
-                if (e) {
-                    waitFor.abort();
-                    return void cb(e);
-                }
-                tab2 = UI.dialog.customModal(c, {
-                    buttons: button
-                });
-            }));
+            if (!allowDisabled) {
+                getAllowTab(common, data, opts, waitFor(function (e, c) {
+                    if (e) {
+                        waitFor.abort();
+                        return void cb(e);
+                    }
+                    tab2 = UI.dialog.customModal(c, {
+                        buttons: button
+                    });
+                }));
+            }
             getOwnersTab(common, data, opts, waitFor(function (e, c) {
                 if (e) {
                     waitFor.abort();
@@ -1098,12 +1107,12 @@ define([
                 content: tab1
             }, {
                 title: Messages.access_allow,
-                disabled: !owned,
+                disabled: disabled || allowDisabled,
                 icon: "fa fa-list",
                 content: tab2
             }, {
                 title: Messages.creation_owners,
-                disabled: !owned,
+                disabled: disabled,
                 icon: "fa fa-id-badge",
                 content: tab3
             }]);
