@@ -78,6 +78,7 @@ define([
     var faRename = 'fa-pencil';
     var faColor = 'cptools-palette';
     var faTrash = 'fa-trash';
+    var faCopy = 'fa-clone';
     var faDelete = 'fa-eraser';
     var faProperties = 'fa-info-circle';
     var faTags = 'fa-hashtag';
@@ -431,6 +432,10 @@ define([
                     'data-icon': faTags,
                 }, Messages.fc_hashtag)),
                 $separator.clone()[0],
+                h('li', h('a.cp-app-drive-context-makeacopy.dropdown-item.cp-app-drive-context-editable', {
+                    'tabindex': '-1',
+                    'data-icon': faCopy,
+                }, Messages.makeACopy)),
                 h('li', h('a.cp-app-drive-context-delete.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faTrash,
@@ -1179,6 +1184,9 @@ define([
                         if (!metadata || !Util.isPlainTextFile(metadata.fileType, metadata.title)) {
                             hide.push('openincode');
                         }
+                        if (!metadata.channel || metadata.channel.length > 32) {
+                            hide.push('makeacopy'); // Not for blobs
+                        }
                     } else if ($element.is('.cp-app-drive-element-sharedf')) {
                         if (containsFolder) {
                             // More than 1 folder selected: cannot create a new subfolder
@@ -1191,6 +1199,7 @@ define([
                         hide.push('openincode');
                         hide.push('hashtag');
                         hide.push('delete');
+                        hide.push('makeacopy');
                         //hide.push('deleteowned');
                     } else { // it's a folder
                         if (containsFolder) {
@@ -1205,6 +1214,7 @@ define([
                         hide.push('openincode');
                         hide.push('properties');
                         hide.push('hashtag');
+                        hide.push('makeacopy');
                     }
                     // If we're in the trash, hide restore and properties for non-root elements
                     if (type === "trash" && path && path.length > 4) {
@@ -1241,6 +1251,7 @@ define([
                     hide.push('share');
                     hide.push('savelocal');
                     hide.push('openincode'); // can't because of race condition
+                    hide.push('makeacopy');
                 }
                 if (containsFolder && paths.length > 1) {
                     // Cannot open multiple folders
@@ -1258,11 +1269,11 @@ define([
                     break;
                 case 'tree':
                     show = ['open', 'openro', 'openincode', 'expandall', 'collapseall',
-                            'color', 'download', 'share', 'savelocal', 'rename', 'delete',
+                            'color', 'download', 'share', 'savelocal', 'rename', 'delete', 'makeacopy',
                             'deleteowned', 'removesf', 'properties', 'hashtag'];
                     break;
                 case 'default':
-                    show = ['open', 'openro', 'share', 'openparent', 'delete', 'deleteowned', 'properties', 'hashtag'];
+                    show = ['open', 'openro', 'share', 'openparent', 'delete', 'deleteowned', 'properties', 'hashtag', 'makeacopy'];
                     break;
                 case 'trashtree': {
                     show = ['empty'];
@@ -3975,6 +3986,35 @@ define([
                         if (!el || manager.isFolder(el)) { return; }
                     }
                     openFile(el, true);
+                });
+            }
+            else if ($this.hasClass('cp-app-drive-context-makeacopy')) {
+                if (paths.length !== 1) { return; }
+                el = manager.find(paths[0].path);
+                var _metadata = manager.getFileData(el);
+                var _simpleData = {
+                    title: _metadata.filename || _metadata.title,
+                    href: _metadata.href || _metadata.roHref,
+                    password: _metadata.password,
+                    channel: _metadata.channel,
+                };
+                nThen(function (waitFor) {
+                    var path = currentPath;
+                    if (path[0] !== ROOT) { path = [ROOT]; }
+                    common.sessionStorage.put(Constants.newPadFileData, JSON.stringify(_simpleData), waitFor());
+                    common.sessionStorage.put(Constants.newPadPathKey, path, waitFor());
+                    common.sessionStorage.put(Constants.newPadTeamKey, APP.team, waitFor());
+                }).nThen(function () {
+                    var parsed = Hash.parsePadUrl(_metadata.href || _metadata.roHref);
+                    common.openURL(Hash.hashToHref('', parsed.type));
+                    // We need to restore sessionStorage for the next time we want to create a pad from this tab
+                    // NOTE: the 100ms timeout is to fix a race condition in firefox where sessionStorage
+                    //       would be deleted before the new tab was created
+                    setTimeout(function () {
+                        common.sessionStorage.put(Constants.newPadFileData, '', function () {});
+                        common.sessionStorage.put(Constants.newPadPathKey, '', function () {});
+                        common.sessionStorage.put(Constants.newPadTeamKey, '', function () {});
+                    }, 100);
                 });
             }
             else if ($this.hasClass('cp-app-drive-context-openincode')) {

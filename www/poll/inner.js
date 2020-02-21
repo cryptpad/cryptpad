@@ -1184,6 +1184,9 @@ define([
             $rightside.append($templateButton);
         }
 
+        var $copy = common.createButton('copy', true);
+        $drawer.append($copy);
+
         /* add an export button */
         var $export = common.createButton('export', true, {}, exportFile);
         $drawer.append($export);
