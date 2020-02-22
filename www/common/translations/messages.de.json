@@ -1309,5 +1309,7 @@
     "trimHistory_button": "Verlauf löschen",
     "historyTrim_contentsSize": "Inhalte: {0}",
     "historyTrim_historySize": "Verlauf: {0}",
-    "areYouSure": "Bist du sicher?"
+    "areYouSure": "Bist du sicher?",
+    "makeACopy": "Kopie erstellen",
+    "copy_title": "{0} (Kopie)"
 }
