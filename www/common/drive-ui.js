@@ -1681,6 +1681,7 @@ define([
                     && $target.parents('#cp-app-drive-content')) {
                 newPath = currentPath;
             }
+            if (newPath[0] !== ROOT) { newPath = [ROOT]; }
             return newPath;
         };
         var onFileDrop = APP.onFileDrop = function (file, e) {
