@@ -2,52 +2,57 @@
 
 ## Goals
 
+As of our last release our 'history trim' functionality was almost ready to go. We took this release period to do some extensive testing and to prepare the 'allow list' functionality which will be included in our next release.
+
+In the meantime, we also aimed to improve performance, add a few small but nice features, and fix a number of bugs.
+
 ## Update notes
 
-* update to chainpad-listmap (^0.7.0 => ^0.8.1)
-  * which updates chainpad-netflux
-    * which updates netflux-websocket
-* updates to example.nginx.conf
-  * resource: for debugging workers on firefox
-  * connect-src (CSP) updates
-* more performant pin log loader
-  * stream pin log directories on-demand to keep a low memory footprint
-  * fewer logs are streamed in parallel
-  * answer pin queries as soon as possible, avoiding a backlog of requests at startup time
-* deleted some unused code :D
-* updated architecture so that the RPC module can share resources with the historyKeeper
-* moved 'storage' directory out of repository root
+This release includes updates to:
+
+1. the server and its dependencies
+2. the example nginx configuration which we recommend for production installations
+4. the client code and its dependencies
+
+Our ability to debug CryptPad's usage of shared workers (on the client) has been complicated by the fact that Firefox's shared worker debugging panel was not working for our instance. We finally traced the problem back to a Content-Security Policy setting in our configuration file. The issue can be addressed by adding a `resource:` entry in the `connect-src` header. We've updated the example nginx config to reflect this. You can deploy this version of CryptPad without this modification, but without it our ability to debug and fix issues related to shared worker will be extremely limited.
+
+Otherwise, updating from CryptPad v3.11.0 is pretty much the same as normal:
+
+1. stop your server
+2. pull the latest code via git
+3. `npm i` to get the latest server dependencies
+4. `bower update` to get the latest client dependencies
+5. restart your server
 
 ## Features
 
-* fancy new confirm-or-timeout button
-* trim history!
-  * for pads
-  * for your whole account
-* introduce txids for getting history so that responses only get interpreted by the part of the client that sent the query
-* fancy new prioritized job scheduler
-  * used for loading pin logs for now
-  * will soon be used for lots of other things (blobs, channels/metadata, tasks)
-* link directly to a support ticket
-* jump/navigate to an anchor in markdown preview with anchor links
-* make a copy of a pad
-  * not spreadsheets yet
-* speed up page loads by loading mailboxes after your drive and teams have finished loading
-* translations contributed:
-  * German
-  * Italian
-* we can now debug workers in firefox!
+* The CryptPad server stores documents as a series of encrypted changes to a blank document. We have mechanisms in place that make it so clients only need the most recent changes to view the document, but the storage requirements on the server would only ever grow unless you deleted the entire document. As of this release, owners of document have the option to remove that unnecessary history. To do so: right-click a pad in a drive or shared folder and choose the properties option in the menu. The bottom of the properties popup will display the document's size. If there is any history that is eligible for removal, a button will be displayed to remove it.
+  * This option is only available for the pad's owners. If it has no owners then it will not be possible to remove its history.
+  * It is not yet possible to trim the history of spreadsheets, as they are based on a different system than the rest of our documents and it will take some additional work to add this functionality.
+* We've also added the ability to easily make copies of documents from your drive. Right-click on documents and select "make a copy" from the menu.
+  * This feature doesn't work for files. Files can't be modified anyway, so there's little value in making copies.
+  * We haven't added the ability to make a copy of a spreadsheet yet for the same reasons as above.
+* We've improved the way our markdown renderer handles links to better support a variety of types of URLs:
+  * anchors, like `[bug fixes](#bug-fixes)`
+  * relative paths, like `[cryptpad home page](/index.html)` or `[a rich text pad](/pad/#/pad/view/12151241241254123412451231231221)`
+  * absolute URLs without the protocol, like `[//github.com/xwiki-labs/cryptpad)
+* We've optimized a background process that iterates over a part of the database when you first launch the CryptPad server. It now uses less memory and should incur less load on the CPU when restarting the server. This should allow the server to spend its resources handling clients that are trying to reconnect.
+* We've also optimized some client-side code to prioritize loading your drive instead of some other non-essential resources used for notifications. Pages should load faster. We're working on some related improvements to address page load time which we'll introduce on an ongoing basis.
+* As noted above, we're finally able to debug shared workers in Firefox. We're investigating a few issues that were blocked by this limitation, and we hope to include a number of bug fixes in upcoming releases.
+* We've continued some ongoing improvements to the instance admin panel and introduced the ability to link directly to a support ticket. The link will only be useful to users who would already be able to open the admin panel.
+* The code responsible for fetching and scanning the older history of a document has also been optimized to avoid handling messages for channels multiple times.
+* Finally, we've received contributions from our German and Italian translators via our weblate instance.
+  * We're always looking for more help with localization. You can review the status of our translations and contribute to them [here](https://weblate.cryptpad.fr/projects/cryptpad/app/).
 
 ## Bug fixes
 
-* duplicated text in rich text pads!
-* setMetadata didn't call back if you sent an invalid query, now it calls back with an error
-  * in practice this should not have affected anyone
-* avoid logging unsupported metadata commands more than once
-* bottom-right-corner popup is displayed after 5s
-* fixed interaction with read-only spreadsheets
-* pin todo-list channels
-* fix team permissions where users with greater permissions than "VIEWER" still couldn't edit
+* After a lot of digging we believe we've identified and fixed a case of automatic text duplication in our rich text editor. We plan to wait a little longer and see if [reports of the incorrect behaviour](https://github.com/xwiki-labs/cryptpad/issues/352) really do stop, but we're optimistic that this problem has been solved.
+* [Another GitHub issue](https://github.com/xwiki-labs/cryptpad/issues/497) related to upgrading access for team members has been fixed. If you continue to have issues with permissions for team members, we recommend haging the team owner demote the affected users to viewers before promoting them to the desired access level.
+* We've fixed a number of small issues in our server:
+  * The server did not correctly respond to unsupported commands for its SET_METADATA RPC. Instead of responding with an error it ignored the message. In practice this should not have affected any users, since our client only uses supported commands.
+  * The server used to log for every entry in a document's metadata log that contained an unsupported command. As we develop we occasionally have to such logs with older versions of the code that don't support every command. To avoid filling the logs with errors, we now ignore any errors of a given type beyond the first one encountered for a given document.
+* We've fixed an issue with read-only spreadsheets that was introduced in our previous release. An overlay intended to prevent users from interacting with the spreadsheet while disconnected was incorrectly applied to spreadsheets in read-only mode, preventing users from copying their data.
+* Clients send "pin commands" to the server to instruct it to count a document against their quota and to preserve its data even if it's considered inactive. We realized that the client wasn't including todo-lists in its list of pads to pin and have updated the client to do so.
 
 # LabradorDuck release (3.11.0)
 
