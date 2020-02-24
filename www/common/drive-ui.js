@@ -122,9 +122,9 @@ define([
     var $addIcon = $('<span>', {"class": "fa fa-plus"});
     var $renamedIcon = $('<span>', {"class": "fa fa-flag"});
     var $readonlyIcon = $('<span>', {"class": "fa " + faReadOnly});
-    var $ownedIcon = $('<span>', {"class": "fa fa-id-card-o"});
+    var $ownedIcon = $('<span>', {"class": "fa fa-id-badge"});
     var $sharedIcon = $('<span>', {"class": "fa " + faShared});
-    var $ownerIcon = $('<span>', {"class": "fa fa-id-card"});
+    //var $ownerIcon = $('<span>', {"class": "fa fa-id-card"});
     var $tagsIcon = $('<span>', {"class": "fa " + faTags});
     var $passwordIcon = $('<span>', {"class": "fa fa-lock"});
     var $expirableIcon = $('<span>', {"class": "fa fa-clock-o"});
@@ -1819,10 +1819,10 @@ define([
                 var $owned = $ownedIcon.clone().appendTo($state);
                 $owned.attr('title', Messages.fm_padIsOwned);
                 $span.addClass('cp-app-drive-element-owned');
-            } else if (data.owners && data.owners.length) {
+            } /* else if (data.owners && data.owners.length) {
                 var $owner = $ownerIcon.clone().appendTo($state);
                 $owner.attr('title', Messages.fm_padIsOwnedOther);
-            }
+            } */
         };
         var thumbsUrls = {};
         var addFileData = function (element, $element) {
