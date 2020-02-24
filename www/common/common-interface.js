@@ -623,9 +623,9 @@ define([
         var to;
 
         var done = function (res) {
-            cb(res);
+            if (res) { cb(res); }
             clearTimeout(to);
-            $(content).remove();
+            $(content).detach();
             $(originalBtn).show();
         };
 
@@ -646,9 +646,12 @@ define([
             $(div).css('width', p+'%');
             to = setTimeout(todo, INTERVAL);
         };
-        to = setTimeout(todo, INTERVAL);
 
-        $(originalBtn).hide().after(content);
+        $(originalBtn).addClass('cp-button-confirm-placeholder').click(function () {
+            i = 1;
+            to = setTimeout(todo, INTERVAL);
+            $(originalBtn).hide().after(content);
+        });
     };
 
 

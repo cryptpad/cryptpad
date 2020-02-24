@@ -825,32 +825,29 @@ define([
                 $d.append(size);
 
                 var $button = $(button);
-                $button.click(function () {
-                    UI.confirmButton(button, {
-                        classes: 'btn-danger'
-                    }, function (yes) {
-                        if (!yes) { return; }
-
-                        $button.remove();
-                        spinner.spin();
-                        history.execCommand('TRIM_HISTORY', {
-                            pad: true,
-                            channels: trimChannels,
-                            teamId: typeof(owned) === "number" && owned
-                        }, function (obj) {
-                            spinner.hide();
-                            if (obj && obj.error) {
-                                $(size).append(h('div.alert.alert-danger', Messages.trimHistory_error));
-                                return;
-                            }
-                            $(size).remove();
-                            var formatted = UIElements.prettySize(bytes - historyBytes);
-                            $d.append(h('div.cp-app-prop', [
-                                Messages.upload_size,
-                                h('br'),
-                                h('span.cp-app-prop-content', formatted)
-                            ]));
-                        });
+                UI.confirmButton(button, {
+                    classes: 'btn-danger'
+                }, function () {
+                    $button.remove();
+                    spinner.spin();
+                    history.execCommand('TRIM_HISTORY', {
+                        pad: true,
+                        channels: trimChannels,
+                        teamId: typeof(owned) === "number" && owned
+                    }, function (obj) {
+                        spinner.hide();
+                        if (obj && obj.error) {
+                            $(size).append(h('div.alert.alert-danger', Messages.trimHistory_error));
+                            return;
+                        }
+                        $(size).remove();
+                        var formatted = UIElements.prettySize(bytes - historyBytes);
+                        $d.append(h('div.cp-app-prop', [
+                            Messages.upload_size,
+                            h('br'),
+                            h('span.cp-app-prop-content', formatted)
+                        ]));
+                        $d.append(h('div.alert.alert-success', Messages.trimHistory_success));
                     });
                 });
 

@@ -1258,27 +1258,24 @@ define([
                 return;
             }
             $(currentSize).html(Messages._getKey('trimHistory_currentSize', [UIElements.prettySize(size)]));
-            $button.click(function () {
-                UI.confirmButton(button, {
-                    classes: 'btn-danger'
-                }, function (yes) {
-                    if (!yes) { return; }
-
-                    $button.remove();
-                    spinner.spin();
-                    APP.history.execCommand('TRIM_HISTORY', {
-                        channels: channels
-                    }, function (obj) {
-                        if (obj && obj.error) {
-                            var error = h('div.alert.alert-danger', Messages.trimHistory_error);
-                            $(content).empty().append(error);
-                            return;
-                        }
-                        spinner.hide();
-                        redrawTrimHistory(cb, $div);
-                    });
+            $button.prop('disabled', '');
+            UI.confirmButton(button, {
+                classes: 'btn-danger'
+            }, function () {
+                $button.remove();
+                spinner.spin();
+                APP.history.execCommand('TRIM_HISTORY', {
+                    channels: channels
+                }, function (obj) {
+                    if (obj && obj.error) {
+                        var error = h('div.alert.alert-danger', Messages.trimHistory_error);
+                        $(content).empty().append(error);
+                        return;
+                    }
+                    spinner.hide();
+                    redrawTrimHistory(cb, $div);
                 });
-            }).prop('disabled', '');
+            });
         });
 
         $div.find('#cp-settings-trim-container').remove();
