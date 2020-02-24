@@ -783,6 +783,10 @@ define([
                 Utils.LocalStore.logout(cb);
             });
 
+            sframeChan.on('Q_LOGOUT_EVERYWHERE', function (data, cb) {
+                Cryptpad.logoutFromAll(cb);
+            });
+
             sframeChan.on('EV_NOTIFY', function (data) {
                 Notifier.notify(data);
             });
