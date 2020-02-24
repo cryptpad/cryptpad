@@ -1184,7 +1184,7 @@ define([
                         if (!metadata || !Util.isPlainTextFile(metadata.fileType, metadata.title)) {
                             hide.push('openincode');
                         }
-                        if (!metadata.channel || metadata.channel.length > 32) {
+                        if (!metadata.channel || metadata.channel.length > 32 || metadata.rtChannel) {
                             hide.push('makeacopy'); // Not for blobs
                         }
                     } else if ($element.is('.cp-app-drive-element-sharedf')) {
