@@ -2357,7 +2357,7 @@ define([
                 loadUniversal(Profile, 'profile', waitFor);
                 loadUniversal(Team, 'team', waitFor);
                 loadUniversal(History, 'history', waitFor);
-                loadMailbox(waitFor); // XXX make sure we don't have new issues with mailboxes being loaded later
+                loadMailbox(waitFor);
                 cleanFriendRequests();
             }).nThen(function () {
                 var requestLogin = function () {
