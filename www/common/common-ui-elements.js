@@ -455,7 +455,7 @@ define([
                         var team = priv.teams[id] || {};
                         if (team.viewer) { return; }
                         if (data.owners.indexOf(team.edPublic) === -1) { return; }
-                        owned = id;
+                        owned = Number(id);
                         return true;
                     });
                 }
@@ -750,7 +750,7 @@ define([
                         var team = priv.teams[id] || {};
                         if (team.viewer) { return; }
                         if (data.owners.indexOf(team.edPublic) === -1) { return; }
-                        owned = id;
+                        owned = Number(id);
                         return true;
                     });
                 }
