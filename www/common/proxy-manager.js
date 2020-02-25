@@ -900,10 +900,11 @@ define([
         cb = cb || function () {};
         var sfId = Env.user.userObject.getSFIdFromHref(data.href);
         if (sfId) {
-            var sfData = Env.user.proxy[UserObject.SHARED_FOLDERS][sfId];
+            var sfData = getSharedFolderData(Env, sfId);
+            var sfValue = data.attr ? sfData[data.attr] : JSON.parse(JSON.stringify(sfData));
             setTimeout(function () {
                 cb(null, {
-                    value: sfData[data.attr],
+                    value: sfValue,
                     atime: 1
                 });
             });

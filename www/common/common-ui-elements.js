@@ -14,7 +14,7 @@ define([
     '/customize/application_config.js',
     '/customize/pages.js',
     '/bower_components/nthen/index.js',
-    '/common/invitation.js',
+    '/common/inner/invitation.js',
 
     'css!/customize/fonts/cptools/style.css',
     '/bower_components/croppie/croppie.min.js',
@@ -99,7 +99,7 @@ define([
             });
         };
     };
-
+/*
     var getPropertiesData = function (common, cb) {
         var data = {};
         NThen(function (waitFor) {
@@ -127,6 +127,32 @@ define([
             cb(void 0, data);
         });
     };
+*/
+    var getPropertiesData = function (common, opts, cb) {
+        opts = opts || {};
+        var data = {};
+        NThen(function (waitFor) {
+            var base = common.getMetadataMgr().getPrivateData().origin;
+            common.getPadAttribute('', waitFor(function (err, val) {
+                if (err || !val) {
+                    waitFor.abort();
+                    return void cb(err || 'EEMPTY');
+                }
+                if (!val.fileType) {
+                    delete val.owners;
+                    delete val.expire;
+                }
+                Util.extend(data, val);
+                if (data.href) { data.href = base + data.href; }
+                if (data.roHref) { data.roHref = base + data.roHref; }
+            }), opts.href);
+        }).nThen(function () {
+            cb(void 0, data);
+        });
+    };
+
+
+/*
     var createOwnerModal = function (common, data) {
         var friends = common.getFriends(true);
         var sframeChan = common.getSframeChannel();
@@ -425,8 +451,8 @@ define([
         var link = h('div.cp-share-columns', [
             div1,
             div2
-            /*drawRemove()[0],
-            drawAdd()[0]*/
+            // drawRemove()[0],
+            //drawAdd()[0]
         ]);
         var linkButtons = [{
             className: 'cancel',
@@ -436,6 +462,8 @@ define([
         }];
         return UI.dialog.customModal(link, {buttons: linkButtons});
     };
+*/
+/*
     var getRightsProperties = function (common, data, cb) {
         var $div = $('<div>');
         if (!data) { return void cb(void 0, $div); }
@@ -707,7 +735,10 @@ define([
 
         cb(void 0, $div);
     };
-    var getPadProperties = function (common, data, cb) {
+*/
+
+    var getPadProperties = function (common, data, opts, cb) {
+        opts = opts || {};
         var $d = $('<div>');
         if (!data) { return void cb(void 0, $d); }
 
@@ -721,7 +752,7 @@ define([
             }));
         }
 
-        if (data.roHref) {
+        if (data.roHref && !opts.noReadOnly) {
             $('<label>', {'for': 'cp-app-prop-rolink'}).text(Messages.viewShare).appendTo($d);
             $d.append(UI.dialog.selectable(data.roHref, {
                 id: 'cp-app-prop-rolink',
@@ -859,35 +890,42 @@ define([
 
 
     };
-    UIElements.getProperties = function (common, data, cb) {
-        var c1;
-        var c2;
+
+    UIElements.getProperties = function (common, opts, cb) {
+        var data;
+        var content;
         var button = [{
-            className: 'primary',
-            name: Messages.okButton,
+            className: 'cancel',
+            name: Messages.filePicker_close,
             onClick: function () {},
-            keys: [13]
+            keys: [13,27]
         }];
         NThen(function (waitFor) {
-            getPadProperties(common, data, waitFor(function (e, c) {
-                c1 = UI.dialog.customModal(c[0], {
-                    buttons: button
-                });
+            getPropertiesData(common, opts, waitFor(function (e, _data) {
+                if (e) {
+                    waitFor.abort();
+                    return void cb(e);
+                }
+                data = _data;
             }));
-            getRightsProperties(common, data, waitFor(function (e, c) {
-                c2 = UI.dialog.customModal(c[0], {
+        }).nThen(function (waitFor) {
+            getPadProperties(common, data, opts, waitFor(function (e, c) {
+                if (e) {
+                    waitFor.abort();
+                    return void cb(e);
+                }
+                content = UI.dialog.customModal(c[0], {
                     buttons: button
                 });
             }));
         }).nThen(function () {
             var tabs = UI.dialog.tabs([{
                 title: Messages.fc_prop,
-                content: c1
-            }, {
-                title: Messages.creation_propertiesTitle,
-                content: c2
+                icon: "fa fa-info-circle",
+                content: content
             }]);
-            cb (void 0, $(tabs));
+            var modal = UI.openCustomModal(tabs);
+            cb (void 0, modal);
         });
     };
 
@@ -901,7 +939,15 @@ define([
             var name = data.displayName || data.name || Messages.anonymous;
             var avatar = h('span.cp-usergrid-avatar.cp-avatar');
             UIElements.displayAvatar(common, $(avatar), data.avatar, name);
-            return h('div.cp-usergrid-user'+(data.selected?'.cp-selected':'')+(config.large?'.large':''), {
+            var removeBtn, el;
+            if (config.remove) {
+                removeBtn = h('span.fa.fa-times');
+                $(removeBtn).click(function () {
+                    config.remove(el);
+                });
+            }
+
+            el = h('div.cp-usergrid-user'+(data.selected?'.cp-selected':'')+(config.large?'.large':''), {
                 'data-ed': data.edPublic,
                 'data-teamid': data.teamId,
                 'data-curve': data.curvePublic || '',
@@ -911,17 +957,20 @@ define([
                 style: 'order:'+i+';'
             },[
                 avatar,
-                h('span.cp-usergrid-user-name', name)
+                h('span.cp-usergrid-user-name', name),
+                data.notRemovable ? undefined : removeBtn
             ]);
+            return el;
         }).filter(function (x) { return x; });
 
         var noOthers = icons.length === 0 ? '.cp-usergrid-empty' : '';
+        var classes = noOthers + (config.large?'.large':'') + (config.list?'.list':'');
 
         var inputFilter = h('input', {
             placeholder: Messages.share_filterFriend
         });
 
-        var div = h('div.cp-usergrid-container' + noOthers + (config.large?'.large':''), [
+        var div = h('div.cp-usergrid-container' + classes, [
             label ? h('label', label) : undefined,
             h('div.cp-usergrid-filter', (config.noFilter || config.noSelect) ? undefined : [
                 inputFilter
@@ -2374,6 +2423,26 @@ define([
                 });
                 updateIcon(data.element.is(':visible'));
                 break;
+            case 'access':
+                button = $('<button>', {
+                    'class': 'fa fa-unlock-alt cp-toolbar-icon-access',
+                    title: "ACCESS", // XXX
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'})
+                .text("ACCESS")) // XXX
+                .click(common.prepareFeedback(type))
+                .click(function () {
+                    common.isPadStored(function (err, data) {
+                        if (!data) {
+                            return void UI.alert(Messages.autostore_notAvailable);
+                        }
+                        require(['/common/inner/access.js'], function (Access) {
+                            Access.getAccessModal(common, {}, function (e) {
+                                if (e) { console.error(e); }
+                            });
+                        });
+                    });
+                });
+                break;
             case 'properties':
                 button = $('<button>', {
                     'class': 'fa fa-info-circle cp-toolbar-icon-properties',
@@ -2386,12 +2455,8 @@ define([
                         if (!data) {
                             return void UI.alert(Messages.autostore_notAvailable);
                         }
-                        getPropertiesData(common, function (e, data) {
+                        UIElements.getProperties(common, {}, function (e) {
                             if (e) { return void console.error(e); }
-                            UIElements.getProperties(common, data, function (e, $prop) {
-                                if (e) { return void console.error(e); }
-                                UI.openCustomModal($prop[0]);
-                            });
                         });
                     });
                 });
@@ -4144,7 +4209,7 @@ define([
     };
 
     UIElements.onServerError = function (common, err, toolbar, cb) {
-        if (["EDELETED", "EEXPIRED"].indexOf(err.type) === -1) { return; }
+        if (["EDELETED", "EEXPIRED", "ERESTRICTED"].indexOf(err.type) === -1) { return; }
         var priv = common.getMetadataMgr().getPrivateData();
         var msg = err.type;
         if (err.type === 'EEXPIRED') {
@@ -4158,11 +4223,13 @@ define([
             if (err.loaded) {
                 msg += Messages.errorCopy;
             }
+        } else if (err.type === 'ERESTRICTED') {
+            msg = Messages.restrictedError || "RESTRICTED"; // XXX
         }
         var sframeChan = common.getSframeChannel();
         sframeChan.event('EV_SHARE_OPEN', {hidden: true});
         if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
-        UI.errorLoadingScreen(msg, true, true);
+        UI.errorLoadingScreen(msg, Boolean(err.loaded), Boolean(err.loaded));
         (cb || function () {})();
     };
 

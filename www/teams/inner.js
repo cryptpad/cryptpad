@@ -15,7 +15,7 @@ define([
     '/common/hyperscript.js',
     '/customize/application_config.js',
     '/common/messenger-ui.js',
-    '/common/invitation.js',
+    '/common/inner/invitation.js',
     '/customize/messages.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',

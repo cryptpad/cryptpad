@@ -8,6 +8,9 @@ define([
     '/common/common-interface.js',
     '/common/common-constants.js',
     '/common/common-feedback.js',
+
+    '/common/inner/access.js',
+
     '/bower_components/nthen/index.js',
     '/common/hyperscript.js',
     '/common/proxy-manager.js',
@@ -23,6 +26,7 @@ define([
     UI,
     Constants,
     Feedback,
+    Access,
     nThen,
     h,
     ProxyManager,
@@ -80,6 +84,7 @@ define([
     var faTrash = 'fa-trash';
     var faCopy = 'fa-clone';
     var faDelete = 'fa-eraser';
+    var faAccess = 'fa-unlock-alt';
     var faProperties = 'fa-info-circle';
     var faTags = 'fa-hashtag';
     var faUploadFiles = 'cptools-file-upload';
@@ -117,9 +122,9 @@ define([
     var $addIcon = $('<span>', {"class": "fa fa-plus"});
     var $renamedIcon = $('<span>', {"class": "fa fa-flag"});
     var $readonlyIcon = $('<span>', {"class": "fa " + faReadOnly});
-    var $ownedIcon = $('<span>', {"class": "fa fa-id-card-o"});
+    var $ownedIcon = $('<span>', {"class": "fa fa-id-badge"});
     var $sharedIcon = $('<span>', {"class": "fa " + faShared});
-    var $ownerIcon = $('<span>', {"class": "fa fa-id-card"});
+    //var $ownerIcon = $('<span>', {"class": "fa fa-id-card"});
     var $tagsIcon = $('<span>', {"class": "fa " + faTags});
     var $passwordIcon = $('<span>', {"class": "fa fa-lock"});
     var $expirableIcon = $('<span>', {"class": "fa fa-clock-o"});
@@ -453,6 +458,10 @@ define([
                     'data-icon': faDelete,
                 }, Messages.fc_remove_sharedfolder)),
                 $separator.clone()[0],
+                h('li', h('a.cp-app-drive-context-access.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': faAccess,
+                }, "ACCESS")), // XXX
                 h('li', h('a.cp-app-drive-context-properties.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faProperties,
@@ -1212,7 +1221,7 @@ define([
                         hide.push('savelocal');
                         hide.push('openro');
                         hide.push('openincode');
-                        hide.push('properties');
+                        hide.push('properties', 'access');
                         hide.push('hashtag');
                         hide.push('makeacopy');
                     }
@@ -1243,7 +1252,7 @@ define([
                 });
                 if (paths.length > 1) {
                     hide.push('restore');
-                    hide.push('properties');
+                    hide.push('properties', 'access');
                     hide.push('rename');
                     hide.push('openparent');
                     hide.push('hashtag');
@@ -1273,7 +1282,7 @@ define([
                             'deleteowned', 'removesf', 'properties', 'hashtag'];
                     break;
                 case 'default':
-                    show = ['open', 'openro', 'share', 'openparent', 'delete', 'deleteowned', 'properties', 'hashtag', 'makeacopy'];
+                    show = ['open', 'openro', 'share', 'openparent', 'delete', 'deleteowned', 'properties', 'access', 'hashtag', 'makeacopy'];
                     break;
                 case 'trashtree': {
                     show = ['empty'];
@@ -1811,10 +1820,10 @@ define([
                 var $owned = $ownedIcon.clone().appendTo($state);
                 $owned.attr('title', Messages.fm_padIsOwned);
                 $span.addClass('cp-app-drive-element-owned');
-            } else if (data.owners && data.owners.length) {
+            } /* else if (data.owners && data.owners.length) {
                 var $owner = $ownerIcon.clone().appendTo($state);
                 $owner.attr('title', Messages.fm_padIsOwnedOther);
-            }
+            } */
         };
         var thumbsUrls = {};
         var addFileData = function (element, $element) {
@@ -3086,9 +3095,8 @@ define([
                             }).appendTo($openDir);
                         }
                         $('<a>').text(Messages.fc_prop).click(function () {
-                            APP.getProperties(r.id, function (e, $prop) {
+                            APP.getProperties(r.id, function (e) {
                                 if (e) { return void logError(e); }
-                                UI.alert($prop[0], undefined, true);
                             });
                         }).appendTo($openDir);
                     }
@@ -3836,12 +3844,11 @@ define([
             }
         };
 
-        var getProperties = APP.getProperties = function (el, cb) {
+        APP.getProperties = function (el, cb) {
             if (!manager.isFile(el) && !manager.isSharedFolder(el)) {
                 return void cb('NOT_FILE');
             }
             //var ro = manager.isReadOnlyFile(el);
-            var base = APP.origin;
             var data;
             if (manager.isSharedFolder(el)) {
                 data = JSON.parse(JSON.stringify(manager.getSharedFolderData(el)));
@@ -3850,42 +3857,42 @@ define([
             }
             if (!data || !(data.href || data.roHref)) { return void cb('INVALID_FILE'); }
 
-            if (data.href) {
-                data.href = base + data.href;
-            }
-            if (data.roHref) {
-                data.roHref = base + data.roHref;
-            }
-
-            if (currentPath[0] === TEMPLATE) {
-                data.isTemplate = true;
-            }
+            var opts = {};
+            opts.href = Hash.getRelativeHref(data.href || data.roHref);
 
             if (manager.isSharedFolder(el)) {
                 var ro = folders[el] && folders[el].version >= 2;
-                if (!ro) { delete data.roHref; }
-                //data.noPassword = true;
-                //data.noEditPassword = true;
-                data.noExpiration = true;
-                // this is here to allow users to check the channel id of a shared folder
-                // we should remove it at some point
-                data.sharedFolder = true;
+                if (!ro) { opts.noReadOnly = true; }
+            }
+            UIElements.getProperties(common, opts, cb);
+        };
+        APP.getAccess = function (el, cb) {
+            if (!manager.isFile(el) && !manager.isSharedFolder(el)) {
+                return void cb('NOT_FILE');
+            }
+            var data;
+            if (manager.isSharedFolder(el)) {
+                data = JSON.parse(JSON.stringify(manager.getSharedFolderData(el)));
+            } else {
+                data = JSON.parse(JSON.stringify(manager.getFileData(el)));
+            }
+            if (!data || !(data.href || data.roHref)) { return void cb('INVALID_FILE'); }
+
+            var opts = {};
+            opts.href = Hash.getRelativeHref(data.href || data.roHref);
+            opts.channel = data.channel;
+
+            // Transfer ownership: templates are stored as templates for other users/teams
+            if (currentPath[0] === TEMPLATE) {
+                opts.isTemplate = true;
             }
 
-            if ((manager.isFile(el) && data.roHref) || manager.isSharedFolder(el)) { // Only for pads!
-                sframeChan.query('Q_GET_PAD_METADATA', {
-                    channel: data.channel
-                }, function (err, val) {
-                    if (!err && !(val && val.error)) {
-                        data.owners = val.owners;
-                        data.expire = val.expire;
-                        data.pending_owners = val.pending_owners;
-                    }
-                    UIElements.getProperties(common, data, cb);
-                });
-                return;
+            // Shared folders: no expiration date
+            if (manager.isSharedFolder(el)) {
+                opts.noExpiration = true;
             }
-            UIElements.getProperties(common, data, cb);
+
+            Access.getAccessModal(common, opts, cb);
         };
 
         if (!APP.loggedIn) {
@@ -4259,9 +4266,19 @@ define([
                     // ANON_SHARED_FOLDER
                     el = manager.find(paths[0].path.slice(1), APP.newSharedFolder);
                 }
-                getProperties(el, function (e, $prop) {
+                APP.getProperties(el, function (e) {
                     if (e) { return void logError(e); }
-                    UI.openCustomModal($prop[0]);
+                });
+            }
+            else if ($this.hasClass("cp-app-drive-context-access")) {
+                if (paths.length !== 1) { return; }
+                el = manager.find(paths[0].path);
+                if (paths[0].path[0] === SHARED_FOLDER && APP.newSharedFolder) {
+                    // ANON_SHARED_FOLDER
+                    el = manager.find(paths[0].path.slice(1), APP.newSharedFolder);
+                }
+                APP.getAccess(el, function (e) {
+                    if (e) { return void logError(e); }
                 });
             }
             else if ($this.hasClass("cp-app-drive-context-hashtag")) {

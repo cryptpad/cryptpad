@@ -702,6 +702,8 @@ define([
 
             var $properties = common.createButton('properties', true);
             toolbar.$drawer.append($properties);
+            var $access = common.createButton('access', true);
+            toolbar.$drawer.append($access);
 
             createFilePicker();
 
