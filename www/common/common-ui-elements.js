@@ -3388,6 +3388,13 @@ define([
         if (accountName) {
             options.push({
                 tag: 'a',
+                attributes: {
+                    'class': 'cp-toolbar-menu-logout-everywhere fa fa-plug',
+                },
+                content: h('span', "CLOSE REMOTE SESSIONS") // XXX Messages.settings_logoutEverywhereTitle)
+            });
+            options.push({
+                tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-logout fa fa-sign-out'},
                 content: h('span', Messages.logoutButton)
             });
@@ -3471,6 +3478,10 @@ define([
             Common.logout(function () {
                 window.parent.location = origin+'/';
             });
+        });
+
+        $userAdmin.find('a.cp-toolbar-menu-logout-everywhere').click(function () {
+            Common.getSframeChannel().query('Q_LOGOUT_EVERYWHERE', null, function () { });
         });
         $userAdmin.find('a.cp-toolbar-menu-settings').click(function () {
             if (padType) {
