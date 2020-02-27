@@ -16,37 +16,7 @@ var _domain = 'http://localhost:3000/';
 // requiring admins to preserve it is unnecessarily confusing
 var domain = ' ' + _domain;
 
-// Content-Security-Policy
-var baseCSP = [
-    "default-src 'none'",
-    "style-src 'unsafe-inline' 'self' " + domain,
-    "font-src 'self' data:" + domain,
-
-    /*  child-src is used to restrict iframes to a set of allowed domains.
-     *  connect-src is used to restrict what domains can connect to the websocket.
-     *
-     *  it is recommended that you configure these fields to match the
-     *  domain which will serve your CryptPad instance.
-     */
-    "child-src blob: *",
-    // IE/Edge
-    "frame-src blob: *",
-
-    /*  this allows connections over secure or insecure websockets
-        if you are deploying to production, you'll probably want to remove
-        the ws://* directive, and change '*' to your domain
-     */
-    "connect-src 'self' ws: wss: blob:" + domain,
-
-    // data: is used by codemirror
-    "img-src 'self' data: blob:" + domain,
-    "media-src * blob:",
-
-    // for accounts.cryptpad.fr authentication and cross-domain iframe sandbox
-    "frame-ancestors *",
-    ""
-];
-
+var Default = require("../lib/defaults");
 
 module.exports = {
     /* =====================
@@ -113,34 +83,18 @@ module.exports = {
      *  These settings may vary widely depending on your needs
      *  Examples are provided below
      */
-    httpHeaders: {
-        "X-XSS-Protection": "1; mode=block",
-        "X-Content-Type-Options": "nosniff",
-        "Access-Control-Allow-Origin": "*"
-    },
+    httpHeaders: Default.httpHeaders(),
 
-    contentSecurity: baseCSP.join('; ') +
-        "script-src 'self'" + domain,
+    contentSecurity: Default.contentSecurity(domain),
 
     // CKEditor and OnlyOffice require significantly more lax content security policy in order to function.
-    padContentSecurity: baseCSP.join('; ') +
-        "script-src 'self' 'unsafe-eval' 'unsafe-inline'" + domain,
+    padContentSecurity: Default.padContentSecurity(domain),
 
     /*  Main pages
      *  add exceptions to the router so that we can access /privacy.html
      *  and other odd pages
      */
-    mainPages: [
-        'index',
-        'privacy',
-        'terms',
-        'about',
-        'contact',
-        'what-is-cryptpad',
-        'features',
-        'faq',
-        'maintenance'
-    ],
+    mainPages: Default.mainPages(),
 
     /* =====================
      *     Subscriptions
