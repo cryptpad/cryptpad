@@ -2762,7 +2762,7 @@ define([
             });
             if (keys.length < 2) { return keys; }
             var mult = asc ? 1 : -1;
-            var getProp = function (el, prop) {
+            var getProp = function (el) {
                 if (folder && root[el] && manager.isSharedFolder(root[el])) {
                     var title = manager.getSharedFolderData(root[el]).title || el;
                     return title.toLowerCase();
@@ -2777,13 +2777,19 @@ define([
                     return hrefData.type;
                 }
                 if (prop === 'atime' || prop === 'ctime') {
-                    return new Date(data[prop]);
+                    return typeof(data[prop]) === "number" ? data[prop] : new Date(data[prop]);
                 }
                 return (manager.getTitle(id) || "").toLowerCase();
             };
+            var props = {};
+            keys.forEach(function (k) {
+                props[k] = getProp(k);
+            });
             keys.sort(function(a, b) {
-                if (getProp(a, prop) < getProp(b, prop)) { return mult * -1; }
-                if (getProp(a, prop) > getProp(b, prop)) { return mult * 1; }
+                var _a = props[a];
+                var _b = props[b];
+                if (_a < _b) { return mult * -1; }
+                if (_b > _a) { return mult; }
                 return 0;
             });
             return keys;

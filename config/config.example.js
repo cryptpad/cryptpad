@@ -1,4 +1,3 @@
-/*@flow*/
 /*
     globals module
 */
@@ -199,6 +198,9 @@ module.exports = {
      *  anything larger than this size will be rejected
      */
     maxUploadSize: 20 * 1024 * 1024,
+
+    // XXX
+    premiumUploadSize: 100 * 1024 * 1024,
 
     /* =====================
      *   DATABASE VOLUMES
