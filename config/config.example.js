@@ -19,6 +19,30 @@ var domain = ' ' + _domain;
 var Default = require("../lib/defaults");
 
 module.exports = {
+    /*  Sales coming from your server will be identified by your domain
+     *
+     *  If you are using CryptPad in a business context, please consider taking a support contract
+     *  by contacting sales@cryptpad.fr
+     */
+    myDomain: _domain,
+
+    // the address you want to bind to, :: means all ipv4 and ipv6 addresses
+    // this may not work on all operating systems
+    httpAddress: '::',
+
+    // the port on which your httpd will listen
+    httpPort: 3000,
+
+    // This is for allowing the cross-domain iframe to function when developing
+    httpSafePort: 3001,
+
+    // This is for deployment in production, CryptPad uses a separate origin (domain) to host the
+    // cross-domain iframe. It can simply host the same content as CryptPad.
+    // httpSafeOrigin: "https://some-other-domain.xyz",
+
+    httpUnsafeOrigin: domain,
+
+
     /* =====================
      *         Admin
      * ===================== */
@@ -50,22 +74,6 @@ module.exports = {
     /* =====================
      *      Infra setup
      * ===================== */
-
-    // the address you want to bind to, :: means all ipv4 and ipv6 addresses
-    // this may not work on all operating systems
-    httpAddress: '::',
-
-    // the port on which your httpd will listen
-    httpPort: 3000,
-
-    // This is for allowing the cross-domain iframe to function when developing
-    httpSafePort: 3001,
-
-    // This is for deployment in production, CryptPad uses a separate origin (domain) to host the
-    // cross-domain iframe. It can simply host the same content as CryptPad.
-    // httpSafeOrigin: "https://some-other-domain.xyz",
-
-    httpUnsafeOrigin: domain,
 
     /*  Your CryptPad server will share this value with clients
      *  via its /api/config endpoint.
@@ -127,13 +135,6 @@ module.exports = {
      */
     adminEmail: 'i.did.not.read.my.config@cryptpad.fr',
 
-    /*  Sales coming from your server will be identified by your domain
-     *
-     *  If you are using CryptPad in a business context, please consider taking a support contract
-     *  by contacting sales@cryptpad.fr
-     */
-    myDomain: _domain,
-
     /*
      *  If you are using CryptPad internally and you want to increase the per-user storage limit,
      *  change the following value.
@@ -171,12 +172,6 @@ module.exports = {
      *        STORAGE
      * ===================== */
 
-    /*  By default the CryptPad server will run scheduled tasks every five minutes
-     *  If you want to run scheduled tasks in a separate process (like a crontab)
-     *  you can disable this behaviour by setting the following value to true
-     */
-     disableIntegratedTasks: false,
-
     /*  Pads that are not 'pinned' by any registered user can be set to expire
      *  after a configurable number of days of inactivity (default 90 days).
      *  The value can be changed or set to false to remove expiration.
@@ -204,20 +199,6 @@ module.exports = {
      *  anything larger than this size will be rejected
      */
     maxUploadSize: 20 * 1024 * 1024,
-
-    /* =====================
-     *    HARDWARE RELATED
-     * ===================== */
-
-    /*  CryptPad's file storage adaptor closes unused files after a configurable
-     *  number of milliseconds (default 30000 (30 seconds))
-     */
-    channelExpirationMs: 30000,
-
-    /*  CryptPad's file storage adaptor is limited by the number of open files.
-     *  When the adaptor reaches openFileLimit, it will clean up older files
-     */
-    openFileLimit: 2048,
 
     /* =====================
      *   DATABASE VOLUMES
