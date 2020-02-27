@@ -158,10 +158,15 @@ define([
             });
 
             onError = function (e) {
+                // XXX if we included the max upload sizes in /api/config
+                // then we could check if a file is too large without going to the server...
                 queue.inProgress = false;
                 queue.next();
                 if (e === 'TOO_LARGE') {
                     $pv.text(Messages.upload_tooLargeBrief);
+                    // XXX translate
+                    // instead of "This file exceeds the maximum upload size"
+                    // use "the maximum upload size allowed for your account"
                     return void UI.alert(Messages.upload_tooLarge);
                 }
                 if (e === 'NOT_ENOUGH_SPACE') {
