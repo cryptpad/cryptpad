@@ -7,6 +7,7 @@ var Fs = require('fs');
 var Package = require('./package.json');
 var Path = require("path");
 var nThen = require("nthen");
+var Util = require("./lib/common-util");
 
 var config = require("./lib/load-config");
 
@@ -34,7 +35,9 @@ if (process.env.PACKAGE) {
     FRESH_KEY = +new Date();
 }
 
+var configCache = {};
 config.flushCache = function () {
+    configCache = {};
     FRESH_KEY = +new Date();
     if (!(DEV_MODE || FRESH_MODE)) { FRESH_MODE = true; }
     if (!config.log) { return; }
@@ -143,38 +146,72 @@ try {
     });
 } catch (e) { console.error("Can't parse admin keys"); }
 
-// TODO, cache this /api/config responses instead of re-computing it each time
-app.get('/api/config', function(req, res){
-    // TODO precompute any data that isn't dynamic to save some CPU time
-    var host = req.headers.host.replace(/\:[0-9]+/, '');
-    res.setHeader('Content-Type', 'text/javascript');
-    res.send('define(function(){\n' + [
-        'var obj = ' + JSON.stringify({
-            requireConf: {
-                waitSeconds: 600,
-                urlArgs: 'ver=' + Package.version + (FRESH_KEY? '-' + FRESH_KEY: '') + (DEV_MODE? '-' + (+new Date()): ''),
-            },
-            removeDonateButton: (config.removeDonateButton === true),
-            allowSubscriptions: (config.allowSubscriptions === true),
-            websocketPath: config.externalWebsocketURL,
-            httpUnsafeOrigin: config.httpUnsafeOrigin.replace(/^\s*/, ''),
-            adminEmail: config.adminEmail,
-            adminKeys: admins,
-            inactiveTime: config.inactiveTime,
-            supportMailbox: config.supportMailboxPublicKey
-        }, null, '\t'),
-        'obj.httpSafeOrigin = ' + (function () {
-            if (config.httpSafeOrigin) { return '"' + config.httpSafeOrigin + '"'; }
-            if (config.httpSafePort) {
-                return "(function () { return window.location.origin.replace(/\:[0-9]+$/, ':" +
-                    config.httpSafePort + "'); }())";
-            }
-            return 'window.location.origin';
-        }()),
-        'return obj',
-        '});'
-    ].join(';\n'));
-});
+var serveConfig = (function () {
+    // if dev mode: never cache
+    var cacheString = function () {
+        return (FRESH_KEY? '-' + FRESH_KEY: '') + (DEV_MODE? '-' + (+new Date()): '');
+    };
+
+    var template = function (host) {
+        return [
+            'define(function(){',
+            'var obj = ' + JSON.stringify({
+                requireConf: {
+                    waitSeconds: 600,
+                    urlArgs: 'ver=' + Package.version + cacheString(),
+                },
+                removeDonateButton: (config.removeDonateButton === true),
+                allowSubscriptions: (config.allowSubscriptions === true),
+                websocketPath: config.externalWebsocketURL,
+                httpUnsafeOrigin: config.httpUnsafeOrigin.replace(/^\s*/, ''),
+                adminEmail: config.adminEmail,
+                adminKeys: admins,
+                inactiveTime: config.inactiveTime,
+                supportMailbox: config.supportMailboxPublicKey
+            }, null, '\t'),
+            'obj.httpSafeOrigin = ' + (function () {
+                if (config.httpSafeOrigin) { return '"' + config.httpSafeOrigin + '"'; }
+                if (config.httpSafePort) {
+                    return "(function () { return window.location.origin.replace(/\:[0-9]+$/, ':" +
+                        config.httpSafePort + "'); }())";
+                }
+                return 'window.location.origin';
+            }()),
+            'return obj',
+            '});'
+        ].join(';\n')
+    };
+
+    var cleanUp = {};
+
+    return function (req, res) {
+        var host = req.headers.host.replace(/\:[0-9]+/, '');
+        res.setHeader('Content-Type', 'text/javascript');
+        // don't cache anything if you're in dev mode
+        if (DEV_MODE) {
+            return void res.send(template(host));
+        }
+        // generate a lookup key for the cache
+        var cacheKey = host + ':' + cacheString();
+        // if there's nothing cached for that key...
+        if (!configCache[cacheKey]) {
+            // generate the response and cache it in memory
+            configCache[cacheKey] = template(host);
+            // and create a function to conditionally evict cache entries
+            // which have not been accessed in the last 20 seconds
+            cleanUp[cacheKey] = Util.throttle(function () {
+                delete cleanUp[cacheKey];
+                delete configCache[cacheKey];
+            }, 20000);
+        }
+
+        // successive calls to this function
+        cleanUp[cacheKey]();
+        return void res.send(configCache[cacheKey]);
+    };
+}());
+
+app.get('/api/config', serveConfig);
 
 var four04_path = Path.resolve(__dirname + '/customize.dist/404.html');
 var custom_four04_path = Path.resolve(__dirname + '/customize/404.html');
