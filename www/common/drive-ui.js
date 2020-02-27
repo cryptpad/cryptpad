@@ -2788,8 +2788,8 @@ define([
             keys.sort(function(a, b) {
                 var _a = props[a];
                 var _b = props[b];
-                if (a < b) { return mult * -1; }
-                if (b > a) { return mult; }
+                if (_a < _b) { return mult * -1; }
+                if (_b > _a) { return mult; }
                 return 0;
             });
             return keys;

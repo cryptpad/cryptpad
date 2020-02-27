@@ -871,7 +871,7 @@ define([
                 var sf = files[SHARED_FOLDERS];
                 var rootFiles = exp.getFiles([ROOT]);
                 var root = exp.find([ROOT]);
-                var parsed, secret, el;
+                var parsed /*, secret */, el;
                 for (var id in sf) {
                     el = sf[id];
                     id = Number(id);
