@@ -27,10 +27,13 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Desktop (please complete the following information):**
+**Browser (please complete the following information):**
  - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
+ - Browser [e.g. firefox, tor browser, chrome, safari, brave, edge, ???]
+   - variations [e.g. Firefox nightly, Firefox ESR, Chromium, Ungoogled chrome]
  - Version [e.g. 22]
+ - Extensions installed (UBlock Origin, Passbolt, LibreJS]
+ - Browser tweaks [e.g. firefox "Enhanced Tracking Protection" strict/custom mode, tor browser "safer" security level, chrome incognito mode]
 
 **Smartphone (please complete the following information):**
  - Device: [e.g. iPhone6]
