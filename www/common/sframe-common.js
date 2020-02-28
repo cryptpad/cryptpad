@@ -69,7 +69,7 @@ define([
     funcs.getAppConfig = function () { return AppConfig; };
 
     funcs.isLoggedIn = function () {
-        return ctx.metadataMgr.getPrivateData().accountName;
+        return ctx.metadataMgr.getPrivateData().loggedIn;
     };
 
     // MISC
