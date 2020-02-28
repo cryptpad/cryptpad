@@ -10,6 +10,10 @@ assignees: ''
 **Describe the bug**
 A clear and concise description of what the bug is.
 
+**Where did it happen?**
+Did the issue occur on CryptPad.fr or an instance hosted by a third-party?  
+If on another instance, please provide its full URL.
+
 **To Reproduce**
 Steps to reproduce the behavior:
 1. Go to '...'
