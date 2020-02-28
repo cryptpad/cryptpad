@@ -39,9 +39,8 @@ define([
         $container.find('.kanban-remove-item').remove();
         $container.find('.kanban-board .kanban-item').each(function (i, el) {
             var pos = kanban.findElementPosition(el);
-            var board = kanban.options.boards.find(function (b) {
-                return b.id === $(el.parentNode.parentNode).attr('data-id');
-            });
+            var boards = kanban.options.boards;
+            var board = boards.data[$(el.parentNode.parentNode).attr('data-id')];
             $('<button>', {
                 'class': 'kanban-remove-item btn btn-default fa fa-times',
                 title: Messages.kanban_removeItem
@@ -59,41 +58,48 @@ define([
 
     // Kanban code
     var initKanban = function (framework, boards) {
-        var defaultBoards = [{
-            "id": "todo",
-            "title": Messages.kanban_todo,
-            "color": "blue",
-            "item": [{
-                "title": Messages._getKey('kanban_item', [1])
-            }, {
-                "title": Messages._getKey('kanban_item', [2])
-            }]
-        }, {
-            "id": "working",
-            "title": Messages.kanban_working,
-            "color": "orange",
-            "item": [{
-                "title": Messages._getKey('kanban_item', [3])
-            }, {
-                "title": Messages._getKey('kanban_item', [4])
-            }]
-        }, {
-            "id": "done",
-            "title": Messages.kanban_done,
-            "color": "green",
-            "item": [{
-                "title": Messages._getKey('kanban_item', [5])
-            }, {
-                "title": Messages._getKey('kanban_item', [6])
-            }]
-        }];
+        var items = {};
+        for (var i=1; i<=6; i++) {
+            items['id'+i] = {
+                id: "id"+i,
+                title: Messages._getKey('kanban_item', [i])
+            };
+        }
+        var defaultBoards = {
+            list: ["todo", "working", "done"],
+            data: {
+                "todo": {
+                    "id": "todo",
+                    "title": Messages.kanban_todo,
+                    "color": "blue",
+                    "item": ["id1", "id2"]
+                },
+                "working": {
+                    "id": "working",
+                    "title": Messages.kanban_working,
+                    "color": "orange",
+                    "item": ["id3", "id4"]
+                },
+                "done": {
+                    "id": "done",
+                    "title": Messages.kanban_done,
+                    "color": "green",
+                    "item": ["id5", "id6"]
+                }
+            },
+            items: items
+        };
 
         if (!boards) {
             verbose("Initializing with default boards content");
             boards = defaultBoards;
+        } else if (Array.isArray(boards)) {
+            // XXX also migrate colors!
+            throw new Error("NEED MIGRATION"); // XXX
         } else {
             verbose("Initializing with boards content " + boards);
         }
+            boards = defaultBoards;
 
         // Remove any existing elements
         $(".kanban-container-outer").remove();
@@ -262,6 +268,8 @@ define([
                 jscolorL.fromString(currentColor);
             },
             buttonClick: function (el, boardId, e) {
+                return;
+                // XXX delete baord from modal only? or drag&drop
                 e.stopPropagation();
                 if (framework.isReadOnly() || framework.isLocked()) { return; }
                 UI.confirm(Messages.kanban_deleteBoard, function (yes) {
@@ -512,7 +520,7 @@ define([
         framework.setContentGetter(function () {
             if (!kanban) {
                 return {
-                    content: []
+                    content: {}
                 };
             }
             var content = kanban.getBoardsJSON();

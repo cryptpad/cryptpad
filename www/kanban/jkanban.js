@@ -53,7 +53,11 @@
                     responsive: '700',
                     colors: ["yellow", "green", "blue", "red", "orange"],
                     responsivePercentage: false,
-                    boards: [],
+                    boards: {
+                        data: {},
+                        items: {},
+                        list: []
+                    },
                     dragBoards: true,
                     addItemButton: false,
                     buttonContent: '+',
@@ -87,7 +91,7 @@
                         self.drakeBoard = self.dragula([self.container], {
                                 moves: function (el, source, handle, sibling) {
                                     if (self.options.readOnly) { return false; }
-                                    if (!self.options.dragBoards) return false;
+                                    if (!self.options.dragBoards) { return false; }
                                     return (handle.classList.contains('kanban-board-header') || handle.classList.contains('kanban-title-board'));
                                 },
                                 accepts: function (el, target, source, sibling) {
@@ -100,8 +104,9 @@
                             .on('drag', function (el, source) {
                                 el.classList.add('is-moving');
                                 self.options.dragBoard(el, source);
-                                if (typeof (el.dragfn) === 'function')
+                                if (typeof (el.dragfn) === 'function') {
                                     el.dragfn(el, source);
+                                }
                             })
                             .on('dragend', function (el) {
                                 el.classList.remove('is-moving');
@@ -112,32 +117,24 @@
                             .on('drop', function (el, target, source, sibling) {
                                 el.classList.remove('is-moving');
                                 self.options.dropBoard(el, target, source, sibling);
-                                if (typeof (el.dropfn) === 'function')
+                                if (typeof (el.dropfn) === 'function') {
                                     el.dropfn(el, target, source, sibling);
-
-                                // TODO: update board object board order
-                                console.log("Drop " + $(el).attr("data-id") + " just before " + (sibling ? $(sibling).attr("data-id") : " end "));
-                                var index1, index2;
-                                self.options.boards.some(function (element, index) {
-                                    if (element.id === $(el).attr("data-id")) {
-                                        index1 = index;
-                                        return true;
-                                    }
-                                });
-                                if (sibling) {
-                                    self.options.boards.some(function (element, index) {
-                                        if (element.id === $(sibling).attr("data-id")) {
-                                            index2 = index;
-                                            return true;
-                                        }
-                                    })
-                                } else {
-                                    index2 = self.options.boards.length;
                                 }
+
+                                var list = self.options.boards.list || [];
+                                var index1 = list.indexOf($(el).attr("data-id"));
+                                var index2;
+                                if (sibling) {
+                                    index2 = list.indexOf($(sibling).attr("data-id"));
+                                } else {
+                                    index2 = list.length;
+                                }
+
                                 console.log("Switch " + index1 + " and " + index2);
-                                if (index1 < index2)
+                                if (index1 < index2) {
                                     index2 = index2 - 1;
-                                self.options.boards.splice(index2, 0, self.options.boards.splice(index1, 1)[0]);
+                                }
+                                list.splice(index2, 0, list.splice(index1, 1)[0]);
                                 // send event that board has changed
                                 self.onChange();
 
@@ -164,31 +161,24 @@
                                 self.dragItemPos = self.findElementPosition(el);
 
                                 el.classList.add('is-moving');
-                                var boardJSON = __findBoardJSON(source.parentNode.dataset.id);
-                                if (boardJSON.dragTo !== undefined) {
-                                    self.options.boards.map(function (board) {
-                                        if (boardJSON.dragTo.indexOf(board.id) === -1 && board.id !== source.parentNode.dataset.id) {
-                                            self.findBoard(board.id).classList.add('disabled-board');
-                                        }
-                                    })
-                                }
 
                                 self.options.dragEl(el, source);
-                                if (el !== null && typeof (el.dragfn) === 'function')
+                                if (el !== null && typeof (el.dragfn) === 'function') {
                                     el.dragfn(el, source);
+                                }
                             })
                             .on('dragend', function (el) {
                                 console.log("In dragend");
                                 el.classList.remove('is-moving');
                                 self.options.dragendEl(el);
-                                if (el !== null && typeof (el.dragendfn) === 'function')
+                                if (el !== null && typeof (el.dragendfn) === 'function') {
                                     el.dragendfn(el);
+                                }
                             })
                             .on('cancel', function (el, container, source) {
                                 console.log("In cancel");
                                 el.classList.remove('is-moving');
-                                // FIXME custom code
-                                var boardId = source.parentNode.dataset.id;
+                                var boardId = $(source).closest('kanban-board').data('id');
                                 self.options.dragcancelEl(el, boardId);
                             })
                             .on('drop', function(el, target, source, sibling) {
@@ -197,42 +187,23 @@
 
                                 console.log("In drop");
 
-                                // TODO: update board object board order
-                                var board1;
-                                self.options.boards.some(function (element) {
-                                    if (element.id === $(source.parentNode).attr("data-id")) {
-                                        return board1 = element;
-                                    }
-                                });
-                                var board2;
-                                self.options.boards.some(function (element) {
-                                    if (element.id === $(target.parentNode).attr("data-id")) {
-                                        return board2 = element;
-                                    }
-                                });
+                                var sourceId = $(source).closest('.kanban-board').data('id');
+                                var targetId = $(target).closest('.kanban-board').data('id');
+
+                                var board1 = __findBoardJSON(sourceId);
+                                var board2 = __findBoardJSON(targetId);
+console.log(source, target, sourceId, targetId, board1, board2);
+
                                 var pos1 = self.dragItemPos;
                                 var pos2 = (sibling) ? self.findElementPosition(sibling) : (board2.item.length + 1);
                                 console.log("Drop element " + pos1 + " before " + pos2);
 
-                                // TODO: update board object item order
-
-                                var allB = document.querySelectorAll('.kanban-board');
-                                if (allB.length > 0 && allB !== undefined) {
-                                    for (var i = 0; i < allB.length; i++) {
-                                        allB[i].classList.remove('disabled-board');
-                                    }
-                                }
-                                var boardJSON = __findBoardJSON(source.parentNode.dataset.id);
-                                if (boardJSON.dragTo !== undefined) {
-                                    if (boardJSON.dragTo.indexOf(target.parentNode.dataset.id) === -1 && target.parentNode.dataset.id !== source.parentNode.dataset.id) {
-                                        self.drake.cancel(true)
-                                    }
-                                }
                                 if (el !== null) {
                                     self.options.dropEl(el, target, source, sibling);
                                     el.classList.remove('is-moving');
-                                    if (typeof (el.dropfn) === 'function')
+                                    if (typeof (el.dropfn) === 'function') {
                                         el.dropfn(el, target, source, sibling);
+                                    }
                                 }
 
                                 var item = board1.item[pos1];
@@ -297,27 +268,25 @@
 
 
                 this.addBoards = function(boards) {
-                    if (self.options.responsivePercentage) {
-                        self.container.style.width = '100%';
-                        self.options.gutter = '1%';
-                        if (window.innerWidth > self.options.responsive) {
-                            var boardWidth = (100 - boards.length * 2) / boards.length;
-                        } else {
-                            var boardWidth = 100 - (boards.length * 2);
-                        }
-                    } else {
-                        var boardWidth = self.options.widthBoard;
-                    }
+                    var boardWidth = self.options.widthBoard;
                     var addButton = self.options.addItemButton;
                     var buttonContent = self.options.buttonContent;
 
 
                     //for on all the boards
-                    for (var boardkey in boards) {
+                    var old = self.options.boards;
+                    boards.list = boards.list || [];
+                    boards.data = boards.data || {};
+                    for (var index in boards.list) {
                         // single board
-                        var board = boards[boardkey];
-                        if (self.options.boards !== boards)
-                            self.options.boards.push(board);
+                        var boardkey = boards.list[index];
+                        var board = boards.data[boardkey];
+                        if (!board) { continue; } // XXX clean invalid data
+
+                        // Remote changes, we had to reset our data
+                        if (old !== boards && old.list.indexOf(boardKey === -1)) {
+                            old.list.push(boardKey);
+                        }
 
                         //create node
                         var boardNode = document.createElement('div');
@@ -333,18 +302,23 @@
                         boardNode.style.marginRight = self.options.gutter;
                         // header board
                         var headerBoard = document.createElement('header');
-                        if (board.class !== '' && board.class !== undefined)
+                        if (board.class !== '' && board.class !== undefined) {
                             var allClasses = board.class.split(",");
-                        else allClasses = [];
+                        } else {
+                            allClasses = [];
+                        }
                         headerBoard.classList.add('kanban-board-header');
                         allClasses.map(function (value) {
                             headerBoard.classList.add(value);
                         });
                         if (board.color !== '' && board.color !== undefined) {
+                            /*
                             headerBoard._jscLinkedInstance = undefined;
                             jscolorL = new jscolor(headerBoard,{showOnClick: false, valueElement:undefined});
                             jscolorL.fromString(board.color);
                             headerBoard._jscLinkedInstance = undefined;
+                            */
+                            // XXX fixed list of color: use class?
                             headerBoard.classList.add("kanban-header-" + board.color);
                         }
                         titleBoard = document.createElement('div');
@@ -354,24 +328,25 @@
                         titleBoard.clickfn = board.boardTitleClick;
                         __onboardTitleClickHandler(titleBoard);
                         headerBoard.appendChild(titleBoard);
-                        __onColorClickHandler(headerBoard, "board");
+                        //__onColorClickHandler(headerBoard, "board"); // XXX color
 
-                        // if add button is true, add button to the board
-                        if (addButton) {
-                            var btn = document.createElement("BUTTON");
-                            btn.setAttribute("class", "kanban-title-button btn btn-default btn-xs fa fa-times");
-                            //var buttonHtml = '<button class="kanban-title-button btn btn-default btn-xs">'+buttonContent+'</button>'
-                            headerBoard.appendChild(btn);
-                            __onButtonClickHandler(btn, board.id);
-                        }
+                        // add button to the board
+                        /* // XXX delete board button ==> removed
+                        var btn = document.createElement("BUTTON");
+                        btn.setAttribute("class", "kanban-title-button btn btn-default btn-xs fa fa-times");
+                        headerBoard.appendChild(btn);
+                        __onButtonClickHandler(btn, board.id);
+                        */
+
                         //content board
                         var contentBoard = document.createElement('main');
                         contentBoard.classList.add('kanban-drag');
                         //add drag to array for dragula
                         self.boardContainer.push(contentBoard);
-                        for (var itemkey in board.item) {
+                        (board.item || []).forEach(function (itemkey) {
                             //create item
-                            var itemKanban = board.item[itemkey];
+                            var itemKanban = boards.items[itemkey];
+                            if (!itemKanban) { return; } // XXX clean invalid data
                             var nodeItem = document.createElement('div');
                             nodeItem.classList.add('kanban-item');
                             nodeItem.dataset.eid = itemKanban.id;
@@ -387,24 +362,32 @@
                             nodeItemText.dropfn = itemKanban.drop;
                             //add click handler of item
                             __onclickHandler(nodeItemText);
+                            /*
+                            // XXX color handle color differently
                             if (itemKanban.color !== '' && itemKanban.color !== undefined) {
-	                            jscolorL = new jscolor(nodeItem,{showOnClick: false, valueElement:undefined});
-	                            jscolorL.fromString(itemKanban.color);
-	                        }
-                            __onColorClickHandler(nodeItem, "item");
+                                jscolorL = new jscolor(nodeItem,{
+                                    showOnClick: false, valueElement:undefined
+                                });
+                                jscolorL.fromString(itemKanban.color);
+                            }*/
+                            //__onColorClickHandler(nodeItem, "item"); // XXX color
 
                             contentBoard.appendChild(nodeItem);
-                        }
+                        });
+
                         //footer board
+                        var footerBoard = document.createElement('footer');
+                        footerBoard.classList.add('kanban-board-footer');
                         //add button
                         var addBoardItem = document.createElement('button');
                         $(addBoardItem).addClass("kanban-title-button btn btn-default fa fa-plus");
-                        headerBoard.appendChild(addBoardItem);
+                        footerBoard.appendChild(addBoardItem);
                         __onAddItemClickHandler(addBoardItem);
 
                         //board assembly
                         boardNode.appendChild(headerBoard);
                         boardNode.appendChild(contentBoard);
+                        boardNode.appendChild(footerBoard);
                         //board add
                         self.container.appendChild(boardNode);
                     }
@@ -416,12 +399,16 @@
                 }
 
                 this.setBoards = function (boards) {
-                    self.element
-                    for (var boardkey in this.options.boards) {
-                        var board = this.options.boards[boardkey];
-                        this.removeBoard(board.id);
+                    //self.element
+                    for (var boardkey in this.options.boards.list) {
+                        //var board = this.options.boards[boardkey];
+                        this.removeBoard(boardKey);
                     }
-                    this.options.boards = [];
+                    this.options.boards = {
+                        list: [],
+                        data: boards.data || {},
+                        items: boards.items || {}
+                    };
                     this.addBoards(boards);
                 }
 
@@ -508,13 +495,13 @@
                     var addBoard = document.createElement('div');
                     addBoard.id = 'kanban-addboard';
                     addBoard.setAttribute('class', 'fa fa-plus');
+                    boardContainer.appendChild(addBoard);
 
                     self.container = boardContainer;
                     //add boards
                     self.addBoards(self.options.boards);
                     //appends to container
                     self.element.appendChild(boardContainerOuter);
-                    self.element.appendChild(addBoard);
 
                     // send event that board has changed
                     self.onChange();
@@ -571,13 +558,7 @@
                 }
 
                 function __findBoardJSON(id) {
-                    var el = []
-                    self.options.boards.map(function (board) {
-                        if (board.id === id) {
-                            return el.push(board)
-                        }
-                    })
-                    return el[0]
+                    return (self.options.boards.data || {})[id];
                 }
 
 
