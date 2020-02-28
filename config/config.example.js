@@ -1,45 +1,22 @@
-/*
-    globals module
-*/
-var _domain = 'http://localhost:3000/';
-
-// You can `kill -USR2` the node process and it will write out a heap dump.
-// If your system doesn't support dumping, comment this out and install with
-// `npm install --production`
-// See: https://strongloop.github.io/strongloop.com/strongblog/how-to-heap-snapshots/
-
-// to enable this feature, uncomment the line below:
-// require('heapdump');
-
-// we prepend a space because every usage expects it
-// requiring admins to preserve it is unnecessarily confusing
-var domain = ' ' + _domain;
-
-var Default = require("../lib/defaults");
-
+/* globals module */
 module.exports = {
-    /*  Sales coming from your server will be identified by your domain
-     *
-     *  If you are using CryptPad in a business context, please consider taking a support contract
-     *  by contacting sales@cryptpad.fr
-     */
-    myDomain: _domain,
-
-    // the address you want to bind to, :: means all ipv4 and ipv6 addresses
-    // this may not work on all operating systems
-    httpAddress: '::',
-
-    // the port on which your httpd will listen
-    httpPort: 3000,
-
-    // This is for allowing the cross-domain iframe to function when developing
-    httpSafePort: 3001,
+    httpUnsafeOrigin: 'http://localhost:3000/', // XXX
 
     // This is for deployment in production, CryptPad uses a separate origin (domain) to host the
     // cross-domain iframe. It can simply host the same content as CryptPad.
     // httpSafeOrigin: "https://some-other-domain.xyz",
 
-    httpUnsafeOrigin: domain,
+
+
+    // the address you want to bind to, :: means all ipv4 and ipv6 addresses
+    // this may not work on all operating systems
+    //httpAddress: '::',
+
+    // the port on which your httpd will listen
+    //httpPort: 3000,
+
+    // This is for allowing the cross-domain iframe to function when developing
+    httpSafePort: 3001,
 
 
     /* =====================
@@ -53,9 +30,11 @@ module.exports = {
      *  which can be found on the settings page for registered users.
      *  Entries should be strings separated by a comma.
      */
+/*
     adminKeys: [
         //"https://my.awesome.website/user/#/1/cryptpad-user1/YZgXQxKR0Rcb6r6CmxHPdAGLVludrAF2lEnkbx1vVOo=",
     ],
+*/
 
     /*  CryptPad's administration panel includes a "support" tab
      *  wherein administrators with a secret key can view messages
@@ -69,6 +48,7 @@ module.exports = {
      *
      */
     // supportMailboxPublicKey: "",
+    supportMailboxPublicKey: 'oxuMPm3xXHFALYaeFdAepVZyCpEPNTAPBO8MlpjdQw8=',
 
     /* =====================
      *      Infra setup
@@ -85,23 +65,6 @@ module.exports = {
      *  websocket (wss://yourdomain.com/cryptpad_websocket)
      */
     //externalWebsocketURL: 'wss://api.yourdomain.com/cryptpad_websocket
-
-    /*  CryptPad can be configured to send customized HTTP Headers
-     *  These settings may vary widely depending on your needs
-     *  Examples are provided below
-     */
-    httpHeaders: Default.httpHeaders(),
-
-    contentSecurity: Default.contentSecurity(domain),
-
-    // CKEditor and OnlyOffice require significantly more lax content security policy in order to function.
-    padContentSecurity: Default.padContentSecurity(domain),
-
-    /*  Main pages
-     *  add exceptions to the router so that we can access /privacy.html
-     *  and other odd pages
-     */
-    mainPages: Default.mainPages(),
 
     /* =====================
      *     Subscriptions
@@ -122,7 +85,7 @@ module.exports = {
      *  If you chose B, set 'allowSubscriptions' to false.
      *  If you chose C, set 'removeDonateButton' to true
      */
-    allowSubscriptions: true,
+    //allowSubscriptions: true,
     removeDonateButton: false,
 
     /*
@@ -142,7 +105,7 @@ module.exports = {
      *    development. Running a public instance that provides a "better deal" than cryptpad.fr
      *    is effectively using the project against itself.
      */
-    defaultStorageLimit: 50 * 1024 * 1024,
+    //defaultStorageLimit: 50 * 1024 * 1024,
 
     /*
      *  CryptPad allows administrators to give custom limits to their friends.
@@ -152,8 +115,8 @@ module.exports = {
      *
      *  hint: 1GB is 1024 * 1024 * 1024 bytes
      */
+/*
     customLimits: {
-        /*
         "https://my.awesome.website/user/#/1/cryptpad-user1/YZgXQxKR0Rcb6r6CmxHPdAGLVludrAF2lEnkbx1vVOo=": {
             limit: 20 * 1024 * 1024 * 1024,
             plan: 'insider',
@@ -164,8 +127,8 @@ module.exports = {
             plan: 'insider',
             note: 'storage space donated by my.awesome.website'
         }
-        */
     },
+*/
 
     /* =====================
      *        STORAGE
@@ -175,9 +138,11 @@ module.exports = {
      *  after a configurable number of days of inactivity (default 90 days).
      *  The value can be changed or set to false to remove expiration.
      *  Expired pads can then be removed using a cron job calling the
-     *  `delete-inactive.js` script with node
+     *  `evict-inactive.js` script with node
+     *
+     *  defaults to 90 days if nothing is provided
      */
-    inactiveTime: 90, // days
+    //inactiveTime: 90, // days
 
     /*  CryptPad archives some data instead of deleting it outright.
      *  This archived data still takes up space and so you'll probably still want to
@@ -190,14 +155,16 @@ module.exports = {
      *  deletion. Set this value to the number of days you'd like to retain
      *  archived data before it's removed permanently.
      *
+     *  defaults to 15 days if nothing is provided
      */
-    archiveRetentionTime: 15,
+    //archiveRetentionTime: 15,
 
     /*  Max Upload Size (bytes)
      *  this sets the maximum size of any one file uploaded to the server.
      *  anything larger than this size will be rejected
+     *  defaults to 20MB if no value is provided
      */
-    maxUploadSize: 20 * 1024 * 1024,
+    //maxUploadSize: 20 * 1024 * 1024,
 
     // XXX
     premiumUploadSize: 100 * 1024 * 1024,
