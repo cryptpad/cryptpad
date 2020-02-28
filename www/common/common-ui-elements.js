@@ -2426,9 +2426,9 @@ define([
             case 'access':
                 button = $('<button>', {
                     'class': 'fa fa-unlock-alt cp-toolbar-icon-access',
-                    title: "ACCESS", // XXX
+                    title: Messages.accessButton,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'})
-                .text("ACCESS")) // XXX
+                .text(Messages.accessButton))
                 .click(common.prepareFeedback(type))
                 .click(function () {
                     common.isPadStored(function (err, data) {
@@ -3391,7 +3391,7 @@ define([
                 attributes: {
                     'class': 'cp-toolbar-menu-logout-everywhere fa fa-plug',
                 },
-                content: h('span', "CLOSE REMOTE SESSIONS") // XXX Messages.settings_logoutEverywhereTitle)
+                content: h('span', Messages.settings_logoutEverywhereTitle)
             });
             options.push({
                 tag: 'a',
@@ -4235,7 +4235,7 @@ define([
                 msg += Messages.errorCopy;
             }
         } else if (err.type === 'ERESTRICTED') {
-            msg = Messages.restrictedError || "RESTRICTED"; // XXX
+            msg = Messages.restrictedError;
         }
         var sframeChan = common.getSframeChannel();
         sframeChan.event('EV_SHARE_OPEN', {hidden: true});
