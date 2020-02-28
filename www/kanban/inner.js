@@ -99,7 +99,13 @@ define([
         } else {
             verbose("Initializing with boards content " + boards);
         }
-            boards = defaultBoards;
+
+        // XXX TODO
+        /*
+            Delete a board ==> remove from array, delete the data + delete the items
+            Delete an item ==> remove from array + delete the item data
+        */
+
 
         // Remove any existing elements
         $(".kanban-container-outer").remove();
@@ -133,21 +139,23 @@ define([
                     verbose("An edit is already active");
                     //return;
                 }
-                kanban.inEditMode = true;
-                $(el).find('button').remove();
+                var eid = $(el).attr('data-eid');
+                kanban.inEditMode = eid;
                 var name = $(el).text();
                 $(el).html('');
+
+                // Add input
                 var $input = getInput().val(name).appendTo(el).focus();
                 $input[0].select();
+
                 var save = function () {
                     // Store the value
                     var name = $input.val();
                     // Remove the input
                     $(el).text(name);
                     // Save the value for the correct board
-                    var board = $(el).closest('.kanban-board').attr("data-id");
-                    var pos = kanban.findElementPosition(el.parentNode);
-                    kanban.getBoardJSON(board).item[pos].title = name;
+                    var item = kanban.getItemJSON(eid);
+                    item.title = name;
                     kanban.onChange();
                     // Unlock edit mode
                     kanban.inEditMode = false;
@@ -182,11 +190,14 @@ define([
                     verbose("An edit is already active");
                     //return;
                 }
-                kanban.inEditMode = true;
+                var boardId = $(el).closest('.kanban-board').attr("data-id");
+                kanban.inEditMode = boardId;
+
                 var name = $(el).text();
                 $(el).html('');
                 var $input = getInput().val(name).appendTo(el).focus();
                 $input[0].select();
+
                 var save = function () {
                     // Store the value
                     var name = $input.val();
@@ -196,8 +207,7 @@ define([
                     // Remove the input
                     $(el).text(name);
                     // Save the value for the correct board
-                    var board = $(el.parentNode.parentNode).attr("data-id");
-                    kanban.getBoardJSON(board).title = name;
+                    kanban.getBoardJSON(boardId).title = name;
                     kanban.onChange();
                     // Unlock edit mode
                     kanban.inEditMode = false;
@@ -294,7 +304,7 @@ define([
                     verbose("An edit is already active");
                     //return;
                 }
-                kanban.inEditMode = true;
+                kanban.inEditMode = "new";
                 // create a form to enter element
                 var boardId = $(el.parentNode.parentNode).attr("data-id");
                 var $item = $('<div>', {'class': 'kanban-item new-item'});
@@ -305,7 +315,9 @@ define([
                     $item.remove();
                     kanban.inEditMode = false;
                     if (!$input.val()) { return; }
+                    var id = Hash.createChannelId();
                     kanban.addElement(boardId, {
+                        "id": id,
                         "title": $input.val(),
                     });
                 };
@@ -336,20 +348,20 @@ define([
         $(addBoardDefault).attr('title', Messages.kanban_addBoard);
         addBoardDefault.addEventListener('click', function () {
             if (framework.isReadOnly()) { return; }
-            var counter = 1;
+            /*var counter = 1;
 
             // Get the new board id
             var boardExists = function (b) { return b.id === "board" + counter; };
             while (kanban.options.boards.some(boardExists)) { counter++; }
+            */
+            var id = Hash.createChannelId();
 
-            kanban.addBoards([{
-                "id": "board" + counter,
+            kanban.addBoard({
+                "id": id,
                 "title": Messages.kanban_newBoard,
                 "color": COLORS[Math.floor(Math.random()*COLORS.length)], // random color
-                "item": [{
-                    "title": Messages._getKey('kanban_item', [1]),
-                }]
-            }]);
+                "item": []
+            });
             kanban.onChange();
         });
 
@@ -403,86 +415,73 @@ define([
             $container.addClass('cp-app-readonly');
         });
 
-        var getSelectedElement = function () {
-            var node = document.getSelection().anchorNode;
-            return (node.nodeType === 3 ? node.parentNode : node);
-        };
         var getCursor = function () {
             if (!kanban || !kanban.inEditMode) { return; }
             try {
-                var el = getSelectedElement();
-                var input = $(el).is('input') ? el : $(el).find('input')[0];
-                if (!input) { return; }
-                var $input = $(input);
-
-                var pos;
-                var $item = $(el).closest('.kanban-item');
-                if ($item.length) {
-                    pos = kanban.findElementPosition($item[0]);
+                var id = kanban.inEditMode;
+                var newBoard;
+                var $el = $container.find('[data-id="'+id+'"]');
+                if (id === "new") {
+                    $el = $container.find('.kanban-item.new-item');
+                    newBoard = $el.closest('.kanban-board').attr('data-id');
+                } else if (!$el.length) {
+                    $el = $container.find('[data-eid="'+id+'"]');
                 }
-                var board = $input.closest('.kanban-board').attr('data-id');
+                if (!$el.length) { return; }
+                var $input = $el.find('input');
+                if (!$input.length) { return; }
+                var input = $input[0];
+
                 var val = ($input.val && $input.val()) || '';
                 var start = input.selectionStart;
                 var end = input.selectionEnd;
 
-
-                var boardEl = kanban.options.boards.find(function (b) {
-                    return b.id === board;
-                });
-                var oldVal = ((pos ? boardEl.item[pos] : boardEl) || {}).title;
+                var json = kanban.getBoardJSON(id) || kanban.getItemJSON(id);
+                // XXX only title for now...
+                var oldVal = json && json.title;
 
                 return {
-                    board: board,
-                    pos: pos,
+                    id: id,
+                    newBoard: newBoard,
                     value: val,
                     start: start,
                     end: end,
                     oldValue: oldVal
                 };
             } catch (e) {
+                console.error(e);
                 return {};
             }
         };
         var restoreCursor = function (data) {
             try {
-                var boardEl = kanban.options.boards.find(function (b) {
-                    return b.id === data.board;
-                });
-                if (!boardEl) { return; }
+                var id = data.id;
 
-                var $board = $('.kanban-board[data-id="'+data.board+'"');
-
-                // Editing a board title...
-                if (!data.pos && $board.length) {
-                    if (boardEl.title !== data.oldValue) { return; }
-                    $board.find('.kanban-title-board').click();
-                    var $boardInput = $board.find('.kanban-title-board input');
-                    $boardInput.val(data.value);
-                    $boardInput[0].selectionStart = data.start;
-                    $boardInput[0].selectionEnd = data.end;
-                    return;
-                }
-                // Editing a deleted board title: abort
-                if (!data.pos) {
-                    return;
-                }
-
-                // An item was added: add a new item
-                if (!data.oldValue) {
-                    $board.find('.kanban-title-button.fa-plus').click();
-                    var $newInput = $board.find('.kanban-item:last-child input');
+                // An item was being added: add a new item
+                if (id === "new" && !data.oldValue) {
+                    var $newBoard = $('.kanban-board[data-id="'+data.newBoard+'"]');
+                    $newBoard.find('.kanban-title-button.fa-plus').click();
+                    var $newInput = $newBoard.find('.kanban-item:last-child input');
                     $newInput.val(data.value);
                     $newInput[0].selectionStart = data.start;
                     $newInput[0].selectionEnd = data.end;
                     return;
                 }
 
-                // An item was edited: click on the correct item
-                var newVal = boardEl.item[data.pos];
-                if (!newVal || newVal.title !== data.oldValue) { return; }
-                var $el = $('.kanban-board[data-id="' + data.board + '"]')
-                            .find('.kanban-item:nth-child('+(data.pos + 1)+')');
-                $el.find('.kanban-item-text').click();
+                // Edit a board title or a card title
+                var $el = $container.find('.kanban-board[data-id="'+id+'"]');
+                if (!$el.length) {
+                    $el = $container.find('.kanban-item[data-eid="'+id+'"]');
+                }
+                if (!$el.length) { return; }
+
+                var json = kanban.getBoardJSON(id) || kanban.getItemJSON(id);
+
+                // if the value was changed by a remote user, abort
+                if (data.oldValue !== json.title) { return; }
+
+                // Editing a board title...
+                $el.find('.kanban-title-board, .kanban-item-text').click();
                 var $input = $el.find('input');
                 if ($input.length) {
                     $input.val(data.value);
@@ -490,6 +489,7 @@ define([
                     $input[0].selectionEnd = data.end;
                 }
             } catch (e) {
+                console.error(e);
                 return;
             }
         };
@@ -509,6 +509,7 @@ define([
 
             if (Sortify(currentContent) !== Sortify(remoteContent)) {
                 var cursor = getCursor();
+                console.error(cursor);
                 verbose("Content is different.. Applying content");
                 kanban.setBoards(remoteContent);
                 kanban.inEditMode = false;
