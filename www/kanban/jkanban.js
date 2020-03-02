@@ -199,6 +199,8 @@
                                 var id1 = $(el).attr('data-eid');
                                 var pos1 = board1.item.indexOf(id1);
 
+                                if (pos1 === -1) { return; }
+
                                 if (target.classList.contains('kanban-trash')) {
                                     board1.item.splice(pos1, 1);
                                     delete self.options.boards.items[id1];
