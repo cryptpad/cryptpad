@@ -69,31 +69,31 @@ define([
     var initKanban = function (framework, boards) {
         var items = {};
         for (var i=1; i<=6; i++) {
-            items['id'+i] = {
-                id: "id"+i,
+            items[i] = {
+                id: i,
                 title: Messages._getKey('kanban_item', [i])
             };
         }
         var defaultBoards = {
-            list: ["todo", "working", "done"],
+            list: [11, 12, 13],
             data: {
-                "todo": {
-                    "id": "todo",
+                "11": {
+                    "id": 11,
                     "title": Messages.kanban_todo,
                     "color": "blue",
-                    "item": ["id1", "id2"]
+                    "item": [1, 2]
                 },
-                "working": {
-                    "id": "working",
+                "12": {
+                    "id": 12,
                     "title": Messages.kanban_working,
                     "color": "orange",
-                    "item": ["id3", "id4"]
+                    "item": [3, 4]
                 },
-                "done": {
-                    "id": "done",
+                "13": {
+                    "id": 13,
                     "title": Messages.kanban_done,
                     "color": "green",
-                    "item": ["id5", "id6"]
+                    "item": [5, 6]
                 }
             },
             items: items
@@ -324,7 +324,7 @@ define([
                     $item.remove();
                     kanban.inEditMode = false;
                     if (!$input.val()) { return; }
-                    var id = Hash.createChannelId();
+                    var id = Util.createRandomInteger();
                     kanban.addElement(boardId, {
                         "id": id,
                         "title": $input.val(),
@@ -363,7 +363,7 @@ define([
             var boardExists = function (b) { return b.id === "board" + counter; };
             while (kanban.options.boards.some(boardExists)) { counter++; }
             */
-            var id = Hash.createChannelId();
+            var id = Util.createRandomInteger();
 
             kanban.addBoard({
                 "id": id,
@@ -463,6 +463,7 @@ define([
             }
         };
         var restoreCursor = function (data) {
+            if (!data) { return; }
             try {
                 var id = data.id;
 
@@ -546,11 +547,11 @@ define([
             var data = boards.data || {};
             var list = boards.list || [];
             Object.keys(data).forEach(function (id) {
-                if (list.indexOf(id) === -1) { delete data[id]; }
+                if (list.indexOf(Number(id)) === -1) { delete data[id]; }
             });
             Object.keys(items).forEach(function (eid) {
                 var exists = Object.keys(data).some(function (id) {
-                    return (data[id].item || []).indexOf(eid) !== -1;
+                    return (data[id].item || []).indexOf(Number(eid)) !== -1;
                 });
                 if (!exists) { delete items[eid]; }
             });

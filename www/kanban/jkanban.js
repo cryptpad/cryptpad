@@ -120,8 +120,19 @@
                                     el.dropfn(el, target, source, sibling);
                                 }
 
+                                var id = Number($(el).attr('data-id'));
                                 var list = self.options.boards.list || [];
-                                var index1 = list.indexOf($(el).attr("data-id"));
+
+                                // Move to trash?
+                                if (target.classList.contains('kanban-trash')) {
+                                    var index1 = list.indexOf(id);
+                                    list.splice(index1, 1);
+                                    delete self.options.boards.data[id];
+                                    self.onChange();
+                                    return;
+                                }
+
+                                var index1 = list.indexOf(id);
                                 var index2;
                                 if (sibling) {
                                     index2 = list.indexOf($(sibling).attr("data-id"));
@@ -194,30 +205,27 @@
 
                                 console.log("In drop");
 
-                                var sourceId = $(source).closest('.kanban-board').data('id');
-                                var board1 = __findBoardJSON(sourceId);
-                                var id1 = $(el).attr('data-eid');
-                                var pos1 = board1.item.indexOf(id1);
+                                var id1 = Number($(el).attr('data-eid'));
 
-                                if (pos1 === -1) { return; }
-
+                                // Move to trash?
                                 if (target.classList.contains('kanban-trash')) {
-                                    board1.item.splice(pos1, 1);
-                                    delete self.options.boards.items[id1];
+                                    self.moveItem(id1);
                                     self.onChange();
                                     return;
                                 }
 
 
 
-
-                                var targetId = $(target).closest('.kanban-board').data('id');
+                                // Find the new board
+                                var targetId = Number($(target).closest('.kanban-board').data('id'));
+                                if (!targetId) { return; }
                                 var board2 = __findBoardJSON(targetId);
                                 var id2 = $(sibling).attr('data-eid');
-                                var pos2 = id2 ? board2.item.indexOf(id2) : (board2.item.length)
+                                if (id2) { id2 = Number(id2); }
+                                var pos2 = id2 ? board2.item.indexOf(id2) : board2.item.length;
                                 if (pos2 === -1) { pos2 = board2.item.length; }
 
-
+                                // Remove the "move" effect
                                 if (el !== null) {
                                     self.options.dropEl(el, target, source, sibling);
                                     el.classList.remove('is-moving');
@@ -226,20 +234,57 @@
                                     }
                                 }
 
-                                if (board1 === board2 && pos1 < pos2) {
-                                    pos2 = pos2 - 1;
-                                }
-
-                                // moving element to target array
-
-                                var item = board1.item.splice(pos1, 1);
-                                board2.item.splice(pos2, 0, item[0]);
+                                // Move the item
+                                self.moveItem(id1, board2, pos2);
 
                                 // send event that board has changed
                                 self.onChange();
-
                             })
                     }
+                };
+
+                var findItem = function (eid) {
+                    var boards = self.options.boards;
+                    var list = boards.list || [];
+                    var res = [];
+                    list.forEach(function (id) {
+                        var b = boards.data[id];
+                        if (!b) { return; }
+                        var items = b.item || [];
+                        var idx = items.indexOf(eid);
+                        if (idx === -1) { return; }
+                        // This board contains our item...
+                        res.push({
+                            board: b,
+                            pos: idx
+                        });
+                    });
+                    return res;
+                };
+                this.moveItem = function (eid, board, pos) {
+                    var boards = self.options.boards;
+                    var list = boards.list || [];
+                    var from = [];
+                    var same = -1;
+                    var from = findItem(eid);
+                    // Remove the item from its board
+                    from.forEach(function (obj) {
+                        console.warn(obj.board.item[obj.pos]);
+                        obj.board.item.splice(obj.pos, 1);
+                        if (obj.board === board) { same = obj.pos; }
+                    });
+                    // If it's a deletion, remove the item data
+                    if (!board) {
+                        delete boards.items[eid];
+                        return;
+                    }
+                    // If it's moved to the same board at a bigger index, decrement the index by one
+                    // (we just removed one element)
+                    if (same !== -1 && same < pos) {
+                        pos = pos - 1;
+                    }
+                    board.item.splice(pos, 0, eid);
+                    console.error(JSON.stringify(boards, 0, 2));
                 };
 
                 this.enableAllBoards = function() {
@@ -438,8 +483,9 @@
                 };
 
                 this.removeBoard = function (board) {
-                    if (typeof (board) === 'string')
+                    if (typeof (board) === 'string' || typeof (board) === "number") {
                         board = self.element.querySelector('[data-id="' + board + '"]');
+                    }
                     if (board) {
                         board.remove();
 
