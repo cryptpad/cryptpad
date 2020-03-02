@@ -86,7 +86,7 @@
                     if (window.innerWidth > self.options.responsive) {
 
                         //Init Drag Board
-                        self.drakeBoard = self.dragula([self.container], {
+                        self.drakeBoard = self.dragula([self.container, self.trashContainer], {
                                 moves: function (el, source, handle, sibling) {
                                     if (self.options.readOnly) { return false; }
                                     if (!self.options.dragBoards) { return false; }
@@ -113,6 +113,14 @@
                                 self.options.dragendBoard(el);
                                 if (typeof (el.dragendfn) === 'function')
                                     el.dragendfn(el);
+                            })
+                            .on('over', function (el, target, source) {
+                                if (!target.classList.contains('kanban-trash')) { return false; }
+                                target.classList.add('kanban-trash-active');
+                            })
+                            .on('out', function (el, target) {
+                                if (!target.classList.contains('kanban-trash')) { return false; }
+                                target.classList.remove('kanban-trash-active');
                             })
                             .on('drop', function (el, target, source, sibling) {
                                 el.classList.remove('is-moving');
@@ -219,8 +227,6 @@
                                     self.onChange();
                                     return;
                                 }
-
-
 
                                 // Find the new board
                                 var targetId = Number($(target).closest('.kanban-board').data('id'));
@@ -547,7 +553,7 @@
                     addBoard.id = 'kanban-addboard';
                     addBoard.setAttribute('class', 'fa fa-plus');
                     boardContainer.appendChild(addBoard);
-                    var trash = document.createElement('div');
+                    var trash = self.trashContainer = document.createElement('div');
                     trash.setAttribute('id', 'kanban-trash');
                     trash.setAttribute('class', 'kanban-trash');
                     var trashIcon = document.createElement('i');
