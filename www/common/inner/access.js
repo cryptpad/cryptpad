@@ -335,6 +335,7 @@ define([
                 pending_owners = data.pending_owners || [];
                 $div1.empty();
                 $div2.empty();
+                $div1.append(h('p', Messages.owner_text));
                 $div1.append(drawRemove(false)).append(drawRemove(true));
                 $div2.append(drawAdd());
             });
