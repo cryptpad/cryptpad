@@ -94,6 +94,7 @@
                                 },
                                 accepts: function (el, target, source, sibling) {
                                     if (self.options.readOnly) { return false; }
+                                    if (sibling && sibling.getAttribute('id') === "kanban-addboard") { return false; }
                                     return target.classList.contains('kanban-container') ||
                                            target.classList.contains('kanban-trash');
                                 },
@@ -123,20 +124,24 @@
                                 var id = Number($(el).attr('data-id'));
                                 var list = self.options.boards.list || [];
 
+                                var index1 = list.indexOf(id);
+                                if (index1 === -1) { return; }
+
                                 // Move to trash?
                                 if (target.classList.contains('kanban-trash')) {
-                                    var index1 = list.indexOf(id);
                                     list.splice(index1, 1);
                                     delete self.options.boards.data[id];
                                     self.onChange();
                                     return;
                                 }
 
-                                var index1 = list.indexOf(id);
                                 var index2;
-                                if (sibling) {
-                                    index2 = list.indexOf($(sibling).attr("data-id"));
-                                } else {
+                                var id2 = Number($(sibling).attr("data-id"));
+                                if (sibling && id2) {
+                                    index2 = list.indexOf(id2);
+                                }
+                                // If we can't find the drop position, drop at the end
+                                if (typeof(index2) === "undefined" || index2 === -1) {
                                     index2 = list.length;
                                 }
 
@@ -144,10 +149,11 @@
                                 if (index1 < index2) {
                                     index2 = index2 - 1;
                                 }
-                                list.splice(index2, 0, list.splice(index1, 1)[0]);
+                                list.splice(index1, 1);
+                                list.splice(index2, 0, id);
                                 // send event that board has changed
                                 self.onChange();
-
+                                self.setBoards(self.options.boards);
                             });
 
                         //Init Drag Item
@@ -227,11 +233,7 @@
 
                                 // Remove the "move" effect
                                 if (el !== null) {
-                                    self.options.dropEl(el, target, source, sibling);
                                     el.classList.remove('is-moving');
-                                    if (typeof (el.dropfn) === 'function') {
-                                        el.dropfn(el, target, source, sibling);
-                                    }
                                 }
 
                                 // Move the item
@@ -239,6 +241,7 @@
 
                                 // send event that board has changed
                                 self.onChange();
+                                self.setBoards(self.options.boards);
                             })
                     }
                 };
@@ -483,7 +486,9 @@
                 };
 
                 this.removeBoard = function (board) {
+                    var id;
                     if (typeof (board) === 'string' || typeof (board) === "number") {
+                        id = board;
                         board = self.element.querySelector('[data-id="' + board + '"]');
                     }
                     if (board) {
@@ -492,6 +497,9 @@
                         // send event that board has changed
                         self.onChange();
                     }
+
+                    // Remove duplicates
+                    if (id) { $('.kanban-board[data-id="' + board + '"]').remove(); }
 
                     return self;
                 }
