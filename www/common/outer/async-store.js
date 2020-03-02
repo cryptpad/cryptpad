@@ -583,6 +583,7 @@ define([
                     support: Util.find(store.proxy, ['mailboxes', 'support', 'channel']),
                     pendingFriends: store.proxy.friends_pending || {},
                     supportPrivateKey: Util.find(store.proxy, ['mailboxes', 'supportadmin', 'keys', 'curvePrivate']),
+                    accountName: store.proxy.login_name || '',
                     teams: teams,
                     plan: account.plan
                 }

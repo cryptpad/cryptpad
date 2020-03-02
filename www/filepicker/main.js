@@ -84,7 +84,7 @@ define([
                         metaObj.doc = {};
                         var additionalPriv = {
                             fileHost: ApiConfig.fileHost,
-                            accountName: Utils.LocalStore.getAccountName(),
+                            loggedIn: Utils.LocalStore.isLoggedIn(),
                             origin: window.location.origin,
                             pathname: window.location.pathname,
                             feedbackAllowed: Utils.Feedback.state,
