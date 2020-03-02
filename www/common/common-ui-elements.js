@@ -953,7 +953,6 @@ define([
                 'data-curve': data.curvePublic || '',
                 'data-name': name.toLowerCase(),
                 'data-order': i,
-                title: name,
                 style: 'order:'+i+';'
             },[
                 avatar,
