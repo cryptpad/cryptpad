@@ -19,6 +19,7 @@
 
 .kanban-board.is-moving.gu-mirror {
     transform: rotate(3deg);
+    opacity: 0.8;
 }
 
 .kanban-board.is-moving.gu-mirror .kanban-drag {
@@ -69,6 +70,7 @@
 .kanban-item.is-moving.gu-mirror {
     transform: rotate(3deg);
     height: auto !important;
+    opacity: 0.8;
 }
 
 /* Dragula CSS  */

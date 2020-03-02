@@ -32,27 +32,36 @@ define([
 
     var COLORS = ['yellow', 'green', 'orange', 'blue', 'red', 'purple', 'cyan', 'lightgreen', 'lightblue'];
 
-    var addRemoveItemButton = function (framework, kanban) {
+    var addEditItemButton = function (framework, kanban) {
         if (!kanban) { return; }
         if (framework.isReadOnly() || framework.isLocked()) { return; }
         var $container = $(kanban.element);
-        $container.find('.kanban-remove-item').remove();
-        $container.find('.kanban-board .kanban-item').each(function (i, el) {
-            var pos = kanban.findElementPosition(el);
-            var boards = kanban.options.boards;
-            var board = boards.data[$(el.parentNode.parentNode).attr('data-id')];
+        $container.find('.kanban-edit-item').remove();
+        $container.find('.kanban-item').each(function (i, el) {
+            var itemId = $(el).attr('data-eid');
             $('<button>', {
-                'class': 'kanban-remove-item btn btn-default fa fa-times',
-                title: Messages.kanban_removeItem
+                'class': 'kanban-edit-item btn btn-default fa fa-pencil',
             }).click(function (e) {
                 e.stopPropagation();
+                /*
                 UI.confirm(Messages.kanban_removeItemConfirm, function (yes) {
                     if (!yes) { return; }
                     board.item.splice(pos, 1);
                     $(el).remove();
                     kanban.onChange();
                 });
+                */
+                // XXX Open edit modal
             }).appendTo($(el));
+        });
+        $container.find('.kanban-board').each(function (i, el) {
+            var itemId = $(el).attr('data-id');
+            $('<button>', {
+                'class': 'kanban-edit-item btn btn-default fa fa-pencil',
+            }).click(function (e) {
+                e.stopPropagation();
+                // XXX Open edit modal
+            }).appendTo($(el).find('.kanban-board-header'));
         });
     };
 
@@ -129,7 +138,7 @@ define([
                 verbose("Board object has changed");
                 framework.localChange();
                 if (kanban) {
-                    addRemoveItemButton(framework, kanban);
+                    addEditItemButton(framework, kanban);
                 }
             },
             click: function (el) {
@@ -176,7 +185,7 @@ define([
                         e.stopPropagation();
                         $(el).text(name);
                         kanban.inEditMode = false;
-                        addRemoveItemButton(framework, kanban);
+                        addEditItemButton(framework, kanban);
                         return;
                     }
                 });
@@ -407,7 +416,7 @@ define([
             if (framework.isReadOnly()) { return; }
             if (!kanban) { return; }
             if (unlocked) {
-                addRemoveItemButton(framework, kanban);
+                addEditItemButton(framework, kanban);
                 kanban.options.readOnly = false;
                 return void $container.removeClass('cp-app-readonly');
             }
@@ -498,7 +507,7 @@ define([
             // Init if needed
             if (!kanban) {
                 kanban = initKanban(framework, (newContent || {}).content);
-                addRemoveItemButton(framework, kanban);
+                addEditItemButton(framework, kanban);
                 return;
             }
 
@@ -513,7 +522,7 @@ define([
                 verbose("Content is different.. Applying content");
                 kanban.setBoards(remoteContent);
                 kanban.inEditMode = false;
-                addRemoveItemButton(framework, kanban);
+                addEditItemButton(framework, kanban);
                 restoreCursor(cursor);
             }
         });
@@ -531,8 +540,27 @@ define([
             };
         });
 
+        var cleanData = function (boards) {
+            if (typeof(boards) !== "object") { return; }
+            var items = boards.items || {};
+            var data = boards.data || {};
+            var list = boards.list || [];
+            Object.keys(data).forEach(function (id) {
+                if (list.indexOf(id) === -1) { delete data[id]; }
+            });
+            Object.keys(items).forEach(function (eid) {
+                var exists = Object.keys(data).some(function (id) {
+                    return (data[id].item || []).indexOf(eid) !== -1;
+                });
+                if (!exists) { delete items[eid]; }
+            });
+            framework.localChange();
+        };
+
         framework.onReady(function () {
             $("#cp-app-kanban-content").focus();
+            var content = kanban.getBoardsJSON();
+            cleanData(content);
         });
 
         framework.onDefaultContentNeeded(function () {

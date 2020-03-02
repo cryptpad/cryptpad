@@ -45,6 +45,23 @@
                 justify-content: space-around;
             }
         }
+        #kanban-trash {
+            width: 100px;
+            height: 100px;
+            align-self: end;
+            font-size: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            &.kanban-trash-active {
+                color: red;
+                border: 1px solid red;
+                background-color: rgba(255,0,0,0.5);
+            }
+            .kanban-item, .kanban-board {
+                display: none;
+            }
+        }
 
         .kanban-item {
             display: flex;
@@ -103,6 +120,7 @@
             .tools_unselectable();
         }
 
+/*
         .kanban-remove-item {
             padding: 0 0.5em;
             visibility: hidden;
@@ -112,6 +130,7 @@
                 visibility: visible;
             }
         }
+*/
 
         .kanban-additem {
             float: right;

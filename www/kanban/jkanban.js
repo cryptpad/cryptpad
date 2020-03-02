@@ -94,7 +94,8 @@
                                 },
                                 accepts: function (el, target, source, sibling) {
                                     if (self.options.readOnly) { return false; }
-                                    return target.classList.contains('kanban-container');
+                                    return target.classList.contains('kanban-container') ||
+                                           target.classList.contains('kanban-trash');
                                 },
                                 revertOnSpill: true,
                                 direction: 'horizontal',
@@ -179,6 +180,14 @@
                                 var boardId = $(source).closest('kanban-board').data('id');
                                 self.options.dragcancelEl(el, boardId);
                             })
+                            .on('over', function (el, target, source) {
+                                if (!target.classList.contains('kanban-trash')) { return false; }
+                                target.classList.add('kanban-trash-active');
+                            })
+                            .on('out', function (el, target) {
+                                if (!target.classList.contains('kanban-trash')) { return false; }
+                                target.classList.remove('kanban-trash-active');
+                            })
                             .on('drop', function(el, target, source, sibling) {
                                 self.enableAllBoards();
                                 el.classList.remove('is-moving');
@@ -186,15 +195,26 @@
                                 console.log("In drop");
 
                                 var sourceId = $(source).closest('.kanban-board').data('id');
-                                var targetId = $(target).closest('.kanban-board').data('id');
-
                                 var board1 = __findBoardJSON(sourceId);
-                                var board2 = __findBoardJSON(targetId);
-console.log(source, target, sourceId, targetId, board1, board2);
+                                var id1 = $(el).attr('data-eid');
+                                var pos1 = board1.item.indexOf(id1);
 
-                                var pos1 = self.dragItemPos;
-                                var pos2 = (sibling) ? self.findElementPosition(sibling) : (board2.item.length + 1);
-                                console.log("Drop element " + pos1 + " before " + pos2);
+                                if (target.classList.contains('kanban-trash')) {
+                                    board1.item.splice(pos1, 1);
+                                    delete self.options.boards.items[id1];
+                                    self.onChange();
+                                    return;
+                                }
+
+
+
+
+                                var targetId = $(target).closest('.kanban-board').data('id');
+                                var board2 = __findBoardJSON(targetId);
+                                var id2 = $(sibling).attr('data-eid');
+                                var pos2 = id2 ? board2.item.indexOf(id2) : (board2.item.length)
+                                if (pos2 === -1) { pos2 = board2.item.length; }
+
 
                                 if (el !== null) {
                                     self.options.dropEl(el, target, source, sibling);
@@ -204,13 +224,14 @@ console.log(source, target, sourceId, targetId, board1, board2);
                                     }
                                 }
 
-                                var item = board1.item[pos1];
-                                // if (board1==board2 && pos2<pos1)
-                                //   pos2 = pos2;
+                                if (board1 === board2 && pos1 < pos2) {
+                                    pos2 = pos2 - 1;
+                                }
 
                                 // moving element to target array
-                                board1.item.splice(pos1, 1);
-                                board2.item.splice(pos2 - 1, 0, item);
+
+                                var item = board1.item.splice(pos1, 1);
+                                board2.item.splice(pos2, 0, item[0]);
 
                                 // send event that board has changed
                                 self.onChange();
@@ -470,12 +491,20 @@ console.log(source, target, sourceId, targetId, board1, board2);
                     addBoard.id = 'kanban-addboard';
                     addBoard.setAttribute('class', 'fa fa-plus');
                     boardContainer.appendChild(addBoard);
+                    var trash = document.createElement('div');
+                    trash.setAttribute('id', 'kanban-trash');
+                    trash.setAttribute('class', 'kanban-trash');
+                    var trashIcon = document.createElement('i');
+                    trashIcon.setAttribute('class', 'fa fa-trash');
+                    trash.appendChild(trashIcon);
+                    self.boardContainer.push(trash);
 
                     self.container = boardContainer;
                     //add boards
                     self.addBoards();
                     //appends to container
                     self.element.appendChild(boardContainerOuter);
+                    self.element.appendChild(trash);
 
                     // send event that board has changed
                     self.onChange();
