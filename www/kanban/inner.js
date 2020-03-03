@@ -56,7 +56,28 @@ define([
     Messages.kanban_submit = "Submit"; // XXX
     Messages.kanban_delete = "Delete"; // XXX
 
+// XXX
+// Fix remote board deletion not applied to local UI
+// Add colors...
+// Add "large" view
 
+    var setValueAndCursor = function (input, val, _cursor) {
+        if (!input) { return; }
+        var $input = $(input);
+        var focus = _cursor || $input.is(':focus');
+        var oldVal = $input.val();
+        var ops = ChainPad.Diff.diff(_cursor.value || oldVal, val);
+
+        var cursor = _cursor || input;
+
+        var selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
+            return TextCursor.transformCursor(cursor[attr], ops);
+        });
+        $input.val(val);
+        if (focus) { $input.focus(); }
+        input.selectionStart = selects[0];
+        input.selectionEnd = selects[1];
+    };
 
     var addEditItemButton = function () {};
     var onRemoteChange = Util.mkEvent();
@@ -101,16 +122,7 @@ define([
                 if (!preserveCursor) {
                     $title.val(val);
                 } else {
-                    var focus = $title.is(':focus');
-                    var oldVal = $title.val();
-                    var ops = ChainPad.Diff.diff(oldVal, val);
-                    var selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
-                        return TextCursor.transformCursor(titleInput[attr], ops);
-                    });
-                    $title.val(val);
-                    if (focus) { $title.focus(); }
-                    titleInput.selectionStart = selects[0];
-                    titleInput.selectionEnd = selects[1];
+                    setValueAndCursor(titleInput, val);
                 }
             }
         };
@@ -230,14 +242,13 @@ define([
         var setId = function (_isBoard, _id) {
             isBoard = _isBoard;
             id = _id;
-            var boards = kanban.options.boards || {};
             if (_isBoard) {
-                dataObject = (boards.data || {})[id];
+                dataObject = kanban.getBoardJSON(id);
                 $(content)
                     .find('#cp-kanban-edit-body, #cp-kanban-edit-tags, [for="cp-kanban-edit-body"], [for="cp-kanban-edit-tags"]')
                     .hide();
             } else {
-                dataObject = (boards.items || {})[id];
+                dataObject = kanban.getItemJSON(id);
                 $(content)
                     .find('#cp-kanban-edit-body, #cp-kanban-edit-tags, [for="cp-kanban-edit-body"], [for="cp-kanban-edit-tags"]')
                     .show();
@@ -279,11 +290,10 @@ define([
         });
 
         onRemoteChange.reg(function () {
-            var boards = kanban.options.boards || {};
             if (isBoard) {
-                dataObject = (boards.data || {})[id];
+                dataObject = kanban.getBoardJSON(id);
             } else {
-                dataObject = (boards.items || {})[id];
+                dataObject = kanban.getItemJSON(id);
             }
             // Check if our itme has been deleted
             if (!dataObject) {
@@ -477,6 +487,13 @@ define([
                         return;
                     }
                 });
+                $input.on('change keyup', function () {
+                    var item = kanban.getItemJSON(eid);
+                    if (!item) { return; }
+                    var name = $input.val();
+                    item.title = name;
+                    framework.localChange();
+                });
 
             },
             boardTitleClick: function (el, e) {
@@ -524,6 +541,13 @@ define([
                         kanban.inEditMode = false;
                         return;
                     }
+                });
+                $input.on('change keyup', function () {
+                    var item = kanban.getBoardJSON(boardId);
+                    if (!item) { return; }
+                    var name = $input.val();
+                    item.title = name;
+                    framework.localChange();
                 });
             },
             colorClick: function (el, type) {
@@ -752,19 +776,24 @@ define([
                 }
                 if (!$el.length) { return; }
 
-                var json = kanban.getBoardJSON(id) || kanban.getItemJSON(id);
+                var isBoard = true;
+                var json = kanban.getBoardJSON(id);
+                if (!json) {
+                    isBoard = false;
+                    json = kanban.getItemJSON(id);
+                }
+
+                // Editing a board or card title...
+                $el.find(isBoard ? '.kanban-title-board' : '.kanban-item-text').click();
+                var $input = $el.find('input');
+                if (!$input.length) { return; }
 
                 // if the value was changed by a remote user, abort
-                if (data.oldValue !== json.title) { return; }
-
-                // Editing a board title...
-                $el.find('.kanban-title-board, .kanban-item-text').click();
-                var $input = $el.find('input');
-                if ($input.length) {
-                    $input.val(data.value);
-                    $input[0].selectionStart = data.start;
-                    $input[0].selectionEnd = data.end;
-                }
+                setValueAndCursor($input[0], json.title, {
+                    value: data.value,
+                    selectionStart: data.start,
+                    selectionEnd: data.end
+                });
             } catch (e) {
                 console.error(e);
                 return;
