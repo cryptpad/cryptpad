@@ -4,12 +4,15 @@ define([
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/sframe-app-framework.js',
+    '/common/sframe-common-codemirror.js',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/modes.js',
     '/customize/messages.js',
     '/common/hyperscript.js',
+    '/common/text-cursor.js',
+    '/bower_components/chainpad/chainpad.dist.js',
     '/bower_components/marked/marked.min.js',
     'cm/lib/codemirror',
 
@@ -31,12 +34,15 @@ define([
     nThen,
     SFCommon,
     Framework,
+    SFCodeMirror,
     Util,
     Hash,
     UI,
     Modes,
     Messages,
     h,
+    TextCursor,
+    ChainPad,
     Marked,
     CodeMirror)
 {
@@ -53,10 +59,21 @@ define([
     Messages.kanban_delete = "Delete"; // XXX
 
 
+
+    var addEditItemButton = function () {};
+    var onRemoteChange = Util.mkEvent();
     var editModal;
     var PROPERTIES = ['title', 'body', 'tags', 'color'];
     var BOARD_PROPERTIES = ['title', 'color'];
     var createEditModal = function (framework, kanban) {
+        var dataObject = {};
+        var isBoard, id;
+
+        var commit = function () {
+            framework.localChange();
+            kanban.setBoards(kanban.options.boards);
+            addEditItemButton(framework, kanban);
+        };
         if (editModal) { return editModal; }
         var titleInput, tagsDiv, color, text;
         var content = h('div', [
@@ -74,18 +91,35 @@ define([
 
         // Title
         var $title = $(titleInput);
+        $title.on('change keyup', function () {
+            dataObject.title = $title.val();
+            commit();
+        });
         var title = {
             getValue: function () {
                 return $title.val();
             },
-            setValue: function (val) {
-                $title.val(val);
+            setValue: function (val, preserveCursor) {
+                if (!preserveCursor) {
+                    $title.val(val);
+                } else {
+                    var focus = $title.is(':focus');
+                    var oldVal = $title.val();
+                    var ops = ChainPad.Diff.diff(oldVal, val);
+                    var selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
+                        return TextCursor.transformCursor(titleInput[attr], ops);
+                    });
+                    $title.val(val);
+                    if (focus) { $title.focus(); }
+                    titleInput.selectionStart = selects[0];
+                    titleInput.selectionEnd = selects[1];
+                }
             }
         };
 
         // Body
         var editor = CodeMirror.fromTextArea(text, {
-            lineNumbers: true,
+            lineWrapping: true,
             styleActiveLine : true,
             mode: "gfm"
         });
@@ -98,15 +132,23 @@ define([
             getValue: function () {
                 return editor.getValue();
             },
-            setValue: function (val) {
-                console.log(val);
-                setTimeout(function () {
-                    editor.setValue(val || ' ');
-                    editor.setValue(val || '');
-                    editor.save();
-                });
+            setValue: function (val, preserveCursor) {
+                if (isBoard) { return; }
+                if (!preserveCursor) {
+                    setTimeout(function () {
+                        editor.setValue(val || ' ');
+                        editor.setValue(val || '');
+                        editor.save();
+                    });
+                } else {
+                    SFCodeMirror.setValueAndCursor(editor, editor.getValue(), val || '');
+                }
             }
         };
+        editor.on('change', function () {
+            dataObject.body = editor.getValue();
+            commit();
+        });
 
         // Tags
         var getExisting = function () {
@@ -123,13 +165,19 @@ define([
             return tags;
         };
         var $tags = $(tagsDiv);
-        var _field;
+        var _field, initialTags;
         var tags = {
             getValue: function () {
                 if (!_field) { return; }
                 return _field.getTokens();
             },
-            setValue: function (tags) {
+            setValue: function (tags, preserveCursor) {
+                if (isBoard) { return; }
+                if (preserveCursor && initialTags && Sortify(tags || []) === initialTags) {
+                    // Don't redraw if there is no change
+                    return;
+                }
+                initialTags = Sortify(tags || []);
                 $tags.empty();
                 var input = UI.dialog.textInput();
                 $tags.append(input);
@@ -138,9 +186,16 @@ define([
                     UI.warn(Messages._getKey('tags_duplicate', [val]));
                 });
                 $tags.append(_field);
-                setTimeout(function () {
-                    _field.setTokens(tags || []);
-                });
+                _field.setTokens(tags || []);
+
+                var commitTags = function () {
+                    dataObject.tags = _field.getTokens();
+                    initialTags = Sortify(dataObject.tags);
+                    commit();
+                };
+                _field.tokenfield.on('tokenfield:createdtoken', commitTags);
+                _field.tokenfield.on('tokenfield:editedoken', commitTags);
+                _field.tokenfield.on('tokenfield:removedtoken', commitTags);
             }
         }
 
@@ -153,10 +208,14 @@ define([
             var $color = $(h('span.cp-kanban-palette.fa'));
             $color.addClass('cp-kanban-palette-'+(color || 'nocolor'));
             $color.click(function () {
+                if (color === selectedColor) { return; }
                 selectedColor = color;
                 $colors.find('.cp-kanban-palette').removeClass('fa-check');
                 var $col = $colors.find('.cp-kanban-palette-'+(color || 'nocolor'));
                 $col.addClass('fa-check');
+
+                dataObject.color = color;
+                commit();
             }).appendTo($colors);
         });
         var color = {
@@ -170,15 +229,17 @@ define([
             }
         };
 
-        var isBoard, id;
         var setId = function (_isBoard, _id) {
             isBoard = _isBoard;
             id = _id;
+            var boards = kanban.options.boards || {};
             if (_isBoard) {
+                dataObject = (boards.data || {})[id];
                 $(content)
                     .find('#cp-kanban-edit-body, #cp-kanban-edit-tags, [for="cp-kanban-edit-body"], [for="cp-kanban-edit-tags"]')
                     .hide();
             } else {
+                dataObject = (boards.items || {})[id];
                 $(content)
                     .find('#cp-kanban-edit-body, #cp-kanban-edit-tags, [for="cp-kanban-edit-body"], [for="cp-kanban-edit-tags"]')
                     .show();
@@ -189,42 +250,57 @@ define([
             className: 'danger', // XXX align left
             name: Messages.kanban_delete,
             onClick: function () {
-                // XXX
+                var boards = kanban.options.boards || {};
+                if (isBoard) {
+                    var list = boards.list || [];
+                    var idx = list.indexOf(id);
+                    if (idx !== -1) { list.splice(idx, 1); }
+                    delete (boards.data || {})[id];
+                    return void commit();
+                }
+                Object.keys(boards.data || {}).forEach(function (boardId) {
+                    var board = boards.data[boardId];
+                    if (!board) { return; }
+                    var items = board.item || [];
+                    var idx = items.indexOf(id);
+                    if (idx !== -1) { items.splice(idx, 1); }
+                });
+                delete (boards.items || {})[id];
+                commit();
             },
             keys: []
         }, {
-            className: 'cancel',
-            name: Messages.cancel,
-            onClick: function () {},
-            keys: []
-        }, {
             className: 'primary',
-            name: Messages.kanban_submit,
+            name: Messages.filePicker_close,
             onClick: function () {
-                var boards = kanban.options.boards || {};
-                if (isBoard) {
-                    var data = (boards.data || {})[id];
-                    if (!data) { return; } // XXX deleted by someone else?
-                    BOARD_PROPERTIES.forEach(function (type) {
-                        if (!editModal[type]) { return; }
-                        data[type] = editModal[type].getValue();
-                    });
-                    framework.localChange();
-                    return;
-                }
-                var item = (boards.items || {})[id];
-                if (!item) { return; } // XXX deleted by someone else?
-                PROPERTIES.forEach(function (type) {
-                    if (!editModal[type]) { return; }
-                    item[type] = editModal[type].getValue();
-                });
-                framework.localChange();
             },
             keys: []
         }];
         var modal = UI.dialog.customModal(content, {
             buttons: button
         });
+
+        onRemoteChange.reg(function () {
+            var boards = kanban.options.boards || {};
+            if (isBoard) {
+                dataObject = (boards.data || {})[id];
+            } else {
+                dataObject = (boards.items || {})[id];
+            }
+            // Check if our itme has been deleted
+            if (!dataObject) {
+                var $frame = $(modal).parents('.alertify').first();
+                if ($frame[0] && $frame[0].closeModal) {
+                    $frame[0].closeModal();
+                }
+                return;
+            }
+            // Not deleted, apply updates
+            PROPERTIES.forEach(function (type) {
+                editModal[type].setValue(dataObject[type], true);
+            });
+        });
+
         return {
             modal: modal,
             setId: setId,
@@ -262,7 +338,7 @@ define([
         UI.openCustomModal(editModal.modal);
     };
 
-    var addEditItemButton = function (framework, kanban) {
+    addEditItemButton = function (framework, kanban) {
         if (!kanban) { return; }
         if (framework.isReadOnly() || framework.isLocked()) { return; }
         var $container = $(kanban.element);
@@ -330,13 +406,6 @@ define([
         } else {
             verbose("Initializing with boards content " + boards);
         }
-
-        // XXX TODO
-        /*
-            Delete a board ==> remove from array, delete the data + delete the items
-            Delete an item ==> remove from array + delete the item data
-        */
-
 
         // Remove any existing elements
         $(".kanban-container-outer").remove();
@@ -507,26 +576,6 @@ define([
                 }
                 jscolorL.fromString(currentColor);
             },
-            buttonClick: function (el, boardId, e) {
-                return;
-                // XXX delete baord from modal only? or drag&drop
-                e.stopPropagation();
-                if (framework.isReadOnly() || framework.isLocked()) { return; }
-                UI.confirm(Messages.kanban_deleteBoard, function (yes) {
-                    if (!yes) { return; }
-                    verbose("Delete board");
-                    //var boardName = $(el.parentNode.parentNode).attr("data-id");
-                    for (var index in kanban.options.boards) {
-                        if (kanban.options.boards[index].id === boardId) {
-                            break;
-                        }
-                        index++;
-                    }
-                    kanban.options.boards.splice(index, 1);
-                    kanban.removeBoard(boardId);
-                    kanban.onChange();
-                });
-            },
             addItemClick: function (el) {
                 if (framework.isReadOnly() || framework.isLocked()) { return; }
                 if (kanban.inEditMode) {
@@ -589,7 +638,6 @@ define([
             kanban.addBoard({
                 "id": id,
                 "title": Messages.kanban_newBoard,
-                //"color": ""; //COLORS[Math.floor(Math.random()*COLORS.length)], // random color // XXX
                 "item": []
             });
             kanban.onChange();
@@ -740,12 +788,12 @@ define([
 
             if (Sortify(currentContent) !== Sortify(remoteContent)) {
                 var cursor = getCursor();
-                console.error(cursor);
                 verbose("Content is different.. Applying content");
                 kanban.setBoards(remoteContent);
                 kanban.inEditMode = false;
                 addEditItemButton(framework, kanban);
                 restoreCursor(cursor);
+                onRemoteChange.fire();
             }
         });
 
