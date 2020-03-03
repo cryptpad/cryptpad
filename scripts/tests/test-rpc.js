@@ -429,14 +429,12 @@ nThen(function  (w) {
         }
     }));
 }).nThen(function () {
-    // XXX RESTRICT alice should now be able to read oscar's mailbox metadata
-/*
     alice.anonRpc.send('GET_METADATA', oscar.mailboxChannel, function (err, response) {
-        if (err) {
-            PROBLEM
+        var metadata = response && response[0];
+        if (!metadata || !metadata.restricted || !metadata.channel) {
+            throw new Error("EXPECTED FULL ACCESS TO CHANNEL METADATA");
         }
     });
-*/
 }).nThen(function (w) {
     //throw new Error("boop");
     // add alice as an owner of oscar's mailbox for some reason
