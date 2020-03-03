@@ -373,11 +373,24 @@ nThen(function  (w) {
         }
     }));
 }).nThen(function (w) {
-    // XXX RESTRICT GET_METADATA should fail because alice is not on the allow list
-    // expect INSUFFICIENT_PERMISSIONS
-    alice.anonRpc.send('GET_METADATA', oscar.mailboxChannel, w(function (err) {
-        if (!err) {
-            // XXX RESTRICT alice should not be permitted to read oscar's mailbox's metadata
+    alice.anonRpc.send('GET_METADATA', oscar.mailboxChannel, w(function (err, response) {
+        if (!response) { throw new Error("EXPECTED RESPONSE"); }
+        var metadata = response[0];
+        var expected_fields = ['restricted', 'allowed'];
+        for (var key in metadata) {
+            if (expected_fields.indexOf(key) === -1) {
+                console.log(metadata);
+                throw new Error("EXPECTED METADATA TO BE RESTRICTED");
+            }
+        }
+    }));
+}).nThen(function (w) {
+    alice.anonRpc.send('WRITE_PRIVATE_MESSAGE', [
+        oscar.mailboxChannel,
+        '["VANDALISM"]',
+    ], w(function (err) {
+        if (err !== 'INSUFFICIENT_PERMISSIONS') {
+            throw new Error("EXPECTED INSUFFICIENT PERMISSIONS ERROR");
         }
     }));
 }).nThen(function (w) {
