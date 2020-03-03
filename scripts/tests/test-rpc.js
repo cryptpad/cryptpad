@@ -401,11 +401,17 @@ nThen(function  (w) {
         value: [
             alice.edKeys.edPublic
         ]
-    }, w(function (err /*, metadata */) {
+    }, w(function (err, response) {
         if (err) {
+            throw new Error("FAIL");
             return void console.error(err);
         }
-        //console.log('XXX', metadata);
+
+        var metadata = response && response[0];
+        if (!metadata || !Array.isArray(metadata.allowed) ||
+            metadata.allowed.indexOf(alice.edKeys.edPublic) === -1) {
+            throw new Error("EXPECTED ALICE TO BE IN THE ALLOW LIST");
+        }
     }));
 }).nThen(function (w) {
     oscar.anonRpc.send('GET_METADATA', oscar.mailboxChannel, w(function (err, response) {
