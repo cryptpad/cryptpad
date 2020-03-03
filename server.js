@@ -225,7 +225,9 @@ var serveConfig = (function () {
                 adminEmail: config.adminEmail,
                 adminKeys: admins,
                 inactiveTime: config.inactiveTime,
-                supportMailbox: config.supportMailboxPublicKey
+                supportMailbox: config.supportMailboxPublicKey,
+                maxUploadSize: config.maxUploadSize,
+                premiumUploadSize: config.premiumUploadSize,
             }, null, '\t'),
             'obj.httpSafeOrigin = ' + (function () {
                 if (config.httpSafeOrigin) { return '"' + config.httpSafeOrigin + '"'; }
