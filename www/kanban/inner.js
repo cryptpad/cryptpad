@@ -50,8 +50,6 @@ define([
     var verbose = function (x) { console.log(x); };
     verbose = function () {}; // comment out to enable verbose logging
 
-    var COLORS = ['yellow', 'green', 'orange', 'blue', 'red', 'purple', 'cyan', 'lightgreen', 'lightblue'];
-
     Messages.kanban_title = "Title"; // XXX
     Messages.kanban_body = "Body"; // XXX
     Messages.kanban_color = "Color"; // XXX
@@ -75,7 +73,7 @@ define([
             addEditItemButton(framework, kanban);
         };
         if (editModal) { return editModal; }
-        var titleInput, tagsDiv, color, text;
+        var titleInput, tagsDiv, colors, text;
         var content = h('div', [
             h('label', {for:'cp-kanban-edit-title'}, Messages.kanban_title),
             titleInput = h('input#cp-kanban-edit-title'),
@@ -197,7 +195,7 @@ define([
                 _field.tokenfield.on('tokenfield:editedoken', commitTags);
                 _field.tokenfield.on('tokenfield:removedtoken', commitTags);
             }
-        }
+        };
 
         // Colors
         var $colors = $(colors);
