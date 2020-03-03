@@ -9,10 +9,21 @@ define([
     '/common/common-interface.js',
     '/common/modes.js',
     '/customize/messages.js',
+    '/common/hyperscript.js',
+    '/bower_components/marked/marked.min.js',
+    'cm/lib/codemirror',
+
+    'cm/mode/gfm/gfm',
+
+    'css!/bower_components/codemirror/lib/codemirror.css',
+    'css!/bower_components/codemirror/addon/dialog/dialog.css',
+    'css!/bower_components/codemirror/addon/fold/foldgutter.css',
+
+
+
     '/kanban/jkanban.js',
     '/common/jscolor.js',
     'css!/kanban/jkanban.css',
-
     'less!/kanban/app-kanban.less'
 ], function (
     $,
@@ -24,13 +35,232 @@ define([
     Hash,
     UI,
     Modes,
-    Messages)
+    Messages,
+    h,
+    Marked,
+    CodeMirror)
 {
 
     var verbose = function (x) { console.log(x); };
     verbose = function () {}; // comment out to enable verbose logging
 
     var COLORS = ['yellow', 'green', 'orange', 'blue', 'red', 'purple', 'cyan', 'lightgreen', 'lightblue'];
+
+    Messages.kanban_title = "Title"; // XXX
+    Messages.kanban_body = "Body"; // XXX
+    Messages.kanban_color = "Color"; // XXX
+    Messages.kanban_submit = "Submit"; // XXX
+    Messages.kanban_delete = "Delete"; // XXX
+
+
+    var editModal;
+    var PROPERTIES = ['title', 'body', 'tags', 'color'];
+    var BOARD_PROPERTIES = ['title', 'color'];
+    var createEditModal = function (framework, kanban) {
+        if (editModal) { return editModal; }
+        var titleInput, tagsDiv, color, text;
+        var content = h('div', [
+            h('label', {for:'cp-kanban-edit-title'}, Messages.kanban_title),
+            titleInput = h('input#cp-kanban-edit-title'),
+            h('label', {for:'cp-kanban-edit-body'}, Messages.kanban_body),
+            h('div#cp-kanban-edit-body', [
+                text = h('textarea')
+            ]),
+            h('label', {for:'cp-kanban-edit-tags'}, Messages.fm_tagsName),
+            tagsDiv = h('div#cp-kanban-edit-tags'),
+            h('label', {for:'cp-kanban-edit-color'}, Messages.kanban_color),
+            colors = h('div#cp-kanban-edit-colors'),
+        ]);
+
+        // Title
+        var $title = $(titleInput);
+        var title = {
+            getValue: function () {
+                return $title.val();
+            },
+            setValue: function (val) {
+                $title.val(val);
+            }
+        };
+
+        // Body
+        var editor = CodeMirror.fromTextArea(text, {
+            lineNumbers: true,
+            styleActiveLine : true,
+            mode: "gfm"
+        });
+        var common = framework._.sfCommon;
+        var markdownTb = common.createMarkdownToolbar(editor);
+        $(text).before(markdownTb.toolbar);
+        $(markdownTb.toolbar).show();
+        editor.refresh();
+        var body = {
+            getValue: function () {
+                return editor.getValue();
+            },
+            setValue: function (val) {
+                console.log(val);
+                setTimeout(function () {
+                    editor.setValue(val || ' ');
+                    editor.setValue(val || '');
+                    editor.save();
+                });
+            }
+        };
+
+        // Tags
+        var getExisting = function () {
+            var tags = [];
+            var boards = kanban.options.boards || {};
+            Object.keys(boards.items || {}).forEach(function (id) {
+                var data = boards.items[id];
+                if (!Array.isArray(data.tags)) { return; }
+                data.tags.forEach(function (tag) {
+                    if (tags.indexOf(tag) === -1) { tags.push(tag); }
+                });
+            });
+            tags.sort();
+            return tags;
+        };
+        var $tags = $(tagsDiv);
+        var _field;
+        var tags = {
+            getValue: function () {
+                if (!_field) { return; }
+                return _field.getTokens();
+            },
+            setValue: function (tags) {
+                $tags.empty();
+                var input = UI.dialog.textInput();
+                $tags.append(input);
+                var existing = getExisting();
+                _field = UI.tokenField(input, existing).preventDuplicates(function (val) {
+                    UI.warn(Messages._getKey('tags_duplicate', [val]));
+                });
+                $tags.append(_field);
+                setTimeout(function () {
+                    _field.setTokens(tags || []);
+                });
+            }
+        }
+
+        // Colors
+        var $colors = $(colors);
+        var palette = [''];
+        for (var i=1; i<=8; i++) { palette.push('color'+i); }
+        var selectedColor = '';
+        palette.forEach(function (color) {
+            var $color = $(h('span.cp-kanban-palette.fa'));
+            $color.addClass('cp-kanban-palette-'+(color || 'nocolor'));
+            $color.click(function () {
+                selectedColor = color;
+                $colors.find('.cp-kanban-palette').removeClass('fa-check');
+                var $col = $colors.find('.cp-kanban-palette-'+(color || 'nocolor'));
+                $col.addClass('fa-check');
+            }).appendTo($colors);
+        });
+        var color = {
+            getValue: function () {
+                return selectedColor;
+            },
+            setValue: function (color) {
+                $colors.find('.cp-kanban-palette').removeClass('fa-check');
+                var $col = $colors.find('.cp-kanban-palette-'+(color || 'nocolor'));
+                $col.addClass('fa-check');
+            }
+        };
+
+        var isBoard, id;
+        var setId = function (_isBoard, _id) {
+            isBoard = _isBoard;
+            id = _id;
+            if (_isBoard) {
+                $(content)
+                    .find('#cp-kanban-edit-body, #cp-kanban-edit-tags, [for="cp-kanban-edit-body"], [for="cp-kanban-edit-tags"]')
+                    .hide();
+            } else {
+                $(content)
+                    .find('#cp-kanban-edit-body, #cp-kanban-edit-tags, [for="cp-kanban-edit-body"], [for="cp-kanban-edit-tags"]')
+                    .show();
+            }
+        };
+
+        var button = [{
+            className: 'danger', // XXX align left
+            name: Messages.kanban_delete,
+            onClick: function () {
+                // XXX
+            },
+            keys: []
+        }, {
+            className: 'cancel',
+            name: Messages.cancel,
+            onClick: function () {},
+            keys: []
+        }, {
+            className: 'primary',
+            name: Messages.kanban_submit,
+            onClick: function () {
+                var boards = kanban.options.boards || {};
+                if (isBoard) {
+                    var data = (boards.data || {})[id];
+                    if (!data) { return; } // XXX deleted by someone else?
+                    BOARD_PROPERTIES.forEach(function (type) {
+                        if (!editModal[type]) { return; }
+                        data[type] = editModal[type].getValue();
+                    });
+                    framework.localChange();
+                    return;
+                }
+                var item = (boards.items || {})[id];
+                if (!item) { return; } // XXX deleted by someone else?
+                PROPERTIES.forEach(function (type) {
+                    if (!editModal[type]) { return; }
+                    item[type] = editModal[type].getValue();
+                });
+                framework.localChange();
+            },
+            keys: []
+        }];
+        var modal = UI.dialog.customModal(content, {
+            buttons: button
+        });
+        return {
+            modal: modal,
+            setId: setId,
+            title: title,
+            body: body,
+            tags: tags,
+            color: color
+        };
+    };
+    var getItemEditModal = function (framework, kanban, eid) {
+        // Create modal if needed
+        if (!editModal) { editModal = createEditModal(framework, kanban); }
+        editModal.setId(false, eid);
+        var boards = kanban.options.boards || {};
+        var item = (boards.items || {})[eid];
+        if (!item) { return void UI.warn(Messages.error); }
+        PROPERTIES.forEach(function (type) {
+            if (!editModal[type]) { return; }
+            editModal[type].setValue(item[type]);
+        });
+        UI.openCustomModal(editModal.modal);
+    };
+    var getBoardEditModal = function (framework, kanban, id) {
+        // Create modal if needed
+        if (!editModal) { editModal = createEditModal(framework, kanban); }
+
+        editModal.setId(true, id);
+        var boards = kanban.options.boards || {};
+        var board = (boards.data || {})[id];
+        if (!board) { return void UI.warn(Messages.error); }
+        BOARD_PROPERTIES.forEach(function (type) {
+            if (!editModal[type]) { return; }
+            editModal[type].setValue(board[type]);
+        });
+        UI.openCustomModal(editModal.modal);
+    };
 
     var addEditItemButton = function (framework, kanban) {
         if (!kanban) { return; }
@@ -42,16 +272,8 @@ define([
             $('<button>', {
                 'class': 'kanban-edit-item btn btn-default fa fa-pencil',
             }).click(function (e) {
+                getItemEditModal(framework, kanban, itemId);
                 e.stopPropagation();
-                /*
-                UI.confirm(Messages.kanban_removeItemConfirm, function (yes) {
-                    if (!yes) { return; }
-                    board.item.splice(pos, 1);
-                    $(el).remove();
-                    kanban.onChange();
-                });
-                */
-                // XXX Open edit modal
             }).appendTo($(el));
         });
         $container.find('.kanban-board').each(function (i, el) {
@@ -59,8 +281,8 @@ define([
             $('<button>', {
                 'class': 'kanban-edit-item btn btn-default fa fa-pencil',
             }).click(function (e) {
+                getBoardEditModal(framework, kanban, itemId);
                 e.stopPropagation();
-                // XXX Open edit modal
             }).appendTo($(el).find('.kanban-board-header'));
         });
     };
@@ -132,7 +354,6 @@ define([
             gutter: '5px',
             widthBoard: '300px',
             buttonContent: '❌',
-            colors: COLORS,
             readOnly: framework.isReadOnly(),
             onChange: function () {
                 verbose("Board object has changed");
@@ -368,7 +589,7 @@ define([
             kanban.addBoard({
                 "id": id,
                 "title": Messages.kanban_newBoard,
-                "color": COLORS[Math.floor(Math.random()*COLORS.length)], // random color
+                //"color": ""; //COLORS[Math.floor(Math.random()*COLORS.length)], // random color // XXX
                 "item": []
             });
             kanban.onChange();
