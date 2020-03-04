@@ -12,6 +12,7 @@ define([
     '/customize/messages.js',
     '/common/hyperscript.js',
     '/common/text-cursor.js',
+    '/common/diffMarked.js',
     '/bower_components/chainpad/chainpad.dist.js',
     '/bower_components/marked/marked.min.js',
     'cm/lib/codemirror',
@@ -42,6 +43,7 @@ define([
     Messages,
     h,
     TextCursor,
+    DiffMd,
     ChainPad,
     Marked,
     CodeMirror)
@@ -64,7 +66,7 @@ define([
         var $input = $(input);
         var focus = _cursor || $input.is(':focus');
         var oldVal = $input.val();
-        var ops = ChainPad.Diff.diff(_cursor.value || oldVal, val);
+        var ops = ChainPad.Diff.diff(_cursor ? _cursor.value : oldVal, val);
 
         var cursor = _cursor || input;
 
@@ -356,7 +358,7 @@ define([
             }).click(function (e) {
                 getItemEditModal(framework, kanban, itemId);
                 e.stopPropagation();
-            }).appendTo($(el));
+            }).insertAfter($(el).find('.kanban-item-text'));
         });
         $container.find('.kanban-board').each(function (i, el) {
             var itemId = $(el).attr('data-id');
@@ -639,6 +641,9 @@ define([
                     }
                 });
             },
+            renderMd: function (md) {
+                return DiffMd.render(md, true, false);
+            },
             addItemButton: true,
             boards: boards
         });
@@ -661,6 +666,37 @@ define([
                 "item": []
             });
             kanban.onChange();
+        });
+
+        var $container = $('#cp-app-kanban-content');
+        var addControls = function () {
+            var small = h('span.cp-kanban-view-small.fa.fa-minus');
+            var big = h('span.cp-kanban-view.fa.fa-bars');
+            $(small).click(function () {
+                if ($container.hasClass('cp-kanban-quick')) { return; }
+                $container.addClass('cp-kanban-quick');
+                framework._.sfCommon.setPadAttribute('quickMode', true);
+            });
+            $(big).click(function () {
+                if (!$container.hasClass('cp-kanban-quick')) { return; }
+                $container.removeClass('cp-kanban-quick');
+                framework._.sfCommon.setPadAttribute('quickMode', false);
+            });
+            var container = h('div#cp-kanban-controls', [
+                h('div', "Tags"), // XXX
+                h('div.cp-kanban-changeView', [
+                    small,
+                    big
+                ])
+            ]);
+            $container.prepend(container);
+            return container;
+        };
+        addControls();
+        framework._.sfCommon.getPadAttribute('quickMode', function (err, res) {
+            if (!err && res) {
+                $container.addClass('cp-kanban-quick');
+            }
         });
 
         return kanban;

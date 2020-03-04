@@ -1,6 +1,7 @@
 @import (reference) "../../customize/src/less2/include/browser.less";
 @import (reference) "../../customize/src/less2/include/framework.less";
 @import (reference) "../../customize/src/less2/include/tools.less";
+@import (reference) "../../customize/src/less2/include/markdown.less";
 
 // body
 &.cp-app-kanban {
@@ -15,6 +16,8 @@
     max-height: 100%;
     min-height: auto;
     color: @cryptpad_text_col;
+
+    @board-bg: #eaeaea;
 
     @palette0: #888; // Default bg color for header
     @palette1: #FFD4D4;
@@ -108,6 +111,59 @@
         height: 100%;
         overflow: hidden;
     }
+
+    .kanban-edit-item {
+        padding: 5px;
+    }
+
+    .kanban-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 5px;
+        flex-wrap: wrap;
+        .kanban-item-body, .kanban-item-tags {
+            .tools_unselectable();
+            width: 100%;
+        }
+        .kanban-item-body {
+            margin: 10px 0;
+            font-size: 0.8em;
+            :last-child {
+                margin-bottom: 0px;
+            }
+            .markdown_main();
+            .markdown_cryptpad();
+            .markdown_preformatted-code;
+            .markdown_gfm-table(black);
+            ul {
+                padding-left: 30px;
+            }
+        }
+        .kanban-item-tags {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            span {
+                padding: 0 5px;
+                margin-right: 5px;
+                margin-top: 5px;
+                background-color: rgba(0,0,0,0.1);
+                display: inline-block;
+                font-size: 12px;
+            }
+        }
+        &.new-item {
+            padding: 10px;
+        }
+        .kanban-item-text {
+            .tools_unselectable();
+            cursor: text;
+            overflow-wrap: anywhere;
+            flex: 1;
+        }
+    }
+
     #cp-app-kanban-content {
         flex: 1;
         display: flex;
@@ -126,8 +182,66 @@
                 max-height: 100%;
             }
         }
+        #cp-kanban-controls {
+            height: 40px;
+            padding: 10px;
+            display: flex;
+            position: relative;
+            width: 100%;
+            justify-content: space-between;
+            position: relative;
+            .cp-kanban-changeView {
+                height: 30px;
+                width: 60px;
+                span {
+                    position: fixed;
+                    height: 30px;
+                    width: 30px;
+                    line-height: 30px;
+                    text-align: center;
+                    display: inline-block;
+                    background-color: @board-bg;
+                    cursor: pointer;
+                    &:hover {
+                        background-color: darken(@board-bg, 10%);
+                    }
+                    &:last-child {
+                        right: 10px;
+                    }
+                }
+            }
+        }
+        &:not(.cp-kanban-quick) {
+            #cp-kanban-controls {
+                .cp-kanban-changeView {
+                    span.cp-kanban-view {
+                        background-color: @cryptpad_text_col !important;
+                        color: white;
+                    }
+                    span.cp-kanban-view-small {
+                    }
+                }
+            }
+        }
+        &.cp-kanban-quick {
+            #cp-kanban-controls {
+                .cp-kanban-changeView {
+                    span.cp-kanban-view {
+                    }
+                    span.cp-kanban-view-small {
+                        background-color: @cryptpad_text_col !important;
+                        color: white;
+                    }
+                }
+            }
+            .kanban-item {
+                .kanban-item-body, .kanban-item-tags {
+                    display: none;
+                }
+            }
+        }
         #kanban-trash {
-            height: 100px;
+            height: 60px;
             font-size: 40px;
             display: flex;
             align-items: center;
@@ -147,23 +261,8 @@
             }
         }
 
-        .kanban-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 5px 10px 10px;
-            &.new-item {
-                padding: 10px;
-            }
-            .kanban-item-text {
-                cursor: text;
-                overflow-wrap: anywhere;
-                flex: 1;
-            }
-        }
-
         .kanban-board {
-            background-color: #eaeaea;
+            background-color: @board-bg;
             color: @cryptpad_text_col;
             main {
                 min-height: 0;

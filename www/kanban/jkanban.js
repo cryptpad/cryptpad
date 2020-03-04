@@ -71,6 +71,7 @@
                     buttonClick: function (el, boardId) {},
                     colorClick: function (el, type) {},
                     addItemClick: function (el, boardId) {},
+                    renderMd: function (md) {},
                     onChange: function () {}
                 };
 
@@ -168,7 +169,7 @@
                             moves: function (el, source, handle, sibling) {
                                 if (self.options.readOnly) { return false; }
                                 if (el.classList.contains('new-item')) { return false; }
-                                return handle.classList.contains('kanban-item');
+                                return el.classList.contains('kanban-item');
                             },
                             accepts: function (el, target, source, sibling) {
                                 if (self.options.readOnly) { return false; }
@@ -336,6 +337,26 @@
                     nodeItemText.dataset.eid = element.id;
                     nodeItemText.innerText = element.title;
                     nodeItem.appendChild(nodeItemText);
+                    if (element.body) {
+                        var html = self.renderMd(element.body);
+                        var nodeBody = document.createElement('div');
+                        nodeBody.classList.add('kanban-item-body');
+                        nodeBody.onclick = function (e) {
+                            e.preventDefault();
+                        };
+                        nodeBody.innerHTML = html;
+                        nodeItem.appendChild(nodeBody);
+                    }
+                    if (Array.isArray(element.tags)) {
+                        var nodeTags = document.createElement('div');
+                        nodeTags.classList.add('kanban-item-tags');
+                        element.tags.forEach(function (_tag) {
+                            var tag = document.createElement('span');
+                            tag.innerText = _tag;
+                            nodeTags.appendChild(tag);
+                        });
+                        nodeItem.appendChild(nodeTags);
+                    }
                     //add function
                     nodeItem.clickfn = element.click;
                     nodeItem.dragfn = element.drag;
@@ -549,6 +570,9 @@
 
                 }
 
+                this.renderMd = function (md) {
+                    return self.options.renderMd(md);
+                }
                 this.onChange = function () {
                     self.options.onChange();
                 }
