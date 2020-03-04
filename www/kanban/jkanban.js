@@ -419,6 +419,7 @@
                         if (/color/.test(board.color)) {
                             // Palette color
                             headerBoard.classList.add('cp-kanban-palette-'+board.color);
+                            boardNode.classList.add('cp-kanban-palette-'+board.color);
                         } else if (!/^[0-9a-f]{6}$/.test(board.color)) {
                             // "string" color (red, blue, etc.)
                             headerBoard.classList.add("kanban-header-" + board.color);
