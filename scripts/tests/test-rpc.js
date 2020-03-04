@@ -402,11 +402,6 @@ nThen(function  (w) {
             alice.edKeys.edPublic
         ]
     }, w(function (err, response) {
-        if (err) {
-            throw new Error("FAIL");
-            return void console.error(err);
-        }
-
         var metadata = response && response[0];
         if (!metadata || !Array.isArray(metadata.allowed) ||
             metadata.allowed.indexOf(alice.edKeys.edPublic) === -1) {
