@@ -432,8 +432,9 @@
                     var footerBoard = document.createElement('footer');
                     footerBoard.classList.add('kanban-board-footer');
                     //add button
-                    var addBoardItem = document.createElement('button');
-                    $(addBoardItem).addClass("kanban-title-button btn btn-default fa fa-plus");
+                    var addBoardItem = document.createElement('span');
+                    addBoardItem.classList.add('kanban-title-button');
+                    addBoardItem.innerText = '+';
                     footerBoard.appendChild(addBoardItem);
                     __onAddItemClickHandler(addBoardItem);
 
