@@ -452,7 +452,7 @@
                 this.setBoards = function (boards) {
                     //self.element
                     for (var i in this.options.boards.list) {
-                        var boardkey = boards.list[i];
+                        var boardkey = this.options.boards.list[i];
                         this.removeBoard(boardkey);
                     }
                     this.options.boards = boards;
@@ -495,6 +495,8 @@
                     if (typeof (board) === 'string' || typeof (board) === "number") {
                         id = board;
                         board = self.element.querySelector('[data-id="' + board + '"]');
+                    } else if (board) {
+                        id = board.id;
                     }
                     if (board) {
                         board.remove();
@@ -504,7 +506,7 @@
                     }
 
                     // Remove duplicates
-                    if (id) { $('.kanban-board[data-id="' + board + '"]').remove(); }
+                    if (id) { $(self.element).find('.kanban-board[data-id="' + board + '"]').remove(); }
 
                     return self;
                 }
