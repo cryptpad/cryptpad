@@ -3384,7 +3384,7 @@ define([
         }
         options.push({ tag: 'hr' });
         // Add login or logout button depending on the current status
-        if (accountName) {
+        if (priv.loggedIn) {
             options.push({
                 tag: 'a',
                 attributes: {
