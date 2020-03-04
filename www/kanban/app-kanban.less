@@ -190,6 +190,9 @@
             overflow-wrap: anywhere;
             flex: 1;
         }
+        &.kanban-item-hidden {
+            display: none;
+        }
     }
 
     #cp-app-kanban-content {
@@ -218,6 +221,33 @@
             width: 100%;
             justify-content: space-between;
             position: relative;
+            .cp-kanban-filterTags {
+                display: inline-flex;
+                width: 250px;
+                height: 40px;
+                align-items: center;
+
+                &> .tokenfield {
+                    border-radius: 0px;
+                    display: inline-flex;
+                    border: 1px solid @cryptpad_text_col;
+                    flex-wrap: nowrap;
+                    align-items: center;
+                    width: 100px;
+                    input {
+                        margin-right: 5px;
+                    }
+                    .token {
+                        order: 2;
+                        border-radius: 0;
+                        margin-left: 5px;
+                        margin-right: 0px;
+                        .token-label {
+                            font-size: 12px;
+                        }
+                    }
+                }
+            }
             .cp-kanban-changeView {
                 height: 30px;
                 width: 60px;

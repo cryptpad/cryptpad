@@ -57,9 +57,12 @@ define([
     Messages.kanban_color = "Color"; // XXX
     Messages.kanban_submit = "Submit"; // XXX
     Messages.kanban_delete = "Delete"; // XXX
+    Messages.kanban_tags = "Filter tags"; // XXX
 
 // XXX
-// Add "large" view
+// Tag filter:
+//   remember tags in padAttribute
+//   click on a tag ==> add it to the list
 
     var setValueAndCursor = function (input, val, _cursor) {
         if (!input) { return; }
@@ -77,6 +80,20 @@ define([
         if (focus) { $input.focus(); }
         input.selectionStart = selects[0];
         input.selectionEnd = selects[1];
+    };
+
+    var getExistingTags = function (boards) {
+        var tags = [];
+        boards = boards || {};
+        Object.keys(boards.items || {}).forEach(function (id) {
+            var data = boards.items[id];
+            if (!Array.isArray(data.tags)) { return; }
+            data.tags.forEach(function (tag) {
+                if (tags.indexOf(tag) === -1) { tags.push(tag); }
+            });
+        });
+        tags.sort();
+        return tags;
     };
 
     var addEditItemButton = function () {};
@@ -161,19 +178,6 @@ define([
         });
 
         // Tags
-        var getExisting = function () {
-            var tags = [];
-            var boards = kanban.options.boards || {};
-            Object.keys(boards.items || {}).forEach(function (id) {
-                var data = boards.items[id];
-                if (!Array.isArray(data.tags)) { return; }
-                data.tags.forEach(function (tag) {
-                    if (tags.indexOf(tag) === -1) { tags.push(tag); }
-                });
-            });
-            tags.sort();
-            return tags;
-        };
         var $tags = $(tagsDiv);
         var _field, initialTags;
         var tags = {
@@ -191,11 +195,10 @@ define([
                 $tags.empty();
                 var input = UI.dialog.textInput();
                 $tags.append(input);
-                var existing = getExisting();
+                var existing = getExistingTags(kanban.options.boards);
                 _field = UI.tokenField(input, existing).preventDuplicates(function (val) {
                     UI.warn(Messages._getKey('tags_duplicate', [val]));
                 });
-                $tags.append(_field);
                 _field.setTokens(tags || []);
 
                 var commitTags = function () {
@@ -682,8 +685,29 @@ define([
                 $container.removeClass('cp-kanban-quick');
                 framework._.sfCommon.setPadAttribute('quickMode', false);
             });
+
+            var existing = getExistingTags(kanban.options.boards);
+            var input = UI.dialog.textInput();
+            var tags = h('div.cp-kanban-filterTags', [
+                Messages.kanban_tags,
+                input
+            ]);
+            var field = UI.tokenField(input, existing).preventDuplicates(function (val) {
+                UI.warn(Messages._getKey('tags_duplicate', [val]));
+            });
+            field.setTokens([]);
+            var commitTags = function () {
+                var t = field.getTokens();
+                kanban.options.tags = t;
+                kanban.setBoards(kanban.options.boards);
+                addEditItemButton(framework, kanban);
+            };
+            field.tokenfield.on('tokenfield:createdtoken', commitTags);
+            field.tokenfield.on('tokenfield:editedoken', commitTags);
+            field.tokenfield.on('tokenfield:removedtoken', commitTags);
+
             var container = h('div#cp-kanban-controls', [
-                h('div', "Tags"), // XXX
+                tags, // XXX
                 h('div.cp-kanban-changeView', [
                     small,
                     big
@@ -860,9 +884,7 @@ define([
 
         framework.setContentGetter(function () {
             if (!kanban) {
-                return {
-                    content: {}
-                };
+                throw new Error("NOT INITIALIZED");
             }
             var content = kanban.getBoardsJSON();
             verbose("Content current value is " + content);

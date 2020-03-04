@@ -56,6 +56,7 @@
                         items: {},
                         list: []
                     },
+                    tags: [],
                     dragBoards: true,
                     addItemButton: false,
                     readOnly: false,
@@ -337,6 +338,16 @@
                     nodeItemText.dataset.eid = element.id;
                     nodeItemText.innerText = element.title;
                     nodeItem.appendChild(nodeItemText);
+                    // Check if this card is filtered out
+                    if (Array.isArray(self.options.tags) && self.options.tags.length) {
+                        var hide = !Array.isArray(element.tags) ||
+                            !element.tags.some(function (tag) {
+                              return self.options.tags.indexOf(tag) !== -1;
+                        });
+                        if (hide) {
+                            nodeItem.classList.add('kanban-item-hidden');
+                        }
+                    }
                     if (element.body) {
                         var html = self.renderMd(element.body);
                         var nodeBody = document.createElement('div');
