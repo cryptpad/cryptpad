@@ -304,10 +304,33 @@
                     }
                 };
 
+                var getTextColor = function (hex) {
+                    if (!/^[0-9a-f]{6}$/.test(hex)) {
+                        return '#000000';
+                    }
+                    var r = parseInt(hex.slice(0,2), 16);
+                    var g = parseInt(hex.slice(2,4), 16);
+                    var b = parseInt(hex.slice(4,6), 16);
+                    if ((r*0.299 + g*0.587 + b*0.114) > 186) {
+                        return '#000000';
+                    }
+                    return '#FFFFFF';
+                };
+
                 var getElementNode = function (element) {
                     var nodeItem = document.createElement('div');
                     nodeItem.classList.add('kanban-item');
                     nodeItem.dataset.eid = element.id;
+                    if (element.color) {
+                        if (/color/.test(element.color)) {
+                            // Palette color
+                            nodeItem.classList.add('cp-kanban-palette-'+element.color);
+                        } else {
+                            // Hex color code
+                            var textColor = getTextColor(element.color);
+                            nodeItem.setAttribute('style', 'background-color:#'+element.color+';color:'+textColor+';');
+                        }
+                    }
                     var nodeItemText = document.createElement('div');
                     nodeItemText.classList.add('kanban-item-text');
                     nodeItemText.dataset.eid = element.id;
@@ -372,8 +395,17 @@
                         headerBoard.classList.add(value);
                     });
                     if (board.color !== '' && board.color !== undefined) {
-                        // XXX color
-                        headerBoard.classList.add("kanban-header-" + board.color);
+                        if (/color/.test(board.color)) {
+                            // Palette color
+                            headerBoard.classList.add('cp-kanban-palette-'+board.color);
+                        } else if (!/^[0-9a-f]{6}$/.test(board.color)) {
+                            // "string" color (red, blue, etc.)
+                            headerBoard.classList.add("kanban-header-" + board.color);
+                        } else {
+                            // Hex color code
+                            var textColor = getTextColor(board.color);
+                            headerBoard.setAttribute('style', 'background-color:#'+board.color+';color:'+textColor+';');
+                        }
                     }
                     titleBoard = document.createElement('div');
                     titleBoard.classList.add('kanban-title-board');

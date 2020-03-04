@@ -15,6 +15,7 @@
     max-height: 100%;
     min-height: auto;
 
+    @palette0: #888; // Default bg color for header
     @palette1: #FFD4D4;
     @palette2: #FFDECA;
     @palette3: #FFE69C;
@@ -24,7 +25,13 @@
     @palette7: #C8D6FF;
     @palette8: #E4CAFF;
 
+    .kanban-board-header {
+        background-color: '#888';
+    }
 
+    .cp-kanban-palette-nocolor {
+        background-color: @palette0;
+    }
     .cp-kanban-palette-color1 {
         background-color: @palette1;
     }

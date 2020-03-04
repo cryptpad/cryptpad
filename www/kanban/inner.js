@@ -57,8 +57,6 @@ define([
     Messages.kanban_delete = "Delete"; // XXX
 
 // XXX
-// Fix remote board deletion not applied to local UI
-// Add colors...
 // Add "large" view
 
     var setValueAndCursor = function (input, val, _cursor) {
@@ -386,19 +384,16 @@ define([
                 "11": {
                     "id": 11,
                     "title": Messages.kanban_todo,
-                    "color": "blue",
                     "item": [1, 2]
                 },
                 "12": {
                     "id": 12,
                     "title": Messages.kanban_working,
-                    "color": "orange",
                     "item": [3, 4]
                 },
                 "13": {
                     "id": 13,
                     "title": Messages.kanban_done,
-                    "color": "green",
                     "item": [5, 6]
                 }
             },
