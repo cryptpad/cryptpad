@@ -4,7 +4,6 @@
 
 .kanban-board {
     position: relative;
-    float: left;
     transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
     margin: 10px;
     vertical-align: top;
@@ -45,17 +44,11 @@
     padding: .25rem .5rem;
 }
 
-.kanban-board .kanban-drag {
-    min-height: 200px;
-    padding: 20px;
-    flex: 1;
-}
 
 .kanban-item {
     background: #fff;
     padding: 15px;
     margin-bottom: 20px;
-    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .kanban-item:hover {

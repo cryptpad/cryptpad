@@ -607,6 +607,9 @@ define([
                 var $input = getInput().val(name).appendTo($item);
                 kanban.addForm(boardId, $item[0]);
                 $input.focus();
+                setTimeout(function () {
+                    $input[0].scrollIntoView();
+                });
                 var save = function () {
                     $item.remove();
                     kanban.inEditMode = false;
@@ -624,7 +627,7 @@ define([
                         e.stopPropagation();
                         save();
                         if (!$input.val()) { return; }
-                        $(el).closest('.kanban-board').find('.kanban-title-button.fa-plus').click();
+                        $(el).closest('.kanban-board').find('footer .kanban-title-button').click();
                         return;
                     }
                     if (e.which === 27) {

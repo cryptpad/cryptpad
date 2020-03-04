@@ -98,6 +98,7 @@
         flex: 1;
         display: flex;
         flex-flow: column;
+        overflow-x: hidden;
     }
     #cp-app-kanban-editor {
         flex: 1;
@@ -108,30 +109,33 @@
     }
     #cp-app-kanban-content {
         flex: 1;
-        overflow-y: auto;
         display: flex;
         flex-flow: column;
+        max-height: 100%;
+        overflow-x: auto;
         .kanban-container-outer {
             flex: 1;
             display: flex;
             align-items: center;
-            min-height: -webkit-min-content;
-            min-height: min-content;
+            min-height: 0;
             .kanban-container {
                 flex: 1;
                 display: flex;
-                flex-wrap: wrap;
                 justify-content: space-around;
+                max-height: 100%;
             }
         }
         #kanban-trash {
-            width: 100px;
             height: 100px;
-            align-self: end;
             font-size: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            width: 100%;
+            i {
+                position: fixed;
+            }
             &.kanban-trash-active {
                 color: red;
                 border: 1px solid red;
@@ -147,6 +151,9 @@
             align-items: center;
             justify-content: space-between;
             padding: 10px 5px 10px 10px;
+            &.new-item {
+                padding: 10px;
+            }
             .kanban-item-text {
                 cursor: text;
                 overflow-wrap: anywhere;
@@ -157,6 +164,13 @@
         .kanban-board {
             background-color: #eaeaea;
             color: @cryptpad_text_col;
+            main {
+                min-height: 0;
+                padding: 0 10px;
+                margin: 10px 0;
+                flex: 1;
+                overflow-y: auto;
+            }
             header {
                 display: flex;
                 align-items: center;
@@ -177,7 +191,8 @@
                 }
             }
             footer {
-                padding: 10px;
+                margin: 10px;
+                margin-top: 0px;
                 span {
                     .tools_unselectable();
                     outline: none;
