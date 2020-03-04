@@ -4,7 +4,7 @@ var Config = require("../lib/load-config");
 var Package = require("../package.json");
 
 var body = JSON.stringify({
-    domain: Config.myDomain || Config.httpUnsafeOrigin,
+    domain: Config.myDomain,
     subdomain: Config.mySubdomain || null,
     adminEmail: Config.adminEmail,
     version: Package.version,
