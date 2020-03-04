@@ -784,7 +784,7 @@ define([
             });
 
             sframeChan.on('Q_LOGOUT_EVERYWHERE', function (data, cb) {
-                Cryptpad.logoutFromAll(cb);
+                Cryptpad.logoutFromAll(Utils.Util.bake(Utils.LocalStore.logout, cb));
             });
 
             sframeChan.on('EV_NOTIFY', function (data) {

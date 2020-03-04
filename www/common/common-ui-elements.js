@@ -3480,7 +3480,9 @@ define([
         });
 
         $userAdmin.find('a.cp-toolbar-menu-logout-everywhere').click(function () {
-            Common.getSframeChannel().query('Q_LOGOUT_EVERYWHERE', null, function () { });
+            Common.getSframeChannel().query('Q_LOGOUT_EVERYWHERE', null, function () {
+                window.parent.location = origin + '/';
+            });
         });
         $userAdmin.find('a.cp-toolbar-menu-settings').click(function () {
             if (padType) {
