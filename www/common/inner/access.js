@@ -11,10 +11,7 @@ define([
              Messages, nThen) {
     var Access = {};
 
-        // XXX contacts, teams, access_noContact
-        Messages.contacts = "Contacts"; // XXX
-        Messages.teams = "Teams"; // XXX
-        Messages.access_noContact = "No other contact to add"; // XXX
+
 
     var evRedrawAll = Util.mkEvent();
 
@@ -120,7 +117,7 @@ define([
                 if (teamOwner && teams[teamOwner] && teams[teamOwner].edPublic === ed) { me = true; }
                 if (ed === edPublic && !teamOwner) { me = true; }
                 nThen(function (waitFor) {
-                    var msg = me ? Messages.owner_removeMeConfirm : Messages.owner_removeConfirm; // XXX check existing keys
+                    var msg = me ? Messages.owner_removeMeConfirm : Messages.owner_removeConfirm;
                     UI.confirm(msg, waitFor(function (yes) {
                         if (!yes) {
                             waitFor.abort();
@@ -338,6 +335,7 @@ define([
                 pending_owners = data.pending_owners || [];
                 $div1.empty();
                 $div2.empty();
+                $div1.append(h('p', Messages.owner_text));
                 $div1.append(drawRemove(false)).append(drawRemove(true));
                 $div2.append(drawAdd());
             });
@@ -437,12 +435,6 @@ define([
                     _allowed[ed].notRemovable = true;
                 }
             });
-
-            // XXX allow_removeConfirm, allow_checkbox, allow_text, allow_addConfirm
-            Messages.allow_addConfirm = "Are you sure?"; // XXX
-            Messages.allow_removeConfirm = "Are you sure?"; // XXX
-            Messages.allow_checkbox = "Enable allow list"; // XXX
-            Messages.allow_text = 'Pewpewpew'; // XXX
 
             var remove = function (el) {
                 // Check selection
@@ -701,7 +693,7 @@ define([
             }
             // Otherwise it's a stranger
             _owners[ed] = {
-                name: '???', // XXX unkwown?
+                name: Messages.owner_unknownUser,
             };
             strangers++;
         });
@@ -884,11 +876,6 @@ define([
             return $d;
         };
         var drawRight = function () {
-            // XXX allow_enabled, allow_disabled, allow_label
-            Messages.allow_enabled = 'ENABLED'; // XXX
-            Messages.allow_disabled = 'DISABLED'; // XXX
-            Messages.allow_label = 'Allow list: {0}'; // XXX
-
             // Owners
             var content = [];
             var _ownersGrid = getUserList(common, data.owners);
@@ -938,9 +925,6 @@ define([
                     });
                 });
             }
-
-            // XXX access_muteRequests
-            Messages.access_muteRequests = "Mute access requests for this pad"; // XXX
 
             // Mute access requests
             var priv = common.getMetadataMgr().getPrivateData();
@@ -1105,10 +1089,6 @@ define([
                 });
             }));
         }).nThen(function () {
-            // XXX access_main, access_allow
-            Messages.access_main = 'ACCESS'; // XXX
-            Messages.access_allow = 'ALLOW'; // XXX
-
             var tabs = UI.dialog.tabs([{
                 title: Messages.access_main,
                 icon: "fa fa-unlock-alt",

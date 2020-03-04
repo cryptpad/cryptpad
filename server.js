@@ -8,6 +8,7 @@ var Package = require('./package.json');
 var Path = require("path");
 var nThen = require("nthen");
 var Util = require("./lib/common-util");
+var Default = require("./lib/defaults");
 
 var config = require("./lib/load-config");
 
@@ -35,6 +36,47 @@ if (process.env.PACKAGE) {
     FRESH_KEY = +new Date();
 }
 
+(function () {
+    // you absolutely must provide an 'httpUnsafeOrigin'
+    if (typeof(config.httpUnsafeOrigin) !== 'string') {
+        throw new Error("No 'httpUnsafeOrigin' provided");
+    }
+
+    config.httpUnsafeOrigin = config.httpUnsafeOrigin.trim();
+
+    // fall back to listening on a local address
+    // if httpAddress is not a string
+    if (typeof(config.httpAddress) !== 'string') {
+        config.httpAddress = '127.0.0.1';
+    }
+
+    // listen on port 3000 if a valid port number was not provided
+    if (typeof(config.httpPort) !== 'number' || config.httpPort > 65535) {
+        config.httpPort = 3000;
+    }
+
+    if (typeof(httpSafeOrigin) !== 'string') {
+        if (typeof(config.httpSafePort) !== 'number') {
+            config.httpSafePort = config.httpPort + 1;
+        }
+
+        if (DEV_MODE) { return; }
+        console.log(`
+    m     m   mm   mmmmm  mm   m mmmmm  mm   m   mmm    m
+    #  #  #   ##   #   "# #"m  #   #    #"m  # m"   "   #
+    " #"# #  #  #  #mmmm" # #m #   #    # #m # #   mm   #
+     ## ##"  #mm#  #   "m #  # #   #    #  # # #    #
+     #   #  #    # #    " #   ## mm#mm  #   ##  "mmm"   #
+`);
+
+        console.log("\nNo 'httpSafeOrigin' provided.");
+        console.log("Your configuration probably isn't taking advantage of all of CryptPad's security features!");
+        console.log("This is acceptable for development, otherwise your users may be at risk.\n");
+
+        console.log("Serving sandboxed content via port %s.\nThis is probably not what you want for a production instance!\n", config.httpSafePort);
+    }
+}());
+
 var configCache = {};
 config.flushCache = function () {
     configCache = {};
@@ -47,11 +89,21 @@ config.flushCache = function () {
 const clone = (x) => (JSON.parse(JSON.stringify(x)));
 
 var setHeaders = (function () {
-    if (typeof(config.httpHeaders) !== 'object') { return function () {}; }
+    // load the default http headers unless the admin has provided their own via the config file
+    var headers;
 
-    const headers = clone(config.httpHeaders);
-    if (config.contentSecurity) {
-        headers['Content-Security-Policy'] = clone(config.contentSecurity);
+    var custom = config.httpHeaders;
+    // if the admin provided valid http headers then use them
+    if (custom && typeof(custom) === 'object' && !Array.isArray(custom)) {
+        headers = clone(custom);
+    } else {
+        // otherwise use the default
+        headers = Default.httpHeaders();
+    }
+
+    // next define the base Content Security Policy (CSP) headers
+    if (typeof(config.contentSecurity) === 'string') {
+        headers['Content-Security-Policy'] = config.contentSecurity;
         if (!/;$/.test(headers['Content-Security-Policy'])) { headers['Content-Security-Policy'] += ';' }
         if (headers['Content-Security-Policy'].indexOf('frame-ancestors') === -1) {
             // backward compat for those who do not merge the new version of the config
@@ -59,10 +111,16 @@ var setHeaders = (function () {
             // It also fixes the cross-domain iframe.
             headers['Content-Security-Policy'] += "frame-ancestors *;";
         }
+    } else {
+        // use the default CSP headers constructed with your domain
+        headers['Content-Security-Policy'] = Default.contentSecurity(config.httpUnsafeOrigin);
     }
+
     const padHeaders = clone(headers);
-    if (config.padContentSecurity) {
-        padHeaders['Content-Security-Policy'] = clone(config.padContentSecurity);
+    if (typeof(config.padContentSecurity) === 'string') {
+        padHeaders['Content-Security-Policy'] = config.padContentSecurity;
+    } else {
+        padHeaders['Content-Security-Policy'] = Default.padContentSecurity(config.httpUnsafeOrigin);
     }
     if (Object.keys(headers).length) {
         return function (req, res) {
@@ -116,7 +174,7 @@ app.use(Express.static(__dirname + '/www'));
 // FIXME I think this is a regression caused by a recent PR
 // correct this hack without breaking the contributor's intended behaviour.
 
-var mainPages = config.mainPages || ['index', 'privacy', 'terms', 'about', 'contact'];
+var mainPages = config.mainPages || Default.mainPages();
 var mainPagePattern = new RegExp('^\/(' + mainPages.join('|') + ').html$');
 app.get(mainPagePattern, Express.static(__dirname + '/customize'));
 app.get(mainPagePattern, Express.static(__dirname + '/customize.dist'));
@@ -163,11 +221,13 @@ var serveConfig = (function () {
                 removeDonateButton: (config.removeDonateButton === true),
                 allowSubscriptions: (config.allowSubscriptions === true),
                 websocketPath: config.externalWebsocketURL,
-                httpUnsafeOrigin: config.httpUnsafeOrigin.replace(/^\s*/, ''),
+                httpUnsafeOrigin: config.httpUnsafeOrigin,
                 adminEmail: config.adminEmail,
                 adminKeys: admins,
                 inactiveTime: config.inactiveTime,
-                supportMailbox: config.supportMailboxPublicKey
+                supportMailbox: config.supportMailboxPublicKey,
+                maxUploadSize: config.maxUploadSize,
+                premiumUploadSize: config.premiumUploadSize,
             }, null, '\t'),
             'obj.httpSafeOrigin = ' + (function () {
                 if (config.httpSafeOrigin) { return '"' + config.httpSafeOrigin + '"'; }

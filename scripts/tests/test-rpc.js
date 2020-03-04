@@ -373,11 +373,24 @@ nThen(function  (w) {
         }
     }));
 }).nThen(function (w) {
-    // XXX RESTRICT GET_METADATA should fail because alice is not on the allow list
-    // expect INSUFFICIENT_PERMISSIONS
-    alice.anonRpc.send('GET_METADATA', oscar.mailboxChannel, w(function (err) {
-        if (!err) {
-            // XXX RESTRICT alice should not be permitted to read oscar's mailbox's metadata
+    alice.anonRpc.send('GET_METADATA', oscar.mailboxChannel, w(function (err, response) {
+        if (!response) { throw new Error("EXPECTED RESPONSE"); }
+        var metadata = response[0];
+        var expected_fields = ['restricted', 'allowed'];
+        for (var key in metadata) {
+            if (expected_fields.indexOf(key) === -1) {
+                console.log(metadata);
+                throw new Error("EXPECTED METADATA TO BE RESTRICTED");
+            }
+        }
+    }));
+}).nThen(function (w) {
+    alice.anonRpc.send('WRITE_PRIVATE_MESSAGE', [
+        oscar.mailboxChannel,
+        '["VANDALISM"]',
+    ], w(function (err) {
+        if (err !== 'INSUFFICIENT_PERMISSIONS') {
+            throw new Error("EXPECTED INSUFFICIENT PERMISSIONS ERROR");
         }
     }));
 }).nThen(function (w) {
@@ -388,11 +401,17 @@ nThen(function  (w) {
         value: [
             alice.edKeys.edPublic
         ]
-    }, w(function (err /*, metadata */) {
+    }, w(function (err, response) {
         if (err) {
+            throw new Error("FAIL");
             return void console.error(err);
         }
-        //console.log('XXX', metadata);
+
+        var metadata = response && response[0];
+        if (!metadata || !Array.isArray(metadata.allowed) ||
+            metadata.allowed.indexOf(alice.edKeys.edPublic) === -1) {
+            throw new Error("EXPECTED ALICE TO BE IN THE ALLOW LIST");
+        }
     }));
 }).nThen(function (w) {
     oscar.anonRpc.send('GET_METADATA', oscar.mailboxChannel, w(function (err, response) {
@@ -410,14 +429,12 @@ nThen(function  (w) {
         }
     }));
 }).nThen(function () {
-    // XXX RESTRICT alice should now be able to read oscar's mailbox metadata
-/*
     alice.anonRpc.send('GET_METADATA', oscar.mailboxChannel, function (err, response) {
-        if (err) {
-            PROBLEM
+        var metadata = response && response[0];
+        if (!metadata || !metadata.restricted || !metadata.channel) {
+            throw new Error("EXPECTED FULL ACCESS TO CHANNEL METADATA");
         }
     });
-*/
 }).nThen(function (w) {
     //throw new Error("boop");
     // add alice as an owner of oscar's mailbox for some reason

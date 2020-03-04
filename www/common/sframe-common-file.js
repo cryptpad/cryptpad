@@ -164,9 +164,6 @@ define([
                 queue.next();
                 if (e === 'TOO_LARGE') {
                     $pv.text(Messages.upload_tooLargeBrief);
-                    // XXX translate
-                    // instead of "This file exceeds the maximum upload size"
-                    // use "the maximum upload size allowed for your account"
                     return void UI.alert(Messages.upload_tooLarge);
                 }
                 if (e === 'NOT_ENOUGH_SPACE') {
