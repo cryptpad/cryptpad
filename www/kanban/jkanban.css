@@ -9,6 +9,8 @@
     vertical-align: top;
     display: flex;
     flex-flow: column;
+    width: 300px;
+    margin: 10px 5px;
 }
 
 .kanban-board.disabled-board {

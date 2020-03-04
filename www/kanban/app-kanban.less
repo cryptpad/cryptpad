@@ -14,6 +14,7 @@
     flex-flow: column;
     max-height: 100%;
     min-height: auto;
+    color: @cryptpad_text_col;
 
     @palette0: #888; // Default bg color for header
     @palette1: #FFD4D4;
@@ -174,7 +175,7 @@
             header {
                 display: flex;
                 align-items: center;
-                padding: 13px 10px;
+                padding: 5px 10px;
                 .kanban-title-board {
                     flex: 1;
                     margin-right: 10px;
@@ -219,43 +220,21 @@
             color: inherit;
         }
 
-        @button-size: 50px;
         #kanban-addboard {
             order: 2;
-            margin: 30px;
-            border: 1px solid;
-            width: @button-size;
-            height: @button-size;
-            line-height: @button-size;
-            text-align: center;
-            background: @colortheme_kanban-bg;
+            width: 300px;
+            margin: 10px 5px;
+            border: 1px solid @cryptpad_text_col;
+            height: 40px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
             align-self: flex-start;
-            font-size: 30px;
+            font-size: 40px;
             cursor: pointer;
             .tools_unselectable();
-        }
-
-/*
-        .kanban-remove-item {
-            padding: 0 0.5em;
-            visibility: hidden;
-        }
-        .kanban-item:hover {
-            .kanban-remove-item {
-                visibility: visible;
-            }
-        }
-*/
-
-        .kanban-additem {
-            float: right;
-            background: #EEE;
-            padding: 5px .5rem 4px;
-            line-height: 1;
-            margin-bottom: 5px;
-            margin-right: 5px;
             &:hover {
-                background: transparent;
+                background-color: rgba(0,0,0,0.1);
             }
         }
 

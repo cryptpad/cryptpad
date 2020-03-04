@@ -585,7 +585,7 @@
                     boardContainerOuter.appendChild(boardContainer);
                     var addBoard = document.createElement('div');
                     addBoard.id = 'kanban-addboard';
-                    addBoard.setAttribute('class', 'fa fa-plus');
+                    addBoard.innerText = '+';
                     boardContainer.appendChild(addBoard);
                     var trash = self.trashContainer = document.createElement('div');
                     trash.setAttribute('id', 'kanban-trash');
