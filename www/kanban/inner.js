@@ -434,7 +434,7 @@ define([
 
 
     var initKanban = function (framework, boards) {
-        var migrated = false
+        var migrated = false;
         if (!boards) {
             verbose("Initializing with default boards content");
             boards = getDefaultBoards();
