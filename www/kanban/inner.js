@@ -376,7 +376,7 @@ define([
     };
 
     // Kanban code
-    var initKanban = function (framework, boards) {
+    var getDefaultBoards = function () {
         var items = {};
         for (var i=1; i<=6; i++) {
             items[i] = {
@@ -405,13 +405,41 @@ define([
             },
             items: items
         };
+        return defaultBoards;
+    };
+    var migrate = function (framework, boards) {
+        if (!Array.isArray(boards)) { return; }
+        console.log("Migration to new format");
+        var b = {
+            list: [],
+            data: {},
+            items: {}
+        };
+        var i = 1;
+        boards.forEach(function (board) {
+            board.id = i;
+            b.list.push(i);
+            b.data[i] = board;
+            i++;
+            if (!Array.isArray(board.item)) { return; }
+            board.item = board.item.map(function (item) {
+                item.id = i;
+                b.items[i] = item;
+                return i++; // return current id and incrmeent after
+            });
+        });
+        return b;
+    };
 
+
+    var initKanban = function (framework, boards) {
+        var migrated = false
         if (!boards) {
             verbose("Initializing with default boards content");
-            boards = defaultBoards;
+            boards = getDefaultBoards();
         } else if (Array.isArray(boards)) {
-            // XXX also migrate colors!
-            throw new Error("NEED MIGRATION"); // XXX
+            boards = migrate(framework, boards);
+            migrated = true;
         } else {
             verbose("Initializing with boards content " + boards);
         }
@@ -658,6 +686,8 @@ define([
             addItemButton: true,
             boards: boards
         });
+
+        if (migrated) { framework.localChange(); }
 
         var addBoardDefault = document.getElementById('kanban-addboard');
         $(addBoardDefault).attr('title', Messages.kanban_addBoard);
