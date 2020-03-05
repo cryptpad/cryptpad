@@ -407,6 +407,8 @@
                     var boardNode = document.createElement('div');
                     boardNode.dataset.id = board.id;
                     boardNode.classList.add('kanban-board');
+                    var boardNodeInner = document.createElement('div');
+                    boardNodeInner.classList.add('kanban-board-inner');
                     //set style
                     if (self.options.responsivePercentage) {
                         boardNode.style.width = boardWidth + '%';
@@ -430,7 +432,7 @@
                         if (/color/.test(board.color)) {
                             // Palette color
                             headerBoard.classList.add('cp-kanban-palette-'+board.color);
-                            boardNode.classList.add('cp-kanban-palette-'+board.color);
+                            boardNodeInner.classList.add('cp-kanban-palette-'+board.color);
                         } else if (!/^[0-9a-f]{6}$/.test(board.color)) {
                             // "string" color (red, blue, etc.)
                             headerBoard.classList.add("kanban-header-" + board.color);
@@ -472,9 +474,10 @@
                     __onAddItemClickHandler(addBoardItem);
 
                     //board assembly
-                    boardNode.appendChild(headerBoard);
-                    boardNode.appendChild(contentBoard);
-                    boardNode.appendChild(footerBoard);
+                    boardNode.appendChild(boardNodeInner);
+                    boardNodeInner.appendChild(headerBoard);
+                    boardNodeInner.appendChild(contentBoard);
+                    boardNodeInner.appendChild(footerBoard);
 
                     return boardNode;
                 };
