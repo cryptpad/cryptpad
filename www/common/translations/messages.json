@@ -513,7 +513,7 @@
     "settings_pinningError": "Something went wrong",
     "settings_usageAmount": "Your pinned pads occupy {0}MB",
     "settings_logoutEverywhereButton": "Log out",
-    "settings_logoutEverywhereTitle": "Log out everywhere",
+    "settings_logoutEverywhereTitle": "Close remote sessions",
     "settings_logoutEverywhere": "Force log out of all other web sessions",
     "settings_logoutEverywhereConfirm": "Are you sure? You will need to log in with all your devices.",
     "settings_driveDuplicateTitle": "Duplicated owned pads",
@@ -1323,5 +1323,6 @@
     "allow_disabled": "disabled",
     "allow_label": "Access list: {0}",
     "access_muteRequests": "Mute access requests for this pad",
-    "owner_text": "The owner(s) of a pad are the only users authorised to: add/remove owners, restrict access to the pad with an access list, or delete the pad."
+    "owner_text": "The owner(s) of a pad are the only users authorised to: add/remove owners, restrict access to the pad with an access list, or delete the pad.",
+    "logoutEverywhere": "Log out everywhere"
 }
