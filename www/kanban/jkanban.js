@@ -73,6 +73,7 @@
                     colorClick: function (el, type) {},
                     addItemClick: function (el, boardId) {},
                     renderMd: function (md) {},
+                    refresh: function () {},
                     onChange: function () {}
                 };
 
@@ -526,6 +527,7 @@
                     }
                     this.options.boards = boards;
                     this.addBoards();
+                    self.options.refresh();
                 }
 
                 this.findBoard = function (id) {

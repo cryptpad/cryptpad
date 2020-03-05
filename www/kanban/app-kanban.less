@@ -219,7 +219,6 @@
             }
         }
         #cp-kanban-controls {
-            height: 40px;
             padding: 10px;
             display: flex;
             position: relative;
@@ -228,9 +227,36 @@
             position: relative;
             .cp-kanban-filterTags {
                 display: inline-flex;
-                width: 250px;
-                height: 40px;
-                align-items: center;
+                align-items: baseline;
+                flex: 1;
+                max-width: 80%;
+                min-width: 150px;
+
+                &> i {
+                    margin-left: 10px;
+                }
+                .cp-kanban-filterTags-name {
+                    flex-shrink: 0;
+                }
+                .cp-kanban-filterTags-list {
+                    margin-left: 10px;
+                    display: flex;
+                    flex-wrap: wrap;
+                    span {
+                        .tools_unselectable();
+                        padding: 0 5px;
+                        margin-right: 5px;
+                        margin-top: 5px;
+                        background-color: rgba(0,0,0,0.1);
+                        display: inline-block;
+                        font-size: 14px;
+                        cursor: pointer;
+                        &.active {
+                            background-color: @cryptpad_text_col;
+                            color: #fff;
+                        }
+                    }
+                }
 
                 &> .tokenfield {
                     border-radius: 0px;

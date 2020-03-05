@@ -51,6 +51,7 @@ define([
 
     var verbose = function (x) { console.log(x); };
     verbose = function () {}; // comment out to enable verbose logging
+    var onRedraw = Util.mkEvent();
 
     Messages.kanban_title = "Title"; // XXX
     Messages.kanban_body = "Body"; // XXX
@@ -60,9 +61,9 @@ define([
     Messages.kanban_tags = "Filter tags"; // XXX
 
 // XXX
-// Tag filter:
-//   remember tags in padAttribute
-//   click on a tag ==> add it to the list
+// Conflicts
+//   use cursor channel to tell others what you are editing
+//    add outline + warning inside the modal?
 
     var setValueAndCursor = function (input, val, _cursor) {
         if (!input) { return; }
@@ -259,7 +260,7 @@ define([
         };
 
         var button = [{
-            className: 'danger', // XXX align left
+            className: 'danger left',
             name: Messages.kanban_delete,
             onClick: function () {
                 var boards = kanban.options.boards || {};
@@ -432,6 +433,9 @@ define([
             widthBoard: '300px',
             buttonContent: '❌',
             readOnly: framework.isReadOnly(),
+            refresh: function () {
+                onRedraw.fire();
+            },
             onChange: function () {
                 verbose("Board object has changed");
                 framework.localChange();
@@ -607,7 +611,7 @@ define([
                 }
                 kanban.inEditMode = "new";
                 // create a form to enter element
-                var boardId = $(el.parentNode.parentNode).attr("data-id");
+                var boardId = $(el).closest('.kanban-board').attr("data-id");
                 var $item = $('<div>', {'class': 'kanban-item new-item'});
                 var $input = getInput().val(name).appendTo($item);
                 kanban.addForm(boardId, $item[0]);
@@ -620,10 +624,14 @@ define([
                     kanban.inEditMode = false;
                     if (!$input.val()) { return; }
                     var id = Util.createRandomInteger();
-                    kanban.addElement(boardId, {
+                    var item = {
                         "id": id,
                         "title": $input.val(),
-                    });
+                    };
+                    if (kanban.options.tags && kanban.options.tags.length) {
+                        item.tags = kanban.options.tags;
+                    }
+                    kanban.addElement(boardId, item);
                 };
                 $input.blur(save);
                 $input.keydown(function (e) {
@@ -673,6 +681,7 @@ define([
 
         var $container = $('#cp-app-kanban-content');
         var addControls = function () {
+            // Quick or normal mode
             var small = h('span.cp-kanban-view-small.fa.fa-minus');
             var big = h('span.cp-kanban-view.fa.fa-bars');
             $(small).click(function () {
@@ -686,42 +695,108 @@ define([
                 framework._.sfCommon.setPadAttribute('quickMode', false);
             });
 
+            // Tags filter
             var existing = getExistingTags(kanban.options.boards);
-            var input = UI.dialog.textInput();
+            var list = h('div.cp-kanban-filterTags-list');
+            var reset = h('i.cp-kanban-filterTags-reset.fa.fa-times');
             var tags = h('div.cp-kanban-filterTags', [
-                Messages.kanban_tags,
-                input
+                h('span.cp-kanban-filterTags-name', Messages.kanban_tags),
+                reset,
+                list
             ]);
-            var field = UI.tokenField(input, existing).preventDuplicates(function (val) {
-                UI.warn(Messages._getKey('tags_duplicate', [val]));
-            });
-            field.setTokens([]);
+            var $reset = $(reset);
+            var $list = $(list);
+
+            var getTags = function () {
+                return $list.find('span.active').map(function () {
+                    return $(this).data('tag');
+                }).get();
+            };
             var commitTags = function () {
-                var t = field.getTokens();
+                var t = getTags();
+                if (t.length) {
+                    $reset.show();
+                } else {
+                    $reset.hide();
+                }
+                framework._.sfCommon.setPadAttribute('tagsFilter', t);
                 kanban.options.tags = t;
                 kanban.setBoards(kanban.options.boards);
                 addEditItemButton(framework, kanban);
             };
-            field.tokenfield.on('tokenfield:createdtoken', commitTags);
-            field.tokenfield.on('tokenfield:editedoken', commitTags);
-            field.tokenfield.on('tokenfield:removedtoken', commitTags);
+
+            var redrawList = function (allTags) {
+                if (!Array.isArray(allTags)) { return; }
+                $list.empty();
+                allTags.forEach(function (t) {
+                    var tag;
+                    $list.append(tag = h('span', {
+                        'data-tag': t
+                    }, t));
+                    var $tag = $(tag).click(function () {
+                        if ($tag.hasClass('active')) {
+                            $tag.removeClass('active');
+                        } else {
+                            $tag.addClass('active');
+                        }
+                        commitTags();
+                    });
+                });
+            };
+            redrawList(existing);
+
+            var setTags = function (tags) {
+                $list.find('span').removeClass('active');
+                if (!Array.isArray(tags)) { return; }
+                tags.forEach(function (t, i) {
+                    if (existing.indexOf(t) === -1) {
+                        // This tag doesn't exist anymore
+                        tags.splice(i, 1);
+                        return;
+                    }
+                    $list.find('span').filter(function () {
+                        return $(this).data('tag') === t;
+                    }).addClass('active');
+                });
+                framework._.sfCommon.setPadAttribute('tagsFilter', tags);
+            };
+            $reset.hide().click(function () {
+                setTags([]);
+                commitTags();
+            });
 
             var container = h('div#cp-kanban-controls', [
-                tags, // XXX
+                tags,
                 h('div.cp-kanban-changeView', [
                     small,
                     big
                 ])
             ]);
             $container.prepend(container);
-            return container;
+
+            onRedraw.reg(function () {
+                // Redraw if new tags have been added to items
+                var old = Sortify(existing);
+                var t = getTags();
+                existing = getExistingTags(kanban.options.boards);
+                if (old === Sortify(existing)) { return; } // No change
+                // New tags:
+                redrawList(existing);
+                setTags(t);
+            });
+            framework._.sfCommon.getPadAttribute('tagsFilter', function (err, res) {
+                if (!err && Array.isArray(res)) {
+                    setTags(res);
+                    commitTags();
+                }
+            });
+            framework._.sfCommon.getPadAttribute('quickMode', function (err, res) {
+                if (!err && res) {
+                    $container.addClass('cp-kanban-quick');
+                }
+            });
         };
         addControls();
-        framework._.sfCommon.getPadAttribute('quickMode', function (err, res) {
-            if (!err && res) {
-                $container.addClass('cp-kanban-quick');
-            }
-        });
 
         return kanban;
     };
@@ -795,7 +870,6 @@ define([
                 var end = input.selectionEnd;
 
                 var json = kanban.getBoardJSON(id) || kanban.getItemJSON(id);
-                // XXX only title for now...
                 var oldVal = json && json.title;
 
                 return {
