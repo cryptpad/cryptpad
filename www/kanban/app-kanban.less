@@ -209,12 +209,10 @@
         .kanban-container-outer {
             flex: 1;
             display: flex;
-            align-items: center;
             min-height: 0;
             .kanban-container {
                 flex: 1;
                 display: flex;
-                justify-content: space-around;
                 max-height: 100%;
             }
         }
@@ -233,6 +231,7 @@
                 min-width: 150px;
 
                 &> i {
+                    cursor: pointer;
                     margin-left: 10px;
                 }
                 .cp-kanban-filterTags-name {
@@ -242,6 +241,11 @@
                     margin-left: 10px;
                     display: flex;
                     flex-wrap: wrap;
+                    em {
+                        font-size: 14px;
+                        color: lighten(@cryptpad_text_col, 10%);
+                    }
+
                     span {
                         .tools_unselectable();
                         padding: 0 5px;
@@ -352,11 +356,12 @@
 
         .kanban-board {
             main {
-                min-height: 0;
                 padding: 0 10px;
                 margin: 10px 0;
                 flex: 1;
                 overflow-y: auto;
+                justify-content: space-around;
+                min-height: 50px;
             }
             header {
                 display: flex;
@@ -475,6 +480,9 @@
             }
             .kanban-title-button, #kanban-addboard, .kanban-remove-item, .kanban-additem {
                 display: none !important;
+            }
+            #kanban-trash {
+                display: none;
             }
         }
     }

@@ -59,6 +59,7 @@ define([
     Messages.kanban_submit = "Submit"; // XXX
     Messages.kanban_delete = "Delete"; // XXX
     Messages.kanban_tags = "Filter tags"; // XXX
+    Messages.kanban_noTags = "No tags"; // XXX
 
 // XXX
 // Conflicts
@@ -758,6 +759,10 @@ define([
             var redrawList = function (allTags) {
                 if (!Array.isArray(allTags)) { return; }
                 $list.empty();
+                if (!allTags.length) {
+                    $list.append(h('em', Messages.kanban_noTags));
+                    return;
+                }
                 allTags.forEach(function (t) {
                     var tag;
                     $list.append(tag = h('span', {
