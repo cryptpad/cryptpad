@@ -500,7 +500,7 @@
     "settings_pinningError": "Un problème est survenu",
     "settings_usageAmount": "Vos pads épinglés occupent {0} Mo",
     "settings_logoutEverywhereButton": "Se déconnecter",
-    "settings_logoutEverywhereTitle": "Se déconnecter partout",
+    "settings_logoutEverywhereTitle": "Fermer les autres sessions",
     "settings_logoutEverywhere": "Se déconnecter de force de toutes les autres sessions",
     "settings_logoutEverywhereConfirm": "Êtes-vous sûr ? Vous devrez vous reconnecter sur tous vos autres appareils.",
     "settings_driveDuplicateTitle": "Doublons des pads dont vous êtes propriétaire",
@@ -1323,5 +1323,6 @@
     "restrictedError": "Vous n'êtes pas autorisé à accéder à ce document",
     "accessButton": "Accès",
     "access_allow": "Liste",
-    "access_main": "Accès"
+    "access_main": "Accès",
+    "logoutEverywhere": "Se déconnecter partout"
 }
