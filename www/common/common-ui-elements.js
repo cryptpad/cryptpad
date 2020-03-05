@@ -3390,7 +3390,7 @@ define([
                 attributes: {
                     'class': 'cp-toolbar-menu-logout-everywhere fa fa-plug',
                 },
-                content: h('span', Messages.settings_logoutEverywhereTitle)
+                content: h('span', Messages.logoutEverywhere)
             });
             options.push({
                 tag: 'a',
