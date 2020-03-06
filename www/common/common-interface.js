@@ -1194,21 +1194,28 @@ define([
         var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide();
 
         var state = false;
+        var to;
 
         var spin = function () {
+            clearTimeout(to);
             state = true;
             $ok.hide();
             $spinner.show();
         };
         var hide = function () {
+            clearTimeout(to);
             state = false;
             $ok.hide();
             $spinner.hide();
         };
         var done = function () {
+            clearTimeout(to);
             state = false;
             $ok.show();
             $spinner.hide();
+            to = setTimeout(function () {
+                $ok.hide();
+            }, 500);
         };
 
         if ($container && $container.append) {

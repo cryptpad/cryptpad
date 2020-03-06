@@ -160,6 +160,10 @@ define([
                 });
             };
 
+            if (pending && !Object.keys(_owners).length) {
+                return $();
+            }
+
             var msg = pending ? Messages.owner_removePendingText
                         : Messages.owner_removeText;
             var removeCol = UIElements.getUserGrid(msg, {
