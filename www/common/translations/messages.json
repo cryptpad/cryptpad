@@ -1325,5 +1325,6 @@
     "access_muteRequests": "Mute access requests for this pad",
     "owner_text": "The owner(s) of a pad are the only users authorised to: add/remove owners, restrict access to the pad with an access list, or delete the pad.",
     "logoutEverywhere": "Log out everywhere",
-    "allow_text": "Using an access list means that only selected users and owners will be able to access this document."
+    "allow_text": "Using an access list means that only selected users and owners will be able to access this document.",
+    "teams": "Teams"
 }
