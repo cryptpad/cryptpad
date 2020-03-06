@@ -698,6 +698,7 @@ define([
             }
             // Otherwise it's a stranger
             _owners[ed] = {
+                avatar: '?',
                 name: Messages.owner_unknownUser,
             };
             strangers++;
