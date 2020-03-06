@@ -131,6 +131,8 @@ define([
             if (state === STATE.INFINITE_SPINNER && newState !== STATE.READY) { return; }
             if (newState === STATE.INFINITE_SPINNER || newState === STATE.DELETED) {
                 state = newState;
+            } else if (newState === STATE.ERROR) {
+                state = newState;
             } else if (state === STATE.DISCONNECTED && newState !== STATE.INITIALIZING) {
                 throw new Error("Cannot transition from DISCONNECTED to " + newState); // FIXME we are getting "DISCONNECTED to READY" on prod
             } else if (state !== STATE.READY && newState === STATE.HISTORY_MODE) {
