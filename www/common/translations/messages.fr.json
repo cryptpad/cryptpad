@@ -1325,5 +1325,6 @@
     "access_allow": "Liste",
     "access_main": "Accès",
     "logoutEverywhere": "Se déconnecter partout",
-    "allow_text": "L'utilisation d'une liste d'accès signifie que seuls les utilisateurs et propriétaires sélectionnés pourront accéder à ce document."
+    "allow_text": "L'utilisation d'une liste d'accès signifie que seuls les utilisateurs et propriétaires sélectionnés pourront accéder à ce document.",
+    "teams": "Équipes"
 }
