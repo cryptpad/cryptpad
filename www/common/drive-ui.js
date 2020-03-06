@@ -352,10 +352,6 @@ define([
                     'tabindex': '-1',
                     'data-icon': faAccess,
                 }, Messages.accessButton)),
-                h('li', h('a.cp-app-drive-context-properties.dropdown-item', {
-                    'tabindex': '-1',
-                    'data-icon': faProperties,
-                }, Messages.fc_prop)),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-newfolder.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
@@ -445,6 +441,10 @@ define([
                     'tabindex': '-1',
                     'data-icon': faCopy,
                 }, Messages.makeACopy)),
+                h('li', h('a.cp-app-drive-context-download.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': faDownload,
+                }, Messages.download_mt_button)),
                 h('li', h('a.cp-app-drive-context-delete.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faTrash,
@@ -462,10 +462,10 @@ define([
                     'data-icon': faDelete,
                 }, Messages.fc_remove_sharedfolder)),
                 $separator.clone()[0],
-                h('li', h('a.cp-app-drive-context-download.dropdown-item', {
+                h('li', h('a.cp-app-drive-context-properties.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': faDownload,
-                }, Messages.download_mt_button)),
+                    'data-icon': faProperties,
+                }, Messages.fc_prop))
             ])
         ]);
         // add icons to the contextmenu options
