@@ -1150,7 +1150,7 @@
     "owner_removeText": "Owners",
     "owner_removePendingText": "Pending",
     "owner_addText": "Offer co-ownership to a contact",
-    "owner_unknownUser": "?????",
+    "owner_unknownUser": "{0} unknown",
     "owner_removeButton": "Remove selected owners",
     "owner_removePendingButton": "Cancel selected offers",
     "owner_addButton": "Offer ownership",
