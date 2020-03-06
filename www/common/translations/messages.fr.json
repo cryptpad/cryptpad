@@ -1145,7 +1145,7 @@
     "owner_removeText": "Propriétaires",
     "owner_removePendingText": "En attente",
     "owner_addText": "Proposer à un contact d'être co-propriétaire de ce document",
-    "owner_unknownUser": "{0} inconnu",
+    "owner_unknownUser": "inconnu",
     "owner_removeButton": "Supprimer les propriétaires sélectionnés",
     "owner_removePendingButton": "Annuler les offres sélectionnées",
     "owner_addButton": "Proposer d'être propriétaire",
