@@ -1523,11 +1523,11 @@ define([
                 },
                 onError: function (err) {
                     channel.bcast("PAD_ERROR", err);
-                    delete channels[data.channel];
+                    Store.leavePad(null, data, function () {});
                 },
                 onChannelError: function (err) {
                     channel.bcast("PAD_ERROR", err);
-                    delete channels[data.channel];
+                    Store.leavePad(null, data, function () {});
                 },
                 onConnectionChange: function (info) {
                     if (!info.state) {
@@ -1776,6 +1776,10 @@ define([
                 if (err) { return void cb({error: err}); }
                 var metadata = (obj && obj[0]) || {};
                 cb(metadata);
+
+                // If you don't have access to the metadata, stop here
+                // (we can't update the local data)
+                if (metadata.rejected) { return; }
 
                 // Update owners and expire time in the drive
                 getAllStores().forEach(function (s) {

@@ -23,6 +23,7 @@ define([
         data.mailbox = obj.mailbox;
         data.restricted = obj.restricted;
         data.allowed = obj.allowed;
+        data.rejected = obj.rejected;
     };
     var loadMetadata = function (common, data, waitFor, redraw) {
         common.getPadMetadata({
@@ -882,7 +883,7 @@ define([
             if (_ownersGrid && _ownersGrid.div) {
                 content.push(h('label', Messages.creation_owners));
                 content.push(_ownersGrid.div);
-            } else {
+            } else if (!data.rejected) {
                 content.push(UI.dialog.selectable(Messages.creation_noOwner, {
                     id: 'cp-app-prop-owners',
                 }));

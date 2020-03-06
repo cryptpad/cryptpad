@@ -161,6 +161,10 @@ define([
                 }
                 case STATE.ERROR: {
                     evStart.reg(function () {
+                        if (text === 'ERESTRICTED') {
+                            toolbar.failed(true);
+                            return;
+                        }
                         toolbar.errorState(true, text);
                         var msg = Messages.chainpadError;
                         UI.errorLoadingScreen(msg, true, true);
@@ -169,6 +173,10 @@ define([
                 }
                 case STATE.FORGOTTEN: {
                     evStart.reg(function () { toolbar.forgotten(); });
+                    break;
+                }
+                case STATE.FORBIDDEN: {
+                    evStart.reg(function () { toolbar.deleted(); });
                     break;
                 }
                 case STATE.DELETED: {
@@ -403,7 +411,11 @@ define([
         };
 
         var onError = function (err) {
-            common.onServerError(err, toolbar, function () {
+            common.onServerError(err, null, function () {
+                if (err.type === 'ERESTRICTED') {
+                    stateChange(STATE.ERROR, err.type);
+                    return;
+                }
                 stateChange(STATE.DELETED);
             });
         };
