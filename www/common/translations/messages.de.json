@@ -493,7 +493,7 @@
     "settings_pinningError": "Etwas ging schief",
     "settings_usageAmount": "Deine gepinnten Pads belegen {0} MB",
     "settings_logoutEverywhereButton": "Ausloggen",
-    "settings_logoutEverywhereTitle": "Überall ausloggen",
+    "settings_logoutEverywhereTitle": "Andere Sitzungen beenden",
     "settings_logoutEverywhere": "Das Ausloggen in allen andere Websitzungen erzwingen",
     "settings_logoutEverywhereConfirm": "Bist du sicher? Du wirst dich auf allen deinen Geräten wieder einloggen müssen.",
     "settings_driveDuplicateTitle": "Duplizierte eigene Pads",
@@ -1141,7 +1141,7 @@
     "register_emailWarning1": "Wenn du möchtest, kannst du dies tun. Allerdings wird sie nicht an unseren Server gesendet.",
     "register_emailWarning2": "Du kannst dein Passwort nicht wie bei vielen anderen Diensten mit der E-Mail-Adresse zurücksetzen.",
     "register_emailWarning3": "Wenn du dies verstanden hast und die E-Mail-Adresse dennoch als Benutzername verwenden möchtest, klicke auf OK.",
-    "owner_unknownUser": "?????",
+    "owner_unknownUser": "unbekannt",
     "owner_removeButton": "Ausgewählte Eigentümer entfernen",
     "owner_removeConfirm": "Bist du sicher, dass die Eigentümerschaft der ausgewählten Benutzer entfernen möchtest? Sie werden über diese Aktion informiert.",
     "owner_removeMeConfirm": "Du bist dabei, deine Rechte als Eigentümer aufzugeben. Diese Aktion kannst du nicht rückgängig machen. Bist du sicher?",
@@ -1318,10 +1318,13 @@
     "accessButton": "Zugriff",
     "access_allow": "Liste",
     "allow_label": "Zugriffsliste: {0}",
-    "allow_checkbox": "Bei der Verwendung von Zugriffslisten können nur Eigentümer und ausgewählte Nutzer auf das Dokument zugreifen.",
+    "allow_checkbox": "Zugriffsliste aktivieren",
     "access_main": "Zugriff",
     "allow_disabled": "deaktiviert",
     "allow_enabled": "aktiviert",
     "contacts": "Kontakte",
-    "restrictedError": "Du bist nicht berechtigt, auf dieses Dokument zuzugreifen"
+    "restrictedError": "Du bist nicht berechtigt, auf dieses Dokument zuzugreifen",
+    "allow_text": "Bei der Verwendung von Zugriffslisten können nur Eigentümer und ausgewählte Nutzer auf das Dokument zugreifen.",
+    "logoutEverywhere": "Überall ausloggen",
+    "teams": "Teams"
 }
