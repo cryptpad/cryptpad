@@ -67,7 +67,7 @@ define([
         }
     };
 
-    var restrictedProxy = function (Env, id, channel) {
+    var restrictedProxy = function (Env, id) {
         var lm = { proxy: { deprecated: true } };
         removeProxy(Env, id);
         addProxy(Env, id, lm, function () {});
