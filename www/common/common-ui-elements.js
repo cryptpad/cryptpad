@@ -2826,13 +2826,13 @@ define([
     };
     UIElements.displayAvatar = function (common, $container, href, name, cb) {
         var displayDefault = function () {
-            var text = typeof(href) === "string" ? href : getFirstEmojiOrCharacter(name);
+            var text = (href && typeof(href) === "string") ? href : getFirstEmojiOrCharacter(name);
             var $avatar = $('<span>', {'class': 'cp-avatar-default'}).text(text);
             $container.append($avatar);
             if (cb) { cb(); }
         };
         if (!window.Symbol) { return void displayDefault(); } // IE doesn't have Symbol
-        if (typeof(href) !== "string" || href.length === 1) { return void displayDefault(); }
+        if (!href || href.length === 1) { return void displayDefault(); }
 
         var centerImage = function ($img, $image, img) {
             var w = img.width;
