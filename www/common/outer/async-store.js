@@ -78,6 +78,7 @@ define([
                 Realtime.whenRealtimeSyncs(s.realtime, waitFor());
                 if (s.sharedFolders && typeof (s.sharedFolders) === "object") {
                     for (var k in s.sharedFolders) {
+                        if (!s.sharedFolders[k].realtime) { continue; } // Deprecated
                         Realtime.whenRealtimeSyncs(s.sharedFolders[k].realtime, waitFor());
                     }
                 }
