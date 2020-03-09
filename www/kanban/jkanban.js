@@ -69,8 +69,6 @@
                     dropBoard: function (el, target, source, sibling) {},
                     click: function (el) {},
                     boardTitleclick: function (el, boardId) {},
-                    buttonClick: function (el, boardId) {},
-                    colorClick: function (el, type) {},
                     addItemClick: function (el, boardId) {},
                     renderMd: function (md) {},
                     refresh: function () {},
@@ -85,20 +83,22 @@
                     // set initial boards
                     __setBoard();
 
-        var $el = $(self.element)
-        var $inner = $el.find('.kanban-container');
-        var leftRegion = $el.position().left + 10;
-        var rightRegion = $(window).width() - 10;
-        var onMouseMove = function (e) {
-            if (e.which !== 1) { return; } // left click
-            var distance = 20;
-            if (e.pageX < leftRegion) {
-                distance *= -1;
-                $el.scrollLeft(distance + $el.scrollLeft()) ;
-            } else if (e.pageX >= rightRegion) {
-                $el.scrollLeft(distance + $el.scrollLeft()) ;
-            }
-        };
+                    // Scroll on drag
+                    var $el = $(self.element)
+                    var $inner = $el.find('.kanban-container');
+                    var leftRegion = $el.position().left + 10;
+                    var rightRegion = $(window).width() - 10;
+                    var onMouseMove = function (e) {
+                        if (e.which !== 1) { return; } // left click
+                        var distance = 20;
+                        if (e.pageX < leftRegion) {
+                            distance *= -1;
+                            $el.scrollLeft(distance + $el.scrollLeft()) ;
+                        } else if (e.pageX >= rightRegion) {
+                            $el.scrollLeft(distance + $el.scrollLeft()) ;
+                        }
+                    };
+
                     //set drag with dragula
                     if (window.innerWidth > self.options.responsive) {
 
@@ -333,7 +333,7 @@
                     var r = parseInt(hex.slice(0,2), 16);
                     var g = parseInt(hex.slice(2,4), 16);
                     var b = parseInt(hex.slice(4,6), 16);
-                    if ((r*0.299 + g*0.587 + b*0.114) > 186) {
+                    if ((r*0.213 + g*0.715 + b*0.072) > 255/2) {
                         return '#000000';
                     }
                     return '#FFFFFF';
@@ -394,7 +394,6 @@
                     nodeItem.dragendfn = element.dragend;
                     nodeItem.dropfn = element.drop;
                     __onclickHandler(nodeItemText);
-                    //__onColorClickHandler(nodeItem, "item");
                     return nodeItem;
                 };
 
@@ -601,11 +600,6 @@
                     return self;
                 }
 
-                // board button on click function
-                this.onButtonClick = function (el) {
-
-                }
-
                 this.renderMd = function (md) {
                     return self.options.renderMd(md);
                 }
@@ -687,17 +681,6 @@
                     });
                 }
 
-                function __onColorClickHandler(nodeItem, type) {
-                    nodeItem.addEventListener('click', function (e) {
-                        if (Array.prototype.slice.call(nodeItem.classList).indexOf('is-moving') !== -1) {
-                            return;
-                        }
-                        e.preventDefault;
-                        e.stopPropagation();
-                        self.options.colorClick(this, type);
-                    });
-                }
-
                 function __onAddItemClickHandler(nodeItem, clickfn) {
                     nodeItem.addEventListener('click', function (e) {
                         e.preventDefault;
@@ -705,16 +688,6 @@
                         self.options.addItemClick(this);
                         if (typeof (this.clickfn) === 'function')
                             this.clickfn(this);
-                    });
-                }
-
-                function __onButtonClickHandler(nodeItem, boardId) {
-                    nodeItem.addEventListener('click', function (e) {
-                        e.stopPropagation();
-                        e.preventDefault;
-                        self.options.buttonClick(this, boardId, e);
-                        // if(typeof(this.clickfn) === 'function')
-                        //     this.clickfn(this);
                     });
                 }
 

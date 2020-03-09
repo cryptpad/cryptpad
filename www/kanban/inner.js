@@ -26,7 +26,6 @@ define([
 
 
     '/kanban/jkanban.js',
-    '/common/jscolor.js',
     'css!/kanban/jkanban.css',
     'less!/kanban/app-kanban.less'
 ], function (
@@ -65,9 +64,6 @@ define([
 // Conflicts
 //   use cursor channel to tell others what you are editing
 //    add outline + warning inside the modal?
-
-// XXX
-// Fix contrast on migrated card (squad kanban green cards)
 
     var setValueAndCursor = function (input, val, _cursor) {
         if (!input) { return; }
@@ -585,54 +581,6 @@ define([
                     item.title = name;
                     framework.localChange();
                 });
-            },
-            colorClick: function (el, type) {
-                if (framework.isReadOnly() || framework.isLocked()) { return; }
-                verbose("on color click");
-                var boardJSON;
-                var board;
-                if (type === "board") {
-                    verbose("board color click");
-                    board = $(el.parentNode).attr("data-id");
-                    boardJSON = kanban.getBoardJSON(board);
-                } else {
-                    verbose("item color click");
-                    board = $(el.parentNode.parentNode).attr("data-id");
-                    var pos = kanban.findElementPosition(el);
-                    boardJSON = kanban.getBoardJSON(board).item[pos];
-                }
-                var onchange = function (colorL) {
-                    var elL = el;
-                    var typeL = type;
-                    var boardJSONL;
-                    var boardL;
-                    if (typeL === "board") {
-                        verbose("board color change");
-                        boardL = $(elL.parentNode).attr("data-id");
-                        boardJSONL = kanban.getBoardJSON(boardL);
-                    } else {
-                        verbose("item color change");
-                        boardL = $(elL.parentNode.parentNode).attr("data-id");
-                        var pos = kanban.findElementPosition(elL);
-                        boardJSONL = kanban.getBoardJSON(boardL).item[pos];
-                    }
-                    var currentColor = boardJSONL.color;
-                    verbose("Current color " + currentColor);
-                    if (currentColor !== colorL.toString()) {
-                        $(elL).removeClass("kanban-header-" + currentColor);
-                        boardJSONL.color = colorL.toString();
-                        kanban.onChange();
-                    }
-                };
-                var jscolorL;
-                el._jscLinkedInstance = undefined;
-                jscolorL = new window.jscolor(el,{showOnClick: false, onFineChange: onchange, valueElement:undefined});
-                jscolorL.show();
-                var currentColor = boardJSON.color;
-                if (currentColor === undefined) {
-                    currentColor = '';
-                }
-                jscolorL.fromString(currentColor);
             },
             addItemClick: function (el) {
                 if (framework.isReadOnly() || framework.isLocked()) { return; }
