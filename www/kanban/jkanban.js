@@ -84,6 +84,21 @@
                 this.init = function () {
                     // set initial boards
                     __setBoard();
+
+        var $el = $(self.element)
+        var $inner = $el.find('.kanban-container');
+        var leftRegion = $el.position().left + 10;
+        var rightRegion = $(window).width() - 10;
+        var onMouseMove = function (e) {
+            if (e.which !== 1) { return; } // left click
+            var distance = 20;
+            if (e.pageX < leftRegion) {
+                distance *= -1;
+                $el.scrollLeft(distance + $el.scrollLeft()) ;
+            } else if (e.pageX >= rightRegion) {
+                $el.scrollLeft(distance + $el.scrollLeft()) ;
+            }
+        };
                     //set drag with dragula
                     if (window.innerWidth > self.options.responsive) {
 
@@ -109,20 +124,22 @@
                                 if (typeof (el.dragfn) === 'function') {
                                     el.dragfn(el, source);
                                 }
+                                $(document).on('mousemove', onMouseMove);
                             })
                             .on('dragend', function (el) {
                                 el.classList.remove('is-moving');
                                 self.options.dragendBoard(el);
+                                $(document).off('mousemove', onMouseMove);
                                 if (typeof (el.dragendfn) === 'function')
                                     el.dragendfn(el);
                             })
                             .on('over', function (el, target, source) {
                                 if (!target.classList.contains('kanban-trash')) { return false; }
-                                target.classList.add('kanban-trash-active');
+                                $('.kanban-trash').addClass('kanban-trash-active');
                             })
                             .on('out', function (el, target) {
                                 if (!target.classList.contains('kanban-trash')) { return false; }
-                                target.classList.remove('kanban-trash-active');
+                                $('.kanban-trash').removeClass('kanban-trash-active');
                             })
                             .on('drop', function (el, target, source, sibling) {
                                 el.classList.remove('is-moving');
@@ -187,6 +204,7 @@
                                 self.dragItemPos = self.findElementPosition(el);
 
                                 el.classList.add('is-moving');
+                                $(document).on('mousemove', onMouseMove);
 
                                 self.options.dragEl(el, source);
                                 if (el !== null && typeof (el.dragfn) === 'function') {
@@ -197,6 +215,7 @@
                                 console.log("In dragend");
                                 el.classList.remove('is-moving');
                                 self.options.dragendEl(el);
+                                $(document).off('mousemove', onMouseMove);
                                 if (el !== null && typeof (el.dragendfn) === 'function') {
                                     el.dragendfn(el);
                                 }
@@ -631,9 +650,11 @@
                     var trash = self.trashContainer = document.createElement('div');
                     trash.setAttribute('id', 'kanban-trash');
                     trash.setAttribute('class', 'kanban-trash');
+                    var trashBg = document.createElement('div');
                     var trashIcon = document.createElement('i');
                     trashIcon.setAttribute('class', 'fa fa-trash');
                     trash.appendChild(trashIcon);
+                    trash.appendChild(trashBg);
                     self.boardContainer.push(trash);
 
                     self.container = boardContainer;

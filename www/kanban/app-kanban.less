@@ -200,110 +200,122 @@
         }
     }
 
-    #cp-app-kanban-content {
-        flex: 1;
-        display: flex;
-        flex-flow: column;
-        max-height: 100%;
-        overflow-x: auto;
-        .kanban-container-outer {
+    .kanban-board {
+        main {
+            padding: 0 10px;
+            margin: 10px 0;
             flex: 1;
+            overflow-y: auto;
+            justify-content: space-around;
+            min-height: 50px;
+        }
+        header {
             display: flex;
-            min-height: 0;
-            .kanban-container {
+            align-items: center;
+            padding: 5px 10px;
+            .kanban-title-board {
                 flex: 1;
-                display: flex;
-                max-height: 100%;
+                margin-right: 10px;
+                min-width: 0;
+                overflow: hidden;
+                //white-space: nowrap;
+                text-overflow: ellipsis;
+            }
+            #kanban-edit {
+                font-weight: bold;
+            }
+            &:hover {
+                cursor: move;
             }
         }
-        #cp-kanban-controls {
-            padding: 10px;
-            display: flex;
-            position: relative;
-            width: 100%;
-            justify-content: space-between;
-            position: relative;
-            .cp-kanban-filterTags {
+        footer {
+            margin: 10px;
+            margin-top: 0px;
+            span {
+                .tools_unselectable();
+                outline: none;
+                width: 100%;
+                border: 1px solid @cryptpad_text_col;
+                border-radius: 0px;
+                font-size: 40px;
                 display: inline-flex;
-                align-items: baseline;
-                flex: 1;
-                max-width: 80%;
-                min-width: 150px;
-
-                &> i {
-                    cursor: pointer;
-                    margin-left: 10px;
-                }
-                .cp-kanban-filterTags-name {
-                    flex-shrink: 0;
-                }
-                .cp-kanban-filterTags-list {
-                    margin-left: 10px;
-                    display: flex;
-                    flex-wrap: wrap;
-                    em {
-                        font-size: 14px;
-                        color: lighten(@cryptpad_text_col, 10%);
-                    }
-
-                    span {
-                        .tools_unselectable();
-                        padding: 0 5px;
-                        margin-right: 5px;
-                        margin-top: 5px;
-                        background-color: rgba(0,0,0,0.1);
-                        display: inline-block;
-                        font-size: 14px;
-                        cursor: pointer;
-                        &.active {
-                            background-color: @cryptpad_text_col;
-                            color: #fff;
-                        }
-                    }
-                }
-
-                &> .tokenfield {
-                    border-radius: 0px;
-                    display: inline-flex;
-                    border: 1px solid @cryptpad_text_col;
-                    flex-wrap: nowrap;
-                    align-items: center;
-                    width: 100px;
-                    input {
-                        margin-right: 5px;
-                    }
-                    .token {
-                        order: 2;
-                        border-radius: 0;
-                        margin-left: 5px;
-                        margin-right: 0px;
-                        .token-label {
-                            font-size: 12px;
-                        }
-                    }
+                justify-content: center;
+                align-items: center;
+                line-height: 1;
+                cursor: pointer;
+                &:hover {
+                    background-color: rgba(0,0,0,0.1);
                 }
             }
-            .cp-kanban-changeView {
-                height: 30px;
-                width: 60px;
+        }
+    }
+
+    #cp-kanban-controls {
+        padding: 10px;
+        display: flex;
+        position: relative;
+        width: 100%;
+        justify-content: space-between;
+        position: relative;
+        min-height: 50px;
+        .cp-kanban-filterTags {
+            display: inline-flex;
+            align-items: baseline;
+            flex: 1;
+            max-width: 80%;
+            min-width: 150px;
+
+            &> i {
+                cursor: pointer;
+                margin-left: 10px;
+            }
+            .cp-kanban-filterTags-name {
+                flex-shrink: 0;
+            }
+            .cp-kanban-filterTags-list {
+                margin-left: 10px;
+                display: flex;
+                flex-wrap: wrap;
+                em {
+                    font-size: 14px;
+                    color: lighten(@cryptpad_text_col, 10%);
+                }
+
                 span {
-                    position: fixed;
-                    height: 30px;
-                    width: 30px;
-                    line-height: 30px;
-                    text-align: center;
+                    .tools_unselectable();
+                    padding: 0 5px;
+                    margin-right: 5px;
+                    margin-top: 5px;
+                    background-color: rgba(0,0,0,0.1);
                     display: inline-block;
-                    background-color: @board-bg;
+                    font-size: 14px;
                     cursor: pointer;
-                    &:hover {
-                        background-color: darken(@board-bg, 10%);
-                    }
-                    &:last-child {
-                        right: 10px;
+                    &.active {
+                        background-color: @cryptpad_text_col;
+                        color: #fff;
                     }
                 }
             }
         }
+        .cp-kanban-changeView {
+            right: 10px;
+            height: 30px;
+            width: 60px;
+            span {
+                height: 30px;
+                width: 30px;
+                line-height: 30px;
+                text-align: center;
+                display: inline-block;
+                background-color: @board-bg;
+                cursor: pointer;
+                &:hover {
+                    background-color: darken(@board-bg, 10%);
+                }
+            }
+        }
+    }
+    #cp-app-kanban-container {
         &:not(.cp-kanban-quick) {
             #cp-kanban-controls {
                 .cp-kanban-changeView {
@@ -333,6 +345,24 @@
                 }
             }
         }
+    }
+
+    #cp-app-kanban-content {
+        flex: 1;
+        display: flex;
+        flex-flow: column;
+        max-height: 100%;
+        overflow-x: auto;
+        .kanban-container-outer {
+            flex: 1;
+            display: flex;
+            min-height: 0;
+            .kanban-container {
+                flex: 1;
+                display: flex;
+                max-height: 100%;
+            }
+        }
         #kanban-trash {
             height: 60px;
             font-size: 40px;
@@ -341,66 +371,24 @@
             justify-content: center;
             position: relative;
             width: 100%;
+            //pointer-events: none;
             i {
                 position: fixed;
             }
+            div {
+                width: 100%;
+                height: 60px;
+                position: fixed;
+                right: 0;
+            }
             &.kanban-trash-active {
                 color: red;
-                border: 1px solid red;
-                background-color: rgba(255,0,0,0.5);
+                div {
+                    background: rgba(255,0,0,0.5);
+                }
             }
             .kanban-item, .kanban-board {
                 display: none;
-            }
-        }
-
-        .kanban-board {
-            main {
-                padding: 0 10px;
-                margin: 10px 0;
-                flex: 1;
-                overflow-y: auto;
-                justify-content: space-around;
-                min-height: 50px;
-            }
-            header {
-                display: flex;
-                align-items: center;
-                padding: 5px 10px;
-                .kanban-title-board {
-                    flex: 1;
-                    margin-right: 10px;
-                    min-width: 0;
-                    overflow: hidden;
-                    //white-space: nowrap;
-                    text-overflow: ellipsis;
-                }
-                #kanban-edit {
-                    font-weight: bold;
-                }
-                &:hover {
-                    cursor: move;
-                }
-            }
-            footer {
-                margin: 10px;
-                margin-top: 0px;
-                span {
-                    .tools_unselectable();
-                    outline: none;
-                    width: 100%;
-                    border: 1px solid @cryptpad_text_col;
-                    border-radius: 0px;
-                    font-size: 40px;
-                    display: inline-flex;
-                    justify-content: center;
-                    align-items: center;
-                    line-height: 1;
-                    cursor: pointer;
-                    &:hover {
-                        background-color: rgba(0,0,0,0.1);
-                    }
-                }
             }
         }
 

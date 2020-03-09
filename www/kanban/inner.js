@@ -66,6 +66,9 @@ define([
 //   use cursor channel to tell others what you are editing
 //    add outline + warning inside the modal?
 
+// XXX
+// Fix contrast on migrated card (squad kanban green cards)
+
     var setValueAndCursor = function (input, val, _cursor) {
         if (!input) { return; }
         var $input = $(input);
@@ -711,18 +714,22 @@ define([
         });
 
         var $container = $('#cp-app-kanban-content');
+        $container[0].onclick = function (e) {
+            console.warn(e);
+        };
+        var $cContainer = $('#cp-app-kanban-container');
         var addControls = function () {
             // Quick or normal mode
             var small = h('span.cp-kanban-view-small.fa.fa-minus');
             var big = h('span.cp-kanban-view.fa.fa-bars');
             $(small).click(function () {
-                if ($container.hasClass('cp-kanban-quick')) { return; }
-                $container.addClass('cp-kanban-quick');
+                if ($cContainer.hasClass('cp-kanban-quick')) { return; }
+                $cContainer.addClass('cp-kanban-quick');
                 framework._.sfCommon.setPadAttribute('quickMode', true);
             });
             $(big).click(function () {
-                if (!$container.hasClass('cp-kanban-quick')) { return; }
-                $container.removeClass('cp-kanban-quick');
+                if (!$cContainer.hasClass('cp-kanban-quick')) { return; }
+                $cContainer.removeClass('cp-kanban-quick');
                 framework._.sfCommon.setPadAttribute('quickMode', false);
             });
 
@@ -746,9 +753,9 @@ define([
             var commitTags = function () {
                 var t = getTags();
                 if (t.length) {
-                    $reset.show();
+                    $reset.css('visibility', '');
                 } else {
-                    $reset.hide();
+                    $reset.css('visibility', 'hidden');
                 }
                 framework._.sfCommon.setPadAttribute('tagsFilter', t);
                 kanban.options.tags = t;
@@ -795,7 +802,7 @@ define([
                 });
                 framework._.sfCommon.setPadAttribute('tagsFilter', tags);
             };
-            $reset.hide().click(function () {
+            $reset.css('visibility', 'hidden').click(function () {
                 setTags([]);
                 commitTags();
             });
@@ -807,7 +814,7 @@ define([
                     big
                 ])
             ]);
-            $container.prepend(container);
+            $container.before(container);
 
             onRedraw.reg(function () {
                 // Redraw if new tags have been added to items
@@ -827,7 +834,7 @@ define([
             });
             framework._.sfCommon.getPadAttribute('quickMode', function (err, res) {
                 if (!err && res) {
-                    $container.addClass('cp-kanban-quick');
+                    $cContainer.addClass('cp-kanban-quick');
                 }
             });
         };
