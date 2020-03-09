@@ -8,6 +8,7 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
+    '/common/common-ui-elements.js',
     '/common/modes.js',
     '/customize/messages.js',
     '/common/hyperscript.js',
@@ -38,6 +39,7 @@ define([
     Util,
     Hash,
     UI,
+    UIElements,
     Modes,
     Messages,
     h,
@@ -51,6 +53,8 @@ define([
     var verbose = function (x) { console.log(x); };
     verbose = function () {}; // comment out to enable verbose logging
     var onRedraw = Util.mkEvent();
+    var onCursorUpdate = Util.mkEvent();
+    var remoteCursors = {};
 
     Messages.kanban_title = "Title"; // XXX
     Messages.kanban_body = "Body"; // XXX
@@ -59,6 +63,7 @@ define([
     Messages.kanban_delete = "Delete"; // XXX
     Messages.kanban_tags = "Filter tags"; // XXX
     Messages.kanban_noTags = "No tags"; // XXX
+    Messages.kanban_conflicts = "Currently editing:"; // XXX
 
 // XXX
 // Conflicts
@@ -81,6 +86,46 @@ define([
         if (focus) { $input.focus(); }
         input.selectionStart = selects[0];
         input.selectionEnd = selects[1];
+    };
+
+    var getTextColor = function (hex) {
+        if (hex && /^#/.test(hex)) { hex = hex.slice(1); }
+        if (!/^[0-9a-f]{6}$/i.test(hex)) {
+            return '#000000';
+        }
+        var r = parseInt(hex.slice(0,2), 16);
+        var g = parseInt(hex.slice(2,4), 16);
+        var b = parseInt(hex.slice(4,6), 16);
+        if ((r*0.213 + g*0.715 + b*0.072) > 255/2) {
+            return '#000000';
+        }
+        return '#FFFFFF';
+    };
+
+    var getAvatar = function (cursor, noClear) {
+        // Tippy
+        var html = '<span class="cp-cursor-avatar">';
+        if (cursor.avatar && UIElements.getAvatar(cursor.avatar)) {
+            html += UIElements.getAvatar(cursor.avatar);
+        }
+        html += cursor.name + '</span>';
+
+        var l = (cursor.name || Messages.anonymous).slice(0,1).toUpperCase();
+
+        var text = '';
+        if (cursor.color) {
+            text = 'color:'+getTextColor(cursor.color)+';';
+        }
+        var avatar = h('span.cp-cursor.cp-tippy-html', {
+            style: "background-color: " + (cursor.color || 'red') + ";"+text,
+            title: html
+        }, l);
+        if (!noClear) {
+            cursor.clear = function () {
+                $(avatar).remove();
+            };
+        }
+        return avatar;
     };
 
     var getExistingTags = function (boards) {
@@ -112,8 +157,12 @@ define([
             addEditItemButton(framework, kanban);
         };
         if (editModal) { return editModal; }
-        var titleInput, tagsDiv, colors, text;
+        var conflicts, conflictContainer, titleInput, tagsDiv, colors, text;
         var content = h('div', [
+            conflictContainer = h('div#cp-kanban-edit-conflicts', [
+                h('div', Messages.kanban_conflicts),
+                conflicts = h('div.cp-kanban-cursors')
+            ]),
             h('label', {for:'cp-kanban-edit-title'}, Messages.kanban_title),
             titleInput = h('input#cp-kanban-edit-title'),
             h('label', {for:'cp-kanban-edit-body'}, Messages.kanban_body),
@@ -125,6 +174,27 @@ define([
             h('label', {for:'cp-kanban-edit-color'}, Messages.kanban_color),
             colors = h('div#cp-kanban-edit-colors'),
         ]);
+
+
+        var $conflict = $(conflicts);
+        var $cc = $(conflictContainer);
+        var conflict = {
+            setValue: function () {
+                $conflict.empty();
+                var i = 0;
+                $cc.hide();
+                Object.keys(remoteCursors).forEach(function (nid) {
+                    var c = remoteCursors[nid];
+                    var avatar = getAvatar(c, true);
+                    if (Number(c.item) === Number(id) || Number(c.board) === Number(id)) {
+                        $conflict.append(avatar);
+                        i++;
+                    }
+                });
+                if (!i) { return; }
+                $cc.show();
+            }
+        };
 
         // Title
         var $title = $(titleInput);
@@ -248,11 +318,17 @@ define([
             isBoard = _isBoard;
             id = _id;
             if (_isBoard) {
+                onCursorUpdate.fire({
+                    board: _id
+                });
                 dataObject = kanban.getBoardJSON(id);
                 $(content)
                     .find('#cp-kanban-edit-body, #cp-kanban-edit-tags, [for="cp-kanban-edit-body"], [for="cp-kanban-edit-tags"]')
                     .hide();
             } else {
+                onCursorUpdate.fire({
+                    item: _id
+                });
                 dataObject = kanban.getItemJSON(id);
                 $(content)
                     .find('#cp-kanban-edit-body, #cp-kanban-edit-tags, [for="cp-kanban-edit-body"], [for="cp-kanban-edit-tags"]')
@@ -287,6 +363,7 @@ define([
             className: 'primary',
             name: Messages.filePicker_close,
             onClick: function () {
+                onCursorUpdate.fire({});
             },
             keys: []
         }];
@@ -310,6 +387,7 @@ define([
                 return;
             }
             // Not deleted, apply updates
+            editModal.conflict.setValue();
             PROPERTIES.forEach(function (type) {
                 editModal[type].setValue(dataObject[type], true);
             });
@@ -321,7 +399,8 @@ define([
             title: title,
             body: body,
             tags: tags,
-            color: color
+            color: color,
+            conflict: conflict
         };
     };
     var getItemEditModal = function (framework, kanban, eid) {
@@ -331,6 +410,7 @@ define([
         var boards = kanban.options.boards || {};
         var item = (boards.items || {})[eid];
         if (!item) { return void UI.warn(Messages.error); }
+        editModal.conflict.setValue();
         PROPERTIES.forEach(function (type) {
             if (!editModal[type]) { return; }
             editModal[type].setValue(item[type]);
@@ -345,6 +425,7 @@ define([
         var boards = kanban.options.boards || {};
         var board = (boards.data || {})[id];
         if (!board) { return void UI.warn(Messages.error); }
+        editModal.conflict.setValue();
         BOARD_PROPERTIES.forEach(function (type) {
             if (!editModal[type]) { return; }
             editModal[type].setValue(board[type]);
@@ -482,6 +563,12 @@ define([
                 }
                 var eid = $(el).attr('data-eid');
                 kanban.inEditMode = eid;
+                setTimeout(function () {
+                    // Make sure the click is sent after the "blur" in case we move from a card to another
+                    onCursorUpdate.fire({
+                        item: eid
+                    });
+                });
                 var name = $(el).text();
                 $(el).html('');
 
@@ -500,8 +587,9 @@ define([
                     kanban.onChange();
                     // Unlock edit mode
                     kanban.inEditMode = false;
+                    onCursorUpdate.fire({});
                 };
-                $input.blur(save);
+                //$input.blur(save);
                 $input.keydown(function (e) {
                     if (e.which === 13) {
                         e.preventDefault();
@@ -515,10 +603,7 @@ define([
                     if (e.which === 27) {
                         e.preventDefault();
                         e.stopPropagation();
-                        $(el).text(name);
-                        kanban.inEditMode = false;
-                        addEditItemButton(framework, kanban);
-                        return;
+                        save();
                     }
                 });
                 $input.on('change keyup', function () {
@@ -540,6 +625,12 @@ define([
                 }
                 var boardId = $(el).closest('.kanban-board').attr("data-id");
                 kanban.inEditMode = boardId;
+                setTimeout(function () {
+                    // Make sure the click is sent after the "blur" in case we move from a card to another
+                    onCursorUpdate.fire({
+                        board: boardId
+                    });
+                });
 
                 var name = $(el).text();
                 $(el).html('');
@@ -559,6 +650,7 @@ define([
                     kanban.onChange();
                     // Unlock edit mode
                     kanban.inEditMode = false;
+                    onCursorUpdate.fire({});
                 };
                 $input.blur(save);
                 $input.keydown(function (e) {
@@ -571,8 +663,7 @@ define([
                     if (e.which === 27) {
                         e.preventDefault();
                         e.stopPropagation();
-                        $(el).text(name);
-                        kanban.inEditMode = false;
+                        save();
                         return;
                     }
                 });
@@ -604,6 +695,7 @@ define([
                 var save = function () {
                     $item.remove();
                     kanban.inEditMode = false;
+                    onCursorUpdate.fire({});
                     if (!$input.val()) { return; }
                     var id = Util.createRandomInteger();
                     var item = {
@@ -630,6 +722,7 @@ define([
                         e.stopPropagation();
                         $item.remove();
                         kanban.inEditMode = false;
+                        onCursorUpdate.fire({});
                         return;
                     }
                 });
@@ -638,6 +731,9 @@ define([
                 return DiffMd.render(md, true, false);
             },
             addItemButton: true,
+            getTextColor: getTextColor,
+            getAvatar: getAvatar,
+            cursors: remoteCursors,
             boards: boards
         });
 
@@ -664,9 +760,6 @@ define([
         });
 
         var $container = $('#cp-app-kanban-content');
-        $container[0].onclick = function (e) {
-            console.warn(e);
-        };
         var $cContainer = $('#cp-app-kanban-container');
         var addControls = function () {
             // Quick or normal mode
@@ -984,6 +1077,47 @@ define([
 
         framework.onDefaultContentNeeded(function () {
             kanban = initKanban(framework);
+        });
+
+        var myCursor = {};
+        onCursorUpdate.reg(function (data) {
+            myCursor = data;
+            framework.updateCursor();
+        });
+        framework.onCursorUpdate(function (data) {
+            if (!data) { return; }
+            var id = data.id;
+
+            // Clear existing cursor
+            if (remoteCursors[id] && remoteCursors[id].clear) {
+                remoteCursors[id].clear();
+            }
+            delete remoteCursors[id];
+
+            var cursor = data.cursor;
+            if (data.leave || !cursor) { return; }
+            if (!cursor.item && !cursor.board) { return; }
+
+            // Add new cursor
+            var avatar = getAvatar(cursor);
+            var $item = $('.kanban-item[data-eid="'+cursor.item+'"]');
+            var $board = $('.kanban-board[data-id="'+cursor.board+'"]');
+            if ($item.length) {
+                remoteCursors[id] = cursor;
+                $item.find('.cp-kanban-cursors').append(avatar);
+                return;
+            }
+            if ($board.length) {
+                remoteCursors[id] = cursor;
+                $board.find('header .cp-kanban-cursors').append(avatar);
+            }
+        });
+        framework.onCursorUpdate(function () {
+            if (!editModal || !editModal.conflict) { return; }
+            editModal.conflict.setValue();
+        });
+        framework.setCursorGetter(function () {
+            return myCursor;
         });
 
         framework.start();

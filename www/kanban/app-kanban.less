@@ -2,6 +2,7 @@
 @import (reference) "../../customize/src/less2/include/framework.less";
 @import (reference) "../../customize/src/less2/include/tools.less";
 @import (reference) "../../customize/src/less2/include/markdown.less";
+@import (reference) "../../customize/src/less2/include/avatar.less";
 
 // body
 &.cp-app-kanban {
@@ -99,6 +100,16 @@
         flex-flow: column;
         overflow: hidden;
     }
+    #cp-kanban-edit-conflicts {
+        padding: 5px;
+        background: #eee;
+        color: @cryptpad_text_col;
+        font-size: 14px;
+        .cp-kanban-cursors {
+            margin-top: 5px;
+        }
+        margin-bottom: 5px;
+    }
     #cp-kanban-edit-body {
         border: 1px solid @colortheme_modal-input;
         .CodeMirror {
@@ -154,12 +165,30 @@
         padding: 5px;
     }
 
+    .cp-kanban-cursors {
+        &:empty { display: none; }
+        order: 2;
+        width: 100%;
+        &> span {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+            margin-right: 5px;
+            .tools_unselectable();
+            cursor: default;
+        }
+    }
     .kanban-item {
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 5px;
         flex-wrap: wrap;
+        .cp-kanban-cursors {
+            margin-top: 10px;
+        }
         .kanban-item-body, .kanban-item-tags {
             .tools_unselectable();
             width: 100%;
@@ -216,6 +245,7 @@
         }
         header {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             padding: 5px 10px;
             .kanban-title-board {

@@ -56,6 +56,9 @@
                         items: {},
                         list: []
                     },
+                    getAvatar: function () {},
+                    getTextColor: function () { return '#000'; },
+                    cursors: {},
                     tags: [],
                     dragBoards: true,
                     addItemButton: false,
@@ -351,19 +354,6 @@
                     }
                 };
 
-                var getTextColor = function (hex) {
-                    if (!/^[0-9a-f]{6}$/.test(hex)) {
-                        return '#000000';
-                    }
-                    var r = parseInt(hex.slice(0,2), 16);
-                    var g = parseInt(hex.slice(2,4), 16);
-                    var b = parseInt(hex.slice(4,6), 16);
-                    if ((r*0.213 + g*0.715 + b*0.072) > 255/2) {
-                        return '#000000';
-                    }
-                    return '#FFFFFF';
-                };
-
                 var getElementNode = function (element) {
                     var nodeItem = document.createElement('div');
                     nodeItem.classList.add('kanban-item');
@@ -374,10 +364,18 @@
                             nodeItem.classList.add('cp-kanban-palette-'+element.color);
                         } else {
                             // Hex color code
-                            var textColor = getTextColor(element.color);
+                            var textColor = self.options.getTextColor(element.color);
                             nodeItem.setAttribute('style', 'background-color:#'+element.color+';color:'+textColor+';');
                         }
                     }
+                    var nodeCursors = document.createElement('div');
+                    nodeCursors.classList.add('cp-kanban-cursors');
+                    Object.keys(self.options.cursors).forEach(function (id) {
+                        var c = self.options.cursors[id];
+                        if (Number(c.item) !== Number(element.id)) { return; }
+                        var el = self.options.getAvatar(c);
+                        nodeCursors.appendChild(el);
+                    });
                     var nodeItemText = document.createElement('div');
                     nodeItemText.classList.add('kanban-item-text');
                     nodeItemText.dataset.eid = element.id;
@@ -413,6 +411,7 @@
                         });
                         nodeItem.appendChild(nodeTags);
                     }
+                    nodeItem.appendChild(nodeCursors);
                     //add function
                     nodeItem.clickfn = element.click;
                     nodeItem.dragfn = element.drag;
@@ -482,10 +481,11 @@
                             headerBoard.classList.add("kanban-header-" + board.color);
                         } else {
                             // Hex color code
-                            var textColor = getTextColor(board.color);
+                            var textColor = self.options.getTextColor(board.color);
                             headerBoard.setAttribute('style', 'background-color:#'+board.color+';color:'+textColor+';');
                         }
                     }
+
                     titleBoard = document.createElement('div');
                     titleBoard.classList.add('kanban-title-board');
                     titleBoard.innerText = board.title;
@@ -493,6 +493,16 @@
                     titleBoard.clickfn = board.boardTitleClick;
                     __onboardTitleClickHandler(titleBoard);
                     headerBoard.appendChild(titleBoard);
+
+                    var nodeCursors = document.createElement('div');
+                    nodeCursors.classList.add('cp-kanban-cursors');
+                    Object.keys(self.options.cursors).forEach(function (id) {
+                        var c = self.options.cursors[id];
+                        if (Number(c.board) !== Number(board.id)) { return; }
+                        var el = self.options.getAvatar(c);
+                        nodeCursors.appendChild(el);
+                    });
+                    headerBoard.appendChild(nodeCursors);
 
                     //content board
                     var contentBoard = document.createElement('main');
