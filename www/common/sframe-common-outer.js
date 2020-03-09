@@ -423,7 +423,7 @@ define([
                     };
                     var additionalPriv = {
                         app: parsed.type,
-                        accountName: Utils.LocalStore.getAccountName(),
+                        loggedIn: Utils.LocalStore.isLoggedIn(),
                         origin: window.location.origin,
                         pathname: window.location.pathname,
                         fileHost: ApiConfig.fileHost,
@@ -784,7 +784,7 @@ define([
             });
 
             sframeChan.on('Q_LOGOUT_EVERYWHERE', function (data, cb) {
-                Cryptpad.logoutFromAll(cb);
+                Cryptpad.logoutFromAll(Utils.Util.bake(Utils.LocalStore.logout, cb));
             });
 
             sframeChan.on('EV_NOTIFY', function (data) {

@@ -1,3 +1,57 @@
+# NorthernWhiteRhino release (3.13.0)
+
+## Goals
+
+This release cycle we prioritized the completion of "access lists", a major feature that we're excited to introduce.
+
+## Update notes
+
+Nearly every week (sometimes more than once) we end up taking time away from development to help administrators to configure their CryptPad instances. We're happy to see more instances popping up, but ideally we'd like to spend more of our time working on new features. With this in mind we devoted some time to simplify instance configuration and to clarify some points where people commonly have difficulty.
+
+If you review `cryptpad/config.example.js` you'll notice it is significantly smaller than it was last release.
+Old configuration files should be backwards compatible (if you copied `config.example.js` to `config.js` in order to customize it).
+The example has been reorganized so that the most important parts (which people seemed to miss most of the time) are at the top.
+Most of the fields which were defined within the config file now have defaults defined within the server itself.
+If you supply these values they will override the default, but for the most part they can be removed.
+
+We advise that you read the comments at the top of the example, in particular the points related to `httpUnsafeOrigin` and `httpSafeOrigin` which are used to protect users' cryptographic keys in the event of a cross-site scripting (XSS) vulnerability.
+If these values are not correctly set then your users will not benefit from all the security measures we've spent lots of time implemented.
+
+A lot of the fields that were present as modifiable defaults have been removed or commented out in the example config.
+If you supply them then they will override the default behaviour, however, you probably won't need to and doing so might break important functionality.
+Content-Security Policy (CSP) definitions should be safe to remove, as should `httpAddress`, `httpPort`, and `httpSafePort` (unless you need to run the nodejs API server on an address other than `localhost` or port 3000.
+
+Up until now it's been possible for administrators to allow users to pay for accounts (on their server) via https://accounts.cryptpad.fr.
+Our intent was to securely handle payment and then split the proceeds between ourselves and the instance's administrator.
+In practice this just created extra work for us because we ended up having to contact admins, all of whom have opted to treat the subscription as a donation to support development.
+As such we have disabled the ability of users to pay for premium subscriptions (on https://accounts.cryptpad.fr) for any instance other than our own.
+
+Servers with premium subscriptions enabled were configured to check whether anyone had subscribed to a premium account by querying our accounts server on a daily basis.
+We've left this daily check in place despite premium subscriptions being disabled because it informs us how many third-party instances exist and what versions they are running.
+We don't sell or share this information with anyone, but it is useful to us because it informs us what older data structures we have to continue to support.
+For instance, we retain code for migrating documents to newer data formats as long as we know that there are still instances that have not run those migrations.
+We also cite the number of third-party instances when applying for grants as an indicator of the value of funding our project.
+In any case, you can disable this daily check-in by setting `blockDailyCheck` to `true` in `config/config.js`.
+
+Finally, we've implemented the ability to set a higher limit on the maximum size of uploaded files for premium users (paying users on CryptPad.fr and users with entries in `customLimits` on other instances).
+Set this limit as a number (of bytes) with `premiumUploadSize` in your config file.
+
+## Features
+
+* It is often difficult to fix problems reported as GitHub issues because we don't have enough information. The platform's repository now includes an _issue template_ which includes a list of details that will probably be relevant to fixing bugs. Please read the list carefully, as we'll probably just close issues if information that we need was not included.
+* We've made it easy to terminate all open sessions for your account. If you're logged in, you'll now see a _log out everywhere_ button in the _user admin menu_ (in the top-right corner of the screen).
+  * You may still terminate only _remote sessions_ while leaving your local session intact via the pre-existing button on the settings page's _confidentiality_ tab.
+* You may have noticed that it takes progressively longer to load your account as you add more files to your drive, shared folders, and teams. This is because an integrity check is run on all your files when you first launch a CryptPad session. We optimized some parts of this check to speed it up. We plan to continue searching for similar processes that we can optimize in order to decrease loading time and run-time efficiency.
+* Lastly, this release introduces **access lists**, which you can use to limit who can view your documents _even if they have the keys required to decrypt them_. You can do so by using the _Access_ modal for any given document, available in the `...` dropdown menu in each app's toolbar or when right-clicking in the drive.
+  * Enabling access restriction for a document will disallow anyone except its owners or allowed users from opening it. Anyone else who is currently editing or viewing the document will be disconnected from the session.
+
+## Bug fixes
+
+* A member of _C3Wien_ reported some strange behaviour triggered by customizing some of Firefox's anti-tracking features. The settings incorrectly identified our cross-domain sandboxing system as a tracker and interfered with its normal functionality. As a result, the user was treated as though they were not logged in, even though pads from their account's drive were displayed within the "anonymous drive" that unregistered users normally see.
+  * This was simple to fix, requiring only that we adjust our method of checking whether a user is logged in.
+  * If you ever notice odd behaviour we do recommend that you review any customizations you've made to your browser, as we only test CryptPad under default conditions unless prompted to investigate an issue.
+* Users that take advantage of the Mermaid renderer in our markdown editor's preview pane may have noticed that the preview's scroll position was lost whenever mermaid charts were modified. We've updated our renderer such that it preserves scroll position when redrawing elements, making it easier to see the effects of your changes when editing large charts.
+
 # Megaloceros release (3.12.0)
 
 ## Goals

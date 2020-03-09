@@ -1,7 +1,7 @@
 {
   "name": "cryptpad",
   "description": "realtime collaborative visual editor with zero knowlege server",
-  "version": "3.12.0",
+  "version": "3.13.0",
   "license": "AGPL-3.0+",
   "repository": {
     "type": "git",
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "chainpad-crypto": "^0.2.2",
-    "chainpad-server": "^4.0.3",
+    "chainpad-server": "^4.0.4",
     "express": "~4.16.0",
     "fs-extra": "^7.0.0",
     "get-folder-size": "^2.0.1",

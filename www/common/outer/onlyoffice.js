@@ -12,7 +12,6 @@ define([
         if (!c) {
             c = ctx.clients[client] = {
                 channel: channel,
-                padChan: padChan,
             };
         } else {
             return void cb();
@@ -45,6 +44,7 @@ define([
             };
 
             chan = ctx.channels[channel];
+            chan.padChan = padChan;
 
             // Create our client ID using the netflux ID
             if (!c.id) { c.id = wc.myID + '-' + client; }

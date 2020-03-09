@@ -724,7 +724,7 @@ define([
                 if (dedup.length !== files[TEMPLATE].length) {
                     files[TEMPLATE] = dedup;
                 }
-                var us = files[TEMPLATE].slice();
+                var us = files[TEMPLATE];
                 var rootFiles = exp.getFiles([ROOT]);
                 var toClean = [];
                 us.forEach(function (el, idx) {

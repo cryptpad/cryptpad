@@ -325,6 +325,10 @@ define([
                     'tabindex': '-1',
                     'data-icon': faOpenInCode,
                 }, Messages.fc_openInCode)),
+                h('li', h('a.cp-app-drive-context-savelocal.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': 'fa-cloud-upload',
+                }, Messages.pad_mediatagImport)), // Save in your CryptDrive
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-expandall.dropdown-item', {
                     'tabindex': '-1',
@@ -344,14 +348,10 @@ define([
                     'tabindex': '-1',
                     'data-icon': 'fa-shhare-alt',
                 }, Messages.shareButton)),
-                h('li', h('a.cp-app-drive-context-savelocal.dropdown-item', {
+                h('li', h('a.cp-app-drive-context-access.dropdown-item', {
                     'tabindex': '-1',
-                    'data-icon': 'fa-cloud-upload',
-                }, Messages.pad_mediatagImport)), // Save in your CryptDrive
-                h('li', h('a.cp-app-drive-context-download.dropdown-item', {
-                    'tabindex': '-1',
-                    'data-icon': faDownload,
-                }, Messages.download_mt_button)),
+                    'data-icon': faAccess,
+                }, Messages.accessButton)),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-newfolder.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
@@ -441,6 +441,10 @@ define([
                     'tabindex': '-1',
                     'data-icon': faCopy,
                 }, Messages.makeACopy)),
+                h('li', h('a.cp-app-drive-context-download.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': faDownload,
+                }, Messages.download_mt_button)),
                 h('li', h('a.cp-app-drive-context-delete.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faTrash,
@@ -458,14 +462,10 @@ define([
                     'data-icon': faDelete,
                 }, Messages.fc_remove_sharedfolder)),
                 $separator.clone()[0],
-                h('li', h('a.cp-app-drive-context-access.dropdown-item', {
-                    'tabindex': '-1',
-                    'data-icon': faAccess,
-                }, "ACCESS")), // XXX
                 h('li', h('a.cp-app-drive-context-properties.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faProperties,
-                }, Messages.fc_prop)),
+                }, Messages.fc_prop))
             ])
         ]);
         // add icons to the contextmenu options
@@ -1279,7 +1279,7 @@ define([
                 case 'tree':
                     show = ['open', 'openro', 'openincode', 'expandall', 'collapseall',
                             'color', 'download', 'share', 'savelocal', 'rename', 'delete', 'makeacopy',
-                            'deleteowned', 'removesf', 'properties', 'hashtag'];
+                            'deleteowned', 'removesf', 'access', 'properties', 'hashtag'];
                     break;
                 case 'default':
                     show = ['open', 'openro', 'share', 'openparent', 'delete', 'deleteowned', 'properties', 'access', 'hashtag', 'makeacopy'];

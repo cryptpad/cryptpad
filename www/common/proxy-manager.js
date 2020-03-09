@@ -67,6 +67,13 @@ define([
         }
     };
 
+    var restrictedProxy = function (Env, id, channel) {
+        var lm = { proxy: { deprecated: true } };
+        removeProxy(Env, id);
+        addProxy(Env, id, lm, function () {});
+        return void Env.Store.refreshDriveUI();
+    };
+
     /*
         Tools
     */
@@ -1118,6 +1125,7 @@ define([
             addProxy: callWithEnv(addProxy),
             removeProxy: callWithEnv(removeProxy),
             deprecateProxy: callWithEnv(deprecateProxy),
+            restrictedProxy: callWithEnv(restrictedProxy),
             addSharedFolder: callWithEnv(_addSharedFolder),
             // Drive
             command: callWithEnv(onCommand),

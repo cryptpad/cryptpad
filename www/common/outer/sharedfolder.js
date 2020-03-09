@@ -214,6 +214,18 @@ define([
                             });
                         } catch (e) {}
                         delete allSharedFolders[secret.channel];
+                        // This shouldn't be called on init because we're calling "isNewChannel" first,
+                        // but we can still call "cb" just in case. This wait we make sure we won't block
+                        // the initial "waitFor"
+                        return void cb();
+                    }
+                    if (info.error === "ERESTRICTED" ) {
+                        // This shouldn't happen: allow list are disabled for shared folders
+                        // but call "cb" to make sure we won't block the initial "waitFor"
+                        sf.teams.forEach(function (obj) {
+                            obj.store.manager.restrictedProxy(obj.id, secret.channel);
+                        });
+                        return void cb();
                     }
                 }
             });

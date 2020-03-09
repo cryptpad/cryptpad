@@ -78,6 +78,7 @@ define([
                 Realtime.whenRealtimeSyncs(s.realtime, waitFor());
                 if (s.sharedFolders && typeof (s.sharedFolders) === "object") {
                     for (var k in s.sharedFolders) {
+                        if (!s.sharedFolders[k].realtime) { continue; } // Deprecated
                         Realtime.whenRealtimeSyncs(s.sharedFolders[k].realtime, waitFor());
                     }
                 }
@@ -583,6 +584,7 @@ define([
                     support: Util.find(store.proxy, ['mailboxes', 'support', 'channel']),
                     pendingFriends: store.proxy.friends_pending || {},
                     supportPrivateKey: Util.find(store.proxy, ['mailboxes', 'supportadmin', 'keys', 'curvePrivate']),
+                    accountName: store.proxy.login_name || '',
                     teams: teams,
                     plan: account.plan
                 }
@@ -1522,11 +1524,39 @@ define([
                 },
                 onError: function (err) {
                     channel.bcast("PAD_ERROR", err);
-                    delete channels[data.channel];
+                    Store.leavePad(null, data, function () {});
                 },
                 onChannelError: function (err) {
                     channel.bcast("PAD_ERROR", err);
-                    delete channels[data.channel];
+                    Store.leavePad(null, data, function () {});
+                },
+                onRejected: function (allowed, _cb) {
+                    var cb = Util.once(Util.mkAsync(_cb));
+
+                    // There is an allow list: check if we can authenticate
+                    if (!Array.isArray(allowed)) { return void cb('EINVAL'); }
+                    if (!store.loggedIn || !store.proxy.edPublic) { return void cb('EFORBIDDEN'); }
+                    var rpc;
+                    var teamModule = store.modules['team'];
+                    var teams = (teamModule && teamModule.getTeams()) || [];
+
+                    if (allowed.indexOf(store.proxy.edPublic) !== -1) {
+                        // We are allowed: use our own rpc
+                        rpc = store.rpc;
+                    } else if (teams.some(function (teamId) {
+                        // We're not allowed: check our teams
+                        var ed = Util.find(store, ['proxy', 'teams', teamId, 'keys', 'drive', 'edPublic']);
+                        if (allowed.indexOf(ed) === -1) { return false; }
+                        // This team is allowed: use its rpc
+                        var t = teamModule.getTeam(teamId);
+                        rpc = t.rpc;
+                        return true;
+                    })) {}
+
+                    if (!rpc) { return void cb('EFORBIDDEN'); }
+                    rpc.send('COOKIE', '', function (err) {
+                        cb(err);
+                    });
                 },
                 onConnectionChange: function (info) {
                     if (!info.state) {
@@ -1775,6 +1805,10 @@ define([
                 if (err) { return void cb({error: err}); }
                 var metadata = (obj && obj[0]) || {};
                 cb(metadata);
+
+                // If you don't have access to the metadata, stop here
+                // (we can't update the local data)
+                if (metadata.rejected) { return; }
 
                 // Update owners and expire time in the drive
                 getAllStores().forEach(function (s) {

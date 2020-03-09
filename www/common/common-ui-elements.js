@@ -953,7 +953,6 @@ define([
                 'data-curve': data.curvePublic || '',
                 'data-name': name.toLowerCase(),
                 'data-order': i,
-                title: name,
                 style: 'order:'+i+';'
             },[
                 avatar,
@@ -2426,9 +2425,9 @@ define([
             case 'access':
                 button = $('<button>', {
                     'class': 'fa fa-unlock-alt cp-toolbar-icon-access',
-                    title: "ACCESS", // XXX
+                    title: Messages.accessButton,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'})
-                .text("ACCESS")) // XXX
+                .text(Messages.accessButton))
                 .click(common.prepareFeedback(type))
                 .click(function () {
                     common.isPadStored(function (err, data) {
@@ -2827,13 +2826,13 @@ define([
     };
     UIElements.displayAvatar = function (common, $container, href, name, cb) {
         var displayDefault = function () {
-            var text = getFirstEmojiOrCharacter(name);
+            var text = (href && typeof(href) === "string") ? href : getFirstEmojiOrCharacter(name);
             var $avatar = $('<span>', {'class': 'cp-avatar-default'}).text(text);
             $container.append($avatar);
             if (cb) { cb(); }
         };
         if (!window.Symbol) { return void displayDefault(); } // IE doesn't have Symbol
-        if (!href) { return void displayDefault(); }
+        if (!href || href.length === 1) { return void displayDefault(); }
 
         var centerImage = function ($img, $image, img) {
             var w = img.width;
@@ -3385,13 +3384,13 @@ define([
         }
         options.push({ tag: 'hr' });
         // Add login or logout button depending on the current status
-        if (accountName) {
+        if (priv.loggedIn) {
             options.push({
                 tag: 'a',
                 attributes: {
                     'class': 'cp-toolbar-menu-logout-everywhere fa fa-plug',
                 },
-                content: h('span', "CLOSE REMOTE SESSIONS") // XXX Messages.settings_logoutEverywhereTitle)
+                content: h('span', Messages.logoutEverywhere)
             });
             options.push({
                 tag: 'a',
@@ -3481,7 +3480,9 @@ define([
         });
 
         $userAdmin.find('a.cp-toolbar-menu-logout-everywhere').click(function () {
-            Common.getSframeChannel().query('Q_LOGOUT_EVERYWHERE', null, function () { });
+            Common.getSframeChannel().query('Q_LOGOUT_EVERYWHERE', null, function () {
+                window.parent.location = origin + '/';
+            });
         });
         $userAdmin.find('a.cp-toolbar-menu-settings').click(function () {
             if (padType) {
@@ -4228,18 +4229,20 @@ define([
             if (err.loaded) {
                 msg += Messages.errorCopy;
             }
+            if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
         } else if (err.type === 'EDELETED') {
             if (priv.burnAfterReading) { return void cb(); }
             msg = Messages.deletedError;
             if (err.loaded) {
                 msg += Messages.errorCopy;
             }
+            if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
         } else if (err.type === 'ERESTRICTED') {
-            msg = Messages.restrictedError || "RESTRICTED"; // XXX
+            msg = Messages.restrictedError;
+            if (toolbar && typeof toolbar.failed === "function") { toolbar.failed(true); }
         }
         var sframeChan = common.getSframeChannel();
         sframeChan.event('EV_SHARE_OPEN', {hidden: true});
-        if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
         UI.errorLoadingScreen(msg, Boolean(err.loaded), Boolean(err.loaded));
         (cb || function () {})();
     };

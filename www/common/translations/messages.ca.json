@@ -536,8 +536,8 @@
     "settings_creationSkipFalse": "Mostra",
     "settings_templateSkip": "Salta la finestra de selecció de plantilla",
     "settings_templateSkipHint": "Quan genereu un document nou buit, si teniu desades plantilles per aquest tipus de document, apareix una finestra preguntant-vos si voleu utilitzar una plantilla. Aquí podeu triar si no voleu veure mai més la finestra i no utilitzar una plantilla.",
-    "settings_ownDriveTitle": "Habilita les darreres funcionalitats del compte",
-    "settings_ownDriveHint": "Per raons tècniques, els comptes antics no tenen accés a totes les funcionalitats noves. Si feu una actualització a un compte nou, preparareu el vostre CryptDrive per les properes funcionalitats sense interrompre la vostra activitat habitual.",
+    "settings_ownDriveTitle": "Milloreu el compte",
+    "settings_ownDriveHint": "Degut a raons tècniques els comptes antics no tenen accés a les darreres funcionalitats . Una actualització gratuïta habilitarà les funcionalitats actuals i prepararà el vostre CryptDrive per futures actualitzacions.",
     "settings_ownDriveButton": "Milloreu el vostre compte",
     "settings_ownDriveConfirm": "Millorar el vostre compte porta una estona. Necessitareu tornar-vos a connectar en tots els vostres dispositius. Segur que ho voleu fer?",
     "settings_ownDrivePending": "El vostre compte s'està posant al dia. No tanqueu ni torneu a carregar aquesta pàgina fins que el procés hagi acabat.",
@@ -616,5 +616,8 @@
     "download_step2": "Desxifrant",
     "download_step1": "Descarregant",
     "download_dl": "Descarrega",
-    "download_resourceNotAvailable": "El recurs sol·licitat no estava disponible... Premeu Esc per continuar."
+    "download_resourceNotAvailable": "El recurs sol·licitat no estava disponible... Premeu Esc per continuar.",
+    "about_contributors": "Col·laboracions clau",
+    "about_core": "Desenvolupament principal",
+    "about_intro": "CryptPad s'ha creat dins l'Equip de Recerca de <a href=\"http://xwiki.com\">XWiki SAS</a>, una petita empresa de París, França i Iasi, Romania. Hi ha 3 membres de l'equip central treballant amb CryptPad més una quantitat de persones col·laboradores, dins i fora d'XWiki SAS."
 }

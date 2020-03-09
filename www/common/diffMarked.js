@@ -309,15 +309,24 @@ define([
         var mermaid_source = [];
         var mermaid_cache = {};
 
+        var canonicalizeMermaidSource = function (src) {
+            // ignore changes to empty lines, since that won't affect
+            // since it will have no effect on the rendered charts
+            return src.replace(/\n[ \t]*\n*[ \t]*\n/g, '\n');
+        };
+
         // iterate over the unrendered mermaid inputs, caching their source as you go
         $(newDomFixed).find('pre.mermaid').each(function (index, el) {
             if (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3) {
-                var src = el.childNodes[0].wholeText;
+                var src = canonicalizeMermaidSource(el.childNodes[0].wholeText);
                 el.setAttribute('mermaid-source', src);
                 mermaid_source[index] = src;
             }
         });
 
+        // remember the previous scroll position
+        var $parent = $content.parent();
+        var scrollTop = $parent.scrollTop();
         // iterate over rendered mermaid charts
         $content.find('pre.mermaid:not([processed="true"])').each(function (index, el) {
             // retrieve the attached source code which it was drawn
@@ -388,7 +397,12 @@ define([
                 var cached = mermaid_cache[src];
 
                 // check if you had cached a pre-rendered instance of the supplied source
-                if (typeof(cached) !== 'object') { return; }
+                if (typeof(cached) !== 'object') {
+                    try {
+                        Mermaid.init(undefined, $(el));
+                    } catch (e) { console.error(e); }
+                    return;
+                }
 
                 // if there's a cached rendering, empty out the contained source code
                 // which would otherwise be drawn again.
@@ -399,12 +413,9 @@ define([
                 // and set a flag indicating that this graph need not be reprocessed
                 el.setAttribute('data-processed', true);
             });
-
-            try {
-                // finally, draw any graphs which have changed and were thus not cached
-                Mermaid.init(undefined, $content.find('pre.mermaid:not([data-processed="true"])'));
-            } catch (e) { console.error(e); }
         }
+        // recover the previous scroll position to avoid jank
+        $parent.scrollTop(scrollTop);
     };
 
     return DiffMd;
