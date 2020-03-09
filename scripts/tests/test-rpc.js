@@ -376,7 +376,7 @@ nThen(function  (w) {
     alice.anonRpc.send('GET_METADATA', oscar.mailboxChannel, w(function (err, response) {
         if (!response) { throw new Error("EXPECTED RESPONSE"); }
         var metadata = response[0];
-        var expected_fields = ['restricted', 'allowed'];
+        var expected_fields = ['restricted', 'allowed', 'rejected'];
         for (var key in metadata) {
             if (expected_fields.indexOf(key) === -1) {
                 console.log(metadata);
@@ -655,7 +655,7 @@ nThen(function  (w) {
         console.error("checkpoint by member failed as expected");
     }));
 }).nThen(function (w) {
-    console.log("STATE =", JSON.stringify(oscar.roster.getState(), null, 2));
+    //console.log("STATE =", JSON.stringify(oscar.roster.getState(), null, 2));
 
     // oscar describes the team
     oscar.roster.metadata({
@@ -663,7 +663,7 @@ nThen(function  (w) {
         topic: "pewpewpew",
     }, w(function (err) {
         if (err) { return void console.log(err); }
-        console.log("STATE =", JSON.stringify(oscar.roster.getState(), null, 2));
+        //console.log("STATE =", JSON.stringify(oscar.roster.getState(), null, 2));
     }));
 }).nThen(function (w) {
     // oscar sends a checkpoint
@@ -718,10 +718,12 @@ nThen(function  (w) {
     }));
 }).nThen(function (w) {
     oscar.roster.checkpoint(w(function (err) {
+        var hash = oscar.lastRosterCheckpointHash = oscar.roster.getLastCheckpointHash(); // FIXME bob should connect to this to avoid extra messages
         if (!err) { return; }
         console.error("Checkpoint by an owner failed unexpectedly");
         console.error(err);
         process.exit(1);
+
     }));
 }).nThen(function (w) {
     alice.roster.remove([
@@ -742,21 +744,21 @@ nThen(function  (w) {
         channel: rosterKeys.channel,
         keys: rosterKeys,
         anon_rpc: bob.anonRpc,
-        lastKnownHash: oscar.lastKnownHash,
+        //lastKnownHash: oscar.lastRosterCheckpointHash
+        //lastKnownHash: oscar.lastKnownHash, // FIXME this doesn't work. off-by-one?
     }, w(function (err, roster) {
         if (err) {
             w.abort();
             return void console.trace(err);
         }
 
-
         bob.roster = roster;
         if (JSON.stringify(bob.roster.getState()) !== JSON.stringify(oscar.roster.getState())) {
-            console.log("BOB AND OSCAR DO NOT HAVE THE SAME STATE");
+            //console.log("BOB AND OSCAR DO NOT HAVE THE SAME STATE");
             console.log("BOB =", JSON.stringify(bob.roster.getState(), null, 2));
             console.log("OSCAR =", JSON.stringify(oscar.roster.getState(), null, 2));
+            throw new Error("BOB AND OSCAR DO NOT HAVE THE SAME STATE");
         }
-
         bob.destroy.reg(function () {
             roster.stop();
         });
@@ -803,8 +805,8 @@ nThen(function  (w) {
 
     bob.roster.describe(data, w(function (err) {
         if (err) {
-            console.error("self-description by a member failed unexpectedly");
-            process.exit(1);
+            console.error(err);
+            throw new Error("self-description by a member failed unexpectedly");
         }
     }));
 }).nThen(function (w) {
