@@ -88,15 +88,39 @@
                     var $inner = $el.find('.kanban-container');
                     var leftRegion = $el.position().left + 10;
                     var rightRegion = $(window).width() - 10;
-                    var onMouseMove = function (e) {
-                        if (e.which !== 1) { return; } // left click
-                        var distance = 20;
-                        if (e.pageX < leftRegion) {
-                            distance *= -1;
-                            $el.scrollLeft(distance + $el.scrollLeft()) ;
-                        } else if (e.pageX >= rightRegion) {
-                            $el.scrollLeft(distance + $el.scrollLeft()) ;
-                        }
+                    var activeBoard;
+                    var $aB;
+                    var setActiveDrag = function (board) {
+                        activeBoard = undefined;
+                        if (!board) { return; }
+                        if (!board.classList.contains('kanban-drag')) { return; }
+                        activeBoard = board;
+                        $aB = $(activeBoard);
+                    };
+                    var onMouseMove = function (isItem) {
+                        return function (e) {
+                            if (e.which !== 1) { return; } // left click
+                            var distance = 20;
+                            // If this is an item drag, check scroll
+                            if (isItem && activeBoard) {
+                                var rect = activeBoard.getBoundingClientRect();
+                                if (e.pageX > rect.left && e.pageX < rect.right) {
+                                    if (e.pageY < (rect.top + 10)) {
+                                        distance *= -1;
+                                        $aB.scrollTop(distance + $aB.scrollTop()) ;
+                                    } else if (e.pageY > (rect.bottom - 10)) {
+                                        $aB.scrollTop(distance + $aB.scrollTop()) ;
+                                    }
+                                }
+                            }
+                            // Itme or board: horizontal scroll if needed
+                            if (e.pageX < leftRegion) {
+                                distance *= -1;
+                                $el.scrollLeft(distance + $el.scrollLeft()) ;
+                            } else if (e.pageX >= rightRegion) {
+                                $el.scrollLeft(distance + $el.scrollLeft()) ;
+                            }
+                        };
                     };
 
                     //set drag with dragula
@@ -124,12 +148,12 @@
                                 if (typeof (el.dragfn) === 'function') {
                                     el.dragfn(el, source);
                                 }
-                                $(document).on('mousemove', onMouseMove);
+                                $(document).on('mousemove', onMouseMove());
                             })
                             .on('dragend', function (el) {
                                 el.classList.remove('is-moving');
                                 self.options.dragendBoard(el);
-                                $(document).off('mousemove', onMouseMove);
+                                $(document).off('mousemove');
                                 if (typeof (el.dragendfn) === 'function')
                                     el.dragendfn(el);
                             })
@@ -203,8 +227,9 @@
                                 // we need to calculate the position before starting to drag
                                 self.dragItemPos = self.findElementPosition(el);
 
+                                setActiveDrag();
                                 el.classList.add('is-moving');
-                                $(document).on('mousemove', onMouseMove);
+                                $(document).on('mousemove', onMouseMove(el));
 
                                 self.options.dragEl(el, source);
                                 if (el !== null && typeof (el.dragfn) === 'function') {
@@ -215,7 +240,7 @@
                                 console.log("In dragend");
                                 el.classList.remove('is-moving');
                                 self.options.dragendEl(el);
-                                $(document).off('mousemove', onMouseMove);
+                                $(document).off('mousemove');
                                 if (el !== null && typeof (el.dragendfn) === 'function') {
                                     el.dragendfn(el);
                                 }
@@ -227,10 +252,12 @@
                                 self.options.dragcancelEl(el, boardId);
                             })
                             .on('over', function (el, target, source) {
+                                setActiveDrag(target);
                                 if (!target.classList.contains('kanban-trash')) { return false; }
                                 target.classList.add('kanban-trash-active');
                             })
                             .on('out', function (el, target) {
+                                setActiveDrag();
                                 if (!target.classList.contains('kanban-trash')) { return false; }
                                 target.classList.remove('kanban-trash-active');
                             })
