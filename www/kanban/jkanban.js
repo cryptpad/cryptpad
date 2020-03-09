@@ -299,7 +299,6 @@
                     var from = findItem(eid);
                     // Remove the item from its board
                     from.forEach(function (obj) {
-                        console.warn(obj.board.item[obj.pos]);
                         obj.board.item.splice(obj.pos, 1);
                         if (obj.board === board) { same = obj.pos; }
                     });
@@ -314,7 +313,6 @@
                         pos = pos - 1;
                     }
                     board.item.splice(pos, 0, eid);
-                    console.error(JSON.stringify(boards, 0, 2));
                 };
 
                 this.enableAllBoards = function() {
