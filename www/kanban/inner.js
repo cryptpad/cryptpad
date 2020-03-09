@@ -240,6 +240,7 @@ define([
                 $colors.find('.cp-kanban-palette').removeClass('fa-check');
                 var $col = $colors.find('.cp-kanban-palette-'+(color || 'nocolor'));
                 $col.addClass('fa-check');
+                selectedColor = color;
             }
         };
 
@@ -292,6 +293,7 @@ define([
         var modal = UI.dialog.customModal(content, {
             buttons: button
         });
+        modal.classList.add('cp-kanban-edit-modal');
 
         onRemoteChange.reg(function () {
             if (isBoard) {
