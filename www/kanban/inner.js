@@ -541,6 +541,15 @@ define([
             }).click(function (e) { e.stopPropagation(); });
         };
 
+        var openLink = function (href) {
+            if (/^\/[^\/]/.test(href)) {
+                var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
+                href = privateData.origin + href;
+            }
+            framework._.sfCommon.openUnsafeURL(href);
+        };
+
+
         var kanban = new window.jKanban({
             element: '#cp-app-kanban-content',
             gutter: '5px',
@@ -736,6 +745,7 @@ define([
             addItemButton: true,
             getTextColor: getTextColor,
             getAvatar: getAvatar,
+            openLink: openLink,
             cursors: remoteCursors,
             boards: boards
         });

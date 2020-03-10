@@ -57,6 +57,7 @@
                         list: []
                     },
                     getAvatar: function () {},
+                    openLink: function () {},
                     getTextColor: function () { return '#000'; },
                     cursors: {},
                     tags: [],
@@ -395,6 +396,12 @@
                         var html = self.renderMd(element.body);
                         var nodeBody = document.createElement('div');
                         nodeBody.classList.add('kanban-item-body');
+                        $(nodeBody).on('click', 'a', function (e) {
+                            e.preventDefault();
+                            var a = e.target;
+                            if (!a.href) { return; }
+                            self.options.openLink(a.href);
+                        });
                         nodeBody.onclick = function (e) {
                             e.preventDefault();
                         };
