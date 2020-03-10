@@ -600,7 +600,7 @@ define([
                         save();
                         if (!$input.val()) { return; }
                         if (!$(el).closest('.kanban-item').is(':last-child')) { return; }
-                        $(el).closest('.kanban-board').find('.kanban-title-button.fa-plus').click();
+                        $(el).closest('.kanban-board').find('.kanban-title-button').click();
                         return;
                     }
                     if (e.which === 27) {
