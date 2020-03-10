@@ -381,7 +381,7 @@ define([
             } else {
                 dataObject = kanban.getItemJSON(id);
             }
-            // Check if our itme has been deleted
+            // Check if our item has been deleted
             if (!dataObject) {
                 var $frame = $(modal).parents('.alertify').first();
                 if ($frame[0] && $frame[0].closeModal) {

@@ -198,7 +198,7 @@ define([
         frame.closeModal = function (cb) {
             $frame.fadeOut(150, function () {
                 $frame.detach();
-                cb();
+                if (typeof(cb) === "function") { cb(); }
             });
         };
         return $frame.click(function (e) {
