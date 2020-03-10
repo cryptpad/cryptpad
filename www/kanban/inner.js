@@ -771,12 +771,12 @@ define([
             $(small).click(function () {
                 if ($cContainer.hasClass('cp-kanban-quick')) { return; }
                 $cContainer.addClass('cp-kanban-quick');
-                framework._.sfCommon.setPadAttribute('quickMode', true);
+                //framework._.sfCommon.setPadAttribute('quickMode', true);
             });
             $(big).click(function () {
                 if (!$cContainer.hasClass('cp-kanban-quick')) { return; }
                 $cContainer.removeClass('cp-kanban-quick');
-                framework._.sfCommon.setPadAttribute('quickMode', false);
+                //framework._.sfCommon.setPadAttribute('quickMode', false);
             });
 
             // Tags filter
@@ -803,7 +803,7 @@ define([
                 } else {
                     $reset.css('visibility', 'hidden');
                 }
-                framework._.sfCommon.setPadAttribute('tagsFilter', t);
+                //framework._.sfCommon.setPadAttribute('tagsFilter', t);
                 kanban.options.tags = t;
                 kanban.setBoards(kanban.options.boards);
                 addEditItemButton(framework, kanban);
@@ -846,7 +846,7 @@ define([
                         return $(this).data('tag') === t;
                     }).addClass('active');
                 });
-                framework._.sfCommon.setPadAttribute('tagsFilter', tags);
+                //framework._.sfCommon.setPadAttribute('tagsFilter', tags);
             };
             $reset.css('visibility', 'hidden').click(function () {
                 setTags([]);
@@ -872,6 +872,7 @@ define([
                 redrawList(existing);
                 setTags(t);
             });
+            /*
             framework._.sfCommon.getPadAttribute('tagsFilter', function (err, res) {
                 if (!err && Array.isArray(res)) {
                     setTags(res);
@@ -883,6 +884,7 @@ define([
                     $cContainer.addClass('cp-kanban-quick');
                 }
             });
+            */
         };
         addControls();
 
