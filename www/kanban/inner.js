@@ -134,7 +134,8 @@ define([
         Object.keys(boards.items || {}).forEach(function (id) {
             var data = boards.items[id];
             if (!Array.isArray(data.tags)) { return; }
-            data.tags.forEach(function (tag) {
+            data.tags.forEach(function (_tag) {
+                var tag = _tag.toLowerCase();
                 if (tags.indexOf(tag) === -1) { tags.push(tag); }
             });
         });
@@ -273,7 +274,9 @@ define([
                 _field.setTokens(tags || []);
 
                 var commitTags = function () {
-                    dataObject.tags = _field.getTokens();
+                    dataObject.tags = Util.deduplicateString(_field.getTokens().map(function (t) {
+                        return t.toLowerCase();
+                    }));
                     initialTags = Sortify(dataObject.tags);
                     commit();
                 };
