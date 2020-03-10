@@ -718,12 +718,11 @@ nThen(function  (w) {
     }));
 }).nThen(function (w) {
     oscar.roster.checkpoint(w(function (err) {
-        var hash = oscar.lastRosterCheckpointHash = oscar.roster.getLastCheckpointHash(); // FIXME bob should connect to this to avoid extra messages
+        oscar.lastRosterCheckpointHash = oscar.roster.getLastCheckpointHash(); // FIXME bob should connect to this to avoid extra messages
         if (!err) { return; }
         console.error("Checkpoint by an owner failed unexpectedly");
         console.error(err);
         process.exit(1);
-
     }));
 }).nThen(function (w) {
     alice.roster.remove([

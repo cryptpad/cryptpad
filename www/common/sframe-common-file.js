@@ -158,7 +158,7 @@ define([
             });
 
             onError = function (e) {
-                // XXX if we included the max upload sizes in /api/config
+                // TODO if we included the max upload sizes in /api/config
                 // then we could check if a file is too large without going to the server...
                 queue.inProgress = false;
                 queue.next();
