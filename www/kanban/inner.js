@@ -592,7 +592,7 @@ define([
                     kanban.inEditMode = false;
                     onCursorUpdate.fire({});
                 };
-                //$input.blur(save);
+                $input.blur(save);
                 $input.keydown(function (e) {
                     if (e.which === 13) {
                         e.preventDefault();
