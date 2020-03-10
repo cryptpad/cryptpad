@@ -58,6 +58,7 @@
                     },
                     getAvatar: function () {},
                     openLink: function () {},
+                    getTags: function () {},
                     getTextColor: function () { return '#000'; },
                     cursors: {},
                     tags: [],
@@ -581,15 +582,29 @@
 
                 this.setBoards = function (boards) {
                     var scroll = {};
-                    //self.element
+                    // Fix the tags
+                    var tags = self.options.getTags(boards);
+                    var filter = self.options.tags || [];
+                    var toClean = [];
+                    filter.forEach(function (tag) {
+                        if (tags.indexOf(tag) === -1) { toClean.push(tag); }
+                    });
+                    toClean.forEach(function (t) {
+                        var idx = filter.indexOf(t);
+                        if (idx === -1) { return; }
+                        filter.splice(idx, 1);
+                    });
+                    // Remove all boards
                     for (var i in this.options.boards.list) {
                         var boardkey = this.options.boards.list[i];
                         scroll[boardkey] = $('.kanban-board[data-id="'+boardkey+'"] .kanban-drag').scrollTop();
                         this.removeBoard(boardkey);
                     }
                     this.options.boards = boards;
+                    // Add all new boards
                     this.addBoards();
                     self.options.refresh();
+                    // Preserve scroll
                     this.options.boards.list.forEach(function (id) {
                         if (!scroll[id]) { return; }
                         $('.kanban-board[data-id="'+id+'"] .kanban-drag').scrollTop(scroll[id]);

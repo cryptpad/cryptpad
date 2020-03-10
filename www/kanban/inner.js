@@ -746,6 +746,7 @@ define([
             getTextColor: getTextColor,
             getAvatar: getAvatar,
             openLink: openLink,
+            getTags: getExistingTags,
             cursors: remoteCursors,
             boards: boards
         });
@@ -856,6 +857,11 @@ define([
                         return $(this).data('tag') === t;
                     }).addClass('active');
                 });
+                if (tags.length) {
+                    $reset.css('visibility', '');
+                } else {
+                    $reset.css('visibility', 'hidden');
+                }
                 //framework._.sfCommon.setPadAttribute('tagsFilter', tags);
             };
             $reset.css('visibility', 'hidden').click(function () {
@@ -1014,6 +1020,7 @@ define([
                     isBoard = false;
                     json = kanban.getItemJSON(id);
                 }
+                if (!json) { return; }
 
                 // Editing a board or card title...
                 $el.find(isBoard ? '.kanban-title-board' : '.kanban-item-text').click();
