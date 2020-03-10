@@ -20,7 +20,7 @@
 
     @board-bg: #eaeaea;
 
-    @palette0: #888; // Default bg color for header
+    @palette0: #C9C9C9; // Default bg color for header
     @palette1: #FFD4D4;
     @palette2: #FFDECA;
     @palette3: #FFE69C;
@@ -31,7 +31,7 @@
     @palette8: #E4CAFF;
 
     .kanban-board-header {
-        background-color: #c9c9c9;
+        background-color: @palette0;
     }
     .kanban-board {
         .kanban-board-inner {
@@ -135,9 +135,6 @@
             text-align: center;
             line-height: 30px;
             color: @cryptpad_text_col;
-        }
-        .cp-kanban-palette-nocolor {
-            border: 1px solid @cryptpad_text_col;
         }
     }
     #cp-kanban-edit-tags {
