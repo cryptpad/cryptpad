@@ -60,14 +60,11 @@ define([
 
         var friends = common.getFriends(true);
         var sframeChan = common.getSframeChannel();
-        var priv = common.getMetadataMgr().getPrivateData();
-        var user = common.getMetadataMgr().getUserData();
-        var edPublic = priv.edPublic;
+        var metadataMgr = common.getMetadataMgr();
+
         var channel = data.channel;
         var owners = data.owners || [];
         var pending_owners = data.pending_owners || [];
-        var teams = priv.teams;
-        var teamsData = Util.tryParse(JSON.stringify(priv.teams)) || {};
         var teamOwner = data.teamId;
 
         opts = opts || {};
@@ -83,6 +80,9 @@ define([
 
         // Remove owner column
         var drawRemove = function (pending) {
+            var priv = metadataMgr.getPrivateData();
+            var user = metadataMgr.getUserData();
+
             var _owners = {};
             var o = (pending ? pending_owners : owners) || [];
             o.forEach(function (ed) {
@@ -93,15 +93,15 @@ define([
                         return true;
                     }
                 });
-                Object.keys(teams).some(function (id) {
-                    if (teams[id].edPublic === ed) {
-                        f = teams[id];
+                Object.keys(priv.teams).some(function (id) {
+                    if (priv.teams[id].edPublic === ed) {
+                        f = priv.teams[id];
                         f.teamId = id;
                     }
                 });
-                if (ed === edPublic) {
+                if (ed === priv.edPublic) {
                     f = f || user;
-                    if (f.name) { f.edPublic = edPublic; }
+                    if (f.name) { f.edPublic = priv.edPublic; }
                 }
                 _owners[ed] = f ? Util.clone(f) : {
                     displayName: Messages._getKey('owner_unknownUser', [ed]),
@@ -115,8 +115,10 @@ define([
                 var $el = $(el);
                 var ed = $el.attr('data-ed');
                 if (!ed) { return; }
-                if (teamOwner && teams[teamOwner] && teams[teamOwner].edPublic === ed) { me = true; }
-                if (ed === edPublic && !teamOwner) { me = true; }
+                if (teamOwner && priv.teams[teamOwner] && priv.teams[teamOwner].edPublic === ed) {
+                    me = true;
+                }
+                if (ed === priv.edPublic && !teamOwner) { me = true; }
                 nThen(function (waitFor) {
                     var msg = me ? Messages.owner_removeMeConfirm : Messages.owner_removeConfirm;
                     UI.confirm(msg, waitFor(function (yes) {
@@ -181,6 +183,9 @@ define([
 
         // Add owners column
         var drawAdd = function () {
+            var priv = metadataMgr.getPrivateData();
+            var teamsData = Util.tryParse(JSON.stringify(priv.teams)) || {};
+
             var $div = $(h('div.cp-share-column'));
             var _friends = Util.clone(friends);
             Object.keys(_friends).forEach(function (curve) {
@@ -228,6 +233,10 @@ define([
         };
 
         $(addBtn).click(function () {
+            var priv = metadataMgr.getPrivateData();
+            var user = metadataMgr.getUserData();
+            var teamsData = Util.tryParse(JSON.stringify(priv.teams)) || {};
+
             var $div = $div2.find('.cp-share-column');
             // Check selection
             var $sel = $div.find('.cp-usergrid-user.cp-selected');
@@ -367,22 +376,14 @@ define([
         var cb = Util.once(Util.mkAsync(_cb));
         opts = opts || {};
 
-        // XXX reload all this data in the "draw" functions
-
         var friends = common.getFriends(true);
         var sframeChan = common.getSframeChannel();
-        var priv = common.getMetadataMgr().getPrivateData();
-        var user = common.getMetadataMgr().getUserData();
-        var edPublic = priv.edPublic;
+        var metadataMgr = common.getMetadataMgr();
 
         var channel = data.channel;
-
         var owners = data.owners || [];
         var restricted = data.restricted || false;
         var allowed = data.allowed || [];
-
-        var teams = priv.teams;
-        var teamsData = Util.tryParse(JSON.stringify(priv.teams)) || {};
         var teamOwner = data.teamId;
 
         var redrawAll = function () {};
@@ -411,6 +412,9 @@ define([
 
         // Remove owner column
         var drawRemove = function () {
+            var priv = metadataMgr.getPrivateData();
+            var user = metadataMgr.getUserData();
+
             var _allowed = {};
             var all = Util.deduplicateString(owners.concat(allowed));
             all.forEach(function (ed) {
@@ -421,15 +425,15 @@ define([
                         return true;
                     }
                 });
-                Object.keys(teams).some(function (id) {
-                    if (teams[id].edPublic === ed) {
-                        f = teams[id];
+                Object.keys(priv.teams).some(function (id) {
+                    if (priv.teams[id].edPublic === ed) {
+                        f = priv.teams[id];
                         f.teamId = id;
                     }
                 });
-                if (ed === edPublic) {
+                if (ed === priv.edPublic) {
                     f = f || user;
-                    if (f.name) { f.edPublic = edPublic; }
+                    if (f.name) { f.edPublic = priv.edPublic; }
                 }
                 _allowed[ed] = f ? Util.clone(f) : {
                     displayName: Messages._getKey('owner_unknownUser', [ed]),
@@ -526,6 +530,9 @@ define([
 
         // Add owners column
         var drawAdd = function () {
+            var priv = metadataMgr.getPrivateData();
+            var teamsData = Util.tryParse(JSON.stringify(priv.teams)) || {};
+
             var $div = $(h('div.cp-share-column'));
 
             $div.addClass('cp-overlay-container').append(h('div.cp-overlay'));
@@ -575,6 +582,10 @@ define([
         };
 
         $(addBtn).click(function () {
+            var priv = metadataMgr.getPrivateData();
+            var user = metadataMgr.getUserData();
+            var teamsData = Util.tryParse(JSON.stringify(priv.teams)) || {};
+
             var $div = $div2.find('.cp-share-column');
             // Check selection
             var $sel = $div.find('.cp-usergrid-user.cp-selected');
@@ -723,8 +734,8 @@ define([
         var cb = Util.once(Util.mkAsync(_cb));
         opts = opts || {};
 
-        var priv = common.getMetadataMgr().getPrivateData();
         var sframeChan = common.getSframeChannel();
+        var metadataMgr = common.getMetadataMgr();
 
         var $div = $(h('div.cp-share-columns'));
         if (!data) { return void cb(void 0, $div); }
@@ -738,6 +749,8 @@ define([
         if (!parsed || !parsed.hashData) { return void console.error("Invalid href"); }
 
         var drawLeft = function () {
+            var priv = metadataMgr.getPrivateData();
+
             var $d = $('<div>');
 
             var owned = isOwned(common, data);
@@ -882,6 +895,8 @@ define([
             return $d;
         };
         var drawRight = function () {
+            var priv = metadataMgr.getPrivateData();
+
             // Owners
             var content = [];
             var _ownersGrid = getUserList(common, data.owners);
@@ -933,7 +948,6 @@ define([
             }
 
             // Mute access requests
-            var priv = common.getMetadataMgr().getPrivateData();
             var edPublic = priv.edPublic;
             var owned = isOwned(common, data);
             var canMute = data.mailbox && owned === true && (
@@ -1123,6 +1137,14 @@ define([
                 override(data, Util.clone(md));
                 evRedrawAll.fire();
             });
+            var metadataMgr = common.getMetadataMgr();
+            var f = function () {
+                if (!$(modal).length) {
+                    return void metadataMgr.off('change', f);
+                }
+                evRedrawAll.fire();
+            };
+            metadataMgr.onChange(f);
         });
     };
 

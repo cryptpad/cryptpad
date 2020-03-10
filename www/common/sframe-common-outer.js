@@ -1305,11 +1305,6 @@ define([
                 }).nThen(function () {
                     // If we are just checking (send === false) and there is a mailbox field, cb state true
                     // If there is no mailbox, we'll have to check if an owner is a friend in the worker
-                    /* // XXX
-                    if (owner && !send) {
-                        return void cb({state: true});
-                    }
-                    */
                     if (!send) { return void cb({state: Boolean(owner)}); }
 
                     Cryptpad.padRpc.requestAccess({
