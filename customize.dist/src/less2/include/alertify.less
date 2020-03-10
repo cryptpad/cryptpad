@@ -277,7 +277,7 @@
                 margin-bottom: 15px;
             }
 
-            button {
+            button:not('.pure-button') {
                 display: inline-block;
                 position: relative;
                 margin: 6px 8px;
@@ -293,6 +293,9 @@
                     &:not(:first-child) {
                         margin-left: @alertify_padding-base !important;
                       }
+                    &.left {
+                        float: left;
+                    }
                 }
             }
         }

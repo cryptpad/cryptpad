@@ -4,13 +4,13 @@
 
 .kanban-board {
     position: relative;
-    float: left;
-    background: #E2E4E6;
     transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
     margin: 10px;
     vertical-align: top;
     display: flex;
     flex-flow: column;
+    width: 300px;
+    margin: 10px 5px;
 }
 
 .kanban-board.disabled-board {
@@ -19,6 +19,7 @@
 
 .kanban-board.is-moving.gu-mirror {
     transform: rotate(3deg);
+    opacity: 0.8;
 }
 
 .kanban-board.is-moving.gu-mirror .kanban-drag {
@@ -45,17 +46,11 @@
     padding: .25rem .5rem;
 }
 
-.kanban-board .kanban-drag {
-    min-height: 200px;
-    padding: 20px;
-    flex: 1;
-}
 
 .kanban-item {
     background: #fff;
     padding: 15px;
-    margin-bottom: 20px;
-    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    margin-bottom: 10px;
 }
 
 .kanban-item:hover {
@@ -69,6 +64,7 @@
 .kanban-item.is-moving.gu-mirror {
     transform: rotate(3deg);
     height: auto !important;
+    opacity: 0.8;
 }
 
 /* Dragula CSS  */
