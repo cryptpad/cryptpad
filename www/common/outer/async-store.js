@@ -1661,7 +1661,9 @@ define([
 
             // If the owner was not is the pad metadata, check if it is a friend.
             // We'll contact the first owner for whom we know the mailbox
-            /* // XXX check mailbox in our contacts is not compatible with the new "mute pad" feature
+            /* // TODO decide whether we want to re-enable this feature for our own contacts
+               // communicate the exception to users that 'muting' won't apply to friends
+            check mailbox in our contacts is not compatible with the new "mute pad" feature
             var owners = data.owners;
             if (!owner && Array.isArray(owners)) {
                 var friends = store.proxy.friends || {};
