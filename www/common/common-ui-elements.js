@@ -4328,7 +4328,7 @@ define([
                 Feedback.send('CROWDFUNDING_NEVER');
             };
 
-            var modal = UI.cornerPopup(text, actions, null, {
+            var modal = UI.cornerPopup(text, actions, '', {
                 big: true,
                 alt: true,
                 dontShowAgain: dontShowAgain
