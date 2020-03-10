@@ -981,7 +981,7 @@ define([
                 // An item was being added: add a new item
                 if (id === "new" && !data.oldValue) {
                     var $newBoard = $('.kanban-board[data-id="'+data.newBoard+'"]');
-                    $newBoard.find('.kanban-title-button.fa-plus').click();
+                    $newBoard.find('.kanban-title-button').click();
                     var $newInput = $newBoard.find('.kanban-item:last-child input');
                     $newInput.val(data.value);
                     $newInput[0].selectionStart = data.start;
