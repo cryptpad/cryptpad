@@ -573,14 +573,20 @@
                 }
 
                 this.setBoards = function (boards) {
+                    var scroll = {};
                     //self.element
                     for (var i in this.options.boards.list) {
                         var boardkey = this.options.boards.list[i];
+                        scroll[boardkey] = $('.kanban-board[data-id="'+boardkey+'"] .kanban-drag').scrollTop();
                         this.removeBoard(boardkey);
                     }
                     this.options.boards = boards;
                     this.addBoards();
                     self.options.refresh();
+                    this.options.boards.list.forEach(function (id) {
+                        if (!scroll[id]) { return; }
+                        $('.kanban-board[data-id="'+id+'"] .kanban-drag').scrollTop(scroll[id]);
+                    });
                 }
 
                 this.findBoard = function (id) {
