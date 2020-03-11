@@ -404,9 +404,9 @@
                 right: 0;
             }
             &.kanban-trash-active {
-                color: red;
+                color: @colortheme_notification-warn;
                 div {
-                    background: rgba(255,0,0,0.5);
+                    background: fade(@colortheme_notification-warn, 20%);
                 }
             }
             .kanban-item, .kanban-board {
