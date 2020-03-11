@@ -1774,7 +1774,7 @@ define([
         if (now - lastPing > (2 * 60 * 1000)) {
             var to = setTimeout(function () {
                 onTimeout(true);
-            });
+            }, 5000);
             postMessage('PING', null, function () {
                 clearTimeout(to);
             });
