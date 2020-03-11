@@ -274,11 +274,13 @@ define([
                 _field.setTokens(tags || []);
 
                 var commitTags = function () {
-                    dataObject.tags = Util.deduplicateString(_field.getTokens().map(function (t) {
-                        return t.toLowerCase();
-                    }));
-                    initialTags = Sortify(dataObject.tags);
-                    commit();
+                    setTimeout(function () {
+                        dataObject.tags = Util.deduplicateString(_field.getTokens().map(function (t) {
+                            return t.toLowerCase();
+                        }));
+                        initialTags = Sortify(dataObject.tags);
+                        commit();
+                    });
                 };
                 _field.tokenfield.on('tokenfield:createdtoken', commitTags);
                 _field.tokenfield.on('tokenfield:editedoken', commitTags);
