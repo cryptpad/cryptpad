@@ -234,14 +234,14 @@ define([
             setValue: function (val, preserveCursor) {
                 if (isBoard) { return; }
                 if (!preserveCursor) {
-                    setTimeout(function () {
-                        editor.setValue(val || ' ');
-                        editor.setValue(val || '');
-                        editor.save();
-                    });
+                    editor.setValue(val || '');
+                    editor.save();
                 } else {
                     SFCodeMirror.setValueAndCursor(editor, editor.getValue(), val || '');
                 }
+            },
+            refresh: function () {
+                editor.refresh();
             }
         };
         editor.on('change', function () {
@@ -421,6 +421,7 @@ define([
             editModal[type].setValue(item[type]);
         });
         UI.openCustomModal(editModal.modal);
+        editModal.body.refresh();
     };
     var getBoardEditModal = function (framework, kanban, id) {
         // Create modal if needed
