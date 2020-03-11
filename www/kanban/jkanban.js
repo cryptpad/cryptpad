@@ -421,7 +421,8 @@
                             e.preventDefault();
                             var a = e.target;
                             if (!a.href) { return; }
-                            self.options.openLink(a.href);
+                            var href = a.getAttribute('href');
+                            self.options.openLink(href);
                         });
                         nodeBody.onclick = function (e) {
                             e.preventDefault();
