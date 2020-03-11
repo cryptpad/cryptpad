@@ -50,8 +50,10 @@
     }
 
     .kanban-colors(@kanban-colors; @index) when (@index > 0){
+        // loop through the @colors
         .kanban-colors(@kanban-colors; (@index - 1));
         @color: extract(@kanban-colors, @index);
+        // make a numbered class selector for each color
         .cp-kanban-palette-color@{index}{
             background-color: @color;
             &.kanban-board-inner {
@@ -59,6 +61,7 @@
             }
         }
     }
+    // call the loop
     .kanban-colors(@kanban-colors; length(@kanban-colors));
 
     .cp-kanban-edit-modal {
@@ -168,8 +171,25 @@
             .markdown_cryptpad();
             .markdown_preformatted-code;
             .markdown_gfm-table(black);
+            p {
+                margin-bottom: 5px;
+            }
             ul {
-                padding-left: 30px;
+                padding-left: 20px;
+            }
+            img {
+                max-width: 100%;
+            }
+            table {
+                color: @cryptpad_text_col;
+                border-color: @cryptpad_text_col;
+                th {
+                    padding: 5px !important;
+                    background-color: fade(@cryptpad_text_col, 10%);
+                }
+                td {
+                    padding: 5px;
+                }
             }
         }
         .kanban-item-tags {
