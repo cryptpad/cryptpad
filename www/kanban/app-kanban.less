@@ -21,14 +21,16 @@
     @board-bg: #eaeaea;
 
     @palette0: #C9C9C9; // Default bg color for header
-    @palette1: #FFD4D4;
-    @palette2: #FFDECA;
-    @palette3: #FFE69C;
-    @palette4: #DBFFB7;
-    @palette5: #AFFDC2;
-    @palette6: #C9FFFE;
-    @palette7: #C8D6FF;
-    @palette8: #E4CAFF;
+
+    @kanban-colors:
+        #FFD4D4,
+        #FFDECA,
+        #FFE69C,
+        #DBFFB7,
+        #AFFDC2,
+        #C9FFFE,
+        #C8D6FF,
+        #E4CAFF;
 
     .kanban-board-header {
         background-color: @palette0;
@@ -46,54 +48,18 @@
     .cp-kanban-palette-nocolor {
         background-color: @palette0;
     }
-    .cp-kanban-palette-color1 {
-        background-color: @palette1;
-        &.kanban-board-inner {
-            background-color: lighten(@palette1, 5%);
+
+    .kanban-colors(@kanban-colors; @index) when (@index > 0){
+        .kanban-colors(@kanban-colors; (@index - 1));
+        @color: extract(@kanban-colors, @index);
+        .cp-kanban-palette-color@{index}{
+            background-color: @color;
+            &.kanban-board-inner {
+                background-color: fade(@color, 50%);
+            }
         }
     }
-    .cp-kanban-palette-color2 {
-        background-color: @palette2;
-        &.kanban-board-inner {
-            background-color: lighten(@palette2, 5%);
-        }
-    }
-    .cp-kanban-palette-color3 {
-        background-color: @palette3;
-        &.kanban-board-inner {
-            background-color: lighten(@palette3, 10%);
-        }
-    }
-    .cp-kanban-palette-color4 {
-        background-color: @palette4;
-        &.kanban-board-inner {
-            background-color: lighten(@palette4, 10%);
-        }
-    }
-    .cp-kanban-palette-color5 {
-        background-color: @palette5;
-        &.kanban-board-inner {
-            background-color: lighten(@palette5, 10%);
-        }
-    }
-    .cp-kanban-palette-color6 {
-        background-color: @palette6;
-        &.kanban-board-inner {
-            background-color: lighten(@palette6, 5%);
-        }
-    }
-    .cp-kanban-palette-color7 {
-        background-color: @palette7;
-        &.kanban-board-inner {
-            background-color: lighten(@palette7, 5%);
-        }
-    }
-    .cp-kanban-palette-color8 {
-        background-color: @palette8;
-        &.kanban-board-inner {
-            background-color: lighten(@palette8, 5%);
-        }
-    }
+    .kanban-colors(@kanban-colors; length(@kanban-colors));
 
     .cp-kanban-edit-modal {
         display: flex;
