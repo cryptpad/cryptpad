@@ -218,8 +218,11 @@ define([
 
         // Body
         var editor = CodeMirror.fromTextArea(text, {
+            allowDropFileTypes: [],
             lineWrapping: true,
             styleActiveLine : true,
+            inputStyle: 'contenteditable',
+            extraKeys: {"Shift-Ctrl-R": undefined},
             mode: "gfm"
         });
         var common = framework._.sfCommon;
@@ -244,6 +247,7 @@ define([
                 editor.refresh();
             }
         };
+        SFCodeMirror.mkIndentSettings(editor, framework._.cpNfInner.metadataMgr);
         editor.on('change', function () {
             dataObject.body = editor.getValue();
             commit();

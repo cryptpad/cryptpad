@@ -122,6 +122,59 @@ define([
         return text.trim();
     };
 
+    module.mkIndentSettings = function (editor, metadataMgr) {
+        var setIndentation = function (units, useTabs, fontSize, spellcheck, brackets) {
+            if (typeof(units) !== 'number') { return; }
+            var doc = editor.getDoc();
+            editor.setOption('indentUnit', units);
+            editor.setOption('tabSize', units);
+            editor.setOption('indentWithTabs', useTabs);
+            editor.setOption('spellcheck', spellcheck);
+            editor.setOption('autoCloseBrackets', brackets);
+            editor.setOption("extraKeys", {
+                Tab: function() {
+                    if (doc.somethingSelected()) {
+                        editor.execCommand("indentMore");
+                    }
+                    else {
+                        if (!useTabs) { editor.execCommand("insertSoftTab"); }
+                        else { editor.execCommand("insertTab"); }
+                    }
+                },
+                "Shift-Tab": function () {
+                    editor.execCommand("indentLess");
+                },
+            });
+            setTimeout(function () {
+                $('.CodeMirror').css('font-size', fontSize+'px');
+                editor.refresh();
+            });
+        };
+
+        var indentKey = 'indentUnit';
+        var useTabsKey = 'indentWithTabs';
+        var fontKey = 'fontSize';
+        var spellcheckKey = 'spellcheck';
+        var updateIndentSettings = function () {
+            if (!metadataMgr) { return; }
+            var data = metadataMgr.getPrivateData().settings;
+            data = data.codemirror || {};
+            var indentUnit = data[indentKey];
+            var useTabs = data[useTabsKey];
+            var fontSize = data[fontKey];
+            var spellcheck = data[spellcheckKey];
+            var brackets = data.brackets;
+            setIndentation(
+                typeof(indentUnit) === 'number'? indentUnit : 2,
+                typeof(useTabs) === 'boolean'? useTabs : false,
+                typeof(fontSize) === 'number' ? fontSize : 12,
+                typeof(spellcheck) === 'boolean' ? spellcheck : false,
+                typeof(brackets) === 'boolean' ? brackets : true);
+        };
+        metadataMgr.onChangeLazy(updateIndentSettings);
+        updateIndentSettings();
+    };
+
     module.create = function (defaultMode, CMeditor) {
         var exp = {};
 
@@ -380,53 +433,7 @@ define([
         };
 
         exp.mkIndentSettings = function (metadataMgr) {
-            var setIndentation = function (units, useTabs, fontSize, spellcheck, brackets) {
-                if (typeof(units) !== 'number') { return; }
-                var doc = editor.getDoc();
-                editor.setOption('indentUnit', units);
-                editor.setOption('tabSize', units);
-                editor.setOption('indentWithTabs', useTabs);
-                editor.setOption('spellcheck', spellcheck);
-                editor.setOption('autoCloseBrackets', brackets);
-                editor.setOption("extraKeys", {
-                    Tab: function() {
-                        if (doc.somethingSelected()) {
-                            editor.execCommand("indentMore");
-                        }
-                        else {
-                            if (!useTabs) { editor.execCommand("insertSoftTab"); }
-                            else { editor.execCommand("insertTab"); }
-                        }
-                    },
-                    "Shift-Tab": function () {
-                        editor.execCommand("indentLess");
-                    },
-                });
-                $('.CodeMirror').css('font-size', fontSize+'px');
-            };
-
-            var indentKey = 'indentUnit';
-            var useTabsKey = 'indentWithTabs';
-            var fontKey = 'fontSize';
-            var spellcheckKey = 'spellcheck';
-            var updateIndentSettings = function () {
-                if (!metadataMgr) { return; }
-                var data = metadataMgr.getPrivateData().settings;
-                data = data.codemirror || {};
-                var indentUnit = data[indentKey];
-                var useTabs = data[useTabsKey];
-                var fontSize = data[fontKey];
-                var spellcheck = data[spellcheckKey];
-                var brackets = data.brackets;
-                setIndentation(
-                    typeof(indentUnit) === 'number'? indentUnit : 2,
-                    typeof(useTabs) === 'boolean'? useTabs : false,
-                    typeof(fontSize) === 'number' ? fontSize : 12,
-                    typeof(spellcheck) === 'boolean' ? spellcheck : false,
-                    typeof(brackets) === 'boolean' ? brackets : true);
-            };
-            metadataMgr.onChangeLazy(updateIndentSettings);
-            updateIndentSettings();
+            module.mkIndentSettings(editor, metadataMgr);
         };
 
         exp.getCursor = function () {
