@@ -84,6 +84,24 @@
                     this.options = __extendDefaults(defaults, arguments[0]);
                 }
 
+                var removeUnusedTags = function (boards) {
+                    var tags = self.options.getTags(boards);
+                    var filter = self.options.tags || [];
+                    var toClean = [];
+                    filter.forEach(function (tag) {
+                        if (tags.indexOf(tag) === -1) { toClean.push(tag); }
+                    });
+                    toClean.forEach(function (t) {
+                        var idx = filter.indexOf(t);
+                        if (idx === -1) { return; }
+                        filter.splice(idx, 1);
+                    });
+                    // If all the tags have bene remove, make sure we show everything again
+                    if (!filter.length) {
+                        $('.kanban-item-hidden').removeClass('kanban-item-hidden');
+                    }
+                };
+
                 this.init = function () {
                     // set initial boards
                     __setBoard();
@@ -337,6 +355,8 @@
                     // If it's a deletion, remove the item data
                     if (!board) {
                         delete boards.items[eid];
+                        removeUnusedTags(boards);
+                        self.options.refresh();
                         return;
                     }
                     // If it's moved to the same board at a bigger index, decrement the index by one
@@ -583,17 +603,7 @@
                 this.setBoards = function (boards) {
                     var scroll = {};
                     // Fix the tags
-                    var tags = self.options.getTags(boards);
-                    var filter = self.options.tags || [];
-                    var toClean = [];
-                    filter.forEach(function (tag) {
-                        if (tags.indexOf(tag) === -1) { toClean.push(tag); }
-                    });
-                    toClean.forEach(function (t) {
-                        var idx = filter.indexOf(t);
-                        if (idx === -1) { return; }
-                        filter.splice(idx, 1);
-                    });
+                    removeUnusedTags(boards);
                     // Remove all boards
                     for (var i in this.options.boards.list) {
                         var boardkey = this.options.boards.list[i];
