@@ -79,7 +79,10 @@ define([
                     var metaObj;
                     nThen(function (waitFor) {
                         Cryptpad.getMetadata(waitFor(function (err, n) {
-                            if (err) { console.log(err); }
+                            if (err) {
+                                waitFor.abort();
+                                return void console.log(err);
+                            }
                             metaObj = n;
                         }));
                     }).nThen(function (/*waitFor*/) {

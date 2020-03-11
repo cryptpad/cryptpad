@@ -13,6 +13,7 @@ define([
             DISCONNECT: Store.disconnect,
             CREATE_README: Store.createReadme,
             MIGRATE_ANON_DRIVE: Store.migrateAnonDrive,
+            PING: function (cId, data, cb) { cb(); },
             // RPC
             UPDATE_PIN_LIMIT: Store.updatePinLimit,
             GET_PIN_LIMIT: Store.getPinLimit,

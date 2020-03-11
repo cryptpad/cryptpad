@@ -6,6 +6,7 @@ define([
     '/common/common-messaging.js',
     '/common/common-constants.js',
     '/common/common-feedback.js',
+    '/common/visible.js',
     '/common/userObject.js',
     '/common/outer/local-store.js',
     '/common/outer/worker-channel.js',
@@ -14,7 +15,7 @@ define([
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
 ], function (Config, Messages, Util, Hash,
-            Messaging, Constants, Feedback, UserObject, LocalStore, Channel, Block,
+            Messaging, Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
             AppConfig, Nthen) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
@@ -1749,18 +1750,36 @@ define([
         cb();
     };
 
+    var lastPing = +new Date();
     var onPing = function (data, cb) {
+        lastPing = +new Date();
         cb();
     };
 
     var timeout = false;
     common.onTimeoutEvent = Util.mkEvent();
-    var onTimeout = function () {
+    var onTimeout = function (fromOuter) {
+        var key = fromOuter ? "TIMEOUT_OUTER" : "TIMEOUT_KICK";
+        Feedback.send(key, true);
         timeout = true;
         common.onNetworkDisconnect.fire();
         common.padRpc.onDisconnectEvent.fire();
         common.onTimeoutEvent.fire();
     };
+
+    Visible.onChange(function (visible) {
+        if (!visible) { return; }
+        var now = +new Date();
+        // If last ping is bigger than 2min, ping the worker
+        if (now - lastPing > (2 * 60 * 1000)) {
+            var to = setTimeout(function () {
+                onTimeout(true);
+            });
+            postMessage('PING', null, function () {
+                clearTimeout(to);
+            });
+        }
+    });
 
     var queries = {
         PING: onPing,
