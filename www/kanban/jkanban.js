@@ -604,6 +604,9 @@
                     var scroll = {};
                     // Fix the tags
                     removeUnusedTags(boards);
+                    // Get horizontal scroll
+                    var $el = $(self.element);
+                    var scrollLeft = $el.scrollLeft();
                     // Remove all boards
                     for (var i in this.options.boards.list) {
                         var boardkey = this.options.boards.list[i];
@@ -619,6 +622,7 @@
                         if (!scroll[id]) { return; }
                         $('.kanban-board[data-id="'+id+'"] .kanban-drag').scrollTop(scroll[id]);
                     });
+                    $el.scrollLeft(scrollLeft);
                 }
 
                 this.findBoard = function (id) {
