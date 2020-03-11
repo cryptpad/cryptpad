@@ -413,6 +413,8 @@ define([
         };
 
         var onError = function (err) {
+            console.error(err); // XXX DEBUG
+
             common.onServerError(err, null, function () {
                 if (err.type === 'ERESTRICTED') {
                     stateChange(STATE.ERROR, err.type);
