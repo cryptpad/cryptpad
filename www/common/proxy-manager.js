@@ -731,6 +731,7 @@ define([
                     // from inside a folder we're trying to delete
                     resolved.main.forEach(function (p) {
                         var el = uo.find(p);
+                        if (p[0] === UserObject.FILES_DATA) { return; }
                         if (uo.isFile(el) || uo.isSharedFolder(el)) { return; }
                         var arr = [];
                         uo.getFilesRecursively(el, arr);

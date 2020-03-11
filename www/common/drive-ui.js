@@ -3902,8 +3902,8 @@ define([
         };
 
         if (!APP.loggedIn) {
-            $contextMenu.find('.cp-app-drive-context-delete').text(Messages.fc_remove)
-                .attr('data-icon', 'fa-eraser');
+            $contextMenu.find('.cp-app-drive-context-delete').attr('data-icon', faDelete)
+                .html($contextMenu.find('.cp-app-drive-context-remove').html());
         }
         var deleteOwnedPaths = function (paths, pathsList) {
             pathsList = pathsList || [];
