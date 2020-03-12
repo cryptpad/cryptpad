@@ -64,7 +64,7 @@ define([
     Messages.kanban_tags = "Filter tags"; // XXX
     Messages.kanban_noTags = "No tags"; // XXX
     Messages.kanban_conflicts = "Currently editing:"; // XXX
-    Messages.kanban_clearFilter = "clear filter" // XXX
+    Messages.kanban_clearFilter = "clear filter"; // XXX
 
 // XXX
 // Conflicts
