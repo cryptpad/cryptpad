@@ -795,11 +795,11 @@ define([
             // Tags filter
             var existing = getExistingTags(kanban.options.boards);
             var list = h('div.cp-kanban-filterTags-list');
-            var reset = h('i.cp-kanban-filterTags-reset.fa.fa-times');
+            var reset = h('span.cp-kanban-filterTags-reset', [h('i.fa.fa-times'), 'clear filter']); //XXX key
             var tags = h('div.cp-kanban-filterTags', [
                 h('span.cp-kanban-filterTags-name', Messages.kanban_tags),
-                reset,
-                list
+                list,
+                reset
             ]);
             var $reset = $(reset);
             var $list = $(list);
