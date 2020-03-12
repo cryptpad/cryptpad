@@ -229,6 +229,9 @@ define([
             extraKeys: {"Shift-Ctrl-R": undefined},
             mode: "gfm"
         });
+        editor.on('keydown', function (editor, e) {
+            e.stopPropagation();
+        });
         var common = framework._.sfCommon;
         var markdownTb = common.createMarkdownToolbar(editor);
         $(text).before(markdownTb.toolbar);
@@ -380,7 +383,7 @@ define([
             onClick: function () {
                 onCursorUpdate.fire({});
             },
-            keys: []
+            keys: [13, 27]
         }];
         var modal = UI.dialog.customModal(content, {
             buttons: button
