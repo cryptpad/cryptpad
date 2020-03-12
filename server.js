@@ -55,7 +55,7 @@ if (process.env.PACKAGE) {
         config.httpPort = 3000;
     }
 
-    if (typeof(httpSafeOrigin) !== 'string') {
+    if (typeof(config.httpSafeOrigin) !== 'string') {
         if (typeof(config.httpSafePort) !== 'number') {
             config.httpSafePort = config.httpPort + 1;
         }
