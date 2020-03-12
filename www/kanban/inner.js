@@ -64,6 +64,7 @@ define([
     Messages.kanban_tags = "Filter tags"; // XXX
     Messages.kanban_noTags = "No tags"; // XXX
     Messages.kanban_conflicts = "Currently editing:"; // XXX
+    Messages.kanban_clearFilter = "clear filter" // XXX
 
 // XXX
 // Conflicts
@@ -795,7 +796,7 @@ define([
             // Tags filter
             var existing = getExistingTags(kanban.options.boards);
             var list = h('div.cp-kanban-filterTags-list');
-            var reset = h('span.cp-kanban-filterTags-reset', [h('i.fa.fa-times'), 'clear filter']); //XXX key
+            var reset = h('span.cp-kanban-filterTags-reset', [h('i.fa.fa-times'), Messages.kanban_clearFilter]);
             var tags = h('div.cp-kanban-filterTags', [
                 h('span.cp-kanban-filterTags-name', Messages.kanban_tags),
                 list,
