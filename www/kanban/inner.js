@@ -1127,9 +1127,12 @@ define([
             var id = data.id;
 
             // Clear existing cursor
-            if (remoteCursors[id] && remoteCursors[id].clear) {
-                remoteCursors[id].clear();
-            }
+            Object.keys(remoteCursors).forEach(function (_id) {
+                if (_id.indexOf(id) === 0 && remoteCursors[_id].clear) {
+                    remoteCursors[_id].clear();
+                    delete remoteCursors[_id];
+                }
+            });
             delete remoteCursors[id];
 
             var cursor = data.cursor;
