@@ -152,10 +152,14 @@ define([
         var dataObject = {};
         var isBoard, id;
 
-        var commit = function () {
-            framework.localChange();
+        var update = Util.throttle(function () {
             kanban.setBoards(kanban.options.boards);
             addEditItemButton(framework, kanban);
+        }, 400);
+
+        var commit = function () {
+            framework.localChange();
+            update();
         };
         if (editModal) { return editModal; }
         var conflicts, conflictContainer, titleInput, tagsDiv, colors, text;
@@ -249,7 +253,9 @@ define([
         };
         SFCodeMirror.mkIndentSettings(editor, framework._.cpNfInner.metadataMgr);
         editor.on('change', function () {
-            dataObject.body = editor.getValue();
+            var val = editor.getValue();
+            if (dataObject.body === val) { return; }
+            dataObject.body = val;
             commit();
         });
 

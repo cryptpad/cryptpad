@@ -45,6 +45,7 @@
                 this.drake = '';
                 this.drakeBoard = '';
                 this.addItemButton = false;
+                this.cache = {};
                 defaults = {
                     element: '',
                     gutter: '15px',
@@ -84,6 +85,12 @@
                     this.options = __extendDefaults(defaults, arguments[0]);
                 }
 
+                var checkCache = function (boards) {
+                    Object.keys(self.cache).forEach(function (id) {
+                        if (boards.items[id]) { return; }
+                        delete self.cache[id];
+                    });
+                };
                 var removeUnusedTags = function (boards) {
                     var tags = self.options.getTags(boards);
                     var filter = self.options.tags || [];
@@ -355,6 +362,7 @@
                     // If it's a deletion, remove the item data
                     if (!board) {
                         delete boards.items[eid];
+                        delete self.cache[eid];
                         removeUnusedTags(boards);
                         self.options.refresh();
                         return;
@@ -414,7 +422,16 @@
                         }
                     }
                     if (element.body) {
-                        var html = self.renderMd(element.body);
+                        var html;
+                        if (self.cache[element.id] && self.cache[element.id].body === element.body) {
+                            html = self.cache[element.id].html;
+                        } else {
+                            html = self.renderMd(element.body);
+                            self.cache[element.id] = {
+                                body: element.body,
+                                html: html
+                            };
+                        }
                         var nodeBody = document.createElement('div');
                         nodeBody.classList.add('kanban-item-body');
                         $(nodeBody).on('click', 'a', function (e) {
@@ -604,6 +621,7 @@
                 this.setBoards = function (boards) {
                     var scroll = {};
                     // Fix the tags
+                    checkCache(boards);
                     removeUnusedTags(boards);
                     // Get horizontal scroll
                     var $el = $(self.element);
