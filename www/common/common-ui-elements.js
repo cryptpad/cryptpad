@@ -146,6 +146,17 @@ define([
                 if (data.href) { data.href = base + data.href; }
                 if (data.roHref) { data.roHref = base + data.roHref; }
             }), opts.href);
+
+            // If this is a file, don't try to look for metadata
+            if (opts.channel && opts.channel.length > 34) { return; }
+            common.getPadMetadata({
+                channel: opts.channel // optional, fallback to current pad
+            }, waitFor(function (obj) {
+                if (obj && obj.error) { return; }
+                data.owners = obj.owners;
+                data.expire = obj.expire;
+                data.pending_owners = obj.pending_owners;
+            }));
         }).nThen(function () {
             cb(void 0, data);
         });
