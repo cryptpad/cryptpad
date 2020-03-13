@@ -1331,6 +1331,15 @@ MessengerUI, Messages) {
             showColors = true;
         };
 
+        // If we had to create a new chainpad instance, reset the one used in the toolbar
+        toolbar.resetChainpad = function (chainpad) {
+            if (config.realtime !== chainpad) {
+                config.realtime = chainpad;
+                config.realtime.onPatch(ks(toolbar, config));
+                config.realtime.onMessage(ks(toolbar, config, true));
+            }
+        };
+
         // On log out, remove permanently the realtime elements of the toolbar
         Common.onLogout(function () {
             failed();

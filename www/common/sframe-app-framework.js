@@ -325,6 +325,11 @@ define([
 
             UI.updateLoadingProgress({ state: -1 }, false);
 
+            if (toolbar) {
+                // Check if we have a new chainpad instance
+                toolbar.resetChainpad(cpNfInner.chainpad);
+            }
+
             var newPad = false;
             if (newContentStr === '') { newPad = true; }
 
@@ -364,6 +369,9 @@ define([
             }).nThen(function () {
                 stateChange(STATE.READY);
                 firstConnection = false;
+
+                oldContent = undefined;
+
                 if (!readOnly) { onLocal(); }
                 evOnReady.fire(newPad);
 
