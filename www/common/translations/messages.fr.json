@@ -877,9 +877,9 @@
             "embed": "Intégrez des images de votre disque <span class=\"fa fa-file-image-o\"></span> ou de votre CryptDrive <span class=\"fa fa-image\"></span> et exporter le contenu en tant que PNG sur votre disque <span class=\"fa fa-download\"></span> ou votre CryptDrive <span class=\"fa fa-cloud-upload\"></span>"
         },
         "kanban": {
-            "add": "Ajoutez des cartes et tableaux en cliquant sur les boutons <span class=\\\"fa fa-plus\\\"></span>",
-            "task": "Déplacez les éléments en les faisant glisser, déposez-les dans la <span class=\\\"fa fa-trash\\\"></span> corbeille pour les effacer",
-            "color": "Modifiez les titres, contenus, mots-clés, et couleurs en cliquant sur le bouton <span class=\\\"fa fa-pencil\\\"></span> à côté du titre des tableaux et des cartes"
+            "add": "Ajoutez des cartes et tableaux en cliquant sur les boutons <span class=\"fa fa-plus\"></span>",
+            "task": "Déplacez les éléments en les faisant glisser, déposez-les dans la <span class=\"fa fa-trash\"></span> corbeille pour les effacer",
+            "color": "Modifiez les titres, contenus, mots-clés, et couleurs en cliquant sur le bouton <span class=\"fa fa-pencil\"></span> à côté du titre des tableaux et des cartes"
         }
     },
     "driveReadmeTitle": "Qu'est-ce que CryptPad ?",
