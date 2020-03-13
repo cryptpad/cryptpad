@@ -56,17 +56,6 @@ define([
     var onCursorUpdate = Util.mkEvent();
     var remoteCursors = {};
 
-    Messages.kanban_title = "Title"; // XXX
-    Messages.kanban_body = "Body"; // XXX
-    Messages.kanban_color = "Color"; // XXX
-    Messages.kanban_submit = "Submit"; // XXX
-    Messages.kanban_delete = "Delete"; // XXX
-    Messages.kanban_tags = "Filter tags"; // XXX
-    Messages.kanban_noTags = "No tags"; // XXX
-    Messages.kanban_conflicts = "Currently editing:"; // XXX
-    Messages.kanban_clearFilter = "clear filter"; // XXX
-    Messages.kanban_editCard = "edit this card" // XXX
-    Messages.kanban_editBoard = "edit this board" // XXX
 
 // XXX
 // Conflicts
@@ -339,7 +328,7 @@ define([
             className: 'danger left',
             name: Messages.kanban_delete,
             confirm: true,
-            onClick: function (button) {
+            onClick: function (/*button*/) {
                 var boards = kanban.options.boards || {};
                 if (isBoard) {
                     var list = boards.list || [];
