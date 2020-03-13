@@ -332,32 +332,11 @@ define([
             }
         };
 
-        var setId = function (_isBoard, _id) {
-            isBoard = _isBoard;
-            id = _id;
-            if (_isBoard) {
-                onCursorUpdate.fire({
-                    board: _id
-                });
-                dataObject = kanban.getBoardJSON(id);
-                $(content)
-                    .find('#cp-kanban-edit-body, #cp-kanban-edit-tags, [for="cp-kanban-edit-body"], [for="cp-kanban-edit-tags"]')
-                    .hide();
-            } else {
-                onCursorUpdate.fire({
-                    item: _id
-                });
-                dataObject = kanban.getItemJSON(id);
-                $(content)
-                    .find('#cp-kanban-edit-body, #cp-kanban-edit-tags, [for="cp-kanban-edit-body"], [for="cp-kanban-edit-tags"]')
-                    .show();
-            }
-        };
-
         var button = [{
             className: 'danger left',
             name: Messages.kanban_delete,
-            onClick: function () {
+            confirm: true,
+            onClick: function (button) {
                 var boards = kanban.options.boards || {};
                 if (isBoard) {
                     var list = boards.list || [];
@@ -389,6 +368,31 @@ define([
             buttons: button
         });
         modal.classList.add('cp-kanban-edit-modal');
+
+        var setId = function (_isBoard, _id) {
+            // Reset the mdoal with a new id
+            isBoard = _isBoard;
+            id = _id;
+            if (_isBoard) {
+                onCursorUpdate.fire({
+                    board: _id
+                });
+                dataObject = kanban.getBoardJSON(id);
+                $(content)
+                    .find('#cp-kanban-edit-body, #cp-kanban-edit-tags, [for="cp-kanban-edit-body"], [for="cp-kanban-edit-tags"]')
+                    .hide();
+            } else {
+                onCursorUpdate.fire({
+                    item: _id
+                });
+                dataObject = kanban.getItemJSON(id);
+                $(content)
+                    .find('#cp-kanban-edit-body, #cp-kanban-edit-tags, [for="cp-kanban-edit-body"], [for="cp-kanban-edit-tags"]')
+                    .show();
+            }
+            // Also reset the buttons
+            $(modal).find('nav').after(UI.dialog.getButtons(button)).remove();
+        };
 
         onRemoteChange.reg(function () {
             if (isBoard) {

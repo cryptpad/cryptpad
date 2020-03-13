@@ -386,7 +386,7 @@ define([
         buttons.forEach(function (b) {
             if (!b.name || !b.onClick) { return; }
             var button = h('button', { tabindex: '1', 'class': b.className || '' }, b.name);
-            $(button).click(function () {
+            var todo = function () {
                 var noClose = b.onClick();
                 if (noClose) { return; }
                 var $modal = $(button).parents('.alertify').first();
@@ -397,7 +397,17 @@ define([
                         }
                     });
                 }
-            });
+            };
+            if (b.confirm) {
+                UI.confirmButton(button, {
+                    classes: 'danger',
+                    divClasses: 'left'
+                }, todo);
+            } else {
+                $(button).click(function () {
+                    todo();
+                });
+            }
             if (b.keys && b.keys.length) { $(button).attr('data-keys', JSON.stringify(b.keys)); }
             navs.push(button);
         });
@@ -620,6 +630,9 @@ define([
             button,
             timer
         ]);
+        if (config.divClasses) {
+            $(content).addClass(config.divClasses);
+        }
 
         var to;
 
@@ -653,6 +666,12 @@ define([
             to = setTimeout(todo, INTERVAL);
             $(originalBtn).hide().after(content);
         });
+
+        return {
+            reset: function () {
+                done(false);
+            }
+        };
     };
 
 

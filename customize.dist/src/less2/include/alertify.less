@@ -288,14 +288,17 @@
             nav {
                 padding: @alertify_padding-base;
                 text-align: right;
-                button {
+                button, div.cp-button-confirm {
                     margin: 0px !important;
-                    &:not(:first-child) {
+                    &:not(:first-child):not(.left) {
                         margin-left: @alertify_padding-base !important;
                       }
                     &.left {
                         float: left;
                     }
+                }
+                div.cp-button-confirm {
+                    vertical-align: middle;
                 }
             }
         }
