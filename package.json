@@ -1,7 +1,7 @@
 {
   "name": "cryptpad",
   "description": "realtime collaborative visual editor with zero knowlege server",
-  "version": "3.13.0",
+  "version": "3.14.0",
   "license": "AGPL-3.0+",
   "repository": {
     "type": "git",
@@ -24,6 +24,7 @@
     "sortify": "^1.0.4",
     "stream-to-pull-stream": "^1.7.2",
     "tweetnacl": "~0.12.2",
+    "ulimit": "0.0.2",
     "ws": "^3.3.1"
   },
   "devDependencies": {
