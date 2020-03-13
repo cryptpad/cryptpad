@@ -65,6 +65,8 @@ define([
     Messages.kanban_noTags = "No tags"; // XXX
     Messages.kanban_conflicts = "Currently editing:"; // XXX
     Messages.kanban_clearFilter = "clear filter"; // XXX
+    Messages.kanban_editCard = "edit this card" // XXX
+    Messages.kanban_editBoard = "edit this board" // XXX
 
 // XXX
 // Conflicts
@@ -448,6 +450,7 @@ define([
             var itemId = $(el).attr('data-eid');
             $('<button>', {
                 'class': 'kanban-edit-item btn btn-default fa fa-pencil',
+                'alt': Messages.kanban_editCard,
             }).click(function (e) {
                 getItemEditModal(framework, kanban, itemId);
                 e.stopPropagation();
@@ -457,6 +460,7 @@ define([
             var itemId = $(el).attr('data-id');
             $('<button>', {
                 'class': 'kanban-edit-item btn btn-default fa fa-pencil',
+                'alt': Messages.kanban_editBoard,
             }).click(function (e) {
                 getBoardEditModal(framework, kanban, itemId);
                 e.stopPropagation();
