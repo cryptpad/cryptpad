@@ -347,7 +347,7 @@
     "fm_info_root": "Créez ici autant de dossiers que vous le souhaitez pour trier vos fichiers.",
     "fm_info_unsorted": "Contient tous les pads que vous avez ouvert et qui ne sont pas triés dans \"Documents\" ou déplacés vers la \"Corbeille\".",
     "fm_info_template": "Contient tous les fichiers que vous avez sauvés en tant que modèle afin de les réutiliser lors de la création d'un nouveau pad.",
-    "fm_info_recent": "Liste les derniers pads que vous avez modifiés ou ouverts.",
+    "fm_info_recent": "Ces pads on été récemment ouverts ou modifiés par vous ou vos collaborateurs.",
     "fm_info_trash": "Vider la corbeille permet de libérer de l'espace dans votre CryptDrive.",
     "fm_info_allFiles": "Contient tous les fichiers de \"Documents\", \"Fichiers non triés\" et \"Corbeille\". Vous ne pouvez pas supprimer ou déplacer des fichiers depuis cet endroit.",
     "fm_info_anonymous": "Vous n'êtes pas connecté, ces pads seront donc supprimés après 3 mois d'inactivité (<a href=\"https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/\" target=\"_blank\">découvrez pourquoi</a>). Ils sont stockés dans votre navigateur donc nettoyer votre historique peut les faire disparaître.<br><a href=\"/register/\">Inscrivez-vous</a> ou <a href=\"/login/\">connectez-vous</a> pour les maintenir en vie.<br>",
@@ -877,9 +877,9 @@
             "embed": "Intégrez des images de votre disque <span class=\"fa fa-file-image-o\"></span> ou de votre CryptDrive <span class=\"fa fa-image\"></span> et exporter le contenu en tant que PNG sur votre disque <span class=\"fa fa-download\"></span> ou votre CryptDrive <span class=\"fa fa-cloud-upload\"></span>"
         },
         "kanban": {
-            "add": "Ajoutez un tableau en utilisant le bouton <span class=\"fa fa-plus\"></span> dans le coin supérieur-droit",
-            "task": "Déplacez les éléments en les faisant glisser d'un tableau à l'autre",
-            "color": "Modifiez les couleurs en cliquant sur les parties colorées à côté du titre de chaque tableau"
+            "add": "Ajoutez des cartes et tableaux en cliquant sur les boutons <span class=\\\"fa fa-plus\\\"></span>",
+            "task": "Déplacez les éléments en les faisant glisser, déposez-les dans la <span class=\\\"fa fa-trash\\\"></span> corbeille pour les effacer",
+            "color": "Modifiez les titres, contenus, mots-clés, et couleurs en cliquant sur le bouton <span class=\\\"fa fa-pencil\\\"></span> à côté du titre des tableaux et des cartes"
         }
     },
     "driveReadmeTitle": "Qu'est-ce que CryptPad ?",
@@ -1326,5 +1326,15 @@
     "access_main": "Accès",
     "logoutEverywhere": "Se déconnecter partout",
     "allow_text": "L'utilisation d'une liste d'accès signifie que seuls les utilisateurs et propriétaires sélectionnés pourront accéder à ce document.",
-    "teams": "Équipes"
+    "teams": "Équipes",
+    "kanban_editBoard": "Modifier ce tableau",
+    "kanban_editCard": "Modifier cette carte",
+    "kanban_clearFilter": "Enlever le filtre",
+    "kanban_conflicts": "En cours d'édition :",
+    "kanban_noTags": "Pas de mots-clés",
+    "kanban_tags": "Filtrer par mot-clé",
+    "kanban_delete": "Supprimer",
+    "kanban_color": "Couleur",
+    "kanban_body": "Contenu",
+    "kanban_title": "Titre"
 }
