@@ -354,7 +354,7 @@
     "fm_info_root": "Create as many nested folders here as you want to sort your files.",
     "fm_info_unsorted": "Contains all the files you've visited that are not yet sorted in \"Documents\" or moved to the \"Trash\".",
     "fm_info_template": "Contains all the pads stored as templates and that you can re-use when you create a new pad.",
-    "fm_info_recent": "List the recently modified or opened pads.",
+    "fm_info_recent": "These pads have recently been opened or modified by you or people you collaborate with.",
     "fm_info_trash": "Empty your trash to free space in your CryptDrive.",
     "fm_info_allFiles": "Contains all the files from \"Documents\", \"Unsorted\" and \"Trash\". You can't move or remove files from here.",
     "fm_info_anonymous": "You are not logged in so your pads will expire after 3 months (<a href=\"https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/\" target=\"_blank\">find out more</a>). They are stored in your browser so clearing history may make them disappear.<br><a href=\"/register/\">Sign up</a> or <a href=\"/login/\">Log in</a> to keep them alive.<br>",
@@ -895,9 +895,9 @@
             "embed": "Embed images from your disk <span class=\"fa fa-file-image-o\"></span> or your CryptDrive <span class=\"fa fa-image\"></span> and export them as PNG to your disk <span class=\"fa fa-download\"></span> or your CryptDrive <span class=\"fa fa-cloud-upload\"></span>"
         },
         "kanban": {
-            "add": "Add new boards using the <span class=\"fa fa-plus\"></span> button in the top-right corner",
-            "task": "Move items by dragging and dropping them from one board to another",
-            "color": "Change the colors by clicking on the colored part next to the board titles"
+            "add": "Add new cards and boards by clicking the <span class=\\\"fa fa-plus\\\"></span> buttons",
+            "task": "Move items by dragging and dropping, drag to the <span class=\\\"fa fa-trash\\\"></span> trash to delete",
+            "color": "Edit titles, content, tags, and colors by clicking on the <span class=\\\"fa fa-pencil\\\"></span> button next to card and board titles"
         }
     },
     "driveReadmeTitle": "What is CryptPad?",
@@ -1326,5 +1326,15 @@
     "owner_text": "The owner(s) of a pad are the only users authorised to: add/remove owners, restrict access to the pad with an access list, or delete the pad.",
     "logoutEverywhere": "Log out everywhere",
     "allow_text": "Using an access list means that only selected users and owners will be able to access this document.",
-    "teams": "Teams"
+    "teams": "Teams",
+    "kanban_title": "Title",
+    "kanban_body": "Content",
+    "kanban_color": "Color",
+    "kanban_delete": "Delete",
+    "kanban_tags": "Filter by tag",
+    "kanban_noTags": "No tags",
+    "kanban_conflicts": "Currently editing:",
+    "kanban_clearFilter": "Clear filter",
+    "kanban_editCard": "Edit this card",
+    "kanban_editBoard": "Edit this board"
 }
