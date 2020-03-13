@@ -64,6 +64,9 @@ define([
     Messages.kanban_tags = "Filter tags"; // XXX
     Messages.kanban_noTags = "No tags"; // XXX
     Messages.kanban_conflicts = "Currently editing:"; // XXX
+    Messages.kanban_clearFilter = "clear filter"; // XXX
+    Messages.kanban_editCard = "edit this card" // XXX
+    Messages.kanban_editBoard = "edit this board" // XXX
 
 // XXX
 // Conflicts
@@ -465,6 +468,7 @@ define([
             var itemId = $(el).attr('data-eid');
             $('<button>', {
                 'class': 'kanban-edit-item btn btn-default fa fa-pencil',
+                'alt': Messages.kanban_editCard,
             }).click(function (e) {
                 getItemEditModal(framework, kanban, itemId);
                 e.stopPropagation();
@@ -474,6 +478,7 @@ define([
             var itemId = $(el).attr('data-id');
             $('<button>', {
                 'class': 'kanban-edit-item btn btn-default fa fa-pencil',
+                'alt': Messages.kanban_editBoard,
             }).click(function (e) {
                 getBoardEditModal(framework, kanban, itemId);
                 e.stopPropagation();
@@ -813,11 +818,11 @@ define([
             // Tags filter
             var existing = getExistingTags(kanban.options.boards);
             var list = h('div.cp-kanban-filterTags-list');
-            var reset = h('i.cp-kanban-filterTags-reset.fa.fa-times');
+            var reset = h('span.cp-kanban-filterTags-reset', [h('i.fa.fa-times'), Messages.kanban_clearFilter]);
             var tags = h('div.cp-kanban-filterTags', [
                 h('span.cp-kanban-filterTags-name', Messages.kanban_tags),
-                reset,
-                list
+                list,
+                reset
             ]);
             var $reset = $(reset);
             var $list = $(list);

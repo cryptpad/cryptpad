@@ -178,22 +178,26 @@
                                 if (typeof (el.dragfn) === 'function') {
                                     el.dragfn(el, source);
                                 }
+                                $('.kanban-trash').addClass('kanban-trash-suggest');
                                 $(document).on('mousemove', onMouseMove());
                             })
                             .on('dragend', function (el) {
                                 el.classList.remove('is-moving');
                                 self.options.dragendBoard(el);
                                 $(document).off('mousemove');
+                                $('.kanban-trash').removeClass('kanban-trash-suggest');
                                 if (typeof (el.dragendfn) === 'function')
                                     el.dragendfn(el);
                             })
                             .on('over', function (el, target, source) {
                                 if (!target.classList.contains('kanban-trash')) { return false; }
                                 $('.kanban-trash').addClass('kanban-trash-active');
+                                $('.kanban-trash').removeClass('kanban-trash-suggest');
                             })
                             .on('out', function (el, target) {
                                 if (!target.classList.contains('kanban-trash')) { return false; }
                                 $('.kanban-trash').removeClass('kanban-trash-active');
+                                $('.kanban-trash').addClass('kanban-trash-suggest');
                             })
                             .on('drop', function (el, target, source, sibling) {
                                 el.classList.remove('is-moving');
@@ -260,6 +264,7 @@
                                 setActiveDrag();
                                 el.classList.add('is-moving');
                                 $(document).on('mousemove', onMouseMove(el));
+                                $('.kanban-trash').addClass('kanban-trash-suggest');
 
                                 self.options.dragEl(el, source);
                                 if (el !== null && typeof (el.dragfn) === 'function') {
@@ -270,6 +275,7 @@
                                 console.log("In dragend");
                                 el.classList.remove('is-moving');
                                 self.options.dragendEl(el);
+                                $('.kanban-trash').removeClass('kanban-trash-suggest');
                                 $(document).off('mousemove');
                                 if (el !== null && typeof (el.dragendfn) === 'function') {
                                     el.dragendfn(el);
@@ -284,12 +290,16 @@
                             .on('over', function (el, target, source) {
                                 setActiveDrag(target);
                                 if (!target.classList.contains('kanban-trash')) { return false; }
+                                target.classList.remove('kanban-trash-suggest');
                                 target.classList.add('kanban-trash-active');
+
                             })
                             .on('out', function (el, target) {
                                 setActiveDrag();
                                 if (!target.classList.contains('kanban-trash')) { return false; }
                                 target.classList.remove('kanban-trash-active');
+                                target.classList.add('kanban-trash-suggest');
+
                             })
                             .on('drop', function(el, target, source, sibling) {
                                 self.enableAllBoards();
