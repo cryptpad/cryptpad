@@ -102,6 +102,8 @@ define([
         }
         html += cursor.name + '</span>';
 
+        // XXX breaks on "😶"
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charAt#Getting_whole_characters
         var l = (cursor.name || Messages.anonymous).slice(0,1).toUpperCase();
 
         var text = '';
@@ -777,6 +779,7 @@ define([
             var boardExists = function (b) { return b.id === "board" + counter; };
             while (kanban.options.boards.some(boardExists)) { counter++; }
             */
+            // XXX confirm that it doesn't collide with an existing id? unlikely but possible
             var id = Util.createRandomInteger();
 
             kanban.addBoard({
