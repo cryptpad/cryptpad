@@ -895,9 +895,9 @@
             "embed": "Embed images from your disk <span class=\"fa fa-file-image-o\"></span> or your CryptDrive <span class=\"fa fa-image\"></span> and export them as PNG to your disk <span class=\"fa fa-download\"></span> or your CryptDrive <span class=\"fa fa-cloud-upload\"></span>"
         },
         "kanban": {
-            "add": "Add new cards and boards by clicking the <span class=\\\"fa fa-plus\\\"></span> buttons",
-            "task": "Move items by dragging and dropping, drag to the <span class=\\\"fa fa-trash\\\"></span> trash to delete",
-            "color": "Edit titles, content, tags, and colors by clicking on the <span class=\\\"fa fa-pencil\\\"></span> button next to card and board titles"
+            "add": "Add new cards and boards by clicking the <span class=\"fa fa-plus\"></span> buttons",
+            "task": "Move items by dragging and dropping, drag to the <span class=\"fa fa-trash\"></span> trash to delete",
+            "color": "Edit titles, content, tags, and colors by clicking on the <span class=\"fa fa-pencil\"></span> button next to card and board titles"
         }
     },
     "driveReadmeTitle": "What is CryptPad?",
