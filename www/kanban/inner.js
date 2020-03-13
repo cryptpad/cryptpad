@@ -328,7 +328,7 @@ define([
             className: 'danger left',
             name: Messages.kanban_delete,
             confirm: true,
-            onClick: function (button) {
+            onClick: function (/*button*/) {
                 var boards = kanban.options.boards || {};
                 if (isBoard) {
                     var list = boards.list || [];
