@@ -21,14 +21,16 @@
     @board-bg: #eaeaea;
 
     @palette0: #C9C9C9; // Default bg color for header
-    @palette1: #FFD4D4;
-    @palette2: #FFDECA;
-    @palette3: #FFE69C;
-    @palette4: #DBFFB7;
-    @palette5: #AFFDC2;
-    @palette6: #C9FFFE;
-    @palette7: #C8D6FF;
-    @palette8: #E4CAFF;
+
+    @kanban-colors:
+        #FFD4D4,
+        #FFDECA,
+        #FFE69C,
+        #DBFFB7,
+        #AFFDC2,
+        #C9FFFE,
+        #C8D6FF,
+        #E4CAFF;
 
     .kanban-board-header {
         background-color: @palette0;
@@ -46,54 +48,21 @@
     .cp-kanban-palette-nocolor {
         background-color: @palette0;
     }
-    .cp-kanban-palette-color1 {
-        background-color: @palette1;
-        &.kanban-board-inner {
-            background-color: lighten(@palette1, 5%);
+
+    .kanban-colors(@kanban-colors; @index) when (@index > 0){
+        // loop through the @colors
+        .kanban-colors(@kanban-colors; (@index - 1));
+        @color: extract(@kanban-colors, @index);
+        // make a numbered class selector for each color
+        .cp-kanban-palette-color@{index}{
+            background-color: @color;
+            &.kanban-board-inner {
+                background-color: fade(@color, 50%);
+            }
         }
     }
-    .cp-kanban-palette-color2 {
-        background-color: @palette2;
-        &.kanban-board-inner {
-            background-color: lighten(@palette2, 5%);
-        }
-    }
-    .cp-kanban-palette-color3 {
-        background-color: @palette3;
-        &.kanban-board-inner {
-            background-color: lighten(@palette3, 10%);
-        }
-    }
-    .cp-kanban-palette-color4 {
-        background-color: @palette4;
-        &.kanban-board-inner {
-            background-color: lighten(@palette4, 10%);
-        }
-    }
-    .cp-kanban-palette-color5 {
-        background-color: @palette5;
-        &.kanban-board-inner {
-            background-color: lighten(@palette5, 10%);
-        }
-    }
-    .cp-kanban-palette-color6 {
-        background-color: @palette6;
-        &.kanban-board-inner {
-            background-color: lighten(@palette6, 5%);
-        }
-    }
-    .cp-kanban-palette-color7 {
-        background-color: @palette7;
-        &.kanban-board-inner {
-            background-color: lighten(@palette7, 5%);
-        }
-    }
-    .cp-kanban-palette-color8 {
-        background-color: @palette8;
-        &.kanban-board-inner {
-            background-color: lighten(@palette8, 5%);
-        }
-    }
+    // call the loop
+    .kanban-colors(@kanban-colors; length(@kanban-colors));
 
     .cp-kanban-edit-modal {
         display: flex;
@@ -105,8 +74,12 @@
         background: #eee;
         color: @cryptpad_text_col;
         font-size: 14px;
+        div {
+            display: inline;
+        }
         .cp-kanban-cursors {
-            margin-top: 5px;
+            display: inline;
+            margin-left: 5px;
         }
         margin-bottom: 5px;
     }
@@ -122,6 +95,12 @@
         .cp-markdown-toolbar {
             background-color: #eee;
             color: @cryptpad_text_col;
+            button {
+                &:hover {
+                    background-color: @cryptpad_text_col;
+                    color: white;
+                }
+            }
         }
         margin-bottom: 15px;
     }
@@ -141,6 +120,7 @@
     #cp-kanban-edit-tags {
         .tokenfield {
             margin: 0;
+            width: 100%;
         }
         margin-bottom: 15px;
     }
@@ -161,6 +141,7 @@
 
     .kanban-edit-item {
         padding: 5px;
+        align-self: flex-start;
     }
 
     .cp-kanban-cursors {
@@ -201,8 +182,32 @@
             .markdown_cryptpad();
             .markdown_preformatted-code;
             .markdown_gfm-table(black);
+            p {
+                margin-bottom: 5px;
+            }
             ul {
-                padding-left: 30px;
+                padding-left: 20px;
+            }
+            img {
+                max-width: 100%;
+            }
+            pre > code {
+                border: none;
+                padding: 5px;
+                margin: 0;
+                background-color: @cryptpad_color_light_grey;
+                width: 100%;
+            }
+            table {
+                color: @cryptpad_text_col;
+                border-color: @cryptpad_text_col;
+                th {
+                    padding: 5px !important;
+                    background-color: fade(@cryptpad_text_col, 10%);
+                }
+                td {
+                    padding: 5px;
+                }
             }
         }
         .kanban-item-tags {
@@ -268,7 +273,8 @@
                 .tools_unselectable();
                 outline: none;
                 width: 100%;
-                border: 1px solid @cryptpad_text_col;
+                border: 1px solid fade(@cryptpad_text_col, 70%);
+                color: fade(@cryptpad_text_col, 70%);
                 border-radius: 0px;
                 font-size: 40px;
                 display: inline-flex;
@@ -298,9 +304,12 @@
             max-width: 80%;
             min-width: 150px;
 
-            &> i {
+            .cp-kanban-filterTags-reset {
                 cursor: pointer;
                 margin-left: 10px;
+                i {
+                    margin-right: 5px;
+                }
             }
             .cp-kanban-filterTags-name {
                 flex-shrink: 0;
@@ -392,6 +401,7 @@
             display: flex;
             min-height: 0;
             .kanban-container {
+                padding: 0px 5px;
                 flex: 1;
                 display: flex;
                 max-height: 100%;
@@ -416,9 +426,14 @@
                 right: 0;
             }
             &.kanban-trash-active {
-                color: red;
+                color: @colortheme_notification-warn;
                 div {
-                    background: rgba(255,0,0,0.5);
+                    background: fade(@colortheme_notification-warn, 20%);
+                }
+            }
+            &.kanban-trash-suggest {
+                div {
+                    background: fade(@cryptpad_text_col, 20%);
                 }
             }
             .kanban-item, .kanban-board {
