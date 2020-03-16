@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "chainpad-crypto": "^0.2.2",
-    "chainpad-server": "^4.0.5",
+    "chainpad-server": "^4.0.6",
     "express": "~4.16.0",
     "fs-extra": "^7.0.0",
     "get-folder-size": "^2.0.1",
