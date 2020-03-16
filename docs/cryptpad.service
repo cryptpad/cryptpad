@@ -19,5 +19,10 @@ Group=cryptpad
 # modify to match your working directory
 Environment='PWD="/home/cryptpad/cryptpad/cryptpad"'
 
+# systemd sets the open file limit to 4000 unless you override it
+# cryptpad stores its data with the filesystem, so you should increase this to match the value of `ulimit -n`
+# or risk EMFILE errors.
+LimitNOFILE=1000000
+
 [Install]
 WantedBy=multi-user.target
