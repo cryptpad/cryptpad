@@ -568,7 +568,11 @@
                     (board.item || []).forEach(function (itemkey) {
                         //create item
                         var itemKanban = boards.items[itemkey];
-                        if (!itemKanban) { return; } // XXX clean invalid data
+                        if (!itemKanban) {
+                            var idx = board.item.indexOf(itemkey);
+                            if (idx > -1) { board.item.splice(idx, 1); }
+                            return;
+                        }
                         var nodeItem = getElementNode(itemKanban);
                         contentBoard.appendChild(nodeItem);
                     });
@@ -610,17 +614,24 @@
                     var boards = self.options.boards;
                     boards.list = boards.list || [];
                     boards.data = boards.data || {};
-                    for (var index in boards.list) {
+                    var toRemove = [];
+                    boards.list.forEach(function (boardkey) {
                         // single board
-                        var boardkey = boards.list[index];
                         var board = boards.data[boardkey];
-                        if (!board) { continue; } // XXX clean invalid data
+                        if (!board) {
+                            toRemove.push(boardkey);
+                            return;
+                        }
 
                         var boardNode = getBoardNode(board);
 
                         //board add
                         self.container.appendChild(boardNode);
-                    }
+                    });
+                    toRemove.forEach(function (id) {
+                        var idx = boards.list.indexOf(id);
+                        if (idx > -1) { boards.list.splice(idx, 1); }
+                    });
 
                     // send event that board has changed
                     self.onChange();
