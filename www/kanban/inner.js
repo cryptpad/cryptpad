@@ -171,6 +171,7 @@ define([
             h('label', {for:'cp-kanban-edit-color'}, Messages.kanban_color),
             colors = h('div#cp-kanban-edit-colors'),
         ]);
+        var $tags = $(tagsDiv);
 
 
         var $conflict = $(conflicts);
@@ -216,12 +217,17 @@ define([
         var editor = CodeMirror.fromTextArea(text, {
             allowDropFileTypes: [],
             lineWrapping: true,
-            styleActiveLine : true,
+            styleActiveLine: true,
+            autoCloseBrackets: true,
             inputStyle: 'contenteditable',
             extraKeys: {"Shift-Ctrl-R": undefined},
             mode: "gfm"
         });
         editor.on('keydown', function (editor, e) {
+            if (e.which === 27) {
+                // Focus the next form element but don't close the modal (stopPropagation)
+                $tags.find('.token-input').focus();
+            }
             e.stopPropagation();
         });
         var common = framework._.sfCommon;
@@ -255,7 +261,6 @@ define([
         });
 
         // Tags
-        var $tags = $(tagsDiv);
         var _field, initialTags;
         var tags = {
             getValue: function () {
@@ -277,6 +282,10 @@ define([
                     UI.warn(Messages._getKey('tags_duplicate', [val]));
                 });
                 _field.setTokens(tags || []);
+
+                $tags.find('.token-input').on('keydown', function (e) {
+                    e.stopPropagation();
+                });
 
                 var commitTags = function () {
                     setTimeout(function () {
