@@ -56,12 +56,6 @@ define([
     var onCursorUpdate = Util.mkEvent();
     var remoteCursors = {};
 
-
-// XXX
-// Conflicts
-//   use cursor channel to tell others what you are editing
-//    add outline + warning inside the modal?
-
     var setValueAndCursor = function (input, val, _cursor) {
         if (!input) { return; }
         var $input = $(input);
@@ -102,9 +96,7 @@ define([
         }
         html += cursor.name + '</span>';
 
-        // XXX breaks on "😶"
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charAt#Getting_whole_characters
-        var l = (cursor.name || Messages.anonymous).slice(0,1).toUpperCase();
+        var l = UIElements.getFirstCharacter(cursor.name || Messages.anonymous);
 
         var text = '';
         if (cursor.color) {
@@ -735,6 +727,9 @@ define([
                     onCursorUpdate.fire({});
                     if (!$input.val()) { return; }
                     var id = Util.createRandomInteger();
+                    while (kanban.getItemJSON(id)) {
+                        id = Util.createRandomInteger();
+                    }
                     var item = {
                         "id": id,
                         "title": $input.val(),
@@ -788,8 +783,10 @@ define([
             var boardExists = function (b) { return b.id === "board" + counter; };
             while (kanban.options.boards.some(boardExists)) { counter++; }
             */
-            // XXX confirm that it doesn't collide with an existing id? unlikely but possible
             var id = Util.createRandomInteger();
+            while (kanban.getBoardJSON(id)) {
+                id = Util.createRandomInteger();
+            }
 
             kanban.addBoard({
                 "id": id,

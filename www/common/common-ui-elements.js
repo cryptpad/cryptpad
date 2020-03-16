@@ -2823,7 +2823,7 @@ define([
       }
       return arr;
     };
-    var getFirstEmojiOrCharacter = function (str) {
+    var getFirstEmojiOrCharacter = UIElements.getFirstCharacter = function (str) {
       if (!str || !str.trim()) { return '?'; }
       var emojis = emojiStringToArray(str);
       return isEmoji(emojis[0])? emojis[0]: str[0];
