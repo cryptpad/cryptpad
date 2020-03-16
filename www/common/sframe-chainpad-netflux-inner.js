@@ -60,7 +60,8 @@ define([
         });
         chainpad.onMessage(function(message, cb) {
             // -1 ==> no timeout, we may receive the callback only when we reconnect
-            sframeChan.query('Q_RT_MESSAGE', message, function (err) {
+            sframeChan.query('Q_RT_MESSAGE', message, function (_err, obj) {
+                var err = _err || (obj && obj.error);
                 if (!err) { evPatchSent.fire(); }
                 cb(err);
             }, { timeout: -1 });
