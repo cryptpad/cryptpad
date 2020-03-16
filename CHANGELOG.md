@@ -1,3 +1,47 @@
+# OrienteCaveRat release (3.14.0)
+
+## Goals
+
+We planned a one-week release cycle in order to finish up some major features that were already in development during our last release.
+
+In the meantime, the reaction to the COVID-19 pandemic has resulted in a greatly increased load on our servers, so we've begun to focus on improving stability to ensure that we are able to keep up with demand.
+
+## Update notes
+
+We had some trouble during the week of March 9th, 2020, as the CryptPad.fr server started throwing EMFILE errors. This means that it was trying to open new files (for reading or writing) but there were too many files open already. We've added some new code to help debug the issue, but there is not yet a fix in place. The maximum number of open files on our host OS had been increased by several orders of magnitude (several years ago) but we're now aware that the systemd service file that launches the API server does not respect this global limit. As such, we've updated the example service file to indicate how you can update this limit yourself. For an example of how to update this limit at the OS level, see this page: https://docs.oracle.com/cd/E19623-01/820-6168/file-descriptor-requirements.html
+
+Otherwise, updating from 3.13.0 to 3.14.0 is as usual:
+
+1. stop your server
+2. fetch the latest source
+3. `npm i`
+4. `bower update`
+5. restart your server
+
+## Features
+
+We're very happy to announce a major update to our kanban application! We've made a lot of changes, but the most notables ones are:
+
+* the ability to add markdown content to your cards and edit it collaboratively in real-time
+* tags on cards and the ability to filter cards by tags at the top of the application
+* indicators to show if a card is being modified by another user while you are editing it
+* the ability to toggle between an 'overview mode' which hides everything but your cards titles and a full mode which shows everything
+* vertical scrolling for very tall columns, and horizontal scrolling for columns that don't fit on your screen (intead of reflowing to the next line)
+* a smaller palette of pre-chosen colors for cards and boards instead of a color-picker, to make it easier to choose matching colors for tasks
+* the ability to drag cards and boards to the trash instead of having to click a small X and confirm their deletion
+
+## Bug fixes
+
+* Drive:
+  * a regression in the drive for anonymous users made it impossible to delete contained pads directly from the drive (though deletion from the pad itself was working). It's now back to normal.
+  * we've updated the translation key referenced in [issue 482](https://github.com/xwiki-labs/cryptpad/issues/482) to clarify what qualifies a pad as "recently modified".
+* We noticed (and fixed) another regression that disabled our recently introduced "history trim" functionality.
+* We've identified and addressed a few client networking errors that were causing clients to disconnect (and to get stuck in a reconnecting state), but we're still actively looking for more.
+* Server:
+  * we've added some extra checks to try to identify where our file descriptor leak is coming from, we'll release fixes as they become available.
+  * we've caught a typeError that only ever happened while the server was overwhelmed with EMFILE errors.
+  * [this PR](https://github.com/xwiki-labs/cryptpad/pull/503) fixed an incorrect conditional expression at launch-time.
+
 # NorthernWhiteRhino release (3.13.0)
 
 ## Goals
