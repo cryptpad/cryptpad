@@ -1523,14 +1523,10 @@ define([
                     channel.bcast("PAD_LEAVE", m);
                 },
                 onError: function (err) {
-                    console.error(err); // XXX DEBUG
-
                     channel.bcast("PAD_ERROR", err);
                     Store.leavePad(null, data, function () {});
                 },
                 onChannelError: function (err) {
-                    console.warn(err); // XXX DEBUG
-
                     channel.bcast("PAD_ERROR", err);
                     Store.leavePad(null, data, function () {});
                 },
@@ -2101,7 +2097,7 @@ define([
         var driveEventClients = [];
 
         var dropChannel = Store.dropChannel = function (chanId) {
-            console.error('Drop channel', chanId); // XXX DEBUG
+            console.error('Drop channel', chanId);
 
             try {
                 store.messenger.leavePad(chanId);
