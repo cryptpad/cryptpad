@@ -343,7 +343,7 @@
     "fm_info_root": "Erstelle hier so viele Ordner, wie du willst, um deine Dateien und Dokumente zu organisieren.",
     "fm_info_unsorted": "Hier sind alle besuchte Dateien enthalten, die noch nicht in \"Dokumente\" einsortiert oder in den Papierkorb verschoben wurden.",
     "fm_info_template": "Hier sind alle Dokumente enthalten, die als Vorlage gespeichert wurden und die du wiederverwenden kannst, um ein neues Pad zu erstellen.",
-    "fm_info_recent": "Hier werden die zuletzt geöffneten Dokumente aufgelistet.",
+    "fm_info_recent": "Diese Pads wurden kürzlich von dir oder von Personen, mit denen du zusammenarbeitest, geöffnet oder geändert.",
     "fm_info_trash": "Leere den Papierkorb, um mehr freien Platz in deinem CryptDrive zu erhalten.",
     "fm_info_allFiles": "Beinhaltet alle Dateien von \"Dokumente\", \"Unsortierte Dateien\" und \"Papierkorb\". Dateien können hier nicht verschoben oder entfernt werden.",
     "fm_info_anonymous": "Du bist nicht eingeloggt, daher laufen die Pads nach 3 Monaten aus (<a href=\"https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/\" target=\"_blank\">mehr dazu lesen</a>). Der Zugang zu den Pads ist in deinem Browser gespeichert, daher wird das Löschen des Browserverlaufs sie möglicherweise verschwinden lassen.<br><a href=\"/register/\">Registriere dich</a> oder <a href=\"/login/\">logge dich ein</a>, um sie dauerhaft zugänglich zu machen.<br>",
@@ -494,7 +494,7 @@
     "settings_usageAmount": "Deine gepinnten Pads belegen {0} MB",
     "settings_logoutEverywhereButton": "Ausloggen",
     "settings_logoutEverywhereTitle": "Andere Sitzungen beenden",
-    "settings_logoutEverywhere": "Das Ausloggen in allen andere Websitzungen erzwingen",
+    "settings_logoutEverywhere": "Das Ausloggen aus allen anderen Websitzungen erzwingen",
     "settings_logoutEverywhereConfirm": "Bist du sicher? Du wirst dich auf allen deinen Geräten wieder einloggen müssen.",
     "settings_driveDuplicateTitle": "Duplizierte eigene Pads",
     "settings_driveDuplicateHint": "Wenn du ein eigenes Pad in einem geteilten Ordner verschiebst, wird eine Kopie in deinem CryptDrive behalten, damit du die Kontrolle des Dokuments nicht verlierst. Du kannst duplizierte Dateien verbergen. Nur die Version in dem geteilten Ordner wird dann angezeigt, außer sie wurde gelöscht. In diesem Fall, wird sie wieder angezeigt.",
@@ -870,9 +870,9 @@
             "embed": "Bette Bilder von deiner Festplatte <span class=\"fa fa-file-image-o\"></span> oder von deinem CryptDrive <span class=\"fa fa-image\"></span> ein und exportiere sie als PNG zu deiner Festplatte <span class=\"fa fa-download\"></span> oder zu deinem CryptDrive <span class=\"fa fa-cloud-upload\"></span>"
         },
         "kanban": {
-            "add": "Füge ein neues Board hinzu mit der Schaltfläche <span class=\"fa fa-plus\"></span> in der rechten oberen Ecke",
-            "task": "Verschiebe Einträge von einem Board zum anderen per Drag & Drop",
-            "color": "Ändere die Farben durch Klicken auf den farbigen Teil neben den Boardtiteln"
+            "add": "Füge neue Karten und Boards mit der Schaltfläche <span class=\"fa fa-plus\"></span> hinzu",
+            "task": "Verschiebe Einträge per Drag & Drop oder ziehe sie zum <span class=\"fa fa-trash\"></span> Papierkorb, um sie zu löschen",
+            "color": "Bearbeite Titel, Inhalt, Tags und Farben durch Klicken auf die Schaltfläche <span class=\"fa fa-pencil\"></span> neben den Titeln von Karten und Boards"
         }
     },
     "driveReadmeTitle": "Was ist CryptPad?",
@@ -1326,5 +1326,15 @@
     "restrictedError": "Du bist nicht berechtigt, auf dieses Dokument zuzugreifen",
     "allow_text": "Bei der Verwendung von Zugriffslisten können nur Eigentümer und ausgewählte Nutzer auf das Dokument zugreifen.",
     "logoutEverywhere": "Überall ausloggen",
-    "teams": "Teams"
+    "teams": "Teams",
+    "kanban_clearFilter": "Filter zurücksetzen",
+    "kanban_noTags": "Keine Tags",
+    "kanban_tags": "Nach Tags filtern",
+    "kanban_conflicts": "In Bearbeitung:",
+    "kanban_editBoard": "Dieses Board bearbeiten",
+    "kanban_editCard": "Diese Karte bearbeiten",
+    "kanban_delete": "Löschen",
+    "kanban_color": "Farbe",
+    "kanban_body": "Inhalt",
+    "kanban_title": "Titel"
 }
