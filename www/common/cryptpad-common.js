@@ -879,7 +879,8 @@ define([
         postMessage("LEAVE_PAD", data, cb);
     };
     pad.sendPadMsg = function (data, cb) {
-        postMessage("SEND_PAD_MSG", data, cb);
+        // -1 ==> no timeout, we may receive the callback only when we reconnect
+        postMessage("SEND_PAD_MSG", data, cb, { timeout: -1 });
     };
     pad.onReadyEvent = Util.mkEvent();
     pad.onMessageEvent = Util.mkEvent();
