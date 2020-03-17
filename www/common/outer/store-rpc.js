@@ -13,6 +13,7 @@ define([
             DISCONNECT: Store.disconnect,
             CREATE_README: Store.createReadme,
             MIGRATE_ANON_DRIVE: Store.migrateAnonDrive,
+            PING: function (cId, data, cb) { cb(); },
             // RPC
             UPDATE_PIN_LIMIT: Store.updatePinLimit,
             GET_PIN_LIMIT: Store.getPinLimit,
@@ -50,6 +51,7 @@ define([
             GET_TEMPLATES: Store.getTemplates,
             GET_SECURE_FILES_LIST: Store.getSecureFilesList,
             GET_PAD_DATA: Store.getPadData,
+            GET_PAD_DATA_FROM_CHANNEL: Store.getPadDataFromChannel,
             GET_STRONGER_HASH: Store.getStrongerHash,
             INCREMENT_TEMPLATE_USE: Store.incrementTemplateUse,
             GET_SHARED_FOLDER: Store.getSharedFolder,

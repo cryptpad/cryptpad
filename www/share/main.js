@@ -79,14 +79,17 @@ define([
                     var metaObj;
                     nThen(function (waitFor) {
                         Cryptpad.getMetadata(waitFor(function (err, n) {
-                            if (err) { console.log(err); }
+                            if (err) {
+                                waitFor.abort();
+                                return void console.log(err);
+                            }
                             metaObj = n;
                         }));
                     }).nThen(function (/*waitFor*/) {
                         metaObj.doc = {};
                         var additionalPriv = {
                             fileHost: ApiConfig.fileHost,
-                            accountName: Utils.LocalStore.getAccountName(),
+                            loggedIn: Utils.LocalStore.isLoggedIn(),
                             origin: window.location.origin,
                             pathname: window.location.pathname,
                             feedbackAllowed: Utils.Feedback.state,

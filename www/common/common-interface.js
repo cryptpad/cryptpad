@@ -70,6 +70,7 @@ define([
                     if (typeof(yes) === 'function') { yes(e); }
                     break;
             }
+            $(el || window).off('keydown', handler);
         };
 
         $(el || window).keydown(handler);
@@ -197,7 +198,7 @@ define([
         frame.closeModal = function (cb) {
             $frame.fadeOut(150, function () {
                 $frame.detach();
-                cb();
+                if (typeof(cb) === "function") { cb(); }
             });
         };
         return $frame.click(function (e) {
@@ -217,14 +218,15 @@ define([
         var titles = [];
         var active = 0;
         tabs.forEach(function (tab, i) {
-            if (!tab.content || !tab.title) { return; }
+            if (!(tab.content || tab.disabled) || !tab.title) { return; }
             var content = h('div.alertify-tabs-content', tab.content);
-            var title = h('span.alertify-tabs-title', tab.title);
+            var title = h('span.alertify-tabs-title'+ (tab.disabled ? '.disabled' : ''), tab.title);
             if (tab.icon) {
                 var icon = h('i', {class: tab.icon});
                 $(title).prepend(' ').prepend(icon);
             }
             $(title).click(function () {
+                if (tab.disabled) { return; }
                 var old = tabs[active];
                 if (old.onHide) { old.onHide(); }
                 titles.forEach(function (t) { $(t).removeClass('alertify-tabs-active'); });
@@ -238,7 +240,7 @@ define([
             });
             titles.push(title);
             contents.push(content);
-            if (tab.active) { active = i; }
+            if (tab.active && !tab.disabled) { active = i; }
         });
         if (contents.length) {
             $(contents[active]).addClass('alertify-tabs-content-active');
@@ -384,7 +386,7 @@ define([
         buttons.forEach(function (b) {
             if (!b.name || !b.onClick) { return; }
             var button = h('button', { tabindex: '1', 'class': b.className || '' }, b.name);
-            $(button).click(function () {
+            var todo = function () {
                 var noClose = b.onClick();
                 if (noClose) { return; }
                 var $modal = $(button).parents('.alertify').first();
@@ -395,7 +397,17 @@ define([
                         }
                     });
                 }
-            });
+            };
+            if (b.confirm) {
+                UI.confirmButton(button, {
+                    classes: 'danger',
+                    divClasses: 'left'
+                }, todo);
+            } else {
+                $(button).click(function () {
+                    todo();
+                });
+            }
             if (b.keys && b.keys.length) { $(button).attr('data-keys', JSON.stringify(b.keys)); }
             navs.push(button);
         });
@@ -483,7 +495,7 @@ define([
             stopListening(listener);
             cb();
         });
-        listener = listenForKeys(close, close);
+        listener = listenForKeys(close, close, frame);
         var $ok = $(ok).click(close);
 
         document.body.appendChild(frame);
@@ -491,6 +503,11 @@ define([
             $ok.focus();
             Notifier.notify();
         });
+
+        return {
+            element: frame,
+            delete: close
+        };
     };
 
     UI.prompt = function (msg, def, cb, opt, force) {
@@ -582,7 +599,7 @@ define([
             $ok.click();
         }, function () {
             $cancel.click();
-        }, ok);
+        }, frame);
 
         document.body.appendChild(frame);
         setTimeout(function () {
@@ -593,6 +610,70 @@ define([
             }
         });
     };
+    UI.confirmButton = function (originalBtn, config, _cb) {
+        config = config || {};
+        var cb = Util.once(Util.mkAsync(_cb));
+        var classes = 'btn ' + (config.classes || 'btn-primary');
+
+        var button = h('button', {
+            "class": classes,
+            title: config.title || ''
+        }, Messages.areYouSure);
+        var $button = $(button);
+
+        var div = h('div', {
+            "class": config.classes || ''
+        });
+        var timer = h('div.cp-button-timer', div);
+
+        var content = h('div.cp-button-confirm', [
+            button,
+            timer
+        ]);
+        if (config.divClasses) {
+            $(content).addClass(config.divClasses);
+        }
+
+        var to;
+
+        var done = function (res) {
+            if (res) { cb(res); }
+            clearTimeout(to);
+            $(content).detach();
+            $(originalBtn).show();
+        };
+
+        $button.click(function () {
+            done(true);
+        });
+
+        var TIMEOUT = 3000;
+        var INTERVAL = 10;
+        var i = 1;
+
+        var todo = function () {
+            var p = 100 * ((TIMEOUT - (i * INTERVAL)) / TIMEOUT);
+            if (i++ * INTERVAL >= TIMEOUT) {
+                done(false);
+                return;
+            }
+            $(div).css('width', p+'%');
+            to = setTimeout(todo, INTERVAL);
+        };
+
+        $(originalBtn).addClass('cp-button-confirm-placeholder').click(function () {
+            i = 1;
+            to = setTimeout(todo, INTERVAL);
+            $(originalBtn).hide().after(content);
+        });
+
+        return {
+            reset: function () {
+                done(false);
+            }
+        };
+    };
+
 
     UI.proposal = function (content, cb) {
         var buttons = [{
@@ -1050,38 +1131,35 @@ define([
         return radio;
     };
 
+    var corner = {
+        queue: [],
+        state: false
+    };
     UI.cornerPopup = function (text, actions, footer, opts) {
         opts = opts || {};
 
-        var minimize = h('div.cp-corner-minimize.fa.fa-window-minimize');
-        var maximize = h('div.cp-corner-maximize.fa.fa-window-maximize');
+        var dontShowAgain = h('div.cp-corner-dontshow', [
+            h('span.fa.fa-times'),
+            Messages.dontShowAgain
+        ]);
+
         var popup = h('div.cp-corner-container', [
-            minimize,
-            maximize,
-            h('div.cp-corner-filler', { style: "width:110px;" }),
-            h('div.cp-corner-filler', { style: "width:80px;" }),
-            h('div.cp-corner-filler', { style: "width:60px;" }),
-            h('div.cp-corner-filler', { style: "width:40px;" }),
-            h('div.cp-corner-filler', { style: "width:20px;" }),
             setHTML(h('div.cp-corner-text'), text),
             h('div.cp-corner-actions', actions),
-            setHTML(h('div.cp-corner-footer'), footer)
+            setHTML(h('div.cp-corner-footer'), footer),
+            opts.dontShowAgain ? dontShowAgain : undefined
         ]);
 
         var $popup = $(popup);
-
-        $(minimize).click(function () {
-            $popup.addClass('cp-minimized');
-        });
-        $(maximize).click(function () {
-            $popup.removeClass('cp-minimized');
-        });
 
         if (opts.hidden) {
             $popup.addClass('cp-minimized');
         }
         if (opts.big) {
             $popup.addClass('cp-corner-big');
+        }
+        if (opts.alt) {
+            $popup.addClass('cp-corner-alt');
         }
 
         var hide = function () {
@@ -1092,15 +1170,85 @@ define([
         };
         var deletePopup = function () {
             $popup.remove();
+            if (!corner.queue.length) {
+                // Make sure no other popup is displayed in the next 5s
+                setTimeout(function () {
+                    if (corner.queue.length) {
+                        $('body').append(corner.queue.pop());
+                        return;
+                    }
+                    corner.state = false;
+                }, 5000);
+                return;
+            }
+            setTimeout(function () {
+                $('body').append(corner.queue.pop());
+            }, 5000);
         };
 
-        $('body').append(popup);
+        $(dontShowAgain).click(function () {
+            deletePopup();
+            if (typeof(opts.dontShowAgain) === "function") {
+                opts.dontShowAgain();
+            }
+        });
+
+        if (corner.state) {
+            corner.queue.push(popup);
+        } else {
+            corner.state = true;
+            $('body').append(popup);
+        }
 
         return {
             popup: popup,
             hide: hide,
             show: show,
             delete: deletePopup
+        };
+    };
+
+    UI.makeSpinner = function ($container) {
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide();
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide();
+
+        var state = false;
+        var to;
+
+        var spin = function () {
+            clearTimeout(to);
+            state = true;
+            $ok.hide();
+            $spinner.show();
+        };
+        var hide = function () {
+            clearTimeout(to);
+            state = false;
+            $ok.hide();
+            $spinner.hide();
+        };
+        var done = function () {
+            clearTimeout(to);
+            state = false;
+            $ok.show();
+            $spinner.hide();
+            to = setTimeout(function () {
+                $ok.hide();
+            }, 500);
+        };
+
+        if ($container && $container.append) {
+            $container.append($ok);
+            $container.append($spinner);
+        }
+
+        return {
+            getState: function () { return state; },
+            ok: $ok[0],
+            spinner: $spinner[0],
+            spin: spin,
+            hide: hide,
+            done: done
         };
     };
 

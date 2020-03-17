@@ -9,6 +9,7 @@ define([
     var requireConfig = RequireConfig();
 
     // Loaded in load #2
+    var hash, href;
     nThen(function (waitFor) {
         DomReady.onReady(waitFor());
     }).nThen(function (waitFor) {
@@ -19,6 +20,14 @@ define([
         };
         window.rc = requireConfig;
         window.apiconf = ApiConfig;
+
+        // Hidden hash
+        hash = window.location.hash;
+        href = window.location.href;
+        if (window.history && window.history.replaceState && hash) {
+            window.history.replaceState({}, window.document.title, '#');
+        }
+
         document.getElementById('sbox-iframe').setAttribute('src',
             ApiConfig.httpSafeOrigin + '/teams/inner.html?' + requireConfig.urlArgs +
                 '#' + encodeURIComponent(JSON.stringify(req)));
@@ -37,7 +46,6 @@ define([
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
         var teamId;
-        var hash = window.location.hash.slice(1);
         var addRpc = function (sframeChan, Cryptpad) {
             sframeChan.on('Q_SET_TEAM', function (data, cb) {
                 teamId = data;
@@ -63,9 +71,6 @@ define([
                 Cryptpad.getUserObject(teamId, function (obj) {
                     cb(obj);
                 });
-            });
-            sframeChan.on('EV_DRIVE_SET_HASH', function () {
-                return;
             });
             Cryptpad.onNetworkDisconnect.reg(function () {
                 sframeChan.event('EV_NETWORK_DISCONNECT');
@@ -95,7 +100,7 @@ define([
         };
         var addData = function (meta) {
             if (!hash) { return; }
-            meta.teamInviteHash = hash;
+            meta.teamInviteHash = hash.slice(1);
         };
         SFCommonO.start({
             getSecrets: getSecrets,

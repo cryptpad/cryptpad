@@ -69,7 +69,7 @@ define([
     funcs.getAppConfig = function () { return AppConfig; };
 
     funcs.isLoggedIn = function () {
-        return ctx.metadataMgr.getPrivateData().accountName;
+        return ctx.metadataMgr.getPrivateData().loggedIn;
     };
 
     // MISC
@@ -83,6 +83,9 @@ define([
     };
 
     // UI
+    window.CryptPad_UI = UI;
+    window.CryptPad_UIElements = UIElements;
+    window.CryptPad_common = funcs;
     funcs.createUserAdminMenu = callWithCommon(UIElements.createUserAdminMenu);
     funcs.initFilePicker = callWithCommon(UIElements.initFilePicker);
     funcs.openFilePicker = callWithCommon(UIElements.openFilePicker);
@@ -139,7 +142,13 @@ define([
         if (!$mt || !$mt.is('media-tag')) { return; }
         var chanStr = $mt.attr('src');
         var keyStr = $mt.attr('data-crypto-key');
-        var channel = chanStr.replace(/\/blob\/[0-9a-f]{2}\//i, '');
+        // Remove origin
+        var a = document.createElement('a');
+        a.href = chanStr;
+        var src = a.pathname;
+        // Get channel id
+        var channel = src.replace(/\/blob\/[0-9a-f]{2}\//i, '');
+        // Get key
         var key = keyStr.replace(/cryptpad:/i, '');
         var metadata = $mt[0]._mediaObject._blob.metadata;
         ctx.sframeChan.query('Q_IMPORT_MEDIATAG', {
@@ -602,6 +611,10 @@ define([
             });
 
             UI.addTooltips();
+
+            ctx.sframeChan.on("EV_PAD_NODATA", function () {
+                UI.errorLoadingScreen(Messages.safeLinks_error);
+            });
 
             ctx.sframeChan.on("EV_PAD_PASSWORD", function (cfg) {
                 UIElements.displayPasswordPrompt(funcs, cfg);

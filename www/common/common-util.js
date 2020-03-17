@@ -34,6 +34,9 @@
     };
 
     Util.mkAsync = function (f) {
+        if (typeof(f) !== 'function') {
+            throw new Error('EXPECTED_FUNCTION');
+        }
         return function () {
             var args = Array.prototype.slice.call(arguments);
             setTimeout(function () {
@@ -63,6 +66,19 @@
                 handlers.forEach(function (h) { h.apply(null, args); });
             }
         };
+    };
+
+    Util.mkTimeout = function (_f, ms) {
+        ms = ms || 0;
+        var f = Util.once(_f);
+
+        var timeout = setTimeout(function () {
+            f('TIMEOUT');
+        }, ms);
+
+        return Util.both(f, function () {
+            clearTimeout(timeout);
+        });
     };
 
     Util.response = function () {
@@ -224,6 +240,7 @@
         else if (bytes >= oneMegabyte) { return 'MB'; }
     };
 
+
     // given a path, asynchronously return an arraybuffer
     Util.fetch = function (src, cb, progress) {
         var CB = Util.once(cb);
@@ -268,8 +285,8 @@
     Util.throttle = function (f, ms) {
         var to;
         var g = function () {
-            window.clearTimeout(to);
-            to = window.setTimeout(Util.bake(f, Util.slice(arguments)), ms);
+            clearTimeout(to);
+            to = setTimeout(Util.bake(f, Util.slice(arguments)), ms);
         };
         return g;
     };

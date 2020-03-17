@@ -48,7 +48,7 @@ define([
         var $passwd = $('#password')
         // background loading of login assets
         // enter key while on password field clicks signup
-        .on('keyup', function (e) {
+        .on('keydown', function (e) {
             if (e.which !== 13) { return; } // enter
             $('button.login').click();
         });

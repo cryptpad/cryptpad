@@ -48,6 +48,8 @@ define([
         var updateLoadingProgress = config.updateLoadingProgress;
         config = undefined;
 
+        var evPatchSent = Util.mkEvent();
+
         var chainpad = ChainPad.create({
             userName: userName,
             initialState: initialState,
@@ -57,7 +59,10 @@ define([
             logLevel: logLevel
         });
         chainpad.onMessage(function(message, cb) {
-            sframeChan.query('Q_RT_MESSAGE', message, cb);
+            sframeChan.query('Q_RT_MESSAGE', message, function (err) {
+                if (!err) { evPatchSent.fire(); }
+                cb(err);
+            });
         });
         chainpad.onPatch(function () {
             onRemote({ realtime: chainpad });
@@ -149,6 +154,8 @@ define([
             metadataMgr: metadataMgr,
             whenRealtimeSyncs: whenRealtimeSyncs,
             onInfiniteSpinner: evInfiniteSpinner.reg,
+            onPatchSent: evPatchSent.reg,
+            offPatchSent: evPatchSent.unreg,
             chainpad: chainpad,
         });
     };

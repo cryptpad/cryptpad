@@ -1,12 +1,13 @@
 define([
     'jquery',
     '/common/common-util.js',
+    '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
     '/common/notifications.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
-], function ($, Util, UI, UIElements, Notifications, h, Messages) {
+], function ($, Util, Hash, UI, UIElements, Notifications, h, Messages) {
     var Mailbox = {};
 
     Mailbox.create = function (Common) {
@@ -53,9 +54,23 @@ define([
         };
         var createElement = mailbox.createElement = function (data) {
             var notif;
+            var avatar;
+            var userData = Util.find(data, ['content', 'msg', 'content', 'user']);
+            if (userData && typeof(userData) === "object" && userData.profile) {
+                avatar = h('span.cp-avatar');
+                Common.displayAvatar($(avatar), userData.avatar, userData.displayName || userData.name);
+                $(avatar).click(function (e) {
+                    e.stopPropagation();
+                    Common.openURL(Hash.hashToHref(userData.profile, 'profile'));
+                });
+            }
             notif = h('div.cp-notification', {
                 'data-hash': data.content.hash
-            }, [h('div.cp-notification-content', h('p', formatData(data)))]);
+            }, [
+                avatar,
+                h('div.cp-notification-content',
+                    h('p', formatData(data)))
+            ]);
 
             if (typeof(data.content.getFormatText) === "function") {
                 $(notif).find('.cp-notification-content p').html(data.content.getFormatText());

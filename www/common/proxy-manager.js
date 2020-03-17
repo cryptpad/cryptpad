@@ -67,6 +67,13 @@ define([
         }
     };
 
+    var restrictedProxy = function (Env, id) {
+        var lm = { proxy: { deprecated: true } };
+        removeProxy(Env, id);
+        addProxy(Env, id, lm, function () {});
+        return void Env.Store.refreshDriveUI();
+    };
+
     /*
         Tools
     */
@@ -587,14 +594,10 @@ define([
 
     // convert a folder to a Shared Folder
     var _convertFolderToSharedFolder = function (Env, data, cb) {
-        return void cb({
-            error: 'DISABLED'
-        }); // XXX CONVERT
-        /*var path = data.path;
+        var path = data.path;
         var folderElement = Env.user.userObject.find(path);
         // don't try to convert top-level elements (trash, root, etc) to shared-folders
-        // TODO also validate that you're in root (not templates, etc)
-        if (data.path.length <= 1) {
+        if (path.length <= 1 || path[0] !== UserObject.ROOT) {
             return void cb({
                 error: 'E_INVAL_PATH',
             });
@@ -664,6 +667,21 @@ define([
                 newPath: newPath,
                 copy: false,
             }, waitFor());
+        }).nThen(function (waitFor) {
+            // Move the owned pads from the old folder to root
+            var paths = [];
+            Object.keys(folderElement).forEach(function (el) {
+                if (!Env.user.userObject.isFile(folderElement[el])) { return; }
+                var data = Env.user.userObject.getFileData(folderElement[el]);
+                if (!data || !_ownedByMe(Env, data.owners)) { return; }
+                // This is an owned pad: move it to ROOT before deleting the initial folder
+                paths.push(path.concat(el));
+            });
+            _move(Env, {
+                paths: paths,
+                newPath: [UserObject.ROOT],
+                copy: false,
+            }, waitFor());
         }).nThen(function () {
             // migrate metadata
             var sharedFolderElement = Env.user.proxy[UserObject.SHARED_FOLDERS][SFId];
@@ -678,9 +696,11 @@ define([
 
             // remove folder
             Env.user.userObject.delete([path], function () {
-                cb();
+                cb({
+                    fId: SFId
+                });
             });
-        });*/
+        });
     };
 
     // Delete permanently some pads or folders
@@ -711,6 +731,7 @@ define([
                     // from inside a folder we're trying to delete
                     resolved.main.forEach(function (p) {
                         var el = uo.find(p);
+                        if (p[0] === UserObject.FILES_DATA) { return; }
                         if (uo.isFile(el) || uo.isSharedFolder(el)) { return; }
                         var arr = [];
                         uo.getFilesRecursively(el, arr);
@@ -771,6 +792,9 @@ define([
             toUnpin.forEach(function (chan) {
                 if (toKeep.indexOf(chan) === -1) {
                     unpinList.push(chan);
+
+                    // Check if need need to restore a full hash (hidden hash deleted from drive)
+                    Env.Store.checkDeletedPad(chan);
                 }
             });
 
@@ -783,7 +807,16 @@ define([
     };
     // Empty the trash (main drive only)
     var _emptyTrash = function (Env, data, cb) {
-        Env.user.userObject.emptyTrash(cb);
+        Env.user.userObject.emptyTrash(function (err, toClean) {
+            cb();
+
+            // Check if need need to restore a full hash (hidden hash deleted from drive)
+            if (!Array.isArray(toClean)) { return; }
+            var toCheck = Util.deduplicateString(toClean);
+            toCheck.forEach(function (chan) {
+                Env.Store.checkDeletedPad(chan);
+            });
+        });
     };
     // Rename files or folders
     var _rename = function (Env, data, cb) {
@@ -875,10 +908,11 @@ define([
         cb = cb || function () {};
         var sfId = Env.user.userObject.getSFIdFromHref(data.href);
         if (sfId) {
-            var sfData = Env.user.proxy[UserObject.SHARED_FOLDERS][sfId];
+            var sfData = getSharedFolderData(Env, sfId);
+            var sfValue = data.attr ? sfData[data.attr] : JSON.parse(JSON.stringify(sfData));
             setTimeout(function () {
                 cb(null, {
-                    value: sfData[data.attr],
+                    value: sfValue,
                     atime: 1
                 });
             });
@@ -1092,6 +1126,7 @@ define([
             addProxy: callWithEnv(addProxy),
             removeProxy: callWithEnv(removeProxy),
             deprecateProxy: callWithEnv(deprecateProxy),
+            restrictedProxy: callWithEnv(restrictedProxy),
             addSharedFolder: callWithEnv(_addSharedFolder),
             // Drive
             command: callWithEnv(onCommand),

@@ -93,6 +93,12 @@ define([
                     }
                 }
             }
+            if (o && !n && Array.isArray(p) && (p[0] === UserObject.FILES_DATA ||
+                (p[0] === 'drive' && p[1] === UserObject.FILES_DATA))) {
+                setTimeout(function () {
+                    ctx.Store.checkDeletedPad(o && o.channel);
+                });
+            }
             team.sendEvent('DRIVE_CHANGE', {
                 id: fId,
                 old: o,
@@ -903,13 +909,11 @@ define([
             }));
         }).nThen(function (waitFor) {
             // Send mailbox to offer ownership
-            var myData = Messaging.createData(ctx.store.proxy, false);
             ctx.store.mailbox.sendTo("ADD_OWNER", {
                 teamChannel: teamData.channel,
                 chatChannel: Util.find(teamData, ['keys', 'chat', 'channel']),
                 rosterChannel: Util.find(teamData, ['keys', 'roster', 'channel']),
-                title: teamData.metadata.name,
-                user: myData
+                title: teamData.metadata.name
             }, {
                 channel: user.notifications,
                 curvePublic: user.curvePublic
@@ -963,12 +967,10 @@ define([
             }));
         }).nThen(function (waitFor) {
             // Send mailbox to offer ownership
-            var myData = Messaging.createData(ctx.store.proxy, false);
             ctx.store.mailbox.sendTo("RM_OWNER", {
                 teamChannel: teamData.channel,
                 title: teamData.metadata.name,
-                pending: isPendingOwner,
-                user: myData
+                pending: isPendingOwner
             }, {
                 channel: user.notifications,
                 curvePublic: user.curvePublic
@@ -1065,14 +1067,25 @@ define([
         ctx.emit('ROSTER_CHANGE_RIGHTS', teamId, team.clients);
     };
 
-    var changeMyRights = function (ctx, teamId, state, data) {
-        if (!teamId) { return true; }
+    var changeMyRights = function (ctx, teamId, state, data, cb) {
+        if (!teamId) { return void cb(false); }
         var teamData = Util.find(ctx, ['store', 'proxy', 'teams', teamId]);
-        if (!teamData) { return true; }
+        if (!teamData) { return void cb(false); }
+        var onReady = ctx.onReadyHandlers[teamId];
         var team = ctx.teams[teamId];
-        if (!team) { return true; }
 
-        if (teamData.channel !== data.channel || teamData.password !== data.password) { return true; }
+        if (!team && Array.isArray(onReady)) {
+            onReady.push({
+                cb: function () {
+                    changeMyRights(ctx, teamId, state, data, cb);
+                }
+            });
+            return;
+        }
+
+        if (!team) { return void cb(false); }
+
+        if (teamData.channel !== data.channel || teamData.password !== data.password) { return void cb(false); }
 
         if (state) {
             teamData.hash = data.hash;
@@ -1089,6 +1102,7 @@ define([
         }
 
         updateMyRights(ctx, teamId, data.hash);
+        cb(true);
     };
     var changeEditRights = function (ctx, teamId, user, state, cb) {
         if (!teamId) { return void cb({error: 'EINVAL'}); }
@@ -1098,11 +1112,9 @@ define([
         if (!team) { return void cb ({error: 'ENOENT'}); }
 
         // Send mailbox to offer ownership
-        var myData = Messaging.createData(ctx.store.proxy, false);
         ctx.store.mailbox.sendTo("TEAM_EDIT_RIGHTS", {
             state: state,
-            teamData: getInviteData(ctx, teamId, state),
-            user: myData
+            teamData: getInviteData(ctx, teamId, state)
         }, {
             channel: user.notifications,
             curvePublic: user.curvePublic
@@ -1169,7 +1181,6 @@ define([
         team.roster.add(obj, function (err) {
             if (err && err !== 'NO_CHANGE') { return void cb({error: err}); }
             ctx.store.mailbox.sendTo('INVITE_TO_TEAM', {
-                user: Messaging.createData(ctx.store.proxy, false),
                 team: getInviteData(ctx, teamId)
             }, {
                 channel: user.notifications,
@@ -1196,7 +1207,6 @@ define([
             if (!userData || !userData.notifications) { return cb(); }
             ctx.store.mailbox.sendTo('KICKED_FROM_TEAM', {
                 pending: data.pending,
-                user: Messaging.createData(ctx.store.proxy, false),
                 teamChannel: getInviteData(ctx, teamId).channel,
                 teamName: getInviteData(ctx, teamId).metadata.name
             }, {
@@ -1634,8 +1644,8 @@ define([
             });
 
         };
-        team.changeMyRights = function (id, edit, teamData) {
-            changeMyRights(ctx, id, edit, teamData);
+        team.changeMyRights = function (id, edit, teamData, cb) {
+            changeMyRights(ctx, id, edit, teamData, cb);
         };
         team.updateMyData = function (data) {
             Object.keys(ctx.teams).forEach(function (id) {

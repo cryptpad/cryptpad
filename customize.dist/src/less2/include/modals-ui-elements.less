@@ -26,10 +26,63 @@
     // Properties modal
     .cp-app-prop {
         margin-bottom: 10px;
+        .cp-app-prop-size-container {
+            height: 20px;
+            background-color: @colortheme_logo-2;
+            margin: 10px 0;
+            padding: 0;
+            div {
+                height: 20px;
+                margin: 0;
+                padding: 0;
+                background-color: #CCCCCC;
+            }
+        }
+        .cp-app-prop-size-legend {
+            color: @colortheme_modal-fg;
+            display: flex;
+            margin: 10px 0;
+            & > div {
+                display: flex;
+                align-items: center;
+                flex-basis: 50%;
+                margin: 0;
+                padding: 0;
+            }
+            .cp-app-prop-history-size-color, .cp-app-prop-contents-size-color {
+                display: inline-block;
+                height: 20px;
+                width: 20px;
+                margin-right: 10px;
+            }
+            .cp-app-prop-history-size-color {
+                background-color: #CCCCCC;
+            }
+            .cp-app-prop-contents-size-color {
+                background-color: @colortheme_logo-2;
+            }
+        }
     }
 
     .cp-app-prop-content {
         color: @cryptpad_text_col;
+    }
+
+    // Access modal
+    .cp-overlay-container {
+        position: relative;
+        .cp-overlay {
+            position: absolute;
+            background-color: rgba(255,255,255,0.5);
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+    }
+
+    .cp-access-margin-right {
+        margin-right: 5px !important;
     }
 
     // teams invite modal

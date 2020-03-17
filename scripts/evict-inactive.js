@@ -1,8 +1,8 @@
 var nThen = require("nthen");
 
-var Store = require("../storage/file");
-var BlobStore = require("../storage/blob");
-var Pinned = require("./pinned");
+var Store = require("../lib/storage/file");
+var BlobStore = require("../lib/storage/blob");
+var Pins = require("../lib/pins");
 var config = require("../lib/load-config");
 
 // the administrator should have set an 'inactiveTime' in their config
@@ -14,8 +14,6 @@ var inactiveTime = +new Date() - (config.inactiveTime * 24 * 3600 * 1000);
 
 // files which were archived before this date can be considered safe to remove
 var retentionTime = +new Date() - (config.archiveRetentionTime * 24 * 3600 * 1000);
-
-var retainData = Boolean(config.retainData);
 
 var getNewestTime = function (stats) {
     return stats[['atime', 'ctime', 'mtime'].reduce(function (a, b) {
@@ -40,7 +38,7 @@ nThen(function (w) {
         store = _;
     })); // load the list of pinned files so you know which files
     // should not be archived or deleted
-    Pinned.load(w(function (err, _) {
+    Pins.list(w(function (err, _) {
         if (err) {
             w.abort();
             return void console.error(err);
@@ -176,23 +174,6 @@ nThen(function (w) {
         if (pins[item.blobId]) { return void next(); }
         if (item && getNewestTime(item) > retentionTime) { return void next(); }
 
-        if (!retainData) {
-            return void blobs.remove.blob(item.blobId, function (err) {
-                if (err) {
-                    Log.error("EVICT_BLOB_ERROR", {
-                        error: err,
-                        item: item,
-                    });
-                    return void next();
-                }
-                Log.info("EVICT_BLOB_INACTIVE", {
-                    item: item,
-                });
-                removed++;
-                next();
-            });
-        }
-
         blobs.archive.blob(item.blobId, function (err) {
             if (err) {
                 Log.error("EVICT_ARCHIVE_BLOB_ERROR", {
@@ -247,7 +228,6 @@ nThen(function (w) {
         Log.info("EVICT_BLOB_PROOFS_REMOVED", removed);
     }));
 }).nThen(function (w) {
-    var removed = 0;
     var channels = 0;
     var archived = 0;
 
@@ -279,42 +259,22 @@ nThen(function (w) {
         // ignore the channel if it's pinned
         if (pins[item.channel]) { return void cb(); }
 
-        // if the server is configured to retain data, archive the channel
-        if (config.retainData) {
-            return void store.archiveChannel(item.channel, w(function (err) {
-                if (err) {
-                    Log.error('EVICT_CHANNEL_ARCHIVAL_ERROR', {
-                        error: err,
-                        channel: item.channel,
-                    });
-                    return void cb();
-                }
-                Log.info('EVICT_CHANNEL_ARCHIVAL', item.channel);
-                archived++;
-                cb();
-            }));
-        }
-
-        // otherwise remove it
-        store.removeChannel(item.channel, w(function (err) {
+        return void store.archiveChannel(item.channel, w(function (err) {
             if (err) {
-                Log.error('EVICT_CHANNEL_REMOVAL_ERROR', {
+                Log.error('EVICT_CHANNEL_ARCHIVAL_ERROR', {
                     error: err,
                     channel: item.channel,
                 });
                 return void cb();
             }
-            Log.info('EVICT_CHANNEL_REMOVAL', item.channel);
-            removed++;
+            Log.info('EVICT_CHANNEL_ARCHIVAL', item.channel);
+            archived++;
             cb();
         }));
     };
 
     var done = function () {
-        if (config.retainData) {
-            return void Log.info('EVICT_CHANNELS_ARCHIVED', archived);
-        }
-        return void Log.info('EVICT_CHANNELS_REMOVED', removed);
+        return void Log.info('EVICT_CHANNELS_ARCHIVED', archived);
     };
 
     store.listChannels(handler, w(done));

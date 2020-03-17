@@ -4,6 +4,7 @@ define([
     '/common/common-util.js',
 ], function (Messaging, Hash, Util) {
 
+    // Random timeout between 10 and 30 times your sync time (lag + chainpad sync)
     var getRandomTimeout = function (ctx) {
         var lag = ctx.store.realtime.getLag().lag || 0;
         return (Math.max(0, lag) + 300) * 20 * (0.5 +  Math.random());
@@ -22,9 +23,11 @@ define([
     // Store the friend request displayed to avoid duplicates
     var friendRequest = {};
     handlers['FRIEND_REQUEST'] = function (ctx, box, data, cb) {
+        // Old format: data was stored directly in "content"
+        var userData = data.msg.content.user || data.msg.content;
 
         // Check if the request is valid (send by the correct user)
-        if (data.msg.author !== data.msg.content.curvePublic) {
+        if (data.msg.author !== userData.curvePublic) {
             return void cb(true);
         }
 
@@ -40,7 +43,8 @@ define([
         if (Messaging.getFriend(ctx.store.proxy, data.msg.author) ||
             ctx.store.proxy.friends_pending[data.msg.author]) {
             delete ctx.store.proxy.friends_pending[data.msg.author];
-            Messaging.acceptFriendRequest(ctx.store, data.msg.content, function (obj) {
+
+            Messaging.acceptFriendRequest(ctx.store, userData, function (obj) {
                 if (obj && obj.error) {
                     return void cb();
                 }
@@ -48,10 +52,10 @@ define([
                     proxy: ctx.store.proxy,
                     realtime: ctx.store.realtime,
                     pinPads: ctx.pinPads
-                }, data.msg.content, function (err) {
-                    if (err) { console.error(err); }
+                }, userData, function (err) {
+                    if (err) { return void console.error(err); }
                     if (ctx.store.messenger) {
-                        ctx.store.messenger.onFriendAdded(data.msg.content);
+                        ctx.store.messenger.onFriendAdded(userData);
                     }
                 });
                 ctx.updateMetadata();
@@ -63,96 +67,110 @@ define([
         cb();
     };
     removeHandlers['FRIEND_REQUEST'] = function (ctx, box, data) {
-        if (friendRequest[data.content.curvePublic]) {
-            delete friendRequest[data.content.curvePublic];
+        var userData = data.content.user || data.content;
+        if (friendRequest[userData.curvePublic]) {
+            delete friendRequest[userData.curvePublic];
         }
     };
+
+    // The DECLINE and ACCEPT messages act on the contacts data
+    // They are processed with a random timeout to avoid having
+    // multiple workers trying to add or remove the contacts at
+    // the same time. Once processed, they are dismissed.
+    // We must dismiss them and send another message to our own
+    // mailbox for the UI part otherwise it would automatically
+    // accept or decline future requests from the same user
+    // until the message is manually dismissed.
 
     var friendRequestDeclined = {};
     handlers['DECLINE_FRIEND_REQUEST'] = function (ctx, box, data, cb) {
-        setTimeout(function () {
-            // Our friend request was declined.
-            if (!ctx.store.proxy.friends_pending[data.msg.author]) { return; }
+        // Old format: data was stored directly in "content"
+        var userData = data.msg.content.user || data.msg.content;
+        if (!userData.curvePublic) { userData.curvePublic = data.msg.author; }
 
+        // Our friend request was declined.
+        setTimeout(function () {
+            // Only dismissed once in the timeout to make sure we won't lose
+            // the data if we close the worker before adding the friend
+            cb(true);
+
+            // Make sure we really sent it
+            if (!ctx.store.proxy.friends_pending[data.msg.author]) { return; }
             // Remove the pending message and display the "declined" state in the UI
             delete ctx.store.proxy.friends_pending[data.msg.author];
+
             ctx.updateMetadata();
             if (friendRequestDeclined[data.msg.author]) { return; }
+            friendRequestDeclined[data.msg.author] = true;
             box.sendMessage({
                 type: 'FRIEND_REQUEST_DECLINED',
-                content: {
-                    user: data.msg.author,
-                    name: data.msg.content.displayName
-                }
-            }, function () {
-                if (friendRequestDeclined[data.msg.author]) {
-                    // TODO remove our message because another one was sent first?
-                }
-                friendRequestDeclined[data.msg.author] = true;
-            });
+                content: { user: userData }
+            }, function () {});
         }, getRandomTimeout(ctx));
-        cb(true);
     };
+    // UI for declined friend request
     handlers['FRIEND_REQUEST_DECLINED'] = function (ctx, box, data, cb) {
         ctx.updateMetadata();
-        if (friendRequestDeclined[data.msg.content.user]) { return void cb(true); }
-        friendRequestDeclined[data.msg.content.user] = true;
+        var curve = data.msg.content.user.curvePublic || data.msg.content.user;
+        if (friendRequestDeclined[curve]) { return void cb(true); }
+        friendRequestDeclined[curve] = true;
         cb();
     };
     removeHandlers['FRIEND_REQUEST_DECLINED'] = function (ctx, box, data) {
-        if (friendRequestDeclined[data.content.user]) {
-            delete friendRequestDeclined[data.content.user];
-        }
+        var curve = data.content.user.curvePublic || data.content.user;
+        if (friendRequestDeclined[curve]) { delete friendRequestDeclined[curve]; }
     };
 
     var friendRequestAccepted = {};
     handlers['ACCEPT_FRIEND_REQUEST'] = function (ctx, box, data, cb) {
+        // Old format: data was stored directly in "content"
+        var userData = data.msg.content.user || data.msg.content;
+
         // Our friend request was accepted.
         setTimeout(function () {
+            // Only dismissed once in the timeout to make sure we won't lose
+            // the data if we close the worker before adding the friend
+            cb(true);
+
             // Make sure we really sent it
             if (!ctx.store.proxy.friends_pending[data.msg.author]) { return; }
+            // Remove the pending state. It will also us to send a new request in case of error
+            delete ctx.store.proxy.friends_pending[data.msg.author];
+
             // And add the friend
             Messaging.addToFriendList({
                 proxy: ctx.store.proxy,
                 realtime: ctx.store.realtime,
                 pinPads: ctx.pinPads
-            }, data.msg.content, function (err) {
-                if (err) { console.error(err); }
-                delete ctx.store.proxy.friends_pending[data.msg.author];
-                if (ctx.store.messenger) {
-                    ctx.store.messenger.onFriendAdded(data.msg.content);
-                }
+            }, userData, function (err) {
+                if (err) { return void console.error(err); }
+                // Load the chat if contacts app loaded
+                if (ctx.store.messenger) { ctx.store.messenger.onFriendAdded(userData); }
+                // Update the userlist
                 ctx.updateMetadata();
                 // If you have a profile page open, update it
                 if (ctx.store.modules['profile']) { ctx.store.modules['profile'].update(); }
-                if (friendRequestAccepted[data.msg.author]) { return; }
                 // Display the "accepted" state in the UI
+                if (friendRequestAccepted[data.msg.author]) { return; }
+                friendRequestAccepted[data.msg.author] = true;
                 box.sendMessage({
                     type: 'FRIEND_REQUEST_ACCEPTED',
-                    content: {
-                        user: data.msg.author,
-                        name: data.msg.content.displayName
-                    }
-                }, function () {
-                    if (friendRequestAccepted[data.msg.author]) {
-                        // TODO remove our message because another one was sent first?
-                    }
-                    friendRequestAccepted[data.msg.author] = true;
-                });
+                    content: { user: userData }
+                }, function () {});
             });
         }, getRandomTimeout(ctx));
-        cb(true);
     };
+    // UI for accepted friend request
     handlers['FRIEND_REQUEST_ACCEPTED'] = function (ctx, box, data, cb) {
         ctx.updateMetadata();
-        if (friendRequestAccepted[data.msg.content.user]) { return void cb(true); }
-        friendRequestAccepted[data.msg.content.user] = true;
+        var curve = data.msg.content.user.curvePublic || data.msg.content.user;
+        if (friendRequestAccepted[curve]) { return void cb(true); }
+        friendRequestAccepted[curve] = true;
         cb();
     };
     removeHandlers['FRIEND_REQUEST_ACCEPTED'] = function (ctx, box, data) {
-        if (friendRequestAccepted[data.content.user]) {
-            delete friendRequestAccepted[data.content.user];
-        }
+        var curve = data.content.user.curvePublic || data.content.user;
+        if (friendRequestAccepted[curve]) { delete friendRequestAccepted[curve]; }
     };
 
     handlers['UNFRIEND'] = function (ctx, box, data, cb) {
@@ -476,10 +494,11 @@ define([
         try {
             var module = ctx.store.modules['team'];
             // changeMyRights returns true if we can't change our rights
-            module.changeMyRights(teamId, content.state, content.teamData);
+            module.changeMyRights(teamId, content.state, content.teamData, function (done) {
+                if (!done) { console.error("Can't update team rights"); }
+                cb(true);
+            });
         } catch (e) { console.error(e); }
-
-        cb(true);
     };
 
     handlers['OWNED_PAD_REMOVED'] = function (ctx, box, data, cb) {

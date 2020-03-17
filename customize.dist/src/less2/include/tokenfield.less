@@ -1,3 +1,4 @@
+@import (reference) "./colortheme-all.less";
 @import (reference) "./tools.less";
 
 .tokenfield_main () {
@@ -11,7 +12,6 @@
         .tools_unselectable();
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-around;
         height: auto;
         min-height: 34px;
         padding-bottom: 0px;
@@ -22,21 +22,19 @@
         width: ~"calc(100% - 20px)";
         .token {
             box-sizing: border-box;
-            border-radius: 3px;
             display: inline-flex;
             align-items: center;
-            border: 1px solid #d9d9d9;
-            background-color: #ededed;
+            background-color: rgba(0, 0, 0, 0.1);
             white-space: nowrap;
             margin: 2px 0;
+            margin-right: 5px;
             height: 24px;
             vertical-align: middle;
             cursor: default;
-
-            color: #222;
+            color: @cryptpad_text_col;
 
             &:hover {
-                border-color: #b9b9b9;
+                background-color: rgba(0, 0, 0, 0.2);
             }
             &.invalid {
                 background: none;
@@ -57,6 +55,7 @@
                 vertical-align: middle;
             }
             .close {
+                opacity: 1;
                 font-family: Arial;
                 display: inline-block;
                 line-height: 1.49em;

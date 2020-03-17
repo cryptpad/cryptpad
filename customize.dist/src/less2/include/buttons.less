@@ -10,7 +10,7 @@
     @alertify-input-fg: @colortheme_modal-input-fg;
 
     input:not(.form-control), textarea {
-        background-color: @alertify-input-fg;
+        // background-color: @alertify-input-fg;
         color: @cryptpad_text_col;
         border: 1px solid @alertify-input-bg;
         width: 100%;
@@ -21,6 +21,10 @@
             color: @cryptpad_text_col;
             border-color: @alertify-input-fg;
         }
+    }
+
+    input:not(.form-control) {
+        height: @variables_input-height;
     }
 
     div.cp-alertify-type {
@@ -48,6 +52,25 @@
         }
     }
 
+    div.cp-button-confirm {
+        display: inline-block;
+        button {
+            margin: 0;
+        }
+        .cp-button-timer {
+            height: 3px;
+            & > div {
+                height: 100%;
+                background-color: @colortheme_alertify-primary;
+                &.danger, &.btn-danger, &.danger-alt, &.btn-danger-alt {
+                    background-color: @colortheme_alertify-red;
+                }
+            }
+        }
+    }
+    button.cp-button-confirm-placeholder {
+        margin-bottom: 3px !important;
+    }
 
     button:not(.pure-button):not(.md-button):not(.mdl-button) {
 
@@ -85,11 +108,21 @@
             white-space: normal;
             font-weight: bold;
         }
+
         &.danger, &.btn-danger {
             background-color: @colortheme_alertify-red;
             border-color: @colortheme_alertify-red-border;
             color: @colortheme_alertify-red-color;
             &:hover, &:active {
+                background-color: contrast(@colortheme_modal-bg, darken(@colortheme_alertify-red, 10%), lighten(@colortheme_alertify-red, 10%));
+            }
+        }
+
+        &.danger-alt, &.btn-danger-alt {
+            border-color: @colortheme_alertify-red;
+            color: @colortheme_alertify-red;
+            &:hover, &:active {
+                color: @colortheme_alertify-red-color;
                 background-color: contrast(@colortheme_modal-bg, darken(@colortheme_alertify-red, 10%), lighten(@colortheme_alertify-red, 10%));
             }
         }

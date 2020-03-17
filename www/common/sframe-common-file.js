@@ -53,10 +53,16 @@ define([
 
         var $table = File.$table = $('<table>', { id: 'cp-fileupload-table' });
 
+        var hover = false;
         var createTableContainer = function ($body) {
             File.$container = $('<div>', { id: 'cp-fileupload' }).append(tableHeader).append($table).appendTo($body);
             $('.cp-fileupload-header-close').click(function () {
                 File.$container.fadeOut();
+            });
+            File.$container.mouseenter(function () {
+                hover = true;
+            }).mouseleave(function () {
+                hover = false;
             });
             return File.$container;
         };
@@ -152,6 +158,8 @@ define([
             });
 
             onError = function (e) {
+                // TODO if we included the max upload sizes in /api/config
+                // then we could check if a file is too large without going to the server...
                 queue.inProgress = false;
                 queue.next();
                 if (e === 'TOO_LARGE') {
@@ -182,13 +190,6 @@ define([
             }
         };
 
-        var prettySize = function (bytes) {
-            var kB = Util.bytesToKilobytes(bytes);
-            if (kB < 1024) { return kB + Messages.KB; }
-            var mB = Util.bytesToMegabytes(bytes);
-            return mB + Messages.MB;
-        };
-
         queue.next = function () {
             if (queue.queue.length === 0) {
                 clearTimeout(queue.to);
@@ -209,6 +210,11 @@ define([
             window.setTimeout(function () { File.$container.show(); });
             var file = queue.queue.shift();
             if (file.dl) { return void file.dl(file); }
+            if (file.$line && file.$line[0] && !hover) {
+                var line = file.$line[0];
+                line.scrollIntoView(false);
+            }
+            delete file.$line;
             upload(file);
         };
         queue.push = function (obj) {
@@ -224,10 +230,10 @@ define([
             $('<div>', {'class':'cp-fileupload-table-progressbar'}).appendTo($progressContainer);
             $('<span>', {'class':'cp-fileupload-table-progress-value'}).text(Messages.upload_pending).appendTo($progressContainer);
 
-            var $tr = $('<tr>', {id: id}).appendTo($table);
+            var $tr = obj.$line = $('<tr>', {id: id}).appendTo($table);
             var $lines = $table.find('tr[id]');
             if ($lines.length > 5) {
-                $lines.slice(0, $lines.length - 5).remove();
+                //$lines.slice(0, $lines.length - 5).remove();
             }
 
             var $cancel = $('<span>', {'class': 'cp-fileupload-table-cancel-button fa fa-times'}).click(function () {
@@ -251,11 +257,18 @@ define([
             // name
             $('<td>').append($link).appendTo($tr);
             // size
-            $('<td>').text(prettySize(estimate)).appendTo($tr);
+            $('<td>').text(UIElements.prettySize(estimate)).appendTo($tr);
             // progress
             $('<td>', {'class': 'cp-fileupload-table-progress'}).append($progressContainer).appendTo($tr);
             // cancel
             $('<td>', {'class': 'cp-fileupload-table-cancel'}).append($cancel).appendTo($tr);
+
+            var tw = $table.width();
+            var cw = File.$container.prop('clientWidth');
+            var diff = tw - cw;
+            if (diff && diff > 0) {
+                $table.css('margin-right', diff+'px');
+            }
 
             queue.next();
         };

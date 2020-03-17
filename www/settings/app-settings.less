@@ -17,6 +17,15 @@
     flex-flow: column;
     font: @colortheme_app-font;
 
+    .cp-sidebarlayout-element {
+        max-width: 650px;
+    }
+
+    div.alert {
+        font-size: @colortheme_app-font-size;
+        padding: 10px;
+    }
+
     #cp-export-container {
         font-size: 16px;
         display: flex;
@@ -121,8 +130,13 @@
                 border: 1px solid black;
             }
             .cp-settings-language-selector {
+                #cp-language-selector {
+                    display: inline;
+                }
                 button.btn {
                     width: @sidebar_button-width;
+                    max-width: 100%;
+                    margin: 0 !important;
                     background-color: @colortheme_sidebar-button-alt-bg;
                     border-color: #adadad;
                     color: black;
@@ -138,6 +152,7 @@
                     padding: 5px;
                     padding-left: 15px;
                     &[type="number"] {
+                        height: @variables_input-height + 2px; // to avoid cropped numbers
                         border-right: 1px solid #adadad;
                     }
                     &[type="checkbox"] {
@@ -148,6 +163,7 @@
             .cp-settings-info-block {
                 [type="text"] {
                     width: @sidebar_button-width;
+                    max-width: 100%;
                 }
             }
 
@@ -160,7 +176,7 @@
                 }
             }
 
-            .cp-settings-change-password, .cp-settings-migrate {
+            .cp-settings-change-password, .cp-settings-own-drive {
                 [type="password"], [type="text"] {
                     width: @sidebar_button-width;
                     flex: unset;

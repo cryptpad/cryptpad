@@ -438,14 +438,24 @@ define([
                 parentEl.push(id);
                 return;
             }
-            // Add to root if path is ROOT or if no path
+            // Add to root if no path
             var filesList = exp.getFiles([ROOT, TRASH, 'hrefArray']);
-            if (path && exp.isPathIn(newPath, [ROOT]) || filesList.indexOf(id) === -1) {
-                parentEl = exp.find(newPath || [ROOT]);
+            if (filesList.indexOf(id) === -1 && !newPath) {
+                newPath = [ROOT];
+            }
+            // Add to root
+            if (path && exp.isPathIn(newPath, [ROOT])) {
+                parentEl = exp.find(newPath);
                 if (parentEl) {
                     var newName = exp.getAvailableName(parentEl, Hash.createChannelId());
                     parentEl[newName] = id;
                     return;
+                } else {
+                    parentEl = exp.find([ROOT]);
+                    newPath.slice(1).forEach(function (folderName) {
+                        parentEl = parentEl[folderName] = parentEl[folderName] || {};
+                    });
+                    parentEl[Hash.createChannelId()] = id;
                 }
             }
         };
@@ -710,13 +720,17 @@ define([
             var fixTemplate = function () {
                 if (sharedFolder) { return; }
                 if (!Array.isArray(files[TEMPLATE])) { debug("TEMPLATE was not an array"); files[TEMPLATE] = []; }
-                files[TEMPLATE] = Util.deduplicateString(files[TEMPLATE].slice());
+                var dedup = Util.deduplicateString(files[TEMPLATE]);
+                if (dedup.length !== files[TEMPLATE].length) {
+                    files[TEMPLATE] = dedup;
+                }
                 var us = files[TEMPLATE];
-                var rootFiles = exp.getFiles([ROOT]).slice();
+                var rootFiles = exp.getFiles([ROOT]);
                 var toClean = [];
                 us.forEach(function (el, idx) {
                     if (!exp.isFile(el, true) || rootFiles.indexOf(el) !== -1) {
                         toClean.push(el);
+                        return;
                     }
                     if (typeof el === "string") {
                         // We have an old file (href) which is not in filesData: add it
@@ -725,6 +739,7 @@ define([
                             href: exp.cryptor.encrypt(el)
                         };
                         us[idx] = id;
+                        return;
                     }
                     if (typeof el === "number") {
                         var data = files[FILES_DATA][el];
@@ -856,7 +871,7 @@ define([
                 var sf = files[SHARED_FOLDERS];
                 var rootFiles = exp.getFiles([ROOT]);
                 var root = exp.find([ROOT]);
-                var parsed, secret, el;
+                var parsed /*, secret */, el;
                 for (var id in sf) {
                     el = sf[id];
                     id = Number(id);
@@ -868,8 +883,7 @@ define([
 
                     // Fix undefined hash
                     parsed = Hash.parsePadUrl(href || el.roHref);
-                    secret = Hash.getSecrets('drive', parsed.hash, el.password);
-                    if (!secret.keys) {
+                    if (!parsed || !parsed.hash || parsed.hash === "undefined") {
                         delete sf[id];
                         continue;
                     }

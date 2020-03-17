@@ -6,6 +6,7 @@ define([
     '/common/common-messaging.js',
     '/common/common-constants.js',
     '/common/common-feedback.js',
+    '/common/visible.js',
     '/common/userObject.js',
     '/common/outer/local-store.js',
     '/common/outer/worker-channel.js',
@@ -14,7 +15,7 @@ define([
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
 ], function (Config, Messages, Util, Hash,
-            Messaging, Constants, Feedback, UserObject, LocalStore, Channel, Block,
+            Messaging, Constants, Feedback, Visible, UserObject, LocalStore, Channel, Block,
             AppConfig, Nthen) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
@@ -47,6 +48,12 @@ define([
         donateURL: "https://opencollective.com/cryptpad/",
         upgradeURL: 'https://accounts.cryptpad.fr/#/?on=' + origin,
         account: {},
+    };
+
+    // Store the href in memory
+    // This is a placeholder value overriden in common.ready from sframe-common-outer
+    var currentPad = common.currentPad = {
+        href: window.location.href
     };
 
     // COMMON
@@ -374,7 +381,7 @@ define([
 
 
     common.getMetadata = function (cb) {
-        var parsed = Hash.parsePadUrl(window.location.href);
+        var parsed = Hash.parsePadUrl(currentPad.href);
         postMessage("GET_METADATA", parsed && parsed.type, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
@@ -394,7 +401,7 @@ define([
 
     common.setPadAttribute = function (attr, value, cb, href) {
         cb = cb || function () {};
-        href = Hash.getRelativeHref(href || window.location.href);
+        href = Hash.getRelativeHref(href || currentPad.href);
         postMessage("SET_PAD_ATTRIBUTE", {
             href: href,
             attr: attr,
@@ -405,7 +412,7 @@ define([
         });
     };
     common.getPadAttribute = function (attr, cb, href) {
-        href = Hash.getRelativeHref(href || window.location.href);
+        href = Hash.getRelativeHref(href || currentPad.href);
         if (!href) {
             return void cb('E404');
         }
@@ -505,7 +512,7 @@ define([
     };
 
     common.saveAsTemplate = function (Cryptput, data, cb) {
-        var p = Hash.parsePadUrl(window.location.href);
+        var p = Hash.parsePadUrl(currentPad.href);
         if (!p.type) { return; }
         // PPP: password for the new template?
         var hash = Hash.createRandomHash(p.type);
@@ -537,13 +544,35 @@ define([
         });
     };
 
+    var fixPadMetadata = function (parsed, copy) {
+        var meta;
+        if (Array.isArray(parsed) && typeof(parsed[3]) === "object") {
+            meta = parsed[3].metadata; // pad
+        } else if (parsed.info) {
+            meta = parsed.info; // poll
+        } else {
+            meta = parsed.metadata;
+        }
+        if (typeof(meta) === "object") {
+            meta.defaultTitle = meta.title || meta.defaultTitle;
+            if (copy) {
+                meta.defaultTitle = Messages._getKey('copy_title', [meta.defaultTitle]);
+            }
+            meta.title = "";
+            delete meta.users;
+            delete meta.chat2;
+            delete meta.chat;
+            delete meta.cursor;
+        }
+    };
+
     common.useTemplate = function (data, Crypt, cb, optsPut) {
         // opts is used to overrides options for chainpad-netflux in cryptput
         // it allows us to add owners and expiration time if it is a new file
         var href = data.href;
 
         var parsed = Hash.parsePadUrl(href);
-        var parsed2 = Hash.parsePadUrl(window.location.href);
+        var parsed2 = Hash.parsePadUrl(currentPad.href);
         if(!parsed) { throw new Error("Cannot get template hash"); }
         postMessage("INCREMENT_TEMPLATE_USE", href);
 
@@ -570,24 +599,7 @@ define([
                 try {
                     // Try to fix the title before importing the template
                     var parsed = JSON.parse(val);
-                    var meta;
-                    if (Array.isArray(parsed) && typeof(parsed[3]) === "object") {
-                        meta = parsed[3].metadata; // pad
-                    } else if (parsed.info) {
-                        meta = parsed.info; // poll
-                    } else {
-                        meta = parsed.metadata;
-                    }
-                    if (typeof(meta) === "object") {
-                        meta.defaultTitle = meta.title || meta.defaultTitle;
-                        meta.title = "";
-                        delete meta.users;
-                        delete meta.chat2;
-                        delete meta.chat;
-                        delete meta.cursor;
-                        if (data.chat) { meta.chat2 = data.chat; }
-                        if (data.cursor) { meta.cursor = data.cursor; }
-                    }
+                    fixPadMetadata(parsed);
                     val = JSON.stringify(parsed);
                 } catch (e) {
                     console.log("Can't fix template title", e);
@@ -601,66 +613,104 @@ define([
         var fileHost = Config.fileHost || window.location.origin;
         var data = common.fromFileData;
         var parsed = Hash.parsePadUrl(data.href);
-        var parsed2 = Hash.parsePadUrl(window.location.href);
-        var hash = parsed.hash;
-        var name = data.title;
-        var secret = Hash.getSecrets('file', hash, data.password);
-        var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
-        var key = secret.keys && secret.keys.cryptKey;
+        var parsed2 = Hash.parsePadUrl(currentPad.href);
 
-        var u8;
-        var res;
-        var mode;
+        if (parsed2.type === 'poll') { optsPut.initialState = '{}'; }
+
         var val;
-        Nthen(function(waitFor) {
-            Util.fetch(src, waitFor(function (err, _u8) {
-                if (err) { return void waitFor.abort(); }
-                u8 = _u8;
-            }));
-        }).nThen(function (waitFor) {
-            require(["/file/file-crypto.js"], waitFor(function (FileCrypto) {
-                FileCrypto.decrypt(u8, key, waitFor(function (err, _res) {
-                    if (err || !_res.content) { return void waitFor.abort(); }
-                    res = _res;
-                }));
-            }));
-        }).nThen(function (waitFor) {
-            var ext = Util.parseFilename(data.title).ext;
-            if (!ext) {
-                mode = "text";
+        Nthen(function(_waitFor) {
+            // If pad, use cryptget
+            if (parsed.hashData && parsed.hashData.type === 'pad') {
+                var optsGet = {
+                    password: data.password,
+                    initialState: parsed.type === 'poll' ? '{}' : undefined
+                };
+                Crypt.get(parsed.hash, _waitFor(function (err, _val) {
+                    if (err) {
+                        _waitFor.abort();
+                        return void cb();
+                    }
+                    try {
+                        val = JSON.parse(_val);
+                        fixPadMetadata(val, true);
+                    } catch (e) {
+                        _waitFor.abort();
+                        return void cb();
+                    }
+                }), optsGet);
                 return;
             }
-            require(["/common/modes.js"], waitFor(function (Modes) {
-                Modes.list.some(function (fType) {
-                    if (fType.ext === ext) {
-                        mode = fType.mode;
-                        return true;
+
+            var name = data.title;
+            var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
+            var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
+            var key = secret.keys && secret.keys.cryptKey;
+            var u8;
+            var res;
+            var mode;
+
+            // Otherwise, it's a text blob "open in code": get blob data & convert format
+            Nthen(function (waitFor) {
+                Util.fetch(src, waitFor(function (err, _u8) {
+                    if (err) {
+                        _waitFor.abort();
+                        return void waitFor.abort();
                     }
-                });
-            }));
-        }).nThen(function (waitFor) {
-            var reader = new FileReader();
-            reader.addEventListener('loadend', waitFor(function (e) {
-                val = {
-                    content: e.srcElement.result,
-                    highlightMode: mode,
-                    metadata: {
-                        defaultTitle: name,
-                        title: name,
-                        type: "code",
-                    },
-                };
-            }));
-            reader.readAsText(res.content);
+                    u8 = _u8;
+                }));
+            }).nThen(function (waitFor) {
+                require(["/file/file-crypto.js"], waitFor(function (FileCrypto) {
+                    FileCrypto.decrypt(u8, key, waitFor(function (err, _res) {
+                        if (err || !_res.content) {
+                            _waitFor.abort();
+                            return void waitFor.abort();
+                        }
+                        res = _res;
+                    }));
+                }));
+            }).nThen(function (waitFor) {
+                var ext = Util.parseFilename(data.title).ext;
+                if (!ext) {
+                    mode = "text";
+                    return;
+                }
+                require(["/common/modes.js"], waitFor(function (Modes) {
+                    Modes.list.some(function (fType) {
+                        if (fType.ext === ext) {
+                            mode = fType.mode;
+                            return true;
+                        }
+                    });
+                }));
+            }).nThen(function (waitFor) {
+                var reader = new FileReader();
+                reader.addEventListener('loadend', waitFor(function (e) {
+                    val = {
+                        content: e.srcElement.result,
+                        highlightMode: mode,
+                        metadata: {
+                            defaultTitle: name,
+                            title: name,
+                            type: "code",
+                        },
+                    };
+                }));
+                reader.readAsText(res.content);
+            }).nThen(_waitFor());
         }).nThen(function () {
-            Crypt.put(parsed2.hash, JSON.stringify(val), cb, optsPut);
+            Crypt.put(parsed2.hash, JSON.stringify(val), function () {
+                cb();
+                Crypt.get(parsed2.hash, function (err, val) {
+                    console.warn(val);
+                });
+            }, optsPut);
         });
 
     };
 
     // Forget button
     common.moveToTrash = function (cb, href) {
-        href = href || window.location.href;
+        href = href || currentPad.href;
         postMessage("MOVE_TO_TRASH", { href: href }, cb);
     };
 
@@ -668,7 +718,7 @@ define([
     common.setPadTitle = function (data, cb) {
         if (!data || typeof (data) !== "object") { return cb ('Data is not an object'); }
 
-        var href = data.href || window.location.href;
+        var href = data.href || currentPad.href;
         var parsed = Hash.parsePadUrl(href);
         if (!parsed.hash) { return cb ('Invalid hash'); }
         data.href = parsed.getUrl({present: parsed.present});
@@ -698,7 +748,7 @@ define([
                 if (obj.error !== "EAUTH") { console.log("unable to set pad title"); }
                 return void cb(obj.error);
             }
-            cb();
+            cb(null, obj);
         });
     };
 
@@ -752,6 +802,13 @@ define([
     // Get a template href from its id
     common.getPadData = function (id, cb) {
         postMessage("GET_PAD_DATA", id, function (data) {
+            cb(void 0, data);
+        });
+    };
+    // Get data about a given channel: use with hidden hashes
+    common.getPadDataFromChannel = function (obj, cb) {
+        if (!obj || !obj.channel) { return void cb('EINVAL'); }
+        postMessage("GET_PAD_DATA_FROM_CHANNEL", obj, function (data) {
             cb(void 0, data);
         });
     };
@@ -832,6 +889,7 @@ define([
     pad.onConnectEvent = Util.mkEvent();
     pad.onErrorEvent = Util.mkEvent();
     pad.onMetadataEvent = Util.mkEvent();
+    pad.onChannelDeleted = Util.mkEvent();
 
     pad.requestAccess = function (data, cb) {
         postMessage("REQUEST_PAD_ACCESS", data, cb);
@@ -1023,11 +1081,12 @@ define([
                 }, waitFor());
             }
         }).nThen(function () {
+            common.drive.onChange.fire({path: ['drive', Constants.storageKey]});
             cb({
                 warning: warning,
                 hash: newHash,
                 href: newHref,
-                roHref: newRoHref
+                roHref: newRoHref,
             });
         });
     };
@@ -1156,6 +1215,7 @@ define([
                 channel: newSecret.channel
             }, waitFor());
         }).nThen(function () {
+            common.drive.onChange.fire({path: ['drive', Constants.storageKey]});
             cb({
                 warning: warning,
                 hash: newHash,
@@ -1390,6 +1450,7 @@ define([
                 }, waitFor());
             }));
         }).nThen(function () {
+            common.drive.onChange.fire({path: ['drive', Constants.storageKey]});
             cb({
                 warning: warning,
                 hash: newHash,
@@ -1608,7 +1669,7 @@ define([
             hashes = Hash.getHashes(secret);
             return void cb(null, hashes);
         }
-        var parsed = Hash.parsePadUrl(window.location.href);
+        var parsed = Hash.parsePadUrl(currentPad.href);
         if (!parsed.type || !parsed.hashData) { return void cb('E_INVALID_HREF'); }
         hashes = Hash.getHashes(secret);
 
@@ -1651,9 +1712,9 @@ define([
         var stored = currentVersion || '0.0.0';
         var storedArr = stored.split('.');
         storedArr[2] = 0;
-        var shouldUpdate = parseInt(verArr[0]) > parseInt(storedArr[0]) ||
+        var shouldUpdate = parseInt(verArr[0]) !== parseInt(storedArr[0]) ||
                            (parseInt(verArr[0]) === parseInt(storedArr[0]) &&
-                            parseInt(verArr[1]) > parseInt(storedArr[1]));
+                            parseInt(verArr[1]) !== parseInt(storedArr[1]));
         if (!shouldUpdate) { return; }
         currentVersion = ver;
         localStorage[CRYPTPAD_VERSION] = ver;
@@ -1679,7 +1740,7 @@ define([
         LocalStore.logout();
 
         // redirect them to log in, and come back when they're done.
-        sessionStorage.redirectTo = window.location.href;
+        sessionStorage.redirectTo = currentPad.href;
         window.location.href = '/login/';
     };
 
@@ -1689,18 +1750,36 @@ define([
         cb();
     };
 
+    var lastPing = +new Date();
     var onPing = function (data, cb) {
+        lastPing = +new Date();
         cb();
     };
 
     var timeout = false;
     common.onTimeoutEvent = Util.mkEvent();
-    var onTimeout = function () {
+    var onTimeout = function (fromOuter) {
+        var key = fromOuter ? "TIMEOUT_OUTER" : "TIMEOUT_KICK";
+        Feedback.send(key, true);
         timeout = true;
         common.onNetworkDisconnect.fire();
         common.padRpc.onDisconnectEvent.fire();
         common.onTimeoutEvent.fire();
     };
+
+    Visible.onChange(function (visible) {
+        if (!visible) { return; }
+        var now = +new Date();
+        // If last ping is bigger than 2min, ping the worker
+        if (now - lastPing > (2 * 60 * 1000)) {
+            var to = setTimeout(function () {
+                onTimeout(true);
+            }, 5000);
+            postMessage('PING', null, function () {
+                clearTimeout(to);
+            });
+        }
+    });
 
     var queries = {
         PING: onPing,
@@ -1740,6 +1819,7 @@ define([
         PAD_CONNECT: common.padRpc.onConnectEvent.fire,
         PAD_ERROR: common.padRpc.onErrorEvent.fire,
         PAD_METADATA: common.padRpc.onMetadataEvent.fire,
+        CHANNEL_DELETED: common.padRpc.onChannelDeleted.fire,
         // Drive
         DRIVE_LOG: common.drive.onLog.fire,
         DRIVE_CHANGE: common.drive.onChange.fire,
@@ -1780,6 +1860,11 @@ define([
 
     return function (f, rdyCfg) {
         rdyCfg = rdyCfg || {};
+
+        if (rdyCfg.currentPad) {
+            currentPad = common.currentPad = rdyCfg.currentPad;
+        }
+
         if (initialized) {
             return void setTimeout(function () { f(void 0, env); });
         }
@@ -1878,11 +1963,14 @@ define([
                 anonHash: LocalStore.getFSHash(),
                 localToken: tryParsing(localStorage.getItem(Constants.tokenKey)), // TODO move this to LocalStore ?
                 language: common.getLanguage(),
-                driveEvents: rdyCfg.driveEvents // Boolean
+                driveEvents: true //rdyCfg.driveEvents // Boolean
             };
             // if a pad is created from a file
             if (sessionStorage[Constants.newPadFileData]) {
                 common.fromFileData = JSON.parse(sessionStorage[Constants.newPadFileData]);
+                var _parsed1 = Hash.parsePadUrl(common.fromFileData.href);
+                var _parsed2 = Hash.parsePadUrl(window.location.href);
+                if (_parsed1.type !== _parsed2.type) { delete common.fromFileData; }
                 delete sessionStorage[Constants.newPadFileData];
             }
 
@@ -2101,7 +2189,10 @@ define([
                 var parsedNew = Hash.parsePadUrl(newHref);
                 if (parsedOld.hashData && parsedNew.hashData &&
                     parsedOld.getUrl() !== parsedNew.getUrl()) {
-                    if (!parsedOld.hashData.key) { oldHref = newHref; return; }
+                    if (parsedOld.hashData.version !== 3 && !parsedOld.hashData.key) {
+                        oldHref = newHref;
+                        return;
+                    }
                     // If different, reload
                     document.location.reload();
                     return;

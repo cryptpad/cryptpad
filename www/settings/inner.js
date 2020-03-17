@@ -48,17 +48,19 @@ define([
 
     var categories = {
         'account': [
+            'cp-settings-own-drive',
             'cp-settings-info-block',
             'cp-settings-displayname',
             'cp-settings-language-selector',
             'cp-settings-resettips',
+            'cp-settings-change-password',
+            'cp-settings-delete'
+        ],
+        'security': [
             'cp-settings-logout-everywhere',
             'cp-settings-autostore',
+            'cp-settings-safe-links',
             'cp-settings-userfeedback',
-            'cp-settings-change-password',
-            'cp-settings-migrate',
-            'cp-settings-backup',
-            'cp-settings-delete'
         ],
         'creation': [
             'cp-settings-creation-owned',
@@ -71,7 +73,8 @@ define([
             'cp-settings-thumbnails',
             'cp-settings-drive-backup',
             'cp-settings-drive-import-local',
-            'cp-settings-drive-reset'
+            'cp-settings-trim-history'
+            //'cp-settings-drive-reset'
         ],
         'cursor': [
             'cp-settings-cursor-color',
@@ -114,6 +117,47 @@ define([
     }
 
     var create = {};
+
+    var SPECIAL_HINTS_HANDLER = {
+        safeLinks: function () {
+            return $('<span>', {'class': 'cp-sidebarlayout-description'})
+                .html(Messages._getKey('settings_safeLinksHint', ['<span class="fa fa-shhare-alt"></span>']));
+        },
+    };
+
+    var DEFAULT_HINT_HANDLER = function (safeKey) {
+        return $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .text(Messages['settings_'+safeKey+'Hint'] || 'Coming soon...');
+    };
+
+    var makeBlock = function (key, getter, full) {
+        var safeKey = key.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
+
+        create[key] = function () {
+            var $div = $('<div>', {'class': 'cp-settings-' + key + ' cp-sidebarlayout-element'});
+            if (full) {
+                $('<label>').text(Messages['settings_'+safeKey+'Title'] || key).appendTo($div);
+
+                // if this block's hint needs a special renderer, then create it in SPECIAL_HINTS_HANLDER
+                // otherwise the default will be used
+                var hintFunction = (typeof(SPECIAL_HINTS_HANDLER[safeKey]) === 'function')?
+                    SPECIAL_HINTS_HANDLER[safeKey]:
+                    DEFAULT_HINT_HANDLER;
+
+                hintFunction(safeKey).appendTo($div);
+            }
+            getter(function (content) {
+                if (content === false) {
+                    $div.remove();
+                    $div = undefined;
+                    return;
+                }
+                $div.append(content);
+            }, $div);
+            return $div;
+        };
+    };
+
 
     // Account settings
 
@@ -482,19 +526,12 @@ define([
         return $div;
     };
 
-    create['migrate'] = function () {
-        if (privateData.isDriveOwned) { return; }
-        if (!common.isLoggedIn()) { return; }
+    makeBlock('own-drive', function (cb, $div) {
+        if (privateData.isDriveOwned || !common.isLoggedIn()) {
+            return void cb(false);
+        }
 
-        var $div = $('<div>', { 'class': 'cp-settings-migrate cp-sidebarlayout-element'});
-
-        $('<span>', {'class': 'label'}).text(Messages.settings_ownDriveTitle).appendTo($div);
-
-        $('<span>', {'class': 'cp-sidebarlayout-description'})
-            .append(Messages.settings_ownDriveHint).appendTo($div);
-
-        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
-        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
+        $div.addClass('alert alert-warning');
 
         var form = h('div', [
             UI.passwordInput({
@@ -503,13 +540,13 @@ define([
             }, true),
             h('button.btn.btn-primary', Messages.settings_ownDriveButton)
         ]);
-
-        $(form).appendTo($div);
+        var $form = $(form);
+        var spinner = UI.makeSpinner($form);
 
         var todo = function () {
-            var password = $(form).find('#cp-settings-migrate-password').val();
+            var password = $form.find('#cp-settings-migrate-password').val();
             if (!password) { return; }
-            $spinner.show();
+            spinner.spin();
             UI.confirm(Messages.settings_ownDriveConfirm, function (yes) {
                 if (!yes) { return; }
                 var data = {
@@ -523,16 +560,15 @@ define([
                 sframeChan.query('Q_CHANGE_USER_PASSWORD', data, function (err, obj) {
                     UI.removeLoadingScreen();
                     if (err || obj.error) { return UI.alert(Messages.settings_changePasswordError); }
-                    $ok.show();
-                    $spinner.hide();
+                    spinner.done();
                 });
             });
         };
 
-        $(form).find('button').click(function () {
+        $form.find('button').click(function () {
             todo();
         });
-        $(form).find('input').keydown(function (e) {
+        $form.find('input').keydown(function (e) {
             // Save on Enter
             if (e.which === 13) {
                 e.preventDefault();
@@ -541,11 +577,38 @@ define([
             }
         });
 
-        $spinner.hide().appendTo($div);
-        $ok.hide().appendTo($div);
 
-        return $div;
-    };
+        cb(form);
+    }, true);
+
+    // Security
+
+    makeBlock('safe-links', function (cb) {
+
+        var $cbox = $(UI.createCheckbox('cp-settings-safe-links',
+                                   Messages.settings_safeLinksCheckbox,
+                                   false, { label: {class: 'noTitle'} }));
+
+        var spinner = UI.makeSpinner($cbox);
+
+        // Checkbox: "Enable safe links"
+        var $checkbox = $cbox.find('input').on('change', function () {
+            spinner.spin();
+            var val = !$checkbox.is(':checked');
+            common.setAttribute(['security', 'unsafeLinks'], val, function () {
+                spinner.done();
+            });
+        });
+
+        common.getAttribute(['security', 'unsafeLinks'], function (e, val) {
+            if (e) { return void console.error(e); }
+            if (val === false) {
+                $checkbox.attr('checked', 'checked');
+            }
+        });
+
+        cb($cbox);
+    }, true);
 
     // Pad Creation settings
 
@@ -1148,6 +1211,82 @@ define([
         return $div;
     };
 
+    var redrawTrimHistory = function (cb, $div) {
+        var spinner = UI.makeSpinner();
+        var button = h('button.btn.btn-danger-alt', {
+            disabled: 'disabled'
+        }, Messages.trimHistory_button);
+        var currentSize = h('p', $(spinner.spinner).clone()[0]);
+        var content = h('div#cp-settings-trim-container', [
+            currentSize,
+            button,
+            spinner.ok,
+            spinner.spinner
+        ]);
+
+        if (!privateData.isDriveOwned) {
+            var href = privateData.origin + privateData.pathname + '#' + 'account';
+            $(currentSize).html(Messages.trimHistory_needMigration);
+            $(currentSize).find('a').prop('href', href).click(function (e) {
+                e.preventDefault();
+                $('.cp-sidebarlayout-category[data-category="account"]').click();
+            });
+            return void cb(content);
+        }
+
+
+        var $button = $(button);
+        var size;
+        var channels = [];
+        nThen(function (waitFor) {
+            APP.history.execCommand('GET_HISTORY_SIZE', {
+                account: true,
+                channels: []
+            }, waitFor(function (obj) {
+                if (obj && obj.error) {
+                    waitFor.abort();
+                    var error = h('div.alert.alert-danger', Messages.trimHistory_getSizeError);
+                    $(content).empty().append(error);
+                    return;
+                }
+                channels = obj.channels;
+                size = Number(obj.size);
+            }));
+        }).nThen(function () {
+            if (!size || size < 1024) {
+                $(currentSize).html(Messages.trimHistory_noHistory);
+                return;
+            }
+            $(currentSize).html(Messages._getKey('trimHistory_currentSize', [UIElements.prettySize(size)]));
+            $button.prop('disabled', '');
+            UI.confirmButton(button, {
+                classes: 'btn-danger'
+            }, function () {
+                $button.remove();
+                spinner.spin();
+                APP.history.execCommand('TRIM_HISTORY', {
+                    channels: channels
+                }, function (obj) {
+                    if (obj && obj.error) {
+                        var error = h('div.alert.alert-danger', Messages.trimHistory_error);
+                        $(content).empty().append(error);
+                        return;
+                    }
+                    spinner.hide();
+                    redrawTrimHistory(cb, $div);
+                });
+            });
+        });
+
+        $div.find('#cp-settings-trim-container').remove();
+        cb(content);
+    };
+    makeBlock('trim-history', function (cb, $div) {
+        if (!common.isLoggedIn()) { return; }
+        redrawTrimHistory(cb, $div);
+    }, true);
+
+    /*
     create['drive-reset'] = function () {
         var $div = $('<div>', {'class': 'cp-settings-drive-reset cp-sidebarlayout-element'});
         $('<label>').text(Messages.settings_resetNewTitle).appendTo($div);
@@ -1171,6 +1310,7 @@ define([
 
         return $div;
     };
+    */
 
     // Cursor settings
 
@@ -1571,13 +1711,17 @@ define([
         APP.$usage = $('<div>', {'class': 'usage'}).appendTo(APP.$leftside);
         var active = privateData.category || 'account';
         Object.keys(categories).forEach(function (key) {
-            var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
+            var $category = $('<div>', {
+                'class': 'cp-sidebarlayout-category',
+                'data-category': key
+            }).appendTo($categories);
             if (key === 'account') { $category.append($('<span>', {'class': 'fa fa-user-o'})); }
             if (key === 'drive') { $category.append($('<span>', {'class': 'fa fa-hdd-o'})); }
             if (key === 'cursor') { $category.append($('<span>', {'class': 'fa fa-i-cursor' })); }
             if (key === 'code') { $category.append($('<span>', {'class': 'fa fa-file-code-o' })); }
             if (key === 'pad') { $category.append($('<span>', {'class': 'fa fa-file-word-o' })); }
             if (key === 'creation') { $category.append($('<span>', {'class': 'fa fa-plus-circle' })); }
+            if (key === 'security') { $category.append($('<span>', {'class': 'fa fa-lock' })); }
             if (key === 'subscription') { $category.append($('<span>', {'class': 'fa fa-star-o' })); }
 
             if (key === active) {
@@ -1596,9 +1740,10 @@ define([
                 showCategories(categories[key]);
             });
 
-            $category.append(Messages['settings_cat_'+key]);
+            $category.append(Messages['settings_cat_'+key] || key);
         });
         showCategories(categories[active]);
+        common.setHash(active);
     };
 
 
@@ -1628,6 +1773,7 @@ define([
         };
         APP.toolbar = Toolbar.create(configTb);
         APP.toolbar.$rightside.hide();
+        APP.history = common.makeUniversal('history');
 
         // Content
         var $rightside = APP.$rightside;
@@ -1645,6 +1791,7 @@ define([
             if (!Array.isArray(categories[cat])) { continue; }
             categories[cat].forEach(addItem);
         }
+
 
         // TODO RPC
         //obj.proxy.on('change', [], refresh);

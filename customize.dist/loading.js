@@ -3,7 +3,6 @@
 define([], function () {
     var loadingStyle = (function(){/*
 #cp-loading {
-  transition: opacity 0.75s, visibility 0s 0.75s;
   visibility: visible;
   position: fixed;
   z-index: 10000000;
@@ -24,6 +23,7 @@ define([], function () {
 #cp-loading.cp-loading-hidden {
   opacity: 0;
   visibility: hidden;
+  transition: opacity 0.75s, visibility 0s 0.75s;
 }
 #cp-loading .cp-loading-logo {
     height: 300px;

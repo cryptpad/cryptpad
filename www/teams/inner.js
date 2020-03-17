@@ -15,7 +15,7 @@ define([
     '/common/hyperscript.js',
     '/customize/application_config.js',
     '/common/messenger-ui.js',
-    '/common/invitation.js',
+    '/common/inner/invitation.js',
     '/customize/messages.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -1379,13 +1379,13 @@ define([
                 setEditable(false);
                 if (APP.team && driveAPP.refresh) { driveAPP.refresh(); }
                 toolbar.failed();
-                if (!noAlert) { UI.alert(Messages.common_connectionLost, undefined, true); }
+                if (!noAlert) { UIElements.disconnectAlert(); }
             };
             var onReconnect = function () {
                 setEditable(true);
                 if (APP.team && driveAPP.refresh) { driveAPP.refresh(); }
                 toolbar.reconnecting();
-                UI.findOKButton().click();
+                UIElements.reconnectAlert();
             };
 
             sframeChan.on('EV_DRIVE_LOG', function (msg) {

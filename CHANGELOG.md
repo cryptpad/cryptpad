@@ -1,3 +1,203 @@
+# OrienteCaveRat release (3.14.0)
+
+## Goals
+
+We planned a one-week release cycle in order to finish up some major features that were already in development during our last release.
+
+In the meantime, the reaction to the COVID-19 pandemic has resulted in a greatly increased load on our servers, so we've begun to focus on improving stability to ensure that we are able to keep up with demand.
+
+## Update notes
+
+We had some trouble during the week of March 9th, 2020, as the CryptPad.fr server started throwing EMFILE errors. This means that it was trying to open new files (for reading or writing) but there were too many files open already. We've added some new code to help debug the issue, but there is not yet a fix in place. The maximum number of open files on our host OS had been increased by several orders of magnitude (several years ago) but we're now aware that the systemd service file that launches the API server does not respect this global limit. As such, we've updated the example service file to indicate how you can update this limit yourself. For an example of how to update this limit at the OS level, see this page: https://docs.oracle.com/cd/E19623-01/820-6168/file-descriptor-requirements.html
+
+Otherwise, updating from 3.13.0 to 3.14.0 is as usual:
+
+1. stop your server
+2. fetch the latest source
+3. `npm i`
+4. `bower update`
+5. restart your server
+
+## Features
+
+We're very happy to announce a major update to our kanban application! We've made a lot of changes, but the most notables ones are:
+
+* the ability to add markdown content to your cards and edit it collaboratively in real-time
+* tags on cards and the ability to filter cards by tags at the top of the application
+* indicators to show if a card is being modified by another user while you are editing it
+* the ability to toggle between an 'overview mode' which hides everything but your cards titles and a full mode which shows everything
+* vertical scrolling for very tall columns, and horizontal scrolling for columns that don't fit on your screen (intead of reflowing to the next line)
+* a smaller palette of pre-chosen colors for cards and boards instead of a color-picker, to make it easier to choose matching colors for tasks
+* the ability to drag cards and boards to the trash instead of having to click a small X and confirm their deletion
+
+## Bug fixes
+
+* Drive:
+  * a regression in the drive for anonymous users made it impossible to delete contained pads directly from the drive (though deletion from the pad itself was working). It's now back to normal.
+  * we've updated the translation key referenced in [issue 482](https://github.com/xwiki-labs/cryptpad/issues/482) to clarify what qualifies a pad as "recently modified".
+* We noticed (and fixed) another regression that disabled our recently introduced "history trim" functionality.
+* We've identified and addressed a few client networking errors that were causing clients to disconnect (and to get stuck in a reconnecting state), but we're still actively looking for more.
+* Server:
+  * we've added some extra checks to try to identify where our file descriptor leak is coming from, we'll release fixes as they become available.
+  * we've caught a typeError that only ever happened while the server was overwhelmed with EMFILE errors.
+  * [this PR](https://github.com/xwiki-labs/cryptpad/pull/503) fixed an incorrect conditional expression at launch-time.
+
+# NorthernWhiteRhino release (3.13.0)
+
+## Goals
+
+This release cycle we prioritized the completion of "access lists", a major feature that we're excited to introduce.
+
+## Update notes
+
+Nearly every week (sometimes more than once) we end up taking time away from development to help administrators to configure their CryptPad instances. We're happy to see more instances popping up, but ideally we'd like to spend more of our time working on new features. With this in mind we devoted some time to simplify instance configuration and to clarify some points where people commonly have difficulty.
+
+If you review `cryptpad/config.example.js` you'll notice it is significantly smaller than it was last release.
+Old configuration files should be backwards compatible (if you copied `config.example.js` to `config.js` in order to customize it).
+The example has been reorganized so that the most important parts (which people seemed to miss most of the time) are at the top.
+Most of the fields which were defined within the config file now have defaults defined within the server itself.
+If you supply these values they will override the default, but for the most part they can be removed.
+
+We advise that you read the comments at the top of the example, in particular the points related to `httpUnsafeOrigin` and `httpSafeOrigin` which are used to protect users' cryptographic keys in the event of a cross-site scripting (XSS) vulnerability.
+If these values are not correctly set then your users will not benefit from all the security measures we've spent lots of time implemented.
+
+A lot of the fields that were present as modifiable defaults have been removed or commented out in the example config.
+If you supply them then they will override the default behaviour, however, you probably won't need to and doing so might break important functionality.
+Content-Security Policy (CSP) definitions should be safe to remove, as should `httpAddress`, `httpPort`, and `httpSafePort` (unless you need to run the nodejs API server on an address other than `localhost` or port 3000.
+
+Up until now it's been possible for administrators to allow users to pay for accounts (on their server) via https://accounts.cryptpad.fr.
+Our intent was to securely handle payment and then split the proceeds between ourselves and the instance's administrator.
+In practice this just created extra work for us because we ended up having to contact admins, all of whom have opted to treat the subscription as a donation to support development.
+As such we have disabled the ability of users to pay for premium subscriptions (on https://accounts.cryptpad.fr) for any instance other than our own.
+
+Servers with premium subscriptions enabled were configured to check whether anyone had subscribed to a premium account by querying our accounts server on a daily basis.
+We've left this daily check in place despite premium subscriptions being disabled because it informs us how many third-party instances exist and what versions they are running.
+We don't sell or share this information with anyone, but it is useful to us because it informs us what older data structures we have to continue to support.
+For instance, we retain code for migrating documents to newer data formats as long as we know that there are still instances that have not run those migrations.
+We also cite the number of third-party instances when applying for grants as an indicator of the value of funding our project.
+In any case, you can disable this daily check-in by setting `blockDailyCheck` to `true` in `config/config.js`.
+
+Finally, we've implemented the ability to set a higher limit on the maximum size of uploaded files for premium users (paying users on CryptPad.fr and users with entries in `customLimits` on other instances).
+Set this limit as a number (of bytes) with `premiumUploadSize` in your config file.
+
+## Features
+
+* It is often difficult to fix problems reported as GitHub issues because we don't have enough information. The platform's repository now includes an _issue template_ which includes a list of details that will probably be relevant to fixing bugs. Please read the list carefully, as we'll probably just close issues if information that we need was not included.
+* We've made it easy to terminate all open sessions for your account. If you're logged in, you'll now see a _log out everywhere_ button in the _user admin menu_ (in the top-right corner of the screen).
+  * You may still terminate only _remote sessions_ while leaving your local session intact via the pre-existing button on the settings page's _confidentiality_ tab.
+* You may have noticed that it takes progressively longer to load your account as you add more files to your drive, shared folders, and teams. This is because an integrity check is run on all your files when you first launch a CryptPad session. We optimized some parts of this check to speed it up. We plan to continue searching for similar processes that we can optimize in order to decrease loading time and run-time efficiency.
+* Lastly, this release introduces **access lists**, which you can use to limit who can view your documents _even if they have the keys required to decrypt them_. You can do so by using the _Access_ modal for any given document, available in the `...` dropdown menu in each app's toolbar or when right-clicking in the drive.
+  * Enabling access restriction for a document will disallow anyone except its owners or allowed users from opening it. Anyone else who is currently editing or viewing the document will be disconnected from the session.
+
+## Bug fixes
+
+* A member of _C3Wien_ reported some strange behaviour triggered by customizing some of Firefox's anti-tracking features. The settings incorrectly identified our cross-domain sandboxing system as a tracker and interfered with its normal functionality. As a result, the user was treated as though they were not logged in, even though pads from their account's drive were displayed within the "anonymous drive" that unregistered users normally see.
+  * This was simple to fix, requiring only that we adjust our method of checking whether a user is logged in.
+  * If you ever notice odd behaviour we do recommend that you review any customizations you've made to your browser, as we only test CryptPad under default conditions unless prompted to investigate an issue.
+* Users that take advantage of the Mermaid renderer in our markdown editor's preview pane may have noticed that the preview's scroll position was lost whenever mermaid charts were modified. We've updated our renderer such that it preserves scroll position when redrawing elements, making it easier to see the effects of your changes when editing large charts.
+
+# Megaloceros release (3.12.0)
+
+## Goals
+
+As of our last release our 'history trim' functionality was almost ready to go. We took this release period to do some extensive testing and to prepare the 'allow list' functionality which will be included in our next release.
+
+In the meantime, we also aimed to improve performance, add a few small but nice features, and fix a number of bugs.
+
+## Update notes
+
+This release includes updates to:
+
+1. the server and its dependencies
+2. the example nginx configuration which we recommend for production installations
+4. the client code and its dependencies
+
+Our ability to debug CryptPad's usage of shared workers (on the client) has been complicated by the fact that Firefox's shared worker debugging panel was not working for our instance. We finally traced the problem back to a Content-Security Policy setting in our configuration file. The issue can be addressed by adding a `resource:` entry in the `connect-src` header. We've updated the example nginx config to reflect this. You can deploy this version of CryptPad without this modification, but without it our ability to debug and fix issues related to shared worker will be extremely limited.
+
+Otherwise, updating from CryptPad v3.11.0 is pretty much the same as normal:
+
+1. stop your server
+2. pull the latest code via git
+3. `npm i` to get the latest server dependencies
+4. `bower update` to get the latest client dependencies
+5. restart your server
+
+## Features
+
+* The CryptPad server stores documents as a series of encrypted changes to a blank document. We have mechanisms in place that make it so clients only need the most recent changes to view the document, but the storage requirements on the server would only ever grow unless you deleted the entire document. As of this release, owners of document have the option to remove that unnecessary history. To do so: right-click a pad in a drive or shared folder and choose the properties option in the menu. The bottom of the properties popup will display the document's size. If there is any history that is eligible for removal, a button will be displayed to remove it.
+  * This option is only available for the pad's owners. If it has no owners then it will not be possible to remove its history.
+  * It is not yet possible to trim the history of spreadsheets, as they are based on a different system than the rest of our documents and it will take some additional work to add this functionality.
+* We've also added the ability to easily make copies of documents from your drive. Right-click on documents and select "make a copy" from the menu.
+  * This feature doesn't work for files. Files can't be modified anyway, so there's little value in making copies.
+  * We haven't added the ability to make a copy of a spreadsheet yet for the same reasons as above.
+* We've improved the way our markdown renderer handles links to better support a variety of types of URLs:
+  * anchors, like `[bug fixes](#bug-fixes)`
+  * relative paths, like `[cryptpad home page](/index.html)` or `[a rich text pad](/pad/#/pad/view/12151241241254123412451231231221)`
+  * absolute URLs without the protocol, like `[//github.com/xwiki-labs/cryptpad)
+* We've optimized a background process that iterates over a part of the database when you first launch the CryptPad server. It now uses less memory and should incur less load on the CPU when restarting the server. This should allow the server to spend its resources handling clients that are trying to reconnect.
+* We've also optimized some client-side code to prioritize loading your drive instead of some other non-essential resources used for notifications. Pages should load faster. We're working on some related improvements to address page load time which we'll introduce on an ongoing basis.
+* As noted above, we're finally able to debug shared workers in Firefox. We're investigating a few issues that were blocked by this limitation, and we hope to include a number of bug fixes in upcoming releases.
+* We've continued some ongoing improvements to the instance admin panel and introduced the ability to link directly to a support ticket. The link will only be useful to users who would already be able to open the admin panel.
+* The code responsible for fetching and scanning the older history of a document has also been optimized to avoid handling messages for channels multiple times.
+* Finally, we've received contributions from our German and Italian translators via our weblate instance.
+  * We're always looking for more help with localization. You can review the status of our translations and contribute to them [here](https://weblate.cryptpad.fr/projects/cryptpad/app/).
+
+## Bug fixes
+
+* After a lot of digging we believe we've identified and fixed a case of automatic text duplication in our rich text editor. We plan to wait a little longer and see if [reports of the incorrect behaviour](https://github.com/xwiki-labs/cryptpad/issues/352) really do stop, but we're optimistic that this problem has been solved.
+* [Another GitHub issue](https://github.com/xwiki-labs/cryptpad/issues/497) related to upgrading access for team members has been fixed. If you continue to have issues with permissions for team members, we recommend haging the team owner demote the affected users to viewers before promoting them to the desired access level.
+* We've fixed a number of small issues in our server:
+  * The server did not correctly respond to unsupported commands for its SET_METADATA RPC. Instead of responding with an error it ignored the message. In practice this should not have affected any users, since our client only uses supported commands.
+  * The server used to log for every entry in a document's metadata log that contained an unsupported command. As we develop we occasionally have to such logs with older versions of the code that don't support every command. To avoid filling the logs with errors, we now ignore any errors of a given type beyond the first one encountered for a given document.
+* We've fixed an issue with read-only spreadsheets that was introduced in our previous release. An overlay intended to prevent users from interacting with the spreadsheet while disconnected was incorrectly applied to spreadsheets in read-only mode, preventing users from copying their data.
+* Clients send "pin commands" to the server to instruct it to count a document against their quota and to preserve its data even if it's considered inactive. We realized that the client wasn't including todo-lists in its list of pads to pin and have updated the client to do so.
+
+# LabradorDuck release (3.11.0)
+
+## Goals
+
+For this release we aimed to phase in two major features that we've been anticipating for a while: "history trim" and "safe links".
+
+History trim will allow users to remove the old versions of their documents which continue to count against their storage quotas. It will be formally introduced in our next release, even though its server-side components are all ready. We had to reorganize and modify a lot of our server code, so we wanted to wait and make sure there were no regressions in our existing functionality before moving ahead.
+
+We're introducing the concept of "safe links" in CryptPad. Users can continue to share links to documents which include the cryptographic secrets necessary to read or edit them, but whenever possible we will replace those secrets with a document id. This will make it less likely for encryption keys to be exposed to third parties through invasive browser extensions or passive behaviour like history synchronization across devices.
+
+## Update notes
+
+This release features a few changes to the server:
+
+1. The "legal notice" feature which we included in the previous release turned out to be incorrect. We've since fixed it. We document this functionality [here](https://github.com/xwiki-labs/cryptpad/blob/e8b905282a2cde826ad9100dcad6b59a50c70e8b/www/common/application_config_internal.js#L35-L41), but you'll need to implement the recommended changes in `cryptpad/customize/application_config.js` for best effect.
+2. We've dropped server-side support for the `retainData` attribute in `cryptpad/config/config.js`. Previously you could configure CryptPad to delete unpinned, inactive data immediately or to move it into an archive for a configurable retention period. We've removed the option to delete data outright, since it introduces additional complexity in the server which we don't regularly test. We also figure that administrators will appreciate this default in the event of a bug which incorrectly flags data as inactive.
+3. We've fixed an incorrect line in [the example nginx configuration file](https://github.com/xwiki-labs/cryptpad/commit/1be01c07eee3431218d0b40a58164f60fec6df31). If you're using nginx as a reverse proxy for your CryptPad instance you should correct this line. It is used to set Content-Security Policy headers for the sandboxed-iframe which provides an additional layer of security for users in the event of a cross-site-scripting (XSS) vulnerability within CryptPad. If you find that your instance stops working after applying this change it is likely that you have not correctly configured your instance to use a secondary domain for its sandbox. See [this section of `cryptpad/config/config.example.js`](https://github.com/xwiki-labs/cryptpad/blob/c388641479128303363d8a4247f64230c08a7264/config/config.example.js#L94-L96) for more information.
+
+Otherwise, deploying the new code should be fairly simple:
+
+1. stop your server
+2. fetch the latest code from the git repository
+3. update your server dependencies with `npm install`
+4. update your clientside dependencies with `bower update`
+5. start your server
+
+## Features
+
+* We've slightly reorganized the _settings_ page to include a new "Confidentiality" section. It includes a checkbox to enable "safe links", which will remove the cryptographic secrets from your documents' URLs whenever possible. It is currently off by default but will most likely default to true in the near future. Otherwise, the settings page has an updated layout which is generally easier to read.
+* We've remove the "Owned pads" category from the CryptDrive application. It was included to provide an overview of pads that you could delete when we first introduced that functionality, however, we've realized that it is generally not very useful.
+* We implemented the ability to convert a regular folder in your drive into a _shared folder_ several months ago, but disabled it when we discovered that it had some bugs. We finally got around to fixing those bugs and so it is officially ready for public use.
+* We've continued to make little changes to improve the discoverability of CryptPad's social features. Unregistered users that view another user's profile are now informed that they can send that profile's owner a contact request once they register.
+* You may remember that CryptPad's contacts used to be called "friends". We've changed this terminology to reflect that you might work with people with whom you do not have a close personal relationship.
+* We analyzed CryptPad for possible vectors for social abuse as a part of our _Teams_ project, sponsored by NLnet foundation. During this audit we identified that the main method for abuse was through the direct messaging/notifications system. We added the ability to mute users, but realized it could be difficult to find the profile page of the person you want to mute. As of this release, any notification triggered by a remote user's actions will include their avatar and a link to their profile. If you find any user's behaviour abusive or annoying you can go straight to their profile and mute them.
+* We've made a small improvements to the admin panel's support ticket view. Tickets which have not received a response are now highlighted in red.
+* The login/register pages had a minor bug where the loading screen was not correctly displayed the second time you tried to enter your password. This was because the key derivation function which unlocks the corresponding user credentials was keeping the CPU busy and preventing an animation from running. It has since been corrected.
+* We've continued to make some small but important changes to various UI elements that are reused throughout the platform. The password field in the _pad properties dialog_ has been tweaked for better color contrast. Similarly, the small notice that pops up in the bottom right hand corner to prompt you to store a pad in your drive has been restyled. We've also implemented a second variation on this popup to display general information not directly related to the current pad. Both of these UI elements better match the general appearance of the rest of the platform and represent a continued effort to improve its visual consistency.
+* The spreadsheet editor has received some attention in the last few weeks as well. It is now able to gracefully resume a session when you reconnect to the server after an interruption. Likewise, the locking system which prevents two users from editing a cell at the same time is now significantly faster, and completely disabled if you're editing alone. Now that it's possible for unregistered users to edit spreadsheets we've had to improve the color contrast for the toolbar message which prompts users to register in order to ensure that a spreadsheet isn't deleted due to inactivity.
+* The "file upload status table" has received some attention as well, in response to [issue 496](https://github.com/xwiki-labs/cryptpad/issues/496). When you upload many files to CryptPad in a row you'll see them all displayed in a table which will include a scrollbar if necessary.
+
+## Bug fixes
+
+* [Issue 441](https://github.com/xwiki-labs/cryptpad/issues/441 "Other users writing in pad hiijacks chat window") has been fixed.
+* We found a bug that affected encrypted files saved to your CryptDrive via the right-click menu. The files were saved in an incorrect format and were unusable. They should behave normally now.
+* Finally, we identified a race condition whereby if two users sent each other contact requests at the same time the request might not be accepted correctly. This process should now be much more reliable.
+
 # Kouprey release (3.10.0)
 
 ## Goals

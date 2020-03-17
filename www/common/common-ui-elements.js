@@ -14,7 +14,7 @@ define([
     '/customize/application_config.js',
     '/customize/pages.js',
     '/bower_components/nthen/index.js',
-    '/common/invitation.js',
+    '/common/inner/invitation.js',
 
     'css!/customize/fonts/cptools/style.css',
     '/bower_components/croppie/croppie.min.js',
@@ -29,6 +29,13 @@ define([
             viewer: '/common/pdfjs/web/viewer.html'
         });
     }
+
+    UIElements.prettySize = function (bytes) {
+        var kB = Util.bytesToKilobytes(bytes);
+        if (kB < 1024) { return kB + Messages.KB; }
+        var mB = Util.bytesToMegabytes(bytes);
+        return mB + Messages.MB;
+    };
 
     UIElements.updateTags = function (common, href) {
         var existing, tags;
@@ -56,6 +63,21 @@ define([
         });
     };
 
+    var dcAlert;
+    UIElements.disconnectAlert = function () {
+        if (dcAlert && $(dcAlert.element).length) { return; }
+        dcAlert = UI.alert(Messages.common_connectionLost, undefined, true);
+    };
+    UIElements.reconnectAlert = function () {
+        if (!dcAlert) { return; }
+        if (!dcAlert.delete) {
+            dcAlert = undefined;
+            return;
+        }
+        dcAlert.delete();
+        dcAlert = undefined;
+    };
+
     var importContent = function (type, f, cfg) {
         return function () {
             var $files = $('<input>', {type:"file"});
@@ -77,7 +99,7 @@ define([
             });
         };
     };
-
+/*
     var getPropertiesData = function (common, cb) {
         var data = {};
         NThen(function (waitFor) {
@@ -105,6 +127,43 @@ define([
             cb(void 0, data);
         });
     };
+*/
+    var getPropertiesData = function (common, opts, cb) {
+        opts = opts || {};
+        var data = {};
+        NThen(function (waitFor) {
+            var base = common.getMetadataMgr().getPrivateData().origin;
+            common.getPadAttribute('', waitFor(function (err, val) {
+                if (err || !val) {
+                    waitFor.abort();
+                    return void cb(err || 'EEMPTY');
+                }
+                if (!val.fileType) {
+                    delete val.owners;
+                    delete val.expire;
+                }
+                Util.extend(data, val);
+                if (data.href) { data.href = base + data.href; }
+                if (data.roHref) { data.roHref = base + data.roHref; }
+            }), opts.href);
+
+            // If this is a file, don't try to look for metadata
+            if (opts.channel && opts.channel.length > 34) { return; }
+            common.getPadMetadata({
+                channel: opts.channel // optional, fallback to current pad
+            }, waitFor(function (obj) {
+                if (obj && obj.error) { return; }
+                data.owners = obj.owners;
+                data.expire = obj.expire;
+                data.pending_owners = obj.pending_owners;
+            }));
+        }).nThen(function () {
+            cb(void 0, data);
+        });
+    };
+
+
+/*
     var createOwnerModal = function (common, data) {
         var friends = common.getFriends(true);
         var sframeChan = common.getSframeChannel();
@@ -212,15 +271,7 @@ define([
                         common.mailbox.sendTo("RM_OWNER", {
                             channel: channel,
                             title: data.title,
-                            pending: pending,
-                            user: {
-                                displayName: user.name,
-                                avatar: user.avatar,
-                                profile: user.profile,
-                                notifications: user.notifications,
-                                curvePublic: user.curvePublic,
-                                edPublic: priv.edPublic
-                            }
+                            pending: pending
                         }, {
                             channel: friend.notifications,
                             curvePublic: friend.curvePublic
@@ -363,15 +414,7 @@ define([
                             channel: channel,
                             href: data.href,
                             password: data.password,
-                            title: data.title,
-                            user: {
-                                displayName: user.name,
-                                avatar: user.avatar,
-                                profile: user.profile,
-                                notifications: user.notifications,
-                                curvePublic: user.curvePublic,
-                                edPublic: priv.edPublic
-                            }
+                            title: data.title
                         }, {
                             channel: friend.notifications,
                             curvePublic: friend.curvePublic
@@ -419,8 +462,8 @@ define([
         var link = h('div.cp-share-columns', [
             div1,
             div2
-            /*drawRemove()[0],
-            drawAdd()[0]*/
+            // drawRemove()[0],
+            //drawAdd()[0]
         ]);
         var linkButtons = [{
             className: 'cancel',
@@ -430,6 +473,8 @@ define([
         }];
         return UI.dialog.customModal(link, {buttons: linkButtons});
     };
+*/
+/*
     var getRightsProperties = function (common, data, cb) {
         var $div = $('<div>');
         if (!data) { return void cb(void 0, $div); }
@@ -449,7 +494,7 @@ define([
                         var team = priv.teams[id] || {};
                         if (team.viewer) { return; }
                         if (data.owners.indexOf(team.edPublic) === -1) { return; }
-                        owned = id;
+                        owned = Number(id);
                         return true;
                     });
                 }
@@ -548,21 +593,27 @@ define([
 
             if (!data.noPassword) {
                 var hasPassword = data.password;
+                var $pwLabel = $('<label>', {'for': 'cp-app-prop-password'}).text(Messages.creation_passwordValue)
+                                .hide().appendTo($d);
+                var password = UI.passwordInput({
+                    id: 'cp-app-prop-password',
+                    readonly: 'readonly'
+                });
+                var $password = $(password).hide();
+                var $pwInput = $password.find('.cp-password-input');
+                $pwInput.val(data.password).click(function () {
+                    $pwInput[0].select();
+                });
+                $d.append(password);
+
                 if (hasPassword) {
-                    $('<label>', {'for': 'cp-app-prop-password'}).text(Messages.creation_passwordValue)
-                        .appendTo($d);
-                    var password = UI.passwordInput({
-                        id: 'cp-app-prop-password',
-                        readonly: 'readonly'
-                    });
-                    var $pwInput = $(password).find('.cp-password-input');
-                    $pwInput.val(data.password).click(function () {
-                        $pwInput[0].select();
-                    });
-                    $d.append(password);
+                    $pwLabel.show();
+                    $password.css('display', 'flex');
                 }
 
-                if (!data.noEditPassword && owned) { // FIXME SHEET fix password change for sheets
+                // In the properties, we should have the edit href if we know it.
+                // We should know it because the pad is stored, but it's better to check...
+                if (!data.noEditPassword && owned && data.href) { // FIXME SHEET fix password change for sheets
                     var sframeChan = common.getSframeChannel();
 
                     var isOO = parsed.type === 'sheet';
@@ -622,7 +673,7 @@ define([
 
                             sframeChan.query(q, {
                                 teamId: typeof(owned) !== "boolean" ? owned : undefined,
-                                href: data.href || data.roHref,
+                                href: data.href,
                                 password: newPass
                             }, function (err, data) {
                                 $(passwordOk).text(Messages.properties_changePasswordButton);
@@ -632,24 +683,41 @@ define([
                                     return void UI.alert(Messages.properties_passwordError);
                                 }
                                 UI.findOKButton().click();
-                                if (isFile) {
-                                    onProgress.stop();
+
+                                $pwLabel.show();
+                                $password.css('display', 'flex');
+                                $pwInput.val(newPass);
+
+                                // If the current document is a file or if we're changing the password from a drive,
+                                // we don't have to reload the page at the end.
+                                // Tell the user the password change was successful and abort
+                                if (isFile || priv.app !== parsed.type) {
+                                    if (onProgress && onProgress.stop) { onProgress.stop(); }
                                     $(passwordOk).text(Messages.properties_changePasswordButton);
                                     var alertMsg = data.warning ? Messages.properties_passwordWarningFile
                                                                 : Messages.properties_passwordSuccessFile;
                                     return void UI.alert(alertMsg, undefined, {force: true});
                                 }
-                                // If we didn't have a password, we have to add the /p/
-                                // If we had a password and we changed it to a new one, we just have to reload
-                                // If we had a password and we removed it, we have to remove the /p/
+
+                                // Pad password changed: update the href
+                                // Use hidden hash if needed (we're an owner of this pad so we know it is stored)
+                                var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
+                                var href = (priv.readOnly && data.roHref) ? data.roHref : data.href;
+                                if (useUnsafe === false) {
+                                    var newParsed = Hash.parsePadUrl(href);
+                                    var newSecret = Hash.getSecrets(newParsed.type, newParsed.hash, newPass);
+                                    var newHash = Hash.getHiddenHashFromKeys(parsed.type, newSecret, {});
+                                    href = Hash.hashToHref(newHash, parsed.type);
+                                }
+
                                 if (data.warning) {
                                     return void UI.alert(Messages.properties_passwordWarning, function () {
-                                        common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
+                                        common.gotoURL(href);
                                     }, {force: true});
                                 }
                                 return void UI.alert(Messages.properties_passwordSuccess, function () {
                                     if (!isSharedFolder) {
-                                        common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
+                                        common.gotoURL(href);
                                     }
                                 }, {force: true});
                             });
@@ -678,9 +746,15 @@ define([
 
         cb(void 0, $div);
     };
-    var getPadProperties = function (common, data, cb) {
+*/
+
+    var getPadProperties = function (common, data, opts, cb) {
+        opts = opts || {};
         var $d = $('<div>');
         if (!data) { return void cb(void 0, $d); }
+
+        var priv = common.getMetadataMgr().getPrivateData();
+        var edPublic = priv.edPublic;
 
         if (data.href) {
             $('<label>', {'for': 'cp-app-prop-link'}).text(Messages.editShare).appendTo($d);
@@ -689,7 +763,7 @@ define([
             }));
         }
 
-        if (data.roHref) {
+        if (data.roHref && !opts.noReadOnly) {
             $('<label>', {'for': 'cp-app-prop-rolink'}).text(Messages.viewShare).appendTo($d);
             $d.append(UI.dialog.selectable(data.roHref, {
                 id: 'cp-app-prop-rolink',
@@ -708,13 +782,30 @@ define([
             $d.append(h('div.cp-app-prop', [Messages.fm_lastAccess,  h('br'), h('span.cp-app-prop-content', new Date(data.atime).toLocaleString())]));
         }
 
+        var owned = false;
         if (common.isLoggedIn()) {
+            if (Array.isArray(data.owners)) {
+                if (data.owners.indexOf(edPublic) !== -1) {
+                    owned = true;
+                } else {
+                    Object.keys(priv.teams || {}).some(function (id) {
+                        var team = priv.teams[id] || {};
+                        if (team.viewer) { return; }
+                        if (data.owners.indexOf(team.edPublic) === -1) { return; }
+                        owned = Number(id);
+                        return true;
+                    });
+                }
+            }
             // check the size of this file...
             var bytes = 0;
+            var historyBytes;
+            var chan = [data.channel];
+            if (data.rtChannel) { chan.push(data.rtChannel); }
+            if (data.lastVersion) { chan.push(Hash.hrefToHexChannelId(data.lastVersion)); }
+            var history = common.makeUniversal('history');
+            var trimChannels = [];
             NThen(function (waitFor) {
-                var chan = [data.channel];
-                if (data.rtChannel) { chan.push(data.rtChannel); }
-                if (data.lastVersion) { chan.push(Hash.hrefToHexChannelId(data.lastVersion)); }
                 chan.forEach(function (c) {
                     common.getFileSize(c, waitFor(function (e, _bytes) {
                         if (e) {
@@ -724,20 +815,83 @@ define([
                         bytes += _bytes;
                     }));
                 });
+
+                if (!owned) { return; }
+                history.execCommand('GET_HISTORY_SIZE', {
+                    pad: true,
+                    channels: chan.filter(function (c) { return c.length === 32; }),
+                    teamId: typeof(owned) === "number" && owned
+                }, waitFor(function (obj) {
+                    if (obj && obj.error) { return; }
+                    historyBytes = obj.size;
+                    trimChannels = obj.channels;
+                }));
             }).nThen(function () {
                 if (bytes === 0) { return void cb(void 0, $d); }
-                var KB = Util.bytesToKilobytes(bytes);
+                var formatted = UIElements.prettySize(bytes);
 
-                var formatted = Messages._getKey('formattedKB', [KB]);
-                $d.append(h('div.cp-app-prop', [Messages.upload_size, h('br'), h('span.cp-app-prop-content', formatted)]));
+                if (!owned || !historyBytes || historyBytes > bytes || historyBytes < 0) {
+                    $d.append(h('div.cp-app-prop', [
+                        Messages.upload_size,
+                        h('br'),
+                        h('span.cp-app-prop-content', formatted)
+                    ]));
+                    return void cb(void 0, $d);
+                }
 
-        if (data.sharedFolder && false) {
-            $('<label>', {'for': 'cp-app-prop-channel'}).text('Channel ID').appendTo($d);
-            if (AppConfig.pinBugRecovery) { $d.append(h('p', AppConfig.pinBugRecovery)); }
-            $d.append(UI.dialog.selectable(data.channel, {
-                id: 'cp-app-prop-link',
-            }));
-        }
+
+                var p = Math.round((historyBytes / bytes) * 100);
+                var historyPrettySize = UIElements.prettySize(historyBytes);
+                var contentsPrettySize = UIElements.prettySize(bytes - historyBytes);
+                var button;
+                var spinner = UI.makeSpinner();
+                var size = h('div.cp-app-prop', [
+                    Messages.upload_size,
+                    h('br'),
+                    h('div.cp-app-prop-size-container', [
+                        h('div.cp-app-prop-size-history', { style: 'width:'+p+'%;' })
+                    ]),
+                    h('div.cp-app-prop-size-legend', [
+                        h('div.cp-app-prop-history-size', [
+                            h('span.cp-app-prop-history-size-color'),
+                            h('span.cp-app-prop-content', Messages._getKey('historyTrim_historySize', [historyPrettySize]))
+                        ]),
+                        h('div.cp-app-prop-contents-size', [
+                            h('span.cp-app-prop-contents-size-color'),
+                            h('span.cp-app-prop-content', Messages._getKey('historyTrim_contentsSize', [contentsPrettySize]))
+                        ]),
+                    ]),
+                    button = h('button.btn.btn-danger-alt.no-margin', Messages.trimHistory_button),
+                    spinner.spinner
+                ]);
+                $d.append(size);
+
+                var $button = $(button);
+                UI.confirmButton(button, {
+                    classes: 'btn-danger'
+                }, function () {
+                    $button.remove();
+                    spinner.spin();
+                    history.execCommand('TRIM_HISTORY', {
+                        pad: true,
+                        channels: trimChannels,
+                        teamId: typeof(owned) === "number" && owned
+                    }, function (obj) {
+                        spinner.hide();
+                        if (obj && obj.error) {
+                            $(size).append(h('div.alert.alert-danger', Messages.trimHistory_error));
+                            return;
+                        }
+                        $(size).remove();
+                        var formatted = UIElements.prettySize(bytes - historyBytes);
+                        $d.append(h('div.cp-app-prop', [
+                            Messages.upload_size,
+                            h('br'),
+                            h('span.cp-app-prop-content', formatted)
+                        ]));
+                        $d.append(h('div.alert.alert-success', Messages.trimHistory_success));
+                    });
+                });
 
                 cb(void 0, $d);
             });
@@ -747,35 +901,42 @@ define([
 
 
     };
-    UIElements.getProperties = function (common, data, cb) {
-        var c1;
-        var c2;
+
+    UIElements.getProperties = function (common, opts, cb) {
+        var data;
+        var content;
         var button = [{
-            className: 'primary',
-            name: Messages.okButton,
+            className: 'cancel',
+            name: Messages.filePicker_close,
             onClick: function () {},
-            keys: [13]
+            keys: [13,27]
         }];
         NThen(function (waitFor) {
-            getPadProperties(common, data, waitFor(function (e, c) {
-                c1 = UI.dialog.customModal(c[0], {
-                    buttons: button
-                });
+            getPropertiesData(common, opts, waitFor(function (e, _data) {
+                if (e) {
+                    waitFor.abort();
+                    return void cb(e);
+                }
+                data = _data;
             }));
-            getRightsProperties(common, data, waitFor(function (e, c) {
-                c2 = UI.dialog.customModal(c[0], {
+        }).nThen(function (waitFor) {
+            getPadProperties(common, data, opts, waitFor(function (e, c) {
+                if (e) {
+                    waitFor.abort();
+                    return void cb(e);
+                }
+                content = UI.dialog.customModal(c[0], {
                     buttons: button
                 });
             }));
         }).nThen(function () {
             var tabs = UI.dialog.tabs([{
                 title: Messages.fc_prop,
-                content: c1
-            }, {
-                title: Messages.creation_propertiesTitle,
-                content: c2
+                icon: "fa fa-info-circle",
+                content: content
             }]);
-            cb (void 0, $(tabs));
+            var modal = UI.openCustomModal(tabs);
+            cb (void 0, modal);
         });
     };
 
@@ -789,27 +950,37 @@ define([
             var name = data.displayName || data.name || Messages.anonymous;
             var avatar = h('span.cp-usergrid-avatar.cp-avatar');
             UIElements.displayAvatar(common, $(avatar), data.avatar, name);
-            return h('div.cp-usergrid-user'+(data.selected?'.cp-selected':'')+(config.large?'.large':''), {
+            var removeBtn, el;
+            if (config.remove) {
+                removeBtn = h('span.fa.fa-times');
+                $(removeBtn).click(function () {
+                    config.remove(el);
+                });
+            }
+
+            el = h('div.cp-usergrid-user'+(data.selected?'.cp-selected':'')+(config.large?'.large':''), {
                 'data-ed': data.edPublic,
                 'data-teamid': data.teamId,
                 'data-curve': data.curvePublic || '',
                 'data-name': name.toLowerCase(),
                 'data-order': i,
-                title: name,
                 style: 'order:'+i+';'
             },[
                 avatar,
-                h('span.cp-usergrid-user-name', name)
+                h('span.cp-usergrid-user-name', name),
+                data.notRemovable ? undefined : removeBtn
             ]);
+            return el;
         }).filter(function (x) { return x; });
 
         var noOthers = icons.length === 0 ? '.cp-usergrid-empty' : '';
+        var classes = noOthers + (config.large?'.large':'') + (config.list?'.list':'');
 
         var inputFilter = h('input', {
             placeholder: Messages.share_filterFriend
         });
 
-        var div = h('div.cp-usergrid-container' + noOthers + (config.large?'.large':''), [
+        var div = h('div.cp-usergrid-container' + classes, [
             label ? h('label', label) : undefined,
             h('div.cp-usergrid-filter', (config.noFilter || config.noSelect) ? undefined : [
                 inputFilter
@@ -1140,8 +1311,13 @@ define([
 
         var parsed = Hash.parsePadUrl(pathname);
         var canPresent = ['code', 'slide'].indexOf(parsed.type) !== -1;
+        var canBAR = parsed.type !== 'drive';
 
-        var burnAfterReading;
+        var burnAfterReading = (hashes.viewHash && canBAR) ?
+                    UI.createRadio('accessRights', 'cp-share-bar', Messages.burnAfterReading_linkBurnAfterReading, false, {
+                        mark: {tabindex:1},
+                        label: {style: "display: none;"}
+                    }) : undefined;
         var rights = h('div.msg.cp-inline-radio-group', [
             h('label', Messages.share_linkAccess),
             h('div.radio-group',[
@@ -1151,8 +1327,7 @@ define([
                             Messages.share_linkPresent, false, { mark: {tabindex:1} }) : undefined,
             UI.createRadio('accessRights', 'cp-share-editable-true',
                            Messages.share_linkEdit, false, { mark: {tabindex:1} })]),
-            burnAfterReading = hashes.viewHash ? UI.createRadio('accessRights', 'cp-share-bar', Messages.burnAfterReading_linkBurnAfterReading,
-                            false, { mark: {tabindex:1}, label: {style: "display: none;"} }) : undefined
+            burnAfterReading
         ]);
 
         // Burn after reading
@@ -1174,7 +1349,9 @@ define([
                 return;
             }
             // When the burn after reading option is selected, transform the modal buttons
-            $(burnAfterReading).show();
+            $(burnAfterReading).css({
+                display: 'flex'
+            });
         });
 
         var $rights = $(rights);
@@ -2037,6 +2214,17 @@ define([
                 if (data.accept) { $input.attr('accept', data.accept); }
                 button.click(function () { $input.click(); });
                 break;
+            case 'copy':
+                button = $('<button>', {
+                    'class': 'fa fa-clone cp-toolbar-icon-import',
+                    title: Messages.makeACopy,
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.makeACopy));
+                button
+                .click(common.prepareFeedback(type))
+                .click(function () {
+                    sframeChan.query('EV_MAKE_A_COPY');
+                });
+                break;
             case 'importtemplate':
                 if (!AppConfig.enableTemplates) { return; }
                 if (!common.isLoggedIn()) { return; }
@@ -2245,6 +2433,26 @@ define([
                 });
                 updateIcon(data.element.is(':visible'));
                 break;
+            case 'access':
+                button = $('<button>', {
+                    'class': 'fa fa-unlock-alt cp-toolbar-icon-access',
+                    title: Messages.accessButton,
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'})
+                .text(Messages.accessButton))
+                .click(common.prepareFeedback(type))
+                .click(function () {
+                    common.isPadStored(function (err, data) {
+                        if (!data) {
+                            return void UI.alert(Messages.autostore_notAvailable);
+                        }
+                        require(['/common/inner/access.js'], function (Access) {
+                            Access.getAccessModal(common, {}, function (e) {
+                                if (e) { console.error(e); }
+                            });
+                        });
+                    });
+                });
+                break;
             case 'properties':
                 button = $('<button>', {
                     'class': 'fa fa-info-circle cp-toolbar-icon-properties',
@@ -2257,12 +2465,8 @@ define([
                         if (!data) {
                             return void UI.alert(Messages.autostore_notAvailable);
                         }
-                        getPropertiesData(common, function (e, data) {
+                        UIElements.getProperties(common, {}, function (e) {
                             if (e) { return void console.error(e); }
-                            UIElements.getProperties(common, data, function (e, $prop) {
-                                if (e) { return void console.error(e); }
-                                UI.openCustomModal($prop[0]);
-                            });
                         });
                     });
                 });
@@ -2619,7 +2823,7 @@ define([
       }
       return arr;
     };
-    var getFirstEmojiOrCharacter = function (str) {
+    var getFirstEmojiOrCharacter = UIElements.getFirstCharacter = function (str) {
       if (!str || !str.trim()) { return '?'; }
       var emojis = emojiStringToArray(str);
       return isEmoji(emojis[0])? emojis[0]: str[0];
@@ -2633,13 +2837,13 @@ define([
     };
     UIElements.displayAvatar = function (common, $container, href, name, cb) {
         var displayDefault = function () {
-            var text = getFirstEmojiOrCharacter(name);
+            var text = (href && typeof(href) === "string") ? href : getFirstEmojiOrCharacter(name);
             var $avatar = $('<span>', {'class': 'cp-avatar-default'}).text(text);
             $container.append($avatar);
             if (cb) { cb(); }
         };
         if (!window.Symbol) { return void displayDefault(); } // IE doesn't have Symbol
-        if (!href) { return void displayDefault(); }
+        if (!href || href.length === 1) { return void displayDefault(); }
 
         var centerImage = function ($img, $image, img) {
             var w = img.width;
@@ -3191,7 +3395,14 @@ define([
         }
         options.push({ tag: 'hr' });
         // Add login or logout button depending on the current status
-        if (accountName) {
+        if (priv.loggedIn) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'class': 'cp-toolbar-menu-logout-everywhere fa fa-plug',
+                },
+                content: h('span', Messages.logoutEverywhere)
+            });
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-logout fa fa-sign-out'},
@@ -3276,6 +3487,12 @@ define([
         $userAdmin.find('a.cp-toolbar-menu-logout').click(function () {
             Common.logout(function () {
                 window.parent.location = origin+'/';
+            });
+        });
+
+        $userAdmin.find('a.cp-toolbar-menu-logout-everywhere').click(function () {
+            Common.getSframeChannel().query('Q_LOGOUT_EVERYWHERE', null, function () {
+                window.parent.location = origin + '/';
             });
         });
         $userAdmin.find('a.cp-toolbar-menu-settings').click(function () {
@@ -3731,7 +3948,7 @@ define([
         ]);
 
         var settings = h('div.cp-creation-remember', [
-            UI.createCheckbox('cp-creation-remember', Messages.creation_saveSettings, false),
+            UI.createCheckbox('cp-creation-remember', Messages.dontShowAgain, false),
             createHelper('/settings/#creation', Messages.creation_settings),
             h('div.cp-creation-remember-help.cp-creation-slider', [
                 h('span.fa.fa-exclamation-circle.cp-creation-warning'),
@@ -4015,7 +4232,7 @@ define([
     };
 
     UIElements.onServerError = function (common, err, toolbar, cb) {
-        if (["EDELETED", "EEXPIRED"].indexOf(err.type) === -1) { return; }
+        //if (["EDELETED", "EEXPIRED", "ERESTRICTED"].indexOf(err.type) === -1) { return; }
         var priv = common.getMetadataMgr().getPrivateData();
         var msg = err.type;
         if (err.type === 'EEXPIRED') {
@@ -4023,17 +4240,21 @@ define([
             if (err.loaded) {
                 msg += Messages.errorCopy;
             }
+            if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
         } else if (err.type === 'EDELETED') {
             if (priv.burnAfterReading) { return void cb(); }
             msg = Messages.deletedError;
             if (err.loaded) {
                 msg += Messages.errorCopy;
             }
+            if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
+        } else if (err.type === 'ERESTRICTED') {
+            msg = Messages.restrictedError;
+            if (toolbar && typeof toolbar.failed === "function") { toolbar.failed(true); }
         }
         var sframeChan = common.getSframeChannel();
         sframeChan.event('EV_SHARE_OPEN', {hidden: true});
-        if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
-        UI.errorLoadingScreen(msg, true, true);
+        UI.errorLoadingScreen(msg, Boolean(err.loaded), Boolean(err.loaded));
         (cb || function () {})();
     };
 
@@ -4097,52 +4318,68 @@ define([
     };
 
     var crowdfundingState = false;
-    UIElements.displayCrowdfunding = function (common) {
+    UIElements.displayCrowdfunding = function (common, force) {
         if (crowdfundingState) { return; }
-        if (AppConfig.disableCrowdfundingMessages) { return; }
         var priv = common.getMetadataMgr().getPrivateData();
+
+
+        var todo = function () {
+            crowdfundingState = true;
+            // Display the popup
+            var text = Messages.crowdfunding_popup_text;
+            var yes = h('button.cp-corner-primary', [
+                h('span.fa.fa-external-link'),
+                'OpenCollective'
+            ]);
+            var no = h('button.cp-corner-cancel', Messages.crowdfunding_popup_no);
+            var actions = h('div', [no, yes]);
+
+            var dontShowAgain = function () {
+                common.setAttribute(['general', 'crowdfunding'], false);
+                Feedback.send('CROWDFUNDING_NEVER');
+            };
+
+            var modal = UI.cornerPopup(text, actions, '', {
+                big: true,
+                alt: true,
+                dontShowAgain: dontShowAgain
+            });
+
+            $(yes).click(function () {
+                modal.delete();
+                common.openURL(priv.accounts.donateURL);
+                Feedback.send('CROWDFUNDING_YES');
+            });
+            $(modal.popup).find('a').click(function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                modal.delete();
+                common.openURL(priv.accounts.donateURL);
+                Feedback.send('CROWDFUNDING_LINK');
+            });
+            $(no).click(function () {
+                modal.delete();
+                Feedback.send('CROWDFUNDING_NO');
+            });
+        };
+
+        if (force) {
+            crowdfundingState = true;
+            return void todo();
+        }
+
+        if (AppConfig.disableCrowdfundingMessages) { return; }
         if (priv.plan) { return; }
 
         crowdfundingState = true;
-        setTimeout(function () {
-            common.getAttribute(['general', 'crowdfunding'], function (err, val) {
-                if (err || val === false) { return; }
-                common.getSframeChannel().query('Q_GET_PINNED_USAGE', null, function (err, obj) {
-                    var quotaMb = obj.quota / (1024 * 1024);
-                    if (quotaMb < 10) { return; }
-                    // Display the popup
-                    var text = Messages.crowdfunding_popup_text;
-                    var yes = h('button.cp-corner-primary', Messages.crowdfunding_popup_yes);
-                    var no = h('button.cp-corner-primary', Messages.crowdfunding_popup_no);
-                    var never = h('button.cp-corner-cancel', Messages.crowdfunding_popup_never);
-                    var actions = h('div', [yes, no, never]);
-
-                    var modal = UI.cornerPopup(text, actions, null, {big: true});
-
-                    $(yes).click(function () {
-                        modal.delete();
-                        common.openURL(priv.accounts.donateURL);
-                        Feedback.send('CROWDFUNDING_YES');
-                    });
-                    $(modal.popup).find('a').click(function (e) {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        modal.delete();
-                        common.openURL(priv.accounts.donateURL);
-                        Feedback.send('CROWDFUNDING_LINK');
-                    });
-                    $(no).click(function () {
-                        modal.delete();
-                        Feedback.send('CROWDFUNDING_NO');
-                    });
-                    $(never).click(function () {
-                        modal.delete();
-                        common.setAttribute(['general', 'crowdfunding'], false);
-                        Feedback.send('CROWDFUNDING_NEVER');
-                    });
-                });
+        common.getAttribute(['general', 'crowdfunding'], function (err, val) {
+            if (err || val === false) { return; }
+            common.getSframeChannel().query('Q_GET_PINNED_USAGE', null, function (err, obj) {
+                var quotaMb = obj.quota / (1024 * 1024);
+                if (quotaMb < 10) { return; }
+                todo();
             });
-        }, 5000);
+        });
     };
 
     var storePopupState = false;
@@ -4164,10 +4401,13 @@ define([
 
         var hide = h('button.cp-corner-cancel', Messages.autostore_hide);
         var store = h('button.cp-corner-primary', Messages.autostore_store);
-        var actions = h('div', [store, hide]);
+        var actions = h('div', [hide, store]);
 
         var initialHide = data && data.autoStore && data.autoStore === -1;
         var modal = UI.cornerPopup(text, actions, footer, {hidden: initialHide});
+
+        // Once the store pad popup is created, put the crowdfunding one in the queue
+        UIElements.displayCrowdfunding(common);
 
         autoStoreModal[priv.channel] = modal;
 
@@ -4177,7 +4417,6 @@ define([
         });
 
         $(hide).click(function () {
-            UIElements.displayCrowdfunding(common);
             delete autoStoreModal[priv.channel];
             modal.delete();
         });
@@ -4197,7 +4436,6 @@ define([
                 $(document).trigger('cpPadStored');
                 delete autoStoreModal[priv.channel];
                 modal.delete();
-                UIElements.displayCrowdfunding(common);
                 UI.log(Messages.autostore_saved);
             });
         });
@@ -4319,7 +4557,8 @@ define([
 
     UIElements.displayFriendRequestModal = function (common, data) {
         var msg = data.content.msg;
-        var text = Messages._getKey('contacts_request', [Util.fixHTML(msg.content.displayName)]);
+        var userData = msg.content.user;
+        var text = Messages._getKey('contacts_request', [Util.fixHTML(userData.displayName)]);
 
         var todo = function (yes) {
             common.getSframeChannel().query("Q_ANSWER_FRIEND_REQUEST", {
@@ -4346,7 +4585,6 @@ define([
 
     UIElements.displayAddOwnerModal = function (common, data) {
         var priv = common.getMetadataMgr().getPrivateData();
-        var user = common.getMetadataMgr().getUserData();
         var sframeChan = common.getSframeChannel();
         var msg = data.content.msg;
 
@@ -4381,15 +4619,7 @@ define([
                 href: msg.content.href,
                 password: msg.content.password,
                 title: msg.content.title,
-                answer: yes,
-                user: {
-                    displayName: user.name,
-                    avatar: user.avatar,
-                    profile: user.profile,
-                    notifications: user.notifications,
-                    curvePublic: user.curvePublic,
-                    edPublic: priv.edPublic
-                }
+                answer: yes
             }, {
                 channel: msg.content.user.notifications,
                 curvePublic: msg.content.user.curvePublic
@@ -4470,7 +4700,6 @@ define([
     };
     UIElements.displayAddTeamOwnerModal = function (common, data) {
         var priv = common.getMetadataMgr().getPrivateData();
-        var user = common.getMetadataMgr().getUserData();
         var sframeChan = common.getSframeChannel();
         var msg = data.content.msg;
 
@@ -4487,15 +4716,7 @@ define([
             common.mailbox.sendTo("ADD_OWNER_ANSWER", {
                 teamChannel: msg.content.teamChannel,
                 title: msg.content.title,
-                answer: yes,
-                user: {
-                    displayName: user.name,
-                    avatar: user.avatar,
-                    profile: user.profile,
-                    notifications: user.notifications,
-                    curvePublic: user.curvePublic,
-                    edPublic: priv.edPublic
-                }
+                answer: yes
             }, {
                 channel: msg.content.user.notifications,
                 curvePublic: msg.content.user.curvePublic
@@ -4602,17 +4823,15 @@ define([
             var f = priv.friends[curve];
             $verified.append(h('span.fa.fa-certificate'));
             var $avatar = $(h('span.cp-avatar')).appendTo($verified);
-            $verified.append(h('p', Messages._getKey('requestEdit_fromFriend', [f.displayName])));
+            $verified.append(h('p', Messages._getKey('isContact', [f.displayName])));
             common.displayAvatar($avatar, f.avatar, f.displayName);
         } else {
-            $verified.append(Messages._getKey('requestEdit_fromStranger', [name]));
+            $verified.append(Messages._getKey('isNotContact', [name]));
         }
         return verified;
     };
 
     UIElements.displayInviteTeamModal = function (common, data) {
-        var priv = common.getMetadataMgr().getPrivateData();
-        var user = common.getMetadataMgr().getUserData();
         var msg = data.content.msg;
 
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
@@ -4633,15 +4852,7 @@ define([
             common.mailbox.sendTo("INVITE_TO_TEAM_ANSWER", {
                 answer: yes,
                 teamChannel: msg.content.team.channel,
-                teamName: teamName,
-                user: {
-                    displayName: user.name,
-                    avatar: user.avatar,
-                    profile: user.profile,
-                    notifications: user.notifications,
-                    curvePublic: user.curvePublic,
-                    edPublic: priv.edPublic
-                }
+                teamName: teamName
             }, {
                 channel: msg.content.user.notifications,
                 curvePublic: msg.content.user.curvePublic

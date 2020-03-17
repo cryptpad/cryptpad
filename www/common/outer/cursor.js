@@ -60,7 +60,6 @@ define([
         if (!c) {
             c = ctx.clients[client] = {
                 channel: channel,
-                padChan: padChan,
                 cursor: {}
             };
         } else {
@@ -95,6 +94,8 @@ define([
             ctx.channels[channel] = ctx.channels[channel] || {};
 
             var chan = ctx.channels[channel];
+            chan.padChan = padChan;
+
             if (!c.id) { c.id = wc.myID + '-' + client; }
             if (chan.clients) {
                 // If 2 tabs from the same worker have been opened at the same time,

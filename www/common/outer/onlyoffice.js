@@ -12,7 +12,6 @@ define([
         if (!c) {
             c = ctx.clients[client] = {
                 channel: channel,
-                padChan: padChan,
             };
         } else {
             return void cb();
@@ -45,6 +44,7 @@ define([
             };
 
             chan = ctx.channels[channel];
+            chan.padChan = padChan;
 
             // Create our client ID using the netflux ID
             if (!c.id) { c.id = wc.myID + '-' + client; }
@@ -53,7 +53,7 @@ define([
             // all our client IDs.
             if (chan.clients) {
                 chan.clients.forEach(function (cl) {
-                    if (ctx.clients[cl] && !ctx.clients[cl].id) {
+                    if (ctx.clients[cl]) {
                         ctx.clients[cl].id = wc.myID + '-' + cl;
                     }
                 });
@@ -189,15 +189,22 @@ define([
         if (!c) { return void cb({ error: 'NOT_IN_CHANNEL' }); }
         var chan = ctx.channels[c.channel];
         if (!chan) { return void cb({ error: 'INVALID_CHANNEL' }); }
+        // Prepare the callback: broadcast the message to the other local tabs
+        // if the message is sent
+        var _cb = function (obj) {
+            if (obj && obj.error) { return void cb(obj); }
+            ctx.emit('MESSAGE', {
+                msg: data.msg
+            }, chan.clients.filter(function (cl) {
+                return cl !== clientId;
+            }));
+            cb();
+        };
+        // Send the message
         if (data.isCp) {
-            return void chan.sendMsg(data.isCp, cb);
+            return void chan.sendMsg(data.isCp, _cb);
         }
-        chan.sendMsg(data.msg, cb);
-        ctx.emit('MESSAGE', {
-            msg: data.msg
-        }, chan.clients.filter(function (cl) {
-            return cl !== clientId;
-        }));
+        chan.sendMsg(data.msg, _cb);
     };
 
     var reencrypt = function (ctx, data, cId, cb) {

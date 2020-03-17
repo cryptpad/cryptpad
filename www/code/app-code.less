@@ -65,47 +65,20 @@
         box-sizing: border-box;
         //font-family: Calibri,Ubuntu,sans-serif;
         font: @colortheme_app-font;
-        word-wrap: break-word;
         position: relative;
         flex: 1;
-        h1, h2, h3, h4, h5, h6 {
-            font-weight: bold;
-            padding-bottom: 0.3em;
-            border-bottom: 1px solid #eee;
-        }
-        li {
-            min-height: 22px;
-        }
+
+        .markdown_main();
+        .markdown_cryptpad();
         .todo-list-item {
-            list-style: none;
             .fa {
-                position: absolute;
-                margin-left: -17px;
-                margin-top: 4px;
                 &.fa-check-square {
                     font-size: 15px;
                     margin-top: 5px;
                 }
             }
         }
-        media-tag {
-            * {
-                max-width:100%;
-            }
-            iframe[src$=".pdf"] {
-                width: 100%;
-                height: 80vh;
-                max-height: 90vh;
-            }
-        }
-        media-tag:empty {
-            width: 100px;
-            height: 100px;
-            display: inline-block;
-            border: 1px solid #BBB;
-        }
 
-        .markdown_main();
         .cp-app-code-preview-empty {
             display: none;
         }

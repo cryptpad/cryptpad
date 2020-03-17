@@ -1,6 +1,7 @@
 @import (reference) "/customize/src/less2/include/colortheme-all.less";
 @import (reference) "/customize/src/less2/include/leftside-menu.less";
 @import (reference) "/customize/src/less2/include/buttons.less";
+@import (reference) "/customize/src/less2/include/browser.less";
 
 @sidebar_button-width: 400px;
 
@@ -73,6 +74,7 @@
             padding: 5px 20px;
             color: @rightside-color;
             overflow: auto;
+            padding-bottom: 200px;
 
             // Following rules are only in settings
             .cp-sidebarlayout-element {
@@ -96,7 +98,7 @@
                     }
                 }
                 margin-bottom: 20px;
-            .buttons_main();
+                .buttons_main();
             }
             [type="text"], [type="password"], button {
                 vertical-align: middle;
@@ -107,6 +109,7 @@
             .cp-sidebarlayout-input-block {
                 display: inline-flex;
                 width: @sidebar_button-width;
+                max-width: 100%;
                 input {
                     flex: 1;
                     //border-radius: 0.25em 0 0 0.25em;
@@ -117,6 +120,8 @@
                     //border-radius: 0 0.25em 0.25em 0;
                     //border: 1px solid #adadad;
                     border-left: 0px;
+                    height: @variables_input-height;
+                    margin: 0 !important;
                 }
             }
             &>div {
@@ -160,6 +165,25 @@
                 }
             }
 */
+        }
+        @media screen and (max-width: @browser_media-medium-screen) {
+            flex-flow: column;
+            overflow: auto;
+            #cp-sidebarlayout-leftside {
+                width: 100% !important; // Override "narrow" mode
+                padding-bottom: 20px;
+                .cp-sidebarlayout-categories {
+                    .cp-sidebarlayout-category {
+                        margin: 0;
+                        span.cp-sidebar-layout-category-name {
+                            display: inline !important; // override "narrow" mode
+                        }
+                    }
+                }
+            }
+            #cp-sidebarlayout-rightside {
+                overflow: unset;
+            }
         }
     }
 }

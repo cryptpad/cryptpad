@@ -13,6 +13,7 @@ define([
     '/common/sframe-common-codemirror.js',
     '/common/common-thumbnail.js',
     '/common/common-interface.js',
+    '/common/common-ui-elements.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
     'cm/lib/codemirror',
@@ -42,6 +43,7 @@ define([
     SframeCM,
     Thumb,
     UI,
+    UIElements,
     h,
     Messages,
     CMeditor,
@@ -1098,13 +1100,13 @@ define([
             });
         }
         setEditable(false);
-        //UI.alert(Messages.common_connectionLost, undefined, true);
+        //UIElements.disconnectAlert();
     };
 
     var onReconnect = function () {
         if (APP.unrecoverable) { return; }
         setEditable(true);
-        //UI.findOKButton().click();
+        //UIElements.reconnectAlert();
     };
 
     var getHeadingText = function () {
@@ -1169,6 +1171,8 @@ define([
         var $forgetPad = common.createButton('forget', true, {}, forgetCb);
         $rightside.append($forgetPad);
 
+        var $access = common.createButton('access', true);
+        $drawer.append($access);
         var $properties = common.createButton('properties', true);
         $drawer.append($properties);
 
@@ -1181,6 +1185,9 @@ define([
             var $templateButton = common.createButton('template', true, templateObj);
             $rightside.append($templateButton);
         }
+
+        var $copy = common.createButton('copy', true);
+        $drawer.append($copy);
 
         /* add an export button */
         var $export = common.createButton('export', true, {}, exportFile);

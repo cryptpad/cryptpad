@@ -160,6 +160,13 @@ var createUser = function (config, cb) {
             wc.leave();
         }));
     }).nThen(function (w) {
+        // FIXME give the server time to write your mailbox data before checking that it's correct
+        // chainpad-server sends an ACK before the channel has actually been created
+        // causing you to think that everything is good.
+        // without this timeout the GET_METADATA rpc occasionally returns before
+        // the metadata has actually been written to the disk.
+        setTimeout(w(), 500);
+    }).nThen(function (w) {
         // confirm that you own your mailbox
         user.anonRpc.send("GET_METADATA", user.mailboxChannel, w(function (err, data) {
             if (err) {
@@ -225,6 +232,18 @@ var createUser = function (config, cb) {
             if (err) {
                 w.abort();
                 return void cb(err);
+            }
+        }));
+    }).nThen(function (w) {
+        // some basic sanity checks...
+        user.rpc.getServerHash(w(function (err, hash) {
+            if (err) {
+                w.abort();
+                return void cb(err);
+            }
+            if (hash !== EMPTY_ARRAY_HASH) {
+                console.error("EXPECTED EMPTY ARRAY HASH");
+                process.exit(1);
             }
         }));
     }).nThen(function () {
@@ -338,9 +357,154 @@ nThen(function  (w) {
         bob.name = 'bob';
         //console.log("Initialized Bob");
     }));
+}).nThen(function (w) {
+    // restrict access to oscar's mailbox channel
+    oscar.rpc.send('SET_METADATA', {
+        command: 'RESTRICT_ACCESS',
+        channel: oscar.mailboxChannel,
+        value: [ true ]
+    }, w(function (err, response) {
+        if (err) {
+            return void console.log(err);
+        }
+        var metadata = response[0];
+        if (!(metadata && metadata.restricted)) {
+            throw new Error("EXPECTED MAILBOX TO BE RESTRICTED");
+        }
+    }));
+}).nThen(function (w) {
+    alice.anonRpc.send('GET_METADATA', oscar.mailboxChannel, w(function (err, response) {
+        if (!response) { throw new Error("EXPECTED RESPONSE"); }
+        var metadata = response[0];
+        var expected_fields = ['restricted', 'allowed', 'rejected'];
+        for (var key in metadata) {
+            if (expected_fields.indexOf(key) === -1) {
+                console.log(metadata);
+                throw new Error("EXPECTED METADATA TO BE RESTRICTED");
+            }
+        }
+    }));
+}).nThen(function (w) {
+    alice.anonRpc.send('WRITE_PRIVATE_MESSAGE', [
+        oscar.mailboxChannel,
+        '["VANDALISM"]',
+    ], w(function (err) {
+        if (err !== 'INSUFFICIENT_PERMISSIONS') {
+            throw new Error("EXPECTED INSUFFICIENT PERMISSIONS ERROR");
+        }
+    }));
+}).nThen(function (w) {
+    // add alice to oscar's mailbox's allow list for some reason
+    oscar.rpc.send('SET_METADATA', {
+        command: 'ADD_ALLOWED',
+        channel: oscar.mailboxChannel,
+        value: [
+            alice.edKeys.edPublic
+        ]
+    }, w(function (err, response) {
+        var metadata = response && response[0];
+        if (!metadata || !Array.isArray(metadata.allowed) ||
+            metadata.allowed.indexOf(alice.edKeys.edPublic) === -1) {
+            throw new Error("EXPECTED ALICE TO BE IN THE ALLOW LIST");
+        }
+    }));
+}).nThen(function (w) {
+    oscar.anonRpc.send('GET_METADATA', oscar.mailboxChannel, w(function (err, response) {
+        if (err) {
+            throw new Error("OSCAR SHOULD BE ABLE TO READ HIS OWN METADATA");
+        }
+        var metadata = response && response[0];
+
+        if (!metadata) {
+            throw new Error("EXPECTED METADATA");
+        }
+
+        if (metadata.allowed[0] !== alice.edKeys.edPublic) {
+            throw new Error("EXPECTED ALICE TO BE ON ALLOW LIST");
+        }
+    }));
+}).nThen(function () {
+    alice.anonRpc.send('GET_METADATA', oscar.mailboxChannel, function (err, response) {
+        var metadata = response && response[0];
+        if (!metadata || !metadata.restricted || !metadata.channel) {
+            throw new Error("EXPECTED FULL ACCESS TO CHANNEL METADATA");
+        }
+    });
+}).nThen(function (w) {
+    //throw new Error("boop");
+    // add alice as an owner of oscar's mailbox for some reason
+    oscar.rpc.send('SET_METADATA', {
+        command: 'ADD_OWNERS',
+        channel: oscar.mailboxChannel,
+        value: [
+            alice.edKeys.edPublic
+        ]
+    }, Util.mkTimeout(w(function (err) {
+        if (err === 'TIMEOUT') {
+            throw new Error(err);
+        }
+        if (err) {
+            throw new Error("ADD_OWNERS_FAILURE");
+        }
+    }), 2000));
+}).nThen(function (w)  {
+    // alice should now be able to read oscar's mailbox metadata
+    alice.anonRpc.send('GET_METADATA', oscar.mailboxChannel, w(function (err, response) {
+        if (err) {
+            throw new Error("EXPECTED ALICE TO BE ALLOWED TO READ OSCAR'S METADATA");
+        }
+
+        var metadata = response && response[0];
+        if (!metadata) { throw new Error("EXPECTED METADATA"); }
+        if (metadata.allowed.length !== 0) {
+            throw new Error("EXPECTED AN EMPTY ALLOW LIST");
+        }
+    }));
+}).nThen(function (w) {
+    // disable the access restrictionallow list
+    oscar.rpc.send('SET_METADATA', {
+        command: 'RESTRICT_ACCESS',
+        channel: oscar.mailboxChannel,
+        value: [
+            false
+        ]
+    }, w(function (err) {
+        if (err) {
+            throw new Error("COULD_NOT_DISABLE_RESTRICTED_ACCESS");
+        }
+    }));
+    // add alice to oscar's mailbox's allow list for some reason
+    oscar.rpc.send('SET_METADATA', {
+        command: 'ADD_ALLOWED',
+        channel: oscar.mailboxChannel,
+        value: [
+            bob.edKeys.edPublic
+        ]
+    }, w(function (err) {
+        if (err) {
+            return void console.error(err);
+        }
+    }));
+}).nThen(function (w) {
+    oscar.anonRpc.send('GET_METADATA', oscar.mailboxChannel, w(function (err, response) {
+        if (err) {
+            throw new Error("OSCAR SHOULD BE ABLE TO READ HIS OWN METADATA");
+        }
+        var metadata = response && response[0];
+
+        if (!metadata) {
+            throw new Error("EXPECTED METADATA");
+        }
+
+        if (metadata.allowed[0] !== bob.edKeys.edPublic) {
+            throw new Error("EXPECTED ALICE TO BE ON ALLOW LIST");
+        }
+        if (metadata.restricted) {
+            throw new Error("RESTRICTED_ACCESS_NOT_DISABLED");
+        }
+    }));
 }).nThen(function () {
     //setTimeout(w(), 500);
-
 }).nThen(function (w) {
     // Alice loads the roster...
     var rosterKeys = Crypto.Team.deriveMemberKeys(sharedConfig.rosterSeed, alice.curveKeys);
@@ -491,7 +655,7 @@ nThen(function  (w) {
         console.error("checkpoint by member failed as expected");
     }));
 }).nThen(function (w) {
-    console.log("STATE =", JSON.stringify(oscar.roster.getState(), null, 2));
+    //console.log("STATE =", JSON.stringify(oscar.roster.getState(), null, 2));
 
     // oscar describes the team
     oscar.roster.metadata({
@@ -499,7 +663,7 @@ nThen(function  (w) {
         topic: "pewpewpew",
     }, w(function (err) {
         if (err) { return void console.log(err); }
-        console.log("STATE =", JSON.stringify(oscar.roster.getState(), null, 2));
+        //console.log("STATE =", JSON.stringify(oscar.roster.getState(), null, 2));
     }));
 }).nThen(function (w) {
     // oscar sends a checkpoint
@@ -554,6 +718,7 @@ nThen(function  (w) {
     }));
 }).nThen(function (w) {
     oscar.roster.checkpoint(w(function (err) {
+        oscar.lastRosterCheckpointHash = oscar.roster.getLastCheckpointHash(); // FIXME bob should connect to this to avoid extra messages
         if (!err) { return; }
         console.error("Checkpoint by an owner failed unexpectedly");
         console.error(err);
@@ -578,21 +743,21 @@ nThen(function  (w) {
         channel: rosterKeys.channel,
         keys: rosterKeys,
         anon_rpc: bob.anonRpc,
-        lastKnownHash: oscar.lastKnownHash,
+        //lastKnownHash: oscar.lastRosterCheckpointHash
+        //lastKnownHash: oscar.lastKnownHash, // FIXME this doesn't work. off-by-one?
     }, w(function (err, roster) {
         if (err) {
             w.abort();
             return void console.trace(err);
         }
 
-
         bob.roster = roster;
         if (JSON.stringify(bob.roster.getState()) !== JSON.stringify(oscar.roster.getState())) {
-            console.log("BOB AND OSCAR DO NOT HAVE THE SAME STATE");
+            //console.log("BOB AND OSCAR DO NOT HAVE THE SAME STATE");
             console.log("BOB =", JSON.stringify(bob.roster.getState(), null, 2));
             console.log("OSCAR =", JSON.stringify(oscar.roster.getState(), null, 2));
+            throw new Error("BOB AND OSCAR DO NOT HAVE THE SAME STATE");
         }
-
         bob.destroy.reg(function () {
             roster.stop();
         });
@@ -639,8 +804,8 @@ nThen(function  (w) {
 
     bob.roster.describe(data, w(function (err) {
         if (err) {
-            console.error("self-description by a member failed unexpectedly");
-            process.exit(1);
+            console.error(err);
+            throw new Error("self-description by a member failed unexpectedly");
         }
     }));
 }).nThen(function (w) {

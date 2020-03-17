@@ -166,14 +166,14 @@ MessengerUI, Messages) {
         });
     };
     var showColors = false;
-    var updateUserList = function (toolbar, config) {
+    var updateUserList = function (toolbar, config, forceOffline) {
         if (!config.displayed || config.displayed.indexOf('userlist') === -1) { return; }
         // Make sure the elements are displayed
         var $userButtons = toolbar.userlist;
         var $userlistContent = toolbar.userlistContent;
 
         var metadataMgr = config.metadataMgr;
-        var online = metadataMgr.isConnected();
+        var online = !forceOffline && metadataMgr.isConnected();
         var userData = metadataMgr.getMetadata().users;
         var viewers = metadataMgr.getViewers();
         var priv = metadataMgr.getPrivateData();
@@ -574,6 +574,7 @@ MessengerUI, Messages) {
         return $shareBlock;
     };
 
+    /*
     var createRequest = function (toolbar, config) {
         if (!config.metadataMgr) {
             throw new Error("You must provide a `metadataMgr` to display the request access button");
@@ -590,13 +591,13 @@ MessengerUI, Messages) {
         // If we have access to the owner's mailbox, display the button and enable it
         // false => check if we can contact the owner
         // true ==> send the request
-        Common.getSframeChannel().query('Q_REQUEST_ACCESS', false, function (err, obj) {
+        Common.getSframeChannel().query('Q_REQUEST_ACCESS', {send:false}, function (err, obj) {
             if (obj && obj.state) {
                 var locked = false;
                 $requestBlock.show().click(function () {
                     if (locked) { return; }
                     locked = true;
-                    Common.getSframeChannel().query('Q_REQUEST_ACCESS', true, function (err, obj) {
+                    Common.getSframeChannel().query('Q_REQUEST_ACCESS', {send:true}, function (err, obj) {
                         if (obj && obj.state) {
                             UI.log(Messages.requestEdit_sent);
                             $requestBlock.hide();
@@ -614,6 +615,7 @@ MessengerUI, Messages) {
 
         return $requestBlock;
     };
+    */
 
     var createTitle = function (toolbar, config) {
         var $titleContainer = $('<span>', {
@@ -1226,7 +1228,7 @@ MessengerUI, Messages) {
         tb['fileshare'] = createFileShare;
         tb['title'] = createTitle;
         tb['pageTitle'] = createPageTitle;
-        tb['request'] = createRequest;
+        //tb['request'] = createRequest;
         tb['lag'] = $.noop;
         tb['spinner'] = createSpinner;
         tb['state'] = $.noop;
@@ -1258,11 +1260,14 @@ MessengerUI, Messages) {
         initClickEvents(toolbar, config);
         initNotifications(toolbar, config);
 
-        var failed = toolbar.failed = function () {
+        var failed = toolbar.failed = function (hideUserList) {
             toolbar.connected = false;
 
             if (toolbar.spinner) {
                 toolbar.spinner.text(Messages.disconnected);
+            }
+            if (hideUserList) {
+                updateUserList(toolbar, config, true);
             }
             //checkLag(toolbar, config);
         };
@@ -1310,7 +1315,7 @@ MessengerUI, Messages) {
         toolbar.deleted = function (/*userId*/) {
             toolbar.isErrorState = true;
             toolbar.connected = false;
-            updateUserList(toolbar, config);
+            updateUserList(toolbar, config, true);
             if (toolbar.spinner) {
                 toolbar.spinner.text(Messages.deletedFromServer);
             }

@@ -665,7 +665,7 @@ define([
 
             // We have to remove the cursors before getting the content because they split
             // the text nodes and OT/ChainPad would freak out
-            cursors.removeCursors();
+            cursors.removeCursors(inner);
 
             displayMediaTags(framework, inner, mediaTagMap);
             inner.normalize();
@@ -741,7 +741,7 @@ define([
                 if (b64images.length && framework._.sfCommon.isLoggedIn()) {
                     var no = h('button.cp-corner-cancel', Messages.cancel);
                     var yes = h('button.cp-corner-primary', Messages.ok);
-                    var actions = h('div', [yes, no]);
+                    var actions = h('div', [no, yes]);
                     var modal = UI.cornerPopup(Messages.pad_base64, actions, '', {big: true});
                     $(no).click(function () {
                         modal.delete();
