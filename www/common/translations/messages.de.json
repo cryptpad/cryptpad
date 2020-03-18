@@ -1336,5 +1336,6 @@
     "kanban_delete": "Löschen",
     "kanban_color": "Farbe",
     "kanban_body": "Inhalt",
-    "kanban_title": "Titel"
+    "kanban_title": "Titel",
+    "oo_isLocked": "synchronisiere Änderungen, bitte warten"
 }
