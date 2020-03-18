@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Initialbuchstaben einfügen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Insert a drop cap and adjust its frame properties to make your document look more expressive." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Initialbuchstaben einfügen</h1>
+			<p>Ein <b>Initial</b> ist der erste Buchstabe eines Absatzes, der viel größer als die anderen ist sich in der Höhe über mehrere Zeilen erstreckt.</p>
+			<p>Ein Initial einfügen:</p>
+			<ol>
+				<li>Positionieren Sie den Mauszeiger an der gewünschten Stelle.</li>
+                <li>Wechseln Sie in der oberen Symbolleiste auf die Registerkarte <b>Einfügen</b>.</li>
+				<li>klicken Sie in der oberen Symbolleiste auf das Symbol <img alt="Initial einfügen" src="../images/insert_dropcap_icon.png" /> <b>Initial einfügen</b>.</li>
+				<li>Wählen Sie im geöffneten Listenmenü die gewünschte Option:<ul>
+				    <li><b>Im Text</b> <img alt="Initial einfügen - Im Text" src="../images/dropcap_text.png" /> - um das Initial innerhalb des Absatzes zu positionieren.</li>
+				    <li><b>Am Seitenrand</b> <img alt="Initial einfügen - Im Seitenrand" src="../images/dropcap_margin.png" /> - um das Initial am linken Seitenrand zu positionieren.</li>
+				    </ul>
+				</li>
+			</ol>
+			<p><img class="floatleft" alt="Beispiel für ein Initial" src="../images/dropcap_example.png" />Das erste Zeichen des ausgewählten Absatzes wird in ein Initial umgewandelt. Wenn das Initial mehrere Zeichen umfassen soll, fügen Sie diese manuell hinzu - wählen Sie das Initial aus und geben Sie die restlichen gewünschten Buchstaben ein.</p>
+			<p>Um das Initial anzupassen (d.h. Schriftgrad, Typ, Formatvorlage oder Farbe), markieren Sie den Buchstaben und nutzen Sie die entsprechenden Symbole in der Registerkarte <b>Start</b> in der oberen Symbolleiste.</p>
+			<p>Wenn das Initial markiert ist, wird es von einem <b>Rahmen</b> umgeben (eine Box, um das Initial auf der Seite zu positionieren). Sie können die Rahmengröße leicht ändern, indem Sie mit dem Mauszeiger an den Rahmenlinien ziehen, oder die Position ändern, indem Sie auf das <img alt="Pfeil" src="../images/arrow.png" /> Symbol klicken, das angezeigt wird, wenn Sie den Mauszeiger über den Rahmen bewegen.</p>
+			<p>Um das hinzugefügte Initial zu löschen, wählen Sie es aus, klicken Sie in der Registerkarte <b>Einfügen</b> auf das Symbol <img alt="Initial einfügen" src="../images/insert_dropcap_icon.png" /> <b>Intial</b> und wählen Sie die Option <b>Keins</b> <img alt="Initial einfügen - Keine" src="../images/dropcap_none.png" /> aus dem Listenmenü aus.</p>
+			<hr />
+			<p>Um die Parameter des hinzugefügten Initials anzupassen, wählen Sie es aus, klicken Sie in der Registerkarte <b>Einfügen</b> auf die Option <img alt="Initial einfügen" src="../images/insert_dropcap_icon.png" /> <b>Initial</b> und wählen Sie die Option <b>Initialformatierung</b> aus dem Listenmenü aus. Das Fenster <b>Initial - Erweiterte Einstellungen</b> wird geöffnet:</p>
+            <p><img alt="Initial - Erweiterte Einstellungen" src="../images/dropcap_properties_1.png" /></p>
+			<p>Über die Gruppe <b>Initial</b> können Sie die folgenden Parameter festlegen:</p>
+			    <ul>
+			    <li><b>Position</b> - die Platzierung des Initials ändern. Wählen Sie die Option <b>Im Text</b> oder <b>Am Seitenrand</b> oder klicken Sie auf <b>Keins</b>, um das Initial zu löschen.</li>
+			    <li><b>Schriftart</b> - eine Schriftart aus der Liste mit den Vorlagen auswählen.</li>
+			    <li><b>Höhe in Zeilen</b> - gibt an, über wie viele Zeilen sich das Initial erstrecht. Der Wert kann von 1 bis 10 gewählt werden.</li>
+			    <li><b>Abstand vom Text</b> - gibt den Abstand zwischen dem Absatztext und der rechten Rahmenlinie des Rahmens an, der das Initial umgibt.</li>
+			    </ul>
+            <p><img alt="Initial - Erweiterte Einstellungen" src="../images/dropcap_properties_2.png" /></p>
+			<p>Auf der Registerkarte <b>Rahmen &amp; Füllung</b> können Sie dem Initial einen Rahmen hinzufügen und die zugehörigen Parameter anpassen. Folgende Parameter lassen sich anpassen:</p>
+			<ul>
+				<li><b>Rahmen</b> (Größe, Farbe und das Vorhandensein oder Fehlen) - legen Sie die Rahmengröße fest und wählen Sie die Farbe und die Art der gewünschten Rahmenlinien aus (oben, unten, links, rechts oder eine Kombination).</li>
+				<li><b>Hintergrundfarbe</b> - wählen Sie die Hintergrundfarbe für das Initial aus.</li>
+			</ul>
+            <p><img alt="Initial - Erweiterte Einstellungen" src="../images/dropcap_properties_3.png" /></p>
+			<p>Über die Registerkarte <b>Ränder</b> können Sie den Abstand zwischen dem Initial und den <b>Oberen</b>, <b>Unteren</b>, <b>Linken</b> und <b>Rechten</b> Rahmenlinien festlegen (falls diese vorher hinzugefügt wurden).</p>
+			<hr />
+			<p>Sobald das Initial hinzugefügt wurde, können Sie auch die Parameter des <b>Rahmens</b> ändern. Klicken Sie dazu mit der rechten Maustaste innerhalb des Rahmens und wählen Sie <b>Rahmen - Erweiterte Einstellungen</b> im Menü aus. Das Fenster <b>Rahmen - Erweiterte Einstellungen</b> wird geöffnet:</p> 
+            <p><img alt="Rahmen - Erweiterte Einstellungen" src="../images/frame_properties_1.png" /></p>
+			<p>In der Gruppe <b>Rahmen</b> können Sie die folgenden Parameter festlegen:</p>
+			<ul>
+				<li><b>Position</b> - wird genutzt, um den Textumbruch <b>Fixiert</b> oder <b>Schwebend</b> zu wählen. Alternativ können Sie auf <b>Keine</b> klicken, um den Rahmen zu löschen.</li>
+				<li><b>Breite</b> und <b>Höhe</b> - zum Ändern der Rahmendimensionen. Über die Option <b>Auto</b> können Sie die Rahmengröße automatisch an das Initial anpassen. Im Feld <b>Genau</b> können Sie bestimmte Werte festlegen. Mit der Option <b>Mindestens</b> wird der Wert für die Mindesthöhe festgelegt (wenn Sie die Größe des Initials ändern, ändert sich die Rahmenhöhe entsprechend, wird jedoch nicht kleiner als der angegebene Wert).</li>
+				<li>Über die Parameter <b>Horizontal</b> kann die genaue <b>Position</b> des Rahmens in den gewählten Maßeinheiten <b>in Bezug auf</b> den Randn, die Seite oder die Spalte, oder um den Rahmen (links, zentriert oder rechts) <b>in Bezug auf</b> einen der Referenzpunkte auszurichten. Sie können auch die horizontale <b>Distanz vom Text</b> festlegen, d.h. den Platz zwischen dem Text des Absatzes und den horizontalen Rahmenlinien des Rahmens.</li>
+				<li>Die Parameter <b>Vertikal</b> werden genutzt, entweder um die genaue <b>Position</b> des Rahmens in gewählten Maßeinheiten <b>relativ zu</b> einem Rand, einer Seite oder einem Absatz festzulegen oder um den Rahmen (oben, zentriert oder unten) <b>relativ zu</b> einem dieser Referenzpunkte auszurichten. Außerdem können auch den vertikalen <b>Abstand des Texts</b> festlegen, also den Abstand zwischen den horizontalen Rahmenrändern und dem Text des Absatzes.</li>
+				<li><b>Mit Text verschieben</b> - kontrolliert, ob der Rahmen verschoben wird, wenn der Absatz, mit dem der Rahmen verankert ist, verschoben wird.</li>
+			</ul><!--<img alt="Frame - Advanced Settings" src="../images/Frame_properties_2.png" />--><p>Über die Gruppen <b>Rahmen &amp; Füllung</b> und <b>Ränder</b> können sie dieselben Parameter festlegen wie über die gleichnamigen Gruppen im Fenster <b>Initial - Erweiterte Einstellungen</b>.</p><!--<img alt="Frame - Advanced Settings" src="../images/Frame_properties_3.png" />
+			<p>The <b>Margins</b> tab allows to set just the same parameters as at the tab of the same name in the <b>Drop Cap - Advanced Settings</b> window.</p>--></div>
+	</body>
+</html>

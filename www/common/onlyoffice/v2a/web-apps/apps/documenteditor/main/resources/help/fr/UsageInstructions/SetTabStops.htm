@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Définir des taquets de tabulation</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Set tab stops" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Définir des taquets de tabulation</h1>
+			<p>Document Editor vous permet de changer des taquets de tabulation c'est-à-dire l'emplacement où le curseur s'arrête quand vous appuyez sur la touche <b>Tab</b> du clavier.</p>
+			<p>Pour définir les taquets de tabulation vous pouvez utiliser la règle horizontale :</p>
+			<ol>
+			    <li>Sélectionnez le type du taquet de tabulation en cliquant sur le bouton <img alt="Taquet de tabulation de gauche" src="../images/tabstopleft.png" /> dans le coin supérieur gauche de la zone de travail. Trois types de taquets de tabulationsont disponibles :<ul>
+			            <li><b>De gauche</b> <img alt="Taquet de tabulation de gauche" src="../images/tabstopleft.png" /> - sert à aligner le texte sur le côté gauche du taquet de tabulation ; le texte se déplace à droite du taquet de tabulation quand vous saisissez le texte. Le taquet de tabulation sera indiqué sur la règle horizontale par le marqueur <img alt="Marqueur du taquet de tabulation de gauche" src="../images/tabstopleft_marker.png" />.</li>
+			            <li><b>Du centre</b> <img alt="Taquet de tabulation du centre" src="../images/tabstopcenter.png" /> - sert à centrer le texte à l'emplacement du taquet de tabulation. Le taquet de tabulation sera indiqué sur la règle horizontale par le marqueur <img alt="Marqueur du taquet de tabulation du centre" src="../images/tabstopcenter_marker.png" />.</li>
+			            <li><b>De droite</b> <img alt="Taquet de tabulation de droite" src="../images/tabstopright.png" /> - sert à aligner le texte sur le côté droit du taquet de tabulation ; le texte se déplace à gauche du taquet de tabulation quand vous saisissez le texte. Le taquet de tabulation sera indiqué sur la règle horizontale par le marqueur <img alt="Marqueur du taquet de tabulation de droite" src="../images/tabstopright_marker.png" />.</li>
+			        </ul>
+			    </li>
+			    <li>Cliquez sur le bord inférieur de la règle là où vous voulez positionner le taquet de tabulation. Faites-le glisser tout au long de la règle pour changer son emplacement. Pour supprimer le taquet de tabulation ajouté faites-le glisser en dehors de la règle.<p><img alt="Règle horizontale avec les taquets de tabulation ajoutés" src="../images/tabstops_ruler.png" /></p>
+			    </li>			
+			</ol>
+			<hr />
+			<p>Vous pouvez également utiliser la fenêtre des paramètres avancés du paragraphe pour régler les taquets de tabulation. Cliquez avec le bouton droit de la souris, sélectionnez l'option <b>Paramètres avancés du paragraphe</b> du menu ou utilisez le lien <b>Afficher les paramètres avancés</b> sur la barre latérale droite, et passez à l'onglet <b>Tabulation</b> de la fenêtre <b>Paragraphe - Paramètres avancés</b>.</p><img alt="Paramètres du paragraphe - onglet Tabulation" src="../images/paradvsettings_tab.png" /><p>Vous y pouvez définir les paramètres suivants :</p>
+			<ul>
+			    <li><b>Position</b> sert à personnaliser les taquets de tabulation. Saisissez la valeur nécessaire dans ce champ, réglez-la en utilisant les boutons à flèche et cliquez sur le bouton <b>Spécifier</b>. La position du taquet de tabulation personnalisée sera ajoutée à la liste dans le champ au-dessous. Si vous avez déjà ajouté qualques taquets de tabulation en utilisant la règle, tous ces taquets seront affichés dans cette liste.</li>
+			    <li>La tabulation <b>Par défaut</b> est 1.25 cm. Vous pouvez augmenter ou diminuer cette valeur en utilisant les boutons à flèche ou en saisissant la valeur nécessaire dans le champ.</li>
+			    <li><b>Alignement</b> sert à définir le type d'alignment pour chaque taquet de tabulation de la liste. Sélectionnez le taquet nécessaire dans la liste, choisissez l'option <b>A gauche</b>, <b>Au centre</b> ou <b>A droite</b> dans la liste déroulante et cliquez sur le bouton <b>Spécifier</b>.</li>
+                <li><b>Points de suite</b> - permet de choisir un caractère utilisé pour créer des points de suite pour chacune des positions de tabulation. Les points de suite sont une ligne de caractères (points ou traits d'union) qui remplissent l'espace entre les taquets. Sélectionnez le taquet voulu dans la liste, choisissez le type de points de suite dans la liste dans la liste déroulante et cliquez sur le bouton .<p>Pour supprimer un taquet de tabulation de la liste sélectionnez-le et cliquez sur le bouton <b>Supprimer</b> ou utilisez le bouton <b>Supprimer tout</b> pour vider la liste.</p>
+                </li>
+			</ul>			
+		</div>
+	</body>
+</html>

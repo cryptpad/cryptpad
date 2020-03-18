@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Utiliser le Publipostage</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Use Mail Merge to create a lot of personalized letters and send them to recipients" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Utiliser le Publipostage</h1>
+            <p class="note"><b>Remarque</b> : cette option est disponible uniquement pour les versions payantes.</p>
+			<p>La fonctionnalité <b>Publipostage</b> est utilisée pour créer un ensemble de documents combinant un contenu commun provenant d'un document texte et des composants individuels (variables, tels que des noms, des messages d'accueil, etc.) extraits d'une feuille de calcul (d'une liste de clients par exemple). Elle peut se révéler utile si vous devez créer beaucoup de lettres personnalisées à envoyer aux destinataires.</p>
+			<p>Pour commencer à travailler avec la fonctionnalité <b>Publipostage</b>,</p>
+            <ol>
+                <li><b>Préparer une source de données et la charger dans le document principal</b><ol>
+                    <li>La source de données utilisée pour le publipostage doit être une feuille de calcul <b>.xlsx</b> stockée sur votre portail. Ouvrez une feuille de calcul existante ou créez-en une nouvelle et assurez-vous qu'elle réponde aux exigences suivantes.<p>La feuille de calcul doit comporter une ligne d'en-tête avec les titres des colonnes, car les valeurs de la première cellule de chaque colonne désignent des champs de fusion (c'est-à-dire des variables que vous pouvez insérer dans le texte). Chaque colonne doit contenir un ensemble de valeurs réelles pour une variable. Chaque ligne de la feuille de calcul doit correspondre à un enregistrement distinct (c'est-à-dire un ensemble de valeurs appartenant à un destinataire donné). Pendant le processus de fusion, une copie du document principal sera créée pour chaque enregistrement et chaque champ de fusion inséré dans le texte principal sera remplacé par une valeur réelle de la colonne correspondante. Si vous devez envoyer le résultat par courrier électronique, la feuille de calcul doit également inclure une colonne avec les adresses électroniques des destinataires.</p>
+                    </li>
+                    <li>Ouvrez un document texte existant ou créez-en un nouveau. Il doit contenir le texte principal qui sera le même pour chaque version du document fusionné. Cliquez sur l'icône <b>Fusionner</b> <img alt="Icône Fusionner" src="../images/mailmergeicon.png" /> dans l'onglet <b>Accueil</b> de la barre d'outils supérieure.</li>
+                    <li>La fenêtre <b>Sélectionner la source de données</b> s'ouvre : Elle affiche la liste de toutes vos feuilles de calcul <b>.xlsx</b> stockées dans la section <b>Mes documents</b>. Pour naviguer entre les autres sections du module <b>Documents</b>, utilisez le menu dans la partie gauche de la fenêtre. Sélectionnez le fichier dont vous avez besoin et cliquez sur <b>OK</b>.</li>
+                </ol>
+                <p>Une fois la source de données chargée, l'onglet <b>Paramètres de publipostage</b> sera disponible dans la barre latérale droite.</p>
+                <p><img alt="Onglet Paramètres de publipostage" src="../images/right_mailmerge.png" /></p>
+                </li>
+                <li><b>Vérifier ou modifier la liste des destinataires</b><ol>
+                    <li>Cliquez sur le bouton <b>Modifier la liste des destinataires</b> en haut de la barre latérale droite pour ouvrir la fenêtre <b>Fusionner les destinataires</b>, où le contenu de la source de données sélectionnée est affiché.<p><img alt="Fenêtre Fusionner les destinataires" src="../images/mailmergerecipients.png" /></p>
+                    </li>
+                    <li>Ici, vous pouvez ajouter de nouvelles informations, modifier ou supprimer les données existantes, si nécessaire. Pour simplifier l'utilisation des données, vous pouvez utiliser les icônes situées au haut de la fenêtre :<ul>
+                        <li><img alt="Copier" src="../images/copy.png" /> et <img alt="Coller" src="../images/paste.png" /> pour copier et coller les données copiées</li>
+                        <li><img alt="Annuler" src="../images/undo.png" /> et <img alt="Rétablir" src="../images/redo.png" /> pour annuler et rétablir les actions</li>
+                        <li><img alt="Icône Trier dans l'ordre croissant" src="../images/sortatoz.png" /> et <img alt="Icône Trier dans l'ordre décroissant" src="../images/sortztoa.png" /> - pour trier vos données dans une plage sélectionnée de cellules dans l'ordre croissant ou décroissant</li>
+                        <li><img alt="icône Filtrer" src="../images/sortandfilter.png" /> - pour activer le filtre pour la plage de cellules sélectionnée précédemment ou supprimer le filtre appliqué</li>
+                        <li><img alt="Icône Effacer les filtres" src="../images/clearfilter.png" /> - pour effacer tous les paramètres de filtre appliqués<p class="note"><b>Remarque</b> : pour en savoir plus sur l'utilisation des filtres, reportez-vous à la section <b>Trier et filtrer les données</b> de l'aide de <b>Spreadsheet Editor</b>.</p>
+                        </li>
+                        <li><img alt="icône Recherche" src="../images/searchicon.png" /> - pour rechercher une certaine valeur et la remplacer par une autre, si nécessaire<p class="note"><b>Remarque</b> : pour en savoir plus sur l'utilisation de l'outil <b>Rechercher et remplacer</b>, reportez-vous à la section <b>Fonctions rechercher et remplacer</b> de l'aide de <b>Spreadsheet Editor</b>.</p>
+                        </li>
+                    </ul>
+                    </li>
+                    <li>Une fois toutes les modifications nécessaires effectuées, cliquez sur le bouton <b>Enregistrer et quitter</b>. Pour annuler les modifications, cliquez sur le bouton <b>Fermer</b>.</li>
+                </ol>
+                </li>
+                <li><b>Insérer des champs de fusion et vérifier les résultats</b><ol>
+                    <li>Placez le curseur de la souris dans le texte du document principal où vous souhaitez insérer un champ de fusion, cliquez sur le bouton <b>Insérer un champ de fusion</b> dans la barre latérale droite et sélectionnez le champ voulu dans la liste. Les champs disponibles correspondent aux données de la première cellule de chaque colonne de la source de données sélectionnée. Ajoutez tous les champs que vous voulez n'importe où dans le document.<p><img alt="Section Fusionner les champs" src="../images/mergefields.png" /></p>
+                    </li>
+                    <li>Activez l'option<b> Mettre en surbrillance les champs de fusion</b> dans la barre latérale droite pour rendre les champs insérés plus visibles dans le texte du document.<p><img alt="Document principal avec champs insérés" src="../images/insertedfields.png" /></p>
+                    </li>
+                    <li>Activez le sélecteur <b>Aperçu des résultats</b> dans la barre latérale droite pour afficher le texte du document avec les champs de fusion remplacés par les valeurs réelles de la source de données. Utilisez les boutons fléchés pour prévisualiser les versions du document fusionné pour chaque enregistrement.<p><img alt="Aperçu des résultats" src="../images/previewinsertedfields.png" /></p>
+                    </li>
+                </ol>
+                <ul>
+                    <li>Pour supprimer un champ inséré, désactivez le mode <b>Aperçu des résultats</b>, sélectionnez le champ avec la souris et appuyez sur la touche <b>Suppr</b> du clavier.</li>
+                    <li>Pour remplacer un champ inséré, désactivez le mode <b>Aperçu des résultats</b>, sélectionnez le champ avec la souris, cliquez sur le bouton <b>Insérer un champ de fusion</b> dans la barre latérale de droite et choisissez un nouveau champ dans la liste.</li>
+                </ul>
+                </li>
+                <li><b>Spécifier les paramètres de fusion</b><ol>
+                    <li>Sélectionnez le type de fusion. Vous pouvez lancer le publipostage ou enregistrer le résultat sous forme de fichier au format PDF ou Docx pour pouvoir l'imprimer ou le modifier ultérieurement. Sélectionnez l'option voulue dans la liste <b>Fusionner vers</b> :<p><img alt="Sélection du type de fusion" src="../images/mergeto.png" /></p>
+                    <ul>
+                        <li><b>PDF</b> - pour créer un document unique au format PDF qui inclut toutes les copies fusionnées afin que vous puissiez les imprimer plus tard</li>
+                        <li><b>Docx</b> - pour créer un document unique au format Docx qui inclut toutes les copies fusionnées afin que vous puissiez éditer les copies individuelles plus tard</li>
+                        <li><b>Email</b> - pour envoyer les résultats aux destinataires par email<p class="note"><b>Remarque</b> : les adresses e-mail des destinataires doivent être spécifiées dans la source de données chargée et vous devez disposer d'au moins un compte de messagerie connecté dans le module <b>Courrier</b> de votre portail.</p>
+                        </li>
+                    </ul>
+                    </li>
+                    <li>Choisissez les enregistrements auxquels vous voulez appliquer la fusion :<ul>
+                        <li><b>Tous les enregistrements</b> (cette option est sélectionnée par défaut) - pour créer des documents fusionnés pour tous les enregistrements de la source de données chargée</li>
+                        <li><b>Enregistrement actuel</b> - pour créer un document fusionné pour l'enregistrement actuellement affiché</li>
+                        <li><b>De ...</b> <b>À</b> - pour créer des documents fusionnés pour une série d'enregistrements (dans ce cas, vous devez spécifier deux valeurs : le numéro du premier enregistrement et celui du dernier enregistrement dans la plage souhaitée)<p class="note"><b>Remarque</b> : la quantité maximale autorisée de destinataires est de 100. Si vous avez plus de 100 destinataires dans votre source de données, exécutez le publipostage par étapes : spécifiez les valeurs comprises entre 1 et 100, attendez la fin du processus de fusion, puis répétez l'opération en spécifiant les valeurs comprises entre 101 et N etc. .</p>
+                        </li>
+                    </ul>
+                    </li>
+                    <li>Terminer la fusion<ul>
+                            <li>Si vous avez décidé d'enregistrer les résultats de la fusion sous forme de fichier,<ul>
+                                <li>cliquez sur le bouton <b>Télécharger</b> pour stocker le fichier n'importe où sur votre PC. Vous trouverez le fichier téléchargé dans votre dossier <em>Téléchargements</em> par défaut.</li>
+                                <li>cliquez sur le bouton <b>Enregistrer</b> pour enregistrer le fichier sur votre portail. Dans la fenêtre <b>Dossier de sauvegarde</b> qui s'ouvre, vous pouvez modifier le nom du fichier et spécifier le dossier dans lequel vous souhaitez enregistrer le fichier. Vous pouvez également cocher la case <b>Ouvrir le document fusionné dans un nouvel onglet</b> pour vérifier le résultat une fois le processus de fusion terminé. Enfin, cliquez sur <b>Enregistrer</b> dans la fenêtre  <b>Dossier de sauvegarde</b>.</li>
+                            </ul>
+                            </li>
+                            <li>Si vous avez sélectionné l'option <b>Email</b>, le bouton <b>Fusionner</b> sera disponible dans la barre latérale droite. Après avoir cliqué dessus, la fenêtre <b>Envoyer par Email</b> s'ouvre :<p><img alt="Fenêtre Envoyer par Email" src="../images/sendtoemail.png" /></p>
+                            <ul>
+                                <li>Dans la liste <b>De</b>, sélectionnez le compte de messagerie que vous souhaitez utiliser pour l'envoi du mail, si plusieurs comptes sont connectés dans le module <b>Courrier</b>.</li>
+                                <li>Dans la liste <b>À</b>, sélectionnez le champ de fusion correspondant aux adresses e-mail des destinataires, s'il n'a pas été sélectionné automatiquement.</li>
+                                <li>Entrez l'objet de votre message dans le champ <b>Objet</b>.</li>
+                                <li>Sélectionnez le format du mail dans la liste déroulante : <b>HTML</b>, <b>Joindre en DOCX</b> ou <b>Joindre en PDF</b>. Lorsque l'une des deux dernières options est sélectionnée, vous devez également spécifier le <b>Nom du fichier</b> pour les pièces jointes et entrer le <b>Message</b> (le texte qui sera envoyé aux destinataires).</li>
+                                <li>Cliquez sur le bouton <b>Envoyer</b>.</li>
+                            </ul>
+                            <p>Une fois l'envoi terminé, vous recevrez une notification à votre adresse e-mail spécifiée dans le champ <b>De</b>.</p>
+                            </li>
+                        </ul>
+                    </li>
+                </ol>
+                </li>
+            </ol>
+		</div>
+	</body>
+</html>

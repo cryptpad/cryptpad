@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>MAXIFS Function</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>MAXIFS Function</h1>
+			<p>The <b>MAXIFS</b> function is one of the statistical functions. It is used to return the maximum value among cells specified by a given set of conditions or criteria.</p>
+			<p>The <b>MAXIFS</b> function syntax is:</p> 
+			<p style="text-indent: 150px;"><b><em>MAXIFS(max_range, criteria_range1, criteria1 [, criteria_range2, criteria2], ...)</em></b></p> 
+            <p style="text-indent: 50px;"><b><em>max_range</em></b> is the range of cells in which the maximum will be determined.</p>
+            <p style="text-indent: 50px;"><b><em>criteria_range1</em></b> is the first selected range of cells to apply the <em>criteria1</em> to.</p>
+            <p style="text-indent: 50px;"><b><em>criteria1</em></b> is the first condition that must be met. It is applied to the <em>criteria_range1</em> and used to determine which cells in the <em>max_range</em> will be evaluated as maximum. It can be a value entered manually or included into the cell you make reference to.</p>
+            <p style="text-indent: 50px;"><b><em>criteria_range2, criteria2, ...</em></b> are additional ranges of cells and their corresponding criteria. These arguments are optional.</p>
+            <p class="note"><b>Note:</b> you can use wildcard characters when specifying criteria. The question mark "?" can replace any single character and the asterisk "*" can be used instead of any number of characters.</p>
+			<p>To apply the <b>MAXIFS</b> function,</p>
+			<ol>
+			<li>select the cell where you wish to display the result,</li>
+			<li>click the <b>Insert function</b> <img alt="Insert function icon" src="../images/insertfunction.png" /> icon situated at the top toolbar,
+				<br />or right-click within a selected cell and select the <b>Insert Function</b> option from the menu,
+				<br />or click the <img alt="Function icon" src="../images/function.png" /> icon situated at the formula bar,
+			</li>
+			<li>select the <b>Statistical</b> function group from the list,</li>
+			<li>click the <b>MAXIFS</b> function,</li>
+			<li>enter the required arguments separating them by commas or select a range of cells with the mouse,</li>
+			<li>press the <b>Enter</b> button.</li>
+			</ol>
+			<p>The result will be displayed in the selected cell.</p>
+			<p style="text-indent: 150px;"><img alt="MAXIFS Function" src="../images/maxifs.png" /></p>
+		</div>
+	</body>
+</html>

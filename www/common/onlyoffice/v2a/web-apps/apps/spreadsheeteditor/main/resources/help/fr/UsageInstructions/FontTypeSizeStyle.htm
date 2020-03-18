@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Définir le type de police, la taille, le style et la couleur</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Change the following formatting parameters: font type, size, style, and colors" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Définir le type de police, la taille, le style et la couleur</h1>
+			<p>Vous pouvez sélectionner le type de police et sa taille, appliquer l'un des styles de décoration et modifier les couleurs de police et fond en utilisant les icônes correspondantes situées sur barre d'outils supérieure.</p>
+			<p class="note"><b>Remarque</b> : si vous souhaitez appliquer la mise en forme aux données déjà présentes dans le classeur, sélectionnez-les avec la souris ou <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">en utilisant le clavier</a> et appliquez la mise en forme. Si vous souhaitez appliquer la mise en forme à plusieurs cellules ou plages non adjacentes, maintenez la touche <b>Ctrl</b> enfoncée tout en sélectionnant les cellules/plages à l'aide de la souris.</p>
+			<table>
+				<tr>
+					<td>Nom de la police</td>
+					<td><img alt="Nom de la police" src="../images/fontfamily.png" /></td>
+					<td>Sert à sélectionner l'une des polices disponibles dans la liste.</td>
+				</tr>
+				<tr>
+					<td>Taille de la police</td>
+					<td><img alt="Taille de la police" src="../images/fontsize.png" /></td>
+					<td>Sert à sélectionner la taille de la police parmi les valeurs disponibles dans la liste déroulante, ou la saisir à la main dans le champ de la taille de police.</td>
+				</tr>
+				<tr>
+					<td>Incrémenter la taille de la police</td>
+					<td><img alt="Taille de la police" src="../images/larger.png" /></td>
+					<td>Sert à modifier la taille de la police en la rendant plus grosse chaque fois que vous cliquez sur l'icône.</td>
+				</tr>
+				<tr>
+					<td>Décrementer la taille de la police</td>
+					<td><img alt="Taille de la police" src="../images/smaller.png" /></td>
+					<td>Sert à modifier la taille de la police en la rendant plus petite chaque fois que vous cliquez sur l'icône.</td>
+				</tr>
+				<tr>
+					<td>Gras</td>
+					<td><img alt="Gras" src="../images/bold.png" /></td>
+					<td>Sert à mettre la police en gras pour lui donner plus de poids.</td>
+				</tr>
+				<tr>
+					<td>Italique</td>
+					<td><img alt="Italique" src="../images/italic.png" /></td>
+					<td>Sert à mettre la police en italique pour lui donner une certaine inclinaison à droite.</td>
+				</tr>
+				<tr>
+					<td>Souligné</td>
+					<td><img alt="Souligné" src="../images/underline.png" /></td>
+					<td>Sert à souligner le texte avec la ligne qui passe sous les lettres.</td>
+				</tr>
+                <tr>
+                    <td>Barré</td>
+                    <td><img alt="Barré" src="../images/strike.png" /></td>
+                    <td>Sert à barrer le texte par la ligne passant par les lettres.</td>
+                </tr>
+                <tr>
+                    <td>Indice/Exposant</td>
+                    <td><img alt="Indice" src="../images/subscripticon.png" /></td>
+                    <td>Permet de choisir l'option <b>Exposant</b> ou <b>Indice</b>. L'option <b>Exposant</b> sert à rendre le texte plus petit et le déplacer vers la partie supérieure de la ligne du texte, comme par exemple dans les fractions. L'option <b>Indice</b> sert à rendre le texte plus petit et le déplacer vers la partie inférieure de la ligne du texte, comme par exemple dans les formules chimiques.</td>
+                </tr>
+                <tr>
+					<td>Couleur de police</td>
+					<td><img alt="Couleur de police" src="../images/fontcolor.png" /></td>
+					<td>Sert à changer la couleur des lettres et des caractères dans les cellules.</td>
+				</tr>
+				<tr>
+					<td>Couleur d'arrière-plan</td>
+					<td><img alt="Couleur d'arrière-plan" src="../images/backgroundcolor.png" /></td>
+					<td>Sert à modifier la couleur d'arrière-plan de la cellule.</td>
+				</tr>
+				<tr>
+					<td>Modifier le jeu de couleurs</td>
+					<td><img alt="Modifier le jeu de couleurs" src="../images/changecolorscheme.png" /></td>
+					<td>Sert à modifier la palette de couleurs par défaut pour les éléments de classeur (police, arrière-plan, graphique et ses élements) en sélectionnant la palette disponible : <b>Bureau</b>, <b>Niveaux de gris</b>, <b>Apex</b>, <b>Aspect</b>, <b>Civil</b>, <b>Rotonde</b>, <b>Capitaux</b>, <b>Flux</b>, <b>Fonderie</b>, <b>Médian</b>, <b>Métro</b>, <b>Module</b>, <b>Opulent</b>, <b>Oriel</b>, <b>Origine</b>, <b>Papier</b>, <b>Solstice</b>, <b>Technique</b>, <b>Promenade</b>, <b>Urbain</b>, ou <b>Verve</b>.</td>
+				</tr>
+			</table>
+			<p><p class="note"><b>Remarque</b> : il est également possible d'appliquer une des mises en forme prédéfinies en sélectionnant la cellule que vous voulez mettre en forme et en choisissant la mise en forme désirée de la liste sur la barre d'outils supérieure :<br /><br /> <img alt="Mises en forme prédéfinies" src="../images/presets.png" /></p>
+			<p>Pour modifier la couleur de police / d'arrière-plan,</p>
+			<ol>
+			<li>sélectionnez les caractères / cellules avec la souris ou une feuille de calcul entière en utilisanst la combinaison de touches <b>Ctrl+A</b>,</li>
+				<li>cliquez sur l'iсône correspondante sur la barre d'outils supérieure,</li>
+				<li>sélectionnez une couleur dans les palettes disponibles<p><img alt="Palette" src="../images/palette.png" /></p>
+					<ul>
+						<li><b>Couleurs de thème</b> - les couleurs qui correspondent à la palette de couleurs sélectionnée du classeur.</li>
+						<li><b>Couleurs standard</b> - le jeu de couleurs par défaut.</li>
+						<li><b>Couleur personnalisée</b> - choisissez cette option si il n'y a pas la couleur recherchée dans les palettes disponibles. Sélectionnez la gamme de couleurs nécessaire en déplaçant le curseur vertical et définissez la couleur spécifique en faisant glisser le sélecteur de couleur dans le grand champ de couleur carré. Une fois que vous sélectionnez une couleur avec le sélecteur de couleur, les valeurs de couleur appropriées RGB et sRGB seront affichées dans les champs à droite. Vous pouvez également spécifier une couleur sur la base du modèle de couleur RGB (RVB) en entrant les valeurs numériques nécessaires dans les champs <b>R</b>, <b>G</b>, <b>B</b> (rouge, vert, bleu) ou saisir le code hexadécimal dans le champ sRGB marqué par le signe <b>#</b>. La couleur sélectionnée apparaît dans la case de prévisualisation <b>Nouveau</b>. Si l'objet a déjà été rempli d'une couleur personnalisée, cette couleur sera affichée dans la case <b>Actuel</b> afin que vous puissiez comparer les couleurs originales et modifiées. Lorsque la couleur est spécifiée, cliquez sur le bouton <b>Ajouter</b> :<p><img alt="Palette - Couleur personnalisée" src="../images/palette_custom.png" /></p>
+						<p>La couleur personnalisée sera appliquée au paragraphe et ajoutée à la palette <b>Couleur personnalisée</b>.</p>
+						</li>
+						</ul>
+					</li>
+			</ol>
+			<p>Pour effacer une couleur d'arrière-plan d'une certaine cellule,</p>
+			<ol>
+				<li>sélectionnez une cellule, ou une plage de cellules avec la souris ou une feuille de calcul entière en utilisant la combinaison de touches <b>Ctrl+A</b>,</li>
+				<li>cliquez sur l'icône <b>Couleur d'arrière-plan</b> <img alt="Couleur d'arrière-plan" src="../images/backgroundcolor.png" /> sur la barre d'outils supérieure,</li>
+				<li>sélectionnez l'icône <img alt="Sans remplissage" src="../images/nofill.png" />.</li>
+			</ol>
+		</div>
+	</body>
+</html>

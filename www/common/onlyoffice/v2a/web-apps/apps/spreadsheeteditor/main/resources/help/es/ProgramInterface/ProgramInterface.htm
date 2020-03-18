@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Introduciendo el interfaz de usuario de Editor de Hoja de Cálculo</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Introducing the Spreadsheet Editor user interface" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Introduciendo el interfaz de usuario de Editor de Hoja de Cálculo</h1>
+			<p>El <b>Editor de Hoja de Cálculo</b> usa un interfaz de pestañas donde los comandos de edición se agrupan en pestañas de manera funcional.</p>
+            <p><img alt="Ventana Editor" src="../images/interface/editorwindow.png" /></p>
+            <p>El interfaz de edición consiste en los siguientes elementos principales:</p>
+            <ol>
+                <li>El <b>Editor de Encabezado</b> muestra el logo, pestañas de menú, nombre de la hoja de cálculo así como tres iconos a la derecha que permiten <a href="../HelpfulHints/CollaborativeEditing.htm" onclick="onhyperlinkclick(this)">ajustar los derechos de acceso</a>, regresar a la lista de Documentos, configurar los <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">Ajustes de Visualización</a> y acceder al editor de <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Ajustes Avanzados</a>.<p><img alt="Iconos en el encabezado del editor" src="../images/interface/rightpart.png" /></p>
+                </li>
+                <li>La <b>Barra de herramientas superior</b> muestra un conjunto de comandos para editar dependiendo de la pestaña del menú que se ha seleccionado. Actualmente, las siguientes pestañas están disponibles: <a href="../ProgramInterface/FileTab.htm" onclick="onhyperlinkclick(this)">Archivo</a>, <a href="../ProgramInterface/HomeTab.htm" onclick="onhyperlinkclick(this)">Inicio</a>, <a href="../ProgramInterface/InsertTab.htm" onclick="onhyperlinkclick(this)">Insertar</a>, <a href="../ProgramInterface/LayoutTab.htm" onclick="onhyperlinkclick(this)">Diseño</a>, <a href="../ProgramInterface/PivotTableTab.htm" onclick="onhyperlinkclick(this)">Tabla Dinámica</a>, <a href="../ProgramInterface/CollaborationTab.htm" onclick="onhyperlinkclick(this)">Colaboración</a>, <a href="../ProgramInterface/PluginsTab.htm" onclick="onhyperlinkclick(this)">Plugins</a>.<p>Las opciones de <b>Imprimir</b>, <b>Guardar</b>, <b>Copiar</b>, <b>Pegar</b>, <b>Deshacer</b> y <b>Rehacer</b> están siempre disponibles en la parte izquierda de la <b>Barra de Herramientas</b>, independientemente de la pestaña seleccionada.</p>
+                <p><img alt="Iconos en la barra de herramientas superior" src="../images/interface/leftpart.png" /></p>
+                </li>
+                <li><b>Barra de fórmulas</b> permite introducir y editar <a href="../UsageInstructions/InsertFunction.htm" onclick="onhyperlinkclick(this)">fórmulas</a> o valores en las celdas. <b>Barra de fórmulas</b> muestra el contenido de la celda seleccionada actualmente.</li>
+                <li>La <b>Barra de estado</b> de debajo de la ventana del editor contiene varias <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">herramientas de navegación</a>: botones de navegación de hojas y botones de zoom. La <b>Barra de estado</b> también muestra el número de archivos filtrados si aplica un <a href="../UsageInstructions/SortData.htm#filter" onclick="onhyperlinkclick(this)">filtro</a>, o los resultados de <a href="../UsageInstructions/InsertFunction.htm" onclick="onhyperlinkclick(this)">calculaciones automáticas</a> si selecciona varias celdas que contienen datos.</li>
+                <li>La <b>barra lateral izquierda</b> contiene iconos que permiten el uso de la herramienta de <a href="../HelpfulHints/Search.htm" onclick="onhyperlinkclick(this)">Buscar y Reemplazar</a>, abrir el panel de <a href="../HelpfulHints/CollaborativeEditing.htm#comments" onclick="onhyperlinkclick(this)">Comentarios</a> y <a href="../HelpfulHints/CollaborativeEditing.htm#chat" onclick="onhyperlinkclick(this)">Chat</a>, contactar nuestro equipo de apoyo y mostrar la información sobre el programa.</li>
+                <li>La <b>Barra lateral derecha</b> permite ajustar parámetros adicionales de objetos distintos. Cuando selecciona un objeto en particular en una hoja de trabajo, el icono correspondiente se activa en la barra lateral derecha. Haga clic en este icono para expandir la barra lateral derecha.</li>
+                <li><b>El área de trabajo</b> permite ver contenido de la hoja de cálculo, introducir y editar datos.</li>
+                <li><b>Barras de desplazamiento</b> horizontal y vertical permiten desplazar hacia arriba/abajo e izquierda/derecha en la hoja actual.</li>
+            </ol>
+            <p>Para su conveniencia, puede ocultar varios componentes y mostrarlos de nuevo cuando sea necesario. Para aprender más sobre cómo ajustar los ajustes de vista vaya a  <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">esta página</a>.</p>
+           
+		</div>
+	</body>
+</html>

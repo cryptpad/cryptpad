@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Créer un nouveau document ou ouvrir un document existant</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Open a recently edited document, create a new one, or return to the list of existing documents" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Créer un nouveau document ou ouvrir un document existant</h1>
+			<p>Une fois que vous avez fini de travailler sur un document, vous pouvez immédiatement passer au document existant que vous avez récemment édité, créer un nouveau, ou revenir à la liste des documents existants.</p>
+			<p>Pour créer un nouveau document,</p>
+			<ol>
+				<li>cliquez sur l'onglet <b>Fichier</b> de la barre d'outils supérieure,</li>
+				<li>sélectionnez l'option <b>Créer nouveau</b>. <!--Here you can choose whether to create a <b>blank</b> text document or use one of the available document <b>templates</b>: contract, letter, list, or plan.--></li>
+			</ol>
+			<p>Pour ouvrir un document récemment édité dans Document Editor,</p>
+			<ol>
+				<li>cliquez sur l'onglet <b>Fichier</b> de la barre d'outils supérieure,</li>
+				<li>sélectionnez l'option <b>Ouvrir récent</b>,</li>
+				<li>sélectionnez le document nécessaire dans la liste des documents récemment édités.</li>
+			</ol>
+			<p>Pour revenir à la liste des documents existants, cliquez sur l'icône <img alt="l'icône Fichier" src="../images/gotodocuments.png" /> <b>Aller aux Documents</b> sur le côté droit de l'en-tête de l'éditeur.  Vous pouvez aussi passer à l'onglet <b>Ficher</b> de la barre d'outils supérieure et sélectionnez l'option <b>Aller aux Documents</b>.</p>
+		</div>
+	</body>
+</html>

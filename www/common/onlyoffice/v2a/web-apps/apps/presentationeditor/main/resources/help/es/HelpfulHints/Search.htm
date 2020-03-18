@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Función de búsqueda</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The description of the search function in Presentation Editor" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+		<h1>Función de búsqueda</h1>
+			<p><b>Para buscar</b> los caracteres necesarios, palabras o frases usadas en la presentación actualmente editada, haga clic en el <img alt="Icono Buscar" src="../images/searchicon.png" /> icono situado en la barra izquierda lateral.</p>
+			<p>La ventana <b>Búsqueda</b> se abrirá:</p><img alt="Ventana de búsqueda" src="../images/search_window.png" /><ol>
+			<li>Introduzca su consulta en el campo correspondiente.</li>
+			<li>Pulse uno de los <b>botones de flecha</b> a la derecha. La búsqueda se realizará o hacia el principio de la presentación (si pulsa el botón <img alt="Botón de flecha izquierda" src="../images/searchupbutton.png" />) o hacia el final de la presentación (si pulsa el botón <img alt="Botón de flecha derecha" src="../images/searchdownbutton.png" />) de la posición actual de cursor.</li>
+			</ol>
+			<p>La primera diapositiva en la dirección seleccionada que contiene los caracteres introducidos se resaltará en la lista de diapositivas y se mostrará en el área de trabajo con los caracteres necesarios resaltados. Si no es la diapositiva que está buscando, haga clic en el botón de nuevo para encontrar la siguiente diapositiva que contiene los caracteres introducidos.</p> 
+		</div>
+	</body>
+</html>

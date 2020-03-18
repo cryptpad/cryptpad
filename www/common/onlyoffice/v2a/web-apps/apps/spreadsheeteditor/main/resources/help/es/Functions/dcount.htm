@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Función BDCONTAR</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Función BDCONTAR</h1>
+			<p>La función <b>BDCONTAR</b> es una función de base de datos. Se usa para contar las celdas que tiene números en un campo (columna) de archivos en una lista o base de datos que concuerdan con las condiciones que ha especificado.</p>
+			<p>La sintaxis de la función <b>BDCONTAR</b> es:</p> 
+			<p style="text-indent: 150px;"><b><em>BDCONTAR(base de datos, campo, criterio)</em></b></p> 
+            <p><em>donde</em></p>
+            <p style="text-indent: 50px;"><b><em>base de datos</em></b> es el rango de celdas que crean la base de datos. Debe contener encabezados de columnas en la primera fila.</p>
+            <p style="text-indent: 50px;"><b><em>campo</em></b> es un argumento que especifica qué campo (por ejemplo, columna) se debe usar. Puede especificarse como un número de la columna necesaria, o el encabezado de la columna dentro de comillas.</p>
+            <p style="text-indent: 50px;"><b><em>criterio</em></b> es el rango de celdas que contienen condiciones. Debe contener por lo menos un nombre de campo (encabezado de columna) y al menos una celda inferior que especifique la condición que se debe aplicar a este campo en la base de datos. El rango de celda de <b><em>criterio</em></b> no debe solapar el rango de la  <b><em>base de datos</em></b>.</p>
+			<p>Para aplicar la función <b>BDCONTAR</b>,</p>
+			<ol>
+			<li>seleccione la celda donde usted quiere ver el resultado,</li>
+			<li>pulse el icono <b>Insertar función</b> <img alt="Icono insertar función" src="../images/insertfunction.png" /> que se sitúa en la barra de herramientas superior, <br />o haga clic derecho en la сelda seleccionada y elija la opción <b>Insertar función</b> en el menú, <br />o pulse el icono <img alt="Icono función" src="../images/function.png" /> que se sitúa en la barra de fórmulas,</li>
+			<li>seleccione el grupo de funciones <b>Base de datos</b> en la lista,</li>
+			<li>haga clic en la función <b>BDCONTAR</b>,</li>
+			<li>introduzca los argumentos correspondientes separados por comas o seleccione un rango de celdas con el ratón,</li>
+			<li>pulse el botón <b>Enter</b>.</li>
+			</ol>
+			<p>El resultado se mostrará en la celda elegida.</p>
+			<p style="text-indent: 150px;"><img alt="Función BDCONTAR" src="../images/dcount.png" /></p>
+		</div>
+	</body>
+</html>

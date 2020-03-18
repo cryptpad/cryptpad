@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Copie/pegue pasajes de texto, deshaga/rehaga sus acciones</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Perform the basic operations with the document text: copy, paste, undo, redo" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Copie/pegue pasajes de texto, deshaga/rehaga sus acciones</h1>
+            <h3>Use operaciones de portapapeles básico</h3>
+			<p>Para cortar, copiar y pegar pasajes de texto y objetos insertados (autoformas, imágenes, gráficos) en el documento actual use las opciones correspondientes del menú contextual o iconos de la barra de herramientas superior:</p>
+			<ul>
+                <li><b>Cortar</b> – seleccione un fragmento de texto o un objeto y use la opción <b>Cortar</b> del menú conextual para borrar la selección y enviarla a portapapeles. Los datos que se han cortado se pueden insertar más adelante en otros lugares del mismo documento.</li>
+				<li><b>Copiar</b> – seleccione un fragmento de texto o un objeto y use la opción <b>Copiar</b> del menú contextual, o use el <img alt="Icono copiar" src="../images/copy.png" /> icono <b>Copiar</b>  para copiar el fragmento seleccionado a la memoria portapapeles de su ordenador. Los datos que se han copiado se pueden insertar más adelante en otros lugares del mismo documento.</li>
+				<li><b>Pegar</b> – busque un lugar en su documento donde necesite pegar el fragmento de texto anteriormente copiado y use la opción <b>Pegar</b> del menú contextual, o el <img alt="Icono pegar" src="../images/paste.png" /> icono <b>Pegar</b> de la barra de herramientas. El texto se insertará en la posición actual del cursor. Los datos se pueden copiar previamente del mismo documento.</li>			
+			</ul>
+            <p>Para copiar o pegar datos de/en otro documento u otro programa use las combinaciones de teclas siguientes:</p>
+            <ul>
+                <li>La combinación de las teclas <b>Ctrl+X</b> para cortar:</li>
+                <li>La combinación de las teclas <b>Ctrl+C</b> para copiar;</li>
+                <li>La combinación de las teclas <b>Ctrl+V</b> para pegar;</li>
+            </ul>
+			<p class="note"><b>Nota</b>: en vez de cortar y pegar texto del mismo documento usted puede seleccionar un pasaje de texto necesario, arrastrar y soltarlo en un lugar necesario.</p>
+            <h3>Use la característica de Pegar Especial</h3>
+            <p>una vez que el texto copiado se ha pegado, el <img alt="Pegado Especial" src="../images/pastespecialbutton.png" /> botón de <b>Pegado Especial</b> aparece al lado del pasaje del texto insertado. Haga clic en el botón para seleccionar la opción de pegado necesaria.</p>
+            <p>Cuando pegue el texto del párrafo u otro texto con autoformas, las siguientes opciones estarán disponibles:</p>
+            <ul>
+                <li><em>Pegar</em> - permite pegar el texto copiado manteniendo el formato original.</li>
+                <li><em>Mantener solo el texto</em> - permite pegar el texto sin su formato original.</li>
+            </ul>
+            <p>Si pega la tabla copiada en una tabla existente, dispone de las siguientes opciones:</p>
+            <ul>
+                <li><em>Sobre escribir celdas</em> - le permite sustituir el contenido de la tabla existente por los datos pegados. Esta opción se selecciona por defecto.</li>
+                <li><em>Anidar tabla</em> - permite pegar la tabla copiada como una tabla anidada en la celda seleccionada de la tabla existente.</li>
+                <li><em>Solo Mantener Texto</em> - permite pegar el contenido de la tabla como valores de texto separados por el carácter de tabulación.</li>
+            </ul>
+            <h3>Deshaga/rehaga sus acciones</h3>
+			<p>Para deshacer/rehacer la última operación, use los iconos correspondientes en la barra de herramientas superior o atajos de teclado:</p>
+            <ul>
+                <li><b>Deshacer</b> – use el <img alt="Icono deshacer" src="../images/undo.png" /> icono <b>Deshacer</b> en la barra de herramientas o la combinación de las teclas <b>Ctrl+Z</b> para deshacer la última operación que usted ha realizado.</li>
+                <li><b>Rehacer</b> – use el <img alt="Icono rehacer" src="../images/redo.png" /> icono <b>Rehacer</b> en la barra de herramientas  o la combinación de las teclas <b>Ctrl+Y</b> para rehacer la última operación deshecha.</li>
+            </ul>
+		</div>
+	</body>
+</html>

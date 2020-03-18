@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Couper/copier/coller des données</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Cut/copy/paste data using the keyboard shortcuts" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+            <h1>Couper/copier/coller des données</h1>
+            <h3>Utiliser les opérations de base du presse-papiers</h3>
+            <p>Pour couper, copier et coller les données de votre classeur, utilisez le menu contextuel ou les icônes correspondantes sur la barre d'outils supérieure,</p>
+            <ul>
+                <li><p><b>Couper</b> - sélectionnez les données et utilisez l'option <b>Couper</b> pour supprimer les données sélectionnées et les envoyer vers le presse-papiers. Les données coupées peuvent être insérées ensuite dans un autre endroit de la même feuille de calcul, dans un autre classeur, ou dans un autre programme.</p></li>
+                <li><p><b>Copier</b> - sélectionnez les données et utilisez l'icône <b>Copier</b> <img alt="Icône Copier" src="../images/copy.png" /> sur la barre d'outils supérieure ou cliquez avec le bouton droit et sélectionnez l'option <b>Copier</b> depuis le menu pour envoyer les données sélectionnées vers le presse-papiers. Les données copiées peuvent être insérées ensuite dans un autre endroit de la même feuille de calcul, dans un autre classeur, ou dans un autre programme.</p></li>
+                <li><p><b>Coller</b> - sélectionnez l'endroit et utilisez l'icône <b>Coller</b> <img alt="Icône Coller" src="../images/paste.png" /> sur la barre d'outils supérieure ou cliquez avec le bouton droit et sélectionnez l'option <b>Coller</b> pour insérer les données précédemment copiées/coupées depuis le presse-papiers à la position actuelle du curseur. Les données peuvent être copiées à partir de la même feuille de calcul, à partir d'un autre classeur, ou provenant d'un autre programme.</p>
+                </li>
+            </ul>
+            <p>Alternativement, vous pouvez effectuer les opérations nécessaires en utilisant les combinaisons de touches suivantes :</p>
+            <ul>
+                <li><b>Ctrl+X</b> pour couper ;</li>
+                <li><b>Ctrl+C</b> pour copier ;</li>
+                <li><b>Ctrl+V</b> pour coller.</li>
+            </ul>
+            <p class="note"><b>Remarque</b> : au lieu de couper et coller des données dans la même feuille de calcul, vous pouvez sélectionner la cellule/plage de cellules requise, placer le pointeur de la souris sur la bordure de sélection pour qu'il devienne l'icône <img alt="Icône de flèche" src="../images/arrow.png" /> et faire glisser la sélection jusqu'à la position requise.</p>
+            <h3>Utiliser la fonctionnalité Collage spécial</h3>
+            <p>Une fois les données copiées collées, le bouton <b>Collage spécial</b> <img alt="Collage spécial" src="../images/pastespecialbutton.png" /> apparaît en regard du coin inférieur droit de la cellule/plage de cellules insérée. Cliquez sur ce bouton pour sélectionner l'option de collage requise.</p>
+            <p>Lorsque vous collez une cellule/plage de cellules avec des données formatées, les options suivantes sont disponibles :</p>
+            <ul>
+                <li><em>Coller</em> - permet de coller tout le contenu de la cellule, y compris le formatage des données. Cette option est sélectionnée par défaut.</li>
+                <li>Les options suivantes peuvent être utilisées si les données copiées contiennent des formules :<ul>
+                        <li><em>Coller uniquement la formule</em> - permet de coller des formules sans coller le formatage des données.</li>
+                        <li><em>Formule + format numérique</em> - permet de coller des formules avec la mise en forme appliquée aux nombres.</li>
+                        <li><em>Formule + toute la mise en forme</em> - permet de coller des formules avec toute la mise en forme des données.</li>
+                        <li><em>Formule sans bordures</em> - permet de coller des formules avec toute la mise en forme sauf les bordures de cellules.</li>
+                        <li><em>Formule + largeur de colonne</em> - permet de coller des formules avec toute la mise en forme des données et de définir la largeur de la colonne source pour la plage de cellules dans laquelle vous collez les données.</li>
+                    </ul>
+                </li>
+                <li>Les options suivantes permettent de coller le résultat renvoyé par la formule copiée sans coller la formule elle-même :<ul>
+                        <li><em>Coller uniquement la valeur</em> - permet de coller les résultats de la formule sans coller la mise en forme des données.</li>
+                        <li><em>Valeur + format numérique</em> - permet de coller les résultats de la formule avec la mise en forme appliquée aux nombres.</li>
+                        <li><em>Valeur + toute la mise en forme</em> - permet de coller les résultats de la formule avec toute la mise en forme des données.</li>
+                    </ul>
+                </li>
+                <li><em>Coller uniquement la mise en forme</em> - permet de coller la mise en forme de la cellule uniquement sans coller le contenu de la cellule.</li>
+                <li><em>Transposer</em> - permet de coller des données en modifiant les colonnes en lignes et les lignes en colonnes. Cette option est disponible pour les plages de données normales, mais pas pour les tables formatées.</li>
+            </ul>
+            <p><img alt="Options de collage" src="../images/pastespecial.png" /></p>
+            <p>Lorsque vous collez le contenu d'une seule cellule ou du texte dans des formes automatiques, les options suivantes sont disponibles :</p>
+            <ul>
+                <li><em>Mise en forme de la source</em> - permet de conserver la mise en forme de la source des données copiées.</li>
+                <li><em>Mise en forme de la destination</em> - permet d'appliquer la mise en forme déjà utilisée pour la cellule/forme automatique à laquelle vous collez les données.</li>
+            </ul>
+            <h3>Utiliser l'option Remplissage automatique</h3>
+            <p>Pour remplir rapidement plusieurs cellules avec les mêmes données, utilisez l'option <b>Remplissage automatique</b> :</p>
+            <ol>
+                <li>sélectionner une cellule/plage de cellules contenant les données ciblées,</li>
+                <li>déplacez le curseur de la souris sur la poignée de remplissage dans le coin inférieur droit de la cellule. Le curseur va se transformer en croix noire :<p><img alt="Remplissage automatique" src="../images/autofill.png" /></p>
+                </li>
+                <li>faites glisser la poignée sur les cellules adjacentes que vous souhaitez remplir avec les données sélectionnées.</li>
+            </ol>
+            <p class="note"><b>Remarque</b> : si vous devez créer une série de nombres (tels que 1, 2, 3, 4 ..., 2, 4, 6, 8 ... etc.) ou des dates, vous pouvez entrer au moins deux valeurs de départ et étendre rapidement la série en sélectionnant ces cellules puis en faisant glisser la poignée de remplissage.</p>
+            <h3>Remplissez les cellules de la colonne avec des valeurs textuelles</h3>
+            <p>Si une colonne de votre feuille de calcul contient des valeurs textuelles, vous pouvez facilement remplacer n'importe quelle valeur dans cette colonne ou remplir la cellule vide suivante en sélectionnant l'une des valeurs de texte existantes.</p>
+            <p>Cliquez avec le bouton droit sur la cellule requise et choisissez l'option <b>Sélectionner dans la liste déroulante</b> dans le menu contextuel.</p>
+            <p><img alt="Sélectionnez dans la liste déroulante" src="../images/selectfromlist.png" /></p>
+            <p>Sélectionnez l'une des valeurs de texte disponibles pour remplacer la valeur actuelle ou remplir une cellule vide.</p>
+        </div>
+	</body>
+</html>

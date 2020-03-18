@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Abschnittsumbrüche einfügen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Insert section breaks to use different formatting for each section of the document" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Abschnittsumbrüche einfügen</h1>
+			<p>Mithilfe von Abschnittsumbrüchen können Sie ein anderes Layout oder eine andere Formatierung für bestimmten Abschnitte in Ihrem Dokument festlegen. Sie können beispielsweise <a href="../UsageInstructions/InsertHeadersFooters.htm" onclick="onhyperlinkclick(this)">Kopf- und Fußzeilen</a>, <a href="../UsageInstructions/InsertPageNumbers.htm" onclick="onhyperlinkclick(this)">Seitennummerierungen</a>, <a href="../UsageInstructions/InsertFootnotes.htm" onclick="onhyperlinkclick(this)">Fußnotenformate</a>, <a href="../UsageInstructions/SetPageParameters.htm" onclick="onhyperlinkclick(this)">Ränder, Größe, Ausrichtung oder Spaltennummer</a> für jeden einzelnen Abschnitt individuell festlegen.</p>
+			<p class="note"><b>Hinweis</b>: Ein eingefügter Abschnittswechsel definiert die Formatierung des vorangegangenen Abschnitts.</p>
+			<p>Einfügen eines Abschnittsumbruchs an der aktuellen Cursorposition:</p>
+			<ol>
+				<li>Klicken Sie in der oberen Menüleiste auf das Symbol <img alt="Umbrüche" src="../images/pagebreak1.png" /> <b>Umbrüche</b> in den Registerkarten <b>Einfügen</b> oder <b>Layout</b>.</li>
+				<li>Wählen Sie das Untermenü <b>Abschnittsumbruch einfügen</b>.</li>
+				<li>Wählen Sie den gewünschten Umbruch:<ul>
+				<li><b>Nächste Seite</b> - um auf der nächsten Seite einen neuen Abschnitt zu beginnen</li>
+				<li><b>Fortlaufend</b> - um auf der aktuellen Seite einen neuen Abschnitt beginnen</li>
+				<li><b>Gerade Seite</b> - um auf der nächsten geraden Seite einen neuen Abschnitt zu beginnen</li>
+				<li><b>Ungerade Seite</b> - um auf der nächsten ungeraden Seite einen neuen Abschnitt zu beginnen</li>
+				</ul>
+				</li>
+			</ol>
+			<p>Abschnittswechsel werden in Ihrem Dokument durch eine doppelt gepunktete Linie angezeigt: <img alt="Abschnittsumbruch" src="../images/sectionbreak.png" /></p>
+			<p>Wenn die eingefügten Abschnittsumbrüche nicht angezeigt werden, klicken Sie in der Registerkarte <b>Start</b> auf das Symbol<img alt="Formatierungssymbole" src="../images/nonprintingcharacters.png" />.</p>
+			<p>Um einen Abschnittsumbruch zu entfernen, wählen Sie diesen mit der Maus aus und drücken Sie die Taste <b>ENTF</b>. Da ein Abschnittsumbruch die Formatierung des vorherigen Abschnitts definiert, wird durch das Löschen des Abschnittsumbruch auch die Formatierung des vorangegangenen Abschnitts entfernt. Ein solcher Abschnitt wird dann entsprechend der Formatierung des nachfolgenden Abschnitts formatiert.</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,665 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Keyboard Shortcuts</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The keyboard shortcut list used for a faster and easier access to the features of Document Editor using the keyboard." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+        <script type="text/javascript" src="../search/js/jquery.min.js"></script>
+        <script type="text/javascript" src="../search/js/keyboard-switch.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Keyboard Shortcuts</h1>
+            <ul class="shortcut_variants">
+                <li class="shortcut_toggle pc_option left_option">Windows/Linux</li><!--
+                --><li class="shortcut_toggle mac_option right_option">Mac OS</li>
+            </ul>
+			<table class="keyboard_shortcuts_table">
+				<tr>
+					<th colspan="4" class="keyboard_section">Working with Document</th>
+				</tr>
+				<tr>
+					<td>Open 'File' panel</td>
+					<td><kbd>Alt</kbd>+<kbd>F</kbd></td>
+					<td><kbd>⌥ Option</kbd>+<kbd>F</kbd></td>
+					<td>Open the <b>File</b> panel to save, download, print the current document, view its info, create a new document or open an existing one, access Document Editor help or advanced settings.</td>
+				</tr>
+				<tr>
+					<td>Open 'Find and Replace' dialog box</td>
+					<td><kbd>Ctrl</kbd>+<kbd>F</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>F</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>F</kbd></td>
+					<td>Open the <b>Find and Replace</b> dialog box to start searching for a character/word/phrase in the currently edited document.</td>
+				</tr>
+                <tr>
+                    <td>Open 'Find and Replace' dialog box with replacement field</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>H</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>H</kbd></td>
+                    <td>Open the <b>Find and Replace</b> dialog box with the replacement field to replace one or more occurrences of the found characters.</td>
+                </tr>
+                <tr>
+                    <td>Repeat the last 'Find' action</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>F4</kbd></td>
+					<td><kbd>⇧ Shift</kbd>+<kbd>F4</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>G</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>F4</kbd></td>
+                    <td>Repeat the <b>Find</b> action which has been performed before the key combination press.</td>
+                </tr>
+				<tr>
+					<td>Open 'Comments' panel</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>H</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>H</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>H</kbd></td>
+					<td>Open the <b>Comments</b> panel to add your own comment or reply to other users' comments.</td>
+				</tr>
+				<tr>
+					<td>Open comment field</td>
+					<td><kbd>Alt</kbd>+<kbd>H</kbd></td>
+					<td><kbd>⌥ Option</kbd>+<kbd>H</kbd></td>
+					<td>Open a data entry field where you can add the text of your comment.</td>
+				</tr>
+				<tr class="onlineDocumentFeatures">
+					<td>Open 'Chat' panel</td>
+					<td><kbd>Alt</kbd>+<kbd>Q</kbd></td>
+					<td><kbd>⌥ Option</kbd>+<kbd>Q</kbd></td>
+					<td>Open the <b>Chat</b> panel and send a message.</td>
+				</tr>
+				<tr>
+					<td>Save document</td>
+					<td><kbd>Ctrl</kbd>+<kbd>S</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>S</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>S</kbd></td>
+					<td>Save all the changes to the document currently edited with Document Editor. The active file will be saved with its current file name, location, and file format.</td>
+				</tr>
+				<tr>
+					<td>Print document</td>
+					<td><kbd>Ctrl</kbd>+<kbd>P</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>P</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>P</kbd></td>
+					<td>Print the document with one of the available printers or save it to a file.</td>
+				</tr>
+				<tr>
+					<td>Download As...</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>S</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>S</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>S</kbd></td>
+					<td>Open the <b>Download as...</b> panel to save the currently edited document to the computer hard disk drive in one of the supported formats: DOCX, PDF, ODT, TXT, DOTX, PDF/A, OTT, RTF, HTML.</td>
+				</tr>
+				<tr>
+					<td>Full screen</td>
+					<td><kbd>F11</kbd></td>
+					<td><!--<kbd>&#8984; Cmd</kbd>+<kbd>^ Ctrl</kbd>+<kbd>F</kbd>--></td>
+					<td>Switch to the full screen view to fit Document Editor into your screen.</td>
+				</tr>
+                <tr>
+                    <td>Help menu</td>
+                    <td><kbd>F1</kbd></td>
+                    <td><kbd>F1</kbd></td>
+                    <td>Open Document Editor <b>Help</b> menu.</td>
+                </tr>
+                <tr>
+                    <td>Open existing file (Desktop Editors)</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>O</kbd></td>
+					<td></td>
+                    <td>On the <b>Open local file</b> tab in <b>Desktop Editors</b>, opens the standard dialog box that allows to select an existing file.</td>
+                </tr>
+                <tr>
+                    <td>Close file (Desktop Editors)</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>W</kbd>,<br /><kbd>Ctrl</kbd>+<kbd>F4</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>W</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>W</kbd></td>
+                    <td>Close the current document window in <b>Desktop Editors</b>.</td>
+                </tr>
+                <tr>
+                    <td>Element contextual menu</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>F10</kbd></td>
+					<td><kbd>⇧ Shift</kbd>+<kbd>F10</kbd></td>
+                    <td>Open the selected element <b>contextual menu</b>.</td>
+                </tr>
+				<tr>
+					<th colspan="4" class="keyboard_section">Navigation</th>
+				</tr>
+				<tr>
+					<td>Jump to the beginning of the line</td>
+					<td><kbd>Home</kbd></td>
+					<td><kbd>Home</kbd></td>
+					<td>Put the cursor to the beginning of the currently edited line.</td>
+				</tr>
+				<tr>
+					<td>Jump to the beginning of the document</td>
+					<td><kbd>Ctrl</kbd>+<kbd>Home</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>Home</kbd></td>
+					<td>Put the cursor to the very beginning of the currently edited document.</td>
+				</tr>
+				<tr>
+					<td>Jump to the end of the line</td>
+					<td><kbd>End</kbd></td>
+					<td><kbd>End</kbd></td>
+					<td>Put the cursor to the end of the currently edited line.</td>
+				</tr>
+				<tr>
+					<td>Jump to the end of the document</td>
+					<td><kbd>Ctrl</kbd>+<kbd>End</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>End</kbd></td>
+					<td>Put the cursor to the very end of the currently edited document.</td>
+				</tr>
+				<tr>
+					<td>Jump to the beginning of the previous page</td>
+					<td><kbd>Alt</kbd>+<kbd>Ctrl</kbd>+<kbd>Page Up</kbd></td>
+					<td></td>
+					<td>Put the cursor to the very beginning of the page which preceeds the currently edited one.</td>
+				</tr>
+				<tr>
+					<td>Jump to the beginning of the next page</td>
+					<td><kbd>Alt</kbd>+<kbd>Ctrl</kbd>+<kbd>Page Down</kbd></td>
+					<td><kbd>⌥ Option</kbd>+<kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>Page Down</kbd></td>
+					<td>Put the cursor to the very beginning of the page which follows the currently edited one.</td>
+				</tr>
+				<tr>
+					<td>Scroll down</td>
+					<td><kbd>Page Down</kbd></td>
+					<td><kbd>Page Down</kbd>,<br /><kbd>⌥ Option</kbd>+<kbd>Fn</kbd>+<kbd>↑</kbd></td>
+					<td>Scroll the document approximately one visible page down.</td>
+				</tr>
+				<tr>
+					<td>Scroll up</td>
+					<td><kbd>Page Up</kbd></td>
+					<td><kbd>Page Up</kbd>,<br /><kbd>⌥ Option</kbd>+<kbd>Fn</kbd>+<kbd>↓</kbd></td>
+					<td>Scroll the document approximately one visible page up.</td>
+				</tr>
+				<tr>
+					<td>Next page</td>
+					<td><kbd>Alt</kbd>+<kbd>Page Down</kbd></td>
+					<td><kbd>⌥ Option</kbd>+<kbd>Page Down</kbd></td>
+					<td>Go to the next page in the currently edited document.</td>
+				</tr>
+				<tr>
+					<td>Previous page</td>
+					<td><kbd>Alt</kbd>+<kbd>Page Up</kbd></td>
+					<td><kbd>⌥ Option</kbd>+<kbd>Page Up</kbd></td>
+					<td>Go to the previous page in the currently edited document.</td>
+				</tr>
+				<tr>
+					<td>Zoom In</td>
+					<td><kbd>Ctrl</kbd>+<kbd>+</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>=</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>=</kbd></td>
+					<td>Zoom in the currently edited document.</td>
+				</tr>
+				<tr>
+					<td>Zoom Out</td>
+					<td><kbd>Ctrl</kbd>+<kbd>-</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>-</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>-</kbd></td>
+					<td>Zoom out the currently edited document.</td>
+				</tr>
+                <tr>
+                    <td>Move one character to the left</td>
+                    <td><kbd>←</kbd></td>
+                    <td><kbd>←</kbd></td>
+                    <td>Move the cursor one character to the left.</td>
+                </tr>
+                <tr>
+                    <td>Move one character to the right</td>
+                    <td><kbd>→</kbd></td>
+                    <td><kbd>→</kbd></td>
+                    <td>Move the cursor one character to the right.</td>
+                </tr>
+                <tr>
+                    <td>Move to the beginning of a word or one word to the left</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>←</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>←</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>←</kbd></td>
+                    <td>Move the cursor to the beginning of a word or one word to the left.</td>
+                </tr>
+                <tr>
+                    <td>Move one word to the right</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>→</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>→</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>→</kbd></td>
+                    <td>Move the cursor one word to the right.</td>
+                </tr>
+                <!--<tr>
+                    <td>Move one paragraph up</td>
+                    <td>Ctrl+Up arrow</td>
+                    <td>Move the cursor one paragraph up.</td>
+                </tr>
+                <tr>
+                    <td>Move one paragraph down</td>
+                    <td>Ctrl+Down arrow</td>
+                    <td>Move the cursor one paragraph down.</td>
+                </tr>-->
+                <tr>
+                    <td>Move one line up</td>
+                    <td><kbd>↑</kbd></td>
+                    <td><kbd>↑</kbd></td>
+                    <td>Move the cursor one line up.</td>
+                </tr>
+                <tr>
+                    <td>Move one line down</td>
+                    <td><kbd>↓</kbd></td>
+                    <td><kbd>↓</kbd></td>
+                    <td>Move the cursor one line down.</td>
+                </tr>
+				<tr>
+					<th colspan="4" class="keyboard_section">Writing</th>
+				</tr>
+				<tr>
+					<td>End paragraph</td>
+					<td><kbd>↵ Enter</kbd></td>
+					<td><kbd>↵ Return</kbd></td>
+					<td>End the current paragraph and start a new one.</td>
+				</tr>
+				<tr>
+					<td>Add line break</td>
+					<td><kbd>⇧ Shift</kbd>+<kbd>↵ Enter</kbd></td>
+					<td><kbd>⇧ Shift</kbd>+<kbd>↵ Return</kbd></td>
+					<td>Add a line break without starting a new paragraph.</td>
+				</tr>
+				<tr>
+					<td>Delete</td>
+					<td><kbd>← Backspace</kbd>,<br /><kbd>Delete</kbd></td>
+					<td><kbd>← Backspace</kbd>,<br /><kbd>Delete</kbd></td>
+					<td>Delete one character to the left (<kbd>← Backspace</kbd>) or to the right (<kbd>Delete</kbd>) of the cursor.</td>
+				</tr>
+				<tr>
+					<td>Delete word to the left of cursor</td>
+					<td><kbd>Ctrl</kbd>+<kbd>← Backspace</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>← Backspace</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>← Backspace</kbd></td>
+					<td>Delete one word to the left of the cursor.</td>
+				</tr>
+				<tr>
+					<td>Delete word to the right of cursor</td>
+					<td><kbd>Ctrl</kbd>+<kbd>Delete</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>Delete</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>Delete</kbd></td>
+					<td>Delete one word to the right of the cursor.</td>
+				</tr>
+				<tr>
+					<td>Create nonbreaking space</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>␣ Spacebar</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>␣ Spacebar</kbd></td>
+					<td>Create a space between characters which cannot be used to start a new line.</td>
+				</tr>
+				<tr>
+					<td>Create nonbreaking hyphen</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>Hyphen</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>Hyphen</kbd></td>
+					<td>Create a hyphen between characters which cannot be used to start a new line.</td>
+				</tr>
+				<tr>
+					<th colspan="4" class="keyboard_section">Undo and Redo</th>
+				</tr>
+				<tr>
+					<td>Undo</td>
+					<td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>Z</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>Z</kbd></td>
+					<td>Reverse the latest performed action.</td>
+				</tr>
+				<tr>
+					<td>Redo</td>
+					<td><kbd>Ctrl</kbd>+<kbd>Y</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>Y</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>Y</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>Z</kbd></td>
+					<td>Repeat the latest undone action.</td>
+				</tr>
+				<tr>
+					<th colspan="4" class="keyboard_section">Cut, Copy, and Paste</th>
+				</tr>
+				<tr>
+					<td>Cut</td>
+					<td><kbd>Ctrl</kbd>+<kbd>X</kbd>,<br /><kbd>⇧ Shift</kbd>+<kbd>Delete</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>X</kbd>,<br /><kbd>⇧ Shift</kbd>+<kbd>Delete</kbd></td>
+					<td>Delete the selected text fragment and send it to the computer clipboard memory. The copied text can be later inserted to another place in the same document, into another document, or into some other program.</td>
+				</tr>
+				<tr>
+					<td>Copy</td>
+					<td><kbd>Ctrl</kbd>+<kbd>C</kbd>,<br /><kbd>Ctrl</kbd>+<kbd>Insert</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>C</kbd></td>
+					<td>Send the selected text fragment to the computer clipboard memory. The copied text can be later inserted to another place in the same document, into another document, or into some other program.</td>
+				</tr>
+				<tr>
+					<td>Paste</td>
+					<td><kbd>Ctrl</kbd>+<kbd>V</kbd>,<br /><kbd>⇧ Shift</kbd>+<kbd>Insert</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>V</kbd></td>
+					<td>Insert the previously copied text fragment from the computer clipboard memory to the current cursor position. The text can be previously copied from the same document, from another document, or from some other program.</td>
+				</tr>
+				<tr>
+					<td>Insert hyperlink</td>
+					<td><kbd>Ctrl</kbd>+<kbd>K</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>K</kbd></td>
+					<td>Insert a hyperlink which can be used to go to a web address.</td>
+				</tr>
+				<tr>
+					<td>Copy style</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>C</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>C</kbd></td>
+					<td>Copy the formatting from the selected fragment of the currently edited text. The copied formatting can be later applied to another text fragment in the same document.</td>
+				</tr>
+				<tr>
+					<td>Apply style</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>V</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>V</kbd></td>
+					<td>Apply the previously copied formatting to the text in the currently edited document.</td>
+				</tr>
+				<tr>
+					<th colspan="4" class="keyboard_section"><a id="textselection"></a>Text Selection</th>
+				</tr>
+				<tr>
+					<td>Select all</td>
+					<td><kbd>Ctrl</kbd>+<kbd>A</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>A</kbd></td>
+					<td>Select all the document text with tables and images.</td>
+				</tr>
+				<tr>
+					<td>Select fragment</td>
+					<td><kbd>⇧ Shift</kbd>+<kbd>→</kbd> <kbd>←</kbd></td>
+					<td><kbd>⇧ Shift</kbd>+<kbd>→</kbd> <kbd>←</kbd></td>
+					<td>Select the text character by character.</td>
+				</tr>
+				<tr>
+					<td>Select from cursor to beginning of line</td>
+					<td><kbd>⇧ Shift</kbd>+<kbd>Home</kbd></td>
+					<td><kbd>⇧ Shift</kbd>+<kbd>Home</kbd></td>
+					<td>Select a text fragment from the cursor to the beginning of the current line.</td>
+				</tr>
+				<tr>
+					<td>Select from cursor to end of line</td>
+					<td><kbd>⇧ Shift</kbd>+<kbd>End</kbd></td>
+					<td><kbd>⇧ Shift</kbd>+<kbd>End</kbd></td>
+					<td>Select a text fragment from the cursor to the end of the current line.</td>
+				</tr>
+                <tr>
+                    <td>Select one character to the right</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>→</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>→</kbd></td>
+                    <td>Select one character to the right of the cursor position.</td>
+                </tr>
+                <tr>
+                    <td>Select one character to the left</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>←</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>←</kbd></td>
+                    <td>Select one character to the left of the cursor position.</td>
+                </tr>
+                <tr>
+                    <td>Select to the end of a word</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>→</kbd></td>
+					<td></td>
+                    <td>Select a text fragment from the cursor to the end of a word.</td>
+                </tr>
+                <tr>
+                    <td>Select to the beginning of a word</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>←</kbd></td>
+					<td></td>
+                    <td>Select a text fragment from the cursor to the beginning of a word.</td>
+                </tr>
+                <tr>
+                    <td>Select one line up</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>↑</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>↑</kbd></td>
+                    <td>Select one line up (with the cursor at the beginning of a line).</td>
+                </tr>
+                <tr>
+                    <td>Select one line down</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>↓</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>↓</kbd></td>
+                    <td>Select one line down (with the cursor at the beginning of a line).</td>
+                </tr>
+                <tr>
+                    <td>Select the page up</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>Page Up</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>Page Up</kbd></td>
+                    <td>Select the page part from the cursor position to the upper part of the screen.</td>
+                </tr>
+                <tr>
+                    <td>Select the page down</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>Page Down</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>Page Down</kbd></td>
+                    <td>Select the page part from the cursor position to the lower part of the screen.</td>
+                </tr>
+				<tr>
+					<th colspan="4" class="keyboard_section">Text Styling</th>
+				</tr>
+				<tr>
+					<td>Bold</td>
+					<td><kbd>Ctrl</kbd>+<kbd>B</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>B</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>B</kbd></td>
+					<td>Make the font of the selected text fragment bold giving it more weight.</td>
+				</tr>
+				<tr>
+					<td>Italic</td>
+					<td><kbd>Ctrl</kbd>+<kbd>I</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>I</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>I</kbd></td>
+					<td>Make the font of the selected text fragment italicized giving it some right side tilt.</td>
+				</tr>
+				<tr>
+					<td>Underline</td>
+					<td><kbd>Ctrl</kbd>+<kbd>U</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>U</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>U</kbd></td>
+					<td>Make the selected text fragment underlined with the line going under the letters.</td>
+				</tr>
+                <tr>
+                    <td>Strikeout</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>5</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>5</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>5</kbd></td>
+                    <td>Make the selected text fragment struck out with the line going through the letters.</td>
+                </tr>
+				<tr>
+					<td>Subscript</td>
+					<td><kbd>Ctrl</kbd>+<kbd>.</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>&gt;</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>&gt;</kbd></td>
+					<td>Make the selected text fragment smaller and place it to the lower part of the text line, e.g. as in chemical formulas.</td>
+				</tr>
+				<tr>
+					<td>Superscript</td>
+					<td><kbd>Ctrl</kbd>+<kbd>,</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>&lt;</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>&lt;</kbd></td>
+					<td>Make the selected text fragment smaller and place it to the upper part of the text line, e.g. as in fractions.</td>
+				</tr>
+				<tr>
+					<td>Heading 1 style</td>
+					<td><kbd>Alt</kbd>+<kbd>1</kbd></td>
+					<td><kbd>⌥ Option</kbd>+<kbd>^ Ctrl</kbd>+<kbd>1</kbd></td>
+					<td>Apply the style of the heading 1 to the selected text fragment.</td>
+				</tr>
+				<tr>
+					<td>Heading 2 style</td>
+					<td><kbd>Alt</kbd>+<kbd>2</kbd></td>
+					<td><kbd>⌥ Option</kbd>+<kbd>^ Ctrl</kbd>+<kbd>2</kbd></td>
+					<td>Apply the style of the heading 2 to the selected text fragment.</td>
+				</tr>
+				<tr>
+					<td>Heading 3 style</td>
+					<td><kbd>Alt</kbd>+<kbd>3</kbd></td>
+					<td><kbd>⌥ Option</kbd>+<kbd>^ Ctrl</kbd>+<kbd>3</kbd></td>
+					<td>Apply the style of the heading 3 to the selected text fragment.</td>
+				</tr>
+				<tr>
+					<td>Bulleted list</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>L</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>L</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>L</kbd></td>
+					<td>Create an unordered bulleted list from the selected text fragment or start a new one.</td>
+				</tr>
+				<tr>
+					<td>Remove formatting</td>
+					<td><kbd>Ctrl</kbd>+<kbd>␣ Spacebar</kbd></td>
+					<td></td>
+					<td>Remove formatting from the selected text fragment.</td>
+				</tr>
+				<tr>
+					<td>Increase font</td>
+					<td><kbd>Ctrl</kbd>+<kbd>]</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>]</kbd></td>
+					<td>Increase the size of the font for the selected text fragment 1 point.</td>
+				</tr>
+				<tr>
+					<td>Decrease font</td>
+					<td><kbd>Ctrl</kbd>+<kbd>[</kbd></td>
+					<td><kbd>&#8984; Cmd</kbd>+<kbd>[</kbd></td>
+					<td>Decrease the size of the font for the selected text fragment 1 point.</td>
+				</tr>
+				<tr>
+					<td>Align center/left</td>
+					<td><kbd>Ctrl</kbd>+<kbd>E</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>E</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>E</kbd></td>
+					<td>Switch a paragraph between centered and left-aligned.</td>
+				</tr>
+				<tr>
+					<td>Align justified/left</td>
+					<td><kbd>Ctrl</kbd>+<kbd>J</kbd>,<br /><kbd>Ctrl</kbd>+<kbd>L</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>J</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>J</kbd></td>
+					<td>Switch a paragraph between justified and left-aligned.</td>
+				</tr>
+				<tr>
+					<td>Align right/left</td>
+					<td><kbd>Ctrl</kbd>+<kbd>R</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>R</kbd></td>
+					<td>Switch a paragraph between right-aligned and left-aligned.</td>
+				</tr>
+				<!--<tr>
+					<td>Align left</td>
+					<td>Ctrl+L</td>
+					<td>Align left with the text lined up by the left side of the page, the right side remains unaligned. If your text is initially left-aligned</td>
+				</tr>-->
+                <tr>
+                    <td>Apply subscript formatting (automatic spacing)</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>=</kbd></td>
+					<td></td>
+                    <td>Apply subscript formatting to the selected text fragment.</td>
+                </tr>
+                <tr>
+                    <td>Apply superscript formatting (automatic spacing)</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>+</kbd></td>
+					<td></td>
+                    <td>Apply superscript  formatting to the selected text fragment.</td>
+                </tr>
+                <tr>
+                    <td>Insert page break</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>↵ Enter</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>↵ Return</kbd></td>
+                    <td>Insert a page break at the current cursor position.</td>
+                </tr>
+				<tr>
+					<td>Increase indent</td>
+					<td><kbd>Ctrl</kbd>+<kbd>M</kbd></td>
+					<td><kbd>^ Ctrl</kbd>+<kbd>M</kbd></td>
+					<td>Indent a paragraph from the left incrementally.</td>
+				</tr>
+                <tr>
+                    <td>Decrease indent</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>M</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>M</kbd></td>
+                    <td>Remove a paragraph indent from the left incrementally.</td>
+                </tr>
+                <tr>
+                    <td>Add page number</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>P</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>P</kbd></td>
+                    <td>Add the current page number at the current cursor position.</td>
+                </tr>
+                <!--<tr>
+                    <td>Add dash</td>
+                    <td>Num-</td>
+                    <td>Add a dash.</td>
+                </tr>-->
+				<tr>
+					<td>Nonprinting characters</td>
+					<td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>Num8</kbd></td>
+					<td></td>
+					<td>Show or hide the display of nonprinting characters.</td>
+				</tr>
+                <tr>
+                    <td>Delete one character to the left</td>
+                    <td><kbd>← Backspace</kbd></td>
+                    <td><kbd>← Backspace</kbd></td>
+                    <td>Delete one character to the left of the cursor.</td>
+                </tr>
+                <tr>
+                    <td>Delete one character to the right</td>
+                    <td><kbd>Delete</kbd></td>
+                    <td><kbd>Delete</kbd></td>
+                    <td>Delete one character to the right of the cursor.</td>
+                </tr>
+				<tr>
+					<th colspan="4" class="keyboard_section"><a id="workwithobjects"></a>Modifying Objects</th>
+				</tr>
+				<tr>
+					<td>Constrain movement</td>
+					<td><kbd>⇧ Shift</kbd> + drag</td>
+					<td><kbd>⇧ Shift</kbd> + drag</td>
+					<td>Constrain the movement of the selected object horizontally or vertically.</td>
+				</tr>
+				<tr>
+					<td>Set 15-degree rotation</td>
+					<td><kbd>⇧ Shift</kbd> + drag (when rotating)</td>
+					<td><kbd>⇧ Shift</kbd> + drag (when rotating)</td>
+					<td>Constrain the rotation angle to 15-degree increments.</td>
+				</tr>
+				<tr>
+					<td>Maintain proportions</td>
+					<td><kbd>⇧ Shift</kbd> + drag (when resizing)</td>
+					<td><kbd>⇧ Shift</kbd> + drag (when resizing)</td>
+					<td>Maintain the proportions of the selected object when resizing.</td>
+				</tr>
+                <tr>
+                    <td>Draw straight line or arrow</td>
+                    <td><kbd>⇧ Shift</kbd> + drag (when drawing lines/arrows)</td>
+                    <td><kbd>⇧ Shift</kbd> + drag (when drawing lines/arrows)</td>
+                    <td>Draw a straight vertical/horizontal/45-degree line or arrow.</td>
+                </tr>
+				<tr>
+					<td>Movement by one-pixel increments</td>
+					<td><kbd>Ctrl</kbd>+<kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd></td>
+					<td></td>
+					<td>Hold down the <kbd>Ctrl</kbd> key and use the keybord arrows to move the selected object by one pixel at a time.</td>
+				</tr>
+                <tr>
+                    <th colspan="4" class="keyboard_section"><a id="workwithtables"></a>Working with Tables</th>
+                </tr>
+                <tr>
+                    <td>Move to the next cell in a row</td>
+                    <td><kbd>↹ Tab</kbd></td>
+                    <td><kbd>↹ Tab</kbd></td>
+                    <td>Go to the next cell in a table row.</td>
+                </tr>
+                <tr>
+                    <td>Move to the previous cell in a row</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>↹ Tab</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>↹ Tab</kbd></td>
+                    <td>Go to the previous cell in a table row.</td>
+                </tr>
+                <tr>
+                    <td>Move to the next row</td>
+                    <td><kbd>↓</kbd></td>
+                    <td><kbd>↓</kbd></td>
+                    <td>Go to the next row in a table.</td>
+                </tr>
+                <tr>
+                    <td>Move to the previous row</td>
+                    <td><kbd>↑</kbd></td>
+                    <td><kbd>↑</kbd></td>
+                    <td>Go to the previous row in a table.</td>
+                </tr>
+                <tr>
+                    <td>Start new paragraph</td>
+                    <td><kbd>↵ Enter</kbd></td>
+                    <td><kbd>↵ Return</kbd></td>
+                    <td>Start a new paragraph within a cell.</td>
+                </tr>
+                <tr>
+                    <td>Add new row</td>
+                    <td><kbd>↹ Tab</kbd> in the lower right table cell.</td>
+                    <td><kbd>↹ Tab</kbd> in the lower right table cell.</td>
+                    <td>Add a new row at the bottom of the table.</td>
+                </tr>
+                
+                <tr>
+                    <th colspan="4" class="keyboard_section">Inserting special characters</th>
+                </tr>
+                <!--<tr>
+                    <td>Insert the Euro sign</td>
+                    <td><kbd>Alt</kbd>+<kbd>Ctrl</kbd>+<kbd>E</kbd></td>
+                    <td>Insert the Euro sign (€) at the current cursor position.</td>
+                </tr>-->
+                <tr>
+                    <td>Insert formula</td>
+                    <td><kbd>Alt</kbd>+<kbd>=</kbd></td>
+					<td></td>
+                    <td>Insert a formula at the current cursor position.</td>
+                </tr>
+			</table>
+		</div>
+	</body>
+</html>

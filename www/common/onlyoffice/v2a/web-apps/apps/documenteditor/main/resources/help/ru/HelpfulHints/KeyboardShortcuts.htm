@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Сочетания клавиш</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Список сочетаний клавиш, которые используются для более быстрого и легкого доступа к функциям редактора документов с помощью клавиатуры." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+        <script type="text/javascript" src="../search/js/jquery.min.js"></script>
+        <script type="text/javascript" src="../search/js/keyboard-switch.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Поиск" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Сочетания клавиш</h1>
+            <ul class="shortcut_variants">
+                <li class="shortcut_toggle pc_option left_option">Windows/Linux</li>
+                <!--
+        -->
+                <li class="shortcut_toggle mac_option right_option">Mac OS</li>
+            </ul>
+            <table class="keyboard_shortcuts_table">
+                <tr>
+                    <th colspan="4" class="keyboard_section">Работа с документом</th>
+                </tr>
+                <tr>
+                    <td>Открыть панель 'Файл'</td>
+                    <td><kbd>Alt</kbd>+<kbd>F</kbd></td>
+                    <td><kbd>⌥ Option</kbd>+<kbd>F</kbd></td>
+                    <td>Открыть панель <b>Файл</b>, чтобы сохранить, скачать, распечатать текущий документ, просмотреть сведения о нем, создать новый документ или открыть существующий, получить доступ к Справке по редактору документов или дополнительным параметрам.</td>
+                </tr>
+                <tr>
+                    <td>Открыть окно 'Поиск и замена'</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>F</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>F</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>F</kbd></td>
+                    <td>Открыть диалоговое окно <b>Поиск и замена</b>, чтобы начать поиск символа/слова/фразы в редактируемом документе.</td>
+                </tr>
+                <tr>
+                    <td>Открыть окно 'Поиск и замена' с полем замены</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>H</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>H</kbd></td>
+                    <td>Открыть диалоговое окно <b>Поиск и замена</b> с полем замены, чтобы заменить одно или более вхождений найденных символов.</td>
+                </tr>
+                <tr>
+                    <td>Повторить последнее действие 'Найти'</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>F4</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>F4</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>G</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>F4</kbd></td>
+                    <td>Повторить действие <b>Найти</b>, которое было выполнено до нажатия этого сочетания клавиш.</td>
+                </tr>
+                <tr>
+                    <td>Открыть панель 'Комментарии'</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>H</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>H</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>H</kbd></td>
+                    <td>Открыть панель <b>Комментарии</b>, чтобы добавить свой комментарий или ответить на комментарии других пользователей.</td>
+                </tr>
+                <tr>
+                    <td>Открыть поле комментария</td>
+                    <td><kbd>Alt</kbd>+<kbd>H</kbd></td>
+                    <td><kbd>⌥ Option</kbd>+<kbd>H</kbd></td>
+                    <td>Открыть поле ввода данных, в котором можно добавить текст комментария.</td>
+                </tr>
+                <tr class="onlineDocumentFeatures">
+                    <td>Открыть панель 'Чат'</td>
+                    <td><kbd>Alt</kbd>+<kbd>Q</kbd></td>
+                    <td><kbd>⌥ Option</kbd>+<kbd>Q</kbd></td>
+                    <td>Открыть панель <b>Чат</b> и отправить сообщение.</td>
+                </tr>
+                <tr>
+                    <td>Сохранить документ</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>S</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>S</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>S</kbd></td>
+                    <td>Сохранить все изменения в редактируемом документе. Активный файл будет сохранен с текущим именем, в том же местоположении и формате.</td>
+                </tr>
+                <tr>
+                    <td>Печать документа</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>P</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>P</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>P</kbd></td>
+                    <td>Распечатать документ на одном из доступных принтеров или сохранить в файл.</td>
+                </tr>
+                <tr>
+                    <td>Скачать как...</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>S</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>S</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>S</kbd></td>
+                    <td>Открыть панель <b>Скачать как...</b>, чтобы сохранить редактируемый документ на жестком диске компьютера в одном из поддерживаемых форматов: DOCX, PDF, ODT, TXT, DOTX, PDF/A, OTT, RTF, HTML.</td>
+                </tr>
+                <tr>
+                    <td>Полноэкранный режим</td>
+                    <td><kbd>F11</kbd></td>
+                    <td><!--<kbd>&#8984; Cmd</kbd>+<kbd>^ Ctrl</kbd>+<kbd>F</kbd>--></td>
+                    <td>Переключиться в полноэкранный режим, чтобы развернуть редактор документов на весь экран.</td>
+                </tr>
+                <tr>
+                    <td>Меню Справка</td>
+                    <td><kbd>F1</kbd></td>
+                    <td><kbd>F1</kbd></td>
+                    <td>Открыть меню <b>Справка</b> редактора документов.</td>
+                </tr>
+                <tr>
+                    <td>Открыть существующий файл (десктопные редакторы)</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>O</kbd></td>
+                    <td></td>
+                    <td>На вкладке <b>Открыть локальный файл</b> в десктопных редакторах позволяет открыть стандартное диалоговое окно для выбора существующего файла.</td>
+                </tr>
+                <tr>
+                    <td>Закрыть файл (десктопные редакторы)</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>W</kbd></td>
+                    <td><kbd>&#8984; Cmd</kbd>+<kbd>W</kbd></td>
+                    <td>Закрыть выбранный документ в десктопных редакторах .</td>
+                </tr>
+                <tr>
+                    <td>Контекстное меню элемента</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>F10</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>F10</kbd></td>
+                    <td>Открыть <b>контекстное меню</b> выбранного элемента.</td>
+                </tr>
+                <!--<tr>
+                    <td>Закрыть окно (вкладку)</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>F4</kbd></td>
+                    <td><kbd>&#8984; Cmd</kbd>+<kbd>F4</kbd></td>
+                    <td>Закрыть вкладку в браузере.</td>
+                </tr>-->
+                <tr>
+                    <th colspan="4" class="keyboard_section">Навигация</th>
+                </tr>                
+                <tr>
+                    <td>Перейти в начало строки</td>
+                    <td><kbd>Home</kbd></td>
+                    <td><kbd>Home</kbd></td>
+                    <td>Установить курсор в начале редактируемой строки.</td>
+                </tr>
+                <tr>
+                    <td>Перейти в начало документа</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>Home</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>Home</kbd></td>
+                    <td>Установить курсор в самом начале редактируемого документа.</td>
+                </tr>
+                <tr>
+                    <td>Перейти в конец строки</td>
+                    <td><kbd>End</kbd></td>
+                    <td><kbd>End</kbd></td>
+                    <td>Установить курсор в конце редактируемой строки.</td>
+                </tr>
+                <tr>
+                    <td>Перейти в конец документа</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>End</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>End</kbd></td>
+                    <td>Установить курсор в самом конце редактируемого документа.</td>
+                </tr>
+                <tr>
+                    <td>Перейти в начало предыдущей страницы</td>
+                    <td><kbd>Alt</kbd>+<kbd>Ctrl</kbd>+<kbd>Page Up</kbd></td>
+                    <td></td>
+                    <td>Установить курсор в самом начале страницы, которая идет перед редактируемой страницей.</td>
+                </tr>
+                <tr>
+                    <td>Перейти в начало следующей страницы</td>
+                    <td><kbd>Alt</kbd>+<kbd>Ctrl</kbd>+<kbd>Page Down</kbd></td>
+                    <td><kbd>⌥ Option</kbd>+<kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>Page Down</kbd></td>
+                    <td>Установить курсор в самом начале страницы, которая идет после редактируемой страницы.</td>
+                </tr>
+                <tr>
+                    <td>Прокрутить вниз</td>
+                    <td><kbd>Page Down</kbd></td>
+                    <td><kbd>Page Down</kbd>,<br /><kbd>⌥ Option</kbd>+<kbd>Fn</kbd>+<kbd>↑</kbd></td>
+                    <td>Прокрутить документ примерно на одну видимую область страницы вниз.</td>
+                </tr>
+                <tr>
+                    <td>Прокрутить вверх</td>
+                    <td><kbd>Page Up</kbd></td>
+                    <td><kbd>Page Up</kbd>,<br /><kbd>⌥ Option</kbd>+<kbd>Fn</kbd>+<kbd>↓</kbd></td>
+                    <td>Прокрутить документ примерно на одну видимую область страницы вверх.</td>
+                </tr>
+                <tr>
+                    <td>Следующая страница</td>
+                    <td><kbd>Alt</kbd>+<kbd>Page Down</kbd></td>
+                    <td><kbd>⌥ Option</kbd>+<kbd>Page Down</kbd></td>
+                    <td>Перейти на следующую страницу редактируемого документа.</td>
+                </tr>
+                <tr>
+                    <td>Предыдущая страница</td>
+                    <td><kbd>Alt</kbd>+<kbd>Page Up</kbd></td>
+                    <td><kbd>⌥ Option</kbd>+<kbd>Page Up</kbd></td>
+                    <td>Перейти на предыдущую страницу редактируемого документа.</td>
+                </tr>
+                <tr>
+                    <td>Увеличить</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>+</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>+</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>+</kbd></td>
+                    <td>Увеличить масштаб редактируемого документа.</td>
+                </tr>
+                <tr>
+                    <td>Уменьшить</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>-</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>-</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>-</kbd></td>
+                    <td>Уменьшить масштаб редактируемого документа.</td>
+                </tr>
+                <tr>
+                    <td>Перейти на один символ влево</td>
+                    <td><kbd>←</kbd></td>
+                    <td><kbd>←</kbd></td>
+                    <td>Переместить курсор на один символ влево.</td>
+                </tr>
+                <tr>
+                    <td>Перейти на один символ вправо</td>
+                    <td><kbd>→</kbd></td>
+                    <td><kbd>→</kbd></td>
+                    <td>Переместить курсор на один символ вправо.</td>
+                </tr>
+                <tr>
+                    <td>Перейти в начало слова или на одно слово влево</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>←</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>←</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>←</kbd></td>
+                    <td>Переместить курсор в начало слова или на одно слово влево.</td>
+                </tr>
+                <tr>
+                    <td>Перейти на одно слово вправо</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>→</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>→</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>→</kbd></td>
+                    <td>Переместить курсор на одно слово вправо.</td>
+                </tr>
+                <!--<tr>
+            <td>Перейти на один абзац вверх</td>
+            <td>Ctrl+Стрелка вверх</td>
+            <td>Переместить курсор на один абзац вверх.</td>
+        </tr>
+        <tr>
+            <td>Перейти на один абзац вниз</td>
+            <td>Ctrl+Стрелка вниз</td>
+            <td>Переместить курсор на один абзац вниз.</td>
+        </tr>-->
+                <tr>
+                    <td>Перейти на одну строку вверх</td>
+                    <td><kbd>↑</kbd></td>
+                    <td><kbd>↑</kbd></td>
+                    <td>Переместить курсор на одну строку вверх.</td>
+                </tr>
+                <tr>
+                    <td>Перейти на одну строку вниз</td>
+                    <td><kbd>↓</kbd></td>
+                    <td><kbd>↓</kbd></td>
+                    <td>Переместить курсор на одну строку вниз.</td>
+                </tr>
+                <tr>
+                    <th colspan="4" class="keyboard_section">Написание</th>
+                </tr>
+                <tr>
+                    <td>Закончить абзац</td>
+                    <td><kbd>↵ Enter</kbd></td>
+                    <td><kbd>↵ Return</kbd></td>
+                    <td>Завершить текущий абзац и начать новый.</td>
+                </tr>
+                <tr>
+                    <td>Добавить разрыв строки</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>↵ Enter</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>↵ Return</kbd></td>
+                    <td>Сделать перевод строки, не начиная новый абзац.</td>
+                </tr>
+                <tr>
+                    <td>Удалить</td>
+                    <td><kbd>← Backspace</kbd>,<br /><kbd>Delete</kbd></td>
+                    <td><kbd>← Backspace</kbd>,<br /><kbd>Delete</kbd></td>
+                    <td>Удалить один символ слева (Backspace) или справа (Delete) от курсора.</td>
+                </tr>
+                <tr>
+                    <td>Удалить слово слева от курсора</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>Backspace</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>Backspace</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>Backspace</kbd></td>
+                    <td>Удалить одно слово слева от курсора.</td>
+                </tr>
+                <tr>
+                    <td>Удалить слово справа от курсора</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>Delete</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>Delete</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>Delete</kbd></td>
+                    <td>Удалить одно слово справа от курсора.</td>
+                </tr>
+                <tr>
+                    <td>Создать неразрываемый пробел</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>␣ Spacebar</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>␣ Spacebar</kbd></td>
+                    <td>Создать между символами пробел, который нельзя использовать для начала новой строки.</td>
+                </tr>
+                <tr>
+                    <td>Создать неразрываемый дефис</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>Hyphen</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>Hyphen</kbd></td>
+                    <td>Создать между символами дефис, который нельзя использовать для начала новой строки.</td>
+                </tr>
+                <tr>
+                    <th colspan="4" class="keyboard_section">Отмена и повтор</th>
+                </tr>
+                <tr>
+                    <td>Отменить</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>Z</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>Z</kbd></td>
+                    <td>Отменить последнее выполненное действие.</td>
+                </tr>
+                <tr>
+                    <td>Повторить</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>Y</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>Y</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>Y</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>Z</kbd></td>
+                    <td>Повторить последнее отмененное действие.</td>
+                </tr>
+                <tr>
+                    <th colspan="4" class="keyboard_section">Вырезание, копирование и вставка</th>
+                </tr>
+                <tr>
+                    <td>Вырезать</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>X</kbd>,<br /><kbd>⇧ Shift</kbd>+<kbd>Delete</kbd></td>
+                    <td><kbd>&#8984; Cmd</kbd>+<kbd>X</kbd>,<br /><kbd>⇧ Shift</kbd>+<kbd>Delete</kbd></td>
+                    <td>Удалить выделенный фрагмент текста и отправить его в буфер обмена компьютера. Скопированный текст можно затем вставить в другое место этого же документа, в другой документ или в какую-то другую программу.</td>
+                </tr>
+                <tr>
+                    <td>Копировать</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>C</kbd>,<br /><kbd>Ctrl</kbd>+<kbd>Insert</kbd></td>
+                    <td><kbd>&#8984; Cmd</kbd>+<kbd>C</kbd></td>
+                    <td>Отправить выделенный фрагмент текста в буфер обмена компьютера. Скопированный текст можно затем вставить в другое место этого же документа, в другой документ или в какую-то другую программу.</td>
+                </tr>
+                <tr>
+                    <td>Вставить</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>V</kbd>,<br /><kbd>⇧ Shift</kbd>+<kbd>Insert</kbd></td>
+                    <td><kbd>&#8984; Cmd</kbd>+<kbd>V</kbd></td>
+                    <td>Вставить ранее скопированный текст из буфера обмена компьютера в текущей позиции курсора. Текст может быть ранее скопирован из того же самого документа, из другого документа или из какой-то другой программы.</td>
+                </tr>
+                <tr>
+                    <td>Вставить гиперссылку</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>K</kbd></td>
+                    <td><kbd>&#8984; Cmd</kbd>+<kbd>K</kbd></td>
+                    <td>Вставить гиперссылку, которую можно использовать для перехода по веб-адресу.</td>
+                </tr>
+                <tr>
+                    <td>Копировать форматирование</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>C</kbd></td>
+                    <td><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>C</kbd></td>
+                    <td>Скопировать форматирование из выделенного фрагмента редактируемого текста. Скопированное форматирование можно затем применить к другому тексту в этом же документе.</td>
+                </tr>
+                <tr>
+                    <td>Применить форматирование</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>V</kbd></td>
+                    <td><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>V</kbd></td>
+                    <td>Применить ранее скопированное форматирование к тексту редактируемого документа.</td>
+                </tr>
+                <tr>
+                    <th colspan="4" class="keyboard_section"><a id="textselection"></a>Выделение текста</th>
+                </tr>
+                <tr>
+                    <td>Выделить все</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>A</kbd></td>
+                    <td><kbd>&#8984; Cmd</kbd>+<kbd>A</kbd></td>
+                    <td>Выделить весь текст документа вместе с таблицами и изображениями.</td>
+                </tr>
+                <tr>
+                    <td>Выделить фрагмент</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>→</kbd> <kbd>←</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>→</kbd> <kbd>←</kbd></td>
+                    <td>Выделить текст посимвольно.</td>
+                </tr>
+                <tr>
+                    <td>Выделить с позиции курсора до начала строки</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>Home</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>Home</kbd></td>
+                    <td>Выделить фрагмент текста с позиции курсора до начала текущей строки.</td>
+                </tr>
+                <tr>
+                    <td>Выделить с позиции курсора до конца строки</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>End</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>End</kbd></td>
+                    <td>Выделить фрагмент текста с позиции курсора до конца текущей строки.</td>
+                </tr>
+                <tr>
+                    <td>Выделить один символ справа</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>→</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>→</kbd></td>
+                    <td>Выделить один символ справа от позиции курсора.</td>
+                </tr>
+                <tr>
+                    <td>Выделить один символ слева</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>←</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>←</kbd></td>
+                    <td>Выделить один символ слева от позиции курсора.</td>
+                </tr>
+                <tr>
+                    <td>Выделить до конца слова</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>→</kbd></td>
+                    <td></td>
+                    <td>Выделить фрагмент текста с позиции курсора до конца слова.</td>
+                </tr>
+                <tr>
+                    <td>Выделить до начала слова</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>←</kbd></td>
+                    <td></td>
+                    <td>Выделить фрагмент текста с позиции курсора до начала слова.</td>
+                </tr>
+                <tr>
+                    <td>Выделить одну строку выше</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>↑</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>↑</kbd></td>
+                    <td>Выделить одну строку выше (курсор находится в начале строки).</td>
+                </tr>
+                <tr>
+                    <td>Выделить одну строку ниже</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>↓</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>↓</kbd></td>
+                    <td>Выделить одну строку ниже (курсор находится в начале строки).</td>
+                </tr>
+                <tr>
+                    <td>Выделить страницу вверх</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>Page Up</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>Page Up</kbd></td>
+                    <td>Выделить часть страницы с позиции курсора до верхней части экрана.</td>
+                </tr>
+                <tr>
+                    <td>Выделить страницу вниз</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>Page Down</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>Page Down</kbd></td>
+                    <td>Выделить часть страницы с позиции курсора до нижней части экрана.</td>
+                </tr>
+                <tr>
+                    <th colspan="4" class="keyboard_section">Оформление текста</th>
+                </tr>
+                <tr>
+                    <td>Жирный шрифт</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>B</kbd></td>
+                    <td><kbd>&#8984; Cmd</kbd>+<kbd>B</kbd></td>
+                    <td>Сделать шрифт в выделенном фрагменте текста жирным, придав ему большую насыщенность.</td>
+                </tr>
+                <tr>
+                    <td>Курсив</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>I</kbd></td>
+                    <td><kbd>&#8984; Cmd</kbd>+<kbd>I</kbd></td>
+                    <td>Сделать шрифт в выделенном фрагменте текста курсивным, придав ему наклон вправо.</td>
+                </tr>
+                <tr>
+                    <td>Подчеркнутый шрифт</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>U</kbd></td>
+                    <td><kbd>&#8984; Cmd</kbd>+<kbd>U</kbd></td>
+                    <td>Подчеркнуть выделенный фрагмент текста чертой, проведенной под буквами.</td>
+                </tr>
+                <tr>
+                    <td>Зачеркнутый шрифт</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>5</kbd></td>
+                    <td><kbd>&#8984; Cmd</kbd>+<kbd>5</kbd></td>
+                    <td>Зачеркнуть выделенный фрагмент текста чертой, проведенной по буквам.</td>
+                </tr>
+                <tr>
+                    <td>Подстрочные знаки</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>.</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>&gt;</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>&gt;</kbd></td>
+                    <td>Сделать выделенный фрагмент текста мельче и поместить его в нижней части строки, например, как в химических формулах.</td>
+                </tr>
+                <tr>
+                    <td>Надстрочные знаки</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>,</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>&lt;</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>&lt;</kbd></td>
+                    <td>Сделать выделенный фрагмент текста мельче и поместить его в верхней части строки, например, как в дробях.</td>
+                </tr>
+                <tr>
+                    <td>Стиль Заголовок 1</td>
+                    <td><kbd>Alt</kbd>+<kbd>1</kbd></td>
+                    <td><kbd>⌥ Option</kbd>+<kbd>^ Ctrl</kbd>+<kbd>1</kbd></td>
+                    <td>Применить к выделенному фрагменту текста стиль Заголовок 1.</td>
+                </tr>
+                <tr>
+                    <td>Стиль Заголовок 2</td>
+                    <td><kbd>Alt</kbd>+<kbd>2</kbd></td>
+                    <td><kbd>⌥ Option</kbd>+<kbd>^ Ctrl</kbd>+<kbd>2</kbd></td>
+                    <td>Применить к выделенному фрагменту текста стиль Заголовок 2.</td>
+                </tr>
+                <tr>
+                    <td>Стиль Заголовок 3</td>
+                    <td><kbd>Alt</kbd>+<kbd>3</kbd></td>
+                    <td><kbd>⌥ Option</kbd>+<kbd>^ Ctrl</kbd>+<kbd>3</kbd></td>
+                    <td>Применить к выделенному фрагменту текста стиль Заголовок 3.</td>
+                </tr>
+                <tr>
+                    <td>Маркированный список</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>L</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>L</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>⇧ Shift</kbd>+<kbd>L</kbd></td>
+                    <td>Создать из выделенного фрагмента текста неупорядоченный маркированный список или начать новый список.</td>
+                </tr>
+                <tr>
+                    <td>Убрать форматирование</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>␣ Spacebar</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>␣ Spacebar</kbd></td>
+                    <td>Убрать форматирование из выделенного фрагмента текста.</td>
+                </tr>
+                <tr>
+                    <td>Увеличить шрифт</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>]</kbd></td>
+                    <td><kbd>&#8984; Cmd</kbd>+<kbd>]</kbd></td>
+                    <td>Увеличить на 1 пункт размер шрифта для выделенного фрагмента текста.</td>
+                </tr>
+                <tr>
+                    <td>Уменьшить шрифт</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>[</kbd></td>
+                    <td><kbd>&#8984; Cmd</kbd>+<kbd>[</kbd></td>
+                    <td>Уменьшить на 1 пункт размер шрифта для выделенного фрагмента текста.</td>
+                </tr>
+                <tr>
+                    <td>Выровнять по центру/левому краю</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>E</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>E</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>E</kbd></td>
+                    <td>Переключать абзац между выравниванием по центру и по левому краю.</td>
+                </tr>
+                <tr>
+                    <td>Выровнять по ширине/левому краю</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>J</kbd>,<br /><kbd>Ctrl</kbd>+<kbd>L</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>J</kbd>,<br /><kbd>&#8984; Cmd</kbd>+<kbd>J</kbd></td>
+                    <td>Переключать абзац между выравниванием по ширине и по левому краю.</td>
+                </tr>
+                <tr>
+                    <td>Выровнять по правому краю/левому краю</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>R</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>R</kbd></td>
+                    <td>Переключать абзац между выравниванием по правому краю и по левому краю.</td>
+                </tr>
+                <tr>
+                    <td>Применение форматирования подстрочного текста (с автоматической установкой интервалов)</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>=</kbd></td>
+                    <td></td>
+                    <td>Применить форматирование подстрочного текста к выделенному фрагменту текста.</td>
+                </tr>
+                <tr>
+                    <td>Применение форматирования надстрочного текста (с автоматической установкой интервалов)</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>+</kbd></td>
+                    <td></td>
+                    <td>Применить форматирование надстрочного текста к выделенному фрагменту текста.</td>
+                </tr>
+                <tr>
+                    <td>Вставка разрыва страницы</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>↵ Enter</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>↵ Return</kbd></td>
+                    <td>Вставить разрыв страницы в текущей позиции курсора.</td>
+                </tr>
+                <tr>
+                    <td>Увеличить отступ</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>M</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>M</kbd></td>
+                    <td>Увеличить отступ абзаца слева на одну позицию табуляции.</td>
+                </tr>
+                <tr>
+                    <td>Уменьшить отступ</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>M</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>M</kbd></td>
+                    <td>Уменьшить отступ абзаца слева на одну позицию табуляции.</td>
+                </tr>
+                <tr>
+                    <td>Добавить номер страницы</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>P</kbd></td>
+                    <td><kbd>^ Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>P</kbd></td>
+                    <td>Добавить номер текущей страницы в текущей позиции курсора.</td>
+                </tr>
+                <!--<tr>
+            <td>Добавить дефис</td>
+            <td>Num-</td>
+            <td>Добавить дефис.</td>
+        </tr>-->
+                <tr>
+                    <td>Непечатаемые символы</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>⇧ Shift</kbd>+<kbd>Num8</kbd></td>
+                    <td></td>
+                    <td>Показать или скрыть непечатаемые символы.</td>
+                </tr>
+                <tr>
+                    <td>Удалить один символ слева</td>
+                    <td><kbd>← Backspace</kbd></td>
+                    <td><kbd>← Backspace</kbd></td>
+                    <td>Удалить один символ слева от курсора.</td>
+                </tr>
+                <tr>
+                    <td>Удалить один символ справа</td>
+                    <td><kbd>Delete</kbd></td>
+                    <td><kbd>Delete</kbd></td>
+                    <td>Удалить один символ справа от курсора.</td>
+                </tr>
+                <tr>
+                    <th colspan="4" class="keyboard_section"><a id="workwithobjects"></a>Модификация объектов</th>
+                </tr>
+                <tr>
+                    <td>Ограничить движение</td>
+                    <td><kbd>⇧ Shift</kbd> + перетаскивание</td>
+                    <td><kbd>⇧ Shift</kbd> + перетаскивание</td>
+                    <td>Ограничить перемещение выбранного объекта по горизонтали или вертикали.</td>
+                </tr>
+                <tr>
+                    <td>Задать угол поворота в 15 градусов</td>
+                    <td><kbd>⇧ Shift</kbd> + перетаскивание (при поворачивании)</td>
+                    <td><kbd>⇧ Shift</kbd> + перетаскивание (при поворачивании)</td>
+                    <td>Ограничить угол поворота шагом в 15 градусов.</td>
+                </tr>
+                <tr>
+                    <td>Сохранять пропорции</td>
+                    <td><kbd>⇧ Shift</kbd> + перетаскивание (при изменении размера)</td>
+                    <td><kbd>⇧ Shift</kbd> + перетаскивание (при изменении размера)</td>
+                    <td>Сохранять пропорции выбранного объекта при изменении размера.</td>
+                </tr>
+                <tr>
+                    <td>Нарисовать прямую линию или стрелку</td>
+                    <td><kbd>⇧ Shift</kbd> + перетаскивание (при рисовании линий или стрелок)</td>
+                    <td><kbd>⇧ Shift</kbd> + перетаскивание (при рисовании линий или стрелок)</td>
+                    <td>Нарисовать прямую линию или стрелку: горизонтальную, вертикальную или под углом 45 градусов.</td>
+                </tr>
+                <tr>
+                    <td>Перемещение с шагом в один пиксель</td>
+                    <td><kbd>Ctrl</kbd>+<kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd></td>
+                    <td></td>
+                    <td>Удерживайте клавишу <kbd>Ctrl</kbd> и используйте стрелки на клавиатуре, чтобы перемещать выбранный объект на один пиксель за раз.</td>
+                </tr>
+                <tr>
+                    <th colspan="4" class="keyboard_section"><a id="workwithtables"></a>Работа с таблицами</th>
+                </tr>
+                <tr>
+                    <td>Перейти к следующей ячейке в строке</td>
+                    <td><kbd>↹ Tab</kbd></td>
+                    <td><kbd>↹ Tab</kbd></td>
+                    <td>Перейти к следующей ячейке в строке таблицы.</td>
+                </tr>
+                <tr>
+                    <td>Перейти к предыдущей ячейке в строке</td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>↹ Tab</kbd></td>
+                    <td><kbd>⇧ Shift</kbd>+<kbd>↹ Tab</kbd></td>
+                    <td>Перейти к предыдущей ячейке в строке таблицы.</td>
+                </tr>
+                <tr>
+                    <td>Перейти к следующей строке</td>
+                    <td><kbd>↓</kbd></td>
+                    <td><kbd>↓</kbd></td>
+                    <td>Перейти к следующей строке таблицы.</td>
+                </tr>
+                <tr>
+                    <td>Перейти к предыдущей строке</td>
+                    <td><kbd>↑</kbd></td>
+                    <td><kbd>↑</kbd></td>
+                    <td>Перейти к предыдущей строке таблицы.</td>
+                </tr>
+                <tr>
+                    <td>Начать новый абзац</td>
+                    <td><kbd>↵ Enter</kbd></td>
+                    <td><kbd>↵ Return</kbd></td>
+                    <td>Начать новый абзац внутри ячейки.</td>
+                </tr>
+                <tr>
+                    <td>Добавить новую строку</td>
+                    <td><kbd>↹ Tab</kbd> в правой нижней ячейке таблицы.</td>
+                    <td><kbd>↹ Tab</kbd> в правой нижней ячейке таблицы.</td>
+                    <td>Добавить новую строку внизу таблицы.</td>
+                </tr>
+
+                <tr>
+                    <th colspan="4" class="keyboard_section">Вставка специальных символов</th>
+                </tr>
+                <!--<tr>
+            <td>Вставка знака Евро</td>
+            <td>Alt+Ctrl+E</td>
+            <td>Вставить знак Евро (€) в текущей позиции курсора.</td>
+        </tr>-->
+                <tr>
+                    <td>Вставка формулы</td>
+                    <td><kbd>Alt</kbd>+<kbd>=</kbd></td>
+                    <td></td>
+                    <td>Вставить формулу в текущей позиции курсора.</td>
+                </tr>
+            </table>
+		</div>
+	</body>
+</html>

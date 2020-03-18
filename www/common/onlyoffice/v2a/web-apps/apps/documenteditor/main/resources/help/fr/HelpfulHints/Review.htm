@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Révision du document</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Tips on document review option" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Révision du document</h1>
+        <p>Lorsque quelqu'un partage avec vous un fichier disposant des autorisations de révision, vous devez utiliser la fonction <b>Révision</b> du document.</p>
+        <p>Si vous êtes le relecteur, vous pouvez utiliser l'option <b>Révision</b> pour réviser le document, modifier les phrases, les expressions et les autres éléments de la page, corriger l'orthographe et faire d'autres choses dans le document sans l'éditer. Toutes vos modifications seront enregistrées et montrées à la personne qui vous a envoyé le document.</p>
+        <p>Si vous êtes la personne qui envoie le fichier pour la révision, vous devrez afficher toutes les modifications qui y ont été apportées, les afficher et les accepter ou les rejeter.</p>
+        <h3>Activer la fonctionnalité Suivi des modifications</h3>
+        <p>Pour voir les modifications suggérées par un réviseur, activez l'option <b>Suivi des modifications</b> de l'une des manières suivantes :</p>
+        <ul>
+            <li>cliquez sur le bouton <img alt="le bouton Suivi des modifications" src="../images/trackchangesstatusbar.png" /> dans le coin inférieur droit de la barre d'état, ou</li>
+            <li>passez à l'onglet <b>Collaboration</b> de la barre d'outils supérieure et cliquez sur le bouton <img alt="Bouton Suivi des modifications" src="../images/trackchangestoptoolbar.png" /> <b>Suivi des modifications</b>.</li>
+        </ul>
+        <p class="note"><b>Remarque</b> : il n'est pas nécessaire que le réviseur active l'option <b>Suivi des modifications</b>. Elle est activée par défaut et ne peut pas être désactivée lorsque le document est partagé avec des droits d'accès de révision uniquement.</p>
+        <h3 id="displaymode">Choisir le mode d'affichage des modifications,</h3>
+        <p>Cliquez sur le bouton <img alt="bouton Mode d'affichage" src="../images/review_displaymode.png" /> <b>Mode d'affichage</b> dans la barre d'outils supérieure et sélectionnez l'un des modes disponibles dans la liste :</p>
+        <ul>
+            <li><b>Marques de révision</b> - cette option est sélectionnée par défaut. Elle permet à la fois d'afficher les modifications suggérées et de modifier le document.</li>
+            <li><b>Final</b> - ce mode est utilisé pour afficher toutes les modifications comme si elles étaient acceptées. Cette option n'accepte pas toutes les modifications, elle vous permet seulement de voir à quoi ressemblera le document après avoir accepté toutes les modifications. Dans ce mode, vous ne pouvez pas modifier le document.</li>
+            <li><b>Original</b> - ce mode est utilisé pour afficher toutes les modifications comme si elles avaient été rejetées. Cette option ne rejette pas toutes les modifications, elle vous permet uniquement d'afficher le document sans modifications. Dans ce mode, vous ne pouvez pas modifier le document.</li>
+        </ul>
+        <h3 id="managechanges">Accepter ou rejeter les modifications</h3>
+        <p>Utilisez les boutons <img alt="Bouton Modification précédente" src="../images/review_previous.png" /> <b>Modification précédente</b> et <img alt="Bouton Modification suivante" src="../images/review_next.png" /> <b>Modification suivante</b> de la barre d'outils supérieure pour naviguer parmi les modifications.</p>
+        <p>Pour accepter la modification actuellement sélectionnée, vous pouvez :</p>
+        <ul>
+            <li>cliquer sur le bouton <img alt="Bouton Accepter" src="../images/review_accepttoptoolbar.png" /> <b>Accepter</b> de la barre d'outils supérieure, ou</li>
+            <li>cliquer sur la flèche vers le bas sous le bouton <b>Accepter</b> et sélectionnez l'option <b>Accepter la modification en cours</b> (dans ce cas, la modification sera acceptée et vous passerez à la modification suivante), ou</li>
+            <li>cliquez sur le bouton <b>Accepter</b> <img alt="Bouton Accepter" src="../images/review_accept.png" /> de la notification de modification.</li>
+        </ul>
+        <p>Pour accepter rapidement toutes les modifications, cliquez sur la flèche vers le bas sous le bouton <img alt="Bouton Accepter" src="../images/review_accepttoptoolbar.png" /> <b>Accepter</b> et sélectionnez l'option <b>Accepter toutes les modifications</b>.</p>
+        <p>Pour rejeter la modification actuelle, vous pouvez :</p>
+        <ul>
+            <li>cliquez sur le bouton <img alt="bouton Rejeter" src="../images/review_rejecttoptoolbar.png" /> <b>Rejeter</b> de la barre d'outils supérieure, ou</li>
+            <li>cliquer sur la flèche vers le bas sous le bouton <b>Rejeter</b> et sélectionnez l'option <b>Rejeter la modification en cours</b> (dans ce cas, la modification sera rejetée et vous passerez à la modification suivante), ou</li>
+            <li>cliquez sur le bouton <b>Rejeter</b> <img alt="Bouton Rejeter" src="../images/review_reject.png" /> de la notification de modification.</li>
+        </ul>
+        <p>Pour rejeter rapidement toutes les modifications, cliquez sur la flèche vers le bas sous le bouton <img alt="bouton Rejeter" src="../images/review_rejecttoptoolbar.png" /> <b>Rejeter</b> et sélectionnez l'option <b>Rejeter toutes les modifications</b>.</p>
+        <p class="note"><b>Remarque</b> : si vous révisez le document, les options <b>Accepter</b> et <b>Rejeter</b> ne sont pas disponibles pour vous. Vous pouvez supprimer vos modifications en utilisant l'icône <img alt="Bouton Supprimer la modification" src="../images/review_delete.png" /> dans le ballon de changement.</p>
+    </div>
+</body>
+</html>

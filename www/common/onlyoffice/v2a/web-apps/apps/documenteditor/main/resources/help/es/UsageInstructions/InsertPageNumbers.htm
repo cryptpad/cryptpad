@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Inserte números de páginas</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Insert page numbers to navigate through your document easier" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Inserte números de páginas</h1>
+			<p>Para insertar números de las páginas en su documento,</p>
+			<ol>
+                <li>cambie a la pestaña <b>Insertar</b> de la barra de herramientas superior,</li>
+                <li>pulse el icono <b>Encabezado/pie de página</b>  en la barra de herramientas superior,</li>
+				<li>elija el submenú <b>Insertar número de página</b>,</li>
+				<li>seleccione una de las opciones siguientes:<ul>
+						<li>Para meter número en cada página de su documento, seleccione la posición de número en la página.</li>
+						<li>Para insertar número en la posición de cursor actual, seleccione la opción <b>Posición actual</b>.</li>
+					</ul>
+				</li>
+			</ol>
+            <p>Para insertar el número de páginas total en su documento (por ejemplo, si quiere crear la entrada de <em>Página X de Y</em>):</p>
+            <ol>
+                <li>ponga el cursos donde quiera insertar el número total de páginas,</li>
+                <li>pulse el <img alt="Icono encabezado/pie de página" src="../images/headerfooter.png" /> icono <b>Editar encabezado y pie de página</b>  en la barra de herramientas superior,</li>
+                <li>Seleccione la opción de <b>Insertar número de páginas</b>.</li>
+            </ol>
+			<hr />
+			<p>Para editar los ajustes del número de la página,</p>
+			<ol>
+				<li>haga doble clic en el número de página añadido,</li>
+				<li>cambie los parámetros actuales en la barra derecha lateral:<p><img alt="Barra lateral derecha - Ajustes de encabezado y pie de página" src="../images/right_headerfooter.png" /></p>
+				<ul>
+				<li>Fije <b>Posición</b> del texto respecto a la parte superior (para encabezados) o inferior (para pies) de la página.</li>
+				<li>Marque la casilla <b>Primera página deferente</b> para aplicar un encabezado o pie de página diferente o si usted no quiere añadir qualquier encabezado/pie a la primera página.</li>
+				<li>Use la casilla <b>Páginas impares y pares diferentes</b> para añadir encabezados/pies de página diferentes a páginas impares y pares.</li>
+				<li>La opción <b>Enlazar con anterior</b> está disponible si usted ha añadido las <a href="../UsageInstructions/SectionBreaks.htm" onclick="onhyperlinkclick(this)">secciones</a> a su documento. Si no, la opción estará desactivada. Además, esta opción está tampoco desactivada para la primera sección (es decir, cuando un encabezado o pie de la primera sección está seleccionado). De manera predeterminada, la casilla está desactivada, para que los mismos encabezados/pies de página se apliquen a todas las secciones. Si selecciona el área de encabezado o pie de página, verá que el área está marcada con la etiqueta <b>Igual al Anterior</b>. Desmarque la casilla <b>Enlazar con anterior</b> para usar encabezados/pies diferentes para cada sección del documento. La etiqueta <b>Igual al Anterior</b> se ocultará.</li>
+				</ul>
+				<p><img alt="Etiqueta Como antes" src="../images/sameasprevious_label.png" /></p>
+				</li>
+			</ol>
+			<p>Para volver a editar el documento haga doble clic en el área de trabajo.</p>
+		</div>
+	</body>
+</html>

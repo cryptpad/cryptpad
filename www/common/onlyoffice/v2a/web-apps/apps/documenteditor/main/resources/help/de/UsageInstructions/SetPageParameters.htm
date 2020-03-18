@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Seitenparameter festlegen</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Set page parameters: change page orientation and size, adjust margins and insert columns" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Seitenparameter festlegen</h1>
+			<p>Um das Seitenlayout zu ändern, d. H. Seitenausrichtung und Seitengröße festzulegen, die Ränder anzupassen und Spalten einzufügen, verwenden Sie die entsprechenden Symbole auf der Registerkarte <b>Layout</b> der oberen Symbolleiste.</p>
+            <p class="note"><b>Hinweis</b>: alle festgelegten Parameter werden auf das gesamte Dokument angewendet. Wie Sie für einzelnen Teile Ihres Dokuments unterschiedliche Seitenränder, Ausrichtungen, Größen oder Spaltenanzahlen festlegen, lesen Sie bitte auf <a href="../UsageInstructions/SectionBreaks.htm" onclick="onhyperlinkclick(this)">dieser Seite</a> nach.</p>
+			<h3 id="orientation">Seitenausrichtung</h3>
+            <p>Die aktuelle Seitenausrichtung ändern Sie mit einem Klick auf das Symbol <img alt="Ausrichtung" src="../images/orientation.png" /> <b>Seitenausrichtung</b>. Die Standardeinstellung ist <b>Hochformat</b>. Diese kann jedoch auf <b>Querformat</b> gewechselt werden.</p>
+            <h3 id="size">Seitengröße</h3>
+            <p>Das A4-Standardformat ändern Sie, indem Sie das Symbol <img alt="Größe" src="../images/pagesize.png" /> <b>Größe</b> anklicken und das gewünschte Format aus der Liste auswählen. Die verfügbaren Formate sind:</p>
+            <ul>
+                <li>US Letter (21,59 cm x 27,94 cm)</li>
+                <li>US Legal (21,59 cm x 35,56 cm)</li>
+                <li>A4 (21 cm x 29,7 cm)</li>
+                <li>A5 (14,81cm x 20,99cm)</li>
+                <li>B5 (17,6cm x 25,01cm)</li>
+                <li>Umschlag #10 (10,48 cm x 24,13 cm)</li>
+                <li>Umschlag DL (11,01 cm x 22,01 cm)</li>
+                <li>Tabloid (27,94 cm x 43,17 cm)</li>
+                <li>AЗ (29,7 cm x 42,01 cm)</li>
+                <li>Tabloid Übergröße (30,48 cm x 45,71 cm)</li>
+                <li>ROC 16K (19,68 cm x 27,3 cm)</li>
+                <li>Umschlag Choukei 3 (11,99 cm x 23,49 cm)</li>
+                <li>Super B/A3 (33,02 cm x 48,25 cm)</li>
+            </ul>
+            <p>Sie können die Seitengröße auch individuell festlegen, wählen Sie dazu die Option <b>Benutzerdefinierte Seitengröße</b> aus der Liste aus. Das Fenster <b>Seitengröße</b> öffnet sich und Sie können die gewünschte <b>Voreinstellung</b> auswählen (US Letter, US Legal, A4, A5, B5, Umschlag #10, Umschlag DL, Tabloid, A3, Tabloid Übergröße, ROC 16K, Umschlag Choukei 3, Super B/A3, A0, A1, A2, A6) oder benutzerdefinierte Werte für <b>Breite</b> und <b>Höhe</b> festlegen. Geben Sie Ihre gewünschten Werte in die Eingabefelder ein oder passen Sie die vorhandenen Werte über die Pfeile an. Wenn Sie fertig sind, klicken Sie auf <b>OK</b>, um die Änderungen anzuwenden.</p>
+            <p><img alt="Benutzerdefinierte Seitengröße" src="../images/custompagesize.png" /></p>
+            <h3 id="margins">Seitenränder</h3>
+            <p>Ändern Sie die Standardränder, also den Abstand zwischen den linken, rechten, oberen und unteren Seitenkanten und dem Absatztext, klicken Sie dazu auf das Symbol <img alt="Ränder" src="../images/pagemargins.png" /> <b>Ränder</b> und wählen Sie eine der verfügbaren Voreinstellungen aus: <b>Normal</b>, <b>US Normal</b>, <b>Schmal</b>, <b>Mittel</b>, <b>Breit</b>. Sie können auch die Option <b>Benutzerdefinierte Seitenränder</b> verwenden, um Ihre eigenen Werte im geöffneten Fenster <b>Ränder</b> einzugeben. Geben Sie Ihre gewünschten Werte für die <b>Oberen</b>, <b>Unteren</b>, <b>Linken</b> und <b>Rechten</b> Seitenränder in die Eingabefelder ein oder passen Sie die vorhandenen Werte über die Pfeile an. Wenn Sie fertig sind, klicken Sie auf <b>OK</b>. Die benutzerdefinierten Ränder werden auf das aktuelle Dokument angewendet. In der Liste <img alt="Ränder" src="../images/pagemargins.png" /> <b>Ränder</b> wird die Option <b>letzte benutzerdefinierte Einstellung</b> mit den entsprechenden Parametern angezeigt, so dass Sie diese auf alle gewünschten anderen Dokumente anwenden können.</p>
+            <p><img alt="Benutzerdefinierte Seitenränder" src="../images/custommargins.png" /></p>
+            <p>Sie können die Seitenränder auch manuell ändern, indem Sie die Ränder zwischen den grauen und weißen Bereichen der Lineale verschieben (die grauen Bereiche der Lineale weisen auf Seitenränder hin):</p>
+            <p><img alt="Seitenränder anpassen" src="../images/margins.png" /></p>
+            <h3 id="columns">Spalten</h3>
+            <p>Sie können Ihren Text in zwei oder mehr Spalten aufteilen, klicken Sie dazu auf das Symbol <img alt="Spalten" src="../images/insertcolumns.png" /> <b>Spalten</b> und wählen Sie die gewünschte Spaltenzahl aus der Liste aus. Folgende Optionen stehen zur Verfügung:</p>
+            <ul>
+                <li><b>Zwei</b> <img alt="Zwei Spalten" src="../images/twocolumns.png" /> - Zwei Spalten mit der gleichen Breite hinzufügen.</li>
+                <li><b>Drei</b> <img alt="Drei Spalten" src="../images/threecolumns.png" /> - Drei Spalten mit der gleichen Breite hinzufügen.</li>
+                <li><b>Links</b> <img alt="Spalte links" src="../images/leftcolumn.png" /> - zwei Spalten hinzufügen: eine schmale auf der linken Seite und eine breite auf der rechten.</li>
+                <li><b>Rechts</b> <img alt="Spalte rechts" src="../images/rightcolumn.png" /> - zwei Spalten hinzufügen: eine schmale auf der rechten Seite und eine breite auf der linken.</li>
+            </ul>
+            <p>Wenn Sie die Spalteneinstellungen anpassen wollen, wählen Sie die Option <b>Benutzerdefinierte Spalten</b> aus der Liste aus. Das Fenster <b>Spalten</b> öffnet sich und Sie können die gewünschte <b>Spaltenanzahl</b> und den <b>Abstand zwischen den Spalten</b> festlegen (es ist möglich bis zu 12 Spalten einzufügen). Geben Sie Ihre gewünschten Werte in die Eingabefelder ein oder passen Sie die vorhandenen Werte über die Pfeile an. Aktivieren Sie das Kontrollkästchen <b>Spaltentrennung</b>, um eine vertikale Linie zwischen den Spalten einzufügen. Wenn Sie fertig sind, klicken Sie auf <b>OK</b>, um die Änderungen anzuwenden.</p>
+            <p><img alt="Benutzerdefinierte Spalten" src="../images/customcolumns.png" /></p>
+            <p>Wenn Sie genau festlegen wollen, wo eine neue Spalte beginnt, positionieren Sie den Cursor vor dem Text, den Sie in eine neue Spalte verschieben wollen, klicken Sie in der oberen Symbolleiste auf das Symbol <img alt="Umbrüche" src="../images/pagebreak1.png" /> <b>Umbrüche</b> und wählen Sie die Option <b>Spaltenumbruch einfügen</b>. Der Text wird in die nächste Spalte verschoben.</p>
+            <p>Spaltenumbrüche werden in Ihrem Dokument durch eine gepunktete Linie angezeigt: <img alt="Spaltenumbruch" src="../images/columnbreak.png" />. Wenn die eingefügten Spaltenumbrüche nicht angezeigt werden, klicken Sie in der Registerkarte <b>Start</b> auf das Symbol<img alt="Formatierungssymbole" src="../images/nonprintingcharacters.png" />. Um einen Spaltenumbruch zu entfernen, wählen Sie diesen mit der Maus aus und drücken Sie die Taste <b>ENTF</b>.</p>
+            <p>Um die Spaltenbreite und den Abstand manuell zu ändern, können Sie das horizontale Lineal verwenden.</p>
+            <p><img alt="Spaltenabstand" src="../images/columnspacing.png" /></p>
+            <p>Um Spalten zu entfernen und zu einem normalen einspaltigen Layout zurückzukehren, klicken Sie in der oberen Symbolleiste auf das Symbol <img alt="Spalten" src="../images/insertcolumns.png" /> <b>Spalten</b> und wählen Sie die Option <b>Eine</b> <img alt="Eine Spalte" src="../images/onecolumn.png" /> aus der angezeigten Liste aus.</p>		
+		</div>
+	</body>
+</html>

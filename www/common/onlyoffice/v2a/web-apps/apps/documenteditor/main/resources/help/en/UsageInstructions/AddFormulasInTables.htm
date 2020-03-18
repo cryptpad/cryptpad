@@ -1,0 +1,167 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Use formulas in tables</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Insert formulas into the table cells to perform simple calculations on data" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Use formulas in tables</h1>
+            <h3>Insert a formula</h3>
+			<p>You can perform simple calculations on data in table cells by adding formulas. To insert a formula into a table cell,</p>
+			<ol>
+				<li>place the cursor within the cell where you want to display the result,</li>
+                <li>click the <b>Add formula</b> button at the right sidebar,</li>
+				<li>in the <b>Formula Settings</b> window that opens, enter the necessary formula into the <b>Formula</b> field. 
+                    <p>You can enter a needed formula manually using the common mathematical operators (+, -, *, /), e.g. <em>=A1*B2</em> or use the <b>Paste Function</b> drop-down list to select one of the embedded functions, e.g. <em>=PRODUCT(A1,B2)</em>.</p>
+                <p><img alt="Add formula" src="../images/formula_settings.png" /></p>					
+				</li>
+                <li>manually specify necessary arguments within the parentheses in the <b>Formula</b> field. If the function requires several arguments, they must be separated by commas.</li>
+                <li>use the <b>Number Format</b> drop-down list if you want to display the result in a certain number format,</li>
+				<li>click <b>OK</b>.</li>
+			</ol>
+            <p>The result will be displayed in the selected cell. </p>
+            <p>To edit the added formula, select the result in the cell and click the <b>Add formula</b> button at the right sidebar, make the necessary changes in the <b>Formula Settings</b> window and click <b>OK</b>.</p>
+            <hr />
+            <h3>Add references to cells</h3>
+            <p>You can use the following arguments to quickly add references to cell ranges:</p>
+            <ul>
+                <li><b>ABOVE</b> - a reference to all the cells in the column above the selected cell</li>
+                <li><b>LEFT</b> - a reference to all the cells in the row  to the left of the selected cell</li>
+                <li><b>BELOW</b> - a reference to all the cells in the column below the selected cell</li>
+                <li><b>RIGHT</b> - a reference to all the cells in the row to the right of the selected cell</li>
+            </ul>
+            <p>These arguments can be used with the AVERAGE, COUNT, MAX, MIN, PRODUCT, SUM functions.</p>
+            <p>You can also manually enter references to a certain cell (e.g., <em>A1</em>) or a range  of cells (e.g., <em>A1:B3</em>).</p>
+            <h3>Use bookmarks</h3>
+            <p>If you have added some <a href="../UsageInstructions/InsertBookmarks.htm" onclick="onhyperlinkclick(this)">bookmarks</a> to certain cells within your table, you can use these bookmarks as arguments when entering formulas.</p>
+            <p>In the <b>Formula Settings</b> window, place the cursor within the parentheses in the <b>Formula</b> entry field where you want the argument to be added and use the <b>Paste Bookmark</b> drop-down list to select one of the previously added bookmarks.</p>
+            <h3>Update formula results</h3>
+            <p>If you change some values in the table cells, you will need to manually update formula results:</p>
+            <ul>
+                <li>To update a single formula result, select the necessary result and press <b>F9</b> or right-click the result and use the <b>Update field</b> option from the menu.</li>
+                <li>To update several formula results, select the necessary cells or the entire table and press <b>F9</b>.</li>
+            </ul>
+            <hr />
+            <h3>Embedded functions</h3>
+            <p>You can use the following standard math, statistical and logical functions:</p>
+            <table>
+                <tr>
+                    <td width="20%"><b>Category</b></td>
+                    <td width="20%"><b>Function</b></td>
+                    <td width="35%"><b>Description</b></td>
+                    <td width="25%"><b>Example</b></td>
+                </tr>
+                <tr>
+                    <td>Mathematical</td>
+                    <td>ABS(x)</td>
+                    <td>The function is used to return the absolute value of a number.</td>
+                    <td>=ABS(-10)<br />Returns 10</td>
+                </tr>
+                <tr>
+                    <td>Logical</td>
+                    <td>AND(logical1, logical2, ...)</td>
+                    <td>The function is used to check if the logical value you enter is TRUE or FALSE. The function returns 1 (TRUE) if all the arguments are TRUE.</td>
+                    <td>=AND(1&gt;0,1&gt;3)<br />Returns 0</td>
+                </tr>
+                <tr>
+                    <td>Statistical</td>
+                    <td>AVERAGE(argument-list)</td>
+                    <td>The function is used to analyze the range of data and find the average value.</td>
+                    <td>=AVERAGE(4,10)<br />Returns 7</td>
+                </tr>
+                <tr>
+                    <td>Statistical</td>
+                    <td>COUNT(argument-list)</td>
+                    <td>The function is used to count the number of the selected cells which contain numbers ignoring empty cells or those contaning text.</td>
+                    <td>=COUNT(A1:B3)<br />Returns 6</td>
+                </tr>
+                <tr>
+                    <td>Logical</td>
+                    <td>DEFINED()</td>
+                    <td>The function evaluates if a value in the cell is defined. The function returns 1 if the value is defined and calculated without errors and returns 0 if the value is not defined or calculated with an error.</td>
+                    <td>=DEFINED(A1)</td>
+                </tr>
+                <tr>
+                    <td>Logical</td>
+                    <td>FALSE()</td>
+                    <td>The function returns 0 (FALSE) and does <b>not</b> require any argument.</td>
+                    <td>=FALSE<br />Returns 0</td>
+                </tr>
+                <tr>
+                    <td>Mathematical</td>
+                    <td>INT(x)</td>
+                    <td>The function is used to analyze and return the integer part of the specified number.</td>
+                    <td>=INT(2.5)<br />Returns 2</td>
+                </tr>
+                <tr>
+                    <td>Statistical</td>
+                    <td>MAX(number1, number2, ...)</td>
+                    <td>The function is used to analyze the range of data and find the largest number.</td>
+                    <td>=MAX(15,18,6)<br />Returns 18</td>
+                </tr>
+                <tr>
+                    <td>Statistical</td>
+                    <td>MIN(number1, number2, ...)</td>
+                    <td>The function is used to analyze the range of data and find the smallest number.</td>
+                    <td>=MIN(15,18,6)<br />Returns 6</td>
+                </tr>
+                <tr>
+                    <td>Mathematical</td>
+                    <td>MOD(x, y)</td>
+                    <td>The function is used to return the remainder after the division of a number by the specified divisor.</td>
+                    <td>=MOD(6,3)<br />Returns 0</td>
+                </tr>
+                <tr>
+                    <td>Logical</td>
+                    <td>NOT(logical)</td>
+                    <td>The function is used to check if the logical value you enter is TRUE or FALSE. The function returns 1 (TRUE) if the argument is FALSE and 0 (FALSE) if the argument is TRUE.</td>
+                    <td>=NOT(2&lt;5)<br />Returns 0</td>
+                </tr>
+                <tr>
+                    <td>Logical</td>
+                    <td>OR(logical1, logical2, ...)</td>
+                    <td>The function is used to check if the logical value you enter is TRUE or FALSE. The function returns 0 (FALSE) if all the arguments are FALSE.</td>
+                    <td>=OR(1&gt;0,1&gt;3)<br />Returns 1</td>
+                </tr>
+                <tr>
+                    <td>Mathematical</td>
+                    <td>PRODUCT(argument-list)</td>
+                    <td>The function is used to multiply all the numbers in the selected range of cells and return the product.</td>
+                    <td>=PRODUCT(2,5)<br />Returns 10</td>
+                </tr>
+                <tr>
+                    <td>Mathematical</td>
+                    <td>ROUND(x, num_digits)</td>
+                    <td>The function is used to round the number to the desired number of digits.</td>
+                    <td>=ROUND(2.25,1)<br />Returns 2.3</td>
+                </tr>
+                <tr>
+                    <td>Mathematical</td>
+                    <td>SIGN(x)</td>
+                    <td>The function is used to return the sign of a number. If the number is positive, the function returns <b>1</b>. If the number is negative, the function returns <b>-1</b>. If the number is <b>0</b>, the function returns <b>0</b>.</td>
+                    <td>=SIGN(-12)<br />Returns -1</td>
+                </tr>
+                <tr>
+                    <td>Mathematical</td>
+                    <td>SUM(argument-list)</td>
+                    <td>The function is used to add all the numbers in the selected range of cells and return the result.</td>
+                    <td>=SUM(5,3,2)<br />Returns 10</td>
+                </tr>
+                <tr>
+                    <td>Logical</td>
+                    <td>TRUE()</td>
+                    <td>The function returns 1 (TRUE) and does <b>not</b> require any argument.</td>
+                    <td>=TRUE<br />Returns 1</td>
+                </tr>
+            </table>             
+		</div>
+	</body>
+</html>

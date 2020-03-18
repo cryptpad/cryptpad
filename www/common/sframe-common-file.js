@@ -162,6 +162,9 @@ define([
                 // then we could check if a file is too large without going to the server...
                 queue.inProgress = false;
                 queue.next();
+
+                if (config.onError) { config.onError(e); }
+
                 if (e === 'TOO_LARGE') {
                     $pv.text(Messages.upload_tooLargeBrief);
                     return void UI.alert(Messages.upload_tooLarge);

@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Revisión de documentos</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Tips on document review option" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Revisión de documentos</h1>
+        <p>Cuando alguien comparte un archivo con usted y que tiene permiso de revisión, use la función de <b>Revisión</b> del documento.</p>
+        <p>Si es el que revisa, entonces puede usar la opción de <b>Revisar</b> para revisar el documento, cambiar las oraciones, frases y otros elementos de la página, corregir ortografía, y hacer otras cosas en el documento sin editarlo. Todos sus cambios se grabarán y mostrarán a la persona que le envió el documento.</p>
+        <p>Si usted fue la persona que mandó el archivo para revisar, necesitará mostrar todos los cambios que se hicieron en el documento, verlos, aceptarlos o rechazarlos.</p>
+        <h3>Activar la característica de rastrear cambios</h3>
+        <p>Para ver los cambios sugeridos por un revisor, activa la opción de <b>Rastrear Cambios</b> en una de las siguientes maneras:</p>
+        <ul>
+            <li>Haga clic en el <img alt="en el botón de Rastrear cambios" src="../images/trackchangesstatusbar.png" /> botón en la esquina de abajo derecha en la barra de estado, o</li>
+            <li>cambie a la pestaña <b>Colaboración</b> en la barra de herramientas superior y haga clic en el botón <img alt="Botón de rastreo de cambios" src="../images/trackchangestoptoolbar.png" /> <b>Rastrear Cambios</b>.</li>
+        </ul>
+        <p class="note"><b>Nota</b>: no es necesario para el revisor habilitar la opción de <b>Rastrear Cambios</b>. Está habilitada por defecto y no se puede deshabilitar cuando el documento se comparte solo con los derechos de acceso de revisar.</p>
+        <h3 id="displaymode">Elegir el modo de mostrar cambios</h3>
+        <p>Haga clic en el <img alt="Botón de Visualizar Modo" src="../images/review_displaymode.png" /> botón de <b>Visualizar Modo</b> en la barra de herramientas superior y seleccione uno de los modos disponibles de la lista:</p>
+        <ul>
+            <li><b>Marcado</b> - esta opción se selecciona por defecto. Permite tanto ver los cambios sugeridos como editar el documento.</li>
+            <li><b>Final</b> - este modo se usa para mostrar todos los cambios como si ellos fueran aceptados. Esta opción no acepta los cambios, simplemente permite ver cómo se vería el documento después de aceptar los cambios. En este modo, no se puede editar el documento.</li>
+            <li><b>Original</b> - este modo se usa para mostrar todos los cambios como si se rechazaran. Esta opción no rechaza todos los cambios, simplemente permite ver el documento sin los cambios. en este modo, no puede editar el documento.</li>
+        </ul>
+        <h3 id="managechanges">Aceptar o rechazar cambios</h3>
+        <p>Use los <img alt="Botón Cambio Anterior" src="../images/review_previous.png" /> botones <b>Anterior</b> y <img alt="Botón Cambio Siguiente" src="../images/review_next.png" /> <b>Siguiente</b> en la barra de herramientas superior para navegar entre los cambios.</p>
+        <p>Para aceptar el cambio actualmente seleccionado puede:</p>
+        <ul>
+            <li>pulsar el icono <img alt="Botón aceptar" src="../images/review_accepttoptoolbar.png" /> <b>Aceptar</b>  en la barra de herramientas superior, o</li>
+            <li>haga clic en la flecha que mira hacia abajo del botón de <b>Aceptar</b> y seleccione la opción de <b>Aceptar Cambio Actual</b> (en este caso el cambio se aceptará y cambiará al siguiente cambio), o</li>
+            <li>haga clic en el <img alt="Botón aceptar" src="../images/review_accept.png" /> botón <b>Aceptar</b> en la notificación de cambio.</li>
+        </ul>
+        <p>Para aceptar de forma rápida todos los cambios, haga clic en la flecha hacia abajo debajo del botón <img alt="Botón aceptar" src="../images/review_accepttoptoolbar.png" /> <b>Aceptar</b> y seleccione la opción <b>Rechazar Todos los Cambios</b>.</p>
+        <p>Para rechazar el cambio actualmente seleccionado puede:</p>
+        <ul>
+            <li>pulse el <img alt="Botón de Rechazar" src="../images/review_rejecttoptoolbar.png" /> icono <b>Rechazar</b>  en la barra de herramientas superior, o</li>
+            <li>haga clic en la flecha hacia abajo debajo del botón de <b>Rechazar</b> y seleccione la opción de <b>Rechazar cambio actual</b> (en este caso, el cambio se rechazará y cambiará al siguiente cambio disponible), o</li>
+            <li>haga clic en el <img alt="Botón de Rechazar" src="../images/review_reject.png" /> botón de <b>Rechazar</b> de la notificación de cambio.</li>
+        </ul>
+        <p>Para rechazar de forma rápida todos los cambios, haga clic en la flecha hacia abajo debajo del botón <img alt="Botón de Rechazar" src="../images/review_rejecttoptoolbar.png" /> <b>Rechazar</b> y seleccione la opción <b>Rechazar Todos los Cambios</b>.</p>
+        <p class="note"><b>Nota</b>: si revisa el documento, las opciones de <b>Aceptar</b> y de <b>Rechazar</b> no están disponibles para usted. Puede eliminar sus cambios usando el <img alt="Botón de eliminar cambio" src="../images/review_delete.png" /> icono dentro del bocadillo de cambio.</p>
+    </div>
+</body>
+</html>

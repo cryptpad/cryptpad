@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Inhaltssteuerelemente einfügen</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Insert content controls to create a form with input fields that can be filled in by other users, or protect some parts of the document from being edited or deleted" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Inhaltssteuerelemente einfügen</h1>
+            <p>Mithilfe von Inhaltssteuerelementen können Sie ein Formular mit Eingabefeldern erstellen, die von anderen Benutzern ausgefüllt werden können; oder Sie können Teile des Dokuments davor schützen, bearbeitet oder gelöscht zu werden. Inhaltssteuerelemente sind Objekte die Text enthalten, der formatiert werden kann. Inhaltssteuerelemente für einfachen Text können nur einen Absatz enthalten, während Steuerelemente für Rich-Text-Inhalte mehrere Absätze, Listen und Objekte (Bilder, Formen, Tabellen usw.) enthalten können.</p>
+			<h3>Inhaltssteuerelemente hinzufügen</h3>
+            <p>Neues <b>Inhaltssteuerelement für einfachen Text</b> erstellen:</p>
+            <ol>
+                <li>Positionieren Sie den Einfügepunkt innerhalb einer Textzeile, in die das Steuerelement eingefügt werden soll <br />oder wählen Sie eine Textpassage aus, die Sie zum Steuerungsinhalt machen wollen.</li>
+                <li>Wechseln Sie in der oberen Symbolleiste auf die Registerkarte <b>Einfügen</b>.</li>
+                <li>Klicken Sie auf den Pfeil neben dem Symbol <img alt="Inhaltssteuerelemente" src="../images/insertccicon.png" /> <b>Inhaltssteuerelemente</b>.</li>
+                <li>Wählen sie die Option <b>Inhaltssteuerelement für einfachen Text einfügen</b> aus dem Menü aus.</li>
+            </ol>
+            <p>Das Steuerelement wird an der Einfügemarke innerhalb einer Zeile des vorhandenen Texts eingefügt. Bei Steuerelementen für einfachen Text können keine Zeilenumbrüche hinzugefügt werden und sie dürfen keine anderen Objekte wie Bilder, Tabellen usw. enthalten.</p>
+            <p><img alt="Neues Inhaltssteuerelement für einfachen Text" src="../images/addedcontentcontrol.png" /></p>
+            <p>Neues <b>Inhaltssteuerelement für Rich-Text</b> erstellen:</p>
+            <ol>
+                <li>Positionieren Sie die Einfügemarke am Ende eines Absatzes, nach dem das Steuerelement hinzugefügt werden soll <br />oder wählen Sie einen oder mehrere der vorhandenen Absätze aus die Sie zum Steuerungsinhalt machen wollen.</li>
+                <li>Wechseln Sie in der oberen Symbolleiste auf die Registerkarte <b>Einfügen</b>.</li>
+                <li>Klicken Sie auf den Pfeil neben dem Symbol <img alt="Inhaltssteuerelemente" src="../images/insertccicon.png" /> <b>Inhaltssteuerelemente</b>.</li>
+                <li>Wählen sie die Option <b>Inhaltssteuerelement für Rich-Text einfügen</b> aus dem Menü aus.</li>
+            </ol>
+            <p>Das Steuerungselement wird in einem neuen Paragraphen eingefügt. Rich-Text-Inhaltssteuerelemente ermöglichen das Hinzufügen von Zeilenumbrüchen und Sie können multiple Absätze sowie auch Objekte enthalten, z. B. Bilder, Tabellen, andere Inhaltssteuerelemente usw.</p>
+            <p><img alt="Inhaltssteuerelement für Rich-Text:" src="../images/richtextcontentcontrol.png" /></p>
+            <p class="note"><b>Hinweis</b>: Der Rahmen des Textfelds für das Inhaltssteuerelement ist nur sichtbar, wenn das Steuerelement ausgewählt ist. In der gedruckten Version sind die Ränder nicht zu sehen.</p>
+            <h3>Inhaltssteuerelemente verschieben</h3>
+            <p>Steuerelemente können an eine andere Stelle im Dokument <b>verschoben</b> werden: Klicken Sie auf die Schaltfläche links neben dem Rahmen des Steuerelements, um das Steuerelement auszuwählen, und ziehen Sie es bei gedrückter Maustaste an die gewünschte Position.</p>
+            <p><img alt="Inhaltssteuerelemente verschieben" src="../images/movecontentcontrol.png" /></p>
+            <p>Sie können Inhaltssteuerelemente auch <b>kopieren und einfügen</b>: wählen Sie das entsprechende Steuerelement aus und verwenden Sie die Tastenkombinationen <b>STRG+C/STRG+V</b>.</p>
+            <h3>Inhaltssteuerelemente bearbeiten</h3>
+            <p>Ersetzen Sie den Standardtext im Steuerelement („Text eingeben") durch Ihren eigenen Text: Wählen Sie den Standardtext aus und geben Sie einen neuen Text ein oder kopieren Sie eine beliebige Textpassage und fügen Sie diese in das Inhaltssteuerelement ein.</p>
+            <p>Der Text im Inhaltssteuerelement eines beliebigen Typs (für einfachen Text und Rich-Text) kann mithilfe der Symbole in der oberen Symbolleiste formatiert werden: Sie können <a href="../UsageInstructions/FontTypeSizeColor.htm" onclick="onhyperlinkclick(this)">Schriftart, -größe und -farbe</a> anpassen und <a href="../UsageInstructions/DecorationStyles.htm" onclick="onhyperlinkclick(this)">DekoSchriften</a> und <a href="../UsageInstructions/FormattingPresets.htm" onclick="onhyperlinkclick(this)">Formatierungsvorgaben</a> anwenden. Es ist auch möglich die Texteigenschaften im Fenster <b>Paragraph - Erweiterte Einstellungen</b> zu ändern, das Ihnen im Kontextmenü oder in der rechten Seitenleiste zur Verfügung steht. Text in Rich-Text-Inhaltssteuerelementen kann wie normaler Dokumententext formatiert werden, Sie können beispielsweise den <a href="../UsageInstructions/LineSpacing.htm" onclick="onhyperlinkclick(this)">Zeilenabstand</a> festlegen, <a href="../UsageInstructions/ParagraphIndents.htm" onclick="onhyperlinkclick(this)">Absatzeinzüge ändern</a> oder <a href="../UsageInstructions/SetTabStops.htm" onclick="onhyperlinkclick(this)">Tab-Stopps</a> anpassen.</p>
+            <h3>Einstellungen für Inhaltssteuerelemente ändern</h3>
+            <p>Die Einstellungen für Inhaltssteuerelemente öffnen Sie wie folgt:</p>
+            <ul>
+                <li>Wählen Sie das gewünschte Inhaltssteuerelement aus und klicken Sie auf den Pfeil neben dem Symbol <img alt="Inhaltssteuerelemente" src="../images/insertccicon.png" /> <b>Inhaltssteuerelemente</b> in der oberen Symbolleiste und wählen Sie dann die Option <b>Einstellungen Steuerelemente</b> aus dem Menü aus.</li>
+                <li>Klicken Sie mit der rechten Maustaste auf eine beliebige Stelle im Inhaltssteuerelement und nutzen Sie die Option <b>Einstellungen Steuerungselement</b> im Kontextmenü.</li>
+            </ul>
+            <p>Im sich nun öffnenden Fenstern können Sie die folgenden Parameter festlegen:</p>
+            <p><img alt="Fenster Einstellungen für Inhaltssteuerelemente" src="../images/ccsettingswindow.png" /></p>
+            <ul>
+                <li>Legen Sie in den entsprechenden Feldern <b>Titel</b> oder <b>Tag</b> des Steuerelements fest. Der Titel wird angezeigt, wenn das Steuerelement im Dokument ausgewählt wird. Tags werden verwendet, um Inhaltssteuerelemente zu identifizieren, damit Sie im Code darauf verweisen können.</li>
+                <li>Wählen Sie aus, ob Sie Steuerelemente mit einem <b>Begrenzungsrahmen</b> anzeigen möchten oder nicht. Wählen Sie die Option <b>Keine</b>, um das Steuerelement ohne Begrenzungsrahmen anzuzeigen. Wenn Sie die Option <b>Begrenzungsrahmen</b> auswählen, können Sie die <b>Feldfarbe</b> im untenstehenden Feld auswählen.</li>
+                <li>Im Abschnitt <b>Sperren</b> können Sie das Inhaltssteuerelement mit der entsprechenden Option vor ungewolltem Löschen oder Bearbeiten schützen:<ul>
+                    <li><b>Inhaltssteuerelement kann nicht gelöscht werden</b> - Aktivieren Sie dieses Kontrollkästchen, um ein Löschen des Steuerelements zu verhindern.</li>
+                    <li><b>Inhaltssteuerelement kann nicht bearbeitet werden</b> - Aktivieren Sie dieses Kontrollkästchen, um ein Bearbeiten des Steuerelements zu verhindern.</li>
+                </ul>
+                </li>
+            </ul>
+            <p>Klicken Sie im Fenster Einstellungen auf <b>OK</b>, um die Änderungen zu bestätigen.</p>
+            <p>Es ist auch möglich, Inhaltssteuerelemente mit einer bestimmten Farbe hervorzuheben. Inhaltssteuerelemente farblich hervorheben:</p>
+            <ol>
+                <li>Klicken Sie auf die Schaltfläche links neben dem Rahmen des Steuerelements, um das Steuerelement auszuwählen.</li>
+                <li>Klicken Sie auf der oberen Symbolleiste auf den Pfeil neben dem Symbol <img alt="Inhaltssteuerelemente" src="../images/insertccicon.png" /> <b>Inhaltssteuerelemente</b>.</li>
+                <li>Wählen Sie die Option <b>Einstellungen hervorheben</b> aus dem Menü aus.</li>
+                <li>Wählen Sie die gewünschte Farbe auf den verfügbaren Paletten aus: <b>Themenfarben</b>, <b>Standardfarben</b> oder neue <b>benutzerdefinierte Farbe</b> angeben. Um zuvor angewendete Farbmarkierungen zu entfernen, verwenden Sie die Option <b>Keine Markierung</b>.</li>
+            </ol>
+            <p>Die ausgewählten Hervorhebungsoptionen werden auf alle Inhaltssteuerelemente im Dokument angewendet.</p>
+            <h3>Inhaltssteuerelemente entfernen</h3>
+            <p>Um ein Steuerelement zu entfernen ohne den Inhalt zu löschen, klicken Sie auf das entsprechende Ssteuerelement und gehen Sie vor wie folgt:</p>
+            <ul>
+                <li>Klicken Sie auf den Pfeil neben dem Symbol <img alt="Inhaltssteuerelemente" src="../images/insertccicon.png" /> <b>Inhaltssteuerelemente</b> in der oberen Symbolleiste und wählen Sie dann die Option <b>Steuerelement entfernen</b> aus dem Menü aus.</li>
+                <li>Klicken Sie mit der rechten Maustaste auf das Steuerelement und wählen Sie die Option <b>Steuerungselement entfernen</b> im Kontextmenü aus.</li>
+            </ul>
+            <p>Um ein Steuerelement einschließlich Inhalt zu entfernen, wählen Sie das entsprechende Steuerelement aus und drücken Sie die Taste <b>Löschen</b> auf der Tastatur.</p>
+                        
+		</div>
+	</body>
+</html>

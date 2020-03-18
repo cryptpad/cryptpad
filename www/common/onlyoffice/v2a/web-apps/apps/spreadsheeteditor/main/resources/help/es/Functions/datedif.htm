@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Función SIFECHA</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Función SIFECHA</h1>
+			<p>La función <b>SIFECHA</b> es una función de fecha y hora. Se usa para devolver la diferencia entre DOS valores de fecha (fecha de inicio y fecha final), basada en el intervalo (unidad) especificado.</p>
+			<p>La sintaxis de la función <b>SIFECHA</b> es:</p> 
+			<p style="text-indent: 150px;"><b><em>SIFECHA(fecha-inicio, fecha-final, unidad)</em></b></p> 
+			<p><em>donde</em></p>
+			<p style="text-indent: 50px;"><b><em>fecha-inicio</em></b> (fecha de inicio) y <b><em>fecha-final</em></b> (fecha final) son dos fechas entre las cuales usted quiere calcular la diferencia.</p>
+			<p style="text-indent: 50px;"><b><em>unidad</em></b> es el intervalo especificado que puede ser uno de los siguientes:</p>
+			<table style="width: 40%">
+				<tr>
+					<td><b>Unidad</b></td>
+					<td><b>Explicación de Intervalos</b></td>
+				</tr>
+				<tr>
+					<td>A</td>
+					<td>El número de años completos.</td>
+				</tr>
+				<tr>
+					<td>M</td>
+					<td>El número de meses completos.</td>
+				</tr>
+				<tr>
+					<td>D</td>
+					<td>El número de días.</td>
+				</tr>
+				<tr>
+					<td>MD</td>
+					<td>La diferencia entre los días (se ignoran meses y años).</td>
+				</tr>
+				<tr>
+					<td>AM</td>
+					<td>La diferencia entre los meses (se ignoran días y años).</td>
+				</tr>
+				<tr>
+					<td>AD</td>
+					<td>La diferencia entre los días (se ignoran años).</td>
+				</tr>
+			</table>
+			<p>Para aplicar la función <b>SIFECHA</b>,</p>
+			<ol>
+			<li>seleccione la celda donde usted quiere ver el resultado,</li>
+			<li>pulse el icono <b>Insertar función</b> <img alt="Icono insertar función" src="../images/insertfunction.png" /> que se sitúa en la barra de herramientas superior, <br />o haga clic derecho en la сelda seleccionada y elija la opción <b>Insertar función</b> en el menú, <br />o pulse el icono <img alt="Icono función" src="../images/function.png" /> que se sitúa en la barra de fórmulas,</li>
+			<li>seleccione el grupo de funciones <b>Fecha y hora</b> en la lista,</li>
+			<li>haga clic en la función <b>SIFECHA</b>,</li>
+			<li>introduzca los argumentos correspondientes separados por comas,</li>
+			<li>pulse el botón <b>Enter</b>.</li>
+			</ol>
+			<p>El resultado se mostrará en la celda elegida.</p>
+			<p style="text-indent: 150px;"><img alt="Función SIFECHA" src="../images/datedif.png" /></p>
+		</div>
+	</body>
+</html>

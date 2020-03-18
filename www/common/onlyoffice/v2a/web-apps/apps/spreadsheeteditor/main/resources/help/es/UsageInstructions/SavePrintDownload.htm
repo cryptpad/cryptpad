@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Guarde/imprima/descargue su hoja de cálculo</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Save, print and download your spreadsheet in various formats" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Guarde/imprima<span class="onlineDocumentFeatures">/descargue</span> su hoja de cálculo</h1>
+			<p>De manera predeterminada, <b>el editor de hojas de cálculo</b> guarda su archivo cada 2 segundos automáticamente preveniendo la pérdida de datos en caso de un cierre inesperado del programa. <span class="onlineDocumentFeatures">Si co-edita el archivo en el modo <b>Rápido</b>, el tiempo requerido para actualizaciones es de 25 cada segundo y guarda los cambios si estos se han producido. Si el archivo se está editando por varias prsonas a la vez, los cambios se guardan cada 10 minutos. Se puede fácilmente desactivar la función <b>Autoguardado</b> en la página <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Ajustes avanzados</a>.</span></p>
+			<p>Para guardar su hoja de cálculo actual manualmente,</p>
+			<ul>
+				<li>pulse el icono <b>Guardar</b> <img alt="Icono Guardar" src="../images/save.png" /> en la barra de herramientas superior, o</li>
+				<li>use la combinación de las teclas <b>Ctrl+S</b>, o</li>
+				<li>pulse el icono <b>Archivo</b> en la barra izquierda lateral y seleccione la opción <b>Guardar</b>.</li>
+			</ul>
+            <div class="onlineDocumentFeatures">
+			<p>Para descargar la consiguiente hoja de cálculo al disco duro de su ordenador,</p>
+			<ol>
+				<li>haga clic en la pestaña <b>Archivo</b> en la barra de herramientas superior,</li>
+				<li>seleccione la opción <b>Descargar como</b>,</li>
+				<li>elija uno de los formatos disponibles: XLSX, PDF, ODS, CSV.<p class="note"><b>Nota</b>: si selecciona el formato CSV, todas las características (formato de letra, fórmulas etc.) excepto el texto plano no se guardarán en el archivo CSV. Si continua el guardado, la ventana <b>Elegir Opciones CSV</b> se abrirá. de manera predeterminada, <em>Unicode (UTF-8)</em> se usa como el tipo de <b>Codificación</b>. El <b>Delimitador</b> por defecto es <em>coma</em> (,), pero también están disponibles las siguientes opciones: <em>punto y coma</em> (;), <em>dos puntos</em> (:), <em>Tabulación</em>, <em>Espacio</em> y <em>Otro</em> (esta opción le permite establecer un carácter delimitador personalizado).</p>
+                </li>
+			</ol>
+            </div>
+			<p>Para imprimir la hoja de cálculo actual,</p>
+			<ul>
+				<li>pulse el icono <b>Imprimir</b>  en la barra de herramientas superior, o</li>
+				<li>use la combinación de las teclas <b>Ctrl+P</b>, o</li>
+				<li>pulse el icono <b>Archivo</b> en la barra izquierda lateral y seleccione la opción <b>Imprimir</b>.</li>
+			</ul>
+			<p>La ventana de <b>Ajustes de impresión</b> se abrirá, y podrá cambiar los ajustes de impresión de defecto. Haga clic en el botón <b>Mostrar detalles</b> al final de la ventana para mostrar todos los parámetros.</p>
+            <p class="note"><b>Nota</b>: usted también puede cambiar los ajustes de impresión en la página <b>Ajustes avanzados...</b>: pulse la pestaña <b>Archivo</b> de la barra de herramientas superior, y siga <b>Ajustes avanzados...</b> &gt;&gt; <b>Ajustes de Página</b>.<br />Algunos de estos ajustes (<b>Márgenes</b>, <b>Orientación</b> y <b>Tamaño</b> de página) también están disponibles en la pestaña <b>Diseño</b> de la barra de herramientas superior.</p>
+			<p><img alt="Ventana de ajustes de impresión" src="../images/printsettingswindow.png" /></p>
+			<p>Aquí usted puede ajustar los parámetros siguientes:</p>
+			<ul>
+			<li><b>Área de impresión</b> - especifique lo que quiere imprimir: toda la <b>Hoja actual</b>, <b>Todas las hojas</b> de su hoja de cálculo o el rango de celdas previamente seleccionado (<b>Selección</b>),</li>
+			<li><b>Ajustes de la hoja</b> - especifica ajustes de impresión individuales para cada hoja de forma separada, si tiene seleccionada la opción <b>Todas las hojas</b> en la lista desplegable <b>Rano de impresión</b>,</li>
+            <li><b>Tamaño de página</b> - seleccione uno de los tamaños disponibles en la lista desplegable,</li>
+			<li><b>Orientación de la página</b> - seleccione la opción <b>Vertical</b> si usted quiere imprimir la página verticalmente, o use la opción <b>Horizontal</b> para imprimirla horizontalmente,</li>
+			<li><b>Escalada</b> - si no quiere que algunas columnas o filas se impriman en una segunda página, puede minimizar los contenidos de la hoja para que ocupen solo una página si selecciona la opción correspondiente: <b>Ajustar hoja en una página</b>, <b>Ajustar todas las columnas en una página</b> o <b>Ajustar todas las filas en una página</b>. Deje la opción <b>Tamaño actual</b> para imprimir la hoja sin ajustar.</li>
+            <li><b>Márgenes</b> - especifique la distancia entre datos de la hoja de cálculo y los bordes de la página imprimible cambiando los tamaños predeterminados en los campos <b>Superior</b>, <b>Inferior</b>, <b>Izquierdo</b> y <b>Derecho</b>,</li>
+			<li><b>Imprimir</b> - especifique elementos de la hoja que quiere imprimir marcando las casillas correspondientes: <b>Imprimir Cuadricula</b> y <b>Imprimir títulos de filas y columnas</b>.</li>
+			</ul>
+			<p class="onlineDocumentFeatures">Una vez establecidos los parámetros, pulse el botón <b>Guardar e imprimir</b> para aplicar los cambios y cerrar la ventana. Después un archivo PDF será generado en la base de la hoja de cálculo. Puede abrirlo e imprimirlo, o guardarlo en el disco duro de su ordenador o en un medio extraíble para imprimirlo más tarde.</p>
+			
+		</div>
+	</body>
+</html>

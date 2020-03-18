@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insérer des images</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add an image to your document and adjust its position and properties" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insérer des images</h1>
+			<p>Document Editor vous permet d'insérer des images aux formats populaires. Les formats d'image pris en charge sont les suivants : <b>BMP</b>, <b>GIF</b>, <b>JPEG</b>, <b>JPG</b>, <b>PNG</b>.</p>
+            <h3>Insérer une image</h3>
+            <p>Pour insérer une image dans votre document de texte,</p>
+			<ol>
+				<li>placez le curseur là où vous voulez insérer l'image,</li>
+                <li>passez à l'onglet <b>Insertion</b> de la barre d'outils supérieure,</li>
+				<li>cliquez sur l'icône <img alt="icône Image" src="../images/image.png" /> <b>Image</b>de la barre d'outils supérieure,</li>
+				<li>sélectionnez l'une des options suivantes pour charger l'image :<ul>
+						<li>l'option <b>Image à partir d'un fichier</b> ouvre la fenêtre de dialogue standard pour sélectionner le fichier. Sélectionnez le fichier de votre choix sur le disque dur de votre ordinateur et cliquez sur le bouton <b>Ouvrir</b></li>
+						<li>l'option <b>Image à partir d'une URL</b> ouvre la fenêtre où vous pouvez saisir l'adresse Web de l'image et cliquer sur le bouton <b>OK</b></li>
+					</ul>
+				</li>
+				<li>après avoir ajouté l'image, vous pouvez modifier sa taille, ses propriétés et sa position.</li>
+			</ol>
+            <h3>Déplacer et redimensionner des images</h3>
+			<p><img class="floatleft" alt="Image en mouvement" src="../images/moving_image.png" /> Pour changer la taille de l'image, faites glisser les petits carreaux <img alt="Icône Carreaux" src="../images/resize_square.png" /> situés sur ses bords. Pour garder les proportions de l'image sélectionnée lors du redimensionnement, maintenez la touche <b>Maj</b> enfoncée et faites glisser l'une des icônes de coin.</p>
+			<p>Pour modifier la position de l'image, utilisez l'icône <img alt="Flèche" src="../images/arrow.png" /> qui apparaît si vous placez le curseur de votre souris sur l'image. Faites glisser l'image à la position nécessaire sans relâcher le bouton de la souris.</p>
+			<p>Lorsque vous déplacez l'image, des lignes de guidage s'affichent pour vous aider à positionner l'objet sur la page avec précision (si un style d'habillage autre que aligné est sélectionné).</p>
+			<p>Pour faire pivoter l'image, placez le curseur de la souris sur la poignée de rotation ronde <img alt="Poignée de rotation" src="../images/greencircle.png" /> et faites-la glisser vers la droite ou la gauche. Pour limiter la rotation de l'angle à des incréments de 15 degrés, maintenez la touche <b>Maj</b> enfoncée.</p>
+            <p class="note"><b>Note</b> : la liste des raccourcis clavier qui peuvent être utilisés lorsque vous travaillez avec des objets est disponible <a href="../HelpfulHints/KeyboardShortcuts.htm#workwithobjects" onclick="onhyperlinkclick(this)">ici</a>.</p>
+            <hr />
+            <h3>Ajuster les paramètres de l'image</h3>
+			<p><img class="floatleft" alt="Onglet Paramètres de l'image" src="../images/right_image.png" />Certains paramètres de l'image peuvent être modifiés dans l'onglet <b>Paramètres de l'image</b> de la barre latérale droite. Pour l'activer, cliquez sur l'image et sélectionnez l'icône <b>Paramètres de l'image</b> <img alt="Paramètres de l'image" src="../images/image_settings_icon.png" /> à droite. Vous pouvez y modifier les paramètres suivants :</p>
+			<ul style="margin-left: 280px;">
+				<li><b>Taille</b> est utilisée pour afficher la <b>Largeur</b> et la <b>Hauteur</b> de l'image actuelle. Si nécessaire, vous pouvez restaurer la taille d'image par défaut en cliquant sur le bouton <b>Taille par défaut</b>. Le bouton <b>Ajuster à la marge</b> permet de redimensionner l'image, de sorte qu'elle occupe tout l'espace entre les marges gauche et droite de la page.</li>
+				<li><b>Style d'habillage</b> sert à sélectionner un des styles d'habillage - aligné sur le texte, carré, rapproché, au travers, haut et bas, devant le texte, derrière le texte (pour en savoir plus, consultez la section des paramètres avancés ci-dessous).</li>
+				<li><b>Remplacer l’image</b> sert à remplacer l'image actuelle et charger une autre <b>À partir d'un fichier</b> ou <b>À partir d'une URL</b>.</li>
+			</ul>
+            <p>Certains paramètres de l'image peuvent être également modifiés en utilisant le menu contextuel. Les options du menu sont les suivantes :</p>
+			<ul style="margin-left: 280px;">
+                <li><b>Couper, Copier, Coller</b> - les options nécessaires pour couper ou coller le texte / l'objet sélectionné et coller un passage de texte précedement coupé / copié ou un objet à la position actuelle du curseur.</li>
+				<li><b>Organiser</b> sert à placer l'image sélectionnée au premier plan, envoyer à fond, avancer ou reculer ainsi que grouper ou dégrouper des images pour effectuer des opérations avec plusieurs images à la fois. Pour en savoir plus sur l'organisation des objets, vous pouvez vous référer à <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">cette page</a>.</li>
+				<li><b>Aligner</b> sert à aligner le texte à gauche, au centre, à droite, en haut, au milieu, en bas. Pour en savoir plus sur l'alignement des objets, vous pouvez vous référer à <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">cette page</a>.</li>
+				<li><b>Style d'habillage</b> sert à sélectionner un des styles d'habillage - aligné sur le texte, carré, rapproché, au travers, haut et bas, devant le texte, derrière le texte - ou modifier le contour de l'habillage. L'option <b>Modifier les limites du renvoi à la ligne</b> n'est disponible qu'au cas où vous sélectionnez le style d'habillage autre que 'aligné sur le texte'. Faites glisser les points d'habillage pour personnaliser les limites. Pour créer un nouveau point d'habillage, cliquez sur la ligne rouge et faites-la glisser vers la position désirée. <img alt="Modifier les limites du renvoi à la ligne" src="../images/wrap_boundary.png" /></li>
+				<li><b>Taille par défaut</b> sert à changer la taille actuelle de l'image ou rétablir la taille par défaut.</li>
+                <li><b>Remplacer l’image</b> sert à remplacer l'image actuelle et charger une autre <b>À partir d'un fichier</b> ou <b>À partir d'une URL</b>.</li>
+				<li><b>Paramètres avancés</b> sert à ouvrir la fenêtre 'Image - Paramètres avancés'.</li>
+			</ul>
+            <p><img class="floatleft" alt="Onglet Paramètres de la forme" src="../images/right_image_shape.png" /> Lorsque l'image est sélectionnée, l'icône <b>Paramètres de forme</b> <img alt="Paramètres de la forme" src="../images/shape_settings_icon.png" /> est également disponible sur la droite. Vous pouvez cliquer sur cette icône pour ouvrir l'onglet <b>Paramètres de forme</b> dans la barre latérale droite et ajuster le type de <a href="../UsageInstructions/InsertAutoshapes.htm#shape_stroke" onclick="onhyperlinkclick(this)"><b>contour</b></a>, la taille et la couleur ainsi que le type de forme en sélectionnant une autre forme dans le menu <b>Modifier la forme automatique</b>. La forme de l'image changera en conséquence.</p>
+			<hr />
+			<p>Pour modifier les paramètres avancés de l’image, cliquez sur celle-ci avec le bouton droit de la souris et sélectionnez <b>Paramètres avancés</b> du menu contextuel ou cliquez sur le lien <b>Afficher les paramètres avancés</b> de la barre latérale droite. La fenêtre des propriétés de l'image sera ouverte :</p>
+			<p><img alt="Image - Paramètres avancés : Taille" src="../images/image_properties.png" /></p>
+			<p>L'onglet <b>Taille</b> comporte les paramètres suivants :</p>
+			<ul>
+				<li><b>Largeur</b> et <b>Hauteur</b> - utilisez ces options pour modifier langeur / hauteur de l'image. Si le bouton <b>Proportions constantes</b> <img alt="Icône Proportions constantes" src="../images/constantproportions.png" /> est cliqué(auquel cas il ressemble à ceci <img alt="Icône Proportions constantes activée" src="../images/constantproportionsactivated.png" />), les proportions d'image originales sera gardées lors de la modification de la largeur/hauteur. Pour rétablir la taille par défaut de l'image ajoutée, cliquez sur le bouton <b>Par défaut</b>.</li>
+			</ul>
+			<p><img alt="Image - Paramètres avancés : Habillage du texte" src="../images/image_properties_1.png" /></p>
+			<p>L'onglet <b>Habillage du texte</b> contient les paramètres suivants :</p>
+			<ul>
+				<li><b>Style d'habillage</b> - utilisez cette option pour changer la manière dont l'image est positionnée par rapport au texte : elle peut faire partie du texte (si vous sélectionnez le style 'aligné sur le texte') ou être contournée par le texte de tous les côtés (si vous sélectionnez l'un des autres styles).<ul>
+				    <li><p><img alt="Style d'habillage - Aligné sur le texte" src="../images/wrappingstyle_inline.png" /> <b>Aligné</b> sur le texte - l'image fait partie du texte, comme un caractère, ainsi si le texte est déplacé, l'image est déplacée elle aussi. Dans ce cas-là les options de position ne sont pas accessibles.</p>
+				    <p>Si vous sélectionnez un des styles suivants, vous pouvez déplacer l'image indépendamment du texte et définir sa position exacte :</p>
+				    </li>
+				    <li><p><img alt="Style d'habillage - Carré" src="../images/wrappingstyle_square.png" /> <b>Carré</b> - le texte est ajusté autour des bords de l'image.</p></li>
+				    <li><p><img alt="Style d'habillage - Rapproché" src="../images/wrappingstyle_tight.png" /> <b>Rapproché</b> - le texte est ajusté sur le contour de l' image.</p></li>
+				    <li><p><img alt="Style d'habillage - Au travers" src="../images/wrappingstyle_through.png" /> <b>Au travers</b> - le texte est ajusté autour des bords de l'image et occupe l'espace vide à l'intérieur d'elle. Pour créer l'effet, utilisez l'option <b>Modifier les limites du renvoi à la ligne</b> du menu contextuel.</p></li>
+				    <li><p><img alt="Style d'habillage - Haut et bas" src="../images/wrappingstyle_topandbottom.png" /> <b>Haut et bas</b> - le texte est ajusté en haut et en bas de l'image.</p></li>
+				    <li><p><img alt="Style d'habillage - Devant le texte" src="../images/wrappingstyle_infront.png" /> <b>Devant</b> le texte - l'image est affichée sur le texte.</p></li>
+				    <li><p><img alt="Style d'habillage - Derrière le texte" src="../images/wrappingstyle_behind.png" /> <b>Derrière</b> le texte - le texte est affiché sur l'image.</p></li>
+				    </ul>
+				</li>
+			</ul>
+			<p>Si vous avez choisi le style carré, rapproché, au travers, haut et bas, vous avez la possibilité de configurer des paramètres supplémentaires - <b>Distance du texte</b> de tous les côtés (haut, bas, droit, gauche).</p>
+            <p id="position"><img alt="Image - Paramètres avancés : Position" src="../images/image_properties_2.png" /></p>
+            <p>L'onglet <b>Position</b> n'est disponible qu'au cas où vous choisissez le style d'habillage autre que 'aligné sur le texte'. Il contient les paramètres suivants qui varient selon le type d'habillage sélectionné :</p>
+			<ul>
+                <li>La section <b>Horizontal</b> vous permet de sélectionner l'un des trois types de positionnement d'image suivants :<ul>
+                        <li><b>Alignement</b> (gauche, centre, droite) <b>par rapport</b> au caractère, à la colonne, à la marge de gauche, à la marge, à la page ou à la marge de droite,</li>
+                        <li><b>Position</b> absolue mesurée en unités absolues, c.-à-d. <b>Centimètres</b>/<b>Points</b>/<b>Pouces</b> (selon l'option spécifiée dans l'onglet <b>Fichier</b> -&gt; <b>Paramètres avancés...</b>) <b>à droite</b> du caractère, de la colonne, de la marge de gauche, de la marge, de la page ou de la marge de droite,</li>
+                        <li><b>Position relative</b> mesurée en pourcentage <b>par rapport</b> à la marge gauche, à la marge, à la page ou à la marge de droite.</li>
+                    </ul>
+                </li>
+                <li>La section <b>Vertical</b> vous permet de sélectionner l'un des trois types de positionnement d'image suivants :<ul>
+                        <li><b>Alignement</b> (haut, centre, bas) <b>par rapport</b> à la ligne, à la marge, à la marge inférieure, au paragraphe, à la page ou à la marge supérieure,</li>
+                        <li><b>Position</b> absolue mesurée en unités absolues, c.-à-d. <b>Centimètres</b>/<b>Points</b>/<b>Pouces</b> (selon l'option spécifiée dans l'onglet <b>Fichier</b> -&gt; <b>Paramètres avancés...</b>) <b>sous</b> la ligne, la marge, la marge inférieure, le paragraphe, la page la marge supérieure,</li>
+                        <li><b>Position relative</b> mesurée en pourcentage <b>par rapport</b> à la marge, à la marge inférieure, à la page ou à la marge supérieure.</li>
+                    </ul>
+                </li>
+                <li><b>Déplacer avec le texte</b> détermine si l'image se déplace en même temps que le texte sur lequel elle est alignée.</li>
+				<li><b>Chevauchement</b> détermine si deux images sont fusionnées en une seule ou se chevauchent si vous les faites glisser les unes près des autres sur la page.</li>
+			</ul>
+            <p><img alt="Image - Paramètres avancés" src="../images/image_properties_3.png" /></p>
+            <p>L'onglet <b>Texte de remplacement</b> permet de spécifier un <b>Titre</b> et une <b>Description</b> qui sera lue aux personnes avec des déficiences cognitives ou visuelles pour les aider à mieux comprendre l'information de l'image.</p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insertar objetos con texto</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Insert text objects such as text boxes and Text Art to make your text more impressive" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insertar objetos con texto</h1>
+            <p>Para hacer su texto más enfático y captar atención a una parte concreta del documento, puede insertar una casilla de texto (un marco rectangular que permita introducir texto) o un objeto de Arte de texto (una casilla de texto con un estilo de letra y color predeterminado que permite aplicar algunos efectos de texto).</p>
+			<h3>Añada un objeto con texto.</h3>
+            <p>Puede añadir un objeto con texto en cualquier lugar de la página. Para hacerlo:</p>
+            <ol>
+                <li>cambie a la pestaña <b>Insertar</b> de la barra de herramientas superior,</li>
+                <li>seleccione el tipo de objeto con texto necesario:<ul>
+                    <li>Para añadir un cuadro de texto, haga clic en el <img alt="Icono de Cuadro de Texto" src="../images/inserttexticon.png" /> icono de <b>Cuadro de Texto</b> en la barra de herramientas superior, luego haga clic donde quiera para insertar el cuadro de texto, mantenga el botón del ratón y arrastre el borde del cuadro de texto para especificar su tamaño. Cuando suelte el botón del ratón, el punto de inserción aparecerá en el cuadro de texto añadido, permitiendo introducir su texto.<p class="note">Nota: también es posible insertar un cuadro de texto haciendo clic en el <img alt="Icono forma" src="../images/insertautoshape.png" /> icono de <b>Forma</b> en la barra de herramientas superior y seleccionando la forma <img alt="Inserte texto en una autoforma" src="../images/text_autoshape.png" /> del grupo <b>Formas Básicas</b>.</p>
+                    </li>
+                    <li>para añadir un objeto de Arte de Texto, haga clic en el <img alt="Icono de Arte de Texto" src="../images/inserttextarticon.png" /> icono <b>Arte Texto</b> en la barra de herramientas superior, luego haga clic en la plantilla del estilo deseada - el objeto de Arte de Texto se añadirá en la posición del cursor actual. Seleccione el texto por defecto dentro del cuadro de texto con el ratón y reemplázelo con su texto.</li>
+                </ul>
+                </li>
+                <li>haga clic fuera del objeto con texto para aplicar los cambios y vuelva al documento.</li>
+            </ol>
+            <p>El texto dentro del objeto de texto es parte de este último (cuando mueve o gira el objeto de texto, el texto realiza las mismas acciones).</p>
+            <p>A la vez que un objeto con texto insertado representa un marco rectangular con texto en este (objetos de Texto Arte tienen bordes de cuadros de texto invisibles de manera predeterminada) y este marco es una autoforma común, se puede cambiar tanto la forma como las propiedades del texto.</p>
+            <p>Para eliminar el objeto de texto añadido, haga clic en el borde del cuadro de texto y presione la tecla <b>Borrar</b> en el teclado. el texto dentro del cuadro de texto también se eliminará.</p>
+            <h3>Formatee un cuadro de texto</h3>
+            <p>Seleccione el cuadro de texto haciendo clic en sus bordes para ser capaz de cambiar sus propiedades. Cuando el cuadro de texto está seleccionado, sus bordes se muestran con líneas sólidas (no con puntos).</p>
+            <p><img alt="Cuadro de Texto seleccionado" src="../images/textbox_boxselected.png" /></p>
+            <ul>
+                <li>para cambiar el <a href="../UsageInstructions/InsertAutoshapes.htm#shape_resize" onclick="onhyperlinkclick(this)">tamaño, mover, rotar</a> el cuadro de texto use las manillas especiales en los bordes de la forma.</li>
+                <li>para editar el <a href="../UsageInstructions/InsertAutoshapes.htm#shape_fill" onclick="onhyperlinkclick(this)">relleno</a>, <a href="../UsageInstructions/InsertAutoshapes.htm#shape_stroke" onclick="onhyperlinkclick(this)">trazo</a>, <a href="../UsageInstructions/InsertAutoshapes.htm#shape_wrapping" onclick="onhyperlinkclick(this)">estilo de ajuste</a> del cuadro de texto o <b>reemplazar</b> el cuadro rectangular con una forma distinta, haga clic en el <img alt="Icono Ajustes de forma" src="../images/shape_settings_icon.png" /> icono de <b>ajustes de forma</b> a la derecha de la barra de herramientas y use las opciones correspondientes.</li>                
+                <li>para <b>alinear</b> el cuadro de texto en la página, <b>organice</b> cuadros de texto según se relacionan con otros objetos, cambie un <b>estilo de ajuste</b> o acceda a la forma en <b>ajustes avanzados</b>, haga clic derecho en el borde del cuadro del texto y use <a href="../UsageInstructions/InsertAutoshapes.htm#shape_rightclickmenu" onclick="onhyperlinkclick(this)">las opciones del menú contextual</a>. Para saber más sobre cómo alinear objetos puede visitar <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">esta página</a>.</li>
+            </ul>
+            <h3>Formatee su texto en el cuadro del texto</h3>
+            <p>Haga clic en el texto dentro del cuadro de texto para ser capaz de cambiar sus propiedades. Cuando el texto está seleccionado, los bordes del cuadro de texto se muestran con líneas con puntos.</p>
+            <p><img alt="Texto seleccionado" src="../images/textbox_textselected.png" /></p>
+            <p class="note"><b>Nota</b>: también es posible cambiar el formato de texto cuando el cuadrado de texto (no el texto) se selecciona. En este caso, cualquier cambio se aplicará a todo el texto dentro del cuadrado de texto. Algunas opciones de formateo de letra (tipo de letra, tamaño, color y estilo de diseño) se pueden aplicar a una porción previamente seleccionada del texto de forma separada.</p>
+            <p>Para <b>rotar</b> el texto dentro del cuadro del texto, haga clic derecho en el texto, seleccione la opción de <b>Dirección del Texto</b> y luego elija una de las siguientes opciones disponibles: <b>Horizontal</b> (se selecciona de manera predeterminada), <b>Rote a 90°</b> (fija la dirección vertical, de arriba a abajo) o <b>Rote a 270°</b> (fija la dirección vertical, de abajo a arriba).</p>
+            <p>Para <b>alinear el texto de manera vertical</b> dentro del cuadro de texto, haga clic derecho en el texto, seleccione la opción <b>alineamiento vertical</b> y luego elija una de las opciones disponibles: <b>Alinear en la parte superior</b>, <b>Alinear al centro</b>, o <b>Alinear en la parte inferior</b>.</p>
+            <p>Otras opciones de formato que puede aplicar son las mismas que las del texto regular. Por favor, refiérase a las secciones de ayuda correspondientes para aprender más sobre las operaciones necesarias. Puede:</p>
+            <ul>
+                <li><a href="../UsageInstructions/AlignText.htm" onclick="onhyperlinkclick(this)">alinear el texto de forma horizontal</a> dentro del cuadrado del texto</li>
+                <li>ajustar <a href="../UsageInstructions/FontTypeSizeColor.htm" onclick="onhyperlinkclick(this)">el tipo de letra, tamaño, color</a>, aplicar los<a href="../UsageInstructions/DecorationStyles.htm" onclick="onhyperlinkclick(this)"> estilos de diseño</a>, y <a href="../UsageInstructions/FormattingPresets.htm" onclick="onhyperlinkclick(this)">pre-ajustes de formato</a></li>
+                <li>aplicar el <a href="../UsageInstructions/LineSpacing.htm" onclick="onhyperlinkclick(this)">espaciado</a>, cambiar <a href="../UsageInstructions/ParagraphIndents.htm" onclick="onhyperlinkclick(this)">sangrías de párrafo</a>, ajustar las <a href="../UsageInstructions/SetTabStops.htm" onclick="onhyperlinkclick(this)">paradas de espaciado</a> para los textos de multi-líneas dentro del cuadro de texto.</li>
+                <li>Insertar <a href="../UsageInstructions/AddHyperlinks.htm" onclick="onhyperlinkclick(this)">hiperenlace</a></li>
+            </ul>
+            <p>También puede hacer clic en el <img alt="Icono de ajustes Arte de Texto" src="../images/textart_settings_icon.png" /> icono <b>Ajustes de Texto Arte</b> en la barra lateral derecha y cambiar algunos de los parámetros de estilo.</p>
+            <h3>Editar un estilo de Texto de Arte</h3>
+            <p>Seleccione un objeto de texto y haga clic en el <img alt="Icono de ajustes Arte de Texto" src="../images/textart_settings_icon.png" /> icono <b>Ajustes de Arte de Texto</b> en la barra lateral.</p>
+            <p><img alt="Pestaña Ajustes de Texto de Arte" src="../images/right_textart.png" /></p>
+            <p>Cambie el estilo de texto aplicado seleccionando una nueva <b>Plantilla</b> de la galería. También puede cambiar los estilos básicos adicionales seleccionando un tipo de letra o tamaño diferente.</p>
+            <p>Cambie el tipo de letra <b>Relleno</b>. Puede seleccionar las opciones siguientes:</p>
+            <ul>
+                <li><b>Color de relleno</b> - seleccione esta opción para especificar el color sólido que quiere aplicar al espacio interior de las letras de dentro.<p><img alt="Color de relleno" src="../images/fill_color.png" /></p>
+                    <p id="color">Pulse la casilla de color debajo y seleccione el color necesario en <a href="../UsageInstructions/ChangeColorScheme.htm" onclick="onhyperlinkclick(this)">el conjunto de colores</a> o especifique algún color deseado:</p>
+                </li>
+                <li><b>Relleno Degradado</b> - seleccione esta opción para rellenar las letras con dos colores que suavemente cambian de un color a otro.<p><img alt="Relleno degradado" src="../images/fill_gradient.png" /></p>
+                    <ul>
+                        <li><b>Estilo</b> - elija una de las opciones disponibles: <b>Lineal</b> (colores cambian por una línea recta por ejemplo por un eje horizontal/vertical o por una línea diagonal que forma un ángulo recto) o <b>Radial</b> (colores cambian por una trayectoria circular del centro a los bordes).</li>
+                        <li><b>Dirección</b> - elija una plantilla en el menú. Si selecciona la gradiente <b>Lineal</b>, serán disponible las direcciones siguientes: de la parte superior izquierda a la inferior derecha, de la parte superior a la inferior, de la parte superior derecha a la inferior izquierda, de la parte derecha a la izquierda,de la parte inferior derecha a la superior izquierda, de la parte inferior a la superior, de la parte inferior izquierda a la superior derecha, de la parte izquierda a la derecha. Si selecciona la gradiente <b>Radial</b>, estará disponible solo una plantilla.</li>
+                        <li><b>Gradiente</b> - utilice el control deslizante izquierdo <img alt="Control deslizante" src="../images/gradientslider.png" /> debajo de la barra de gradiente para activar la casilla de color que corresponde al primer color. Pulse la casilla de color para elegir el primer color. Arrastre el control deslizante para establecer el punto de degradado - el punto donde un color cambie el otro. Utilice el control deslizante derecho debajo de la barra de gradiente para especificar el segundo color y establecer el punto de degradado.</li>
+                    </ul>
+                    <p class="note"><b>Nota</b>: si una de estas dos opciones está seleccionada, usted también puede establecer el nivel de <b>Opacidad</b> arrastrando el control deslizante o introduciendo el valor manualmente. El valor predeterminado es <b>100%</b>. Esto corresponde a la capacidad completa. El valor <b>0%</b> corresponde a la plena transparencia.</p>
+                </li>
+                <li><b>Sin relleno</b> - seleccione esta opción si no desea usar ningún relleno.</li>
+            </ul>
+            <p>Ajuste el <b>Trazo</b> del ancho del tipo de letra, color y tipo.</p>
+            <ul>
+                <li>Para cambiar el ancho de trazo, seleccione una de las opciones disponibles en la lista desplegable <b>Tamaño</b>. Las opciones disponibles: 0.5 pt, 1 pt, 1.5 pt, 2.25 pt, 3 pt, 4.5 pt, 6 pt. Alternativamente, seleccione la opción <b>Sin línea</b> si no quiere usar ningún trazo.</li>
+                <li>Para cambiar el <b>color</b> del trazo, pulse el rectángulo de color debajo y <a href="../UsageInstructions/ChangeColorScheme.htm" onclick="onhyperlinkclick(this)">seleccione el color necesario</a>.</li>
+                <li>Para cambiar el <b>tipo</b> de trazo, pulse la opción necesaria de la lista correspondiente despegable (una línea sólida se aplicará por defecto, puede cambiarla a una de las líneas disponibles con líneas con puntos.</li>
+            </ul>
+            <p>Aplique un efecto de texto seleccionando el texto necesario para el tipo de transformación de la galería de <b>Transformar</b>. Puede ajustar el grado de la distorsión del texto si arrastra la manivela con forma de diamante rosa.</p>
+            <p><img alt="Transformación del Texto de Arte" src="../images/textart_transformation.png" /></p>
+		</div>
+	</body>
+</html>

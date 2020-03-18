@@ -1,0 +1,223 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Diagramme einfügen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add a chart to your document and adjust its position, size and properties" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Diagramme einfügen</h1>
+            <h3>Diagramm einfügen</h3>
+			<p>Einfügen eines Diagramms</p>
+			<ol>
+				<li>Positionieren Sie den Cursor an der Stelle, an der Sie ein Diagramm einfügen möchten.</li>
+                <li>Wechseln Sie in der oberen Symbolleiste auf die Registerkarte <b>Einfügen</b>.</li>
+				<li>Klicken Sie in der oberen Symbolleiste auf das Symbol <img alt="Diagramm" src="../images/insertchart.png" /> <b>Diagramm</b>.</li>
+				<li>Wählen Sie den gewünschten Diagrammtyp aus den verfügbaren Vorlagen aus - Säule, Linie, Kreis, Balken, Fläche, Punkt (XY) oder Strich.<p class="note"><b>Hinweis</b>: Die Diagrammtypen <b>Säule</b>, <b>Linie</b>, <b>Kreis</b> und <b>Balken</b> stehen auch im 3D-Format zur Verfügung.</p>
+                </li>
+				<li>Wenn Sie Ihre Auswahl getroffen haben, öffnet sich das Fenster <b>Diagramm bearbeiten</b> und Sie können die gewünschten Daten mithilfe der folgenden Steuerelemente in die Zellen eingeben:<ul>
+						<li><img alt="Kopieren" src="../images/copy.png" /> und <img alt="Einfügen" src="../images/paste.png" /> - Kopieren und Einfügen der kopierten Daten.</li>
+						<li><img alt="Rückgängig machen" src="../images/undo.png" /> und <img alt="Wiederholen" src="../images/redo.png" /> - Aktionen Rückgängig machen und Wiederholen.</li>
+						<li><img alt="Funktion einfügen" src="../images/insertfunction.png" /> - Einfügen einer Funktion</li>
+						<li><img alt="Dezimalstelle löschen" src="../images/decreasedec.png" /> und <img alt="Dezimalstelle hinzufügen" src="../images/increasedec.png" /> - Löschen und Hinzufügen von Dezimalstellen.</li>
+						<li><img alt="Zahlenformat" src="../images/numberformat.png" /> - Zahlenformat ändern, d.h. das Format in dem die eingegebenen Zahlen in den Zellen dargestellt werden</li>
+					</ul>
+					<p><img alt="Fenster Diagramm bearbeiten" src="../images/charteditor.png" /></p>
+				</li>
+				<li>Die Diagrammeinstellungen ändern Sie durch Anklicken der Schaltfläche <b>Diagramm bearbeiten</b> im Fenster <b>Diagramme</b>. Das Fenster <b>Diagramme - Erweiterte Einstellungen</b> wird geöffnet.<p><img alt="Diagramme - Erweiterte Einstellungen" src="../images/chartsettings.png" /></p>
+                    <p>Auf der Registerkarte <b>Diagrammtyp und Daten</b> können Sie den Diagrammtyp sowie die Daten ändern, die Sie zum Erstellen eines Diagramms verwenden möchten.</p>
+                    <ul>
+                        <li>Wählen Sie den gewünschten <b>Diagrammtyp</b> aus: Säule, Linie, Kreis, Balken, Fläche, Punkt (XY) oder Strich.</li>
+                        <li>Überprüfen Sie den ausgewählten <b>Datenbereich</b> und ändern Sie diesen ggf. durch Anklicken der Schaltfläche <b>Daten auswählen</b>; geben Sie den gewünschten Datenbereich im folgenden Format ein: <em>Sheet1!A1:B4</em>.</li>
+                        <li>Wählen Sie aus, wie die Daten angeordnet werden sollen. Für die <b>Datenreihen</b> die auf die X-Achse angewendet werden sollen, können Sie wählen zwischen: Datenreihen <b>in Zeilen</b> oder <b>in Spalten</b>.</li>
+                    </ul>
+					<p><img alt="Diagramme - Erweiterte Einstellungen" src="../images/chartsettings2.png" /></p>
+                    <p>Auf der Registerkarte <b>Layout</b> können Sie das Layout von Diagrammelementen ändern.</p>
+                    <ul>
+                        <li>Wählen Sie die gewünschte Position der <b>Diagrammbezeichnung</b> aus der Dropdown-Liste aus:<ul>
+                                <li><b>Keine</b> - es wird keine Diagrammbezeichnung angezeigt.</li>
+                                <li><b>Überlagerung</b> - der Titel wird zentriert und im Diagrammbereich angezeigt.</li>
+                                <li><b>Keine Überlagerung</b> - der Titel wird über dem Diagramm angezeigt.</li>
+                            </ul>
+                        </li>
+                        <li>Wählen Sie die gewünschte Position der <b>Legende</b> aus der Menüliste aus:<ul>
+                                <li><b>Keine</b> - es wird keine Legende angezeigt</li>
+                                <li><b>Unten</b> - die Legende wird unterhalb des Diagramms angezeigt</li>
+                                <li><b>Oben</b> - die Legende wird oberhalb des Diagramms angezeigt</li>
+                                <li><b>Rechts</b> - die Legende wird rechts vom Diagramm angezeigt</li>
+                                <li><b>Links</b> - die Legende wird links vom Diagramm angezeigt</li>
+                                <li><b>Überlappung links</b> - die Legende wird im linken Diagrammbereich mittig dargestellt</li>
+                                <li><b>Überlappung rechts</b> - die Legende wird im rechten Diagrammbereich mittig dargestellt</li>
+                            </ul>
+                        </li>
+                        <li>Legen Sie <b>Datenbeschriftungen</b> fest (Titel für genaue Werte von Datenpunkten):<br /><ul>
+                                <li>Wählen Sie die gewünschte Position der <b>Datenbeschriftungen</b> aus der Menüliste aus: Die verfügbaren Optionen variieren je nach Diagrammtyp.<ul>
+                                    <li>Für <b>Säulen-/Balkendiagramme</b> haben Sie die folgenden Optionen: <b>Keine</b>, <b>zentriert</b>, <b>unterer Innenbereich</b>, <b>oberer Innenbereich</b>, <b>oberer Außenbereich</b>.</li>
+                                    <li>Für <b>Linien-/Punktdiagramme (XY)/Strichdarstellungen</b> haben Sie die folgenden Optionen: <b>Keine</b>, <b>zentriert</b>, <b>links</b>, <b>rechts</b>, <b>oben</b>, <b>unten</b>.</li>
+                                    <li>Für <b>Kreisdiagramme</b> stehen Ihnen folgende Optionen zur Verfügung: <b>Keine</b>, <b>zentriert</b>, <b>an Breite anpassen</b>, <b>oberer Innenbereich</b>, <b>oberer Außenbereich</b>.</li>
+                                    <li>Für <b>Flächendiagramme</b> sowie für <b>3D-Diagramme</b>, <b>Säulen-</b> <b>Linien-</b> und <b>Balkendiagramme</b>, stehen Ihnen folgende Optionen zur Verfügung: <b>Keine</b>, <b>zentriert</b>.</li>
+                                </ul>
+                                </li>
+                                <li>Wählen Sie die Daten aus, für die Sie eine Bezeichnung erstellen möchten, indem Sie die entsprechenden Felder markieren: <b>Reihenname</b>, <b>Kategorienname</b>, <b>Wert</b>.</li>
+                                <li>Geben Sie das Zeichen (Komma, Semikolon etc.) in das Feld <b>Trennzeichen Datenbeschriftung</b> ein, dass Sie zum Trennen der Beschriftungen verwenden möchten.</li>
+                            </ul>
+                        </li>
+                        <li><b>Linien</b> - Einstellen der Linienart für <b>Liniendiagramme/Punktdiagramme (XY)</b>. Die folgenden Optionen stehen Ihnen zur Verfügung: <b>Gerade</b>, um gerade Linien zwischen Datenpunkten zu verwenden, <b>glatt</b> um glatte Kurven zwischen Datenpunkten zu verwenden oder <b>keine</b>, um keine Linien anzuzeigen.</li>
+                        <li><b>Markierungen</b> - über diese Funktion können Sie festlegen, ob die Marker für <b>Liniendiagramme/ Punktdiagramme (XY)</b> angezeigt werden sollen (Kontrollkästchen aktiviert) oder nicht (Kontrollkästchen deaktiviert).<p class="note"><b>Hinweis</b>: Die Optionen <b>Linien</b> und <b>Marker</b> stehen nur für <b>Liniendiagramme</b> und <b>Punktdiagramm (XY)</b> zur Verfügung.</p>
+                        </li>
+                        <li>Im Abschnitt <b>Achseneinstellungen</b> können Sie auswählen, ob die <b>horizontalen/vertikalen Achsen</b> angezeigt werden sollen oder nicht. Wählen Sie dazu einfach <b>einblenden</b> oder <b>ausblenden</b> aus der Menüliste aus. Außerdem können Sie auch die Parameter für <b>horizontale/vertikale Achsenbeschriftung</b> festlegen:<ul>
+                                <li>Legen Sie fest, ob der <b>horizontale Achsentitel</b> angezeigt werden soll oder nicht. Wählen Sie dazu einfach die entsprechende Option aus der Menüliste aus:<ul>
+                                        <li><b>Keinen</b> - der Titel der horizontalen Achse wird nicht angezeigt.</li>
+                                        <li><b>Keine Überlappung</b> - der Titel wird oberhalb der horizontalen Achse angezeigt.</li>
+                                    </ul>
+                                </li>
+                                <li>Wählen Sie die gewünschte Position des <b>vertikalen Achsentitels</b> aus der Menüliste aus:<ul>
+                                        <li><b>Keinen</b> - der Titel der vertikalen Achse wird nicht angezeigt.</li>
+                                        <li><b>Gedreht</b> - der Titel wird links von der vertikalen Achse von unten nach oben angezeigt.</li>
+                                        <li><b>Horizontal</b> - der Titel wird links von der vertikalen Achse von links nach rechts angezeigt.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>Im Abschnitt <b>Gitternetzlinien</b>, können Sie festlegen, welche der <b>horizontalen/vertikalen Gitternetzlinien</b> angezeigt werden sollen. Wählen Sie dazu einfach die entsprechende Option aus der Menüliste aus: <b>Hauptgitternetz</b>, <b>Hilfsgitternetz</b> oder <b>Alle</b>. Wenn Sie alle Gitternetzlinien ausblenden wollen, wählen Sie die Option <b>Keine</b>.<p class="note"><b>Hinweis</b>: Die Abschnitte <b>Achseneinstellungen</b> und <b>Gitternetzlinien</b> sind für <b>Kreisdiagramme</b> deaktiviert, da bei diesem Diagrammtyp keine Achsen oder Gitternetze vorhanden sind.</p>
+                        </li>
+                    </ul>
+                    <p><img alt="Diagramme - Erweiterte Einstellungen" src="../images/chartsettings3.png" /></p>
+                    <p class="note"><b>Hinweis</b>: Die Registerkarte <b>vertikale/horizontale Achsen</b> ist für <b>Kreisdiagramme</b> deaktiviert, da bei diesem Diagrammtyp keine Achsen vorhanden sind.</p>
+                <p>Auf der Registerkarte <b>Vertikale Achse</b> können Sie die Parameter der vertikalen Achse ändern, die auch als Werteachse oder Y-Achse bezeichnet wird und die numerische Werte anzeigt. Beachten Sie, dass bei <b>Balkendiagrammen</b> die vertikale Achse die Rubrikenachse ist, an der die Textbeschriftungen anzeigt werden, daher entsprechen in diesem Fall die Optionen in der Registerkarte <b>Vertikale Achse</b> den im nächsten Abschnitt beschriebenen Optionen. Für <b>Punktdiagramme (XY)</b> sind beide Achsen Wertachsen.</p>
+                <ul>
+                    <li>Im Abschnitt <b>Achsenoptionen</b> können die folgenden Parameter festgelegt werden:<ul>
+                        <li><b>Mindestwert</b> - der niedrigste Wert, der am Anfang der vertikalen Achse angezeigt wird. Standardmäßig ist die Option <b>Automatisch</b> ausgewählt. In diesem Fall wird der Mindestwert automatisch abhängig vom ausgewählten Datenbereich berechnet. Alternativ können Sie die Option <b>Festlegen</b> aus der Menüliste auswählen und den gewünschten Wert in das dafür vorgesehene Feld eingeben.</li>
+                        <li><b>Höchstwert</b> - der höchste Wert, der am Ende der vertikalen Achse angezeigt wird. Standardmäßig ist die Option <b>Automatisch</b> ausgewählt. In diesem Fall wird der Höchstwert automatisch abhängig vom ausgewählten Datenbereich berechnet. Alternativ können Sie die Option <b>Festlegen</b> aus der Menüliste auswählen und den gewünschten Wert in das dafür vorgesehene Feld eingeben.</li>
+                        <li><b>Schnittstelle</b> - bestimmt den Punkt auf der vertikalen Achse, an dem die horizontale Achse die vertikale Achse kreuzt. Standardmäßig ist die Option <b>Automatisch</b> ausgewählt. In diesem Fall wird der Wert für die Schnittstelle automatisch abhängig vom ausgewählten Datenbereich berechnet. Alternativ können Sie die Option <b>Wert</b> aus der Menüliste auswählen und einen anderen Wert in das dafür vorgesehene Feld eingeben oder Sie legen den Achsenschnittpunkt am <b>Mindest-/Höchstwert</b> auf der vertikalen Achse fest.</li>
+                        <li><b>Einheiten anzeigen</b> - Festlegung der numerischen Werte, die auf der vertikalen Achse angezeigt werden sollen. Diese Option kann nützlich sein, wenn Sie mit großen Zahlen arbeiten und die Werte auf der Achse kompakter und lesbarer anzeigen wollen (Sie können z.B. 50.000 als 50 anzeigen, indem Sie die Anzeigeeinheit <b>in Tausendern</b> auswählen). Wählen Sie die gewünschten Einheiten aus der Menüliste aus: <b>In Hundertern</b>, <b>in Tausendern</b>, <b>10 000</b>, <b>100 000</b>, <b>in Millionen</b>, <b>10.000.000</b>, <b>100.000.000</b>, <b>in Milliarden</b>, <b>in Trillionen</b>, oder Sie wählen die Option <b>Keine</b>, um zu den Standardeinheiten zurückzukehren.</li>
+                        <li><b>Werte in umgekehrter Reihenfolge</b> - die Werte werden in absteigender Reihenfolge angezeigt. Wenn das Kontrollkästchen deaktiviert ist, wird der niedrigste Wert unten und der höchste Wert oben auf der Achse angezeigt. Wenn das Kontrollkästchen aktiviert ist, werden die Werte in absteigender Reihenfolge angezeigt.</li>
+                    </ul>
+                    </li>
+                    <li>Im Abschnitt <b>Skalierung</b> können Sie die Darstellung von Teilstrichen auf der vertikalen Achse anpassen. Die größeren Teilstriche bilden die Hauptintervalle der Skalenteilung und dienen der Darstellung von nummerischen Werten. Kleine Teilstriche bilden Hilfsintervalle und haben keine Beschriftungen. Skalenstriche legen auch fest, an welcher Stelle Gitterlinien angezeigt werden können, sofern die entsprechende Option in der Registerkarte <b>Layout</b> aktiviert ist. In der Menüliste für <b>Hauptintervalle/Hilfsintervalle</b> stehen folgende Optionen für die Positionierung zur Verfügung:<ul>                        
+                            <li><b>Keine</b> - es werden keine Skalenstriche angezeigt.</li>
+                            <li><b>Beidseitig</b> - auf beiden Seiten der Achse werden Skalenstriche angezeigt.</li>
+                            <li><b>Innen</b> - die Skalenstriche werden auf der Innenseite der Achse angezeigt.</li>
+                            <li><b>Außen</b> - die Skalenstriche werden auf der Außenseite der Achse angezeigt.</li>                                                
+                    </ul>
+                    </li>
+                    <li>Im Abschnitt <b>Beschriftungsoptionen</b> können Sie die Darstellung von Hauptintervallen, die Werte anzeigen, anpassen. Um die <b>Anzeigeposition</b> in Bezug auf die vertikale Achse festzulegen, wählen Sie die gewünschte Option aus der Menüliste aus:<ul>
+                        <li><b>Keine</b> - es werden keine Skalenbeschriftungen angezeigt.</li>
+                        <li><b>Tief</b> - die Skalenbeschriftung wird links vom Diagrammbereich angezeigt.</li>
+                        <li><b>Hoch</b> - die Skalenbeschriftung wird rechts vom Diagrammbereich angezeigt.</li>
+                        <li><b>Neben der Achse</b> - die Skalenbeschriftung wird neben der Achse angezeigt.</li>
+                    </ul>
+                    </li>
+                </ul>
+                    <p><img alt="Diagramme - Erweiterte Einstellungen" src="../images/chartsettings4.png" /></p>
+                    <p>Auf der Registerkarte <b>Horizontale Achse</b> können Sie die Parameter der horizontalen Achse ändern, die auch als Werteachse oder X-Achse bezeichnet wird und die Textbeschriftungen anzeigt. Beachten Sie, dass bei <b>Balkendiagrammen</b> die horizontale Achse die Rubrikenachse ist an der die nummerischen Werte anzeigt werden, daher entsprechen in diesem Fall die Optionen in der Registerkarte <b>Horizontale Achse</b> den im nächsten Abschnitt beschriebenen Optionen. Für <b>Punktdiagramme (XY)</b> sind beide Achsen Wertachsen.</p>
+                    <ul>
+                        <li>Im Abschnitt <b>Achsenoptionen</b> können die folgenden Parameter festgelegt werden:<ul>
+                                <li><b>Schnittstelle</b> - bestimmt den Punkt auf der horizontalen Achse, an dem die vertikale Achse die horizontale Achse kreuzt. Standardmäßig ist die Option <b>Automatisch</b> ausgewählt. In diesem Fall wird der Wert für die Schnittstelle automatisch abhängig vom ausgewählten Datenbereich berechnet. Alternativ können Sie die Option <b>Wert</b> aus der Menüliste auswählen und einen anderen Wert in das dafür vorgesehene Feld eingeben oder Sie legen den Achsenschnittpunkt am <b>Mindest-/Höchstwert</b> (der Wert, welcher der ersten und letzten Kategorie entspricht) auf der horizontalen Achse fest.</li>
+                                <li><b>Achsenposition</b> - legt fest, wo die Achsenbeschriftungen positioniert werden sollen: <b>An den Skalenstrichen</b> oder <b>Zwischen den Skalenstrichen</b>.</li>
+                                <li><b>Werte in umgekehrter Reihenfolge</b> - die Kategorien werden in umgekehrter Reihenfolge angezeigt. Wenn das Kästchen deaktiviert ist, werden die Kategorien von links nach rechts angezeigt. Wenn das Kontrollkästchen aktiviert ist, werden die Kategorien von rechts nach links angezeigt.</li>
+                            </ul>
+                        </li>
+                        <li>Im Abschnitt <b>Skalierung</b> können Sie die Darstellung von Teilstrichen auf der horizontalen Skala anpassen. Die größeren Teilstriche bilden die Hauptintervalle der Skalenteilung und dienen der Darstellung von Kategorien. Kleine Teilstriche werden zwischen den Hauptintervallen eingefügt und bilden Hilfsintervalle ohne Beschriftungen. Skalenstriche legen auch fest, an welcher Stelle Gitterlinien angezeigt werden können, sofern die entsprechende Option in der Registerkarte <b>Layout</b> aktiviert ist. Sie können die folgenden Parameter für die Skalenstriche anpassen:<ul>
+                                <li><b>Hauptintervalle/Hilfsintervalle</b> - legt fest wo die Teilstriche positioniert werden sollen, dazu stehen Ihnen folgende Optionen zur Verfügung: <b>Keine</b> - es werden keine Skalenstriche angezeigt, <b>Beidseitig</b> - auf beiden Seiten der Achse werden Skalenstriche angezeigt, <b>Innen</b> - die Skalenstriche werden auf der Innenseite der Achse angezeigt, <b>Außen</b> - die Skalenstriche werden auf der Außenseite der Achse angezeigt.</li>
+                                <li><b>Intervalle zwischen Teilstrichen</b> - legt fest, wie viele Kategorien zwischen zwei benachbarten Teilstrichen angezeigt werden sollen.</li>
+                            </ul>
+                        </li>
+                        <li>Im Abschnitt <b>Beschriftungsoptionen</b> können Sie die Darstellung von Beschriftungen für Kategorien anpassen.<ul>
+                            <li><b>Beschriftungsposition</b> - legt fest, wo die Beschriftungen in Bezug auf die horizontale Achse positioniert werden sollen: Wählen Sie die gewünschte Position aus der Dropdown-Liste aus: <b>Keine</b> - es wird keine Achsenbeschriftung angezeigt, <b>Tief</b> - die Kategorien werden im unteren Diagrammbereich angezeigt, <b>Hoch</b> - die Kategorien werden im oberen Diagrammbereich angezeigt, <b>Neben der Achse</b> - die Kategorien werden neben der Achse angezeigt.</li>
+                            <li><b>Abstand Achsenbeschriftung</b> - legt fest, wie dicht die Achsenbeschriftung an der Achse positioniert wird. Sie können den gewünschten Wert im dafür vorgesehenen Eingabefeld festlegen. Je höher der eingegebene Wert, desto größer der Abstand zwischen der Achse und der Achsenbeschriftung.</li>
+                            <li><b>Intervalle zwischen Achsenbeschriftungen</b> - legt fest, wie viele Kategorien auf der Achse angezeigt werden sollen. Standardmäßig ist die Option <b>Automatisch</b> ausgewählt. In diesem Fall werden alle Kategorien auf der Achse angezeigt. Alternativ können Sie die Option <b>Manuell</b> aus der Menüliste auswählen und den gewünschten Wert in das dafür vorgesehene Feld eingeben. Geben Sie zum Beispiel die Zahl 2 an, dann wird jede zweite Kategorie auf der Achse angezeigt usw.</li>
+                        </ul>
+                        </li>
+                    </ul>
+                    <p><img alt="Diagramm - Erweiterte Einstellungen" src="../images/chartsettings5.png" /></p>
+                    <p>Die Registerkarte <b>Alternativtext</b> ermöglicht die Eingabe eines <b>Titels</b> und einer <b>Beschreibung</b>, die Personen mit Sehbehinderungen oder kognitiven Beeinträchtigungen vorgelesen werden kann, damit sie besser verstehen können, welche Informationen in dem Diagramm enthalten sind.</p>
+                    </li>
+			</ol>
+			<hr />
+            <h3>Diagramme verschieben und Diagrammgröße ändern</h3>
+			<p><img class="floatleft" alt="Diagramm verschieben" src="../images/moving_chart.png" />Wenn Sie ein Diagramm hinzugefügt haben, können Sie Größe und Position beliebig ändern. Um die Diagrammgröße zu ändern, ziehen Sie mit der Maus an den kleinen Quadraten <img alt="Quadrat" src="../images/resize_square.png" /> die an den Ecken eingeblendet werden. Um das Originalseitenverhältnis des gewählten Diagramms bei der Größenänderung zu behalten, halten Sie die <b>UMSCHALT</b>-Taste gedrückt und ziehen Sie eines der Symbole an den Ecken.</p>
+			<p>Um die Diagrammposition zu ändern, nutzen Sie das Symbol <img alt="Pfeil" src="../images/arrow.png" />, das erscheint, wenn Sie mit Ihrem Mauszeiger über das Diagramm fahren. Ziehen Sie das Diagramm an die gewünschten Position, ohne die Maustaste loszulassen. Wenn Sie die Diagramm Bild verschieben, werden Hilfslinien angezeigt, damit Sie das Objekt präzise auf der Seite positionieren können (wenn Sie einen anderen Umbruchstil als mit Text in Zeile ausgewählt haben).</p>
+			<hr />
+            <h3>Diagrammelemente bearbeiten</h3>
+            <p>Um den <b>Diagrammtitel</b> zu bearbeiten, wählen Sie den Standardtext mit der Maus aus und geben Sie stattdessen Ihren eigenen Text ein.</p>
+            <p>Um die Schriftformatierung innerhalb von Textelementen, wie beispielsweise Diagrammtitel, Achsentitel, Legendeneinträge, Datenbeschriftungen etc. zu ändern, wählen Sie das gewünschte Textelement durch Klicken mit der linken Maustaste aus. Wechseln Sie in die Registerkarte <b>Start</b> und nutzen Sie die in der Menüleiste angezeigten Symbole, um <a href="../UsageInstructions/FontTypeSizeColor.htm" onclick="onhyperlinkclick(this)">Schriftart, Schriftgröße und Schriftfarbe</a> oder <a href="../UsageInstructions/DecorationStyles.htm" onclick="onhyperlinkclick(this)">DekoStile</a> zu bearbeiten.</p>
+            <p>Um ein Diagrammelement zu löschen, wählen Sie es mit der linken Maustaste aus und drücken Sie die Taste <b>Entfernen</b> auf Ihrer Tastatur.</p>
+            <p>Sie haben die Möglichkeit 3D-Diagramme mithilfe der Maus zu drehen. Klicken Sie mit der linken Maustaste in den Diagrammbereich und halten Sie die Maustaste gedrückt. Um die 3D-Diagrammausrichtung zu ändern, ziehen Sie den Mauszeiger in die gewünschte Richtung ohne die Maustaste loszulassen.</p>
+            <p><img alt="3D-Diagramm" src="../images/3dchart.png" /></p>
+            <hr />
+            <h3>Diagrammeinstellungen anpassen</h3>
+            <p><img class="floatleft" alt="Registerkarte Diagrammeinstellungen" src="../images/right_chart.png" /></p>
+			<p>Einige Diagrammeigenschaften können mithilfe der Registerkarte <b>Diagrammeinstellungen</b> in der rechten Seitenleiste geändert werden. Um das Menü zu aktivieren, klicken Sie auf das Diagramm und wählen Sie rechts das Symbol <b>Diagrammeinstellungen</b> <img alt="Diagrammeinstellungen" src="../images/chart_settings_icon.png" /> aus. Hier können die folgenden Eigenschaften geändert werden:</p>
+			<ul style="margin-left: 280px;">
+				<li><b>Größe</b> - zeigt die aktuelle <b>Breite</b> und <b>Höhe</b> des Diagramms an.</li>
+				<li><b>Textumbruch</b> - der Stil für den Textumbruch wird aus den verfügbaren Vorlagen ausgewählt: Mit Text in Zeile, Quadrat, Eng, Transparent, Oben und unten, Vorne, Hinten (für weitere Information lesen Sie die folgende Beschreibung der erweiterten Einstellungen).</li>
+				<li><b>Diagrammtyp ändern</b> - ändern Sie den ausgewählten Diagrammtyp bzw. -stil.<p>Um den gewünschten <b>Diagrammstil</b> auszuwählen, verwenden Sie im Abschnitt <b>Diagrammtyp ändern</b> die zweite Auswahlliste.</p>
+                </li>
+				<li><b>Daten bearbeiten</b> - das Fenster „Diagrammtools“ wird geöffnet.<p class="note"><b>Hinweis</b>: Wenn Sie einen Doppelklick auf einem in Ihrem Dokument enthaltenen Diagramm ausführen, öffnet sich das Fenster „Diagrammtools“.</p>
+                </li>
+			</ul>
+			<p>Einige dieser Optionen finden Sie auch im <b>Rechtsklickmenü</b>. Die Menüoptionen sind:</p>
+			<ul style="margin-left: 280px;">
+                <li><b>Ausschneiden, Kopieren, Einfügen</b> - Standardoptionen zum Ausschneiden oder Kopieren ausgewählter Textpassagen/Objekte und zum Einfügen von zuvor ausgeschnittenen/kopierten Textstellen oder Objekten an der aktuellen Cursorposition.</li>
+				<li><b>Anordnen</b> - um das ausgewählte Diagramm in den Vordergrund bzw. Hintergrund oder eine Ebene nach vorne bzw. hinten zu verschieben sowie Formen zu gruppieren und die Gruppierung aufzuheben (um diese wie ein einzelnes Objekt behandeln zu können). Weitere Informationen zum Anordnen von Objekten finden Sie auf <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">dieser Seite</a>.</li>
+				<li><b>Ausrichten</b> wird verwendet, um das Diagramm linksbündig, zentriert, rechtsbündig, oben, mittig oder unten auszurichten. Weitere Informationen zum Ausrichten von Objekten finden Sie auf <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">dieser Seite</a>.</li>
+				<li><b>Textumbruch</b> - der Stil für den Textumbruch wird aus den verfügbaren Vorlagen ausgewählt: Mit Text in Zeile, Quadrat, Eng, Transparent, Oben und unten, Vorne, Hinten. Die Option <b>Umbruchsgrenze bearbeiten</b> ist für Diagramme nicht verfügbar.</li>
+				<li><b>Daten bearbeiten</b> - das Fenster „Diagrammtools“ wird geöffnet.</li>
+				<li><b>Erweiterte Diagrammeinstellungen</b> - das Fenster „Diagramme - Erweiterte Einstellungen“ wird geöffnet.</li>
+			</ul>	
+			<p>Wenn das Diagramm ausgewählt ist, ist rechts auch das Symbol <b>Formeinstellungen</b> <img alt="Formeinstellungen" src="../images/shape_settings_icon.png" /> verfügbar, da eine Form als Hintergrund für das Diagramm verwendet wird. Klicken Sie auf dieses Symbol, um die Registerkarte <b>Formeinstellungen</b> in der rechten Seitenleisten zu öffnen und passen sie Form <a href="../UsageInstructions/InsertAutoshapes.htm#shape_fill" onclick="onhyperlinkclick(this)"><b>Füllung</b></a>, <a href="../UsageInstructions/InsertAutoshapes.htm#shape_stroke" onclick="onhyperlinkclick(this)"><b>Linienstärke</b></a> und <b>Umbruchart</b>. Beachten Sie, dass Sie den Formtyp nicht ändern können.</p>
+			<hr />
+			<p>Um die erweiterten Diagrammeinstellungen zu ändern, klicken Sie mit der rechten Maustaste auf das Diagramm und wählen Sie die Option <b>Diagramm - Erweiterte Einstellungen</b> im Rechtsklickmenü aus oder klicken Sie in der rechten Seitenleiste einfach auf den Link <b>Erweiterte Einstellungen anzeigen</b>. Das Fenster mit den Tabelleneigenschaften wird geöffnet:</p>
+			<p><img alt="Diagramme - Erweiterte Einstellungen: Größe" src="../images/chart_properties.png" /></p>
+			<p>Die Registerkarte <b>Größe</b> enthält die folgenden Parameter:</p>
+			<ul>
+				<li><b>Breite</b> und <b>Höhe</b> - nutzen Sie diese Optionen, um die Breite und/oder Höhe des Diagramms zu ändern. Wenn Sie die Funktion <b>Seitenverhältnis sperren</b> <img alt="Seitenverhältnis sperren" src="../images/constantproportions.png" /> aktivieren (in diesem Fall sieht das Symbol so aus <img alt="Symbol Seitenverhältnis sperren aktiviert" src="../images/constantproportionsactivated.png" />), werden Breite und Höhe gleichmäßig geändert und das ursprüngliche Seitenverhältnis des Diagramms wird beibehalten.</li>
+			</ul>
+			<p><img alt="Diagramme - Erweiterte Einstellungen: Textumbruch" src="../images/chart_properties_1.png" /></p>
+			<p>Die Registerkarte <b>Textumbruch</b> enthält die folgenden Parameter:</p>
+			<ul>
+				<li><b>Textumbruch</b> - legen Sie fest, wie das Diagramm im Verhältnis zum Text positioniert wird: entweder als Teil des Textes (wenn Sie die Option „Mit Text verschieben“ auswählen) oder an allen Seiten von Text umgeben (wenn Sie einen anderen Stil auswählen).<ul>
+				    <li><p><img alt="Textumbruch - Mit Text verschieben" src="../images/wrappingstyle_inline.png" /> <b>Mit Text verschieben</b> - das Diagramm wird Teil des Textes (wie ein Zeichen) und wenn der Text verschoben wird, wird auch das Diagramm verschoben. In diesem Fall sind die Positionsoptionen nicht verfügbar.</p>
+				    <p>Ist eine der folgenden Umbrucharten ausgewählt, kann das Diagramm unabhängig vom Text verschoben und präzise auf der Seite positioniert werden:</p>
+				    </li>
+				    <li><p><img alt="Textumbruch - Quadrat" src="../images/wrappingstyle_square.png" /> <b>Quadrat</b> - der Text bricht um den rechteckigen Kasten herum, der das Diagramm begrenzt.</p></li>
+				    <li><p><img alt="Textumbruch - Eng" src="../images/wrappingstyle_tight.png" /> <b>Eng</b> - der Text bricht um die Bildkanten herum.</p></li>
+				    <li><p><img alt="Textumbruch - Transparent" src="../images/wrappingstyle_through.png" /> <b>Transparent</b> - der Text bricht um die Diagrammkanten herum und füllt den offenen weißen Leerraum innerhalb des Diagramms.</p></li>
+				    <li><p><img alt="Textumbruch - Oben und unten" src="../images/wrappingstyle_topandbottom.png" /> <b>Oben und unten</b> - der Text ist nur oberhalb und unterhalb des Diagramms.</p></li>
+				    <li><p><img alt="Textumbruch - Vorne" src="../images/wrappingstyle_infront.png" /> <b>Vorne</b> - das Diagramm überlappt mit dem Text.</p></li>
+				    <li><p><img alt="Textumbruch - Hinten" src="../images/wrappingstyle_behind.png" /> <b>Hinten</b> - der Text überlappt sich mit dem Diagramm.</p></li>
+				    </ul>
+				</li>
+			</ul>
+			<p>Wenn Sie die Stile Quadrat, Eng, Transparent oder Oben und unten auswählen, haben Sie die Möglichkeit zusätzliche Parameter einzugeben - <b>Abstand vom Text</b> auf allen Seiten (oben, unten, links, rechts).</p>
+            <p id="position"><img alt="Diagramme - Erweiterte Einstellungen: Position" src="../images/chart_properties_2.png" /></p>
+            <p>Die Registerkarte <b>Position</b> ist nur verfügbar, wenn Sie einen anderen Umbruchstil als „Mit Text in Zeile“ auswählen. Hier können Sie abhängig vom gewählten Format des Textumbruchs die folgenden Parameter festlegen:</p>
+			<ul>
+                <li>In der Gruppe <b>Horizontal</b>, können Sie eine der folgenden drei Bildpositionierungstypen auswählen:<ul>
+                        <li><b>Ausrichtung</b> (links, zentriert, rechts) <b>gemessen an</b> Zeichen, Spalte, linker Seitenrand, Seitenrand, Seite oder rechter Seitenrand.</li>
+                        <li><b>Absolute Position</b>, gemessen in absoluten Einheiten wie <b>Zentimeter</b>/<b>Punkte</b>/<b>Zoll</b> (abhängig von der Voreinstellung in <b>Datei</b> -&gt; <b>Erweiterte Einstellungen...</b>), <b>rechts von</b> Zeichen, Spalte, linker Seitenrand, Seitenrand, Seite oder rechter Seitenrand.</li>
+                        <li><b>Relative Position</b> in Prozent, <b>gemessen von</b> linker Seitenrand, Seitenrand, Seite oder rechter Seitenrand.</li>
+                    </ul>
+                </li>
+                <li>In der Gruppe <b>Vertikal</b>, können Sie eine der folgenden drei Bildpositionierungstypen auswählen:<ul>
+                        <li><b>Ausrichtung</b> (oben, zentriert, unten) <b>gemessen von</b> Zeile, Seitenrand, unterer Rand, Abschnitt, Seite oder oberer Rand.</li>
+                        <li><b>Absolute Position</b>, gemessen in absoluten Einheiten wie <b>Zentimeter</b>/<b>Punkte</b>/<b>Zoll</b> (abhängig von der Voreinstellung in <b>Datei</b> -&gt; <b>Erweiterte Einstellungen...</b>), <b>unterhalb</b> Zeile, Seitenrand, unterer Seitenrand, Absatz, Seite oder oberer Seitenrand.</li>
+                        <li><b>Relative Position</b> in Prozent, <b>gemessen von</b> Seitenrand, unterer Seitenrand, Seite oder oberer Seitenrand.</li>
+                    </ul>
+                </li>
+				<li>Im Kontrollkästchen <b>Objekt mit Text verschieben</b> können Sie festlegen, ob sich das Diagramm zusammen mit dem Text bewegen lässt, mit dem es verankert wurde.</li>
+				<li><b>Überlappung zulassen</b> legt fest, ob zwei Diagramme einander überlagern können oder nicht, wenn Sie diese auf einer Seite dicht aneinander bringen.</li>
+			</ul>
+            <p><img alt="Diagramm - Erweiterte Einstellungen" src="../images/chart_properties_3.png" /></p>
+            <p>Die Registerkarte <b>Alternativtext</b> ermöglicht die Eingabe eines <b>Titels</b> und einer <b>Beschreibung</b>, die Personen mit Sehbehinderungen oder kognitiven Beeinträchtigungen vorgelesen werden kann, damit sie besser verstehen können, welche Informationen in dem Diagramm enthalten sind.</p>
+		</div>
+	</body>
+</html>

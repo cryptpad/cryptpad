@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Crear una tabla de contenidos</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Create a Table of Contents" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Crear una tabla de contenidos</h1>
+            <p>Una tabla de contenidos contiene una lista de todos los capítulos (secciones, etc.) de un documento y muestra los números de las páginas donde se inicia cada capítulo. Esto permite navegar fácilmente a través de un documento de varias páginas cambiando rápidamente a la parte necesaria del texto. La tabla de contenidos se genera automáticamente sobre la base de los encabezados del documento formateados usando estilos incorporados. Esto facilita la actualización de la tabla de contenidos creada sin necesidad de editar manualmente los encabezados y cambiar los números de página si se ha modificado el texto del documento.</p>
+			<h3>Definir la estructura de título</h3>
+            <p><b>Formato de encabezados</b></p>
+            <p>En primer lugar, formatee los encabezados en su documento utilizando uno de los estilos predefinidos. Para hacerlo,</p>
+            <ol>
+                <li>Seleccione el texto que desea incluir en la tabla de contenidos.</li>
+                <li>Abra el menú de estilo en el lado derecho de la pestaña <b>Inicio</b> en la barra de tareas superior.</li>
+                <li>Haga clic en el estilo que desea aplicar. Por defecto, usted puede usar los estilos <em>Encabezado 1 - Encabezado 9</em>.<p class="note"><b>Nota</b>: si quiere usar otros estilos (por ejemplo <em>Título</em>, <em>Subtítulo</em>, etc.) para dar formato a los encabezados que se incluirán en la tabla de contenidos, primero tendrá que ajustar la configuración de la tabla de contenidos (consulte la sección correspondiente a continuación). Para saber más sobre cómo los formatos disponibles de estilos, puede visitar <a href="../UsageInstructions/FormattingPresets.htm" onclick="onhyperlinkclick(this)">esta página</a>.</p>
+                </li>
+            </ol>
+            <p id="navigation"><b>Manejando los encabezados</b></p>
+            <p>Una vez formateados los encabezados, puede hacer clic en el icono <img alt="Icono de navegación" src="../images/navigationicon.png" /> <b>Navegación</b> en la barra de tareas izquierda para abrir el panel que muestra la lista de todos los encabezados con los niveles de anidamiento correspondientes. Este panel permite navegar fácilmente entre los encabezados del texto del documento, así como administrar la estructura de encabezados.</p>
+            <p>Haga clic derecho en un encabezado de la lista y utilice una de las opciones disponibles en el menú:</p>
+            <p><img alt="Panel de navegación" src="../images/navigationpanel.png" /></p>
+            <ul>
+                <li><b>Promover</b> - para desplazar el encabezado actualmente seleccionado al nivel superior de la estructura jerárquica, por ejemplo, modificarlo de <em>Encabezado 2</em> a <em>Encabezado 1</em>.</li>
+                <li><b>Rebajar</b> - para desplazar el encabezado actualmente seleccionado al nivel inferior de la estructura jerárquica, por ejemplo, modificarlo de <em>Encabezado 1</em> a <em>Encabezado 2</em>.</li>
+                <li><b>Nuevo encabezado anterior</b> - para añadir un nuevo encabezado vacío del mismo nivel antes del seleccionado actualmente.</li>
+                <li><b>Nuevo encabezado después</b> - para añadir un nuevo encabezado vacío del mismo nivel después del seleccionado actualmente.</li>
+                <li><b>Nuevo subencabezado</b> - para añadir un nuevo subencabezado vacío (es decir, un encabezado con un nivel inferior) después del encabezado actualmente seleccionado.<p>Cuando se agrega el encabezado o subencabezado, haga clic en el encabezado vacío agregado en la lista y escriba su propio texto. Esto se puede hacer tanto en el texto del documento como en el mismo panel de <b>Navegación</b>.</p>
+                </li>
+                <li><b>Seleccionar contenido</b> - para seleccionar el texto debajo del encabezado actual del documento (incluido el texto relativo a todos los subencabezados de este encabezado).</li>
+                <li><b>Expandir todo</b> - para expandir todos los niveles de encabezados en el panel <b>Navegación</b>.</li>
+                <li><b>Colapsar todo</b> - para colapsar todos los niveles de encabezados, excepto el <em>nivel 1</em>, en el panel de <b>Navegación</b>.</li>
+                <li><b>Expandir al nivel</b> - para expandir la estructura de título al nivel seleccionado. Por ejemplo, si usted selecciona <em>nivel 3</em>, luego los niveles 1, 2 y 3 serán expandidos, mientras que el nivel 4 y todos los niveles inferiores se colapsarán.</li>
+            </ul>
+            <p>Para expandir u ocultar manualmente niveles de encabezado separados, utilice las flechas a la izquierda de los encabezados.</p>
+            <p>Para cerrar el panel de <b>Navegación</b>, haga clic en el icono <img alt="Icono de navegación" src="../images/navigationicon.png" /> situado en la barra de tareas izquierda una vez más.</p>
+            <h3>Inserta una Tabla de Contenidos en el documento</h3>
+            <p>Para insertar una tabla de contenidos en su documento,</p>
+            <ol>
+                <li>Posicione el punto de inserción donde desea añadir la tabla de contenidos.</li>
+                <li>Cambie a la pestaña <b>Referencias</b> en la barra de herramientas superior,</li>
+                <li>Haga clic en el <img alt="Icono de tabla de contenidos" src="../images/tocicon.png" /> icono de la <b>Tabla de Contenidos</b> en la barra de herramientas superior, o<br /> haga clic en la flecha al lado de este icono y seleccione la opción de diseño del menú, Usted puede seleccionar la tabla de contenidos que muestra los encabezados, números de página y líderes, o sólo los encabezados.<p><img alt="Opciones de tabla de contenidos" src="../images/tociconmenu.png" /></p>
+                    <p class="note"><b>Nota</b>: la apariencia de la tabla de contenidos se puede ajustar más tarde a través de la configuración de la tabla de contenidos.</p>
+                </li>
+            </ol>
+            <p>La tabla de contenidos se añadirá en la posición actual del cursor. Para cambiar la posición de la tabla de contenidos, puede seleccionar el campo de la tabla de contenidos (control de contenido) y simplemente arrastrarlo al lugar deseado. Para hacer eso, haga clic en el <img alt="Botón de control del contenido de la Tabla de Contenidos" src="../images/toccontentcontrol.png" /> botón en la esquina superior izquierda del campo de la tabla de contenidos y arrástrelo sin soltar el botón del ratón a otra posición en el texto del documento.</p>
+            <p><img alt="Moviendo la tabla de contenidos" src="../images/tocmove.png" /></p>
+            <p>Para navegar entre encabezados, presione la tecla <b>Ctrl</b> y haga clic en el encabezado necesario dentro del campo de la tabla de contenidos. Irá a la página correspondiente.</p>
+            <h3>Ajuste la tabla de contenidos creada</h3>
+            <p><b>Refrescar la tabla de contenidos</b></p>
+            <p>Una vez creada la tabla de contenidos, puede seguir editando su texto añadiendo nuevos capítulos, cambiando su orden, eliminando algunos párrafos o ampliando el texto relacionado con un título para que puedan cambiar los números de página correspondientes a la sección precedente o subsecuente. En este caso, use la opción <b>Refrescar</b> para aplicar automáticamente todos los cambios al índice de contenidos.</p>
+            <p>Haga clic en la flecha al lado del icono <img alt="Icono Refrescar" src="../images/tocrefreshicon.png" /> <b>Refrescar</b> en la pestaña de <b>Referencias</b> en la barra de herramientas superior y seleccione la opción necesaria del menú.</p>
+            <ul>
+                <li><b>Refrescar toda la tabla</b> - para agregar los encabezados que agregó al documento, elimine los que eliminó del documento, actualice los encabezados editados (renombrados), así como actualice los números de página.</li>
+                <li><b>Refrescar solo los números de página</b> - para actualizar los números de página sin aplicar cambios a los encabezados.</li>
+            </ul>
+            <p>Alternativamente, también puede seleccionar la tabla de contenidos en el texto del documento y hacer clic en el icono <img alt="Icono Refrescar" src="../images/tocrefreshiconcc.png" /> <b>Refrescar</b> en la parte superior del campo de la tabla de contenidos para mostrar las opciones mencionadas anteriormente.</p>
+            <p><img alt="Refrescar la tabla de contenidos" src="../images/tocrefreshcc.png" /></p>
+            <p>También es posible hacer clic con el botón derecho en cualquier parte de la tabla de contenidos y utilizar las opciones correspondientes del menú contextual.</p>
+            <p><img alt="Menú contextual" src="../images/tocrefreshcontextual.png" /></p>
+            <p><b>Ajustar la configuración de la Tabla de Contenidos</b></p>
+            <p>Para abrir las configuraciones de la tabla de contenidos, puede proceder de las siguientes maneras:</p>
+            <ul>
+                <li>Haga clic en la flecha al lado del icono <img alt="Icono de la Tabla de Contenidos" src="../images/tocicon.png" /> <b>Tabla de contenidos</b> en la barra de tareas superior y seleccione la opción <b>Ajustes</b> del menú.</li>
+                <li>Seleccione la tabla de contenidos en el texto del documento, haga clic en la flecha situada junto al título del campo de la tabla de contenidos y seleccione el icono <b>Ajustes </b> del menú.<p><img alt="Opciones de Tabla de Contenidos" src="../images/tocsettingscc.png" /></p>    
+                </li>
+                <li>Haga clic con el botón derecho en cualquier parte de la tabla de contenidos y use la opción <b>Ajustes de la tabla de contenidos</b> del menú contextual.</li>
+            </ul>
+            <p>Se abrirá una nueva ventana donde podrá ajustar los siguientes ajustes:</p>
+            <p><img alt="Ventana de Ajustes de la Tabla de Contenidos" src="../images/tocsettingswindow.png" /></p> 
+            <ul>
+                <li><b>Mostrar números de página</b> - esta opción permite elegir si desea mostrar o no los números de página.</li>
+                <li><b>Alinear los números de página a la derecha</b> - esta opción permite elegir si desea alinear los números de página al lado derecho de la pantalla o no.</li>
+                <li><b>Líder</b> - esta opción permite elegir el tipo de líder que desea usar. Un líder es una línea de caracteres (puntos o guiones) que llena el espacio entre un encabezado y el número de página correspondiente. También es posible seleccionar la opción <b>Ninguno</b> si no quiere usar líderes.</li>
+                <li><b>Formatear la tabla de contenidos como enlaces</b> - esta opción está seleccionada por defecto. Si la desmarca, no podrá cambiar al capítulo necesario pulsando <b>Ctrl</b> y haciendo clic en el encabezado correspondiente.</li>
+                <li><b>De donde construir la tabla de contenidos</b> - esta sección permite especificar el número necesario de niveles de esquema, así como los estilos predeterminados que se usarán para crear la tabla de contenidos. Compruebe el botón de selección necesario:<ul>
+                    <li><b>Niveles de esquema</b> - al seleccionar esta opción, podrá ajustar el número de niveles jerárquicos utilizados en la tabla de contenidos. Haga clic en las flechas en el campo <b>Niveles</b> para disminuir o aumentar el número de niveles (los valores de 1 a 9 están disponibles). Por ejemplo, si selecciona el valor de 3, los encabezados que tienen niveles 4 - 9 no se incluirán en la tabla de contenidos.</li>
+                    <li><b>Estilos seleccionados</b> - cuando se selecciona esta opción, puede especificar estilos adicionales que se pueden utilizar para construir la tabla de contenidos y asignar un nivel de esquema correspondiente a cada uno de ellos. Especifique el valor del nivel deseado en el campo situado a la derecha del estilo. Una vez guardada la configuración, podrá utilizar este estilo al crear la tabla de contenidos.<p><img alt="Ventana de Ajustes de la Tabla de Contenidos" src="../images/tocsettingswindow2.png" /></p>
+                    </li>
+                </ul>
+                </li>
+                <li><b>Estilos</b> - esta opción permite seleccionar la apariencia deseada de la tabla de contenidos. Seleccione la opción necesaria en la lista desplegable: El campo de vista previa de arriba muestra el aspecto que debe tener la tabla de contenidos.<p>Los siguientes cuatro estilos por defecto están disponibles: <em>Simple</em>, <em>Estándar</em>, <em>Moderno</em>, <em>Clásico</em>. La opción <em>Actual</em> es usada si usted personaliza el estilo de la tabla de contenidos.</p>
+                </li>
+            </ul>
+            <p>Haga clic en el botón <b>OK</b> de la ventana de ajustes para aplicar los cambios.</p>
+            <p><b>Ajustar el estilo de la Tabla de Contenidos</b></p>
+            <p>Después de aplicar uno de los estilos de tabla de contenidos predeterminados dentro de la ventana de ajustes de la <b>Tabla de Contenidos</b>, puede modificar adicionalmente este estilo para que el texto dentro del campo de la tabla de contenidos se vea como usted lo necesita.</p>
+            <ol>
+                <li>Seleccione el texto dentro del campo del índice, por ejemplo, pulsando la tecla <img alt="Botón de control del contenido de la Tabla de Contenidos" src="../images/toccontentcontrol.png" /> en la esquina superior izquierda del control de contenido de la tabla de contenidos.</li>
+                <li>Formatee los elementos de la tabla de contenidos cambiando su tipo de fuente, tamaño, color o aplicando los estilos de decoración de fuentes.</li>
+                <li>En consecuencia, actualice los estilos de los elementos de cada nivel. Para actualizar el estilo, haga clic derecho en el elemento seleccionado, seleccione la opción <b>Formatear como Estilo</b> del menú contextual y haga clic en la opción <b>Actualizar estilo N de la tabla de contenidos</b> (El estilo<em>2</em> de la tabla de contenidos corresponde a elementos que tienen el <em>nivel 2</em>, el estilo <em>3</em> de la tabla de contenidos corresponde a elementos con el nivel <em>3</em> y así sucesivamente).<p><img alt="Ajustar el estilo de la Tabla de Contenidos" src="../images/toccustomize.png" /></p>
+                </li>
+                <li>Refrescar la tabla de contenidos</li>
+            </ol>
+            <p><b>Remover la tabla de contenidos</b></p>
+            <p>Para remover la tabla de contenidos del documento:</p>
+            <ul>
+                <li>Haga clic en la flecha al lado del icono <img alt="Icono de la Tabla de Contenidos" src="../images/tocicon.png" /> <b>Tabla de contenidos</b> en la barra de tareas superior y use la opción <b>Remover tabla de contenidos</b>.</li>
+                <li>o haga clic en la flecha al lado de controlar contenido del título de la tabla de contenidos y use la opción <b>Remover tabla de contenidos</b>.</li>
+            </ul>
+		</div>
+	</body>
+</html>

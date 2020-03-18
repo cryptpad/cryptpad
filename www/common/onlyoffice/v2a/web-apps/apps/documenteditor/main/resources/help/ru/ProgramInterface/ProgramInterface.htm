@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Знакомство с пользовательским интерфейсом редактора документов</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Знакомство с пользовательским интерфейсом редактора документов" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Поиск" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Знакомство с пользовательским интерфейсом редактора документов</h1>
+			<p>В <b>редакторе документов</b> используется вкладочный интерфейс, в котором команды редактирования сгруппированы во вкладки по функциональности.</p>
+            <div class="onlineDocumentFeatures">
+                <p>Окно онлайн-редактора документов:</p>
+                <p><img alt="Окно онлайн-редактора документов" src="../images/interface/editorwindow.png" /></p>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>Окно десктопного редактора документов:</p>
+                <p><img alt="Окно десктопного редактора документов" src="../images/interface/desktop_editorwindow.png" /></p>
+            </div>
+            <p>Интерфейс редактора состоит из следующих основных элементов:</p>
+            <ol>
+                <li>В <b>Шапке редактора</b> отображается логотип, <span class="desktopDocumentFeatures">вкладки открытых документов, </span> название документа и вкладки меню.
+                    <p>В левой части <b>Шапки редактора</b> расположены кнопки <b>Сохранить</b>, <b>Напечатать файл</b>, <b>Отменить</b> и <b>Повторить</b>.</p>
+                    <p><img alt="Значки в шапке редактора" src="../images/interface/leftpart.png" /></p>
+                    <p>В правой части <b>Шапки редактора</b> отображается имя пользователя и находятся следующие значки:</p>
+                    <ul>
+                        <li><img alt="Открыть расположение файла" src="../images/gotodocuments.png" /> <b>Открыть расположение файла</b>, с помощью которого <span class="desktopDocumentFeatures">в <em>десктопной версии</em> можно открыть в окне <b>Проводника</b> папку, в которой сохранен файл.</span><span class="onlineDocumentFeatures"> В <em>онлайн-версии</em> можно открыть в новой вкладке браузера папку модуля <b>Документы</b>, в которой сохранен файл</span>.</li>
+                        <li><img alt="Значок Параметры представления" src="../images/viewsettingsicon.png" /> <b>Параметры представления</b>, с помощью которого можно настраивать <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">параметры представления</a> и получать доступ к <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">дополнительным параметрам</a> редактора.</li>
+                        <li class="onlineDocumentFeatures"><img alt="Значок управления правами доступа" src="../images/access_rights.png" /> <b>Управление правами доступа</b> (доступно только в <em>онлайн-версии</em>), с помощью которого можно <a href="../HelpfulHints/CollaborativeEditing.htm" onclick="onhyperlinkclick(this)">задать права доступа</a> к документам, сохраненным в облаке.</li>
+                    </ul>                    
+                </li>
+                <li>На <b>Верхней панели инструментов</b> отображается набор команд редактирования в зависимости от выбранной вкладки меню. В настоящее время доступны следующие вкладки: <a href="../ProgramInterface/FileTab.htm" onclick="onhyperlinkclick(this)">Файл</a>, <a href="../ProgramInterface/HomeTab.htm" onclick="onhyperlinkclick(this)">Главная</a>, <a href="../ProgramInterface/InsertTab.htm" onclick="onhyperlinkclick(this)">Вставка</a>, <a href="../ProgramInterface/LayoutTab.htm" onclick="onhyperlinkclick(this)">Макет</a>, <a href="../ProgramInterface/ReferencesTab.htm" onclick="onhyperlinkclick(this)">Ссылки</a>, <a href="../ProgramInterface/ReviewTab.htm" onclick="onhyperlinkclick(this)">Совместная работа</a>, <span class="desktopDocumentFeatures">Защита,</span> <a href="../ProgramInterface/PluginsTab.htm" onclick="onhyperlinkclick(this)">Плагины</a>.
+                <p>Опции <img alt="Значок Копировать" src="../images/copy.png" /> <b>Копировать</b> и <img alt="Значок Вставить" src="../images/paste.png" /> <b>Вставить</b> всегда доступны в левой части <b>Верхней панели инструментов</b>, независимо от выбранной вкладки.</p>
+                </li>
+                <li>В <b>Строке состояния</b>, расположенной внизу окна редактора, находится указатель номера страницы, отображаются некоторые оповещения (например, "Все изменения сохранены" и т.д.), с ее помощью также можно <a href="../HelpfulHints/SpellChecking.htm" onclick="onhyperlinkclick(this)">задать язык текста, включить проверку орфографии</a>, включить <a href="../HelpfulHints/Review.htm" onclick="onhyperlinkclick(this)">режим отслеживания изменений</a>, настроить <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">масштаб</a>.</li>
+                <li>На <b>Левой боковой панели</b> находятся следующие значки: 
+                <ul>
+                    <li><img alt="Значок Поиск" src="../images/searchicon.png" /> - позволяет использовать инструмент <a href="../HelpfulHints/Search.htm" onclick="onhyperlinkclick(this)">поиска и замены</a>,</li>
+                    <li><img alt="Значок Комментариев" src="../images/commentsicon.png" /> - позволяет открыть панель <a href="../HelpfulHints/CollaborativeEditing.htm#comments" onclick="onhyperlinkclick(this)">Комментариев</a></li>
+                    <li><img alt="Значок Навигация" src="../images/navigationicon.png" /> - позволяет перейти в панель <a href="../UsageInstructions/CreateTableOfContents.htm" onclick="onhyperlinkclick(this)">Навигации</a> для управления заголовками</li>
+                    <li class="onlineDocumentFeatures"><img alt="Значок Чата" src="../images/chaticon.png" /> (доступно только в <em>онлайн-версии</em>) - позволяет открыть панель <a href="../HelpfulHints/CollaborativeEditing.htm#chat" onclick="onhyperlinkclick(this)">Чата</a>, а также значки, позволяющие обратиться в службу технической поддержки и посмотреть информацию о программе.</li>
+                </ul>
+                </li>
+                <li><b>Правая боковая панель</b> позволяет настроить дополнительные параметры различных объектов. При выделении в тексте определенного объекта активируется соответствующий значок на правой боковой панели. Нажмите на этот значок, чтобы развернуть правую боковую панель.</li>
+                <li>Горизонтальная и вертикальная <b>Линейки</b> позволяют выравнивать текст и другие элементы в документе, настраивать поля, позиции табуляции и отступы абзацев.</li>
+                <li>В <b>Рабочей области</b> вы можете просматривать содержимое документа, вводить и редактировать данные.</li>
+                <li><b>Полоса прокрутки</b>, расположенная справа, позволяет прокручивать вверх и вниз многостраничные документы.</li>
+            </ol>
+            <p>Для удобства вы можете скрыть некоторые элементы и снова отобразить их при необходимости. Для получения дополнительной информации о настройке параметров представления, пожалуйста, обратитесь к <a href="../HelpfulHints/Navigation.htm" onclick="onhyperlinkclick(this)">этой странице</a>.</p>
+           
+		</div>
+	</body>
+</html>

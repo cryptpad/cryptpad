@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Usar la Combinación de Correspondencia</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Use Mail Merge to create a lot of personalized letters and send them to recipients" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Usar la Combinación de Correspondencia</h1>
+            <p class="note"><b>Nota</b>: esta opción solo está disponible para versiones de pago.</p>
+			<p>La característica de <b>Combinación de Correspondencia</b> se usa para crear un set de documentos que combinen un contenido común, el cual se toma de un texto de un documento y varios componentes individuales (variables, como nombres, saludos etc.) tomados de una hoja de cálculo (por ejemplo, una lista de consumidores). Puede ser útil si necesita crear muchas cartas personalizadas y enviarlas a los recipientes.</p>
+			<p>Para empezar a trabajar con la característica de <b>Combinación de Correspondencia</b>,</p>
+            <ol>
+                <li><b>Prepare una fuente de datos y cárgala al documento principal</b><ol>
+                    <li>Una fuente de datos que se usa para la combinación de correspondencia debe ser una hoja de cálculo <b>.xlsx</b> que se encuentra almacenada en su portal. Abra una hoja de cálculo existente o cree una nueva y asegúrese de que contiene los siguientes requisitos.<p>La hoja de cálculo debe tener una columna de encabezado con los títulos de las columnas, como los valores en la primera celda de cada columna designarán los campos de combinación (es decir, las variables que puede introducir en el texto). Cada columna debe contener un set de valores actuales para cada variable. Cada fila en la hoja de cálculo debe corresponder a un registro separado (es decir, un set de valores que pertenecen a un recipiente en concreto). Durante el proceso de combinación, se creará una copia del documento principal para cada registro y cada campo de combinación insertado en el texto principal se reemplazará con el valor actual de la columna correspondiente. Si va a mandar los resultados por correo electrónico, la hoja de cálculo también debe incluir una columna con los correos electrónicos de los recipientes.</p>
+                    </li>
+                    <li>Abra un documento existente o cree uno nuevo. Debe contener el texto principal, que será el mismo para cada versión del documento combinado. Haga clic en el icono <b>Combinación de Correspondencia</b> <img alt="Icono de Combinación de Correspondencia" src="../images/mailmergeicon.png" /> en la pestaña de <b>Inicio</b> barra de herramientas superior.</li>
+                    <li>Se abrirá la ventana <b>Seleccione la Fuente de Datos</b>. La lista se muestra con todas sus hojas de cálculo <b>.xlsx</b> almacenadas en la sección de <b>Mis Documentos</b>. Para navegar entre las secciones de módulos de <b>Documentos</b>, use el menú en la parte izquierda de la ventana. Seleccione el archivo que necesita y haga clic en <b>OK</b>.</li>
+                </ol>
+                <p>Una vez que la fuente de datos está cargada, la pestaña de <b>Ajustes de Combinación de Correspondencia</b> estará disponible en la barra lateral de la derecha.</p>
+                <p><img alt="Pestaña de ajuste de Combinación de Correspondencia" src="../images/right_mailmerge.png" /></p>
+                </li>
+                <li><b>Verifique o cambie la lista de recipientes</b><ol>
+                    <li>Haga clic en el botón de <b>Editar la lista de recipientes</b> arriba de la barra lateral derecha para abrir la ventana de <b>Recipientes de Combinación de Correspondencia</b>, donde el contenido de la fuente de datos seleccionada se muestra.<p><img alt="Ventana de recipientes de Combinación de Correspondencia" src="../images/mailmergerecipients.png" /></p>
+                    </li>
+                    <li>Aquí puede añadir información nueva editar o borrar los datos existentes, si es necesario. Para simplificar el trabajo con datos, puede usar los iconos en la parte superior de la ventana:<ul>
+                        <li><img alt="Copiar" src="../images/copy.png" /> y <img alt="Pegar" src="../images/paste.png" /> - para copiar y pegar los datos copiados</li>
+                        <li><img alt="Deshacer" src="../images/undo.png" /> y <img alt="Rehacer" src="../images/redo.png" /> - para deshacer o rehacer acciones</li>
+                        <li><img alt="Icono organizar de menor a mayor" src="../images/sortatoz.png" /> y <img alt="Icono organizar de mayor a menor" src="../images/sortztoa.png" /> - para organizar sus datos dentro de un rango de celdas seleccionado de manera ascendiente o descendiente</li>
+                        <li><img alt="Icono Filtro" src="../images/sortandfilter.png" /> - para habilitar el filtro del rango de celdas previamente seleccionado o para eliminar los filtros aplicados</li>
+                        <li><img alt="Icono eliminar filtro" src="../images/clearfilter.png" /> - para eliminar todos los parámetros de filtros aplicados<p class="note"><b>Nota</b>: para aprender más sobre cómo usar el filtro puede referirse a la sección de <b>Organizar y Filtrar Datos</b> de la ayuda de <b>Editor de hojas de cálculo</b>.</p>
+                        </li>
+                        <li><img alt="Icono Buscar" src="../images/searchicon.png" /> - para buscar un valor en concreto y reemplazarlo con otro, si es necesario<p class="note"><b>Nota</b>: para aprender más sobre cómo usar la herramienta de<b> Búsqueda y Sustitución</b> puede referirse a la sección de <b>Funciones de Búsqueda y Sustitución</b> de la ayuda del <b>Editor de Hojas de Cálculo</b>.</p>
+                        </li>
+                    </ul>
+                    </li>
+                    <li>Después de que todos los cambios necesarios se han hecho, haga clic en el botón de <b>Guardar y Salir</b>. Para descartar los cambios realizados, pulse el botón <b>Cerrar</b>.</li>
+                </ol>
+                </li>
+                <li><b>Introduzca los campos de combinación y valide los resultados</b><ol>
+                    <li>Ponga el cursos del ratón en el texto del documento principal donde quiera combinar un campo para que se inserte, haga clic en el botón de <b>Introduzca Campo de Combinación</b> a la derecha de la barra lateral y seleccione el campo necesario de la lista. Los campos disponibles corresponden a los datos en la primera celda de cada columna de la fuente de datos seleccionados. Añada todos los campos que necesite en cualquier parte del documento.<p><img alt="Sección de combinación de campos" src="../images/mergefields.png" /></p>
+                    </li>
+                    <li>Active el cambiador <b>Destacar campos de combinación</b> en la barra lateral derecha para crear los campos introducidos más visibles en el texto del documento.<p><img alt="Documento principal con campos insertados" src="../images/insertedfields.png" /></p>
+                    </li>
+                    <li>Active el cambiador <b>Visualizar resultados</b> en la barra lateral derecha para ver el texto de documento con los campos combinados reemplazados con valores reales de la fuente de datos. Use los botones de las flechas para visualizar versiones de los documentos combinados para cada registro.<p><img alt="Visualizar resultados" src="../images/previewinsertedfields.png" /></p>
+                    </li>
+                </ol>
+                <ul>
+                    <li>Para eliminar un campo insertado, deshabilite el modo de <b>Visualizar resultados</b>, seleccione el campo con el ratón y presione la tecla <b>Borrar</b> en el teclado.</li>
+                    <li>Para reemplazar e introducir un campo, deshabilite el modo de <b>Visualizar resultados</b>, seleccione el campo con el ratón, haga clic en el botón <b>Insertar Campos de Combinación</b> en la barra lateral derecha y elija un campo nuevo de la lista.</li>
+                </ul>
+                </li>
+                <li><b>Especifique los parámetros de combinación</b><ol>
+                    <li>Seleccione el tipo de combinación. Puede empezar a o guardar los resultados como un documento PDF o Docx para poder imprimir o editarlo más adelante. Seleccione la opción necesaria de la lista <b>Combinar a</b>:<p><img alt="Selección de tipo de combinación" src="../images/mergeto.png" /></p>
+                    <ul>
+                        <li><b>PDF</b> - para crear un solo documento en formato PDF que incluya todas las copias combinadas para que las pueda imprimir más adelante</li>
+                        <li><b>Docx</b> - para crear un solo documento en formato Docx que incluya todas las copias combinadas para que las pueda editar de forma individual más adelante</li>
+                        <li><b>Email</b> - para enviar los resultados a recipientes por correo electrónico<p class="note"><b>Nota</b>: los correos electrónicos de los recipientes deben especificarse en la fuente de datos cargados y tiene que tener al menos un correo electrónico conectado en el módulo de <b>Correo</b> en su portal.</p>
+                        </li>
+                    </ul>
+                    </li>
+                    <li>Elija los registros a los que quiere aplicar la combinación:<ul>
+                        <li><b>Todos los registros</b> (esta opción está seleccionada por defecto) - para crear documentos combinados para todos los registros de la fuente de datos cargados</li>
+                        <li><b>Registro actual</b> - para crear un documento combinado para el registro que está mostrándose de forma actual</li>
+                        <li><b>Desde</b>... <b>A</b> - para crear documentos combinados para una variedad de registros (en este caso necesita especificar dos valores: el número del primer registro y el último registro en el rango deseado)<p class="note"><b>Nota</b>:  la cantidad máxima permitida de recipientes es de 100. Si tiene más de 100 recipientes en su fuente de datos, por favor, realice la combinación de correspondencia en pasos: especifique los valores del 1 al 100, espere hasta que el proceso de combinación de correspondencia se termine, luego repita la operación especificando los valores del 101 a N etc.</p>
+                        </li>
+                    </ul>
+                    </li>
+                    <li>Completar la combinación<ul>
+                            <li>Si ha decidido guardar los resultados de combinación como un archivo,<ul>
+                                <li>Haga clic en el botón de <b>Descarga</b> para almacenar el archivo en cualquier sitio de su PC. Encontrará el archivo descargado en su carpeta de defecto de <em>Descargas</em>.</li>
+                                <li>haga clic en el botón <b>Guardar</b> para guardar el archivo en su portal. En la ventana de <b>Archivo para guardar</b> que se abre, puede cambiar el nombre del archivo y especificar la carpeta donde quiera guardar el archivo. También puede verificar la casilla <b>Abrir documento combinado en nueva pestaña</b> para ver el resultado una vez que el proceso haya terminado. Finalmente, haga clic en <b>Guardar</b> en la ventana de <b>Archivo para guardar</b>.</li>
+                            </ul>
+                            </li>
+                            <li>si has seleccionado la opción de <b>Correo Electrónico</b>, el botón de <b>Combinar</b> estará disponible en la barra lateral de la derecha. Después de hacer clic, la ventana de <b>Mandar a correo electrónico</b> se abrirá:<p><img alt="Enviar a la ventana de correo electrónico" src="../images/sendtoemail.png" /></p>
+                            <ul>
+                                <li>En la lista de <b>Desde</b>, seleccione la cuenta de correo que quiera usar para mandar el correo electrónico, si tiene varias cuentas conectadas en el módulo de <b>Correo electrónico</b>.</li>
+                                <li>En la lista de <b>Para</b>, seleccione el campo de combinación correspondiente a las direcciones de correo electrónico de los recipiente, si no se ha elegido de forma automática.</li>
+                                <li>Introduzca el tema de su mensaje en el campo <b>Línea de Tema</b>.</li>
+                                <li>Seleccione el formato del correo electrónico de la lista: <b>HTML</b>, <b>Adjunto como DOCX</b>, o <b>Adjunto como PDF</b>. Cuando una de las dos últimas opciones se selecciona, también necesita especificar el <b>Nombre de Archivo</b> de los adjuntos e introducir el <b>Mensaje</b> (el texto de su correo que se enviará a los recipientes).</li>
+                                <li>Pulse el botón <b>Enviar</b>.</li>
+                            </ul>
+                            <p>Una vez que que el envío de correo electrónicos haya finalizado, recibirá una notificación a su email en el campo de <b>Desde</b>.</p>
+                            </li>
+                        </ul>
+                    </li>
+                </ol>
+                </li>
+            </ol>
+		</div>
+	</body>
+</html>

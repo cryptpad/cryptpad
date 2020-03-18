@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Créer une table des matières</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Create a Table of Contents" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Créer une table des matières</h1>
+            <p>Une table des matières contient une liste de tous les chapitres (sections, etc.) d'un document et affiche les numéros des pages où chaque chapitre est démarré. Cela permet de naviguer facilement dans un document de plusieurs pages en passant rapidement à la partie voulue du texte. La table des matières est générée automatiquement sur la base des titres de document formatés à l'aide de styles prédéfinis. Cela facilite la mise à jour de la table des matières créée sans qu'il soit nécessaire de modifier les titres et de changer manuellement les numéros de page si le texte du document a été modifié.</p>
+			<h3>Définir la structure des titres</h3>
+            <p><b>Formater les titres</b></p>
+            <p>Tout d'abord, formatez les titres dans votre document en utilisant l'un des styles prédéfinis. Pour le faire,</p>
+            <ol>
+                <li>Sélectionnez le texte que vous souhaitez inclure dans la table des matières.</li>
+                <li>Ouvrez le menu Style sur le côté droit de l'onglet <b>Accueil</b> dans la barre d'outils supérieure.</li>
+                <li>Cliquez sur le style que vous souhaitez appliquer. Par défaut, vous pouvez utiliser les styles <em>Titre 1 - Titre 9</em>.<p class="note"><b>Remarque</b>: si vous souhaitez utiliser d'autres styles (par exemple <em>Titre</em>, <em>Sous-titre</em>, etc.) pour formater les titres qui seront inclus dans la table des matières, vous devrez d'abord ajuster les paramètres de la table des matières (voir la section correspondante ci-dessous). Pour en savoir plus sur les styles de mise en forme disponibles, vous pouvez vous référer à <a href="../UsageInstructions/FormattingPresets.htm" onclick="onhyperlinkclick(this)">cette page</a>.</p>
+                </li>
+            </ol>
+            <p id="navigation"><b>Gérer les titres</b></p>
+            <p>Une fois les titres formatés, vous pouvez cliquer sur l'icône <img alt="Icône Navigation" src="../images/navigationicon.png" /> <b>Navigation</b> dans la barre latérale de gauche pour ouvrir le panneau qui affiche la liste de tous les titres avec les niveaux d'imbrication correspondants. Ce panneau permet de naviguer facilement entre les titres dans le texte du document et de gérer la structure de titre.</p>
+            <p>Cliquez avec le bouton droit sur un titre de la liste et utilisez l'une des options disponibles dans le menu:</p>
+            <p><img alt="Panneau de navigation" src="../images/navigationpanel.png" /></p>
+            <ul>
+                <li><b>Promouvoir</b> - pour déplacer le titre actuellement sélectionné vers le niveau supérieur de la structure hiérarchique, par ex. le changer de <em>Titre 2</em> à <em>Titre 1</em>.</li>
+                <li><b>Abaisser</b> - pour déplacer le titre actuellement sélectionné vers le niveau inférieur de la structure hiérarchique, par ex. le changer de  à .</li>
+                <li><b>Nouveau titre avant</b> - pour ajouter un nouveau titre vide du même niveau avant celui actuellement sélectionné.</li>
+                <li> - pour ajouter un nouveau titre vide du même niveau après celui actuellement sélectionné.</li>
+                <li><b>Nouveau sous-titre</b> - pour ajouter un nouveau sous-titre vide (c'est-à-dire un titre de niveau inférieur) après le titre actuellement sélectionné.<p>Lorsque le titre ou la sous-rubrique est ajouté, cliquez sur l'en-tête vide ajouté dans la liste et tapez votre propre texte. Cela peut être fait à la fois dans le texte du document et sur le panneau <b>Navigation</b> lui-même.</p>
+                </li>
+                <li><b>Sélectionner le contenu</b> - pour sélectionner le texte sous le titre actuel du document (y compris le texte relatif à tous les sous-titres de cette rubrique).</li>
+                <li><b>Tout développer</b> - pour développer tous les niveaux de titres dans le panneau <b>Navigation</b>.</li>
+                <li><b>Tout réduire</b> - pour réduire tous les niveaux de titres excepté le <em>niveau 1</em> dans le panneau .</li>
+                <li><b>Développer au niveau</b> - pour étendre la structure de titre au niveau sélectionné. Par exemple. Si vous sélectionnez le <em>niveau 3</em>, les niveaux 1, 2 et 3 seront développés, tandis que le niveau 4 et tous les niveaux inférieurs seront réduits.</li>
+            </ul>
+            <p>Pour développer ou réduire manuellement des niveaux de titre différents, utilisez les flèches situées à gauche des en-têtes.</p>
+            <p>Pour fermer le panneau <b>Navigation</b> cliquez sur l'icône <img alt="Icône Navigation" src="../images/navigationicon.png" />  encore une fois.</p>
+            <h3>Insérer une table des matières dans le document</h3>
+            <p>Pour insérer une table des matières dans votre document:</p>
+            <ol>
+                <li>Positionnez le point d'insertion à l'endroit où vous souhaitez ajouter la table des matières.</li>
+                <li>passez à l'onglet <b>Références</b> de la barre d'outils supérieure,</li>
+                <li>cliquez sur l'icône <img alt="Icône Table des matières" src="../images/tocicon.png" /> <b>Table des matières</b> dans la barre d'outils supérieure ou<br /> cliquez sur la flèche en regard de cette icône et sélectionnez l'option voulue dans le menu. Vous pouvez sélectionner la table des matières qui affiche les titres, les numéros de page et les repères, ou les en-têtes uniquement.<p><img alt="Options de la table des matières" src="../images/tociconmenu.png" /></p>
+                    <p class="note"><b>Remarque</b>: l'apparence de la table des matières peut être ajustée ultérieurement via les paramètres de la table des matières.</p>
+                </li>
+            </ol>
+            <p>La table des matières sera insérée à la position actuelle du curseur. Pour modifier la position de la table des matières, vous pouvez sélectionner le champ de la table des matières (contrôle du contenu) et le faire simplement glisser vers l'emplacement souhaité. Pour ce faire, cliquez sur le bouton <img alt="Bouton de contrôle du contenu de la table des matières" src="../images/toccontentcontrol.png" /> dans le coin supérieur gauche du champ Table des matières et faites-le glisser sans relâcher le bouton de la souris sur une autre position dans le texte du document.</p>
+            <p><img alt="Déplacer la table des matières" src="../images/tocmove.png" /></p>
+            <p>Pour naviguer entre les titres, appuyez sur la touche <b>Ctrl</b> et cliquez sur le titre souhaité dans le champ de la table des matières. Vous serez ramené à la page correspondante.</p>
+            <h3>Ajuster la table des matières créée</h3>
+            <p><b>Actualiser la table des matières</b></p>
+            <p>Une fois la table des matières créée, vous pouvez continuer à modifier votre texte en ajoutant de nouveaux chapitres, en modifiant leur ordre, en supprimant certains paragraphes ou en développant le texte associé à un titre de manière à changer les numéros de page correspondants à la section considérée. Dans ce cas, utilisez l'option <b>Actualiser</b> pour appliquer automatiquement toutes les modifications à la table des matières.</p>
+            <p>Cliquez sur la flèche en regard de l'icône <img alt="Icône Actualiser" src="../images/tocrefreshicon.png" /> <b>Actualiser</b> dans l'onglet <b>Références</b> de la barre d'outils supérieure et sélectionnez l'option voulue dans le menu:</p>
+            <ul>
+                <li><b>Actualiser la totalité de la table</b>: pour ajouter les titres que vous avez ajoutés au document, supprimer ceux que vous avez supprimés du document, mettre à jour les titres modifiés (renommés) et les numéros de page.</li>
+                <li><b>Actualiser uniquement les numéros de page</b> pour mettre à jour les numéros de page sans appliquer de modifications aux titres.</li>
+            </ul>
+            <p>Vous pouvez également sélectionner la table des matières dans le texte du document et cliquer sur l'icône <img alt="Icône Actualiser" src="../images/tocrefreshiconcc.png" /> <b>Actualiser</b> en haut du champ Table des matières pour afficher les options mentionnées ci-dessus.</p>
+            <p><img alt="Actualiser la table des matières" src="../images/tocrefreshcc.png" /></p>
+            <p>Il est également possible de cliquer avec le bouton droit n'importe où dans la table des matières et d'utiliser les options correspondantes dans le menu contextuel.</p>
+            <p><img alt="Menu contextuel" src="../images/tocrefreshcontextual.png" /></p>
+            <p><b>Ajuster les paramètres de la table des matières</b></p>
+            <p>Pour ouvrir les paramètres de la table des matières, vous pouvez procéder de la manière suivante:</p>
+            <ul>
+                <li>Cliquez sur la flèche en regard de l'icône <img alt="Icône Table des matières" src="../images/tocicon.png" /> <b>Table des matières</b> dans la barre d'outils supérieure et sélectionnez l'option <b>Paramètres</b> dans le menu.</li>
+                <li>Sélectionnez la table des matières dans le texte du document, cliquez sur la flèche à côté du titre du champ Table des matières et sélectionnez l'option <b>Paramètres</b> dans le menu.<p><img alt="Options de la table des matières" src="../images/tocsettingscc.png" /></p>    
+                </li>
+                <li>Cliquez avec le bouton droit n'importe où dans la table des matières et utilisez l'option <b>Paramètres de table des matières</b> dans le menu contextuel.</li>
+            </ul>
+            <p>Une nouvelle fenêtre s'ouvrira où vous pourrez ajuster les paramètres suivants:</p>
+            <p><img alt="Fenêtre des paramètres de la table des matières" src="../images/tocsettingswindow.png" /></p> 
+            <ul>
+                <li><b>Afficher les numéros de page</b> - cette option permet de choisir si vous souhaitez afficher les numéros de page ou non.</li>
+                <li><b>Aligner à droite les numéros de page</b> - cette option permet de choisir si vous souhaitez aligner les numéros de page sur le côté droit de la page ou non.</li>
+                <li><b>Points de suite</b> - cette option permet de choisir le type de points de suite que vous voulez utiliser. Un point de suite est une ligne de caractères (points ou traits d'union) qui remplit l'espace entre un titre et le numéro de page correspondant. Il est également possible de sélectionner l'option <b>Aucun</b> si vous ne souhaitez pas utiliser de points de suite.</li>
+                <li><b>Mettre en forme la table des matières en tant que liens</b> - cette option est cochée par défaut. Si vous le décochez, vous ne pourrez pas passer au chapitre souhaité en appuyant sur <b>Ctrl</b> et en cliquant sur le titre correspondant.</li>
+                <li><b>Créer une table des matières à partir de</b> - cette section permet de spécifier le nombre de niveaux hiérarchiques voulus ainsi que les styles par défaut qui seront utilisés pour créer la table des matières. Cochez le champ correspondant:<ul>
+                    <li><b>Niveaux hiérarchiques</b> - lorsque cette option est sélectionnée, vous pouvez ajuster le nombre de niveaux hiérarchiques utilisés dans la table des matières. Cliquez sur les flèches dans le champ <b>Niveaux</b> pour diminuer ou augmenter le nombre de niveaux (les valeurs de 1 à 9 sont disponibles). Par exemple, si vous sélectionnez la valeur 3, les en-têtes de niveau 4 à 9 ne seront pas inclus dans la table des matières.</li>
+                    <li><b>Styles sélectionnés</b> - lorsque cette option est sélectionnée, vous pouvez spécifier des styles supplémentaires pouvant être utilisés pour créer la table des matières et affecter un niveau de plan correspondant à chacun d'eux. Spécifiez la valeur de niveau souhaitée dans le champ situé à droite du style. Une fois les paramètres enregistrés, vous pourrez utiliser ce style lors de la création de la table des matières.<p><img alt="Fenêtre des paramètres de la table des matières" src="../images/tocsettingswindow2.png" /></p>
+                    </li>
+                </ul>
+                </li>
+                <li><b>Styles</b> - cette option permet de sélectionner l'apparence souhaitée de la table des matières. Sélectionnez l'option souhaitée dans la liste déroulante : Le champ d'aperçu ci-dessus affiche l'apparence de la table des matières.<p>Les quatre styles par défaut suivants sont disponibles: <em>Simple</em>, <em>Standard</em>, <em>Moderne</em>, <em>Classique</em>. L'option <em>Actuel</em> est utilisée si vous personnalisez le style de la table des matières.</p>
+                </li>
+            </ul>
+            <p>cliquez sur le bouton <b>OK</b> dans la fenêtre des paramètres pour appliquer les changements.</p>
+            <p><b>Personnaliser le style de la table des matières</b></p>
+            <p>Après avoir appliqué l'un des styles de table des matières par défaut dans la fenêtre des paramètres de la <b>Table des matières</b>, vous pouvez le modifier afin que le texte figurant dans le champ de la table des matières ressemble au résultat que vous recherchez.</p>
+            <ol>
+                <li>Sélectionnez le texte dans le champ de la table des matières, par ex. en appuyant sur le bouton <img alt="Bouton de contrôle du contenu de la table des matières" src="../images/toccontentcontrol.png" /> dans le coin supérieur gauche du contrôle du contenu de la table des matières.</li>
+                <li>Mettez en forme la table des matières en modifiant le type de police, la taille, la couleur ou en appliquant les styles de décoration de police.</li>
+                <li>Mettez à jour les styles pour les éléments de chaque niveau. Pour mettre à jour le style, cliquez avec le bouton droit sur l'élément mis en forme, sélectionnez l'option <b>Mise en forme du style</b> dans le menu contextuel et cliquez sur l'option <b>Mettre à jour le style TM N</b> (le style <em>TM 2</em> correspond aux éléments de <em>niveau 2</em>, le style  correspond aux éléments de  et ainsi de suite).<p><img alt="Mettre à jour le style de la table des matières" src="../images/toccustomize.png" /></p>
+                </li>
+                <li>Actualiser la table des matières.</li>
+            </ol>
+            <p><b>Supprimer la table des matières</b></p>
+            <p>Pour supprimer la table des matières du document:</p>
+            <ul>
+                <li>cliquez sur la flèche en regard de l'icône <img alt="Icône Table des matières" src="../images/tocicon.png" /> <b>Table des matières</b> dans la barre d'outils supérieure et utilisez l'option <b>Supprimer la table des matières</b>,</li>
+                <li>ou cliquez sur la flèche en regard du titre de contrôle du contenu de la table des matières et utilisez l'option <b>Supprimer la table des matières</b>.</li>
+            </ul>
+		</div>
+	</body>
+</html>
