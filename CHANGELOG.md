@@ -30,6 +30,8 @@ We're very happy to announce a major update to our kanban application! We've mad
 * a smaller palette of pre-chosen colors for cards and boards instead of a color-picker, to make it easier to choose matching colors for tasks
 * the ability to drag cards and boards to the trash instead of having to click a small X and confirm their deletion
 
+We've also improved message throughput for our server by splitting cryptographic signature validation into separate processes. On a quad core server this means you should be able to handle (roughly) four times the messages.
+
 ## Bug fixes
 
 * Drive:
@@ -41,6 +43,7 @@ We're very happy to announce a major update to our kanban application! We've mad
   * we've added some extra checks to try to identify where our file descriptor leak is coming from, we'll release fixes as they become available.
   * we've caught a typeError that only ever happened while the server was overwhelmed with EMFILE errors.
   * [this PR](https://github.com/xwiki-labs/cryptpad/pull/503) fixed an incorrect conditional expression at launch-time.
+* We fixed a bug in our spreadsheet editor that was causing sheets not to load. Sheets affected by this issue should be repaired. We ask that you submit a report ticket on your instance if you encounter a sheet that wasn't fixed.
 
 # NorthernWhiteRhino release (3.13.0)
 
