@@ -458,6 +458,7 @@ define([
         setTimeout(function () {
             Notifier.notify();
         });
+        return frame;
     };
 
     UI.alert = function (msg, cb, opt) {

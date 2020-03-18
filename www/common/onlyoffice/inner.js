@@ -531,6 +531,9 @@ define([
                     delete content.locks[id];
                 }
             });
+            if (content.saveLock && !isUserOnline(content.saveLock)) {
+                delete content.saveLock;
+            }
         };
 
         var handleAuth = function (obj, send) {
@@ -595,9 +598,16 @@ define([
         };
 
         // Add a lock
+        var isLockedModal = {
+            content: UI.customModal(h('div', [
+                h('span.fa.fa-spin.fa-spinner'),
+                "pewpewpew"
+            ]))
         var handleLock = function (obj, send) {
             if (content.saveLock) {
-                if (Messages.oo_isLocked) { UI.log(Messages.oo_isLocked); }
+                if (!isLockedModal.modal) {
+                    isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
+                }
                 setTimeout(function () {
                     handleLock(obj, send);
                 }, 50);
@@ -621,12 +631,18 @@ define([
                     if (!again) { cpNfInner.offPatchSent(onPatchSent); }
                     // Answer to our onlyoffice
                     if (!content.saveLock) {
+                        if (isLockedModal.modal) {
+                            isLockedModal.modal.closeModal();
+                            delete isLockedModal.modal();
+                        }
                         send({
                             type: "getLock",
                             locks: getLock()
                         });
                     } else {
-                        if (Messages.oo_isLocked) { UI.log(Messages.oo_isLocked); }
+                        if (!isLockedModal.modal) {
+                            isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
+                        }
                         setTimeout(function () {
                             onPatchSent(true);
                         }, 50);
