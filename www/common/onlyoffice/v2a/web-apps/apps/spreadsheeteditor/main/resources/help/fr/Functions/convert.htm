@@ -1,0 +1,698 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fonction CONVERT</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+            </div>
+            <h1>Fonction CONVERT</h1>
+            <p>La fonction <b>CONVERT</b> est l'une des fonctions d'ingénierie. Elle est utilisée pour convertir un nombre d’une unité de mesure à une autre. Par exemple, la CONVERT peut traduire un tableau de distances en miles en un tableau de distances en kilomètres.</p>
+            <p>La syntaxe de la fonction <b>CONVERT</b> est :</p>
+            <p style="text-indent: 150px;"><b><em>CONVERT(nombre, de_unité, à_unité)</em></b></p>
+            <p><em>où</em></p>
+            <p style="text-indent: 50px;"><b><em>nombre</em></b> est un nombre à convertir.</p>
+            <p style="text-indent: 50px;"><b><em> de_unité</em></b> est l’unité de mesure initiale. Une chaine de caractères entre guillemets. Les valeurs possibles sont listées dans le tableau ci-dessous.</p>
+            <p style="text-indent: 50px;"><b><em>à_unité</em></b> est l’unité de mesure vers laquelle <b><em>nombre</em></b> devrait être converti. Une chaine de caractères entre guillemets. Les valeurs possibles sont listées dans le tableau ci-dessous.</p>
+            <p class="note"><b>Remarque:</b>  et  doivent être compatibles, c'est-à-dire qu'ils doivent appartenir au même type de mesure.</p>
+            <h3>Poids et masse</h3>
+            <table style="width: 40%">
+                <tr>
+                    <td width="50%"><b>Unité</b></td>
+                    <td width="50%"><b>Valeur du texte</b></td>
+                </tr>
+                <tr>
+                    <td>Gramme	</td>
+                    <td>"g"</td>
+                </tr>
+                <tr>
+                    <td>Slug</td>
+                    <td>"sg"</td>
+                </tr>
+                <tr>
+                    <td>Livre masse (avoirdupois)</td>
+                    <td>"lbm"</td>
+                </tr>
+                <tr>
+                    <td>U (unité de masse atomique)</td>
+                    <td>"u"</td>
+                </tr>
+                <tr>
+                    <td>Once (avoirdupois)</td>
+                    <td>"ozm"</td>
+                </tr>
+                <tr>
+                    <td>Grain</td>
+                    <td>"grain"</td>
+                </tr>
+                <tr>
+                    <td>Poids de cent livres (U.S.)</td>
+                    <td>"cwt" ou "shweight"</td>
+                </tr>
+                <tr>
+                    <td>Poids de cent-douze livres</td>
+                    <td>"uk_cwt" ou "lcwt" ("hweight")</td>
+                </tr>
+                <tr>
+                    <td>Stone</td>
+                    <td>"stone"</td>
+                </tr>
+                <tr>
+                    <td>Tonne</td>
+                    <td>"ton"</td>
+                </tr>
+                <tr>
+                    <td>Tonne britannique</td>
+                    <td>"uk_ton" ou "LTON" ("brton")</td>
+                </tr>
+            </table>
+            <h3>Distance</h3>
+            <table style="width: 40%">
+                <tr>
+                    <td width="50%"><b>Unité</b></td>
+                    <td width="50%"><b>Valeur du texte</b></td>
+                </tr>
+                <tr>
+                    <td>Mètre</td>
+                    <td>"m"</td>
+                </tr>
+                <tr>
+                    <td>Mille</td>
+                    <td>"mi"</td>
+                </tr>
+                <tr>
+                    <td>Mille nautique</td>
+                    <td>"mn"</td>
+                </tr>
+                <tr>
+                    <td>Pouce</td>
+                    <td>"in"</td>
+                </tr>
+                <tr>
+                    <td>Pied</td>
+                    <td>"ft"</td>
+                </tr>
+                <tr>
+                    <td>Yard (ou Verge)</td>
+                    <td>"yd"</td>
+                </tr>
+                <tr>
+                    <td>Angstrom</td>
+                    <td>"ang"</td>
+                </tr>
+                <tr>
+                    <td>Ell</td>
+                    <td>"ell"</td>
+                </tr>
+                <tr>
+                    <td>Année lumière</td>
+                    <td>"ly"</td>
+                </tr>
+                <tr>
+                    <td>Parsec</td>
+                    <td>"parsec" ou "pc"</td>
+                </tr>
+                <tr>
+                    <td>Pica (1/72 po)</td>
+                    <td>"Picapt" ou "Pica"</td>
+                </tr>
+                <tr>
+                    <td>Pica (1/6 po)</td>
+                    <td>"pica"</td>
+                </tr>
+                <tr>
+                    <td>Mille U.S (mille légal)</td>
+                    <td>"survey_mi"</td>
+                </tr>
+            </table>
+            <h3>Temps</h3>
+            <table style="width: 40%">
+                <tr>
+                    <td width="50%"><b>Unité</b></td>
+                    <td width="50%"><b>Valeur du texte</b></td>
+                </tr>
+                <tr>
+                    <td>Année</td>
+                    <td>"aa"</td>
+                </tr>
+                <tr>
+                    <td>Jour</td>
+                    <td>"jour" ou "j"</td>
+                </tr>
+                <tr>
+                    <td>Heure</td>
+                    <td>"h"</td>
+                </tr>
+                <tr>
+                    <td>Minute</td>
+                    <td>"mn" ou "min"</td>
+                </tr>
+                <tr>
+                    <td>Seconde</td>
+                    <td>"sec" ou "s"</td>
+                </tr>
+            </table>
+            <h3>Pression</h3>
+            <table style="width: 40%">
+                <tr>
+                    <td width="50%"><b>Unité</b></td>
+                    <td width="50%"><b>Valeur du texte</b></td>
+                </tr>
+                <tr>
+                    <td>Pascal</td>
+                    <td>"Pa" (ou "p")</td>
+                </tr>
+                <tr>
+                    <td>Atmosphère</td>
+                    <td>"atm" (ou "at")</td>
+                </tr>
+                <tr>
+                    <td>mm de mercure</td>
+                    <td>"mmHg"</td>
+                </tr>
+                <tr>
+                    <td>PSI</td>
+                    <td>"psi"</td>
+                </tr>
+                <tr>
+                    <td>Torr</td>
+                    <td>"Torr"</td>
+                </tr>
+            </table>
+            <h3>Force</h3>
+            <table style="width: 40%">
+                <tr>
+                    <td width="50%"><b>Unité</b></td>
+                    <td width="50%"><b>Valeur du texte</b></td>
+                </tr>
+                <tr>
+                    <td>Newton</td>
+                    <td>"N"</td>
+                </tr>
+                <tr>
+                    <td>Dyne</td>
+                    <td>"dyn" (ou "dy")</td>
+                </tr>
+                <tr>
+                    <td>Livre force</td>
+                    <td>"lbf"</td>
+                </tr>
+                <tr>
+                    <td>Livre</td>
+                    <td>"livre"</td>
+                </tr>
+            </table>
+            <h3>Énergie</h3>
+            <table style="width: 40%">
+                <tr>
+                    <td width="50%"><b>Unité</b></td>
+                    <td width="50%"><b>Valeur du texte</b></td>
+                </tr>
+                <tr>
+                    <td>Joule</td>
+                    <td>"J"</td>
+                </tr>
+                <tr>
+                    <td>Erg</td>
+                    <td>"e"</td>
+                </tr>
+                <tr>
+                    <td>Calorie (4,183991 J)</td>
+                    <td>"c"</td>
+                </tr>
+                <tr>
+                    <td>Calorie (4,186795 J)</td>
+                    <td>"cal"</td>
+                </tr>
+                <tr>
+                    <td>Électron volt</td>
+                    <td>"eV" (ou "ev")</td>
+                </tr>
+                <tr>
+                    <td>Cheval-heure</td>
+                    <td>"HPh" (ou "hh")</td>
+                </tr>
+                <tr>
+                    <td>Watt-heure</td>
+                    <td>"Wh" (ou "wh")</td>
+                </tr>
+                <tr>
+                    <td>Livre pied</td>
+                    <td>"lpd"</td>
+                </tr>
+                <tr>
+                    <td>British Thermal Unit</td>
+                    <td>"BTU" (ou "btu")</td>
+                </tr>
+            </table>
+            <h3>Puisssance</h3>
+            <table style="width: 40%">
+                <tr>
+                    <td width="50%"><b>Unité</b></td>
+                    <td width="50%"><b>Valeur du texte</b></td>
+                </tr>
+                <tr>
+                    <td>Chevaux-vapeur</td>
+                    <td>"HP" (ou "h")</td>
+                </tr>
+                <tr>
+                    <td>Pferdestärke</td>
+                    <td>"PS"</td>
+                </tr>
+                <tr>
+                    <td>Watt</td>
+                    <td>"W" (ou "w")</td>
+                </tr>
+            </table>
+            <h3>Magnétisme</h3>
+            <table style="width: 40%">
+                <tr>
+                    <td width="50%"><b>Unité</b></td>
+                    <td width="50%"><b>Valeur du texte</b></td>
+                </tr>
+                <tr>
+                    <td>Tesla</td>
+                    <td>"T"</td>
+                </tr>
+                <tr>
+                    <td>Gauss</td>
+                    <td>"ga"</td>
+                </tr>
+            </table>
+            <h3>Température</h3>
+            <table style="width: 40%">
+                <tr>
+                    <td width="50%"><b>Unité</b></td>
+                    <td width="50%"><b>Valeur du texte</b></td>
+                </tr>
+                <tr>
+                    <td>Degré Celsius</td>
+                    <td>"C" (ou "cel")</td>
+                </tr>
+                <tr>
+                    <td>Degré Fahrenheit</td>
+                    <td>"F" (ou "fah")</td>
+                </tr>
+                <tr>
+                    <td>Kelvin</td>
+                    <td>"K" (ou "kel")</td>
+                </tr>
+                <tr>
+                    <td>Degrés Rankine</td>
+                    <td>"Rank"</td>
+                </tr>
+                <tr>
+                    <td>Degrés Réaumur</td>
+                    <td>"Reau"</td>
+                </tr>
+            </table>
+            <h3> Volume (ou mesure liquide ) </h3>
+            <table style="width: 40%">
+                <tr>
+                    <td width="50%"><b>Unité</b></td>
+                    <td width="50%"><b>Valeur du texte</b></td>
+                </tr>
+                <tr>
+                    <td>Cuillère à thé</td>
+                    <td>"clt"</td>
+                </tr>
+                <tr>
+                    <td>Cuillère à thé moderne</td>
+                    <td>"cltm"</td>
+                </tr>
+                <tr>
+                    <td>Cuillère à soupe</td>
+                    <td>"cls"</td>
+                </tr>
+                <tr>
+                    <td>Once fluide</td>
+                    <td>"oz"</td>
+                </tr>
+                <tr>
+                    <td>Tasse</td>
+                    <td>"Ta"</td>
+                </tr>
+                <tr>
+                    <td>Pinte U.S.A.</td>
+                    <td>"pt" (ou "us_pt")</td>
+                </tr>
+                <tr>
+                    <td>Pinte R.U.</td>
+                    <td>"pt-ru"</td>
+                </tr>
+                <tr>
+                    <td>Quart</td>
+                    <td>"qt"</td>
+                </tr>
+                <tr>
+                    <td>Litre britannique (quart)</td>
+                    <td>"uk_qt"</td>
+                </tr>
+                <tr>
+                    <td>Gallon</td>
+                    <td>"gal"</td>
+                </tr>
+                <tr>
+                    <td>Gallon britannique</td>
+                    <td>"uk_gal"</td>
+                </tr>
+                <tr>
+                    <td>Litre</td>
+                    <td>"l" ou "L" ("lt")</td>
+                </tr>
+                <tr>
+                    <td>Angstrom cubique</td>
+                    <td>"ang3" ou "ang^3"</td>
+                </tr>
+                <tr>
+                    <td>Baril de pétrole U.S.</td>
+                    <td>"baril"</td>
+                </tr>
+                <tr>
+                    <td>Boisseau U.S.</td>
+                    <td>"boisseau"</td>
+                </tr>
+                <tr>
+                    <td>Pieds cubes</td>
+                    <td>"ft3" ou "ft^3"</td>
+                </tr>
+                <tr>
+                    <td>pouce cube</td>
+                    <td>"in3" ou "in^3"</td>
+                </tr>
+                <tr>
+                    <td>Année lumière cube</td>
+                    <td>"ly3" ou "ly^3"</td>
+                </tr>
+                <tr>
+                    <td>Mètre cube</td>
+                    <td>"m3" ou "m^3"</td>
+                </tr>
+                <tr>
+                    <td>Mille cube</td>
+                    <td>"mi3" ou "mi^3"</td>
+                </tr>
+                <tr>
+                    <td>Yard cube</td>
+                    <td>"yd3" ou "yd^3"</td>
+                </tr>
+                <tr>
+                    <td>Mille nautique cube</td>
+                    <td>"Nmi3" ou "Nmi^3"</td>
+                </tr>
+                <tr>
+                    <td>Pica cube</td>
+                    <td>"Picapt3", "Picapt^3", "Pica3" ou "Pica^3"</td>
+                </tr>
+                <tr>
+                    <td>Tonneau de jauge brut</td>
+                    <td>"GRT" ("regton")</td>
+                </tr>
+                <tr>
+                    <td>Tonne de mesure (tonne de fret)</td>
+                    <td>"MTON"</td>
+                </tr>
+            </table>
+            <h3>Aire</h3>
+            <table style="width: 40%">
+                <tr>
+                    <td width="50%"><b>Unité</b></td>
+                    <td width="50%"><b>Valeur du texte</b></td>
+                </tr>
+                <tr>
+                    <td>Acre international</td>
+                    <td>"uk_acre"</td>
+                </tr>
+                <tr>
+                    <td>Acre légal U.S.</td>
+                    <td>"us_acre"</td>
+                </tr>
+                <tr>
+                    <td>Angstrom carré</td>
+                    <td>"ang2" ou “ang^2"</td>
+                </tr>
+                <tr>
+                    <td>Are</td>
+                    <td>"ar"</td>
+                </tr>
+                <tr>
+                    <td>Pieds carrés</td>
+                    <td>"ft2" ou "ft^2</td>
+                </tr>
+                <tr>
+                    <td>Hectare</td>
+                    <td>"ha"</td>
+                </tr>
+                <tr>
+                    <td>Pouces carrés</td>
+                    <td>"in2" ou "in^2"</td>
+                </tr>
+                <tr>
+                    <td>Année lumière cube</td>
+                    <td>"ly2" ou "ly^2"</td>
+                </tr>
+                <tr>
+                    <td>Mètres carrés</td>
+                    <td>"m2" ou "m^2"</td>
+                </tr>
+                <tr>
+                    <td>Morgen</td>
+                    <td>"Morgen"</td>
+                </tr>
+                <tr>
+                    <td>Milles carrés</td>
+                    <td>"mi2" ou "mi^2</td>
+                </tr>
+                <tr>
+                    <td>Milles nautiques carrés</td>
+                    <td>"Nmi2" ou "Nmi^2</td>
+                </tr>
+                <tr>
+                    <td>Pica carrés</td>
+                    <td>"Picapt2", "Pica2", "Pica^2" ou "Picapt^2"</td>
+                </tr>
+                <tr>
+                    <td>Yards carrés</td>
+                    <td>"yd2" ou "yd^2"</td>
+                </tr>
+            </table>
+            <h3>Information</h3>
+            <table style="width: 40%">
+                <tr>
+                    <td width="50%"><b>Unité</b></td>
+                    <td width="50%"><b>Valeur du texte</b></td>
+                </tr>
+                <tr>
+                    <td>Bit</td>
+                    <td>"bit"</td>
+                </tr>
+                <tr>
+                    <td>Byte (Octet)</td>
+                    <td>"octet"</td>
+                </tr>
+            </table>
+            <h3>Vitesse</h3>
+            <table style="width: 40%">
+                <tr>
+                    <td width="50%"><b>Unité</b></td>
+                    <td width="50%"><b>Valeur du texte</b></td>
+                </tr>
+                <tr>
+                    <td>Nœud marin</td>
+                    <td>"admkn"</td>
+                </tr>
+                <tr>
+                    <td>Nœud</td>
+                    <td>"kn"</td>
+                </tr>
+                <tr>
+                    <td>Mètres par heure</td>
+                    <td>"m/h" ou "m/hr"</td>
+                </tr>
+                <tr>
+                    <td>Mètres par seconde</td>
+                    <td>"m/s" ou "m/sec"</td>
+                </tr>
+                <tr>
+                    <td>Milles par heure</td>
+                    <td>"mph"</td>
+                </tr>
+            </table>
+            <p>Les préfixes d’unités abrégés suivants peuvent être ajoutés à n’importe quel argument <b><em>de_unité</em></b> ou , par exemple en ajoutant le préfixe "k" devant l’unité "g" on obtient la valeur "kg" qui symbolise les kilogrammes.</p>
+            <h3>Préfixes</h3>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Préfixe</b></td>
+                    <td><b>Multiplicateur</b></td>
+                    <td><b>Valeur du texte</b></td>
+                </tr>
+                <tr>
+                    <td>yotta</td>
+                    <td>1E+24</td>
+                    <td>"A"</td>
+                </tr>
+                <tr>
+                    <td>zetta</td>
+                    <td>1E+21</td>
+                    <td>"Z"</td>
+                </tr>
+                <tr>
+                    <td>exa</td>
+                    <td>1E+18</td>
+                    <td>"E"</td>
+                </tr>
+                <tr>
+                    <td>peta</td>
+                    <td>1E+15</td>
+                    <td>"P"</td>
+                </tr>
+                <tr>
+                    <td>tera</td>
+                    <td>1E+12</td>
+                    <td>"T"</td>
+                </tr>
+                <tr>
+                    <td>giga</td>
+                    <td>1E+09</td>
+                    <td>"S"</td>
+                </tr>
+                <tr>
+                    <td>mega</td>
+                    <td>1E+06</td>
+                    <td>"M"</td>
+                </tr>
+                <tr>
+                    <td>kilo</td>
+                    <td>1E+03</td>
+                    <td>"k"</td>
+                </tr>
+                <tr>
+                    <td>hecto</td>
+                    <td>1E+02</td>
+                    <td>"h"</td>
+                </tr>
+                <tr>
+                    <td>deca</td>
+                    <td>1E+01</td>
+                    <td>"da" ou "e"</td>
+                </tr>
+                <tr>
+                    <td>deci</td>
+                    <td>1E-01</td>
+                    <td>"d"</td>
+                </tr>
+                <tr>
+                    <td>centi</td>
+                    <td>1E-02</td>
+                    <td>"c"</td>
+                </tr>
+                <tr>
+                    <td>milli</td>
+                    <td>1E-03</td>
+                    <td>"m"</td>
+                </tr>
+                <tr>
+                    <td>micro</td>
+                    <td>1E-06</td>
+                    <td>"u"</td>
+                </tr>
+                <tr>
+                    <td>nano</td>
+                    <td>1E-09</td>
+                    <td>"n"</td>
+                </tr>
+                <tr>
+                    <td>pico</td>
+                    <td>1E-12</td>
+                    <td>"p"</td>
+                </tr>
+                <tr>
+                    <td>femto</td>
+                    <td>1E-15</td>
+                    <td>"f"</td>
+                </tr>
+                <tr>
+                    <td>atto</td>
+                    <td>1E-18</td>
+                    <td>"a"</td>
+                </tr>
+                <tr>
+                    <td>zepto</td>
+                    <td>1E-21</td>
+                    <td>"z"</td>
+                </tr>
+                <tr>
+                    <td>yocto</td>
+                    <td>1E-24</td>
+                    <td>"y"</td>
+                </tr>
+            </table>
+            <h3>Préfixes binaires</h3>
+            <table style="width: 40%">
+                <tr>
+                    <td><b>Préfixe</b></td>
+                    <td><b>Valeur du préfixe</b></td>
+                    <td><b>Valeur du texte</b></td>
+                </tr>
+                <tr>
+                    <td>yobi</td>
+                    <td>2^80 = 1 208 925 819 614 629 174 706 176</td>
+                    <td>"Yi"</td>
+                </tr>
+                <tr>
+                    <td>zebi</td>
+                    <td>2^70 = 1 180 591 620 717 411 303 424</td>
+                    <td>"Zi"</td>
+                </tr>
+                <tr>
+                    <td>exbi</td>
+                    <td>2^60 = 1 152 921 504 606 846 976</td>
+                    <td>"Ei"</td>
+                </tr>
+                <tr>
+                    <td>pebi</td>
+                    <td>2^50 = 1 125 899 906 842 624</td>
+                    <td>"Pi"</td>
+                </tr>
+                <tr>
+                    <td>tebi</td>
+                    <td>2^40 = 1 099 511 627 776</td>
+                    <td>"Ti"</td>
+                </tr>
+                <tr>
+                    <td>gibi</td>
+                    <td>2^30 = 1 073 741 824</td>
+                    <td>"Gi"</td>
+                </tr>
+                <tr>
+                    <td>mebi</td>
+                    <td>2^20 = 1 048 576</td>
+                    <td>"Mi"</td>
+                </tr>
+                <tr>
+                    <td>kibi</td>
+                    <td>2^10 = 1024</td>
+                    <td>"ki"</td>
+                </tr>
+            </table>
+            <p>Pour appliquer la fonction <b>CONVERT</b>,</p>
+            <ol>
+                <li>sélectionnez la cellule où vous souhaitez afficher le résultat,</li>
+                <li>cliquez sur l'icône <b>Insérer une fonction</b> <img alt="Icône Insérer une fonction" src="../images/insertfunction.png" /> située sur la barre d'outils supérieure, <br />ou cliquez avec le bouton droit sur la cellule sélectionnée et sélectionnez l'option <b>Insérer une fonction</b> depuis le menu, <br />ou cliquez sur l'icône <img alt="Icône Fonction" src="../images/function.png" /> située sur la barre de formule,</li>
+                <li>sélectionnez le groupe de fonctions <b>Ingénierie</b> depuis la liste,</li>
+                <li>cliquez sur la fonction <b>CONVERT</b>,</li>
+                <li>insérez les arguments nécessaires en les séparant par des virgules,</li>
+                <li>appuyez sur la touche <b>Entrée</b>.</li>
+            </ol>
+            <p>Le résultat sera affiché dans la cellule sélectionnée.</p>
+            <p style="text-indent: 150px;"><img alt="Fonction CONVERT" src="../images/convert.png" /></p>
+        </div>
+	</body>
+</html>

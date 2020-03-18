@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Gérer des diapositives</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add new blank slides, duplicate, move or delete them" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Gérer des diapositives</h1>
+			<p>Par défaut, une présentation nouvellement créée a une diapositive de titre vide. Vous pouvez créer de nouvelles diapositives, copier une diapositive pour pouvoir la coller à un autre endroit de la liste, dupliquer des diapositives, déplacer des diapositives pour modifier leur ordre dans la liste des diapositives, supprimer des diapositives inutiles, marquer certaines diapositives comme masquées.</p>
+			<p><b>Pour créer une nouvelle diapositive <em>Titre et contenu</em> :</b></p>
+			<ul>
+				<li>cliquez sur l'icône <img alt="icône Ajouter diapositive" src="../images/addslide.png" /> <b>Ajouter une diapositive</b> dans l'onglet <b>Accueil</b> ou <b>Insertion</b> de la barre d'outils supérieure, ou</li>
+				<li>cliquez avec le bouton droit sur une diapositive de la liste et sélectionnez l'option <b>Nouvelle diapositive</b> dans le menu contextuel, ou</li>
+                <li>appuyez sur la combinaison de touches <b>Ctrl+M</b>.</li>
+			</ul>
+            <p><b>Pour créer une nouvelle diapositive avec une mise en page différente :</b></p>
+            <ol>
+                <li>cliquez sur la flèche à côté de l'icône <img alt="icône Ajouter diapositive" src="../images/addslide.png" /> <b>Ajouter une diapositive</b> dans l'onglet <b>Accueil</b> ou <b>Insertion</b> de la barre d'outils supérieure,</li>
+                <li>sélectionnez une diapositive avec la mise en page nécessaire de la liste.<p class="note"><b>Remarque </b>: vous pouvez modifier la mise en page de la diapositive ajoutée à tout moment. Pour en savoir plus consultez le chapitre <a href="../UsageInstructions/SetSlideParameters.htm#changelayout" onclick="onhyperlinkclick(this)">Définir les paramètres de la diapositive</a>.</p>
+                </li>
+            </ol>
+			<p>Une nouvelle diapositive sera insérée après la dispositive sélectionnée dans la liste des diapositives existantes située à gauche.</p>
+			<p><b>Pour dupliquer une diapositive :</b></p>
+			<ol>
+				<li>cliquez avec le bouton droit sur une diapositive nécessaire dans la liste des diapositives existantes située à gauche,</li>
+				<li>sélectionnez l'option <b>Dupliquer la diapositive</b> du menu contextuel.</li>
+			</ol>
+			<p>La diapositive dupliquée sera insérée après la dispositive sélectionnée dans la liste des diapositives.</p>
+			<p><b>Pour copier une diapositive :</b></p>
+			<ol>
+				<li>sélectionnez la diapositive à copier dans la liste des diapositives existantes située à gauche,</li>
+				<li>appuyez sur la combinaison de touches <b>Ctrl+C</b>,</li>
+				<li>sélectionnez la diapositive après laquelle vous voulez insérer la diapositive copiée,</li>
+				<li>appuyez sur la combinaison de touches <b>Ctrl+V</b>.</li>
+			</ol>
+			<p><b>Pour déplacer une diapositive existante :</b></p>
+			<ol>
+				<li>cliquez avec le bouton gauche sur la diapositive nécessaire dans la liste des diapositives existantes située à guache,</li>
+				<li>sans relâcher le bouton de la souris, faites-la glisser à l'endroit nécessaire dans la liste (une ligne horizontale indique un nouvel emplacement).</li>
+			</ol>
+			<p><b>Pour supprimer une diapositive inutile :</b></p>
+			<ol>
+				<li>cliquez avec le bouton droit sur la diapositive à supprimer dans la liste des diapositives existantes située à guache,</li>
+				<li>sélectionnez l'option <b>Supprimer la diapositive</b> du menu contextuel.</li>
+			</ol>
+            <p><b>Pour marquer une diapositive comme masquée :</b></p>
+            <ol>
+                <li>cliquez avec le bouton droit sur la diapositive à masquer dans la liste des diapositives existantes située à gauche,</li>
+                <li>sélectionnez l'option <b>Masquer la diapositive</b> du menu contextuel.</li>
+            </ol>
+            <p>Le numéro qui correspond à la diapositive cachée dans la liste à gauche sera barré. Pour afficher la diapositive cachée comme une diapositive normale dans la liste des diapositives, cliquez à nouveau sur l'option <b>Masquer la diapositive</b>.</p>
+            <p><img alt="Diapositive masquée" src="../images/hidden_slide.png" /></p>
+            <p class="note"><b>Remarque</b> : utilisez cette option si vous ne souhaitez pas montrer certaines diapositives à votre audience, mais souhaitez pouvoir y accéder si nécessaire. Lorsque vous lancez le diaporama en <a href="../UsageInstructions/PreviewPresentation.htm#presenter" onclick="onhyperlinkclick(this)">mode <b>Présentateur</b></a>, vous pouvez voir toutes les diapositives existantes dans la liste à gauche, tandis que les numéros de diapositives masquées sont barrés. Si vous souhaitez afficher une diapositive masquée aux autres, il suffit de cliquer dessus dans la liste à gauche - la diapositive s'affichera.</p>
+            <p><b>Pour sélectionner toutes les diapositives existantes à la fois :</b></p>
+			<ol>
+				<li>cliquez avec le bouton droit sur une diapositive dans la liste des diapositives existantes située à guache,</li>
+				<li>sélectionnez l'option <b>Sélectionner tout</b> du menu contextuel.</li>
+			</ol>
+			<p><b>Pour sélectionner plusieurs diapositives :</b></p>
+			<ol>
+				<li>maintenez la touche <b>Ctrl</b> enfoncée,</li>
+				<li>sélectionnez les diapositives nécessaires dans la liste des diapositives existantes située à guache en la cliquant avec le bouton gauche de la souris.</li>
+			</ol>
+            <p class="note"><b>Remarque</b> : toutes les combinaisons de touches pouvant être utilisées pour gérer les diapositives sont répertoriées sur la page <a href="../HelpfulHints/KeyboardShortcuts.htm#manageslides" onclick="onhyperlinkclick(this)">Raccourcis clavier</a>.</p>
+		</div>
+	</body>
+</html>

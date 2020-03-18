@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Edition collaborative des présentations</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Tips on collaborative editing" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Edition collaborative des présentations</h1>
+			<p><b>Presentation Editor</b> vous offre la possibilité de travailler sur votre présentation simultanément avec d'autres utilisateurs. Cette fonction inclut :</p>
+			<ul>
+				<li class="onlineDocumentFeatures">accès simultané à la présentation éditée par plusieurs utilisateurs</li>
+				<li class="onlineDocumentFeatures">indication visuelle des objets qui sont en train d'être édités par d'autres utilisateurs</li>
+				<li class="onlineDocumentFeatures">affichage des changements en temps réel ou synchronisation des changements en un seul clic</li>
+				<li class="onlineDocumentFeatures">chat pour partager des idées concernant certaines parties de la présentation</li>
+				<li>commentaires avec la description d'une tâche ou d'un problème à résoudre</li>
+			</ul>
+            <div class="onlineDocumentFeatures">
+                <h3>Edition collaborative</h3>
+                <p><b>Presentation Editor</b> permet de sélectionner l'un des deux modes de coédition disponibles. <b>Rapide</b> est utilisé par défaut et affiche les modifications effectuées par d'autres utilisateurs en temps réel. <b>Strict</b> est sélectionné pour masquer les modifications des autres utilisateurs jusqu'à ce que vous cliquiez sur l'icône <b>Enregistrer</b> <img alt="Icône Enregistrer" src="../images/saveupdate.png" /> pour enregistrer vos propres modifications et accepter les modifications apportées par d'autres utilisateurs. Le mode peut être sélectionné dans les <a href="../HelpfulHints/AdvancedSettings.htm" onclick="onhyperlinkclick(this)">Paramètres avancés</a>. Il est également possible de choisir le mode voulu à l'aide de l'icône <img alt="Icône Mode de co-édition" src="../images/coeditingmode.png" /> <b>Mode de coédition</b> dans l'onglet <b>Collaboration</b> de la barre d'outils supérieure:</p>
+                <p><img alt="Menu Mode de co-édition" src="../images/coeditingmodemenu.png" /></p>
+                <p>Lorsqu'une présentation est en cours de modification par plusieurs utilisateurs simultanément dans le mode <b>Strict</b>, les objets modifiés (formes automatiques, objets textuels, tableaux, images, graphiques) sont marqués avec des lignes pointillées de couleurs différentes. L'objet que vous modifiez actuellement est entouré d'une ligne pointillée verte. Les lignes pointillées rouges indiquent les objets en train d'être modifiés par d'autres utilisateurs. Pour voir qui est en train d'éditer le fichier au présent, placez le curseur de la souris sur cette icône - les noms des utilisateurs seront affichés dans la fenêtre contextuelle. Le mode <b>Rapide</b> affichera les actions et les noms des co-éditeurs tandis qu'ils modifient le texte.</p>
+                <p>Le nombre d'utilisateurs qui travaillent sur le document actuel est spécifié sur le côté droit de l'en-tête de l'éditeur - <img alt="Icône Nombre d'utilisateurs" src="../images/usersnumber.png" />. S'il y a trop d'utilisateurs, cliquez sur cette icône pour ouvrir le panneau <b>Chat</b> avec la liste complète affichée.</p>
+                <p>Quand aucun utilisateur ne consulte ou ne modifie le fichier, l'icône dans l'en-tête de l'éditeur aura cette apparence <img alt="Icône Gérer les droits d'accès au document" src="../images/access_rights.png" /> et vous permettra de gérer les utilisateurs qui ont accès au fichier depuis le document: inviter de nouveaux utilisateurs en leur donnant un accès complet ou en lecture seule ou refuser à certains utilisateurs des droits d'accès au fichier. Cliquez sur cette icône pour gérer l'accès au fichier ; cela peut être fait aussi bien lorsqu'il n'y a pas d'autres utilisateurs qui voient ou co-éditent le document pour le moment que quand il y a d'autres utilisateurs. L'icône ressemble à ceci <img alt="Icône Nombre d'utilisateurs" src="../images/usersnumber.png" />. Il est également possible de définir des droits d'accès à l'aide de l'icône <img alt="Icône Partage" src="../images/sharingicon.png" /> <b>Partage</b> dans l'onglet <b>Collaboration</b> de la barre d'outils supérieure.</p>
+                <p>Dès que l'un des utilisateurs enregistre ses modifications en cliquant sur l'icône <img alt="Icône Enregistrer" src="../images/savewhilecoediting.png" />, les autres verront une note dans la barre d'état indiquant qu'il y a des mises à jour. Pour enregistrer les changements effectués et récupérer les mises à jour de vos co-éditeurs cliquez sur l'icône <img alt="Icône Enregistrer" src="../images/saveupdate.png" /> dans le coin supérieur gauche de la barre supérieure. Les mises à jour seront marquées pour vous aider à controller ce qui a été exactement modifié.</p>
+                <h3>Chat</h3>
+                <p>Vous pouvez utiliser cet outil pour coordonner en temps réel le processus de co-édition, par exemple, pour décider avec vos collaborateurs de qui fait quoi, quel paragraphe vous allez éditer maintenant, etc.</p>
+                <p>Les messages de discussion sont stockés pendant une session seulement. Pour discuter du contenu du document, il est préférable d'utiliser les commentaires qui sont stockés jusqu'à ce que vous décidiez de les supprimer.</p>
+                <p>Pour accéder à Chat et envoyer un message à d'autres utilisateurs :</p>
+                <ol>
+                    <li>cliquez sur l'icône <img alt="Chat" src="../images/chaticon.png" /> dans la barre latérale gauche ou <br /> passez à l'onglet <b>Collaboration</b> de la barre d'outils supérieure et cliquez sur le bouton <img alt="Chat" src="../images/chat_toptoolbar.png" /> <b>Chat</b>,</li>
+                    <li>saisissez le texte dans le champ correspondant,</li>
+                    <li>cliquez sur le bouton <b>Envoyer</b>.</li>
+                </ol>
+                <p>Tous les messages envoyés par les utilisateurs seront affichés sur le panneau à gauche. S'il y a de nouveaux messages à lire, l'icône chat sera affichée de la manière suivante - <img alt="Chat" src="../images/chaticon_new.png" />.</p>
+                <p>Pour fermer le panneau avec des messages de discussion, cliquez à nouveau sur l'icône <img alt="Chat" src="../images/chaticon.png" /> dans la barre latérale gauche ou sur le bouton <img alt="Chat" src="../images/chat_toptoolbar.png" /> <b>Chat</b> dans la barre d'outils supérieure.</p>
+            </div>
+            <h3>Commentaires</h3>
+                <p>Pour laisser un commentaire à un certain objet (zone de texte, forme etc.):</p>
+                <ol>
+                    <li>sélectionnez l'objet que vous voulez commenter,</li>
+                    <li>passez à l'onglet <b>Insertion</b> ou <b>Collaboration</b> de la barre d'outils supérieure et cliquez sur le bouton <img alt="Commentaires" src="../images/comment_toptoolbar.png" /> <b>Commentaire</b> ou<br /> cliquez avec le bouton droit sur l'objet sélectionné et sélectionnez l'option <b>Ajouter un commentaire</b> dans le menu,<br /></li>
+                    <li>saisissez le texte nécessaire,</li>
+                    <li>cliquez sur le bouton <b>Ajouter commentaire/Ajouter</b>.</li>
+                </ol>
+                <p>L'objet que vous commentez sera marqué par l'icône <img alt="Objet commenté" src="../images/added_comment_icon.png" />. Pour lire le commentaire, il suffit de cliquer sur cette icône.</p>
+                <p>Pour ajouter un commentaire à une diapositive donnée, sélectionnez la diapositive et utilisez le bouton <img alt="Commentaires" src="../images/comment_toptoolbar.png" /> <b>Commentaire</b> dans l'onglet <b>Insertion</b> ou <b>Collaboration</b> de la barre d'outils supérieure. Le commentaire ajouté sera affiché dans le coin supérieur gauche de la diapositive.</p>
+                <p>Pour créer un commentaire de niveau présentation qui n'est pas lié à un objet ou une diapositive spécifique, cliquez sur l'icône <img alt="Icône Commentaires" src="../images/commentsicon.png" /> dans la barre latérale gauche pour ouvrir le panneau <b>Commentaires</b> et utilisez le lien <b>Ajouter un commentaire au document</b>. Les commentaires au niveau de la présentation peuvent être consultés dans le panneau <b>Commentaires</b>. Les commentaires relatifs aux objets et aux diapositives y sont également disponibles.</p>
+                <p>Tout autre utilisateur peut répondre au commentaire ajouté en posant une question ou en faisant référance au travail fait. Pour le faire il suffit de cliquer sur le lien <b>Ajouter une réponse</b> situé au-dessus du commentaire.</p>
+                <p>Pour gérer les commentaires ajoutés, procédez de la manière suivante :</p>
+                <ul>
+                    <li>pour les modifier, cliquez sur l'icône <img alt="Editer" src="../images/editcommenticon.png" />,</li>
+                    <li>pour les supprimer, cliquez sur l'icône <img alt="Supprimer" src="../images/deletecommenticon.png" />,</li>
+                    <li>fermez la discussion en cliquant sur l'icône <img alt="Icône Résoudre" src="../images/resolveicon.png" /> si la tâche ou le problème décrit dans votre commentaire est résolu, après quoi la discussion ouverte par votre commentaire reçoit le statut résolu. Pour l'ouvrir à nouveau, cliquez sur l'icône <img alt="Icône Ouvrir à nouveau" src="../images/resolvedicon.png" />.</li>
+                </ul>
+                <p>Les nouveaux commentaires ajoutés par d'autres utilisateurs ne seront visibles qu'après un clic sur l'icône <img alt="Icône Enregistrer" src="../images/saveupdate.png" /> dans le coin gauche de la barre supérieure.</p>
+                <p>Pour fermer le panneau avec les commentaires cliquez sur l'icône <img alt="Icône Commentaires" src="../images/commentsicon.png" /> encore une fois.</p>
+            </div>
+	</body>
+</html>

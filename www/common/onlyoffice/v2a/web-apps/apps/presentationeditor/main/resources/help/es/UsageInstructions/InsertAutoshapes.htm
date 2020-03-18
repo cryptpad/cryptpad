@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Inserte y dé formato a autoformas</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add an autoshape to your presentation and adjust its properties." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Inserte y dé formato a autoformas</h1>
+            <h3>Inserte un autoforma</h3>
+			<p>Para <b>añadir</b> un autoforma a una diapositiva,</p>
+			<ol>
+				<li>en la lista de diapositivas a la izquierda, seleccione la diapositiva a la que usted quiere añadir una autoforma,</li>
+				<li>haga clic en el icono <img alt="Icono Forma" src="../images/insertautoshape.png" /> <b>Forma</b> en la pestaña de <b>Inicio</b> o <b>Insertar</b> en la barra de herramientas superior,</li>
+				<li>seleccione uno de los grupos de autoformas disponibles: Formas básicas, Formas de flecha, Matemáticas, Gráficos, Cintas y estrellas, Llamadas, Botones, Rectángulos, Líneas,</li>
+				<li>haga clic sobre la autoforma necesaria en el grupo seleccionado,</li>
+				<li>en el área de edición de diapositiva, coloque el cursor del ratón donde usted quiere insertar la autoforma,<p class="note"><b>Nota</b>: usted puede hacer clic en la autoforma y arrastrar esta para estirarla.</p>
+				</li>
+				<li>una vez que la autoforma se ha añadido, usted puede <a href="../UsageInstructions/ManipulateObjects.htm" onclick="onhyperlinkclick(this)">cambiar su tamaño, posición</a> y propiedades.<p class="note"><b>Nota</b>: si quiere añadir una leyenda en la autoforma, asegúrese de que la autoforma está seleccionada y empiece a introducir su texto. El texto introducido de tal modo forma la parte del autoforma (cuando usted mueva o gire la autoforma, el texto realiza las mismas acciones).</p>
+				</li>
+			</ol>
+			<hr />
+            <h3>Ajuste la configuración de autoforma</h3>
+			<p>Se pueden cambiar algunos parámetros de la autoforma usando la pestaña <b>Ajustes de forma</b> en la barra lateral derecha. Para activarla, haga clic en la autoforma y elija el icono <img alt="Icono Ajustes de forma" src="../images/shape_settings_icon.png" /> <b>Ajustes de forma</b>  a la derecha. Aquí usted puede cambiar los siguientes ajustes:</p>
+			<p><img class="floatleft"alt="Pestaña Ajustes de forma" src="../images/shapesettingstab.png" /></p>
+			<ul  style="margin-left: 280px;">
+			<li><b>Relleno</b> - utilice esta sección para seleccionar el relleno de la autoforma. Usted puede seleccionar las opciones siguientes:<ul>
+				<li><b>Color de relleno</b> - para especificar el color que usted quiere aplicar a la forma seleccionada.</li>
+				<li><b>Relleno degradado</b> - para rellenar la forma de dos colores que cambian de uno a otro de forma gradual.</li>
+				<li><b>Imagen o textura</b> - para usar una imagen o textura pre-definida como el fondo de la forma.</li>
+				<li><b>Patrón</b> - para rellenar la forma con un diseño de dos colores que está compuesto de elementos repetidos.</li>
+				<li><b>Sin relleno</b> - seleccione esta opción si no desea usar ningún relleno.</li>
+			</ul>
+			<p>Para obtener información detallada sobre estas opciones, por favor, consulte la sección <a href="../UsageInstructions/FillObjectsSelectColor.htm" onclick="onhyperlinkclick(this)">Rellene objetos y seleccione colores</a>.</p>
+			</li>
+			<li id="shapestroke"><b>Trazo</b> - use esta sección para cambiar el color, tipo o ancho del trazo del autoforma.<ul>
+    			<li>Para cambiar el <b>ancho</b> del trazo, seleccione una de las opciones disponibles en la lista desplegable de <b>Tamaño</b>. Las opciones disponibles son: 0.5 pt, 1 pt, 1.5 pt, 2.25 pt, 3 pt, 4.5 pt, 6 pt. O seleccione la opción <b>Sin líneas</b> si no quiere usar ningún trazo.</li>
+    			<li>Para cambiar el <b>color</b> del trazo, haga clic en el cuadro con color de debajo y <a href="../UsageInstructions/FillObjectsSelectColor.htm" onclick="onhyperlinkclick(this)">seleccione el color necesario</a>. Usted puede usar un <b>color de tema</b> seleccionado, un <b>color estándar</b> o elegir un <b>color personalizado</b>.</li>
+                <li>Para cambiar el <b>color</b> del trazo, seleccione la opción necesaria de la lista desplegable correspondiente (una línea sólida se aplicará de forma pre-determinada, la cual puede cambiar a una de las líneas discontinuas disponibles).</li>
+    			</ul>
+			</li>
+			</ul>
+			<hr />
+			<p>Para cambiar los <b>ajustes avanzados</b> de la autoforma, haga clic derecho en la forma y seleccione la opción <b>Ajustes avanzados de forma</b> en el menú contextual o haga clic izquierdo y haga clic en el enlace <b>Mostrar ajustes avanzados</b> en la barra derecha lateral. La ventana con propiedades formas se abrirá:</p>
+            <p><img alt="Propiedades de forma - pestaña de Tamaño" src="../images/shape_properties1.png" /></p>
+			<p>La pestaña <b>Tamaño</b> permite cambiar el <b>Ancho</b> y/o <b>Altura</b> de la autoforma. Si se hace clic en el botón <img alt="Icono Proporciones constantes" src="../images/constantproportions.png" /> <b>Proporciones constantes</b>  (en este caso se verá así <img alt="Icono Proporciones constantes activado" src="../images/constantproportionsactivated.png" />), se cambiarán el ancho y altura preservando la relación original de aspecto de forma.</p>
+            <p><img alt="Propiedades de forma - pestaña grosores y flechas" src="../images/shape_properties.png" /></p>
+			<p>La pestaña <b>Grosores y flechas</b> contiene los parámetros siguientes:</p>
+			<ul>
+				<li><b>Estilo de línea</b> - este grupo de opciones permite especificar los parámetros siguientes:<ul>
+				<li><b>Tipo de remate</b> - esta opción le permite establecer el estilo para el final de la línea, por lo que se aplica solo a las formas con contorno abierto, como líneas, polilíneas etc.:<ul>
+				    <li><b>Plano</b> - los extremos serán planos.</li>
+				    <li><b>Redondeado</b> - los extremos serán redondeados.</li>
+				    <li><b>Cuadrado</b> - los extremos serán cuadrados.</li>
+				    </ul>
+				</li>
+				<li><b>Tipo Combinado</b> - esta opción le permite establecer el estilo de intersección de dos líneas, por ejemplo, puede afectar a una polilínea o a esquinas de triángulo o contornos de triángulos:<ul>
+    				<li><b>Redondeado</b> - la esquina será redondeada.</li>
+    				<li><b>Biselado</b> - la esquina será sesgada.</li>
+    				<li><b>Ángulo</b> - la esquina será puntiaguda. Vale para ángulos agudos.</li>
+    				</ul>
+    				<p class="note"><b>Nota</b>: el efecto será más visible si usa un contorno con ancho amplio.</p>
+				</li>
+				</ul>
+				</li>
+				<li><b>Flechas</b> - esta sección está disponible si una forma del grupo de formas de <b>Líneas</b> se selecciona. Le permite ajustar la flecha <b>Empezar</b> y <b>Estilo Final</b> y <b>Tamaño</b> seleccionando la opción apropiada de las listas desplegables.</li>
+			</ul>
+            <p id="internalmargins"><img alt="Propiedades de forma - pestaña relleno de texto" src="../images/shape_properties3.png" /></p>
+			<p>La pestaña <b>Relleno de texto</b> permite cambiar los márgenes internos <b>superiores</b>, <b>inferiores</b>, <b>izquierdos</b> y <b>derechos</b> de la autoforma (es decir, la distancia entre el texto y los bordes del autoforma dentro del autoforma).</p>
+            <p class="note"><b>Nota</b>: esta pestaña está disponible solo si se añade texto dentro de la autoforma, si no, la pestaña está desactivada.</p>
+            <p id ="columns"><img alt="Propiedades de forma - pestaña Columnas" src="../images/shape_properties2.png" /></p>
+            <p>La pestaña <b>Columnas</b> permite añadir columnas de texto dentro de la autoforma especificando el <b>Número de columnas</b> (hasta 16) y <b>Espaciado entre columnas</b> necesario. Una vez que hace clic en <b>OK</b>, el texto que ya existe u otro texto que introduzca dentro de la autoforma aparecerá en columnas y se moverá de una columna a otra.</p>
+            <p><img alt="Propiedades de forma - pestaña Texto Alternativo" src="../images/shape_properties4.png" /></p>
+            <p>La pestaña de <b>Texto Alternativo</b> permite especificar un <b>Título</b> y <b>Descripción</b> que se leerá a las personas con deficiencias de visión o cognitivas para ayudarles a entender mejor la información que hay en la forma.</p>
+            <hr />
+			<p>Para <b>sustituir</b> la autoforma añadida, haga clic izquierdo en esta y use la lista desplegable <b>Cambiar autoforma</b> en la pestaña <b>Ajustes de forma</b> en la barra lateral derecha.</p>
+			<p>Para <b>borrar</b> la autoforma añadida, haga clic izquierdo en esta y presione la tecla <b>Delete</b> en su teclado.</p>
+			<p>Para saber como <b>alinear</b> una autoforma en la diapositiva u <b>organizar</b> varias autoformas, consulte la sección <a href="../UsageInstructions/AlignArrangeObjects.htm" onclick="onhyperlinkclick(this)">Alinee y organice objetos en una diapositiva</a>.</p>
+            <hr />
+            <h3>Una las autoformas usando conectores</h3>
+            <p>Puede conectar autoformas usando líneas con puntos de conexión para demostrar dependencias entre los objetos (por ejemplo si quiere crear un organigrama). Para hacerlo,</p>
+            <ol>
+                <li>haga clic en el icono <img alt="Icono Forma" src="../images/insertautoshape.png" /> <b>Forma</b> en la pestaña de <b>Inicio</b> o <b>Insertar</b> en la barra de herramientas superior,</li>
+                <li>seleccione el grupo <b>Líneas</b> del menú.<p><img alt="Formas - Líneas" src="../images/connectors.png" /></p>
+                </li>
+                <li>haga clic en las formas necesarias dentro del grupo seleccionado (con excepción de las últimas tres formas que no son conectores, es decir, <em>forma 10</em>, <em>11</em> y <em>12</em>),</li>
+                <li>ponga el cursor del ratón sobre la primera autoforma y haga clic en uno de los puntos de conexión <img alt="Icono punto de conexión" src="../images/connectionpoint.png" /> que aparece en el trazado de la forma,<p><img alt="Uso de conectores" src="../images/connectors_firstshape.png" /></p>
+                </li>
+                <li>arrastre el cursor del ratón hacia la segunda autoforma y haga clic en el punto de conexión necesario en su esbozo.<p><img alt="Uso de conectores" src="../images/connectors_secondshape.png" /></p>
+                </li>
+            </ol>
+            <p>Si mueve las autoformas unidas, el conector permanece adjunto a las formas y se mueve a la vez que estas.</p>
+            <p><img alt="Mover formas adjuntas" src="../images/connectors_moveshape.png" /></p>
+            <p>También puede separar el conector de las formas y luego juntarlo a otros puntos de conexión.</p>
+		</div>
+	</body>
+</html>

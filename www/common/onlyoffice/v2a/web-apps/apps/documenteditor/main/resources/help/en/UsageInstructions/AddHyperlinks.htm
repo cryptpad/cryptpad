@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Add hyperlinks</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add hyperlinks to a word or text fragment leading to an external website" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Add hyperlinks</h1>
+			<p>To add a hyperlink,</p>
+			<ol>
+				<li>place the cursor to a position where a hyperlink will be added,</li>
+                <li>switch to the <b>Insert</b> or <b>References</b> tab of the top toolbar,</li>
+				<li>click the <img alt="Hyperlink icon" src="../images/addhyperlink.png" /> <b>Hyperlink</b> icon at the top toolbar,</li>
+				<li>after that the <b>Hyperlink Settings</b> window will appear where you can specify the hyperlink parameters:
+                    <ul>
+                        <li>
+                            Select a link type you wish to insert:
+                            <p>Use the <b>External Link</b> option and enter a URL in the format <em>http://www.example.com</em> in the <b>Link to</b> field below if you need to add a hyperlink leading to an external website.</p>
+                            <p><img alt="Hyperlink Settings window" src="../images/hyperlinkwindow.png" /></p>
+                            <p>Use the <b>Place in Document</b> option and select one of the existing <a href="../UsageInstructions/FormattingPresets.htm" onclick="onhyperlinkclick(this)">headings</a> in the document text or one of previously added <a href="../UsageInstructions/InsertBookmarks.htm" onclick="onhyperlinkclick(this)">bookmarks</a> if you need to add a hyperlink leading to a certain place in the same document.</p>
+                            <p><img alt="Hyperlink Settings window" src="../images/hyperlinkwindow1.png" /></p>
+                        </li>
+                        <li><b>Display</b> - enter a text that will get clickable and lead to the address specified in the upper field.</li>
+                        <li><b>ScreenTip text</b> - enter a text that will become visible in a small pop-up window that provides a brief note or label pertaining to the hyperlink being pointed to.</li>
+                    </ul>
+				</li>
+				<li>Click the <b>OK</b> button.</li>
+			</ol>
+            <p>To add a hyperlink, you can also use the <b>Ctrl+K</b> key combination or click with the right mouse button at a position where a hyperlink will be added and select the <b>Hyperlink</b> option in the right-click menu.</p>
+			<p class="note"><b>Note</b>: it's also possible to select a character, word, word combination, text passage with the mouse or <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">using the keyboard</a> and
+			then open the <b>Hyperlink Settings</b> window as described above. In this case, the <b>Display</b> field will be filled with the text fragment you selected.</p>
+			<p>By hovering the cursor over the added hyperlink, the ScreenTip will appear containing the text you specified. 
+			You can follow the link by pressing the <b>CTRL</b> key and clicking the link in your document.</p>
+			<p>To edit or delete the added hyperlink, click it with the right mouse button, select the <b>Hyperlink</b> option and then the action you want to perform - <b>Edit Hyperlink</b> or <b>Remove Hyperlink</b>.</p>
+		</div>
+	</body>
+</html>

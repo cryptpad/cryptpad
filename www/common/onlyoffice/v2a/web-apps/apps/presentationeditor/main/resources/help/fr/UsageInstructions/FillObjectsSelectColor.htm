@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Remplir des objets et sélectionner des couleurs</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Fill the added objects with color, picture or texture, select colors for the slide background, autoshape fill and stroke, font." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Remplir des objets et sélectionner des couleurs</h1>
+			<p>Vous pouvez appliquer de différents remplissages pour l'arrière-plan de diapositives ainsi que pour les formes automatiques.</p>
+			<ol>
+			<li>Sélectionnez un objet.<ul>
+                    <li>Pour modifier le remplissage de l'arrière-plan de la diapositive, sélectionnez les diapositives voulues dans la liste des diapositives. L'onglet <img alt="Icône Paramètres de la diapositive" src="../images/slide_settings_icon.png" /> <b>Paramètres de la diapositive</b> sera activé sur la barre latérale droite.</li>
+                    <li>Pour modifier le remplissage de la forme automatique, cliquez sur la forme automatique concernée. L'onglet <img alt="Icône Paramètres de la forme" src="../images/shape_settings_icon.png" /> <b>Paramètres de la forme</b> sera activé sur la barre latérale droite.</li>
+                    <li>Pour modifier le remplissage de la police Text Art, cliquez avec le bouton gauche sur l'objet texte concerné. L'onglet <img alt="Icône Paramètres Text Art" src="../images/textart_settings_icon.png" /> <b>Paramètres Text Art</b> sera activé sur la barre latérale droite.</li>
+                </ul>
+			</li>
+			<li>Définissez le type de remplissage nécessaire.</li>
+			<li>Réglez les propriétés du remplissage sélectionné (voir la description détaillée de chaque type de remplissage ci-après)<p class="note"><b>Remarque</b>: Quel que soit le type de remplissage sélectionné, vous pouvez toujours régler le niveau d'<b>Opacité</b> des formes automatiques en faisant glisser le curseur ou en saisissant la valeur de pourcentage à la main. La valeur par défaut est <b>100%</b>. Elle correspond à l'opacité complète. La valeur <b>0%</b> correspond à la transparence totale.</p>
+			</li>
+			</ol>			
+			<p><b>Les types de remplissage disponibles sont les suivants :</b></p>
+			<ul>
+				<li><b>Couleur</b> - sélectionnez cette option pour spécifier la couleur unie à utiliser pour remplir l'espace intérieur de la forme / diapositive sélectionnée.<p><img alt="Couleur" src="../images/fill_color.png" /></p>
+				<p>Cliquez sur la case de couleur et sélectionnez la couleur nécessaire à partir de l'ensemble de couleurs disponibles ou spécifiez n'importe quelle couleur que vous aimez :</p>
+			        <p><img alt="Palettes" src="../images/palettes.png" /></p>
+			        <ul>
+			        <li><b>Couleurs de thème</b> - les couleurs qui correspondent à la palette de couleurs sélectionnée de la présentation. Une fois que vous avez appliqué un thème ou un jeu de couleurs différent, le jeu de <b>Couleurs du thème</b> change.</li>
+			        <li><b>Couleurs standard</b> - le jeu de couleurs par défaut.</li>
+			        <li><b>Couleur personnalisée</b> - choisissez cette option si il n'y a pas de couleur nécessaire dans les palettes disponibles. Sélectionnez la gamme de couleurs nécessaire en déplaçant le curseur vertical et définissez la couleur spécifique en faisant glisser le sélecteur de couleur dans le grand champ de couleur carré. Une fois que vous sélectionnez une couleur avec le sélecteur de couleur, les valeurs de couleur appropriées RGB et sRGB seront affichées dans les champs à droite. Vous pouvez également spécifier une couleur sur la base du modèle de couleur RGB (RVB) en entrant les valeurs numériques nécessaires dans les champs <b>R</b>, <b>G</b>, <b>B</b> (rouge, vert, bleu) ou saisir le code hexadécimal dans le champ sRGB marqué par le signe #. La couleur sélectionnée apparaît dans la case de prévisualisation <b>Nouveau</b>. Si l'objet a déjà été rempli d'une couleur personnalisée, cette couleur sera affichée dans la case <b>Actuel</b> afin que vous puissiez comparer les couleurs originales et modifiées. Lorsque la couleur est spécifiée, cliquez sur le bouton <b>Ajouter</b> :<p><img alt="Palette - Couleur personnalisée" src="../images/palette_custom.png" /></p>
+			        <p>La couleur personnalisée sera appliquée à votre objet et ajoutée dans la palette <b>Couleur personnalisée</b> du menu.</p>			        
+			        </li>			        
+			        </ul>
+			    <p class="note"><b>Remarque</b> : vous pouvez utiliser les mêmes types de couleurs lors de la sélection de la <b>couleur du trait de la forme automatique</b>, ou lors du changement de la <b>couleur de police</b> ou de l'<b>arrière-plan de tableau ou la couleur de bordure</b>.</p>
+				</li>
+			</ul>
+				<hr />
+			<ul>				
+				<li><b>Dégradé</b> - sélectionnez cette option pour specifier deux couleurs pour créer une transition douce entre elles et remplir la forme.<p><img class="floatleft"alt="Dégradé" src="../images/fill_gradient.png" /></p>
+				    <ul style="margin-left: 280px;">
+				    <li><b>Style</b> - choisissez une des options disponibles : <b>Linéaire</b> (la transition se fait selon un axe horizontal/vertical ou en diagonale, sous l'angle de 45 degrés) ou <b>Radial</b> (la transition se fait autour d'un point, les couleurs se fondent progressivement du centre aux bords en formant un cercle).</li>
+				    <li><b>Direction</b> - choisissez un modèle du menu. Si vous avez sélectionné le style <b>Linéaire</b>, vous pouvez choisir une des directions suivantes : du haut à gauche vers le bas à droite, du haut en bas, du haut à droite vers le bas à gauche, de droite à gauche, du bas à droite vers le haut à gauche, du bas en haut, du bas à gauche vers le haut à droite, de gauche à droite. Si vous avez choisi le style <b>Radial</b>, il n'est disponible qu'un seul modèle.</li>
+				    <li><b>Dégradé</b> - cliquez sur le curseur de dégradé gauche <img alt="Curseur" src="../images/gradientslider.png" /> au-dessous de la barre de dégradé pour activer la palette de couleurs qui correspond à la première couleur. Cliquez sur la palette de couleurs à droite pour sélectionner la première couleur. Faites glisser le curseur pour définir le point de dégradé c'est-à-dire le point quand une couleur se fond dans une autre. Utilisez le curseur droit au-dessous de la barre de dégradé pour spécifier la deuxième couleur et définir le point de dégradé.</li>
+				    </ul>			
+				</li>
+			</ul>
+				<hr />
+			<ul>
+				<li><b>Image ou texture</b> - sélectionnez cette option pour utiliser une image ou une texture prédéfinie en tant que l'arrière-plan de la forme / diapositive.<p><img class="floatleft"alt="Remplissage avec Image ou texture" src="../images/fill_picture.png" /></p>
+				    <ul style="margin-left: 280px;">
+				    <li>Si vous souhaitez utiliser une image en tant que l'arrière-plan de la forme / diapositive, vous pouvez ajouter une image <b>D'un fichier</b> en la sélectionnant sur le disque dur de votre ordinateur ou <b>D'une URL</b> en insérant l'adresse URL appropriée dans la fenêtre ouverte.</li>
+				    <li>Si vous souhaitez utiliser une texture en tant que l'arrière-plan de la forme / diapositive, utilisez le menu déroulant <b>D'une texture</b> et sélectionnez le préréglage de la texture nécessaire.<p>Actuellement, les textures suivantes sont disponibles : Toile, Carton, Tissu foncé, Grain, Granit, Papier gris, Tricot, Cuir, Papier brun, Papyrus, Bois.</p>
+				    </li>
+				    </ul>
+			        <ul style="margin-left: 280px;">
+			        <li>Si l'<b>Image</b> sélectionnée est plus grande ou plus petite que la forme automatique ou diapositive, vous pouvez profiter d'une des options : <b>Étirement</b> ou <b>Mosaïque</b> depuis la liste déroulante.<p>L'option <b>Étirement</b> permet de régler la taille de l'image pour l'adapter à la taille de la diapositive ou de la forme automatique afin qu'elle puisse remplir tout l'espace uniformément.</p>
+			        <p>L'option <b>Mosaïque</b> permet d'afficher seulement une partie de l'image plus grande en gardant ses dimensions d'origine, ou de répéter l'image plus petite en conservant ses dimensions initiales sur la surface de la forme automatique ou de la diapositive afin qu'elle puisse remplir tout l'espace uniformément.</p>
+			        <p class="note"><b>Remarque</b> : tout préréglage <b>Texture</b> sélectionné remplit l'espace de façon uniforme, mais vous pouvez toujours appliquer l'effet <b>Étirement</b>, si nécessaire.</p>
+			        </li>
+			        </ul>			
+				</li>
+			</ul>
+				<hr />
+			<ul>
+				<li><b>Modèle</b> - sélectionnez cette option pour sélectionner le modèle à deux couleurs composé des éléments répétés.<p><img class="floatleft"alt="Modèle" src="../images/fill_pattern.png" /></p>
+				    <ul style="margin-left: 280px;">
+				        <li><b>Modèle</b> - sélectionnez un des modèles prédéfinis du menu.</li>
+				        <li><b>Couleur de premier plan</b> - cliquez sur cette palette de couleurs pour changer la couleur des éléments du modèle.</li>
+				        <li><b>Couleur d'arrière-plan</b> - cliquez sur cette palette de couleurs pour changer de l'arrière-plan du modèle.</li>
+				    </ul>			
+				</li>
+			</ul>
+				<hr />
+			<ul>
+				<li><b>Pas de remplissage</b> - sélectionnez cette option si vous ne voulez pas utiliser un remplissage.</li>
+			</ul>
+		</div>
+	</body>
+</html>

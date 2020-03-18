@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Ajouter des marque-pages</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Bookmarks allow to quickly jump to a certain position in the current document or add a link to this location within the document." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Ajouter des marque-pages</h1>
+            <p>Les marque-pages permettent d’aller rapidement à une certaine position dans le document en cours ou d'ajouter un lien vers cette position dans le document.</p>
+			<p>Pour ajouter un marque-pages dans un document :</p>
+			<ol>
+                <li>placez le curseur de la souris au début du passage de texte à l'endroit où vous voulez ajouter le marque-pages,</li>
+                <li>passez à l'onglet <b>Références</b> de la barre d'outils supérieure,</li>
+                <li>cliquez sur l'icône <img alt="icône Marque-pages" src="../images/bookmark.png" /> <b>Marque-pages</b> de la barre d'outils supérieure,</li>
+				<li>dans la fenêtre <b>Marque-pages</b> qui s'ouvre, entrez le <b>Nom du marque-pages</b> et cliquez sur le bouton <b>Ajouter</b> - un marque-pages sera ajouté à la liste des marque-pages affichée ci-dessous,<p class="note"><b>Note</b> : le nom du marque-pages doit commencer par une lettre, mais il peut aussi contenir des chiffres. Le nom du marque-pages ne peut pas contenir d'espaces, mais peut inclure le caractère de soulignement "_".</p>
+                    <p><img alt="Fenêtre Marque-pages" src="../images/bookmark_window.png" /></p>
+                </li>
+			</ol>
+            <p>Pour accéder à un des marque-pages ajoutés dans le texte du document :</p>
+            <ol>
+                <li>cliquez sur l'icône <img alt="icône Marque-page" src="../images/bookmark.png" /> <b>Marque-pages</b> dans l'onglet <b>Références</b> de la barre d'outils supérieure,</li>
+                <li>dans la fenêtre <b>Marque-pages</b> qui s'ouvre, sélectionnez le marque-pages vers lequel vous voulez vous déplacer. Pour trouver facilement le marque-pages voulu dans la liste, vous pouvez trier la liste par <b>Nom</b> ou par <b>Emplacement</b> de marque-pages dans le texte du document,</li>
+                <li>cochez l'option <b>Marque-pages cachés</b> pour afficher les marque-pages cachés dans la liste (c'est-à-dire les marque-pages automatiquement créés par le programme lors de l'ajout de références à une certaine partie du document. Par exemple, si vous créez un lien hypertexte vers un certain titre dans le document, l'éditeur de document crée automatiquement un marque-pages caché vers la cible de ce lien).</li>
+                <li>cliquez sur le bouton <b>Aller à</b> - le curseur sera positionné à l'endroit du document où le marque-pages sélectionné a été ajouté,</li>
+                <li>cliquez sur le bouton <b>Fermer</b> pour fermer la fenêtre.</li>
+            </ol>
+            <p>Pour supprimer un marque-pages, sélectionnez-le dans la liste et cliquez sur le bouton <b>Suppr</b>.</p>
+            <p>Pour savoir comment utiliser les marque-pages lors de la création de liens, veuillez consulter la section <a href="../UsageInstructions/AddHyperlinks.htm" onclick="onhyperlinkclick(this)">Ajouter des liens hypertextes</a>.</p>
+
+		</div>
+	</body>
+</html>

@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Appliquer les styles de formatage</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Apply formatting styles: normal, heading, quote, list, etc." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Appliquer les styles de formatage</h1>
+            <p>Chaque style de mise en forme représente un ensemble des options de mise en forme : (taille de la police, couleur, interligne, alignment etc.). Les styles permettent de mettre en forme rapidement les parties différentes du texte (en-têtes, sous-titres, listes,texte normal, citations) au lieu d'appliquer les options de mise en forme différentes individuellement chaque fois que vous en avez besoin. Cela permet également d'assurer une apparence uniforme de tout le document. Un style n'est appliqué au'au paragraphe entier.</p>
+			<h3>Appliquer des styles par défault</h3>
+            <p>Pour appliquer un des styles de mise en forme disponibles,</p>
+			<ol>
+				<li>placez le curseur dans le paragraphe nécessaire, ou sélectionnez plusieurs paragraphes pour appliquer un des styles de mise en forme,</li>
+				<li>sélectionnez le style nécessaire à partir de la galerie de styles située à droite de la barre d'outils supérieure.</li>
+			</ol>
+			<p>Les styles de mise en forme disponibles sont : normal, non-espacemen, titre 1-9, title, sous-titre, citation, citation intense, paragraphe de liste.</p>
+			<p><img alt="Formatting styles" src="../images/formattingpresets.png" /></p>
+            <h3>Modifier des styles disponibles et créer de nouveaux</h3>
+            <p><b>Pour modifier le style existant :</b></p>
+            <ol>
+                <li>Appliquez le style nécessaire à un paragraphe.</li>
+                <li>Sélectionnez le texte du paragraphe et modifiez tous les paramètres de mise en forme dont vous avez besoin.</li>
+                <li>Enregistrez les modifications effectuées :<ul>
+                    <li>cliquez avec le bouton droit de la souris sur le texte en cours de modification, sélectionnez l'option <b>En tant que style</b> et sélectionnez l'option <b>Mettre à jour le style 'Nomdestyle'</b> ('Nomdestyle' correspond au style appliqué à l'étape 1),</li>
+                    <li>ou sélectionnez le fragment du texte en cours de modification avec la souris, ouvrez le menu déroulant de la galerie des styles, cliquez avec le bouton droit de la souris sur le style à modifier et sélectionnez l'option <b>Mettre à jour selon la sélection</b>.</li>
+                </ul>
+                </li>
+            </ol>
+            <p>Une fois que le style est modifié, tous les paragraphes dans le document qui a été mis en forme à l'aide de ce style vont changer leur apparence de manière correspondante.</p>
+            <p><b>Pour créer un tout nouveau style:</b></p>
+            <ol>
+                <li>Mettez en forme un fragment du texte d'une manière nécessaire.</li>
+                <li>Choisissez une façon appropriée de sauvegarder le style:<ul>
+                        <li>cliquez avec le bouton droit de la souris sur le texte en cours de modification, sélectionnez l'option <b>En tant que style</b> et puis choisissez l'option <b>Créer un nouveau style</b>,</li>
+                        <li>ou sélectionnez le fragment du texte à l'aide de la souris, ouvrez la liste déroulante de la galerie de styles et cliquez sur l'option <b>Nouveau style à partir du fragment sélectionné</b>.</li>
+                    </ul>
+                </li>
+                <li>Définissez les paramètres du nouveau style dans la fenêtre <b>Créer un nouveau style</b> qui s'ouvre :<p><img alt="Fenêtre Créer un nouveau style" src="../images/createnewstylewindow.png" /></p>
+                <ul>
+                    <li>Spécifiez un nom du nouveau style en utilisant le champ correspondant.</li>
+                    <li>Chosissez le style nécessaire du paragraphe suivant en utilisant la liste <b>Style du nouveau paragraphe</b>.</li>
+                    <li>Cliquez sur le bouton <b>OK</b>.</li>
+                </ul>
+                </li>
+            </ol>
+            <p>Le style créé sera ajouté à la galerie des styles.</p>
+            <p><b>Gérez vos styles personnalisés:</b></p>
+            <ul>
+                <li>Pour restaurer les paramètres par défaut d'un style que vous avez modifié, cliquez avec le bouton droit de la souris sur le style que vous voulez restaurer et sélectionnez l'option <b>Restaurer les paramètres par défaut</b>.</li>
+                <li>Pour restaurer les paramètres par défaut de tous les styles que vous avez modifiés, cliquez avec le bouton droit de la souris sur le style dans la galerie des styles et sélectionnez l'option <b>Restaurer tous les styles par défaut</b>.<p><img alt="Edited style menu" src="../images/editedstylemenu.png" /></p>
+                </li>
+                <li>Pour supprimer un des styles que vous avez créé, cliquez avec le bouton droit de la souris sur le style à supprimer et sélectionnez l'option <b>Supprimer le style</b>.</li>
+                <li>Pour supprimer tous les nouveaux style que vous avez crées, cliquez avec le bouton droit de la souris sur un des nouveaux styles crées et sélectionnez l'option <b>Supprimer tous les styles personnalisés</b>.<p><img alt="Menu style personnalisé" src="../images/customstylemenu.png" /></p>
+                </li>
+            </ul>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Vea información sobre documento</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="View document title, author, location, creation date, persons with the rights to view or edit the document, and statistics" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Vea información sobre documento</h1>
+			<p>Para acceder a la información detallada sobre el documento actualmente editado, pulse el icono <b>Archivo</b>  en la barra de herramientas superior y seleccione la opción <b>Información sobre documento...</b>.</p>
+			<h3>Información General</h3>
+            <p>La información del documento incluye el título del documento, autor, localización, fecha de creación, y estadísticas: el número de páginas, párrafos, palabras, símbolos, símbolos con espacios.</p>
+            <div class="onlineDocumentFeatures">
+                <p class="note"><b>Nota</b>: Los editores en línea le permiten cambiar el título del documento directamente desde el interfaz del editor. Para realizar esto, haga clic en la pestaña <b>Archivo</b> en la barra de herramientas superior, y seleccione la opción <b>Renombrar</b> luego introduzca el <b>Nombre de archivo</b> necesario en una nueva ventana que se abre y haga clic en <b>OK</b>.</p>
+            </div>  
+                <div class="onlineDocumentFeatures">
+                    <h3>Información de Permiso</h3>
+                    <p class="note"><b>Nota</b>: esta opción no está disponible para usuarios con los permisos de <b>Solo Lectura</b>.</p>
+                    <p>Para descubrir quién tiene derechos para ver o editar el documento, seleccione la opción <b>Acceder a Derechos...</b> en la barra lateral de la izquierda.</p>
+                    <p>También puede cambiar los derechos de acceso actualmente seleccionados pulsando el botón <b>Cambiar derechos de acceso</b> en la sección <b>Personas que tienen derechos</b>.</p>
+                    <h3>Historial de versión</h3>
+                    <p class="note"><b>Nota</b>: esta opción no está disponible para usuarios con una cuenta gratis así como usuarios con permisos de <b>Solo Lectura</b>.</p>
+                    <p>para ver todos los cambios que se han producido en este documento, seleccione la opción de <b>Historial de Versiones</b> en la barra lateral de la izquierda. También es posible abrir el historial de versiones usando el icono <img alt="Icono de historial de versión" src="../images/versionhistoryicon.png" /> <b>Historial de versión</b> en la pestaña <b>Colaboración</b> de la barra de herramientas superior. Podrá ver la lista de versiones de este documento (los cambios más grandes) y revisiones (los cambios más pequeños) con el indicador de cada versión/revisión del autor y fecha y hora de creación. Para versiones de documentos, el número de versión también se especifica (por ejemplo, <em>ver. 2</em>). Para saber de forma exacta qué cambios se han realizado en cada versión/revisión separada, puede ver el que necesita haciendo clic en este en la barra lateral izquierda. Los cambios  hecho por el autor en la versión/revisión se marcan con el color que se muestra al lado del nombre del autor en la barra lateral izquierda. Puede usar el enlace de <b>Restaurar</b> que se encuentra abajo de la versión/revisión seleccionada para restaurarlo. <!--To hide the list of the revisions within a certain version, use the <img alt="Collapse icon" src="../images/collapse.png" /> icon next to the version. To display revisions again, use the <img alt="Expand icon" src="../images/expand.png" /> icon.--></p>
+                    <p><img alt="Historial de versión" src="../images/versionhistory.png" /></p>
+                    <p>Para volver a la versión del documento actual, use la opción de <b>Cerrar Historia</b> arriba de la lista de versiones.</p>
+                </div>
+                <p>Para cerrar el panel de <b>Archivo</b> y volver a la edición del documento, seleccione la opción <b>Cerrar Menú</b>.</p>
+            </div>
+	</body>
+</html>

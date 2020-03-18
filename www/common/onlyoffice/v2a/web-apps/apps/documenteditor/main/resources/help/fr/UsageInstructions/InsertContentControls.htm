@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insérer des contrôles de contenu</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Insert content controls to create a form with input fields that can be filled in by other users, or protect some parts of the document from being edited or deleted" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insérer des contrôles de contenu</h1>
+            <p>À l'aide des contrôles de contenu, vous pouvez créer un formulaire avec des champs de saisie pouvant être renseignés par d'autres utilisateurs ou protéger certaines parties du document contre l'édition ou la suppression. Les contrôles de contenu sont des objets contenant du texte pouvant être mis en forme. Les contrôles de contenu de texte brut ne peuvent pas contenir plus d'un paragraphe, tandis que les contrôles de contenu en texte enrichi peuvent contenir plusieurs paragraphes, listes et objets (images, formes, tableaux, etc.).</p>
+			<h3>Ajouter des contrôles de contenu</h3>
+            <p>Pour créer un nouveau <b>contrôle de contenu de texte brut</b>,</p>
+            <ol>
+                <li>positionnez le point d'insertion dans une ligne du texte où vous souhaitez ajouter le contrôle,<br />ou sélectionnez un passage de texte que vous souhaitez transformer en contenu du contrôle.</li>
+                <li>passez à l'onglet <b>Insertion</b> de la barre d'outils supérieure.</li>
+                <li>cliquez sur la flèche en regard de l'icône <img alt="Icône Contrôles de contenu" src="../images/insertccicon.png" /> <b>Contrôles de contenu</b>.</li>
+                <li>choisissez l'option <b>Insérer un contrôle de contenu de texte brut</b> dans le menu.</li>
+            </ol>
+            <p>Le contrôle sera inséré au point d'insertion dans une ligne du texte existant. Les contrôles de contenu de texte brut ne permettent pas l'ajout de sauts de ligne et ne peuvent pas contenir d'autres objets tels que des images, des tableaux, etc.</p>
+            <p><img alt="Nouveau contrôle du contenu de texte brut" src="../images/addedcontentcontrol.png" /></p>
+            <p>Pour créer un nouveau <b>contrôle de contenu de texte enrichi</b>,</p>
+            <ol>
+                <li>positionnez le point d'insertion à la fin d'un paragraphe après lequel vous voulez ajouter le contrôle,<br />ou sélectionnez un ou plusieurs des paragraphes existants que vous voulez convertir en contenu du contrôle.</li>
+                <li>passez à l'onglet <b>Insertion</b> de la barre d'outils supérieure.</li>
+                <li>cliquez sur la flèche en regard de l'icône <img alt="Icône Contrôles de contenu" src="../images/insertccicon.png" /> <b>Contrôles de contenu</b>.</li>
+                <li>choisissez l'option<b> Insérer un contrôle de contenu de texte enrichi</b> dans le menu.</li>
+            </ol>
+            <p>Le contrôle sera inséré dans un nouveau paragraphe. Les contrôles de contenu de texte enrichi permettent d'ajouter des sauts de ligne, c'est-à-dire peuvent contenir plusieurs paragraphes ainsi que certains objets, tels que des images, des tableaux, d'autres contrôles de contenu, etc.</p>
+            <p><img alt="Contrôle du contenu de texte enrichi" src="../images/richtextcontentcontrol.png" /></p>
+            <p class="note"><b>Remarque</b> : La bordure du contrôle de contenu est visible uniquement lorsque le contrôle est sélectionné. Les bordures n'apparaissent pas sur une version imprimée.</p>
+            <h3>Déplacer des contrôles de contenu</h3>
+            <p>Les contrôles peuvent être <b>déplacés</b> à un autre endroit du document: cliquez sur le bouton à gauche de la bordure de contrôle pour sélectionner le contrôle et faites-le glisser sans relâcher le bouton de la souris à un autre endroit dans le texte du document.</p>
+            <p><img alt="Déplacer des contrôles de contenu" src="../images/movecontentcontrol.png" /></p>
+            <p>Vous pouvez également <b>copier et coller</b> des contrôles de contenu: sélectionnez le contrôle voulu et utilisez les combinaisons de touches <b>Ctrl+C/Ctrl+V</b>.</p>
+            <h3>Modifier des contrôles de contenu</h3>
+            <p>Remplacez le texte par défaut dans le contrôle ("Votre texte ici") par votre propre texte: sélectionnez le texte par défaut, et tapez un nouveau texte ou copiez un passage de texte de n'importe où et collez-le dans le contrôle de contenu.</p>
+            <p>Le texte contenu dans le contrôle de contenu (texte brut ou texte enrichi) peut être formaté à l'aide des icônes de la barre d'outils supérieure: vous pouvez ajuster le <a href="../UsageInstructions/FontTypeSizeColor.htm" onclick="onhyperlinkclick(this)">type, la taille, la couleur de police</a>, appliquer des <a href="../UsageInstructions/DecorationStyles.htm" onclick="onhyperlinkclick(this)">styles de décoration</a> et les <a href="../UsageInstructions/FormattingPresets.htm" onclick="onhyperlinkclick(this)">préréglages de mise en forme</a>. Il est également possible d'utiliser la fenêtre <b>Paragraphe - Paramètres avancés</b> accessible depuis le menu contextuel ou depuis la barre latérale de droite pour modifier les propriétés du texte. Le texte contenu dans les contrôles de contenu de texte enrichi peut être mis en forme comme un texte normal du document, c'est-à-dire que vous pouvez définir l'<a href="../UsageInstructions/LineSpacing.htm" onclick="onhyperlinkclick(this)">interlignage</a>, modifier les <a href="../UsageInstructions/ParagraphIndents.htm" onclick="onhyperlinkclick(this)">retraits de paragraphe</a>, ajuster les <a href="../UsageInstructions/SetTabStops.htm" onclick="onhyperlinkclick(this)">taquets de tabulation</a>.</p>
+            <h3>Modification des paramètres de contrôle du contenu</h3>
+            <p>Pour ouvrir les paramètres de contrôle du contenu, vous pouvez procéder de la manière suivante:</p>
+            <ul>
+                <li>Sélectionnez le contrôle de contenu nécessaire, cliquez sur la flèche en regard de l'icône <img alt="Icône Contrôles de contenu" src="../images/insertccicon.png" /> <b>Contrôles de contenu</b> dans la barre d'outils supérieure et sélectionnez l'option <b>Paramètres de contrôle</b> dans le menu.</li>
+                <li>Cliquez avec le bouton droit n'importe où dans le contrôle de contenu et utilisez l'option <b>Paramètres de contrôle du contenu</b> dans le menu contextuel.</li>
+            </ul>
+            <p>Une nouvelle fenêtre s'ouvrira où vous pourrez ajuster les paramètres suivants:</p>
+            <p><img alt="Fenêtre des paramètres de contrôle du contenu" src="../images/ccsettingswindow.png" /></p>
+            <ul>
+                <li>Spécifiez le <b>Titre</b> ou l'<b>Étiquette</b> du contrôle de contenu dans les champs correspondants. Le titre s'affiche lorsque le contrôle est sélectionné dans le document. Les étiquettes sont utilisées pour identifier les contrôles de contenu afin que vous puissiez y faire référence dans votre code.</li>
+                <li>Choisissez si vous voulez afficher le contrôle de contenu avec une <b>Zone de délimitation</b> ou non. Utilisez l'option <b>Aucune</b> pour afficher le contrôle sans la zone de délimitation. Si vous sélectionnez l'option <b>Zone de délimitation</b>, vous pouvez choisir la <b>Couleur</b> de cette zone à l'aide du champ ci-dessous.</li>
+                <li>Empêchez le contrôle de contenu d'être supprimé ou modifié en utilisant l'option de la section <b>Verrouillage</b>:<ul>
+                    <li><b>Le contrôle du contenu ne peut pas être supprimé</b> - cochez cette case pour empêcher la suppression du contrôle de contenu.</li>
+                    <li><b>Le contenu ne peut pas être modifié</b> - cochez cette case pour protéger le contenu du contrôle de contenu contre une modification.</li>
+                </ul>
+                </li>
+            </ul>
+            <p>cliquez sur le bouton <b>OK</b> dans la fenêtre des paramètres pour appliquer les changements.</p>
+            <p>Il est également possible de surligner les contrôles de contenu avec une certaine couleur. Pour surligner les contrôles avec une couleur :</p>
+            <ol>
+                <li>Cliquez sur le bouton situé à gauche de la bordure du champ pour sélectionner le champ,</li>
+                <li>Cliquez sur la flèche à côté de l'icône <img alt="Icône Contrôles de contenu" src="../images/insertccicon.png" /> <b>Contrôles de contenu</b> dans la barre d'outils supérieure,</li>
+                <li>Sélectionnez l'option <b>Paramètres de surlignage</b> du menu contextuel,</li>
+                <li>Sélectionnez la couleur souhaitée dans les palettes disponibles : <b>Couleurs du thème</b>, <b>Couleurs standard</b> ou spécifiez une nouvelle <b>Couleur personnalisée</b>. Pour supprimer la surbrillance des couleurs précédemment appliquée, utilisez l'option <b>Pas de surbrillance</b>.</li>
+            </ol>
+            <p>Les options de surbrillance sélectionnées seront appliquées à tous les contrôles de contenu du document.</p>
+            <h3>Retirer des contrôles de contenu</h3>
+            <p>Pour supprimer un contrôle et laisser tout son contenu, cliquez sur le contrôle de contenu pour le sélectionner, puis procédez de l'une des façons suivantes:</p>
+            <ul>
+                <li>Cliquez sur la flèche en regard de l'icône <img alt="Icône Contrôles de contenu" src="../images/insertccicon.png" /> <b>Contrôles du contenu</b> dans la barre d'outils supérieure et sélectionnez l'option <b>Retirer le contrôle du contenu</b> dans le menu.</li>
+                <li>Cliquez avec le bouton droit sur la sélection et choisissez l'option <b>Supprimer le contrôle de contenu</b> dans le menu contextuel,</li>
+            </ul>
+            <p>Pour supprimer un contrôle et tout son contenu, sélectionnez le contrôle nécessaire et appuyez sur la touche <b>Suppr</b> du clavier.</p>
+                        
+		</div>
+	</body>
+</html>

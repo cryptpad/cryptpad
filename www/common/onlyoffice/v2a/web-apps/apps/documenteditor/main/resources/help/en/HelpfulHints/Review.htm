@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Document Review</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Tips on document review option" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Document Review</h1>
+        <p>When somebody shares a file with you that has review permissions, you need to use the document <b>Review</b> feature.</p>
+        <p>If you are the reviewer, then you can use the <b>Review</b> option to review the document, change the sentences, phrases and other page elements, correct spelling, and do other things to the document without actually editing it. All your changes will be recorded and shown to the person who sent the document to you.</p>
+        <p>If you are the person who sends the file for the review, you will need to display all the changes which were made to it, view and either accept or reject them.</p>
+        <h3>Enable the Track Changes feature</h3>
+        <p>To see changes suggested by a reviewer, enable the <b>Track Changes</b> option in one of the following ways:</p>
+        <ul>
+            <li>click the <img alt="Track changes button" src="../images/trackchangesstatusbar.png" /> button in the right lower corner at the status bar, or</li>
+            <li>switch to the <b>Collaboration</b> tab at the top toolbar and press the <img alt="Track Changes button" src="../images/trackchangestoptoolbar.png" /> <b>Track Changes</b> button.</li>
+        </ul>
+        <p class="note"><b>Note</b>: it is not necessary for the reviewer to enable the <b>Track Changes</b> option. It is enabled by default and cannot be disabled when the document is shared with review only access rights.</p>
+        <h3 id="displaymode">Choose the changes display mode</h3>
+        <p>Click the <img alt="Display Mode button" src="../images/review_displaymode.png" /> <b>Display Mode</b> button at the top toolbar and select one of the available modes from the list:</p>
+        <ul>
+            <li><b>Markup</b> - this option is selected by default. It allows both to view suggested changes and edit the document.</li>
+            <li><b>Final</b> - this mode is used to display all the changes as if they were accepted. This option does not actually accept all changes, it only allows you to see how the document will look like after you accept all the changes. In this mode, you cannot edit the document.</li>
+            <li><b>Original</b> - this mode is used to display all the changes as if they were rejected. This option does not actually reject all changes, it only allows you to view the document without changes. In this mode, you cannot edit the document.</li>
+        </ul>
+        <h3 id="managechanges">Accept or reject changes</h3>
+        <p>Use the <img alt="To Previous Change button" src="../images/review_previous.png" /> <b>Previous</b> and the <img alt="To Next Change button" src="../images/review_next.png" /> <b>Next</b> buttons at the top toolbar to navigate among the changes.</p>
+        <p>To accept the currently selected change you can:</p>
+        <ul>
+            <li>click the <img alt="Accept button" src="../images/review_accepttoptoolbar.png" /> <b>Accept</b> button at the top toolbar, or</li>
+            <li>click the downward arrow below the <b>Accept</b> button and select the <b>Accept Current Change</b> option (in this case, the change will be accepted and you will proceed to the next change), or</li>
+            <li>click the <b>Accept</b> <img alt="Accept button" src="../images/review_accept.png" /> button of the change notification.</li>
+        </ul>
+        <p>To quickly accept all the changes, click the downward arrow below the <img alt="Accept button" src="../images/review_accepttoptoolbar.png" /> <b>Accept</b> button and select the <b>Accept All Changes</b> option.</p>
+        <p>To reject the current change you can:</p>
+        <ul>
+            <li>click the <img alt="Reject button" src="../images/review_rejecttoptoolbar.png" /> <b>Reject</b> button at the top toolbar, or</li>
+            <li>click the downward arrow below the <b>Reject</b> button and select the <b>Reject Current Change</b> option (in this case, the change will be rejected and you will move on to the next available change), or</li>
+            <li>click the <b>Reject</b> <img alt="Reject button" src="../images/review_reject.png" /> button of the change notification.</li>
+        </ul>
+        <p>To quickly reject all the changes, click the downward arrow below the <img alt="Reject button" src="../images/review_rejecttoptoolbar.png" /> <b>Reject</b> button and select the <b>Reject All Changes</b> option.</p>
+        <p class="note"><b>Note</b>: if you review the document the <b>Accept</b> and <b>Reject</b> options are not available for you. You can delete your changes using the <img alt="Delete change button" src="../images/review_delete.png" /> icon within the change balloon.</p>
+    </div>
+</body>
+</html>

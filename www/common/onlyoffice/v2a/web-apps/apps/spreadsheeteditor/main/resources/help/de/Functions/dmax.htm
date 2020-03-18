@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>DBMAX-Funktion</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>DBMAX-Funktion</h1>
+			<p>Die Funktion <b>DBMAX</b> gehört zur Gruppe der Datenbankfunktionen. Sie gib den größten Wert in einem Feld (einer Spalte) mit Datensätzen in einer Liste oder Datenbank zurück, der den von Ihnen angegebenen Bedingungen entspricht.</p>
+			<p>Die Formelsyntax der Funktion <b>DBMAX</b> ist:</p> 
+			<p style="text-indent: 150px;"><b><em>DBMAX(Datenbank;Datenbankfeld;Suchkriterien)</em></b></p> 
+            <p><em>Dabei gilt:</em></p>
+            <p style="text-indent: 50px;"><b><em>Datenbank</em></b> ist der Zellbereich, aus dem die Liste oder Datenbank besteht. Der Zellbereich muss Spaltenüberschriften in der ersten Zeile enthalten.</p>
+            <p style="text-indent: 50px;"><b><em>Datenbankfeld</em></b> gibt an, welches Feld (z.B. Spalte) in der Funktion verwendet wird. Es kann als Nummer der erforderlichen Spalte oder als in Anführungszeichen eingeschlossene Spaltenüberschrift angegeben werden.</p>
+            <p style="text-indent: 50px;"><b><em>Suchkriterien</em></b> ist der Zellbereich, der die angegebenen Bedingungen enthält. Der Zellbereich muss mindestens einen Feldnamen (Spaltenüberschrift) enthalten und mindestens eine Zelle darunter in der die Bedingung angegeben ist, die auf dieses Feld in der Datenbank angewendet werden soll. Der Zellbereich <b><em>Suchkriterien</em></b> sollte sich nicht mit dem Zellbereich <b><em>Datenbank</em></b> überlappen.</p>
+			<p>Anwendung der Funktion <b>DBMAX</b>.</p>
+			<ol>
+			<li>Wählen Sie die gewünschte Zelle für die Ergebnisanzeige aus.</li>
+			<li>Klicken Sie auf das Symbol <b>Funktion einfügen</b> <img alt="Funktion einfügen" src="../images/insertfunction.png" /> auf der oberen Symbolleiste <br />oder klicken Sie mit der rechten Maustaste in die gewünschte Zelle und wählen Sie die Option <b>Funktion einfügen</b> aus dem Kontextenü aus <br />oder klicken Sie auf das Symbol <img alt="Funktion" src="../images/function.png" /> auf der Formelleiste.</li>
+			<li>Wählen Sie die Funktionsgruppe <b>Datenbank</b> aus der Liste aus.</li>
+			<li>Klicken Sie auf die Funktion <b>DBMAX</b>.</li>
+			<li>Geben Sie die erforderlichen Argumente ein und trennen Sie diese durch Kommas oder wählen Sie den Zellenbereich mit der Maus aus.</li>
+			<li>Drücken Sie die <b>Eingabetaste</b>.</li>
+			</ol>
+			<p>Das Ergebnis wird in der gewählten Zelle angezeigt.</p>
+			<p style="text-indent: 150px;"><img alt="DBMAX-Funktion" src="../images/dmax.png" /></p>
+		</div>
+	</body>
+</html>

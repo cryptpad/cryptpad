@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Erweiterte Einstellungen des Dokumenteneditors</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="The advanced settings of Document Editor" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Erweiterte Einstellungen des Dokumenteneditors</h1>
+        <p>Über die Funktion erweiterten Einstellungen können Sie die Grundeinstellungen im <b>Dokumenteneditor</b> ändern. Klicken Sie dazu in der oberen Menüleiste auf die Registerkarte <b>Datei</b> und wählen Sie die Option <b>Erweiterte Einstellungen...</b>. Sie können auch das <img alt="Symbol Erweiterte Einstellungen" src="../images/advanced_settings_icon.png" /> Symbol in der rechten oberen Ecke der Registerkarte <b>Start</b> anklicken.</p>
+        <p>Die erweiterten Einstellungen umfassen:</p>
+        <ul>
+            <li><b>Kommentaranzeige</b> - zum Ein-/Ausschalten der Option Live-Kommentar:<ul>
+                <li><b>Anzeige von Kommentaren aktivieren</b> - wenn Sie diese Funktion deaktivieren, werden die kommentierten Passagen nur hervorgehoben, wenn Sie auf das Symbol <b>Kommentare</b> <img alt="Kommentare" src="../images/commentsicon.png" /> in der linken Seitenleiste klicken.</li>
+                <li><b>Anzeige der aufgelösten Kommentare aktivieren</b> - wenn Sie diese Funktion deaktivieren, werden die aufgelösten Kommentare im Dokumenttext verborgen. Sie können diese Kommentare nur ansehen, wenn Sie in der linken Seitenleiste auf das Symbol <b>Kommentare</b> <img alt="Kommentare" src="../images/commentsicon.png" /> klicken.</li>
+            </ul>
+            </li>
+            <li><b>Rechtschreibprüfung</b> - Ein-/Ausschalten der automatischen Rechtschreibprüfung.</li>
+            <li><b>Erweiterte Eingabe</b> - Ein-/Auszuschalten von Hieroglyphen.</li>
+            <li><b>Hilfslinien</b> - Aktivieren/Deaktivieren von Ausrichtungshilfslinien, die Ihnen dabei helfen Objekte präzise auf der Seite zu positionieren.</li>
+            <li class="onlineDocumentFeatures"><b>Automatische Sicherung</b> - automatische Speichern von Änderungen während der Bearbeitung ein-/ausschalten.</li>
+            <li class="onlineDocumentFeatures"><b>Co-Bearbeitung</b> - anzeige der während der Co-Bearbeitung vorgenommenen Änderungen:<ul>
+                    <li>Standardmäßig ist der <b>Schnellmodus</b> aktiviert. Die Benutzer, die das Dokuments gemeinsam bearbeiten, sehen die Änderungen in Echtzeit, sobald sie von anderen Benutzern vorgenommen wurden.</li>
+                    <li>Wenn Sie die Änderungen von anderen Benutzern nicht einsehen möchten (um Störungen zu vermeiden oder aus einem anderen Grund), wählen Sie den Modus <b>Strikt</b> und alle Änderungen werden erst angezeigt, nachdem Sie auf das Symbol <b>Speichern</b> <img alt="Speichern" src="../images/saveupdate.png" /> geklickt haben, dass Sie darüber informiert, dass Änderungen von anderen Benutzern vorliegen.</li>
+                </ul>
+            </li>
+            <li class="onlineDocumentFeatures"><b>Echtzeit-Änderungen bei gemeinsamer Bearbeitung</b> - legt fest, welche Änderungen bei der Co-Bearbeitung hervorgehoben werden sollen:<ul>
+                    <li>Wenn Sie die Option <b>Keine anzeigen</b> auswählen, werden die während der aktuellen Sitzung vorgenommenen Änderungen nicht hervorgehoben.</li>
+                    <li>Wenn Sie die Option <b>Alle anzeigen</b> auswählen, werden alle während der aktuellen Sitzung vorgenommenen Änderungen hervorgehoben.</li>
+                    <li>Wenn Sie die Option <b>Letzte anzeigen</b> auswählen, werden alle Änderungen hervorgehoben, die Sie vorgenommen haben, seit Sie das letzte Mal das Symbol <b>Speichern</b> <img alt="Speichern" src="../images/saveupdate.png" /> angeklickt haben. Diese Option ist nur verfügbar, wenn Sie in der Co-Bearbeitung den Modus <b>Strikt</b> ausgewählt haben.</li>
+                </ul>
+            </li>
+            <li><b>Standard-Zoomwert</b> - Einrichten des Standard-Zoomwerts aus der Liste der verfügbaren Optionen von 50 % bis 200 %. Sie können auch die Option <b>Auf Seite anpassen</b> oder <b>Auf Breite anpassen</b> auswählen.</li>
+            <li><b>Hinting</b> - Auswahl der Schriftartdarstellung im Dokumenteneditor:<ul>
+                    <li>Wählen Sie <b>Wie Windows</b>, wenn Ihnen die Art gefällt, wie die Schriftarten unter Windows gewöhnlich angezeigt werden, d.h. mit Windows-artigen Hints.</li>
+                    <li>Wählen Sie <b>Wie OS X</b>, wenn Ihnen die Art gefällt, wie die Schriftarten auf einem Mac gewöhnlich angezeigt werden, d.h. ohne Hints.</li>
+                    <li>Wählen Sie <b>Eingebettet</b>, wenn Sie möchten, dass Ihr Text mit den Hints angezeigt wird, die in Schriftartdateien eingebettet sind.</li>
+                </ul>
+            </li>
+            <li><b>Maßeinheiten</b> - geben Sie an, welche Einheiten auf den Linealen und in Eigenschaftenfenstern verwendet werden, um Elemente wie Breite, Höhe, Abstand, Ränder usw. zu messen. Sie können die Optionen <b>Zentimeter</b>, <b>Punkt</b>, oder <b>Zoll</b> wählen.</li>
+        </ul>
+        <p>Um die vorgenommenen Änderungen zu speichern, klicken Sie auf <b>Übernehmen</b>.</p>
+    </div>
+</body>
+</html>

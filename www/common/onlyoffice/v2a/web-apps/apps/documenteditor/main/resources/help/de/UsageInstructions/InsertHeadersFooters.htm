@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Kopf- und Fußzeilen einfügen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Insert headers and footers into your document, add different headers and footer to the first page or odd and even pages" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Kopf- und Fußzeilen einfügen</h1>
+			<p>Kopf- oder Fußzeile hinzuzufügen oder die vorhandene Kopf- oder Fußzeile bearbeiten:</p>
+			<ol>
+                <li>Wechseln Sie in der oberen Symbolleiste auf die Registerkarte <b>Einfügen</b>.</li>
+				<li>Klicken Sie aufs Symbol <img alt="Kopf-/Fußzeile bearbeiten" src="../images/headerfooter.png" /> <b>Kopf-/Fußzeile bearbeiten</b></li>
+				<li>Wählen Sie eine der folgenden Optionen:<ul>
+						<li><b>Kopfzeile bearbeiten</b>, um den Text in der Kopfzeile einzugeben oder zu bearbeiten.</li>
+						<li><b>Fußzeile bearbeiten</b>, um den Text in der Fußzeile einzugeben oder zu bearbeiten.</li>
+					</ul>
+				</li>
+				<li>Ändern der aktuellen Parameter für die Kopf- oder Fußzeile in der rechten Seitenleiste:<p><img alt="Rechte Seitenleiste - Kopf- und Fußzeileneinstellungen" src="../images/right_headerfooter.png" /></p>
+				<ul>
+				<li>Legen Sie die aktuelle <b>Position</b> des Texts relativ zum Seitenanfang (für Kopfzeilen) oder zum Seitenende (für Fußzeilen) fest.</li>
+				<li>Wenn Sie der ersten Seite eine andere oder keine Kopf- oder Fußzeile zuweisen wollen, aktivieren Sie die Option <b>Erste Seite anders</b>.</li>
+				<li>Mit der Option <b>Gerade &amp; ungerade Seiten unterschiedlich</b> können Sie geraden und ungeraden Seiten unterschiedliche Kopf- oder Fußzeilen zuweisen.</li>
+				<li>Die Option <b>Mit vorheriger verknüpfen</b> ist verfügbar, wenn Sie zuvor <a href="../UsageInstructions/SectionBreaks.htm" onclick="onhyperlinkclick(this)">Abschnitte</a> in Ihr Dokument eingefügt haben. Sind keine Abschnitte vorhanden, ist die Option ausgeblendet. Außerdem ist diese Option auch für den allerersten Abschnitt nicht verfügbar (oder wenn eine Kopf- oder Fußzeile ausgewählt ist, die zu dem ersten Abschnitt gehört). Standardmäßig ist dieses Kontrollkästchen aktiviert, sodass die selbe Kopf-/Fußzeile auf alle Abschnitte angewendet wird. Wenn Sie einen Kopf- oder Fußzeilenbereich auswählen, sehen Sie, dass der Bereich mit der Verlinkung <b>Wie vorherige</b> markiert ist. Deaktivieren Sie das Kontrollkästchen <b>Wie vorherige</b>, um für jeden Abschnitt des Dokuments eine andere Kopf-/Fußzeile zu verwenden. Die Markierung <b>Wie vorherige</b> wird nicht mehr angezeigt.</li>
+				</ul> 
+					<p><img alt="Wie vorherige Markierung" src="../images/sameasprevious_label.png" /></p>
+				</li>
+			</ol>
+			<p>Um einen Text einzugeben oder den bereits vorhandenen Text zu bearbeiten und die Einstellungen der Kopf- oder Fußzeilen zu ändern, können Sie auch im oberen oder unteren Bereich der Seite einen Doppelklick ausführen oder in diesem Bereich die rechte Maustaste klicken und über das Kontextmenü die gewünschte Option wählen: <b>Kopfzeile bearbeiten</b> oder <b>Fußzeile bearbeiten</b>.</p>
+			<p>Um zur Dokumentbearbeitung zurückzukehren, führen Sie einen Doppelklick im Arbeitsbereich aus. Der Inhalt Ihrer Kopf- oder Fußzeile wird grau angezeigt.</p>
+			<p class="note"><b>Hinweis</b>: Für Informationen über die Erstellung von Seitenzahlen, lesen Sie bitte den Abschnitt <a href="InsertPageNumbers.htm" onclick="onhyperlinkclick(this)">Seitenzahlen einfügen</a>.</p>
+		</div>
+	</body>
+</html>

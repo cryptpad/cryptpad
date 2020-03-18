@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Limpie texto, formatee en una celda, copie formato de celda</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Clear the text or the format within your worksheet, copy cell format" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Limpie texto, formatee en una celda, copie formato de celda</h1>
+            <h3>Elimine formato</h3>
+			<p>Usted puede eliminar rápidamente un texto o un formato dentro de una celda seleccionada. Para hacerlo,</p>
+			<ol>
+				<li>seleccione una celda, un rango de celdas usando el ratón o toda la hoja de cálculo pulsando la combinación de las teclas <b>Ctrl+A</b>,<p class="note"><b>Nota</b>: también puede seleccionar varias celdas o rangos de celdas no adyacentes pulsando la combinación de las teclas <b>Ctrl</b> mientras selecciona las celdas/rangos con el ratón.</p>
+                </li>
+				<li>pulse el icono <b>Limpiar</b> <img alt="Limpiar" src="../images/clear.png" /> en la pestaña de <b>Inicio</b> en la barra de herramientas superior y seleccione una de las opciones disponibles:<ul>
+				<li>use la opción <b>Todo</b> si quiere eliminar un texto, un formato, una función etc;</li>
+				<li>use la opción <b>Texto</b> si quiere eliminar un texto del rango de celdas seleccionado;</li>
+				<li>use la opción <b>Formato</b> si usted quiere limpiar un formato del rango de celdas seleccionado. Si hay un texto o funciones, no cambiarán;</li>
+                <li>use la opción <b>Comentarios</b> si usted quiere eliminar comentarios del rango de celdas seleccionado;</li>
+                <li>use la opción <b>Hiperenlaces</b> si usted quiere eliminar hiperenlaces del rango de celdas seleccionado.</li>
+				</ul>
+                <p class="note"><b>Nota</b>: todas estas opciones están también disponibles en el menú contextual.</p>
+				</li>
+			</ol>
+            <h3>Copiar formato de celda</h3>
+            <p>Puede de forma rápida copiar un formato de celda en concreto y aplicarlo a otras celdas.</p>
+            <p>Para aplicar el formato copiado a una sola celda o varias celdas adyacentes,</p>
+            <ol>
+                <li>seleccione una celda/rango de celdas de la cual usted quiere copiar el formato usnado el ratón o <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">teclado</a>,</li>
+                <li>pulse el icono <b>Copiar estilo</b> <img alt="Copiar estilo" src="../images/copystyle.png" /> en la pestaña de <b>Inicio</b> en la barra de herramientas superior, (el cursor del ratón estará así <img alt="Cursor del ratón al pegar el estilo" src="../images/paste_style.png" />),</li>
+                <li>seleccione una celda/rango de celdas a las que usted quiere aplicar el formato.</li>
+            </ol>
+            <p>Para aplicar el formato copiado a varias celdas o rangos de celdas no adyacentes,</p>
+            <ol>
+                <li>seleccione una celda/rango de celdas de la cual usted quiere copiar el formato usnado el ratón o <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">teclado</a>,</li>
+                <li>haga doble clic en el <img alt="Copiar estilo" src="../images/copystyle.png" /> icono <b>Copiar estilo</b> en la pestaña <b>Inicio</b> de la barra de herramientas superior, (el cursor del ratón estará así <img alt="Cursor del ratón al pegar el estilo" src="../images/paste_style.png" />, y el icono <b>Copiar estilo</b> permanecerá seleccionado: <img alt="Estilo de copiar de forma múltiple" src="../images/copystyle_selected.png" />),</li>
+                <li>haga clic en celdas o rangos de celdas una por una para aplicar el mismo formato a todas ellas,</li>
+                <li>Para salir de este modo, haga clic en el <img alt="Estilo de copiar de forma múltiple" src="../images/copystyle_selected.png" /> icono <b>Copiar Estilo</b> otra vez o presione la tecla <b>Esc</b> en el teclado.</li>
+            </ol>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fonction BINHEX</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Fonction BINHEX</h1>
+			<p>La fonction <b>BINHEX</b> est l'une des fonctions d'ingénierie. Elle est utilisée pour convertir un nombre binaire en un nombre hexadécimal.</p>
+			<p>La syntaxe de la fonction <b>BINHEX</b> est :</p> 
+			<p style="text-indent: 150px;"><b><em>BINHEX(number [, num-hex-digits])</em></b></p>
+			<p><em>où</em></p>  
+			    <p style="text-indent: 50px;"><b><em>number</em></b> est une valeur numérique saisie à la main ou incluse dans la cellule à laquelle il est fait référence.</p> 
+				<p style="text-indent: 50px;"><b><em>num-hex-digits</em></b> est le nombre de chiffres à afficher. Si omis, la fonction utilisera le nombre minimum.</p> 
+			<p class="note"><b>Remarque :</b> si l'argument n'est pas reconnu comme un nombre binaire ou contient plus de 10 caractères, ou si le nombre hexadécimal obtenu nécessite plus de chiffres que vous avez spécifié, ou si le nombre <b><em>num-hex-digits</em></b> spécifié est inférieur ou égal à 0, le La fonction retournera l'erreur <b>#NOMBRE!</b>.</p>
+			<p>Pour appliquer la fonction <b>BINHEX</b>,</p>
+			<ol>
+			<li>sélectionnez la cellule où vous souhaitez afficher le résultat,</li>
+			<li>cliquez sur l'icône <b>Insérer une fonction</b> <img alt="Icône Insérer une fonction" src="../images/insertfunction.png" /> située sur la barre d'outils supérieure, <br />ou cliquez avec le bouton droit sur la cellule sélectionnée et sélectionnez l'option <b>Insérer une fonction</b> depuis le menu, <br />ou cliquez sur l'icône <img alt="Icône Fonction" src="../images/function.png" /> située sur la barre de formule,</li>
+			<li>sélectionnez le groupe de fonctions <b>Ingénierie</b> depuis la liste,</li>
+			<li>cliquez sur la fonction <b>BINHEX</b>,</li>
+			<li>insérez les arguments requis en les séparant par des virgules,</li>
+			<li>appuyez sur la touche <b>Entrée</b>.</li>
+			</ol>
+			<p>Le résultat sera affiché dans la cellule sélectionnée.</p>
+			<p style="text-indent: 150px;"><img alt="Fonction BINHEX" src="../images/bin2hex.png" /></p>
+		</div>
+	</body>
+</html>

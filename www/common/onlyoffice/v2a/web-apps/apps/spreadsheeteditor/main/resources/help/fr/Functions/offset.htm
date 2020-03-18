@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fonction DECALER</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+            <div class="search-field">
+                <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+            </div>
+			<h1>Fonction DECALER</h1>
+			<p>La fonction <b>DECALER</b> est l'une des fonctions de recherche et de référence. Elle est utilisée pour renvoyer une référence à une cellule déplacée de la cellule spécifiée (ou de la cellule supérieure gauche dans la plage de cellules) à un certain nombre de lignes et de colonnes.</p>
+			<p>La syntaxe de la fonction <b>DECALER</b> est :</p> 
+			<p style="text-indent: 150px;"><b><em>DECALER(reference, rows, cols[, [height] [, [width]]])</em></b></p> 
+			<p><em>où</em></p> 
+			<p style="text-indent: 50px;"><em><b>reference</b></em> est une référence à une cellule initiale ou à une plage de cellules.</p>
+			<p style="text-indent: 50px;"><em><b>rows</b></em> est un nombre de lignes, vers le haut ou vers le bas, auquel vous voulez faire référence dans la cellule supérieure gauche de la référence renvoyée. Les nombres positifs signifient que le résultat se déplacera sous la cellule initiale. Les valeurs négatives signifient qu'il se déplacera au-dessus de la cellule initiale.</p>
+			<p style="text-indent: 50px;"><em><b>cols</b></em> est un nombre de colonnes, à gauche ou à droite, que vous voulez faire référence à la cellule supérieure gauche de la référence renvoyée. Les nombres positifs signifient que le résultat se déplacera vers la droite de la cellule initiale. Les valeurs négatives signifient qu'elle se déplacera à gauche de la cellule initiale.</p>
+            <p style="text-indent: 50px;"><em><b>height</b></em> est un nombre de lignes dans la référence renvoyée. La valeur doit être un nombre positif. C'est un argument facultatif. S'il est omis, la fonction suppose qu'il correspond à la hauteur de la plage initiale.</p>
+            <p style="text-indent: 50px;"><em><b>width</b></em> est un nombre de colonnes dans la référence renvoyée. La valeur doit être un nombre positif. C'est un argument facultatif. S'il est omis, la fonction suppose qu'il correspond à la largeur de la plage initiale.</p>
+			<p>Pour appliquer la fonction <b>DECALER</b>,</p>
+			<ol>
+			<li>sélectionnez la cellule où vous souhaitez afficher le résultat,</li>
+			<li>cliquez sur l'icône <b>Insérer une fonction</b> <img alt="Icône Insérer une fonction" src="../images/insertfunction.png" /> située sur la barre d'outils supérieure, <br />ou cliquez avec le bouton droit sur la cellule sélectionnée et sélectionnez l'option <b>Insérer une fonction</b> depuis le menu, <br />ou cliquez sur l'icône <img alt="Icône Fonction" src="../images/function.png" /> située sur la barre de formule,</li>
+			<li>sélectionnez le groupe de fonctions <b>Recherche et référence</b> depuis la liste,</li>
+			<li>cliquez sur la fonction <b>DECALER</b>,</li>
+			<li>insérez les arguments nécessaires en les séparant par des virgules,</li>
+			<li>appuyez sur la touche <b>Entrée</b>.</li>
+			</ol>
+			<p>Le résultat sera affiché dans la cellule sélectionnée.</p>
+			<p style="text-indent: 150px;"><img alt="Fonction DECALER" src="../images/offset.png" /></p>
+		</div>
+	</body>
+</html>

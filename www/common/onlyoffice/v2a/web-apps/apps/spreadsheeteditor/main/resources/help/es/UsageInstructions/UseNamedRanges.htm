@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Usar rangos con nombre</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Use named ranges to simplify working with formulas" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Usar rangos con nombre</h1>
+            <p>Los nombres son notaciones útiles, las cuales se pueden asignar a una celda o rango de celdas y se puede usar para simplificar el trabajo con fórmulas. Al crear una fórmula, puede introducir un nombres como su argumento en vez de usar una referencia para un rango de celda. Por ejemplo, si asigna el nombre de <em>Ingreso_Anual</em> para un rango de celda, será posible introducir <em>=SUMA(Ingreso_Anual)</em> en vez de <em>=SUMA(B1:B12)</em>. Con esta forma, las fórmulas son más claras. Esta característica también puede ser útil en el caso de que sean muchas las funciones que se refieren a una celda o el mismo rango de celda. Si la dirección del rango se cambia, puede hacer la corrección una vez que use el Organizador de Nombres en vez de editar todas las fórmulas una a una.</p>
+			<p>Hay dos tipos de nombres que se pueden usar:</p>
+            <ul>
+                <li><b>Nombre definido</b> - un nombre arbitrario que puede especificar para un rango de celda específico.</li>
+                <li><b>Nombre Defecto</b> - un nombre por defecto que se asigna de manera automática a una <a href="SortData.htm#tabletemplate" onclick="onhyperlinkclick(this)">tabla nuevamente formateada</a> (<em>Mesa1</em>, <em>Mesa2</em> etc.). Puede editar dicho nombre más adelante.</li>
+            </ul>
+            <p>Los nombres también se pueden clasificar por su <b>Alcance</b>, por ejemplo, el lugar donde el nombre se reconoce. Un nombre se puede alcanzar a todo el libro de trabajo (será reconocido por cualquier hoja de cálculo en este libro de trabajo) o a una hoja de cálculo (será reconocido solo por la hoja de cálculo especificada). Cada nombre debe ser único en un solo alcance, los mismo nombres se pueden usar en alcances distintos.</p>
+            <h3>Crear nombres nuevos</h3>
+			<p>Para crear un nombre nuevo para una selección:</p>
+			<ol>
+			<li>Seleccione una celda o rango de celdas a las que quiera asignar un nombre.</li>
+			<li>Abra una ventana de nuevo nombre de forma adecuada:<ul>
+                    <li>haga clic derecho en la selección y seleccione la opción de <b>Definir nombre</b> del menú contextual,</li>
+                    <li>o haga clic en el icono <b>Rangos nombrados</b> <img alt="Icono rangos nombrados" src="../images/namedranges.png" /> en la pestaña de <b>Inicio</b> en la barra de herramientas superior y seleccione la opción <b>Nombre Nuevo</b> del menú.</li>
+                </ul>
+                <p>La ventana <b>Nombre Nuevo</b> se abrirá:</p>
+                <p><img alt="Ventana Nombre nuevo" src="../images/newnamewindow.png" /></p>
+            </li>
+            <li>Introduzca el <b>Nombre</b> necesario en el texto en el campo de entrada.<p class="note"><b>Nota</b>: un nombre no puede empezar con un número, o contener espacios o marcas de puntuación. Las barras bajas (_) están permitidas. No importa si es mayúscula o minúscula.</p>   
+            </li>
+            <li>Especifique el nombre del <b>Alcance</b>. El alcance del <em>Libro de trabajo</em> se selecciona de manera predeterminada, pero puede especificar una hoja de cálculo específica seleccionándola en la lista.</li>
+            <li>Verifique la dirección del <b>Rango de datos</b> seleccionado. Si es necesario, puede cambiarlo. Haga clic en el botón <b>Datos seleccionados</b> - la ventana <b>Seleccione rango de datos</b> se abrirá.<p><img alt="Ventana seleccione rango de datos" src="../images/selectdatarange.png" /></p>   
+            <p>Cambie el enlace del rango de celdas en el campo de entrada o seleccione un nuevo rango en la hoja de cálculo son el ratón y luego haga clic en <b>OK</b>.</p> 
+            </li>
+            <li>Haga clic en <b>OK</b> para guardar en nombre nuevo.</li>
+			</ol>
+            <p>Para crear de manera rápida un nombre nuevo para el rango de celdas seleccionado, puede introducir el nombre deseado en el cuadro de nombres que se encuentra a la izquierda de la barra de fórmulas y presionar <b>Enter</b>. Un nombre creado de esta forma se alcanza en el <em>Libro de trabajo</em>.</p>
+            <p><img alt="Cuadro de nombre" src="../images/namefield.png" /></p>
+			<h3>Organizador de nombres</h3>
+            <p>Todos los nombres existentes se pueden acceder a través del <b>Organizador de nombres</b>. Para abrirlo:</p>
+            <ul>
+                <li>haga clic en el icono <b>Rangos nombrados</b> <img alt="Icono rangos nombrados" src="../images/namedranges.png" /> en la pestaña de <b>Inicio</b> en la barra de herramientas superior y seleccione la opción <b>Organizador de nombres</b> del menú.</li>
+                <li>o haga clic en la flecha en el campo de entrada y seleccione la opción <b>Organizador</b>.</li>
+            </ul>
+            <p>La ventana <b>Organizador de Nombres</b> se abrirá:</p>
+            <p><img alt="Ventana organizador de nombres" src="../images/namemanagerwindow.png" /></p>
+            <p>Para su conveniencia, puede filtrar los nombres seleccionando la categoría de nombre que quiere mostrar: <b>Todos</b>, <b>Nombres definidos</b>, <b>Nombres por defecto</b>, <b>Nombres alcanzados a una hoja de cálculo</b>, <b>Nombres alcanzados a un libro de trabajo</b>. Los nombres que pertenecen a la categoría seleccionada se mostrarán en la lista, los otros nombres se ocultarán.</p>
+            <p>Para cambiar el orden clasificación para la lista mostrada puede hacer clic en títulos <b>Rangos nombrados</b> o <b>Alcance</b> en esta ventana.</p>
+            <p><b>Para editar un nombre</b>, selecciónelo en la lista y haga clic en el botón <b>Editar</b>. La ventana <b>Editar nombre</b> se abrirá:</p>
+            <p><img alt="Ventana Editar nombre" src="../images/editnamewindow.png" /></p>
+            <p>Para un nombre definido, puede cambiar el nombre y el rango de datos al que se refiere. Para un nombre defecto, solo puede cambiar el nombre. Cuando todos los cambios necesarios se han llevado a cabo, haga clic en <b>OK</b> para que se realicen. Para descartar los cambios realizados, haga clic en <b>Cancelar</b>. Si el nombre editado se usa en una fórmula, la fórmula se cambiará en consecuencia.</p>
+            <p><b>Para eliminar un nombre</b>, selecciónelo en la lista y haga clic en el botón <b>Borrar</b>.</p>
+            <p class="note"><b>Nota</b>: si elimina el nombre que se usa en la fórmula, la fórmula no funcionará (devolverá el error  <em>#NAME?</em>).</p>  
+            <p>También puede crear un nombre nuevo en la ventana <b>Organizador de nombres</b> si hace clic en el botón <b>Nuevo</b>.</p>
+			<h3 id="usingnames">Use nombres cuando trabaje con hojas de cálculo</h3>
+            <p><b>Para navegar por los rangos de celdas de forma rápida</b> puede hacer clic en la flecha en el nombre del cuadro y seleccionar el nombre necesario de la lista de nombres - el rango de datos que corresponde con este nombre se seleccionará en la hoja de cálculo.</p>
+            <p><img alt="Lista de nombres" src="../images/namelist.png" /></p>
+            <p class="note"><b>Nota</b>: la lista de nombres muestra los nombres definidos y nombres por defecto alcanzados en la hoja de cálculo actual y en todo el libro de trabajo.</p>
+            <p><b>Para añadir un nombre como argumento a una fórmula</b>:</p>
+            <ol>
+                <li>Ponga el punto de inserción donde quiera introducir el nombre.</li>
+                <li>Haga una de las opciones siguientes:<ul>
+                        <li>introduzca el nombre del rango nombrado necesario de forma manual usando el teclado. Una vez que escriba las letras iniciales, la lista <b>Auto-completar fórmula</b> se mostrará. Según escribe, los elementos (fórmulas y nombres) que coinciden con los caracteres introducido se mostrarán. Puede seleccionar el nombre necesario de la lista e introducirlo en la fórmula si hace doble clic en este o lo mantiene apretado con la tecla <b>Tab</b>.</li>
+                        <li>o haga clic en el icono <b>Rangos nombrados</b> <img alt="Icono rangos nombrados" src="../images/namedranges.png" /> en la pestaña de <b>Inicio</b> en la barra de herramientas superior, seleccione la opción <b>Pegar nombre</b> del menú, elija el nombre necesario de la ventana <b>Pegar nombre</b> y haga clic en <b>OK</b>:<p><img alt="Ventana Pegar nombre" src="../images/pastenamewindow.png" /></p>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+            <p class="note"><b>Nota</b>: la ventana <b>Pegar nombres</b> muestra los nombres definidos y nombres por defecto alcanzados en la hoja de cálculo actual y en todo el libro de trabajo.</p>  
+		</div>
+	</body>
+</html>

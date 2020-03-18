@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Régler les paramètres de page</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Set page parameters: change page orientation and size, adjust margins and insert columns" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Régler les paramètres de page</h1>
+			<p>Pour modifier la mise en page, c'est-à-dire définir l'orientation et la taille de la page, ajuster les marges et insérer des colonnes, utilisez les icônes correspondantes dans l'onglet <b>Mise en page</b> de la barre d'outils supérieure.</p>
+            <p class="note"><b>Remarque</b>: tous ces paramètres sont appliqués au document entier. Si vous voulez définir de différentes marges de page, l'orientation, la taille, ou le numéro de colonne pour les parties différentes de votre document, consultez <a href="../UsageInstructions/SectionBreaks.htm" onclick="onhyperlinkclick(this)">cette page</a>.</p>
+			<h3 id="orientation">Orientation de page</h3>
+            <p>Changez l'orientation de page actuelle en cliquant sur l'icône <b>Orientation de page</b> <img alt="Icône Orientation" src="../images/orientation.png" />. Le type d'orientation par défaut est <b>Portrait</b> qui peut être commuté sur <b>Album</b>.</p>
+            <h3 id="size">Taille de la page</h3>
+            <p>Changez le format A4 par défaut en cliquant sur l'icône <b>Taille de la page</b> <img alt="icône Taille de la page" src="../images/pagesize.png" /> et sélectionnez la taille nécessaire dans la liste. Les formats offerts sont les suivants :</p>
+            <ul>
+                <li>US Letter (21,59cm x 27,94cm)</li>
+                <li>US Legal (21,59cm x 35,56cm)</li>
+                <li>A4 (21cm x 29,7cm)</li>
+                <li>A5 (14,81cm x 20,99cm)</li>
+                <li>B5 (17,6cm x 25,01cm)</li>
+                <li>Envelope #10 (10,48cm x 24,13cm)</li>
+                <li>Envelope DL (11,01cm x 22,01cm)</li>
+                <li>Tabloid (27,94cm x 43,17cm)</li>
+                <li>AЗ (29,7cm x 42,01cm)</li>
+                <li>Tabloid Oversize (30,48cm x 45,71cm)</li>
+                <li>ROC 16K (19,68cm x 27,3cm)</li>
+                <li>Envelope Choukei 3 (11,99cm x 23,49cm)</li>
+                <li>Super B/A3 (33,02cm x 48,25cm)</li>
+            </ul>
+            <p>Vous pouvez définir une taille de la page particulière en utilisant l'option <b>Taille personnalisée</b> dans la liste. La fenêtre <b>Taille de la page</b> s'ouvrira où vous pourrez sélectionner le <b>Préréglage</b> voulu (US Letter, US Legal, A4, A5, B5, Enveloppe #10, Enveloppe DL, Tabloid, AЗ, Tabloid Oversize, ROC 16K, Enveloppe Choukei 3, Super B/A3, A0, A1, A2, A6) ou définir des valeurs personnalisées de <b>Largeur</b> et <b>Hauteur</b>. Entrez vos nouvelles valeurs dans les champs d'entrées ou ajustez les valeurs existantes en utilisant les boutons de direction. Lorsque tout est prêt, cliquez sur <b>OK</b> pour appliquer les changements.</p>
+            <p><img alt="Custom Page Size" src="../images/custompagesize.png" /></p>
+            <h3 id="margins">Marges de la page</h3>
+            <p>Modifiez les marges par défaut, c-à-d l’espace entre les bords de la page et le texte du paragraphe, en cliquant sur l'icône <img alt="icône Marges de page" src="../images/pagemargins.png" /> <b>Marges</b> et sélectionnez un des paramètres prédéfinis : <b>Normal</b>, <b>US Normal</b>, <b>Étroit</b>, <b>Modérer</b>, <b>Large</b>. Vous pouvez aussi utiliser l'option <b>Marges personnalisées</b> pour définir les valeurs nécessaires dans la fenêtre <b>Marges</b> qui s'ouvre. Entrez les valeurs des marges <b>Haut</b>, <b>Bas</b>, <b>Gauche</b> et <b>Droite</b> de la page dans les champs d'entrées ou ajustez les valeurs existantes en utilisant les boutons de direction. Lorsque tout est prêt, cliquez sur <b>OK</b>. Les marges personnalisées seront appliquées au document actuel et l'option <b>Dernière mesure</b> avec les paramètres spécifiés apparaît dans la liste des <b>Marges de la page</b> <img alt="icône Marges de page" src="../images/pagemargins.png" /> pour que vous puissiez les appliquer à d'autres documents.</p>
+            <p><img alt="Marges personnalisées" src="../images/custommargins.png" /></p>
+            <p>Vous pouvez également modifier les marges manuellement en faisant glisser la bordure entre les zones grises et blanches sur les règles (les zones grises des règles indiquent les marges de page):</p>
+            <p><img alt="Ajustement des marges" src="../images/margins.png" /></p>
+            <h3 id="columns">Colonnes</h3>
+            <p>Pour appliquez une mise en page multicolonne, cliquez sur l'icône <b>Insérer des colonnes</b> <img alt="icône Insérer des colonnes" src="../images/insertcolumns.png" /> et sélectionnez le type de la colonne nécessaire dans la liste déroulante. Les options suivantes sont disponibles :</p>
+            <ul>
+                <li><b>Deux</b> <img alt="icône deux colonnes" src="../images/twocolumns.png" /> - pour ajouter deux colonnes de la même largeur,</li>
+                <li><b>Trois</b> <img alt="icône trois colonnes" src="../images/threecolumns.png" /> - pour ajouter trois colonnes de la même largeur,</li>
+                <li><b>A gauche</b> <img alt="icône colonne gauche" src="../images/leftcolumn.png" /> - pour ajouter deux colonnes: une étroite colonne à gauche et une large colonne à droite,</li>
+                <li><b>A droite</b> <img alt="icône colonne droite" src="../images/rightcolumn.png" /> - pour ajouter deux colonnes: une étroite colonne à droite et une large colonne à gauche.</li>
+            </ul>
+            <p>Si vous souhaitez ajuster les paramètres de colonne, sélectionnez l'option <b>Colonnes personnalisées</b> dans la liste. La fenêtre <b>Colonnes</b> s'ouvrira où vous pourrez définir le <b>Nombre de colonnes</b> nécessaire (il est possible d'ajouter jusqu'à 12 colonnes) et l'<b>Espacement entre les colonnes</b>. Entrez vos nouvelles valeurs dans les champs d'entrées ou ajustez les valeurs existantes en utilisant les boutons de direction. Cochez la case <b>Diviseur de colonne</b> pour ajouter une ligne verticale entre les colonnes. Lorsque tout est prêt, cliquez sur <b>OK</b> pour appliquer les changements.</p>
+            <p><img alt="Colonnes personnalisées" src="../images/customcolumns.png" /></p>
+            <p>Pour spécifier exactement la position d'une nouvelle colonne, placez le curseur avant le texte à déplacer dans une nouvelle colonne, cliquez sur l'icône <img alt="icône Saut de section" src="../images/pagebreak1.png" /> <b>Sauts de page</b> de la barre d'outils supérieure et sélectionnez l'option <b>Insérer un saut de colonne</b>. Le texte sera déplacé vers la colonne suivante.</p>
+            <p>Les sauts de colonne ajoutés sont indiqués dans votre document par une ligne pointillée: <img alt="Saut de colonne" src="../images/columnbreak.png" />. Si vous ne voyez pas de sauts de section insérés, cliquez sur l'icône <img alt="Icône Caractères non imprimables" src="../images/nonprintingcharacters.png" /> de l'onglet <b>Accueil</b> de la barre d'outils supérieure pour les afficher. Pour supprimer un saut de colonne,sélectionnez-le avec le souris et appuyez sur une touche <b>Supprimer</b>.</p>
+            <p>Pour modifier manuellement la largeur et l'espacement entre les colonnes, vous pouvez utiliser la règle horizontale.</p>
+            <p><img alt="Espacemment entre les colonnes" src="../images/columnspacing.png" /></p>
+            <p>Pour annuler les colonnes et revenir à la disposition en une seule colonne, cliquez sur l'icône <b>Insérer des colonnes</b> <img alt="icône Insérer des colonnes" src="../images/insertcolumns.png" /> de la barre d'outils supérieure et sélectionnez l'option <b>Une</b> <img alt="icône Une colonne" src="../images/onecolumn.png" /> dans la liste.</p>		
+		</div>
+	</body>
+</html>

@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Add bookmarks</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Bookmarks allow to quickly jump to a certain position in the current document or add a link to this location within the document." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Add bookmarks</h1>
+            <p>Bookmarks allow to quickly jump to a certain position in the current document or add a link to this location within the document.</p>
+			<p>To add a bookmark within a document:</p>
+			<ol>
+                <li>put the mouse cursor at the beginning of the text passage where you want the bookmark to be added,</li>
+                <li>switch to the <b>References</b> tab of the top toolbar,</li>
+                <li>click the <img alt="Bookmark icon" src="../images/bookmark.png" /> <b>Bookmark</b> icon at the top toolbar,</li>
+				<li>in the <b>Bookmarks</b> window that opens, enter the <b>Bookmark name</b> and click the <b>Add</b> button - a bookmark will be added to the bookmark list displayed below,
+                    <p class="note"><b>Note</b>: the bookmark name should begin wish a letter, but it can also contain numbers. The bookmark name cannot contain spaces, but can include the underscore character "_".</p>
+                    <p><img alt="Bookmarks window" src="../images/bookmark_window.png" /></p>
+                </li>
+			</ol>
+            <p>To go to one of the added bookmarks within the document text:</p>
+            <ol>
+                <li>click the <img alt="Bookmark icon" src="../images/bookmark.png" /> <b>Bookmark</b> icon at the <b>References</b> tab of the top toolbar,</li>
+                <li>in the <b>Bookmarks</b> window that opens, select the bookmark you want to jump to. To easily find the necessary bookmark in the list you can sort the list by bookmark <b>Name</b> or by <b>Location</b> of a bookmark within the document text,</li>
+                <li>check the <b>Hidden bookmarks</b> option to display hidden bookmarks in the list (i.e. the bookmarks automatically created by the program when adding references to a certain part of the document. For example, if you create a hyperlink to a certain heading within the document, the document editor automatically creates a hidden bookmark to the target of this link).</li>
+                <li>click the <b>Go to</b> button - the cursor will be positioned in the location within the document where the selected bookmark was added,</li>
+                <li>click the <b>Close</b> button to close the window.</li>
+            </ol>
+            <p>To delete a bookmark select it in the bookmark list and use the <b>Delete</b> button.</p>
+            <p>To find out how to use bookmarks when creating links please refer to the <a href="../UsageInstructions/AddHyperlinks.htm" onclick="onhyperlinkclick(this)">Add hyperlinks</a> section.</p>
+
+		</div>
+	</body>
+</html>

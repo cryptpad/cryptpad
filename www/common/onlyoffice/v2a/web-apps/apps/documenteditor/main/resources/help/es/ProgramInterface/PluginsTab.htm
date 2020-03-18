@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Pestaña de Extensiones</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Introducing the Document Editor user interface - Plugins tab" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Pestaña de Extensiones</h1>
+            <p>La pestaña de <b>Extensiones</b> permite acceso a características de edición avanzadas usando componentes disponibles de terceros. Aquí también puede utilizar macros para simplificar las operaciones rutinarias.</p>
+            <p><img alt="Pestaña Plugins" src="../images/interface/pluginstab.png" /></p>
+            <p>El botón <b>Macros</b> permite abrir la ventana donde puede crear sus propias macros y ejecutarlas. Para aprender más sobre macros puede referirse a nuestra <a target="_blank" href="https://api.onlyoffice.com/plugin/macros" onclick="onhyperlinkclick(this)">Documentación de API</a>.</p>
+            <p>Actualmente, los siguientes plugins están disponibles por defecto:</p>		
+            <ul>
+                <li><b>ArteClip</b> permite añadir imágenes de la colección de arteclip a su documento,</li>
+                <li><b>OCR</b> permite reconocer el texto incluido en una imagen e insertarlo en el texto de un documento,</li>
+                <li><b>EditordeImágenes</b> permite editar imágenes: cortar, cambiar el tamaño, aplicar efectos etc.,</li>
+                <li><b>Discurso</b> permite convertir el texto seleccionado en un discurso,</li>
+                <li><b>Tabla de Símbolos</b> permite insertar símbolos especiales en su texto,</li>
+                <li><b>Traductor</b> permite traducir el texto seleccionado en otros idiomas,</li>
+                <li><b>YouTube</b> permite incorporar vídeos en su documento.</li>
+            </ul>
+            <p>Los plugins <b>Wordpress</b> y <b>EasyBib</b> pueden usarse si conecta los servicios correspondientes en la configuración de su portal. Puede utilizar las siguientes instrucciones <a target="_blank" href="https://helpcenter.onlyoffice.com/server/windows/community/authorization-keys.aspx" onclick="onhyperlinkclick(this)">para la versión de servidor</a> o <a target="_blank" href="https://helpcenter.onlyoffice.com/tipstricks/authorization-keys-saas.aspx" onclick="onhyperlinkclick(this)">para la versión SaaS</a>.</p>
+            <p>Para aprender más sobre los plugins por favor refiérase a nuestra <a target="_blank" href="https://api.onlyoffice.com/plugin/basic" onclick="onhyperlinkclick(this)">Documentación de API</a>. Todos los ejemplos de plugin existentes y de acceso libre están disponibles en <a target="_blank" href="https://github.com/ONLYOFFICE/sdkjs-plugins" onclick="onhyperlinkclick(this)">GitHub</a></p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Afficher les informations sur la présentation</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="View presentation title, author, location, creation date, persons with the rights to view or edit the presentation" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Recherche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Afficher les informations sur la présentation</h1>
+			<p>Pour accéder aux informations détaillées sur la présentation actuellement modifiée, cliquez sur l'onglet <b>Fichier</b> de la barre d'outils supérieure et sélectionnez l'option <b>Infos sur la présentation</b>.</p>
+            <h3>Informations générales</h3>
+            <p>Les informations de présentation comprennent le titre de la présentation, l'auteur, l'emplacement et la date de création.</p>
+            <div class="onlineDocumentFeatures">
+                <p class="note"><b>Remarque</b> : Les éditeurs en ligne vous permettent de modifier le titre de la présentation directement à partir de l'interface de l'éditeur. Pour ce faire, cliquez sur l'onglet <b>Fichier</b> de la barre d'outils supérieure et sélectionnez l'option <b>Renommer...</b>, puis entrez le nouveau <b>Nom de fichier</b> dans une nouvelle fenêtre qui s'ouvre et cliquez sur <b>OK</b>.</p>
+            </div>
+            <div class="onlineDocumentFeatures">
+            <h3>Informations d'autorisation</h3>
+            <p class="note"><b>Remarque</b> : cette option n'est pas disponible pour les utilisateurs disposant des autorisations en <b>Lecture seule</b>.</p>
+            <p>Pour savoir qui a le droit d'afficher ou de modifier la présentation, sélectionnez l'option <b>Droits d'accès...</b> dans la barre latérale de gauche.</p>
+			<p>Si vous avez l'accès complet à cette présentation, vous pouvez également changer les droits d'accès actuels en cliquant sur le bouton <b>Changer les droits d'accès</b> dans la section <b>Personnes qui ont des droits</b>.</p>
+            </div>
+			<p>Pour fermer l'onglet <b>Fichier</b> et reprendre le travail sur votre présentation, sélectionnez l'option <b>Retour à la présentation</b>.</p>
+		</div>
+	</body>
+</html>

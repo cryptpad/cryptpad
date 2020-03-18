@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Daten filtern und sortieren</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Sort your data in ascending or descending order in a spreadsheet" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Daten filtern und sortieren</h1>
+			<h3>Daten sortieren</h3>
+			<p>Sie können Ihre Daten in einer Tabelle mithilfe der verfügbaren Optionen schnell sortieren:</p>
+			<ul>
+			<li><b>Aufsteigend</b> wird genutzt, um Ihre Daten in aufsteigender Reihenfolge zu sortieren - von A bis Z alphabetisch oder von den kleinsten bis zu den größten nummerischen Werten.</li>
+			<li><b>Absteigend</b> wird genutzt, um Ihre Daten in absteigender Reihenfolge zu sortieren - von Z bis A alphabetisch oder von den größten bis zu den kleinsten nummerischen Werten.</li>
+			</ul>
+			<p>Daten sortieren:</p>
+			<ol>
+				<li>Wählen Sie den Zellenbereich aus, den Sie sortieren möchten (Sie können eine einzelne Zelle in einem Bereich auswählen, um den gesamten Bereich zu sortieren.</li>
+				<li>Klicken Sie auf das Symbol <b>Von A bis Z sortieren</b> <img alt="Von A bis Z sortieren" src="../images/sortatoz.png" /> in der Registerkarte <b>Start</b> auf der oberen Symbolleiste, um Ihre Daten in aufsteigender Reihenfolge zu sortieren, <br />ODER<br /> klicken Sie auf das Symbol <b>Von Z bis A sortieren</b> <img alt="Von Z bis A sortieren" src="../images/sortztoa.png" /> in der Registerkarte <b>Start</b> auf der oberen Symbolleiste, um Ihre Daten in absteigender Reihenfolge zu sortieren.</li>
+			</ol>
+            <p class="note"><b>Hinweis</b>: Wenn Sie eine einzelne Spalte / Zeile innerhalb eines Zellenbereichs oder eines Teils der Spalte / Zeile auswählen, werden Sie gefragt, ob Sie die Auswahl um benachbarte Zellen erweitern oder nur die ausgewählten Daten sortieren möchten.</p>
+			<p>Sie können Ihre Daten auch mit Hilfe der Optionen im <b>Kontextmenü</b> sortieren. Klicken Sie mit der rechten Maustaste auf den ausgewählten Zellenbereich, wählen Sie im Menü die Option <b>Sortieren</b> und dann im Untermenü auf die gewünschte Option <b>Aufsteigend</b> oder <b>Absteigend</b>.</p>
+            <p>Mithilfe des Kontextmenüs können Sie die Daten auch nach Farbe sortieren.</p>
+            <ol>
+                <li>Klicken Sie mit der rechten Maustaste auf eine Zelle, die die Farbe enthält, nach der Sie Ihre Daten sortieren möchten.</li>
+                <li>Wählen Sie die Option <b>Sortieren</b> aus dem Menü aus.</li>
+                <li>Wählen Sie die gewünschte Option aus dem Untermenü aus:<ul>
+                        <li><b>Ausgewählte Zellenfarbe oben</b> - um die Einträge mit der gleichen Zellenhintergrundfarbe oben in der Spalte anzuzeigen.</li>
+                        <li><b>Ausgewählte Schriftfarbe oben</b> - um die Einträge mit der gleichen Schriftfarbe oben in der Spalte anzuzeigen.</li>
+                    </ul>
+                </li>
+            </ol>            
+                        
+			<h3 id="filter">Daten filtern</h3>
+			<p>Um nur Zeilen anzuzeigen die bestimmten Kriterien entsprechen, nutzen Sie die Option <b>Filter</b>.</p><b>Filter aktivieren:</b><ol>
+                <li>Wählen Sie den Zellenbereich aus, der die Daten enthält, die Sie filtern möchten (Sie können eine einzelne Zelle in einem Zellbereich auswählen, um den gesamten Zellbereich zu filter).</li>
+                <li>Klicken Sie in der oberen Symbolleiste in der Registerkarte <b>Start</b> auf das Symbol <b>Filter</b> <img alt="Filter" src="../images/sortandfilter.png" />.<p>Ein nach unten gerichteter Pfeil <img alt="Filterpfeil" src="../images/dropdownarrow.png" /> wird in der ersten Zelle jeder Spalte des gewählten Zellenbereichs angezeigt. So können Sie erkennen, dass der Filter aktiviert ist.</p>
+                </li>
+            </ol>
+            <p><b>Einen Filter anwenden:</b></p>
+            <ol>
+                <li>Klicken Sie auf den Filterpfeil <img alt="Filterpfeil" src="../images/dropdownarrow.png" />. Die Liste mit den <b>Filter</b>-Optionen wird angezeigt:<p><img alt="Filter" src="../images/filterwindow.png" /></p>
+                </li>
+                <li>
+                <p>Passen Sie die Filterparameter an. Folgende Optionen stehen Ihnen zur Verfügung: Anzuzeigende Daten auswählen; Daten nach bestimmten Kriterien filtern oder Daten nach Farben filtern.</p>
+                    <ul>
+                        <li><b>Anzuzeigende Daten auswählen:</b><p>Deaktivieren Sie die Felder neben den Daten die Sie ausblenden möchten. Zur Vereinfachung werden alle Daten neben dem Fenster <b>Filter</b> in absteigender Reihenfolge dargestellt.</p>
+                            <p class="note"><b>Hinweis</b>: das Kästchen <b>{Leerstellen}</b> bezieht sich auf leere Zellen. Es ist verfügbar, wenn der ausgewählte Zellenbereich mindestens eine leere Zelle enthält.</p>
+                            <p>Über das oben befindliche Suchfeld, können Sie den Prozess vereinfachen. Geben Sie Ihre Abfrage ganz oder teilweise in das Feld ein und drücken Sie dann auf OK - die Werte, die die gesuchten Zeichen enthalten, werden in der Liste unten angezeigt. Außerdem stehen Ihnen die zwei folgenden Optionen zur Verfügung:</p>
+                            <ul>
+                                <li><b>Alle Suchergebnisse auswählen</b> ist standardmäßig aktiviert. Diese Option ermöglicht Ihnen alle Werte auszuwählen, die Ihrer Abfrage in der Liste entsprechen.</li>
+                                <li><b>Aktuelle Auswahl zum Filtern hinzufügen</b> - Wenn Sie dieses Kontrollkästchen aktivieren, werden die ausgewählten Werte nicht ausgeblendet, wenn Sie den Filter anwenden.</li>
+                            </ul>
+                            <p>Nachdem Sie alle erforderlichen Daten ausgewählt haben, klicken Sie auf die Schaltfläche <b>OK</b> in der Optionsliste <b>Filter</b>, um den Filter anzuwenden.</p>
+                        </li>
+                        <li><b>Daten nach bestimmten Kriterien filtern</b><p>Abhängig von den Daten, die in der ausgewählten Spalte enthalten sind, können Sie im rechten Teil der Liste der <b>Filteroptionen</b> entweder die Option <b> Zahlenfilter</b> oder die Option <b>Textfilter</b> auswählen und dann eine der Optionen aus dem Untermenü auswählen:</p>
+                            <ul>
+                                <li>Für <b>Zahlenfilter</b> stehen folgende Auswahlmöglichkeiten zur Verfügung: <em>Gleich...</em>, <em>Ungleich...</em>, <em>Größer als...</em>, <em>Größer als oder gleich...</em>, <em>Kleiner als...</em>, <em>Kleiner als oder gleich...</em>, <em>Zwischen</em>, <em>Top 10</em>, <em>Größer als der Durchschnitt</em>, <em>Kleiner als der Durchschnitt</em>, <em>Benutzerdefinierter Filter...</em>.</li>
+                                <li>Für <b>Textfilter</b> stehen folgende Auswahlmöglichkeiten zur Verfügung: <em>Gleich...</em>, <em>Ungleich...</em>, <em>Beginnt mit...</em>, <em>Beginnt nicht mit...</em>, <em>Endet mit...</em>, <em>Endet nicht mit...</em>, <em>Enthält...</em>, <em>Enthält nicht...</em>, <em>Benutzerdefinierter Filter...</em>.</li>
+                            </ul>
+                            <p>Nachdem Sie eine der oben genannten Optionen ausgewählt haben (außer den Optionen <em>Top 10</em> und <em>Größer/ Kleiner als Durchschnitt</em>), öffnet sich das Fenster <b>Benutzerdefinierter Filter</b>. Das entsprechende Kriterium wird in der oberen Dropdown-Liste ausgewählt. Geben Sie den erforderlichen Wert in das Feld rechts ein.</p>
+                            <p>Um ein weiteres Kriterium hinzuzufügen, verwenden Sie das Optionsfeld <b>Und</b>, wenn Sie die Daten benötigen, um beide Kriterien zu erfüllen, oder klicken Sie auf das Optionsfeld <b>Oder</b>, wenn eines oder beide Kriterien erfüllt werden können. Wählen Sie dann das zweite Kriterium aus der unteren Auswahlliste und geben Sie den erforderlichen Wert rechts ein.</p>
+                            <p>Klicken Sie auf <b>OK</b>, um den Filter anzuwenden.</p>
+                            <p><img alt="Benutzerdefinierter Filter" src="../images/customfilterwindow.png" /></p>
+                            <p>Wenn Sie die Option <em>Benutzerdefinierter Filter...</em> aus der Optionsliste <b>Zahlen-/ Textfilter</b> wählen, wird das erste Kriterium nicht automatisch ausgewählt, Sie können es selbst festlegen.</p>
+                            <p>Wenn Sie die Option <em>Top 10</em> aus dem <b>Zahlenfilter</b> auswählen, öffnet sich ein neues Fenster:</p>
+                            <p><img alt="Top 10 AutoFilter" src="../images/topten.png" /></p>
+                            <p>In der ersten Dropdown-Liste können Sie auswählen, ob Sie die höchsten (<b>Oben</b>) oder niedrigsten (<b>Unten</b>) Werte anzeigen möchten. Im zweiten Feld können Sie angeben, wie viele Einträge aus der Liste oder wie viel Prozent der Gesamtzahl der Einträge angezeigt werden sollen (Sie können eine Zahl zwischen 1 und 500 eingeben). Die dritte Drop-Down-Liste erlaubt die Einstellung von Maßeinheiten: <b>Element</b> oder <b>Prozent</b>. Nach der Einstellung der erforderlichen Parameter, klicken Sie auf <b>OK</b>, um den Filter anzuwenden.</p>
+                            <p>Wenn Sie die Option <em>Größer/Kleiner als Durchschnitt</em> aus dem <b>Zahlenfilter</b> auswählen, wird der Filter sofort angewendet.</p>
+                        </li>
+                        <li><b>Daten nach Farbe filtern</b><p>Wenn der Zellenbereich, den Sie filtern möchten, Zellen mit einem formatierten Hintergrund oder einer geänderten Schriftfarbe enthalten (manuell oder mithilfe vordefinierter Stile), stehen Ihnen die folgenden Optionen zur Verfügung:</p>
+                            <ul>
+                                <li><b>Nach Zellenfarbe filtern</b> - nur die Einträge mit einer bestimmten Zellenhintergrundfarbe anzeigen und alle anderen verbergen.</li>
+                                <li><b>Nach Schriftfarbe filtern</b> - nur die Einträge mit einer bestimmten Schriftfarbe anzeigen und alle anderen verbergen.</li>
+                            </ul>
+                            <p>Wenn Sie die erforderliche Option auswählen, wird eine Palette geöffnet, die alle im ausgewählten Zellenbereich verwendeten Farben anzeigt. Klicken Sie auf OK, um den Filter anzuwenden.</p>
+                            <p><img alt="Daten nach Farbe filtern" src="../images/filterbycolor.png" /></p>
+                        </li>
+                    </ul>
+                    <p>Die Schaltfläche <b>Filter</b> <img alt="Filter" src="../images/filterbutton.png" /> wird in der ersten Zelle jeder Spalte des gewählten Zellenbereichs angezeigt. Das bedeutet, dass der Filter aktiviert ist. Die Anzahl der gefilterten Datensätze wird in der Statusleiste angezeigt (z. B. <em>25 von 80 gefilterten Datensätzen</em>).</p>
+                    <p class="note"><b>Hinweis</b>: Wenn der Filter angewendet wird, können die ausgefilterten Zeilen beim automatischen Ausfüllen, Formatieren und Löschen der sichtbaren Inhalte nicht geändert werden. Solche Aktionen betreffen nur die sichtbaren Zeilen, die Zeilen, die vom Filter ausgeblendet werden, bleiben unverändert. Beim Kopieren und Einfügen der gefilterten Daten können nur sichtbare Zeilen kopiert und eingefügt werden. Dies entspricht jedoch nicht manuell ausgeblendeten Zeilen, die von allen ähnlichen Aktionen betroffen sind.</p>
+                </li>
+			</ol>
+            <h3>Gefilterte Daten sortieren</h3>
+            <p>Sie können die <b>Sortierreihenfolge</b> der Daten festlegen, für die Sie den Filter aktiviert oder angewendet haben. Klicken Sie auf den Pfeil <img alt="Filterpfeil" src="../images/dropdownarrow.png" /> oder auf das Smbol <b>Filter</b> <img alt="Filter" src="../images/filterbutton.png" /> und wählen Sie eine der Optionen in der Liste der für <b>Filter</b> zur Verfügung stehenden Optionen aus:</p>
+                <ul>
+                    <li><b>Von niedrig zu hoch</b> - Daten in aufsteigender Reihenfolge sortieren, wobei der niedrigste Wert oben in der Spalte angezeigt wird.</li>
+                    <li><b>Von hoch zu niedrig</b> - Daten in absteigender Reihenfolge sortieren, wobei der höchste Wert oben in der Spalte angezeigt wird.</li>
+                    <li><b>Nach Zellfarbe sortieren</b> - Daten nach einer festgelegten Farbe sortieren und die Einträge mit der angegebenen Zellfarbe oben in der Spalte anzeigen.</li>
+                    <li><b>Nach Schriftfarbe sortieren</b> - Daten nach einer festgelegten Farbe sortieren und die Einträge mit der angegebenen Schriftfarbe oben in der Spalte anzeigen.</li>
+                </ul>
+                <p>Die letzten beiden Optionen können verwendet werden, wenn der zu sortierende Zellenbereich Zellen enthält, die Sie formatiert haben und deren Hintergrund oder Schriftfarbe geändert wurde (manuell oder mithilfe vordefinierter Stile).</p>
+            <p>Die Sortierrichtung wird durch die Pfeilrichtung des jeweiligen Filters angezeigt.</p>
+            <ul>
+                <li>Wenn die Daten in aufsteigender Reihenfolge sortiert sind, sieht der Filterpfeil in der ersten Zelle der Spalte aus wie folgt: <img alt="Filterpfeil" src="../images/lowesttohighest.png" /> und das Symbol <b>Filter</b> ändert sich folgendermaßen: <img alt="Filter" src="../images/lowesttohighest1.png" />.</li>
+                <li>Wenn die Daten in absteigender Reihenfolge sortiert sind, sieht der Filterpfeil in der ersten Zelle der Spalte aus wie folgt: <img alt="Filterpfeil" src="../images/highesttolowest.png" /> und das Symbol <b>Filter</b> ändert sich folgendermaßen: <img alt="Filter" src="../images/highesttolowest1.png" />.</li>
+            </ul>
+            <p>Sie können die Daten auch über das Kontextmenü nach Farbe sortieren:</p>
+            <ol>
+                <li>Klicken Sie mit der rechten Maustaste auf eine Zelle, die die Farbe enthält, nach der Sie Ihre Daten sortieren möchten.</li>
+                <li>Wählen Sie die Option <b>Sortieren</b> aus dem Menü aus.</li>
+                <li>Wählen Sie die gewünschte Option aus dem Untermenü aus:<ul>
+                        <li><b>Ausgewählte Zellenfarbe oben</b> - um die Einträge mit der gleichen Zellenhintergrundfarbe oben in der Spalte anzuzeigen.</li>
+                        <li><b>Ausgewählte Schriftfarbe oben</b> - um die Einträge mit der gleichen Schriftfarbe oben in der Spalte anzuzeigen.</li>
+                    </ul>
+                </li>
+            </ol>
+            <h3>Nach ausgewählten Zelleninhalten filtern.</h3>
+            <p>Sie können die Daten auch über das <b>Kontextmenü</b> nach bestimmten Inhalten filtern: Klicken Sie mit der rechten Maustaste auf eine Zelle, wählen Sie die <b>Filteroptionen</b> aus dem Menü aus und wählen Sie anschließend eine der verfügbaren Optionen:</p>
+			<ul>
+                <li><b>Nach dem Wert der ausgewählten Zelle filtern</b> - es werden nur Einträge angezeigt, die denselben Wert wie die ausgewählte Zelle enthalten.</li>
+                <li><b>Nach Zellfarbe filtern</b> - es werden nur Einträge mit derselben Zellfarbe wie die ausgewählte Zelle angezeigt.</li>
+                <li><b>Nach Schriftfarbe filtern</b> - es werden nur Einträge mit derselben Schriftfarbe wie die ausgewählte Zelle angezeigt.</li>
+            </ul>
+            <h3 id="tabletemplate">Wie Tabellenvorlage formatieren</h3>
+			<p>Um die Arbeit mit Daten zu erleichtern, ermöglicht der <b>Tabelleneditor</b> eine Tabellenvorlage auf einen ausgewählten Zellenbereich unter automatischer Filteraktivierung anzuwenden. Gehen Sie dazu vor wie folgt:</p>
+			<ol>
+				<li>Wählen sie einen Zellenbereich, den Sie formatieren möchten.</li>
+				<li>Klicken Sie auf das Symbol <b>Wie Tabellenvorlage formatieren</b> <img alt="Wie Tabellenvorlage formatieren" src="../images/tabletemplate.png" /> in der Registerkarte <b>Start</b> auf der oberen Symbolleiste.</li>
+				<li>Wählen Sie die gewünschte Vorlage in der Gallerie aus.</li>
+				<li>Überprüfen Sie den Zellenbereich, der als Tabelle formatiert werden soll im geöffneten Fenster.</li>
+				<li>Aktivieren Sie das Kontrollkästchen <b>Titel</b>, wenn Sie möchten, dass die Tabellenüberschriften in den ausgewählten Zellbereich aufgenommen werden, ansonsten wird die Kopfzeile oben hinzugefügt, während der ausgewählte Zellbereich um eine Zeile nach unten verschoben wird.</li>
+				<li>Klicken Sie auf <b>OK</b>, um die gewählte Vorlage anzuwenden.</li>
+			</ol>
+			<p>Die Vorlage wird auf den ausgewählten Zellenbereich angewendet und Sie können die Tabellenüberschriften bearbeiten und den Filter anwenden, um mit Ihren Daten zu arbeiten.</p>
+            <p class="note"><b>Hinweis</b>: wenn Sie eine neu formatierte Tabelle erstellen, wird der Tabelle automatisch ein <a href="UseNamedRanges.htm" onclick="onhyperlinkclick(this)">Standardname</a> zugewiesen (<em>Tabelle1</em>, <em>Tabelle2</em> usw.). Sie können den Namen ändern und für weitere Bearbeitungen verwenden.</p> 
+            <p>Wenn Sie einen neuen Wert in eine Zelle unter der letzten Zeile der Tabelle eingeben (wenn die Tabelle nicht über eine Zeile mit den Gesamtergebnissen verfügt) oder in einer Zelle rechts von der letzten Tabellenspalte, wird die formatierte Tabelle automatisch um eine neue Zeile oder Spalte erweitert. Wenn Sie die Tabelle nicht erweitern möchten, klicken Sie auf die angezeigte Schaltfläche <img alt="Einfügen mit Sonderoptionen" src="../images/pastespecialbutton.png" /> und wählen Sie die Option <b>Automatische Erweiterung</b> rückgängig machen. Wenn Sie diese Aktion rückgängig gemacht haben, ist im Menü die Option <b>Automatische Erweiterung wiederholen</b> verfügbar.</p>
+            <p><img alt="Automatische Erweiterung rückgängig machen" src="../images/undoautoexpansion.png" /></p>
+            <p>Einige der <b>Tabelleneinstellungen</b> können über die Registerkarte Einstellungen in der rechten Seitenleiste geändert werden, die geöffnet wird, wenn Sie mindestens eine Zelle in der Tabelle mit der Maus auswählen und auf das Symbol <b>Tabelleneinstellungen</b> <img alt="Tabelleneinstellungen" src="../images/table_settings_icon.png" /> rechts klicken.</p>
+            <p><img alt="Registerkarte Tabelleneinstellungen" src="../images/tablesettingstab.png" /></p>
+            <p>In den Abschnitten <b>Zeilen</b> und <b>Spalten</b>, haben Sie die Möglichkeit, bestimmte Zeilen/Spalten hervorzuheben, eine bestimmte Formatierung anzuwenden oder die Zeilen/Spalten in den verschiedenen Hintergrundfarben einzufärben, um sie klar zu unterscheiden. Folgende Optionen stehen zur Verfügung:</p>
+            <ul>
+                <li><b>Kopfzeile</b> - Kopfzeile wird angezeigt.</li>
+                <li><b>Gesamt</b> - am Ende der Tabelle wird eine Zeile mit den <b>Ergebnissen</b> hinzugefügt.</li>
+                <li><b>Gebänderte Zeilen</b> - gerade und ungerade Zeilen werden unterschiedlich formatiert.</li>
+                <li><b>Schaltfläche Filtern</b> - die Filterpfeile <img alt="Filterpfeil" src="../images/dropdownarrow.png" /> werden in den Zellen der Kopfzeile angezeigt. Diese Option ist nur verfügbar, wenn die Option <b>Kopfzeile</b> ausgewählt ist.</li>
+                <li><b>Erste Spalte</b> - die erste Spalte der Tabelle wird durch eine bestimmte Formatierung hervorgehoben.</li>
+                <li><b>Letzte Spalte</b> - die letzte Spalte der Tabelle wird durch eine bestimmte Formatierung hervorgehoben.</li>
+                <li><b>Gebänderte Spalten</b> - gerade und ungerade Spalten werden unterschiedlich formatiert.</li>
+            </ul>
+            <p>Im Abschnitt <b>Aus Vorlage wählen</b> können Sie einen vordefinierten Tabellenstil auswählen. Jede Vorlage kombiniert bestimmte Formatierungsparameter, wie Hintergrundfarbe, Rahmenstil, Zellen-/Spaltenformat usw. Abhängig von den in den Abschnitten <b>Zeilen</b> oder <b>Spalten</b> ausgewählten Optionen, werden die Vorlagen unterschiedlich dargestellt. Wenn Sie zum Beispiel die Option <b>Kopfzeile</b> im Abschnitt <b>Zeilen</b> und die Option <b>Gebänderte Spalten</b> im Abschnitt <b>Spalten</b> aktiviert haben, enthält die angezeigte Vorlagenliste nur Vorlagen mit Kopfzeile und gebänderten Spalten:</p>
+            <p><img alt="Vorlagenliste" src="../images/templateslist.png" /></p>
+            <p>Wenn Sie den aktuellen Tabellenstil (Hintergrundfarbe, Rahmen usw.) löschen möchten, ohne die Tabelle selbst zu entfernen, wenden Sie die Vorlage <b>Keine</b> aus der Vorlagenliste an:</p>
+            <p><img alt="Keine Vorlagen" src="../images/nonetemplate.png" /></p>
+            <p>Im Abschnitt <b>Größe anpassen</b> können Sie den Zellenbereich ändern, auf den die Tabellenformatierung angewendet wird. Klicken Sie auf die Schaltfläche <b>Daten auswählen</b> - ein neues Fenster wird geöffnet. Ändern Sie die Verknüpfung zum Zellbereich im Eingabefeld oder wählen Sie den gewünschten Zellbereich auf dem Arbeitsblatt mit der Maus aus und klicken Sie anschließend auf <b>OK</b>.</p>
+            <p><img alt="Tabellengröße ändern" src="../images/resizetable.png" /></p>
+            <p>Im Abschnitt <b>Zeilen &amp; Spalten</b> <img alt="Zeilen &amp; Spalten" src="../images/rowsandcolumns.png" /> können Sie folgende Vorgänge durchzuführen:</p>
+            <ul>
+                <li><b>Wählen</b> Sie eine Zeile, Spalte, alle Spalten ohne die Kopfzeile oder die gesamte Tabelle einschließlich der Kopfzeile aus.</li>
+                <li><b>Einfügen</b> - eine neue Zeile unter oder über der ausgewählten Zeile bzw. eine neue Spalte links oder rechts von der ausgewählten Spalte einfügen.</li>
+                <li><b>Löschen</b> - eine Zeile, Spalte, Zelle (abhängig von der Cursorposition) oder die ganze Tabelle löschen.</li>
+            </ul>
+            <p class="note"><b>Hinweis</b>: die Optionen im Abschnitt <b>Zeilen &amp; Spalten</b> sind auch über das <b>Rechtsklickmenü</b> zugänglich.</p>
+            <p><b>In Bereich konvertieren</b> - Tabelle in einen regulären Datenbereich umwandeln, indem Sie den Filter entfernen. Der Tabellenstil wird beibehalten (z. B. Zellen- und Schriftfarben usw.). Wenn Sie diese Option anwenden, ist die Registerkarte <b>Tabelleneinstellungen</b> in der rechten Seitenleiste nicht mehr verfügbar.</p>
+            <p>Um die erweiterten Tabelleneigenschaften zu ändern, klicken Sie auf den Link <b>Erweiterte Einstellungen anzeigen</b> in der rechten Seitenleiste. Das Fenster mit den Tabelleneigenschaften wird geöffnet:</p>
+            <p><img alt="Tabelle - Erweiterte Einstellungen" src="../images/tableadvancedsettings.png" /></p>
+            <p>Die Registerkarte <b>Alternativtext</b> ermöglicht die Eingabe eines <b>Titels</b> und einer <b>Beschreibung</b>, die Personen mit Sehbehinderungen oder kognitiven Beeinträchtigungen vorgelesen werden kann, damit sie besser verstehen können, welche Informationen in der Tabelle enthalten sind.</p>
+            <h3>Filter erneut anwenden:</h3>
+            <p>Wenn die gefilterten Daten geändert wurden, können Sie den Filter aktualisieren, um ein aktuelles Ergebnis anzuzeigen:</p>
+            <ol>
+                <li>Klicken Sie auf die Schaltfläche <b>Filter</b> <img alt="Filter" src="../images/filterbutton.png" /> in der ersten Zelle der Spalte mit den gefilterten Daten.</li>
+                <li>Wählen Sie die Option <b>Filter erneut anwenden</b> in der geöffneten Liste mit den <b>Filteroptionen</b> aus.</li>
+            </ol>
+            <p>Sie können auch mit der rechten Maustaste auf eine Zelle innerhalb der Spalte klicken, die die gefilterten Daten enthält, und im Kontextmenü die Option <b>Filter erneut anwenden</b> auswählen.</p>
+            <h3>Filter leeren</h3>
+			<p>Angewendete Filter leeren:</p>
+            <ol>
+                <li>Klicken Sie auf die Schaltfläche <b>Filter</b> <img alt="Filter" src="../images/filterbutton.png" /> in der ersten Zelle der Spalte mit den gefilterten Daten.</li>
+                <li>Wählen Sie die Option <b>Filter leeren</b> in der geöffneten Liste mit den <b>Filteroptionen</b> aus.</li>
+            </ol>
+            <p>Alternativ gehen Sie vor wie folgt:</p>
+				<ol>
+					<li>Wählen Sie den Zellenbereich mit den gefilterten Daten aus.</li>
+					<li>Klicken Sie in der oberen Symbolleiste in der Registerkarte <b>Start</b> auf das Symbol <b>Filter leeren</b> <img alt="Filter leeren" src="../images/clearfilter.png" />.</li>
+				</ol>
+            <p>Der Filter bleibt aktiviert, aber alle angewendeten Filterparameter werden entfernt und die Schaltflächen <b>Filter</b> <img alt="Filter" src="../images/filterbutton.png" /> in den ersten Zellen der Spalten werden in die Filterpfeile <img alt="Filterpfeil" src="../images/dropdownarrow.png" /> geändert.</p>
+            <h3>Filter entfernen</h3>
+            <p>Einen Filter entfernen:</p>
+            <ol>
+                <li>Wählen Sie den Zellenbereich mit den gefilterten Daten aus.</li>
+                <li>Klicken Sie in der oberen Symbolleiste in der Registerkarte <b>Start</b> auf das Symbol <b>Filter</b> <img alt="Filter" src="../images/sortandfilter.png" />.</li>
+            </ol>
+            <p>Der Filter werde deaktiviert und die Filterpfeile <img alt="Filterpfeil" src="../images/dropdownarrow.png" /> verschwinden aus den ersten Zellen der Spalten.</p>
+		</div>
+	</body>
+</html>

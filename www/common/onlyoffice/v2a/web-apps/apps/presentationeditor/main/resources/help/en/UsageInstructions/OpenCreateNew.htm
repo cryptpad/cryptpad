@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Create a new presentation or open an existing one</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Open a recently edited presentation, create a new one, or return to the list of existing presentations" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Create a new presentation or open an existing one</h1>
+            <h6>To create a new presentation</h6>
+            <div class="onlineDocumentFeatures">
+                <p>In the <em>online editor</em></p>
+                <ol>
+                    <li>click the <b>File</b> tab of the top toolbar,</li>
+                    <li>select the <b>Create New</b> option. <!--Here you can choose whether to create a <b>blank</b> text document or use one of the available document <b>templates</b>: contract, letter, list, or plan.--></li>
+                </ol>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>In the <em>desktop editor</em></p>
+                <ol>
+                    <li>in the main program window, select the <b>Presentation</b> menu item from the <b>Create new</b> section of the left sidebar - a new file will open in a new tab,</li>
+                    <li>when all the necessary changes are made, click the <b>Save</b> <img alt="Save icon" src="../images/save.png" /> icon in the upper left corner or switch to the <b>File</b> tab and choose the <b>Save as</b> menu item. </li>
+                    <li>in the file manager window, select the file location, specify its name, choose the format you want to save the presentation to (PPTX, Presentation template, ODP, PDF or PDFA) and click the <b>Save</b> button.</li>
+                </ol>
+            </div>
+
+            <div class="desktopDocumentFeatures">
+                <h6>To open an existing presentation</h6>
+                <p>In the <em>desktop editor</em></p>
+                <ol>
+                    <li>in the main program window, select the <b>Open local file</b> menu item at the left sidebar,</li>
+                    <li>choose the necessary presentation from the file manager window and click the <b>Open</b> button.</li>
+                </ol>
+                <p>You can also right-click the necessary presentation in the file manager window, select the <b>Open with</b> option and choose the necessary application from the menu. If the office documents files are associated with the application, you can also open presentations by double-clicking the file name in the file explorer window.</p>
+                <p>All the directories that you have accessed using the desktop editor will be displayed in the <b>Recent folders</b> list so that you can quickly access them afterwards. Click the necessary folder to select one of the files stored in it.</p>
+            </div>
+
+            <h6>To open a recently edited presentation</h6>
+            <div class="onlineDocumentFeatures">
+                <p>In the <em>online editor</em></p>
+                <ol>
+                    <li>click the <b>File</b> tab of the top toolbar,</li>
+                    <li>select the <b>Open Recent...</b> option,</li>
+                    <li>choose the presentation you need from the list of recently edited documents.</li>
+                </ol>
+            </div>
+            <div class="desktopDocumentFeatures">
+                <p>In the <em>desktop editor</em></p>
+                <ol>
+                    <li>in the main program window, select the <b>Recent files</b> menu item at the left sidebar,</li>
+                    <li>choose the presentation you need from the list of recently edited documents.</li>
+                </ol>
+            </div>
+
+            <p>To open the folder where the file is stored <span class="onlineDocumentFeatures"> in a new browser tab in the <em>online version</em>,</span> <span class="desktopDocumentFeatures">in the file explorer window in the <em>desktop version</em>,</span> click the <img alt="Open file location" src="../images/gotodocuments.png" /> <b>Open file location</b> icon on the right side of the editor header. Alternatively, you can switch to the <b>File</b> tab of the top toolbar and select the <b>Open file location</b> option.</p>
+		</div>
+	</body>
+</html>

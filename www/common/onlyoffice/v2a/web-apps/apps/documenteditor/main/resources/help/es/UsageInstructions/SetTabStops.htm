@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fije tabuladores</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Set tab stops" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Fije tabuladores</h1>
+			<p>En el editor de documentos, usted puede cambiar tabuladores, es decir, la posición que avanza el cursor al pulsar la tecla <b>Tab</b> en el teclado.</p>
+			<p>Para fijar los tabuladores, usted puede utilizar la regla horizontal:</p>
+			<ol>
+			    <li>Seleccione un tipo de tabulador pulsando el botón <img alt="Botón de tabulador izquierdo" src="../images/tabstopleft.png" /> en la esquina izquierda superior del área de trabajo. Hay tres tipos de tabuladores disponibles:<ul>
+			            <li><b>Izquierdo</b>  <img alt="Botón de tabulador izquierdo" src="../images/tabstopleft.png" /> - alinea su texto por la parte izquierda en la posición de tabulador; el texto se mueva a la derecha del tabulador cuando escribe. El tabulador se indicará en el control deslizante horizontal con el <img alt="Marcador de tabulador izquierdo" src="../images/tabstopleft_marker.png" /> marcador .</li>
+			            <li><b>Centro</b>  - alinea el texto por el centro en la posición de tabulador. Tal tabulador se indicará en el control deslizante horizontal con el marcador <img alt="Marcador de tabulador central" src="../images/tabstopcenter_marker.png" />.</li>
+			            <li><b>Derecho</b> <img alt="Botón Tabulador derecho" src="../images/tabstopright.png" /> - alinea su texto por la parte derecha en la posición de tabulador; el texto se mueva a la izquierda del tabulador cuando escribe. El tabulador se indicará en el control deslizante horizontal con el marcador <img alt="Marcador de tabulador derecho" src="../images/tabstopright_marker.png" />.</li>
+			        </ul>
+			    </li>
+			    <li>Haga clic en el borde inferior de la regla donde usted quiere colocar el tabulador. Arrástrelo a lo largo de la regla para cambiar su posición. Para eliminar el tabulador añadido arrástrelo fuera de la regla.<p><img alt="Regla Horizontal con los tabuladores añadidos" src="../images/tabstops_ruler.png" /></p>
+			    </li>			
+			</ol>
+			<hr />
+			<p>Usted también puede utilizar la ventana de propiedades del párrafo para ajustar tabuladores. Haga clic derecho, seleccione la opción <b>Ajustes avanzados de párrafo</b> en el menú o utilice el enlace <b>Mostrar ajustes avanzados</b> en la barra derecha lateral, y pase a la pestaña <b>Tab</b> en la ventana abierta <b>Párrafo - ajustes avanzados</b>.</p><img alt="Propiedades de párrafo - Tabulador" src="../images/paradvsettings_tab.png" /><p>Usted puede establecer los parámetros siguientes:</p>
+			<ul>
+			    <li><b>Posición del tabulador</b> - se usa para establecer los tabuladores personalizados. Introduzca el valor necesario en este campo, ajústelo de forma más precisa usando los botones de flechas y pulse el botón <b>Especificar</b>. Su posición de tab personalizada se añadirá a la lista en el campo debajo. Todos los tabuladores anteriormente añadidos usando la regla se mostrarán también en la lista.</li>
+			    <li>El <b>Tabulador Predeterminado</b> se ha fijado a 1.25 cm. Puede aumentar o disminuir este valor usando los botones de flechas o introducir el botón necesario en el cuadro.</li>
+			    <li><b>Alineación</b> - se usa para establecer el tipo de alineación necesario para cada posición del tabulador en la lista de arriba. Seleccione el tabulador necesario en la lista, elija la opción <b>Izquierdo</b>, <b>Al centro</b> o <b>Derecho</b> y pulse el botón <b>Especificar</b>.</li>
+                <li><b>Líder</b> - permite elegir un caracter usado para crear un líder para cada una de las posiciones de tabulación. Un líder es una línea de caracteres (puntos o guiones) que llena el espacio entre tabulaciones. Seleccione la posición del tabulador necesaria en la lista, elija el tipo de líder de la lista desplegable y presione el botón <b>Especificar</b>.<p>Para borrar los tabuladores de la lista, seleccione el tabulador y pulse el botón <b>Eliminar</b> o <b>Eliminar todo</b>.</p>
+                </li>
+			</ul>			
+		</div>
+	</body>
+</html>

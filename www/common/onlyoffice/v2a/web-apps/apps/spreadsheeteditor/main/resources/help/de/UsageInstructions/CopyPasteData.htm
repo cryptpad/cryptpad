@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Daten ausschneiden/kopieren/einfügen</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Cut/copy/paste data using the keyboard shortcuts" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+        <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Suche" type="text" onkeypress="doSearch(event)">
+        </div>
+            <h1>Daten ausschneiden/kopieren/einfügen</h1>
+            <h3>Zwischenablage verwenden</h3>
+            <p>Um die Daten in Ihrer aktuellen Kalkulationstabelle auszuschneiden, zu kopieren oder einzufügen, nutzen Sie die entsprechenden Optionen aus dem Rechtsklickmenü oder die Symbole die auf jeder beliebigen Registerkarte in der oberen Symbolleiste verfügbar sind:</p>
+            <ul>
+                <li><p><b>Ausschneiden</b> - wählen Sie die entsprechenden Daten aus und nutzen Sie die Option <b>Ausschneiden</b> im Rechtsklickmenü, um die gewählten Daten zu löschen und in der Zwischenablage des Rechners zu speichern. Die ausgeschnittenen Daten können später an einer anderen Stelle in derselben Tabelle wieder eingefügt werden.</p></li>
+                <li><p><b>Kopieren</b> – wählen Sie die gewünschten Daten aus und klicken Sie im Rechtsklickmenü auf <b>Kopieren</b> <img alt="Kopieren" src="../images/copy.png" /> oder klicken Sie in der oberen Symbolleiste auf das Symbol <b>Kopieren</b>,  um die Auswahl in die Zwischenablage Ihres Computers zu kopieren. Die kopierten Daten können später an eine andere Stelle in demselben Blatt, in eine andere Tabelle oder in ein anderes Programm eingefügt werden.</p></li>
+                <li><p><b>Einfügen</b> - wählen Sie die gewünschte Stelle aus und klicken Sie in der oberen Symbolleiste auf <b>Einfügen</b> <img alt="Einfügen" src="../images/paste.png" /> oder klicken Sie mit der rechten Maustaste auf die gewünschte Stelle und wählen Sie <b>Einfügen</b> aus der Menüleiste aus, um die vorher kopierten bzw. ausgeschnittenen Daten aus der Zwischenablage an der aktuellen Cursorposition einzufügen. Die Daten können vorher aus demselben Blatt, einer anderen Tabelle oder einem anderen Programm kopiert werden.</p>
+                </li>
+            </ul>
+            <p>Alternativ können Sie auch die folgenden Tastenkombinationen verwenden, um Daten aus bzw. in eine andere Tabelle oder ein anderes Programm zu kopieren oder einzufügen:</p>
+            <ul>
+                <li><b>Strg+X</b> - Ausschneiden;</li>
+                <li><b>STRG+C</b> - Kopieren;</li>
+                <li><b>Strg+V</b> - Einfügen.</li>
+            </ul>
+            <p class="note"><b>Hinweis</b>: Wenn Sie Daten innerhalb von einer Kalkulationstabelle ausschneiden und einfügen wollen, können Sie die gewünschte(n) Zelle(n) auch einfach auswählen. Wenn Sie nun den Mauszeiger über die Auswahl bewegen ändert sich der Zeiger in das <img alt="Pfeil" src="../images/arrow.png" /> Symbol und Sie können die Auswahl in die gewünschte Position ziehen.</p>
+            <h3>Inhalte einfügen mit Optionen</h3>
+            <p>Wenn Sie den kopierten Text eingefügt haben, erscheint neben der unteren rechten Ecke der eingefügte(n) Zelle(n) das Menü <b>Einfügeoptionen</b> <img alt="Einfügen mit Sonderoptionen" src="../images/pastespecialbutton.png" />. Klicken Sie auf die Schaltfläche, um die gewünschte Einfügeoption auszuwählen.</p>
+            <p>Für das Eifügen von Zellen/Zellbereichen mit formatierten Daten sind die folgenden Optionen verfügbar:</p>
+            <ul>
+                <li><em>Einfügen</em> - der Zellinhalt wird einschließlich Datenformatierung eingefügt. Diese Option ist standardmäßig ausgewählt.</li>
+                <li>Wenn die kopierten Daten Formeln enthalten, stehen folgende Optionen zur Verfügung:<ul>
+                        <li><em>Nur Formel einfügen</em> - ermöglicht das Einfügen von Formeln ohne Einfügen der Datenformatierung.</li>
+                        <li><em>Formel + Zahlenformat</em> - ermöglicht das Einfügen von Formeln mit der auf Zahlen angewendeten Formatierung.</li>
+                        <li><em>Formel + alle Formatierung</em> - ermöglicht das Einfügen von Formeln mit allen Datenformatierungen.</li>
+                        <li><em>Formel ohne Rahmenlinien</em> - ermöglicht das Einfügen von Formeln mit allen Datenformatierungen außer Zellenrahmen.</li>
+                        <li><em>Formel + Spaltenbreite</em> - ermöglicht das Einfügen von Formeln mit allen Datenformatierungen einschließlich Breite der Quellenspalte für den Zellenbereich, in den Sie die Daten einfügen.</li>
+                    </ul>
+                </li>
+                <li>Die folgenden Optionen ermöglichen das Einfügen des Ergebnisses, der kopierten Formel, ohne die Formel selbst einzufügen:<ul>
+                        <li><em>Nur Wert einfügen</em> - ermöglicht das Einfügen der Formelergebnisse ohne Einfügen der Datenformatierung.</li>
+                        <li><em>Wert + Zahlenformat</em> - ermöglicht das Einfügen der Formelergebnisse mit der auf Zahlen angewendeten Formatierung.</li>
+                        <li><em>Wert + alle Formatierung</em> - ermöglicht das Einfügen der Formelergebnisse mit allen Datenformatierungen.</li>
+                    </ul>
+                </li>
+                <li><em>Nur Formatierung einfügen</em> - ermöglicht das Einfügen der Zellenformatierung ohne Einfügen des Zelleninhalts.</li>
+                <li><em>Transponieren</em> - ermöglicht das Einfügen von Daten, die Spalten in Zeilen und Zeilen in Spalten ändern. Diese Option ist nur für normale Datenbereiche verfügbar und nicht für formatierte Tabellen.</li>
+            </ul>
+            <p><img alt="Einfügeoptionen" src="../images/pastespecial.png" /></p>
+            <p>Wenn Sie den Inhalt einer einzelnen Zelle oder eines Textes in AutoFormen einfügen, sind die folgenden Optionen verfügbar:</p>
+            <ul>
+                <li><em>Quellenformatierung</em> - die Quellformatierung der kopierten Daten wird beizubehalten.</li>
+                <li><em>Zielformatierung</em> - ermöglicht das Anwenden der bereits für die Zelle/AutoForm verwendeten Formatierung auf die eingefügten Daten.</li>
+            </ul>
+            <h3>Auto-Ausfülloptionen</h3>
+            <p>Wenn Sie mehrere Zellen mit denselben Daten füllen wollen, verwenden Sie die <b>Auto-Ausfülloptionen</b>:</p>
+            <ol>
+                <li>Wählen Sie eine Zelle/einen Zellenbereich mit den gewünschten Daten aus.</li>
+                <li>Bewegen Sie den Mauszeiger über den Füllpunkt in der rechten unteren Ecke der Zelle. Der Cursor wird zu einem schwarzen Pluszeichen:<p><img alt="Automatische Füllung" src="../images/autofill.png" /></p>
+                </li>
+                <li>Ziehen Sie den Füllpunkt über die angrenzenden Zellen, die Sie mit den ausgewählten Daten füllen möchten.</li>
+            </ol>
+            <p class="note"><b>Hinweis</b>: Wenn Sie eine Reihe von Zahlen (z. B. 1, 2, 3, 4 ...; 2, 4, 6, 8 ... usw.) oder Datumsangaben erstellen wollen, geben Sie mindestens zwei Startwerte ein und erweitern Sie die Datenreihe, indem Sie beide Zellen markieren und dann den Füllpunkt ziehen bis Sie den gewünschten Maximalwert erreicht haben.</p>
+            <h3>Zellen in einer Spalte mit Textwerten füllen</h3>
+            <p>Wenn eine Spalte in Ihrer Tabelle einige Textwerte enthält, können Sie einfach jeden Wert in dieser Spalte ersetzen oder die nächste leere Zelle füllen, indem Sie einen der bereits vorhandenen Textwerte auswählen.</p>
+            <p>Klicken Sie mit der rechten Maustaste auf die gewünschte Zelle und wählen Sie im Kontextmenü die Option <b>Aus Dropdown-Liste auswählen</b>.</p>
+            <p><img alt="Aus Dropdown-Liste auswählen" src="../images/selectfromlist.png" /></p>
+            <p>Wählen Sie einen der verfügbaren Textwerte, um den aktuellen Text zu ersetzen oder eine leere Zelle zu füllen.</p>
+        </div>
+	</body>
+</html>

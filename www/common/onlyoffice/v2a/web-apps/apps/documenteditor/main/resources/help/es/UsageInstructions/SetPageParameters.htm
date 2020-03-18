@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Establezca parámetros de página</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Set page parameters: change page orientation and size, adjust margins and insert columns" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Buscar" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Establezca parámetros de página</h1>
+			<p>Para establecer la orientación de la página y su tamaño, ajustar márgenes e insertar columnas, use los iconos correspondientes en la pestaña <b>Diseño</b> en barra de herramientas superior.</p>
+            <p class="note"><b>Nota</b>: todos estos parámetros se aplican al documento entero. Si necesita aplicar distintos márgenes, orientación, tamaño, tamaño o número de columna para las partes separadas del documento de la página, por favor visite <a href="../UsageInstructions/SectionBreaks.htm" onclick="onhyperlinkclick(this)">esta página</a>.</p>
+			<h3 id="orientation">Orientación de página</h3>
+            <p>Cambie el tipo de orientación actual haciendo clic en el <img alt="Icono orientación" src="../images/orientation.png" /> icono <b>Orientación</b>. El tipo de orientación predeterminado es <b>Vertical</b> pero usted puede cambiarla en <b>Horizontal</b>.</p>
+            <h3 id="size">Tamaño de página</h3>
+            <p>Cambie el formato A4 predeterminado pulsando el <img alt="Icono Tamaño" src="../images/pagesize.png" /> icono <b>Tamaño</b> y seleccionando un formato necesario de la lista. Los tamaños preestablecidos son:</p>
+            <ul>
+                <li>US Letter (21,59cm x 27,94cm)</li>
+                <li>US Legal (21,59cm x 35,56cm)</li>
+                <li>A4 (21cm x 29,7cm)</li>
+                <li>A5 (14,81cm x 20,99cm)</li>
+                <li>B5 (17,6cm x 25,01cm)</li>
+                <li>Envelope #10 (10,48cm x 24,13cm)</li>
+                <li>Envelope DL (11,01cm x 22,01cm)</li>
+                <li>Tabloid (27,94cm x 43,17cm)</li>
+                <li>AЗ (29,7cm x 42,01cm)</li>
+                <li>Tabloid Oversize (30,48cm x 45,71cm)</li>
+                <li>ROC 16K (19,68cm x 27,3cm)</li>
+                <li>Envelope Choukei 3 (11,99cm x 23,49cm)</li>
+                <li>Super B/A3 (33,02cm x 48,25cm)</li>
+            </ul>
+            <p>También puede ajustar un tamaño de página especial seleccionando la opción <b>Personalizar Tamaño de página</b> de la lista. La ventana de <b>Tamaño de Página</b> se abrirá y podrá seleccionar el <b>Preajuste</b> necesario (Carta, Legal, A4, A5, B5, Sobre #10, Sobre DL, Tabloide, AЗ, Tabloide Grande, ROC 16K, Sobre Choukei 3, Super B/A3, A0, A1, A2, A6) o establecer valores personalizados de <b>Ancho</b> y <b>Largo</b>. Introduzca sus valores nuevos en los campos de entrada o ajuste los valores existentes usando los botones de flechas. Cuando esté listo, pulse <b>OK</b> para realizar los cambios.</p>
+            <p><img alt="Personalizar Tamaño de página" src="../images/custompagesize.png" /></p>
+            <h3 id="margins">Márgenes de Página</h3>
+            <p>Cambie los márgenes predeterminados, por ejemplo, el espacio en blanco a la izquierda, derecha, arriba o abajo de los bordes de la página y el texto del párrafo, haciendo clic en el icono <img alt="Icono márgenes" src="../images/pagemargins.png" /> <b>Márgenes</b> y seleccionando uno de los pre-ajustes disponibles: <b>Normal</b>, <b>Normal US</b>, <b>Estrecho</b>, <b>Moderado</b>, <b>Ancho</b>. También puede usar la opción de <b>Personalizar Márgenes</b> para ajustar sus valores propios en la ventana de <b>Márgenes</b> que se abre. Introduzca los valores del márgenes de Página <b>Arriba</b>, <b>Abajo</b>, <b>Izquierda</b>, <b>Derecha</b> en los campos de entrada o ajuste los valores existentes usando los botones de flecha. Cuando este listo, haga clic en <b>OK</b>. Los márgenes personalizados se aplicarán al documento actual y la opción <b>Última Personalización</b> con los parámetros específicos aparecerá en la lista <img alt="Icono márgenes" src="../images/pagemargins.png" /> <b>Márgenes</b> para que pueda aplicarlos a otros documentos.</p>
+            <p><img alt="Márgenes Personalizados" src="../images/custommargins.png" /></p>
+            <p>También puede cambiar los márgenes de forma manual arrastrando el borde entre las áreas grises y blancas en las reglas (las áreas grises de las reglas indican un margen de página):</p>
+            <p><img alt="Ajuste de Márgenes" src="../images/margins.png" /></p>
+            <h3 id="columns">Columnas</h3>
+            <p>Aplique una disposición de varias columnas haciendo clic en el icono <img alt="Icono columnas" src="../images/insertcolumns.png" /> <b>Columnas</b> seleccionando el tipo de columna necesario de la lista despegable. Las siguientes opciones están disponibles:</p>
+            <ul>
+                <li><b>Dos</b> <img alt="Icono dos columnas" src="../images/twocolumns.png" /> - para añadir dos columnas de la misma anchura,</li>
+                <li><b>Tres</b> <img alt="Icono tres columnas" src="../images/threecolumns.png" /> - para añadir tres columnas de la misma anchura,</li>
+                <li><b>Izquierda</b> <img alt="Icono columna izquierda" src="../images/leftcolumn.png" /> - para añadir dos columnas: una columna estrecha en la parte izquierda y una columna ancha en la parte derecha,</li>
+                <li><b>Derecha</b> <img alt="Icono columna derecha" src="../images/rightcolumn.png" /> - para añadir dos columnas: una columna estrecha en la parte derecha y una columna ancha en la parte izquierda.</li>
+            </ul>
+            <p>Si quiere ajustar los ajustes de la columna, seleccione la opción <b>Personalizar Columnas</b> de la lista. La ventana <b>Columnas</b> se abrirá cuando sea capaz de ajustar el <b>Número de columnas</b> (es posible añadir hasta 12 columnas) y el <b>Espaciado entre columnas</b>. Introduzca sus valores nuevos en los campos de entrada o ajuste los valores existentes usando los botones de flechas. Verifique la casilla <b>Divisor de columna</b> para añadir una línea vertical entre las columnas. Cuando esté listo, pulse <b>OK</b> para realizar los cambios.</p>
+            <p><img alt="Columnas Personalizadas" src="../images/customcolumns.png" /></p>
+            <p>Para especificar de forma exacta donde debe empezar una columna, coloque el cursos antes del texto que quiere mover en la nueva columna, haga clic en el <img alt="Icono de saltos" src="../images/pagebreak1.png" /> icono de <b>Saltos</b> en la barra de herramientas superior y luego seleccione la opción <b>Insertar Saltos de Columna</b>. El texto se moverá a la siguiente columna.</p>
+            <p>Los saltos de sección añadidos se indican en su documento con una línea de puntos doble: <img alt="Salto de columna" src="../images/columnbreak.png" />. Si no ve los saltos de sección insertados, pulse el icono <img alt="Icono Caracteres no imprimibles" src="../images/nonprintingcharacters.png" /> en la pestaña de <b>Inicio</b> en la barra de herramientas superior para mostrarlos. Para eliminar un salto de página selecciónelo con el ratón y pulse la tecla <b>Delete</b>.</p>
+            <p>Para cambiar de forma manual el espaciado y anchura de la columna, puede usar ua regla horizontal.</p>
+            <p><img alt="Espaciado de columnas" src="../images/columnspacing.png" /></p>
+            <p>Para cancelar columnas y volver a un formato regular de una sola columna, haga clic en el icono <img alt="Icono columnas" src="../images/insertcolumns.png" /> <b>Columnas</b> en la barra de herramientas superior y seleccione la opción <img alt="Icono una columna" src="../images/onecolumn.png" /> <b>Una</b> de la lista.</p>		
+		</div>
+	</body>
+</html>

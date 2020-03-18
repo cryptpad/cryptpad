@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Manipulate objects</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Move, rotate, resize, reshape and arrange autoshapes, images, charts." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Manipulate objects</h1>
+			<p>You can resize, move, rotate and arrange autoshapes, images and charts inserted into your worksheet.</p>
+            <p class="note">
+                <b>Note</b>: the list of keyboard shortcuts that can be used when working with objects is available <a href="../HelpfulHints/KeyboardShortcuts.htm#workwithobjects" onclick="onhyperlinkclick(this)">here</a>.
+            </p>
+			<h3>Resize objects</h3>
+			<p>To change the autoshape/image/chart <b>size</b>, drag small squares <img alt="Square icon" src="../images/resize_square.png" /> situated on the object edges. To maintain the original proportions of the selected object while resizing, hold down the <b>Shift</b> key and drag one of the corner icons.</p>
+            <p class="note"><b>Note</b>: to resize the inserted chart or image you can also use the right sidebar that will be activated once you select the necessary object. To open it, click the <b>Chart settings</b> <img alt="Chart settings icon" src="../images/chartsettingsicon.png" />  or the <b>Image settings</b> <img alt="Image settings icon" src="../images/image_settings_icon.png" /> icon to the right.</p>
+			<p><img alt="Maintaining proportions" src="../images/maintain_proportions.png" /></p>
+			<h3>Move objects</h3>
+			<p>To alter the autoshape/image/chart <b>position</b>, use the <img alt="Arrow" src="../images/arrow.png" /> icon that appears after hovering your mouse cursor over the object. Drag the object to the necessary position without releasing the mouse button. 
+			To move the object by the one-pixel increments, hold down the <b>Ctrl</b> key and use the keybord arrows. 
+			To move the object strictly horizontally/vertically and prevent it from moving in a perpendicular direction, hold down the <b>Shift</b> key when dragging.</p>
+			<h3>Rotate objects</h3>
+			<p>To manually <b>rotate</b> the autoshape/image, hover the mouse cursor over the rotation handle <img alt="Rotation Handle" src="../images/greencircle.png" /> and drag it clockwise or counterclockwise. To constrain the rotation angle to 15 degree increments, hold down the <b>Shift</b> key while rotating.</p>
+            <p>To rotate a shape or image by 90 degrees counterclockwise/clockwise or flip the object horizontally/vertically you can use the <b>Rotation</b> section of the right sidebar that will be activated once you select the necessary object. To open it, click the <b>Shape settings</b> <img alt="Shape settings icon" src="../images/shape_settings_icon.png" />  or the <b>Image settings</b> <img alt="Image settings icon" src="../images/image_settings_icon.png" /> icon to the right. Click one of the buttons:</p>
+            <ul>
+                <li><img alt="Rotate counterclockwise icon" src="../images/rotatecounterclockwise.png" /> to rotate the object by 90 degrees counterclockwise</li>
+                <li><img alt="Rotate clockwise icon" src="../images/rotateclockwise.png" /> to rotate the object by 90 degrees clockwise</li>
+                <li><img alt="Flip horizontally icon" src="../images/fliplefttoright.png" /> to flip the object horizontally (left to right)</li>
+                <li><img alt="Flip vertically icon" src="../images/flipupsidedown.png" /> to flip the object vertically (upside down)</li>
+            </ul>
+            <p>It's also possible to right-click the image or shape, choose the <b>Rotate</b> option from the contextual menu and then use one of the available rotation options.</p>
+            <p>To rotate a shape or image by an exactly specified angle, click the <b>Show advanced settings</b> link at the right sidebar and use the <b>Rotation</b> tab of the <b>Advanced Settings</b> window. Specify the necessary value measured in degrees in the <b>Angle</b> field and click <b>OK</b>.</p>
+            <h3>Reshape autoshapes</h3>
+			<p>When modifying some shapes, for example Figured arrows or Callouts, the yellow diamond-shaped <img alt="Yellow diamond icon" src="../images/yellowdiamond.png" /> icon is also available. It allows to adjust some aspects of the shape, for example, the length of the head of an arrow.</p>
+			<p><img alt="Reshaping autoshape" src="../images/reshaping.png" /></p>
+            <h3>Align objects</h3>
+            <p>To <b>align</b> <em>two or more</em> selected objects in relation to each other, hold down the <b>Ctrl</b> key while selecting the objects with the mouse, then click the <img alt="Align icon" src="../images/align_toptoolbar.png" /> <b>Align</b> icon at the <b>Layout</b> tab of the top toolbar and select the necessary alignment type from the list:</p>
+            <ul>
+                <li><b>Align Left</b> <img alt="Align Left icon" src="../images/alignobjectleft.png" /> - to align objects in relation to each other by the left edge of the leftmost object,</li>
+                <li><b>Align Center</b> <img alt="Align Center icon" src="../images/alignobjectcenter.png" /> - to align objects in relation to each other by their centers,</li>
+                <li><b>Align Right</b> <img alt="Align Right icon" src="../images/alignobjectright.png" /> - to align objects in relation to each other by the right edge of the rightmost object,</li>
+                <li><b>Align Top</b> <img alt="Align Top icon" src="../images/alignobjecttop.png" /> - to align objects in relation to each other by the top edge of the topmost object,</li>
+                <li><b>Align Middle</b> <img alt="Align Middle icon" src="../images/alignobjectmiddle.png" /> - to align objects in relation to each other by their middles,</li>
+                <li><b>Align Bottom</b> <img alt="Align Bottom icon" src="../images/alignobjectbottom.png" />  - to align objects in relation to each other by the bottom edge of the bottommost object.</li>
+            </ul>
+            <p>Alternatively, you can right-click the selected objects, choose the <b>Align</b> option from the contextual menu and then use one of the available alignment options.</p>
+            <p class="note"><b>Note</b>: the alignment options are disabled if you select less than two objects.</p>
+            <h3>Distribute objects</h3>
+            <p>To <b>distribute</b> <em>three or more</em> selected objects horizontally or vertically between two outermost selected objects so that the equal distance appears between them, click the <img alt="Align icon" src="../images/align_toptoolbar.png" /> <b>Align</b> icon at the <b>Layout</b> tab of the top toolbar and select the necessary distribution type from the list:</p>
+                    <ul>
+                        <li><b>Distribute Horizontally</b> <img alt="Distribute Horizontally icon" src="../images/distributehorizontally.png" /> - to distribute objects evenly between the leftmost and rightmost selected objects.</li>
+                        <li><b>Distribute Vertically</b> <img alt="Distribute Vertically icon" src="../images/distributevertically.png" /> - to distribute objects evenly between the topmost and bottommost selected objects.</li>
+                    </ul>
+            <p>Alternatively, you can right-click the selected objects, choose the <b>Align</b> option from the contextual menu and then use one of the available distribution options.</p>
+            <p class="note"><b>Note</b>: the distribution options are disabled if you select less than three objects.</p>
+            <h3>Group several objects</h3>
+            <p>To manipulate several objects at once, you can <b>group</b> them. Hold down the <b>Ctrl</b> key while selecting the objects with the mouse, then click the arrow next to the <img alt="Group icon" src="../images/group_toptoolbar.png" /> <b>Group</b> icon at the <b>Layout</b> tab of the top toolbar and select the necessary option from the list:</p>
+            <ul>
+                <li><b>Group</b> <img alt="Group icon" src="../images/group.png" /> - to join several objects into a group so that they can be simultaneously rotated, moved, resized, aligned, arranged, copied, pasted, formatted like a single object.</li>
+                <li><b>Ungroup</b> <img alt="Ungroup icon" src="../images/ungroup.png" /> - to ungroup the selected group of the previously joined objects.</li>
+            </ul>
+            <p>Alternatively, you can right-click the selected objects, choose the <b>Arrange</b> option from the contextual menu and then use the <b>Group</b> or <b>Ungroup</b> option.</p>
+            <p class="note"><b>Note</b>: the <b>Group</b> option is disabled if you select less than two objects. The <b>Ungroup</b> option is available only when a group of the previously joined objects is selected.</p>
+            <p><img alt="Group several objects" src="../images/grouping.png" /></p>
+            <h3 id="arrange">Arrange several objects</h3>
+            <p>To <b>arrange</b> the selected object or several objects (e.g. to change their order when several objects overlap each other), you can use the <img alt="Bring Forward icon" src="../images/bringforward_toptoolbar.png" /> <b>Bring Forward</b> and <img alt="Send Backward icon" src="../images/sendbackward_toptoolbar.png" /> <b>Send Backward</b> icons at the <b>Layout</b> tab of the top toolbar and select the necessary arrangement type from the list.</p>
+            <p>To move the selected object(s) forward, click the arrow next to the <img alt="Bring Forward icon" src="../images/bringforward_toptoolbar.png" /> <b>Bring Forward</b> icon at the <b>Layout</b> tab of the top toolbar and select the necessary arrangement type from the list:</p>
+            <ul>
+                <li><b>Bring To Foreground</b> <img alt="Bring To Foreground icon" src="../images/bringtofront.png" /> - to move the object(s) in front of all other objects,</li>
+                <li><b>Bring Forward</b> <img alt="Bring Forward icon" src="../images/bringforward.png" /> - to move the selected object(s) by one level forward as related to other objects.</li>
+            </ul>
+            <p>To move the selected object(s) backward, click the arrow next to the <img alt="Send Backward icon" src="../images/sendbackward_toptoolbar.png" /> <b>Send Backward</b> icon at the <b>Layout</b> tab of the top toolbar and select the necessary arrangement type from the list:</p>
+            <ul>
+                <li><b>Send To Background</b> <img alt="Send To Background icon" src="../images/sendtoback.png" /> - to move the object(s) behind all other objects,</li>
+                <li><b>Send Backward</b> <img alt="Send Backward icon" src="../images/sendbackward.png" /> - to move the selected object(s) by one level backward as related to other objects.</li>
+            </ul>
+            <p>Alternatively, you can right-click the selected object(s), choose the <b>Arrange</b> option from the contextual menu and then use one of the available arrangement options.</p>			
+		</div>
+	</body>
+</html>
