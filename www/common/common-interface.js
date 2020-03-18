@@ -380,6 +380,7 @@ define([
     };
 
     dialog.getButtons = function (buttons, onClose) {
+        if (!buttons) { return; }
         if (!Array.isArray(buttons)) { return void console.error('Not an array'); }
         if (!buttons.length) { return; }
         var navs = [];

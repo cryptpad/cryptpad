@@ -599,10 +599,11 @@ define([
 
         // Add a lock
         var isLockedModal = {
-            content: UI.customModal(h('div', [
+            content: UI.dialog.customModal(h('div.cp-oo-x2tXls', [
                 h('span.fa.fa-spin.fa-spinner'),
-                "pewpewpew"
+                h('span', Messages.oo_isLocked)
             ]))
+        };
         var handleLock = function (obj, send) {
             if (content.saveLock) {
                 if (!isLockedModal.modal) {
@@ -633,7 +634,7 @@ define([
                     if (!content.saveLock) {
                         if (isLockedModal.modal) {
                             isLockedModal.modal.closeModal();
-                            delete isLockedModal.modal();
+                            delete isLockedModal.modal;
                         }
                         send({
                             type: "getLock",
