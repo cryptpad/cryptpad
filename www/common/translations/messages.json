@@ -1336,5 +1336,6 @@
     "kanban_conflicts": "Currently editing:",
     "kanban_clearFilter": "Clear filter",
     "kanban_editCard": "Edit this card",
-    "kanban_editBoard": "Edit this board"
+    "kanban_editBoard": "Edit this board",
+    "oo_isLocked": "syncing changes, please wait"
 }

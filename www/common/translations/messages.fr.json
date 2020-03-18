@@ -1336,5 +1336,6 @@
     "kanban_delete": "Supprimer",
     "kanban_color": "Couleur",
     "kanban_body": "Contenu",
-    "kanban_title": "Titre"
+    "kanban_title": "Titre",
+    "oo_isLocked": "Synchronisation, veuillez patienter"
 }
