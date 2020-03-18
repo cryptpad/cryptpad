@@ -297,7 +297,6 @@ define([
             }
             APP.onLocal();
             APP.realtime.onSettle(function () {
-                fixSheets();
                 UI.log(Messages.saved);
                 APP.realtime.onSettle(function () {
                     if (APP.migrate) {
@@ -342,6 +341,7 @@ define([
                 hash: ooChannel.lastHash,
                 index: ooChannel.cpIndex
             };
+            fixSheets();
             APP.FM.handleFile(blob, data);
         };
         var makeCheckpoint = function (force) {
@@ -595,13 +595,19 @@ define([
             deleteOfflineLocks();
             // Prepare callback
             if (cpNfInner) {
-                var onPatchSent = function () {
-                    cpNfInner.offPatchSent(onPatchSent);
+                var onPatchSent = function (again) {
+                    if (!again) { cpNfInner.offPatchSent(onPatchSent); }
                     // Answer to our onlyoffice
-                    send({
-                        type: "getLock",
-                        locks: getLock()
-                    });
+                    if (!content.saveLock) {
+                        send({
+                            type: "getLock",
+                            locks: getLock()
+                        });
+                    } else {
+                        setTimeout(function () {
+                            onPatchSent(true);
+                        }, 50);
+                    }
                 };
                 cpNfInner.onPatchSent(onPatchSent);
             }
@@ -1432,7 +1438,7 @@ define([
 
             if (window.CP_DEV_MODE) {
                 var $save = common.createButton('save', true, {}, function () {
-                    saveToServer();
+                    makeCheckpoint(true);
                 });
                 $save.appendTo($rightside);
             }
@@ -1577,14 +1583,21 @@ define([
                 metadataMgr.updateMetadata(json.metadata);
             }
 
+            var wasLocked = content.saveLock;
+
             var wasMigrating = content.migration;
 
             content = json.content;
+
+            if (!wasLocked && content.saveLock) {
+                // Someone is creating a new checkpoint: fix the sheets ids
+                fixSheets();
+            }
+
             if (content.hashes) {
                 var latest = getLastCp(true);
                 var newLatest = getLastCp();
                 if (newLatest.index > latest.index) {
-                    fixSheets();
                     sframeChan.query('Q_OO_SAVE', {
                         url: newLatest.file
                     }, function () { });
