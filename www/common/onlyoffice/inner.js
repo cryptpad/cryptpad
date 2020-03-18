@@ -596,6 +596,13 @@ define([
 
         // Add a lock
         var handleLock = function (obj, send) {
+            if (content.saveLock) {
+                if (Messages.oo_isLocked) { UI.log(Messages.oo_isLocked); }
+                setTimeout(function () {
+                    handleLock(obj, send);
+                }, 50);
+                return;
+            }
             content.locks = content.locks || {};
             // Send the lock to other users
             var msg = {
@@ -619,6 +626,7 @@ define([
                             locks: getLock()
                         });
                     } else {
+                        if (Messages.oo_isLocked) { UI.log(Messages.oo_isLocked); }
                         setTimeout(function () {
                             onPatchSent(true);
                         }, 50);
