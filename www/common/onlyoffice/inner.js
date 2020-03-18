@@ -278,6 +278,7 @@ define([
         };
 
         var onUploaded = function (ev, data, err) {
+            content.saveLock = undefined;
             if (err) {
                 console.error(err);
                 return void UI.alert(Messages.oo_saveError);
@@ -289,7 +290,6 @@ define([
                 index: ev.index
             };
             oldHashes = JSON.parse(JSON.stringify(content.hashes));
-            content.saveLock = undefined;
             // If this is a migration, set the new version
             if (APP.migrate) {
                 delete content.migration;
@@ -328,6 +328,9 @@ define([
                 sframeChan.query('Q_OO_SAVE', data, function (err) {
                     onUploaded(ev, data, err);
                 });
+            },
+            onError: function (err) {
+                onUploaded(null, null, err);
             }
         };
         APP.FM = common.createFileManager(fmConfig);
@@ -347,24 +350,19 @@ define([
         var makeCheckpoint = function (force) {
             if (!common.isLoggedIn()) { return; }
             var locked = content.saveLock;
+            var lastCp = getLastCp();
+
+            var needCp = force || ooChannel.cpIndex % CHECKPOINT_INTERVAL === 0 ||
+                        (ooChannel.cpIndex - lastCp.index) > CHECKPOINT_INTERVAL;
+            if (!needCp) { return; }
+
             if (!locked || !isUserOnline(locked) || force) {
                 content.saveLock = myOOId;
                 APP.onLocal();
                 APP.realtime.onSettle(function () {
                     saveToServer();
                 });
-                return;
             }
-            // The save is locked by someone else. If no new checkpoint is created
-            // in the next 20 to 40 secondes and the lock is kept by the same user,
-            // force the lock and make a checkpoint.
-            var saved = stringify(content.hashes);
-            var to = 20000 + (Math.random() * 20000);
-            setTimeout(function () {
-                if (stringify(content.hashes) === saved && locked === content.saveLock) {
-                    makeCheckpoint(force);
-                }
-            }, to);
         };
         var restoreLastCp = function () {
             content.saveLock = myOOId;
@@ -377,6 +375,23 @@ define([
                     url: getLastCp().file,
                 });
             });
+        };
+        // Add a timeout to check if a checkpoint was correctly saved by the locking user
+        // and "unlock the sheet" or "make a checkpoint" if needed
+        var cpTo;
+        var checkCheckpoint = function () {
+            clearTimeout(cpTo);
+            var saved = stringify(content.hashes);
+            var locked = content.saveLock;
+            var to = 20000 + (Math.random() * 20000);
+            cpTo = setTimeout(function () {
+                // If no checkpoint was added and the same user still has the lock
+                // then make a checkpoint if needed (cp interval)
+                if (stringify(content.hashes) === saved && locked === content.saveLock) {
+                    content.saveLock = undefined;
+                    makeCheckpoint();
+                }
+            }, to);
         };
 
 
@@ -684,11 +699,7 @@ define([
                 ooChannel.cpIndex++;
                 ooChannel.lastHash = hash;
                 // Check if a checkpoint is needed
-                var lastCp = getLastCp();
-                if (common.isLoggedIn() && (ooChannel.cpIndex % CHECKPOINT_INTERVAL === 0 ||
-                            (ooChannel.cpIndex - lastCp.index) > CHECKPOINT_INTERVAL)) {
-                    makeCheckpoint();
-                }
+                makeCheckpoint();
                 // Remove my lock
                 delete content.locks[getId()];
                 oldLocks = JSON.parse(JSON.stringify(content.locks));
@@ -1546,6 +1557,16 @@ define([
                 }
             }
 
+            // If the sheet is locked by an offline user, remove it
+            if (content && content.saveLock && !isUserOnline(content.saveLock)) {
+                content.saveLock = undefined;
+                APP.onLocal();
+            } else if (content && content.saveLock) {
+                // If someone is currently creating a checkpoint (and locking the sheet),
+                // make sure it will end (maybe you'll have to make the checkpoint yourself)
+                checkCheckpoint();
+            }
+
             var s = h('script', {
                 type:'text/javascript',
                 src: '/common/onlyoffice/'+version+'web-apps/apps/api/documents/api.js'
@@ -1575,6 +1596,7 @@ define([
         };
 
         var reloadPopup = false;
+
         config.onRemote = function () {
             if (initializing) { return; }
             var userDoc = APP.realtime.getUserDoc();
@@ -1589,9 +1611,11 @@ define([
 
             content = json.content;
 
-            if (!wasLocked && content.saveLock) {
-                // Someone is creating a new checkpoint: fix the sheets ids
+            if (content.saveLock && wasLocked !== content.saveLock) {
+                // Someone new is creating a checkpoint: fix the sheets ids
                 fixSheets();
+                // If the checkpoint is not saved in 20s to 40s, do it ourselves
+                checkCheckpoint();
             }
 
             if (content.hashes) {
