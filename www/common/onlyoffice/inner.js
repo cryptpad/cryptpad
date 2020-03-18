@@ -635,6 +635,7 @@ define([
                         if (isLockedModal.modal) {
                             isLockedModal.modal.closeModal();
                             delete isLockedModal.modal;
+                            $('#cp-app-oo-editor > iframe')[0].contentWindow.focus();
                         }
                         send({
                             type: "getLock",
