@@ -117,29 +117,30 @@ define([
     // Tasks list
     var checkedTaskItemPtn = /^\s*(<p>)?\[[xX]\](<\/p>)?\s*/;
     var uncheckedTaskItemPtn = /^\s*(<p>)?\[ ?\](<\/p>)?\s*/;
-    var bogusCheckPtn = /<input( checked=""){0,1} disabled="" type="checkbox">/;
+    var bogusCheckPtn = /<input checked="" disabled="" type="checkbox">/;
+    var bogusUncheckPtn = /<input disabled="" type="checkbox">/;
     renderer.listitem = function (text) {
         var isCheckedTaskItem = checkedTaskItemPtn.test(text);
         var isUncheckedTaskItem = uncheckedTaskItemPtn.test(text);
-        var hasBogusInput = bogusCheckPtn.test(text);
+        var hasBogusCheckedInput = bogusCheckPtn.test(text);
+        var hasBogusUncheckedInput = bogusUncheckPtn.test(text);
+        var isCheckbox = true;
         if (isCheckedTaskItem) {
             text = text.replace(checkedTaskItemPtn,
                 '<i class="fa fa-check-square" aria-hidden="true"></i>') + '\n';
-        }
-        if (isUncheckedTaskItem) {
+        } else if (isUncheckedTaskItem) {
             text = text.replace(uncheckedTaskItemPtn,
                 '<i class="fa fa-square-o" aria-hidden="true"></i>') + '\n';
-        }
-        if (!isCheckedTaskItem && !isUncheckedTaskItem && hasBogusInput) {
-            if (/checked/.test(text)) {
-                text = text.replace(bogusCheckPtn,
+        } else if (hasBogusCheckedInput) {
+            text = text.replace(bogusCheckPtn,
                 '<i class="fa fa-check-square" aria-hidden="true"></i>') + '\n';
-            } else if (/disabled/.test(text)) {
-                text = text.replace(bogusCheckPtn,
+        } else if (hasBogusUncheckedInput) {
+            text = text.replace(bogusUncheckPtn,
                 '<i class="fa fa-square-o" aria-hidden="true"></i>') + '\n';
-            }
+        } else {
+            isCheckbox = false;
         }
-        var cls = (isCheckedTaskItem || isUncheckedTaskItem || hasBogusInput) ? ' class="todo-list-item"' : '';
+        var cls = (isCheckbox) ? ' class="todo-list-item"' : '';
         return '<li'+ cls + '>' + text + '</li>\n';
     };
     restrictedRenderer.listitem = function (text) {
