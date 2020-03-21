@@ -1,1 +1,12 @@
-{}
+{
+    "type": {
+        "contacts": "Kontakter",
+        "media": "Media",
+        "file": "Fil",
+        "whiteboard": "Whiteboard",
+        "drive": "CryptDrive",
+        "slide": "Presentation",
+        "poll": "Röstning",
+        "code": "Kod"
+    }
+}
