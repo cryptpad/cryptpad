@@ -543,5 +543,6 @@
     "whatis_drive_p2": "Con l'intuitiva funziona \"trascina e rilascia\" puoi spostare i tuoi pad all'interno del tuo CryptDrive e il collegamento a questi ultimi rimarrà lo stesso, in modo che le persone con le quali collabori non perdano mai l'accesso.",
     "policy_howweuse": "Come usiamo i dati che raccogliamo",
     "policy_whatweknow": "Cosa sappiamo di te",
-    "policy_title": "Informativa sulla privacy di CryptPad"
+    "policy_title": "Informativa sulla privacy di CryptPad",
+    "policy_howweuse_p1": "Utilizziamo queste informazioni per migliorare le nostre decisioni in merito a come meglio pubblicizzare CryptPad, valutando quali dei nostri sforzi passati hanno avuto maggiore successo. Le informazioni sulla tua posizione ci permettono di sapere se dovremmo prendere in considerazione la possibilità di fornire un migliore supporto per lingue diverse dall'inglese."
 }
