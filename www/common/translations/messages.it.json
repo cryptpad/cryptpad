@@ -538,5 +538,7 @@
         }
     },
     "whatis_zeroknowledge_p2": "Quando ti registri e accedi, il tuo nome utente e la tua password vengono computati in una chiave segreta utilizzando la <a href=\"https://en.wikipedia.org/wiki/Scrypt\">funzione di derivazione scrypt</a>. Ne questa chiave, ne il tuo nome utente o la tua password vengono inviati al server. Infatti sono usati soltanto dal lato client per decriptare il contenuto del tuo CryptDrive, che contiene le chiavi per tutti i pad a cui hai accesso.",
-    "faq_title": "Domande frequenti"
+    "faq_title": "Domande frequenti",
+    "whatis_business": "CryptPad per le aziende",
+    "whatis_drive_p2": "Con l'intuitiva funziona \"trascina e rilascia\" puoi spostare i tuoi pad all'interno del tuo CryptDrive e il collegamento a questi ultimi rimarrà lo stesso, in modo che le persone con le quali collabori non perdano mai l'accesso."
 }
