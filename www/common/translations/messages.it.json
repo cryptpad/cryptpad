@@ -520,10 +520,10 @@
     "faq": {
         "usability": {
             "devices": {
-                "a": "nome utente"
+                "a": "È probabile che tu abbia registrato lo stesso nome due volte, usando password diverse. Poiché il server di CryptPad ti identifica usando la tua firma crittografica e non il tuo nome, non può impedire ad altre persone di registrarsi con lo stesso nome. Questo significa che ogni account ha una combinazione univoca di nome utente e password. Gli/le utenti registrati/e possono vedere il loro nome utente nella parte superiore della pagina delle impostazioni."
             },
             "forget": {
-                "a": "nome utente"
+                "a": "Purtroppo, se fossimo in grado di aiutarti a recuperare l'accesso ai tuoi pad criptati, saremmo noi stessi/e in grado di accedere ai tuoi pad. Se non hai salvato il tuo nome utente e password da nessuna parte e non resci a ricordarli, potresti essere in grado di recuperare i tuoi pad controllando la cronologia del browser."
             }
         },
         "security": {
@@ -544,5 +544,12 @@
     "policy_howweuse": "Come usiamo i dati che raccogliamo",
     "policy_whatweknow": "Cosa sappiamo di te",
     "policy_title": "Informativa sulla privacy di CryptPad",
-    "policy_howweuse_p1": "Utilizziamo queste informazioni per migliorare le nostre decisioni in merito a come meglio pubblicizzare CryptPad, valutando quali dei nostri sforzi passati hanno avuto maggiore successo. Le informazioni sulla tua posizione ci permettono di sapere se dovremmo prendere in considerazione la possibilità di fornire un migliore supporto per lingue diverse dall'inglese."
+    "policy_howweuse_p1": "Utilizziamo queste informazioni per migliorare le nostre decisioni in merito a come meglio pubblicizzare CryptPad, valutando quali dei nostri sforzi passati hanno avuto maggiore successo. Le informazioni sulla tua posizione ci permettono di sapere se dovremmo prendere in considerazione la possibilità di fornire un migliore supporto per lingue diverse dall'inglese.",
+    "policy_ads_p1": "Non mostriamo alcuna pubblicità online, anche se potremmo inserire collegamenti agli enti che finanziano la nostra ricerca.",
+    "policy_ads": "Pubblicità",
+    "policy_links_p1": "Questo sito contiene collegamenti ad altri siti, compresi quelli prodotti da altre organizzazioni. Non siamo responsabili delle pratiche relative alla privacy o dei contenuti di siti esterni. Come regola generale, i collegamenti a siti esterni vengono aperti in una nuova finestra del browser, per chiarire che si sta lasciando CryptPad.fr.",
+    "policy_links": "Collegamenti ad altri siti",
+    "policy_whatwetell_p1": "Non forniamo a terzi le informazioni che raccogliamo o che ci fornite, a meno che non siamo legalmente obbligati a farlo.",
+    "policy_whatwetell": "Cosa comunichiamo a terzi riguardo a te",
+    "policy_howweuse_p2": "Le informazioni relative al tuo browser (sia che si tratti di un sistema operativo desktop che di uno mobile) ci aiutano a prendere decisioni quando si tratta di dare priorità ai miglioramenti delle funzionalità. Il nostro grupp di sviluppo è piccolo e cerchiamo di fare scelte che migliorino l'esperienza del maggior numero di utenti possibile."
 }
