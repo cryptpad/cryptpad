@@ -1337,5 +1337,10 @@
     "kanban_clearFilter": "Clear filter",
     "kanban_editCard": "Edit this card",
     "kanban_editBoard": "Edit this board",
-    "oo_isLocked": "syncing changes, please wait"
+    "oo_isLocked": "syncing changes, please wait",
+    "videoconfButton": "Start video-conferencing",
+    "videoconfText": "You can join the video conference on {0}. Warning: video conferencing is not end to end encrypted",
+    "videoconfOwnUrl": "Insert your own URL",
+    "videoConfChooseUrl": "Choose the URL you would like to embed",
+    "videoConfChooseUrlTitle": "Insert your own URL"
 }

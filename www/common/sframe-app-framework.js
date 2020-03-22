@@ -649,6 +649,7 @@ define([
             }, onLocal);
             var configTb = {
                 displayed: [
+                    'videoconf',
                     'chat',
                     'userlist',
                     'title',

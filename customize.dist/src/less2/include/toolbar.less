@@ -154,6 +154,76 @@
         }
     }
 
+     .cp-toolbar-videoconf-drawer {
+        background-color: @toolbar-bg-color;
+        background-color: var(--toolbar-bg-color);
+        font: @colortheme_app-font-size @colortheme_font;
+        width: 20%;
+        min-width: 200px;
+        display: block;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 0;
+        box-sizing: border-box;
+        position: relative;
+        order: -2;
+        resize: horizontal;
+        z-index: 1;
+        #cp-app-videoconf-container {
+         span {
+          display: block;
+          margin: auto;
+          width: 80%;
+          padding: 20px;
+          color: white;
+         }
+         button {
+          margin: auto;
+          padding-top: 20px;
+          padding-bottom: 20px;
+          display: block;
+          min-width: 230px;
+          height: auto;
+         }
+            height: 100%;
+		    text-align: center;
+            iframe {
+             display: block;
+             width: 300px;
+             height: 100%;
+             width: 100%;
+            }
+        }
+        .cp-toolbar-videoconf-drawer-size {
+            color: @toolbar-color;
+            color: var(--toolbar-color);
+            position: absolute;
+            top: 0;
+            right: 30px;
+            font-size: 15px;
+            opacity: 0.5;
+            cursor: pointer;
+            text-shadow: unset;
+            &:hover {
+                opacity: 1;
+            } 
+        }
+        .cp-toolbar-videoconf-drawer-close {
+            color: @toolbar-color;
+            color: var(--toolbar-color);
+            position: absolute;
+            top: 0;
+            right: 1px;
+            font-size: 15px;
+            opacity: 0.5;
+            cursor: pointer;
+            text-shadow: unset;
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
+
     .cp-toolbar-chat-drawer {
         background-color: @toolbar-bg-color;
         background-color: var(--toolbar-bg-color);
@@ -1069,14 +1139,20 @@
 
         #cp-toolbar-userlist-drawer-open { order: 0; }
         #cp-toolbar-chat-drawer-open { order: 1; }
-        .cp-toolbar-share-button { order: 2; }
-        .cp-toolbar-spinner { order: 3; }
+        #cp-toolbar-videoconf-drawer-open { order: 2; }
+        .cp-toolbar-share-button { order: 3; }
+        .cp-toolbar-spinner { order: 4; }
 
         #cp-toolbar-userlist-drawer-open button {
             width: 125px;
             text-align: center;
         }
         #cp-toolbar-chat-drawer-open button {
+            &.cp-toolbar-notification {
+                animation: notification 2s ease-in-out infinite;
+            }
+        }
+        #cp-toolbar-videoconf-drawer-open button {
             &.cp-toolbar-notification {
                 animation: notification 2s ease-in-out infinite;
             }

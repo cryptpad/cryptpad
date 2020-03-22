@@ -356,6 +356,7 @@ MessengerUI, Messages) {
                     $span.append($rightCol);
                 });
             }
+
             $span.data('uid', data.uid);
             $editUsersList.append($span);
         });
@@ -441,6 +442,115 @@ MessengerUI, Messages) {
         initUserList(toolbar, config);
         return $container;
     };
+
+
+    var initVideoConf = function (toolbar, config) {
+        var $container = $('<div>', {
+            id: 'cp-app-videoconf-container',
+            'class': 'cp-app-videoconf-inapp'
+        }).prependTo(toolbar.videoconfContent);
+
+        var baseURL = (Config.conferencingURL) ? Config.conferencingURL : 'https://meet.jit.si/';
+        var pd = config.metadataMgr.getPrivateData();
+        var cid = pd.channel;
+
+        var $videoText = $('<span>' +  Messages._getKey('videoconfText', [baseURL]) + '</span>').appendTo($container);
+	var $videoButton = $('<button>' + Messages.videoconfButton + '</button>', {'title': Messages.videoconfButton }).appendTo($container);
+        $videoButton.click(function() {
+         var src = baseURL + 'cryptpad' + cid;
+         var $videoIframe = $('<iframe>', {'src': src, 'allow': 'camera *;microphone *', 
+		     'frameborder':'0', 'border': '0'}).appendTo($container);
+         $videoText.hide();
+         $videoButton.hide();
+         $urlButton.hide();
+       }); 
+	var $urlButton = $('<button>' + Messages.videoconfOwnUrl + '</button>', {'title': Messages.videoconfOwnUrl }).appendTo($container);
+        $urlButton.click(function() {
+	  UI.prompt(Messages.videoConfChooseUrl, Messages.videoConfChooseUrlTitle, function (src) {
+           if (src.trim()!="") {
+             var $videoIframe = $('<iframe>', {'src': src, 'allow': 'camera *;microphone *', 
+		     'frameborder':'0', 'border': '0'}).appendTo($container);
+             $videoText.hide();
+             $videoButton.hide();
+	     $urlButton.hide();
+           }
+        });
+       }); 
+    };
+    var createVideoConf = function (toolbar, config) {
+        if (!config.metadataMgr) {
+            throw new Error("You must provide a `metadataMgr` to display the video conf");
+        }
+        if (Config.availablePadTypes.indexOf('contacts') === -1) { return; }
+        var $content = $('<div>', {'class': 'cp-toolbar-videoconf-drawer'});
+        $content.on('drop dragover', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+        var $closeIcon = $('<span>', {"class": "fa fa-window-close cp-toolbar-videoconf-drawer-close"}).appendTo($content);
+        var $sizeIcon = $('<span>', {"class": "fa fa-expand cp-toolbar-videoconf-drawer-size"}).appendTo($content);
+
+        toolbar.videoconfContent = $content;
+
+        var $container = $('<span>', {id: 'cp-toolbar-videoconf-drawer-open', title: Messages.videoconfButton});
+
+        var $button = $('<button>', {'class': 'fa fa-video-camera'}).appendTo($container);
+        $('<span>',{'class': 'cp-dropdown-button-title'}).appendTo($button);
+
+        toolbar.$leftside.prepend($container);
+
+        if (config.$contentContainer) {
+            config.$contentContainer.prepend($content);
+        }
+
+        $sizeIcon.click(function () {
+            var style = $(".cp-toolbar-videoconf-drawer")[0].style;
+            if (style.width=="100%")
+		style.width="";
+            else if (style.width=="450px")
+		style.width="100%";
+            else
+                style.width="450px";
+        });
+
+        var hide = function (closed) {
+            if (!closed) {
+                // It means it's the initial state so we're going to make the icon blink
+                $button.addClass('cp-toolbar-notification');
+            }
+            $content.hide();
+            $button.removeClass('cp-toolbar-button-active');
+            config.$contentContainer.removeClass('cp-videoconf-visible');
+        };
+        var show = function () {
+            if (Bar.isEmbed) { $content.hide(); return; }
+            $content.show();
+            $button.addClass('cp-toolbar-button-active');
+            config.$contentContainer.addClass('cp-videoconf-visible');
+            $button.removeClass('cp-toolbar-notification');
+        };
+        $closeIcon.click(function () {
+            Common.setAttribute(['toolbar', 'videoconf-drawer'], false);
+            hide(true);
+        });
+        $button.click(function () {
+            var visible = $content.is(':visible');
+            if (visible) { hide(true); }
+            else { show(); }
+            visible = !visible;
+            Common.setAttribute(['toolbar', 'videoconf-drawer'], visible);
+        });
+        show();
+        Common.getAttribute(['toolbar', 'videoconf-drawer'], function (err, val) {
+            if (!val || Util.isSmallScreen()) {
+                return void hide(val === false);
+            }
+            show();
+        });
+
+        initVideoConf(toolbar, config);
+        return $container;   
+    }
 
     var initChat = function (toolbar) {
         var $container = $('<div>', {
@@ -1238,6 +1348,7 @@ MessengerUI, Messages) {
         tb['useradmin'] = createUserAdmin;
         tb['unpinnedWarning'] = createUnpinnedWarning;
         tb['notifications'] = createNotifications;
+        tb['videoconf'] = createVideoConf;
 
         var addElement = toolbar.addElement = function (arr, additionalCfg, init) {
             if (typeof additionalCfg === "object") { $.extend(true, config, additionalCfg); }

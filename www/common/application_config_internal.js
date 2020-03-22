@@ -173,5 +173,9 @@ define(function() {
     // You can change the value here.
     // config.maxOwnedTeams = 1;
 
+    // Integrations
+    // JITSI Integration
+    config.conferencingURL = "https://meet.jit.si/";
+
     return config;
 });
