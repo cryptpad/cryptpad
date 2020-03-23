@@ -7,6 +7,8 @@
         "drive": "CryptDrive",
         "slide": "Presentation",
         "poll": "Röstning",
-        "code": "Kod"
-    }
+        "code": "Kod",
+        "todo": "Att-göra"
+    },
+    "main_title": "CryptPad: Nollkunskap, samarbete i realtid"
 }
