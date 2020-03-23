@@ -582,7 +582,8 @@
                 "a": "<em>Pad</em> è un termine popolare per <a href='http://etherpad.org/' target='_blank'>Etherpad</a>, un editor collaborativo in tempo reale.\nSi riferisce ad un documento che puoi modificare nel tuo browser, generalmente con le modifiche di altri utenti visibili in modo quasi istantaneo."
             },
             "expiring": {
-                "q": "Cos'è un pad effimero?"
+                "q": "Cos'è un pad effimero?",
+                "a": "Un <em>expiring pad</em> è un pad creato con una scadenza, raggiunta il pad verrà automaticamente cancellato dal server. Gli expiring pad possono essere configurati per durare da un minimo di un'ora ad un massimo di 100 mesi. Il pad e tutta la sua cronologia diventeranno permanentemente non disponibili anche se vengono modificati nel momento in cui scadono.<br><br>Se un pad è impostato con una scadenza, puoi controllare il suo tempo di durata visualizzando le sue <em> proprietà </em>, sia facendo clic con il tasto destro del mouse sul pad in CryptDrive, sia usando la <em> proprietà </em> -menu dalla barra degli strumenti di un'applicazione."
             },
             "owned": {
                 "a": "Un <em>pad di proprietà</em> è un pad creato da un esplicito <em>proprietario</em>, identificato dal server dalla sua <em>chiave di crittografia pubblica</em>. Il proprietario di un pad può scegliere di cancellare i suoi pad dal server, rendendoli invalidi per gli altri collaboratori nel futuro, sia che essi li avessero oppure no nei loro Cryptdrive.",
