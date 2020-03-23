@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "jshint": "^2.10.2",
-    "less": "2.7.1",
+    "less": "3.7.1",
     "lesshint": "^4.5.0",
     "selenium-webdriver": "^3.6.0"
   },
