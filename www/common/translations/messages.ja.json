@@ -1,1 +1,26 @@
-{}
+{
+    "websocketError": "ウェブソケットサーバーとの接続ができません。",
+    "common_connectionLost": "サーバーとの接続が切断しました。\nサーバーと再接続するまで閲覧モードになります。",
+    "button_newsheet": "新規スプレッドシート",
+    "button_newkanban": "新規カンバン",
+    "button_newwhiteboard": "新規ホワイトボード",
+    "button_newslide": "新規プレゼンテーション",
+    "button_newpoll": "新規投票・アンケート",
+    "button_newcode": "新規コードファイル",
+    "button_newpad": "新規リッチテキスト",
+    "type": {
+        "teams": "チーム",
+        "contacts": "連絡先",
+        "todo": "やることリスト",
+        "media": "メディア",
+        "file": "ファイル",
+        "whiteboard": "ホワイトボード",
+        "drive": "ドライブ",
+        "slide": "プレゼン",
+        "kanban": "看板",
+        "poll": "投票・アンケート",
+        "code": "コード",
+        "pad": "リッチテキスト"
+    },
+    "main_title": " CryptPad - それは直感的なリアルタイム同期編集エディター -"
+}
