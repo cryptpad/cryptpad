@@ -13,6 +13,7 @@ var map = {
     'pt-br': 'Português do Brasil',
     'ro': 'Română',
     'ru': 'Русский',
+    //'sv': 'Svenska',
     //'te': 'తెలుగు',
     'zh': '繁體中文',
     //'nl': 'Nederlands'

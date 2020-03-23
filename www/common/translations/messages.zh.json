@@ -8,7 +8,8 @@
         "drive": "磁碟",
         "whiteboard": "白板",
         "file": "檔案",
-        "media": "多媒體"
+        "media": "多媒體",
+        "kanban": "任务看板"
     },
     "button_newpad": "富文件檔案",
     "button_newcode": "新代碼檔案",

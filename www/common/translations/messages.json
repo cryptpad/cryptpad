@@ -599,7 +599,7 @@
     "mdToolbar_button": "Show or hide the Markdown toolbar",
     "mdToolbar_defaultText": "Your text here",
     "mdToolbar_help": "Help",
-    "mdToolbar_tutorial": "http://www.markdowntutorial.com/",
+    "mdToolbar_tutorial": "https://www.markdowntutorial.com/",
     "mdToolbar_bold": "Bold",
     "mdToolbar_italic": "Italic",
     "mdToolbar_strikethrough": "Strikethrough",

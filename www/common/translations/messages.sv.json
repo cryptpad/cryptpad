@@ -1,0 +1,14 @@
+{
+    "type": {
+        "contacts": "Kontakter",
+        "media": "Media",
+        "file": "Fil",
+        "whiteboard": "Whiteboard",
+        "drive": "CryptDrive",
+        "slide": "Presentation",
+        "poll": "Röstning",
+        "code": "Kod",
+        "todo": "Att-göra"
+    },
+    "main_title": "CryptPad: Nollkunskap, samarbete i realtid"
+}
