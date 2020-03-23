@@ -325,6 +325,7 @@ define([
             body: $('body'),
             onUploaded: function (ev, data) {
                 if (!data || !data.url) { return; }
+                data.hash = ev.hash;
                 sframeChan.query('Q_OO_SAVE', data, function (err) {
                     onUploaded(ev, data, err);
                 });
@@ -1556,6 +1557,7 @@ define([
                 content = hjson.content || content;
                 var newLatest = getLastCp();
                 sframeChan.query('Q_OO_SAVE', {
+                    hash: newLatest.hash,
                     url: newLatest.file
                 }, function () { });
                 newDoc = !content.hashes || Object.keys(content.hashes).length === 0;
@@ -1649,6 +1651,7 @@ define([
                 var newLatest = getLastCp();
                 if (newLatest.index > latest.index) {
                     sframeChan.query('Q_OO_SAVE', {
+                        hash: newLatest.hash,
                         url: newLatest.file
                     }, function () { });
                 }

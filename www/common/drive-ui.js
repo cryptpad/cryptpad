@@ -3867,6 +3867,7 @@ define([
 
             var opts = {};
             opts.href = Hash.getRelativeHref(data.href || data.roHref);
+            opts.channel = data.channel;
 
             if (manager.isSharedFolder(el)) {
                 var ro = folders[el] && folders[el].version >= 2;

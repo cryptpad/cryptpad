@@ -36,6 +36,7 @@ define([
             return void cb();
         }
 
+        var txid = Math.floor(Math.random() * 1000000);
         var onOpen = function (wc) {
 
             ctx.channels[channel] = ctx.channels[channel] || {
@@ -91,6 +92,7 @@ define([
 
             var hk = network.historyKeeper;
             var cfg = {
+                txid: txid,
                 lastKnownHash: chan.lastKnownHash || chan.lastCpHash,
                 metadata: {
                     validateKey: obj.validateKey,
@@ -121,6 +123,8 @@ define([
             } catch (e) {}
             if (!parsed) { return; }
 
+            // If there is a txid, make sure it's ours or abort
+            if (parsed.txid && parsed.txid !== txid) { return; }
 
             // Keep only metadata messages for the current channel
             if (parsed.channel && parsed.channel !== channel) { return; }
@@ -137,6 +141,11 @@ define([
                 return;
             }
             if (parsed.error && parsed.channel) { return; }
+
+            // If there is a txid, make sure it's ours or abort
+            if (Array.isArray(parsed) && parsed[0] && parsed[0] !== txid) {
+                return;
+            }
 
             msg = parsed[4];
 
