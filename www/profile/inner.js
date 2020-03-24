@@ -457,6 +457,34 @@ define([
         APP.editor.save();
     };
 
+    Messages.profile_copyKey = "Copy edPublic key"; // XXX
+    var addPublicKey = function ($container) {
+        if (!APP.readOnly) { return; }
+
+        var $div = $(h('div.cp-sidebarlayout-element')).appendTo($container);
+        APP.$edPublic = $('<button>', {
+            'class': 'btn btn-success',
+        }).append(h('i.fa.fa-key'))
+          .append(h('span', Messages.profile_copyKey))
+          .click(function () {
+            if (!APP.getEdPublic) { return; }
+            APP.getEdPublic();
+        }).appendTo($div).hide();
+    };
+    var setPublicKeyButton = function (data) {
+        if (!data.edPublic || APP.getEdPublic || !APP.readOnly) { return; }
+        APP.$edPublic.show();
+        APP.getEdPublic = function () {
+            var metadataMgr = APP.common.getMetadataMgr();
+            var privateData = metadataMgr.getPrivateData();
+            var name = data.name.toLowerCase().replace(/[^a-zA-Z0-9]+/g, "-");
+            var ed = data.edPublic.replace(/\//g, '-');
+            var url = privateData.origin + '/user/#/1/' + name + '/' + ed;
+            var success = Clipboard.copy(url);
+            if (success) { UI.log(Messages.shareSuccess); }
+        };
+    };
+
     var createLeftside = function () {
         var $categories = $('<div>', {'class': 'cp-sidebarlayout-categories'}).appendTo(APP.$leftside);
         var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
@@ -477,6 +505,7 @@ define([
             addFriendRequest($rightside);
             addMuteButton($rightside);
             addDescription(APP.$rightside);
+            addPublicKey(APP.$rightside);
             addViewButton($rightside);
             APP.initialized = true;
             createLeftside();
@@ -490,6 +519,7 @@ define([
         refreshDescription(data);
         refreshFriendRequest(data);
         refreshMute(data);
+        setPublicKeyButton(data);
     };
 
     var createToolbar = function () {

@@ -54,6 +54,9 @@ define([
             if (!lm.proxy.notifications) {
                 lm.proxy.notifications = Util.find(ctx.store.proxy, ['mailboxes', 'notifications', 'channel']);
             }
+            if (!lm.proxy.edPublic) {
+                lm.proxy.edPublic = ctx.store.proxy.edPublic;
+            }
             if (ctx.onReadyHandlers.length) {
                 ctx.onReadyHandlers.forEach(function (f) {
                     try {
