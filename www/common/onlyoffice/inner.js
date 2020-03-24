@@ -104,10 +104,14 @@ define([
             return metadataMgr.getNetfluxId() + '-' + privateData.clientId;
         };
 
+        var getEditor = function () {
+            return window.frames[0].editor || window.frames[0].editorCell;
+        };
+
         var setEditable = function (state) {
             $('#cp-app-oo-editor').find('#cp-app-oo-offline').remove();
             try {
-                window.frames[0].editor.asc_setViewMode(!state);
+                getEditor().asc_setViewMode(!state);
                 //window.frames[0].editor.setViewModeDisconnect(true);
             } catch (e) {}
             if (!state && !readOnly) {
@@ -239,10 +243,6 @@ define([
             queue: [],
             send: function () {},
             cpIndex: 0
-        };
-
-        var getEditor = function () {
-            return window.frames[0].editor || window.frames[0].editorCell;
         };
 
         var getContent = function () {
@@ -847,7 +847,7 @@ define([
                         "id": String(myOOId), //"c0c3bf82-20d7-4663-bf6d-7fa39c598b1d",
                         "firstname": metadataMgr.getUserData().name || Messages.anonymous,
                     },
-                    "mode": readOnly || lock ? "view" : "edit",
+                    "mode": lock ? "view" : "edit",
                     "lang": (navigator.language || navigator.userLanguage || '').slice(0,2)
                 },
                 "events": {
