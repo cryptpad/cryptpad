@@ -284,15 +284,14 @@ define([
         });
         var $canvas = $('canvas');
         var $canvasContainer = $('canvas').parents('.cp-app-whiteboard-canvas-container');
+        var $container = $('#cp-app-whiteboard-container');
 
         // Max for old macs: 2048×1464
         // Max for IE: 8192x8192
         var MAX = 8192;
         var onResize = APP.onResize = function () {
-            $canvasContainer.css('width', '');
-            $canvasContainer.css('height', '');
-            var w = $canvasContainer.width() - 20;
-            var h = $canvasContainer.height();
+            var w = $container.width();
+            var h = $container.height();
             canvas.forEachObject(function (obj) {
                 var c = obj.getCoords();
                 Object.keys(c).forEach(function (k) {
