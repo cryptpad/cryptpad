@@ -35,7 +35,6 @@
     #cp-app-whiteboard-container {
         flex: 1;
         display: flex;
-        flex-flow: column;
         overflow: auto;
     }
 
@@ -43,14 +42,17 @@
     #cp-app-whiteboard-canvas-area {
         flex: 1;
         display: flex;
+        min-height: 0;
     }
     // created by fabricjs. styled so defaults don't break anything
     .cp-app-whiteboard-canvas-container {
+        width: 100%;
         margin: auto;
         background: white;
         flex: 1;
         min-height: 0;
         & > canvas {
+            width: 100%;
             border: 1px solid black;
         }
     }
