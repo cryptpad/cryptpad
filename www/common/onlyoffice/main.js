@@ -61,6 +61,7 @@ define([
                     if (e) { return void cb(e); }
                     Cryptpad.setPadAttribute('lastVersion', data.url, cb);
                 });
+                Cryptpad.setPadAttribute('lastCpHash', data.hash, cb);
             });
             sframeChan.on('Q_OO_OPENCHANNEL', function (data, cb) {
                 Cryptpad.getPadAttribute('rtChannel', function (err, res) {

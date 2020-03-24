@@ -203,7 +203,6 @@ define([
             var base = exp.getStructure();
             return typeof (obj) === "object" &&
                     Object.keys(base).every(function (key) {
-                        console.log(key, obj[key], type(obj[key]));
                         return obj[key] && type(base[key]) === type(obj[key]);
                     });
         };

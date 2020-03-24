@@ -137,7 +137,7 @@ define([
                 canvas.discardActiveGroup();
             }
             canvas.renderAll();
-            framework.localChange();
+            APP.onLocal();
         };
         $deleteButton.click(deleteSelection);
         $(window).on('keyup', function (e) {
@@ -220,7 +220,7 @@ define([
             var metadata = JSON.parse(JSON.stringify(metadataMgr.getMetadata()));
             metadata.palette = newPalette;
             metadataMgr.updateMetadata(metadata);
-            framework.localChange();
+            APP.onLocal();
         };
 
         var makeColorButton = function ($container) {
@@ -284,6 +284,34 @@ define([
         });
         var $canvas = $('canvas');
         var $canvasContainer = $('canvas').parents('.cp-app-whiteboard-canvas-container');
+        var $container = $('#cp-app-whiteboard-container');
+
+        // Max for old macs: 2048×1464
+        // Max for IE: 8192x8192
+        var MAX = 8192;
+        var onResize = APP.onResize = function () {
+            var w = $container.width();
+            var h = $container.height();
+            canvas.forEachObject(function (obj) {
+                var c = obj.getCoords();
+                Object.keys(c).forEach(function (k) {
+                    if (c[k].x > w) { w = c[k].x + 1; }
+                    if (c[k].y > h) { h = c[k].y + 1; }
+                });
+            });
+            w = Math.min(w, MAX);
+            h = Math.min(h, MAX);
+            canvas.setWidth(w);
+            canvas.setHeight(h);
+            canvas.calcOffset();
+        };
+        $(window).on('resize', onResize);
+
+        var onLocal = APP.onLocal = function () {
+            framework.localChange();
+            APP.onResize();
+        };
+
         var $controls = $('#cp-app-whiteboard-controls');
         var metadataMgr = framework._.cpNfInner.metadataMgr;
 
@@ -333,7 +361,7 @@ define([
             }
             var cImg = new Fabric.Image(img, { left:0, top:0, angle:0, });
             APP.canvas.add(cImg);
-            framework.localChange();
+            onLocal();
         };
 
         // Embed image
@@ -403,7 +431,7 @@ define([
 
         $('#cp-app-whiteboard-clear').on('click', function () {
             canvas.clear();
-            framework.localChange();
+            onLocal();
         });
 
         // ---------------------------------------------
@@ -432,6 +460,7 @@ define([
             var content = newContent.content;
             canvas.loadFromJSON(content, waitFor(function () {
                 canvas.renderAll();
+                onResize();
             }));
         });
 
@@ -461,7 +490,7 @@ define([
             window.setTimeout(mkThumbnail, Thumb.UPDATE_FIRST);
         });
 
-        canvas.on('mouse:up', framework.localChange);
+        canvas.on('mouse:up', onLocal);
         framework.start();
     };
 
@@ -471,8 +500,6 @@ define([
             h('div#cp-app-whiteboard-canvas-area',
                 h('div#cp-app-whiteboard-container',
                     h('canvas#cp-app-whiteboard-canvas', {
-                        width: 600,
-                        height: 600
                     })
                 )
             ),

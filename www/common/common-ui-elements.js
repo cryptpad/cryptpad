@@ -803,6 +803,17 @@ define([
             var chan = [data.channel];
             if (data.rtChannel) { chan.push(data.rtChannel); }
             if (data.lastVersion) { chan.push(Hash.hrefToHexChannelId(data.lastVersion)); }
+            var channels = chan.filter(function (c) { return c.length === 32; }).map(function (id) {
+                if (id === data.rtChannel && data.lastVersion && data.lastCpHash) {
+                    return {
+                        channel: id,
+                        lastKnownHash: data.lastCpHash
+                    };
+                }
+                return {
+                    channel: id
+                };
+            });
             var history = common.makeUniversal('history');
             var trimChannels = [];
             NThen(function (waitFor) {
@@ -819,7 +830,7 @@ define([
                 if (!owned) { return; }
                 history.execCommand('GET_HISTORY_SIZE', {
                     pad: true,
-                    channels: chan.filter(function (c) { return c.length === 32; }),
+                    channels: channels,
                     teamId: typeof(owned) === "number" && owned
                 }, waitFor(function (obj) {
                     if (obj && obj.error) { return; }

@@ -119,7 +119,7 @@ define([
 
     var setHistory = function (bool, update) {
         history.isHistoryMode = bool;
-        setEditable(!bool);
+        setEditable(!bool, true);
         if (!bool && update) {
             history.onLeaveHistory();
         }

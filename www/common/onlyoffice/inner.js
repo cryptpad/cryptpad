@@ -104,10 +104,14 @@ define([
             return metadataMgr.getNetfluxId() + '-' + privateData.clientId;
         };
 
+        var getEditor = function () {
+            return window.frames[0].editor || window.frames[0].editorCell;
+        };
+
         var setEditable = function (state) {
             $('#cp-app-oo-editor').find('#cp-app-oo-offline').remove();
             try {
-                window.frames[0].editor.asc_setViewMode(!state);
+                getEditor().asc_setViewMode(!state);
                 //window.frames[0].editor.setViewModeDisconnect(true);
             } catch (e) {}
             if (!state && !readOnly) {
@@ -241,10 +245,6 @@ define([
             cpIndex: 0
         };
 
-        var getEditor = function () {
-            return window.frames[0].editor || window.frames[0].editorCell;
-        };
-
         var getContent = function () {
             try {
                 return getEditor().asc_nativeGetFile();
@@ -325,6 +325,7 @@ define([
             body: $('body'),
             onUploaded: function (ev, data) {
                 if (!data || !data.url) { return; }
+                data.hash = ev.hash;
                 sframeChan.query('Q_OO_SAVE', data, function (err) {
                     onUploaded(ev, data, err);
                 });
@@ -846,7 +847,7 @@ define([
                         "id": String(myOOId), //"c0c3bf82-20d7-4663-bf6d-7fa39c598b1d",
                         "firstname": metadataMgr.getUserData().name || Messages.anonymous,
                     },
-                    "mode": readOnly || lock ? "view" : "edit",
+                    "mode": lock ? "view" : "edit",
                     "lang": (navigator.language || navigator.userLanguage || '').slice(0,2)
                 },
                 "events": {
@@ -1556,6 +1557,7 @@ define([
                 content = hjson.content || content;
                 var newLatest = getLastCp();
                 sframeChan.query('Q_OO_SAVE', {
+                    hash: newLatest.hash,
                     url: newLatest.file
                 }, function () { });
                 newDoc = !content.hashes || Object.keys(content.hashes).length === 0;
@@ -1649,6 +1651,7 @@ define([
                 var newLatest = getLastCp();
                 if (newLatest.index > latest.index) {
                     sframeChan.query('Q_OO_SAVE', {
+                        hash: newLatest.hash,
                         url: newLatest.file
                     }, function () { });
                 }
