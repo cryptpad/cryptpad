@@ -506,7 +506,7 @@ define([
             addFriendRequest($rightside);
             addMuteButton($rightside);
             addDescription(APP.$rightside);
-            addPublicKey(APP.$rightside);
+            addPublicKey($rightside);
             addViewButton($rightside);
             APP.initialized = true;
             createLeftside();
