@@ -457,9 +457,9 @@ define([
         APP.editor.save();
     };
 
-    Messages.profile_copyKey = "Copy edPublic key"; // XXX
     var addPublicKey = function ($container) {
         if (!APP.readOnly) { return; }
+        if (!Messages.profile_copyKey) { return; } // XXX
 
         var $div = $(h('div.cp-sidebarlayout-element')).appendTo($container);
         APP.$edPublic = $('<button>', {
@@ -473,6 +473,7 @@ define([
     };
     var setPublicKeyButton = function (data) {
         if (!data.edPublic || APP.getEdPublic || !APP.readOnly) { return; }
+        if (!Messages.profile_copyKey) { return; } // XXX
         APP.$edPublic.show();
         APP.getEdPublic = function () {
             var metadataMgr = APP.common.getMetadataMgr();
