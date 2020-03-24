@@ -34,7 +34,11 @@ var msSinceStart = function ()  {
 nThen(function (w) {
     // load the store which will be used for iterating over channels
     // and performing operations like archival and deletion
-    Store.create(config, w(function (_) {
+    Store.create(config, w(function (err, _) {
+        if (err) {
+            w.abort();
+            throw err;
+        }
         store = _;
     })); // load the list of pinned files so you know which files
     // should not be archived or deleted

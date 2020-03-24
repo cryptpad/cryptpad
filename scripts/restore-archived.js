@@ -8,7 +8,8 @@ var Log;
 nThen(function (w) {
     // load the store which will be used for iterating over channels
     // and performing operations like archival and deletion
-    Store.create(config, w(function (_) {
+    Store.create(config, w(function (err, _) {
+        if (err) { throw err; }
         store = _;
     }));
 
