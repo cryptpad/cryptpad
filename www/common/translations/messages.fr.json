@@ -1340,5 +1340,7 @@
     "oo_isLocked": "Synchronisation, veuillez patienter",
     "admin_openFilesHint": "Nombre de descripteurs de fichiers actuellement ouverts sur le serveur.",
     "admin_openFilesTitle": "Fichiers Ouverts",
-    "profile_copyKey": "Copier la clé publique"
+    "profile_copyKey": "Copier la clé publique",
+    "canvas_select": "Selection",
+    "canvas_brush": "Pinceau"
 }
