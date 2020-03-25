@@ -66,7 +66,7 @@ define([
             }), {
                 network: network
             });
-        }).nThen(function (waitFor) {
+        }).nThen(function () {
             var origin = ApiConfig.fileHost || window.location.origin;
             // Get contacts and extract their avatar channel and key
             var getData = function (obj, href) {
