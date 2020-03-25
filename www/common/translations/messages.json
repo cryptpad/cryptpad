@@ -1337,5 +1337,8 @@
     "kanban_clearFilter": "Clear filter",
     "kanban_editCard": "Edit this card",
     "kanban_editBoard": "Edit this board",
-    "oo_isLocked": "syncing changes, please wait"
+    "oo_isLocked": "syncing changes, please wait",
+    "profile_copyKey": "Copy public key",
+    "admin_openFilesTitle": "Open Files",
+    "admin_openFilesHint": "Number of file descriptors currently open on the server."
 }
