@@ -507,8 +507,6 @@ define([
         framework.start();
     };
 
-    Messages.canvas_brush = "Brush"; // XXX
-    Messages.canvas_select = "Select"; // XXX
 
     var initialContent = function () {
         return [
