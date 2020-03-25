@@ -575,7 +575,7 @@
     "mdToolbar_button": "Die Markdown-Werkzeugleiste anzeigen oder verbergen",
     "mdToolbar_defaultText": "Dein Text hier",
     "mdToolbar_help": "Hilfe",
-    "mdToolbar_tutorial": "http://www.markdowntutorial.com/",
+    "mdToolbar_tutorial": "https://www.markdowntutorial.com/",
     "mdToolbar_bold": "Fett",
     "mdToolbar_italic": "Kursiv",
     "mdToolbar_strikethrough": "Durchgestrichen",
