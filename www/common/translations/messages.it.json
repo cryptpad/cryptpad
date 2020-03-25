@@ -1,5 +1,5 @@
 {
-    "main_title": "CryptPad: Editor zero knowledge collaborativo in tempo reale",
+    "main_title": "CryptPad: Editor Zero Knowledge collaborativo in tempo reale",
     "type": {
         "pad": "Testo",
         "code": "Codice",
@@ -13,7 +13,7 @@
         "todo": "Promemoria",
         "contacts": "Contatti",
         "sheet": "Fogli",
-        "teams": "Team"
+        "teams": "Teams"
     },
     "button_newpad": "Nuovo pad di Testo",
     "button_newcode": "Nuovo pad di Codice",
@@ -25,14 +25,14 @@
     "common_connectionLost": "<b>Connessione al server persa</b><br>Rimarrai in modalità solo lettura finché la connessione non sarà ripristinata.",
     "websocketError": "Impossibile connettersi al WebSocket server...",
     "typeError": "Questo pad non è compatibile con l'applicazione selezionata",
-    "onLogout": "Sei logged out, {0}Click qui{1} per fare il log in<br>o premi <em>Esc</em> per accedere il tuo pad in modalità solo lettura.",
-    "wrongApp": "Impossibile mostrare il contenuto di quella sessione in tempo reale nel tuo browser. Per favore, prova a ricaricare la pagina.",
-    "padNotPinned": "Questo pad scadrà dopo 3 mesi di inattività, {0}login{1} o {2}registrati{3} per mantenerlo permanentemente.",
-    "anonymousStoreDisabled": "Il webmaster di questa istanza di CryptPad ha disabilitato il drive per gli utenti anonimi. Devi eseguire il login per poter usare CryptDrive.",
+    "onLogout": "Sei uscito, {0}Clicca qui{1} per entrare<br>o premi <em>Esc</em> per accedere al tuo pad in modalità solo lettura.",
+    "wrongApp": "Impossibile mostrare il contenuto di quella sessione in tempo reale nel tuo browser. Per favore, prova a ricaricare quella pagina.",
+    "padNotPinned": "Questo pad scadrà dopo 3 mesi di inattività, {0}accedi{1} o {2}registrati{3} per conservarlo.",
+    "anonymousStoreDisabled": "Il webmaster di questa istanza di CryptPad ha disabilitato il drive per gli utenti anonimi. Devi accedere per poter usare CryptDrive.",
     "expiredError": "Questo pad ha raggiunto la sua data di scadenza e non è più disponibile.",
     "deletedError": "Questo pad è stato cancellato dal suo autore e non è più disponibile.",
     "inactiveError": "Questo pad è stato cancellato per inattività. Premi Esc per creare un nuovo pad.",
-    "chainpadError": "Si è verificato un errore critico nell'aggiornamento del tuo contenuto. Questa pagina è in modalità solo lettura per assicurarci che non perderai il tuo lavoro..<br>Premi <em>Esc</em> per continuare a visualizzare questo pad, o ricarica la pagina per provare a modificarlo di nuovo.",
+    "chainpadError": "Si è verificato un errore critico nell'aggiornamento del tuo contenuto. Questa pagina è in modalità solo lettura per assicurarci che non perderai il tuo lavoro.<br>Premi <em>Esc</em> per continuare a visualizzare questo pad, o ricarica la pagina per provare a modificarlo di nuovo.",
     "invalidHashError": "Il documento richiesto ha un URL non valido.",
     "errorCopy": " Puoi ancora accedere al contenuto premendo <em>Esc</em>.<br>Una volta chiusa questa finestra, non sarà possibile accedere di nuovo.",
     "errorRedirectToHome": "Premi <em>Esc</em> per essere reindirizzato al tuo CryptDrive.",
@@ -549,16 +549,33 @@
             "why": {
                 "q": "Perché dovrei usare CryptPad?"
             },
-            "title": "Sicurezza"
+            "title": "Sicurezza",
+            "proof": {
+                "q": "Come utilizzate le Zero Knowledge Proofs?"
+            }
         },
         "privacy": {
             "register": {
-                "a": "nome utente"
+                "a": "nome utente",
+                "q": "Il server mi conosce di più se mi registro?"
             },
             "policy": {
-                "a": "Sì! È disponibile <a href='/privacy.html' target='_blank'>qui</a>."
+                "a": "Sì! È disponibile <a href='/privacy.html' target='_blank'>qui</a>.",
+                "q": "Avete una politica di privacy dei dati?"
             },
-            "title": "Privacy"
+            "title": "Privacy",
+            "anonymous": {
+                "q": "CryptPad mi rende anonimo?"
+            },
+            "other": {
+                "q": "Cosa possono conoscere di me gli altri collaboratori?"
+            },
+            "me": {
+                "q": "Che informazioni ha il server su di me?"
+            },
+            "different": {
+                "q": "In cosa è diverso CryptPad dagli altri servizi Pad?"
+            }
         },
         "other": {
             "jobs": {
@@ -583,13 +600,19 @@
             },
             "expiring": {
                 "q": "Cos'è un pad effimero?",
-                "a": "Un <em>expiring pad</em> è un pad creato con una scadenza, raggiunta il pad verrà automaticamente cancellato dal server. Gli expiring pad possono essere configurati per durare da un minimo di un'ora ad un massimo di 100 mesi. Il pad e tutta la sua cronologia diventeranno permanentemente non disponibili anche se vengono modificati nel momento in cui scadono.<br><br>Se un pad è impostato con una scadenza, puoi controllare il suo tempo di durata visualizzando le sue <em> proprietà </em>, sia facendo clic con il tasto destro del mouse sul pad in CryptDrive, sia usando la <em> proprietà </em> -menu dalla barra degli strumenti di un'applicazione."
+                "a": "Un <em>pad effimero</em> è un pad creato con una scadenza, raggiunta la quale il pad verrà automaticamente cancellato dal server. I pad effimeri possono essere configurati per durare da un minimo di un'ora ad un massimo di 100 mesi. Il pad e tutta la sua cronologia diventeranno permanentemente non disponibili anche se vengono modificati nel momento in cui scadono.<br><br>Se un pad è impostato con una scadenza, puoi controllare il suo tempo di durata visualizzando le sue <em> proprietà </em>, sia facendo clic con il tasto destro del mouse sul pad nel tuo CryptDrive, sia usando le <em> proprietà </em> sub-menu dalla barra degli strumenti di un'applicazione."
             },
             "owned": {
                 "a": "Un <em>pad di proprietà</em> è un pad creato da un esplicito <em>proprietario</em>, identificato dal server dalla sua <em>chiave di crittografia pubblica</em>. Il proprietario di un pad può scegliere di cancellare i suoi pad dal server, rendendoli invalidi per gli altri collaboratori nel futuro, sia che essi li avessero oppure no nei loro Cryptdrive.",
                 "q": "Cos'è un Pad di proprietà?"
             },
-            "title": "Parole chiave"
+            "title": "Parole chiave",
+            "abandoned": {
+                "q": "Cos'è un pad abbandonato?"
+            },
+            "template": {
+                "q": "Cos'è un modello?"
+            }
         }
     },
     "whatis_zeroknowledge_p2": "Quando ti registri e accedi, il tuo nome utente e la tua password vengono computati in una chiave segreta utilizzando la <a href=\"https://en.wikipedia.org/wiki/Scrypt\">funzione di derivazione scrypt</a>. Né questa chiave, né il tuo nome utente o la tua password vengono inviati al server. Infatti sono usati soltanto dal lato client per decriptare il contenuto del tuo CryptDrive, che contiene le chiavi per tutti i pad a cui hai accesso.",
@@ -635,7 +658,7 @@
     "mdToolbar_link": "Link",
     "mdToolbar_italic": "Corsivo",
     "mdToolbar_bold": "Grassetto",
-    "mdToolbar_tutorial": "http://www.markdowntutorial.com/",
+    "mdToolbar_tutorial": "https://www.markdowntutorial.com/",
     "mdToolbar_help": "Aiuto",
     "pad_hideToolbar": "Nascondi barra degli strumenti",
     "pad_showToolbar": "Mostra barra degli strumenti",
