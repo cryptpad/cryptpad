@@ -123,23 +123,28 @@
         .middle;
         z-index: 100;
         background: white;
-        display: flex;
         justify-content: space-between;
+        display: flex;
+        flex-shrink: 1;
+        flex-wrap: wrap;
+        min-width: 0;
+        max-width: 300px;
 
         padding: 10px;
 
         span.cp-app-whiteboard-palette-color {
-            height: 4vw;
-            width: 4vw;
+            height: 30px;
+            width: 30px;
             display: block;
             margin: 5px;
-            border: 1px solid black;
+            border: 1px solid #bbb;
             vertical-align: top;
             border-radius: 50%;
+            cursor: pointer;
             transition: transform 0.1s;
 
             &:hover {
-                transform: scale(1.2);
+                transform: scale(1.1);
             }
         }
     }

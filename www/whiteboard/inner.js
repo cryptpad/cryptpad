@@ -511,13 +511,13 @@ define([
                     }),
                     h('span#cp-app-whiteboard-opacity-val', '100%')
                 ]),
-                h('span.cp-app-whiteboard-selected.cp-app-whiteboard-unselectable', [
+                h('div.cp-app-whiteboard-selected.cp-app-whiteboard-unselectable', [
                     h('img', {
                         title: Messages.canvas_currentBrush
                     })
-                ])
+                ]),
+                UI.setHTML(h('div#cp-app-whiteboard-colors'), '&nbsp;'),
             ]),
-            UI.setHTML(h('div#cp-app-whiteboard-colors'), '&nbsp;'),
             h('div#cp-app-whiteboard-cursors', {
                 style: {
                     display: 'none',
