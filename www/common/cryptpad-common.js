@@ -1970,7 +1970,9 @@ define([
                 common.fromFileData = JSON.parse(sessionStorage[Constants.newPadFileData]);
                 var _parsed1 = Hash.parsePadUrl(common.fromFileData.href);
                 var _parsed2 = Hash.parsePadUrl(window.location.href);
-                if (_parsed1.type !== _parsed2.type) { delete common.fromFileData; }
+                if (_parsed1.hashData.type === 'pad') {
+                    if (_parsed1.type !== _parsed2.type) { delete common.fromFileData; }
+                }
                 delete sessionStorage[Constants.newPadFileData];
             }
 
