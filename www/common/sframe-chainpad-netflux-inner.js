@@ -61,10 +61,12 @@ define([
                 logLevel: logLevel
             });
             _chainpad.onMessage(function(message, cb) {
-                sframeChan.query('Q_RT_MESSAGE', message, function (err) {
+                // -1 ==> no timeout, we may receive the callback only when we reconnect
+                sframeChan.query('Q_RT_MESSAGE', message, function (_err, obj) {
+                    var err = _err || (obj && obj.error);
                     if (!err) { evPatchSent.fire(); }
                     cb(err);
-                });
+                }, { timeout: -1 });
             });
             _chainpad.onPatch(function () {
                 onRemote({ realtime: chainpad });

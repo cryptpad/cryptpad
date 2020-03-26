@@ -1596,7 +1596,10 @@ define([
                 onConnect: function (wc, sendMessage) {
                     channel.sendMessage = function (msg, cId, cb) {
                         // Send to server
-                        sendMessage(msg, function () {
+                        sendMessage(msg, function (err) {
+                            if (err) {
+                                return void cb({ error: err });
+                            }
                             // Broadcast to other tabs
                             channel.pushHistory(CpNetflux.removeCp(msg), /^cp\|/.test(msg));
                             channel.bcast("PAD_MESSAGE", {
