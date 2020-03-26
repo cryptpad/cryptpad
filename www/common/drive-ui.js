@@ -10,6 +10,7 @@ define([
     '/common/common-feedback.js',
 
     '/common/inner/access.js',
+    '/common/inner/properties.js',
 
     '/bower_components/nthen/index.js',
     '/common/hyperscript.js',
@@ -27,6 +28,7 @@ define([
     Constants,
     Feedback,
     Access,
+    Properties,
     nThen,
     h,
     ProxyManager,
@@ -3873,7 +3875,7 @@ define([
                 var ro = folders[el] && folders[el].version >= 2;
                 if (!ro) { opts.noReadOnly = true; }
             }
-            UIElements.getProperties(common, opts, cb);
+            Properties.getPropertiesModal(common, opts, cb);
         };
         APP.getAccess = function (el, cb) {
             if (!manager.isFile(el) && !manager.isSharedFolder(el)) {

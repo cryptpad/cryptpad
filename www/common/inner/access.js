@@ -4,59 +4,22 @@ define([
     '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
+    '/common/inner/common-modal.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/bower_components/nthen/index.js',
-], function ($, Util, Hash, UI, UIElements, h,
+], function ($, Util, Hash, UI, UIElements, Modal, h,
              Messages, nThen) {
     var Access = {};
 
-
-
-    var evRedrawAll = Util.mkEvent();
-
-    // Override metadata values from data
-    var override = function (data, obj) {
-        data.owners = obj.owners;
-        data.expire = obj.expire;
-        data.pending_owners = obj.pending_owners;
-        data.mailbox = obj.mailbox;
-        data.restricted = obj.restricted;
-        data.allowed = obj.allowed;
-        data.rejected = obj.rejected;
-    };
-    var loadMetadata = function (common, data, waitFor, redraw) {
-        common.getPadMetadata({
-            channel: data.channel
-        }, waitFor(function (md) {
-            override(data, md);
-            if (redraw) { evRedrawAll.fire(redraw); }
-        }));
-    };
-
-    var isOwned = function (common, data) {
-        data = data || {};
-        var priv = common.getMetadataMgr().getPrivateData();
-        var edPublic = priv.edPublic;
-        var owned = false;
-        if (Array.isArray(data.owners) && data.owners.length) {
-            if (data.owners.indexOf(edPublic) !== -1) {
-                owned = true;
-            } else {
-                Object.keys(priv.teams || {}).some(function (id) {
-                    var team = priv.teams[id] || {};
-                    if (team.viewer) { return; }
-                    if (data.owners.indexOf(team.edPublic) === -1) { return; }
-                    owned = id;
-                    return true;
-                });
-            }
-        }
-        return owned;
-    };
-
-    var getOwnersTab = function (common, data, opts, _cb) {
+    var getOwnersTab = function (Env, data, opts, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
+        var common = Env.common;
+
+        var parsed = Hash.parsePadUrl(data.href || data.roHref);
+        var owned = Modal.isOwned(Env, data);
+        var disabled = !owned || !parsed.hashData || parsed.hashData.type !== 'pad';
+        if (disabled) { return void cb(); }
 
         var friends = common.getFriends(true);
         var sframeChan = common.getSframeChannel();
@@ -340,10 +303,13 @@ define([
             });
         });
 
+        var called = false;
         redrawAll = function (reload) {
+            if (called) { return; }
+            called = true;
             nThen(function (waitFor) {
                 if (!reload) { return; }
-                loadMetadata(common, data, waitFor, "owner");
+                Modal.loadMetadata(common, data, waitFor, "owner");
             }).nThen(function () {
                 owners = data.owners || [];
                 pending_owners = data.pending_owners || [];
@@ -352,11 +318,12 @@ define([
                 $div1.append(h('p', Messages.owner_text));
                 $div1.append(drawRemove(false)).append(drawRemove(true));
                 $div2.append(drawAdd());
+                called = false;
             });
         };
         redrawAll();
 
-        evRedrawAll.reg(function (type) {
+        Env.evRedrawAll.reg(function (type) {
             if (type === "owner") { return; }
             setTimeout(function () {
                 redrawAll();
@@ -372,8 +339,16 @@ define([
         cb(void 0, link);
     };
 
-    var getAllowTab = function (common, data, opts, _cb) {
+    var getAllowTab = function (Env, data, opts, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
+        var common = Env.common;
+
+        var parsed = Hash.parsePadUrl(data.href || data.roHref);
+        var owned = Modal.isOwned(Env, data);
+        var disabled = !owned || !parsed.hashData || parsed.hashData.type !== 'pad';
+        var allowDisabled = parsed.type === 'drive';
+        if (disabled || allowDisabled) { return void cb(); }
+
         opts = opts || {};
 
         var friends = common.getFriends(true);
@@ -636,10 +611,13 @@ define([
             });
         });
 
+        var called = false;
         redrawAll = function (reload) {
+            if (called) { return; }
+            called = true;
             nThen(function (waitFor) {
                 if (!reload) { return; }
-                loadMetadata(common, data, waitFor, "allow");
+                Modal.loadMetadata(common, data, waitFor, "allow");
             }).nThen(function () {
                 owners = data.owners || [];
                 restricted = data.restricted || false;
@@ -649,11 +627,12 @@ define([
                 $div1.append(drawRemove());
                 $div2.append(drawAdd());
                 setLock(!restricted);
+                called = false;
             });
         };
         redrawAll();
 
-        evRedrawAll.reg(function (type) {
+        Env.evRedrawAll.reg(function (type) {
             if (type === "allow") { return; }
             setTimeout(function () {
                 redrawAll();
@@ -730,8 +709,9 @@ define([
         }, function () {});
     };
 
-    var getAccessTab = function (common, data, opts, _cb) {
+    var getAccessTab = function (Env, data, opts, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
+        var common = Env.common;
         opts = opts || {};
 
         var sframeChan = common.getSframeChannel();
@@ -753,7 +733,7 @@ define([
 
             var $d = $('<div>');
 
-            var owned = isOwned(common, data);
+            var owned = Modal.isOwned(Env, data);
 
             if (!opts.noExpiration) {
                 var expire = Messages.creation_expireFalse;
@@ -949,7 +929,7 @@ define([
 
             // Mute access requests
             var edPublic = priv.edPublic;
-            var owned = isOwned(common, data);
+            var owned = Modal.isOwned(Env, data);
             var canMute = data.mailbox && owned === true && (
                     (typeof (data.mailbox) === "string" && data.owners[0] === edPublic) ||
                     data.mailbox[edPublic]);
@@ -1007,7 +987,7 @@ define([
         };
         redraw();
 
-        evRedrawAll.reg(function (ownersOrAllow) {
+        Env.evRedrawAll.reg(function (ownersOrAllow) {
             setTimeout(function () {
                 redraw(ownersOrAllow);
             });
@@ -1016,136 +996,24 @@ define([
         cb(void 0, $div);
     };
 
-    var getAccessData = function (common, opts, _cb) {
-        var cb = Util.once(Util.mkAsync(_cb));
-        opts = opts || {};
-        var data = {};
-        nThen(function (waitFor) {
-            var base = common.getMetadataMgr().getPrivateData().origin;
-            common.getPadAttribute('', waitFor(function (err, val) {
-                if (err || !val) {
-                    waitFor.abort();
-                    return void cb(err || 'EEMPTY');
-                }
-                if (!val.fileType) {
-                    delete val.owners;
-                    delete val.expire;
-                }
-                Util.extend(data, val);
-                if (data.href) { data.href = base + data.href; }
-                if (data.roHref) { data.roHref = base + data.roHref; }
-            }), opts.href);
-
-            // If this is a file, don't try to look for metadata
-            if (opts.channel && opts.channel.length > 34) { return; }
-            common.getPadMetadata({
-                channel: opts.channel // optional, fallback to current pad
-            }, waitFor(function (obj) {
-                if (obj && obj.error) { console.error(obj.error); return; }
-                loadMetadata(common, data, waitFor);
-            }));
-        }).nThen(function () {
-            cb(void 0, data);
-        });
-    };
     Access.getAccessModal = function (common, opts, cb) {
-        var data;
-        var tab1, tab2, tab3;
-        var disabled = false;
-        var allowDisabled = false;
-        var button = [{
-            className: 'cancel',
-            name: Messages.filePicker_close,
-            onClick: function () {},
-            keys: [13,27]
+        cb = cb || function () {};
+        opts = opts || {};
+        opts.wide = true;
+        var tabs = [{
+            getTab: getAccessTab,
+            title: Messages.access_main,
+            icon: "fa fa-unlock-alt",
+        }, {
+            getTab: getAllowTab,
+            title: Messages.access_allow,
+            icon: "fa fa-list",
+        }, {
+            getTab: getOwnersTab,
+            title: Messages.creation_owners,
+            icon: "fa fa-id-badge",
         }];
-        nThen(function (waitFor) {
-            getAccessData(common, opts, waitFor(function (e, _data) {
-                if (e) {
-                    waitFor.abort();
-                    return void cb(e);
-                }
-                data = _data;
-            }));
-        }).nThen(function (waitFor) {
-            var owned = isOwned(common, data);
-            if (typeof(owned) !== "boolean") {
-                data.teamId = Number(owned);
-            }
-            var parsed = Hash.parsePadUrl(data.href || data.roHref);
-            disabled = !owned || !parsed.hashData || parsed.hashData.type !== 'pad';
-            allowDisabled = parsed.type === 'drive';
-
-            getAccessTab(common, data, opts, waitFor(function (e, c) {
-                if (e) {
-                    waitFor.abort();
-                    return void cb(e);
-                }
-                tab1 = UI.dialog.customModal(c[0], {
-                    buttons: button
-                });
-            }));
-
-            if (disabled) { return; }
-
-            if (!allowDisabled) {
-                getAllowTab(common, data, opts, waitFor(function (e, c) {
-                    if (e) {
-                        waitFor.abort();
-                        return void cb(e);
-                    }
-                    tab2 = UI.dialog.customModal(c, {
-                        buttons: button
-                    });
-                }));
-            }
-            getOwnersTab(common, data, opts, waitFor(function (e, c) {
-                if (e) {
-                    waitFor.abort();
-                    return void cb(e);
-                }
-                tab3 = UI.dialog.customModal(c, {
-                    buttons: button
-                });
-            }));
-        }).nThen(function () {
-            var tabs = UI.dialog.tabs([{
-                title: Messages.access_main,
-                icon: "fa fa-unlock-alt",
-                content: tab1
-            }, {
-                title: Messages.access_allow,
-                disabled: disabled || allowDisabled,
-                icon: "fa fa-list",
-                content: tab2
-            }, {
-                title: Messages.creation_owners,
-                disabled: disabled,
-                icon: "fa fa-id-badge",
-                content: tab3
-            }]);
-            var modal = UI.openCustomModal(tabs, {
-                wide: true
-            });
-            cb (void 0, modal);
-
-            var sframeChan = common.getSframeChannel();
-            var handler = sframeChan.on('EV_RT_METADATA', function (md) {
-                if (!$(modal).length) {
-                    return void handler.stop();
-                }
-                override(data, Util.clone(md));
-                evRedrawAll.fire();
-            });
-            var metadataMgr = common.getMetadataMgr();
-            var f = function () {
-                if (!$(modal).length) {
-                    return void metadataMgr.off('change', f);
-                }
-                evRedrawAll.fire();
-            };
-            metadataMgr.onChange(f);
-        });
+        Modal.getModal(common, opts, tabs, cb);
     };
 
     return Access;
