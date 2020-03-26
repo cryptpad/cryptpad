@@ -103,7 +103,7 @@ define([
         sframeChan.on('EV_RT_ERROR', function (err) {
             isReady = false;
             chainpad.abort();
-            if (err.type === 'EUNKNOWN') { // XXX
+            if (err.type === 'EUNKNOWN') {
                 // Recoverable error: make a new chainpad
                 chainpad = makeChainPad();
                 return;

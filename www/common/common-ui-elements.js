@@ -1601,14 +1601,9 @@ define([
                 .text(Messages.accessButton))
                 .click(common.prepareFeedback(type))
                 .click(function () {
-                    common.isPadStored(function (err, data) { // XXX not necessary for access modal?
-                        if (!data) {
-                            return void UI.alert(Messages.autostore_notAvailable);
-                        }
-                        require(['/common/inner/access.js'], function (Access) {
-                            Access.getAccessModal(common, {}, function (e) {
-                                if (e) { console.error(e); }
-                            });
+                    require(['/common/inner/access.js'], function (Access) {
+                        Access.getAccessModal(common, {}, function (e) {
+                            if (e) { console.error(e); }
                         });
                     });
                 });

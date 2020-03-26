@@ -1000,6 +1000,7 @@ define([
         cb = cb || function () {};
         opts = opts || {};
         opts.wide = true;
+        opts.access = true;
         var tabs = [{
             getTab: getAccessTab,
             title: Messages.access_main,

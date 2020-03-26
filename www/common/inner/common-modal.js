@@ -1,11 +1,12 @@
 define([
     'jquery',
     '/common/common-util.js',
+    '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
     '/customize/messages.js',
     '/bower_components/nthen/index.js',
-], function ($, Util, UI, UIElements, Messages, nThen) {
+], function ($, Util, Hash, UI, UIElements, Messages, nThen) {
     var Modal = {};
 
     Modal.override = function (data, obj) {
@@ -23,7 +24,7 @@ define([
         }, waitFor(function (md) {
             if (md && md.error) { return void console.error(md.error); }
             Modal.override(data, md);
-            if (redraw) { Env.evRedrawAll.fire(redraw); } // XXX
+            if (redraw) { Env.evRedrawAll.fire(redraw); }
         }));
     };
     Modal.getPadData = function (Env, opts, _cb) {
@@ -32,11 +33,21 @@ define([
         opts = opts || {};
         var data = {};
         nThen(function (waitFor) {
-            var base = common.getMetadataMgr().getPrivateData().origin;
+            var priv = common.getMetadataMgr().getPrivateData();
+            var base = priv.origin;
             common.getPadAttribute('', waitFor(function (err, val) {
                 if (err || !val) {
-                    waitFor.abort();
-                    return void cb(err || 'EEMPTY');
+                    if (opts.access) {
+                        data.password = priv.password;
+                        // Access modal and the pad is not stored: we're not an owner
+                        // so we don't need the correct href, just the type
+                        var h = Hash.createRandomHash(priv.app, priv.password);
+                        data.href = base + priv.pathname + '#' + h;
+                    } else {
+                        waitFor.abort();
+                        return void cb(err || 'EEMPTY');
+                    }
+                    return;
                 }
                 if (!val.fileType) {
                     delete val.owners;
