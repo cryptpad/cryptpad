@@ -81,9 +81,15 @@
         });
     };
 
-    Util.response = function () {
+    Util.response = function (errorHandler) {
         var pending = {};
         var timeouts = {};
+
+        if (typeof(errorHandler) !== 'function') {
+            errorHandler = function (label) {
+                throw new Error(label);
+            };
+        }
 
         var clear = function (id) {
             clearTimeout(timeouts[id]);
@@ -92,8 +98,8 @@
         };
 
         var expect = function (id, fn, ms) {
-            if (typeof(id) !== 'string') { throw new Error("EXPECTED_STRING"); }
-            if (typeof(fn) !== 'function') { throw new Error("EXPECTED_CALLBACK"); }
+            if (typeof(id) !== 'string') { errorHandler('EXPECTED_STRING'); }
+            if (typeof(fn) !== 'function') { errorHandler('EXPECTED_CALLBACK'); }
             pending[id] = fn;
             if (typeof(ms) === 'number' && ms) {
                 timeouts[id] = setTimeout(function () {
@@ -105,8 +111,21 @@
 
         var handle = function (id, args) {
             var fn = pending[id];
-            if (typeof(fn) !== 'function') { throw new Error("MISSING_CALLBACK"); }
-            pending[id].apply(null, Array.isArray(args)? args : [args]);
+            if (typeof(fn) !== 'function') {
+                errorHandler("MISSING_CALLBACK", {
+                    id: id,
+                    args: args,
+                });
+            }
+            try {
+                pending[id].apply(null, Array.isArray(args)? args : [args]);
+            } catch (err) {
+                errorHandler('HANDLER_ERROR', {
+                    error: err,
+                    id: id,
+                    args: args,
+                });
+            }
             clear(id);
         };
 
