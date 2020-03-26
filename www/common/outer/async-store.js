@@ -1499,6 +1499,13 @@ define([
 
                 return;
             }
+            var onError = function (err) {
+                channel.bcast("PAD_ERROR", err);
+
+                // If this is a DELETED, EXPIRED or RESTRICTED pad, leave the channel
+                if (["EDELETED", "EEXPIRED", "ERESTRICTED"].indexOf(err.type) === -1) { return; }
+                Store.leavePad(null, data, function () {});
+            };
             var conf = {
                 onReady: function (pad) {
                     var padData = pad.metadata || {};
@@ -1522,14 +1529,8 @@ define([
                 onLeave: function (m) {
                     channel.bcast("PAD_LEAVE", m);
                 },
-                onError: function (err) {
-                    channel.bcast("PAD_ERROR", err);
-                    Store.leavePad(null, data, function () {});
-                },
-                onChannelError: function (err) {
-                    channel.bcast("PAD_ERROR", err);
-                    Store.leavePad(null, data, function () {});
-                },
+                onError: onError,
+                onChannelError: onError,
                 onRejected: function (allowed, _cb) {
                     var cb = Util.once(Util.mkAsync(_cb));
 

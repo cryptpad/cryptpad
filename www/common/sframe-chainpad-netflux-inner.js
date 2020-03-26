@@ -49,24 +49,29 @@ define([
         config = undefined;
 
         var evPatchSent = Util.mkEvent();
+        var chainpad;
 
-        var chainpad = ChainPad.create({
-            userName: userName,
-            initialState: initialState,
-            patchTransformer: patchTransformer,
-            validateContent: validateContent,
-            avgSyncMilliseconds: avgSyncMilliseconds,
-            logLevel: logLevel
-        });
-        chainpad.onMessage(function(message, cb) {
-            sframeChan.query('Q_RT_MESSAGE', message, function (err) {
-                if (!err) { evPatchSent.fire(); }
-                cb(err);
+        var makeChainPad = function () {
+            var _chainpad = ChainPad.create({
+                userName: userName,
+                initialState: initialState,
+                patchTransformer: patchTransformer,
+                validateContent: validateContent,
+                avgSyncMilliseconds: avgSyncMilliseconds,
+                logLevel: logLevel
             });
-        });
-        chainpad.onPatch(function () {
-            onRemote({ realtime: chainpad });
-        });
+            _chainpad.onMessage(function(message, cb) {
+                sframeChan.query('Q_RT_MESSAGE', message, function (err) {
+                    if (!err) { evPatchSent.fire(); }
+                    cb(err);
+                });
+            });
+            _chainpad.onPatch(function () {
+                onRemote({ realtime: chainpad });
+            });
+            return _chainpad;
+        };
+        chainpad = makeChainPad();
 
         var myID;
         var isReady = false;
@@ -96,6 +101,11 @@ define([
         sframeChan.on('EV_RT_ERROR', function (err) {
             isReady = false;
             chainpad.abort();
+            if (err.type === 'EUNKNOWN') { // XXX
+                // Recoverable error: make a new chainpad
+                chainpad = makeChainPad();
+                return;
+            }
             onError(err);
         });
         sframeChan.on('EV_RT_CONNECT', function (content) {
@@ -149,15 +159,18 @@ define([
             });
         };
 
-        return Object.freeze({
+        var cpNfInner = {
             getMyID: function () { return myID; },
             metadataMgr: metadataMgr,
             whenRealtimeSyncs: whenRealtimeSyncs,
             onInfiniteSpinner: evInfiniteSpinner.reg,
             onPatchSent: evPatchSent.reg,
             offPatchSent: evPatchSent.unreg,
-            chainpad: chainpad,
+        };
+        cpNfInner.__defineGetter__("chainpad", function () {
+            return chainpad;
         });
+        return Object.freeze(cpNfInner);
     };
     return Object.freeze(module.exports);
 });
