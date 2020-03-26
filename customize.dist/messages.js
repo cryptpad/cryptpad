@@ -7,6 +7,7 @@ var map = {
     'es': 'Español',
     'fi': 'Suomalainen',
     'fr': 'Français',
+    //'hi': 'हिन्दी',
     'it': 'Italiano',
     'nb': 'Norwegian Bokmål',
     //'pl': 'Polski',
