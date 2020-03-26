@@ -459,7 +459,7 @@ define([
 
     var addPublicKey = function ($container) {
         if (!APP.readOnly) { return; }
-        if (!Messages.profile_copyKey) { return; } // XXX
+        if (!Messages.profile_copyKey) { return; }
 
         var $div = $(h('div.cp-sidebarlayout-element')).appendTo($container);
         APP.$edPublic = $('<button>', {
@@ -473,7 +473,7 @@ define([
     };
     var setPublicKeyButton = function (data) {
         if (!data.edPublic || APP.getEdPublic || !APP.readOnly) { return; }
-        if (!Messages.profile_copyKey) { return; } // XXX
+        if (!Messages.profile_copyKey) { return; }
         APP.$edPublic.show();
         APP.getEdPublic = function () {
             var metadataMgr = APP.common.getMetadataMgr();
@@ -506,7 +506,7 @@ define([
             addFriendRequest($rightside);
             addMuteButton($rightside);
             addDescription(APP.$rightside);
-            addPublicKey(APP.$rightside);
+            addPublicKey($rightside);
             addViewButton($rightside);
             APP.initialized = true;
             createLeftside();

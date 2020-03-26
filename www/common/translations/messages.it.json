@@ -1,5 +1,5 @@
 {
-    "main_title": "CryptPad: Editor zero knowledge collaborativo in tempo reale",
+    "main_title": "CryptPad: Editor Zero Knowledge collaborativo in tempo reale",
     "type": {
         "pad": "Testo",
         "code": "Codice",
@@ -13,7 +13,7 @@
         "todo": "Promemoria",
         "contacts": "Contatti",
         "sheet": "Fogli",
-        "teams": "Team"
+        "teams": "Teams"
     },
     "button_newpad": "Nuovo pad di Testo",
     "button_newcode": "Nuovo pad di Codice",
@@ -25,14 +25,14 @@
     "common_connectionLost": "<b>Connessione al server persa</b><br>Rimarrai in modalità solo lettura finché la connessione non sarà ripristinata.",
     "websocketError": "Impossibile connettersi al WebSocket server...",
     "typeError": "Questo pad non è compatibile con l'applicazione selezionata",
-    "onLogout": "Sei logged out, {0}Click qui{1} per fare il log in<br>o premi <em>Esc</em> per accedere il tuo pad in modalità solo lettura.",
-    "wrongApp": "Impossibile mostrare il contenuto di quella sessione in tempo reale nel tuo browser. Per favore, prova a ricaricare la pagina.",
-    "padNotPinned": "Questo pad scadrà dopo 3 mesi di inattività, {0}login{1} o {2}registrati{3} per mantenerlo permanentemente.",
-    "anonymousStoreDisabled": "Il webmaster di questa istanza di CryptPad ha disabilitato il drive per gli utenti anonimi. Devi eseguire il login per poter usare CryptDrive.",
+    "onLogout": "Sei uscito, {0}Clicca qui{1} per entrare<br>o premi <em>Esc</em> per accedere al tuo pad in modalità solo lettura.",
+    "wrongApp": "Impossibile mostrare il contenuto di quella sessione in tempo reale nel tuo browser. Per favore, prova a ricaricare quella pagina.",
+    "padNotPinned": "Questo pad scadrà dopo 3 mesi di inattività, {0}accedi{1} o {2}registrati{3} per conservarlo.",
+    "anonymousStoreDisabled": "Il webmaster di questa istanza di CryptPad ha disabilitato il drive per gli utenti anonimi. Devi accedere per poter usare CryptDrive.",
     "expiredError": "Questo pad ha raggiunto la sua data di scadenza e non è più disponibile.",
     "deletedError": "Questo pad è stato cancellato dal suo autore e non è più disponibile.",
     "inactiveError": "Questo pad è stato cancellato per inattività. Premi Esc per creare un nuovo pad.",
-    "chainpadError": "Si è verificato un errore critico nell'aggiornamento del tuo contenuto. Questa pagina è in modalità solo lettura per assicurarci che non perderai il tuo lavoro..<br>Premi <em>Esc</em> per continuare a visualizzare questo pad, o ricarica la pagina per provare a modificarlo di nuovo.",
+    "chainpadError": "Si è verificato un errore critico nell'aggiornamento del tuo contenuto. Questa pagina è in modalità solo lettura per assicurarci che non perderai il tuo lavoro.<br>Premi <em>Esc</em> per continuare a visualizzare questo pad, o ricarica la pagina per provare a modificarlo di nuovo.",
     "invalidHashError": "Il documento richiesto ha un URL non valido.",
     "errorCopy": " Puoi ancora accedere al contenuto premendo <em>Esc</em>.<br>Una volta chiusa questa finestra, non sarà possibile accedere di nuovo.",
     "errorRedirectToHome": "Premi <em>Esc</em> per essere reindirizzato al tuo CryptDrive.",
@@ -537,7 +537,7 @@
         },
         "security": {
             "crypto": {
-                "a": "nome utente",
+                "a": "CryptPad è basato su due librerie open-source di crittografia: <a href='https://github.com/dchest/tweetnacl-js' target='_blank'>tweetnacl.js</a> and <a href='https://github.com/dchest/scrypt-async-js' target='_blank'>scrypt-async.js</a>.<br><br>Scrypt è un <em>algoritmo di derivazione delle chiavi basato su password</em>. Lo utilizziamo per trasformare i tuoi username e password in una chiave unica che assicura l'accesso al tuo CryptDrive così che solo tu possa accedere ai tuoi pad.<br><br>Utilizziamo i crypters <em>xsalsa20-poly1305</em> e <em>x25519-xsalsa20-poly1305</em> forniti da tweetnacl rispettivamente per criptare i pad e la chat.",
                 "q": "Quale crittografia utilizzate?"
             },
             "pad_password": {
@@ -549,16 +549,37 @@
             "why": {
                 "q": "Perché dovrei usare CryptPad?"
             },
-            "title": "Sicurezza"
+            "title": "Sicurezza",
+            "proof": {
+                "q": "Come utilizzate le Zero Knowledge Proofs?"
+            }
         },
         "privacy": {
             "register": {
-                "a": "nome utente"
+                "a": "Non richiediamo agli utenti la verifica del loro indirizzo email, e il server non registra il vostro username o la password quando vi registrate. Piuttosto, la form di accesso genera una chiave univoca basata su ciò che scrivete, ed il server registra esclusivamente la vostra firma crittografata. Utilizziamo questa chiave per tracciare dettagli su quanto spazio utilizzate che ci permettono di restringere ciascun utente ad una specifica quota.<br><br>Utilizziamo le nostre funzionalità di <em>feedback</em> per registrare sul server che qualcuno con il vostro indirizzo IP ha registrato un account. Utilizziamo questo dato per conteggiare quante persone abbiano attivato un account CryptPad, e vedere da quale area geografica provengano in modo da capire quali linguaggi richiedano maggiore impegno.<br><br>Gli utenti registrati sono associati nel server ai loro pad nel loro CryptDrive in modo tale che non vengano considerati abbandonati e rimossi dal server in seguito a mancata attività.",
+                "q": "Il server avrà maggiori informazioni su di me se mi registro?"
             },
             "policy": {
-                "a": "Sì! È disponibile <a href='/privacy.html' target='_blank'>qui</a>."
+                "a": "Sì! È disponibile <a href='/privacy.html' target='_blank'>qui</a>.",
+                "q": "Avete una politica di privacy dei dati?"
             },
-            "title": "Privacy"
+            "title": "Privacy",
+            "anonymous": {
+                "q": "CryptPad mi rende anonimo?",
+                "a": "Sebbene CryptPad per raccogliere il minimo di informazione possibile, non garantisce il totale anonimato. Il server ha accesso al vostro indirizzo IP, comunque potete utilizzare strumenti per nascondere questa informazione, ad esempio usando Tor per accedere a CryptPad. Utilizzare Tor senza cambiare il vostro comportamento non garantirà l'anonimato, visto che il server riconosce l'utente anche dalla sua firma crittografata. Se utilizzate lo stesso account quando usate Tor e quando non lo usate, è possibile collegare la sessione con IP a quella senza.<br><br>Per utenti che richiedano un livello di privacy meno ferreo basti sapere che CryptPad non richiede all'utente di identificarsi con nome, numero di telefono o indirizzo mail come la maggior parte degli altri servizi."
+            },
+            "other": {
+                "q": "Cosa possono conoscere di me gli altri collaboratori?",
+                "a": "Quando lavorate su un pad insieme ad altri, comunicate attraverso il server, l'unica informazione raccolta è il vostro indirizzo IP. Gli altri possono vedere il vostro nome utente, l'avatar, un link al vostro profilo (se ne avete uno), e la vostra <em>chiave pubblica</em> (che è utilizzata per criptare le informazioni dall'uno all'altro)."
+            },
+            "me": {
+                "q": "Che informazioni ha il server su di me?",
+                "a": "L'amministratore del server è in grado di vedere l'indirizzo IP degli utenti che accedono a CryptPad. Non registriamo quale siano i pad visitati da un indirizzo IP, ma potremmo, sebbene senza la possibilità di leggere i pad criptati. Se ti preoccupa il fatto che noi si possa leggere i tuoi contenuti, è più sicuro che tu assuma che noi lo si possa fare, giacché non possiamo dimostrarti il contrario.<br><br>Raccogliamo alcune misurazioni di base su come le persone usano CryptPad, come la risoluzione dello schermo, o quali pulsanti usino più frequentemente. Questo ci aiuta a migliorare il software, ma se preferisci non inviare queste informazioni al server, puoi <strong>cessare l'invio togliendo la spunta sul check <em>Abilita il feedback utente</em></strong>.<br><br>Teniamo traccia di quali pad siano nel CryptDrive di ciascun utente così da poter definire limiti all'uso di spazio, ma non conosciamo il contenuto o il tipo di questi pad. Le occupazioni di spazio sono collegate alle chiavi pubbliche degli utenti, ma non associamo nomi o indirizzi mail a queste chiavi pubbliche.<br><br>Per maggiori informazioni puoi leggere questo <a href='https://blog.cryptpad.fr/2017/07/07/cryptpad-analytics-what-we-cant-know-what-we-must-know-what-we-want-to-know/' target='_blank'>articolo nel blog</a> che abbiamo scritto sull'argomento."
+            },
+            "different": {
+                "q": "In cosa è diverso CryptPad dagli altri servizi Pad?",
+                "a": "CryptPad cripta i cambiamenti ai tuoi documenti prima di inviare queste informazioni al server per l'archiviazione, quindi noi non possiamo leggere ciò che tu scrivi."
+            }
         },
         "other": {
             "jobs": {
@@ -575,7 +596,8 @@
         },
         "keywords": {
             "tag": {
-                "q": "Come utilizzo i tag?"
+                "q": "Come utilizzo i tag?",
+                "a": "Puoi taggare i file creati o caricati con il tuo CryptDrive, oppure utilizzando il pulsante <em>tag</em> (<span class='fa fa-hashtag'></span>) nella barra degli strumenti di qualsiasi editor. Cerca gli appunti ed i file nel tuo CryptDrive utilizzando la barra di ricerca con una parola marcata come hashtag, ad esempio <em>#crypto</em>."
             },
             "pad": {
                 "q": "Cos'è un pad?",
@@ -583,13 +605,21 @@
             },
             "expiring": {
                 "q": "Cos'è un pad effimero?",
-                "a": "Un <em>expiring pad</em> è un pad creato con una scadenza, raggiunta il pad verrà automaticamente cancellato dal server. Gli expiring pad possono essere configurati per durare da un minimo di un'ora ad un massimo di 100 mesi. Il pad e tutta la sua cronologia diventeranno permanentemente non disponibili anche se vengono modificati nel momento in cui scadono.<br><br>Se un pad è impostato con una scadenza, puoi controllare il suo tempo di durata visualizzando le sue <em> proprietà </em>, sia facendo clic con il tasto destro del mouse sul pad in CryptDrive, sia usando la <em> proprietà </em> -menu dalla barra degli strumenti di un'applicazione."
+                "a": "Un <em>pad effimero</em> è un pad creato con una scadenza, raggiunta la quale il pad verrà automaticamente cancellato dal server. I pad effimeri possono essere configurati per durare da un minimo di un'ora ad un massimo di 100 mesi. Il pad e tutta la sua cronologia diventeranno permanentemente non disponibili anche se vengono modificati nel momento in cui scadono.<br><br>Se un pad è impostato con una scadenza, puoi controllare il suo tempo di durata visualizzando le sue <em> proprietà </em>, sia facendo clic con il tasto destro del mouse sul pad nel tuo CryptDrive, sia usando le <em> proprietà </em> sub-menu dalla barra degli strumenti di un'applicazione."
             },
             "owned": {
                 "a": "Un <em>pad di proprietà</em> è un pad creato da un esplicito <em>proprietario</em>, identificato dal server dalla sua <em>chiave di crittografia pubblica</em>. Il proprietario di un pad può scegliere di cancellare i suoi pad dal server, rendendoli invalidi per gli altri collaboratori nel futuro, sia che essi li avessero oppure no nei loro Cryptdrive.",
                 "q": "Cos'è un Pad di proprietà?"
             },
-            "title": "Parole chiave"
+            "title": "Parole chiave",
+            "abandoned": {
+                "q": "Cos'è un pad abbandonato?",
+                "a": "Un <em>pad abbandonato</em> è un pad che non è collegato al CryptDrive di nessun utente registrato e non è stato modificato da sei mesi. I documenti abbandonati vengono rimossi automaticamente dal server."
+            },
+            "template": {
+                "q": "Cos'è un modello?",
+                "a": "Un template (modello) è un file che può essere usato per definire il contenuto iniziale per altri dello stesso tipo quando li crei. Qualsiasi salvataggio esistente può essere trasformato in un template spostandolo nella sezione <em>Template</em> del tuo CryptDrive. Puoi anche creare una copia di un pad da utilizzare come template cliccando il pulsante template (<span class='fa fa-bookmark'></span>) nella barra degli strumenti dell'editor."
+            }
         }
     },
     "whatis_zeroknowledge_p2": "Quando ti registri e accedi, il tuo nome utente e la tua password vengono computati in una chiave segreta utilizzando la <a href=\"https://en.wikipedia.org/wiki/Scrypt\">funzione di derivazione scrypt</a>. Né questa chiave, né il tuo nome utente o la tua password vengono inviati al server. Infatti sono usati soltanto dal lato client per decriptare il contenuto del tuo CryptDrive, che contiene le chiavi per tutti i pad a cui hai accesso.",
@@ -635,7 +665,7 @@
     "mdToolbar_link": "Link",
     "mdToolbar_italic": "Corsivo",
     "mdToolbar_bold": "Grassetto",
-    "mdToolbar_tutorial": "http://www.markdowntutorial.com/",
+    "mdToolbar_tutorial": "https://www.markdowntutorial.com/",
     "mdToolbar_help": "Aiuto",
     "pad_hideToolbar": "Nascondi barra degli strumenti",
     "pad_showToolbar": "Mostra barra degli strumenti",

@@ -121,7 +121,7 @@ define([
         return $div;
     };
     create['open-files'] = function () {
-        var key = 'open-files'; // XXX
+        var key = 'open-files';
         var $div = makeBlock(key);
         sFrameChan.query('Q_ADMIN_RPC', {
             cmd: 'GET_FILE_DESCRIPTOR_COUNT',
