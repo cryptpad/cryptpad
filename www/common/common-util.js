@@ -134,6 +134,9 @@
             expected: function (id) {
                 return Boolean(pending[id]);
             },
+            expectation: function (id) {
+                return pending[id];
+            },
             expect: expect,
             handle: handle,
         };
