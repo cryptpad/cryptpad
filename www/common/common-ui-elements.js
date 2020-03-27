@@ -2796,18 +2796,6 @@ define([
 
         var $advanced;
 
-        var $advancedContainer = $('<div>');
-        var priv = common.getMetadataMgr().getPrivateData();
-        var c = (priv.settings.general && priv.settings.general.creation) || {};
-        if (AppConfig.displayCreationScreen && common.isLoggedIn() && c.skip) {
-            var $cboxLabel = $(UI.createCheckbox('cp-app-toolbar-creation-advanced',
-                                                 Messages.creation_newPadModalAdvanced, true))
-                                 .appendTo($advancedContainer);
-            $advanced = $cboxLabel.find('input');
-            $description.append('<br>');
-            $description.append(Messages.creation_newPadModalDescriptionAdvanced);
-        }
-
         var $container = $('<div>');
         var i = 0;
         var types = AppConfig.availablePadTypes.filter(function (p) {
@@ -2872,7 +2860,7 @@ define([
         });
 
 
-        $modal.find('.cp-modal').append($container).append($advancedContainer);
+        $modal.find('.cp-modal').append($container);
         window.setTimeout(function () {
             $modal.show();
             $modal.focus();
@@ -3117,15 +3105,6 @@ define([
             right
         ]);
 
-        var settings = h('div.cp-creation-remember', [
-            UI.createCheckbox('cp-creation-remember', Messages.dontShowAgain, false),
-            createHelper('/settings/#creation', Messages.creation_settings),
-            h('div.cp-creation-remember-help.cp-creation-slider', [
-                h('span.fa.fa-exclamation-circle.cp-creation-warning'),
-                Messages.creation_rememberHelp
-            ])
-        ]);
-
         var createDiv = h('div.cp-creation-create');
         var $create = $(createDiv);
 
@@ -3134,7 +3113,6 @@ define([
             owned,
             expire,
             password,
-            settings,
             templates,
             createDiv
         ])).appendTo($creation);
@@ -3282,16 +3260,6 @@ define([
             $creation.focus();
         });
 
-        // Display settings help when checkbox checked
-        $creation.find('#cp-creation-remember').on('change', function () {
-            if ($(this).is(':checked')) {
-                $creation.find('.cp-creation-remember-help:not(.active)').addClass('active');
-                return;
-            }
-            $creation.find('.cp-creation-remember-help').removeClass('active');
-            $creation.focus();
-        });
-
         // Keyboard shortcuts
         $creation.find('#cp-creation-expire-val').keydown(function (e) {
             if (e.which === 9) {
@@ -3308,9 +3276,6 @@ define([
         // Initial values
         if (!cfg.owned && typeof cfg.owned !== "undefined") {
             $creation.find('#cp-creation-owned').prop('checked', false);
-        }
-        if (cfg.skip) {
-            $creation.find('#cp-creation-remember').prop('checked', true).trigger('change');
         }
         UIElements.setExpirationValue(cfg.expire, $creation);
 
@@ -3353,14 +3318,6 @@ define([
         };
         var create = function () {
             var val = getFormValues();
-
-            var skip = $('#cp-creation-remember').is(':checked');
-            common.setAttribute(['general', 'creation', 'skip'], skip, function (e) {
-                if (e) { return void console.error(e); }
-            });
-            common.setAttribute(['general', 'creation', 'noTemplate'], skip, function (e) {
-                if (e) { return void console.error(e); }
-            });
 
             common.setAttribute(['general', 'creation', 'owned'], val.owned, function (e) {
                 if (e) { return void console.error(e); }

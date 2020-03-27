@@ -402,12 +402,6 @@ define([
                         Thumb.initPadThumbnails(common, options.thumbnail);
                     }
                 }
-
-                var skipTemp = Util.find(privateDat, ['settings', 'general', 'creation', 'noTemplate']);
-                var skipCreation = Util.find(privateDat, ['settings', 'general', 'creation', 'skip']);
-                if (newPad && (!AppConfig.displayCreationScreen || (!skipTemp && skipCreation))) {
-                    common.openTemplatePicker();
-                }
             });
         };
         var onConnectionChange = function (info) {
