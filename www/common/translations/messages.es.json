@@ -864,7 +864,7 @@
             "title": "Otras preguntas",
             "pay": {
                 "q": "¿ Porque debería de pagar cuando hay características que son gratis ?",
-                "a": "Brindamos a los seguidores almacenamiento adicional y la capacidad de aumentar las cuotas de sus amigos (<a href='https://accounts.cryptpad.fr/#/faq' target='_blank'> obtener más información </a>). <Br > <br> Más allá de estos beneficios a corto plazo, al suscribirse con una cuenta premium, usted ayuda a financiar el desarrollo continuo y activo de CryptPad. Eso incluye corregir errores, agregar nuevas funciones y facilitar que otros ayuden a alojar CryptPad ellos mismos. Además, ayuda a demostrar a otros proveedores de servicios que las personas están dispuestas a apoyar las tecnologías que mejoran la privacidad. Esperamos que eventualmente los modelos de negocio basados en la venta de datos de usuarios se conviertan en cosa del pasado. <br> <br> Finalmente, ofrecemos la mayor parte de la funcionalidad de CryptPad de forma gratuita porque creemos que todos merecen privacidad personal, no solo aquellos con desechables. ingresos. Al apoyarnos, nos ayuda a continuar haciendo posible que las poblaciones desfavorecidas accedan a estas funciones básicas sin una etiqueta de precio adjunta."
+                "a": "Brindamos a los seguidores almacenamiento adicional y la capacidad de aumentar las cuotas de sus contactos (<a href='https://accounts.cryptpad.fr/#/faq' target='_blank'> obtener más información </a>). <Br > <br> Más allá de estos beneficios a corto plazo, al suscribirse con una cuenta premium, usted ayuda a financiar el desarrollo continuo y activo de CryptPad. Eso incluye corregir errores, agregar nuevas funciones y facilitar que otros ayuden a alojar CryptPad ellos mismos. Además, ayuda a demostrar a otros proveedores de servicios que las personas están dispuestas a apoyar las tecnologías que mejoran la privacidad. Esperamos que eventualmente los modelos de negocio basados en la venta de datos de usuarios se conviertan en cosa del pasado. <br> <br> Finalmente, ofrecemos la mayor parte de la funcionalidad de CryptPad de forma gratuita porque creemos que todos merecen privacidad personal, no solo aquellos con desechables. ingresos. Al apoyarnos, nos ayuda a continuar haciendo posible que las poblaciones desfavorecidas accedan a estas funciones básicas sin una etiqueta de precio adjunta."
             },
             "goal": {
                 "q": "¿Cuál es tu objetivo?",
@@ -916,7 +916,7 @@
             "settings": "Configura las diapositivas (fondo, transiciones, números de página, etc.) con el botón <span class=\"fa fa-cog\"></span> en el submenú <span class=\"fa fa-ellipsis-h\"></span>"
         },
         "poll": {
-            "decisions": "Crea decisiones en privado entre verdaderos amigos",
+            "decisions": "Crea decisiones en privado entre contactos de confianza",
             "options": "Proponga opciones y exprese sus preferencias",
             "choices": "Haga clic en las celdas de su columna para recorrer sí (<strong> ✔ </strong>), tal vez (<strong> ~ </strong>) o no (<strong> ✖ </strong>)",
             "submit": "Haga clic en <strong> enviar </strong> para que otras personas puedan ver sus opciones"
@@ -927,8 +927,8 @@
             "embed": "Incrusta imágenes de tu disco <span class=\"fa fa-file-image-o\"></span> o de tu CryptDrive <span class=\"fa fa-image\"></span> y expórtalas como PNG a tu disco <span class=\"fa fa-download\"></span> o a tu CryptDrive <span class=\"fa fa-cloud-upload\"></span>"
         },
         "kanban": {
-            "add": "Añada nuevas placas usando el botón <span class=\"fa fa-plus\"></span> en la esquina superior derecha",
-            "task": "Mover objetos arrastrándolos y soltándolos de un tablero a otro",
+            "add": "Añada nuevas fichas y cuadros usando el botón <span class=\"fa fa-plus\"></span>",
+            "task": "Mover objetos arrastrándolos y soltándolos, arrastrándolo <span class=\"fa fa-trash\"></span> al basurero para borarlo",
             "color": "Cambie los colores haciendo clic en la parte coloreada junto a los títulos de los tableros"
         }
     },
