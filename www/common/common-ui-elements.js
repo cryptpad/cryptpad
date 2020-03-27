@@ -15,12 +15,13 @@ define([
     '/customize/pages.js',
     '/bower_components/nthen/index.js',
     '/common/inner/invitation.js',
+    '/common/visible.js',
 
     'css!/customize/fonts/cptools/style.css',
     '/bower_components/croppie/croppie.min.js',
     'css!/bower_components/croppie/croppie.css',
 ], function ($, Config, Util, Hash, Language, UI, Constants, Feedback, h, MediaTag, Clipboard,
-             Messages, AppConfig, Pages, NThen, InviteInner) {
+             Messages, AppConfig, Pages, NThen, InviteInner, Visible) {
     var UIElements = {};
 
     // Configure MediaTags to use our local viewer
@@ -2228,6 +2229,17 @@ define([
         var interval = setInterval(function () {
             updateUsage();
         }, LIMIT_REFRESH_RATE * 3);
+
+        Visible.onChange(function (state) {
+            if (!state) {
+                clearInterval(interval);
+                return;
+            }
+            interval = setInterval(function () {
+                updateUsage();
+            }, LIMIT_REFRESH_RATE * 3);
+            updateUsage();
+        });
 
         updateUsage();
         cb(null, $container);
