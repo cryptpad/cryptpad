@@ -295,22 +295,28 @@ define([
             if (!proxy.drive || typeof(proxy.drive) !== 'object') {
                 throw new Error("Corrupted drive");
             }
-            if (APP.usageBar) { APP.usageBar.stop(); }
-            APP.usageBar = common.createUsageBar(APP.team, function (err, $limitContainer) {
-                if (err) { return void DriveUI.logError(err); }
-                driveAPP.$limit = $limitContainer;
-                $limitContainer.attr('title', Messages.team_quota);
-            }, true);
             driveAPP.team = id;
 
             // Provide secondaryKey
             var teamData = (privateData.teams || {})[id] || {};
             driveAPP.readOnly = !teamData.hasSecondaryKey;
+
+            if (APP.usageBar) { APP.usageBar.stop(); }
+            APP.usageBar = undefined;
+            if (!driveAPP.readOnly) {
+                APP.usageBar = common.createUsageBar(APP.team, function (err, $limitContainer) {
+                    if (err) { return void DriveUI.logError(err); }
+                    $limitContainer.attr('title', Messages.team_quota);
+                }, true);
+            }
+
             var drive = DriveUI.create(common, {
                 proxy: proxy,
                 folders: folders,
                 updateObject: updateObject,
                 updateSharedFolders: updateSharedFolders,
+
+                $limit: APP.usageBar && APP.usageBar.$container,
                 APP: driveAPP,
                 edPublic: APP.teamEdPublic,
                 editKey: teamData.secondaryKey
@@ -1281,6 +1287,7 @@ define([
             var sframeChan = common.getSframeChannel();
             var metadataMgr = common.getMetadataMgr();
             var privateData = metadataMgr.getPrivateData();
+            var user = metadataMgr.getUserData();
 
             readOnly = driveAPP.readOnly = metadataMgr.getPrivateData().readOnly;
 
@@ -1305,11 +1312,12 @@ define([
             var toolbar = Toolbar.create(configTb);
             toolbar.$rightside.hide(); // hide the bottom part of the toolbar
             // Update the name in the user menu
-            driveAPP.$displayName = $bar.find('.' + Toolbar.constants.username);
+            var $displayName = $bar.find('.' + Toolbar.constants.username);
             metadataMgr.onChange(function () {
                 var name = metadataMgr.getUserData().name || Messages.anonymous;
-                driveAPP.$displayName.text(name);
+                $displayName.text(name);
             });
+            $displayName.text(user.name || Messages.anonymous);
 
             // Load the Team module
             var onEvent = function (obj) {

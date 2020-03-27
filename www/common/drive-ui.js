@@ -538,10 +538,10 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var sframeChan = common.getSframeChannel();
         var priv = metadataMgr.getPrivateData();
-        var user = metadataMgr.getUserData();
 
         // Initialization
         Util.extend(APP, driveConfig.APP);
+        APP.$limit = driveConfig.$limit;
         var proxy = driveConfig.proxy;
         var folders = driveConfig.folders;
         var files = proxy.drive;
@@ -586,11 +586,6 @@ define([
         var $trashContextMenu = $("#cp-app-drive-context-trash");
 
         // TOOLBAR
-
-        /* add a "change username" button */
-        if (!APP.readOnly) {
-            APP.$displayName.text(user.name || Messages.anonymous);
-        }
 
         // DRIVE
         var currentPath = APP.currentPath = LS.getLastOpenedFolder();

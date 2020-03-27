@@ -2232,6 +2232,7 @@ define([
         updateUsage();
         cb(null, $container);
         return {
+            $container: $container,
             stop: function () {
                 clearInterval(interval);
             }
