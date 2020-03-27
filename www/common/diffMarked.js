@@ -23,7 +23,6 @@ define([
     };
 
     require(['mermaid', 'css!/code/mermaid-new.css'], function (_Mermaid) {
-        console.log(arguments);
         Mermaid = _Mermaid;
     });
 
