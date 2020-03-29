@@ -1,0 +1,167 @@
+body.cp-app-generic {
+
+@import (once) "../../customize.dist/src/less2/include/browser.less";
+@import (once) "../../customize.dist/src/less2/include/framework.less";
+
+.framework_main( @bg-color: @colortheme_todo-bg,
+@warn-color: @colortheme_todo-warn,
+@color: @colortheme_todo-color);
+
+// body
+&.cp-app-generic {
+    display: flex;
+    flex-flow: column;
+    max-height: 100%;
+    min-height: auto;
+    background-color: #474747;
+    color: #fff;
+
+    .cp-app-generic-container {
+        display: inline-flex;
+        flex-flow: column;
+        height: 100%;
+        min-height: 100%;
+        width: 100%;
+        resize: horizontal;
+        overflow: hidden;
+    }
+    .cp-app-generic-editor {
+        flex: 1;
+        display: flex;
+        flex-flow: row;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    @media (max-width: @browser_media-medium-screen) {
+        .cp-app-meet-container {
+            flex: 1;
+            max-width: 100%;
+            resize: none;
+        }
+    }
+
+    #cp-app-meet-container, #cp-app-meet-container .row {
+      height: 100%;
+    }
+
+    .cp-app-meet-video {
+      height: 100%;
+    }
+
+    .cp-app-meet-video-element {
+      text-align: center;
+      width: 100%;
+    }
+
+    .cp-app-meet-video {
+      display: flex;
+      align-items: center;
+    }
+
+    .cp-app-meet-video-block {
+        text-align: center;
+    }
+
+    video {
+      width: 90%;
+      height: auto;
+      margin: auto;
+      background-color: black;
+      border-radius: 4px;
+      color: rgb(184, 199, 224); 
+      box-shadow: 0 0 5px 3px #165ECC;     
+    }
+
+    audio {
+      display: hidden;
+    }
+
+    #cp-app-meet-toolbar {
+      bottom:0;
+      height: 50px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    #cp-app-meet-buttons {
+      margin: auto;
+      color: #000;
+    }
+
+    .cp-app-meet-camera-off, .cp-app-meet-camera-on,
+    .cp-app-meet-microphone-off, .cp-app-meet-microphone-on,
+    .cp-app-meet-screen-off, .cp-app-meet-screen-on,
+     {
+        font-family: "FontAwesome"; 
+        font-weight: 1000; 
+        padding: 10px;
+        z-index: 10;
+    } 
+
+    .cp-app-meet-camera-off, .cp-app-meet-microphone-off, .cp-app-meet-screen-off {
+        background-color: #ffffff;
+        border-radius: 50%;
+    }
+    .cp-app-meet-camera-on, .cp-app-meet-microphone-on, .cp-app-meet-screen-on {
+        background-color: #7bccd1;
+        border-radius: 50%;
+    }
+    .cp-app-meet-camera-off:before {
+        content: "\f030"; 
+    }
+    .cp-app-meet-camera-on:before {
+        content: "\f030"; 
+    } 
+    .cp-app-meet-screen-off:before {
+        content: "\f108"; 
+    }
+    .cp-app-meet-screen-on:before {
+        content: "\f108"; 
+    } 
+
+    .cp-app-meet-microphone-off:before {
+        content: "\f131"; 
+    } 
+    .cp-app-meet-microphone-on:before {
+        content: "\f130"; 
+    } 
+    .cp-app-meet-bandwidth-slider {
+        width: 100%;
+    }
+    .cp-app-sending-stats, .cp-app-remote-stats {
+        width: 90%;
+        font-size: 10px;
+        margin: auto;
+        text-align: left;
+        margin-bottom: 5px;
+    }
+    .cp-app-stats-item {
+        margin: 10px;
+    }
+    .cp-app-meet-bandwidth-slider {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        font-size: 10px;
+        z-index: 0;
+        width: 350px;
+        height: 50px;
+    }
+    .cp-app-meet-bandwidth-slider label {
+        margin: 0;
+        margin-left: 10px;
+        margin-right: 10px;
+        height: 20px;
+        width: 100px;
+    }
+    .cp-app-meet-bandwidth-slider input {
+        margin: 0;
+        margin-bottom: 10px;
+        width: 180px;
+    }
+  }
+}

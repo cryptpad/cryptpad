@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html class="cp-app-noscroll">
+
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <script async data-bootload="/meet/inner.js" data-main="/common/sframe-boot.js?ver=1.6" src="/bower_components/requirejs/require.js?ver=2.3.5"></script>
+    <style>
+        .loading-hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="cp-app-generic cp-app-meet">
+    <div id="cme_toolbox" class="cp-toolbar-container"></div>
+    <div id="cp-app-meet-editor" class="cp-app-generic-editor">
+        <div id="cp-app-meet-container" class="cp-app-generic-container">
+            <div class="row">
+                <div id="cp-app-meet-own" class="cp-app-meet-video col-sm-6">
+                            <div id="cp-app-meet-video-own" class="cp-app-meet-video-element">
+                                <div class="cp-app-sending-stats">
+                                    <span id="cp-app-meet-own-name"></span>
+                                    <span id="cp-stats-sending-video" class="cp-app-stats-item"></span>
+                                    <span id="cp-stats-sending-audio" class="cp-app-stats-item"></span>
+                                    <span id="cp-kbits-sending-video" class="cp-app-stats-item"></span>
+                                    <span id="cp-kbits-sending-audio" class="cp-app-stats-item"></span>
+                                    <span id="cp-delayed-sending-video" class="cp-app-stats-item"></span>
+                                    <span id="cp-delayed-sending-audio" class="cp-app-stats-item"></span>
+                                </div>
+                                <video id="ownvideo" width="1024" height="576" autoplay></video>
+                    </div>
+                </div>
+                <div id="cp-app-meet-remote" class="cp-app-meet-video col-sm-6">
+                            <div id="cp-app-meet-video-remote" class="cp-app-meet-video-element">
+                                <div class="cp-app-remote-stats">
+                                    <span id="cp-app-meet-remote-name"></span>
+                                    <span id="cp-stats-remote-video" class="cp-app-stats-item"></span>
+                                    <span id="cp-stats-remote-audio" class="cp-app-stats-item"></span>
+                                    <span id="cp-stats-remote-receive-video" class="cp-app-stats-item"></span>
+                                    <span id="cp-stats-remote-receive-audio" class="cp-app-stats-item"></span>
+                                    <span id="cp-kbits-remote-video" class="cp-app-stats-item"></span>
+                                    <span id="cp-kbits-remote-audio" class="cp-app-stats-item"></span>
+                                    <span id="cp-dropped-remote-video" class="cp-app-stats-item"></span>
+                                    <span id="cp-dropped-remote-audio" class="cp-app-stats-item"></span>
+                                </div>
+                                <video id="remotevideo" width="1024" height="576" autoplay></video>
+                                <audio id="remoteaudio" autoplay></audio>
+                            </div>
+                </div>
+            </div>
+            <div class="cp-app-meet-bandwidth-slider col-sm-12">
+                        <label id="quality-label">Quality: </label><label id="quality-bitrate"></label><input id="quality" type="text" />
+            </div>
+            <div id="cp-app-meet-toolbar">
+                <div id="cp-app-meet-buttons">
+                    <span id="cp-app-meet-screen" class="cp-app-meet-screen-off"></span>
+                    <span id="cp-app-meet-camera" class="cp-app-meet-camera-off"></span>
+                    <span id="cp-app-meet-microphone" class="cp-app-meet-microphone-off"></span>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
