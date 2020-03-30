@@ -9,6 +9,7 @@ define([
     '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
+    '/common/inner/common-mediatag.js',
     '/common/modes.js',
     '/customize/messages.js',
     '/common/hyperscript.js',
@@ -40,6 +41,7 @@ define([
     Hash,
     UI,
     UIElements,
+    MT,
     Modes,
     Messages,
     h,
@@ -90,13 +92,9 @@ define([
 
     var getAvatar = function (cursor, noClear) {
         // Tippy
-        var html = '<span class="cp-cursor-avatar">';
-        if (cursor.avatar && UIElements.getAvatar(cursor.avatar)) {
-            html += UIElements.getAvatar(cursor.avatar);
-        }
-        html += cursor.name + '</span>';
+        var html = MT.getCursorAvatar(cursor);
 
-        var l = UIElements.getFirstCharacter(cursor.name || Messages.anonymous);
+        var l = Util.getFirstCharacter(cursor.name || Messages.anonymous);
 
         var text = '';
         if (cursor.color) {

@@ -4,11 +4,12 @@ define([
     '/common/themes.js',
     '/customize/messages.js',
     '/common/common-ui-elements.js',
+    '/common/inner/common-mediatag.js',
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/text-cursor.js',
     '/bower_components/chainpad/chainpad.dist.js',
-], function ($, Modes, Themes, Messages, UIElements, Hash, Util, TextCursor, ChainPad) {
+], function ($, Modes, Themes, Messages, UIElements, MT, Hash, Util, TextCursor, ChainPad) {
     var module = {};
 
     var cursorToPos = function(cursor, oldText) {
@@ -454,12 +455,7 @@ define([
             })[0];
         };
         var makeTippy = function (cursor) {
-            var html = '<span class="cp-cursor-avatar">';
-            if (cursor.avatar && UIElements.getAvatar(cursor.avatar)) {
-                html += UIElements.getAvatar(cursor.avatar);
-            }
-            html += cursor.name + '</span>';
-            return html;
+            return MT.getCursorAvatar(cursor);
         };
         var marks = {};
         exp.removeCursors = function () {

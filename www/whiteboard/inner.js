@@ -404,6 +404,8 @@ define([
                     if (data.type === 'file') {
                         var mt = '<media-tag src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>';
                         framework._.sfCommon.displayMediatagImage($(mt), function (err, $image) {
+                            // Convert src from blob URL to base64 data URL
+                            // XXX base64 is heavy...
                             Util.blobURLToImage($image.attr('src'), function (imgSrc) {
                                 var img = new Image();
                                 img.onload = function () { addImageToCanvas(img); };

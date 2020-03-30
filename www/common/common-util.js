@@ -445,6 +445,27 @@
         return false;
     };
 
+    var emoji_patt = /([\uD800-\uDBFF][\uDC00-\uDFFF])/;
+    var isEmoji = function (str) {
+      return emoji_patt.test(str);
+    };
+    var emojiStringToArray = function (str) {
+      var split = str.split(emoji_patt);
+      var arr = [];
+      for (var i=0; i<split.length; i++) {
+        var char = split[i];
+        if (char !== "") {
+          arr.push(char);
+        }
+      }
+      return arr;
+    };
+    Util.getFirstCharacter = function (str) {
+      if (!str || !str.trim()) { return '?'; }
+      var emojis = emojiStringToArray(str);
+      return isEmoji(emojis[0])? emojis[0]: str[0];
+    };
+
     if (typeof(module) !== 'undefined' && module.exports) {
         module.exports = Util;
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
