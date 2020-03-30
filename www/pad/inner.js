@@ -601,6 +601,8 @@ define([
 
             restoreMediaTags(userDocStateDom, mediaTagMap);
 
+            cursors.removeCursors(inner);
+
             // Deal with adjasent text nodes
             userDocStateDom.normalize();
             inner.normalize();
@@ -809,8 +811,8 @@ define([
         });
 
         /* Display the cursor of other users and send our cursor */
-        //framework.setCursorGetter(cursors.cursorGetter);
-        //framework.onCursorUpdate(cursors.onCursorUpdate);
+        framework.setCursorGetter(cursors.cursorGetter);
+        framework.onCursorUpdate(cursors.onCursorUpdate);
         inner.addEventListener('click', updateCursor);
         inner.addEventListener('keyup', updateCursor);
 
