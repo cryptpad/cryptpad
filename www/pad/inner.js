@@ -809,8 +809,8 @@ define([
         });
 
         /* Display the cursor of other users and send our cursor */
-        framework.setCursorGetter(cursors.cursorGetter);
-        framework.onCursorUpdate(cursors.onCursorUpdate);
+        //framework.setCursorGetter(cursors.cursorGetter);
+        //framework.onCursorUpdate(cursors.onCursorUpdate);
         inner.addEventListener('click', updateCursor);
         inner.addEventListener('keyup', updateCursor);
 
