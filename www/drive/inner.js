@@ -216,7 +216,7 @@ define([
             /* add the usage */
             var usageBar;
             if (APP.loggedIn) {
-                usageBar = common.createUsageBar(null, function (err, $limitContainer) {
+                usageBar = common.createUsageBar(null, function (err) {
                     if (err) { return void DriveUI.logError(err); }
                 }, true);
             }
