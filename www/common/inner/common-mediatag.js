@@ -3,13 +3,17 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
+    '/common/hyperscript.js',
     '/common/media-tag.js',
     '/customize/messages.js',
 
     '/bower_components/croppie/croppie.min.js',
+    '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/croppie/croppie.css',
-], function ($, Util, Hash, UI, MediaTag, Messages) {
+], function ($, Util, Hash, UI, h, MediaTag, Messages) {
     var MT = {};
+
+    var Nacl = window.nacl;
 
     // Configure MediaTags to use our local viewer
     if (MediaTag) {
@@ -204,7 +208,7 @@ define([
         return data;
     };
 
-    MT.previewMediaTag = function (common, config) {
+    MT.getMediaTagPreview = function (common, config) {
         config = config || {};
 
         var metadataMgr = common.getMetadataMgr();
@@ -217,21 +221,124 @@ define([
             var secret = Hash.getSecrets(parsed.type, parsed.hash, config.password);
             var host = priv.fileHost || priv.origin || '';
             src = host + Hash.getBlobPathFromHex(secret.channel);
-            key = secret.keys && secret.keys.cryptKey;
+            var _key = secret.keys && secret.keys.cryptKey;
+            if (_key) { key = 'cryptpad:' + Nacl.util.encodeBase64(_key); }
         }
-        if (!src || !key) {
-            // XXX
-            return;
-        }
+        if (!src || !key) { return void UI.log(Messages.error); }
 
         var tag = h('media-tag', {
             src: src,
-            'data-crypto-key': 'cryptpad:' + key
+            'data-crypto-key': key
         });
-        $img.attr('src', src);
-        $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
-        
 
+        var $modal = UI.createModal({
+            id: 'cp-mediatag-preview-modal',
+            $body: $('body')
+        }).show().focus();
+
+        var $container = $modal.find('.cp-modal').append(h('div.cp-mediatag-container', [
+            tag
+        ]));
+
+        var el;
+        var checkSize = function () {
+            if (!el) { return; }
+            $container.find('.cp-mediatag-container').css('height', '');
+            var size = el.naturalHeight || el.videoHeight;
+            // Center small images and videos
+            if (size && size < $container.height()) {
+                $container.find('.cp-mediatag-container').css('height', 'auto');
+            }
+        };
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.addedNodes.length === 1) {
+                    el = mutation.addedNodes[0];
+                    if (el.readyState === 0) {
+                        // Wait for the video to be ready before checking the size
+                        el.onloadedmetadata = checkSize;
+                        return;
+                    }
+                    if (el.complete === false) {
+                        el.onload = checkSize;
+                        return;
+                    }
+                    setTimeout(checkSize);
+                }
+            });
+        });
+        observer.observe(tag, {
+            attributes: false,
+            childList: true,
+            characterData: false
+        });
+        MediaTag(tag).on('error', function () {
+            UI.log(Messages.error);
+            $modal.hide();
+        });
+    };
+
+    var mediatagContextMenu;
+    MT.importMediaTagMenu = function (common) {
+        if (mediatagContextMenu) { return mediatagContextMenu; }
+
+        // Create context menu
+        var menu = h('div.cp-contextmenu.dropdown.cp-unselectable', [
+            h('ul.dropdown-menu', {
+                'role': 'menu',
+                'aria-labelledBy': 'dropdownMenu',
+                'style': 'display:block;position:static;margin-bottom:5px;'
+            }, [
+                h('li', h('a.cp-app-code-context-open.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': "fa-eye",
+                }, Messages.fc_open)), // XXX
+                h('li', h('a.cp-app-code-context-saveindrive.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': "fa-cloud-upload",
+                }, Messages.pad_mediatagImport)),
+                h('li', h('a.cp-app-code-context-download.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': "fa-download",
+                }, Messages.download_mt_button)),
+            ])
+        ]);
+        // create the icon for each contextmenu option
+        $(menu).find("li a.dropdown-item").each(function (i, el) {
+            var $icon = $("<span>");
+            if ($(el).attr('data-icon')) {
+                var font = $(el).attr('data-icon').indexOf('cptools') === 0 ? 'cptools' : 'fa';
+                $icon.addClass(font).addClass($(el).attr('data-icon'));
+            } else {
+                $icon.text($(el).text());
+            }
+            $(el).prepend($icon);
+        });
+        var m = UI.createContextMenu(menu);
+
+        mediatagContextMenu = m;
+
+        var $menu = $(m.menu);
+        $menu.on('click', 'a', function (e) {
+            e.stopPropagation();
+            m.hide();
+            var $mt = $menu.data('mediatag');
+            if ($(this).hasClass("cp-app-code-context-saveindrive")) {
+                common.importMediaTag($mt);
+            }
+            else if ($(this).hasClass("cp-app-code-context-download")) {
+                var media = $mt[0]._mediaObject;
+                window.saveAs(media._blob.content, media.name);
+            }
+            else if ($(this).hasClass("cp-app-code-context-open")) {
+                common.getMediaTagPreview({
+                    src: $mt.attr('src'),
+                    key: $mt.attr('data-crypto-key')
+                });
+            }
+        });
+
+        return m;
     };
 
     return MT;

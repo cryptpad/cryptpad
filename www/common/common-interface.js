@@ -1283,5 +1283,65 @@ define([
         };
     };
 
+    UI.createContextMenu = function (menu) {
+        var $menu = $(menu).appendTo($('body'));
+
+        var display = function (e) {
+            $menu.css({ display: "block" });
+            var h = $menu.outerHeight();
+            var w = $menu.outerWidth();
+            var wH = window.innerHeight;
+            var wW = window.innerWidth;
+            if (h > wH) {
+                $menu.css({
+                    top: '0px',
+                    bottom: ''
+                });
+            } else if (e.pageY + h <= wH) {
+                $menu.css({
+                    top: e.pageY+'px',
+                    bottom: ''
+                });
+            } else {
+                $menu.css({
+                    bottom: '0px',
+                    top: ''
+                });
+            }
+            if(w > wW) {
+                $menu.css({
+                    left: '0px',
+                    right: ''
+                });
+            } else if (e.pageX + w <= wW) {
+                $menu.css({
+                    left: e.pageX+'px',
+                    right: ''
+                });
+            } else {
+                $menu.css({
+                    left: '',
+                    right: '0px',
+                });
+            }
+        };
+
+        var hide = function () {
+            $menu.hide();
+        };
+        var remove = function () {
+            $menu.remove();
+        };
+
+        $('body').click(hide);
+
+        return {
+            menu: menu,
+            show: display,
+            hide: hide,
+            remove: remove
+        };
+    };
+
     return UI;
 });

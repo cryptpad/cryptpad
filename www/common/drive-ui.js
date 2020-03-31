@@ -80,6 +80,7 @@ define([
     var faCollapseAll = 'fa-minus-square-o';
     var faShared = 'fa-shhare-alt';
     var faReadOnly = 'fa-eye';
+    var faPreview = 'fa-eye';
     var faOpenInCode = 'cptools-code';
     var faRename = 'fa-pencil';
     var faColor = 'cptools-palette';
@@ -317,6 +318,10 @@ define([
                 'style': 'display:block;position:static;margin-bottom:5px;'
             }, [
                 h('span.cp-app-drive-context-noAction.dropdown-item.disabled', Messages.fc_noAction || "No action possible"),
+                h('li', h('a.cp-app-drive-context-preview.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': faPreview,
+                }, 'PREVIEW')), // XXX
                 h('li', h('a.cp-app-drive-context-open.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faFolderOpen,
@@ -1042,12 +1047,23 @@ define([
             return ret;
         };
 
-        var openFile = function (el, isRo) {
+        var openFile = function (el, isRo, app) {
             var data = manager.getFileData(el);
             if (!data || (!data.href && !data.roHref)) {
                 return void logError("Missing data for the file", el, data);
             }
+
             var href = isRo ? data.roHref : (data.href || data.roHref);
+            var parsed = Hash.parsePadUrl(href);
+
+            if (parsed.hashData && parsed.hashData.type === 'file' && !app) {
+                common.getMediaTagPreview({
+                    href: data.href,
+                    password: data.password
+                });
+                return;
+            }
+
             var priv = metadataMgr.getPrivateData();
             var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
             if (useUnsafe !== false) { // true of undefined: use unsafe links
@@ -1055,7 +1071,6 @@ define([
             }
 
             // Get hidden hash
-            var parsed = Hash.parsePadUrl(href);
             var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
             var opts = {};
             if (isRo) { opts.view = true; }
@@ -1175,6 +1190,7 @@ define([
                     if (!$element.is('.cp-border-color-file')) {
                         //hide.push('download');
                         hide.push('openincode');
+                        hide.push('preview');
                     }
                     if ($element.is('.cp-border-color-sheet')) {
                         hide.push('download');
@@ -1191,6 +1207,9 @@ define([
                         var metadata = manager.getFileData(manager.find(path));
                         if (!metadata || !Util.isPlainTextFile(metadata.fileType, metadata.title)) {
                             hide.push('openincode');
+                        }
+                        if (metadata.channel && metadata.channel.length < 48) {
+                            hide.push('preview');
                         }
                         if (!metadata.channel || metadata.channel.length > 32 || metadata.rtChannel) {
                             hide.push('makeacopy'); // Not for blobs
@@ -1260,6 +1279,7 @@ define([
                     hide.push('savelocal');
                     hide.push('openincode'); // can't because of race condition
                     hide.push('makeacopy');
+                    hide.push('preview');
                 }
                 if (containsFolder && paths.length > 1) {
                     // Cannot open multiple folders
@@ -1276,12 +1296,12 @@ define([
                     show = ['newfolder', 'newsharedfolder', 'uploadfiles', 'uploadfolder', 'newdoc'];
                     break;
                 case 'tree':
-                    show = ['open', 'openro', 'openincode', 'expandall', 'collapseall',
+                    show = ['open', 'openro', 'preview', 'openincode', 'expandall', 'collapseall',
                             'color', 'download', 'share', 'savelocal', 'rename', 'delete', 'makeacopy',
                             'deleteowned', 'removesf', 'access', 'properties', 'hashtag'];
                     break;
                 case 'default':
-                    show = ['open', 'openro', 'share', 'openparent', 'delete', 'deleteowned', 'properties', 'access', 'hashtag', 'makeacopy'];
+                    show = ['open', 'openro', 'preview', 'share', 'openparent', 'delete', 'deleteowned', 'properties', 'access', 'hashtag', 'makeacopy'];
                     break;
                 case 'trashtree': {
                     show = ['empty'];
@@ -3980,11 +4000,15 @@ define([
             else if ($this.hasClass('cp-app-drive-context-deleteowned')) {
                 deleteOwnedPaths(paths);
             }
+            else if ($this.hasClass('cp-app-drive-context-preview')) {
+                if (paths.length !== 1) { return; }
+                el = manager.find(paths[0].path);
+                openFile(el);
+            }
             else if ($this.hasClass('cp-app-drive-context-open')) {
                 paths.forEach(function (p) {
-                    var $element = p.element;
-                    $element.click();
-                    $element.dblclick();
+                    var el = manager.find(p.path);
+                    openFile(el, false, true);
                 });
             }
             else if ($this.hasClass('cp-app-drive-context-openro')) {
@@ -3999,7 +4023,7 @@ define([
                     } else {
                         if (!el || manager.isFolder(el)) { return; }
                     }
-                    openFile(el, true);
+                    openFile(el, true, true);
                 });
             }
             else if ($this.hasClass('cp-app-drive-context-makeacopy')) {

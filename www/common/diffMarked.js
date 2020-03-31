@@ -5,13 +5,14 @@ define([
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/hyperscript.js',
+    '/common/inner/common-mediatag.js',
     '/common/media-tag.js',
     '/common/highlight/highlight.pack.js',
     '/customize/messages.js',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/common/highlight/styles/github.css'
-],function ($, ApiConfig, Marked, Hash, Util, h, MediaTag, Highlight, Messages) {
+],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Highlight, Messages) {
     var DiffMd = {};
 
     var DiffDOM = window.diffDOM;
@@ -355,7 +356,7 @@ define([
             DD.apply($content[0], patch);
             var $mts = $content.find('media-tag:not(:has(*))');
             $mts.each(function (i, el) {
-                $(el).contextmenu(function (e) {
+                var $mt = $(el).contextmenu(function (e) {
                     e.preventDefault();
                     $(contextMenu.menu).data('mediatag', $(el));
                     contextMenu.show(e);
@@ -371,6 +372,15 @@ define([
                             observer.disconnect();
                         }
                     });
+                    $mt.off('dblclick');
+                    if ($mt.find('img').length) {
+                        $mt.on('dblclick', function () {
+                            common.getMediaTagPreview({
+                                src: $mt.attr('src'),
+                                key: $mt.attr('data-crypto-key')
+                            });
+                        });
+                    }
                 });
                 observer.observe(el, {
                     attributes: false,

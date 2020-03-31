@@ -104,8 +104,8 @@ define([
     funcs.getBurnAfterReadingWarning = callWithCommon(UIElements.getBurnAfterReadingWarning);
     funcs.createNewPadModal = callWithCommon(UIElements.createNewPadModal);
     funcs.onServerError = callWithCommon(UIElements.onServerError);
-    funcs.importMediaTagMenu = callWithCommon(UIElements.importMediaTagMenu);
-    funcs.getMediaTagPreview = callWithCommon(UIElements.getMediaTagPreview);
+    funcs.importMediaTagMenu = callWithCommon(MT.importMediaTagMenu);
+    funcs.getMediaTagPreview = callWithCommon(MT.getMediaTagPreview);
 
     // Thumb
     funcs.displayThumbnail = callWithCommon(Thumb.displayThumbnail);
