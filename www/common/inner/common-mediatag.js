@@ -237,21 +237,27 @@ define([
         }).show().focus();
 
         var $container = $modal.find('.cp-modal').append(h('div.cp-mediatag-container', [
+            h('div.cp-loading-spinner-container', h('span.cp-spinner')),
             tag
         ]));
 
         var el;
         var checkSize = function () {
             if (!el) { return; }
-            $container.find('.cp-mediatag-container').css('height', '');
             var size = el.naturalHeight || el.videoHeight;
+            if (el.nodeName !== 'IMG' && el.nodeName !== 'VIDEO') {
+                $container.find('.cp-mediatag-container').css('height', '100%');
+            }
+            if (!size) { return; }
             // Center small images and videos
-            if (size && size < $container.height()) {
+            $container.find('.cp-mediatag-container').css('height', '100%');
+            if (size < $container.height()) {
                 $container.find('.cp-mediatag-container').css('height', 'auto');
             }
         };
         var observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
+                $container.find('.cp-loading-spinner-container').remove();
                 if (mutation.addedNodes.length === 1) {
                     el = mutation.addedNodes[0];
                     if (el.readyState === 0) {

@@ -114,7 +114,6 @@
             align-items: center;
             justify-content: center;
             .cp-mediatag-container {
-                height: 100%;
                 width: 100%;
                 media-tag {
                     & > * {
@@ -131,6 +130,10 @@
                         word-break: break-word;
                         color: @cryptpad_text_col;
                     }
+                }
+                .cp-spinner {
+                    border-color: @colortheme_logo-1;
+                    border-top-color: transparent;
                 }
             }
         }
