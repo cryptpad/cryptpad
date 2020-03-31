@@ -1056,7 +1056,8 @@ define([
             var href = isRo ? data.roHref : (data.href || data.roHref);
             var parsed = Hash.parsePadUrl(href);
 
-            if (parsed.hashData && parsed.hashData.type === 'file' && !app) {
+            if (parsed.hashData && parsed.hashData.type === 'file' && !app
+                    && data.fileType !== "application/pdf") {
                 common.getMediaTagPreview({
                     href: data.href,
                     password: data.password
