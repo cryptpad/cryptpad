@@ -81,7 +81,7 @@ define([
         var createFileDialog = function () {
             var types = filters.types || [];
             // Create modal
-            var $blockContainer = UIElements.createModal({
+            var $blockContainer = UI.createModal({
                 id: 'cp-filepicker-dialog',
                 $body: $body,
                 onClose: hideFileDialog

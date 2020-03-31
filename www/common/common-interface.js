@@ -462,6 +462,35 @@ define([
         return frame;
     };
 
+    UI.createModal = function (cfg) {
+        var $body = cfg.$body || $('body');
+        var $blockContainer = $body.find('#'+cfg.id);
+        if (!$blockContainer.length) {
+            $blockContainer = $(h('div.cp-modal-container#'+cfg.id, {
+                tabindex: 1
+            }));
+        }
+        var hide = function () {
+            if (cfg.onClose) { return void cfg.onClose(); }
+            $blockContainer.hide();
+        };
+        $blockContainer.html('').appendTo($body);
+        var $block = $(h('div.cp-modal')).appendTo($blockContainer);
+        $(h('span.cp-modal-close.fa.fa-times', {
+            title: Messages.filePicker_close
+        })).click(hide).appendTo($block);
+        $body.click(hide);
+        $block.click(function (e) {
+            e.stopPropagation();
+        });
+        $body.keydown(function (e) {
+            if (e.which === 27) {
+                hide();
+            }
+        });
+        return $blockContainer;
+    };
+
     UI.alert = function (msg, cb, opt) {
         var force = false;
         if (typeof(opt) === 'object') {

@@ -2538,37 +2538,6 @@ define([
         return $block;
     };
 
-    UIElements.createModal = function (cfg) {
-        var $body = cfg.$body || $('body');
-        var $blockContainer = $body.find('#'+cfg.id);
-        if (!$blockContainer.length) {
-            $blockContainer = $('<div>', {
-                'class': 'cp-modal-container',
-                tabindex: 1,
-                'id': cfg.id
-            });
-        }
-        var hide = function () {
-            if (cfg.onClose) { return void cfg.onClose(); }
-            $blockContainer.hide();
-        };
-        $blockContainer.html('').appendTo($body);
-        var $block = $('<div>', {'class': 'cp-modal'}).appendTo($blockContainer);
-        $('<span>', {
-            'class': 'cp-modal-close fa fa-times',
-            'title': Messages.filePicker_close
-        }).click(hide).appendTo($block);
-        $body.click(hide);
-        $block.click(function (e) {
-            e.stopPropagation();
-        });
-        $body.keydown(function (e) {
-            if (e.which === 27) {
-                hide();
-            }
-        });
-        return $blockContainer;
-    };
 
     UIElements.createNewPadModal = function (common) {
         // if in drive, show new pad modal instead
@@ -2576,7 +2545,7 @@ define([
             return void $(".cp-app-drive-element-row.cp-app-drive-new-ghost").click();
         }
 
-        var $modal = UIElements.createModal({
+        var $modal = UI.createModal({
             id: 'cp-app-toolbar-creation-dialog',
             $body: $('body')
         });

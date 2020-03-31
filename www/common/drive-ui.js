@@ -2892,7 +2892,7 @@ define([
             $element.append($('<span>', {'class': 'cp-app-drive-element-name'})
                 .text(Messages.fm_newFile));
             $element.click(function () {
-                var $modal = UIElements.createModal({
+                var $modal = UI.createModal({
                     id: 'cp-app-drive-new-ghost-dialog',
                     $body: $('body')
                 });

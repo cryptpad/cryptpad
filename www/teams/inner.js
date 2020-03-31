@@ -535,7 +535,7 @@ define([
     };
 
     var makePermissions = function () {
-        var $blockContainer = UIElements.createModal({
+        var $blockContainer = UI.createModal({
             id: 'cp-teams-roster-dialog',
         }).show();
 
