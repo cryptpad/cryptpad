@@ -129,11 +129,24 @@
                         text-align: left;
                         word-break: break-word;
                         color: @cryptpad_text_col;
+                        padding: 5px;
                     }
                 }
                 .cp-spinner {
                     border-color: @colortheme_logo-1;
                     border-top-color: transparent;
+                }
+            }
+            .cp-mediatag-outer {
+                display: flex;
+                height: 100%;
+                width: 100%;
+                align-items: center;
+                .cp-mediatag-control {
+                    .fa {
+                        margin: 10px;
+                        cursor: pointer;
+                    }
                 }
             }
         }

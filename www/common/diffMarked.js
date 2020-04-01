@@ -289,7 +289,7 @@ define([
     };
 
     DiffMd.apply = function (newHtml, $content, common) {
-        var contextMenu = common.importMediaTagMenu();
+        var contextMenu = common.importMediaTagMenu($content);
         var id = $content.attr('id');
         if (!id) { throw new Error("The element must have a valid id"); }
         var pattern = /(<media-tag src="([^"]*)" data-crypto-key="([^"]*)">)<\/media-tag>/g;
@@ -375,10 +375,19 @@ define([
                     $mt.off('dblclick');
                     if ($mt.find('img').length) {
                         $mt.on('dblclick', function () {
-                            common.getMediaTagPreview({
+                            var mts = [{
                                 src: $mt.attr('src'),
                                 key: $mt.attr('data-crypto-key')
+                            }];
+                            $content.find('media-tag').each(function (i, el) {
+                                var $el = $(el);
+                                if ($el.attr('src') === $mt.attr('src')) { return; }
+                                mts.push({
+                                    src: $el.attr('src'),
+                                    key: $el.attr('data-crypto-key')
+                                });
                             });
+                            common.getMediaTagPreview(mts);
                         });
                     }
                 });

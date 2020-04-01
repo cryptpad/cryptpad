@@ -208,38 +208,29 @@ define([
         return data;
     };
 
-    MT.getMediaTagPreview = function (common, config) {
-        config = config || {};
+    MT.getMediaTagPreview = function (common, tags) {
+        if (!Array.isArray(tags) || !tags.length) { return; }
 
+        var i = 0;
         var metadataMgr = common.getMetadataMgr();
         var priv = metadataMgr.getPrivateData();
 
-        var src = config.src;
-        var key = config.key;
-        if (config.href) {
-            var parsed = Hash.parsePadUrl(config.href);
-            var secret = Hash.getSecrets(parsed.type, parsed.hash, config.password);
-            var host = priv.fileHost || priv.origin || '';
-            src = host + Hash.getBlobPathFromHex(secret.channel);
-            var _key = secret.keys && secret.keys.cryptKey;
-            if (_key) { key = 'cryptpad:' + Nacl.util.encodeBase64(_key); }
-        }
-        if (!src || !key) { return void UI.log(Messages.error); }
-
-        var tag = h('media-tag', {
-            src: src,
-            'data-crypto-key': key
-        });
+        var left, right;
 
         var $modal = UI.createModal({
             id: 'cp-mediatag-preview-modal',
             $body: $('body')
         }).show().focus();
-
-        var $container = $modal.find('.cp-modal').append(h('div.cp-mediatag-container', [
-            h('div.cp-loading-spinner-container', h('span.cp-spinner')),
-            tag
+        var $container = $modal.find('.cp-modal').append(h('div.cp-mediatag-outer', [
+            h('div.cp-mediatag-control', left = h('span.fa.fa-chevron-left')),
+            h('div.cp-mediatag-container', [
+                h('div.cp-loading-spinner-container', h('span.cp-spinner')),
+            ]),
+            h('div.cp-mediatag-control', right = h('span.fa.fa-chevron-right')),
         ]));
+        var $left = $(left);
+        var $right = $(right);
+        var $inner = $container.find('.cp-mediatag-container');
 
         var el;
         var checkSize = function () {
@@ -255,37 +246,124 @@ define([
                 $container.find('.cp-mediatag-container').css('height', 'auto');
             }
         };
-        var observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                $container.find('.cp-loading-spinner-container').remove();
-                if (mutation.addedNodes.length === 1) {
-                    el = mutation.addedNodes[0];
-                    if (el.readyState === 0) {
-                        // Wait for the video to be ready before checking the size
-                        el.onloadedmetadata = checkSize;
-                        return;
-                    }
-                    if (el.complete === false) {
-                        el.onload = checkSize;
-                        return;
-                    }
-                    setTimeout(checkSize);
-                }
+
+        var $spinner = $container.find('.cp-loading-spinner-container');
+
+        var locked = false;
+        var show = function (_i) {
+            if (locked) { return; }
+            locked = true;
+            if (_i < 0) { i = 0; }
+            else if (_i > tags.length -1) { i = tags.length - 1; }
+            else { i = _i; }
+
+            // Show/hide controls
+            $left.css('visibility', '');
+            $right.css('visibility', '');
+            if (i === 0) {
+                $left.css('visibility', 'hidden');
+            }
+            if (i === tags.length - 1) {
+                $right.css('visibility', 'hidden');
+            }
+
+            // Reset modal
+            $inner.find('media-tag').remove();
+            $spinner.show();
+
+            // Check src and cryptkey
+            var cfg = tags[i];
+            var src = cfg.src;
+            var key = cfg.key;
+            if (cfg.href) {
+                var parsed = Hash.parsePadUrl(cfg.href);
+                var secret = Hash.getSecrets(parsed.type, parsed.hash, cfg.password);
+                var host = priv.fileHost || priv.origin || '';
+                src = host + Hash.getBlobPathFromHex(secret.channel);
+                var _key = secret.keys && secret.keys.cryptKey;
+                if (_key) { key = 'cryptpad:' + Nacl.util.encodeBase64(_key); }
+            }
+            if (!src || !key) {
+                locked = false;
+                $spinner.hide();
+                // XXX show error
+                return void UI.log(Messages.error);
+            }
+
+            var tag = h('media-tag', {
+                src: src,
+                'data-crypto-key': key
             });
-        });
-        observer.observe(tag, {
-            attributes: false,
-            childList: true,
-            characterData: false
-        });
-        MediaTag(tag).on('error', function () {
-            UI.log(Messages.error);
-            $modal.hide();
+            $inner.append(tag);
+
+            var observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    locked = false;
+                    $spinner.hide();
+                    if (mutation.addedNodes.length === 1) {
+                        el = mutation.addedNodes[0];
+                        if (el.readyState === 0) {
+                            // Wait for the video to be ready before checking the size
+                            el.onloadedmetadata = checkSize;
+                            return;
+                        }
+                        if (el.complete === false) {
+                            el.onload = checkSize;
+                            return;
+                        }
+                        setTimeout(checkSize);
+                    }
+                });
+            });
+            observer.observe(tag, {
+                attributes: false,
+                childList: true,
+                characterData: false
+            });
+            MediaTag(tag).on('error', function () {
+                locked = false;
+                $spinner.hide();
+                UI.log(Messages.error);
+                // XXX show error
+            });
+        };
+
+        show(i);
+        var previous = function () {
+            show(i - 1);
+        };
+        var next = function () {
+            show(i + 1);
+        };
+        $left.click(previous);
+        $right.click(next);
+
+        $modal.on('keyup', function (e) {
+            //if (!Slide.shown) { return; }
+            e.stopPropagation();
+            if (e.ctrlKey) { return; }
+            switch(e.which) {
+                case 33: // pageup
+                case 38: // up
+                case 37: // left
+                    previous();
+                    break;
+                case 34: // pagedown
+                case 32: // space
+                case 40: // down
+                case 39: // right
+                    next();
+                    break;
+                case 27: // esc
+                    $modal.hide();
+                    break;
+                default:
+            }
         });
     };
 
     var mediatagContextMenu;
-    MT.importMediaTagMenu = function (common) {
+    MT.importMediaTagMenu = function (common, $container) {
         if (mediatagContextMenu) { return mediatagContextMenu; }
 
         // Create context menu
@@ -337,10 +415,19 @@ define([
                 window.saveAs(media._blob.content, media.name);
             }
             else if ($(this).hasClass("cp-app-code-context-open")) {
-                common.getMediaTagPreview({
+                var mts = [{
                     src: $mt.attr('src'),
                     key: $mt.attr('data-crypto-key')
+                }];
+                $container.find('media-tag').each(function (i, el) {
+                    var $el = $(el);
+                    if ($el.attr('src') === $mt.attr('src')) { return; }
+                    mts.push({
+                        src: $el.attr('src'),
+                        key: $el.attr('data-crypto-key')
+                    });
                 });
+                common.getMediaTagPreview(mts);
             }
         });
 

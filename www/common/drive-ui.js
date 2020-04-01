@@ -1047,6 +1047,28 @@ define([
             return ret;
         };
 
+        var previewMediaTag = function (data) {
+            var mts = [{
+                href: data.href,
+                password: data.password
+            }];
+            $content.find('.cp-app-drive-element.cp-border-color-file').each(function (i, el) {
+                var path = $(el).data('path');
+                var id = manager.find(path);
+                if (!id) { return; }
+                var _data = manager.getFileData(id);
+                if (!_data || _data.channel < 48 || _data.channel === data.channel) { return; }
+                mts.push({
+                    href: _data.href,
+                    password: _data.password
+                });
+            });
+            common.getMediaTagPreview(mts);
+        };
+
+        // `app`: true (force open wiht the app), false (force open in preview),
+        //        falsy (open in preview if default is not using the app)
+        var defaultInApp = ['application/pdf'];
         var openFile = function (el, isRo, app) {
             var data = manager.getFileData(el);
             if (!data || (!data.href && !data.roHref)) {
@@ -1057,12 +1079,8 @@ define([
             var parsed = Hash.parsePadUrl(href);
 
             if (parsed.hashData && parsed.hashData.type === 'file' && !app
-                    && data.fileType !== "application/pdf") {
-                common.getMediaTagPreview({
-                    href: data.href,
-                    password: data.password
-                });
-                return;
+                    && (defaultInApp.indexOf(data.fileType) === -1 || app === false)) {
+                return void previewMediaTag(data);
             }
 
             var priv = metadataMgr.getPrivateData();
@@ -4004,7 +4022,7 @@ define([
             else if ($this.hasClass('cp-app-drive-context-preview')) {
                 if (paths.length !== 1) { return; }
                 el = manager.find(paths[0].path);
-                openFile(el);
+                openFile(el, null, false);
             }
             else if ($this.hasClass('cp-app-drive-context-open')) {
                 paths.forEach(function (p) {
