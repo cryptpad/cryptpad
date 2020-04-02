@@ -31,6 +31,10 @@ define([
             ApiConfig.httpSafeOrigin + window.location.pathname + 'inner.html?' +
                 requireConfig.urlArgs + '#' + encodeURIComponent(JSON.stringify(req)));
 
+        console.log(ApiConfig.httpSafeOrigin);
+
+        console.error(document.getElementById('sbox-iframe').getAttribute('src'));
+
         // This is a cheap trick to avoid loading sframe-channel in parallel with the
         // loading screen setup.
         var done = waitFor();
