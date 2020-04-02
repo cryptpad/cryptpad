@@ -1880,7 +1880,15 @@ define([
                 if (msg) {
                     msg = msg.replace(/cp\|(([A-Za-z0-9+\/=]+)\|)?/, '');
                     //var decryptedMsg = crypto.decrypt(msg, true);
-                    msgs.push(msg);
+                    if (data.debug) {
+                        msgs.push({
+                            msg: msg,
+                            author: parsed[1][1],
+                            time: parsed[1][5]
+                        });
+                    } else {
+                        msgs.push(msg);
+                    }
                 }
             };
             network.on('message', onMsg);

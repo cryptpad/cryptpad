@@ -389,6 +389,120 @@ define([
             }, {timeout: 2147483647}); // Max 32-bit integer
         };
 
+        var replayFullHistory = function () {
+            // Set spinner
+            var content = h('div#cp-app-debug-loading', [
+                h('p', 'Loading history from the server...'),
+                h('span.fa.fa-circle-o-notch.fa-spin.fa-3x.fa-fw')
+            ]);
+            $('#cp-app-debug-content').html('').append(content);
+            var makeChainpad = function () {
+                return window.ChainPad.create({
+                    userName: 'debug',
+                    initialState: '',
+                    logLevel: 2,
+                    validateContent: function (content) {
+                        try {
+                            JSON.parse(content);
+                            return true;
+                        } catch (e) {
+                            console.log('Failed to parse, rejecting patch');
+                            return false;
+                        }
+                    },
+                });
+            };
+            sframeChan.query('Q_GET_FULL_HISTORY', {
+                debug: true,
+            }, function (err, data) {
+                var replay, input, left, right;
+                var content = h('div.cp-app-debug-progress.cp-loading-progress', [
+                    h('p', [
+                        left = h('span.fa.fa-chevron-left'),
+                        input = h('input', {type: 'number'}),
+                        right = h('span.fa.fa-chevron-right'),
+                    ]),
+                    h('br'),
+                    replay = h('pre.cp-debug-replay'),
+                ]);
+                var $input = $(input);
+                var $left = $(left);
+                var $right = $(right);
+
+                $('#cp-app-debug-content').html('').append(content);
+                var chainpad = makeChainpad();
+                console.warn(chainpad);
+
+                var i = 0;
+                var messages = data.slice();
+                var play = function (_i) {
+                    if (_i < 1) { _i = 1; }
+                    if (_i > data.length - 1) { _i = data.length - 1; }
+                    if (_i < i) {
+                        chainpad.abort();
+                        chainpad = makeChainpad();
+                        console.warn(chainpad);
+                        i = 0;
+                    }
+                    var messages = data.slice(i, _i);
+                    i = _i;
+                    $input.val(i);
+                    messages.forEach(function (obj) {
+                        chainpad.message(obj);
+                    });
+                    if (messages.length) {
+                        var hashes = Object.keys(chainpad._.messages);
+                        var currentHash = hashes[hashes.length - 1];
+                        var best = chainpad.getAuthBlock();
+                        var current = chainpad.getBlockForHash(currentHash);
+                        if (best.hashOf === currentHash) {
+                            console.log("Best", best);
+                        } else {
+                            console.warn("Current", current);
+                            console.log("Best", best);
+                        }
+                    }
+                    $(replay).text(JSON.stringify(JSON.parse(chainpad.getUserDoc()), 0, 2));
+                };
+                play(1);
+                $left.click(function () {
+                    play(i-1);
+                });
+                $right.click(function () {
+                    play(i+1);
+                });
+                $input.keydown(function (e) {
+                    if (e.which === 37 || e.which === 40) { // Left or down
+                        e.preventDefault();
+                        return;
+                    }
+                    if (e.which === 38 || e.which === 39) { // Up or right
+                        e.preventDefault();
+                        return;
+                    }
+                });
+                $input.keyup(function (e) {
+                    var val = Number($input.val());
+                    if (e.which === 37 || e.which === 40) { // Left or down
+                        e.preventDefault();
+                        play(val - 1);
+                        return;
+                    }
+                    if (e.which === 38 || e.which === 39) { // Up or right
+                        e.preventDefault();
+                        play(val + 1);
+                        return;
+                    }
+                    if (e.which !== 13) { return; }
+                    if (!val) {
+                        $input.val(1);
+                        return;
+                    }
+                    play(Number(val));
+                });
+            }, {timeout: 2147483647}); // Max 32-bit integer
+        };
+
         var getContent = function () {
             if ($('#cp-app-debug-content').is(':visible')) {
                 $('#cp-app-debug-content').hide();
@@ -402,11 +516,14 @@ define([
         };
         var setInitContent = function () {
             var button = h('button.btn.btn-success', 'Load history');
+            var buttonReplay = h('button.btn.btn-success', 'Replay');
             $(button).click(getFullHistory);
+            $(buttonReplay).click(replayFullHistory);
             var content = h('p.cp-app-debug-init', [
                 'To get better debugging tools, we need to load the entire history of the document. This make take some time.', // TODO
                 h('br'),
-                button
+                button,
+                buttonReplay
             ]);
             $('#cp-app-debug-content').html('').append(content);
         };
