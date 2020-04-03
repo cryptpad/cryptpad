@@ -420,12 +420,16 @@ define([
                 var content = h('div.cp-app-debug-progress.cp-loading-progress', [
                     h('p', [
                         left = h('span.fa.fa-chevron-left'),
-                        input = h('input', {type: 'number'}),
+                        h('label', 'Start'),
+                        start = h('input', {type: 'number', value: 0}),
+                        h('label', 'State'),
+                        input = h('input', {type: 'number', min: 1}),
                         right = h('span.fa.fa-chevron-right'),
                     ]),
                     h('br'),
                     replay = h('pre.cp-debug-replay'),
                 ]);
+                var $start = $(start);
                 var $input = $(input);
                 var $left = $(left);
                 var $right = $(right);
@@ -434,10 +438,11 @@ define([
                 var chainpad = makeChainpad();
                 console.warn(chainpad);
 
+                var start = 0;
                 var i = 0;
                 var messages = data.slice();
                 var play = function (_i) {
-                    if (_i < 1) { _i = 1; }
+                    if (_i < (start+1)) { _i = start + 1; }
                     if (_i > data.length - 1) { _i = data.length - 1; }
                     if (_i < i) {
                         chainpad.abort();
@@ -447,6 +452,7 @@ define([
                     }
                     var messages = data.slice(i, _i);
                     i = _i;
+                    $start.val(start);
                     $input.val(i);
                     messages.forEach(function (obj) {
                         chainpad.message(obj);
@@ -463,6 +469,10 @@ define([
                             console.log("Best", best);
                         }
                     }
+                    if (!chainpad.getUserDoc()) {
+                        $(replay).text('');
+                        return;
+                    }
                     $(replay).text(JSON.stringify(JSON.parse(chainpad.getUserDoc()), 0, 2));
                 };
                 play(1);
@@ -472,14 +482,10 @@ define([
                 $right.click(function () {
                     play(i+1);
                 });
+
                 $input.keydown(function (e) {
-                    if (e.which === 37 || e.which === 40) { // Left or down
+                    if ([37, 38, 39, 40].indexOf(e.which) !== -1) {
                         e.preventDefault();
-                        return;
-                    }
-                    if (e.which === 38 || e.which === 39) { // Up or right
-                        e.preventDefault();
-                        return;
                     }
                 });
                 $input.keyup(function (e) {
@@ -500,6 +506,38 @@ define([
                         return;
                     }
                     play(Number(val));
+                });
+
+                // Initial state
+                $start.keydown(function (e) {
+                    if ([37, 38, 39, 40].indexOf(e.which) !== -1) {
+                        e.preventDefault();
+                    }
+                });
+                $start.keyup(function (e) {
+                    var val = Number($start.val());
+                    e.preventDefault();
+                    if ([37, 38, 39, 40, 13].indexOf(e.which) !== -1) {
+                        chainpad.abort();
+                        chainpad = makeChainpad();
+                    }
+                    if (e.which === 37 || e.which === 40) { // Left or down
+                        start = Math.max(0, val - 1);
+                        i = start;
+                        play(i);
+                        return;
+                    }
+                    if (e.which === 38 || e.which === 39) { // Up or right
+                        start = Math.min(data.length - 1, val + 1);
+                        i = start;
+                        play(i);
+                        return;
+                    }
+                    if (e.which !== 13) { return; }
+                    start = Number(val);
+                    if (!val) { start = 0; }
+                    i = start;
+                    play(i);
                 });
             }, {timeout: 2147483647}); // Max 32-bit integer
         };
