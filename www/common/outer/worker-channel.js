@@ -45,10 +45,13 @@ define([
             var txid = mkTxid();
             opts = opts || {};
             var to = opts.timeout || 30000;
-            var timeout = setTimeout(function () {
-                delete queries[txid];
-                cb('TIMEOUT');
-            }, to);
+            var timeout;
+            if (to > 0) {
+                timeout = setTimeout(function () {
+                    delete queries[txid];
+                    cb('TIMEOUT');
+                }, to);
+            }
             acks[txid] = function (err) {
                 clearTimeout(timeout);
                 delete acks[txid];

@@ -794,6 +794,11 @@ define([
         var userDoc = JSON.stringify(proxy);
         if (userDoc === "" || userDoc === "{}") { isNew = true; }
 
+        if (APP.toolbar && APP.rt.cpCnInner) {
+            // Check if we have a new chainpad instance
+            APP.toolbar.resetChainpad(APP.rt.cpCnInner.chainpad);
+        }
+
         if (!isNew) {
             if (proxy.info) {
                 // Migration

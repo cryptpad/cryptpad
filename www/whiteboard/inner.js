@@ -50,7 +50,9 @@ define([
         var $widthLabel = $('label[for="cp-app-whiteboard-width"]');
         var $opacity = $('#cp-app-whiteboard-opacity');
         var $opacityLabel = $('label[for="cp-app-whiteboard-opacity"]');
-        var $toggle = $('#cp-app-whiteboard-toggledraw');
+        var $type = $('.cp-whiteboard-type');
+        var $brush = $('.cp-whiteboard-type .brush');
+        var $move = $('.cp-whiteboard-type .move');
         var $deleteButton = $('#cp-app-whiteboard-delete');
 
         var metadataMgr = framework._.cpNfInner.metadataMgr;
@@ -97,7 +99,7 @@ define([
         var updateBrushWidth = function () {
             var val = $width.val();
             canvas.freeDrawingBrush.width = Number(val);
-            $widthLabel.text(Messages._getKey("canvas_widthLabel", [val]));
+            $widthLabel.text(Messages._getKey("canvas_widthLabel", ['']));
             $('#cp-app-whiteboard-width-val').text(val + 'px');
             createCursor();
         };
@@ -108,7 +110,7 @@ define([
             var val = $opacity.val();
             brush.opacity = Number(val);
             canvas.freeDrawingBrush.color = Colors.hex2rgba(brush.color, brush.opacity);
-            $opacityLabel.text(Messages._getKey("canvas_opacityLabel", [val]));
+            $opacityLabel.text(Messages._getKey("canvas_opacityLabel", ['']));
             $('#cp-app-whiteboard-opacity-val').text((Number(val) * 100) + '%');
             createCursor();
         };
@@ -116,17 +118,27 @@ define([
         $opacity.on('change', updateBrushOpacity);
 
         APP.draw = true;
-        var toggleDrawMode = function () {
+        $brush.click(function () {
+            if (APP.draw) { return; }
             canvas.deactivateAll().renderAll();
-            APP.draw = !APP.draw;
+            APP.draw = true;
             canvas.isDrawingMode = APP.draw;
-            $toggle.text(APP.draw ? Messages.canvas_disable : Messages.canvas_enable);
-            if (APP.draw) { $deleteButton.hide(); }
-            else { $deleteButton.show(); }
-        };
-        $toggle.click(toggleDrawMode);
+            $type.find('button').removeClass('btn-primary');
+            $brush.addClass('btn-primary');
+            $deleteButton.prop('disabled', 'disabled');
+        });
+        $move.click(function () {
+            if (!APP.draw) { return; }
+            canvas.deactivateAll().renderAll();
+            APP.draw = false;
+            canvas.isDrawingMode = APP.draw;
+            $type.find('button').removeClass('btn-primary');
+            $move.addClass('btn-primary');
+            $deleteButton.prop('disabled', '');
+        });
 
         var deleteSelection = function () {
+            if (APP.draw) { return; }
             if (canvas.getActiveObject()) {
                 canvas.getActiveObject().remove();
             }
@@ -211,6 +223,7 @@ define([
             if (first || Sortify(palette) !== Sortify(newPalette)) {
                 palette = newPalette;
                 $colors.html('<div class="hidden">&nbsp;</div>');
+                $colors.css('width', (palette.length * 20)+'px');
                 palette.forEach(addColorToPalette);
                 first = false;
             }
@@ -494,6 +507,7 @@ define([
         framework.start();
     };
 
+
     var initialContent = function () {
         return [
             h('div#cp-toolbar.cp-toolbar-container'),
@@ -509,42 +523,56 @@ define([
                 }
             }, [
                 h('button#cp-app-whiteboard-clear.btn.btn-danger', Messages.canvas_clear), ' ',
+                h('div.cp-whiteboard-type', [
+                    h('button.brush.fa.fa-paint-brush.btn-primary', {title: Messages.canvas_brush}),
+                    h('button.move.fa.fa-arrows', {title: Messages.canvas_select}),
+                ]),
+                h('button.fa.fa-trash#cp-app-whiteboard-delete', {
+                    disabled: 'disabled',
+                    title: Messages.canvas_delete
+                }),
+                /*
+                h('button#cp-app-whiteboard-toggledraw.btn.btn-secondary', Messages.canvas_disable),
                 h('button#cp-app-whiteboard-toggledraw.btn.btn-secondary', Messages.canvas_disable),
                 h('button#cp-app-whiteboard-delete.btn.btn-secondary', {
                     style: {
                         display: 'none',
                     }
-                }, Messages.canvas_delete),
-                h('div.cp-app-whiteboard-range-group', [
-                    h('label', {
-                        'for': 'cp-app-whiteboard-width'
-                    }, Messages.canvas_width),
-                    h('input#cp-app-whiteboard-width', {
-                        type: 'range',
-                        min: "1",
-                        max: "100"
-                    }),
-                    h('span#cp-app-whiteboard-width-val', '5px')
+                }, Messages.canvas_delete),*/
+                h('div.cp-whiteboard-brush', [
+                    h('div.cp-app-whiteboard-range-group', [
+                        h('label', {
+                            'for': 'cp-app-whiteboard-width'
+                        }, Messages.canvas_width),
+                        h('input#cp-app-whiteboard-width', {
+                            type: 'range',
+                            value: "20",
+                            min: "1",
+                            max: "100"
+                        }),
+                        h('span#cp-app-whiteboard-width-val', '5px')
+                    ]),
+                    h('div.cp-app-whiteboard-range-group', [
+                        h('label', {
+                            'for': 'cp-app-whiteboard-opacity',
+                        }, Messages.canvas_opacity),
+                        h('input#cp-app-whiteboard-opacity', {
+                            type: 'range',
+                            value: "1",
+                            min: "0.1",
+                            max: "1",
+                            step: "0.1"
+                        }),
+                        h('span#cp-app-whiteboard-opacity-val', '100%')
+                    ]),
                 ]),
-                h('div.cp-app-whiteboard-range-group', [
-                    h('label', {
-                        'for': 'cp-app-whiteboard-opacity',
-                    }, Messages.canvas_opacity),
-                    h('input#cp-app-whiteboard-opacity', {
-                        type: 'range',
-                        min: "0.1",
-                        max: "1",
-                        step: "0.1"
-                    }),
-                    h('span#cp-app-whiteboard-opacity-val', '100%')
-                ]),
-                h('span.cp-app-whiteboard-selected.cp-app-whiteboard-unselectable', [
+                h('div.cp-app-whiteboard-selected.cp-app-whiteboard-unselectable', [
                     h('img', {
                         title: Messages.canvas_currentBrush
                     })
-                ])
+                ]),
+                UI.setHTML(h('div#cp-app-whiteboard-colors'), '&nbsp;'),
             ]),
-            UI.setHTML(h('div#cp-app-whiteboard-colors'), '&nbsp;'),
             h('div#cp-app-whiteboard-cursors', {
                 style: {
                     display: 'none',

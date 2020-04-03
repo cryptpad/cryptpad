@@ -1,5 +1,6 @@
 @import (reference) '../../customize/src/less2/include/tools.less';
 @import (reference) "../../customize/src/less2/include/framework.less";
+@import (reference) "../../customize/src/less2/include/buttons.less";
 
 &.cp-app-whiteboard {
 
@@ -36,6 +37,7 @@
         flex: 1;
         display: flex;
         overflow: auto;
+        flex-flow: column;
     }
 
     // created in the html
@@ -74,6 +76,8 @@
 
         padding: 10px;
 
+        .buttons_main();
+
         & > * + * {
             margin: 0;
             margin-left: 1em;
@@ -82,10 +86,27 @@
         #cp-app-whiteboard-width, #cp-app-whiteboard-opacity {
             .middle;
         }
-        #cp-app-whiteboard-clear, #cp-app-whiteboard-delete, #cp-app-whiteboard-toggledraw {
+
+        #cp-app-whiteboard-clear {
             display: inline;
             vertical-align: middle;
         }
+        #cp-app-whiteboard-delete {
+            min-width: 40px;
+        }
+        .cp-whiteboard-type {
+            button {
+                min-width: 40px;
+                text-align: center;
+                &:not(:first-child) {
+                    margin-left: -1px;
+                }
+                &.btn-primary:hover {
+                    cursor: default;
+                }
+            }
+        }
+
         .cp-app-whiteboard-selected {
             display: flex;
             align-items: center;
@@ -96,27 +117,34 @@
             height: 100px;
         }
 
-        .cp-app-whiteboard-range-group {
+        .cp-whiteboard-brush {
             display: flex;
             flex-direction: column;
-            position: relative;
-
-            input[type="range"] {
-                background-color: inherit;
-            }
-
-            & > span {
-                cursor: default;
-                position: absolute;
-                top: 0;
-                right: 0;
-            }
-        }
-        .cp-app-whiteboard-range-group:first-of-type {
             margin-left: 2em;
-        }
-        .cp-app-whiteboard-range-group:last-of-type {
             margin-right: 1em;
+            .cp-app-whiteboard-range-group {
+                display: flex;
+                align-items: center;
+                position: relative;
+
+                label {
+                    margin-bottom: 0;
+                    margin-right: 5px;
+                    flex: 1;
+                }
+
+                input[type="range"] {
+                    background-color: inherit;
+                    margin-right: 5px;
+                    width: 150px;
+                    padding: 0;
+                }
+
+                & > span {
+                    width: 50px;
+                    cursor: default;
+                }
+            }
         }
     }
 
@@ -126,22 +154,22 @@
         z-index: 100;
         background: white;
         display: flex;
-        justify-content: space-between;
-
-        padding: 10px;
+        flex-wrap: wrap;
+        max-width: 320px;
 
         span.cp-app-whiteboard-palette-color {
-            height: 4vw;
-            width: 4vw;
+            height: 30px;
+            width: 30px;
             display: block;
             margin: 5px;
-            border: 1px solid black;
+            border: 1px solid #bbb;
             vertical-align: top;
             border-radius: 50%;
+            cursor: pointer;
             transition: transform 0.1s;
 
             &:hover {
-                transform: scale(1.2);
+                transform: scale(1.1);
             }
         }
     }
