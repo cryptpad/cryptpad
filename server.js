@@ -42,7 +42,8 @@ if (process.env.PACKAGE) {
         throw new Error("No 'httpUnsafeOrigin' provided");
     }
 
-    config.httpUnsafeOrigin = config.httpUnsafeOrigin.trim().replace(/\/$/, '');
+    config.httpUnsafeOrigin = config.httpUnsafeOrigin.trim();
+    config.httpSafeOrigin = config.httpSafeOrigin.trim().replace(/\/$/, '');
 
     // fall back to listening on a local address
     // if httpAddress is not a string
@@ -125,15 +126,12 @@ var setHeaders = (function () {
     if (Object.keys(headers).length) {
         return function (req, res) {
             const h = [
-                    /^\/+pad\/inner\.html.*/,
+                    /^\/pad\/inner\.html.*/,
                     /^\/common\/onlyoffice\/.*\/index\.html.*/,
-                    /^\/+(sheet|ooslide|oodoc)\/in.*\.html.*/,
+                    /^\/(sheet|ooslide|oodoc)\/inner\.html.*/,
                 ].some((regex) => {
-                    if (regex.test('' + req.url)) {
-                        console.log('CSP MATCH: [%s] <= [%s]', regex, req.url);
-                        return true;
-                    }
-                }) ? padHeaders: headers;
+                    return regex.test(req.url);
+                }) ? padHeaders : headers;
             for (let header in h) { res.setHeader(header, h[header]); }
         };
     }
