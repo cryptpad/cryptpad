@@ -287,6 +287,23 @@ define([
         return patch;
     };
 
+    var removeMermaidClickables = function ($el) {
+        // find all links in the tree and do the following for each one
+        $el.find('a').each(function (index, a) {
+            var parent = a.parentElement;
+            if (!parent) { return; }
+            // iterate over the links' children and transform them into preceding children
+            // to preserve their visible ordering
+            slice(a.children).forEach(function (child) {
+                parent.insertBefore(child, a);
+            });
+            // remove the link once it has been emptied
+            $(a).remove();
+        });
+        // finally, find all 'clickable' items and remove the class
+        $el.find('.clickable').removeClass('clickable');
+    };
+
     DiffMd.apply = function (newHtml, $content, common) {
         var contextMenu = common.importMediaTagMenu();
         var id = $content.attr('id');
@@ -364,7 +381,7 @@ define([
                 var observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
                         if (mutation.type === 'childList') {
-                            var list_values = [].slice.call(mutation.target.children)
+                            var list_values = slice(mutation.target.children)
                                                 .map(function (el) { return el.outerHTML; })
                                                 .join('');
                             mediaMap[mutation.target.getAttribute('src')] = list_values;
@@ -400,7 +417,13 @@ define([
                 // check if you had cached a pre-rendered instance of the supplied source
                 if (typeof(cached) !== 'object') {
                     try {
-                        Mermaid.init(undefined, $(el));
+                        var $el = $(el);
+                        Mermaid.init(undefined, $el);
+                        // clickable elements in mermaid don't work well with our sandboxing setup
+                        // the function below strips clickable elements but still leaves behind some artifacts
+                        // tippy tooltips might still be useful, so they're not removed. It would be
+                        // preferable to just support links, but this covers up a rough edge in the meantime
+                        removeMermaidClickables($el);
                     } catch (e) { console.error(e); }
                     return;
                 }
