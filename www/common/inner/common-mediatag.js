@@ -208,10 +208,10 @@ define([
         return data;
     };
 
-    MT.getMediaTagPreview = function (common, tags) {
+    MT.getMediaTagPreview = function (common, tags, start) {
         if (!Array.isArray(tags) || !tags.length) { return; }
 
-        var i = 0;
+        var i = start;
         var metadataMgr = common.getMetadataMgr();
         var priv = metadataMgr.getPrivateData();
 
@@ -418,19 +418,32 @@ define([
                 window.saveAs(media._blob.content, media.name);
             }
             else if ($(this).hasClass("cp-app-code-context-open")) {
-                var mts = [{
-                    src: $mt.attr('src'),
-                    key: $mt.attr('data-crypto-key')
-                }];
+                var mts = [];
                 $container.find('media-tag').each(function (i, el) {
                     var $el = $(el);
-                    if ($el.attr('src') === $mt.attr('src')) { return; }
                     mts.push({
                         src: $el.attr('src'),
                         key: $el.attr('data-crypto-key')
                     });
                 });
-                common.getMediaTagPreview(mts);
+
+                // Find initial position
+                var idx = -1;
+                mts.some(function (obj, i) {
+                    if (obj.src === $mt.attr('src')) {
+                        idx = i;
+                        return true;
+                    }
+                });
+                if (idx === -1) {
+                    mts.unshift({
+                        src: $mt.attr('src'),
+                        key: $mt.attr('data-crypto-key')
+                    });
+                    idx = 0;
+                }
+
+                common.getMediaTagPreview(mts, idx);
             }
         });
 

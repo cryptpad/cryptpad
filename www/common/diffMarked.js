@@ -375,19 +375,32 @@ define([
                     $mt.off('dblclick');
                     if ($mt.find('img').length) {
                         $mt.on('dblclick', function () {
-                            var mts = [{
-                                src: $mt.attr('src'),
-                                key: $mt.attr('data-crypto-key')
-                            }];
+                            var mts = [];
                             $content.find('media-tag').each(function (i, el) {
                                 var $el = $(el);
-                                if ($el.attr('src') === $mt.attr('src')) { return; }
                                 mts.push({
                                     src: $el.attr('src'),
                                     key: $el.attr('data-crypto-key')
                                 });
                             });
-                            common.getMediaTagPreview(mts);
+
+                            // Find initial position
+                            var idx = -1;
+                            mts.some(function (obj, i) {
+                                if (obj.src === $mt.attr('src')) {
+                                    idx = i;
+                                    return true;
+                                }
+                            });
+                            if (idx === -1) {
+                                mts.unshift({
+                                    src: $mt.attr('src'),
+                                    key: $mt.attr('data-crypto-key')
+                                });
+                                idx = 0;
+                            }
+
+                            common.getMediaTagPreview(mts, idx);
                         });
                     }
                 });

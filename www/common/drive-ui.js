@@ -1048,22 +1048,37 @@ define([
         };
 
         var previewMediaTag = function (data) {
-            var mts = [{
-                href: data.href,
-                password: data.password
-            }];
+            var mts = [];
             $content.find('.cp-app-drive-element.cp-border-color-file').each(function (i, el) {
                 var path = $(el).data('path');
                 var id = manager.find(path);
                 if (!id) { return; }
                 var _data = manager.getFileData(id);
-                if (!_data || _data.channel < 48 || _data.channel === data.channel) { return; }
+                if (!_data || _data.channel < 48) { return; }
                 mts.push({
+                    channel: _data.channel,
                     href: _data.href,
                     password: _data.password
                 });
             });
-            common.getMediaTagPreview(mts);
+
+            // Find initial position
+            var idx = -1;
+            mts.some(function (obj, i) {
+                if (obj.channel === data.channel) {
+                    idx = i;
+                    return true;
+                }
+            });
+            if (idx === -1) {
+                mts.unshift({
+                    href: data.href,
+                    password: data.password
+                });
+                idx = 0;
+            }
+
+            common.getMediaTagPreview(mts, idx);
         };
 
         // `app`: true (force open wiht the app), false (force open in preview),
