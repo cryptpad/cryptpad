@@ -17,20 +17,21 @@ body.cp-app-generic {
     color: #fff;
 
     .cp-app-generic-container {
+        height: 100%;
+        overflow: hidden;
+        min-height: 100%;
+    }
+
+    .cp-app-generic-container {
         display: inline-flex;
         flex-flow: column;
-        height: 100%;
-        min-height: 100%;
         width: 100%;
         resize: horizontal;
-        overflow: hidden;
     }
     .cp-app-generic-editor {
         flex: 1;
         display: flex;
         flex-flow: row;
-        height: 100%;
-        overflow: hidden;
     }
 
     @media (max-width: @browser_media-medium-screen) {
@@ -42,12 +43,11 @@ body.cp-app-generic {
     }
 
     #cp-app-meet-container, #cp-app-meet-container .row {
-      height: 100%;
+        margin-top: auto;
+        margin-bottom: auto;
     }
 
-    .cp-app-meet-video {
-      height: 100%;
-    }
+    
 
     .cp-app-meet-video-element {
       text-align: center;
@@ -77,8 +77,7 @@ body.cp-app-generic {
       display: hidden;
     }
 
-    #cp-app-meet-toolbar {
-      bottom:0;
+    #cp-app-meet-toolbar {    
       height: 50px;
       text-align: center;
       display: flex;
@@ -129,9 +128,6 @@ body.cp-app-generic {
     .cp-app-meet-microphone-on:before {
         content: "\f130"; 
     } 
-    .cp-app-meet-bandwidth-slider {
-        width: 100%;
-    }
     .cp-app-sending-stats, .cp-app-remote-stats {
         width: 90%;
         font-size: 10px;
@@ -143,13 +139,12 @@ body.cp-app-generic {
         margin: 10px;
     }
     .cp-app-meet-bandwidth-slider {
-        position: absolute;
-        bottom: 0;
-        left: 0;
+        margin: auto;
         font-size: 10px;
-        z-index: 0;
-        width: 350px;
+        z-index: 5;
+        width: 100%;
         height: 50px;
+        text-align: center;
     }
     .cp-app-meet-bandwidth-slider label {
         margin: 0;
@@ -162,6 +157,34 @@ body.cp-app-generic {
         margin: 0;
         margin-bottom: 10px;
         width: 180px;
+    }
+
+    @media (min-width: 768px) {
+        .cp-app-generic-container {
+            height: 100%;
+            overflow: hidden;
+            min-height: 100%;
+        }
+    
+        .cp-app-generic-editor {
+            height: 100%;
+            overflow: hidden;
+
+        }
+        .cp-app-meet-video {
+        } 
+        #cp-app-meet-toolbar {
+            bottom:0;
+            position: absolute;
+        }
+        .cp-app-meet-bandwidth-slider {
+            display: block;
+            position: absolute;
+            width: 350px;
+            bottom: 0;
+            left: 0;
+            text-align: auto;
+        }
     }
   }
 }

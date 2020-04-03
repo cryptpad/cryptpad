@@ -36,14 +36,17 @@ define([
     var options = { "video" : { videoBitsPerSecond : 500000, mimeType : videoCodec }, "audio" : { audioBitsPerSecond : 64000, mimeType : audioCodec }}
     var remoteVideo = document.querySelector('#remotevideo');
     var remoteAudio = document.querySelector('#remoteaudio');
+    var currentBitRate = 3;
+    var maxBitRate = 3;
     var video = document.querySelector('#ownvideo');
     var stream = { "audio" : "", "video" : ""};
-    var sendingDelayed = { "audio" : 0, "video" : 0};
+    var sendingDropped = { "audio" : 0, "video" : 0};
     var remoteDropped = { "audio" : 0, "video" : 0};
     var stream = { "audio" : "", "video" : ""};
     var lastStats = { "audio" : 0, "video" : 0};
     var mediaSending = false;
-    var mediaSendQueue = [];
+    var audioSendQueue = [];
+    var videoSendQueue = [];
     var screenSharingActive = false;
     var packetDuration = 300;
 
@@ -54,36 +57,59 @@ define([
     var stats = {};
     const average = arr => arr.reduce((a,b) => a + b, 0) / arr.length
 
-
-    // With JQuery
     /*
-    $("#quality").slider({
-      min: 10000,
-      max: 50000000,
-      scale: 'logarithmic',
-      step: 10
-    });
+      Managing Video Quality Bitrate
     */
-
     var qualityValues = [50, 100, 250, 500, 1000, 5000, 10000, 25000, 50000];
-      
     $("#quality-bitrate").text("" + Math.floor(options["video"].videoBitsPerSecond/1000) + "kbits/sec")
     $("#quality").slider({
       id: "quality",
-      value: 3,
+      value: maxBitRate,
       min: 0,
       max: 8,
       formatter: function(value) {
         return "" + value + "kbits/sec";
       }   
     }).on('change', function(event) {
-      console.log("Slider value: " + event.value.newValue)
-      var val = qualityValues[event.value.newValue];
-      $("#quality-bitrate").text("" + val + "kbits/sec")
-      options["video"].videoBitsPerSecond = val*1000;
+      console.log("Slider value: " + event.value.newValue);
+      maxBitRate = event.value.newValue;
+      currentBitRate = maxBitRate;
+      setBitRate(maxBitRate, true);
     });
 
-   
+    function setBitRate(bitRateId, display) {
+      var val = qualityValues[bitRateId];
+      if (display)
+          $("#quality-bitrate").text("" + val + "kbits/sec");
+      options["video"].videoBitsPerSecond = val*1000;
+    }
+
+    var waitChange = 0;
+    function increaseBitRate() {
+        if (waitChange>0) {
+           waitChange--;
+        } else if (currentBitRate<maxBitRate) {
+           currentBitRate++;
+           setBitRate(currentBitRate, false);
+           console.log("INCREASE BIT RATE TO " + qualityValues[currentBitRate] + "kbits/sec")
+           waitChange = 20;
+        }
+    }
+
+    function decreaseBitRate() {
+        if (waitChange>0) {
+           waitChange--;
+        } else if (currentBitRate>0) {
+           currentBitRate--;
+           setBitRate(currentBitRate, false);
+           console.log("DECREASE BIT RATE TO " + qualityValues[currentBitRate] + "kbits/sec")
+           waitChange = 20;
+        }
+    }
+
+    /*
+     Gathering statistics
+    */
     function addStats(id, type, value) {
        var key = id + "-" + type;
        var statsItem = stats[key]
@@ -101,25 +127,35 @@ define([
          lastStats[type] = val;
     }
 
-    function addSendingDelayed(type) {
-        $("#cp-delayed-sending-" + type).text(++sendingDelayed[type])
+    function addSendingDropped(type, nb) {
+        sendingDropped[type] = sendingDropped[type] + nb;
+        $("#cp-dropped-sending-" + type).text(sendingDropped[type])
     }
-    function addRemoteDropped(type) {
-        $("#cp-dropped-remote-" + type).text(++remoteDropped[type])
+    function addRemoteDropped(id, type, nb) {
+        remoteDropped[type] = remoteDropped[type] + nb;
+        $("#cp-dropped-remote-" + type).text(remoteDropped[type])
     }
 
+
+    /*
+      Secret keys for the video channel
+      TODO: generate a new secret key or use the secret key of the current pad
+    */
     var hash = "/2/meet/edit/6Hwli0F5AsLHzhRenu412SNP/"; // Hash.createRandomHash('meet');
     var secret = Hash.getSecrets('meet', hash);
     secret.keys.signKey = "";
-                 
+
+    /*
+      MediaSource management
+    */
     var mediaSource = new MediaSource();
-    
     var audioSourceBuffer;
     var videoSourceBuffer;
     mediaSource.addEventListener('sourceopen', function() { 
       console.log("Remote video source open")
         
       videoSourceBuffer = mediaSource.addSourceBuffer(videoCodec);
+      window.videoSourceBuffer = videoSourceBuffer;
       videoSourceBuffer.mode = "sequence";
     }, false);
     mediaSource.addEventListener('error', function (e) {
@@ -127,15 +163,69 @@ define([
     }, false);
     remoteVideo.src = window.URL.createObjectURL(mediaSource);
 
+
     var audioSource = new MediaSource();
     audioSource.addEventListener('sourceopen', function() { 
       console.log("Remote audio source open")
-        
       audioSourceBuffer = audioSource.addSourceBuffer(audioCodec);
+      window.audioSourceBuffer = audioSourceBuffer;
       audioSourceBuffer.mode = "sequence";
     }, false);
     remoteAudio.src = window.URL.createObjectURL(audioSource);
+    /*
+    var audioCtx = new window.AudioContext()
+    var channels = 1
+    var sampleRate = 44100
+    var frames = sampleRate * 3
+    var buffer = audioCtx.createBuffer(channels, frames, sampleRate)
+    var audioSourceBuffer = audioCtx.createBufferSource();
+    */
 
+    /*
+      Display user name on own video
+    */
+    function updateUserName() {
+      var pdata = framework._.sfCommon.getMetadataMgr().getPrivateData()
+      $("#cp-app-meet-own-name").text(pdata.accountName + " (me)");
+    }
+
+
+    /*
+     Setup a new remote user
+    */
+    function checkRemoteUser(clientId) {
+      var remoteUserDoc = $("#cp-app-meet-remote" + clientId);
+      if (remoteUserDoc[0]) {
+        return remoteUserDoc;
+      }
+
+      var html = "<div id='cp-app-meet-remote' class='cp-app-meet-video col-sm-6'> \
+                            <div id='cp-app-meet-video-remote' class='cp-app-meet-video-element'> \
+                                <div class='cp-app-remote-stats'> \
+                                    <span id='cp-app-meet-remote-name' class='cp-app-meet-remote-name'></span> \
+                                    <span id='cp-stats-remote-video' class='cp-app-stats-item'></span> \
+                                    <span id='cp-stats-remote-audio' class='cp-app-stats-item'></span> \
+                                    <span id='cp-stats-remote-receive-video' class='cp-app-stats-item'></span> \
+                                    <span id='cp-stats-remote-receive-audio' class='cp-app-stats-item'></span> \
+                                    <span id='cp-kbits-remote-video' class='cp-app-stats-item'></span> \
+                                    <span id='cp-kbits-remote-audio' class='cp-app-stats-item'></span> \
+                                    <span id='cp-dropped-remote-video' class='cp-app-stats-item'></span> \
+                                    <span id='cp-dropped-remote-audio' class='cp-app-stats-item'></span> \
+                                </div> \
+                                <video id='remotevideo' width='1024' height='576' autoplay></video> \
+                                <audio id='remoteaudio' autoplay></audio> \
+                            </div> \
+                </div>";
+       var remoteUserHTML = html.replace("remote", "remote" + clientId);
+       console.log(remoteUserHTML)
+       $(remoteUserHTML).insertAfter($("#cp-app-meet-own"));
+       return $("#cp-app-meet-remote" + clientId);
+    }
+
+
+    /*
+      Recoding and transmission
+    */
     var record = (stream, options, ms) => {
       /*
       console.log(stream);
@@ -176,6 +266,13 @@ define([
                     addStats("sending", msg.type, duration);
                     msg.sendTime = sendTime;
                     console.log("Sending " + msg.type + " done " + msg.counter + " time: " + duration + "ms");
+                    if (msg.type=="video") {
+                      if (duration>2000) {
+                          decreaseBitRate();
+                      } else if (duration<600) {
+                          increaseBitRate();
+                      }
+                    }
                     if (mediaSending)
                       addSendingDelayed(msg.type);
                     else
@@ -188,14 +285,19 @@ define([
     }
 
     function emptyQueue() {
-        if (mediaSendQueue.length==0)
+        if (audioSendQueue.length==0 && videoSendQueue.length==0)
           return;
         if (mediaSending) {
           console.log("Video sending channel not ready. Waiting");
           return;
         }
-        var msg = mediaSendQueue.shift();
-        sendMessage(msg);     
+        if (audioSendQueue.length>0) {
+          var msg = audioSendQueue.shift();
+          sendMessage(msg);
+        } else if (videoSendQueue.length>0) {
+          var msg = videoSendQueue.shift();
+          sendMessage(msg);
+        }
     }
 
     function sendStream(stream, type) {        
@@ -203,7 +305,7 @@ define([
         record(stream, options[type], packetDuration).then(recording => {
           var prepareTime = Date.now();
           var duration = prepareTime - startTime;       
-             
+
           // stop(stream);
           var fr = new FileReader();
           var arrayBuffer;
@@ -213,10 +315,28 @@ define([
              var msg = { id: pdata.clientId, name: pdata.accountName, startTime: startTime, prepareTime: prepareTime, type: type, counter: counter, data: ab2str(uint8Array), averageTime: lastStats[type] }
              var kbit = Math.floor((uint8Array.length / 1024)*8*1000/duration);
              $("#cp-kbits-sending-" + type).text("" + kbit + "kbits/sec")
-             mediaSendQueue.push(msg);
-             if (!status[type]) {
-                var pdata = framework._.sfCommon.getMetadataMgr().getPrivateData()
-                mediaSendQueue.push({ id: pdata.clientId, name: pdata.accountName, startTime: 0, prepareTime: 0, type: "message", action : "stopvideo" });
+             if (msg.type=="video") {
+                if (videoSendQueue.length>5) {
+                    console.log("VIDEO QUEUE TOO FULL. DROPPING 5 Packets")
+                    decreaseBitRate();
+                    addSendingDropped(msg.type, videoSendQueue.length);
+                    msg.dropped = videoSendQueue.length;
+                    addSendingDropped(msg.type, audioSendQueue.length);
+                    videoSendQueue = [];
+                }
+                videoSendQueue.push(msg);
+                if (!status[type]) {
+                  var pdata = framework._.sfCommon.getMetadataMgr().getPrivateData()
+                  videoSendQueue.push({ id: pdata.clientId, name: pdata.accountName, startTime: 0, prepareTime: 0, type: "message", action : "stopvideo" });
+                }
+             }
+             if (msg.type=="audio") {
+                if (audioSendQueue.length>10) {
+                    console.log("AUDIO QUEUE TOO FULL. DROPPING 10 Packets")
+                    msg.dropped = audioSendQueue.length;
+                    audioSendQueue = [];
+                }
+                audioSendQueue.push(msg);
              }
              emptyQueue();
              };
@@ -239,11 +359,6 @@ define([
     }
 
     var status = { "video" : false, "audio" : false};
-
-    function updateUserName() {
-      var pdata = framework._.sfCommon.getMetadataMgr().getPrivateData()
-      $("#cp-app-meet-own-name").text(pdata.accountName + " (me)");
-    }
 
     function launchVideo(screenSharing) {
       
@@ -292,6 +407,9 @@ define([
        }
     } 
 
+    /*
+      Handling buttons
+    */
     $("#cp-app-meet-camera").click(function() {
         launchVideo(false);
     });
@@ -318,6 +436,38 @@ define([
           status[type] = false;
        }
     });
+
+    /*
+      Managing full screen video display
+    */
+    $("#remotevideo").click(function() {
+          console.log("Remote video CLICK")
+          if ($("#cp-app-meet-remote").hasClass("col-sm-12")) {
+             $("#cp-app-meet-remote").removeClass("col-sm-12")
+             $("#cp-app-meet-remote").addClass("col-sm-6")
+             $("#cp-app-meet-own").show();
+          } else {
+             $("#cp-app-meet-remote").removeClass("col-sm-6")
+             $("#cp-app-meet-remote").addClass("col-sm-12")
+             $("#cp-app-meet-own").hide();
+          }
+        });
+
+    $("#ownvideo").click(function() {
+          console.log("Own video CLICK")
+          if ($("#cp-app-meet-own").hasClass("col-sm-12")) {
+             $("#cp-app-meet-own").removeClass("col-sm-12")
+             $("#cp-app-meet-own").addClass("col-sm-6")
+             $("#cp-app-meet-remote").show();
+          } else {
+             $("#cp-app-meet-own").removeClass("col-sm-6")
+             $("#cp-app-meet-own").addClass("col-sm-12")
+             $("#cp-app-meet-remote").hide()
+          }
+        });
+
+
+    // Generic pad code
 
     // This is the main initialization loop
     var andThen2 = function (framework) {
@@ -361,36 +511,13 @@ define([
             framework.localChange();
         });
 
-        $("#remotevideo").click(function() {
-          console.log("Remote video CLICK")
-          if ($("#cp-app-meet-remote").hasClass("col-sm-12")) {
-             $("#cp-app-meet-remote").removeClass("col-sm-12")
-             $("#cp-app-meet-remote").addClass("col-sm-6")
-             $("#cp-app-meet-own").show();
-          } else {
-             $("#cp-app-meet-remote").removeClass("col-sm-6")
-             $("#cp-app-meet-remote").addClass("col-sm-12")
-             $("#cp-app-meet-own").hide();
-          }
-        });
-
-        $("#ownvideo").click(function() {
-          console.log("Own video CLICK")
-          if ($("#cp-app-meet-own").hasClass("col-sm-12")) {
-             $("#cp-app-meet-own").removeClass("col-sm-12")
-             $("#cp-app-meet-own").addClass("col-sm-6")
-             $("#cp-app-meet-remote").show();
-          } else {
-             $("#cp-app-meet-own").removeClass("col-sm-6")
-             $("#cp-app-meet-own").addClass("col-sm-12")
-             $("#cp-app-meet-remote").hide()
-          }
-        });
-
         // starting the CryptPad framework
         window.framework = framework;
         framework.start();
 
+        /*
+          Manager connecting to Video WebSocket and receiving data
+        */
         require([
             '/bower_components/netflux-websocket/netflux-client.js',
             '/common/outer/network-config.js'
@@ -419,6 +546,7 @@ define([
                             parsed = JSON.parse(msg);
                             if (parsed) {
                                 // console.log(parsed)
+                                // checkRemoteUser(parsed.id);
 
                                 if (parsed.type=="message") {
                                     if (parsed.action=="stopvideo") {
@@ -426,6 +554,10 @@ define([
                                     }
                                   // special message
                                 } else {
+                                 if (parsed.dropped) {
+                                        addRemoteDropped(parsed.id, parsed.type, parsed.dropped);
+                                  }
+
                                 var uint8Array = str2ab(parsed.data);
                                 // console.log(uint8Array);
 
@@ -444,13 +576,19 @@ define([
                                     console.log("Video SourceBuffer appending done: " + duration + "ms")
                                   } else {
                                     console.log("VIDEO SOURCE BUFFER IS BUSY")
-                                    addRemoteDropped("video")
+                                    addRemoteDropped(parsed.id, parsed.type, 1);
                                   }
                                 }
 
                                 if (parsed.type=="audio") {
                                   if (!audioSourceBuffer.updating) { 
                                     console.log("Audio SourceBuffer appending")
+
+                                    // audioCtx.decodeAudioData(audioData, function(buffer) {
+                                    //  source.buffer = buffer
+                                    //  source.connect(audioCtx.destination);
+                                    //  source.start();
+
                                     audioSourceBuffer.appendBuffer(uint8Array);
                                     remoteAudio.play();
                                     var videoDisplayDoneTime = Date.now();
@@ -463,7 +601,7 @@ define([
                                     console.log("Audio SourceBuffer appending done: " + duration + "ms")
                                   } else {
                                     console.log("AUDIO SOURCE BUFFER IS BUSY")
-                                    addRemoteDropped("audio")
+                                    addRemoteDropped(parsed.id, parsed.type, 1);
                                   }
                                 }
 
