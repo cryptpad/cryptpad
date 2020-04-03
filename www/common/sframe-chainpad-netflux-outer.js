@@ -45,7 +45,8 @@ define([], function () {
                 return decryptedMsg;
             } catch (err) {
                 console.error(err);
-                return msg;
+                console.warn(peer, msg);
+                return false;
             }
         };
 
@@ -81,6 +82,7 @@ define([], function () {
                 validateKey = msgObj.validateKey;
             }
             var message = msgIn(msgObj.user, msgObj.msg);
+            if (!message) { return; }
 
             verbose(message);
 
