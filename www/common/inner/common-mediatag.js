@@ -338,6 +338,9 @@ define([
         $left.click(previous);
         $right.click(next);
 
+        $modal.on('keydown', function (e) {
+            e.stopPropagation();
+        });
         $modal.on('keyup', function (e) {
             //if (!Slide.shown) { return; }
             e.stopPropagation();
