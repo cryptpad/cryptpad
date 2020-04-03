@@ -216,9 +216,13 @@ define([
         var priv = metadataMgr.getPrivateData();
 
         var left, right;
+        var checkSize = function () {};
 
         var $modal = UI.createModal({
             id: 'cp-mediatag-preview-modal',
+            onClose: function () {
+                $(window).off('resize', checkSize);
+            },
             $body: $('body')
         }).show().focus();
         var $container = $modal.find('.cp-modal').append(h('div.cp-mediatag-outer', [
@@ -233,9 +237,18 @@ define([
         var $inner = $container.find('.cp-mediatag-container');
 
         var el;
-        var checkSize = function () {
+        checkSize = function () {
             if (!el) { return; }
+
+            if (el.nodeName === 'BUTTON') {
+                return $container.find('.cp-mediatag-container').css('height', 'auto');
+            }
+
             var size = el.naturalHeight || el.videoHeight;
+            if ($(el).find('svg').length) {
+                var h = $(el).find('svg').prop('height');
+                size = Number(h) || (h.baseVal && h.baseVal.value);
+            }
             if (el.nodeName !== 'IMG' && el.nodeName !== 'VIDEO') {
                 $container.find('.cp-mediatag-container').css('height', '100%');
             }
@@ -246,6 +259,8 @@ define([
                 $container.find('.cp-mediatag-container').css('height', 'auto');
             }
         };
+
+        $(window).on('resize', checkSize);
 
         var $spinner = $container.find('.cp-loading-spinner-container');
 
@@ -268,11 +283,21 @@ define([
             }
 
             // Reset modal
-            $inner.find('media-tag').remove();
+            $inner.find('media-tag, pre.mermaid').detach();
             $spinner.show();
 
             // Check src and cryptkey
             var cfg = tags[i];
+
+            if (cfg.svg) {
+                $spinner.hide();
+                $inner.append(cfg.svg);
+                el = cfg.svg;
+                checkSize();
+                locked = false;
+                return;
+            }
+
             var src = cfg.src;
             var key = cfg.key;
             if (cfg.href) {
@@ -286,7 +311,6 @@ define([
             if (!src || !key) {
                 locked = false;
                 $spinner.hide();
-                // XXX show error
                 return void UI.log(Messages.error);
             }
 
@@ -311,7 +335,9 @@ define([
                             el.onload = checkSize;
                             return;
                         }
-                        setTimeout(checkSize);
+                        setTimeout(function () {
+                            checkSize();
+                        });
                     }
                 });
             });
@@ -324,7 +350,6 @@ define([
                 locked = false;
                 $spinner.hide();
                 UI.log(Messages.error);
-                // XXX show error
             });
         };
 
@@ -366,7 +391,7 @@ define([
     };
 
     var mediatagContextMenu;
-    MT.importMediaTagMenu = function (common, $container) {
+    MT.importMediaTagMenu = function (common) {
         if (mediatagContextMenu) { return mediatagContextMenu; }
 
         // Create context menu
@@ -376,10 +401,10 @@ define([
                 'aria-labelledBy': 'dropdownMenu',
                 'style': 'display:block;position:static;margin-bottom:5px;'
             }, [
-                h('li', h('a.cp-app-code-context-open.dropdown-item', {
+                h('li.cp-svg', h('a.cp-app-code-context-open.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': "fa-eye",
-                }, Messages.fc_open)), // XXX
+                }, Messages.pad_mediatagPreview)),
                 h('li', h('a.cp-app-code-context-saveindrive.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': "fa-cloud-upload",
@@ -418,32 +443,7 @@ define([
                 window.saveAs(media._blob.content, media.name);
             }
             else if ($(this).hasClass("cp-app-code-context-open")) {
-                var mts = [];
-                $container.find('media-tag').each(function (i, el) {
-                    var $el = $(el);
-                    mts.push({
-                        src: $el.attr('src'),
-                        key: $el.attr('data-crypto-key')
-                    });
-                });
-
-                // Find initial position
-                var idx = -1;
-                mts.some(function (obj, i) {
-                    if (obj.src === $mt.attr('src')) {
-                        idx = i;
-                        return true;
-                    }
-                });
-                if (idx === -1) {
-                    mts.unshift({
-                        src: $mt.attr('src'),
-                        key: $mt.attr('data-crypto-key')
-                    });
-                    idx = 0;
-                }
-
-                common.getMediaTagPreview(mts, idx);
+                $mt.trigger('preview');
             }
         });
 

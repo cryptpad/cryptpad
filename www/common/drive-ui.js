@@ -321,7 +321,7 @@ define([
                 h('li', h('a.cp-app-drive-context-preview.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faPreview,
-                }, 'PREVIEW')), // XXX
+                }, Messages.pad_mediatagPreview)),
                 h('li', h('a.cp-app-drive-context-open.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faFolderOpen,

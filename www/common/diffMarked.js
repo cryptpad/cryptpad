@@ -289,7 +289,7 @@ define([
     };
 
     DiffMd.apply = function (newHtml, $content, common) {
-        var contextMenu = common.importMediaTagMenu($content);
+        var contextMenu = common.importMediaTagMenu();
         var id = $content.attr('id');
         if (!id) { throw new Error("The element must have a valid id"); }
         var pattern = /(<media-tag src="([^"]*)" data-crypto-key="([^"]*)">)<\/media-tag>/g;
@@ -349,6 +349,42 @@ define([
 
         var oldDom = domFromHTML($content[0].outerHTML);
 
+        var onPreview = function ($mt) {
+            return function () {
+                var mts = [];
+                $content.find('media-tag, pre.mermaid').each(function (i, el) {
+                    if (el.nodeName.toLowerCase() === "pre") {
+                        return void mts.push({
+                            svg: el.cloneNode(true)
+                        });
+                    }
+                    var $el = $(el);
+                    mts.push({
+                        src: $el.attr('src'),
+                        key: $el.attr('data-crypto-key')
+                    });
+                });
+
+                // Find initial position
+                var idx = -1;
+                mts.some(function (obj, i) {
+                    if (obj.src === $mt.attr('src')) {
+                        idx = i;
+                        return true;
+                    }
+                });
+                if (idx === -1) {
+                    mts.unshift({
+                        src: $mt.attr('src'),
+                        key: $mt.attr('data-crypto-key')
+                    });
+                    idx = 0;
+                }
+
+                common.getMediaTagPreview(mts, idx);
+            };
+        };
+
         var patch = makeDiff(oldDom, Dom, id);
         if (typeof(patch) === 'string') {
             throw new Error(patch);
@@ -359,6 +395,7 @@ define([
                 var $mt = $(el).contextmenu(function (e) {
                     e.preventDefault();
                     $(contextMenu.menu).data('mediatag', $(el));
+                    $(contextMenu.menu).find('li').show();
                     contextMenu.show(e);
                 });
                 MediaTag(el);
@@ -372,35 +409,11 @@ define([
                             observer.disconnect();
                         }
                     });
-                    $mt.off('dblclick');
+                    $mt.off('dblclick preview');
+                    $mt.on('preview', onPreview($mt));
                     if ($mt.find('img').length) {
                         $mt.on('dblclick', function () {
-                            var mts = [];
-                            $content.find('media-tag').each(function (i, el) {
-                                var $el = $(el);
-                                mts.push({
-                                    src: $el.attr('src'),
-                                    key: $el.attr('data-crypto-key')
-                                });
-                            });
-
-                            // Find initial position
-                            var idx = -1;
-                            mts.some(function (obj, i) {
-                                if (obj.src === $mt.attr('src')) {
-                                    idx = i;
-                                    return true;
-                                }
-                            });
-                            if (idx === -1) {
-                                mts.unshift({
-                                    src: $mt.attr('src'),
-                                    key: $mt.attr('data-crypto-key')
-                                });
-                                idx = 0;
-                            }
-
-                            common.getMediaTagPreview(mts, idx);
+                            $mt.trigger('preview');
                         });
                     }
                 });
@@ -422,6 +435,19 @@ define([
 
             // loop over mermaid elements in the rendered content
             $content.find('pre.mermaid').each(function (index, el) {
+                var $el = $(el);
+                $el.off('contextmenu').on('contextmenu', function (e) {
+                    e.preventDefault();
+                    $(contextMenu.menu).data('mediatag', $el);
+                    $(contextMenu.menu).find('li:not(.cp-svg)').hide();
+                    contextMenu.show(e);
+                });
+                $el.off('dblclick preview');
+                $el.on('preview', onPreview($el));
+                $el.on('dblclick', function () {
+                    $el.trigger('preview');
+                });
+
                 // since you've simply drawn the content that was supplied via markdown
                 // you can assume that the index of your rendered charts matches that
                 // of those in the markdown source. 
