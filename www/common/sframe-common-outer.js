@@ -853,7 +853,7 @@ define([
                                     msg: crypto.decrypt(_msg.msg, true, true)
                                 });
                             } else {
-                                decryptedMsgs.push(crypto.decrypt(_msg.msg, true, true));
+                                decryptedMsgs.push(crypto.decrypt(_msg, true, true));
                             }
                             setTimeout(waitFor(function () {
                                 sframeChan.event('EV_FULL_HISTORY_STATUS', (i+1)/total);

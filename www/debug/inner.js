@@ -401,6 +401,7 @@ define([
                     userName: 'debug',
                     initialState: '',
                     logLevel: 2,
+                    noPrune: true,
                     validateContent: function (content) {
                         try {
                             JSON.parse(content);
