@@ -2639,7 +2639,6 @@ define([
         });
     };
 
-    // XXX add txid
     UIElements.initFilePicker = function (common, cfg) {
         var onSelect = cfg.onSelect || $.noop;
         var sframeChan = common.getSframeChannel();

@@ -399,34 +399,18 @@ define([
         }).appendTo($rightside);
 
         if (framework._.sfCommon.isLoggedIn()) {
-            var fileDialogCfg = {
-                onSelect: function (data) {
-                    if (data.type === 'file') {
-                        var mt = '<media-tag src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>';
-                        framework._.sfCommon.displayMediatagImage($(mt), function (err, $image) {
-                            // Convert src from blob URL to base64 data URL
-                            // XXX base64 is heavy...
-                            Util.blobURLToImage($image.attr('src'), function (imgSrc) {
-                                var img = new Image();
-                                img.onload = function () { addImageToCanvas(img); };
-                                img.src = imgSrc;
-                            });
-                        });
-                        return;
-                    }
-                }
-            };
-            framework._.sfCommon.initFilePicker(fileDialogCfg);
-            framework._.sfCommon.createButton('mediatag', true).click(function () {
-                var pickerCfg = {
-                    types: ['file'],
-                    where: ['root'],
-                    filter: {
-                        fileType: ['image/']
-                    }
-                };
-                framework._.sfCommon.openFilePicker(pickerCfg);
-            }).appendTo($rightside);
+            framework.setMediaTagEmbedder(function ($mt) {
+                framework._.sfCommon.displayMediatagImage($mt, function (err, $image) {
+                    // Convert src from blob URL to base64 data URL
+                    Util.blobURLToImage($image.attr('src'), function (imgSrc) {
+                        var img = new Image();
+                        img.onload = function () { addImageToCanvas(img); };
+                        img.src = imgSrc;
+                    });
+                });
+            }, {
+                fileType: ['image/']
+            });
 
             // Export to drive as PNG
             framework._.sfCommon.createButton('savetodrive', true, {}).click(function () {

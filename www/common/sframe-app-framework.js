@@ -525,18 +525,23 @@ define([
                 }
             });
             $embedButton = common.createButton('mediatag', true).click(function () {
-                common.openFilePicker({
+                var cfg = {
                     types: ['file'],
                     where: ['root']
-                });
+                };
+                if ($embedButton.data('filter')) {
+                    cfg.filter = $embedButton.data('filter');
+                }
+                common.openFilePicker(cfg);
             }).appendTo(toolbar.$rightside).hide();
         };
-        var setMediaTagEmbedder = function (mte) {
+        var setMediaTagEmbedder = function (mte, filter) {
             if (!common.isLoggedIn()) { return; }
             if (!mte || readOnly) {
                 $embedButton.hide();
                 return;
             }
+            if (filter) { $embedButton.data('filter', filter); }
             $embedButton.show();
             mediaTagEmbedder = mte;
         };
