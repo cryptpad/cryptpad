@@ -57,8 +57,12 @@ define([
     var audioRecorder;
     var audioContext;
 
+    var users = {}
+    var currentAudioChannels = 0;
     var status = { "video" : false, "audio" : false};
     
+    var outputResampler;
+    var inputResampler;
     // var audioSampler = new Resampler(44100, audioCodec.sampleRate, 1, audioCodec.bufferSize);
     // var audioEncoder = new OpusEncoder(audioCodec.sampleRate, audioCodec.channels, audioCodec.app, audioCodec.frameDuration);
     
@@ -70,6 +74,7 @@ define([
     var maxStatsSize = 10;
     var stats = {};
     const average = arr => arr.reduce((a,b) => a + b, 0) / arr.length
+    var qualityValues = [50, 100, 250, 500, 1000, 5000, 10000, 25000, 50000];
 
 
     function setBitRate(bitRateId, display) {
@@ -140,54 +145,40 @@ define([
     var secret = Hash.getSecrets('meet', hash);
     secret.keys.signKey = "";
 
-    /*
-      MediaSource management
-    */
-    var mediaSource = new MediaSource();
-    var audioSourceBuffer;
-    var videoSourceBuffer;
-    mediaSource.addEventListener('sourceopen', function() { 
-      console.log("Remote video source open")
-        
-      videoSourceBuffer = mediaSource.addSourceBuffer(videoCodec);
-      window.videoSourceBuffer = videoSourceBuffer;
-      videoSourceBuffer.mode = "sequence";
-    }, false);
-    mediaSource.addEventListener('error', function (e) {
-       console.log("error", e)
-    }, false);
-    remoteVideo.src = window.URL.createObjectURL(mediaSource);
-
-
     var lastSampleDate = Date.now();
     var lastAudioReceivedDate = Date.now();
     function launchAudio(framework) {
       silence = new Float32Array(audioBufferSize);
       audioPlayingQueue = {
-            buffer: new Float32Array(0),
+            buffers: [new Float32Array(0), new Float32Array(0), new Float32Array(0),
+                       new Float32Array(0), new Float32Array(0), new Float32Array(0)],
 
-            write: function(newAudio) {
-              console.log("Adding new Audio" + newAudio.length)
-              var currentQLength = this.buffer.length;
+            write: function(newAudio, audioChannel) {
+              var buffer = this.buffers[audioChannel];
+              console.log("Adding new Audio in channel " + audioChannel + " " + newAudio.length)
+              var currentQLength = buffer.length;
               var newBuffer = new Float32Array(currentQLength + newAudio.length);
-              newBuffer.set(this.buffer, 0);
+              newBuffer.set(buffer, 0);
               newBuffer.set(newAudio, currentQLength);
-              this.buffer = newBuffer;
-              console.log("New length " + this.buffer.length)
+              this.buffers[audioChannel] = buffer = newBuffer;
+              console.log("New length " + buffer.length)
             },
 
-            read: function(nSamples) {
-              var samplesToPlay = this.buffer.subarray(0, nSamples);
-              this.buffer = this.buffer.subarray(nSamples, this.buffer.length);
+            read: function(nSamples, audioChannel) {
+              var buffer = this.buffers[audioChannel];
+              var samplesToPlay = buffer.subarray(0, nSamples);
+              this.buffers[audioChannel] = buffer = buffer.subarray(nSamples, buffer.length);
               return samplesToPlay;
             },
 
-            length: function() {
-              return this.buffer.length;
+            length: function(audioChannel) {
+              var buffer = this.buffers[audioChannel];
+              return buffer.length;
             },
 
-            reset: function() {
-              this.buffer = new Float32Array(0);
+            reset: function(audioChannel) {
+              var buffer = this.buffers[audioChannel];
+              buffer = new Float32Array(0);
             }
         };
         // get Audio autorisation so that we can play sound
@@ -199,7 +190,7 @@ define([
           
           audioInput = audioContext.createMediaStreamSource(stream1);
           audioGainNode = audioContext.createGain();
-          audioProcessor = audioContext.createScriptProcessor(audioBufferSize, 1, 1);
+          audioProcessor = audioContext.createScriptProcessor(audioBufferSize, 1, 6);
           console.log("Audio sample rate is " + audioContext.sampleRate);
           inputResampler = new Resampler(audioContext.sampleRate, 16000, 1, audioBufferSize);
           outputResampler = new Resampler(16000, audioContext.sampleRate, 1, audioBufferSize);
@@ -213,25 +204,28 @@ define([
 
             // This part plays audio that is being received
             // If we are too much behind we drop packats to catch up
-            if (audioPlayingQueue.length()>16384*10) {
-              console.log("Sample in buffer too long. Dropping");
-              audioPlayingQueue.reset();
-              var nb = audioPlayingQueue.length()/16384;
-              addRemoteDropped(type, nb);
-            } else if (audioPlayingQueue.length()) {
-              console.log("Playing a sample");
-              var sourceData = audioPlayingQueue.read(audioBufferSize);
-              var newQueueLength = audioPlayingQueue.length();
-              e.outputBuffer.getChannelData(0).set(sourceData);
-              var sampleDuration = e.outputBuffer.duration;
-              var sampleDate = Date.now();
-              var sampleDelay = sampleDate - lastSampleDate;
-              lastSampleDate = sampleDate;
-              console.log("Sample size: " + sourceData.length + " duration: " + sampleDuration 
-                        + " delay since previous sample: " + sampleDelay + " queue left: " + newQueueLength);
-            } else {
-              // console.log("Playing silence");
-              e.outputBuffer.getChannelData(0).set(silence);
+            for (var audioChannel=0;audioChannel<currentAudioChannels;audioChannel++) {
+                if (audioPlayingQueue.length(audioChannel)==0) {
+                  console.log("Nothing to play for channel " + audioChannel)
+                  // console.log("Playing silence");
+                  // e.outputBuffer.getChannelData(audioChannel).set(silence);
+                } else if (audioPlayingQueue.length(audioChannel)>16384*10) {
+                  console.log("Sample in buffer too long. Dropping");
+                  audioPlayingQueue.reset(audioChannel);
+                  var nb = audioPlayingQueue.length(audioChannel)/16384;
+                  addRemoteDropped(type, nb);
+                } else {
+                  console.log("Playing a sample");
+                  var sourceData = audioPlayingQueue.read(audioBufferSize, audioChannel);
+                  var newQueueLength = audioPlayingQueue.length(audioChannel);
+                  e.outputBuffer.getChannelData(audioChannel).set(sourceData);
+                  var sampleDuration = e.outputBuffer.duration;
+                  var sampleDate = Date.now();
+                  var sampleDelay = sampleDate - lastSampleDate;
+                  lastSampleDate = sampleDate;
+                  console.log("Channel " + audioChannel + " Sample size: " + sourceData.length + " duration: " + sampleDuration 
+                            + " delay since previous sample: " + sampleDelay + " queue left: " + newQueueLength);
+                } 
             }
           
             var type = "audio";
@@ -274,38 +268,62 @@ define([
       var pdata = framework._.sfCommon.getMetadataMgr().getPrivateData()
       $("#cp-app-meet-own-name").text(pdata.accountName + " (me)");
     }
-
-
+    
     /*
      Setup a new remote user
     */
-    function checkRemoteUser(clientId) {
-      var remoteUserDoc = $("#cp-app-meet-remote" + clientId);
-      if (remoteUserDoc[0]) {
-        return remoteUserDoc;
+    function checkRemoteUser(clientId, cb) {
+      var user = users[clientId];
+      if (user) {
+        console.log("Found user " + user);
+        user.lastSeen = Date.now();
+        cb(user);
+        return;
       }
 
-      var html = "<div id='cp-app-meet-remote' class='cp-app-meet-video col-sm-6'> \
-                            <div id='cp-app-meet-video-remote' class='cp-app-meet-video-element'> \
+      console.log("Creating user " + clientId);
+      user = {}
+      user.audioChannel = currentAudioChannels;
+      currentAudioChannels++;
+      user.init = true;
+      users[clientId] = user;
+      user.lastSeen = Date.now();
+      var html = "<div id='cp-app-meet-REMOTEUSER' class='cp-app-meet-video col-sm-6'> \
+                            <div id='cp-app-meet-video-REMOTEUSER' class='cp-app-meet-video-element'> \
                                 <div class='cp-app-remote-stats'> \
-                                    <span id='cp-app-meet-remote-name' class='cp-app-meet-remote-name'></span> \
-                                    <span id='cp-stats-remote-video' class='cp-app-stats-item'></span> \
-                                    <span id='cp-stats-remote-audio' class='cp-app-stats-item'></span> \
-                                    <span id='cp-stats-remote-receive-video' class='cp-app-stats-item'></span> \
-                                    <span id='cp-stats-remote-receive-audio' class='cp-app-stats-item'></span> \
-                                    <span id='cp-kbits-remote-video' class='cp-app-stats-item'></span> \
-                                    <span id='cp-kbits-remote-audio' class='cp-app-stats-item'></span> \
-                                    <span id='cp-dropped-remote-video' class='cp-app-stats-item'></span> \
-                                    <span id='cp-dropped-remote-audio' class='cp-app-stats-item'></span> \
+                                    <span id='cp-app-meet-REMOTEUSER-name' class='cp-app-meet-remote-name'></span> \
+                                    <span id='cp-stats-REMOTEUSER-video' class='cp-app-stats-item'></span> \
+                                    <span id='cp-stats-REMOTEUSER-audio' class='cp-app-stats-item'></span> \
+                                    <span id='cp-stats-REMOTEUSER-receive-video' class='cp-app-stats-item'></span> \
+                                    <span id='cp-stats-REMOTEUSER-receive-audio' class='cp-app-stats-item'></span> \
+                                    <span id='cp-kbits-REMOTEUSER-video' class='cp-app-stats-item'></span> \
+                                    <span id='cp-kbits-REMOTEUSER-audio' class='cp-app-stats-item'></span> \
+                                    <span id='cp-dropped-REMOTEUSER-video' class='cp-app-stats-item'></span> \
+                                    <span id='cp-dropped-REMOTEUSER-audio' class='cp-app-stats-item'></span> \
                                 </div> \
-                                <video id='remotevideo' width='1024' height='576' autoplay></video> \
-                                <audio id='remoteaudio' autoplay></audio> \
+                                <video id='REMOTEUSERvideo' width='1024' height='576' autoplay></video> \
                             </div> \
                 </div>";
-       var remoteUserHTML = html.replace("remote", "remote" + clientId);
-       console.log(remoteUserHTML)
-       $(remoteUserHTML).insertAfter($("#cp-app-meet-own"));
-       return $("#cp-app-meet-remote" + clientId);
+      var remoteUserHTML = html.replace(/REMOTEUSER/g, "remote" + clientId);
+      console.log("Inserting HTML")
+      $(remoteUserHTML).insertAfter($("#cp-app-meet-own"));
+      user.remoteUserDoc = $("#cp-app-meet-remote" + clientId);
+      user.remoteVideo = document.querySelector('#remote' + clientId + 'video');
+      
+      var mediaSource = new MediaSource();
+      mediaSource.addEventListener('error', function (e) {
+        console.log("MEDIASOURCE ERROR", e)
+      }, false);
+      mediaSource.addEventListener('sourceopen', function() { 
+        console.log("Remote video source open for user " + clientId)
+        
+        user.videoSourceBuffer = mediaSource.addSourceBuffer(videoCodec);
+        user.videoSourceBuffer.mode = "sequence";
+        user.init = false;
+        cb(user);
+      }, false);
+      user.remoteVideo.src = window.URL.createObjectURL(mediaSource);
+      console.log(user);
     }
 
 
@@ -499,7 +517,6 @@ define([
       /*
         Managing Video Quality Bitrate
       */
-      var qualityValues = [50, 100, 250, 500, 1000, 5000, 10000, 25000, 50000];
       $("#quality-bitrate").text("" + Math.floor(options["video"].videoBitsPerSecond/1000) + "kbits/sec")
       $("#quality").slider({
         id: "quality",
@@ -669,84 +686,85 @@ define([
                             parsed = JSON.parse(msg);
                             if (parsed) {
                                 // console.log(parsed)
-                                // checkRemoteUser(parsed.id);
+                                checkRemoteUser(parsed.id, function(user) {
 
-                                if (parsed.type=="message") {
-                                    if (parsed.action=="stopvideo") {
-                                       remoteVideo.load();
-                                    }
-                                  // special message
-                                } else {
-                                 if (parsed.dropped) {
-                                        addRemoteDropped(parsed.id, parsed.type, parsed.dropped);
-                                  }
+                                  // we cannot handle frames until the mediastream is initialiazed.
+                                  if (user.init)
+                                    return;
 
-                                var uint8Array = str2ab(parsed.data);
-                                
-                                if (parsed.type=="video") {
-                                  var doneTime = Date.now();
-                                  var doneDuration = doneTime - parsed.startTime;
-                                  var delay = (doneDuration>1000) ? 0 : 700;
-                                  console.log("Delaying video by " + delay + "ms")
-                                  window.setTimeout(function() {
-                                    if (!videoSourceBuffer.updating) { 
-                                      console.log("Video SourceBuffer appending")
-                                      videoSourceBuffer.appendBuffer(uint8Array);
-                                      remoteVideo.play();
-                                      var videoDisplayDoneTime = Date.now();
-                                      var duration = videoDisplayDoneTime - parsed.startTime;
-                                      addStats("remote", "video", duration);
-                                      $("#cp-app-meet-remote-name").text(parsed.name);
-                                      $("#cp-stats-remote-receive-video").text("" + parsed.averageTime+ "ms");
-                                      var kbit = Math.floor((uint8Array.length / 1024)*1000*8/packetDuration);
-                                      $("#cp-kbits-remote-video").text("" + kbit + "kbits/sec")
-                                      console.log("Video SourceBuffer appending done: " + duration + "ms")
+                                  try {
+                                    if (parsed.type=="message") {
+                                        if (parsed.action=="stopvideo") {
+                                           user.remoteVideo.load();
+                                        }
+                                      // special message
                                     } else {
-                                     console.log("VIDEO SOURCE BUFFER IS BUSY")
-                                     addRemoteDropped(parsed.id, parsed.type, 1);
-                                    }
-                                  }, delay);
-                                }
+                                      if (parsed.dropped) {
+                                            addRemoteDropped(parsed.id, parsed.type, parsed.dropped);
+                                      }
 
-                                if (parsed.type=="audio") {
-                                  if (true) { 
-                                    console.log("Audio SourceBuffer appending")
+                                      var uint8Array = str2ab(parsed.data);
+                                      
+                                      if (parsed.type=="video") {
+                                        var doneTime = Date.now();
+                                        var doneDuration = doneTime - parsed.startTime;
+                                        var delay = (doneDuration>1000) ? 0 : 700;
+                                        console.log("Delaying video by " + delay + "ms")
+                                        window.setTimeout(function() {
+                                          if (!user.videoSourceBuffer.updating) { 
+                                            console.log("Video sourcebuffer appending for user " + parsed.id)
+                                            user.videoSourceBuffer.appendBuffer(uint8Array);
+                                            user.remoteVideo.play();
+                                            var videoDisplayDoneTime = Date.now();
+                                            var duration = videoDisplayDoneTime - parsed.startTime;
+                                            addStats("remote" + parsed.id, "video", duration);
+                                            $("#cp-app-meet-remote" + parsed.id + "-name").text(parsed.name);
+                                            $("#cp-stats-remote" + parsed.id + "-receive-video").text("" + parsed.averageTime+ "ms");
+                                            var kbit = Math.floor((uint8Array.length / 1024)*1000*8/packetDuration);
+                                            $("#cp-kbits-remote" + parsed.id + "-video").text("" + kbit + "kbits/sec")
+                                            console.log("Video sourcebuffer for user " + parsed.id + " appending done: " + duration + "ms")
+                                          } else {
+                                           console.log("VIDEO SOURCE BUFFER IS BUSY FOR USER " + parsed.id)
+                                           addRemoteDropped(parsed.id, parsed.type, 1);
+                                          }
+                                        }, delay);
+                                      }
 
-                                    console.log(parsed.counter);
-                                    var dView1 = new DataView(uint8Array.buffer)
-                                    var audioData  = new Float32Array(uint8Array.length / 4);
-                                    var p = 0;
-                                    for(var j=0; j < audioData.length; j++){
-                                        p = j * 4;
-                                        audioData[j] = dView1.getFloat32(p,true);
-                                    }
-                                    
-                                    // console.log(audioData);
-                                    // we need to resampler before adding to the playing queue
-                                    var data = outputResampler.resampler(audioData);
-                                    audioPlayingQueue.write(data)
-                                    var audioDoneTime = Date.now();
-                                    var duration = audioDoneTime - parsed.startTime;
-                                    addStats("remote", "audio", duration);
-                                    $("#cp-app-meet-remote-name").text(parsed.name);
-                                    $("#cp-stats-remote-receive-audio").text("" + parsed.averageTime+ "ms");
-                                    var kbit = Math.floor((uint8Array.length / 1024)*1000/packetDuration);
-                                    $("#cp-kbits-remote-audio").text("" + kbit + "kbits/sec")
-                                    console.log("Audio SourceBuffer appending done: " + duration + "ms")
-                                  } else {
-                                    console.log("AUDIO SOURCE BUFFER IS BUSY")
-                                    addRemoteDropped(parsed.id, parsed.type, 1);
-                                  }
-                                }
+                                      if (parsed.type=="audio") {
+                                          console.log("Audio SourceBuffer appending")
 
-                                }
+                                          console.log(parsed.counter);
+                                          var dView1 = new DataView(uint8Array.buffer)
+                                          var audioData  = new Float32Array(uint8Array.length / 4);
+                                          var p = 0;
+                                          for(var j=0; j < audioData.length; j++){
+                                              p = j * 4;
+                                              audioData[j] = dView1.getFloat32(p,true);
+                                          }
+                                          
+                                          // console.log(audioData);
+                                          // we need to resampler before adding to the playing queue
+                                          if (!outputResampler) {
+                                              console.log("Audio context is not yet ready")
+                                          } else {
+                                              var data = outputResampler.resampler(audioData);
+                                              audioPlayingQueue.write(data, user.audioChannel)
+                                              var audioDoneTime = Date.now();
+                                              var duration = audioDoneTime - parsed.startTime;
+                                              addStats("remote", "audio", duration);
+                                              $("#cp-app-meet-remote-name").text(parsed.name);
+                                              $("#cp-stats-remote-receive-audio").text("" + parsed.averageTime+ "ms");
+                                              var kbit = Math.floor((uint8Array.length / 1024)*1000/packetDuration);
+                                              $("#cp-kbits-remote-audio").text("" + kbit + "kbits/sec")
+                                              console.log("Audio SourceBuffer appending done: " + duration + "ms")
+                                          }
+                                        }
+                                      }
+                                  } catch (e) { console.error(e); }
+                                });
                             }
-                            
                         } catch (e) { console.error(e); }
-                        
                     });
-
-
                 }, function (err) {
                   console.log("Failed opening video channel")
                 });
