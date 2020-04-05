@@ -49,6 +49,9 @@ define([
     var videoSendQueue = [];
     var screenSharingActive = false;
     var packetDuration = 300;
+    var sharedDocument;
+    var sharedDocumentActive = false;
+    var videoFullScreen = false;
 
     // audio capture objects
     var audioBufferSize = 16384;
@@ -58,7 +61,7 @@ define([
     var audioContext;
 
     var users = {}
-    var currentAudioChannels = 0;
+    var availableAudioChannels = [0, 1, 2, 3, 4, 5];
     var status = { "video" : false, "audio" : false};
     
     var outputResampler;
@@ -148,6 +151,14 @@ define([
     var lastSampleDate = Date.now();
     var lastAudioReceivedDate = Date.now();
     function launchAudio(framework) {
+      if (audioContext)
+        return;
+
+      // get Audio autorisation so that we can play sound
+        // we activate the audio system
+      var ac = new window.AudioContext();
+      audioContext = ac; 
+
       silence = new Float32Array(audioBufferSize);
       audioPlayingQueue = {
             buffers: [new Float32Array(0), new Float32Array(0), new Float32Array(0),
@@ -181,11 +192,9 @@ define([
               buffer = new Float32Array(0);
             }
         };
-        // get Audio autorisation so that we can play sound
-        // we activate the audio system
-        audioContext = new window.AudioContext();
-        navigator.mediaDevices.getUserMedia(allConstraints).then((stream1) => {
-          var pdata = framework._.sfCommon.getMetadataMgr().getPrivateData()
+         navigator.mediaDevices.getUserMedia(allConstraints).then((stream1) => {
+
+          var pdata = framework._.sfCommon.getMetadataMgr().getUserData()
           stream["audio"] = stream1;
           
           audioInput = audioContext.createMediaStreamSource(stream1);
@@ -204,9 +213,8 @@ define([
 
             // This part plays audio that is being received
             // If we are too much behind we drop packats to catch up
-            for (var audioChannel=0;audioChannel<currentAudioChannels;audioChannel++) {
+            for (var audioChannel=0;audioChannel<6;audioChannel++) {
                 if (audioPlayingQueue.length(audioChannel)==0) {
-                  console.log("Nothing to play for channel " + audioChannel)
                   // console.log("Playing silence");
                   // e.outputBuffer.getChannelData(audioChannel).set(silence);
                 } else if (audioPlayingQueue.length(audioChannel)>16384*10) {
@@ -242,7 +250,7 @@ define([
               var uint8array = new Uint8Array(data.buffer)
               // console.log(uint8array)
               var prepareTime = Date.now();
-              var msg = { id: pdata.clientId, name: pdata.accountName, startTime: startTime, prepareTime: prepareTime, type: type, counter: counter++, data: ab2str(uint8array), averageTime: lastStats[type] }
+              var msg = { id: pdata.netfluxId, name: pdata.name, startTime: startTime, prepareTime: prepareTime, type: type, counter: counter++, data: ab2str(uint8array), averageTime: lastStats[type] }
               if (audioSendQueue.length>5) {
                 console.log("AUDIO QUEUE TOO FULL. DROPPING 10 Packets")
                 msg.dropped = audioSendQueue.length;
@@ -259,32 +267,52 @@ define([
         });  
       }
     
+    function getNextAudioChannel(user) {
+      console.log("Current available Channels " + availableAudioChannels.length)
+      console.log(availableAudioChannels)
+      var id = availableAudioChannels.shift();
+      if (id!=null) {
+        console.log("Attributed audio channel " + id + " to " + user.name + " " + user.id)
+        return id;
+      } else {
+        console.log("ERROR: no more audio channels available");
+      }
+      return null;
+    }
     
+    function dropAudioChannel(user) {
+      console.log("Giving back audioChannel " + user.id);
+      availableAudioChannels.push(user.id);
+    }
     
     /*
       Display user name on own video
     */
     function updateUserName() {
-      var pdata = framework._.sfCommon.getMetadataMgr().getPrivateData()
-      $("#cp-app-meet-own-name").text(pdata.accountName + " (me)");
+      var pdata = framework._.sfCommon.getMetadataMgr().getUserData()
+      $("#cp-app-meet-own-name").text(pdata.name + " (me)");
     }
     
     /*
      Setup a new remote user
     */
-    function checkRemoteUser(clientId, cb) {
+    function checkRemoteUser(clientId, name, cb) {
       var user = users[clientId];
       if (user) {
         console.log("Found user " + user);
         user.lastSeen = Date.now();
+        if (user.audioChannel==null) {
+          user.audioChannel = getNextAudioChannel(user);
+        }
         cb(user);
         return;
       }
 
       console.log("Creating user " + clientId);
       user = {}
-      user.audioChannel = currentAudioChannels;
-      currentAudioChannels++;
+      user.id = clientId;
+      user.name = (name=="") ? clientId : name;
+      user.audioChannel = getNextAudioChannel(user);
       user.init = true;
       users[clientId] = user;
       user.lastSeen = Date.now();
@@ -301,31 +329,113 @@ define([
                                     <span id='cp-dropped-REMOTEUSER-video' class='cp-app-stats-item'></span> \
                                     <span id='cp-dropped-REMOTEUSER-audio' class='cp-app-stats-item'></span> \
                                 </div> \
-                                <video id='REMOTEUSERvideo' width='1024' height='576' autoplay></video> \
+                                <video id='REMOTEUSERvideo' class='remotevideo' width='1024' height='576' autoplay></video> \
                             </div> \
                 </div>";
       var remoteUserHTML = html.replace(/REMOTEUSER/g, "remote" + clientId);
       console.log("Inserting HTML")
       $(remoteUserHTML).insertAfter($("#cp-app-meet-own"));
+
+      // resize videos
+      setVideoWidth();
+      $("#cp-app-meet-remote" + clientId+ "-name").text(user.name);
       user.remoteUserDoc = $("#cp-app-meet-remote" + clientId);
       user.remoteVideo = document.querySelector('#remote' + clientId + 'video');
       
+      // Adding full-screen handler
+      $(user.remoteVideo).click(function(e) {
+            console.log("Remote video CLICK")
+            var el = $(this).parent().parent();
+            console.log(el);
+            if ($(el).hasClass("meet-fullscreen")) {
+               videoFullScreen = false;
+               $(el).removeClass("meet-fullscreen")
+               $(el).addClass("col-sm-6")
+               $(".cp-app-meet-video").show()
+               if (sharedDocumentActive)
+                $(".cp-app-meet-document").show()
+            } else {
+               videoFullScreen = true;
+               $(el).addClass("meet-fullscreen")
+               $(".cp-app-meet-video").hide()
+               $(".cp-app-meet-document").hide()
+               $(el).addClass("col-sm-12")
+               $(el).show();
+               $(".cp-app-meet-video-element").width("85%");
+            }
+            setVideoWidth();
+      });
+
       var mediaSource = new MediaSource();
+      user.mediaSource = mediaSource;
       mediaSource.addEventListener('error', function (e) {
         console.log("MEDIASOURCE ERROR", e)
       }, false);
       mediaSource.addEventListener('sourceopen', function() { 
         console.log("Remote video source open for user " + clientId)
         
-        user.videoSourceBuffer = mediaSource.addSourceBuffer(videoCodec);
-        user.videoSourceBuffer.mode = "sequence";
-        user.init = false;
+        try {
+          user.videoSourceBuffer = mediaSource.addSourceBuffer(videoCodec);
+          user.videoSourceBuffer.mode = "sequence";
+          user.init = false;
+        } catch (e) {
+          console.log("Error initing video stream for " + user.id);
+        }
         cb(user);
+
       }, false);
       user.remoteVideo.src = window.URL.createObjectURL(mediaSource);
       console.log(user);
     }
 
+       /*
+     Setup a new remote user
+    */
+    function dropRemoteUser(clientId, accountName, cb) {
+      var user = users[clientId];
+      if (user) {
+        // free the audio channel
+        try {
+        dropAudioChannel(user);
+        } catch (e) {
+          console.log("Error dropping audio channel")
+          console.log(e)
+        }
+        // free video elements
+        try {
+          if (user.videoSourceBuffer)
+            user.mediaSource.removeSourceBuffer(user.videoSourceBuffer);
+        } catch (e) {
+          console.log("Error removing source buffer")
+          console.log(e)
+        }
+        try {
+            user.mediaSource.endOfStream();
+        } catch (e) {
+          console.log("Error calling endOfStream")
+          console.log(e)
+        }
+
+        try {
+          user.remoteVideo.src = "";
+        } catch (e) {
+          console.log("Error removing source from video")
+          console.log(e)
+        }
+
+        try {
+          $("#cp-app-meet-remote" + clientId).remove();
+        } catch (e) {
+          console.log("Error removing HTML element")
+          console.log(e)
+        }
+      } else {
+        console.log("Could not find user " + clientId);
+      }
+      // removing user from the array
+      users[clientId] = null;
+      setVideoWidth();
+    }
 
     /*
       Recoding and transmission
@@ -416,8 +526,8 @@ define([
           var arrayBuffer;
            fr.onload = function(event) {
              var uint8Array = new Uint8Array(event.target.result);
-             var pdata = framework._.sfCommon.getMetadataMgr().getPrivateData()
-             var msg = { id: pdata.clientId, name: pdata.accountName, startTime: startTime, prepareTime: prepareTime, type: type, counter: counter, data: ab2str(uint8Array), averageTime: lastStats[type] }
+             var pdata = framework._.sfCommon.getMetadataMgr().getUserData()
+             var msg = { id: pdata.netfluxId, name: pdata.name, startTime: startTime, prepareTime: prepareTime, type: type, counter: counter, data: ab2str(uint8Array), averageTime: lastStats[type] }
              var kbit = Math.floor((uint8Array.length / 1024)*8*1000/duration);
              $("#cp-kbits-sending-" + type).text("" + kbit + "kbits/sec")
              if (msg.type=="video") {
@@ -431,8 +541,7 @@ define([
                 }
                 videoSendQueue.push(msg);
                 if (!status[type]) {
-                  var pdata = framework._.sfCommon.getMetadataMgr().getPrivateData()
-                  videoSendQueue.push({ id: pdata.clientId, name: pdata.accountName, startTime: 0, prepareTime: 0, type: "message", action : "stopvideo" });
+                  videoSendQueue.push({ id: pdata.netfluxId, name: pdata.name, startTime: 0, prepareTime: 0, type: "message", action : "stopvideo" });
                 }
              }
              if (msg.type=="audio") {
@@ -451,6 +560,75 @@ define([
               sendStream(stream, type);
         })
     }
+
+    function countUsers(users) {
+      var count = 0;
+
+      for(var prop in users) {
+          if(users.hasOwnProperty(prop)&&users[prop]!=null)
+              ++count;
+      }
+
+      return count;
+    }
+
+    function setVideoWidth() {
+      if (videoFullScreen)
+        return;
+
+      var screenWidth = $("#cp-app-meet-container-row").width();
+      var screenHeight = $("body").height() - 160;
+      var nbVideos = countUsers(users) + 1;
+      if (sharedDocumentActive)
+        nbVideos += 1;
+
+      if (!screenWidth || !screenHeight || !nbVideos)
+        return 0;
+      
+      console.log("W: " + screenWidth + " H: " + screenHeight + " nbvideos: " + nbVideos);
+      var baseRatio = 1.77
+      var ratio = screenWidth/screenHeight;
+      var maxWidth = 0;
+      var nbCols = 1;
+      for (var rows=1;rows<10;rows++) {
+        var cols = Math.ceil(nbVideos / rows);
+        var w;
+        var r = ratio * rows / cols
+        if (r<baseRatio)
+          w = screenWidth / cols
+        else
+          w = baseRatio * (screenHeight / rows)
+        if (w>maxWidth) {
+           maxWidth = w
+           nbCols = cols;
+        }
+        console.log("Rows: " + rows + " Cols: " + cols + " Ratio: " + r + " width: " + w);
+      }
+      console.log("Max Width: " + maxWidth);
+      var w = Math.floor(maxWidth);
+      var h = Math.floor(maxWidth / baseRatio);
+      if (w>0) {
+        $(".cp-app-meet-video-element, .cp-app-meet-document-element").width(w);
+        $(".cp-app-meet-document-element").height(h);
+        var nb = 12/nbCols;
+        var classes = "col-sm-" + nb;
+        console.log("Set class: " + classes);
+        $(".cp-app-meet-video, .cp-app-meet-document").removeClass("col-sm-12");
+        $(".cp-app-meet-video, .cp-app-meet-document").removeClass("col-sm-6");
+        $(".cp-app-meet-video, .cp-app-meet-document").removeClass("col-sm-4");
+        $(".cp-app-meet-video, .cp-app-meet-document").removeClass("col-sm-3");
+        $(".cp-app-meet-video, .cp-app-meet-document").removeClass("col-sm-2");
+        $(".cp-app-meet-video, .cp-app-meet-document").addClass(classes);
+      }
+    }
+
+  
+    window.setVideoWidth = setVideoWidth;
+
+    $( window ).resize(function() {
+        console.log("Window resize");
+        setVideoWidth();
+    });
 
     function stopStream(type, screenSharing) {
       var stream1 = stream[type]
@@ -537,7 +715,9 @@ define([
         Handling buttons
       */
       $("#cp-app-meet-camera").click(function() {
-          launchVideo(false);
+        // make sure the audio sub-system is launched
+        // because of chrome we can't launch it right away
+        launchVideo(false);
       });
 
       $("#cp-app-meet-screen").click(function() {
@@ -545,6 +725,10 @@ define([
       });
 
       $("#cp-app-meet-microphone").click(function() {
+        // make sure the audio sub-system is launched
+        // because of chrome we can't launch it right away
+        launchAudio(framework); 
+        
          var type = "audio";
          if (status[type]==false) { 
              navigator.mediaDevices.getUserMedia(audioConstraints).
@@ -569,34 +753,65 @@ define([
          }
       });
 
+      $("#cp-app-meet-docbutton").click(function() {
+          if (sharedDocumentActive) {
+            $("#cp-app-meet-document").hide();
+          } else {
+            $("#cp-app-meet-document").show();
+          }
+          sharedDocumentActive = !sharedDocumentActive;
+          setVideoWidth();
+      });
+
       /*
         Managing full screen video display
       */
-      $("#remotevideo").click(function() {
-            console.log("Remote video CLICK")
-            if ($("#cp-app-meet-remote").hasClass("col-sm-12")) {
-               $("#cp-app-meet-remote").removeClass("col-sm-12")
-               $("#cp-app-meet-remote").addClass("col-sm-6")
-               $("#cp-app-meet-own").show();
-            } else {
-               $("#cp-app-meet-remote").removeClass("col-sm-6")
-               $("#cp-app-meet-remote").addClass("col-sm-12")
-               $("#cp-app-meet-own").hide();
-            }
-          });
+      $(".cp-app-meet-document-button").click(function() {
+           console.log("Document click")
+           if ($("#cp-app-meet-document").hasClass("meet-fullscreen")) {
+             videoFullScreen = false;
+             $("#cp-app-meet-document").removeClass("meet-fullscreen")
+             $(".cp-app-meet-video").show()
+             if (sharedDocumentActive)
+              $(".cp-app-meet-document").show()
+             $("#cp-app-meet-document").width("auto");
+             $("#cp-app-meet-document").height("auto");
+          } else {
+             videoFullScreen = true;
+             $("#cp-app-meet-document").addClass("meet-fullscreen")
+             $(".cp-app-meet-video").hide()
+             $(".cp-app-meet-document").hide()
+             $(".cp-app-meet-document").addClass("col-sm-12")
+             $(".cp-app-meet-document").show();
+             $("#cp-app-meet-document").width("85%");
+             $("#cp-app-meet-document").height("85%");
+             $("#cp-app-meet-document-element").width("85%");
+             $("#cp-app-meet-document-element").height("85%");
+          }
+          setVideoWidth();
+      });
+
 
       $("#ownvideo").click(function() {
             console.log("Own video CLICK")
-            if ($("#cp-app-meet-own").hasClass("col-sm-12")) {
-               $("#cp-app-meet-own").removeClass("col-sm-12")
-               $("#cp-app-meet-own").addClass("col-sm-6")
-               $("#cp-app-meet-remote").show();
+            var el = $(this).parent().parent();
+            if ($(el).hasClass("meet-fullscreen")) {
+               videoFullScreen = false;
+               $(el).removeClass("meet-fullscreen")
+               $(".cp-app-meet-video").show()
+               if (sharedDocumentActive)
+                 $(".cp-app-meet-document").show()
             } else {
-               $("#cp-app-meet-own").removeClass("col-sm-6")
-               $("#cp-app-meet-own").addClass("col-sm-12")
-               $("#cp-app-meet-remote").hide()
-            }
-          });
+               videoFullScreen = true;
+               $(el).addClass("meet-fullscreen")
+               $(".cp-app-meet-video").hide()
+               $(".cp-app-meet-document").hide()
+               $(el).addClass("col-sm-12")
+               $(el).show();
+               $(".cp-app-meet-video-element").width("85%");
+           }
+           setVideoWidth();
+      });
     }
 
 
@@ -608,10 +823,9 @@ define([
     // This is the main initialization loop
     var andThen2 = function (framework) {
         
-
-        // launch audio sub-system
-        launchAudio(framework); 
-
+        // Cannot initialize here
+        // launchAudio(framework);
+        
         // Here you can load the objects or call the functions you have defined
 
         // This is the function from which you will receive updates from CryptPad
@@ -636,6 +850,34 @@ define([
         framework.onReady(function (newPad) {
             $("#cp-app-meet-content").focus();
         });
+
+        framework._.sfCommon.getSframeChannel().on('EV_RT_JOIN', function (ev) {
+            checkRemoteUser(ev, "", function(user) {});
+        });
+
+       framework._.sfCommon.getSframeChannel().on('EV_RT_LEAVE', function (ev) {
+            dropRemoteUser(ev);
+        });
+
+       framework._.sfCommon.getMetadataMgr().onChange(function() {
+            var userId = framework._.sfCommon.getMetadataMgr().getUserData().netfluxId;
+            var cpUsers =  framework._.sfCommon.getMetadataMgr().getMetadata().users;
+            console.log("Check user start");
+            for (user in cpUsers) {
+              if (userId != user) {
+                var userData = cpUsers[user];
+                console.log("Adding user " + user + " " + userData.name);
+                checkRemoteUser(user, userData.name, function(user) {});
+              }
+            }
+            for (videoUser in users) {
+              if (!cpUsers[videoUser]) {
+                console.log("Could not find user " + videoUser + " dropping it")
+                dropRemoteUser(videoUser)
+              }
+            }
+            console.log("Check user end");
+       });
 
         // We add some code to our application to be informed of changes from the textarea
         var oldVal = "";
@@ -665,14 +907,14 @@ define([
           console.log("Connecting to video channel")
             var wsUrl = "ws://localhost:3000/cryptpad_websocket"; 
             // wsUrl = NetConfig.getWebsocketURL();
-            // wsUrl = "wss://cryptpad.dubost.name/cryptpad_websocket";
+	    // wsUrl = "wss://cryptpad.dubost.name/cryptpad_websocket";
             Netflux.connect(wsUrl).then(function (network) {
                 var privateData = framework._.sfCommon.getMetadataMgr().getPrivateData();
                 updateUserName(framework);
+
                 network.join(privateData.channel + "01").then(function (wc) {
                     console.log("Connected to video channel")
                     videoWC = wc;
-                   
 
                      wc.on('message', function (cryptMsg) {
                         console.log("Receiving encrypted data");
@@ -686,7 +928,7 @@ define([
                             parsed = JSON.parse(msg);
                             if (parsed) {
                                 // console.log(parsed)
-                                checkRemoteUser(parsed.id, function(user) {
+                                checkRemoteUser(parsed.id, parsed.name, function(user) {
 
                                   // we cannot handle frames until the mediastream is initialiazed.
                                   if (user.init)
@@ -697,6 +939,11 @@ define([
                                         if (parsed.action=="stopvideo") {
                                            user.remoteVideo.load();
                                         }
+                                        /*
+                                        if (parsed.action=="join") {
+                                            videoSendQueue.push({ id: privateData.clientId, name: privateData.accountName, startTime: 0, prepareTime: 0, type: "message", action : "ping" });
+                                            emptyQueue();
+                                        }*/
                                       // special message
                                     } else {
                                       if (parsed.dropped) {
@@ -718,7 +965,8 @@ define([
                                             var videoDisplayDoneTime = Date.now();
                                             var duration = videoDisplayDoneTime - parsed.startTime;
                                             addStats("remote" + parsed.id, "video", duration);
-                                            $("#cp-app-meet-remote" + parsed.id + "-name").text(parsed.name);
+                                            var name = (parsed.name=="") ? parsed.id : parsed.name;
+                                            $("#cp-app-meet-remote" + parsed.id + "-name").text(name);
                                             $("#cp-stats-remote" + parsed.id + "-receive-video").text("" + parsed.averageTime+ "ms");
                                             var kbit = Math.floor((uint8Array.length / 1024)*1000*8/packetDuration);
                                             $("#cp-kbits-remote" + parsed.id + "-video").text("" + kbit + "kbits/sec")
@@ -732,6 +980,12 @@ define([
 
                                       if (parsed.type=="audio") {
                                           console.log("Audio SourceBuffer appending")
+
+                                          if (!audioContext) {
+                                            console.log("AudioContext is not ready for receiving data");
+                                           return;
+                                          }
+                                          
 
                                           console.log(parsed.counter);
                                           var dView1 = new DataView(uint8Array.buffer)
@@ -748,7 +1002,10 @@ define([
                                               console.log("Audio context is not yet ready")
                                           } else {
                                               var data = outputResampler.resampler(audioData);
-                                              audioPlayingQueue.write(data, user.audioChannel)
+                                              if (user.audioChannel)
+                                                 audioPlayingQueue.write(data, user.audioChannel)
+                                              else 
+                                                 console.log("No audio channe for this user " + user.id)
                                               var audioDoneTime = Date.now();
                                               var duration = audioDoneTime - parsed.startTime;
                                               addStats("remote", "audio", duration);

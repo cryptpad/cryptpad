@@ -11,14 +11,11 @@ body.cp-app-generic {
 &.cp-app-generic {
     display: flex;
     flex-flow: column;
-    max-height: 100%;
     min-height: auto;
     background-color: #474747;
     color: #fff;
 
     .cp-app-generic-container {
-        height: 100%;
-        overflow: hidden;
         min-height: 100%;
     }
 
@@ -28,10 +25,16 @@ body.cp-app-generic {
         width: 100%;
         resize: horizontal;
     }
+
     .cp-app-generic-editor {
         flex: 1;
         display: flex;
         flex-flow: row;
+    }
+
+    #cp-app-meet-container .row {
+        display: flex;
+        align-items: center;
     }
 
     @media (max-width: @browser_media-medium-screen) {
@@ -47,30 +50,60 @@ body.cp-app-generic {
         margin-bottom: auto;
     }
 
-    
 
-    .cp-app-meet-video-element {
+    .cp-app-meet-video-element, .cp-app-meet-document-element {
       text-align: center;
       width: 100%;
+      height: 100%;
+      margin: auto;
     }
 
-    .cp-app-meet-video {
+    .cp-app-meet-video, .cp-app-meet-document {
       display: flex;
       align-items: center;
     }
 
-    .cp-app-meet-video-block {
-        text-align: center;
+    .cp-app-meet-document {
+      display: flex;
+      display: none;
+      align-items: center;
     }
 
-    video {
-      width: 90%;
+    .cp-app-meet-document-button {
+        text-align: right;
+        margin-right: 40px;
+        margin-bottom: 5px;
+        font-size: 12px;
+    }
+
+    .cp-app-meet-document-element {
+    }
+
+    video, .cp-app-meet-document-iframe {
+      width: 100%;
       height: auto;
       margin: auto;
       background-color: black;
       border-radius: 4px;
       color: rgb(184, 199, 224); 
-      box-shadow: 0 0 5px 3px #165ECC;     
+      box-shadow: 0 0 5px 3px #165ECC;   
+    }
+
+    .cp-app-meet-document-iframe {
+        -ms-zoom: 0.5;
+        -moz-transform: scale(0.5);
+        -moz-transform-origin: 0 0;
+        -o-transform: scale(0.5);
+        -o-transform-origin: 0 0;
+        -webkit-transform: scale(0.5);
+        -webkit-transform-origin: 0 0;
+        width: 190%;
+        height: 190%;
+        margin-left: 3%;
+    }
+
+    .cp-app-meet-document-iframe {
+      min-height: 90%;
     }
 
     audio {
@@ -94,6 +127,7 @@ body.cp-app-generic {
     .cp-app-meet-camera-off, .cp-app-meet-camera-on,
     .cp-app-meet-microphone-off, .cp-app-meet-microphone-on,
     .cp-app-meet-screen-off, .cp-app-meet-screen-on,
+    .cp-app-meet-docbutton-off, .cp-app-meet-docbutton-on,
      {
         font-family: "FontAwesome"; 
         font-weight: 1000; 
@@ -101,11 +135,13 @@ body.cp-app-generic {
         z-index: 10;
     } 
 
-    .cp-app-meet-camera-off, .cp-app-meet-microphone-off, .cp-app-meet-screen-off {
+    .cp-app-meet-camera-off, .cp-app-meet-microphone-off, 
+    .cp-app-meet-screen-off, .cp-app-meet-docbutton-off {
         background-color: #ffffff;
         border-radius: 50%;
     }
-    .cp-app-meet-camera-on, .cp-app-meet-microphone-on, .cp-app-meet-screen-on {
+    .cp-app-meet-camera-on, .cp-app-meet-microphone-on, 
+    .cp-app-meet-screen-on, .cp-app-meet-docbutton-on {
         background-color: #7bccd1;
         border-radius: 50%;
     }
@@ -127,7 +163,15 @@ body.cp-app-generic {
     } 
     .cp-app-meet-microphone-on:before {
         content: "\f130"; 
+    }
+
+    .cp-app-meet-docbutton-off:before {
+        content: "\f044"; 
     } 
+    .cp-app-meet-docbutton-on:before {
+        content: "\f044"; 
+    } 
+
     .cp-app-sending-stats, .cp-app-remote-stats {
         width: 90%;
         font-size: 10px;
@@ -159,7 +203,10 @@ body.cp-app-generic {
         width: 180px;
     }
 
-    @media (min-width: 768px) {
+
+    @media (min-width: 0px) {
+        max-height: 100%;
+
         .cp-app-generic-container {
             height: 100%;
             overflow: hidden;
@@ -169,10 +216,20 @@ body.cp-app-generic {
         .cp-app-generic-editor {
             height: 100%;
             overflow: hidden;
-
         }
+
+
+        #cp-app-meet-container {
+            padding-bottom: 50px;
+        }
+
+        #cp-app-meet-container .row {
+            height: 100%;
+        }
+
         .cp-app-meet-video {
         } 
+
         #cp-app-meet-toolbar {
             bottom:0;
             position: absolute;
@@ -182,9 +239,23 @@ body.cp-app-generic {
             position: absolute;
             width: 350px;
             bottom: 0;
-            left: 0;
+            float: left;
             text-align: auto;
         }
     }
+
+    @media (max-width: 768px) {
+        .cp-app-meet-bandwidth-slider {
+            width: 80px;
+        }
+        .cp-app-meet-bandwidth-slider #quality-label {
+            display: none;
+        }
+        .cp-app-meet-bandwidth-slider .slider.slider-horizontal {
+            width: 80px;
+        }
+    }
+
+   
   }
 }

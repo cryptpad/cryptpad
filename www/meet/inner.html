@@ -14,7 +14,7 @@
 <body class="cp-app-generic cp-app-meet">
     <div id="cme_toolbox" class="cp-toolbar-container"></div>
     <div id="cp-app-meet-editor" class="cp-app-generic-editor">
-        <div id="cp-app-meet-container" class="cp-app-generic-container">
+        <div id="cp-app-meet-container" class="cp-app-generic-container container-fluid">
             <div id="cp-app-meet-container-row" class="row">
                 <div id="cp-app-meet-own" class="cp-app-meet-video col-sm-6">
                             <div id="cp-app-meet-video-own" class="cp-app-meet-video-element">
@@ -49,12 +49,19 @@
                             </div>
                 </div>
                 -->
+                <div id="cp-app-meet-document" class="cp-app-meet-document col-sm-6">
+                            <div id="cp-app-meet-document-element" class="cp-app-meet-document-element">
+                                <div id="cp-app-meet-document-button" class="cp-app-meet-document-button">Full-Screen</div>
+                                <iframe id="cp-app-meet-document-iframe" src="http://localhost:3000/whiteboard/#/2/whiteboard/edit/OQXRXvs5CqVEnwedLMayvo-n/embed/" class="cp-app-meet-document-iframe" width="100%" height="100%"></iframe>
+                            </div>
+                </div>
              <div class="cp-app-meet-bandwidth-slider col-sm-12">
                         <label id="quality-label">Quality: </label><label id="quality-bitrate"></label><input id="quality" type="text" />
              </div>
                 <div id="cp-app-meet-toolbar" class="col-sm-12">
                 <div id="cp-app-meet-buttons">
                     <span id="cp-app-meet-screen" class="cp-app-meet-screen-off"></span>
+                    <span id="cp-app-meet-docbutton" class="cp-app-meet-docbutton-off"></span>
                     <span id="cp-app-meet-camera" class="cp-app-meet-camera-off"></span>
                     <span id="cp-app-meet-microphone" class="cp-app-meet-microphone-off"></span>
                 </div>
