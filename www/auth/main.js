@@ -71,7 +71,7 @@ define([
             // Get contacts and extract their avatar channel and key
             var getData = function (obj, href) {
                 var parsed = Hash.parsePadUrl(href);
-                if (parsed.type !== "file") { return; }
+                if (!parsed || parsed.type !== "file") { return; } // XXX
                 var secret = Hash.getSecrets('file', parsed.hash);
                 if (!secret.keys || !secret.channel) { return; }
                 obj.avatarKey = Hash.encodeBase64(secret.keys && secret.keys.cryptKey);
@@ -81,6 +81,7 @@ define([
             contacts.friends = proxy.friends || {};
             Object.keys(contacts.friends).map(function (key) {
                 var friend = contacts.friends[key];
+                // if (!friend) { return; } // XXX how should this be handled?
                 var ret = {
                     edPublic: friend.edPublic,
                     name: friend.displayName,
@@ -90,6 +91,7 @@ define([
             });
             Object.keys(contacts.teams).map(function (key) {
                 var team = contacts.teams[key];
+                // if (!team) { return; } // XXX how should this be handled. Is this possible?
                 var avatar = team.metadata && team.metadata.avatar;
                 var ret = {
                     edPublic: team.keys && team.keys.drive && team.keys.drive.edPublic,
