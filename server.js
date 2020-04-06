@@ -43,7 +43,9 @@ if (process.env.PACKAGE) {
     }
 
     config.httpUnsafeOrigin = config.httpUnsafeOrigin.trim();
-    config.httpSafeOrigin = config.httpSafeOrigin.trim().replace(/\/$/, '');
+    if (typeof(config.httpSafeOrigin) === 'string') {
+        config.httpSafeOrigin = config.httpSafeOrigin.trim().replace(/\/$/, '');
+    }
 
     // fall back to listening on a local address
     // if httpAddress is not a string
