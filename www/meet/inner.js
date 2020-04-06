@@ -54,7 +54,7 @@ define([
     var videoFullScreen = false;
 
     // audio capture objects
-    var audioBufferSize = 16384;
+    var audioBufferSize = 4096;
     var audioInput;
     var audioGainNode;
     var audioRecorder;
@@ -215,10 +215,10 @@ define([
                 if (audioPlayingQueue.length(audioChannel)==0) {
                   // console.log("Playing silence");
                   // e.outputBuffer.getChannelData(audioChannel).set(silence);
-                } else if (audioPlayingQueue.length(audioChannel)>16384*10) {
+                } else if (audioPlayingQueue.length(audioChannel)>audioBufferSize*10) {
                   console.log("Sample in buffer too long. Dropping");
                   audioPlayingQueue.reset(audioChannel);
-                  var nb = audioPlayingQueue.length(audioChannel)/16384;
+  	 	  var nb = audioPlayingQueue.length(audioChannel)/audioBufferSize;
                   addRemoteDropped(type, nb);
                 } else {
                   console.log("Playing a sample");
@@ -831,7 +831,7 @@ define([
           console.log("Connecting to video channel")
             var wsUrl = "ws://localhost:3000/cryptpad_websocket"; 
             // wsUrl = NetConfig.getWebsocketURL();
-      // wsUrl = "wss://cryptpad.dubost.name/cryptpad_websocket";
+             wsUrl = "wss://cryptpad.dubost.name/cryptpad_websocket";
             Netflux.connect(wsUrl).then(function (network) {
                 var privateData = framework._.sfCommon.getMetadataMgr().getPrivateData();
                 updateUserName(framework);
@@ -935,7 +935,7 @@ define([
                                               $("#cp-stats-remote-receive-audio").text("" + parsed.averageTime+ "ms");
                                               var kbit = Math.floor((uint8Array.length / 1024)*1000/packetDuration);
                                               $("#cp-kbits-remote-audio").text("" + kbit + "kbits/sec")
-                                              console.log("Audio SourceBuffer appending done: " + duration + "ms")
+                                              console.log("Audio SourceBuffer for package " + parsed.counter + " appending done: " + duration + "ms")
                                           }
                                         }
                                       }
