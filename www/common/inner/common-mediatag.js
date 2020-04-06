@@ -99,6 +99,7 @@ define([
         // No password for avatars
         var privateData = common.getMetadataMgr().getPrivateData();
         var origin = privateData.fileHost || privateData.origin;
+        var parsed = Hash.parsePadUrl(href);
         var secret = Hash.getSecrets('file', parsed.hash);
         if (secret.keys && secret.channel) {
             var hexFileName = secret.channel;
