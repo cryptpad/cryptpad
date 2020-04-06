@@ -1066,13 +1066,6 @@ define([
         common.openPadChat(function () {});
 
         UI.removeLoadingScreen();
-        var privateDat = metadataMgr.getPrivateData();
-        var skipTemp = Util.find(privateDat,
-            ['settings', 'general', 'creation', 'noTemplate']);
-        var skipCreation = Util.find(privateDat, ['settings', 'general', 'creation', 'skip']);
-        if (isNew && (!AppConfig.displayCreationScreen || (!skipTemp && skipCreation))) {
-            common.openTemplatePicker();
-        }
     };
 
     var onError = function (info) {
