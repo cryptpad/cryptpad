@@ -941,7 +941,7 @@ MessengerUI, Messages) {
                 id: 'cp-app-toolbar-creation-advanced',
                 href: origin
             },
-            content: '<span class="fa fa-plus-circle"></span> ' + Messages.creation_appMenuName // XXX change value
+            content: '<span class="fa fa-plus-circle"></span> ' + Messages.creation_appMenuName
         });
         var dropdownConfig = {
             text: '', // Button initial text
