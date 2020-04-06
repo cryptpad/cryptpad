@@ -363,6 +363,11 @@ define([
             });
         };
         var addImageToCanvas = function (img) {
+            // 1 MB maximum
+            if (img.src && img.src.length > 1 * 1024 * 1024) {
+                UI.warn(Messages.upload_tooLargeBrief);
+                return;
+            }
             var w = img.width;
             var h = img.height;
             if (w<h) {
@@ -381,6 +386,11 @@ define([
         var onUpload = function (e) {
             var file = e.target.files[0];
             var reader = new FileReader();
+            // 1 MB maximum
+            if (file.size > 1 * 1024 * 1024) {
+                UI.warn(Messages.upload_tooLargeBrief);
+                return;
+            }
             reader.onload = function () {
                 var img = new Image();
                 img.onload = function () {
