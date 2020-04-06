@@ -299,9 +299,11 @@ define([
 
         show(i);
         var previous = function () {
+            if (i === 0) { return; }
             show(i - 1);
         };
         var next = function () {
+            if (i === tags.length - 1) { return; }
             show(i + 1);
         };
         $left.click(previous);
