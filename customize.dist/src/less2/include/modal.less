@@ -24,6 +24,9 @@
     .cp-modal-container {
         display: none;
 
+        align-items: center;
+        justify-content: center;
+
         z-index: 100000; //Z modal container
         position: absolute;
         top: 0;
@@ -39,9 +42,11 @@
 
             padding: @variables_padding;
 
-            position: absolute;
-            top: 15vh; bottom: 15vh;
-            left: 10vw; right: 10vw;
+            position: relative;
+            //top: 15vh; bottom: 15vh;
+            //left: 10vw; right: 10vw;
+            width: 90vw;
+            max-height: 95vh;
 
             overflow: auto;
 

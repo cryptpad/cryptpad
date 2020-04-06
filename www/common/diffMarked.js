@@ -5,13 +5,14 @@ define([
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/hyperscript.js',
+    '/common/inner/common-mediatag.js',
     '/common/media-tag.js',
     '/common/highlight/highlight.pack.js',
     '/customize/messages.js',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/common/highlight/styles/github.css'
-],function ($, ApiConfig, Marked, Hash, Util, h, MediaTag, Highlight, Messages) {
+],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Highlight, Messages) {
     var DiffMd = {};
 
     var DiffDOM = window.diffDOM;
@@ -365,6 +366,53 @@ define([
 
         var oldDom = domFromHTML($content[0].outerHTML);
 
+        var onPreview = function ($mt) {
+            return function () {
+                var isSvg = $mt.is('pre.mermaid');
+                var mts = [];
+                $content.find('media-tag, pre.mermaid').each(function (i, el) {
+                    if (el.nodeName.toLowerCase() === "pre") {
+                        return void mts.push({
+                            svg: el.cloneNode(true)
+                        });
+                    }
+                    var $el = $(el);
+                    mts.push({
+                        src: $el.attr('src'),
+                        key: $el.attr('data-crypto-key')
+                    });
+                });
+
+                // Find initial position
+                var idx = -1;
+                mts.some(function (obj, i) {
+                    if (isSvg && $mt.find('svg').attr('id') === $(obj.svg).find('svg').attr('id')) {
+                        idx = i;
+                        return true;
+                    }
+                    if (!isSvg && obj.src === $mt.attr('src')) {
+                        idx = i;
+                        return true;
+                    }
+                });
+                if (idx === -1) {
+                    if (isSvg) {
+                        mts.unshift({
+                            svg: $mt[0].cloneNode(true)
+                        });
+                    } else {
+                        mts.unshift({
+                            src: $mt.attr('src'),
+                            key: $mt.attr('data-crypto-key')
+                        });
+                    }
+                    idx = 0;
+                }
+
+                common.getMediaTagPreview(mts, idx);
+            };
+        };
+
         var patch = makeDiff(oldDom, Dom, id);
         if (typeof(patch) === 'string') {
             throw new Error(patch);
@@ -372,9 +420,10 @@ define([
             DD.apply($content[0], patch);
             var $mts = $content.find('media-tag:not(:has(*))');
             $mts.each(function (i, el) {
-                $(el).contextmenu(function (e) {
+                var $mt = $(el).contextmenu(function (e) {
                     e.preventDefault();
                     $(contextMenu.menu).data('mediatag', $(el));
+                    $(contextMenu.menu).find('li').show();
                     contextMenu.show(e);
                 });
                 MediaTag(el);
@@ -388,6 +437,13 @@ define([
                             observer.disconnect();
                         }
                     });
+                    $mt.off('dblclick preview');
+                    $mt.on('preview', onPreview($mt));
+                    if ($mt.find('img').length) {
+                        $mt.on('dblclick', function () {
+                            $mt.trigger('preview');
+                        });
+                    }
                 });
                 observer.observe(el, {
                     attributes: false,
@@ -407,6 +463,19 @@ define([
 
             // loop over mermaid elements in the rendered content
             $content.find('pre.mermaid').each(function (index, el) {
+                var $el = $(el);
+                $el.off('contextmenu').on('contextmenu', function (e) {
+                    e.preventDefault();
+                    $(contextMenu.menu).data('mediatag', $el);
+                    $(contextMenu.menu).find('li:not(.cp-svg)').hide();
+                    contextMenu.show(e);
+                });
+                $el.off('dblclick preview');
+                $el.on('preview', onPreview($el));
+                $el.on('dblclick', function () {
+                    $el.trigger('preview');
+                });
+
                 // since you've simply drawn the content that was supplied via markdown
                 // you can assume that the index of your rendered charts matches that
                 // of those in the markdown source. 
@@ -417,7 +486,6 @@ define([
                 // check if you had cached a pre-rendered instance of the supplied source
                 if (typeof(cached) !== 'object') {
                     try {
-                        var $el = $(el);
                         Mermaid.init(undefined, $el);
                         // clickable elements in mermaid don't work well with our sandboxing setup
                         // the function below strips clickable elements but still leaves behind some artifacts

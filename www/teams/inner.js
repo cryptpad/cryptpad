@@ -12,6 +12,7 @@ define([
     '/common/sframe-common.js',
     '/common/proxy-manager.js',
     '/common/userObject.js',
+    '/common/inner/common-mediatag.js',
     '/common/hyperscript.js',
     '/customize/application_config.js',
     '/common/messenger-ui.js',
@@ -35,6 +36,7 @@ define([
     SFCommon,
     ProxyManager,
     UserObject,
+    MT,
     h,
     AppConfig,
     MessengerUI,
@@ -533,9 +535,11 @@ define([
     };
 
     var makePermissions = function () {
-        var $blockContainer = UIElements.createModal({
+        var modal= UI.createModal({
             id: 'cp-teams-roster-dialog',
-        }).show();
+        });
+        modal.show();
+        var $blockContainer = modal.$modal;
 
         var makeRow = function (arr, first) {
             return arr.map(function (val) {
@@ -966,7 +970,7 @@ define([
         // Upload
         var avatar = h('div.cp-team-avatar.cp-avatar');
         var $avatar = $(avatar);
-        var data = UIElements.addAvatar(common, function (ev, data) {
+        var data = MT.addAvatar(common, function (ev, data) {
             if (!data.url) { return void UI.warn(Messages.error); }
             APP.module.execCommand('GET_TEAM_METADATA', {
                 teamId: APP.team
@@ -1051,7 +1055,7 @@ define([
 
     var displayUser = function (common, data) {
         var avatar = h('span.cp-teams-invite-from-avatar.cp-avatar');
-        UIElements.displayAvatar(common, $(avatar), data.avatar, data.displayName);
+        common.displayAvatar($(avatar), data.avatar, data.displayName);
         return h('div.cp-teams-invite-from-author', [
             avatar,
             h('span.cp-teams-invite-from-name', data.displayName)

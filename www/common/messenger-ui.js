@@ -879,7 +879,7 @@ define([
                         h('i.fa.fa-bell'),
                         Messages.contacts_unmute || 'unmute'
                     ]);
-                    UIElements.displayAvatar(common, $(avatar), data.avatar, data.name);
+                    common.displayAvatar($(avatar), data.avatar, data.name);
                     $(button).click(function () {
                         unmuteUser(curve, button);
                         execCommand('UNMUTE_USER', curve, function (e, data) {

@@ -8,7 +8,6 @@ define([
     '/common/common-constants.js',
     '/common/common-feedback.js',
     '/common/hyperscript.js',
-    '/common/media-tag.js',
     '/common/clipboard.js',
     '/customize/messages.js',
     '/customize/application_config.js',
@@ -18,18 +17,9 @@ define([
     '/common/visible.js',
 
     'css!/customize/fonts/cptools/style.css',
-    '/bower_components/croppie/croppie.min.js',
-    'css!/bower_components/croppie/croppie.css',
-], function ($, Config, Util, Hash, Language, UI, Constants, Feedback, h, MediaTag, Clipboard,
+], function ($, Config, Util, Hash, Language, UI, Constants, Feedback, h, Clipboard,
              Messages, AppConfig, Pages, NThen, InviteInner, Visible) {
     var UIElements = {};
-
-    // Configure MediaTags to use our local viewer
-    if (MediaTag) {
-        MediaTag.setDefaultConfig('pdf', {
-            viewer: '/common/pdfjs/web/viewer.html'
-        });
-    }
 
     UIElements.prettySize = function (bytes) {
         var kB = Util.bytesToKilobytes(bytes);
@@ -110,7 +100,7 @@ define([
             var data = users[key];
             var name = data.displayName || data.name || Messages.anonymous;
             var avatar = h('span.cp-usergrid-avatar.cp-avatar');
-            UIElements.displayAvatar(common, $(avatar), data.avatar, name);
+            common.displayAvatar($(avatar), data.avatar, name);
             var removeBtn, el;
             if (config.remove) {
                 removeBtn = h('span.fa.fa-times');
@@ -1930,205 +1920,6 @@ define([
         };
     };
 
-    // Avatars
-
-    UIElements.displayMediatagImage = function (Common, $tag, cb) {
-        if (!$tag.length || !$tag.is('media-tag')) { return void cb('NOT_MEDIATAG'); }
-        var observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.addedNodes.length) {
-                    if (mutation.addedNodes.length > 1 ||
-                        mutation.addedNodes[0].nodeName !== 'IMG') {
-                        return void cb('NOT_IMAGE');
-                    }
-                    var $image = $tag.find('img');
-                    var onLoad = function () {
-                        var img = new Image();
-                        img.onload = function () {
-                            var _cb = cb;
-                            cb = $.noop;
-                            _cb(null, $image, img);
-                        };
-                        img.src = $image.attr('src');
-                    };
-                    if ($image[0].complete) { onLoad(); }
-                    $image.on('load', onLoad);
-                }
-            });
-        });
-        observer.observe($tag[0], {
-            attributes: false,
-            childList: true,
-            characterData: false
-        });
-        MediaTag($tag[0]).on('error', function (data) {
-            console.error(data);
-        });
-    };
-
-    var emoji_patt = /([\uD800-\uDBFF][\uDC00-\uDFFF])/;
-    var isEmoji = function (str) {
-      return emoji_patt.test(str);
-    };
-    var emojiStringToArray = function (str) {
-      var split = str.split(emoji_patt);
-      var arr = [];
-      for (var i=0; i<split.length; i++) {
-        var char = split[i];
-        if (char !== "") {
-          arr.push(char);
-        }
-      }
-      return arr;
-    };
-    var getFirstEmojiOrCharacter = UIElements.getFirstCharacter = function (str) {
-      if (!str || !str.trim()) { return '?'; }
-      var emojis = emojiStringToArray(str);
-      return isEmoji(emojis[0])? emojis[0]: str[0];
-    };
-    var avatars = {};
-    UIElements.setAvatar = function (hash, data) {
-        avatars[hash] = data;
-    };
-    UIElements.getAvatar = function (hash) {
-        return avatars[hash];
-    };
-    UIElements.displayAvatar = function (common, $container, href, name, cb) {
-        var displayDefault = function () {
-            var text = (href && typeof(href) === "string") ? href : getFirstEmojiOrCharacter(name);
-            var $avatar = $('<span>', {'class': 'cp-avatar-default'}).text(text);
-            $container.append($avatar);
-            if (cb) { cb(); }
-        };
-        if (!window.Symbol) { return void displayDefault(); } // IE doesn't have Symbol
-        if (!href || href.length === 1) { return void displayDefault(); }
-
-        var centerImage = function ($img, $image, img) {
-            var w = img.width;
-            var h = img.height;
-            if (w>h) {
-                $image.css('max-height', '100%');
-                $img.css('flex-direction', 'column');
-                if (cb) { cb($img); }
-                return;
-            }
-            $image.css('max-width', '100%');
-            $img.css('flex-direction', 'row');
-            if (cb) { cb($img); }
-        };
-
-        var parsed = Hash.parsePadUrl(href);
-        if (parsed.type !== "file" || parsed.hashData.type !== "file") {
-            var $img = $('<media-tag>').appendTo($container);
-            var img = new Image();
-            $(img).attr('src', href);
-            img.onload = function () {
-                centerImage($img, $(img), img);
-                $(img).appendTo($img);
-            };
-            return;
-        }
-        // No password for avatars
-        var privateData = common.getMetadataMgr().getPrivateData();
-        var origin = privateData.fileHost || privateData.origin;
-        var secret = Hash.getSecrets('file', parsed.hash);
-        if (secret.keys && secret.channel) {
-            var hexFileName = secret.channel;
-            var cryptKey = Hash.encodeBase64(secret.keys && secret.keys.cryptKey);
-            var src = origin + Hash.getBlobPathFromHex(hexFileName);
-            common.getFileSize(hexFileName, function (e, data) {
-                if (e || !data) { return void displayDefault(); }
-                if (typeof data !== "number") { return void displayDefault(); }
-                if (Util.bytesToMegabytes(data) > 0.5) { return void displayDefault(); }
-                var $img = $('<media-tag>').appendTo($container);
-                $img.attr('src', src);
-                $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
-                UIElements.displayMediatagImage(common, $img, function (err, $image, img) {
-                    if (err) { return void console.error(err); }
-                    centerImage($img, $image,  img);
-                });
-            });
-        }
-    };
-    var transformAvatar = function (file, cb) {
-        if (file.type === 'image/gif') { return void cb(file); }
-        var $croppie = $('<div>', {
-            'class': 'cp-app-profile-resizer'
-        });
-
-        if (typeof ($croppie.croppie) !== "function") {
-            console.warn('fuck');
-            return void cb(file);
-        }
-
-        var todo = function () {
-            UI.confirm($croppie[0], function (yes) {
-                if (!yes) { return; }
-                $croppie.croppie('result', {
-                    type: 'blob',
-                    size: {width: 300, height: 300}
-                }).then(function(blob) {
-                    blob.lastModifiedDate = new Date();
-                    blob.name = 'avatar';
-                    cb(blob);
-                });
-            });
-        };
-
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            $croppie.croppie({
-                url: e.target.result,
-                viewport: { width: 100, height: 100 },
-                boundary: { width: 400, height: 300 },
-            });
-            todo();
-        };
-        reader.readAsDataURL(file);
-    };
-    UIElements.addAvatar = function (common, cb) {
-        var AVATAR_SIZE_LIMIT = 0.5;
-        var allowedMediaTypes = [
-            'image/png',
-            'image/jpeg',
-            'image/jpg',
-            'image/gif',
-        ];
-        var fmConfig = {
-            noHandlers: true,
-            noStore: true,
-            body: $('body'),
-            onUploaded: cb
-        };
-        var FM = common.createFileManager(fmConfig);
-        var accepted = ".gif,.jpg,.jpeg,.png";
-        var data = {
-            FM: FM,
-            filter: function (file) {
-                var sizeMB = Util.bytesToMegabytes(file.size);
-                var type = file.type;
-                // We can't resize .gif so we have to display an error if it is too big
-                if (sizeMB > AVATAR_SIZE_LIMIT && type === 'image/gif') {
-                    UI.log(Messages._getKey('profile_uploadSizeError', [
-                        Messages._getKey('formattedMB', [AVATAR_SIZE_LIMIT])
-                    ]));
-                    return false;
-                }
-                // Display an error if the image type is not allowed
-                if (allowedMediaTypes.indexOf(type) === -1) {
-                    UI.log(Messages._getKey('profile_uploadTypeError', [
-                        accepted.split(',').join(', ')
-                    ]));
-                    return false;
-                }
-                return true;
-            },
-            transformer: transformAvatar,
-            accept: accepted
-        };
-        return data;
-    };
-
     /*  Create a usage bar which keeps track of how much storage space is used
         by your CryptDrive. The getPinnedUsage RPC is one of the heavier calls,
         so we throttle its usage. Clients will not update more than once per
@@ -2640,7 +2431,7 @@ define([
             $displayName.text(newName || Messages.anonymous);
             if (accountName && oldUrl !== url) {
                 $avatar.html('');
-                UIElements.displayAvatar(Common, $avatar, url,
+                Common.displayAvatar($avatar, url,
                         newName || Messages.anonymous, function ($img) {
                     oldUrl = url;
                     $userAdmin.find('> button').removeClass('cp-avatar');
@@ -2747,37 +2538,6 @@ define([
         return $block;
     };
 
-    UIElements.createModal = function (cfg) {
-        var $body = cfg.$body || $('body');
-        var $blockContainer = $body.find('#'+cfg.id);
-        if (!$blockContainer.length) {
-            $blockContainer = $('<div>', {
-                'class': 'cp-modal-container',
-                tabindex: 1,
-                'id': cfg.id
-            });
-        }
-        var hide = function () {
-            if (cfg.onClose) { return void cfg.onClose(); }
-            $blockContainer.hide();
-        };
-        $blockContainer.html('').appendTo($body);
-        var $block = $('<div>', {'class': 'cp-modal'}).appendTo($blockContainer);
-        $('<span>', {
-            'class': 'cp-modal-close fa fa-times',
-            'title': Messages.filePicker_close
-        }).click(hide).appendTo($block);
-        $body.click(hide);
-        $block.click(function (e) {
-            e.stopPropagation();
-        });
-        $body.keydown(function (e) {
-            if (e.which === 27) {
-                hide();
-            }
-        });
-        return $blockContainer;
-    };
 
     UIElements.createNewPadModal = function (common) {
         // if in drive, show new pad modal instead
@@ -2785,10 +2545,11 @@ define([
             return void $(".cp-app-drive-element-row.cp-app-drive-new-ghost").click();
         }
 
-        var $modal = UIElements.createModal({
+        var modal = UI.createModal({
             id: 'cp-app-toolbar-creation-dialog',
             $body: $('body')
         });
+        var $modal = modal.$modal;
         var $title = $('<h3>').text(Messages.fm_newFile);
         var $description = $('<p>').html(Messages.creation_newPadModalDescription);
         $modal.find('.cp-modal').append($title);
@@ -2874,7 +2635,7 @@ define([
 
         $modal.find('.cp-modal').append($container).append($advancedContainer);
         window.setTimeout(function () {
-            $modal.show();
+            modal.show();
             $modal.focus();
         });
     };
@@ -3028,7 +2789,7 @@ define([
             var teams = Object.keys(privateData.teams).map(function (id) {
                 var data = privateData.teams[id];
                 var avatar = h('span.cp-creation-team-avatar.cp-avatar');
-                UIElements.displayAvatar(common, $(avatar), data.avatar, data.name);
+                common.displayAvatar($(avatar), data.avatar, data.name);
                 return h('div.cp-creation-team', {
                     'data-id': id,
                     title: data.name,
@@ -3610,119 +3371,6 @@ define([
             });
         });
 
-    };
-
-    var createContextMenu = function (menu) {
-        var $menu = $(menu).appendTo($('body'));
-
-        var display = function (e) {
-            $menu.css({ display: "block" });
-            var h = $menu.outerHeight();
-            var w = $menu.outerWidth();
-            var wH = window.innerHeight;
-            var wW = window.innerWidth;
-            if (h > wH) {
-                $menu.css({
-                    top: '0px',
-                    bottom: ''
-                });
-            } else if (e.pageY + h <= wH) {
-                $menu.css({
-                    top: e.pageY+'px',
-                    bottom: ''
-                });
-            } else {
-                $menu.css({
-                    bottom: '0px',
-                    top: ''
-                });
-            }
-            if(w > wW) {
-                $menu.css({
-                    left: '0px',
-                    right: ''
-                });
-            } else if (e.pageX + w <= wW) {
-                $menu.css({
-                    left: e.pageX+'px',
-                    right: ''
-                });
-            } else {
-                $menu.css({
-                    left: '',
-                    right: '0px',
-                });
-            }
-        };
-
-        var hide = function () {
-            $menu.hide();
-        };
-        var remove = function () {
-            $menu.remove();
-        };
-
-        $('body').click(hide);
-
-        return {
-            menu: menu,
-            show: display,
-            hide: hide,
-            remove: remove
-        };
-    };
-
-    var mediatagContextMenu;
-    UIElements.importMediaTagMenu = function (common) {
-        if (mediatagContextMenu) { return mediatagContextMenu; }
-
-        // Create context menu
-        var menu = h('div.cp-contextmenu.dropdown.cp-unselectable', [
-            h('ul.dropdown-menu', {
-                'role': 'menu',
-                'aria-labelledBy': 'dropdownMenu',
-                'style': 'display:block;position:static;margin-bottom:5px;'
-            }, [
-                h('li', h('a.cp-app-code-context-saveindrive.dropdown-item', {
-                    'tabindex': '-1',
-                    'data-icon': "fa-cloud-upload",
-                }, Messages.pad_mediatagImport)),
-                h('li', h('a.cp-app-code-context-download.dropdown-item', {
-                    'tabindex': '-1',
-                    'data-icon': "fa-download",
-                }, Messages.download_mt_button)),
-            ])
-        ]);
-        // create the icon for each contextmenu option
-        $(menu).find("li a.dropdown-item").each(function (i, el) {
-            var $icon = $("<span>");
-            if ($(el).attr('data-icon')) {
-                var font = $(el).attr('data-icon').indexOf('cptools') === 0 ? 'cptools' : 'fa';
-                $icon.addClass(font).addClass($(el).attr('data-icon'));
-            } else {
-                $icon.text($(el).text());
-            }
-            $(el).prepend($icon);
-        });
-        var m = createContextMenu(menu);
-
-        mediatagContextMenu = m;
-
-        var $menu = $(m.menu);
-        $menu.on('click', 'a', function (e) {
-            e.stopPropagation();
-            m.hide();
-            var $mt = $menu.data('mediatag');
-            if ($(this).hasClass("cp-app-code-context-saveindrive")) {
-                common.importMediaTag($mt);
-            }
-            else if ($(this).hasClass("cp-app-code-context-download")) {
-                var media = $mt[0]._mediaObject;
-                window.saveAs(media._blob.content, media.name);
-            }
-        });
-
-        return m;
     };
 
     UIElements.displayFriendRequestModal = function (common, data) {

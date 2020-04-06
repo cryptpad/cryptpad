@@ -10,6 +10,7 @@ define([
     '/common/common-ui-elements.js',
     '/common/common-realtime.js',
     '/common/clipboard.js',
+    '/common/inner/common-mediatag.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/customize/application_config.js',
@@ -36,6 +37,7 @@ define([
     UIElements,
     Realtime,
     Clipboard,
+    MT,
     h,
     Messages,
     AppConfig,
@@ -351,7 +353,7 @@ define([
         displayAvatar();
         if (APP.readOnly) { return; }
 
-        var data = UIElements.addAvatar(common, function (ev, data) {
+        var data = MT.addAvatar(common, function (ev, data) {
             var old = common.getMetadataMgr().getUserData().avatar;
             var todo = function () {
                 APP.module.execCommand("SET", {
