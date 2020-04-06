@@ -96,18 +96,6 @@ define([
             if (cb) { cb($img); }
         };
 
-        // XXX Drop support for external URLs
-        var parsed = Hash.parsePadUrl(href);
-        if (parsed.type !== "file" || parsed.hashData.type !== "file") {
-            var $img = $('<media-tag>').appendTo($container);
-            var img = new Image();
-            $(img).attr('src', href);
-            img.onload = function () {
-                centerImage($img, $(img), img);
-                $(img).appendTo($img);
-            };
-            return;
-        }
         // No password for avatars
         var privateData = common.getMetadataMgr().getPrivateData();
         var origin = privateData.fileHost || privateData.origin;
