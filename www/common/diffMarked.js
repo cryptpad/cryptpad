@@ -486,7 +486,6 @@ define([
                 // check if you had cached a pre-rendered instance of the supplied source
                 if (typeof(cached) !== 'object') {
                     try {
-                        var $el = $(el);
                         Mermaid.init(undefined, $el);
                         // clickable elements in mermaid don't work well with our sandboxing setup
                         // the function below strips clickable elements but still leaves behind some artifacts
