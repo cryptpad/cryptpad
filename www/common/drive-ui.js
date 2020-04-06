@@ -2946,17 +2946,18 @@ define([
             $element.append($('<span>', {'class': 'cp-app-drive-element-name'})
                 .text(Messages.fm_newFile));
             $element.click(function () {
-                var $modal = UI.createModal({
+                var modal = UI.createModal({
                     id: 'cp-app-drive-new-ghost-dialog',
                     $body: $('body')
                 });
+                var $modal = modal.$modal;
                 var $title = $('<h3>').text(Messages.fm_newFile);
                 var $description = $('<p>').text(Messages.fm_newButtonTitle);
                 $modal.find('.cp-modal').append($title);
                 $modal.find('.cp-modal').append($description);
                 var $content = createNewPadIcons($modal, isInRoot);
                 $modal.find('.cp-modal').append($content);
-                window.setTimeout(function () { $modal.show(); });
+                window.setTimeout(function () { modal.show(); });
                 addNewPadHandlers($modal, isInRoot);
             });
         };

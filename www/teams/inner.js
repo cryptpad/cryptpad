@@ -535,9 +535,11 @@ define([
     };
 
     var makePermissions = function () {
-        var $blockContainer = UI.createModal({
+        var modal= UI.createModal({
             id: 'cp-teams-roster-dialog',
-        }).show();
+        });
+        modal.show();
+        var $blockContainer = modal.$modal;
 
         var makeRow = function (arr, first) {
             return arr.map(function (val) {

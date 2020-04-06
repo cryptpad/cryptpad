@@ -216,51 +216,23 @@ define([
         var priv = metadataMgr.getPrivateData();
 
         var left, right;
-        var checkSize = function () {};
 
-        var $modal = UI.createModal({
+        var modal = UI.createModal({
             id: 'cp-mediatag-preview-modal',
-            onClose: function () {
-                $(window).off('resize', checkSize);
-            },
             $body: $('body')
-        }).show().focus();
-        var $container = $modal.find('.cp-modal').append(h('div.cp-mediatag-outer', [
+        });
+        modal.show();
+        var $modal = modal.$modal.focus();
+        var $container = $modal.find('.cp-modal').append([
             h('div.cp-mediatag-control', left = h('span.fa.fa-chevron-left')),
             h('div.cp-mediatag-container', [
                 h('div.cp-loading-spinner-container', h('span.cp-spinner')),
             ]),
             h('div.cp-mediatag-control', right = h('span.fa.fa-chevron-right')),
-        ]));
+        ]);
         var $left = $(left);
         var $right = $(right);
         var $inner = $container.find('.cp-mediatag-container');
-
-        var el;
-        checkSize = function () {
-            if (!el) { return; }
-
-            if (el.nodeName === 'BUTTON') {
-                return $container.find('.cp-mediatag-container').css('height', 'auto');
-            }
-
-            var size = el.naturalHeight || el.videoHeight;
-            if ($(el).find('svg').length) {
-                var h = $(el).find('svg').prop('height');
-                size = Number(h) || (h.baseVal && h.baseVal.value);
-            }
-            if (el.nodeName !== 'IMG' && el.nodeName !== 'VIDEO') {
-                $container.find('.cp-mediatag-container').css('height', '100%');
-            }
-            if (!size) { return; }
-            // Center small images and videos
-            $container.find('.cp-mediatag-container').css('height', '100%');
-            if (size < $container.height()) {
-                $container.find('.cp-mediatag-container').css('height', 'auto');
-            }
-        };
-
-        $(window).on('resize', checkSize);
 
         var $spinner = $container.find('.cp-loading-spinner-container');
 
@@ -292,8 +264,6 @@ define([
             if (cfg.svg) {
                 $spinner.hide();
                 $inner.append(cfg.svg);
-                el = cfg.svg;
-                checkSize();
                 locked = false;
                 return;
             }
@@ -321,24 +291,9 @@ define([
             $inner.append(tag);
 
             var observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
+                mutations.forEach(function() {
                     locked = false;
                     $spinner.hide();
-                    if (mutation.addedNodes.length === 1) {
-                        el = mutation.addedNodes[0];
-                        if (el.readyState === 0) {
-                            // Wait for the video to be ready before checking the size
-                            el.onloadedmetadata = checkSize;
-                            return;
-                        }
-                        if (el.complete === false) {
-                            el.onload = checkSize;
-                            return;
-                        }
-                        setTimeout(function () {
-                            checkSize();
-                        });
-                    }
                 });
             });
             observer.observe(tag, {

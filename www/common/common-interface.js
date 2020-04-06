@@ -473,6 +473,7 @@ define([
         var hide = function () {
             if (cfg.onClose) { return void cfg.onClose(); }
             $blockContainer.hide();
+            if (cfg.onClosed) { cfg.onClosed(); }
         };
         $blockContainer.html('').appendTo($body);
         var $block = $(h('div.cp-modal')).appendTo($blockContainer);
@@ -488,7 +489,13 @@ define([
                 hide();
             }
         });
-        return $blockContainer;
+        return {
+            $modal: $blockContainer,
+            show: function () {
+                $blockContainer.css('display', 'flex');
+            },
+            hide: hide
+        };
     };
 
     UI.alert = function (msg, cb, opt) {

@@ -351,6 +351,7 @@ define([
 
         var onPreview = function ($mt) {
             return function () {
+                var isSvg = $mt.is('pre.mermaid');
                 var mts = [];
                 $content.find('media-tag, pre.mermaid').each(function (i, el) {
                     if (el.nodeName.toLowerCase() === "pre") {
@@ -368,16 +369,26 @@ define([
                 // Find initial position
                 var idx = -1;
                 mts.some(function (obj, i) {
-                    if (obj.src === $mt.attr('src')) {
+                    if (isSvg && $mt.find('svg').attr('id') === $(obj.svg).find('svg').attr('id')) {
+                        idx = i;
+                        return true;
+                    }
+                    if (!isSvg && obj.src === $mt.attr('src')) {
                         idx = i;
                         return true;
                     }
                 });
                 if (idx === -1) {
-                    mts.unshift({
-                        src: $mt.attr('src'),
-                        key: $mt.attr('data-crypto-key')
-                    });
+                    if (isSvg) {
+                        mts.unshift({
+                            svg: $mt[0].cloneNode(true)
+                        });
+                    } else {
+                        mts.unshift({
+                            src: $mt.attr('src'),
+                            key: $mt.attr('data-crypto-key')
+                        });
+                    }
                     idx = 0;
                 }
 

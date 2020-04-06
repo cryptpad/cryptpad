@@ -2545,10 +2545,11 @@ define([
             return void $(".cp-app-drive-element-row.cp-app-drive-new-ghost").click();
         }
 
-        var $modal = UI.createModal({
+        var modal = UI.createModal({
             id: 'cp-app-toolbar-creation-dialog',
             $body: $('body')
         });
+        var $modal = modal.$modal;
         var $title = $('<h3>').text(Messages.fm_newFile);
         var $description = $('<p>').html(Messages.creation_newPadModalDescription);
         $modal.find('.cp-modal').append($title);
@@ -2634,7 +2635,7 @@ define([
 
         $modal.find('.cp-modal').append($container).append($advancedContainer);
         window.setTimeout(function () {
-            $modal.show();
+            modal.show();
             $modal.focus();
         });
     };
