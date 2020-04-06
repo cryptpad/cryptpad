@@ -281,7 +281,7 @@
     "profile_description": "Kuvaus",
     "profile_fieldSaved": "Uusi arvo tallennettu: {0}",
     "profile_viewMyProfile": "Näytä oma profiili",
-    "userlist_addAsFriendTitle": "Lähetä ystäväpyyntö käyttäjälle \"{0}\"",
+    "userlist_addAsFriendTitle": "Lähetä kontaktipyyntö käyttäjälle \"{0}\"",
     "contacts_title": "Yhteystiedot",
     "contacts_addError": "Virhe lisätessä yhteystietoa listaan",
     "contacts_added": "Yhteystietopyyntö hyväksytty.",
@@ -301,7 +301,7 @@
     "contacts_confirmRemoveHistory": "Oletko varma, että haluat tyhjentää keskusteluhistorian pysyvästi? Tietoja ei voida palauttaa",
     "contacts_removeHistoryServerError": "Keskusteluhistorian poistamisessa tapahtui virhe. Yritä myöhemmin uudelleen",
     "contacts_fetchHistory": "Hae vanhempia viestejä",
-    "contacts_friends": "Kaverit",
+    "contacts_friends": "Kontaktit",
     "contacts_rooms": "Keskusteluhuoneet",
     "contacts_leaveRoom": "Lähde keskusteluhuoneesta",
     "contacts_online": "Toinen käyttäjä tästä keskusteluhuoneesta on online-tilassa",
@@ -354,7 +354,7 @@
     "fm_info_root": "Voit luoda haluamasi määrän sisäkkäisiä kansioita tiedostojesi järjestämiseen.",
     "fm_info_unsorted": "Sisältää kaikki käyttämäsi tiedostot, joita ei ole vielä lajiteltu \"Tiedostot\"-näkymässä tai siirretty roskakoriin.",
     "fm_info_template": "Sisältää kaikki mallipohjiksi tallennetut padit, joita voit käyttää uudelleen luodessasi uuden padin.",
-    "fm_info_recent": "Näytä viimeksi muokatut tai avatut padit.",
+    "fm_info_recent": "Tässä näytetään sinun tai yhteistyökumppaniesi äskettäin avaamat tai muokkaamat padit.",
     "fm_info_trash": "Tyhjennä roskakorisi vapauttaaksesi CryptDrive-tallennustilaa.",
     "fm_info_allFiles": "Sisältää kaikki tiedostot \"Dokumentit\"- \"Lajittelemattomat\"- ja \"Roskakori\"-näkymistä. Et voi siirtää tai poistaa tiedostoja täältä.",
     "fm_info_anonymous": "Et ole kirjautunut sisään. Padisi vanhenevat kolmen kuukauden kuluttua (<a href=\"https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/\" target=\"_blank\">(lue lisää)</a>). Padit säilytetään paikallisesti selaimessasi, joten selaimen historiatietojen tyhjentäminen saattaa hävittää ne.<br><a href=\"/register/\">Rekisteröidy</a>  tai  <a href=\"/login/\">kirjaudu sisään</a> säilyttääksesi padisi palvelimella.<br>",
@@ -513,7 +513,7 @@
     "settings_pinningError": "Jokin meni pieleen",
     "settings_usageAmount": "Kiinnitetyt padisi käyttävät {0}Mt",
     "settings_logoutEverywhereButton": "Kirjaudu ulos",
-    "settings_logoutEverywhereTitle": "Kirjaudu ulos kaikkialta",
+    "settings_logoutEverywhereTitle": "Sulje etäistunnot",
     "settings_logoutEverywhere": "Pakota uloskirjautuminen kaikista web-sessioista",
     "settings_logoutEverywhereConfirm": "Oletko varma? Joudut kirjautumaan kaikilla laitteillasi uudelleen sisään.",
     "settings_driveDuplicateTitle": "Omistettujen padien kaksoiskappaleet",
@@ -534,8 +534,8 @@
     "settings_creationSkipFalse": "Näytä",
     "settings_templateSkip": "Ohita mallipohjan valinta-dialogi",
     "settings_templateSkipHint": "Luodessasi uutta padia sinulta kysytään, haluatko käyttää mallipohjaa, jos sinulla on tallennettuja mallipohjia tälle padityypille. Tällä asetuksella voit valita, ettei mallipohjan valinta-dialogia näytetä ja siten mallipohjia ei koskaan käytetä.",
-    "settings_ownDriveTitle": "Ota käyttöön viimeisimmät tiliominaisuudet",
-    "settings_ownDriveHint": "Teknisistä syistä vanhemmilla käyttäjätileillä ei suoraan ole pääsyä CryptPadin uusimpiin ominaisuuksiin. Ilmainen päivitys uuteen käyttäjätiliin valmistelee CryptDrivesi tulevia ominaisuuksia varten häiritsemättä tavanomaista toimintaasi.",
+    "settings_ownDriveTitle": "Päivitä käyttäjätili",
+    "settings_ownDriveHint": "Vanhemmilla käyttäjätileillä ei ole teknisistä syistä pääsyä CryptPadin uusimpiin ominaisuuksiin. Ilmainen päivitys uuteen käyttäjätiliin valmistelee CryptDrivesi tulevia ominaisuuksia varten häiritsemättä tavanomaista toimintaasi.",
     "settings_ownDriveButton": "Päivitä käyttäjätilisi",
     "settings_ownDriveConfirm": "Käyttäjätilin päivitykseen voi mennä jonkin aikaa. Joudut kirjautumaan uudelleen sisään kaikilla laitteillasi. Oletko varma, että haluat aloittaa päivityksen?",
     "settings_ownDrivePending": "Käyttäjätiliäsi päivitetään. Ole hyvä, äläkä sulje tai lataa tätä sivua uudelleen, ennen kuin toimenpide on valmis.",
@@ -850,7 +850,7 @@
     "features_f_social": "Sosiaaliset sovellukset",
     "features_f_social_note": "Luo käyttäjäprofiili, käytä avatar-kuvaa, keskustele yhteystietojen kanssa",
     "features_f_file1": "Lataa ja jaa tiedostoja",
-    "features_f_file1_note": "Jaa tiedostoja kavereidesi kanssa tai upota ne padeihisi",
+    "features_f_file1_note": "Jaa tiedostoja kontaktiesi kanssa tai upota ne padeihisi",
     "features_f_storage1": "Pysyvä tallennustila (50Mt)",
     "features_f_storage1_note": "CryptDriveen tallennettuja padeja ei koskaan poisteta käyttämättömyyden takia",
     "features_f_register": "Rekisteröidy ilmaiseksi",
@@ -953,7 +953,7 @@
                 "a": "Rekisteröityneille käyttäjille on tarjolla joitakin toimintoja, jotka eivät ole saatavilla rekisteröitymättömille käyttäjille. Löydät nämä toiminnot <a href='/features.html' target='_blank'>luomastamme kaaviosta</a>."
             },
             "share": {
-                "q": "Miten jaan salattuja padeja kavereideni kanssa?",
+                "q": "Miten jaan salattuja padeja kontaktieni kanssa?",
                 "a": "CryptPad laittaa URL-osoitteessa padisi salaisen salausavaimen <em>#</em>-merkin jälkeen. Tämän merkin jälkeen laitettuja tietoja ei lähetetä palvelimelle, joten emme pääse koskaan käyttämään salausavaimiasi. Jakaessasi linkin padiin jaat oikeuden lukea ja käyttää sitä."
             },
             "remove": {
@@ -985,7 +985,7 @@
             "title": "Muita kysymyksiä",
             "pay": {
                 "q": "Miksi minun täytyisi maksaa, kun niin monet toiminnot ovat ilmaisia?",
-                "a": "Annamme tukijoillemme lisätallennustilaa ja mahdollisuuden kasvattaa kavereiden tallennustilakiintiöitä (<a href='https://accounts.cryptpad.fr/#/faq' target='_blank'>lue lisää</a>).<br><br>Näiden lyhytaikaisten etujen lisäksi premium-tilaus auttaa rahoittamaan CryptPadin jatkuvaa, aktiivista kehitystyötä. Tähän kuuluu bugien korjaamista, uusien ominaisuuksien lisäämistä ja CryptPad-instanssien pystyttämisen ja ylläpidon helpottamista. Lisäksi autat näyttämään muille palveluntarjoajille, että ihmiset ovat valmiita tukemaan yksityisyyttä parantavia teknologioita. Toivomme, että käyttäjätietojen myymiseen perustuvat liiketoimintamallit jäävät lopulta menneeseen.<br><br>Lopuksi, tarjoamme suurimman osan CryptPadin toiminnallisuudesta ilmaiseksi, koska uskomme yksityisyyden kuuluvan kaikille - ei vain niille, joilla on varaa maksaa siitä. Tukemalla meitä autat tarjoamaan heikommassa asemassa oleville väestöille pääsyn näihin peruspalveluihin."
+                "a": "Annamme tukijoillemme lisätallennustilaa ja mahdollisuuden kasvattaa kontaktien tallennustilakiintiöitä (<a href='https://accounts.cryptpad.fr/#/faq' target='_blank'>lue lisää</a>).<br><br>Näiden lyhytaikaisten etujen lisäksi premium-tilaus auttaa rahoittamaan CryptPadin jatkuvaa, aktiivista kehitystyötä. Tähän kuuluu bugien korjaamista, uusien ominaisuuksien lisäämistä ja CryptPad-instanssien pystyttämisen ja ylläpidon helpottamista. Lisäksi autat näyttämään muille palveluntarjoajille, että ihmiset ovat valmiita tukemaan yksityisyyttä parantavia teknologioita. Toivomme, että käyttäjätietojen myymiseen perustuvat liiketoimintamallit jäävät lopulta menneeseen.<br><br>Lopuksi, tarjoamme suurimman osan CryptPadin toiminnallisuudesta ilmaiseksi, koska uskomme yksityisyyden kuuluvan kaikille - ei vain niille, joilla on varaa maksaa siitä. Tukemalla meitä autat tarjoamaan heikommassa asemassa oleville väestöille pääsyn näihin peruspalveluihin."
             },
             "goal": {
                 "q": "Mitkä ovat tavoitteenne?",
@@ -1047,7 +1047,7 @@
             "colors": "Vaihda tekstin ja taustan väriä <span class=\"fa fa-i-cursor\"></span> ja <span class=\"fa fa-square\"></span> -painikkeilla"
         },
         "poll": {
-            "decisions": "Tee päätöksiä luotettujen ystävien kesken",
+            "decisions": "Tee päätöksiä luotettujen kontaktien kesken",
             "options": "Ehdota vaihtoehtoja ja tuo ilmi mielipiteesi",
             "choices": "Napsauta sarakkeesi soluja valitaksesi kyllä- (<strong>✔</strong>), ehkä- (<strong>~</strong>), tai ei (<strong>✖</strong>) -vaihtoehdon",
             "submit": "Napsauta <strong>Lähetä</strong> tehdäksesi valintasi näkyviksi muille"
@@ -1058,12 +1058,12 @@
             "embed": "Upota kuvia kovalevyltäsi <span class=\"fa fa-file-image-o\"></span> tai CryptDrivestasi <span class=\"fa fa-image\"></span> ja vie ne PNG-tiedostomuodossa kovalevyllesi <span class=\"fa fa-download\"></span> tai CryptDriveesi <span class=\"fa fa-cloud-upload\"></span>"
         },
         "kanban": {
-            "add": "Lisää uusia tauluja oikeassa yläkulmassa olevalla <span class=\"fa fa-plus\"></span> -painikkeella",
-            "task": "Siirrä kohtia raahaamalla ja pudottamalla ne yhdestä taulusta toiseen",
-            "color": "Vaihda värejä napsauttamalla taulun otsikon vieressä olevaa värillistä osaa"
+            "add": "Lisää uusia kortteja ja  tauluja <span class=\"fa fa-plus\"></span> -painikkeella",
+            "task": "Siirrä kohtia raahaamalla ja pudottamalla, raahaa <span class=\"fa fa-trash\"></span> roskakoriin poistaaksesi",
+            "color": "Muokkaa otsikoita, sisältöä, tunnisteita ja värejä korttien ja taulujen otsikoiden vieressä olevalla  span class=\"fa fa-pencil\"></span> -painikkeella"
         }
     },
     "driveReadmeTitle": "Mikä on CryptPad?",
     "readme_welcome": "Tervetuloa CryptPadiin!",
-    "readme_p1": "Tervetuloa CryptPadiin, täällä voit tehdä muistiinpanoja yksin tai ystäviesi kanssa."
+    "readme_p1": "Tervetuloa CryptPadiin, täällä voit tehdä muistiinpanoja yksin tai kontaktiesi kanssa."
 }
