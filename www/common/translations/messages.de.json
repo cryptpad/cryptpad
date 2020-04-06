@@ -938,7 +938,7 @@
     "creation_expiration": "Ablaufdatum",
     "creation_passwordValue": "Passwort",
     "creation_propertiesTitle": "Verfügbarkeit",
-    "creation_appMenuName": "Fortgeschrittener Modus (Strg + E)",
+    "creation_appMenuName": "Neues Pad (Strg + E)",
     "creation_newPadModalDescription": "Klicke auf einen Pad-Typ, um das entsprechende Pad zu erstellen. Du kannst auch die <b>Tab</b>-Taste für die Auswahl und die <b>Enter</b>-Taste zum Bestätigen benutzen.",
     "creation_newPadModalDescriptionAdvanced": "Du kannst das Kästchen markieren (oder den Wert mit der Leertaste ändern), um den Dialog bei der Pad-Erstellung anzuzeigen (für eigene oder auslaufende Dokumente etc.).",
     "creation_newPadModalAdvanced": "Dialog bei der Pad-Erstellung anzeigen",
