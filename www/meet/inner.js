@@ -150,14 +150,12 @@ define([
 
     var lastSampleDate = Date.now();
     var lastAudioReceivedDate = Date.now();
-    function launchAudio(framework) {
-      if (audioContext)
-        return;
+    function launchAudio(framework, cb) {
+      console.log("Initializing audio sub-system");
 
       // get Audio autorisation so that we can play sound
-        // we activate the audio system
-      var ac = new window.AudioContext();
-      audioContext = ac; 
+      // we activate the audio system
+      audioContext = new window.AudioContext();
 
       silence = new Float32Array(audioBufferSize);
       audioPlayingQueue = {
@@ -192,8 +190,8 @@ define([
               buffer = new Float32Array(0);
             }
         };
-         navigator.mediaDevices.getUserMedia(allConstraints).then((stream1) => {
-
+      
+       navigator.mediaDevices.getUserMedia(allConstraints).then((stream1) => {
           var pdata = framework._.sfCommon.getMetadataMgr().getUserData()
           stream["audio"] = stream1;
           
@@ -264,6 +262,7 @@ define([
           audioInput.connect(audioGainNode);
           audioGainNode.connect(audioProcessor);
           audioProcessor.connect(audioContext.destination);
+          cb();
         });  
       }
     
@@ -297,13 +296,11 @@ define([
      Setup a new remote user
     */
     function checkRemoteUser(clientId, name, cb) {
+
       var user = users[clientId];
       if (user) {
         console.log("Found user " + user);
         user.lastSeen = Date.now();
-        if (user.audioChannel==null) {
-          user.audioChannel = getNextAudioChannel(user);
-        }
         cb(user);
         return;
       }
@@ -392,6 +389,10 @@ define([
      Setup a new remote user
     */
     function dropRemoteUser(clientId, accountName, cb) {
+
+      if (!audioContext)
+        return;
+
       var user = users[clientId];
       if (user) {
         // free the audio channel
@@ -727,7 +728,6 @@ define([
       $("#cp-app-meet-microphone").click(function() {
         // make sure the audio sub-system is launched
         // because of chrome we can't launch it right away
-        launchAudio(framework); 
         
          var type = "audio";
          if (status[type]==false) { 
@@ -815,88 +815,12 @@ define([
     }
 
 
-    // Prepare buttons
-    initButtons();
+    function startVideoConf(framework) {
 
-    
-
-    // This is the main initialization loop
-    var andThen2 = function (framework) {
+        $("#cp-meet-start").hide();
+        $("#cp-app-meet-container").show();
+        launchAudio(framework, function() {
         
-        // Cannot initialize here
-        // launchAudio(framework);
-        
-        // Here you can load the objects or call the functions you have defined
-
-        // This is the function from which you will receive updates from CryptPad
-        // In this example we update the textarea with the data received
-        framework.onContentUpdate(function (newContent) {
-            console.log("Content should be updated to " + newContent);
-            $("#cp-app-meet-content").val(newContent.content);
-        });
-
-        // This is the function called to get the current state of the data in your app
-        // Here we read the data from the textarea and put it in a javascript object
-        framework.setContentGetter(function () {
-            var content = $("#cp-app-meet-content").val();
-            console.log("Content current value is " + content);
-            return {
-                content: content
-            };
-        });
-
-        // This is called when the system is ready to start editing
-        // We focus the textarea
-        framework.onReady(function (newPad) {
-            $("#cp-app-meet-content").focus();
-        });
-
-        framework._.sfCommon.getSframeChannel().on('EV_RT_JOIN', function (ev) {
-            checkRemoteUser(ev, "", function(user) {});
-        });
-
-       framework._.sfCommon.getSframeChannel().on('EV_RT_LEAVE', function (ev) {
-            dropRemoteUser(ev);
-        });
-
-       framework._.sfCommon.getMetadataMgr().onChange(function() {
-            var userId = framework._.sfCommon.getMetadataMgr().getUserData().netfluxId;
-            var cpUsers =  framework._.sfCommon.getMetadataMgr().getMetadata().users;
-            console.log("Check user start");
-            for (user in cpUsers) {
-              if (userId != user) {
-                var userData = cpUsers[user];
-                console.log("Adding user " + user + " " + userData.name);
-                checkRemoteUser(user, userData.name, function(user) {});
-              }
-            }
-            for (videoUser in users) {
-              if (!cpUsers[videoUser]) {
-                console.log("Could not find user " + videoUser + " dropping it")
-                dropRemoteUser(videoUser)
-              }
-            }
-            console.log("Check user end");
-       });
-
-        // We add some code to our application to be informed of changes from the textarea
-        var oldVal = "";
-        $("#cp-app-meet-content").on("change keyup paste", function () {
-            var currentVal = $(this).val();
-            if (currentVal === oldVal) {
-                return; //check to prevent multiple simultaneous triggers
-            }
-            oldVal = currentVal;
-            // action to be performed on textarea changed
-            console.log("Content changed");
-            // we call back the cryptpad framework to inform data has changes
-            framework.localChange();
-        });
-
-        // starting the CryptPad framework
-        window.framework = framework;
-        framework.start();
-
         /*
           Manager connecting to Video WebSocket and receiving data
         */
@@ -907,7 +831,7 @@ define([
           console.log("Connecting to video channel")
             var wsUrl = "ws://localhost:3000/cryptpad_websocket"; 
             // wsUrl = NetConfig.getWebsocketURL();
-	    // wsUrl = "wss://cryptpad.dubost.name/cryptpad_websocket";
+      // wsUrl = "wss://cryptpad.dubost.name/cryptpad_websocket";
             Netflux.connect(wsUrl).then(function (network) {
                 var privateData = framework._.sfCommon.getMetadataMgr().getPrivateData();
                 updateUserName(framework);
@@ -916,7 +840,9 @@ define([
                     console.log("Connected to video channel")
                     videoWC = wc;
 
-                     wc.on('message', function (cryptMsg) {
+                    updateUsers();
+
+                    wc.on('message', function (cryptMsg) {
                         console.log("Receiving encrypted data");
                         // console.log("Receiving encrypted data ", cryptMsg);
                         // var msg = videoEncryptor.decrypt(cryptMsg, null, true);
@@ -930,11 +856,7 @@ define([
                                 // console.log(parsed)
                                 checkRemoteUser(parsed.id, parsed.name, function(user) {
 
-                                  // we cannot handle frames until the mediastream is initialiazed.
-                                  if (user.init)
-                                    return;
-
-                                  try {
+                                try {
                                     if (parsed.type=="message") {
                                         if (parsed.action=="stopvideo") {
                                            user.remoteVideo.load();
@@ -1002,10 +924,10 @@ define([
                                               console.log("Audio context is not yet ready")
                                           } else {
                                               var data = outputResampler.resampler(audioData);
-                                              if (user.audioChannel)
+                                              if (user.audioChannel!=null)
                                                  audioPlayingQueue.write(data, user.audioChannel)
                                               else 
-                                                 console.log("No audio channe for this user " + user.id)
+                                                 console.log("No audio channel for this user " + user.id)
                                               var audioDoneTime = Date.now();
                                               var duration = audioDoneTime - parsed.startTime;
                                               addStats("remote", "audio", duration);
@@ -1029,6 +951,92 @@ define([
                 console.log("Could not get network")
             });
         });
+      });
+    }
+
+    function updateUsers() {
+            var userId = framework._.sfCommon.getMetadataMgr().getUserData().netfluxId;
+            var cpUsers =  framework._.sfCommon.getMetadataMgr().getMetadata().users;
+            console.log("Check user start");
+            for (user in cpUsers) {
+              if (userId != user) {
+                var userData = cpUsers[user];
+                console.log("Adding user " + user + " " + userData.name);
+                checkRemoteUser(user, userData.name, function(user) {});
+              }
+            }
+            for (videoUser in users) {
+              if (!cpUsers[videoUser]) {
+                console.log("Could not find user " + videoUser + " dropping it")
+                dropRemoteUser(videoUser)
+              }
+            }
+            console.log("Check user end");
+       }
+    
+    // Prepare buttons
+    initButtons();
+
+    // This creates a delayed start of the Video Conferencing
+    $("#cp-meet-start").click(function() { startVideoConf(framework) });
+
+    // This is the main initialization loop
+    var andThen2 = function (framework) {
+        
+        // Here you can load the objects or call the functions you have defined
+
+        // This is the function from which you will receive updates from CryptPad
+        // In this example we update the textarea with the data received
+        framework.onContentUpdate(function (newContent) {
+            console.log("Content should be updated to " + newContent);
+            $("#cp-app-meet-content").val(newContent.content);
+        });
+
+        // This is the function called to get the current state of the data in your app
+        // Here we read the data from the textarea and put it in a javascript object
+        framework.setContentGetter(function () {
+            var content = $("#cp-app-meet-content").val();
+            console.log("Content current value is " + content);
+            return {
+                content: content
+            };
+        });
+
+        // This is called when the system is ready to start editing
+        // We focus the textarea
+        framework.onReady(function (newPad) {
+            $("#cp-app-meet-content").focus();
+        });
+
+        framework._.sfCommon.getSframeChannel().on('EV_RT_JOIN', function (ev) {
+           if (audioContext)
+            checkRemoteUser(ev, "", function(user) {});
+        });
+
+       framework._.sfCommon.getSframeChannel().on('EV_RT_LEAVE', function (ev) {
+           if (audioContext)
+            dropRemoteUser(ev);
+        });
+
+       framework._.sfCommon.getMetadataMgr().onChange(updateUsers);
+
+        // We add some code to our application to be informed of changes from the textarea
+        var oldVal = "";
+        $("#cp-app-meet-content").on("change keyup paste", function () {
+            var currentVal = $(this).val();
+            if (currentVal === oldVal) {
+                return; //check to prevent multiple simultaneous triggers
+            }
+            oldVal = currentVal;
+            // action to be performed on textarea changed
+            console.log("Content changed");
+            // we call back the cryptpad framework to inform data has changes
+            framework.localChange();
+        });
+
+        // starting the CryptPad framework
+        window.framework = framework;
+        framework.start();
     };
 
     // This is the main starting loop
