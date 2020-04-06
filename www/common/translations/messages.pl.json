@@ -4,7 +4,10 @@
         "pad": "Pad",
         "code": "Kod",
         "poll": "Balot",
-        "slide": "Prezentacja"
+        "slide": "Prezentacja",
+        "contacts": "Kontakty",
+        "file": "Plik",
+        "kanban": "Kanban"
     },
     "common_connectionLost": "Przerwano połączenie z serwerem",
     "disconnected": "Rozłączony",

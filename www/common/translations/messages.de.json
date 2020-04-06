@@ -575,7 +575,7 @@
     "mdToolbar_button": "Die Markdown-Werkzeugleiste anzeigen oder verbergen",
     "mdToolbar_defaultText": "Dein Text hier",
     "mdToolbar_help": "Hilfe",
-    "mdToolbar_tutorial": "http://www.markdowntutorial.com/",
+    "mdToolbar_tutorial": "https://www.markdowntutorial.com/",
     "mdToolbar_bold": "Fett",
     "mdToolbar_italic": "Kursiv",
     "mdToolbar_strikethrough": "Durchgestrichen",
@@ -1337,5 +1337,10 @@
     "kanban_color": "Farbe",
     "kanban_body": "Inhalt",
     "kanban_title": "Titel",
-    "oo_isLocked": "synchronisiere Änderungen, bitte warten"
+    "oo_isLocked": "synchronisiere Änderungen, bitte warten",
+    "admin_openFilesHint": "Anzahl der momentan geöffneten Dateideskriptoren auf dem Server",
+    "admin_openFilesTitle": "Offene Dateien",
+    "canvas_select": "Auswahl",
+    "canvas_brush": "Pinsel",
+    "profile_copyKey": "Öffentlichen Schlüssel kopieren"
 }

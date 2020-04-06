@@ -1,8 +1,10 @@
 define([
     'jquery',
+    '/api/config',
     '/common/cryptget.js',
     '/common/pinpad.js',
     '/common/common-constants.js',
+    '/common/common-hash.js',
     '/common/outer/local-store.js',
     '/common/outer/login-block.js',
     '/common/outer/network-config.js',
@@ -11,7 +13,7 @@ define([
     '/bower_components/nthen/index.js',
     '/bower_components/netflux-websocket/netflux-client.js',
     '/bower_components/tweetnacl/nacl-fast.min.js'
-], function ($, Crypt, Pinpad, Constants, LocalStore, Block, NetConfig, Login, Test, nThen, Netflux) {
+], function ($, ApiConfig, Crypt, Pinpad, Constants, Hash, LocalStore, Block, NetConfig, Login, Test, nThen, Netflux) {
     var Nacl = window.nacl;
 
     var signMsg = function (msg, privKey) {
@@ -35,6 +37,7 @@ define([
     var rpc;
     var network;
     var rpcError;
+    var contacts = {};
 
     var loadProxy = function (hash) {
         nThen(function (waitFor) {
@@ -63,6 +66,39 @@ define([
             }), {
                 network: network
             });
+        }).nThen(function () {
+            var origin = ApiConfig.fileHost || window.location.origin;
+            // Get contacts and extract their avatar channel and key
+            var getData = function (obj, href) {
+                var parsed = Hash.parsePadUrl(href);
+                if (parsed.type !== "file") { return; }
+                var secret = Hash.getSecrets('file', parsed.hash);
+                if (!secret.keys || !secret.channel) { return; }
+                obj.avatarKey = Hash.encodeBase64(secret.keys && secret.keys.cryptKey);
+                obj.avatarSrc = origin + Hash.getBlobPathFromHex(secret.channel);
+            };
+            contacts.teams = proxy.teams || {};
+            contacts.friends = proxy.friends || {};
+            Object.keys(contacts.friends).map(function (key) {
+                var friend = contacts.friends[key];
+                var ret = {
+                    edPublic: friend.edPublic,
+                    name: friend.displayName,
+                };
+                getData(ret, friend.avatar);
+                contacts.friends[key] = ret;
+            });
+            Object.keys(contacts.teams).map(function (key) {
+                var team = contacts.teams[key];
+                var avatar = team.metadata && team.metadata.avatar;
+                var ret = {
+                    edPublic: team.keys && team.keys.drive && team.keys.drive.edPublic,
+                    name: team.metadata && team.metadata.name
+                };
+                getData(ret, avatar);
+                contacts.teams[key] = ret;
+            });
+            contacts.origin = window.location.origin;
         }).nThen(function (waitFor) {
             if (!network) { return void waitFor.abort(); }
             Pinpad.create(network, proxy, waitFor(function (e, call) {
@@ -122,6 +158,7 @@ define([
                         edPublic: proxy.edPublic,
                         sig: sig
                     };
+                    ret.contacts = contacts;
                     srcWindow.postMessage(JSON.stringify(ret), domain);
                 });
             }

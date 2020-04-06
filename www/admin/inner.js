@@ -43,6 +43,7 @@ define([
         'stats': [
             'cp-admin-active-sessions',
             'cp-admin-active-pads',
+            'cp-admin-open-files',
             'cp-admin-registered',
             'cp-admin-disk-usage',
         ],
@@ -113,6 +114,17 @@ define([
         var $div = makeBlock(key);
         sFrameChan.query('Q_ADMIN_RPC', {
             cmd: 'ACTIVE_PADS',
+        }, function (e, data) {
+            console.log(e, data);
+            $div.append(h('pre', String(data)));
+        });
+        return $div;
+    };
+    create['open-files'] = function () {
+        var key = 'open-files';
+        var $div = makeBlock(key);
+        sFrameChan.query('Q_ADMIN_RPC', {
+            cmd: 'GET_FILE_DESCRIPTOR_COUNT',
         }, function (e, data) {
             console.log(e, data);
             $div.append(h('pre', String(data)));

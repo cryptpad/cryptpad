@@ -259,12 +259,14 @@ define([
     };
 
     // Handle disconnect/reconnect
-    var setEditable = function (state) {
+    var setEditable = function (state, isHistory) {
         if (APP.closed || !APP.$content || !$.contains(document.documentElement, APP.$content[0])) { return; }
         APP.editable = !APP.readOnly && state;
         if (!state) {
             APP.$content.addClass('cp-app-drive-readonly');
-            $('#cp-app-drive-connection-state').show();
+            if (!isHistory) {
+                $('#cp-app-drive-connection-state').show();
+            }
             $('[draggable="true"]').attr('draggable', false);
         }
         else {
@@ -3865,6 +3867,7 @@ define([
 
             var opts = {};
             opts.href = Hash.getRelativeHref(data.href || data.roHref);
+            opts.channel = data.channel;
 
             if (manager.isSharedFolder(el)) {
                 var ro = folders[el] && folders[el].version >= 2;

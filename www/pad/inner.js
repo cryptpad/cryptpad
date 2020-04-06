@@ -601,6 +601,8 @@ define([
 
             restoreMediaTags(userDocStateDom, mediaTagMap);
 
+            cursors.removeCursors(inner);
+
             // Deal with adjasent text nodes
             userDocStateDom.normalize();
             inner.normalize();
