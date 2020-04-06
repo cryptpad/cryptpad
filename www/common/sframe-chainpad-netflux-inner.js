@@ -112,11 +112,16 @@ define([
         });
         sframeChan.on('EV_RT_CONNECT', function (content) {
             //content.members.forEach(userList.onJoin);
+            if (isReady && myID === content.myID) {
+                // We are connected and we are "reconnecting" ==> we probably had to rejoin
+                // the channel because of a server error (enoent), don't update the toolbar
+                return;
+            }
             isReady = false;
             if (myID) {
                 // it's a reconnect
                 myID = content.myID;
-                chainpad.start();
+                //chainpad.start();
                 onConnectionChange({ state: true, myId: myID });
                 return;
             }

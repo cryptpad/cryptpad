@@ -43,6 +43,7 @@ if (process.env.PACKAGE) {
     }
 
     config.httpUnsafeOrigin = config.httpUnsafeOrigin.trim();
+    config.httpSafeOrigin = config.httpSafeOrigin.trim().replace(/\/$/, '');
 
     // fall back to listening on a local address
     // if httpAddress is not a string
@@ -129,7 +130,7 @@ var setHeaders = (function () {
                     /^\/common\/onlyoffice\/.*\/index\.html.*/,
                     /^\/(sheet|ooslide|oodoc)\/inner\.html.*/,
                 ].some((regex) => {
-                    return regex.test(req.url)
+                    return regex.test(req.url);
                 }) ? padHeaders : headers;
             for (let header in h) { res.setHeader(header, h[header]); }
         };
