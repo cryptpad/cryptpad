@@ -108,6 +108,10 @@ define([
 
                 config.addCommonRpc(sframeChan);
 
+                Cryptpad.padRpc.onMetadataEvent.reg(function (data) {
+                    sframeChan.event('EV_RT_METADATA', data);
+                });
+
                 sframeChan.on('EV_CACHE_PUT', function (x) {
                     Object.keys(x).forEach(function (k) {
                         localStorage['CRYPTPAD_CACHE|' + k] = x[k];

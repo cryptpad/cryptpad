@@ -1020,6 +1020,10 @@ define([
                 initSecureModal('filepicker', data || {}, cb);
             });
 
+            sframeChan.on('EV_ACCESS_OPEN', function (data) {
+                initSecureModal('access', data || {}, null);
+            });
+
             sframeChan.on('EV_SHARE_OPEN', function (data) {
                 initSecureModal('share', data || {}, null);
             });

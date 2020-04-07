@@ -129,7 +129,10 @@ define([
                     tabs[i] = {
                         content: c && UI.dialog.customModal(node, {
                             buttons: obj.buttons || button,
-                            onClose: function () { blocked = false; }
+                            onClose: function () {
+                                blocked = false;
+                                if (typeof(opts.onClose) === "function") { opts.onClose(); }
+                            }
                         }),
                         disabled: !c,
                         title: obj.title,

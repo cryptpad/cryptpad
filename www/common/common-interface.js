@@ -196,6 +196,7 @@ define([
         ]);
         var $frame = $(frame);
         frame.closeModal = function (cb) {
+            frame.closeModal = function () {}; // Prevent further calls
             $frame.fadeOut(150, function () {
                 $frame.detach();
                 if (typeof(cb) === "function") { cb(); }

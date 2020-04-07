@@ -40,6 +40,8 @@ define([
 
         var displayed;
         var create = {};
+
+        // Share modal
         create['share'] = function (data) {
             var priv = metadataMgr.getPrivateData();
             var f = (data && data.file) ? UIElements.createFileShareModal
@@ -69,6 +71,20 @@ define([
             $('button.cancel').click(); // Close any existing alertify
             _modal = UI.openCustomModal(modal);
             displayed = modal;
+        };
+
+        // Access modal
+        create['access'] = function (data) {
+            require(['/common/inner/access.js'], function (Access) {
+                Access.getAccessModal(common, {
+                    onClose: function () {
+                        hideIframe();
+                    }
+                }, function (e, modal) {
+                    if (e) { console.error(e); }
+                    displayed = modal;
+                });
+            });
         };
 
         // File uploader

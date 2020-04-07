@@ -1592,11 +1592,7 @@ define([
                 .text(Messages.accessButton))
                 .click(common.prepareFeedback(type))
                 .click(function () {
-                    require(['/common/inner/access.js'], function (Access) {
-                        Access.getAccessModal(common, {}, function (e) {
-                            if (e) { console.error(e); }
-                        });
-                    });
+                    sframeChan.event('EV_ACCESS_OPEN');
                 });
                 break;
             case 'properties':
