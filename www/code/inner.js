@@ -300,6 +300,20 @@ define([
         var previewPane = mkPreviewPane(editor, CodeMirror, framework, isPresentMode);
         var markdownTb = mkMarkdownTb(editor, framework);
 
+        var $removeAuthorColorsButton = framework._.sfCommon.createButton('removeauthorcolors', true, {icon: 'fa-paint-brush', title: 'Autorenfarben entfernen'});
+        framework._.toolbar.$rightside.append($removeAuthorColorsButton);
+        $removeAuthorColorsButton.click(function() {
+            selfrom = editor.getCursor("from");
+            selto = editor.getCursor("to");
+            if (selfrom == selto) {
+                editor.getAllMarks().forEach(marker => marker.clear());
+            } else {
+                editor.findMarks(selfrom, selto).forEach(marker => marker.clear());
+            }
+            framework.localChange();
+        });
+
+        var authormarksLocal = [];
         var authormarksUpdate = [];
 
         var $print = $('#cp-app-code-print');
@@ -352,7 +366,7 @@ define([
             // author marks will be updated in onChange-Handler
             authormarksUpdate = newContent.authormarks;
 
-            CodeMirror.contentUpdate(newContent);
+            CodeMirror.contentUpdate(newContent, authormarksUpdate, authormarksLocal);
             previewPane.draw();
         });
 
@@ -372,6 +386,7 @@ define([
                 }
             });
             content.authormarks = authormarks;
+            authormarksLocal = authormarks.slice();
 
             return content;
         });

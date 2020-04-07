@@ -418,12 +418,12 @@ define([
 
 
 
-        exp.contentUpdate = function (newContent) {
+        exp.contentUpdate = function (newContent, authormarksUpdate, authormarksLocal) {
             var oldDoc = canonicalize(editor.getValue());
             var remoteDoc = newContent.content;
             // setValueAndCursor triggers onLocal, even if we don't make any change to the content
             // and it may revert other changes (metadata)
-            if (oldDoc === remoteDoc) { return; }
+            if (oldDoc === remoteDoc && authormarksUpdate == authormarksLocal) { return; }
             exp.setValueAndCursor(oldDoc, remoteDoc);
         };
 
