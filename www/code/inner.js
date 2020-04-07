@@ -305,7 +305,7 @@ define([
         $removeAuthorColorsButton.click(function() {
             selfrom = editor.getCursor("from");
             selto = editor.getCursor("to");
-            if (selfrom == selto) {
+            if (!editor.somethingSelected() || selfrom == selto) {
                 editor.getAllMarks().forEach(marker => marker.clear());
             } else {
                 editor.findMarks(selfrom, selto).forEach(marker => marker.clear());
