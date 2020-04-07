@@ -300,6 +300,8 @@ define([
         var previewPane = mkPreviewPane(editor, CodeMirror, framework, isPresentMode);
         var markdownTb = mkMarkdownTb(editor, framework);
 
+        var authormarksUpdate = [];
+
         var $print = $('#cp-app-code-print');
         var $content = $('#cp-app-code-preview-content');
         mkPrintButton(framework, $content, $print);
@@ -321,6 +323,23 @@ define([
         } else {
             CodeMirror.configureTheme(common);
         }
+        
+        // get user color for author marks
+        var authorcolor = framework._.sfCommon.getMetadataMgr().getUserData().color;
+        var authorcolor_r = parseInt("0x" + authorcolor.slice(1,3));
+        var authorcolor_g = parseInt("0x" + authorcolor.slice(3,5));
+        var authorcolor_b = parseInt("0x" + authorcolor.slice(5,7));
+        var authorcolor_min = Math.min(authorcolor_r, authorcolor_g, authorcolor_b);
+
+        // set minimal brightness for author marks and calculate color
+        tarMinColorVal = 180;
+        if (authorcolor_min < tarMinColorVal) {
+            facColor = (255-tarMinColorVal)/(255-authorcolor_min);
+            authorcolor_r = Math.floor(255-facColor*(255-authorcolor_r));
+            authorcolor_g = Math.floor(255-facColor*(255-authorcolor_g));
+            authorcolor_b = Math.floor(255-facColor*(255-authorcolor_b));
+            authorcolor = "#" + authorcolor_r.toString(16) + authorcolor_g.toString(16) + authorcolor_b.toString(16);
+        }
 
         ////
 
@@ -329,6 +348,10 @@ define([
             if (highlightMode && highlightMode !== CodeMirror.highlightMode) {
                 CodeMirror.setMode(highlightMode, evModeChange.fire);
             }
+
+            // author marks will be updated in onChange-Handler
+            authormarksUpdate = newContent.authormarks;
+
             CodeMirror.contentUpdate(newContent);
             previewPane.draw();
         });
@@ -338,6 +361,18 @@ define([
             var content = CodeMirror.getContent();
             content.highlightMode = CodeMirror.highlightMode;
             previewPane.draw();
+
+            // get author marks
+            authormarks = [];
+            editor.getAllMarks().forEach(function (mark) {
+                pos = mark.find();
+                css = mark.css;
+                if (pos != undefined && css != undefined) {
+                    authormarks.push({from: {line: pos.from.line, ch: pos.from.ch}, to: {line: pos.to.line, ch: pos.to.ch}, color: css.replace("background-color:", "").trim()});
+                }
+            });
+            content.authormarks = authormarks;
+
             return content;
         });
 
@@ -401,11 +436,24 @@ define([
         framework.setNormalizer(function (c) {
             return {
                 content: c.content,
-                highlightMode: c.highlightMode
+                highlightMode: c.highlightMode,
+                authormarks: c.authormarks
             };
         });
 
-        editor.on('change', framework.localChange);
+        editor.on('change', function( cm, change ) {
+            if (change.origin == "+input" || change.origin == "paste") {
+                // add new author mark if text is added. marks from removed text are removed automatically
+                editor.markText({line: change.from.line, ch: change.from.ch}, {line: change.from.line + change.text.length-1, ch: change.from.ch + change.text[change.text.length-1].length}, {css: "background-color: " + authorcolor});
+            } else if (change.origin == "setValue") {
+                // on remote update: remove all marks, add new marks
+                editor.getAllMarks().forEach(marker => marker.clear());
+                authormarksUpdate.forEach(function (mark) {
+                    editor.markText({line: mark.from.line, ch: mark.from.ch}, {line: mark.to.line, ch: mark.to.ch}, {css: "background-color: " + mark.color});
+                });
+            }
+            framework.localChange();
+        });
 
         framework.start();
 
