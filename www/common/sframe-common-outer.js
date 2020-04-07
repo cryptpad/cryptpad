@@ -488,7 +488,7 @@ define([
 
 
             // Put in the following function the RPC queries that should also work in filepicker
-            var addCommonRpc = function (sframeChan) {
+            var addCommonRpc = function (sframeChan, safe) {
                 sframeChan.on('Q_ANON_RPC_MESSAGE', function (data, cb) {
                     Cryptpad.anonRpcMsg(data.msg, data.content, function (err, response) {
                         cb({error: err, response: response});
@@ -595,6 +595,12 @@ define([
                     }
                     if (data.href) { href = data.href; }
                     Cryptpad.getPadAttribute(data.key, function (e, data) {
+                        if (!safe && data) {
+                            // Remove unsafe data for the unsafe iframe
+                            delete data.href;
+                            delete data.roHref;
+                            delete data.password;
+                        }
                         cb({
                             error: e,
                             data: data

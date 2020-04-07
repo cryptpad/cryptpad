@@ -106,7 +106,7 @@ define([
                 Cryptpad.onMetadataChanged(updateMeta);
                 sframeChan.onReg('EV_METADATA_UPDATE', updateMeta);
 
-                config.addCommonRpc(sframeChan);
+                config.addCommonRpc(sframeChan, true);
 
                 Cryptpad.padRpc.onMetadataEvent.reg(function (data) {
                     sframeChan.event('EV_RT_METADATA', data);
