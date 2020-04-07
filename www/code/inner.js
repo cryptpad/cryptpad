@@ -382,23 +382,29 @@ define([
 
             // get author marks
             var authormarks = [];
+            var colorlist = [];
             editor.getAllMarks().forEach(function (mark) {
                 var pos = mark.find();
                 var css = mark.css;
                 if (pos !== undefined && css !== undefined) {
                     var color = css.replace("background-color:", "").trim();
+                    var colorIndex = colorlist.indexOf(color);
+                    if (colorIndex === -1) {
+                        colorlist.push(color);
+                        colorIndex = colorlist.length-1;
+                    }
                     if (pos.from.line === pos.to.line) {
                         if ((pos.from.ch + 1) === pos.to.ch) {
-                            authormarks.push([pos.from.line, pos.from.ch, color]);
+                            authormarks.push([colorIndex, pos.from.line, pos.from.ch]);
                         } else {
-                            authormarks.push([pos.from.line, pos.from.ch, pos.to.ch, color]);
+                            authormarks.push([colorIndex, pos.from.line, pos.from.ch, pos.to.ch]);
                         }
                     } else {
-                        authormarks.push([pos.from.line, pos.from.ch, pos.to.line, pos.to.ch, color]);
+                        authormarks.push([colorIndex, pos.from.line, pos.from.ch, pos.to.line, pos.to.ch]);
                     }
                 }
             });
-            content.authormarks = authormarks;
+            content.authormarks = {marks: authormarks, colorlist: colorlist};
             authormarksLocal = authormarks.slice();
 
             return content;
@@ -484,32 +490,31 @@ define([
                 editor.getAllMarks().forEach(function (marker) {
                     marker.clear();
                 });
-                authormarksUpdate.forEach(function (mark) {
+                authormarksUpdate.marks.forEach(function (mark) {
                     var from_line;
                     var to_line;
                     var from_ch;
                     var to_ch;
-                    var mark_color;
+                    var colorIndex = mark[0];
+                    if (authormarksUpdate.colorlist === undefined || (authormarksUpdate.colorlist.length < (colorIndex+1))) { return; }
+                    var color = authormarksUpdate.colorlist[colorIndex];
                     if (mark.length === 3)  {
-                        from_line = mark[0];
-                        to_line = mark[0];
-                        from_ch = mark[1];
-                        to_ch = mark[1]+1;
-                        mark_color = mark[2];
+                        from_line = mark[1];
+                        to_line = mark[1];
+                        from_ch = mark[2];
+                        to_ch = mark[2]+1;
                     } else if (mark.length === 4) {
-                        from_line = mark[0];
-                        to_line = mark[0];
-                        from_ch = mark[1];
-                        to_ch = mark[2];
-                        mark_color = mark[3];
-                    } else if (mark.length === 5) {
-                        from_line = mark[0];
-                        to_line = mark[2];
-                        from_ch = mark[1];
+                        from_line = mark[1];
+                        to_line = mark[1];
+                        from_ch = mark[2];
                         to_ch = mark[3];
-                        mark_color = mark[4];
+                    } else if (mark.length === 5) {
+                        from_line = mark[1];
+                        to_line = mark[3];
+                        from_ch = mark[2];
+                        to_ch = mark[4];
                     }
-                    editor.markText({line: from_line, ch: from_ch}, {line: to_line, ch: to_ch}, {css: "background-color: " + mark_color});
+                    editor.markText({line: from_line, ch: from_ch}, {line: to_line, ch: to_ch}, {css: "background-color: " + color});
                 });
             }
             framework.localChange();
