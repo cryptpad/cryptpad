@@ -464,16 +464,23 @@ define([
 
     UI.createModal = function (cfg) {
         var $body = cfg.$body || $('body');
-        var $blockContainer = $body.find('#'+cfg.id);
-        if (!$blockContainer.length) {
-            $blockContainer = $(h('div.cp-modal-container#'+cfg.id, {
+        var $blockContainer = cfg.id && $body.find('#'+cfg.id);
+        if (!$blockContainer || !$blockContainer.length) {
+            var id = '';
+            if (cfg.id) { id = '#'+cfg.id; }
+            $blockContainer = $(h('div.cp-modal-container'+id, {
                 tabindex: 1
             }));
         }
+        var deleted = false;
         var hide = function () {
-            if (cfg.onClose) { return void cfg.onClose(); }
+            if (deleted) { return; }
             $blockContainer.hide();
-            if (cfg.onClosed) { cfg.onClosed(); }
+            if (!cfg.id) {
+                deleted = true;
+                $blockContainer.remove();
+            }
+            if (cfg.onClose) { cfg.onClose(); }
         };
         $blockContainer.html('').appendTo($body);
         var $block = $(h('div.cp-modal')).appendTo($blockContainer);

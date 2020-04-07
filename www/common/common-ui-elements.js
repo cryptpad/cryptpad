@@ -2628,16 +2628,12 @@ define([
         });
     };
 
-    UIElements.initFilePicker = function (common, cfg) {
-        var onSelect = cfg.onSelect || $.noop;
+    UIElements.openFilePicker = function (common, types, cb) {
         var sframeChan = common.getSframeChannel();
-        sframeChan.on("EV_FILE_PICKED", function (data) {
-            onSelect(data);
+        sframeChan.query("Q_FILE_PICKER_OPEN", types, function (err, data) {
+            if (err) { return; }
+            cb(data);
         });
-    };
-    UIElements.openFilePicker = function (common, types) {
-        var sframeChan = common.getSframeChannel();
-        sframeChan.event("EV_FILE_PICKER_OPEN", types);
     };
 
     UIElements.openTemplatePicker = function (common, force) {
@@ -2661,29 +2657,25 @@ define([
                 return;
             }
             delete pickerCfg.hidden;
-            common.openFilePicker(pickerCfg);
             var first = true; // We can only pick a template once (for a new document)
-            var fileDialogCfg = {
-                onSelect: function (data) {
-                    if (data.type === type && first) {
-                        UI.addLoadingScreen({hideTips: true});
-                        var chatChan = common.getPadChat();
-                        var cursorChan = common.getCursorChannel();
-                        sframeChan.query('Q_TEMPLATE_USE', {
-                            href: data.href,
-                            chat: chatChan,
-                            cursor: cursorChan
-                        }, function () {
-                            first = false;
-                            UI.removeLoadingScreen();
-                            Feedback.send('TEMPLATE_USED');
-                        });
-                        if (focus) { focus.focus(); }
-                        return;
-                    }
+            common.openFilePicker(pickerCfg, function (data) {
+                if (data.type === type && first) {
+                    UI.addLoadingScreen({hideTips: true});
+                    var chatChan = common.getPadChat();
+                    var cursorChan = common.getCursorChannel();
+                    sframeChan.query('Q_TEMPLATE_USE', {
+                        href: data.href,
+                        chat: chatChan,
+                        cursor: cursorChan
+                    }, function () {
+                        first = false;
+                        UI.removeLoadingScreen();
+                        Feedback.send('TEMPLATE_USED');
+                    });
+                    if (focus) { focus.focus(); }
+                    return;
                 }
-            };
-            common.initFilePicker(fileDialogCfg);
+            });
         };
 
         sframeChan.query("Q_TEMPLATE_EXIST", type, function (err, data) {

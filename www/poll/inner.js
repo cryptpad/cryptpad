@@ -1206,22 +1206,18 @@ define([
         updatePublishButton();
 
         if (common.isLoggedIn()) {
-            var fileDialogCfg = {
-                onSelect: function (data) {
-                    if (data.type === 'file' && APP.editor) {
-                        var mt = '<media-tag src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>';
-                        APP.editor.replaceSelection(mt);
-                        return;
-                    }
-                }
-            };
-            common.initFilePicker(fileDialogCfg);
             APP.$mediaTagButton = common.createButton('mediatag', true).click(function () {
                 var pickerCfg = {
                     types: ['file'],
                     where: ['root']
                 };
-                common.openFilePicker(pickerCfg);
+                common.openFilePicker(pickerCfg, function (data) {
+                    if (data.type === 'file' && APP.editor) {
+                        var mt = '<media-tag src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>';
+                        APP.editor.replaceSelection(mt);
+                        return;
+                    }
+                });
             }).appendTo($rightside);
 
             var $tags = common.createButton('hashtag', true);

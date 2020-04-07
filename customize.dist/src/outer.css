@@ -2,7 +2,7 @@ html, body {
     margin: 0px;
     padding: 0px;
 }
-#sbox-iframe, #sbox-share-iframe, #sbox-filePicker-iframe {
+#sbox-iframe, #sbox-secure-iframe {
     position: fixed;
     top:0; left:0;
     bottom:0; right:0;

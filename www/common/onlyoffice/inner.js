@@ -941,8 +941,16 @@ define([
                 if (ifr) { ifr.remove(); }
             };
 
-            common.initFilePicker({
-                onSelect: function (data) {
+            APP.AddImage = function(cb1, cb2) {
+                APP.AddImageSuccessCallback = cb1;
+                APP.AddImageErrorCallback = cb2;
+                common.openFilePicker({
+                    types: ['file'],
+                    where: ['root'],
+                    filter: {
+                        fileType: ['image/']
+                    }
+                }, function (data) {
                     if (data.type !== 'file') {
                         debug("Unexpected data type picked " + data.type);
                         return;
@@ -963,19 +971,6 @@ define([
                             });
                         });
                     });
-                }
-            });
-
-            APP.AddImage = function(cb1, cb2) {
-                APP.AddImageSuccessCallback = cb1;
-                APP.AddImageErrorCallback = cb2;
-                common.openFilePicker({
-                    types: ['file'],
-                    where: ['root'],
-                    filter: {
-                        fileType: ['image/']
-                    }
-
                 });
             };
 

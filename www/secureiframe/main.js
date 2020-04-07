@@ -7,6 +7,8 @@ define([
 ], function (nThen, ApiConfig, $, RequireConfig) {
     var requireConfig = RequireConfig();
 
+    var ready = false;
+
     var create = function (config) {
         // Loaded in load #2
         var sframeChan;
@@ -20,8 +22,8 @@ define([
             };
             window.rc = requireConfig;
             window.apiconf = ApiConfig;
-            $('#sbox-filePicker-iframe').attr('src',
-                ApiConfig.httpSafeOrigin + '/filepicker/inner.html?' + requireConfig.urlArgs +
+            $('#sbox-secure-iframe').attr('src',
+                ApiConfig.httpSafeOrigin + '/secureiframe/inner.html?' + requireConfig.urlArgs +
                     '#' + encodeURIComponent(JSON.stringify(req)));
 
             // This is a cheap trick to avoid loading sframe-channel in parallel with the
@@ -46,7 +48,7 @@ define([
                 // First, we have to answer to this message, otherwise we're going to block
                 // sframe-boot.js. Then we can start the channel.
                 var msgEv = Utils.Util.mkEvent();
-                var iframe = $('#sbox-filePicker-iframe')[0].contentWindow;
+                var iframe = $('#sbox-secure-iframe')[0].contentWindow;
                 var postMsg = function (data) {
                     iframe.postMessage(data, '*');
                 };
@@ -77,7 +79,10 @@ define([
                     var metaObj;
                     nThen(function (waitFor) {
                         Cryptpad.getMetadata(waitFor(function (err, n) {
-                            if (err) { console.log(err); }
+                            if (err) {
+                                waitFor.abort();
+                                return void console.log(err);
+                            }
                             metaObj = n;
                         }));
                     }).nThen(function (/*waitFor*/) {
@@ -88,7 +93,10 @@ define([
                             origin: window.location.origin,
                             pathname: window.location.pathname,
                             feedbackAllowed: Utils.Feedback.state,
-                            types: config.types
+                            hashes: config.data.hashes,
+                            password: config.data.password,
+                            isTemplate: config.data.isTemplate,
+                            file: config.data.file,
                         };
                         for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 
@@ -100,6 +108,21 @@ define([
 
                 config.addCommonRpc(sframeChan);
 
+                sframeChan.on('EV_CACHE_PUT', function (x) {
+                    Object.keys(x).forEach(function (k) {
+                        localStorage['CRYPTPAD_CACHE|' + k] = x[k];
+                    });
+                });
+                sframeChan.on('EV_LOCALSTORE_PUT', function (x) {
+                    Object.keys(x).forEach(function (k) {
+                        if (typeof(x[k]) === "undefined") {
+                            delete localStorage['CRYPTPAD_STORE|' + k];
+                            return;
+                        }
+                        localStorage['CRYPTPAD_STORE|' + k] = x[k];
+                    });
+                });
+
                 sframeChan.on('Q_GET_FILES_LIST', function (types, cb) {
                     Cryptpad.getSecureFilesList(types, function (err, data) {
                         cb({
@@ -109,20 +132,44 @@ define([
                     });
                 });
 
-                sframeChan.on('EV_FILE_PICKER_CLOSE', function () {
-                    config.onClose();
-                });
-                sframeChan.on('EV_FILE_PICKED', function (data) {
-                    config.onFilePicked(data);
+                sframeChan.on('EV_SECURE_ACTION', function (data) {
+                    config.onAction(data);
                 });
                 sframeChan.on('Q_UPLOAD_FILE', function (data, cb) {
                     config.onFileUpload(sframeChan, data, cb);
                 });
+
+                sframeChan.on('Q_GET_FILES_LIST', function (types, cb) {
+                    Cryptpad.getSecureFilesList(types, function (err, data) {
+                        cb({
+                            error: err,
+                            data: data
+                        });
+                    });
+                });
+
+                sframeChan.on('EV_SECURE_IFRAME_CLOSE', function () {
+                    config.onClose();
+                });
+
+                sframeChan.onReady(function () {
+                    if (ready === true) { return; }
+                    if (typeof ready === "function") {
+                        ready();
+                    }
+                    ready = true;
+                });
             });
         });
-        var refresh = function (types) {
-            if (!sframeChan) { return; }
-            sframeChan.event('EV_FILE_PICKER_REFRESH', types);
+        var refresh = function (data, cb) {
+            if (!ready) {
+                ready = function () {
+                    refresh(data, cb);
+                };
+                return;
+            }
+            sframeChan.event('EV_REFRESH', data);
+            cb();
         };
         return {
             refresh: refresh
