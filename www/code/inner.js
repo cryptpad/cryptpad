@@ -459,7 +459,12 @@ define([
         editor.on('change', function( cm, change ) {
             if (change.origin == "+input" || change.origin == "paste") {
                 // add new author mark if text is added. marks from removed text are removed automatically
-                editor.markText({line: change.from.line, ch: change.from.ch}, {line: change.from.line + change.text.length-1, ch: change.from.ch + change.text[change.text.length-1].length}, {css: "background-color: " + authorcolor});
+                if (change.text.length > 1) {
+                    to_ch = change.text[change.text.length-1].length; 
+                } else {
+                    to_ch = change.from.ch + change.text[change.text.length-1].length;                
+                }
+                editor.markText({line: change.from.line, ch: change.from.ch}, {line: change.from.line + change.text.length-1, ch: to_ch}, {css: "background-color: " + authorcolor});
             } else if (change.origin == "setValue") {
                 // on remote update: remove all marks, add new marks
                 editor.getAllMarks().forEach(marker => marker.clear());
