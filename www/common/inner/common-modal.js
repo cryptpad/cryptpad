@@ -59,8 +59,8 @@ define([
             }), opts.href);
 
             // If this is a file, don't try to look for metadata
+            if (opts.channel && opts.channel.length > 32) { return; }
             if (opts.channel) { data.channel = opts.channel; }
-            if (!data.channel || data.channel.length > 32) { return; }
             Modal.loadMetadata(Env, data, waitFor);
         }).nThen(function () {
             cb(void 0, data);
