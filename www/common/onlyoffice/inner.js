@@ -132,6 +132,12 @@ define([
             APP.onLocal();
         };
 
+        var isRegisteredUserOnline = function () {
+            var users = metadataMgr.getMetadata().users || {};
+            return Object.keys(users).some(function (id) {
+                return users[id] && users[id].curvePublic;
+            });
+        };
         var isUserOnline = function (ooid) {
             // Remove ids for users that have left the channel
             deleteOffline();
@@ -348,16 +354,44 @@ define([
             fixSheets();
             APP.FM.handleFile(blob, data);
         };
+
+        Messages.oo_login = 'Log in...'; // XXX
+        var noLogin = false;
+
         var makeCheckpoint = function (force) {
-            if (!common.isLoggedIn()) { return; }
             var locked = content.saveLock;
             var lastCp = getLastCp();
 
             var needCp = force || ooChannel.cpIndex % CHECKPOINT_INTERVAL === 0 ||
-                        (ooChannel.cpIndex - lastCp.index) > CHECKPOINT_INTERVAL;
+                        (ooChannel.cpIndex - (lastCp.index || 0)) > CHECKPOINT_INTERVAL;
             if (!needCp) { return; }
 
             if (!locked || !isUserOnline(locked) || force) {
+                if (!common.isLoggedIn() && !isRegisteredUserOnline() && !noLogin) {
+                    var login = h('button.cp-corner-primary', Messages.login_login);
+                    var register = h('button.cp-corner-primary', Messages.login_register);
+                    var cancel = h('button.cp-corner-cancel', Messages.cancel);
+                    var actions = h('div', [cancel, register, login]);
+                    var modal = UI.cornerPopup(Messages.oo_login, actions, '', {alt: true});
+                    $(register).click(function () {
+                        common.setLoginRedirect(function () {
+                            common.gotoURL('/register/');
+                        });
+                        modal.delete();
+                    });
+                    $(login).click(function () {
+                        common.setLoginRedirect(function () {
+                            common.gotoURL('/login/');
+                        });
+                        modal.delete();
+                    });
+                    $(cancel).click(function () {
+                        modal.delete();
+                        noLogin = true;
+                    });
+                    return;
+                }
+                if (!common.isLoggedIn()) { return; }
                 content.saveLock = myOOId;
                 APP.onLocal();
                 APP.realtime.onSettle(function () {
