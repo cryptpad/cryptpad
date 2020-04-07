@@ -73,6 +73,20 @@ define([
             displayed = modal;
         };
 
+        // Properties modal
+        create['properties'] = function (data) {
+            require(['/common/inner/properties.js'], function (Properties) {
+                Properties.getPropertiesModal(common, {
+                    onClose: function () {
+                        hideIframe();
+                    }
+                }, function (e) {
+                    if (e) { console.error(e); }
+                    displayed = modal;
+                });
+            });
+        };
+
         // Access modal
         create['access'] = function (data) {
             require(['/common/inner/access.js'], function (Access) {

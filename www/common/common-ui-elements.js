@@ -1607,11 +1607,7 @@ define([
                         if (!data) {
                             return void UI.alert(Messages.autostore_notAvailable);
                         }
-                        require(['/common/inner/properties.js'], function (Properties) {
-                            Properties.getPropertiesModal(common, {}, function (e) {
-                                if (e) { console.error(e); }
-                            });
-                        });
+                        sframeChan.event('EV_PROPERTIES_OPEN');
                     });
                 });
                 break;
