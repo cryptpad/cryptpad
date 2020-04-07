@@ -303,12 +303,16 @@ define([
         var $removeAuthorColorsButton = framework._.sfCommon.createButton('removeauthorcolors', true, {icon: 'fa-paint-brush', title: 'Autorenfarben entfernen'});
         framework._.toolbar.$rightside.append($removeAuthorColorsButton);
         $removeAuthorColorsButton.click(function() {
-            selfrom = editor.getCursor("from");
-            selto = editor.getCursor("to");
-            if (!editor.somethingSelected() || selfrom == selto) {
-                editor.getAllMarks().forEach(marker => marker.clear());
+            var selfrom = editor.getCursor("from");
+            var selto = editor.getCursor("to");
+            if (!editor.somethingSelected() || selfrom === selto) {
+                editor.getAllMarks().forEach(function (marker) {
+                    marker.clear();
+                });
             } else {
-                editor.findMarks(selfrom, selto).forEach(marker => marker.clear());
+                editor.findMarks(selfrom, selto).forEach(function (marker) {
+                    marker.clear();
+                });
             }
             framework.localChange();
         });
@@ -346,9 +350,9 @@ define([
         var authorcolor_min = Math.min(authorcolor_r, authorcolor_g, authorcolor_b);
 
         // set minimal brightness for author marks and calculate color
-        tarMinColorVal = 180;
+        var tarMinColorVal = 180;
         if (authorcolor_min < tarMinColorVal) {
-            facColor = (255-tarMinColorVal)/(255-authorcolor_min);
+            var facColor = (255-tarMinColorVal)/(255-authorcolor_min);
             authorcolor_r = Math.floor(255-facColor*(255-authorcolor_r));
             authorcolor_g = Math.floor(255-facColor*(255-authorcolor_g));
             authorcolor_b = Math.floor(255-facColor*(255-authorcolor_b));
@@ -377,12 +381,21 @@ define([
             previewPane.draw();
 
             // get author marks
-            authormarks = [];
+            var authormarks = [];
             editor.getAllMarks().forEach(function (mark) {
-                pos = mark.find();
-                css = mark.css;
-                if (pos != undefined && css != undefined) {
-                    authormarks.push({from: {line: pos.from.line, ch: pos.from.ch}, to: {line: pos.to.line, ch: pos.to.ch}, color: css.replace("background-color:", "").trim()});
+                var pos = mark.find();
+                var css = mark.css;
+                if (pos !== undefined && css !== undefined) {
+                    var color = css.replace("background-color:", "").trim();
+                    if (pos.from.line === pos.to.line) {
+                        if ((pos.from.ch + 1) === pos.to.ch) {
+                            authormarks.push([pos.from.line, pos.from.ch, color]);
+                        } else {
+                            authormarks.push([pos.from.line, pos.from.ch, pos.to.ch, color]);
+                        }
+                    } else {
+                        authormarks.push([pos.from.line, pos.from.ch, pos.to.line, pos.to.ch, color]);
+                    }
                 }
             });
             content.authormarks = authormarks;
@@ -457,19 +470,46 @@ define([
         });
 
         editor.on('change', function( cm, change ) {
-            if (change.origin == "+input" || change.origin == "paste") {
+            if (change.origin !== undefined && change.text !== undefined && (change.origin === "+input" || change.origin === "paste")) {
                 // add new author mark if text is added. marks from removed text are removed automatically
+                var to_ch_add;
                 if (change.text.length > 1) {
-                    to_ch = change.text[change.text.length-1].length; 
+                    to_ch_add = change.text[change.text.length-1].length; 
                 } else {
-                    to_ch = change.from.ch + change.text[change.text.length-1].length;                
+                    to_ch_add = change.from.ch + change.text[change.text.length-1].length;                
                 }
-                editor.markText({line: change.from.line, ch: change.from.ch}, {line: change.from.line + change.text.length-1, ch: to_ch}, {css: "background-color: " + authorcolor});
-            } else if (change.origin == "setValue") {
+                editor.markText({line: change.from.line, ch: change.from.ch}, {line: change.from.line + change.text.length-1, ch: to_ch_add}, {css: "background-color: " + authorcolor});
+            } else if (change.origin === "setValue") {
                 // on remote update: remove all marks, add new marks
-                editor.getAllMarks().forEach(marker => marker.clear());
+                editor.getAllMarks().forEach(function (marker) {
+                    marker.clear();
+                });
                 authormarksUpdate.forEach(function (mark) {
-                    editor.markText({line: mark.from.line, ch: mark.from.ch}, {line: mark.to.line, ch: mark.to.ch}, {css: "background-color: " + mark.color});
+                    var from_line;
+                    var to_line;
+                    var from_ch;
+                    var to_ch;
+                    var mark_color;
+                    if (mark.length === 3)  {
+                        from_line = mark[0];
+                        to_line = mark[0];
+                        from_ch = mark[1];
+                        to_ch = mark[1]+1;
+                        mark_color = mark[2];
+                    } else if (mark.length === 4) {
+                        from_line = mark[0];
+                        to_line = mark[0];
+                        from_ch = mark[1];
+                        to_ch = mark[2];
+                        mark_color = mark[3];
+                    } else if (mark.length === 5) {
+                        from_line = mark[0];
+                        to_line = mark[2];
+                        from_ch = mark[1];
+                        to_ch = mark[3];
+                        mark_color = mark[4];
+                    }
+                    editor.markText({line: from_line, ch: from_ch}, {line: to_line, ch: to_ch}, {css: "background-color: " + mark_color});
                 });
             }
             framework.localChange();
