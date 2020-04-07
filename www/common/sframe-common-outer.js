@@ -1266,6 +1266,9 @@ define([
                     var _parsed = Utils.Hash.parsePadUrl(metadata.roHref);
                     _secret = Utils.Hash.getSecrets(_parsed.type, _parsed.hash, metadata.password);
                 }
+                if (_secret.channel.length !== 32) {
+                    return void cb({error: 'EINVAL'});
+                }
                 var crypto = Crypto.createEncryptor(_secret.keys);
                 nThen(function (waitFor) {
                     // Try to get the owner's mailbox from the pad metadata first.
@@ -1324,6 +1327,9 @@ define([
                 if (metadata && (metadata.href || metadata.roHref)) {
                     var _parsed = Utils.Hash.parsePadUrl(metadata.href || metadata.roHref);
                     _secret = Utils.Hash.getSecrets(_parsed.type, _parsed.hash, metadata.password);
+                }
+                if (_secret.channel.length !== 32) {
+                    return void cb({error: 'EINVAL'});
                 }
                 var crypto = Crypto.createEncryptor(_secret.keys);
                 nThen(function (waitFor) {
