@@ -31,7 +31,6 @@ define([
 
     var andThen = function (common) {
         var metadataMgr = common.getMetadataMgr();
-        var privateData = metadataMgr.getPrivateData();
         var sframeChan = common.getSframeChannel();
         var $body = $('body');
 
