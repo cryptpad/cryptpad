@@ -1809,7 +1809,7 @@ define([
             var cb = Util.once(Util.mkAsync(_cb));
 
             if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }
-            if (!data.channel.length !== 32) { return void cb({ error: 'EINVAL'}); }
+            if (data.channel.length !== 32) { return void cb({ error: 'EINVAL'}); }
             store.anon_rpc.send('GET_METADATA', data.channel, function (err, obj) {
                 if (err) { return void cb({error: err}); }
                 var metadata = (obj && obj[0]) || {};
