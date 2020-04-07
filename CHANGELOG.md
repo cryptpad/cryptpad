@@ -1,3 +1,50 @@
+# PigFootedBandicoot release (3.15.0)
+
+## Goals
+
+Our plan for this release was to allow our server's code to stabilize after a prologued period of major changes. The massive surge of new users on cryptpad.fr forced us to change our plans and focus instead on increasing performance and scalability of our serverside code and its supporting infrastructure. Most of this release's changes have been thoroughly tested as they've been deployed to our instance on an ongoing basis, however, we're still looking forward to stabilizing as planned.
+
+We also ended up making significant improvements to our clientside code, since the increased load on the server seemed to exacerbate a few race conditions which occurred less frequently under the previous circumstances.
+
+## Update notes
+
+Updating from version 3.14.0 should follow the usual process:
+
+1. stop your server
+2. fetch the latest code with git
+3. install clientside dependencies with `bower update`
+4. install serverside dependencies with `npm i`
+5. start your server
+
+You may notice that the server now launches a number of child processes named `crypto-worker.js` and `db-worker.js`. These worker processes make use of however many cores your server has available to perform more CPU-intensive tasks in parallel.
+
+## Features
+
+* As noted above, the server uses an multi-process architecture and parallelizes more routines. This improvement will be the most noticeable when the server is run on ARM processors which validate cryptographic signatures particularly slowly.
+* The admin panel available to instance administrators now displays a list of "Open files". We added this to help us diagnose a "file descriptor leak" which will be described in the _Bug fixes_ section.
+* We received a large number of contributions from translators via our [weblate instance](https://weblate.cryptpad.fr/projects/cryptpad/app/). Most notably, Italian is the fourth language to be fully translated with Finnish and Spanish seemingly in line to take the fifth and sixth spots.
+* We've addressed some usability issues in our whiteboard app in response to increased interest. Its canvas now automatically resizes according to the size of your screen and the content you've drawn. Unfortunately, we noticed that the "embed image" functionality was imposing some additional strain on our server, so we decided to implement an admittedly arbitrary limit of 1MB on the size of images embedded in whiteboards. We'll consider removing this restriction when we have time to design a more efficient embedding system.
+* We've removed the per-user setting which previously allowed registered users to skip the "pad creation screen" which is displayed before creating a document. This setting has not been the default for some time and was not actively tested, so this "feature" is our way of guaranteeing no future regressions in its behaviour.
+* As a part of our effort to improve the server's scalability we evaluated which clientside requests could be sent less often. One such request came from the "usage bar" found in users' drives, teams, and settings pages. Previously it would update every 30 seconds no matter what. Now it only updates if that tab is focused.
+* Most actions that an administrator can take with regard to a user's account require the "public key" which is used to identify their account. This key is available on the user's settings page, but many users share their profile URL instead. We've added a button to profile pages which copies the user's public key to the clipboard, so now either page will be sufficient.
+* We've updated our [mermaidjs](https://mermaid-js.github.io/mermaid/#/) dependency. For those that don't know, Mermaid is a powerful markup syntax for producing a variety of charts. It's integrated into our code editor. This updated version supports GANTT chart tasks with multiple dependencies, pie charts, and a variety of other useful formats.
+* We found that in practice our mermaid charts and other embedded media were sufficiently detailed that they became difficult to read on some screens. In response we've added the ability to view these elements in a "lightbox UI" which is nearly full-screen. This interface is can be used to view media contained in the "preview pane" of the code editor as well as within user and team drives, as well as a few other places where Markdown is used.
+
+## Bug fixes
+
+This release contains fixes for a lot of bugs. We'll provide a brief overview, but in the interest of putting more time towards development I'll just put my strong recommendation that you update.
+
+* The server process didn't always close file descriptors that it opened, resulting in an EMFILE error when the system ran out of available file descriptors. Now it closes them.
+* The server also kept an unbounded amount of data in an in-memory cache under certain circumstances. Now it doesn't.
+* A simple check to ignore the `premiumUploadSize` config value if it was less than `maxUploadSize` incorrectly compared against `defaultStorageLimit`. Premium upload sizes were disabled on our instance when we increased the default storage limit to 1GB. It's fixed now.
+* We accepted a [PR](https://github.com/xwiki-labs/cryptpad/pull/513) to prevent a typeError when logging to disk was entirely disabled.
+* We identified and fixed the cause of [This issue](https://github.com/xwiki-labs/cryptpad/issues/518) which caused spreadsheets not to load.
+* Emojis at the start of users display names were not displayed correctly in the Kanban's "cursor"
+* We (once again) believe we've fixed the [duplicated text bug](https://github.com/xwiki-labs/cryptpad/issues/352). Time will tell.
+* Our existing Mermaidjs integration supported the special syntax to make elements clickable, but the resulting links don't work within CryptPad. We now remove them.
+* Rather than having messages time out if they are not received by the server within a certain timeframe we now wait until the client reconnects, at which point we can check whether those messages exist in the document's history. On a related note we now detect when the realtime system is in a bad state and recreate it.
+* Finally, we've fixed a variety of errors in spreadsheets.
+
 # OrienteCaveRat release (3.14.0)
 
 ## Goals
