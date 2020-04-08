@@ -48,6 +48,7 @@ define([
     var mediaSending = false;
     var audioSendQueue = [];
     var videoSendQueue = [];
+    var messageSendQueue = [];
     var screenSharingActive = false;
     var packetDuration = 300;
     var sharedDocument;
@@ -514,14 +515,14 @@ define([
                     else
                       emptyQueue();
         }, function (err) {
-                    error("Error Sending video recording");
+                    error("Error sending message");
                     mediaSending = false;
                     emptyVideoQueue();
         }); 
     }
 
     function emptyQueue() {
-        if (audioSendQueue.length==0 && videoSendQueue.length==0)
+        if (audioSendQueue.length==0 && videoSendQueue.length==0 && messageSendQueue.length==0)
           return;
         if (mediaSending) {
           info("Sending channel not ready. Waiting");
@@ -533,7 +534,10 @@ define([
         } else if (videoSendQueue.length>0) {
           var msg = videoSendQueue.shift();
           sendMessage(msg);
-        }
+        } else if (messageSendQueue.length>0) {
+          var msg = messageSendQueue.shift();
+          sendMessage(msg);
+	}
     }
 
     function sendStream(stream, type) {        
@@ -562,7 +566,7 @@ define([
                 }
                 videoSendQueue.push(msg);
                 if (!status[type]) {
-                  videoSendQueue.push({ id: pdata.netfluxId, name: pdata.name, startTime: 0, prepareTime: 0, type: "message", action : "stopvideo" });
+                  messageSendQueue.push({ id: pdata.netfluxId, name: pdata.name, startTime: 0, prepareTime: 0, type: "message", action : "stopvideo" });
                 }
              }
              if (msg.type=="audio") {
@@ -778,6 +782,8 @@ define([
             $("#cp-app-meet-document").hide();
           } else {
             $("#cp-app-meet-document").show();
+	    messageSendQueue.push({ id: "", name: "", startTime: 0, prepareTime: 0, type: "message", action : "showshareddoc" });
+	    emptyQueue();
           }
           sharedDocumentActive = !sharedDocumentActive;
           setVideoWidth();
@@ -877,9 +883,16 @@ define([
 
                                 try {
                                     if (parsed.type=="message") {
-                                        if (parsed.action=="stopvideo") {
+					info("Received message " + parsed.action);
+                                        if (parsed.action==="stopvideo") {
                                            user.remoteVideo.load();
                                         }
+					if (parsed.action==="showshareddoc") {
+					   info("Activating shared document");
+					   $("#cp-app-meet-document").show();
+				    	   sharedDocumentActive = true;
+				           setVideoWidth();
+					}
                                         /*
                                         if (parsed.action=="join") {
                                             videoSendQueue.push({ id: privateData.clientId, name: privateData.accountName, startTime: 0, prepareTime: 0, type: "message", action : "ping" });
