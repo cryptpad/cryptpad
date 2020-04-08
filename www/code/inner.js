@@ -346,20 +346,7 @@ define([
         
         // get user color for author marks
         var authorcolor = framework._.sfCommon.getMetadataMgr().getUserData().color;
-        var authorcolor_r = parseInt("0x" + authorcolor.slice(1,3));
-        var authorcolor_g = parseInt("0x" + authorcolor.slice(3,5));
-        var authorcolor_b = parseInt("0x" + authorcolor.slice(5,7));
-        var authorcolor_min = Math.min(authorcolor_r, authorcolor_g, authorcolor_b);
-
-        // set minimal brightness for author marks and calculate color
-        var tarMinColorVal = 180;
-        if (authorcolor_min < tarMinColorVal) {
-            var facColor = (255-tarMinColorVal)/(255-authorcolor_min);
-            authorcolor_r = Math.floor(255-facColor*(255-authorcolor_r));
-            authorcolor_g = Math.floor(255-facColor*(255-authorcolor_g));
-            authorcolor_b = Math.floor(255-facColor*(255-authorcolor_b));
-            authorcolor = "#" + authorcolor_r.toString(16) + authorcolor_g.toString(16) + authorcolor_b.toString(16);
-        }
+        var authorcolorOpacity = "90";
 
         ////
 
@@ -486,7 +473,7 @@ define([
                 } else {
                     to_ch_add = change.from.ch + change.text[change.text.length-1].length;                
                 }
-                editor.markText({line: change.from.line, ch: change.from.ch}, {line: change.from.line + change.text.length-1, ch: to_ch_add}, {css: "background-color: " + authorcolor, attributes: {'data-type': 'authorcolor', 'data-color': authorcolor}});
+                editor.markText({line: change.from.line, ch: change.from.ch}, {line: change.from.line + change.text.length-1, ch: to_ch_add}, {css: "background-color: " + authorcolor + authorcolorOpacity, attributes: {'data-type': 'authorcolor', 'data-color': authorcolor}});
             } else if (change.origin === "setValue") {
                 // on remote update: remove all marks, add new marks
                 editor.getAllMarks().forEach(function (marker) {
@@ -518,7 +505,7 @@ define([
                         from_ch = mark[2];
                         to_ch = mark[4];
                     }
-                    editor.markText({line: from_line, ch: from_ch}, {line: to_line, ch: to_ch}, {css: "background-color: " + color, attributes: {'data-type': 'authorcolor', 'data-color': color}});
+                    editor.markText({line: from_line, ch: from_ch}, {line: to_line, ch: to_ch}, {css: "background-color: " + color + authorcolorOpacity, attributes: {'data-type': 'authorcolor', 'data-color': color}});
                 });
             }
             framework.localChange();
