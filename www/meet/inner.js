@@ -367,7 +367,9 @@ define([
       // resize videos
       setVideoWidth();
       $("#cp-app-meet-remote" + clientId+ "-name").text(user.name);
-      user.remoteUserDoc = $("#cp-app-meet-remote" + clientId);
+      user.remoteUserDoc = $("#cp-app-meet-remote" + clientId); 
+      if (videoFullScreen)
+	    user.remoteUserDoc.hide();
       user.remoteVideo = document.querySelector('#remote' + clientId + 'video');
       
       // Adding full-screen handler
