@@ -307,7 +307,9 @@ define([
             var selto = editor.getCursor("to");
             if (!editor.somethingSelected() || selfrom === selto) {
                 editor.getAllMarks().forEach(function (marker) {
-                    marker.clear();
+                    if (marker.attributes !== undefined && marker.attributes['data-type'] === 'authorcolor') {
+                        marker.clear();
+                    }
                 });
             } else {
                 editor.findMarks(selfrom, selto).forEach(function (marker) {
@@ -385,9 +387,9 @@ define([
             var colorlist = [];
             editor.getAllMarks().forEach(function (mark) {
                 var pos = mark.find();
-                var css = mark.css;
-                if (pos !== undefined && css !== undefined) {
-                    var color = css.replace("background-color:", "").trim();
+                var attributes = mark.attributes;
+                if (pos !== undefined && attributes !== undefined && attributes['data-color'] !== undefined && attributes['data-type'] === "authorcolor") {
+                    var color = attributes['data-color'];
                     var colorIndex = colorlist.indexOf(color);
                     if (colorIndex === -1) {
                         colorlist.push(color);
@@ -484,11 +486,13 @@ define([
                 } else {
                     to_ch_add = change.from.ch + change.text[change.text.length-1].length;                
                 }
-                editor.markText({line: change.from.line, ch: change.from.ch}, {line: change.from.line + change.text.length-1, ch: to_ch_add}, {css: "background-color: " + authorcolor});
+                editor.markText({line: change.from.line, ch: change.from.ch}, {line: change.from.line + change.text.length-1, ch: to_ch_add}, {css: "background-color: " + authorcolor, attributes: {'data-type': 'authorcolor', 'data-color': authorcolor}});
             } else if (change.origin === "setValue") {
                 // on remote update: remove all marks, add new marks
                 editor.getAllMarks().forEach(function (marker) {
-                    marker.clear();
+                    if (marker.attributes !== undefined && marker.attributes['data-type'] === 'authorcolor') {
+                        marker.clear();
+                    }
                 });
                 authormarksUpdate.marks.forEach(function (mark) {
                     var from_line;
@@ -514,7 +518,7 @@ define([
                         from_ch = mark[2];
                         to_ch = mark[4];
                     }
-                    editor.markText({line: from_line, ch: from_ch}, {line: to_line, ch: to_ch}, {css: "background-color: " + color});
+                    editor.markText({line: from_line, ch: from_ch}, {line: to_line, ch: to_ch}, {css: "background-color: " + color, attributes: {'data-type': 'authorcolor', 'data-color': color}});
                 });
             }
             framework.localChange();
