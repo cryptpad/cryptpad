@@ -300,6 +300,26 @@ define([
         var previewPane = mkPreviewPane(editor, CodeMirror, framework, isPresentMode);
         var markdownTb = mkMarkdownTb(editor, framework);
 
+        var $removeAuthorColorsButton = framework._.sfCommon.createButton('removeauthorcolors', true, {icon: 'fa-paint-brush', title: 'Autorenfarben entfernen'});
+        framework._.toolbar.$rightside.append($removeAuthorColorsButton);
+        $removeAuthorColorsButton.click(function() {
+            var selfrom = editor.getCursor("from");
+            var selto = editor.getCursor("to");
+            if (!editor.somethingSelected() || selfrom === selto) {
+                editor.getAllMarks().forEach(function (marker) {
+                    marker.clear();
+                });
+            } else {
+                editor.findMarks(selfrom, selto).forEach(function (marker) {
+                    marker.clear();
+                });
+            }
+            framework.localChange();
+        });
+
+        var authormarksLocal = [];
+        var authormarksUpdate = [];
+
         var $print = $('#cp-app-code-print');
         var $content = $('#cp-app-code-preview-content');
         mkPrintButton(framework, $content, $print);
@@ -321,6 +341,23 @@ define([
         } else {
             CodeMirror.configureTheme(common);
         }
+        
+        // get user color for author marks
+        var authorcolor = framework._.sfCommon.getMetadataMgr().getUserData().color;
+        var authorcolor_r = parseInt("0x" + authorcolor.slice(1,3));
+        var authorcolor_g = parseInt("0x" + authorcolor.slice(3,5));
+        var authorcolor_b = parseInt("0x" + authorcolor.slice(5,7));
+        var authorcolor_min = Math.min(authorcolor_r, authorcolor_g, authorcolor_b);
+
+        // set minimal brightness for author marks and calculate color
+        var tarMinColorVal = 180;
+        if (authorcolor_min < tarMinColorVal) {
+            var facColor = (255-tarMinColorVal)/(255-authorcolor_min);
+            authorcolor_r = Math.floor(255-facColor*(255-authorcolor_r));
+            authorcolor_g = Math.floor(255-facColor*(255-authorcolor_g));
+            authorcolor_b = Math.floor(255-facColor*(255-authorcolor_b));
+            authorcolor = "#" + authorcolor_r.toString(16) + authorcolor_g.toString(16) + authorcolor_b.toString(16);
+        }
 
         ////
 
@@ -329,7 +366,11 @@ define([
             if (highlightMode && highlightMode !== CodeMirror.highlightMode) {
                 CodeMirror.setMode(highlightMode, evModeChange.fire);
             }
-            CodeMirror.contentUpdate(newContent);
+
+            // author marks will be updated in onChange-Handler
+            authormarksUpdate = newContent.authormarks;
+
+            CodeMirror.contentUpdate(newContent, authormarksUpdate, authormarksLocal);
             previewPane.draw();
         });
 
@@ -338,6 +379,34 @@ define([
             var content = CodeMirror.getContent();
             content.highlightMode = CodeMirror.highlightMode;
             previewPane.draw();
+
+            // get author marks
+            var authormarks = [];
+            var colorlist = [];
+            editor.getAllMarks().forEach(function (mark) {
+                var pos = mark.find();
+                var css = mark.css;
+                if (pos !== undefined && css !== undefined) {
+                    var color = css.replace("background-color:", "").trim();
+                    var colorIndex = colorlist.indexOf(color);
+                    if (colorIndex === -1) {
+                        colorlist.push(color);
+                        colorIndex = colorlist.length-1;
+                    }
+                    if (pos.from.line === pos.to.line) {
+                        if ((pos.from.ch + 1) === pos.to.ch) {
+                            authormarks.push([colorIndex, pos.from.line, pos.from.ch]);
+                        } else {
+                            authormarks.push([colorIndex, pos.from.line, pos.from.ch, pos.to.ch]);
+                        }
+                    } else {
+                        authormarks.push([colorIndex, pos.from.line, pos.from.ch, pos.to.line, pos.to.ch]);
+                    }
+                }
+            });
+            content.authormarks = {marks: authormarks, colorlist: colorlist};
+            authormarksLocal = authormarks.slice();
+
             return content;
         });
 
@@ -401,11 +470,55 @@ define([
         framework.setNormalizer(function (c) {
             return {
                 content: c.content,
-                highlightMode: c.highlightMode
+                highlightMode: c.highlightMode,
+                authormarks: c.authormarks
             };
         });
 
-        editor.on('change', framework.localChange);
+        editor.on('change', function( cm, change ) {
+            if (change.origin !== undefined && change.text !== undefined && (change.origin === "+input" || change.origin === "paste")) {
+                // add new author mark if text is added. marks from removed text are removed automatically
+                var to_ch_add;
+                if (change.text.length > 1) {
+                    to_ch_add = change.text[change.text.length-1].length; 
+                } else {
+                    to_ch_add = change.from.ch + change.text[change.text.length-1].length;                
+                }
+                editor.markText({line: change.from.line, ch: change.from.ch}, {line: change.from.line + change.text.length-1, ch: to_ch_add}, {css: "background-color: " + authorcolor});
+            } else if (change.origin === "setValue") {
+                // on remote update: remove all marks, add new marks
+                editor.getAllMarks().forEach(function (marker) {
+                    marker.clear();
+                });
+                authormarksUpdate.marks.forEach(function (mark) {
+                    var from_line;
+                    var to_line;
+                    var from_ch;
+                    var to_ch;
+                    var colorIndex = mark[0];
+                    if (authormarksUpdate.colorlist === undefined || (authormarksUpdate.colorlist.length < (colorIndex+1))) { return; }
+                    var color = authormarksUpdate.colorlist[colorIndex];
+                    if (mark.length === 3)  {
+                        from_line = mark[1];
+                        to_line = mark[1];
+                        from_ch = mark[2];
+                        to_ch = mark[2]+1;
+                    } else if (mark.length === 4) {
+                        from_line = mark[1];
+                        to_line = mark[1];
+                        from_ch = mark[2];
+                        to_ch = mark[3];
+                    } else if (mark.length === 5) {
+                        from_line = mark[1];
+                        to_line = mark[3];
+                        from_ch = mark[2];
+                        to_ch = mark[4];
+                    }
+                    editor.markText({line: from_line, ch: from_ch}, {line: to_line, ch: to_ch}, {css: "background-color: " + color});
+                });
+            }
+            framework.localChange();
+        });
 
         framework.start();
 
