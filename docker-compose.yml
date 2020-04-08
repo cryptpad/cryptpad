@@ -1,6 +1,23 @@
 version: '2'
 services:
 
+  traefik:
+    image: "traefik:v2.2"
+    container_name: "traefik"
+    command:
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web-secure.address=:443"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
   cryptpad:
     build:
       context: .
@@ -10,8 +27,15 @@ services:
     hostname: cryptpad
 
     labels:
-      - traefik.port=3000
-      - traefik.frontend.passHostHeader=true
+      - traefik.enable=true
+      - traefik.http.routers.cryptpad.rule=Host(pad)
+      - traefik.http.services.cryptpad.loadbalancer.server.port=3000
+      - "traefik.http.routers.cryptpad.tls=true"
+      - "traefik.http.routers.cryptpad.entrypoints=web-secure"
+      - "traefik.frontend.passHostHeader=true"
+      - traefik.http.routers.cryptpad.middlewares=ssl-header
+      - traefik.http.middlewares.ssl-header.headers.customrequestheaders.X-Forwarded-Proto=https
+
     environment:
       - USE_SSL=${USE_SSL}
       - STORAGE=${STORAGE}
