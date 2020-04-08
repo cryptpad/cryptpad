@@ -33,7 +33,8 @@ define([
     var counter = 0;
     var videoCodec = 'video/webm; codecs="vp8"';
     var audioCodec = 'audio/webm; codecs="opus"';
-    var options = { "video" : { videoBitsPerSecond : 500000, mimeType : videoCodec }, "audio" : { audioBitsPerSecond : 16000, mimeType : audioCodec }}
+    var sampleRate = "auto";
+    var options = { "video" : { videoBitsPerSecond : 500000, mimeType : videoCodec }, "audio" : { audioBitsPerSecond : sampleRate, mimeType : audioCodec }}
     var remoteVideo = document.querySelector('#remotevideo');
     var remoteAudio = document.querySelector('#remoteaudio');
     var currentBitRate = 3;
@@ -54,9 +55,11 @@ define([
     var videoFullScreen = false;
 
     // audio capture objects
-    var audioBufferSize = 4096;
+    var audioBufferSize = 2048;
     var audioInput;
     var audioGainNode;
+    var audioProcessor;
+    var audioMerger;
     var audioRecorder;
     var audioContext;
 
@@ -64,16 +67,14 @@ define([
     var availableAudioChannels = [0, 1, 2, 3, 4, 5];
     var status = { "video" : false, "audio" : false};
     
-    var outputResampler;
+    var outputResampler = [];
     var inputResampler;
-    // var audioSampler = new Resampler(44100, audioCodec.sampleRate, 1, audioCodec.bufferSize);
-    // var audioEncoder = new OpusEncoder(audioCodec.sampleRate, audioCodec.channels, audioCodec.app, audioCodec.frameDuration);
     
 
     const videoConstraints = {video: { width: 1024, height: 576 } };
     const screenSharingConstraints = { video: { width: 1024, height: 576, mediaSource: 'screen'}};
-    const audioConstraints = { audio: { sampleRate: 16000 } };
-    const allConstraints = { audio: { sampleRate: 16000 }, video: { width: 1024, height: 576 } };
+    const audioConstraints = { audio: { sampleRate: sampleRate } };
+    const allConstraints = { audio: { sampleRate: sampleRate }, video: { width: 1024, height: 576 } };
     var maxStatsSize = 10;
     var stats = {};
     const average = arr => arr.reduce((a,b) => a + b, 0) / arr.length
@@ -139,6 +140,16 @@ define([
         $("#cp-dropped-remote-" + type).text(remoteDropped[type])
     }
 
+    function getResampler(sampleRate) {
+       var resampler = outputResampler[sampleRate];
+       if (resampler)
+	    return resampler;
+
+       resampler = new Resampler(sampleRate, audioContext.sampleRate, 1, audioBufferSize);
+       outputResampler[sampleRate] = resampler;
+       return resampler;
+    }
+
 
     /*
       Secret keys for the video channel
@@ -177,7 +188,7 @@ define([
               var buffer = this.buffers[audioChannel];
               var samplesToPlay = buffer.subarray(0, nSamples);
               this.buffers[audioChannel] = buffer = buffer.subarray(nSamples, buffer.length);
-              return samplesToPlay;
+             return samplesToPlay;
             },
 
             length: function(audioChannel) {
@@ -186,8 +197,7 @@ define([
             },
 
             reset: function(audioChannel) {
-              var buffer = this.buffers[audioChannel];
-              buffer = new Float32Array(0);
+              this.buffers[audioChannel] = new Float32Array(0);
             }
         };
       
@@ -197,10 +207,10 @@ define([
           
           audioInput = audioContext.createMediaStreamSource(stream1);
           audioGainNode = audioContext.createGain();
-          audioProcessor = audioContext.createScriptProcessor(audioBufferSize, 1, 6);
+	  audioMerger = audioContext.createChannelMerger(6);
+          audioProcessor = audioContext.createScriptProcessor(audioBufferSize, 6, 6);
           console.log("Audio sample rate is " + audioContext.sampleRate);
-          inputResampler = new Resampler(audioContext.sampleRate, 16000, 1, audioBufferSize);
-          outputResampler = new Resampler(16000, audioContext.sampleRate, 1, audioBufferSize);
+          inputResampler = (sampleRate=="auto") ? null : new Resampler(audioContext.sampleRate, sampleRate, 1, audioBufferSize);
 
           // this is the audio playing and recording handling
           audioProcessor.onaudioprocess = function(e) {
@@ -238,17 +248,18 @@ define([
             // If the audio streaming is active we should send data
             if (status[type]) {
               
-              // resampling the audio data to 16000
+              // resampling the audio data to sampleRate
               var sourceData = e.inputBuffer.getChannelData(0);
-              var data = inputResampler.resampler(sourceData);
-              console.log("Capturing source data duration " + e.inputBuffer.duration + "s (" + sourceData.length + ") resampled to " + data.length)
+              var data = (sampleRate=="auto") ? sourceData : inputResampler.resampler(sourceData);
+              var mysampleRate = (sampleRate=="auto") ? audioContext.sampleRate : sampleRate;
+	      console.log("Capturing source data duration " + e.inputBuffer.duration + "s (" + sourceData.length + ") resampled to " + mysampleRate + " "  + data.length)
               // console.log(sourceData);
               // console.log(data);
               // console.log(data)
               var uint8array = new Uint8Array(data.buffer)
               // console.log(uint8array)
               var prepareTime = Date.now();
-              var msg = { id: pdata.netfluxId, name: pdata.name, startTime: startTime, prepareTime: prepareTime, type: type, counter: counter++, data: ab2str(uint8array), averageTime: lastStats[type] }
+              var msg = { id: pdata.netfluxId, name: pdata.name, startTime: startTime, prepareTime: prepareTime, type: type, counter: counter++, data: ab2str(uint8array), averageTime: lastStats[type] , sampleRate: mysampleRate };
               if (audioSendQueue.length>5) {
                 console.log("AUDIO QUEUE TOO FULL. DROPPING 10 Packets")
                 msg.dropped = audioSendQueue.length;
@@ -259,9 +270,12 @@ define([
              emptyQueue();
             }
           };
-          audioInput.connect(audioGainNode);
-          audioGainNode.connect(audioProcessor);
-          audioProcessor.connect(audioContext.destination);
+          // audioInput.connect(audioGainNode);
+          // audioGainNode.connect(audioProcessor);
+          audioInput.connect(audioProcessor);
+          audioProcessor.connect(audioMerger);
+	  audioContext.destination.channelCount = 1;
+          audioMerger.connect(audioContext.destination);
           cb();
         });  
       }
@@ -471,7 +485,7 @@ define([
     }
 
     function sendMessage(msg) {
-        mediaSending = true;
+        mediaSending = false;
         var startTime = msg.startTime;
         var cmsg = Crypto.encrypt(JSON.stringify(msg), secret.keys.cryptKey)
         videoWC.bcast(cmsg).then(function () {
@@ -920,10 +934,11 @@ define([
                                           
                                           // console.log(audioData);
                                           // we need to resampler before adding to the playing queue
-                                          if (!outputResampler) {
+                                          var resampler = getResampler(parsed.sampleRate);
+			                  if (!resampler) {
                                               console.log("Audio context is not yet ready")
                                           } else {
-                                              var data = outputResampler.resampler(audioData);
+                                              var data = resampler.resampler(audioData);
                                               if (user.audioChannel!=null)
                                                  audioPlayingQueue.write(data, user.audioChannel)
                                               else 
