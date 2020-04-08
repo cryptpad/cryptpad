@@ -965,6 +965,7 @@ define([
                 };
                 Ckeditor.plugins.addExternal('mediatag','/pad/', 'mediatag-plugin.js');
                 Ckeditor.plugins.addExternal('blockbase64','/pad/', 'disable-base64.js');
+                Ckeditor.plugins.addExternal('comments','/pad/', 'comment.js');
                 Ckeditor.plugins.addExternal('wordcount','/pad/wordcount/', 'plugin.js');
                 module.ckeditor = editor = Ckeditor.replace('editor1', {
                     customConfig: '/customize/ckeditor-config.js',
@@ -973,6 +974,9 @@ define([
             }).nThen(function () {
                 editor.plugins.mediatag.import = function ($mt) {
                     framework._.sfCommon.importMediaTag($mt);
+                };
+                editor.plugins.comments.addComment = function (uid, cb) {
+                    
                 };
                 Links.addSupportForOpeningLinksInNewTab(Ckeditor)({editor: editor});
             }).nThen(function () {
