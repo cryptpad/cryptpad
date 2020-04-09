@@ -12,7 +12,7 @@ define([
 ], function ($, Modes, Themes, Messages, UIElements, MT, Hash, Util, TextCursor, ChainPad) {
     var module = {};
 
-    var cursorToPos = function(cursor, oldText) {
+     var cursorToPos = module.cursorToPos = function(cursor, oldText) {
         var cLine = cursor.line;
         var cCh = cursor.ch;
         var pos = 0;
@@ -28,7 +28,7 @@ define([
         return pos;
     };
 
-    var posToCursor = function(position, newText) {
+    var posToCursor = module.posToCursor = function(position, newText) {
         var cursor = {
             line: 0,
             ch: 0
@@ -58,6 +58,7 @@ define([
         editor.save();
 
         var ops = ChainPad.Diff.diff(oldDoc, remoteDoc);
+        console.log(ops);
         var selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
             return TextCursor.transformCursor(oldCursor[attr], ops);
         });
@@ -415,16 +416,16 @@ define([
 
         /////
 
-        var canonicalize = function (t) { return t.replace(/\r\n/g, '\n'); };
+        var canonicalize = exp.canonicalize = function (t) { return t.replace(/\r\n/g, '\n'); };
 
 
-
-        exp.contentUpdate = function (newContent, authormarksUpdate, authormarksLocal) {
+        exp.contentUpdate = function (newContent) {
             var oldDoc = canonicalize(editor.getValue());
             var remoteDoc = newContent.content;
             // setValueAndCursor triggers onLocal, even if we don't make any change to the content
             // and it may revert other changes (metadata)
-            if (oldDoc === remoteDoc && (authormarksUpdate === undefined || authormarksLocal === undefined || JSON.stringify(authormarksUpdate) === JSON.stringify(authormarksLocal))) { return; }
+
+            if (oldDoc === remoteDoc) { return; }
             exp.setValueAndCursor(oldDoc, remoteDoc);
         };
 
