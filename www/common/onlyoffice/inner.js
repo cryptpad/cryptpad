@@ -1091,12 +1091,12 @@ define([
 
         var x2tSaveAndConvertData = function(data, filename, extension, finalFilename) {
             // Perform the x2t conversion
-            require(['/common/onlyoffice/x2t/x2t.js'], function() {
+            require(['/common/onlyoffice/x2t/x2t.js'], function() { // XXX why does this fail without an access-control-allow-origin header?
                 var x2t = window.Module;
                 x2t.run();
                 if (x2tInitialized) {
                     debug("x2t runtime already initialized");
-                    x2tSaveAndConvertDataInternal(x2t, data, filename, extension, finalFilename);
+                    x2tSaveAndConvertDataInternal(x2t, data, filename, extension, finalFilename); // XXX shouldn't this return ?
                 }
 
                 x2t.onRuntimeInitialized = function() {
