@@ -62,12 +62,6 @@ define([
             'cp-settings-safe-links',
             'cp-settings-userfeedback',
         ],
-        'creation': [
-            'cp-settings-creation-owned',
-            'cp-settings-creation-expire',
-            'cp-settings-creation-skip',
-            'cp-settings-creation-template'
-        ],
         'drive': [
             'cp-settings-drive-duplicate',
             'cp-settings-thumbnails',
@@ -101,9 +95,6 @@ define([
         }
     };
 
-    if (!AppConfig.displayCreationScreen) {
-        delete categories.creation;
-    }
     if (AppConfig.disableFeedback) {
         var feedbackIdx = categories.account.indexOf('cp-settings-userfeedback');
         categories.account.splice(feedbackIdx, 1);
@@ -609,242 +600,6 @@ define([
 
         cb($cbox);
     }, true);
-
-    // Pad Creation settings
-
-    var setHTML = function (e, html) {
-        e.innerHTML = html;
-        return e;
-    };
-    create['creation-owned'] = function () {
-        if (!common.isLoggedIn()) { return; }
-        var owned = h('div.cp-settings-creation-owned.cp-sidebarlayout-element', [
-            h('label', [
-                Messages.creation_ownedTitle
-            ]),
-            setHTML(h('p.cp-sidebarlayout-description'),
-                    Messages.creation_owned1 + '<br>' + Messages.creation_owned2),
-            h('input#cp-creation-owned-true.cp-creation-owned-value', {
-                type: 'radio',
-                name: 'cp-creation-owned',
-                value: 1,
-                checked: 'checked'
-            }),
-            h('label', { 'for': 'cp-creation-owned-true' }, Messages.creation_ownedTrue),
-            h('input#cp-creation-owned-false.cp-creation-owned-value', {
-                type: 'radio',
-                name: 'cp-creation-owned',
-                value: 0,
-            }),
-            h('label', { 'for': 'cp-creation-owned-false' }, Messages.creation_ownedFalse),
-            h('span.fa.fa-check', {title: Messages.saved}),
-            h('span.fa.fa-spinner.fa-pulse'),
-        ]);
-
-        var $owned = $(owned);
-
-        var $ok = $owned.find('.fa-check').hide();
-        var $spinner = $owned.find('.fa-spinner').hide();
-
-        $owned.find('input').change(function () {
-            $spinner.show();
-            $ok.hide();
-            var val = parseInt($owned.find('[name="cp-creation-owned"]:checked').val());
-            common.setAttribute(['general', 'creation', 'owned'], val, function (e) {
-                if (e) { return void console.error(e); }
-                $spinner.hide();
-                $ok.show();
-            });
-        });
-        common.getAttribute(['general', 'creation', 'owned'], function (e, val) {
-            if (!val && typeof val !== "undefined") {
-                $owned.find('#cp-creation-owned-false').attr('checked', true);
-            }
-        });
-
-        return $owned;
-    };
-    create['creation-expire'] = function () {
-        if (!common.isLoggedIn()) { return; }
-        var expire = h('div.cp-settings-creation-expire.cp-sidebarlayout-element', [
-            h('label', [
-                Messages.creation_expireTitle
-            ]),
-            setHTML(h('p.cp-sidebarlayout-description'),
-                    Messages.creation_expire1 + '<br>' + Messages.creation_expire2),
-            h('input#cp-creation-expire-false.cp-creation-expire-value', {
-                type: 'radio',
-                name: 'cp-creation-expire',
-                value: 0,
-                checked: 'checked'
-            }),
-            h('label', { 'for': 'cp-creation-expire-false' }, Messages.creation_expireFalse),
-            h('input#cp-creation-expire-true.cp-creation-expire-value', {
-                type: 'radio',
-                name: 'cp-creation-expire',
-                value: 1
-            }),
-            h('label', { 'for': 'cp-creation-expire-true' }, [
-                Messages.creation_expireTrue,
-                h('span.cp-creation-expire-picker', [
-                    h('input#cp-creation-expire-val', {
-                        type: "number",
-                        min: 1,
-                        max: 100,
-                        value: 3
-                    }),
-                    h('select#cp-creation-expire-unit', [
-                        h('option', { value: 'hour' }, Messages.creation_expireHours),
-                        h('option', { value: 'day' }, Messages.creation_expireDays),
-                        h('option', {
-                            value: 'month',
-                            selected: 'selected'
-                        }, Messages.creation_expireMonths)
-                    ])
-                ])
-            ]),
-            h('span.fa.fa-check', {title: Messages.saved}),
-            h('span.fa.fa-spinner.fa-pulse'),
-        ]);
-
-        var $expire = $(expire);
-
-        var $ok = $expire.find('.fa-check').hide();
-        var $spinner = $expire.find('.fa-spinner').hide();
-
-        var getValue = function () {
-            if(!parseInt($expire.find('[name="cp-creation-expire"]:checked').val())) { return 0; }
-            var unit = 0;
-            switch ($expire.find('#cp-creation-expire-unit').val()) {
-                case "hour" : unit = 3600;           break;
-                case "day"  : unit = 3600 * 24;      break;
-                case "month": unit = 3600 * 24 * 30; break;
-                default: unit = 0;
-            }
-            return ($expire.find('#cp-creation-expire-val').val() || 0) * unit;
-        };
-        $expire.find('input, select').change(function () {
-            $spinner.show();
-            $ok.hide();
-            common.setAttribute(['general', 'creation', 'expire'], getValue(), function (e) {
-                if (e) { return void console.error(e); }
-                $spinner.hide();
-                $ok.show();
-            });
-        });
-        common.getAttribute(['general', 'creation', 'expire'], function (e, val) {
-            UIElements.setExpirationValue(val, $expire);
-        });
-
-        return $expire;
-    };
-    create['creation-skip'] = function () {
-        if (!common.isLoggedIn()) { return; }
-        var skip = h('div.cp-settings-creation-skip.cp-sidebarlayout-element', [
-            h('label', [
-                Messages.settings_creationSkip
-            ]),
-            setHTML(h('p.cp-sidebarlayout-description'), Messages.settings_creationSkipHint),
-            h('input#cp-creation-skip-true.cp-creation-skip-value', {
-                type: 'radio',
-                name: 'cp-creation-skip',
-                value: 1,
-            }),
-            h('label', { 'for': 'cp-creation-skip-true' }, Messages.settings_creationSkipTrue),
-            h('input#cp-creation-skip-false.cp-creation-skip-value', {
-                type: 'radio',
-                name: 'cp-creation-skip',
-                value: 0,
-                checked: 'checked'
-            }),
-            h('label', { 'for': 'cp-creation-skip-false' }, Messages.settings_creationSkipFalse),
-            h('span.fa.fa-check', {title: Messages.saved}),
-            h('span.fa.fa-spinner.fa-pulse'),
-        ]);
-
-        var $div = $(skip);
-
-        var $ok = $div.find('.fa-check').hide();
-        var $spinner = $div.find('.fa-spinner').hide();
-
-        $div.find('input').change(function () {
-            $spinner.show();
-            $ok.hide();
-            var val = parseInt($div.find('[name="cp-creation-skip"]:checked').val());
-            // If we don't skip the pad creation screen, we dont' need settings to hide the templates
-            // modal
-            if (!val) {
-                $('.cp-settings-creation-template').addClass('cp-settings-creation-skipped');
-            } else {
-                $('.cp-settings-creation-template').removeClass('cp-settings-creation-skipped');
-            }
-            common.setAttribute(['general', 'creation', 'skip'], val, function (e) {
-                if (e) { return void console.error(e); }
-                $spinner.hide();
-                $ok.show();
-            });
-        });
-        common.getAttribute(['general', 'creation', 'skip'], function (e, val) {
-            if (val) {
-                $div.find('#cp-creation-skip-true').attr('checked', true);
-                return;
-            }
-            // If we don't skip the pad creation screen, we dont' need settings to hide the templates
-            // modal
-            $('.cp-settings-creation-template').addClass('cp-settings-creation-skipped');
-        });
-
-        return $div;
-    };
-    create['creation-template'] = function () {
-        var skip = h('div.cp-settings-creation-template.cp-sidebarlayout-element', [
-            h('label', [
-                Messages.settings_templateSkip
-            ]),
-            setHTML(h('p.cp-sidebarlayout-description'), Messages.settings_templateSkipHint),
-            h('input#cp-creation-template-true.cp-creation-template-value', {
-                type: 'radio',
-                name: 'cp-creation-template',
-                value: 1,
-            }),
-            h('label', { 'for': 'cp-creation-template-true' }, Messages.settings_creationSkipTrue),
-            h('input#cp-creation-template-false.cp-creation-template-value', {
-                type: 'radio',
-                name: 'cp-creation-template',
-                value: 0,
-                checked: 'checked'
-            }),
-            h('label', { 'for': 'cp-creation-template-false' }, Messages.settings_creationSkipFalse),
-            h('span.fa.fa-check', {title: Messages.saved}),
-            h('span.fa.fa-spinner.fa-pulse'),
-        ]);
-
-        var $div = $(skip);
-
-        var $ok = $div.find('.fa-check').hide();
-        var $spinner = $div.find('.fa-spinner').hide();
-
-        $div.find('input').change(function () {
-            $spinner.show();
-            $ok.hide();
-            var val = parseInt($div.find('[name="cp-creation-template"]:checked').val());
-            common.setAttribute(['general', 'creation', 'noTemplate'], val, function (e) {
-                if (e) { return void console.error(e); }
-                $spinner.hide();
-                $ok.show();
-            });
-        });
-        common.getAttribute(['general', 'creation', 'noTemplate'], function (e, val) {
-            if (val) {
-                $div.find('#cp-creation-template-true').attr('checked', true);
-            }
-        });
-
-        return $div;
-    };
-
-
-
 
     // Drive settings
 
@@ -1720,7 +1475,6 @@ define([
             if (key === 'cursor') { $category.append($('<span>', {'class': 'fa fa-i-cursor' })); }
             if (key === 'code') { $category.append($('<span>', {'class': 'fa fa-file-code-o' })); }
             if (key === 'pad') { $category.append($('<span>', {'class': 'fa fa-file-word-o' })); }
-            if (key === 'creation') { $category.append($('<span>', {'class': 'fa fa-plus-circle' })); }
             if (key === 'security') { $category.append($('<span>', {'class': 'fa fa-lock' })); }
             if (key === 'subscription') { $category.append($('<span>', {'class': 'fa fa-star-o' })); }
 

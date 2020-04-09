@@ -32,7 +32,9 @@ define([
     module.create = function (common, config) {
         var File = {};
         var origin = common.getMetadataMgr().getPrivateData().origin;
-        var response = Util.response();
+        var response = Util.response(function (label, info) {
+            console.error('COMMON_UPLOAD__' + label, info);
+        });
 
         var teamId = config.teamId;
 

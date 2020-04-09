@@ -481,7 +481,9 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         if (!config.anon_rpc) { return void cb("EXPECTED_ANON_RPC"); }
 
 
-        var response = Util.response();
+        var response = Util.response(function (label, info) {
+            console.error('ROSTER_RESPONSE__' + label, info);
+        });
         var anon_rpc = config.anon_rpc;
         var keys = config.keys;
         var me = keys.myCurvePublic;

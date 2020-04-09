@@ -42,7 +42,7 @@ nThen(function (w) {
         store = _;
     })); // load the list of pinned files so you know which files
     // should not be archived or deleted
-    Pins.list(w(function (err, _) {
+    Pins.load(w(function (err, _) {
         if (err) {
             w.abort();
             return void console.error(err);

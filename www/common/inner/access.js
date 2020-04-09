@@ -309,7 +309,7 @@ define([
             called = true;
             nThen(function (waitFor) {
                 if (!reload) { return; }
-                Modal.loadMetadata(common, data, waitFor, "owner");
+                Modal.loadMetadata(Env, data, waitFor, "owner");
             }).nThen(function () {
                 owners = data.owners || [];
                 pending_owners = data.pending_owners || [];
@@ -617,7 +617,7 @@ define([
             called = true;
             nThen(function (waitFor) {
                 if (!reload) { return; }
-                Modal.loadMetadata(common, data, waitFor, "allow");
+                Modal.loadMetadata(Env, data, waitFor, "allow");
             }).nThen(function () {
                 owners = data.owners || [];
                 restricted = data.restricted || false;

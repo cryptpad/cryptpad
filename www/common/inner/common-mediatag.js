@@ -7,6 +7,7 @@ define([
     '/common/media-tag.js',
     '/customize/messages.js',
 
+    '/bower_components/tweetnacl/nacl-fast.min.js',
     '/bower_components/croppie/croppie.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/croppie/croppie.css',
@@ -28,7 +29,7 @@ define([
     MT.getCursorAvatar = function (cursor) {
         var html = '<span class="cp-cursor-avatar">';
         html += (cursor.avatar && avatars[cursor.avatar]) || '';
-        html += cursor.name + '</span>';
+        html += Util.fixHTML(cursor.name) + '</span>';
         return html;
     };
 
