@@ -287,6 +287,7 @@ define([
         ctx.sframeChan.event('EV_PRESENT_URL_SET_VALUE', value);
     };
 
+
     // Store
     funcs.handleNewFile = function (waitFor, config) {
         if (window.__CRYPTPAD_TEST__) { return; }

@@ -309,6 +309,18 @@ define([
             if (md.slideOptions) {
                 updateLocalOptions(md.slideOptions);
             }
+
+            console.log("In metadata on Change")
+            console.log(md);
+            if (md.slideShown && (md.slideShown !== Slide.index)) {
+                framework._.sfCommon.isPresentUrl(function (err, val) {
+                    if (val) {
+                        console.log("Slide changing to " + md.slideShown);
+                        if (md.slideShown<20)
+                         Slide.goTo(md.slideShown);
+                    }
+                });
+            }
         });
     };
 
@@ -497,10 +509,13 @@ define([
         });
 
         framework.onReady(function (/*newPad*/) {
+            var metadataMgr = framework._.cpNfInner.metadataMgr;
             editor.focus();
 
             CodeMirror.setMode('markdown', function () { });
             Slide.onChange(function (o, n, l) {
+                
+
                 var slideNumber = '';
                 if (n !== null) {
                     if (Slide.shown) {
@@ -509,6 +524,24 @@ define([
                 }
                 framework._.sfCommon.setTabTitle('{title}' + slideNumber);
             });
+
+            Slide.onChange(function (o, n, l) {
+                if (o!==n) {
+                    // Tell other sessions I've moved slides
+                    var metadata = metadataMgr.getMetadata();
+                    if (metadata.slideShown!==n) {
+                        framework._.sfCommon.isPresentUrl(function (err, val) {
+                            if (val) {
+                                var metadata2 = JSON.parse(JSON.stringify(metadataMgr.getMetadata()));
+                                metadata2.slideShown = n;
+                                metadataMgr.updateMetadata(metadata2)
+                                framework.localChange();
+                            }
+                        });
+                    }
+                }
+            });
+
             Slide.update(editor.getValue());
 
             var fmConfig = {
