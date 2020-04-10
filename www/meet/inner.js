@@ -6,6 +6,7 @@ define([
     '/common/sframe-app-framework.js',
     '/common/common-util.js',
     '/common/common-hash.js',
+    '/common/common-interface.js',
     '/common/modes.js',
     '/customize/messages.js',
     '/bower_components/chainpad-crypto/crypto.js',
@@ -22,6 +23,7 @@ define([
     Framework,
     Util,
     Hash,
+    UI,
     Modes,
     Messages,
     Crypto,
@@ -37,8 +39,8 @@ define([
     var options = { "video" : { videoBitsPerSecond : 250000, mimeType : videoCodec }, "audio" : { audioBitsPerSecond : sampleRate, mimeType : audioCodec }}
     var remoteVideo = document.querySelector('#remotevideo');
     var remoteAudio = document.querySelector('#remoteaudio');
-    var currentBitRate = 3;
-    var maxBitRate = 3;
+    var currentBitRate = 2;
+    var maxBitRate = 2;
     var video = document.querySelector('#ownvideo');
     var stream = { "audio" : "", "video" : ""};
     var sendingDropped = { "audio" : 0, "video" : 0};
@@ -51,8 +53,9 @@ define([
     var messageSendQueue = [];
     var screenSharingActive = false;
     var packetDuration = 300;
-    var sharedDocument;
+    var sharedDocument = "";
     var sharedDocumentActive = false;
+
     var videoFullScreen = false;
     var debugLevel = 3;
 
@@ -73,7 +76,7 @@ define([
     var inputResampler;
     
 
-    const videoConstraints = {video: { width: 1024, height: 576 } };
+    const videoConstraints = {video: { width: 500, height: 500 } };
     const screenSharingConstraints = { video: { width: 1024, height: 576, mediaSource: 'screen'}};
     const audioConstraints = { audio: { sampleRate: sampleRate } };
     const allConstraints = { audio: { sampleRate: sampleRate }, video: { width: 1024, height: 576 } };
@@ -611,7 +614,7 @@ define([
         return 0;
       
       debug("W: " + screenWidth + " H: " + screenHeight + " nbvideos: " + nbVideos);
-      var baseRatio = 1.77
+      var baseRatio = 1
       var ratio = screenWidth/screenHeight;
       var maxWidth = 0;
       var nbCols = 1;
@@ -780,13 +783,18 @@ define([
       $("#cp-app-meet-docbutton").click(function() {
           if (sharedDocumentActive) {
             $("#cp-app-meet-document").hide();
+            sharedDocumentActive = false;
+            setVideoWidth();
           } else {
-            $("#cp-app-meet-document").show();
-	    messageSendQueue.push({ id: "", name: "", startTime: 0, prepareTime: 0, type: "message", action : "showshareddoc" });
-	    emptyQueue();
-          }
-          sharedDocumentActive = !sharedDocumentActive;
-          setVideoWidth();
+            UI.prompt(Messages.shareDocumentChooseUrl, sharedDocument, function (src) {
+              $("#cp-app-meet-document-iframe")[0].src = src;
+              $("#cp-app-meet-document").show();
+	            messageSendQueue.push({ id: "", name: "", startTime: 0, prepareTime: 0, type: "message", action : "showshareddoc" });
+	            emptyQueue();
+              sharedDocumentActive = true;
+              setVideoWidth();
+          });
+         }
       });
 
       /*
@@ -854,9 +862,10 @@ define([
             '/bower_components/netflux-websocket/netflux-client.js',
             '/common/outer/network-config.js'
         ], function (Netflux, NetConfig) {
-            var wsUrl = "ws://localhost:3000/cryptpad_websocket"; 
+            var wsUrl = "wss://meet-alpha.cryptpad.fr/cryptpad_websocket"; 
             // wsUrl = NetConfig.getWebsocketURL();
-            wsUrl = "wss://cryptpad.dubost.name/cryptpad_websocket";
+            // wsUrl = "ws://localhost:3000/cryptpad_websocket";
+            // wsUrl = "wss://cryptpad.dubost.name/cryptpad_websocket";
             info("Connecting to video channel " + wsUrl);
             Netflux.connect(wsUrl).then(function (network) {
                 var privateData = framework._.sfCommon.getMetadataMgr().getPrivateData();
