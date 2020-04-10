@@ -114,6 +114,7 @@ define(function() {
         sheet: 'fa-file-excel-o',
         drive: 'fa-hdd-o',
         teams: 'fa-users',
+	meet: 'fa-phone',
     };
 
     // Ability to create owned pads and expiring pads through a new pad creation screen.

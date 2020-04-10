@@ -13,7 +13,10 @@
         "todo": "Todo",
         "contacts": "Contacts",
         "sheet": "Sheet",
-        "teams": "Teams"
+        "teams": "Teams",
+        "ooslide": "OnlyOffice Presentation",
+        "oodoc": "OnlyOffice Doc",
+        "meet": "Meet"
     },
     "button_newpad": "New Rich Text pad",
     "button_newcode": "New Code pad",
