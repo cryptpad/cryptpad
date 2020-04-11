@@ -55,7 +55,7 @@ define([
     var packetDuration = 300;
     var sharedDocument = "";
     var sharedDocumentActive = false;
-
+    var isChrome = (navigator.userAgent.search("Firefox")>-1);
     var videoFullScreen = false;
     var debugLevel = 3;
 
@@ -69,6 +69,7 @@ define([
     var audioContext;
 
     var users = {}
+    window.users = users;
     var availableAudioChannels = [0, 1, 2, 3, 4, 5];
     var status = { "video" : false, "audio" : false};
 
@@ -76,7 +77,7 @@ define([
     var inputResampler;
     
 
-    const videoConstraints = {video: { width: 500, height: 500 } };
+    const videoConstraints = {video: { width: 1024, height: 576 } };
     const screenSharingConstraints = { video: { width: 1024, height: 576, mediaSource: 'screen'}};
     const audioConstraints = { audio: { sampleRate: sampleRate } };
     const allConstraints = { audio: { sampleRate: sampleRate }, video: { width: 1024, height: 576 } };
@@ -97,12 +98,12 @@ define([
 
     function info(str) {
       if (debugLevel>2)
-	console.log(str);
+	console.info(str);
     }
 
     function warning(str) {
       if (debugLevel>1)
-	console.log(str);
+	console.warn(str);
     }
 
     function error(str) {
@@ -315,8 +316,8 @@ define([
     }
     
     function dropAudioChannel(user) {
-      info("Giving back audioChannel " + user.id);
-      availableAudioChannels.push(user.id);
+      info("Giving back audioChannel " + user.audioChannel);
+      availableAudioChannels.push(user.audioChannel);
     }
     
     /*
@@ -331,24 +332,20 @@ define([
      Setup a new remote user
     */
     function checkRemoteUser(clientId, name, cb) {
-
       var user = users[clientId];
-      if (user) {
-        debug("Found user " + user);
-        user.lastSeen = Date.now();
-        cb(user);
-        return;
+      if (!user) {
+       debug("Creating user " + clientId);
+       users[clientId] = user = {};
+       user.id = clientId;
+       user.name = (name=="") ? clientId : name;
+       window.videoUser = user;
       }
-
-      debug("Creating user " + clientId);
-      user = {}
-      user.id = clientId;
-      user.name = (name=="") ? clientId : name;
-      user.audioChannel = getNextAudioChannel(user);
-      user.init = true;
-      users[clientId] = user;
+ 
+      if (!user.audioChannel)
+         user.audioChannel = getNextAudioChannel(user);
       user.lastSeen = Date.now();
-      var html = "<div id='cp-app-meet-REMOTEUSER' class='cp-app-meet-video col-sm-6'> \
+      if (!user.remoteUserDoc) {
+        var html = "<div id='cp-app-meet-REMOTEUSER' class='cp-app-meet-video col-sm-6'> \
                             <div id='cp-app-meet-video-REMOTEUSER' class='cp-app-meet-video-element'> \
                                 <div class='cp-app-remote-stats'> \
                                     <span id='cp-app-meet-REMOTEUSER-name' class='cp-app-meet-remote-name'></span> \
@@ -364,20 +361,19 @@ define([
                                 <video id='REMOTEUSERvideo' class='remotevideo' width='1024' height='576' autoplay></video> \
                             </div> \
                 </div>";
-      var remoteUserHTML = html.replace(/REMOTEUSER/g, "remote" + clientId);
-      debug("Inserting HTML")
-      $(remoteUserHTML).insertAfter($("#cp-app-meet-own"));
-
-      // resize videos
-      setVideoWidth();
-      $("#cp-app-meet-remote" + clientId+ "-name").text(user.name);
-      user.remoteUserDoc = $("#cp-app-meet-remote" + clientId); 
-      if (videoFullScreen)
+        var remoteUserHTML = html.replace(/REMOTEUSER/g, "remote" + clientId);
+        debug("Inserting HTML")
+        $(remoteUserHTML).insertAfter($("#cp-app-meet-own"));
+        $("#cp-app-meet-remote" + clientId+ "-name").text(user.name);
+        user.remoteUserDoc = $("#cp-app-meet-remote" + clientId); 
+        // resize videos
+        setVideoWidth();
+        if (videoFullScreen)
 	    user.remoteUserDoc.hide();
-      user.remoteVideo = document.querySelector('#remote' + clientId + 'video');
-      
-      // Adding full-screen handler
-      $(user.remoteVideo).click(function(e) {
+        user.remoteVideo = document.querySelector('#remote' + clientId + 'video');
+
+        // Adding full-screen handler
+        $(user.remoteVideo).click(function(e) {
             debug("Remote video CLICK")
             var el = $(this).parent().parent();
             if ($(el).hasClass("meet-fullscreen")) {
@@ -397,27 +393,49 @@ define([
                $(".cp-app-meet-video-element").width("85%");
             }
             setVideoWidth();
-      });
-
-      var mediaSource = new MediaSource();
-      user.mediaSource = mediaSource;
-      mediaSource.addEventListener('error', function (e) {
-        error("MEDIASOURCE ERROR", e)
-      }, false);
-      mediaSource.addEventListener('sourceopen', function() { 
-        info("Remote video source open for user " + clientId)
+        });
+      }
+ 
+      if (!user.mediaSource) {
+        var mediaSource = new MediaSource();
+        user.mediaSource = mediaSource;
+	user.currentTime = 0;
+	user.freezedBlocks = 0;
+        mediaSource.addEventListener('error', function (e) {
+          error("MEDIASOURCE ERROR", e)
+        }, false);
+        mediaSource.addEventListener('sourceopen', function() { 
+          info("Remote video source open for user " + clientId)
         
-        try {
-          user.videoSourceBuffer = mediaSource.addSourceBuffer(videoCodec);
-          user.videoSourceBuffer.mode = "sequence";
-          user.init = false;
-        } catch (e) {
-          error("Error initing video stream for " + user.id);
-        }
+          try {
+            user.videoSourceBuffer = mediaSource.addSourceBuffer(videoCodec);
+            user.videoSourceBuffer.mode = "sequence";
+            user.videoSourceBuffer.onerror = function(e) {
+		error("Error in video source buffer");
+		error(e);
+	    };
+            user.videoSourceBuffer.onabort = function(e) {
+		error("Abort in video source buffer");
+		error(e);
+	    };
+            user.videoSourceBuffer.onupdatestart = function(e) {
+		debug("Update start");
+	    };
+            user.videoSourceBuffer.onupdate = function(e) {
+		debug("Update");
+	    };
+            user.videoSourceBuffer.onupdateend = function(e) {
+		debug("Update end");
+	    };
+          } catch (e) {
+            error("Error initing video stream for " + user.id);
+          }
+          cb(user);
+        }, false);
+	user.remoteVideo.src = window.URL.createObjectURL(mediaSource);
+      } else {
         cb(user);
-
-      }, false);
-      user.remoteVideo.src = window.URL.createObjectURL(mediaSource);
+      }
       debug(user);
     }
 
@@ -437,6 +455,22 @@ define([
         } catch (e) {
           error("Error dropping audio channel", e)
         }
+	dropVideoChannel(user)
+        try {
+          $("#cp-app-meet-remote" + clientId).remove();
+        } catch (e) {
+          error("Error removing HTML element", e)
+        }
+      } else {
+	  info("Could not find user " + clientId);
+      }
+      // removing user from the array
+      users[clientId] = null;
+      setVideoWidth();
+    }
+
+	      
+    function dropVideoChannel(user, removeSrc) {
         // free video elements
         try {
           if (user.videoSourceBuffer)
@@ -451,22 +485,13 @@ define([
         }
 
         try {
-          user.remoteVideo.src = "";
+          if (removeSrc)
+            user.remoteVideo.src = null;
         } catch (e) {
           error("Error removing source from video", e)
         }
-
-        try {
-          $("#cp-app-meet-remote" + clientId).remove();
-        } catch (e) {
-          error("Error removing HTML element", e)
-        }
-      } else {
-	  info("Could not find user " + clientId);
-      }
-      // removing user from the array
-      users[clientId] = null;
-      setVideoWidth();
+	user.videoSourceBuffer = null;
+	user.mediaSource = null;
     }
 
     /*
@@ -475,7 +500,7 @@ define([
     var record = (stream, options, ms) => {
       var rec = new MediaRecorder(stream, options), data = [];
       rec.ondataavailable = e => data.push(e.data);
-      rec.start(ms);
+      rec.start();
       log(rec.state + " for "+ (ms / 1000) +" seconds.");
       var stopped = new Promise((r, e) => (rec.onstop = r, rec.onerror = e));
       return Promise.all([stopped, wait(ms).then(() => rec.stop())])
@@ -894,7 +919,8 @@ define([
                                     if (parsed.type=="message") {
 					info("Received message " + parsed.action);
                                         if (parsed.action==="stopvideo") {
-                                           user.remoteVideo.load();
+					        dropVideoChannel(user, true);	
+						try { user.remoteVideo.load(); } catch (e) {};
                                         }
 					if (parsed.action==="showshareddoc") {
 					   info("Activating shared document");
@@ -921,11 +947,36 @@ define([
                                         var delay = 0;
                                         if (delay>0)
 					    debug("Delaying video by " + delay + "ms")
-                                        window.setTimeout(function() {
-                                          if (!user.videoSourceBuffer.updating) { 
+                                        // window.setTimeout(function() {
+					   if (true) { // user.videoSourceBuffer && !user.videoSourceBuffer.updating) { 
                                             debug("Video sourcebuffer appending for user " + parsed.id)
-                                            user.videoSourceBuffer.appendBuffer(uint8Array);
-                                            user.remoteVideo.play();
+                                            if (1==1) {
+						var maxLag = (isChrome) ? 3 : 10;
+						if (user.currentTime==user.remoteVideo.currentTime) {
+							if (user.currentTime!=0) {
+								user.freezedBlocks += 1;
+								console.log("Video has not advanced ", user.freezedBlocks);
+							}
+						}
+						user.currentTime = user.remoteVideo.currentTime;
+						if (user.freezedBlocks > maxLag) {
+							warning("Video frozen - resetting playing stream " + user.freezedBlocks);
+							dropVideoChannel(user, false);
+							checkRemoteUser(parsed.id, parsed.name, function(user) {
+								user.videoSourceBuffer.appendBuffer(uint8Array);
+								user.currentTime += packetDuration / 1000;
+							});
+						} else {
+						  user.videoSourceBuffer.appendBuffer(uint8Array);
+						  user.currentTime += packetDuration / 1000;
+						}
+					    } else {
+						var thisBlob = new Blob([uint8Array],{type:"video/webm"});
+					        var url = URL.createObjectURL(thisBlob);
+					        user.remoteVideo.src = url;
+				                user.remoteVideo.currentTime = 0;
+					    }
+				 	    try { user.remoteVideo.play(); } catch (e) {};
                                             var videoDisplayDoneTime = Date.now();
                                             var duration = videoDisplayDoneTime - parsed.startTime;
                                             addStats("remote" + parsed.id, "video", duration);
@@ -939,7 +990,7 @@ define([
                                            error("VIDEO SOURCE BUFFER IS BUSY FOR USER " + parsed.id)
                                            addRemoteDropped(parsed.id, parsed.type, 1);
                                           }
-                                        }, delay);
+                                       // }, delay);
                                       }
 
                                       if (parsed.type=="audio") {
