@@ -61,12 +61,15 @@ define([
 
     // audio capture objects
     var audioBufferSize = 2048;
-    var audioInput;
+    var audioInputSource;
     var audioGainNode;
-    var audioProcessor;
+    var audioInputProcessor;
+    var audioPlayingProcessor;
     var audioMerger;
-    var audioRecorder;
-    var audioContext;
+    var audioInputContext;
+    var audioPlayingContext;
+    var firstInput = true;
+    var firstPlaying = [ true, true, true, true, true, true];
 
     var users = {}
     window.users = users;
@@ -175,7 +178,7 @@ define([
        if (resampler)
 	    return resampler;
 
-       resampler = new Resampler(sampleRate, audioContext.sampleRate, 1, audioBufferSize);
+       resampler = new Resampler(sampleRate, audioPlayingContext.sampleRate, 1, audioBufferSize);
        outputResampler[sampleRate] = resampler;
        return resampler;
     }
@@ -196,7 +199,8 @@ define([
 
       // get Audio autorisation so that we can play sound
       // we activate the audio system
-      audioContext = new window.AudioContext();
+      audioInputContext = new window.AudioContext();
+      audioPlayingContext = new window.AudioContext();
 
       silence = new Float32Array(audioBufferSize);
       audioPlayingQueue = {
@@ -235,18 +239,17 @@ define([
           var pdata = framework._.sfCommon.getMetadataMgr().getUserData()
           stream["audio"] = stream1;
           
-          audioInput = audioContext.createMediaStreamSource(stream1);
-          audioGainNode = audioContext.createGain();
-	  audioMerger = audioContext.createChannelMerger(6);
-          audioProcessor = audioContext.createScriptProcessor(audioBufferSize, 6, 6);
-          info("Audio sample rate is " + audioContext.sampleRate);
-          inputResampler = (sampleRate=="auto") ? null : new Resampler(audioContext.sampleRate, sampleRate, 1, audioBufferSize);
+          info("Audio Input sample rate is " + audioInputContext.sampleRate);
+          info("Audio Output sample rate is " + audioPlayingContext.sampleRate);
+          audioInputSource = audioInputContext.createMediaStreamSource(stream1);
+          audioInputProcessor = audioInputContext.createScriptProcessor(audioBufferSize, 1, 1);
+	  audioMerger = audioPlayingContext.createChannelMerger(6);
+          audioPlayingProcessor = audioPlayingContext.createScriptProcessor(audioBufferSize, 6, 6);
+          inputResampler = (sampleRate=="auto") ? null : new Resampler(audioInputContext.sampleRate, sampleRate, 1, audioBufferSize);
 
-          // this is the audio playing and recording handling
-          audioProcessor.onaudioprocess = function(e) {
-              var startTime = lastAudioReceivedDate;
-              lastAudioReceivedDate = Date.now();
-
+          // this is the audio playing handling
+          audioPlayingProcessor.onaudioprocess = function(e) {
+	    // debug("in audio playing processor");
             // This part plays audio that is being received
             // If we are too much behind we drop packats to catch up
             for (var audioChannel=0;audioChannel<6;audioChannel++) {
@@ -265,11 +268,23 @@ define([
                   var sampleDate = Date.now();
                   var sampleDelay = sampleDate - lastSampleDate;
                   lastSampleDate = sampleDate;
-                  debug("Channel " + audioChannel + " Sample size: " + sourceData.length + " duration: " + sampleDuration 
+	          if (firstPlaying[audioChannel])
+                    info("Channel " + audioChannel + " Sample size: " + sourceData.length + " duration: " + sampleDuration 
                             + " delay since previous sample: " + sampleDelay + " queue left: " + newQueueLength);
+		  else
+		    debug("Channel " + audioChannel + " Sample size: " + sourceData.length + " duration: " + sampleDuration 
+                            + " delay since previous sample: " + sampleDelay + " queue left: " + newQueueLength);
+	          firstPlaying[audioChannel] = false;
                 } 
             }
-          
+	  }
+
+
+          // this is the audio recording handling
+          audioInputProcessor.onaudioprocess = function(e) {
+            // debug("in audio input processor");
+            var startTime = lastAudioReceivedDate;
+            lastAudioReceivedDate = Date.now();
             var type = "audio";
             // If the audio streaming is active we should send data
             if (status[type]) {
@@ -277,8 +292,12 @@ define([
               // resampling the audio data to sampleRate
               var sourceData = e.inputBuffer.getChannelData(0);
               var data = (sampleRate=="auto") ? sourceData : inputResampler.resampler(sourceData);
-              var mysampleRate = (sampleRate=="auto") ? audioContext.sampleRate : sampleRate;
-	      debug("Capturing source data duration " + e.inputBuffer.duration + "s (" + sourceData.length + ") resampled to " + mysampleRate + " "  + data.length)
+              var mysampleRate = (sampleRate=="auto") ? audioInputContext.sampleRate : sampleRate;
+	      if (firstInput)
+		    info("Capturing source data duration " + e.inputBuffer.duration + "s (" + sourceData.length + ") resampled to " + mysampleRate + " "  + data.length)
+	      else
+	   	    debug("Capturing source data duration " + e.inputBuffer.duration + "s (" + sourceData.length + ") resampled to " + mysampleRate + " "  + data.length)
+	      firstInput = false;
               var uint8array = new Uint8Array(data.buffer)
               var prepareTime = Date.now();
               var msg = { id: pdata.netfluxId, name: pdata.name, startTime: startTime, prepareTime: prepareTime, type: type, counter: counter++, data: ab2str(uint8array), averageTime: lastStats[type] , sampleRate: mysampleRate };
@@ -292,12 +311,13 @@ define([
              emptyQueue();
             }
           };
-          // audioInput.connect(audioGainNode);
-          // audioGainNode.connect(audioProcessor);
-          audioInput.connect(audioProcessor);
-          audioProcessor.connect(audioMerger);
-	  audioContext.destination.channelCount = 1;
-          audioMerger.connect(audioContext.destination);
+
+          audioInputSource.connect(audioInputProcessor);
+          audioInputProcessor.connect(audioInputContext.destination);
+
+          audioPlayingProcessor.connect(audioMerger);
+	  audioPlayingContext.destination.channelCount = 1;
+          audioMerger.connect(audioPlayingContext.destination, 0, 0);
           cb();
         });  
       }
@@ -308,6 +328,7 @@ define([
       var id = availableAudioChannels.shift();
       if (id!=null) {
         warning("Attributed audio channel " + id + " to " + user.name + " " + user.id)
+	firstPlaying[id] = true;
         return id;
       } else {
         error("ERROR: no more audio channels available");
@@ -444,7 +465,7 @@ define([
     */
     function dropRemoteUser(clientId, accountName, cb) {
 
-      if (!audioContext)
+      if (!audioPlayingContext)
         return;
 
       var user = users[clientId];
@@ -783,13 +804,15 @@ define([
         
          var type = "audio";
          if (status[type]==false) { 
+             $("#cp-app-meet-microphone").removeClass("cp-app-meet-microphone-off")
+             $("#cp-app-meet-microphone").addClass("cp-app-meet-microphone-on")
+             status[type] = true;
+             /*
              navigator.mediaDevices.getUserMedia(audioConstraints).
                 then((stream1) => {
                   // connect the receiver part
-                  // var audioGainPlayingNode = audioContext.createGain();
                   // audioSourceBuffer.connect(scriptPlayingNode);
                   // scriptPlayingNode.connect(audioContext.destination);
-                  // audioGainPlayingNode.connect(audioContext.destination);
                   //try { audioSourceBuffer.start(); } catch (e) {}
                   // audioContext = new window.AudioContext()
 
@@ -798,6 +821,7 @@ define([
                   $("#cp-app-meet-microphone").addClass("cp-app-meet-microphone-on")
                   status[type] = true;
               });
+	      */
          } else {
             $("#cp-app-meet-microphone").removeClass("cp-app-meet-microphone-on")
             $("#cp-app-meet-microphone").addClass("cp-app-meet-microphone-off")
@@ -996,7 +1020,7 @@ define([
                                       if (parsed.type=="audio") {
                                           debug("Audio SourceBuffer appending")
 
-                                          if (!audioContext) {
+                                          if (!audioInputContext) {
                                             info("AudioContext is not ready for receiving data");
                                            return;
                                           }
@@ -1102,12 +1126,12 @@ define([
         });
 
         framework._.sfCommon.getSframeChannel().on('EV_RT_JOIN', function (ev) {
-           if (audioContext)
+           if (audioPlayingContext)
             checkRemoteUser(ev, "", function(user) {});
         });
 
        framework._.sfCommon.getSframeChannel().on('EV_RT_LEAVE', function (ev) {
-           if (audioContext)
+           if (audioPlayingContext)
             dropRemoteUser(ev);
         });
 
