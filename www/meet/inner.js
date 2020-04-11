@@ -80,7 +80,7 @@ define([
     var inputResampler;
     
 
-    const videoConstraints = {video: { width: 1024, height: 576 } };
+    const videoConstraints = {video: { width: 1024, height: 800 } };
     const screenSharingConstraints = { video: { width: 1024, height: 576, mediaSource: 'screen'}};
     const audioConstraints = { audio: { sampleRate: sampleRate } };
     const allConstraints = { audio: { sampleRate: sampleRate }, video: { width: 1024, height: 576 } };
@@ -379,7 +379,7 @@ define([
                                     <span id='cp-dropped-REMOTEUSER-video' class='cp-app-stats-item'></span> \
                                     <span id='cp-dropped-REMOTEUSER-audio' class='cp-app-stats-item'></span> \
                                 </div> \
-                                <video id='REMOTEUSERvideo' class='remotevideo' width='1024' height='576' autoplay></video> \
+                                <video id='REMOTEUSERvideo' class='remotevideo' width='1000' height='800' autoplay></video> \
                             </div> \
                 </div>";
         var remoteUserHTML = html.replace(/REMOTEUSER/g, "remote" + clientId);
