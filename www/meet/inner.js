@@ -353,6 +353,9 @@ define([
      Setup a new remote user
     */
     function checkRemoteUser(clientId, name, cb) {
+      if ((clientId==null) || (clientId==""))
+	  cb(null);
+
       var user = users[clientId];
       if (!user) {
        debug("Creating user " + clientId);
@@ -835,13 +838,13 @@ define([
             sharedDocumentActive = false;
             setVideoWidth();
           } else {
-            UI.prompt(Messages.shareDocumentChooseUrl, sharedDocument, function (src) {
-              $("#cp-app-meet-document-iframe")[0].src = src;
-              $("#cp-app-meet-document").show();
-	            messageSendQueue.push({ id: "", name: "", startTime: 0, prepareTime: 0, type: "message", action : "showshareddoc" });
+            // UI.prompt(Messages.shareDocumentChooseUrl, sharedDocument, function (src) {
+            UI.prompt(sharedDocument, sharedDocument, function (src) {
+		    activateSharedDoc(src);
+	            messageSendQueue.push({ id: "", name: "", startTime: 0, prepareTime: 0, type: "message", action : "showshareddoc" , url: src});
 	            emptyQueue();
-              sharedDocumentActive = true;
-              setVideoWidth();
+		    addToSharedDocuments(src);
+
           });
          }
       });
@@ -896,7 +899,25 @@ define([
            setVideoWidth();
       });
     }
-
+   
+    function activateSharedDoc(src) {
+        info("Activating shared document");
+        $("#cp-app-meet-document-iframe")[0].src = src;	
+        $("#cp-app-meet-document").show();
+	sharedDocumentActive = true;
+	setVideoWidth();
+    }
+    function addToSharedDocuments(src) {
+	var metadataMgr = framework._.cpNfInner.metadataMgr;
+	var metadata = metadataMgr.getMetadata();
+        var metadata2 = JSON.parse(JSON.stringify(metadataMgr.getMetadata()));
+        if (!metadata2.sharedDocuments) {
+   	   metadata2.sharedDocuments = [];
+	}
+	metadata2.sharedDocuments.push(src);
+        metadataMgr.updateMetadata(metadata2)
+        framework.localChange();
+    }
 
     function startVideoConf(framework) {
 
@@ -947,10 +968,7 @@ define([
 						try { user.remoteVideo.load(); } catch (e) {};
                                         }
 					if (parsed.action==="showshareddoc") {
-					   info("Activating shared document");
-					   $("#cp-app-meet-document").show();
-				    	   sharedDocumentActive = true;
-				           setVideoWidth();
+				    	   activateSharedDoc(parsed.url);
 					}
                                         /*
                                         if (parsed.action=="join") {
@@ -1089,6 +1107,16 @@ define([
               }
             }
             debug("Check user end");
+
+            var sharedDocs = framework._.sfCommon.getMetadataMgr().getMetadata().sharedDocuments;
+	    if (sharedDocs) {
+               var sharedDoc = sharedDocs[sharedDocs.length-1];
+	       if (!sharedDoc || sharedDoc==sharedDocument) {
+		       // it's the same shared doc, return
+	       } else {
+		  activateSharedDoc(sharedDoc);
+	       }
+	    }	
        }
     
     // Prepare buttons
