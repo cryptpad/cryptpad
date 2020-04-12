@@ -96,22 +96,22 @@ define([
 
     function debug(str) {
       if (debugLevel>3)
-	console.log(str);
+        console.log(str);
     }
 
     function info(str) {
       if (debugLevel>2)
-	console.info(str);
+	      console.info(str);
     }
 
     function warning(str) {
       if (debugLevel>1)
-	console.warn(str);
+	      console.warn(str);
     }
 
     function error(str) {
       if (debugLevel>0)
-	console.error(str);
+	      console.error(str);
     }
 
     function setBitRate(bitRateId, display) {
@@ -840,11 +840,7 @@ define([
           } else {
             // UI.prompt(Messages.shareDocumentChooseUrl, sharedDocument, function (src) {
             UI.prompt(sharedDocument, sharedDocument, function (src) {
-		    activateSharedDoc(src);
-	            messageSendQueue.push({ id: "", name: "", startTime: 0, prepareTime: 0, type: "message", action : "showshareddoc" , url: src});
-	            emptyQueue();
-		    addToSharedDocuments(src);
-
+                insertSharedDoc(src);
           });
          }
       });
@@ -899,24 +895,39 @@ define([
            setVideoWidth();
       });
     }
-   
-    function activateSharedDoc(src) {
-        info("Activating shared document");
-        $("#cp-app-meet-document-iframe")[0].src = src;	
-        $("#cp-app-meet-document").show();
-	sharedDocumentActive = true;
-	setVideoWidth();
+
+    function insertSharedDoc(src) {
+        activateSharedDoc(src);
+         
+         // Informing other users that the document has been inserted
+         messageSendQueue.push({ id: "", name: "", startTime: 0, prepareTime: 0, type: "message", action : "showshareddoc" , url: src});
+         emptyQueue();
+
+         // Adding document to permanently shared doc
+         addToSharedDocuments(src);
     }
+
+    function activateSharedDoc(src) {
+      info("Activating shared document");
+      if (src && src!="" && src != $("#cp-app-meet-document-iframe")[0].src) {
+        $("#cp-app-meet-document-iframe")[0].src = ""; 
+        $("#cp-app-meet-document-iframe")[0].src = src;	
+      }
+      $("#cp-app-meet-document").show();
+	    sharedDocumentActive = true;
+	    setVideoWidth();
+    }
+
     function addToSharedDocuments(src) {
-	var metadataMgr = framework._.cpNfInner.metadataMgr;
-	var metadata = metadataMgr.getMetadata();
-        var metadata2 = JSON.parse(JSON.stringify(metadataMgr.getMetadata()));
-        if (!metadata2.sharedDocuments) {
-   	   metadata2.sharedDocuments = [];
-	}
-	metadata2.sharedDocuments.push(src);
-        metadataMgr.updateMetadata(metadata2)
-        framework.localChange();
+      var metadataMgr = framework._.cpNfInner.metadataMgr;
+      var metadata = metadataMgr.getMetadata();
+      var metadata2 = JSON.parse(JSON.stringify(metadataMgr.getMetadata()));
+      if (!metadata2.sharedDocuments) {
+   	    metadata2.sharedDocuments = [];
+	    }
+      metadata2.sharedDocuments.push(src);
+      metadataMgr.updateMetadata(metadata2)
+      framework.localChange();
     }
 
     function startVideoConf(framework) {
@@ -934,7 +945,7 @@ define([
         ], function (Netflux, NetConfig) {
             var wsUrl = "wss://meet-alpha.cryptpad.fr/cryptpad_websocket"; 
             // wsUrl = NetConfig.getWebsocketURL();
-            // wsUrl = "ws://localhost:3000/cryptpad_websocket";
+            wsUrl = "ws://localhost:3000/cryptpad_websocket";
             // wsUrl = "wss://cryptpad.dubost.name/cryptpad_websocket";
             info("Connecting to video channel " + wsUrl);
             Netflux.connect(wsUrl).then(function (network) {
@@ -997,7 +1008,7 @@ define([
 						if (user.currentTime==user.remoteVideo.currentTime) {
 							if (user.currentTime!=0) {
 								user.freezedBlocks += 1;
-								console.log("Video has not advanced ", user.freezedBlocks);
+								warning("Video has not advanced ", user.freezedBlocks);
 							}
 						}
 						user.currentTime = user.remoteVideo.currentTime;
@@ -1117,40 +1128,102 @@ define([
 		  activateSharedDoc(sharedDoc);
 	       }
 	    }	
-       }
+    }
+
+    function updateFilePicker(framework) {
+            var common = framework._.sfCommon;
+            var privateDat = framework._.cpNfInner.metadataMgr.getPrivateData();
+            var origin = privateDat.fileHost || privateDat.origin;
+
+            common.initFilePicker({
+                onSelect: function (data) {
+                  var url = origin + data.href + "/embed/";
+                  if (data.type=="slide")
+                    url += "present/"
+                  info("Embedding url " + url)
+                  insertSharedDoc(url);
+                }
+            });
+            
+            $embedButton = common.createButton('mediatag', true).click(function () {
+                common.openFilePicker({
+                    types: ["pad", "slide", "sheet", "whiteboard", "code", "ooslide", "oodoc", "kanban", "poll"],
+                    where: ['root']
+                });
+            });
+
+            framework._.toolbar.$rightside.append($embedButton);
+    };
     
     // Prepare buttons
     initButtons();
 
     // This creates a delayed start of the Video Conferencing
-    $("#cp-meet-start").click(function() { startVideoConf(framework) });
+    $("#cp-meet-start").click(function() { 
+      updateFilePicker(framework)
+      startVideoConf(framework) 
+    });
 
     // This is the main initialization loop
     var andThen2 = function (framework) {
+        var common = framework._.sfCommon;
+        var privateData = common.getMetadataMgr().getPrivateData();
         
         // Here you can load the objects or call the functions you have defined
 
         // This is the function from which you will receive updates from CryptPad
         // In this example we update the textarea with the data received
         framework.onContentUpdate(function (newContent) {
-            debug("Content should be updated to " + newContent);
-            $("#cp-app-meet-content").val(newContent.content);
+            // debug("Content should be updated to " + newContent);
+            // $("#cp-app-meet-content").val(newContent.content);
         });
 
         // This is the function called to get the current state of the data in your app
         // Here we read the data from the textarea and put it in a javascript object
         framework.setContentGetter(function () {
+            return {
+              content: ""
+            };
+            /*
             var content = $("#cp-app-meet-content").val();
             debug("Content current value is " + content);
             return {
                 content: content
             };
+            */
         });
 
         // This is called when the system is ready to start editing
         // We focus the textarea
         framework.onReady(function (newPad) {
-            $("#cp-app-meet-content").focus();
+            $("body").focus();
+            
+            /*
+            var fmConfig = {
+                dropArea: $('body'),
+                body: $('body'),
+                onUploaded: function (ev, data) {
+                    var parsed = Hash.parsePadUrl(data.url);
+                    var secret = Hash.getSecrets('file', parsed.hash, data.password);
+                    var fileHost = privateData.fileHost || privateData.origin;
+                    var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
+                    var key = Hash.encodeBase64(secret.keys.cryptKey);
+                    debug(data.url);
+                    // var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + key + '"></media-tag>';
+                    // editor.replaceSelection(mt);
+
+                }
+            };
+            common.createFileManager(fmConfig);
+            */
+
+            $(".cp-toolbar-icon-mediatag").remove();
+        });
+
+
+        framework.setMediaTagEmbedder(function (mt) {
+             debug("Received media-tag");
+             debug(mt);
         });
 
         framework._.sfCommon.getSframeChannel().on('EV_RT_JOIN', function (ev) {
