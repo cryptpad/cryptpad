@@ -943,10 +943,13 @@ define([
             '/bower_components/netflux-websocket/netflux-client.js',
             '/common/outer/network-config.js'
         ], function (Netflux, NetConfig) {
-            var wsUrl = "wss://meet-alpha.cryptpad.fr/cryptpad_websocket"; 
+            var wsUrl;
+            // wsUrl = "wss://meet-alpha.cryptpad.fr/cryptpad_websocket"; 
             // wsUrl = NetConfig.getWebsocketURL();
-            wsUrl = "ws://localhost:3000/cryptpad_websocket";
+            // wsUrl = "ws://localhost:3000/cryptpad_websocket";
             // wsUrl = "wss://cryptpad.dubost.name/cryptpad_websocket";
+            wsUrl = "ws" + framework._.cpNfInner.metadataMgr.getPrivateData().origin.substring(4) + "/cryptpad_websocket"
+
             info("Connecting to video channel " + wsUrl);
             Netflux.connect(wsUrl).then(function (network) {
                 var privateData = framework._.sfCommon.getMetadataMgr().getPrivateData();
@@ -1197,6 +1200,8 @@ define([
         // We focus the textarea
         framework.onReady(function (newPad) {
             $("body").focus();
+            if (Messages.meet_warning)
+              $("<span class='cp-toolbar-meet'>" + Messages.meet_warning + "</span>").insertBefore($(".cp-toolbar-limit")[0])
             
             /*
             var fmConfig = {

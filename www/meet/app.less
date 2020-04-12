@@ -17,7 +17,13 @@ body.cp-app-generic {
     #cp-meet-start {
         width: 100%;
         text-align: center;
-        padding-top: 30%;
+        padding-top: 20%;
+        p {
+            width: 50%;
+            max-width: 400px;
+            margin: auto;
+            margin-bottom: 30px;
+        }
 
         input {
             background-color: lightblue;
@@ -261,6 +267,9 @@ body.cp-app-generic {
     }
 
     @media (max-width: 768px) {
+        .cp-toolbar-meet {
+            display: none;
+        }
         .cp-app-meet-bandwidth-slider {
             width: 80px;
         }
