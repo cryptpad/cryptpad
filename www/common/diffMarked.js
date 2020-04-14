@@ -23,8 +23,17 @@ define([
         init: function () {}
     };
 
+    var mermaidThemeCSS = ".node rect { fill: #DDD; stroke: #AAA; } " +
+        "rect.task, rect.task0, rect.task2 { stroke-width: 1 !important; rx: 0 !important; } " +
+        "g.grid g.tick line { opacity: 0.25; }" +
+        "g.today line { stroke: red; stroke-width: 1; stroke-dasharray: 3; opacity: 0.5; }";
+
     require(['mermaid', 'css!/code/mermaid-new.css'], function (_Mermaid) {
         Mermaid = _Mermaid;
+        Mermaid.initialize({
+            gantt: { axisFormat: '%m-%d', },
+            "themeCSS": mermaidThemeCSS,
+        });
     });
 
     var highlighter = function () {
