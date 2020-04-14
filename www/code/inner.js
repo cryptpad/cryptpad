@@ -375,7 +375,7 @@ define([
                 startLine: array[1],
                 startCh: array[2],
                 endLine: multiline ? array[3] : array[1],
-                endCh: singleChar ? (array[2]+1) : array[3]
+                endCh: singleChar ? (array[2]+1) : (multiline ? array[4] : array[3])
             };
         };
 
@@ -406,127 +406,214 @@ define([
         // first: data about the change with the lowest offset
         // last: data about the change with the latest offset
         // in the comments, "I" am "first"
-        var fixMarks = function (first, last) {
-            var toKeepEnd = [];
-            var toKeepStart = [];
-            // Get their start position compared to the authdoc
-            var lastOldOffset = last.offset - first.size; // (their offset minus my size)
-            var lastOldPos = SFCodeMirror.posToCursor(lastOldOffset, last.doc);
+        var fixMarks = function (first, last, content, toKeepEnd) {
+            console.log(first, last);
+            var toKeep = [];
+
+            // Get their start position compared to the authDoc
+            var lastAuthOffset = last.offset + last.total;
+            var lastAuthPos = SFCodeMirror.posToCursor(lastAuthOffset, last.doc);
+            // Get their start position compared to the localDoc
+            var lastLocalOffset = last.offset + first.total;
+            var lastLocalPos = SFCodeMirror.posToCursor(lastLocalOffset, first.doc);
+
+            console.log(lastAuthPos, lastAuthOffset);
+            console.log(lastLocalPos, lastLocalOffset);
             // Keep their changes in the marks (after their offset)
             last.marks.some(function (array, i) {
                 var p = parseMark(array);
                 // End of the mark before offset? ignore
-                if (p.endLine < lastOldPos.line) { return; }
+                if (p.endLine < lastAuthPos.line) { return; }
                 // Take everything from the first mark ending after the pos
-                if (p.endLine > lastOldPos.line || p.endCh >= lastOldPos.ch) {
-                    toKeepEnd = last.marks.slice(i);
+                if (p.endLine > lastAuthPos.line || p.endCh >= lastAuthPos.ch) {
+                    toKeep = last.marks.slice(i);
+                    last.marks.splice(i);
                     return true;
                 }
             });
             // Keep my marks (based on currentDoc) before their changes
+            var toJoin = {};
             first.marks.some(function (array, i) {
                 var p = parseMark(array);
                 // End of the mark before offset? ignore
-                if (p.endLine < last.startLine) { return; }
+                if (p.endLine < lastLocalPos.line) { return; }
                 // Take everything from the first mark ending after the pos
-                if (p.endLine > last.startLine || p.endCh >= last.startCh) {
-                    toKeepStart = first.marks.slice(0,i);
+                if (p.endLine > lastLocalPos.line || p.endCh >= lastLocalPos.ch) {
+                    first.marks.splice(i);
                     return true;
                 }
             });
+            if (first.marks.length) {
+                var toJoinMark = first.marks[first.marks.length - 1].slice();
+                toJoin = parseMark(toJoinMark);
+            }
 
     console.info('to keep');
-    console.info(JSON.stringify(toKeepStart));
-    console.info(JSON.stringify(toKeepEnd));
+    console.info(JSON.stringify(toKeep));
 
-            // Fix their offset
-            var addLine = first.endLine - first.startLine;
-            var addCh = first.endCh - first.startCh;
+            // Add the new markers to the result
+            Array.prototype.unshift.apply(toKeepEnd, toKeep);
+
+            // Fix their offset: compute added lines and added characters on the last line
+            // using the chainpad operation data (toInsert and toRemove)
+            var pos = SFCodeMirror.posToCursor(first.offset, content);
+            var removed = content.slice(first.offset, first.offset + first.toRemove);
+            var removedS = removed.split('\n');
+            var addedS = first.toInsert.split('\n');
+            var addLine = addedS.length - removedS.length;
+            var addCh = addedS[addedS.length - 1].length - removedS[removedS.length - 1].length;
+            if (addLine > 0) { addCh -= pos.ch; }
             toKeepEnd.forEach(function (array) {
                 // Push to correct lines
                 array[1] += addLine;
                 if (typeof(array[4]) !== "undefined") { array[3] += addLine; }
                 // If they have markers on my end line, push their "ch"
-                if (array[1] === first.endLine) {
+                if (array[1] === toJoin[1]) {
                     array[2] += addCh;
                     // If they have no end line, it means end line === start line,
                     // so we also push their end offset
                     if (!array[4] && array[3]) { array[3] += addCh; }
                 }
             });
-            Array.prototype.push.apply(toKeepStart, toKeepEnd);
-            authormarks.marks = toKeepStart;
+
+            if (toKeep.length && toJoin) {
+                // Make sure the marks are joined correctly:
+                // fix the start position of the marks to keep
+                toKeepEnd[0][1] = toJoin.endLine;
+                toKeepEnd[0][2] = toJoin.endCh;
+            }
+
+    console.info(JSON.stringify(toJoin));
+console.info(JSON.stringify(first.marks));
+console.info(JSON.stringify(last.marks));
+    console.info(JSON.stringify(toKeepEnd));
         };
         var checkAuthors = function (userDoc) {
             var chainpad = framework._.cpNfInner.chainpad;
             var authDoc = JSON.parse(chainpad.getAuthDoc() || '{}');
             if (!authDoc.content || !userDoc.content) { return; }
+            if (authDoc.content === userDoc.content) { return; } // No uncommitted work
             if (!authormarks || !Array.isArray(authormarks.marks)) { return; }
             var localDoc = CodeMirror.canonicalize(editor.getValue());
 
+            var commonParent = chainpad.getAuthBlock().getParent().getContent().doc;
+            console.log(chainpad);
+            console.log(commonParent);
+            var content = JSON.parse(commonParent || '{}').content || '';
+
             // Their changes are the diff between my local doc (my local changes only)
             // and the userDoc (my local changes + their changes pushed to the authdoc)
-            var theirOps = ChainPad.Diff.diff(localDoc, userDoc.content);
+            //var theirOps = ChainPad.Diff.diff(localDoc, userDoc.content);
+            var theirOps = ChainPad.Diff.diff(content, authDoc.content);
             // My changes are the diff between my userDoc (my local changes + their changes)
             // and the authDoc (their changes only)
-            var myOps = ChainPad.Diff.diff(authDoc.content, userDoc.content);
+            //var myOps = ChainPad.Diff.diff(authDoc.content, userDoc.content);
+            var myOps = ChainPad.Diff.diff(content, localDoc);
+
+            if (!myOps.length || !theirOps.length) { return; }
 
             // If I have uncommited content when receiving a remote patch, and they have
             // pushed content to the same line as me, I need to update all the authormarks
             // after their changes to push them by the length of the text I added
-            console.log(JSON.stringify(authDoc.authormarks));
-            console.log(JSON.stringify(authormarks));
+            console.log(JSON.stringify(oldMarks.marks));
+            console.log(JSON.stringify(authDoc.authormarks.marks));
+            console.log(JSON.stringify(authormarks.marks));
             console.warn(myOps);
             console.warn(theirOps);
             var marks = authormarks.marks;
 
-            myOps.forEach(function (op) {
-                var pos = SFCodeMirror.posToCursor(op.offset, userDoc.content);
-                var size = (op.toInsert.length - op.toRemove);
-                var pos2 = SFCodeMirror.posToCursor(op.offset+size, userDoc.content);
+            var ops = {};
 
-                var me = {
-                    offset: op.offset,
-                    size: size,
-                    startLine: pos.line,
-                    startCh: pos.ch,
-                    endLine: pos2.line,
-                    endCh: pos2.ch,
-                    marks: (oldMarks && oldMarks.marks) || [],
-                    doc: localDoc
-                };
+            var myTotal = 0;
+            var theirTotal = 0;
+            var parseOp = function (me) {
+                return function (op) {
+                    var size = (op.toInsert.length - op.toRemove);
+                    /*
+                    var pos = SFCodeMirror.posToCursor(op.offset, content);
+                    var pos2 = SFCodeMirror.posToCursor(op.offset+size, content);
+                    */
 
-                theirOps.some(function (_op) {
-                    // XXX we need the take the first operation after my changes and the one just before my change
-                    // XXX if they have multiple operations and one of them (not the first)
-                    // is multiline...
-
-                    var _size = (_op.toInsert.length - _op.toRemove);
-                    var _pos = SFCodeMirror.posToCursor(_op.offset, userDoc.content);
-                    var _pos2 = SFCodeMirror.posToCursor(_op.offset+_size, userDoc.content);
-
-                    var them = {
-                        offset: _op.offset,
-                        size: _size,
-                        startLine: _pos.line,
-                        startCh: _pos.ch,
-                        endLine: _pos2.line,
-                        endCh: _pos2.ch,
-                        marks: (authDoc.authormarks && authDoc.authormarks.marks) || [],
-                        doc: authDoc.content
+                    ops[op.offset] = {
+                        me: me,
+                        offset: op.offset,
+                        toInsert: op.toInsert,
+                        toRemove: op.toRemove,
+                        size: size,
+                        /*
+                        size: size,
+                        startLine: pos.line,
+                        startCh: pos.ch,
+                        endLine: pos2.line,
+                        endCh: pos2.ch,
+                        addLine: pos2.line - pos.line,
+                        addCh: pos2.ch - pos.ch,
+                        */
+                        marks: (me ? (oldMarks && oldMarks.marks)
+                                   : (authDoc.authormarks && authDoc.authormarks.marks)) || [],
+                        doc: me ? localDoc : authDoc.content
                     };
 
-                    if (_op.offset > op.offset) {
-                        console.error('me first', me, them);
-                        fixMarks(me, them);
+                    if (me) {
+                        myTotal += size;
                     } else {
-                        console.error('them first', me, them);
-                        fixMarks(them, me);
+                        theirTotal += size;
                     }
-                    console.warn(JSON.stringify(authormarks.marks));
-                    return true;
-                });
+                };
+            };
+            myOps.forEach(parseOp(true));
+            theirOps.forEach(parseOp(false));
+console.error(myTotal, theirTotal);
+
+            /*
+            theirOps.map(function (_op) {
+                var _pos = SFCodeMirror.posToCursor(_op.offset, content);
+                var _size = (_op.toInsert.length - _op.toRemove);
+                var _pos2 = SFCodeMirror.posToCursor(_op.offset+_size, content);
+
+                ops[_op.offset] = {
+                    me: false,
+                    offset: _op.offset,
+                    size: _size,
+                    startLine: _pos.line,
+                    startCh: _pos.ch,
+                    endLine: _pos2.line,
+                    endCh: _pos2.ch,
+                    marks: (authDoc.authormarks && authDoc.authormarks.marks) || [],
+                    doc: authDoc.content
+                };
+
+                theirTotal += _size;
             });
+            */
+            var sorted = Object.keys(ops).map(Number);
+            sorted.sort().reverse();
+
+            console.log(sorted);
+            // We start from the end so that we don't have to fix the offsets everytime
+            var prev;
+            var toKeepEnd = [];
+            sorted.forEach(function (offset) {
+                var op = ops[offset];
+
+                // Not the same author? fix!
+                if (prev && prev.me !== op.me) {
+                    prev.total = prev.me ? myTotal : theirTotal;
+                    op.total = op.me ? myTotal : theirTotal;
+                    fixMarks(op, prev, content, toKeepEnd);
+                }
+
+                if (op.me) { myTotal -= op.size }
+                else { theirTotal -= op.size }
+                prev = op;
+            });
+            var first = ops[sorted[sorted.length - 1]];
+            console.error(JSON.stringify(first.marks));
+            if (first) {
+            Array.prototype.unshift.apply(toKeepEnd, first.marks);
+            }
+            console.error(JSON.stringify(toKeepEnd));
+            authormarks.marks = toKeepEnd;
         };
 
         framework.onContentUpdate(function (newContent) {
@@ -535,6 +622,10 @@ define([
                 CodeMirror.setMode(highlightMode, evModeChange.fire);
             }
 
+            var chainpad = framework._.cpNfInner.chainpad;
+            console.error(chainpad._.authDoc);
+            console.warn(chainpad._.uncommitted);
+            console.error(authormarks.marks, oldMarks.marks);
             if (newContent.authormarks) {
                 oldMarks = authormarks;
                 authormarks = newContent.authormarks;

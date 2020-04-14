@@ -65,6 +65,7 @@ define([
                 sframeChan.query('Q_RT_MESSAGE', message, function (_err, obj) {
                     var err = _err || (obj && obj.error);
                     if (!err) { evPatchSent.fire(); }
+                    console.error('cb', message);
                     cb(err);
                 }, { timeout: -1 });
             });
@@ -137,6 +138,7 @@ define([
             if (isReady) {
                 onLocal(true); // should be onBeforeMessage
             }
+            console.error('received', content);
             chainpad.message(content);
             if (isHistory && updateLoadingProgress) {
                 updateLoadingProgress({
