@@ -360,6 +360,12 @@ define([
             // retrieve the attached source code which it was drawn
             var src = el.getAttribute('mermaid-source');
 
+/*  The new source might have syntax errors that will prevent rendering.
+    It might be preferable to keep the existing state instead of removing it
+    if you don't have something better to display. Ideally we should display
+    the cause of the syntax error so that the user knows what to correct.  */
+            //if (!Mermaid.parse(src)) { } // TODO
+
             // check if that source exists in the set of charts which are about to be rendered
             if (mermaid_source.indexOf(src) === -1) {
                 // if it's not, then you can remove it
