@@ -50,6 +50,51 @@ define([
         // File and history size...
         var owned = Modal.isOwned(Env, data);
 
+        var metadataMgr = common.getMetadataMgr();
+        var priv = metadataMgr.getPrivateData();
+        Messages.cba_properties = "Author colors (experimental)"; // XXX
+        Messages.cba_enable = "Enable author colors in this pad"; // XXX
+        Messages.cba_disable = "Clear all colors and disable"; // XXX
+        if (owned && priv.app === 'code') {
+            (function () {
+                var md = metadataMgr.getMetadata();
+                var div = h('div');
+                var $div = $(div);
+                var setButton = function (state) {
+                    var button = h('button.btn');
+                    var $button = $(button);
+                    $div.html('').append($button);
+                    if (state) {
+                        // Add "enable" button
+                        $button.addClass('btn-secondary').text(Messages.cba_enable);
+                        UI.confirmButton(button, {
+                            classes: 'btn-primary'
+                        }, function () {
+                            $button.remove();
+                            var md = Util.clone(metadataMgr.getMetadata());
+                            md.enableColors = true;
+                            metadataMgr.updateMetadata(md);
+                            setButton(false);
+                        });
+                        return;
+                    }
+                    // Add "disable" button
+                    $button.addClass('btn-danger-alt').text(Messages.cba_disable);
+                    UI.confirmButton(button, {
+                        classes: 'btn-danger'
+                    }, function () {
+                        $button.remove();
+                        var md = Util.clone(metadataMgr.getMetadata());
+                        md.enableColors = false;
+                        metadataMgr.updateMetadata(md);
+                        setButton(true);
+                    });
+                };
+                setButton(!md.enableColors);
+                $d.append(h('div.cp-app-prop', [Messages.cba_properties, h('br'), div]));
+            })();
+        }
+
         // check the size of this file, including additional channels
         var bytes = 0;
         var historyBytes;

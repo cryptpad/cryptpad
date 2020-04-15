@@ -310,24 +310,11 @@ define([
             editor: editor
         });
 
-        var $removeAuthorColorsButton = framework._.sfCommon.createButton('removeauthorcolors', true, {icon: 'fa-paint-brush', title: 'Autorenfarben entfernen'}); // XXX
-        framework._.toolbar.$rightside.append($removeAuthorColorsButton);
-        $removeAuthorColorsButton.click(function() {
-            var selfrom = editor.getCursor("from");
-            var selto = editor.getCursor("to");
-            if (!editor.somethingSelected() || selfrom === selto) {
-                editor.getAllMarks().forEach(function (marker) {
-                    marker.clear();
-                });
-                authormarks.authors = {};
-                authormarks.marks = [];
-            } else {
-                editor.findMarks(selfrom, selto).forEach(function (marker) {
-                    marker.clear();
-                });
-            }
-            framework.localChange();
-        });
+        var $showAuthorColorsButton = framework._.sfCommon.createButton('', true, {
+            icon: 'fa-paint-brush',
+        }).hide();
+        framework._.toolbar.$rightside.append($showAuthorColorsButton);
+        markers.setButton($showAuthorColorsButton);
 
         var $print = $('#cp-app-code-print');
         var $content = $('#cp-app-code-preview-content');
@@ -358,7 +345,7 @@ define([
             }
 
             // Fix the markers offsets
-            markers.checkAuthors(newContent);
+            markers.checkMarks(newContent);
 
             // Apply the text content
             CodeMirror.contentUpdate(newContent);

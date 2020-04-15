@@ -6,19 +6,21 @@ define([
 ], function (Util, SFCodeMirror, Messages, ChainPad) {
     var Markers = {};
 
-    Messages.cba_writtenBy = 'Written by <em>{0}</em>';
-
     var MARK_OPACITY = 90;
+
+    Messages.cba_writtenBy = 'Written by <em>{0}</em>'; // XXX
+
     var addMark = function (Env, from, to, uid) {
+        if (!Env.enabled) { return; }
         var author = Env.authormarks.authors[uid] || {};
         uid = Number(uid);
         var name = Util.fixHTML(author.name || Messages.anonymous);
         return Env.editor.markText(from, to, {
             inclusiveLeft: uid === Env.myAuthorId,
             inclusiveRight: uid === Env.myAuthorId,
-            css: "background-color: " + author.color + MARK_OPACITY,
+            css: "background-color: " + author.color + Env.opacity,
             attributes: {
-                title: Messages._getKey('cba_writtenBy', [name]),
+                title: Env.opacity ? Messages._getKey('cba_writtenBy', [name]) : undefined,
                 'data-type': 'authormark',
                 'data-uid': uid
             }
@@ -60,6 +62,8 @@ define([
     };
 
     var updateAuthorMarks = function (Env) {
+        if (!Env.enabled) { return; }
+
         // get author marks
         var _marks = [];
         var all = [];
@@ -195,13 +199,16 @@ define([
         }
     };
 
-    var checkAuthors = function (Env, userDoc) {
+    var checkMarks = function (Env, userDoc) {
+
         var chainpad = Env.framework._.cpNfInner.chainpad;
         var editor = Env.editor;
         var CodeMirror = Env.CodeMirror;
         var oldMarks = Env.oldMarks;
 
         setAuthorMarks(Env, userDoc.authormarks);
+
+        if (!Env.enabled) { return; }
 
         var authDoc = JSON.parse(chainpad.getAuthDoc() || '{}');
         if (!authDoc.content || !userDoc.content) { return; }
@@ -280,12 +287,14 @@ define([
     };
 
     var setMarks = function (Env) {
-        // on remote update: remove all marks, add new marks
+        // on remote update: remove all marks, add new marks if colors are enabled
         Env.editor.getAllMarks().forEach(function (marker) {
             if (marker.attributes && marker.attributes['data-type'] === 'authormark') {
                 marker.clear();
             }
         });
+
+        if (!Env.enabled) { return; }
         var authormarks = Env.authormarks;
         authormarks.marks.forEach(function (mark) {
             var uid = mark[0];
@@ -316,19 +325,23 @@ define([
     };
 
     var setMyData = function (Env) {
+        if (!Env.enabled) { return; }
+
         var userData = Env.common.getMetadataMgr().getUserData();
         var old = Env.authormarks.authors[Env.myAuthorId];
-        if (!old || (old.name === userData.data && old.color === userData.color)) { return; }
         Env.authormarks.authors[Env.myAuthorId] = {
             name: userData.name,
             curvePublic: userData.curvePublic,
             color: userData.color
         };
+        if (!old || (old.name === userData.name && old.color === userData.color)) { return; }
         return true;
     };
 
     var localChange = function (Env, change, cb) {
         cb = cb || function () {};
+
+        if (!Env.enabled) { return void cb(); }
 
         if (change.origin === "setValue") {
             // If the content is changed from a remote patch, we call localChange
@@ -397,6 +410,31 @@ define([
         cb();
     };
 
+    Messages.cba_show = "Show user colors"; // XXX
+    Messages.cba_hide = "Hide user colors"; // XXX
+    var setButton = function (Env, $button) {
+        var toggle = function () {
+            var tippy = $button[0] && $button[0]._tippy;
+            if (Env.opacity) {
+                Env.opacity = 0;
+                if (tippy) { tippy.title = Messages.cba_show; }
+                else { $button.attr('title', Messages.cba_show); }
+                $button.removeClass("cp-toolbar-button-active");
+            } else {
+                Env.opacity = MARK_OPACITY;
+                if (tippy) { tippy.title = Messages.cba_hide; }
+                else { $button.attr('title', Messages.cba_hide); }
+                $button.addClass("cp-toolbar-button-active");
+            }
+        };
+        toggle();
+        Env.$button = $button;
+        $button.click(function() {
+            toggle();
+            setMarks(Env);
+        });
+    };
+
     var authorUid = function (existing) {
         if (!Array.isArray(existing)) { existing = []; }
         var n;
@@ -422,28 +460,55 @@ define([
         });
         return uid || authorUid(existing);
     };
-
     var ready = function (Env) {
+        var metadataMgr = Env.common.getMetadataMgr();
+        var md = metadataMgr.getMetadata();
+        Env.ready = true;
         Env.myAuthorId = getAuthorId(Env);
-        var changed = setMyData(Env);
-        if (changed) {
-            Env.framework.localChange();
+        Env.enabled = md.enableColors;
+
+        if (Env.enabled) {
+            if (Env.$button) { Env.$button.show(); }
             setMarks(Env);
         }
     };
 
     Markers.create = function (config) {
         var Env = config;
-        setAuthorMarks(Env);
+        Env.authormarks = {
+            authors: {},
+            marks: []
+        };
+        Env.enabled = false;
         Env.myAuthorId = 0;
 
         var metadataMgr = Env.common.getMetadataMgr();
         metadataMgr.onChange(function () {
+            var md = metadataMgr.getMetadata();
+            // If the state has changed in the pad, change the Env too
+            if (Env.enabled !== md.enableColors) {
+                Env.enabled = md.enableColors;
+                if (!Env.enabled) {
+                    // Reset marks
+                    Env.authormarks = {
+                        authors: {},
+                        marks: []
+                    };
+                    setMarks(Env);
+                    if (Env.$button) { Env.$button.hide(); }
+                } else {
+                    Env.myAuthorId = getAuthorId(Env);
+                    if (Env.$button) { Env.$button.show(); }
+                }
+                if (Env.ready) { Env.framework.localChange(); }
+            }
+
+            if (!Env.enabled) { return; }
             // Update my data
             var changed = setMyData(Env);
             if (changed) {
-                Env.framework.localChange();
                 setMarks(Env);
+                Env.framework.localChange();
             }
         });
 
@@ -457,13 +522,13 @@ define([
 
         return {
             addMark: call(addMark),
-            setAuthorMarks: call(setAuthorMarks),
             getAuthorMarks: call(getAuthorMarks),
             updateAuthorMarks: call(updateAuthorMarks),
-            checkAuthors: call(checkAuthors),
+            checkMarks: call(checkMarks),
             setMarks: call(setMarks),
             localChange: call(localChange),
             ready: call(ready),
+            setButton: call(setButton)
         };
     };
 
