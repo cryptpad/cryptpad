@@ -7,12 +7,12 @@ define([
     '/common/sframe-common-codemirror.js',
     '/common/common-util.js',
     '/common/common-hash.js',
+    '/code/markers.js',
     '/common/modes.js',
     '/common/visible.js',
     '/common/TypingTests.js',
     '/customize/messages.js',
     'cm/lib/codemirror',
-    '/bower_components/chainpad/chainpad.dist.js',
 
 
     'css!cm/lib/codemirror.css',
@@ -52,12 +52,12 @@ define([
     SFCodeMirror,
     Util,
     Hash,
+    Markers,
     Modes,
     Visible,
     TypingTest,
     Messages,
-    CMeditor,
-    ChainPad)
+    CMeditor)
 {
     window.CodeMirror = CMeditor;
 
@@ -295,18 +295,6 @@ define([
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var authorUid = function (existing) {
-        if (!Array.isArray(existing)) { existing = []; }
-        var n;
-        var i = 0;
-        while (!n || existing.indexOf(n) !== -1 && i++ < 1000) {
-            n = Math.floor(Math.random() * 1000000);
-        }
-        // If we can't find a valid number in 1000 iterations, use 0...
-        if (existing.indexOf(n) !== -1) { n = 0; }
-        return n;
-    };
-
     var andThen2 = function (editor, CodeMirror, framework, isPresentMode) {
 
         var common = framework._.sfCommon;
@@ -314,6 +302,13 @@ define([
 
         var previewPane = mkPreviewPane(editor, CodeMirror, framework, isPresentMode);
         var markdownTb = mkMarkdownTb(editor, framework);
+
+        var markers = Markers.create({
+            common: common,
+            framework: framework,
+            CodeMirror: CodeMirror,
+            editor: editor
+        });
 
         var $removeAuthorColorsButton = framework._.sfCommon.createButton('removeauthorcolors', true, {icon: 'fa-paint-brush', title: 'Autorenfarben entfernen'}); // XXX
         framework._.toolbar.$rightside.append($removeAuthorColorsButton);
@@ -333,51 +328,6 @@ define([
             }
             framework.localChange();
         });
-
-        var authormarks = {
-            marks: [],
-            authors: {}
-        };
-        var authormarksLocal = [];
-        var myAuthorId = 0;
-
-        var MARK_OPACITY = 90;
-
-        var addMark = function (from, to, uid) {
-            var author = authormarks.authors[uid] || {};
-            uid = Number(uid);
-            return editor.markText(from, to, {
-                inclusiveLeft: uid === myAuthorId,
-                inclusiveRight: uid === myAuthorId,
-                css: "background-color: " + author.color + MARK_OPACITY,
-                attributes: {
-                    'data-type': 'authormark',
-                    'data-uid': uid
-                }
-            });
-        };
-        var sortMarks = function (a, b) {
-            if (!Array.isArray(b)) { return -1; }
-            if (!Array.isArray(a)) { return 1; }
-            // Check line
-            if (a[1] < b[1]) { return -1; }
-            if (a[1] > b[1]) { return 1; }
-            // Same line: check start offset
-            if (a[2] < b[2]) { return -1; }
-            if (a[2] > b[2]) { return 1; }
-            return 0;
-        };
-        var parseMark = function (array) {
-            if (!Array.isArray(array)) { return {}; }
-            var multiline = typeof(array[4]) !== "undefined";
-            var singleChar = typeof(array[3]) === "undefined";
-            return {
-                startLine: array[1],
-                startCh: array[2],
-                endLine: multiline ? array[3] : array[1],
-                endCh: singleChar ? (array[2]+1) : (multiline ? array[4] : array[3])
-            };
-        };
 
         var $print = $('#cp-app-code-print');
         var $content = $('#cp-app-code-preview-content');
@@ -401,247 +351,22 @@ define([
             CodeMirror.configureTheme(common);
         }
 
-        var oldMarks = authormarks;
-        // Remove marks added by OT and fix the incorrect ones
-        // first: data about the change with the lowest offset
-        // last: data about the change with the latest offset
-        // in the comments, "I" am "first"
-        var fixMarks = function (first, last, content, toKeepEnd) {
-            console.log(first, last);
-            var toKeep = [];
-
-            // Get their start position compared to the authDoc
-            var lastAuthOffset = last.offset + last.total;
-            var lastAuthPos = SFCodeMirror.posToCursor(lastAuthOffset, last.doc);
-            // Get their start position compared to the localDoc
-            var lastLocalOffset = last.offset + first.total;
-            var lastLocalPos = SFCodeMirror.posToCursor(lastLocalOffset, first.doc);
-
-            console.log(lastAuthPos, lastAuthOffset);
-            console.log(lastLocalPos, lastLocalOffset);
-            // Keep their changes in the marks (after their offset)
-            last.marks.some(function (array, i) {
-                var p = parseMark(array);
-                // End of the mark before offset? ignore
-                if (p.endLine < lastAuthPos.line) { return; }
-                // Take everything from the first mark ending after the pos
-                if (p.endLine > lastAuthPos.line || p.endCh >= lastAuthPos.ch) {
-                    toKeep = last.marks.slice(i);
-                    last.marks.splice(i);
-                    return true;
-                }
-            });
-            // Keep my marks (based on currentDoc) before their changes
-            var toJoin = {};
-            first.marks.some(function (array, i) {
-                var p = parseMark(array);
-                // End of the mark before offset? ignore
-                if (p.endLine < lastLocalPos.line) { return; }
-                // Take everything from the first mark ending after the pos
-                if (p.endLine > lastLocalPos.line || p.endCh >= lastLocalPos.ch) {
-                    first.marks.splice(i);
-                    return true;
-                }
-            });
-            if (first.marks.length) {
-                var toJoinMark = first.marks[first.marks.length - 1].slice();
-                toJoin = parseMark(toJoinMark);
-            }
-
-    console.info('to keep');
-    console.info(JSON.stringify(toKeep));
-
-            // Add the new markers to the result
-            Array.prototype.unshift.apply(toKeepEnd, toKeep);
-
-            // Fix their offset: compute added lines and added characters on the last line
-            // using the chainpad operation data (toInsert and toRemove)
-            var pos = SFCodeMirror.posToCursor(first.offset, content);
-            var removed = content.slice(first.offset, first.offset + first.toRemove);
-            var removedS = removed.split('\n');
-            var addedS = first.toInsert.split('\n');
-            var addLine = addedS.length - removedS.length;
-            var addCh = addedS[addedS.length - 1].length - removedS[removedS.length - 1].length;
-            if (addLine > 0) { addCh -= pos.ch; }
-            toKeepEnd.forEach(function (array) {
-                // Push to correct lines
-                array[1] += addLine;
-                if (typeof(array[4]) !== "undefined") { array[3] += addLine; }
-                // If they have markers on my end line, push their "ch"
-                if (array[1] === toJoin[1]) {
-                    array[2] += addCh;
-                    // If they have no end line, it means end line === start line,
-                    // so we also push their end offset
-                    if (!array[4] && array[3]) { array[3] += addCh; }
-                }
-            });
-
-            if (toKeep.length && toJoin) {
-                // Make sure the marks are joined correctly:
-                // fix the start position of the marks to keep
-                toKeepEnd[0][1] = toJoin.endLine;
-                toKeepEnd[0][2] = toJoin.endCh;
-            }
-
-    console.info(JSON.stringify(toJoin));
-console.info(JSON.stringify(first.marks));
-console.info(JSON.stringify(last.marks));
-    console.info(JSON.stringify(toKeepEnd));
-        };
-        var checkAuthors = function (userDoc) {
-            var chainpad = framework._.cpNfInner.chainpad;
-            var authDoc = JSON.parse(chainpad.getAuthDoc() || '{}');
-            if (!authDoc.content || !userDoc.content) { return; }
-            if (authDoc.content === userDoc.content) { return; } // No uncommitted work
-            if (!authormarks || !Array.isArray(authormarks.marks)) { return; }
-            var localDoc = CodeMirror.canonicalize(editor.getValue());
-
-            var commonParent = chainpad.getAuthBlock().getParent().getContent().doc;
-            console.log(chainpad);
-            console.log(commonParent);
-            var content = JSON.parse(commonParent || '{}').content || '';
-
-            // Their changes are the diff between my local doc (my local changes only)
-            // and the userDoc (my local changes + their changes pushed to the authdoc)
-            //var theirOps = ChainPad.Diff.diff(localDoc, userDoc.content);
-            var theirOps = ChainPad.Diff.diff(content, authDoc.content);
-            // My changes are the diff between my userDoc (my local changes + their changes)
-            // and the authDoc (their changes only)
-            //var myOps = ChainPad.Diff.diff(authDoc.content, userDoc.content);
-            var myOps = ChainPad.Diff.diff(content, localDoc);
-
-            if (!myOps.length || !theirOps.length) { return; }
-
-            // If I have uncommited content when receiving a remote patch, and they have
-            // pushed content to the same line as me, I need to update all the authormarks
-            // after their changes to push them by the length of the text I added
-            console.log(JSON.stringify(oldMarks.marks));
-            console.log(JSON.stringify(authDoc.authormarks.marks));
-            console.log(JSON.stringify(authormarks.marks));
-            console.warn(myOps);
-            console.warn(theirOps);
-            var marks = authormarks.marks;
-
-            var ops = {};
-
-            var myTotal = 0;
-            var theirTotal = 0;
-            var parseOp = function (me) {
-                return function (op) {
-                    var size = (op.toInsert.length - op.toRemove);
-                    /*
-                    var pos = SFCodeMirror.posToCursor(op.offset, content);
-                    var pos2 = SFCodeMirror.posToCursor(op.offset+size, content);
-                    */
-
-                    ops[op.offset] = {
-                        me: me,
-                        offset: op.offset,
-                        toInsert: op.toInsert,
-                        toRemove: op.toRemove,
-                        size: size,
-                        /*
-                        size: size,
-                        startLine: pos.line,
-                        startCh: pos.ch,
-                        endLine: pos2.line,
-                        endCh: pos2.ch,
-                        addLine: pos2.line - pos.line,
-                        addCh: pos2.ch - pos.ch,
-                        */
-                        marks: (me ? (oldMarks && oldMarks.marks)
-                                   : (authDoc.authormarks && authDoc.authormarks.marks)) || [],
-                        doc: me ? localDoc : authDoc.content
-                    };
-
-                    if (me) {
-                        myTotal += size;
-                    } else {
-                        theirTotal += size;
-                    }
-                };
-            };
-            myOps.forEach(parseOp(true));
-            theirOps.forEach(parseOp(false));
-console.error(myTotal, theirTotal);
-
-            /*
-            theirOps.map(function (_op) {
-                var _pos = SFCodeMirror.posToCursor(_op.offset, content);
-                var _size = (_op.toInsert.length - _op.toRemove);
-                var _pos2 = SFCodeMirror.posToCursor(_op.offset+_size, content);
-
-                ops[_op.offset] = {
-                    me: false,
-                    offset: _op.offset,
-                    size: _size,
-                    startLine: _pos.line,
-                    startCh: _pos.ch,
-                    endLine: _pos2.line,
-                    endCh: _pos2.ch,
-                    marks: (authDoc.authormarks && authDoc.authormarks.marks) || [],
-                    doc: authDoc.content
-                };
-
-                theirTotal += _size;
-            });
-            */
-            var sorted = Object.keys(ops).map(Number);
-            sorted.sort().reverse();
-
-            console.log(sorted);
-            // We start from the end so that we don't have to fix the offsets everytime
-            var prev;
-            var toKeepEnd = [];
-            sorted.forEach(function (offset) {
-                var op = ops[offset];
-
-                // Not the same author? fix!
-                if (prev && prev.me !== op.me) {
-                    prev.total = prev.me ? myTotal : theirTotal;
-                    op.total = op.me ? myTotal : theirTotal;
-                    fixMarks(op, prev, content, toKeepEnd);
-                }
-
-                if (op.me) { myTotal -= op.size }
-                else { theirTotal -= op.size }
-                prev = op;
-            });
-            var first = ops[sorted[sorted.length - 1]];
-            console.error(JSON.stringify(first.marks));
-            if (first) {
-            Array.prototype.unshift.apply(toKeepEnd, first.marks);
-            }
-            console.error(JSON.stringify(toKeepEnd));
-            authormarks.marks = toKeepEnd;
-        };
-
         framework.onContentUpdate(function (newContent) {
             var highlightMode = newContent.highlightMode;
             if (highlightMode && highlightMode !== CodeMirror.highlightMode) {
                 CodeMirror.setMode(highlightMode, evModeChange.fire);
             }
 
-            var chainpad = framework._.cpNfInner.chainpad;
-            console.error(chainpad._.authDoc);
-            console.warn(chainpad._.uncommitted);
-            console.error(authormarks.marks, oldMarks.marks);
-            if (newContent.authormarks) {
-                oldMarks = authormarks;
-                authormarks = newContent.authormarks;
-                if (!authormarks.marks) { authormarks.marks = []; }
-                if (!authormarks.authors) { authormarks.authors = {}; }
-            }
+            // Fix the markers offsets
+            markers.checkAuthors(newContent);
 
-            var chainpad = framework._.cpNfInner.chainpad;
-            var ops = ChainPad.Diff.diff(chainpad.getAuthDoc(), chainpad.getUserDoc());
-            if (ops.length) {
-                console.error(ops);
-            }
-            checkAuthors(newContent);
-
-            CodeMirror.contentUpdate(newContent); //, authormarks.marks, authormarksLocal);
+            // Apply the text content
+            CodeMirror.contentUpdate(newContent);
             previewPane.draw();
+
+            // Apply the markers
+            markers.setMarks();
+
             framework.localChange();
         });
 
@@ -651,65 +376,8 @@ console.error(myTotal, theirTotal);
             content.highlightMode = CodeMirror.highlightMode;
             previewPane.draw();
 
-            // get author marks
-            var authors = authormarks.authors || {};
-            var _marks = [];
-            var all = [];
-
-            var i = 0;
-            editor.getAllMarks().forEach(function (mark) {
-                var pos = mark.find();
-                var attributes = mark.attributes || {};
-                if (!pos || attributes['data-type'] !== 'authormark') { return; }
-
-                var uid = Number(attributes['data-uid']) || 0;
-                var author = authors[uid] || {};
-
-                all.forEach(function (obj,i) {
-                    if (obj.uid !== uid) { return; }
-                    if (obj.removed) { return; }
-                    // Merge left
-                    if (obj.pos.to.line === pos.from.line && obj.pos.to.ch === pos.from.ch) {
-                        obj.removed = true;
-                        _marks[obj.index] = undefined;
-                        obj.mark.clear();
-                        mark.clear();
-                        mark = addMark(obj.pos.from, pos.to, uid);
-                        pos.from = obj.pos.from;
-                        return;
-                    }
-                    // Merge right
-                    if (obj.pos.from.line === pos.to.line && obj.pos.from.ch === pos.to.ch) {
-                        obj.removed = true;
-                        _marks[obj.index] = undefined;
-                        obj.mark.clear();
-                        mark.clear();
-                        mark = addMark(pos.from, obj.pos.to, uid);
-                        pos.to = obj.pos.to;
-                    }
-                });
-
-                var array = [uid, pos.from.line, pos.from.ch];
-                if (pos.from.line === pos.to.line && pos.to.ch > (pos.from.ch+1)) {
-                    // If there is more than 1 character, add the "to" character
-                    array.push(pos.to.ch);
-                } else if (pos.from.line !== pos.to.line) {
-                    // If the mark is on more than one line, add the "to" line data
-                    Array.prototype.push.apply(array, [pos.to.line, pos.to.ch]);
-                }
-                _marks.push(array);
-                all.push({
-                    uid: uid,
-                    pos: pos,
-                    mark: mark,
-                    index: i
-                });
-                i++;
-            });
-            _marks.sort(sortMarks);
-            authormarks.marks = _marks.filter(Boolean);
-            content.authormarks = authormarks;
-            //authormarksLocal = _marks.slice();
+            markers.updateAuthorMarks();
+            content.authormarks = markers.getAuthorMarks();
 
             return content;
         });
@@ -732,22 +400,6 @@ console.error(myTotal, theirTotal);
 
         framework.setTitleRecommender(CodeMirror.getHeadingText);
 
-        var getMyAuthorId = function () {
-            var existing = Object.keys(authormarks.authors || {});
-            if (!common.isLoggedIn()) { return authorUid(existing); }
-
-            var userData = common.getMetadataMgr().getUserData();
-            var uid;
-            existing.some(function (id) {
-                var author = authormarks.authors[id] || {};
-                if (author.curvePublic !== userData.curvePublic) { return; }
-                uid = Number(id);
-                return true;
-            });
-            // XXX update my color?
-            return uid || authorUid(existing);
-        };
-
         framework.onReady(function (newPad) {
             editor.focus();
 
@@ -756,8 +408,7 @@ console.error(myTotal, theirTotal);
                 //console.log("%s => %s", CodeMirror.highlightMode, CodeMirror.$language.val());
             }
 
-            myAuthorId = getMyAuthorId();
-            console.warn(myAuthorId);
+            markers.ready();
 
             var fmConfig = {
                 dropArea: $('.CodeMirror'),
@@ -776,7 +427,7 @@ console.error(myTotal, theirTotal);
         });
 
         framework.onDefaultContentNeeded(function () {
-             editor.setValue(''); //Messages.codeInitialState);
+             editor.setValue('');
         });
 
         framework.setFileExporter(CodeMirror.getContentExtension, CodeMirror.fileExporter);
@@ -799,103 +450,7 @@ console.error(myTotal, theirTotal);
         });
 
         editor.on('change', function( cm, change ) {
-            if (change.text !== undefined && (change.origin === "+input" || change.origin === "paste")) {
-                // add new author mark if text is added. marks from removed text are removed automatically
-
-                // If my text is inside an existing mark:
-                //  * if it's my mark, do nothing
-                //  * if it's someone else's mark, break it
-                // We can only have one author mark at a given position, but there may be
-                // another mark (cursor selection...) at this position so we use ".some"
-                var toSplit, abort;
-                editor.findMarksAt(change.from).some(function (mark) {
-                    if (!mark.attributes) { return; }
-                    if (mark.attributes['data-type'] !== 'authormark') { return; }
-                    if (mark.attributes['data-uid'] !== myAuthorId) {
-                        toSplit = {
-                            mark: mark,
-                            uid: mark.attributes['data-uid']
-                        };
-                    } else {
-                        // This is our mark: abort to avoid making a new one
-                        abort = true;
-                    }
-
-                    return true;
-                });
-                if (abort) { return void framework.localChange(); }
-
-                // Add my data to the doc if it's missing
-                if (!authormarks.authors[myAuthorId]) {
-                    var userData = common.getMetadataMgr().getUserData();
-                    authormarks.authors[myAuthorId] = {
-                        name: userData.name,
-                        curvePublic: userData.curvePublic,
-                        color: userData.color
-                    }
-                }
-
-                var to_add = {
-                    line: change.from.line + change.text.length-1,
-                };
-                if (change.text.length > 1) {
-                    // Multiple lines => take the length of the text added to the last line
-                    to_add.ch = change.text[change.text.length-1].length;
-                } else {
-                    // Single line => use the "from" position and add the length of the text
-                    to_add.ch = change.from.ch + change.text[change.text.length-1].length;
-                }
-
-                if (toSplit && toSplit.mark && typeof(toSplit.uid) !== "undefined") {
-                    // Break the other user's mark if needed
-                    var _pos = toSplit.mark.find();
-                    toSplit.mark.clear();
-                    addMark(_pos.from, change.from, toSplit.uid); // their mark, 1st part
-                    addMark(change.from, to_add, myAuthorId); // my mark
-                    addMark(to_add, _pos.to, toSplit.uid); // their mark, 2nd part
-                } else {
-                    // Add my mark
-                    addMark(change.from, to_add, myAuthorId);
-                }
-            } else if (change.origin === "setValue") {
-                // on remote update: remove all marks, add new marks
-                editor.getAllMarks().forEach(function (marker) {
-                    if (marker.attributes && marker.attributes['data-type'] === 'authormark') {
-                        marker.clear();
-                    }
-                });
-                authormarks.marks.forEach(function (mark) {
-                    var from_line;
-                    var to_line;
-                    var from_ch;
-                    var to_ch;
-                    var uid = mark[0];
-                    if (!authormarks.authors || !authormarks.authors[uid]) { return; }
-                    var data = authormarks.authors[uid];
-                    if (mark.length === 3)  {
-                        from_line = mark[1];
-                        to_line = mark[1];
-                        from_ch = mark[2];
-                        to_ch = mark[2]+1;
-                    } else if (mark.length === 4) {
-                        from_line = mark[1];
-                        to_line = mark[1];
-                        from_ch = mark[2];
-                        to_ch = mark[3];
-                    } else if (mark.length === 5) {
-                        from_line = mark[1];
-                        to_line = mark[3];
-                        from_ch = mark[2];
-                        to_ch = mark[4];
-                    }
-                    addMark({
-                        line: from_line, ch: from_ch
-                    }, {
-                        line: to_line, ch: to_ch
-                    }, uid);
-                });
-            }
-            framework.localChange();
+            markers.localChange(change, framework.localChange);
         });
 
         framework.start();

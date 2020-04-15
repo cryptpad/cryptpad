@@ -58,7 +58,6 @@ define([
         editor.save();
 
         var ops = ChainPad.Diff.diff(oldDoc, remoteDoc);
-        console.log(ops);
         var selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
             return TextCursor.transformCursor(oldCursor[attr], ops);
         });
