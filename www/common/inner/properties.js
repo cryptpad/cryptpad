@@ -53,12 +53,14 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var priv = metadataMgr.getPrivateData();
         Messages.cba_properties = "Author colors (experimental)"; // XXX
+        Messages.cba_hint = "This setting will be remembered for your next pad."; // XXX
         Messages.cba_enable = "Enable author colors in this pad"; // XXX
         Messages.cba_disable = "Clear all colors and disable"; // XXX
         if (owned && priv.app === 'code') {
             (function () {
                 var md = metadataMgr.getMetadata();
                 var div = h('div');
+                var hint = h('div.cp-app-prop-hint', Messages.cba_hint);
                 var $div = $(div);
                 var setButton = function (state) {
                     var button = h('button.btn');
@@ -93,7 +95,7 @@ define([
                     });
                 };
                 setButton(!md.enableColors);
-                $d.append(h('div.cp-app-prop', [Messages.cba_properties, h('br'), div]));
+                $d.append(h('div.cp-app-prop', [Messages.cba_properties, hint, div]));
             })();
         }
 
