@@ -678,6 +678,8 @@ define([
                 sem.take(function (give) {
                     var otherOwners = false;
                     nThen(function (_w) {
+                        // Don't check server metadata for blobs
+                        if (c.length !== 32) { return; }
                         ctx.Store.anonRpcMsg(null, {
                             msg: 'GET_METADATA',
                             data: c

@@ -503,8 +503,13 @@ define([
 
         var createFilePicker = function () {
             if (!common.isLoggedIn()) { return; }
-            common.initFilePicker({
-                onSelect: function (data) {
+            $embedButton = common.createButton('mediatag', true).click(function () {
+                var cfg = {
+                    types: ['file'],
+                    where: ['root']
+                };
+                if ($embedButton.data('filter')) { cfg.filter = $embedButton.data('filter'); }
+                common.openFilePicker(cfg, function (data) {
                     if (data.type !== 'file') {
                         console.log("Unexpected data type picked " + data.type);
                         return;
@@ -516,17 +521,7 @@ define([
                     var src = data.src = data.src.slice(0,1) === '/' ? origin + data.src : data.src;
                     mediaTagEmbedder($('<media-tag src="' + src +
                         '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>'), data);
-                }
-            });
-            $embedButton = common.createButton('mediatag', true).click(function () {
-                var cfg = {
-                    types: ['file'],
-                    where: ['root']
-                };
-                if ($embedButton.data('filter')) {
-                    cfg.filter = $embedButton.data('filter');
-                }
-                common.openFilePicker(cfg);
+                });
             }).appendTo(toolbar.$rightside).hide();
         };
         var setMediaTagEmbedder = function (mte, filter) {

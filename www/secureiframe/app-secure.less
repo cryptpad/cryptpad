@@ -6,8 +6,11 @@
 @import (reference) '../../customize/src/less2/include/tippy.less';
 @import (reference) '../../customize/src/less2/include/checkmark.less';
 @import (reference) '../../customize/src/less2/include/password-input.less';
+@import (reference) '../../customize/src/less2/include/modals-ui-elements.less';
+@import (reference) '../../customize/src/less2/include/usergrid.less';
 
-&.cp-app-filepicker {
+&.cp-app-secureiframe {
+    .modals-ui-elements_main();
     .iconColors_main();
     .fileupload_main();
     .alertify_main();
@@ -15,6 +18,7 @@
     .checkmark_main(20px);
     .password_main();
     .modal_main();
+    .usergrid_main();
 
     #cp-filepicker-dialog {
         display: none;
@@ -24,6 +28,14 @@
                 flex-wrap: wrap;
                 justify-content: center;
                 overflow-y: auto;
+            }
+
+            .cp-loading-spinner-container {
+                height: 100px;
+                .cp-spinner {
+                    border-color: @colortheme_logo-2;
+                    border-top-color: transparent;
+                }
             }
 
             .cp-filepicker-content-element {

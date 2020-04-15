@@ -89,7 +89,6 @@ define([
     window.CryptPad_UIElements = UIElements;
     window.CryptPad_common = funcs;
     funcs.createUserAdminMenu = callWithCommon(UIElements.createUserAdminMenu);
-    funcs.initFilePicker = callWithCommon(UIElements.initFilePicker);
     funcs.openFilePicker = callWithCommon(UIElements.openFilePicker);
     funcs.openTemplatePicker = callWithCommon(UIElements.openTemplatePicker);
     funcs.displayMediatagImage = callWithCommon(MT.displayMediatagImage);
