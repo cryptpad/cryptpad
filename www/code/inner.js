@@ -395,6 +395,13 @@ define([
                 //console.log("%s => %s", CodeMirror.highlightMode, CodeMirror.$language.val());
             }
 
+            if (newPad && Util.find(privateData, ['settings', 'code', 'enableColors'])) {
+                var metadataMgr = common.getMetadataMgr();
+                var md = Util.clone(metadataMgr.getMetadata());
+                md.enableColors = true;
+                metadataMgr.updateMetadata(md);
+            }
+
             markers.ready();
 
             var fmConfig = {

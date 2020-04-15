@@ -73,6 +73,7 @@ define([
                             $button.remove();
                             var md = Util.clone(metadataMgr.getMetadata());
                             md.enableColors = true;
+                            common.setAttribute(['code', 'enableColors'], true);
                             metadataMgr.updateMetadata(md);
                             setButton(false);
                         });
@@ -86,6 +87,7 @@ define([
                         $button.remove();
                         var md = Util.clone(metadataMgr.getMetadata());
                         md.enableColors = false;
+                        common.setAttribute(['code', 'enableColors'], false);
                         metadataMgr.updateMetadata(md);
                         setButton(true);
                     });
