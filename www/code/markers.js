@@ -37,6 +37,12 @@ define([
         if (a[2] > b[2]) { return 1; }
         return 0;
     };
+
+    /* Formats:
+        [uid, startLine, startCh, endLine, endCh] (multi line)
+        [uid, startLine, startCh, endCh] (single line)
+        [uid, startLine, startCh] (single character)
+    */
     var parseMark = Markers.parseMark = function (array) {
         if (!Array.isArray(array)) { return {}; }
         var multiline = typeof(array[4]) !== "undefined";
@@ -315,10 +321,14 @@ define([
             }
 
             // Remove marks that are placed under this one
-            Env.editor.findMarks(from, to).forEach(function (mark) {
-                if (mark.attributes['data-type'] !== 'authormark') { return; }
-                mark.clear();
-            });
+            try {
+                Env.editor.findMarks(from, to).forEach(function (mark) {
+                    if (mark.attributes['data-type'] !== 'authormark') { return; }
+                    mark.clear();
+                });
+            } catch (e) {
+                console.error(e);
+            }
 
             addMark(Env, from, to, uid);
         });
