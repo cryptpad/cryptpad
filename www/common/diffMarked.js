@@ -418,7 +418,7 @@ define([
             throw new Error(patch);
         } else {
             DD.apply($content[0], patch);
-            var $mts = $content.find('media-tag:not(:has(*))');
+            var $mts = $content.find('media-tag');
             $mts.each(function (i, el) {
                 var $mt = $(el).contextmenu(function (e) {
                     e.preventDefault();
@@ -426,6 +426,16 @@ define([
                     $(contextMenu.menu).find('li').show();
                     contextMenu.show(e);
                 });
+                if ($mt.children().length) {
+                    $mt.off('dblclick preview');
+                    $mt.on('preview', onPreview($mt));
+                    if ($mt.find('img').length) {
+                        $mt.on('dblclick', function () {
+                            $mt.trigger('preview');
+                        });
+                    }
+                    return;
+                }
                 MediaTag(el);
                 var observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
