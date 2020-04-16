@@ -6,7 +6,7 @@ define([
 ], function (Util, SFCodeMirror, Messages, ChainPad) {
     var Markers = {};
 
-    var MARK_OPACITY = 90;
+    var MARK_OPACITY = 0.5;
 
     Messages.cba_writtenBy = 'Written by <em>{0}</em>'; // XXX
 
@@ -15,10 +15,12 @@ define([
         var author = Env.authormarks.authors[uid] || {};
         uid = Number(uid);
         var name = Util.fixHTML(author.name || Messages.anonymous);
+        var col = Util.hexToRGB(author.color);
+        var rgba = 'rgba('+col[0]+','+col[1]+','+col[2]+','+Env.opacity+');';
         return Env.editor.markText(from, to, {
             inclusiveLeft: uid === Env.myAuthorId,
             inclusiveRight: uid === Env.myAuthorId,
-            css: "background-color: " + author.color + Env.opacity,
+            css: "background-color: " + rgba,
             attributes: {
                 title: Env.opacity ? Messages._getKey('cba_writtenBy', [name]) : undefined,
                 'data-type': 'authormark',
