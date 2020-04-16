@@ -182,6 +182,7 @@ console.warn(JSON.stringify(toJoin));
 
         // Add the new markers to the result
         Array.prototype.unshift.apply(toKeepEnd, toKeep);
+        console.warn(JSON.stringify(toKeepEnd));
 
         // Fix their offset: compute added lines and added characters on the last line
         // using the chainpad operation data (toInsert and toRemove)
@@ -190,17 +191,20 @@ console.warn(JSON.stringify(toJoin));
         var added = first.toInsert.split('\n');
         var addLine = added.length - removed.length;
         var addCh = added[added.length - 1].length - removed[removed.length - 1].length;
+        console.log(removed, added, addLine, addCh);
         if (addLine > 0) { addCh -= pos.ch; }
-        toKeepEnd.forEach(function (array) {
+        toKeepEnd.forEach(function (array, i) {
             // Push to correct lines
             array[1] += addLine;
             if (typeof(array[4]) !== "undefined") { array[3] += addLine; }
             // If they have markers on my end line, push their "ch"
-            if (array[1] === toJoin[1]) {
+            // If i===0, this marker will be joined later and it will also start on my end line
+            if (array[1] === toJoin.endLine || i === 0) {
                 array[2] += addCh;
                 // If they have no end line, it means end line === start line,
                 // so we also push their end offset
                 if (!array[4] && array[3]) { array[3] += addCh; }
+                else if (array[4] && array[3] === toJoin.endLine) { array[4] += addCh; }
             }
         });
 
@@ -241,9 +245,18 @@ console.warn(JSON.stringify(toJoin));
         console.log(JSON.stringify(authDoc.authormarks.marks));
 
 
+var authpatch = chainpad.getAuthBlock();
+var test = chainpad._.messages[authpatch.hashOf]; // XXX use new chainpad api
+if (test.mut.isFromMe) {
+    console.error('stopped');
+    return;
+}
+
+        console.log(content);
         var theirOps = ChainPad.Diff.diff(content, authDoc.content);
         console.warn(theirOps, chainpad.getAuthBlock().getPatch().operations);
         var myOps = ChainPad.Diff.diff(content, localDoc);
+        console.warn(myOps);
 
         if (!myOps.length || !theirOps.length) { return; }
 
@@ -375,6 +388,8 @@ console.error("END");
 
         if (!Env.enabled) { return void cb(); }
 
+console.warn(change);
+
         if (change.origin === "setValue") {
             // If the content is changed from a remote patch, we call localChange
             // in "onContentUpdate" directly
@@ -405,6 +420,7 @@ console.error("END");
         // another mark (cursor selection...) at this position so we use ".some"
         var toSplit, abort;
 
+
         Env.editor.findMarks(change.from, to_add).some(function (mark) {
             if (!mark.attributes) { return; }
             if (mark.attributes['data-type'] !== 'authormark') { return; }
@@ -420,6 +436,8 @@ console.error("END");
 
             return true;
         });
+console.warn(Env.editor.findMarks(change.from, to_add));
+console.log(change.from, to_add, change.text, abort, toSplit);
         if (abort) { return void cb(); }
 
         // Add my data to the doc if it's missing
