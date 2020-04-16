@@ -203,8 +203,11 @@ console.warn(JSON.stringify(toJoin));
                 array[2] += addCh;
                 // If they have no end line, it means end line === start line,
                 // so we also push their end offset
-                if (!array[4] && array[3]) { array[3] += addCh; }
-                else if (array[4] && array[3] === toJoin.endLine) { array[4] += addCh; }
+                if (typeof(array[4]) === "undefined" && typeof(array[3]) !== "undefined") {
+                    array[3] += addCh;
+                } else if (typeof(array[4]) !== "undefined" && array[3] === toJoin.endLine) {
+                    array[4] += addCh;
+                }
             }
         });
 
