@@ -135,6 +135,7 @@ define([
     // in the comments, "I" am "first"
     var fixMarks = function (first, last, content, toKeepEnd) {
         var toKeep = [];
+console.log(first, last, JSON.stringify(toKeepEnd));
 
         // Get their start position compared to the authDoc
         var lastAuthOffset = last.offset + last.total;
@@ -175,6 +176,10 @@ define([
             toJoin = parseMark(toJoinMark);
         }
 
+console.log('to keep, to join');
+console.warn(JSON.stringify(toKeep));
+console.warn(JSON.stringify(toJoin));
+
         // Add the new markers to the result
         Array.prototype.unshift.apply(toKeepEnd, toKeep);
 
@@ -199,12 +204,13 @@ define([
             }
         });
 
-        if (toKeep.length && toJoin) {
+        if (toKeep.length && toJoin && toJoin.endLine && toJoin.startLine) {
             // Make sure the marks are joined correctly:
             // fix the start position of the marks to keep
             toKeepEnd[0][1] = toJoin.endLine;
             toKeepEnd[0][2] = toJoin.endCh;
         }
+        console.warn(JSON.stringify(toKeepEnd));
     };
 
     var checkMarks = function (Env, userDoc) {
@@ -212,9 +218,10 @@ define([
         var chainpad = Env.framework._.cpNfInner.chainpad;
         var editor = Env.editor;
         var CodeMirror = Env.CodeMirror;
-        var oldMarks = Env.oldMarks;
 
         setAuthorMarks(Env, userDoc.authormarks);
+
+        var oldMarks = Env.oldMarks;
 
         if (!Env.enabled) { return; }
 
@@ -229,7 +236,13 @@ define([
         var commonParent = chainpad.getAuthBlock().getParent().getContent().doc;
         var content = JSON.parse(commonParent || '{}').content || '';
 
+        console.error("BEGIN");
+        console.log(JSON.stringify(oldMarks.marks));
+        console.log(JSON.stringify(authDoc.authormarks.marks));
+
+
         var theirOps = ChainPad.Diff.diff(content, authDoc.content);
+        console.warn(theirOps, chainpad.getAuthBlock().getPatch().operations);
         var myOps = ChainPad.Diff.diff(content, localDoc);
 
         if (!myOps.length || !theirOps.length) { return; }
@@ -263,7 +276,8 @@ define([
         theirOps.forEach(parseOp(false));
 
         var sorted = Object.keys(ops).map(Number);
-        sorted.sort().reverse();
+        sorted.sort(function (a, b) { return a-b; }).reverse();
+console.warn(ops, sorted);
 
         // We start from the end so that we don't have to fix the offsets everytime
         var prev;
@@ -289,6 +303,10 @@ define([
         // Prepend the markers placed before this operation
         var first = ops[sorted[sorted.length - 1]];
         if (first) { Array.prototype.unshift.apply(toKeepEnd, first.marks); }
+console.error(JSON.stringify(first.marks));
+console.error(JSON.stringify(toKeepEnd));
+
+console.error("END");
 
         // Commit our new markers
         Env.authormarks.marks = toKeepEnd;
@@ -329,6 +347,8 @@ define([
                     mark.clear();
                 });
             } catch (e) {
+                console.warn(mark, JSON.stringify(authormarks.marks));
+                console.error(from, to);
                 console.error(e);
             }
 
@@ -515,7 +535,12 @@ define([
                 if (Env.ready) { Env.framework.localChange(); }
             }
 
-            if (!Env.enabled) { return; }
+            // If the markers are disabled or if I haven't pushed content since the last reset,
+            // don't update my data
+            if (!Env.enabled || !Env.myAuthorId || !Env.authormarks.authors[Env.myAuthorId]) {
+                return;
+            }
+
             // Update my data
             var changed = setMyData(Env);
             if (changed) {
