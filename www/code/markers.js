@@ -82,6 +82,7 @@ define([
             var attributes = mark.attributes || {};
             if (!pos || attributes['data-type'] !== 'authormark') { return; }
 
+
             var uid = Number(attributes['data-uid']) || 0;
 
             all.forEach(function (obj) {
@@ -126,6 +127,7 @@ define([
             i++;
         });
         _marks.sort(sortMarks);
+        console.error(JSON.stringify(_marks.filter(Boolean)));
         Env.authormarks.marks = _marks.filter(Boolean);
     };
 
@@ -135,39 +137,41 @@ define([
     // in the comments, "I" am "first"
     var fixMarks = function (first, last, content, toKeepEnd) {
         var toKeep = [];
+        var toJoin = {};
 console.log(first, last, JSON.stringify(toKeepEnd));
 
-        // Get their start position compared to the authDoc
-        var lastAuthOffset = last.offset + last.total;
-        var lastAuthPos = SFCodeMirror.posToCursor(lastAuthOffset, last.doc);
-        // Get their start position compared to the localDoc
-        var lastLocalOffset = last.offset + first.total;
-        var lastLocalPos = SFCodeMirror.posToCursor(lastLocalOffset, first.doc);
+        if (first.me !== last.me) {
+            // Get their start position compared to the authDoc
+            var lastAuthOffset = last.offset + last.total;
+            var lastAuthPos = SFCodeMirror.posToCursor(lastAuthOffset, last.doc);
+            // Get their start position compared to the localDoc
+            var lastLocalOffset = last.offset + first.total;
+            var lastLocalPos = SFCodeMirror.posToCursor(lastLocalOffset, first.doc);
 
-        // Keep their changes in the marks (after their offset)
-        last.marks.some(function (array, i) {
-            var p = parseMark(array);
-            // End of the mark before offset? ignore
-            if (p.endLine < lastAuthPos.line) { return; }
-            // Take everything from the first mark ending after the pos
-            if (p.endLine > lastAuthPos.line || p.endCh >= lastAuthPos.ch) {
-                toKeep = last.marks.slice(i);
-                last.marks.splice(i);
-                return true;
-            }
-        });
-        // Keep my marks (based on currentDoc) before their changes
-        var toJoin = {};
-        first.marks.some(function (array, i) {
-            var p = parseMark(array);
-            // End of the mark before offset? ignore
-            if (p.endLine < lastLocalPos.line) { return; }
-            // Take everything from the first mark ending after the pos
-            if (p.endLine > lastLocalPos.line || p.endCh >= lastLocalPos.ch) {
-                first.marks.splice(i);
-                return true;
-            }
-        });
+            // Keep their changes in the marks (after their offset)
+            last.marks.some(function (array, i) {
+                var p = parseMark(array);
+                // End of the mark before offset? ignore
+                if (p.endLine < lastAuthPos.line) { return; }
+                // Take everything from the first mark ending after the pos
+                if (p.endLine > lastAuthPos.line || p.endCh >= lastAuthPos.ch) {
+                    toKeep = last.marks.slice(i);
+                    last.marks.splice(i);
+                    return true;
+                }
+            });
+            // Keep my marks (based on currentDoc) before their changes
+            first.marks.some(function (array, i) {
+                var p = parseMark(array);
+                // End of the mark before offset? ignore
+                if (p.endLine < lastLocalPos.line) { return; }
+                // Take everything from the first mark ending after the pos
+                if (p.endLine > lastLocalPos.line || p.endCh >= lastLocalPos.ch) {
+                    first.marks.splice(i);
+                    return true;
+                }
+            });
+        }
 
         // If we still have markers in "first", store the last one so that we can "join"
         // everything at the end
@@ -193,6 +197,7 @@ console.warn(JSON.stringify(toJoin));
         var addCh = added[added.length - 1].length - removed[removed.length - 1].length;
         console.log(removed, added, addLine, addCh);
         if (addLine > 0) { addCh -= pos.ch; }
+        if (addLine < 0) { addCh += pos.ch; }
         toKeepEnd.forEach(function (array, i) {
             // Push to correct lines
             array[1] += addLine;
@@ -211,7 +216,8 @@ console.warn(JSON.stringify(toJoin));
             }
         });
 
-        if (toKeep.length && toJoin && toJoin.endLine && toJoin.startLine) {
+        if (toKeep.length && toJoin && typeof(toJoin.endLine) !== "undefined"
+                                    && typeof(toJoin.endCh) !== "undefined") {
             // Make sure the marks are joined correctly:
             // fix the start position of the marks to keep
             toKeepEnd[0][1] = toJoin.endLine;
@@ -225,6 +231,18 @@ console.warn(JSON.stringify(toJoin));
         var chainpad = Env.framework._.cpNfInner.chainpad;
         var editor = Env.editor;
         var CodeMirror = Env.CodeMirror;
+
+        var authPatch = chainpad.getAuthBlock();
+var test = chainpad._.messages[authpatch.hashOf]; // XXX use new chainpad api
+        if (authPatch.isFromMe) {
+            console.error('stopped');
+            console.error(JSON.stringify(Env.authormarks.marks));
+            return;
+        }
+if (test.mut.isFromMe) { // XXX
+    console.error('ERROR');
+    window.alert('error authPatch');
+}
 
         setAuthorMarks(Env, userDoc.authormarks);
 
@@ -247,13 +265,6 @@ console.warn(JSON.stringify(toJoin));
         console.log(JSON.stringify(oldMarks.marks));
         console.log(JSON.stringify(authDoc.authormarks.marks));
 
-
-var authpatch = chainpad.getAuthBlock();
-var test = chainpad._.messages[authpatch.hashOf]; // XXX use new chainpad api
-if (test.mut.isFromMe) {
-    console.error('stopped');
-    return;
-}
 
         console.log(content);
         var theirOps = ChainPad.Diff.diff(content, authDoc.content);
@@ -302,7 +313,7 @@ console.warn(ops, sorted);
             var op = ops[offset];
 
             // Not the same author? fix!
-            if (prev && prev.me !== op.me) {
+            if (prev) {
                 // Provide the new "totals"
                 prev.total = prev.me ? myTotal : theirTotal;
                 op.total = op.me ? myTotal : theirTotal;
