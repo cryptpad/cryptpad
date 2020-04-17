@@ -1343,11 +1343,12 @@
     "profile_copyKey": "Copier la clé publique",
     "canvas_select": "Selection",
     "canvas_brush": "Pinceau",
-    "cba_show": "",
-    "cba_disable": "",
-    "cba_hint": "",
-    "cba_enable": "",
-    "cba_writtenBy": "",
-    "cba_properties": "",
-    "cba_hide": ""
+    "cba_show": "Montrer les couleurs d'auteurs",
+    "cba_disable": "Effacer et Désactiver",
+    "cba_hint": "Ce réglage sera mémorisé lors de la création de votre prochain pad.",
+    "cba_enable": "Activer",
+    "cba_writtenBy": "Écrit par : {0}",
+    "cba_properties": "Couleurs par auteurs (expérimental)",
+    "cba_hide": "Cacher les couleurs d'auteurs",
+    "oo_login": "Veuillez vous connecter ou vous inscrire pour améliorer la performance des feuilles de calcul."
 }
