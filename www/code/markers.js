@@ -17,15 +17,7 @@ define([
                In some cases, the result is "ew" inserted and the following character not deleted
      */
 
-    var debug = function (Env, level, obj, logObject) {
-        if (!Env.devMode) { return function () {}; }
-        var f = console.log;
-        if (typeof(console[level]) === "function") {
-            f = console[level];
-        }
-        if (logObject) { return void f(obj); }
-        f(JSON.stringify(obj));
-    };
+    var debug = function () {};
 
     var MARK_OPACITY = 0.5;
 
@@ -149,7 +141,7 @@ define([
             i++;
         });
         _marks.sort(sortMarks);
-        debug(Env, 'warn', _marks);
+        debug('warn', _marks);
         Env.authormarks.marks = _marks.filter(Boolean);
     };
 
@@ -166,14 +158,18 @@ define([
         if (addLine > 0) { addCh -= pos.ch; }
         else if (addLine < 0) { addCh += pos.ch; }
         else { posEndCh += pos.ch; }
+
+        var splitted;
+
         marks.forEach(function (mark, i) {
+            if (!mark) { return; }
             var p = parseMark(mark);
             // Don't update marks located before the operation
             if (p.endLine < pos.line || (p.endLine === pos.line && p.endCh < pos.ch)) { return; }
             // Remove markers that have been deleted by my changes
             if ((p.startLine > pos.line || (p.startLine === pos.line && p.startCh >= pos.ch)) &&
                 (p.endLine < rPos.line || (p.endLine === rPos.line && p.endCh <= rPos.ch))) {
-                mark[i] = undefined;
+                marks[i] = undefined;
                 return;
             }
             // Update markers that have been cropped right
@@ -184,7 +180,12 @@ define([
             }
             // Update markers that have been cropped left. This markers will be affected by
             // my toInsert so don't abort
-            if (p.startLine < rPos.line || (p.startLine === pos.line && p.startCh < pos.ch)) {
+            if (p.startLine < rPos.line || (p.startLine === rPos.line && p.startCh < rPos.ch)) {
+                // If our change will split an existing mark, put the existing mark after the change
+                // and create a new mark before
+                if (p.startLine < pos.line || (p.startLine === pos.line && p.startCh < pos.ch)) {
+                    splitted = [mark[0], mark[1], mark[2], pos.line, pos.ch];
+                }
                 mark[1] = rPos.line;
                 mark[2] = rPos.ch;
             }
@@ -204,6 +205,9 @@ define([
         if (op.toInsert.length) {
             marks.push([Env.myAuthorId, pos.line, pos.ch, posEndLine, posEndCh]);
         }
+        if (splitted) {
+            marks.push(splitted);
+        }
         marks.sort(sortMarks);
     };
 
@@ -215,9 +219,9 @@ define([
         var toKeep = [];
         var toJoin = {};
 
-        debug(Env, 'error', "Fix marks");
-        debug(Env, 'warn', first);
-        debug(Env, 'warn', last);
+        debug('error', "Fix marks");
+        debug('warn', first);
+        debug('warn', last);
 
         if (first.me !== last.me) {
             // Get their start position compared to the authDoc
@@ -263,9 +267,9 @@ define([
         // Add the new markers to the result
         Array.prototype.unshift.apply(toKeepEnd, toKeep);
 
-        debug(Env, 'warn', toJoin);
-        debug(Env, 'warn', toKeep);
-        debug(Env, 'warn', toKeepEnd);
+        debug('warn', toJoin);
+        debug('warn', toKeep);
+        debug('warn', toKeepEnd);
 
         // Fix their offset: compute added lines and added characters on the last line
         // using the chainpad operation data (toInsert and toRemove)
@@ -307,8 +311,8 @@ define([
             toKeepEnd[0][2] = toJoin.endCh;
         }
 
-        debug(Env, 'log', 'Fixed');
-        debug(Env, 'warn', toKeepEnd);
+        debug('log', 'Fixed');
+        debug('warn', toKeepEnd);
     };
 
     var checkMarks = function (Env, userDoc) {
@@ -321,17 +325,17 @@ define([
 
         if (!Env.enabled) { return; }
 
-        debug(Env, 'error', 'Check marks');
+        debug('error', 'Check marks');
 
         var authDoc = JSON.parse(chainpad.getAuthDoc() || '{}');
         if (!authDoc.content || !userDoc.content) { return; }
 
         var authPatch = chainpad.getAuthBlock();
         if (authPatch.isFromMe) {
-            debug(Env, 'log', 'Switch branch, from me');
-            debug(Env, 'log', authDoc.content);
-            debug(Env, 'log', authDoc.authormarks.marks);
-            debug(Env, 'log', userDoc.content);
+            debug('log', 'Switch branch, from me');
+            debug('log', authDoc.content);
+            debug('log', authDoc.authormarks.marks);
+            debug('log', userDoc.content);
             // We're switching to a different branch that was created by us.
             // We can't trust localDoc anymore because it contains data from the other branch
             // It means the only changes that we need to consider are ours.
@@ -341,8 +345,9 @@ define([
             _myOps.forEach(function (op) {
                 fixMarksFromOp(Env, op, authormarks.marks, authDoc.content);
             });
-            debug(Env, 'log', 'Fixed marks');
-            debug(Env, 'warn', authormarks.marks);
+            authormarks.marks = authormarks.marks.filter(Boolean);
+            debug('log', 'Fixed marks');
+            debug('warn', authormarks.marks);
             setAuthorMarks(Env, authormarks);
             return;
         }
@@ -355,7 +360,7 @@ define([
 
         if (!userDoc.authormarks || !Array.isArray(userDoc.authormarks.marks)) { return; }
 
-        debug(Env, 'warn', 'Begin...');
+        debug('warn', 'Begin...');
 
         var localDoc = CodeMirror.canonicalize(editor.getValue());
 
@@ -365,8 +370,8 @@ define([
         var theirOps = ChainPad.Diff.diff(content, authDoc.content);
         var myOps = ChainPad.Diff.diff(content, localDoc);
 
-        debug(Env, 'log', theirOps);
-        debug(Env, 'log', myOps);
+        debug('log', theirOps);
+        debug('log', myOps);
 
         if (!myOps.length || !theirOps.length) { return; }
 
@@ -407,7 +412,7 @@ define([
             return b.offset - a.offset;
         });
 
-        debug(Env, 'log', sorted);
+        debug('log', sorted);
 
         // We start from the end so that we don't have to fix the offsets everytime
         var prev;
@@ -428,7 +433,7 @@ define([
             prev = op;
         });
 
-        debug(Env, 'log', toKeepEnd);
+        debug('log', toKeepEnd);
 
         // We now have all the markers located after the first operation (ordered by offset).
         // Prepend the markers placed before this operation
@@ -438,8 +443,8 @@ define([
         // Commit our new markers
         Env.authormarks.marks = toKeepEnd;
 
-        debug(Env, 'warn', toKeepEnd);
-        debug(Env, 'warn', '...End');
+        debug('warn', toKeepEnd);
+        debug('warn', '...End');
     };
 
     // Reset marks displayed in CodeMirror to the marks stored in Env
@@ -453,8 +458,8 @@ define([
 
         if (!Env.enabled) { return; }
 
-        debug(Env, 'error', 'setMarks');
-        debug(Env, 'log', Env.authormarks.marks);
+        debug('error', 'setMarks');
+        debug('log', Env.authormarks.marks);
 
         var authormarks = Env.authormarks;
         authormarks.marks.forEach(function (mark) {
@@ -510,8 +515,8 @@ define([
 
         if (!Env.enabled) { return void cb(); }
 
-        debug(Env, 'error', 'Local change');
-        debug(Env, 'log', change, true);
+        debug('error', 'Local change');
+        debug('log', change, true);
 
         if (change.origin === "setValue") {
             // If the content is changed from a remote patch, we call localChange
@@ -652,6 +657,17 @@ define([
         };
         Env.enabled = false;
         Env.myAuthorId = 0;
+
+        if (Env.devMode) {
+            debug = function (level, obj, logObject) {
+                var f = console.log;
+                if (typeof(console[level]) === "function") {
+                    f = console[level];
+                }
+                if (logObject) { return void f(obj); }
+                f(JSON.stringify(obj));
+            };
+        }
 
         var metadataMgr = Env.common.getMetadataMgr();
         metadataMgr.onChange(function () {
