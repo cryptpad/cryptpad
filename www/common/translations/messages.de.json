@@ -1342,5 +1342,11 @@
     "admin_openFilesTitle": "Offene Dateien",
     "canvas_select": "Auswahl",
     "canvas_brush": "Pinsel",
-    "profile_copyKey": "Öffentlichen Schlüssel kopieren"
+    "profile_copyKey": "Öffentlichen Schlüssel kopieren",
+    "cba_hide": "",
+    "cba_enable": "",
+    "cba_properties": "",
+    "cba_disable": "",
+    "cba_show": "",
+    "cba_writtenBy": ""
 }
