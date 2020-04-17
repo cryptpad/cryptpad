@@ -22,13 +22,14 @@
         display: none;
     }
     #cp-app-debug-content {
-        margin: 50px;
+        margin: 10px 50px;
         flex-flow: column;
         align-items: center;
         justify-content: center;
         .cp-app-debug-content {
             flex: 1;
             min-height: 0;
+            justify-content: center;
         }
         .cp-app-debug-progress, .cp-app-debug-init {
             text-align: center;
@@ -56,6 +57,27 @@
             tr:not(:first-child):hover {
                 background-color: rgba(0,0,0,0.1);
             }
+        }
+        .fa-chevron-left, .fa-chevron-right {
+            margin: 5px 20px;
+            cursor: pointer;
+            &:hover {
+                color: #777;
+            }
+        }
+        .cp-app-debug-progress {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+            flex-flow: column;
+        }
+        pre.cp-debug-replay {
+            text-align: left;
+            white-space: pre-wrap;
+            word-break: break-word;
+            overflow: auto;
+            flex: 1;
+            min-height: 0;
         }
     }
 }

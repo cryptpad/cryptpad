@@ -835,17 +835,26 @@ define([
             sframeChan.on('Q_GET_FULL_HISTORY', function (data, cb) {
                 var crypto = Crypto.createEncryptor(secret.keys);
                 Cryptpad.getFullHistory({
+                    debug: data && data.debug,
                     channel: secret.channel,
                     validateKey: secret.keys.validateKey
                 }, function (encryptedMsgs) {
                     var nt = nThen;
                     var decryptedMsgs = [];
                     var total = encryptedMsgs.length;
-                    encryptedMsgs.forEach(function (msg, i) {
+                    encryptedMsgs.forEach(function (_msg, i) {
                         nt = nt(function (waitFor) {
                             // The 3rd parameter "true" means we're going to skip signature validation.
                             // We don't need it since the message is already validated serverside by hk
-                            decryptedMsgs.push(crypto.decrypt(msg, true, true));
+                            if (typeof(_msg) === "object") {
+                                decryptedMsgs.push({
+                                    author: _msg.author,
+                                    time: _msg.time,
+                                    msg: crypto.decrypt(_msg.msg, true, true)
+                                });
+                            } else {
+                                decryptedMsgs.push(crypto.decrypt(_msg, true, true));
+                            }
                             setTimeout(waitFor(function () {
                                 sframeChan.event('EV_FULL_HISTORY_STATUS', (i+1)/total);
                             }));
