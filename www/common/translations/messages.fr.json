@@ -1342,5 +1342,12 @@
     "admin_openFilesTitle": "Fichiers Ouverts",
     "profile_copyKey": "Copier la clé publique",
     "canvas_select": "Selection",
-    "canvas_brush": "Pinceau"
+    "canvas_brush": "Pinceau",
+    "cba_show": "",
+    "cba_disable": "",
+    "cba_hint": "",
+    "cba_enable": "",
+    "cba_writtenBy": "",
+    "cba_properties": "",
+    "cba_hide": ""
 }
