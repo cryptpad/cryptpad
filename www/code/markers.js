@@ -478,7 +478,7 @@ define([
             // Remove marks that are placed under this one
             try {
                 Env.editor.findMarks(from, to).forEach(function (mark) {
-                    if (mark.attributes['data-type'] !== 'authormark') { return; }
+                    if (!mark || !mark.attributes || mark.attributes['data-type'] !== 'authormark') { return; }
                     mark.clear();
                 });
             } catch (e) {
