@@ -59,7 +59,7 @@ define([
             }), opts.href);
 
             // If this is a file, don't try to look for metadata
-            if (opts.channel && opts.channel.length > 34) { return; }
+            if (opts.channel && opts.channel.length > 32) { return; }
             if (opts.channel) { data.channel = opts.channel; }
             Modal.loadMetadata(Env, data, waitFor);
         }).nThen(function () {
@@ -129,7 +129,10 @@ define([
                     tabs[i] = {
                         content: c && UI.dialog.customModal(node, {
                             buttons: obj.buttons || button,
-                            onClose: function () { blocked = false; }
+                            onClose: function () {
+                                blocked = false;
+                                if (typeof(opts.onClose) === "function") { opts.onClose(); }
+                            }
                         }),
                         disabled: !c,
                         title: obj.title,

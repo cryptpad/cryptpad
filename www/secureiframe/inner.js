@@ -7,12 +7,13 @@ define([
     '/common/common-ui-elements.js',
     '/common/common-util.js',
     '/common/common-hash.js',
+    '/common/hyperscript.js',
     'json.sortify',
     '/customize/messages.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'less!/filepicker/app-filepicker.less',
+    'less!/secureiframe/app-secure.less',
 ], function (
     $,
     Crypto,
@@ -22,6 +23,7 @@ define([
     UIElements,
     Util,
     Hash,
+    h,
     Sortify,
     Messages)
 {
@@ -29,23 +31,88 @@ define([
 
     var andThen = function (common) {
         var metadataMgr = common.getMetadataMgr();
-        var privateData = metadataMgr.getPrivateData();
-        var $body = $('body');
         var sframeChan = common.getSframeChannel();
-        var filters = metadataMgr.getPrivateData().types;
+        var $body = $('body');
 
-        var hideFileDialog = function () {
-            sframeChan.event('EV_FILE_PICKER_CLOSE');
+        var hideIframe = function () {
+            sframeChan.event('EV_SECURE_IFRAME_CLOSE');
         };
+
+        var displayed;
+        var create = {};
+
+        // Share modal
+        create['share'] = function (data) {
+            var priv = metadataMgr.getPrivateData();
+            var f = (data && data.file) ? UIElements.createFileShareModal
+                                          : UIElements.createShareModal;
+
+            var friends = common.getFriends();
+
+            var _modal;
+            var modal = f({
+                origin: priv.origin,
+                pathname: priv.pathname,
+                password: priv.password,
+                isTemplate: priv.isTemplate,
+                hashes: priv.hashes,
+                common: common,
+                title: data.title,
+                friends: friends,
+                onClose: function () {
+                    if (_modal && _modal.close) { _modal.close(); }
+                    hideIframe();
+                },
+                fileData: {
+                    hash: priv.hashes.fileHash,
+                    password: priv.password
+                }
+            });
+            $('button.cancel').click(); // Close any existing alertify
+            _modal = UI.openCustomModal(modal);
+            displayed = modal;
+        };
+
+        // Properties modal
+        create['properties'] = function () {
+            require(['/common/inner/properties.js'], function (Properties) {
+                Properties.getPropertiesModal(common, {
+                    onClose: function () {
+                        hideIframe();
+                    }
+                }, function (e, modal) {
+                    if (e) { console.error(e); }
+                    displayed = modal;
+                });
+            });
+        };
+
+        // Access modal
+        create['access'] = function () {
+            require(['/common/inner/access.js'], function (Access) {
+                Access.getAccessModal(common, {
+                    onClose: function () {
+                        hideIframe();
+                    }
+                }, function (e, modal) {
+                    if (e) { console.error(e); }
+                    displayed = modal;
+                });
+            });
+        };
+
+        // File uploader
         var onFilePicked = function (data) {
+            var privateData = metadataMgr.getPrivateData();
             var parsed = Hash.parsePadUrl(data.url);
-            hideFileDialog();
+            if (displayed && displayed.hide) { displayed.hide(); }
+            hideIframe();
             if (parsed.type === 'file') {
                 var secret = Hash.getSecrets('file', parsed.hash, data.password);
                 var fileHost = privateData.fileHost || privateData.origin;
                 var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
                 var key = Hash.encodeBase64(secret.keys.cryptKey);
-                sframeChan.event("EV_FILE_PICKED", {
+                sframeChan.event("EV_SECURE_ACTION", {
                     type: parsed.type,
                     src: src,
                     name: data.name,
@@ -53,14 +120,12 @@ define([
                 });
                 return;
             }
-            sframeChan.event("EV_FILE_PICKED", {
+            sframeChan.event("EV_SECURE_ACTION", {
                 type: parsed.type,
                 href: data.url,
                 name: data.name
             });
         };
-
-        // File uploader
         var fmConfig = {
             body: $('body'),
             noHandlers: true,
@@ -69,40 +134,40 @@ define([
             }
         };
         APP.FM = common.createFileManager(fmConfig);
+        create['filepicker'] = function (_filters) {
+            var updateContainer = function () {};
 
-        // Create file picker
-        var onSelect = function (url, name, password) {
-            onFilePicked({url: url, name: name, password: password});
-        };
-        var data = {
-            FM: APP.FM
-        };
-        var updateContainer;
-        var createFileDialog = function () {
+            var filters = _filters;
             var types = filters.types || [];
+            var data = {
+                FM: APP.FM
+            };
+
             // Create modal
             var modal = UI.createModal({
-                id: 'cp-filepicker-dialog',
                 $body: $body,
-                onClose: hideFileDialog
+                onClose: function () {
+                    hideIframe();
+                }
             });
+            displayed = modal;
             modal.show();
-            var $blockContainer = modal.$modal;
+
             // Set the fixed content
-            var $block = $blockContainer.find('.cp-modal');
+            modal.$modal.attr('id', 'cp-filepicker-dialog');
+            var $block = modal.$modal.find('.cp-modal');
 
             // Description
             var text = Messages.filePicker_description;
             if (types && types.length === 1 && types[0] !== 'file') {
-                // Should be Templates
                 text = Messages.selectTemplate;
             }
-            var $description = $('<p>').text(text);
-            $block.append($description);
+            $block.append(h('p', text));
 
-            var $filter = $('<p>', {'class': 'cp-modal-form'}).appendTo($block);
+            // Add filter input
+            var $filter = $(h('p.cp-modal-form')).appendTo($block);
             var to;
-            $('<input>', {
+            var $input = $('<input>', {
                 type: 'text',
                 'class': 'cp-filepicker-filter',
                 'placeholder': Messages.filePicker_filter
@@ -111,7 +176,7 @@ define([
                 to = window.setTimeout(updateContainer, 300);
             });
 
-            //If file, display the upload button
+            // If file, display the upload button
             if (types.indexOf('file') !== -1 && common.isLoggedIn()) {
                 var f = (filters && filters.filter) || {};
                 delete data.accept;
@@ -126,15 +191,16 @@ define([
                 $filter.append(common.createButton('upload', false, data));
             }
 
-            var $container = $('<span>', {'class': 'cp-filepicker-content'}).appendTo($block);
+            var $container = $(h('span.cp-filepicker-content', [
+                h('div.cp-loading-spinner-container', h('span.cp-spinner'))
+            ])).appendTo($block);
 
             // Update the files list when needed
             updateContainer = function () {
-                $container.html('');
-                var $input = $filter.find('.cp-filepicker-filter');
                 var filter = $input.val().trim();
                 var todo = function (err, list) {
                     if (err) { return void console.error(err); }
+                    $container.html('');
                     Object.keys(list).forEach(function (id) {
                         var data = list[id];
                         var name = data.filename || data.title || '?';
@@ -149,8 +215,8 @@ define([
                         $('<span>', {'class': 'cp-filepicker-content-element-name'}).text(name)
                             .appendTo($span);
                         $span.click(function () {
-                            if (typeof onSelect === "function") {
-                                onSelect(data.href, name, data.password);
+                            if (typeof onFilePicked === "function") {
+                                onFilePicked({url: data.href, name: name, password: data.password});
                             }
                         });
 
@@ -163,21 +229,23 @@ define([
             };
             updateContainer();
         };
-        sframeChan.on('EV_FILE_PICKER_REFRESH', function (newFilters) {
-            if (Sortify(filters) !== Sortify(newFilters)) {
-                $body.html('');
-                filters = newFilters;
-                return void createFileDialog();
-            }
-            updateContainer();
+
+        sframeChan.on('EV_REFRESH', function (data) {
+            if (!data) { return; }
+            var type = data.modal;
+            if (!create[type]) { return; }
+            if (displayed && displayed.close) { displayed.close(); }
+            else if (displayed && displayed.hide) { displayed.hide(); }
+            displayed = undefined;
+            create[type](data);
         });
-        createFileDialog();
 
         UI.removeLoadingScreen();
     };
 
     var main = function () {
         var common;
+        var _andThen = Util.once(andThen);
 
         nThen(function (waitFor) {
             $(waitFor(function () {
@@ -187,11 +255,11 @@ define([
         }).nThen(function (/*waitFor*/) {
             var metadataMgr = common.getMetadataMgr();
             if (metadataMgr.getMetadataLazy() !== 'uninitialized') {
-                andThen(common);
+                _andThen(common);
                 return;
             }
             metadataMgr.onChange(function () {
-                andThen(common);
+                _andThen(common);
             });
         });
     };

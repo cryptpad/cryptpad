@@ -18,8 +18,7 @@ define([
         var Cryptget;
         var SFrameChannel;
         var sframeChan;
-        var FilePicker;
-        var Share;
+        var SecureIframe;
         var Messaging;
         var Notifier;
         var Utils = {
@@ -44,8 +43,7 @@ define([
                 '/bower_components/chainpad-crypto/crypto.js',
                 '/common/cryptget.js',
                 '/common/outer/worker-channel.js',
-                '/filepicker/main.js',
-                '/share/main.js',
+                '/secureiframe/main.js',
                 '/common/common-messaging.js',
                 '/common/common-notifier.js',
                 '/common/common-hash.js',
@@ -58,15 +56,14 @@ define([
                 '/common/test.js',
                 '/common/userObject.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
-            _FilePicker, _Share, _Messaging, _Notifier, _Hash, _Util, _Realtime,
+            _SecureIframe, _Messaging, _Notifier, _Hash, _Util, _Realtime,
             _Constants, _Feedback, _LocalStore, _AppConfig, _Test, _UserObject) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = Utils.Crypto = _Crypto;
                 Cryptget = _Cryptget;
                 SFrameChannel = _SFrameChannel;
-                FilePicker = _FilePicker;
-                Share = _Share;
+                SecureIframe = _SecureIframe;
                 Messaging = _Messaging;
                 Notifier = _Notifier;
                 Utils.Hash = _Hash;
@@ -491,7 +488,7 @@ define([
 
 
             // Put in the following function the RPC queries that should also work in filepicker
-            var addCommonRpc = function (sframeChan) {
+            var addCommonRpc = function (sframeChan, safe) {
                 sframeChan.on('Q_ANON_RPC_MESSAGE', function (data, cb) {
                     Cryptpad.anonRpcMsg(data.msg, data.content, function (err, response) {
                         cb({error: err, response: response});
@@ -598,6 +595,12 @@ define([
                     }
                     if (data.href) { href = data.href; }
                     Cryptpad.getPadAttribute(data.key, function (e, data) {
+                        if (!safe && data) {
+                            // Remove unsafe data for the unsafe iframe
+                            delete data.href;
+                            delete data.roHref;
+                            delete data.password;
+                        }
                         cb({
                             error: e,
                             data: data
@@ -985,81 +988,63 @@ define([
                 onFileUpload(sframeChan, data, cb);
             });
 
-            // File picker
-            var FP = {};
-            var initFilePicker = function (cfg) {
-                // cfg.hidden means pre-loading the filepicker while keeping it hidden.
+            // Secure modal
+            var SecureModal = {};
+            // Create or display the iframe and modal
+            var initSecureModal = function (type, cfg, cb) {
+                cfg.modal = type;
+                SecureModal.cb = cb;
+                // cfg.hidden means pre-loading the iframe while keeping it hidden.
                 // if cfg.hidden is true and the iframe already exists, do nothing
-                if (!FP.$iframe) {
+                if (!SecureModal.$iframe) {
                     var config = {};
-                    config.onFilePicked = function (data) {
-                        sframeChan.event('EV_FILE_PICKED', data);
+                    config.onAction = function (data) {
+                        if (typeof(SecureModal.cb) !== "function") { return; }
+                        SecureModal.cb(data);
+                        SecureModal.$iframe.hide();
                     };
                     config.onClose = function () {
-                        FP.$iframe.hide();
+                        SecureModal.$iframe.hide();
                     };
-                    config.onFileUpload = onFileUpload;
-                    config.types = cfg;
+                    config.data = {
+                        hashes: hashes,
+                        password: password,
+                        isTemplate: isTemplate
+                    };
                     config.addCommonRpc = addCommonRpc;
                     config.modules = {
                         Cryptpad: Cryptpad,
                         SFrameChannel: SFrameChannel,
                         Utils: Utils
                     };
-                    FP.$iframe = $('<iframe>', {id: 'sbox-filePicker-iframe'}).appendTo($('body'));
-                    FP.picker = FilePicker.create(config);
+                    SecureModal.$iframe = $('<iframe>', {id: 'sbox-secure-iframe'}).appendTo($('body'));
+                    SecureModal.modal = SecureIframe.create(config);
                 } else if (!cfg.hidden) {
-                    FP.$iframe.show();
-                    FP.picker.refresh(cfg);
-                }
-                if (cfg.hidden) {
-                    FP.$iframe.hide();
-                    return;
-                }
-                FP.$iframe.focus();
-            };
-            sframeChan.on('EV_FILE_PICKER_OPEN', function (data) {
-                initFilePicker(data);
-            });
-
-            // Share modal
-            var ShareModal = {};
-            var initShareModal = function (cfg) {
-                cfg.hashes = hashes;
-                cfg.password = password;
-                cfg.isTemplate = isTemplate;
-                // cfg.hidden means pre-loading the filepicker while keeping it hidden.
-                // if cfg.hidden is true and the iframe already exists, do nothing
-                if (!ShareModal.$iframe) {
-                    var config = {};
-                    config.onShareAction = function (data) {
-                        sframeChan.event('EV_SHARE_ACTION', data);
-                    };
-                    config.onClose = function () {
-                        ShareModal.$iframe.hide();
-                    };
-                    config.data = cfg;
-                    config.addCommonRpc = addCommonRpc;
-                    config.modules = {
-                        Cryptpad: Cryptpad,
-                        SFrameChannel: SFrameChannel,
-                        Utils: Utils
-                    };
-                    ShareModal.$iframe = $('<iframe>', {id: 'sbox-share-iframe'}).appendTo($('body'));
-                    ShareModal.modal = Share.create(config);
-                } else if (!cfg.hidden) {
-                    ShareModal.modal.refresh(cfg, function () {
-                        ShareModal.$iframe.show();
+                    SecureModal.modal.refresh(cfg, function () {
+                        SecureModal.$iframe.show();
                     });
                 }
                 if (cfg.hidden) {
-                    ShareModal.$iframe.hide();
+                    SecureModal.$iframe.hide();
                     return;
                 }
-                ShareModal.$iframe.focus();
+                SecureModal.$iframe.focus();
             };
+
+            sframeChan.on('Q_FILE_PICKER_OPEN', function (data, cb) {
+                initSecureModal('filepicker', data || {}, cb);
+            });
+
+            sframeChan.on('EV_PROPERTIES_OPEN', function (data) {
+                initSecureModal('properties', data || {}, null);
+            });
+
+            sframeChan.on('EV_ACCESS_OPEN', function (data) {
+                initSecureModal('access', data || {}, null);
+            });
+
             sframeChan.on('EV_SHARE_OPEN', function (data) {
-                initShareModal(data || {});
+                initSecureModal('share', data || {}, null);
             });
 
             sframeChan.on('Q_TEMPLATE_USE', function (data, cb) {
@@ -1275,6 +1260,9 @@ define([
                     var _parsed = Utils.Hash.parsePadUrl(metadata.roHref);
                     _secret = Utils.Hash.getSecrets(_parsed.type, _parsed.hash, metadata.password);
                 }
+                if (_secret.channel.length !== 32) {
+                    return void cb({error: 'EINVAL'});
+                }
                 var crypto = Crypto.createEncryptor(_secret.keys);
                 nThen(function (waitFor) {
                     // Try to get the owner's mailbox from the pad metadata first.
@@ -1333,6 +1321,9 @@ define([
                 if (metadata && (metadata.href || metadata.roHref)) {
                     var _parsed = Utils.Hash.parsePadUrl(metadata.href || metadata.roHref);
                     _secret = Utils.Hash.getSecrets(_parsed.type, _parsed.hash, metadata.password);
+                }
+                if (_secret.channel.length !== 32) {
+                    return void cb({error: 'EINVAL'});
                 }
                 var crypto = Crypto.createEncryptor(_secret.keys);
                 nThen(function (waitFor) {

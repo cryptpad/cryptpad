@@ -281,6 +281,7 @@ define([
             if (MEDIA_TAG_MODES.indexOf(mode) !== -1) {
                 // Embedding is endabled
                 framework.setMediaTagEmbedder(function (mt) {
+                    editor.focus();
                     editor.replaceSelection($(mt)[0].outerHTML);
                 });
             } else {

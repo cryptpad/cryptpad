@@ -23,8 +23,17 @@ define([
         init: function () {}
     };
 
+    var mermaidThemeCSS = ".node rect { fill: #DDD; stroke: #AAA; } " +
+        "rect.task, rect.task0, rect.task2 { stroke-width: 1 !important; rx: 0 !important; } " +
+        "g.grid g.tick line { opacity: 0.25; }" +
+        "g.today line { stroke: red; stroke-width: 1; stroke-dasharray: 3; opacity: 0.5; }";
+
     require(['mermaid', 'css!/code/mermaid-new.css'], function (_Mermaid) {
         Mermaid = _Mermaid;
+        Mermaid.initialize({
+            gantt: { axisFormat: '%m-%d', },
+            "themeCSS": mermaidThemeCSS,
+        });
     });
 
     var highlighter = function () {
@@ -351,6 +360,12 @@ define([
             // retrieve the attached source code which it was drawn
             var src = el.getAttribute('mermaid-source');
 
+/*  The new source might have syntax errors that will prevent rendering.
+    It might be preferable to keep the existing state instead of removing it
+    if you don't have something better to display. Ideally we should display
+    the cause of the syntax error so that the user knows what to correct.  */
+            //if (!Mermaid.parse(src)) { } // TODO
+
             // check if that source exists in the set of charts which are about to be rendered
             if (mermaid_source.indexOf(src) === -1) {
                 // if it's not, then you can remove it
@@ -418,7 +433,7 @@ define([
             throw new Error(patch);
         } else {
             DD.apply($content[0], patch);
-            var $mts = $content.find('media-tag:not(:has(*))');
+            var $mts = $content.find('media-tag');
             $mts.each(function (i, el) {
                 var $mt = $(el).contextmenu(function (e) {
                     e.preventDefault();
@@ -426,6 +441,16 @@ define([
                     $(contextMenu.menu).find('li').show();
                     contextMenu.show(e);
                 });
+                if ($mt.children().length) {
+                    $mt.off('dblclick preview');
+                    $mt.on('preview', onPreview($mt));
+                    if ($mt.find('img').length) {
+                        $mt.on('dblclick', function () {
+                            $mt.trigger('preview');
+                        });
+                    }
+                    return;
+                }
                 MediaTag(el);
                 var observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
