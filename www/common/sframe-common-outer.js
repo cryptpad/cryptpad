@@ -1007,6 +1007,7 @@ define([
                         SecureModal.$iframe.hide();
                     };
                     config.data = {
+                        app: parsed.type,
                         hashes: hashes,
                         password: password,
                         isTemplate: isTemplate
