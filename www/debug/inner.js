@@ -416,6 +416,7 @@ define([
             sframeChan.query('Q_GET_FULL_HISTORY', {
                 debug: true,
             }, function (err, data) {
+                var start = 0;
                 var replay, input, left, right;
                 var content = h('div.cp-app-debug-progress.cp-loading-progress', [
                     h('p', [
@@ -438,9 +439,7 @@ define([
                 var chainpad = makeChainpad();
                 console.warn(chainpad);
 
-                var start = 0;
                 var i = 0;
-                var messages = data.slice();
                 var play = function (_i) {
                     if (_i < (start+1)) { _i = start + 1; }
                     if (_i > data.length - 1) { _i = data.length - 1; }

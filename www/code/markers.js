@@ -22,7 +22,7 @@ define([
         var f = console.log;
         if (typeof(console[level]) === "function") {
             f = console[level];
-        };
+        }
         if (logObject) { return void f(obj); }
         f(JSON.stringify(obj));
     };
@@ -211,7 +211,7 @@ define([
     // first: data about the change with the lowest offset
     // last: data about the change with the latest offset
     // in the comments, "I" am "first"
-    var fixMarks = function (first, last, content, toKeepEnd) {
+    var fixMarks = function (Env, first, last, content, toKeepEnd) {
         var toKeep = [];
         var toJoin = {};
 
@@ -277,7 +277,7 @@ define([
         var addCh = added[added.length - 1].length - removed[removed.length - 1].length;
         if (addLine > 0) { addCh -= pos.ch; }
         if (addLine < 0) { addCh += pos.ch; }
-        toKeepEnd.forEach(function (array, i) {
+        toKeepEnd.forEach(function (array) {
             // Push to correct lines
             array[1] += addLine;
             if (typeof(array[4]) !== "undefined") { array[3] += addLine; }
@@ -336,9 +336,9 @@ define([
             // We can't trust localDoc anymore because it contains data from the other branch
             // It means the only changes that we need to consider are ours.
             // Diff between userDoc and authDoc to see what we changed
-            var myOps = ChainPad.Diff.diff(authDoc.content, userDoc.content).reverse();
+            var _myOps = ChainPad.Diff.diff(authDoc.content, userDoc.content).reverse();
             var authormarks = Util.clone(authDoc.authormarks);
-            myOps.forEach(function (op) {
+            _myOps.forEach(function (op) {
                 fixMarksFromOp(Env, op, authormarks.marks, authDoc.content);
             });
             debug(Env, 'log', 'Fixed marks');
@@ -420,7 +420,7 @@ define([
                 prev.total = prev.me ? myTotal : theirTotal;
                 op.total = op.me ? myTotal : theirTotal;
                 // Fix the markers
-                fixMarks(op, prev, content, toKeepEnd);
+                fixMarks(Env, op, prev, content, toKeepEnd);
             }
 
             if (op.me) { myTotal -= op.size; }
