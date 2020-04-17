@@ -1342,5 +1342,13 @@
     "admin_openFilesTitle": "Open Files",
     "admin_openFilesHint": "Number of file descriptors currently open on the server.",
     "canvas_brush": "Brush",
-    "canvas_select": "Select"
+    "canvas_select": "Select",
+    "cba_writtenBy": "Written by: {0}",
+    "cba_properties": "Author colors (experimental)",
+    "cba_hint": "This setting will be remembered when you create your next pad.",
+    "cba_enable": "Enable",
+    "cba_disable": "Clear and Disable",
+    "cba_show": "Show author colors",
+    "cba_hide": "Hide author colors",
+    "oo_login": "Please log in or register to improve the performance of spreadsheets."
 }
