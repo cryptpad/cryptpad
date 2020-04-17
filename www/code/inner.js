@@ -307,6 +307,7 @@ define([
             common: common,
             framework: framework,
             CodeMirror: CodeMirror,
+            devMode: privateData.devMode,
             editor: editor
         });
 

@@ -65,12 +65,10 @@ define([
                 sframeChan.query('Q_RT_MESSAGE', message, function (_err, obj) {
                     var err = _err || (obj && obj.error);
                     if (!err) { evPatchSent.fire(); }
-                    console.error('cb', JSON.stringify(message));
                     cb(err);
                 }, { timeout: -1 });
             });
             _chainpad.onPatch(function () {
-                console.log('patch');
                 onRemote({ realtime: chainpad });
             });
             return _chainpad;
@@ -139,7 +137,6 @@ define([
             if (isReady) {
                 onLocal(true); // should be onBeforeMessage
             }
-            console.error('received', JSON.stringify(content));
             chainpad.message(content);
             if (isHistory && updateLoadingProgress) {
                 updateLoadingProgress({

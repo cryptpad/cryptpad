@@ -6,6 +6,27 @@ define([
 ], function (Util, SFCodeMirror, Messages, ChainPad) {
     var Markers = {};
 
+    /* TODO Known Issues
+     * 1. ChainPad diff is not completely accurate: we're not aware of the other user's cursor
+          position so if they insert an "a" in the middle of "aaaaa", the diff will think that
+          the "a" was inserted at the end of this sequence. This is not an issue for the content
+          but it will cause issues for the colors
+       2. ChainPad doesn't always provide the good result in case of conflict (?)
+          e.g. Alice is inserting "pew" at offset 10, Bob is removing 1 character at offset 10
+               The expected result is to have "pew" and the following character deleted
+               In some cases, the result is "ew" inserted and the following character not deleted
+     */
+
+    var debug = function (Env, level, obj, logObject) {
+        if (!Env.devMode) { return function () {}; }
+        var f = console.log;
+        if (typeof(console[level]) === "function") {
+            f = console[level];
+        };
+        if (logObject) { return void f(obj); }
+        f(JSON.stringify(obj));
+    };
+
     var MARK_OPACITY = 0.5;
 
     Messages.cba_writtenBy = 'Written by <em>{0}</em>'; // XXX
@@ -50,6 +71,7 @@ define([
         var multiline = typeof(array[4]) !== "undefined";
         var singleChar = typeof(array[3]) === "undefined";
         return {
+            uid: array[0],
             startLine: array[1],
             startCh: array[2],
             endLine: multiline ? array[3] : array[1],
@@ -127,8 +149,62 @@ define([
             i++;
         });
         _marks.sort(sortMarks);
-        console.error(JSON.stringify(_marks.filter(Boolean)));
+        debug(Env, 'warn', _marks);
         Env.authormarks.marks = _marks.filter(Boolean);
+    };
+
+    // Fix all marks located after the given operation in the provided document
+    var fixMarksFromOp = function (Env, op, marks, doc) {
+        var pos = SFCodeMirror.posToCursor(op.offset, doc); // pos of start offset
+        var rPos = SFCodeMirror.posToCursor(op.offset + op.toRemove, doc); // end of removed content
+        var removed = doc.slice(op.offset, op.offset + op.toRemove).split('\n'); // removed content
+        var added = op.toInsert.split('\n'); // added content
+        var posEndLine = pos.line + added.length - 1; // end line after op
+        var posEndCh = added[added.length - 1].length; // end ch after op
+        var addLine = added.length - removed.length;
+        var addCh = added[added.length - 1].length - removed[removed.length - 1].length;
+        if (addLine > 0) { addCh -= pos.ch; }
+        else if (addLine < 0) { addCh += pos.ch; }
+        else { posEndCh += pos.ch; }
+        marks.forEach(function (mark, i) {
+            var p = parseMark(mark);
+            // Don't update marks located before the operation
+            if (p.endLine < pos.line || (p.endLine === pos.line && p.endCh < pos.ch)) { return; }
+            // Remove markers that have been deleted by my changes
+            if ((p.startLine > pos.line || (p.startLine === pos.line && p.startCh >= pos.ch)) &&
+                (p.endLine < rPos.line || (p.endLine === rPos.line && p.endCh <= rPos.ch))) {
+                mark[i] = undefined;
+                return;
+            }
+            // Update markers that have been cropped right
+            if (p.endLine < rPos.line || (p.endLine === rPos.line && p.endCh <= rPos.ch)) {
+                mark[3] = pos.line;
+                mark[4] = pos.ch;
+                return;
+            }
+            // Update markers that have been cropped left. This markers will be affected by
+            // my toInsert so don't abort
+            if (p.startLine < rPos.line || (p.startLine === pos.line && p.startCh < pos.ch)) {
+                mark[1] = rPos.line;
+                mark[2] = rPos.ch;
+            }
+            // Apply my toInsert the to remaining marks
+            mark[1] += addLine;
+            if (typeof(mark[4]) !== "undefined") { mark[3] += addLine; }
+
+            if (mark[1] === posEndLine) {
+                mark[2] += addCh;
+                if (typeof(mark[4]) === "undefined" && typeof(mark[3]) !== "undefined") {
+                    mark[3] += addCh;
+                } else if (typeof(mark[4]) !== "undefined" && mark[3] === posEndLine) {
+                    mark[4] += addCh;
+                }
+            }
+        });
+        if (op.toInsert.length) {
+            marks.push([Env.myAuthorId, pos.line, pos.ch, posEndLine, posEndCh]);
+        }
+        marks.sort(sortMarks);
     };
 
     // Remove marks added by OT and fix the incorrect ones
@@ -138,7 +214,10 @@ define([
     var fixMarks = function (first, last, content, toKeepEnd) {
         var toKeep = [];
         var toJoin = {};
-console.log(first, last, JSON.stringify(toKeepEnd));
+
+        debug(Env, 'error', "Fix marks");
+        debug(Env, 'warn', first);
+        debug(Env, 'warn', last);
 
         if (first.me !== last.me) {
             // Get their start position compared to the authDoc
@@ -180,22 +259,22 @@ console.log(first, last, JSON.stringify(toKeepEnd));
             toJoin = parseMark(toJoinMark);
         }
 
-console.log('to keep, to join');
-console.warn(JSON.stringify(toKeep));
-console.warn(JSON.stringify(toJoin));
 
         // Add the new markers to the result
         Array.prototype.unshift.apply(toKeepEnd, toKeep);
-        console.warn(JSON.stringify(toKeepEnd));
+
+        debug(Env, 'warn', toJoin);
+        debug(Env, 'warn', toKeep);
+        debug(Env, 'warn', toKeepEnd);
 
         // Fix their offset: compute added lines and added characters on the last line
         // using the chainpad operation data (toInsert and toRemove)
         var pos = SFCodeMirror.posToCursor(first.offset, content);
         var removed = content.slice(first.offset, first.offset + first.toRemove).split('\n');
         var added = first.toInsert.split('\n');
+        var posEndLine = pos.line + added.length - 1; // end line after op
         var addLine = added.length - removed.length;
         var addCh = added[added.length - 1].length - removed[removed.length - 1].length;
-        console.log(removed, added, addLine, addCh);
         if (addLine > 0) { addCh -= pos.ch; }
         if (addLine < 0) { addCh += pos.ch; }
         toKeepEnd.forEach(function (array, i) {
@@ -203,14 +282,13 @@ console.warn(JSON.stringify(toJoin));
             array[1] += addLine;
             if (typeof(array[4]) !== "undefined") { array[3] += addLine; }
             // If they have markers on my end line, push their "ch"
-            // If i===0, this marker will be joined later and it will also start on my end line
-            if (array[1] === toJoin.endLine || i === 0) {
+            if (array[1] === posEndLine) {
                 array[2] += addCh;
                 // If they have no end line, it means end line === start line,
                 // so we also push their end offset
                 if (typeof(array[4]) === "undefined" && typeof(array[3]) !== "undefined") {
                     array[3] += addCh;
-                } else if (typeof(array[4]) !== "undefined" && array[3] === toJoin.endLine) {
+                } else if (typeof(array[4]) !== "undefined" && array[3] === posEndLine) {
                     array[4] += addCh;
                 }
             }
@@ -220,10 +298,17 @@ console.warn(JSON.stringify(toJoin));
                                     && typeof(toJoin.endCh) !== "undefined") {
             // Make sure the marks are joined correctly:
             // fix the start position of the marks to keep
+            // Note: we must preserve the same end for this mark if it was single line!
+            if (typeof(toKeepEnd[0][4]) === "undefined") { // Single line
+                toKeepEnd[0][4] = toKeepEnd[0][3] || (toKeepEnd[0][2]+1); // preserve end ch
+                toKeepEnd[0][3] = toKeepEnd[0][1]; // preserve end line
+            }
             toKeepEnd[0][1] = toJoin.endLine;
             toKeepEnd[0][2] = toJoin.endCh;
         }
-        console.warn(JSON.stringify(toKeepEnd));
+
+        debug(Env, 'log', 'Fixed');
+        debug(Env, 'warn', toKeepEnd);
     };
 
     var checkMarks = function (Env, userDoc) {
@@ -232,51 +317,62 @@ console.warn(JSON.stringify(toJoin));
         var editor = Env.editor;
         var CodeMirror = Env.CodeMirror;
 
-        var authPatch = chainpad.getAuthBlock();
-var test = chainpad._.messages[authpatch.hashOf]; // XXX use new chainpad api
-        if (authPatch.isFromMe) {
-            console.error('stopped');
-            console.error(JSON.stringify(Env.authormarks.marks));
-            return;
-        }
-if (test.mut.isFromMe) { // XXX
-    console.error('ERROR');
-    window.alert('error authPatch');
-}
-
         setAuthorMarks(Env, userDoc.authormarks);
-
-        var oldMarks = Env.oldMarks;
 
         if (!Env.enabled) { return; }
 
+        debug(Env, 'error', 'Check marks');
+
         var authDoc = JSON.parse(chainpad.getAuthDoc() || '{}');
         if (!authDoc.content || !userDoc.content) { return; }
+
+        var authPatch = chainpad.getAuthBlock();
+        if (authPatch.isFromMe) {
+            debug(Env, 'log', 'Switch branch, from me');
+            debug(Env, 'log', authDoc.content);
+            debug(Env, 'log', authDoc.authormarks.marks);
+            debug(Env, 'log', userDoc.content);
+            // We're switching to a different branch that was created by us.
+            // We can't trust localDoc anymore because it contains data from the other branch
+            // It means the only changes that we need to consider are ours.
+            // Diff between userDoc and authDoc to see what we changed
+            var myOps = ChainPad.Diff.diff(authDoc.content, userDoc.content).reverse();
+            var authormarks = Util.clone(authDoc.authormarks);
+            myOps.forEach(function (op) {
+                fixMarksFromOp(Env, op, authormarks.marks, authDoc.content);
+            });
+            debug(Env, 'log', 'Fixed marks');
+            debug(Env, 'warn', authormarks.marks);
+            setAuthorMarks(Env, authormarks);
+            return;
+        }
+
+
+        var oldMarks = Env.oldMarks;
+
+
         if (authDoc.content === userDoc.content) { return; } // No uncommitted work
 
         if (!userDoc.authormarks || !Array.isArray(userDoc.authormarks.marks)) { return; }
+
+        debug(Env, 'warn', 'Begin...');
 
         var localDoc = CodeMirror.canonicalize(editor.getValue());
 
         var commonParent = chainpad.getAuthBlock().getParent().getContent().doc;
         var content = JSON.parse(commonParent || '{}').content || '';
 
-        console.error("BEGIN");
-        console.log(JSON.stringify(oldMarks.marks));
-        console.log(JSON.stringify(authDoc.authormarks.marks));
-
-
-        console.log(content);
         var theirOps = ChainPad.Diff.diff(content, authDoc.content);
-        console.warn(theirOps, chainpad.getAuthBlock().getPatch().operations);
         var myOps = ChainPad.Diff.diff(content, localDoc);
-        console.warn(myOps);
+
+        debug(Env, 'log', theirOps);
+        debug(Env, 'log', myOps);
 
         if (!myOps.length || !theirOps.length) { return; }
 
         // If I have uncommited content when receiving a remote patch, all the operations
         // placed after someone else's changes will create marker issues. We have to fix it
-        var ops = {};
+        var sorted = [];
 
         var myTotal = 0;
         var theirTotal = 0;
@@ -284,7 +380,7 @@ if (test.mut.isFromMe) { // XXX
             return function (op) {
                 var size = (op.toInsert.length - op.toRemove);
 
-                ops[op.offset] = {
+                sorted.push({
                     me: me,
                     offset: op.offset,
                     toInsert: op.toInsert,
@@ -293,7 +389,7 @@ if (test.mut.isFromMe) { // XXX
                     marks: (me ? (oldMarks && oldMarks.marks)
                                : (authDoc.authormarks && authDoc.authormarks.marks)) || [],
                     doc: me ? localDoc : authDoc.content
-                };
+                });
 
                 if (me) { myTotal += size; }
                 else { theirTotal += size; }
@@ -302,15 +398,21 @@ if (test.mut.isFromMe) { // XXX
         myOps.forEach(parseOp(true));
         theirOps.forEach(parseOp(false));
 
-        var sorted = Object.keys(ops).map(Number);
-        sorted.sort(function (a, b) { return a-b; }).reverse();
-console.warn(ops, sorted);
+        // Sort the operation in reverse order of offset
+        // If an operation from them has the same offset than an operation from me, put mine first
+        sorted.sort(function (a, b) {
+            if (a.offset === b.offset) {
+                return a.me ? -1 : 1;
+            }
+            return b.offset - a.offset;
+        });
+
+        debug(Env, 'log', sorted);
 
         // We start from the end so that we don't have to fix the offsets everytime
         var prev;
         var toKeepEnd = [];
-        sorted.forEach(function (offset) {
-            var op = ops[offset];
+        sorted.forEach(function (op) {
 
             // Not the same author? fix!
             if (prev) {
@@ -326,19 +428,21 @@ console.warn(ops, sorted);
             prev = op;
         });
 
+        debug(Env, 'log', toKeepEnd);
+
         // We now have all the markers located after the first operation (ordered by offset).
         // Prepend the markers placed before this operation
-        var first = ops[sorted[sorted.length - 1]];
+        var first = sorted[sorted.length - 1];
         if (first) { Array.prototype.unshift.apply(toKeepEnd, first.marks); }
-console.error(JSON.stringify(first.marks));
-console.error(JSON.stringify(toKeepEnd));
-
-console.error("END");
 
         // Commit our new markers
         Env.authormarks.marks = toKeepEnd;
+
+        debug(Env, 'warn', toKeepEnd);
+        debug(Env, 'warn', '...End');
     };
 
+    // Reset marks displayed in CodeMirror to the marks stored in Env
     var setMarks = function (Env) {
         // on remote update: remove all marks, add new marks if colors are enabled
         Env.editor.getAllMarks().forEach(function (marker) {
@@ -348,6 +452,10 @@ console.error("END");
         });
 
         if (!Env.enabled) { return; }
+
+        debug(Env, 'error', 'setMarks');
+        debug(Env, 'log', Env.authormarks.marks);
+
         var authormarks = Env.authormarks;
         authormarks.marks.forEach(function (mark) {
             var uid = mark[0];
@@ -402,7 +510,8 @@ console.error("END");
 
         if (!Env.enabled) { return void cb(); }
 
-console.warn(change);
+        debug(Env, 'error', 'Local change');
+        debug(Env, 'log', change, true);
 
         if (change.origin === "setValue") {
             // If the content is changed from a remote patch, we call localChange
@@ -450,8 +559,6 @@ console.warn(change);
 
             return true;
         });
-console.warn(Env.editor.findMarks(change.from, to_add));
-console.log(change.from, to_add, change.text, abort, toSplit);
         if (abort) { return void cb(); }
 
         // Add my data to the doc if it's missing
@@ -583,8 +690,12 @@ console.log(change.from, to_add, change.text, abort, toSplit);
 
         var call = function (f) {
             return function () {
-                [].unshift.call(arguments, Env);
-                return f.apply(null, arguments);
+                try {
+                    [].unshift.call(arguments, Env);
+                    return f.apply(null, arguments);
+                } catch (e) {
+                    console.error(e);
+                }
             };
         };
 
