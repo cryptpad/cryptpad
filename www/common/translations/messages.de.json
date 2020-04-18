@@ -1343,10 +1343,12 @@
     "canvas_select": "Auswahl",
     "canvas_brush": "Pinsel",
     "profile_copyKey": "Öffentlichen Schlüssel kopieren",
-    "cba_hide": "",
-    "cba_enable": "",
-    "cba_properties": "",
-    "cba_disable": "",
-    "cba_show": "",
-    "cba_writtenBy": ""
+    "cba_hide": "Autorenfarben verbergen",
+    "cba_enable": "Aktivieren",
+    "cba_properties": "Autorenfarben (experimentell)",
+    "cba_disable": "Löschen und Deaktivieren",
+    "cba_show": "Autorenfarben anzeigen",
+    "cba_writtenBy": "Geschrieben von: {0}",
+    "cba_hint": "Diese Einstellung wird zukünftig verwendet, wenn du ein neues Pad erstellst.",
+    "oo_login": "Bitte logge dich ein oder erstelle ein Account, um die Performance von Tabellen zu verbessern."
 }
