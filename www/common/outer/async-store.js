@@ -38,6 +38,9 @@ define([
         drive: {
             hideDuplicate: true
         },
+        pad: {
+            width: true
+        },
         general: {
             allowUserFeedback: true
         }

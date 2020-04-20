@@ -1651,7 +1651,6 @@ define([
                 if (data.hiddenReadOnly) { button.addClass('cp-hidden-if-readonly'); }
                 if (data.name) {
                     button.addClass('cp-toolbar-icon-'+data.name);
-                    button.click(common.prepareFeedback(data.name));
                 }
                 if (data.text) {
                     $('<span>', {'class': 'cp-toolbar-drawer-element'}).text(data.text)
