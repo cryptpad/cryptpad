@@ -25,8 +25,6 @@ define([
         marks: [[-1, 0, 0, Number.MAX_SAFE_INTEGER,  Number.MAX_SAFE_INTEGER]]
     };
 
-    Messages.cba_writtenBy = 'Written by <em>{0}</em>'; // XXX
-
     var addMark = function (Env, from, to, uid) {
         if (!Env.enabled) { return; }
         var author = Env.authormarks.authors[uid] || {};
@@ -603,8 +601,6 @@ define([
         cb();
     };
 
-    Messages.cba_show = "Show user colors"; // XXX
-    Messages.cba_hide = "Hide user colors"; // XXX
     var setButton = function (Env, $button) {
         var toggle = function () {
             var tippy = $button[0] && $button[0]._tippy;

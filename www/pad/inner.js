@@ -732,8 +732,6 @@ define([
                 }
             });
 
-            Messages.pad_useFullWidth = "Use full width"; // XXX
-            Messages.pad_usePageWidth = "Use page mode"; // XXX
             framework._.sfCommon.getAttribute(['pad', 'width'], function (err, data) {
                 var active = data || typeof(data) === "undefined";
                 if (active) {

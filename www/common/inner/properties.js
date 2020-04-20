@@ -52,10 +52,6 @@ define([
 
         var metadataMgr = common.getMetadataMgr();
         var priv = metadataMgr.getPrivateData();
-        Messages.cba_properties = "Author colors (experimental)"; // XXX
-        Messages.cba_hint = "This setting will be remembered for your next pad."; // XXX
-        Messages.cba_enable = "Enable author colors in this pad"; // XXX
-        Messages.cba_disable = "Clear all colors and disable"; // XXX
         if (owned && priv.app === 'code') {
             (function () {
                 var sframeChan = common.getSframeChannel();
