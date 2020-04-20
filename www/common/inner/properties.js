@@ -50,6 +50,60 @@ define([
         // File and history size...
         var owned = Modal.isOwned(Env, data);
 
+        var metadataMgr = common.getMetadataMgr();
+        var priv = metadataMgr.getPrivateData();
+        Messages.cba_properties = "Author colors (experimental)"; // XXX
+        Messages.cba_hint = "This setting will be remembered for your next pad."; // XXX
+        Messages.cba_enable = "Enable author colors in this pad"; // XXX
+        Messages.cba_disable = "Clear all colors and disable"; // XXX
+        if (owned && priv.app === 'code') {
+            (function () {
+                var sframeChan = common.getSframeChannel();
+                var md = (opts.data && opts.data.metadata) || {};
+                var div = h('div');
+                var hint = h('div.cp-app-prop-hint', Messages.cba_hint);
+                var $div = $(div);
+                var setButton = function (state) {
+                    var button = h('button.btn');
+                    var $button = $(button);
+                    $div.html('').append($button);
+                    if (state) {
+                        // Add "enable" button
+                        $button.addClass('btn-secondary').text(Messages.cba_enable);
+                        UI.confirmButton(button, {
+                            classes: 'btn-primary'
+                        }, function () {
+                            $button.remove();
+                            sframeChan.event("EV_SECURE_ACTION", {
+                                cmd: 'UPDATE_METADATA',
+                                key: 'enableColors',
+                                value: true
+                            });
+                            common.setAttribute(['code', 'enableColors'], true);
+                            setButton(false);
+                        });
+                        return;
+                    }
+                    // Add "disable" button
+                    $button.addClass('btn-danger-alt').text(Messages.cba_disable);
+                    UI.confirmButton(button, {
+                        classes: 'btn-danger'
+                    }, function () {
+                        $button.remove();
+                        sframeChan.event("EV_SECURE_ACTION", {
+                            cmd: 'UPDATE_METADATA',
+                            key: 'enableColors',
+                            value: false
+                        });
+                        common.setAttribute(['code', 'enableColors'], false);
+                        setButton(true);
+                    });
+                };
+                setButton(!md.enableColors);
+                $d.append(h('div.cp-app-prop', [Messages.cba_properties, hint, div]));
+            })();
+        }
+
         // check the size of this file, including additional channels
         var bytes = 0;
         var historyBytes;

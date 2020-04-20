@@ -7,11 +7,13 @@ define([
     '/common/sframe-common-codemirror.js',
     '/common/common-util.js',
     '/common/common-hash.js',
+    '/code/markers.js',
     '/common/modes.js',
     '/common/visible.js',
     '/common/TypingTests.js',
     '/customize/messages.js',
     'cm/lib/codemirror',
+
 
     'css!cm/lib/codemirror.css',
     'css!cm/addon/dialog/dialog.css',
@@ -50,6 +52,7 @@ define([
     SFCodeMirror,
     Util,
     Hash,
+    Markers,
     Modes,
     Visible,
     TypingTest,
@@ -301,6 +304,20 @@ define([
         var previewPane = mkPreviewPane(editor, CodeMirror, framework, isPresentMode);
         var markdownTb = mkMarkdownTb(editor, framework);
 
+        var markers = Markers.create({
+            common: common,
+            framework: framework,
+            CodeMirror: CodeMirror,
+            devMode: privateData.devMode,
+            editor: editor
+        });
+
+        var $showAuthorColorsButton = framework._.sfCommon.createButton('', true, {
+            icon: 'fa-paint-brush',
+        }).hide();
+        framework._.toolbar.$rightside.append($showAuthorColorsButton);
+        markers.setButton($showAuthorColorsButton);
+
         var $print = $('#cp-app-code-print');
         var $content = $('#cp-app-code-preview-content');
         mkPrintButton(framework, $content, $print);
@@ -323,15 +340,23 @@ define([
             CodeMirror.configureTheme(common);
         }
 
-        ////
-
         framework.onContentUpdate(function (newContent) {
             var highlightMode = newContent.highlightMode;
             if (highlightMode && highlightMode !== CodeMirror.highlightMode) {
                 CodeMirror.setMode(highlightMode, evModeChange.fire);
             }
+
+            // Fix the markers offsets
+            markers.checkMarks(newContent);
+
+            // Apply the text content
             CodeMirror.contentUpdate(newContent);
             previewPane.draw();
+
+            // Apply the markers
+            markers.setMarks();
+
+            framework.localChange();
         });
 
         framework.setContentGetter(function () {
@@ -339,6 +364,10 @@ define([
             var content = CodeMirror.getContent();
             content.highlightMode = CodeMirror.highlightMode;
             previewPane.draw();
+
+            markers.updateAuthorMarks();
+            content.authormarks = markers.getAuthorMarks();
+
             return content;
         });
 
@@ -368,6 +397,15 @@ define([
                 //console.log("%s => %s", CodeMirror.highlightMode, CodeMirror.$language.val());
             }
 
+            if (newPad && Util.find(privateData, ['settings', 'code', 'enableColors'])) {
+                var metadataMgr = common.getMetadataMgr();
+                var md = Util.clone(metadataMgr.getMetadata());
+                md.enableColors = true;
+                metadataMgr.updateMetadata(md);
+            }
+
+            markers.ready();
+
             var fmConfig = {
                 dropArea: $('.CodeMirror'),
                 body: $('body'),
@@ -385,7 +423,7 @@ define([
         });
 
         framework.onDefaultContentNeeded(function () {
-             editor.setValue(''); //Messages.codeInitialState);
+             editor.setValue('');
         });
 
         framework.setFileExporter(CodeMirror.getContentExtension, CodeMirror.fileExporter);
@@ -402,11 +440,14 @@ define([
         framework.setNormalizer(function (c) {
             return {
                 content: c.content,
-                highlightMode: c.highlightMode
+                highlightMode: c.highlightMode,
+                authormarks: c.authormarks
             };
         });
 
-        editor.on('change', framework.localChange);
+        editor.on('change', function( cm, change ) {
+            markers.localChange(change, framework.localChange);
+        });
 
         framework.start();
 
