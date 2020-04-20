@@ -445,10 +445,13 @@ define([
         if ($faLink.length) {
             $html.find('iframe').contents().find('head').append($faLink.clone());
         }
-        var ml = Ckeditor.instances.editor1.plugins.magicline.backdoor.that.line.$;
+
+        var ml = editor._.magiclineBackdoor.that.line.$;
         [ml, ml.parentElement].forEach(function (el) {
             el.setAttribute('class', 'non-realtime');
         });
+
+        window.editor = editor;
 
         var $iframe = $('html').find('iframe').contents();
         var ifrWindow = $html.find('iframe')[0].contentWindow;
