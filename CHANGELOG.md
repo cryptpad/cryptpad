@@ -1,3 +1,44 @@
+# Quagga release (3.16.0)
+
+## Goals
+
+We've continued to keep a close eye on server performance since our last release while making minimal changes. Our goal for this release has been to improve server scalability further while also addressing user needs with updates to our client code.
+
+We were pleasantly surprised to receive a pull request implementing a basic version of [author colors](https://github.com/xwiki-labs/cryptpad/issues/41) in our code editor. Since it was nearly ready to go we set some time aside to polish it up a little bit to include it in this release.
+
+## Update notes
+
+We've updated the example nginx config in order to include an `Access-Control-Allow-Origin` header that was not included. We've also added a new configuration point in response to [this issue](https://github.com/xwiki-labs/cryptpad/issues/529) about the server's child processes using too many threads. Administrators may not set a maximum number of child processes via `config.js` using `maxWorkers: <number of child processes>`. We recommend using one less than the number of available cores, though one worker should be sufficient as long as your server is not under heavy load.
+
+As usual, updating from the previous release can be accomplished by:
+
+1. stopping your server
+2. pulling the latest code with git
+3. installing clientside dependencies with `bower update`
+4. installing serverside dependencies with `npm i`
+5. restarting your server
+
+## Features
+
+* As mentioned above, we've built upon a very helpful PR to introduce author colors in our code editor. It's still experimental, but you can test it out by enabling author colors in a code pad via the pad's properties modal.
+* Serverside performance optimizations
+  * Automatically expiring pads work by creating a task to be run at the target date. This process involves a little bit of hashing, so we've changed it to be run in the worker.
+  * The act of deleting a file from the server actually moves it to an archive which is not publicly accessible. These archived files are regularly cleaned up if you run `scripts/evict-inactive.js`. Unfortunately, moving files is more expensive than deletion, so we've noticed spikes in CPU when users delete many files at once (like when emptying the trash from their drive). To avoid such spikes while the server is already under load we've implemented per-user queues for deletion.
+  * We've also noticed that when we restart our server while it is under heavy load some queries can time out due to many users requesting history at once. We've implemented another queue to delegate tasks to workers in the order that they are received. We need to observe how this system performs in practice, so there might be small tweaks as we get more data.
+  * As noted above, we've made the number of workers configurable. At the same time we unified two types of workers into one, cutting the number of workers in half.
+* We've added a new admin RPC call to request some information about the server's memory usage to help us debug what seems to be a small memory leak.
+* Most of our editors were previously loaded with two more iframes on the page in addition to our main sandboxed iframe. These separate frames ensure that encryption keys are not exposed to the same iframe responsible for displaying the rest of CryptPad's UI. One was responsible for loading the "filepicker" for inserting media into your documents, the other was responsible for handling encryption keys for the share modal. Since we wanted to add two new functions using iframes in the same manner we took the opportunity to come up with a generic solution using only one iframe for these separate modals, since they all have the same level of privilege to the sensitive data we're trying to protect.
+* Our mermaidjs integration has been customized to be a little easier on the eyes. We focused in particular on GANTT charts, though other charts should be more appealing as well, especially in the new "lightbox" UI introduced in our last release.
+* We now prompt unregistered users to register or log in when they use the spreadsheet editor. For context, unregistered users don't benefit from all of the same features as registered users, and this makes a few performance optimizations impossible.
+* Finally, we've continued to receive translations from contributors in Catalan, German, and Dutch.
+
+## Bug fixes
+
+* We noticed that under certain conditions clients were sending metadata queries to the server for documents that don't have metadata. We've implemented some stricter checks to prevent these useless queries.
+* We've implemented a temporary fix for our rich text editor to solve [this issue](https://github.com/xwiki-labs/cryptpad/issues/526) related to conflicting font-size and header styles.
+* We also accepted [this PR](https://github.com/xwiki-labs/cryptpad/pull/525) to tolerate server configurations specifying a `defaultStorageLimit` of 0.
+* Finally, we noticed that embedded media occasionally stopped responding correctly to right-click events due to a problem with our in-memory cache. It has since been fixed.
+
 # PigFootedBandicoot release (3.15.0)
 
 ## Goals
