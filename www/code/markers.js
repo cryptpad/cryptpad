@@ -623,7 +623,7 @@ define([
         return n;
     };
     var getAuthorId = function (Env) {
-        var existing = Object.keys(Env.authormarks.authors || {});
+        var existing = Object.keys(Env.authormarks.authors || {}).map(Number);
         if (!Env.common.isLoggedIn()) { return authorUid(existing); }
 
         var userData = Env.common.getMetadataMgr().getUserData();
