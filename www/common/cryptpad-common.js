@@ -1704,6 +1704,11 @@ define([
         // Check for CryptPad updates
         var urlArgs = newUrlArgs || (Config.requireConf ? Config.requireConf.urlArgs : null);
         if (!urlArgs) { return; }
+
+        console.log(newUrlArgs, urlArgs, currentVersion);
+
+        if (newUrlArgs !== currentVersion) { return true; }
+
         var arr = /ver=([0-9.]+)(-[0-9]*)?/.exec(urlArgs);
         var ver = arr[1];
         if (!ver) { return; }
