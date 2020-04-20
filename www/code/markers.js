@@ -20,12 +20,25 @@ define([
     var debug = function () {};
 
     var MARK_OPACITY = 0.5;
+    var DEFAULT = {
+        authors: {},
+        marks: [[-1, 0, 0, Number.MAX_SAFE_INTEGER,  Number.MAX_SAFE_INTEGER]]
+    };
 
     Messages.cba_writtenBy = 'Written by <em>{0}</em>'; // XXX
 
     var addMark = function (Env, from, to, uid) {
         if (!Env.enabled) { return; }
         var author = Env.authormarks.authors[uid] || {};
+        if (uid === -1) {
+            return void Env.editor.markText(from, to, {
+                css: "background-color: transparent",
+                attributes: {
+                    'data-type': 'authormark',
+                    'data-uid': uid
+                }
+            });
+        }
         uid = Number(uid);
         var name = Util.fixHTML(author.name || Messages.anonymous);
         var col = Util.hexToRGB(author.color);
@@ -73,8 +86,8 @@ define([
 
     var setAuthorMarks = function (Env, authormarks) {
         authormarks = authormarks || {};
-        if (!authormarks.marks) { authormarks.marks = []; }
-        if (!authormarks.authors) { authormarks.authors = {}; }
+        if (!authormarks.marks) { authormarks.marks = Util.clone(DEFAULT.marks); }
+        if (!authormarks.authors) { authormarks.authors = Util.clone(DEFAULT.authors); }
         Env.oldMarks = Env.authormarks;
         Env.authormarks = authormarks;
     };
@@ -219,8 +232,6 @@ define([
         var toKeep = [];
         var toJoin = {};
 
-        var firstMarks = first.marks.slice();
-
         debug('error', "Fix marks");
         debug('warn', first);
         debug('warn', last);
@@ -260,15 +271,9 @@ define([
 
         // If we still have markers in "first", store the last one so that we can "join"
         // everything at the end
-        // NOTE: we only join if the marks were joined initially!
         if (first.marks.length) {
-            var idx = first.marks.length - 1;
-            var toJoinMark = first.marks[index].slice();
+            var toJoinMark = first.marks[first.marks.length - 1].slice();
             toJoin = parseMark(toJoinMark);
-            var next = parseMark(firstMarks[idx + 1]); // always an object
-            if (toJoin.endLine !== next.startLine || toJoin.endCh !== next.startCh) {
-                toJoin.overlapOnly = true;
-            }
         }
 
 
@@ -310,17 +315,13 @@ define([
                                     && typeof(toJoin.endCh) !== "undefined") {
             // Make sure the marks are joined correctly:
             // fix the start position of the marks to keep
-            var overlap = toKeepEnd[0][1] < toJoin.endLine ||
-                           (toKeepEnd[0][1] === toJoin.endLine && toKeepEnd[0][2] < toJoin.endCh);
-            if (!toJoin.overlapOnly || overlap) {
-                // Note: we must preserve the same end for this mark if it was single line!
-                if (typeof(toKeepEnd[0][4]) === "undefined") { // Single line
-                    toKeepEnd[0][4] = toKeepEnd[0][3] || (toKeepEnd[0][2]+1); // preserve end ch
-                    toKeepEnd[0][3] = toKeepEnd[0][1]; // preserve end line
-                }
-                toKeepEnd[0][1] = toJoin.endLine;
-                toKeepEnd[0][2] = toJoin.endCh;
+            // Note: we must preserve the same end for this mark if it was single line!
+            if (typeof(toKeepEnd[0][4]) === "undefined") { // Single line
+                toKeepEnd[0][4] = toKeepEnd[0][3] || (toKeepEnd[0][2]+1); // preserve end ch
+                toKeepEnd[0][3] = toKeepEnd[0][1]; // preserve end line
             }
+            toKeepEnd[0][1] = toJoin.endLine;
+            toKeepEnd[0][2] = toJoin.endCh;
         }
 
         debug('log', 'Fixed');
@@ -476,7 +477,7 @@ define([
         var authormarks = Env.authormarks;
         authormarks.marks.forEach(function (mark) {
             var uid = mark[0];
-            if (!authormarks.authors || !authormarks.authors[uid]) { return; }
+            if (uid !== -1 && (!authormarks.authors || !authormarks.authors[uid])) { return; }
             var from = {};
             var to = {};
             from.line = mark[1];
@@ -663,10 +664,7 @@ define([
 
     Markers.create = function (config) {
         var Env = config;
-        Env.authormarks = {
-            authors: {},
-            marks: []
-        };
+        Env.authormarks = Util.clone(DEFAULT);
         Env.enabled = false;
         Env.myAuthorId = 0;
 
@@ -689,14 +687,16 @@ define([
                 Env.enabled = md.enableColors;
                 if (!Env.enabled) {
                     // Reset marks
-                    Env.authormarks = {
-                        authors: {},
-                        marks: []
-                    };
+                    Env.authormarks = {};
                     setMarks(Env);
                     if (Env.$button) { Env.$button.hide(); }
                 } else {
                     Env.myAuthorId = getAuthorId(Env);
+                    // If it's a reset, add initial marker
+                    if (!Env.authormarks.marks || !Env.authormarks.marks.length) {
+                        Env.authormarks = Util.clone(DEFAULT);
+                        setMarks(Env);
+                    }
                     if (Env.$button) { Env.$button.show(); }
                 }
                 if (Env.ready) { Env.framework.localChange(); }
