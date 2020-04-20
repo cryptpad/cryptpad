@@ -25,6 +25,7 @@ define([
     '/common/TypingTests.js',
     '/customize/messages.js',
     '/pad/links.js',
+    '/pad/comments.js',
     '/pad/export.js',
     '/pad/cursor.js',
     '/bower_components/nthen/index.js',
@@ -51,6 +52,7 @@ define([
     TypingTest,
     Messages,
     Links,
+    Comments,
     Exporter,
     Cursors,
     nThen,
@@ -461,9 +463,9 @@ define([
 
         framework._.sfCommon.addShortcuts(ifrWindow);
 
-        var privateData = framework._.sfCommon.getMetadataMgr().getPrivateData();
-
         var documentBody = ifrWindow.document.body;
+        var inner = window.inner = documentBody;
+        var $inner = $(inner);
 
         var observer = new MutationObserver(function (muts) {
             muts.forEach(function (mut) {
@@ -483,8 +485,38 @@ define([
             childList: true
         });
 
-        var inner = window.inner = documentBody;
-        var $inner = $(inner);
+        var metadataMgr = framework._.sfCommon.getMetadataMgr();
+        var privateData = metadataMgr.getPrivateData();
+        var userData = metadataMgr.getUserData();
+        var common = framework._.sfCommon;
+
+        var comments = Comments.create({
+            framework: framework,
+            metadataMgr: metadataMgr,
+            common: common,
+            editor: editor
+        });
+
+        editor.plugins.comments.addComment = function (uid, cb) {
+            if (!comments) {
+                comments = Util.clone(COMMENTS);
+            }
+            // XXX display input
+            UI.prompt("Message", "", function (val) {
+                if (!val) { return; }
+                if (!editor.getSelection().getSelectedText()) {
+                    // text has been deleted by another user while we were typing our comment?
+                    return void UI.warn(Messages.error);
+                }
+                var myId = updateAuthorData();
+                comments.messages[uid] = {
+                    user: myId,
+                    time: +new Date(),
+                    message: val
+                };
+                cb();
+            });
+        };
 
         var onLinkClicked = function (e) {
             var $target = $(e.target);
@@ -650,6 +682,12 @@ define([
                 // off so that we don't end up with multiple identical handlers
                 $links.off('click', openLink).on('click', openLink);
             }
+
+            // XXX check comments
+            // new comments
+            // deleted comments
+            // check comment authors too
+            
         });
 
         framework.setTextContentGetter(function () {
@@ -997,9 +1035,6 @@ define([
             }).nThen(function () {
                 editor.plugins.mediatag.import = function ($mt) {
                     framework._.sfCommon.importMediaTag($mt);
-                };
-                editor.plugins.comments.addComment = function (uid, cb) {
-                    
                 };
                 Links.addSupportForOpeningLinksInNewTab(Ckeditor)({editor: editor});
             }).nThen(function () {
