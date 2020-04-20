@@ -85,6 +85,10 @@ define([
     };
 
     var setAuthorMarks = function (Env, authormarks) {
+        if (!Env.enabled) {
+            Env.authormarks = {};
+            return;
+        }
         authormarks = authormarks || {};
         if (!authormarks.marks) { authormarks.marks = Util.clone(DEFAULT.marks); }
         if (!authormarks.authors) { authormarks.authors = Util.clone(DEFAULT.authors); }
@@ -675,7 +679,6 @@ define([
                     f = console[level];
                 }
                 if (logObject) { return void f(obj); }
-                f(JSON.stringify(obj));
             };
         }
 
