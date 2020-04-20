@@ -1001,7 +1001,6 @@ define([
                     config.onAction = function (data) {
                         if (typeof(SecureModal.cb) !== "function") { return; }
                         SecureModal.cb(data);
-                        SecureModal.$iframe.hide();
                     };
                     config.onClose = function () {
                         SecureModal.$iframe.hide();
