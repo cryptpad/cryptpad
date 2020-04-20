@@ -284,10 +284,12 @@ define([
                     'data-crypto-key': key
                 });
                 $inner.append(tag);
-                MediaTag(tag).on('error', function () {
-                    locked = false;
-                    $spinner.hide();
-                    UI.log(Messages.error);
+                setTimeout(function () {
+                    MediaTag(tag).on('error', function () {
+                        locked = false;
+                        $spinner.hide();
+                        UI.log(Messages.error);
+                    });
                 });
             }
 

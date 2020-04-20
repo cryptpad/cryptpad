@@ -35,6 +35,7 @@ define([
         var $body = $('body');
 
         var hideIframe = function () {
+            if (!displayed) { return; }
             sframeChan.event('EV_SECURE_IFRAME_CLOSE');
         };
 
@@ -68,15 +69,15 @@ define([
                     password: priv.password
                 }
             });
-            $('button.cancel').click(); // Close any existing alertify
             _modal = UI.openCustomModal(modal);
             displayed = modal;
         };
 
         // Properties modal
-        create['properties'] = function () {
+        create['properties'] = function (data) {
             require(['/common/inner/properties.js'], function (Properties) {
                 Properties.getPropertiesModal(common, {
+                    data: data,
                     onClose: function () {
                         hideIframe();
                     }
@@ -236,6 +237,7 @@ define([
             if (!create[type]) { return; }
             if (displayed && displayed.close) { displayed.close(); }
             else if (displayed && displayed.hide) { displayed.hide(); }
+            $('button.cancel').click(); // Close any existing alertify
             displayed = undefined;
             create[type](data);
         });

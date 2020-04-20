@@ -290,7 +290,7 @@ define([
             }
 
             if (padChange && hasChanged(content)) {
-                cpNfInner.metadataMgr.addAuthor();
+                //cpNfInner.metadataMgr.addAuthor();
             }
             oldContent = content;
 

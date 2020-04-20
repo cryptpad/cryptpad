@@ -88,6 +88,7 @@ define([
                     }).nThen(function (/*waitFor*/) {
                         metaObj.doc = {};
                         var additionalPriv = {
+                            app: config.data.app,
                             fileHost: ApiConfig.fileHost,
                             loggedIn: Utils.LocalStore.isLoggedIn(),
                             origin: window.location.origin,
