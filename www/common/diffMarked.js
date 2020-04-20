@@ -23,8 +23,17 @@ define([
         init: function () {}
     };
 
+    var mermaidThemeCSS = ".node rect { fill: #DDD; stroke: #AAA; } " +
+        "rect.task, rect.task0, rect.task2 { stroke-width: 1 !important; rx: 0 !important; } " +
+        "g.grid g.tick line { opacity: 0.25; }" +
+        "g.today line { stroke: red; stroke-width: 1; stroke-dasharray: 3; opacity: 0.5; }";
+
     require(['mermaid', 'css!/code/mermaid-new.css'], function (_Mermaid) {
         Mermaid = _Mermaid;
+        Mermaid.initialize({
+            gantt: { axisFormat: '%m-%d', },
+            "themeCSS": mermaidThemeCSS,
+        });
     });
 
     var highlighter = function () {
@@ -304,6 +313,15 @@ define([
         // finally, find all 'clickable' items and remove the class
         $el.find('.clickable').removeClass('clickable');
     };
+    var renderMermaid = function ($el) {
+        Mermaid.init(undefined, $el);
+        // clickable elements in mermaid don't work well with our sandboxing setup
+        // the function below strips clickable elements but still leaves behind some artifacts
+        // tippy tooltips might still be useful, so they're not removed. It would be
+        // preferable to just support links, but this covers up a rough edge in the meantime
+        removeMermaidClickables($el);
+    };
+
 
     DiffMd.apply = function (newHtml, $content, common) {
         var contextMenu = common.importMediaTagMenu();
@@ -351,6 +369,12 @@ define([
             // retrieve the attached source code which it was drawn
             var src = el.getAttribute('mermaid-source');
 
+/*  The new source might have syntax errors that will prevent rendering.
+    It might be preferable to keep the existing state instead of removing it
+    if you don't have something better to display. Ideally we should display
+    the cause of the syntax error so that the user knows what to correct.  */
+            //if (!Mermaid.parse(src)) { } // TODO
+
             // check if that source exists in the set of charts which are about to be rendered
             if (mermaid_source.indexOf(src) === -1) {
                 // if it's not, then you can remove it
@@ -372,8 +396,15 @@ define([
                 var mts = [];
                 $content.find('media-tag, pre.mermaid').each(function (i, el) {
                     if (el.nodeName.toLowerCase() === "pre") {
+                        var clone = el.cloneNode();
                         return void mts.push({
-                            svg: el.cloneNode(true)
+                            svg: clone,
+                            render: function () {
+                                var $el = $(clone);
+                                $el.text(clone.getAttribute('mermaid-source'));
+                                $el.attr('data-processed', '');
+                                renderMermaid($el);
+                            }
                         });
                     }
                     var $el = $(el);
@@ -386,7 +417,7 @@ define([
                 // Find initial position
                 var idx = -1;
                 mts.some(function (obj, i) {
-                    if (isSvg && $mt.find('svg').attr('id') === $(obj.svg).find('svg').attr('id')) {
+                    if (isSvg && $mt.attr('mermaid-source') === $(obj.svg).attr('mermaid-source')) {
                         idx = i;
                         return true;
                     }
@@ -397,8 +428,15 @@ define([
                 });
                 if (idx === -1) {
                     if (isSvg) {
+                        var clone = $mt[0].cloneNode();
                         mts.unshift({
-                            svg: $mt[0].cloneNode(true)
+                            svg: clone,
+                            render: function () {
+                                var $el = $(clone);
+                                $el.text(clone.getAttribute('mermaid-source'));
+                                $el.attr('data-processed', '');
+                                renderMermaid($el);
+                            }
                         });
                     } else {
                         mts.unshift({
@@ -418,7 +456,7 @@ define([
             throw new Error(patch);
         } else {
             DD.apply($content[0], patch);
-            var $mts = $content.find('media-tag:not(:has(*))');
+            var $mts = $content.find('media-tag');
             $mts.each(function (i, el) {
                 var $mt = $(el).contextmenu(function (e) {
                     e.preventDefault();
@@ -426,6 +464,16 @@ define([
                     $(contextMenu.menu).find('li').show();
                     contextMenu.show(e);
                 });
+                if ($mt.children().length) {
+                    $mt.off('dblclick preview');
+                    $mt.on('preview', onPreview($mt));
+                    if ($mt.find('img').length) {
+                        $mt.on('dblclick', function () {
+                            $mt.trigger('preview');
+                        });
+                    }
+                    return;
+                }
                 MediaTag(el);
                 var observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
@@ -486,12 +534,7 @@ define([
                 // check if you had cached a pre-rendered instance of the supplied source
                 if (typeof(cached) !== 'object') {
                     try {
-                        Mermaid.init(undefined, $el);
-                        // clickable elements in mermaid don't work well with our sandboxing setup
-                        // the function below strips clickable elements but still leaves behind some artifacts
-                        // tippy tooltips might still be useful, so they're not removed. It would be
-                        // preferable to just support links, but this covers up a rough edge in the meantime
-                        removeMermaidClickables($el);
+                        renderMermaid($el);
                     } catch (e) { console.error(e); }
                     return;
                 }

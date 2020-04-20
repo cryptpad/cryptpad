@@ -250,35 +250,46 @@ define([
 
             // Check src and cryptkey
             var cfg = tags[i];
+            var tag;
 
             if (cfg.svg) {
-                $spinner.hide();
                 $inner.append(cfg.svg);
-                locked = false;
-                return;
+                if (!cfg.render) {
+                    $spinner.hide();
+                    console.error('here');
+                    locked = false;
+                    return;
+                }
+                console.error('there');
+                setTimeout(cfg.render);
+                tag = cfg.svg;
+            } else {
+                var src = cfg.src;
+                var key = cfg.key;
+                if (cfg.href) {
+                    var parsed = Hash.parsePadUrl(cfg.href);
+                    var secret = Hash.getSecrets(parsed.type, parsed.hash, cfg.password);
+                    var host = priv.fileHost || priv.origin || '';
+                    src = host + Hash.getBlobPathFromHex(secret.channel);
+                    var _key = secret.keys && secret.keys.cryptKey;
+                    if (_key) { key = 'cryptpad:' + Nacl.util.encodeBase64(_key); }
+                }
+                if (!src || !key) {
+                    locked = false;
+                    $spinner.hide();
+                    return void UI.log(Messages.error);
+                }
+                tag = h('media-tag', {
+                    src: src,
+                    'data-crypto-key': key
+                });
+                $inner.append(tag);
+                MediaTag(tag).on('error', function () {
+                    locked = false;
+                    $spinner.hide();
+                    UI.log(Messages.error);
+                });
             }
-
-            var src = cfg.src;
-            var key = cfg.key;
-            if (cfg.href) {
-                var parsed = Hash.parsePadUrl(cfg.href);
-                var secret = Hash.getSecrets(parsed.type, parsed.hash, cfg.password);
-                var host = priv.fileHost || priv.origin || '';
-                src = host + Hash.getBlobPathFromHex(secret.channel);
-                var _key = secret.keys && secret.keys.cryptKey;
-                if (_key) { key = 'cryptpad:' + Nacl.util.encodeBase64(_key); }
-            }
-            if (!src || !key) {
-                locked = false;
-                $spinner.hide();
-                return void UI.log(Messages.error);
-            }
-
-            var tag = h('media-tag', {
-                src: src,
-                'data-crypto-key': key
-            });
-            $inner.append(tag);
 
             var observer = new MutationObserver(function(mutations) {
                 mutations.forEach(function() {
@@ -290,11 +301,6 @@ define([
                 attributes: false,
                 childList: true,
                 characterData: false
-            });
-            MediaTag(tag).on('error', function () {
-                locked = false;
-                $spinner.hide();
-                UI.log(Messages.error);
             });
         };
 

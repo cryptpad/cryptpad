@@ -175,9 +175,9 @@ define([
         var common = config.common;
         var sframeChan = common.getSframeChannel();
         var title = config.title;
-        var friends = config.friends;
+        var friends = config.friends || {};
+        var teams = config.teams || {};
         var myName = common.getMetadataMgr().getUserData().name;
-        if (!friends) { return; }
         var order = [];
 
         var smallCurves = Object.keys(friends).map(function (c) {
@@ -206,40 +206,28 @@ define([
             delete friends[curve];
         });
 
-        var friendsList = UIElements.getUserGrid(Messages.share_linkFriends, {
-            common: common,
-            data: friends,
-            noFilter: false,
-            large: true
-        }, refreshButtons);
-        var friendDiv = friendsList.div;
-        $div.append(friendDiv);
-        var others = friendsList.icons;
+        var others = [];
+        if (Object.keys(friends).length) {
+            var friendsList = UIElements.getUserGrid(Messages.share_linkFriends, {
+                common: common,
+                data: friends,
+                noFilter: false,
+                large: true
+            }, refreshButtons);
+            var friendDiv = friendsList.div;
+            $div.append(friendDiv);
+            others = friendsList.icons;
+        }
 
-        var privateData = common.getMetadataMgr().getPrivateData();
-        var teamsData = Util.tryParse(JSON.stringify(privateData.teams)) || {};
-        var teams = {};
-        Object.keys(teamsData).forEach(function (id) {
-            // config.teamId only exists when we're trying to share a pad from a team drive
-            // In this case, we don't want to share the pad with the current team
-            if (config.teamId && config.teamId === id) { return; }
-            if (!teamsData[id].hasSecondaryKey) { return; }
-            var t = teamsData[id];
-            teams[t.edPublic] = {
-                notifications: true,
-                displayName: t.name,
-                edPublic: t.edPublic,
-                avatar: t.avatar,
-                id: id
-            };
-        });
-        var teamsList = UIElements.getUserGrid(Messages.share_linkTeam, {
-            common: common,
-            noFilter: true,
-            large: true,
-            data: teams
-        }, refreshButtons);
-        $div.append(teamsList.div);
+        if (Object.keys(teams).length) {
+            var teamsList = UIElements.getUserGrid(Messages.share_linkTeam, {
+                common: common,
+                noFilter: true,
+                large: true,
+                data: teams
+            }, refreshButtons);
+            $div.append(teamsList.div);
+        }
 
         var shareButton = {
             className: 'primary cp-share-with-friends',
@@ -395,6 +383,26 @@ define([
         }
     };
 
+    var getEditableTeams = function (common, config) {
+        var privateData = common.getMetadataMgr().getPrivateData();
+        var teamsData = Util.tryParse(JSON.stringify(privateData.teams)) || {};
+        var teams = {};
+        Object.keys(teamsData).forEach(function (id) {
+            // config.teamId only exists when we're trying to share a pad from a team drive
+            // In this case, we don't want to share the pad with the current team
+            if (config.teamId && config.teamId === id) { return; }
+            if (!teamsData[id].hasSecondaryKey) { return; }
+            var t = teamsData[id];
+            teams[t.edPublic] = {
+                notifications: true,
+                displayName: t.name,
+                edPublic: t.edPublic,
+                avatar: t.avatar,
+                id: id
+            };
+        });
+        return teams;
+    };
     var makeBurnAfterReadingUrl = function (common, href, channel, cb) {
         var keyPair = Hash.generateSignPair();
         var parsed = Hash.parsePadUrl(href);
@@ -643,7 +651,10 @@ define([
 
         // Share with contacts tab
 
-        var hasFriends = Object.keys(config.friends || {}).length !== 0;
+        var teams = getEditableTeams(common, config);
+        config.teams = teams;
+        var hasFriends = Object.keys(config.friends || {}).length ||
+                         Object.keys(teams).length;
         var onFriendShare = Util.mkEvent();
 
 
@@ -926,7 +937,10 @@ define([
         });
 
         // share with contacts tab
-        var hasFriends = Object.keys(config.friends || {}).length !== 0;
+        var teams = getEditableTeams(common, config);
+        config.teams = teams;
+        var hasFriends = Object.keys(config.friends || {}).length ||
+                         Object.keys(teams).length;
 
         var friendsObject = hasFriends ? createShareWithFriends(config, null, getLinkValue) : noContactsMessage(common);
         var friendsList = friendsObject.content;
@@ -1637,7 +1651,6 @@ define([
                 if (data.hiddenReadOnly) { button.addClass('cp-hidden-if-readonly'); }
                 if (data.name) {
                     button.addClass('cp-toolbar-icon-'+data.name);
-                    button.click(common.prepareFeedback(data.name));
                 }
                 if (data.text) {
                     $('<span>', {'class': 'cp-toolbar-drawer-element'}).text(data.text)
