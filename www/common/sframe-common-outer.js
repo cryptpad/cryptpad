@@ -1020,12 +1020,12 @@ define([
                     };
                     SecureModal.$iframe = $('<iframe>', {id: 'sbox-secure-iframe'}).appendTo($('body'));
                     SecureModal.modal = SecureIframe.create(config);
-                } else if (!cfg.hidden) {
+                }
+                if (!cfg.hidden) {
                     SecureModal.modal.refresh(cfg, function () {
                         SecureModal.$iframe.show();
                     });
-                }
-                if (cfg.hidden) {
+                } else {
                     SecureModal.$iframe.hide();
                     return;
                 }

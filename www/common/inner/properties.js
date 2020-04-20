@@ -59,7 +59,7 @@ define([
         if (owned && priv.app === 'code') {
             (function () {
                 var sframeChan = common.getSframeChannel();
-                var md = metadataMgr.getMetadata();
+                var md = (opts.data && opts.data.metadata) || {};
                 var div = h('div');
                 var hint = h('div.cp-app-prop-hint', Messages.cba_hint);
                 var $div = $(div);

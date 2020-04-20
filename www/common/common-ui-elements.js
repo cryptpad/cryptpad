@@ -1621,11 +1621,13 @@ define([
                         if (!data) {
                             return void UI.alert(Messages.autostore_notAvailable);
                         }
-                        sframeChan.query('Q_PROPERTIES_OPEN', null, function (err, data) {
+                        var metadataMgr = common.getMetadataMgr();
+                        sframeChan.query('Q_PROPERTIES_OPEN', {
+                            metadata: metadataMgr.getMetadata()
+                        }, function (err, data) {
                             if (!data || !data.cmd) { return; }
                             if (data.cmd === "UPDATE_METADATA") {
                                 if (!data.key) { return; }
-                                var metadataMgr = common.getMetadataMgr();
                                 var md = Util.clone(metadataMgr.getMetadata());
                                 md[data.key] = data.value;
                                 if (!data.value) { delete md[data.key]; }
