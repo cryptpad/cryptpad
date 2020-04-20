@@ -1036,8 +1036,8 @@ define([
                 initSecureModal('filepicker', data || {}, cb);
             });
 
-            sframeChan.on('EV_PROPERTIES_OPEN', function (data) {
-                initSecureModal('properties', data || {}, null);
+            sframeChan.on('Q_PROPERTIES_OPEN', function (data, cb) {
+                initSecureModal('properties', data || {}, cb);
             });
 
             sframeChan.on('EV_ACCESS_OPEN', function (data) {

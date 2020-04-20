@@ -58,6 +58,7 @@ define([
         Messages.cba_disable = "Clear all colors and disable"; // XXX
         if (owned && priv.app === 'code') {
             (function () {
+                var sframeChan = common.getSframeChannel();
                 var md = metadataMgr.getMetadata();
                 var div = h('div');
                 var hint = h('div.cp-app-prop-hint', Messages.cba_hint);
@@ -73,10 +74,12 @@ define([
                             classes: 'btn-primary'
                         }, function () {
                             $button.remove();
-                            var md = Util.clone(metadataMgr.getMetadata());
-                            md.enableColors = true;
+                            sframeChan.event("EV_SECURE_ACTION", {
+                                cmd: 'UPDATE_METADATA',
+                                key: 'enableColors',
+                                value: true
+                            });
                             common.setAttribute(['code', 'enableColors'], true);
-                            metadataMgr.updateMetadata(md);
                             setButton(false);
                         });
                         return;
@@ -87,10 +90,12 @@ define([
                         classes: 'btn-danger'
                     }, function () {
                         $button.remove();
-                        var md = Util.clone(metadataMgr.getMetadata());
-                        md.enableColors = false;
+                        sframeChan.event("EV_SECURE_ACTION", {
+                            cmd: 'UPDATE_METADATA',
+                            key: 'enableColors',
+                            value: false
+                        });
                         common.setAttribute(['code', 'enableColors'], false);
-                        metadataMgr.updateMetadata(md);
                         setButton(true);
                     });
                 };
