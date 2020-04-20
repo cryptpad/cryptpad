@@ -510,7 +510,7 @@
     "settings_codeUseTabs": "Utiliser des tabulations au lieu d'espaces",
     "settings_codeFontSize": "Taille de la police dans l'éditeur de code (px)",
     "settings_padWidth": "Largeur de l'éditeur de texte",
-    "settings_padWidthHint": "L'éditeur de documents texte occupe toute la largeur de l'écran disponible par défaut, ce qui peut rendre le texte difficile à lire. Vous pouvez ici réduire la largeur de l'éditeur.",
+    "settings_padWidthHint": "Passez du mode page (par défaut) qui limite la largeur de l'éditeur de texte, au mode plein-écran qui utilise toute la largeur de l'écran.",
     "settings_padWidthLabel": "Réduire la largeur de l'éditeur",
     "settings_padSpellcheckTitle": "Vérification orthographique",
     "settings_padSpellcheckHint": "Cette option vous permet d'activer la vérification orthographique dans l'éditeur de Texte. Les fautes seront soulignées et des propositions correctes seront disponibles en effectuant un clic-droit avec la touche Ctrl ou Meta enfoncée.",
@@ -1350,5 +1350,7 @@
     "cba_writtenBy": "Écrit par : {0}",
     "cba_properties": "Couleurs par auteurs (expérimental)",
     "cba_hide": "Cacher les couleurs d'auteurs",
-    "oo_login": "Veuillez vous connecter ou vous inscrire pour améliorer la performance des feuilles de calcul."
+    "oo_login": "Veuillez vous connecter ou vous inscrire pour améliorer la performance des feuilles de calcul.",
+    "pad_usePageWidth": "Mode page",
+    "pad_useFullWidth": "Mode large"
 }
