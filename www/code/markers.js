@@ -219,6 +219,8 @@ define([
         var toKeep = [];
         var toJoin = {};
 
+        var firstMarks = first.marks.slice();
+
         debug('error', "Fix marks");
         debug('warn', first);
         debug('warn', last);
@@ -258,9 +260,15 @@ define([
 
         // If we still have markers in "first", store the last one so that we can "join"
         // everything at the end
+        // NOTE: we only join if the marks were joined initially!
         if (first.marks.length) {
-            var toJoinMark = first.marks[first.marks.length - 1].slice();
+            var idx = first.marks.length - 1;
+            var toJoinMark = first.marks[index].slice();
             toJoin = parseMark(toJoinMark);
+            var next = parseMark(firstMarks[idx + 1]); // always an object
+            if (toJoin.endLine !== next.startLine || toJoin.endCh !== next.startCh) {
+                toJoin.overlapOnly = true;
+            }
         }
 
 
@@ -302,13 +310,17 @@ define([
                                     && typeof(toJoin.endCh) !== "undefined") {
             // Make sure the marks are joined correctly:
             // fix the start position of the marks to keep
-            // Note: we must preserve the same end for this mark if it was single line!
-            if (typeof(toKeepEnd[0][4]) === "undefined") { // Single line
-                toKeepEnd[0][4] = toKeepEnd[0][3] || (toKeepEnd[0][2]+1); // preserve end ch
-                toKeepEnd[0][3] = toKeepEnd[0][1]; // preserve end line
+            var overlap = toKeepEnd[0][1] < toJoin.endLine ||
+                           (toKeepEnd[0][1] === toJoin.endLine && toKeepEnd[0][2] < toJoin.endCh);
+            if (!toJoin.overlapOnly || overlap) {
+                // Note: we must preserve the same end for this mark if it was single line!
+                if (typeof(toKeepEnd[0][4]) === "undefined") { // Single line
+                    toKeepEnd[0][4] = toKeepEnd[0][3] || (toKeepEnd[0][2]+1); // preserve end ch
+                    toKeepEnd[0][3] = toKeepEnd[0][1]; // preserve end line
+                }
+                toKeepEnd[0][1] = toJoin.endLine;
+                toKeepEnd[0][2] = toJoin.endCh;
             }
-            toKeepEnd[0][1] = toJoin.endLine;
-            toKeepEnd[0][2] = toJoin.endCh;
         }
 
         debug('log', 'Fixed');
