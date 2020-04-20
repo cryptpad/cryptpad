@@ -731,10 +731,30 @@ define([
                     $iframe.find('body').attr('spellcheck', true);
                 }
             });
+
+            Messages.pad_useFullWidth = "Use full width"; // XXX
+            Messages.pad_usePageWidth = "Use page mode"; // XXX
             framework._.sfCommon.getAttribute(['pad', 'width'], function (err, data) {
-                if (data) {
+                var active = data || typeof(data) === "undefined";
+                if (active) {
                     $iframe.find('html').addClass('cke_body_width');
                 }
+                var $width = framework._.sfCommon.createButton('', true, {
+                    icon: 'fa-arrows-h',
+                    text: active ? Messages.pad_useFullWidth : Messages.pad_usePageWidth,
+                    name: "pad-width",
+                },function () {
+                    if (active) {
+                        $iframe.find('html').removeClass('cke_body_width');
+                    } else {
+                        $iframe.find('html').addClass('cke_body_width');
+                    }
+                    active = !active;
+                    var key = active ? Messages.pad_useFullWidth : Messages.pad_usePageWidth;
+                    $width.find('.cp-toolbar-drawer-element').text(key);
+                    framework._.sfCommon.setAttribute(['pad', 'width'], active);
+                });
+                framework._.toolbar.$drawer.append($width);
             });
 
             framework._.sfCommon.isPadStored(function (err, val) {
