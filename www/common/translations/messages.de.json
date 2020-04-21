@@ -503,7 +503,7 @@
     "settings_codeUseTabs": "Mit Tabs einrücken (anstatt mit Leerzeichen)",
     "settings_codeFontSize": "Schriftgröße im Code-Editor",
     "settings_padWidth": "Maximalgröße des Editors",
-    "settings_padWidthHint": "Rich-Text-Pads benutzen normalerweise die größte verfügbare Zeilenbreite, das kann manchmal schwer lesbar sein. Du kannst die Breite des Editors hier reduzieren.",
+    "settings_padWidthHint": "Schalte um zwischen der Seitenansicht (Standard), die auf die Breite des Texteditors beschränkt ist, und der Ausnutzung der vollen Bildschirmbreite.",
     "settings_padWidthLabel": "Die Breite des Editors reduzieren",
     "settings_padSpellcheckTitle": "Rechtschreibprüfung",
     "settings_padSpellcheckHint": "Mit dieser Option kann die Rechtschreibprüfung in Rich-Text-Pads aktiviert werden. Rechtschreibfehler werden rot unterstrichen. Halte die Strg- oder Meta-Taste gedrückt, um Verbesserungsvorschläge anzuzeigen.",
@@ -1350,5 +1350,8 @@
     "cba_show": "Autorenfarben anzeigen",
     "cba_writtenBy": "Geschrieben von: {0}",
     "cba_hint": "Diese Einstellung wird zukünftig verwendet, wenn du ein neues Pad erstellst.",
-    "oo_login": "Bitte logge dich ein oder erstelle ein Account, um die Performance von Tabellen zu verbessern."
+    "oo_login": "Bitte logge dich ein oder erstelle ein Account, um die Performance von Tabellen zu verbessern.",
+    "pad_usePageWidth": "Seitenansicht",
+    "pad_useFullWidth": "Volle Breite",
+    "cba_title": "Autorenfarben"
 }
