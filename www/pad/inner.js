@@ -440,9 +440,8 @@ define([
 
     var andThen2 = function (editor, Ckeditor, framework) {
         var mediaTagMap = {};
-        var $bar = $('#cke_1_toolbox');
         var $contentContainer = $('#cke_1_contents');
-        var $html = $bar.closest('html');
+        var $html = $('html');
         var $faLink = $html.find('head link[href*="/bower_components/components-font-awesome/css/font-awesome.min.css"]');
         if ($faLink.length) {
             $html.find('iframe').contents().find('head').append($faLink.clone());
@@ -494,29 +493,9 @@ define([
             framework: framework,
             metadataMgr: metadataMgr,
             common: common,
-            editor: editor
+            editor: editor,
+            container: $('#cp-app-pad-comments')[0]
         });
-
-        editor.plugins.comments.addComment = function (uid, cb) {
-            if (!comments) {
-                comments = Util.clone(COMMENTS);
-            }
-            // XXX display input
-            UI.prompt("Message", "", function (val) {
-                if (!val) { return; }
-                if (!editor.getSelection().getSelectedText()) {
-                    // text has been deleted by another user while we were typing our comment?
-                    return void UI.warn(Messages.error);
-                }
-                var myId = updateAuthorData();
-                comments.messages[uid] = {
-                    user: myId,
-                    time: +new Date(),
-                    message: val
-                };
-                cb();
-            });
-        };
 
         var onLinkClicked = function (e) {
             var $target = $(e.target);
@@ -717,7 +696,6 @@ define([
             return hjson;
         });
 
-        $bar.find('#cke_1_toolbar_collapser').hide();
         if (!framework.isReadOnly()) {
             addToolbarHideBtn(framework, $contentContainer);
         } else {
@@ -776,7 +754,7 @@ define([
             framework._.sfCommon.getAttribute(['pad', 'width'], function (err, data) {
                 var active = data || typeof(data) === "undefined";
                 if (active) {
-                    $iframe.find('html').addClass('cke_body_width');
+                    $contentContainer.addClass('cke_body_width');
                 }
                 var $width = framework._.sfCommon.createButton('', true, {
                     icon: 'fa-arrows-h',
@@ -784,9 +762,9 @@ define([
                     name: "pad-width",
                 },function () {
                     if (active) {
-                        $iframe.find('html').removeClass('cke_body_width');
+                        $contentContainer.removeClass('cke_body_width');
                     } else {
-                        $iframe.find('html').addClass('cke_body_width');
+                        $contentContainer.addClass('cke_body_width');
                     }
                     active = !active;
                     var key = active ? Messages.pad_useFullWidth : Messages.pad_usePageWidth;
@@ -959,8 +937,8 @@ define([
 
         nThen(function (waitFor) {
             Framework.create({
-                toolbarContainer: '#cke_1_toolbox',
-                contentContainer: '#cke_editor1 > .cke_inner',
+                toolbarContainer: '#cp-app-pad-toolbar',
+                contentContainer: '#cp-app-pad-editor',
                 patchTransformer: ChainPad.NaiveJSONTransformer,
                 /*thumbnail: {
                     getContainer: function () { return $('iframe').contents().find('html')[0]; },
@@ -1004,14 +982,6 @@ define([
                 }
                 // Used in ckeditor-config.js
                 Ckeditor.CRYPTPAD_URLARGS = ApiConfig.requireConf.urlArgs;
-                var backColor = AppConfig.appBackgroundColor;
-                var newCss = '.cke_body_width { background: '+ backColor +'; height: 100%; overflow: auto;}' +
-                    '.cke_body_width body {' +
-                        'max-width: 50em; padding: 20px 30px; margin: 0 auto; min-height: 100%;'+
-                        'box-sizing: border-box; overflow: auto;'+
-                    '}' +
-                    '.cke_body_width body > *:first-child { margin-top: 0; }';
-                Ckeditor.addCss(newCss);
                 Ckeditor._mediatagTranslations = {
                     title: Messages.pad_mediatagTitle,
                     width: Messages.pad_mediatagWidth,
@@ -1037,13 +1007,11 @@ define([
                 Links.addSupportForOpeningLinksInNewTab(Ckeditor)({editor: editor});
             }).nThen(function () {
                 // Move ckeditor parts to have a structure like the other apps
-                var $toolbarContainer = $('#cke_1_top');
                 var $contentContainer = $('#cke_1_contents');
-                var $mainContainer = $('#cke_editor1');
-                $contentContainer.prepend($toolbarContainer.find('.cke_toolbox_main'));
-                $mainContainer.prepend($toolbarContainer);
-                $contentContainer.find('.cke_toolbox_main').addClass('cke_reset_all');
-                $toolbarContainer.removeClass('cke_reset_all');
+                var $mainContainer = $('#cke_editor1 > .cke_inner');
+                var $ckeToolbar = $('#cke_1_top').find('.cke_toolbox_main');
+                $mainContainer.prepend($ckeToolbar.addClass('cke_reset_all'));
+                $contentContainer.append(h('div#cp-app-pad-comments'));
             }).nThen(waitFor());
 
         }).nThen(function (/*waitFor*/) {

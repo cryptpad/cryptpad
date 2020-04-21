@@ -30,7 +30,7 @@ define([
         var uid;
         existing.some(function (id) {
             var author = Env.comments.authors[id] || {};
-            if (author.curvePublic !== curvePublic) { return; }
+            if (author.curvePublic !== curve) { return; }
             uid = Number(id);
             return true;
         });
@@ -76,7 +76,7 @@ define([
                 };
                 var md = Util.clone(Env.metadataMgr.getMetadata());
                 md.comments = Util.clone(Env.comments);
-                metadataMgr.updateMetadata(md);
+                Env.metadataMgr.updateMetadata(md);
 
                 addMark();
 
