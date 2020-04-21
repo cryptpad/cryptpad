@@ -33,13 +33,13 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var sframeChan = common.getSframeChannel();
         var $body = $('body');
+    var displayed;
 
         var hideIframe = function () {
             if (!displayed) { return; }
             sframeChan.event('EV_SECURE_IFRAME_CLOSE');
         };
 
-        var displayed;
         var create = {};
 
         // Share modal

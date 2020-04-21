@@ -1036,7 +1036,7 @@ define([
                 initSecureModal('filepicker', data || {}, cb);
             });
 
-            sframeChan.on('EV_PROPERTIES_OPEN', function (data, cb) {
+            sframeChan.on('EV_PROPERTIES_OPEN', function (data) {
                 initSecureModal('properties', data || {});
             });
 

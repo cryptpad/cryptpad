@@ -1621,8 +1621,7 @@ define([
                         if (!data) {
                             return void UI.alert(Messages.autostore_notAvailable);
                         }
-                        var metadataMgr = common.getMetadataMgr();
-                        sframeChan.query('EV_PROPERTIES_OPEN');
+                        sframeChan.event('EV_PROPERTIES_OPEN');
                     });
                 });
                 break;

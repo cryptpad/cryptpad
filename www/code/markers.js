@@ -651,8 +651,6 @@ define([
         return uid || authorUid(existing);
     };
     var ready = function (Env) {
-        var metadataMgr = Env.common.getMetadataMgr();
-        var md = metadataMgr.getMetadata();
         Env.ready = true;
         Env.myAuthorId = getAuthorId(Env);
 
