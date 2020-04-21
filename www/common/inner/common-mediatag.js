@@ -256,11 +256,9 @@ define([
                 $inner.append(cfg.svg);
                 if (!cfg.render) {
                     $spinner.hide();
-                    console.error('here');
                     locked = false;
                     return;
                 }
-                console.error('there');
                 setTimeout(cfg.render);
                 tag = cfg.svg;
             } else {
