@@ -218,6 +218,24 @@ define([
         });
         editor.focus();
 
+        // Fix cursor and scroll position after undo/redo
+        var undoData;
+        editor.on('beforeChange', function (editor, change) {
+            if (change.origin !== "undo" && change.origin !== "redo") { return; }
+            undoData = editor.getValue();
+        });
+        editor.on('change', function (editor, change) {
+            if (change.origin !== "undo" && change.origin !== "redo") { return; }
+            if (typeof(undoData) === "undefined") { return; }
+            var doc = editor.getValue();
+            var ops = ChainPad.Diff.diff(undoData, doc);
+            undoData = undefined;
+            if (!ops.length) { return; }
+            var cursor = posToCursor(ops[0].offset, doc);
+            editor.setCursor(cursor);
+            editor.scrollIntoView(cursor);
+        });
+
         var setMode = exp.setMode = function (mode, cb) {
             exp.highlightMode = mode;
             if (mode === 'markdown') { mode = 'gfm'; }
