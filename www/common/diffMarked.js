@@ -447,7 +447,9 @@ define([
                     idx = 0;
                 }
 
-                common.getMediaTagPreview(mts, idx);
+                setTimeout(function () {
+                    common.getMediaTagPreview(mts, idx);
+                });
             };
         };
 
@@ -465,10 +467,10 @@ define([
                     contextMenu.show(e);
                 });
                 if ($mt.children().length) {
-                    $mt.off('dblclick preview');
+                    $mt.off('click dblclick preview');
                     $mt.on('preview', onPreview($mt));
                     if ($mt.find('img').length) {
-                        $mt.on('dblclick', function () {
+                        $mt.on('click dblclick', function () {
                             $mt.trigger('preview');
                         });
                     }
@@ -485,10 +487,10 @@ define([
                             observer.disconnect();
                         }
                     });
-                    $mt.off('dblclick preview');
+                    $mt.off('click dblclick preview');
                     $mt.on('preview', onPreview($mt));
                     if ($mt.find('img').length) {
-                        $mt.on('dblclick', function () {
+                        $mt.on('click dblclick', function () {
                             $mt.trigger('preview');
                         });
                     }
@@ -518,9 +520,9 @@ define([
                     $(contextMenu.menu).find('li:not(.cp-svg)').hide();
                     contextMenu.show(e);
                 });
-                $el.off('dblclick preview');
+                $el.off('dblclick click preview');
                 $el.on('preview', onPreview($el));
-                $el.on('dblclick', function () {
+                $el.on('dblclick click', function () {
                     $el.trigger('preview');
                 });
 

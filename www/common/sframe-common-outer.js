@@ -1003,6 +1003,7 @@ define([
                         if (typeof(SecureModal.cb) !== "function") { return; }
                         SecureModal.cb(data);
                     };
+                    config.onFileUpload = onFileUpload;
                     config.onClose = function () {
                         SecureModal.$iframe.hide();
                     };
