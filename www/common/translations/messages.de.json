@@ -1352,5 +1352,6 @@
     "cba_hint": "Diese Einstellung wird zukünftig verwendet, wenn du ein neues Pad erstellst.",
     "oo_login": "Bitte logge dich ein oder erstelle ein Account, um die Performance von Tabellen zu verbessern.",
     "pad_usePageWidth": "Seitenansicht",
-    "pad_useFullWidth": "Volle Breite"
+    "pad_useFullWidth": "Volle Breite",
+    "cba_title": "Autorenfarben"
 }
