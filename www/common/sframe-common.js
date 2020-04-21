@@ -331,6 +331,26 @@ define([
         }, cb);
     };
 
+    funcs.isOwned = function (owners) {
+        var priv = ctx.metadataMgr.getPrivateData();
+        var edPublic = priv.edPublic;
+        var owned = false;
+        if (Array.isArray(owners) && owners.length) {
+            if (owners.indexOf(edPublic) !== -1) {
+                owned = true;
+            } else {
+                Object.keys(priv.teams || {}).some(function (id) {
+                    var team = priv.teams[id] || {};
+                    if (team.viewer) { return; }
+                    if (owners.indexOf(team.edPublic) === -1) { return; }
+                    owned = Number(id);
+                    return true;
+                });
+            }
+        }
+        return owned;
+    };
+
     funcs.isPadStored = function (cb) {
         ctx.sframeChan.query("Q_IS_PAD_STORED", null, function (err, obj) {
             cb (err || (obj && obj.error), obj);

@@ -74,10 +74,9 @@ define([
         };
 
         // Properties modal
-        create['properties'] = function (data) {
+        create['properties'] = function () {
             require(['/common/inner/properties.js'], function (Properties) {
                 Properties.getPropertiesModal(common, {
-                    data: data,
                     onClose: function () {
                         hideIframe();
                     }

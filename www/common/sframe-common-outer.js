@@ -1035,16 +1035,16 @@ define([
                 initSecureModal('filepicker', data || {}, cb);
             });
 
-            sframeChan.on('Q_PROPERTIES_OPEN', function (data, cb) {
-                initSecureModal('properties', data || {}, cb);
+            sframeChan.on('EV_PROPERTIES_OPEN', function (data, cb) {
+                initSecureModal('properties', data || {});
             });
 
             sframeChan.on('EV_ACCESS_OPEN', function (data) {
-                initSecureModal('access', data || {}, null);
+                initSecureModal('access', data || {});
             });
 
             sframeChan.on('EV_SHARE_OPEN', function (data) {
-                initSecureModal('share', data || {}, null);
+                initSecureModal('share', data || {});
             });
 
             sframeChan.on('Q_TEMPLATE_USE', function (data, cb) {

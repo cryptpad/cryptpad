@@ -69,23 +69,7 @@ define([
     Modal.isOwned = function (Env, data) {
         var common = Env.common;
         data = data || {};
-        var priv = common.getMetadataMgr().getPrivateData();
-        var edPublic = priv.edPublic;
-        var owned = false;
-        if (Array.isArray(data.owners) && data.owners.length) {
-            if (data.owners.indexOf(edPublic) !== -1) {
-                owned = true;
-            } else {
-                Object.keys(priv.teams || {}).some(function (id) {
-                    var team = priv.teams[id] || {};
-                    if (team.viewer) { return; }
-                    if (data.owners.indexOf(team.edPublic) === -1) { return; }
-                    owned = Number(id);
-                    return true;
-                });
-            }
-        }
-        return owned;
+        return common.isOwned(data.owners);
     };
 
     var blocked = false;

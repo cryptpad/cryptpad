@@ -336,6 +336,7 @@ define([
         var editor = Env.editor;
         var CodeMirror = Env.CodeMirror;
 
+        Env.enabled = Boolean(userDoc.authormarks && userDoc.authormarks.marks);
         setAuthorMarks(Env, userDoc.authormarks);
 
         if (!Env.enabled) { return; }
@@ -654,12 +655,38 @@ define([
         var md = metadataMgr.getMetadata();
         Env.ready = true;
         Env.myAuthorId = getAuthorId(Env);
-        Env.enabled = md.enableColors;
 
-        if (Env.enabled) {
-            if (Env.$button) { Env.$button.show(); }
-            setMarks(Env);
+        if (!Env.enabled) { return; }
+        if (Env.$button) { Env.$button.show(); }
+        if (!Env.authormarks.marks || !Env.authormarks.marks.length) {
+            Env.authormarks = Util.clone(DEFAULT);
         }
+        setMarks(Env);
+    };
+
+    var getState = function (Env) {
+        return Boolean(Env.authormarks && Env.authormarks.marks);
+    };
+    var setState = function (Env, enabled) {
+        // If the state has changed in the pad, change the Env too
+        if (!Env.ready) { return; }
+        if (Env.enabled === enabled) { return; }
+        Env.enabled = enabled;
+        if (!Env.enabled) {
+            // Reset marks
+            Env.authormarks = {};
+            setMarks(Env);
+            if (Env.$button) { Env.$button.hide(); }
+        } else {
+            Env.myAuthorId = getAuthorId(Env);
+            // If it's a reset, add initial marker
+            if (!Env.authormarks.marks || !Env.authormarks.marks.length) {
+                Env.authormarks = Util.clone(DEFAULT);
+                setMarks(Env);
+            }
+            if (Env.$button) { Env.$button.show(); }
+        }
+        if (Env.ready) { Env.framework.localChange(); }
     };
 
     Markers.create = function (config) {
@@ -680,30 +707,10 @@ define([
 
         var metadataMgr = Env.common.getMetadataMgr();
         metadataMgr.onChange(function () {
-            var md = metadataMgr.getMetadata();
-            // If the state has changed in the pad, change the Env too
-            if (Env.enabled !== md.enableColors) {
-                Env.enabled = md.enableColors;
-                if (!Env.enabled) {
-                    // Reset marks
-                    Env.authormarks = {};
-                    setMarks(Env);
-                    if (Env.$button) { Env.$button.hide(); }
-                } else {
-                    Env.myAuthorId = getAuthorId(Env);
-                    // If it's a reset, add initial marker
-                    if (!Env.authormarks.marks || !Env.authormarks.marks.length) {
-                        Env.authormarks = Util.clone(DEFAULT);
-                        setMarks(Env);
-                    }
-                    if (Env.$button) { Env.$button.show(); }
-                }
-                if (Env.ready) { Env.framework.localChange(); }
-            }
-
             // If the markers are disabled or if I haven't pushed content since the last reset,
             // don't update my data
-            if (!Env.enabled || !Env.myAuthorId || !Env.authormarks.authors[Env.myAuthorId]) {
+            if (!Env.enabled || !Env.myAuthorId || !Env.authormarks.authors ||
+                !Env.authormarks.authors[Env.myAuthorId]) {
                 return;
             }
 
@@ -735,7 +742,9 @@ define([
             setMarks: call(setMarks),
             localChange: call(localChange),
             ready: call(ready),
-            setButton: call(setButton)
+            setButton: call(setButton),
+            getState: call(getState),
+            setState: call(setState),
         };
     };
 

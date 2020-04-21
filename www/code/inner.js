@@ -3,8 +3,10 @@ define([
     '/common/diffMarked.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
+    '/common/hyperscript.js',
     '/common/sframe-app-framework.js',
     '/common/sframe-common-codemirror.js',
+    '/common/common-interface.js',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/code/markers.js',
@@ -48,8 +50,10 @@ define([
     DiffMd,
     nThen,
     SFCommon,
+    h,
     Framework,
     SFCodeMirror,
+    UI,
     Util,
     Hash,
     Markers,
@@ -276,6 +280,54 @@ define([
         };
     };
 
+    var mkColorByAuthor = function (framework, markers) {
+        var common = framework._.sfCommon;
+        var $cbaButton = framework._.sfCommon.createButton(null, true, {
+            icon: 'fa-paint-brush',
+            text: Messages.cba_title,
+            name: 'cba'
+        }, function () {
+            var div = h('div');
+            var $div = $(div);
+            var content = h('div', [
+                h('h4', Messages.cba_properties),
+                h('p', Messages.cba_hint),
+                div
+            ]);
+            var setButton = function (state) {
+                var button = h('button.btn');
+                var $button = $(button);
+                $div.html('').append($button);
+                if (state) {
+                    // Add "enable" button
+                    $button.addClass('btn-secondary').text(Messages.cba_enable);
+                    UI.confirmButton(button, {
+                        classes: 'btn-primary'
+                    }, function () {
+                        $button.remove();
+                        markers.setState(true);
+                        common.setAttribute(['code', 'enableColors'], true);
+                        setButton(false);
+                    });
+                    return;
+                }
+                // Add "disable" button
+                $button.addClass('btn-danger-alt').text(Messages.cba_disable);
+                UI.confirmButton(button, {
+                    classes: 'btn-danger'
+                }, function () {
+                    $button.remove();
+                    markers.setState(false);
+                    common.setAttribute(['code', 'enableColors'], false);
+                    setButton(true);
+                });
+            };
+            setButton(!markers.getState());
+            UI.alert(content);
+        });
+        framework._.toolbar.$drawer.append($cbaButton);
+    };
+
     var mkFilePicker = function (framework, editor, evModeChange) {
         evModeChange.reg(function (mode) {
             if (MEDIA_TAG_MODES.indexOf(mode) !== -1) {
@@ -397,14 +449,17 @@ define([
                 //console.log("%s => %s", CodeMirror.highlightMode, CodeMirror.$language.val());
             }
 
-            if (newPad && Util.find(privateData, ['settings', 'code', 'enableColors'])) {
-                var metadataMgr = common.getMetadataMgr();
-                var md = Util.clone(metadataMgr.getMetadata());
-                md.enableColors = true;
-                metadataMgr.updateMetadata(md);
-            }
-
             markers.ready();
+            common.getPadMetadata(null, function (md) {
+                if (md && md.error) { return; }
+                if (!common.isOwned(md.owners)) { return; }
+                // We're the owner: add the button and enable the colors if needed
+                mkColorByAuthor(framework, markers);
+                if (newPad && Util.find(privateData, ['settings', 'code', 'enableColors'])) {
+                    markers.setState(true);
+                }
+            });
+
 
             var fmConfig = {
                 dropArea: $('.CodeMirror'),
