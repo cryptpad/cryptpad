@@ -1708,14 +1708,17 @@ define([
         var ver = arr[1];
         if (!ver) { return; }
         var verArr = ver.split('.');
-        verArr[2] = 0;
+        //verArr[2] = 0;
         if (verArr.length !== 3) { return; }
         var stored = currentVersion || '0.0.0';
         var storedArr = stored.split('.');
-        storedArr[2] = 0;
+        //storedArr[2] = 0;
+        var shouldUpdate = JSON.stringify(verArr) !== JSON.stringify(storedArr);
+/*
         var shouldUpdate = parseInt(verArr[0]) !== parseInt(storedArr[0]) ||
                            (parseInt(verArr[0]) === parseInt(storedArr[0]) &&
                             parseInt(verArr[1]) !== parseInt(storedArr[1]));
+*/
         if (!shouldUpdate) { return; }
         currentVersion = ver;
         localStorage[CRYPTPAD_VERSION] = ver;

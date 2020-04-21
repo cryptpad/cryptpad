@@ -48,7 +48,6 @@ define(['json.sortify'], function (Sortify) {
                     //title: meta.doc.defaultTitle,
                     type: meta.doc.type,
                     users: {},
-                    authors: {}
                 };
                 metadataLazyObj = JSON.parse(JSON.stringify(metadataObj));
             }
@@ -68,6 +67,10 @@ define(['json.sortify'], function (Sortify) {
                 mdo[meta.user.netfluxId] = meta.user;
             }
             metadataObj.users = mdo;
+
+            // Clean old data
+            delete metadataObj.authors;
+            delete metadataLazyObj.authors;
 
             // Always update the userlist in the lazy object, otherwise it may be outdated
             // and metadataMgr.updateMetadata() won't do anything, and so we won't push events
@@ -95,27 +98,6 @@ define(['json.sortify'], function (Sortify) {
             setTimeout(function () {
                 checkUpdate(lazy);
             });
-        };
-        var addAuthor = function () {
-            if (!meta.user || !meta.user.netfluxId || !priv || !priv.edPublic) { return; }
-            var authors = metadataObj.authors || {};
-            var old = Sortify(authors);
-            if (!authors[priv.edPublic]) {
-                authors[priv.edPublic] = {
-                    nId: [meta.user.netfluxId],
-                    name: meta.user.name
-                };
-            } else {
-                authors[priv.edPublic].name = meta.user.name;
-                if (authors[priv.edPublic].nId.indexOf(meta.user.netfluxId) === -1) {
-                    authors[priv.edPublic].nId.push(meta.user.netfluxId);
-                }
-            }
-            if (Sortify(authors) !== old) {
-                metadataObj.authors = authors;
-                metadataLazyObj.authors = JSON.parse(JSON.stringify(authors));
-                change();
-            }
         };
 
         var netfluxId;
@@ -225,7 +207,6 @@ define(['json.sortify'], function (Sortify) {
                 if (isReady) { return void f(); }
                 readyHandlers.push(f);
             },
-            addAuthor: addAuthor,
         });
     };
     return Object.freeze({ create: create });

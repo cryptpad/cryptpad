@@ -71,7 +71,10 @@ define([
                 lastKnownHash = data.lastKnownHash;
                 isComplete = data.isFull;
                 var messages = (data.messages || []).map(function (obj) {
-                    return obj.msg;
+                    if (!config.debug) {
+                        return obj.msg;
+                    }
+                    return obj;
                 });
                 if (config.debug) { console.log(data.messages); }
                 Array.prototype.unshift.apply(allMessages, messages); // Destructive concat

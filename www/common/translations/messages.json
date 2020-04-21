@@ -523,7 +523,7 @@
     "settings_codeUseTabs": "Indent using tabs (instead of spaces)",
     "settings_codeFontSize": "Font size in the code editor",
     "settings_padWidth": "Editor's maximum width",
-    "settings_padWidthHint": "Rich text pads use by default the maximum available width on your screen and it can be difficult to read. You can reduce the editor's width here.",
+    "settings_padWidthHint": "Switch between page mode (default) that limits the width of the text editor, and using the full width of the screen.",
     "settings_padWidthLabel": "Reduce the editor's width",
     "settings_padSpellcheckTitle": "Spellcheck",
     "settings_padSpellcheckHint": "This option allows you to enable spellcheck in rich text pads. Spelling errors will be underlined in red and you'll have to hold your Ctrl or Meta key while right-clicking to see the correct options.",
@@ -1350,5 +1350,8 @@
     "cba_disable": "Clear and Disable",
     "cba_show": "Show author colors",
     "cba_hide": "Hide author colors",
-    "oo_login": "Please log in or register to improve the performance of spreadsheets."
+    "oo_login": "Please log in or register to improve the performance of spreadsheets.",
+    "pad_useFullWidth": "Full-width mode",
+    "pad_usePageWidth": "Page mode",
+    "cba_title": "Author colors"
 }

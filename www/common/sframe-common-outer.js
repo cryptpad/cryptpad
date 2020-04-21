@@ -395,6 +395,7 @@ define([
             var forceCreationScreen = cfg.useCreationScreen &&
                                       sessionStorage[Utils.Constants.displayPadCreationScreen];
             delete sessionStorage[Utils.Constants.displayPadCreationScreen];
+            var isSafe = ['debug', 'profile', 'drive'].indexOf(currentPad.app) !== -1;
             var updateMeta = function () {
                 //console.log('EV_METADATA_UPDATE');
                 var metaObj;
@@ -459,7 +460,7 @@ define([
                         additionalPriv.registeredOnly = true;
                     }
 
-                    if (['debug', 'profile'].indexOf(currentPad.app) !== -1) {
+                    if (isSafe) {
                         additionalPriv.hashes = hashes;
                     }
 
@@ -620,7 +621,7 @@ define([
                 });
 
             };
-            addCommonRpc(sframeChan);
+            addCommonRpc(sframeChan, isSafe);
 
             var currentTitle;
             var currentTabTitle;
@@ -838,17 +839,26 @@ define([
             sframeChan.on('Q_GET_FULL_HISTORY', function (data, cb) {
                 var crypto = Crypto.createEncryptor(secret.keys);
                 Cryptpad.getFullHistory({
+                    debug: data && data.debug,
                     channel: secret.channel,
                     validateKey: secret.keys.validateKey
                 }, function (encryptedMsgs) {
                     var nt = nThen;
                     var decryptedMsgs = [];
                     var total = encryptedMsgs.length;
-                    encryptedMsgs.forEach(function (msg, i) {
+                    encryptedMsgs.forEach(function (_msg, i) {
                         nt = nt(function (waitFor) {
                             // The 3rd parameter "true" means we're going to skip signature validation.
                             // We don't need it since the message is already validated serverside by hk
-                            decryptedMsgs.push(crypto.decrypt(msg, true, true));
+                            if (typeof(_msg) === "object") {
+                                decryptedMsgs.push({
+                                    author: _msg.author,
+                                    time: _msg.time,
+                                    msg: crypto.decrypt(_msg.msg, true, true)
+                                });
+                            } else {
+                                decryptedMsgs.push(crypto.decrypt(_msg, true, true));
+                            }
                             setTimeout(waitFor(function () {
                                 sframeChan.event('EV_FULL_HISTORY_STATUS', (i+1)/total);
                             }));
@@ -992,12 +1002,12 @@ define([
                     config.onAction = function (data) {
                         if (typeof(SecureModal.cb) !== "function") { return; }
                         SecureModal.cb(data);
-                        SecureModal.$iframe.hide();
                     };
                     config.onClose = function () {
                         SecureModal.$iframe.hide();
                     };
                     config.data = {
+                        app: parsed.type,
                         hashes: hashes,
                         password: password,
                         isTemplate: isTemplate
@@ -1010,12 +1020,12 @@ define([
                     };
                     SecureModal.$iframe = $('<iframe>', {id: 'sbox-secure-iframe'}).appendTo($('body'));
                     SecureModal.modal = SecureIframe.create(config);
-                } else if (!cfg.hidden) {
+                }
+                if (!cfg.hidden) {
                     SecureModal.modal.refresh(cfg, function () {
                         SecureModal.$iframe.show();
                     });
-                }
-                if (cfg.hidden) {
+                } else {
                     SecureModal.$iframe.hide();
                     return;
                 }
@@ -1027,15 +1037,15 @@ define([
             });
 
             sframeChan.on('EV_PROPERTIES_OPEN', function (data) {
-                initSecureModal('properties', data || {}, null);
+                initSecureModal('properties', data || {});
             });
 
             sframeChan.on('EV_ACCESS_OPEN', function (data) {
-                initSecureModal('access', data || {}, null);
+                initSecureModal('access', data || {});
             });
 
             sframeChan.on('EV_SHARE_OPEN', function (data) {
-                initSecureModal('share', data || {}, null);
+                initSecureModal('share', data || {});
             });
 
             sframeChan.on('Q_TEMPLATE_USE', function (data, cb) {
