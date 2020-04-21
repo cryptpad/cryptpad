@@ -1352,5 +1352,6 @@
     "cba_hide": "Hide author colors",
     "oo_login": "Please log in or register to improve the performance of spreadsheets.",
     "pad_useFullWidth": "Full-width mode",
-    "pad_usePageWidth": "Page mode"
+    "pad_usePageWidth": "Page mode",
+    "cba_title": "Author colors"
 }
