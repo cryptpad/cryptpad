@@ -395,6 +395,7 @@ define([
             var forceCreationScreen = cfg.useCreationScreen &&
                                       sessionStorage[Utils.Constants.displayPadCreationScreen];
             delete sessionStorage[Utils.Constants.displayPadCreationScreen];
+            var isSafe = ['debug', 'profile', 'drive'].indexOf(currentPad.app) !== -1;
             var updateMeta = function () {
                 //console.log('EV_METADATA_UPDATE');
                 var metaObj;
@@ -459,7 +460,7 @@ define([
                         additionalPriv.registeredOnly = true;
                     }
 
-                    if (['debug', 'profile'].indexOf(currentPad.app) !== -1) {
+                    if (isSafe) {
                         additionalPriv.hashes = hashes;
                     }
 
@@ -620,7 +621,7 @@ define([
                 });
 
             };
-            addCommonRpc(sframeChan);
+            addCommonRpc(sframeChan, isSafe);
 
             var currentTitle;
             var currentTabTitle;
