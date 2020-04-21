@@ -1352,5 +1352,6 @@
     "cba_hide": "Cacher les couleurs d'auteurs",
     "oo_login": "Veuillez vous connecter ou vous inscrire pour améliorer la performance des feuilles de calcul.",
     "pad_usePageWidth": "Mode page",
-    "pad_useFullWidth": "Mode large"
+    "pad_useFullWidth": "Mode large",
+    "cba_title": "Couleurs par auteurs"
 }
