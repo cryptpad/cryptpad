@@ -3,7 +3,7 @@ define([], function () {
 
     var indexOfNode = tree.indexOfNode = function (el) {
         if (!(el && el.parentNode)) {
-            console.log("No parentNode found!");
+            console.log("No parentNode found!", el);
             throw new Error('No parentNode found!');
         }
         return Array.prototype.indexOf.call(el.parentNode.childNodes, el);
@@ -26,6 +26,7 @@ define([], function () {
         leaf nodes of a tree
     */
     var rightmostNode = tree.rightmostNode = function (el) {
+        if (!el) { return null; }
         var childNodeCount = childCount(el);
         if (!childNodeCount) { // no children
             return el; // return the element
@@ -53,7 +54,7 @@ define([], function () {
         if (!el.parentNode) { return null; }
         if (i === 0) {
             if (root && el.parentNode === root.childNodes[0]) { return null; }
-            return rightmostNode(previousNode(el.parentNode));
+            return rightmostNode(previousNode(el.parentNode, root));
         } else {
             return rightmostNode(el.parentNode.childNodes[i-1]);
         }
@@ -76,6 +77,10 @@ define([], function () {
         if (!b) { return; }
         // a and b might be the same element
         if (a === b) { return 0; }
+
+        // If we're selecting an entire node containing a single text node,
+        // b can be the child of a. Order is correct.
+        if (b.parentNode && b.parentNode === a) { return 1; }
 
         var cur = b;
         while (cur) {
