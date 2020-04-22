@@ -36,14 +36,9 @@
                 childRule: isUnstylable
             };
 
-// XXX define default style
-// XXX we can't uncomment if nothing has been added yet
-// XXX "styles" is useless because not rebuilt on reload
-// XXX and one style can remove all the other ones so no need to store all of them?
-
             // Register the command.
             var removeStyle = new CKEDITOR.style(styleDef, { 'uid': '' });
-            editor.addCommand(pluginName, {
+            editor.addCommand('comment', {
                 exec: function (editor, data) {
                     if (editor.readOnly) { return; }
                     editor.focus();
@@ -57,19 +52,15 @@
 
                     var uid = CKEDITOR.tools.getUniqueId();
                     editor.plugins.comments.addComment(uid, function () {
-                        // XXX call cryptpad code here
+                        // Make an undo spnashot
                         editor.fire('saveSnapshot');
+                        // Make sure comments won't overlap
                         editor.removeStyle(removeStyle);
-                        /*
-                        Object.keys(styles).forEach(function (id) {
-                            editor.removeStyle(styles[id]);
-                        });
-                        */
-                        styles[uid] = new CKEDITOR.style(styleDef, { 'uid': uid });
-                        editor.applyStyle(styles[uid]);
 
-                        //editor.removeStyle(removeStyle); // XXX to remove comment on the selection
-                        //editor.plugins.comments.addComment();
+                        // Add the comment marker
+                        var s = new CKEDITOR.style(styleDef, { 'uid': uid });
+                        editor.applyStyle(s);
+
                         // Save the undo snapshot after all changes are affected.
                         setTimeout( function() {
                             editor.fire('saveSnapshot');
@@ -79,13 +70,34 @@
                 }
             });
 
-            // XXX Uncomment selection, remove on prod, only used for dev
             editor.addCommand('uncomment', {
                 exec: function (editor, data) {
                     if (editor.readOnly) { return; }
-                    editor.focus();
                     editor.fire('saveSnapshot');
-                    editor.removeStyle(removeStyle);
+                    if (!data || !data.id) {
+                        // XXX Uncomment the selection, remove on prod, only used for dev
+                        editor.focus();
+                        editor.removeStyle(removeStyle);
+                        setTimeout( function() {
+                            editor.fire('saveSnapshot');
+                        }, 0 );
+                        return;
+                    }
+                    // Uncomment provided element
+
+                    //Create style for this id
+                    var style = new CKEDITOR.style({
+                        element: 'comment',
+                        attributes: {
+                            'data-uid': data.id
+                        },
+                    });
+                    // Create range for the entire document
+                    var range = editor.createRange();
+                    range.selectNodeContents( editor.document.getBody() );
+                    // Remove style for the document
+                    style.removeFromRange(range, editor);
+
                     setTimeout( function() {
                         editor.fire('saveSnapshot');
                     }, 0 );
@@ -93,6 +105,7 @@
             });
 
             // Register the toolbar button.
+            // XXX Uncomment selection, remove on prod, only used for dev
             editor.ui.addButton && editor.ui.addButton('UnComment', {
                 label: 'UNCOMMENT',
                 command: 'uncomment',

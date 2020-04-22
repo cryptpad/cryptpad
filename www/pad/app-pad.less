@@ -1,4 +1,5 @@
 @import (reference) "../../customize/src/less2/include/framework.less";
+@import (reference) "../../customize/src/less2/include/comments.less";
 
 body.cp-app-pad {
     .framework_main(
@@ -71,9 +72,10 @@ body.cp-app-pad {
             min-width: 0;
         }
         #cp-app-pad-comments {
-            width: 400px;
-            background-color: white;
+            width: 300px;
+            //background-color: white;
             margin: 30px;
+            .comments_main();
         }
         &.cke_body_width {
             iframe {

@@ -494,7 +494,9 @@ define([
             metadataMgr: metadataMgr,
             common: common,
             editor: editor,
-            container: $('#cp-app-pad-comments')[0]
+            ifrWindow: ifrWindow,
+            $inner: $inner,
+            $container: $('#cp-app-pad-comments')
         });
 
         var onLinkClicked = function (e) {
@@ -662,11 +664,7 @@ define([
                 $links.off('click', openLink).on('click', openLink);
             }
 
-            // XXX check comments
-            // new comments
-            // deleted comments
-            // check comment authors too
-            
+            comments.onContentUpdate();
         });
 
         framework.setTextContentGetter(function () {
@@ -688,6 +686,8 @@ define([
             // We have to remove the cursors before getting the content because they split
             // the text nodes and OT/ChainPad would freak out
             cursors.removeCursors(inner);
+
+            comments.onContentUpdate();
 
             displayMediaTags(framework, inner, mediaTagMap);
             inner.normalize();
@@ -805,6 +805,9 @@ define([
                     });
                 }
             });
+
+            comments.ready();
+
             /*setTimeout(function () {
                 $('iframe.cke_wysiwyg_frame').focus();
                 editor.focus();
