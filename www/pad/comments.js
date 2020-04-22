@@ -118,9 +118,14 @@ define([
             if (e.which === 27) {
                 $(cancel).click();
             }
-            if (e.which === 13 && e.ctrlKey) {
+            if (e.which === 13 && !e.shiftKey) {
                 $(submit).click();
+                e.preventDefault();
             }
+        });
+
+        setTimeout(function () {
+            $(textarea).focus();
         });
 
         return h('div.cp-comment-form' + (reply ? '.cp-comment-reply' : ''), [
@@ -300,6 +305,11 @@ define([
     var checkDeleted = function (Env) {
         if (!Env.comments || !Env.comments.data) { return; }
 
+        // Don't recheck if there were no change
+        var str = Env.$inner[0].innerHTML;
+        if (str === Env.oldCheck) { return; }
+        Env.oldCheck = str;
+
         // If there is no comment stored in the metadata, abort
         var comments = Object.keys(Env.comments.data || {}).filter(function (id) {
             return !Env.comments.data[id].deleted;
@@ -318,8 +328,7 @@ define([
             }
             // Comment not in the metadata: uncomment (probably an undo)
             if (comments.indexOf(id) === -1) {
-                console.error(id, el);
-                Env.editor.execCommand('uncomment', {id:id});
+                Env.editor.plugins.comments.uncomment(id);
                 changed = true;
                 return;
             }
@@ -383,6 +392,8 @@ sel.forEach(function (el) {
             Env.$container.find('.cp-comment-form').remove();
             var form = getCommentForm(Env, false, function (val) {
                 $(form).remove();
+                Env.$inner.focus();
+
                 if (!val) { return; }
                 if (!editor.getSelection().getSelectedText()) {
                     // text has been deleted by another user while we were typing our comment?
@@ -410,6 +421,7 @@ sel.forEach(function (el) {
     var onContentUpdate = function (Env) {
         if (!Env.ready) { return; }
         // Check deleted
+        onChange(Env);
         checkDeleted(Env);
     };
     var localChange = function (Env) {

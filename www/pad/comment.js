@@ -70,6 +70,29 @@
                 }
             });
 
+            // Uncomment provided element
+            editor.plugins.comments.uncomment = function (id) {
+                if (editor.readOnly) { return; }
+                editor.fire('saveSnapshot');
+
+                //Create style for this id
+                var style = new CKEDITOR.style({
+                    element: 'comment',
+                    attributes: {
+                        'data-uid': id
+                    },
+                });
+                // Create range for the entire document
+                var range = editor.createRange();
+                range.selectNodeContents( editor.document.getBody() );
+                // Remove style for the document
+                style.removeFromRange(range, editor);
+
+                setTimeout( function() {
+                    editor.fire('saveSnapshot');
+                }, 0 );
+            };
+
             editor.addCommand('uncomment', {
                 exec: function (editor, data) {
                     if (editor.readOnly) { return; }
@@ -83,24 +106,6 @@
                         }, 0 );
                         return;
                     }
-                    // Uncomment provided element
-
-                    //Create style for this id
-                    var style = new CKEDITOR.style({
-                        element: 'comment',
-                        attributes: {
-                            'data-uid': data.id
-                        },
-                    });
-                    // Create range for the entire document
-                    var range = editor.createRange();
-                    range.selectNodeContents( editor.document.getBody() );
-                    // Remove style for the document
-                    style.removeFromRange(range, editor);
-
-                    setTimeout( function() {
-                        editor.fire('saveSnapshot');
-                    }, 0 );
                 }
             });
 
