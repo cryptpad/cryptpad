@@ -689,7 +689,7 @@ define([
 
     Markers.create = function (config) {
         var Env = config;
-        Env.authormarks = Util.clone(DEFAULT);
+        Env.authormarks = {};
         Env.enabled = false;
         Env.myAuthorId = 0;
 
