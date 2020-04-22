@@ -1,0 +1,95 @@
+@import (reference) "./colortheme-all.less";
+@import (reference) "./variables.less";
+@import (reference) "./avatar.less";
+@import (reference) "./buttons.less";
+@import (reference) "./tools.less";
+
+.comments_main() {
+    @data-color: #888;
+    overflow-y: auto;
+
+    .buttons_main();
+
+    .cp-comment-reply {
+        margin-left: 40px;
+    }
+
+
+    .cp-comment-form {
+        &:not(:last-child) {
+            margin-bottom: 10px;
+        }
+    }
+    .cp-comment-form-input {
+        .avatar_main(40px);
+        display: flex;
+        align-items: flex-start;
+        textarea {
+            flex: 1;
+            height: 50px;
+            padding: 2px 8px;
+        }
+        margin-bottom: 5px;
+    }
+    .cp-comment-form-actions {
+        text-align: right;
+        button:not(:last-child) {
+            margin-right: 10px;
+        }
+    }
+
+
+    .cp-comment-container {
+        outline: none;
+        &:not(:focus) {
+            cursor: pointer;
+            .tools_unselectable();
+        }
+        &:not(:last-child) {
+            margin-bottom: 10px;
+        }
+        .cp-comment-form {
+            margin-top: 5px;
+        }
+    }
+    .cp-comment {
+        &:not(:first-child) {
+            margin-top: 5px;
+        }
+    }
+    .cp-comment-header {
+        height: 40px;
+        align-items: center;
+        display: flex;
+        background-color: white;
+        .avatar_main(40px);
+        .cp-comment-metadata {
+            flex: 1;
+            display: flex;
+            flex-flow: column;
+            margin-left: 5px;
+            .cp-comment-time {
+                font-size: 13px;
+                color: @data-color;
+            }
+        }
+    }
+    .cp-comment-content {
+        background-color: white;
+        padding: 10px 5px 5px;
+    }
+    .cp-comment-actions {
+        display: none;
+        text-align: right;
+        margin-top: 5px;
+        button:not(:last-child) {
+            margin-right: 10px;
+        }
+    }
+    .cp-comment-active {
+        .cp-comment-actions {
+            display: block;
+        }
+    }
+}
+
