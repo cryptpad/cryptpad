@@ -452,6 +452,7 @@ define([
             markers.ready();
             common.getPadMetadata(null, function (md) {
                 if (md && md.error) { return; }
+                if (!Array.isArray(md.owners)) { return void markers.setState(false); }
                 if (!common.isOwned(md.owners)) { return; }
                 // We're the owner: add the button and enable the colors if needed
                 mkColorByAuthor(framework, markers);
