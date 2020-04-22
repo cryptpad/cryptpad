@@ -20,7 +20,7 @@ As usual, updating from the previous release can be accomplished by:
 
 ## Features
 
-* As mentioned above, we've built upon a very helpful PR to introduce author colors in our code editor. It's still experimental, but you can test it out by enabling author colors in a code pad via the pad's properties modal.
+* As mentioned above, we've built upon a very helpful [PR](https://github.com/xwiki-labs/cryptpad/pull/522) from members of the Piratenpartei (German Pirate Party) to introduce author colors in our code editor. It's still experimental, but registered users can enable it on pads that they own via the "Author colors" entry in the `...` menu found beneath their user admin menu.
 * Serverside performance optimizations
   * Automatically expiring pads work by creating a task to be run at the target date. This process involves a little bit of hashing, so we've changed it to be run in the worker.
   * The act of deleting a file from the server actually moves it to an archive which is not publicly accessible. These archived files are regularly cleaned up if you run `scripts/evict-inactive.js`. Unfortunately, moving files is more expensive than deletion, so we've noticed spikes in CPU when users delete many files at once (like when emptying the trash from their drive). To avoid such spikes while the server is already under load we've implemented per-user queues for deletion.
