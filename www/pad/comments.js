@@ -262,6 +262,7 @@ define([
             });
 
             $div.click(function () {
+                if ($div.hasClass('cp-comment-active')) { return; }
                 Env.$container.find('.cp-comment-active').removeClass('cp-comment-active');
                 $div.addClass('cp-comment-active');
                 $actions.css('display', '');
