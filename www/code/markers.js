@@ -46,7 +46,7 @@ define([
             inclusiveRight: uid === Env.myAuthorId,
             css: "background-color: " + rgba,
             attributes: {
-                title: Env.opacity ? Messages._getKey('cba_writtenBy', [name]) : undefined,
+                title: Env.opacity ? Messages._getKey('cba_writtenBy', [name]) : '',
                 'data-type': 'authormark',
                 'data-uid': uid
             }
@@ -689,7 +689,7 @@ define([
 
     Markers.create = function (config) {
         var Env = config;
-        Env.authormarks = Util.clone(DEFAULT);
+        Env.authormarks = {};
         Env.enabled = false;
         Env.myAuthorId = 0;
 
