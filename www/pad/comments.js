@@ -148,7 +148,10 @@ define([
 
         Env.$container.html('');
 
+        var show = false;
+
         if ($oldInput && !$oldInput.attr('data-uid')) {
+            show = true;
             Env.$container.append($oldInput);
         }
 
@@ -158,7 +161,6 @@ define([
         var done = [];
 
 
-        var show = false;
         order.forEach(function (key) {
             // Avoir duplicates
             if (done.indexOf(key) !== -1) { return; }
@@ -278,9 +280,17 @@ define([
     var onChange = function (Env) {
         var md = Util.clone(Env.metadataMgr.getMetadata());
         Env.comments = md.comments;
-        if (!Env.comments || !Env.comments.data) { Env.comments = Util.clone(COMMENTS); }
+        var changed = false;
+        if (!Env.comments || !Env.comments.data) {
+            changed = true;
+            Env.comments = Util.clone(COMMENTS);
+        }
         if (Env.ready === 0) {
             Env.ready = true;
+            if (changed) {
+                updateMetadata(Env);
+                Env.framework.localChange();
+            }
         }
         redrawComments(Env);
     };
@@ -392,7 +402,7 @@ sel.forEach(function (el) {
 
                 Env.framework.localChange();
             });
-            Env.$container.prepend(form);
+            Env.$container.prepend(form).show();;
         };
     };
 
