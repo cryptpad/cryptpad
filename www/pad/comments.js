@@ -128,7 +128,9 @@ define([
             $(textarea).focus();
         });
 
-        return h('div.cp-comment-form' + (reply ? '.cp-comment-reply' : ''), [
+        return h('div.cp-comment-form' + (reply ? '.cp-comment-reply' : ''), {
+            'data-uid': reply || undefined
+        }, [
             h('div.cp-comment-form-input', [
                 avatar,
                 textarea
@@ -146,9 +148,7 @@ define([
         if (str === Env.oldComments) { return; }
         Env.oldComments = str;
 
-        // XXX don't wipe inputs?
-
-        var $oldInput = Env.$container.find('.cp-comment-form');
+        var $oldInput = Env.$container.find('.cp-comment-form').detach();
         if ($oldInput.length !== 1) { $oldInput = undefined; }
 
         Env.$container.html('');
@@ -226,9 +226,11 @@ define([
             $(reply).click(function (e) {
                 e.stopPropagation();
                 $actions.hide();
-                var form = getCommentForm(Env, true, function (val) {
+                var form = getCommentForm(Env, key, function (val) {
                     $(form).remove();
-                    $actions.css('display', '');
+                    $(form).closest('.cp-comment-container')
+                        .find('.cp-comment-actions').css('display', '');
+
                     if (!val) { return; }
                     var obj = Env.comments.data[key];
                     if (!obj || !Array.isArray(obj.m)) { return; }
@@ -260,6 +262,7 @@ define([
             }, function () {
                 // Delete the comment
                 delete Env.comments.data[key];
+                Env.editor.plugins.comments.uncomment(key);
 
                 // Send to chainpad
                 updateMetadata(Env);
@@ -274,6 +277,13 @@ define([
                 Env.$container.find('.cp-comment-form').remove();
                 // XXX highlight (and scroll to) the comment in the doc?
             });
+
+            if ($oldInput && $oldInput.attr('data-uid') === key) {
+                $div.addClass('cp-comment-active');
+                $actions.hide();
+                $div.append($oldInput);
+                $oldInput.find('textarea').focus();
+            }
         });
 
         if (show) {
@@ -399,6 +409,9 @@ sel.forEach(function (el) {
                     // text has been deleted by another user while we were typing our comment?
                     return void UI.warn(Messages.error);
                 }
+                // Don't override existing data
+                if (Env.comments.data[uid]) { return; }
+
                 var myId = updateAuthorData(Env);
                 Env.comments.data[uid] = {
                     m: [{
