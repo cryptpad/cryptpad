@@ -91,14 +91,20 @@ define([
         var userData = Env.metadataMgr.getUserData();
         var name = Util.fixHTML(userData.name || Messages.anonymous);
         var avatar = h('span.cp-avatar');
-        var textarea = h('textarea');
+        var textarea = h('textarea', {
+            tabindex: 1
+        });
         Env.common.displayAvatar($(avatar), userData.avatar, name);
 
-        var cancel = h('button.btn.btn-cancel', [
+        var cancel = h('button.btn.btn-cancel', {
+            tabindex: 1
+        }, [
             h('i.fa.fa-times'),
             Messages.cancel
         ]);
-        var submit = h('button.btn.btn-primary', [
+        var submit = h('button.btn.btn-primary', {
+            tabindex: 1
+        }, [
             h('i.fa.fa-paper-plane-o'),
             Messages.comments_submit
         ]);
@@ -198,11 +204,15 @@ define([
 
             });
 
-            var reply = h('button.btn.btn-secondary', [
+            var reply = h('button.btn.btn-secondary', {
+                tabindex: 1
+            }, [
                 h('i.fa.fa-reply'),
                 Messages.comments_reply
             ]);
-            var resolve = h('button.btn.btn-primary', [
+            var resolve = h('button.btn.btn-primary', {
+                tabindex: 1
+            }, [
                 h('i.fa.fa-check'),
                 Messages.comments_resolve
             ]);
@@ -282,7 +292,7 @@ define([
                 if (!visible) { $last[0].scrollIntoView(); }
             };
 
-            $div.click(function () {
+            $div.on('click focus', function () {
                 if ($div.hasClass('cp-comment-active')) { return; }
                 Env.$container.find('.cp-comment-active').removeClass('cp-comment-active');
                 $div.addClass('cp-comment-active');
