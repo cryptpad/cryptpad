@@ -73,7 +73,6 @@ define([
         data.avatar = userData.avatar;
         data.profile = userData.profile;
         data.curvePublic = userData.curvePublic;
-        console.log(data);
         return myAuthorId;
     };
 
@@ -143,7 +142,8 @@ define([
 
     var redrawComments = function (Env) {
         // Don't redraw if there were no change
-        var str = Sortify(Env.comments || {});
+        var str = Sortify((Env.comments || {}).data || {});
+
         if (str === Env.oldComments) { return; }
         Env.oldComments = str;
 
@@ -163,7 +163,6 @@ define([
             return el.getAttribute('data-uid');
         }).toArray();
         var done = [];
-
 
         order.forEach(function (key) {
             // Avoir duplicates
@@ -414,11 +413,18 @@ define([
                         v: canonicalize(Env.editor.getSelection().getSelectedText())
                     }]
                 };
+                // There may be a race condition between updateMetadata and addMark that causes
+                //  * updateMetadata first:  comment not rendered (redrawComments called
+                //                           before addMark)
+                //  * addMark first: comment deleted (checkDeleted called before updateMetadata)
+                // ==> we're going to call updateMetadata first, and we'll invalidate the cache
+                //     of rendered comments to display them properly in redrawComments
                 updateMetadata(Env);
-
                 addMark();
 
                 Env.framework.localChange();
+
+                Env.oldComments = undefined;
             });
             Env.$container.prepend(form).show();
         };
@@ -428,11 +434,6 @@ define([
         if (!Env.ready) { return; }
         // Check deleted
         onChange(Env);
-        checkDeleted(Env);
-    };
-    var localChange = function (Env) {
-        if (!Env.ready) { return; }
-        // Check deleted
         checkDeleted(Env);
     };
 
@@ -453,14 +454,12 @@ define([
             }
             Env.$container.find('.cp-comment-active').removeClass('cp-comment-active');
             Env.$inner.find('comment.active').removeClass('active');
-            Env.$container.find('.cp-comment-form').remove();
         });
         // Unselect comment when clicking on another part of the doc
         Env.$inner.on('click', function (e) {
             if ($(e.target).closest('comment').length) { return; }
             Env.$container.find('.cp-comment-active').removeClass('cp-comment-active');
             Env.$inner.find('comment.active').removeClass('active');
-            Env.$container.find('.cp-comment-form').remove();
         });
         Env.$inner.on('click', 'comment', function (e) {
             var $comment = $(e.target);
@@ -484,7 +483,6 @@ define([
 
         return {
             onContentUpdate: call(onContentUpdate),
-            localChange: call(localChange),
             ready: call(ready)
         };
     };

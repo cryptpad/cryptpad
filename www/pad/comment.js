@@ -125,7 +125,7 @@
             if (editor.ui.addButton) {
                 editor.ui.addButton('Comment', {
                     label: 'COMMENT',
-                    command: pluginName,
+                    command: 'comment',
                     icon : '/pad/icons/comment.png',
                     toolbar: 'insert,10'
                 });
