@@ -17,7 +17,7 @@
         onLoad: function () {
             CKEDITOR.addCss('comment { background-color: '+color1+' }' +
                 '@keyframes color { 0% { background-color: '+color2+' } 50% { background-color: '+color1+' } 100% { background-color: '+color2+' } }' +
-                'comment:focus { animation-name: color; animation-duration: 1s; animation-iteration-count: 2; background-color: '+color2+' outline: none;}' +
+                'comment.active { animation-name: color; animation-duration: 1s; animation-iteration-count: 2; background-color: '+color2+' outline: none;}' +
                 'comment * { background-color: transparent !important; }');
         },
         init: function (editor) {
@@ -27,7 +27,6 @@
                 element: 'comment',
                 attributes: {
                     'data-uid': '#(uid)',
-                    'tabindex': '1'
                 },
                 overrides: [ {
                     element: 'comment'
@@ -79,17 +78,17 @@
                     element: 'comment',
                     attributes: {
                         'data-uid': id,
-                        'tabindex': '1'
                     },
                 });
                 style.alwaysRemoveElement = true;
                 els.forEach(function (el) {
-                    // Create range for the entire document
+                    // Create range for this element
+                    el.removeAttribute('class');
                     var node = new CKEDITOR.dom.node(el);
                     var range = editor.createRange();
                     range.setStart(node, 0);
                     range.setEnd(node, Number.MAX_SAFE_INTEGER);
-                    // Remove style for the document
+                    // Remove style for the comment
                     style.removeFromRange(range, editor);
                 });
 

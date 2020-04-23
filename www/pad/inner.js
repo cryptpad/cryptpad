@@ -155,8 +155,13 @@ define([
             if (hj[0] === 'MEDIA-TAG') { hj[2] = []; }
             return hj;
         };
+        var commentActiveFilter = function (hj) {
+            if (hj[0] === 'COMMENT') { delete (hj[1] || {}).class; }
+            return hj;
+        };
         brFilter(hj);
         mediatagContentFilter(hj);
+        commentActiveFilter(hj);
         widgetFilter(hj);
         return hj;
     };
@@ -276,6 +281,14 @@ define([
                         return true;
                     } else if (info.diff.newValue && forbiddenTags.indexOf(info.diff.newValue.nodeType) !== -1) {
                         console.log("Rejecting forbidden tag of type (%s)", info.diff.newValue.nodeName);
+                        return true;
+                    }
+                }
+
+                // Don't remote the "active" class of our comments
+                if (info.node && info.node.tagName === 'COMMENT') {
+                    if (info.diff.action === 'removeAttribute' &&
+                        ['class'].indexOf(info.diff.name) !== -1) {
                         return true;
                     }
                 }

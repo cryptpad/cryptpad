@@ -270,7 +270,17 @@ define([
             });
 
             var focusContent = function () {
-                Env.$inner.find('comment[data-uid="'+key+'"]').focus();
+                // Add class "active"
+                Env.$inner.find('comment.active').removeClass('active');
+                Env.$inner.find('comment[data-uid="'+key+'"]').addClass('active');
+                var $last = Env.$inner.find('comment[data-uid="'+key+'"]').last();
+
+                // Scroll into view
+                if (!$last.length) { return; }
+                var size = Env.$inner.outerHeight();
+                var pos = $last[0].getBoundingClientRect();
+                var visible = (pos.y + pos.height) < size;
+                if (!visible) { $last[0].scrollIntoView(); }
             };
 
             $div.click(function () {
@@ -382,30 +392,6 @@ define([
                 return;
             }
 
-/*
-sel.forEach(function (el) {
-    // For each comment ID, check if the comment will be deleted
-    // if we add a comment on our selection
-    var id = el.getAttribute('data-uid');
-
-    // Get all nodes for this comment
-    var all = Env.$inner.find('comment[data-uid="'+id+'"]');
-    // Get our selection
-    var sel = Env.ifrWindow.getSelection();
-    if (!sel.containsNode) {
-        // IE doesn't support this method, always allow comments for them...
-        sel.containsNode = function () { return false; };
-    }
-
-    var notDeleted = all.some(function (i, el) {
-        // If this node is completely outside of the selection, continue
-        if (!sel.containsNode(el, true)) { return true; }
-    });
-
-    // only continue if notDeleted is true (at least one node for
-    // this comment won't be deleted)
-});
-*/
             Env.$container.find('.cp-comment-form').remove();
             var form = getCommentForm(Env, false, function (val) {
                 $(form).remove();
@@ -460,11 +446,21 @@ sel.forEach(function (el) {
 
         addAddCommentHandler(Env);
 
+        // Unselect comment when clicking outside
         $(window).click(function (e) {
             if ($(e.target).closest('.cp-comment-container').length) {
                 return;
             }
             Env.$container.find('.cp-comment-active').removeClass('cp-comment-active');
+            Env.$inner.find('comment.active').removeClass('active');
+            Env.$container.find('.cp-comment-form').remove();
+        });
+        // Unselect comment when clicking on another part of the doc
+        Env.$inner.on('click', function (e) {
+            if ($(e.target).closest('comment').length) { return; }
+            Env.$container.find('.cp-comment-active').removeClass('cp-comment-active');
+            Env.$inner.find('comment.active').removeClass('active');
+            Env.$container.find('.cp-comment-form').remove();
         });
         Env.$inner.on('click', 'comment', function (e) {
             var $comment = $(e.target);
