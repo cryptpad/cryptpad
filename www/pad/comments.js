@@ -1,10 +1,11 @@
 define([
+    'jquery',
     'json.sortify',
     '/common/common-util.js',
     '/common/hyperscript.js',
     '/common/common-interface.js',
     '/customize/messages.js'
-], function (Sortify, Util, h, UI, Messages) {
+], function ($, Sortify, Util, h, UI, Messages) {
     var Comments = {};
 
 /*
@@ -262,20 +263,27 @@ define([
             }, function () {
                 // Delete the comment
                 delete Env.comments.data[key];
-                Env.editor.plugins.comments.uncomment(key);
+                var els = Env.$inner.find('comment[data-uid="'+key+'"]').toArray();
+                Env.editor.plugins.comments.uncomment(key, els);
 
                 // Send to chainpad
                 updateMetadata(Env);
                 Env.framework.localChange();
             });
 
+            var focusContent = function () {
+                Env.$inner.find('comment[data-uid="'+key+'"]').focus();
+            };
+
             $div.click(function () {
                 if ($div.hasClass('cp-comment-active')) { return; }
                 Env.$container.find('.cp-comment-active').removeClass('cp-comment-active');
                 $div.addClass('cp-comment-active');
+                div.scrollIntoView();
                 $actions.css('display', '');
                 Env.$container.find('.cp-comment-form').remove();
-                // XXX highlight (and scroll to) the comment in the doc?
+
+                focusContent();
             });
 
             if ($oldInput && $oldInput.attr('data-uid') === key) {
@@ -283,6 +291,7 @@ define([
                 $actions.hide();
                 $div.append($oldInput);
                 $oldInput.find('textarea').focus();
+                focusContent();
             }
         });
 
@@ -338,7 +347,7 @@ define([
             }
             // Comment not in the metadata: uncomment (probably an undo)
             if (comments.indexOf(id) === -1) {
-                Env.editor.plugins.comments.uncomment(id);
+                Env.editor.plugins.comments.uncomment(id, [el]);
                 changed = true;
                 return;
             }
@@ -458,6 +467,12 @@ sel.forEach(function (el) {
                 return;
             }
             Env.$container.find('.cp-comment-active').removeClass('cp-comment-active');
+        });
+        Env.$inner.on('click', 'comment', function (e) {
+            var $comment = $(e.target);
+            var uid = $comment.attr('data-uid');
+            if (!uid) { return; }
+            Env.$container.find('.cp-comment-container[data-uid="'+uid+'"]').click();
         });
 
         var call = function (f) {

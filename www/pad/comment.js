@@ -1,21 +1,23 @@
 (function () {
+    var CKEDITOR = window.CKEDITOR;
 
     function isUnstylable (el) {
-        console.log(el);
-        console.log(el.getAttribute('contentEditable'));
-        console.log(el.getAttribute('data-nostyle'));
-        var b = el.getAttribute( 'contentEditable' ) == 'false' ||
+        var b = el.getAttribute( 'contentEditable' ) === 'false' ||
                el.getAttribute( 'data-nostyle' );
-        console.log(b);
         return b;
     }
+
+    var color1 = 'rgba(252, 165, 3, 0.8);';
+    var color2 = 'rgba(252, 231, 3, 0.8);';
 
     CKEDITOR.plugins.add('comments', {
         //requires: 'dialog,widget',
         //icons: 'image',
         //hidpi: true,
         onLoad: function () {
-            CKEDITOR.addCss('comment { background-color: rgba(252, 165, 3, 0.8); }' +
+            CKEDITOR.addCss('comment { background-color: '+color1+' }' +
+                '@keyframes color { 0% { background-color: '+color2+' } 50% { background-color: '+color1+' } 100% { background-color: '+color2+' } }' +
+                'comment:focus { animation-name: color; animation-duration: 1s; animation-iteration-count: 2; background-color: '+color2+' outline: none;}' +
                 'comment * { background-color: transparent !important; }');
         },
         init: function (editor) {
@@ -28,7 +30,8 @@
             var styleDef = {
                 element: 'comment',
                 attributes: {
-                    'data-uid': '#(uid)'
+                    'data-uid': '#(uid)',
+                    'tabindex': '1'
                 },
                 overrides: [ {
                     element: 'comment'
@@ -71,7 +74,7 @@
             });
 
             // Uncomment provided element
-            editor.plugins.comments.uncomment = function (id) {
+            editor.plugins.comments.uncomment = function (id, els) {
                 if (editor.readOnly) { return; }
                 editor.fire('saveSnapshot');
 
@@ -79,14 +82,20 @@
                 var style = new CKEDITOR.style({
                     element: 'comment',
                     attributes: {
-                        'data-uid': id
+                        'data-uid': id,
+                        'tabindex': '1'
                     },
                 });
-                // Create range for the entire document
-                var range = editor.createRange();
-                range.selectNodeContents( editor.document.getBody() );
-                // Remove style for the document
-                style.removeFromRange(range, editor);
+                style.alwaysRemoveElement = true;
+                els.forEach(function (el) {
+                    // Create range for the entire document
+                    var node = new CKEDITOR.dom.node(el);
+                    var range = editor.createRange();
+                    range.setStart(node, 0);
+                    range.setEnd(node, Number.MAX_SAFE_INTEGER);
+                    // Remove style for the document
+                    style.removeFromRange(range, editor);
+                });
 
                 setTimeout( function() {
                     editor.fire('saveSnapshot');
