@@ -104,8 +104,6 @@ define([
             Messages.comments_submit
         ]);
 
-        var done = false;
-
         $(submit).click(function (e) {
             e.stopPropagation();
             cb(textarea.value);
@@ -414,7 +412,7 @@ sel.forEach(function (el) {
                 Env.$inner.focus();
 
                 if (!val) { return; }
-                if (!editor.getSelection().getSelectedText()) {
+                if (!Env.editor.getSelection().getSelectedText()) {
                     // text has been deleted by another user while we were typing our comment?
                     return void UI.warn(Messages.error);
                 }
@@ -427,7 +425,7 @@ sel.forEach(function (el) {
                         u: myId,
                         t: +new Date(),
                         m: val,
-                        v: canonicalize(editor.getSelection().getSelectedText())
+                        v: canonicalize(Env.editor.getSelection().getSelectedText())
                     }]
                 };
                 updateMetadata(Env);
@@ -436,7 +434,7 @@ sel.forEach(function (el) {
 
                 Env.framework.localChange();
             });
-            Env.$container.prepend(form).show();;
+            Env.$container.prepend(form).show();
         };
     };
 

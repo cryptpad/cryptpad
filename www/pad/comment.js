@@ -22,10 +22,6 @@
         },
         init: function (editor) {
             var pluginName = 'comment';
-            var Messages = CKEDITOR._commentsTranslations; // XXX
-            var targetWidget;
-
-            var styles = {};
 
             var styleDef = {
                 element: 'comment',
@@ -42,7 +38,7 @@
             // Register the command.
             var removeStyle = new CKEDITOR.style(styleDef, { 'uid': '' });
             editor.addCommand('comment', {
-                exec: function (editor, data) {
+                exec: function (editor) {
                     if (editor.readOnly) { return; }
                     editor.focus();
 
@@ -120,20 +116,21 @@
 
             // Register the toolbar button.
             // XXX Uncomment selection, remove on prod, only used for dev
-            editor.ui.addButton && editor.ui.addButton('UnComment', {
-                label: 'UNCOMMENT',
-                command: 'uncomment',
-                toolbar: 'insert,10'
-            });
-            editor.ui.addButton && editor.ui.addButton('Comment', {
-                label: 'COMMENT',
-                command: pluginName,
-                icon : '/pad/icons/comment.png',
-                toolbar: 'insert,10'
-            });
-        },
-        afterInit: function (editor) {
-            editor.plugins.comments.removeComment = function () {};
+            if (editor.ui.addButton) {
+                editor.ui.addButton('UnComment', {
+                    label: 'UNCOMMENT',
+                    command: 'uncomment',
+                    toolbar: 'insert,10'
+                });
+            }
+            if (editor.ui.addButton) {
+                editor.ui.addButton('Comment', {
+                    label: 'COMMENT',
+                    command: pluginName,
+                    icon : '/pad/icons/comment.png',
+                    toolbar: 'insert,10'
+                });
+            }
         }
     });
 

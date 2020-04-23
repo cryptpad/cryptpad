@@ -486,7 +486,6 @@ define([
 
         var metadataMgr = framework._.sfCommon.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
-        var userData = metadataMgr.getUserData();
         var common = framework._.sfCommon;
 
         var comments = Comments.create({
