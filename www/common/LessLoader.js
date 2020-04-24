@@ -99,7 +99,7 @@ define([
         if (lessEngine) {
             cb(lessEngine);
         } else {
-            require(['/bower_components/less/dist/less.min.js'], function (Less) {
+            require(['/common/less.min.js'], function (Less) {
                 if (lessEngine) { return void cb(lessEngine); }
                 lessEngine = Less;
                 Less.functions.functionRegistry.add('LessLoader_currentFile', function () {
