@@ -1007,6 +1007,10 @@ define([
                     'import': Messages.pad_mediatagImport,
                     options: Messages.pad_mediatagOptions
                 };
+                Messages.comments_comment = "COMMENT"; // XXX
+                Ckeditor._commentsTranslations = {
+                    comment: Messages.comments_comment,
+                };
                 Ckeditor.plugins.addExternal('mediatag','/pad/', 'mediatag-plugin.js');
                 Ckeditor.plugins.addExternal('blockbase64','/pad/', 'disable-base64.js');
                 Ckeditor.plugins.addExternal('comments','/pad/', 'comment.js');

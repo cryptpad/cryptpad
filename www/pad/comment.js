@@ -23,6 +23,7 @@
                 'comment * { background-color: transparent !important; }');
         },
         init: function (editor) {
+            var Messages = CKEDITOR._commentsTranslations;
             var pluginName = 'comment';
 
             var styleDef = {
@@ -48,7 +49,7 @@
                     if (isComment) { return; }
 
                     // We can't comment on empty text!
-                    if (!editor.getSelection().getSelectedText()) { return; }
+                    if (!editor.getSelection().getSelectedText()) { console.warn('there');return; }
 
                     var uid = CKEDITOR.tools.getUniqueId();
                     editor.plugins.comments.addComment(uid, function () {
@@ -104,12 +105,12 @@
                 }, 0 );
             };
 
+            // Uncomment from context menu, disabled for now...
             editor.addCommand('uncomment', {
                 exec: function (editor, data) {
                     if (editor.readOnly) { return; }
                     editor.fire('saveSnapshot');
                     if (!data || !data.id) {
-                        // XXX Uncomment the selection, remove on prod, only used for dev
                         editor.focus();
                         editor.removeStyle(removeStyle);
                         setTimeout( function() {
@@ -121,20 +122,49 @@
             });
 
             // Register the toolbar button.
-            // XXX Uncomment selection, remove on prod, only used for dev
-            if (editor.ui.addButton) {
-                editor.ui.addButton('UnComment', {
-                    label: 'UNCOMMENT',
-                    command: 'uncomment',
-                    toolbar: 'insert,10'
-                });
-            }
             if (editor.ui.addButton) {
                 editor.ui.addButton('Comment', {
-                    label: 'COMMENT',
+                    label: Messages.comment,
                     command: 'comment',
                     icon : '/pad/icons/comment.png',
                     toolbar: 'insert,10'
+                });
+            }
+
+            if (editor.addMenuItems) {
+                editor.addMenuGroup('comments');
+                editor.addMenuItem('comment', {
+                    label: Messages.comment,
+                    icon : '/pad/icons/comment.png',
+                    command: 'comment',
+                    group: 'comments'
+                });
+                /*
+                editor.addMenuItem('uncomment', {
+                    label: Messages.uncomment,
+                    icon : '/pad/icons/uncomment.png',
+                    command: 'uncomment',
+                    group: 'comments'
+                });
+                */
+            }
+            if (editor.contextMenu) {
+                /*
+                editor.contextMenu.addListener(function (element, sel, path) {
+                    var isComment = removeStyle.checkActive(path, editor);
+                    if (!isComment) { return; }
+                    return {
+                        uncomment: CKEDITOR.TRISTATE_OFF,
+                    };
+                });
+                */
+                editor.contextMenu.addListener(function (element, sel, path) {
+                    var applicable = removeStyle.checkApplicable(path, editor);
+                    var empty = !sel.getSelectedText();
+                    if (!applicable || empty) { return; }
+                    return {
+                        comment: CKEDITOR.TRISTATE_OFF,
+                    };
                 });
             }
         }
