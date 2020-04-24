@@ -2,10 +2,11 @@ define([
     'jquery',
     'json.sortify',
     '/common/common-util.js',
+    '/common/common-hash.js',
     '/common/hyperscript.js',
     '/common/common-interface.js',
     '/customize/messages.js'
-], function ($, Sortify, Util, h, UI, Messages) {
+], function ($, Sortify, Util, Hash, h, UI, Messages) {
     var Comments = {};
 
 /*
@@ -188,6 +189,12 @@ define([
                 var date = new Date(msg.t);
                 var avatar = h('span.cp-avatar');
                 Env.common.displayAvatar($(avatar), author.avatar, name);
+                if (author.profile) {
+                    $(avatar).click(function (e) {
+                        Env.common.openURL(Hash.hashToHref(author.profile, 'profile'));
+                        e.stopPropagation();
+                    });
+                }
 
                 content.push(h('div.cp-comment'+(i === 0 ? '' : '.cp-comment-reply'), [
                     h('div.cp-comment-header', [
@@ -400,17 +407,58 @@ define([
         }
     };
 
+    var removeCommentBubble = function (Env) {
+        Env.bubble = undefined;
+        Env.$contentContainer.find('.cp-comment-bubble').remove();
+    };
+    var updateBubble = function (Env) {
+        if (!Env.bubble) { return; }
+        var pos = Env.bubble.node.getBoundingClientRect();
+        if (pos.y < 0 || pos.y > Env.$inner.outerHeight()) {
+            //removeCommentBubble(Env);
+        }
+        Env.bubble.button.setAttribute('style', 'top:'+pos.y+'px');
+    };
+    var addCommentBubble = function (Env) {
+        var ranges = Env.editor.getSelectedRanges();
+        if (!ranges.length) { return; }
+        var el = ranges[0].endContainer || ranges[0].startContainer;
+        var node = el && el.$;
+        if (!node) { return; }
+        if (node.nodeType === Node.TEXT_NODE) {
+            node = node.parentNode;
+            if (!node) { return; }
+        }
+        var pos = node.getBoundingClientRect();
+        var y = pos.y;
+        if (y < 0 || y > Env.$inner.outerHeight()) { return; }
+        var button = h('button.btn.btn-secondary', {
+            style: 'top:'+y+'px;',
+            title: Messages.comments_comment
+        },h('i.fa.fa-comment'));
+        Env.bubble = {
+            node: node,
+            button: button
+        };
+        $(button).click(function () {
+            Env.editor.execCommand('comment');
+            Env.bubble = undefined;
+        });
+        Env.$contentContainer.append(h('div.cp-comment-bubble', button));
+    };
+
     var addAddCommentHandler = function (Env) {
         Env.editor.plugins.comments.addComment = function (uid, addMark) {
+            if (!Env.ready) { return; }
             if (!Env.comments) { Env.comments = Util.clone(COMMENTS); }
 
             // Get all comments ID contained within the selection
-            var sel = Env.editor.getSelectedHtml().$.querySelectorAll('comment');
-            if (sel.length) {
+            var applicable = Env.editor.plugins.comments.isApplicable();
+            if (!applicable) {
                 // Abort if our selection contains a comment
-                console.error("Your selection contains a comment");
-                UI.warn(Messages.error);
+                console.error("Can't add a comment here");
                 // XXX show error
+                UI.warn(Messages.error);
                 return;
             }
 
@@ -420,10 +468,12 @@ define([
                 Env.$inner.focus();
 
                 if (!val) { return; }
-                if (!Env.editor.getSelection().getSelectedText()) {
+                var applicable = Env.editor.plugins.comments.isApplicable();
+                if (!applicable) {
                     // text has been deleted by another user while we were typing our comment?
                     return void UI.warn(Messages.error);
                 }
+
                 // Don't override existing data
                 if (Env.comments.data[uid]) { return; }
 
@@ -451,6 +501,17 @@ define([
             });
             Env.$container.prepend(form).show();
         };
+
+
+        Env.$iframe.on('scroll', function () {
+            updateBubble(Env);
+        });
+        $(Env.ifrWindow.document).on('selectionchange', function () {
+            removeCommentBubble(Env);
+            var applicable = Env.editor.plugins.comments.isApplicable();
+            if (!applicable) { return; }
+            addCommentBubble(Env);
+        });
     };
 
     var onContentUpdate = function (Env) {

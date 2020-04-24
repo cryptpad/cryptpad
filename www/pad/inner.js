@@ -507,7 +507,9 @@ define([
             common: common,
             editor: editor,
             ifrWindow: ifrWindow,
+            $iframe: $iframe,
             $inner: $inner,
+            $contentContainer: $contentContainer,
             $container: $('#cp-app-pad-comments')
         });
 

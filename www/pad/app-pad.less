@@ -1,5 +1,6 @@
 @import (reference) "../../customize/src/less2/include/framework.less";
 @import (reference) "../../customize/src/less2/include/comments.less";
+@import (reference) "../../customize/src/less2/include/buttons.less";
 
 body.cp-app-pad {
     .framework_main(
@@ -36,9 +37,6 @@ body.cp-app-pad {
             align-items: center;
             padding: 4px;
         }
-        .cke_button__comment_label {
-            display: inline !important;
-        }
     }
     .cke_wysiwyg_frame {
         width: 100%;
@@ -70,14 +68,33 @@ body.cp-app-pad {
         iframe {
             flex: 1;
             min-width: 0;
+            order: 1;
+        }
+        div.cp-comment-bubble {
+            .buttons_main();
+            position: relative;
+            order: 2;
+            button {
+                .fa {
+                    margin: 0 !important;
+                }
+                right: 20px;
+                position: absolute;
+            }
         }
         #cp-app-pad-comments {
+            order: 3;
             width: 300px;
             //background-color: white;
             margin: 30px;
             .comments_main();
         }
         &.cke_body_width {
+            div.cp-comment-bubble {
+                button {
+                    right: 0px;
+                }
+            }
             iframe {
                 margin: 0 30px;
                 max-width: 800px;

@@ -54,7 +54,6 @@ define([
 
             var inner = editor.document.$.body;
             var $inner = $(inner);
-            console.log($inner, inner);
             // Bubble to open the link in a new tab
             $inner.click(function (e) {
                 removeClickedLink($inner);

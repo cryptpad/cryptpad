@@ -35,20 +35,23 @@
                 } ],
                 childRule: isUnstylable
             };
+            var removeStyle = new CKEDITOR.style(styleDef, { 'uid': '' });
+
+            var isApplicable = editor.plugins.comments.isApplicable = function (path, sel) {
+                path = path || editor.elementPath();
+                sel = sel || editor.getSelection();
+                var applicable = removeStyle.checkApplicable(path, editor);
+                var hasComments = editor.getSelectedHtml().$.querySelectorAll('comment').length;
+                var isComment = removeStyle.checkActive(path, editor);
+                var empty = !sel.getSelectedText();
+                return applicable && !empty && !hasComments && !isComment;
+            };
 
             // Register the command.
-            var removeStyle = new CKEDITOR.style(styleDef, { 'uid': '' });
             editor.addCommand('comment', {
                 exec: function (editor) {
                     if (editor.readOnly) { return; }
                     editor.focus();
-
-                    // If we're inside another comment, abort
-                    var isComment = removeStyle.checkActive(editor.elementPath(), editor);
-                    if (isComment) { return; }
-
-                    // We can't comment on empty text!
-                    if (!editor.getSelection().getSelectedText()) { console.warn('there');return; }
 
                     var uid = CKEDITOR.tools.getUniqueId();
                     editor.plugins.comments.addComment(uid, function () {
@@ -91,7 +94,6 @@
                     range.setStart(node, 0);
                     range.setEnd(node, Number.MAX_SAFE_INTEGER);
                     // Remove style for the comment
-                    console.log(range);
                     try {
                         style.removeFromRange(range, editor);
                     } catch (e) {
@@ -158,9 +160,8 @@
                 });
                 */
                 editor.contextMenu.addListener(function (element, sel, path) {
-                    var applicable = removeStyle.checkApplicable(path, editor);
-                    var empty = !sel.getSelectedText();
-                    if (!applicable || empty) { return; }
+                    var applicable = isApplicable(path, sel);
+                    if (!applicable) { return; }
                     return {
                         comment: CKEDITOR.TRISTATE_OFF,
                     };
