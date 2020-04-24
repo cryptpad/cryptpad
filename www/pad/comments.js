@@ -462,6 +462,22 @@ define([
 
     var ready = function (Env) {
         Env.ready = 0;
+
+        // If you're the only edit user online, clear "deleted" comments
+        if (!Env.common.isLoggedIn()) { return; }
+        var users = Env.metadataMgr.getMetadata().users || {};
+        var isNotAlone = Object.keys(users).length > 1;
+        if (isNotAlone) { return; }
+
+        // Clear data
+        var data = (Env.comments && Env.comments.data) || {};
+        Object.keys(data).forEach(function (uid) {
+            if (data[uid].deleted) { delete data[uid]; }
+        });
+
+        // Commit
+        updateMetadata(Env);
+        Env.framework.localChange();
     };
 
     Comments.create = function (cfg) {
