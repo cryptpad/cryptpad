@@ -270,8 +270,6 @@ define([
             }, function () {
                 // Delete the comment
                 delete Env.comments.data[key];
-                var els = Env.$inner.find('comment[data-uid="'+key+'"]').toArray();
-                Env.editor.plugins.comments.uncomment(key, els);
 
                 // Send to chainpad
                 updateMetadata(Env);
@@ -354,6 +352,7 @@ define([
         var changed = false;
 
         // Get the comments from the document
+        var toUncomment = {};
         var uids = Env.$inner.find('comment').map(function (i, el) {
             var id = el.getAttribute('data-uid');
             // Empty comment: remove from dom
@@ -363,13 +362,27 @@ define([
                 return;
             }
             // Comment not in the metadata: uncomment (probably an undo)
-            if (comments.indexOf(id) === -1) {
-                Env.editor.plugins.comments.uncomment(id, [el]);
+            var obj = Env.comments.data[id];
+            if (!obj) {
+                toUncomment[id] = toUncomment[id] || [];
+                toUncomment[id].push(el);
                 changed = true;
                 return;
             }
+            // If this comment was deleted, we're probably using "undo" to restore it:
+            // remove the "deleted" state and continue
+            if (obj.deleted) {
+                delete obj.deleted;
+                changed = true;
+            }
             return id;
         }).toArray();
+
+        if (Object.keys(toUncomment).length) {
+            Object.keys(toUncomment).forEach(function (id) {
+                Env.editor.plugins.comments.uncomment(id, toUncomment[id]);
+            });
+        }
 
         // Check if a comment has been deleted
         comments.forEach(function (uid) {
@@ -377,8 +390,8 @@ define([
             // comment has been deleted
             var data = Env.comments.data[uid];
             if (!data) { return; }
-            //data.deleted = true;
-            delete Env.comments.data[uid];
+            data.deleted = true;
+            //delete Env.comments.data[uid];
             changed = true;
         });
 

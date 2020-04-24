@@ -14,9 +14,6 @@
     var color2 = 'rgba(252, 231, 3, 0.8)';
 
     CKEDITOR.plugins.add('comments', {
-        //requires: 'dialog,widget',
-        //icons: 'image',
-        //hidpi: true,
         onLoad: function () {
             CKEDITOR.addCss('comment { background-color: '+color1+'; }' +
                 '@keyframes color { 0% { background-color: '+color2+'; } 50% { background-color: '+color1+'; } 100% { background-color: '+color2+'; } }' +
@@ -94,7 +91,12 @@
                     range.setStart(node, 0);
                     range.setEnd(node, Number.MAX_SAFE_INTEGER);
                     // Remove style for the comment
-                    style.removeFromRange(range, editor);
+                    console.log(range);
+                    try {
+                        style.removeFromRange(range, editor);
+                    } catch (e) {
+                        console.error(e);
+                    }
                 });
 
                 setTimeout( function() {
