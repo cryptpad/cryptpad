@@ -985,6 +985,7 @@ define([
                 var $ckeToolbar = $('#cke_1_top').find('.cke_toolbox_main');
                 $mainContainer.prepend($ckeToolbar.addClass('cke_reset_all'));
                 $contentContainer.append(h('div#cp-app-pad-comments'));
+                $ckeToolbar.find('.cke_button__image_icon').parent().hide();
             }).nThen(waitFor());
 
         }).nThen(function (/*waitFor*/) {
