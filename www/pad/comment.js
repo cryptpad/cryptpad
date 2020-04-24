@@ -24,7 +24,6 @@
         },
         init: function (editor) {
             var Messages = CKEDITOR._commentsTranslations;
-            var pluginName = 'comment';
 
             var styleDef = {
                 element: 'comment',

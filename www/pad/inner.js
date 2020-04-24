@@ -511,54 +511,6 @@ define([
             $container: $('#cp-app-pad-comments')
         });
 
-        var onLinkClicked = function (e) {
-            var $target = $(e.target);
-            if (!$target.is('a')) { return; }
-            var href = $target.attr('href');
-            if (!href || href[0] === '#') { return; }
-            e.preventDefault();
-            e.stopPropagation();
-
-            var rect = e.target.getBoundingClientRect();
-            var rect0 = inner.getBoundingClientRect();
-            var l = (rect.left - rect0.left)+'px';
-            var t = rect.bottom + $iframe.scrollTop() +'px';
-
-            var a = h('a', { href: href}, href);
-            var link = h('div.cp-link-clicked.non-realtime', {
-                contenteditable: false,
-                style: 'top:'+t+';left:'+l
-            }, [ a ]);
-            var $link = $(link);
-            $inner.append(link);
-
-            if (rect.left + $link.outerWidth() - rect0.left > $inner.width()) {
-                $link.css('left', 'unset');
-                $link.css('right', 0);
-            }
-
-            $(a).click(function (ee) {
-                ee.preventDefault();
-                ee.stopPropagation();
-                framework._.sfCommon.openUnsafeURL(href);
-                $link.remove();
-            });
-            $link.on('mouseleave', function () {
-                $link.remove();
-            });
-        };
-        var removeClickedLink = function () {
-            $inner.find('.cp-link-clicked').remove();
-        };
-
-        $inner.click(function (e) {
-            if (e.target.nodeName.toUpperCase() === 'A') {
-                removeClickedLink();
-                return void onLinkClicked(e);
-            }
-            removeClickedLink();
-        });
-
         // My cursor
         var cursor = module.cursor = Cursor(inner);
 
@@ -1023,7 +975,7 @@ define([
                 editor.plugins.mediatag.import = function ($mt) {
                     framework._.sfCommon.importMediaTag($mt);
                 };
-                Links.addSupportForOpeningLinksInNewTab(Ckeditor)({editor: editor});
+                Links.init(Ckeditor, editor);
             }).nThen(function () {
                 // Move ckeditor parts to have a structure like the other apps
                 var $contentContainer = $('#cke_1_contents');
