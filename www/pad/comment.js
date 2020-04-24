@@ -2,22 +2,27 @@
     var CKEDITOR = window.CKEDITOR;
 
     function isUnstylable (el) {
+        if (el.hasClass('cke_widget_mediatag')) {
+            return false;
+        }
         var b = el.getAttribute( 'contentEditable' ) === 'false' ||
                el.getAttribute( 'data-nostyle' );
         return b;
     }
 
-    var color1 = 'rgba(252, 165, 3, 0.8);';
-    var color2 = 'rgba(252, 231, 3, 0.8);';
+    var color1 = 'rgba(252, 165, 3, 0.8)';
+    var color2 = 'rgba(252, 231, 3, 0.8)';
 
     CKEDITOR.plugins.add('comments', {
         //requires: 'dialog,widget',
         //icons: 'image',
         //hidpi: true,
         onLoad: function () {
-            CKEDITOR.addCss('comment { background-color: '+color1+' }' +
-                '@keyframes color { 0% { background-color: '+color2+' } 50% { background-color: '+color1+' } 100% { background-color: '+color2+' } }' +
-                'comment.active { animation-name: color; animation-duration: 1s; animation-iteration-count: 2; background-color: '+color2+' outline: none;}' +
+            CKEDITOR.addCss('comment { background-color: '+color1+'; }' +
+                '@keyframes color { 0% { background-color: '+color2+'; } 50% { background-color: '+color1+'; } 100% { background-color: '+color2+'; } }' +
+                'comment.active { animation-name: color; animation-duration: 1s; animation-iteration-count: 2; background-color: '+color2+'; outline: none;}' +
+                'comment media-tag { border: 2px solid '+color1+' !important; }' +
+                'comment.active media-tag { border: 2px solid '+color2+' !important; }' +
                 'comment * { background-color: transparent !important; }');
         },
         init: function (editor) {

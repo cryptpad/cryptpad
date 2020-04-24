@@ -357,7 +357,7 @@ define([
         var uids = Env.$inner.find('comment').map(function (i, el) {
             var id = el.getAttribute('data-uid');
             // Empty comment: remove from dom
-            if (!el.innerText && el.parentElement) {
+            if (!el.innerHTML && el.parentElement) {
                 el.parentElement.removeChild(el);
                 changed = true;
                 return;
