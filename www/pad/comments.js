@@ -66,8 +66,13 @@ define([
         return uid || authorUid(existing);
     };
 
+    // Return the author ID  and add/update the data for registered users
+    // Return the username for unregistered users
     var updateAuthorData = function (Env) {
         var userData = Env.metadataMgr.getUserData();
+        if (!Env.common.isLoggedIn()) {
+            return userData.name;
+        }
         var myAuthorId = getAuthorId(Env, userData.curvePublic);
         var data = Env.comments.authors[myAuthorId] = Env.comments.authors[myAuthorId] || {};
         data.name = userData.name;
@@ -184,7 +189,9 @@ define([
 
             var content = [];
             obj.m.forEach(function (msg, i) {
-                var author = (Env.comments.authors || {})[msg.u] || {};
+                var author = typeof(msg.u) === "number" ?
+                                ((Env.comments.authors || {})[msg.u] || {}) :
+                                { name: msg.u };
                 var name = Util.fixHTML(author.name || Messages.anonymous);
                 var date = new Date(msg.t);
                 var avatar = h('span.cp-avatar');
@@ -257,9 +264,9 @@ define([
                     }).join('\n');
 
                     // Push the reply
-                    var myId = updateAuthorData(Env);
+                    var user = updateAuthorData(Env);
                     obj.m.push({
-                        u: myId,
+                        u: user, // id (number) or name (string)
                         t: +new Date(),
                         m: val,
                         v: value
@@ -477,10 +484,10 @@ define([
                 // Don't override existing data
                 if (Env.comments.data[uid]) { return; }
 
-                var myId = updateAuthorData(Env);
+                var user = updateAuthorData(Env);
                 Env.comments.data[uid] = {
                     m: [{
-                        u: myId,
+                        u: user, // Id or name
                         t: +new Date(),
                         m: val,
                         v: canonicalize(Env.editor.getSelection().getSelectedText())
