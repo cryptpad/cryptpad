@@ -80,6 +80,7 @@ define([
         data.avatar = userData.avatar;
         data.profile = userData.profile;
         data.curvePublic = userData.curvePublic;
+        data.notifications = userData.notifications;
         if (typeof(onChange) === "function" && Sortify(data) !== old) {
             onChange();
         }
@@ -90,6 +91,43 @@ define([
         var md = Util.clone(Env.metadataMgr.getMetadata());
         md.comments = Util.clone(Env.comments);
         Env.metadataMgr.updateMetadata(md);
+    };
+
+    var sendReplyNotification = function (Env, uid) {
+        if (!Env.comments || !Env.comments.data || !Env.comments.authors) { return; }
+        if (!Env.common.isLoggedIn()) { return; }
+        var thread = Env.comments.data[uid];
+        if (!thread || !Array.isArray(thread.m)) { return; }
+        var userData = Env.metadataMgr.getUserData();
+        var privateData = Env.metadataMgr.getPrivateData();
+        var others = {};
+        // Get all the other registered users with a mailbox
+        thread.m.forEach(function (obj) {
+            var u = obj.u;
+            if (typeof(u) !== "number") { return; }
+            var author = Env.comments.authors[u];
+            if (!author || others[u] || !author.notifications || !author.curvePublic) { return; }
+            if (author.curvePublic === userData.curvePublic) { return; } // don't send to yourself
+            others[u] = {
+                curvePublic: author.curvePublic,
+                comment: obj.m,
+                content: obj.v,
+                notifications: author.notifications
+            };
+        });
+        // Send the notification
+        Object.keys(others).forEach(function (id) {
+            var data = others[id];
+            Env.common.mailbox.sendTo("COMMENT_REPLY", {
+                channel: privateData.channel,
+                comment: data.comment,
+                content: data.content
+            }, {
+                channel: data.notifications,
+                curvePublic: data.curvePublic
+            });
+        });
+
     };
 
     Messages.comments_submit = "Submit"; // XXX
@@ -275,6 +313,9 @@ define([
                         m: val,
                         v: value
                     });
+
+                    // Notify other users
+                    sendReplyNotification(Env, key);
 
                     // Send to chainpad
                     updateMetadata(Env);
