@@ -397,7 +397,7 @@ define([
             }
         } else if (Env.ready) {
             // Everytime there is a metadata change, check if our user data have changed
-            // and puhs the update sif necessary
+            // and push the updates if necessary
             updateAuthorData(Env, function () {
                 updateMetadata(Env);
                 Env.framework.localChange();

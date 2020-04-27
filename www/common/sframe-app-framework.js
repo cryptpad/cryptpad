@@ -289,9 +289,11 @@ define([
                 throw new Error("Content must be an object or array, type is " + typeof(content));
             }
 
+            /*
             if (padChange && hasChanged(content)) {
                 //cpNfInner.metadataMgr.addAuthor();
             }
+            */
             oldContent = content;
 
             if (Array.isArray(content)) {
