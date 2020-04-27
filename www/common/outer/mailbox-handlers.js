@@ -534,9 +534,10 @@ define([
         var msg = data.msg;
         var hash = data.hash;
         var content = msg.content;
-        // content.channel
 
-        //if (isMuted(ctx, data)) { return void cb(true); }
+        if (Util.find(ctx.store.proxy, ['settings', 'pad', 'disableNotif'])) {
+            return void cb(true);
+        }
 
         var channel = content.channel;
         if (!channel) { return void cb(true); }
