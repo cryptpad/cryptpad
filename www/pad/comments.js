@@ -68,17 +68,21 @@ define([
 
     // Return the author ID  and add/update the data for registered users
     // Return the username for unregistered users
-    var updateAuthorData = function (Env) {
+    var updateAuthorData = function (Env, onChange) {
         var userData = Env.metadataMgr.getUserData();
         if (!Env.common.isLoggedIn()) {
             return userData.name;
         }
         var myAuthorId = getAuthorId(Env, userData.curvePublic);
         var data = Env.comments.authors[myAuthorId] = Env.comments.authors[myAuthorId] || {};
+        var old = Sortify(data);
         data.name = userData.name;
         data.avatar = userData.avatar;
         data.profile = userData.profile;
         data.curvePublic = userData.curvePublic;
+        if (typeof(onChange) === "function" && Sortify(data) !== old) {
+            onChange();
+        }
         return myAuthorId;
     };
 
@@ -154,7 +158,7 @@ define([
 
     var redrawComments = function (Env) {
         // Don't redraw if there were no change
-        var str = Sortify((Env.comments || {}).data || {});
+        var str = Sortify(Env.comments || {});
 
         if (str === Env.oldComments) { return; }
         Env.oldComments = str;
@@ -341,10 +345,22 @@ define([
         }
         if (Env.ready === 0) {
             Env.ready = true;
+            updateAuthorData(Env, function () {
+                changed = true;
+            });
+            // On ready, if our user data have changed or if we've added the initial structure
+            // of the comments, push the changes
             if (changed) {
                 updateMetadata(Env);
                 Env.framework.localChange();
             }
+        } else if (Env.ready) {
+            // Everytime there is a metadata change, check if our user data have changed
+            // and puhs the update sif necessary
+            updateAuthorData(Env, function () {
+                updateMetadata(Env);
+                Env.framework.localChange();
+            });
         }
         redrawComments(Env);
     };
