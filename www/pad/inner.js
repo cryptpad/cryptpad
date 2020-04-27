@@ -530,6 +530,15 @@ define([
 
         mkHelpMenu(framework);
 
+        framework._.sfCommon.getAttribute(['pad', 'width'], function (err, data) {
+            var active = data || typeof(data) === "undefined";
+            if (active) {
+                $contentContainer.addClass('cke_body_width');
+            } else {
+                editor.execCommand('pagemode');
+            }
+        });
+
         framework.onEditableChange(function (unlocked) {
             if (!framework.isReadOnly()) {
                 $inner.attr('contenteditable', '' + Boolean(unlocked));
@@ -715,29 +724,6 @@ define([
                 if (data) {
                     $iframe.find('body').attr('spellcheck', true);
                 }
-            });
-
-            framework._.sfCommon.getAttribute(['pad', 'width'], function (err, data) {
-                var active = data || typeof(data) === "undefined";
-                if (active) {
-                    $contentContainer.addClass('cke_body_width');
-                }
-                var $width = framework._.sfCommon.createButton('', true, {
-                    icon: 'fa-arrows-h',
-                    text: active ? Messages.pad_useFullWidth : Messages.pad_usePageWidth,
-                    name: "pad-width",
-                },function () {
-                    if (active) {
-                        $contentContainer.removeClass('cke_body_width');
-                    } else {
-                        $contentContainer.addClass('cke_body_width');
-                    }
-                    active = !active;
-                    var key = active ? Messages.pad_useFullWidth : Messages.pad_usePageWidth;
-                    $width.find('.cp-toolbar-drawer-element').text(key);
-                    framework._.sfCommon.setAttribute(['pad', 'width'], active);
-                });
-                framework._.toolbar.$drawer.append($width);
             });
 
             framework._.sfCommon.isPadStored(function (err, val) {
@@ -972,6 +958,30 @@ define([
                 module.ckeditor = editor = Ckeditor.replace('editor1', {
                     customConfig: '/customize/ckeditor-config.js',
                 });
+
+                editor.addCommand('pagemode', {
+                    exec: function () {
+                        if (!framework) { return; }
+                        var $contentContainer = $('#cke_1_contents');
+                        var $button = $('.cke_button__pagemode');
+                        var isLarge = $button.hasClass('cke_button_on');
+                        if (isLarge) {
+                            $button.addClass('cke_button_off').removeClass('cke_button_on');
+                            $contentContainer.addClass('cke_body_width');
+                        } else {
+                            $button.addClass('cke_button_on').removeClass('cke_button_off');
+                            $contentContainer.removeClass('cke_body_width');
+                        }
+                        framework._.sfCommon.setAttribute(['pad', 'width'], isLarge);
+                    }
+                });
+                editor.ui.addButton('PageMode', {
+                    label: Messages.pad_useFullWidth,
+                    command: 'pagemode',
+                    icon: '/pad/icons/arrows-h.png',
+                    toolbar: 'document,60'
+                });
+
                 editor.on('instanceReady', waitFor());
             }).nThen(function () {
                 editor.plugins.mediatag.import = function ($mt) {
