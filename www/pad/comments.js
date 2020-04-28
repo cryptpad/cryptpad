@@ -224,7 +224,7 @@ define([
                 try {
                     var visible = $text.autocomplete("instance").menu.activeMenu.is(':visible');
                     if (visible) { return; }
-                } catch (e) {}
+                } catch (err) {}
                 $(submit).click();
                 e.preventDefault();
             }
@@ -239,11 +239,6 @@ define([
                 var obj = Util.clone(Env.comments.authors[id]);
                 authors[obj.curvePublic] = obj;
             });
-            for (var i = 0; i< 30; i++) {
-                authors['test'+i] = {
-                    name: "Name"+i
-                };
-            }
             Env.common.addMentions({
                 $input: $text,
                 contenteditable: true,
@@ -336,7 +331,7 @@ define([
                     var name = $el.attr('data-name');
                     var avatarUrl = $el.attr('data-avatar');
                     var profile = $el.attr('data-profile');
-                    if (!name && !avatar && !profile) {
+                    if (!name && !avatarUrl && !profile) {
                         $el.remove();
                         return;
                     }
