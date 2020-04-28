@@ -3893,6 +3893,16 @@ define([
                     results.sort(sort);
                 }
                 cb(results);
+                // Set max-height to the autocomplete dropdown
+                try {
+                    var max = window.innerHeight;
+                    var pos = $t[0].getBoundingClientRect();
+                    var menu = $t.autocomplete("instance").menu.activeMenu;
+                    menu.css({
+                        'overflow-y': 'auto',
+                        'max-height': (max-pos.bottom)+'px'
+                    });
+                } catch (e) {}
             },
             focus: function() {
                 // prevent value inserted on focus

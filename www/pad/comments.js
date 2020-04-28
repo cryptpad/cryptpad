@@ -239,6 +239,11 @@ define([
                 var obj = Util.clone(Env.comments.authors[id]);
                 authors[obj.curvePublic] = obj;
             });
+            for (var i = 0; i< 30; i++) {
+                authors['test'+i] = {
+                    name: "Name"+i
+                };
+            }
             Env.common.addMentions({
                 $input: $text,
                 contenteditable: true,
@@ -429,7 +434,13 @@ define([
                     updateMetadata(Env);
                     Env.framework.localChange();
                 });
+
                 $div.append(form);
+
+                // Make sure the submit button is visible: scroll by the height of the form
+                setTimeout(function () {
+                    Env.$container.scrollTop(Env.$container.scrollTop() + 55);
+                });
             });
 
             UI.confirmButton(resolve, {
