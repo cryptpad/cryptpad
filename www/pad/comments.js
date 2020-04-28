@@ -195,7 +195,9 @@ define([
 
             // Send notification
             var privateData = Env.metadataMgr.getPrivateData();
+            var userData = Env.metadataMgr.getUserData();
             Object.keys(notify).forEach(function (curve) {
+                if (curve === userData.curvePublic) { return; }
                 Env.common.mailbox.sendTo("MENTION", {
                     channel: privateData.channel,
                 }, {

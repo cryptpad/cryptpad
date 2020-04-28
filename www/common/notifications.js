@@ -316,6 +316,7 @@ define([
     };
 
     Messages.comments_notification = 'Replies to your comment "{0}" in <b>{1}</b>'; // XXX
+    Messages.unknownPad = "Unknown pad"; // XXX
     handlers['COMMENT_REPLY'] = function (common, data) {
         var content = data.content;
         var msg = content.msg;
@@ -326,16 +327,18 @@ define([
         if (msg.content.comment.length > 20) {
             comment += '...';
         }
-        var title = Util.fixHTML(msg.content.title);
+        var title = Util.fixHTML(msg.content.title || Messages.unknownPad);
         var href = msg.content.href;
 
         content.getFormatText = function () {
             return Messages._getKey('comments_notification', [comment, title]);
         };
-        content.handler = function () {
-            common.openURL(href);
-            defaultDismiss(common, data)();
-        };
+        if (href) {
+            content.handler = function () {
+                common.openURL(href);
+                defaultDismiss(common, data)();
+            };
+        }
         if (!content.archived) {
             content.dismissHandler = defaultDismiss(common, data);
         }
@@ -348,16 +351,18 @@ define([
 
         // Display the notification
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
-        var title = Util.fixHTML(msg.content.title);
+        var title = Util.fixHTML(msg.content.title || Messages.unknownPad);
         var href = msg.content.href;
 
         content.getFormatText = function () {
             return Messages._getKey('mentions_notification', [name, title]);
         };
-        content.handler = function () {
-            common.openURL(href);
-            defaultDismiss(common, data)();
-        };
+        if (href) {
+            content.handler = function () {
+                common.openURL(href);
+                defaultDismiss(common, data)();
+            };
+        }
         if (!content.archived) {
             content.dismissHandler = defaultDismiss(common, data);
         }

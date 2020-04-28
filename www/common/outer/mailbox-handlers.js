@@ -546,12 +546,12 @@ define([
 
         var title, href;
         // Check if the pad is in our drive
-        if (!res.some(function (obj) {
+        res.some(function (obj) {
             if (!obj.data) { return; }
-            href = obj.data.href;
+            href = obj.data.href || obj.data.roHref;
             title = obj.data.filename || obj.data.title;
             return true;
-        })) { return void cb(true); }
+        });
 
         // If we don't have the edit url, ignore this notification
         if (!href) { return void cb(true); }
@@ -596,16 +596,17 @@ define([
         var channel = content.channel;
         if (!channel) { return void cb(true); }
         var res = ctx.store.manager.findChannel(channel);
+        console.log(res);
         if (!res.length) { return void cb(true); }
 
         var title, href;
         // Check if the pad is in our drive
-        if (!res.some(function (obj) {
+        res.some(function (obj) {
             if (!obj.data) { return; }
-            href = obj.data.href || obj.data.roHref; // XXX send the href when we mention?
+            href = obj.data.href || obj.data.roHref;
             title = obj.data.filename || obj.data.title;
             return true;
-        })) { return void cb(true); }
+        });
 
         // Add the title
         content.href = href;
