@@ -542,7 +542,6 @@ define([
         var channel = content.channel;
         if (!channel) { return void cb(true); }
         var res = ctx.store.manager.findChannel(channel);
-        if (!res.length) { return void cb(true); }
 
         var title, href;
         // Check if the pad is in our drive
@@ -596,8 +595,6 @@ define([
         var channel = content.channel;
         if (!channel) { return void cb(true); }
         var res = ctx.store.manager.findChannel(channel);
-        console.log(res);
-        if (!res.length) { return void cb(true); }
 
         var title, href;
         // Check if the pad is in our drive
