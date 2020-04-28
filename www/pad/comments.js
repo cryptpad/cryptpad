@@ -130,17 +130,35 @@ define([
 
     };
 
+    var cleanMentions = function ($el, full) {
+        $el.html('');
+        var el = $el[0];
+        var allowed = full ? ['data-profile', 'data-name', 'data-avatar', 'class']
+                           : ['class'];
+        // Remove unnecessary/unsafe attributes
+        for (var i=el.attributes.length-1; i>0; i--) {
+            var name = el.attributes[i] && el.attributes[i].name;
+            if (allowed.indexOf(name) === -1) {
+                $el.removeAttr(name);
+            }
+        }
+    };
+
     Messages.comments_submit = "Submit"; // XXX
     Messages.comments_reply = "Reply"; // XXX
     Messages.comments_resolve = "Resolve"; // XXX
-
     var getCommentForm = function (Env, reply, _cb) {
         var cb = Util.once(_cb);
         var userData = Env.metadataMgr.getUserData();
         var name = Util.fixHTML(userData.name || Messages.anonymous);
         var avatar = h('span.cp-avatar');
-        var textarea = h('textarea', {
-            tabindex: 1
+        var textarea = h('div.cp-textarea', {
+            tabindex: 1,
+            role: 'textbox',
+            'aria-multiline': true,
+            'aria-labelledby': 'cp-comments-label',
+            'aria-required': true,
+            contenteditable: true,
         });
         Env.common.displayAvatar($(avatar), userData.avatar, name);
 
@@ -157,24 +175,77 @@ define([
             Messages.comments_submit
         ]);
 
+        // List of allowed attributes in mentions
         $(submit).click(function (e) {
             e.stopPropagation();
-            cb(textarea.value);
+            var clone = textarea.cloneNode(true);
+            var notify = {};
+            var $clone = $(clone);
+            $clone.find('span.cp-mentions').each(function (i, el) {
+                var $el = $(el);
+                var curve = $el.attr('data-curve');
+                var notif = $el.attr('data-notifications');
+                cleanMentions($el, true);
+                if (!curve || !notif) { return; }
+                notify[curve] = notif;
+            });
+            $clone.find('> *:not(.cp-mentions)').remove();
+            var content = clone.innerHTML.trim();
+            if (!content) { return; }
+
+            // Send notification
+            var privateData = Env.metadataMgr.getPrivateData();
+            Object.keys(notify).forEach(function (curve) {
+                Env.common.mailbox.sendTo("MENTION", {
+                    channel: privateData.channel,
+                }, {
+                    channel: notify[curve],
+                    curvePublic: curve
+                });
+            });
+
+            // Push the content
+            cb(content);
         });
         $(cancel).click(function (e) {
             e.stopPropagation();
             cb();
         });
 
-        $(textarea).keydown(function (e) {
+        var $text = $(textarea).keydown(function (e) {
+            e.stopPropagation();
             if (e.which === 27) {
                 $(cancel).click();
             }
             if (e.which === 13 && !e.shiftKey) {
+                // Submit form on Enter is the autocompelte menu is not visible
+                try {
+                    var visible = $text.autocomplete("instance").menu.activeMenu.is(':visible');
+                    if (visible) { return; }
+                } catch (e) {}
                 $(submit).click();
                 e.preventDefault();
             }
+        }).click(function (e) {
+            e.stopPropagation();
         });
+
+
+        if (Env.common.isLoggedIn()) {
+            var authors = {};
+            Object.keys((Env.comments && Env.comments.authors) || {}).forEach(function (id) {
+                var obj = Util.clone(Env.comments.authors[id]);
+                authors[obj.curvePublic] = obj;
+            });
+            Env.common.addMentions({
+                $input: $text,
+                contenteditable: true,
+                type: 'contacts',
+                sources: authors
+            });
+        }
+
+
 
         setTimeout(function () {
             $(textarea).focus();
@@ -205,6 +276,9 @@ define([
         if ($oldInput.length !== 1) { $oldInput = undefined; }
 
         Env.$container.html('');
+
+        var label = h('label#cp-comments-label', Messages.comments_comment);
+        Env.$container.append(label);
 
         var show = false;
 
@@ -245,6 +319,40 @@ define([
                     });
                 }
 
+                // Build sanitized html with mentions
+                var m = h('div.cp-comment-content');
+                m.innerHTML = msg.m;
+                var $m = $(m);
+                $m.find('> *:not(span.cp-mentions)').remove();
+                $m.find('span.cp-mentions').each(function (i, el) {
+                    var $el = $(el);
+                    var name = $el.attr('data-name');
+                    var avatarUrl = $el.attr('data-avatar');
+                    var profile = $el.attr('data-profile');
+                    if (!name && !avatar && !profile) {
+                        $el.remove();
+                        return;
+                    }
+                    cleanMentions($el);
+                    var avatar = h('span.cp-avatar');
+                    Env.common.displayAvatar($(avatar), avatarUrl, name);
+                    $el.append([
+                        avatar,
+                        h('span.cp-mentions-name', name)
+                    ]);
+                    if (profile) {
+                        $el.attr('tabindex', 1);
+                        $el.addClass('cp-mentions-clickable').click(function (e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            Env.common.openURL(Hash.hashToHref(profile, 'profile'));
+                        }).focus(function (e) {
+                            e.stopPropagation();
+                        });
+                    }
+                });
+
+                // Add the comment
                 content.push(h('div.cp-comment'+(i === 0 ? '' : '.cp-comment-reply'), [
                     h('div.cp-comment-header', [
                         avatar,
@@ -253,9 +361,7 @@ define([
                             h('span.cp-comment-time', date.toLocaleString())
                         ])
                     ]),
-                    h('div.cp-comment-content', [
-                        msg.m
-                    ])
+                    m
                 ]));
 
             });
@@ -291,9 +397,9 @@ define([
                 e.stopPropagation();
                 $actions.hide();
                 var form = getCommentForm(Env, key, function (val) {
-                    $(form).remove();
                     $(form).closest('.cp-comment-container')
                         .find('.cp-comment-actions').css('display', '');
+                    $(form).remove();
 
                     if (!val) { return; }
                     var obj = Env.comments.data[key];

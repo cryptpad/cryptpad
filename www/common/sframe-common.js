@@ -103,6 +103,7 @@ define([
     funcs.getBurnAfterReadingWarning = callWithCommon(UIElements.getBurnAfterReadingWarning);
     funcs.createNewPadModal = callWithCommon(UIElements.createNewPadModal);
     funcs.onServerError = callWithCommon(UIElements.onServerError);
+    funcs.addMentions = callWithCommon(UIElements.addMentions);
     funcs.importMediaTagMenu = callWithCommon(MT.importMediaTagMenu);
     funcs.getMediaTagPreview = callWithCommon(MT.getMediaTagPreview);
 

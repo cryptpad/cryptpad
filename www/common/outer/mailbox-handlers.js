@@ -583,6 +583,57 @@ define([
         }
     };
 
+    // Hide duplicates when receiving a SHARE_PAD notification:
+    // Keep only one notification per channel: the stronger and more recent one
+    var mentions = {};
+    handlers['MENTION'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var hash = data.hash;
+        var content = msg.content;
+
+        if (isMuted(ctx, data)) { return void cb(true); }
+
+        var channel = content.channel;
+        if (!channel) { return void cb(true); }
+        var res = ctx.store.manager.findChannel(channel);
+        if (!res.length) { return void cb(true); }
+
+        var title, href;
+        // Check if the pad is in our drive
+        if (!res.some(function (obj) {
+            if (!obj.data) { return; }
+            href = obj.data.href || obj.data.roHref; // XXX send the href when we mention?
+            title = obj.data.filename || obj.data.title;
+            return true;
+        })) { return void cb(true); }
+
+        // Add the title
+        content.href = href;
+        content.title = title;
+
+        // Remove duplicates
+        var old = mentions[channel];
+        var toRemove = old ? old.data : undefined;
+
+        // Update the data
+        mentions[channel] = {
+            data: {
+                type: box.type,
+                hash: hash
+            }
+        };
+
+        cb(false, toRemove);
+    };
+    removeHandlers['MENTION'] = function (ctx, box, data, hash) {
+        var content = data.content;
+        var channel = content.channel;
+        var old = mentions[channel];
+        if (old && old.data && old.data.hash === hash) {
+            delete mentions[channel];
+        }
+    };
+
 
     return {
         add: function (ctx, box, data, cb) {

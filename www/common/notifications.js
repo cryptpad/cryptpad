@@ -341,6 +341,28 @@ define([
         }
     };
 
+    Messages.mentions_notification = '{0} has mentionned you in <b>{1}</b>'; // XXX
+    handlers['MENTION'] = function (common, data) {
+        var content = data.content;
+        var msg = content.msg;
+
+        // Display the notification
+        var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
+        var title = Util.fixHTML(msg.content.title);
+        var href = msg.content.href;
+
+        content.getFormatText = function () {
+            return Messages._getKey('mentions_notification', [name, title]);
+        };
+        content.handler = function () {
+            common.openURL(href);
+            defaultDismiss(common, data)();
+        };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
 
     // NOTE: don't forget to fixHTML everything returned by "getFormatText"
 
