@@ -397,7 +397,7 @@ define([
     var addToolbarHideBtn = function (framework, $bar) {
         // Expand / collapse the toolbar
         var cfg = {
-            element: $bar.find('.cke_toolbox_main')
+            element: $bar
         };
         var onClick = function (visible) {
             framework._.sfCommon.setAttribute(['pad', 'showToolbar'], visible);
@@ -672,7 +672,7 @@ define([
         });
 
         if (!framework.isReadOnly()) {
-            addToolbarHideBtn(framework, $contentContainer);
+            addToolbarHideBtn(framework, $('.cke_toolbox_main'));
         } else {
             $('.cke_toolbox_main').hide();
         }

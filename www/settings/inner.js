@@ -78,6 +78,7 @@ define([
         'pad': [
             'cp-settings-pad-width',
             'cp-settings-pad-spellcheck',
+            'cp-settings-pad-notif',
         ],
         'code': [
             'cp-settings-code-indent-unit',
@@ -1274,6 +1275,38 @@ define([
         });
         return $div;
     };
+
+    // XXX Messages.settings_padNotifTitle
+    // XXX Messages.settings_padNotifHint
+    // XXX Messages.settings_padNotifCheckbox ("disable comments notifications")
+    Messages.settings_padNotifTitle = "Comments notifications"; // XXX
+    Messages.settings_padNotifHint = "Block notifications when someone replies to one of your comments"; // XXX
+    Messages.settings_padNotifCheckbox = "Disable comment notifications";
+    makeBlock('pad-notif', function (cb) {
+        var $cbox = $(UI.createCheckbox('cp-settings-pad-notif',
+                                   Messages.settings_padNotifCheckbox,
+                                   false, { label: {class: 'noTitle'} }));
+
+        var spinner = UI.makeSpinner($cbox);
+
+        // Checkbox: "Enable safe links"
+        var $checkbox = $cbox.find('input').on('change', function () {
+            spinner.spin();
+            var val = $checkbox.is(':checked');
+            common.setAttribute(['pad', 'disableNotif'], val, function () {
+                spinner.done();
+            });
+        });
+
+        common.getAttribute(['pad', 'disableNotif'], function (e, val) {
+            if (e) { return void console.error(e); }
+            if (val === true) {
+                $checkbox.attr('checked', 'checked');
+            }
+        });
+
+        cb($cbox);
+    }, true);
 
     // Code settings
 
