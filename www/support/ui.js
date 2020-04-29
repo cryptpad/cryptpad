@@ -188,7 +188,7 @@ define([
         var senderKey = content.sender && content.sender.edPublic;
         var fromMe = senderKey === privateData.edPublic;
         var fromAdmin = ctx.adminKeys.indexOf(senderKey) !== -1;
-        var fromPremium = Boolean(privateData.plan);
+        var fromPremium = Boolean(content.sender.plan);
 
         var userData = h('div.cp-support-showdata', [
             Messages.support_showData,
@@ -201,7 +201,7 @@ define([
         });
 
         var adminClass = (fromAdmin? '.cp-support-fromadmin': '');
-        var premiumClass = (fromPremium? '.cp-support-frompremium': '');
+        var premiumClass = (fromPremium && !fromAdmin? '.cp-support-frompremium': '');
         var name = Util.fixHTML(content.sender.name) || Messages.anonymous;
         return h('div.cp-support-list-message' + adminClass + premiumClass, {
             'data-hash': hash
