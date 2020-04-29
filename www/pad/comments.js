@@ -192,6 +192,7 @@ define([
                 if (!curve || !notif) { return; }
                 notify[curve] = notif;
             });
+            $clone.find('br').replaceWith("\n");
             $clone.find('> *:not(.cp-mentions)').remove();
             var content = clone.innerHTML.trim();
             if (!content) { return; }
