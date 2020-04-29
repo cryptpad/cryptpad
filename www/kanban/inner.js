@@ -102,6 +102,7 @@ define([
         }
         var avatar = h('span.cp-cursor.cp-tippy-html', {
             style: "background-color: " + (cursor.color || 'red') + ";"+text,
+            'data-cptippy-html': true,
             title: html
         }, l);
         if (!noClear) {

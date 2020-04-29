@@ -2754,6 +2754,7 @@ define([
         var origin = privateData.origin;
         var createHelper = function (href, text) {
             var q = h('a.cp-creation-help.fa.fa-question-circle', {
+                'data-cptippy-html': true,
                 title: text,
                 href: origin + href,
                 target: "_blank",
@@ -2777,7 +2778,7 @@ define([
                 common.displayAvatar($(avatar), data.avatar, data.name);
                 return h('div.cp-creation-team', {
                     'data-id': id,
-                    title: data.name,
+                    title: Util.fixHTML(data.name),
                 },[
                     avatar,
                     h('span.cp-creation-team-name', data.name)

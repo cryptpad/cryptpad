@@ -312,7 +312,8 @@ MessengerUI, Messages) {
                 } else if (friendRequests[data.curvePublic]) {
                     $('<button>', {
                         'class': 'fa fa-bell cp-toolbar-userlist-button',
-                        'title': Messages._getKey('friendRequest_received', [name]),
+                        'data-cptippy-html': true,
+                        'title': Messages._getKey('friendRequest_received', [Util.fixHTML(name)]),
                     }).appendTo($nameSpan).click(function (e) {
                         e.stopPropagation();
                         UIElements.displayFriendRequestModal(Common, friendRequests[data.curvePublic]);
@@ -321,8 +322,9 @@ MessengerUI, Messages) {
                 } else {
                     $('<button>', {
                         'class': 'fa fa-user-plus cp-toolbar-userlist-button',
+                        'data-cptippy-html': true,
                         'title': Messages._getKey('userlist_addAsFriendTitle', [
-                            name
+                            Util.fixHTML(name)
                         ])
                     }).appendTo($nameSpan).click(function (e) {
                         e.stopPropagation();
@@ -334,7 +336,7 @@ MessengerUI, Messages) {
             } else if (Common.isLoggedIn() && data.curvePublic && friends[data.curvePublic]) {
                 $('<button>', {
                     'class': 'fa fa-comments-o cp-toolbar-userlist-button',
-                    'title': Messages.userlist_chat
+                    'title': Messages.contact_chat
                 }).appendTo($nameSpan).click(function (e) {
                     e.stopPropagation();
                     Common.openURL('/contacts/');

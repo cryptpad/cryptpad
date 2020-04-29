@@ -27,9 +27,7 @@ define([
         var userData = data.msg.content.user || data.msg.content;
 
         // Check if the request is valid (send by the correct user)
-        if (data.msg.author !== userData.curvePublic) {
-            return void cb(true);
-        }
+        if (data.msg.author !== userData.curvePublic) { return void cb(true); }
 
         if (isMuted(ctx, data)) { return void cb(true); }
 

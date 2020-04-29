@@ -1053,6 +1053,10 @@ define([
             }).forEach(function (obj) {
                 opts[obj.name.slice(11)] = obj.value;
             });
+            if (!el.getAttribute('data-cptippy-html') && !el.fixHTML) {
+                el.setAttribute('title', Util.fixHTML(el.getAttribute('title'))); // fixHTML
+                el.fixHTML = true; // Don't clean HTML twice on the same element
+            }
             Tippy(el, opts);
         };
         // This is the robust solution to remove dangling tooltips
