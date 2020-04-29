@@ -265,6 +265,7 @@ define([
             if (!bool && update) { onRemote(); }
         };
 
+        /*
         var hasChanged = function (content) {
             try {
                 var oldValue = JSON.parse(cpNfInner.chainpad.getUserDoc());
@@ -276,8 +277,9 @@ define([
             } catch (e) {}
             return false;
         };
+        */
 
-        onLocal = function (padChange) {
+        onLocal = function (/*padChange*/) {
             if (state !== STATE.READY) { return; }
             if (readOnly) { return; }
 

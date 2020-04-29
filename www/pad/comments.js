@@ -224,7 +224,7 @@ define([
                 try {
                     var visible = $text.autocomplete("instance").menu.activeMenu.is(':visible');
                     if (visible) { return; }
-                } catch (e) {}
+                } catch (err) {}
                 $(submit).click();
                 e.preventDefault();
             }
@@ -331,7 +331,7 @@ define([
                     var name = $el.attr('data-name');
                     var avatarUrl = $el.attr('data-avatar');
                     var profile = $el.attr('data-profile');
-                    if (!name && !avatar && !profile) {
+                    if (!name && !avatarUrl && !profile) {
                         $el.remove();
                         return;
                     }
@@ -429,7 +429,13 @@ define([
                     updateMetadata(Env);
                     Env.framework.localChange();
                 });
+
                 $div.append(form);
+
+                // Make sure the submit button is visible: scroll by the height of the form
+                setTimeout(function () {
+                    Env.$container.scrollTop(Env.$container.scrollTop() + 55);
+                });
             });
 
             UI.confirmButton(resolve, {

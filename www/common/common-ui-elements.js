@@ -3673,10 +3673,10 @@ define([
         var node = document.createTextNode(text);
         range.insertNode(node);
 
-        for (var position = 0; position != text.length; position++) {
+        for (var position = 0; position !== text.length; position++) {
             selection.modify("move", "right", "character");
-        };
-    }
+        }
+    };
 
     var getSource = {};
     getSource['contacts'] = function (common, sources) {
@@ -3710,7 +3710,7 @@ define([
                 try {
                     insertTextAtCursor(e.originalEvent.clipboardData.getData('text'));
                     e.preventDefault();
-                } catch (e) { console.error(e); }
+                } catch (err) { console.error(err); }
             });
 
             // Fix backspace with "contenteditable false" children
@@ -3767,14 +3767,14 @@ define([
 
         // Get the text between the last @ before the cursor and the cursor
         var extractLast = function (term, offset) {
-            var offset = typeof(offset) !== "undefined" ? offset : $t[0].selectionStart;
+            offset = typeof(offset) !== "undefined" ? offset : $t[0].selectionStart;
             var startOffset = term.slice(0,offset).lastIndexOf('@');
             return term.slice(startOffset+1, offset);
         };
         // Insert the autocomplete value in the input field
         var insertValue = function (value, offset, content) {
-            var offset = typeof(offset) !== "undefined" ? offset : $t[0].selectionStart;
-            var content = content || getValue();
+            offset = typeof(offset) !== "undefined" ? offset : $t[0].selectionStart;
+            content = content || getValue();
             var startOffset = content.slice(0,offset).lastIndexOf('@');
             var length = offset - startOffset;
             if (length <= 0) { return; }
@@ -3798,7 +3798,6 @@ define([
             var _extractLast = extractLast;
             // Use getSelection to get the cursor position in contenteditable
             extractLast = function () {
-                var val = getValue();
                 var sel = document.getSelection();
                 if (sel.anchorNode.nodeType !== Node.TEXT_NODE) { return; }
                 return _extractLast(sel.anchorNode.nodeValue, sel.anchorOffset);
@@ -3832,14 +3831,14 @@ define([
                 var range = document.createRange();
                 range.setStart(next, 0);
                 range.setEnd(next, 0);
-                var sel = window.getSelection();
-                sel.removeAllRanges();
-                sel.addRange(range);
+                var newSel = window.getSelection();
+                newSel.removeAllRanges();
+                newSel.addRange(range);
             };
 
             // Inserting contacts into contenteditable: use mention UI
             if (options.type === "contacts") {
-                toInsert = function (data, key) {
+                toInsert = function (data) {
                     var avatar = h('span.cp-avatar', {
                         contenteditable: false
                     });
@@ -3871,7 +3870,7 @@ define([
                         e.preventDefault();
                         e.stopPropagation();
                     }
-                } catch (e) {}
+                } catch (err) { console.error(err); }
             }
         }).autocomplete({
             minLength: 0,
@@ -3893,6 +3892,16 @@ define([
                     results.sort(sort);
                 }
                 cb(results);
+                // Set max-height to the autocomplete dropdown
+                try {
+                    var max = window.innerHeight;
+                    var pos = $t[0].getBoundingClientRect();
+                    var menu = $t.autocomplete("instance").menu.activeMenu;
+                    menu.css({
+                        'overflow-y': 'auto',
+                        'max-height': (max-pos.bottom)+'px'
+                    });
+                } catch (e) {}
             },
             focus: function() {
                 // prevent value inserted on focus
