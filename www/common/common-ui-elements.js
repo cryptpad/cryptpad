@@ -3870,7 +3870,7 @@ define([
                         e.preventDefault();
                         e.stopPropagation();
                     }
-                } catch (err) { console.error(err); }
+                } catch (err) { console.error(err, $t); }
             }
         }).autocomplete({
             minLength: 0,
