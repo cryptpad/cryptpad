@@ -7,11 +7,17 @@
 .comments_main() {
     @data-color: #888;
     overflow-y: auto;
+    color: @cryptpad_text_col;
 
     .buttons_main();
 
     .cp-comment-reply {
         margin-left: 30px;
+    }
+    .cp-comment-deleted {
+        background: white;
+        font-size: 14px;
+        padding: 5px;
     }
 
 
@@ -72,6 +78,7 @@
         align-items: center;
         display: flex;
         background-color: white;
+        position: relative;
         padding: 5px;
         box-sizing: content-box;
         .avatar_main(40px);
@@ -85,12 +92,30 @@
                 color: @data-color;
             }
         }
+        .cp-comment-edit {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+            &:hover {
+                color: lighten(@cryptpad_text_col, 10%);
+            }
+        }
     }
     .cp-comment-content {
         background-color: white;
         padding: 0px 5px 5px 5px;
         white-space: pre-wrap;
         word-break: break-word;
+    }
+    .cp-comment-edited {
+        background-color: white;
+        font-size: 13px;
+        color: @data-color;
+        padding: 0 5px;
     }
     .cp-comment-actions {
         display: none;

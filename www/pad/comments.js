@@ -25,9 +25,11 @@ define([
                 u: id,
                 m: "str", // comment
                 t: +new Date,
-                v: "str" // value of the commented content
+                v: "str", // value of the commented content
+                e: undefined/1, // edited
+                d: undefined/1, // deleted
             }],
-            (deleted: undefined/true,)
+            d: undefined/1,
         }
     }
 }
@@ -130,11 +132,10 @@ define([
 
     };
 
-    var cleanMentions = function ($el, full) {
+    var cleanMentions = function ($el) {
         $el.html('');
         var el = $el[0];
-        var allowed = full ? ['data-profile', 'data-name', 'data-avatar', 'class']
-                           : ['class'];
+        var allowed = ['data-profile', 'data-name', 'data-avatar', 'class'];
         // Remove unnecessary/unsafe attributes
         for (var i=el.attributes.length-1; i>0; i--) {
             var name = el.attributes[i] && el.attributes[i].name;
@@ -144,10 +145,12 @@ define([
         }
     };
 
+    Messages.comments_deleted = "Comment deleted by its author"; // XXX
+    Messages.comments_edited = "Edited"; // XXX
     Messages.comments_submit = "Submit"; // XXX
     Messages.comments_reply = "Reply"; // XXX
     Messages.comments_resolve = "Resolve"; // XXX
-    var getCommentForm = function (Env, reply, _cb) {
+    var getCommentForm = function (Env, reply, _cb, editContent) {
         var cb = Util.once(_cb);
         var userData = Env.metadataMgr.getUserData();
         var name = Util.fixHTML(userData.name || Messages.anonymous);
@@ -189,6 +192,7 @@ define([
                 if (!curve || !notif) { return; }
                 notify[curve] = notif;
             });
+            $clone.find('br').replaceWith("\n");
             $clone.find('> *:not(.cp-mentions)').remove();
             var content = clone.innerHTML.trim();
             if (!content) { return; }
@@ -218,6 +222,7 @@ define([
             e.stopPropagation();
             if (e.which === 27) {
                 $(cancel).click();
+                e.stopImmediatePropagation();
             }
             if (e.which === 13 && !e.shiftKey) {
                 // Submit form on Enter is the autocompelte menu is not visible
@@ -226,6 +231,7 @@ define([
                     if (visible) { return; }
                 } catch (err) {}
                 $(submit).click();
+                e.stopImmediatePropagation();
                 e.preventDefault();
             }
         }).click(function (e) {
@@ -247,6 +253,22 @@ define([
             });
         }
 
+        var deleteButton;
+        // Edit? start with the old content
+        // Add a space to make sure we won't end with a mention and a bad cursor
+        if (editContent) {
+            textarea.innerHTML = editContent + " ";
+            deleteButton = h('button.btn.btn-danger', {
+                tabindex: 1
+            }, [
+                h('i.fa.fa-times'),
+                Messages.kanban_delete
+            ]);
+            $(deleteButton).click(function (e) {
+                e.stopPropagation();
+                cb();
+            });
+        }
 
 
         setTimeout(function () {
@@ -262,6 +284,7 @@ define([
             ]),
             h('div.cp-comment-form-actions', [
                 cancel,
+                deleteButton,
                 submit
             ])
         ]);
@@ -270,43 +293,60 @@ define([
     var redrawComments = function (Env) {
         // Don't redraw if there were no change
         var str = Sortify(Env.comments || {});
-
         if (str === Env.oldComments) { return; }
         Env.oldComments = str;
 
+        // Store existing input form in memory
         var $oldInput = Env.$container.find('.cp-comment-form').detach();
         if ($oldInput.length !== 1) { $oldInput = undefined; }
 
+        // Remove everything
         Env.$container.html('');
 
+        // "show" tells us if we need to display the "comments" column or not
+        var show = false;
+
+        // Add invisible label for accessibility tools
         var label = h('label#cp-comments-label', Messages.comments_comment);
         Env.$container.append(label);
 
-        var show = false;
-
+        // If we were adding a new comment, redraw our form
         if ($oldInput && !$oldInput.attr('data-uid')) {
             show = true;
             Env.$container.append($oldInput);
         }
 
-        var order = Env.$inner.find('comment').map(function (i, el) {
+        var userData = Env.metadataMgr.getUserData();
+
+        // Get all the comment threads in their order in the pad
+        var threads = Env.$inner.find('comment').map(function (i, el) {
             return el.getAttribute('data-uid');
         }).toArray();
-        var done = [];
 
-        order.forEach(function (key) {
-            // Avoir duplicates
-            if (done.indexOf(key) !== -1) { return; }
-            done.push(key);
-
+        // Draw all comment threads
+        Util.deduplicateString(threads).forEach(function (key) {
+            // Get thread data
             var obj = Env.comments.data[key];
-            if (!obj || obj.deleted || !Array.isArray(obj.m) || !obj.m.length) {
+            if (!obj || obj.d || !Array.isArray(obj.m) || !obj.m.length) {
                 return;
             }
+
+            // If at least one thread is visible, display the "comments" column
             show = true;
 
             var content = [];
-            obj.m.forEach(function (msg, i) {
+            var $div;
+            var $actions;
+
+            // Draw all messages for this thread
+            (obj.m || []).forEach(function (msg, i) {
+                var replyCls = i === 0 ? '' : '.cp-comment-reply';
+                if (msg.d) {
+
+                    content.push(h('div.cp-comment.cp-comment-deleted'+replyCls,
+                                    Messages.comments_deleted));
+                    return;
+                }
                 var author = typeof(msg.u) === "number" ?
                                 ((Env.comments.authors || {})[msg.u] || {}) :
                                 { name: msg.u };
@@ -354,16 +394,71 @@ define([
                     }
                 });
 
+                // edited state
+                var edited;
+                if (msg.e) {
+                    edited = h('div.cp-comment-edited', Messages.comments_edited);
+                }
+
+                var container;
+
+                // Add edit button when applicable (last message of the thread, written by ourselves)
+                var edit;
+                if (i === (obj.m.length -1) && author.curvePublic === userData.curvePublic) {
+                    edit = h('span.cp-comment-edit', {
+                        title: Messages.clickToEdit
+                    }, h('i.fa.fa-pencil'));
+                    $(edit).click(function (e) {
+                        e.stopPropagation();
+                        Env.$container.find('.cp-comment-form').remove();
+                        if ($actions) { $actions.hide(); }
+                        var form = getCommentForm(Env, key, function (val) {
+                            // Show the "reply" and "resolve" buttons again
+                            $(form).closest('.cp-comment-container')
+                                .find('.cp-comment-actions').css('display', '');
+                            $(form).remove();
+
+                            var obj = Env.comments.data[key];
+                            if (!obj || !Array.isArray(obj.m)) { return; }
+                            var msg = obj.m[i];
+                            if (!msg) { return; }
+                            // i is our index
+                            if (!val) {
+                                msg.d = 1;
+                                if (container) {
+                                    $(container).addClass('cp-comment-deleted')
+                                                .html(Messages.comments_deleted);
+                                }
+                                if (obj.m.length === 1) {
+                                    delete Env.comments.data[key];
+                                }
+                            } else {
+                                msg.e = 1;
+                                msg.m = val;
+                            }
+
+                            // Send to chainpad
+                            updateMetadata(Env);
+                            Env.framework.localChange();
+                        }, m.innerHTML);
+
+                        if (!$div) { return; }
+                        $div.append(form);
+                    });
+                }
+
                 // Add the comment
-                content.push(h('div.cp-comment'+(i === 0 ? '' : '.cp-comment-reply'), [
+                content.push(container = h('div.cp-comment'+replyCls, [
                     h('div.cp-comment-header', [
                         avatar,
                         h('span.cp-comment-metadata', [
                             h('span.cp-comment-author', name),
                             h('span.cp-comment-time', date.toLocaleString())
-                        ])
+                        ]),
+                        edit
                     ]),
-                    m
+                    m,
+                    edited
                 ]));
 
             });
@@ -386,19 +481,20 @@ define([
                 reply,
                 resolve
             ]));
-            var $actions = $(actions);
+            $actions = $(actions);
 
             var div;
             Env.$container.append(div = h('div.cp-comment-container', {
                 'data-uid': key,
                 tabindex: 1
             }, content));
-            var $div = $(div);
+            $div = $(div);
 
             $(reply).click(function (e) {
                 e.stopPropagation();
                 $actions.hide();
                 var form = getCommentForm(Env, key, function (val) {
+                    // Show the "reply" and "resolve" buttons again
                     $(form).closest('.cp-comment-container')
                         .find('.cp-comment-actions').css('display', '');
                     $(form).remove();
@@ -434,7 +530,11 @@ define([
 
                 // Make sure the submit button is visible: scroll by the height of the form
                 setTimeout(function () {
-                    Env.$container.scrollTop(Env.$container.scrollTop() + 55);
+                    var yContainer = Env.$container[0].getBoundingClientRect().bottom;
+                    var yActions = form.getBoundingClientRect().bottom;
+                    if (yActions > yContainer) {
+                        Env.$container.scrollTop(Env.$container.scrollTop() + 55);
+                    }
                 });
             });
 
@@ -531,7 +631,7 @@ define([
 
         // If there is no comment stored in the metadata, abort
         var comments = Object.keys(Env.comments.data || {}).filter(function (id) {
-            return !Env.comments.data[id].deleted;
+            return !Env.comments.data[id].d;
         });
 
         var changed = false;
@@ -556,8 +656,8 @@ define([
             }
             // If this comment was deleted, we're probably using "undo" to restore it:
             // remove the "deleted" state and continue
-            if (obj.deleted) {
-                delete obj.deleted;
+            if (obj.d) {
+                delete obj.d;
                 changed = true;
             }
             return id;
@@ -575,7 +675,7 @@ define([
             // comment has been deleted
             var data = Env.comments.data[uid];
             if (!data) { return; }
-            data.deleted = true;
+            data.d = 1;
             //delete Env.comments.data[uid];
             changed = true;
         });
@@ -711,7 +811,7 @@ define([
         // Clear data
         var data = (Env.comments && Env.comments.data) || {};
         Object.keys(data).forEach(function (uid) {
-            if (data[uid].deleted) { delete data[uid]; }
+            if (data[uid].d) { delete data[uid]; }
         });
 
         // Commit
