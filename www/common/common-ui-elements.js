@@ -2778,7 +2778,7 @@ define([
                 common.displayAvatar($(avatar), data.avatar, data.name);
                 return h('div.cp-creation-team', {
                     'data-id': id,
-                    title: Util.fixHTML(data.name),
+                    title: data.name,
                 },[
                     avatar,
                     h('span.cp-creation-team-name', data.name)

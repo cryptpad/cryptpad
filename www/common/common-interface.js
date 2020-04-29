@@ -1036,7 +1036,7 @@ define([
             }
         },
         //arrowType: 'round',
-        dynamicTitle: true,
+        dynamicTitle: false,
         arrowTransform: 'scale(2)',
         zIndex: 100000001
     });
@@ -1079,6 +1079,7 @@ define([
                     }
                 }
                 if (mutation.type === "attributes" && mutation.attributeName === "title") {
+                    mutation.target.fixHTML = false;
                     addTippy(0, mutation.target);
                 }
             });
