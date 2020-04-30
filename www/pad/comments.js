@@ -544,7 +544,7 @@ define([
             });
 
             UI.confirmButton(resolve, {
-                classes: 'btn-danger-alt'
+                classes: 'btn-danger'
             }, function () {
                 // Delete the comment
                 delete Env.comments.data[key];
