@@ -221,7 +221,7 @@
     "poll_admin_button": "Admin",
     "poll_create_user": "Neuen Benutzer hinzufügen",
     "poll_create_option": "Neue Option hinzufügen",
-    "poll_commit": "Einchecken",
+    "poll_commit": "Bestätigen",
     "poll_closeWizardButton": "Assistenten schließen",
     "poll_closeWizardButtonTitle": "Assistenten schließen",
     "poll_wizardComputeButton": "Optionen übernehmen",
