@@ -23,7 +23,7 @@ define([
         init: function () {}
     };
 
-    var mermaidThemeCSS = ".node rect { fill: #DDD; stroke: #AAA; } " +
+    var mermaidThemeCSS = //".node rect { fill: #DDD; stroke: #AAA; } " +
         "rect.task, rect.task0, rect.task2 { stroke-width: 1 !important; rx: 0 !important; } " +
         "g.grid g.tick line { opacity: 0.25; }" +
         "g.today line { stroke: red; stroke-width: 1; stroke-dasharray: 3; opacity: 0.5; }";
