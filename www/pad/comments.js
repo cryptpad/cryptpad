@@ -266,7 +266,7 @@ define([
             ]);
             $(deleteButton).click(function (e) {
                 e.stopPropagation();
-                cb();
+                cb(false);
             });
         }
 
@@ -406,9 +406,12 @@ define([
                 var edit;
                 if (i === (obj.m.length -1) && author.curvePublic === userData.curvePublic) {
                     edit = h('span.cp-comment-edit', {
+                        tabindex:1,
                         title: Messages.clickToEdit
                     }, h('i.fa.fa-pencil'));
                     $(edit).click(function (e) {
+                        Env.$container.find('.cp-comment-active').removeClass('cp-comment-active');
+                        $div.addClass('cp-comment-active');
                         e.stopPropagation();
                         Env.$container.find('.cp-comment-form').remove();
                         if ($actions) { $actions.hide(); }
@@ -418,12 +421,14 @@ define([
                                 .find('.cp-comment-actions').css('display', '');
                             $(form).remove();
 
+                            if (typeof(val) === "undefined") { return; }
+
                             var obj = Env.comments.data[key];
                             if (!obj || !Array.isArray(obj.m)) { return; }
                             var msg = obj.m[i];
                             if (!msg) { return; }
                             // i is our index
-                            if (!val) {
+                            if (val === false) {
                                 msg.d = 1;
                                 if (container) {
                                     $(container).addClass('cp-comment-deleted')
@@ -563,7 +568,7 @@ define([
                 if (!visible) { $last[0].scrollIntoView(); }
             };
 
-            $div.on('click focus', function () {
+            $div.on('click focus', function (e) {
                 if ($div.hasClass('cp-comment-active')) { return; }
                 Env.$container.find('.cp-comment-active').removeClass('cp-comment-active');
                 $div.addClass('cp-comment-active');
@@ -832,12 +837,14 @@ define([
             }
             Env.$container.find('.cp-comment-active').removeClass('cp-comment-active');
             Env.$inner.find('comment.active').removeClass('active');
+            Env.$container.find('.cp-comment-form').remove();
         });
         // Unselect comment when clicking on another part of the doc
         Env.$inner.on('click', function (e) {
             if ($(e.target).closest('comment').length) { return; }
             Env.$container.find('.cp-comment-active').removeClass('cp-comment-active');
             Env.$inner.find('comment.active').removeClass('active');
+            Env.$container.find('.cp-comment-form').remove();
         });
         Env.$inner.on('click', 'comment', function (e) {
             var $comment = $(e.target);
