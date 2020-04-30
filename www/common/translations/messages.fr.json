@@ -1353,5 +1353,17 @@
     "oo_login": "Veuillez vous connecter ou vous inscrire pour améliorer la performance des feuilles de calcul.",
     "pad_usePageWidth": "Mode page",
     "pad_useFullWidth": "Mode large",
-    "cba_title": "Couleurs par auteurs"
+    "cba_title": "Couleurs par auteurs",
+    "settings_padNotifCheckbox": "Désactiver les notifications de commentaires",
+    "settings_padNotifHint": "Ignorer les notifications lorsque quelqu'un répond à l'un de vos commentaires",
+    "settings_padNotifTitle": "Notifications de commentaires",
+    "comments_comment": "Commenter",
+    "comments_resolve": "Fermer",
+    "comments_reply": "Répondre",
+    "comments_submit": "Valider",
+    "comments_edited": "Édité",
+    "comments_deleted": "Commentaire effacé par son auteur",
+    "mentions_notification": "{0} vous a mentionné dans <b>{1}</b>",
+    "unknownPad": "Pad inconnu",
+    "comments_notification": "Réponses à votre commentaire \"{0}\" sur <b>{1}</b>"
 }

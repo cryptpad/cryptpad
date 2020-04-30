@@ -1353,5 +1353,17 @@
     "oo_login": "Please log in or register to improve the performance of spreadsheets.",
     "pad_useFullWidth": "Full-width mode",
     "pad_usePageWidth": "Page mode",
-    "cba_title": "Author colors"
+    "cba_title": "Author colors",
+    "comments_notification": "Replies to your comment \"{0}\" in <b>{1}</b>",
+    "unknownPad": "Unknown pad",
+    "mentions_notification": "{0} has mentioned you in <b>{1}</b>",
+    "comments_deleted": "Comment deleted by its author",
+    "comments_edited": "Edited",
+    "comments_submit": "Submit",
+    "comments_reply": "Reply",
+    "comments_resolve": "Resolve",
+    "comments_comment": "Comment",
+    "settings_padNotifTitle": "Comment notifications",
+    "settings_padNotifHint": "Ignore notifications when someone replies to one of your comments",
+    "settings_padNotifCheckbox": "Disable comment notifications"
 }
