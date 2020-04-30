@@ -110,8 +110,11 @@ define([
         c2.height = D.dim;
 
         var ctx = c2.getContext('2d');
-        ctx.drawImage(canvas, D.x, D.y, D.w, D.h);
-
+        try {
+            ctx.drawImage(canvas, D.x, D.y, D.w, D.h);
+        } catch (e) {
+            return void cb('ERROR');
+        }
         cb(void 0, c2.toDataURL());
     };
 
@@ -157,6 +160,8 @@ define([
                     viewport: page.getViewport(scale)
                 }).promise.then(function () {
                     return canvas;
+                }).catch(function () {
+                    cb('ERROR');
                 });
             };
             PDFJS.getDocument(url).promise
@@ -190,7 +195,8 @@ define([
         });
         reader.readAsText(blob);
     };
-    Thumb.fromBlob = function (blob, cb) {
+    Thumb.fromBlob = function (blob, _cb) {
+        var cb = Util.once(_cb);
         if (blob.type.indexOf('video/') !== -1) {
             return void Thumb.fromVideoBlob(blob, cb);
         }
@@ -200,7 +206,10 @@ define([
         if (Util.isPlainTextFile(blob.type, blob.name)) {
             return void Thumb.fromPlainTextBlob(blob, cb);
         }
-        Thumb.fromImageBlob(blob, cb);
+        if (blob.type.indexOf('image/') !== -1) {
+            return void Thumb.fromImageBlob(blob, cb);
+        }
+        return void cb('NO_THUMBNAIL');
     };
 
     window.html2canvas = undefined;
