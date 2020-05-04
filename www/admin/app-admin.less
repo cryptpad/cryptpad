@@ -32,9 +32,18 @@
         .cp-support-list-message {
             &:last-child:not(.cp-support-fromadmin)  {
                 color: @colortheme_cp-red;
-                background-color: lighten(@colortheme_cp-red, 25%);
+                background-color: lighten(@colortheme_form-warning, 25%);
                 .cp-support-showdata {
-                    background-color: lighten(@colortheme_cp-red, 30%);
+                    background-color: lighten(@colortheme_form-warning, 30%);
+                }
+            }
+
+            &:last-child {
+                &.cp-support-frompremium {
+                    background-color: lighten(@colortheme_cp-red, 25%);
+                    .cp-support-showdata {
+                        background-color: lighten(@colortheme_cp-red, 30%);
+                    }
                 }
             }
         }
