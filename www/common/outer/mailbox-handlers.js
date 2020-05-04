@@ -527,6 +527,117 @@ define([
     };
 
 
+    // Hide duplicates when receiving a SHARE_PAD notification:
+    // Keep only one notification per channel: the stronger and more recent one
+    var comments = {};
+    handlers['COMMENT_REPLY'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var hash = data.hash;
+        var content = msg.content;
+
+        if (Util.find(ctx.store.proxy, ['settings', 'pad', 'disableNotif'])) {
+            return void cb(true);
+        }
+
+        var channel = content.channel;
+        if (!channel) { return void cb(true); }
+
+        var title, href;
+        ctx.Store.getAllStores().some(function (s) {
+            var res = s.manager.findChannel(channel);
+            // Check if the pad is in our drive
+            return res.some(function (obj) {
+                if (!obj.data) { return; }
+                if (href && !obj.data.href) { return; } // We already have the VIEW url, we need EDIT
+                href = obj.data.href || obj.data.roHref;
+                title = obj.data.filename || obj.data.title;
+                if (obj.data.href) { return true; } // Abort only if we have the EDIT url
+            });
+        });
+
+        // If we don't have the edit url, ignore this notification
+        if (!href) { return void cb(true); }
+
+        // Add the title
+        content.href = href;
+        content.title = title;
+
+        // Remove duplicates
+        var old = comments[channel];
+        var toRemove = old ? old.data : undefined;
+
+        // Update the data
+        comments[channel] = {
+            data: {
+                type: box.type,
+                hash: hash
+            }
+        };
+
+        cb(false, toRemove);
+    };
+    removeHandlers['COMMENT_REPLY'] = function (ctx, box, data, hash) {
+        var content = data.content;
+        var channel = content.channel;
+        var old = comments[channel];
+        if (old && old.data && old.data.hash === hash) {
+            delete comments[channel];
+        }
+    };
+
+    // Hide duplicates when receiving a SHARE_PAD notification:
+    // Keep only one notification per channel: the stronger and more recent one
+    var mentions = {};
+    handlers['MENTION'] = function (ctx, box, data, cb) {
+        var msg = data.msg;
+        var hash = data.hash;
+        var content = msg.content;
+
+        if (isMuted(ctx, data)) { return void cb(true); }
+
+        var channel = content.channel;
+        if (!channel) { return void cb(true); }
+
+        var title, href;
+        ctx.Store.getAllStores().some(function (s) {
+            var res = s.manager.findChannel(channel);
+            // Check if the pad is in our drive
+            return res.some(function (obj) {
+                if (!obj.data) { return; }
+                if (href && !obj.data.href) { return; } // We already have the VIEW url, we need EDIT
+                href = obj.data.href || obj.data.roHref;
+                title = obj.data.filename || obj.data.title;
+                if (obj.data.href) { return true; } // Abort only if we have the EDIT url
+            });
+        });
+
+        // Add the title
+        content.href = href;
+        content.title = title;
+
+        // Remove duplicates
+        var old = mentions[channel];
+        var toRemove = old ? old.data : undefined;
+
+        // Update the data
+        mentions[channel] = {
+            data: {
+                type: box.type,
+                hash: hash
+            }
+        };
+
+        cb(false, toRemove);
+    };
+    removeHandlers['MENTION'] = function (ctx, box, data, hash) {
+        var content = data.content;
+        var channel = content.channel;
+        var old = mentions[channel];
+        if (old && old.data && old.data.hash === hash) {
+            delete mentions[channel];
+        }
+    };
+
 
     return {
         add: function (ctx, box, data, cb) {

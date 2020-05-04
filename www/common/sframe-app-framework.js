@@ -265,6 +265,7 @@ define([
             if (!bool && update) { onRemote(); }
         };
 
+        /*
         var hasChanged = function (content) {
             try {
                 var oldValue = JSON.parse(cpNfInner.chainpad.getUserDoc());
@@ -276,8 +277,9 @@ define([
             } catch (e) {}
             return false;
         };
+        */
 
-        onLocal = function (padChange) {
+        onLocal = function (/*padChange*/) {
             if (state !== STATE.READY) { return; }
             if (readOnly) { return; }
 
@@ -289,9 +291,11 @@ define([
                 throw new Error("Content must be an object or array, type is " + typeof(content));
             }
 
+            /*
             if (padChange && hasChanged(content)) {
                 //cpNfInner.metadataMgr.addAuthor();
             }
+            */
             oldContent = content;
 
             if (Array.isArray(content)) {

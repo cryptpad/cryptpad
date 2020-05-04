@@ -9,7 +9,7 @@
     @alertify-input-bg: @colortheme_modal-input;
     @alertify-input-fg: @colortheme_modal-input-fg;
 
-    input:not(.form-control), textarea {
+    input:not(.form-control), textarea, div.cp-textarea {
         // background-color: @alertify-input-fg;
         color: @cryptpad_text_col;
         border: 1px solid @alertify-input-bg;
@@ -44,18 +44,29 @@
         }
     }
 
-    textarea {
+    textarea, div.cp-textarea {
         padding: 8px;
         &[readonly] {
             overflow: hidden;
             resize: none;
         }
     }
+    div.cp-textarea {
+        height: 60px;
+        width: 100%;
+        background-color: white;
+        cursor: text;
+        outline: none;
+        white-space: pre-wrap;
+        overflow-y: auto;
+        word-break: break-word;
+        resize: vertical;
+    }
 
     div.cp-button-confirm {
         display: inline-block;
         button {
-            margin: 0;
+            margin: 0 !important;
         }
         .cp-button-timer {
             height: 3px;

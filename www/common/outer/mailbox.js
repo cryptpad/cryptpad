@@ -431,6 +431,7 @@ proxy.mailboxes = {
         var mailbox = {};
         var store = cfg.store;
         var ctx = {
+            Store: cfg.Store,
             store: store,
             pinPads: cfg.pinPads,
             updateMetadata: cfg.updateMetadata,

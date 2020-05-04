@@ -528,7 +528,7 @@ define([
         /////////////////////// Store ////////////////////////////////////
         //////////////////////////////////////////////////////////////////
 
-        var getAllStores = function () {
+        var getAllStores = Store.getAllStores = function () {
             var stores = [store];
             var teamModule = store.modules['team'];
             if (teamModule) {
@@ -2307,6 +2307,7 @@ define([
                 return;
             }
             store.mailbox = Mailbox.init({
+                Store: Store,
                 store: store,
                 updateMetadata: function () {
                     broadcast([], "UPDATE_METADATA");
@@ -2415,7 +2416,6 @@ define([
                 loadUniversal(Profile, 'profile', waitFor);
                 loadUniversal(Team, 'team', waitFor);
                 loadUniversal(History, 'history', waitFor);
-                loadMailbox(waitFor);
                 cleanFriendRequests();
             }).nThen(function () {
                 var requestLogin = function () {
@@ -2506,6 +2506,8 @@ define([
                 proxy.on('change', [Constants.tokenKey], function () {
                     broadcast([], "UPDATE_TOKEN", { token: proxy[Constants.tokenKey] });
                 });
+
+                loadMailbox();
             });
         };
 

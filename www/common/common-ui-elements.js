@@ -3666,5 +3666,268 @@ define([
         UI.proposal(div, todo);
     };
 
+    var insertTextAtCursor = function (text) {
+        var selection = window.getSelection();
+        var range = selection.getRangeAt(0);
+        range.deleteContents();
+        var node = document.createTextNode(text);
+        range.insertNode(node);
+
+        for (var position = 0; position !== text.length; position++) {
+            selection.modify("move", "right", "character");
+        }
+    };
+
+    var getSource = {};
+    getSource['contacts'] = function (common, sources) {
+        var priv = common.getMetadataMgr().getPrivateData();
+        Object.keys(priv.friends || {}).forEach(function (key) {
+            if (key === 'me') { return; }
+            var f = priv.friends[key];
+            if (!f.curvePublic || sources[f.curvePublic]) { return; }
+            sources[f.curvePublic] = {
+                avatar: f.avatar,
+                name: f.displayName,
+                curvePublic: f.curvePublic,
+                profile: f.profile,
+                notifications: f.notifications
+            };
+        });
+    };
+    UIElements.addMentions = function (common, options) {
+        if (!options.$input) { return; }
+        var $t = options.$input;
+
+        var getValue = function () { return $t.val(); };
+        var setValue = function (val) { $t.val(val); };
+
+        var div = false;
+        if (options.contenteditable) {
+            div = true;
+            getValue = function () { return $t.html(); };
+            setValue = function () {}; // Not used, we insert data at the node level
+            $t.on('paste', function (e) {
+                try {
+                    insertTextAtCursor(e.originalEvent.clipboardData.getData('text'));
+                    e.preventDefault();
+                } catch (err) { console.error(err); }
+            });
+
+            // Fix backspace with "contenteditable false" children
+            $t.on('keydown', function (e) {
+                if (e.which !== 8 && e.which !== 46) { return; } // Backspace or del
+                var sel = document.getSelection();
+                if (sel.anchorNode.nodeType !== Node.TEXT_NODE) { return; } // text nodes only
+
+                // Only fix node located after mentions
+                var n = sel.anchorNode;
+                var prev = n && n.previousSibling;
+                // Check if our caret is just after a mention
+                if (!prev || !prev.classList || !prev.classList.contains('cp-mentions')) { return; }
+
+                // Del: if we're at offset 0, make sure we won't delete the text node
+                if (e.which === 46) {
+                    if (!sel.anchorOffset && sel.anchorNode.length === 1) {
+                        sel.anchorNode.nodeValue = " ";
+                        e.preventDefault();
+                    }
+                    return;
+                }
+
+                // Backspace
+                // If we're not at offset 0, make sure we won't delete the text node
+                if (e.which === 8 && sel.anchorOffset) {
+                    if (sel.anchorNode.length === 1) {
+                        sel.anchorNode.nodeValue = " ";
+                        e.preventDefault();
+                    }
+                    return;
+                }
+                // If we're at offset 0, We're just after a mention: delete it
+                prev.parentElement.removeChild(prev);
+                e.preventDefault();
+            });
+        }
+
+        // Add the sources
+        // NOTE: Sources must have a "name". They can have an "avatar".
+        var sources = options.sources || {};
+        if (!getSource[options.type]) { return; }
+        getSource[options.type](common, sources);
+
+
+        // Sort autocomplete result by label
+        var sort = function (a, b) {
+            var _a = a.label.toLowerCase();
+            var _b = b.label.toLowerCase();
+            if (_a.label < _b.label) { return -1; }
+            if (_b.label < _a.label) { return 1; }
+            return 0;
+        };
+
+        // Get the text between the last @ before the cursor and the cursor
+        var extractLast = function (term, offset) {
+            offset = typeof(offset) !== "undefined" ? offset : $t[0].selectionStart;
+            var startOffset = term.slice(0,offset).lastIndexOf('@');
+            return term.slice(startOffset+1, offset);
+        };
+        // Insert the autocomplete value in the input field
+        var insertValue = function (value, offset, content) {
+            offset = typeof(offset) !== "undefined" ? offset : $t[0].selectionStart;
+            content = content || getValue();
+            var startOffset = content.slice(0,offset).lastIndexOf('@');
+            var length = offset - startOffset;
+            if (length <= 0) { return; }
+            var result = content.slice(0,startOffset) + value + content.slice(offset);
+            if (content) {
+                return {
+                    result: result,
+                    startOffset: startOffset
+                };
+            }
+            setValue(result);
+        };
+        // Set the value to receive from the autocomplete
+        var toInsert = function (data, key) {
+            var name = data.name.replace(/[^a-zA-Z0-9]+/g, "-");
+            return "[@"+name+"|"+key+"]";
+        };
+
+        // Fix the functions when suing a contenteditable div
+        if (div) {
+            var _extractLast = extractLast;
+            // Use getSelection to get the cursor position in contenteditable
+            extractLast = function () {
+                var sel = document.getSelection();
+                if (sel.anchorNode.nodeType !== Node.TEXT_NODE) { return; }
+                return _extractLast(sel.anchorNode.nodeValue, sel.anchorOffset);
+            };
+            var _insertValue = insertValue;
+            insertValue = function (value) {
+                // Get the selected node
+                var sel = document.getSelection();
+                if (sel.anchorNode.nodeType !== Node.TEXT_NODE) { return; }
+                var node = sel.anchorNode;
+
+                // Remove the "term"
+                var insert =_insertValue("", sel.anchorOffset, node.nodeValue);
+                if (insert) {
+                    node.nodeValue = insert.result;
+                }
+                var breakAt = insert ? insert.startOffset : sel.anchorOffset;
+
+                var el;
+                if (typeof(value) === "string") { el = document.createTextNode(value); }
+                else { el = value; }
+
+                node.parentNode.insertBefore(el, node.splitText(breakAt));
+                var next = el.nextSibling;
+                if (!next) {
+                    next = document.createTextNode(" ");
+                    el.parentNode.appendChild(next);
+                } else if (next.nodeType === Node.TEXT_NODE && !next.nodeValue) {
+                    next.nodeValue = " ";
+                }
+                var range = document.createRange();
+                range.setStart(next, 0);
+                range.setEnd(next, 0);
+                var newSel = window.getSelection();
+                newSel.removeAllRanges();
+                newSel.addRange(range);
+            };
+
+            // Inserting contacts into contenteditable: use mention UI
+            if (options.type === "contacts") {
+                toInsert = function (data) {
+                    var avatar = h('span.cp-avatar', {
+                        contenteditable: false
+                    });
+                    common.displayAvatar($(avatar), data.avatar, data.name);
+                    return h('span.cp-mentions', {
+                        'data-curve': data.curvePublic,
+                        'data-notifications': data.notifications,
+                        'data-profile': data.profile,
+                        'data-name': Util.fixHTML(data.name),
+                        'data-avatar': data.avatar || "",
+                    }, [
+                        avatar,
+                        h('span.cp-mentions-name', {
+                            contenteditable: false
+                        }, data.name)
+                    ]);
+                };
+            }
+        }
+
+
+        // don't navigate away from the field on tab when selecting an item
+        $t.on("keydown", function(e) {
+            // Tab or enter
+            if ((e.which === 13 || e.which === 9)) {
+                try {
+                    var visible = $t.autocomplete("instance").menu.activeMenu.is(':visible');
+                    if (visible) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                } catch (err) { console.error(err, $t); }
+            }
+        }).autocomplete({
+            minLength: 0,
+            source: function(data, cb) {
+                var term = data.term;
+                var results = [];
+                if (term.indexOf("@") >= 0) {
+                    term = extractLast(data.term) || '';
+                    results = Object.keys(sources).filter(function (key) {
+                        var data = sources[key];
+                        return data.name.toLowerCase().indexOf(term.toLowerCase()) !== -1;
+                    }).map(function (key) {
+                        var data = sources[key];
+                        return {
+                            label: data.name,
+                            value: key
+                        };
+                    });
+                    results.sort(sort);
+                }
+                cb(results);
+                // Set max-height to the autocomplete dropdown
+                try {
+                    var max = window.innerHeight;
+                    var pos = $t[0].getBoundingClientRect();
+                    var menu = $t.autocomplete("instance").menu.activeMenu;
+                    menu.css({
+                        'overflow-y': 'auto',
+                        'max-height': (max-pos.bottom)+'px'
+                    });
+                } catch (e) {}
+            },
+            focus: function() {
+                // prevent value inserted on focus
+                return false;
+            },
+            select: function(event, ui) {
+                // add the selected item
+                var key = ui.item.value;
+                var data = sources[key];
+                var value = toInsert(data, key);
+                insertValue(value);
+                return false;
+            }
+        }).autocomplete( "instance" )._renderItem = function( ul, item ) {
+            var key = item.value;
+            var obj = sources[key];
+            if (!obj) { return; }
+            var avatar = h('span.cp-avatar');
+            common.displayAvatar($(avatar), obj.avatar, obj.name);
+            var li = h('li.cp-autocomplete-value', [
+                avatar,
+                h('span', obj.name)
+            ]);
+            return $(li).appendTo(ul);
+        };
+    };
+
     return UIElements;
 });

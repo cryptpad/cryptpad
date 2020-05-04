@@ -1,28 +1,31 @@
-(function () {
+(function() {
     var CKEDITOR = window.CKEDITOR;
 
-    function isUnstylable (el) {
+    function isUnstylable(el) {
+        if (el.hasClass('cke_widget_mathjax')) {
+            return false;
+        }
         if (el.hasClass('cke_widget_mediatag')) {
             return false;
         }
-        var b = el.getAttribute( 'contentEditable' ) === 'false' ||
-               el.getAttribute( 'data-nostyle' );
+        var b = el.getAttribute('contentEditable') === 'false' ||
+            el.getAttribute('data-nostyle');
         return b;
     }
 
-    var color1 = 'rgba(252, 165, 3, 0.8)';
-    var color2 = 'rgba(252, 231, 3, 0.8)';
+    var color1 = 'rgba(249, 230, 65, 1.0)';
+    var color2 = 'rgba(252, 181, 0, 1.0)';
 
     CKEDITOR.plugins.add('comments', {
-        onLoad: function () {
-            CKEDITOR.addCss('comment { background-color: '+color1+'; }' +
-                '@keyframes color { 0% { background-color: '+color2+'; } 50% { background-color: '+color1+'; } 100% { background-color: '+color2+'; } }' +
-                'comment.active { animation-name: color; animation-duration: 1s; animation-iteration-count: 2; background-color: '+color2+'; outline: none;}' +
-                'comment media-tag { border: 2px solid '+color1+' !important; }' +
-                'comment.active media-tag { border: 2px solid '+color2+' !important; }' +
+        onLoad: function() {
+            CKEDITOR.addCss('comment { background-color: ' + color1 + '; }' +
+                '@keyframes color { 0% { background-color: ' + color2 + '; } 50% { background-color: ' + color1 + '; } 100% { background-color: ' + color2 + '; } }' +
+                'comment.active { animation-name: color; animation-duration: 1s; animation-iteration-count: 2; background-color: ' + color2 + '; outline: none;}' +
+                'comment media-tag { border: 2px solid ' + color1 + ' !important; }' +
+                'comment.active media-tag { border: 2px solid ' + color2 + ' !important; }' +
                 'comment * { background-color: transparent !important; }');
         },
-        init: function (editor) {
+        init: function(editor) {
             var Messages = CKEDITOR._commentsTranslations;
 
             var styleDef = {
@@ -30,14 +33,14 @@
                 attributes: {
                     'data-uid': '#(uid)',
                 },
-                overrides: [ {
+                overrides: [{
                     element: 'comment'
-                } ],
+                }],
                 childRule: isUnstylable
             };
             var removeStyle = new CKEDITOR.style(styleDef, { 'uid': '' });
 
-            var isApplicable = editor.plugins.comments.isApplicable = function (path, sel) {
+            var isApplicable = editor.plugins.comments.isApplicable = function(path, sel) {
                 path = path || editor.elementPath();
                 sel = sel || editor.getSelection();
                 var applicable = removeStyle.checkApplicable(path, editor);
@@ -49,12 +52,12 @@
 
             // Register the command.
             editor.addCommand('comment', {
-                exec: function (editor) {
+                exec: function(editor) {
                     if (editor.readOnly) { return; }
                     editor.focus();
 
                     var uid = CKEDITOR.tools.getUniqueId();
-                    editor.plugins.comments.addComment(uid, function () {
+                    editor.plugins.comments.addComment(uid, function() {
                         // Make an undo spnashot
                         editor.fire('saveSnapshot');
                         // Make sure comments won't overlap
@@ -65,16 +68,16 @@
                         editor.applyStyle(s);
 
                         // Save the undo snapshot after all changes are affected.
-                        setTimeout( function() {
+                        setTimeout(function() {
                             editor.fire('saveSnapshot');
-                        }, 0 );
+                        }, 0);
                     });
 
                 }
             });
 
             // Uncomment provided element
-            editor.plugins.comments.uncomment = function (id, els) {
+            editor.plugins.comments.uncomment = function(id, els) {
                 if (editor.readOnly) { return; }
                 editor.fire('saveSnapshot');
 
@@ -86,7 +89,7 @@
                     },
                 });
                 style.alwaysRemoveElement = true;
-                els.forEach(function (el) {
+                els.forEach(function(el) {
                     // Create range for this element
                     el.removeAttribute('class');
                     var node = new CKEDITOR.dom.node(el);
@@ -101,22 +104,22 @@
                     }
                 });
 
-                setTimeout( function() {
+                setTimeout(function() {
                     editor.fire('saveSnapshot');
-                }, 0 );
+                }, 0);
             };
 
             // Uncomment from context menu, disabled for now...
             editor.addCommand('uncomment', {
-                exec: function (editor, data) {
+                exec: function(editor, data) {
                     if (editor.readOnly) { return; }
                     editor.fire('saveSnapshot');
-                    if (!data || !data.id) {
+                    if (!data ||  !data.id) {
                         editor.focus();
                         editor.removeStyle(removeStyle);
-                        setTimeout( function() {
+                        setTimeout(function() {
                             editor.fire('saveSnapshot');
-                        }, 0 );
+                        }, 0);
                         return;
                     }
                 }
@@ -127,7 +130,7 @@
                 editor.ui.addButton('Comment', {
                     label: Messages.comment,
                     command: 'comment',
-                    icon : '/pad/icons/comment.png',
+                    icon: '/pad/icons/comment.png',
                     toolbar: 'insert,10'
                 });
             }
@@ -136,7 +139,7 @@
                 editor.addMenuGroup('comments');
                 editor.addMenuItem('comment', {
                     label: Messages.comment,
-                    icon : '/pad/icons/comment.png',
+                    icon: '/pad/icons/comment.png',
                     command: 'comment',
                     group: 'comments'
                 });
@@ -159,7 +162,7 @@
                     };
                 });
                 */
-                editor.contextMenu.addListener(function (element, sel, path) {
+                editor.contextMenu.addListener(function(element, sel, path) {
                     var applicable = isApplicable(path, sel);
                     if (!applicable) { return; }
                     return {
