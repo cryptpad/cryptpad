@@ -1,5 +1,6 @@
 node_modules/
 www/bower_components/
+www/common/less.min.js
 www/common/pdfjs/
 www/common/tippy/
 www/common/textFit.min.js
