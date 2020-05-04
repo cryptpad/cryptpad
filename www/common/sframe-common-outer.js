@@ -395,7 +395,7 @@ define([
             var forceCreationScreen = cfg.useCreationScreen &&
                                       sessionStorage[Utils.Constants.displayPadCreationScreen];
             delete sessionStorage[Utils.Constants.displayPadCreationScreen];
-            var isSafe = ['debug', 'profile', 'drive'].indexOf(currentPad.app) !== -1;
+            var isSafe = ['debug', 'profile', 'drive', 'teams'].indexOf(currentPad.app) !== -1;
             var updateMeta = function () {
                 //console.log('EV_METADATA_UPDATE');
                 var metaObj;
@@ -618,6 +618,172 @@ define([
                     Cryptpad.setPadAttribute(data.key, data.value, function (e) {
                         cb({error:e});
                     }, href);
+                });
+
+                // Add or remove our mailbox from the list if we're an owner
+                sframeChan.on('Q_UPDATE_MAILBOX', function (data, cb) {
+                    var metadata = data.metadata;
+                    var add = data.add;
+                    var _secret = secret;
+                    if (metadata && (metadata.href || metadata.roHref)) {
+                        var _parsed = Utils.Hash.parsePadUrl(metadata.href || metadata.roHref);
+                        _secret = Utils.Hash.getSecrets(_parsed.type, _parsed.hash, metadata.password);
+                    }
+                    if (_secret.channel.length !== 32) {
+                        return void cb({error: 'EINVAL'});
+                    }
+                    var crypto = Crypto.createEncryptor(_secret.keys);
+                    nThen(function (waitFor) {
+                        // If we already have metadata, use it, otherwise, try to get it
+                        if (metadata) { return; }
+
+                        Cryptpad.getPadMetadata({
+                            channel: secret.channel
+                        }, waitFor(function (obj) {
+                            obj = obj || {};
+                            if (obj.error) {
+                                waitFor.abort();
+                                return void cb(obj);
+                            }
+                            metadata = obj;
+                        }));
+                    }).nThen(function () {
+                        // Get and maybe migrate the existing mailbox object
+                        var owners = metadata.owners;
+                        if (!Array.isArray(owners) || owners.indexOf(edPublic) === -1) {
+                            return void cb({ error: 'INSUFFICIENT_PERMISSIONS' });
+                        }
+
+                        // Remove a mailbox
+                        if (!add) {
+                            // Old format: this is the mailbox of the first owner
+                            if (typeof (metadata.mailbox) === "string" && metadata.mailbox) {
+                                // Not our mailbox? abort
+                                if (owners[0] !== edPublic) {
+                                    return void cb({ error: 'INSUFFICIENT_PERMISSIONS' });
+                                }
+                                // Remove it
+                                return void Cryptpad.setPadMetadata({
+                                    channel: _secret.channel,
+                                    command: 'RM_MAILBOX',
+                                    value: []
+                                }, cb);
+                            } else if (metadata.mailbox) { // New format
+                                return void Cryptpad.setPadMetadata({
+                                    channel: _secret.channel,
+                                    command: 'RM_MAILBOX',
+                                    value: [edPublic]
+                                }, cb);
+                            }
+                            return void cb({
+                                error: 'NO_MAILBOX'
+                            });
+                        }
+                        // Add a mailbox
+                        var toAdd = {};
+                        toAdd[edPublic] = crypto.encrypt(JSON.stringify({
+                            notifications: notifications,
+                            curvePublic: curvePublic
+                        }));
+                        Cryptpad.setPadMetadata({
+                            channel: _secret.channel,
+                            command: 'ADD_MAILBOX',
+                            value: toAdd
+                        }, cb);
+                    });
+                });
+
+                // REQUEST_ACCESS is used both to check IF we can contact an owner (send === false)
+                // AND also to send the request if we want (send === true)
+                sframeChan.on('Q_REQUEST_ACCESS', function (data, cb) {
+                    if (readOnly && hashes.editHash) {
+                        return void cb({error: 'ALREADYKNOWN'});
+                    }
+                    var send = data.send;
+                    var metadata = data.metadata;
+                    var owner, owners;
+                    var _secret = secret;
+                    if (metadata && metadata.roHref) {
+                        var _parsed = Utils.Hash.parsePadUrl(metadata.roHref);
+                        _secret = Utils.Hash.getSecrets(_parsed.type, _parsed.hash, metadata.password);
+                    }
+                    if (_secret.channel.length !== 32) {
+                        return void cb({error: 'EINVAL'});
+                    }
+                    var crypto = Crypto.createEncryptor(_secret.keys);
+                    nThen(function (waitFor) {
+                        // Try to get the owner's mailbox from the pad metadata first.
+                        // If it's is an older owned pad, check if the owner is a friend
+                        // or an acquaintance (from async-store directly in requestAccess)
+                        var todo = function (obj) {
+                            owners = obj.owners;
+
+                            var mailbox;
+                            // Get the first available mailbox (the field can be an string or an object)
+                            // TODO maybe we should send the request to all the owners?
+                            if (typeof (obj.mailbox) === "string") {
+                                mailbox = obj.mailbox;
+                            } else if (obj.mailbox && obj.owners && obj.owners.length) {
+                                mailbox = obj.mailbox[obj.owners[0]];
+                            }
+                            if (mailbox) {
+                                try {
+                                    var dataStr = crypto.decrypt(mailbox, true, true);
+                                    var data = JSON.parse(dataStr);
+                                    if (!data.notifications || !data.curvePublic) { return; }
+                                    owner = data;
+                                } catch (e) { console.error(e); }
+                            }
+                        };
+
+                        // If we already have metadata, use it, otherwise, try to get it
+                        if (metadata) { return void todo(metadata); }
+
+                        Cryptpad.getPadMetadata({
+                            channel: _secret.channel
+                        }, waitFor(function (obj) {
+                            obj = obj || {};
+                            if (obj.error) { return; }
+                            todo(obj);
+                        }));
+                    }).nThen(function () {
+                        // If we are just checking (send === false) and there is a mailbox field, cb state true
+                        // If there is no mailbox, we'll have to check if an owner is a friend in the worker
+                        if (!send) { return void cb({state: Boolean(owner)}); }
+
+                        Cryptpad.padRpc.requestAccess({
+                            send: send,
+                            channel: _secret.channel,
+                            owner: owner,
+                            owners: owners
+                        }, cb);
+                    });
+                });
+
+                sframeChan.on('Q_BLOB_PASSWORD_CHANGE', function (data, cb) {
+                    data.href = data.href || currentPad.href;
+                    var onPending = function (cb) {
+                        sframeChan.query('Q_BLOB_PASSWORD_CHANGE_PENDING', null, function (err, obj) {
+                            if (obj && obj.cancel) { cb(); }
+                        });
+                    };
+                    var updateProgress = function (p) {
+                        sframeChan.event('EV_BLOB_PASSWORD_CHANGE_PROGRESS', p);
+                    };
+                    Cryptpad.changeBlobPassword(data, {
+                        onPending: onPending,
+                        updateProgress: updateProgress
+                    }, cb);
+                });
+
+                sframeChan.on('Q_OO_PASSWORD_CHANGE', function (data, cb) {
+                    data.href = data.href;
+                    Cryptpad.changeOOPassword(data, cb);
+                });
+
+                sframeChan.on('Q_PAD_PASSWORD_CHANGE', function (data, cb) {
+                    data.href = data.href;
+                    Cryptpad.changePadPassword(Cryptget, Crypto, data, cb);
                 });
 
             };
@@ -1126,32 +1292,6 @@ define([
                 });
             });
 
-            sframeChan.on('Q_BLOB_PASSWORD_CHANGE', function (data, cb) {
-                data.href = data.href || currentPad.href;
-                var onPending = function (cb) {
-                    sframeChan.query('Q_BLOB_PASSWORD_CHANGE_PENDING', null, function (err, obj) {
-                        if (obj && obj.cancel) { cb(); }
-                    });
-                };
-                var updateProgress = function (p) {
-                    sframeChan.event('EV_BLOB_PASSWORD_CHANGE_PROGRESS', p);
-                };
-                Cryptpad.changeBlobPassword(data, {
-                    onPending: onPending,
-                    updateProgress: updateProgress
-                }, cb);
-            });
-
-            sframeChan.on('Q_OO_PASSWORD_CHANGE', function (data, cb) {
-                data.href = data.href;
-                Cryptpad.changeOOPassword(data, cb);
-            });
-
-            sframeChan.on('Q_PAD_PASSWORD_CHANGE', function (data, cb) {
-                data.href = data.href;
-                Cryptpad.changePadPassword(Cryptget, Crypto, data, cb);
-            });
-
             sframeChan.on('Q_CHANGE_USER_PASSWORD', function (data, cb) {
                 Cryptpad.changeUserPassword(Cryptget, edPublic, data, cb);
             });
@@ -1247,145 +1387,6 @@ define([
 
             sframeChan.on('EV_GIVE_ACCESS', function (data, cb) {
                 Cryptpad.padRpc.giveAccess(data, cb);
-            });
-            // REQUEST_ACCESS is used both to check IF we can contact an owner (send === false)
-            // AND also to send the request if we want (send === true)
-            sframeChan.on('Q_REQUEST_ACCESS', function (data, cb) {
-                if (readOnly && hashes.editHash) {
-                    return void cb({error: 'ALREADYKNOWN'});
-                }
-                var send = data.send;
-                var metadata = data.metadata;
-                var owner, owners;
-                var _secret = secret;
-                if (metadata && metadata.roHref) {
-                    var _parsed = Utils.Hash.parsePadUrl(metadata.roHref);
-                    _secret = Utils.Hash.getSecrets(_parsed.type, _parsed.hash, metadata.password);
-                }
-                if (_secret.channel.length !== 32) {
-                    return void cb({error: 'EINVAL'});
-                }
-                var crypto = Crypto.createEncryptor(_secret.keys);
-                nThen(function (waitFor) {
-                    // Try to get the owner's mailbox from the pad metadata first.
-                    // If it's is an older owned pad, check if the owner is a friend
-                    // or an acquaintance (from async-store directly in requestAccess)
-                    var todo = function (obj) {
-                        owners = obj.owners;
-
-                        var mailbox;
-                        // Get the first available mailbox (the field can be an string or an object)
-                        // TODO maybe we should send the request to all the owners?
-                        if (typeof (obj.mailbox) === "string") {
-                            mailbox = obj.mailbox;
-                        } else if (obj.mailbox && obj.owners && obj.owners.length) {
-                            mailbox = obj.mailbox[obj.owners[0]];
-                        }
-                        if (mailbox) {
-                            try {
-                                var dataStr = crypto.decrypt(mailbox, true, true);
-                                var data = JSON.parse(dataStr);
-                                if (!data.notifications || !data.curvePublic) { return; }
-                                owner = data;
-                            } catch (e) { console.error(e); }
-                        }
-                    };
-
-                    // If we already have metadata, use it, otherwise, try to get it
-                    if (metadata) { return void todo(metadata); }
-
-                    Cryptpad.getPadMetadata({
-                        channel: _secret.channel
-                    }, waitFor(function (obj) {
-                        obj = obj || {};
-                        if (obj.error) { return; }
-                        todo(obj);
-                    }));
-                }).nThen(function () {
-                    // If we are just checking (send === false) and there is a mailbox field, cb state true
-                    // If there is no mailbox, we'll have to check if an owner is a friend in the worker
-                    if (!send) { return void cb({state: Boolean(owner)}); }
-
-                    Cryptpad.padRpc.requestAccess({
-                        send: send,
-                        channel: _secret.channel,
-                        owner: owner,
-                        owners: owners
-                    }, cb);
-                });
-            });
-
-            // Add or remove our mailbox from the list if we're an owner
-            sframeChan.on('Q_UPDATE_MAILBOX', function (data, cb) {
-                var metadata = data.metadata;
-                var add = data.add;
-                var _secret = secret;
-                if (metadata && (metadata.href || metadata.roHref)) {
-                    var _parsed = Utils.Hash.parsePadUrl(metadata.href || metadata.roHref);
-                    _secret = Utils.Hash.getSecrets(_parsed.type, _parsed.hash, metadata.password);
-                }
-                if (_secret.channel.length !== 32) {
-                    return void cb({error: 'EINVAL'});
-                }
-                var crypto = Crypto.createEncryptor(_secret.keys);
-                nThen(function (waitFor) {
-                    // If we already have metadata, use it, otherwise, try to get it
-                    if (metadata) { return; }
-
-                    Cryptpad.getPadMetadata({
-                        channel: secret.channel
-                    }, waitFor(function (obj) {
-                        obj = obj || {};
-                        if (obj.error) {
-                            waitFor.abort();
-                            return void cb(obj);
-                        }
-                        metadata = obj;
-                    }));
-                }).nThen(function () {
-                    // Get and maybe migrate the existing mailbox object
-                    var owners = metadata.owners;
-                    if (!Array.isArray(owners) || owners.indexOf(edPublic) === -1) {
-                        return void cb({ error: 'INSUFFICIENT_PERMISSIONS' });
-                    }
-
-                    // Remove a mailbox
-                    if (!add) {
-                        // Old format: this is the mailbox of the first owner
-                        if (typeof (metadata.mailbox) === "string" && metadata.mailbox) {
-                            // Not our mailbox? abort
-                            if (owners[0] !== edPublic) {
-                                return void cb({ error: 'INSUFFICIENT_PERMISSIONS' });
-                            }
-                            // Remove it
-                            return void Cryptpad.setPadMetadata({
-                                channel: _secret.channel,
-                                command: 'RM_MAILBOX',
-                                value: []
-                            }, cb);
-                        } else if (metadata.mailbox) { // New format
-                            return void Cryptpad.setPadMetadata({
-                                channel: _secret.channel,
-                                command: 'RM_MAILBOX',
-                                value: [edPublic]
-                            }, cb);
-                        }
-                        return void cb({
-                            error: 'NO_MAILBOX'
-                        });
-                    }
-                    // Add a mailbox
-                    var toAdd = {};
-                    toAdd[edPublic] = crypto.encrypt(JSON.stringify({
-                        notifications: notifications,
-                        curvePublic: curvePublic
-                    }));
-                    Cryptpad.setPadMetadata({
-                        channel: _secret.channel,
-                        command: 'ADD_MAILBOX',
-                        value: toAdd
-                    }, cb);
-                });
             });
 
             sframeChan.on('EV_BURN_PAD', function (channel) {
