@@ -25,6 +25,7 @@ define([
     '/common/TypingTests.js',
     '/customize/messages.js',
     '/pad/links.js',
+    '/pad/comments.js',
     '/pad/export.js',
     '/pad/cursor.js',
     '/bower_components/nthen/index.js',
@@ -51,6 +52,7 @@ define([
     TypingTest,
     Messages,
     Links,
+    Comments,
     Exporter,
     Cursors,
     nThen,
@@ -153,8 +155,13 @@ define([
             if (hj[0] === 'MEDIA-TAG') { hj[2] = []; }
             return hj;
         };
+        var commentActiveFilter = function (hj) {
+            if (hj[0] === 'COMMENT') { delete (hj[1] || {}).class; }
+            return hj;
+        };
         brFilter(hj);
         mediatagContentFilter(hj);
+        commentActiveFilter(hj);
         widgetFilter(hj);
         return hj;
     };
@@ -274,6 +281,14 @@ define([
                         return true;
                     } else if (info.diff.newValue && forbiddenTags.indexOf(info.diff.newValue.nodeType) !== -1) {
                         console.log("Rejecting forbidden tag of type (%s)", info.diff.newValue.nodeName);
+                        return true;
+                    }
+                }
+
+                // Don't remote the "active" class of our comments
+                if (info.node && info.node.tagName === 'COMMENT') {
+                    if (info.diff.action === 'removeAttribute' &&
+                        ['class'].indexOf(info.diff.name) !== -1) {
                         return true;
                     }
                 }
@@ -438,17 +453,19 @@ define([
 
     var andThen2 = function (editor, Ckeditor, framework) {
         var mediaTagMap = {};
-        var $bar = $('#cke_1_toolbox');
         var $contentContainer = $('#cke_1_contents');
-        var $html = $bar.closest('html');
+        var $html = $('html');
         var $faLink = $html.find('head link[href*="/bower_components/components-font-awesome/css/font-awesome.min.css"]');
         if ($faLink.length) {
             $html.find('iframe').contents().find('head').append($faLink.clone());
         }
-        var ml = Ckeditor.instances.editor1.plugins.magicline.backdoor.that.line.$;
+
+        var ml = editor._.magiclineBackdoor.that.line.$;
         [ml, ml.parentElement].forEach(function (el) {
             el.setAttribute('class', 'non-realtime');
         });
+
+        window.editor = editor;
 
         var $iframe = $('html').find('iframe').contents();
         var ifrWindow = $html.find('iframe')[0].contentWindow;
@@ -458,9 +475,9 @@ define([
 
         framework._.sfCommon.addShortcuts(ifrWindow);
 
-        var privateData = framework._.sfCommon.getMetadataMgr().getPrivateData();
-
         var documentBody = ifrWindow.document.body;
+        var inner = window.inner = documentBody;
+        var $inner = $(inner);
 
         var observer = new MutationObserver(function (muts) {
             muts.forEach(function (mut) {
@@ -480,55 +497,20 @@ define([
             childList: true
         });
 
-        var inner = window.inner = documentBody;
-        var $inner = $(inner);
+        var metadataMgr = framework._.sfCommon.getMetadataMgr();
+        var privateData = metadataMgr.getPrivateData();
+        var common = framework._.sfCommon;
 
-        var onLinkClicked = function (e) {
-            var $target = $(e.target);
-            if (!$target.is('a')) { return; }
-            var href = $target.attr('href');
-            if (!href || href[0] === '#') { return; }
-            e.preventDefault();
-            e.stopPropagation();
-
-            var rect = e.target.getBoundingClientRect();
-            var rect0 = inner.getBoundingClientRect();
-            var l = (rect.left - rect0.left)+'px';
-            var t = rect.bottom + $iframe.scrollTop() +'px';
-
-            var a = h('a', { href: href}, href);
-            var link = h('div.cp-link-clicked.non-realtime', {
-                contenteditable: false,
-                style: 'top:'+t+';left:'+l
-            }, [ a ]);
-            var $link = $(link);
-            $inner.append(link);
-
-            if (rect.left + $link.outerWidth() - rect0.left > $inner.width()) {
-                $link.css('left', 'unset');
-                $link.css('right', 0);
-            }
-
-            $(a).click(function (ee) {
-                ee.preventDefault();
-                ee.stopPropagation();
-                framework._.sfCommon.openUnsafeURL(href);
-                $link.remove();
-            });
-            $link.on('mouseleave', function () {
-                $link.remove();
-            });
-        };
-        var removeClickedLink = function () {
-            $inner.find('.cp-link-clicked').remove();
-        };
-
-        $inner.click(function (e) {
-            if (e.target.nodeName.toUpperCase() === 'A') {
-                removeClickedLink();
-                return void onLinkClicked(e);
-            }
-            removeClickedLink();
+        var comments = Comments.create({
+            framework: framework,
+            metadataMgr: metadataMgr,
+            common: common,
+            editor: editor,
+            ifrWindow: ifrWindow,
+            $iframe: $iframe,
+            $inner: $inner,
+            $contentContainer: $contentContainer,
+            $container: $('#cp-app-pad-comments')
         });
 
         // My cursor
@@ -647,6 +629,8 @@ define([
                 // off so that we don't end up with multiple identical handlers
                 $links.off('click', openLink).on('click', openLink);
             }
+
+            comments.onContentUpdate();
         });
 
         framework.setTextContentGetter(function () {
@@ -669,6 +653,8 @@ define([
             // the text nodes and OT/ChainPad would freak out
             cursors.removeCursors(inner);
 
+            comments.onContentUpdate();
+
             displayMediaTags(framework, inner, mediaTagMap);
             inner.normalize();
             var hjson = Hyperjson.fromDOM(inner, shouldSerialize, hjsonFilters);
@@ -676,7 +662,6 @@ define([
             return hjson;
         });
 
-        $bar.find('#cke_1_toolbar_collapser').hide();
         if (!framework.isReadOnly()) {
             addToolbarHideBtn(framework, $contentContainer);
         } else {
@@ -735,7 +720,7 @@ define([
             framework._.sfCommon.getAttribute(['pad', 'width'], function (err, data) {
                 var active = data || typeof(data) === "undefined";
                 if (active) {
-                    $iframe.find('html').addClass('cke_body_width');
+                    $contentContainer.addClass('cke_body_width');
                 }
                 var $width = framework._.sfCommon.createButton('', true, {
                     icon: 'fa-arrows-h',
@@ -743,9 +728,9 @@ define([
                     name: "pad-width",
                 },function () {
                     if (active) {
-                        $iframe.find('html').removeClass('cke_body_width');
+                        $contentContainer.removeClass('cke_body_width');
                     } else {
-                        $iframe.find('html').addClass('cke_body_width');
+                        $contentContainer.addClass('cke_body_width');
                     }
                     active = !active;
                     var key = active ? Messages.pad_useFullWidth : Messages.pad_usePageWidth;
@@ -786,6 +771,9 @@ define([
                     });
                 }
             });
+
+            comments.ready();
+
             /*setTimeout(function () {
                 $('iframe.cke_wysiwyg_frame').focus();
                 editor.focus();
@@ -918,8 +906,8 @@ define([
 
         nThen(function (waitFor) {
             Framework.create({
-                toolbarContainer: '#cke_1_toolbox',
-                contentContainer: '#cke_editor1 > .cke_inner',
+                toolbarContainer: '#cp-app-pad-toolbar',
+                contentContainer: '#cp-app-pad-editor',
                 patchTransformer: ChainPad.NaiveJSONTransformer,
                 /*thumbnail: {
                     getContainer: function () { return $('iframe').contents().find('html')[0]; },
@@ -963,14 +951,6 @@ define([
                 }
                 // Used in ckeditor-config.js
                 Ckeditor.CRYPTPAD_URLARGS = ApiConfig.requireConf.urlArgs;
-                var backColor = AppConfig.appBackgroundColor;
-                var newCss = '.cke_body_width { background: '+ backColor +'; height: 100%; overflow: auto;}' +
-                    '.cke_body_width body {' +
-                        'max-width: 50em; padding: 20px 30px; margin: 0 auto; min-height: 100%;'+
-                        'box-sizing: border-box; overflow: auto;'+
-                    '}' +
-                    '.cke_body_width body > *:first-child { margin-top: 0; }';
-                Ckeditor.addCss(newCss);
                 Ckeditor._mediatagTranslations = {
                     title: Messages.pad_mediatagTitle,
                     width: Messages.pad_mediatagWidth,
@@ -981,8 +961,13 @@ define([
                     'import': Messages.pad_mediatagImport,
                     options: Messages.pad_mediatagOptions
                 };
+                Messages.comments_comment = "COMMENT"; // XXX
+                Ckeditor._commentsTranslations = {
+                    comment: Messages.comments_comment,
+                };
                 Ckeditor.plugins.addExternal('mediatag','/pad/', 'mediatag-plugin.js');
                 Ckeditor.plugins.addExternal('blockbase64','/pad/', 'disable-base64.js');
+                Ckeditor.plugins.addExternal('comments','/pad/', 'comment.js');
                 Ckeditor.plugins.addExternal('wordcount','/pad/wordcount/', 'plugin.js');
                 module.ckeditor = editor = Ckeditor.replace('editor1', {
                     customConfig: '/customize/ckeditor-config.js',
@@ -992,16 +977,14 @@ define([
                 editor.plugins.mediatag.import = function ($mt) {
                     framework._.sfCommon.importMediaTag($mt);
                 };
-                Links.addSupportForOpeningLinksInNewTab(Ckeditor)({editor: editor});
+                Links.init(Ckeditor, editor);
             }).nThen(function () {
                 // Move ckeditor parts to have a structure like the other apps
-                var $toolbarContainer = $('#cke_1_top');
                 var $contentContainer = $('#cke_1_contents');
-                var $mainContainer = $('#cke_editor1');
-                $contentContainer.prepend($toolbarContainer.find('.cke_toolbox_main'));
-                $mainContainer.prepend($toolbarContainer);
-                $contentContainer.find('.cke_toolbox_main').addClass('cke_reset_all');
-                $toolbarContainer.removeClass('cke_reset_all');
+                var $mainContainer = $('#cke_editor1 > .cke_inner');
+                var $ckeToolbar = $('#cke_1_top').find('.cke_toolbox_main');
+                $mainContainer.prepend($ckeToolbar.addClass('cke_reset_all'));
+                $contentContainer.append(h('div#cp-app-pad-comments'));
             }).nThen(waitFor());
 
         }).nThen(function (/*waitFor*/) {

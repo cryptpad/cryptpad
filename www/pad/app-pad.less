@@ -1,4 +1,6 @@
 @import (reference) "../../customize/src/less2/include/framework.less";
+@import (reference) "../../customize/src/less2/include/comments.less";
+@import (reference) "../../customize/src/less2/include/buttons.less";
 
 body.cp-app-pad {
     .framework_main(
@@ -7,10 +9,21 @@ body.cp-app-pad {
         @color: @colortheme_pad-color
     );
 
-    #cke_1_top {
-        overflow: visible;
-        padding: 0px;
+    @bg-color: #e3e3e3;
+
+    display: flex;
+    flex-flow: column;
+    max-height: 100%;
+    min-height: auto;
+
+    #cp-app-pad-editor {
+        flex: 1;
+        display: flex;
+        flex-flow: row;
+        height: 100%;
+        overflow: hidden;
     }
+
     .cke_toolbox_main {
         background-color: @colortheme_pad-toolbar-bg;
         .cke_toolbar {
@@ -33,20 +46,58 @@ body.cp-app-pad {
         flex-flow: column;
         height: 100%;
         border: 0;
+        flex: 1;
         > .cke_inner {
             overflow: hidden;
             flex: 1;
             position: unset;
             display: flex;
+            flex-flow: column;
             margin-top: -1px;
-            #cke_1_contents {
-                flex: 1;
-                display: flex;
-                flex-flow: column;
-                height: auto !important;
-                iframe {
-                    flex: 1;
+        }
+        #cke_1_top {
+            display: none;
+        }
+    }
+    #cke_1_contents {
+        flex: 1;
+        display: flex;
+        height: auto !important;
+        background-color: @bg-color;
+        justify-content: center;
+        iframe {
+            flex: 1;
+            min-width: 0;
+            order: 1;
+        }
+        div.cp-comment-bubble {
+            .buttons_main();
+            position: relative;
+            order: 2;
+            button {
+                .fa {
+                    margin: 0 !important;
                 }
+                right: 20px;
+                position: absolute;
+            }
+        }
+        #cp-app-pad-comments {
+            order: 3;
+            width: 300px;
+            //background-color: white;
+            margin: 30px;
+            .comments_main();
+        }
+        &.cke_body_width {
+            div.cp-comment-bubble {
+                button {
+                    right: 0px;
+                }
+            }
+            iframe {
+                margin: 0 30px;
+                max-width: 800px;
             }
         }
     }
