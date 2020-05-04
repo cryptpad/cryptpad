@@ -145,6 +145,15 @@ define([
         }
     };
 
+    // Seletc all text of a contenteditable element
+    var selectAll = function (element) {
+        var selection = window.getSelection();
+        var range = document.createRange();
+        range.selectNodeContents(element);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    };
+
     Messages.comments_deleted = "Comment deleted by its author"; // XXX
     Messages.comments_edited = "Edited"; // XXX
     Messages.comments_submit = "Submit"; // XXX
@@ -273,10 +282,11 @@ define([
 
         setTimeout(function () {
             $(textarea).focus();
+            selectAll(textarea);
         });
 
         return h('div.cp-comment-form' + (reply ? '.cp-comment-reply' : ''), {
-            'data-uid': reply || undefined
+            'data-uid': reply || ''
         }, [
             h('div.cp-comment-form-input', [
                 avatar,
@@ -290,12 +300,30 @@ define([
         ]);
     };
 
+    var isVisible = function (el, $container) {
+        var size = $container.outerHeight();
+        var pos = el.getBoundingClientRect();
+        return (pos.bottom < size) && (pos.y > 0);
+    };
+
     var redrawComments = function (Env) {
         // Don't redraw if there were no change
         var str = Sortify(Env.comments || {});
         if (str === Env.oldComments) { return; }
         Env.oldComments = str;
 
+        // Store the cursor position if it's located in this form
+        var oldSelection = window.getSelection();
+        var oldRangeObj;
+        if ($(oldSelection.anchorNode).closest('.cp-comment-form').length) {
+            oldRange = oldSelection.getRangeAt && oldSelection.getRangeAt(0);
+            oldRangeObj = {
+                start: oldRange.startContainer,
+                startO: oldRange.startOffset,
+                end: oldRange.endContainer,
+                endO: oldRange.endOffset
+            };
+        }
         // Store existing input form in memory
         var $oldInput = Env.$container.find('.cp-comment-form').detach();
         if ($oldInput.length !== 1) { $oldInput = undefined; }
@@ -562,21 +590,24 @@ define([
 
                 // Scroll into view
                 if (!$last.length) { return; }
-                var size = Env.$inner.outerHeight();
-                var pos = $last[0].getBoundingClientRect();
-                var visible = (pos.y + pos.height) < size;
+                var visible = isVisible($last[0], Env.$inner);
                 if (!visible) { $last[0].scrollIntoView(); }
             };
 
             $div.on('click focus', function (e) {
+                // Prevent the click event to propagate if we're already selected
+                // The propagation to #cp-app-pad-inner would trigger the "unselect" handler
+                e.stopPropagation();
                 if ($div.hasClass('cp-comment-active')) { return; }
                 Env.$container.find('.cp-comment-active').removeClass('cp-comment-active');
                 $div.addClass('cp-comment-active');
-                div.scrollIntoView();
                 $actions.css('display', '');
                 Env.$container.find('.cp-comment-form').remove();
 
                 focusContent();
+
+                var visible = isVisible(div, Env.$container);
+                if (!visible) { div.scrollIntoView(); }
             });
 
             if ($oldInput && $oldInput.attr('data-uid') === key) {
@@ -587,6 +618,19 @@ define([
                 focusContent();
             }
         });
+
+        // Restore selection
+        if (oldRangeObj) {
+            setTimeout(function () {
+                if (!oldRangeObj) { return; }
+                var range = document.createRange();
+                range.setStart(oldRangeObj.start, oldRangeObj.startO);
+                range.setEnd(oldRangeObj.end, oldRangeObj.endO);
+                var sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+            });
+        }
 
         if (show) {
             Env.$container.show();
@@ -835,9 +879,11 @@ define([
 
         // Unselect comment when clicking outside
         $(window).click(function (e) {
-            if ($(e.target).closest('.cp-comment-container').length) {
-                return;
-            }
+            var $target = $(e.target);
+            if (!$target.length) { return; }
+            if ($target.is('.cp-comment-container')) { return; }
+            if ($target.closest('.cp-comment-container').length) { return; }
+            if ($target.closest('.ui-autocomplete').length) { return; }
             // Add comment button? don't remove anything because this handler is called after
             // the button action
             if (e.target.classList.contains('cke_button__comment_icon')) { return; }
