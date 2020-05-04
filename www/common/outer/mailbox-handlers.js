@@ -541,15 +541,18 @@ define([
 
         var channel = content.channel;
         if (!channel) { return void cb(true); }
-        var res = ctx.store.manager.findChannel(channel);
 
         var title, href;
-        // Check if the pad is in our drive
-        res.some(function (obj) {
-            if (!obj.data) { return; }
-            href = obj.data.href || obj.data.roHref;
-            title = obj.data.filename || obj.data.title;
-            return true;
+        ctx.Store.getAllStores().some(function (s) {
+            var res = s.manager.findChannel(channel);
+            // Check if the pad is in our drive
+            return res.some(function (obj) {
+                if (!obj.data) { return; }
+                if (href && !obj.data.href) { return; } // We already have the VIEW url, we need EDIT
+                href = obj.data.href || obj.data.roHref;
+                title = obj.data.filename || obj.data.title;
+                if (obj.data.href) { return true; } // Abort only if we have the EDIT url
+            });
         });
 
         // If we don't have the edit url, ignore this notification
@@ -597,12 +600,16 @@ define([
         var res = ctx.store.manager.findChannel(channel);
 
         var title, href;
-        // Check if the pad is in our drive
-        res.some(function (obj) {
-            if (!obj.data) { return; }
-            href = obj.data.href || obj.data.roHref;
-            title = obj.data.filename || obj.data.title;
-            return true;
+        ctx.Store.getAllStores().some(function (s) {
+            var res = s.manager.findChannel(channel);
+            // Check if the pad is in our drive
+            return res.some(function (obj) {
+                if (!obj.data) { return; }
+                if (href && !obj.data.href) { return; } // We already have the VIEW url, we need EDIT
+                href = obj.data.href || obj.data.roHref;
+                title = obj.data.filename || obj.data.title;
+                if (obj.data.href) { return true; } // Abort only if we have the EDIT url
+            });
         });
 
         // Add the title
