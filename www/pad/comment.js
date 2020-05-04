@@ -2,6 +2,9 @@
     var CKEDITOR = window.CKEDITOR;
 
     function isUnstylable(el) {
+        if (el.hasClass('cke_widget_mathjax')) {
+            return false;
+        }
         if (el.hasClass('cke_widget_mediatag')) {
             return false;
         }
