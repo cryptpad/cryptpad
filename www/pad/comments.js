@@ -316,7 +316,7 @@ define([
         var oldSelection = window.getSelection();
         var oldRangeObj;
         if ($(oldSelection.anchorNode).closest('.cp-comment-form').length) {
-            oldRange = oldSelection.getRangeAt && oldSelection.getRangeAt(0);
+            var oldRange = oldSelection.getRangeAt && oldSelection.getRangeAt(0);
             oldRangeObj = {
                 start: oldRange.startContainer,
                 startO: oldRange.startOffset,
