@@ -896,7 +896,8 @@ define([
             if ($target.closest('.ui-autocomplete').length) { return; }
             // Add comment button? don't remove anything because this handler is called after
             // the button action
-            if (e.target.classList.contains('cke_button__comment_icon')) { return; }
+            if ($target.is('.cke_button__comment')) { return; }
+            if ($target.closest('.cke_button__comment').length) { return; }
             Env.$container.find('.cp-comment-active').removeClass('cp-comment-active');
             Env.$inner.find('comment.active').removeClass('active');
             Env.$container.find('.cp-comment-form').remove();
