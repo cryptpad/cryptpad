@@ -597,7 +597,6 @@ define([
 
         var channel = content.channel;
         if (!channel) { return void cb(true); }
-        var res = ctx.store.manager.findChannel(channel);
 
         var title, href;
         ctx.Store.getAllStores().some(function (s) {
