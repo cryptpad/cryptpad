@@ -107,7 +107,7 @@ define([
                     ])*/
                 ])
             ]),
-            h('div.cp-version-footer', "CryptPad v3.16.0 (Quagga)")
+            h('div.cp-version-footer', "CryptPad v3.17.0 (RedGazelle)")
         ]);
     };
 
