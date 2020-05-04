@@ -9,6 +9,19 @@
     overflow-y: auto;
     color: @cryptpad_text_col;
 
+    &.cp-comments-readonly {
+        .cp-comment-actions {
+            display: none !important;
+        }
+        .cp-comment-form {
+            display: none !important;
+        }
+        .cp-comment-edit {
+            display: none !important;
+        }
+
+    }
+
     .buttons_main();
 
     .cp-comment-reply {

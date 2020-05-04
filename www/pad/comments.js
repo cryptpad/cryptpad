@@ -875,6 +875,16 @@ define([
         var Env = cfg;
         Env.comments = Util.clone(COMMENTS);
 
+        var ro = cfg.framework.isReadOnly();
+        var onEditableChange = function (unlocked) {
+            Env.$container.removeClass('cp-comments-readonly');
+            if (ro || !unlocked) {
+                Env.$container.addClass('cp-comments-readonly');
+            }
+        };
+        cfg.framework.onEditableChange(onEditableChange);
+        onEditableChange();
+
         addAddCommentHandler(Env);
 
         // Unselect comment when clicking outside
