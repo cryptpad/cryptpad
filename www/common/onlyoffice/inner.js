@@ -110,10 +110,12 @@ define([
 
         var setEditable = function (state) {
             $('#cp-app-oo-editor').find('#cp-app-oo-offline').remove();
+            /*
             try {
                 getEditor().asc_setViewMode(!state);
                 //window.frames[0].editor.setViewModeDisconnect(true);
             } catch (e) {}
+            */
             if (!state && !readOnly) {
                 $('#cp-app-oo-editor').append(h('div#cp-app-oo-offline'));
             }
@@ -571,17 +573,11 @@ define([
         };
 
         var handleAuth = function (obj, send) {
-            // OO is ready
-            ooChannel.ready = true;
-            // Get the content pushed after the latest checkpoint
-            var changes = [];
-            ooChannel.queue.forEach(function (data) {
-                Array.prototype.push.apply(changes, data.msg.changes);
-            });
+            setEditable(false);
             ooChannel.lastHash = getLastCp().hash;
             send({
                 type: "authChanges",
-                changes: changes
+                changes: []
             });
             // Answer to the auth command
             var p = getParticipants();
@@ -605,14 +601,6 @@ define([
                 type: "documentOpen",
                 data: {"type":"open","status":"ok","data":{"Editor.bin":obj.openCmd.url}}
             });
-            // Update current index
-            var last = ooChannel.queue.pop();
-            if (last) { ooChannel.lastHash = last.hash; }
-            ooChannel.cpIndex += ooChannel.queue.length;
-            // Apply existing locks
-            deleteOfflineLocks();
-            APP.onLocal();
-            handleNewLocks(oldLocks, content.locks || {});
 
             var observer = new MutationObserver(function(mutations) {
                 mutations.forEach(function(mutation) {
@@ -922,6 +910,24 @@ define([
                         }
                     },
                     "onDocumentReady": function () {
+
+                        // The doc is ready, fix the worksheets IDs and push the queue
+                        fixSheets();
+                        // Push changes since last cp
+                        ooChannel.ready = true;
+                        ooChannel.queue.forEach(function (data) {
+                            ooChannel.send(data.msg);
+                        });
+                        var last = ooChannel.queue.pop();
+                        if (last) { ooChannel.lastHash = last.hash; }
+                        ooChannel.cpIndex += ooChannel.queue.length;
+                        // Apply existing locks
+                        deleteOfflineLocks();
+                        APP.onLocal();
+                        handleNewLocks(oldLocks, content.locks || {});
+                        // Allow edition
+                        setEditable(true);
+
                         if (APP.migrate && !readOnly) {
                             var div = h('div.cp-oo-x2tXls', [
                                 h('span.fa.fa-spin.fa-spinner'),
