@@ -1360,7 +1360,7 @@
     "comments_deleted": "Kommentar vom Autor gelöscht",
     "comments_comment": "Kommentieren",
     "comments_reply": "Antworten",
-    "mentions_notification": "{0] hat dich in <b>{1}</b> erwähnt",
+    "mentions_notification": "{0} hat dich in <b>{1}</b> erwähnt",
     "settings_padNotifHint": "Benachrichtigungen über Antworten auf deine Kommentare ignorieren",
     "settings_padNotifTitle": "Kommentar-Benachrichtigungen",
     "settings_padNotifCheckbox": "Kommentar-Benachrichtigungen deaktivieren",
