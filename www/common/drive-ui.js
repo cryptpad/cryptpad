@@ -2820,7 +2820,7 @@ define([
             var getProp = function (el) {
                 if (folder && root[el] && manager.isSharedFolder(root[el])) {
                     var title = manager.getSharedFolderData(root[el]).title || el;
-                    return title.toLowerCase();
+                    return String(title).toLowerCase();
                 } else if (folder) {
                     return el.toLowerCase();
                 }
