@@ -6,44 +6,44 @@ define([
     '/common/hyperscript.js',
     '/common/common-interface.js',
     '/customize/messages.js'
-], function ($, Sortify, Util, Hash, h, UI, Messages) {
+], function($, Sortify, Util, Hash, h, UI, Messages) {
     var Comments = {};
 
-/*
-{
-    authors: {
-        "id": {
-            name: "",
-            curvePublic: "",
-            avatar: "",
-            profile: ""
-        }
-    },
-    data: {
-        "uid": {
-            m: [{
-                u: id,
-                m: "str", // comment
-                t: +new Date,
-                v: "str", // value of the commented content
-                e: undefined/1, // edited
-                d: undefined/1, // deleted
-            }],
-            d: undefined/1,
+    /*
+    {
+        authors: {
+            "id": {
+                name: "",
+                curvePublic: "",
+                avatar: "",
+                profile: ""
+            }
+        },
+        data: {
+            "uid": {
+                m: [{
+                    u: id,
+                    m: "str", // comment
+                    t: +new Date,
+                    v: "str", // value of the commented content
+                    e: undefined/1, // edited
+                    d: undefined/1, // deleted
+                }],
+                d: undefined/1,
+            }
         }
     }
-}
-*/
+    */
 
     var COMMENTS = {
         authors: {},
         data: {}
     };
 
-    var canonicalize = function (t) { return t.replace(/\r\n/g, '\n'); };
+    var canonicalize = function(t) { return t.replace(/\r\n/g, '\n'); };
 
     // XXX function duplicated from www/code/markers.js
-    var authorUid = function (existing) {
+    var authorUid = function(existing) {
         if (!Array.isArray(existing)) { existing = []; }
         var n;
         var i = 0;
@@ -54,12 +54,12 @@ define([
         if (existing.indexOf(n) !== -1) { n = 0; }
         return n;
     };
-    var getAuthorId = function (Env, curve) {
+    var getAuthorId = function(Env, curve) {
         var existing = Object.keys(Env.comments.authors || {}).map(Number);
         if (!Env.common.isLoggedIn()) { return authorUid(existing); }
 
         var uid;
-        existing.some(function (id) {
+        existing.some(function(id) {
             var author = Env.comments.authors[id] || {};
             if (author.curvePublic !== curve) { return; }
             uid = Number(id);
@@ -70,7 +70,7 @@ define([
 
     // Return the author ID  and add/update the data for registered users
     // Return the username for unregistered users
-    var updateAuthorData = function (Env, onChange) {
+    var updateAuthorData = function(Env, onChange) {
         var userData = Env.metadataMgr.getUserData();
         if (!Env.common.isLoggedIn()) {
             return userData.name;
@@ -89,13 +89,13 @@ define([
         return myAuthorId;
     };
 
-    var updateMetadata = function (Env) {
+    var updateMetadata = function(Env) {
         var md = Util.clone(Env.metadataMgr.getMetadata());
         md.comments = Util.clone(Env.comments);
         Env.metadataMgr.updateMetadata(md);
     };
 
-    var sendReplyNotification = function (Env, uid) {
+    var sendReplyNotification = function(Env, uid) {
         if (!Env.comments || !Env.comments.data || !Env.comments.authors) { return; }
         if (!Env.common.isLoggedIn()) { return; }
         var thread = Env.comments.data[uid];
@@ -104,7 +104,7 @@ define([
         var privateData = Env.metadataMgr.getPrivateData();
         var others = {};
         // Get all the other registered users with a mailbox
-        thread.m.forEach(function (obj) {
+        thread.m.forEach(function(obj) {
             var u = obj.u;
             if (typeof(u) !== "number") { return; }
             var author = Env.comments.authors[u];
@@ -118,11 +118,11 @@ define([
             };
         });
         // Send the notification
-        Object.keys(others).forEach(function (id) {
+        Object.keys(others).forEach(function(id) {
             var data = others[id];
             Env.common.mailbox.sendTo("COMMENT_REPLY", {
                 channel: privateData.channel,
-                comment: data.comment,
+                comment: data.comment.replace(/<[^>]*>/g, ''),
                 content: data.content
             }, {
                 channel: data.notifications,
@@ -132,12 +132,12 @@ define([
 
     };
 
-    var cleanMentions = function ($el) {
+    var cleanMentions = function($el) {
         $el.html('');
         var el = $el[0];
         var allowed = ['data-profile', 'data-name', 'data-avatar', 'class'];
         // Remove unnecessary/unsafe attributes
-        for (var i=el.attributes.length-1; i>0; i--) {
+        for (var i = el.attributes.length - 1; i > 0; i--) {
             var name = el.attributes[i] && el.attributes[i].name;
             if (allowed.indexOf(name) === -1) {
                 $el.removeAttr(name);
@@ -146,7 +146,7 @@ define([
     };
 
     // Seletc all text of a contenteditable element
-    var selectAll = function (element) {
+    var selectAll = function(element) {
         var selection = window.getSelection();
         var range = document.createRange();
         range.selectNodeContents(element);
@@ -154,12 +154,7 @@ define([
         selection.addRange(range);
     };
 
-    Messages.comments_deleted = "Comment deleted by its author"; // XXX
-    Messages.comments_edited = "Edited"; // XXX
-    Messages.comments_submit = "Submit"; // XXX
-    Messages.comments_reply = "Reply"; // XXX
-    Messages.comments_resolve = "Resolve"; // XXX
-    var getCommentForm = function (Env, reply, _cb, editContent) {
+    var getCommentForm = function(Env, reply, _cb, editContent) {
         var cb = Util.once(_cb);
         var userData = Env.metadataMgr.getUserData();
         var name = Util.fixHTML(userData.name || Messages.anonymous);
@@ -188,12 +183,12 @@ define([
         ]);
 
         // List of allowed attributes in mentions
-        $(submit).click(function (e) {
+        $(submit).click(function(e) {
             e.stopPropagation();
             var clone = textarea.cloneNode(true);
             var notify = {};
             var $clone = $(clone);
-            $clone.find('span.cp-mentions').each(function (i, el) {
+            $clone.find('span.cp-mentions').each(function(i, el) {
                 var $el = $(el);
                 var curve = $el.attr('data-curve');
                 var notif = $el.attr('data-notifications');
@@ -209,7 +204,7 @@ define([
             // Send notification
             var privateData = Env.metadataMgr.getPrivateData();
             var userData = Env.metadataMgr.getUserData();
-            Object.keys(notify).forEach(function (curve) {
+            Object.keys(notify).forEach(function(curve) {
                 if (curve === userData.curvePublic) { return; }
                 Env.common.mailbox.sendTo("MENTION", {
                     channel: privateData.channel,
@@ -222,12 +217,12 @@ define([
             // Push the content
             cb(content);
         });
-        $(cancel).click(function (e) {
+        $(cancel).click(function(e) {
             e.stopPropagation();
             cb();
         });
 
-        var $text = $(textarea).keydown(function (e) {
+        var $text = $(textarea).keydown(function(e) {
             e.stopPropagation();
             if (e.which === 27) {
                 $(cancel).click();
@@ -243,14 +238,14 @@ define([
                 e.stopImmediatePropagation();
                 e.preventDefault();
             }
-        }).click(function (e) {
+        }).click(function(e) {
             e.stopPropagation();
         });
 
 
         if (Env.common.isLoggedIn()) {
             var authors = {};
-            Object.keys((Env.comments && Env.comments.authors) || {}).forEach(function (id) {
+            Object.keys((Env.comments && Env.comments.authors) ||  {}).forEach(function(id) {
                 var obj = Util.clone(Env.comments.authors[id]);
                 authors[obj.curvePublic] = obj;
             });
@@ -273,14 +268,14 @@ define([
                 h('i.fa.fa-times'),
                 Messages.kanban_delete
             ]);
-            $(deleteButton).click(function (e) {
+            $(deleteButton).click(function(e) {
                 e.stopPropagation();
                 cb(false);
             });
         }
 
 
-        setTimeout(function () {
+        setTimeout(function() {
             $(textarea).focus();
             selectAll(textarea);
         });
@@ -300,13 +295,13 @@ define([
         ]);
     };
 
-    var isVisible = function (el, $container) {
+    var isVisible = function(el, $container) {
         var size = $container.outerHeight();
         var pos = el.getBoundingClientRect();
         return (pos.bottom < size) && (pos.y > 0);
     };
 
-    var redrawComments = function (Env) {
+    var redrawComments = function(Env) {
         // Don't redraw if there were no change
         var str = Sortify(Env.comments || {});
         if (str === Env.oldComments) { return; }
@@ -347,15 +342,15 @@ define([
         var userData = Env.metadataMgr.getUserData();
 
         // Get all the comment threads in their order in the pad
-        var threads = Env.$inner.find('comment').map(function (i, el) {
+        var threads = Env.$inner.find('comment').map(function(i, el) {
             return el.getAttribute('data-uid');
         }).toArray();
 
         // Draw all comment threads
-        Util.deduplicateString(threads).forEach(function (key) {
+        Util.deduplicateString(threads).forEach(function(key) {
             // Get thread data
             var obj = Env.comments.data[key];
-            if (!obj || obj.d || !Array.isArray(obj.m) || !obj.m.length) {
+            if (!obj || obj.d ||  !Array.isArray(obj.m) ||  !obj.m.length) {
                 return;
             }
 
@@ -367,23 +362,22 @@ define([
             var $actions;
 
             // Draw all messages for this thread
-            (obj.m || []).forEach(function (msg, i) {
+            (obj.m || []).forEach(function(msg, i) {
                 var replyCls = i === 0 ? '' : '.cp-comment-reply';
                 if (msg.d) {
 
-                    content.push(h('div.cp-comment.cp-comment-deleted'+replyCls,
-                                    Messages.comments_deleted));
+                    content.push(h('div.cp-comment.cp-comment-deleted' + replyCls,
+                        Messages.comments_deleted));
                     return;
                 }
                 var author = typeof(msg.u) === "number" ?
-                                ((Env.comments.authors || {})[msg.u] || {}) :
-                                { name: msg.u };
+                    ((Env.comments.authors || {})[msg.u] || {}) : { name: msg.u };
                 var name = Util.fixHTML(author.name || Messages.anonymous);
                 var date = new Date(msg.t);
                 var avatar = h('span.cp-avatar');
                 Env.common.displayAvatar($(avatar), author.avatar, name);
                 if (author.profile) {
-                    $(avatar).click(function (e) {
+                    $(avatar).click(function(e) {
                         Env.common.openURL(Hash.hashToHref(author.profile, 'profile'));
                         e.stopPropagation();
                     });
@@ -394,7 +388,7 @@ define([
                 m.innerHTML = msg.m;
                 var $m = $(m);
                 $m.find('> *:not(span.cp-mentions)').remove();
-                $m.find('span.cp-mentions').each(function (i, el) {
+                $m.find('span.cp-mentions').each(function(i, el) {
                     var $el = $(el);
                     var name = $el.attr('data-name');
                     var avatarUrl = $el.attr('data-avatar');
@@ -412,11 +406,11 @@ define([
                     ]);
                     if (profile) {
                         $el.attr('tabindex', 1);
-                        $el.addClass('cp-mentions-clickable').click(function (e) {
+                        $el.addClass('cp-mentions-clickable').click(function(e) {
                             e.preventDefault();
                             e.stopPropagation();
                             Env.common.openURL(Hash.hashToHref(profile, 'profile'));
-                        }).focus(function (e) {
+                        }).focus(function(e) {
                             e.stopPropagation();
                         });
                     }
@@ -432,18 +426,18 @@ define([
 
                 // Add edit button when applicable (last message of the thread, written by ourselves)
                 var edit;
-                if (i === (obj.m.length -1) && author.curvePublic === userData.curvePublic) {
+                if (i === (obj.m.length - 1) && author.curvePublic === userData.curvePublic) {
                     edit = h('span.cp-comment-edit', {
-                        tabindex:1,
+                        tabindex: 1,
                         title: Messages.clickToEdit
                     }, h('i.fa.fa-pencil'));
-                    $(edit).click(function (e) {
+                    $(edit).click(function(e) {
                         Env.$container.find('.cp-comment-active').removeClass('cp-comment-active');
                         $div.addClass('cp-comment-active');
                         e.stopPropagation();
                         Env.$container.find('.cp-comment-form').remove();
                         if ($actions) { $actions.hide(); }
-                        var form = getCommentForm(Env, key, function (val) {
+                        var form = getCommentForm(Env, key, function(val) {
                             // Show the "reply" and "resolve" buttons again
                             $(form).closest('.cp-comment-container')
                                 .find('.cp-comment-actions').css('display', '');
@@ -460,7 +454,7 @@ define([
                                 msg.d = 1;
                                 if (container) {
                                     $(container).addClass('cp-comment-deleted')
-                                                .html(Messages.comments_deleted);
+                                        .html(Messages.comments_deleted);
                                 }
                                 if (obj.m.length === 1) {
                                     delete Env.comments.data[key];
@@ -481,7 +475,7 @@ define([
                 }
 
                 // Add the comment
-                content.push(container = h('div.cp-comment'+replyCls, [
+                content.push(container = h('div.cp-comment' + replyCls, [
                     h('div.cp-comment-header', [
                         avatar,
                         h('span.cp-comment-metadata', [
@@ -523,10 +517,10 @@ define([
             }, content));
             $div = $(div);
 
-            $(reply).click(function (e) {
+            $(reply).click(function(e) {
                 e.stopPropagation();
                 $actions.hide();
-                var form = getCommentForm(Env, key, function (val) {
+                var form = getCommentForm(Env, key, function(val) {
                     // Show the "reply" and "resolve" buttons again
                     $(form).closest('.cp-comment-container')
                         .find('.cp-comment-actions').css('display', '');
@@ -537,8 +531,8 @@ define([
                     if (!obj || !Array.isArray(obj.m)) { return; }
 
                     // Get the value of the commented text
-                    var res = Env.$inner.find('comment[data-uid="'+key+'"]').toArray();
-                    var value = res.map(function (el) {
+                    var res = Env.$inner.find('comment[data-uid="' + key + '"]').toArray();
+                    var value = res.map(function(el) {
                         return el.innerText;
                     }).join('\n');
 
@@ -562,7 +556,7 @@ define([
                 $div.append(form);
 
                 // Make sure the submit button is visible: scroll by the height of the form
-                setTimeout(function () {
+                setTimeout(function() {
                     var yContainer = Env.$container[0].getBoundingClientRect().bottom;
                     var yActions = form.getBoundingClientRect().bottom;
                     if (yActions > yContainer) {
@@ -573,7 +567,7 @@ define([
 
             UI.confirmButton(resolve, {
                 classes: 'btn-danger'
-            }, function () {
+            }, function() {
                 // Delete the comment
                 delete Env.comments.data[key];
 
@@ -582,11 +576,11 @@ define([
                 Env.framework.localChange();
             });
 
-            var focusContent = function () {
+            var focusContent = function() {
                 // Add class "active"
                 Env.$inner.find('comment.active').removeClass('active');
-                Env.$inner.find('comment[data-uid="'+key+'"]').addClass('active');
-                var $last = Env.$inner.find('comment[data-uid="'+key+'"]').last();
+                Env.$inner.find('comment[data-uid="' + key + '"]').addClass('active');
+                var $last = Env.$inner.find('comment[data-uid="' + key + '"]').last();
 
                 // Scroll into view
                 if (!$last.length) { return; }
@@ -594,7 +588,7 @@ define([
                 if (!visible) { $last[0].scrollIntoView(); }
             };
 
-            $div.on('click focus', function (e) {
+            $div.on('click focus', function(e) {
                 // Prevent the click event to propagate if we're already selected
                 // The propagation to #cp-app-pad-inner would trigger the "unselect" handler
                 e.stopPropagation();
@@ -621,7 +615,7 @@ define([
 
         // Restore selection
         if (oldRangeObj) {
-            setTimeout(function () {
+            setTimeout(function() {
                 if (!oldRangeObj) { return; }
                 var range = document.createRange();
                 range.setStart(oldRangeObj.start, oldRangeObj.startO);
@@ -639,7 +633,7 @@ define([
         }
     };
 
-    var onChange = function (Env) {
+    var onChange = function(Env) {
         var md = Util.clone(Env.metadataMgr.getMetadata());
         Env.comments = md.comments;
         var changed = false;
@@ -649,7 +643,7 @@ define([
         }
         if (Env.ready === 0) {
             Env.ready = true;
-            updateAuthorData(Env, function () {
+            updateAuthorData(Env, function() {
                 changed = true;
             });
             // On ready, if our user data have changed or if we've added the initial structure
@@ -661,7 +655,7 @@ define([
         } else if (Env.ready) {
             // Everytime there is a metadata change, check if our user data have changed
             // and push the updates if necessary
-            updateAuthorData(Env, function () {
+            updateAuthorData(Env, function() {
                 updateMetadata(Env);
                 Env.framework.localChange();
             });
@@ -670,7 +664,7 @@ define([
     };
 
     // Check if comments have been deleted from the document but not from metadata
-    var checkDeleted = function (Env) {
+    var checkDeleted = function(Env) {
         if (!Env.comments || !Env.comments.data) { return; }
 
         // Don't recheck if there were no change
@@ -679,7 +673,7 @@ define([
         Env.oldCheck = str;
 
         // If there is no comment stored in the metadata, abort
-        var comments = Object.keys(Env.comments.data || {}).filter(function (id) {
+        var comments = Object.keys(Env.comments.data || {}).filter(function(id) {
             return !Env.comments.data[id].d;
         });
 
@@ -687,7 +681,7 @@ define([
 
         // Get the comments from the document
         var toUncomment = {};
-        var uids = Env.$inner.find('comment').map(function (i, el) {
+        var uids = Env.$inner.find('comment').map(function(i, el) {
             var id = el.getAttribute('data-uid');
             // Empty comment: remove from dom
             if (!el.innerHTML && el.parentElement) {
@@ -713,13 +707,13 @@ define([
         }).toArray();
 
         if (Object.keys(toUncomment).length) {
-            Object.keys(toUncomment).forEach(function (id) {
+            Object.keys(toUncomment).forEach(function(id) {
                 Env.editor.plugins.comments.uncomment(id, toUncomment[id]);
             });
         }
 
         // Check if a comment has been deleted
-        comments.forEach(function (uid) {
+        comments.forEach(function(uid) {
             if (uids.indexOf(uid) !== -1) { return; }
             // comment has been deleted
             var data = Env.comments.data[uid];
@@ -734,19 +728,19 @@ define([
         }
     };
 
-    var removeCommentBubble = function (Env) {
+    var removeCommentBubble = function(Env) {
         Env.bubble = undefined;
         Env.$contentContainer.find('.cp-comment-bubble').remove();
     };
-    var updateBubble = function (Env) {
+    var updateBubble = function(Env) {
         if (!Env.bubble) { return; }
         var pos = Env.bubble.node.getBoundingClientRect();
         if (pos.y < 0 || pos.y > Env.$inner.outerHeight()) {
             //removeCommentBubble(Env);
         }
-        Env.bubble.button.setAttribute('style', 'top:'+pos.y+'px');
+        Env.bubble.button.setAttribute('style', 'top:' + pos.y + 'px');
     };
-    var addCommentBubble = function (Env) {
+    var addCommentBubble = function(Env) {
         var ranges = Env.editor.getSelectedRanges();
         if (!ranges.length) { return; }
         var el = ranges[0].endContainer || ranges[0].startContainer;
@@ -760,14 +754,14 @@ define([
         var y = pos.y;
         if (y < 0 || y > Env.$inner.outerHeight()) { return; }
         var button = h('button.btn.btn-secondary', {
-            style: 'top:'+y+'px;',
+            style: 'top:' + y + 'px;',
             title: Messages.comments_comment
-        },h('i.fa.fa-comment'));
+        }, h('i.fa.fa-comment'));
         Env.bubble = {
             node: node,
             button: button
         };
-        $(button).click(function (e) {
+        $(button).click(function(e)  {
             e.stopPropagation();
             Env.editor.execCommand('comment');
             Env.bubble = undefined;
@@ -775,8 +769,8 @@ define([
         Env.$contentContainer.append(h('div.cp-comment-bubble', button));
     };
 
-    var addAddCommentHandler = function (Env) {
-        Env.editor.plugins.comments.addComment = function (uid, addMark) {
+    var addAddCommentHandler = function(Env) {
+        Env.editor.plugins.comments.addComment = function(uid, addMark) {
             if (!Env.ready) { return; }
             if (!Env.comments) { Env.comments = Util.clone(COMMENTS); }
 
@@ -784,16 +778,14 @@ define([
             var applicable = Env.editor.plugins.comments.isApplicable();
             if (!applicable) {
                 // Abort if our selection contains a comment
-                console.error("Can't add a comment here");
-                // XXX show error
-                UI.warn(Messages.error);
+                UI.warn(Messages.comments_error);
                 return;
             }
 
             // Remove active class on other comments
             Env.$container.find('.cp-comment-active').removeClass('cp-comment-active');
             Env.$container.find('.cp-comment-form').remove();
-            var form = getCommentForm(Env, false, function (val) {
+            var form = getCommentForm(Env, false, function(val) {
                 $(form).remove();
                 Env.$inner.focus();
 
@@ -833,10 +825,10 @@ define([
         };
 
 
-        Env.$iframe.on('scroll', function () {
+        Env.$iframe.on('scroll', function() {
             updateBubble(Env);
         });
-        $(Env.ifrWindow.document).on('selectionchange', function () {
+        $(Env.ifrWindow.document).on('selectionchange', function() {
             removeCommentBubble(Env);
             var applicable = Env.editor.plugins.comments.isApplicable();
             if (!applicable) { return; }
@@ -844,14 +836,14 @@ define([
         });
     };
 
-    var onContentUpdate = function (Env) {
+    var onContentUpdate = function(Env) {
         if (!Env.ready) { return; }
         // Check deleted
         onChange(Env);
         checkDeleted(Env);
     };
 
-    var ready = function (Env) {
+    var ready = function(Env) {
         Env.ready = 0;
 
         // If you're the only edit user online, clear "deleted" comments
@@ -862,7 +854,7 @@ define([
 
         // Clear data
         var data = (Env.comments && Env.comments.data) || {};
-        Object.keys(data).forEach(function (uid) {
+        Object.keys(data).forEach(function(uid) {
             if (data[uid].d) { delete data[uid]; }
         });
 
@@ -871,12 +863,12 @@ define([
         Env.framework.localChange();
     };
 
-    Comments.create = function (cfg) {
+    Comments.create = function(cfg) {
         var Env = cfg;
         Env.comments = Util.clone(COMMENTS);
 
         var ro = cfg.framework.isReadOnly();
-        var onEditableChange = function (unlocked) {
+        var onEditableChange = function(unlocked) {
             Env.$container.removeClass('cp-comments-readonly');
             if (ro || !unlocked) {
                 Env.$container.addClass('cp-comments-readonly');
@@ -888,7 +880,7 @@ define([
         addAddCommentHandler(Env);
 
         // Unselect comment when clicking outside
-        $(window).click(function (e) {
+        $(window).click(function(e) {
             var $target = $(e.target);
             if (!$target.length) { return; }
             if ($target.is('.cp-comment-container')) { return; }
@@ -903,21 +895,21 @@ define([
             Env.$container.find('.cp-comment-form').remove();
         });
         // Unselect comment when clicking on another part of the doc
-        Env.$inner.on('click', function (e) {
+        Env.$inner.on('click', function(e) {
             if ($(e.target).closest('comment').length) { return; }
             Env.$container.find('.cp-comment-active').removeClass('cp-comment-active');
             Env.$inner.find('comment.active').removeClass('active');
             Env.$container.find('.cp-comment-form').remove();
         });
-        Env.$inner.on('click', 'comment', function (e) {
+        Env.$inner.on('click', 'comment', function(e) {
             var $comment = $(e.target);
             var uid = $comment.attr('data-uid');
             if (!uid) { return; }
-            Env.$container.find('.cp-comment-container[data-uid="'+uid+'"]').click();
+            Env.$container.find('.cp-comment-container[data-uid="' + uid + '"]').click();
         });
 
-        var call = function (f) {
-            return function () {
+        var call = function(f) {
+            return function() {
                 try {
                     [].unshift.call(arguments, Env);
                     return f.apply(null, arguments);

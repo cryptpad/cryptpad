@@ -1365,5 +1365,6 @@
     "comments_deleted": "Commentaire effacé par son auteur",
     "mentions_notification": "{0} vous a mentionné dans <b>{1}</b>",
     "unknownPad": "Pad inconnu",
-    "comments_notification": "Réponses à votre commentaire \"{0}\" sur <b>{1}</b>"
+    "comments_notification": "Réponses à votre commentaire \"{0}\" sur <b>{1}</b>",
+    "comments_error": "Impossible d'ajouter un commentaire ici"
 }
