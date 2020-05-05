@@ -26,9 +26,6 @@ define([
         // Old format: data was stored directly in "content"
         var userData = data.msg.content.user || data.msg.content;
 
-        // Check if the request is valid (send by the correct user)
-        if (data.msg.author !== userData.curvePublic) { return void cb(true); }
-
         if (isMuted(ctx, data)) { return void cb(true); }
 
         // Don't show duplicate friend request: if we already have a friend request
@@ -172,7 +169,7 @@ define([
     };
 
     handlers['UNFRIEND'] = function (ctx, box, data, cb) {
-        var curve = data.msg.content.curvePublic;
+        var curve = data.msg.author;
         var friend = Messaging.getFriend(ctx.store.proxy, curve);
         if (!friend) { return void cb(true); }
         delete ctx.store.proxy.friends[curve];
@@ -260,8 +257,6 @@ define([
         var msg = data.msg;
         var content = msg.content;
 
-        if (msg.author !== content.user.curvePublic) { return void cb(true); }
-
         if (isMuted(ctx, data)) { return void cb(true); }
 
         var channel = content.channel;
@@ -290,8 +285,6 @@ define([
         var msg = data.msg;
         var content = msg.content;
 
-        if (msg.author !== content.user.curvePublic) { return void cb(true); }
-
         var channel = content.channel;
         var res = ctx.store.manager.findChannel(channel, true);
 
@@ -312,8 +305,6 @@ define([
     handlers['ADD_OWNER'] = function (ctx, box, data, cb) {
         var msg = data.msg;
         var content = msg.content;
-
-        if (msg.author !== content.user.curvePublic) { return void cb(true); }
 
         if (isMuted(ctx, data)) { return void cb(true); }
 
@@ -343,7 +334,6 @@ define([
         var msg = data.msg;
         var content = msg.content;
 
-        if (msg.author !== content.user.curvePublic) { return void cb(true); }
         if (!content.channel && !content.teamChannel) {
             console.log('Remove invalid notification');
             return void cb(true);
@@ -372,8 +362,6 @@ define([
     handlers['INVITE_TO_TEAM'] = function (ctx, box, data, cb) {
         var msg = data.msg;
         var content = msg.content;
-
-        if (msg.author !== content.user.curvePublic) { return void cb(true); }
 
         if (isMuted(ctx, data)) { return void cb(true); }
 
@@ -416,7 +404,6 @@ define([
         var msg = data.msg;
         var content = msg.content;
 
-        if (msg.author !== content.user.curvePublic) { return void cb(true); }
         if (!content.teamChannel) {
             console.log('Remove invalid notification');
             return void cb(true);
@@ -433,7 +420,6 @@ define([
         var msg = data.msg;
         var content = msg.content;
 
-        if (msg.author !== content.user.curvePublic) { return void cb(true); }
         if (!content.teamChannel) {
             console.log('Remove invalid notification');
             return void cb(true);
@@ -469,7 +455,6 @@ define([
         var msg = data.msg;
         var content = msg.content;
 
-        if (msg.author !== content.user.curvePublic) { return void cb(true); }
         if (!content.teamData) {
             console.log('Remove invalid notification');
             return void cb(true);
@@ -503,7 +488,6 @@ define([
         var msg = data.msg;
         var content = msg.content;
 
-        if (msg.author !== content.user.curvePublic) { return void cb(true); }
         if (!content.channel) {
             console.log('Remove invalid notification');
             return void cb(true);
@@ -539,6 +523,12 @@ define([
                 }
              */
             if (!data.msg) { return void cb(true); }
+
+            // Check if the request is valid (sent by the correct user)
+            var curve = Util.find(data, ['msg', 'content', 'user', 'curvePublic']) ||
+                        Util.find(data, ['msg', 'content', 'curvePublic']);
+            if (curve && data.msg.author !== curve) { console.error('blocked'); return void cb(true); }
+
             var type = data.msg.type;
 
             if (handlers[type]) {
