@@ -1365,5 +1365,6 @@
     "settings_padNotifTitle": "Kommentar-Benachrichtigungen",
     "settings_padNotifCheckbox": "Kommentar-Benachrichtigungen deaktivieren",
     "comments_edited": "Bearbeitet",
-    "unknownPad": "Unbekanntes Pad"
+    "unknownPad": "Unbekanntes Pad",
+    "comments_error": "An dieser Stelle kann kein Kommentar hinzugefügt werden"
 }
