@@ -221,10 +221,12 @@ define([
 
         var now = function () { return +new Date(); };
 
-        var getLastCp = function (old) {
+        var getLastCp = function (old, i) {
             var hashes = old ? oldHashes : content.hashes;
             if (!hashes || !Object.keys(hashes).length) { return {}; }
-            var lastIndex = Math.max.apply(null, Object.keys(hashes).map(Number));
+            i = i || 0;
+            var idx = Object.keys(hashes).map(Number).sort();
+            var lastIndex = idx[idx.length - 1 - i];
             var last = JSON.parse(JSON.stringify(hashes[lastIndex]));
             return last;
         };
@@ -1365,9 +1367,7 @@ define([
             }, 100);
         };
 
-        var loadLastDocument = function () {
-            var lastCp = getLastCp();
-            if (!lastCp) { return; }
+        var loadLastDocument = function (lastCp, onCpError) {
             ooChannel.cpIndex = lastCp.index || 0;
             var parsed = Hash.parsePadUrl(lastCp.file);
             var secret = Hash.getSecrets('file', parsed.hash);
@@ -1381,6 +1381,7 @@ define([
             xhr.responseType = 'arraybuffer';
             xhr.onload = function () {
                 if (/^4/.test('' + this.status)) {
+                    onCpError();
                     return void console.error('XHR error', this.status);
                 }
                 var arrayBuffer = xhr.response;
@@ -1393,15 +1394,25 @@ define([
                     });
                 }
             };
+            xhr.onerror = function () {
+                onCpError();
+            };
             xhr.send(null);
         };
-        var loadDocument = function (noCp, useNewDefault) {
+        var loadDocument = function (noCp, useNewDefault, i) {
             if (ooLoaded) { return; }
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var file = getFileType();
             if (!noCp) {
+                var lastCp = getLastCp(false, i);
+                // If the last checkpoint is empty, load the "initial" doc instead
+                if (!lastCp || !lastCp.file) { return void loadDocument(true, useNewDefault); }
                 // Load latest checkpoint
-                return void loadLastDocument();
+                return void loadLastDocument(lastCp, function () {
+                    // Checkpoint error: load the previous one
+                    i = i || 0;
+                    loadDocument(noCp, useNewDefault, ++i);
+                });
             }
             var newText;
             switch (type) {
