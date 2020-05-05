@@ -269,6 +269,8 @@ define([
         // so that the messages we send to the realtime channel are
         // loadable by users joining after the checkpoint
         var fixSheets = function () {
+            var hasDrawings = checkDrawings();
+            if (hasDrawings) { return; } // XXX we need a migration for old sheets...
             try {
                 var editor = getEditor();
                 // if we are not in the sheet app
