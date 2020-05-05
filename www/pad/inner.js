@@ -979,6 +979,13 @@ define([
 
                 editor.on('instanceReady', waitFor());
             }).nThen(function() {
+                var _getPath = Ckeditor.plugins.getPath;
+                Ckeditor.plugins.getPath = function (name) {
+                    if (name === 'preview') {
+                        return window.location.origin + "/bower_components/ckeditor/plugins/preview/";
+                    }
+                    return _getPath(name);
+                };
                 editor.plugins.mediatag.import = function($mt) {
                     framework._.sfCommon.importMediaTag($mt);
                 };
