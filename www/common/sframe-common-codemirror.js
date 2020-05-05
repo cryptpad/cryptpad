@@ -509,11 +509,12 @@ define([
                 var cursorPosS = posToCursor(cursor.selectionStart, doc);
                 var el = makeCursor(id);
                 if (cursor.color) {
-                    $(el).css('border-color', cursor.color);
-                    $(el).css('background-color', cursor.color);
+                    $(el).css('border-color', cursor.color)
+                         .css('background-color', cursor.color);
                 }
                 if (cursor.name) {
-                    $(el).attr('title', makeTippy(cursor));
+                    $(el).attr('title', makeTippy(cursor))
+                         .attr('data-cptippy-html', true);
                 }
                 marks[id] = editor.setBookmark(cursorPosS, { widget: el });
             } else {
@@ -524,6 +525,7 @@ define([
                     : 'background-color: rgba(255,0,0,0.2)';
                 marks[id] = editor.markText(pos1, pos2, {
                     css: css,
+                    'data-cptippy-html': true,
                     title: makeTippy(cursor),
                     className: 'cp-tippy-html'
                 });

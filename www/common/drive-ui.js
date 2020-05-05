@@ -1903,7 +1903,8 @@ define([
             }
             if (data.filename && data.filename !== data.title) {
                 var $renamed = $renamedIcon.clone().appendTo($state);
-                $renamed.attr('title', Messages._getKey('fm_renamedPad', [data.title]));
+                $renamed.attr('data-cptippy-html', 'true');
+                $renamed.attr('title', Messages._getKey('fm_renamedPad', [Util.fixHTML(data.title)]));
             }
             if (hrefData.hashData && hrefData.hashData.password) {
                 var $password = $passwordIcon.clone().appendTo($state);
@@ -2407,6 +2408,7 @@ define([
             var createHelper = function (href, text) {
                 var q = h('a.fa.fa-question-circle', {
                     style: 'text-decoration: none !important;',
+                    'data-cptippy-html': true,
                     title: text,
                     href: APP.origin + href,
                     target: "_blank",
@@ -2818,7 +2820,7 @@ define([
             var getProp = function (el) {
                 if (folder && root[el] && manager.isSharedFolder(root[el])) {
                     var title = manager.getSharedFolderData(root[el]).title || el;
-                    return title.toLowerCase();
+                    return String(title).toLowerCase();
                 } else if (folder) {
                     return el.toLowerCase();
                 }

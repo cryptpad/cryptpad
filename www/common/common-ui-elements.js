@@ -2754,6 +2754,7 @@ define([
         var origin = privateData.origin;
         var createHelper = function (href, text) {
             var q = h('a.cp-creation-help.fa.fa-question-circle', {
+                'data-cptippy-html': true,
                 title: text,
                 href: origin + href,
                 target: "_blank",

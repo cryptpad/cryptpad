@@ -1256,7 +1256,7 @@ define([
 
     var getTitle = function (Env, id, type) {
         var uo = _getUserObjectFromId(Env, id);
-        return uo.getTitle(id, type);
+        return String(uo.getTitle(id, type));
     };
 
     var isReadOnlyFile = function (Env, id) {
