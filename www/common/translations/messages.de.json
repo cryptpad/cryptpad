@@ -1353,5 +1353,17 @@
     "oo_login": "Bitte logge dich ein oder erstelle ein Account, um die Performance von Tabellen zu verbessern.",
     "pad_usePageWidth": "Seitenansicht",
     "pad_useFullWidth": "Volle Breite",
-    "cba_title": "Autorenfarben"
+    "cba_title": "Autorenfarben",
+    "comments_resolve": "Abschließen",
+    "comments_submit": "Absenden",
+    "comments_notification": "Antworten auf deinen Kommentar \"{0}\" in <b>{1}</b>",
+    "comments_deleted": "Kommentar vom Autor gelöscht",
+    "comments_comment": "Kommentieren",
+    "comments_reply": "Antworten",
+    "mentions_notification": "{0} hat dich in <b>{1}</b> erwähnt",
+    "settings_padNotifHint": "Benachrichtigungen über Antworten auf deine Kommentare ignorieren",
+    "settings_padNotifTitle": "Kommentar-Benachrichtigungen",
+    "settings_padNotifCheckbox": "Kommentar-Benachrichtigungen deaktivieren",
+    "comments_edited": "Bearbeitet",
+    "unknownPad": "Unbekanntes Pad"
 }
