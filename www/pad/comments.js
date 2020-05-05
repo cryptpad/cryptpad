@@ -154,11 +154,6 @@ define([
         selection.addRange(range);
     };
 
-    Messages.comments_deleted = "Comment deleted by its author"; // XXX
-    Messages.comments_edited = "Edited"; // XXX
-    Messages.comments_submit = "Submit"; // XXX
-    Messages.comments_reply = "Reply"; // XXX
-    Messages.comments_resolve = "Resolve"; // XXX
     var getCommentForm = function(Env, reply, _cb, editContent) {
         var cb = Util.once(_cb);
         var userData = Env.metadataMgr.getUserData();
@@ -783,8 +778,6 @@ define([
             var applicable = Env.editor.plugins.comments.isApplicable();
             if (!applicable) {
                 // Abort if our selection contains a comment
-                console.error("Can't add a comment here");
-                // XXX show error
                 UI.warn(Messages.comments_error);
                 return;
             }
