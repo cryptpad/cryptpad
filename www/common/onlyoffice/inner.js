@@ -346,6 +346,21 @@ define([
         };
         APP.FM = common.createFileManager(fmConfig);
 
+        var checkDrawings = function () {
+            var editor = getEditor();
+            if (!editor) { return false; }
+            var s = editor.GetSheets();
+            var hasDrawings = false;
+            s.forEach(function (obj, i) {
+                obj.worksheet.Drawings.forEach(function (d) {
+                    console.log(d.graphicObject, d.graphicObject.Id);
+                });
+            });
+            return s.some(function (obj, i) {
+                return obj.worksheet.Drawings.length;
+            });
+        };
+
         var saveToServer = function () {
             var text = getContent();
             var blob = new Blob([text], {type: 'plain/text'});
@@ -356,6 +371,19 @@ define([
                 index: ooChannel.cpIndex
             };
             fixSheets();
+
+var hasDrawings = checkDrawings();
+console.log(hasDrawings);
+
+if (hasDrawings) {
+    data.callback = function () {
+        console.error('reload');
+        $('iframe[name="frameEditor"]').after(h('div#cp-app-oo-placeholder')).remove();// XXX
+        startOO(blob, file, true); // XXX
+    };
+}
+
+
             APP.FM.handleFile(blob, data);
         };
 
@@ -841,8 +869,8 @@ define([
         };
 
         var ooLoaded = false;
-        var startOO = function (blob, file) {
-            if (APP.ooconfig) { return void console.error('already started'); }
+        var startOO = function (blob, file, force) {
+            if (APP.ooconfig && !force) { return void console.error('already started'); }
             var url = URL.createObjectURL(blob);
             var lock = readOnly || APP.migrate;
 
@@ -1367,7 +1395,7 @@ define([
             }, 100);
         };
 
-        var loadLastDocument = function (lastCp, onCpError) {
+        var loadLastDocument = function (lastCp, onCpError, cb) {
             ooChannel.cpIndex = lastCp.index || 0;
             var parsed = Hash.parsePadUrl(lastCp.file);
             var secret = Hash.getSecrets('file', parsed.hash);
@@ -1390,6 +1418,9 @@ define([
                     FileCrypto.decrypt(u8, key, function (err, decrypted) {
                         if (err) { return void console.error(err); }
                         var blob = new Blob([decrypted.content], {type: 'plain/text'});
+                        if (cb) {
+                            return cb(blob, getFileType());
+                        }
                         startOO(blob, getFileType());
                     });
                 }
@@ -1670,6 +1701,21 @@ define([
 
         var reloadPopup = false;
 
+        var checkNewCheckpoint = function () {
+            var hasDrawings = checkDrawings();
+            if (hasDrawings) {
+                console.error('reload');
+                var lastCp = getLastCp();
+                loadLastDocument(lastCp, function () {
+                    // On error, do nothing
+                }, function (blob, type) {
+                    $('iframe[name="frameEditor"]').after(h('div#cp-app-oo-placeholder'))
+                                        .remove();// XXX
+                    startOO(blob, type, true);
+                });
+            }
+        };
+
         config.onRemote = function () {
             if (initializing) { return; }
             var userDoc = APP.realtime.getUserDoc();
@@ -1695,10 +1741,13 @@ define([
                 var latest = getLastCp(true);
                 var newLatest = getLastCp();
                 if (newLatest.index > latest.index) {
+                    // New checkpoint
                     sframeChan.query('Q_OO_SAVE', {
                         hash: newLatest.hash,
                         url: newLatest.file
-                    }, function () { });
+                    }, function () {
+                        checkNewCheckpoint();
+                    });
                 }
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
             }
