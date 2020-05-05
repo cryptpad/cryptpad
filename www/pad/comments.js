@@ -122,7 +122,7 @@ define([
             var data = others[id];
             Env.common.mailbox.sendTo("COMMENT_REPLY", {
                 channel: privateData.channel,
-                comment: data.comment,
+                comment: data.comment.replace(/<[^>]*>/g, ''),
                 content: data.content
             }, {
                 channel: data.notifications,
