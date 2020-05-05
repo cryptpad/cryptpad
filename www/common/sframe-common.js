@@ -221,6 +221,7 @@ define([
             setTimeout(saveChanges);
         }
         padChatChannel = channel;
+        console.error('Chat ID:', channel);
         ctx.sframeChan.query('Q_CHAT_OPENPADCHAT', channel, function (err, obj) {
             if (err || (obj && obj.error)) { console.error(err || (obj && obj.error)); }
         });
