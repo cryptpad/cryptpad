@@ -325,7 +325,7 @@
     "fm_fileName": "Nom du fichier",
     "fm_title": "Titre",
     "fm_type": "Type",
-    "fm_lastAccess": "Dernier accès",
+    "fm_lastAccess": "Accès",
     "fm_creation": "Création",
     "fm_forbidden": "Action interdite",
     "fm_originalPath": "Chemin d'origine",

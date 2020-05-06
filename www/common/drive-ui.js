@@ -1931,7 +1931,6 @@ define([
             if (thumbsUrls[element]) {
                 var img = new Image();
                 img.src = thumbsUrls[element];
-                $element.find('.cp-icon').addClass('cp-app-drive-element-list');
                 $element.prepend(img);
                 $(img).addClass('cp-app-drive-element-grid cp-app-drive-element-thumbnail');
                 $(img).attr("draggable", false);
@@ -1940,7 +1939,7 @@ define([
                 common.displayThumbnail(href || data.roHref, data.channel, data.password, $element, function ($thumb) {
                     // Called only if the thumbnail exists
                     // Remove the .hide() added by displayThumnail() because it hides the icon in list mode too
-                    $element.find('.cp-icon').removeAttr('style').addClass('cp-app-drive-element-list');
+                    $element.find('.cp-icon').removeAttr('style');
                     $thumb.addClass('cp-app-drive-element-grid cp-app-drive-element-thumbnail');
                     $thumb.attr("draggable", false);
                     thumbsUrls[element] = $thumb[0].src;
@@ -1998,10 +1997,13 @@ define([
             var $files = $('<span>', {
                 'class': 'cp-app-drive-element-files cp-app-drive-element-list'
             }).text(files);
+            var $filler = $('<span>', {
+                'class': 'cp-app-drive-element-filler cp-app-drive-element-list'
+            });
             if (getViewMode() === 'grid') {
                 $span.attr('title', key);
             }
-            $span.append($name).append($state).append($subfolders).append($files);
+            $span.append($name).append($state).append($subfolders).append($files).append($filler);
         };
 
         // This is duplicated in cryptpad-common, it should be unified
@@ -2714,7 +2716,7 @@ define([
                     value = '';
                 }
             } else {
-                ['cp-app-drive-element-title', 'cp-app-drive-element-type',
+                ['cp-app-drive-element-type',
                  'cp-app-drive-element-atime', 'cp-app-drive-element-ctime'].some(function (c) {
                     if ($span.hasClass(c)) {
                         var nValue = c.replace(/cp-app-drive-element-/, '');
@@ -2744,6 +2746,47 @@ define([
                 $list.find('.cp-app-drive-sort-foldername').addClass('cp-app-drive-sort-active').prepend($icon);
             }
         };
+        Messages.fm_sort = "Sort"; // XXX
+        var getSortDropdown = function (folder) {
+            var $fhSort = $(h('span.cp-dropdown-container.cp-app-drive-element-sort.cp-app-drive-sort-clickable'));
+            var options = [];
+            if (folder) {
+                options = [{
+                    tag: 'a',
+                    attributes: {'class': 'cp-app-drive-element-folders'},
+                    content: Messages.fm_numberOfFolders
+                },{
+                    tag: 'a',
+                    attributes: {'class': 'cp-app-drive-element-files'},
+                    content: Messages.fm_numberOfFiles
+                }];
+            } else {
+                options = [{
+                    tag: 'a',
+                    attributes: {'class': 'cp-app-drive-element-type'},
+                    content: Messages.fm_type
+                },{
+                    tag: 'a',
+                    attributes: {'class': 'cp-app-drive-element-atime'},
+                    content: Messages.fm_lastAccess
+                },{
+                    tag: 'a',
+                    attributes: {'class': 'cp-app-drive-element-ctime'},
+                    content: Messages.fm_creation
+                }];
+            }
+            var dropdownConfig = {
+                text: '', // Button initial text
+                options: options, // Entries displayed in the menu
+                container: $fhSort,
+                left: true,
+                common: common
+            };
+            var $sortBlock = UIElements.createDropdown(dropdownConfig);
+            $sortBlock.find('button').append(h('span.fa.fa-sort-amount-desc')).append(h('span', Messages.fm_sort));
+            $sortBlock.on('click', 'a', onSortByClick);
+            return $fhSort;
+        };
         var getFolderListHeader = function () {
             var $fohElement = $('<li>', {
                 'class': 'cp-app-drive-element-header cp-app-drive-element-list'
@@ -2754,6 +2797,8 @@ define([
                 'class': 'cp-app-drive-element-name cp-app-drive-sort-foldername ' +
                          'cp-app-drive-sort-clickable'
             }).text(Messages.fm_folderName).click(onSortByClick);
+            var $fhSort = getSortDropdown(true);
+
             var $state = $('<span>', {'class': 'cp-app-drive-element-state'});
             var $subfolders = $('<span>', {
                 'class': 'cp-app-drive-element-folders cp-app-drive-element-list'
@@ -2761,8 +2806,11 @@ define([
             var $files = $('<span>', {
                 'class': 'cp-app-drive-element-files cp-app-drive-element-list'
             }).text(Messages.fm_numberOfFiles);
-            $fohElement.append($fhIcon).append($name).append($state)
-                        .append($subfolders).append($files);
+            var $filler = $('<span>', {
+                'class': 'cp-app-drive-element-filler cp-app-drive-element-list'
+            });
+            $fohElement.append($fhIcon).append($name).append($fhSort).append($state)
+                        .append($subfolders).append($files).append($filler);
             addFolderSortIcon($fohElement);
             return $fohElement;
         };
@@ -2788,18 +2836,20 @@ define([
                 'class': 'cp-app-drive-element-name cp-app-drive-sort-filename ' +
                          'cp-app-drive-sort-clickable'
             }).text(Messages.fm_fileName).click(onSortByClick);
+            var $fhSort = getSortDropdown();
+
             var $fhState = $('<span>', {'class': 'cp-app-drive-element-state'});
             var $fhType = $('<span>', {
-                'class': 'cp-app-drive-element-type cp-app-drive-sort-clickable'
+                'class': 'cp-app-drive-element-type cp-app-drive-sort-clickable cp-app-drive-element-list'
             }).text(Messages.fm_type).click(onSortByClick);
             var $fhAdate = $('<span>', {
-                'class': 'cp-app-drive-element-atime cp-app-drive-sort-clickable'
+                'class': 'cp-app-drive-element-atime cp-app-drive-sort-clickable cp-app-drive-element-list'
             }).text(Messages.fm_lastAccess).click(onSortByClick);
             var $fhCdate = $('<span>', {
-                'class': 'cp-app-drive-element-ctime cp-app-drive-sort-clickable'
+                'class': 'cp-app-drive-element-ctime cp-app-drive-sort-clickable cp-app-drive-element-list'
             }).text(Messages.fm_creation).click(onSortByClick);
             // If displayTitle is false, it means the "name" is the title, so do not display the "name" header
-            $fihElement.append($fhIcon).append($fhName).append($fhState).append($fhType);
+            $fihElement.append($fhIcon).append($fhName).append($fhSort).append($fhState).append($fhType);
             $fihElement.append($fhAdate).append($fhCdate);
             addFileSortIcon($fihElement);
             return $fihElement;

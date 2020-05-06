@@ -3,6 +3,7 @@
 @import (reference) "./tools.less";
 @import (reference) "./limit-bar.less";
 @import (reference) "./tokenfield.less";
+@import (reference) "./dropdown.less";
 
 .drive_main() {
     --LessLoader_require: LessLoader_currentFile();
@@ -102,10 +103,10 @@
 
     .cp-app-drive-container {
         flex: 1;
-        overflow-x: auto;
         width: 100%;
         display: flex;
         flex-flow: row;
+        min-height: 0;
         @media screen and (max-width: @browser_media-medium-screen) {
             display: block;
             #cp-app-drive-toolbar {
@@ -159,7 +160,6 @@
     .cp-app-drive-element-selected {
         background: @drive_selected-bg !important;
         color: #eee;
-        margin: -1px;
         .fa-minus-square-o, .fa-plus-square-o {
             color: @colortheme_sidebar-left-fg;
         }
@@ -169,7 +169,6 @@
         border: 1px dotted #bbb;
         background: #AAA;
         color: #ddd;
-        margin: -1px;
         .fa-minus-square-o, .fa-plus-square-o {
             color: @colortheme_sidebar-left-fg;
         }
@@ -434,10 +433,8 @@
     #cp-app-drive-content-container {
         display: flex;
         flex-flow: column;
-        flex: 1;
-        // Needed to avoid the folder's path to overflows
-        // https://stackoverflow.com/questions/38223879/white-space-nowrap-breaks-flexbox-layout
-        // min-width: 0;
+        flex: 1 1 100%;
+        min-width: 0;
     }
     #cp-app-drive-content {
         box-sizing: border-box;
@@ -637,22 +634,70 @@
                 display: none;
             }
             // Make it act as a table!
-            padding-left: 20px;
+            padding-left: 10px;
             ul {
-                display: table;
                 width: 100%;
-                padding: 0px 10px;
             }
             li {
-                display: table-row;
+                display: flex;
                 input {
                     border: 1px solid #ddd;
                     margin: 0;
                     padding: 0 4px;
+                    flex: 1;
+                    min-width: 0;
                 }
+
                 &> span {
                     padding: 0 5px;
-                    display: table-cell;
+                    display: inline-block;
+                    white-space: nowrap;
+                    &.cp-app-drive-element-state {
+                        .fa, .cptools {
+                            &:not(:last-child) {
+                                margin-right: 2px;
+                            }
+                        }
+                    }
+                    &:first-child, &.cp-icon {
+                        min-width: 20px;
+                        text-align: center;
+                        font-size: 18px;
+                        line-height: 32px;
+                        padding: 0;
+                    }
+                    &.cp-app-drive-element-name {
+                        flex: 1;
+                        min-width: 0;
+                        text-align: left;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                    }
+                    &.cp-app-drive-element-state {
+                        min-width: 40px;
+                        text-align: right;
+                    }
+                    &.cp-app-drive-element-list {
+                        width: 110px;
+                    }
+                    &.cp-app-drive-element-sort {
+                        display: none;
+                        .dropdown_main();
+                        .cp-dropdown-content a {
+                            display: block !important;
+                            .sortdesc {
+                                order: 2;
+                            }
+                        }
+                        button {
+                            color: inherit;
+                            background: none;
+                            border: none;
+                            .fa {
+                                margin-right: 5px;
+                            }
+                        }
+                    }
                 }
                 &:not(.cp-app-drive-element-header) {
                     height: @variables_bar-height;
@@ -674,14 +719,11 @@
                             text-align: left;
                         }
                         &.sortasc, &.sortdesc {
-                            float: right;
+                            margin-right: 3px;
                         }
                     }
                     &> span {
-                        padding: 15px 5px;
-                        &.cp-app-drive-sort-active {
-                            font-weight: bold;
-                        }
+                        padding: 14px 5px;
                         &.cp-app-drive-sort-clickable {
                             cursor: pointer;
                             &:hover {
@@ -696,28 +738,29 @@
                     overflow: hidden;
                     white-space: nowrap;
                     box-sizing: border-box;
-                    &.cp-app-drive-element-state {
-                        .fa, .cptools {
-                            &:not(:last-child) {
-                                margin-right: 5px;
-                            }
-                        }
-                    }
-                    &.cp-app-drive-content-icon, &.cp-app-drive-element-state, &.cp-icon {
-                        width: 30px;
-                    }
-                    &.cp-app-drive-element-type, &.cp-app-drive-element-atime, &.cp-app-drive-element-ctime {
-                        width: 175px;
-                    }
-                    &.cp-app-drive-element-title {
-                        width: 250px;
-                        @media screen and (max-width: 1200px) {
-                            display: none;
-                        }
-                    }
-                    &.cp-app-drive-element-folders, &.cp-app-drive-element-files {
-                        width: 150px;
-                    }
+                }
+            }
+            @media screen and (max-width: 840px) {
+                .cp-app-drive-element-type, .cp-app-drive-element-filler {
+                    display: none !important;
+                }
+            }
+
+            @media screen and (max-width: 740px) {
+                .cp-app-drive-element-folders, .cp-app-drive-element-ctime {
+                    display: none !important;
+                }
+            }
+
+            @media screen and (max-width: 670px) {
+                .cp-app-drive-element-files, .cp-app-drive-element-atime {
+                    display: none !important;
+                }
+                .cp-app-drive-element-header .cp-app-drive-element-state {
+                    display: none !important;
+                }
+                .cp-app-drive-element-sort {
+                    display: block !important;
                 }
             }
         }
