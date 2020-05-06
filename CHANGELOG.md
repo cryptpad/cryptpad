@@ -1,3 +1,51 @@
+# RedGazelle release (3.17.0)
+
+## Goals
+
+Our goal for this release was to introduce a first version of comments and mentions in our rich text editor as a part of a second R&D project funded by [NLnet](https://nlnet.nl/). We also received the results of an "accessibility audit" that was conducted as a part of our first NLnet PET project and so we've begun to integrate the auditor's feedback into the platform.
+
+Otherwise we've continued with our major goal of continuing to support a growing number of users on our instance via server improvements (without introducing any regressions).
+
+## Update notes
+
+The most drastic change in this release is that we've removed all docker-related files from the platform's repository. These files were all added via community contributions. Having them in the main repo gave the impression that we support installation via docker (which we do not).
+
+Docker-related files can now be found in the community-support [cryptpad-docker](https://github.com/xwiki-labs/cryptpad-docker/) repository.
+If you have an existing instance that you've installed using docker and you'd like to update, you may review the [migration guide](https://github.com/xwiki-labs/cryptpad-docker/blob/master/MIGRATION.md). If you encounter any problems in the process we advise that you create an issue in the repository's issue-tracker.
+
+Once again, this repository is **community-maintained**. If you are using this repository then _you are a part of the community_! Bug reports are useful, but fixes are even better!
+
+Otherwise, this is a fairly standard release. We've updated two of our client-side dependencies:
+
+1. ChainPad features a memory management optimization which is particularly relevant to editing very large documents or loading a drive with a large number of files. In one test we were able to reduce memory consumption in Chrome from 1.7GB to 20MB.
+2. CKEditor (the third-party library we use for our rich-text editor) has been updated so that we could make use of some more recent APIs for the _comments_ feature.
+
+To update from **3.16.0** to **3.17.0**:
+
+1. Stop your server
+2. Fetch the latest source with git
+3. Install the latest client-side dependencies with `bower update`
+4. Restart your server
+
+## Features
+
+* As noted above, this release introduces a first version of [comments at the right of the screen](https://github.com/xwiki-labs/cryptpad/issues/143) in our rich text editor. We're aware of a few usability issues under heavy concurrent usage, and we have some more improvements planned, but we figured that these issues were minor enough that people would be happy to use them in the meantime. The comments system integrates with the rest of our social functionality, so you'll have the ability to mention other users with the `@` symbol when typing within a comment.
+* We've made some minor changes to the server's logging system to suppress some uninformative log statements and to include some useful information in logs to improve our ability to debug some serverside performance issues. This probably won't affect you directly, but indirectly you'll benefit from some bug fixes and performance tweaks as we get a better understanding of what the server does at runtime.
+* We've received an _enormous_ amount of support tickets on CryptPad.fr (enough that if we answered them all we'd have very little time left for development). In response, we've updated the support ticket inbox available to administrators to highlight unanswered messages from non-paying users in yellow while support tickets from _premium users_ are highlighted in red. Administrators on other instances will notice that users of their instance with quotas increased via the server's `customLimits` config block will be counted as _premium_ as well.
+* Finally, we've continued to receive translations in a number of languages via our [Weblate instance](https://weblate.cryptpad.fr/projects/cryptpad/app/).
+
+## Bug fixes
+
+* We've fixed a minor bug in our code editor in which hiding _author colors_ while they were still enabled for the document caused a tooltip containing `undefined` to be displayed when hovering over the text.
+* A race condition in our server which was introduced when we started validating cryptographic signatures in child processes made it such that incoming messages could be written to the database in a different order than they were received. We implemented a per-channel queue which should now guarantee their ordering.
+* It used to be that an error in the process of creating a thumbnail for an encrypted file upload would prevent the file upload from completing (and prevent future uploads in that session). We've added some guards to catch these errors and handle them appropriately, closing [#540](https://github.com/xwiki-labs/cryptpad/issues/540).
+* CryptPad builds some CSS on the client because the source files (written in LESS) are smaller than the produced CSS. This results in faster load times for users with slow network connections. We identified and fixed bug in the loader which caused some files to be included in the compiled output multiple times, resulting in faster load times.
+* We addressed a minor bug in the drive's item sorting logic which was triggered when displaying inverse sortings.
+* Our last release introduced a set of custom styles for the mermaidjs integration in our code editor and featured one style which was not applied consistently across the wide variety of elements that could appear in mermaid graphs. As such, we've reverted the style (a color change in mermaid `graph` charts).
+* In the process of implementing comments in our rich text editor we realized that there were some bugs in our cursor recovery code (used to maintain your cursor position when multiple people are typing in the same document). We made some small patches to address a few very specific edge cases, but it's possible the improvements will have a broader effect with cursors in other situations.
+* We caught (and fixed) a few regressions in the _access_ and _properties_ modals that were introduced in the previous release.
+* It came to our attention that the script `cryptpad/scripts/evict-inactive.js` was removing inactive blobs after a shorter amount of time than intended. After investigating we found that it was using `retentionTime` instead of `inactiveTime` (both of which are from the server's config file. As such, some files were being archived after 15 days of inactivity instead of 90 (in cases where the files were not stored in anyone's drive). This script must be run manually (or periodically via a `cron`), so unless you've configured your instance to do so this will not have affected you.
+
 # Quagga release (3.16.0)
 
 ## Goals
