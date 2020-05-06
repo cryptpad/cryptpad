@@ -2747,34 +2747,21 @@ define([
             }
         };
         Messages.fm_sort = "Sort"; // XXX
-        var getSortDropdown = function (folder) {
+        var getSortDropdown = function () {
             var $fhSort = $(h('span.cp-dropdown-container.cp-app-drive-element-sort.cp-app-drive-sort-clickable'));
-            var options = [];
-            if (folder) {
-                options = [{
-                    tag: 'a',
-                    attributes: {'class': 'cp-app-drive-element-folders'},
-                    content: Messages.fm_numberOfFolders
-                },{
-                    tag: 'a',
-                    attributes: {'class': 'cp-app-drive-element-files'},
-                    content: Messages.fm_numberOfFiles
-                }];
-            } else {
-                options = [{
-                    tag: 'a',
-                    attributes: {'class': 'cp-app-drive-element-type'},
-                    content: Messages.fm_type
-                },{
-                    tag: 'a',
-                    attributes: {'class': 'cp-app-drive-element-atime'},
-                    content: Messages.fm_lastAccess
-                },{
-                    tag: 'a',
-                    attributes: {'class': 'cp-app-drive-element-ctime'},
-                    content: Messages.fm_creation
-                }];
-            }
+            var options = [{
+                tag: 'a',
+                attributes: {'class': 'cp-app-drive-element-type'},
+                content: Messages.fm_type
+            },{
+                tag: 'a',
+                attributes: {'class': 'cp-app-drive-element-atime'},
+                content: Messages.fm_lastAccess
+            },{
+                tag: 'a',
+                attributes: {'class': 'cp-app-drive-element-ctime'},
+                content: Messages.fm_creation
+            }];
             var dropdownConfig = {
                 text: '', // Button initial text
                 options: options, // Entries displayed in the menu
@@ -2797,7 +2784,6 @@ define([
                 'class': 'cp-app-drive-element-name cp-app-drive-sort-foldername ' +
                          'cp-app-drive-sort-clickable'
             }).text(Messages.fm_folderName).click(onSortByClick);
-            var $fhSort = getSortDropdown(true);
 
             var $state = $('<span>', {'class': 'cp-app-drive-element-state'});
             var $subfolders = $('<span>', {
@@ -2809,7 +2795,7 @@ define([
             var $filler = $('<span>', {
                 'class': 'cp-app-drive-element-filler cp-app-drive-element-list'
             });
-            $fohElement.append($fhIcon).append($name).append($fhSort).append($state)
+            $fohElement.append($fhIcon).append($name).append($state)
                         .append($subfolders).append($files).append($filler);
             addFolderSortIcon($fohElement);
             return $fohElement;
