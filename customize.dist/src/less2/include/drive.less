@@ -652,13 +652,6 @@
                     padding: 0 5px;
                     display: inline-block;
                     white-space: nowrap;
-                    &.cp-app-drive-element-state {
-                        .fa, .cptools {
-                            &:not(:last-child) {
-                                margin-right: 2px;
-                            }
-                        }
-                    }
                     &:first-child, &.cp-icon {
                         min-width: 20px;
                         text-align: center;
@@ -676,6 +669,13 @@
                     &.cp-app-drive-element-state {
                         min-width: 40px;
                         text-align: right;
+                        display: flex;
+                        align-items: center;
+                        .fa, .cptools {
+                            &:not(:last-child) {
+                                margin-right: 2px;
+                            }
+                        }
                     }
                     &.cp-app-drive-element-list {
                         width: 110px;
