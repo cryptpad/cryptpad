@@ -17,11 +17,13 @@
     @warn-color: @colortheme_default-warn // color of the warning text in the toolbar
 ) {
     @toolbar-color: @color;
+    //@toolbar-color: @bg-color;
     @toolbar-color-l20: lighten(@color, 20%);
     @toolbar-color-d20: darken(@color, 20%);
     @toolbar-color-d15: darken(@color, 15%);
 
     @toolbar-bg-color: @bg-color;
+    //@toolbar-bg-color: #FFFFFF;
     @toolbar-bg-color-l8: lighten(@bg-color, 8%);
     @toolbar-bg-color-l20: lighten(@bg-color, 20%);
     @toolbar-bg-color-d5: darken(@bg-color, 5%);
@@ -88,7 +90,7 @@
 
     .toolbar_vars();
     @toolbar_line-height: 32px;
-    @toolbar_top-height: 64px;
+    @toolbar_top-height: 76px;
     @toolbar_button-font: @colortheme_app-font;
 
     // if we spell 'share' correctly, then adblock plus hides the share button
@@ -166,7 +168,7 @@
         padding: 0;
         box-sizing: border-box;
         position: relative;
-        order: -2;
+        order: 99;
         resize: horizontal;
         z-index: 1;
         #cp-app-contacts-container {
@@ -196,7 +198,7 @@
         overflow-x: hidden;
         padding: 10px;
         box-sizing: border-box;
-        order: -3;
+        order: 100;
         z-index: 1;
         .cp-toolbar-userlist-drawer-close {
             position: absolute;
@@ -438,10 +440,17 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
+/*
+// XXX
         background-color: @toolbar-bg-color;
         background-color: var(--toolbar-bg-color);
         color: @toolbar-color;
         color: var(--toolbar-color);
+ */
+background-color: #ffffff;
+color: @toolbar-bg-color;
+color: var(--toolbar-bg-color);
+
 
         .fa {
             font: normal normal normal 14px/1 FontAwesome;
@@ -628,57 +637,9 @@
                         margin: 0;
                     }
                 }
-                /*
-                .cp-toolbar-top-filler {
-                    flex: 1;
-                }
-                .cp-toolbar-title {
-                    flex: auto;
-                    width: 100%;
-                    order: 10;
-                    height: @toolbar_line-height;
-                    line-height: initial;
-                    margin: 0;
-                    .cp-toolbar-title-hoverable {
-                        width: 100%;
-                    }
-                    .cp-toolbar-title-editable {
-                        max-width: ~"calc(100vw - 26px)";
-                        display: inline-block;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        font-size: @colortheme_app-font-size;
-                        height: @toolbar_line-height;
-                        box-sizing: border-box;
-                        line-height: 20px;
-                    }
-                    .cp-toolbar-title-edit, .cp-toolbar-title-save {
-                        box-sizing: border-box;
-                        height: @toolbar_line-height;
-                        line-height: @colortheme_app-font-size;
-                        display: inline-block;
-
-                        .fa {
-                            font-size: @colortheme_app-font-size;
-                        }
-                    }
-                    input {
-                        height: @toolbar_line-height;
-                        font-size: @colortheme_app-font-size;
-                        flex: 1;
-                        max-width: none;
-                        line-height: calc(@toolbar_line-height - 12px); // padding + border
-                    }
-                }
-                */
             }
         }
 
-        .cp-toolbar-spinner {
-            font-size: @colortheme_app-font-size;
-            color: @toolbar-color;
-            color: var(--toolbar-color);
-        }
         .cp-toolbar-limit {
             text-shadow: -1px 0 @toolbar-color, 0 1px @toolbar-color, 1px 0 @toolbar-color, 0 -1px @toolbar-color;
             text-shadow: -1px 0 var(--toolbar-color), 0 1px var(--toolbar-color), 1px 0 var(--toolbar-color), 0 -1px var(--toolbar-color);
@@ -688,45 +649,7 @@
         .cp-toolbar-leftside, .cp-toolbar-rightside {
             background-color: @toolbar-bg-color-l8;
             background-color: var(--toolbar-bg-color-l8);
-            button:hover, button.cp-toolbar-button-active {
-                background-color: @toolbar-bg-color;
-                background-color: var(--toolbar-bg-color);
-            }
-        }
-        .cp-toolbar-title-hoverable:hover {
-            .cp-toolbar-title-editable, .cp-toolbar-title-edit {
-                cursor: text;
-                border: 1px solid @toolbar-bg-color-d15;
-                border: 1px solid var(--toolbar-bg-color-d15);
-                background: @toolbar-bg-color-d10;
-                background: var(--toolbar-bg-color-d10);
-                transition: all 0.15s;
-                color: @toolbar-color;
-                color: var(--toolbar-color);
-            }
-            .cp-toolbar-title-editable {
-                cursor: text;
-            }
-        }
-        .cp-toolbar-title-save {
-            border: 1px solid @toolbar-bg-color-d15;
-            border: 1px solid var(--toolbar-bg-color-d15);
-            background: @toolbar-bg-color-d10;
-            background: var(--toolbar-bg-color-d10);
-            color: @toolbar-color;
-            color: var(--toolbar-color);
-            &:hover {
-                background: @toolbar-bg-color-d5;
-                background: var(--toolbar-bg-color-d5);
-            }
-        }
-        input {
-            border: 1px solid @toolbar-bg-color-d15;
-            border: 1px solid var(--toolbar-bg-color-d15);
-            background: @toolbar-bg-color-d10;
-            background: var(--toolbar-bg-color-d10);
-            color: @toolbar-color;
-            color: var(--toolbar-color);
+            color: #FFF; // XXX
         }
         .cp-dropdown-content.cp-dropdown-left a {
             color: black;
@@ -784,34 +707,32 @@
             //flex: 1;
         }
         .cp-toolbar-title {
+            color: @cryptpad_text_col;
             flex: 1;
             overflow: hidden;
             text-overflow: ellipsis;
             order: 3;
             height: 100%;
             display: inline-flex;
-            align-items: center;
-            line-height: @toolbar_top-height;
+            flex-flow: column;
+            justify-content: center;
             margin: 0 10px;
             .cp-toolbar-title-value {
                 border: 1px solid transparent;
-                padding: 5px;
-                font-size: 25px;
+                padding: 0 5px;
+                font-size: 30px;
                 vertical-align: middle;
-                line-height: 25px;
                 white-space: nowrap;
             }
             .cp-toolbar-title-value-page {
                 border: 1px solid transparent;
                 padding: 0 5px;
-                line-height: 48px;
             }
             .cp-toolbar-title-edit, .cp-toolbar-title-save {
                 display: flex;
                 align-items: center;
                 font-size: 20px;
                 vertical-align: middle;
-                line-height: 20px;
                 .fa {
                     font-size: 20px;
                 }
@@ -825,17 +746,30 @@
             .cp-toolbar-title-hoverable {
                 display: inline-flex;
                 overflow: hidden;
+                align-self: baseline;
+                &:hover {
+                    .cp-toolbar-title-editable, .cp-toolbar-title-edit {
+                        border: 1px solid @toolbar-bg-color-d15;
+                        border: 1px solid var(--toolbar-bg-color-d15);
+                        transition: all 0.15s;
+                    }
+                    .cp-toolbar-title-editable {
+                        cursor: text;
+                    }
+                }
             }
             .cp-toolbar-title-edit {
                 cursor: pointer;
                 border: 1px solid transparent;
-                padding: 5px;
+                padding: 0 5px;
                 border-collapse: collapse;
                 span {
                     cursor: pointer;
                 }
             }
             .cp-toolbar-title-save {
+                border: 1px solid @toolbar-bg-color-d15;
+                border: 1px solid var(--toolbar-bg-color-d15);
                 cursor: pointer;
                 padding: 5px;
                 border-collapse: collapse;
@@ -849,38 +783,48 @@
                 border-collapse: collapse;
             }
             input {
+                color: @cryptpad_text_col;
+                border: 1px solid @toolbar-bg-color-d15;
+                border: 1px solid var(--toolbar-bg-color-d15);
                 max-width: ~"calc(100% - 40px)";
                 //flex: 1;
                 vertical-align: middle;
                 box-sizing: border-box;
                 cursor: auto;
                 width: 300px;
-                font-size: 20px;
-                padding: 5px 5px;
-                height: 40px;
-                line-height: 28px; // padding + border
+                font-size: 30px;
+                padding: 0 5px;
+                height: 43px;
             }
         }
         .cp-toolbar-link, .cp-toolbar-new, .cp-toolbar-notifications {
             font-size: 48px;
-            line-height: 64px;
-            width: @toolbar_top-height;
+            line-height: @toolbar_top-height;
+            width: 64px;
             height: @toolbar_top-height;
             padding: 0;
             box-sizing: border-box;
             display: inline-block;
 
+/*
+            // XXX
             color: white;
             a {
                 color: white;
             }
             transition: all 0.15s;
+ */
+
         }
         .cp-toolbar-notifications, .cp-toolbar-new {
+/*
+            // XXX
             background-color: rgba(0,0,0,0.2);
             &:hover {
                 background-color: rgba(0,0,0,0.3);
             }
+ */
+
             text-align: center;
             font-size: 32px;
             &> button {
@@ -890,7 +834,7 @@
                 width: 64px;
                 font-size: 1em;
                 color: inherit;
-                height: 64px;
+                height: @toolbar_top-height;
                 padding: 0px;
                 margin: 0;
                 &::before {
@@ -899,7 +843,6 @@
                     padding-top: 4px;
                 }
                 &:hover {
-                    background-color: initial;
                     border-color: transparent;
                 }
                 span {
@@ -940,10 +883,15 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
+/*
+// XXX
             background-color: rgba(0,0,0,0.4);
             &:hover {
                 background-color: rgba(0,0,0,0.5);
             }
+ */
+
+
             order: 1;
             .fa {
                 margin: 0;
@@ -954,6 +902,13 @@
                 text-decoration: none;
                 height: auto;
                 padding: 10px;
+
+                svg {
+                    * {
+                        fill: @toolbar-bg-color;
+                        fill: var(--toolbar-bg-color);
+                    }
+                }
 
                 img {
                     cursor: pointer;
@@ -967,7 +922,11 @@
             display: inline-flex;
             order: 6;
             line-height: @toolbar_top-height;
-            color: white;
+/*
+// XXX
+ color: white;
+ */
+
             .cp-toolbar-notifications { order: 1; }
             .cp-toolbar-new { order: 2; }
             .cp-toolbar-user-dropdown { order: 3; }
@@ -980,16 +939,20 @@
             .cp-toolbar-user-dropdown {
                 z-index: 10000; //Z cp-toolbar-user-dropdown
                 //margin-left: 20px;
-                height: 64px;
+                height: @toolbar_top-height;
                 width: 64px;
                 padding: 0px;
                 box-sizing: border-box;
                 text-align: center;
+
+/*
                 background-color: rgba(0,0,0,0.3);
                 transition: all 0.15s;
                 &:hover {
                     background-color: rgba(0,0,0,0.4);
                 }
+ */
+
                 .cp-dropdown-content {
                     margin: 0;
                     overflow: visible;
@@ -998,7 +961,7 @@
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    height: 64px;
+                    height: @toolbar_top-height;
                     width: 64px;
                     padding: 0;
                     span {
@@ -1034,6 +997,58 @@
                     background-color: rgba(0,0,0,0.2);
                 }
             }
+        }
+    }
+
+    .cp-toolbar-bottom {
+        background-color: @toolbar-bg-color-l8;
+        background-color: var(--toolbar-bg-color-l8);
+        color: #FFF; // XXX
+        button:hover, button.cp-toolbar-button-active {
+            background-color: @toolbar-bg-color;
+            background-color: var(--toolbar-bg-color);
+        }
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 100%;
+        flex: 1 1 auto;
+        &:empty {
+            height: 0;
+        }
+        .cp-toolbar-users {
+            pre {
+                /* needed for ckeditor */
+                white-space: pre;
+                margin: 5px 0px;
+            }
+        }
+        button {
+            margin: 0px;
+            border-radius: 0;
+            height: 100%;
+        }
+        .cp-dropdown-content {
+            margin-top: -1px;
+        }
+
+        & > span {
+            height: @toolbar_line-height;
+        }
+
+
+        .cp-toolbar-bottom-left {
+            order: 1;
+        }
+        .cp-toolbar-bottom-mid {
+            order: 2;
+        }
+        .cp-toolbar-bottom-right {
+            order: 3;
+            display: flex;
+            #cp-toolbar-chat-drawer-open { order: 0; }
+            #cp-toolbar-userlist-drawer-open { order: 1; }
         }
     }
 
@@ -1188,13 +1203,17 @@
         }
     }
     .cp-toolbar-spinner {
-        line-height: @toolbar_line-height;
-        padding: 0 20px;
+        color: @cryptpad_text_col;
+        font-size: 14px;
+        padding: 0 8px;
+        height: 20px;
+        line-height: 20px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
         min-width: 200px;
         box-sizing: border-box;
+        margin-bottom: 5px;
         &> span.fa {
             height: 20px;
             width: 20px;

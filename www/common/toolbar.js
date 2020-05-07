@@ -24,6 +24,10 @@ MessengerUI, Messages) {
     // Toolbar parts
     var TOOLBAR_CLS = Bar.constants.toolbar = 'cp-toolbar';
     var TOP_CLS = Bar.constants.top = 'cp-toolbar-top';
+    var BOTTOM_CLS = Bar.constants.bottom = 'cp-toolbar-bottom';
+    var BOTTOM_LEFT_CLS = Bar.constants.bottomL = 'cp-toolbar-bottom-left';
+    var BOTTOM_MID_CLS = Bar.constants.bottomM = 'cp-toolbar-bottom-mid';
+    var BOTTOM_RIGHT_CLS = Bar.constants.bottomR = 'cp-toolbar-bottom-right';
     var LEFTSIDE_CLS = Bar.constants.leftside = 'cp-toolbar-leftside';
     var RIGHTSIDE_CLS = Bar.constants.rightside = 'cp-toolbar-rightside';
     var DRAWER_CLS = Bar.constants.drawer = 'cp-toolbar-drawer-content';
@@ -77,10 +81,19 @@ MessengerUI, Messages) {
         $('<span>', {'class': NEWPAD_CLS + ' cp-dropdown-container'}).hide().appendTo($userContainer);
         $('<span>', {'class': USERADMIN_CLS + ' cp-dropdown-container'}).hide().appendTo($userContainer);
 
+        /*
         $toolbar.append($topContainer)
         .append($('<div>', {'class': LEFTSIDE_CLS}))
         .append($('<div>', {'class': RIGHTSIDE_CLS}))
         .append($('<div>', {'class': HISTORY_CLS}));
+        */
+        $toolbar.append($topContainer);
+        var $bottom = $(h('div.'+BOTTOM_CLS, [
+            h('div.'+BOTTOM_LEFT_CLS),
+            h('div.'+BOTTOM_MID_CLS),
+            h('div.'+BOTTOM_RIGHT_CLS)
+        ])).appendTo($toolbar);
+        $toolbar.append(h('div.'+HISTORY_CLS));
 
         var $rightside = $toolbar.find('.'+RIGHTSIDE_CLS);
         if (!config.hideDrawer) {
@@ -398,7 +411,7 @@ MessengerUI, Messages) {
         var $button = $('<button>').appendTo($container);
         $('<span>',{'class': 'cp-dropdown-button-title'}).appendTo($button);
 
-        toolbar.$leftside.prepend($container);
+        toolbar.$bottomR.prepend($container);
 
         if (config.$contentContainer) {
             config.$contentContainer.prepend($content);
@@ -465,7 +478,7 @@ MessengerUI, Messages) {
         var $button = $('<button>', {'class': 'fa fa-comments'}).appendTo($container);
         $('<span>',{'class': 'cp-dropdown-button-title'}).appendTo($button);
 
-        toolbar.$leftside.prepend($container);
+        toolbar.$bottomR.prepend($container);
 
         if (config.$contentContainer) {
             config.$contentContainer.prepend($content);
@@ -812,9 +825,12 @@ MessengerUI, Messages) {
             href: href,
             title: buttonTitle,
             'class': "cp-toolbar-link-logo"
-        }).append($('<img>', {
-            src: '/customize/images/logo_white.png?' + ApiConfig.requireConf.urlArgs
-        }));
+        }).append(UIElements.getSvgLogo());
+        
+        /*.append($('<img>', {
+            //src: '/customize/images/logo_white.png?' + ApiConfig.requireConf.urlArgs
+            src: '/customize/main-favicon.png?' + ApiConfig.requireConf.urlArgs
+        }));*/
         var onClick = function (e) {
             e.preventDefault();
             if (e.ctrlKey) {
@@ -867,7 +883,7 @@ MessengerUI, Messages) {
         };
     };
     var createSpinner = function (toolbar, config) {
-        var $spin = $('<span>', {'class': SPINNER_CLS}).appendTo(toolbar.$leftside);
+        var $spin = $('<span>', {'class': SPINNER_CLS}).appendTo(toolbar.title);
         $spin.text(Messages.synchronizing);
 
         if (config.realtime) {
@@ -1207,6 +1223,10 @@ MessengerUI, Messages) {
         toolbar.firstConnection = true;
 
         var $toolbar = toolbar.$toolbar = createRealtimeToolbar(config);
+        toolbar.$bottom = $toolbar.find('.'+Bar.constants.bottom);
+        toolbar.$bottomL = $toolbar.find('.'+Bar.constants.bottomL);
+        toolbar.$bottomM = $toolbar.find('.'+Bar.constants.bottomM);
+        toolbar.$bottomR = $toolbar.find('.'+Bar.constants.bottomR);
         toolbar.$leftside = $toolbar.find('.'+Bar.constants.leftside);
         toolbar.$rightside = $toolbar.find('.'+Bar.constants.rightside);
         toolbar.$drawer = $toolbar.find('.'+Bar.constants.drawer);
