@@ -1125,18 +1125,7 @@ define([
         Title = common.createTitle(titleCfg);
 
         var configTb = {
-            displayed: [
-                'chat',
-                'userlist',
-                'title',
-                'useradmin',
-                'spinner',
-                'newpad',
-                'share',
-                'limit',
-                'unpinnedWarning',
-                'notifications'
-            ],
+            displayed: ['pad'],
             title: Title.getTitleConfig(),
             metadataMgr: metadataMgr,
             readOnly: APP.readOnly,
@@ -1169,8 +1158,6 @@ define([
         var $forgetPad = common.createButton('forget', true, {}, forgetCb);
         $rightside.append($forgetPad);
 
-        var $access = common.createButton('access', true);
-        $drawer.append($access);
         var $properties = common.createButton('properties', true);
         $drawer.append($properties);
 

@@ -1003,7 +1003,7 @@ color: var(--toolbar-bg-color);
     .cp-toolbar-bottom {
         background-color: @toolbar-bg-color-l8;
         background-color: var(--toolbar-bg-color-l8);
-        color: #FFF; // XXX
+        color: @cryptpad_text_col;
         button:hover, button.cp-toolbar-button-active {
             background-color: @toolbar-bg-color;
             background-color: var(--toolbar-bg-color);
@@ -1028,6 +1028,9 @@ color: var(--toolbar-bg-color);
             margin: 0px;
             border-radius: 0;
             height: 100%;
+            .fa {
+                margin-right: 5px;
+            }
         }
         .cp-dropdown-content {
             margin-top: -1px;

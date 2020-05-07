@@ -1483,18 +1483,7 @@ define([
             Title = common.createTitle({});
 
             var configTb = {
-                displayed: [
-                    'chat',
-                    'userlist',
-                    'title',
-                    'useradmin',
-                    'spinner',
-                    'newpad',
-                    'share',
-                    'limit',
-                    'unpinnedWarning',
-                    'notifications'
-                ],
+                displayed: ['pad'],
                 title: Title.getTitleConfig(),
                 metadataMgr: metadataMgr,
                 readOnly: readOnly,
@@ -1561,8 +1550,6 @@ define([
 
             var $properties = common.createButton('properties', true);
             toolbar.$drawer.append($properties);
-            var $access = common.createButton('access', true);
-            toolbar.$drawer.append($access);
         };
 
         config.onReady = function (info) {

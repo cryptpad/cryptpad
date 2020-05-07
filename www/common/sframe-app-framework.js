@@ -654,19 +654,7 @@ define([
                 getHeadingText: function () { return titleRecommender(); }
             }, onLocal);
             var configTb = {
-                displayed: [
-                    'chat',
-                    'userlist',
-                    'title',
-                    'useradmin',
-                    'spinner',
-                    'newpad',
-                    'share',
-                    'limit',
-                    'request',
-                    'unpinnedWarning',
-                    'notifications'
-                ],
+                displayed: ['pad'],
                 title: title.getTitleConfig(),
                 metadataMgr: cpNfInner.metadataMgr,
                 readOnly: readOnly,
@@ -722,8 +710,6 @@ define([
 
             var $properties = common.createButton('properties', true);
             toolbar.$drawer.append($properties);
-            var $access = common.createButton('access', true);
-            toolbar.$drawer.append($access);
 
             createFilePicker();
 

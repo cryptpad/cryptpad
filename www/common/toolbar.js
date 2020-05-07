@@ -473,10 +473,12 @@ MessengerUI, Messages) {
 
         toolbar.chatContent = $content;
 
-        var $container = $('<span>', {id: 'cp-toolbar-chat-drawer-open', title: Messages.chatButton});
+        var $container = $('<span>', {id: 'cp-toolbar-chat-drawer-open'});
 
-        var $button = $('<button>', {'class': 'fa fa-comments'}).appendTo($container);
-        $('<span>',{'class': 'cp-dropdown-button-title'}).appendTo($button);
+        var $button = $(h('button', [
+            h('i.fa.fa-comments'),
+            h('span.cp-button-name', Messages.chatButton)
+        ])).appendTo($container);
 
         toolbar.$bottomR.prepend($container);
 
@@ -531,13 +533,13 @@ MessengerUI, Messages) {
 
     var createShare = function (toolbar, config) {
         if (!config.metadataMgr) {
-            throw new Error("You must provide a `metadataMgr` to display the userlist");
+            throw new Error("You must provide a `metadataMgr` to display the share button");
         }
 
-        var $shareBlock = $('<button>', {
-            'class': 'fa fa-shhare-alt cp-toolbar-share-button',
-            title: Messages.shareButton
-        });
+        var $shareBlock = $(h('button.cp-toolar-share-button', [
+            h('i.fa.fa-shhare-alt'),
+            h('span.cp-button-name', Messages.shareButton)
+        ]));
         Common.getSframeChannel().event('EV_SHARE_OPEN', {
             hidden: true
         });
@@ -550,10 +552,28 @@ MessengerUI, Messages) {
             });
         });
 
-        toolbar.$leftside.append($shareBlock);
+        toolbar.$bottomM.append($shareBlock);
         toolbar.share = $shareBlock;
 
         return "Loading share button";
+    };
+    var createAccess = function (toolbar, config) {
+        if (!config.metadataMgr) {
+            throw new Error("You must provide a `metadataMgr` to display the access button");
+        }
+
+        var $accessBlock = $(h('button.cp-toolar-access-button', [
+            h('i.fa.fa-unlock-alt'),
+            h('span.cp-button-name', Messages.accessButton)
+        ]));
+        $accessBlock.click(function () { 
+            Common.getSframeChannel().event('EV_ACCESS_OPEN');
+        });
+
+        toolbar.$bottomM.append($accessBlock);
+        toolbar.access = $accessBlock;
+
+        return "Loading access button";
     };
 
     var createFileShare = function (toolbar, config) {
@@ -578,7 +598,7 @@ MessengerUI, Messages) {
             });
         });
 
-        toolbar.$leftside.append($shareBlock);
+        toolbar.$bottomM.append($shareBlock);
         return $shareBlock;
     };
 
@@ -1240,6 +1260,7 @@ MessengerUI, Messages) {
         tb['userlist'] = createUserList;
         tb['chat'] = createChat;
         tb['share'] = createShare;
+        tb['access'] = createAccess;
         tb['fileshare'] = createFileShare;
         tb['title'] = createTitle;
         tb['pageTitle'] = createPageTitle;
@@ -1253,6 +1274,14 @@ MessengerUI, Messages) {
         tb['useradmin'] = createUserAdmin;
         tb['unpinnedWarning'] = createUnpinnedWarning;
         tb['notifications'] = createNotifications;
+
+        tb['pad'] = function () {
+            addElement([
+                'chat', 'userlist', 'title', 'useradmin', 'spinner',
+                'newpad', 'share', 'access', 'limit', 'unpinnedWarning',
+                'notifications'
+            ], {});
+        };
 
         var addElement = toolbar.addElement = function (arr, additionalCfg, init) {
             if (typeof additionalCfg === "object") { $.extend(true, config, additionalCfg); }

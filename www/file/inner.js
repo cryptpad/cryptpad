@@ -72,6 +72,7 @@ define([
         var displayed = ['useradmin', 'newpad', 'limit', 'upgrade'];
         if (!uploadMode) {
             displayed.push('fileshare');
+            displayed.push('access');
         }
         var configTb = {
             displayed: displayed,
@@ -132,7 +133,6 @@ define([
                     title: Title.getTitleConfig(),
                 });
                 toolbar.$rightside.append(common.createButton('forget', true));
-                toolbar.$rightside.append(common.createButton('access', true));
                 toolbar.$rightside.append(common.createButton('properties', true));
                 if (common.isLoggedIn()) {
                     toolbar.$rightside.append(common.createButton('hashtag', true));
