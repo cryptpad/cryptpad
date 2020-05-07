@@ -1,6 +1,6 @@
 define([
     'jquery',
-    '/common/toolbar3.js',
+    '/common/toolbar.js',
     '/common/drive-ui.js',
     '/common/common-util.js',
     '/common/common-hash.js',
