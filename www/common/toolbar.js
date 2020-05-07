@@ -81,12 +81,6 @@ MessengerUI, Messages) {
         $('<span>', {'class': NEWPAD_CLS + ' cp-dropdown-container'}).hide().appendTo($userContainer);
         $('<span>', {'class': USERADMIN_CLS + ' cp-dropdown-container'}).hide().appendTo($userContainer);
 
-        /*
-        $toolbar.append($topContainer)
-        .append($('<div>', {'class': LEFTSIDE_CLS}))
-        .append($('<div>', {'class': RIGHTSIDE_CLS}))
-        .append($('<div>', {'class': HISTORY_CLS}));
-        */
         $toolbar.append($topContainer);
         var $bottom = $(h('div.'+BOTTOM_CLS, [
             h('div.'+BOTTOM_LEFT_CLS),
@@ -95,13 +89,18 @@ MessengerUI, Messages) {
         ])).appendTo($toolbar);
         $toolbar.append(h('div.'+HISTORY_CLS));
 
-        var $rightside = $toolbar.find('.'+RIGHTSIDE_CLS);
+        var $file = $toolbar.find('.'+BOTTOM_LEFT_CLS);
+
+        Messages.toolbar_file = "File"; // XXX
         if (!config.hideDrawer) {
             var $drawerContent = $('<div>', {
                 'class': DRAWER_CLS,
                 'tabindex': 1
-            }).appendTo($rightside).hide();
-            var $drawer = Common.createButton('more', true).appendTo($rightside);
+            }).appendTo($file).hide();
+            var $drawer = $(h('button', [
+                h('i.fa.fa-file-o'),
+                h('span.cp-button-name', Messages.toolbar_file)
+            ])).appendTo($file);
             $drawer.click(function () {
                 $drawerContent.toggle();
                 $drawer.removeClass('cp-toolbar-button-active');

@@ -1027,7 +1027,9 @@ color: var(--toolbar-bg-color);
         button {
             margin: 0px;
             border-radius: 0;
-            height: 100%;
+            height: @toolbar_line-height;
+            display: inline-flex;
+            align-items: center;
             .fa {
                 margin-right: 5px;
             }
@@ -1052,6 +1054,82 @@ color: var(--toolbar-bg-color);
             display: flex;
             #cp-toolbar-chat-drawer-open { order: 0; }
             #cp-toolbar-userlist-drawer-open { order: 1; }
+        }
+
+        .cp-toolbar-bottom-left {
+            .cp-toolbar-drawer-content:empty ~ .cp-toolbar-drawer-button {
+                display: none;
+            }
+            .cp-toolbar-drawer-content {
+                box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
+                position: absolute;
+                left: 0px;
+                margin-top: @toolbar_line-height;
+                min-width: 50px;
+                background: @colortheme_dropdown-bg;
+                display: flex;
+                flex-flow: column;
+                z-index: 10000; //Z cp-toolbar-drawer-content
+                color: black;
+                .fa {
+                    font-size: 17px;
+                }
+                &> span {
+                    order: 8;
+                    box-sizing: border-box;
+                    min-width: 150px;
+                    height: @toolbar_line-height;
+                    border-radius: 0;
+                    border: 0;
+                }
+                button {
+                    padding: 5px 16px;
+                    text-align: left;
+                    margin: 0;
+                    border-radius: 0;
+                    border: 0;
+                    width: 100%;
+                    line-height: 1em;
+                    &.cp-toolbar-button-active {
+                        background-color: inherit;
+                    }
+                    .cp-toolbar-drawer-element {
+                        margin-left: 10px;
+                        display: inline;
+                        vertical-align: baseline;
+                    }
+                    &.fa-info-circle, &.fa-history, &.fa-cog {
+                        .cp-toolbar-drawer-element {
+                            margin-left: 11px;
+                        }
+                    }
+                    &.fa-unlock-alt {
+                        .cp-toolbar-drawer-element {
+                            margin-left: 15px;
+                        }
+                    }
+                    &.fa-question {
+                        .cp-toolbar-drawer-element {
+                            margin-left: 16px;
+                        }
+                    }
+                    &:hover {
+                        background-color: @colortheme_dropdown-bg-hover !important;
+                        color: @colortheme_dropdown-color;
+                    }
+                    order: 8;
+                    &.fa-history { order: 1; }
+                    &.fa-clone { order: 1; }
+                    &.fa-download { order: 2; }
+                    &.fa-upload { order: 3; }
+                    &.fa-print { order: 4; }
+                    &.fa-arrows-h { order: 5; }
+                    &.fa-cog { order: 5; }
+                    &.fa-paint-brush { order: 5; }
+                    &.fa-info-circle { order: 6; }
+                    &.fa-help { order: 7; }
+                }
+            }
         }
     }
 
@@ -1131,79 +1209,6 @@ color: var(--toolbar-bg-color);
 
         }
 
-        .cp-toolbar-drawer-content:empty ~ .cp-toolbar-drawer-button {
-            display: none;
-        }
-        .cp-toolbar-drawer-content {
-            box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
-            position: absolute;
-            right: 0px;
-            margin-top: @toolbar_line-height;
-            min-width: 50px;
-            background: @colortheme_dropdown-bg;
-            display: flex;
-            flex-flow: column;
-            z-index: 10000; //Z cp-toolbar-drawer-content
-            color: black;
-            .fa {
-                font-size: 17px;
-            }
-            &> span {
-                order: 8;
-                box-sizing: border-box;
-                min-width: 150px;
-                height: @toolbar_line-height;
-                border-radius: 0;
-                border: 0;
-            }
-            button {
-                padding: 5px 16px;
-                text-align: left;
-                margin: 0;
-                border-radius: 0;
-                border: 0;
-                width: 100%;
-                line-height: 1em;
-                &.cp-toolbar-button-active {
-                    background-color: inherit;
-                }
-                .cp-toolbar-drawer-element {
-                    margin-left: 10px;
-                    display: inline;
-                    vertical-align: baseline;
-                }
-                &.fa-info-circle, &.fa-history, &.fa-cog {
-                    .cp-toolbar-drawer-element {
-                        margin-left: 11px;
-                    }
-                }
-                &.fa-unlock-alt {
-                    .cp-toolbar-drawer-element {
-                        margin-left: 15px;
-                    }
-                }
-                &.fa-question {
-                    .cp-toolbar-drawer-element {
-                        margin-left: 16px;
-                    }
-                }
-                &:hover {
-                    background-color: @colortheme_dropdown-bg-hover !important;
-                    color: @colortheme_dropdown-color;
-                }
-                order: 8;
-                &.fa-history { order: 1; }
-                &.fa-clone { order: 1; }
-                &.fa-download { order: 2; }
-                &.fa-upload { order: 3; }
-                &.fa-print { order: 4; }
-                &.fa-arrows-h { order: 5; }
-                &.fa-cog { order: 5; }
-                &.fa-paint-brush { order: 5; }
-                &.fa-info-circle { order: 6; }
-                &.fa-help { order: 7; }
-            }
-        }
     }
     .cp-toolbar-spinner {
         color: @cryptpad_text_col;

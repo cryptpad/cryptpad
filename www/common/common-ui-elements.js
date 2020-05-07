@@ -1554,12 +1554,6 @@ define([
                     }
                 }
                 break;
-            case 'more':
-                button = $('<button>', {
-                    title: Messages.moreActions,
-                    'class': "cp-toolbar-drawer-button fa fa-ellipsis-h",
-                });
-                break;
             case 'mediatag':
                 button = $('<button>', {
                     'class': 'fa fa-picture-o cp-toolbar-icon-mediatag',
@@ -1615,17 +1609,6 @@ define([
                     updateIcon(isVisible);
                 });
                 updateIcon(data.element.is(':visible'));
-                break;
-            case 'access':
-                button = $('<button>', {
-                    'class': 'fa fa-unlock-alt cp-toolbar-icon-access',
-                    title: Messages.accessButton,
-                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'})
-                .text(Messages.accessButton))
-                .click(common.prepareFeedback(type))
-                .click(function () {
-                    sframeChan.event('EV_ACCESS_OPEN');
-                });
                 break;
             case 'properties':
                 button = $('<button>', {
