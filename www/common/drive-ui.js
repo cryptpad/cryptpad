@@ -698,7 +698,6 @@ define([
             }
         };
         $content.on('mousedown', function (e) {
-            if (currentPath[0] === SEARCH) { return; }
             if (e.which !== 1) { return; }
             $content.focus();
             sel.down = true;
@@ -2273,7 +2272,8 @@ define([
                 if (idx < path.length - 1) {
                     if (!noStyle) {
                         $span.addClass('cp-app-drive-path-clickable');
-                        $span.click(function () {
+                        $span.click(function (e) {
+                            e.stopPropagation();
                             var sliceEnd = idx + 1;
                             if (isTrash && idx === 1) { sliceEnd = 4; } // Make sure we don't show the index or 'element' and 'path'
                             APP.displayDirectory(path.slice(0, sliceEnd));
@@ -2812,32 +2812,33 @@ define([
                 $list.find('.' + classSorted).addClass('cp-app-drive-sort-active').prepend($icon);
             }
         };
-        var getFileListHeader = function () {
+        var getFileListHeader = function (clickable) {
             var $fihElement = $('<li>', {
                 'class': 'cp-app-drive-element-header cp-app-drive-element-list'
             });
+            var clickCls = clickable ? 'cp-app-drive-sort-clickable ' : '';
+            var onClick = clickable ? onSortByClick : function () {};
             //var $fihElement = $('<span>', {'class': 'element'}).appendTo($fileHeader);
             var $fhIcon = $('<span>', {'class': 'cp-app-drive-content-icon'});
             var $fhName = $('<span>', {
-                'class': 'cp-app-drive-element-name cp-app-drive-sort-filename ' +
-                         'cp-app-drive-sort-clickable'
-            }).text(Messages.fm_fileName).click(onSortByClick);
-            var $fhSort = getSortDropdown();
+                'class': 'cp-app-drive-element-name cp-app-drive-sort-filename ' + clickCls
+            }).text(Messages.fm_fileName).click(onClick);
+            var $fhSort = clickable ? getSortDropdown() : undefined;
 
             var $fhState = $('<span>', {'class': 'cp-app-drive-element-state'});
             var $fhType = $('<span>', {
-                'class': 'cp-app-drive-element-type cp-app-drive-sort-clickable cp-app-drive-element-list'
-            }).text(Messages.fm_type).click(onSortByClick);
+                'class': 'cp-app-drive-element-type cp-app-drive-element-list ' + clickCls
+            }).text(Messages.fm_type).click(onClick);
             var $fhAdate = $('<span>', {
-                'class': 'cp-app-drive-element-atime cp-app-drive-sort-clickable cp-app-drive-element-list'
-            }).text(Messages.fm_lastAccess).click(onSortByClick);
+                'class': 'cp-app-drive-element-atime cp-app-drive-element-list ' + clickCls
+            }).text(Messages.fm_lastAccess).click(onClick);
             var $fhCdate = $('<span>', {
-                'class': 'cp-app-drive-element-ctime cp-app-drive-sort-clickable cp-app-drive-element-list'
-            }).text(Messages.fm_creation).click(onSortByClick);
+                'class': 'cp-app-drive-element-ctime cp-app-drive-element-list ' + clickCls
+            }).text(Messages.fm_creation).click(onClick);
             // If displayTitle is false, it means the "name" is the title, so do not display the "name" header
             $fihElement.append($fhIcon).append($fhName).append($fhSort).append($fhState).append($fhType);
             $fihElement.append($fhAdate).append($fhCdate);
-            addFileSortIcon($fihElement);
+            if (clickable) { addFileSortIcon($fihElement); }
             return $fihElement;
         };
 
@@ -3025,7 +3026,7 @@ define([
         var displayHrefArray = function ($container, rootName, draggable) {
             var unsorted = files[rootName];
             if (unsorted.length) {
-                var $fileHeader = getFileListHeader(false);
+                var $fileHeader = getFileListHeader(true);
                 $container.append($fileHeader);
             }
             var keys = unsorted;
@@ -3080,7 +3081,7 @@ define([
             }
             var allfiles = files[FILES_DATA];
             if (allfiles.length === 0) { return; }
-            var $fileHeader = getFileListHeader(false);
+            var $fileHeader = getFileListHeader(true);
             $container.append($fileHeader);
             var keys = manager.getFiles([FILES_DATA]);
             var sortedFiles = sortElements(false, [FILES_DATA], keys, APP.store[SORT_FILE_BY], !getSortFileDesc(), true);
@@ -3144,74 +3145,42 @@ define([
         };
 
         var displaySearch = function ($list, value) {
+            getFileListHeader(false).appendTo($list);
+            $list.closest('#cp-app-drive-content-folder').addClass('cp-app-drive-content-list');
             var filesList = manager.search(value);
             filesList.forEach(function (r) {
                 // if r.id === null, then it's a folder, not a file
                 r.paths.forEach(function (path) {
                     if (!r.inSharedFolder &&
                         APP.hideDuplicateOwned && manager.isDuplicateOwned(path)) { return; }
-                    var href = r.data.href || r.data.roHref;
-                    var parsed = Hash.parsePadUrl(href);
-                    var $table = $('<table>');
-                    var $icon = $('<td>', {'rowspan': '3', 'class': 'cp-app-drive-search-icon'});
-                    var $title = $('<td>', {
-                        'class': 'cp-app-drive-search-col1 cp-app-drive-search-title'
-                    }).text(r.data.title);
-                    if (manager.isPathIn(path, ['hrefArray'])) {
-                        path.pop();
-                        path.push(r.data.title);
-                    }
-                    var $path = $('<td>', {
-                        'class': 'cp-app-drive-search-col1 cp-app-drive-search-path'
-                    });
-                    createTitle($path, path, true);
-                    var $typeName = $('<td>', {'class': 'cp-app-drive-search-label2'}).text(Messages.fm_type);
-                    var $type = $('<td>', {'class': 'cp-app-drive-search-col2'});
-                    var $atimeName = $('<td>', {'class': 'cp-app-drive-search-label2'});
-                    var $atime = $('<td>', {'class': 'cp-app-drive-search-col2'});
-                    var $ctimeName = $('<td>', {'class': 'cp-app-drive-search-label2'});
-                    var $ctime = $('<td>', {'class': 'cp-app-drive-search-col2'});
-                    var $openDir = $('<td>', {'class': 'cp-app-drive-search-opendir'});
-                    if (r.id) {
-                        $icon.append(getFileIcon(r.id));
-                        $type.text(Messages.type[parsed.type] || parsed.type);
-                        $title.click(function () {
-                            openFile(r.id);
-                        });
-                        $atimeName.text(Messages.fm_lastAccess);
-                        $atime.text(new Date(r.data.atime).toLocaleString());
-                        $ctimeName.text(Messages.fm_creation);
-                        $ctime.text(new Date(r.data.ctime).toLocaleString());
-                        var parentPath = path.slice();
-                        if (parentPath) {
-                            $('<a>').text(Messages.fm_openParent).click(function (e) {
-                                e.preventDefault();
-                                if (manager.isInTrashRoot(parentPath)) { parentPath = [TRASH]; }
-                                else { parentPath.pop(); }
-                                APP.displayDirectory(parentPath);
-                                APP.selectedFiles = path.slice(-1);
-                            }).appendTo($openDir);
-                        }
-                        $('<a>').text(Messages.fc_prop).click(function () {
-                            APP.getProperties(r.id, function (e) {
-                                if (e) { return void logError(e); }
-                            });
-                        }).appendTo($openDir);
-                    }
-                    else {
-                        $icon.append($folderIcon.clone());
-                        $type.text(Messages.fm_folder);
-                        $('<a>').text(Messages.fc_open).click(function (e) {
-                            e.preventDefault();
-                            APP.displayDirectory(path);
-                        }).appendTo($openDir);
+                    var _path = path.slice();
+                    var key = path.pop();
+                    var root = manager.find(path);
+                    var isFolder = manager.isFolder(root[key]);
+                    var $element = createElement(path, key, root, isFolder);
+                    $element.addClass('cp-app-drive-element-notrash cp-app-drive-search-result');
+                    $element.off('contextmenu');
+                    $element.contextmenu(openContextMenu('default'));
+                    $element.data('context', 'default');
+                    if (isFolder) {
+                        $element.find('.cp-app-drive-element-list').css({
+                            visibility: 'hidden'
+                        }).text('');
+                        $element.find('.cp-app-drive-element-folders').css({
+                            visibility: ''
+                        }).text(Messages.fm_folder);
                     }
 
-                    // rows 1-3
-                    $('<tr>').append($icon).append($title).append($typeName).append($type).appendTo($table);
-                    $('<tr>').append($path).append($atimeName).append($atime).appendTo($table);
-                    $('<tr>').append($openDir).append($ctimeName).append($ctime).appendTo($table);
-                    $('<li>', {'class':'cp-app-drive-search-result'}).append($table).appendTo($list);
+                    if (manager.isPathIn(_path, ['hrefArray'])) {
+                        _path.pop();
+                        _path.push(r.data.title);
+                    }
+                    var $path = $('<span>', {
+                        'class': 'cp-app-drive-search-path'
+                    }).appendTo($element.find('.cp-app-drive-element-name'));
+                    createTitle($path, _path);
+
+                    $list.append($element);
                 });
             });
         };
@@ -3295,7 +3264,7 @@ define([
         var displayOwned = function ($container) {
             var list = manager.getOwnedPads();
             if (list.length === 0) { return; }
-            var $fileHeader = getFileListHeader(false);
+            var $fileHeader = getFileListHeader(true);
             $container.append($fileHeader);
             var sortedFiles = sortElements(false, false, list, APP.store[SORT_FILE_BY], !getSortFileDesc(), true);
             sortedFiles.forEach(function (id) {

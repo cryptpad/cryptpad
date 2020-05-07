@@ -109,6 +109,7 @@
         min-height: 0;
         @media screen and (max-width: @browser_media-medium-screen) {
             display: block;
+            overflow-y: auto;
             #cp-app-drive-toolbar {
                 .path .element {
                     display: none;
@@ -483,61 +484,31 @@
         #cp-app-drive-content-folder {
             li {
                 &.cp-app-drive-search-result {
-                    border-bottom: 1px solid @drive_info-box-border;
-                    display: block;
-                    &:hover {
-                        background-color: initial;
-                    }
-                    table {
-                        width: 100%;
-                        .cp-app-drive-search-label2 {
-                            width: 150px;
-                            font-size: 15px;
-                            text-align: right;
-                            padding-right: 15px;
-                        }
-                        .cp-app-drive-search-opendir {
+                    display: flex;
+                    height: 2 * @variables_bar-height;
+                    .cp-app-drive-search-path {
+                        .cp-app-drive-path-inner {
                             display: flex;
-                            justify-content: space-between;
-                            a {
+                            flex-flow: row-reverse wrap-reverse;
+                            justify-content: flex-end;
+                            .cp-app-drive-path-element {
+                                flex-shrink: 0;
+                                display: inline-block;
+                                margin-right: 5px;
+                                white-space: normal;
+                                word-wrap: break-word;
+                                max-width: 100%;
+                            }
+                            .cp-app-drive-path-clickable {
                                 cursor: pointer;
-                                color: #41b7d8;
                                 &:hover {
-                                    color: #014c8c;
-                                    text-decoration: underline;
+                                    background-color: #eee;
                                 }
                             }
                         }
-                        .cp-app-drive-search-path {
-                            font-style: italic;
-                            .cp-app-drive-path-inner {
-                                display: flex;
-                                flex-flow: row-reverse wrap-reverse;
-                                justify-content: flex-end;
-                                .cp-app-drive-path-element {
-                                    flex-shrink: 0;
-                                    display: inline-block;
-                                    margin-right: 5px;
-                                    white-space: normal;
-                                    word-wrap: break-word;
-                                    max-width: 100%;
-                                }
-                            }
-                        }
-                        .cp-app-drive-search-title {
-                            font-weight: bold;
-                            cursor: pointer;
-                            &:hover {
-                                background-color: @drive_hover;
-                            }
-                        }
-                        .cp-app-drive-search-col2 {
-                            width: 250px;
-                        }
-                        td.cp-app-drive-search-icon {
-                            width: 50px;
-                            font-size: 40px;
-                        }
+                        font-size: 12px;
+                        line-height: 16px;
+                        color: @drive_table-header-fg;
                     }
                 }
                 &.cp-app-drive-tags-list {
@@ -671,6 +642,8 @@
                         text-align: right;
                         display: flex;
                         align-items: center;
+                        justify-content: end;
+                        height: @variables_bar-height;
                         .fa, .cptools {
                             &:not(:last-child) {
                                 margin-right: 2px;
@@ -678,7 +651,7 @@
                         }
                     }
                     &.cp-app-drive-element-list {
-                        width: 110px;
+                        width: 120px;
                     }
                     &.cp-app-drive-element-sort {
                         display: none;
@@ -708,6 +681,7 @@
                     height: 1.5 * @variables_bar-height;
                     line-height: 1.5 * @variables_bar-height;
                     span {
+                        line-height: 1.5 * @variables_bar-height;
                         position: absolute;
                     }
                 }
