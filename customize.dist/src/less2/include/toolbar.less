@@ -863,7 +863,7 @@ color: var(--toolbar-bg-color);
                 position: relative;
                 .cp-dropdown-button-title {
                     position: absolute;
-                    bottom: 0;
+                    bottom: 10px;
                     right: 0;
                     font-size: 14px;
                     border: 1px solid;
@@ -1025,12 +1025,13 @@ color: var(--toolbar-bg-color);
             }
         }
         button {
+            position: relative;
             margin: 0px;
             border-radius: 0;
             height: @toolbar_line-height;
             display: inline-flex;
             align-items: center;
-            .fa {
+            .fa, .cptools {
                 margin-right: 5px;
             }
         }
@@ -1044,6 +1045,7 @@ color: var(--toolbar-bg-color);
 
 
         .cp-toolbar-bottom-left {
+            display: flex;
             order: 1;
         }
         .cp-toolbar-bottom-mid {
@@ -1064,7 +1066,8 @@ color: var(--toolbar-bg-color);
                 box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
                 position: absolute;
                 left: 0px;
-                margin-top: @toolbar_line-height;
+                top: @toolbar_line-height;
+                margin: -1px;
                 min-width: 50px;
                 background: @colortheme_dropdown-bg;
                 display: flex;
@@ -1083,6 +1086,7 @@ color: var(--toolbar-bg-color);
                     border: 0;
                 }
                 button {
+                    white-space: nowrap;
                     padding: 5px 16px;
                     text-align: left;
                     margin: 0;

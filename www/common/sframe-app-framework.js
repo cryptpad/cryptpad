@@ -526,7 +526,7 @@ define([
                     mediaTagEmbedder($('<media-tag src="' + src +
                         '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>'), data);
                 });
-            }).appendTo(toolbar.$rightside).hide();
+            }).appendTo(toolbar.$bottomL).hide();
         };
         var setMediaTagEmbedder = function (mte, filter) {
             if (!common.isLoggedIn()) { return; }
@@ -691,21 +691,21 @@ define([
                     getTitle: function () { return cpNfInner.metadataMgr.getMetadata().title; }
                 };
                 var $templateButton = common.createButton('template', true, templateObj);
-                toolbar.$rightside.append($templateButton);
+                toolbar.$drawer.append($templateButton);
             }
 
             var $importTemplateButton = common.createButton('importtemplate', true);
             toolbar.$drawer.append($importTemplateButton);
 
             /* add a forget button */
-            toolbar.$rightside.append(common.createButton('forget', true, {}, function (err) {
+            toolbar.$drawer.append(common.createButton('forget', true, {}, function (err) {
                 if (err) { return; }
                 stateChange(STATE.FORGOTTEN);
             }));
 
             if (common.isLoggedIn()) {
                 var $tags = common.createButton('hashtag', true);
-                toolbar.$rightside.append($tags);
+                toolbar.$drawer.append($tags);
             }
 
             var $properties = common.createButton('properties', true);

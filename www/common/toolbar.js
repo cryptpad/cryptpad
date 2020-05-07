@@ -30,6 +30,7 @@ MessengerUI, Messages) {
     var BOTTOM_RIGHT_CLS = Bar.constants.bottomR = 'cp-toolbar-bottom-right';
     var LEFTSIDE_CLS = Bar.constants.leftside = 'cp-toolbar-leftside';
     var RIGHTSIDE_CLS = Bar.constants.rightside = 'cp-toolbar-rightside';
+    var FILE_CLS = Bar.constants.file = 'cp-toolbar-file';
     var DRAWER_CLS = Bar.constants.drawer = 'cp-toolbar-drawer-content';
     var HISTORY_CLS = Bar.constants.history = 'cp-toolbar-history';
 
@@ -93,14 +94,14 @@ MessengerUI, Messages) {
 
         Messages.toolbar_file = "File"; // XXX
         if (!config.hideDrawer) {
+            var $drawer = $(h('button.' + FILE_CLS, [
+                h('i.fa.fa-file-o'),
+                h('span.cp-button-name', Messages.toolbar_file)
+            ])).appendTo($file).hide();
             var $drawerContent = $('<div>', {
                 'class': DRAWER_CLS,
                 'tabindex': 1
-            }).appendTo($file).hide();
-            var $drawer = $(h('button', [
-                h('i.fa.fa-file-o'),
-                h('span.cp-button-name', Messages.toolbar_file)
-            ])).appendTo($file);
+            }).appendTo($drawer).hide();
             $drawer.click(function () {
                 $drawerContent.toggle();
                 $drawer.removeClass('cp-toolbar-button-active');
@@ -1248,6 +1249,7 @@ MessengerUI, Messages) {
         toolbar.$bottomR = $toolbar.find('.'+Bar.constants.bottomR);
         toolbar.$leftside = $toolbar.find('.'+Bar.constants.leftside);
         toolbar.$rightside = $toolbar.find('.'+Bar.constants.rightside);
+        toolbar.$file = $toolbar.find('.'+Bar.constants.file);
         toolbar.$drawer = $toolbar.find('.'+Bar.constants.drawer);
         toolbar.$top = $toolbar.find('.'+Bar.constants.top);
         toolbar.$history = $toolbar.find('.'+Bar.constants.history);
@@ -1275,6 +1277,7 @@ MessengerUI, Messages) {
         tb['notifications'] = createNotifications;
 
         tb['pad'] = function () {
+            toolbar.$file.show();
             addElement([
                 'chat', 'userlist', 'title', 'useradmin', 'spinner',
                 'newpad', 'share', 'access', 'limit', 'unpinnedWarning',

@@ -188,15 +188,13 @@ define([
 
         var Title;
         var onLocal = function () {};
-        var $rightside;
         var $drawer;
         exp.init = function (local, title, toolbar) {
             if (typeof local === "function") {
                 onLocal = local;
             }
             Title = title;
-            $rightside = toolbar.$rightside;
-            $drawer = toolbar.$drawer;
+            $drawer = toolbar.$theme || $();
         };
 
         var editor = exp.editor = CMeditor.fromTextArea($textarea[0], {
@@ -355,10 +353,10 @@ define([
                         content: l.name // Pretty name of the language value
                     });
                 });
+                Messages.code_editorTheme = "Editor theme";
                 var dropdownConfig = {
-                    text: 'Theme', // Button initial text
+                    text: Messages.code_editorTheme, // Button initial text
                     options: options, // Entries displayed in the menu
-                    left: true, // Open to the left of the button
                     isSelect: true,
                     initialValue: lastTheme,
                     feedback: 'CODE_THEME',

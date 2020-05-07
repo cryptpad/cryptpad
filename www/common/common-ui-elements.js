@@ -1513,16 +1513,20 @@ define([
                 });
                 break;
             case 'present':
-                button = $('<button>', {
-                    title: Messages.presentButtonTitle,
-                    'class': "fa fa-play-circle cp-toolbar-icon-present", // used in slide.js
-                });
+                button = $(h('button', {
+                    title: Messages.presentButtonTitle, // XXX remove tippy?
+                }, [
+                    h('i.fa.fa-play-circle'),
+                    h('span.cp-toolbar-name', Messages.share_linkPresent)
+                ])).click(common.prepareFeedback(type));
                 break;
             case 'preview':
-                button = $('<button>', {
-                    title: Messages.previewButtonTitle,
-                    'class': "fa fa-eye cp-toolbar-icon-preview",
-                });
+                button = $(h('button', {
+                    title: Messages.previewButtonTitle, // XXX remove tippy?
+                }, [
+                    h('i.fa.fa-eye'),
+                    h('span.cp-toolbar-name', Messages.share_linkOpen)
+                ])).click(common.prepareFeedback(type));
                 break;
             case 'print':
                 button = $('<button>', {
@@ -1555,11 +1559,13 @@ define([
                 }
                 break;
             case 'mediatag':
-                button = $('<button>', {
-                    'class': 'fa fa-picture-o cp-toolbar-icon-mediatag',
-                    title: Messages.filePickerButton,
-                })
-                .click(common.prepareFeedback(type));
+                Messages.toolbar_insert = "Insert"; // XXX
+                button = $(h('button', {
+                    title: Messages.filePickerButton, // XXX remove tippy?
+                }, [
+                    h('i.fa.fa-picture-o'),
+                    h('span.cp-toolbar-name', Messages.toolbar_insert)
+                ])).click(common.prepareFeedback(type));
                 break;
             case 'savetodrive':
                 button = $('<button>', {
@@ -1584,9 +1590,14 @@ define([
                 });
                 break;
             case 'toggle':
-                button = $('<button>', {
-                    'class': 'fa fa-caret-down cp-toolbar-icon-toggle',
-                });
+                Messages.toolbar_tools = "Tools"; // XXX
+                button = $(h('button', {
+                    title: data.title || '', // XXX remove tippy?
+                }, [
+                    h('i.fa.fa-wrench'),
+                    h('span.cp-toolbar-name', Messages.toolbar_tools)
+                ])).click(common.prepareFeedback(type));
+                /*
                 window.setTimeout(function () {
                     button.attr('title', data.title);
                 });
@@ -1595,6 +1606,7 @@ define([
                     if (!isVisible) { button.addClass('fa-caret-down'); }
                     else { button.addClass('fa-caret-up'); }
                 };
+                */
                 button.click(function (e) {
                     data.element.toggle();
                     var isVisible = data.element.is(':visible');
@@ -1606,9 +1618,9 @@ define([
                         button.removeClass('cp-toolbar-button-active');
                         if (e.originalEvent) { Feedback.send('TOGGLE_HIDE_' + appType); }
                     }
-                    updateIcon(isVisible);
+                    //updateIcon(isVisible);
                 });
-                updateIcon(data.element.is(':visible'));
+                //updateIcon(data.element.is(':visible'));
                 break;
             case 'properties':
                 button = $('<button>', {
@@ -1638,24 +1650,20 @@ define([
             default:
                 data = data || {};
                 var icon = data.icon || "fa-question";
-                button = $('<button>', {
-                    'class': "fa " + icon,
-                })
-                .click(common.prepareFeedback(data.name || 'DEFAULT'));
-                //.click(common.prepareFeedback(type));
+                button = $(h('button', {
+                    title: data.title || '', // XXX remove tippy?
+                }, [
+                    h('i.fa.' + icon),
+                    h('span.cp-toolbar-name.cp-toolbar-drawer-element', data.text)
+                ])).click(common.prepareFeedback(data.name || 'DEFAULT'));
                 if (callback) {
                     button.click(callback);
                 }
-                if (data.title) { button.attr('title', data.title); }
                 if (data.style) { button.attr('style', data.style); }
                 if (data.id) { button.attr('id', data.id); }
                 if (data.hiddenReadOnly) { button.addClass('cp-hidden-if-readonly'); }
                 if (data.name) {
                     button.addClass('cp-toolbar-icon-'+data.name);
-                }
-                if (data.text) {
-                    $('<span>', {'class': 'cp-toolbar-drawer-element'}).text(data.text)
-                        .appendTo(button);
                 }
         }
         if (rightside) {
