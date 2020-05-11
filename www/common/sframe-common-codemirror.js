@@ -525,7 +525,9 @@ define([
                     : 'background-color: rgba(255,0,0,0.2)';
                 marks[id] = editor.markText(pos1, pos2, {
                     css: css,
-                    'data-cptippy-html': true,
+                    attributes: {
+                        'data-cptippy-html': true,
+                    },
                     title: makeTippy(cursor),
                     className: 'cp-tippy-html'
                 });
