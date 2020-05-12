@@ -1741,7 +1741,6 @@ define([
         var checkNewCheckpoint = function () {
             var hasDrawings = checkDrawings();
             if (hasDrawings) {
-                console.error('reload');
                 var lastCp = getLastCp();
                 loadLastDocument(lastCp, function () {
                     // On error, do nothing
