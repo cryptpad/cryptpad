@@ -52,7 +52,7 @@ define([
         $: $
     };
 
-    var CHECKPOINT_INTERVAL = 50;
+    var CHECKPOINT_INTERVAL = 100;
     var DISPLAY_RESTORE_BUTTON = false;
     var NEW_VERSION = 2;
     var PENDING_TIMEOUT = 30000;
@@ -296,7 +296,13 @@ define([
                 console.error(err);
                 return void UI.alert(Messages.oo_saveError);
             }
-            var i = Math.floor(ev.index / CHECKPOINT_INTERVAL);
+            // Get the last cp idx
+            var all = Object.keys(content.hashes || {}).map(Number).sort();
+            var current = all[all.length - 1] || 0;
+            // Get the expected cp idx
+            var _i = Math.floor(ev.index / CHECKPOINT_INTERVAL);
+            // Take the max of both
+            var i = Math.max(_i, current);
             content.hashes[i] = {
                 file: data.url,
                 hash: ev.hash,
