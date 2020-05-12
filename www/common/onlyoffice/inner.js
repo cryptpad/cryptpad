@@ -96,6 +96,8 @@ define([
         // This structure is used for caching media data and blob urls for each media cryptpad url
         var mediasData = {};
 
+        var startOO = function () {};
+
         var getMediasSources = APP.getMediasSources =  function() {
             content.mediasSources = content.mediasSources || {};
             return content.mediasSources;
@@ -265,13 +267,22 @@ define([
             }
         };
 
+        var checkDrawings = function () {
+            var editor = getEditor();
+            if (!editor) { return false; }
+            var s = editor.GetSheets();
+            return s.some(function (obj) {
+                return obj.worksheet.Drawings.length;
+            });
+        };
+
         // Loading a checkpoint reorder the sheet starting from ID "5".
         // We have to reorder it manually when a checkpoint is created
         // so that the messages we send to the realtime channel are
         // loadable by users joining after the checkpoint
         var fixSheets = function () {
             var hasDrawings = checkDrawings();
-            if (hasDrawings) { return; } // XXX we need a migration for old sheets...
+            if (hasDrawings) { return; }
             try {
                 var editor = getEditor();
                 // if we are not in the sheet app
@@ -360,19 +371,12 @@ define([
         };
         APP.FM = common.createFileManager(fmConfig);
 
-        var checkDrawings = function () {
-            var editor = getEditor();
-            if (!editor) { return false; }
-            var s = editor.GetSheets();
-            var hasDrawings = false;
-            s.forEach(function (obj, i) {
-                obj.worksheet.Drawings.forEach(function (d) {
-                    console.log(d.graphicObject, d.graphicObject.Id);
-                });
-            });
-            return s.some(function (obj, i) {
-                return obj.worksheet.Drawings.length;
-            });
+        // Add a lock
+        var isLockedModal = {
+            content: UI.dialog.customModal(h('div.cp-oo-x2tXls', [
+                h('span.fa.fa-spin.fa-spinner'),
+                h('span', Messages.oo_isLocked)
+            ]))
         };
 
         var resetData = function (blob, type) {
@@ -403,18 +407,14 @@ define([
             };
             fixSheets();
 
-var hasDrawings = checkDrawings();
-console.log(hasDrawings);
-
-if (hasDrawings) {
-    ooChannel.ready = false;
-    ooChannel.queue = [];
-    data.callback = function () {
-        console.error('reload');
-        resetData(blob, file);
-    };
-}
-
+            var hasDrawings = checkDrawings();
+            if (hasDrawings) {
+                ooChannel.ready = false;
+                ooChannel.queue = [];
+                data.callback = function () {
+                    resetData(blob, file);
+                };
+            }
 
             APP.FM.handleFile(blob, data);
         };
@@ -530,7 +530,6 @@ if (hasDrawings) {
         var getParticipants = function () {
             var users = metadataMgr.getMetadata().users;
             var i = 1;
-            var myIdx = false;
             var p = Object.keys(content.ids || {}).map(function (id) {
                 var nId = id.slice(0,32);
                 var ooId = content.ids[id].ooid;
@@ -682,13 +681,6 @@ if (hasDrawings) {
             });
         };
 
-        // Add a lock
-        var isLockedModal = {
-            content: UI.dialog.customModal(h('div.cp-oo-x2tXls', [
-                h('span.fa.fa-spin.fa-spinner'),
-                h('span', Messages.oo_isLocked)
-            ]))
-        };
         var handleLock = function (obj, send) {
             if (content.saveLock) {
                 if (!isLockedModal.modal) {
@@ -901,7 +893,7 @@ if (hasDrawings) {
             });
         };
 
-        var startOO = function (blob, file, force) {
+        startOO = function (blob, file, force) {
             if (APP.ooconfig && !force) { return void console.error('already started'); }
             var url = URL.createObjectURL(blob);
             var lock = readOnly || APP.migrate;

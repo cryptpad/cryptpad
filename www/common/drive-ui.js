@@ -2746,7 +2746,6 @@ define([
                 $list.find('.cp-app-drive-sort-foldername').addClass('cp-app-drive-sort-active').prepend($icon);
             }
         };
-        Messages.fm_sort = "Sort"; // XXX
         var getSortDropdown = function () {
             var $fhSort = $(h('span.cp-dropdown-container.cp-app-drive-element-sort.cp-app-drive-sort-clickable'));
             var options = [{
