@@ -930,7 +930,7 @@ if (hasDrawings) {
                         "id": String(myOOId), //"c0c3bf82-20d7-4663-bf6d-7fa39c598b1d",
                         "firstname": metadataMgr.getUserData().name || Messages.anonymous,
                     },
-                    "mode": lock ? "view" : "edit",
+                    "mode": "edit",
                     "lang": (navigator.language || navigator.userLanguage || '').slice(0,2)
                 },
                 "events": {
@@ -987,7 +987,15 @@ if (hasDrawings) {
                         APP.onLocal();
                         handleNewLocks(oldLocks, content.locks || {});
                         // Allow edition
-                        setEditable(true);
+
+                        if (lock) {
+                            setTimeout(function () {
+                                setEditable(true);
+                                getEditor().setViewModeDisconnect();
+                            }, 5000);
+                        } else {
+                            setEditable(true);
+                        }
 
                         if (isLockedModal.modal && force) {
                             isLockedModal.modal.closeModal();
