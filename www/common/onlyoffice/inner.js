@@ -76,6 +76,7 @@ define([
         var privateData = metadataMgr.getPrivateData();
         var readOnly = false;
         var offline = false;
+        var ooLoaded = false;
         var pendingChanges = {};
         var config = {};
         var content = {
@@ -302,6 +303,11 @@ define([
                 index: ev.index
             };
             oldHashes = JSON.parse(JSON.stringify(content.hashes));
+            var hasDrawings = checkDrawings();
+            if (hasDrawings) {
+                content.locks = {};
+                content.ids = {};
+            }
             // If this is a migration, set the new version
             if (APP.migrate) {
                 delete content.migration;
@@ -363,6 +369,23 @@ define([
             });
         };
 
+        var resetData = function (blob, type) {
+            if (!isLockedModal.modal) {
+                isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
+            }
+            myUniqueOOId = undefined;
+            setMyId();
+            APP.docEditor.destroyEditor(); // Kill the old editor
+            $('iframe[name="frameEditor"]').after(h('div#cp-app-oo-placeholder')).remove();
+            ooLoaded = false;
+            oldLocks = {};
+            Object.keys(pendingChanges).forEach(function (key) {
+                clearTimeout(pendingChanges[key]);
+                delete pendingChanges[key];
+            });
+            startOO(blob, type, true);
+        };
+
         var saveToServer = function () {
             var text = getContent();
             var blob = new Blob([text], {type: 'plain/text'});
@@ -378,10 +401,11 @@ var hasDrawings = checkDrawings();
 console.log(hasDrawings);
 
 if (hasDrawings) {
+    ooChannel.ready = false;
+    ooChannel.queue = [];
     data.callback = function () {
         console.error('reload');
-        $('iframe[name="frameEditor"]').after(h('div#cp-app-oo-placeholder')).remove();// XXX
-        startOO(blob, file, true); // XXX
+        resetData(blob, file);
     };
 }
 
@@ -500,6 +524,7 @@ if (hasDrawings) {
         var getParticipants = function () {
             var users = metadataMgr.getMetadata().users;
             var i = 1;
+            var myIdx = false;
             var p = Object.keys(content.ids || {}).map(function (id) {
                 var nId = id.slice(0,32);
                 var ooId = content.ids[id].ooid;
@@ -870,7 +895,6 @@ if (hasDrawings) {
             });
         };
 
-        var ooLoaded = false;
         var startOO = function (blob, file, force) {
             if (APP.ooconfig && !force) { return void console.error('already started'); }
             var url = URL.createObjectURL(blob);
@@ -942,7 +966,6 @@ if (hasDrawings) {
                         }
                     },
                     "onDocumentReady": function () {
-
                         // The doc is ready, fix the worksheets IDs and push the queue
                         fixSheets();
                         // Push changes since last cp
@@ -959,6 +982,12 @@ if (hasDrawings) {
                         handleNewLocks(oldLocks, content.locks || {});
                         // Allow edition
                         setEditable(true);
+
+                        if (isLockedModal.modal && force) {
+                            isLockedModal.modal.closeModal();
+                            delete isLockedModal.modal;
+                            $('#cp-app-oo-editor > iframe')[0].contentWindow.focus();
+                        }
 
                         if (APP.migrate && !readOnly) {
                             var div = h('div.cp-oo-x2tXls', [
@@ -1711,9 +1740,7 @@ if (hasDrawings) {
                 loadLastDocument(lastCp, function () {
                     // On error, do nothing
                 }, function (blob, type) {
-                    $('iframe[name="frameEditor"]').after(h('div#cp-app-oo-placeholder'))
-                                        .remove();// XXX
-                    startOO(blob, type, true);
+                    resetData(blob, type);
                 });
             }
         };
@@ -1743,6 +1770,11 @@ if (hasDrawings) {
                 var latest = getLastCp(true);
                 var newLatest = getLastCp();
                 if (newLatest.index > latest.index) {
+                    var hasDrawings = checkDrawings();
+                    if (hasDrawings) {
+                        ooChannel.ready = false;
+                        ooChannel.queue = [];
+                    }
                     // New checkpoint
                     sframeChan.query('Q_OO_SAVE', {
                         hash: newLatest.hash,
