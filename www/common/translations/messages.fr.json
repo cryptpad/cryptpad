@@ -686,7 +686,7 @@
     "features_f_subscribe": "S'abonner à un compte premium",
     "features_f_subscribe_note": "Vous devez d'abord vous connecter à un compte CryptPad",
     "faq_link": "FAQ",
-    "faq_title": "Foire Aux Questions",
+    "faq_title": "Foire aux questions",
     "faq_whatis": "Qu'est-ce que <span class='cp-brand-font'>CryptPad</span> ?",
     "faq": {
         "keywords": {
@@ -1366,5 +1366,6 @@
     "mentions_notification": "{0} vous a mentionné dans <b>{1}</b>",
     "unknownPad": "Pad inconnu",
     "comments_notification": "Réponses à votre commentaire \"{0}\" sur <b>{1}</b>",
-    "comments_error": "Impossible d'ajouter un commentaire ici"
+    "comments_error": "Impossible d'ajouter un commentaire ici",
+    "fm_sort": "Trier"
 }
