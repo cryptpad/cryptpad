@@ -52,7 +52,7 @@ define([
         $: $
     };
 
-    var CHECKPOINT_INTERVAL = 50;
+    var CHECKPOINT_INTERVAL = 100;
     var DISPLAY_RESTORE_BUTTON = false;
     var NEW_VERSION = 2;
     var PENDING_TIMEOUT = 30000;
@@ -76,6 +76,7 @@ define([
         var privateData = metadataMgr.getPrivateData();
         var readOnly = false;
         var offline = false;
+        var ooLoaded = false;
         var pendingChanges = {};
         var config = {};
         var content = {
@@ -221,10 +222,12 @@ define([
 
         var now = function () { return +new Date(); };
 
-        var getLastCp = function (old) {
+        var getLastCp = function (old, i) {
             var hashes = old ? oldHashes : content.hashes;
             if (!hashes || !Object.keys(hashes).length) { return {}; }
-            var lastIndex = Math.max.apply(null, Object.keys(hashes).map(Number));
+            i = i || 0;
+            var idx = Object.keys(hashes).map(Number).sort();
+            var lastIndex = idx[idx.length - 1 - i];
             var last = JSON.parse(JSON.stringify(hashes[lastIndex]));
             return last;
         };
@@ -267,6 +270,8 @@ define([
         // so that the messages we send to the realtime channel are
         // loadable by users joining after the checkpoint
         var fixSheets = function () {
+            var hasDrawings = checkDrawings();
+            if (hasDrawings) { return; } // XXX we need a migration for old sheets...
             try {
                 var editor = getEditor();
                 // if we are not in the sheet app
@@ -291,13 +296,24 @@ define([
                 console.error(err);
                 return void UI.alert(Messages.oo_saveError);
             }
-            var i = Math.floor(ev.index / CHECKPOINT_INTERVAL);
+            // Get the last cp idx
+            var all = Object.keys(content.hashes || {}).map(Number).sort();
+            var current = all[all.length - 1] || 0;
+            // Get the expected cp idx
+            var _i = Math.floor(ev.index / CHECKPOINT_INTERVAL);
+            // Take the max of both
+            var i = Math.max(_i, current);
             content.hashes[i] = {
                 file: data.url,
                 hash: ev.hash,
                 index: ev.index
             };
             oldHashes = JSON.parse(JSON.stringify(content.hashes));
+            var hasDrawings = checkDrawings();
+            if (hasDrawings) {
+                content.locks = {};
+                content.ids = {};
+            }
             // If this is a migration, set the new version
             if (APP.migrate) {
                 delete content.migration;
@@ -344,6 +360,38 @@ define([
         };
         APP.FM = common.createFileManager(fmConfig);
 
+        var checkDrawings = function () {
+            var editor = getEditor();
+            if (!editor) { return false; }
+            var s = editor.GetSheets();
+            var hasDrawings = false;
+            s.forEach(function (obj, i) {
+                obj.worksheet.Drawings.forEach(function (d) {
+                    console.log(d.graphicObject, d.graphicObject.Id);
+                });
+            });
+            return s.some(function (obj, i) {
+                return obj.worksheet.Drawings.length;
+            });
+        };
+
+        var resetData = function (blob, type) {
+            if (!isLockedModal.modal) {
+                isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
+            }
+            myUniqueOOId = undefined;
+            setMyId();
+            APP.docEditor.destroyEditor(); // Kill the old editor
+            $('iframe[name="frameEditor"]').after(h('div#cp-app-oo-placeholder')).remove();
+            ooLoaded = false;
+            oldLocks = {};
+            Object.keys(pendingChanges).forEach(function (key) {
+                clearTimeout(pendingChanges[key]);
+                delete pendingChanges[key];
+            });
+            startOO(blob, type, true);
+        };
+
         var saveToServer = function () {
             var text = getContent();
             var blob = new Blob([text], {type: 'plain/text'});
@@ -354,6 +402,20 @@ define([
                 index: ooChannel.cpIndex
             };
             fixSheets();
+
+var hasDrawings = checkDrawings();
+console.log(hasDrawings);
+
+if (hasDrawings) {
+    ooChannel.ready = false;
+    ooChannel.queue = [];
+    data.callback = function () {
+        console.error('reload');
+        resetData(blob, file);
+    };
+}
+
+
             APP.FM.handleFile(blob, data);
         };
 
@@ -468,6 +530,7 @@ define([
         var getParticipants = function () {
             var users = metadataMgr.getMetadata().users;
             var i = 1;
+            var myIdx = false;
             var p = Object.keys(content.ids || {}).map(function (id) {
                 var nId = id.slice(0,32);
                 var ooId = content.ids[id].ooid;
@@ -838,9 +901,8 @@ define([
             });
         };
 
-        var ooLoaded = false;
-        var startOO = function (blob, file) {
-            if (APP.ooconfig) { return void console.error('already started'); }
+        var startOO = function (blob, file, force) {
+            if (APP.ooconfig && !force) { return void console.error('already started'); }
             var url = URL.createObjectURL(blob);
             var lock = readOnly || APP.migrate;
 
@@ -910,7 +972,6 @@ define([
                         }
                     },
                     "onDocumentReady": function () {
-
                         // The doc is ready, fix the worksheets IDs and push the queue
                         fixSheets();
                         // Push changes since last cp
@@ -927,6 +988,12 @@ define([
                         handleNewLocks(oldLocks, content.locks || {});
                         // Allow edition
                         setEditable(true);
+
+                        if (isLockedModal.modal && force) {
+                            isLockedModal.modal.closeModal();
+                            delete isLockedModal.modal;
+                            $('#cp-app-oo-editor > iframe')[0].contentWindow.focus();
+                        }
 
                         if (APP.migrate && !readOnly) {
                             var div = h('div.cp-oo-x2tXls', [
@@ -1365,9 +1432,7 @@ define([
             }, 100);
         };
 
-        var loadLastDocument = function () {
-            var lastCp = getLastCp();
-            if (!lastCp) { return; }
+        var loadLastDocument = function (lastCp, onCpError, cb) {
             ooChannel.cpIndex = lastCp.index || 0;
             var parsed = Hash.parsePadUrl(lastCp.file);
             var secret = Hash.getSecrets('file', parsed.hash);
@@ -1381,6 +1446,7 @@ define([
             xhr.responseType = 'arraybuffer';
             xhr.onload = function () {
                 if (/^4/.test('' + this.status)) {
+                    onCpError();
                     return void console.error('XHR error', this.status);
                 }
                 var arrayBuffer = xhr.response;
@@ -1389,19 +1455,32 @@ define([
                     FileCrypto.decrypt(u8, key, function (err, decrypted) {
                         if (err) { return void console.error(err); }
                         var blob = new Blob([decrypted.content], {type: 'plain/text'});
+                        if (cb) {
+                            return cb(blob, getFileType());
+                        }
                         startOO(blob, getFileType());
                     });
                 }
             };
+            xhr.onerror = function () {
+                onCpError();
+            };
             xhr.send(null);
         };
-        var loadDocument = function (noCp, useNewDefault) {
+        var loadDocument = function (noCp, useNewDefault, i) {
             if (ooLoaded) { return; }
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var file = getFileType();
             if (!noCp) {
+                var lastCp = getLastCp(false, i);
+                // If the last checkpoint is empty, load the "initial" doc instead
+                if (!lastCp || !lastCp.file) { return void loadDocument(true, useNewDefault); }
                 // Load latest checkpoint
-                return void loadLastDocument();
+                return void loadLastDocument(lastCp, function () {
+                    // Checkpoint error: load the previous one
+                    i = i || 0;
+                    loadDocument(noCp, useNewDefault, ++i);
+                });
             }
             var newText;
             switch (type) {
@@ -1659,6 +1738,19 @@ define([
 
         var reloadPopup = false;
 
+        var checkNewCheckpoint = function () {
+            var hasDrawings = checkDrawings();
+            if (hasDrawings) {
+                console.error('reload');
+                var lastCp = getLastCp();
+                loadLastDocument(lastCp, function () {
+                    // On error, do nothing
+                }, function (blob, type) {
+                    resetData(blob, type);
+                });
+            }
+        };
+
         config.onRemote = function () {
             if (initializing) { return; }
             var userDoc = APP.realtime.getUserDoc();
@@ -1684,10 +1776,18 @@ define([
                 var latest = getLastCp(true);
                 var newLatest = getLastCp();
                 if (newLatest.index > latest.index) {
+                    var hasDrawings = checkDrawings();
+                    if (hasDrawings) {
+                        ooChannel.ready = false;
+                        ooChannel.queue = [];
+                    }
+                    // New checkpoint
                     sframeChan.query('Q_OO_SAVE', {
                         hash: newLatest.hash,
                         url: newLatest.file
-                    }, function () { });
+                    }, function () {
+                        checkNewCheckpoint();
+                    });
                 }
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
             }
