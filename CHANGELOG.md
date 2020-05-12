@@ -1,3 +1,17 @@
+# RedGazelle's revenge release (3.17.1)
+
+In recent months a growing amount of our time has been going towards answering support tickets, emails, and GitHub issues. This has made it a little more difficult to also maintain a bi-weekly release schedule, since there's some overhead involved in deploying our latest code and producing release notes.
+
+To ease our workload, we've decided to switch to producing a full release every three weeks, with an optional patch release at some point in the middle. Patch releases may fix major issues that can't wait three weeks or may simply consist of a few minor fixes that are trivial to deploy.
+
+This release fixes a few spreadsheet issues and introduces a more responsive layout for user drives in list mode.
+
+Updating to 3.17.1 from 3.17.0 is pretty standard:
+
+1. Stop your server
+2. Get the latest code with git
+3. Restart your server 
+
 # RedGazelle release (3.17.0)
 
 ## Goals
