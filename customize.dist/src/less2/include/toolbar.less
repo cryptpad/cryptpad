@@ -1033,14 +1033,20 @@ color: var(--toolbar-bg-color);
 
         .cp-toolbar-bottom-left {
             display: flex;
+            flex-basis: 33.33%;
             order: 1;
         }
         .cp-toolbar-bottom-mid {
+            display: flex;
+            flex-basis: 33.33%;
+            justify-content: center;
             order: 2;
         }
         .cp-toolbar-bottom-right {
             order: 3;
             display: flex;
+            flex-basis: 33.33%;
+            justify-content: end;
             #cp-toolbar-chat-drawer-open { order: 0; }
             #cp-toolbar-userlist-drawer-open { order: 1; }
         }
