@@ -964,6 +964,18 @@
                 margin-right: 5px;
             }
         }
+
+        &.cp-toolbar-small {
+            button {
+                .cp-toolbar-name, .cp-button-name {
+                    display: none;
+                }
+                i {
+                    margin-right: 0;
+                }
+            }
+        }
+
         .cp-dropdown-content {
             margin-top: -1px;
         }
@@ -988,6 +1000,11 @@
             #cp-toolbar-userlist-drawer-open { order: 1; }
         }
 
+        .cp-toolbar-bottom-right {
+            button {
+                white-space: nowrap;
+            }
+        }
         .cp-toolbar-bottom-left {
             .cp-toolbar-appmenu, .cp-toolbar-file {
                 button {

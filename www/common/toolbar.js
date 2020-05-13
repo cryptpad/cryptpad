@@ -1247,6 +1247,18 @@ MessengerUI, Messages) {
             ], {});
         };
 
+        var checkSize = function () {
+            toolbar.$bottom.removeClass('cp-toolbar-small');
+            var w = $(window).width();
+            var size = toolbar.$bottomL.width() + toolbar.$bottomM.width() +
+                       toolbar.$bottomR.width();
+            if (size > w) {
+                toolbar.$bottom.addClass('cp-toolbar-small');
+            }
+        };
+
+        $(window).on('resize', checkSize);
+
         var addElement = toolbar.addElement = function (arr, additionalCfg, init) {
             if (typeof additionalCfg === "object") { $.extend(true, config, additionalCfg); }
             arr.forEach(function (el) {
@@ -1257,9 +1269,11 @@ MessengerUI, Messages) {
                     if (!init) { config.displayed.push(el); }
                 }
             });
+            checkSize();
         };
 
         addElement(config.displayed, {}, true);
+
 
         toolbar['linkToMain'] = createLinkToMain(toolbar, config);
 
