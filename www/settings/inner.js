@@ -942,8 +942,7 @@ define([
     create['drive-import-local'] = function() {
         if (!common.isLoggedIn()) { return; }
         var $div = $('<div>', { 'class': 'cp-settings-drive-import-local cp-sidebarlayout-element' });
-        $('<label>', { 'for': 'cp-settings-import-local-pads' })
-            .text(Messages.settings_import).appendTo($div);
+        $('<label>').text(Messages.settings_import).appendTo($div);
         $('<span>', { 'class': 'cp-sidebarlayout-description' })
             .text(Messages.settings_importTitle).appendTo($div);
         var $button = $('<button>', {

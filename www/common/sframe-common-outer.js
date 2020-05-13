@@ -490,6 +490,13 @@ define([
 
             // Put in the following function the RPC queries that should also work in filepicker
             var addCommonRpc = function (sframeChan, safe) {
+                Cryptpad.universal.onEvent.reg(function (data) {
+                    sframeChan.event('EV_UNIVERSAL_EVENT', data);
+                });
+                sframeChan.on('Q_UNIVERSAL_COMMAND', function (data, cb) {
+                    Cryptpad.universal.execCommand(data, cb);
+                });
+
                 sframeChan.on('Q_ANON_RPC_MESSAGE', function (data, cb) {
                     Cryptpad.anonRpcMsg(data.msg, data.content, function (err, response) {
                         cb({error: err, response: response});
@@ -1372,13 +1379,6 @@ define([
             });
             sframeChan.on('Q_CURSOR_COMMAND', function (data, cb) {
                 Cryptpad.cursor.execCommand(data, cb);
-            });
-
-            Cryptpad.universal.onEvent.reg(function (data) {
-                sframeChan.event('EV_UNIVERSAL_EVENT', data);
-            });
-            sframeChan.on('Q_UNIVERSAL_COMMAND', function (data, cb) {
-                Cryptpad.universal.execCommand(data, cb);
             });
 
             Cryptpad.onTimeoutEvent.reg(function () {

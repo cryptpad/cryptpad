@@ -1044,6 +1044,7 @@ define([
         var MutationObserver = window.MutationObserver;
         var addTippy = function (i, el) {
             if (el._tippy) { return; }
+            if (!el.getAttribute('title')) { return; }
             if (el.nodeName === 'IFRAME') { return; }
             var opts = {
                 distance: 15

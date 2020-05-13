@@ -1366,5 +1366,6 @@
     "settings_padNotifTitle": "Comment notifications",
     "settings_padNotifHint": "Ignore notifications when someone replies to one of your comments",
     "settings_padNotifCheckbox": "Disable comment notifications",
-    "comments_error": "Can't add a comment here"
+    "comments_error": "Can't add a comment here",
+    "fm_sort": "Sort"
 }
