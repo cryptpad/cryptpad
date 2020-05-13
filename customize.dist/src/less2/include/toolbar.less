@@ -69,7 +69,7 @@
     }
 
     .toolbar_vars();
-    @toolbar-top-bg: #eeeeee;
+    @toolbar-top-bg: #f9f9f9;
     @toolbar_line-height: 32px;
     @toolbar_top-height: 76px;
     @toolbar_button-font: @colortheme_app-font;
@@ -506,6 +506,7 @@
                 }
                 .cp-toolbar-title {
                     height: @toolbar_line-height;
+                    flex-flow: row;
                     line-height: initial;
                     margin: 0;
                     .cp-toolbar-title-hoverable {
@@ -524,13 +525,13 @@
                         font-size: @colortheme_app-font-size;
                         height: @toolbar_line-height;
                         box-sizing: border-box;
-                        line-height: 20px;
+                        line-height: @toolbar_line-height;
                     }
                     .cp-toolbar-title-edit, .cp-toolbar-title-save {
                         box-sizing: border-box;
                         height: @toolbar_line-height;
-                        line-height: @colortheme_app-font-size;
-                        display: inline-block;
+                        line-height: @toolbar_line-height;
+                        display: inline-flex;
 
                         .fa {
                             font-size: @colortheme_app-font-size;
@@ -544,9 +545,16 @@
                         line-height: calc(@toolbar_line-height - 12px); // padding + border
                     }
                 }
+                .cp-toolbar-spinner {
+                    min-width: 100px;
+                    margin: 0;
+                    height: @toolbar_line-height;
+                    line-height: @toolbar_line-height;
+                }
                 .cp-toolbar-link {
                     height: @toolbar_line-height;
                     width: @toolbar_line-height;
+                    transform: scale(0.5);
                     .cp-toolbar-link-logo {
                         padding: 5px;
                     }
