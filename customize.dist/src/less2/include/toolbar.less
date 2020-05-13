@@ -17,13 +17,11 @@
     @warn-color: @colortheme_default-warn // color of the warning text in the toolbar
 ) {
     @toolbar-color: @color;
-    //@toolbar-color: @bg-color;
     @toolbar-color-l20: lighten(@color, 20%);
     @toolbar-color-d20: darken(@color, 20%);
     @toolbar-color-d15: darken(@color, 15%);
 
     @toolbar-bg-color: @bg-color;
-    //@toolbar-bg-color: #FFFFFF;
     @toolbar-bg-color-l8: lighten(@bg-color, 8%);
     @toolbar-bg-color-l20: lighten(@bg-color, 20%);
     @toolbar-bg-color-d5: darken(@bg-color, 5%);
@@ -731,6 +729,8 @@ color: var(--toolbar-bg-color);
                 font-size: 25px;
                 font-style: italic;
                 white-space: nowrap;
+                display: inline-flex;
+                align-items: center;
             }
             .cp-toolbar-title-hoverable {
                 display: inline-flex;
@@ -1057,8 +1057,19 @@ color: var(--toolbar-bg-color);
                 }
             }
             .cp-toolbar-file {
+                order: 1;
+            }
+            .cp-toolbar-appmenu {
+                order: 3;
+            }
+            .cp-toolbar-mediatag {
+                order: 5;
+            }
+            .cp-toolbar-tools {
+                order: 7;
+            }
+            .cp-toolbar-file {
                 button {
-                    order: 50;
                     &.fa-plus { order: 0; }
                     &.fa-history { order: 5; }
                     &.fa-hashtag { order: 10; }
@@ -1070,9 +1081,6 @@ color: var(--toolbar-bg-color);
                     &.fa-trash { order: 40; }
                     &.fa-info-circle { order: 100; }
 
-                    &.fa-arrows-h { order: 5; }
-                    &.fa-cog { order: 5; }
-                    &.fa-paint-brush { order: 5; }
                     &.cp-toolbar-icon-help { order: 150; }
                 }
             }
@@ -1125,36 +1133,10 @@ color: var(--toolbar-bg-color);
                         display: inline;
                         vertical-align: baseline;
                     }
-                    &.fa-info-circle, &.fa-history, &.fa-cog {
-                        .cp-toolbar-drawer-element {
-                            margin-left: 11px;
-                        }
-                    }
-                    &.fa-unlock-alt {
-                        .cp-toolbar-drawer-element {
-                            margin-left: 15px;
-                        }
-                    }
-                    &.fa-question {
-                        .cp-toolbar-drawer-element {
-                            margin-left: 16px;
-                        }
-                    }
                     &:hover {
                         background-color: @colortheme_dropdown-bg-hover !important;
                         color: @colortheme_dropdown-color;
                     }
-                    order: 8;
-                    &.fa-history { order: 1; }
-                    &.fa-clone { order: 1; }
-                    &.fa-download { order: 2; }
-                    &.fa-upload { order: 3; }
-                    &.fa-print { order: 4; }
-                    &.fa-arrows-h { order: 5; }
-                    &.fa-cog { order: 5; }
-                    &.fa-paint-brush { order: 5; }
-                    &.fa-info-circle { order: 6; }
-                    &.fa-help { order: 7; }
                 }
             }
         }

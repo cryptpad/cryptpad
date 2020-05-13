@@ -101,7 +101,7 @@ define([
     };
 
     var mkThemeButton = function (framework) {
-        Messages.toolbar_theme = "Theme";
+        Messages.toolbar_theme = "Theme"; // XXX
         var $theme = $(h('button.cp-toolbar-appmenu', [
             h('i.cptools.cptools-palette'),
             h('span.cp-button-name', Messages.toolbar_theme)
@@ -491,13 +491,13 @@ define([
 
         activateLinks($content, framework);
         Slide.setModal(framework._.sfCommon, $modal, $content, slideOptions, Messages.slideInitialState);
+        mkMarkdownToolbar(framework, editor);
         mkThemeButton(framework);
         mkPrintButton(framework, editor, $content, $print);
         mkSlideOptionsButton(framework, slideOptions, $toolbarDrawer);
         mkColorConfiguration(framework, $modal);
         mkFilePicker(framework, editor);
         mkSlidePreviewPane(framework, $contentContainer);
-        mkMarkdownToolbar(framework, editor);
         mkHelpMenu(framework);
 
         CodeMirror.mkIndentSettings(framework._.cpNfInner.metadataMgr);

@@ -604,16 +604,13 @@ define([
 
     var setButton = function (Env, $button) {
         var toggle = function () {
-            var tippy = $button[0] && $button[0]._tippy;
             if (Env.opacity) {
                 Env.opacity = 0;
-                if (tippy) { tippy.title = Messages.cba_show; }
-                else { $button.attr('title', Messages.cba_show); }
+                $button.find('.cp-toolbar-drawer-element').text(Messages.cba_show);
                 $button.removeClass("cp-toolbar-button-active");
             } else {
                 Env.opacity = MARK_OPACITY;
-                if (tippy) { tippy.title = Messages.cba_hide; }
-                else { $button.attr('title', Messages.cba_hide); }
+                $button.find('.cp-toolbar-drawer-element').text(Messages.cba_hide);
                 $button.addClass("cp-toolbar-button-active");
             }
         };

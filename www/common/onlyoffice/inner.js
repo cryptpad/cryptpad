@@ -1574,13 +1574,11 @@ define([
             toolbar = APP.toolbar = Toolbar.create(configTb);
             Title.setToolbar(toolbar);
 
-            var $rightside = toolbar.$rightside;
-
             if (window.CP_DEV_MODE) {
                 var $save = common.createButton('save', true, {}, function () {
                     makeCheckpoint(true);
                 });
-                $save.appendTo($rightside);
+                $save.appendTo(toolbar.$bottomM);
             }
             if (window.CP_DEV_MODE || DISPLAY_RESTORE_BUTTON) {
                 common.createButton('', true, {
@@ -1590,11 +1588,11 @@ define([
                 }).click(function () {
                     if (initializing) { return void console.error('initializing'); }
                     restoreLastCp();
-                }).attr('title', 'Restore last checkpoint').appendTo($rightside);
+                }).attr('title', 'Restore last checkpoint').appendTo(toolbar.$bottomM);
             }
 
             var $exportXLSX = common.createButton('export', true, {}, exportXLSXFile);
-            $exportXLSX.appendTo($rightside);
+            $exportXLSX.appendTo(toolbar.$drawer);
 
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var accept = [".bin", ".ods", ".xlsx"];
@@ -1610,17 +1608,17 @@ define([
                 accept: accept,
                 binary : ["ods", "xlsx", "odt", "docx", "odp", "pptx"]
             }, importXLSXFile);
-            $importXLSX.appendTo($rightside);
+            $importXLSX.appendTo(toolbar.$drawer);
 
             if (common.isLoggedIn()) {
-                common.createButton('hashtag', true).appendTo($rightside);
+                common.createButton('hashtag', true).appendTo(toolbar.$drawer);
             }
 
             var $forget = common.createButton('forget', true, {}, function (err) {
                 if (err) { return; }
                 setEditable(false);
             });
-            $rightside.append($forget);
+            toolbar.$drawer.append($forget);
 
             var helpMenu = APP.helpMenu = common.createHelpMenu(['beta', 'oo']);
             $('#cp-app-oo-editor').prepend(common.getBurnAfterReadingWarning());

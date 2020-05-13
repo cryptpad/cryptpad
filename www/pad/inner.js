@@ -400,10 +400,19 @@ define([
             framework._.sfCommon.setAttribute(['pad', 'showToolbar'], visible);
         };
         framework._.sfCommon.getAttribute(['pad', 'showToolbar'], function(err, data) {
+            var state = false;
             if (($(window).height() >= 800 || $(window).width() >= 800) &&
-                (typeof(data) === "undefined" || data)) { $('.cke_toolbox_main').show(); } else { $('.cke_toolbox_main').hide(); }
+                (typeof(data) === "undefined" || data)) {
+                state = true;
+                $('.cke_toolbox_main').show();
+            } else {
+                $('.cke_toolbox_main').hide();
+            }
             var $collapse = framework._.sfCommon.createButton('toggle', true, cfg, onClick);
-            framework._.toolbar.$rightside.append($collapse);
+            framework._.toolbar.$bottomL.append($collapse);
+            if (state) {
+                $collapse.addClass('cp-toolbar-button-active');
+            }
         });
     };
 

@@ -1556,7 +1556,7 @@ define([
                 break;
             case 'mediatag':
                 Messages.toolbar_insert = "Insert"; // XXX
-                button = $(h('button', {
+                button = $(h('button.cp-toolbar-mediatag', {
                     title: Messages.filePickerButton, // XXX remove tippy?
                 }, [
                     h('i.fa.fa-picture-o'),
@@ -1564,11 +1564,13 @@ define([
                 ])).click(common.prepareFeedback(type));
                 break;
             case 'savetodrive':
-                button = $('<button>', {
-                    'class': 'fa fa-cloud-upload cp-toolbar-icon-savetodrive',
+                Messages.toolbar_savetodrive = "Save as image"; // XXX
+                button = $(h('button.cp-toolbar-savetodrive', {
                     title: Messages.canvas_saveToDrive,
-                })
-                .click(common.prepareFeedback(type));
+                }, [
+                    h('i.fa.fa-file-image-o'),
+                    h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_savetodrive)
+                ])).click(common.prepareFeedback(type));
                 break;
             case 'hashtag':
                 button = $('<button>', {
@@ -1587,7 +1589,7 @@ define([
                 break;
             case 'toggle':
                 Messages.toolbar_tools = "Tools"; // XXX
-                button = $(h('button', {
+                button = $(h('button.cp-toolbar-tools', {
                     title: data.title || '', // XXX remove tippy?
                 }, [
                     h('i.fa.fa-wrench'),
@@ -1656,12 +1658,13 @@ define([
                 break;
             default:
                 data = data || {};
+                var drawerCls = data.drawer === false ? '' : '.cp-toolbar-drawer-element';
                 var icon = data.icon || "fa-question";
                 button = $(h('button', {
                     title: data.title || '', // XXX remove tippy?
                 }, [
                     h('i.fa.' + icon),
-                    h('span.cp-toolbar-name.cp-toolbar-drawer-element', data.text)
+                    h('span.cp-toolbar-name'+drawerCls, data.text)
                 ])).click(common.prepareFeedback(data.name || 'DEFAULT'));
                 if (callback) {
                     button.click(callback);

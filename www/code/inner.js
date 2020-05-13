@@ -77,6 +77,51 @@ define([
         'xml',
     ]);
 
+    var mkThemeButton = function (framework) {
+        Messages.toolbar_theme = "Theme"; // XXX (duplicate from slide/inner.js)
+        var $theme = $(h('button.cp-toolbar-appmenu', [
+            h('i.cptools.cptools-palette'),
+            h('span.cp-button-name', Messages.toolbar_theme)
+        ]));
+        var $content = $(h('div.cp-toolbar-drawer-content', {
+            tabindex: 1
+        })).hide();
+        $theme.click(function () {
+            $content.toggle();
+            $theme.removeClass('cp-toolbar-button-active');
+            if ($content.is(':visible')) {
+                $theme.addClass('cp-toolbar-button-active');
+                $content.focus();
+                var wh = $(window).height();
+                var topPos = $theme[0].getBoundingClientRect().bottom;
+                $content.css('max-height', Math.floor(wh - topPos - 1)+'px');
+            }
+        });
+        var onBlur = function (e) {
+            if (e.relatedTarget) {
+                if ($(e.relatedTarget).is('.cp-toolbar-drawer-button')) { return; }
+                if ($(e.relatedTarget).parents('.cp-toolbar-drawer-content').length) {
+                    $(e.relatedTarget).blur(onBlur);
+                    return;
+                }
+            }
+            $theme.removeClass('cp-toolbar-button-active');
+            $content.hide();
+        };
+        $content.blur(onBlur).appendTo($theme);
+        framework._.toolbar.$theme = $content;
+        framework._.toolbar.$bottomL.append($theme);
+    };
+
+    var mkCbaButton = function (framework, markers) {
+        var $showAuthorColorsButton = framework._.sfCommon.createButton('', true, {
+            text: Messages.cba_hide,
+            name: 'authormarks',
+            icon: 'fa-paint-brush',
+        }).hide();
+        framework._.toolbar.$theme.append($showAuthorColorsButton); // XXX
+        markers.setButton($showAuthorColorsButton);
+    };
     var mkPrintButton = function (framework, $content, $print) {
         var $printButton = framework._.sfCommon.createButton('print', true);
         $printButton.click(function () {
@@ -92,7 +137,7 @@ define([
         var markdownTb = framework._.sfCommon.createMarkdownToolbar(editor);
         $codeMirrorContainer.prepend(markdownTb.toolbar);
 
-        framework._.toolbar.$rightside.append(markdownTb.button);
+        framework._.toolbar.$bottomL.append(markdownTb.button);
 
         var modeChange = function (mode) {
             if (['markdown', 'gfm'].indexOf(mode) !== -1) { return void markdownTb.setState(true); }
@@ -168,7 +213,7 @@ define([
             }
         });
 
-        framework._.toolbar.$rightside.append($previewButton);
+        framework._.toolbar.$bottomM.append($previewButton);
 
         $preview.click(function (e) {
             if (!e.target) { return; }
@@ -325,7 +370,7 @@ define([
             setButton(!markers.getState());
             UI.alert(content);
         });
-        framework._.toolbar.$drawer.append($cbaButton);
+        framework._.toolbar.$theme.append($cbaButton);
     };
 
     var mkFilePicker = function (framework, editor, evModeChange) {
@@ -356,6 +401,8 @@ define([
         var previewPane = mkPreviewPane(editor, CodeMirror, framework, isPresentMode);
         var markdownTb = mkMarkdownTb(editor, framework);
 
+        mkThemeButton(framework);
+
         var markers = Markers.create({
             common: common,
             framework: framework,
@@ -363,16 +410,12 @@ define([
             devMode: privateData.devMode,
             editor: editor
         });
-
-        var $showAuthorColorsButton = framework._.sfCommon.createButton('', true, {
-            icon: 'fa-paint-brush',
-        }).hide();
-        framework._.toolbar.$rightside.append($showAuthorColorsButton);
-        markers.setButton($showAuthorColorsButton);
+        mkCbaButton(framework, markers);
 
         var $print = $('#cp-app-code-print');
         var $content = $('#cp-app-code-preview-content');
         mkPrintButton(framework, $content, $print);
+
 
         mkHelpMenu(framework);
 

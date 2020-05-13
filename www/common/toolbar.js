@@ -108,7 +108,6 @@ MessengerUI, Messages) {
                     $drawerContent.focus();
                     var wh = $(window).height();
                     var topPos = $drawer[0].getBoundingClientRect().bottom;
-                    console.error(wh, topPos);
                     $drawerContent.css('max-height', Math.floor(wh - topPos - 1)+'px');
                 }
             });
@@ -675,7 +674,7 @@ MessengerUI, Messages) {
             'title': Messages.saveTitle
         }).hide();
         if (config.readOnly === 1) {
-            $titleContainer.append($('<span>', {'class': 'cp-toolbar-title-readonly'})
+            $hoverable.append($('<span>', {'class': 'cp-toolbar-title-readonly'})
                 .text('('+Messages.readonly+')'));
             return $titleContainer;
         }
@@ -905,6 +904,7 @@ MessengerUI, Messages) {
         };
     };
     var createSpinner = function (toolbar, config) {
+        if (config.readOnly === 1) { return; }
         var $spin = $('<span>', {'class': SPINNER_CLS}).appendTo(toolbar.title);
         $spin.text(Messages.synchronizing);
 
@@ -1341,6 +1341,7 @@ MessengerUI, Messages) {
 
         // If we had to create a new chainpad instance, reset the one used in the toolbar
         toolbar.resetChainpad = function (chainpad) {
+            if (config.readOnly === 1) { return; }
             if (config.realtime !== chainpad) {
                 config.realtime = chainpad;
                 config.realtime.onPatch(ks(toolbar, config));
