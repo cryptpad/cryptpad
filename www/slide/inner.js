@@ -102,7 +102,7 @@ define([
 
     var mkThemeButton = function (framework) {
         Messages.toolbar_theme = "Theme";
-        var $theme = $(h('button', [
+        var $theme = $(h('button.cp-toolbar-appmenu', [
             h('i.cptools.cptools-palette'),
             h('span.cp-button-name', Messages.toolbar_theme)
         ]));
@@ -115,6 +115,9 @@ define([
             if ($content.is(':visible')) {
                 $theme.addClass('cp-toolbar-button-active');
                 $content.focus();
+                var wh = $(window).height();
+                var topPos = $theme[0].getBoundingClientRect().bottom;
+                $content.css('max-height', Math.floor(wh - topPos - 1)+'px');
             }
         });
         var onBlur = function (e) {

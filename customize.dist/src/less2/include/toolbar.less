@@ -603,17 +603,6 @@ color: var(--toolbar-bg-color);
                             }
                         }
                     }
-                    .cp-toolbar-new {
-                        height: @toolbar_line-height;
-                        width: @toolbar_line-height;
-                        margin-left: 0;
-                        button {
-                            height: @toolbar_line-height;
-                            width: @toolbar_line-height;
-                            font-size: 20px;
-                            margin-top: -1px;
-                        }
-                    }
                     .cp-toolbar-user-dropdown {
                         height: @toolbar_line-height;
                         width: @toolbar_line-height;
@@ -797,7 +786,7 @@ color: var(--toolbar-bg-color);
                 height: 43px;
             }
         }
-        .cp-toolbar-link, .cp-toolbar-new, .cp-toolbar-notifications {
+        .cp-toolbar-link, .cp-toolbar-notifications {
             font-size: 48px;
             line-height: @toolbar_top-height;
             width: 64px;
@@ -816,7 +805,7 @@ color: var(--toolbar-bg-color);
  */
 
         }
-        .cp-toolbar-notifications, .cp-toolbar-new {
+        .cp-toolbar-notifications {
 /*
             // XXX
             background-color: rgba(0,0,0,0.2);
@@ -928,7 +917,6 @@ color: var(--toolbar-bg-color);
  */
 
             .cp-toolbar-notifications { order: 1; }
-            .cp-toolbar-new { order: 2; }
             .cp-toolbar-user-dropdown { order: 3; }
             .cp-toolbar-backup { order: 4; } // TODO drive migration to secure iframe
             &> * {
@@ -955,7 +943,6 @@ color: var(--toolbar-bg-color);
 
                 .cp-dropdown-content {
                     margin: 0;
-                    overflow: visible;
                 }
                 & > button {
                     display: flex;
@@ -1059,11 +1046,46 @@ color: var(--toolbar-bg-color);
         }
 
         .cp-toolbar-bottom-left {
+            .cp-toolbar-appmenu, .cp-toolbar-file {
+                button {
+                    &::before, .fa {
+                        min-width: 20px;
+                        text-align: center;
+                        margin-right: 0;
+                    }
+                }
+            }
+            .cp-toolbar-file {
+                button {
+                    order: 50;
+                    &.fa-plus { order: 0; }
+                    &.fa-history { order: 5; }
+                    &.fa-hashtag { order: 10; }
+                    &.fa-bookmark { order: 15; }
+                    &.fa-upload { order: 20; }
+                    &.fa-clone { order: 25; }
+                    &.fa-download { order: 30; }
+                    &.fa-print { order: 35; }
+                    &.fa-trash { order: 40; }
+                    &.fa-info-circle { order: 100; }
+
+                    &.fa-arrows-h { order: 5; }
+                    &.fa-cog { order: 5; }
+                    &.fa-paint-brush { order: 5; }
+                    &.cp-toolbar-icon-help { order: 150; }
+                }
+            }
+
             .cp-toolbar-drawer-content:empty ~ .cp-toolbar-drawer-button {
                 display: none;
             }
             .cp-toolbar-drawer-content {
                 box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
+                overflow-y: auto;
+                overflow-x: hidden;
+                &.cp-dropdown-visible {
+                    overflow: visible;
+                }
                 position: absolute;
                 left: 0px;
                 top: @toolbar_line-height;

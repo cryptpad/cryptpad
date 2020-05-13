@@ -1400,7 +1400,6 @@ define([
             case 'copy':
                 button = $('<button>', {
                     'class': 'fa fa-clone cp-toolbar-icon-import',
-                    title: Messages.makeACopy,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.makeACopy));
                 button
                 .click(common.prepareFeedback(type))
@@ -1413,7 +1412,6 @@ define([
                 if (!common.isLoggedIn()) { return; }
                 button = $('<button>', {
                     'class': 'fa fa-upload cp-toolbar-icon-import',
-                    title: Messages.template_import,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.template_import));
                 button
                 .click(common.prepareFeedback(type))
@@ -1425,9 +1423,8 @@ define([
                 if (!AppConfig.enableTemplates) { return; }
                 if (!common.isLoggedIn()) { return; }
                 button = $('<button>', {
-                    title: Messages.saveTemplateButton,
-                    class: 'fa fa-bookmark cp-toolbar-icon-template'
-                });
+                    'class': 'fa fa-bookmark cp-toolbar-icon-template',
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.saveTemplateButton));
                 if (data.rt) {
                     button
                     .click(function () {
@@ -1472,9 +1469,8 @@ define([
                 break;
             case 'forget':
                 button = $('<button>', {
-                    title: Messages.forgetButtonTitle,
                     'class': "fa fa-trash cp-toolbar-icon-forget"
-                });
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.fc_delete));
                 callback = typeof callback === "function" ? callback : function () {};
                 button
                 .click(common.prepareFeedback(type))
@@ -1578,8 +1574,8 @@ define([
                 button = $('<button>', {
                     'class': 'fa fa-hashtag cp-toolbar-icon-hashtag',
                     title: Messages.tags_title,
-                })
-                .click(common.prepareFeedback(type))
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.fc_hashtag));
+                button.click(common.prepareFeedback(type))
                 .click(function () {
                     common.isPadStored(function (err, data) {
                         if (!data) {
@@ -1646,6 +1642,17 @@ define([
                 .text(Messages.settings_save))
                 .click(common.prepareFeedback(type));
                 if (callback) { button.click(callback); }
+                break;
+            case 'newpad':
+                button = $('<button>', {
+                    title: Messages.newButtonTitle,
+                    'class': 'fa fa-plus cp-toolbar-icon-newpad',
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.newButton));
+                button
+                .click(common.prepareFeedback(type))
+                .click(function () {
+                    common.createNewPadModal();
+                });
                 break;
             default:
                 data = data || {};
@@ -2291,6 +2298,17 @@ define([
                     'class': 'fa fa-users'
                 },
                 content: h('span', Messages.type.teams)
+            });
+        }
+        if (padType !== 'contacts' && accountName) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'target': '_blank',
+                    'href': origin+'/contacts/',
+                    'class': 'cptools cptools-contacts'
+                },
+                content: h('span', Messages.type.contacts)
             });
         }
         options.push({ tag: 'hr' });

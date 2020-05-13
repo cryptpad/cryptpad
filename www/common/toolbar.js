@@ -42,7 +42,6 @@ MessengerUI, Messages) {
     var SPINNER_CLS = Bar.constants.spinner = 'cp-toolbar-spinner';
     var LIMIT_CLS = Bar.constants.limit = 'cp-toolbar-limit';
     var TITLE_CLS = Bar.constants.title = "cp-toolbar-title";
-    var NEWPAD_CLS = Bar.constants.newpad = "cp-toolbar-new";
     var LINK_CLS = Bar.constants.link = "cp-toolbar-link";
     var NOTIFICATIONS_CLS = Bar.constants.user = 'cp-toolbar-notifications';
 
@@ -79,7 +78,6 @@ MessengerUI, Messages) {
         }).appendTo($topContainer);
         $('<span>', {'class': LIMIT_CLS}).hide().appendTo($userContainer);
         $('<span>', {'class': NOTIFICATIONS_CLS + ' cp-dropdown-container'}).hide().appendTo($userContainer);
-        $('<span>', {'class': NEWPAD_CLS + ' cp-dropdown-container'}).hide().appendTo($userContainer);
         $('<span>', {'class': USERADMIN_CLS + ' cp-dropdown-container'}).hide().appendTo($userContainer);
 
         $toolbar.append($topContainer);
@@ -108,6 +106,10 @@ MessengerUI, Messages) {
                 if ($drawerContent.is(':visible')) {
                     $drawer.addClass('cp-toolbar-button-active');
                     $drawerContent.focus();
+                    var wh = $(window).height();
+                    var topPos = $drawer[0].getBoundingClientRect().bottom;
+                    console.error(wh, topPos);
+                    $drawerContent.css('max-height', Math.floor(wh - topPos - 1)+'px');
                 }
             });
             var onBlur = function (e) {
@@ -948,49 +950,9 @@ MessengerUI, Messages) {
     };
 
     var createNewPad = function (toolbar, config) {
-        var $newPad = toolbar.$top.find('.'+NEWPAD_CLS).show();
-
-        var origin = config.metadataMgr.getPrivateData().origin;
-
-        var pads_options = [];
-        Config.availablePadTypes.forEach(function (p) {
-            if (p === 'drive') { return; }
-            if (!Common.isLoggedIn() && Config.registeredOnlyTypes &&
-                Config.registeredOnlyTypes.indexOf(p) !== -1) { return; }
-            pads_options.push({
-                tag: 'a',
-                attributes: {
-                    'target': '_blank',
-                    'href': origin + '/' + p + '/',
-                },
-                content: $('<div>').append(UI.getIcon(p)).html() + Messages.type[p]
-            });
-        });
-        pads_options.push({
-            tag: 'a',
-            attributes: {
-                id: 'cp-app-toolbar-creation-advanced',
-                href: origin
-            },
-            content: '<span class="fa fa-plus-circle"></span> ' + Messages.creation_appMenuName
-        });
-        var dropdownConfig = {
-            text: '', // Button initial text
-            options: pads_options, // Entries displayed in the menu
-            container: $newPad,
-            left: true,
-            feedback: /drive/.test(window.location.pathname)?
-                'DRIVE_NEWPAD': 'NEWPAD',
-            common: Common
-        };
-        var $newPadBlock = UIElements.createDropdown(dropdownConfig);
-        $newPadBlock.find('button').attr('title', Messages.newButtonTitle);
-        $newPadBlock.find('button').addClass('fa fa-th');
-        $newPadBlock.find('#cp-app-toolbar-creation-advanced').click(function (e) {
-            e.preventDefault();
-            Common.createNewPadModal();
-        });
-        return $newPadBlock;
+        var $button = Common.createButton('newpad', true);
+        toolbar.$drawer.append($button);
+        return $button;
     };
 
     var createUserAdmin = function (toolbar, config) {
