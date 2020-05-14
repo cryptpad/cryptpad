@@ -319,6 +319,7 @@ define([
                 updateSharedFolders: updateSharedFolders,
 
                 $limit: APP.usageBar && APP.usageBar.$container,
+                toolbar: APP.toolbar,
                 APP: driveAPP,
                 edPublic: APP.teamEdPublic,
                 editKey: teamData.secondaryKey
@@ -509,7 +510,6 @@ define([
             h('div.cp-app-drive-container', {tabindex:0}, [
                 h('div#cp-app-drive-tree'),
                 h('div#cp-app-drive-content-container', [
-                    h('div#cp-app-drive-toolbar'),
                     h('div#cp-app-drive-connection-state', {style: "display: none;"}, Messages.disconnected),
                     h('div#cp-app-drive-content', {tabindex:2})
                 ])
@@ -1313,8 +1313,7 @@ define([
                 sfCommon: common,
                 $container: $bar
             };
-            var toolbar = Toolbar.create(configTb);
-            toolbar.$rightside.hide(); // hide the bottom part of the toolbar
+            var toolbar = APP.toolbar = Toolbar.create(configTb);
             // Update the name in the user menu
             var $displayName = $bar.find('.' + Toolbar.constants.username);
             metadataMgr.onChange(function () {

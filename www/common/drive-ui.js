@@ -556,6 +556,7 @@ define([
         APP.origin = priv.origin;
         APP.hideDuplicateOwned = Util.find(priv, ['settings', 'drive', 'hideDuplicate']);
         APP.closed = false;
+        APP.toolbar = driveConfig.toolbar;
 
         var $readOnly = $(h('div#cp-app-drive-edition-state.cp-app-drive-content-info-box', Messages.readonly));
 
@@ -582,7 +583,7 @@ define([
         var $tree = APP.$tree = $("#cp-app-drive-tree");
         var $content = APP.$content = $("#cp-app-drive-content");
         var $appContainer = $(".cp-app-drive-container");
-        var $driveToolbar = $("#cp-app-drive-toolbar");
+        var $driveToolbar = APP.toolbar.$bottom;
         var $contextMenu = createContextMenu().appendTo($appContainer);
 
         var $contentContextMenu = $("#cp-app-drive-context-content");
@@ -2237,8 +2238,12 @@ define([
         window.addEventListener("resize", collapseDrivePath);
         var treeResizeObserver = new MutationObserver(collapseDrivePath);
         treeResizeObserver.observe($("#cp-app-drive-tree")[0], {"attributes": true});
+
+        // XXX
+        /*
         var toolbarButtonAdditionObserver = new MutationObserver(collapseDrivePath);
         $(function () { toolbarButtonAdditionObserver.observe($("#cp-app-drive-toolbar")[0], {"childList": true, "subtree": true}); });
+        */
 
 
         // Create the title block with the "parent folder" button
@@ -2367,16 +2372,16 @@ define([
             var $gridButton = $gridIcon.clone();
 
             $listButton.click(function () {
-                $gridButton.removeClass('cp-app-drive-toolbar-active');
-                $listButton.addClass('cp-app-drive-toolbar-active');
+                $gridButton.show();
+                $listButton.hide();
                 setViewMode('list');
                 $('#' + FOLDER_CONTENT_ID).removeClass('cp-app-drive-content-grid');
                 $('#' + FOLDER_CONTENT_ID).addClass('cp-app-drive-content-list');
                 Feedback.send('DRIVE_LIST_MODE');
             });
             $gridButton.click(function () {
-                $listButton.removeClass('cp-app-drive-toolbar-active');
-                $gridButton.addClass('cp-app-drive-toolbar-active');
+                $listButton.show();
+                $gridButton.hide();
                 setViewMode('grid');
                 $('#' + FOLDER_CONTENT_ID).addClass('cp-app-drive-content-grid');
                 $('#' + FOLDER_CONTENT_ID).removeClass('cp-app-drive-content-list');
@@ -2384,9 +2389,9 @@ define([
             });
 
             if (getViewMode() === 'list') {
-                $listButton.addClass('cp-app-drive-toolbar-active');
+                $listButton.hide();
             } else {
-                $gridButton.addClass('cp-app-drive-toolbar-active');
+                $gridButton.hide();
             }
             $listButton.attr('title', Messages.fm_viewListButton);
             $gridButton.attr('title', Messages.fm_viewGridButton);
@@ -3002,20 +3007,16 @@ define([
 
         // Drive content toolbar
         var createToolbar = function () {
-            var $toolbar = $driveToolbar;
-            $toolbar.html('');
-            $('<div>', {'class': 'cp-app-drive-toolbar-leftside'}).appendTo($toolbar);
-            $('<div>', {'class': 'cp-app-drive-path cp-unselectable'}).appendTo($toolbar);
-            $('<div>', {'class': 'cp-app-drive-toolbar-filler'}).appendTo($toolbar);
-            var $rightside = $('<div>', {'class': 'cp-app-drive-toolbar-rightside'})
-                .appendTo($toolbar);
+            var $toolbar = APP.toolbar.$bottom;
+            APP.toolbar.$bottomL.html('');
+            APP.toolbar.$bottomR.html('');
             if (APP.histConfig && (APP.loggedIn || !APP.newSharedFolder)) {
                 // ANON_SHARED_FOLDER
                 var $hist = common.createButton('history', true, {histConfig: APP.histConfig});
-                $rightside.append($hist);
+                APP.toolbar.$bottomR.append($hist);
             }
             if (APP.$burnThisDrive) {
-                $rightside.append(APP.$burnThisDrive);
+                APP.toolbar.$bottomR.append(APP.$burnThisDrive);
             }
             return $toolbar;
         };
@@ -3514,10 +3515,10 @@ define([
                 if (mode) {
                     $dirContent.addClass(getViewModeClass());
                 }
-                createViewModeButton($toolbar.find('.cp-app-drive-toolbar-rightside'));
+                createViewModeButton(APP.toolbar.$bottomR);
             }
             if (inTrash) {
-                createEmptyTrashButton($toolbar.find('.cp-app-drive-toolbar-rightside'));
+                createEmptyTrashButton(APP.toolbar.$bottomR);
             }
 
             var $list = $('<ul>').appendTo($dirContent);
@@ -3536,27 +3537,27 @@ define([
 
             // NewButton can be undefined if we're in read only mode
             if (!readOnlyFolder) {
-                createNewButton(isInRoot, $toolbar.find('.cp-app-drive-toolbar-leftside'));
+                createNewButton(isInRoot, APP.toolbar.$bottomL);
             }
             if (sfId) {
-                createShareButton(sfId, $toolbar.find('.cp-app-drive-toolbar-leftside'));
+                createShareButton(sfId, APP.toolbar.$bottomL);
             }
 
 
-            createTitle($toolbar.find('.cp-app-drive-path'), path);
+            createTitle($toolbar.find('.cp-app-drive-path'), path); // XXX
 
             if (APP.mobile()) {
                 var $context = $('<button>', {
                     id: 'cp-app-drive-toolbar-context-mobile'
                 });
                 $context.append($('<span>', {'class': 'fa fa-caret-down'}));
-                $context.appendTo($toolbar.find('.cp-app-drive-toolbar-rightside'));
+                $context.appendTo(APP.toolbar.$bottomR);
                 $context.click(function (e) {
                     e.preventDefault();
                     e.stopPropagation();
                     var $li = findSelectedElements();
                     if ($li.length !== 1) {
-                        $li = findDataHolder($tree.find('.cp-app-drive-element-active'));
+                        $li = findDataHolder($tree.find('.cp-toolbar-button-active'));
                     }
                     // Close if already opened
                     if ($('.cp-contextmenu:visible').length) {
@@ -3568,7 +3569,7 @@ define([
                 });
             } else {
                 var $contextButtons = $('<span>', {'id' : 'cp-app-drive-toolbar-contextbuttons'});
-                $contextButtons.appendTo($toolbar.find('.cp-app-drive-toolbar-rightside'));
+                $contextButtons.appendTo(APP.toolbar.$bottomR);
             }
             updateContextButton();
 
