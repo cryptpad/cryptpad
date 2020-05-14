@@ -3143,7 +3143,74 @@ define([
             });
         };
 
+        APP.Search = {};
+        var isCharacterKey = function (e) {
+            return e.which === "undefined" /* IE */ ||
+                    (e.which > 0 && e.which !== 13 && e.which !== 27 && !e.ctrlKey && !e.altKey);
+        };
         var displaySearch = function ($list, value) {
+            var search = APP.Search;
+            var isInSearch = currentPath[0] === SEARCH;
+            var $div = $('<div>', {'id': 'cp-app-drive-search', 'class': 'cp-unselectable'});
+
+            $searchIcon.clone().appendTo($div);
+
+            var $input = APP.Search.$input = $('<input>', {
+                id: 'cp-app-drive-search-input',
+                type: 'text',
+                draggable: false,
+                tabindex: 1,
+            }).keyup(function (e) {
+                if (search.to) { window.clearTimeout(search.to); }
+                if ($input.val().trim() === "") {
+                    search.cursor = 0;
+                    displayDirectory([SEARCH]);
+                    return;
+                }
+                if (e.which === 13) {
+                    var newLocation = [SEARCH, $input.val()];
+                    search.cursor = $input[0].selectionStart;
+                    if (!manager.comparePath(newLocation, currentPath.slice())) { displayDirectory(newLocation); }
+                    return;
+                }
+                if (e.which === 27) {
+                    $input.val('');
+                    search.cursor = 0;
+                    displayDirectory([SEARCH]);
+                    return;
+                }
+                if ($input.val()) {
+                    if (!$input.hasClass('cp-app-drive-search-active')) {
+                        $input.addClass('cp-app-drive-search-active');
+                    }
+                } else {
+                    $input.removeClass('cp-app-drive-search-active');
+                }
+                search.to = window.setTimeout(function () {
+                    var newLocation = [SEARCH, $input.val()];
+                    search.cursor = $input[0].selectionStart;
+                    if (!manager.comparePath(newLocation, currentPath.slice())) { displayDirectory(newLocation); }
+                }, 500);
+            }).on('click mousedown mouseup', function (e) {
+                e.stopPropagation();
+            }).val(value || '').appendTo($div);
+            if (value) { $input.addClass('cp-app-drive-search-active'); }
+            $input[0].selectionStart = search.cursor || 0;
+            $input[0].selectionEnd = search.cursor || 0;
+
+            var cancel = h('span.fa.fa-times.cp-app-drive-search-cancel', {title:Messages.cancel});
+            cancel.addEventListener('click', function () {
+                $input.val('');
+                search.cursor = 0;
+                displayDirectory([SEARCH]);
+            });
+            $div.append(cancel);
+
+            $list.append($div);
+            setTimeout(function () {
+                $input.focus();
+            });
+
             getFileListHeader(false).appendTo($list);
             $list.closest('#cp-app-drive-content-folder').addClass('cp-app-drive-content-list');
             var filesList = manager.search(value);
@@ -3434,18 +3501,6 @@ define([
 
             // Display the tree and build the content
             APP.resetTree();
-            if (displayedCategories.indexOf(SEARCH) !== -1 && $tree.find('#cp-app-drive-tree-search-input').length) {
-                // in history mode we want to focus the version number input
-                if (!history.isHistoryMode && !APP.mobile()) {
-                    var st = $tree.scrollTop() || 0;
-                    if (!$('.alertify').length) {
-                        $tree.find('#cp-app-drive-tree-search-input').focus();
-                    }
-                    $tree.scrollTop(st);
-                }
-                $tree.find('#cp-app-drive-tree-search-input')[0].selectionStart = getSearchCursor();
-                $tree.find('#cp-app-drive-tree-search-input')[0].selectionEnd = getSearchCursor();
-            }
 
             LS.setLastOpenedFolder(path);
 
@@ -3841,6 +3896,10 @@ define([
             name: OWNED_NAME,
             $icon: $ownedIcon
         };
+        categories[SEARCH] = {
+            name: Messages.fm_searchPlaceholder,
+            $icon: $searchIcon
+        };
         categories[TAGS] = {
             name: TAGS_NAME,
             $icon: $tagsIcon
@@ -3860,9 +3919,9 @@ define([
             var s = $categories.scrollTop() || 0;
 
             $tree.html('');
-            if (displayedCategories.indexOf(SEARCH) !== -1) { createSearch($tree); }
             var $div = $('<div>', {'class': 'cp-app-drive-tree-categories-container'})
                 .appendTo($tree);
+            if (displayedCategories.indexOf(SEARCH) !== -1) { createCategory($div, SEARCH); }
             if (displayedCategories.indexOf(TAGS) !== -1) { createCategory($div, TAGS); }
             if (displayedCategories.indexOf(RECENT) !== -1) { createCategory($div, RECENT); }
             if (displayedCategories.indexOf(OWNED) !== -1) { createCategory($div, OWNED); }
@@ -4458,19 +4517,6 @@ define([
                 }
                 // else move to trash
                 moveElements(paths2, [TRASH], false, refresh);
-                return;
-            }
-        });
-        var isCharacterKey = function (e) {
-            return e.which === "undefined" /* IE */ ||
-                    (e.which > 0 && e.which !== 13 && e.which !== 27 && !e.ctrlKey && !e.altKey);
-        };
-        $appContainer.on('keypress', function (e) {
-            var $searchBar = $tree.find('#cp-app-drive-tree-search-input');
-            if ($searchBar.is(':focus')) { return; }
-            if (isCharacterKey(e)) {
-                $searchBar.focus();
-                e.preventDefault();
                 return;
             }
         });
