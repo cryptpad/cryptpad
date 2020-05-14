@@ -12,6 +12,10 @@
     .limit-bar_main();
     .tokenfield_main();
 
+    @colortheme_drive-bg-light: lighten(@colortheme_drive-bg, 30%);
+    @colortheme_drive-bg-active: lighten(@colortheme_drive-bg, 20%);
+    @colortheme_drive-color: @cryptpad_text_col;
+
     @drive_hover: #eee;
     @drive_hover-light: lighten(@drive_hover, 20%);
     @drive_info-box-bg: #d2e1f2;
@@ -311,8 +315,8 @@
             padding: 0;
             position: relative;
             display: flex;
-            background: lighten(@colortheme_drive-bg, 8%);
-            border-right: 1px solid lighten(@colortheme_drive-bg, 16%);
+            background: @colortheme_drive-bg-light;
+            border-right: 1px solid @colortheme_drive-bg-light;
             input {
                 background: transparent;
                 color: @colortheme_drive-color;
@@ -814,7 +818,7 @@
     /* Toolbar */
 
     #cp-app-drive-toolbar {
-        background: lighten(@colortheme_drive-bg, 8%);
+        background: @colortheme_drive-bg-light;
         color: @colortheme_drive-color;
         //height: 30px;
         //display: flex;
@@ -870,7 +874,7 @@
                     font-size: @colortheme_app-font-size;
                 }
                 &:hover {
-                    background: @colortheme_drive-bg;
+                    background: @colortheme_drive-bg-active;
                 }
                 &.cp-app-drive-toolbar-active {
                     display: none;
@@ -953,7 +957,7 @@
                     font-size: @colortheme_app-font-size;
                     padding: 0 5px;
                     border: 0;
-                    background: darken(@colortheme_drive-bg, 7%);
+                    background: @colortheme_drive-bg-active;
                     color: @colortheme_drive-color;
                     box-sizing: border-box;
                     overflow: hidden;
@@ -979,11 +983,11 @@
                     }
                     &:not(.cp-app-drive-element-droppable):hover {
                         &:not(.cp-app-drive-path-separator) {
-                            background-color: darken(@colortheme_drive-bg, 15%);
+                            background-color: @colortheme_drive-bg-active;
                             text-decoration: underline;
                         }
                         & ~ .cp-app-drive-path-element {
-                            background-color: darken(@colortheme_drive-bg, 15%);
+                            background-color: @colortheme_drive-bg-active;
                         }
                         & ~ .cp-app-drive-path-element:not(.cp-app-drive-path-separator) {
                             text-decoration: underline;
@@ -1003,7 +1007,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: lighten(@colortheme_drive-bg, 32%);
+        background-color: @colortheme_drive-bg-active;
         color: black;
         font-weight: bold;
         text-transform: uppercase;
