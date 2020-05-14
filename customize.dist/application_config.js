@@ -9,5 +9,7 @@ define(['/common/application_config_internal.js'], function (AppConfig) {
     // Example: If you want to remove the survey link in the menu:
     // AppConfig.surveyURL = "";
 
+    AppConfig.supportLanguages = [ 'en', 'fr' ]; // XXX
+
     return AppConfig;
 });

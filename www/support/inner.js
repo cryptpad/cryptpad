@@ -11,6 +11,7 @@ define([
     '/common/hyperscript.js',
     '/support/ui.js',
     '/api/config',
+    '/customize/application_config.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -27,7 +28,8 @@ define([
     Messages,
     h,
     Support,
-    ApiConfig
+    ApiConfig,
+    AppConfig
     )
 {
     var APP = window.APP = {};
@@ -41,6 +43,7 @@ define([
             'cp-support-list',
         ],
         'new': [
+            'cp-support-language',
             'cp-support-form',
         ],
     };
@@ -129,6 +132,30 @@ define([
                 $ticket.append(APP.support.makeMessage(content, hash));
             }
         });
+        return $div;
+    };
+
+    create['language'] = function () {
+        if (!Array.isArray(AppConfig.supportLanguages)) { return $(h('div')); }
+        var languages = AppConfig.supportLanguages;
+
+        var list = h('li', languages
+            .map(function (lang) {
+                return Messages._languages[lang];
+            })
+            .filter(Boolean)
+            .map(function (lang) {
+                return h('li', lang);
+            })
+        );
+
+        var preamble = "This server's administrators speak the following languages:"; // XXX
+        var $div = $(
+            h('div.cp-support-language', [
+                preamble,
+                list,
+            ])
+        );
         return $div;
     };
 
