@@ -306,7 +306,6 @@ define([
             var dropdownConfig = {
                 text: Messages.languageButton, // Button initial text
                 options: options, // Entries displayed in the menu
-                left: true, // Open to the left of the button
                 isSelect: true,
                 feedback: 'CODE_LANGUAGE',
                 common: Common
