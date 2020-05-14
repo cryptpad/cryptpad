@@ -134,7 +134,6 @@ define([
     var $separator = $('<div>', {"class": "dropdown-divider"});
 
     var LS_VIEWMODE = "app-drive-viewMode";
-    var LS_SEARCHCURSOR = "app-drive-searchCursor";
     var FOLDER_CONTENT_ID = "cp-app-drive-content-folder";
 
     var config = {};
@@ -250,15 +249,6 @@ define([
         }
         APP.store[LS_VIEWMODE] = mode;
         localStore.put(LS_VIEWMODE, mode);
-    };
-
-    var setSearchCursor = function () {
-        var $input = $('#cp-app-drive-tree-search-input');
-        APP.store[LS_SEARCHCURSOR] = $input[0].selectionStart;
-        localStore.put(LS_SEARCHCURSOR, $input[0].selectionStart);
-    };
-    var getSearchCursor = function () {
-        return APP.store[LS_SEARCHCURSOR] || 0;
     };
 
     // Handle disconnect/reconnect
@@ -556,6 +546,7 @@ define([
         APP.origin = priv.origin;
         APP.hideDuplicateOwned = Util.find(priv, ['settings', 'drive', 'hideDuplicate']);
         APP.closed = false;
+        APP.toolbar = driveConfig.toolbar;
 
         var $readOnly = $(h('div#cp-app-drive-edition-state.cp-app-drive-content-info-box', Messages.readonly));
 
@@ -582,7 +573,7 @@ define([
         var $tree = APP.$tree = $("#cp-app-drive-tree");
         var $content = APP.$content = $("#cp-app-drive-content");
         var $appContainer = $(".cp-app-drive-container");
-        var $driveToolbar = $("#cp-app-drive-toolbar");
+        var $driveToolbar = APP.toolbar.$bottom;
         var $contextMenu = createContextMenu().appendTo($appContainer);
 
         var $contentContextMenu = $("#cp-app-drive-context-content");
@@ -2237,8 +2228,12 @@ define([
         window.addEventListener("resize", collapseDrivePath);
         var treeResizeObserver = new MutationObserver(collapseDrivePath);
         treeResizeObserver.observe($("#cp-app-drive-tree")[0], {"attributes": true});
+
+        // XXX
+        /*
         var toolbarButtonAdditionObserver = new MutationObserver(collapseDrivePath);
         $(function () { toolbarButtonAdditionObserver.observe($("#cp-app-drive-toolbar")[0], {"childList": true, "subtree": true}); });
+        */
 
 
         // Create the title block with the "parent folder" button
@@ -2367,16 +2362,16 @@ define([
             var $gridButton = $gridIcon.clone();
 
             $listButton.click(function () {
-                $gridButton.removeClass('cp-app-drive-toolbar-active');
-                $listButton.addClass('cp-app-drive-toolbar-active');
+                $gridButton.show();
+                $listButton.hide();
                 setViewMode('list');
                 $('#' + FOLDER_CONTENT_ID).removeClass('cp-app-drive-content-grid');
                 $('#' + FOLDER_CONTENT_ID).addClass('cp-app-drive-content-list');
                 Feedback.send('DRIVE_LIST_MODE');
             });
             $gridButton.click(function () {
-                $listButton.removeClass('cp-app-drive-toolbar-active');
-                $gridButton.addClass('cp-app-drive-toolbar-active');
+                $listButton.show();
+                $gridButton.hide();
                 setViewMode('grid');
                 $('#' + FOLDER_CONTENT_ID).addClass('cp-app-drive-content-grid');
                 $('#' + FOLDER_CONTENT_ID).removeClass('cp-app-drive-content-list');
@@ -2384,9 +2379,9 @@ define([
             });
 
             if (getViewMode() === 'list') {
-                $listButton.addClass('cp-app-drive-toolbar-active');
+                $listButton.hide();
             } else {
-                $gridButton.addClass('cp-app-drive-toolbar-active');
+                $gridButton.hide();
             }
             $listButton.attr('title', Messages.fm_viewListButton);
             $gridButton.attr('title', Messages.fm_viewGridButton);
@@ -3002,20 +2997,16 @@ define([
 
         // Drive content toolbar
         var createToolbar = function () {
-            var $toolbar = $driveToolbar;
-            $toolbar.html('');
-            $('<div>', {'class': 'cp-app-drive-toolbar-leftside'}).appendTo($toolbar);
-            $('<div>', {'class': 'cp-app-drive-path cp-unselectable'}).appendTo($toolbar);
-            $('<div>', {'class': 'cp-app-drive-toolbar-filler'}).appendTo($toolbar);
-            var $rightside = $('<div>', {'class': 'cp-app-drive-toolbar-rightside'})
-                .appendTo($toolbar);
+            var $toolbar = APP.toolbar.$bottom;
+            APP.toolbar.$bottomL.html('');
+            APP.toolbar.$bottomR.html('');
             if (APP.histConfig && (APP.loggedIn || !APP.newSharedFolder)) {
                 // ANON_SHARED_FOLDER
                 var $hist = common.createButton('history', true, {histConfig: APP.histConfig});
-                $rightside.append($hist);
+                APP.toolbar.$bottomR.append($hist);
             }
             if (APP.$burnThisDrive) {
-                $rightside.append(APP.$burnThisDrive);
+                APP.toolbar.$bottomR.append(APP.$burnThisDrive);
             }
             return $toolbar;
         };
@@ -3144,13 +3135,8 @@ define([
         };
 
         APP.Search = {};
-        var isCharacterKey = function (e) {
-            return e.which === "undefined" /* IE */ ||
-                    (e.which > 0 && e.which !== 13 && e.which !== 27 && !e.ctrlKey && !e.altKey);
-        };
         var displaySearch = function ($list, value) {
             var search = APP.Search;
-            var isInSearch = currentPath[0] === SEARCH;
             var $div = $('<div>', {'id': 'cp-app-drive-search', 'class': 'cp-unselectable'});
 
             $searchIcon.clone().appendTo($div);
@@ -3164,19 +3150,21 @@ define([
                 if (search.to) { window.clearTimeout(search.to); }
                 if ($input.val().trim() === "") {
                     search.cursor = 0;
-                    displayDirectory([SEARCH]);
+                    APP.displayDirectory([SEARCH]);
                     return;
                 }
                 if (e.which === 13) {
                     var newLocation = [SEARCH, $input.val()];
                     search.cursor = $input[0].selectionStart;
-                    if (!manager.comparePath(newLocation, currentPath.slice())) { displayDirectory(newLocation); }
+                    if (!manager.comparePath(newLocation, currentPath.slice())) {
+                        APP.displayDirectory(newLocation);
+                    }
                     return;
                 }
                 if (e.which === 27) {
                     $input.val('');
                     search.cursor = 0;
-                    displayDirectory([SEARCH]);
+                    APP.displayDirectory([SEARCH]);
                     return;
                 }
                 if ($input.val()) {
@@ -3189,7 +3177,9 @@ define([
                 search.to = window.setTimeout(function () {
                     var newLocation = [SEARCH, $input.val()];
                     search.cursor = $input[0].selectionStart;
-                    if (!manager.comparePath(newLocation, currentPath.slice())) { displayDirectory(newLocation); }
+                    if (!manager.comparePath(newLocation, currentPath.slice())) {
+                        APP.displayDirectory(newLocation);
+                    }
                 }, 500);
             }).on('click mousedown mouseup', function (e) {
                 e.stopPropagation();
@@ -3202,7 +3192,7 @@ define([
             cancel.addEventListener('click', function () {
                 $input.val('');
                 search.cursor = 0;
-                displayDirectory([SEARCH]);
+                APP.displayDirectory([SEARCH]);
             });
             $div.append(cancel);
 
@@ -3514,10 +3504,10 @@ define([
                 if (mode) {
                     $dirContent.addClass(getViewModeClass());
                 }
-                createViewModeButton($toolbar.find('.cp-app-drive-toolbar-rightside'));
+                createViewModeButton(APP.toolbar.$bottomR);
             }
             if (inTrash) {
-                createEmptyTrashButton($toolbar.find('.cp-app-drive-toolbar-rightside'));
+                createEmptyTrashButton(APP.toolbar.$bottomR);
             }
 
             var $list = $('<ul>').appendTo($dirContent);
@@ -3536,27 +3526,27 @@ define([
 
             // NewButton can be undefined if we're in read only mode
             if (!readOnlyFolder) {
-                createNewButton(isInRoot, $toolbar.find('.cp-app-drive-toolbar-leftside'));
+                createNewButton(isInRoot, APP.toolbar.$bottomL);
             }
             if (sfId) {
-                createShareButton(sfId, $toolbar.find('.cp-app-drive-toolbar-leftside'));
+                createShareButton(sfId, APP.toolbar.$bottomL);
             }
 
 
-            createTitle($toolbar.find('.cp-app-drive-path'), path);
+            createTitle($toolbar.find('.cp-app-drive-path'), path); // XXX
 
             if (APP.mobile()) {
                 var $context = $('<button>', {
                     id: 'cp-app-drive-toolbar-context-mobile'
                 });
                 $context.append($('<span>', {'class': 'fa fa-caret-down'}));
-                $context.appendTo($toolbar.find('.cp-app-drive-toolbar-rightside'));
+                $context.appendTo(APP.toolbar.$bottomR);
                 $context.click(function (e) {
                     e.preventDefault();
                     e.stopPropagation();
                     var $li = findSelectedElements();
                     if ($li.length !== 1) {
-                        $li = findDataHolder($tree.find('.cp-app-drive-element-active'));
+                        $li = findDataHolder($tree.find('.cp-toolbar-button-active'));
                     }
                     // Close if already opened
                     if ($('.cp-contextmenu:visible').length) {
@@ -3568,7 +3558,7 @@ define([
                 });
             } else {
                 var $contextButtons = $('<span>', {'id' : 'cp-app-drive-toolbar-contextbuttons'});
-                $contextButtons.appendTo($toolbar.find('.cp-app-drive-toolbar-rightside'));
+                $contextButtons.appendTo(APP.toolbar.$bottomR);
             }
             updateContextButton();
 
@@ -3805,77 +3795,6 @@ define([
             var $trashList = $('<ul>', { 'class': 'cp-app-drive-tree-category' })
                 .append($trashElement);
             $container.append($trashList);
-        };
-
-        var search = APP.Search = {};
-        var createSearch = function ($container) {
-            var isInSearch = currentPath[0] === SEARCH;
-            var $div = $('<div>', {'id': 'cp-app-drive-tree-search', 'class': 'cp-unselectable'});
-            var $input = APP.Search.$input = $('<input>', {
-                id: 'cp-app-drive-tree-search-input',
-                type: 'text',
-                draggable: false,
-                tabindex: 1,
-                placeholder: Messages.fm_searchPlaceholder
-            }).keyup(function (e) {
-                if (search.to) { window.clearTimeout(search.to); }
-                if ([37, 38, 39, 40].indexOf(e.which) !== -1) {
-                    if (!$input.val()) {
-                        $input.blur();
-                        $content.focus();
-                        return;
-                    } else {
-                        e.stopPropagation();
-                    }
-                }
-                var isInSearchTmp = currentPath[0] === SEARCH;
-                if ($input.val().trim() === "") {
-                    setSearchCursor(0);
-                    if (search.oldLocation && search.oldLocation.length) { displayDirectory(search.oldLocation); }
-                    return;
-                }
-                if (e.which === 13) {
-                    if (!isInSearchTmp) { search.oldLocation = currentPath.slice(); }
-                    var newLocation = [SEARCH, $input.val()];
-                    setSearchCursor();
-                    if (!manager.comparePath(newLocation, currentPath.slice())) { displayDirectory(newLocation); }
-                    return;
-                }
-                if (e.which === 27) {
-                    $input.val('');
-                    setSearchCursor(0);
-                    if (search.oldLocation && search.oldLocation.length) { displayDirectory(search.oldLocation); }
-                    else { displayDirectory([ROOT]); }
-                    return;
-                }
-                if ($input.val()) {
-                    if (!$input.hasClass('cp-app-drive-search-active')) {
-                        $input.addClass('cp-app-drive-search-active');
-                    }
-                } else {
-                    $input.removeClass('cp-app-drive-search-active');
-                }
-                if (APP.mobile()) { return; }
-                search.to = window.setTimeout(function () {
-                    if (!isInSearchTmp) { search.oldLocation = currentPath.slice(); }
-                    var newLocation = [SEARCH, $input.val()];
-                    setSearchCursor();
-                    if (!manager.comparePath(newLocation, currentPath.slice())) { displayDirectory(newLocation); }
-                }, 500);
-            }).appendTo($div);
-            var cancel = h('span.fa.fa-times.cp-app-drive-search-cancel', {title:Messages.cancel});
-            cancel.addEventListener('click', function () {
-                $input.val('');
-                setSearchCursor(0);
-                if (search.oldLocation && search.oldLocation.length) { displayDirectory(search.oldLocation); }
-            });
-            $div.append(cancel);
-            $searchIcon.clone().appendTo($div);
-            if (isInSearch) {
-                $input.val(currentPath[1] || '');
-                if ($input.val()) { $input.addClass('cp-app-drive-search-active'); }
-            }
-            $container.append($div);
         };
 
         var categories = {};

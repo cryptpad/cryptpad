@@ -201,10 +201,8 @@ define([
                 sfCommon: common,
                 $container: APP.$bar
             };
-            var toolbar = APP.toolbar = Toolbar.create(configTb);
+            var toolbar = Toolbar.create(configTb);
 
-            var $rightside = toolbar.$rightside;
-            $rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
             var $displayName = APP.$bar.find('.' + Toolbar.constants.username);
             metadataMgr.onChange(function () {
                 var name = metadataMgr.getUserData().name || Messages.anonymous;
@@ -274,6 +272,7 @@ define([
                 updateObject: updateObject,
                 updateSharedFolders: updateSharedFolders,
                 history: history,
+                toolbar: toolbar,
                 APP: APP
             });
 
