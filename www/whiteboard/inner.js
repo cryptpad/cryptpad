@@ -312,7 +312,7 @@ define([
 
         mkHelpMenu(framework);
 
-        var controls = mkControls(framework, canvas);
+        mkControls(framework, canvas);
 
         // ---------------------------------------------
         // Whiteboard custom buttons

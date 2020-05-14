@@ -134,7 +134,6 @@ define([
     var $separator = $('<div>', {"class": "dropdown-divider"});
 
     var LS_VIEWMODE = "app-drive-viewMode";
-    var LS_SEARCHCURSOR = "app-drive-searchCursor";
     var FOLDER_CONTENT_ID = "cp-app-drive-content-folder";
 
     var config = {};
@@ -250,15 +249,6 @@ define([
         }
         APP.store[LS_VIEWMODE] = mode;
         localStore.put(LS_VIEWMODE, mode);
-    };
-
-    var setSearchCursor = function () {
-        var $input = $('#cp-app-drive-tree-search-input');
-        APP.store[LS_SEARCHCURSOR] = $input[0].selectionStart;
-        localStore.put(LS_SEARCHCURSOR, $input[0].selectionStart);
-    };
-    var getSearchCursor = function () {
-        return APP.store[LS_SEARCHCURSOR] || 0;
     };
 
     // Handle disconnect/reconnect
@@ -3145,13 +3135,8 @@ define([
         };
 
         APP.Search = {};
-        var isCharacterKey = function (e) {
-            return e.which === "undefined" /* IE */ ||
-                    (e.which > 0 && e.which !== 13 && e.which !== 27 && !e.ctrlKey && !e.altKey);
-        };
         var displaySearch = function ($list, value) {
             var search = APP.Search;
-            var isInSearch = currentPath[0] === SEARCH;
             var $div = $('<div>', {'id': 'cp-app-drive-search', 'class': 'cp-unselectable'});
 
             $searchIcon.clone().appendTo($div);
@@ -3165,19 +3150,21 @@ define([
                 if (search.to) { window.clearTimeout(search.to); }
                 if ($input.val().trim() === "") {
                     search.cursor = 0;
-                    displayDirectory([SEARCH]);
+                    APP.displayDirectory([SEARCH]);
                     return;
                 }
                 if (e.which === 13) {
                     var newLocation = [SEARCH, $input.val()];
                     search.cursor = $input[0].selectionStart;
-                    if (!manager.comparePath(newLocation, currentPath.slice())) { displayDirectory(newLocation); }
+                    if (!manager.comparePath(newLocation, currentPath.slice())) {
+                        APP.displayDirectory(newLocation);
+                    }
                     return;
                 }
                 if (e.which === 27) {
                     $input.val('');
                     search.cursor = 0;
-                    displayDirectory([SEARCH]);
+                    APP.displayDirectory([SEARCH]);
                     return;
                 }
                 if ($input.val()) {
@@ -3190,7 +3177,9 @@ define([
                 search.to = window.setTimeout(function () {
                     var newLocation = [SEARCH, $input.val()];
                     search.cursor = $input[0].selectionStart;
-                    if (!manager.comparePath(newLocation, currentPath.slice())) { displayDirectory(newLocation); }
+                    if (!manager.comparePath(newLocation, currentPath.slice())) {
+                        APP.displayDirectory(newLocation);
+                    }
                 }, 500);
             }).on('click mousedown mouseup', function (e) {
                 e.stopPropagation();
@@ -3203,7 +3192,7 @@ define([
             cancel.addEventListener('click', function () {
                 $input.val('');
                 search.cursor = 0;
-                displayDirectory([SEARCH]);
+                APP.displayDirectory([SEARCH]);
             });
             $div.append(cancel);
 
@@ -3806,77 +3795,6 @@ define([
             var $trashList = $('<ul>', { 'class': 'cp-app-drive-tree-category' })
                 .append($trashElement);
             $container.append($trashList);
-        };
-
-        var search = APP.Search = {};
-        var createSearch = function ($container) {
-            var isInSearch = currentPath[0] === SEARCH;
-            var $div = $('<div>', {'id': 'cp-app-drive-tree-search', 'class': 'cp-unselectable'});
-            var $input = APP.Search.$input = $('<input>', {
-                id: 'cp-app-drive-tree-search-input',
-                type: 'text',
-                draggable: false,
-                tabindex: 1,
-                placeholder: Messages.fm_searchPlaceholder
-            }).keyup(function (e) {
-                if (search.to) { window.clearTimeout(search.to); }
-                if ([37, 38, 39, 40].indexOf(e.which) !== -1) {
-                    if (!$input.val()) {
-                        $input.blur();
-                        $content.focus();
-                        return;
-                    } else {
-                        e.stopPropagation();
-                    }
-                }
-                var isInSearchTmp = currentPath[0] === SEARCH;
-                if ($input.val().trim() === "") {
-                    setSearchCursor(0);
-                    if (search.oldLocation && search.oldLocation.length) { displayDirectory(search.oldLocation); }
-                    return;
-                }
-                if (e.which === 13) {
-                    if (!isInSearchTmp) { search.oldLocation = currentPath.slice(); }
-                    var newLocation = [SEARCH, $input.val()];
-                    setSearchCursor();
-                    if (!manager.comparePath(newLocation, currentPath.slice())) { displayDirectory(newLocation); }
-                    return;
-                }
-                if (e.which === 27) {
-                    $input.val('');
-                    setSearchCursor(0);
-                    if (search.oldLocation && search.oldLocation.length) { displayDirectory(search.oldLocation); }
-                    else { displayDirectory([ROOT]); }
-                    return;
-                }
-                if ($input.val()) {
-                    if (!$input.hasClass('cp-app-drive-search-active')) {
-                        $input.addClass('cp-app-drive-search-active');
-                    }
-                } else {
-                    $input.removeClass('cp-app-drive-search-active');
-                }
-                if (APP.mobile()) { return; }
-                search.to = window.setTimeout(function () {
-                    if (!isInSearchTmp) { search.oldLocation = currentPath.slice(); }
-                    var newLocation = [SEARCH, $input.val()];
-                    setSearchCursor();
-                    if (!manager.comparePath(newLocation, currentPath.slice())) { displayDirectory(newLocation); }
-                }, 500);
-            }).appendTo($div);
-            var cancel = h('span.fa.fa-times.cp-app-drive-search-cancel', {title:Messages.cancel});
-            cancel.addEventListener('click', function () {
-                $input.val('');
-                setSearchCursor(0);
-                if (search.oldLocation && search.oldLocation.length) { displayDirectory(search.oldLocation); }
-            });
-            $div.append(cancel);
-            $searchIcon.clone().appendTo($div);
-            if (isInSearch) {
-                $input.val(currentPath[1] || '');
-                if ($input.val()) { $input.addClass('cp-app-drive-search-active'); }
-            }
-            $container.append($div);
         };
 
         var categories = {};
