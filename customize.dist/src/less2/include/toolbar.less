@@ -512,11 +512,6 @@
                     .cp-toolbar-title-hoverable {
                         width: 100%;
                     }
-                    .cp-toolbar-title-value-page {
-                        padding: 5px;
-                        line-height: unset;
-                        border: 0;
-                    }
                     .cp-toolbar-title-editable, .cp-toolbar-title-value-page {
                         max-width: ~"calc(100vw - 26px)";
                         display: inline-block;
@@ -526,6 +521,11 @@
                         height: @toolbar_line-height;
                         box-sizing: border-box;
                         line-height: @toolbar_line-height;
+                    }
+                    .cp-toolbar-title-value-page {
+                        padding: 5px;
+                        line-height: @toolbar_line-height - 10px;
+                        border: 0;
                     }
                     .cp-toolbar-title-edit, .cp-toolbar-title-save {
                         box-sizing: border-box;
@@ -1029,7 +1029,7 @@
             .cp-toolbar-appmenu {
                 order: 3;
             }
-            .cp-toolbar-mediatag {
+            .cp-toolbar-mediatag, .cp-toolbar-icon-mediatag {
                 order: 5;
             }
             .cp-toolbar-tools {

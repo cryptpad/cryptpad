@@ -368,16 +368,6 @@ define([
             reader.readAsDataURL(file);
         };
 
-        Messages.canvas_insertImage = "Insert local image"; // XXX
-        framework._.sfCommon.createButton('', true, {
-            title: Messages.canvas_imageEmbed,
-            text: Messages.canvas_insertImage,
-            icon: 'fa-upload',
-            name: 'embedImage'
-        }).click(function () {
-            $('<input>', {type:'file'}).on('change', onUpload).click();
-        }).appendTo($drawer);
-
         if (framework._.sfCommon.isLoggedIn()) {
             framework.setMediaTagEmbedder(function ($mt) {
                 framework._.sfCommon.displayMediatagImage($mt, function (err, $image) {
@@ -400,6 +390,17 @@ define([
                     APP.upload(name);
                 });
             }).appendTo($drawer);
+        } else {
+            Messages.toolbar_insert = "Insert"; // XXX duplicate key from common-ui-elements
+            framework._.sfCommon.createButton('', true, {
+                title: Messages.canvas_imageEmbed,
+                text: Messages.toolbar_insert,
+                drawer: false,
+                icon: 'fa-picture-o',
+                name: 'mediatag'
+            }).click(function () {
+                $('<input>', {type:'file'}).on('change', onUpload).click();
+            }).appendTo(framework._.toolbar.$bottomL);
         }
 
         if (framework.isReadOnly()) {
