@@ -3004,12 +3004,13 @@ define([
                 name: 'files',
                 icon: 'fa-sitemap',
                 drawer: false,
-            }, function () {
-                APP.$tree.toggle();
-                checkCollapseButton();
             });
             checkCollapseButton();
             APP.toolbar.$bottomL.append(APP.$collapseButton);
+            APP.$collapseButton.off('click').on('click', function () {
+                APP.$tree.toggle();
+                checkCollapseButton();
+            })
         };
         var createToolbar = function () {
             var $toolbar = APP.toolbar.$bottom;
