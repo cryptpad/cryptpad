@@ -1366,5 +1366,6 @@
     "settings_padNotifCheckbox": "Kommentar-Benachrichtigungen deaktivieren",
     "comments_edited": "Bearbeitet",
     "unknownPad": "Unbekanntes Pad",
-    "comments_error": "An dieser Stelle kann kein Kommentar hinzugefügt werden"
+    "comments_error": "An dieser Stelle kann kein Kommentar hinzugefügt werden",
+    "fm_sort": "Sortieren"
 }
