@@ -86,7 +86,6 @@ define([
             configTb.pageTitle = Messages.upload_title;
         }
         var toolbar = APP.toolbar = Toolbar.create(configTb);
-        toolbar.$rightside.html('');
 
         if (!uploadMode) {
             var hexFileName = secret.channel;
@@ -132,11 +131,12 @@ define([
                     pageTitle: title,
                     title: Title.getTitleConfig(),
                 });
-                toolbar.$rightside.append(common.createButton('forget', true));
-                toolbar.$rightside.append(common.createButton('properties', true));
+                toolbar.$drawer.append(common.createButton('forget', true));
+                toolbar.$drawer.append(common.createButton('properties', true));
                 if (common.isLoggedIn()) {
-                    toolbar.$rightside.append(common.createButton('hashtag', true));
+                    toolbar.$drawer.append(common.createButton('hashtag', true));
                 }
+                toolbar.$file.show();
 
                 var displayFile = function (ev, sizeMb, CB) {
                     var called_back;
@@ -159,7 +159,7 @@ define([
                         if (ev) { $dlButton.click(); }
 
                         if (!rightsideDisplayed) {
-                            toolbar.$rightside
+                            toolbar.$drawer
                             .append(common.createButton('export', true, {}, function () {
                                 saveAs(decrypted.content, decrypted.metadata.name);
                             }));

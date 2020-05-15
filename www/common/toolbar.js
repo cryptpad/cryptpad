@@ -582,10 +582,10 @@ MessengerUI, Messages) {
             throw new Error("You must provide a `metadataMgr` to display the userlist");
         }
 
-        var $shareBlock = $('<button>', {
-            'class': 'fa fa-shhare-alt cp-toolbar-share-button',
-            title: Messages.shareButton
-        });
+        var $shareBlock = $(h('button.cp-toolar-share-button', [
+            h('i.fa.fa-shhare-alt'),
+            h('span.cp-button-name', Messages.shareButton)
+        ]));
         Common.getSframeChannel().event('EV_SHARE_OPEN', {
             hidden: true,
             file: true
