@@ -1378,6 +1378,7 @@ define([
                 return;
             }
             // Non mobile
+            /*
             var $container = $driveToolbar.find('#cp-app-drive-toolbar-contextbuttons');
             if (!$container.length) { return; }
             $container.html('');
@@ -1404,6 +1405,7 @@ define([
                 $container.append($a);
                 $a.click(function() { $(el).click(); });
             });
+            */
         };
 
         var scrollTo = function ($element) {
