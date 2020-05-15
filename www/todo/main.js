@@ -7,6 +7,7 @@ define([
     '/common/sframe-common-outer.js'
 ], function (nThen, ApiConfig, DomReady, RequireConfig, SFCommonO) {
     var requireConfig = RequireConfig();
+    window.location.href = '/drive/';
 
     // Loaded in load #2
     nThen(function (waitFor) {

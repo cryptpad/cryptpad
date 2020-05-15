@@ -4,10 +4,12 @@ define([
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/common-messaging.js',
+    '/common/cryptget.js',
     '/common/outer/mailbox.js',
+    '/customize/messages.js',
     '/bower_components/nthen/index.js',
     '/bower_components/chainpad-crypto/crypto.js',
-], function (AppConfig, Feedback, Hash, Util, Messaging, Mailbox, nThen, Crypto) {
+], function (AppConfig, Feedback, Hash, Util, Messaging, Crypt, Mailbox, Messages, nThen, Crypto) {
     // Start migration check
     // Versions:
     // 1: migrate pad attributes
@@ -319,6 +321,140 @@ define([
                 migrateFriends();
                 Feedback.send('Migrate-9', true);
                 userObject.version = version = 9;
+            }
+        }).nThen(function (waitFor) {
+            // Migration 10: deprecate todo
+            var fixTodo = function () {
+                var h = store.proxy.todo;
+                if (!h) { return; }
+                var next = waitFor(function () {
+                    Feedback.send('Migrate-10', true);
+                    userObject.version = version = 10; // XXX
+                });
+                var old;
+                var opts = {
+                    network: store.network,
+                    initialState: '{}',
+                    metadata: {
+                        owners: store.proxy.edPublic ? [store.proxy.edPublic] : []
+                    }
+                };
+                nThen(function (w) {
+                    Crypt.get(h, w(function (err, val) {
+                        if (err || !val) {
+                            w.abort();
+                            next();
+                            return;
+                        }
+                        try {
+                            old = JSON.parse(val);
+                        } catch (e) {} // We will abort in the next step in case of error
+                    }), opts);
+                }).nThen(function (w) {
+                    if (!old || typeof(old) !== "object") {
+                        w.abort();
+                        next();
+                        return;
+                    }
+                    var k = {
+                        content: {
+                            data: {
+                                "1": {
+                                    id: "1",
+                                    color: 'color6',
+                                    item: [],
+                                    title: Messages.kanban_todo
+                                },
+                                "2": {
+                                    id: "2",
+                                    color: 'color3',
+                                    item: [],
+                                    title: Messages.kanban_working
+                                },
+                                "3": {
+                                    id: "3",
+                                    color: 'color5',
+                                    item: [],
+                                    title: Messages.kanban_done
+                                },
+                            },
+                            items: {},
+                            list: [1, 2, 3]
+                        },
+                        metadata: {
+                            title: Messages.type.todo,
+                            defaultTitle: Messages.type.todo,
+                            type: "kanban"
+                        }
+                    };
+                    var i = 4;
+                    var items = false;
+                    (old.order || []).forEach(function (key) {
+                        var data = old.data[key];
+                        if (!data || !data.task) { return; }
+                        items = true;
+                        var column = data.state ? '3' : '1';
+                        k.content.data[column].item.push(i);
+                        k.content.items[i] = {
+                            id: i,
+                            title: data.task
+                        };
+                        i++;
+                    });
+                    if (!items) {
+                        w.abort();
+                        next();
+                        return;
+                    }
+                    var newH = Hash.createRandomHash('kanban');
+                    var secret = Hash.getSecrets('kanban', newH);
+                    var oldSecret = Hash.getSecrets('todo', h);
+                    Crypt.put(newH, JSON.stringify(k), w(function (err) {
+                        if (err) {
+                            w.abort();
+                            next();
+                            return;
+                        }
+                        if (store.rpc) {
+                            store.rpc.pin([secret.channel], function () {
+                                // Try to pin and ignore errors...
+                                // Todo won't be available anyway so keep your unpinned kanban
+                            });
+                            store.rpc.unpin([oldSecret.channel], function () {
+                                // Try to unpin and ignore errors...
+                            });
+                        }
+                        var href = Hash.hashToHref(newH, 'kanban');
+                        store.manager.addPad(['root'], {
+                            title: Messages.type.todo,
+                            owners: opts.metadata.owners,
+                            channel: secret.channel,
+                            href: href,
+                            roHref: Hash.hashToHref(Hash.getViewHashFromKeys(secret), 'kanban'),
+                            atime: +new Date(),
+                            ctime: +new Date()
+                        }, w(function (e) {
+                            if (e) { return void console.error(e); }
+                            delete store.proxy.todo;
+                            var myData = Messaging.createData(userObject);
+                            var ctx = { store: store };
+                            Mailbox.sendTo(ctx, 'MOVE_TODO', {
+                                user: myData,
+                                href: href,
+                            }, {
+                                channel: myData.notifications,
+                                curvePublic: myData.curvePublic
+                            }, function (obj) {
+                                if (obj && obj.error) { return void console.error(obj); }
+                            });
+                        }));
+                    }), opts);
+                }).nThen(function () {
+                    next();
+                });
+            };
+            if (version < 10) {
+                fixTodo();
             }
         /*}).nThen(function (waitFor) {
             // Test progress bar in the loading screen

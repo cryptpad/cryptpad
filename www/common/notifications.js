@@ -365,6 +365,29 @@ define([
         }
     };
 
+    Messages.todo_move = "Your todo list has been moved to the pad <b>{0}</b>, as the Todo app is now deprecated.";
+    handlers['MOVE_TODO'] = function(common, data) {
+        var content = data.content;
+        var msg = content.msg;
+
+        // Display the notification
+        var title = Util.fixHTML(Messages.type.todo);
+        var href = msg.content.href;
+
+        content.getFormatText = function() {
+            return Messages._getKey('todo_move', [title]);
+        };
+        if (href) {
+            content.handler = function() {
+                common.openURL(href);
+                defaultDismiss(common, data)();
+            };
+        }
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
 
     // NOTE: don't forget to fixHTML everything returned by "getFormatText"
 

@@ -12,7 +12,7 @@ define(function() {
      * You should never remove the drive from this list.
      */
     config.availablePadTypes = ['drive', 'teams', 'pad', 'sheet', 'code', 'slide', 'poll', 'kanban', 'whiteboard',
-                                /*'oodoc', 'ooslide',*/ 'file', 'todo', 'contacts'];
+                                /*'oodoc', 'ooslide',*/ 'file', /*'todo',*/ 'contacts'];
     /* The registered only types are apps restricted to registered users.
      * You should never remove apps from this list unless you know what you're doing. The apps
      * listed here by default can't work without a user account.
