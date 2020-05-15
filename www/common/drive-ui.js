@@ -2229,13 +2229,6 @@ define([
         var treeResizeObserver = new MutationObserver(collapseDrivePath);
         treeResizeObserver.observe($("#cp-app-drive-tree")[0], {"attributes": true});
 
-        // XXX
-        /*
-        var toolbarButtonAdditionObserver = new MutationObserver(collapseDrivePath);
-        $(function () { toolbarButtonAdditionObserver.observe($("#cp-app-drive-toolbar")[0], {"childList": true, "subtree": true}); });
-        */
-
-
         // Create the title block with the "parent folder" button
         var createTitle = function ($container, path, noStyle) {
             if (!path || path.length === 0) { return; }
@@ -2247,8 +2240,10 @@ define([
             var el = isVirtual ? undefined : manager.find(path);
             path = path[0] === SEARCH ? path.slice(0,1) : path;
 
+            var $outer = $('<div>', {'class': 'cp-app-drive-path'});
             var $inner = $('<div>', {'class': 'cp-app-drive-path-inner'});
-            $container.prepend($inner);
+            $outer.append($inner);
+            $container.prepend($outer);
 
             var skipNext = false; // When encountering a shared folder, skip a key in the path
             path.forEach(function (p, idx) {
@@ -2996,6 +2991,26 @@ define([
         };
 
         // Drive content toolbar
+        var checkCollapseButton = function () {
+            APP.$collapseButton.removeClass('cp-toolbar-button-active');
+            if (APP.$tree.is(':visible')) {
+                APP.$collapseButton.addClass('cp-toolbar-button-active');
+            }
+        };
+        var collapseTreeButton = function () {
+            Messages.drive_treeButton = "Files"; // XXX
+            APP.$collapseButton = APP.$collapseButton || common.createButton('', true, {
+                text: Messages.drive_treeButton,
+                name: 'files',
+                icon: 'fa-sitemap',
+                drawer: false,
+            }, function () {
+                APP.$tree.toggle();
+                checkCollapseButton();
+            });
+            checkCollapseButton();
+            APP.toolbar.$bottomL.append(APP.$collapseButton);
+        };
         var createToolbar = function () {
             var $toolbar = APP.toolbar.$bottom;
             APP.toolbar.$bottomL.html('');
@@ -3008,6 +3023,7 @@ define([
             if (APP.$burnThisDrive) {
                 APP.toolbar.$bottomR.append(APP.$burnThisDrive);
             }
+            collapseTreeButton();
             return $toolbar;
         };
 
@@ -3494,7 +3510,11 @@ define([
 
             LS.setLastOpenedFolder(path);
 
-            var $toolbar = createToolbar(path);
+            createToolbar(path);
+
+            if (inTrash || isInRoot) {
+                createTitle($content, path);
+            }
             var $info = createInfoBox(path);
 
             var $dirContent = $('<div>', {id: FOLDER_CONTENT_ID});
@@ -3531,9 +3551,6 @@ define([
             if (sfId) {
                 createShareButton(sfId, APP.toolbar.$bottomL);
             }
-
-
-            createTitle($toolbar.find('.cp-app-drive-path'), path); // XXX
 
             if (APP.mobile()) {
                 var $context = $('<button>', {
@@ -3838,6 +3855,15 @@ define([
             var s = $categories.scrollTop() || 0;
 
             $tree.html('');
+
+            $(h('button.fa.fa-times.cp-close-button', {
+                title: Messages.filePicker_close
+            })).click(function (e) {
+                e.stopPropagation();
+                $tree.hide();
+                checkCollapseButton();
+            }).appendTo($tree);
+
             var $div = $('<div>', {'class': 'cp-app-drive-tree-categories-container'})
                 .appendTo($tree);
             if (displayedCategories.indexOf(SEARCH) !== -1) { createCategory($div, SEARCH); }
