@@ -357,7 +357,7 @@ define([
                     if (shouldImport) {
                         setMergeAnonDrive();
                     } else {
-                        proxy.version = 6;
+                        proxy.version = 10;
                     }
 
                     Feedback.send('REGISTRATION', true);
