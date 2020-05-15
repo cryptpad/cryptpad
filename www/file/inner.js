@@ -69,7 +69,7 @@ define([
         }
 
         var Title = common.createTitle({});
-        var displayed = ['useradmin', 'newpad', 'limit', 'upgrade'];
+        var displayed = ['useradmin', 'newpad', 'limit', 'upgrade', 'notifications'];
         if (!uploadMode) {
             displayed.push('fileshare');
             displayed.push('access');
