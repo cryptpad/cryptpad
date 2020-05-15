@@ -3002,7 +3002,7 @@ define([
             APP.$collapseButton = APP.$collapseButton || common.createButton('', true, {
                 text: Messages.drive_treeButton,
                 name: 'files',
-                icon: 'fa-sitemap',
+                icon: 'fa-hdd-o',
                 drawer: false,
             });
             checkCollapseButton();
