@@ -16,16 +16,9 @@
     @bg-color: @colortheme_default-bg, // color of the toolbar background
     @warn-color: @colortheme_default-warn // color of the warning text in the toolbar
 ) {
-    @toolbar-color: @cryptpad_text_col;
-
     @toolbar-bg-color: @bg-color;
     @toolbar-bg-color-light: lighten(@bg-color, 30%);
     @toolbar-bg-color-active: lighten(@bg-color, 20%);
-    @toolbar-bg-color-d10: darken(@bg-color, 10%);
-
-    @toolbar-warn-color: @warn-color;
-
-    @toolbar-userlist-name-edit: @toolbar-color;
 };
 
 .toolbar_main (
@@ -37,18 +30,11 @@
     --LessLoader_require: LessLoader_currentFile();
     .toolbar_vars(@color, @bg-color, @warn-color);
 
-    --toolbar-color: @toolbar-color;
-
     --toolbar-bg-color: @toolbar-bg-color;
     --toolbar-bg-color-light: @toolbar-bg-color-light;
     --toolbar-bg-color-active: @toolbar-bg-color-active;
-    --toolbar-bg-color-d10: @toolbar-bg-color-d10;
 
-    --toolbar-warn-color: @toolbar-warn-color;
-
-    --toolbar-userlist-name-edit: @toolbar-userlist-name-edit;
-
-    .help_main(@color, @bg-color);
+    .help_main();
     .notifications_main();
     .dropdown_main();
     .history_main();
@@ -56,17 +42,8 @@
     .modal_main();
 };
 & {
-    @keyframes notification {
-        0% {
-            background: rgba(0,0,0,0);
-        }
-        50% {
-            background: rgba(0,0,0,0.2);
-        }
-        100% {
-            background: rgba(0,0,0,0);
-        }
-    }
+    @toolbar-color: @cryptpad_text_col;
+    @toolbar-color-light: lighten(@cryptpad_text_col, 10%);
 
     .toolbar_vars();
     @toolbar-top-bg: #eee;
@@ -94,7 +71,6 @@
             height: @toolbar_line-height !important;
             outline: 0;
             color: @toolbar-color;
-            color: var(--toolbar-color);
             .toolbar_button;
             font: normal normal normal 14px/1 FontAwesome;
             &:hover {
@@ -155,7 +131,6 @@
         }
         .cp-toolbar-chat-drawer-close {
             color: @toolbar-color;
-            color: var(--toolbar-color);
             position: absolute;
             top: 0;
             right: 1px;
@@ -367,33 +342,21 @@
     }
 
     .cp-toolbar-userlist-drawer {
-        background-color: @toolbar-bg-color;
-        background-color: var(--toolbar-bg-color);
+        background-color: @colortheme_userlist-bg;
         color: @toolbar-color;
-        color: var(--toolbar-color);
         .cp-toolbar-userlist-drawer-close {
             color: @toolbar-color;
-            color: var(--toolbar-color);
         }
         h2 {
-            background-color: @toolbar-bg-color-d10;
-            background-color: var(--toolbar-bg-color-d10);
             color: @toolbar-color;
-            color: var(--toolbar-color);
         }
         .cp-toolbar-userlist-name-input {
-            background-color: @toolbar-bg-color-d10;
-            background-color: var(--toolbar-bg-color-d10);
-            color: @toolbar-color;
-            color: var(--toolbar-color);
+            background-color: rgba(0,0,0,0.1);
         }
         .cp-toolbar-userlist-button {
-            color: @toolbar-userlist-name-edit;
-            color: var(--toolbar-userlist-name-edit);
             background: transparent;
             &:hover {
-                color: @toolbar-color;
-                color: var(--toolbar-color);
+                color: @toolbar-color-light;
             }
         }
     }

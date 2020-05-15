@@ -1884,7 +1884,7 @@ define([
 
         common.fixLinks(text);
 
-        var closeButton = h('span.cp-help-close.fa.fa-window-close');
+        var closeButton = h('span.cp-help-close.fa.fa-times');
         var $toolbarButton = common.createButton('', true, {
             title: Messages.hide_help_button,
             text: Messages.help_button,

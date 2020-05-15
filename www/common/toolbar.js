@@ -401,7 +401,7 @@ MessengerUI, Messages) {
             e.preventDefault();
             e.stopPropagation();
         });
-        var $closeIcon = $('<span>', {"class": "fa fa-window-close cp-toolbar-userlist-drawer-close"}).appendTo($content);
+        var $closeIcon = $('<span>', {"class": "fa fa-times cp-toolbar-userlist-drawer-close"}).appendTo($content);
         $('<h2>').text(Messages.users).appendTo($content);
         $('<p>', {'class': USERLIST_CLS}).appendTo($content);
 
@@ -468,7 +468,7 @@ MessengerUI, Messages) {
             e.preventDefault();
             e.stopPropagation();
         });
-        var $closeIcon = $('<span>', {"class": "fa fa-window-close cp-toolbar-chat-drawer-close"}).appendTo($content);
+        var $closeIcon = $('<span>', {"class": "fa fa-times cp-toolbar-chat-drawer-close"}).appendTo($content);
         //$('<h2>').text(Messages.users).appendTo($content);
         //$('<p>', {'class': USERLIST_CLS}).appendTo($content);
 
