@@ -3010,7 +3010,7 @@ define([
             APP.$collapseButton.off('click').on('click', function () {
                 APP.$tree.toggle();
                 checkCollapseButton();
-            })
+            });
         };
         var createToolbar = function () {
             var $toolbar = APP.toolbar.$bottom;
