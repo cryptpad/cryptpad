@@ -2241,6 +2241,7 @@ define([
             var isVirtual = virtualCategories.indexOf(path[0]) !== -1;
             var el = isVirtual ? undefined : manager.find(path);
             path = path[0] === SEARCH ? path.slice(0,1) : path;
+            var isInTrashRoot = manager.isInTrashRoot(path);
 
             var $outer = $('<div>', {'class': 'cp-app-drive-path'});
             var $inner = $('<div>', {'class': 'cp-app-drive-path-inner'});
@@ -2251,8 +2252,11 @@ define([
             path.forEach(function (p, idx) {
                 if (skipNext) { skipNext = false; return; }
                 if (isTrash && [2,3].indexOf(idx) !== -1) { return; }
-
                 var name = p;
+
+                if (manager.isFile(el) && isInTrashRoot && idx === 1) {
+                    idx = 3;
+                }
 
                 var currentEl = isVirtual ? undefined : manager.find(path.slice(0, idx+1));
                 if (p === SHARED_FOLDER || (currentEl && manager.isSharedFolder(currentEl))) {
@@ -3258,6 +3262,7 @@ define([
                     $list.append($element);
                 });
             });
+            setTimeout(collapseDrivePath);
         };
 
         var displayRecent = function ($list) {
