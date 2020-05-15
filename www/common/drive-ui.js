@@ -3389,7 +3389,7 @@ define([
                 var tagLink = h('a', { href: '#' }, '#' + tag);
                 $(tagLink).click(function () {
                     if (displayedCategories.indexOf(SEARCH) !== -1) {
-                        APP.Search.$input.val('#' + tag).keyup();
+                        displayDirectory([SEARCH, '#' + tag]);
                     }
                 });
                 lines.push(h('tr', [
