@@ -18,6 +18,7 @@ define([
     '/bower_components/chainpad/chainpad.dist.js',
     '/bower_components/marked/marked.min.js',
     'cm/lib/codemirror',
+    '/kanban/jkanban_cp.js',
 
     'cm/mode/gfm/gfm',
 
@@ -27,7 +28,6 @@ define([
 
 
 
-    '/kanban/jkanban.js',
     'css!/kanban/jkanban.css',
     'less!/kanban/app-kanban.less'
 ], function (
@@ -49,7 +49,8 @@ define([
     DiffMd,
     ChainPad,
     Marked,
-    CodeMirror)
+    CodeMirror,
+    jKanban)
 {
 
     var verbose = function (x) { console.log(x); };
@@ -582,7 +583,7 @@ define([
         };
 
 
-        var kanban = new window.jKanban({
+        var kanban = new jKanban({
             element: '#cp-app-kanban-content',
             gutter: '5px',
             widthBoard: '300px',
