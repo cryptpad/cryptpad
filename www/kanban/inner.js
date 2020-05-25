@@ -382,7 +382,7 @@ define([
         var setId = function (_isBoard, _id) {
             // Reset the mdoal with a new id
             isBoard = _isBoard;
-            id = _id;
+            id = Number(_id);
             if (_isBoard) {
                 onCursorUpdate.fire({
                     board: _id
