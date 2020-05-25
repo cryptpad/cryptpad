@@ -310,7 +310,10 @@ define([
             $canvasContainer.find('canvas').css('border-color', bool? 'black': 'red');
         };
 
-        mkHelpMenu(framework);
+        var privateData = metadataMgr.getPrivateData();
+        if (!privateData.isEmbed) {
+            mkHelpMenu(framework);
+        }
 
         mkControls(framework, canvas);
 

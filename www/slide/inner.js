@@ -499,7 +499,10 @@ define([
         mkColorConfiguration(framework, $modal);
         mkFilePicker(framework, editor);
         mkSlidePreviewPane(framework, $contentContainer);
-        mkHelpMenu(framework);
+
+        if (!privateData.isEmbed) {
+            mkHelpMenu(framework);
+        }
 
         CodeMirror.mkIndentSettings(framework._.cpNfInner.metadataMgr);
         CodeMirror.init(framework.localChange, framework._.title, framework._.toolbar);

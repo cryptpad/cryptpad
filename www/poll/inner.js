@@ -1160,8 +1160,9 @@ define([
         var $properties = common.createButton('properties', true);
         $drawer.append($properties);
 
+        var privateData = metadataMgr.getPrivateData();
         /* save as template */
-        if (!metadataMgr.getPrivateData().isTemplate && common.isLoggedIn()) {
+        if (!privateData.isTemplate && common.isLoggedIn()) {
             var templateObj = {
                 rt: info.realtime,
                 getTitle: function () { return metadataMgr.getMetadata().title; }
@@ -1177,10 +1178,13 @@ define([
         var $export = common.createButton('export', true, {}, exportFile);
         $drawer.append($export);
 
-        var helpMenu = common.createHelpMenu(['poll']);
         $('#cp-app-poll-form').prepend(common.getBurnAfterReadingWarning());
-        $('#cp-app-poll-form').prepend(helpMenu.menu);
-        $drawer.append(helpMenu.button);
+
+        if (!privateData.isEmbed) {
+            var helpMenu = common.createHelpMenu(['poll']);
+            $('#cp-app-poll-form').prepend(helpMenu.menu);
+            $drawer.append(helpMenu.button);
+        }
 
         if (APP.readOnly) { publish(true); return; }
         var $publish = common.createButton('', true, {
@@ -1283,6 +1287,7 @@ define([
         }).nThen(function (/* waitFor */) {
             Test.registerInner(common.getSframeChannel());
             var metadataMgr = common.getMetadataMgr();
+
             APP.locked = APP.readOnly = metadataMgr.getPrivateData().readOnly;
             APP.loggedIn = common.isLoggedIn();
             APP.SFCommon = common;

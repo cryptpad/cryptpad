@@ -418,12 +418,9 @@ define([
         var $content = $('#cp-app-code-preview-content');
         mkPrintButton(framework, $content, $print);
 
-        // XXX don't display the help menu in embed mode?
-            // metadataMgr.getPrivateData().isEmbed
-            // do the same in all other apps
-            // pad, code, oo, slide, poll, whiteboard, kanban
-            // OR do it in a more generic way...
-        mkHelpMenu(framework);
+        if (!privateData.isEmbed) {
+            mkHelpMenu(framework);
+        }
 
         var evModeChange = Util.mkEvent();
         evModeChange.reg(previewPane.modeChange);

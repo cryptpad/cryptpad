@@ -1557,7 +1557,9 @@ define([
         };
 
         config.onInit = function (info) {
-            readOnly = metadataMgr.getPrivateData().readOnly;
+            var privateData = metadataMgr.getPrivateData();
+
+            readOnly = privateData.readOnly;
 
             Title = common.createTitle({});
 
@@ -1594,7 +1596,7 @@ define([
             var $exportXLSX = common.createButton('export', true, {}, exportXLSXFile);
             $exportXLSX.appendTo(toolbar.$drawer);
 
-            var type = common.getMetadataMgr().getPrivateData().ooType;
+            var type = privateData.ooType;
             var accept = [".bin", ".ods", ".xlsx"];
             if (type === "ooslide") {
                 accept = ['.bin', '.odp', '.pptx'];
@@ -1620,10 +1622,12 @@ define([
             });
             toolbar.$drawer.append($forget);
 
-            var helpMenu = APP.helpMenu = common.createHelpMenu(['beta', 'oo']);
-            $('#cp-app-oo-editor').prepend(common.getBurnAfterReadingWarning());
-            $('#cp-app-oo-editor').prepend(helpMenu.menu);
-            toolbar.$drawer.append(helpMenu.button);
+            if (!privateData.isEmbed) {
+                var helpMenu = APP.helpMenu = common.createHelpMenu(['beta', 'oo']);
+                $('#cp-app-oo-editor').prepend(common.getBurnAfterReadingWarning());
+                $('#cp-app-oo-editor').prepend(helpMenu.menu);
+                toolbar.$drawer.append(helpMenu.button);
+            }
 
             var $properties = common.createButton('properties', true);
             toolbar.$drawer.append($properties);

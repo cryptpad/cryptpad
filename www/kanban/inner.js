@@ -962,7 +962,10 @@ define([
         var kanban;
         var $container = $('#cp-app-kanban-content');
 
-        mkHelpMenu(framework);
+        var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
+        if (!privateData.isEmbed) {
+            mkHelpMenu(framework);
+        }
 
         if (framework.isReadOnly()) {
             $container.addClass('cp-app-readonly');
