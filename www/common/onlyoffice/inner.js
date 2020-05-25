@@ -228,7 +228,9 @@ define([
             var hashes = old ? oldHashes : content.hashes;
             if (!hashes || !Object.keys(hashes).length) { return {}; }
             i = i || 0;
-            var idx = Object.keys(hashes).map(Number).sort();
+            var idx = Object.keys(hashes).map(Number).sort(function (a, b) {
+                return a-b;
+            });
             var lastIndex = idx[idx.length - 1 - i];
             var last = JSON.parse(JSON.stringify(hashes[lastIndex]));
             return last;
