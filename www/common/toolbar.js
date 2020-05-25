@@ -92,6 +92,7 @@ MessengerUI, Messages) {
 
         Messages.toolbar_file = "File"; // XXX
         if (!config.hideDrawer) {
+            // XXX a lot of this logic is duplicated (code, slide, here)
             var $drawer = $(h('button.' + FILE_CLS, [
                 h('i.fa.fa-file-o'),
                 h('span.cp-button-name', Messages.toolbar_file)

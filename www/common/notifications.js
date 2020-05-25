@@ -365,7 +365,7 @@ define([
         }
     };
 
-    Messages.todo_move = "Your todo list has been moved to the pad <b>{0}</b>, as the Todo app is now deprecated.";
+    Messages.todo_move = "Your todo list has been moved to the pad <b>{0}</b>, as the Todo app is now deprecated."; // XXX
     handlers['MOVE_TODO'] = function(common, data) {
         var content = data.content;
         var msg = content.msg;

@@ -99,9 +99,11 @@ define([
         });
         var onBlur = function (e) {
             if (e.relatedTarget) {
-                if ($(e.relatedTarget).is('.cp-toolbar-drawer-button')) { return; }
-                if ($(e.relatedTarget).parents('.cp-toolbar-drawer-content').length) {
-                    $(e.relatedTarget).blur(onBlur);
+                var $relatedTarget = $(e.relatedTarget);
+
+                if ($relatedTarget.is('.cp-toolbar-drawer-button')) { return; }
+                if ($relatedTarget.parents('.cp-toolbar-drawer-content').length) {
+                    $relatedTarget.blur(onBlur);
                     return;
                 }
             }
@@ -416,7 +418,11 @@ define([
         var $content = $('#cp-app-code-preview-content');
         mkPrintButton(framework, $content, $print);
 
-
+        // XXX don't display the help menu in embed mode?
+            // metadataMgr.getPrivateData().isEmbed
+            // do the same in all other apps
+            // pad, code, oo, slide, poll, whiteboard, kanban
+            // OR do it in a more generic way...
         mkHelpMenu(framework);
 
         var evModeChange = Util.mkEvent();

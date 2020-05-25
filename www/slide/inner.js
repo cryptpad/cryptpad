@@ -100,6 +100,7 @@ define([
         });
     };
 
+    // XXX this function is a duplicate of /code/
     var mkThemeButton = function (framework) {
         Messages.toolbar_theme = "Theme"; // XXX
         var $theme = $(h('button.cp-toolbar-appmenu', [
