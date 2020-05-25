@@ -725,13 +725,13 @@
         .cp-toolbar-notifications {
             text-align: center;
             font-size: 32px;
+            margin-left: 10px;
             &> button {
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 width: @toolbar_top-height;
                 font-size: 1em;
-                color: inherit;
                 height: @toolbar_top-height;
                 padding: 0px;
                 margin: 0;
@@ -742,6 +742,7 @@
                 }
                 &:hover {
                     border-color: transparent;
+                    background-color: rgba(50,50,50,0.1);
                 }
                 span {
                     vertical-align: top;
@@ -750,9 +751,6 @@
                     color: inherit;
                 }
             }
-        }
-        .cp-toolbar-notifications {
-            margin-left: 10px;
             .cp-notifications-empty {
                 color: black;
                 padding: 5px;
@@ -847,6 +845,10 @@
                     height: @toolbar_top-height;
                     width: @toolbar_top-height;
                     padding: 0;
+                    &:hover {
+                        border-color: transparent;
+                        background-color: rgba(50,50,50,0.1);
+                    }
                     span {
                         text-align: center;
                         width: 100%;
