@@ -3394,7 +3394,7 @@ define([
                 var tagLink = h('a', { href: '#' }, '#' + tag);
                 $(tagLink).click(function () {
                     if (displayedCategories.indexOf(SEARCH) !== -1) {
-                        displayDirectory([SEARCH, '#' + tag]);
+                        APP.displayDirectory([SEARCH, '#' + tag]);
                     }
                 });
                 lines.push(h('tr', [
