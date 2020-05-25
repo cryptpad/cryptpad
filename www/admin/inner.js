@@ -257,15 +257,18 @@ define([
                 if (!$ticket.length) {
                     $ticket = APP.support.makeTicket($div, content, function () {
                         var error = false;
-                        hashesById[id].forEach(function (d) {
-                            common.mailbox.dismiss(d, function (err) {
-                                if (err) {
-                                    error = true;
-                                    console.error(err);
-                                }
+                        nThen(function (w) {
+                            hashesById[id].forEach(function (d) {
+                                common.mailbox.dismiss(d, w(function (err) {
+                                    if (err) {
+                                        error = true;
+                                        console.error(err);
+                                    }
+                                }));
                             });
+                        }).nThen(function () {
+                            if (!error) { $ticket.remove(); }
                         });
-                        if (!error) { $ticket.remove(); }
                     });
                 }
                 $ticket.append(APP.support.makeMessage(content, hash));

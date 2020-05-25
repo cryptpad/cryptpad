@@ -134,13 +134,8 @@ proxy.mailboxes = {
         // If the hash in in our history, get the index from the history:
         // - if the index is 0, we can change our lastKnownHash
         // - otherwise, just push to view
-        var idx;
-        if (box.history.some(function (el, i) {
-            if (hash === el) {
-                idx = i;
-                return true;
-            }
-        })) {
+        var idx = box.history.indexOf(hash);
+        if (idx !== -1) {
             if (idx === 0) {
                 m.lastKnownHash = hash;
                 box.history.shift();
@@ -153,15 +148,25 @@ proxy.mailboxes = {
         // Check the "viewed" array to see if we're able to bump lastKnownhash more
         var sliceIdx;
         var lastKnownHash;
+        var toForget = [];
         box.history.some(function (hash, i) {
+            // naming here is confusing... isViewed implies it's a boolean
+            // when in fact it's an index
             var isViewed = m.viewed.indexOf(hash);
-            if (isViewed !== -1) {
-                sliceIdx = i + 1;
-                m.viewed.splice(isViewed, 1);
-                lastKnownHash = hash;
-                return false;
-            }
-            return true;
+
+            // iterate over your history until you hit an element you haven't viewed
+            if (isViewed === -1) { return true; }
+            // update the index that you'll use to slice off viewed parts of history
+            sliceIdx = i + 1;
+            // keep track of which hashes you should remove from your 'viewed' array
+            toForget.push(hash);
+            // prevent fetching dismissed messages on (re)connect
+            lastKnownHash = hash;
+        });
+
+        // remove all elements in 'toForget' from the 'viewed' array in one step
+        m.viewed = m.viewed.filter(function (hash) {
+            return toForget.indexOf(hash) === -1;
         });
 
         if (sliceIdx) {
