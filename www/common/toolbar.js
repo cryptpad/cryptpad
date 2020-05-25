@@ -1020,7 +1020,7 @@ MessengerUI, Messages) {
         };
         var $newPadBlock = UIElements.createDropdown(dropdownConfig);
         var $button = $newPadBlock.find('button');
-        $button.attr('title', Messages.notifications_empty);
+        $button.attr('title', Messages.notificationsPage);
         $button.addClass('fa fa-bell-o');
         var $n = $button.find('.cp-dropdown-button-title').hide();
         var $empty = $(div).find('.cp-notifications-empty');
@@ -1031,7 +1031,6 @@ MessengerUI, Messages) {
             $button.removeClass('fa-bell-o').removeClass('fa-bell');
             $n.removeClass('cp-notifications-small');
             if (n === 0) {
-                $button.attr('title', Messages.notifications_empty);
                 $empty.show();
                 $n.hide();
                 return void $button.addClass('fa-bell-o');
@@ -1040,7 +1039,6 @@ MessengerUI, Messages) {
                 n = '99+';
                 $n.addClass('cp-notifications-small');
             }
-            $button.attr('title', Messages.notifications_title);
             $empty.hide();
             $n.text(n).show();
             $button.addClass('fa-bell');
