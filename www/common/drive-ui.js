@@ -3556,9 +3556,13 @@ define([
             if (!readOnlyFolder) {
                 createNewButton(isInRoot, APP.toolbar.$bottomL);
             }
+            /*
+            // The share button is not displayed anymore in the toolbar: users can't know
+            // if they're going to share the current shared folder or the selected pad
             if (sfId) {
                 createShareButton(sfId, APP.toolbar.$bottomL);
             }
+            */
 
             if (APP.mobile()) {
                 var $context = $('<button>', {

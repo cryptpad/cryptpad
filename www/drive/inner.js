@@ -251,14 +251,18 @@ define([
 
             // Add a "Burn this drive" button
             if (!APP.loggedIn && !APP.readOnly) {
-                APP.$burnThisDrive = common.createButton(null, true).click(function () {
+                APP.$burnThisDrive = common.createButton(null, true, {
+                    text: '',
+                    name: 'burn-anon-drive',
+                    icon: 'fa-ban',
+                    title: Messages.fm_burnThisDriveButton,
+                    drawer: false
+                }).click(function () {
                     UI.confirm(Messages.fm_burnThisDrive, function (yes) {
                         if (!yes) { return; }
                         common.getSframeChannel().event('EV_BURN_ANON_DRIVE');
                     }, null, true);
-                }).attr('title', Messages.fm_burnThisDriveButton)
-                  .removeClass('fa-question')
-                  .addClass('fa-ban');
+                });
             }
 
             $('body').css('display', '');
