@@ -715,9 +715,8 @@
             }
         }
         .cp-toolbar-link, .cp-toolbar-notifications {
-            font-size: 48px;
             line-height: @toolbar_top-height;
-            width: 64px;
+            width: @toolbar_top-height;
             height: @toolbar_top-height;
             padding: 0;
             box-sizing: border-box;
@@ -730,7 +729,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                width: 64px;
+                width: @toolbar_top-height;
                 font-size: 1em;
                 color: inherit;
                 height: @toolbar_top-height;
@@ -763,13 +762,14 @@
                 .cp-dropdown-button-title {
                     position: absolute;
                     bottom: 10px;
-                    right: 0;
+                    right: 16px;
                     font-size: 14px;
                     border: 1px solid;
                     border-radius: 50%;
                     width: 20px;
                     height: 20px;
                     line-height: 16px;
+                    background: @toolbar-top-bg;
                     &.cp-notifications-small {
                         font-size: 10px;
                         line-height: 17px;
@@ -824,7 +824,7 @@
                 z-index: 10000; //Z cp-toolbar-user-dropdown
                 //margin-left: 20px;
                 height: @toolbar_top-height;
-                width: 64px;
+                width: @toolbar_top-height;
                 padding: 0px;
                 box-sizing: border-box;
                 text-align: center;
@@ -845,21 +845,18 @@
                     justify-content: center;
                     align-items: center;
                     height: @toolbar_top-height;
-                    width: 64px;
+                    width: @toolbar_top-height;
                     padding: 0;
                     span {
                         text-align: center;
                         width: 100%;
-                        font-size: 32px;
+                        font-size: 48px;
                         display: inline-flex;
                         justify-content: center;
                         align-items: center;
                     }
                     &.cp-avatar {
-                        .avatar_main(48px);
-                        media-tag {
-                            margin: 8px;
-                        }
+                        .avatar_main(64px);
                         border: 0;
                     }
                 }
