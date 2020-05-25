@@ -48,7 +48,8 @@
     "sortablejs": "^1.6.0",
     "saferphore": "^0.0.1",
     "jszip": "Stuk/jszip#^3.1.5",
-    "requirejs-plugins": "^1.0.3"
+    "requirejs-plugins": "^1.0.3",
+    "dragula.js": "3.7.2"
   },
   "resolutions": {
     "bootstrap": "^v4.0.0",
