@@ -997,6 +997,7 @@ define([
                     }
                     return _getPath(name);
                 };
+                window.__defineGetter__('_cke_htmlToLoad', function() {});
                 editor.plugins.mediatag.import = function($mt) {
                     framework._.sfCommon.importMediaTag($mt);
                 };
