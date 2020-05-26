@@ -857,19 +857,19 @@
         "title": "Getting started",
         "generic": {
             "more": "Learn more about how CryptPad can work for you by reading our <a href=\"/faq.html\" target=\"_blank\">FAQ</a>",
-            "share": "Use the share menu (<span class=\"fa fa-shhare-alt\"></span>) to generate a link so collaborators can view or edit this pad",
+            "share": "Share this document with the  <i class=\"fa fa-shhare-alt\"></i> <b>Share</b> button, and manage access rights with <i class=\"fa fa-unlock-alt\"></i> <b>Access</b>.",
             "save": "All your changes are synced automatically so you never need to save"
         },
         "text": {
-            "formatting": "You can display or hide the text formatting toolbar by clicking the <span class=\"fa fa-caret-down\"></span> or <span class=\"fa fa-caret-up\"></span> buttons",
-            "embed": "Registered users can embed an image or a file stored in their CryptDrive using <span class=\"fa fa-image\"></span>",
+            "formatting": "Show/hide the text toolbar with the <i class=\"fa fa-wrench\"></i> <b>Tools</b> button.",
+            "embed": "Insert an image from your CryptDrive or computer with the <i class=\"fa fa-image\"></i> <b>Insert</b> button (logged in users).",
             "history": "You can use <em>history</em> <span class=\"fa fa-history\"></span> to view or restore previous versions"
         },
         "pad": {
             "export": "You can export the content as PDF using the <span class=\"fa fa-print\"></span> button in the text formatting toolbar"
         },
         "code": {
-            "modes": "Use the dropdown menus in the <span class=\"fa fa-ellipsis-h\"></span> submenu to change syntax highlighting modes or color themes"
+            "modes": "Use the <span class=\"cptools cptools-palette\"></span> <b>Theme</b> menu to choose an editor theme and syntax highlighting."
         },
         "beta": {
             "warning": "This editor is still <strong>experimental</strong>, you can report bugs on <a href=\"https://github.com/xwiki-labs/cryptpad/issues/\" target=\"_blank\">our issue tracker</a>"
@@ -880,7 +880,7 @@
         "slide": {
             "markdown": "Write slides in <a href=\"http://www.markdowntutorial.com/\">Markdown</a> and separate them with a line containing <code>---</code>",
             "present": "Start the presentation using the <span class=\"fa fa-play-circle\"></span> button",
-            "settings": "Change the slide settings (background, transitions, page numbers, etc.) with the <span class=\"fa fa-cog\"></span> button in the <span class=\"fa fa-ellipsis-h\"></span> submenu",
+            "settings": "Use the <span class=\"cptools cptools-palette\"></span> <b>Theme</b> menu to change slide colors and <span class=\"fa fa-cog\"></span> <b>Options</b> (background, transitions, page numbers, etc.).",
             "colors": "Change the text and background colors using the <span class=\"fa fa-i-cursor\"></span> and <span class=\"fa fa-square\"></span> buttons"
         },
         "poll": {
@@ -891,8 +891,8 @@
         },
         "whiteboard": {
             "colors": "Double-click colors to modify your palette",
-            "mode": "Disable draw mode to drag and stretch strokes",
-            "embed": "Embed images from your disk <span class=\"fa fa-file-image-o\"></span> or your CryptDrive <span class=\"fa fa-image\"></span> and export them as PNG to your disk <span class=\"fa fa-download\"></span> or your CryptDrive <span class=\"fa fa-cloud-upload\"></span>"
+            "mode": "Switch to <span class=\"fa fa-arrows\"></span> Select mode to move and transform strokes.",
+            "embed": "Embed images from your CryptDrive or computer with <span class=\"fa fa-image\"></span> <b>Insert</b>. Export the canvas as PNG to your CryptDrive with <b><span class=\"fa fa-file-o\"></span> File > <span class=\"fa fa-file-image-o\"></span> Save as image</b> or to your computer with <b><span class=\"fa fa-file-o\"></span> File > <span class=\"fa fa-download\"></span> Export</b>."
         },
         "kanban": {
             "add": "Add new cards and boards by clicking the <span class=\"fa fa-plus\"></span> buttons",
@@ -1367,5 +1367,15 @@
     "settings_padNotifHint": "Ignore notifications when someone replies to one of your comments",
     "settings_padNotifCheckbox": "Disable comment notifications",
     "comments_error": "Can't add a comment here",
-    "fm_sort": "Sort"
+    "fm_sort": "Sort",
+    "todo_move": "Your todo list is now in the kanban <b>{0}</b> in your Drive.",
+    "toolbar_theme": "Theme",
+    "toolbar_insert": "Insert",
+    "toolbar_savetodrive": "Save as image",
+    "toolbar_tools": "Tools",
+    "drive_treeButton": "Files",
+    "code_editorTheme": "Editor theme",
+    "toolbar_file": "File",
+    "slide_backCol": "Background color",
+    "slide_textCol": "Text color"
 }
