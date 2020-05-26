@@ -78,7 +78,6 @@ define([
     ]);
 
     var mkThemeButton = function (framework) {
-        Messages.toolbar_theme = "Theme"; // XXX (duplicate from slide/inner.js)
         var $theme = $(h('button.cp-toolbar-appmenu', [
             h('i.cptools.cptools-palette'),
             h('span.cp-button-name', Messages.toolbar_theme)
@@ -121,7 +120,7 @@ define([
             name: 'authormarks',
             icon: 'fa-paint-brush',
         }).hide();
-        framework._.toolbar.$theme.append($showAuthorColorsButton); // XXX
+        framework._.toolbar.$theme.append($showAuthorColorsButton);
         markers.setButton($showAuthorColorsButton);
     };
     var mkPrintButton = function (framework, $content, $print) {

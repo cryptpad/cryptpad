@@ -329,7 +329,7 @@ define([
                 if (!h) { return; }
                 var next = waitFor(function () {
                     Feedback.send('Migrate-10', true);
-                    userObject.version = version = 10; // XXX
+                    userObject.version = version = 10;
                 });
                 var old;
                 var opts = {

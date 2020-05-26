@@ -394,7 +394,6 @@ define([
                 });
             }).appendTo($drawer);
         } else {
-            Messages.toolbar_insert = "Insert"; // XXX duplicate key from common-ui-elements
             framework._.sfCommon.createButton('', true, {
                 title: Messages.canvas_imageEmbed,
                 text: Messages.toolbar_insert,

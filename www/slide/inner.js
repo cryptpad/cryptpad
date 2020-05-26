@@ -102,7 +102,6 @@ define([
 
     // XXX this function is a duplicate of /code/
     var mkThemeButton = function (framework) {
-        Messages.toolbar_theme = "Theme"; // XXX
         var $theme = $(h('button.cp-toolbar-appmenu', [
             h('i.cptools.cptools-palette'),
             h('span.cp-button-name', Messages.toolbar_theme)
@@ -378,7 +377,6 @@ define([
             framework.localChange();
         };
 
-        Messages.slide_backCol = "Background color"; // XXX
         var $back = framework._.sfCommon.createButton(null, true, {
             icon: 'fa-square',
             text: Messages.slide_backCol,
@@ -387,7 +385,6 @@ define([
             name: 'background',
             id: SLIDE_BACKCOLOR_ID
         });
-        Messages.slide_textCol = "Text color"; // XXX
         var $text = framework._.sfCommon.createButton(null, true, {
             icon: 'fa-i-cursor',
             text: Messages.slide_textCol,
