@@ -402,7 +402,7 @@ MessengerUI, Messages) {
             e.preventDefault();
             e.stopPropagation();
         });
-        var $closeIcon = $('<span>', {"class": "fa fa-times cp-toolbar-userlist-drawer-close"}).appendTo($content);
+        //var $closeIcon = $('<span>', {"class": "fa fa-times cp-toolbar-userlist-drawer-close"}).appendTo($content);
         $('<h2>').text(Messages.users).appendTo($content);
         $('<p>', {'class': USERLIST_CLS}).appendTo($content);
 
@@ -428,10 +428,12 @@ MessengerUI, Messages) {
             $content.show();
             $button.addClass('cp-toolbar-button-active');
         };
+        /*
         $closeIcon.click(function () {
             Common.setAttribute(['toolbar', 'userlist-drawer'], false);
             hide();
         });
+        */
         $button.click(function () {
             var visible = $content.is(':visible');
             if (visible) { hide(); }
@@ -469,7 +471,7 @@ MessengerUI, Messages) {
             e.preventDefault();
             e.stopPropagation();
         });
-        var $closeIcon = $('<span>', {"class": "fa fa-times cp-toolbar-chat-drawer-close"}).appendTo($content);
+        //var $closeIcon = $('<span>', {"class": "fa fa-times cp-toolbar-chat-drawer-close"}).appendTo($content);
         //$('<h2>').text(Messages.users).appendTo($content);
         //$('<p>', {'class': USERLIST_CLS}).appendTo($content);
 
@@ -510,10 +512,12 @@ MessengerUI, Messages) {
             config.$contentContainer.addClass('cp-chat-visible');
             $button.removeClass('cp-toolbar-notification');
         };
+        /*
         $closeIcon.click(function () {
             Common.setAttribute(['toolbar', 'chat-drawer'], false);
             hide(true);
         });
+        */
         $button.click(function () {
             var visible = $content.is(':visible');
             if (visible) { hide(true); }
