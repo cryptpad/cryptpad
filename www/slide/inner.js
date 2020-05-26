@@ -100,7 +100,6 @@ define([
         });
     };
 
-    // XXX this function is a duplicate of /code/
     var mkThemeButton = function (framework) {
         var $theme = $(h('button.cp-toolbar-appmenu', [
             h('i.cptools.cptools-palette'),
@@ -109,29 +108,10 @@ define([
         var $content = $(h('div.cp-toolbar-drawer-content', {
             tabindex: 1
         })).hide();
-        $theme.click(function () {
-            $content.toggle();
-            $theme.removeClass('cp-toolbar-button-active');
-            if ($content.is(':visible')) {
-                $theme.addClass('cp-toolbar-button-active');
-                $content.focus();
-                var wh = $(window).height();
-                var topPos = $theme[0].getBoundingClientRect().bottom;
-                $content.css('max-height', Math.floor(wh - topPos - 1)+'px');
-            }
-        });
-        var onBlur = function (e) {
-            if (e.relatedTarget) {
-                if ($(e.relatedTarget).is('.cp-toolbar-drawer-button')) { return; }
-                if ($(e.relatedTarget).parents('.cp-toolbar-drawer-content').length) {
-                    $(e.relatedTarget).blur(onBlur);
-                    return;
-                }
-            }
-            $theme.removeClass('cp-toolbar-button-active');
-            $content.hide();
-        };
-        $content.blur(onBlur).appendTo($theme);
+
+        // set up all the necessary events
+        UI.createDrawer($theme, $content);
+
         framework._.toolbar.$theme = $content;
         framework._.toolbar.$bottomL.append($theme);
     };
