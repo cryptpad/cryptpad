@@ -42,6 +42,7 @@ define([
                         // Access modal and the pad is not stored: we're not an owner
                         // so we don't need the correct href, just the type
                         var h = Hash.createRandomHash(priv.app, priv.password);
+                        data.fakeHref = true;
                         data.href = base + priv.pathname + '#' + h;
                     } else {
                         waitFor.abort();

@@ -894,7 +894,7 @@ define([
             if (parsed.hashData.type !== 'pad' || parsed.type === 'drive') { return h('div', content); }
 
             // Request edit access
-            if (data.roHref && !data.href) {
+            if (common.isLoggedIn() && ((data.roHref && !data.href) || data.fakeHref)) {
                 var requestButton = h('button.btn.btn-secondary.no-margin.cp-access-margin-right',
                                         Messages.requestEdit_button);
                 var requestBlock = h('p', requestButton);
