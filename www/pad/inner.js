@@ -793,8 +793,8 @@ define([
             });
         }, true);
 
-        framework.setFileExporter(Exporter.ext, function(cb) {
-            Exporter.main(inner, cb);
+        framework.setFileExporter(Exporter.exts, function(cb, ext) {
+            Exporter.main(inner, cb, ext);
         }, true);
 
         framework.setNormalizer(function(hjson) {
