@@ -1395,6 +1395,11 @@ define([
             $content.hide();
         };
         $content.blur(onBlur).appendTo($button);
+        $('body').keydown(function (e) {
+            if (e.which === 27) {
+                $content.blur();
+            }
+        });
     };
 
     return UI;
