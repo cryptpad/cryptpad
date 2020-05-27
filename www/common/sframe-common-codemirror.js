@@ -311,14 +311,7 @@ define([
                 common: Common
             };
             var $block = exp.$language = UIElements.createDropdown(dropdownConfig);
-            $block.find('button').attr('title', Messages.languageButtonTitle).click(function () {
-                var state = $block.find('.cp-dropdown-content').is(':visible');
-                var $c = $block.closest('.cp-toolbar-drawer-content');
-                $c.removeClass('cp-dropdown-visible');
-                if (!state) {
-                    $c.addClass('cp-dropdown-visible');
-                }
-            });
+            $block.find('button').attr('title', Messages.languageButtonTitle);
 
             var isHovering = false;
             var $aLanguages = $block.find('a');
@@ -359,7 +352,6 @@ define([
                         content: l.name // Pretty name of the language value
                     });
                 });
-                Messages.code_editorTheme = "Editor theme"; // XXX
                 var dropdownConfig = {
                     text: Messages.code_editorTheme, // Button initial text
                     options: options, // Entries displayed in the menu
@@ -369,15 +361,7 @@ define([
                     common: Common
                 };
                 var $block = exp.$theme = UIElements.createDropdown(dropdownConfig);
-                $block.find('button').attr('title', Messages.themeButtonTitle).click(function () {
-                    // XXX copy-pasted code from configureLanguage. We can refactor this.
-                    var state = $block.find('.cp-dropdown-content').is(':visible');
-                    var $c = $block.closest('.cp-toolbar-drawer-content');
-                    $c.removeClass('cp-dropdown-visible');
-                    if (!state) {
-                        $c.addClass('cp-dropdown-visible');
-                    }
-                });
+                $block.find('button').attr('title', Messages.themeButtonTitle);
 
                 setTheme(lastTheme, $block);
 
