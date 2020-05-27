@@ -359,7 +359,6 @@ define([
                         content: l.name // Pretty name of the language value
                     });
                 });
-                Messages.code_editorTheme = "Editor theme"; // XXX
                 var dropdownConfig = {
                     text: Messages.code_editorTheme, // Button initial text
                     options: options, // Entries displayed in the menu

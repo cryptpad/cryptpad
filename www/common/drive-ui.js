@@ -3004,7 +3004,6 @@ define([
             }
         };
         var collapseTreeButton = function () {
-            Messages.drive_treeButton = "Files"; // XXX
             APP.$collapseButton = APP.$collapseButton || common.createButton('', true, {
                 text: Messages.drive_treeButton,
                 name: 'files',
