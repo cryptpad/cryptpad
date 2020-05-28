@@ -3004,7 +3004,6 @@ define([
             }
         };
         var collapseTreeButton = function () {
-            Messages.drive_treeButton = "Files"; // XXX
             APP.$collapseButton = APP.$collapseButton || common.createButton('', true, {
                 text: Messages.drive_treeButton,
                 name: 'files',
@@ -4215,8 +4214,9 @@ define([
                 el = manager.find(paths[0].path);
                 var parsed, modal;
                 var friends = common.getFriends();
+                var anonDrive = manager.isPathIn(currentPath, [FILES_DATA]) && !APP.loggedIn;
 
-                if (manager.isFolder(el) && !manager.isSharedFolder(el)) { // Folder
+                if (manager.isFolder(el) && !manager.isSharedFolder(el) && !anonDrive) { // Folder
                     // if folder is inside SF
                     if (manager.isInSharedFolder(paths[0].path)) {
                         return void UI.alert(Messages.convertFolderToSF_SFParent);
@@ -4254,8 +4254,12 @@ define([
                         });
                     }
                 } else { // File or shared folder
-                    var sf = manager.isSharedFolder(el);
-                    data = sf ? manager.getSharedFolderData(el) : manager.getFileData(el);
+                    var sf = !anonDrive && manager.isSharedFolder(el);
+                    if (anonDrive) {
+                        data = el;
+                    } else {
+                        data = sf ? manager.getSharedFolderData(el) : manager.getFileData(el);
+                    }
                     parsed = (data.href && data.href.indexOf('#') !== -1) ? Hash.parsePadUrl(data.href) : {};
                     var roParsed = Hash.parsePadUrl(data.roHref);
                     var padType = parsed.type || roParsed.type;

@@ -359,7 +359,6 @@ define([
                         content: l.name // Pretty name of the language value
                     });
                 });
-                Messages.code_editorTheme = "Editor theme"; // XXX
                 var dropdownConfig = {
                     text: Messages.code_editorTheme, // Button initial text
                     options: options, // Entries displayed in the menu
@@ -370,7 +369,6 @@ define([
                 };
                 var $block = exp.$theme = UIElements.createDropdown(dropdownConfig);
                 $block.find('button').attr('title', Messages.themeButtonTitle).click(function () {
-                    // XXX copy-pasted code from configureLanguage. We can refactor this.
                     var state = $block.find('.cp-dropdown-content').is(':visible');
                     var $c = $block.closest('.cp-toolbar-drawer-content');
                     $c.removeClass('cp-dropdown-visible');

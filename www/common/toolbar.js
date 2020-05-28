@@ -90,9 +90,7 @@ MessengerUI, Messages) {
 
         var $file = $toolbar.find('.'+BOTTOM_LEFT_CLS);
 
-        Messages.toolbar_file = "File"; // XXX
         if (!config.hideDrawer) {
-            // XXX a lot of this logic is duplicated (code, slide, here)
             var $drawer = $(h('button.' + FILE_CLS, [
                 h('i.fa.fa-file-o'),
                 h('span.cp-button-name', Messages.toolbar_file)
@@ -100,30 +98,8 @@ MessengerUI, Messages) {
             var $drawerContent = $('<div>', {
                 'class': DRAWER_CLS,
                 'tabindex': 1
-            }).appendTo($drawer).hide();
-            $drawer.click(function () {
-                $drawerContent.toggle();
-                $drawer.removeClass('cp-toolbar-button-active');
-                if ($drawerContent.is(':visible')) {
-                    $drawer.addClass('cp-toolbar-button-active');
-                    $drawerContent.focus();
-                    var wh = $(window).height();
-                    var topPos = $drawer[0].getBoundingClientRect().bottom;
-                    $drawerContent.css('max-height', Math.floor(wh - topPos - 1)+'px');
-                }
-            });
-            var onBlur = function (e) {
-                if (e.relatedTarget) {
-                    if ($(e.relatedTarget).is('.cp-toolbar-drawer-button')) { return; }
-                    if ($(e.relatedTarget).parents('.'+DRAWER_CLS).length) {
-                        $(e.relatedTarget).blur(onBlur);
-                        return;
-                    }
-                }
-                $drawer.removeClass('cp-toolbar-button-active');
-                $drawerContent.hide();
-            };
-            $drawerContent.blur(onBlur);
+            }).hide();
+            UI.createDrawer($drawer, $drawerContent);
         }
 
         // The 'notitle' class removes the line added for the title with a small screen
@@ -402,7 +378,7 @@ MessengerUI, Messages) {
             e.preventDefault();
             e.stopPropagation();
         });
-        var $closeIcon = $('<span>', {"class": "fa fa-times cp-toolbar-userlist-drawer-close"}).appendTo($content);
+        //var $closeIcon = $('<span>', {"class": "fa fa-times cp-toolbar-userlist-drawer-close"}).appendTo($content);
         $('<h2>').text(Messages.users).appendTo($content);
         $('<p>', {'class': USERLIST_CLS}).appendTo($content);
 
@@ -428,10 +404,12 @@ MessengerUI, Messages) {
             $content.show();
             $button.addClass('cp-toolbar-button-active');
         };
+        /*
         $closeIcon.click(function () {
             Common.setAttribute(['toolbar', 'userlist-drawer'], false);
             hide();
         });
+        */
         $button.click(function () {
             var visible = $content.is(':visible');
             if (visible) { hide(); }
@@ -469,7 +447,7 @@ MessengerUI, Messages) {
             e.preventDefault();
             e.stopPropagation();
         });
-        var $closeIcon = $('<span>', {"class": "fa fa-times cp-toolbar-chat-drawer-close"}).appendTo($content);
+        //var $closeIcon = $('<span>', {"class": "fa fa-times cp-toolbar-chat-drawer-close"}).appendTo($content);
         //$('<h2>').text(Messages.users).appendTo($content);
         //$('<p>', {'class': USERLIST_CLS}).appendTo($content);
 
@@ -510,10 +488,12 @@ MessengerUI, Messages) {
             config.$contentContainer.addClass('cp-chat-visible');
             $button.removeClass('cp-toolbar-notification');
         };
+        /*
         $closeIcon.click(function () {
             Common.setAttribute(['toolbar', 'chat-drawer'], false);
             hide(true);
         });
+        */
         $button.click(function () {
             var visible = $content.is(':visible');
             if (visible) { hide(true); }

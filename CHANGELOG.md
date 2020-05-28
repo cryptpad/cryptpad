@@ -1,3 +1,42 @@
+# Smilodon release (3.18.0)
+
+## Goals
+
+This is a big one! A lot of people are going to love it and a few are probably going to hate it.
+
+This release introduces some major changes to our apps' appearances with the intent of making it easier to use, easier for us to support, and easier to maintain.
+
+## Update notes
+
+If you're using a mostly standard CryptPad installation this should be a rather easy update.
+
+If you've customized your styles, particularly for the purpose of overriding the default colors, you may encounter some problems. **We recommend that you test this version in a staging environment** before deploying to ensure that it is compatible with your modifications.
+
+Otherwise, update to 3.18.0 from 3.17.0 in the following manner:
+
+1. stop your server
+2. fetch the latest code with git
+3. bower update
+4. relaunch your server
+
+## Features
+
+* Obviously, there's the major redesign mentioned in our _goals_.
+  * You'll immediately notice that we've changed a lot of our color scheme. Apps still have colors as accents to help differentiate them, but the colors are more subtle. The move towards a more monochrome design makes it easier for us to ensure that the UI has a sufficient amount of contrast (less eye strain for everybody!) and simplifies design issues by settling on a simpler color palette.
+  * You'll probably also notice that a lot of the toolbar features have been rearranged. The chat and userlist are now at the right, while we've adopted the "File menu" layout to which users of office productivity are accustomed. A lot of the common features that were buried in our `...` menu are now under "File" ("new", "import/export", "history", "move to trash", etc.). Some apps feature their special menus ("Insert", "Tools", "Theme") depending on whether they support certain features. In general we'll use text in addition to icons in the toolbar except on very small screens where the use of space is constrained.
+  * Finally, you'll find some of CryptPad's most important functionality right in the center of the toolbar. The "Share" and "Access" buttons already existed, but lots of people had trouble finding them and missed out on our fine-grained access controls by always sharing the URL directly from their browser's address bar. In case you hadn't seen it, the "Share menu" gives you the ability to generate links that let others view, edit, or delete the document in question. The "Access menu" provides an overview of the document's access settings, and lets its owner(s) add passwords, enable or disable other viewers' ability to request edit rights, restrict access to a dynamic list of users or teams, and modify ownership of the document. It will soon be even more important to know about these menus, because **we plan to enable "Safe links" as the default behaviour in our next release**. "Safe links" are URLs that contain only a document's id instead of its cryptographic secrets, making it less likely that you'll accidentally leak the ability to read your documents during screenshots or when copy-pasting URLs.
+* The toolbar redesign has also affected the drive interface, but it's special enough that it deserves a separate mention:
+  * You can now collapse the sidebar which contains the search button, recent pads, filesystem tree, templates, trash, and account storage quota meter. This should make navigation of the drive on mobile devices much simpler.
+  * The actual "search" interface is no longer inside the sidebar. Instead, clicking search will bring you to an interface which uses the full size available to display the search bar and its results.
+* By the time the toolbar was mostly redesigned we realized that our mockups hadn't included a link to the "todo" app. In fact, we'd been meaning to deprecate it in favour of Kanbans for some time, but we hadn't gotten around to it. So, now there's a migration that will be run automatically when you access your account for the first time after this release. Your todo-list will be transformed into a Kanban located in the root of your drive.
+* On that note, this release also makes it much easier to drag and drop kanban cards within and between full columns thanks to an improved scrolling behaviour while you are holding a card.
+
+## Bug fixes
+
+* While implementing the todo-list migration we noticed that user accounts were running migrations without updating their version afterward. This resulted in redundant migrations being run at login time, so now that the version has been updated you might notice that login is marginally faster.
+* We also fixed a regression in the "Print" functionality of the rich text editor, so you should be able to print correctly-formatted rich text documents once more.
+* Lastly, there were some rather annoying issues with spreadsheets throughout this release that resulted in some users not being able to load their sheets or in their sheets being rendered or encoded incorrectly. We spent a lot of time solving these issues, and believe spreadsheets to be stable once more.
+
 # RedGazelle's revenge release (3.17.1)
 
 In recent months a growing amount of our time has been going towards answering support tickets, emails, and GitHub issues. This has made it a little more difficult to also maintain a bi-weekly release schedule, since there's some overhead involved in deploying our latest code and producing release notes.
@@ -10,7 +49,7 @@ Updating to 3.17.1 from 3.17.0 is pretty standard:
 
 1. Stop your server
 2. Get the latest code with git
-3. Restart your server 
+3. Restart your server
 
 # RedGazelle release (3.17.0)
 

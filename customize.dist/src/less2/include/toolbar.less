@@ -474,7 +474,7 @@
                     .cp-toolbar-title-hoverable {
                         width: 100%;
                     }
-                    .cp-toolbar-title-editable, .cp-toolbar-title-value-page {
+                    .cp-toolbar-title-editable, .cp-toolbar-title-value {
                         max-width: ~"calc(100vw - 26px)";
                         display: inline-block;
                         overflow: hidden;
@@ -484,7 +484,10 @@
                         box-sizing: border-box;
                         line-height: @toolbar_line-height;
                     }
-                    .cp-toolbar-title-value-page {
+                    .cp-toolbar-title-readonly {
+                        font-size: 14px;
+                    }
+                    .cp-toolbar-title-value {
                         padding: 5px;
                         line-height: @toolbar_line-height - 10px;
                         border: 0;
@@ -664,6 +667,7 @@
                 display: inline-flex;
                 overflow: hidden;
                 align-self: baseline;
+                max-width: 100%;
                 &:hover {
                     .cp-toolbar-title-editable, .cp-toolbar-title-edit {
                         border: 1px solid @toolbar-bg-color;
@@ -694,7 +698,7 @@
                     cursor: pointer;
                 }
             }
-            .cp-toolbar-title-editable {
+            .cp-toolbar-title-value {
                 overflow: hidden;
                 text-overflow: ellipsis;
                 border-collapse: collapse;
