@@ -361,7 +361,14 @@ define([
                     common: Common
                 };
                 var $block = exp.$theme = UIElements.createDropdown(dropdownConfig);
-                $block.find('button').attr('title', Messages.themeButtonTitle);
+                $block.find('button').attr('title', Messages.themeButtonTitle).click(function () {
+                    var state = $block.find('.cp-dropdown-content').is(':visible');
+                    var $c = $block.closest('.cp-toolbar-drawer-content');
+                    $c.removeClass('cp-dropdown-visible');
+                    if (!state) {
+                        $c.addClass('cp-dropdown-visible');
+                    }
+                });
 
                 setTheme(lastTheme, $block);
 
