@@ -2141,8 +2141,17 @@ define([
 
         var show = function () {
             var wh = $(window).height();
-            var topPos = $container[0].getBoundingClientRect().bottom;
-            $innerblock.css('max-height', Math.floor(wh - topPos - 1)+'px');
+            var button = $button[0].getBoundingClientRect();
+            var topPos = button.bottom;
+            $innerblock.css('bottom', '');
+            if (config.noscroll) {
+                var h = $innerblock.outerHeight();
+                if ((topPos + h) > wh) {
+                    $innerblock.css('bottom', button.height+'px');
+                }
+            } else {
+                $innerblock.css('max-height', Math.floor(wh - topPos - 1)+'px');
+            }
             $innerblock.show();
             $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
             if (config.isSelect && value) {
@@ -2157,6 +2166,11 @@ define([
             e.stopPropagation();
             var state = $innerblock.is(':visible');
             $('.cp-dropdown-content').hide();
+
+            var $c = $container.closest('.cp-toolbar-drawer-content');
+            $c.removeClass('cp-dropdown-visible');
+            if (!state) { $c.addClass('cp-dropdown-visible'); }
+
             try {
                 $('iframe').each(function (idx, ifrw) {
                     $(ifrw).contents().find('.cp-dropdown-content').hide();

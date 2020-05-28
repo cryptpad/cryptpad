@@ -42,30 +42,8 @@ define([
 
     var canonicalize = function(t) { return t.replace(/\r\n/g, '\n'); };
 
-    // XXX function duplicated from www/code/markers.js
-    var authorUid = function(existing) {
-        if (!Array.isArray(existing)) { existing = []; }
-        var n;
-        var i = 0;
-        while (!n || existing.indexOf(n) !== -1 && i++ < 1000) {
-            n = Math.floor(Math.random() * 1000000);
-        }
-        // If we can't find a valid number in 1000 iterations, use 0...
-        if (existing.indexOf(n) !== -1) { n = 0; }
-        return n;
-    };
     var getAuthorId = function(Env, curve) {
-        var existing = Object.keys(Env.comments.authors || {}).map(Number);
-        if (!Env.common.isLoggedIn()) { return authorUid(existing); }
-
-        var uid;
-        existing.some(function(id) {
-            var author = Env.comments.authors[id] || {};
-            if (author.curvePublic !== curve) { return; }
-            uid = Number(id);
-            return true;
-        });
-        return uid || authorUid(existing);
+        return Env.common.getAuthorId(Env.comments.authors, curve);
     };
 
     // Return the author ID  and add/update the data for registered users

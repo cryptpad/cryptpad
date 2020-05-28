@@ -716,6 +716,9 @@
                             }
                         }
                     }
+                    .cp-app-drive-element-state {
+                        display: none !important;
+                    }
                 }
             }
             .cp-app-drive-element {
@@ -728,6 +731,9 @@
             @media screen and (max-width: 840px) {
                 .cp-app-drive-element-type, .cp-app-drive-element-filler {
                     display: none !important;
+                }
+                .cp-app-drive-element-sort {
+                    display: block !important;
                 }
             }
 
@@ -743,9 +749,6 @@
                 }
                 .cp-app-drive-element-header .cp-app-drive-element-state {
                     display: none !important;
-                }
-                .cp-app-drive-element-sort {
-                    display: block !important;
                 }
             }
         }
@@ -899,126 +902,6 @@
                 display: flex;
                 align-items: center;
             }
-        }
-    }
-
-    /* Toolbar */
-
-    // XXX remove, preserve drive path?
-    #cp-app-drive-toolbar {
-        background: @colortheme_drive-bg-light;
-        color: @colortheme_drive-color;
-        //height: 30px;
-        //display: flex;
-        //flex-flow: row;
-        z-index: 100;
-        box-sizing: border-box;
-        height: @variables_bar-height;
-        padding: 0;
-        display: flex;
-        flex-flow: row;
-
-        * {
-            outline-width: 0;
-            &:focus {
-                outline-width: 0;
-            }
-        }
-
-        .cp-toolbar-icon-history {
-            float: right;
-            &.active {
-                background-color: rgba(0, 0, 255, 0.2);
-            }
-            .cp-toolbar-drawer-element {
-                display: none;
-            }
-        }
-
-        .cp-app-drive-toolbar-rightside, .cp-app-drive-toolbar-leftside {
-            display: inline-block;
-            margin: 0;
-            padding: 0;
-            .fa, .cptools {
-                margin: 0;
-                vertical-align: top;
-            }
-            button {
-                height: @variables_bar-height !important;
-                padding: 0 10px;
-                border: none;
-                border-radius: 0;
-                box-sizing: border-box;
-                background: transparent;
-                font-size: @colortheme_app-font-size;
-                color: @colortheme_drive-color;
-                transition: all 0.15s;
-                display: inline-flex;
-                align-items: center;
-                .drawer {
-                    display: none;
-                }
-                .fa, .cptools, span {
-                    font-size: @colortheme_app-font-size;
-                }
-                &:hover {
-                    background: @colortheme_drive-bg-active;
-                }
-                &.cp-app-drive-toolbar-active {
-                    display: none;
-                }
-            }
-        }
-        .cp-app-drive-toolbar-rightside {
-            float: right;
-            flex-shrink: 0;
-            & > * {
-                float: right;
-            }
-            #cp-app-drive-toolbar-contextbuttons {
-                display: inline-block;
-                height: 100%;
-            }
-            padding-left: 10px;
-        }
-        .cp-app-drive-toolbar-leftside {
-            flex-shrink: 0;
-            & > span {
-                height: 100%;
-                margin: 0;
-            }
-            button {
-                padding: 0 10px;
-                .fa, .cptools {
-                    margin-right: 5px;
-                }
-                .cp-dropdown-button-title {
-                    display: inline-flex;
-                    height: @variables_bar-height;
-                    align-items: center;
-                    span:not(.fa):not(.cptools) {
-                        line-height: 23px;
-                    }
-                }
-            }
-        }
-
-        button {
-            font: @colortheme_app-font;
-            span {
-                font: @colortheme_app-font;
-            }
-            .fa, &.fa {
-                font-family: FontAwesome;
-            }
-            .cptools, &.cptools {
-                font-family: cptools;
-            }
-        }
-
-
-        .cp-app-drive-toolbar-filler {
-            flex: 1;
         }
     }
 

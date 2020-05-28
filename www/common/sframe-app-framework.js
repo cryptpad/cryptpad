@@ -433,21 +433,37 @@ define([
                 var ext = (typeof(extension) === 'function') ? extension() : extension;
                 var suggestion = title.suggestTitle('cryptpad-document');
                 ext = ext || '.txt';
-                var types = [{
-                    tag: 'a',
-                    attributes: {
-                        'data-value': ext,
-                        'href': '#'
-                    },
-                    content: ext
-                }, {
+                var types = [];
+                if (Array.isArray(ext) && ext.length) {
+                    ext.forEach(function (_ext) {
+                        types.push({
+                            tag: 'a',
+                            attributes: {
+                                'data-value': _ext,
+                                'href': '#'
+                            },
+                            content: _ext
+                        });
+                    });
+                    ext = ext[0];
+                } else {
+                    types.push({
+                        tag: 'a',
+                        attributes: {
+                            'data-value': ext,
+                            'href': '#'
+                        },
+                        content: ext
+                    });
+                }
+                types.push({
                     tag: 'a',
                     attributes: {
                         'data-value': '',
                         'href': '#'
                     },
                     content: '&nbsp;'
-                }];
+                });
                 var dropdownConfig = {
                     text: ext, // Button initial text
                     caretDown: true,
@@ -461,14 +477,15 @@ define([
                     Util.fixFileName(suggestion), function (filename)
                 {
                     if (!(typeof(filename) === 'string' && filename)) { return; }
-                    filename = filename + $select.getValue();
+                    var ext = $select.getValue();
+                    filename = filename + ext;
                     if (async) {
                         fe(function (blob) {
                             SaveAs(blob, filename);
-                        });
+                        }, ext);
                         return;
                     }
-                    var blob = fe();
+                    var blob = fe(null, ext);
                     SaveAs(blob, filename);
                 }, {
                     typeInput: $select[0]

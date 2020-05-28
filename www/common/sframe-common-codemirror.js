@@ -311,14 +311,7 @@ define([
                 common: Common
             };
             var $block = exp.$language = UIElements.createDropdown(dropdownConfig);
-            $block.find('button').attr('title', Messages.languageButtonTitle).click(function () {
-                var state = $block.find('.cp-dropdown-content').is(':visible');
-                var $c = $block.closest('.cp-toolbar-drawer-content');
-                $c.removeClass('cp-dropdown-visible');
-                if (!state) {
-                    $c.addClass('cp-dropdown-visible');
-                }
-            });
+            $block.find('button').attr('title', Messages.languageButtonTitle);
 
             var isHovering = false;
             var $aLanguages = $block.find('a');
