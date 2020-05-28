@@ -2748,21 +2748,22 @@ define([
             var options = [{
                 tag: 'a',
                 attributes: {'class': 'cp-app-drive-element-type'},
-                content: Messages.fm_type
+                content: '<i class="fa fa-minus"></i>' + Messages.fm_type
             },{
                 tag: 'a',
                 attributes: {'class': 'cp-app-drive-element-atime'},
-                content: Messages.fm_lastAccess
+                content: '<i class="fa fa-minus"></i>' + Messages.fm_lastAccess
             },{
                 tag: 'a',
                 attributes: {'class': 'cp-app-drive-element-ctime'},
-                content: Messages.fm_creation
+                content: '<i class="fa fa-minus"></i>' + Messages.fm_creation
             }];
             var dropdownConfig = {
                 text: '', // Button initial text
                 options: options, // Entries displayed in the menu
                 container: $fhSort,
                 left: true,
+                noscroll: true,
                 common: common
             };
             var $sortBlock = UIElements.createDropdown(dropdownConfig);
@@ -2805,7 +2806,7 @@ define([
             if (APP.store[SORT_FILE_BY] === '') { classSorted = 'cp-app-drive-sort-filename'; }
             else if (APP.store[SORT_FILE_BY]) { classSorted = 'cp-app-drive-element-' + APP.store[SORT_FILE_BY]; }
             if (classSorted) {
-                $list.find('.' + classSorted).addClass('cp-app-drive-sort-active').prepend($icon);
+                $list.find('.' + classSorted).addClass('cp-app-drive-sort-active').prepend($icon).find('i').hide();
             }
         };
         var getFileListHeader = function (clickable) {
