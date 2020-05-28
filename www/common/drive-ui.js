@@ -3314,10 +3314,11 @@ define([
                 }
 
                 // Display the pad
+                /*
                 var $icon = getFileIcon(id);
                 var ro = manager.isReadOnlyFile(id);
                 // ro undefined means it's an old hash which doesn't support read-only
-                /*var roClass = typeof(ro) === 'undefined' ? ' cp-app-drive-element-noreadonly' :
+                var roClass = typeof(ro) === 'undefined' ? ' cp-app-drive-element-noreadonly' :
                                 ro ? ' cp-app-drive-element-readonly' : '';
                 var $element = $('<li>', {
                     'class': 'cp-app-drive-element cp-app-drive-element-notrash cp-app-drive-element-file cp-app-drive-element-row' + roClass,
