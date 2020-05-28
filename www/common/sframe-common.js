@@ -202,6 +202,33 @@ define([
         };
     };
 
+    funcs.getAuthorId = function () {
+    };
+
+    var authorUid = function(existing) {
+        if (!Array.isArray(existing)) { existing = []; }
+        var n;
+        var i = 0;
+        while (!n || existing.indexOf(n) !== -1 && i++ < 1000) {
+            n = Math.floor(Math.random() * 1000000);
+        }
+        // If we can't find a valid number in 1000 iterations, use 0...
+        if (existing.indexOf(n) !== -1) { n = 0; }
+        return n;
+    };
+    funcs.getAuthorId = function(authors, curve) {
+        var existing = Object.keys(authors || {}).map(Number);
+        if (!funcs.isLoggedIn()) { return authorUid(existing); }
+
+        var uid;
+        existing.some(function(id) {
+            var author = authors[id] || {};
+            if (author.curvePublic !== curve) { return; }
+            uid = Number(id);
+            return true;
+        });
+        return uid || authorUid(existing);
+    };
 
     // Chat
     var padChatChannel;
