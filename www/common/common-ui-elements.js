@@ -2400,6 +2400,22 @@ define([
                 content: h('span', Messages.survey)
             });
         }
+        if (Pages.versionString) {
+            Messages.user_about = "About CryptPad"; // XXX
+            var aboutButton = h('span', Messages.user_about);
+            $(aboutButton).click(function () {
+                UI.alert(Pages.versionString);
+            });
+
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'class': 'fa fa-info',
+                },
+                content: aboutButton,
+            });
+        }
+
         options.push({ tag: 'hr' });
         // Add login or logout button depending on the current status
         if (priv.loggedIn) {
