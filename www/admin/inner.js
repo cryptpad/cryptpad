@@ -255,7 +255,10 @@ define([
                 if (msg.type !== 'TICKET') { return; }
 
                 if (!$ticket.length) {
-                    $ticket = APP.support.makeTicket($div, content, function () {
+                    $ticket = APP.support.makeTicket($div, content, function (hideButton) {
+                        // the ticket will still be displayed until the worker confirms its deletion
+                        // so make it unclickable in the meantime
+                        hideButton.setAttribute('disabled', true);
                         var error = false;
                         nThen(function (w) {
                             hashesById[id].forEach(function (d) {
@@ -267,7 +270,11 @@ define([
                                 }));
                             });
                         }).nThen(function () {
-                            if (!error) { $ticket.remove(); }
+                            if (!error) { return void $ticket.remove(); }
+                            // if deletion failed then reactivate the button and warn
+                            hideButton.removeAttribute('disabled');
+                            // and show a generic error message
+                            UI.alert(Messages.error);
                         });
                     });
                 }
