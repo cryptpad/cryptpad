@@ -302,6 +302,12 @@ define([
                 _field.setTokens(tags || []);
 
                 $tags.find('.token-input').on('keydown', function (e) {
+                    // if the tokenfield is blank and the user hits enter or escape
+                    // then allow the event to propogate (closing the modal)
+                    // this can leave behind the autocomplete menu, so forcefully hide it
+                    if (!$(this).val() && [13, 27].indexOf(e.which) !== -1) {
+                        return void $('.ui-autocomplete.ui-front').hide();
+                    }
                     e.stopPropagation();
                 });
 
