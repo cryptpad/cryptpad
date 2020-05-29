@@ -200,7 +200,6 @@ define([
         // The blob is already in memory, it should be super-fast to make a thumbnail
         // ==> 1s timeout
         setTimeout(function () {
-            console.error("Thumbnail timeout");
             cb('TIMEOUT');
         }, 1000);
         try {

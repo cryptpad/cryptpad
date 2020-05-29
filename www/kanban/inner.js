@@ -21,6 +21,12 @@ define([
     '/kanban/jkanban_cp.js',
 
     'cm/mode/gfm/gfm',
+    'cm/addon/edit/closebrackets',
+    'cm/addon/edit/matchbrackets',
+    'cm/addon/edit/trailingspace',
+    'cm/addon/selection/active-line',
+    'cm/addon/search/search',
+    'cm/addon/search/match-highlighter',
 
     'css!/bower_components/codemirror/lib/codemirror.css',
     'css!/bower_components/codemirror/addon/dialog/dialog.css',
@@ -211,15 +217,11 @@ define([
         };
 
         // Body
-        var editor = CodeMirror.fromTextArea(text, {
-            allowDropFileTypes: [],
-            lineWrapping: true,
-            styleActiveLine: true,
-            autoCloseBrackets: true,
-            inputStyle: 'contenteditable',
-            extraKeys: {"Shift-Ctrl-R": undefined},
-            mode: "gfm"
-        });
+        var cm = SFCodeMirror.create("gfm", CodeMirror, text);
+        var editor = cm.editor;
+        editor.setOption('gutters', []);
+        editor.setOption('lineNumbers', false);
+        editor.setOption('readOnly', false);
         editor.on('keydown', function (editor, e) {
             if (e.which === 27) {
                 // Focus the next form element but don't close the modal (stopPropagation)
@@ -256,6 +258,25 @@ define([
             dataObject.body = val;
             commit();
         });
+
+        setTimeout(function () {
+            var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
+            var fmConfig = {
+                dropArea: $('.CodeMirror'),
+                body: $('body'),
+                onUploaded: function (ev, data) {
+                    var parsed = Hash.parsePadUrl(data.url);
+                    var secret = Hash.getSecrets('file', parsed.hash, data.password);
+                    var fileHost = privateData.fileHost || privateData.origin;
+                    var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
+                    var key = Hash.encodeBase64(secret.keys.cryptKey);
+                    var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + key + '"></media-tag>';
+                    editor.replaceSelection(mt);
+                }
+            };
+            common.createFileManager(fmConfig);
+        });
+
 
         // Tags
         var _field, initialTags;
@@ -775,8 +796,11 @@ define([
                     }
                 });
             },
+            applyHtml: function (html, node) {
+                DiffMd.apply(html, $(node),framework._.sfCommon);
+            },
             renderMd: function (md) {
-                return DiffMd.render(md, true, false);
+                return DiffMd.render(md);
             },
             addItemButton: true,
             getTextColor: getTextColor,

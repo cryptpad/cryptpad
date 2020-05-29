@@ -176,14 +176,14 @@ define([
         updateIndentSettings();
     };
 
-    module.create = function (defaultMode, CMeditor) {
+    module.create = function (defaultMode, CMeditor, textarea) {
         var exp = {};
 
         var CodeMirror = exp.CodeMirror = CMeditor;
         CodeMirror.modeURL = "cm/mode/%N/%N";
 
         var $pad = $('#pad-iframe');
-        var $textarea = exp.$textarea = $('#editor1');
+        var $textarea = exp.$textarea = textarea ? $(textarea) : $('#editor1');
         if (!$textarea.length) { $textarea = exp.$textarea = $pad.contents().find('#editor1'); }
 
         var Title;
