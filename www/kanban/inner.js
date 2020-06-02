@@ -364,6 +364,7 @@ define([
                     var idx = list.indexOf(id);
                     if (idx !== -1) { list.splice(idx, 1); }
                     delete (boards.data || {})[id];
+                    kanban.removeBoard(id);
                     return void commit();
                 }
                 Object.keys(boards.data || {}).forEach(function (boardId) {
