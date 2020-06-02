@@ -341,6 +341,11 @@ define([
                     if (shouldImport) {
                         setMergeAnonDrive();
                     }
+                    var l = Util.find(rt.proxy, ['settings', 'general', 'language']);
+                    var LS_LANG = "CRYPTPAD_LANG";
+                    if (l) {
+                        localStorage.setItem(LS_LANG, l);
+                    }
                     return void LocalStore.login(userHash, uname, function () {
                         cb(void 0, res);
                     });

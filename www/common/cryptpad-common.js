@@ -63,7 +63,10 @@ define([
     common.setLanguage = function (l, cb) {
         var LS_LANG = "CRYPTPAD_LANG";
         localStorage.setItem(LS_LANG, l);
-        cb();
+        postMessage("SET_ATTRIBUTE", {
+            attr: ['general', 'language'],
+            value: l
+        }, cb);
     };
 
     common.makeNetwork = function (cb) {
