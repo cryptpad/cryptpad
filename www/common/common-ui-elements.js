@@ -2342,14 +2342,28 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-profile fa fa-user-circle'},
-                content: h('span', Messages.profileButton)
+                content: h('span', Messages.profileButton),
+                action: function () {
+                    if (padType) {
+                        window.open(origin+'/profile/');
+                    } else {
+                        window.parent.location = origin+'/profile/';
+                    }
+                },
             });
         }
         if (padType !== 'settings') {
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-settings fa fa-cog'},
-                content: h('span', Messages.settingsButton)
+                content: h('span', Messages.settingsButton),
+                action: function () {
+                    if (padType) {
+                        window.open(origin+'/settings/');
+                    } else {
+                        window.parent.location = origin+'/settings/';
+                    }
+                },
             });
         }
         options.push({ tag: 'hr' });
@@ -2358,14 +2372,28 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-admin fa fa-cogs'},
-                content: h('span', Messages.adminPage || 'Admin')
+                content: h('span', Messages.adminPage || 'Admin'),
+                action: function () {
+                    if (padType) {
+                        window.open(origin+'/admin/');
+                    } else {
+                        window.parent.location = origin+'/admin/';
+                    }
+                },
             });
         }
         if (padType !== 'support' && accountName && Config.supportMailbox) {
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-support fa fa-life-ring'},
-                content: h('span', Messages.supportPage || 'Support')
+                content: h('span', Messages.supportPage || 'Support'),
+                action: function () {
+                    if (padType) {
+                        window.open(origin+'/support/');
+                    } else {
+                        window.parent.location = origin+'/support/';
+                    }
+                },
             });
         }
         options.push({ tag: 'hr' });
@@ -2401,7 +2429,10 @@ define([
                     'href': AppConfig.surveyURL,
                     'class': 'cp-toolbar-survey fa fa-graduation-cap'
                 },
-                content: h('span', Messages.survey)
+                content: h('span', Messages.survey),
+                action: function () {
+                    Feedback.send('SURVEY_CLICKED');
+                },
             });
         }
         if (Pages.versionString) {
@@ -2427,23 +2458,43 @@ define([
                 attributes: {
                     'class': 'cp-toolbar-menu-logout-everywhere fa fa-plug',
                 },
-                content: h('span', Messages.logoutEverywhere)
+                content: h('span', Messages.logoutEverywhere),
+                action: function () {
+                    Common.getSframeChannel().query('Q_LOGOUT_EVERYWHERE', null, function () {
+                        window.parent.location = origin + '/';
+                    });
+                },
             });
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-logout fa fa-sign-out'},
-                content: h('span', Messages.logoutButton)
+                content: h('span', Messages.logoutButton),
+                action: function () {
+                    Common.logout(function () {
+                        window.parent.location = origin+'/';
+                    });
+                },
             });
         } else {
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-login fa fa-sign-in'},
-                content: h('span', Messages.login_login)
+                content: h('span', Messages.login_login),
+                action: function () {
+                    Common.setLoginRedirect(function () {
+                        window.parent.location = origin+'/login/';
+                    });
+                },
             });
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-register fa fa-user-plus'},
-                content: h('span', Messages.login_register)
+                content: h('span', Messages.login_register),
+                action: function () {
+                    Common.setLoginRedirect(function () {
+                        window.parent.location = origin+'/register/';
+                    });
+                },
             });
         }
         var $icon = $('<span>', {'class': 'fa fa-user-secret'});
@@ -2509,60 +2560,6 @@ define([
         };
         metadataMgr.onChange(updateButton);
         updateButton();
-
-        // XXX easier to just pass in handlers?
-        $userAdmin.find('a.cp-toolbar-menu-logout').click(function () {
-            Common.logout(function () {
-                window.parent.location = origin+'/';
-            });
-        });
-
-        $userAdmin.find('a.cp-toolbar-menu-logout-everywhere').click(function () {
-            Common.getSframeChannel().query('Q_LOGOUT_EVERYWHERE', null, function () {
-                window.parent.location = origin + '/';
-            });
-        });
-        $userAdmin.find('a.cp-toolbar-menu-settings').click(function () {
-            if (padType) {
-                window.open(origin+'/settings/');
-            } else {
-                window.parent.location = origin+'/settings/';
-            }
-        });
-        $userAdmin.find('a.cp-toolbar-menu-support').click(function () {
-            if (padType) {
-                window.open(origin+'/support/');
-            } else {
-                window.parent.location = origin+'/support/';
-            }
-        });
-        $userAdmin.find('a.cp-toolbar-menu-admin').click(function () {
-            if (padType) {
-                window.open(origin+'/admin/');
-            } else {
-                window.parent.location = origin+'/admin/';
-            }
-        });
-        $userAdmin.find('a.cp-toolbar-survey').click(function () {
-            Feedback.send('SURVEY_CLICKED');
-        });
-        $userAdmin.find('a.cp-toolbar-menu-profile').click(function () {
-            if (padType) {
-                window.open(origin+'/profile/');
-            } else {
-                window.parent.location = origin+'/profile/';
-            }
-        });
-        $userAdmin.find('a.cp-toolbar-menu-login').click(function () {
-            Common.setLoginRedirect(function () {
-                window.parent.location = origin+'/login/';
-            });
-        });
-        $userAdmin.find('a.cp-toolbar-menu-register').click(function () {
-            Common.setLoginRedirect(function () {
-                window.parent.location = origin+'/register/';
-            });
-        });
 
         return $userAdmin;
     };
