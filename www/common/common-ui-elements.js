@@ -2401,18 +2401,13 @@ define([
             });
         }
         if (Pages.versionString) {
-            Messages.user_about = "About CryptPad"; // XXX
-            var aboutButton = h('span', Messages.user_about);
-            $(aboutButton).click(function () {
-                UI.alert(Pages.versionString);
-            });
-
+            Messages.user_about = Messages.about; // XXX "About CryptPad"
             options.push({
                 tag: 'a',
                 attributes: {
-                    'class': 'fa fa-info',
+                    'class': 'cp-toolbar-about fa fa-info',
                 },
-                content: aboutButton,
+                content: h('span', Messages.user_about),
             });
         }
 
@@ -2513,6 +2508,9 @@ define([
             });
         });
 
+        $userAdmin.find('a.cp-toolbar-about').click(function () {
+            UI.alert(Pages.versionString);
+        });
         $userAdmin.find('a.cp-toolbar-menu-logout-everywhere').click(function () {
             Common.getSframeChannel().query('Q_LOGOUT_EVERYWHERE', null, function () {
                 window.parent.location = origin + '/';
