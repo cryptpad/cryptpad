@@ -62,7 +62,7 @@ define([
     var imprintUrl = AppConfig.imprint && (typeof(AppConfig.imprint) === "boolean" ?
                         '/imprint.html' : AppConfig.imprint);
 
-    Pages.versionString = "CryptPad v3.18.0 (Smilodon)";
+    Pages.versionString = "CryptPad v3.18.1 (Smilodon's revenge)";
 
     Pages.infopageFooter = function () {
         return h('footer', [
