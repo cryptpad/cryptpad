@@ -1,3 +1,33 @@
+# Smilodon's revenge (3.18.1)
+
+Our next major release (3.19.0) is still a few weeks away.
+In the meantime we've been working on some minor improvements and bug fixes that we wanted to ship as soon as possible.
+
+New features:
+
+* Rich text pads can now be exported to .doc format. A few features don't translate well to the exported format (some fonts, embedded videos and pdfs), but for the most part your documents should work
+* Items in the "Recent pads" section of your drive can now be dragged to other folders via the filesystem tree UI
+* The user admin menu (found in the top-right corner) now includes an option to display the current version of the CryptPad instance you're using. We plan to add some more information here in the near future.
+* The kanban app now offers better support for editing markdown within cards with autocompleted parentheses. We've also added support for embedded media, allowing users to drag images and other content into the card content editor.
+
+Bug fixes:
+
+* Account deletion via the settings page works once again
+* Some small layout and usability issues in the drive have been addressed
+  * dropdown menus flow in the appropriate direction when space is limited
+  * changing the sorting criteria no longer causes the browser to jump to the top of the page
+* Hitting enter or escape in the kanban's card tag field while it's empty now closes the modal (instead of doing nothing)
+* Language preferences (as configured via the settings page) are applied when you log in (previously it would reset to English or your browser's settings)
+* A performance issue triggered by hiding a closed support ticket from the admin panel has been optimized. Previously it would lock up the shared worker in cases when there were many unclosed tickets.
+* We've updated the parameters of the XLSX import/export functionality to prevent an "out of memory" error that primarily affected large spreadsheets. It should now allocate more memory instead of failing silently.
+* Finally, members of a team can now directly share or transfer ownership of a document owned by their team to their own account without having to go through the additional steps of offering it to themself and accepting the offer.
+
+Updating from 3.18.0 to 3.18.1 is pretty standard:
+
+1. Stop your server
+2. Get the latest code with git
+3. Restart your server
+
 # Smilodon release (3.18.0)
 
 ## Goals
