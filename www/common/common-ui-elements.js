@@ -2116,7 +2116,11 @@ define([
         config.options.forEach(function (o) {
             if (!isValidOption(o)) { return; }
             if (isElement(o)) { return $innerblock.append($(o)); }
-            $('<' + o.tag + '>', o.attributes || {}).html(o.content || '').appendTo($innerblock);
+            var $el = $('<' + o.tag + '>', o.attributes || {}).html(o.content || '');
+            $el.appendTo($innerblock);
+            if (typeof(o.action) === 'function') {
+                $el.click(o.action);
+            }
         });
 
         $container.append($button).append($innerblock);
@@ -2408,6 +2412,10 @@ define([
                     'class': 'cp-toolbar-about fa fa-info',
                 },
                 content: h('span', Messages.user_about),
+                action: function () {
+                    // XXX UIElements.createHelpButton
+                    UI.alert(Pages.versionString);
+                },
             });
         }
 
@@ -2502,15 +2510,13 @@ define([
         metadataMgr.onChange(updateButton);
         updateButton();
 
+        // XXX easier to just pass in handlers?
         $userAdmin.find('a.cp-toolbar-menu-logout').click(function () {
             Common.logout(function () {
                 window.parent.location = origin+'/';
             });
         });
 
-        $userAdmin.find('a.cp-toolbar-about').click(function () {
-            UI.alert(Pages.versionString);
-        });
         $userAdmin.find('a.cp-toolbar-menu-logout-everywhere').click(function () {
             Common.getSframeChannel().query('Q_LOGOUT_EVERYWHERE', null, function () {
                 window.parent.location = origin + '/';
