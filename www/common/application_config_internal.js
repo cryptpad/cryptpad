@@ -40,6 +40,12 @@ define(function() {
     // config.imprint = true;
     // config.imprint = 'https://xwiki.com/en/company/legal-notice';
 
+    /* You can display a link to your own privacy policy in the static pages footer.
+     * To do so, set the following value to the absolute URL of your privacy policy.
+     */
+    config.privacy = '/privacy.html';
+    // config.privacy = 'https://xwiki.com/en/company/PrivacyPolicy';
+
     /*  Cryptpad apps use a common API to display notifications to users
      *  by default, notifications are hidden after 5 seconds
      *  You can change their duration here (measured in milliseconds)

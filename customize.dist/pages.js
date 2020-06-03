@@ -99,7 +99,7 @@ define([
                     ]),
                     footerCol('footer_legal', [
                         footLink('/terms.html', 'footer_tos'),
-                        footLink('/privacy.html', 'privacy'),
+                        footLink(AppConfig.privacy, 'privacy'),
                         AppConfig.imprint ? footLink(imprintUrl, 'imprint') : undefined,
                     ]),
                     /*footerCol('footer_contact', [
