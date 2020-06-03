@@ -257,7 +257,7 @@ define([
                     icon: 'fa-ban',
                     tippy: Messages.fm_burnThisDriveButton,
                     drawer: false
-                }).click(function () {
+                }, function () {
                     UI.confirm(Messages.fm_burnThisDrive, function (yes) {
                         if (!yes) { return; }
                         common.getSframeChannel().event('EV_BURN_ANON_DRIVE');
