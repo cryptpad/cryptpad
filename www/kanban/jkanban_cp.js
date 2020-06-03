@@ -1,7 +1,8 @@
 define([
     'jquery',
+    '/customize/messages.js',
     '/bower_components/dragula.js/dist/dragula.min.js',
-], function ($, Dragula) {
+], function ($, Messages, Dragula) {
         /**
          * jKanban
          * Vanilla Javascript plugin for manage kanban boards
@@ -559,25 +560,37 @@ define([
             return nodeItem;
         };
 
-        this.addElement = function (boardID, element) {
+        this.addElement = function (boardID, element, before) {
 
             // add Element to JSON
             var boardJSON = __findBoardJSON(boardID);
 
-            boardJSON.item.push(element.id);
+            if (before) {
+                boardJSON.item.unshift(element.id);
+            } else {
+                boardJSON.item.push(element.id);
+            }
             self.options.boards.items = self.options.boards.items || {};
             self.options.boards.items[element.id] = element;
 
             var board = self.element.querySelector('[data-id="' + boardID + '"] .kanban-drag');
-            board.appendChild(getElementNode(element));
+            if (before) {
+                board.insertBefore(getElementNode(element), board.firstChild);
+            } else {
+                board.appendChild(getElementNode(element));
+            }
             // send event that board has changed
             self.onChange();
             return self;
         };
 
-        this.addForm = function (boardID, formItem) {
+        this.addForm = function (boardID, formItem, isTop) {
             var board = self.element.querySelector('[data-id="' + boardID + '"] .kanban-drag');
-            board.appendChild(formItem);
+            if (isTop) {
+                board.insertBefore(formItem, board.firstChild);
+            } else {
+                board.appendChild(formItem);
+            }
             return self;
         };
 
@@ -662,9 +675,17 @@ define([
             var footerBoard = document.createElement('footer');
             footerBoard.classList.add('kanban-board-footer');
             //add button
+            Messages.kanban_addTopButton = '<i class="fa fa-plus"></i> (top)'; // XXX
+            Messages.kanban_addBottomButton = '<i class="fa fa-plus"></i> (bottom)'; // XXX
+            var addTopBoardItem = document.createElement('span');
+            addTopBoardItem.classList.add('kanban-title-button');
+            addTopBoardItem.setAttribute('data-top', "1");
+            addTopBoardItem.innerHTML = Messages.kanban_addTopButton;
+            footerBoard.appendChild(addTopBoardItem);
+            __onAddItemClickHandler(addTopBoardItem);
             var addBoardItem = document.createElement('span');
             addBoardItem.classList.add('kanban-title-button');
-            addBoardItem.innerText = '+';
+            addBoardItem.innerHTML = Messages.kanban_addBottomButton;
             footerBoard.appendChild(addBoardItem);
             __onAddItemClickHandler(addBoardItem);
 

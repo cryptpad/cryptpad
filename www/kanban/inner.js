@@ -750,20 +750,26 @@ define([
             },
             addItemClick: function (el) {
                 if (framework.isReadOnly() || framework.isLocked()) { return; }
+                var $el = $(el);
                 if (kanban.inEditMode) {
-                    $(el).focus();
+                    $el.focus();
                     verbose("An edit is already active");
                     //return;
                 }
                 kanban.inEditMode = "new";
                 // create a form to enter element
-                var boardId = $(el).closest('.kanban-board').attr("data-id");
+                var isTop = $el.attr('data-top');
+                var boardId = $el.closest('.kanban-board').attr("data-id");
                 var $item = $('<div>', {'class': 'kanban-item new-item'});
                 var $input = getInput().val(name).appendTo($item);
-                kanban.addForm(boardId, $item[0]);
+                kanban.addForm(boardId, $item[0], isTop);
                 $input.focus();
                 setTimeout(function () {
-                    $input[0].scrollIntoView();
+                    if (isTop) {
+                        $el.closest('.kanban-drag').scrollTop(0);
+                    } else {
+                        $input[0].scrollIntoView();
+                    }
                 });
                 var save = function () {
                     $item.remove();
@@ -781,7 +787,7 @@ define([
                     if (kanban.options.tags && kanban.options.tags.length) {
                         item.tags = kanban.options.tags;
                     }
-                    kanban.addElement(boardId, item);
+                    kanban.addElement(boardId, item, isTop);
                 };
                 $input.blur(save);
                 $input.keydown(function (e) {
@@ -790,7 +796,12 @@ define([
                         e.stopPropagation();
                         save();
                         if (!$input.val()) { return; }
-                        $(el).closest('.kanban-board').find('footer .kanban-title-button').click();
+                        var $footer = $el.closest('.kanban-board').find('footer');
+                        if (isTop) {
+                            $footer.find('.kanban-title-button[data-top]').click();
+                        } else {
+                            $footer.find('.kanban-title-button').click();
+                        }
                         return;
                     }
                     if (e.which === 27) {

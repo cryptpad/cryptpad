@@ -269,21 +269,26 @@
         footer {
             margin: 10px;
             margin-top: 0px;
+            display: flex;
             span {
                 .tools_unselectable();
                 outline: none;
-                width: 100%;
+                width: 50%;
                 border: 1px solid fade(@cryptpad_text_col, 70%);
                 color: fade(@cryptpad_text_col, 70%);
                 border-radius: 0px;
-                font-size: 40px;
+                font-size: 20px;
                 display: inline-flex;
                 justify-content: center;
                 align-items: center;
                 line-height: 1;
                 cursor: pointer;
+                height: 40px;
                 &:hover {
                     background-color: rgba(0,0,0,0.1);
+                }
+                .fa {
+                    margin-right: 5px;
                 }
             }
         }
