@@ -255,7 +255,7 @@ define([
                     text: '',
                     name: 'burn-anon-drive',
                     icon: 'fa-ban',
-                    title: Messages.fm_burnThisDriveButton,
+                    tippy: Messages.fm_burnThisDriveButton,
                     drawer: false
                 }).click(function () {
                     UI.confirm(Messages.fm_burnThisDrive, function (yes) {

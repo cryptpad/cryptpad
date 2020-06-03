@@ -1658,6 +1658,7 @@ define([
                 var drawerCls = data.drawer === false ? '' : '.cp-toolbar-drawer-element';
                 var icon = data.icon || "fa-question";
                 button = $(h('button', {
+                    title: data.tippy || ''
                     //title: data.title || '',
                 }, [
                     h('i.fa.' + icon),
