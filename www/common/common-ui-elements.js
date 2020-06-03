@@ -2255,6 +2255,80 @@ define([
         return $container;
     };
 
+    UIElements.displayInfoMenu = function (Common, metadataMgr) {
+        var padType = metadataMgr.getMetadata().type;
+        var priv = metadataMgr.getPrivateData();
+        var origin = priv.origin;
+
+        Messages.help_faq = "Review our list of frequently asked questions"; // XXX
+        var faqLine = h('p',
+            h('a', {
+                target: '_blank',
+                rel: 'noreferrer noopener',
+                href: origin + '/faq.html',
+            }, Messages.help_faq)
+        );
+
+        var supportLine;
+        if (padType === 'support' || !Config.supportMailbox) {
+            // do nothing
+        } else if (priv.accountName) {
+            // registered users can submit support tickets
+            Messages.help_support = "Submit a support ticket"; // XXX
+            supportLine = h('p', [
+                h('a', {
+                    target: '_blank',
+                    rel: 'noreferrer noopener',
+                    href: origin + '/support/',
+                }, Messages.help_support)
+            ]);
+        } else {
+            // register to submit support tickets
+            Messages.help_supportRegisteredOnly = "Registered users can submit support tickets"; // XXX
+            var login = h('button', Messages.login_login);
+            $(login).click(function () {
+                Common.setLoginRedirect(function () {
+                    Common.gotoURL('/login/');
+                });
+            });
+            var register = h('button', Messages.login_register);
+            $(register).click(function () {
+                Common.setLoginRedirect(function () {
+                    Common.gotoURL('/register/');
+                });
+            });
+            supportLine = h('span', [
+                Messages.help_supportRegisteredOnly,
+                h('div', [
+                    login,
+                    register,
+                ])
+            ]);
+        }
+
+        var content = h('div', [
+            // CryptPad version number
+            h('h6', Pages.versionString),
+            // First point users to our FAQ
+            faqLine,
+            // Link to the support ticket form in case their
+            // question isn't answered by the FAQ
+            supportLine,
+        ]);
+
+        var buttons = [
+            {
+                className: 'primary',
+                name: Messages.filePicker_close,
+                onClick: function () {},
+                keys: [27],
+            },
+        ];
+
+        var modal = UI.dialog.customModal(content, {buttons: buttons });
+        UI.openCustomModal(modal);
+    };
+
     UIElements.createUserAdminMenu = function (Common, config) {
         var metadataMgr = Common.getMetadataMgr();
 
@@ -2366,7 +2440,6 @@ define([
                 },
             });
         }
-        options.push({ tag: 'hr' });
         // Add administration panel link if the user is an admin
         if (priv.edPublic && Array.isArray(Config.adminKeys) && Config.adminKeys.indexOf(priv.edPublic) !== -1) {
             options.push({
@@ -2378,20 +2451,6 @@ define([
                         window.open(origin+'/admin/');
                     } else {
                         window.parent.location = origin+'/admin/';
-                    }
-                },
-            });
-        }
-        if (padType !== 'support' && accountName && Config.supportMailbox) {
-            options.push({
-                tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-support fa fa-life-ring'},
-                content: h('span', Messages.supportPage || 'Support'),
-                action: function () {
-                    if (padType) {
-                        window.open(origin+'/support/');
-                    } else {
-                        window.parent.location = origin+'/support/';
                     }
                 },
             });
@@ -2435,20 +2494,17 @@ define([
                 },
             });
         }
-        if (Pages.versionString) {
-            Messages.user_about = Messages.about; // XXX "About CryptPad"
-            options.push({
-                tag: 'a',
-                attributes: {
-                    'class': 'cp-toolbar-about fa fa-info',
-                },
-                content: h('span', Messages.user_about),
-                action: function () {
-                    // XXX UIElements.createHelpButton
-                    UI.alert(Pages.versionString);
-                },
-            });
-        }
+        Messages.user_about = 'About CryptPad'; // XXX
+        options.push({
+            tag: 'a',
+            attributes: {
+                'class': 'cp-toolbar-about fa fa-info',
+            },
+            content: h('span', Messages.user_about),
+            action: function () {
+                UIElements.displayInfoMenu(Common, metadataMgr);
+            },
+        });
 
         options.push({ tag: 'hr' });
         // Add login or logout button depending on the current status
