@@ -403,6 +403,10 @@ define([
                 updateLocalColors(md.color, md.backColor);
             }
         });
+
+        return {
+            updateLocalColors: updateLocalColors
+        };
     };
 
     var mkFilePicker = function (framework, editor) {
@@ -473,7 +477,7 @@ define([
         mkThemeButton(framework);
         mkPrintButton(framework, editor, $content, $print);
         mkSlideOptionsButton(framework, slideOptions, $toolbarDrawer);
-        mkColorConfiguration(framework, $modal);
+        var colors = mkColorConfiguration(framework, $modal);
         mkFilePicker(framework, editor);
         mkSlidePreviewPane(framework, $contentContainer);
 
@@ -518,8 +522,12 @@ define([
             return CodeMirror.getHeadingText();
         });
 
-        framework.onReady(function (/*newPad*/) {
+        framework.onReady(function (newPad) {
             editor.focus();
+
+            if (newPad) {
+                colors.updateLocalColors('#000', '#FFF');
+            }
 
             CodeMirror.setMode('markdown', function () { });
             Slide.onChange(function (o, n, l) {
