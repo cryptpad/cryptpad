@@ -415,7 +415,7 @@ define([
     };
 
     var mkFilePicker = function (framework, editor) {
-        framework.setMediaTagEmbedder(function (mt, data) {
+        framework.setMediaTagEmbedder(function (mt) {
             editor.replaceSelection($(mt)[0].outerHTML);
         });
     };
