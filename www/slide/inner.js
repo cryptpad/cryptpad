@@ -130,7 +130,6 @@ define([
 
     // Flag to check if a file from the filepicker is a mediatag for the slides or a background image
     var Background = {
-        isBackground: false
     };
 
     var mkSlideOptionsButton = function (framework, slideOptions) {
@@ -208,7 +207,6 @@ define([
                     style: 'font-size: 17px',
                     id: 'cp-app-slide-options-bg'
                 }).click(function () {
-                    Background.isBackground = true;
                     var pickerCfg = {
                         types: ['file'],
                         where: ['root'],
@@ -216,7 +214,12 @@ define([
                             fileType: ['image/']
                         }
                     };
-                    common.openFilePicker(pickerCfg);
+                    common.openFilePicker(pickerCfg, function (data) {
+                        if (data.type === 'file') {
+                            data.mt = common.getMediaTag(data).outerHTML;
+                            Background.todo(data);
+                        }
+                    });
                 }).text(Messages.printBackgroundButton).appendTo($p);
             }
             $p.append($('<br>'));
@@ -330,7 +333,7 @@ define([
         });
     };
 
-    var mkColorConfiguration = function (framework, $modal) {
+    var mkColorConfiguration = function (framework, $modal, slideOptions) {
         var textColor;
         var backColor;
         var metadataMgr = framework._.cpNfInner.metadataMgr;
@@ -341,11 +344,13 @@ define([
                 $modal.css('color', text);
                 $modal.css('border-color', text);
                 $('#' + SLIDE_COLOR_ID).find('i').css('color', text);
+                slideOptions.textColor = text;
             }
             if (back) {
                 backColor = back;
-                $modal.css('background-color', back);
+                //$modal.css('background-color', back);
                 $('#' + SLIDE_BACKCOLOR_ID).find('i').css('color', back);
+                slideOptions.bgColor = back;
             }
         };
         var updateLocalColors = function (text, back) {
@@ -411,14 +416,6 @@ define([
 
     var mkFilePicker = function (framework, editor) {
         framework.setMediaTagEmbedder(function (mt, data) {
-            if (Background.isBackground) {
-                if (data.type === 'file') {
-                    data.mt = mt[0].outerHTML;
-                    Background.todo(data);
-                }
-                Background.isBackground = false;
-                return;
-            }
             editor.replaceSelection($(mt)[0].outerHTML);
         });
     };
@@ -477,7 +474,7 @@ define([
         mkThemeButton(framework);
         mkPrintButton(framework, editor, $content, $print);
         mkSlideOptionsButton(framework, slideOptions, $toolbarDrawer);
-        var colors = mkColorConfiguration(framework, $modal);
+        var colors = mkColorConfiguration(framework, $modal, slideOptions);
         mkFilePicker(framework, editor);
         mkSlidePreviewPane(framework, $contentContainer);
 

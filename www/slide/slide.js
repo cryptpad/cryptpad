@@ -93,7 +93,11 @@ define([
         if (options.background && options.background.mt) {
             mediatagBg = options.background.mt;
         }
-        var m = '<span class="cp-app-slide-container">' + mediatagBg + '<span class="'+slideClass+'">'+DiffMd.render(c).replace(separatorReg, '</span></span><span class="cp-app-slide-container">' + mediatagBg + '<span class="'+slideClass+'">')+'</span></span>';
+        var bgColor = '';
+        if (options.bgColor && !mediatagBg) {
+            bgColor = 'style="background-color:'+options.bgColor+';"';
+        }
+        var m = '<span class="cp-app-slide-container">' + mediatagBg + '<span class="'+slideClass+'" '+bgColor+'>'+DiffMd.render(c).replace(separatorReg, '</span></span><span class="cp-app-slide-container">' + mediatagBg + '<span class="'+slideClass+'" '+bgColor+'>')+'</span></span>';
 
         try { DiffMd.apply(m, $content, Common); } catch (e) { return console.error(e); }
 
