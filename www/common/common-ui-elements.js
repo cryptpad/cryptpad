@@ -272,25 +272,30 @@ define([
                     var $friends = $div.find('.cp-usergrid-user.cp-selected');
                     $friends.each(function (i, el) {
                         var curve = $(el).attr('data-curve');
-                        // Check if the selected element is a friend or a team
-                        if (curve) { // Friend
-                            if (!curve || !friends[curve]) { return; }
-                            var friend = friends[curve];
-                            if (!friend.notifications || !friend.curvePublic) { return; }
-                            common.mailbox.sendTo("SHARE_PAD", {
-                                href: href,
-                                password: config.password,
-                                isTemplate: config.isTemplate,
-                                name: myName,
-                                title: title
-                            }, {
-                                channel: friend.notifications,
-                                curvePublic: friend.curvePublic
-                            });
-                            return;
-                        }
-                        // Team
                         var ed = $(el).attr('data-ed');
+                        var friend = curve && friends[curve];
+                        var team = teams[ed];
+                        // If the selected element is a friend or a team without edit right,
+                        // send a notification
+                        var mailbox = friend || ((team && team.viewer) ? team : undefined);
+                        if (mailbox) { // Friend
+                            if (friends[curve] && !mailbox.notifications) { return; }
+                            if (mailbox.notifications && mailbox.curvePublic) {
+                                // XXX we should mark this notification as "viewed" in our own proxy
+                                common.mailbox.sendTo("SHARE_PAD", {
+                                    href: href,
+                                    password: config.password,
+                                    isTemplate: config.isTemplate,
+                                    name: myName,
+                                    title: title
+                                }, {
+                                    channel: mailbox.notifications,
+                                    curvePublic: mailbox.curvePublic
+                                });
+                                return;
+                            }
+                        }
+                        // If it's a team with edit right, add the pad directly
                         var team = teams[ed];
                         if (!team) { return; }
                         sframeChan.query('Q_STORE_IN_TEAM', {
@@ -409,10 +414,11 @@ define([
             // config.teamId only exists when we're trying to share a pad from a team drive
             // In this case, we don't want to share the pad with the current team
             if (config.teamId && config.teamId === id) { return; }
-            if (!teamsData[id].hasSecondaryKey) { return; }
             var t = teamsData[id];
             teams[t.edPublic] = {
-                notifications: true,
+                viewer: !teamsData[id].hasSecondaryKey,
+                notifications: t.notifications,
+                curvePublic: t.curvePublic,
                 displayName: t.name,
                 edPublic: t.edPublic,
                 avatar: t.avatar,

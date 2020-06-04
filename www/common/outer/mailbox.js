@@ -467,6 +467,15 @@ proxy.mailboxes = {
             }
         });
 
+        Object.keys(store.proxy.teams || {}).forEach(function (teamId) {
+            var team = store.proxy.teams[teamId];
+            var teamMailbox = team.keys.mailbox || {};
+            if (!teamMailbox.channel) { return; }
+            openChannel(ctx, 'team-'+teamId, teamMailbox, function () {
+                //console.log('Mailbox team', teamId);
+            });
+        });
+
         mailbox.post = function (box, type, content) {
             var b = ctx.boxes[box];
             if (!b) { return; }
@@ -477,8 +486,8 @@ proxy.mailboxes = {
             });
         };
 
-        mailbox.open = function (key, m, cb) {
-            if (TYPES.indexOf(key) === -1) { return; }
+        mailbox.open = function (key, m, cb, team) {
+            if (TYPES.indexOf(key) === -1 && !team) { return; }
             openChannel(ctx, key, m, cb);
         };
 

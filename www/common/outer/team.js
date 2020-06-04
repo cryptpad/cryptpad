@@ -494,6 +494,9 @@ define([
         var roHash = Hash.getViewHashFromKeys(secret);
         var keyPair = Nacl.sign.keyPair(); // keyPair.secretKey , keyPair.publicKey
 
+        var curveSeed = Nacl.randomBytes(32);
+        var curvePair = Nacl.box.keyPair.fromSecretKey(curveSeed);
+
         var rosterSeed = Crypto.Team.createSeed();
         var rosterKeys = Crypto.Team.deriveMemberKeys(rosterSeed, {
             curvePublic: ctx.store.proxy.curvePublic,
@@ -585,6 +588,14 @@ define([
             proxy.on('ready', function () {
                 // Store keys in our drive
                 var keys = {
+                    mailbox: {
+                        channel: Hash.createChannelId(),
+                        viewed: [],
+                        keys: {
+                            curvePrivate: Nacl.util.encodeBase64(curvePair.secretKey),
+                            curvePublic: Nacl.util.encodeBase64(curvePair.publicKey)
+                        }
+                    },
                     drive: {
                         edPrivate: Nacl.util.encodeBase64(keyPair.secretKey),
                         edPublic: Nacl.util.encodeBase64(keyPair.publicKey)
@@ -1566,6 +1577,26 @@ define([
         });
     };
 
+    var deriveMailbox = function (team) {
+        if (!team) { return; }
+        if (team.keys && team.keys.mailbox) { return team.keys.mailbox; }
+        var channel = team.channel;
+        if (!channel) { return; }
+        // XXX maybe use something else than channel?
+        var hash = Nacl.hash(Nacl.util.decodeUTF8(channel));
+        var seed = hash.slice(0,32);
+        var channel = Util.uint8ArrayToHex(hash.slice(32,48));
+        var curvePair = Nacl.box.keyPair.fromSecretKey(seed);
+        return {
+            channel: channel,
+            viewed: [],
+            keys: {
+                curvePrivate: Nacl.util.encodeBase64(curvePair.secretKey),
+                curvePublic: Nacl.util.encodeBase64(curvePair.publicKey)
+            }
+        };
+    };
+
     Team.init = function (cfg, waitFor, emit) {
         var team = {};
         var store = cfg.store;
@@ -1595,6 +1626,9 @@ define([
 
         Object.keys(teams).forEach(function (id) {
             ctx.onReadyHandlers[id] = [];
+            if (!Util.find(teams, id, 'keys', 'mailbox')) {
+                teams[id].keys.mailbox = deriveMailbox(teams[id]);
+            }
             openChannel(ctx, teams[id], id, waitFor(function (err) {
                 if (err) { return void console.error(err); }
                 console.debug('Team '+id+' ready');
@@ -1615,6 +1649,8 @@ define([
                     edPublic: Util.find(teams[id], ['keys', 'drive', 'edPublic']),
                     avatar: Util.find(teams[id], ['metadata', 'avatar']),
                     viewer: !Util.find(teams[id], ['keys', 'drive', 'edPrivate']),
+                    notifications: Util.find(teams[id], ['keys', 'mailbox', 'channel']),
+                    curvePublic: Util.find(teams[id], ['keys', 'mailbox', 'keys', 'curvePublic']),
 
                 };
                 if (safe && ctx.teams[id]) {
