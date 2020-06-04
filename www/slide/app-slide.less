@@ -164,6 +164,14 @@
         #cp-app-slide-editor-container {
             display: none;
         }
+        #cp-app-slide-print {
+            .cp-app-slide-frame {
+                pre.mermaid > svg {
+                    height: 100%;
+                    width: 100%;
+                }
+            }
+        }
     }
     #cp-app-slide-print {
         position: relative;
@@ -336,8 +344,8 @@
                 * {
                     max-width: unset;
                     max-height: unset;
-                    font-size: unset;
                     line-height: unset;
+                    font-size: 87.5%;
                 }
             }
             ul, ol {
