@@ -50,6 +50,7 @@ define([
             boardTitleclick: function (/*el, boardId*/) {},
             addItemClick: function (/*el, boardId*/) {},
             renderMd: function (/*md*/) {},
+            applyHtml: function (/*html, node*/) {},
             refresh: function () {},
             onChange: function () {}
         };
@@ -522,7 +523,7 @@ define([
                     };
                 }
                 var nodeBody = document.createElement('div');
-                nodeBody.classList.add('kanban-item-body');
+                nodeBody.setAttribute('id', 'kanban-body-' + element.id);
                 $(nodeBody).on('click', 'a', function (e) {
                     e.preventDefault();
                     var a = e.target;
@@ -533,7 +534,9 @@ define([
                 nodeBody.onclick = function (e) {
                     e.preventDefault();
                 };
-                nodeBody.innerHTML = html;
+                //nodeBody.innerHTML = html;
+                self.applyHtml(html, nodeBody);
+                nodeBody.classList.add('kanban-item-body');
                 nodeItem.appendChild(nodeBody);
             }
             if (Array.isArray(element.tags)) {
@@ -796,6 +799,9 @@ define([
             return self;
         };
 
+        this.applyHtml = function (html, node) {
+            return self.options.applyHtml(html, node);
+        };
         this.renderMd = function (md) {
             return self.options.renderMd(md);
         };

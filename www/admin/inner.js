@@ -255,17 +255,27 @@ define([
                 if (msg.type !== 'TICKET') { return; }
 
                 if (!$ticket.length) {
-                    $ticket = APP.support.makeTicket($div, content, function () {
+                    $ticket = APP.support.makeTicket($div, content, function (hideButton) {
+                        // the ticket will still be displayed until the worker confirms its deletion
+                        // so make it unclickable in the meantime
+                        hideButton.setAttribute('disabled', true);
                         var error = false;
-                        hashesById[id].forEach(function (d) {
-                            common.mailbox.dismiss(d, function (err) {
-                                if (err) {
-                                    error = true;
-                                    console.error(err);
-                                }
+                        nThen(function (w) {
+                            hashesById[id].forEach(function (d) {
+                                common.mailbox.dismiss(d, w(function (err) {
+                                    if (err) {
+                                        error = true;
+                                        console.error(err);
+                                    }
+                                }));
                             });
+                        }).nThen(function () {
+                            if (!error) { return void $ticket.remove(); }
+                            // if deletion failed then reactivate the button and warn
+                            hideButton.removeAttribute('disabled');
+                            // and show a generic error message
+                            UI.alert(Messages.error);
                         });
-                        if (!error) { $ticket.remove(); }
                     });
                 }
                 $ticket.append(APP.support.makeMessage(content, hash));

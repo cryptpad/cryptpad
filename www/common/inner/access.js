@@ -205,10 +205,14 @@ define([
             var $sel = $div.find('.cp-usergrid-user.cp-selected');
             var sel = $sel.toArray();
             if (!sel.length) { return; }
+            var addMe = false;
             var toAdd = sel.map(function (el) {
                 var curve = $(el).attr('data-curve');
-                // If the pad is woned by a team, we can transfer ownership to ourselves
-                if (curve === user.curvePublic && teamOwner) { return priv.edPublic; }
+                // If the pad is owned by a team, we can transfer ownership to ourselves
+                if (curve === user.curvePublic && teamOwner) {
+                    addMe = true;
+                    return;
+                }
                 var friend = friends[curve];
                 if (!friend) { return; }
                 return friend.edPublic;
@@ -283,9 +287,30 @@ define([
                     }));
                 }
             }).nThen(function (waitFor) {
+                // Offer ownership to a friend
+                if (addMe) {
+                    // Send the command
+                    sframeChan.query('Q_SET_PAD_METADATA', {
+                        channel: channel,
+                        command: 'ADD_OWNERS',
+                        value: [priv.edPublic],
+                        teamId: teamOwner
+                    }, waitFor(function (err, res) {
+                        err = err || (res && res.error);
+                        if (err) {
+                            waitFor.abort();
+                            redrawAll(true);
+                            var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
+                                                                          : Messages.error;
+                            return void UI.warn(text);
+                        }
+                    }));
+                }
+            }).nThen(function (waitFor) {
                 sel.forEach(function (el) {
                     var curve = $(el).attr('data-curve');
-                    var friend = curve === user.curvePublic ? user : friends[curve];
+                    if (curve === user.curvePublic) { return; }
+                    var friend = friends[curve];
                     if (!friend) { return; }
                     common.mailbox.sendTo("ADD_OWNER", {
                         channel: channel,

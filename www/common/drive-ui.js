@@ -1207,9 +1207,6 @@ define([
                     if ($element.is('.cp-app-drive-element-notrash')) {
                         // We can't delete elements in virtual categories
                         hide.push('delete');
-                    } else {
-                        // We can only open parent in virtual categories
-                        hide.push('openparent');
                     }
                     if (!$element.is('.cp-border-color-file')) {
                         //hide.push('download');
@@ -1310,6 +1307,10 @@ define([
                     hide.push('open');
                 }
 
+                if (!APP.loggedIn) {
+                    hide.push('openparent');
+                }
+
                 filter = function ($el, className) {
                     if (hide.indexOf(className) !== -1) { return true; }
                 };
@@ -1325,7 +1326,7 @@ define([
                             'deleteowned', 'removesf', 'access', 'properties', 'hashtag'];
                     break;
                 case 'default':
-                    show = ['open', 'openro', 'preview', 'share', 'openparent', 'delete', 'deleteowned', 'properties', 'access', 'hashtag', 'makeacopy'];
+                    show = ['open', 'openro', 'preview', 'openincode', 'share', 'download', 'openparent', 'delete', 'deleteowned', 'properties', 'access', 'hashtag', 'makeacopy', 'savelocal', 'rename'];
                     break;
                 case 'trashtree': {
                     show = ['empty'];
@@ -2117,7 +2118,7 @@ define([
                 onElementClick(e, $element);
             });
             if (!isTrash) {
-                $element.contextmenu(openContextMenu('tree'));
+                $element.on('contextmenu', openContextMenu('tree'));
                 $element.data('context', 'tree');
             } else {
                 $element.contextmenu(openContextMenu('trash'));
@@ -2747,21 +2748,22 @@ define([
             var options = [{
                 tag: 'a',
                 attributes: {'class': 'cp-app-drive-element-type'},
-                content: Messages.fm_type
+                content: '<i class="fa fa-minus"></i>' + Messages.fm_type
             },{
                 tag: 'a',
                 attributes: {'class': 'cp-app-drive-element-atime'},
-                content: Messages.fm_lastAccess
+                content: '<i class="fa fa-minus"></i>' + Messages.fm_lastAccess
             },{
                 tag: 'a',
                 attributes: {'class': 'cp-app-drive-element-ctime'},
-                content: Messages.fm_creation
+                content: '<i class="fa fa-minus"></i>' + Messages.fm_creation
             }];
             var dropdownConfig = {
                 text: '', // Button initial text
                 options: options, // Entries displayed in the menu
                 container: $fhSort,
                 left: true,
+                noscroll: true,
                 common: common
             };
             var $sortBlock = UIElements.createDropdown(dropdownConfig);
@@ -2804,7 +2806,7 @@ define([
             if (APP.store[SORT_FILE_BY] === '') { classSorted = 'cp-app-drive-sort-filename'; }
             else if (APP.store[SORT_FILE_BY]) { classSorted = 'cp-app-drive-element-' + APP.store[SORT_FILE_BY]; }
             if (classSorted) {
-                $list.find('.' + classSorted).addClass('cp-app-drive-sort-active').prepend($icon);
+                $list.find('.' + classSorted).addClass('cp-app-drive-sort-active').prepend($icon).find('i').hide();
             }
         };
         var getFileListHeader = function (clickable) {
@@ -3312,6 +3314,7 @@ define([
                 }
 
                 // Display the pad
+                /*
                 var $icon = getFileIcon(id);
                 var ro = manager.isReadOnlyFile(id);
                 // ro undefined means it's an old hash which doesn't support read-only
@@ -3319,21 +3322,13 @@ define([
                                 ro ? ' cp-app-drive-element-readonly' : '';
                 var $element = $('<li>', {
                     'class': 'cp-app-drive-element cp-app-drive-element-notrash cp-app-drive-element-file cp-app-drive-element-row' + roClass,
-                });
-                $element.prepend($icon).dblclick(function () {
-                    openFile(id);
-                });
-                addFileData(id, $element);
-                $element.data('path', path);
-                $element.click(function(e) {
-                    e.stopPropagation();
-                    onElementClick(e, $element);
-                });
-                $element.contextmenu(openContextMenu('default'));
+                });*/
+                var parentPath = path.slice();
+                var key = parentPath.pop();
+                var root = manager.find(parentPath);
+                var $element = createElement(parentPath, key, root);
+                $element.off('contextmenu').contextmenu(openContextMenu('default'));
                 $element.data('context', 'default');
-                /*if (draggable) {
-                    addDragAndDropHandlers($element, path, false, false);
-                }*/
                 $list.append($element);
                 i++;
             });

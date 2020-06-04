@@ -727,10 +727,13 @@ define([
                 // Owned drive
                 if (metadata && metadata.owners && metadata.owners.length === 1 &&
                     metadata.owners.indexOf(edPublic) !== -1) {
+                    var token;
                     nThen(function (waitFor) {
+                        self.accountDeletion = clientId;
+                        // Log out from other workers
                         var token = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
                         store.proxy[Constants.tokenKey] = token;
-                        postMessage(clientId, "DELETE_ACCOUNT", token, waitFor());
+                        onSync(null, waitFor());
                     }).nThen(function (waitFor) {
                         removeOwnedPads(waitFor);
                     }).nThen(function (waitFor) {
@@ -745,6 +748,10 @@ define([
                             force: true
                         }, waitFor());
                     }).nThen(function () {
+                        // XXX users need to login after registration if they register after account deletion (token issue?)
+                        // XXX delete block
+                        // Log out current worker
+                        postMessage(clientId, "DELETE_ACCOUNT", token, function () {});
                         store.network.disconnect();
                         cb({
                             state: true
@@ -2663,6 +2670,7 @@ define([
         };
 
         Store.disconnect = function () {
+            if (self.accountDeletion) { return; }
             if (!store.network) { return; }
             store.network.disconnect();
         };

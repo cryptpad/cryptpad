@@ -1606,13 +1606,13 @@ define([
             if (typeof(Atomics) === "undefined") {
                 accept = ['.bin'];
             }
-            var $importXLSX = common.createButton('import', true, {
-                accept: accept,
-                binary : ["ods", "xlsx", "odt", "docx", "odp", "pptx"]
-            }, importXLSXFile);
-            $importXLSX.appendTo(toolbar.$drawer);
 
             if (common.isLoggedIn()) {
+                var $importXLSX = common.createButton('import', true, {
+                    accept: accept,
+                    binary : ["ods", "xlsx", "odt", "docx", "odp", "pptx"]
+                }, importXLSXFile);
+                $importXLSX.appendTo(toolbar.$drawer);
                 common.createButton('hashtag', true).appendTo(toolbar.$drawer);
             }
 

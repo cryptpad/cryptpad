@@ -622,30 +622,9 @@ define([
         });
     };
 
-    var authorUid = function (existing) {
-        if (!Array.isArray(existing)) { existing = []; }
-        var n;
-        var i = 0;
-        while (!n || existing.indexOf(n) !== -1 && i++ < 1000) {
-            n = Math.floor(Math.random() * 1000000);
-        }
-        // If we can't find a valid number in 1000 iterations, use 0...
-        if (existing.indexOf(n) !== -1) { n = 0; }
-        return n;
-    };
     var getAuthorId = function (Env) {
-        var existing = Object.keys(Env.authormarks.authors || {}).map(Number);
-        if (!Env.common.isLoggedIn()) { return authorUid(existing); }
-
         var userData = Env.common.getMetadataMgr().getUserData();
-        var uid;
-        existing.some(function (id) {
-            var author = Env.authormarks.authors[id] || {};
-            if (author.curvePublic !== userData.curvePublic) { return; }
-            uid = Number(id);
-            return true;
-        });
-        return uid || authorUid(existing);
+        return Env.common.getAuthorId(Env.authormarks.authors, userData.curvePublic);
     };
     var ready = function (Env) {
         Env.ready = true;
