@@ -46,28 +46,69 @@ define([
         return mB + Messages.MB;
     };
 
-    UIElements.updateTags = function (common, href) {
+    UIElements.updateTags = function (common, hrefs) {
         var existing, tags;
+        var allTags = {};
+        if (!hrefs || typeof (hrefs) === "string") {
+            hrefs = [hrefs];
+        }
         NThen(function(waitFor) {
             common.getSframeChannel().query("Q_GET_ALL_TAGS", null, waitFor(function(err, res) {
                 if (err || res.error) { return void console.error(err || res.error); }
                 existing = Object.keys(res.tags).sort();
             }));
         }).nThen(function (waitFor) {
-            common.getPadAttribute('tags', waitFor(function (err, res) {
-                if (err) {
-                    if (err === 'NO_ENTRY') {
-                        UI.alert(Messages.tags_noentry);
+            var _err;
+            hrefs.forEach(function (href) {
+                common.getPadAttribute('tags', waitFor(function (err, res) {
+                    if (err) {
+                        if (err === 'NO_ENTRY') {
+                            UI.alert(Messages.tags_noentry);
+                        }
+                        waitFor.abort();
+                        _err = err;
+                        return void console.error(err);
                     }
-                    waitFor.abort();
-                    return void console.error(err);
-                }
-                tags = res || [];
-            }), href);
+                    allTags[href] = res || [];
+
+                    if (tags) {
+                        // Intersect with tags from previous pads
+                        tags = (res || []).filter(function (tag) {
+                            return tags.indexOf(tag) !== -1;
+                        });
+                    } else {
+                        tags = res || [];
+                    }
+                }), href);
+            });
         }).nThen(function () {
             UI.dialog.tagPrompt(tags, existing, function (newTags) {
                 if (!Array.isArray(newTags)) { return; }
-                common.setPadAttribute('tags', newTags, null, href);
+                var added = [];
+                var removed = [];
+                newTags.forEach(function (tag) {
+                    if (tags.indexOf(tag) === -1) {
+                        added.push(tag);
+                    }
+                });
+                tags.forEach(function (tag) {
+                    if (newTags.indexOf(tag) === -1) {
+                        removed.push(tag);
+                    }
+                });
+                var update = function (oldTags) {
+                    Array.prototype.push.apply(oldTags, added);
+                    removed.forEach(function (tag) {
+                        var idx = oldTags.indexOf(tag);
+                        oldTags.splice(idx, 1);
+                    });
+                };
+
+                hrefs.forEach(function (href) {
+                    var oldTags = allTags[href] || [];
+                    update(oldTags);
+                    common.setPadAttribute('tags', Util.deduplicateString(oldTags), null, href);
+                });
             });
         });
     };

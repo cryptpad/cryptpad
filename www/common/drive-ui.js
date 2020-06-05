@@ -1294,7 +1294,6 @@ define([
                     hide.push('properties', 'access');
                     hide.push('rename');
                     hide.push('openparent');
-                    hide.push('hashtag');
                     hide.push('download');
                     hide.push('share');
                     hide.push('savelocal');
@@ -4370,12 +4369,12 @@ define([
                 });
             }
             else if ($this.hasClass("cp-app-drive-context-hashtag")) {
-                if (paths.length !== 1) { return; }
-                el = manager.find(paths[0].path);
-                data = manager.getFileData(el);
-                if (!data) { return void console.error("Expected to find a file"); }
-                var href = data.href || data.roHref;
-                common.updateTags(href);
+                var hrefs = paths.map(function (p) {
+                    var el = manager.find(p.path);
+                    var data =  manager.getFileData(el);
+                    return data.href || data.roHref;
+                }).filter(Boolean);
+                common.updateTags(hrefs);
             }
             else if ($this.hasClass("cp-app-drive-context-empty")) {
                 if (paths.length !== 1 || !paths[0].element
