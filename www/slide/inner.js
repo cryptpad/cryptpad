@@ -348,7 +348,7 @@ define([
             }
             if (back) {
                 backColor = back;
-                //$modal.css('background-color', back);
+                $modal.find('.cp-app-slide-frame').css('background-color', back);
                 $('#' + SLIDE_BACKCOLOR_ID).find('i').css('color', back);
                 slideOptions.bgColor = back;
             }
@@ -362,6 +362,10 @@ define([
             framework.localChange();
         };
 
+        var $check = $("#cp-app-slide-colorpicker");
+        var $backgroundPicker = $('<input>', { type: 'color', value: backColor })
+            .css({ display: 'none', })
+            .on('change', function() { updateLocalColors(undefined, this.value); });
         var $back = framework._.sfCommon.createButton(null, true, {
             icon: 'fa-square',
             text: Messages.slide_backCol,
@@ -369,24 +373,7 @@ define([
             hiddenReadOnly: true,
             name: 'background',
             id: SLIDE_BACKCOLOR_ID
-        });
-        var $text = framework._.sfCommon.createButton(null, true, {
-            icon: 'fa-i-cursor',
-            text: Messages.slide_textCol,
-            title: Messages.colorButtonTitle,
-            hiddenReadOnly: true,
-            name: 'color',
-            id: SLIDE_COLOR_ID
-        });
-        var $testColor = $('<input>', { type: 'color', value: '!' });
-        var $check = $("#cp-app-slide-colorpicker");
-        if ($testColor.attr('type') !== "color" || $testColor.val() === '!') { return; }
-
-        var $backgroundPicker = $('<input>', { type: 'color', value: backColor })
-            .css({ display: 'none', })
-            .on('change', function() { updateLocalColors(undefined, this.value); });
-        $check.append($backgroundPicker);
-        $back.on('click', function() {
+        }, function () {
             $backgroundPicker.val(backColor);
             $backgroundPicker.click();
         });
@@ -394,11 +381,22 @@ define([
         var $foregroundPicker = $('<input>', { type: 'color', value: textColor })
             .css({ display: 'none', })
             .on('change', function() { updateLocalColors(this.value, undefined); });
-        $check.append($foregroundPicker);
-        $text.on('click', function() {
+        var $text = framework._.sfCommon.createButton(null, true, {
+            icon: 'fa-i-cursor',
+            text: Messages.slide_textCol,
+            title: Messages.colorButtonTitle,
+            hiddenReadOnly: true,
+            name: 'color',
+            id: SLIDE_COLOR_ID
+        }, function () {
             $foregroundPicker.val(textColor);
             $foregroundPicker.click();
         });
+        var $testColor = $('<input>', { type: 'color', value: '!' });
+        if ($testColor.attr('type') !== "color" || $testColor.val() === '!') { return; }
+
+        $check.append($backgroundPicker);
+        $check.append($foregroundPicker);
 
         framework._.toolbar.$theme.append($text).append($back);
 
@@ -524,6 +522,8 @@ define([
 
             if (newPad) {
                 colors.updateLocalColors('#000', '#FFF');
+            } else {
+                colors.updateLocalColors('#FFF', '#000');
             }
 
             CodeMirror.setMode('markdown', function () { });

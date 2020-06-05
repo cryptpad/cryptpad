@@ -1115,7 +1115,13 @@ define([
                 if (parsed.hashData) { currentPad.hash = parsed.hashData.getHash(opts); }
                 // Rendered (maybe hidden) hash
                 var hiddenParsed = Utils.Hash.parsePadUrl(window.location.href);
+
+                // Update the hash in the address bar
+                var ohc = window.onhashchange;
+                window.onhashchange = function () {};
                 window.location.href = hiddenParsed.getUrl(opts);
+                window.onhashchange = ohc;
+                ohc({reset: true});
             });
 
 
