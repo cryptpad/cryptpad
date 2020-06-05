@@ -281,7 +281,6 @@ define([
                         if (mailbox) { // Friend
                             if (friends[curve] && !mailbox.notifications) { return; }
                             if (mailbox.notifications && mailbox.curvePublic) {
-                                // XXX we should mark this notification as "viewed" in our own proxy
                                 common.mailbox.sendTo("SHARE_PAD", {
                                     href: href,
                                     password: config.password,
@@ -289,6 +288,7 @@ define([
                                     name: myName,
                                     title: title
                                 }, {
+                                    viewed: team && team.id,
                                     channel: mailbox.notifications,
                                     curvePublic: mailbox.curvePublic
                                 });

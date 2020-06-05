@@ -109,6 +109,17 @@ proxy.mailboxes = {
         });
         var ciphertext = crypto.encrypt(text, user.curvePublic);
 
+        // If we've sent this message to one of our teams' mailbox, we may want to "dismiss" it
+        // automatically
+        if (user.viewed) {
+            var team = Util.find(ctx, ['store', 'proxy', 'teams', user.viewed]);
+            if (team) {
+                var hash = ciphertext.slice(0,64);
+                var viewed = Util.find(team, ['keys', 'mailbox', 'viewed']);
+                if (Array.isArray(viewed)) { viewed.push(hash); }
+            }
+        }
+
         anonRpc.send("WRITE_PRIVATE_MESSAGE", [
             user.channel,
             ciphertext
