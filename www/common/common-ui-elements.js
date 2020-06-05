@@ -296,7 +296,6 @@ define([
                             }
                         }
                         // If it's a team with edit right, add the pad directly
-                        var team = teams[ed];
                         if (!team) { return; }
                         sframeChan.query('Q_STORE_IN_TEAM', {
                             href: href,

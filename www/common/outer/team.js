@@ -1585,10 +1585,10 @@ define([
         // XXX maybe use something else than channel?
         var hash = Nacl.hash(Nacl.util.decodeUTF8(channel));
         var seed = hash.slice(0,32);
-        var channel = Util.uint8ArrayToHex(hash.slice(32,48));
+        var mailboxChannel = Util.uint8ArrayToHex(hash.slice(32,48));
         var curvePair = Nacl.box.keyPair.fromSecretKey(seed);
         return {
-            channel: channel,
+            channel: mailboxChannel,
             viewed: [],
             keys: {
                 curvePrivate: Nacl.util.encodeBase64(curvePair.secretKey),
