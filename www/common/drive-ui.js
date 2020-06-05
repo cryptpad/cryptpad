@@ -526,6 +526,8 @@ define([
                 }
             });
         });
+
+
         return $(menu);
     };
 
@@ -918,6 +920,11 @@ define([
             var ev = {};
             if (e.ctrlKey) { ev.ctrlKey = true; }
             if (e.shiftKey) { ev.shiftKey = true; }
+
+            // ESC
+            if (e.which === 27) {
+                 return void APP.hideMenu();
+            }
 
             // Enter
             if (e.which === 13) {
