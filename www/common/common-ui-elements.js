@@ -1364,6 +1364,7 @@ define([
             case 'import':
                 button = $('<button>', {
                     'class': 'fa fa-upload cp-toolbar-icon-import',
+                    // XXX text is weird anywhere other than the drive
                     title: Messages.importButtonTitle,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.importButton));
                 /*if (data.types) {
