@@ -823,7 +823,7 @@ define([
                         var opts = parsed.getOptions();
                         var hash = Utils.Hash.getHiddenHashFromKeys(parsed.type, secret, opts);
                         var useUnsafe = Utils.Util.find(settings, ['security', 'unsafeLinks']);
-                        if (useUnsafe === false && window.history && window.history.replaceState) {
+                        if (useUnsafe !== true && window.history && window.history.replaceState) {
                             if (!/^#/.test(hash)) { hash = '#' + hash; }
                             window.history.replaceState({}, window.document.title, hash);
                         }
@@ -854,6 +854,7 @@ define([
                     path: initialPathInDrive, // Where to store the pad if we don't have it in our drive
                     forceSave: true
                 };
+                // XXX copypaste from above...
                 Cryptpad.setPadTitle(data, function (err) {
                     if (!err && !(obj && obj.notStored)) {
                         // No error and the pad was correctly stored
@@ -861,7 +862,7 @@ define([
                         var opts = parsed.getOptions();
                         var hash = Utils.Hash.getHiddenHashFromKeys(parsed.type, secret, opts);
                         var useUnsafe = Utils.Util.find(settings, ['security', 'unsafeLinks']);
-                        if (useUnsafe === false && window.history && window.history.replaceState) {
+                        if (useUnsafe !== true && window.history && window.history.replaceState) {
                             if (!/^#/.test(hash)) { hash = '#' + hash; }
                             window.history.replaceState({}, window.document.title, hash);
                         }
