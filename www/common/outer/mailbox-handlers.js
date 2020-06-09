@@ -515,7 +515,7 @@ define([
         cb();
     };
 
-    handlers["SAFE_LINKS_DEFAULT"] = function (ctx, box, data, cb) { // XXX
+    handlers["SAFE_LINKS_DEFAULT"] = function (ctx, box, data, cb) {
         var curve = ctx.store.proxy.curvePublic;
         if (data.msg.author !== curve) { return void cb(true); }
         cb();
