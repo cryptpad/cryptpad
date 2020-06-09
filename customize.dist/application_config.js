@@ -9,7 +9,8 @@ define(['/common/application_config_internal.js'], function (AppConfig) {
     // Example: If you want to remove the survey link in the menu:
     // AppConfig.surveyURL = "";
 
-    AppConfig.supportLanguages = [ 'en', 'fr' ]; // XXX
+    // To inform users of the support ticket panel which languages your admins speak:
+    //AppConfig.supportLanguages = [ 'en', 'fr' ];
 
     return AppConfig;
 });
