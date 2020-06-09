@@ -104,6 +104,8 @@ define([
         };
         SFCommonO.start({
             getSecrets: getSecrets,
+            hash: hash,
+            href: href,
             noHash: true,
             noRealtime: true,
             //driveEvents: true,
