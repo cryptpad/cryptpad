@@ -1315,6 +1315,7 @@ define([
 
                 if (!APP.loggedIn) {
                     hide.push('openparent');
+                    hide.push('rename');
                 }
 
                 filter = function ($el, className) {
