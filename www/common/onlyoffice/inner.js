@@ -271,7 +271,7 @@ define([
 
         var checkDrawings = function () {
             var editor = getEditor();
-            if (!editor) { return false; }
+            if (!editor || !editor.GetSheets) { return false; }
             var s = editor.GetSheets();
             return s.some(function (obj) {
                 return obj.worksheet.Drawings.length;
@@ -775,6 +775,7 @@ define([
             }
 
             // Send the changes
+            content.locks = content.locks || {};
             rtChannel.sendMsg({
                 type: "saveChanges",
                 changes: parseChanges(obj.changes),
