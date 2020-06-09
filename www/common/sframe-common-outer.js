@@ -806,16 +806,8 @@ define([
                 var title = currentTabTitle.replace(/\{title\}/g, currentTitle || 'CryptPad');
                 document.title = title;
             };
-            sframeChan.on('Q_SET_PAD_TITLE_IN_DRIVE', function (newData, cb) {
-                var newTitle = newData.title || newData.defaultTitle;
-                currentTitle = newTitle;
-                setDocumentTitle();
-                var data = {
-                    password: password,
-                    title: newTitle,
-                    channel: secret.channel,
-                    path: initialPathInDrive // Where to store the pad if we don't have it in our drive
-                };
+
+            var setPadTitle = function (data, cb) {
                 Cryptpad.setPadTitle(data, function (err, obj) {
                     if (!err && !(obj && obj.notStored)) {
                         // No error and the pad was correctly stored
@@ -830,6 +822,19 @@ define([
                     }
                     cb({error: err});
                 });
+            };
+
+            sframeChan.on('Q_SET_PAD_TITLE_IN_DRIVE', function (newData, cb) {
+                var newTitle = newData.title || newData.defaultTitle;
+                currentTitle = newTitle;
+                setDocumentTitle();
+                var data = {
+                    password: password,
+                    title: newTitle,
+                    channel: secret.channel,
+                    path: initialPathInDrive // Where to store the pad if we don't have it in our drive
+                };
+                setPadTitle(data, cb);
             });
             sframeChan.on('EV_SET_TAB_TITLE', function (newTabTitle) {
                 currentTabTitle = newTabTitle;
@@ -854,21 +859,7 @@ define([
                     path: initialPathInDrive, // Where to store the pad if we don't have it in our drive
                     forceSave: true
                 };
-                // XXX copypaste from above...
-                Cryptpad.setPadTitle(data, function (err) {
-                    if (!err && !(obj && obj.notStored)) {
-                        // No error and the pad was correctly stored
-                        // hide the hash
-                        var opts = parsed.getOptions();
-                        var hash = Utils.Hash.getHiddenHashFromKeys(parsed.type, secret, opts);
-                        var useUnsafe = Utils.Util.find(settings, ['security', 'unsafeLinks']);
-                        if (useUnsafe !== true && window.history && window.history.replaceState) {
-                            if (!/^#/.test(hash)) { hash = '#' + hash; }
-                            window.history.replaceState({}, window.document.title, hash);
-                        }
-                    }
-                    cb({error: err});
-                });
+                setPadTitle(data, cb);
             });
             sframeChan.on('Q_IS_PAD_STORED', function (data, cb) {
                 Cryptpad.getPadAttribute('title', function (err, data) {
