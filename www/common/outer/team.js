@@ -1577,6 +1577,8 @@ define([
         });
     };
 
+    // XXX call mailbox.open when you create or join a team
+    // XXX close the mailbox hwne you leave the team
     var deriveMailbox = function (team) {
         if (!team) { return; }
         if (team.keys && team.keys.mailbox) { return team.keys.mailbox; }
@@ -1626,7 +1628,7 @@ define([
 
         Object.keys(teams).forEach(function (id) {
             ctx.onReadyHandlers[id] = [];
-            if (!Util.find(teams, id, 'keys', 'mailbox')) {
+            if (!Util.find(teams, [id, 'keys', 'mailbox'])) {
                 teams[id].keys.mailbox = deriveMailbox(teams[id]);
             }
             openChannel(ctx, teams[id], id, waitFor(function (err) {
