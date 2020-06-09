@@ -107,7 +107,7 @@ define([
             boardContainerOuter.appendChild(boardContainer);
             var addBoard = document.createElement('div');
             addBoard.id = 'kanban-addboard';
-            addBoard.innerText = '+';
+            addBoard.innerHTML = '<i class="fa fa-plus"></i>';
             boardContainer.appendChild(addBoard);
             var trash = self.trashContainer = document.createElement('div');
             trash.setAttribute('id', 'kanban-trash');
@@ -675,17 +675,15 @@ define([
             var footerBoard = document.createElement('footer');
             footerBoard.classList.add('kanban-board-footer');
             //add button
-            Messages.kanban_addTopButton = '<i class="fa fa-plus"></i> (top)'; // XXX
-            Messages.kanban_addBottomButton = '<i class="fa fa-plus"></i> (bottom)'; // XXX
             var addTopBoardItem = document.createElement('span');
             addTopBoardItem.classList.add('kanban-title-button');
             addTopBoardItem.setAttribute('data-top', "1");
-            addTopBoardItem.innerHTML = Messages.kanban_addTopButton;
+            addTopBoardItem.innerHTML = '<i class="cptools cptools-add-top">';
             footerBoard.appendChild(addTopBoardItem);
             __onAddItemClickHandler(addTopBoardItem);
             var addBoardItem = document.createElement('span');
             addBoardItem.classList.add('kanban-title-button');
-            addBoardItem.innerHTML = Messages.kanban_addBottomButton;
+            addBoardItem.innerHTML = '<i class="cptools cptools-add-bottom">';
             footerBoard.appendChild(addBoardItem);
             __onAddItemClickHandler(addBoardItem);
 

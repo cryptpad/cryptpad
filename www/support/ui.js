@@ -173,7 +173,7 @@ define([
             classes: 'btn-danger'
         }, function() {
             if (typeof(onHide) !== "function") { return; }
-            onHide(hide); // XXX
+            onHide(hide);
         });
 
         $(answer).click(function () {

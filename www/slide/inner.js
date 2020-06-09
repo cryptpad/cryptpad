@@ -130,7 +130,6 @@ define([
 
     // Flag to check if a file from the filepicker is a mediatag for the slides or a background image
     var Background = {
-        isBackground: false
     };
 
     var mkSlideOptionsButton = function (framework, slideOptions) {
@@ -208,7 +207,6 @@ define([
                     style: 'font-size: 17px',
                     id: 'cp-app-slide-options-bg'
                 }).click(function () {
-                    Background.isBackground = true;
                     var pickerCfg = {
                         types: ['file'],
                         where: ['root'],
@@ -216,7 +214,12 @@ define([
                             fileType: ['image/']
                         }
                     };
-                    common.openFilePicker(pickerCfg);
+                    common.openFilePicker(pickerCfg, function (data) {
+                        if (data.type === 'file') {
+                            data.mt = common.getMediaTag(data).outerHTML;
+                            Background.todo(data);
+                        }
+                    });
                 }).text(Messages.printBackgroundButton).appendTo($p);
             }
             $p.append($('<br>'));
@@ -330,7 +333,7 @@ define([
         });
     };
 
-    var mkColorConfiguration = function (framework, $modal) {
+    var mkColorConfiguration = function (framework, $modal, slideOptions) {
         var textColor;
         var backColor;
         var metadataMgr = framework._.cpNfInner.metadataMgr;
@@ -341,11 +344,13 @@ define([
                 $modal.css('color', text);
                 $modal.css('border-color', text);
                 $('#' + SLIDE_COLOR_ID).find('i').css('color', text);
+                slideOptions.textColor = text;
             }
             if (back) {
                 backColor = back;
-                $modal.css('background-color', back);
+                $modal.find('.cp-app-slide-frame').css('background-color', back);
                 $('#' + SLIDE_BACKCOLOR_ID).find('i').css('color', back);
+                slideOptions.bgColor = back;
             }
         };
         var updateLocalColors = function (text, back) {
@@ -357,6 +362,10 @@ define([
             framework.localChange();
         };
 
+        var $check = $("#cp-app-slide-colorpicker");
+        var $backgroundPicker = $('<input>', { type: 'color', value: backColor })
+            .css({ display: 'none', })
+            .on('change', function() { updateLocalColors(undefined, this.value); });
         var $back = framework._.sfCommon.createButton(null, true, {
             icon: 'fa-square',
             text: Messages.slide_backCol,
@@ -364,24 +373,7 @@ define([
             hiddenReadOnly: true,
             name: 'background',
             id: SLIDE_BACKCOLOR_ID
-        });
-        var $text = framework._.sfCommon.createButton(null, true, {
-            icon: 'fa-i-cursor',
-            text: Messages.slide_textCol,
-            title: Messages.colorButtonTitle,
-            hiddenReadOnly: true,
-            name: 'color',
-            id: SLIDE_COLOR_ID
-        });
-        var $testColor = $('<input>', { type: 'color', value: '!' });
-        var $check = $("#cp-app-slide-colorpicker");
-        if ($testColor.attr('type') !== "color" || $testColor.val() === '!') { return; }
-
-        var $backgroundPicker = $('<input>', { type: 'color', value: backColor })
-            .css({ display: 'none', })
-            .on('change', function() { updateLocalColors(undefined, this.value); });
-        $check.append($backgroundPicker);
-        $back.on('click', function() {
+        }, function () {
             $backgroundPicker.val(backColor);
             $backgroundPicker.click();
         });
@@ -389,11 +381,22 @@ define([
         var $foregroundPicker = $('<input>', { type: 'color', value: textColor })
             .css({ display: 'none', })
             .on('change', function() { updateLocalColors(this.value, undefined); });
-        $check.append($foregroundPicker);
-        $text.on('click', function() {
+        var $text = framework._.sfCommon.createButton(null, true, {
+            icon: 'fa-i-cursor',
+            text: Messages.slide_textCol,
+            title: Messages.colorButtonTitle,
+            hiddenReadOnly: true,
+            name: 'color',
+            id: SLIDE_COLOR_ID
+        }, function () {
             $foregroundPicker.val(textColor);
             $foregroundPicker.click();
         });
+        var $testColor = $('<input>', { type: 'color', value: '!' });
+        if ($testColor.attr('type') !== "color" || $testColor.val() === '!') { return; }
+
+        $check.append($backgroundPicker);
+        $check.append($foregroundPicker);
 
         framework._.toolbar.$theme.append($text).append($back);
 
@@ -403,18 +406,14 @@ define([
                 updateLocalColors(md.color, md.backColor);
             }
         });
+
+        return {
+            updateLocalColors: updateLocalColors
+        };
     };
 
     var mkFilePicker = function (framework, editor) {
-        framework.setMediaTagEmbedder(function (mt, data) {
-            if (Background.isBackground) {
-                if (data.type === 'file') {
-                    data.mt = mt[0].outerHTML;
-                    Background.todo(data);
-                }
-                Background.isBackground = false;
-                return;
-            }
+        framework.setMediaTagEmbedder(function (mt) {
             editor.replaceSelection($(mt)[0].outerHTML);
         });
     };
@@ -473,7 +472,7 @@ define([
         mkThemeButton(framework);
         mkPrintButton(framework, editor, $content, $print);
         mkSlideOptionsButton(framework, slideOptions, $toolbarDrawer);
-        mkColorConfiguration(framework, $modal);
+        var colors = mkColorConfiguration(framework, $modal, slideOptions);
         mkFilePicker(framework, editor);
         mkSlidePreviewPane(framework, $contentContainer);
 
@@ -518,8 +517,14 @@ define([
             return CodeMirror.getHeadingText();
         });
 
-        framework.onReady(function (/*newPad*/) {
+        framework.onReady(function (newPad) {
             editor.focus();
+
+            if (newPad) {
+                colors.updateLocalColors('#000', '#FFF');
+            } else {
+                colors.updateLocalColors('#FFF', '#000');
+            }
 
             CodeMirror.setMode('markdown', function () { });
             Slide.onChange(function (o, n, l) {

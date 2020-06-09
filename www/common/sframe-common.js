@@ -106,6 +106,7 @@ define([
     funcs.addMentions = callWithCommon(UIElements.addMentions);
     funcs.importMediaTagMenu = callWithCommon(MT.importMediaTagMenu);
     funcs.getMediaTagPreview = callWithCommon(MT.getMediaTagPreview);
+    funcs.getMediaTag = callWithCommon(MT.getMediaTag);
 
     // Thumb
     funcs.displayThumbnail = callWithCommon(Thumb.displayThumbnail);
