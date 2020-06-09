@@ -7,9 +7,10 @@ define([
     '/common/cryptget.js',
     '/common/outer/mailbox.js',
     '/customize/messages.js',
+    '/common/common-realtime.js',
     '/bower_components/nthen/index.js',
     '/bower_components/chainpad-crypto/crypto.js',
-], function (AppConfig, Feedback, Hash, Util, Messaging, Crypt, Mailbox, Messages, nThen, Crypto) {
+], function (AppConfig, Feedback, Hash, Util, Messaging, Crypt, Mailbox, Messages, Realtime, nThen, Crypto) {
     // Start migration check
     // Versions:
     // 1: migrate pad attributes
@@ -456,6 +457,37 @@ define([
             if (version < 10) {
                 fixTodo();
             }
+        }).nThen(function (waitFor) {
+            if (version >= 11) { return; }
+            // Migration 11: alert users of safe links as the new default
+
+            var done = function () {
+                Feedback.send('Migrate-11', true);
+                userObject.version = version = 11;
+            };
+
+            /*  userObject.settings.security.unsafeLinks
+                    undefined => the user has never touched it
+                    false => the user has explicitly enabled "safe links"
+                    true => the user has explicitly disabled "safe links"
+            */
+            var unsafeLinks = Util.find(userObject, [ 'settings', 'security', 'unsafeLinks' ]);
+            if (unsafeLinks !== undefined) { return void done(); }
+
+            var ctx = {
+                store: store,
+            };
+            var myData = Messaging.createData(userObject);
+
+            Mailbox.sendTo(ctx, 'SAFE_LINKS_DEFAULT', {
+                user: myData,
+            }, {
+                channel: myData.notifications,
+                curvePublic: myData.curvePublic
+            }, waitFor(function (obj) {
+                if (obj && obj.error) { return void console.error(obj); }
+                done();
+            }));
         /*}).nThen(function (waitFor) {
             // Test progress bar in the loading screen
             var i = 0;
@@ -467,7 +499,7 @@ define([
             }, 500);
             progress(0, 0);*/
         }).nThen(function () {
-            setTimeout(cb);
+            Realtime.whenRealtimeSyncs(store.realtime, Util.bake(cb));
         });
     };
 });
