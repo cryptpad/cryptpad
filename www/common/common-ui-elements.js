@@ -1364,6 +1364,7 @@ define([
             case 'import':
                 button = $('<button>', {
                     'class': 'fa fa-upload cp-toolbar-icon-import',
+                    // XXX text is weird anywhere other than the drive
                     title: Messages.importButtonTitle,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.importButton));
                 /*if (data.types) {
@@ -1569,6 +1570,7 @@ define([
                 button = $('<button>', {
                     title: Messages.printButtonTitle2,
                     'class': "fa fa-print cp-toolbar-icon-print",
+                // XXX people don't realize this does PDF (https://github.com/xwiki-labs/cryptpad/issues/357#issuecomment-640711724)
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.printText));
                 break;
             case 'history':

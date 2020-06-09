@@ -377,6 +377,14 @@ define([
             field.focus();
         });
 
+        var $field = field.tokenfield.closest('.tokenfield').find('.token-input');
+        $field.on('keypress', function (e) {
+            if (!$field.val() && e.which === 13) { return void $ok.click(); }
+        });
+        $field.on('keydown', function (e) {
+            if (!$field.val() && e.which === 27) { return void $cancel.click(); }
+        });
+
         return tagger;
     };
 

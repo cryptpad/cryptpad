@@ -177,7 +177,7 @@ define([
             });
 
             // If file, display the upload button
-            if (types.indexOf('file') !== -1 && common.isLoggedIn()) {
+            if (types.indexOf('file') !== -1) {
                 var f = (filters && filters.filter) || {};
                 delete data.accept;
                 if (Array.isArray(f.fileType)) {
@@ -188,7 +188,13 @@ define([
                         return val;
                     });
                 }
-                $filter.append(common.createButton('upload', false, data));
+            }
+
+            var $uploadButton = common.createButton('upload', false, data);
+            $filter.append($uploadButton);
+            if (!common.isLoggedIn()) {
+                $uploadButton.prop('disabled', true)
+                    .prop('title', Messages.upload_mustLogin);
             }
 
             var $container = $(h('span.cp-filepicker-content', [
