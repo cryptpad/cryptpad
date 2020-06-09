@@ -400,10 +400,19 @@ define([
             framework._.sfCommon.setAttribute(['pad', 'showToolbar'], visible);
         };
         framework._.sfCommon.getAttribute(['pad', 'showToolbar'], function(err, data) {
+            var state = false;
             if (($(window).height() >= 800 || $(window).width() >= 800) &&
-                (typeof(data) === "undefined" || data)) { $('.cke_toolbox_main').show(); } else { $('.cke_toolbox_main').hide(); }
+                (typeof(data) === "undefined" || data)) {
+                state = true;
+                $('.cke_toolbox_main').show();
+            } else {
+                $('.cke_toolbox_main').hide();
+            }
             var $collapse = framework._.sfCommon.createButton('toggle', true, cfg, onClick);
-            framework._.toolbar.$rightside.append($collapse);
+            framework._.toolbar.$bottomL.append($collapse);
+            if (state) {
+                $collapse.addClass('cp-toolbar-button-active');
+            }
         });
     };
 
@@ -524,7 +533,9 @@ define([
             }
         };
 
-        mkHelpMenu(framework);
+        if (!privateData.isEmbed) {
+            mkHelpMenu(framework);
+        }
 
         framework._.sfCommon.getAttribute(['pad', 'width'], function(err, data) {
             var active = data || typeof(data) === "undefined";
@@ -782,8 +793,8 @@ define([
             });
         }, true);
 
-        framework.setFileExporter(Exporter.ext, function(cb) {
-            Exporter.main(inner, cb);
+        framework.setFileExporter(Exporter.exts, function(cb, ext) {
+            Exporter.main(inner, cb, ext);
         }, true);
 
         framework.setNormalizer(function(hjson) {
@@ -986,6 +997,7 @@ define([
                     }
                     return _getPath(name);
                 };
+                window.__defineGetter__('_cke_htmlToLoad', function() {});
                 editor.plugins.mediatag.import = function($mt) {
                     framework._.sfCommon.importMediaTag($mt);
                 };

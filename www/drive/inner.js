@@ -1,6 +1,6 @@
 define([
     'jquery',
-    '/common/toolbar3.js',
+    '/common/toolbar.js',
     '/common/drive-ui.js',
     '/common/common-util.js',
     '/common/common-hash.js',
@@ -201,10 +201,8 @@ define([
                 sfCommon: common,
                 $container: APP.$bar
             };
-            var toolbar = APP.toolbar = Toolbar.create(configTb);
+            var toolbar = Toolbar.create(configTb);
 
-            var $rightside = toolbar.$rightside;
-            $rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
             var $displayName = APP.$bar.find('.' + Toolbar.constants.username);
             metadataMgr.onChange(function () {
                 var name = metadataMgr.getUserData().name || Messages.anonymous;
@@ -253,14 +251,18 @@ define([
 
             // Add a "Burn this drive" button
             if (!APP.loggedIn && !APP.readOnly) {
-                APP.$burnThisDrive = common.createButton(null, true).click(function () {
+                APP.$burnThisDrive = common.createButton(null, true, {
+                    text: '',
+                    name: 'burn-anon-drive',
+                    icon: 'fa-ban',
+                    tippy: Messages.fm_burnThisDriveButton,
+                    drawer: false
+                }, function () {
                     UI.confirm(Messages.fm_burnThisDrive, function (yes) {
                         if (!yes) { return; }
                         common.getSframeChannel().event('EV_BURN_ANON_DRIVE');
                     }, null, true);
-                }).attr('title', Messages.fm_burnThisDriveButton)
-                  .removeClass('fa-question')
-                  .addClass('fa-ban');
+                });
             }
 
             $('body').css('display', '');
@@ -274,6 +276,7 @@ define([
                 updateObject: updateObject,
                 updateSharedFolders: updateSharedFolders,
                 history: history,
+                toolbar: toolbar,
                 APP: APP
             });
 

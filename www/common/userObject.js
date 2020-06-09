@@ -644,14 +644,9 @@ define([
 
             // parse the search string into tags
             var tags;
-            lValue.replace(/^#(.*)/, function (all, t) {
-                tags = t.split(/\s+/)
-                .map(function (tag) {
-                    return tag.replace(/^#/, '');
-                }).filter(function (x) {
-                    return x;
-                });
-            });
+            if (/^#/.test(lValue)) {
+                tags = [lValue.slice(1).trim()];
+            }
 
             /* returns true if an entry's tags are at least a partial match for
                 one of the specified tags */
@@ -661,7 +656,7 @@ define([
                 T = T.map(function (t) { return t.toLowerCase(); });
                 return tags.some(function (tag) {
                     return T.some(function (t) {
-                        return t.indexOf(tag) !== -1;
+                        return t === tag;
                     });
                 });
             };

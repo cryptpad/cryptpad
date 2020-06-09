@@ -152,6 +152,7 @@ define([
             actions
         ]));
 
+        /*
         $(close).click(function () {
             send(ctx, content.id, 'CLOSE', {}, content.sender);
         });
@@ -159,6 +160,20 @@ define([
         $(hide).click(function () {
             if (typeof(onHide) !== "function") { return; }
             onHide();
+        });
+        */
+
+        UI.confirmButton(close, {
+            classes: 'btn-danger'
+        }, function() {
+            send(ctx, content.id, 'CLOSE', {}, content.sender);
+            $(close).hide();
+        });
+        UI.confirmButton(hide, {
+            classes: 'btn-danger'
+        }, function() {
+            if (typeof(onHide) !== "function") { return; }
+            onHide(hide);
         });
 
         $(answer).click(function () {

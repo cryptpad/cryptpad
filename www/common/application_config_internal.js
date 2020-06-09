@@ -12,7 +12,7 @@ define(function() {
      * You should never remove the drive from this list.
      */
     config.availablePadTypes = ['drive', 'teams', 'pad', 'sheet', 'code', 'slide', 'poll', 'kanban', 'whiteboard',
-                                /*'oodoc', 'ooslide',*/ 'file', 'todo', 'contacts'];
+                                /*'oodoc', 'ooslide',*/ 'file', /*'todo',*/ 'contacts'];
     /* The registered only types are apps restricted to registered users.
      * You should never remove apps from this list unless you know what you're doing. The apps
      * listed here by default can't work without a user account.
@@ -20,7 +20,7 @@ define(function() {
      * users and these users will be redirected to the login page if they still try to access
      * the app
      */
-    config.registeredOnlyTypes = ['file', 'contacts', 'oodoc', 'ooslide', 'notifications'];
+    config.registeredOnlyTypes = ['file', 'contacts', 'oodoc', 'ooslide', 'notifications', 'support'];
 
     /* CryptPad is available is multiple languages, but only English and French are maintained
      * by the developers. The other languages may be outdated, and any missing string for a langauge
@@ -39,6 +39,12 @@ define(function() {
     config.imprint = false;
     // config.imprint = true;
     // config.imprint = 'https://xwiki.com/en/company/legal-notice';
+
+    /* You can display a link to your own privacy policy in the static pages footer.
+     * To do so, set the following value to the absolute URL of your privacy policy.
+     */
+    config.privacy = '/privacy.html';
+    // config.privacy = 'https://xwiki.com/en/company/PrivacyPolicy';
 
     /*  Cryptpad apps use a common API to display notifications to users
      *  by default, notifications are hidden after 5 seconds

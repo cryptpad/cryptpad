@@ -18,8 +18,15 @@ define([
     '/bower_components/chainpad/chainpad.dist.js',
     '/bower_components/marked/marked.min.js',
     'cm/lib/codemirror',
+    '/kanban/jkanban_cp.js',
 
     'cm/mode/gfm/gfm',
+    'cm/addon/edit/closebrackets',
+    'cm/addon/edit/matchbrackets',
+    'cm/addon/edit/trailingspace',
+    'cm/addon/selection/active-line',
+    'cm/addon/search/search',
+    'cm/addon/search/match-highlighter',
 
     'css!/bower_components/codemirror/lib/codemirror.css',
     'css!/bower_components/codemirror/addon/dialog/dialog.css',
@@ -27,7 +34,6 @@ define([
 
 
 
-    '/kanban/jkanban.js',
     'css!/kanban/jkanban.css',
     'less!/kanban/app-kanban.less'
 ], function (
@@ -49,7 +55,8 @@ define([
     DiffMd,
     ChainPad,
     Marked,
-    CodeMirror)
+    CodeMirror,
+    jKanban)
 {
 
     var verbose = function (x) { console.log(x); };
@@ -210,15 +217,11 @@ define([
         };
 
         // Body
-        var editor = CodeMirror.fromTextArea(text, {
-            allowDropFileTypes: [],
-            lineWrapping: true,
-            styleActiveLine: true,
-            autoCloseBrackets: true,
-            inputStyle: 'contenteditable',
-            extraKeys: {"Shift-Ctrl-R": undefined},
-            mode: "gfm"
-        });
+        var cm = SFCodeMirror.create("gfm", CodeMirror, text);
+        var editor = cm.editor;
+        editor.setOption('gutters', []);
+        editor.setOption('lineNumbers', false);
+        editor.setOption('readOnly', false);
         editor.on('keydown', function (editor, e) {
             if (e.which === 27) {
                 // Focus the next form element but don't close the modal (stopPropagation)
@@ -256,6 +259,25 @@ define([
             commit();
         });
 
+        setTimeout(function () {
+            var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
+            var fmConfig = {
+                dropArea: $('.CodeMirror'),
+                body: $('body'),
+                onUploaded: function (ev, data) {
+                    var parsed = Hash.parsePadUrl(data.url);
+                    var secret = Hash.getSecrets('file', parsed.hash, data.password);
+                    var fileHost = privateData.fileHost || privateData.origin;
+                    var src = fileHost + Hash.getBlobPathFromHex(secret.channel);
+                    var key = Hash.encodeBase64(secret.keys.cryptKey);
+                    var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + key + '"></media-tag>';
+                    editor.replaceSelection(mt);
+                }
+            };
+            common.createFileManager(fmConfig);
+        });
+
+
         // Tags
         var _field, initialTags;
         var tags = {
@@ -280,6 +302,12 @@ define([
                 _field.setTokens(tags || []);
 
                 $tags.find('.token-input').on('keydown', function (e) {
+                    // if the tokenfield is blank and the user hits enter or escape
+                    // then allow the event to propogate (closing the modal)
+                    // this can leave behind the autocomplete menu, so forcefully hide it
+                    if (!$(this).val() && [13, 27].indexOf(e.which) !== -1) {
+                        return void $('.ui-autocomplete.ui-front').hide();
+                    }
                     e.stopPropagation();
                 });
 
@@ -342,6 +370,7 @@ define([
                     var idx = list.indexOf(id);
                     if (idx !== -1) { list.splice(idx, 1); }
                     delete (boards.data || {})[id];
+                    kanban.removeBoard(id);
                     return void commit();
                 }
                 Object.keys(boards.data || {}).forEach(function (boardId) {
@@ -382,7 +411,7 @@ define([
         var setId = function (_isBoard, _id) {
             // Reset the mdoal with a new id
             isBoard = _isBoard;
-            id = _id;
+            id = Number(_id);
             if (_isBoard) {
                 onCursorUpdate.fire({
                     board: _id
@@ -582,7 +611,7 @@ define([
         };
 
 
-        var kanban = new window.jKanban({
+        var kanban = new jKanban({
             element: '#cp-app-kanban-content',
             gutter: '5px',
             widthBoard: '300px',
@@ -721,20 +750,26 @@ define([
             },
             addItemClick: function (el) {
                 if (framework.isReadOnly() || framework.isLocked()) { return; }
+                var $el = $(el);
                 if (kanban.inEditMode) {
-                    $(el).focus();
+                    $el.focus();
                     verbose("An edit is already active");
                     //return;
                 }
                 kanban.inEditMode = "new";
                 // create a form to enter element
-                var boardId = $(el).closest('.kanban-board').attr("data-id");
+                var isTop = $el.attr('data-top');
+                var boardId = $el.closest('.kanban-board').attr("data-id");
                 var $item = $('<div>', {'class': 'kanban-item new-item'});
                 var $input = getInput().val(name).appendTo($item);
-                kanban.addForm(boardId, $item[0]);
+                kanban.addForm(boardId, $item[0], isTop);
                 $input.focus();
                 setTimeout(function () {
-                    $input[0].scrollIntoView();
+                    if (isTop) {
+                        $el.closest('.kanban-drag').scrollTop(0);
+                    } else {
+                        $input[0].scrollIntoView();
+                    }
                 });
                 var save = function () {
                     $item.remove();
@@ -752,7 +787,7 @@ define([
                     if (kanban.options.tags && kanban.options.tags.length) {
                         item.tags = kanban.options.tags;
                     }
-                    kanban.addElement(boardId, item);
+                    kanban.addElement(boardId, item, isTop);
                 };
                 $input.blur(save);
                 $input.keydown(function (e) {
@@ -761,7 +796,12 @@ define([
                         e.stopPropagation();
                         save();
                         if (!$input.val()) { return; }
-                        $(el).closest('.kanban-board').find('footer .kanban-title-button').click();
+                        var $footer = $el.closest('.kanban-board').find('footer');
+                        if (isTop) {
+                            $footer.find('.kanban-title-button[data-top]').click();
+                        } else {
+                            $footer.find('.kanban-title-button').click();
+                        }
                         return;
                     }
                     if (e.which === 27) {
@@ -774,8 +814,11 @@ define([
                     }
                 });
             },
+            applyHtml: function (html, node) {
+                DiffMd.apply(html, $(node),framework._.sfCommon);
+            },
             renderMd: function (md) {
-                return DiffMd.render(md, true, false);
+                return DiffMd.render(md);
             },
             addItemButton: true,
             getTextColor: getTextColor,
@@ -961,7 +1004,10 @@ define([
         var kanban;
         var $container = $('#cp-app-kanban-content');
 
-        mkHelpMenu(framework);
+        var privateData = framework._.cpNfInner.metadataMgr.getPrivateData();
+        if (!privateData.isEmbed) {
+            mkHelpMenu(framework);
+        }
 
         if (framework.isReadOnly()) {
             $container.addClass('cp-app-readonly');

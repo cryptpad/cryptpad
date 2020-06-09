@@ -329,7 +329,7 @@ define([
 
             var priv = metadataMgr.getPrivateData();
 
-            var closeTips = h('span.fa.fa-window-close.cp-app-contacts-tips-close');
+            var closeTips = h('span.fa.fa-times.cp-app-contacts-tips-close');
             var tips;
             if (isApp && Util.find(priv.settings, ['general', 'hidetips', 'chat']) !== true) {
                 tips = h('div.cp-app-contacts-tips', [

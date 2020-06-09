@@ -21,6 +21,24 @@ define([
              Messages, AppConfig, Pages, NThen, InviteInner, Visible) {
     var UIElements = {};
 
+    UIElements.getSvgLogo = function () {
+        var svg = (function(){/*
+<svg width="45" height="50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <path d="m22.422 1.4356-14.641 2.7035c-0.51734-0.36799-1.1561-0.57696-1.8393-0.57696a3.1356 3.1339 0 0 0-3.1373 3.1355 3.1602 3.1585 0 0 0 1.6227 2.7575v21.103c0 1.9871 0.88906 4.1328 2.6508 6.3801 1.5602 1.9878 3.7668 4.027 6.5635 6.0547 1.9912 1.4389 3.9942 2.6545 5.6782 3.6005a3.1431 3.1413 0 0 0 5.9855 0.12499c1.7264-0.96163 3.8202-2.224 5.8986-3.7254 2.7979-2.0277 5.0033-4.0668 6.5635-6.0547 1.7624-2.2501 2.6508-4.393 2.6508-6.3801v-21.12c0.95814-0.53813 1.622-1.5642 1.622-2.74 0-1.733-1.4213-3.1355-3.1556-3.1355a3.1075 3.1059 0 0 0-1.8028 0.57696zm-0.03584 3.118 13.379 2.4687c0.01952 0.19629 0.03611 0.37448 0.08998 0.55867l-7.8432 5.1004c-1.4028-1.5215-3.4192-2.4877-5.6439-2.4877-2.2404 0-4.2687 0.98212-5.6797 2.5235l-7.7539-5.028c0.071056-0.21736 0.10472-0.44988 0.12659-0.68519zm14.426 4.4869c0.2616 0.22946 0.5738 0.4256 0.90137 0.55867v20.526c0 0.27043-0.02367 0.55955-0.07169 0.84677-0.31548 1.2546-1.0076 2.5682-2.0734 3.9289-1.3362 1.7018-3.231 3.4367-5.6264 5.172-1.9203 1.3873-3.8601 2.5452-5.3983 3.3932a3.1431 3.1413 0 0 0-4.3574-0.06325c-1.5186-0.84169-3.4128-1.979-5.2825-3.3299-2.3934-1.7353-4.2716-3.4702-5.6072-5.172-1.2729-1.6234-2.017-3.1789-2.2176-4.6492v-20.616c0.31859-0.12253 0.60591-0.30939 0.86477-0.52285l9.9357 6.3976a5.0789 5.0761 0 0 1 4.4893-2.685c1.9639 0 3.6499 1.0816 4.4901 2.7027zm-21.812 6.6849c-0.20732 0.69421-0.33324 1.4177-0.33324 2.1767 0 2.1872 0.94799 4.1262 2.4242 5.5287l-2.7125 5.4541c-0.01034-1.35e-4 -0.02017-0.0015-0.03051-0.0015-1.2807 0-2.3266 1.045-2.3266 2.3246 0 1.2799 1.046 2.3063 2.3266 2.3063a2.3009 2.2996 0 0 0 1.7349-0.78198h3.999v-2.6119h-3.3974l3.1938-6.4136c0.27643-0.55529 0.08702-1.2992-0.42094-1.6546-1.3154-0.91704-2.178-2.4154-2.178-4.1499 0-0.22399 0.03023-0.43738 0.05796-0.65318zm14.737 0.01524-2.3518 1.5372c0.02538 0.20682 0.04347 0.40998 0.04347 0.62422 0 1.7288-0.83863 3.2165-2.149 4.1356-0.50796 0.3555-0.69738 1.0994-0.42094 1.6546l3.1655 6.4281h-3.3829v2.6112h4.1363c0.42696 0.47986 1.0501 0.78274 1.744 0.78274a2.3009 2.2996 0 0 0 2.3076-2.3056c0-1.2799-1.0273-2.3253-2.3076-2.3253-0.05792 0-0.1147 0.0049-0.17158 0.0092l-2.7186-5.4769c1.4697-1.401 2.4106-3.3321 2.4106-5.5143 0-0.74898-0.10409-1.475-0.30503-2.1607zm-7.4398 0.2477a2.1129 2.1118 0 0 0-2.078 2.1111 2.1132 2.1119 0 1 0 4.2262 0 2.1129 2.1118 0 0 0-2.1482-2.1111z" style="stroke-width:1.2608"/>
+</svg>
+*/}).toString().slice(14,-3);
+        return svg;
+    };
+
     UIElements.prettySize = function (bytes) {
         var kB = Util.bytesToKilobytes(bytes);
         if (kB < 1024) { return kB + Messages.KB; }
@@ -28,28 +46,69 @@ define([
         return mB + Messages.MB;
     };
 
-    UIElements.updateTags = function (common, href) {
+    UIElements.updateTags = function (common, hrefs) {
         var existing, tags;
+        var allTags = {};
+        if (!hrefs || typeof (hrefs) === "string") {
+            hrefs = [hrefs];
+        }
         NThen(function(waitFor) {
             common.getSframeChannel().query("Q_GET_ALL_TAGS", null, waitFor(function(err, res) {
                 if (err || res.error) { return void console.error(err || res.error); }
                 existing = Object.keys(res.tags).sort();
             }));
         }).nThen(function (waitFor) {
-            common.getPadAttribute('tags', waitFor(function (err, res) {
-                if (err) {
-                    if (err === 'NO_ENTRY') {
-                        UI.alert(Messages.tags_noentry);
+            var _err;
+            hrefs.forEach(function (href) {
+                common.getPadAttribute('tags', waitFor(function (err, res) {
+                    if (err) {
+                        if (err === 'NO_ENTRY') {
+                            UI.alert(Messages.tags_noentry);
+                        }
+                        waitFor.abort();
+                        _err = err;
+                        return void console.error(err);
                     }
-                    waitFor.abort();
-                    return void console.error(err);
-                }
-                tags = res || [];
-            }), href);
+                    allTags[href] = res || [];
+
+                    if (tags) {
+                        // Intersect with tags from previous pads
+                        tags = (res || []).filter(function (tag) {
+                            return tags.indexOf(tag) !== -1;
+                        });
+                    } else {
+                        tags = res || [];
+                    }
+                }), href);
+            });
         }).nThen(function () {
             UI.dialog.tagPrompt(tags, existing, function (newTags) {
                 if (!Array.isArray(newTags)) { return; }
-                common.setPadAttribute('tags', newTags, null, href);
+                var added = [];
+                var removed = [];
+                newTags.forEach(function (tag) {
+                    if (tags.indexOf(tag) === -1) {
+                        added.push(tag);
+                    }
+                });
+                tags.forEach(function (tag) {
+                    if (newTags.indexOf(tag) === -1) {
+                        removed.push(tag);
+                    }
+                });
+                var update = function (oldTags) {
+                    Array.prototype.push.apply(oldTags, added);
+                    removed.forEach(function (tag) {
+                        var idx = oldTags.indexOf(tag);
+                        oldTags.splice(idx, 1);
+                    });
+                };
+
+                hrefs.forEach(function (href) {
+                    var oldTags = allTags[href] || [];
+                    update(oldTags);
+                    common.setPadAttribute('tags', Util.deduplicateString(oldTags), null, href);
+                });
             });
         });
     };
@@ -1305,6 +1364,7 @@ define([
             case 'import':
                 button = $('<button>', {
                     'class': 'fa fa-upload cp-toolbar-icon-import',
+                    // XXX text is weird anywhere other than the drive
                     title: Messages.importButtonTitle,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.importButton));
                 /*if (data.types) {
@@ -1382,7 +1442,6 @@ define([
             case 'copy':
                 button = $('<button>', {
                     'class': 'fa fa-clone cp-toolbar-icon-import',
-                    title: Messages.makeACopy,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.makeACopy));
                 button
                 .click(common.prepareFeedback(type))
@@ -1395,7 +1454,6 @@ define([
                 if (!common.isLoggedIn()) { return; }
                 button = $('<button>', {
                     'class': 'fa fa-upload cp-toolbar-icon-import',
-                    title: Messages.template_import,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.template_import));
                 button
                 .click(common.prepareFeedback(type))
@@ -1407,9 +1465,8 @@ define([
                 if (!AppConfig.enableTemplates) { return; }
                 if (!common.isLoggedIn()) { return; }
                 button = $('<button>', {
-                    title: Messages.saveTemplateButton,
-                    class: 'fa fa-bookmark cp-toolbar-icon-template'
-                });
+                    'class': 'fa fa-bookmark cp-toolbar-icon-template',
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.saveTemplateButton));
                 if (data.rt) {
                     button
                     .click(function () {
@@ -1454,9 +1511,8 @@ define([
                 break;
             case 'forget':
                 button = $('<button>', {
-                    title: Messages.forgetButtonTitle,
                     'class': "fa fa-trash cp-toolbar-icon-forget"
-                });
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.fc_delete));
                 callback = typeof callback === "function" ? callback : function () {};
                 button
                 .click(common.prepareFeedback(type))
@@ -1495,21 +1551,26 @@ define([
                 });
                 break;
             case 'present':
-                button = $('<button>', {
-                    title: Messages.presentButtonTitle,
-                    'class': "fa fa-play-circle cp-toolbar-icon-present", // used in slide.js
-                });
+                button = $(h('button', {
+                    //title: Messages.presentButtonTitle, // TODO display if the label text is collapsed
+                }, [
+                    h('i.fa.fa-play-circle'),
+                    h('span.cp-toolbar-name', Messages.share_linkPresent)
+                ])).click(common.prepareFeedback(type));
                 break;
             case 'preview':
-                button = $('<button>', {
-                    title: Messages.previewButtonTitle,
-                    'class': "fa fa-eye cp-toolbar-icon-preview",
-                });
+                button = $(h('button', {
+                    //title: Messages.previewButtonTitle, // TODO display if the label text is collapsed
+                }, [
+                    h('i.fa.fa-eye'),
+                    h('span.cp-toolbar-name', Messages.share_linkOpen)
+                ])).click(common.prepareFeedback(type));
                 break;
             case 'print':
                 button = $('<button>', {
                     title: Messages.printButtonTitle2,
                     'class': "fa fa-print cp-toolbar-icon-print",
+                // XXX people don't realize this does PDF (https://github.com/xwiki-labs/cryptpad/issues/357#issuecomment-640711724)
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.printText));
                 break;
             case 'history':
@@ -1536,32 +1597,28 @@ define([
                     }
                 }
                 break;
-            case 'more':
-                button = $('<button>', {
-                    title: Messages.moreActions,
-                    'class': "cp-toolbar-drawer-button fa fa-ellipsis-h",
-                });
-                break;
             case 'mediatag':
-                button = $('<button>', {
-                    'class': 'fa fa-picture-o cp-toolbar-icon-mediatag',
-                    title: Messages.filePickerButton,
-                })
-                .click(common.prepareFeedback(type));
+                button = $(h('button.cp-toolbar-mediatag', {
+                    //title: Messages.filePickerButton, // TODO display if the label text is collapsed
+                }, [
+                    h('i.fa.fa-picture-o'),
+                    h('span.cp-toolbar-name', Messages.toolbar_insert)
+                ])).click(common.prepareFeedback(type));
                 break;
             case 'savetodrive':
-                button = $('<button>', {
-                    'class': 'fa fa-cloud-upload cp-toolbar-icon-savetodrive',
+                button = $(h('button.cp-toolbar-savetodrive', {
                     title: Messages.canvas_saveToDrive,
-                })
-                .click(common.prepareFeedback(type));
+                }, [
+                    h('i.fa.fa-file-image-o'),
+                    h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_savetodrive)
+                ])).click(common.prepareFeedback(type));
                 break;
             case 'hashtag':
                 button = $('<button>', {
                     'class': 'fa fa-hashtag cp-toolbar-icon-hashtag',
                     title: Messages.tags_title,
-                })
-                .click(common.prepareFeedback(type))
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.fc_hashtag));
+                button.click(common.prepareFeedback(type))
                 .click(function () {
                     common.isPadStored(function (err, data) {
                         if (!data) {
@@ -1572,9 +1629,13 @@ define([
                 });
                 break;
             case 'toggle':
-                button = $('<button>', {
-                    'class': 'fa fa-caret-down cp-toolbar-icon-toggle',
-                });
+                button = $(h('button.cp-toolbar-tools', {
+                    //title: data.title || '', // TODO display if the label text is collapsed
+                }, [
+                    h('i.fa.fa-wrench'),
+                    h('span.cp-toolbar-name', Messages.toolbar_tools)
+                ])).click(common.prepareFeedback(type));
+                /*
                 window.setTimeout(function () {
                     button.attr('title', data.title);
                 });
@@ -1583,6 +1644,7 @@ define([
                     if (!isVisible) { button.addClass('fa-caret-down'); }
                     else { button.addClass('fa-caret-up'); }
                 };
+                */
                 button.click(function (e) {
                     data.element.toggle();
                     var isVisible = data.element.is(':visible');
@@ -1594,20 +1656,9 @@ define([
                         button.removeClass('cp-toolbar-button-active');
                         if (e.originalEvent) { Feedback.send('TOGGLE_HIDE_' + appType); }
                     }
-                    updateIcon(isVisible);
+                    //updateIcon(isVisible);
                 });
-                updateIcon(data.element.is(':visible'));
-                break;
-            case 'access':
-                button = $('<button>', {
-                    'class': 'fa fa-unlock-alt cp-toolbar-icon-access',
-                    title: Messages.accessButton,
-                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'})
-                .text(Messages.accessButton))
-                .click(common.prepareFeedback(type))
-                .click(function () {
-                    sframeChan.event('EV_ACCESS_OPEN');
-                });
+                //updateIcon(data.element.is(':visible'));
                 break;
             case 'properties':
                 button = $('<button>', {
@@ -1634,27 +1685,36 @@ define([
                 .click(common.prepareFeedback(type));
                 if (callback) { button.click(callback); }
                 break;
+            case 'newpad':
+                button = $('<button>', {
+                    title: Messages.newButtonTitle,
+                    'class': 'fa fa-plus cp-toolbar-icon-newpad',
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.newButton));
+                button
+                .click(common.prepareFeedback(type))
+                .click(function () {
+                    common.createNewPadModal();
+                });
+                break;
             default:
                 data = data || {};
+                var drawerCls = data.drawer === false ? '' : '.cp-toolbar-drawer-element';
                 var icon = data.icon || "fa-question";
-                button = $('<button>', {
-                    'class': "fa " + icon,
-                })
-                .click(common.prepareFeedback(data.name || 'DEFAULT'));
-                //.click(common.prepareFeedback(type));
+                button = $(h('button', {
+                    title: data.tippy || ''
+                    //title: data.title || '',
+                }, [
+                    h('i.fa.' + icon),
+                    h('span.cp-toolbar-name'+drawerCls, data.text)
+                ])).click(common.prepareFeedback(data.name || 'DEFAULT'));
                 if (callback) {
                     button.click(callback);
                 }
-                if (data.title) { button.attr('title', data.title); }
                 if (data.style) { button.attr('style', data.style); }
                 if (data.id) { button.attr('id', data.id); }
                 if (data.hiddenReadOnly) { button.addClass('cp-hidden-if-readonly'); }
                 if (data.name) {
                     button.addClass('cp-toolbar-icon-'+data.name);
-                }
-                if (data.text) {
-                    $('<span>', {'class': 'cp-toolbar-drawer-element'}).text(data.text)
-                        .appendTo(button);
                 }
         }
         if (rightside) {
@@ -1865,7 +1925,7 @@ define([
 
         common.fixLinks(text);
 
-        var closeButton = h('span.cp-help-close.fa.fa-window-close');
+        var closeButton = h('span.cp-help-close.fa.fa-times');
         var $toolbarButton = common.createButton('', true, {
             title: Messages.hide_help_button,
             text: Messages.help_button,
@@ -2100,7 +2160,11 @@ define([
         config.options.forEach(function (o) {
             if (!isValidOption(o)) { return; }
             if (isElement(o)) { return $innerblock.append($(o)); }
-            $('<' + o.tag + '>', o.attributes || {}).html(o.content || '').appendTo($innerblock);
+            var $el = $('<' + o.tag + '>', o.attributes || {}).html(o.content || '');
+            $el.appendTo($innerblock);
+            if (typeof(o.action) === 'function') {
+                $el.click(o.action);
+            }
         });
 
         $container.append($button).append($innerblock);
@@ -2125,8 +2189,17 @@ define([
 
         var show = function () {
             var wh = $(window).height();
-            var topPos = $container[0].getBoundingClientRect().bottom;
-            $innerblock.css('max-height', Math.floor(wh - topPos - 1)+'px');
+            var button = $button[0].getBoundingClientRect();
+            var topPos = button.bottom;
+            $innerblock.css('bottom', '');
+            if (config.noscroll) {
+                var h = $innerblock.outerHeight();
+                if ((topPos + h) > wh) {
+                    $innerblock.css('bottom', button.height+'px');
+                }
+            } else {
+                $innerblock.css('max-height', Math.floor(wh - topPos - 1)+'px');
+            }
             $innerblock.show();
             $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
             if (config.isSelect && value) {
@@ -2141,6 +2214,11 @@ define([
             e.stopPropagation();
             var state = $innerblock.is(':visible');
             $('.cp-dropdown-content').hide();
+
+            var $c = $container.closest('.cp-toolbar-drawer-content');
+            $c.removeClass('cp-dropdown-visible');
+            if (!state) { $c.addClass('cp-dropdown-visible'); }
+
             try {
                 $('iframe').each(function (idx, ifrw) {
                     $(ifrw).contents().find('.cp-dropdown-content').hide();
@@ -2284,6 +2362,17 @@ define([
                 content: h('span', Messages.type.teams)
             });
         }
+        if (padType !== 'contacts' && accountName) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'target': '_blank',
+                    'href': origin+'/contacts/',
+                    'class': 'cptools cptools-contacts'
+                },
+                content: h('span', Messages.type.contacts)
+            });
+        }
         options.push({ tag: 'hr' });
         // Add the change display name button if not in read only mode
         if (config.changeNameButtonCls && config.displayChangeName && !AppConfig.disableProfile) {
@@ -2297,14 +2386,28 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-profile fa fa-user-circle'},
-                content: h('span', Messages.profileButton)
+                content: h('span', Messages.profileButton),
+                action: function () {
+                    if (padType) {
+                        window.open(origin+'/profile/');
+                    } else {
+                        window.parent.location = origin+'/profile/';
+                    }
+                },
             });
         }
         if (padType !== 'settings') {
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-settings fa fa-cog'},
-                content: h('span', Messages.settingsButton)
+                content: h('span', Messages.settingsButton),
+                action: function () {
+                    if (padType) {
+                        window.open(origin+'/settings/');
+                    } else {
+                        window.parent.location = origin+'/settings/';
+                    }
+                },
             });
         }
         options.push({ tag: 'hr' });
@@ -2313,14 +2416,28 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-admin fa fa-cogs'},
-                content: h('span', Messages.adminPage || 'Admin')
+                content: h('span', Messages.adminPage || 'Admin'),
+                action: function () {
+                    if (padType) {
+                        window.open(origin+'/admin/');
+                    } else {
+                        window.parent.location = origin+'/admin/';
+                    }
+                },
             });
         }
         if (padType !== 'support' && accountName && Config.supportMailbox) {
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-support fa fa-life-ring'},
-                content: h('span', Messages.supportPage || 'Support')
+                content: h('span', Messages.supportPage || 'Support'),
+                action: function () {
+                    if (padType) {
+                        window.open(origin+'/support/');
+                    } else {
+                        window.parent.location = origin+'/support/';
+                    }
+                },
             });
         }
         options.push({ tag: 'hr' });
@@ -2356,9 +2473,27 @@ define([
                     'href': AppConfig.surveyURL,
                     'class': 'cp-toolbar-survey fa fa-graduation-cap'
                 },
-                content: h('span', Messages.survey)
+                content: h('span', Messages.survey),
+                action: function () {
+                    Feedback.send('SURVEY_CLICKED');
+                },
             });
         }
+        if (Pages.versionString) {
+            Messages.user_about = Messages.about; // XXX "About CryptPad"
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'class': 'cp-toolbar-about fa fa-info',
+                },
+                content: h('span', Messages.user_about),
+                action: function () {
+                    // XXX UIElements.createHelpButton
+                    UI.alert(Pages.versionString);
+                },
+            });
+        }
+
         options.push({ tag: 'hr' });
         // Add login or logout button depending on the current status
         if (priv.loggedIn) {
@@ -2367,23 +2502,43 @@ define([
                 attributes: {
                     'class': 'cp-toolbar-menu-logout-everywhere fa fa-plug',
                 },
-                content: h('span', Messages.logoutEverywhere)
+                content: h('span', Messages.logoutEverywhere),
+                action: function () {
+                    Common.getSframeChannel().query('Q_LOGOUT_EVERYWHERE', null, function () {
+                        window.parent.location = origin + '/';
+                    });
+                },
             });
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-logout fa fa-sign-out'},
-                content: h('span', Messages.logoutButton)
+                content: h('span', Messages.logoutButton),
+                action: function () {
+                    Common.logout(function () {
+                        window.parent.location = origin+'/';
+                    });
+                },
             });
         } else {
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-login fa fa-sign-in'},
-                content: h('span', Messages.login_login)
+                content: h('span', Messages.login_login),
+                action: function () {
+                    Common.setLoginRedirect(function () {
+                        window.parent.location = origin+'/login/';
+                    });
+                },
             });
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-register fa fa-user-plus'},
-                content: h('span', Messages.login_register)
+                content: h('span', Messages.login_register),
+                action: function () {
+                    Common.setLoginRedirect(function () {
+                        window.parent.location = origin+'/register/';
+                    });
+                },
             });
         }
         var $icon = $('<span>', {'class': 'fa fa-user-secret'});
@@ -2449,59 +2604,6 @@ define([
         };
         metadataMgr.onChange(updateButton);
         updateButton();
-
-        $userAdmin.find('a.cp-toolbar-menu-logout').click(function () {
-            Common.logout(function () {
-                window.parent.location = origin+'/';
-            });
-        });
-
-        $userAdmin.find('a.cp-toolbar-menu-logout-everywhere').click(function () {
-            Common.getSframeChannel().query('Q_LOGOUT_EVERYWHERE', null, function () {
-                window.parent.location = origin + '/';
-            });
-        });
-        $userAdmin.find('a.cp-toolbar-menu-settings').click(function () {
-            if (padType) {
-                window.open(origin+'/settings/');
-            } else {
-                window.parent.location = origin+'/settings/';
-            }
-        });
-        $userAdmin.find('a.cp-toolbar-menu-support').click(function () {
-            if (padType) {
-                window.open(origin+'/support/');
-            } else {
-                window.parent.location = origin+'/support/';
-            }
-        });
-        $userAdmin.find('a.cp-toolbar-menu-admin').click(function () {
-            if (padType) {
-                window.open(origin+'/admin/');
-            } else {
-                window.parent.location = origin+'/admin/';
-            }
-        });
-        $userAdmin.find('a.cp-toolbar-survey').click(function () {
-            Feedback.send('SURVEY_CLICKED');
-        });
-        $userAdmin.find('a.cp-toolbar-menu-profile').click(function () {
-            if (padType) {
-                window.open(origin+'/profile/');
-            } else {
-                window.parent.location = origin+'/profile/';
-            }
-        });
-        $userAdmin.find('a.cp-toolbar-menu-login').click(function () {
-            Common.setLoginRedirect(function () {
-                window.parent.location = origin+'/login/';
-            });
-        });
-        $userAdmin.find('a.cp-toolbar-menu-register').click(function () {
-            Common.setLoginRedirect(function () {
-                window.parent.location = origin+'/register/';
-            });
-        });
 
         return $userAdmin;
     };

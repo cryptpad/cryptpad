@@ -1,6 +1,6 @@
 define([
     'jquery',
-    '/common/toolbar3.js',
+    '/common/toolbar.js',
     '/common/common-util.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
@@ -563,13 +563,13 @@ define([
     var updatePublishButton = function () {
         if (!APP.ready || !APP.proxy || !APP.$publishButton) { return; }
         var p = APP.proxy.published;
-        var msg = (p ? Messages.poll_admin_button : Messages.poll_publish_button);
-        APP.$publishButton.attr('title', msg);
+        var msg = (p ? Messages.poll_edit : Messages.poll_publish_button);
+        APP.$publishButton.find('.cp-toolbar-name').text(msg);
         if (p) {
-            APP.$publishButton.removeClass('fa-check').addClass('fa-pencil');
+            APP.$publishButton.find('i').removeClass('fa-check').addClass('fa-pencil');
             return;
         }
-        APP.$publishButton.addClass('fa-check').removeClass('fa-pencil');
+        APP.$publishButton.find('i').addClass('fa-check').removeClass('fa-pencil');
     };
     var publish = APP.publish = function (bool) {
         if (!APP.readOnly) {
@@ -938,7 +938,7 @@ define([
 
         var markdownTb = APP.markdownTb = common.createMarkdownToolbar(APP.editor);
         $('.CodeMirror').parent().prepend(markdownTb.toolbar);
-        APP.toolbar.$rightside.append(markdownTb.button);
+        APP.toolbar.$bottomL.append(markdownTb.button);
 
         // Initialize author name for comments.
         // Disable name modification for logged in users
@@ -1125,18 +1125,7 @@ define([
         Title = common.createTitle(titleCfg);
 
         var configTb = {
-            displayed: [
-                'chat',
-                'userlist',
-                'title',
-                'useradmin',
-                'spinner',
-                'newpad',
-                'share',
-                'limit',
-                'unpinnedWarning',
-                'notifications'
-            ],
+            displayed: ['pad'],
             title: Title.getTitleConfig(),
             metadataMgr: metadataMgr,
             readOnly: APP.readOnly,
@@ -1149,7 +1138,6 @@ define([
 
         Title.setToolbar(APP.toolbar);
 
-        var $rightside = APP.toolbar.$rightside;
         var $drawer = APP.toolbar.$drawer;
 
         metadataMgr.onChange(function () {
@@ -1167,21 +1155,20 @@ define([
             setEditable(false);
         };
         var $forgetPad = common.createButton('forget', true, {}, forgetCb);
-        $rightside.append($forgetPad);
+        $drawer.append($forgetPad);
 
-        var $access = common.createButton('access', true);
-        $drawer.append($access);
         var $properties = common.createButton('properties', true);
         $drawer.append($properties);
 
+        var privateData = metadataMgr.getPrivateData();
         /* save as template */
-        if (!metadataMgr.getPrivateData().isTemplate) {
+        if (!privateData.isTemplate && common.isLoggedIn()) {
             var templateObj = {
                 rt: info.realtime,
                 getTitle: function () { return metadataMgr.getMetadata().title; }
             };
             var $templateButton = common.createButton('template', true, templateObj);
-            $rightside.append($templateButton);
+            $drawer.append($templateButton);
         }
 
         var $copy = common.createButton('copy', true);
@@ -1191,17 +1178,22 @@ define([
         var $export = common.createButton('export', true, {}, exportFile);
         $drawer.append($export);
 
-        var helpMenu = common.createHelpMenu(['poll']);
         $('#cp-app-poll-form').prepend(common.getBurnAfterReadingWarning());
-        $('#cp-app-poll-form').prepend(helpMenu.menu);
-        $drawer.append(helpMenu.button);
+
+        if (!privateData.isEmbed) {
+            var helpMenu = common.createHelpMenu(['poll']);
+            $('#cp-app-poll-form').prepend(helpMenu.menu);
+            $drawer.append(helpMenu.button);
+        }
 
         if (APP.readOnly) { publish(true); return; }
         var $publish = common.createButton('', true, {
             name: 'publish',
+            text: Messages.poll_publish_button,
             icon: 'fa-check',
+            drawer: false,
             hiddenReadOnly: true
-        }).click(function () { publish(!APP.proxy.published); }).appendTo($rightside);
+        }).click(function () { publish(!APP.proxy.published); }).appendTo(APP.toolbar.$bottomM);
         APP.$publishButton = $publish;
         updatePublishButton();
 
@@ -1218,10 +1210,13 @@ define([
                         return;
                     }
                 });
-            }).appendTo($rightside);
+            }).appendTo(APP.toolbar.$bottomL);
+
+            var $importTemplateButton = common.createButton('importtemplate', true);
+            $drawer.append($importTemplateButton);
 
             var $tags = common.createButton('hashtag', true);
-            $rightside.append($tags);
+            $drawer.append($tags);
         }
     };
 
@@ -1292,6 +1287,7 @@ define([
         }).nThen(function (/* waitFor */) {
             Test.registerInner(common.getSframeChannel());
             var metadataMgr = common.getMetadataMgr();
+
             APP.locked = APP.readOnly = metadataMgr.getPrivateData().readOnly;
             APP.loggedIn = common.isLoggedIn();
             APP.SFCommon = common;

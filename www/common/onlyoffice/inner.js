@@ -1,6 +1,6 @@
 define([
     'jquery',
-    '/common/toolbar3.js',
+    '/common/toolbar.js',
     'json.sortify',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
@@ -228,7 +228,9 @@ define([
             var hashes = old ? oldHashes : content.hashes;
             if (!hashes || !Object.keys(hashes).length) { return {}; }
             i = i || 0;
-            var idx = Object.keys(hashes).map(Number).sort();
+            var idx = Object.keys(hashes).map(Number).sort(function (a, b) {
+                return a-b;
+            });
             var lastIndex = idx[idx.length - 1 - i];
             var last = JSON.parse(JSON.stringify(hashes[lastIndex]));
             return last;
@@ -269,7 +271,7 @@ define([
 
         var checkDrawings = function () {
             var editor = getEditor();
-            if (!editor) { return false; }
+            if (!editor || !editor.GetSheets) { return false; }
             var s = editor.GetSheets();
             return s.some(function (obj) {
                 return obj.worksheet.Drawings.length;
@@ -773,6 +775,7 @@ define([
             }
 
             // Send the changes
+            content.locks = content.locks || {};
             rtChannel.sendMsg({
                 type: "saveChanges",
                 changes: parseChanges(obj.changes),
@@ -1555,23 +1558,14 @@ define([
         };
 
         config.onInit = function (info) {
-            readOnly = metadataMgr.getPrivateData().readOnly;
+            var privateData = metadataMgr.getPrivateData();
+
+            readOnly = privateData.readOnly;
 
             Title = common.createTitle({});
 
             var configTb = {
-                displayed: [
-                    'chat',
-                    'userlist',
-                    'title',
-                    'useradmin',
-                    'spinner',
-                    'newpad',
-                    'share',
-                    'limit',
-                    'unpinnedWarning',
-                    'notifications'
-                ],
+                displayed: ['pad'],
                 title: Title.getTitleConfig(),
                 metadataMgr: metadataMgr,
                 readOnly: readOnly,
@@ -1583,13 +1577,11 @@ define([
             toolbar = APP.toolbar = Toolbar.create(configTb);
             Title.setToolbar(toolbar);
 
-            var $rightside = toolbar.$rightside;
-
             if (window.CP_DEV_MODE) {
                 var $save = common.createButton('save', true, {}, function () {
                     makeCheckpoint(true);
                 });
-                $save.appendTo($rightside);
+                $save.appendTo(toolbar.$bottomM);
             }
             if (window.CP_DEV_MODE || DISPLAY_RESTORE_BUTTON) {
                 common.createButton('', true, {
@@ -1599,13 +1591,13 @@ define([
                 }).click(function () {
                     if (initializing) { return void console.error('initializing'); }
                     restoreLastCp();
-                }).attr('title', 'Restore last checkpoint').appendTo($rightside);
+                }).attr('title', 'Restore last checkpoint').appendTo(toolbar.$bottomM);
             }
 
             var $exportXLSX = common.createButton('export', true, {}, exportXLSXFile);
-            $exportXLSX.appendTo($rightside);
+            $exportXLSX.appendTo(toolbar.$drawer);
 
-            var type = common.getMetadataMgr().getPrivateData().ooType;
+            var type = privateData.ooType;
             var accept = [".bin", ".ods", ".xlsx"];
             if (type === "ooslide") {
                 accept = ['.bin', '.odp', '.pptx'];
@@ -1615,31 +1607,31 @@ define([
             if (typeof(Atomics) === "undefined") {
                 accept = ['.bin'];
             }
-            var $importXLSX = common.createButton('import', true, {
-                accept: accept,
-                binary : ["ods", "xlsx", "odt", "docx", "odp", "pptx"]
-            }, importXLSXFile);
-            $importXLSX.appendTo($rightside);
 
             if (common.isLoggedIn()) {
-                common.createButton('hashtag', true).appendTo($rightside);
+                var $importXLSX = common.createButton('import', true, {
+                    accept: accept,
+                    binary : ["ods", "xlsx", "odt", "docx", "odp", "pptx"]
+                }, importXLSXFile);
+                $importXLSX.appendTo(toolbar.$drawer);
+                common.createButton('hashtag', true).appendTo(toolbar.$drawer);
             }
 
             var $forget = common.createButton('forget', true, {}, function (err) {
                 if (err) { return; }
                 setEditable(false);
             });
-            $rightside.append($forget);
+            toolbar.$drawer.append($forget);
 
-            var helpMenu = APP.helpMenu = common.createHelpMenu(['beta', 'oo']);
-            $('#cp-app-oo-editor').prepend(common.getBurnAfterReadingWarning());
-            $('#cp-app-oo-editor').prepend(helpMenu.menu);
-            toolbar.$drawer.append(helpMenu.button);
+            if (!privateData.isEmbed) {
+                var helpMenu = APP.helpMenu = common.createHelpMenu(['beta', 'oo']);
+                $('#cp-app-oo-editor').prepend(common.getBurnAfterReadingWarning());
+                $('#cp-app-oo-editor').prepend(helpMenu.menu);
+                toolbar.$drawer.append(helpMenu.button);
+            }
 
             var $properties = common.createButton('properties', true);
             toolbar.$drawer.append($properties);
-            var $access = common.createButton('access', true);
-            toolbar.$drawer.append($access);
         };
 
         config.onReady = function (info) {

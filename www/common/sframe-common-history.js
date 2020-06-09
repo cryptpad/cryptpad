@@ -112,13 +112,11 @@ define([
         var c = 0;//states.length - 1;
 
         var $hist = $toolbar.find('.cp-toolbar-history');
-        var $left = $toolbar.find('.cp-toolbar-leftside');
-        var $right = $toolbar.find('.cp-toolbar-rightside');
+        var $bottom = $toolbar.find('.cp-toolbar-bottom');
         var $cke = $toolbar.find('.cke_toolbox_main');
 
         $hist.html('').css('display', 'flex');
-        $left.hide();
-        $right.hide();
+        $bottom.hide();
         $cke.hide();
 
         UI.spinner($hist).get().show();
@@ -277,8 +275,7 @@ define([
             var onKeyDown, onKeyUp;
             var close = function () {
                 $hist.hide();
-                $left.show();
-                $right.show();
+                $bottom.show();
                 $cke.show();
                 $(window).trigger('resize');
                 $(window).off('keydown', onKeyDown);

@@ -61,6 +61,9 @@ define([
 
     var imprintUrl = AppConfig.imprint && (typeof(AppConfig.imprint) === "boolean" ?
                         '/imprint.html' : AppConfig.imprint);
+
+    Pages.versionString = "CryptPad v3.18.1 (Smilodon's revenge)";
+
     Pages.infopageFooter = function () {
         return h('footer', [
             h('div.container', [
@@ -96,7 +99,7 @@ define([
                     ]),
                     footerCol('footer_legal', [
                         footLink('/terms.html', 'footer_tos'),
-                        footLink('/privacy.html', 'privacy'),
+                        footLink(AppConfig.privacy, 'privacy'),
                         AppConfig.imprint ? footLink(imprintUrl, 'imprint') : undefined,
                     ]),
                     /*footerCol('footer_contact', [
@@ -107,7 +110,7 @@ define([
                     ])*/
                 ])
             ]),
-            h('div.cp-version-footer', "CryptPad v3.17.1 (RedGazelle's revenge)")
+            h('div.cp-version-footer', Pages.versionString)
         ]);
     };
 

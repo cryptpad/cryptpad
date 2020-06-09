@@ -175,9 +175,6 @@ define([
             c = Colors.rgb2hex(c);
             brush.color = c;
             canvas.freeDrawingBrush.color = Colors.hex2rgba(brush.color, brush.opacity);
-            APP.$color.css({
-                'color': c,
-            });
             createCursor();
         };
 
@@ -236,35 +233,6 @@ define([
             APP.onLocal();
         };
 
-        var makeColorButton = function ($container) {
-            var $testColor = $('<input>', { type: 'color', value: '!' });
-
-            // if colors aren't supported, bail out
-            if ($testColor.attr('type') !== 'color' ||
-                $testColor.val() === '!') {
-                console.log("Colors aren't supported. Aborting");
-                return;
-            }
-
-            var $color = APP.$color = framework._.sfCommon.createButton(null, true, {
-                icon: 'fa-square',
-                title: Messages.canvas_chooseColor,
-                name: 'color',
-                id: 'cp-app-whiteboard-color-picker'
-            });
-            $color.on('click', function () {
-                pickColor($color.css('background-color'), function (color) {
-                    setColor(color);
-                });
-            });
-
-            setColor('#000');
-
-            $container.append($color);
-
-            return $color;
-        };
-
         updateLocalPalette(palette);
 
         metadataMgr.onChange(function () {
@@ -276,7 +244,6 @@ define([
 
         return {
             palette: palette,
-            makeColorButton: makeColorButton,
             updateLocalPalette: updateLocalPalette,
         };
     };
@@ -343,15 +310,18 @@ define([
             $canvasContainer.find('canvas').css('border-color', bool? 'black': 'red');
         };
 
-        mkHelpMenu(framework);
+        var privateData = metadataMgr.getPrivateData();
+        if (!privateData.isEmbed) {
+            mkHelpMenu(framework);
+        }
 
-        var controls = mkControls(framework, canvas);
+        mkControls(framework, canvas);
 
         // ---------------------------------------------
         // Whiteboard custom buttons
         // ---------------------------------------------
 
-        var $rightside = framework._.toolbar.$rightside;
+        var $drawer = framework._.toolbar.$drawer;
 
         APP.FM = framework._.sfCommon.createFileManager({});
         APP.upload = function (title) {
@@ -400,13 +370,6 @@ define([
             };
             reader.readAsDataURL(file);
         };
-        framework._.sfCommon.createButton('', true, {
-            title: Messages.canvas_imageEmbed,
-            icon: 'fa-file-image-o',
-            name: 'embedImage'
-        }).click(function () {
-            $('<input>', {type:'file'}).on('change', onUpload).click();
-        }).appendTo($rightside);
 
         if (framework._.sfCommon.isLoggedIn()) {
             framework.setMediaTagEmbedder(function ($mt) {
@@ -429,13 +392,21 @@ define([
                     if (name === null || !name.trim()) { return; }
                     APP.upload(name);
                 });
-            }).appendTo($rightside);
+            }).appendTo($drawer);
+        } else {
+            framework._.sfCommon.createButton('', true, {
+                title: Messages.canvas_imageEmbed,
+                text: Messages.toolbar_insert,
+                drawer: false,
+                icon: 'fa-picture-o',
+                name: 'mediatag'
+            }).click(function () {
+                $('<input>', {type:'file'}).on('change', onUpload).click();
+            }).appendTo(framework._.toolbar.$bottomL);
         }
 
         if (framework.isReadOnly()) {
             setEditable(false);
-        } else {
-            controls.makeColorButton($rightside);
         }
 
         $('#cp-app-whiteboard-clear').on('click', function () {

@@ -1,11 +1,32 @@
 @import (reference) './avatar.less';
 @import (reference) "./colortheme-all.less";
 
-.messenger_main() {
+.messenger_vars (
+    @color: @colortheme_friends-color, // color of the toolbar text
+    @bg-color: @colortheme_friends-bg, // color of the toolbar background
+) {
+    @msg-color: @color;
+    @msg-bg-color: @bg-color;
+    @msg-bg-color-light: lighten(@bg-color, 15%);
+    @msg-bg-color-lighter: lighten(@bg-color, 20%);
+    @msg-bg-color-dark: darken(@bg-color, 10%);
+    @msg-bg-color-darker: darken(@bg-color, 20%);
+};
+.messenger_main(
+    @color: @colortheme_friends-color, // color of the toolbar text
+    @bg-color: @colortheme_friends-bg, // color of the toolbar background
+) {
     --LessLoader_require: LessLoader_currentFile();
+    .messenger_vars(@color, @bg-color);
+    --msg-color: @msg-color;
+    --msg-bg-color: @msg-bg-color;
+    --msg-bg-color-light: @msg-bg-color-light;
+    --msg-bg-color-lighter: @msg-bg-color-lighter;
+    --msg-bg-color-dark: @msg-bg-color-dark;
+    --msg-bg-color-darker: @msg-bg-color-darker;
 };
 & {
-    @keyframes example {
+    @keyframes notif {
         0% {
             background: rgba(0,0,0,0.1);
         }
@@ -17,9 +38,8 @@
         }
     }
 
+    .messenger_vars();
     @button-border: 2px;
-    @bg-color: @colortheme_friends-bg;
-    @color: @colortheme_friends-color;
     @room-height: 48px;
 
     #cp-app-contacts-container {
@@ -57,7 +77,8 @@
     #cp-app-contacts-friendlist {
         width: 200px;
         height: 100%;
-        background-color: lighten(@bg-color, 10%);
+        background-color: @msg-bg-color;
+        background-color: var(--msg-bg-color);
         overflow-y: auto;
         display: flex;
         flex-flow: column;
@@ -86,7 +107,7 @@
                 background-color: rgba(0,0,0,0.3);
             }
             &.cp-app-contacts-notify {
-                animation: example 2s ease-in-out infinite;
+                animation: notif 2s ease-in-out infinite;
             }
         }
         .cp-app-contacts-remove {
@@ -94,7 +115,7 @@
             width: 20px;
             text-align: center;
             &:hover {
-                color: darken(@color, 20%);
+                color: darken(@msg-color, 20%);
             }
         }
 
@@ -183,7 +204,7 @@
             display: flex;
         }
         cursor: pointer;
-        color: @color;
+        color: @msg-color;
         media-tag {
             img {
                 color: #000;
@@ -252,14 +273,16 @@
     #cp-app-contacts-messaging {
         flex: 1;
         height: 100%;
-        background-color: lighten(@bg-color, 20%);
+        background-color: @msg-bg-color-lighter;
+        background-color: var(--msg-bg-color-lighter);
         min-width: 0;
 
         .cp-app-contacts-info {
             padding: 20px;
         }
         .cp-app-contacts-header {
-            background-color: lighten(@bg-color, 15%);
+            background-color: @msg-bg-color;
+            background-color: var(--msg-bg-color);
             padding: 0;
             display: flex;
             justify-content: space-between;
@@ -289,7 +312,7 @@
                 //display: none;
                 .hover;
                 &.cp-app-contacts-faded {
-                    color: darken(@bg-color, 5%);
+                    color: @cryptpad_text_col;
                 }
             }
 
@@ -300,7 +323,8 @@
         }
         .cp-app-contacts-tips {
             margin: 1em;
-            background-color: lighten(@bg-color, 15%);
+            background-color: @msg-bg-color-light;
+            background-color: var(--msg-bg-color-light);
             font-size: 14px;
             padding: 10px;
             position: relative;
@@ -352,7 +376,7 @@
                         display: none;
                         font-size: 0.8em;
                         align-items: center;
-                        color: @color;
+                        color: @msg-color;
                         font-weight: bold;
                         position: absolute;
                         right: 0;
@@ -372,7 +396,8 @@
             }
         }
         .cp-app-contacts-input {
-            background-color: lighten(@bg-color, 15%);
+            background-color: @msg-bg-color-lighter;
+            background-color: var(--msg-bg-color-lighter);
             height: auto;
             min-height: 50px;
             display: flex;
@@ -385,22 +410,28 @@
                 border: none;
                 height: 54px; // 2 lines (22px height) + 2 margins (5px)
                 flex: 1;
-                background-color: darken(@bg-color, 10%);
-                color: @color;
+                background-color: white;
+                color: @cryptpad_text_col;
+                //background-color: @msg-bg-color-dark;
+                //background-color: var(--msg-bg-color-dark);
+                //color: @msg-color;
                 resize: none;
                 overflow-y: auto;
-                .placeholder(#bbb);
+                .placeholder(#999);
                 &[disabled="true"] {
-                    .placeholder(#999);
+                    .placeholder(#666);
                 }
             }
             button {
                 height: 54px !important;
                 border-radius: 0;
                 border: none;
-                background-color: darken(@bg-color, 15%) !important;
+                color: #eee;
+                background-color: @msg-bg-color-darker;
+                background-color: var(--msg-bg-color-darker);
                 &:hover {
-                    background-color: darken(@bg-color, 20%) !important;
+                    background-color: @msg-bg-color-dark;
+                    background-color: var(--msg-bg-color-dark);
                 }
             }
         }

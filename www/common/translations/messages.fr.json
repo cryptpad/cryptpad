@@ -839,19 +839,19 @@
         "title": "Pour bien démarrer",
         "generic": {
             "more": "Apprenez-en davantage sur le fonctionnement de CryptPad en lisant notre <a href=\"/faq.html\" target=\"_blank\">FAQ</a>",
-            "share": "Utilisez le menu partage (<span class=\"fa fa-shhare-alt\"></span>) pour générer un lien d'accès ou d'édition  pad",
+            "share": "Partagez ce document avec le bouton <i class=\"fa fa-shhare-alt\"></i> <b>Partager</b> et gérez les droits d'accès avec le bouton <i class=\"fa fa-unlock-alt\"></i> <b>Accès</b>.",
             "save": "Tous les changements effectués sont enregistrés automatiquement"
         },
         "text": {
-            "formatting": "Vous pouvez afficher ou cacher la barre d'outils de texte en cliquant sur les boutons <span class=\"fa fa-caret-down\"></span> ou <span class=\"fa fa-caret-up\"></span>",
-            "embed": "Les utilisateurs enregistrés peuvent intégrer un fichier de leur CryptDrive en utilisant le bouton <span class=\"fa fa-image\"></span>",
+            "formatting": "Affichez ou cachez la barre d'outils texte avec le bouton <i class=\"fa fa-wrench\"></i> <b>Outils</b>.",
+            "embed": "Insérez une image de votre CryptDrive ou de votre ordinateur avec le bouton <i class=\"fa fa-image\"></i> <b>Insérer</b> (utilisateurs connectés à leur compte).",
             "history": "Vous pouvez utiliser <em>l'historique</em> <span class=\"fa fa-history\"></span> pour voir ou restaurer les versions précédentes du pad"
         },
         "pad": {
             "export": "Vous pouvez exporter le contenu en tant que PDF avec le bouton <span class=\"fa fa-print\"></span> de la barre d'outils de mise en forme du texte"
         },
         "code": {
-            "modes": "Utilisez le sous-menu <span class=\"fa fa-ellipsis-h\"></span> pour changer le mode de coloration syntaxique ou le thème de couleur"
+            "modes": "Changez le thème de couleur et la coloration syntaxique avec le menu <span class=\"cptools cptools-palette\"></span> <b>Thème</b>."
         },
         "beta": {
             "warning": "Cet éditeur est encore <strong>expérimental</strong>, vous pouvez signaler tout problème rencontré sur <a href=\"https://github.com/xwiki-labs/cryptpad/issues/\" target=\"_blank\">GitHub</a>"
@@ -862,7 +862,7 @@
         "slide": {
             "markdown": "Rédigez vos slides en <a href=\"http://www.markdowntutorial.com/\">Markdown</a> et séparez les avec une ligne contenant <code>---</code>",
             "present": "Démarrez la présentation en utilisant le bouton <span class=\"fa fa-play-circle\"></span>",
-            "settings": "Modifiez les préférences de la présentation (image de fond, transitions, numéro de pages, ...) avec le bouton <span class=\"fa fa-cog\"></span> dans le sous-menu <span class=\"fa fa-ellipsis-h\"></span>",
+            "settings": "Changez les couleurs de la présentation et autres <span class=\"fa fa-cog\"></span> <b>Options</b> (image de fond, transitions, numéro de pages, etc.) avec le menu <span class=\"cptools cptools-palette\"></span> <b>Thème</b>.",
             "colors": "Modifiez la couleur du texte ou du fond en utilisant les boutons <span class=\"fa fa-i-cursor\"></span> et <span class=\"fa fa-square\"></span>"
         },
         "poll": {
@@ -873,8 +873,8 @@
         },
         "whiteboard": {
             "colors": "Double-cliquez sur les couleurs pour changer la palette",
-            "mode": "Vous pouvez désactiver le mode dessin pour déplacer, redimensionner, ou supprimer des éléments du dessin",
-            "embed": "Intégrez des images de votre disque <span class=\"fa fa-file-image-o\"></span> ou de votre CryptDrive <span class=\"fa fa-image\"></span> et exporter le contenu en tant que PNG sur votre disque <span class=\"fa fa-download\"></span> ou votre CryptDrive <span class=\"fa fa-cloud-upload\"></span>"
+            "mode": "Le mode <span class=\"fa fa-arrows\"></span> Sélection permet de déplacer et transformer des éléments du dessin.",
+            "embed": "Insérez des images de votre CryptDrive ou ordinateur avec <span class=\"fa fa-image\"></span> <b>Insérer</b>. Exportez le dessin vers votre CryptDrive avec <b><span class=\"fa fa-file-o\"></span> Fichier > <span class=\"fa fa-file-image-o\"></span> Sauvegarder image</b> ou vers votre ordinateur avec <b><span class=\"fa fa-file-o\"></span> Fichier > <span class=\"fa fa-download\"></span> Exporter</b>."
         },
         "kanban": {
             "add": "Ajoutez des cartes et tableaux en cliquant sur les boutons <span class=\"fa fa-plus\"></span>",
@@ -1367,5 +1367,15 @@
     "unknownPad": "Pad inconnu",
     "comments_notification": "Réponses à votre commentaire \"{0}\" sur <b>{1}</b>",
     "comments_error": "Impossible d'ajouter un commentaire ici",
-    "fm_sort": "Trier"
+    "fm_sort": "Trier",
+    "slide_textCol": "Couleur de texte",
+    "slide_backCol": "Couleur de fond",
+    "toolbar_file": "Fichier",
+    "code_editorTheme": "Thème de l'éditeur",
+    "drive_treeButton": "Fichiers",
+    "toolbar_tools": "Outils",
+    "toolbar_savetodrive": "Sauvegarder image",
+    "toolbar_insert": "Insérer",
+    "toolbar_theme": "Thème",
+    "todo_move": "Votre liste de tâches est désormais dans le kanban <b>{0}</b> dans votre Drive."
 }

@@ -26,6 +26,17 @@ define([
     // Cache of the avatars outer html (including <media-tag>)
     var avatars = {};
 
+    MT.getMediaTag = function (common, data) {
+        var metadataMgr = common.getMetadataMgr();
+        var privateDat = metadataMgr.getPrivateData();
+        var origin = privateDat.fileHost || privateDat.origin;
+        var src = data.src = data.src.slice(0,1) === '/' ? origin + data.src : data.src;
+        return h('media-tag', {
+            src: src,
+            'data-crypto-key': 'cryptpad:'+data.key
+        });
+    };
+
     MT.getCursorAvatar = function (cursor) {
         var html = '<span class="cp-cursor-avatar">';
         html += (cursor.avatar && avatars[cursor.avatar]) || '';

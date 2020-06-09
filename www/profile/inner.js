@@ -2,7 +2,7 @@ define([
     'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
-    '/common/toolbar3.js',
+    '/common/toolbar.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-util.js',
@@ -376,6 +376,7 @@ define([
             todo();
         });
         var $upButton = common.createButton('upload', false, data);
+        $upButton.removeProp('title');
         $upButton.text(Messages.profile_upload);
         $upButton.prepend($('<span>', {'class': 'fa fa-upload'}));
         $block.append($upButton);
