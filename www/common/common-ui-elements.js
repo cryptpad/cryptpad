@@ -2300,7 +2300,7 @@ define([
     };
 
     UIElements.displayInfoMenu = function (Common, metadataMgr) {
-        var padType = metadataMgr.getMetadata().type;
+        //var padType = metadataMgr.getMetadata().type;
         var priv = metadataMgr.getPrivateData();
         var origin = priv.origin;
 
@@ -2313,42 +2313,11 @@ define([
             }, Messages.help_faq)
         );
 
-        var supportLine;
-        if (padType === 'support' || !Config.supportMailbox) {
-            // do nothing
-        } else if (priv.accountName) {
-            // registered users can submit support tickets
-            Messages.help_support = "Submit a support ticket"; // XXX
-            supportLine = h('p', [
-                h('a', {
-                    target: '_blank',
-                    rel: 'noreferrer noopener',
-                    href: origin + '/support/',
-                }, Messages.help_support)
-            ]);
-        } else {
-            // register to submit support tickets
-            Messages.help_supportRegisteredOnly = "Registered users can submit support tickets"; // XXX
-            var login = h('button', Messages.login_login);
-            $(login).click(function () {
-                Common.setLoginRedirect(function () {
-                    Common.gotoURL('/login/');
-                });
-            });
-            var register = h('button', Messages.login_register);
-            $(register).click(function () {
-                Common.setLoginRedirect(function () {
-                    Common.gotoURL('/register/');
-                });
-            });
-            supportLine = h('span', [
-                Messages.help_supportRegisteredOnly,
-                h('div', [
-                    login,
-                    register,
-                ])
-            ]);
-        }
+        // XXX link to the most recent changelog/release notes
+        // XXX FAQ
+        // XXX GitHub
+        // XXX privacy policy
+        // XXX legal notice
 
         var content = h('div', [
             // CryptPad version number
@@ -2357,7 +2326,7 @@ define([
             faqLine,
             // Link to the support ticket form in case their
             // question isn't answered by the FAQ
-            supportLine,
+            //supportLine,
         ]);
 
         var buttons = [
@@ -2484,6 +2453,7 @@ define([
                 },
             });
         }
+        options.push({ tag: 'hr' });
         // Add administration panel link if the user is an admin
         if (priv.edPublic && Array.isArray(Config.adminKeys) && Config.adminKeys.indexOf(priv.edPublic) !== -1) {
             options.push({
@@ -2495,6 +2465,20 @@ define([
                         window.open(origin+'/admin/');
                     } else {
                         window.parent.location = origin+'/admin/';
+                    }
+                },
+            });
+        }
+        if (padType !== 'support' && accountName && Config.supportMailbox) {
+            options.push({
+                tag: 'a',
+                attributes: {'class': 'cp-toolbar-menu-support fa fa-life-ring'},
+                content: h('span', Messages.supportPage || 'Support'),
+                action: function () {
+                    if (padType) {
+                        window.open(origin+'/support/');
+                    } else {
+                        window.parent.location = origin+'/support/';
                     }
                 },
             });
