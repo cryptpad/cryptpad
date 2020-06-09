@@ -139,20 +139,20 @@ define([
         if (!Array.isArray(AppConfig.supportLanguages)) { return $(h('div')); }
         var languages = AppConfig.supportLanguages;
 
-        var list = h('li', languages
+        var list = h('span.cp-support-language-list', languages
             .map(function (lang) {
                 return Messages._languages[lang];
             })
             .filter(Boolean)
             .map(function (lang) {
-                return h('li', lang);
+                return h('span.cp-support-language', lang);
             })
         );
 
-        var preamble = "This server's administrators speak the following languages:"; // XXX
+        Messages.support_languagesPreamble = "This server's administrators speak the following languages:"; // XXX
         var $div = $(
             h('div.cp-support-language', [
-                preamble,
+                Messages.support_languagesPreamble,
                 list,
             ])
         );
