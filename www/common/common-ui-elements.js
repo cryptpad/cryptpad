@@ -2386,15 +2386,21 @@ define([
                 content: $userAdminContent.html()
             });
         }
-        options.push({
-            tag: 'a',
-            attributes: {
-                'target': '_blank',
-                'href': origin+'/index.html',
-                'class': 'fa fa-home'
-            },
-            content: h('span', Messages.homePage)
-        });
+
+        if (accountName && !AppConfig.disableProfile) {
+            options.push({
+                tag: 'a',
+                attributes: {'class': 'cp-toolbar-menu-profile fa fa-user-circle'},
+                content: h('span', Messages.profileButton),
+                action: function () {
+                    if (padType) {
+                        window.open(origin+'/profile/');
+                    } else {
+                        window.parent.location = origin+'/profile/';
+                    }
+                },
+            });
+        }
         if (padType !== 'drive' || (!accountName && priv.newSharedFolder)) {
             options.push({
                 tag: 'a',
@@ -2428,30 +2434,6 @@ define([
                 content: h('span', Messages.type.contacts)
             });
         }
-        options.push({ tag: 'hr' });
-        // Add the change display name button if not in read only mode
-        /*
-        if (config.changeNameButtonCls && config.displayChangeName && !AppConfig.disableProfile) {
-            options.push({
-                tag: 'a',
-                attributes: {'class': config.changeNameButtonCls + ' fa fa-user'},
-                content: h('span', Messages.user_rename)
-            });
-        }*/
-        if (accountName && !AppConfig.disableProfile) {
-            options.push({
-                tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-profile fa fa-user-circle'},
-                content: h('span', Messages.profileButton),
-                action: function () {
-                    if (padType) {
-                        window.open(origin+'/profile/');
-                    } else {
-                        window.parent.location = origin+'/profile/';
-                    }
-                },
-            });
-        }
         if (padType !== 'settings') {
             options.push({
                 tag: 'a',
@@ -2466,6 +2448,7 @@ define([
                 },
             });
         }
+
         options.push({ tag: 'hr' });
         // Add administration panel link if the user is an admin
         if (priv.edPublic && Array.isArray(Config.adminKeys) && Config.adminKeys.indexOf(priv.edPublic) !== -1) {
@@ -2496,30 +2479,6 @@ define([
                 },
             });
         }
-        options.push({ tag: 'hr' });
-        if (Config.allowSubscriptions) {
-            options.push({
-                tag: 'a',
-                attributes: {
-                    'target': '_blank',
-                    'href': priv.plan ? priv.accounts.upgradeURL : origin+'/features.html',
-                    'class': 'fa fa-star-o'
-                },
-                content: h('span', priv.plan ? Messages.settings_cat_subscription : Messages.pricing)
-            });
-        }
-        if (!priv.plan && !Config.removeDonateButton) {
-            options.push({
-                tag: 'a',
-                attributes: {
-                    'target': '_blank',
-                    'rel': 'noopener',
-                    'href': priv.accounts.donateURL,
-                    'class': 'fa fa-gift'
-                },
-                content: h('span', Messages.crowdfunding_button2)
-            });
-        }
         if (AppConfig.surveyURL) {
             options.push({
                 tag: 'a',
@@ -2546,6 +2505,49 @@ define([
                 UIElements.displayInfoMenu(Common, metadataMgr);
             },
         });
+
+        options.push({
+            tag: 'a',
+            attributes: {
+                'target': '_blank',
+                'href': origin+'/index.html',
+                'class': 'fa fa-home'
+            },
+            content: h('span', Messages.homePage)
+        });
+        // Add the change display name button if not in read only mode
+        /*
+        if (config.changeNameButtonCls && config.displayChangeName && !AppConfig.disableProfile) {
+            options.push({
+                tag: 'a',
+                attributes: {'class': config.changeNameButtonCls + ' fa fa-user'},
+                content: h('span', Messages.user_rename)
+            });
+        }*/
+        options.push({ tag: 'hr' });
+        if (Config.allowSubscriptions) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'target': '_blank',
+                    'href': priv.plan ? priv.accounts.upgradeURL : origin+'/features.html',
+                    'class': 'fa fa-star-o'
+                },
+                content: h('span', priv.plan ? Messages.settings_cat_subscription : Messages.pricing)
+            });
+        }
+        if (!priv.plan && !Config.removeDonateButton) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'target': '_blank',
+                    'rel': 'noopener',
+                    'href': priv.accounts.donateURL,
+                    'class': 'fa fa-gift'
+                },
+                content: h('span', Messages.crowdfunding_button2)
+            });
+        }
 
         options.push({ tag: 'hr' });
         // Add login or logout button depending on the current status
