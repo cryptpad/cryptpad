@@ -1364,7 +1364,6 @@ define([
             case 'import':
                 button = $('<button>', {
                     'class': 'fa fa-upload cp-toolbar-icon-import',
-                    // XXX text is weird anywhere other than the drive
                     title: Messages.importButtonTitle,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.importButton));
                 /*if (data.types) {
@@ -2299,6 +2298,49 @@ define([
         return $container;
     };
 
+    UIElements.displayInfoMenu = function (Common, metadataMgr) {
+        //var padType = metadataMgr.getMetadata().type;
+        var priv = metadataMgr.getPrivateData();
+        var origin = priv.origin;
+
+        Messages.help_faq = "Review our list of frequently asked questions"; // XXX
+        var faqLine = h('p',
+            h('a', {
+                target: '_blank',
+                rel: 'noreferrer noopener',
+                href: origin + '/faq.html',
+            }, Messages.help_faq)
+        );
+
+        // XXX link to the most recent changelog/release notes
+        // XXX FAQ
+        // XXX GitHub
+        // XXX privacy policy
+        // XXX legal notice
+
+        var content = h('div', [
+            // CryptPad version number
+            h('h6', Pages.versionString),
+            // First point users to our FAQ
+            faqLine,
+            // Link to the support ticket form in case their
+            // question isn't answered by the FAQ
+            //supportLine,
+        ]);
+
+        var buttons = [
+            {
+                className: 'primary',
+                name: Messages.filePicker_close,
+                onClick: function () {},
+                keys: [27],
+            },
+        ];
+
+        var modal = UI.dialog.customModal(content, {buttons: buttons });
+        UI.openCustomModal(modal);
+    };
+
     UIElements.createUserAdminMenu = function (Common, config) {
         var metadataMgr = Common.getMetadataMgr();
 
@@ -2479,20 +2521,17 @@ define([
                 },
             });
         }
-        if (Pages.versionString) {
-            Messages.user_about = Messages.about; // XXX "About CryptPad"
-            options.push({
-                tag: 'a',
-                attributes: {
-                    'class': 'cp-toolbar-about fa fa-info',
-                },
-                content: h('span', Messages.user_about),
-                action: function () {
-                    // XXX UIElements.createHelpButton
-                    UI.alert(Pages.versionString);
-                },
-            });
-        }
+        Messages.user_about = 'About CryptPad'; // XXX
+        options.push({
+            tag: 'a',
+            attributes: {
+                'class': 'cp-toolbar-about fa fa-info',
+            },
+            content: h('span', Messages.user_about),
+            action: function () {
+                UIElements.displayInfoMenu(Common, metadataMgr);
+            },
+        });
 
         options.push({ tag: 'hr' });
         // Add login or logout button depending on the current status

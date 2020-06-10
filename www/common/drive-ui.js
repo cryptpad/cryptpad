@@ -1097,7 +1097,7 @@ define([
 
             var priv = metadataMgr.getPrivateData();
             var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
-            if (useUnsafe !== false) { // true of undefined: use unsafe links
+            if (useUnsafe === true) {
                 return void window.open(APP.origin + href);
             }
 

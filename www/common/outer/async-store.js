@@ -41,6 +41,9 @@ define([
         pad: {
             width: true
         },
+        security: {
+            unsafeLinks: false
+        },
         general: {
             allowUserFeedback: true
         }
