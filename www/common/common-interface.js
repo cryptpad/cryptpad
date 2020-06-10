@@ -807,6 +807,7 @@ define([
 
     UI.createHelper = function (href, text) {
         var q = h('a.fa.fa-question-circle', {
+            'data-cptippy-html': true,
             style: 'text-decoration: none !important;',
             title: text,
             href: href,
