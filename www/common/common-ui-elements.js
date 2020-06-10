@@ -2303,29 +2303,47 @@ define([
         var priv = metadataMgr.getPrivateData();
         var origin = priv.origin;
 
-        Messages.help_faq = "Review our list of frequently asked questions"; // XXX
-        var faqLine = h('p',
-            h('a', {
-                target: '_blank',
-                rel: 'noreferrer noopener',
-                href: origin + '/faq.html',
-            }, Messages.help_faq)
-        );
+        // TODO link to the most recent changelog/release notes
+        // https://github.com/xwiki-labs/cryptpad/releases/latest/ ?
 
-        // XXX link to the most recent changelog/release notes
-        // XXX FAQ
-        // XXX GitHub
-        // XXX privacy policy
-        // XXX legal notice
+        var note = function (content) {
+            return h('span.cp-info-menu-description', content);
+        };
 
-        var content = h('div', [
-            // CryptPad version number
+        Messages.info_imprintFlavour = "Legally mandated information about this service's operators can be found <a>here</a>."; // XXX
+        Messages.info_privacyFlavour = "Our <a>privacy policy</a> describes how we treat your data."; // XXX
+        Messages.info_faqFlavour = "Consult our <a>FAQ</a> for answers to common questions."; // XXX
+
+        var template = function (line, link) {
+            if (!line || !link) { return; }
+            var p = $('<p>').html(line)[0];
+            var model = link.cloneNode(true);
+            var sub = link.cloneNode(true);
+
+/*  This is a hack to make relative URLs point to the main domain
+    instead of the sandbox domain. It will break if the admins have specified
+    some less common URL formats for their customizable links, such as if they've
+    used a protocal-relative absolute URL. The URL API isn't quite safe to use
+    because of IE (thanks, Bill).  */
+            var href = sub.getAttribute('href');
+            if (/^\//.test(href)) { sub.setAttribute('href', origin + href); }
+            var a = p.querySelector('a');
+            if (!a) { return; }
+            sub.innerText = a.innerText;
+            p.replaceChild(sub, a);
+            return p;
+        };
+
+        var legalLine = template(Messages.info_imprintFlavour, Pages.imprintLink);
+        var privacyLine = template(Messages.info_privacyFlavour, Pages.privacyLink);
+        var faqLine = template(Messages.info_faqFlavour, Pages.faqLink);
+
+        var content = h('div.cp-info-menu-container', [
             h('h6', Pages.versionString),
-            // First point users to our FAQ
+            h('hr'),
+            legalLine,
+            privacyLine,
             faqLine,
-            // Link to the support ticket form in case their
-            // question isn't answered by the FAQ
-            //supportLine,
         ]);
 
         var buttons = [
