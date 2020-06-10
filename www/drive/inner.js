@@ -283,13 +283,13 @@ define([
             var onDisconnect = function (noAlert) {
                 setEditable(false);
                 if (drive.refresh) { drive.refresh(); }
-                APP.toolbar.failed();
+                toolbar.failed();
                 if (!noAlert) { UIElements.disconnectAlert(); }
             };
             var onReconnect = function () {
                 setEditable(true);
                 if (drive.refresh) { drive.refresh(); }
-                APP.toolbar.reconnecting();
+                toolbar.reconnecting();
                 UIElements.reconnectAlert();
             };
 
