@@ -388,8 +388,6 @@ define([
     };
 
     handlers['SAFE_LINKS_DEFAULT'] = function (common, data) {
-        Messages.settings_safeLinkDefault = "SAFE LINKS ARE NOW DEFAULT"; // XXX
-
         var content = data.content;
         content.getFormatText = function () {
             return Messages.settings_safeLinkDefault;
