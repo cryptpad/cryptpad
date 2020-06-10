@@ -704,6 +704,8 @@ define([
     };
 
     // Delete permanently some pads or folders
+    var _deleteOwned = function (Env, data, cb) {
+    };
     var _delete = function (Env, data, cb) {
         data = data || {};
         var resolved = _resolvePaths(Env, data.paths);
@@ -742,8 +744,8 @@ define([
                         });
                     });
                 }
-                uo.delete(resolved.main, waitFor(function (err, _toUnpin, _ownedRemoved) {
-                    ownedRemoved = _ownedRemoved;
+                uo.delete(resolved.main, waitFor(function (err, _toUnpin/*, _ownedRemoved*/) {
+                    //ownedRemoved = _ownedRemoved;
                     if (!Env.unpinPads || !_toUnpin) { return; }
                     Array.prototype.push.apply(toUnpin, _toUnpin);
                 }));
@@ -752,7 +754,7 @@ define([
             // Check if removed owned pads are duplicated in some shared folders
             // If that's the case, we have to remove them from the shared folders too
             // We can do that by adding their paths to the list of pads to remove from shared folders
-            if (ownedRemoved) {
+            /*if (ownedRemoved) {
                 var ids = _findChannels(Env, ownedRemoved);
                 ids.forEach(function (id) {
                     var paths = findFile(Env, id);
@@ -765,7 +767,7 @@ define([
                         }
                     });
                 });
-            }
+            }*/
             // Delete paths from the shared folders
             Object.keys(resolved.folders).forEach(function (id) {
                 Env.folders[id].userObject.delete(resolved.folders[id], waitFor(function (err, _toUnpin) {
@@ -1140,6 +1142,7 @@ define([
             getChannelsList: callWithEnv(getChannelsList),
             addPad: callWithEnv(addPad),
             delete: callWithEnv(_delete),
+            deleteOwned: callWithEnv(_deleteOwned),
             // Tools
             findChannel: callWithEnv(findChannel),
             findHref: callWithEnv(findHref),
@@ -1223,6 +1226,14 @@ define([
     var deleteInner = function (Env, paths, cb) {
         return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
             cmd: "delete",
+            data: {
+                paths: paths,
+            }
+        }, cb);
+    };
+    var deleteOwnedInner = function (Env, paths, cb) {
+        return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
+            cmd: "deleteOwned",
             data: {
                 paths: paths,
             }
@@ -1416,6 +1427,7 @@ define([
             restoreSharedFolder: callWithEnv(restoreSharedFolderInner),
             convertFolderToSharedFolder: callWithEnv(convertFolderToSharedFolderInner),
             delete: callWithEnv(deleteInner),
+            deleteOwned: callWithEnv(deleteOwnedInner),
             restore: callWithEnv(restoreInner),
             setFolderData: callWithEnv(setFolderDataInner),
             // Tools

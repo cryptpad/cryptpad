@@ -147,6 +147,7 @@ define([
                     var fd = exp.isSharedFolder(id) ? files[SHARED_FOLDERS][id] : exp.getFileData(id);
                     var channelId = fd.channel;
                     // If trying to remove an owned pad, remove it from server also
+                    /*
                     if (!sharedFolder && fd.owners && fd.owners.indexOf(edPublic) !== -1
                         && channelId) {
                         if (channelId) { ownedRemoved.push(channelId); }
@@ -168,6 +169,7 @@ define([
                             removeOwnedChannel(fd.rtChannel, function () {});
                         }
                     }
+                    */
                     if (fd.lastVersion) { toClean.push(Hash.hrefToHexChannelId(fd.lastVersion)); }
                     if (fd.rtChannel) { toClean.push(fd.rtChannel); }
                     if (channelId) { toClean.push(channelId); }
