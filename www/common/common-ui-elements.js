@@ -2306,10 +2306,6 @@ define([
         // TODO link to the most recent changelog/release notes
         // https://github.com/xwiki-labs/cryptpad/releases/latest/ ?
 
-        var note = function (content) {
-            return h('span.cp-info-menu-description', content);
-        };
-
         Messages.info_imprintFlavour = "Legally mandated information about this service's operators can be found <a>here</a>."; // XXX
         Messages.info_privacyFlavour = "Our <a>privacy policy</a> describes how we treat your data."; // XXX
         Messages.info_faqFlavour = "Consult our <a>FAQ</a> for answers to common questions."; // XXX
@@ -2317,7 +2313,6 @@ define([
         var template = function (line, link) {
             if (!line || !link) { return; }
             var p = $('<p>').html(line)[0];
-            var model = link.cloneNode(true);
             var sub = link.cloneNode(true);
 
 /*  This is a hack to make relative URLs point to the main domain
@@ -2435,13 +2430,14 @@ define([
         }
         options.push({ tag: 'hr' });
         // Add the change display name button if not in read only mode
+        /*
         if (config.changeNameButtonCls && config.displayChangeName && !AppConfig.disableProfile) {
             options.push({
                 tag: 'a',
                 attributes: {'class': config.changeNameButtonCls + ' fa fa-user'},
                 content: h('span', Messages.user_rename)
             });
-        }
+        }*/
         if (accountName && !AppConfig.disableProfile) {
             options.push({
                 tag: 'a',
