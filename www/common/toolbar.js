@@ -1027,6 +1027,7 @@ MessengerUI, Messages) {
 
         Common.mailbox.subscribe(['notifications', 'team'], {
             onMessage: function (data, el) {
+                console.log(data, el, div);
                 if (el) {
                     $(div).prepend(el);
                 }

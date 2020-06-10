@@ -137,10 +137,9 @@ proxy.mailboxes = {
     var dismiss = function (ctx, data, cId, cb) {
         var type = data.type;
         var hash = data.hash;
-        var m = Util.find(ctx, ['store', 'proxy', 'mailboxes', type]);
-        if (!m) { return void cb({error: 'NOT_FOUND'}); }
         var box = ctx.boxes[type];
         if (!box) { return void cb({error: 'NOT_LOADED'}); }
+        var m = box.data || {};
 
         // If the hash in in our history, get the index from the history:
         // - if the index is 0, we can change our lastKnownHash
@@ -202,7 +201,16 @@ proxy.mailboxes = {
     };
 
 
-    var openChannel = function (ctx, type, m, onReady) {
+    var leaveChannel = function (ctx, type, cb) {
+        var box = ctx.boxes[type];
+        if (!box) { return void cb(); }
+        if (!box.cpNf || typeof(box.cpNf.stop) !== "function") { return void cb('EINVAL'); }
+        box.cpNf.stop();
+        delete ctx.boxes[type];
+    };
+    var openChannel = function (ctx, type, m, onReady, opts) {
+        console.error(type, m, opts);
+        opts = opts || {};
         var box = ctx.boxes[type] = {
             channel: m.channel,
             type: type,
@@ -221,7 +229,8 @@ proxy.mailboxes = {
                     console.error(e);
                 }
                 box.queue.push(msg);
-            }
+            },
+            data: m
         };
         if (!Crypto.Mailbox) {
             return void console.error("chainpad-crypto is outdated and doesn't support mailboxes.");
@@ -235,7 +244,7 @@ proxy.mailboxes = {
             channel: m.channel,
             noChainPad: true,
             crypto: crypto,
-            owners: [ctx.store.proxy.edPublic],
+            owners: opts.owners || [ctx.store.proxy.edPublic],
             lastKnownHash: m.lastKnownHash
         };
         cfg.onConnectionChange = function () {}; // Allow reconnections in chainpad-netflux
@@ -357,7 +366,7 @@ proxy.mailboxes = {
             // Continue
             onReady();
         };
-        CpNetflux.start(cfg);
+        box.cpNf = CpNetflux.start(cfg);
     };
 
     var initializeHistory = function (ctx) {
@@ -480,11 +489,15 @@ proxy.mailboxes = {
 
         Object.keys(store.proxy.teams || {}).forEach(function (teamId) {
             var team = store.proxy.teams[teamId];
+            if (!team) { return; }
             var teamMailbox = team.keys.mailbox || {};
             if (!teamMailbox.channel) { return; }
+            var opts = {
+                owners: [Util.find(team, ['keys', 'drive', 'edPublic'])]
+            };
             openChannel(ctx, 'team-'+teamId, teamMailbox, function () {
                 //console.log('Mailbox team', teamId);
-            });
+            }, opts);
         });
 
         mailbox.post = function (box, type, content) {
@@ -497,9 +510,12 @@ proxy.mailboxes = {
             });
         };
 
-        mailbox.open = function (key, m, cb, team) {
+        mailbox.open = function (key, m, cb, team, opts) {
             if (TYPES.indexOf(key) === -1 && !team) { return; }
-            openChannel(ctx, key, m, cb);
+            openChannel(ctx, key, m, cb, opts);
+        };
+        mailbox.close = function (key, cb) {
+            leaveChannel(ctx, key, cb);
         };
 
         mailbox.dismiss = function (data, cb) {

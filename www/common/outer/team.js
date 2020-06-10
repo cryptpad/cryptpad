@@ -126,6 +126,9 @@ define([
         delete ctx.store.proxy.teams[teamId];
         ctx.emit('LEAVE_TEAM', teamId, team.clients);
         ctx.updateMetadata();
+        ctx.store.mailbox.close('team-'+teamId, function () {
+            // Close team mailbox
+        });
     };
 
     var getTeamChannelList = function (ctx, id) {
@@ -494,8 +497,7 @@ define([
         var roHash = Hash.getViewHashFromKeys(secret);
         var keyPair = Nacl.sign.keyPair(); // keyPair.secretKey , keyPair.publicKey
 
-        var curveSeed = Nacl.randomBytes(32);
-        var curvePair = Nacl.box.keyPair.fromSecretKey(curveSeed);
+        var curvePair = Nacl.box.keyPair();
 
         var rosterSeed = Crypto.Team.createSeed();
         var rosterKeys = Crypto.Team.deriveMemberKeys(rosterSeed, {
@@ -612,7 +614,7 @@ define([
                         view: rosterKeys.viewKeyStr,
                     }
                 };
-                ctx.store.proxy.teams[id] = {
+                var t = ctx.store.proxy.teams[id] = {
                     owner: true,
                     channel: secret.channel,
                     hash: hash,
@@ -629,6 +631,11 @@ define([
 
                 onReady(ctx, id, lm, roster, keys, cId, function () {
                     Feedback.send('TEAM_CREATION');
+                    ctx.store.mailbox.open('team-'+id, t.keys.mailbox, function () {
+                        // Team mailbox loaded
+                    }, true, {
+                        owners: t.keys.drive.edPublic
+                    });
                     ctx.updateMetadata();
                     cb();
                 });
@@ -729,6 +736,11 @@ define([
         }).nThen(function (waitFor) {
             // Delete the pins log
             team.rpc.removePins(waitFor(function (err) {
+                if (err) { console.error(err); }
+            }));
+            // Delete the mailbox
+            var mailboxChan = Util.find(teamData, ['keys', 'mailbox', 'channel']);
+            team.rpc.removeOwnedChannel(mailboxChan, waitFor(function (err) {
                 if (err) { console.error(err); }
             }));
             // Delete the roster
@@ -1577,15 +1589,12 @@ define([
         });
     };
 
-    // XXX call mailbox.open when you create or join a team
-    // XXX close the mailbox hwne you leave the team
     var deriveMailbox = function (team) {
         if (!team) { return; }
         if (team.keys && team.keys.mailbox) { return team.keys.mailbox; }
-        var channel = team.channel;
-        if (!channel) { return; }
-        // XXX maybe use something else than channel?
-        var hash = Nacl.hash(Nacl.util.decodeUTF8(channel));
+        var strSeed = Util.find(team, ['keys', 'roster', 'edit']);
+        if (!strSeed) { return; }
+        var hash = Nacl.hash(Nacl.util.decodeUTF8(strSeed));
         var seed = hash.slice(0,32);
         var mailboxChannel = Util.uint8ArrayToHex(hash.slice(32,48));
         var curvePair = Nacl.box.keyPair.fromSecretKey(seed);
