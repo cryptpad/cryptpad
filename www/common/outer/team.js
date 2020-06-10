@@ -773,6 +773,12 @@ define([
         ctx.onReadyHandlers[id] = [];
         openChannel(ctx, team, id, function (obj) {
             if (!(obj && obj.error)) { console.debug('Team joined:' + id); }
+            var t = ctx.store.proxy.teams[id];
+            ctx.store.mailbox.open('team-'+id, t.keys.mailbox, function () {
+                // Team mailbox loaded
+            }, true, {
+                owners: t.keys.drive.edPublic
+            });
             ctx.updateMetadata();
             cb(obj);
         });
