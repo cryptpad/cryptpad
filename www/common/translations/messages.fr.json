@@ -1377,5 +1377,7 @@
     "toolbar_savetodrive": "Sauvegarder image",
     "toolbar_insert": "Insérer",
     "toolbar_theme": "Thème",
-    "todo_move": "Votre liste de tâches est désormais dans le kanban <b>{0}</b> dans votre Drive."
+    "todo_move": "Votre liste de tâches est désormais dans le kanban <b>{0}</b> dans votre Drive.",
+    "settings_safeLinkDefault": "Les liens sécurisés sont désormais activés par défaut. Veuillez utiliser le menu <i class=\"fa fa-shhare-alt\"></i> <b>Partager</b> pour copier les liens plutôt que la barre d'adresse de votre navigateur.",
+    "support_languagesPreamble": "L'équipe de support parle les langues suivantes :"
 }
