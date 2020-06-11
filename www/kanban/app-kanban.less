@@ -421,14 +421,21 @@
             }
         }
         #kanban-trash {
-            height: 60px;
-            font-size: 40px;
+            height: 0px;
+            font-size: 0px;
+            transition: height 400ms, font-size 400ms;
+
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             width: 100%;
             //pointer-events: none;
+
+            &.kanban-trash-active, &.kanban-trash-suggest {
+                height: 60px;
+                font-size: 40px;
+            }
             i {
                 position: fixed;
             }
