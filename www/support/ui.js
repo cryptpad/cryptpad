@@ -66,7 +66,7 @@ define([
         var $cat = $form.find('.cp-support-form-category');
         var $title = $form.find('.cp-support-form-title');
         var $content = $form.find('.cp-support-form-msg');
-        var $attachments = $form.find('.cp-support-form-attachments');
+        var $attachments = $form.find('.cp-support-attachments');
 
 
         var category = $cat.val().trim();
@@ -105,9 +105,31 @@ Messages.support_cat_account = "User account"; // XXX
 Messages.support_cat_data = "Loss of content"; // XXX
 Messages.support_cat_bug = "Bug report"; // XXX
 Messages.support_cat_other = "Other"; // XXX
+Messages.support_cat_all = "All"; // XXX
 Messages.support_category = "Category"; // XXX
 Messages.support_attachments = "Attachments"; // XXX
 Messages.support_addAttachment = "Add attachment"; // XXX
+
+    var makeCategoryDropdown = function (ctx, container, onChange, all) {
+        var categories = ['account', 'data', 'bug', 'other'];
+        if (all) { categories.push('all'); }
+        categories = categories.map(function (key) {
+            return {
+                tag: 'a',
+                content: h('span', Messages['support_cat_'+key]),
+                action: function () {
+                    onChange(key);
+                }
+            };
+        });
+        var dropdownCfg = {
+            text: Messages.support_category,
+            options: categories,
+            container: $(container),
+            isSelect: true
+        };
+        return UIElements.createDropdown(dropdownCfg);
+    };
 
     var makeForm = function (ctx, cb, title) {
         var button;
@@ -123,23 +145,10 @@ Messages.support_addAttachment = "Add attachment"; // XXX
             type: 'hidden',
             value: ''
         });
-        var categories = ['account', 'data', 'bug', 'other'].map(function (key) {
-            return {
-                tag: 'a',
-                content: h('span', Messages['support_cat_'+key]),
-                action: function () {
-                    $(category).val(key);
-                }
-            };
-        });
         var catContainer = h('div.cp-dropdown-container' + (title ? '.cp-hidden': ''));
-        var dropdownCfg = {
-            text: Messages.support_category,
-            options: categories,
-            container: $(catContainer),
-            isSelect: true
-        };
-        var $drop = UIElements.createDropdown(dropdownCfg);
+        makeCategoryDropdown(ctx, catContainer, function (key) {
+            $(category).val(key);
+        });
 
         var attachments, addAttachment;
 
@@ -157,7 +166,7 @@ Messages.support_addAttachment = "Add attachment"; // XXX
                 placeholder: Messages.support_formMessage
             }),
             h('label', Messages.support_attachments),
-            attachments = h('div.cp-support-form-attachments'),
+            attachments = h('div.cp-support-attachments'),
             addAttachment = h('button', Messages.support_addAttachment),
             h('hr'),
             button,
@@ -240,6 +249,7 @@ Messages.support_addAttachment = "Add attachment"; // XXX
         }
 
         var $ticket = $(h('div.cp-support-list-ticket', {
+            'data-cat': content.category,
             'data-id': content.id
         }, [
             h('h2', [ticketCategory, ticketTitle, url]),
@@ -334,7 +344,7 @@ Messages.support_addAttachment = "Add attachment"; // XXX
                 h('span.cp-support-message-time', content.time ? new Date(content.time).toLocaleString() : '')
             ]),
             h('pre.cp-support-message-content', content.message),
-            h('div', attachments),
+            h('div.cp-support-attachments', attachments),
             isAdmin ? userData : undefined,
         ]);
     };
@@ -381,6 +391,9 @@ Messages.support_addAttachment = "Add attachment"; // XXX
         };
         ui.makeForm = function (cb, title) {
             return makeForm(ctx, cb, title);
+        };
+        ui.makeCategoryDropdown = function (container, onChange, all) {
+            return makeCategoryDropdown(ctx, container, onChange, all);
         };
         ui.makeTicket = function ($div, content, onHide) {
             return makeTicket(ctx, $div, content, onHide);
