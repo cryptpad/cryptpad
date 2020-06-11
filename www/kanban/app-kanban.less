@@ -421,11 +421,17 @@
             }
         }
         #kanban-trash {
-            height: 0px;
+            height: 1px;
             font-size: 0px;
-            transition: height 400ms, font-size 400ms;
+/*  CSS transitions are nice to look at, but it seems some interaction of "display: flex" here
+    makes the horizontal scrollbar stop working, so we need "display: none" for this state, but
+    CSS transitions are disabled when one state has "display: none". We can accomplish this in
+    js, but js animations are more prone to bugs and I'd rather live with a slight jank than
+    have the trash get stuck in some intermediary animation state under heavy use. --ansuz
+*/
+            display: none; // flex;
+            //transition: opacity 400ms, height 400ms, font-size 400ms;
 
-            display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
@@ -433,6 +439,7 @@
             //pointer-events: none;
 
             &.kanban-trash-active, &.kanban-trash-suggest {
+                display: flex;
                 height: 60px;
                 font-size: 40px;
             }
