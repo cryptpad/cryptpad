@@ -1378,6 +1378,6 @@
     "toolbar_file": "File",
     "slide_backCol": "Background color",
     "slide_textCol": "Text color",
-    "support_languagesPreamble": "This server's administrators speak the following languages:",
+    "support_languagesPreamble": "The support team speaks the following languages:",
     "settings_safeLinkDefault": "Safe Links are now turned on by default. Please use the <i class=\"fa fa-shhare-alt\"></i> <b>Share</b> menu to copy links rather than your browser's address bar."
 }
