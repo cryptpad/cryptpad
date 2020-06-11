@@ -149,7 +149,6 @@ define([
             })
         );
 
-        Messages.support_languagesPreamble = "This server's administrators speak the following languages:"; // XXX
         var $div = $(
             h('div.cp-support-language', [
                 Messages.support_languagesPreamble,
