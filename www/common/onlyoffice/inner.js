@@ -462,6 +462,20 @@ define([
                 });
             }
         };
+        var deleteLastCp = function () {
+            var hashes = content.hashes;
+            if (!hashes || !Object.keys(hashes).length) { return; }
+            i = i || 0;
+            var idx = Object.keys(hashes).map(Number).sort(function (a, b) {
+                return a-b;
+            });
+            var lastIndex = idx[idx.length - 1 - i];
+            delete content.hashes[lastIndex];
+            APP.onLocal();
+            APP.realtime.onSettle(function () {
+                UI.log(Messages.saved);
+            });
+        };
         var restoreLastCp = function () {
             content.saveLock = myOOId;
             APP.onLocal();
@@ -1585,6 +1599,14 @@ define([
             }
             if (window.CP_DEV_MODE || DISPLAY_RESTORE_BUTTON) {
                 common.createButton('', true, {
+                    name: 'delete',
+                    icon: 'fa-trash',
+                    hiddenReadOnly: true
+                }).click(function () {
+                    if (initializing) { return void console.error('initializing'); }
+                    deleteLastCp();
+                }).attr('title', 'Delete last checkpoint').appendTo(toolbar.$bottomM);
+                common.createButton('', true, {
                     name: 'restore',
                     icon: 'fa-history',
                     hiddenReadOnly: true
@@ -1609,6 +1631,7 @@ define([
             }
 
             if (common.isLoggedIn()) {
+                window.CryptPad_deleteLastCp = deleteLastCp;
                 var $importXLSX = common.createButton('import', true, {
                     accept: accept,
                     binary : ["ods", "xlsx", "odt", "docx", "odp", "pptx"]
