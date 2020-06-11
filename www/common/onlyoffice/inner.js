@@ -465,7 +465,7 @@ define([
         var deleteLastCp = function () {
             var hashes = content.hashes;
             if (!hashes || !Object.keys(hashes).length) { return; }
-            i = i || 0;
+            var i = 0;
             var idx = Object.keys(hashes).map(Number).sort(function (a, b) {
                 return a-b;
             });
