@@ -579,5 +579,6 @@
     "fc_color": "Schimbă culoarea",
     "fm_morePads": "Mai mult",
     "uploadFolderButton": "Încarcă dosar",
-    "storageStatus": "Capacitate de stocare:<br /><b>{0}</b> utilizat din <b>{1}</b>"
+    "storageStatus": "Capacitate de stocare:<br /><b>{0}</b> utilizat din <b>{1}</b>",
+    "fc_collapseAll": "Restrânge"
 }
