@@ -312,22 +312,24 @@
             display: inline-flex;
             align-items: baseline;
             flex: 1;
-            max-width: 80%;
+            //max-width: 80%;
             min-width: 150px;
-
+            .cp-kanban-filterTags-toggle {
+                min-width: 100px;
+            }
             .cp-kanban-filterTags-reset {
                 cursor: pointer;
-                margin-left: 10px;
-                flex-shrink: 0;
                 .tools_unselectable();
+                font-weight: bold;
                 i {
                     margin-right: 5px;
                 }
             }
-            .cp-kanban-filterTags-name {
+            .cp-kanban-filterTags-reset, .cp-kanban-filterTags-name {
                 flex-shrink: 0;
             }
             .cp-kanban-filterTags-list {
+                margin-right: 10px;
                 margin-left: 10px;
                 display: flex;
                 flex-wrap: wrap;

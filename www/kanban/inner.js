@@ -874,14 +874,27 @@ define([
             // Tags filter
             var existing = getExistingTags(kanban.options.boards);
             var list = h('div.cp-kanban-filterTags-list');
-            var reset = h('span.cp-kanban-filterTags-reset', [h('i.fa.fa-times'), Messages.kanban_clearFilter]);
+            var reset = h('span.cp-kanban-filterTags-reset', [
+                //h('i.fa.fa-times'), // XXX creates vertical alignment issues
+                Messages.kanban_clearFilter
+            ]);
+            var hint = h('span.cp-kanban-filterTags-name', Messages.kanban_tags);
             var tags = h('div.cp-kanban-filterTags', [
-                h('span.cp-kanban-filterTags-name', Messages.kanban_tags),
+                h('span.cp-kanban-filterTags-toggle', [
+                    hint,
+                    reset,
+                ]),
                 list,
-                reset
             ]);
             var $reset = $(reset);
             var $list = $(list);
+            var $hint = $(hint);
+
+            var setTagFilterState = function (bool) {
+                $hint.css('display', bool? 'none': 'inherit');
+                $reset.css('display', bool? 'inherit': 'none');
+            };
+            setTagFilterState();
 
             var getTags = function () {
                 return $list.find('span.active').map(function () {
@@ -890,11 +903,7 @@ define([
             };
             var commitTags = function () {
                 var t = getTags();
-                if (t.length) {
-                    $reset.css('visibility', '');
-                } else {
-                    $reset.css('visibility', 'hidden');
-                }
+                setTagFilterState(t.length);
                 //framework._.sfCommon.setPadAttribute('tagsFilter', t);
                 kanban.options.tags = t;
                 kanban.setBoards(kanban.options.boards);
@@ -938,14 +947,11 @@ define([
                         return $(this).data('tag') === t;
                     }).addClass('active');
                 });
-                if (tags.length) {
-                    $reset.css('visibility', '');
-                } else {
-                    $reset.css('visibility', 'hidden');
-                }
+                setTagFilterState(tags.length);
                 //framework._.sfCommon.setPadAttribute('tagsFilter', tags);
             };
-            $reset.css('visibility', 'hidden').click(function () {
+            setTagFilterState();
+            $reset.click(function () {
                 setTags([]);
                 commitTags();
             });
