@@ -707,7 +707,6 @@ define([
         }
 
         var toUnpin = [];
-        var ownedRemoved;
         nThen(function (waitFor)  {
             // Delete paths from the main drive and get the list of pads to unpin
             // We also get the list of owned pads that were removed
