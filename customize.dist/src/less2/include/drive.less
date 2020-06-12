@@ -4,6 +4,7 @@
 @import (reference) "./limit-bar.less";
 @import (reference) "./tokenfield.less";
 @import (reference) "./dropdown.less";
+@import (reference) "./buttons.less";
 
 .drive_main() {
     --LessLoader_require: LessLoader_currentFile();
@@ -471,6 +472,7 @@
             margin-top: 10px;
         }
         .cp-app-drive-content-info-box {
+            order: 10;
             line-height: 2em;
             padding: 0.25em 0.75em;
             margin: 1em;
@@ -493,6 +495,7 @@
             }
         }
         #cp-app-drive-content-folder {
+            order: 20;
             li {
                 &.cp-app-drive-search-result {
                     display: flex;
@@ -754,6 +757,7 @@
         }
 
         & > .cp-app-drive-path {
+            order: 1;
             width: 100%;
             height: @variables_bar-height;
             line-height: @variables_bar-height;
@@ -927,5 +931,12 @@
         text-transform: uppercase;
         cursor: default;
     }
+
+    .cp-app-drive-button {
+        order: 15;
+        margin: 0 1em;
+        .buttons_main();
+    }
+
 }
 

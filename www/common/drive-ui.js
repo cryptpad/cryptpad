@@ -114,7 +114,6 @@ define([
     var $trashEmptyIcon = $('<span>', {"class": "fa fa-trash-o"});
     //var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o cp-app-drive-icon-expcol"});
     var $expandIcon = $('<span>', {"class": "fa fa-plus-square-o cp-app-drive-icon-expcol"});
-    var $emptyTrashIcon = $('<button>', {"class": "fa fa-ban"});
     var $listIcon = $('<button>', {"class": "fa fa-list"});
     var $gridIcon = $('<button>', {"class": "fa fa-th-large"});
     var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up sortasc"});
@@ -2379,17 +2378,18 @@ define([
             $gridButton.attr('title', Messages.fm_viewGridButton);
             $container.append($listButton).append($gridButton);
         };
-        var createEmptyTrashButton = function ($container) {
-            var $button = $emptyTrashIcon.clone();
-            $button.addClass('cp-app-drive-toolbar-emptytrash');
-            $button.attr('title', Messages.fc_empty);
-            $button.click(function () {
+        var createEmptyTrashButton = function () {
+            var button = h('button.btn.btn-danger', [
+                h('i.fa.'+faTrash),
+                h('span', Messages.fc_empty)
+            ]);
+            $(button).click(function () {
                 UI.confirm(Messages.fm_emptyTrashDialog, function(res) {
                     if (!res) { return; }
                     manager.emptyTrash(refresh);
                 });
             });
-            $container.append($button);
+            return $(h('div.cp-app-drive-button', button));
         };
 
         // Get the upload options
@@ -3118,6 +3118,8 @@ define([
         var displayTrashRoot = function ($list, $folderHeader, $fileHeader) {
             var filesList = [];
             var root = files[TRASH];
+            var isEmpty = true;
+
             // Elements in the trash are JS arrays (several elements can have the same name)
             Object.keys(root).forEach(function (key) {
                 if (!Array.isArray(root[key])) {
@@ -3133,7 +3135,14 @@ define([
                         name: key
                     });
                 });
+                isEmpty = false;
             });
+
+            if (!isEmpty) {
+                var $empty = createEmptyTrashButton();
+                $content.append($empty);
+            }
+
             var sortedFolders = sortTrashElements(true, filesList, null, !getSortFolderDesc());
             var sortedFiles = sortTrashElements(false, filesList, APP.store[SORT_FILE_BY], !getSortFileDesc());
             if (manager.hasSubfolder(root, true)) { $list.append($folderHeader); }
@@ -3518,9 +3527,6 @@ define([
                 }
                 createViewModeButton(APP.toolbar.$bottomR);
             }
-            if (inTrash) {
-                createEmptyTrashButton(APP.toolbar.$bottomR);
-            }
 
             var $list = $('<ul>').appendTo($dirContent);
 
@@ -3536,7 +3542,6 @@ define([
             }
             $content.data('readOnlyFolder', readOnlyFolder);
 
-            // NewButton can be undefined if we're in read only mode
             if (!readOnlyFolder) {
                 createNewButton(isInRoot, APP.toolbar.$bottomL);
             }
@@ -3547,6 +3552,7 @@ define([
                 createShareButton(sfId, APP.toolbar.$bottomL);
             }
             */
+
 
             if (APP.mobile()) {
                 var $context = $('<button>', {
