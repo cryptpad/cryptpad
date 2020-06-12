@@ -2306,10 +2306,6 @@ define([
         // TODO link to the most recent changelog/release notes
         // https://github.com/xwiki-labs/cryptpad/releases/latest/ ?
 
-        Messages.info_imprintFlavour = "Legally mandated information about this service's operators can be found <a>here</a>."; // XXX
-        Messages.info_privacyFlavour = "Our <a>privacy policy</a> describes how we treat your data."; // XXX
-        Messages.info_faqFlavour = "Consult our <a>FAQ</a> for answers to common questions."; // XXX
-
         var template = function (line, link) {
             if (!line || !link) { return; }
             var p = $('<p>').html(line)[0];
@@ -2331,7 +2327,7 @@ define([
 
         var legalLine = template(Messages.info_imprintFlavour, Pages.imprintLink);
         var privacyLine = template(Messages.info_privacyFlavour, Pages.privacyLink);
-        var faqLine = template(Messages.info_faqFlavour, Pages.faqLink);
+        var faqLine = template(Messages.help.generic.more, Pages.faqLink);
 
         var content = h('div.cp-info-menu-container', [
             h('h6', Pages.versionString),
@@ -2494,7 +2490,6 @@ define([
                 },
             });
         }
-        Messages.user_about = 'About CryptPad'; // XXX
         options.push({
             tag: 'a',
             attributes: {
