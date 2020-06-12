@@ -4,8 +4,9 @@ define([
     '/common/common-hash.js',
     '/common/outer/sharedfolder.js',
     '/customize/messages.js',
+    '/common/common-feedback.js',
     '/bower_components/nthen/index.js',
-], function (UserObject, Util, Hash, SF, Messages, nThen) {
+], function (UserObject, Util, Hash, SF, Messages, Feedback, nThen) {
 
 
     var getConfig = function (Env) {
@@ -703,18 +704,16 @@ define([
         });
     };
 
-    // Delete permanently some pads or folders
-    var _deleteOwned = function (Env, data, cb) {
-    };
     var _delete = function (Env, data, cb) {
         data = data || {};
-        var resolved = _resolvePaths(Env, data.paths);
+        var resolved = data.resolved || _resolvePaths(Env, data.paths);
         if (!resolved.main.length && !Object.keys(resolved.folders).length) {
             return void cb({error: 'E_NOTFOUND'});
         }
 
         // Deleted or password changed for a shared folder
-        if (data.paths.length === 1 && data.paths[0][0] === UserObject.SHARED_FOLDERS_TEMP) {
+        if (data.paths && data.paths.length === 1 &&
+            data.paths[0][0] === UserObject.SHARED_FOLDERS_TEMP) {
             var temp = Util.find(Env, ['user', 'proxy', UserObject.SHARED_FOLDERS_TEMP]);
             delete temp[data.paths[0][1]];
             return void Env.onSync(cb);
@@ -807,6 +806,69 @@ define([
             cb();
         });
     };
+    // Delete permanently some pads or folders
+    var _deleteOwned = function (Env, data, cb) {
+        data = data || {};
+        var resolved = _resolvePaths(Env, data.paths);
+        if (!resolved.main.length && !Object.keys(resolved.folders).length) {
+            return void cb({error: 'E_NOTFOUND'});
+        }
+        var toDelete = {
+            main: [],
+            folders: {}
+        };
+        var todo = function (id, uo, p, _cb) {
+            var cb = Util.once(Util.mkAsync(_cb));
+            var el = uo.find(p);
+            if (!uo.isFile(el) && !uo.isSharedFolder(el)) { return; }
+            var data = uo.isFile(el) ? uo.getFileData(el) : getSharedFolderData(Env, el);
+            var chan = data.channel;
+            Env.removeOwnedChannel(chan, function (obj) {
+                // If the error is that the file is already removed, nothing to
+                // report, it's a normal behavior (pad expired probably)
+                if (obj && obj.error && obj.error.code !== "ENOENT") {
+                    // RPC may not be responding
+                    // Send a report that can be handled manually
+                    console.error(obj.error, chan);
+                    Feedback.send('ERROR_DELETING_OWNED_PAD=' + chan + '|' + obj.error, true);
+                    return void cb();
+                }
+
+                // No error: delete the pads and all its copies from our drive and shared folders
+                var ids = _findChannels(Env, [chan]);
+                ids.forEach(function (id) {
+                    var paths = findFile(Env, id);
+                    var _resolved = _resolvePaths(Env, paths);
+
+                    Array.prototype.push.apply(toDelete.main, _resolved.main);
+                    Object.keys(_resolved.folders).forEach(function (fId) {
+                        if (toDelete.folders[fId]) {
+                            Array.prototype.push.apply(toDelete.folders[fId], _resolved.folders[fId]);
+                        } else {
+                            toDelete.folders[fId] = _resolved.folders[fId];
+                        }
+                    });
+                });
+                cb();
+            });
+        };
+        nThen(function (w) {
+            // Delete owned pads from the server
+            resolved.main.forEach(function (p) {
+                todo(null, Env.user.userObject, p, w());
+            });
+            Object.keys(resolved.folders).forEach(function (id) {
+                var uo = Env.folders[id].userObject;
+                resolved.folders[id].forEach(function (p) {
+                    todo(id, uo, p, w());
+                });
+            });
+        }).nThen(function () {
+            // Remove deleted pads from the drive
+            _delete(Env, { resolved: toDelete }, cb);
+        });
+    };
+
     // Empty the trash (main drive only)
     var _emptyTrash = function (Env, data, cb) {
         Env.user.userObject.emptyTrash(function (err, toClean) {
@@ -870,6 +932,8 @@ define([
                 _convertFolderToSharedFolder(Env, data, cb); break;
             case 'delete':
                 _delete(Env, data, cb); break;
+            case 'deleteOwned':
+                _deleteOwned(Env, data, cb); break;
             case 'emptyTrash':
                 _emptyTrash(Env, data, cb); break;
             case 'rename':
@@ -1103,6 +1167,7 @@ define([
             unpinPads: data.unpin,
             onSync: data.onSync,
             Store: data.Store,
+            removeOwnedChannel: data.removeOwnedChannel,
             loadSharedFolder: data.loadSharedFolder,
             cfg: uoConfig,
             edPublic: data.edPublic,

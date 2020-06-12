@@ -3,9 +3,8 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-realtime.js',
-    '/common/common-feedback.js',
     '/customize/messages.js'
-], function (AppConfig, Util, Hash, Realtime, Feedback, Messages) {
+], function (AppConfig, Util, Hash, Realtime, Messages) {
     var module = {};
 
     var clone = function (o) {

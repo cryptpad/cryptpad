@@ -447,19 +447,19 @@ define([
                 h('li', h('a.cp-app-drive-context-delete.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faTrash,
-                }, Messages.fc_delete)),
+                }, Messages.fc_delete)), // "Move to trash"
                 h('li', h('a.cp-app-drive-context-deleteowned.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faDelete,
-                }, Messages.fc_delete_owned)),
+                }, Messages.fc_delete_owned)), // XXX update key? "Delete from the server"
                 h('li', h('a.cp-app-drive-context-remove.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
-                    'data-icon': faDelete,
-                }, Messages.fc_remove)),
+                    'data-icon': faTrash,
+                }, Messages.fc_remove)), // XXX update key? "Remove from your CryptDrive"
                 h('li', h('a.cp-app-drive-context-removesf.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
-                    'data-icon': faDelete,
-                }, Messages.fc_remove_sharedfolder)),
+                    'data-icon': faTrash,
+                }, Messages.fc_remove_sharedfolder)), // XXX update key? "Remove"
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-properties.dropdown-item', {
                     'tabindex': '-1',
@@ -1279,18 +1279,12 @@ define([
                     // If we're not in the trash nor in a shared folder, hide "remove"
                     if (!manager.isInSharedFolder(path)
                             && !$element.is('.cp-app-drive-element-sharedf')) {
+                        // This isn't a shared folder: can't delete shared folder
                         hide.push('removesf');
                     } else if (type === "tree") {
+                        // This is a shared folder or an element inside a shsared folder
+                        // ==> can't move to trash
                         hide.push('delete');
-                        // Don't hide the deleteowned link if the element is a shared folder and
-                        // it is owned
-                        if (manager.isInSharedFolder(path) ||
-                                !$element.is('.cp-app-drive-element-owned')) {
-                            hide.push('deleteowned');
-                        } else {
-                            // This is a shared folder and it is owned
-                            hide.push('removesf');
-                        }
                     }
                     if ($element.closest('[data-ro]').length) {
                         editable = false;
@@ -1657,22 +1651,11 @@ define([
             if (paths) {
                 paths.forEach(function (p) { pathsList.push(p.path); });
             }
-            var hasOwned = pathsList.some(function (p) {
-                // NOTE: Owned pads in shared folders won't be removed from the server
-                // so we don't have to check, we can use the default message
-                if (manager.isInSharedFolder(p)) { return false; }
-
-                var el = manager.find(p);
-                var data = manager.isSharedFolder(el) ? manager.getSharedFolderData(el)
-                                        : manager.getFileData(el);
-                return data.owners && data.owners.indexOf(edPublic) !== -1;
-            });
             var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [pathsList.length]);
             if (pathsList.length === 1) {
-                msg = hasOwned ? Messages.fm_deleteOwnedPad : Messages.fm_removePermanentlyDialog;
-            } else if (hasOwned) {
-                msg = msg + '<br><em>' + Messages.fm_removePermanentlyNote + '</em>';
+                msg = Messages.fm_removePermanentlyDialog;
             }
+            // XXX update key to tell the user that these pads will still be avialble to other users
             UI.confirm(msg, function(res) {
                 $(window).focus();
                 if (!res) { return; }
@@ -3995,7 +3978,7 @@ define([
             UI.confirm(msgD, function(res) {
                 $(window).focus();
                 if (!res) { return; }
-                manager.delete(pathsList, function () {
+                manager.deleteOwned(pathsList, function () {
                     pathsList.forEach(LS.removeFoldersOpened);
                     removeSelected();
                     refresh();
