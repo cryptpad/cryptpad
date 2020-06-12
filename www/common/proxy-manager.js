@@ -398,26 +398,13 @@ define([
                     // Copy the elements to the new location
                     var toCopy = _getCopyFromPaths(Env, resolved.main, Env.user.userObject);
                     var newUserObject = newResolved.userObject;
-                    var ownedPads = [];
                     toCopy.forEach(function (obj) {
                         newUserObject.copyFromOtherDrive(newResolved.path, obj.el, obj.data, obj.key);
-                        var _owned = Object.keys(obj.data).filter(function (id) {
-                            var owners = obj.data[id].owners;
-                            return _ownedByMe(Env, owners);
-                        });
-                        Array.prototype.push.apply(ownedPads, _owned);
                     });
 
                     if (copy) { return; }
 
                     if (resolved.main.length) {
-                        var rootPath = resolved.main[0].slice();
-                        rootPath.pop();
-                        ownedPads = Util.deduplicateString(ownedPads);
-                        ownedPads.forEach(function (id) {
-                            Env.user.userObject.add(Number(id), rootPath);
-                        });
-
                         // Remove the elements from the old location (without unpinning)
                         Env.user.userObject.delete(resolved.main, waitFor()); // FIXME waitFor() is called synchronously
                     }
@@ -1142,14 +1129,6 @@ define([
                     if (e) { error = e; return; }
                     uo.add(id, p);
                 }));
-                if (uo.id && _ownedByMe(Env, pad.owners)) {
-                    // Creating an owned pad in a shared folder:
-                    // We must add a copy in the user's personnal drive
-                    Env.user.userObject.pushData(pad, waitFor(function (e, id) {
-                        if (e) { error = e; return; }
-                        Env.user.userObject.add(id, ['root']);
-                    }));
-                }
             }).nThen(function () {
                 cb(error);
             });
