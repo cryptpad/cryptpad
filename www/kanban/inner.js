@@ -874,8 +874,8 @@ define([
             // Tags filter
             var existing = getExistingTags(kanban.options.boards);
             var list = h('div.cp-kanban-filterTags-list');
-            var reset = h('span.cp-kanban-filterTags-reset', [
-                //h('i.fa.fa-times'), // XXX creates vertical alignment issues
+            var reset = h('button.btn.btn-secondary.cp-kanban-filterTags-reset', [
+                h('i.fa.fa-times'),
                 Messages.kanban_clearFilter
             ]);
             var hint = h('span.cp-kanban-filterTags-name', Messages.kanban_tags);
@@ -891,8 +891,8 @@ define([
             var $hint = $(hint);
 
             var setTagFilterState = function (bool) {
-                $hint.css('display', bool? 'none': 'inherit');
-                $reset.css('display', bool? 'inherit': 'none');
+                $hint.css('visibility', bool? 'hidden': 'visible');
+                $reset.css('visibility', bool? 'visible': 'hidden');
             };
             setTagFilterState();
 
