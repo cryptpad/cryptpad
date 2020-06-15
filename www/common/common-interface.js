@@ -328,11 +328,7 @@ define([
         var input = dialog.textInput();
 
         var tagger = dialog.frame([
-            dialog.message([
-                Messages.tags_add,
-                h('br'),
-                Messages.tags_searchHint,
-            ]),
+            dialog.message([ Messages.tags_add ]),
             input,
             h('center', h('small', Messages.tags_notShared)),
             dialog.nav(),
