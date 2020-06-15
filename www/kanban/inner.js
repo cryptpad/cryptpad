@@ -874,7 +874,7 @@ define([
             // Tags filter
             var existing = getExistingTags(kanban.options.boards);
             var list = h('div.cp-kanban-filterTags-list');
-            var reset = h('button.btn.btn-secondary.cp-kanban-filterTags-reset', [
+            var reset = h('button.btn.btn-cancel.cp-kanban-filterTags-reset', [
                 h('i.fa.fa-times'),
                 Messages.kanban_clearFilter
             ]);
