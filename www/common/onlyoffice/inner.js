@@ -506,6 +506,33 @@ define([
             }, to);
         };
 
+Messages.oo_refresh = "Refresh"; // XXX read-only corner popup when receiving remote updates
+        var refreshReadOnly = function () {
+            var cancel = h('button.cp-corner-cancel', Messages.cancel);
+            var reload = h('button.cp-corner-primary', [
+                h('i.fa.fa-refresh'),
+                Messages.oo_refresh
+            ]);
+
+            var actions = h('div', [cancel, reload]);
+            var m = UI.cornerPopup("out of date", actions, '');
+            $(reload).click(function () {
+                console.error('todo');
+                ooChannel.ready = false;
+                var lastCp = getLastCp();
+                loadLastDocument(lastCp, function () {
+                    // On error, do nothing
+                }, function (blob, type) {
+                    resetData(blob, type);
+                });
+                delete APP.refreshPopup;
+                m.delete();
+            });
+            $(cancel).click(function () {
+                delete APP.refreshPopup;
+                m.delete();
+            });
+        };
 
         var openRtChannel = function (cb) {
             if (rtChannel.ready) { return void cb(); }
@@ -529,6 +556,18 @@ define([
                         break;
                     case 'MESSAGE':
                         if (ooChannel.ready) {
+                            // In read-only mode, push the message to the queue and prompt
+                            // the user to refresh OO (without reloading the page)
+                            if (readOnly) {
+                                ooChannel.queue.push(obj.data);
+                                if (APP.refreshPopup) { return; }
+                                APP.refreshPopup = true;
+
+                                // Don't "spam" the user instantly and no more than
+                                // 1 popup every 30s
+                                setTimeout(refreshReadOnly, 30000);
+                                return;
+                            }
                             ooChannel.send(obj.data.msg);
                             ooChannel.lastHash = obj.data.hash;
                             ooChannel.cpIndex++;
@@ -986,8 +1025,10 @@ define([
                         ooChannel.queue.forEach(function (data) {
                             ooChannel.send(data.msg);
                         });
-                        var last = ooChannel.queue.pop();
-                        if (last) { ooChannel.lastHash = last.hash; }
+                        if (!readOnly) {
+                            var last = ooChannel.queue.pop();
+                            if (last) { ooChannel.lastHash = last.hash; }
+                        }
                         ooChannel.cpIndex += ooChannel.queue.length;
                         // Apply existing locks
                         deleteOfflineLocks();
@@ -1018,7 +1059,7 @@ define([
                             UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
                             setTimeout(function () {
                                 makeCheckpoint(true);
-                            }, 1000);
+                            }, 5000);
                         }
                     }
                 }
@@ -1788,10 +1829,10 @@ define([
                 var latest = getLastCp(true);
                 var newLatest = getLastCp();
                 if (newLatest.index > latest.index) {
+                    ooChannel.queue = [];
                     var hasDrawings = checkDrawings();
                     if (hasDrawings) {
                         ooChannel.ready = false;
-                        ooChannel.queue = [];
                     }
                     // New checkpoint
                     sframeChan.query('Q_OO_SAVE', {
