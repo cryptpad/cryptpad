@@ -23,12 +23,20 @@ To update to 3.19.0 from 3.18.1:
 * We've updated the layout of the "user admin menu" which can be found in the top-right corner by clicking your avatar. It features an "About CryptPad" menu which displays the version of the instance you're using as well as some resources which are otherwise only available via the footer of static pages.
 * We often receive support tickets in languages that we don't speak, which forces us to use translation services in order to answer questions. To address this issue, we've made it possible for admins to display a notice indicating which languages they speak. An example configuration is provided in `customize.dist/application_config.js`.
 * We've integrated two PRs:
-  1. [Only list premium features when subscriptions are enabled](https://github.com/xwiki-labs/cryptpad/pull/538)
-  2. [Add privacy policy option](https://github.com/xwiki-labs/cryptpad/pull/537)
+  1. [Only list premium features when subscriptions are enabled](https://github.com/xwiki-labs/cryptpad/pull/538).
+  2. [Add privacy policy option](https://github.com/xwiki-labs/cryptpad/pull/537).
 * We found it cumbersome to add new cards to the top of our Kanban columns, since we had to create a new card at the bottom and then drag it to the top. In response, we've broken up the rather large "new card" button into two buttons, one which adds a card at the top, and another which adds a new card at the bottom.
 * We've made it easier to use tags for files in the drive:
-  1. You can now select multiple files and apply a set of tags to all of them
-  2. Hitting "enter" in an empty tag prompt field will submit the current list of tags
+  1. You can now select multiple files and apply a set of tags to all of them.
+  2. Hitting "enter" in an empty tag prompt field will submit the current list of tags.
+* We've also made a few tweaks to the kanban layout:
+  1. The "trash bar" only appears while you are actively dragging a card.
+  2. The "tag list" now takes up more of the available width, while the button to clear the currently applied tag filter has been moved to the left, replacing the "filter by tag" hint text.
+* We've received requests to enable translations for a number of languages over the last few months. The following languages are enabled on [our weblate instance](https://weblate.cryptpad.fr/projects/cryptpad/app/), but have yet to be translated.
+  * Arabic
+  * Hindi
+  * Telugu
+  * Turkish
 * Unregistered users were able to open up the "filepicker modal" in spreadsheets. It was already possible to embed an image which they'd already stored in their drive, but it was not clear why they were not able to upload a new image. We now display a disabled upload button with a tooltip to log in or register in order to upload images.
 * Finally, we've updated the styles in our presentation editor to better match our recent toolbar redesign and the mermaidjs integration.
 
@@ -40,6 +48,7 @@ To update to 3.19.0 from 3.18.1:
 * We've updated our marked.js dependency to the latest version in order to correct some minor rendering bugs.
 * Unregistered users are now redirected to the login page when they visit the support page.
 * We've removed the unsupported "rename" entry from the right-click menu in unregistered users drives.
+* After a deep investigation we found and fixed the cause of a bug in which user accounts spontaneously removed themselves from teams. A flaw in the serverside cache caused clients to load an incomplete account of the team's membership which caused the team to appear to have been deleted. Unfortunately, the client responded by removing the corrupt team credentials from their account. Our fix will prevent future corruptions, but does not restore unintentionally removed teams.
 * Lastly, we've added a "Hind" font to the spreadsheet editor which introduces basic support for Devanagari characters.
 
 # Smilodon's revenge (3.18.1)
