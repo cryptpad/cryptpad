@@ -66,10 +66,11 @@ define([
         var $cat = $form.find('.cp-support-form-category');
         var $title = $form.find('.cp-support-form-title');
         var $content = $form.find('.cp-support-form-msg');
+        // XXX block submission until pending uploads are complete?
         var $attachments = $form.find('.cp-support-attachments');
 
 
-        var category = $cat.val().trim();
+        var category = $cat.val().trim(); // XXX make category a required field?
         var title = $title.val().trim();
         if (!title) {
             return void UI.alert(Messages.support_formTitleError);
@@ -182,6 +183,8 @@ Messages.support_addAttachment = "Add attachment"; // XXX
             }).on('change', function (e) {
                 var files = Util.slice(e.target.files);
                 files.forEach(function (file) {
+                    // XXX validate that the href is hosted on the same instance
+                    // use relative URLs or compare it against a list or allowed domains?
                     var ev = {};
                     ev.callback = function (data) {
                         var x, a;
@@ -324,6 +327,7 @@ Messages.support_addAttachment = "Add attachment"; // XXX
             var a = h('a', {
                 href: '#'
             }, obj.name)
+            // XXX disallow remote URLs
             $(a).click(function (e) {
                 e.preventDefault();
                 ctx.common.openURL(obj.href);
