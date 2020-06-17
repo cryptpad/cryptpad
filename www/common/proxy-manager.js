@@ -68,7 +68,7 @@ define([
     };
 
     var restrictedProxy = function (Env, id) {
-        var lm = { proxy: { deprecated: true } };
+        var lm = { proxy: { restricted: true, root: {}, filesData: {} } };
         removeProxy(Env, id);
         addProxy(Env, id, lm, function () {});
         return void Env.Store.refreshDriveUI();

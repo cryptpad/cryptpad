@@ -371,8 +371,7 @@ define([
         var parsed = Hash.parsePadUrl(data.href || data.roHref);
         var owned = Modal.isOwned(Env, data);
         var disabled = !owned || !parsed.hashData || parsed.hashData.type !== 'pad';
-        var allowDisabled = parsed.type === 'drive';
-        if (disabled || allowDisabled) { return void cb(); }
+        if (disabled) { return void cb(); }
 
         opts = opts || {};
 

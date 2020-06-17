@@ -2188,6 +2188,8 @@ define([
             });
         };
         registerProxyEvents = function (proxy, fId) {
+            if (!proxy) { return; }
+            if (proxy.deprecated || proxy.restricted) { return; }
             if (!fId) {
                 // Listen for shared folder password change
                 proxy.on('change', ['drive', UserObject.SHARED_FOLDERS], function (o, n, p) {

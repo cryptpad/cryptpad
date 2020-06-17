@@ -225,6 +225,7 @@ define([
                         sf.teams.forEach(function (obj) {
                             obj.store.manager.restrictedProxy(obj.id, secret.channel);
                         });
+                        delete allSharedFolders[secret.channel];
                         return void cb();
                     }
                 }

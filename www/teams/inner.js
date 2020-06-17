@@ -55,6 +55,7 @@ define([
         if (!drive || !drive.sharedFolders) {
             return void cb();
         }
+        var r = drive.restrictedFolders = drive.restrictedFolders || {};
         var oldIds = Object.keys(folders);
         nThen(function (waitFor) {
             Object.keys(drive.sharedFolders).forEach(function (fId) {
@@ -65,7 +66,10 @@ define([
                 sframeChan.query('Q_DRIVE_GETOBJECT', {
                     sharedFolder: fId
                 }, waitFor(function (err, newObj) {
-                    if (newObj && newObj.deprecated) {
+                    if (newObj && newObj.restricted) {
+                        r[fId] = drive.sharedFolders[fId];
+                    }
+                    if (newObj && (newObj.deprecated || newObj.restricted)) {
                         delete folders[fId];
                         delete drive.sharedFolders[fId];
                         if (manager && manager.folders) {
