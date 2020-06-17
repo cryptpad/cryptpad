@@ -2203,7 +2203,9 @@ define([
             if (config.isSelect && value) {
                 var $val = $innerblock.find('[data-value="'+value+'"]');
                 setActive($val);
-                $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
+                try {
+                    $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
+                } catch (e) {}
             }
             if (config.feedback) { Feedback.send(config.feedback); }
         };
