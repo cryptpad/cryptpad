@@ -505,6 +505,59 @@ define([
             }, to);
         };
 
+        var loadInitDocument = function (type, useNewDefault) {
+            var newText;
+            switch (type) {
+                case 'sheet' :
+                    newText = EmptyCell(useNewDefault);
+                    break;
+                case 'oodoc':
+                    newText = EmptyDoc();
+                    break;
+                case 'ooslide':
+                    newText = EmptySlide();
+                    break;
+                default:
+                    newText = '';
+            }
+            return new Blob([newText], {type: 'text/plain'});
+        };
+        var loadLastDocument = function (lastCp, onCpError, cb) {
+            ooChannel.cpIndex = lastCp.index || 0;
+            var parsed = Hash.parsePadUrl(lastCp.file);
+            var secret = Hash.getSecrets('file', parsed.hash);
+            if (!secret || !secret.channel) { return; }
+            var hexFileName = secret.channel;
+            var fileHost = privateData.fileHost || privateData.origin;
+            var src = fileHost + Hash.getBlobPathFromHex(hexFileName);
+            var key = secret.keys && secret.keys.cryptKey;
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', src, true);
+            xhr.responseType = 'arraybuffer';
+            xhr.onload = function () {
+                if (/^4/.test('' + this.status)) {
+                    onCpError();
+                    return void console.error('XHR error', this.status);
+                }
+                var arrayBuffer = xhr.response;
+                if (arrayBuffer) {
+                    var u8 = new Uint8Array(arrayBuffer);
+                    FileCrypto.decrypt(u8, key, function (err, decrypted) {
+                        if (err) { return void console.error(err); }
+                        var blob = new Blob([decrypted.content], {type: 'plain/text'});
+                        if (cb) {
+                            return cb(blob, getFileType());
+                        }
+                        startOO(blob, getFileType());
+                    });
+                }
+            };
+            xhr.onerror = function () {
+                onCpError();
+            };
+            xhr.send(null);
+        };
+
 Messages.oo_refresh = "Refresh"; // XXX read-only corner popup when receiving remote updates
 Messages.oo_refreshText = "out of date"; // XXX read-only corner popup when receiving remote updates
         var refreshReadOnly = function () {
@@ -1490,58 +1543,6 @@ Messages.oo_refreshText = "out of date"; // XXX read-only corner popup when rece
             }, 100);
         };
 
-        var loadInitDocument = function (type, useNewDefault) {
-            var newText;
-            switch (type) {
-                case 'sheet' :
-                    newText = EmptyCell(useNewDefault);
-                    break;
-                case 'oodoc':
-                    newText = EmptyDoc();
-                    break;
-                case 'ooslide':
-                    newText = EmptySlide();
-                    break;
-                default:
-                    newText = '';
-            }
-            return new Blob([newText], {type: 'text/plain'});
-        };
-        var loadLastDocument = function (lastCp, onCpError, cb) {
-            ooChannel.cpIndex = lastCp.index || 0;
-            var parsed = Hash.parsePadUrl(lastCp.file);
-            var secret = Hash.getSecrets('file', parsed.hash);
-            if (!secret || !secret.channel) { return; }
-            var hexFileName = secret.channel;
-            var fileHost = privateData.fileHost || privateData.origin;
-            var src = fileHost + Hash.getBlobPathFromHex(hexFileName);
-            var key = secret.keys && secret.keys.cryptKey;
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', src, true);
-            xhr.responseType = 'arraybuffer';
-            xhr.onload = function () {
-                if (/^4/.test('' + this.status)) {
-                    onCpError();
-                    return void console.error('XHR error', this.status);
-                }
-                var arrayBuffer = xhr.response;
-                if (arrayBuffer) {
-                    var u8 = new Uint8Array(arrayBuffer);
-                    FileCrypto.decrypt(u8, key, function (err, decrypted) {
-                        if (err) { return void console.error(err); }
-                        var blob = new Blob([decrypted.content], {type: 'plain/text'});
-                        if (cb) {
-                            return cb(blob, getFileType());
-                        }
-                        startOO(blob, getFileType());
-                    });
-                }
-            };
-            xhr.onerror = function () {
-                onCpError();
-            };
-            xhr.send(null);
-        };
         var loadDocument = function (noCp, useNewDefault, i) {
             if (ooLoaded) { return; }
             var type = common.getMetadataMgr().getPrivateData().ooType;
