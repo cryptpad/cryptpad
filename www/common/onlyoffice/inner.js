@@ -122,7 +122,6 @@ define([
             if (!state && !readOnly) {
                 $('#cp-app-oo-editor').append(h('div#cp-app-oo-offline'));
             }
-            debug(state);
         };
 
         var deleteOffline = function () {
@@ -507,6 +506,7 @@ define([
         };
 
 Messages.oo_refresh = "Refresh"; // XXX read-only corner popup when receiving remote updates
+Messages.oo_refreshText = "out of date"; // XXX read-only corner popup when receiving remote updates
         var refreshReadOnly = function () {
             var cancel = h('button.cp-corner-cancel', Messages.cancel);
             var reload = h('button.cp-corner-primary', [
@@ -515,15 +515,17 @@ Messages.oo_refresh = "Refresh"; // XXX read-only corner popup when receiving re
             ]);
 
             var actions = h('div', [cancel, reload]);
-            var m = UI.cornerPopup("out of date", actions, '');
+            var m = UI.cornerPopup(Messages.oo_refreshText, actions, '');
             $(reload).click(function () {
-                console.error('todo');
                 ooChannel.ready = false;
                 var lastCp = getLastCp();
                 loadLastDocument(lastCp, function () {
-                    // On error, do nothing
-                }, function (blob, type) {
-                    resetData(blob, type);
+                    var file = getFileType();
+                    var type = common.getMetadataMgr().getPrivateData().ooType;
+                    var blob = loadInitDocument(type, true);
+                    resetData(blob, file);
+                }, function (blob, file) {
+                    resetData(blob, file);
                 });
                 delete APP.refreshPopup;
                 m.delete();
@@ -1488,6 +1490,23 @@ Messages.oo_refresh = "Refresh"; // XXX read-only corner popup when receiving re
             }, 100);
         };
 
+        var loadInitDocument = function (type, useNewDefault) {
+            var newText;
+            switch (type) {
+                case 'sheet' :
+                    newText = EmptyCell(useNewDefault);
+                    break;
+                case 'oodoc':
+                    newText = EmptyDoc();
+                    break;
+                case 'ooslide':
+                    newText = EmptySlide();
+                    break;
+                default:
+                    newText = '';
+            }
+            return new Blob([newText], {type: 'text/plain'});
+        };
         var loadLastDocument = function (lastCp, onCpError, cb) {
             ooChannel.cpIndex = lastCp.index || 0;
             var parsed = Hash.parsePadUrl(lastCp.file);
@@ -1552,7 +1571,7 @@ Messages.oo_refresh = "Refresh"; // XXX read-only corner popup when receiving re
                 default:
                     newText = '';
             }
-            var blob = new Blob([newText], {type: 'text/plain'});
+            var blob = loadInitDocument(type, useNewDefault);
             startOO(blob, file);
         };
 
