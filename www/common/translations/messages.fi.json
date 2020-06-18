@@ -151,7 +151,6 @@
     "or": "tai",
     "tags_title": "Tunnisteet (vain sinulle)",
     "tags_add": "Päivitä sivun tunnisteet",
-    "tags_searchHint": "Aloita hakusi CryptDrivessa #-merkillä löytääksesi tunnisteita sisältävät padit.",
     "tags_notShared": "Tunnisteitasi ei jaeta muiden käyttäjien kanssa",
     "tags_duplicate": "Kaksinkertainen tunniste: {0}",
     "tags_noentry": "Et voi lisätä tunnistetta poistettuun padiin!",

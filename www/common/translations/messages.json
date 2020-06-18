@@ -151,7 +151,6 @@
     "or": "or",
     "tags_title": "Tags (for you only)",
     "tags_add": "Update the tags for selected pads",
-    "tags_searchHint": "Start a search with # in your CryptDrive to find your tagged pads.",
     "tags_notShared": "Your tags are not shared with other users",
     "tags_duplicate": "Duplicate tag: {0}",
     "tags_noentry": "You can't tag a deleted pad!",

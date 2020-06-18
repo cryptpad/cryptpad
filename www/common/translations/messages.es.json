@@ -472,7 +472,6 @@
     "printBackgroundRemove": "Eliminar este fondo de pantalla",
     "tags_title": "Etiquetas (sólo para tí)",
     "tags_add": "Actualizar las etiquetas de esta página",
-    "tags_searchHint": "Comenzar una búsqueda con # en tú CryptDrive para encontrar las notas etiquetadas.",
     "tags_notShared": "Tus etiquetas no están compartidas con otros usuarios",
     "tags_duplicate": "Duplicar etiquetas:{0}",
     "tags_noentry": "No puedes etiquetar una nota eliminada!",

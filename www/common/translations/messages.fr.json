@@ -148,7 +148,6 @@
     "or": "ou",
     "tags_title": "Mots-clés du pad (pour vous uniquement)",
     "tags_add": "Modifier les mots-clés de la sélection",
-    "tags_searchHint": "Commencez une recherche par # dans votre CryptDrive pour retrouver vos pads par mot-clé.",
     "tags_notShared": "Vos mots-clés ne sont pas partagés avec les autres utilisateurs",
     "tags_duplicate": "Mot-clé déjà présent : {0}",
     "tags_noentry": "Vous ne pouvez pas ajouter de mots-clés à un pad supprimé !",

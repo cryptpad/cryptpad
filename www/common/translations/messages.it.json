@@ -148,7 +148,6 @@
     "or": "o",
     "tags_title": "Tag (mostrati solo a te)",
     "tags_add": "Aggiorna i tag di questa pagina",
-    "tags_searchHint": "Inizia una ricerca con # nel tuo CryptDrive per trovare i pad taggati.",
     "tags_notShared": "I tuoi tag non sono condivisi con altri utenti",
     "tags_duplicate": "Duplica tag: {0}",
     "tags_noentry": "Non puoi taggare un pad eliminato!",
