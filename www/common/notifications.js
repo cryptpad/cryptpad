@@ -406,6 +406,19 @@ define([
         }
     };
 
+    handlers['SAFE_LINKS_DEFAULT'] = function (common, data) {
+        var content = data.content;
+        content.getFormatText = function () {
+            return Messages.settings_safeLinkDefault;
+        };
+
+        content.handler = function () {
+            common.openURL('/settings/#security');
+        };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
 
     // NOTE: don't forget to fixHTML everything returned by "getFormatText"
 

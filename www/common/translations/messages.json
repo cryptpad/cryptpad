@@ -114,7 +114,7 @@
     "newButtonTitle": "Create a new pad",
     "uploadButton": "Upload files",
     "uploadFolderButton": "Upload folder",
-    "uploadButtonTitle": "Upload a new file to the current folder",
+    "uploadButtonTitle": "Upload a new file to your CryptDrive",
     "saveTemplateButton": "Save as template",
     "saveTemplatePrompt": "Choose a title for the template",
     "templateSaved": "Template saved!",
@@ -150,7 +150,7 @@
     "filePicker_filter": "Filter files by name",
     "or": "or",
     "tags_title": "Tags (for you only)",
-    "tags_add": "Update this page's tags",
+    "tags_add": "Update the tags for selected pads",
     "tags_searchHint": "Start a search with # in your CryptDrive to find your tagged pads.",
     "tags_notShared": "Your tags are not shared with other users",
     "tags_duplicate": "Duplicate tag: {0}",
@@ -856,7 +856,7 @@
     "help": {
         "title": "Getting started",
         "generic": {
-            "more": "Learn more about how CryptPad can work for you by reading our <a href=\"/faq.html\" target=\"_blank\">FAQ</a>",
+            "more": "Learn more about how CryptPad can work for you by reading our <a href=\"/faq.html\" target=\"_blank\">FAQ</a>.",
             "share": "Share this document with the  <i class=\"fa fa-shhare-alt\"></i> <b>Share</b> button, and manage access rights with <i class=\"fa fa-unlock-alt\"></i> <b>Access</b>.",
             "save": "All your changes are synced automatically so you never need to save"
         },
@@ -1377,5 +1377,10 @@
     "code_editorTheme": "Editor theme",
     "toolbar_file": "File",
     "slide_backCol": "Background color",
-    "slide_textCol": "Text color"
+    "slide_textCol": "Text color",
+    "support_languagesPreamble": "The support team speaks the following languages:",
+    "settings_safeLinkDefault": "Safe Links are now turned on by default. Please use the <i class=\"fa fa-shhare-alt\"></i> <b>Share</b> menu to copy links rather than your browser's address bar.",
+    "info_imprintFlavour": "<a>Legal information about the administrators of this instance</a>.",
+    "user_about": "About CryptPad",
+    "info_privacyFlavour": "Our <a>privacy policy</a> describes how we treat your data."
 }

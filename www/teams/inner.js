@@ -987,6 +987,7 @@ define([
             });
         });
         var $upButton = common.createButton('upload', false, data);
+        $upButton.removeProp('title');
         $upButton.text(Messages.profile_upload);
         $upButton.prepend($('<span>', {'class': 'fa fa-upload'}));
 

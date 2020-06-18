@@ -515,6 +515,12 @@ define([
         cb();
     };
 
+    handlers["SAFE_LINKS_DEFAULT"] = function (ctx, box, data, cb) {
+        var curve = ctx.store.proxy.curvePublic;
+        if (data.msg.author !== curve) { return void cb(true); }
+        cb();
+    };
+
     // Hide duplicates when receiving a SHARE_PAD notification:
     // Keep only one notification per channel: the stronger and more recent one
     var comments = {};

@@ -109,7 +109,7 @@
     "newButton": "Neu",
     "newButtonTitle": "Neues Pad erstellen",
     "uploadButton": "Hochladen",
-    "uploadButtonTitle": "Eine neue Datei in den aktuellen Ordner hochladen",
+    "uploadButtonTitle": "Eine neue Datei zum CryptDrive hochladen",
     "saveTemplateButton": "Als Vorlage speichern",
     "saveTemplatePrompt": "Bitte gib einen Titel für die Vorlage ein",
     "templateSaved": "Vorlage gespeichert!",
@@ -145,7 +145,7 @@
     "filePicker_filter": "Dateien nach Namen filtern",
     "or": "oder",
     "tags_title": "Tags (nur für dich)",
-    "tags_add": "Die Tags dieser Seite bearbeiten",
+    "tags_add": "Tags der ausgewählten Pads bearbeiten",
     "tags_searchHint": "Beginne die Suche in deinem CryptDrive mit #, um getaggte Dokumente zu finden.",
     "tags_notShared": "Deine Tags werden nicht mit anderen Benutzern geteilt",
     "tags_duplicate": "Doppeltes Tag: {0}",
@@ -831,7 +831,7 @@
     "help": {
         "title": "Mit CryptPad anfangen",
         "generic": {
-            "more": "Erfahre mehr über die Nutzung von CryptPad, indem du unsere <a href=\"/faq.html\" target=\"_blank\">FAQ</a> liest",
+            "more": "Erfahre mehr über die Nutzung von CryptPad, indem du unsere <a href=\"/faq.html\" target=\"_blank\">FAQ</a> liest.",
             "share": "Teile dieses Dokument mit der Schaltfläche  <i class=\"fa fa-shhare-alt\"></i> <b>Teilen</b> und verwalte die Zugriffsrechte mit <i class=\"fa fa-unlock-alt\"></i> <b>Zugriff</b>.",
             "save": "Alle Änderungen werden automatisch synchronisiert. Du musst sie also nicht selbst speichern"
         },
@@ -1377,5 +1377,10 @@
     "toolbar_insert": "Einfügen",
     "toolbar_savetodrive": "Als Bild speichern",
     "slide_backCol": "Hintergrundfarbe",
-    "slide_textCol": "Textfarbe"
+    "slide_textCol": "Textfarbe",
+    "support_languagesPreamble": "Das Support-Team spricht die folgenden Sprachen:",
+    "settings_safeLinkDefault": "Sichere Links sind nun standardmäßig aktiviert. Bitte verwende zum Kopieren von Links das Menü <i class=\"fa fa-shhare-alt\"></i> <b>Teilen</b> und nicht die Adressleiste des Browsers.",
+    "info_imprintFlavour": "<a>Rechtliche Informationen über die Administratoren dieses Servers</a>.",
+    "info_privacyFlavour": "Unsere <a>Datenschutzerklärung</a> beschreibt, wie wir deine Daten verarbeiten.",
+    "user_about": "Über CryptPad"
 }

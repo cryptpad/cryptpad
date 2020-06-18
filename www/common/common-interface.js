@@ -328,11 +328,7 @@ define([
         var input = dialog.textInput();
 
         var tagger = dialog.frame([
-            dialog.message([
-                Messages.tags_add,
-                h('br'),
-                Messages.tags_searchHint,
-            ]),
+            dialog.message([ Messages.tags_add ]),
             input,
             h('center', h('small', Messages.tags_notShared)),
             dialog.nav(),
@@ -375,6 +371,14 @@ define([
         setTimeout(function () {
             field.setTokens(tags);
             field.focus();
+        });
+
+        var $field = field.tokenfield.closest('.tokenfield').find('.token-input');
+        $field.on('keypress', function (e) {
+            if (!$field.val() && e.which === 13) { return void $ok.click(); }
+        });
+        $field.on('keydown', function (e) {
+            if (!$field.val() && e.which === 27) { return void $cancel.click(); }
         });
 
         return tagger;
@@ -799,6 +803,7 @@ define([
 
     UI.createHelper = function (href, text) {
         var q = h('a.fa.fa-question-circle', {
+            'data-cptippy-html': true,
             style: 'text-decoration: none !important;',
             title: text,
             href: href,

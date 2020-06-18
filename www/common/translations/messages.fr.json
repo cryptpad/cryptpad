@@ -111,7 +111,7 @@
     "newButtonTitle": "Créer un nouveau pad",
     "uploadButton": "Importer des fichiers",
     "uploadFolderButton": "Importer un dossier",
-    "uploadButtonTitle": "Importer un nouveau fichier dans le dossier actuel",
+    "uploadButtonTitle": "Importer un nouveau fichier dans votre CryptDrive",
     "saveTemplateButton": "Sauver en tant que modèle",
     "saveTemplatePrompt": "Choisir un titre pour ce modèle",
     "templateSaved": "Modèle enregistré !",
@@ -147,7 +147,7 @@
     "filePicker_filter": "Filtrez les fichiers par leur nom",
     "or": "ou",
     "tags_title": "Mots-clés du pad (pour vous uniquement)",
-    "tags_add": "Modifier les mots-clés du pad",
+    "tags_add": "Modifier les mots-clés de la sélection",
     "tags_searchHint": "Commencez une recherche par # dans votre CryptDrive pour retrouver vos pads par mot-clé.",
     "tags_notShared": "Vos mots-clés ne sont pas partagés avec les autres utilisateurs",
     "tags_duplicate": "Mot-clé déjà présent : {0}",
@@ -838,7 +838,7 @@
     "help": {
         "title": "Pour bien démarrer",
         "generic": {
-            "more": "Apprenez-en davantage sur le fonctionnement de CryptPad en lisant notre <a href=\"/faq.html\" target=\"_blank\">FAQ</a>",
+            "more": "Apprenez-en davantage sur le fonctionnement de CryptPad en lisant notre <a href=\"/faq.html\" target=\"_blank\">FAQ</a>.",
             "share": "Partagez ce document avec le bouton <i class=\"fa fa-shhare-alt\"></i> <b>Partager</b> et gérez les droits d'accès avec le bouton <i class=\"fa fa-unlock-alt\"></i> <b>Accès</b>.",
             "save": "Tous les changements effectués sont enregistrés automatiquement"
         },
@@ -1377,5 +1377,10 @@
     "toolbar_savetodrive": "Sauvegarder image",
     "toolbar_insert": "Insérer",
     "toolbar_theme": "Thème",
-    "todo_move": "Votre liste de tâches est désormais dans le kanban <b>{0}</b> dans votre Drive."
+    "todo_move": "Votre liste de tâches est désormais dans le kanban <b>{0}</b> dans votre Drive.",
+    "settings_safeLinkDefault": "Les liens sécurisés sont désormais activés par défaut. Veuillez utiliser le menu <i class=\"fa fa-shhare-alt\"></i> <b>Partager</b> pour copier les liens plutôt que la barre d'adresse de votre navigateur.",
+    "support_languagesPreamble": "L'équipe de support parle les langues suivantes :",
+    "info_privacyFlavour": "<a>Description de la confidentialité</a> de vos données.",
+    "user_about": "À propos de CryptPad",
+    "info_imprintFlavour": "<a>Informations légales sur les administateurs de cette instance</a>."
 }

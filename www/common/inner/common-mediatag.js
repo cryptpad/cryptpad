@@ -399,14 +399,16 @@ define([
             e.stopPropagation();
             m.hide();
             var $mt = $menu.data('mediatag');
-            if ($(this).hasClass("cp-app-code-context-saveindrive")) {
+            var $this = $(this);
+            if ($this.hasClass("cp-app-code-context-saveindrive")) {
                 common.importMediaTag($mt);
             }
-            else if ($(this).hasClass("cp-app-code-context-download")) {
-                var media = $mt[0]._mediaObject;
+            else if ($this.hasClass("cp-app-code-context-download")) {
+                var media = Util.find($mt, [0, '_mediaObject']);
+                if (!(media && media._blob)) { return void console.error($mt); }
                 window.saveAs(media._blob.content, media.name);
             }
-            else if ($(this).hasClass("cp-app-code-context-open")) {
+            else if ($this.hasClass("cp-app-code-context-open")) {
                 $mt.trigger('preview');
             }
         });

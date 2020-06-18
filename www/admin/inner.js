@@ -185,6 +185,20 @@ define([
         var $container = makeBlock('support-list');
         var $div = $(h('div.cp-support-container')).appendTo($container);
 
+        var catContainer = h('div.cp-dropdown-container');
+        $div.append(catContainer);
+        var category = 'all';
+        var $drop = APP.support.makeCategoryDropdown(catContainer, function (key) {
+            category = key;
+            if (key === 'all') {
+                $div.find('.cp-support-list-ticket').show();
+                return;
+            }
+            $div.find('.cp-support-list-ticket').hide();
+            $div.find('.cp-support-list-ticket[data-cat="'+key+'"]').show();
+        }, true);
+        $drop.setValue('all');
+
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
         var cat = privateData.category || '';
@@ -277,6 +291,9 @@ define([
                             UI.alert(Messages.error);
                         });
                     });
+                    if (category !== 'all' && $ticket.attr('data-cat') !== category) {
+                        $ticket.hide();
+                    }
                 }
                 $ticket.append(APP.support.makeMessage(content, hash));
                 reorder();

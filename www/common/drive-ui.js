@@ -526,6 +526,8 @@ define([
                 }
             });
         });
+
+
         return $(menu);
     };
 
@@ -919,6 +921,11 @@ define([
             if (e.ctrlKey) { ev.ctrlKey = true; }
             if (e.shiftKey) { ev.shiftKey = true; }
 
+            // ESC
+            if (e.which === 27) {
+                 return void APP.hideMenu();
+            }
+
             // Enter
             if (e.which === 13) {
                 var $allSelected = $content.find('.cp-app-drive-element.cp-app-drive-element-selected');
@@ -1090,7 +1097,7 @@ define([
 
             var priv = metadataMgr.getPrivateData();
             var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
-            if (useUnsafe !== false) { // true of undefined: use unsafe links
+            if (useUnsafe === true) {
                 return void window.open(APP.origin + href);
             }
 
@@ -1294,7 +1301,6 @@ define([
                     hide.push('properties', 'access');
                     hide.push('rename');
                     hide.push('openparent');
-                    hide.push('hashtag');
                     hide.push('download');
                     hide.push('share');
                     hide.push('savelocal');
@@ -1309,6 +1315,7 @@ define([
 
                 if (!APP.loggedIn) {
                     hide.push('openparent');
+                    hide.push('rename');
                 }
 
                 filter = function ($el, className) {
@@ -4370,12 +4377,12 @@ define([
                 });
             }
             else if ($this.hasClass("cp-app-drive-context-hashtag")) {
-                if (paths.length !== 1) { return; }
-                el = manager.find(paths[0].path);
-                data = manager.getFileData(el);
-                if (!data) { return void console.error("Expected to find a file"); }
-                var href = data.href || data.roHref;
-                common.updateTags(href);
+                var hrefs = paths.map(function (p) {
+                    var el = manager.find(p.path);
+                    var data =  manager.getFileData(el);
+                    return data.href || data.roHref;
+                }).filter(Boolean);
+                common.updateTags(hrefs);
             }
             else if ($this.hasClass("cp-app-drive-context-empty")) {
                 if (paths.length !== 1 || !paths[0].element

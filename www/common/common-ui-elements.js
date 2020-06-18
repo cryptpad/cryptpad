@@ -46,28 +46,69 @@ define([
         return mB + Messages.MB;
     };
 
-    UIElements.updateTags = function (common, href) {
+    UIElements.updateTags = function (common, hrefs) {
         var existing, tags;
+        var allTags = {};
+        if (!hrefs || typeof (hrefs) === "string") {
+            hrefs = [hrefs];
+        }
         NThen(function(waitFor) {
             common.getSframeChannel().query("Q_GET_ALL_TAGS", null, waitFor(function(err, res) {
                 if (err || res.error) { return void console.error(err || res.error); }
                 existing = Object.keys(res.tags).sort();
             }));
         }).nThen(function (waitFor) {
-            common.getPadAttribute('tags', waitFor(function (err, res) {
-                if (err) {
-                    if (err === 'NO_ENTRY') {
-                        UI.alert(Messages.tags_noentry);
+            var _err;
+            hrefs.forEach(function (href) {
+                common.getPadAttribute('tags', waitFor(function (err, res) {
+                    if (err) {
+                        if (err === 'NO_ENTRY') {
+                            UI.alert(Messages.tags_noentry);
+                        }
+                        waitFor.abort();
+                        _err = err;
+                        return void console.error(err);
                     }
-                    waitFor.abort();
-                    return void console.error(err);
-                }
-                tags = res || [];
-            }), href);
+                    allTags[href] = res || [];
+
+                    if (tags) {
+                        // Intersect with tags from previous pads
+                        tags = (res || []).filter(function (tag) {
+                            return tags.indexOf(tag) !== -1;
+                        });
+                    } else {
+                        tags = res || [];
+                    }
+                }), href);
+            });
         }).nThen(function () {
             UI.dialog.tagPrompt(tags, existing, function (newTags) {
                 if (!Array.isArray(newTags)) { return; }
-                common.setPadAttribute('tags', newTags, null, href);
+                var added = [];
+                var removed = [];
+                newTags.forEach(function (tag) {
+                    if (tags.indexOf(tag) === -1) {
+                        added.push(tag);
+                    }
+                });
+                tags.forEach(function (tag) {
+                    if (newTags.indexOf(tag) === -1) {
+                        removed.push(tag);
+                    }
+                });
+                var update = function (oldTags) {
+                    Array.prototype.push.apply(oldTags, added);
+                    removed.forEach(function (tag) {
+                        var idx = oldTags.indexOf(tag);
+                        oldTags.splice(idx, 1);
+                    });
+                };
+
+                hrefs.forEach(function (href) {
+                    var oldTags = allTags[href] || [];
+                    update(oldTags);
+                    common.setPadAttribute('tags', Util.deduplicateString(oldTags), null, href);
+                });
             });
         });
     };
@@ -2167,7 +2208,9 @@ define([
             if (config.isSelect && value) {
                 var $val = $innerblock.find('[data-value="'+value+'"]');
                 setActive($val);
-                $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
+                try {
+                    $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
+                } catch (e) {}
             }
             if (config.feedback) { Feedback.send(config.feedback); }
         };
@@ -2261,6 +2304,58 @@ define([
         return $container;
     };
 
+    UIElements.displayInfoMenu = function (Common, metadataMgr) {
+        //var padType = metadataMgr.getMetadata().type;
+        var priv = metadataMgr.getPrivateData();
+        var origin = priv.origin;
+
+        // TODO link to the most recent changelog/release notes
+        // https://github.com/xwiki-labs/cryptpad/releases/latest/ ?
+
+        var template = function (line, link) {
+            if (!line || !link) { return; }
+            var p = $('<p>').html(line)[0];
+            var sub = link.cloneNode(true);
+
+/*  This is a hack to make relative URLs point to the main domain
+    instead of the sandbox domain. It will break if the admins have specified
+    some less common URL formats for their customizable links, such as if they've
+    used a protocal-relative absolute URL. The URL API isn't quite safe to use
+    because of IE (thanks, Bill).  */
+            var href = sub.getAttribute('href');
+            if (/^\//.test(href)) { sub.setAttribute('href', origin + href); }
+            var a = p.querySelector('a');
+            if (!a) { return; }
+            sub.innerText = a.innerText;
+            p.replaceChild(sub, a);
+            return p;
+        };
+
+        var legalLine = template(Messages.info_imprintFlavour, Pages.imprintLink);
+        var privacyLine = template(Messages.info_privacyFlavour, Pages.privacyLink);
+        var faqLine = template(Messages.help.generic.more, Pages.faqLink);
+
+        var content = h('div.cp-info-menu-container', [
+            h('h6', Pages.versionString),
+            h('hr'),
+            legalLine,
+            privacyLine,
+            faqLine,
+        ]);
+
+        var buttons = [
+            {
+                className: 'primary',
+                name: Messages.filePicker_close,
+                onClick: function () {},
+                keys: [27],
+            },
+        ];
+
+        var modal = UI.dialog.customModal(content, {buttons: buttons });
+        UI.openCustomModal(modal);
+    };
+
     UIElements.createUserAdminMenu = function (Common, config) {
         var metadataMgr = Common.getMetadataMgr();
 
@@ -2293,15 +2388,21 @@ define([
                 content: $userAdminContent.html()
             });
         }
-        options.push({
-            tag: 'a',
-            attributes: {
-                'target': '_blank',
-                'href': origin+'/index.html',
-                'class': 'fa fa-home'
-            },
-            content: h('span', Messages.homePage)
-        });
+
+        if (accountName && !AppConfig.disableProfile) {
+            options.push({
+                tag: 'a',
+                attributes: {'class': 'cp-toolbar-menu-profile fa fa-user-circle'},
+                content: h('span', Messages.profileButton),
+                action: function () {
+                    if (padType) {
+                        window.open(origin+'/profile/');
+                    } else {
+                        window.parent.location = origin+'/profile/';
+                    }
+                },
+            });
+        }
         if (padType !== 'drive' || (!accountName && priv.newSharedFolder)) {
             options.push({
                 tag: 'a',
@@ -2335,29 +2436,6 @@ define([
                 content: h('span', Messages.type.contacts)
             });
         }
-        options.push({ tag: 'hr' });
-        // Add the change display name button if not in read only mode
-        if (config.changeNameButtonCls && config.displayChangeName && !AppConfig.disableProfile) {
-            options.push({
-                tag: 'a',
-                attributes: {'class': config.changeNameButtonCls + ' fa fa-user'},
-                content: h('span', Messages.user_rename)
-            });
-        }
-        if (accountName && !AppConfig.disableProfile) {
-            options.push({
-                tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-profile fa fa-user-circle'},
-                content: h('span', Messages.profileButton),
-                action: function () {
-                    if (padType) {
-                        window.open(origin+'/profile/');
-                    } else {
-                        window.parent.location = origin+'/profile/';
-                    }
-                },
-            });
-        }
         if (padType !== 'settings') {
             options.push({
                 tag: 'a',
@@ -2372,6 +2450,7 @@ define([
                 },
             });
         }
+
         options.push({ tag: 'hr' });
         // Add administration panel link if the user is an admin
         if (priv.edPublic && Array.isArray(Config.adminKeys) && Config.adminKeys.indexOf(priv.edPublic) !== -1) {
@@ -2402,6 +2481,50 @@ define([
                 },
             });
         }
+        if (AppConfig.surveyURL) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'target': '_blank',
+                    'rel': 'noopener',
+                    'href': AppConfig.surveyURL,
+                    'class': 'cp-toolbar-survey fa fa-graduation-cap'
+                },
+                content: h('span', Messages.survey),
+                action: function () {
+                    Feedback.send('SURVEY_CLICKED');
+                },
+            });
+        }
+        options.push({
+            tag: 'a',
+            attributes: {
+                'class': 'cp-toolbar-about fa fa-info',
+            },
+            content: h('span', Messages.user_about),
+            action: function () {
+                UIElements.displayInfoMenu(Common, metadataMgr);
+            },
+        });
+
+        options.push({
+            tag: 'a',
+            attributes: {
+                'target': '_blank',
+                'href': origin+'/index.html',
+                'class': 'fa fa-home'
+            },
+            content: h('span', Messages.homePage)
+        });
+        // Add the change display name button if not in read only mode
+        /*
+        if (config.changeNameButtonCls && config.displayChangeName && !AppConfig.disableProfile) {
+            options.push({
+                tag: 'a',
+                attributes: {'class': config.changeNameButtonCls + ' fa fa-user'},
+                content: h('span', Messages.user_rename)
+            });
+        }*/
         options.push({ tag: 'hr' });
         if (Config.allowSubscriptions) {
             options.push({
@@ -2424,35 +2547,6 @@ define([
                     'class': 'fa fa-gift'
                 },
                 content: h('span', Messages.crowdfunding_button2)
-            });
-        }
-        if (AppConfig.surveyURL) {
-            options.push({
-                tag: 'a',
-                attributes: {
-                    'target': '_blank',
-                    'rel': 'noopener',
-                    'href': AppConfig.surveyURL,
-                    'class': 'cp-toolbar-survey fa fa-graduation-cap'
-                },
-                content: h('span', Messages.survey),
-                action: function () {
-                    Feedback.send('SURVEY_CLICKED');
-                },
-            });
-        }
-        if (Pages.versionString) {
-            Messages.user_about = Messages.about; // XXX "About CryptPad"
-            options.push({
-                tag: 'a',
-                attributes: {
-                    'class': 'cp-toolbar-about fa fa-info',
-                },
-                content: h('span', Messages.user_about),
-                action: function () {
-                    // XXX UIElements.createHelpButton
-                    UI.alert(Pages.versionString);
-                },
             });
         }
 
