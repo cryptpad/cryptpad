@@ -55,7 +55,7 @@ define([
     var CHECKPOINT_INTERVAL = 100;
     var DISPLAY_RESTORE_BUTTON = false;
     var NEW_VERSION = 2;
-    var PENDING_TIMEOUT = 30000;
+    var PENDING_TIMEOUT = 30000; // XXX it feels like maybe this should be shorter
 
     var debug = function (x) {
         if (!window.CP_DEV_MODE) { return; }
