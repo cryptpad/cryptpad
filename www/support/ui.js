@@ -91,6 +91,7 @@ define([
                 name: $el.attr('data-name')
             });
         });
+        $attachments.html('');
 
         send(ctx, id, 'TICKET', {
             category: category,
@@ -207,7 +208,8 @@ Messages.support_addAttachment = "Add attachment"; // XXX
 
                         $(attachments).append(span);
                     };
-                    ctx.FM.handleFile(file, ev);
+                    // The empty object allows us to bypass the file upload modal
+                    ctx.FM.handleFile(file, ev, {});
                 });
             });
             $input.click();
