@@ -91,6 +91,7 @@ define([
                 name: $el.attr('data-name')
             });
         });
+        $attachments.html('');
 
         send(ctx, id, 'TICKET', {
             category: category,
@@ -207,7 +208,8 @@ Messages.support_addAttachment = "Add attachment"; // XXX
 
                         $(attachments).append(span);
                     };
-                    ctx.FM.handleFile(file, ev);
+                    // The empty object allows us to bypass the file upload modal
+                    ctx.FM.handleFile(file, ev, {});
                 });
             });
             $input.click();
@@ -242,7 +244,7 @@ Messages.support_addAttachment = "Add attachment"; // XXX
 
         var url;
         if (ctx.isAdmin) {
-            ticketCategory = Messages['support_cat_'+(content.category || 'other')] + ' - ';
+            ticketCategory = Messages['support_cat_'+(content.category || 'all')] + ' - ';
             url = h('button.btn.btn-primary.fa.fa-clipboard');
             $(url).click(function () {
                 var link = privateData.origin + privateData.pathname + '#' + 'support-' + content.id;

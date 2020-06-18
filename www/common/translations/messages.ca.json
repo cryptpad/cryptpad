@@ -148,7 +148,6 @@
     "or": "o",
     "tags_title": "Etiquetes (només vostres)",
     "tags_add": "Actualitza les etiquetes d'aquesta pàgina",
-    "tags_searchHint": "Inicieu una cerca amb # al vostre CryptDrive per trobar els vostres documents etiquetats.",
     "tags_notShared": "Les vostres etiquetes no es comparteixen amb altres persones usuàries",
     "tags_duplicate": "Etiquetes duplicades: {0}",
     "tags_noentry": "No podeu etiquetar un document esborrat!",

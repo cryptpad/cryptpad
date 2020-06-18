@@ -146,7 +146,6 @@
     "or": "oder",
     "tags_title": "Tags (nur für dich)",
     "tags_add": "Tags der ausgewählten Pads bearbeiten",
-    "tags_searchHint": "Beginne die Suche in deinem CryptDrive mit #, um getaggte Dokumente zu finden.",
     "tags_notShared": "Deine Tags werden nicht mit anderen Benutzern geteilt",
     "tags_duplicate": "Doppeltes Tag: {0}",
     "tags_noentry": "Du kannst keine Tags zu einem gelöschten Pad hinzufügen!",
