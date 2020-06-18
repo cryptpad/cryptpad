@@ -244,7 +244,7 @@ Messages.support_addAttachment = "Add attachment"; // XXX
 
         var url;
         if (ctx.isAdmin) {
-            ticketCategory = Messages['support_cat_'+(content.category || 'other')] + ' - ';
+            ticketCategory = Messages['support_cat_'+(content.category || 'all')] + ' - ';
             url = h('button.btn.btn-primary.fa.fa-clipboard');
             $(url).click(function () {
                 var link = privateData.origin + privateData.pathname + '#' + 'support-' + content.id;
