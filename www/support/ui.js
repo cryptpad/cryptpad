@@ -103,14 +103,7 @@ define([
         return true;
     };
 
-Messages.support_cat_account = "User account"; // XXX
-Messages.support_cat_data = "Loss of content"; // XXX
-Messages.support_cat_bug = "Bug report"; // XXX
-Messages.support_cat_other = "Other"; // XXX
-Messages.support_cat_all = "All"; // XXX
 Messages.support_category = "Category"; // XXX
-Messages.support_attachments = "Attachments"; // XXX
-Messages.support_addAttachment = "Add attachment"; // XXX
 
     var makeCategoryDropdown = function (ctx, container, onChange, all) {
         var categories = ['account', 'data', 'bug', 'other'];
