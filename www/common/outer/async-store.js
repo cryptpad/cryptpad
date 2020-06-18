@@ -751,8 +751,7 @@ define([
                             force: true
                         }, waitFor());
                     }).nThen(function () {
-                        // XXX users need to login after registration if they register after account deletion (token issue?)
-                        // XXX delete block
+                        // TODO delete block
                         // Log out current worker
                         postMessage(clientId, "DELETE_ACCOUNT", token, function () {});
                         store.network.disconnect();

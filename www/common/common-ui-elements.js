@@ -313,26 +313,30 @@ define([
                     var $friends = $div.find('.cp-usergrid-user.cp-selected');
                     $friends.each(function (i, el) {
                         var curve = $(el).attr('data-curve');
-                        // Check if the selected element is a friend or a team
-                        if (curve) { // Friend
-                            if (!curve || !friends[curve]) { return; }
-                            var friend = friends[curve];
-                            if (!friend.notifications || !friend.curvePublic) { return; }
-                            common.mailbox.sendTo("SHARE_PAD", {
-                                href: href,
-                                password: config.password,
-                                isTemplate: config.isTemplate,
-                                name: myName,
-                                title: title
-                            }, {
-                                channel: friend.notifications,
-                                curvePublic: friend.curvePublic
-                            });
-                            return;
-                        }
-                        // Team
                         var ed = $(el).attr('data-ed');
+                        var friend = curve && friends[curve];
                         var team = teams[ed];
+                        // If the selected element is a friend or a team without edit right,
+                        // send a notification
+                        var mailbox = friend || ((team && team.viewer) ? team : undefined);
+                        if (mailbox) { // Friend
+                            if (friends[curve] && !mailbox.notifications) { return; }
+                            if (mailbox.notifications && mailbox.curvePublic) {
+                                common.mailbox.sendTo("SHARE_PAD", {
+                                    href: href,
+                                    password: config.password,
+                                    isTemplate: config.isTemplate,
+                                    name: myName,
+                                    title: title
+                                }, {
+                                    viewed: team && team.id,
+                                    channel: mailbox.notifications,
+                                    curvePublic: mailbox.curvePublic
+                                });
+                                return;
+                            }
+                        }
+                        // If it's a team with edit right, add the pad directly
                         if (!team) { return; }
                         sframeChan.query('Q_STORE_IN_TEAM', {
                             href: href,
@@ -450,10 +454,11 @@ define([
             // config.teamId only exists when we're trying to share a pad from a team drive
             // In this case, we don't want to share the pad with the current team
             if (config.teamId && config.teamId === id) { return; }
-            if (!teamsData[id].hasSecondaryKey) { return; }
             var t = teamsData[id];
             teams[t.edPublic] = {
-                notifications: true,
+                viewer: !teamsData[id].hasSecondaryKey,
+                notifications: t.notifications,
+                curvePublic: t.curvePublic,
                 displayName: t.name,
                 edPublic: t.edPublic,
                 avatar: t.avatar,
@@ -1569,7 +1574,6 @@ define([
                 button = $('<button>', {
                     title: Messages.printButtonTitle2,
                     'class': "fa fa-print cp-toolbar-icon-print",
-                // XXX people don't realize this does PDF (https://github.com/xwiki-labs/cryptpad/issues/357#issuecomment-640711724)
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.printText));
                 break;
             case 'history':
@@ -2204,7 +2208,9 @@ define([
             if (config.isSelect && value) {
                 var $val = $innerblock.find('[data-value="'+value+'"]');
                 setActive($val);
-                $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
+                try {
+                    $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
+                } catch (e) {}
             }
             if (config.feedback) { Feedback.send(config.feedback); }
         };
@@ -2303,29 +2309,38 @@ define([
         var priv = metadataMgr.getPrivateData();
         var origin = priv.origin;
 
-        Messages.help_faq = "Review our list of frequently asked questions"; // XXX
-        var faqLine = h('p',
-            h('a', {
-                target: '_blank',
-                rel: 'noreferrer noopener',
-                href: origin + '/faq.html',
-            }, Messages.help_faq)
-        );
+        // TODO link to the most recent changelog/release notes
+        // https://github.com/xwiki-labs/cryptpad/releases/latest/ ?
 
-        // XXX link to the most recent changelog/release notes
-        // XXX FAQ
-        // XXX GitHub
-        // XXX privacy policy
-        // XXX legal notice
+        var template = function (line, link) {
+            if (!line || !link) { return; }
+            var p = $('<p>').html(line)[0];
+            var sub = link.cloneNode(true);
 
-        var content = h('div', [
-            // CryptPad version number
+/*  This is a hack to make relative URLs point to the main domain
+    instead of the sandbox domain. It will break if the admins have specified
+    some less common URL formats for their customizable links, such as if they've
+    used a protocal-relative absolute URL. The URL API isn't quite safe to use
+    because of IE (thanks, Bill).  */
+            var href = sub.getAttribute('href');
+            if (/^\//.test(href)) { sub.setAttribute('href', origin + href); }
+            var a = p.querySelector('a');
+            if (!a) { return; }
+            sub.innerText = a.innerText;
+            p.replaceChild(sub, a);
+            return p;
+        };
+
+        var legalLine = template(Messages.info_imprintFlavour, Pages.imprintLink);
+        var privacyLine = template(Messages.info_privacyFlavour, Pages.privacyLink);
+        var faqLine = template(Messages.help.generic.more, Pages.faqLink);
+
+        var content = h('div.cp-info-menu-container', [
             h('h6', Pages.versionString),
-            // First point users to our FAQ
+            h('hr'),
+            legalLine,
+            privacyLine,
             faqLine,
-            // Link to the support ticket form in case their
-            // question isn't answered by the FAQ
-            //supportLine,
         ]);
 
         var buttons = [
@@ -2373,15 +2388,21 @@ define([
                 content: $userAdminContent.html()
             });
         }
-        options.push({
-            tag: 'a',
-            attributes: {
-                'target': '_blank',
-                'href': origin+'/index.html',
-                'class': 'fa fa-home'
-            },
-            content: h('span', Messages.homePage)
-        });
+
+        if (accountName && !AppConfig.disableProfile) {
+            options.push({
+                tag: 'a',
+                attributes: {'class': 'cp-toolbar-menu-profile fa fa-user-circle'},
+                content: h('span', Messages.profileButton),
+                action: function () {
+                    if (padType) {
+                        window.open(origin+'/profile/');
+                    } else {
+                        window.parent.location = origin+'/profile/';
+                    }
+                },
+            });
+        }
         if (padType !== 'drive' || (!accountName && priv.newSharedFolder)) {
             options.push({
                 tag: 'a',
@@ -2415,29 +2436,6 @@ define([
                 content: h('span', Messages.type.contacts)
             });
         }
-        options.push({ tag: 'hr' });
-        // Add the change display name button if not in read only mode
-        if (config.changeNameButtonCls && config.displayChangeName && !AppConfig.disableProfile) {
-            options.push({
-                tag: 'a',
-                attributes: {'class': config.changeNameButtonCls + ' fa fa-user'},
-                content: h('span', Messages.user_rename)
-            });
-        }
-        if (accountName && !AppConfig.disableProfile) {
-            options.push({
-                tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-profile fa fa-user-circle'},
-                content: h('span', Messages.profileButton),
-                action: function () {
-                    if (padType) {
-                        window.open(origin+'/profile/');
-                    } else {
-                        window.parent.location = origin+'/profile/';
-                    }
-                },
-            });
-        }
         if (padType !== 'settings') {
             options.push({
                 tag: 'a',
@@ -2452,6 +2450,7 @@ define([
                 },
             });
         }
+
         options.push({ tag: 'hr' });
         // Add administration panel link if the user is an admin
         if (priv.edPublic && Array.isArray(Config.adminKeys) && Config.adminKeys.indexOf(priv.edPublic) !== -1) {
@@ -2482,6 +2481,50 @@ define([
                 },
             });
         }
+        if (AppConfig.surveyURL) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'target': '_blank',
+                    'rel': 'noopener',
+                    'href': AppConfig.surveyURL,
+                    'class': 'cp-toolbar-survey fa fa-graduation-cap'
+                },
+                content: h('span', Messages.survey),
+                action: function () {
+                    Feedback.send('SURVEY_CLICKED');
+                },
+            });
+        }
+        options.push({
+            tag: 'a',
+            attributes: {
+                'class': 'cp-toolbar-about fa fa-info',
+            },
+            content: h('span', Messages.user_about),
+            action: function () {
+                UIElements.displayInfoMenu(Common, metadataMgr);
+            },
+        });
+
+        options.push({
+            tag: 'a',
+            attributes: {
+                'target': '_blank',
+                'href': origin+'/index.html',
+                'class': 'fa fa-home'
+            },
+            content: h('span', Messages.homePage)
+        });
+        // Add the change display name button if not in read only mode
+        /*
+        if (config.changeNameButtonCls && config.displayChangeName && !AppConfig.disableProfile) {
+            options.push({
+                tag: 'a',
+                attributes: {'class': config.changeNameButtonCls + ' fa fa-user'},
+                content: h('span', Messages.user_rename)
+            });
+        }*/
         options.push({ tag: 'hr' });
         if (Config.allowSubscriptions) {
             options.push({
@@ -2506,32 +2549,6 @@ define([
                 content: h('span', Messages.crowdfunding_button2)
             });
         }
-        if (AppConfig.surveyURL) {
-            options.push({
-                tag: 'a',
-                attributes: {
-                    'target': '_blank',
-                    'rel': 'noopener',
-                    'href': AppConfig.surveyURL,
-                    'class': 'cp-toolbar-survey fa fa-graduation-cap'
-                },
-                content: h('span', Messages.survey),
-                action: function () {
-                    Feedback.send('SURVEY_CLICKED');
-                },
-            });
-        }
-        Messages.user_about = 'About CryptPad'; // XXX
-        options.push({
-            tag: 'a',
-            attributes: {
-                'class': 'cp-toolbar-about fa fa-info',
-            },
-            content: h('span', Messages.user_about),
-            action: function () {
-                UIElements.displayInfoMenu(Common, metadataMgr);
-            },
-        });
 
         options.push({ tag: 'hr' });
         // Add login or logout button depending on the current status

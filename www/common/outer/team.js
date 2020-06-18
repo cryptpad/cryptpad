@@ -126,6 +126,9 @@ define([
         delete ctx.store.proxy.teams[teamId];
         ctx.emit('LEAVE_TEAM', teamId, team.clients);
         ctx.updateMetadata();
+        ctx.store.mailbox.close('team-'+teamId, function () {
+            // Close team mailbox
+        });
     };
 
     var getTeamChannelList = function (ctx, id) {
@@ -494,6 +497,8 @@ define([
         var roHash = Hash.getViewHashFromKeys(secret);
         var keyPair = Nacl.sign.keyPair(); // keyPair.secretKey , keyPair.publicKey
 
+        var curvePair = Nacl.box.keyPair();
+
         var rosterSeed = Crypto.Team.createSeed();
         var rosterKeys = Crypto.Team.deriveMemberKeys(rosterSeed, {
             curvePublic: ctx.store.proxy.curvePublic,
@@ -585,6 +590,14 @@ define([
             proxy.on('ready', function () {
                 // Store keys in our drive
                 var keys = {
+                    mailbox: {
+                        channel: Hash.createChannelId(),
+                        viewed: [],
+                        keys: {
+                            curvePrivate: Nacl.util.encodeBase64(curvePair.secretKey),
+                            curvePublic: Nacl.util.encodeBase64(curvePair.publicKey)
+                        }
+                    },
                     drive: {
                         edPrivate: Nacl.util.encodeBase64(keyPair.secretKey),
                         edPublic: Nacl.util.encodeBase64(keyPair.publicKey)
@@ -601,7 +614,7 @@ define([
                         view: rosterKeys.viewKeyStr,
                     }
                 };
-                ctx.store.proxy.teams[id] = {
+                var t = ctx.store.proxy.teams[id] = {
                     owner: true,
                     channel: secret.channel,
                     hash: hash,
@@ -618,6 +631,11 @@ define([
 
                 onReady(ctx, id, lm, roster, keys, cId, function () {
                     Feedback.send('TEAM_CREATION');
+                    ctx.store.mailbox.open('team-'+id, t.keys.mailbox, function () {
+                        // Team mailbox loaded
+                    }, true, {
+                        owners: t.keys.drive.edPublic
+                    });
                     ctx.updateMetadata();
                     cb();
                 });
@@ -720,6 +738,11 @@ define([
             team.rpc.removePins(waitFor(function (err) {
                 if (err) { console.error(err); }
             }));
+            // Delete the mailbox
+            var mailboxChan = Util.find(teamData, ['keys', 'mailbox', 'channel']);
+            team.rpc.removeOwnedChannel(mailboxChan, waitFor(function (err) {
+                if (err) { console.error(err); }
+            }));
             // Delete the roster
             var rosterChan = Util.find(teamData, ['keys', 'roster', 'channel']);
             ctx.store.rpc.removeOwnedChannel(rosterChan, waitFor(function (err) {
@@ -750,6 +773,12 @@ define([
         ctx.onReadyHandlers[id] = [];
         openChannel(ctx, team, id, function (obj) {
             if (!(obj && obj.error)) { console.debug('Team joined:' + id); }
+            var t = ctx.store.proxy.teams[id];
+            ctx.store.mailbox.open('team-'+id, t.keys.mailbox, function () {
+                // Team mailbox loaded
+            }, true, {
+                owners: t.keys.drive.edPublic
+            });
             ctx.updateMetadata();
             cb(obj);
         });
@@ -1566,6 +1595,25 @@ define([
         });
     };
 
+    var deriveMailbox = function (team) {
+        if (!team) { return; }
+        if (team.keys && team.keys.mailbox) { return team.keys.mailbox; }
+        var strSeed = Util.find(team, ['keys', 'roster', 'edit']);
+        if (!strSeed) { return; }
+        var hash = Nacl.hash(Nacl.util.decodeUTF8(strSeed));
+        var seed = hash.slice(0,32);
+        var mailboxChannel = Util.uint8ArrayToHex(hash.slice(32,48));
+        var curvePair = Nacl.box.keyPair.fromSecretKey(seed);
+        return {
+            channel: mailboxChannel,
+            viewed: [],
+            keys: {
+                curvePrivate: Nacl.util.encodeBase64(curvePair.secretKey),
+                curvePublic: Nacl.util.encodeBase64(curvePair.publicKey)
+            }
+        };
+    };
+
     Team.init = function (cfg, waitFor, emit) {
         var team = {};
         var store = cfg.store;
@@ -1595,6 +1643,9 @@ define([
 
         Object.keys(teams).forEach(function (id) {
             ctx.onReadyHandlers[id] = [];
+            if (!Util.find(teams, [id, 'keys', 'mailbox'])) {
+                teams[id].keys.mailbox = deriveMailbox(teams[id]);
+            }
             openChannel(ctx, teams[id], id, waitFor(function (err) {
                 if (err) { return void console.error(err); }
                 console.debug('Team '+id+' ready');
@@ -1615,6 +1666,8 @@ define([
                     edPublic: Util.find(teams[id], ['keys', 'drive', 'edPublic']),
                     avatar: Util.find(teams[id], ['metadata', 'avatar']),
                     viewer: !Util.find(teams[id], ['keys', 'drive', 'edPrivate']),
+                    notifications: Util.find(teams[id], ['keys', 'mailbox', 'channel']),
+                    curvePublic: Util.find(teams[id], ['keys', 'mailbox', 'keys', 'curvePublic']),
 
                 };
                 if (safe && ctx.teams[id]) {

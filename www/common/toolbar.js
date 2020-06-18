@@ -1025,8 +1025,9 @@ MessengerUI, Messages) {
             $button.addClass('fa-bell');
         };
 
-        Common.mailbox.subscribe(['notifications'], {
+        Common.mailbox.subscribe(['notifications', 'team'], {
             onMessage: function (data, el) {
+                console.log(data, el, div);
                 if (el) {
                     $(div).prepend(el);
                 }

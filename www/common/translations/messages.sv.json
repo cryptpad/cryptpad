@@ -38,7 +38,6 @@
     "tags_noentry": "Du kan inte tagga ett raderat dokument!",
     "tags_duplicate": "Duplicera tagg: {0}",
     "tags_notShared": "Dina taggar är inte delade med andra användare",
-    "tags_searchHint": "Påbörja en sökning med # i din CryptDrive för att hitta dina taggade dokument.",
     "tags_add": "Uppdatera taggar för denna sida",
     "tags_title": "Taggar (endast för dig)",
     "or": "eller",

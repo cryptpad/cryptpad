@@ -943,6 +943,7 @@ define([
 
             // Ctrl+A select all
             if (e.which === 65 && (e.ctrlKey || (e.metaKey && APP.isMac))) {
+                e.preventDefault();
                 $content.find('.cp-app-drive-element:not(.cp-app-drive-element-selected)')
                     .each(function (idx, element) {
                         selectElement($(element));
