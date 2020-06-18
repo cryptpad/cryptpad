@@ -1187,7 +1187,7 @@
     "team_rosterPromote": "Promote",
     "team_rosterDemote": "Demote",
     "team_rosterKick": "Kick from the team",
-    "team_inviteButton": "Invite contacts",
+    "team_inviteButton": "Invite members",
     "team_leaveButton": "Leave this team",
     "team_leaveConfirm": "If you leave this team you will lose access to its CryptDrive, chat history, and other contents. Are you sure?",
     "team_owner": "Owners",
@@ -1381,5 +1381,15 @@
     "settings_safeLinkDefault": "Safe Links are now turned on by default. Please use the <i class=\"fa fa-shhare-alt\"></i> <b>Share</b> menu to copy links rather than your browser's address bar.",
     "info_imprintFlavour": "<a>Legal information about the administrators of this instance</a>.",
     "user_about": "About CryptPad",
-    "info_privacyFlavour": "Our <a>privacy policy</a> describes how we treat your data."
+    "info_privacyFlavour": "Our <a>privacy policy</a> describes how we treat your data.",
+    "support_cat_account": "User account",
+    "support_cat_data": "Loss of content",
+    "support_cat_bug": "Bug report",
+    "support_cat_other": "Other",
+    "support_cat_all": "All",
+    "support_attachments": "Attachments",
+    "support_addAttachment": "Add attachment",
+    "notification_padSharedTeam": "{0} has shared a pad with the team {2}: <b>{1}</b>",
+    "notification_fileSharedTeam": "{0} has shared a file with the team {2}: <b>{1}</b>",
+    "notification_folderSharedTeam": "{0} has shared a pad with the team {2}: <b>{1}</b>"
 }
