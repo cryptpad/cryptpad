@@ -326,7 +326,7 @@ Messages.support_addAttachment = "Add attachment"; // XXX
             if (!obj || !obj.name || !obj.href) { return; }
             var a = h('a', {
                 href: '#'
-            }, obj.name)
+            }, obj.name);
             // XXX disallow remote URLs
             $(a).click(function (e) {
                 e.preventDefault();
