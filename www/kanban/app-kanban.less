@@ -141,6 +141,8 @@
 
     .kanban-edit-item {
         padding: 5px;
+        border: 0;
+        background: transparent;
         align-self: flex-start;
     }
 
@@ -344,7 +346,7 @@
                 margin-left: 10px;
                 display: flex;
                 flex-wrap: wrap;
-                &:not(:empty) {
+                &:not(.cp-empty) {
                     margin-top: -5px;
                 }
                 em {

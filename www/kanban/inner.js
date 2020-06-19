@@ -503,7 +503,7 @@ define([
         $container.find('.kanban-item').each(function (i, el) {
             var itemId = $(el).attr('data-eid');
             $('<button>', {
-                'class': 'kanban-edit-item btn btn-default fa fa-pencil',
+                'class': 'kanban-edit-item fa fa-pencil',
                 'alt': Messages.kanban_editCard,
             }).click(function (e) {
                 getItemEditModal(framework, kanban, itemId);
@@ -513,7 +513,7 @@ define([
         $container.find('.kanban-board').each(function (i, el) {
             var itemId = $(el).attr('data-id');
             $('<button>', {
-                'class': 'kanban-edit-item btn btn-default fa fa-pencil',
+                'class': 'kanban-edit-item fa fa-pencil',
                 'alt': Messages.kanban_editBoard,
             }).click(function (e) {
                 getBoardEditModal(framework, kanban, itemId);
@@ -913,7 +913,9 @@ define([
             var redrawList = function (allTags) {
                 if (!Array.isArray(allTags)) { return; }
                 $list.empty();
+                $list.removeClass('cp-empty');
                 if (!allTags.length) {
+                    $list.addClass('cp-empty');
                     $list.append(h('em', Messages.kanban_noTags));
                     return;
                 }
