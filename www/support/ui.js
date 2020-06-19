@@ -123,7 +123,9 @@ Messages.support_category = "Category"; // XXX
             container: $(container),
             isSelect: true
         };
-        return UIElements.createDropdown(dropdownCfg);
+        var $select = UIElements.createDropdown(dropdownCfg);
+        $select.find('button').addClass('btn');
+        return $select;
     };
 
     var makeForm = function (ctx, cb, title) {
@@ -151,6 +153,7 @@ Messages.support_category = "Category"; // XXX
             h('hr'),
             category,
             catContainer,
+            h('br'),
             h('input.cp-support-form-title' + (title ? '.cp-hidden' : ''), {
                 placeholder: Messages.support_formTitle,
                 type: 'text',
@@ -162,7 +165,7 @@ Messages.support_category = "Category"; // XXX
             }),
             h('label', Messages.support_attachments),
             attachments = h('div.cp-support-attachments'),
-            addAttachment = h('button', Messages.support_addAttachment),
+            addAttachment = h('button.btn', Messages.support_addAttachment),
             h('hr'),
             button,
             cancel
