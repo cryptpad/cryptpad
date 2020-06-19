@@ -356,11 +356,15 @@ define([
         var $cancel = findCancelButton(tagger).click(function (e) {
             close(null, e);
         });
-        listener = listenForKeys(function () {
-            $ok.click();
-        }, function () {
-            $cancel.click();
-        }, tagger);
+        $(tagger).on('keydown', function (e) {
+            if (e.which === 27) {
+                $cancel.click();
+                return;
+            }
+            if (e.which === 13) {
+                $ok.click();
+            }
+        });
 
         $(tagger).on('click submit', function (e) {
             e.stopPropagation();
