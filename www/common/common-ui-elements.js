@@ -3544,6 +3544,11 @@ define([
             link
         ]);
 
+        var dismiss = function () {
+            common.mailbox.dismiss(data, function (err) {
+                console.log(err);
+            });
+        };
         var answer = function (yes) {
             common.mailbox.sendTo("ADD_OWNER_ANSWER", {
                 channel: msg.content.channel,
@@ -3555,9 +3560,7 @@ define([
                 channel: msg.content.user.notifications,
                 curvePublic: msg.content.user.curvePublic
             });
-            common.mailbox.dismiss(data, function (err) {
-                console.log(err);
-            });
+            dismiss();
         };
 
         var todo = function (yes) {
@@ -3572,6 +3575,8 @@ define([
                     if (err) {
                         var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
                                                                       : Messages.error;
+                        console.error(err);
+                        dismiss();
                         return void UI.warn(text);
                     }
                     UI.log(Messages.saved);
