@@ -2856,6 +2856,7 @@ define([
         });
     };
 
+    /*
     UIElements.setExpirationValue = function (val, $expire) {
         if (val && typeof (val) === "number") {
             $expire.find('#cp-creation-expire').attr('checked', true).trigger('change');
@@ -2879,6 +2880,7 @@ define([
             $expire.find('#cp-creation-expire-false').attr('checked', true);
         }
     };
+    */
     UIElements.getPadCreationScreen = function (common, cfg, appCfg, cb) {
         appCfg = appCfg || {};
         if (!common.isLoggedIn()) { return void cb(); }
@@ -3191,10 +3193,12 @@ define([
 
 
         // Initial values
+        /*
         if (!cfg.owned && typeof cfg.owned !== "undefined") {
             $creation.find('#cp-creation-owned').prop('checked', false);
         }
         UIElements.setExpirationValue(cfg.expire, $creation);
+        */
 
         // Create the pad
         var getFormValues = function () {
