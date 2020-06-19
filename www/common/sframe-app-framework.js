@@ -490,6 +490,7 @@ define([
                 }, {
                     typeInput: $select[0]
                 });
+                $select.find('button').addClass('btn');
             });
             toolbar.$drawer.append($export);
         };

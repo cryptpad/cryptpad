@@ -805,7 +805,7 @@ define([
                         id: 'cp-app-prop-change-password',
                         style: 'flex: 1;'
                     });
-                    var passwordOk = h('button', Messages.properties_changePasswordButton);
+                    var passwordOk = h('button.btn', Messages.properties_changePasswordButton);
                     var changePass = h('span.cp-password-change-container', [
                         newPassword,
                         passwordOk

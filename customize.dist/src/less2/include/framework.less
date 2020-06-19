@@ -16,6 +16,7 @@
 @import (reference) "./cursor.less";
 @import (reference) "./usergrid.less";
 @import (reference) "./mentions.less";
+@import (reference) "./forms.less";
 @import (reference) "./modals-ui-elements.less";
 
 .framework_main(@bg-color, @warn-color, @color) {
@@ -48,6 +49,7 @@
     );
     .cursor_main();
     .usergrid_main();
+    .forms_main();
     .mentions_main();
     .creation_main(
         @bg-color: @bg-color,
@@ -84,6 +86,7 @@
     .checkmark_main(20px);
     .password_main();
     .usergrid_main();
+    .forms_main();
     font: @colortheme_app-font;
 }
 

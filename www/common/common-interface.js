@@ -145,12 +145,12 @@ define([
     };
 
     dialog.okButton = function (content, classString) {
-        var sel = typeof(classString) === 'string'? 'button.ok.' + classString:'button.ok.primary';
+        var sel = typeof(classString) === 'string'? 'button.ok.' + classString:'button.btn.ok.primary';
         return h(sel, { tabindex: '2', }, content || Messages.okButton);
     };
 
     dialog.cancelButton = function (content, classString) {
-        var sel = typeof(classString) === 'string'? 'button.' + classString:'button.cancel';
+        var sel = typeof(classString) === 'string'? 'button.' + classString:'button.btn.cancel';
         return h(sel, { tabindex: '1'}, content || Messages.cancelButton);
     };
 
@@ -396,6 +396,7 @@ define([
         buttons.forEach(function (b) {
             if (!b.name || !b.onClick) { return; }
             var button = h('button', { tabindex: '1', 'class': b.className || '' }, b.name);
+            button.classList.add('btn');
             var todo = function () {
                 var noClose = b.onClick();
                 if (noClose) { return; }
