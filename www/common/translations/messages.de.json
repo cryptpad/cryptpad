@@ -1391,5 +1391,8 @@
     "notification_padSharedTeam": "{0} hat ein Pad mit dem Team {2} geteilt: <b>{1}</b>",
     "support_addAttachment": "Anhang hinzufügen",
     "support_attachments": "Anhänge",
-    "support_cat_bug": "Fehlerbericht"
+    "support_cat_bug": "Fehlerbericht",
+    "oo_refresh": "Neu laden",
+    "support_category": "Wähle eine Kategorie",
+    "oo_refreshText": "Dieses Dokument wurde aktualisiert"
 }
