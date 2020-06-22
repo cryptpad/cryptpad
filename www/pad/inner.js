@@ -1024,6 +1024,149 @@ define([
             }).nThen(waitFor());
 
         }).nThen(function( /*waitFor*/ ) {
+            var $a = $('.cke_toolbox_main').find('.cke_button, .cke_combo_button');
+            $a.each(function (i, el) {
+                var attr = $(el).attr('onclick');
+                var reg = /CKEDITOR.tools.callFunction\(([0-9]+),this\);return false;/;
+                var f = attr.match(reg)[1];
+                $(el).click(function () {
+                    CKEDITOR.tools.callFunction(Number(f), el);
+                });
+            });
+
+
+
+
+
+
+
+
+
+
+
+		CKEDITOR.ui.panel.prototype.render = function( editor, output ) {
+			var data = {
+				editorId: editor.id,
+				id: this.id,
+				langCode: editor.langCode,
+				dir: editor.lang.dir,
+				cls: this.className,
+				frame: '',
+				env: CKEDITOR.env.cssClass,
+				'z-index': editor.config.baseFloatZIndex + 1
+			};
+
+			this.getHolderElement = function() {
+				var holder = this._.holder;
+
+				if ( !holder ) {
+					if ( this.isFramed ) {
+						var iframe = this.document.getById( this.id + '_frame' ),
+							parentDiv = iframe.getParent(),
+							doc = iframe.getFrameDocument();
+
+						// Make it scrollable on iOS. (https://dev.ckeditor.com/ticket/8308)
+						CKEDITOR.env.iOS && parentDiv.setStyles( {
+							'overflow': 'scroll',
+							'-webkit-overflow-scrolling': 'touch'
+						} );
+
+						var onLoad = CKEDITOR.tools.addFunction( CKEDITOR.tools.bind( function() {
+							this.isLoaded = true;
+							if ( this.onLoad )
+								this.onLoad();
+						}, this ) );
+
+						doc.write( frameDocTpl.output( CKEDITOR.tools.extend( {
+							css: CKEDITOR.tools.buildStyleHtml( this.css ),
+							onload: 'self.parent.CKEDITOR.tools.callFunction(' + onLoad + ');'
+						}, data ) ) );
+
+						var win = doc.getWindow();
+
+						// Register the CKEDITOR global.
+						win.$.CKEDITOR = CKEDITOR;
+
+						// Arrow keys for scrolling is only preventable with 'keypress' event in Opera (https://dev.ckeditor.com/ticket/4534).
+						doc.on( 'keydown', function( evt ) {
+							var keystroke = evt.data.getKeystroke(),
+								dir = this.document.getById( this.id ).getAttribute( 'dir' );
+
+							// Arrow left and right should use native behaviour inside input element
+							if ( evt.data.getTarget().getName() === 'input' && ( keystroke === 37 || keystroke === 39 ) ) {
+								return;
+							}
+							// Delegate key processing to block.
+							if ( this._.onKeyDown && this._.onKeyDown( keystroke ) === false ) {
+								if ( !( evt.data.getTarget().getName() === 'input' && keystroke === 32 ) ) {
+									// Don't prevent space when is pressed on a input filed.
+									evt.data.preventDefault();
+								}
+								return;
+							}
+
+							// ESC/ARROW-LEFT(ltr) OR ARROW-RIGHT(rtl)
+							if ( keystroke == 27 || keystroke == ( dir == 'rtl' ? 39 : 37 ) ) {
+								if ( this.onEscape && this.onEscape( keystroke ) === false )
+									evt.data.preventDefault();
+							}
+						}, this );
+
+						holder = doc.getBody();
+						holder.unselectable();
+						CKEDITOR.env.air && CKEDITOR.tools.callFunction( onLoad );
+					} else {
+						holder = this.document.getById( this.id );
+					}
+
+					this._.holder = holder;
+				}
+
+				return holder;
+			};
+
+			if ( this.isFramed ) {
+				// With IE, the custom domain has to be taken care at first,
+				// for other browers, the 'src' attribute should be left empty to
+				// trigger iframe's 'load' event.
+				var src =
+					CKEDITOR.env.air ? 'javascript:void(0)' : // jshint ignore:line
+					( CKEDITOR.env.ie && !CKEDITOR.env.edge ) ? 'javascript:void(function(){' + encodeURIComponent( // jshint ignore:line
+						'document.open();' +
+						// In IE, the document domain must be set any time we call document.open().
+						'(' + CKEDITOR.tools.fixDomain + ')();' +
+						'document.close();'
+					) + '}())' :
+					'';
+
+				data.frame = frameTpl.output( {
+					id: this.id + '_frame',
+					src: src
+				} );
+			}
+
+			var html = panelTpl.output( data );
+
+			if ( output )
+				output.push( html );
+
+			return html;
+		};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             function launchAnchorTest(test) {
                 // -------- anchor test: make sure the exported anchor contains <a name="...">  -------
                 console.log('---- anchor test: make sure the exported anchor contains <a name="...">  -----.');

@@ -128,7 +128,7 @@ var setHeaders = (function () {
     if (Object.keys(headers).length) {
         return function (req, res) {
             const h = [
-                    /^\/pad\/inner\.html.*/,
+                    ///^\/pad\/inner\.html.*/,
                     /^\/common\/onlyoffice\/.*\/index\.html.*/,
                     /^\/(sheet|ooslide|oodoc)\/inner\.html.*/,
                 ].some((regex) => {
