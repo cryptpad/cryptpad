@@ -66,11 +66,20 @@ define([
         var $cat = $form.find('.cp-support-form-category');
         var $title = $form.find('.cp-support-form-title');
         var $content = $form.find('.cp-support-form-msg');
-        // XXX block submission until pending uploads are complete?
+        // TODO block submission until pending uploads are complete?
         var $attachments = $form.find('.cp-support-attachments');
 
+        var category = $cat.val().trim();
+        /*
+        // || ($form.closest('.cp-support-list-ticket').data('cat') || "").trim();
+        // Messages.support_formCategoryError = "Error: category is empty"; // TODO ensure this is translated before use
 
-        var category = $cat.val().trim(); // XXX make category a required field?
+        if (!category) {
+            console.log($cat);
+            return void UI.alert(Messages.support_formCategoryError);
+        }
+        */
+
         var title = $title.val().trim();
         if (!title) {
             return void UI.alert(Messages.support_formTitleError);
