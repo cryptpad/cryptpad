@@ -798,7 +798,6 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
                     return void console.error(err);
                 }
                 metadata = ref.internal.metadata = (data && data[0]) || undefined;
-                console.log("TEAM_METADATA", metadata);
             });
         }).nThen(function (w) {
             if (!config.keys.teamEdPublic && metadata && metadata.validateKey) {
