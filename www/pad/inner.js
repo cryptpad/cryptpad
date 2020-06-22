@@ -456,6 +456,15 @@ define([
         });
     };
 
+    var mkPrintButton = function (framework, editor, ckeditor) {
+        var $printButton = framework._.sfCommon.createButton('print', true);
+        $printButton.click(function () {
+            editor.execCommand('print');
+            framework.feedback('PRINT_PAD');
+        });
+        framework._.toolbar.$drawer.append($printButton);
+    };
+
     var andThen2 = function(editor, Ckeditor, framework) {
         var mediaTagMap = {};
         var $contentContainer = $('#cke_1_contents');
@@ -479,6 +488,8 @@ define([
         $iframe.find('head').append('<link href="' + customCss + '" type="text/css" rel="stylesheet" _fcktemp="true"/>');
 
         framework._.sfCommon.addShortcuts(ifrWindow);
+
+        mkPrintButton(framework, editor, Ckeditor);
 
         var documentBody = ifrWindow.document.body;
         var inner = window.inner = documentBody;
