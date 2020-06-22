@@ -1164,7 +1164,7 @@
     "team_inviteModalButton": "Inviter",
     "team_pcsSelectLabel": "Sauver dans",
     "team_pcsSelectHelp": "Créer un pad dans le drive d'une équipe rend cette équipe propriétaire du pad si l'option est cochée.",
-    "team_invitedToTeam": "{0} vous à inviter à rejoindre l'équipe : <b>{1}</b>",
+    "team_invitedToTeam": "{0} vous a invité à rejoindre l'équipe : <b>{1}</b>",
     "team_kickedFromTeam": "{0} vous a exclu de l'équipe : <b>{1}</b>",
     "team_acceptInvitation": "{0} a accepté votre offre de rejoindre l'équipe : <b>{1}</b>",
     "team_declineInvitation": "{0} a refusé votre offre de rejoindre l'équipe : <b>{1}</b>",
@@ -1381,5 +1381,18 @@
     "support_languagesPreamble": "L'équipe de support parle les langues suivantes :",
     "info_privacyFlavour": "<a>Description de la confidentialité</a> de vos données.",
     "user_about": "À propos de CryptPad",
-    "info_imprintFlavour": "<a>Informations légales sur les administateurs de cette instance</a>."
+    "info_imprintFlavour": "<a>Informations légales sur les administateurs de cette instance</a>.",
+    "support_cat_all": "Tout",
+    "support_cat_other": "Autre",
+    "support_cat_bug": "Rapport de bug",
+    "support_cat_data": "Perte de données",
+    "support_cat_account": "Compte utilisateur",
+    "notification_folderSharedTeam": "{0} a partagé un dossier avec l'équipe {2} : <b>{1}</b>",
+    "notification_fileSharedTeam": "{0} a partagé un fichier avec l'équipe {2} : <b>{1}</b>",
+    "notification_padSharedTeam": "{0} a partagé un pad avec l'équipe {2} : <b>{1}</b>",
+    "support_addAttachment": "Ajouter une pièce jointe",
+    "support_attachments": "Pièces jointes",
+    "oo_refreshText": "Ce document a été mis à jour",
+    "oo_refresh": "Recharger",
+    "support_category": "Choisir une catégorie"
 }

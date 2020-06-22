@@ -103,8 +103,6 @@ define([
         return true;
     };
 
-Messages.support_category = "Category"; // XXX
-
     var makeCategoryDropdown = function (ctx, container, onChange, all) {
         var categories = ['account', 'data', 'bug', 'other'];
         if (all) { categories.push('all'); }
