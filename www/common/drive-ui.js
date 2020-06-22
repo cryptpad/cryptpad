@@ -2779,30 +2779,34 @@ define([
             $sortBlock.on('click', 'a', onSortByClick);
             return $fhSort;
         };
-        var getFolderListHeader = function () {
+        var getFolderListHeader = function (clickable, small) {
             var $fohElement = $('<li>', {
                 'class': 'cp-app-drive-element-header cp-app-drive-element-list'
             });
+            var clickCls = clickable ? 'cp-app-drive-sort-clickable ' : '';
+            var onClick = clickable ? onSortByClick : function () {};
             //var $fohElement = $('<span>', {'class': 'element'}).appendTo($folderHeader);
             var $fhIcon = $('<span>', {'class': 'cp-app-drive-content-icon'});
             var $name = $('<span>', {
-                'class': 'cp-app-drive-element-name cp-app-drive-sort-foldername ' +
-                         'cp-app-drive-sort-clickable'
-            }).text(Messages.fm_folderName).click(onSortByClick);
+                'class': 'cp-app-drive-element-name cp-app-drive-sort-foldername ' + clickCls
+            }).text(Messages.fm_folderName).click(onClick);
 
             var $state = $('<span>', {'class': 'cp-app-drive-element-state'});
-            var $subfolders = $('<span>', {
-                'class': 'cp-app-drive-element-folders cp-app-drive-element-list'
-            }).text(Messages.fm_numberOfFolders);
-            var $files = $('<span>', {
-                'class': 'cp-app-drive-element-files cp-app-drive-element-list'
-            }).text(Messages.fm_numberOfFiles);
+            var $subfolders, $files;
+            if (!small) {
+                $subfolders = $('<span>', {
+                    'class': 'cp-app-drive-element-folders cp-app-drive-element-list'
+                }).text(Messages.fm_numberOfFolders);
+                $files = $('<span>', {
+                    'class': 'cp-app-drive-element-files cp-app-drive-element-list'
+                }).text(Messages.fm_numberOfFiles);
+            }
             var $filler = $('<span>', {
                 'class': 'cp-app-drive-element-filler cp-app-drive-element-list'
             });
             $fohElement.append($fhIcon).append($name).append($state)
                         .append($subfolders).append($files).append($filler);
-            addFolderSortIcon($fohElement);
+            if (clickable) { addFolderSortIcon($fohElement); }
             return $fohElement;
         };
         var addFileSortIcon = function ($list) {
@@ -2859,15 +2863,16 @@ define([
             });
             if (keys.length < 2) { return keys; }
             var mult = asc ? 1 : -1;
-            var getProp = function (el) {
-                if (folder && root[el] && manager.isSharedFolder(root[el])) {
-                    var title = manager.getSharedFolderData(root[el]).title || el;
+            var getProp = function (_el) {
+                var el = useId ? _el : root[_el];
+                var sfId = (el && el.root && el.key) ? el.root[el.key] : el;
+                if (folder && el && manager.isSharedFolder(sfId)) {
+                    var title = manager.getSharedFolderData(sfId).title || el;
                     return String(title).toLowerCase();
                 } else if (folder) {
-                    return el.toLowerCase();
+                    return String((el && el.key) || el).toLowerCase();
                 }
-                var id = useId ? el : root[el];
-                var data = manager.getFileData(id);
+                var data = manager.getFileData(el);
                 if (!data) { return ''; }
                 if (prop === 'type') {
                     var hrefData = Hash.parsePadUrl(data.href || data.roHref);
@@ -2876,15 +2881,19 @@ define([
                 if (prop === 'atime' || prop === 'ctime') {
                     return typeof(data[prop]) === "number" ? data[prop] : new Date(data[prop]);
                 }
-                return (manager.getTitle(id) || "").toLowerCase();
+                return (manager.getTitle(el) || "").toLowerCase();
             };
             var props = {};
             keys.forEach(function (k) {
-                props[k] = getProp(k);
+                var uid = k;
+                if (typeof(k) === "object") {
+                    uid = k.uid = Util.uid();
+                }
+                props[uid] = getProp(k);
             });
             keys.sort(function(a, b) {
-                var _a = props[a];
-                var _b = props[b];
+                var _a = props[(a && a.uid) || a];
+                var _b = props[(b && b.uid) || b];
                 if (_a < _b) { return mult * -1; }
                 if (_b < _a) { return mult; }
                 return 0;
@@ -3233,9 +3242,10 @@ define([
                 $input.focus();
             });
 
-            getFileListHeader(false).appendTo($list);
             $list.closest('#cp-app-drive-content-folder').addClass('cp-app-drive-content-list');
             var filesList = manager.search(value);
+            var sortable = {};
+            var sortableFolders = [];
             filesList.forEach(function (r) {
                 // if r.id === null, then it's a folder, not a file
                 r.paths.forEach(function (path) {
@@ -3244,32 +3254,55 @@ define([
                     var _path = path.slice();
                     var key = path.pop();
                     var root = manager.find(path);
-                    var isFolder = manager.isFolder(root[key]);
-                    var $element = createElement(path, key, root, isFolder);
-                    $element.addClass('cp-app-drive-element-notrash cp-app-drive-search-result');
-                    $element.off('contextmenu');
-                    $element.contextmenu(openContextMenu('default'));
-                    $element.data('context', 'default');
-                    if (isFolder) {
-                        $element.find('.cp-app-drive-element-list').css({
-                            visibility: 'hidden'
-                        }).text('');
-                        $element.find('.cp-app-drive-element-folders').css({
-                            visibility: ''
-                        }).text(Messages.fm_folder);
+                    var obj = {
+                        path: path,
+                        _path: _path,
+                        key: key,
+                        root: root,
+                        data: r.data
+                    };
+                    if (manager.isFolder(root[key])) {
+                        sortableFolders.push(obj);
+                        return;
                     }
-
-                    if (manager.isPathIn(_path, ['hrefArray'])) {
-                        _path.pop();
-                        _path.push(r.data.title);
-                    }
-                    var $path = $('<span>', {
-                        'class': 'cp-app-drive-search-path'
-                    }).appendTo($element.find('.cp-app-drive-element-name'));
-                    createTitle($path, _path);
-
-                    $list.append($element);
+                    sortable[root[key]] = obj;
                 });
+            });
+            var _folders = sortElements(true, [ROOT], sortableFolders, null, !getSortFolderDesc(), true);
+            var sortableKeys = Object.keys(sortable).map(Number);
+            var _files = sortElements(false, [ROOT], sortableKeys, APP.store[SORT_FILE_BY], !getSortFileDesc(), true);
+
+            var addEl = function (obj, folder) {
+                var $element = createElement(obj.path, obj.key, obj.root, folder);
+                $element.addClass('cp-app-drive-element-notrash cp-app-drive-search-result');
+                $element.off('contextmenu');
+                $element.contextmenu(openContextMenu('default'));
+                $element.data('context', 'default');
+                if (folder) {
+                    $element.find('.cp-app-drive-element-list').css({
+                        visibility: 'hidden'
+                    }).text('');
+                }
+                if (manager.isPathIn(obj._path, ['hrefArray'])) {
+                    obj._path.pop();
+                    obj._path.push(obj.data.title);
+                }
+                var $path = $('<span>', {
+                    'class': 'cp-app-drive-search-path'
+                }).appendTo($element.find('.cp-app-drive-element-name'));
+                createTitle($path, obj._path);
+
+                $list.append($element);
+            };
+            if (_folders.length) { getFolderListHeader(true, true).appendTo($list); }
+            _folders.forEach(function (el) {
+                var obj = el;
+                addEl(obj, true);
+            });
+            if (_files.length) { getFileListHeader(true).appendTo($list); }
+            _files.forEach(function (el) {
+                var obj = sortable[el];
+                addEl(obj, false);
             });
             setTimeout(collapseDrivePath);
         };
@@ -3415,7 +3448,7 @@ define([
             }
             var fId = APP.newSharedFolder;
             var data = folders[fId];
-            var $folderHeader = getFolderListHeader();
+            var $folderHeader = getFolderListHeader(true);
             var $fileHeader = getFileListHeader(true);
             var path = currentPath.slice(1);
             var root = Util.find(data, path);
@@ -3593,7 +3626,7 @@ define([
             }
             updateContextButton();
 
-            var $folderHeader = getFolderListHeader();
+            var $folderHeader = getFolderListHeader(true);
             var $fileHeader = getFileListHeader(true);
 
             if (isTemplate) {
