@@ -478,6 +478,7 @@ define([
                 store: store,
             };
             var myData = Messaging.createData(userObject);
+            if (!myData.curvePublic) { return void done(); }
 
             Mailbox.sendTo(ctx, 'SAFE_LINKS_DEFAULT', {
                 user: myData,
