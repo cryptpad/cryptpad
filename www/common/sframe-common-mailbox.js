@@ -188,7 +188,6 @@ define([
                 onMessageHandlers.push(function (data, el) {
                     var type = data.type;
                     if (types.indexOf(type) === -1 && !(teams && /^team-/.test(type))) { return; }
-                    console.log('okokok');
                     cfg.onMessage(data, el);
                 });
             }
