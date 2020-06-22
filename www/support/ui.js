@@ -119,6 +119,7 @@ Messages.support_category = "Category"; // XXX
         });
         var dropdownCfg = {
             text: Messages.support_category,
+            angleDown: 1,
             options: categories,
             container: $(container),
             isSelect: true
