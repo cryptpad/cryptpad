@@ -1086,7 +1086,7 @@
     "support_disabledTitle": "Le support n'est pas activé",
     "support_disabledHint": "Cette instance de CryptPad n'est pas encore configurée pour utiliser le formulaire de support.",
     "support_cat_new": "Nouveau ticket",
-    "support_formTitle": "Titre du ticket",
+    "support_formTitle": "Nouveau Ticket",
     "support_formButton": "Envoyer",
     "support_formTitleError": "Erreur : le titre est vide",
     "support_formContentError": "Erreur : le contenu est vide",
