@@ -2299,7 +2299,9 @@ define([
                 value = val;
                 var $val = $innerblock.find('[data-value="'+val+'"]');
                 var textValue = name || $val.html() || val;
-                $button.find('.cp-dropdown-button-title').html(textValue);
+                setTimeout(function () {
+                    $button.find('.cp-dropdown-button-title').html(textValue);
+                });
             };
             $container.getValue = function () {
                 return value || '';
