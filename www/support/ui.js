@@ -66,11 +66,20 @@ define([
         var $cat = $form.find('.cp-support-form-category');
         var $title = $form.find('.cp-support-form-title');
         var $content = $form.find('.cp-support-form-msg');
-        // XXX block submission until pending uploads are complete?
+        // TODO block submission until pending uploads are complete?
         var $attachments = $form.find('.cp-support-attachments');
 
+        var category = $cat.val().trim();
+        /*
+        // || ($form.closest('.cp-support-list-ticket').data('cat') || "").trim();
+        // Messages.support_formCategoryError = "Error: category is empty"; // TODO ensure this is translated before use
 
-        var category = $cat.val().trim(); // XXX make category a required field?
+        if (!category) {
+            console.log($cat);
+            return void UI.alert(Messages.support_formCategoryError);
+        }
+        */
+
         var title = $title.val().trim();
         if (!title) {
             return void UI.alert(Messages.support_formTitleError);
@@ -117,6 +126,7 @@ define([
         });
         var dropdownCfg = {
             text: Messages.support_category,
+            angleDown: 1,
             options: categories,
             container: $(container),
             isSelect: true
@@ -178,8 +188,6 @@ define([
             }).on('change', function (e) {
                 var files = Util.slice(e.target.files);
                 files.forEach(function (file) {
-                    // XXX validate that the href is hosted on the same instance
-                    // use relative URLs or compare it against a list or allowed domains?
                     var ev = {};
                     ev.callback = function (data) {
                         var x, a;
@@ -320,10 +328,11 @@ define([
 
         var attachments = (content.attachments || []).map(function (obj) {
             if (!obj || !obj.name || !obj.href) { return; }
+            // only support files explicitly beginning with /file/ so that users can't link outside of the instance
+            if (!/^\/file\//.test(obj.href)) { return; }
             var a = h('a', {
                 href: '#'
             }, obj.name);
-            // XXX disallow remote URLs
             $(a).click(function (e) {
                 e.preventDefault();
                 ctx.common.openURL(obj.href);

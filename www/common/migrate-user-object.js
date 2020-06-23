@@ -500,7 +500,7 @@ define([
             }, 500);
             progress(0, 0);*/
         }).nThen(function () {
-            Realtime.whenRealtimeSyncs(store.realtime, Util.bake(cb));
+            Realtime.whenRealtimeSyncs(store.realtime, Util.mkAsync(Util.bake(cb)));
         });
     };
 });

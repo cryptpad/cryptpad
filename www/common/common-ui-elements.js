@@ -2155,6 +2155,11 @@ define([
                 'class': 'fa fa-caret-down',
             }).prependTo($button);
         }
+        if (config.angleDown) {
+            $('<span>', {
+                'class': 'fa fa-angle-down',
+            }).prependTo($button);
+        }
 
         // Menu
         var $innerblock = $('<div>', {'class': 'cp-dropdown-content'});
