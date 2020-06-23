@@ -456,7 +456,7 @@ define([
         });
     };
 
-    var mkPrintButton = function (framework, editor, ckeditor) {
+    var mkPrintButton = function (framework, editor) {
         var $printButton = framework._.sfCommon.createButton('print', true);
         $printButton.click(function () {
             editor.execCommand('print');
