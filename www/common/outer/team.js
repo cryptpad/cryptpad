@@ -474,6 +474,16 @@ define([
             // Make sure we have not been kicked from the roster
             var state = roster.getState();
             var me = Util.find(ctx, ['store', 'proxy', 'curvePublic']);
+            // XXX FIXME roster history temporarily corrupted, don't leave the team
+            if (!state.members || !Object.keys(state.members).length) {
+                lm.stop();
+                roster.stop();
+                lm.proxy = {};
+                cb({error: 'EINVAL'});
+                waitFor.abort();
+                console.error(JSON.stringify(state));
+                return;
+            }
             if (!state.members[me]) {
                 lm.stop();
                 roster.stop();
@@ -1660,6 +1670,7 @@ define([
             var safe = false;
             if (['drive', 'teams', 'settings'].indexOf(app) !== -1) { safe = true; }
             Object.keys(teams).forEach(function (id) {
+                if (!ctx.teams[id]) { return; }
                 t[id] = {
                     owner: teams[id].owner,
                     name: teams[id].metadata.name,
@@ -1716,6 +1727,15 @@ define([
         team.removeClient = function (clientId) {
             removeClient(ctx, clientId);
         };
+        var listTeams = function (cb) {
+            var t = Util.clone(teams);
+            Object.keys(t).forEach(function (id) {
+                // If failure to load the team, don't send it
+                if (ctx.teams[id]) { return; }
+                t[id].error = true;
+            });
+            cb(t);
+        };
         team.execCommand = function (clientId, obj, cb) {
             if (ctx.store.offline) {
                 return void cb({ error: 'OFFLINE' });
@@ -1728,7 +1748,7 @@ define([
                 return void subscribe(ctx, data, clientId, cb);
             }
             if (cmd === 'LIST_TEAMS') {
-                return void cb(store.proxy.teams);
+                return void listTeams(cb);
             }
             if (cmd === 'OPEN_TEAM_CHAT') {
                 return void openTeamChat(ctx, data, clientId, cb);
