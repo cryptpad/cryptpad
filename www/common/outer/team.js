@@ -175,6 +175,23 @@ define([
             Pinpad.create(ctx.store.network, data, function (e, call) {
                 if (e) { return void cb(e); }
                 team.rpc = call;
+                team.pin = function (data, cb) {
+                    if (!team.rpc) { return void cb({error: 'TEAM_RPC_NOT_READY'}); }
+                    if (typeof(cb) !== 'function') { console.error('expected a callback'); }
+                    team.rpc.pin(data, function (e, hash) {
+                        if (e) { return void cb({error: e}); }
+                        cb({hash: hash});
+                    });
+                };
+
+                team.unpin = function (data, cb) {
+                    if (!team.rpc) { return void cb({error: 'TEAM_RPC_NOT_READY'}); }
+                    if (typeof(cb) !== 'function') { console.error('expected a callback'); }
+                    team.rpc.unpin(data, function (e, hash) {
+                        if (e) { return void cb({error: e}); }
+                        cb({hash: hash});
+                    });
+                };
                 cb();
             });
         });
@@ -245,27 +262,7 @@ define([
         nThen(function (waitFor) {
             // Init Team RPC
             if (!keys.drive.edPrivate) { return; }
-            initRpc(ctx, team, keys.drive, waitFor(function (err) {
-                if (err) { return; }
-
-                team.pin = function (data, cb) {
-                    if (!team.rpc) { return void cb({error: 'TEAM_RPC_NOT_READY'}); }
-                    if (typeof(cb) !== 'function') { console.error('expected a callback'); }
-                    team.rpc.pin(data, function (e, hash) {
-                        if (e) { return void cb({error: e}); }
-                        cb({hash: hash});
-                    });
-                };
-
-                team.unpin = function (data, cb) {
-                    if (!team.rpc) { return void cb({error: 'TEAM_RPC_NOT_READY'}); }
-                    if (typeof(cb) !== 'function') { console.error('expected a callback'); }
-                    team.rpc.unpin(data, function (e, hash) {
-                        if (e) { return void cb({error: e}); }
-                        cb({hash: hash});
-                    });
-                };
-            }));
+            initRpc(ctx, team, keys.drive, waitFor(function () {}));
         }).nThen(function () {
             // Create the proxy manager
             var loadSharedFolder = function (id, data, cb, isNew) {
@@ -1132,6 +1129,7 @@ define([
             teamData.hash = data.hash;
             teamData.keys.drive.edPrivate = data.keys.drive.edPrivate;
             teamData.keys.chat.edit = data.keys.chat.edit;
+            initRpc(ctx, team, teamData.keys.drive, function () {});
 
             var secret = Hash.getSecrets('team', data.hash, teamData.password);
             team.secondaryKey = secret && secret.keys.secondaryKey;
@@ -1140,6 +1138,9 @@ define([
             delete teamData.keys.drive.edPrivate;
             delete teamData.keys.chat.edit;
             delete team.secondaryKey;
+            if (team.rpc && team.rpc.destroy) {
+                team.rpc.destroy();
+            }
         }
 
         updateMyRights(ctx, teamId, data.hash);
