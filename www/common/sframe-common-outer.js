@@ -793,6 +793,15 @@ define([
                     Cryptpad.changePadPassword(Cryptget, Crypto, data, cb);
                 });
 
+                sframeChan.on('Q_DELETE_OWNED', function (data, cb) {
+                    Cryptpad.userObjectCommand({
+                        cmd: 'deleteOwned',
+                        teamId: data.teamId,
+                        data: {
+                            channel: data.channel
+                        }
+                    }, cb);
+                });
             };
             addCommonRpc(sframeChan, isSafe);
 

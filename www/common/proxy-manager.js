@@ -795,20 +795,23 @@ define([
     // Delete permanently some pads or folders
     var _deleteOwned = function (Env, data, cb) {
         data = data || {};
-        var resolved = _resolvePaths(Env, data.paths);
-        if (!resolved.main.length && !Object.keys(resolved.folders).length) {
+        var resolved = _resolvePaths(Env, data.paths || []);
+        if (!data.channel && !resolved.main.length && !Object.keys(resolved.folders).length) {
             return void cb({error: 'E_NOTFOUND'});
         }
         var toDelete = {
             main: [],
             folders: {}
         };
-        var todo = function (id, uo, p, _cb) {
+        var todo = function (channel, uo, p, _cb) {
             var cb = Util.once(Util.mkAsync(_cb));
-            var el = uo.find(p);
-            if (!uo.isFile(el) && !uo.isSharedFolder(el)) { return; }
-            var data = uo.isFile(el) ? uo.getFileData(el) : getSharedFolderData(Env, el);
-            var chan = data.channel;
+            var chan = channel;
+            if (!chan && uo) {
+                var el = uo.find(p);
+                if (!uo.isFile(el) && !uo.isSharedFolder(el)) { return; }
+                var data = uo.isFile(el) ? uo.getFileData(el) : getSharedFolderData(Env, el);
+                chan = data.channel;
+            }
             Env.removeOwnedChannel(chan, function (obj) {
                 // If the error is that the file is already removed, nothing to
                 // report, it's a normal behavior (pad expired probably)
@@ -840,13 +843,16 @@ define([
         };
         nThen(function (w) {
             // Delete owned pads from the server
+            if (data.channel) {
+                todo(data.channel, null, null, w());
+            }
             resolved.main.forEach(function (p) {
                 todo(null, Env.user.userObject, p, w());
             });
             Object.keys(resolved.folders).forEach(function (id) {
                 var uo = Env.folders[id].userObject;
                 resolved.folders[id].forEach(function (p) {
-                    todo(id, uo, p, w());
+                    todo(null, uo, p, w());
                 });
             });
         }).nThen(function () {
