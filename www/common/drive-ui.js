@@ -3559,6 +3559,13 @@ define([
             var $list = $('<ul>').appendTo($dirContent);
 
             var sfId = manager.isInSharedFolder(currentPath);
+
+            // Restricted folder? display ROOT instead
+            if (sfId && files.restrictedFolders[sfId]) {
+                _displayDirectory([ROOT], true);
+                return;
+            }
+
             var readOnlyFolder = false;
             if (APP.readOnly) {
                 // Read-only drive (team?)
