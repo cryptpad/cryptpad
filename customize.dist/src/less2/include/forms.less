@@ -1,7 +1,7 @@
 @import (reference) "./colortheme-all.less";
 @import (reference) "./variables.less";
 
-.buttons_main() {
+.forms_main() {
     @alertify-fore: @colortheme_modal-fg;
     @alertify-btn-fg: @alertify-fore;
     @alertify-light-bg: fade(@alertify-fore, 25%);
@@ -30,7 +30,7 @@
     div.cp-alertify-type {
         display: flex;
         input {
-            margin: 0;
+            margin: 0 !important;
             flex: 1;
             min-width: 0;
         }
@@ -83,7 +83,7 @@
         margin-bottom: 3px !important;
     }
 
-    button:not(.pure-button):not(.md-button):not(.mdl-button) {
+    button.btn {
 
         background-color: @colortheme_alertify-cancel;
         box-sizing: border-box;

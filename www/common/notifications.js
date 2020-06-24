@@ -83,11 +83,6 @@ define([
     };
 
     // Share pad
-
-    Messages.notification_padSharedTeam = "{0} has shared a pad with the team {2}: <b>{1}</b>"; // XXX
-    Messages.notification_fileSharedTeam = "{0} has shared a file with the team {2}: <b>{1}</b>"; // XXX
-    Messages.notification_folderSharedTeam = "{0} has shared a pad with the team {2}: <b>{1}</b>"; // XXX
-
     handlers['SHARE_PAD'] = function(common, data) {
         var content = data.content;
         var msg = content.msg;

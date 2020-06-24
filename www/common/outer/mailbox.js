@@ -209,7 +209,6 @@ proxy.mailboxes = {
         delete ctx.boxes[type];
     };
     var openChannel = function (ctx, type, m, onReady, opts) {
-        console.error(type, m, opts);
         opts = opts || {};
         var box = ctx.boxes[type] = {
             channel: m.channel,

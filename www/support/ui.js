@@ -66,11 +66,20 @@ define([
         var $cat = $form.find('.cp-support-form-category');
         var $title = $form.find('.cp-support-form-title');
         var $content = $form.find('.cp-support-form-msg');
-        // XXX block submission until pending uploads are complete?
+        // TODO block submission until pending uploads are complete?
         var $attachments = $form.find('.cp-support-attachments');
 
+        var category = $cat.val().trim();
+        /*
+        // || ($form.closest('.cp-support-list-ticket').data('cat') || "").trim();
+        // Messages.support_formCategoryError = "Error: category is empty"; // TODO ensure this is translated before use
 
-        var category = $cat.val().trim(); // XXX make category a required field?
+        if (!category) {
+            console.log($cat);
+            return void UI.alert(Messages.support_formCategoryError);
+        }
+        */
+
         var title = $title.val().trim();
         if (!title) {
             return void UI.alert(Messages.support_formTitleError);
@@ -103,15 +112,6 @@ define([
         return true;
     };
 
-Messages.support_cat_account = "User account"; // XXX
-Messages.support_cat_data = "Loss of content"; // XXX
-Messages.support_cat_bug = "Bug report"; // XXX
-Messages.support_cat_other = "Other"; // XXX
-Messages.support_cat_all = "All"; // XXX
-Messages.support_category = "Category"; // XXX
-Messages.support_attachments = "Attachments"; // XXX
-Messages.support_addAttachment = "Add attachment"; // XXX
-
     var makeCategoryDropdown = function (ctx, container, onChange, all) {
         var categories = ['account', 'data', 'bug', 'other'];
         if (all) { categories.push('all'); }
@@ -126,11 +126,14 @@ Messages.support_addAttachment = "Add attachment"; // XXX
         });
         var dropdownCfg = {
             text: Messages.support_category,
+            angleDown: 1,
             options: categories,
             container: $(container),
             isSelect: true
         };
-        return UIElements.createDropdown(dropdownCfg);
+        var $select = UIElements.createDropdown(dropdownCfg);
+        $select.find('button').addClass('btn');
+        return $select;
     };
 
     var makeForm = function (ctx, cb, title) {
@@ -158,6 +161,7 @@ Messages.support_addAttachment = "Add attachment"; // XXX
             h('hr'),
             category,
             catContainer,
+            h('br'),
             h('input.cp-support-form-title' + (title ? '.cp-hidden' : ''), {
                 placeholder: Messages.support_formTitle,
                 type: 'text',
@@ -169,7 +173,7 @@ Messages.support_addAttachment = "Add attachment"; // XXX
             }),
             h('label', Messages.support_attachments),
             attachments = h('div.cp-support-attachments'),
-            addAttachment = h('button', Messages.support_addAttachment),
+            addAttachment = h('button.btn', Messages.support_addAttachment),
             h('hr'),
             button,
             cancel
@@ -184,8 +188,6 @@ Messages.support_addAttachment = "Add attachment"; // XXX
             }).on('change', function (e) {
                 var files = Util.slice(e.target.files);
                 files.forEach(function (file) {
-                    // XXX validate that the href is hosted on the same instance
-                    // use relative URLs or compare it against a list or allowed domains?
                     var ev = {};
                     ev.callback = function (data) {
                         var x, a;
@@ -326,10 +328,11 @@ Messages.support_addAttachment = "Add attachment"; // XXX
 
         var attachments = (content.attachments || []).map(function (obj) {
             if (!obj || !obj.name || !obj.href) { return; }
+            // only support files explicitly beginning with /file/ so that users can't link outside of the instance
+            if (!/^\/file\//.test(obj.href)) { return; }
             var a = h('a', {
                 href: '#'
             }, obj.name);
-            // XXX disallow remote URLs
             $(a).click(function (e) {
                 e.preventDefault();
                 ctx.common.openURL(obj.href);

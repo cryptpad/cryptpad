@@ -4171,7 +4171,8 @@ define([
                     if (!manager.isSharedFolder(el)) {
                         name = path.path[path.path.length - 1];
                         folderEl = el;
-                        downloadFolder(folderEl, name);
+                        var sfId = manager.isInSharedFolder(path.path);
+                        downloadFolder(folderEl, name, sfId);
                     }
                     // shared folder
                     else {

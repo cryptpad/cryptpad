@@ -2155,6 +2155,11 @@ define([
                 'class': 'fa fa-caret-down',
             }).prependTo($button);
         }
+        if (config.angleDown) {
+            $('<span>', {
+                'class': 'fa fa-angle-down',
+            }).prependTo($button);
+        }
 
         // Menu
         var $innerblock = $('<div>', {'class': 'cp-dropdown-content'});
@@ -2856,6 +2861,7 @@ define([
         });
     };
 
+    /*
     UIElements.setExpirationValue = function (val, $expire) {
         if (val && typeof (val) === "number") {
             $expire.find('#cp-creation-expire').attr('checked', true).trigger('change');
@@ -2879,6 +2885,7 @@ define([
             $expire.find('#cp-creation-expire-false').attr('checked', true);
         }
     };
+    */
     UIElements.getPadCreationScreen = function (common, cfg, appCfg, cb) {
         appCfg = appCfg || {};
         if (!common.isLoggedIn()) { return void cb(); }
@@ -3191,10 +3198,12 @@ define([
 
 
         // Initial values
+        /*
         if (!cfg.owned && typeof cfg.owned !== "undefined") {
             $creation.find('#cp-creation-owned').prop('checked', false);
         }
         UIElements.setExpirationValue(cfg.expire, $creation);
+        */
 
         // Create the pad
         var getFormValues = function () {
@@ -3544,6 +3553,11 @@ define([
             link
         ]);
 
+        var dismiss = function () {
+            common.mailbox.dismiss(data, function (err) {
+                console.log(err);
+            });
+        };
         var answer = function (yes) {
             common.mailbox.sendTo("ADD_OWNER_ANSWER", {
                 channel: msg.content.channel,
@@ -3555,9 +3569,7 @@ define([
                 channel: msg.content.user.notifications,
                 curvePublic: msg.content.user.curvePublic
             });
-            common.mailbox.dismiss(data, function (err) {
-                console.log(err);
-            });
+            dismiss();
         };
 
         var todo = function (yes) {
@@ -3572,6 +3584,8 @@ define([
                     if (err) {
                         var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
                                                                       : Messages.error;
+                        console.error(err);
+                        dismiss();
                         return void UI.warn(text);
                     }
                     UI.log(Messages.saved);

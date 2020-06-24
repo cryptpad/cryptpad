@@ -56,6 +56,7 @@ define([
     var DISPLAY_RESTORE_BUTTON = false;
     var NEW_VERSION = 2;
     var PENDING_TIMEOUT = 30000;
+    var READ_ONLY_REFRESH_DATA_DELAY = 15000;
 
     var debug = function (x) {
         if (!window.CP_DEV_MODE) { return; }
@@ -558,8 +559,6 @@ define([
             xhr.send(null);
         };
 
-Messages.oo_refresh = "Refresh"; // XXX read-only corner popup when receiving remote updates
-Messages.oo_refreshText = "out of date"; // XXX read-only corner popup when receiving remote updates
         var refreshReadOnly = function () {
             var cancel = h('button.cp-corner-cancel', Messages.cancel);
             var reload = h('button.cp-corner-primary', [
@@ -619,8 +618,8 @@ Messages.oo_refreshText = "out of date"; // XXX read-only corner popup when rece
                                 APP.refreshPopup = true;
 
                                 // Don't "spam" the user instantly and no more than
-                                // 1 popup every 30s
-                                setTimeout(refreshReadOnly, 30000);
+                                // 1 popup every 15s
+                                setTimeout(refreshReadOnly, READ_ONLY_REFRESH_DATA_DELAY);
                                 return;
                             }
                             ooChannel.send(obj.data.msg);
@@ -1124,6 +1123,9 @@ Messages.oo_refreshText = "out of date"; // XXX read-only corner popup when rece
                 if (ifr) { ifr.remove(); }
             };
 
+            APP.UploadImageFiles = function (files, type, id, jwt, cb) {
+                cb('NO');
+            };
             APP.AddImage = function(cb1, cb2) {
                 APP.AddImageSuccessCallback = cb1;
                 APP.AddImageErrorCallback = cb2;
