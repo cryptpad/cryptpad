@@ -1334,7 +1334,7 @@ define([
                     break;
                 }
                 case 'trash': {
-                    show = ['remove', 'restore', 'properties'];
+                    show = ['remove', 'deleteowned', 'restore', 'properties'];
                 }
             }
 
