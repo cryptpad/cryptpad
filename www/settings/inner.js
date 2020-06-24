@@ -488,6 +488,7 @@ define([
                         UI.removeLoadingScreen();
                         if (obj && obj.error) {
                             // TODO
+                            // XXX EEXISTS error message?
                             UI.alert(Messages.settings_changePasswordError);
                         }
                     });
