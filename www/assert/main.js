@@ -516,6 +516,14 @@ define([
         }, "tracker should not timeout");
     }());
 
+    (function () {
+        assert(function (cb) {
+            cb(false);
+
+
+        }, "new format of users' public signing key strings should parse"); // XXX
+    }());
+
     Drive.test(assert);
 
     assert(function (cb) {

@@ -92,8 +92,23 @@ var factory = function (Util, Crypto, Nacl) {
         }
     };
 
-    Hash.getUserHrefFromKeys = function (origin, username, pubkey) {
-        return origin + '/user/#/1/' + username + '/' + pubkey.replace(/\//g, '-');
+/*
+
+0. usernames may contain spaces or many other wacky characters, so enclose the whole thing in square braces so we know its boundaries. If the formatted string does not include these we know it is either a _v1 public key string_ or _an incomplete string_. Start parsing by removing them.
+1. public keys should have a fixed length, so slice them off of the end of the string.
+2. domains cannot include `@`, so find the last occurence of it in the signing key and slice everything thereafter.
+3. the username is everything before the `@`.
+
+*/
+    Hash.getUserHrefFromKeys = function (origin, username, pubkey) { // XXX
+        return '[' +
+            username +
+            '@' +
+            origin.replace(/https*:\/\//, '') +
+            '/' +
+            pubkey.replace(/\//g, '-') +
+        ']';
+        // return origin + '/user/#/1/' + username + '/' + pubkey.replace(/\//g, '-');
     };
 
     var fixDuplicateSlashes = function (s) {
