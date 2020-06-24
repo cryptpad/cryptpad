@@ -2083,6 +2083,9 @@ define([
         Store.addSharedFolder = function (clientId, data, cb) {
             var s = getStore(data.teamId);
             s.manager.addSharedFolder(data, function (id) {
+                if (id && typeof(id) == "object" && id.error) {
+                    return void cb(id);
+                }
                 var send = data.teamId ? s.sendEvent : sendDriveEvent;
                 send('DRIVE_CHANGE', {
                     path: ['drive', UserObject.FILES_DATA]

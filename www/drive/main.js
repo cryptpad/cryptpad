@@ -45,11 +45,16 @@ define([
         };
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
-        var afterSecrets = function (Cryptpad, Utils, secret, cb) {
+        var afterSecrets = function (Cryptpad, Utils, secret, cb, sframeChan) {
             var _hash = hash.slice(1);
             if (_hash && Utils.LocalStore.isLoggedIn()) {
                 // Add a shared folder!
                 Cryptpad.addSharedFolder(null, secret, function (id) {
+                    if (id && typeof(id) === "object" && id.error) {
+                        sframeChan.event("EV_RESTRICTED_ERROR");
+                        return;
+                    }
+
                     window.CryptPad_newSharedFolder = id;
 
                     // Clear the hash now that the secrets have been generated
