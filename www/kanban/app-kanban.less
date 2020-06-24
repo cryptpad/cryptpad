@@ -3,7 +3,6 @@
 @import (reference) "../../customize/src/less2/include/tools.less";
 @import (reference) "../../customize/src/less2/include/markdown.less";
 @import (reference) "../../customize/src/less2/include/avatar.less";
-@import (reference) "../../customize/src/less2/include/buttons.less";
 
 // body
 &.cp-app-kanban {
@@ -142,6 +141,8 @@
 
     .kanban-edit-item {
         padding: 5px;
+        border: 0;
+        background: transparent;
         align-self: flex-start;
     }
 
@@ -310,7 +311,6 @@
         position: relative;
         min-height: 50px;
         .cp-kanban-filterTags {
-            .buttons_main();
             display: inline-flex;
             align-items: center;
             flex: 1;
@@ -346,7 +346,7 @@
                 margin-left: 10px;
                 display: flex;
                 flex-wrap: wrap;
-                &:not(:empty) {
+                &:not(.cp-empty) {
                     margin-top: -5px;
                 }
                 em {

@@ -126,6 +126,9 @@ define([
         delete ctx.store.proxy.teams[teamId];
         ctx.emit('LEAVE_TEAM', teamId, team.clients);
         ctx.updateMetadata();
+        ctx.store.mailbox.close('team-'+teamId, function () {
+            // Close team mailbox
+        });
     };
 
     var getTeamChannelList = function (ctx, id) {
@@ -172,6 +175,23 @@ define([
             Pinpad.create(ctx.store.network, data, function (e, call) {
                 if (e) { return void cb(e); }
                 team.rpc = call;
+                team.pin = function (data, cb) {
+                    if (!team.rpc) { return void cb({error: 'TEAM_RPC_NOT_READY'}); }
+                    if (typeof(cb) !== 'function') { console.error('expected a callback'); }
+                    team.rpc.pin(data, function (e, hash) {
+                        if (e) { return void cb({error: e}); }
+                        cb({hash: hash});
+                    });
+                };
+
+                team.unpin = function (data, cb) {
+                    if (!team.rpc) { return void cb({error: 'TEAM_RPC_NOT_READY'}); }
+                    if (typeof(cb) !== 'function') { console.error('expected a callback'); }
+                    team.rpc.unpin(data, function (e, hash) {
+                        if (e) { return void cb({error: e}); }
+                        cb({hash: hash});
+                    });
+                };
                 cb();
             });
         });
@@ -242,27 +262,7 @@ define([
         nThen(function (waitFor) {
             // Init Team RPC
             if (!keys.drive.edPrivate) { return; }
-            initRpc(ctx, team, keys.drive, waitFor(function (err) {
-                if (err) { return; }
-
-                team.pin = function (data, cb) {
-                    if (!team.rpc) { return void cb({error: 'TEAM_RPC_NOT_READY'}); }
-                    if (typeof(cb) !== 'function') { console.error('expected a callback'); }
-                    team.rpc.pin(data, function (e, hash) {
-                        if (e) { return void cb({error: e}); }
-                        cb({hash: hash});
-                    });
-                };
-
-                team.unpin = function (data, cb) {
-                    if (!team.rpc) { return void cb({error: 'TEAM_RPC_NOT_READY'}); }
-                    if (typeof(cb) !== 'function') { console.error('expected a callback'); }
-                    team.rpc.unpin(data, function (e, hash) {
-                        if (e) { return void cb({error: e}); }
-                        cb({hash: hash});
-                    });
-                };
-            }));
+            initRpc(ctx, team, keys.drive, waitFor(function () {}));
         }).nThen(function () {
             // Create the proxy manager
             var loadSharedFolder = function (id, data, cb, isNew) {
@@ -471,6 +471,16 @@ define([
             // Make sure we have not been kicked from the roster
             var state = roster.getState();
             var me = Util.find(ctx, ['store', 'proxy', 'curvePublic']);
+            // XXX FIXME roster history temporarily corrupted, don't leave the team
+            if (!state.members || !Object.keys(state.members).length) {
+                lm.stop();
+                roster.stop();
+                lm.proxy = {};
+                cb({error: 'EINVAL'});
+                waitFor.abort();
+                console.error(JSON.stringify(state));
+                return;
+            }
             if (!state.members[me]) {
                 lm.stop();
                 roster.stop();
@@ -493,6 +503,8 @@ define([
         var secret = Hash.getSecrets('team', hash, password);
         var roHash = Hash.getViewHashFromKeys(secret);
         var keyPair = Nacl.sign.keyPair(); // keyPair.secretKey , keyPair.publicKey
+
+        var curvePair = Nacl.box.keyPair();
 
         var rosterSeed = Crypto.Team.createSeed();
         var rosterKeys = Crypto.Team.deriveMemberKeys(rosterSeed, {
@@ -585,6 +597,14 @@ define([
             proxy.on('ready', function () {
                 // Store keys in our drive
                 var keys = {
+                    mailbox: {
+                        channel: Hash.createChannelId(),
+                        viewed: [],
+                        keys: {
+                            curvePrivate: Nacl.util.encodeBase64(curvePair.secretKey),
+                            curvePublic: Nacl.util.encodeBase64(curvePair.publicKey)
+                        }
+                    },
                     drive: {
                         edPrivate: Nacl.util.encodeBase64(keyPair.secretKey),
                         edPublic: Nacl.util.encodeBase64(keyPair.publicKey)
@@ -601,7 +621,7 @@ define([
                         view: rosterKeys.viewKeyStr,
                     }
                 };
-                ctx.store.proxy.teams[id] = {
+                var t = ctx.store.proxy.teams[id] = {
                     owner: true,
                     channel: secret.channel,
                     hash: hash,
@@ -618,6 +638,11 @@ define([
 
                 onReady(ctx, id, lm, roster, keys, cId, function () {
                     Feedback.send('TEAM_CREATION');
+                    ctx.store.mailbox.open('team-'+id, t.keys.mailbox, function () {
+                        // Team mailbox loaded
+                    }, true, {
+                        owners: t.keys.drive.edPublic
+                    });
                     ctx.updateMetadata();
                     cb();
                 });
@@ -720,6 +745,11 @@ define([
             team.rpc.removePins(waitFor(function (err) {
                 if (err) { console.error(err); }
             }));
+            // Delete the mailbox
+            var mailboxChan = Util.find(teamData, ['keys', 'mailbox', 'channel']);
+            team.rpc.removeOwnedChannel(mailboxChan, waitFor(function (err) {
+                if (err) { console.error(err); }
+            }));
             // Delete the roster
             var rosterChan = Util.find(teamData, ['keys', 'roster', 'channel']);
             ctx.store.rpc.removeOwnedChannel(rosterChan, waitFor(function (err) {
@@ -750,6 +780,12 @@ define([
         ctx.onReadyHandlers[id] = [];
         openChannel(ctx, team, id, function (obj) {
             if (!(obj && obj.error)) { console.debug('Team joined:' + id); }
+            var t = ctx.store.proxy.teams[id];
+            ctx.store.mailbox.open('team-'+id, t.keys.mailbox, function () {
+                // Team mailbox loaded
+            }, true, {
+                owners: t.keys.drive.edPublic
+            });
             ctx.updateMetadata();
             cb(obj);
         });
@@ -1093,6 +1129,7 @@ define([
             teamData.hash = data.hash;
             teamData.keys.drive.edPrivate = data.keys.drive.edPrivate;
             teamData.keys.chat.edit = data.keys.chat.edit;
+            initRpc(ctx, team, teamData.keys.drive, function () {});
 
             var secret = Hash.getSecrets('team', data.hash, teamData.password);
             team.secondaryKey = secret && secret.keys.secondaryKey;
@@ -1101,6 +1138,9 @@ define([
             delete teamData.keys.drive.edPrivate;
             delete teamData.keys.chat.edit;
             delete team.secondaryKey;
+            if (team.rpc && team.rpc.destroy) {
+                team.rpc.destroy();
+            }
         }
 
         updateMyRights(ctx, teamId, data.hash);
@@ -1566,6 +1606,25 @@ define([
         });
     };
 
+    var deriveMailbox = function (team) {
+        if (!team) { return; }
+        if (team.keys && team.keys.mailbox) { return team.keys.mailbox; }
+        var strSeed = Util.find(team, ['keys', 'roster', 'edit']);
+        if (!strSeed) { return; }
+        var hash = Nacl.hash(Nacl.util.decodeUTF8(strSeed));
+        var seed = hash.slice(0,32);
+        var mailboxChannel = Util.uint8ArrayToHex(hash.slice(32,48));
+        var curvePair = Nacl.box.keyPair.fromSecretKey(seed);
+        return {
+            channel: mailboxChannel,
+            viewed: [],
+            keys: {
+                curvePrivate: Nacl.util.encodeBase64(curvePair.secretKey),
+                curvePublic: Nacl.util.encodeBase64(curvePair.publicKey)
+            }
+        };
+    };
+
     Team.init = function (cfg, waitFor, emit) {
         var team = {};
         var store = cfg.store;
@@ -1595,6 +1654,9 @@ define([
 
         Object.keys(teams).forEach(function (id) {
             ctx.onReadyHandlers[id] = [];
+            if (!Util.find(teams, [id, 'keys', 'mailbox'])) {
+                teams[id].keys.mailbox = deriveMailbox(teams[id]);
+            }
             openChannel(ctx, teams[id], id, waitFor(function (err) {
                 if (err) { return void console.error(err); }
                 console.debug('Team '+id+' ready');
@@ -1609,12 +1671,15 @@ define([
             var safe = false;
             if (['drive', 'teams', 'settings'].indexOf(app) !== -1) { safe = true; }
             Object.keys(teams).forEach(function (id) {
+                if (!ctx.teams[id]) { return; }
                 t[id] = {
                     owner: teams[id].owner,
                     name: teams[id].metadata.name,
                     edPublic: Util.find(teams[id], ['keys', 'drive', 'edPublic']),
                     avatar: Util.find(teams[id], ['metadata', 'avatar']),
                     viewer: !Util.find(teams[id], ['keys', 'drive', 'edPrivate']),
+                    notifications: Util.find(teams[id], ['keys', 'mailbox', 'channel']),
+                    curvePublic: Util.find(teams[id], ['keys', 'mailbox', 'keys', 'curvePublic']),
 
                 };
                 if (safe && ctx.teams[id]) {
@@ -1663,6 +1728,15 @@ define([
         team.removeClient = function (clientId) {
             removeClient(ctx, clientId);
         };
+        var listTeams = function (cb) {
+            var t = Util.clone(teams);
+            Object.keys(t).forEach(function (id) {
+                // If failure to load the team, don't send it
+                if (ctx.teams[id]) { return; }
+                t[id].error = true;
+            });
+            cb(t);
+        };
         team.execCommand = function (clientId, obj, cb) {
             if (ctx.store.offline) {
                 return void cb({ error: 'OFFLINE' });
@@ -1675,7 +1749,7 @@ define([
                 return void subscribe(ctx, data, clientId, cb);
             }
             if (cmd === 'LIST_TEAMS') {
-                return void cb(store.proxy.teams);
+                return void listTeams(cb);
             }
             if (cmd === 'OPEN_TEAM_CHAT') {
                 return void openTeamChat(ctx, data, clientId, cb);

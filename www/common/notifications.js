@@ -83,7 +83,6 @@ define([
     };
 
     // Share pad
-
     handlers['SHARE_PAD'] = function(common, data) {
         var content = data.content;
         var msg = content.msg;
@@ -91,10 +90,22 @@ define([
         var key = type === 'drive' ? 'notification_folderShared' :
             (type === 'file' ? 'notification_fileShared' :
                 'notification_padShared');
+
+        var teamNotification = /^team-/.test(data.type) && Number(data.type.slice(5));
+        var teamName = '';
+        if (teamNotification) {
+            var privateData = common.getMetadataMgr().getPrivateData();
+            var teamsData = Util.tryParse(JSON.stringify(privateData.teams)) || {};
+            var team = teamsData[teamNotification];
+            if (!team || !team.name) { return; }
+            key += "Team";
+            teamName = Util.fixHTML(team.name);
+        }
+
         var name = Util.fixHTML(msg.content.name) || Messages.anonymous;
         var title = Util.fixHTML(msg.content.title);
         content.getFormatText = function() {
-            return Messages._getKey(key, [name, title]);
+            return Messages._getKey(key, [name, title, teamName]);
         };
         content.handler = function() {
             var todo = function() {
@@ -104,6 +115,9 @@ define([
             nThen(function(waitFor) {
                 if (msg.content.isTemplate) {
                     common.sessionStorage.put(Constants.newPadPathKey, ['template'], waitFor());
+                }
+                if (teamNotification) {
+                    common.sessionStorage.put(Constants.newPadTeamKey, teamNotification, waitFor());
                 }
                 common.sessionStorage.put('newPadPassword', msg.content.password || '', waitFor());
             }).nThen(function() {

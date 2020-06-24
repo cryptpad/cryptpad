@@ -313,26 +313,30 @@ define([
                     var $friends = $div.find('.cp-usergrid-user.cp-selected');
                     $friends.each(function (i, el) {
                         var curve = $(el).attr('data-curve');
-                        // Check if the selected element is a friend or a team
-                        if (curve) { // Friend
-                            if (!curve || !friends[curve]) { return; }
-                            var friend = friends[curve];
-                            if (!friend.notifications || !friend.curvePublic) { return; }
-                            common.mailbox.sendTo("SHARE_PAD", {
-                                href: href,
-                                password: config.password,
-                                isTemplate: config.isTemplate,
-                                name: myName,
-                                title: title
-                            }, {
-                                channel: friend.notifications,
-                                curvePublic: friend.curvePublic
-                            });
-                            return;
-                        }
-                        // Team
                         var ed = $(el).attr('data-ed');
+                        var friend = curve && friends[curve];
                         var team = teams[ed];
+                        // If the selected element is a friend or a team without edit right,
+                        // send a notification
+                        var mailbox = friend || ((team && team.viewer) ? team : undefined);
+                        if (mailbox) { // Friend
+                            if (friends[curve] && !mailbox.notifications) { return; }
+                            if (mailbox.notifications && mailbox.curvePublic) {
+                                common.mailbox.sendTo("SHARE_PAD", {
+                                    href: href,
+                                    password: config.password,
+                                    isTemplate: config.isTemplate,
+                                    name: myName,
+                                    title: title
+                                }, {
+                                    viewed: team && team.id,
+                                    channel: mailbox.notifications,
+                                    curvePublic: mailbox.curvePublic
+                                });
+                                return;
+                            }
+                        }
+                        // If it's a team with edit right, add the pad directly
                         if (!team) { return; }
                         sframeChan.query('Q_STORE_IN_TEAM', {
                             href: href,
@@ -450,10 +454,11 @@ define([
             // config.teamId only exists when we're trying to share a pad from a team drive
             // In this case, we don't want to share the pad with the current team
             if (config.teamId && config.teamId === id) { return; }
-            if (!teamsData[id].hasSecondaryKey) { return; }
             var t = teamsData[id];
             teams[t.edPublic] = {
-                notifications: true,
+                viewer: !teamsData[id].hasSecondaryKey,
+                notifications: t.notifications,
+                curvePublic: t.curvePublic,
                 displayName: t.name,
                 edPublic: t.edPublic,
                 avatar: t.avatar,
@@ -2150,6 +2155,11 @@ define([
                 'class': 'fa fa-caret-down',
             }).prependTo($button);
         }
+        if (config.angleDown) {
+            $('<span>', {
+                'class': 'fa fa-angle-down',
+            }).prependTo($button);
+        }
 
         // Menu
         var $innerblock = $('<div>', {'class': 'cp-dropdown-content'});
@@ -2203,7 +2213,9 @@ define([
             if (config.isSelect && value) {
                 var $val = $innerblock.find('[data-value="'+value+'"]');
                 setActive($val);
-                $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
+                try {
+                    $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
+                } catch (e) {}
             }
             if (config.feedback) { Feedback.send(config.feedback); }
         };
@@ -2849,6 +2861,7 @@ define([
         });
     };
 
+    /*
     UIElements.setExpirationValue = function (val, $expire) {
         if (val && typeof (val) === "number") {
             $expire.find('#cp-creation-expire').attr('checked', true).trigger('change');
@@ -2872,6 +2885,7 @@ define([
             $expire.find('#cp-creation-expire-false').attr('checked', true);
         }
     };
+    */
     UIElements.getPadCreationScreen = function (common, cfg, appCfg, cb) {
         appCfg = appCfg || {};
         if (!common.isLoggedIn()) { return void cb(); }
@@ -3184,10 +3198,12 @@ define([
 
 
         // Initial values
+        /*
         if (!cfg.owned && typeof cfg.owned !== "undefined") {
             $creation.find('#cp-creation-owned').prop('checked', false);
         }
         UIElements.setExpirationValue(cfg.expire, $creation);
+        */
 
         // Create the pad
         var getFormValues = function () {
@@ -3537,6 +3553,11 @@ define([
             link
         ]);
 
+        var dismiss = function () {
+            common.mailbox.dismiss(data, function (err) {
+                console.log(err);
+            });
+        };
         var answer = function (yes) {
             common.mailbox.sendTo("ADD_OWNER_ANSWER", {
                 channel: msg.content.channel,
@@ -3548,9 +3569,7 @@ define([
                 channel: msg.content.user.notifications,
                 curvePublic: msg.content.user.curvePublic
             });
-            common.mailbox.dismiss(data, function (err) {
-                console.log(err);
-            });
+            dismiss();
         };
 
         var todo = function (yes) {
@@ -3565,6 +3584,8 @@ define([
                     if (err) {
                         var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
                                                                       : Messages.error;
+                        console.error(err);
+                        dismiss();
                         return void UI.warn(text);
                     }
                     UI.log(Messages.saved);

@@ -56,6 +56,7 @@ define([
     var DISPLAY_RESTORE_BUTTON = false;
     var NEW_VERSION = 2;
     var PENDING_TIMEOUT = 30000;
+    var READ_ONLY_REFRESH_DATA_DELAY = 15000;
 
     var debug = function (x) {
         if (!window.CP_DEV_MODE) { return; }
@@ -122,7 +123,6 @@ define([
             if (!state && !readOnly) {
                 $('#cp-app-oo-editor').append(h('div#cp-app-oo-offline'));
             }
-            debug(state);
         };
 
         var deleteOffline = function () {
@@ -506,6 +506,87 @@ define([
             }, to);
         };
 
+        var loadInitDocument = function (type, useNewDefault) {
+            var newText;
+            switch (type) {
+                case 'sheet' :
+                    newText = EmptyCell(useNewDefault);
+                    break;
+                case 'oodoc':
+                    newText = EmptyDoc();
+                    break;
+                case 'ooslide':
+                    newText = EmptySlide();
+                    break;
+                default:
+                    newText = '';
+            }
+            return new Blob([newText], {type: 'text/plain'});
+        };
+        var loadLastDocument = function (lastCp, onCpError, cb) {
+            ooChannel.cpIndex = lastCp.index || 0;
+            var parsed = Hash.parsePadUrl(lastCp.file);
+            var secret = Hash.getSecrets('file', parsed.hash);
+            if (!secret || !secret.channel) { return; }
+            var hexFileName = secret.channel;
+            var fileHost = privateData.fileHost || privateData.origin;
+            var src = fileHost + Hash.getBlobPathFromHex(hexFileName);
+            var key = secret.keys && secret.keys.cryptKey;
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', src, true);
+            xhr.responseType = 'arraybuffer';
+            xhr.onload = function () {
+                if (/^4/.test('' + this.status)) {
+                    onCpError();
+                    return void console.error('XHR error', this.status);
+                }
+                var arrayBuffer = xhr.response;
+                if (arrayBuffer) {
+                    var u8 = new Uint8Array(arrayBuffer);
+                    FileCrypto.decrypt(u8, key, function (err, decrypted) {
+                        if (err) { return void console.error(err); }
+                        var blob = new Blob([decrypted.content], {type: 'plain/text'});
+                        if (cb) {
+                            return cb(blob, getFileType());
+                        }
+                        startOO(blob, getFileType());
+                    });
+                }
+            };
+            xhr.onerror = function () {
+                onCpError();
+            };
+            xhr.send(null);
+        };
+
+        var refreshReadOnly = function () {
+            var cancel = h('button.cp-corner-cancel', Messages.cancel);
+            var reload = h('button.cp-corner-primary', [
+                h('i.fa.fa-refresh'),
+                Messages.oo_refresh
+            ]);
+
+            var actions = h('div', [cancel, reload]);
+            var m = UI.cornerPopup(Messages.oo_refreshText, actions, '');
+            $(reload).click(function () {
+                ooChannel.ready = false;
+                var lastCp = getLastCp();
+                loadLastDocument(lastCp, function () {
+                    var file = getFileType();
+                    var type = common.getMetadataMgr().getPrivateData().ooType;
+                    var blob = loadInitDocument(type, true);
+                    resetData(blob, file);
+                }, function (blob, file) {
+                    resetData(blob, file);
+                });
+                delete APP.refreshPopup;
+                m.delete();
+            });
+            $(cancel).click(function () {
+                delete APP.refreshPopup;
+                m.delete();
+            });
+        };
 
         var openRtChannel = function (cb) {
             if (rtChannel.ready) { return void cb(); }
@@ -529,6 +610,18 @@ define([
                         break;
                     case 'MESSAGE':
                         if (ooChannel.ready) {
+                            // In read-only mode, push the message to the queue and prompt
+                            // the user to refresh OO (without reloading the page)
+                            if (readOnly) {
+                                ooChannel.queue.push(obj.data);
+                                if (APP.refreshPopup) { return; }
+                                APP.refreshPopup = true;
+
+                                // Don't "spam" the user instantly and no more than
+                                // 1 popup every 15s
+                                setTimeout(refreshReadOnly, READ_ONLY_REFRESH_DATA_DELAY);
+                                return;
+                            }
                             ooChannel.send(obj.data.msg);
                             ooChannel.lastHash = obj.data.hash;
                             ooChannel.cpIndex++;
@@ -986,8 +1079,10 @@ define([
                         ooChannel.queue.forEach(function (data) {
                             ooChannel.send(data.msg);
                         });
-                        var last = ooChannel.queue.pop();
-                        if (last) { ooChannel.lastHash = last.hash; }
+                        if (!readOnly) {
+                            var last = ooChannel.queue.pop();
+                            if (last) { ooChannel.lastHash = last.hash; }
+                        }
                         ooChannel.cpIndex += ooChannel.queue.length;
                         // Apply existing locks
                         deleteOfflineLocks();
@@ -1018,7 +1113,7 @@ define([
                             UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
                             setTimeout(function () {
                                 makeCheckpoint(true);
-                            }, 1000);
+                            }, 5000);
                         }
                     }
                 }
@@ -1028,6 +1123,9 @@ define([
                 if (ifr) { ifr.remove(); }
             };
 
+            APP.UploadImageFiles = function (files, type, id, jwt, cb) {
+                cb('NO');
+            };
             APP.AddImage = function(cb1, cb2) {
                 APP.AddImageSuccessCallback = cb1;
                 APP.AddImageErrorCallback = cb2;
@@ -1447,41 +1545,6 @@ define([
             }, 100);
         };
 
-        var loadLastDocument = function (lastCp, onCpError, cb) {
-            ooChannel.cpIndex = lastCp.index || 0;
-            var parsed = Hash.parsePadUrl(lastCp.file);
-            var secret = Hash.getSecrets('file', parsed.hash);
-            if (!secret || !secret.channel) { return; }
-            var hexFileName = secret.channel;
-            var fileHost = privateData.fileHost || privateData.origin;
-            var src = fileHost + Hash.getBlobPathFromHex(hexFileName);
-            var key = secret.keys && secret.keys.cryptKey;
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', src, true);
-            xhr.responseType = 'arraybuffer';
-            xhr.onload = function () {
-                if (/^4/.test('' + this.status)) {
-                    onCpError();
-                    return void console.error('XHR error', this.status);
-                }
-                var arrayBuffer = xhr.response;
-                if (arrayBuffer) {
-                    var u8 = new Uint8Array(arrayBuffer);
-                    FileCrypto.decrypt(u8, key, function (err, decrypted) {
-                        if (err) { return void console.error(err); }
-                        var blob = new Blob([decrypted.content], {type: 'plain/text'});
-                        if (cb) {
-                            return cb(blob, getFileType());
-                        }
-                        startOO(blob, getFileType());
-                    });
-                }
-            };
-            xhr.onerror = function () {
-                onCpError();
-            };
-            xhr.send(null);
-        };
         var loadDocument = function (noCp, useNewDefault, i) {
             if (ooLoaded) { return; }
             var type = common.getMetadataMgr().getPrivateData().ooType;
@@ -1511,7 +1574,7 @@ define([
                 default:
                     newText = '';
             }
-            var blob = new Blob([newText], {type: 'text/plain'});
+            var blob = loadInitDocument(type, useNewDefault);
             startOO(blob, file);
         };
 
@@ -1788,10 +1851,10 @@ define([
                 var latest = getLastCp(true);
                 var newLatest = getLastCp();
                 if (newLatest.index > latest.index) {
+                    ooChannel.queue = [];
                     var hasDrawings = checkDrawings();
                     if (hasDrawings) {
                         ooChannel.ready = false;
-                        ooChannel.queue = [];
                     }
                     // New checkpoint
                     sframeChan.query('Q_OO_SAVE', {

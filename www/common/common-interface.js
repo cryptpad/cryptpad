@@ -145,12 +145,12 @@ define([
     };
 
     dialog.okButton = function (content, classString) {
-        var sel = typeof(classString) === 'string'? 'button.ok.' + classString:'button.ok.primary';
+        var sel = typeof(classString) === 'string'? 'button.ok.' + classString:'button.btn.ok.primary';
         return h(sel, { tabindex: '2', }, content || Messages.okButton);
     };
 
     dialog.cancelButton = function (content, classString) {
-        var sel = typeof(classString) === 'string'? 'button.' + classString:'button.cancel';
+        var sel = typeof(classString) === 'string'? 'button.' + classString:'button.btn.cancel';
         return h(sel, { tabindex: '1'}, content || Messages.cancelButton);
     };
 
@@ -356,11 +356,15 @@ define([
         var $cancel = findCancelButton(tagger).click(function (e) {
             close(null, e);
         });
-        listener = listenForKeys(function () {
-            $ok.click();
-        }, function () {
-            $cancel.click();
-        }, tagger);
+        $(tagger).on('keydown', function (e) {
+            if (e.which === 27) {
+                $cancel.click();
+                return;
+            }
+            if (e.which === 13) {
+                $ok.click();
+            }
+        });
 
         $(tagger).on('click submit', function (e) {
             e.stopPropagation();
@@ -392,6 +396,7 @@ define([
         buttons.forEach(function (b) {
             if (!b.name || !b.onClick) { return; }
             var button = h('button', { tabindex: '1', 'class': b.className || '' }, b.name);
+            button.classList.add('btn');
             var todo = function () {
                 var noClose = b.onClick();
                 if (noClose) { return; }
@@ -641,9 +646,6 @@ define([
 
         var $ok = $(ok).click(function (ev) { close(true, ev); });
         var $cancel = $(cancel).click(function (ev) { close(false, ev); });
-
-        if (opt.cancelClass) { $cancel.addClass(opt.cancelClass); }
-        if (opt.okClass) { $ok.addClass(opt.okClass); }
 
         listener = listenForKeys(function () {
             $ok.click();

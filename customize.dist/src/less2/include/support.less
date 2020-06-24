@@ -4,6 +4,9 @@
     @msg-bg: #eee;
     @fromme-bg: #ddd;
     .cp-support-form-container {
+        div {
+            margin-bottom: 10px;
+        }
         [type="text"] {
             width: @sidebar_button-width;
             margin-bottom: 10px;
@@ -13,6 +16,18 @@
             max-width: 90%;
             padding: 10px 15px;
             height: 300px;
+        }
+    }
+    .cp-support-attachments {
+        display: flex;
+        .fa {
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        &> span {
+            border: 1px solid #ddd;
+            margin-right: 5px;
+            padding: 10px;
         }
     }
     .cp-support-container {

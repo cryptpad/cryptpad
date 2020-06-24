@@ -165,8 +165,6 @@ define([
 
         var form = APP.support.makeForm();
 
-        $div.find('button').before(form);
-
         var id = Util.uid();
 
         $div.find('button').click(function () {
@@ -182,6 +180,7 @@ define([
                 $('.cp-sidebarlayout-category[data-category="tickets"]').click();
             }
         });
+        $div.find('button').before(form);
         return $div;
     };
 
