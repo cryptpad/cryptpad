@@ -675,6 +675,12 @@ define([
                 UI.errorLoadingScreen(Messages.password_error_seed);
             });
 
+            ctx.sframeChan.on("EV_EXPIRED_ERROR", function () {
+                funcs.onServerError({
+                    type: 'EEXPIRED'
+                });
+            });
+
             ctx.sframeChan.on('EV_LOADING_INFO', function (data) {
                 UI.updateLoadingProgress(data, 'drive');
             });
