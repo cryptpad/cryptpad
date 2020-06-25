@@ -747,6 +747,14 @@ define([
         Env.$contentContainer.append(h('div.cp-comment-bubble', button));
     };
 
+    var isEditable = function (document) {
+        try {
+            return document.body.getAttribute('contenteditable') === 'true';
+        } catch (err) {
+            return false;
+        }
+    };
+
     var addAddCommentHandler = function(Env) {
         Env.editor.plugins.comments.addComment = function(uid, addMark) {
             if (!Env.ready) { return; }
@@ -809,7 +817,7 @@ define([
         $(Env.ifrWindow.document).on('selectionchange', function() {
             removeCommentBubble(Env);
             var applicable = Env.editor.plugins.comments.isApplicable();
-            if (!applicable) { return; }
+            if (!applicable || !isEditable(Env.ifrWindow.document)) { return; }
             addCommentBubble(Env);
         });
     };
