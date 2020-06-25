@@ -100,7 +100,7 @@ var factory = function (Util, Crypto, Nacl) {
 3. the username is everything before the `@`.
 
 */
-    Hash.getUserHrefFromKeys = function (origin, username, pubkey) { // XXX
+    Hash.getPublicSigningKeyString = function (origin, username, pubkey) {
         return '[' +
             username +
             '@' +
