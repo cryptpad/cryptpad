@@ -56,7 +56,10 @@
                 path = path || editor.elementPath();
                 sel = sel || editor.getSelection();
                 var applicable = removeStyle.checkApplicable(path, editor);
-                var hasComments = editor.getSelectedHtml().$.querySelectorAll('comment').length;
+                var selectedHtml = editor.getSelectedHtml();
+                if (selectedHtml === null) { return; }
+                var comments = selectedHtml.$.querySelectorAll('comment');
+                var hasComments = comments && comments.length;
                 var isComment = removeStyle.checkActive(path, editor);
                 var empty = !sel.getSelectedText();
                 return applicable && !empty && !hasComments && !isComment;
