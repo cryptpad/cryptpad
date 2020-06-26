@@ -5,11 +5,18 @@ define(['jquery'], function ($) {
     // Buttons
     var $a = $('.cke_toolbox_main').find('.cke_button, .cke_combo_button');
     $a.each(function (i, el) {
-        var attr = $(el).attr('onclick');
-        var reg = /CKEDITOR.tools.callFunction\(([0-9]+),this\);return false;/;
-        var f = attr.match(reg)[1];
-        $(el).click(function () {
-            CKEDITOR.tools.callFunction(Number(f), el);
+        var $el = $(el);
+        $el.on('keydown blur focus click', function (e) {
+            e.preventDefault();
+            var attr = $(el).attr('on'+e.type);
+            if (!attr) { return; }
+            if (e.type === "blur") { return false; }
+            var reg = /CKEDITOR.tools.callFunction\(([0-9]+),(this|event)\);return false;/;
+            var m = attr.match(reg);
+            if (!m) { return; }
+            var f = m[1];
+            var arg = m[2] === "this" ? el : e.originalEvent;
+            CKEDITOR.tools.callFunction(Number(f), arg);
         });
     });
 
@@ -70,12 +77,15 @@ define(['jquery'], function ($) {
                         if (that.onLoad) {
                             that.onLoad();
                         }
-                    }).contents().find('body').on('click', '.cke_button, a.cke_colormore, a.cke_colorbox, .cke_colorauto, .cke_combo_button, .cke_panel_listItem a', function (e) {
+                    }).contents().find('body').on('click dragstart', '.cke_button, a.cke_colormore, a.cke_colorbox, .cke_colorauto, .cke_combo_button, .cke_panel_listItem a', function (e) {
+                        e.preventDefault();
+                        if (e.type === 'dragstart') { return false; }
                         var attr = $(e.currentTarget).attr('onclick');
-                        var reg = /CKEDITOR.tools.callFunction\(([0-9]+),'([A-Za-z0-9 ]+)'(,'([A-Za-z0-9 ]+)')?\);/;
+                        var reg = /CKEDITOR.tools.callFunction\(([0-9]+),'?([A-Za-z0-9 ?]+)'?(,'([A-Za-z0-9 ]+)')?\);/;
                         var match = attr.match(reg);
+                        if (!match) { return; }
                         var f = match[1];
-                        var el = match[2];
+                        var el = match[2] !== "null" ? match[2] : null;
                         CKEDITOR.tools.callFunction(Number(f), el, match[4]);
                     });
 
