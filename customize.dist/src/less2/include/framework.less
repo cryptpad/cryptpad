@@ -19,7 +19,11 @@
 @import (reference) "./forms.less";
 @import (reference) "./modals-ui-elements.less";
 
-.framework_main(@bg-color, @warn-color, @color) {
+.framework_main(
+    @bg-color: @colortheme_default-bg, // color of the toolbar background
+    @warn-color: @colortheme_default-warn, // color of the warning text in the toolbar
+    @color: @colortheme_default-color, // Color of the text for the toolbar
+) {
     --LessLoader_require: LessLoader_currentFile();
     // Set the HTML style for the apps which shouldn't have a body scrollbar
     .app-noscroll_main();
