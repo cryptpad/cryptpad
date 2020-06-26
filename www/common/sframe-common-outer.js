@@ -288,7 +288,15 @@ define([
                 var newHref;
                 var expire;
                 nThen(function (w) {
-                    if (parsed.hashData.key || !parsed.hashData.channel) { return; }
+                    // If we're using an unsafe link, get pad attribute
+                    if (parsed.hashData.key || !parsed.hashData.channel) {
+                        Cryptpad.getPadAttribute('expire', w(function (err, data) {
+                            if (err) { return; }
+                            expire = data;
+                        }));
+                        return;
+                    }
+                    // Otherwise, get pad data from channel id
                     var edit = parsed.hashData.mode === 'edit';
                     Cryptpad.getPadDataFromChannel({
                         channel: parsed.hashData.channel,

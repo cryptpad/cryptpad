@@ -114,6 +114,7 @@ define([
                 var key = Hash.encodeBase64(secret.keys.cryptKey);
                 sframeChan.event("EV_SECURE_ACTION", {
                     type: parsed.type,
+                    href: data.url,
                     src: src,
                     name: data.name,
                     key: key

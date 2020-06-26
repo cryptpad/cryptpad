@@ -1,9 +1,10 @@
 define([
     'jquery',
     '/customize/messages.js',
+    '/common/common-util.js',
     '/common/visible.js',
     '/bower_components/dragula.js/dist/dragula.min.js',
-], function ($, Messages, Visible, Dragula) {
+], function ($, Messages, Util, Visible, Dragula) {
         /**
          * jKanban
          * Vanilla Javascript plugin for manage kanban boards
@@ -740,7 +741,6 @@ define([
             return self;
         };
 
-        var todoOnVisible = function () {};
         var onVisibleHandler = false;
         this.setBoards = function (boards) {
             var scroll = {};
@@ -750,15 +750,23 @@ define([
             // Get horizontal scroll
             var $el = $(self.element);
             var scrollLeft = $el.scrollLeft();
-            // Remove all boards
-            for (var i in this.options.boards.list) {
-                var boardkey = this.options.boards.list[i];
-                scroll[boardkey] = $('.kanban-board[data-id="'+boardkey+'"] .kanban-drag').scrollTop();
-                this.removeBoard(boardkey);
-            }
+            // Get existing boards list
+            var list = Util.clone(this.options.boards.list);
+
+            // Update memory
             this.options.boards = boards;
 
-            todoOnVisible = function () {
+            // If the tab is not focused but a handler already exists: abort
+            if (!Visible.currently() && onVisibleHandler) { return; }
+
+            var todoOnVisible = function () {
+                // Remove all boards
+                for (var i in list) {
+                    var boardkey = list[i];
+                    scroll[boardkey] = $('.kanban-board[data-id="'+boardkey+'"] .kanban-drag').scrollTop();
+                    self.removeBoard(boardkey);
+                }
+
                 // Add all new boards
                 self.addBoards();
                 self.options.refresh();
@@ -772,7 +780,6 @@ define([
 
             // If the tab is not focused, redraw on focus
             if (!Visible.currently()) {
-                if (onVisibleHandler) { return; }
                 onVisibleHandler = true;
                 return void Visible.onChange(function (visible) {
                     if (!visible) { return; }
