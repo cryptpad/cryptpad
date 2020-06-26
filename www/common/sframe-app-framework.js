@@ -538,6 +538,7 @@ define([
                     }
                     if (!mediaTagEmbedder) { console.log('mediaTagEmbedder missing'); return; }
                     if (data.type !== 'file') { console.log('unhandled embed type ' + data.type); return; }
+                    common.setPadAttribute('atime', +new Date(), null, data.href);
                     var privateDat = cpNfInner.metadataMgr.getPrivateData();
                     var origin = privateDat.fileHost || privateDat.origin;
                     var src = data.src = data.src.slice(0,1) === '/' ? origin + data.src : data.src;

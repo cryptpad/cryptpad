@@ -1150,6 +1150,7 @@ define([
                     APP.realtime.onSettle(function () {
                         APP.getImageURL(name, function(url) {
                             debug("CRYPTPAD success add " + name);
+                            common.setPadAttribute('atime', +new Date(), null, data.href);
                             APP.AddImageSuccessCallback({
                                 name: name,
                                 url: url

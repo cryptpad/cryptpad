@@ -1205,6 +1205,7 @@ define([
                 };
                 common.openFilePicker(pickerCfg, function (data) {
                     if (data.type === 'file' && APP.editor) {
+                        common.setPadAttribute('atime', +new Date(), null, data.href);
                         var mt = '<media-tag src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>';
                         APP.editor.replaceSelection(mt);
                         return;
