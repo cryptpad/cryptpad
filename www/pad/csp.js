@@ -77,10 +77,11 @@ define(['jquery'], function ($) {
                         if (that.onLoad) {
                             that.onLoad();
                         }
-                    }).contents().find('body').on('click dragstart', '.cke_button, a.cke_colormore, a.cke_colorbox, .cke_colorauto, .cke_combo_button, .cke_panel_listItem a', function (e) {
+                    }).contents().find('body').on('click dragstart mouseover mouseout', '.cke_button, a.cke_colormore, a.cke_colorbox, .cke_colorauto, .cke_combo_button, .cke_panel_listItem a, a.cke_menubutton', function (e) {
                         e.preventDefault();
                         if (e.type === 'dragstart') { return false; }
-                        var attr = $(e.currentTarget).attr('onclick');
+                        var attr = $(e.currentTarget).attr('on'+e.type);
+                        if (!attr) { return; }
                         var reg = /CKEDITOR.tools.callFunction\(([0-9]+),'?([A-Za-z0-9 ?]+)'?(,'([A-Za-z0-9 ]+)')?\);/;
                         var match = attr.match(reg);
                         if (!match) { return; }
