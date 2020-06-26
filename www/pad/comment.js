@@ -44,7 +44,8 @@
                 path = path || editor.elementPath();
                 sel = sel || editor.getSelection();
                 var applicable = removeStyle.checkApplicable(path, editor);
-                var hasComments = editor.getSelectedHtml().$.querySelectorAll('comment').length;
+                var el = editor.getSelectedHtml().$;
+                var hasComments = el && el.querySelectorAll('comment').length;
                 var isComment = removeStyle.checkActive(path, editor);
                 var empty = !sel.getSelectedText();
                 return applicable && !empty && !hasComments && !isComment;
