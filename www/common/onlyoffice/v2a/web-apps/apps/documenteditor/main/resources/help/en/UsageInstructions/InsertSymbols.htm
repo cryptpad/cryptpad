@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Insert symbols and characters</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Insert symbols and characters" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Insert symbols and characters</h1>
+        <p>During working process you may need to insert a symbol which is not on your keyboard. To insert such symbols into your document, use the <img alt="Symbol table icon" src="../images/vector.png" /><b>Insert symbol</b> option and follow these simple steps:</p>
+        <ul>
+            <li>place the cursor at the location where a special symbol has to be inserted,</li>
+            <li>switch to the <b>Insert</b> tab of the top toolbar,</li>
+            <li>
+                click the <img alt="Symbol table icon" src="../images/vector.png" /><b>Symbol</b>,
+                <p><img alt="Insert symbol sidebar " src="../images/insert_symbol_window.png" /></p>
+            </li>
+            <li>The <b>Symbol</b> dialog box appears from which you can select the appropriate symbol,</li>
+            <li>
+                <p>use the <b>Range</b> section to quickly find the nesessary symbol. All symbols are divided into specific groups, for example, select 'Currency Symbols' if you want to insert a currency character.</p>
+                <p>If this character is not in the set, select a different font. Many of them also have characters other than the standard set.</p>
+                <p>Or, enter the Unicode hex value of the symbol you want into the <b>Unicode hex value field</b>. This code can be found in the <b>Character map</b>.</p>
+                <p>Previously used symbols are also displayed in the <b>Recently used symbols</b> field,</p>
+            </li>
+            <li>click <b>Insert</b>. The selected character will be added to the document.</li>
+        </ul>
+
+        <h2>Insert ASCII symbols</h2>
+        <p>ASCII table is also used to add characters.</p>
+        <p>To do this, hold down ALT key and use the numeric keypad to enter the character code.</p>
+        <p class="note"><b>Note</b>: be sure to use the numeric keypad, not the numbers on the main keyboard. To enable the numeric keypad, press the Num Lock key.</p>
+        <p>For example, to add a paragraph character (§), press and hold down ALT while typing 789, and then release ALT key.</p>
+
+        <h2>Insert symbols using Unicode table</h2>
+        <p>Additional charachters and symbols might also be found via Windows symbol table. To open this table, do one of the following:</p>
+        <ul>
+            <li>in the Search field write 'Character table' and open it,</li>
+            <li>
+                simultaneously presss Win + R, and then in the following window type <code>charmap.exe</code> and click OK.
+                <p><img alt="Insert symbol windpow" src="../images/insert_symbols_windows.png" /></p>
+            </li>
+        </ul>
+        <p>In the opened <b>Character Map</b>, select one of the <b>Character sets</b>, <b>Groups</b> and <b>Fonts</b>. Next, click on the nesessary characters, copy them to clipboard and paste in the right place of the document.</p>
+    </div>
+</body>
+</html>
