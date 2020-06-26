@@ -1,6 +1,14 @@
 define(['jquery'], function ($) {
     var CKEDITOR = window.CKEDITOR;
 
+    $('body').on('click', '.cke_dialog_container a.cke_specialchar', function (e) {
+        var attr = $(e.currentTarget).attr('onclick');
+        if (!attr) { return; }
+        var reg = /CKEDITOR.tools.callFunction\(([0-9]+), this\);/;
+        var m = attr.match(reg);
+        if (!m) { return; }
+        CKEDITOR.tools.callFunction(Number(m[1]), e.currentTarget);
+    });
 
     // Buttons
     var $a = $('.cke_toolbox_main').find('.cke_button, .cke_combo_button');
