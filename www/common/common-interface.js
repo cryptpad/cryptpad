@@ -647,9 +647,6 @@ define([
         var $ok = $(ok).click(function (ev) { close(true, ev); });
         var $cancel = $(cancel).click(function (ev) { close(false, ev); });
 
-        if (opt.cancelClass) { $cancel.addClass(opt.cancelClass); }
-        if (opt.okClass) { $ok.addClass(opt.okClass); }
-
         listener = listenForKeys(function () {
             $ok.click();
         }, function () {

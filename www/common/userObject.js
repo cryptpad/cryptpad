@@ -666,9 +666,9 @@ define([
                 var data = allFilesList[id] || allSFList[id];
                 if (!data) { return; }
                 if (Array.isArray(data.tags) && containsSearchedTag(data.tags)) {
-                    res.push(id);
-                } else
-                var title = data.title || data.lastTitle
+                    return void res.push(id);
+                }
+                var title = data.title || data.lastTitle;
                 if ((title && title.toLowerCase().indexOf(lValue) !== -1) ||
                     (data.filename && data.filename.toLowerCase().indexOf(lValue) !== -1)) {
                     res.push(id);

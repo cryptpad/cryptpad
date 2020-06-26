@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Compare documents</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="Instructions on how to compare and merge two documents" />
+    <link type="text/css" rel="stylesheet" href="../editor.css" />
+    <script type="text/javascript" src="../callback.js"></script>
+    <script type="text/javascript" src="../search/js/page-search.js"></script>
+</head>
+<body>
+    <div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+        <h1>Compare documents</h1>
+        <p class="note"><b>Note</b>: this option is available in the <b>paid</b> <em>online version</em> only starting from <b>Document Server</b> v. <b>5.5</b>.</p>
+        <p>If you need to compare and merge two documents, you can use the document <b>Compare</b> feature. It allows to display the differences between two documents and merge the documents by accepting the changes one by one or all at once.</p>
+        <p>After comparing and merging two documents, the result will be stored on the portal as a new version of the original file<!-- (in the <em>online version</em> of editors)-->. <!--In the desktop version, when you click the <b>Save</b> button, the dialog window will appear where you will be suggested to save a new file.--></p>
+        <p>If you do not need to merge documents which are being compared, you can reject all the changes so that the original document remains unchanged.</p>
+        
+        <h3 id="choosedocument">Choose a document for comparison</h3>
+        <p>To compare two documents, open the original document that you need to compare and select the second document for comparison:</p>
+        <ol>
+            <li>switch to the <b>Collaboration</b> tab at the top toolbar and press the <img alt="Compare button" src="../images/comparebutton.png" /> <b>Compare</b> button,</li>
+            <li>
+                select one of the following options to load the document:
+                <ul>
+                    <li>the <b>Document from File</b> option will open the standard dialog window for file selection. Browse your computer hard disk drive for the necessary <em>.docx</em> file and click the <b>Open</b> button.</li>
+                    <li>
+                        the <b>Document from URL</b> option will open the window where you can enter a link to the file stored in a third-party web storage (for example, Nextcloud) if you have corresponding access rights to it. The link must be a <b>direct link for downloading the file</b>. When the link is specified, click the <b>OK</b> button.
+                        <p class="note"><b>Note</b>: The direct link allows to download the file directly without opening it in a web browser. For example, to get a direct link in Nextcloud, find the necessary document in the file list, select the <b>Details</b> option from the file menu. Click the <b>Copy direct link (only works for users who have access to this file/folder)</b> icon to the right of the file name at the details panel. To find out how to get a direct link for downloading the file in a different third-party web storage, please refer to the corresponding third-party service documentation.</p>
+                    </li>
+                    <li class="onlineDocumentFeatures"> the <b>Document from Storage</b> option <!--(available in the <em>online version</em> only)--> will open the <b>Select Data Source</b> window. It displays the list of all the <em>.docx</em> documents stored on your portal you have corresponding access rights to. To navigate between the <b>Documents</b> module sections use the menu in the left part of the window. Select the necessary <em>.docx</em> document and click the <b>OK</b> button.</li>
+                </ul>
+            </li>
+        </ol>
+        <p>When the second document for comparison is selected, the comparison process will start and the document will look as if it was opened in the <b>Review</b> mode. All the changes are highlighted with a color, and you can view the changes, navigate between them, accept or reject them one by one or all the changes at once. It's also possible to change the display mode and see how the document looks before comparison, in the process of comparison, or how it will look after comparison if you accept all changes.</p>
+
+        <h3 id="displaymode">Choose the changes display mode</h3>
+        <p>Click the <img alt="Display Mode button" src="../images/review_displaymode.png" /> <b>Display Mode</b> button at the top toolbar and select one of the available modes from the list:</p>
+        <ul>
+            <li>
+                <b>Markup</b> - this option is selected by default. It is used to display the document <b>in the process of comparison</b>. This mode allows both to view the changes and edit the document.
+                <p><img alt="Compare documents - Markup" src="../images/compare_markup.png" /></p>
+            </li>
+            <li>
+                <b>Final</b> - this mode is used to display the document <b>after comparison</b> as if all the changes were accepted. This option does not actually accept all changes, it only allows you to see how the document will look like after you accept all the changes. In this mode, you cannot edit the document.
+                <p><img alt="Compare documents - Final" src="../images/compare_final.png" /></p>
+            </li>
+            <li>
+                <b>Original</b> - this mode is used to display the document <b>before comparison</b> as if all the changes were rejected. This option does not actually reject all changes, it only allows you to view the document without changes. In this mode, you cannot edit the document.
+                <p><img alt="Compare documents - Original" src="../images/compare_original.png" /></p>
+            </li>
+        </ul>
+
+        <h3 id="managechanges">Accept or reject changes</h3>
+        <p>Use the <img alt="To Previous Change button" src="../images/review_previous.png" /> <b>Previous</b> and the <img alt="To Next Change button" src="../images/review_next.png" /> <b>Next</b> buttons at the top toolbar to navigate among the changes.</p>
+        <p>To accept the currently selected change you can:</p>
+        <ul>
+            <li>click the <img alt="Accept button" src="../images/review_accepttoptoolbar.png" /> <b>Accept</b> button at the top toolbar, or</li>
+            <li>click the downward arrow below the <b>Accept</b> button and select the <b>Accept Current Change</b> option (in this case, the change will be accepted and you will proceed to the next change), or</li>
+            <li>click the <b>Accept</b> <img alt="Accept button" src="../images/review_accept.png" /> button of the change notification.</li>
+        </ul>
+        <p>To quickly accept all the changes, click the downward arrow below the <img alt="Accept button" src="../images/review_accepttoptoolbar.png" /> <b>Accept</b> button and select the <b>Accept All Changes</b> option.</p>
+        <p>To reject the current change you can:</p>
+        <ul>
+            <li>click the <img alt="Reject button" src="../images/review_rejecttoptoolbar.png" /> <b>Reject</b> button at the top toolbar, or</li>
+            <li>click the downward arrow below the <b>Reject</b> button and select the <b>Reject Current Change</b> option (in this case, the change will be rejected and you will move on to the next available change), or</li>
+            <li>click the <b>Reject</b> <img alt="Reject button" src="../images/review_reject.png" /> button of the change notification.</li>
+        </ul>
+        <p>To quickly reject all the changes, click the downward arrow below the <img alt="Reject button" src="../images/review_rejecttoptoolbar.png" /> <b>Reject</b> button and select the <b>Reject All Changes</b> option.</p>
+
+        <h3 id="comparisonnotes">Additional info on the comparison feature</h3>
+        <h5>Method of the comparison</h5>
+        <p>Documents are compared <b>by words</b>. If a word contains a change of at least one character (e.g. if a character was removed or replaced), in the result, the difference will be displayed as the change of the entire word, not the character.</p>
+        <p>The image below illustrates the case when the original file contains the word 'Characters' and the document for comparison contains the word 'Character'.</p>
+        <p><img alt="Compare documents - method" src="../images/compare_method.png" /></p>
+
+        <h5>Authorship of the document</h5>
+        <p>When the comparison process is launched, the second document for comparison is being loaded and compared to the current one.</p>
+        <ul>
+            <li>If the loaded document contains some data which is not represented in the original document, the data will be marked as added by a reviewer.</li>
+            <li>If the original document contains some data which is not represented in the loaded document, the data will be marked as deleted by a reviewer.</li>
+        </ul>
+        <p>If the authors of the original and loaded documents are the same person, the reviewer is the same user. His/her name is displayed in the change balloon.</p>
+        <p>If the authors of two files are different users, then the author of the second file loaded for comparison is the author of the added/removed changes.</p>
+        
+        <h5>Presence of the tracked changes in the compared document</h5>
+        <p>If the original document contains some changes made in the review mode, they will be accepted in the comparison process. When you choose the second file for comparison, you'll see the corresponding warning message.</p>
+        <p>In this case, when you choose the <b>Original</b> display mode, the document will not contain any changes.</p>
+    </div>
+</body>
+</html>

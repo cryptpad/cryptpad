@@ -418,6 +418,10 @@ define([
                 ]));
                 common.displayAvatar($(avatar), team.metadata.avatar, team.metadata.name);
                 $(btn).click(function () {
+                    if (team.error) {
+                        UI.warn(Messages.error); // XXX better error message - roster bug, can't load the team for now
+                        return;
+                    }
                     openTeam(common, id, team);
                 });
             });

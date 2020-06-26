@@ -1,3 +1,32 @@
+# Thylacine's revenge (3.19.1)
+
+Our upcoming 3.20.0 release is planned for July 7th, 2020, but we are once again releasing a minor version featuring some nice bug fixes and usability improvements which are ready to be deployed now. In case you missed [our announcement](https://social.weho.st/@cryptpad/104360490068671089) we are phasing out our usage of the `master` and basing our releases on the `main` branch. For best results we recommend explicitly checking out code by its tag.
+
+New features:
+
+* We've spent a little time making support tickets a little bit easier for both users and admins.
+  * Users can now label their tickets with a set of predefined categories, making it easier for admins to sort through related reports.
+  * Users and admins can both attach encrypted uploads to their messages, making it easier to demonstrate a problem with an image, video, or other example file.
+* Teams now take advantage of the same "mailbox" functionality that powers user accounts' notification center. Team members with the "viewer" role can now use this feature to share documents with their team using the "share menu" as they already can with other users. Anyone with the ability to add a document to the team's drive will then be able to receive the notification and add the document to the team's drive for them. Going forward we'll use this functionality to implement more behaviour to make teams function more like shared user accounts.
+* The "pad creation screen" which is displayed to registered users when they first create a pad will no longer remember the settings used when they last created a pad. While this behaviour was intended to streamline the process of creating documents, in practice it led to some user's documents getting deleted because they didn't realize they were set to automatically expire. If you prefer not to use the defaults (owned, non-expiring) then you'll have to click a few more times to create a document, but we think that's a worthwhile tradeoff to avoid data loss.
+
+Bug fixes:
+
+* Hitting _ctrl-A_ in the drive used to select lots of the page's elements which had no business being selected. Now it will select the contents of the directory currently being displayed.
+* Due to some complications in OnlyOffice (which we use for spreadsheets) remote updates made to a sheet were not displayed for users who had opened the document in "view mode". We still don't have the means to apply these remote changes in real-time, but we now prompt users to click a button to refresh the editor (not the full page) to display the latest document state.
+* A recent update set the text color of the team chat input to 'white', matching the input's background and making the text unreadable. We patched it to make it black text on a white background.
+* We're slowly working on improving keyboard shortcuts for a variety of actions. This time around we fixed a bug that prevented "ESC" from closing an open "tag prompt" interface.
+* We noticed that the zip file constructed in the browser when you downloaded a subtree of a shared folder in your drive contained the correct directory structure but did not contain the files that were supposed to be there. This has been fixed.
+* Finally, we've tweaked our styles to use more specific CSS selectors to prevent a variety of styles from being accidentally applied to the wrong elements. This should make the platform a little easier to maintain and help us improve the visual consistency of a variety of elements on different pages.
+
+To update from 3.19.0 to 3.19.1:
+
+1. Stop your server
+2. Get the latest code with `git checkout 3.19.1`
+3. Restart your server
+
+If you're updating from anything other than 3.19.0 you may need other clientside dependencies (available with `bower update` and `npm i`).
+
 # Thylacine release (3.19.0)
 
 ## Goals

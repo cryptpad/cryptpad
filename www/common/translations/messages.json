@@ -1108,7 +1108,7 @@
     "support_disabledTitle": "Support is not enabled",
     "support_disabledHint": "This CryptPad instance is not yet configured to use a support form.",
     "support_cat_new": "New ticket",
-    "support_formTitle": "Ticket title",
+    "support_formTitle": "New Ticket",
     "support_formHint": "This form can be used to create a new support ticket. Use it to contact the administrators to solve issues or ask any question in a secure way. Please don't create a new ticket if you already have an open ticket about the same issue, but use the reply button to provide more information.",
     "support_formButton": "Send",
     "support_formTitleError": "Error: title is empty",
@@ -1394,5 +1394,6 @@
     "notification_folderSharedTeam": "{0} has shared a folder with the team {2}: <b>{1}</b>",
     "oo_refresh": "Refresh",
     "oo_refreshText": "This document has been updated",
-    "support_category": "Choose a category"
+    "support_category": "Choose a category",
+    "support_formCategoryError": "Error: category is empty"
 }

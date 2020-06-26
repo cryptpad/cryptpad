@@ -175,6 +175,23 @@ define([
             Pinpad.create(ctx.store.network, data, function (e, call) {
                 if (e) { return void cb(e); }
                 team.rpc = call;
+                team.pin = function (data, cb) {
+                    if (!team.rpc) { return void cb({error: 'TEAM_RPC_NOT_READY'}); }
+                    if (typeof(cb) !== 'function') { console.error('expected a callback'); }
+                    team.rpc.pin(data, function (e, hash) {
+                        if (e) { return void cb({error: e}); }
+                        cb({hash: hash});
+                    });
+                };
+
+                team.unpin = function (data, cb) {
+                    if (!team.rpc) { return void cb({error: 'TEAM_RPC_NOT_READY'}); }
+                    if (typeof(cb) !== 'function') { console.error('expected a callback'); }
+                    team.rpc.unpin(data, function (e, hash) {
+                        if (e) { return void cb({error: e}); }
+                        cb({hash: hash});
+                    });
+                };
                 cb();
             });
         });
@@ -245,27 +262,7 @@ define([
         nThen(function (waitFor) {
             // Init Team RPC
             if (!keys.drive.edPrivate) { return; }
-            initRpc(ctx, team, keys.drive, waitFor(function (err) {
-                if (err) { return; }
-
-                team.pin = function (data, cb) {
-                    if (!team.rpc) { return void cb({error: 'TEAM_RPC_NOT_READY'}); }
-                    if (typeof(cb) !== 'function') { console.error('expected a callback'); }
-                    team.rpc.pin(data, function (e, hash) {
-                        if (e) { return void cb({error: e}); }
-                        cb({hash: hash});
-                    });
-                };
-
-                team.unpin = function (data, cb) {
-                    if (!team.rpc) { return void cb({error: 'TEAM_RPC_NOT_READY'}); }
-                    if (typeof(cb) !== 'function') { console.error('expected a callback'); }
-                    team.rpc.unpin(data, function (e, hash) {
-                        if (e) { return void cb({error: e}); }
-                        cb({hash: hash});
-                    });
-                };
-            }));
+            initRpc(ctx, team, keys.drive, waitFor(function () {}));
         }).nThen(function () {
             // Create the proxy manager
             var loadSharedFolder = function (id, data, cb, isNew) {
@@ -474,6 +471,16 @@ define([
             // Make sure we have not been kicked from the roster
             var state = roster.getState();
             var me = Util.find(ctx, ['store', 'proxy', 'curvePublic']);
+            // XXX FIXME roster history temporarily corrupted, don't leave the team
+            if (!state.members || !Object.keys(state.members).length) {
+                lm.stop();
+                roster.stop();
+                lm.proxy = {};
+                cb({error: 'EINVAL'});
+                waitFor.abort();
+                console.error(JSON.stringify(state));
+                return;
+            }
             if (!state.members[me]) {
                 lm.stop();
                 roster.stop();
@@ -1122,6 +1129,7 @@ define([
             teamData.hash = data.hash;
             teamData.keys.drive.edPrivate = data.keys.drive.edPrivate;
             teamData.keys.chat.edit = data.keys.chat.edit;
+            initRpc(ctx, team, teamData.keys.drive, function () {});
 
             var secret = Hash.getSecrets('team', data.hash, teamData.password);
             team.secondaryKey = secret && secret.keys.secondaryKey;
@@ -1130,6 +1138,9 @@ define([
             delete teamData.keys.drive.edPrivate;
             delete teamData.keys.chat.edit;
             delete team.secondaryKey;
+            if (team.rpc && team.rpc.destroy) {
+                team.rpc.destroy();
+            }
         }
 
         updateMyRights(ctx, teamId, data.hash);
@@ -1660,6 +1671,7 @@ define([
             var safe = false;
             if (['drive', 'teams', 'settings'].indexOf(app) !== -1) { safe = true; }
             Object.keys(teams).forEach(function (id) {
+                if (!ctx.teams[id]) { return; }
                 t[id] = {
                     owner: teams[id].owner,
                     name: teams[id].metadata.name,
@@ -1716,6 +1728,15 @@ define([
         team.removeClient = function (clientId) {
             removeClient(ctx, clientId);
         };
+        var listTeams = function (cb) {
+            var t = Util.clone(teams);
+            Object.keys(t).forEach(function (id) {
+                // If failure to load the team, don't send it
+                if (ctx.teams[id]) { return; }
+                t[id].error = true;
+            });
+            cb(t);
+        };
         team.execCommand = function (clientId, obj, cb) {
             if (ctx.store.offline) {
                 return void cb({ error: 'OFFLINE' });
@@ -1728,7 +1749,7 @@ define([
                 return void subscribe(ctx, data, clientId, cb);
             }
             if (cmd === 'LIST_TEAMS') {
-                return void cb(store.proxy.teams);
+                return void listTeams(cb);
             }
             if (cmd === 'OPEN_TEAM_CHAT') {
                 return void openTeamChat(ctx, data, clientId, cb);

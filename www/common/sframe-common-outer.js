@@ -286,6 +286,7 @@ define([
                 };
 
                 var newHref;
+                var expire;
                 nThen(function (w) {
                     if (parsed.hashData.key || !parsed.hashData.channel) { return; }
                     var edit = parsed.hashData.mode === 'edit';
@@ -308,6 +309,7 @@ define([
                         if (edit && !res.href) {
                             newHref = res.roHref;
                         }
+                        expire = res.expire;
                         // We have good data, keep the hash in memory
                         newHref = edit ? res.href : (res.roHref || res.href);
                     }));
@@ -344,6 +346,11 @@ define([
                     }
                     // Not a file, so we can use `isNewChannel`
                     Cryptpad.isNewChannel(currentPad.href, password, w(function(e, isNew) {
+                        if (isNew && expire && expire < (+new Date())) {
+                            sframeChan.event("EV_EXPIRED_ERROR");
+                            waitFor.abort();
+                            return;
+                        }
                         if (!isNew) { return void todo(); }
                         if (parsed.hashData.mode === 'view' && (password || !parsed.hashData.password)) {
                             // Error, wrong password stored, the view seed has changed with the password

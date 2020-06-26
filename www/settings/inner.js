@@ -488,14 +488,15 @@ define([
                         UI.removeLoadingScreen();
                         if (obj && obj.error) {
                             // TODO
+                            // XXX EEXISTS error message?
                             UI.alert(Messages.settings_changePasswordError);
                         }
                     });
                 }, {
                     ok: Messages.register_writtenPassword,
                     cancel: Messages.register_cancel,
-                    cancelClass: 'safe',
-                    okClass: 'danger',
+                    cancelClass: 'btn.btn-safe',
+                    okClass: 'btn.btn-danger',
                     reverseOrder: true,
                     done: function($dialog) {
                         $dialog.find('> div').addClass('half');

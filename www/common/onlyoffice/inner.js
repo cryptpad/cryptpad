@@ -1123,6 +1123,9 @@ define([
                 if (ifr) { ifr.remove(); }
             };
 
+            APP.UploadImageFiles = function (files, type, id, jwt, cb) {
+                cb('NO');
+            };
             APP.AddImage = function(cb1, cb2) {
                 APP.AddImageSuccessCallback = cb1;
                 APP.AddImageErrorCallback = cb2;
