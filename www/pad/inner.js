@@ -1044,6 +1044,14 @@ define([
 
 
 
+        var frameTpl = CKEDITOR.getTemplate('panel-frame');
+        var panelTpl = CKEDITOR.getTemplate('panel');
+        var frameDocTpl = CKEDITOR.addTemplate( 'panel-frame-inner-csp', '<!DOCTYPE html>' +
+		'<html class="cke_panel_container {env}" dir="{dir}" lang="{langCode}">' +
+			'<head>{css}</head>' +
+			'<body class="cke_{dir}"' +
+				' style="margin:0;padding:0"></body>' +
+		'<\/html>' );
 		CKEDITOR.ui.panel.prototype.render = function( editor, output ) {
 			var data = {
 				editorId: editor.id,
@@ -1055,6 +1063,7 @@ define([
 				env: CKEDITOR.env.cssClass,
 				'z-index': editor.config.baseFloatZIndex + 1
 			};
+console.log(this);
 
 			this.getHolderElement = function() {
 				var holder = this._.holder;
@@ -1078,13 +1087,19 @@ define([
 						}, this ) );
 
 						doc.write( frameDocTpl.output( CKEDITOR.tools.extend( {
-							css: CKEDITOR.tools.buildStyleHtml( this.css ),
-							onload: 'self.parent.CKEDITOR.tools.callFunction(' + onLoad + ');'
+							css: CKEDITOR.tools.buildStyleHtml( this.css )
 						}, data ) ) );
-
-						var win = doc.getWindow();
+                        
+                        var that = this;
+                        iframe.$.onload = function () {
+                            console.error(that.onLoad);
+							that.isLoaded = true;
+							if ( that.onLoad )
+								that.onLoad();
+                        };
 
 						// Register the CKEDITOR global.
+						var win = doc.getWindow();
 						win.$.CKEDITOR = CKEDITOR;
 
 						// Arrow keys for scrolling is only preventable with 'keypress' event in Opera (https://dev.ckeditor.com/ticket/4534).
