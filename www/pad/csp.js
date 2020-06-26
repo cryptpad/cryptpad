@@ -14,11 +14,11 @@ define(['jquery'], function ($) {
     var $a = $('.cke_toolbox_main').find('.cke_button, .cke_combo_button');
     $a.each(function (i, el) {
         var $el = $(el);
-        $el.on('keydown blur focus click', function (e) {
+        $el.on('keydown blur focus click dragstart', function (e) {
             e.preventDefault();
-            var attr = $(el).attr('on'+e.type);
+            var attr = $(el).attr('oon'+e.type);
             if (!attr) { return; }
-            if (e.type === "blur") { return false; }
+            if (['blur', 'dragstart'].indexOf(e.type) !== -1) { return false; }
             var reg = /CKEDITOR.tools.callFunction\(([0-9]+),(this|event)\);return false;/;
             var m = attr.match(reg);
             if (!m) { return; }
@@ -88,7 +88,7 @@ define(['jquery'], function ($) {
                     }).contents().find('body').on('click dragstart mouseover mouseout', '.cke_button, a.cke_colormore, a.cke_colorbox, .cke_colorauto, .cke_combo_button, .cke_panel_listItem a, a.cke_menubutton', function (e) {
                         e.preventDefault();
                         if (e.type === 'dragstart') { return false; }
-                        var attr = $(e.currentTarget).attr('on'+e.type);
+                        var attr = $(e.currentTarget).attr('oon'+e.type);
                         if (!attr) { return; }
                         var reg = /CKEDITOR.tools.callFunction\(([0-9]+),'?([A-Za-z0-9 ?]+)'?(,'([A-Za-z0-9 ]+)')?\);/;
                         var match = attr.match(reg);
