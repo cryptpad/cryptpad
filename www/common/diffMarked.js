@@ -2,6 +2,7 @@ define([
     'jquery',
     '/api/config',
     '/bower_components/marked/marked.min.js',
+    '/bower_components/MathJax/es5/tex-svg.js',
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/hyperscript.js',
@@ -12,7 +13,7 @@ define([
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/common/highlight/styles/github.css'
-],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Highlight, Messages) {
+],function ($, ApiConfig, Marked, MathJax, Hash, Util, h, MT, MediaTag, Highlight, Messages) {
     var DiffMd = {};
 
     var DiffDOM = window.diffDOM;
@@ -22,6 +23,8 @@ define([
     var Mermaid = {
         init: function () {}
     };
+
+    var MathJax = window.MathJax;
 
     var mermaidThemeCSS = //".node rect { fill: #DDD; stroke: #AAA; } " +
         "rect.task, rect.task0, rect.task2 { stroke-width: 1 !important; rx: 0 !important; } " +
@@ -95,6 +98,9 @@ define([
     renderer.code = function (code, language) {
         if (language === 'mermaid' && code.match(/^(graph|pie|gantt|sequenceDiagram|classDiagram|gitGraph)/)) {
             return '<pre class="mermaid">'+Util.fixHTML(code)+'</pre>';
+        } else if (language === 'mathjax') {
+           var svg = MathJax.tex2svg(code, {display: true})
+           return '<pre class="mathjax">'+ svg.innerHTML.replace(/xlink:href/g, "href") +'</pre>';
         } else {
             return defaultCode.apply(renderer, arguments);
         }
