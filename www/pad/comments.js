@@ -812,9 +812,13 @@ define([
         });
         $(Env.ifrWindow.document).on('selectionchange', function() {
             removeCommentBubble(Env);
-            var applicable = Env.editor.plugins.comments.isApplicable();
-            if (!applicable || !isEditable(Env.ifrWindow.document)) { return; }
+            var comments = Env.editor.plugins.comments;
+            var applicable = comments.isApplicable();
+            if (!applicable || !isEditable(Env.ifrWindow.document)) {
+                return void comments.command.setState(0);
+            }
             addCommentBubble(Env);
+            comments.command.setState(2);
         });
     };
 

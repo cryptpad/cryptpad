@@ -68,7 +68,7 @@
             };
 
             // Register the command.
-            editor.addCommand('comment', {
+            var command = editor.plugins.comments.command = editor.addCommand('comment', {
                 exec: function(editor) {
                     if (editor.readOnly) { return; }
                     editor.focus();
