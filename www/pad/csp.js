@@ -97,7 +97,7 @@ define(['jquery'], function ($) {
                         if (e.type === 'dragstart') { return false; }
                         var attr = $(e.currentTarget).attr('oon'+e.type);
                         if (!attr) { return; }
-                        var reg = /CKEDITOR.tools.callFunction\(([0-9]+),'?([A-Za-z0-9 ?]+)'?(,'([A-Za-z0-9 ]+)')?\);/;
+                        var reg = /CKEDITOR.tools.callFunction\(([0-9]+),'?([^'"]+)'?(,'([A-Za-z0-9 ]+)')?\);/;
                         var match = attr.match(reg);
                         if (!match) { return; }
                         var f = match[1];
