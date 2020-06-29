@@ -2,6 +2,7 @@ define(['jquery'], function ($) {
     var CKEDITOR = window.CKEDITOR;
 
     $('body').on('click', '.cke_dialog_container a.cke_specialchar', function (e) {
+        e.preventDefault();
         var attr = $(e.currentTarget).attr('oonclick');
         if (!attr) { return; }
         var reg = /CKEDITOR.tools.callFunction\(([0-9]+), this\);/;
