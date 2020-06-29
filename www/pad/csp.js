@@ -1,6 +1,8 @@
 define(['jquery'], function ($) {
     var CKEDITOR = window.CKEDITOR;
 
+    var $iframe = $('iframe').contents().find('html');
+
     $('body').on('click', '.cke_dialog_container a.cke_specialchar', function (e) {
         e.preventDefault();
         var attr = $(e.currentTarget).attr('oonclick');
@@ -8,10 +10,10 @@ define(['jquery'], function ($) {
         var reg = /CKEDITOR.tools.callFunction\(([0-9]+), this\);/;
         var m = attr.match(reg);
         if (!m) { return; }
+        var s = $iframe.scrollTop();
         CKEDITOR.tools.callFunction(Number(m[1]), e.currentTarget);
+        $iframe.scrollTop(s);
     });
-
-    var $iframe = $('iframe').contents().find('html');
 
     // Buttons
     var $a = $('.cke_toolbox_main').find('.cke_button, .cke_combo_button');
@@ -100,7 +102,9 @@ define(['jquery'], function ($) {
                         if (!match) { return; }
                         var f = match[1];
                         var el = match[2] !== "null" ? match[2] : null;
+                        var s = $iframe.scrollTop();
                         CKEDITOR.tools.callFunction(Number(f), el, match[4]);
+                        $iframe.scrollTop(s);
                     });
 
                     // Register the CKEDITOR global.

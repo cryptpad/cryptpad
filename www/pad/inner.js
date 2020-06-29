@@ -1065,18 +1065,6 @@ define([
             require(['/pad/csp.js'], waitFor());
         }).nThen(function( /*waitFor*/ ) {
 
-
-
-
-
-
-
-
-
-
-
-
-
             function launchAnchorTest(test) {
                 // -------- anchor test: make sure the exported anchor contains <a name="...">  -------
                 console.log('---- anchor test: make sure the exported anchor contains <a name="...">  -----.');
