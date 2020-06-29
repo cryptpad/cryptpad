@@ -1986,7 +1986,7 @@ define([
         }).nThen(function (waitFor) {
             var blockHash = LocalStore.getBlockHash();
             if (blockHash) {
-                console.log(blockHash);
+                console.debug("Block hash is present");
                 var parsed = Block.parseBlockHash(blockHash);
 
                 if (typeof(parsed) !== 'object') {
