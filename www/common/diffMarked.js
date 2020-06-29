@@ -10,10 +10,12 @@ define([
     '/common/media-tag.js',
     '/common/highlight/highlight.pack.js',
     '/customize/messages.js',
+    '/code/markmap/markmap-lib.transform.bundle.js',
+    '/code/markmap/markmap-lib.view.bundle.js',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/common/highlight/styles/github.css'
-],function ($, ApiConfig, Marked, MathJax, Hash, Util, h, MT, MediaTag, Highlight, Messages) {
+],function ($, ApiConfig, Marked, MathJax, Hash, Util, h, MT, MediaTag, Highlight, Messages, transform, Markmap) {
     var DiffMd = {};
 
     var DiffDOM = window.diffDOM;
@@ -24,6 +26,7 @@ define([
         init: function () {}
     };
 
+ 
     var MathJax = window.MathJax;
 
     var mermaidThemeCSS = //".node rect { fill: #DDD; stroke: #AAA; } " +
@@ -98,7 +101,14 @@ define([
     renderer.code = function (code, language) {
         if (language === 'mermaid' && code.match(/^(graph|pie|gantt|sequenceDiagram|classDiagram|gitGraph)/)) {
             return '<pre class="mermaid">'+Util.fixHTML(code)+'</pre>';
-        } else if (language === 'mathjax') {
+        } else if (language === 'markdown markmap') {
+            return '<pre class="markmap">'+Util.fixHTML(code)+'</pre>';
+            /*
+            var data = transform.transform(code);
+            var svgEl = document.createElement("svg");
+            return '<pre class="markmap">'+ svgEl.outerHTML +'</pre>';
+            */
+	} else if (language === 'mathjax') {
            var svg = MathJax.tex2svg(code, {display: true})
            return '<pre class="mathjax">'+ svg.innerHTML.replace(/xlink:href/g, "href") +'</pre>';
         } else {
@@ -328,6 +338,13 @@ define([
         removeMermaidClickables($el);
     };
 
+    var renderMarkmap = function ($el) {
+        var data = transform.transform($el[0].getAttribute("markmap-source"));
+        $el[0].innerHTML = "<svg width='100%' height='600px' />"
+        Markmap.markmap($el[0].firstChild, data)
+        removeMermaidClickables($el);
+    }  
+
 
     DiffMd.apply = function (newHtml, $content, common) {
         var contextMenu = common.importMediaTagMenu();
@@ -351,6 +368,8 @@ define([
 
         var mermaid_source = [];
         var mermaid_cache = {};
+        var markmap_source = [];
+        var markmap_cache = {};
 
         var canonicalizeMermaidSource = function (src) {
             // ignore changes to empty lines, since that won't affect
@@ -364,6 +383,15 @@ define([
                 var src = canonicalizeMermaidSource(el.childNodes[0].wholeText);
                 el.setAttribute('mermaid-source', src);
                 mermaid_source[index] = src;
+            }
+        });
+
+        // iterate over the unrendered mermaid inputs, caching their source as you go
+        $(newDomFixed).find('pre.markmap').each(function (index, el) {
+            if (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3) {
+                var src = canonicalizeMermaidSource(el.childNodes[0].wholeText);
+                el.setAttribute('markmap-source', src);
+                markmap_source[index] = src;
             }
         });
 
@@ -394,11 +422,37 @@ define([
             }
         });
 
+
+        // iterate over rendered markmap charts
+        $content.find('pre.markmap:not([processed="true"])').each(function (index, el) {
+            // retrieve the attached source code which it was drawn
+            var src = el.getAttribute('markmap-source');
+
+/*  The new source might have syntax errors that will prevent rendering.
+    It might be preferable to keep the existing state instead of removing it
+    if you don't have something better to display. Ideally we should display
+    the cause of the syntax error so that the user knows what to correct.  */
+            //if (!Mermaid.parse(src)) { } // TODO
+
+            // check if that source exists in the set of charts which are about to be rendered
+            if (markmap_source.indexOf(src) === -1) {
+                // if it's not, then you can remove it
+                if (el.parentNode && el.parentNode.children.length) {
+                    el.parentNode.removeChild(el);
+                }
+            } else if (el.childNodes.length === 1 && el.childNodes[0].nodeType !== 3) {
+                // otherwise, confirm that the content of the rendered chart is not a text node
+                // and keep a copy of it
+                markmap_cache[src] = el.childNodes[0];
+            }
+        });
+
+
         var oldDom = domFromHTML($content[0].outerHTML);
 
         var onPreview = function ($mt) {
             return function () {
-                var isSvg = $mt.is('pre.mermaid');
+                var isSvg = $mt.is('pre.mermaid') || $mt.is('pre.markmap');
                 var mts = [];
                 $content.find('media-tag, pre.mermaid').each(function (i, el) {
                     if (el.nodeName.toLowerCase() === "pre") {
@@ -420,6 +474,27 @@ define([
                     });
                 });
 
+                $content.find('media-tag, pre.markmap').each(function (i, el) {
+                    if (el.nodeName.toLowerCase() === "pre") {
+                        var clone = el.cloneNode();
+                        return void mts.push({
+                            svg: clone,
+                            render: function () {
+                                var $el = $(clone);
+                                $el.text(clone.getAttribute('markmap-source'));
+                                $el.attr('data-processed', '');
+                                renderMermaid($el);
+                            }
+                        });
+                    }
+                    var $el = $(el);
+                    mts.push({
+                        src: $el.attr('src'),
+                        key: $el.attr('data-crypto-key')
+                    });
+                });
+
+
                 // Find initial position
                 var idx = -1;
                 mts.some(function (obj, i) {
@@ -427,13 +502,17 @@ define([
                         idx = i;
                         return true;
                     }
+                    if (isSvg && $mt.attr('markmap-source') === $(obj.svg).attr('markmap-source')) {
+                        idx = i;
+                        return true;
+                    } 
                     if (!isSvg && obj.src === $mt.attr('src')) {
                         idx = i;
                         return true;
                     }
                 });
                 if (idx === -1) {
-                    if (isSvg) {
+                    if (isSvg && $mt.attr('mermaid-source')) {
                         var clone = $mt[0].cloneNode();
                         mts.unshift({
                             svg: clone,
@@ -442,6 +521,17 @@ define([
                                 $el.text(clone.getAttribute('mermaid-source'));
                                 $el.attr('data-processed', '');
                                 renderMermaid($el);
+                            }
+                        });
+                    } else if (isSvg && $mt.attr('markmap-source')) {
+                        var clone = $mt[0].cloneNode();
+                        mts.unshift({
+                            svg: clone,
+                            render: function () {
+                                var $el = $(clone);
+                                $el.text(clone.getAttribute('markmap-source'));
+                                $el.attr('data-processed', '');
+                                renderMarkmap($el);
                             }
                         });
                     } else {
@@ -556,6 +646,50 @@ define([
                 // and set a flag indicating that this graph need not be reprocessed
                 el.setAttribute('data-processed', true);
             });
+
+            // loop over markmap elements in the rendered content
+            $content.find('pre.markmap').each(function (index, el) {
+                var $el = $(el);
+                $el.off('contextmenu').on('contextmenu', function (e) {
+                    e.preventDefault();
+                    $(contextMenu.menu).data('mediatag', $el);
+                    $(contextMenu.menu).find('li:not(.cp-svg)').hide();
+                    contextMenu.show(e);
+                });
+                $el.off('dblclick click preview');
+                $el.on('preview', onPreview($el));
+                $el.on('dblclick click', function () {
+                    $el.trigger('preview');
+                });
+
+                // since you've simply drawn the content that was supplied via markdown
+                // you can assume that the index of your rendered charts matches that
+                // of those in the markdown source. 
+                var src = markmap_source[index];
+                el.setAttribute('markmap-source', src);
+                var cached = markmap_cache[src];
+
+                // check if you had cached a pre-rendered instance of the supplied source
+                if (typeof(cached) !== 'object') {
+                    try {
+                        renderMarkmap($el);
+                    } catch (e) { console.error(e); }
+                    return;
+                }
+
+                // if there's a cached rendering, empty out the contained source code
+                // which would otherwise be drawn again.
+                // apparently this is the fastest way to empty out an element
+                while (el.firstChild) { el.removeChild(el.firstChild); } //el.innerHTML = '';
+                // insert the cached graph
+                el.appendChild(cached);
+                // and set a flag indicating that this graph need not be reprocessed
+                el.setAttribute('data-processed', true);
+            });
+
+
+
+
         }
         // recover the previous scroll position to avoid jank
         $parent.scrollTop(scrollTop);
