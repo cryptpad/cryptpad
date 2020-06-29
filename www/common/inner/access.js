@@ -110,7 +110,8 @@ define([
                     }));
                 }).nThen(function (waitFor) {
                     var curve = $el.attr('data-curve');
-                    var friend = curve === user.curvePublic ? user : friends[curve];
+                    if (curve === user.curvePublic) { return; }
+                    var friend = friends[curve];
                     if (!friend) { return; }
                     common.mailbox.sendTo("RM_OWNER", {
                         channel: channel,
