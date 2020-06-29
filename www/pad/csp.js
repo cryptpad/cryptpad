@@ -10,6 +10,8 @@ define(['jquery'], function ($) {
         CKEDITOR.tools.callFunction(Number(m[1]), e.currentTarget);
     });
 
+    var $iframe = $('iframe').contents().find('html');
+
     // Buttons
     var $a = $('.cke_toolbox_main').find('.cke_button, .cke_combo_button');
     $a.each(function (i, el) {
@@ -24,7 +26,9 @@ define(['jquery'], function ($) {
             if (!m) { return; }
             var f = m[1];
             var arg = m[2] === "this" ? el : e.originalEvent;
+            var s = $iframe.scrollTop();
             CKEDITOR.tools.callFunction(Number(f), arg);
+            $iframe.scrollTop(s);
         });
     });
 
