@@ -54,7 +54,7 @@ define([
 
     var CHECKPOINT_INTERVAL = 100;
     var DISPLAY_RESTORE_BUTTON = false;
-    var NEW_VERSION = 2;
+    var NEW_VERSION = 3;
     var PENDING_TIMEOUT = 30000;
     var READ_ONLY_REFRESH_DATA_DELAY = 15000;
 
@@ -278,11 +278,16 @@ define([
             });
         };
 
+        // DEPRECATED from version 3
         // Loading a checkpoint reorder the sheet starting from ID "5".
         // We have to reorder it manually when a checkpoint is created
         // so that the messages we send to the realtime channel are
         // loadable by users joining after the checkpoint
         var fixSheets = function () {
+            // Starting from version 3, we don't need to fix the sheet IDs anymore
+            // because we reload onlyoffice whenever we receive a checkpoint
+            if (!APP.migrate || (content && content.version > 2)) { return; }
+
             try {
                 var editor = getEditor();
                 // if we are not in the sheet app
@@ -742,12 +747,24 @@ define([
         };
 
         var handleAuth = function (obj, send) {
-            setEditable(false);
-            ooChannel.lastHash = getLastCp().hash;
+            //setEditable(false);
+
+            var changes = [];
+            if (content.version > 2) {
+                ooChannel.queue.forEach(function (data) {
+                    Array.prototype.push.apply(changes, data.msg.changes);
+                });
+                ooChannel.ready = true;
+
+                ooChannel.cpIndex += ooChannel.queue.length;
+                var last = ooChannel.queue.pop();
+                if (last) { ooChannel.lastHash = last.hash; }
+            }
             send({
                 type: "authChanges",
-                changes: []
+                changes: changes
             });
+
             // Answer to the auth command
             var p = getParticipants();
             send({
@@ -1006,6 +1023,9 @@ define([
             var url = URL.createObjectURL(blob);
             var lock = readOnly || APP.migrate;
 
+            // Starting from version 3, we can use the view mode again
+            var mode = (content && content.version > 2 && lock) ? "view" : "edit";
+
             // Config
             APP.ooconfig = {
                 "document": {
@@ -1072,31 +1092,35 @@ define([
                         }
                     },
                     "onDocumentReady": function () {
-                        // The doc is ready, fix the worksheets IDs and push the queue
-                        fixSheets();
-                        // Push changes since last cp
-                        ooChannel.ready = true;
-                        ooChannel.queue.forEach(function (data) {
-                            ooChannel.send(data.msg);
-                        });
-                        if (!readOnly) {
-                            var last = ooChannel.queue.pop();
-                            if (last) { ooChannel.lastHash = last.hash; }
-                        }
-                        ooChannel.cpIndex += ooChannel.queue.length;
-                        // Apply existing locks
-                        deleteOfflineLocks();
-                        APP.onLocal();
-                        handleNewLocks(oldLocks, content.locks || {});
-                        // Allow edition
+                        // DEPRECATED: from version 3, the queue is sent again during init
+                        if (APP.migrate && ((content.version || 1) <= 2)) {
+                            // The doc is ready, fix the worksheets IDs and push the queue
+                            fixSheets();
+                            // Push changes since last cp
+                            ooChannel.ready = true;
+                            ooChannel.queue.forEach(function (data) {
+                                ooChannel.send(data.msg);
+                            });
+                            if (!readOnly) {
+                                var last = ooChannel.queue.pop();
+                                if (last) { ooChannel.lastHash = last.hash; }
+                            }
+                            ooChannel.cpIndex += ooChannel.queue.length;
 
-                        if (lock) {
-                            setTimeout(function () {
+                            // Apply existing locks
+                            deleteOfflineLocks();
+                            APP.onLocal();
+                            handleNewLocks(oldLocks, content.locks || {});
+                            // Allow edition
+
+                            if (lock) {
+                                setTimeout(function () {
+                                    setEditable(true);
+                                    getEditor().setViewModeDisconnect();
+                                }, 60000);
+                            } else {
                                 setEditable(true);
-                                getEditor().setViewModeDisconnect();
-                            }, 5000);
-                        } else {
-                            setEditable(true);
+                            }
                         }
 
                         if (isLockedModal.modal && force) {
@@ -1108,12 +1132,12 @@ define([
                         if (APP.migrate && !readOnly) {
                             var div = h('div.cp-oo-x2tXls', [
                                 h('span.fa.fa-spin.fa-spinner'),
-                                h('span', Messages.oo_sheetMigration_loading)
+                                h('span', Messages.oo_sheetMigration_loading) // XXX tell them that it will take ~ 1min)
                             ]);
                             UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
                             setTimeout(function () {
                                 makeCheckpoint(true);
-                            }, 5000);
+                            }, 60000);
                         }
                     }
                 }
@@ -1763,6 +1787,17 @@ define([
                 }
             } else if (content && (!content.version || content.version === 1)) {
                 version = 'v1/';
+                APP.migrate = true;
+                // Registedred users can start the migration
+                if (common.isLoggedIn()) {
+                    content.migration = true;
+                    APP.onLocal();
+                } else {
+                    var msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
+                    $(APP.helpMenu.menu).after(msg);
+                    readOnly = true;
+                }
+            } else if (content && content.version === 2) {
                 APP.migrate = true;
                 // Registedred users can start the migration
                 if (common.isLoggedIn()) {
