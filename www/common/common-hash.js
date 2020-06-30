@@ -1,5 +1,5 @@
 (function (window) {
-var factory = function (Util, Crypto, Nacl) {
+var factory = function (Util, Crypto, Keys, Nacl) {
     var Hash = window.CryptPad_Hash = {};
 
     var uint8ArrayToHex = Util.uint8ArrayToHex;
@@ -92,9 +92,7 @@ var factory = function (Util, Crypto, Nacl) {
         }
     };
 
-    Hash.getUserHrefFromKeys = function (origin, username, pubkey) {
-        return origin + '/user/#/1/' + username + '/' + pubkey.replace(/\//g, '-');
-    };
+    Hash.getPublicSigningKeyString = Keys.serialize;
 
     var fixDuplicateSlashes = function (s) {
         return s.replace(/\/+/g, '/');
@@ -568,14 +566,20 @@ Version 1
 };
 
     if (typeof(module) !== 'undefined' && module.exports) {
-        module.exports = factory(require("./common-util"), require("chainpad-crypto"), require("tweetnacl/nacl-fast"));
+        module.exports = factory(
+            require("./common-util"),
+            require("chainpad-crypto"),
+            require("./common-signing-keys"),
+            require("tweetnacl/nacl-fast")
+        );
     } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
         define([
             '/common/common-util.js',
             '/bower_components/chainpad-crypto/crypto.js',
+            '/common/common-signing-keys.js',
             '/bower_components/tweetnacl/nacl-fast.min.js'
-        ], function (Util, Crypto) {
-            return factory(Util, Crypto, window.nacl);
+        ], function (Util, Crypto, Keys) {
+            return factory(Util, Crypto, Keys, window.nacl);
         });
     } else {
         // unsupported initialization
