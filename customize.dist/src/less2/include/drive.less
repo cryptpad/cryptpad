@@ -45,10 +45,11 @@
     }
 
     /* local mixins */
+    @drive_icon-margin: 10px;
     .drive_fileIcon {
         li {
             display: inline-block;
-            margin: 10px 10px;
+            margin: @drive_icon-margin;
             width: 140px;
             height: 140px;
             text-align: center;
@@ -549,7 +550,10 @@
             .cp-app-drive-element-truncated { display: none; }
         }
         div.cp-app-drive-content-grid {
-            padding: 20px;
+            padding: 1em;
+            ul {
+                margin: -(@drive_icon-margin);
+            }
             .drive_fileIcon;
             li {
                 &.cp-app-drive-element {
