@@ -842,6 +842,12 @@ define([
             files[TRASH] = {};
             exp.checkDeletedFiles(cb);
         };
+        exp.ownedInTrash = function (isOwned) {
+            return getFiles([TRASH]).map(function (id) {
+                var data = exp.getFileData(id);
+                return isOwned(data.owners) ? data.channel : undefined;
+            }).filter(Boolean);
+        };
 
         // RENAME
         exp.rename = function (path, newName, cb) {

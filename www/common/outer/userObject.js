@@ -129,14 +129,13 @@ define([
         };
 
         // Find files in FILES_DATA that are not anymore in the drive, and remove them from
-        // FILES_DATA. If there are owned pads, remove them from server too.
+        // FILES_DATA.
         exp.checkDeletedFiles = function (cb) {
             if (!loggedIn && !config.testMode) { return void cb(); }
             if (readOnly) { return void cb('EFORBIDDEN'); }
 
             var filesList = exp.getFiles([ROOT, 'hrefArray', TRASH]);
             var toClean = [];
-            var ownedRemoved = [];
             exp.getFiles([FILES_DATA, SHARED_FOLDERS]).forEach(function (id) {
                 if (filesList.indexOf(id) === -1) {
                     var fd = exp.isSharedFolder(id) ? files[SHARED_FOLDERS][id] : exp.getFileData(id);
@@ -153,7 +152,7 @@ define([
                 }
             });
             if (!toClean.length) { return void cb(); }
-            cb(null, toClean, ownedRemoved);
+            cb(null, toClean);
         };
         var deleteHrefs = function (ids) {
             if (readOnly) { return; }

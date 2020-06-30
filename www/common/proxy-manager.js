@@ -857,16 +857,49 @@ define([
 
     // Empty the trash (main drive only)
     var _emptyTrash = function (Env, data, cb) {
-        Env.user.userObject.emptyTrash(function (err, toClean) {
-            cb();
+        nThen(function (waitFor) {
+            if (data && data.deleteOwned) {
+                // Delete owned pads in the trash from the server
+                var owned = Env.user.userObject.ownedInTrash(function (owners) {
+                    return _ownedByMe(Env, owners);
+                });
+                owned.forEach(function (chan) {
+                    Env.removeOwnedChannel(chan, waitFor(function (obj) {
+                        // If the error is that the file is already removed, nothing to
+                        // report, it's a normal behavior (pad expired probably)
+                        if (obj && obj.error && obj.error.code !== "ENOENT") {
+                            // RPC may not be responding
+                            // Send a report that can be handled manually
+                            console.error(obj.error, chan);
+                            Feedback.send('ERROR_EMPTYTRASH_OWNED=' + chan + '|' + obj.error, true);
+                        }
+                        console.warn('DELETED', chan);
+                    }));
+                });
+            }
 
-            // Check if need need to restore a full hash (hidden hash deleted from drive)
-            if (!Array.isArray(toClean)) { return; }
-            var toCheck = Util.deduplicateString(toClean);
-            toCheck.forEach(function (chan) {
-                Env.Store.checkDeletedPad(chan);
-            });
-        });
+            // Empty the trash
+            Env.user.userObject.emptyTrash(waitFor(function (err, toClean) {
+                cb();
+
+                // Don't block nThen for the lower-priority tasks
+                setTimeout(function () {
+                    // Unpin deleted pads if needed
+                    // Check if we need to restore a full hash (hidden hash deleted from drive)
+                    if (!Array.isArray(toClean)) { return; }
+                    var toCheck = Util.deduplicateString(toClean);
+                    var toUnpin = [];
+                    toCheck.forEach(function (channel) {
+                        // Check unpin
+                        var data = findChannel(Env, channel, true);
+                        if (!data.length) { toUnpin.push(channel); }
+                        // Check hidden hash
+                        Env.Store.checkDeletedPad(channel);
+                    });
+                    Env.unpinPads(toUnpin, function () {});
+                });
+            }));
+        }).nThen(cb);
     };
     // Rename files or folders
     var _rename = function (Env, data, cb) {
@@ -1221,10 +1254,12 @@ define([
             }
         }, cb);
     };
-    var emptyTrashInner = function (Env, cb) {
+    var emptyTrashInner = function (Env, deleteOwned, cb) {
         return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
             cmd: "emptyTrash",
-            data: null
+            data: {
+                deleteOwned: deleteOwned
+            }
         }, cb);
     };
     var addFolderInner = function (Env, path, name, cb) {
@@ -1435,6 +1470,11 @@ define([
         }
         return Env.user.userObject.hasFile(el, trashRoot);
     };
+    var ownedInTrash = function (Env) {
+        return Env.user.userObject.ownedInTrash(function (owners) {
+            return _ownedByMe(Env, owners);
+        });
+    };
 
     var isDuplicateOwned = _isDuplicateOwned;
 
@@ -1490,6 +1530,7 @@ define([
             isInSharedFolder: callWithEnv(isInSharedFolder),
             getUserObjectPath: callWithEnv(getUserObjectPath),
             isDuplicateOwned: callWithEnv(isDuplicateOwned),
+            ownedInTrash: callWithEnv(ownedInTrash),
             // Generic
             isValidDrive: callWithEnv(isValidDrive),
             isFile: callWithEnv(isFile),

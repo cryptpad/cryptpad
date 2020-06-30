@@ -2378,16 +2378,53 @@ define([
             $gridButton.attr('title', Messages.fm_viewGridButton);
             $container.append($listButton).append($gridButton);
         };
+        var emptyTrashModal = function () {
+            var ownedInTrash = manager.ownedInTrash();
+            var hasOwned = Array.isArray(ownedInTrash) && ownedInTrash.length;
+            Messages.fm_emptyTrashOwned = "Your trash contains documents you own. You can remove them for everyone or only from your drive"; // XXX
+            var content = h('p', [
+                Messages.fm_emptyTrashDialog,
+                hasOwned ? h('br') : undefined,
+                hasOwned ? Messages.fm_emptyTrashOwned : undefined // XXX update UI?
+            ]);
+            var buttons = [{
+                className: 'cancel',
+                name: Messages.cancelButton,
+                onClick: function () {},
+                keys: [27]
+            }];
+            if (hasOwned) {
+                buttons.push({
+                    className: 'secondary',
+                    name: Messages.fc_delete_owned,
+                    onClick: function () {
+                        manager.emptyTrash(true, refresh);
+                    },
+                    keys: []
+                });
+            }
+            buttons.push({
+                className: 'primary',
+                // XXX fc_remove: Remove from your CryptDrive
+                // We may want to use a new key here
+                name: hasOwned ? Messages.fc_remove : Messages.okButton,
+                onClick: function () {
+                    manager.emptyTrash(false, refresh);
+                },
+                keys: [13]
+            });
+            var m = UI.dialog.customModal(content, {
+                buttons: buttons
+            });
+            UI.openCustomModal(m);
+        };
         var createEmptyTrashButton = function () {
             var button = h('button.btn.btn-danger', [
                 h('i.fa.'+faTrash),
                 h('span', Messages.fc_empty)
             ]);
             $(button).click(function () {
-                UI.confirm(Messages.fm_emptyTrashDialog, function(res) {
-                    if (!res) { return; }
-                    manager.emptyTrash(refresh);
-                });
+                emptyTrashModal();
             });
             return $(h('div.cp-app-drive-button', button));
         };
@@ -4379,10 +4416,7 @@ define([
                     log(Messages.fm_forbidden);
                     return;
                 }
-                UI.confirm(Messages.fm_emptyTrashDialog, function(res) {
-                    if (!res) { return; }
-                    manager.emptyTrash(refresh);
-                });
+                emptyTrashModal();
             }
             else if ($this.hasClass("cp-app-drive-context-remove")) {
                 return void deletePaths(paths);
