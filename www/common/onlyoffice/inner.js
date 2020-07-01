@@ -308,7 +308,9 @@ define([
                 return void UI.alert(Messages.oo_saveError);
             }
             // Get the last cp idx
-            var all = Object.keys(content.hashes || {}).map(Number).sort();
+            var all = Object.keys(content.hashes || {}).map(Number).sort(function (a, b) {
+                return a-b;
+            });
             var current = all[all.length - 1] || 0;
             // Get the expected cp idx
             var _i = Math.floor(ev.index / CHECKPOINT_INTERVAL);
