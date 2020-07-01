@@ -3673,7 +3673,7 @@ define([
                 // ANON_SHARED_FOLDER
                 displaySharedFolder($list);
             } else {
-                $dirContent.contextmenu(openContextMenu('content'));
+                if (!inTrash) { $dirContent.contextmenu(openContextMenu('content')); }
                 if (manager.hasSubfolder(root)) { $list.append($folderHeader); }
                 // display sub directories
                 var keys = Object.keys(root);
@@ -3757,6 +3757,10 @@ define([
                 e.stopPropagation();
                 APP.displayDirectory(path);
             });
+            if (isSharedFolder) {
+                var sfData = manager.getSharedFolderData(isSharedFolder);
+                _addOwnership($elementRow, $(), sfData);
+            }
             var $element = $('<li>').append($elementRow);
             if (draggable) { $elementRow.attr('draggable', true); }
             if (collapsable) {
@@ -3839,17 +3843,17 @@ define([
                 var sfId = manager.isInSharedFolder(newPath) || (isSharedFolder && root[key]);
                 var $icon, isCurrentFolder, subfolder;
                 if (isSharedFolder) {
-                    var fId = root[key];
                     // Fix path
                     newPath.push(manager.user.userObject.ROOT);
                     isCurrentFolder = manager.comparePath(newPath, currentPath);
                     // Subfolders?
-                    var newRoot = manager.folders[fId].proxy[manager.user.userObject.ROOT];
+                    var newRoot = manager.folders[sfId].proxy[manager.user.userObject.ROOT];
                     subfolder = manager.hasSubfolder(newRoot);
                     // Fix name
-                    key = manager.getSharedFolderData(fId).title;
+                    key = manager.getSharedFolderData(sfId).title;
                     // Fix icon
                     $icon = isCurrentFolder ? $sharedFolderOpenedIcon : $sharedFolderIcon;
+                    isSharedFolder = sfId;
                 } else {
                     var isEmpty = manager.isFolderEmpty(root[key]);
                     subfolder = manager.hasSubfolder(root[key]);
