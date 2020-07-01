@@ -285,9 +285,6 @@ define([
                 settings: {
                     drive: Util.find(ctx.store, ['proxy', 'settings', 'drive'])
                 },
-                Store: ctx.Store
-            }, {
-                outer: true,
                 removeOwnedChannel: function (channel, cb) {
                     var data;
                     if (typeof(channel) === "object") {
@@ -301,6 +298,9 @@ define([
                     }
                     ctx.Store.removeOwnedChannel('', data, cb);
                 },
+                Store: ctx.Store
+            }, {
+                outer: true,
                 edPublic: keys.drive.edPublic,
                 loggedIn: true,
                 log: function (msg) {

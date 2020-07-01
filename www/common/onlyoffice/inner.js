@@ -224,13 +224,16 @@ define([
 
         var now = function () { return +new Date(); };
 
+        var sortCpIndex = function (hashes) {
+            return Object.keys(hashes).map(Number).sort(function (a, b) {
+                return a-b;
+            });
+        };
         var getLastCp = function (old, i) {
             var hashes = old ? oldHashes : content.hashes;
             if (!hashes || !Object.keys(hashes).length) { return {}; }
             i = i || 0;
-            var idx = Object.keys(hashes).map(Number).sort(function (a, b) {
-                return a-b;
-            });
+            var idx = sortCpIndex(hashes);
             var lastIndex = idx[idx.length - 1 - i];
             var last = JSON.parse(JSON.stringify(hashes[lastIndex]));
             return last;
@@ -313,7 +316,7 @@ define([
                 return void UI.alert(Messages.oo_saveError);
             }
             // Get the last cp idx
-            var all = Object.keys(content.hashes || {}).map(Number).sort();
+            var all = sortCpIndex(content.hashes || {});
             var current = all[all.length - 1] || 0;
             // Get the expected cp idx
             var _i = Math.floor(ev.index / CHECKPOINT_INTERVAL);

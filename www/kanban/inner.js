@@ -761,6 +761,9 @@ define([
                 var isTop = $el.attr('data-top');
                 var boardId = $el.closest('.kanban-board').attr("data-id");
                 var $item = $('<div>', {'class': 'kanban-item new-item'});
+                if (isTop) {
+                    $item.addClass('item-top');
+                }
                 var $input = getInput().val(name).appendTo($item);
                 kanban.addForm(boardId, $item[0], isTop);
                 $input.focus();
@@ -1059,6 +1062,7 @@ define([
                 } else if (!$el.length) {
                     $el = $container.find('[data-eid="'+id+'"]');
                 }
+                var isTop = $el && $el.hasClass('item-top');
                 if (!$el.length) { return; }
                 var $input = $el.find('input');
                 if (!$input.length) { return; }
@@ -1077,6 +1081,7 @@ define([
                     value: val,
                     start: start,
                     end: end,
+                    isTop: isTop,
                     oldValue: oldVal
                 };
             } catch (e) {
@@ -1092,8 +1097,10 @@ define([
                 // An item was being added: add a new item
                 if (id === "new" && !data.oldValue) {
                     var $newBoard = $('.kanban-board[data-id="'+data.newBoard+'"]');
-                    $newBoard.find('.kanban-title-button').click();
-                    var $newInput = $newBoard.find('.kanban-item:last-child input');
+                    var topSelector = ':not([data-top])';
+                    if (data.isTop) { topSelector = '[data-top]'; }
+                    $newBoard.find('.kanban-title-button' + topSelector).click();
+                    var $newInput = $newBoard.find('.kanban-item.new-item input');
                     $newInput.val(data.value);
                     $newInput[0].selectionStart = data.start;
                     $newInput[0].selectionEnd = data.end;

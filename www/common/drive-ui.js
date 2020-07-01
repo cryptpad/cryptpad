@@ -114,7 +114,6 @@ define([
     var $trashEmptyIcon = $('<span>', {"class": "fa fa-trash-o"});
     //var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o cp-app-drive-icon-expcol"});
     var $expandIcon = $('<span>', {"class": "fa fa-plus-square-o cp-app-drive-icon-expcol"});
-    var $emptyTrashIcon = $('<button>', {"class": "fa fa-ban"});
     var $listIcon = $('<button>', {"class": "fa fa-list"});
     var $gridIcon = $('<button>', {"class": "fa fa-th-large"});
     var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up sortasc"});
@@ -447,19 +446,19 @@ define([
                 h('li', h('a.cp-app-drive-context-delete.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faTrash,
-                }, Messages.fc_delete)),
+                }, Messages.fc_delete)), // "Move to trash"
                 h('li', h('a.cp-app-drive-context-deleteowned.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faDelete,
-                }, Messages.fc_delete_owned)),
+                }, Messages.fc_delete_owned)), // XXX update key? "Delete from the server"
                 h('li', h('a.cp-app-drive-context-remove.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
-                    'data-icon': faDelete,
-                }, Messages.fc_remove)),
+                    'data-icon': faTrash,
+                }, Messages.fc_remove)), // XXX update key? "Remove from your CryptDrive"
                 h('li', h('a.cp-app-drive-context-removesf.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
-                    'data-icon': faDelete,
-                }, Messages.fc_remove_sharedfolder)),
+                    'data-icon': faTrash,
+                }, Messages.fc_remove_sharedfolder)), // XXX update key? "Remove"
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-properties.dropdown-item', {
                     'tabindex': '-1',
@@ -1280,18 +1279,12 @@ define([
                     // If we're not in the trash nor in a shared folder, hide "remove"
                     if (!manager.isInSharedFolder(path)
                             && !$element.is('.cp-app-drive-element-sharedf')) {
+                        // This isn't a shared folder: can't delete shared folder
                         hide.push('removesf');
                     } else if (type === "tree") {
+                        // This is a shared folder or an element inside a shsared folder
+                        // ==> can't move to trash
                         hide.push('delete');
-                        // Don't hide the deleteowned link if the element is a shared folder and
-                        // it is owned
-                        if (manager.isInSharedFolder(path) ||
-                                !$element.is('.cp-app-drive-element-owned')) {
-                            hide.push('deleteowned');
-                        } else {
-                            // This is a shared folder and it is owned
-                            hide.push('removesf');
-                        }
                     }
                     if ($element.closest('[data-ro]').length) {
                         editable = false;
@@ -1341,7 +1334,7 @@ define([
                     break;
                 }
                 case 'trash': {
-                    show = ['remove', 'restore', 'properties'];
+                    show = ['remove', 'deleteowned', 'restore', 'properties'];
                 }
             }
 
@@ -1658,22 +1651,11 @@ define([
             if (paths) {
                 paths.forEach(function (p) { pathsList.push(p.path); });
             }
-            var hasOwned = pathsList.some(function (p) {
-                // NOTE: Owned pads in shared folders won't be removed from the server
-                // so we don't have to check, we can use the default message
-                if (manager.isInSharedFolder(p)) { return false; }
-
-                var el = manager.find(p);
-                var data = manager.isSharedFolder(el) ? manager.getSharedFolderData(el)
-                                        : manager.getFileData(el);
-                return data.owners && data.owners.indexOf(edPublic) !== -1;
-            });
             var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [pathsList.length]);
             if (pathsList.length === 1) {
-                msg = hasOwned ? Messages.fm_deleteOwnedPad : Messages.fm_removePermanentlyDialog;
-            } else if (hasOwned) {
-                msg = msg + '<br><em>' + Messages.fm_removePermanentlyNote + '</em>';
+                msg = Messages.fm_removePermanentlyDialog;
             }
+            // XXX update key to tell the user that these pads will still be avialble to other users
             UI.confirm(msg, function(res) {
                 $(window).focus();
                 if (!res) { return; }
@@ -2397,17 +2379,55 @@ define([
             $gridButton.attr('title', Messages.fm_viewGridButton);
             $container.append($listButton).append($gridButton);
         };
-        var createEmptyTrashButton = function ($container) {
-            var $button = $emptyTrashIcon.clone();
-            $button.addClass('cp-app-drive-toolbar-emptytrash');
-            $button.attr('title', Messages.fc_empty);
-            $button.click(function () {
-                UI.confirm(Messages.fm_emptyTrashDialog, function(res) {
-                    if (!res) { return; }
-                    manager.emptyTrash(refresh);
+        var emptyTrashModal = function () {
+            var ownedInTrash = manager.ownedInTrash();
+            var hasOwned = Array.isArray(ownedInTrash) && ownedInTrash.length;
+            Messages.fm_emptyTrashOwned = "Your trash contains documents you own. You can remove them for everyone or only from your drive"; // XXX
+            var content = h('p', [
+                Messages.fm_emptyTrashDialog,
+                hasOwned ? h('br') : undefined,
+                hasOwned ? Messages.fm_emptyTrashOwned : undefined // XXX update UI?
+            ]);
+            var buttons = [{
+                className: 'cancel',
+                name: Messages.cancelButton,
+                onClick: function () {},
+                keys: [27]
+            }];
+            if (hasOwned) {
+                buttons.push({
+                    className: 'secondary',
+                    name: Messages.fc_delete_owned,
+                    onClick: function () {
+                        manager.emptyTrash(true, refresh);
+                    },
+                    keys: []
                 });
+            }
+            buttons.push({
+                className: 'primary',
+                // XXX fc_remove: Remove from your CryptDrive
+                // We may want to use a new key here
+                name: hasOwned ? Messages.fc_remove : Messages.okButton,
+                onClick: function () {
+                    manager.emptyTrash(false, refresh);
+                },
+                keys: [13]
             });
-            $container.append($button);
+            var m = UI.dialog.customModal(content, {
+                buttons: buttons
+            });
+            UI.openCustomModal(m);
+        };
+        var createEmptyTrashButton = function () {
+            var button = h('button.btn.btn-danger', [
+                h('i.fa.'+faTrash),
+                h('span', Messages.fc_empty)
+            ]);
+            $(button).click(function () {
+                emptyTrashModal();
+            });
+            return $(h('div.cp-app-drive-button', button));
         };
 
         // Get the upload options
@@ -3145,6 +3165,8 @@ define([
         var displayTrashRoot = function ($list, $folderHeader, $fileHeader) {
             var filesList = [];
             var root = files[TRASH];
+            var isEmpty = true;
+
             // Elements in the trash are JS arrays (several elements can have the same name)
             Object.keys(root).forEach(function (key) {
                 if (!Array.isArray(root[key])) {
@@ -3160,7 +3182,14 @@ define([
                         name: key
                     });
                 });
+                isEmpty = false;
             });
+
+            if (!isEmpty) {
+                var $empty = createEmptyTrashButton();
+                $content.append($empty);
+            }
+
             var sortedFolders = sortTrashElements(true, filesList, null, !getSortFolderDesc());
             var sortedFiles = sortTrashElements(false, filesList, APP.store[SORT_FILE_BY], !getSortFileDesc());
             if (manager.hasSubfolder(root, true)) { $list.append($folderHeader); }
@@ -3555,9 +3584,7 @@ define([
 
             createToolbar(path);
 
-            if (inTrash || isInRoot) {
-                createTitle($content, path);
-            }
+            if (!isSearch) { createTitle($content, path); }
             var $info = createInfoBox(path);
 
             var $dirContent = $('<div>', {id: FOLDER_CONTENT_ID});
@@ -3568,9 +3595,6 @@ define([
                     $dirContent.addClass(getViewModeClass());
                 }
                 createViewModeButton(APP.toolbar.$bottomR);
-            }
-            if (inTrash) {
-                createEmptyTrashButton(APP.toolbar.$bottomR);
             }
 
             var $list = $('<ul>').appendTo($dirContent);
@@ -3587,7 +3611,6 @@ define([
             }
             $content.data('readOnlyFolder', readOnlyFolder);
 
-            // NewButton can be undefined if we're in read only mode
             if (!readOnlyFolder) {
                 createNewButton(isInRoot, APP.toolbar.$bottomL);
             }
@@ -3598,6 +3621,7 @@ define([
                 createShareButton(sfId, APP.toolbar.$bottomL);
             }
             */
+
 
             if (APP.mobile()) {
                 var $context = $('<button>', {
@@ -3647,7 +3671,7 @@ define([
                 // ANON_SHARED_FOLDER
                 displaySharedFolder($list);
             } else {
-                $dirContent.contextmenu(openContextMenu('content'));
+                if (!inTrash) { $dirContent.contextmenu(openContextMenu('content')); }
                 if (manager.hasSubfolder(root)) { $list.append($folderHeader); }
                 // display sub directories
                 var keys = Object.keys(root);
@@ -3731,6 +3755,10 @@ define([
                 e.stopPropagation();
                 APP.displayDirectory(path);
             });
+            if (isSharedFolder) {
+                var sfData = manager.getSharedFolderData(isSharedFolder);
+                _addOwnership($elementRow, $(), sfData);
+            }
             var $element = $('<li>').append($elementRow);
             if (draggable) { $elementRow.attr('draggable', true); }
             if (collapsable) {
@@ -3813,17 +3841,17 @@ define([
                 var sfId = manager.isInSharedFolder(newPath) || (isSharedFolder && root[key]);
                 var $icon, isCurrentFolder, subfolder;
                 if (isSharedFolder) {
-                    var fId = root[key];
                     // Fix path
                     newPath.push(manager.user.userObject.ROOT);
                     isCurrentFolder = manager.comparePath(newPath, currentPath);
                     // Subfolders?
-                    var newRoot = manager.folders[fId].proxy[manager.user.userObject.ROOT];
+                    var newRoot = manager.folders[sfId].proxy[manager.user.userObject.ROOT];
                     subfolder = manager.hasSubfolder(newRoot);
                     // Fix name
-                    key = manager.getSharedFolderData(fId).title;
+                    key = manager.getSharedFolderData(sfId).title;
                     // Fix icon
                     $icon = isCurrentFolder ? $sharedFolderOpenedIcon : $sharedFolderIcon;
+                    isSharedFolder = sfId;
                 } else {
                     var isEmpty = manager.isFolderEmpty(root[key]);
                     subfolder = manager.hasSubfolder(root[key]);
@@ -4029,7 +4057,7 @@ define([
             UI.confirm(msgD, function(res) {
                 $(window).focus();
                 if (!res) { return; }
-                manager.delete(pathsList, function () {
+                manager.deleteOwned(pathsList, function () {
                     pathsList.forEach(LS.removeFoldersOpened);
                     removeSelected();
                     refresh();
@@ -4425,10 +4453,7 @@ define([
                     log(Messages.fm_forbidden);
                     return;
                 }
-                UI.confirm(Messages.fm_emptyTrashDialog, function(res) {
-                    if (!res) { return; }
-                    manager.emptyTrash(refresh);
-                });
+                emptyTrashModal();
             }
             else if ($this.hasClass("cp-app-drive-context-remove")) {
                 return void deletePaths(paths);

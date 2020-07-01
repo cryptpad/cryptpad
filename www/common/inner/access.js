@@ -898,6 +898,27 @@ define([
                     $d.append(changePass);
                 }
             }
+            if (owned) {
+                var deleteOwned = h('button.btn.btn-danger-alt', Messages.fc_delete_owned);
+                var spinner = UI.makeSpinner();
+                UI.confirmButton(deleteOwned, {
+                    classes: 'btn-danger'
+                }, function () {
+                    spinner.spin();
+                    sframeChan.query('Q_DELETE_OWNED', {
+                        teamId: typeof(owned) !== "boolean" ? owned : undefined,
+                        channel: data.channel
+                    }, function (err, obj) {
+                        spinner.done();
+                        if (err || (obj && obj.error)) { UI.warn(Messages.error); }
+                    });
+                });
+                $d.append(h('br'));
+                $d.append(h('div', [
+                    deleteOwned,
+                    spinner.spinner
+                ]));
+            }
             return $d;
         };
         var drawRight = function () {
