@@ -56,7 +56,7 @@ define([
     var DISPLAY_RESTORE_BUTTON = false;
     var NEW_VERSION = 3;
     var PENDING_TIMEOUT = 30000;
-    var READ_ONLY_REFRESH_DATA_DELAY = 15000;
+    var READONLY_REFRESH_TO = 15000;
 
     var debug = function (x) {
         if (!window.CP_DEV_MODE) { return; }
@@ -112,7 +112,7 @@ define([
             return window.frames[0].editor || window.frames[0].editorCell;
         };
 
-        var setEditable = function (state) {
+        var setEditable = function (state, force) {
             $('#cp-app-oo-editor').find('#cp-app-oo-offline').remove();
             /*
             try {
@@ -120,7 +120,7 @@ define([
                 //window.frames[0].editor.setViewModeDisconnect(true);
             } catch (e) {}
             */
-            if (!state && !readOnly) {
+            if (!state && (!readOnly || force)) {
                 $('#cp-app-oo-editor').append(h('div#cp-app-oo-offline'));
             }
         };
@@ -272,6 +272,7 @@ define([
             }
         };
 
+        /*
         var checkDrawings = function () {
             var editor = getEditor();
             if (!editor || !editor.GetSheets) { return false; }
@@ -280,6 +281,7 @@ define([
                 return obj.worksheet.Drawings.length;
             });
         };
+        */
 
         // DEPRECATED from version 3
         // Loading a checkpoint reorder the sheet starting from ID "5".
@@ -328,11 +330,8 @@ define([
                 index: ev.index
             };
             oldHashes = JSON.parse(JSON.stringify(content.hashes));
-            var hasDrawings = checkDrawings();
-            if (hasDrawings) {
-                content.locks = {};
-                content.ids = {};
-            }
+            content.locks = {};
+            content.ids = {};
             // If this is a migration, set the new version
             if (APP.migrate) {
                 delete content.migration;
@@ -388,6 +387,9 @@ define([
         };
 
         var resetData = function (blob, type) {
+            // If a read-only refresh popup was planned, abort it
+            clearTimeout(APP.refreshRoTo);
+
             if (!isLockedModal.modal) {
                 isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
             }
@@ -415,14 +417,11 @@ define([
             };
             fixSheets();
 
-            var hasDrawings = checkDrawings();
-            if (hasDrawings) {
-                ooChannel.ready = false;
-                ooChannel.queue = [];
-                data.callback = function () {
-                    resetData(blob, file);
-                };
-            }
+            ooChannel.ready = false;
+            ooChannel.queue = [];
+            data.callback = function () {
+                resetData(blob, file);
+            };
 
             APP.FM.handleFile(blob, data);
         };
@@ -612,6 +611,7 @@ define([
             sframeChan.on('EV_OO_EVENT', function (obj) {
                 switch (obj.ev) {
                     case 'READY':
+                        cb();
                         break;
                     case 'LEAVE':
                         removeClient(obj.data);
@@ -627,7 +627,7 @@ define([
 
                                 // Don't "spam" the user instantly and no more than
                                 // 1 popup every 15s
-                                setTimeout(refreshReadOnly, READ_ONLY_REFRESH_DATA_DELAY);
+                                APP.refreshRoTo = setTimeout(refreshReadOnly, READONLY_REFRESH_TO);
                                 return;
                             }
                             ooChannel.send(obj.data.msg);
@@ -639,7 +639,6 @@ define([
                         break;
                 }
             });
-            cb();
         };
 
         var getParticipants = function () {
@@ -762,6 +761,8 @@ define([
                 ooChannel.cpIndex += ooChannel.queue.length;
                 var last = ooChannel.queue.pop();
                 if (last) { ooChannel.lastHash = last.hash; }
+            } else {
+                setEditable(false, true);
             }
             send({
                 type: "authChanges",
@@ -1015,6 +1016,10 @@ define([
                                     index: -1
                                 });
                             }
+                            if (APP.onDocumentUnlock) {
+                                APP.onDocumentUnlock();
+                                APP.onDocumentUnlock = undefined;
+                            }
                             break;
                     }
                 });
@@ -1095,35 +1100,65 @@ define([
                         }
                     },
                     "onDocumentReady": function () {
+                        var onMigrateRdy = Util.mkEvent();
+                        onMigrateRdy.reg(function () {
+                            var div = h('div.cp-oo-x2tXls', [
+                                h('span.fa.fa-spin.fa-spinner'),
+                                h('span', Messages.oo_sheetMigration_loading) // XXX tell them that it will take ~ 1min)
+                            ]);
+                            UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
+                            makeCheckpoint(true);
+                        });
                         // DEPRECATED: from version 3, the queue is sent again during init
                         if (APP.migrate && ((content.version || 1) <= 2)) {
                             // The doc is ready, fix the worksheets IDs and push the queue
                             fixSheets();
                             // Push changes since last cp
                             ooChannel.ready = true;
+                            var changes = [];
+                            var changesIndex;
                             ooChannel.queue.forEach(function (data) {
-                                ooChannel.send(data.msg);
+                                Array.prototype.push.apply(changes, data.msg.changes);
+                                changesIndex = data.msg.changesIndex;
+                                //ooChannel.send(data.msg);
                             });
-                            if (!readOnly) {
-                                var last = ooChannel.queue.pop();
-                                if (last) { ooChannel.lastHash = last.hash; }
-                            }
                             ooChannel.cpIndex += ooChannel.queue.length;
+                            var last = ooChannel.queue.pop();
+                            if (last) { ooChannel.lastHash = last.hash; }
 
-                            // Apply existing locks
-                            deleteOfflineLocks();
-                            APP.onLocal();
-                            handleNewLocks(oldLocks, content.locks || {});
-                            // Allow edition
-
-                            if (lock) {
-                                setTimeout(function () {
+                            var onDocUnlock = function () {
+                                // Migration required but read-only: continue...
+                                if (readOnly) {
                                     setEditable(true);
                                     getEditor().setViewModeDisconnect();
-                                }, 60000);
-                            } else {
-                                setEditable(true);
+                                } else {
+                                    // No changes after the cp: migrate now
+                                    onMigrateRdy.fire();
+                                }
+                            };
+
+
+                            // Send the changes all at once
+                            if (changes.length) {
+                                setTimeout(function () {
+                                    ooChannel.send({
+                                        type: 'saveChanges',
+                                        changesIndex: changesIndex,
+                                        changes: changes,
+                                        locks: []
+                                    });
+                                    APP.onDocumentUnlock = onDocUnlock;
+                                }, 5000);
+                                return;
                             }
+                            onDocUnlock();
+                            return;
+                        }
+
+                        if (lock) {
+                            getEditor().setViewModeDisconnect();
+                        } else {
+                            setEditable(true);
                         }
 
                         if (isLockedModal.modal && force) {
@@ -1133,14 +1168,7 @@ define([
                         }
 
                         if (APP.migrate && !readOnly) {
-                            var div = h('div.cp-oo-x2tXls', [
-                                h('span.fa.fa-spin.fa-spinner'),
-                                h('span', Messages.oo_sheetMigration_loading) // XXX tell them that it will take ~ 1min)
-                            ]);
-                            UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
-                            setTimeout(function () {
-                                makeCheckpoint(true);
-                            }, 60000);
+                            onMigrateRdy.fire();
                         }
                     }
                 }
@@ -1791,19 +1819,19 @@ define([
             } else if (content && (!content.version || content.version === 1)) {
                 version = 'v1/';
                 APP.migrate = true;
-                // Registedred users can start the migration
-                if (common.isLoggedIn()) {
+                // Registedred ~~users~~ editors can start the migration
+                if (common.isLoggedIn() && !readOnly) {
                     content.migration = true;
                     APP.onLocal();
                 } else {
-                    var msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
+                    var msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor); // XXX update: "anonymous users or viewers"
                     $(APP.helpMenu.menu).after(msg);
                     readOnly = true;
                 }
             } else if (content && content.version === 2) {
                 APP.migrate = true;
-                // Registedred users can start the migration
-                if (common.isLoggedIn()) {
+                // Registedred ~~users~~ editors can start the migration
+                if (common.isLoggedIn() && !readOnly) {
                     content.migration = true;
                     APP.onLocal();
                 } else {
@@ -1854,15 +1882,12 @@ define([
         var reloadPopup = false;
 
         var checkNewCheckpoint = function () {
-            var hasDrawings = checkDrawings();
-            if (hasDrawings) {
-                var lastCp = getLastCp();
-                loadLastDocument(lastCp, function () {
-                    // On error, do nothing
-                }, function (blob, type) {
-                    resetData(blob, type);
-                });
-            }
+            var lastCp = getLastCp();
+            loadLastDocument(lastCp, function () {
+                // On error, do nothing
+            }, function (blob, type) {
+                resetData(blob, type);
+            });
         };
 
         config.onRemote = function () {
@@ -1891,10 +1916,7 @@ define([
                 var newLatest = getLastCp();
                 if (newLatest.index > latest.index) {
                     ooChannel.queue = [];
-                    var hasDrawings = checkDrawings();
-                    if (hasDrawings) {
-                        ooChannel.ready = false;
-                    }
+                    ooChannel.ready = false;
                     // New checkpoint
                     sframeChan.query('Q_OO_SAVE', {
                         hash: newLatest.hash,
