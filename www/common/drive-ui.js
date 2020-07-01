@@ -3584,9 +3584,7 @@ define([
 
             createToolbar(path);
 
-            if (inTrash || isInRoot) {
-                createTitle($content, path);
-            }
+            if (!isSearch) { createTitle($content, path); }
             var $info = createInfoBox(path);
 
             var $dirContent = $('<div>', {id: FOLDER_CONTENT_ID});
