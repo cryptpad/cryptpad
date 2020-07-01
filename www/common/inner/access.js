@@ -900,7 +900,6 @@ define([
             }
             if (owned) {
                 var deleteOwned = h('button.btn.btn-danger-alt', Messages.fc_delete_owned);
-                var $deleteOwned;
                 var spinner = UI.makeSpinner();
                 UI.confirmButton(deleteOwned, {
                     classes: 'btn-danger'

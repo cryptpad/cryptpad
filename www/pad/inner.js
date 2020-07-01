@@ -1001,13 +1001,14 @@ define([
 
     YAY!
 */
-                CKEDITOR.dom.element.prototype.setHtml = function(a){
+                Ckeditor.dom.element.prototype.setHtml = function(a){
                     if (/callFunction/.test(a)) {
                         a = a.replace(/on(mousedown|blur|keydown|focus|click|dragstart)/g, function (value) {
                             return 'o' + value;
                         });
                     }
-                    return this.$.innerHTML=a;
+                    this.$.innerHTML = a;
+                    return a;
                 };
 
                 module.ckeditor = editor = Ckeditor.replace('editor1', {
