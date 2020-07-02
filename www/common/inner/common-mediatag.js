@@ -256,7 +256,7 @@ define([
             }
 
             // Reset modal
-            $inner.find('media-tag, pre.mermaid').detach();
+            $inner.find('media-tag, pre[data-plugin]').detach();
             $spinner.show();
 
             // Check src and cryptkey
