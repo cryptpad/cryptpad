@@ -9,9 +9,6 @@ define([
     '/common/media-tag.js',
     '/common/highlight/highlight.pack.js',
     '/customize/messages.js',
-    '/lib/markmap/transform.min.js',
-    '/lib/markmap/view.min.js',
-    '/bower_components/MathJax/es5/tex-svg.js',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/common/highlight/styles/github.css'
@@ -19,7 +16,6 @@ define([
             MarkMapTransform, Markmap) {
     var DiffMd = {};
 
-    var MathJax = window.MathJax;
     var DiffDOM = window.diffDOM;
     var renderer = new Marked.Renderer();
     var restrictedRenderer = new Marked.Renderer();
@@ -27,13 +23,33 @@ define([
     var Mermaid = {
         init: function () {}
     };
+    var MarkMapTransform = {
+        transform: function () {}
+    };
+    var Markmap = {
+        markmap: function () {}
+    };
+    var Mathjax = {
+        tex2svg: function () {}
+    };
 
     var mermaidThemeCSS = //".node rect { fill: #DDD; stroke: #AAA; } " +
         "rect.task, rect.task0, rect.task2 { stroke-width: 1 !important; rx: 0 !important; } " +
         "g.grid g.tick line { opacity: 0.25; }" +
         "g.today line { stroke: red; stroke-width: 1; stroke-dasharray: 3; opacity: 0.5; }";
 
-    require(['mermaid', 'css!/code/mermaid-new.css'], function (_Mermaid) {
+    require([
+        'mermaid',
+        '/lib/markmap/transform.min.js',
+        '/lib/markmap/view.min.js',
+        '/bower_components/MathJax/es5/tex-svg.js',
+        'css!/code/mermaid-new.css'
+    ], function (_Mermaid, _Transform, _View) {
+        Mathjax = window.MathJax;
+
+        MarkMapTransform = _Transform;
+        Markmap = _View;
+
         Mermaid = _Mermaid;
         Mermaid.initialize({
             gantt: { axisFormat: '%m-%d', },
@@ -103,7 +119,8 @@ define([
         } else if (language === 'markmap') {
             return '<pre class="markmap" data-plugin="markmap">'+Util.fixHTML(code)+'</pre>';
         } else if (language === 'mathjax') {
-           var svg = MathJax.tex2svg(code, {display: true})
+           var svg = Mathjax.tex2svg(code, {display: true})
+           if (!svg) { return ''; }
            return '<pre class="mathjax">'+ svg.innerHTML.replace(/xlink:href/g, "href") +'</pre>';
         } else {
             return defaultCode.apply(renderer, arguments);
