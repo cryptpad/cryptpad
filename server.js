@@ -9,6 +9,7 @@ var Path = require("path");
 var nThen = require("nthen");
 var Util = require("./lib/common-util");
 var Default = require("./lib/defaults");
+var Keys = require("./lib/keys");
 
 var config = require("./lib/load-config");
 
@@ -128,7 +129,7 @@ var setHeaders = (function () {
     if (Object.keys(headers).length) {
         return function (req, res) {
             const h = [
-                    /^\/pad\/inner\.html.*/,
+                    ///^\/pad\/inner\.html.*/,
                     /^\/common\/onlyoffice\/.*\/index\.html.*/,
                     /^\/(sheet|ooslide|oodoc)\/inner\.html.*/,
                 ].some((regex) => {
@@ -201,9 +202,11 @@ app.use(/^\/[^\/]*$/, Express.static('customize.dist'));
 var admins = [];
 try {
     admins = (config.adminKeys || []).map(function (k) {
-        k = k.replace(/\/+$/, '');
-        var s = k.split('/');
-        return s[s.length-1].replace(/-/g, '/');
+        // return each admin's "unsafeKey"
+        // this might throw and invalidate all the other admin's keys
+        // but we want to get the admin's attention anyway.
+        // breaking everything is a good way to accomplish that.
+        return Keys.parseUser(k).pubkey;
     });
 } catch (e) { console.error("Can't parse admin keys"); }
 

@@ -2382,10 +2382,10 @@ define([
                 unpin: unpin,
                 loadSharedFolder: loadSharedFolder,
                 settings: proxy.settings,
+                removeOwnedChannel: function (channel, cb) { Store.removeOwnedChannel('', channel, cb); },
                 Store: Store
             }, {
                 outer: true,
-                removeOwnedChannel: function (channel, cb) { Store.removeOwnedChannel('', channel, cb); },
                 edPublic: store.proxy.edPublic,
                 loggedIn: store.loggedIn,
                 log: function (msg) {

@@ -168,7 +168,7 @@ define([
         var publicKey = privateData.edPublic;
         if (publicKey) {
             var $key = $('<div>', { 'class': 'cp-sidebarlayout-element' }).appendTo($div);
-            var userHref = Hash.getUserHrefFromKeys(privateData.origin, accountName, publicKey);
+            var userHref = Hash.getPublicSigningKeyString(privateData.origin, accountName, publicKey);
             var $pubLabel = $('<span>', { 'class': 'label' })
                 .text(Messages.settings_publicSigningKey);
             $key.append($pubLabel).append(UI.dialog.selectable(userHref));
@@ -488,6 +488,7 @@ define([
                         UI.removeLoadingScreen();
                         if (obj && obj.error) {
                             // TODO
+                            // XXX EEXISTS error message?
                             UI.alert(Messages.settings_changePasswordError);
                         }
                     });

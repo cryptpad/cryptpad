@@ -640,6 +640,7 @@ define([
             var res = [];
             // Search title
             var allFilesList = files[FILES_DATA];
+            var allSFList = files[SHARED_FOLDERS];
             var lValue = value.toLowerCase();
 
             // parse the search string into tags
@@ -661,13 +662,14 @@ define([
                 });
             };
 
-            getFiles([FILES_DATA]).forEach(function (id) {
-                var data = allFilesList[id];
+            getFiles([FILES_DATA, SHARED_FOLDERS]).forEach(function (id) {
+                var data = allFilesList[id] || allSFList[id];
                 if (!data) { return; }
                 if (Array.isArray(data.tags) && containsSearchedTag(data.tags)) {
-                    res.push(id);
-                } else
-                if ((data.title && data.title.toLowerCase().indexOf(lValue) !== -1) ||
+                    return void res.push(id);
+                }
+                var title = data.title || data.lastTitle;
+                if ((title && title.toLowerCase().indexOf(lValue) !== -1) ||
                     (data.filename && data.filename.toLowerCase().indexOf(lValue) !== -1)) {
                     res.push(id);
                 }
@@ -841,6 +843,12 @@ define([
             }
             files[TRASH] = {};
             exp.checkDeletedFiles(cb);
+        };
+        exp.ownedInTrash = function (isOwned) {
+            return getFiles([TRASH]).map(function (id) {
+                var data = exp.getFileData(id);
+                return isOwned(data.owners) ? data.channel : undefined;
+            }).filter(Boolean);
         };
 
         // RENAME

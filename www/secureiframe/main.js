@@ -144,15 +144,6 @@ define([
                     config.onFileUpload(sframeChan, data, cb);
                 });
 
-                sframeChan.on('Q_GET_FILES_LIST', function (types, cb) {
-                    Cryptpad.getSecureFilesList(types, function (err, data) {
-                        cb({
-                            error: err,
-                            data: data
-                        });
-                    });
-                });
-
                 sframeChan.on('EV_SECURE_IFRAME_CLOSE', function () {
                     config.onClose();
                 });

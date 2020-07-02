@@ -13,6 +13,18 @@
         return b;
     }
 
+    // COPYPASTED from mediatag-plugin-dialog.js
+    var isReadOnly = function (el) {
+        if (!el) { return; }
+        var parent = el;
+        while (parent) {
+            if (parent.nodeName.toUpperCase() === 'BODY') {
+                return parent.getAttribute("contenteditable") === 'false';
+            }
+            parent = parent.parentElement;
+        }
+    };
+
     var color1 = 'rgba(249, 230, 65, 1.0)';
     var color2 = 'rgba(252, 181, 0, 1.0)';
 
@@ -44,14 +56,19 @@
                 path = path || editor.elementPath();
                 sel = sel || editor.getSelection();
                 var applicable = removeStyle.checkApplicable(path, editor);
-                var hasComments = editor.getSelectedHtml().$.querySelectorAll('comment').length;
+
+                var selectedHtml = editor.getSelectedHtml();
+                if (selectedHtml === null) { return; }
+                var comments = selectedHtml.$.querySelectorAll('comment');
+                var hasComments = comments && comments.length;
+
                 var isComment = removeStyle.checkActive(path, editor);
                 var empty = !sel.getSelectedText();
                 return applicable && !empty && !hasComments && !isComment;
             };
 
             // Register the command.
-            editor.addCommand('comment', {
+            editor.plugins.comments.command = editor.addCommand('comment', {
                 exec: function(editor) {
                     if (editor.readOnly) { return; }
                     editor.focus();
@@ -164,7 +181,8 @@
                 */
                 editor.contextMenu.addListener(function(element, sel, path) {
                     var applicable = isApplicable(path, sel);
-                    if (!applicable) { return; }
+                    if (!applicable || isReadOnly(element.$)) { return; }
+
                     return {
                         comment: CKEDITOR.TRISTATE_OFF,
                     };

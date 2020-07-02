@@ -717,7 +717,7 @@ MessengerUI, Messages) {
 
         var displayInput = function () {
             if (toolbar.connected === false) { return; }
-            $input.width(Math.max($text.width(), 300)+'px');
+            $input.width(Math.max(($text.width() + 10), 300)+'px');
             $text.hide();
             //$pencilIcon.css('display', 'none');
             var inputVal = suggestName() || "";

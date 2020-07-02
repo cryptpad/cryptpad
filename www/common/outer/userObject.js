@@ -3,9 +3,8 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-realtime.js',
-    '/common/common-feedback.js',
     '/customize/messages.js'
-], function (AppConfig, Util, Hash, Realtime, Feedback, Messages) {
+], function (AppConfig, Util, Hash, Realtime, Messages) {
     var module = {};
 
     var clone = function (o) {
@@ -14,12 +13,8 @@ define([
     };
 
     module.init = function (config, exp, files) {
-        var removeOwnedChannel = config.removeOwnedChannel || function () {
-            console.error("removeOwnedChannel was not provided");
-        };
         var loggedIn = config.loggedIn;
         var sharedFolder = config.sharedFolder;
-        var edPublic = config.edPublic;
 
         var readOnly = config.readOnly;
 
@@ -134,40 +129,17 @@ define([
         };
 
         // Find files in FILES_DATA that are not anymore in the drive, and remove them from
-        // FILES_DATA. If there are owned pads, remove them from server too.
+        // FILES_DATA.
         exp.checkDeletedFiles = function (cb) {
             if (!loggedIn && !config.testMode) { return void cb(); }
             if (readOnly) { return void cb('EFORBIDDEN'); }
 
             var filesList = exp.getFiles([ROOT, 'hrefArray', TRASH]);
             var toClean = [];
-            var ownedRemoved = [];
             exp.getFiles([FILES_DATA, SHARED_FOLDERS]).forEach(function (id) {
                 if (filesList.indexOf(id) === -1) {
                     var fd = exp.isSharedFolder(id) ? files[SHARED_FOLDERS][id] : exp.getFileData(id);
                     var channelId = fd.channel;
-                    // If trying to remove an owned pad, remove it from server also
-                    if (!sharedFolder && fd.owners && fd.owners.indexOf(edPublic) !== -1
-                        && channelId) {
-                        if (channelId) { ownedRemoved.push(channelId); }
-                        Feedback.send('REMOVE_OWNED_CHANNEL');
-                        removeOwnedChannel(channelId, function (obj) {
-                            if (obj && obj.error) {
-                                // If the error is that the file is already removed, nothing to
-                                // report, it's a normal behavior (pad expired probably)
-                                if (obj.error.code === 'ENOENT') { return; }
-
-                                // RPC may not be responding
-                                // Send a report that can be handled manually
-                                console.error(obj.error);
-                                Feedback.send('ERROR_DELETING_OWNED_PAD=' + channelId + '|' + obj.error, true);
-                            }
-                        });
-                        // Also remove the realtime channel for onlyoffice
-                        if (fd.rtChannel) {
-                            removeOwnedChannel(fd.rtChannel, function () {});
-                        }
-                    }
                     if (fd.lastVersion) { toClean.push(Hash.hrefToHexChannelId(fd.lastVersion)); }
                     if (fd.rtChannel) { toClean.push(fd.rtChannel); }
                     if (channelId) { toClean.push(channelId); }
@@ -180,7 +152,7 @@ define([
                 }
             });
             if (!toClean.length) { return void cb(); }
-            cb(null, toClean, ownedRemoved);
+            cb(null, toClean);
         };
         var deleteHrefs = function (ids) {
             if (readOnly) { return; }

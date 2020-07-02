@@ -1,5 +1,6 @@
 @import (reference) "../../customize/src/less2/include/framework.less";
 @import (reference) "../../customize/src/less2/include/comments.less";
+@import (reference) "../../customize/src/less2/include/tools.less";
 
 body.cp-app-pad {
     .framework_main(
@@ -35,6 +36,12 @@ body.cp-app-pad {
             height: 24px;
             align-items: center;
             padding: 4px;
+        }
+        .cke_button__print {
+            display: none !important;
+        }
+        .cke_button {
+            .tools_unselectable();
         }
     }
     .cke_wysiwyg_frame {

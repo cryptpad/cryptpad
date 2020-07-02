@@ -249,7 +249,7 @@ define([
             setTimeout(saveChanges);
         }
         padChatChannel = channel;
-        console.error('Chat ID:', channel);
+        console.debug('Chat ID:', channel);
         ctx.sframeChan.query('Q_CHAT_OPENPADCHAT', channel, function (err, obj) {
             if (err || (obj && obj.error)) { console.error(err || (obj && obj.error)); }
         });
@@ -673,6 +673,12 @@ define([
 
             ctx.sframeChan.on("EV_PAD_PASSWORD_ERROR", function () {
                 UI.errorLoadingScreen(Messages.password_error_seed);
+            });
+
+            ctx.sframeChan.on("EV_EXPIRED_ERROR", function () {
+                funcs.onServerError({
+                    type: 'EEXPIRED'
+                });
             });
 
             ctx.sframeChan.on('EV_LOADING_INFO', function (data) {
