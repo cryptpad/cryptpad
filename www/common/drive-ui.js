@@ -2400,7 +2400,7 @@ define([
             var content = h('p', [
                 Messages.fm_emptyTrashDialog,
                 hasOwned ? h('br') : undefined,
-                hasOwned ? Messages.fm_emptyTrashOwned : undefined
+                hasOwned ? UI.setHTML(h('span'), Messages.fm_emptyTrashOwned) : undefined
             ]);
             var buttons = [{
                 className: 'cancel',
