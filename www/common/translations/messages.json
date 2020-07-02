@@ -338,9 +338,9 @@
     "fm_openParent": "Show in folder",
     "fm_noname": "Untitled Document",
     "fm_emptyTrashDialog": "Are you sure you want to empty the trash?",
-    "fm_removeSeveralPermanentlyDialog": "Are you sure you want to permanently remove these {0} elements from your CryptDrive?",
+    "fm_removeSeveralPermanentlyDialog": "Are you sure you want to remove these {0} items from your drive? They will remain in the drives of other users who have stored them.",
     "fm_removePermanentlyNote": "Owned pads will be removed from the server if you continue.",
-    "fm_removePermanentlyDialog": "Are you sure you want to permanently remove that element from your CryptDrive?",
+    "fm_removePermanentlyDialog": "Are you sure you want to remove this item from your drive? It will remain in the drives of other users who have stored it.",
     "fm_removeSeveralDialog": "Are you sure you want to move these {0} elements to the trash?",
     "fm_removeDialog": "Are you sure you want to move {0} to the trash?",
     "fm_deleteOwnedPad": "Are you sure you want to permanently remove this pad from the server?",
@@ -389,9 +389,9 @@
     "fc_expandAll": "Expand All",
     "fc_collapseAll": "Collapse All",
     "fc_delete": "Move to trash",
-    "fc_delete_owned": "Delete from the server",
+    "fc_delete_owned": "Destroy",
     "fc_restore": "Restore",
-    "fc_remove": "Remove from your CryptDrive",
+    "fc_remove": "Remove",
     "fc_remove_sharedfolder": "Remove",
     "fc_empty": "Empty the trash",
     "fc_prop": "Properties",
@@ -1395,5 +1395,7 @@
     "oo_refresh": "Refresh",
     "oo_refreshText": "This document has been updated",
     "support_category": "Choose a category",
-    "support_formCategoryError": "Error: category is empty"
+    "support_formCategoryError": "Error: category is empty",
+    "fm_emptyTrashOwned": "Your trash contains documents you own. You can <b>remove</b> them from your drive only, or <b>destroy</b> them for all users.",
+    "fm_restricted": "You do not have access"
 }
