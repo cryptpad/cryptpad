@@ -307,10 +307,6 @@ define([
         // "show" tells us if we need to display the "comments" column or not
         var show = false;
 
-        // Add invisible label for accessibility tools
-        var label = h('label#cp-comments-label', Messages.comments_comment);
-        Env.$container.append(label);
-
         // If we were adding a new comment, redraw our form
         if ($oldInput && !$oldInput.attr('data-uid')) {
             show = true;
@@ -747,6 +743,14 @@ define([
         Env.$contentContainer.append(h('div.cp-comment-bubble', button));
     };
 
+    var isEditable = function (document) {
+        try {
+            return document.body.getAttribute('contenteditable') === 'true';
+        } catch (err) {
+            return false;
+        }
+    };
+
     var addAddCommentHandler = function(Env) {
         Env.editor.plugins.comments.addComment = function(uid, addMark) {
             if (!Env.ready) { return; }
@@ -754,7 +758,7 @@ define([
 
             // Get all comments ID contained within the selection
             var applicable = Env.editor.plugins.comments.isApplicable();
-            if (!applicable) {
+            if (!applicable || !isEditable(Env.ifrWindow.document)) {
                 // Abort if our selection contains a comment
                 UI.warn(Messages.comments_error);
                 return;
@@ -769,7 +773,7 @@ define([
 
                 if (!val) { return; }
                 var applicable = Env.editor.plugins.comments.isApplicable();
-                if (!applicable) {
+                if (!applicable || !isEditable(Env.ifrWindow.document)) {
                     // text has been deleted by another user while we were typing our comment?
                     return void UI.warn(Messages.error);
                 }
@@ -808,9 +812,13 @@ define([
         });
         $(Env.ifrWindow.document).on('selectionchange', function() {
             removeCommentBubble(Env);
-            var applicable = Env.editor.plugins.comments.isApplicable();
-            if (!applicable) { return; }
+            var comments = Env.editor.plugins.comments;
+            var applicable = comments.isApplicable();
+            if (!applicable || !isEditable(Env.ifrWindow.document)) {
+                return void comments.command.setState(0);
+            }
             addCommentBubble(Env);
+            comments.command.setState(2);
         });
     };
 
@@ -844,6 +852,12 @@ define([
     Comments.create = function(cfg) {
         var Env = cfg;
         Env.comments = Util.clone(COMMENTS);
+
+        // Add invisible label for accessibility tools
+        var label = h('label#cp-comments-label', {
+            style: "display:none;"
+        }, Messages.comments_comment);
+        Env.$container.before(label);
 
         var ro = cfg.framework.isReadOnly();
         var onEditableChange = function(unlocked) {

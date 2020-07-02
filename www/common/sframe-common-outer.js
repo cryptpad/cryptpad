@@ -286,8 +286,17 @@ define([
                 };
 
                 var newHref;
+                var expire;
                 nThen(function (w) {
-                    if (parsed.hashData.key || !parsed.hashData.channel) { return; }
+                    // If we're using an unsafe link, get pad attribute
+                    if (parsed.hashData.key || !parsed.hashData.channel) {
+                        Cryptpad.getPadAttribute('expire', w(function (err, data) {
+                            if (err) { return; }
+                            expire = data;
+                        }));
+                        return;
+                    }
+                    // Otherwise, get pad data from channel id
                     var edit = parsed.hashData.mode === 'edit';
                     Cryptpad.getPadDataFromChannel({
                         channel: parsed.hashData.channel,
@@ -308,6 +317,7 @@ define([
                         if (edit && !res.href) {
                             newHref = res.roHref;
                         }
+                        expire = res.expire;
                         // We have good data, keep the hash in memory
                         newHref = edit ? res.href : (res.roHref || res.href);
                     }));
@@ -344,6 +354,11 @@ define([
                     }
                     // Not a file, so we can use `isNewChannel`
                     Cryptpad.isNewChannel(currentPad.href, password, w(function(e, isNew) {
+                        if (isNew && expire && expire < (+new Date())) {
+                            sframeChan.event("EV_EXPIRED_ERROR");
+                            waitFor.abort();
+                            return;
+                        }
                         if (!isNew) { return void todo(); }
                         if (parsed.hashData.mode === 'view' && (password || !parsed.hashData.password)) {
                             // Error, wrong password stored, the view seed has changed with the password
@@ -793,6 +808,15 @@ define([
                     Cryptpad.changePadPassword(Cryptget, Crypto, data, cb);
                 });
 
+                sframeChan.on('Q_DELETE_OWNED', function (data, cb) {
+                    Cryptpad.userObjectCommand({
+                        cmd: 'deleteOwned',
+                        teamId: data.teamId,
+                        data: {
+                            channel: data.channel
+                        }
+                    }, cb);
+                });
             };
             addCommonRpc(sframeChan, isSafe);
 

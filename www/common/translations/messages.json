@@ -1394,5 +1394,6 @@
     "notification_folderSharedTeam": "{0} has shared a folder with the team {2}: <b>{1}</b>",
     "oo_refresh": "Refresh",
     "oo_refreshText": "This document has been updated",
-    "support_category": "Choose a category"
+    "support_category": "Choose a category",
+    "support_formCategoryError": "Error: category is empty"
 }

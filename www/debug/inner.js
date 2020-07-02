@@ -605,7 +605,7 @@ define([
             Title = common.createTitle({});
 
             var configTb = {
-                displayed: ['title', 'useradmin', 'spinner', 'share', 'userlist', 'newpad', 'limit'],
+                displayed: ['pad'],
                 title: Title.getTitleConfig(),
                 metadataMgr: metadataMgr,
                 readOnly: 1,
@@ -633,7 +633,7 @@ define([
             };
             var $hist = common.createButton('history', true, {histConfig: histConfig});
             $hist.addClass('cp-hidden-if-readonly');
-            toolbar.$rightside.append($hist);
+            toolbar.$drawer.append($hist);
 
             var $content = common.createButton(null, true, {
                 icon: 'fa-question',
@@ -642,7 +642,7 @@ define([
                 id: 'cp-app-debug-get-content'
             });
             $content.click(getContent);
-            toolbar.$rightside.append($content);
+            toolbar.$drawer.append($content);
         };
 
         config.onReady = function (info) {

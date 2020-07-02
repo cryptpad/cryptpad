@@ -15,6 +15,14 @@ require(['/api/config'], function(ApiConfig) {
         }
         return resource;
     };
+
+    window.MathJax = {
+        "HTML-CSS": {
+        },
+        TeX: {
+        }
+    };
+
     require(['/bower_components/ckeditor/ckeditor.js']);
 });
 define([
@@ -456,6 +464,15 @@ define([
         });
     };
 
+    var mkPrintButton = function (framework, editor) {
+        var $printButton = framework._.sfCommon.createButton('print', true);
+        $printButton.click(function () {
+            editor.execCommand('print');
+            framework.feedback('PRINT_PAD');
+        });
+        framework._.toolbar.$drawer.append($printButton);
+    };
+
     var andThen2 = function(editor, Ckeditor, framework) {
         var mediaTagMap = {};
         var $contentContainer = $('#cke_1_contents');
@@ -479,6 +496,8 @@ define([
         $iframe.find('head').append('<link href="' + customCss + '" type="text/css" rel="stylesheet" _fcktemp="true"/>');
 
         framework._.sfCommon.addShortcuts(ifrWindow);
+
+        mkPrintButton(framework, editor, Ckeditor);
 
         var documentBody = ifrWindow.document.body;
         var inner = window.inner = documentBody;
@@ -961,6 +980,37 @@ define([
                 Ckeditor.plugins.addExternal('blockbase64', '/pad/', 'disable-base64.js');
                 Ckeditor.plugins.addExternal('comments', '/pad/', 'comment.js');
                 Ckeditor.plugins.addExternal('wordcount', '/pad/wordcount/', 'plugin.js');
+
+/*  CKEditor4 is, by default, incompatible with strong CSP settings due to the
+    way it loads a variety of resources and event handlers by injecting HTML
+    via the innerHTML API.
+
+    In most cases those handlers just call a function with an id, so there's no
+    strong case for why it should be done this way except that lots of code depends
+    on this behaviour. These handlers all stop working when we enable our default CSP,
+    but fortunately the code is simple enough that we can use regex to grab the id
+    from the inline code and call the relevant function directly, preserving the
+    intended behaviour while preventing malicious code injection.
+
+    Unfortunately, as long as the original code is still present the console
+    fills up with CSP warnings saying that inline scripts were blocked.
+    The code below overrides CKEditor's default `setHtml` method to include
+    a string.replace call which will rewrite various inline event handlers from
+    onevent to oonevent.. rendering them invalid as scripts and preventing
+    some needless noise from showing up in the console.
+
+    YAY!
+*/
+                Ckeditor.dom.element.prototype.setHtml = function(a){
+                    if (/callFunction/.test(a)) {
+                        a = a.replace(/on(mousedown|blur|keydown|focus|click|dragstart)/g, function (value) {
+                            return 'o' + value;
+                        });
+                    }
+                    this.$.innerHTML = a;
+                    return a;
+                };
+
                 module.ckeditor = editor = Ckeditor.replace('editor1', {
                     customConfig: '/customize/ckeditor-config.js',
                 });
@@ -1012,7 +1062,10 @@ define([
                 $ckeToolbar.find('.cke_button__image_icon').parent().hide();
             }).nThen(waitFor());
 
+        }).nThen(function(waitFor) {
+            require(['/pad/csp.js'], waitFor());
         }).nThen(function( /*waitFor*/ ) {
+
             function launchAnchorTest(test) {
                 // -------- anchor test: make sure the exported anchor contains <a name="...">  -------
                 console.log('---- anchor test: make sure the exported anchor contains <a name="...">  -----.');

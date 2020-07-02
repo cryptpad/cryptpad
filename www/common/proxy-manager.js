@@ -4,8 +4,9 @@ define([
     '/common/common-hash.js',
     '/common/outer/sharedfolder.js',
     '/customize/messages.js',
+    '/common/common-feedback.js',
     '/bower_components/nthen/index.js',
-], function (UserObject, Util, Hash, SF, Messages, nThen) {
+], function (UserObject, Util, Hash, SF, Messages, Feedback, nThen) {
 
 
     var getConfig = function (Env) {
@@ -397,26 +398,13 @@ define([
                     // Copy the elements to the new location
                     var toCopy = _getCopyFromPaths(Env, resolved.main, Env.user.userObject);
                     var newUserObject = newResolved.userObject;
-                    var ownedPads = [];
                     toCopy.forEach(function (obj) {
                         newUserObject.copyFromOtherDrive(newResolved.path, obj.el, obj.data, obj.key);
-                        var _owned = Object.keys(obj.data).filter(function (id) {
-                            var owners = obj.data[id].owners;
-                            return _ownedByMe(Env, owners);
-                        });
-                        Array.prototype.push.apply(ownedPads, _owned);
                     });
 
                     if (copy) { return; }
 
                     if (resolved.main.length) {
-                        var rootPath = resolved.main[0].slice();
-                        rootPath.pop();
-                        ownedPads = Util.deduplicateString(ownedPads);
-                        ownedPads.forEach(function (id) {
-                            Env.user.userObject.add(Number(id), rootPath);
-                        });
-
                         // Remove the elements from the old location (without unpinning)
                         Env.user.userObject.delete(resolved.main, waitFor()); // FIXME waitFor() is called synchronously
                     }
@@ -714,23 +702,22 @@ define([
         });
     };
 
-    // Delete permanently some pads or folders
     var _delete = function (Env, data, cb) {
         data = data || {};
-        var resolved = _resolvePaths(Env, data.paths);
+        var resolved = data.resolved || _resolvePaths(Env, data.paths);
         if (!resolved.main.length && !Object.keys(resolved.folders).length) {
             return void cb({error: 'E_NOTFOUND'});
         }
 
         // Deleted or password changed for a shared folder
-        if (data.paths.length === 1 && data.paths[0][0] === UserObject.SHARED_FOLDERS_TEMP) {
+        if (data.paths && data.paths.length === 1 &&
+            data.paths[0][0] === UserObject.SHARED_FOLDERS_TEMP) {
             var temp = Util.find(Env, ['user', 'proxy', UserObject.SHARED_FOLDERS_TEMP]);
             delete temp[data.paths[0][1]];
             return void Env.onSync(cb);
         }
 
         var toUnpin = [];
-        var ownedRemoved;
         nThen(function (waitFor)  {
             // Delete paths from the main drive and get the list of pads to unpin
             // We also get the list of owned pads that were removed
@@ -753,8 +740,8 @@ define([
                         });
                     });
                 }
-                uo.delete(resolved.main, waitFor(function (err, _toUnpin, _ownedRemoved) {
-                    ownedRemoved = _ownedRemoved;
+                uo.delete(resolved.main, waitFor(function (err, _toUnpin/*, _ownedRemoved*/) {
+                    //ownedRemoved = _ownedRemoved;
                     if (!Env.unpinPads || !_toUnpin) { return; }
                     Array.prototype.push.apply(toUnpin, _toUnpin);
                 }));
@@ -763,7 +750,7 @@ define([
             // Check if removed owned pads are duplicated in some shared folders
             // If that's the case, we have to remove them from the shared folders too
             // We can do that by adding their paths to the list of pads to remove from shared folders
-            if (ownedRemoved) {
+            /*if (ownedRemoved) {
                 var ids = _findChannels(Env, ownedRemoved);
                 ids.forEach(function (id) {
                     var paths = findFile(Env, id);
@@ -776,7 +763,7 @@ define([
                         }
                     });
                 });
-            }
+            }*/
             // Delete paths from the shared folders
             Object.keys(resolved.folders).forEach(function (id) {
                 Env.folders[id].userObject.delete(resolved.folders[id], waitFor(function (err, _toUnpin) {
@@ -816,18 +803,120 @@ define([
             cb();
         });
     };
+    // Delete permanently some pads or folders
+    var _deleteOwned = function (Env, data, cb) {
+        data = data || {};
+        var resolved = _resolvePaths(Env, data.paths || []);
+        if (!data.channel && !resolved.main.length && !Object.keys(resolved.folders).length) {
+            return void cb({error: 'E_NOTFOUND'});
+        }
+        var toDelete = {
+            main: [],
+            folders: {}
+        };
+        var todo = function (channel, uo, p, _cb) {
+            var cb = Util.once(Util.mkAsync(_cb));
+            var chan = channel;
+            if (!chan && uo) {
+                var el = uo.find(p);
+                if (!uo.isFile(el) && !uo.isSharedFolder(el)) { return; }
+                var data = uo.isFile(el) ? uo.getFileData(el) : getSharedFolderData(Env, el);
+                chan = data.channel;
+            }
+            Env.removeOwnedChannel(chan, function (obj) {
+                // If the error is that the file is already removed, nothing to
+                // report, it's a normal behavior (pad expired probably)
+                if (obj && obj.error && obj.error.code !== "ENOENT") {
+                    // RPC may not be responding
+                    // Send a report that can be handled manually
+                    console.error(obj.error, chan);
+                    Feedback.send('ERROR_DELETING_OWNED_PAD=' + chan + '|' + obj.error, true);
+                    return void cb();
+                }
+
+                // No error: delete the pads and all its copies from our drive and shared folders
+                var ids = _findChannels(Env, [chan]);
+                ids.forEach(function (id) {
+                    var paths = findFile(Env, id);
+                    var _resolved = _resolvePaths(Env, paths);
+
+                    Array.prototype.push.apply(toDelete.main, _resolved.main);
+                    Object.keys(_resolved.folders).forEach(function (fId) {
+                        if (toDelete.folders[fId]) {
+                            Array.prototype.push.apply(toDelete.folders[fId], _resolved.folders[fId]);
+                        } else {
+                            toDelete.folders[fId] = _resolved.folders[fId];
+                        }
+                    });
+                });
+                cb();
+            });
+        };
+        nThen(function (w) {
+            // Delete owned pads from the server
+            if (data.channel) {
+                todo(data.channel, null, null, w());
+            }
+            resolved.main.forEach(function (p) {
+                todo(null, Env.user.userObject, p, w());
+            });
+            Object.keys(resolved.folders).forEach(function (id) {
+                var uo = Env.folders[id].userObject;
+                resolved.folders[id].forEach(function (p) {
+                    todo(null, uo, p, w());
+                });
+            });
+        }).nThen(function () {
+            // Remove deleted pads from the drive
+            _delete(Env, { resolved: toDelete }, cb);
+        });
+    };
+
     // Empty the trash (main drive only)
     var _emptyTrash = function (Env, data, cb) {
-        Env.user.userObject.emptyTrash(function (err, toClean) {
-            cb();
+        nThen(function (waitFor) {
+            if (data && data.deleteOwned) {
+                // Delete owned pads in the trash from the server
+                var owned = Env.user.userObject.ownedInTrash(function (owners) {
+                    return _ownedByMe(Env, owners);
+                });
+                owned.forEach(function (chan) {
+                    Env.removeOwnedChannel(chan, waitFor(function (obj) {
+                        // If the error is that the file is already removed, nothing to
+                        // report, it's a normal behavior (pad expired probably)
+                        if (obj && obj.error && obj.error.code !== "ENOENT") {
+                            // RPC may not be responding
+                            // Send a report that can be handled manually
+                            console.error(obj.error, chan);
+                            Feedback.send('ERROR_EMPTYTRASH_OWNED=' + chan + '|' + obj.error, true);
+                        }
+                        console.warn('DELETED', chan);
+                    }));
+                });
+            }
 
-            // Check if need need to restore a full hash (hidden hash deleted from drive)
-            if (!Array.isArray(toClean)) { return; }
-            var toCheck = Util.deduplicateString(toClean);
-            toCheck.forEach(function (chan) {
-                Env.Store.checkDeletedPad(chan);
-            });
-        });
+            // Empty the trash
+            Env.user.userObject.emptyTrash(waitFor(function (err, toClean) {
+                cb();
+
+                // Don't block nThen for the lower-priority tasks
+                setTimeout(function () {
+                    // Unpin deleted pads if needed
+                    // Check if we need to restore a full hash (hidden hash deleted from drive)
+                    if (!Array.isArray(toClean)) { return; }
+                    var toCheck = Util.deduplicateString(toClean);
+                    var toUnpin = [];
+                    toCheck.forEach(function (channel) {
+                        // Check unpin
+                        var data = findChannel(Env, channel, true);
+                        if (!data.length) { toUnpin.push(channel); }
+                        // Check hidden hash
+                        Env.Store.checkDeletedPad(channel);
+                    });
+                    Env.unpinPads(toUnpin, function () {});
+                });
+            }));
+        }).nThen(cb);
     };
     // Rename files or folders
     var _rename = function (Env, data, cb) {
@@ -879,6 +968,8 @@ define([
                 _convertFolderToSharedFolder(Env, data, cb); break;
             case 'delete':
                 _delete(Env, data, cb); break;
+            case 'deleteOwned':
+                _deleteOwned(Env, data, cb); break;
             case 'emptyTrash':
                 _emptyTrash(Env, data, cb); break;
             case 'rename':
@@ -1087,14 +1178,6 @@ define([
                     if (e) { error = e; return; }
                     uo.add(id, p);
                 }));
-                if (uo.id && _ownedByMe(Env, pad.owners)) {
-                    // Creating an owned pad in a shared folder:
-                    // We must add a copy in the user's personnal drive
-                    Env.user.userObject.pushData(pad, waitFor(function (e, id) {
-                        if (e) { error = e; return; }
-                        Env.user.userObject.add(id, ['root']);
-                    }));
-                }
             }).nThen(function () {
                 cb(error);
             });
@@ -1112,6 +1195,7 @@ define([
             unpinPads: data.unpin,
             onSync: data.onSync,
             Store: data.Store,
+            removeOwnedChannel: data.removeOwnedChannel,
             loadSharedFolder: data.loadSharedFolder,
             cfg: uoConfig,
             edPublic: data.edPublic,
@@ -1151,6 +1235,7 @@ define([
             getChannelsList: callWithEnv(getChannelsList),
             addPad: callWithEnv(addPad),
             delete: callWithEnv(_delete),
+            deleteOwned: callWithEnv(_deleteOwned),
             // Tools
             findChannel: callWithEnv(findChannel),
             findHref: callWithEnv(findHref),
@@ -1186,10 +1271,12 @@ define([
             }
         }, cb);
     };
-    var emptyTrashInner = function (Env, cb) {
+    var emptyTrashInner = function (Env, deleteOwned, cb) {
         return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
             cmd: "emptyTrash",
-            data: null
+            data: {
+                deleteOwned: deleteOwned
+            }
         }, cb);
     };
     var addFolderInner = function (Env, path, name, cb) {
@@ -1234,6 +1321,14 @@ define([
     var deleteInner = function (Env, paths, cb) {
         return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
             cmd: "delete",
+            data: {
+                paths: paths,
+            }
+        }, cb);
+    };
+    var deleteOwnedInner = function (Env, paths, cb) {
+        return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
+            cmd: "deleteOwned",
             data: {
                 paths: paths,
             }
@@ -1392,6 +1487,11 @@ define([
         }
         return Env.user.userObject.hasFile(el, trashRoot);
     };
+    var ownedInTrash = function (Env) {
+        return Env.user.userObject.ownedInTrash(function (owners) {
+            return _ownedByMe(Env, owners);
+        });
+    };
 
     var isDuplicateOwned = _isDuplicateOwned;
 
@@ -1427,6 +1527,7 @@ define([
             restoreSharedFolder: callWithEnv(restoreSharedFolderInner),
             convertFolderToSharedFolder: callWithEnv(convertFolderToSharedFolderInner),
             delete: callWithEnv(deleteInner),
+            deleteOwned: callWithEnv(deleteOwnedInner),
             restore: callWithEnv(restoreInner),
             setFolderData: callWithEnv(setFolderDataInner),
             // Tools
@@ -1446,6 +1547,7 @@ define([
             isInSharedFolder: callWithEnv(isInSharedFolder),
             getUserObjectPath: callWithEnv(getUserObjectPath),
             isDuplicateOwned: callWithEnv(isDuplicateOwned),
+            ownedInTrash: callWithEnv(ownedInTrash),
             // Generic
             isValidDrive: callWithEnv(isValidDrive),
             isFile: callWithEnv(isFile),

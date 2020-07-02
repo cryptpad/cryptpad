@@ -1605,6 +1605,26 @@ define([
                 blockKeys = allocated.blockKeys;
             }));
         }).nThen(function (waitFor) {
+            var blockUrl = Block.getBlockUrl(blockKeys);
+            // Check whether there is a block at that location
+            Util.fetch(blockUrl, waitFor(function (err, block) {
+                // If there is no block or the block is invalid, continue.
+                if (err) {
+                    console.log("no block found");
+                    return;
+                }
+
+                var decryptedBlock = Block.decrypt(block, blockKeys);
+                if (!decryptedBlock) {
+                    console.error("Found a login block but failed to decrypt");
+                    return;
+                }
+
+                // If there is already a valid block, abort! We risk overriding another user's data
+                waitFor.abort();
+                cb({ error: 'EEXISTS' });
+            }));
+        }).nThen(function (waitFor) {
             // Write the new login block
             var temp = {
                 User_name: accountName,
@@ -1966,7 +1986,7 @@ define([
         }).nThen(function (waitFor) {
             var blockHash = LocalStore.getBlockHash();
             if (blockHash) {
-                console.log(blockHash);
+                console.debug("Block hash is present");
                 var parsed = Block.parseBlockHash(blockHash);
 
                 if (typeof(parsed) !== 'object') {

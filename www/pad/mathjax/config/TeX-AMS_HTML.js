@@ -33,6 +33,8 @@ MathJax.Ajax.Preloading(
   "[MathJax]/extensions/a11y/accessibility-menu.js"
 );
 
+MathJax.Hub.Config( {showMathMenu: false,messageStyle: "none"} );function getCKE() {if ( typeof window.parent.CKEDITOR == 'object' ) {return window.parent.CKEDITOR;} else {return window.parent.parent.CKEDITOR;}}function update() {MathJax.Hub.Queue([ 'Typeset', MathJax.Hub, this.buffer ],function() {getCKE().tools.callFunction( window.mathjax_done );});}MathJax.Hub.Queue( function() {getCKE().tools.callFunction(window.mathjax_loaded);} );
+
 MathJax.Hub.Config({
   extensions: ['[a11y]/accessibility-menu.js']
 });

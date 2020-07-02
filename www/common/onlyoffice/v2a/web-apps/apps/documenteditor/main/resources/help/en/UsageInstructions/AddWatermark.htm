@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Add watermark</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Text watermarks allow to indicate your document status (for example, confidential, draft etc.), image watermarks allow to add an image, for example your company logo." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Add watermark</h1>
+            <p>Watermark is a text or image placed below the main text layer. Text watermarks allow to indicate your document status (for example, confidential, draft etc.), image watermarks allow to add an image, for example your company logo.</p>
+			<p>To add a watermark within a document:</p>
+			<ol>
+                <li>Switch to the <b>Layout</b> tab of the top toolbar.</li>
+                <li>Click the <img alt="Watermark icon" src="../images/watermark.png" /> <b>Watermark</b> icon at the top toolbar and choose the <b>Custom Watermark</b> option from the menu. After that the <b>Watermark Settings</b> window will appear.</li>
+                <li>Select a watermark type you wish to insert:
+                    <ul>
+                        <li>Use the <b>Text watermark</b> option and adjust the available parameters:
+                            <p><img alt="Watermark Settings window" src="../images/watermark_settings.png" /></p>
+                            <ul>
+                                <li><b>Language</b> - select one of the available languages from the list,</li>
+                                <li><b>Text</b> - select one of the available text examples on the selected language. For English, the following watermark texts are available: <em>ASAP</em>, <em>CONFIDENTIAL</em>, <em>COPY</em>, <em>DO NOT COPY</em>, <em>DRAFT</em>, <em>ORIGINAL</em>, <em>PERSONAL</em>, <em>SAMPLE</em>, <em>TOP SECRET</em>, <em>URGENT</em>.</li>
+                                <li><b>Font</b> - select the font name and size from the corresponding drop-down lists. Use the icons on the right to set the font color or apply one of the font decoration styles: <em>Bold</em>, <em>Italic</em>, <em>Underline</em>, <em>Strikeout</em>,</li>
+                                <li><b>Semitransparent</b> - check this box if you want to apply transparency,</li>
+                                <li><b>Layout</b> - select the <b>Diagonal</b> or <b>Horizontal</b> option.</li>
+                            </ul>
+                        </li>
+                        <li>Use the <b>Image watermark</b> option and adjust the available parameters:
+                            <p><img alt="Watermark Settings window" src="../images/watermark_settings2.png" /></p>
+                            <ul>
+                                <li>Choose the image file source using one of the buttons: <b>From File</b> or <b>From URL</b> - the image will be displayed in the preview window on the right,</li>
+                                <li><b>Scale</b> - select the necessary scale value from the available ones: <em>Auto</em>, <em>500%</em>, <em>200%</em>, <em>150%</em>, <em>100%</em>, <em>50%</em>.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>Click the <b>OK</b> button.</li>
+			</ol>
+            <p>To edit the added watermark, open the <b>Watermark Settings</b> window as described above, change the necessary parameters and click <b>OK</b>.</p>
+            <p>To delete the added watermark click the <img alt="Watermark icon" src="../images/watermark.png" /> <b>Watermark</b> icon at the <b>Layout</b> tab of the top toolbar and choose the <b>Remove Watermark</b> option from the menu. It's also possible to use the <b>None</b> option in the <b>Watermark Settings</b> window.</p>
+            
+		</div>
+	</body>
+</html>

@@ -1394,5 +1394,6 @@
     "support_cat_bug": "Fehlerbericht",
     "oo_refresh": "Neu laden",
     "support_category": "Wähle eine Kategorie",
-    "oo_refreshText": "Dieses Dokument wurde aktualisiert"
+    "oo_refreshText": "Dieses Dokument wurde aktualisiert",
+    "support_formCategoryError": "Fehler: Kategorie ist leer"
 }

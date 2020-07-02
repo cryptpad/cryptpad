@@ -8,6 +8,10 @@
     overflow-y: auto;
     color: @cryptpad_text_col;
 
+    &:empty {
+        display: none !important;
+    }
+
     &.cp-comments-readonly {
         .cp-comment-actions {
             display: none !important;
@@ -59,10 +63,6 @@
         button:not(:last-child) {
             margin-right: 5px;
         }
-    }
-
-    #cp-comments-label {
-        display: none;
     }
 
     .cp-comment-container {

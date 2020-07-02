@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insert headers and footers</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Insert headers and footers to display additional info in a printed spreadsheet." />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+        <script type="text/javascript" src="../search/js/page-search.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+        <div class="search-field">
+            <input id="search" class="searchBar" placeholder="Search" type="text" onkeypress="doSearch(event)">
+        </div>
+			<h1>Insert headers and footers</h1>
+            <p>Headers and footers allow to add some additional info on a printed worksheet, such as date and time, page number, sheet name etc. Headers and footers are displayed in the printed version of a spreadsheet.</p>
+			<p>To insert a header or footer in a worksheet:</p>
+			<ol>
+			<li>switch to the <b>Insert</b> or <b>Layout</b> tab,</li>
+			<li>click the <img alt="Edit Header/Footer icon" src="../images/header_footer_icon.png" /> <b>Edit Header/Footer</b> button at the top toolbar,</li>
+            <li>the <b>Header/Footer Settings</b> window will open, where you can adjust the following settings:
+                <ul>
+                    <li>check the <b>Different first page</b> box to apply a different header or footer to the very first page or in case you don't want to add any header/ footer to it at all. The <b>First page</b> tab will appear below.</li>
+                    <li>check the <b>Different odd and even page</b> box to add different headers/footer for odd and even pages. The <b>Odd page</b> and <b>Even page</b> tabs will appear below.</li>
+                    <li>the <b>Scale with document</b> option allows to scale the header and footer together with the worksheet. This parameter is enabled by default.</li>
+                    <li>the <b>Align with page margins</b> option allows to align the left header/footer to the left margin and the right header/footer to the right margin. This option is enable by default. </li>
+                </ul>
+                <p><img alt="Header/Footer Settings" src="../images/header_footer_settings.png" /></p>
+            </li>
+            <li>insert the necessary data. Depending on the selected options, you can adjust settings for <b>All pages</b> or set up the header/footer for the first page as well as for odd and even pages individually. Switch to the necessary tab and adjust the available parameters. You can use one of the ready-made presets or insert the necessary data to the left, center and right header/footer field manually:
+                <ul>
+                    <li>choose one of the available presets from the <b>Presets</b> list: <em>Page 1</em>; <em>Page 1 of ?</em>; <em>Sheet1</em>; <em>Confidential, dd/mm/yyyy, Page 1</em>; <em>Spreadsheet name.xlsx</em>; <em>Sheet1, Page 1</em>; <em>Sheet1, Confidential, Page 1</em>; <em>Spreadsheet name.xlsx, Page 1</em>; <em>Page 1, Sheet1</em>; <em>Page 1, Spreadsheet name.xlsx</em>; <em>Author, Page 1, dd/mm/yyyy</em>; <em>Prepared by Author dd/mm/yyyy, Page 1</em>.
+                    <p>The corresponding variables will be added.</p>
+                    </li>
+                    <li>place the cursor into the left, center or right field of the header/footer and use the <b>Insert</b> list to add <em>Page number</em>, <em>Page count</em>, <em>Date</em>, <em>Time</em>, <em>File name</em>, <em>Sheet name</em>.</li>
+                </ul>
+            </li>
+            <li>format the text inserted into header/footer using the corresponding controls. You can change the default font, its size, color, apply some font styles, such as bold, italic, underlined, strikethrough, use subscript or superscript characters.</li>
+            <li>when ready, click the <b>OK</b> button to apply the changes.</li>
+			</ol>
+            <p>To edit the added headers and footers, click the <img alt="Edit Header/Footer icon" src="../images/header_footer_icon.png" /> <b>Edit Header/Footer</b> button at the top toolbar, make the necessary changes in the <b>Header/Footer Settings</b> window, and click <b>OK</b> to save the changes.</p>
+            <p>The added header and/or footer will be displayed in the printed version of the spreadsheet.</p>
+		</div>
+	</body>
+</html>

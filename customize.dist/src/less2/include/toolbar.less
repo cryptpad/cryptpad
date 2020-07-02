@@ -713,8 +713,8 @@
                 box-sizing: border-box;
                 cursor: auto;
                 width: 300px;
-                font-size: 30px;
-                padding: 0 5px;
+                font-size: 30px !important;
+                padding: 0 5px !important;
                 height: 43px;
             }
         }
@@ -1033,6 +1033,7 @@
                 flex-flow: column;
                 z-index: 10000; //Z cp-toolbar-drawer-content
                 color: black;
+                .tools_unselectable();
                 .fa {
                     font-size: 17px;
                 }
