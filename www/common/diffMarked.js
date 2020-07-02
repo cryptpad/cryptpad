@@ -12,8 +12,7 @@ define([
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/common/highlight/styles/github.css'
-],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Highlight, Messages,
-            MarkMapTransform, Markmap) {
+],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Highlight, Messages) {
     var DiffMd = {};
 
     var DiffDOM = window.diffDOM;
@@ -119,7 +118,7 @@ define([
         } else if (language === 'markmap') {
             return '<pre class="markmap" data-plugin="markmap">'+Util.fixHTML(code)+'</pre>';
         } else if (language === 'mathjax') {
-           var svg = Mathjax.tex2svg(code, {display: true})
+           var svg = Mathjax.tex2svg(code, {display: true});
            if (!svg) { return ''; }
            return '<pre class="mathjax">'+ svg.innerHTML.replace(/xlink:href/g, "href") +'</pre>';
         } else {
@@ -380,7 +379,7 @@ define([
         var observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 if (mutation.type === 'childList') {
-                    var n, $a;
+                    var n;
                     for (var i = 0; i < mutation.addedNodes.length; i++) {
                         n = mutation.addedNodes[i];
                         if (n.nodeName === "A") { return void n.addEventListener('click', onClick); }
@@ -400,8 +399,8 @@ define([
         attr: 'markmap-source',
         render:  function ($el) {
             var data = MarkMapTransform.transform($el[0].getAttribute("markmap-source"));
-            $el[0].innerHTML = "<svg width='100%' height='600'/>"
-            Markmap.markmap($el[0].firstChild, data)
+            $el[0].innerHTML = "<svg width='100%' height='600'/>";
+            Markmap.markmap($el[0].firstChild, data);
             fixMathjaxClickables($el);
         }
     };
@@ -516,7 +515,6 @@ define([
                 // If the element is a mermaid or markmap svg, get the corresponding attribute
                 var isSvg = $mt.is('pre[data-plugin]');
                 var plugin = isSvg && plugins[$mt.attr('data-plugin')];
-                console.log(plugin);
 
                 // Get initial idx
                 var idx = -1;
