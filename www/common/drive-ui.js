@@ -3719,6 +3719,10 @@ define([
             }
             var $elementRow = $('<span>', {'class': 'cp-app-drive-element-row'}).append($collapse).append($icon).append($name).click(function (e) {
                 e.stopPropagation();
+                if (files.restrictedFolders[isSharedFolder]) {
+                    UI.warn(Messages.fm_restricted);
+                    return;
+                }
                 APP.displayDirectory(path);
             });
             if (files.restrictedFolders[isSharedFolder]) {

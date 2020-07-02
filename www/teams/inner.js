@@ -68,6 +68,7 @@ define([
                 }, waitFor(function (err, newObj) {
                     if (newObj && newObj.restricted) {
                         r[fId] = drive.sharedFolders[fId];
+                        if (!r[fId].title) { r[fId].title = r[fId].lastTitle; }
                     }
                     if (newObj && (newObj.deprecated || newObj.restricted)) {
                         delete folders[fId];
