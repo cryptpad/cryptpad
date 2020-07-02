@@ -378,7 +378,7 @@ define([
             }
         }).nThen(function (waitFor) {
             if (cfg.afterSecrets) {
-                cfg.afterSecrets(Cryptpad, Utils, secret, waitFor());
+                cfg.afterSecrets(Cryptpad, Utils, secret, waitFor(), sframeChan);
             }
         }).nThen(function (waitFor) {
             // Check if the pad exists on server

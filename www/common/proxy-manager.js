@@ -69,7 +69,7 @@ define([
     };
 
     var restrictedProxy = function (Env, id) {
-        var lm = { proxy: { deprecated: true } };
+        var lm = { proxy: { restricted: true, root: {}, filesData: {} } };
         removeProxy(Env, id);
         addProxy(Env, id, lm, function () {});
         return void Env.Store.refreshDriveUI();
@@ -215,7 +215,7 @@ define([
         if (!Env.folders[id]) { return {}; }
         var obj = Env.folders[id].proxy.metadata || {};
         for (var k in Env.user.proxy[UserObject.SHARED_FOLDERS][id] || {}) {
-            var data = JSON.parse(JSON.stringify(Env.user.proxy[UserObject.SHARED_FOLDERS][id][k]));
+            var data = Util.clone(Env.user.proxy[UserObject.SHARED_FOLDERS][id][k] || {});
             if (k === "href" && data.indexOf('#') === -1) {
                 try {
                     data = Env.user.userObject.cryptor.decrypt(data);
@@ -491,6 +491,17 @@ define([
             };
             if (data.password) { folderData.password = data.password; }
             if (data.owned) { folderData.owners = [Env.edPublic]; }
+        }).nThen(function (waitFor) {
+            Env.Store.getPadMetadata(null, {
+                channel: folderData.channel
+            }, waitFor(function (obj) {
+                if (obj && (obj.error || obj.rejected)) {
+                    waitFor.abort();
+                    return void cb({
+                        error: obj.error || 'ERESTRICTED'
+                    });
+                }
+            }));
         }).nThen(function (waitFor) {
             Env.pinPads([folderData.channel], waitFor());
         }).nThen(function (waitFor) {
