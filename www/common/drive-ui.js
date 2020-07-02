@@ -451,15 +451,15 @@ define([
                 h('li', h('a.cp-app-drive-context-deleteowned.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faDelete,
-                }, Messages.fc_delete_owned)), // XXX update key? "Delete from the server"
+                }, Messages.fc_delete_owned)),
                 h('li', h('a.cp-app-drive-context-remove.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faTrash,
-                }, Messages.fc_remove)), // XXX update key? "Remove from your CryptDrive"
+                }, Messages.fc_remove)),
                 h('li', h('a.cp-app-drive-context-removesf.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faTrash,
-                }, Messages.fc_remove_sharedfolder)), // XXX update key? "Remove"
+                }, Messages.fc_remove_sharedfolder)),
                 $separator.clone()[0],
                 h('li', h('a.cp-app-drive-context-properties.dropdown-item', {
                     'tabindex': '-1',
@@ -2044,7 +2044,6 @@ define([
             return $shareBlock;
         };
 
-        Messages.fm_restricted = "Forbidden access"; // XXX
         // Create the "li" element corresponding to the file/folder located in "path"
         var createElement = function (path, elPath, root, isFolder) {
             // Forbid drag&drop inside the trash
@@ -2398,11 +2397,10 @@ define([
         var emptyTrashModal = function () {
             var ownedInTrash = manager.ownedInTrash();
             var hasOwned = Array.isArray(ownedInTrash) && ownedInTrash.length;
-            Messages.fm_emptyTrashOwned = "Your trash contains documents you own. You can remove them for everyone or only from your drive"; // XXX
             var content = h('p', [
                 Messages.fm_emptyTrashDialog,
                 hasOwned ? h('br') : undefined,
-                hasOwned ? Messages.fm_emptyTrashOwned : undefined // XXX update UI?
+                hasOwned ? Messages.fm_emptyTrashOwned : undefined
             ]);
             var buttons = [{
                 className: 'cancel',
@@ -2422,7 +2420,6 @@ define([
             }
             buttons.push({
                 className: 'primary',
-                // XXX fc_remove: Remove from your CryptDrive
                 // We may want to use a new key here
                 name: hasOwned ? Messages.fc_remove : Messages.okButton,
                 onClick: function () {
