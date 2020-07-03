@@ -19,42 +19,120 @@ define([
     var renderer = new Marked.Renderer();
     var restrictedRenderer = new Marked.Renderer();
 
-    var Mermaid = {
-        init: function () {}
-    };
-    var MarkMapTransform = {
-        transform: function () {}
-    };
-    var Markmap = {
-        markmap: function () {}
-    };
-    var Mathjax = {
-        tex2svg: function () {}
-    };
+    var argsMap = {};
 
     var mermaidThemeCSS = //".node rect { fill: #DDD; stroke: #AAA; } " +
         "rect.task, rect.task0, rect.task2 { stroke-width: 1 !important; rx: 0 !important; } " +
         "g.grid g.tick line { opacity: 0.25; }" +
         "g.today line { stroke: red; stroke-width: 1; stroke-dasharray: 3; opacity: 0.5; }";
 
-    require([
-        'mermaid',
-        '/lib/markmap/transform.min.js',
-        '/lib/markmap/view.min.js',
-        '/bower_components/MathJax/es5/tex-svg.js',
-        'css!/code/mermaid-new.css'
-    ], function (_Mermaid, _Transform, _View) {
-        Mathjax = window.MathJax;
+    var Mermaid = {
+        init: function () {
+            argsMap.mermaid = Util.slice(arguments);
+            require([
+                'mermaid',
+                'css!/code/mermaid-new.css'
+            ], function (_Mermaid) {
+                console.debug("loaded mermaid");
+                Mermaid = _Mermaid;
+                Mermaid.initialize({
+                    gantt: { axisFormat: '%m-%d', },
+                    "themeCSS": mermaidThemeCSS,
+                });
+                Mermaid.init.call(argsMap.mermaid);
+                delete argsMap.mermaid;
+            });
+        }
+    };
 
-        MarkMapTransform = _Transform;
-        Markmap = _View;
+    var Mathjax = {
+        tex2svg: function () {
+            argsMap.Mathjax = Util.slice(arguments);
+            require([
+                '/bower_components/MathJax/es5/tex-svg.js',
+            ], function () {
+                console.debug("Loaded mathjax");
+                Mathjax = window.MathJax;
+                if (!argsMap.Mathjax) { return; }
+                Mathjax.tex2svg(argsMap.Mathjax[0], argsMap.Mathjax[1]);
+                delete argsMap.Mathjax;
+            });
+        }
+    };
 
-        Mermaid = _Mermaid;
-        Mermaid.initialize({
-            gantt: { axisFormat: '%m-%d', },
-            "themeCSS": mermaidThemeCSS,
+    var drawMarkmap;
+    var MarkMapTransform;
+    var Markmap;
+
+    var markmapLoaded = false;
+    var loadMarkmap = function () {
+        require([
+            '/lib/markmap/transform.min.js',
+            '/lib/markmap/view.min.js',
+        ], function (_Transform, _View) {
+            console.debug("Loaded markmap");
+            MarkMapTransform = _Transform;
+            Markmap = _View;
+
+            markmapLoaded = true;
+            drawMarkmap(argsMap.markmap);
+            delete argsMap.markmap;
         });
-    });
+    };
+
+    var sfCommon;
+    var fixMathjaxClickables = function ($svg) {
+        // find all links in the tree and do the following for each one
+        var onClick = function (e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            var $el = $(e.target);
+            // Open links only from the preview modal
+            if (!sfCommon) { return void console.error('No sfCommon'); }
+
+            var href = $el.attr('href');
+            if (!href || !/^(https?:\/\/|\/)/.test(href)) { return; }
+
+            if (/^http/.test(href)) {
+                sfCommon.openUnsafeURL(href);
+                return;
+            }
+            sfCommon.openURL(href);
+        };
+        $svg.find('a').click(onClick);
+        // make sure the links added later by collapsing/expading the map are also safe
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList') {
+                    var n;
+                    for (var i = 0; i < mutation.addedNodes.length; i++) {
+                        n = mutation.addedNodes[i];
+                        if (n.nodeName === "A") { return void n.addEventListener('click', onClick); }
+                        $(n).find('a').click(onClick);
+                    }
+                }
+            });
+        });
+        observer.observe($svg[0], {
+            childList: true,
+            subtree: true
+        });
+    };
+
+    drawMarkmap = function ($el) {
+        if (!markmapLoaded) {
+            argsMap.markmap = $el; //Util.slice(arguments);
+            loadMarkmap();
+            return;
+        }
+
+        if (!$el) { return console.error("no element provided"); }
+
+        var data = MarkMapTransform.transform($el[0].getAttribute("markmap-source"));
+        $el[0].innerHTML = "<svg width='100%' height='600'/>";
+        Markmap.markmap($el[0].firstChild, data);
+        fixMathjaxClickables($el);
+    };
 
     var highlighter = function () {
         return function(code, lang) {
@@ -225,7 +303,6 @@ define([
         return renderParagraph(p);
     };
 
-    var MutationObserver = window.MutationObserver;
     var forbiddenTags = [
         'SCRIPT',
         'IFRAME',
@@ -270,7 +347,7 @@ define([
         parent.removeChild(node);
     };
 
-    var removeForbiddenTags = function (root) {
+    var removeForbiddenTags = function (root) { // YYY
         if (!root) { return; }
         if (forbiddenTags.indexOf(root.nodeName.toUpperCase()) !== -1) { removeNode(root); }
         slice(root.children).forEach(removeForbiddenTags);
@@ -355,56 +432,13 @@ define([
         }
     };
 
-    var sfCommon;
-    var fixMathjaxClickables = function ($svg) {
-        // find all links in the tree and do the following for each one
-        var onClick = function (e) {
-            e.preventDefault();
-            e.stopImmediatePropagation();
-            var $el = $(e.target);
-            // Open links only from the preview modal
-            if (!sfCommon) { return void console.error('No sfCommon'); }
-
-            var href = $el.attr('href');
-            if (!href || !/^(https?:\/\/|\/)/.test(href)) { return; }
-
-            if (/^http/.test(href)) {
-                sfCommon.openUnsafeURL(href);
-                return;
-            }
-            sfCommon.openURL(href);
-        };
-        $svg.find('a').click(onClick);
-        // make sure the links added later by collapsing/expading the map are also safe
-        var observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.type === 'childList') {
-                    var n;
-                    for (var i = 0; i < mutation.addedNodes.length; i++) {
-                        n = mutation.addedNodes[i];
-                        if (n.nodeName === "A") { return void n.addEventListener('click', onClick); }
-                        $(n).find('a').click(onClick);
-                    }
-                }
-            });
-        });
-        observer.observe($svg[0], {
-            childList: true,
-            subtree: true
-        });
-    };
-
     plugins.markmap = {
         name: 'markmap',
         attr: 'markmap-source',
         render:  function ($el) {
-            var data = MarkMapTransform.transform($el[0].getAttribute("markmap-source"));
-            $el[0].innerHTML = "<svg width='100%' height='600'/>";
-            Markmap.markmap($el[0].firstChild, data);
-            fixMathjaxClickables($el);
+            drawMarkmap($el);
         }
     };
-
 
     DiffMd.apply = function (newHtml, $content, common) {
         if (!sfCommon) { sfCommon = common; }
@@ -483,6 +517,7 @@ define([
 
         var oldDom = domFromHTML($content[0].outerHTML);
 
+        var MutationObserver = window.MutationObserver;
         var onPreview = function ($mt) {
             return function () {
                 var mts = [];
