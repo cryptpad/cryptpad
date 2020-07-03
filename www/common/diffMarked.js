@@ -19,22 +19,121 @@ define([
     var renderer = new Marked.Renderer();
     var restrictedRenderer = new Marked.Renderer();
 
-    var Mermaid = {
-        init: function () {}
-    };
+    var pluginLoaded = Util.mkEvent();
+    DiffMd.onPluginLoaded = pluginLoaded.reg;
 
     var mermaidThemeCSS = //".node rect { fill: #DDD; stroke: #AAA; } " +
         "rect.task, rect.task0, rect.task2 { stroke-width: 1 !important; rx: 0 !important; } " +
         "g.grid g.tick line { opacity: 0.25; }" +
         "g.today line { stroke: red; stroke-width: 1; stroke-dasharray: 3; opacity: 0.5; }";
 
-    require(['mermaid', 'css!/code/mermaid-new.css'], function (_Mermaid) {
-        Mermaid = _Mermaid;
-        Mermaid.initialize({
-            gantt: { axisFormat: '%m-%d', },
-            "themeCSS": mermaidThemeCSS,
+    var Mermaid = {
+        __stubbed: true,
+        init: function () {
+            var args = Util.slice(arguments);
+            require([
+                'mermaid',
+                'css!/code/mermaid-new.css'
+            ], function (_Mermaid) {
+                console.debug("loaded mermaid");
+                if (Mermaid.__stubbed) {
+                    Mermaid = _Mermaid;
+                    Mermaid.initialize({
+                        gantt: { axisFormat: '%m-%d', },
+                        "themeCSS": mermaidThemeCSS,
+                    });
+                }
+
+                Mermaid.init.call(args);
+                pluginLoaded.fire();
+            });
+        }
+    };
+
+    var Mathjax = {
+        __stubbed: true,
+        tex2svg: function (a, b) {
+            require([
+                '/bower_components/MathJax/es5/tex-svg.js',
+            ], function () {
+                console.debug("Loaded mathjax");
+                if (Mathjax.__stubbed) {
+                    Mathjax = window.MathJax;
+                }
+                Mathjax.tex2svg(a, b);
+                pluginLoaded.fire();
+            });
+        }
+    };
+
+    var drawMarkmap;
+    var MarkMapTransform;
+    var Markmap;
+
+    var markmapLoaded = false;
+    var loadMarkmap = function ($el) {
+        require([
+            '/lib/markmap/transform.min.js',
+            '/lib/markmap/view.min.js',
+        ], function (_Transform, _View) {
+            if (!markmapLoaded) {
+                console.debug("Loaded markmap");
+                MarkMapTransform = _Transform;
+                Markmap = _View;
+                markmapLoaded = true;
+            }
+            drawMarkmap($el);
+            pluginLoaded.fire();
         });
-    });
+    };
+
+    var sfCommon;
+    var fixMathjaxClickables = function ($svg) {
+        // find all links in the tree and do the following for each one
+        var onClick = function (e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            var $el = $(e.target);
+            // Open links only from the preview modal
+            if (!sfCommon) { return void console.error('No sfCommon'); }
+
+            var href = $el.attr('href');
+            if (!href || !/^(https?:\/\/|\/)/.test(href)) { return; }
+
+            if (/^http/.test(href)) {
+                sfCommon.openUnsafeURL(href);
+                return;
+            }
+            sfCommon.openURL(href);
+        };
+        $svg.find('a').click(onClick);
+        // make sure the links added later by collapsing/expading the map are also safe
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList') {
+                    var n;
+                    for (var i = 0; i < mutation.addedNodes.length; i++) {
+                        n = mutation.addedNodes[i];
+                        if (n.nodeName === "A") { return void n.addEventListener('click', onClick); }
+                        $(n).find('a').click(onClick);
+                    }
+                }
+            });
+        });
+        observer.observe($svg[0], {
+            childList: true,
+            subtree: true
+        });
+    };
+
+    drawMarkmap = function ($el) {
+        if (!markmapLoaded) { return void loadMarkmap($el); }
+        if (!$el) { return console.error("no element provided"); }
+        var data = MarkMapTransform.transform($el[0].getAttribute("markmap-source"));
+        $el[0].innerHTML = "<svg width='100%' height='600'/>";
+        Markmap.markmap($el[0].firstChild, data);
+        fixMathjaxClickables($el);
+    };
 
     var highlighter = function () {
         return function(code, lang) {
@@ -94,7 +193,15 @@ define([
     var defaultCode = renderer.code;
     renderer.code = function (code, language) {
         if (language === 'mermaid' && code.match(/^(graph|pie|gantt|sequenceDiagram|classDiagram|gitGraph)/)) {
-            return '<pre class="mermaid">'+Util.fixHTML(code)+'</pre>';
+            return '<pre class="mermaid" data-plugin="mermaid">'+Util.fixHTML(code)+'</pre>';
+        } else if (language === 'markmap') {
+            return '<pre class="markmap" data-plugin="markmap">'+Util.fixHTML(code)+'</pre>';
+        } else if (language === 'mathjax') {
+           var svg = Mathjax.tex2svg(code, {display: true});
+           if (!svg) {
+               return defaultCode.apply(renderer, arguments);
+           }
+           return '<pre class="mathjax">'+ svg.innerHTML.replace(/xlink:href/g, "href") +'</pre>';
         } else {
             return defaultCode.apply(renderer, arguments);
         }
@@ -199,7 +306,6 @@ define([
         return renderParagraph(p);
     };
 
-    var MutationObserver = window.MutationObserver;
     var forbiddenTags = [
         'SCRIPT',
         'IFRAME',
@@ -297,6 +403,8 @@ define([
         return patch;
     };
 
+    var plugins = {};
+
     var removeMermaidClickables = function ($el) {
         // find all links in the tree and do the following for each one
         $el.find('a').each(function (index, a) {
@@ -313,17 +421,31 @@ define([
         // finally, find all 'clickable' items and remove the class
         $el.find('.clickable').removeClass('clickable');
     };
-    var renderMermaid = function ($el) {
-        Mermaid.init(undefined, $el);
-        // clickable elements in mermaid don't work well with our sandboxing setup
-        // the function below strips clickable elements but still leaves behind some artifacts
-        // tippy tooltips might still be useful, so they're not removed. It would be
-        // preferable to just support links, but this covers up a rough edge in the meantime
-        removeMermaidClickables($el);
+
+    plugins.mermaid = {
+        name: 'mermaid',
+        attr: 'mermaid-source',
+        render: function ($el) {
+            Mermaid.init(undefined, $el);
+            // clickable elements in mermaid don't work well with our sandboxing setup
+            // the function below strips clickable elements but still leaves behind some artifacts
+            // tippy tooltips might still be useful, so they're not removed. It would be
+            // preferable to just support links, but this covers up a rough edge in the meantime
+            removeMermaidClickables($el);
+        }
     };
 
+    plugins.markmap = {
+        name: 'markmap',
+        attr: 'markmap-source',
+        render:  function ($el) {
+            drawMarkmap($el);
+        }
+    };
 
     DiffMd.apply = function (newHtml, $content, common) {
+        if (!sfCommon) { sfCommon = common; }
+
         var contextMenu = common.importMediaTagMenu();
         var id = $content.attr('id');
         if (!id) { throw new Error("The element must have a valid id"); }
@@ -343,8 +465,10 @@ define([
         var Dom = domFromHTML($('<div>').append($div).html());
         $content[0].normalize();
 
-        var mermaid_source = [];
-        var mermaid_cache = {};
+        Object.keys(plugins).forEach(function (id) {
+            plugins[id].source = [];
+            plugins[id].cache = {};
+        });
 
         var canonicalizeMermaidSource = function (src) {
             // ignore changes to empty lines, since that won't affect
@@ -352,12 +476,15 @@ define([
             return src.replace(/\n[ \t]*\n*[ \t]*\n/g, '\n');
         };
 
-        // iterate over the unrendered mermaid inputs, caching their source as you go
-        $(newDomFixed).find('pre.mermaid').each(function (index, el) {
+        // iterate over the unrendered mermaid and markmap inputs,
+        // caching their source as you go
+        $(newDomFixed).find('pre[data-plugin]').each(function (index, el) {
             if (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3) {
+                var plugin = plugins[el.getAttribute('data-plugin')];
+                if (!plugin) { return; }
                 var src = canonicalizeMermaidSource(el.childNodes[0].wholeText);
-                el.setAttribute('mermaid-source', src);
-                mermaid_source[index] = src;
+                el.setAttribute(plugin.attr, src);
+                plugin.source[index] = src;
             }
         });
 
@@ -365,18 +492,21 @@ define([
         var $parent = $content.parent();
         var scrollTop = $parent.scrollTop();
         // iterate over rendered mermaid charts
-        $content.find('pre.mermaid:not([processed="true"])').each(function (index, el) {
+        $content.find('pre[data-plugin]:not([processed="true"])').each(function (index, el) {
+            var plugin = plugins[el.getAttribute('data-plugin')];
+            if (!plugin) { return; }
+
             // retrieve the attached source code which it was drawn
-            var src = el.getAttribute('mermaid-source');
+            var src = el.getAttribute(plugin.attr);
 
 /*  The new source might have syntax errors that will prevent rendering.
     It might be preferable to keep the existing state instead of removing it
     if you don't have something better to display. Ideally we should display
     the cause of the syntax error so that the user knows what to correct.  */
-            //if (!Mermaid.parse(src)) { } // TODO
+            //if (plugin.name === "mermaid" && !Mermaid.parse(src)) { } // TODO
 
             // check if that source exists in the set of charts which are about to be rendered
-            if (mermaid_source.indexOf(src) === -1) {
+            if (plugin.source.indexOf(src) === -1) {
                 // if it's not, then you can remove it
                 if (el.parentNode && el.parentNode.children.length) {
                     el.parentNode.removeChild(el);
@@ -384,26 +514,30 @@ define([
             } else if (el.childNodes.length === 1 && el.childNodes[0].nodeType !== 3) {
                 // otherwise, confirm that the content of the rendered chart is not a text node
                 // and keep a copy of it
-                mermaid_cache[src] = el.childNodes[0];
+                plugin.cache[src] = el.childNodes[0];
             }
         });
 
         var oldDom = domFromHTML($content[0].outerHTML);
 
+        var MutationObserver = window.MutationObserver;
         var onPreview = function ($mt) {
             return function () {
-                var isSvg = $mt.is('pre.mermaid');
                 var mts = [];
-                $content.find('media-tag, pre.mermaid').each(function (i, el) {
+                // Get all previewable elements from the doc
+                $content.find('media-tag, pre[data-plugin]').each(function (i, el) {
                     if (el.nodeName.toLowerCase() === "pre") {
                         var clone = el.cloneNode();
+                        var plugin = plugins[el.getAttribute('data-plugin')];
+                        if (!plugin) { return; }
+
                         return void mts.push({
                             svg: clone,
                             render: function () {
                                 var $el = $(clone);
-                                $el.text(clone.getAttribute('mermaid-source'));
+                                $el.text(clone.getAttribute(plugin.attr));
                                 $el.attr('data-processed', '');
-                                renderMermaid($el);
+                                plugin.render($el);
                             }
                         });
                     }
@@ -415,9 +549,15 @@ define([
                 });
 
                 // Find initial position
+
+                // If the element is a mermaid or markmap svg, get the corresponding attribute
+                var isSvg = $mt.is('pre[data-plugin]');
+                var plugin = isSvg && plugins[$mt.attr('data-plugin')];
+
+                // Get initial idx
                 var idx = -1;
                 mts.some(function (obj, i) {
-                    if (isSvg && $mt.attr('mermaid-source') === $(obj.svg).attr('mermaid-source')) {
+                    if (isSvg && $mt.attr(plugin.attr) === $(obj.svg).attr(plugin.attr)) {
                         idx = i;
                         return true;
                     }
@@ -426,16 +566,17 @@ define([
                         return true;
                     }
                 });
+                // Not found, re-render
                 if (idx === -1) {
-                    if (isSvg) {
+                    if (isSvg && $mt.attr(plugin.attr)) {
                         var clone = $mt[0].cloneNode();
                         mts.unshift({
                             svg: clone,
                             render: function () {
                                 var $el = $(clone);
-                                $el.text(clone.getAttribute('mermaid-source'));
+                                $el.text(clone.getAttribute(plugin.attr));
                                 $el.attr('data-processed', '');
-                                renderMermaid($el);
+                                plugin.render($el);
                             }
                         });
                     } else {
@@ -512,7 +653,9 @@ define([
             });
 
             // loop over mermaid elements in the rendered content
-            $content.find('pre.mermaid').each(function (index, el) {
+            $content.find('pre[data-plugin]').each(function (index, el) {
+                var plugin = plugins[el.getAttribute('data-plugin')];
+                if (!plugin) { return; }
                 var $el = $(el);
                 $el.off('contextmenu').on('contextmenu', function (e) {
                     e.preventDefault();
@@ -529,14 +672,14 @@ define([
                 // since you've simply drawn the content that was supplied via markdown
                 // you can assume that the index of your rendered charts matches that
                 // of those in the markdown source. 
-                var src = mermaid_source[index];
-                el.setAttribute('mermaid-source', src);
-                var cached = mermaid_cache[src];
+                var src = plugin.source[index];
+                el.setAttribute(plugin.attr, src);
+                var cached = plugin.cache[src];
 
                 // check if you had cached a pre-rendered instance of the supplied source
                 if (typeof(cached) !== 'object') {
                     try {
-                        renderMermaid($el);
+                        plugin.render($el);
                     } catch (e) { console.error(e); }
                     return;
                 }

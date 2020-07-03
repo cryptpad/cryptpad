@@ -150,6 +150,16 @@
                     overflow: unset;
                     margin-bottom: 0;
                 }
+                pre.markmap {
+                    margin-bottom: 0;
+                    max-height: 100%;
+                    overflow: hidden;
+                    display: flex;
+                    flex-flow: column;
+                    svg {
+                        flex: 1;
+                    }
+                }
                 .cp-spinner {
                     border-color: @colortheme_logo-1;
                     border-top-color: transparent;
