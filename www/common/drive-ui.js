@@ -2410,7 +2410,8 @@ define([
             }];
             if (hasOwned) {
                 buttons.push({
-                    className: 'secondary',
+                    className: 'danger',
+                    iconClass: '.cptools.cptools-destroy',
                     name: Messages.fc_delete_owned,
                     onClick: function () {
                         manager.emptyTrash(true, refresh);
@@ -2421,6 +2422,7 @@ define([
             buttons.push({
                 className: 'primary',
                 // We may want to use a new key here
+                iconClass: '.fa.fa-trash',
                 name: hasOwned ? Messages.fc_remove : Messages.okButton,
                 onClick: function () {
                     manager.emptyTrash(false, refresh);

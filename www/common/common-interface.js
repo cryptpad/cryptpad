@@ -395,7 +395,10 @@ define([
         var navs = [];
         buttons.forEach(function (b) {
             if (!b.name || !b.onClick) { return; }
-            var button = h('button', { tabindex: '1', 'class': b.className || '' }, b.name);
+            var button = h('button', { tabindex: '1', 'class': b.className || '' }, [
+                b.iconClass ? h('i' + b.iconClass) : undefined,
+                b.name
+            ]);
             button.classList.add('btn');
             var todo = function () {
                 var noClose = b.onClick();
