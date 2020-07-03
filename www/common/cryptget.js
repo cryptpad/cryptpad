@@ -76,6 +76,9 @@ define([
             finish(Session, void 0, rt.getUserDoc());
         };
 
+        config.onError = function (info) {
+            finish(Session, info.error);
+        };
         config.onChannelError = function (info) {
             finish(Session, info.error);
         };

@@ -1730,7 +1730,9 @@ define([
                     && $target.parents('#cp-app-drive-content')) {
                 newPath = currentPath;
             }
-            if (newPath[0] !== ROOT) { newPath = [ROOT]; }
+            // XXX Why did we add the following line?
+            // https://github.com/xwiki-labs/cryptpad/commit/f103a0fb08d137901174ef7e15dbc2c9a2ec3ca1
+            //if (newPath[0] !== ROOT) { newPath = [ROOT]; }
             return newPath;
         };
         var onFileDrop = APP.onFileDrop = function (file, e) {
