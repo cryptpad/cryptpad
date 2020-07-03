@@ -19,6 +19,9 @@ define([
     var renderer = new Marked.Renderer();
     var restrictedRenderer = new Marked.Renderer();
 
+    var pluginLoaded = Util.mkEvent();
+    DiffMd.onPluginLoaded = pluginLoaded.reg;
+
     var mermaidThemeCSS = //".node rect { fill: #DDD; stroke: #AAA; } " +
         "rect.task, rect.task0, rect.task2 { stroke-width: 1 !important; rx: 0 !important; } " +
         "g.grid g.tick line { opacity: 0.25; }" +
@@ -42,6 +45,7 @@ define([
                 }
 
                 Mermaid.init.call(args);
+                pluginLoaded.fire();
             });
         }
     };
@@ -49,7 +53,6 @@ define([
     var Mathjax = {
         __stubbed: true,
         tex2svg: function (a, b) {
-            var args = Util.slice(arguments);
             require([
                 '/bower_components/MathJax/es5/tex-svg.js',
             ], function () {
@@ -57,7 +60,8 @@ define([
                 if (Mathjax.__stubbed) {
                     Mathjax = window.MathJax;
                 }
-                Mathjax.tex2svg(a, b); //args[0], args[1]);
+                Mathjax.tex2svg(a, b);
+                pluginLoaded.fire();
             });
         }
     };
@@ -79,6 +83,7 @@ define([
                 markmapLoaded = true;
             }
             drawMarkmap($el);
+            pluginLoaded.fire();
         });
     };
 
@@ -194,7 +199,7 @@ define([
         } else if (language === 'mathjax') {
            var svg = Mathjax.tex2svg(code, {display: true});
            if (!svg) {
-                return defaultCode.apply(renderer, arguments);
+               return defaultCode.apply(renderer, arguments);
            }
            return '<pre class="mathjax">'+ svg.innerHTML.replace(/xlink:href/g, "href") +'</pre>';
         } else {
@@ -345,7 +350,7 @@ define([
         parent.removeChild(node);
     };
 
-    var removeForbiddenTags = function (root) { // YYY
+    var removeForbiddenTags = function (root) {
         if (!root) { return; }
         if (forbiddenTags.indexOf(root.nodeName.toUpperCase()) !== -1) { removeNode(root); }
         slice(root.children).forEach(removeForbiddenTags);
