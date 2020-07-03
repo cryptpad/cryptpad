@@ -19,43 +19,45 @@ define([
     var renderer = new Marked.Renderer();
     var restrictedRenderer = new Marked.Renderer();
 
-    var argsMap = {};
-
     var mermaidThemeCSS = //".node rect { fill: #DDD; stroke: #AAA; } " +
         "rect.task, rect.task0, rect.task2 { stroke-width: 1 !important; rx: 0 !important; } " +
         "g.grid g.tick line { opacity: 0.25; }" +
         "g.today line { stroke: red; stroke-width: 1; stroke-dasharray: 3; opacity: 0.5; }";
 
     var Mermaid = {
+        __stubbed: true,
         init: function () {
-            argsMap.mermaid = Util.slice(arguments);
+            var args = Util.slice(arguments);
             require([
                 'mermaid',
                 'css!/code/mermaid-new.css'
             ], function (_Mermaid) {
                 console.debug("loaded mermaid");
-                Mermaid = _Mermaid;
-                Mermaid.initialize({
-                    gantt: { axisFormat: '%m-%d', },
-                    "themeCSS": mermaidThemeCSS,
-                });
-                Mermaid.init.call(argsMap.mermaid);
-                delete argsMap.mermaid;
+                if (Mermaid.__stubbed) {
+                    Mermaid = _Mermaid;
+                    Mermaid.initialize({
+                        gantt: { axisFormat: '%m-%d', },
+                        "themeCSS": mermaidThemeCSS,
+                    });
+                }
+
+                Mermaid.init.call(args);
             });
         }
     };
 
     var Mathjax = {
-        tex2svg: function () {
-            argsMap.Mathjax = Util.slice(arguments);
+        __stubbed: true,
+        tex2svg: function (a, b) {
+            var args = Util.slice(arguments);
             require([
                 '/bower_components/MathJax/es5/tex-svg.js',
             ], function () {
                 console.debug("Loaded mathjax");
-                Mathjax = window.MathJax;
-                if (!argsMap.Mathjax) { return; }
-                Mathjax.tex2svg(argsMap.Mathjax[0], argsMap.Mathjax[1]);
-                delete argsMap.Mathjax;
+                if (Mathjax.__stubbed) {
+                    Mathjax = window.MathJax;
+                }
+                Mathjax.tex2svg(a, b); //args[0], args[1]);
             });
         }
     };
@@ -65,18 +67,18 @@ define([
     var Markmap;
 
     var markmapLoaded = false;
-    var loadMarkmap = function () {
+    var loadMarkmap = function ($el) {
         require([
             '/lib/markmap/transform.min.js',
             '/lib/markmap/view.min.js',
         ], function (_Transform, _View) {
-            console.debug("Loaded markmap");
-            MarkMapTransform = _Transform;
-            Markmap = _View;
-
-            markmapLoaded = true;
-            drawMarkmap(argsMap.markmap);
-            delete argsMap.markmap;
+            if (!markmapLoaded) {
+                console.debug("Loaded markmap");
+                MarkMapTransform = _Transform;
+                Markmap = _View;
+                markmapLoaded = true;
+            }
+            drawMarkmap($el);
         });
     };
 
@@ -120,14 +122,8 @@ define([
     };
 
     drawMarkmap = function ($el) {
-        if (!markmapLoaded) {
-            argsMap.markmap = $el; //Util.slice(arguments);
-            loadMarkmap();
-            return;
-        }
-
+        if (!markmapLoaded) { return void loadMarkmap($el); }
         if (!$el) { return console.error("no element provided"); }
-
         var data = MarkMapTransform.transform($el[0].getAttribute("markmap-source"));
         $el[0].innerHTML = "<svg width='100%' height='600'/>";
         Markmap.markmap($el[0].firstChild, data);
@@ -197,7 +193,9 @@ define([
             return '<pre class="markmap" data-plugin="markmap">'+Util.fixHTML(code)+'</pre>';
         } else if (language === 'mathjax') {
            var svg = Mathjax.tex2svg(code, {display: true});
-           if (!svg) { return ''; }
+           if (!svg) {
+                return defaultCode.apply(renderer, arguments);
+           }
            return '<pre class="mathjax">'+ svg.innerHTML.replace(/xlink:href/g, "href") +'</pre>';
         } else {
             return defaultCode.apply(renderer, arguments);
