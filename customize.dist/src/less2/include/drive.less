@@ -222,7 +222,7 @@
 
 
     #cp-app-drive-search {
-        display: flex;
+        display: inline-flex;
         align-items: center;
         max-width: 400px;
         font-size: 30px;
@@ -230,7 +230,7 @@
         input {
             background: transparent;
             color: @colortheme_drive-color;
-            .tools_placeholder-color(@colortheme_drive-color);
+            .tools_placeholder-color(@cryptpad_color_grey);
             outline-width: 0px;
             border-radius: 0;
             width: 100%;
@@ -256,7 +256,19 @@
             color: @colortheme_drive-color;
         }
     }
-
+    .cp-app-drive-search-spinner {
+        display: inline-flex;
+        color: @colortheme_drive-color;
+        font-size: 40px;
+        align-items: center;
+        justify-content: center;
+    }
+    .cp-app-drive-search-noresult {
+        font-size: 30px;
+        padding: 15px;
+        font-style: italic;
+        color: @cryptpad_color_grey;
+    }
 
 
     /* TREE */

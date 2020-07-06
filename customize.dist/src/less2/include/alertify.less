@@ -227,16 +227,7 @@
                 }
             }
 
-            ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-                color: @cryptpad_color_grey;
-                opacity: 1; /* Firefox */
-            }
-            :-ms-input-placeholder { /* Internet Explorer 10-11 */
-                color: @cryptpad_color_grey;
-            }
-            ::-ms-input-placeholder { /* Microsoft Edge */
-                color: @cryptpad_color_grey;
-            }
+            .tools_placeholder-color(@cryptpad_color_grey);
 
             span.cp-password-container {
                 display: flex;
