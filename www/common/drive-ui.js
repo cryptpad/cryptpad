@@ -3031,7 +3031,7 @@ define([
             if (APP.$content.data('readOnlyFolder') || !APP.editable) { return; }
             var isInRoot = currentPath[0] === ROOT;
             var $element = $('<li>', {
-                'class': 'cp-app-drive-element-row cp-app-drive-element-grid cp-app-drive-new-ghost'
+                'class': 'cp-app-drive-element-row cp-app-drive-new-ghost'
             }).prepend($addIcon.clone()).appendTo($list);
             $element.append($('<span>', {'class': 'cp-app-drive-element-name'})
                 .text(Messages.fm_newFile));
@@ -3148,7 +3148,10 @@ define([
                 return;
             }
             var allfiles = files[FILES_DATA];
-            if (allfiles.length === 0) { return; }
+            if (Object.keys(allfiles || {}).length === 0) {
+                createGhostIcon($container);
+                return;
+            }
             var $fileHeader = getFileListHeader(true);
             $container.append($fileHeader);
             var keys = manager.getFiles([FILES_DATA]);
