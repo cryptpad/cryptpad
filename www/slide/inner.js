@@ -485,15 +485,19 @@ define([
         CodeMirror.init(framework.localChange, framework._.title, framework._.toolbar);
         CodeMirror.configureTheme(common);
 
+        var drawSlides = Util.throttle(function (content) {
+            Slide.update(content);
+        }, 400);
+
         framework.onContentUpdate(function (newContent) {
             CodeMirror.contentUpdate(newContent);
-            Slide.update(newContent.content);
+            drawSlides(newContent.content);
         });
 
         framework.setContentGetter(function () {
             CodeMirror.removeCursors();
             var content = CodeMirror.getContent();
-            Slide.update(content.content);
+            drawSlides(content.content);
             return content;
         });
 
