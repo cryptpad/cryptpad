@@ -649,6 +649,10 @@ define([
                 var toClean;
                 var addToClean = function (obj, idx, el) {
                     if (typeof(obj) !== "object") { toClean.push(idx); return; }
+
+                    // shared folders have their own userObject
+                    if (exp.isSharedFolder(obj.element)) { return; }
+
                     if (!exp.isFile(obj.element, true) &&
                         !exp.isFolder(obj.element)) { toClean.push(idx); return; }
                     if (!Array.isArray(obj.path)) { toClean.push(idx); return; }
@@ -841,7 +845,7 @@ define([
                 if (sharedFolder) { return; }
                 if (typeof(files[SHARED_FOLDERS]) !== "object") { debug("SHARED_FOLDER was not an object"); files[SHARED_FOLDERS] = {}; }
                 var sf = files[SHARED_FOLDERS];
-                var rootFiles = exp.getFiles([ROOT]);
+                var rootFiles = exp.getFiles([ROOT, TRASH]);
                 var root = exp.find([ROOT]);
                 var parsed /*, secret */, el;
                 for (var id in sf) {
