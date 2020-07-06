@@ -30,7 +30,6 @@ define([
     var Mermaid = {
         __stubbed: true,
         init: function () {
-            var args = Util.slice(arguments);
             require([
                 'mermaid',
                 'css!/code/mermaid-new.css'
@@ -44,7 +43,6 @@ define([
                     });
                 }
 
-                Mermaid.init.call(args);
                 pluginLoaded.fire();
             });
         }
@@ -88,7 +86,7 @@ define([
     };
 
     var sfCommon;
-    var fixMathjaxClickables = function ($svg) {
+    var fixMarkmapClickables = function ($svg) {
         // find all links in the tree and do the following for each one
         var onClick = function (e) {
             e.preventDefault();
@@ -132,7 +130,7 @@ define([
         var data = MarkMapTransform.transform($el[0].getAttribute("markmap-source"));
         $el[0].innerHTML = "<svg width='100%' height='600'/>";
         Markmap.markmap($el[0].firstChild, data);
-        fixMathjaxClickables($el);
+        fixMarkmapClickables($el);
     };
 
     var highlighter = function () {
@@ -191,17 +189,14 @@ define([
     var mediaMap = {};
 
     var defaultCode = renderer.code;
+
     renderer.code = function (code, language) {
         if (language === 'mermaid' && code.match(/^(graph|pie|gantt|sequenceDiagram|classDiagram|gitGraph)/)) {
             return '<pre class="mermaid" data-plugin="mermaid">'+Util.fixHTML(code)+'</pre>';
         } else if (language === 'markmap') {
             return '<pre class="markmap" data-plugin="markmap">'+Util.fixHTML(code)+'</pre>';
         } else if (language === 'mathjax') {
-           var svg = Mathjax.tex2svg(code, {display: true});
-           if (!svg) {
-               return defaultCode.apply(renderer, arguments);
-           }
-           return '<pre class="mathjax">'+ svg.innerHTML.replace(/xlink:href/g, "href") +'</pre>';
+            return '<pre class="mathjax" data-plugin="mathjax">'+Util.fixHTML(code)+'</pre>';
         } else {
             return defaultCode.apply(renderer, arguments);
         }
@@ -443,6 +438,58 @@ define([
         }
     };
 
+    plugins.mathjax = {
+        name: 'mathjax',
+        attr: 'mathjax-source',
+        render: function renderMathjax ($el) {
+            var el = $el[0];
+            if (!el) { return; }
+            var code = el.getAttribute("mathjax-source");
+            var svg = Mathjax.tex2svg(code, {display: true});
+            if (!svg) { return; }
+            svg.innerHTML = svg.innerHTML.replace(/xlink:href/g, "href");
+            var wrapper = document.createElement('span');
+            wrapper.innerHTML = svg.innerHTML;
+            el.innerHTML = wrapper.outerHTML;
+        }
+    };
+
+    var getAvailableCachedElement = function ($content, cache, src) {
+        var cached = cache[src];
+        if (!Array.isArray(cached)) { return; }
+        var root = $content[0];
+        var l = cached.length;
+        for (var i = 0; i < l; i++) {
+            if (!root.contains(cached[i])) {
+                return cached[i];
+            }
+        }
+    };
+
+    var cacheRenderedElement = function (cache, src, el) {
+        if (Array.isArray(cache[src])) {
+            cache[src].push(el);
+        } else {
+            cache[src] = [ el ];
+        }
+    };
+
+    // remove elements from the cache that are not embedded in the dom
+    var clearUnusedCacheEntries = function ($content, plugins) {
+        var root = $content[0];
+        Object.keys(plugins).forEach(function (name) {
+            var plugin = plugins[name];
+            var cache = plugin.cache;
+            Object.keys(cache).forEach(function (key) {
+                var list = cache[key];
+                if (!Array.isArray(list)) { return; }
+                cache[key] = list.filter(function (el) {
+                    return root.contains(el);
+                });
+            });
+        });
+    };
+
     DiffMd.apply = function (newHtml, $content, common) {
         if (!sfCommon) { sfCommon = common; }
 
@@ -514,7 +561,7 @@ define([
             } else if (el.childNodes.length === 1 && el.childNodes[0].nodeType !== 3) {
                 // otherwise, confirm that the content of the rendered chart is not a text node
                 // and keep a copy of it
-                plugin.cache[src] = el.childNodes[0];
+                cacheRenderedElement(plugin.cache, src, el.childNodes[0]);
             }
         });
 
@@ -550,7 +597,8 @@ define([
 
                 // Find initial position
 
-                // If the element is a mermaid or markmap svg, get the corresponding attribute
+                // If the element is supported by one of our plugin types
+                // (mermaid, mathjax, or markmap) get the corresponding attribute
                 var isSvg = $mt.is('pre[data-plugin]');
                 var plugin = isSvg && plugins[$mt.attr('data-plugin')];
 
@@ -652,7 +700,7 @@ define([
                 if (target) { target.scrollIntoView(); }
             });
 
-            // loop over mermaid elements in the rendered content
+            // loop over plugin elements in the rendered content
             $content.find('pre[data-plugin]').each(function (index, el) {
                 var plugin = plugins[el.getAttribute('data-plugin')];
                 if (!plugin) { return; }
@@ -674,7 +722,7 @@ define([
                 // of those in the markdown source. 
                 var src = plugin.source[index];
                 el.setAttribute(plugin.attr, src);
-                var cached = plugin.cache[src];
+                var cached = getAvailableCachedElement($content, plugin.cache, src);
 
                 // check if you had cached a pre-rendered instance of the supplied source
                 if (typeof(cached) !== 'object') {
@@ -694,6 +742,8 @@ define([
                 el.setAttribute('data-processed', true);
             });
         }
+        clearUnusedCacheEntries($content, plugins);
+
         // recover the previous scroll position to avoid jank
         $parent.scrollTop(scrollTop);
     };
