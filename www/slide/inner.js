@@ -203,7 +203,7 @@ define([
                 $p.append($('<br>'));
                 $('<button>', {
                     title: Messages.filePickerButton,
-                    'class': '',
+                    'class': 'btn',
                     style: 'font-size: 17px',
                     id: 'cp-app-slide-options-bg'
                 }).click(function () {
@@ -221,16 +221,18 @@ define([
                         }
                     });
                 }).text(Messages.printBackgroundButton).appendTo($p);
+                $p.append($('<br>'));
             }
             $p.append($('<br>'));
-            var $bgValue = $('<div>').appendTo($p);
+            var $bgValue = $('<div class="cp-background-selected">').appendTo($p);
             var refreshValue = function () {
                 $bgValue.html('');
                 if (slideOptionsTmp.background && slideOptionsTmp.background.name) {
                     $bgValue.append(Messages._getKey("printBackgroundValue", [slideOptionsTmp.background.name]));
-                    $('<button>', {
+                    $('<span>', {
                         'class': 'fa fa-times',
-                        title: Messages.printBackgroundRemove
+                        title: Messages.printBackgroundRemove,
+                        style: 'margin-left: 5px'
                     }).click(function () {
                         slideOptionsTmp.background = false;
                         refreshValue();
@@ -246,7 +248,6 @@ define([
                     refreshValue();
                 };
             }
-            $p.append($('<br>'));
             $p.append($('<br>'));
             // CSS
             $('<label>', {'for': 'cp-app-slide-options-css'}).text(Messages.printCSS).appendTo($p);
@@ -307,8 +308,8 @@ define([
             h = UI.listenForKeys(todo, todoCancel);
 
             var $nav = $('<nav>').appendTo($div);
-            $('<button>', {'class': 'cancel'}).text(Messages.cancelButton).appendTo($nav).click(todoCancel);
-            $('<button>', {'class': 'ok'}).text(Messages.settings_save).appendTo($nav).click(todo);
+            $('<button>', {'class': 'btn cancel'}).text(Messages.cancelButton).appendTo($nav).click(todoCancel);
+            $('<button>', {'class': 'btn ok'}).text(Messages.settings_save).appendTo($nav).click(todo);
 
             return $container;
         };
