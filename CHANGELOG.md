@@ -38,8 +38,13 @@ To update from 3.19.1 to 3.20.0:
 
 ## Bug fixes
 
+* When a user attempted to open an automatically expiring document which had passed its expiration date they were shown a general message indicating that the document had been deleted even when they had sufficient information to know that it had been marked for expiration. We now display a message indicating the more likely cause of its deletion.
 * Remote changes in the Kanban app removed pending text in new cards, effectively making it impossible (and very frustrating) to create new cards while anyone else was editing existing content or submitting their own new cards.
 * Dropping an image directly into a spreadsheet no longer puts the UI into an unrecoverable state, though we still don't support image drop. To insert images, use the "Insert" menu. This was actually fixed in our 3.19.1 release, but it wasn't documented in the release notes.
+* We've spent some time working on the usability of comments in our rich text app:
+  * When a user started adding a first comment to a document then canceled their action it was possible for the document to get stuck in an odd layout. This extra space allocated towards comments now correctly collapses as intended when there are no comments, pending or otherwise.
+  * The comments UI is now completely disabled whenever the document is in read-only mode, whether due to disconnection or insufficient permissions.
+  * The _comment_ button in the app toolbar now toggles on and off to indicate the eligibility of the current selection as a new comment.
 * We've fixed a number of issues with teams:
   * Users no longer send themselves a notification when they remove themself as an owner of a pad from within the _Teams_ UI.
   * The _worker_ process which is responsible for managing account rights now correctly upgrades and downgrades its internal state when its role within a team is changed by a remote user instead of requiring a complete worker reload.
