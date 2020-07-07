@@ -233,7 +233,7 @@
     "poll_removeOption": "Bist du sicher, dass du diese Option entfernen möchtest?",
     "poll_removeUser": "Bist du sicher, dass du diesen Nutzer entfernen möchtest?",
     "poll_titleHint": "Titel",
-    "poll_descriptionHint": "Beschreibe deine Abstimmung und publiziere sie mit der Schaltfläche ✓ (Veröffentlichen), wenn du fertig bist. Bei der Beschreibung kann Markdown-Syntax verwendet werden und du kannst Medien-Elemente von deinem CryptDrive einbetten. Jeder, der den Link kennt, kann die Beschreibung ändern. Dies wird aber nicht empfohlen.",
+    "poll_descriptionHint": "Beschreibe deine Abstimmung und veröffentliche sie mit der Schaltfläche ✓ (Veröffentlichen).\nBei der Beschreibung kann Markdown-Syntax verwendet werden und du kannst Medien-Elemente von deinem CryptDrive einbetten.\nJeder, der den Link kennt, kann die Beschreibung ändern. Dies wird aber nicht empfohlen.",
     "poll_remove": "Entfernen",
     "poll_edit": "Bearbeiten",
     "poll_locked": "Gesperrt",
@@ -327,9 +327,9 @@
     "fm_openParent": "Im Ordner zeigen",
     "fm_noname": "Dokument ohne Titel",
     "fm_emptyTrashDialog": "Soll der Papierkorb wirklich geleert werden?",
-    "fm_removeSeveralPermanentlyDialog": "Bist du sicher, dass du diese {0} Elemente endgültig aus deinem CryptDrive entfernen möchtest?",
+    "fm_removeSeveralPermanentlyDialog": "Bist du sicher, dass du diese {0} Elemente aus deinem CryptDrive entfernen möchtest? Sie verbleiben in den CryptDrives anderer Benutzer, die sie gespeichert haben.",
     "fm_removePermanentlyNote": "Wenn du fortfährst, werden deine eigenen Pads vom Server entfernt.",
-    "fm_removePermanentlyDialog": "Bist du sicher, dass du dieses Element endgültig aus deinem CryptDrive entfernen möchtest?",
+    "fm_removePermanentlyDialog": "Bist du sicher, dass du dieses Element aus deinem CryptDrive entfernen möchtest? Es verbleibt in den CryptDrives anderer Benutzer, die es gespeichert haben.",
     "fm_removeSeveralDialog": "Bist du sicher, dass du diese {0} Elemente in den Papierkorb verschieben möchtest?",
     "fm_removeDialog": "Bist du sicher, dass du {0} in den Papierkorb verschieben möchtest?",
     "fm_deleteOwnedPad": "Bist du sicher, dass du dieses Pad endgültig vom Server löschen möchtest?",
@@ -373,9 +373,9 @@
     "fc_open": "Öffnen",
     "fc_open_ro": "Öffnen (schreibgeschützt)",
     "fc_delete": "In den Papierkorb verschieben",
-    "fc_delete_owned": "Vom Server löschen",
+    "fc_delete_owned": "Zerstören",
     "fc_restore": "Wiederherstellen",
-    "fc_remove": "Aus deinem CryptDrive entfernen",
+    "fc_remove": "Entfernen",
     "fc_remove_sharedfolder": "Entfernen",
     "fc_empty": "Den Papierkorb leeren",
     "fc_prop": "Eigenschaften",
@@ -605,7 +605,7 @@
     "blog": "Blog",
     "topbar_whatIsCryptpad": "Was ist CryptPad",
     "whatis_title": "Was ist CryptPad",
-    "whatis_collaboration": "Effektive und und leichte Zusammenarbeit",
+    "whatis_collaboration": "Effektive und leichte Zusammenarbeit",
     "whatis_collaboration_p1": "Mit CryptPad kannst du kollaborative Dokumente erstellen, um Notizen und Ideen gemeinsam zu bearbeiten. Wenn du dich registrierst und einloggst, bekommst du die Möglichkeit, Dateien hochzuladen und Ordner einzurichten, um alle deine Dokumente zu organisieren. Als registrierter Nutzer erhältst du kostenlos 50 MB Speicherplatz.",
     "whatis_collaboration_p2": "Du kannst den Zugang zu einem CryptPad-Dokument teilen, indem du einfach den entsprechenden Link teilst. Du kannst auch einen <em>schreibgeschützten</em> Zugang erstellen, um die Ergebnisse deiner Arbeit zu teilen, während du sie noch bearbeitest.",
     "whatis_collaboration_p3": "Du kannst Rich-Text Dokumente mit dem <a href=\"http://ckeditor.com/\">CKEditor</a> erstellen. Außerdem kannst du Markdown-Dokumente erstellen, die in Echtzeit formatiert angezeigt werden, während du tippst. Du kannst auch die Umfrage-Anwendung verwenden, um Termine unter mehrere Teilnehmern zu abzustimmen.",
@@ -720,7 +720,7 @@
             },
             "register": {
                 "q": "Weisst der Server mehr über mich, wenn ich registriere?",
-                "a": "Wir verlangen nicht Deine Emailadresse und der Server kennt Benutzername und Passwort auch dann nicht, wenn du dich registrierst.  Statt dessen generiert das Registrierungs- und Anmeldeformular ein Schlüsselpaar mit deiner Eingabe. Nur der öffentliche Schlüssel dieses Schlüsselpaars wird zum Server geschickt. Mit diesem öffentlichen Schlüssel könenn wir z.B. die Menge der Daten, die du benutzt, kontrollieren, denn jeder Benutzer hat eine beschränkte Quota.<br><br> Wir benutzen die <em>Rückmeldung</em>s-Funktion, um den Server zu informieren, dass jemand mit deiner IP ein Konto registriert hat. Damit können wir messen, wie viele Benutzer CryptPad Konten registrieren und aus welchen Regionen. Somit können wir erfahren, welche Sprache besseren Support braucht.<br><br> Wenn Du registrierst, erstellst Du einen öffentlichen Schlüssel, der benutzt wird, um den Server zu informieren, dass er Dokumente auch dann nicht löschen sollte, wenn sie nicht aktiv benutzt werden. Diese Information zeigt dem Server, wie Du CryptPad benutzt und dieses System erlaubt uns, die Dokumente zu löschen, wofür sich keiner mehr interessiert."
+                "a": "Wir verlangen deine E-Mail-Adresse nicht, und der Server kennt Benutzername und Passwort auch dann nicht, wenn du dich registrierst. Statt dessen generiert das Registrierungs- und Anmeldeformular ein Schlüsselpaar aus deiner Eingabe. Nur der öffentliche Schlüssel dieses Schlüsselpaars wird zum Server geschickt. Mit diesem öffentlichen Schlüssel können wir z.B. die Menge der Daten, die du benutzt, kontrollieren, denn jeder Benutzer hat eine beschränkte Quota.<br><br>Wir benutzen die <em>Rückmeldung</em>s-Funktion, um den Server zu informieren, dass jemand mit deiner IP ein Konto registriert hat. Damit können wir messen, wie viele Benutzer CryptPad Konten registrieren und aus welchen Regionen. Somit können wir erfahren, welche Sprache besser unterstützt werden sollte.<br><br>Registrierte Benutzer informieren den Server, dass er Dokumente im CryptDrive auch dann nicht wegen Inaktivität löschen sollte, wenn sie nicht aktiv benutzt werden."
             },
             "other": {
                 "q": "Was können andere Benutzer über mich erfahren?",
@@ -747,7 +747,7 @@
             },
             "compromised": {
                 "q": "Liefert mir CryptPad einen Schutz, wenn mein Gerät kompromittiert wird?",
-                "a": "Für den Fall, dass dein Gerät gestohlen wird, ermöglicht CryptPad, das Ausloggen aller Geräte zu erzwingen - außer dem, das du gerade verwendest. Gehe dazu zur Seite mit deinen <strong>Einstellungen</strong> und klicke auf <strong>Überall ausloggen</strong>. Alle anderen Geräte, die mit diesem Konto verbunden sind, werden dann ausgeloggt.  Alle früher verbundenen Geräte werden ausgeloggt, sobald sie CryptPad besuchen.<br><br> Die beschriebene Funktion ist derzeit im Browser implementiert und nicht im Server. Somit schützt sie nicht vor staatlichen Akteuren. Aber sie sollte ausreichend sein, wenn du nach Verwendung eines öffentlichen Computers vergessen hast dich auszuloggen."
+                "a": "Für den Fall, dass dein Gerät gestohlen wird, ermöglicht CryptPad, das Ausloggen aller Geräte zu erzwingen - außer dem, das du gerade verwendest. Gehe dazu zur Seite mit deinen <strong>Einstellungen</strong> und klicke auf <strong>Überall ausloggen</strong>. Alle anderen Geräte, die mit diesem Konto verbunden sind, werden dann ausgeloggt. Alle früher verbundenen Geräte werden ausgeloggt, sobald sie CryptPad besuchen.<br><br> Die beschriebene Funktion ist derzeit im Browser implementiert und nicht im Server. Somit schützt sie nicht vor staatlichen Akteuren. Aber sie sollte ausreichend sein, wenn du nach Verwendung eines öffentlichen Computers vergessen hast dich auszuloggen."
             },
             "crypto": {
                 "q": "Welche Kryptografie benutzt ihr?",
@@ -770,7 +770,7 @@
             },
             "remove": {
                 "q": "Ich habe ein Dokument aus meinem CryptDrive gelöscht, aber der Inhalt ist noch verfügbar. Wie kann ich es entfernen?",
-                "a": "Nur <em>eigene Pads</em>, die im Februar 2018 eingeführt wurden, können gelöscht werden und zwar nur von deren Eigentümer  (der Benutzer, der das Dokument ursprünglich erstellt hat). Wenn du nicht der Eigentümer des Pads bist, musst du den Eigentümer bitten, dass er dieses für dich löscht. Bei Pads, deren Eigentümer du bist, kannst du <strong>auf das Pad in deinem CryptDrive rechtsklicken</em> und <strong>Vom Server löschen</strong> wählen."
+                "a": "Nur <em>eigene Pads</em>, die im Februar 2018 eingeführt wurden, können gelöscht werden und zwar nur von deren <em>Eigentümer</em> (der Benutzer, der das Dokument ursprünglich erstellt hat). Wenn du nicht der Eigentümer des Pads bist, musst du den Eigentümer bitten, dass er dieses für dich löscht. Bei Pads, deren Eigentümer du bist, kannst du <strong>auf das Pad in deinem CryptDrive rechtsklicken</strong> und <strong>Vom Server löschen</strong> wählen."
             },
             "forget": {
                 "q": "Was passiert, wenn ich mein Passwort vergesse?",
@@ -797,7 +797,7 @@
             "title": "Andere Fragen",
             "pay": {
                 "q": "Wieso soll ich zahlen, wenn so viele Funktionen sowieso kostenfrei sind?",
-                "a": "Wir geben Unterstützern zusätzlichen Speicherplatz sowie die Möglichkeit, die Speicherplatzbegrenzung ihrer Kontakte zu erhöhen (<a href='https://accounts.cryptpad.fr/#/faq' target='_blank'>erfahre mehr</a>).<br><br>Über diese diese kurzfristigen Vorteile hinaus kannst du, wenn du ein Premiumangebot annimmst, die aktive Weiterentwicklung von CryptPad fördern. Das beinhaltet, Fehler zu beseitigen, neue Funktionen zu umzusetzen und Installationen von CryptPad auf eigenen Servern zu erleichtern. Zusätzlich hilfst du, anderen Anbietern zu beweisen, dass Leute datenschutzfreundliche Technologien unterstützen. Wir hoffen, dass Geschäftsmodelle, die auf dem Verkauf von Benutzerdaten basieren, letztendlich der Vergangenheit angehören werden.<br><br>Außerdem glauben wir, dass es gut ist, die Funktionen von CryptPad kostenfrei anzubieten. Denn jeder verdient persönlichen Datenschutz und nicht nur Personen mit hohem Einkommen. Durch deine Unterstützung hilfst du uns, zu ermöglichen, dass auch Menschen mit geringerem Einkommen diese grundlegenden Funktionen genießen können, ohne dass ein Preisetikett daran klebt."
+                "a": "Wir geben Unterstützern zusätzlichen Speicherplatz sowie die Möglichkeit, die Speicherplatzbegrenzung ihrer Kontakte zu erhöhen (<a href='https://accounts.cryptpad.fr/#/faq' target='_blank'>erfahre mehr</a>).<br><br>Über diese kurzfristigen Vorteile hinaus kannst du, wenn du ein Premiumangebot annimmst, die aktive Weiterentwicklung von CryptPad fördern. Das beinhaltet, Fehler zu beseitigen, neue Funktionen umzusetzen und Installationen von CryptPad auf eigenen Servern zu erleichtern. Zusätzlich hilfst du, anderen Anbietern zu beweisen, dass Benutzer datenschutzfreundliche Technologien unterstützen. Wir hoffen, dass Geschäftsmodelle, die auf dem Verkauf von Benutzerdaten basieren, letztendlich der Vergangenheit angehören werden.<br><br>Außerdem glauben wir, dass es gut ist, die Funktionen von CryptPad kostenfrei anzubieten. Denn jeder verdient persönlichen Datenschutz und nicht nur Personen mit hohem Einkommen. Durch deine Unterstützung hilfst du uns, zu ermöglichen, dass auch Menschen mit geringerem Einkommen diese grundlegenden Funktionen genießen können, ohne dass ein Preisetikett daran klebt."
             },
             "goal": {
                 "q": "Was ist euer Ziel?",
@@ -813,7 +813,7 @@
             },
             "revenue": {
                 "q": "Wie kann ich meine Einnahmen mit den Entwicklern teilen?",
-                "a": "Wenn du deine eigene Installation von CrytPad betreibst und die Einnahmen für deine bezahlten Konten mit den Entwicklern teilen möchtest, muss dein Server als Partnerservice konfiguriert werden.<br><br>In deinem CryptPad-Verzeichnis befindet sich <em>config.example.js</em>. Darin wird erklärt, wie du deinen Server dafür konfigurieren musst. Danach solltest du  <a href='mailto:sales@cryptpad.fr'>sales@cryptpad.fr</a> kontaktieren, damit geprüft wird, dass dein Server richtig für HTTPS konfiguriert ist, und die Zahlungsmethoden abgesprochen werden können."
+                "a": "Wenn du deine eigene Installation von CrytPad betreibst und die Einnahmen für deine bezahlten Konten mit den Entwicklern teilen möchtest, muss dein Server als Partnerservice konfiguriert werden.<br><br>In deinem CryptPad-Verzeichnis befindet sich <em>config.example.js</em>. Darin wird erklärt, wie du deinen Server dafür konfigurieren musst. Danach solltest du <a href='mailto:sales@cryptpad.fr'>sales@cryptpad.fr</a> kontaktieren, damit geprüft wird, dass dein Server richtig für HTTPS konfiguriert ist, und die Zahlungsmethoden abgesprochen werden können."
             }
         }
     },
@@ -906,7 +906,7 @@
         "shortcuts": "Mit den Tastenkürzeln `Strg+b`, `Strg+i` und `Strg+u` formatierst du Text fett, kursiv oder unterstrichen.",
         "indent": "In nummerierten Listen oder Aufzählungen kannst du mit Tab und Umschalt+Tab den Einzug erhöhen oder reduzieren."
     },
-    "feedback_about": "Wenn du das liest, fragst du dich wahrscheinlich, weshalb dein Browser bei der der Ausführung mancher Aktionen Anfragen an Webseiten sendet",
+    "feedback_about": "Wenn du das liest, fragst du dich wahrscheinlich, weshalb dein Browser bei der Ausführung mancher Aktionen Anfragen an Webseiten sendet",
     "feedback_privacy": "Wir respektieren deine Datenschutz, aber gleichzeitig wollen wir, dass die Benutzung von CryptPad sehr leicht ist. Deshalb wollen wir erfahren, welche Funktion am wichtigsten für unsere Benutzer ist, indem wir diese mit einer genauen Parameterbeschreibung anfordern.",
     "feedback_optout": "Wenn du das nicht möchtest, kannst du es in <a href='/settings/'>deinen Einstellungen</a> deaktivieren",
     "creation_404": "Dieses Pad existiert nicht mehr. Benutze das folgende Formular, um ein neues Pad zu erstellen.",
@@ -1395,5 +1395,7 @@
     "oo_refresh": "Neu laden",
     "support_category": "Wähle eine Kategorie",
     "oo_refreshText": "Dieses Dokument wurde aktualisiert",
-    "support_formCategoryError": "Fehler: Kategorie ist leer"
+    "support_formCategoryError": "Fehler: Kategorie ist leer",
+    "fm_restricted": "Du kannst auf dieses Element nicht zugreifen",
+    "fm_emptyTrashOwned": "In deinem Papierkorb sind Dokumente gespeichert, deren Eigentümer du bist. Du kannst sie aus deinem CryptDrive <b>entfernen</b> oder für alle Benutzer <b>zerstören</b>."
 }
