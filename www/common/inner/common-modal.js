@@ -110,6 +110,10 @@ define([
                         waitFor.abort();
                         return void cb(e);
                     }
+                    if (c && c.content && c.buttons) {
+                        obj.buttons = c.buttons;
+                        c = c.content;
+                    }
                     var node = (c instanceof $) ? c[0] : c;
                     tabs[i] = {
                         content: c && UI.dialog.customModal(node, {
@@ -120,6 +124,9 @@ define([
                             }
                         }),
                         disabled: !c,
+                        active: obj.active,
+                        onShow: obj.onShow,
+                        onHide: obj.onHide,
                         title: obj.title,
                         icon: obj.icon
                     };

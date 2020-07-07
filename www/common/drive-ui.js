@@ -9,6 +9,7 @@ define([
     '/common/common-constants.js',
     '/common/common-feedback.js',
 
+    '/common/inner/share.js',
     '/common/inner/access.js',
     '/common/inner/properties.js',
 
@@ -27,6 +28,7 @@ define([
     UI,
     Constants,
     Feedback,
+    Share,
     Access,
     Properties,
     nThen,
@@ -2021,26 +2023,25 @@ define([
             if (!parsed.hash && !roParsed.hash) { return void console.error("Invalid href: "+(data.href || data.roHref)); }
             var friends = common.getFriends();
             var ro = folders[id] && folders[id].version >= 2;
-            var modal = UIElements.createShareModal({
-                teamId: APP.team,
-                origin: APP.origin,
-                pathname: "/drive/",
-                friends: friends,
-                title: data.title,
-                password: data.password,
-                sharedFolder: true,
-                common: common,
-                hashes: {
-                    editHash: parsed.hash,
-                    viewHash: ro && roParsed.hash,
-                }
-            });
             // If we're a viewer and this is an old shared folder (no read-only mode), we
             // can't share the read-only URL and we don't have access to the edit one.
             // We should hide the share button.
-            if (!modal) { return; }
+            if (!data.href && !ro) { return; }
             $shareBlock.click(function () {
-                UI.openCustomModal(modal);
+                Share.getShareModal(common, {
+                    teamId: APP.team,
+                    origin: APP.origin,
+                    pathname: "/drive/",
+                    friends: friends,
+                    title: data.title,
+                    password: data.password,
+                    sharedFolder: true,
+                    common: common,
+                    hashes: {
+                        editHash: parsed.hash,
+                        viewHash: ro && roParsed.hash,
+                    }
+                });
             });
             $container.append($shareBlock);
             return $shareBlock;
@@ -3638,14 +3639,6 @@ define([
             if (!readOnlyFolder) {
                 createNewButton(isInRoot, APP.toolbar.$bottomL);
             }
-            /*
-            // The share button is not displayed anymore in the toolbar: users can't know
-            // if they're going to share the current shared folder or the selected pad
-            if (sfId) {
-                createShareButton(sfId, APP.toolbar.$bottomL);
-            }
-            */
-
 
             if (APP.mobile()) {
                 var $context = $('<button>', {
@@ -4384,9 +4377,10 @@ define([
                         sharedFolder: sf,
                         common: common
                     };
-                    modal = padType === 'file' ? UIElements.createFileShareModal(padData)
-                                            : UIElements.createShareModal(padData);
-                    UI.openCustomModal(modal);
+                    if (padType === 'file') {
+                        return void Share.getFileShareModal(common, padData);
+                    }
+                    Share.getShareModal(common, padData);
                 }
             }
             else if ($this.hasClass('cp-app-drive-context-savelocal')) {
@@ -4760,7 +4754,7 @@ define([
                 placeholder: Messages.settings_changePasswordNew,
                 style: 'flex: 1;'
             });
-            var passwordOk = h('button', Messages.properties_changePasswordButton);
+            var passwordOk = h('button.btn.btn-secondary', Messages.properties_changePasswordButton);
             var changePass = h('span.cp-password-container', [
                 newPassword,
                 passwordOk
