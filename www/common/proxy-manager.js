@@ -52,6 +52,10 @@ define([
 
     // Password may have changed
     var deprecateProxy = function (Env, id, channel) {
+        if (Env.folders[id] && Env.folders[id].deleting) {
+            // Folder is being deleted by its owner, don't deprecate it
+            return;
+        }
         if (Env.user.userObject.readOnly) {
             // In a read-only team, we can't deprecate a shared folder
             // Use a empty object with a deprecated flag...
@@ -823,19 +827,38 @@ define([
                 var data = uo.isFile(el) ? uo.getFileData(el) : getSharedFolderData(Env, el);
                 chan = data.channel;
             }
+            // If the pad was a shared folder, delete it too and leave it
+            var fId;
+            Object.keys(Env.user.proxy[UserObject.SHARED_FOLDERS] || {}).some(function (id) {
+                var sfData = Env.user.proxy[UserObject.SHARED_FOLDERS][id] || {};
+                if (sfData.channel === chan) {
+                    fId = Number(id);
+                    Env.folders[id].deleting = true;
+                    return true;
+                }
+            });
             Env.removeOwnedChannel(chan, function (obj) {
                 // If the error is that the file is already removed, nothing to
                 // report, it's a normal behavior (pad expired probably)
                 if (obj && obj.error && obj.error.code !== "ENOENT") {
                     // RPC may not be responding
                     // Send a report that can be handled manually
+                    if (fId && Env.folders[fId] && Env.folders[fId].deleting) {
+                        delete Env.folders[fId].deleting;
+                    }
                     console.error(obj.error, chan);
                     Feedback.send('ERROR_DELETING_OWNED_PAD=' + chan + '|' + obj.error, true);
                     return void cb();
                 }
 
-                // No error: delete the pads and all its copies from our drive and shared folders
+                // No error: delete the pad and all its copies from our drive and shared folders
                 var ids = _findChannels(Env, [chan]);
+
+                // If the pad was a shared folder, delete it too and leave it
+                if (fId) {
+                    ids.push(fId);
+                }
+
                 ids.forEach(function (id) {
                     var paths = findFile(Env, id);
                     var _resolved = _resolvePaths(Env, paths);
