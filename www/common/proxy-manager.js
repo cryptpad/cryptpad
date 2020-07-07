@@ -892,6 +892,10 @@ define([
         }).nThen(function () {
             // Remove deleted pads from the drive
             _delete(Env, { resolved: toDelete }, cb);
+            // If we were using the access modal, send a refresh command
+            if (data.channel) {
+                Env.Store.refreshDriveUI();
+            }
         });
     };
 

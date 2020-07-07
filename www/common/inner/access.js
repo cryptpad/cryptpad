@@ -909,6 +909,7 @@ define([
                         channel: data.channel
                     }, function (err, obj) {
                         spinner.done();
+                        UI.findCancelButton().click();
                         if (err || (obj && obj.error)) { UI.warn(Messages.error); }
                     });
                 });
