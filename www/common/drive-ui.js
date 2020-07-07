@@ -4305,7 +4305,7 @@ define([
             else if ($this.hasClass('cp-app-drive-context-share')) {
                 if (paths.length !== 1) { return; }
                 el = manager.find(paths[0].path);
-                var parsed, modal;
+                var parsed;
                 var friends = common.getFriends();
                 var anonDrive = manager.isPathIn(currentPath, [FILES_DATA]) && !APP.loggedIn;
 

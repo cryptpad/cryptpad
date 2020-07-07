@@ -186,49 +186,6 @@ define([
         };
     };
 
-    var noContactsMessage = function(common){
-        var metadataMgr = common.getMetadataMgr();
-        var data = metadataMgr.getUserData();
-        var origin = metadataMgr.getPrivateData().origin;
-        if (common.isLoggedIn()) {
-            return {
-                content: h('p', Messages.share_noContactsLoggedIn),
-                buttons: [{
-                    className: 'secondary',
-                    name: Messages.share_copyProfileLink,
-                    onClick: function () {
-                        var profile = data.profile ? (origin + '/profile/#' + data.profile) : '';
-                        var success = Clipboard.copy(profile);
-                        if (success) { UI.log(Messages.shareSuccess); }
-                    },
-                    keys: [13]
-                  }]
-            };
-        } else {
-            return {
-                content: h('p', Messages.share_noContactsNotLoggedIn),
-                buttons: [{
-                    className: 'secondary',
-                    name: Messages.login_register,
-                    onClick: function () {
-                        common.setLoginRedirect(function () {
-                            common.gotoURL('/register/');
-                        });
-                    }
-                  }, {
-                    className: 'secondary',
-                    name: Messages.login_login,
-                    onClick: function () {
-                        common.setLoginRedirect(function () {
-                            common.gotoURL('/login/');
-                        });
-                    }
-                  }
-                  ]
-            };
-        }
-    };
-
     var getEditableTeams = function (common, config) {
         var privateData = common.getMetadataMgr().getPrivateData();
         var teamsData = Util.tryParse(JSON.stringify(privateData.teams)) || {};
@@ -294,7 +251,7 @@ define([
             h('a', {href: '#'}, Messages.passwordFaqLink)
         ]);
         $(link).click(function () {
-            common.openURL(opts.origin + "/faq.html#security-pad_password");
+            opts.common.openURL(opts.origin + "/faq.html#security-pad_password");
         });
         return link;
     };
@@ -311,15 +268,11 @@ define([
     var getContactsTab = function (Env, data, opts, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
         var common = Env.common;
-        var origin = opts.origin;
-        var pathname = opts.pathname;
-        var hashes = opts.hashes;
 
-        var teams = opts.teams;
         var hasFriends = opts.hasFriends;
         var onFriendShare = Util.mkEvent();
 
-        var friendsObject = hasFriends ? createShareWithFriends(opts, onFriendShare, opts.getLinkValue) : noContactsMessage(common);
+        var friendsObject = hasFriends ? createShareWithFriends(opts, onFriendShare, opts.getLinkValue) : UIElements.noContactsMessage(common);
         var friendsList = friendsObject.content;
 
         onFriendShare.reg(opts.saveValue);
@@ -461,10 +414,6 @@ define([
 
     var getEmbedTab = function (Env, data, opts, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
-        var common = Env.common;
-        var origin = opts.origin;
-        var pathname = opts.pathname;
-        var hashes = opts.hashes;
 
         var embedContent = [
             h('p', Messages.viewEmbedTag),
@@ -733,7 +682,7 @@ define([
     var getFileContactsTab = function (Env, data, opts, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
         var common = Env.common;
-        var friendsObject = opts.hasFriends ? createShareWithFriends(opts, null, opts.getLinkValue) : noContactsMessage(common);
+        var friendsObject = opts.hasFriends ? createShareWithFriends(opts, null, opts.getLinkValue) : UIElements.noContactsMessage(common);
         var friendsList = friendsObject.content;
 
         var contactsContent = h('div.cp-share-modal');
@@ -742,7 +691,7 @@ define([
 
         // Show alert if the pad is password protected
         if (opts.hasPassword) {
-            linkContent.push(h('div.alert.alert-primary', [
+            $contactsContent.append(h('div.alert.alert-primary', [
                 h('i.fa.fa-lock'),
                 Messages.share_linkPasswordAlert, h('br'),
                 makeFaqLink(opts)
@@ -832,7 +781,7 @@ define([
 
         // Show alert if the pad is password protected
         if (opts.hasPassword) {
-            linkContent.push(h('div.alert.alert-primary', [
+            $(embed).append(h('div.alert.alert-primary', [
                 h('i.fa.fa-lock'),
                 Messages.share_linkPasswordAlert, h('br'),
                 makeFaqLink(opts)

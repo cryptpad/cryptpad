@@ -229,6 +229,49 @@ define([
         };
     };
 
+    UIElements.noContactsMessage = function (common) {
+        var metadataMgr = common.getMetadataMgr();
+        var data = metadataMgr.getUserData();
+        var origin = metadataMgr.getPrivateData().origin;
+        if (common.isLoggedIn()) {
+            return {
+                content: h('p', Messages.share_noContactsLoggedIn),
+                buttons: [{
+                    className: 'secondary',
+                    name: Messages.share_copyProfileLink,
+                    onClick: function () {
+                        var profile = data.profile ? (origin + '/profile/#' + data.profile) : '';
+                        var success = Clipboard.copy(profile);
+                        if (success) { UI.log(Messages.shareSuccess); }
+                    },
+                    keys: [13]
+                  }]
+            };
+        } else {
+            return {
+                content: h('p', Messages.share_noContactsNotLoggedIn),
+                buttons: [{
+                    className: 'secondary',
+                    name: Messages.login_register,
+                    onClick: function () {
+                        common.setLoginRedirect(function () {
+                            common.gotoURL('/register/');
+                        });
+                    }
+                  }, {
+                    className: 'secondary',
+                    name: Messages.login_login,
+                    onClick: function () {
+                        common.setLoginRedirect(function () {
+                            common.gotoURL('/login/');
+                        });
+                    }
+                  }
+                  ]
+            };
+        }
+    };
+
     UIElements.createInviteTeamModal = function (config) {
         var common = config.common;
         var hasFriends = Object.keys(config.friends || {}).length !== 0;
@@ -293,7 +336,7 @@ define([
                 buttons: contactsButtons
             };
         };
-        var friendsObject = hasFriends ? getContacts() : noContactsMessage(common);
+        var friendsObject = hasFriends ? getContacts() : UIElements.noContactsMessage(common);
         var friendsList = friendsObject.content;
         var contactsButtons = friendsObject.buttons;
         contactsButtons.unshift({
