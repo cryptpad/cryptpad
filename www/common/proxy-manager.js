@@ -926,9 +926,8 @@ define([
         if (!resolved.id) {
             var el = Env.user.userObject.find(resolved.path);
             if (Env.user.userObject.isSharedFolder(el) && Env.folders[el]) {
-                var oldName = Env.folders[el].proxy.metadata.title;
                 Env.folders[el].proxy.metadata.title = data.newName;
-                Env.user.proxy[UserObject.SHARED_FOLDERS][el].lastTitle = oldName;
+                Env.user.proxy[UserObject.SHARED_FOLDERS][el].lastTitle = data.newName;
                 return void cb();
             }
         }
