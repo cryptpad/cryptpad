@@ -212,7 +212,7 @@ define([
                             sf.teams.forEach(function (obj) {
                                 obj.store.manager.deprecateProxy(obj.id, secret.channel);
                                 if (obj.store.handleSharedFolder) {
-                                    obj.store.handleSharedFolder(id, null);
+                                    obj.store.handleSharedFolder(obj.id, null);
                                 }
                             });
                         } catch (e) {}
@@ -261,7 +261,7 @@ define([
         clients.some(function (obj, i) {
             if (obj.store.id === teamId) {
                 if (obj.store.handleSharedFolder) {
-                    obj.store.handleSharedFolder(id, null);
+                    obj.store.handleSharedFolder(obj.id, null);
                 }
                 idx = i;
                 return true;
