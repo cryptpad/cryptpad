@@ -257,10 +257,7 @@ define([
         });
         if (active === 'drive') {
             APP.$rightside.addClass('cp-rightside-drive');
-            APP.$leftside.on('mouseover', function() {
-                APP.$leftside.addClass('cp-leftside-narrow');
-                APP.$leftside.off('mouseover');
-            });
+            APP.$leftside.addClass('cp-leftside-narrow');
         } else {
             APP.$rightside.removeClass('cp-rightside-drive');
             APP.$leftside.removeClass('cp-leftside-narrow');
