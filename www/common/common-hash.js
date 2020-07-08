@@ -171,7 +171,7 @@ Version 1
                 return true;
             }
         });
-        return k;
+        return k ? Crypto.b64AddSlashes(k) : '';
     };
     var getOwnerKey = function (hashArr) {
         var k;
@@ -227,6 +227,9 @@ Version 1
                 if (opts.embed) { hash += 'embed/'; }
                 if (opts.present) { hash += 'present/'; }
                 var versionHash = typeof(opts.versionHash) !== "undefined" ? opts.versionHash : parsed.versionHash;
+                if (versionHash) {
+                    hash += 'hash=' + Crypto.b64RemoveSlashes(versionHash) + '/';
+                }
                 return hash;
             };
 

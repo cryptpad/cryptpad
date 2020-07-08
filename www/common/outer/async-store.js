@@ -1455,7 +1455,47 @@ define([
 
         var channels = Store.channels = store.channels = {};
 
+        var getVersionHash = function (clientId, data) {
+            var validateKey;
+            var fakeNetflux = Hash.createChannelId();
+            nThen(function (waitFor) {
+                Store.getPadMetadata(null, {
+                    channel: data.channel
+                }, function (md) {
+                    // XXX not needed? we don't need to validate messages coming from history keeper
+                    validateKey = md.validateKey;
+                });
+            }).nThen(function () {
+                Store.getHistoryRange(clientId, {
+                    cpCount: 1,
+                    channel: data.channel,
+                    lastKnownHash: data.versionHash
+                }, function (obj) {
+                    if (obj && obj.error) {
+                        postMessage(clientId, "PAD_ERROR", obj.error);
+                        return;
+                    }
+                    postMessage(clientId, "PAD_CONNECT", {
+                        myID: fakeNetflux,
+                        id: data.channel,
+                        members: [fakeNetflux]
+                    });
+                    (obj.messages || []).forEach(function (data) {
+                        postMessage(clientId, "PAD_MESSAGE", {
+                            msg: data.msg,
+                            user: fakeNetflux.slice(0,16), // fake history keeper to avoid validate
+                            validateKey: validateKey
+                        });
+                    });
+                    postMessage(clientId, "PAD_READY");
+                });
+            });
+        };
+
         Store.joinPad = function (clientId, data) {
+            if (data.versionHash) {
+                return void getVersionHash(clientId, data);
+            }
             var isNew = typeof channels[data.channel] === "undefined";
             var channel = channels[data.channel] = channels[data.channel] || {
                 queue: [],
@@ -2046,7 +2086,7 @@ define([
             network.on('message', onMsg);
             network.sendto(hk, JSON.stringify(['GET_HISTORY_RANGE', data.channel, {
                 from: data.lastKnownHash,
-                cpCount: 2,
+                cpCount: data.cpCount || 2,
                 txid: txid
             }]));
         };

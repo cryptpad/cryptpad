@@ -329,26 +329,30 @@ define([
         }
 
         // warning about sharing links
-        var localStore = window.cryptpadStore;
-        var dismissButton = h('span.fa.fa-times');
-        var shareLinkWarning = h('div.alert.alert-warning.dismissable',
-            { style: 'display: none;' },
-            [
-                h('span.cp-inline-alert-text', Messages.share_linkWarning),
-                dismissButton
-            ]);
-        linkContent.push(shareLinkWarning);
+        // when sharing a version hash, there is a similar warning and we want
+        // to avoid alert fatigue
+        if (!opts.versionHash) {
+            var localStore = window.cryptpadStore;
+            var dismissButton = h('span.fa.fa-times');
+            var shareLinkWarning = h('div.alert.alert-warning.dismissable',
+                { style: 'display: none;' },
+                [
+                    h('span.cp-inline-alert-text', Messages.share_linkWarning),
+                    dismissButton
+                ]);
+            linkContent.push(shareLinkWarning);
 
-        localStore.get('hide-alert-shareLinkWarning', function (val) {
-            if (val === '1') { return; }
-            $(shareLinkWarning).show();
+            localStore.get('hide-alert-shareLinkWarning', function (val) {
+                if (val === '1') { return; }
+                $(shareLinkWarning).show();
 
-            $(dismissButton).on('click', function () {
-                localStore.put('hide-alert-shareLinkWarning', '1');
-                $(shareLinkWarning).remove();
+                $(dismissButton).on('click', function () {
+                    localStore.put('hide-alert-shareLinkWarning', '1');
+                    $(shareLinkWarning).remove();
+                });
+
             });
-
-        });
+        }
 
         // Burn after reading
         if (opts.barAlert) { linkContent.push(opts.barAlert.cloneNode(true)); }
@@ -460,7 +464,8 @@ define([
         var pathname = opts.pathname;
         var parsed = Hash.parsePadUrl(pathname);
         var canPresent = ['code', 'slide'].indexOf(parsed.type) !== -1;
-        var canBAR = parsed.type !== 'drive';
+        var versionHash = hashes.viewHash && opts.versionHash;
+        var canBAR = parsed.type !== 'drive' && !versionHash;
 
         var burnAfterReading = (hashes.viewHash && canBAR) ?
                     UI.createRadio('accessRights', 'cp-share-bar', Messages.burnAfterReading_linkBurnAfterReading, false, {
@@ -519,6 +524,12 @@ define([
             var embed = val.embed;
             var present = val.present !== undefined ? val.present : Util.isChecked($rights.find('#cp-share-present'));
             var burnAfterReading = Util.isChecked($rights.find('#cp-share-bar'));
+            if (versionHash) {
+                edit = false;
+                embed = false;
+                present = false;
+                burnAfterReading = false;
+            }
             if (burnAfterReading && !opts.burnAfterReadingUrl) {
                 if (cb) { // Called from the contacts tab, "share" button
                     var barHref = origin + pathname + '#' + (hashes.viewHash || hashes.editHash);
@@ -533,7 +544,7 @@ define([
             var href = burnAfterReading ? opts.burnAfterReadingUrl
                                              : (origin + pathname + '#' + hash);
             var parsed = Hash.parsePadUrl(href);
-            return origin + parsed.getUrl({embed: embed, present: present});
+            return origin + parsed.getUrl({embed: embed, present: present, versionHash: versionHash});
         };
         opts.getEmbedValue = function () {
             var url = opts.getLinkValue({
@@ -543,7 +554,11 @@ define([
         };
 
         // disable edit share options if you don't have edit rights
-        if (!hashes.editHash) {
+        if (versionHash) {
+            $rights.find('#cp-share-editable-false').attr('checked', true);
+            $rights.find('#cp-share-present').removeAttr('checked').attr('disabled', true);
+            $rights.find('#cp-share-editable-true').removeAttr('checked').attr('disabled', true);
+        } else if (!hashes.editHash) {
             $rights.find('#cp-share-editable-false').attr('checked', true);
             $rights.find('#cp-share-editable-true').removeAttr('checked').attr('disabled', true);
         } else if (!hashes.viewHash) {
@@ -582,7 +597,9 @@ define([
         // Set default values
         common.getAttribute(['general', 'share'], function (err, val) {
             val = val || {};
-            if (val.present && canPresent) {
+            if (versionHash) {
+                $rights.find('#cp-share-editable-false').prop('checked', true);
+            } else if (val.present && canPresent) {
                 $rights.find('#cp-share-editable-false').prop('checked', false);
                 $rights.find('#cp-share-editable-true').prop('checked', false);
                 $rights.find('#cp-share-present').prop('checked', true);
@@ -671,9 +688,22 @@ define([
             onHide: resetTab
         }];
         Modal.getModal(common, opts, tabs, function (err, modal) {
-            $(modal).find('.cp-bar').hide();
+            // Hide the burn-after-reading option by default
+            var $modal = $(modal);
+            $modal.find('.cp-bar').hide();
+
             // Prepend the "rights" radio selection
-            $(modal).find('.alertify-tabs-titles').after($rights);
+            $modal.find('.alertify-tabs-titles').after($rights);
+
+            // Add the versionHash warning if needed
+            if (opts.versionHash) {
+                Messages.share_versionHash = "You're going to share the selected history version of the document in read-only mode. This will also <b>give view access</b> to the recipients."; // XXX
+                $rights.after(h('div.alert.alert-warning', [
+                    h('i.fa.fa-history'),
+                    UI.setHTML(h('span'), Messages.share_versionHash)
+                ]));
+            }
+
             // callback
             cb(err, modal);
         });

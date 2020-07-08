@@ -445,6 +445,7 @@ define([
                         feedbackAllowed: Utils.Feedback.state,
                         isPresent: parsed.hashData && parsed.hashData.present,
                         isEmbed: parsed.hashData && parsed.hashData.embed,
+                        isHistoryVersion: parsed.hashData && parsed.hashData.versionHash,
                         accounts: {
                             donateURL: Cryptpad.donateURL,
                             upgradeURL: Cryptpad.upgradeURL
@@ -1499,6 +1500,7 @@ define([
                 var cpNfCfg = {
                     sframeChan: sframeChan,
                     channel: secret.channel,
+                    versionHash: parsed.hashData && parsed.hashData.versionHash,
                     padRpc: Cryptpad.padRpc,
                     validateKey: secret.keys.validateKey || undefined,
                     isNewHash: isNewHash,

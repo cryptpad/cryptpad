@@ -28,9 +28,12 @@ define([], function () {
         var padRpc = conf.padRpc;
         var sframeChan = conf.sframeChan;
         var metadata= conf.metadata || {};
+        var versionHash = conf.versionHash;
         var validateKey = metadata.validateKey;
         var onConnect = conf.onConnect || function () { };
         conf = undefined;
+
+        if (versionHash) { readOnly = true; }
 
         padRpc.onReadyEvent.reg(function () {
             sframeChan.event('EV_RT_READY', null);
@@ -132,6 +135,7 @@ define([], function () {
         padRpc.joinPad({
             channel: channel || null,
             readOnly: readOnly,
+            versionHash: versionHash,
             metadata: metadata
         });
     };
