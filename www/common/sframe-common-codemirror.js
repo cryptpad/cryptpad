@@ -234,6 +234,19 @@ define([
             editor.scrollIntoView(cursor);
         });
 
+        // Don't paste file path in the users wants to paste a file
+        editor.on('paste', function (editor, ev) {
+            try {
+                if (!ev.clipboardData.items) { return; }
+                var items = Array.prototype.slice.apply(ev.clipboardData.items);
+                var hasFile = items.some(function (el) {
+                    return el.kind === "file";
+                });
+                if (!hasFile) { return; }
+                ev.preventDefault();
+            } catch (e) { console.error(e); }
+        });
+
         var setMode = exp.setMode = function (mode, cb) {
             exp.highlightMode = mode;
             if (mode === 'markdown') { mode = 'gfm'; }
