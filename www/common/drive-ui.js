@@ -3228,6 +3228,8 @@ define([
 
             $searchIcon.clone().appendTo($div);
 
+            var $spinnerContainer = $(h('div.cp-app-drive-search-spinner'));
+            var spinner = UI.makeSpinner($spinnerContainer);
             var $input = APP.Search.$input = $('<input>', {
                 id: 'cp-app-drive-search-input',
                 placeholder: Messages.fm_searchName,
@@ -3235,12 +3237,17 @@ define([
                 draggable: false,
                 tabindex: 1,
             }).keyup(function (e) {
+                var lastValue = search.value;
+                search.value = $input.val().trim();
+                if (lastValue === search.value) { return; }
+
                 if (search.to) { window.clearTimeout(search.to); }
-                if ($input.val().trim() === "") {
+                if (search.value === "") {
                     search.cursor = 0;
                     APP.displayDirectory([SEARCH]);
                     return;
                 }
+                spinner.spin();
                 if (e.which === 13) {
                     var newLocation = [SEARCH, $input.val()];
                     search.cursor = $input[0].selectionStart;
@@ -3285,14 +3292,12 @@ define([
             $div.append(cancel);
 
             $list.append($div);
+            $spinnerContainer.appendTo($list);
             setTimeout(function () {
                 $input.focus();
             });
 
-            var $spinnerContainer = $(h('div.cp-app-drive-search-spinner')).appendTo($list);
-
-            var spinner = UI.makeSpinner($spinnerContainer);
-            if (typeof(value) == "string" && value.trim()) {
+            if (typeof(value) === "string" && value.trim()) {
                 spinner.spin();
             } else {
                 return;
