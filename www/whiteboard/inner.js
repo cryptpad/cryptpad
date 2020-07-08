@@ -491,10 +491,10 @@ define([
             }, [
                 h('button#cp-app-whiteboard-clear.btn.btn-danger', Messages.canvas_clear), ' ',
                 h('div.cp-whiteboard-type', [
-                    h('button.brush.fa.fa-paint-brush.btn-primary', {title: Messages.canvas_brush}),
-                    h('button.move.fa.fa-arrows', {title: Messages.canvas_select}),
+                    h('button.btn.brush.fa.fa-paint-brush.btn-primary', {title: Messages.canvas_brush}),
+                    h('button.btn.move.fa.fa-arrows', {title: Messages.canvas_select}),
                 ]),
-                h('button.fa.fa-trash#cp-app-whiteboard-delete', {
+                h('button.btn.fa.fa-trash#cp-app-whiteboard-delete', {
                     disabled: 'disabled',
                     title: Messages.canvas_delete
                 }),
