@@ -162,6 +162,17 @@ Version 1
     /code/#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI
 */
 
+    var getVersionHash = function (hashArr) {
+        var k;
+        // Check if we have a ownerKey for this pad
+        hashArr.some(function (data) {
+            if (/^hash=/.test(data)) {
+                k = data.slice(5);
+                return true;
+            }
+        });
+        return k;
+    };
     var getOwnerKey = function (hashArr) {
         var k;
         // Check if we have a ownerKey for this pad
@@ -183,6 +194,7 @@ Version 1
             parsed.password = options.indexOf('p') !== -1;
             parsed.present = options.indexOf('present') !== -1;
             parsed.embed = options.indexOf('embed') !== -1;
+            parsed.versionHash = getVersionHash(options);
             parsed.ownerKey = getOwnerKey(options);
         };
 
@@ -194,6 +206,7 @@ Version 1
                     embed: parsed.embed,
                     present: parsed.present,
                     ownerKey: parsed.ownerKey,
+                    versionHash: parsed.versionHash,
                     password: parsed.password
                 };
             };
@@ -213,6 +226,7 @@ Version 1
                 if (parsed.password || opts.password) { hash += 'p/'; }
                 if (opts.embed) { hash += 'embed/'; }
                 if (opts.present) { hash += 'present/'; }
+                var versionHash = typeof(opts.versionHash) !== "undefined" ? opts.versionHash : parsed.versionHash;
                 return hash;
             };
 

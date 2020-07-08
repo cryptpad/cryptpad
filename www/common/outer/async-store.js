@@ -2035,6 +2035,7 @@ define([
                     }
                     msg = msg.replace(/cp\|(([A-Za-z0-9+\/=]+)\|)?/, '');
                     msgs.push({
+                        serverHash: msg.slice(0,64),
                         msg: msg,
                         author: parsed[2][1],
                         time: parsed[2][5]

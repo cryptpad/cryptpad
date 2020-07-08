@@ -71,9 +71,6 @@ define([
                 lastKnownHash = data.lastKnownHash;
                 isComplete = data.isFull;
                 var messages = (data.messages || []).map(function (obj) {
-                    if (!config.debug) {
-                        return obj.msg;
-                    }
                     return obj;
                 });
                 if (config.debug) { console.log(data.messages); }
@@ -160,7 +157,7 @@ define([
                 if (cb) { cb(); }
             });
         };
-        get = function (i) {
+        get = function (i, blockOnly) {
             i = parseInt(i);
             if (isNaN(i)) { return; }
             if (i > 0) { i = 0; }
@@ -169,6 +166,8 @@ define([
                 loadMore();
             }
             var idx = states.length - 1 + i;
+            if (blockOnly) { return states[idx]; }
+
             var val = states[idx].getContent().doc;
             c = i;
             if (typeof onUpdate === "function") { onUpdate(); }
@@ -237,6 +236,10 @@ define([
                 'class': 'cp-toolbar-history-fast-next fa fa-fast-forward buttonPrimary',
                 title: Messages.history_next
             }).appendTo($hist);
+            var $share = $('<button>', {
+                'class': 'fa fa-shhare-alt buttonPrimary',
+                title: Messages.shareButton
+            }).appendTo($hist);
             $('<span>', {'class': 'cp-history-filler'}).appendTo($hist);
             var $close = $('<button>', {
                 'class':'cp-toolbar-history-close fa fa-window-close',
@@ -297,6 +300,15 @@ define([
             };
             onKeyUp = function (e) { e.stopPropagation(); };
             $(window).on('keydown', onKeyDown).on('keyup', onKeyUp).focus();
+
+            // Share
+            $share.click(function () {
+                var block = get(c, true);
+                common.getSframeChannel().event('EV_SHARE_OPEN', {
+                    versionHash: block.serverHash,
+                    //title: title
+                });
+            });
 
             // Close & restore buttons
             $close.click(function () {

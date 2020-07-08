@@ -1084,6 +1084,7 @@ define([
                             // We don't need it since the message is already validated serverside by hk
                             return {
                                 msg: crypto.decrypt(obj.msg, true, true),
+                                serverHash: obj.serverHash,
                                 author: obj.author,
                                 time: obj.time
                             };
