@@ -1,3 +1,62 @@
+# UplandMoa (3.20.0)
+
+## Goals
+
+We've held off on deploying any major features while we work towards deploying some documentation we've been busy organizing. This release features a wide range of minor features intended to address a number of github issues and frequent causes of support tickets.
+
+## Update notes
+
+This release features a modification to the recommended Content Security Policy headers as demonstrated in `./cryptpad/docs/example.nginx.conf`. CryptPad will work without making this change, however, we highly recommend updating your instance's nginx.conf as it will mitigate a variety of potential security vulnerabilities.
+
+Otherwise, we've introduced a new client-side dependency (_Mathjax_) and changed some server-side code that will require a server restart.
+
+To update from 3.19.1 to 3.20.0:
+
+1. Apply the recommended changes to  your `nginx.conf`
+2. Stop your server
+3. Get the latest platform code with git
+4. Install client-side dependencies with `bower update`
+5. Reload nginx to apply the updated CSP headers
+6. Restart the CryptPad API server
+
+## Features
+
+* As noted above, this release features a change to the Content Security Policy headers which define the types of code that can be loaded in a given context. More specifically, we've addressed a number of CKEditor's quirks which required us to set a more lax security policy for the rich text editor. With these changes in place the only remaining exceptions to our general policy are applied for the sake of our OnlyOffice integration, though we hope to address its quirks soon as well.
+* On the topic of the rich text editor, we also moved the _print_ action from the CKEditor toolbar to the _File_ menu to be more consistent with our other apps.
+* The Kanban board that we use to organize our own team has become rather large and complex due to a wealth of long-term ideas and a large number of tags. We started to notice some performance issues as a result, and have begun looking into some optimizations to improve its scalability. As a start, we avoid applying changes whenever the Kanban's tab is not visible.
+* We finally decided to file off one of the platform's rough edges which had been confusing curious users for some time. Every registered user is identified by a randomly-generated cryptographic key (the _Public Signing Key_ found on your settings page). These identifiers are used to allocate additional storage space via our premium accounts, and we occasionally require them for other support issues like deleting accounts or debugging server issues. Unfortunately, because we occasionally receive emails asking for help with _other administrators instances_ these keys were formatted along with the host domain in the form of a URL. As such, it was very tempting to open them in the browser even though there was no functionality corresponding to the URL. We've updated all the code that parses these keys and introduced a new format which is clearly _not a URL_, so hopefully we'll get fewer messages asking us why they _don't work_.
+* We've made a number of small improvements to the common functionality in our code and slide editors:
+  * We've merged and built upon a pull request which implemented two new extensions to our markdown renderer for _Mathjax_ and _Markmap_. This introduces support for embedding formatted equations and markdown-based mind maps. Since these depend on new client-side code which would otherwise increase page loading time we've also implemented support for lazily loading extensions on demand, so you'll only load the extra code if the current document requires it.
+  * The _slide_ editor now throttles slide redraws so that updates are only applied after 400ms of inactivity rather than on every character update.
+  * We've made a number of small style tweaks for blockquotes, tables, and embedded media in rendered markdown.
+* Lastly, we've made a large number of improvements to user and team drives:
+  * Search results now include shared folders with matching names and have been made _sortable_ like the rest of the drive.
+  * Inserting media in a document via the _Insert_ menu now updates its access time, which causes it to show up in the _Recent pads_  category of your drive.
+  * Shared folders now support access lists. To apply an access list to a shared folder that you own you may right-click the shared folder in your drive, choose _Access_, then click the _List_ tab of the resulting dialog. Enabling its access list will restrict access to its owners and any other contacts that you or other owners add to its list. Note, this access applies to the folder itself (who can view it or add to its directory), its access list will not be applied recursively to all the elements contained within which might be contained in other shared folders or other users drives.
+  * In the interest of removing jargon from the platform we've started to change text from "Delete from the server" to "Destroy". We plan to make more changes like this on an ongoing basis as we notice them.
+  * We've made a significant change to the way that _owned files_ are treated in the user and team drives. Previously, files that you owned were implicitly deleted from the server whenever you removed them from your drive. This seemed sensible when we first introduced the concept of ownership, however, now that a variety of assets can have multiple owners it is clearly less appropriate. Rather than require users to first remove themselves as a co-owner before removing an asset from their drive in order to allow other owners to continue accessing it we now offer two distinct _Remove_ and _Destroy_ actions. _Remove_ will simply take it out of your drive so that it will no longer count against your storage limit, while _Destroy_ will cause it to stop existing _for everyone_. To clarify the two actions we've associated them with a _trash bin_ and _paper shredder_ icon, respectively.
+
+## Bug fixes
+
+* Remote changes in the Kanban app removed pending text in new cards, effectively making it impossible (and very frustrating) to create new cards while anyone else was editing existing content or submitting their own new cards.
+* Dropping an image directly into a spreadsheet no longer puts the UI into an unrecoverable state, though we still don't support image drop. To insert images, use the "Insert" menu. This was actually fixed in our 3.19.1 release, but it wasn't documented in the release notes.
+* When a user attempted to open an automatically expiring document which had passed its expiration date they were shown a general message indicating that the document had been deleted even when they had sufficient information to know that it had been marked for expiration. We now display a message indicating the more likely cause of its deletion.
+* We've spent some time working on the usability of comments in our rich text app:
+  * When a user started adding a first comment to a document then canceled their action it was possible for the document to get stuck in an odd layout. This extra space allocated towards comments now correctly collapses as intended when there are no comments, pending or otherwise.
+  * The comments UI is now completely disabled whenever the document is in read-only mode, whether due to disconnection or insufficient permissions.
+  * The _comment_ button in the app toolbar now toggles on and off to indicate the eligibility of the current selection as a new comment.
+* We've fixed a number of issues with teams:
+  * Users no longer send themselves a notification when they remove themself as an owner of a pad from within the _Teams_ UI.
+  * The _worker_ process which is responsible for managing account rights now correctly upgrades and downgrades its internal state when its role within a team is changed by a remote user instead of requiring a complete worker reload.
+  * The worker does not delete credentials to access a team when it finds that its id is not in the team's roster, since this could be triggered accidentally by some unrelated server bugs that responded incorrectly to a request for the team roster's history.
+* We've fixed a number of issues in our code and slide editors:
+  * The "Language" dropdown selectors in the "Theme" menu used to show "Language (Markdown)" when the page was first loaded, however, changing the setting to another language would drop the annotation and instead show only "Markdown". Now the annotation is preserved as intended.
+  * A recent update to our stylesheets introduced a regression in the buttons of our "print options" dialog.
+  * While polishing up the PRs which introduced the _Mathjax_ and _Markmap_ support we noticed that the client-side cache which is used to prevent unnecessary redraws of embedded media was causing only one instance of an element to be rendered when the same source was embedded in multiple sections of a document.
+* The "File export" dialog featured a similar regression in the style of its buttons which has been addressed.
+* We fixed a minor bug in our 3.19.0 release in which unregistered users (who do not have a "mailbox") tried to send a notification to themselves.
+* We've added an additional check to the process for changing your account password in which we make sure that we are not overwriting another account with the same username and password.
+
 # Thylacine's revenge (3.19.1)
 
 Our upcoming 3.20.0 release is planned for July 7th, 2020, but we are once again releasing a minor version featuring some nice bug fixes and usability improvements which are ready to be deployed now. In case you missed [our announcement](https://social.weho.st/@cryptpad/104360490068671089) we are phasing out our usage of the `master` and basing our releases on the `main` branch. For best results we recommend explicitly checking out code by its tag.

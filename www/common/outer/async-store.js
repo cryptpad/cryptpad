@@ -2054,6 +2054,10 @@ define([
         var addSharedFolderHandler = function () {
             store.sharedFolders = {};
             store.handleSharedFolder = function (id, rt) {
+                if (!rt) {
+                    delete store.sharedFolders[id];
+                    return;
+                }
                 store.sharedFolders[id] = rt;
                 if (store.driveEvents) {
                     registerProxyEvents(rt.proxy, id);

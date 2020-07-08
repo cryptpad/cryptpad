@@ -2905,10 +2905,12 @@ define([
                 var el = useId ? _el : root[_el];
                 var sfId = (el && el.root && el.key) ? el.root[el.key] : el;
                 if (folder && el && manager.isSharedFolder(sfId)) {
-                    var title = manager.getSharedFolderData(sfId).title || el;
+                    var sfData = manager.getSharedFolderData(sfId);
+                    var title = sfData.title || sfData.lastTitle || el;
                     return String(title).toLowerCase();
                 } else if (folder) {
-                    return String((el && el.key) || el).toLowerCase();
+                    console.log(el);
+                    return String((el && el.key) || _el).toLowerCase();
                 }
                 var data = manager.getFileData(el);
                 if (!data) { return ''; }
@@ -2929,6 +2931,7 @@ define([
                 }
                 props[uid] = getProp(k);
             });
+            if (folder) { console.error(useId, props); }
             keys.sort(function(a, b) {
                 var _a = props[(a && a.uid) || a];
                 var _b = props[(b && b.uid) || b];
