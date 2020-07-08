@@ -191,6 +191,7 @@ define([
     var defaultCode = renderer.code;
 
     renderer.code = function (code, language) {
+        if (!code || typeof(code) !== 'string' || !code.trim()) { return defaultCode.apply(renderer, arguments); }
         if (language === 'mermaid' && code.match(/^(graph|pie|gantt|sequenceDiagram|classDiagram|gitGraph)/)) {
             return '<pre class="mermaid" data-plugin="mermaid">'+Util.fixHTML(code)+'</pre>';
         } else if (language === 'markmap') {
