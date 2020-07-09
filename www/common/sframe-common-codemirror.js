@@ -75,6 +75,21 @@ define([
         }
     };
 
+    module.handleImagePaste = function (editor) {
+        // Don't paste file path in the users wants to paste a file
+        editor.on('paste', function (editor, ev) {
+            try {
+                if (!ev.clipboardData.items) { return; }
+                var items = Array.prototype.slice.apply(ev.clipboardData.items);
+                var hasFile = items.some(function (el) {
+                    return el.kind === "file";
+                });
+                if (!hasFile) { return; }
+                ev.preventDefault();
+            } catch (e) { console.error(e); }
+        });
+    };
+
     module.getHeadingText = function (editor) {
         var lines = editor.getValue().split(/\n/);
 
@@ -233,6 +248,8 @@ define([
             editor.setCursor(cursor);
             editor.scrollIntoView(cursor);
         });
+
+        module.handleImagePaste(editor);
 
         var setMode = exp.setMode = function (mode, cb) {
             exp.highlightMode = mode;
