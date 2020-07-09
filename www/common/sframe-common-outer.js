@@ -28,6 +28,7 @@ define([
         var Test;
         var password;
         var initialPathInDrive;
+        var burnAfterReading;
 
         var currentPad = window.CryptPad_location = {
             app: '',
@@ -171,6 +172,8 @@ define([
             });
 
             var parsed = Utils.Hash.parsePadUrl(currentPad.href);
+            burnAfterReading = parsed && parsed.hashData && parsed.hashData.ownerKey;
+
             currentPad.app = parsed.type;
             if (cfg.getSecrets) {
                 var w = waitFor();
@@ -377,6 +380,27 @@ define([
                 }).nThen(done);
             }
         }).nThen(function (waitFor) {
+            if (!burnAfterReading) { return; }
+
+            // This is a burn after reading URL: make sure our owner key is still valid
+            try {
+                var nacl = window.nacl;
+                var key = nacl.util.decodeBase64(Crypto.b64AddSlashes(burnAfterReading));
+                var kp = nacl.sign.keyPair.fromSecretKey(key);
+                var publicKey = nacl.util.encodeBase64(kp.publicKey);
+                Cryptpad.getPadMetadata({
+                    channel: secret.channel
+                }, waitFor(function (md) {
+                    if (md && md.error) { return console.error(md.error); }
+                    // If our key is not valid anymore, don't show BAR warning
+                    if (!(md && Array.isArray(md.owners)) || md.owners.indexOf(publicKey) === -1) {
+                        burnAfterReading = null;
+                    }
+                }));
+            } catch (e) {
+                console.error(e);
+            }
+        }).nThen(function (waitFor) {
             if (cfg.afterSecrets) {
                 cfg.afterSecrets(Cryptpad, Utils, secret, waitFor(), sframeChan);
             }
@@ -402,7 +426,6 @@ define([
             }
             Utils.crypto = Utils.Crypto.createEncryptor(Utils.secret.keys);
             var parsed = Utils.Hash.parsePadUrl(currentPad.href);
-            var burnAfterReading = parsed && parsed.hashData && parsed.hashData.ownerKey;
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Utils.UserObject.getDefaultName(parsed);
             var edPublic, curvePublic, notifications, isTemplate;
