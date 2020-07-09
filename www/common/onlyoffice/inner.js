@@ -388,6 +388,7 @@ define([
 
         var resetData = function (blob, type) {
             // If a read-only refresh popup was planned, abort it
+            delete APP.refreshPopup;
             clearTimeout(APP.refreshRoTo);
 
             if (!isLockedModal.modal) {
