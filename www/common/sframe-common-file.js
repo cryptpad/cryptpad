@@ -546,7 +546,7 @@ define([
                         var file = el.getAsFile();
                         handleFile(file, e);
                     });
-                } catch (e) { console.error(e); }
+                } catch (err) { console.error(err); }
             });
         };
         var createCkeditorDropHandler = function () {
