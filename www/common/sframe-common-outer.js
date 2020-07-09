@@ -384,10 +384,7 @@ define([
 
             // This is a burn after reading URL: make sure our owner key is still valid
             try {
-                var nacl = window.nacl;
-                var key = nacl.util.decodeBase64(Crypto.b64AddSlashes(burnAfterReading));
-                var kp = nacl.sign.keyPair.fromSecretKey(key);
-                var publicKey = nacl.util.encodeBase64(kp.publicKey);
+                var publicKey = Utils.Hash.getSignPublicFromPrivate(burnAfterReading);
                 Cryptpad.getPadMetadata({
                     channel: secret.channel
                 }, waitFor(function (md) {
