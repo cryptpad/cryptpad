@@ -959,6 +959,8 @@ define([
         };
         common.createFileManager(fmConfig);
 
+        SframeCM.handleImagePaste(APP.editor);
+
         // Initialize author name for comments.
         // Disable name modification for logged in users
         var $cName = APP.$addComment.find('.cp-app-poll-comments-add-name')
