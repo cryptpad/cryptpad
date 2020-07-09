@@ -1886,6 +1886,7 @@ define([
             var lastCp = getLastCp();
             loadLastDocument(lastCp, function () {
                 // On error, do nothing
+                // XXX lock the document or ask for a page reload?
             }, function (blob, type) {
                 resetData(blob, type);
             });
