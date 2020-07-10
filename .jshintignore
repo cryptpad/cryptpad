@@ -37,3 +37,4 @@ www/debug/chainpad.dist.js
 
 www/pad/mathjax/
 www/code/mermaid*.js
+www/code/orgmode.js
