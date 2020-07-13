@@ -2908,7 +2908,6 @@ define([
                     var title = sfData.title || sfData.lastTitle || el;
                     return String(title).toLowerCase();
                 } else if (folder) {
-                    console.log(el);
                     return String((el && el.key) || _el).toLowerCase();
                 }
                 var data = manager.getFileData(el);
@@ -2930,7 +2929,6 @@ define([
                 }
                 props[uid] = getProp(k);
             });
-            if (folder) { console.error(useId, props); }
             keys.sort(function(a, b) {
                 var _a = props[(a && a.uid) || a];
                 var _b = props[(b && b.uid) || b];
@@ -4714,7 +4712,10 @@ define([
                 var ok = manager.isValidDrive(obj.drive);
                 if (!ok) { return; }
 
+                var restricted  = files.restrictedFolders;
                 copyObjectValue(files, obj.drive);
+                files.restrictedFolders = restricted;
+
                 appStatus.isReady = true;
                 refresh();
             };
