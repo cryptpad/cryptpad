@@ -571,6 +571,7 @@ define([
         var MutationObserver = window.MutationObserver;
         var onPreview = function ($mt) {
             return function () {
+                if (window.event.ctrlKey) { return; }
                 var mts = [];
                 // Get all previewable elements from the doc
                 $content.find('media-tag, pre[data-plugin]').each(function (i, el) {
