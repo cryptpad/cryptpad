@@ -1397,5 +1397,6 @@
     "support_category": "Choose a category",
     "support_formCategoryError": "Error: category is empty",
     "fm_emptyTrashOwned": "Your trash contains documents you own. You can <b>remove</b> them from your drive only, or <b>destroy</b> them for all users.",
-    "fm_restricted": "You do not have access"
+    "fm_restricted": "You do not have access",
+    "fm_noResult": "No results found"
 }

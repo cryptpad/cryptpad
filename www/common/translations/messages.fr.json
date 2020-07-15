@@ -1396,5 +1396,6 @@
     "oo_refresh": "Recharger",
     "support_category": "Choisir une catégorie",
     "fm_restricted": "Vous n'avez pas accès à cet élément",
-    "fm_emptyTrashOwned": "Votre corbeille contient des documents dont vous êtes propriétaire. Vous pouvez les <b>supprimer</b> de votre drive uniquement, ou les <b>détruire</b> pour tous les utilisateurs."
+    "fm_emptyTrashOwned": "Votre corbeille contient des documents dont vous êtes propriétaire. Vous pouvez les <b>supprimer</b> de votre drive uniquement, ou les <b>détruire</b> pour tous les utilisateurs.",
+    "fm_noResult": "Pas de résultat"
 }
