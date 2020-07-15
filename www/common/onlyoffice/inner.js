@@ -903,6 +903,10 @@ define([
                 return;
             }
 
+            // XXX
+            // If save lock, tell onlyoffice that it can't save now...
+            // if (content && content.saveLock] {}
+
             // Send the changes
             content.locks = content.locks || {};
             rtChannel.sendMsg({
@@ -915,6 +919,12 @@ define([
                 if (err) {
                     return void console.error(err);
                 }
+                // XXX
+                // If save lock, it means the sheet was locked for a checkpoint before
+                // our message was received!
+                // Add our message to our own queue to load it after the checkpoint reload
+
+
                 if (pendingChanges[uid]) {
                     clearTimeout(pendingChanges[uid]);
                     delete pendingChanges[uid];
