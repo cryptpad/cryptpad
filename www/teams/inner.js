@@ -55,6 +55,7 @@ define([
         if (!drive || !drive.sharedFolders) {
             return void cb();
         }
+        var r = drive.restrictedFolders = drive.restrictedFolders || {};
         var oldIds = Object.keys(folders);
         nThen(function (waitFor) {
             Object.keys(drive.sharedFolders).forEach(function (fId) {
@@ -65,7 +66,11 @@ define([
                 sframeChan.query('Q_DRIVE_GETOBJECT', {
                     sharedFolder: fId
                 }, waitFor(function (err, newObj) {
-                    if (newObj && newObj.deprecated) {
+                    if (newObj && newObj.restricted) {
+                        r[fId] = drive.sharedFolders[fId];
+                        if (!r[fId].title) { r[fId].title = r[fId].lastTitle; }
+                    }
+                    if (newObj && (newObj.deprecated || newObj.restricted)) {
                         delete folders[fId];
                         delete drive.sharedFolders[fId];
                         if (manager && manager.folders) {
@@ -252,10 +257,7 @@ define([
         });
         if (active === 'drive') {
             APP.$rightside.addClass('cp-rightside-drive');
-            APP.$leftside.on('mouseover', function() {
-                APP.$leftside.addClass('cp-leftside-narrow');
-                APP.$leftside.off('mouseover');
-            });
+            APP.$leftside.addClass('cp-leftside-narrow');
         } else {
             APP.$rightside.removeClass('cp-rightside-drive');
             APP.$leftside.removeClass('cp-leftside-narrow');

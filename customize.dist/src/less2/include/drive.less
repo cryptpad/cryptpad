@@ -159,6 +159,10 @@
         user-select: none;
     }
 
+    .cp-app-drive-element-restricted {
+        color: #939393;
+    }
+
     .cp-app-drive-element-droppable {
         background-color: @drive_droppable-bg;
         color: #222;
@@ -218,7 +222,7 @@
 
 
     #cp-app-drive-search {
-        display: flex;
+        display: inline-flex;
         align-items: center;
         max-width: 400px;
         font-size: 30px;
@@ -226,7 +230,7 @@
         input {
             background: transparent;
             color: @colortheme_drive-color;
-            .tools_placeholder-color(@colortheme_drive-color);
+            .tools_placeholder-color(@cryptpad_color_grey);
             outline-width: 0px;
             border-radius: 0;
             width: 100%;
@@ -252,7 +256,19 @@
             color: @colortheme_drive-color;
         }
     }
-
+    .cp-app-drive-search-spinner {
+        display: inline-flex;
+        color: @colortheme_drive-color;
+        font-size: 40px;
+        align-items: center;
+        justify-content: center;
+    }
+    .cp-app-drive-search-noresult {
+        font-size: 30px;
+        padding: 15px;
+        font-style: italic;
+        color: @cryptpad_color_grey;
+    }
 
 
     /* TREE */
@@ -313,6 +329,7 @@
                     padding: 0 10px;
                     border: 0;
                     color: lighten(@colortheme_sidebar-left-fg, 40%);
+                    height: auto;
                 }
                 & > span.cp-app-drive-element-row {
                     overflow: hidden;
@@ -528,7 +545,7 @@
                 &.cp-app-drive-tags-list {
                     width: 100%;
                     table {
-                        margin: 10px 50px;
+                        margin: 10px;
                         width: ~"calc(100% - 100px)";
                         table-layout: fixed;
                         td, th {
@@ -547,6 +564,21 @@
         }
         .cp-app-drive-element {
             .cp-app-drive-element-truncated { display: none; }
+        }
+
+        .cp-app-drive-new-ghost {
+            cursor: pointer;
+            opacity: 0.5;
+            padding: 0;
+            align-items: center;
+            justify-content: center;
+            display: inline-flex;
+            &:hover {
+                opacity: 0.7;
+            }
+            .fa, .cptools {
+                cursor: pointer;
+            }
         }
         div.cp-app-drive-content-grid {
             padding: 1em;
@@ -571,6 +603,7 @@
                     border-radius: 0;
                     border: 1px solid #ddd;
                     font-size: 14px;
+                    height: auto;
                 }
                 .cp-app-drive-element-state {
                     position: absolute;
@@ -594,26 +627,16 @@
                     }
                 }
             }
-            .cp-app-drive-element-list {
-                display: none;
-            }
             .cp-app-drive-new-ghost {
-                cursor: pointer;
-                opacity: 0.5;
-                padding: 0;
                 flex-flow: column;
-                align-items: center;
-                justify-content: center;
-                display: inline-flex;
-                &:hover {
-                    opacity: 0.7;
-                }
                 .fa, .cptools {
-                    cursor: pointer;
                     font-size: 90px;
                     margin-top: 5px;
                     margin-bottom: 0;
                 }
+            }
+            .cp-app-drive-element-list {
+                display: none;
             }
         }
 
@@ -622,6 +645,10 @@
                 display: none;
             }
             // Make it act as a table!
+            .cp-app-drive-new-ghost {
+                padding: 0 5px;
+                margin-top: 20px;
+            }
             padding-left: 10px;
             ul {
                 width: 100%;
@@ -634,6 +661,7 @@
                     padding: 0 4px;
                     flex: 1;
                     min-width: 0;
+                    height: auto;
                 }
 
                 &> span {
@@ -780,6 +808,7 @@
                 flex-flow: row-reverse;
                 flex-grow: 1;
                 justify-content: flex-end;
+                padding-left: 10px;
                 .cp-app-drive-path-element {
                     .tools_unselectable();
                     display: inline-block;

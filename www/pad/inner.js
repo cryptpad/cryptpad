@@ -725,6 +725,7 @@ define([
 
             var fmConfig = {
                 ckeditor: editor,
+                dropArea: $inner,
                 body: $('body'),
                 onUploaded: function(ev, data) {
                     var parsed = Hash.parsePadUrl(data.url);
@@ -743,7 +744,24 @@ define([
                     editor.widgets.initOn(element, 'mediatag');
                 }
             };
-            window.APP.FM = framework._.sfCommon.createFileManager(fmConfig);
+            var FM = window.APP.FM = framework._.sfCommon.createFileManager(fmConfig);
+
+            editor.on('paste', function (ev) {
+                try {
+                    var files = ev.data.dataTransfer._.files;
+                    files.forEach(function (f) {
+                        FM.handleFile(f);
+                    });
+                    // If the paste data contains files, don't use the ckeditor default handlers
+                    // ==> they would try to include either a remote image URL or a base64 image
+                    if (files.length) {
+                        ev.cancel();
+                        ev.preventDefault();
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            });
 
             framework._.sfCommon.getAttribute(['pad', 'spellcheck'], function(err, data) {
                 if (framework.isReadOnly()) { return; }

@@ -528,6 +528,26 @@ define([
                 $hoverArea.removeClass('cp-fileupload-hovering');
                 onFileDrop(dropped, e);
             });
+
+
+            // Upload files on paste
+            $area.on('paste', function (e) {
+                try {
+                    var ev = e.originalEvent;
+                    if (!ev.clipboardData.items) { return; }
+                    var items = Array.prototype.slice.apply(ev.clipboardData.items);
+                    var hasFile = items.some(function (el) {
+                        return el.kind === "file";
+                    });
+                    if (!hasFile) { return; }
+                    ev.preventDefault();
+                    items.forEach(function (el) {
+                        if (el.kind !== "file") { return; }
+                        var file = el.getAsFile();
+                        handleFile(file, e);
+                    });
+                } catch (err) { console.error(err); }
+            });
         };
         var createCkeditorDropHandler = function () {
             var editor = config.ckeditor;

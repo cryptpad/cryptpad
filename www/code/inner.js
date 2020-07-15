@@ -297,6 +297,8 @@ define([
             }
         });
 
+        DiffMd.onPluginLoaded(drawPreview);
+
         return {
             forceDraw: forceDrawPreview,
             draw: drawPreview,

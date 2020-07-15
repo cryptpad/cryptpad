@@ -1439,6 +1439,7 @@ define([
             }, {
                 typeInput: $select[0]
             }, true);
+            $select.find('button').addClass('btn');
         };
 
         var x2tImportImagesInternal = function(x2t, images, i, callback) {

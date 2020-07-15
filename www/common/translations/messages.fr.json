@@ -331,9 +331,9 @@
     "fm_openParent": "Montrer dans le dossier",
     "fm_noname": "Document sans titre",
     "fm_emptyTrashDialog": "Êtes-vous sûr de vouloir vider la corbeille ?",
-    "fm_removeSeveralPermanentlyDialog": "Êtes-vous sûr de vouloir supprimer ces {0} éléments de votre CryptDrive de manière permanente ?",
+    "fm_removeSeveralPermanentlyDialog": "Êtes vous sûr de vouloir supprimer ces {0} éléments ? Ils resteront dans le drive des autres utilisateurs qui les ont stockés.",
     "fm_removePermanentlyNote": "Les pads dont vous êtes le propriétaire seront supprimés du serveur.",
-    "fm_removePermanentlyDialog": "Êtes-vous sûr de vouloir supprimer cet élément de votre CryptDrive de manière permanente ?",
+    "fm_removePermanentlyDialog": "Êtes-vous sûr de vouloir supprimer cet élément ? Il restera dans le drive des autres utilisateurs qui l'ont stocké.",
     "fm_deleteOwnedPad": "Êtes-vous sûr de vouloir supprimer définitivement ce pad du serveur ?",
     "fm_deleteOwnedPads": "Êtes-vous sûr de vouloir supprimer définitivement ces pads du serveur ?",
     "fm_restoreDialog": "Êtes-vous sûr de vouloir restaurer {0} à son emplacement précédent ?",
@@ -380,9 +380,9 @@
     "fc_expandAll": "Développer tout",
     "fc_collapseAll": "Réduire tout",
     "fc_delete": "Déplacer vers la corbeille",
-    "fc_delete_owned": "Supprimer du serveur",
+    "fc_delete_owned": "Détruire",
     "fc_restore": "Restaurer",
-    "fc_remove": "Supprimer de votre CryptDrive",
+    "fc_remove": "Supprimer",
     "fc_remove_sharedfolder": "Supprimer",
     "fc_empty": "Vider la corbeille",
     "fc_prop": "Propriétés",
@@ -1394,5 +1394,7 @@
     "support_attachments": "Pièces jointes",
     "oo_refreshText": "Ce document a été mis à jour",
     "oo_refresh": "Recharger",
-    "support_category": "Choisir une catégorie"
+    "support_category": "Choisir une catégorie",
+    "fm_restricted": "Vous n'avez pas accès à cet élément",
+    "fm_emptyTrashOwned": "Votre corbeille contient des documents dont vous êtes propriétaire. Vous pouvez les <b>supprimer</b> de votre drive uniquement, ou les <b>détruire</b> pour tous les utilisateurs."
 }

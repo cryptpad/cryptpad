@@ -2054,6 +2054,10 @@ define([
         var addSharedFolderHandler = function () {
             store.sharedFolders = {};
             store.handleSharedFolder = function (id, rt) {
+                if (!rt) {
+                    delete store.sharedFolders[id];
+                    return;
+                }
                 store.sharedFolders[id] = rt;
                 if (store.driveEvents) {
                     registerProxyEvents(rt.proxy, id);
@@ -2083,6 +2087,9 @@ define([
         Store.addSharedFolder = function (clientId, data, cb) {
             var s = getStore(data.teamId);
             s.manager.addSharedFolder(data, function (id) {
+                if (id && typeof(id) === "object" && id.error) {
+                    return void cb(id);
+                }
                 var send = data.teamId ? s.sendEvent : sendDriveEvent;
                 send('DRIVE_CHANGE', {
                     path: ['drive', UserObject.FILES_DATA]
@@ -2188,6 +2195,8 @@ define([
             });
         };
         registerProxyEvents = function (proxy, fId) {
+            if (!proxy) { return; }
+            if (proxy.deprecated || proxy.restricted) { return; }
             if (!fId) {
                 // Listen for shared folder password change
                 proxy.on('change', ['drive', UserObject.SHARED_FOLDERS], function (o, n, p) {

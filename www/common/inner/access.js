@@ -372,8 +372,7 @@ define([
         var parsed = Hash.parsePadUrl(data.href || data.roHref);
         var owned = Modal.isOwned(Env, data);
         var disabled = !owned || !parsed.hashData || parsed.hashData.type !== 'pad';
-        var allowDisabled = parsed.type === 'drive';
-        if (disabled || allowDisabled) { return void cb(); }
+        if (disabled) { return void cb(); }
 
         opts = opts || {};
 
@@ -899,7 +898,7 @@ define([
                 }
             }
             if (owned) {
-                var deleteOwned = h('button.btn.btn-danger-alt', Messages.fc_delete_owned);
+                var deleteOwned = h('button.btn.btn-danger-alt', [h('i.cptools.cptools-destroy'), Messages.fc_delete_owned]);
                 var spinner = UI.makeSpinner();
                 UI.confirmButton(deleteOwned, {
                     classes: 'btn-danger'
@@ -910,6 +909,7 @@ define([
                         channel: data.channel
                     }, function (err, obj) {
                         spinner.done();
+                        UI.findCancelButton().click();
                         if (err || (obj && obj.error)) { UI.warn(Messages.error); }
                     });
                 });

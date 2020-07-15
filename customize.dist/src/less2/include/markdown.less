@@ -1,23 +1,32 @@
 @import (reference) "./tools.less";
 
 .markdown_main() {
+    @nice-grey: #f3f3f3;
+    @accent-grey: rgba(0, 0, 0, 0.2);
+    hr {
+        border-top: 1px solid @accent-grey;
+    }
     blockquote {
-        background: #e5e5e5;
-        background: rgba(128,128,128,0.5);
+        background: @nice-grey;
+        background: rgba(144, 144, 144, 0.2);
         padding: 10px;
-        border-left: 3px solid #999;
+        border-left: 2px solid @accent-grey;
         padding-right: 0;
         p { margin: 0; }
         blockquote { margin: 0; }
+        & > *:not(:last-child) {
+            margin-bottom: 10px !important;
+        }
     }
     // todo ul, ol
     // TOC
     div.cp-md-toc {
-        background: #f3f3f3;
+        background: @nice-grey;
         padding: 20px;
-        //float: right;
-        margin: 5px;
-        margin-right: 0;
+        * {
+            margin: 5px;
+            margin-right: 0;
+        }
         max-width: 100%;
         min-width: 200px;
         white-space: nowrap;
@@ -93,7 +102,13 @@
         border: 1px solid #BBB;
     }
 
-    pre.mermaid {
+    pre.markmap {
+        border: 1px solid #ddd;
+        svg {
+            height: 400px;
+        }
+    }
+    pre[data-plugin] {
         svg {
             max-width: 100%;
             cursor: pointer;

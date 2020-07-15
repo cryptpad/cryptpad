@@ -15,6 +15,7 @@ www/common/onlyoffice/v2*
 server.js
 www/common/old-media-tag.js
 www/scratch
+www/lib
 
 www/common/toolbar.js
 www/common/hyperscript.js

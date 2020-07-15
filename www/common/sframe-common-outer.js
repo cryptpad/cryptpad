@@ -28,6 +28,7 @@ define([
         var Test;
         var password;
         var initialPathInDrive;
+        var burnAfterReading;
 
         var currentPad = window.CryptPad_location = {
             app: '',
@@ -171,6 +172,8 @@ define([
             });
 
             var parsed = Utils.Hash.parsePadUrl(currentPad.href);
+            burnAfterReading = parsed && parsed.hashData && parsed.hashData.ownerKey;
+
             currentPad.app = parsed.type;
             if (cfg.getSecrets) {
                 var w = waitFor();
@@ -377,8 +380,26 @@ define([
                 }).nThen(done);
             }
         }).nThen(function (waitFor) {
+            if (!burnAfterReading) { return; }
+
+            // This is a burn after reading URL: make sure our owner key is still valid
+            try {
+                var publicKey = Utils.Hash.getSignPublicFromPrivate(burnAfterReading);
+                Cryptpad.getPadMetadata({
+                    channel: secret.channel
+                }, waitFor(function (md) {
+                    if (md && md.error) { return console.error(md.error); }
+                    // If our key is not valid anymore, don't show BAR warning
+                    if (!(md && Array.isArray(md.owners)) || md.owners.indexOf(publicKey) === -1) {
+                        burnAfterReading = null;
+                    }
+                }));
+            } catch (e) {
+                console.error(e);
+            }
+        }).nThen(function (waitFor) {
             if (cfg.afterSecrets) {
-                cfg.afterSecrets(Cryptpad, Utils, secret, waitFor());
+                cfg.afterSecrets(Cryptpad, Utils, secret, waitFor(), sframeChan);
             }
         }).nThen(function (waitFor) {
             // Check if the pad exists on server
@@ -402,7 +423,6 @@ define([
             }
             Utils.crypto = Utils.Crypto.createEncryptor(Utils.secret.keys);
             var parsed = Utils.Hash.parsePadUrl(currentPad.href);
-            var burnAfterReading = parsed && parsed.hashData && parsed.hashData.ownerKey;
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Utils.UserObject.getDefaultName(parsed);
             var edPublic, curvePublic, notifications, isTemplate;
@@ -1600,7 +1620,16 @@ define([
                         // server
                         Cryptpad.useTemplate({
                             href: data.template
-                        }, Cryptget, function () {
+                        }, Cryptget, function (err) {
+                            if (err) {
+                                // TODO: better messages in case of expired, deleted, etc.?
+                                if (err === 'ERESTRICTED') {
+                                    sframeChan.event('EV_RESTRICTED_ERROR');
+                                } else {
+                                    sframeChan.query("EV_LOADING_ERROR", "DELETED");
+                                }
+                                return;
+                            }
                             startRealtime();
                             cb();
                         }, cryptputCfg);
@@ -1608,7 +1637,16 @@ define([
                     }
                     // if we open a new code from a file
                     if (Cryptpad.fromFileData) {
-                        Cryptpad.useFile(Cryptget, function () {
+                        Cryptpad.useFile(Cryptget, function (err) {
+                            if (err) {
+                                // TODO: better messages in case of expired, deleted, etc.?
+                                if (err === 'ERESTRICTED') {
+                                    sframeChan.event('EV_RESTRICTED_ERROR');
+                                } else {
+                                    sframeChan.query("EV_LOADING_ERROR", "DELETED");
+                                }
+                                return;
+                            }
                             startRealtime();
                             cb();
                         }, cryptputCfg);

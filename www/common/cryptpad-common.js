@@ -632,7 +632,12 @@ define([
             }
         }).nThen(function () {
             Crypt.get(parsed.hash, function (err, val) {
-                if (err) { throw new Error(err); }
+                if (err) {
+                    return void cb(err);
+                }
+                if (!val) {
+                    return void cb('ENOENT');
+                }
                 try {
                     // Try to fix the title before importing the template
                     var parsed = JSON.parse(val);
@@ -665,14 +670,14 @@ define([
                 Crypt.get(parsed.hash, _waitFor(function (err, _val) {
                     if (err) {
                         _waitFor.abort();
-                        return void cb();
+                        return void cb(err);
                     }
                     try {
                         val = JSON.parse(_val);
                         fixPadMetadata(val, true);
                     } catch (e) {
                         _waitFor.abort();
-                        return void cb();
+                        return void cb(e.message);
                     }
                 }), optsGet);
                 return;
@@ -691,7 +696,7 @@ define([
                 Util.fetch(src, waitFor(function (err, _u8) {
                     if (err) {
                         _waitFor.abort();
-                        return void waitFor.abort();
+                        return void cb(err);
                     }
                     u8 = _u8;
                 }));
@@ -700,7 +705,7 @@ define([
                     FileCrypto.decrypt(u8, key, waitFor(function (err, _res) {
                         if (err || !_res.content) {
                             _waitFor.abort();
-                            return void waitFor.abort();
+                            return void cb(err);
                         }
                         res = _res;
                     }));
