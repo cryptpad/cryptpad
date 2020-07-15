@@ -545,7 +545,7 @@ define([
             xhr.responseType = 'arraybuffer';
             xhr.onload = function () {
                 if (/^4/.test('' + this.status)) {
-                    onCpError();
+                    onCpError(this.status);
                     return void console.error('XHR error', this.status);
                 }
                 var arrayBuffer = xhr.response;
@@ -561,8 +561,8 @@ define([
                     });
                 }
             };
-            xhr.onerror = function () {
-                onCpError();
+            xhr.onerror = function (err) {
+                onCpError(err);
             };
             xhr.send(null);
         };
@@ -1884,7 +1884,8 @@ define([
 
         var checkNewCheckpoint = function () {
             var lastCp = getLastCp();
-            loadLastDocument(lastCp, function () {
+            loadLastDocument(lastCp, function (err) {
+                console.error(err);
                 // On error, do nothing
                 // XXX lock the document or ask for a page reload?
             }, function (blob, type) {
