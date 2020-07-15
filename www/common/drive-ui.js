@@ -1659,7 +1659,6 @@ define([
             if (pathsList.length === 1) {
                 msg = Messages.fm_removePermanentlyDialog;
             }
-            // XXX update key to tell the user that these pads will still be avialble to other users
             UI.confirm(msg, function(res) {
                 $(window).focus();
                 if (!res) { return; }
@@ -1730,9 +1729,6 @@ define([
                     && $target.parents('#cp-app-drive-content')) {
                 newPath = currentPath;
             }
-            // XXX Why did we add the following line?
-            // https://github.com/xwiki-labs/cryptpad/commit/f103a0fb08d137901174ef7e15dbc2c9a2ec3ca1
-            //if (newPath[0] !== ROOT) { newPath = [ROOT]; }
             return newPath;
         };
         var onFileDrop = APP.onFileDrop = function (file, e) {
@@ -3311,7 +3307,6 @@ define([
                 //$list.closest('#cp-app-drive-content-folder').addClass('cp-app-drive-content-list');
                 var filesList = manager.search(value);
                 if (!filesList.length) {
-                    Messages.fm_noResult = "No result found"; // XXX
                     $list.append(h('div.cp-app-drive-search-noresult', Messages.fm_noResult));
                     spinner.hide();
                     return;
