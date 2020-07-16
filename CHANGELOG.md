@@ -1,3 +1,35 @@
+# UplandMoa's revenge (3.20.1)
+
+Once again we've decided to follow up our last major release with a minor "revenge" release that we wanted to make available as soon as possible.
+We expect to deploy and release version 3.21.0 on Tuesday, July 28th, 2020.
+
+Features
+
+* The _markmap_ rendering mode which was recently added to markdown preview pane implements some click event handlers which overlap with our existing handlers which open the embedded mindmap in our full screen "lightbox". You can now use _ctrl-click_ to trigger its built-in events (collapsing subtrees of the mindmap) without opening the lightbox.
+* We've made a few improvement to user and team drives:
+  * The _list mode_ now features a "ghost icon" which you can use to create a new pad in the current folder, matching behaviour that already existed in grid mode.
+  * We've also updated the search mode to display a spinner while your search is in progress. We also display some text when no results are found.
+  * Team drives now open with the sidebar collapsed.
+* Our rich text, code, slide, and poll apps now intercept pasted images and prompt the user to upload them, matching the existing experience of dragging an image into the same editable area.
+* We've received new contributions to our Romanian translation via [our weblate instance](https://weblate.cryptpad.fr/projects/cryptpad/app/).
+
+Bug fixes
+
+* We identified some race conditions in our spreadsheet app that were responsible for some corrupted data during the period leading up to our 3.20.0 release, however, we wanted to take a little more time to test before releasing the fixes. As of this release we're moving to a third version of our internal data format. This requires a client-side migration for each older sheet which will be performed by the first registered user to open a sheet in edit mode, after which a page reload will be required. Unregistered users with edit rights will only be able to view older sheets until they have been migrated by a registered user.
+* We now guard against empty _mathjax_ and _markmap_ code blocks in their respective markdown preview rendering extensions, as we discovered that empty inputs resulted in the display of "undefined" in the rendered element.
+* We noticed and fixed two regressions in user and team drives:
+  1. drive history had stopped working since the introduction of the "restricted mode" for shared folders which were made inaccessible due to the enforcement of their access lists.
+  2. users with shared folders which had been deleted or had their passwords changed were prompted to delete the folder from their drive or enter its new password. The "submit" button was affected by a style regression which we've addressed.
+* We've updated to a new version of `lodash` as a dependency of the linters that we use to validate our code. Unless you were actively using those linters while developing CryptPad this should have no effect for you.
+* Finally, when users open a link to a "self-destructing pad" we now check to make sure that the deletion key they possess has not been revoked before displaying a warning indicating that the pad in question will be deleted once they open it.
+
+To update from 3.20.0 to 3.20.1:
+
+1. Stop your server
+2. Get the latest code with `git checkout 3.20.1`
+3. Install the latest dependencies with `bower update` and `npm i`
+3. Restart your server
+
 # UplandMoa (3.20.0)
 
 ## Goals
