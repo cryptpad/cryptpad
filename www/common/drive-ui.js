@@ -1854,7 +1854,7 @@ define([
 
         // In list mode, display metadata from the filesData object
         var _addOwnership = function ($span, $state, data) {
-            if (data && Array.isArray(data.owners) && data.owners.indexOf(edPublic) !== -1) :
+            if (data && Array.isArray(data.owners) && data.owners.indexOf(edPublic) !== -1) {
                 var $owned = $ownedIcon.clone().appendTo($state);
                 $owned.attr('title', Messages.fm_padIsOwned);
                 $span.addClass('cp-app-drive-element-owned');
