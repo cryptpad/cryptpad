@@ -310,6 +310,10 @@
             clearTimeout(to);
             to = setTimeout(Util.bake(f, Util.slice(arguments)), ms);
         };
+        g.clear = function () {
+            clearTimeout(to);
+            to = undefined;
+        };
         return g;
     };
 

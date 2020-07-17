@@ -1043,7 +1043,8 @@ define([
             var lock = readOnly || APP.migrate;
 
             // Starting from version 3, we can use the view mode again
-            var mode = (content && content.version > 2 && lock) ? "view" : "edit";
+            // defined but never used
+            //var mode = (content && content.version > 2 && lock) ? "view" : "edit";
 
             // Config
             APP.ooconfig = {
@@ -1823,6 +1824,7 @@ define([
             }
 
             var version = 'v2a/';
+            var msg;
             // Old version detected: use the old OO and start the migration if we can
             if (privateData.ooForceVersion) {
                 if (privateData.ooForceVersion === "1") {
@@ -1836,7 +1838,7 @@ define([
                     content.migration = true;
                     APP.onLocal();
                 } else {
-                    var msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor); // XXX update: "anonymous users or viewers"
+                    msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor); // XXX update: "anonymous users or viewers"
                     $(APP.helpMenu.menu).after(msg);
                     readOnly = true;
                 }
@@ -1847,7 +1849,7 @@ define([
                     content.migration = true;
                     APP.onLocal();
                 } else {
-                    var msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
+                    msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
                     $(APP.helpMenu.menu).after(msg);
                     readOnly = true;
                 }
