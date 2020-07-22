@@ -1403,7 +1403,7 @@ define([
                 ext = ['.docx', /*'.odt',*/ '.bin'];
             }
 
-            if (typeof(Atomics) === "undefined") {
+            if (typeof(Atomics) === "undefined" || typeof (SharedArrayBuffer) === "undefined") {
                 ext = ['.bin'];
                 warning = '<div class="alert alert-info cp-alert-top">'+Messages.oo_exportChrome+'</div>';
             }
@@ -1583,7 +1583,7 @@ define([
             if (ext === "bin") {
                 return void importFile(content);
             }
-            if (typeof(Atomics) === "undefined") {
+            if (typeof(Atomics) === "undefined" || typeof (SharedArrayBuffer) === "undefined") {
                 return void UI.alert(Messages.oo_invalidFormat);
             }
             var div = h('div.cp-oo-x2tXls', [
@@ -1758,7 +1758,7 @@ define([
             } else if (type === "oodoc") {
                 accept = ['.bin', '.odt', '.docx'];
             }
-            if (typeof(Atomics) === "undefined") {
+            if (typeof(Atomics) === "undefined" || typeof (SharedArrayBuffer) === "undefined") {
                 accept = ['.bin'];
             }
 
