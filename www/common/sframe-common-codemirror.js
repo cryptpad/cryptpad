@@ -147,6 +147,13 @@ define([
             editor.setOption('indentWithTabs', useTabs);
             editor.setOption('spellcheck', spellcheck);
             editor.setOption('autoCloseBrackets', brackets);
+            setTimeout(function () {
+                $('.CodeMirror').css('font-size', fontSize+'px');
+                editor.refresh();
+            });
+
+            // orgmode is using its own shortcuts
+            if (editor.getMode().name === 'orgmode') { return; }
             editor.setOption("extraKeys", {
                 Tab: function() {
                     if (doc.somethingSelected()) {
@@ -160,10 +167,16 @@ define([
                 "Shift-Tab": function () {
                     editor.execCommand("indentLess");
                 },
-            });
-            setTimeout(function () {
-                $('.CodeMirror').css('font-size', fontSize+'px');
-                editor.refresh();
+                "Alt-Left": undefined,
+                "Alt-Right": undefined,
+                "Alt-Enter": undefined, 
+                "Alt-Up": undefined,
+                "Alt-Down": undefined,
+                "Shift-Alt-Left": undefined,
+                "Shift-Alt-Right": undefined,
+                "Shift-Alt-Enter": undefined,
+                "Shift-Alt-Up": undefined,
+                "Shift-Alt-Down": undefined,
             });
         };
 
@@ -171,7 +184,7 @@ define([
         var useTabsKey = 'indentWithTabs';
         var fontKey = 'fontSize';
         var spellcheckKey = 'spellcheck';
-        var updateIndentSettings = function () {
+        var updateIndentSettings = editor.updateSettings = function () {
             if (!metadataMgr) { return; }
             var data = metadataMgr.getPrivateData().settings;
             data = data.codemirror || {};
@@ -268,6 +281,17 @@ define([
                 name = name ? Messages.languageButton + ' ('+name+')' : Messages.languageButton;
                 exp.$language.setValue(mode, name);
             }
+
+                if (mode === "orgmode") {
+                    if (CodeMirror.orgmode && typeof (CodeMirror.orgmode.init) === "function") {
+                        CodeMirror.orgmode.init(editor);
+                    }
+                } else {
+                    if (CodeMirror.orgmode && typeof (CodeMirror.orgmode.destroy) === "function") {
+                        CodeMirror.orgmode.destroy(editor);
+                    }
+                }
+
             if(cb) { cb(mode); }
         };
 
@@ -343,7 +367,8 @@ define([
             });
             $aLanguages.click(function () {
                 isHovering = false;
-                setMode($(this).attr('data-value'), onModeChanged);
+                var mode = $(this).attr('data-value');
+                setMode(mode, onModeChanged);
                 onLocal();
             });
 

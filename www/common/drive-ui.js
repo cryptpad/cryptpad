@@ -1202,7 +1202,7 @@ define([
                         hide.push('collapseall');
                     }
                     if (path.length === 1) {
-                        // Can't rename, share, delete, or change the color of root elements
+                        // Can't rename, share, delete, or change the color of categories
                         hide.push('delete');
                         hide.push('rename');
                         hide.push('share');
@@ -1257,7 +1257,7 @@ define([
                         hide.push('openro');
                         hide.push('openincode');
                         hide.push('hashtag');
-                        hide.push('delete');
+                        //hide.push('delete');
                         hide.push('makeacopy');
                         //hide.push('deleteowned');
                     } else { // it's a folder
@@ -1768,25 +1768,15 @@ define([
             });
 
             if (sharedF && manager.isPathIn(newPath, [TRASH])) {
-                return void deletePaths(null, movedPaths);
+                // XXX create a key here?
+                // You can't move to YOUR trash documents stored in a shared folder
+                // XXX or keep deletePaths: trigger the "Remove from cryptdrive" modal
+                return void UI.warn(Messages.error);
+                //return void deletePaths(null, movedPaths);
             }
 
             var copy = false;
-            if (manager.isPathIn(newPath, [TRASH])) {
-                // Filter the selection to remove shared folders.
-                // Shared folders can't be moved to the trash!
-                var filteredPaths = movedPaths.filter(function (p) {
-                    var el = manager.find(p);
-                    return !manager.isSharedFolder(el);
-                });
-
-                if (!filteredPaths.length) {
-                    // We only have shared folder, delete them
-                    return void deletePaths(null, movedPaths);
-                }
-
-                movedPaths = filteredPaths;
-            } else if (ev.ctrlKey || (ev.metaKey && APP.isMac)) {
+            if (ev.ctrlKey || (ev.metaKey && APP.isMac)) {
                 copy = true;
             }
 
@@ -2254,15 +2244,25 @@ define([
 
             var skipNext = false; // When encountering a shared folder, skip a key in the path
             path.forEach(function (p, idx) {
-                if (skipNext) { skipNext = false; return; }
                 if (isTrash && [2,3].indexOf(idx) !== -1) { return; }
+                if (skipNext) { skipNext = false; return; }
                 var name = p;
 
                 if (manager.isFile(el) && isInTrashRoot && idx === 1) {
                     idx = 3;
                 }
 
+                // Check if the current element is a shared folder. If it is, get its
+                // name and skip the next itme in the path (it will be "root")
                 var currentEl = isVirtual ? undefined : manager.find(path.slice(0, idx+1));
+
+                // If we're in trash root, check if the "element" is a shared folder
+                if (isTrash && idx === 1) {
+                    currentEl = manager.find(path.slice(0, idx+3));
+                }
+
+                // Name and skip next...
+                // "p === SHARED_FOLDER" for anonymous shared folders
                 if (p === SHARED_FOLDER || (currentEl && manager.isSharedFolder(currentEl))) {
                     name = manager.getSharedFolderData(currentEl || APP.newSharedFolder).title;
                     skipNext = true;
@@ -4582,23 +4582,18 @@ define([
                     paths.push($(elmt).data('path'));
                 });
                 if (!paths.length) { return; }
-                // Remove shared folders from the selection (they can't be moved to the trash)
-                // unless the selection is only shared folders
-                var paths2 = paths.filter(function (p) {
-                    var el = manager.find(p);
-                    return !manager.isSharedFolder(el);
-                });
-                // If we are in the trash or anon pad or if we are holding the "shift" key,
+
+                // If we are in the trash or anon USER or if we are holding the "shift" key,
                 // delete permanently
                 // Or if we are in a shared folder
                 // Or if the selection is only shared folders
                 if (!APP.loggedIn || isTrash || manager.isInSharedFolder(currentPath)
-                        || e.shiftKey || !paths2.length) {
+                        || e.shiftKey) {
                     deletePaths(null, paths);
                     return;
                 }
                 // else move to trash
-                moveElements(paths2, [TRASH], false, refresh);
+                moveElements(paths, [TRASH], false, refresh);
                 return;
             }
         });

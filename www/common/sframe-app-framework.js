@@ -199,6 +199,7 @@ define([
                 evContentUpdate.fire(newContent, waitFor);
                 oldContent = newContent;
             } catch (e) {
+                console.error(e);
                 console.log(e.stack);
                 UI.errorLoadingScreen(e.message);
             }

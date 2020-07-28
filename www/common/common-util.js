@@ -351,10 +351,6 @@
         };
     };
 
-    Util.slice = function (A) {
-        return Array.prototype.slice.call(A);
-    };
-
     Util.blobToImage = function (blob, cb) {
         var reader = new FileReader();
         reader.onloadend = function() {

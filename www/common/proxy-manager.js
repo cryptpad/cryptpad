@@ -840,7 +840,7 @@ define([
             Env.removeOwnedChannel(chan, function (obj) {
                 // If the error is that the file is already removed, nothing to
                 // report, it's a normal behavior (pad expired probably)
-                if (obj && obj.error && obj.error.code !== "ENOENT") {
+                if (obj && obj.error && obj.error !== "ENOENT") {
                     // RPC may not be responding
                     // Send a report that can be handled manually
                     if (fId && Env.folders[fId] && Env.folders[fId].deleting) {
@@ -911,7 +911,7 @@ define([
                     Env.removeOwnedChannel(chan, waitFor(function (obj) {
                         // If the error is that the file is already removed, nothing to
                         // report, it's a normal behavior (pad expired probably)
-                        if (obj && obj.error && obj.error.code !== "ENOENT") {
+                        if (obj && obj.error && obj.error !== "ENOENT") {
                             // RPC may not be responding
                             // Send a report that can be handled manually
                             console.error(obj.error, chan);
