@@ -1,5 +1,7 @@
 @import (reference) "./colortheme-all.less";
 @import (reference) "./variables.less";
+@import (reference) "./browser.less";
+
 .modals-ui-elements_main() {
     --LessLoader_require: LessLoader_currentFile();
 }
@@ -19,6 +21,15 @@
             }
             .cp-radio {
                 margin-right: 30px;
+            }
+            @media (max-width: @browser_media-medium-screen) {
+                flex-direction: column;
+                &:not(:last-child) {
+                    margin-bottom: 0px;
+                }
+                .cp-radio {
+                    margin: 0 0 5px 0;
+                }
             }
         }
     }
