@@ -157,8 +157,7 @@
                 background: #fff;
                 box-shadow: @alertify_box-shadow;
                 &.wide {
-                    width: 1000px;
-                    max-width: 70%;
+                    max-width: 850px;
                 }
             }
 
@@ -393,9 +392,15 @@
         .cp-share-columns {
             display: flex;
             flex-flow: row;
+            @media screen and (max-width: (@browser_media-medium-screen)) {
+                flex-flow: column;
+            }
 
             & > .cp-share-column {
                 width: 50%;
+                @media screen and (max-width: (@browser_media-medium-screen)) {
+                    width: unset;
+                }
                 //padding: 0 10px;
                 position: relative;
                 &.contains-nav {
@@ -414,14 +419,24 @@
                 }
                 &:first-child {
                     margin-right: @alertify_padding-base;
+                    @media screen and (max-width: (@browser_media-medium-screen)) {
+                        margin: 0 0 @alertify_padding-base 0;
+                    }
                 }
                 &:last-child {
                     margin-left: @alertify_padding-base;
+                    @media screen and (max-width: (@browser_media-medium-screen)) {
+                        margin: 0px;
+                    }
                 }
             }
             & > .cp-share-column-mid {
                 display: flex;
                 align-items: center;
+                justify-content: center;
+                @media screen and (max-width: (@browser_media-medium-screen)) {
+                    margin-bottom: @alertify_padding-base;
+                }
                 button {
                     width: 50px;
                     margin: 0;
