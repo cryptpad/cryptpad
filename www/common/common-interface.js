@@ -221,7 +221,7 @@ define([
         tabs.forEach(function (tab, i) {
             if (!(tab.content || tab.disabled) || !tab.title) { return; }
             var content = h('div.alertify-tabs-content', tab.content);
-            var title = h('span.alertify-tabs-title'+ (tab.disabled ? '.disabled' : ''), tab.title);
+            var title = h('span.alertify-tabs-title'+ (tab.disabled ? '.disabled' : ''), h('span.tab-title-text',tab.title));
             if (tab.icon) {
                 var icon = h('i', {class: tab.icon});
                 $(title).prepend(' ').prepend(icon);

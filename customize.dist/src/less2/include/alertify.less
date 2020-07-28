@@ -183,7 +183,7 @@
                     border-bottom: 1px solid @alertify-fore;
                     margin-bottom: 10px;
                     box-sizing: content-box;
-                    span {
+                    .alertify-tabs-title {
                         .tools_unselectable();
                         font-size: 20px;
                         height: 40px;
@@ -199,6 +199,13 @@
                         &.disabled {
                             color: #949494;
                             cursor: not-allowed;
+                        }
+                        &:not(.alertify-tabs-active) {
+                            @media (max-width: @browser_media-medium-screen) {
+                                .tab-title-text {
+                                    display: none;
+                                }
+                            }
                         }
                     }
                     span.alertify-tabs-active {
