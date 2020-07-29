@@ -2438,7 +2438,7 @@ define([
                 attributes: {
                     'target': '_blank',
                     'href': origin+'/contacts/',
-                    'class': 'cptools cptools-contacts'
+                    'class': 'fa fa-address-book'
                 },
                 content: h('span', Messages.type.contacts)
             });
