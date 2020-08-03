@@ -533,6 +533,7 @@ define([
         };
         var loadLastDocument = function (lastCp, onCpError, cb) {
             ooChannel.cpIndex = lastCp.index || 0;
+            ooChannel.lastHash = lastCp.hash;
             var parsed = Hash.parsePadUrl(lastCp.file);
             var secret = Hash.getSecrets('file', parsed.hash);
             if (!secret || !secret.channel) { return; }
