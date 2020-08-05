@@ -129,6 +129,18 @@ define([
 
         if (cb) { cb(); }
     };
+    var loginHandlers = [];
+    LocalStore.loginReload = function () {
+        loginHandlers.forEach(function (h) {
+            if (typeof (h) === "function") { h(); }
+        });
+        document.location.reload();
+    };
+    LocalStore.onLogin = function (h) {
+        if (typeof (h) !== "function") { return; }
+        if (loginHandlers.indexOf(h) !== -1) { return; }
+        loginHandlers.push(h);
+    };
     LocalStore.onLogout = function (h) {
         if (typeof (h) !== "function") { return; }
         if (logoutHandlers.indexOf(h) !== -1) { return; }
