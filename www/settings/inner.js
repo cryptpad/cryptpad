@@ -86,6 +86,9 @@ define([
             'cp-settings-code-font-size',
             'cp-settings-code-spellcheck',
         ],
+        'kanban': [
+            'cp-settings-kanban-tags',
+        ],
         'subscription': {
             onClick: function() {
                 var urls = common.getMetadataMgr().getPrivateData().accounts;
@@ -290,7 +293,7 @@ define([
                 input: { value: 1 },
                 label: { class: 'noTitle' }
             });
-        var $div2 = $(h('div.cp-settings-autostore-radio', [
+        var $div2 = $(h('div.cp-settings-radio-container', [
             opt3,
             opt2,
             opt1
@@ -1469,6 +1472,52 @@ define([
         return $div;
     };
 
+
+    Messages.settings_kanbanTagsTitle = "Kanban tags filter"; // XXX
+    Messages.settings_kanbanTagsHint = "Select how you want the tags filter to act when selecting multiple tags: only show cards containing all the selected tags (AND) or show cards containing any of the selected tags (OR)"; // XXX
+    Messages.settings_kanbanTagsAnd = "AND";
+    Messages.settings_kanbanTagsOr = "OR";
+    Messages.settings_cat_kanban = "Kanban";
+
+    makeBlock('kanban-tags', function(cb) {
+
+        var opt1 = UI.createRadio('cp-settings-kanban-tags', 'cp-settings-kanban-tags-and',
+            Messages.settings_kanbanTagsAnd, false, {
+                input: { value: 1 },
+                label: { class: 'noTitle' }
+            });
+        var opt2 = UI.createRadio('cp-settings-kanban-tags', 'cp-settings-kanban-tags-or',
+            Messages.settings_kanbanTagsOr, true, {
+                input: { value: 0 },
+                label: { class: 'noTitle' }
+            });
+        var div = h('div.cp-settings-radio-container', [
+            opt1,
+            opt2,
+        ]);
+        var $d = $(div);
+
+        var spinner = UI.makeSpinner($d);
+
+        $d.find('input[type="radio"]').on('change', function() {
+            spinner.spin();
+            var val = $('input:radio[name="cp-settings-kanban-tags"]:checked').val();
+            val = Number(val) || 0;
+            common.setAttribute(['kanban', 'tagsAnd'], val, function() {
+                spinner.done();
+            });
+        });
+
+
+        common.getAttribute(['kanban', 'tagsAnd'], function(e, val) {
+            if (e) { return void console.error(e); }
+            if (val) {
+                $(opt1).find('input').attr('checked', 'checked');
+            }
+        });
+
+        cb($d);
+    }, true);
 
     // Settings app
 

@@ -608,6 +608,8 @@ define([
             framework._.sfCommon.openUnsafeURL(href);
         };
 
+        var md = framework._.cpNfInner.metadataMgr.getPrivateData();
+        var _tagsAnd = Util.find(md, ['settings', 'kanban', 'tagsAnd']);
 
         var kanban = new jKanban({
             element: '#cp-app-kanban-content',
@@ -615,6 +617,7 @@ define([
             widthBoard: '300px',
             buttonContent: '❌',
             readOnly: framework.isReadOnly(),
+            tagsAnd: _tagsAnd,
             refresh: function () {
                 onRedraw.fire();
             },
@@ -828,6 +831,17 @@ define([
             getTags: getExistingTags,
             cursors: remoteCursors,
             boards: boards
+        });
+
+        framework._.cpNfInner.metadataMgr.onChange(function () {
+            var md = framework._.cpNfInner.metadataMgr.getPrivateData();
+            var tagsAnd = Util.find(md, ['settings', 'kanban', 'tagsAnd']);
+            if (_tagsAnd === tagsAnd) { return; }
+
+            // If the rendering has changed, update the value and redraw
+            kanban.options.tagsAnd = tagsAnd;
+            _tagsAnd = tagsAnd;
+            kanban.setBoards(kanban.options.boards);
         });
 
         if (migrated) { framework.localChange(); }
