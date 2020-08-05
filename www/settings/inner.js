@@ -1555,6 +1555,7 @@ define([
             if (key === 'pad') { $category.append($('<span>', { 'class': 'fa fa-file-word-o' })); }
             if (key === 'security') { $category.append($('<span>', { 'class': 'fa fa-lock' })); }
             if (key === 'subscription') { $category.append($('<span>', { 'class': 'fa fa-star-o' })); }
+            if (key === 'kanban') { $category.append($('<span>', { 'class': 'cptools cptools-kanban' })); }
 
             if (key === active) {
                 $category.addClass('cp-leftside-active');
