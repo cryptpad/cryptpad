@@ -609,6 +609,12 @@ define([
             }, 500); // 500ms to make sure it is sent after chainpad sync
         };
 
+        var isVisible = function(el, $container) {
+            var size = $container.outerHeight();
+            var pos = el.getBoundingClientRect();
+            return (pos.bottom < size) && (pos.y > 0);
+        };
+
         var updateTOC = function () {
             var toc = [];
             $inner.find('h1, h2, h3').each(function (i, el) {
@@ -622,16 +628,17 @@ define([
             toc.forEach(function (obj) {
                 // Only include level 2 headings
                 var level = obj.level;
-                var a = h('a.cp-md-toc-link', {
+                var a = h('a.cp-pad-toc-link', {
                     href: '#',
                 });
                 $(a).click(function (e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    $(obj.el).scrollIntoView();
+                    if (!obj.el || isVisible(obj.el, $inner)) { return; }
+                    obj.el.scrollIntoView();
                 });
                 a.innerHTML = obj.title;
-                content.push(h('p.cp-md-toc-'+level, ['• ',  a]));
+                content.push(h('p.cp-pad-toc-'+level, ['• ',  a]));
             });
             $toc.html('').append(content);
         };
