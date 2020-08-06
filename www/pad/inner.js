@@ -537,6 +537,8 @@ define([
             $container: $('#cp-app-pad-comments')
         });
 
+        var $toc = $('#cp-app-pad-toc');
+
         // My cursor
         var cursor = module.cursor = Cursor(inner);
 
@@ -607,6 +609,33 @@ define([
             }, 500); // 500ms to make sure it is sent after chainpad sync
         };
 
+        var updateTOC = function () {
+            var toc = [];
+            $inner.find('h1, h2, h3').each(function (i, el) {
+                toc.push({
+                    level: Number(el.tagName.slice(1)),
+                    el: el,
+                    title: Util.stripTags($(el).text())
+                });
+            });
+            var content = [h('h2', Messages.markdown_toc)];
+            toc.forEach(function (obj) {
+                // Only include level 2 headings
+                var level = obj.level;
+                var a = h('a.cp-md-toc-link', {
+                    href: '#',
+                });
+                $(a).click(function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $(obj.el).scrollIntoView();
+                });
+                a.innerHTML = obj.title;
+                content.push(h('p.cp-md-toc-'+level, ['• ',  a]));
+            });
+            $toc.html('').append(content);
+        };
+
         // apply patches, and try not to lose the cursor in the process!
         framework.onContentUpdate(function(hjson) {
             if (!Array.isArray(hjson)) { throw new Error(Messages.typeError); }
@@ -666,6 +695,8 @@ define([
             }
 
             comments.onContentUpdate();
+
+            updateTOC();
         });
 
         framework.setTextContentGetter(function() {
@@ -877,8 +908,12 @@ define([
             framework.localChange();
             updateCursor();
             editor.fire('cp-wc'); // Update word count
+            updateTOC(); // XXX throttle
         });
-        editor.on('change', framework.localChange);
+        editor.on('change', function () {
+            framework.localChange();
+            updateTOC(); // XXX throttle
+        });
 
         var wordCount = h('span.cp-app-pad-wordCount');
         $('.cke_toolbox_main').append(wordCount);
@@ -1077,6 +1112,7 @@ define([
                 var $ckeToolbar = $('#cke_1_top').find('.cke_toolbox_main');
                 $mainContainer.prepend($ckeToolbar.addClass('cke_reset_all'));
                 $contentContainer.append(h('div#cp-app-pad-comments'));
+                $contentContainer.prepend(h('div#cp-app-pad-toc'));
                 $ckeToolbar.find('.cke_button__image_icon').parent().hide();
             }).nThen(waitFor());
 
