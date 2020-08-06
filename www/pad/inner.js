@@ -638,7 +638,7 @@ define([
                     obj.el.scrollIntoView();
                 });
                 a.innerHTML = obj.title;
-                content.push(h('p.cp-pad-toc-'+level, ['• ',  a]));
+                content.push(h('p.cp-pad-toc-'+level, a));
             });
             $toc.html('').append(content);
         };
