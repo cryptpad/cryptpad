@@ -426,6 +426,42 @@ define([
         });
     };
 
+    var addTOCHideBtn = function(framework, $toc) {
+        // Expand / collapse the toolbar
+        var onClick = function(visible) {
+            framework._.sfCommon.setAttribute(['pad', 'showTOC'], visible);
+        };
+        framework._.sfCommon.getAttribute(['pad', 'showTOC'], function(err, data) {
+            var state = false;
+            if (($(window).height() >= 800 || $(window).width() >= 800) &&
+                (typeof(data) === "undefined" || data)) {
+                state = true;
+                $toc.show();
+            } else {
+                $toc.hide();
+            }
+            Messages.pad_tocHide = "TOC"; // XXX
+            var $tocButton = framework._.sfCommon.createButton('', true, {
+                drawer: false,
+                text: Messages.pad_tocHide,
+                name: 'pad_toc',
+                icon: 'fa-newspaper-o',
+            }, function () {
+                $tocButton.removeClass('cp-toolbar-button-active');
+                $toc.toggle();
+                state = $toc.is(':visible');
+                if (state) {
+                    $tocButton.addClass('cp-toolbar-button-active');
+                }
+                onClick(state);
+            });
+            framework._.toolbar.$bottomL.append($tocButton);
+            if (state) {
+                $tocButton.addClass('cp-toolbar-button-active');
+            }
+        });
+    };
+
     var displayMediaTags = function(framework, dom, mediaTagMap) {
         setTimeout(function() { // Just in case
             var tags = dom.querySelectorAll('media-tag:empty');
@@ -540,6 +576,7 @@ define([
         });
 
         var $toc = $('#cp-app-pad-toc');
+        addTOCHideBtn(framework, $toc);
 
         // My cursor
         var cursor = module.cursor = Cursor(inner);
