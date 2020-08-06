@@ -5,8 +5,9 @@ define([
     '/common/common-hash.js',
     '/common/hyperscript.js',
     '/common/common-interface.js',
+    '/common/common-ui-elements.js',
     '/customize/messages.js'
-], function($, Sortify, Util, Hash, h, UI, Messages) {
+], function($, Sortify, Util, Hash, h, UI, UIElements, Messages) {
     var Comments = {};
 
     /*
@@ -271,12 +272,6 @@ define([
                 submit
             ])
         ]);
-    };
-
-    var isVisible = function(el, $container) {
-        var size = $container.outerHeight();
-        var pos = el.getBoundingClientRect();
-        return (pos.bottom < size) && (pos.y > 0);
     };
 
     var redrawComments = function(Env) {
@@ -558,7 +553,7 @@ define([
 
                 // Scroll into view
                 if (!$last.length) { return; }
-                var visible = isVisible($last[0], Env.$inner);
+                var visible = UIElements.isVisible($last[0], Env.$inner);
                 if (!visible) { $last[0].scrollIntoView(); }
             };
 
@@ -574,7 +569,7 @@ define([
 
                 focusContent();
 
-                var visible = isVisible(div, Env.$container);
+                var visible = UIElements.isVisible(div, Env.$container);
                 if (!visible) { div.scrollIntoView(); }
             });
 

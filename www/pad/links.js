@@ -1,19 +1,28 @@
 define([
     'jquery',
     '/common/hyperscript.js',
+    '/common/common-ui-elements.js',
     '/customize/messages.js'
-], function ($, h, Messages) {
+], function ($, h, UIElements, Messages) {
 
     var onLinkClicked = function (e, inner) {
         var $target = $(e.target);
         if (!$target.is('a')) { return; }
         var href = $target.attr('href');
-        if (!href || href[0] === '#') { return; }
+        if (!href) { return; }
+        var $inner = $(inner);
+
         e.preventDefault();
         e.stopPropagation();
 
+        if (href[0] === '#') {
+            var anchor = $inner.find(href);
+            if (!anchor.length) { return; }
+            anchor[0].scrollIntoView();
+            return;
+        }
+
         var $iframe = $('html').find('iframe').contents();
-        var $inner = $(inner);
 
         var rect = e.target.getBoundingClientRect();
         var rect0 = inner.getBoundingClientRect();
