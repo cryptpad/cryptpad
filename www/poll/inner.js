@@ -794,6 +794,11 @@ define([
         var userDoc = JSON.stringify(proxy);
         if (userDoc === "" || userDoc === "{}") { isNew = true; }
 
+        if (APP.toolbar && APP.rt.cpCnInner) {
+            // Check if we have a new chainpad instance
+            APP.toolbar.resetChainpad(APP.rt.cpCnInner.chainpad);
+        }
+
         if (!isNew) {
             if (proxy.info) {
                 // Migration
@@ -1061,13 +1066,6 @@ define([
         common.openPadChat(function () {});
 
         UI.removeLoadingScreen();
-        var privateDat = metadataMgr.getPrivateData();
-        var skipTemp = Util.find(privateDat,
-            ['settings', 'general', 'creation', 'noTemplate']);
-        var skipCreation = Util.find(privateDat, ['settings', 'general', 'creation', 'skip']);
-        if (isNew && (!AppConfig.displayCreationScreen || (!skipTemp && skipCreation))) {
-            common.openTemplatePicker();
-        }
     };
 
     var onError = function (info) {

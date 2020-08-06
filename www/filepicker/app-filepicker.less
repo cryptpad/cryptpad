@@ -27,8 +27,6 @@
             }
 
             .cp-filepicker-content-element {
-                @darker: darken(@colortheme_modal-fg, 30%);
-
                 width: 125px;
                 //min-width: 200px;
                 //height: 1em;
@@ -45,8 +43,9 @@
                 cursor: pointer;
 
                 background-color: @colortheme_modal-bg;
-                box-shadow: 2px 2px 5px #000;
-                color: @darker;
+
+                border: 1px solid @colortheme_logo-2;
+                color: @colortheme_logo-2;
 
                 transition: all 0.1s;
 

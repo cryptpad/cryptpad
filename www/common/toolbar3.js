@@ -7,10 +7,11 @@ define([
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/common-feedback.js',
+    '/common/inner/common-mediatag.js',
     '/common/hyperscript.js',
     '/common/messenger-ui.js',
     '/customize/messages.js',
-], function ($, Config, ApiConfig, UIElements, UI, Hash, Util, Feedback, h,
+], function ($, Config, ApiConfig, UIElements, UI, Hash, Util, Feedback, MT, h,
 MessengerUI, Messages) {
     var Common;
 
@@ -345,17 +346,9 @@ MessengerUI, Messages) {
                     window.open(origin+'/profile/#' + data.profile);
                 });
             }
-            if (data.avatar && UIElements.getAvatar(data.avatar)) {
-                $span.append(UIElements.getAvatar(data.avatar));
+            Common.displayAvatar($span, data.avatar, name, function () {
                 $span.append($rightCol);
-            } else {
-                Common.displayAvatar($span, data.avatar, name, function ($img) {
-                    if (data.avatar && $img && $img.length) {
-                        UIElements.setAvatar(data.avatar, $img[0].outerHTML);
-                    }
-                    $span.append($rightCol);
-                });
-            }
+            });
             $span.data('uid', data.uid);
             $editUsersList.append($span);
         });
@@ -1329,6 +1322,15 @@ MessengerUI, Messages) {
             var show = Util.find(privateData, ['settings', 'general', 'cursor', 'show']);
             if (show === false) { return; }
             showColors = true;
+        };
+
+        // If we had to create a new chainpad instance, reset the one used in the toolbar
+        toolbar.resetChainpad = function (chainpad) {
+            if (config.realtime !== chainpad) {
+                config.realtime = chainpad;
+                config.realtime.onPatch(ks(toolbar, config));
+                config.realtime.onMessage(ks(toolbar, config, true));
+            }
         };
 
         // On log out, remove permanently the realtime elements of the toolbar

@@ -10,6 +10,7 @@ define([
     '/common/common-feedback.js',
 
     '/common/inner/access.js',
+    '/common/inner/properties.js',
 
     '/bower_components/nthen/index.js',
     '/common/hyperscript.js',
@@ -27,6 +28,7 @@ define([
     Constants,
     Feedback,
     Access,
+    Properties,
     nThen,
     h,
     ProxyManager,
@@ -78,6 +80,7 @@ define([
     var faCollapseAll = 'fa-minus-square-o';
     var faShared = 'fa-shhare-alt';
     var faReadOnly = 'fa-eye';
+    var faPreview = 'fa-eye';
     var faOpenInCode = 'cptools-code';
     var faRename = 'fa-pencil';
     var faColor = 'cptools-palette';
@@ -315,6 +318,10 @@ define([
                 'style': 'display:block;position:static;margin-bottom:5px;'
             }, [
                 h('span.cp-app-drive-context-noAction.dropdown-item.disabled', Messages.fc_noAction || "No action possible"),
+                h('li', h('a.cp-app-drive-context-preview.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': faPreview,
+                }, Messages.pad_mediatagPreview)),
                 h('li', h('a.cp-app-drive-context-open.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faFolderOpen,
@@ -536,10 +543,10 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var sframeChan = common.getSframeChannel();
         var priv = metadataMgr.getPrivateData();
-        var user = metadataMgr.getUserData();
 
         // Initialization
         Util.extend(APP, driveConfig.APP);
+        APP.$limit = driveConfig.$limit;
         var proxy = driveConfig.proxy;
         var folders = driveConfig.folders;
         var files = proxy.drive;
@@ -584,11 +591,6 @@ define([
         var $trashContextMenu = $("#cp-app-drive-context-trash");
 
         // TOOLBAR
-
-        /* add a "change username" button */
-        if (!APP.readOnly) {
-            APP.$displayName.text(user.name || Messages.anonymous);
-        }
 
         // DRIVE
         var currentPath = APP.currentPath = LS.getLastOpenedFolder();
@@ -1045,12 +1047,57 @@ define([
             return ret;
         };
 
-        var openFile = function (el, isRo) {
+        var previewMediaTag = function (data) {
+            var mts = [];
+            $content.find('.cp-app-drive-element.cp-border-color-file').each(function (i, el) {
+                var path = $(el).data('path');
+                var id = manager.find(path);
+                if (!id) { return; }
+                var _data = manager.getFileData(id);
+                if (!_data || _data.channel < 48) { return; }
+                mts.push({
+                    channel: _data.channel,
+                    href: _data.href,
+                    password: _data.password
+                });
+            });
+
+            // Find initial position
+            var idx = -1;
+            mts.some(function (obj, i) {
+                if (obj.channel === data.channel) {
+                    idx = i;
+                    return true;
+                }
+            });
+            if (idx === -1) {
+                mts.unshift({
+                    href: data.href,
+                    password: data.password
+                });
+                idx = 0;
+            }
+
+            common.getMediaTagPreview(mts, idx);
+        };
+
+        // `app`: true (force open wiht the app), false (force open in preview),
+        //        falsy (open in preview if default is not using the app)
+        var defaultInApp = ['application/pdf'];
+        var openFile = function (el, isRo, app) {
             var data = manager.getFileData(el);
             if (!data || (!data.href && !data.roHref)) {
                 return void logError("Missing data for the file", el, data);
             }
+
             var href = isRo ? data.roHref : (data.href || data.roHref);
+            var parsed = Hash.parsePadUrl(href);
+
+            if (parsed.hashData && parsed.hashData.type === 'file' && !app
+                    && (defaultInApp.indexOf(data.fileType) === -1 || app === false)) {
+                return void previewMediaTag(data);
+            }
+
             var priv = metadataMgr.getPrivateData();
             var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
             if (useUnsafe !== false) { // true of undefined: use unsafe links
@@ -1058,7 +1105,6 @@ define([
             }
 
             // Get hidden hash
-            var parsed = Hash.parsePadUrl(href);
             var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
             var opts = {};
             if (isRo) { opts.view = true; }
@@ -1178,6 +1224,7 @@ define([
                     if (!$element.is('.cp-border-color-file')) {
                         //hide.push('download');
                         hide.push('openincode');
+                        hide.push('preview');
                     }
                     if ($element.is('.cp-border-color-sheet')) {
                         hide.push('download');
@@ -1194,6 +1241,9 @@ define([
                         var metadata = manager.getFileData(manager.find(path));
                         if (!metadata || !Util.isPlainTextFile(metadata.fileType, metadata.title)) {
                             hide.push('openincode');
+                        }
+                        if (metadata.channel && metadata.channel.length < 48) {
+                            hide.push('preview');
                         }
                         if (!metadata.channel || metadata.channel.length > 32 || metadata.rtChannel) {
                             hide.push('makeacopy'); // Not for blobs
@@ -1263,6 +1313,7 @@ define([
                     hide.push('savelocal');
                     hide.push('openincode'); // can't because of race condition
                     hide.push('makeacopy');
+                    hide.push('preview');
                 }
                 if (containsFolder && paths.length > 1) {
                     // Cannot open multiple folders
@@ -1279,12 +1330,12 @@ define([
                     show = ['newfolder', 'newsharedfolder', 'uploadfiles', 'uploadfolder', 'newdoc'];
                     break;
                 case 'tree':
-                    show = ['open', 'openro', 'openincode', 'expandall', 'collapseall',
+                    show = ['open', 'openro', 'preview', 'openincode', 'expandall', 'collapseall',
                             'color', 'download', 'share', 'savelocal', 'rename', 'delete', 'makeacopy',
                             'deleteowned', 'removesf', 'access', 'properties', 'hashtag'];
                     break;
                 case 'default':
-                    show = ['open', 'openro', 'share', 'openparent', 'delete', 'deleteowned', 'properties', 'access', 'hashtag', 'makeacopy'];
+                    show = ['open', 'openro', 'preview', 'share', 'openparent', 'delete', 'deleteowned', 'properties', 'access', 'hashtag', 'makeacopy'];
                     break;
                 case 'trashtree': {
                     show = ['empty'];
@@ -2895,17 +2946,18 @@ define([
             $element.append($('<span>', {'class': 'cp-app-drive-element-name'})
                 .text(Messages.fm_newFile));
             $element.click(function () {
-                var $modal = UIElements.createModal({
+                var modal = UI.createModal({
                     id: 'cp-app-drive-new-ghost-dialog',
                     $body: $('body')
                 });
+                var $modal = modal.$modal;
                 var $title = $('<h3>').text(Messages.fm_newFile);
                 var $description = $('<p>').text(Messages.fm_newButtonTitle);
                 $modal.find('.cp-modal').append($title);
                 $modal.find('.cp-modal').append($description);
                 var $content = createNewPadIcons($modal, isInRoot);
                 $modal.find('.cp-modal').append($content);
-                window.setTimeout(function () { $modal.show(); });
+                window.setTimeout(function () { modal.show(); });
                 addNewPadHandlers($modal, isInRoot);
             });
         };
@@ -3873,7 +3925,7 @@ define([
                 var ro = folders[el] && folders[el].version >= 2;
                 if (!ro) { opts.noReadOnly = true; }
             }
-            UIElements.getProperties(common, opts, cb);
+            Properties.getPropertiesModal(common, opts, cb);
         };
         APP.getAccess = function (el, cb) {
             if (!manager.isFile(el) && !manager.isSharedFolder(el)) {
@@ -3983,11 +4035,15 @@ define([
             else if ($this.hasClass('cp-app-drive-context-deleteowned')) {
                 deleteOwnedPaths(paths);
             }
+            else if ($this.hasClass('cp-app-drive-context-preview')) {
+                if (paths.length !== 1) { return; }
+                el = manager.find(paths[0].path);
+                openFile(el, null, false);
+            }
             else if ($this.hasClass('cp-app-drive-context-open')) {
                 paths.forEach(function (p) {
-                    var $element = p.element;
-                    $element.click();
-                    $element.dblclick();
+                    var el = manager.find(p.path);
+                    openFile(el, false, true);
                 });
             }
             else if ($this.hasClass('cp-app-drive-context-openro')) {
@@ -4002,7 +4058,7 @@ define([
                     } else {
                         if (!el || manager.isFolder(el)) { return; }
                     }
-                    openFile(el, true);
+                    openFile(el, true, true);
                 });
             }
             else if ($this.hasClass('cp-app-drive-context-makeacopy')) {

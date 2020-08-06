@@ -8,27 +8,18 @@ define([
     '/common/common-constants.js',
     '/common/common-feedback.js',
     '/common/hyperscript.js',
-    '/common/media-tag.js',
     '/common/clipboard.js',
     '/customize/messages.js',
     '/customize/application_config.js',
     '/customize/pages.js',
     '/bower_components/nthen/index.js',
     '/common/inner/invitation.js',
+    '/common/visible.js',
 
     'css!/customize/fonts/cptools/style.css',
-    '/bower_components/croppie/croppie.min.js',
-    'css!/bower_components/croppie/croppie.css',
-], function ($, Config, Util, Hash, Language, UI, Constants, Feedback, h, MediaTag, Clipboard,
-             Messages, AppConfig, Pages, NThen, InviteInner) {
+], function ($, Config, Util, Hash, Language, UI, Constants, Feedback, h, Clipboard,
+             Messages, AppConfig, Pages, NThen, InviteInner, Visible) {
     var UIElements = {};
-
-    // Configure MediaTags to use our local viewer
-    if (MediaTag) {
-        MediaTag.setDefaultConfig('pdf', {
-            viewer: '/common/pdfjs/web/viewer.html'
-        });
-    }
 
     UIElements.prettySize = function (bytes) {
         var kB = Util.bytesToKilobytes(bytes);
@@ -99,857 +90,6 @@ define([
             });
         };
     };
-/*
-    var getPropertiesData = function (common, cb) {
-        var data = {};
-        NThen(function (waitFor) {
-            var base = common.getMetadataMgr().getPrivateData().origin;
-            common.getPadAttribute('', waitFor(function (err, val) {
-                if (err || !val) {
-                    waitFor.abort();
-                    return void cb(err || 'EEMPTY');
-                }
-                if (!val.fileType) {
-                    delete val.owners;
-                    delete val.expire;
-                }
-                Util.extend(data, val);
-                if (data.href) { data.href = base + data.href; }
-                if (data.roHref) { data.roHref = base + data.roHref; }
-            }));
-            common.getPadMetadata(null, waitFor(function (obj) {
-                if (obj && obj.error) { return; }
-                data.owners = obj.owners;
-                data.expire = obj.expire;
-                data.pending_owners = obj.pending_owners;
-            }));
-        }).nThen(function () {
-            cb(void 0, data);
-        });
-    };
-*/
-    var getPropertiesData = function (common, opts, cb) {
-        opts = opts || {};
-        var data = {};
-        NThen(function (waitFor) {
-            var base = common.getMetadataMgr().getPrivateData().origin;
-            common.getPadAttribute('', waitFor(function (err, val) {
-                if (err || !val) {
-                    waitFor.abort();
-                    return void cb(err || 'EEMPTY');
-                }
-                if (!val.fileType) {
-                    delete val.owners;
-                    delete val.expire;
-                }
-                Util.extend(data, val);
-                if (data.href) { data.href = base + data.href; }
-                if (data.roHref) { data.roHref = base + data.roHref; }
-            }), opts.href);
-
-            // If this is a file, don't try to look for metadata
-            if (opts.channel && opts.channel.length > 34) { return; }
-            common.getPadMetadata({
-                channel: opts.channel // optional, fallback to current pad
-            }, waitFor(function (obj) {
-                if (obj && obj.error) { return; }
-                data.owners = obj.owners;
-                data.expire = obj.expire;
-                data.pending_owners = obj.pending_owners;
-            }));
-        }).nThen(function () {
-            cb(void 0, data);
-        });
-    };
-
-
-/*
-    var createOwnerModal = function (common, data) {
-        var friends = common.getFriends(true);
-        var sframeChan = common.getSframeChannel();
-        var priv = common.getMetadataMgr().getPrivateData();
-        var user = common.getMetadataMgr().getUserData();
-        var edPublic = priv.edPublic;
-        var channel = data.channel;
-        var owners = data.owners || [];
-        var pending_owners = data.pending_owners || [];
-        var teams = priv.teams;
-        var teamOwner = data.teamId;
-
-        var redrawAll = function () {};
-
-        var div1 = h('div.cp-usergrid-user.cp-share-column.cp-ownership');
-        var div2 = h('div.cp-usergrid-user.cp-share-column.cp-ownership');
-        var $div1 = $(div1);
-        var $div2 = $(div2);
-
-        // Remove owner column
-        var drawRemove = function (pending) {
-            var _owners = {};
-            var o = (pending ? pending_owners : owners) || [];
-            o.forEach(function (ed) {
-                var f;
-                Object.keys(friends).some(function (c) {
-                    if (friends[c].edPublic === ed) {
-                        f = friends[c];
-                        return true;
-                    }
-                });
-                Object.keys(teams).some(function (id) {
-                    if (teams[id].edPublic === ed) {
-                        f = teams[id];
-                        f.teamId = id;
-                    }
-                });
-                if (ed === edPublic) {
-                    f = f || user;
-                    if (f.name) { f.edPublic = edPublic; }
-                }
-                _owners[ed] = f || {
-                    displayName: Messages._getKey('owner_unknownUser', [ed]),
-                    edPublic: ed,
-                };
-            });
-            var msg = pending ? Messages.owner_removePendingText
-                        : Messages.owner_removeText;
-            var removeCol = UIElements.getUserGrid(msg, {
-                common: common,
-                large: true,
-                data: _owners,
-                noFilter: true
-            }, function () {
-            });
-            var $div = $(removeCol.div);
-            // When clicking on the remove button, we check the selected users.
-            // If you try to remove yourself, we'll display an additional warning message
-            var btnMsg = pending ? Messages.owner_removePendingButton : Messages.owner_removeButton;
-            var removeButton = h('button.no-margin', btnMsg);
-            $(removeButton).click(function () {
-                // Check selection
-                var $sel = $div.find('.cp-usergrid-user.cp-selected');
-                var sel = $sel.toArray();
-                if (!sel.length) { return; }
-                var me = false;
-                var toRemove = sel.map(function (el) {
-                    var ed = $(el).attr('data-ed');
-                    if (!ed) { return; }
-                    if (teamOwner && teams[teamOwner] && teams[teamOwner].edPublic === ed) { me = true; }
-                    if (ed === edPublic && !teamOwner) { me = true; }
-                    return ed;
-                }).filter(function (x) { return x; });
-                NThen(function (waitFor) {
-                    var msg = me ? Messages.owner_removeMeConfirm : Messages.owner_removeConfirm;
-                    UI.confirm(msg, waitFor(function (yes) {
-                        if (!yes) {
-                            waitFor.abort();
-                            return;
-                        }
-                    }));
-                }).nThen(function (waitFor) {
-                    // Send the command
-                    sframeChan.query('Q_SET_PAD_METADATA', {
-                        channel: channel,
-                        command: pending ? 'RM_PENDING_OWNERS' : 'RM_OWNERS',
-                        value: toRemove,
-                        teamId: teamOwner
-                    }, waitFor(function (err, res) {
-                        err = err || (res && res.error);
-                        if (err) {
-                            waitFor.abort();
-                            redrawAll();
-                            var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
-                                                                          : Messages.error;
-                            return void UI.warn(text);
-                        }
-                        UI.log(Messages.saved);
-                    }));
-                }).nThen(function (waitFor) {
-                    sel.forEach(function (el) {
-                        var curve = $(el).attr('data-curve');
-                        var friend = curve === user.curvePublic ? user : friends[curve];
-                        if (!friend) { return; }
-                        common.mailbox.sendTo("RM_OWNER", {
-                            channel: channel,
-                            title: data.title,
-                            pending: pending
-                        }, {
-                            channel: friend.notifications,
-                            curvePublic: friend.curvePublic
-                        }, waitFor());
-                    });
-                }).nThen(function () {
-                    redrawAll();
-                });
-            });
-            $div.append(h('p', removeButton));
-            return $div;
-        };
-
-        // Add owners column
-        var drawAdd = function () {
-            var $div = $(h('div.cp-share-column'));
-            var _friends = JSON.parse(JSON.stringify(friends));
-            Object.keys(_friends).forEach(function (curve) {
-                if (owners.indexOf(_friends[curve].edPublic) !== -1 ||
-                    pending_owners.indexOf(_friends[curve].edPublic) !== -1 ||
-                    !_friends[curve].notifications) {
-                    delete _friends[curve];
-                }
-            });
-            var addCol = UIElements.getUserGrid(Messages.owner_addText, {
-                common: common,
-                large: true,
-                data: _friends
-            }, function () {
-                //console.log(arguments);
-            });
-            $div.append(addCol.div);
-
-            var teamsData = Util.tryParse(JSON.stringify(priv.teams)) || {};
-            Object.keys(teamsData).forEach(function (id) {
-                var t = teamsData[id];
-                t.teamId = id;
-                if (owners.indexOf(t.edPublic) !== -1 || pending_owners.indexOf(t.edPublic) !== -1) {
-                    delete teamsData[id];
-                }
-            });
-            var teamsList = UIElements.getUserGrid(Messages.owner_addTeamText, {
-                common: common,
-                large: true,
-                noFilter: true,
-                data: teamsData
-            }, function () {});
-            $div.append(teamsList.div);
-
-            // When clicking on the add button, we get the selected users.
-            var addButton = h('button.no-margin', Messages.owner_addButton);
-            $(addButton).click(function () {
-                // Check selection
-                var $sel = $div.find('.cp-usergrid-user.cp-selected');
-                var sel = $sel.toArray();
-                if (!sel.length) { return; }
-                var toAdd = sel.map(function (el) {
-                    var curve = $(el).attr('data-curve');
-                    // If the pad is woned by a team, we can transfer ownership to ourselves
-                    if (curve === user.curvePublic && teamOwner) { return priv.edPublic; }
-                    var friend = friends[curve];
-                    if (!friend) { return; }
-                    return friend.edPublic;
-                }).filter(function (x) { return x; });
-                var toAddTeams = sel.map(function (el) {
-                    var team = teamsData[$(el).attr('data-teamid')];
-                    if (!team || !team.edPublic) { return; }
-                    return {
-                        edPublic: team.edPublic,
-                        id: $(el).attr('data-teamid')
-                    };
-                }).filter(function (x) { return x; });
-
-                NThen(function (waitFor) {
-                    var msg = Messages.owner_addConfirm;
-                    UI.confirm(msg, waitFor(function (yes) {
-                        if (!yes) {
-                            waitFor.abort();
-                            return;
-                        }
-                    }));
-                }).nThen(function (waitFor) {
-                    // Add one of our teams as an owner
-                    if (toAddTeams.length) {
-                        // Send the command
-                        sframeChan.query('Q_SET_PAD_METADATA', {
-                            channel: channel,
-                            command: 'ADD_OWNERS',
-                            value: toAddTeams.map(function (obj) { return obj.edPublic; }),
-                            teamId: teamOwner
-                        }, waitFor(function (err, res) {
-                            err = err || (res && res.error);
-                            if (err) {
-                                waitFor.abort();
-                                redrawAll();
-                                var text = err === "INSUFFICIENT_PERMISSIONS" ?
-                                        Messages.fm_forbidden : Messages.error;
-                                return void UI.warn(text);
-                            }
-                            var isTemplate = priv.isTemplate || data.isTemplate;
-                            toAddTeams.forEach(function (obj) {
-                                sframeChan.query('Q_STORE_IN_TEAM', {
-                                    href: data.href || data.rohref,
-                                    password: data.password,
-                                    path: isTemplate ? ['template'] : undefined,
-                                    title: data.title || '',
-                                    teamId: obj.id
-                                }, waitFor(function (err) {
-                                    if (err) { return void console.error(err); }
-                                }));
-                            });
-                        }));
-                    }
-                }).nThen(function (waitFor) {
-                    // Offer ownership to a friend
-                    if (toAdd.length) {
-                        // Send the command
-                        sframeChan.query('Q_SET_PAD_METADATA', {
-                            channel: channel,
-                            command: 'ADD_PENDING_OWNERS',
-                            value: toAdd,
-                            teamId: teamOwner
-                        }, waitFor(function (err, res) {
-                            err = err || (res && res.error);
-                            if (err) {
-                                waitFor.abort();
-                                redrawAll();
-                                var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
-                                                                              : Messages.error;
-                                return void UI.warn(text);
-                            }
-                        }));
-                    }
-                }).nThen(function (waitFor) {
-                    sel.forEach(function (el) {
-                        var curve = $(el).attr('data-curve');
-                        var friend = curve === user.curvePublic ? user : friends[curve];
-                        if (!friend) { return; }
-                        common.mailbox.sendTo("ADD_OWNER", {
-                            channel: channel,
-                            href: data.href,
-                            password: data.password,
-                            title: data.title
-                        }, {
-                            channel: friend.notifications,
-                            curvePublic: friend.curvePublic
-                        }, waitFor());
-                    });
-                }).nThen(function () {
-                    redrawAll();
-                    UI.log(Messages.saved);
-                });
-            });
-            $div.append(h('p', addButton));
-            return $div;
-        };
-
-        redrawAll = function (md) {
-            var todo = function (obj) {
-                if (obj && obj.error) { return; }
-                owners = obj.owners || [];
-                pending_owners = obj.pending_owners || [];
-                $div1.empty();
-                $div2.empty();
-                $div1.append(drawRemove(false)).append(drawRemove(true));
-                $div2.append(drawAdd());
-            };
-
-            if (md) { return void todo(md); }
-            common.getPadMetadata({
-                channel: data.channel
-            }, todo);
-        };
-
-        $div1.append(drawRemove(false)).append(drawRemove(true));
-        $div2.append(drawAdd());
-
-        var handler = sframeChan.on('EV_RT_METADATA', function (md) {
-            if (!$div1.length) {
-                return void handler.stop();
-            }
-            owners = md.owners || [];
-            pending_owners = md.pending_owners || [];
-            redrawAll(md);
-        });
-
-        // Create modal
-        var link = h('div.cp-share-columns', [
-            div1,
-            div2
-            // drawRemove()[0],
-            //drawAdd()[0]
-        ]);
-        var linkButtons = [{
-            className: 'cancel',
-            name: Messages.filePicker_close,
-            onClick: function () {},
-            keys: [27]
-        }];
-        return UI.dialog.customModal(link, {buttons: linkButtons});
-    };
-*/
-/*
-    var getRightsProperties = function (common, data, cb) {
-        var $div = $('<div>');
-        if (!data) { return void cb(void 0, $div); }
-
-        var draw = function () {
-            var $d = $('<div>');
-            var priv = common.getMetadataMgr().getPrivateData();
-            var user = common.getMetadataMgr().getUserData();
-            var edPublic = priv.edPublic;
-            var owned = false;
-            var _owners = {};
-            if (data.owners && data.owners.length) {
-                if (data.owners.indexOf(edPublic) !== -1) {
-                    owned = true;
-                } else {
-                    Object.keys(priv.teams || {}).some(function (id) {
-                        var team = priv.teams[id] || {};
-                        if (team.viewer) { return; }
-                        if (data.owners.indexOf(team.edPublic) === -1) { return; }
-                        owned = Number(id);
-                        return true;
-                    });
-                }
-                var strangers = 0;
-                data.owners.forEach(function (ed) {
-                    // If a friend is an owner, add their name to the list
-                    // otherwise, increment the list of strangers
-
-                    // Our edPublic? print "Yourself"
-                    if (ed === edPublic) {
-                        _owners[ed] = {
-                            selected: true,
-                            name: user.name,
-                            avatar: user.avatar
-                        };
-                        return;
-                    }
-                    // One of our teams? print the team name
-                    if (Object.keys(priv.teams || {}).some(function (id) {
-                        var team = priv.teams[id] || {};
-                        if (team.edPublic !== ed) { return; }
-                        _owners[ed] = {
-                            name: team.name,
-                            avatar: team.avatar
-                        };
-                        return true;
-                    })) {
-                        return;
-                    }
-                    // One of our friends? print the friend name
-                    if (Object.keys(priv.friends || {}).some(function (c) {
-                        var friend = priv.friends[c] || {};
-                        if (friend.edPublic !== ed || c === 'me') { return; }
-                        _owners[friend.edPublic] = {
-                            name: friend.displayName,
-                            avatar: friend.avatar
-                        };
-                        return true;
-                    })) {
-                        return;
-                    }
-                    // Otherwise it's a stranger
-                    strangers++;
-                });
-                if (strangers) {
-                    _owners['stangers'] = {
-                        name: Messages._getKey('properties_unknownUser', [strangers]),
-                    };
-                }
-            }
-            var _ownersGrid = UIElements.getUserGrid(Messages.creation_owners, {
-                common: common,
-                noSelect: true,
-                data: _owners,
-                large: true
-            }, function () {});
-            if (_ownersGrid && Object.keys(_owners).length) {
-                $d.append(_ownersGrid.div);
-            } else {
-                $d.append([
-                    h('label', Messages.creation_owners),
-                ]);
-                $d.append(UI.dialog.selectable(Messages.creation_noOwner, {
-                    id: 'cp-app-prop-owners',
-                }));
-
-            }
-
-            var parsed;
-            if (data.href || data.roHref) {
-                parsed = Hash.parsePadUrl(data.href || data.roHref);
-            }
-            if (owned && parsed.hashData.type === 'pad') {
-                var manageOwners = h('button.no-margin', Messages.owner_openModalButton);
-                $(manageOwners).click(function () {
-                    data.teamId = typeof(owned) !== "boolean" ? owned : undefined;
-                    var modal = createOwnerModal(common, data);
-                    UI.openCustomModal(modal, {
-                        wide: true,
-                    });
-                });
-                $d.append(h('p', manageOwners));
-            }
-
-            if (!data.noExpiration) {
-                var expire = Messages.creation_expireFalse;
-                if (data.expire && typeof (data.expire) === "number") {
-                    expire = new Date(data.expire).toLocaleString();
-                }
-                $('<label>', {'for': 'cp-app-prop-expire'}).text(Messages.creation_expiration)
-                    .appendTo($d);
-                $d.append(UI.dialog.selectable(expire, {
-                    id: 'cp-app-prop-expire',
-                }));
-            }
-
-            if (!data.noPassword) {
-                var hasPassword = data.password;
-                var $pwLabel = $('<label>', {'for': 'cp-app-prop-password'}).text(Messages.creation_passwordValue)
-                                .hide().appendTo($d);
-                var password = UI.passwordInput({
-                    id: 'cp-app-prop-password',
-                    readonly: 'readonly'
-                });
-                var $password = $(password).hide();
-                var $pwInput = $password.find('.cp-password-input');
-                $pwInput.val(data.password).click(function () {
-                    $pwInput[0].select();
-                });
-                $d.append(password);
-
-                if (hasPassword) {
-                    $pwLabel.show();
-                    $password.css('display', 'flex');
-                }
-
-                // In the properties, we should have the edit href if we know it.
-                // We should know it because the pad is stored, but it's better to check...
-                if (!data.noEditPassword && owned && data.href) { // FIXME SHEET fix password change for sheets
-                    var sframeChan = common.getSframeChannel();
-
-                    var isOO = parsed.type === 'sheet';
-                    var isFile = parsed.hashData.type === 'file';
-                    var isSharedFolder = parsed.type === 'drive';
-
-                    var changePwTitle = Messages.properties_changePassword;
-                    var changePwConfirm = isFile ? Messages.properties_confirmChangeFile : Messages.properties_confirmChange;
-                    if (!hasPassword) {
-                        changePwTitle = Messages.properties_addPassword;
-                        changePwConfirm = isFile ? Messages.properties_confirmNewFile : Messages.properties_confirmNew;
-                    }
-                    $('<label>', {'for': 'cp-app-prop-change-password'})
-                        .text(changePwTitle).appendTo($d);
-                    var newPassword = UI.passwordInput({
-                        id: 'cp-app-prop-change-password',
-                        style: 'flex: 1;'
-                    });
-                    var passwordOk = h('button', Messages.properties_changePasswordButton);
-                    var changePass = h('span.cp-password-change-container', [
-                        newPassword,
-                        passwordOk
-                    ]);
-                    var pLocked = false;
-                    $(passwordOk).click(function () {
-                        var newPass = $(newPassword).find('input').val();
-                        if (data.password === newPass ||
-                            (!data.password && !newPass)) {
-                            return void UI.alert(Messages.properties_passwordSame);
-                        }
-                        if (pLocked) { return; }
-                        pLocked = true;
-                        UI.confirm(changePwConfirm, function (yes) {
-                            if (!yes) { pLocked = false; return; }
-                            $(passwordOk).html('').append(h('span.fa.fa-spinner.fa-spin', {style: 'margin-left: 0'}));
-                            var q = isFile ? 'Q_BLOB_PASSWORD_CHANGE' :
-                                        (isOO ? 'Q_OO_PASSWORD_CHANGE' : 'Q_PAD_PASSWORD_CHANGE');
-
-                            // If this is a file password change, register to the upload events:
-                            // * if there is a pending upload, ask if we shoudl interrupt
-                            // * display upload progress
-                            var onPending;
-                            var onProgress;
-                            if (isFile) {
-                                onPending = sframeChan.on('Q_BLOB_PASSWORD_CHANGE_PENDING', function (data, cb) {
-                                    onPending.stop();
-                                    UI.confirm(Messages.upload_uploadPending, function (yes) {
-                                        cb({cancel: yes});
-                                    });
-                                });
-                                onProgress = sframeChan.on('EV_BLOB_PASSWORD_CHANGE_PROGRESS', function (data) {
-                                    if (typeof (data) !== "number") { return; }
-                                    var p = Math.round(data);
-                                    $(passwordOk).text(p + '%');
-                                });
-                            }
-
-                            sframeChan.query(q, {
-                                teamId: typeof(owned) !== "boolean" ? owned : undefined,
-                                href: data.href,
-                                password: newPass
-                            }, function (err, data) {
-                                $(passwordOk).text(Messages.properties_changePasswordButton);
-                                pLocked = false;
-                                if (err || data.error) {
-                                    console.error(err || data.error);
-                                    return void UI.alert(Messages.properties_passwordError);
-                                }
-                                UI.findOKButton().click();
-
-                                $pwLabel.show();
-                                $password.css('display', 'flex');
-                                $pwInput.val(newPass);
-
-                                // If the current document is a file or if we're changing the password from a drive,
-                                // we don't have to reload the page at the end.
-                                // Tell the user the password change was successful and abort
-                                if (isFile || priv.app !== parsed.type) {
-                                    if (onProgress && onProgress.stop) { onProgress.stop(); }
-                                    $(passwordOk).text(Messages.properties_changePasswordButton);
-                                    var alertMsg = data.warning ? Messages.properties_passwordWarningFile
-                                                                : Messages.properties_passwordSuccessFile;
-                                    return void UI.alert(alertMsg, undefined, {force: true});
-                                }
-
-                                // Pad password changed: update the href
-                                // Use hidden hash if needed (we're an owner of this pad so we know it is stored)
-                                var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
-                                var href = (priv.readOnly && data.roHref) ? data.roHref : data.href;
-                                if (useUnsafe === false) {
-                                    var newParsed = Hash.parsePadUrl(href);
-                                    var newSecret = Hash.getSecrets(newParsed.type, newParsed.hash, newPass);
-                                    var newHash = Hash.getHiddenHashFromKeys(parsed.type, newSecret, {});
-                                    href = Hash.hashToHref(newHash, parsed.type);
-                                }
-
-                                if (data.warning) {
-                                    return void UI.alert(Messages.properties_passwordWarning, function () {
-                                        common.gotoURL(href);
-                                    }, {force: true});
-                                }
-                                return void UI.alert(Messages.properties_passwordSuccess, function () {
-                                    if (!isSharedFolder) {
-                                        common.gotoURL(href);
-                                    }
-                                }, {force: true});
-                            });
-                        });
-                    });
-                    $d.append(changePass);
-                }
-            }
-            return $d;
-        };
-
-        var sframeChan = common.getSframeChannel();
-        var handler = sframeChan.on('EV_RT_METADATA', function (md) {
-            if (!$div.length) {
-                handler.stop();
-                return;
-            }
-            md = JSON.parse(JSON.stringify(md));
-            data.owners = md.owners;
-            data.expire = md.expire;
-            data.pending_owners = md.pending_owners;
-            $div.empty();
-            $div.append(draw());
-        });
-        $div.append(draw());
-
-        cb(void 0, $div);
-    };
-*/
-
-    var getPadProperties = function (common, data, opts, cb) {
-        opts = opts || {};
-        var $d = $('<div>');
-        if (!data) { return void cb(void 0, $d); }
-
-        var priv = common.getMetadataMgr().getPrivateData();
-        var edPublic = priv.edPublic;
-
-        if (data.href) {
-            $('<label>', {'for': 'cp-app-prop-link'}).text(Messages.editShare).appendTo($d);
-            $d.append(UI.dialog.selectable(data.href, {
-                id: 'cp-app-prop-link',
-            }));
-        }
-
-        if (data.roHref && !opts.noReadOnly) {
-            $('<label>', {'for': 'cp-app-prop-rolink'}).text(Messages.viewShare).appendTo($d);
-            $d.append(UI.dialog.selectable(data.roHref, {
-                id: 'cp-app-prop-rolink',
-            }));
-        }
-
-        if (data.tags && Array.isArray(data.tags)) {
-            $d.append(h('div.cp-app-prop', [Messages.fm_prop_tagsList, h('br'), h('span.cp-app-prop-content', data.tags.join(', '))]));
-        }
-
-        if (data.ctime) {
-            $d.append(h('div.cp-app-prop', [Messages.fm_creation,  h('br'), h('span.cp-app-prop-content', new Date(data.ctime).toLocaleString())]));
-        }
-
-        if (data.atime) {
-            $d.append(h('div.cp-app-prop', [Messages.fm_lastAccess,  h('br'), h('span.cp-app-prop-content', new Date(data.atime).toLocaleString())]));
-        }
-
-        var owned = false;
-        if (common.isLoggedIn()) {
-            if (Array.isArray(data.owners)) {
-                if (data.owners.indexOf(edPublic) !== -1) {
-                    owned = true;
-                } else {
-                    Object.keys(priv.teams || {}).some(function (id) {
-                        var team = priv.teams[id] || {};
-                        if (team.viewer) { return; }
-                        if (data.owners.indexOf(team.edPublic) === -1) { return; }
-                        owned = Number(id);
-                        return true;
-                    });
-                }
-            }
-            // check the size of this file...
-            var bytes = 0;
-            var historyBytes;
-            var chan = [data.channel];
-            if (data.rtChannel) { chan.push(data.rtChannel); }
-            if (data.lastVersion) { chan.push(Hash.hrefToHexChannelId(data.lastVersion)); }
-            var channels = chan.filter(function (c) { return c.length === 32; }).map(function (id) {
-                if (id === data.rtChannel && data.lastVersion && data.lastCpHash) {
-                    return {
-                        channel: id,
-                        lastKnownHash: data.lastCpHash
-                    };
-                }
-                return {
-                    channel: id
-                };
-            });
-            var history = common.makeUniversal('history');
-            var trimChannels = [];
-            NThen(function (waitFor) {
-                chan.forEach(function (c) {
-                    common.getFileSize(c, waitFor(function (e, _bytes) {
-                        if (e) {
-                            // there was a problem with the RPC
-                            console.error(e);
-                        }
-                        bytes += _bytes;
-                    }));
-                });
-
-                if (!owned) { return; }
-                history.execCommand('GET_HISTORY_SIZE', {
-                    pad: true,
-                    channels: channels,
-                    teamId: typeof(owned) === "number" && owned
-                }, waitFor(function (obj) {
-                    if (obj && obj.error) { return; }
-                    historyBytes = obj.size;
-                    trimChannels = obj.channels;
-                }));
-            }).nThen(function () {
-                if (bytes === 0) { return void cb(void 0, $d); }
-                var formatted = UIElements.prettySize(bytes);
-
-                if (!owned || !historyBytes || historyBytes > bytes || historyBytes < 0) {
-                    $d.append(h('div.cp-app-prop', [
-                        Messages.upload_size,
-                        h('br'),
-                        h('span.cp-app-prop-content', formatted)
-                    ]));
-                    return void cb(void 0, $d);
-                }
-
-
-                var p = Math.round((historyBytes / bytes) * 100);
-                var historyPrettySize = UIElements.prettySize(historyBytes);
-                var contentsPrettySize = UIElements.prettySize(bytes - historyBytes);
-                var button;
-                var spinner = UI.makeSpinner();
-                var size = h('div.cp-app-prop', [
-                    Messages.upload_size,
-                    h('br'),
-                    h('div.cp-app-prop-size-container', [
-                        h('div.cp-app-prop-size-history', { style: 'width:'+p+'%;' })
-                    ]),
-                    h('div.cp-app-prop-size-legend', [
-                        h('div.cp-app-prop-history-size', [
-                            h('span.cp-app-prop-history-size-color'),
-                            h('span.cp-app-prop-content', Messages._getKey('historyTrim_historySize', [historyPrettySize]))
-                        ]),
-                        h('div.cp-app-prop-contents-size', [
-                            h('span.cp-app-prop-contents-size-color'),
-                            h('span.cp-app-prop-content', Messages._getKey('historyTrim_contentsSize', [contentsPrettySize]))
-                        ]),
-                    ]),
-                    button = h('button.btn.btn-danger-alt.no-margin', Messages.trimHistory_button),
-                    spinner.spinner
-                ]);
-                $d.append(size);
-
-                var $button = $(button);
-                UI.confirmButton(button, {
-                    classes: 'btn-danger'
-                }, function () {
-                    $button.remove();
-                    spinner.spin();
-                    history.execCommand('TRIM_HISTORY', {
-                        pad: true,
-                        channels: trimChannels,
-                        teamId: typeof(owned) === "number" && owned
-                    }, function (obj) {
-                        spinner.hide();
-                        if (obj && obj.error) {
-                            $(size).append(h('div.alert.alert-danger', Messages.trimHistory_error));
-                            return;
-                        }
-                        $(size).remove();
-                        var formatted = UIElements.prettySize(bytes - historyBytes);
-                        $d.append(h('div.cp-app-prop', [
-                            Messages.upload_size,
-                            h('br'),
-                            h('span.cp-app-prop-content', formatted)
-                        ]));
-                        $d.append(h('div.alert.alert-success', Messages.trimHistory_success));
-                    });
-                });
-
-                cb(void 0, $d);
-            });
-        } else {
-            cb(void 0, $d);
-        }
-
-
-    };
-
-    UIElements.getProperties = function (common, opts, cb) {
-        var data;
-        var content;
-        var button = [{
-            className: 'cancel',
-            name: Messages.filePicker_close,
-            onClick: function () {},
-            keys: [13,27]
-        }];
-        NThen(function (waitFor) {
-            getPropertiesData(common, opts, waitFor(function (e, _data) {
-                if (e) {
-                    waitFor.abort();
-                    return void cb(e);
-                }
-                data = _data;
-            }));
-        }).nThen(function (waitFor) {
-            getPadProperties(common, data, opts, waitFor(function (e, c) {
-                if (e) {
-                    waitFor.abort();
-                    return void cb(e);
-                }
-                content = UI.dialog.customModal(c[0], {
-                    buttons: button
-                });
-            }));
-        }).nThen(function () {
-            var tabs = UI.dialog.tabs([{
-                title: Messages.fc_prop,
-                icon: "fa fa-info-circle",
-                content: content
-            }]);
-            var modal = UI.openCustomModal(tabs);
-            cb (void 0, modal);
-        });
-    };
 
     UIElements.getUserGrid = function (label, config, onSelect) {
         var common = config.common;
@@ -960,7 +100,7 @@ define([
             var data = users[key];
             var name = data.displayName || data.name || Messages.anonymous;
             var avatar = h('span.cp-usergrid-avatar.cp-avatar');
-            UIElements.displayAvatar(common, $(avatar), data.avatar, name);
+            common.displayAvatar($(avatar), data.avatar, name);
             var removeBtn, el;
             if (config.remove) {
                 removeBtn = h('span.fa.fa-times');
@@ -2452,14 +1592,9 @@ define([
                 .text(Messages.accessButton))
                 .click(common.prepareFeedback(type))
                 .click(function () {
-                    common.isPadStored(function (err, data) {
-                        if (!data) {
-                            return void UI.alert(Messages.autostore_notAvailable);
-                        }
-                        require(['/common/inner/access.js'], function (Access) {
-                            Access.getAccessModal(common, {}, function (e) {
-                                if (e) { console.error(e); }
-                            });
+                    require(['/common/inner/access.js'], function (Access) {
+                        Access.getAccessModal(common, {}, function (e) {
+                            if (e) { console.error(e); }
                         });
                     });
                 });
@@ -2476,8 +1611,10 @@ define([
                         if (!data) {
                             return void UI.alert(Messages.autostore_notAvailable);
                         }
-                        UIElements.getProperties(common, {}, function (e) {
-                            if (e) { return void console.error(e); }
+                        require(['/common/inner/properties.js'], function (Properties) {
+                            Properties.getPropertiesModal(common, {}, function (e) {
+                                if (e) { console.error(e); }
+                            });
                         });
                     });
                 });
@@ -2783,205 +1920,6 @@ define([
         };
     };
 
-    // Avatars
-
-    UIElements.displayMediatagImage = function (Common, $tag, cb) {
-        if (!$tag.length || !$tag.is('media-tag')) { return void cb('NOT_MEDIATAG'); }
-        var observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.addedNodes.length) {
-                    if (mutation.addedNodes.length > 1 ||
-                        mutation.addedNodes[0].nodeName !== 'IMG') {
-                        return void cb('NOT_IMAGE');
-                    }
-                    var $image = $tag.find('img');
-                    var onLoad = function () {
-                        var img = new Image();
-                        img.onload = function () {
-                            var _cb = cb;
-                            cb = $.noop;
-                            _cb(null, $image, img);
-                        };
-                        img.src = $image.attr('src');
-                    };
-                    if ($image[0].complete) { onLoad(); }
-                    $image.on('load', onLoad);
-                }
-            });
-        });
-        observer.observe($tag[0], {
-            attributes: false,
-            childList: true,
-            characterData: false
-        });
-        MediaTag($tag[0]).on('error', function (data) {
-            console.error(data);
-        });
-    };
-
-    var emoji_patt = /([\uD800-\uDBFF][\uDC00-\uDFFF])/;
-    var isEmoji = function (str) {
-      return emoji_patt.test(str);
-    };
-    var emojiStringToArray = function (str) {
-      var split = str.split(emoji_patt);
-      var arr = [];
-      for (var i=0; i<split.length; i++) {
-        var char = split[i];
-        if (char !== "") {
-          arr.push(char);
-        }
-      }
-      return arr;
-    };
-    var getFirstEmojiOrCharacter = UIElements.getFirstCharacter = function (str) {
-      if (!str || !str.trim()) { return '?'; }
-      var emojis = emojiStringToArray(str);
-      return isEmoji(emojis[0])? emojis[0]: str[0];
-    };
-    var avatars = {};
-    UIElements.setAvatar = function (hash, data) {
-        avatars[hash] = data;
-    };
-    UIElements.getAvatar = function (hash) {
-        return avatars[hash];
-    };
-    UIElements.displayAvatar = function (common, $container, href, name, cb) {
-        var displayDefault = function () {
-            var text = (href && typeof(href) === "string") ? href : getFirstEmojiOrCharacter(name);
-            var $avatar = $('<span>', {'class': 'cp-avatar-default'}).text(text);
-            $container.append($avatar);
-            if (cb) { cb(); }
-        };
-        if (!window.Symbol) { return void displayDefault(); } // IE doesn't have Symbol
-        if (!href || href.length === 1) { return void displayDefault(); }
-
-        var centerImage = function ($img, $image, img) {
-            var w = img.width;
-            var h = img.height;
-            if (w>h) {
-                $image.css('max-height', '100%');
-                $img.css('flex-direction', 'column');
-                if (cb) { cb($img); }
-                return;
-            }
-            $image.css('max-width', '100%');
-            $img.css('flex-direction', 'row');
-            if (cb) { cb($img); }
-        };
-
-        var parsed = Hash.parsePadUrl(href);
-        if (parsed.type !== "file" || parsed.hashData.type !== "file") {
-            var $img = $('<media-tag>').appendTo($container);
-            var img = new Image();
-            $(img).attr('src', href);
-            img.onload = function () {
-                centerImage($img, $(img), img);
-                $(img).appendTo($img);
-            };
-            return;
-        }
-        // No password for avatars
-        var privateData = common.getMetadataMgr().getPrivateData();
-        var origin = privateData.fileHost || privateData.origin;
-        var secret = Hash.getSecrets('file', parsed.hash);
-        if (secret.keys && secret.channel) {
-            var hexFileName = secret.channel;
-            var cryptKey = Hash.encodeBase64(secret.keys && secret.keys.cryptKey);
-            var src = origin + Hash.getBlobPathFromHex(hexFileName);
-            common.getFileSize(hexFileName, function (e, data) {
-                if (e || !data) { return void displayDefault(); }
-                if (typeof data !== "number") { return void displayDefault(); }
-                if (Util.bytesToMegabytes(data) > 0.5) { return void displayDefault(); }
-                var $img = $('<media-tag>').appendTo($container);
-                $img.attr('src', src);
-                $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
-                UIElements.displayMediatagImage(common, $img, function (err, $image, img) {
-                    if (err) { return void console.error(err); }
-                    centerImage($img, $image,  img);
-                });
-            });
-        }
-    };
-    var transformAvatar = function (file, cb) {
-        if (file.type === 'image/gif') { return void cb(file); }
-        var $croppie = $('<div>', {
-            'class': 'cp-app-profile-resizer'
-        });
-
-        if (typeof ($croppie.croppie) !== "function") {
-            console.warn('fuck');
-            return void cb(file);
-        }
-
-        var todo = function () {
-            UI.confirm($croppie[0], function (yes) {
-                if (!yes) { return; }
-                $croppie.croppie('result', {
-                    type: 'blob',
-                    size: {width: 300, height: 300}
-                }).then(function(blob) {
-                    blob.lastModifiedDate = new Date();
-                    blob.name = 'avatar';
-                    cb(blob);
-                });
-            });
-        };
-
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            $croppie.croppie({
-                url: e.target.result,
-                viewport: { width: 100, height: 100 },
-                boundary: { width: 400, height: 300 },
-            });
-            todo();
-        };
-        reader.readAsDataURL(file);
-    };
-    UIElements.addAvatar = function (common, cb) {
-        var AVATAR_SIZE_LIMIT = 0.5;
-        var allowedMediaTypes = [
-            'image/png',
-            'image/jpeg',
-            'image/jpg',
-            'image/gif',
-        ];
-        var fmConfig = {
-            noHandlers: true,
-            noStore: true,
-            body: $('body'),
-            onUploaded: cb
-        };
-        var FM = common.createFileManager(fmConfig);
-        var accepted = ".gif,.jpg,.jpeg,.png";
-        var data = {
-            FM: FM,
-            filter: function (file) {
-                var sizeMB = Util.bytesToMegabytes(file.size);
-                var type = file.type;
-                // We can't resize .gif so we have to display an error if it is too big
-                if (sizeMB > AVATAR_SIZE_LIMIT && type === 'image/gif') {
-                    UI.log(Messages._getKey('profile_uploadSizeError', [
-                        Messages._getKey('formattedMB', [AVATAR_SIZE_LIMIT])
-                    ]));
-                    return false;
-                }
-                // Display an error if the image type is not allowed
-                if (allowedMediaTypes.indexOf(type) === -1) {
-                    UI.log(Messages._getKey('profile_uploadTypeError', [
-                        accepted.split(',').join(', ')
-                    ]));
-                    return false;
-                }
-                return true;
-            },
-            transformer: transformAvatar,
-            accept: accepted
-        };
-        return data;
-    };
-
     /*  Create a usage bar which keeps track of how much storage space is used
         by your CryptDrive. The getPinnedUsage RPC is one of the heavier calls,
         so we throttle its usage. Clients will not update more than once per
@@ -3083,9 +2021,21 @@ define([
             updateUsage();
         }, LIMIT_REFRESH_RATE * 3);
 
+        Visible.onChange(function (state) {
+            if (!state) {
+                clearInterval(interval);
+                return;
+            }
+            interval = setInterval(function () {
+                updateUsage();
+            }, LIMIT_REFRESH_RATE * 3);
+            updateUsage();
+        });
+
         updateUsage();
         cb(null, $container);
         return {
+            $container: $container,
             stop: function () {
                 clearInterval(interval);
             }
@@ -3481,7 +2431,7 @@ define([
             $displayName.text(newName || Messages.anonymous);
             if (accountName && oldUrl !== url) {
                 $avatar.html('');
-                UIElements.displayAvatar(Common, $avatar, url,
+                Common.displayAvatar($avatar, url,
                         newName || Messages.anonymous, function ($img) {
                     oldUrl = url;
                     $userAdmin.find('> button').removeClass('cp-avatar');
@@ -3588,37 +2538,6 @@ define([
         return $block;
     };
 
-    UIElements.createModal = function (cfg) {
-        var $body = cfg.$body || $('body');
-        var $blockContainer = $body.find('#'+cfg.id);
-        if (!$blockContainer.length) {
-            $blockContainer = $('<div>', {
-                'class': 'cp-modal-container',
-                tabindex: 1,
-                'id': cfg.id
-            });
-        }
-        var hide = function () {
-            if (cfg.onClose) { return void cfg.onClose(); }
-            $blockContainer.hide();
-        };
-        $blockContainer.html('').appendTo($body);
-        var $block = $('<div>', {'class': 'cp-modal'}).appendTo($blockContainer);
-        $('<span>', {
-            'class': 'cp-modal-close fa fa-times',
-            'title': Messages.filePicker_close
-        }).click(hide).appendTo($block);
-        $body.click(hide);
-        $block.click(function (e) {
-            e.stopPropagation();
-        });
-        $body.keydown(function (e) {
-            if (e.which === 27) {
-                hide();
-            }
-        });
-        return $blockContainer;
-    };
 
     UIElements.createNewPadModal = function (common) {
         // if in drive, show new pad modal instead
@@ -3626,28 +2545,17 @@ define([
             return void $(".cp-app-drive-element-row.cp-app-drive-new-ghost").click();
         }
 
-        var $modal = UIElements.createModal({
+        var modal = UI.createModal({
             id: 'cp-app-toolbar-creation-dialog',
             $body: $('body')
         });
+        var $modal = modal.$modal;
         var $title = $('<h3>').text(Messages.fm_newFile);
         var $description = $('<p>').html(Messages.creation_newPadModalDescription);
         $modal.find('.cp-modal').append($title);
         $modal.find('.cp-modal').append($description);
 
         var $advanced;
-
-        var $advancedContainer = $('<div>');
-        var priv = common.getMetadataMgr().getPrivateData();
-        var c = (priv.settings.general && priv.settings.general.creation) || {};
-        if (AppConfig.displayCreationScreen && common.isLoggedIn() && c.skip) {
-            var $cboxLabel = $(UI.createCheckbox('cp-app-toolbar-creation-advanced',
-                                                 Messages.creation_newPadModalAdvanced, true))
-                                 .appendTo($advancedContainer);
-            $advanced = $cboxLabel.find('input');
-            $description.append('<br>');
-            $description.append(Messages.creation_newPadModalDescriptionAdvanced);
-        }
 
         var $container = $('<div>');
         var i = 0;
@@ -3713,9 +2621,9 @@ define([
         });
 
 
-        $modal.find('.cp-modal').append($container).append($advancedContainer);
+        $modal.find('.cp-modal').append($container);
         window.setTimeout(function () {
-            $modal.show();
+            modal.show();
             $modal.focus();
         });
     };
@@ -3869,7 +2777,7 @@ define([
             var teams = Object.keys(privateData.teams).map(function (id) {
                 var data = privateData.teams[id];
                 var avatar = h('span.cp-creation-team-avatar.cp-avatar');
-                UIElements.displayAvatar(common, $(avatar), data.avatar, data.name);
+                common.displayAvatar($(avatar), data.avatar, data.name);
                 return h('div.cp-creation-team', {
                     'data-id': id,
                     title: data.name,
@@ -3958,15 +2866,6 @@ define([
             right
         ]);
 
-        var settings = h('div.cp-creation-remember', [
-            UI.createCheckbox('cp-creation-remember', Messages.dontShowAgain, false),
-            createHelper('/settings/#creation', Messages.creation_settings),
-            h('div.cp-creation-remember-help.cp-creation-slider', [
-                h('span.fa.fa-exclamation-circle.cp-creation-warning'),
-                Messages.creation_rememberHelp
-            ])
-        ]);
-
         var createDiv = h('div.cp-creation-create');
         var $create = $(createDiv);
 
@@ -3975,7 +2874,6 @@ define([
             owned,
             expire,
             password,
-            settings,
             templates,
             createDiv
         ])).appendTo($creation);
@@ -4123,16 +3021,6 @@ define([
             $creation.focus();
         });
 
-        // Display settings help when checkbox checked
-        $creation.find('#cp-creation-remember').on('change', function () {
-            if ($(this).is(':checked')) {
-                $creation.find('.cp-creation-remember-help:not(.active)').addClass('active');
-                return;
-            }
-            $creation.find('.cp-creation-remember-help').removeClass('active');
-            $creation.focus();
-        });
-
         // Keyboard shortcuts
         $creation.find('#cp-creation-expire-val').keydown(function (e) {
             if (e.which === 9) {
@@ -4149,9 +3037,6 @@ define([
         // Initial values
         if (!cfg.owned && typeof cfg.owned !== "undefined") {
             $creation.find('#cp-creation-owned').prop('checked', false);
-        }
-        if (cfg.skip) {
-            $creation.find('#cp-creation-remember').prop('checked', true).trigger('change');
         }
         UIElements.setExpirationValue(cfg.expire, $creation);
 
@@ -4194,14 +3079,6 @@ define([
         };
         var create = function () {
             var val = getFormValues();
-
-            var skip = $('#cp-creation-remember').is(':checked');
-            common.setAttribute(['general', 'creation', 'skip'], skip, function (e) {
-                if (e) { return void console.error(e); }
-            });
-            common.setAttribute(['general', 'creation', 'noTemplate'], skip, function (e) {
-                if (e) { return void console.error(e); }
-            });
 
             common.setAttribute(['general', 'creation', 'owned'], val.owned, function (e) {
                 if (e) { return void console.error(e); }
@@ -4451,119 +3328,6 @@ define([
             });
         });
 
-    };
-
-    var createContextMenu = function (menu) {
-        var $menu = $(menu).appendTo($('body'));
-
-        var display = function (e) {
-            $menu.css({ display: "block" });
-            var h = $menu.outerHeight();
-            var w = $menu.outerWidth();
-            var wH = window.innerHeight;
-            var wW = window.innerWidth;
-            if (h > wH) {
-                $menu.css({
-                    top: '0px',
-                    bottom: ''
-                });
-            } else if (e.pageY + h <= wH) {
-                $menu.css({
-                    top: e.pageY+'px',
-                    bottom: ''
-                });
-            } else {
-                $menu.css({
-                    bottom: '0px',
-                    top: ''
-                });
-            }
-            if(w > wW) {
-                $menu.css({
-                    left: '0px',
-                    right: ''
-                });
-            } else if (e.pageX + w <= wW) {
-                $menu.css({
-                    left: e.pageX+'px',
-                    right: ''
-                });
-            } else {
-                $menu.css({
-                    left: '',
-                    right: '0px',
-                });
-            }
-        };
-
-        var hide = function () {
-            $menu.hide();
-        };
-        var remove = function () {
-            $menu.remove();
-        };
-
-        $('body').click(hide);
-
-        return {
-            menu: menu,
-            show: display,
-            hide: hide,
-            remove: remove
-        };
-    };
-
-    var mediatagContextMenu;
-    UIElements.importMediaTagMenu = function (common) {
-        if (mediatagContextMenu) { return mediatagContextMenu; }
-
-        // Create context menu
-        var menu = h('div.cp-contextmenu.dropdown.cp-unselectable', [
-            h('ul.dropdown-menu', {
-                'role': 'menu',
-                'aria-labelledBy': 'dropdownMenu',
-                'style': 'display:block;position:static;margin-bottom:5px;'
-            }, [
-                h('li', h('a.cp-app-code-context-saveindrive.dropdown-item', {
-                    'tabindex': '-1',
-                    'data-icon': "fa-cloud-upload",
-                }, Messages.pad_mediatagImport)),
-                h('li', h('a.cp-app-code-context-download.dropdown-item', {
-                    'tabindex': '-1',
-                    'data-icon': "fa-download",
-                }, Messages.download_mt_button)),
-            ])
-        ]);
-        // create the icon for each contextmenu option
-        $(menu).find("li a.dropdown-item").each(function (i, el) {
-            var $icon = $("<span>");
-            if ($(el).attr('data-icon')) {
-                var font = $(el).attr('data-icon').indexOf('cptools') === 0 ? 'cptools' : 'fa';
-                $icon.addClass(font).addClass($(el).attr('data-icon'));
-            } else {
-                $icon.text($(el).text());
-            }
-            $(el).prepend($icon);
-        });
-        var m = createContextMenu(menu);
-
-        mediatagContextMenu = m;
-
-        var $menu = $(m.menu);
-        $menu.on('click', 'a', function (e) {
-            e.stopPropagation();
-            m.hide();
-            var $mt = $menu.data('mediatag');
-            if ($(this).hasClass("cp-app-code-context-saveindrive")) {
-                common.importMediaTag($mt);
-            }
-            else if ($(this).hasClass("cp-app-code-context-download")) {
-                var media = $mt[0]._mediaObject;
-                window.saveAs(media._blob.content, media.name);
-            }
-        });
-
-        return m;
     };
 
     UIElements.displayFriendRequestModal = function (common, data) {

@@ -966,7 +966,7 @@
     "creation_expiration": "Expiration time",
     "creation_passwordValue": "Password",
     "creation_propertiesTitle": "Availability",
-    "creation_appMenuName": "Advanced mode (Ctrl + E)",
+    "creation_appMenuName": "New pad (Ctrl + E)",
     "creation_newPadModalDescription": "Click on a pad type to create it. You can also press <b>Tab</b> to select the type and press <b>Enter</b> to confirm.",
     "creation_newPadModalDescriptionAdvanced": "You can check the box (or press <b>Space</b> to change its value) if you want to display the pad creation screen (for owned pads, expiring pads, etc.).",
     "creation_newPadModalAdvanced": "Display the pad creation screen",

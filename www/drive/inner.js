@@ -177,6 +177,7 @@ define([
             var sframeChan = common.getSframeChannel();
             var metadataMgr = common.getMetadataMgr();
             var privateData = metadataMgr.getPrivateData();
+            var user = metadataMgr.getUserData();
 
             APP.disableSF = !privateData.enableSF && AppConfig.disableSharedFolders;
             if (APP.newSharedFolder && !APP.loggedIn) {
@@ -204,13 +205,19 @@ define([
 
             var $rightside = toolbar.$rightside;
             $rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
-            APP.$displayName = APP.$bar.find('.' + Toolbar.constants.username);
+            var $displayName = APP.$bar.find('.' + Toolbar.constants.username);
+            metadataMgr.onChange(function () {
+                var name = metadataMgr.getUserData().name || Messages.anonymous;
+                $displayName.text(name);
+            });
+            $displayName.text(user.name || Messages.anonymous);
+
 
             /* add the usage */
+            var usageBar;
             if (APP.loggedIn) {
-                common.createUsageBar(null, function (err, $limitContainer) {
+                usageBar = common.createUsageBar(null, function (err) {
                     if (err) { return void DriveUI.logError(err); }
-                    APP.$limit = $limitContainer;
                 }, true);
             }
 
@@ -256,16 +263,12 @@ define([
                   .addClass('fa-ban');
             }
 
-            metadataMgr.onChange(function () {
-                var name = metadataMgr.getUserData().name || Messages.anonymous;
-                APP.$displayName.text(name);
-            });
-
             $('body').css('display', '');
             if (!proxy.drive || typeof(proxy.drive) !== 'object') {
                 throw new Error("Corrupted drive");
             }
             var drive = DriveUI.create(common, {
+                $limit: usageBar && usageBar.$container,
                 proxy: proxy,
                 folders: folders,
                 updateObject: updateObject,

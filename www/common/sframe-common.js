@@ -11,6 +11,7 @@ define([
     '/common/sframe-common-codemirror.js',
     '/common/sframe-common-cursor.js',
     '/common/sframe-common-mailbox.js',
+    '/common/inner/common-mediatag.js',
     '/common/metadata-manager.js',
 
     '/customize/application_config.js',
@@ -35,6 +36,7 @@ define([
     CodeMirror,
     Cursor,
     Mailbox,
+    MT,
     MetadataMgr,
     AppConfig,
     CommonRealtime,
@@ -90,8 +92,8 @@ define([
     funcs.initFilePicker = callWithCommon(UIElements.initFilePicker);
     funcs.openFilePicker = callWithCommon(UIElements.openFilePicker);
     funcs.openTemplatePicker = callWithCommon(UIElements.openTemplatePicker);
-    funcs.displayMediatagImage = callWithCommon(UIElements.displayMediatagImage);
-    funcs.displayAvatar = callWithCommon(UIElements.displayAvatar);
+    funcs.displayMediatagImage = callWithCommon(MT.displayMediatagImage);
+    funcs.displayAvatar = callWithCommon(MT.displayAvatar);
     funcs.createButton = callWithCommon(UIElements.createButton);
     funcs.createUsageBar = callWithCommon(UIElements.createUsageBar);
     funcs.updateTags = callWithCommon(UIElements.updateTags);
@@ -102,7 +104,8 @@ define([
     funcs.getBurnAfterReadingWarning = callWithCommon(UIElements.getBurnAfterReadingWarning);
     funcs.createNewPadModal = callWithCommon(UIElements.createNewPadModal);
     funcs.onServerError = callWithCommon(UIElements.onServerError);
-    funcs.importMediaTagMenu = callWithCommon(UIElements.importMediaTagMenu);
+    funcs.importMediaTagMenu = callWithCommon(MT.importMediaTagMenu);
+    funcs.getMediaTagPreview = callWithCommon(MT.getMediaTagPreview);
 
     // Thumb
     funcs.displayThumbnail = callWithCommon(Thumb.displayThumbnail);
@@ -294,10 +297,9 @@ define([
         var priv = ctx.metadataMgr.getPrivateData();
         if (priv.isNewFile) {
             var c = (priv.settings.general && priv.settings.general.creation) || {};
-            var skip = !AppConfig.displayCreationScreen || (c.skip && !priv.forceCreationScreen);
             // If this is a new file but we have a hash in the URL and pad creation screen is
             // not displayed, then display an error...
-            if (priv.isDeleted && (!funcs.isLoggedIn() || skip)) {
+            if (priv.isDeleted && !funcs.isLoggedIn()) {
                 UI.errorLoadingScreen(Messages.inactiveError, false, function () {
                     UI.addLoadingScreen();
                     return void funcs.createPad({}, waitFor());
@@ -306,7 +308,7 @@ define([
             }
             // Otherwise, if we don't display the screen, it means it is not a deleted pad
             // so we can continue and start realtime...
-            if (!funcs.isLoggedIn() || skip) {
+            if (!funcs.isLoggedIn()) {
                 return void funcs.createPad(c, waitFor());
             }
             // If we display the pad creation screen, it will handle deleted pads directly

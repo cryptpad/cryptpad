@@ -41,12 +41,6 @@ define([
         var cursors = {};
 
         var makeTippy = function (cursor) {
-            /*var html = '<span class="cp-cursor-avatar">';
-            if (cursor.avatar && UIElements.getAvatar(cursor.avatar)) {
-                html += UIElements.getAvatar(cursor.avatar);
-            }
-            html += cursor.name + '</span>';
-            return html;*/
             return cursor.name;
         };
 

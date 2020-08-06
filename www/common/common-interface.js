@@ -462,6 +462,42 @@ define([
         return frame;
     };
 
+    UI.createModal = function (cfg) {
+        var $body = cfg.$body || $('body');
+        var $blockContainer = $body.find('#'+cfg.id);
+        if (!$blockContainer.length) {
+            $blockContainer = $(h('div.cp-modal-container#'+cfg.id, {
+                tabindex: 1
+            }));
+        }
+        var hide = function () {
+            if (cfg.onClose) { return void cfg.onClose(); }
+            $blockContainer.hide();
+            if (cfg.onClosed) { cfg.onClosed(); }
+        };
+        $blockContainer.html('').appendTo($body);
+        var $block = $(h('div.cp-modal')).appendTo($blockContainer);
+        $(h('span.cp-modal-close.fa.fa-times', {
+            title: Messages.filePicker_close
+        })).click(hide).appendTo($block);
+        $body.click(hide);
+        $block.click(function (e) {
+            e.stopPropagation();
+        });
+        $body.keydown(function (e) {
+            if (e.which === 27) {
+                hide();
+            }
+        });
+        return {
+            $modal: $blockContainer,
+            show: function () {
+                $blockContainer.css('display', 'flex');
+            },
+            hide: hide
+        };
+    };
+
     UI.alert = function (msg, cb, opt) {
         var force = false;
         if (typeof(opt) === 'object') {
@@ -1251,6 +1287,66 @@ define([
             spin: spin,
             hide: hide,
             done: done
+        };
+    };
+
+    UI.createContextMenu = function (menu) {
+        var $menu = $(menu).appendTo($('body'));
+
+        var display = function (e) {
+            $menu.css({ display: "block" });
+            var h = $menu.outerHeight();
+            var w = $menu.outerWidth();
+            var wH = window.innerHeight;
+            var wW = window.innerWidth;
+            if (h > wH) {
+                $menu.css({
+                    top: '0px',
+                    bottom: ''
+                });
+            } else if (e.pageY + h <= wH) {
+                $menu.css({
+                    top: e.pageY+'px',
+                    bottom: ''
+                });
+            } else {
+                $menu.css({
+                    bottom: '0px',
+                    top: ''
+                });
+            }
+            if(w > wW) {
+                $menu.css({
+                    left: '0px',
+                    right: ''
+                });
+            } else if (e.pageX + w <= wW) {
+                $menu.css({
+                    left: e.pageX+'px',
+                    right: ''
+                });
+            } else {
+                $menu.css({
+                    left: '',
+                    right: '0px',
+                });
+            }
+        };
+
+        var hide = function () {
+            $menu.hide();
+        };
+        var remove = function () {
+            $menu.remove();
+        };
+
+        $('body').click(hide);
+
+        return {
+            menu: menu,
+            show: display,
+            hide: hide,
+            remove: remove
         };
     };
 

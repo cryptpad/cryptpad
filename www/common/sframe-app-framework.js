@@ -325,6 +325,11 @@ define([
 
             UI.updateLoadingProgress({ state: -1 }, false);
 
+            if (toolbar) {
+                // Check if we have a new chainpad instance
+                toolbar.resetChainpad(cpNfInner.chainpad);
+            }
+
             var newPad = false;
             if (newContentStr === '') { newPad = true; }
 
@@ -364,6 +369,9 @@ define([
             }).nThen(function () {
                 stateChange(STATE.READY);
                 firstConnection = false;
+
+                oldContent = undefined;
+
                 if (!readOnly) { onLocal(); }
                 evOnReady.fire(newPad);
 
@@ -393,12 +401,6 @@ define([
                         };
                         Thumb.initPadThumbnails(common, options.thumbnail);
                     }
-                }
-
-                var skipTemp = Util.find(privateDat, ['settings', 'general', 'creation', 'noTemplate']);
-                var skipCreation = Util.find(privateDat, ['settings', 'general', 'creation', 'skip']);
-                if (newPad && (!AppConfig.displayCreationScreen || (!skipTemp && skipCreation))) {
-                    common.openTemplatePicker();
                 }
             });
         };
@@ -517,18 +519,23 @@ define([
                 }
             });
             $embedButton = common.createButton('mediatag', true).click(function () {
-                common.openFilePicker({
+                var cfg = {
                     types: ['file'],
                     where: ['root']
-                });
+                };
+                if ($embedButton.data('filter')) {
+                    cfg.filter = $embedButton.data('filter');
+                }
+                common.openFilePicker(cfg);
             }).appendTo(toolbar.$rightside).hide();
         };
-        var setMediaTagEmbedder = function (mte) {
+        var setMediaTagEmbedder = function (mte, filter) {
             if (!common.isLoggedIn()) { return; }
             if (!mte || readOnly) {
                 $embedButton.hide();
                 return;
             }
+            if (filter) { $embedButton.data('filter', filter); }
             $embedButton.show();
             mediaTagEmbedder = mte;
         };
