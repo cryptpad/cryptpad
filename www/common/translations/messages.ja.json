@@ -273,5 +273,10 @@
     "creation_expireHours": "時間",
     "creation_expireFalse": "無制限",
     "pad_wordCount": "単語数: {0}",
-    "teams_table_role": "権限"
+    "teams_table_role": "権限",
+    "templateSaved": "テンプレートを保存しました",
+    "saveTemplateButton": "テンプレートとして保存",
+    "fm_rootName": "ドキュメント",
+    "team_listTitle": "あなたのチーム",
+    "team_createName": "チーム名"
 }
