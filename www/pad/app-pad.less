@@ -24,6 +24,33 @@ body.cp-app-pad {
         overflow: hidden;
     }
 
+    #cp-app-pad-toc {
+        @toc-level-indent: 15px;
+
+        margin-top: 10px;
+        margin-left: 10px;
+        width: 200px;
+        color: @cryptpad_text_col;
+        h2 {
+            font-size: 1.5rem;
+        }
+        p {
+            margin-bottom: 5px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            a {
+                color: @cryptpad_text_col;
+            }
+            &.cp-pad-toc-2 {
+                margin-left: @toc-level-indent;
+            }
+            &.cp-pad-toc-3 {
+                margin-left: @toc-level-indent * 2;
+            }
+        }
+    }
+
     .cke_toolbox_main {
         background-color: @colortheme_pad-toolbar-bg;
         .cke_toolbar {
