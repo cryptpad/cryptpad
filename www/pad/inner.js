@@ -42,6 +42,7 @@ define([
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/common-interface.js',
+    '/common/common-ui-elements.js',
     '/common/hyperscript.js',
     '/bower_components/chainpad/chainpad.dist.js',
     '/customize/application_config.js',
@@ -69,6 +70,7 @@ define([
     Hash,
     Util,
     UI,
+    UIElements,
     h,
     ChainPad,
     AppConfig,
@@ -609,12 +611,6 @@ define([
             }, 500); // 500ms to make sure it is sent after chainpad sync
         };
 
-        var isVisible = function(el, $container) {
-            var size = $container.outerHeight();
-            var pos = el.getBoundingClientRect();
-            return (pos.bottom < size) && (pos.y > 0);
-        };
-
         var updateTOC = function () {
             var toc = [];
             $inner.find('h1, h2, h3').each(function (i, el) {
@@ -634,7 +630,7 @@ define([
                 $(a).click(function (e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    if (!obj.el || isVisible(obj.el, $inner)) { return; }
+                    if (!obj.el || UIElements.isVisible(obj.el, $inner)) { return; }
                     obj.el.scrollIntoView();
                 });
                 a.innerHTML = obj.title;
