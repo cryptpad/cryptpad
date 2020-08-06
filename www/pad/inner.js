@@ -440,12 +440,12 @@ define([
             } else {
                 $toc.hide();
             }
-            Messages.pad_tocHide = "TOC"; // XXX
+            Messages.pad_tocHide = "Outline"; // XXX
             var $tocButton = framework._.sfCommon.createButton('', true, {
                 drawer: false,
                 text: Messages.pad_tocHide,
                 name: 'pad_toc',
-                icon: 'fa-newspaper-o',
+                icon: 'fa-list-ul',
             }, function () {
                 $tocButton.removeClass('cp-toolbar-button-active');
                 $toc.toggle();
