@@ -4104,5 +4104,11 @@ define([
         };
     };
 
+    UIElements.isVisible = function (el, $container) {
+        var size = $container.outerHeight();
+        var pos = el.getBoundingClientRect();
+        return (pos.bottom < size) && (pos.y > 0);
+    };
+
     return UIElements;
 });
