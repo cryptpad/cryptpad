@@ -110,7 +110,8 @@ define([
                     }));
                 }).nThen(function (waitFor) {
                     var curve = $el.attr('data-curve');
-                    var friend = curve === user.curvePublic ? user : friends[curve];
+                    if (curve === user.curvePublic) { return; }
+                    var friend = friends[curve];
                     if (!friend) { return; }
                     common.mailbox.sendTo("RM_OWNER", {
                         channel: channel,
@@ -205,10 +206,14 @@ define([
             var $sel = $div.find('.cp-usergrid-user.cp-selected');
             var sel = $sel.toArray();
             if (!sel.length) { return; }
+            var addMe = false;
             var toAdd = sel.map(function (el) {
                 var curve = $(el).attr('data-curve');
-                // If the pad is woned by a team, we can transfer ownership to ourselves
-                if (curve === user.curvePublic && teamOwner) { return priv.edPublic; }
+                // If the pad is owned by a team, we can transfer ownership to ourselves
+                if (curve === user.curvePublic && teamOwner) {
+                    addMe = true;
+                    return;
+                }
                 var friend = friends[curve];
                 if (!friend) { return; }
                 return friend.edPublic;
@@ -283,9 +288,30 @@ define([
                     }));
                 }
             }).nThen(function (waitFor) {
+                // Offer ownership to a friend
+                if (addMe) {
+                    // Send the command
+                    sframeChan.query('Q_SET_PAD_METADATA', {
+                        channel: channel,
+                        command: 'ADD_OWNERS',
+                        value: [priv.edPublic],
+                        teamId: teamOwner
+                    }, waitFor(function (err, res) {
+                        err = err || (res && res.error);
+                        if (err) {
+                            waitFor.abort();
+                            redrawAll(true);
+                            var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
+                                                                          : Messages.error;
+                            return void UI.warn(text);
+                        }
+                    }));
+                }
+            }).nThen(function (waitFor) {
                 sel.forEach(function (el) {
                     var curve = $(el).attr('data-curve');
-                    var friend = curve === user.curvePublic ? user : friends[curve];
+                    if (curve === user.curvePublic) { return; }
+                    var friend = friends[curve];
                     if (!friend) { return; }
                     common.mailbox.sendTo("ADD_OWNER", {
                         channel: channel,
@@ -346,8 +372,7 @@ define([
         var parsed = Hash.parsePadUrl(data.href || data.roHref);
         var owned = Modal.isOwned(Env, data);
         var disabled = !owned || !parsed.hashData || parsed.hashData.type !== 'pad';
-        var allowDisabled = parsed.type === 'drive';
-        if (disabled || allowDisabled) { return void cb(); }
+        if (disabled) { return void cb(); }
 
         opts = opts || {};
 
@@ -780,7 +805,7 @@ define([
                         id: 'cp-app-prop-change-password',
                         style: 'flex: 1;'
                     });
-                    var passwordOk = h('button', Messages.properties_changePasswordButton);
+                    var passwordOk = h('button.btn', Messages.properties_changePasswordButton);
                     var changePass = h('span.cp-password-change-container', [
                         newPassword,
                         passwordOk
@@ -849,7 +874,7 @@ define([
                                 // Use hidden hash if needed (we're an owner of this pad so we know it is stored)
                                 var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
                                 var href = (priv.readOnly && data.roHref) ? data.roHref : data.href;
-                                if (useUnsafe === false) {
+                                if (useUnsafe !== true) {
                                     var newParsed = Hash.parsePadUrl(href);
                                     var newSecret = Hash.getSecrets(newParsed.type, newParsed.hash, newPass);
                                     var newHash = Hash.getHiddenHashFromKeys(parsed.type, newSecret, {});
@@ -871,6 +896,28 @@ define([
                     });
                     $d.append(changePass);
                 }
+            }
+            if (owned) {
+                var deleteOwned = h('button.btn.btn-danger-alt', [h('i.cptools.cptools-destroy'), Messages.fc_delete_owned]);
+                var spinner = UI.makeSpinner();
+                UI.confirmButton(deleteOwned, {
+                    classes: 'btn-danger'
+                }, function () {
+                    spinner.spin();
+                    sframeChan.query('Q_DELETE_OWNED', {
+                        teamId: typeof(owned) !== "boolean" ? owned : undefined,
+                        channel: data.channel
+                    }, function (err, obj) {
+                        spinner.done();
+                        UI.findCancelButton().click();
+                        if (err || (obj && obj.error)) { UI.warn(Messages.error); }
+                    });
+                });
+                $d.append(h('br'));
+                $d.append(h('div', [
+                    deleteOwned,
+                    spinner.spinner
+                ]));
             }
             return $d;
         };
@@ -894,7 +941,7 @@ define([
             if (parsed.hashData.type !== 'pad' || parsed.type === 'drive') { return h('div', content); }
 
             // Request edit access
-            if (data.roHref && !data.href) {
+            if (common.isLoggedIn() && ((data.roHref && !data.href) || data.fakeHref)) {
                 var requestButton = h('button.btn.btn-secondary.no-margin.cp-access-margin-right',
                                         Messages.requestEdit_button);
                 var requestBlock = h('p', requestButton);

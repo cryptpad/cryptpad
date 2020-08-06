@@ -1,0 +1,193 @@
+@import (reference) "./colortheme-all.less";
+@import (reference) "./variables.less";
+
+.forms_main() {
+    @alertify-fore: @colortheme_modal-fg;
+    @alertify-btn-fg: @alertify-fore;
+    @alertify-light-bg: fade(@alertify-fore, 25%);
+    @alertify_padding-base: @variables_padding;
+    @alertify-input-bg: @colortheme_modal-input;
+    @alertify-input-fg: @colortheme_modal-input-fg;
+
+    input:not(.form-control):not([type="checkbox"]), textarea, div.cp-textarea {
+        // background-color: @alertify-input-fg;
+        color: @cryptpad_text_col;
+        border: 1px solid @alertify-input-bg;
+        width: 100%;
+        font-size: 100%;
+        padding: @alertify_padding-base;
+        &[readonly] {
+            background-color: @alertify-light-bg;
+            color: @cryptpad_text_col;
+            border-color: @alertify-input-fg;
+        }
+    }
+
+    input:not(.form-control) {
+        height: @variables_input-height;
+    }
+
+    div.cp-alertify-type {
+        display: flex;
+        input {
+            margin: 0 !important;
+            flex: 1;
+            min-width: 0;
+        }
+        span {
+            button {
+                margin: 0;
+                height: 100%;
+                margin-left: -1px;
+                text-transform: unset !important;
+            }
+        }
+    }
+
+    textarea, div.cp-textarea {
+        padding: 8px;
+        &[readonly] {
+            overflow: hidden;
+            resize: none;
+        }
+    }
+    div.cp-textarea {
+        height: 60px;
+        width: 100%;
+        background-color: white;
+        cursor: text;
+        outline: none;
+        white-space: pre-wrap;
+        overflow-y: auto;
+        word-break: break-word;
+        resize: vertical;
+    }
+
+    div.cp-button-confirm {
+        display: inline-block;
+        button {
+            margin: 0 !important;
+        }
+        .cp-button-timer {
+            height: 3px;
+            & > div {
+                height: 100%;
+                background-color: @colortheme_alertify-primary;
+                &.danger, &.btn-danger, &.danger-alt, &.btn-danger-alt {
+                    background-color: @colortheme_alertify-red;
+                }
+            }
+        }
+    }
+    button.cp-button-confirm-placeholder {
+        margin-bottom: 3px !important;
+    }
+
+    button.btn {
+
+        background-color: @colortheme_alertify-cancel;
+        box-sizing: border-box;
+        outline: 0;
+        align-items: center;
+        padding: 0 6px;
+        line-height: 36px;
+        white-space: nowrap;
+        text-align: center;
+        text-transform: uppercase;
+        font-size: 14px;
+        text-decoration: none;
+        cursor: pointer;
+        border-radius: 0;
+
+        .fa, .cptools {
+            margin-right: 0.2em;
+        }
+        .cptools {
+            vertical-align: middle;
+        }
+
+        color: @alertify-btn-fg;
+        border: 1px solid @alertify-btn-fg;
+
+        &.no-margin {
+            margin: 0;
+        }
+
+        &:hover, &:active, &:focus {
+            background-color: lighten(@alertify-fore, 35%);
+        }
+
+        &.safe, &.danger, &.btn-safe, &.btn-danger {
+            color: @colortheme_old-base;
+            white-space: normal;
+            font-weight: bold;
+        }
+
+        &.danger, &.btn-danger {
+            background-color: @colortheme_alertify-red;
+            border-color: @colortheme_alertify-red-border;
+            color: @colortheme_alertify-red-color;
+            &:hover, &:active, &:focus {
+                background-color: contrast(@colortheme_modal-bg, darken(@colortheme_alertify-red, 10%), lighten(@colortheme_alertify-red, 10%));
+            }
+        }
+
+        &.danger-alt, &.btn-danger-alt {
+            border-color: @colortheme_alertify-red;
+            color: @colortheme_alertify-red;
+            &:hover, &:active, &:focus {
+                color: @colortheme_alertify-red-color;
+                background-color: contrast(@colortheme_modal-bg, darken(@colortheme_alertify-red, 10%), lighten(@colortheme_alertify-red, 10%));
+            }
+        }
+
+        &.safe, &.btn-safe {
+            background-color: @colortheme_alertify-green;
+            border-color: @colortheme_alertify-green-border;
+            color: @colortheme_alertify-green-color;
+            &:hover, &:active, &:focus {
+                background-color: contrast(@colortheme_modal-bg, darken(@colortheme_alertify-green, 10%), lighten(@colortheme_alertify-green, 10%));
+            }
+        }
+
+        &.primary, &.btn-primary {
+            background-color: @colortheme_alertify-primary;
+            color: @colortheme_alertify-primary-text;
+            border-color: @colortheme_alertify-primary-border;
+            font-weight: bold;
+            &:hover, &:active, &:focus {
+                background-color: contrast(@colortheme_modal-bg, darken(@colortheme_alertify-primary, 10%), lighten(@colortheme_alertify-primary, 10%));
+            }
+        }
+
+        &.cancel, &.btn-cancel {
+            border-color: @colortheme_alertify-cancel-border;
+            color: @colortheme_alertify-cancel-border;
+            &:hover, &:hover, &:focus {
+                background-color: fade(@colortheme_alertify-cancel-border, 25%);
+            }
+        }
+
+
+
+        &:focus {
+            //border: 1px dotted @alertify-base;
+            box-shadow: 0px 0px 5px @colortheme_alertify-primary;
+            outline: none;
+        }
+        &::-moz-focus-inner {
+            border: 0;
+        }
+
+        &:disabled {
+            cursor: not-allowed !important;
+            background-color: @colortheme_alertify-disabled;
+            color: @colortheme_alertify-disabled-text;
+            border-color: @colortheme_alertify-disabled-border;
+            &:hover, &:active {
+                background-color: @colortheme_alertify-disabled;
+            }
+        }
+    }
+
+}

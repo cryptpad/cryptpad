@@ -2,7 +2,7 @@ define([
     'jquery',
     '/api/config',
     '/bower_components/chainpad-crypto/crypto.js',
-    '/common/toolbar3.js',
+    '/common/toolbar.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/hyperscript.js',
@@ -185,6 +185,20 @@ define([
         var $container = makeBlock('support-list');
         var $div = $(h('div.cp-support-container')).appendTo($container);
 
+        var catContainer = h('div.cp-dropdown-container');
+        $div.append(catContainer);
+        var category = 'all';
+        var $drop = APP.support.makeCategoryDropdown(catContainer, function (key) {
+            category = key;
+            if (key === 'all') {
+                $div.find('.cp-support-list-ticket').show();
+                return;
+            }
+            $div.find('.cp-support-list-ticket').hide();
+            $div.find('.cp-support-list-ticket[data-cat="'+key+'"]').show();
+        }, true);
+        $drop.setValue('all');
+
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
         var cat = privateData.category || '';
@@ -255,18 +269,31 @@ define([
                 if (msg.type !== 'TICKET') { return; }
 
                 if (!$ticket.length) {
-                    $ticket = APP.support.makeTicket($div, content, function () {
+                    $ticket = APP.support.makeTicket($div, content, function (hideButton) {
+                        // the ticket will still be displayed until the worker confirms its deletion
+                        // so make it unclickable in the meantime
+                        hideButton.setAttribute('disabled', true);
                         var error = false;
-                        hashesById[id].forEach(function (d) {
-                            common.mailbox.dismiss(d, function (err) {
-                                if (err) {
-                                    error = true;
-                                    console.error(err);
-                                }
+                        nThen(function (w) {
+                            hashesById[id].forEach(function (d) {
+                                common.mailbox.dismiss(d, w(function (err) {
+                                    if (err) {
+                                        error = true;
+                                        console.error(err);
+                                    }
+                                }));
                             });
+                        }).nThen(function () {
+                            if (!error) { return void $ticket.remove(); }
+                            // if deletion failed then reactivate the button and warn
+                            hideButton.removeAttribute('disabled');
+                            // and show a generic error message
+                            UI.alert(Messages.error);
                         });
-                        if (!error) { $ticket.remove(); }
                     });
+                    if (category !== 'all' && $ticket.attr('data-cat') !== category) {
+                        $ticket.hide();
+                    }
                 }
                 $ticket.append(APP.support.makeMessage(content, hash));
                 reorder();

@@ -16,21 +16,9 @@
     @bg-color: @colortheme_default-bg, // color of the toolbar background
     @warn-color: @colortheme_default-warn // color of the warning text in the toolbar
 ) {
-    @toolbar-color: @color;
-    @toolbar-color-l20: lighten(@color, 20%);
-    @toolbar-color-d20: darken(@color, 20%);
-    @toolbar-color-d15: darken(@color, 15%);
-
     @toolbar-bg-color: @bg-color;
-    @toolbar-bg-color-l8: lighten(@bg-color, 8%);
-    @toolbar-bg-color-l20: lighten(@bg-color, 20%);
-    @toolbar-bg-color-d5: darken(@bg-color, 5%);
-    @toolbar-bg-color-d10: darken(@bg-color, 10%);
-    @toolbar-bg-color-d15: darken(@bg-color, 15%);
-
-    @toolbar-warn-color: @warn-color;
-
-    @toolbar-userlist-name-edit: contrast(@toolbar-color, @toolbar-color-l20, @toolbar-color-d20);
+    @toolbar-bg-color-light: lighten(@bg-color, 30%);
+    @toolbar-bg-color-active: lighten(@bg-color, 20%);
 };
 
 .toolbar_main (
@@ -42,31 +30,11 @@
     --LessLoader_require: LessLoader_currentFile();
     .toolbar_vars(@color, @bg-color, @warn-color);
 
-    --toolbar-color: @toolbar-color;
-    --toolbar-color-l20: @toolbar-color-l20;
-    --toolbar-color-d20: @toolbar-color-d20;
-    --toolbar-color-d15: @toolbar-color-d15;
-
     --toolbar-bg-color: @toolbar-bg-color;
-    --toolbar-bg-color-l8: @toolbar-bg-color-l8;
-    --toolbar-bg-color-l20: @toolbar-bg-color-l20;
-    --toolbar-bg-color-d5: @toolbar-bg-color-d5;
-    --toolbar-bg-color-d10: @toolbar-bg-color-d10;
-    --toolbar-bg-color-d15: @toolbar-bg-color-d15;
+    --toolbar-bg-color-light: @toolbar-bg-color-light;
+    --toolbar-bg-color-active: @toolbar-bg-color-active;
 
-    --toolbar-warn-color: @toolbar-warn-color;
-
-    --toolbar-userlist-name-edit: @toolbar-userlist-name-edit;
-
-    @media screen and (max-width: @barWidth) {
-        .cp-toolbar-rightside {
-            flex-wrap: wrap;
-            height: auto;
-            width: 100%;
-        }
-    }
-
-    .help_main(@color, @bg-color);
+    .help_main();
     .notifications_main();
     .dropdown_main();
     .history_main();
@@ -74,21 +42,13 @@
     .modal_main();
 };
 & {
-    @keyframes notification {
-        0% {
-            background: rgba(0,0,0,0);
-        }
-        50% {
-            background: rgba(0,0,0,0.2);
-        }
-        100% {
-            background: rgba(0,0,0,0);
-        }
-    }
+    @toolbar-color: @cryptpad_text_col;
+    @toolbar-color-light: lighten(@cryptpad_text_col, 10%);
 
     .toolbar_vars();
+    @toolbar-top-bg: #eee;
     @toolbar_line-height: 32px;
-    @toolbar_top-height: 64px;
+    @toolbar_top-height: 76px;
     @toolbar_button-font: @colortheme_app-font;
 
     // if we spell 'share' correctly, then adblock plus hides the share button
@@ -105,19 +65,16 @@
 
     .cp-markdown-toolbar {
         height: @toolbar_line-height;
-        background-color: @toolbar-bg-color-l20;
-        background-color: var(--toolbar-bg-color-l20);
+        background-color: @colortheme_pad-toolbar-bg;
         display: none;
         button {
             height: @toolbar_line-height !important;
             outline: 0;
             color: @toolbar-color;
-            color: var(--toolbar-color);
             .toolbar_button;
             font: normal normal normal 14px/1 FontAwesome;
             &:hover {
-                background-color: @toolbar-bg-color-l8;
-                background-color: var(--toolbar-bg-color-l8);
+                background-color: darken(@colortheme_pad-toolbar-bg, 5%);
             }
             &.cp-markdown-help { float: right; }
         }
@@ -166,15 +123,13 @@
         padding: 0;
         box-sizing: border-box;
         position: relative;
-        order: -2;
-        resize: horizontal;
+        order: 99;
         z-index: 1;
         #cp-app-contacts-container {
             height: 100%;
         }
         .cp-toolbar-chat-drawer-close {
             color: @toolbar-color;
-            color: var(--toolbar-color);
             position: absolute;
             top: 0;
             right: 1px;
@@ -196,7 +151,7 @@
         overflow-x: hidden;
         padding: 10px;
         box-sizing: border-box;
-        order: -3;
+        order: 100;
         z-index: 1;
         .cp-toolbar-userlist-drawer-close {
             position: absolute;
@@ -386,39 +341,21 @@
     }
 
     .cp-toolbar-userlist-drawer {
-        background-color: @toolbar-bg-color;
-        background-color: var(--toolbar-bg-color);
+        background-color: @colortheme_userlist-bg;
         color: @toolbar-color;
-        color: var(--toolbar-color);
         .cp-toolbar-userlist-drawer-close {
             color: @toolbar-color;
-            color: var(--toolbar-color);
         }
         h2 {
-            background-color: @toolbar-bg-color-d10;
-            background-color: var(--toolbar-bg-color-d10);
             color: @toolbar-color;
-            color: var(--toolbar-color);
         }
         .cp-toolbar-userlist-name-input {
-            background-color: @toolbar-bg-color-d10;
-            background-color: var(--toolbar-bg-color-d10);
-            color: @toolbar-color;
-            color: var(--toolbar-color);
+            background-color: rgba(0,0,0,0.1);
         }
         .cp-toolbar-userlist-button {
-            color: @toolbar-userlist-name-edit;
-            color: var(--toolbar-userlist-name-edit);
             background: transparent;
             &:hover {
-                color: @toolbar-color;
-                color: var(--toolbar-color);
-            }
-        }
-        .cp-toolbar-userlist-friend {
-            &:hover {
-                color: @toolbar-color-d15;
-                color: var(--toolbar-color-d15);
+                color: @toolbar-color-light;
             }
         }
     }
@@ -438,10 +375,10 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-        background-color: @toolbar-bg-color;
-        background-color: var(--toolbar-bg-color);
-        color: @toolbar-color;
-        color: var(--toolbar-color);
+
+        background-color: @toolbar-top-bg;
+        color: @toolbar-bg-color;
+        color: var(--toolbar-bg-color);
 
         .fa {
             font: normal normal normal 14px/1 FontAwesome;
@@ -531,17 +468,13 @@
                 }
                 .cp-toolbar-title {
                     height: @toolbar_line-height;
+                    flex-flow: row;
                     line-height: initial;
                     margin: 0;
                     .cp-toolbar-title-hoverable {
                         width: 100%;
                     }
-                    .cp-toolbar-title-value-page {
-                        padding: 5px;
-                        line-height: unset;
-                        border: 0;
-                    }
-                    .cp-toolbar-title-editable, .cp-toolbar-title-value-page {
+                    .cp-toolbar-title-editable, .cp-toolbar-title-value {
                         max-width: ~"calc(100vw - 26px)";
                         display: inline-block;
                         overflow: hidden;
@@ -549,13 +482,21 @@
                         font-size: @colortheme_app-font-size;
                         height: @toolbar_line-height;
                         box-sizing: border-box;
-                        line-height: 20px;
+                        line-height: @toolbar_line-height;
+                    }
+                    .cp-toolbar-title-readonly {
+                        font-size: 14px;
+                    }
+                    .cp-toolbar-title-value {
+                        padding: 5px;
+                        line-height: @toolbar_line-height - 10px;
+                        border: 0;
                     }
                     .cp-toolbar-title-edit, .cp-toolbar-title-save {
                         box-sizing: border-box;
                         height: @toolbar_line-height;
-                        line-height: @colortheme_app-font-size;
-                        display: inline-block;
+                        line-height: @toolbar_line-height;
+                        display: inline-flex;
 
                         .fa {
                             font-size: @colortheme_app-font-size;
@@ -569,9 +510,16 @@
                         line-height: calc(@toolbar_line-height - 12px); // padding + border
                     }
                 }
+                .cp-toolbar-spinner {
+                    min-width: 100px;
+                    margin: 0;
+                    height: @toolbar_line-height;
+                    line-height: @toolbar_line-height;
+                }
                 .cp-toolbar-link {
                     height: @toolbar_line-height;
                     width: @toolbar_line-height;
+                    transform: scale(0.5);
                     .cp-toolbar-link-logo {
                         padding: 5px;
                     }
@@ -592,17 +540,6 @@
                                 bottom: -5px;
                                 right: -5px;
                             }
-                        }
-                    }
-                    .cp-toolbar-new {
-                        height: @toolbar_line-height;
-                        width: @toolbar_line-height;
-                        margin-left: 0;
-                        button {
-                            height: @toolbar_line-height;
-                            width: @toolbar_line-height;
-                            font-size: 20px;
-                            margin-top: -1px;
                         }
                     }
                     .cp-toolbar-user-dropdown {
@@ -628,105 +565,11 @@
                         margin: 0;
                     }
                 }
-                /*
-                .cp-toolbar-top-filler {
-                    flex: 1;
-                }
-                .cp-toolbar-title {
-                    flex: auto;
-                    width: 100%;
-                    order: 10;
-                    height: @toolbar_line-height;
-                    line-height: initial;
-                    margin: 0;
-                    .cp-toolbar-title-hoverable {
-                        width: 100%;
-                    }
-                    .cp-toolbar-title-editable {
-                        max-width: ~"calc(100vw - 26px)";
-                        display: inline-block;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        font-size: @colortheme_app-font-size;
-                        height: @toolbar_line-height;
-                        box-sizing: border-box;
-                        line-height: 20px;
-                    }
-                    .cp-toolbar-title-edit, .cp-toolbar-title-save {
-                        box-sizing: border-box;
-                        height: @toolbar_line-height;
-                        line-height: @colortheme_app-font-size;
-                        display: inline-block;
-
-                        .fa {
-                            font-size: @colortheme_app-font-size;
-                        }
-                    }
-                    input {
-                        height: @toolbar_line-height;
-                        font-size: @colortheme_app-font-size;
-                        flex: 1;
-                        max-width: none;
-                        line-height: calc(@toolbar_line-height - 12px); // padding + border
-                    }
-                }
-                */
             }
         }
 
-        .cp-toolbar-spinner {
-            font-size: @colortheme_app-font-size;
-            color: @toolbar-color;
-            color: var(--toolbar-color);
-        }
         .cp-toolbar-limit {
-            text-shadow: -1px 0 @toolbar-color, 0 1px @toolbar-color, 1px 0 @toolbar-color, 0 -1px @toolbar-color;
-            text-shadow: -1px 0 var(--toolbar-color), 0 1px var(--toolbar-color), 1px 0 var(--toolbar-color), 0 -1px var(--toolbar-color);
-            color: @toolbar-warn-color;
-            color: var(--toolbar-warn-color);
-        }
-        .cp-toolbar-leftside, .cp-toolbar-rightside {
-            background-color: @toolbar-bg-color-l8;
-            background-color: var(--toolbar-bg-color-l8);
-            button:hover, button.cp-toolbar-button-active {
-                background-color: @toolbar-bg-color;
-                background-color: var(--toolbar-bg-color);
-            }
-        }
-        .cp-toolbar-title-hoverable:hover {
-            .cp-toolbar-title-editable, .cp-toolbar-title-edit {
-                cursor: text;
-                border: 1px solid @toolbar-bg-color-d15;
-                border: 1px solid var(--toolbar-bg-color-d15);
-                background: @toolbar-bg-color-d10;
-                background: var(--toolbar-bg-color-d10);
-                transition: all 0.15s;
-                color: @toolbar-color;
-                color: var(--toolbar-color);
-            }
-            .cp-toolbar-title-editable {
-                cursor: text;
-            }
-        }
-        .cp-toolbar-title-save {
-            border: 1px solid @toolbar-bg-color-d15;
-            border: 1px solid var(--toolbar-bg-color-d15);
-            background: @toolbar-bg-color-d10;
-            background: var(--toolbar-bg-color-d10);
-            color: @toolbar-color;
-            color: var(--toolbar-color);
-            &:hover {
-                background: @toolbar-bg-color-d5;
-                background: var(--toolbar-bg-color-d5);
-            }
-        }
-        input {
-            border: 1px solid @toolbar-bg-color-d15;
-            border: 1px solid var(--toolbar-bg-color-d15);
-            background: @toolbar-bg-color-d10;
-            background: var(--toolbar-bg-color-d10);
-            color: @toolbar-color;
-            color: var(--toolbar-color);
+            color: @colortheme_toolbar-warn;
         }
         .cp-dropdown-content.cp-dropdown-left a {
             color: black;
@@ -752,8 +595,7 @@
             padding: 0;
             margin: 0 5px;
             font-size: @colortheme_app-font-size;
-            color: @toolbar-warn-color;
-            color: var(--toolbar-warn-color);
+            color: @colortheme_toolbar-warn;
             .cp-pnp-msg {
                 padding-left: 5px;
                 font-family: @colortheme_font;
@@ -762,8 +604,7 @@
                     font-size: @colortheme_app-font-size;
                     font-family: @colortheme_font;
                     font-weight: bold;
-                    color: @toolbar-warn-color;
-                    color: var(--toolbar-warn-color);
+                    color: @colortheme_toolbar-warn;
                     &:hover {
                         text-decoration: underline;
                     }
@@ -784,34 +625,32 @@
             //flex: 1;
         }
         .cp-toolbar-title {
+            color: @cryptpad_text_col;
             flex: 1;
             overflow: hidden;
             text-overflow: ellipsis;
             order: 3;
             height: 100%;
             display: inline-flex;
-            align-items: center;
-            line-height: @toolbar_top-height;
+            flex-flow: column;
+            justify-content: center;
             margin: 0 10px;
             .cp-toolbar-title-value {
                 border: 1px solid transparent;
-                padding: 5px;
-                font-size: 25px;
+                padding: 0 5px;
+                font-size: 30px;
                 vertical-align: middle;
-                line-height: 25px;
                 white-space: nowrap;
             }
             .cp-toolbar-title-value-page {
                 border: 1px solid transparent;
                 padding: 0 5px;
-                line-height: 48px;
             }
             .cp-toolbar-title-edit, .cp-toolbar-title-save {
                 display: flex;
                 align-items: center;
                 font-size: 20px;
                 vertical-align: middle;
-                line-height: 20px;
                 .fa {
                     font-size: 20px;
                 }
@@ -821,21 +660,37 @@
                 font-size: 25px;
                 font-style: italic;
                 white-space: nowrap;
+                display: inline-flex;
+                align-items: center;
             }
             .cp-toolbar-title-hoverable {
                 display: inline-flex;
                 overflow: hidden;
+                align-self: baseline;
+                max-width: 100%;
+                &:hover {
+                    .cp-toolbar-title-editable, .cp-toolbar-title-edit {
+                        border: 1px solid @toolbar-bg-color;
+                        border: 1px solid var(--toolbar-bg-color);
+                        transition: all 0.15s;
+                    }
+                    .cp-toolbar-title-editable {
+                        cursor: text;
+                    }
+                }
             }
             .cp-toolbar-title-edit {
                 cursor: pointer;
                 border: 1px solid transparent;
-                padding: 5px;
+                padding: 0 5px;
                 border-collapse: collapse;
                 span {
                     cursor: pointer;
                 }
             }
             .cp-toolbar-title-save {
+                border: 1px solid @toolbar-bg-color;
+                border: 1px solid var(--toolbar-bg-color);
                 cursor: pointer;
                 padding: 5px;
                 border-collapse: collapse;
@@ -843,54 +698,45 @@
                     cursor: pointer;
                 }
             }
-            .cp-toolbar-title-editable {
+            .cp-toolbar-title-value {
                 overflow: hidden;
                 text-overflow: ellipsis;
                 border-collapse: collapse;
             }
             input {
+                color: @cryptpad_text_col;
+                border: 1px solid @toolbar-bg-color;
+                border: 1px solid var(--toolbar-bg-color);
                 max-width: ~"calc(100% - 40px)";
                 //flex: 1;
                 vertical-align: middle;
                 box-sizing: border-box;
                 cursor: auto;
                 width: 300px;
-                font-size: 20px;
-                padding: 5px 5px;
-                height: 40px;
-                line-height: 28px; // padding + border
+                font-size: 30px !important;
+                padding: 0 5px !important;
+                height: 43px;
             }
         }
-        .cp-toolbar-link, .cp-toolbar-new, .cp-toolbar-notifications {
-            font-size: 48px;
-            line-height: 64px;
+        .cp-toolbar-link, .cp-toolbar-notifications {
+            line-height: @toolbar_top-height;
             width: @toolbar_top-height;
             height: @toolbar_top-height;
             padding: 0;
             box-sizing: border-box;
             display: inline-block;
-
-            color: white;
-            a {
-                color: white;
-            }
-            transition: all 0.15s;
         }
-        .cp-toolbar-notifications, .cp-toolbar-new {
-            background-color: rgba(0,0,0,0.2);
-            &:hover {
-                background-color: rgba(0,0,0,0.3);
-            }
+        .cp-toolbar-notifications {
             text-align: center;
             font-size: 32px;
+            margin-left: 10px;
             &> button {
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                width: 64px;
+                width: @toolbar_top-height;
                 font-size: 1em;
-                color: inherit;
-                height: 64px;
+                height: @toolbar_top-height;
                 padding: 0px;
                 margin: 0;
                 &::before {
@@ -899,8 +745,8 @@
                     padding-top: 4px;
                 }
                 &:hover {
-                    background-color: initial;
                     border-color: transparent;
+                    background-color: rgba(50,50,50,0.1);
                 }
                 span {
                     vertical-align: top;
@@ -909,9 +755,6 @@
                     color: inherit;
                 }
             }
-        }
-        .cp-toolbar-notifications {
-            margin-left: 10px;
             .cp-notifications-empty {
                 color: black;
                 padding: 5px;
@@ -920,14 +763,15 @@
                 position: relative;
                 .cp-dropdown-button-title {
                     position: absolute;
-                    bottom: 0;
-                    right: 0;
+                    bottom: 10px;
+                    right: 16px;
                     font-size: 14px;
                     border: 1px solid;
                     border-radius: 50%;
                     width: 20px;
                     height: 20px;
                     line-height: 16px;
+                    background: @toolbar-top-bg;
                     &.cp-notifications-small {
                         font-size: 10px;
                         line-height: 17px;
@@ -940,10 +784,6 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            background-color: rgba(0,0,0,0.4);
-            &:hover {
-                background-color: rgba(0,0,0,0.5);
-            }
             order: 1;
             .fa {
                 margin: 0;
@@ -954,6 +794,13 @@
                 text-decoration: none;
                 height: auto;
                 padding: 10px;
+
+                svg {
+                    * {
+                        fill: @toolbar-bg-color;
+                        fill: var(--toolbar-bg-color);
+                    }
+                }
 
                 img {
                     cursor: pointer;
@@ -967,9 +814,7 @@
             display: inline-flex;
             order: 6;
             line-height: @toolbar_top-height;
-            color: white;
             .cp-toolbar-notifications { order: 1; }
-            .cp-toolbar-new { order: 2; }
             .cp-toolbar-user-dropdown { order: 3; }
             .cp-toolbar-backup { order: 4; } // TODO drive migration to secure iframe
             &> * {
@@ -980,40 +825,44 @@
             .cp-toolbar-user-dropdown {
                 z-index: 10000; //Z cp-toolbar-user-dropdown
                 //margin-left: 20px;
-                height: 64px;
-                width: 64px;
+                height: @toolbar_top-height;
+                width: @toolbar_top-height;
                 padding: 0px;
                 box-sizing: border-box;
                 text-align: center;
+
+/*
                 background-color: rgba(0,0,0,0.3);
                 transition: all 0.15s;
                 &:hover {
                     background-color: rgba(0,0,0,0.4);
                 }
+ */
+
                 .cp-dropdown-content {
                     margin: 0;
-                    overflow: visible;
                 }
                 & > button {
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    height: 64px;
-                    width: 64px;
+                    height: @toolbar_top-height;
+                    width: @toolbar_top-height;
                     padding: 0;
+                    &:hover {
+                        border-color: transparent;
+                        background-color: rgba(50,50,50,0.1);
+                    }
                     span {
                         text-align: center;
                         width: 100%;
-                        font-size: 32px;
+                        font-size: 48px;
                         display: inline-flex;
                         justify-content: center;
                         align-items: center;
                     }
                     &.cp-avatar {
-                        .avatar_main(48px);
-                        media-tag {
-                            margin: 8px;
-                        }
+                        .avatar_main(64px);
                         border: 0;
                     }
                 }
@@ -1037,16 +886,37 @@
         }
     }
 
-    .cp-toolbar-leftside {
-        //height: @toolbar_line-height;
+    .cp-toolbar-history {
+        background-color: @toolbar-bg-color-light;
+        background-color: var(--toolbar-bg-color-light);
+        color: @cryptpad_text_col;
+    }
+    .cp-toolbar-bottom {
+        background-color: @toolbar-bg-color-light;
+        background-color: var(--toolbar-bg-color-light);
+        color: @cryptpad_text_col;
+        button:hover, button.cp-toolbar-button-active {
+            background-color: @toolbar-bg-color-active;
+            background-color: var(--toolbar-bg-color-active);
+        }
+        button.cp-toolbar-button-active {
+            border-color: @toolbar-bg-color-active;
+            border-color: var(--toolbar-bg-color-active);
+        }
+        button:hover, button:focus {
+            border-color: @toolbar-bg-color-active;
+            border-color: var(--toolbar-bg-color-active);
+            //border-color: @cryptpad_text_col;
+        }
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 100%;
+        flex: 1 1 auto;
         &:empty {
             height: 0;
         }
-        display: inline-flex;
-        align-items: center;
-        max-width: 100%;
-        flex: 1 1 auto;
-        //margin-bottom: -1px;
         .cp-toolbar-users {
             pre {
                 /* needed for ckeditor */
@@ -1055,144 +925,164 @@
             }
         }
         button {
+            border: 1px solid transparent;
+            box-sizing: border-box;
+            position: relative;
             margin: 0px;
             border-radius: 0;
-            height: 100%;
+            height: @toolbar_line-height;
+            display: inline-flex;
+            align-items: center;
+            .fa, .cptools {
+                margin-right: 5px;
+            }
         }
-        .cp-dropdown-content {
-            margin-top: -1px;
+
+        &.cp-toolbar-small {
+            button {
+                .cp-toolbar-name, .cp-button-name {
+                    display: none;
+                }
+                i {
+                    margin-right: 0;
+                }
+            }
         }
 
         & > span {
             height: @toolbar_line-height;
         }
 
-        #cp-toolbar-userlist-drawer-open { order: 0; }
-        #cp-toolbar-chat-drawer-open { order: 1; }
-        .cp-toolbar-share-button { order: 2; }
-        .cp-toolbar-spinner { order: 3; }
 
-        #cp-toolbar-userlist-drawer-open button {
-            width: 125px;
-            text-align: center;
-        }
-        #cp-toolbar-chat-drawer-open button {
-            &.cp-toolbar-notification {
-                animation: notification 2s ease-in-out infinite;
-            }
-        }
-        .cp-toolbar-share-button {
-            width: 50px;
-            text-align: center;
-        }
-    }
-    .cp-toolbar-rightside {
-        display: flex;
-        min-height: @toolbar_line-height;
-        overflow: hidden;
-        &:empty {
-            min-height: 0;
-            height: 0;
-        }
-
-        .cp-toolbar-rightside-button {
-            cursor: pointer;
-            // UI actions
-            &.cp-toolbar-icon-toggle { order: 1; }
-            &.cp-toolbar-icon-preview { order: 2; }
-            &.cp-toolbar-icon-present { order: 3; }
-            // Content actions
-            &.cp-toolbar-icon-mediatag { order: 10; }
-            order: 11;
-            // Storage actions
-            &.cp-toolbar-icon-hashtag { order: 20; }
-            &.cp-toolbar-icon-template { order: 21; }
-            &.cp-toolbar-icon-forget { order: 22; }
-            // Drawer
-            &.cp-toolbar-drawer-button { order: 30; }
-
-        }
-
-        .cp-toolbar-drawer-content:empty ~ .cp-toolbar-drawer-button {
-            display: none;
-        }
-        .cp-toolbar-drawer-content {
-            box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
-            position: absolute;
-            right: 0px;
-            margin-top: @toolbar_line-height;
-            min-width: 50px;
-            background: @colortheme_dropdown-bg;
+        .cp-toolbar-bottom-left {
             display: flex;
-            flex-flow: column;
-            z-index: 10000; //Z cp-toolbar-drawer-content
-            color: black;
-            .fa {
-                font-size: 17px;
-            }
-            &> span {
-                order: 8;
-                box-sizing: border-box;
-                min-width: 150px;
-                height: @toolbar_line-height;
-                border-radius: 0;
-                border: 0;
-            }
+            order: 1;
+        }
+        .cp-toolbar-bottom-mid {
+            display: flex;
+            order: 2;
+        }
+        .cp-toolbar-bottom-right {
+            order: 3;
+            display: flex;
+            #cp-toolbar-chat-drawer-open { order: 0; }
+            #cp-toolbar-userlist-drawer-open { order: 1; }
+        }
+
+        .cp-toolbar-bottom-right {
             button {
-                padding: 5px 16px;
-                text-align: left;
-                margin: 0;
-                border-radius: 0;
-                border: 0;
-                width: 100%;
-                line-height: 1em;
-                &.cp-toolbar-button-active {
-                    background-color: inherit;
-                }
-                .cp-toolbar-drawer-element {
-                    margin-left: 10px;
-                    display: inline;
-                    vertical-align: baseline;
-                }
-                &.fa-info-circle, &.fa-history, &.fa-cog {
-                    .cp-toolbar-drawer-element {
-                        margin-left: 11px;
+                white-space: nowrap;
+            }
+        }
+        .cp-toolbar-bottom-left {
+            .cp-toolbar-appmenu, .cp-toolbar-file {
+                button {
+                    &::before, .fa {
+                        min-width: 20px;
+                        text-align: center;
+                        margin-right: 0;
                     }
                 }
-                &.fa-unlock-alt {
+            }
+            .cp-toolbar-file {
+                order: 1;
+            }
+            .cp-toolbar-appmenu {
+                order: 3;
+            }
+            .cp-toolbar-mediatag, .cp-toolbar-icon-mediatag {
+                order: 5;
+            }
+            .cp-toolbar-tools {
+                order: 7;
+            }
+            .cp-toolbar-file {
+                button {
+                    &.fa-plus { order: 0; }
+                    &.fa-history { order: 5; }
+                    &.fa-hashtag { order: 10; }
+                    &.fa-bookmark { order: 15; }
+                    &.fa-upload { order: 20; }
+                    &.fa-clone { order: 25; }
+                    &.fa-download { order: 30; }
+                    &.fa-print { order: 35; }
+                    &.fa-trash { order: 40; }
+                    &.fa-info-circle { order: 100; }
+
+                    &.cp-toolbar-icon-help { order: 150; }
+                }
+            }
+
+            .cp-toolbar-drawer-content:empty ~ .cp-toolbar-drawer-button {
+                display: none;
+            }
+            .cp-toolbar-drawer-content {
+                box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2);
+                overflow-y: auto;
+                overflow-x: hidden;
+                &.cp-dropdown-visible {
+                    overflow: visible;
+                }
+                position: absolute;
+                left: 0px;
+                top: @toolbar_line-height;
+                margin: -1px;
+                min-width: 50px;
+                background: @colortheme_dropdown-bg;
+                display: flex;
+                flex-flow: column;
+                z-index: 10000; //Z cp-toolbar-drawer-content
+                color: black;
+                .tools_unselectable();
+                .fa {
+                    font-size: 17px;
+                }
+                &> span {
+                    order: 8;
+                    box-sizing: border-box;
+                    min-width: 150px;
+                    height: @toolbar_line-height;
+                    border-radius: 0;
+                    border: 0;
+                }
+                button {
+                    white-space: nowrap;
+                    padding: 5px 16px;
+                    text-align: left;
+                    margin: 0;
+                    border-radius: 0;
+                    border: 0;
+                    width: 100%;
+                    line-height: 1em;
+                    &.cp-toolbar-button-active {
+                        background-color: inherit;
+                    }
                     .cp-toolbar-drawer-element {
-                        margin-left: 15px;
+                        margin-left: 10px;
+                        display: inline;
+                        vertical-align: baseline;
+                    }
+                    &:hover {
+                        background-color: @colortheme_dropdown-bg-hover !important;
+                        color: @colortheme_dropdown-color;
                     }
                 }
-                &.fa-question {
-                    .cp-toolbar-drawer-element {
-                        margin-left: 16px;
-                    }
-                }
-                &:hover {
-                    background-color: @colortheme_dropdown-bg-hover !important;
-                    color: @colortheme_dropdown-color;
-                }
-                order: 8;
-                &.fa-history { order: 1; }
-                &.fa-clone { order: 1; }
-                &.fa-download { order: 2; }
-                &.fa-upload { order: 3; }
-                &.fa-print { order: 4; }
-                &.fa-cog { order: 5; }
-                &.fa-info-circle { order: 6; }
-                &.fa-help { order: 7; }
             }
         }
     }
+
     .cp-toolbar-spinner {
-        line-height: @toolbar_line-height;
-        padding: 0 20px;
+        color: @cryptpad_text_col;
+        font-size: 14px;
+        padding: 0 8px;
+        height: 20px;
+        line-height: 20px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
         min-width: 200px;
         box-sizing: border-box;
+        margin-bottom: 5px;
         &> span.fa {
             height: 20px;
             width: 20px;

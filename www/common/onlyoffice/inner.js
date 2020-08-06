@@ -1,6 +1,6 @@
 define([
     'jquery',
-    '/common/toolbar3.js',
+    '/common/toolbar.js',
     'json.sortify',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
@@ -52,10 +52,11 @@ define([
         $: $
     };
 
-    var CHECKPOINT_INTERVAL = 50;
+    var CHECKPOINT_INTERVAL = 100;
     var DISPLAY_RESTORE_BUTTON = false;
-    var NEW_VERSION = 2;
+    var NEW_VERSION = 3;
     var PENDING_TIMEOUT = 30000;
+    var READONLY_REFRESH_TO = 15000;
 
     var debug = function (x) {
         if (!window.CP_DEV_MODE) { return; }
@@ -76,6 +77,7 @@ define([
         var privateData = metadataMgr.getPrivateData();
         var readOnly = false;
         var offline = false;
+        var ooLoaded = false;
         var pendingChanges = {};
         var config = {};
         var content = {
@@ -95,6 +97,8 @@ define([
         // This structure is used for caching media data and blob urls for each media cryptpad url
         var mediasData = {};
 
+        var startOO = function () {};
+
         var getMediasSources = APP.getMediasSources =  function() {
             content.mediasSources = content.mediasSources || {};
             return content.mediasSources;
@@ -108,16 +112,17 @@ define([
             return window.frames[0].editor || window.frames[0].editorCell;
         };
 
-        var setEditable = function (state) {
+        var setEditable = function (state, force) {
             $('#cp-app-oo-editor').find('#cp-app-oo-offline').remove();
+            /*
             try {
                 getEditor().asc_setViewMode(!state);
                 //window.frames[0].editor.setViewModeDisconnect(true);
             } catch (e) {}
-            if (!state && !readOnly) {
+            */
+            if (!state && (!readOnly || force)) {
                 $('#cp-app-oo-editor').append(h('div#cp-app-oo-offline'));
             }
-            debug(state);
         };
 
         var deleteOffline = function () {
@@ -132,6 +137,12 @@ define([
             APP.onLocal();
         };
 
+        var isRegisteredUserOnline = function () {
+            var users = metadataMgr.getMetadata().users || {};
+            return Object.keys(users).some(function (id) {
+                return users[id] && users[id].curvePublic;
+            });
+        };
         var isUserOnline = function (ooid) {
             // Remove ids for users that have left the channel
             deleteOffline();
@@ -213,10 +224,17 @@ define([
 
         var now = function () { return +new Date(); };
 
-        var getLastCp = function (old) {
+        var sortCpIndex = function (hashes) {
+            return Object.keys(hashes).map(Number).sort(function (a, b) {
+                return a-b;
+            });
+        };
+        var getLastCp = function (old, i) {
             var hashes = old ? oldHashes : content.hashes;
             if (!hashes || !Object.keys(hashes).length) { return {}; }
-            var lastIndex = Math.max.apply(null, Object.keys(hashes).map(Number));
+            i = i || 0;
+            var idx = sortCpIndex(hashes);
+            var lastIndex = idx[idx.length - 1 - i];
             var last = JSON.parse(JSON.stringify(hashes[lastIndex]));
             return last;
         };
@@ -254,11 +272,27 @@ define([
             }
         };
 
+        /*
+        var checkDrawings = function () {
+            var editor = getEditor();
+            if (!editor || !editor.GetSheets) { return false; }
+            var s = editor.GetSheets();
+            return s.some(function (obj) {
+                return obj.worksheet.Drawings.length;
+            });
+        };
+        */
+
+        // DEPRECATED from version 3
         // Loading a checkpoint reorder the sheet starting from ID "5".
         // We have to reorder it manually when a checkpoint is created
         // so that the messages we send to the realtime channel are
         // loadable by users joining after the checkpoint
         var fixSheets = function () {
+            // Starting from version 3, we don't need to fix the sheet IDs anymore
+            // because we reload onlyoffice whenever we receive a checkpoint
+            if (!APP.migrate || (content && content.version > 2)) { return; }
+
             try {
                 var editor = getEditor();
                 // if we are not in the sheet app
@@ -283,13 +317,21 @@ define([
                 console.error(err);
                 return void UI.alert(Messages.oo_saveError);
             }
-            var i = Math.floor(ev.index / CHECKPOINT_INTERVAL);
+            // Get the last cp idx
+            var all = sortCpIndex(content.hashes || {});
+            var current = all[all.length - 1] || 0;
+            // Get the expected cp idx
+            var _i = Math.floor(ev.index / CHECKPOINT_INTERVAL);
+            // Take the max of both
+            var i = Math.max(_i, current);
             content.hashes[i] = {
                 file: data.url,
                 hash: ev.hash,
                 index: ev.index
             };
             oldHashes = JSON.parse(JSON.stringify(content.hashes));
+            content.locks = {};
+            content.ids = {};
             // If this is a migration, set the new version
             if (APP.migrate) {
                 delete content.migration;
@@ -336,6 +378,35 @@ define([
         };
         APP.FM = common.createFileManager(fmConfig);
 
+        // Add a lock
+        var isLockedModal = {
+            content: UI.dialog.customModal(h('div.cp-oo-x2tXls', [
+                h('span.fa.fa-spin.fa-spinner'),
+                h('span', Messages.oo_isLocked)
+            ]))
+        };
+
+        var resetData = function (blob, type) {
+            // If a read-only refresh popup was planned, abort it
+            delete APP.refreshPopup;
+            clearTimeout(APP.refreshRoTo);
+
+            if (!isLockedModal.modal) {
+                isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
+            }
+            myUniqueOOId = undefined;
+            setMyId();
+            APP.docEditor.destroyEditor(); // Kill the old editor
+            $('iframe[name="frameEditor"]').after(h('div#cp-app-oo-placeholder')).remove();
+            ooLoaded = false;
+            oldLocks = {};
+            Object.keys(pendingChanges).forEach(function (key) {
+                clearTimeout(pendingChanges[key]);
+                delete pendingChanges[key];
+            });
+            startOO(blob, type, true);
+        };
+
         var saveToServer = function () {
             var text = getContent();
             var blob = new Blob([text], {type: 'plain/text'});
@@ -346,24 +417,72 @@ define([
                 index: ooChannel.cpIndex
             };
             fixSheets();
+
+            ooChannel.ready = false;
+            ooChannel.queue = [];
+            data.callback = function () {
+                resetData(blob, file);
+            };
+
             APP.FM.handleFile(blob, data);
         };
+
+        var noLogin = false;
+
         var makeCheckpoint = function (force) {
-            if (!common.isLoggedIn()) { return; }
             var locked = content.saveLock;
             var lastCp = getLastCp();
 
             var needCp = force || ooChannel.cpIndex % CHECKPOINT_INTERVAL === 0 ||
-                        (ooChannel.cpIndex - lastCp.index) > CHECKPOINT_INTERVAL;
+                        (ooChannel.cpIndex - (lastCp.index || 0)) > CHECKPOINT_INTERVAL;
             if (!needCp) { return; }
 
             if (!locked || !isUserOnline(locked) || force) {
+                if (!common.isLoggedIn() && !isRegisteredUserOnline() && !noLogin) {
+                    var login = h('button.cp-corner-primary', Messages.login_login);
+                    var register = h('button.cp-corner-primary', Messages.login_register);
+                    var cancel = h('button.cp-corner-cancel', Messages.cancel);
+                    var actions = h('div', [cancel, register, login]);
+                    var modal = UI.cornerPopup(Messages.oo_login, actions, '', {alt: true});
+                    $(register).click(function () {
+                        common.setLoginRedirect(function () {
+                            common.gotoURL('/register/');
+                        });
+                        modal.delete();
+                    });
+                    $(login).click(function () {
+                        common.setLoginRedirect(function () {
+                            common.gotoURL('/login/');
+                        });
+                        modal.delete();
+                    });
+                    $(cancel).click(function () {
+                        modal.delete();
+                        noLogin = true;
+                    });
+                    return;
+                }
+                if (!common.isLoggedIn()) { return; }
                 content.saveLock = myOOId;
                 APP.onLocal();
                 APP.realtime.onSettle(function () {
                     saveToServer();
                 });
             }
+        };
+        var deleteLastCp = function () {
+            var hashes = content.hashes;
+            if (!hashes || !Object.keys(hashes).length) { return; }
+            var i = 0;
+            var idx = Object.keys(hashes).map(Number).sort(function (a, b) {
+                return a-b;
+            });
+            var lastIndex = idx[idx.length - 1 - i];
+            delete content.hashes[lastIndex];
+            APP.onLocal();
+            APP.realtime.onSettle(function () {
+                UI.log(Messages.saved);
+            });
         };
         var restoreLastCp = function () {
             content.saveLock = myOOId;
@@ -395,6 +514,88 @@ define([
             }, to);
         };
 
+        var loadInitDocument = function (type, useNewDefault) {
+            var newText;
+            switch (type) {
+                case 'sheet' :
+                    newText = EmptyCell(useNewDefault);
+                    break;
+                case 'oodoc':
+                    newText = EmptyDoc();
+                    break;
+                case 'ooslide':
+                    newText = EmptySlide();
+                    break;
+                default:
+                    newText = '';
+            }
+            return new Blob([newText], {type: 'text/plain'});
+        };
+        var loadLastDocument = function (lastCp, onCpError, cb) {
+            ooChannel.cpIndex = lastCp.index || 0;
+            ooChannel.lastHash = lastCp.hash;
+            var parsed = Hash.parsePadUrl(lastCp.file);
+            var secret = Hash.getSecrets('file', parsed.hash);
+            if (!secret || !secret.channel) { return; }
+            var hexFileName = secret.channel;
+            var fileHost = privateData.fileHost || privateData.origin;
+            var src = fileHost + Hash.getBlobPathFromHex(hexFileName);
+            var key = secret.keys && secret.keys.cryptKey;
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', src, true);
+            xhr.responseType = 'arraybuffer';
+            xhr.onload = function () {
+                if (/^4/.test('' + this.status)) {
+                    onCpError(this.status);
+                    return void console.error('XHR error', this.status);
+                }
+                var arrayBuffer = xhr.response;
+                if (arrayBuffer) {
+                    var u8 = new Uint8Array(arrayBuffer);
+                    FileCrypto.decrypt(u8, key, function (err, decrypted) {
+                        if (err) { return void console.error(err); }
+                        var blob = new Blob([decrypted.content], {type: 'plain/text'});
+                        if (cb) {
+                            return cb(blob, getFileType());
+                        }
+                        startOO(blob, getFileType());
+                    });
+                }
+            };
+            xhr.onerror = function (err) {
+                onCpError(err);
+            };
+            xhr.send(null);
+        };
+
+        var refreshReadOnly = function () {
+            var cancel = h('button.cp-corner-cancel', Messages.cancel);
+            var reload = h('button.cp-corner-primary', [
+                h('i.fa.fa-refresh'),
+                Messages.oo_refresh
+            ]);
+
+            var actions = h('div', [cancel, reload]);
+            var m = UI.cornerPopup(Messages.oo_refreshText, actions, '');
+            $(reload).click(function () {
+                ooChannel.ready = false;
+                var lastCp = getLastCp();
+                loadLastDocument(lastCp, function () {
+                    var file = getFileType();
+                    var type = common.getMetadataMgr().getPrivateData().ooType;
+                    var blob = loadInitDocument(type, true);
+                    resetData(blob, file);
+                }, function (blob, file) {
+                    resetData(blob, file);
+                });
+                delete APP.refreshPopup;
+                m.delete();
+            });
+            $(cancel).click(function () {
+                delete APP.refreshPopup;
+                m.delete();
+            });
+        };
 
         var openRtChannel = function (cb) {
             if (rtChannel.ready) { return void cb(); }
@@ -412,12 +613,25 @@ define([
             sframeChan.on('EV_OO_EVENT', function (obj) {
                 switch (obj.ev) {
                     case 'READY':
+                        cb();
                         break;
                     case 'LEAVE':
                         removeClient(obj.data);
                         break;
                     case 'MESSAGE':
                         if (ooChannel.ready) {
+                            // In read-only mode, push the message to the queue and prompt
+                            // the user to refresh OO (without reloading the page)
+                            if (readOnly) {
+                                ooChannel.queue.push(obj.data);
+                                if (APP.refreshPopup) { return; }
+                                APP.refreshPopup = true;
+
+                                // Don't "spam" the user instantly and no more than
+                                // 1 popup every 15s
+                                APP.refreshRoTo = setTimeout(refreshReadOnly, READONLY_REFRESH_TO);
+                                return;
+                            }
                             ooChannel.send(obj.data.msg);
                             ooChannel.lastHash = obj.data.hash;
                             ooChannel.cpIndex++;
@@ -427,7 +641,6 @@ define([
                         break;
                 }
             });
-            cb();
         };
 
         var getParticipants = function () {
@@ -538,18 +751,26 @@ define([
         };
 
         var handleAuth = function (obj, send) {
-            // OO is ready
-            ooChannel.ready = true;
-            // Get the content pushed after the latest checkpoint
+            //setEditable(false);
+
             var changes = [];
-            ooChannel.queue.forEach(function (data) {
-                Array.prototype.push.apply(changes, data.msg.changes);
-            });
-            ooChannel.lastHash = getLastCp().hash;
+            if (content.version > 2) {
+                ooChannel.queue.forEach(function (data) {
+                    Array.prototype.push.apply(changes, data.msg.changes);
+                });
+                ooChannel.ready = true;
+
+                ooChannel.cpIndex += ooChannel.queue.length;
+                var last = ooChannel.queue.pop();
+                if (last) { ooChannel.lastHash = last.hash; }
+            } else {
+                setEditable(false, true);
+            }
             send({
                 type: "authChanges",
                 changes: changes
             });
+
             // Answer to the auth command
             var p = getParticipants();
             send({
@@ -572,14 +793,6 @@ define([
                 type: "documentOpen",
                 data: {"type":"open","status":"ok","data":{"Editor.bin":obj.openCmd.url}}
             });
-            // Update current index
-            var last = ooChannel.queue.pop();
-            if (last) { ooChannel.lastHash = last.hash; }
-            ooChannel.cpIndex += ooChannel.queue.length;
-            // Apply existing locks
-            deleteOfflineLocks();
-            APP.onLocal();
-            handleNewLocks(oldLocks, content.locks || {});
 
             var observer = new MutationObserver(function(mutations) {
                 mutations.forEach(function(mutation) {
@@ -598,13 +811,6 @@ define([
             });
         };
 
-        // Add a lock
-        var isLockedModal = {
-            content: UI.dialog.customModal(h('div.cp-oo-x2tXls', [
-                h('span.fa.fa-spin.fa-spinner'),
-                h('span', Messages.oo_isLocked)
-            ]))
-        };
         var handleLock = function (obj, send) {
             if (content.saveLock) {
                 if (!isLockedModal.modal) {
@@ -698,7 +904,12 @@ define([
                 return;
             }
 
+            // XXX
+            // If save lock, tell onlyoffice that it can't save now...
+            // if (content && content.saveLock] {}
+
             // Send the changes
+            content.locks = content.locks || {};
             rtChannel.sendMsg({
                 type: "saveChanges",
                 changes: parseChanges(obj.changes),
@@ -709,6 +920,12 @@ define([
                 if (err) {
                     return void console.error(err);
                 }
+                // XXX
+                // If save lock, it means the sheet was locked for a checkpoint before
+                // our message was received!
+                // Add our message to our own queue to load it after the checkpoint reload
+
+
                 if (pendingChanges[uid]) {
                     clearTimeout(pendingChanges[uid]);
                     delete pendingChanges[uid];
@@ -811,17 +1028,24 @@ define([
                                     index: -1
                                 });
                             }
+                            if (APP.onDocumentUnlock) {
+                                APP.onDocumentUnlock();
+                                APP.onDocumentUnlock = undefined;
+                            }
                             break;
                     }
                 });
             });
         };
 
-        var ooLoaded = false;
-        var startOO = function (blob, file) {
-            if (APP.ooconfig) { return void console.error('already started'); }
+        startOO = function (blob, file, force) {
+            if (APP.ooconfig && !force) { return void console.error('already started'); }
             var url = URL.createObjectURL(blob);
             var lock = readOnly || APP.migrate;
+
+            // Starting from version 3, we can use the view mode again
+            // defined but never used
+            //var mode = (content && content.version > 2 && lock) ? "view" : "edit";
 
             // Config
             APP.ooconfig = {
@@ -847,7 +1071,7 @@ define([
                         "id": String(myOOId), //"c0c3bf82-20d7-4663-bf6d-7fa39c598b1d",
                         "firstname": metadataMgr.getUserData().name || Messages.anonymous,
                     },
-                    "mode": lock ? "view" : "edit",
+                    "mode": "edit",
                     "lang": (navigator.language || navigator.userLanguage || '').slice(0,2)
                 },
                 "events": {
@@ -889,15 +1113,75 @@ define([
                         }
                     },
                     "onDocumentReady": function () {
-                        if (APP.migrate && !readOnly) {
+                        var onMigrateRdy = Util.mkEvent();
+                        onMigrateRdy.reg(function () {
                             var div = h('div.cp-oo-x2tXls', [
                                 h('span.fa.fa-spin.fa-spinner'),
-                                h('span', Messages.oo_sheetMigration_loading)
+                                h('span', Messages.oo_sheetMigration_loading) // XXX tell them that it will take ~ 1min)
                             ]);
                             UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
-                            setTimeout(function () {
-                                makeCheckpoint(true);
-                            }, 1000);
+                            makeCheckpoint(true);
+                        });
+                        // DEPRECATED: from version 3, the queue is sent again during init
+                        if (APP.migrate && ((content.version || 1) <= 2)) {
+                            // The doc is ready, fix the worksheets IDs and push the queue
+                            fixSheets();
+                            // Push changes since last cp
+                            ooChannel.ready = true;
+                            var changes = [];
+                            var changesIndex;
+                            ooChannel.queue.forEach(function (data) {
+                                Array.prototype.push.apply(changes, data.msg.changes);
+                                changesIndex = data.msg.changesIndex;
+                                //ooChannel.send(data.msg);
+                            });
+                            ooChannel.cpIndex += ooChannel.queue.length;
+                            var last = ooChannel.queue.pop();
+                            if (last) { ooChannel.lastHash = last.hash; }
+
+                            var onDocUnlock = function () {
+                                // Migration required but read-only: continue...
+                                if (readOnly) {
+                                    setEditable(true);
+                                    getEditor().setViewModeDisconnect();
+                                } else {
+                                    // No changes after the cp: migrate now
+                                    onMigrateRdy.fire();
+                                }
+                            };
+
+
+                            // Send the changes all at once
+                            if (changes.length) {
+                                setTimeout(function () {
+                                    ooChannel.send({
+                                        type: 'saveChanges',
+                                        changesIndex: changesIndex,
+                                        changes: changes,
+                                        locks: []
+                                    });
+                                    APP.onDocumentUnlock = onDocUnlock;
+                                }, 5000);
+                                return;
+                            }
+                            onDocUnlock();
+                            return;
+                        }
+
+                        if (lock) {
+                            getEditor().setViewModeDisconnect();
+                        } else {
+                            setEditable(true);
+                        }
+
+                        if (isLockedModal.modal && force) {
+                            isLockedModal.modal.closeModal();
+                            delete isLockedModal.modal;
+                            $('#cp-app-oo-editor > iframe')[0].contentWindow.focus();
+                        }
+
+                        if (APP.migrate && !readOnly) {
+                            onMigrateRdy.fire();
                         }
                     }
                 }
@@ -907,8 +1191,19 @@ define([
                 if (ifr) { ifr.remove(); }
             };
 
-            common.initFilePicker({
-                onSelect: function (data) {
+            APP.UploadImageFiles = function (files, type, id, jwt, cb) {
+                cb('NO');
+            };
+            APP.AddImage = function(cb1, cb2) {
+                APP.AddImageSuccessCallback = cb1;
+                APP.AddImageErrorCallback = cb2;
+                common.openFilePicker({
+                    types: ['file'],
+                    where: ['root'],
+                    filter: {
+                        fileType: ['image/']
+                    }
+                }, function (data) {
                     if (data.type !== 'file') {
                         debug("Unexpected data type picked " + data.type);
                         return;
@@ -923,25 +1218,13 @@ define([
                     APP.realtime.onSettle(function () {
                         APP.getImageURL(name, function(url) {
                             debug("CRYPTPAD success add " + name);
+                            common.setPadAttribute('atime', +new Date(), null, data.href);
                             APP.AddImageSuccessCallback({
                                 name: name,
                                 url: url
                             });
                         });
                     });
-                }
-            });
-
-            APP.AddImage = function(cb1, cb2) {
-                APP.AddImageSuccessCallback = cb1;
-                APP.AddImageErrorCallback = cb2;
-                common.openFilePicker({
-                    types: ['file'],
-                    where: ['root'],
-                    filter: {
-                        fileType: ['image/']
-                    }
-
                 });
             };
 
@@ -1091,12 +1374,12 @@ define([
 
         var x2tSaveAndConvertData = function(data, filename, extension, finalFilename) {
             // Perform the x2t conversion
-            require(['/common/onlyoffice/x2t/x2t.js'], function() {
+            require(['/common/onlyoffice/x2t/x2t.js'], function() { // FIXME why does this fail without an access-control-allow-origin header?
                 var x2t = window.Module;
                 x2t.run();
                 if (x2tInitialized) {
                     debug("x2t runtime already initialized");
-                    x2tSaveAndConvertDataInternal(x2t, data, filename, extension, finalFilename);
+                    return void x2tSaveAndConvertDataInternal(x2t, data, filename, extension, finalFilename);
                 }
 
                 x2t.onRuntimeInitialized = function() {
@@ -1108,6 +1391,9 @@ define([
             });
         };
 
+        var supportsXLSX = function () {
+            return !(typeof(Atomics) === "undefined" || typeof (SharedArrayBuffer) === "undefined");
+        };
 
         var exportXLSXFile = function() {
             var text = getContent();
@@ -1121,7 +1407,7 @@ define([
                 ext = ['.docx', /*'.odt',*/ '.bin'];
             }
 
-            if (typeof(Atomics) === "undefined") {
+            if (!supportsXLSX()) {
                 ext = ['.bin'];
                 warning = '<div class="alert alert-info cp-alert-top">'+Messages.oo_exportChrome+'</div>';
             }
@@ -1168,6 +1454,7 @@ define([
             }, {
                 typeInput: $select[0]
             }, true);
+            $select.find('button').addClass('btn');
         };
 
         var x2tImportImagesInternal = function(x2t, images, i, callback) {
@@ -1300,7 +1587,7 @@ define([
             if (ext === "bin") {
                 return void importFile(content);
             }
-            if (typeof(Atomics) === "undefined") {
+            if (!supportsXLSX()) {
                 return void UI.alert(Messages.oo_invalidFormat);
             }
             var div = h('div.cp-oo-x2tXls', [
@@ -1331,43 +1618,20 @@ define([
             }, 100);
         };
 
-        var loadLastDocument = function () {
-            var lastCp = getLastCp();
-            if (!lastCp) { return; }
-            ooChannel.cpIndex = lastCp.index || 0;
-            var parsed = Hash.parsePadUrl(lastCp.file);
-            var secret = Hash.getSecrets('file', parsed.hash);
-            if (!secret || !secret.channel) { return; }
-            var hexFileName = secret.channel;
-            var fileHost = privateData.fileHost || privateData.origin;
-            var src = fileHost + Hash.getBlobPathFromHex(hexFileName);
-            var key = secret.keys && secret.keys.cryptKey;
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', src, true);
-            xhr.responseType = 'arraybuffer';
-            xhr.onload = function () {
-                if (/^4/.test('' + this.status)) {
-                    return void console.error('XHR error', this.status);
-                }
-                var arrayBuffer = xhr.response;
-                if (arrayBuffer) {
-                    var u8 = new Uint8Array(arrayBuffer);
-                    FileCrypto.decrypt(u8, key, function (err, decrypted) {
-                        if (err) { return void console.error(err); }
-                        var blob = new Blob([decrypted.content], {type: 'plain/text'});
-                        startOO(blob, getFileType());
-                    });
-                }
-            };
-            xhr.send(null);
-        };
-        var loadDocument = function (noCp, useNewDefault) {
+        var loadDocument = function (noCp, useNewDefault, i) {
             if (ooLoaded) { return; }
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var file = getFileType();
             if (!noCp) {
+                var lastCp = getLastCp(false, i);
+                // If the last checkpoint is empty, load the "initial" doc instead
+                if (!lastCp || !lastCp.file) { return void loadDocument(true, useNewDefault); }
                 // Load latest checkpoint
-                return void loadLastDocument();
+                return void loadLastDocument(lastCp, function () {
+                    // Checkpoint error: load the previous one
+                    i = i || 0;
+                    loadDocument(noCp, useNewDefault, ++i);
+                });
             }
             var newText;
             switch (type) {
@@ -1383,7 +1647,7 @@ define([
                 default:
                     newText = '';
             }
-            var blob = new Blob([newText], {type: 'text/plain'});
+            var blob = loadInitDocument(type, useNewDefault);
             startOO(blob, file);
         };
 
@@ -1444,23 +1708,14 @@ define([
         };
 
         config.onInit = function (info) {
-            readOnly = metadataMgr.getPrivateData().readOnly;
+            var privateData = metadataMgr.getPrivateData();
+
+            readOnly = privateData.readOnly;
 
             Title = common.createTitle({});
 
             var configTb = {
-                displayed: [
-                    'chat',
-                    'userlist',
-                    'title',
-                    'useradmin',
-                    'spinner',
-                    'newpad',
-                    'share',
-                    'limit',
-                    'unpinnedWarning',
-                    'notifications'
-                ],
+                displayed: ['pad'],
                 title: Title.getTitleConfig(),
                 metadataMgr: metadataMgr,
                 readOnly: readOnly,
@@ -1472,15 +1727,21 @@ define([
             toolbar = APP.toolbar = Toolbar.create(configTb);
             Title.setToolbar(toolbar);
 
-            var $rightside = toolbar.$rightside;
-
             if (window.CP_DEV_MODE) {
                 var $save = common.createButton('save', true, {}, function () {
                     makeCheckpoint(true);
                 });
-                $save.appendTo($rightside);
+                $save.appendTo(toolbar.$bottomM);
             }
             if (window.CP_DEV_MODE || DISPLAY_RESTORE_BUTTON) {
+                common.createButton('', true, {
+                    name: 'delete',
+                    icon: 'fa-trash',
+                    hiddenReadOnly: true
+                }).click(function () {
+                    if (initializing) { return void console.error('initializing'); }
+                    deleteLastCp();
+                }).attr('title', 'Delete last checkpoint').appendTo(toolbar.$bottomM);
                 common.createButton('', true, {
                     name: 'restore',
                     icon: 'fa-history',
@@ -1488,47 +1749,48 @@ define([
                 }).click(function () {
                     if (initializing) { return void console.error('initializing'); }
                     restoreLastCp();
-                }).attr('title', 'Restore last checkpoint').appendTo($rightside);
+                }).attr('title', 'Restore last checkpoint').appendTo(toolbar.$bottomM);
             }
 
             var $exportXLSX = common.createButton('export', true, {}, exportXLSXFile);
-            $exportXLSX.appendTo($rightside);
+            $exportXLSX.appendTo(toolbar.$drawer);
 
-            var type = common.getMetadataMgr().getPrivateData().ooType;
+            var type = privateData.ooType;
             var accept = [".bin", ".ods", ".xlsx"];
             if (type === "ooslide") {
                 accept = ['.bin', '.odp', '.pptx'];
             } else if (type === "oodoc") {
                 accept = ['.bin', '.odt', '.docx'];
             }
-            if (typeof(Atomics) === "undefined") {
+            if (!supportsXLSX()) {
                 accept = ['.bin'];
             }
-            var $importXLSX = common.createButton('import', true, {
-                accept: accept,
-                binary : ["ods", "xlsx", "odt", "docx", "odp", "pptx"]
-            }, importXLSXFile);
-            $importXLSX.appendTo($rightside);
 
             if (common.isLoggedIn()) {
-                common.createButton('hashtag', true).appendTo($rightside);
+                window.CryptPad_deleteLastCp = deleteLastCp;
+                var $importXLSX = common.createButton('import', true, {
+                    accept: accept,
+                    binary : ["ods", "xlsx", "odt", "docx", "odp", "pptx"]
+                }, importXLSXFile);
+                $importXLSX.appendTo(toolbar.$drawer);
+                common.createButton('hashtag', true).appendTo(toolbar.$drawer);
             }
 
             var $forget = common.createButton('forget', true, {}, function (err) {
                 if (err) { return; }
                 setEditable(false);
             });
-            $rightside.append($forget);
+            toolbar.$drawer.append($forget);
 
-            var helpMenu = APP.helpMenu = common.createHelpMenu(['beta', 'oo']);
-            $('#cp-app-oo-editor').prepend(common.getBurnAfterReadingWarning());
-            $('#cp-app-oo-editor').prepend(helpMenu.menu);
-            toolbar.$drawer.append(helpMenu.button);
+            if (!privateData.isEmbed) {
+                var helpMenu = APP.helpMenu = common.createHelpMenu(['beta', 'oo']);
+                $('#cp-app-oo-editor').prepend(common.getBurnAfterReadingWarning());
+                $('#cp-app-oo-editor').prepend(helpMenu.menu);
+                toolbar.$drawer.append(helpMenu.button);
+            }
 
             var $properties = common.createButton('properties', true);
             toolbar.$drawer.append($properties);
-            var $access = common.createButton('access', true);
-            toolbar.$drawer.append($access);
         };
 
         config.onReady = function (info) {
@@ -1566,6 +1828,7 @@ define([
             }
 
             var version = 'v2a/';
+            var msg;
             // Old version detected: use the old OO and start the migration if we can
             if (privateData.ooForceVersion) {
                 if (privateData.ooForceVersion === "1") {
@@ -1574,12 +1837,23 @@ define([
             } else if (content && (!content.version || content.version === 1)) {
                 version = 'v1/';
                 APP.migrate = true;
-                // Registedred users can start the migration
-                if (common.isLoggedIn()) {
+                // Registedred ~~users~~ editors can start the migration
+                if (common.isLoggedIn() && !readOnly) {
                     content.migration = true;
                     APP.onLocal();
                 } else {
-                    var msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
+                    msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor); // XXX update: "anonymous users or viewers"
+                    $(APP.helpMenu.menu).after(msg);
+                    readOnly = true;
+                }
+            } else if (content && content.version === 2) {
+                APP.migrate = true;
+                // Registedred ~~users~~ editors can start the migration
+                if (common.isLoggedIn() && !readOnly) {
+                    content.migration = true;
+                    APP.onLocal();
+                } else {
+                    msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
                     $(APP.helpMenu.menu).after(msg);
                     readOnly = true;
                 }
@@ -1625,6 +1899,17 @@ define([
 
         var reloadPopup = false;
 
+        var checkNewCheckpoint = function () {
+            var lastCp = getLastCp();
+            loadLastDocument(lastCp, function (err) {
+                console.error(err);
+                // On error, do nothing
+                // XXX lock the document or ask for a page reload?
+            }, function (blob, type) {
+                resetData(blob, type);
+            });
+        };
+
         config.onRemote = function () {
             if (initializing) { return; }
             var userDoc = APP.realtime.getUserDoc();
@@ -1650,10 +1935,15 @@ define([
                 var latest = getLastCp(true);
                 var newLatest = getLastCp();
                 if (newLatest.index > latest.index) {
+                    ooChannel.queue = [];
+                    ooChannel.ready = false;
+                    // New checkpoint
                     sframeChan.query('Q_OO_SAVE', {
                         hash: newLatest.hash,
                         url: newLatest.file
-                    }, function () { });
+                    }, function () {
+                        checkNewCheckpoint();
+                    });
                 }
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
             }

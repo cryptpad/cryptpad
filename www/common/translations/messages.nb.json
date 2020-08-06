@@ -140,7 +140,6 @@
     "or": "eller",
     "tags_title": "Tags (kun for ditt bruk)",
     "tags_add": "Oppdater tags for denne sida",
-    "tags_searchHint": "Søk med # i CryptDriven din for å finne pads med slike tags.",
     "tags_notShared": "Dine tags deles ikke med andre brukerer",
     "tags_duplicate": "Dupliser tag:{0}",
     "tags_noentry": "Du kan ikke tagge en sletta pad!",

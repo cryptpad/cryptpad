@@ -25,10 +25,12 @@
             typeof document[hidden] === "undefined");
     };
 
-    Visible.onChange = function (f) {
+    Visible.onChange = function (f, once) {
         document.addEventListener(visibilityChange, function (ev) {
             f(!document[hidden], ev);
-        }, false);
+        }, {
+            once: once
+        });
     };
 
     Visible.currently = function () {

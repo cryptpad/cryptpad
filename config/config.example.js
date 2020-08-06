@@ -89,6 +89,14 @@ module.exports = {
  */
     //httpSafePort: 3001,
 
+/*  CryptPad will launch a child process for every core available
+ *  in order to perform CPU-intensive tasks in parallel.
+ *  Some host environments may have a very large number of cores available
+ *  or you may want to limit how much computing power CryptPad can take.
+ *  If so, set 'maxWorkers' to a positive integer.
+ */
+    // maxWorkers: 4,
+
     /* =====================
      *         Admin
      * ===================== */

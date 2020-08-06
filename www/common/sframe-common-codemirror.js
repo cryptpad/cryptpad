@@ -12,7 +12,7 @@ define([
 ], function ($, Modes, Themes, Messages, UIElements, MT, Hash, Util, TextCursor, ChainPad) {
     var module = {};
 
-    var cursorToPos = function(cursor, oldText) {
+     var cursorToPos = module.cursorToPos = function(cursor, oldText) {
         var cLine = cursor.line;
         var cCh = cursor.ch;
         var pos = 0;
@@ -28,7 +28,7 @@ define([
         return pos;
     };
 
-    var posToCursor = function(position, newText) {
+    var posToCursor = module.posToCursor = function(position, newText) {
         var cursor = {
             line: 0,
             ch: 0
@@ -73,6 +73,21 @@ define([
         else {
             editor.setSelection(posToCursor(selects[0], remoteDoc), posToCursor(selects[1], remoteDoc));
         }
+    };
+
+    module.handleImagePaste = function (editor) {
+        // Don't paste file path in the users wants to paste a file
+        editor.on('paste', function (editor, ev) {
+            try {
+                if (!ev.clipboardData.items) { return; }
+                var items = Array.prototype.slice.apply(ev.clipboardData.items);
+                var hasFile = items.some(function (el) {
+                    return el.kind === "file";
+                });
+                if (!hasFile) { return; }
+                ev.preventDefault();
+            } catch (e) { console.error(e); }
+        });
     };
 
     module.getHeadingText = function (editor) {
@@ -132,6 +147,13 @@ define([
             editor.setOption('indentWithTabs', useTabs);
             editor.setOption('spellcheck', spellcheck);
             editor.setOption('autoCloseBrackets', brackets);
+            setTimeout(function () {
+                $('.CodeMirror').css('font-size', fontSize+'px');
+                editor.refresh();
+            });
+
+            // orgmode is using its own shortcuts
+            if (editor.getMode().name === 'orgmode') { return; }
             editor.setOption("extraKeys", {
                 Tab: function() {
                     if (doc.somethingSelected()) {
@@ -145,10 +167,16 @@ define([
                 "Shift-Tab": function () {
                     editor.execCommand("indentLess");
                 },
-            });
-            setTimeout(function () {
-                $('.CodeMirror').css('font-size', fontSize+'px');
-                editor.refresh();
+                "Alt-Left": undefined,
+                "Alt-Right": undefined,
+                "Alt-Enter": undefined, 
+                "Alt-Up": undefined,
+                "Alt-Down": undefined,
+                "Shift-Alt-Left": undefined,
+                "Shift-Alt-Right": undefined,
+                "Shift-Alt-Enter": undefined,
+                "Shift-Alt-Up": undefined,
+                "Shift-Alt-Down": undefined,
             });
         };
 
@@ -156,7 +184,7 @@ define([
         var useTabsKey = 'indentWithTabs';
         var fontKey = 'fontSize';
         var spellcheckKey = 'spellcheck';
-        var updateIndentSettings = function () {
+        var updateIndentSettings = editor.updateSettings = function () {
             if (!metadataMgr) { return; }
             var data = metadataMgr.getPrivateData().settings;
             data = data.codemirror || {};
@@ -176,27 +204,25 @@ define([
         updateIndentSettings();
     };
 
-    module.create = function (defaultMode, CMeditor) {
+    module.create = function (defaultMode, CMeditor, textarea) {
         var exp = {};
 
         var CodeMirror = exp.CodeMirror = CMeditor;
         CodeMirror.modeURL = "cm/mode/%N/%N";
 
         var $pad = $('#pad-iframe');
-        var $textarea = exp.$textarea = $('#editor1');
+        var $textarea = exp.$textarea = textarea ? $(textarea) : $('#editor1');
         if (!$textarea.length) { $textarea = exp.$textarea = $pad.contents().find('#editor1'); }
 
         var Title;
         var onLocal = function () {};
-        var $rightside;
         var $drawer;
         exp.init = function (local, title, toolbar) {
             if (typeof local === "function") {
                 onLocal = local;
             }
             Title = title;
-            $rightside = toolbar.$rightside;
-            $drawer = toolbar.$drawer;
+            $drawer = toolbar.$theme || $();
         };
 
         var editor = exp.editor = CMeditor.fromTextArea($textarea[0], {
@@ -218,6 +244,26 @@ define([
         });
         editor.focus();
 
+        // Fix cursor and scroll position after undo/redo
+        var undoData;
+        editor.on('beforeChange', function (editor, change) {
+            if (change.origin !== "undo" && change.origin !== "redo") { return; }
+            undoData = editor.getValue();
+        });
+        editor.on('change', function (editor, change) {
+            if (change.origin !== "undo" && change.origin !== "redo") { return; }
+            if (typeof(undoData) === "undefined") { return; }
+            var doc = editor.getValue();
+            var ops = ChainPad.Diff.diff(undoData, doc);
+            undoData = undefined;
+            if (!ops.length) { return; }
+            var cursor = posToCursor(ops[0].offset, doc);
+            editor.setCursor(cursor);
+            editor.scrollIntoView(cursor);
+        });
+
+        module.handleImagePaste(editor);
+
         var setMode = exp.setMode = function (mode, cb) {
             exp.highlightMode = mode;
             if (mode === 'markdown') { mode = 'gfm'; }
@@ -235,6 +281,17 @@ define([
                 name = name ? Messages.languageButton + ' ('+name+')' : Messages.languageButton;
                 exp.$language.setValue(mode, name);
             }
+
+                if (mode === "orgmode") {
+                    if (CodeMirror.orgmode && typeof (CodeMirror.orgmode.init) === "function") {
+                        CodeMirror.orgmode.init(editor);
+                    }
+                } else {
+                    if (CodeMirror.orgmode && typeof (CodeMirror.orgmode.destroy) === "function") {
+                        CodeMirror.orgmode.destroy(editor);
+                    }
+                }
+
             if(cb) { cb(mode); }
         };
 
@@ -290,7 +347,6 @@ define([
             var dropdownConfig = {
                 text: Messages.languageButton, // Button initial text
                 options: options, // Entries displayed in the menu
-                left: true, // Open to the left of the button
                 isSelect: true,
                 feedback: 'CODE_LANGUAGE',
                 common: Common
@@ -311,7 +367,8 @@ define([
             });
             $aLanguages.click(function () {
                 isHovering = false;
-                setMode($(this).attr('data-value'), onModeChanged);
+                var mode = $(this).attr('data-value');
+                setMode(mode, onModeChanged);
                 onLocal();
             });
 
@@ -338,16 +395,22 @@ define([
                     });
                 });
                 var dropdownConfig = {
-                    text: 'Theme', // Button initial text
+                    text: Messages.code_editorTheme, // Button initial text
                     options: options, // Entries displayed in the menu
-                    left: true, // Open to the left of the button
                     isSelect: true,
                     initialValue: lastTheme,
                     feedback: 'CODE_THEME',
                     common: Common
                 };
                 var $block = exp.$theme = UIElements.createDropdown(dropdownConfig);
-                $block.find('button').attr('title', Messages.themeButtonTitle);
+                $block.find('button').attr('title', Messages.themeButtonTitle).click(function () {
+                    var state = $block.find('.cp-dropdown-content').is(':visible');
+                    var $c = $block.closest('.cp-toolbar-drawer-content');
+                    $c.removeClass('cp-dropdown-visible');
+                    if (!state) {
+                        $c.addClass('cp-dropdown-visible');
+                    }
+                });
 
                 setTheme(lastTheme, $block);
 
@@ -415,8 +478,7 @@ define([
 
         /////
 
-        var canonicalize = function (t) { return t.replace(/\r\n/g, '\n'); };
-
+        var canonicalize = exp.canonicalize = function (t) { return t.replace(/\r\n/g, '\n'); };
 
 
         exp.contentUpdate = function (newContent) {
@@ -424,6 +486,7 @@ define([
             var remoteDoc = newContent.content;
             // setValueAndCursor triggers onLocal, even if we don't make any change to the content
             // and it may revert other changes (metadata)
+
             if (oldDoc === remoteDoc) { return; }
             exp.setValueAndCursor(oldDoc, remoteDoc);
         };
@@ -491,11 +554,12 @@ define([
                 var cursorPosS = posToCursor(cursor.selectionStart, doc);
                 var el = makeCursor(id);
                 if (cursor.color) {
-                    $(el).css('border-color', cursor.color);
-                    $(el).css('background-color', cursor.color);
+                    $(el).css('border-color', cursor.color)
+                         .css('background-color', cursor.color);
                 }
                 if (cursor.name) {
-                    $(el).attr('title', makeTippy(cursor));
+                    $(el).attr('title', makeTippy(cursor))
+                         .attr('data-cptippy-html', true);
                 }
                 marks[id] = editor.setBookmark(cursorPosS, { widget: el });
             } else {
@@ -506,6 +570,9 @@ define([
                     : 'background-color: rgba(255,0,0,0.2)';
                 marks[id] = editor.markText(pos1, pos2, {
                     css: css,
+                    attributes: {
+                        'data-cptippy-html': true,
+                    },
                     title: makeTippy(cursor),
                     className: 'cp-tippy-html'
                 });

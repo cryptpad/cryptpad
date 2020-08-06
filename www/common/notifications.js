@@ -8,17 +8,17 @@ define([
     '/common/common-constants.js',
     '/customize/messages.js',
     '/bower_components/nthen/index.js'
-], function ($, h, Hash, UI, UIElements, Util, Constants, Messages, nThen) {
+], function($, h, Hash, UI, UIElements, Util, Constants, Messages, nThen) {
 
     var handlers = {};
 
-    var defaultDismiss = function (common, data) {
-        return function (e) {
+    var defaultDismiss = function(common, data) {
+        return function(e) {
             if (e) {
                 e.preventDefault();
                 e.stopPropagation();
             }
-            common.mailbox.dismiss(data, function (err) {
+            common.mailbox.dismiss(data, function(err) {
                 if (err) { return void console.error(err); }
             });
         };
@@ -26,7 +26,7 @@ define([
 
     // Friend request
 
-    handlers['FRIEND_REQUEST'] = function (common, data) {
+    handlers['FRIEND_REQUEST'] = function(common, data) {
         var content = data.content;
         var msg = content.msg;
         var userData = msg.content.user || msg.content;
@@ -34,7 +34,7 @@ define([
         msg.content = { user: userData };
 
         // Display the notification
-        content.getFormatText = function () {
+        content.getFormatText = function() {
             return Messages._getKey('friendRequest_notification', [name]);
         };
 
@@ -43,14 +43,14 @@ define([
 
         // if not archived, add handlers
         if (!content.archived) {
-            content.handler = function () {
+            content.handler = function() {
                 UIElements.displayFriendRequestModal(common, data);
             };
             common.addFriendRequest(data);
         }
     };
 
-    handlers['FRIEND_REQUEST_ACCEPTED'] = function (common, data) {
+    handlers['FRIEND_REQUEST_ACCEPTED'] = function(common, data) {
         var content = data.content;
         var msg = content.msg;
         var userData = typeof(msg.content.user) === "object" ? msg.content.user : {
@@ -58,7 +58,7 @@ define([
             curvePublic: msg.content.user
         };
         var name = Util.fixHTML(userData.displayName) || Messages.anonymous;
-        content.getFormatText = function () {
+        content.getFormatText = function() {
             return Messages._getKey('friendRequest_accepted', [name]);
         };
         if (!content.archived) {
@@ -66,7 +66,7 @@ define([
         }
     };
 
-    handlers['FRIEND_REQUEST_DECLINED'] = function (common, data) {
+    handlers['FRIEND_REQUEST_DECLINED'] = function(common, data) {
         var content = data.content;
         var msg = content.msg;
         var userData = typeof(msg.content.user) === "object" ? msg.content.user : {
@@ -74,7 +74,7 @@ define([
             curvePublic: msg.content.user
         };
         var name = Util.fixHTML(userData.displayName) || Messages.anonymous;
-        content.getFormatText = function () {
+        content.getFormatText = function() {
             return Messages._getKey('friendRequest_declined', [name]);
         };
         if (!content.archived) {
@@ -83,30 +83,44 @@ define([
     };
 
     // Share pad
-
-    handlers['SHARE_PAD'] = function (common, data) {
+    handlers['SHARE_PAD'] = function(common, data) {
         var content = data.content;
         var msg = content.msg;
         var type = Hash.parsePadUrl(msg.content.href).type;
         var key = type === 'drive' ? 'notification_folderShared' :
-                    (type === 'file' ? 'notification_fileShared' :
-                    'notification_padShared');
+            (type === 'file' ? 'notification_fileShared' :
+                'notification_padShared');
+
+        var teamNotification = /^team-/.test(data.type) && Number(data.type.slice(5));
+        var teamName = '';
+        if (teamNotification) {
+            var privateData = common.getMetadataMgr().getPrivateData();
+            var teamsData = Util.tryParse(JSON.stringify(privateData.teams)) || {};
+            var team = teamsData[teamNotification];
+            if (!team || !team.name) { return; }
+            key += "Team";
+            teamName = Util.fixHTML(team.name);
+        }
+
         var name = Util.fixHTML(msg.content.name) || Messages.anonymous;
         var title = Util.fixHTML(msg.content.title);
-        content.getFormatText = function () {
-            return Messages._getKey(key, [name, title]);
+        content.getFormatText = function() {
+            return Messages._getKey(key, [name, title, teamName]);
         };
-        content.handler = function () {
-            var todo = function () {
+        content.handler = function() {
+            var todo = function() {
                 common.openURL(msg.content.href);
                 defaultDismiss(common, data)();
             };
-            nThen(function (waitFor) {
+            nThen(function(waitFor) {
                 if (msg.content.isTemplate) {
                     common.sessionStorage.put(Constants.newPadPathKey, ['template'], waitFor());
                 }
+                if (teamNotification) {
+                    common.sessionStorage.put(Constants.newPadTeamKey, teamNotification, waitFor());
+                }
                 common.sessionStorage.put('newPadPassword', msg.content.password || '', waitFor());
-            }).nThen(function () {
+            }).nThen(function() {
                 todo();
             });
         };
@@ -116,12 +130,12 @@ define([
     };
 
     // New support message from the admins
-    handlers['SUPPORT_MESSAGE'] = function (common, data) {
+    handlers['SUPPORT_MESSAGE'] = function(common, data) {
         var content = data.content;
-        content.getFormatText = function () {
+        content.getFormatText = function() {
             return Messages.support_notification;
         };
-        content.handler = function () {
+        content.handler = function() {
             common.openURL('/support/');
             defaultDismiss(common, data)();
         };
@@ -130,7 +144,7 @@ define([
         }
     };
 
-    handlers['REQUEST_PAD_ACCESS'] = function (common, data) {
+    handlers['REQUEST_PAD_ACCESS'] = function(common, data) {
         var content = data.content;
         var msg = content.msg;
 
@@ -140,13 +154,13 @@ define([
         // Display the notification
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
         var title = Util.fixHTML(msg.content.title);
-        content.getFormatText = function () {
+        content.getFormatText = function() {
             return Messages._getKey('requestEdit_request', [title, name]);
         };
 
         // if not archived, add handlers
         if (!content.archived) {
-            content.handler = function () {
+            content.handler = function() {
                 var link = h('a', {
                     href: '#'
                 }, Messages.requestEdit_viewPad);
@@ -160,12 +174,12 @@ define([
                     verified,
                     link
                 ]);
-                $(link).click(function (e) {
+                $(link).click(function(e) {
                     e.preventDefault();
                     e.stopPropagation();
                     common.openURL(msg.content.href);
                 });
-                UI.confirm(div, function (yes) {
+                UI.confirm(div, function(yes) {
                     if (!yes) { return; }
                     common.getSframeChannel().event('EV_GIVE_ACCESS', {
                         channel: msg.content.channel,
@@ -182,7 +196,7 @@ define([
         }
     };
 
-    handlers['GIVE_PAD_ACCESS'] = function (common, data) {
+    handlers['GIVE_PAD_ACCESS'] = function(common, data) {
         var content = data.content;
         var msg = content.msg;
 
@@ -195,26 +209,26 @@ define([
         var title = Util.fixHTML(msg.content.title);
 
         // Display the notification
-        content.getFormatText = function () {
+        content.getFormatText = function() {
             return Messages._getKey('requestEdit_accepted', [title, name]);
         };
 
         // if not archived, add handlers
-        content.handler = function () {
+        content.handler = function() {
             common.openURL(msg.content.href);
             defaultDismiss(common, data)();
         };
     };
 
 
-    handlers['ADD_OWNER'] = function (common, data) {
+    handlers['ADD_OWNER'] = function(common, data) {
         var content = data.content;
         var msg = content.msg;
 
         // Display the notification
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
         var title = Util.fixHTML(msg.content.title);
-        content.getFormatText = function () {
+        content.getFormatText = function() {
             return Messages._getKey('owner_request', [name, title]);
         };
 
@@ -223,7 +237,7 @@ define([
 
         // if not archived, add handlers
         if (!content.archived) {
-            content.handler = function () {
+            content.handler = function() {
                 if (msg.content.teamChannel) {
                     return void UIElements.displayAddTeamOwnerModal(common, data);
                 }
@@ -232,7 +246,7 @@ define([
         }
     };
 
-    handlers['ADD_OWNER_ANSWER'] = function (common, data) {
+    handlers['ADD_OWNER_ANSWER'] = function(common, data) {
         var content = data.content;
         var msg = content.msg;
 
@@ -240,7 +254,7 @@ define([
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
         var title = Util.fixHTML(msg.content.title);
         var key = 'owner_request_' + (msg.content.answer ? 'accepted' : 'declined');
-        content.getFormatText = function () {
+        content.getFormatText = function() {
             return Messages._getKey(key, [name, title]);
         };
         if (!content.archived) {
@@ -248,7 +262,7 @@ define([
         }
     };
 
-    handlers['RM_OWNER'] = function (common, data) {
+    handlers['RM_OWNER'] = function(common, data) {
         var content = data.content;
         var msg = content.msg;
 
@@ -256,7 +270,7 @@ define([
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
         var title = Util.fixHTML(msg.content.title);
         var key = 'owner_removed' + (msg.content.pending ? 'Pending' : '');
-        content.getFormatText = function () {
+        content.getFormatText = function() {
             return Messages._getKey(key, [name, title]);
         };
         if (!content.archived) {
@@ -264,32 +278,32 @@ define([
         }
     };
 
-    handlers['INVITE_TO_TEAM'] = function (common, data) {
+    handlers['INVITE_TO_TEAM'] = function(common, data) {
         var content = data.content;
         var msg = content.msg;
 
         // Display the notification
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
-        var teamName = Util.fixHTML(Util.find(msg, ['content', 'team', 'metadata', 'name']) || '');
-        content.getFormatText = function () {
+        var teamName = Util.fixHTML(Util.find(msg, ['content', 'team', 'metadata', 'name'])  || '');
+        content.getFormatText = function() {
             var text = Messages._getKey('team_invitedToTeam', [name, teamName]);
             return text;
         };
         if (!content.archived) {
-            content.handler = function () {
+            content.handler = function() {
                 UIElements.displayInviteTeamModal(common, data);
             };
         }
     };
 
-    handlers['KICKED_FROM_TEAM'] = function (common, data) {
+    handlers['KICKED_FROM_TEAM'] = function(common, data) {
         var content = data.content;
         var msg = content.msg;
 
         // Display the notification
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
-        var teamName = Util.fixHTML(Util.find(msg, ['content', 'teamName']) || '');
-        content.getFormatText = function () {
+        var teamName = Util.fixHTML(Util.find(msg, ['content', 'teamName'])  || '');
+        content.getFormatText = function() {
             var text = Messages._getKey('team_kickedFromTeam', [name, teamName]);
             return text;
         };
@@ -298,16 +312,16 @@ define([
         }
     };
 
-    handlers['INVITE_TO_TEAM_ANSWER'] = function (common, data) {
+    handlers['INVITE_TO_TEAM_ANSWER'] = function(common, data) {
         var content = data.content;
         var msg = content.msg;
 
         // Display the notification
         var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
-        var teamName = Util.fixHTML(Util.find(msg, ['content', 'team', 'metadata', 'name']) || '') ||
-                        Util.fixHTML(Util.find(msg, ['content', 'teamName']));
+        var teamName = Util.fixHTML(Util.find(msg, ['content', 'team', 'metadata', 'name'])  || '') ||
+            Util.fixHTML(Util.find(msg, ['content', 'teamName']));
         var key = 'team_' + (msg.content.answer ? 'accept' : 'decline') + 'Invitation';
-        content.getFormatText = function () {
+        content.getFormatText = function() {
             return Messages._getKey(key, [name, teamName]);
         };
         if (!content.archived) {
@@ -315,11 +329,96 @@ define([
         }
     };
 
+    handlers['COMMENT_REPLY'] = function(common, data) {
+        var content = data.content;
+        var msg = content.msg;
+
+        // Display the notification
+        //var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
+        var comment = Util.fixHTML(msg.content.comment).slice(0, 20).trim();
+        if (msg.content.comment.length > 20) {
+            comment += '...';
+        }
+        var title = Util.fixHTML(msg.content.title || Messages.unknownPad);
+        var href = msg.content.href;
+
+        content.getFormatText = function() {
+            return Messages._getKey('comments_notification', [comment, title]);
+        };
+        if (href) {
+            content.handler = function() {
+                common.openURL(href);
+                defaultDismiss(common, data)();
+            };
+        }
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
+    handlers['MENTION'] = function(common, data) {
+        var content = data.content;
+        var msg = content.msg;
+
+        // Display the notification
+        var name = Util.fixHTML(msg.content.user.displayName) || Messages.anonymous;
+        var title = Util.fixHTML(msg.content.title || Messages.unknownPad);
+        var href = msg.content.href;
+
+        content.getFormatText = function() {
+            return Messages._getKey('mentions_notification', [name, title]);
+        };
+        if (href) {
+            content.handler = function() {
+                common.openURL(href);
+                defaultDismiss(common, data)();
+            };
+        }
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
+    handlers['MOVE_TODO'] = function(common, data) {
+        var content = data.content;
+        var msg = content.msg;
+
+        // Display the notification
+        var title = Util.fixHTML(Messages.type.todo);
+        var href = msg.content.href;
+
+        content.getFormatText = function() {
+            return Messages._getKey('todo_move', [title]);
+        };
+        if (href) {
+            content.handler = function() {
+                common.openURL(href);
+                defaultDismiss(common, data)();
+            };
+        }
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
+
+    handlers['SAFE_LINKS_DEFAULT'] = function (common, data) {
+        var content = data.content;
+        content.getFormatText = function () {
+            return Messages.settings_safeLinkDefault;
+        };
+
+        content.handler = function () {
+            common.openURL('/settings/#security');
+        };
+        if (!content.archived) {
+            content.dismissHandler = defaultDismiss(common, data);
+        }
+    };
 
     // NOTE: don't forget to fixHTML everything returned by "getFormatText"
 
     return {
-        add: function (common, data) {
+        add: function(common, data) {
             var type = data.content.msg.type;
 
             if (handlers[type]) {
@@ -332,7 +431,7 @@ define([
                 data.content.isDismissible = typeof data.content.dismissHandler === "function";
             }
         },
-        remove: function (common, data) {
+        remove: function(common, data) {
             common.removeFriendRequest(data.hash);
         },
         allowed: Object.keys(handlers)

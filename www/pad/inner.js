@@ -1,7 +1,7 @@
-require(['/api/config'], function (ApiConfig) {
+require(['/api/config'], function(ApiConfig) {
     // see ckeditor_base.js getUrl()
-    window.CKEDITOR_GETURL = function (resource) {
-        if (resource.indexOf( '/' ) === 0) {
+    window.CKEDITOR_GETURL = function(resource) {
+        if (resource.indexOf('/') === 0) {
             resource = window.CKEDITOR.basePath.replace(/\/bower_components\/.*/, '') + resource;
         } else if (resource.indexOf(':/') === -1) {
             resource = window.CKEDITOR.basePath + resource;
@@ -15,6 +15,14 @@ require(['/api/config'], function (ApiConfig) {
         }
         return resource;
     };
+
+    window.MathJax = {
+        "HTML-CSS": {
+        },
+        TeX: {
+        }
+    };
+
     require(['/bower_components/ckeditor/ckeditor.js']);
 });
 define([
@@ -25,6 +33,7 @@ define([
     '/common/TypingTests.js',
     '/customize/messages.js',
     '/pad/links.js',
+    '/pad/comments.js',
     '/pad/export.js',
     '/pad/cursor.js',
     '/bower_components/nthen/index.js',
@@ -43,7 +52,7 @@ define([
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/pad/app-pad.less'
-], function (
+], function(
     $,
     Hyperjson,
     Framework,
@@ -51,6 +60,7 @@ define([
     TypingTest,
     Messages,
     Links,
+    Comments,
     Exporter,
     Cursors,
     nThen,
@@ -63,16 +73,15 @@ define([
     ChainPad,
     AppConfig,
     Test
-)
-{
+) {
     var DiffDom = window.diffDOM;
 
-    var slice = function (coll) {
+    var slice = function(coll) {
         return Array.prototype.slice.call(coll);
     };
 
-    var removeListeners = function (root) {
-        slice(root.attributes).map(function (attr) {
+    var removeListeners = function(root) {
+        slice(root.attributes).map(function(attr) {
             if (/^on/.test(attr.name)) {
                 root.attributes.removeNamedItem(attr.name);
             }
@@ -80,7 +89,7 @@ define([
         slice(root.children).forEach(removeListeners);
     };
 
-    var hjsonToDom = function (H) {
+    var hjsonToDom = function(H) {
         var dom = Hyperjson.toDOM(H);
         removeListeners(dom);
         return dom;
@@ -95,17 +104,17 @@ define([
 
     // MEDIATAG: Filter elements to serialize
     // * Remove the drag&drop and resizers from the hyperjson
-    var isWidget = function (el) {
-        return typeof (el.getAttribute) === "function" &&
-                   (el.getAttribute('data-cke-hidden-sel') ||
-                    (el.getAttribute('class') &&
-                        (/cke_widget_drag/.test(el.getAttribute('class')) ||
-                         /cke_image_resizer/.test(el.getAttribute('class')))
-                    )
-                   );
+    var isWidget = function(el) {
+        return typeof(el.getAttribute) === "function" &&
+            (el.getAttribute('data-cke-hidden-sel') ||
+                (el.getAttribute('class') &&
+                    (/cke_widget_drag/.test(el.getAttribute('class')) ||
+                        /cke_image_resizer/.test(el.getAttribute('class')))
+                )
+            );
     };
 
-    var isNotMagicLine = function (el) {
+    var isNotMagicLine = function(el) {
         return !(el && typeof(el.getAttribute) === 'function' &&
             el.getAttribute('class') &&
             el.getAttribute('class').split(' ').indexOf('non-realtime') !== -1);
@@ -113,12 +122,12 @@ define([
 
     var isCursor = Cursors.isCursor;
 
-    var shouldSerialize = function (el) {
+    var shouldSerialize = function(el) {
         return isNotMagicLine(el) && !isWidget(el) && !isCursor(el);
     };
 
     // MEDIATAG: Filter attributes in the serialized elements
-    var widgetFilter = function (hj) {
+    var widgetFilter = function(hj) {
         // Send a widget ID == 0 to avoid a fight between browsers and
         // prevent the container from having the "selected" class (blue border)
         if (hj[1].class) {
@@ -135,7 +144,7 @@ define([
                 //hj[1]['data-cke-widget-id'] = "0";
             }
             // Remove the title attribute of the drag&drop icons (translation conflicts)
-            if (split.indexOf('cke_widget_drag_handler')  !== -1 ||
+            if (split.indexOf('cke_widget_drag_handler') !== -1 ||
                 split.indexOf('cke_image_resizer') !== -1) {
                 hj[1].title = undefined;
             }
@@ -143,23 +152,28 @@ define([
         return hj;
     };
 
-    var hjsonFilters = function (hj) {
+    var hjsonFilters = function(hj) {
         /* catch `type="_moz"` before it goes over the wire */
-        var brFilter = function (hj) {
+        var brFilter = function(hj) {
             if (hj[1].type === '_moz') { hj[1].type = undefined; }
             return hj;
         };
-        var mediatagContentFilter = function (hj) {
+        var mediatagContentFilter = function(hj) {
             if (hj[0] === 'MEDIA-TAG') { hj[2] = []; }
+            return hj;
+        };
+        var commentActiveFilter = function(hj) {
+            if (hj[0] === 'COMMENT') { delete(hj[1] || {}).class; }
             return hj;
         };
         brFilter(hj);
         mediatagContentFilter(hj);
+        commentActiveFilter(hj);
         widgetFilter(hj);
         return hj;
     };
 
-    var domFromHTML = function (html) {
+    var domFromHTML = function(html) {
         return new DOMParser().parseFromString(html, 'text/html');
     };
 
@@ -173,22 +187,22 @@ define([
     ];
 
     var CKEDITOR_CHECK_INTERVAL = 100;
-    var ckEditorAvailable = function (cb) {
+    var ckEditorAvailable = function(cb) {
         var intr;
-        var check = function () {
+        var check = function() {
             if (window.CKEDITOR) {
                 clearTimeout(intr);
                 cb(window.CKEDITOR);
             }
         };
-        intr = setInterval(function () {
+        intr = setInterval(function() {
             console.log("Ckeditor was not defined. Trying again in %sms", CKEDITOR_CHECK_INTERVAL);
             check();
         }, CKEDITOR_CHECK_INTERVAL);
         check();
     };
 
-    var mkHelpMenu = function (framework) {
+    var mkHelpMenu = function(framework) {
         var $toolbarContainer = $('.cke_toolbox_main');
         $toolbarContainer.before(framework._.sfCommon.getBurnAfterReadingWarning());
         var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
@@ -197,9 +211,9 @@ define([
         framework._.toolbar.$drawer.append(helpMenu.button);
     };
 
-    var mkDiffOptions = function (cursor, readOnly) {
+    var mkDiffOptions = function(cursor, readOnly) {
         return {
-            preDiffApply: function (info) {
+            preDiffApply: function(info) {
                 /*
                     Don't accept attributes that begin with 'on'
                     these are probably listeners, and we don't want to
@@ -250,15 +264,15 @@ define([
                 }
                 // CkEditor drag&drop icon container
                 if (info.node && info.node.tagName === 'SPAN' &&
-                        info.node.getAttribute('class') &&
-                        info.node.getAttribute('class').split(' ').indexOf('cke_widget_drag_handler_container') !== -1) {
+                    info.node.getAttribute('class') &&
+                    info.node.getAttribute('class').split(' ').indexOf('cke_widget_drag_handler_container') !== -1) {
                     return true;
                 }
                 // CkEditor drag&drop title (language fight)
                 if (info.node && info.node.getAttribute &&
-                        info.node.getAttribute('class') &&
-                        (info.node.getAttribute('class').split(' ').indexOf('cke_widget_drag_handler') !== -1 ||
-                         info.node.getAttribute('class').split(' ').indexOf('cke_image_resizer') !== -1 ) ) {
+                    info.node.getAttribute('class') &&
+                    (info.node.getAttribute('class').split(' ').indexOf('cke_widget_drag_handler') !== -1 ||
+                        info.node.getAttribute('class').split(' ').indexOf('cke_image_resizer') !== -1)) {
                     return true;
                 }
 
@@ -278,9 +292,15 @@ define([
                     }
                 }
 
+                // Don't remote the "active" class of our comments
+                if (info.node && info.node.tagName === 'COMMENT') {
+                    if (info.diff.action === 'removeAttribute' && ['class'].indexOf(info.diff.name) !== -1) {
+                        return true;
+                    }
+                }
+
                 if (info.node && info.node.tagName === 'BODY') {
-                    if (info.diff.action === 'removeAttribute' &&
-                        ['class', 'spellcheck'].indexOf(info.diff.name) !== -1) {
+                    if (info.diff.action === 'removeAttribute' && ['class', 'spellcheck'].indexOf(info.diff.name) !== -1) {
                         return true;
                     }
                 }
@@ -328,50 +348,50 @@ define([
                     return true;
                 }
 
-/*
-                cursor.update();
+                /*
+                                cursor.update();
 
-                // no use trying to recover the cursor if it doesn't exist
-                if (!cursor.exists()) { return; }
+                                // no use trying to recover the cursor if it doesn't exist
+                                if (!cursor.exists()) { return; }
 
-                /*  frame is either 0, 1, 2, or 3, depending on which
-                    cursor frames were affected: none, first, last, or both
+                                /*  frame is either 0, 1, 2, or 3, depending on which
+                                    cursor frames were affected: none, first, last, or both
+                                */
+                /*
+                                var frame = info.frame = cursor.inNode(info.node);
+
+                                if (!frame) { return; }
+
+                                if (frame && typeof info.diff.oldValue === 'string' && typeof info.diff.newValue === 'string') {
+                                    //var pushes = cursor.pushDelta(info.diff.oldValue, info.diff.newValue);
+                                    var ops = ChainPad.Diff.diff(info.diff.oldValue, info.diff.newValue);
+
+                                    if (frame & 1) {
+                                        // push cursor start if necessary
+                                        cursor.transformRange(cursor.Range.start, ops);
+                                    }
+                                    if (frame & 2) {
+                                        // push cursor end if necessary
+                                        cursor.transformRange(cursor.Range.end, ops);
+                                    }
+                                }
                 */
-/*
-                var frame = info.frame = cursor.inNode(info.node);
-
-                if (!frame) { return; }
-
-                if (frame && typeof info.diff.oldValue === 'string' && typeof info.diff.newValue === 'string') {
-                    //var pushes = cursor.pushDelta(info.diff.oldValue, info.diff.newValue);
-                    var ops = ChainPad.Diff.diff(info.diff.oldValue, info.diff.newValue);
-
-                    if (frame & 1) {
-                        // push cursor start if necessary
-                        cursor.transformRange(cursor.Range.start, ops);
-                    }
-                    if (frame & 2) {
-                        // push cursor end if necessary
-                        cursor.transformRange(cursor.Range.end, ops);
-                    }
-                }
-*/
             },
-/*
-            postDiffApply: function (info) {
-                if (info.frame) {
-                    if (info.node) {
-                        if (info.frame & 1) { cursor.fixStart(info.node); }
-                        if (info.frame & 2) { cursor.fixEnd(info.node); }
-                    } else { console.error("info.node did not exist"); }
+            /*
+                        postDiffApply: function (info) {
+                            if (info.frame) {
+                                if (info.node) {
+                                    if (info.frame & 1) { cursor.fixStart(info.node); }
+                                    if (info.frame & 2) { cursor.fixEnd(info.node); }
+                                } else { console.error("info.node did not exist"); }
 
-                    var sel = cursor.makeSelection();
-                    var range = cursor.makeRange();
+                                var sel = cursor.makeSelection();
+                                var range = cursor.makeRange();
 
-                    cursor.fixSelection(sel, range);
-                }
-            }
-*/
+                                cursor.fixSelection(sel, range);
+                            }
+                        }
+            */
         };
     };
 
@@ -379,30 +399,38 @@ define([
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var addToolbarHideBtn = function (framework, $bar) {
+    var addToolbarHideBtn = function(framework, $bar) {
         // Expand / collapse the toolbar
         var cfg = {
-            element: $bar.find('.cke_toolbox_main')
+            element: $bar
         };
-        var onClick = function (visible) {
+        var onClick = function(visible) {
             framework._.sfCommon.setAttribute(['pad', 'showToolbar'], visible);
         };
-        framework._.sfCommon.getAttribute(['pad', 'showToolbar'], function (err, data) {
-            if (($(window).height() >= 800  || $(window).width() >= 800) &&
-                (typeof(data) === "undefined" || data)) { $('.cke_toolbox_main').show(); }
-            else { $('.cke_toolbox_main').hide(); }
+        framework._.sfCommon.getAttribute(['pad', 'showToolbar'], function(err, data) {
+            var state = false;
+            if (($(window).height() >= 800 || $(window).width() >= 800) &&
+                (typeof(data) === "undefined" || data)) {
+                state = true;
+                $('.cke_toolbox_main').show();
+            } else {
+                $('.cke_toolbox_main').hide();
+            }
             var $collapse = framework._.sfCommon.createButton('toggle', true, cfg, onClick);
-            framework._.toolbar.$rightside.append($collapse);
+            framework._.toolbar.$bottomL.append($collapse);
+            if (state) {
+                $collapse.addClass('cp-toolbar-button-active');
+            }
         });
     };
 
-    var displayMediaTags = function (framework, dom, mediaTagMap) {
-        setTimeout(function () { // Just in case
+    var displayMediaTags = function(framework, dom, mediaTagMap) {
+        setTimeout(function() { // Just in case
             var tags = dom.querySelectorAll('media-tag:empty');
-            Array.prototype.slice.call(tags).forEach(function (el) {
+            Array.prototype.slice.call(tags).forEach(function(el) {
                 MediaTag(el);
-                $(el).on('keydown', function (e) {
-                    if ([8,46].indexOf(e.which) !== -1) {
+                $(el).on('keydown', function(e) {
+                    if ([8, 46].indexOf(e.which) !== -1) {
                         $(el).remove();
                         framework.localChange();
                     }
@@ -424,31 +452,42 @@ define([
         });
     };
 
-    var restoreMediaTags = function (tempDom, mediaTagMap) {
+    var restoreMediaTags = function(tempDom, mediaTagMap) {
         var tags = tempDom.querySelectorAll('media-tag:empty');
-        Array.prototype.slice.call(tags).forEach(function (tag) {
+        Array.prototype.slice.call(tags).forEach(function(tag) {
             var src = tag.getAttribute('src');
             if (mediaTagMap[src]) {
-                mediaTagMap[src].forEach(function (n) {
+                mediaTagMap[src].forEach(function(n) {
                     tag.appendChild(n.cloneNode());
                 });
             }
         });
     };
 
-    var andThen2 = function (editor, Ckeditor, framework) {
+    var mkPrintButton = function (framework, editor) {
+        var $printButton = framework._.sfCommon.createButton('print', true);
+        $printButton.click(function () {
+            editor.execCommand('print');
+            framework.feedback('PRINT_PAD');
+        });
+        framework._.toolbar.$drawer.append($printButton);
+    };
+
+    var andThen2 = function(editor, Ckeditor, framework) {
         var mediaTagMap = {};
-        var $bar = $('#cke_1_toolbox');
         var $contentContainer = $('#cke_1_contents');
-        var $html = $bar.closest('html');
+        var $html = $('html');
         var $faLink = $html.find('head link[href*="/bower_components/components-font-awesome/css/font-awesome.min.css"]');
         if ($faLink.length) {
             $html.find('iframe').contents().find('head').append($faLink.clone());
         }
-        var ml = Ckeditor.instances.editor1.plugins.magicline.backdoor.that.line.$;
-        [ml, ml.parentElement].forEach(function (el) {
+
+        var ml = editor._.magiclineBackdoor.that.line.$;
+        [ml, ml.parentElement].forEach(function(el) {
             el.setAttribute('class', 'non-realtime');
         });
+
+        window.editor = editor;
 
         var $iframe = $('html').find('iframe').contents();
         var ifrWindow = $html.find('iframe')[0].contentWindow;
@@ -458,18 +497,20 @@ define([
 
         framework._.sfCommon.addShortcuts(ifrWindow);
 
-        var privateData = framework._.sfCommon.getMetadataMgr().getPrivateData();
+        mkPrintButton(framework, editor, Ckeditor);
 
         var documentBody = ifrWindow.document.body;
+        var inner = window.inner = documentBody;
+        var $inner = $(inner);
 
-        var observer = new MutationObserver(function (muts) {
-            muts.forEach(function (mut) {
+        var observer = new MutationObserver(function(muts) {
+            muts.forEach(function(mut) {
                 if (mut.type === 'childList') {
                     var $a;
                     for (var i = 0; i < mut.addedNodes.length; i++) {
                         $a = $(mut.addedNodes[i]);
-                        if ($a.is('p') && $a.find('> span:empty').length
-                            && $a.find('> br').length && $a.children().length === 2) {
+                        if ($a.is('p') && $a.find('> span:empty').length &&
+                            $a.find('> br').length && $a.children().length === 2) {
                             $a.find('> span').append($a.find('> br'));
                         }
                     }
@@ -480,55 +521,20 @@ define([
             childList: true
         });
 
-        var inner = window.inner = documentBody;
-        var $inner = $(inner);
+        var metadataMgr = framework._.sfCommon.getMetadataMgr();
+        var privateData = metadataMgr.getPrivateData();
+        var common = framework._.sfCommon;
 
-        var onLinkClicked = function (e) {
-            var $target = $(e.target);
-            if (!$target.is('a')) { return; }
-            var href = $target.attr('href');
-            if (!href || href[0] === '#') { return; }
-            e.preventDefault();
-            e.stopPropagation();
-
-            var rect = e.target.getBoundingClientRect();
-            var rect0 = inner.getBoundingClientRect();
-            var l = (rect.left - rect0.left)+'px';
-            var t = rect.bottom + $iframe.scrollTop() +'px';
-
-            var a = h('a', { href: href}, href);
-            var link = h('div.cp-link-clicked.non-realtime', {
-                contenteditable: false,
-                style: 'top:'+t+';left:'+l
-            }, [ a ]);
-            var $link = $(link);
-            $inner.append(link);
-
-            if (rect.left + $link.outerWidth() - rect0.left > $inner.width()) {
-                $link.css('left', 'unset');
-                $link.css('right', 0);
-            }
-
-            $(a).click(function (ee) {
-                ee.preventDefault();
-                ee.stopPropagation();
-                framework._.sfCommon.openUnsafeURL(href);
-                $link.remove();
-            });
-            $link.on('mouseleave', function () {
-                $link.remove();
-            });
-        };
-        var removeClickedLink = function () {
-            $inner.find('.cp-link-clicked').remove();
-        };
-
-        $inner.click(function (e) {
-            if (e.target.nodeName.toUpperCase() === 'A') {
-                removeClickedLink();
-                return void onLinkClicked(e);
-            }
-            removeClickedLink();
+        var comments = Comments.create({
+            framework: framework,
+            metadataMgr: metadataMgr,
+            common: common,
+            editor: editor,
+            ifrWindow: ifrWindow,
+            $iframe: $iframe,
+            $inner: $inner,
+            $contentContainer: $contentContainer,
+            $container: $('#cp-app-pad-comments')
         });
 
         // My cursor
@@ -537,7 +543,7 @@ define([
         // Display other users cursor
         var cursors = Cursors.create(inner, hjsonToDom, cursor);
 
-        var openLink = function (e) {
+        var openLink = function(e) {
             var el = e.currentTarget;
             if (!el || el.nodeName !== 'A') { return; }
             var href = el.getAttribute('href');
@@ -546,52 +552,63 @@ define([
             }
         };
 
-        mkHelpMenu(framework);
+        if (!privateData.isEmbed) {
+            mkHelpMenu(framework);
+        }
 
-        framework.onEditableChange(function (unlocked) {
+        framework._.sfCommon.getAttribute(['pad', 'width'], function(err, data) {
+            var active = data || typeof(data) === "undefined";
+            if (active) {
+                $contentContainer.addClass('cke_body_width');
+            } else {
+                editor.execCommand('pagemode');
+            }
+        });
+
+        framework.onEditableChange(function(unlocked) {
             if (!framework.isReadOnly()) {
                 $inner.attr('contenteditable', '' + Boolean(unlocked));
             }
             $inner.css({ background: unlocked ? '#fff' : '#eee' });
         });
 
-        framework.setMediaTagEmbedder(function ($mt) {
+        framework.setMediaTagEmbedder(function($mt) {
             $mt.attr('contenteditable', 'false');
             //$mt.attr('tabindex', '1');
             //MEDIATAG
             var element = new window.CKEDITOR.dom.element($mt[0]);
             editor.insertElement(element);
-            editor.widgets.initOn( element, 'mediatag' );
+            editor.widgets.initOn(element, 'mediatag');
         });
 
-        framework.setTitleRecommender(function () {
+        framework.setTitleRecommender(function() {
             var text;
-            if (['h1', 'h2', 'h3'].some(function (t) {
-                var $header = $inner.find(t + ':first-of-type');
-                if ($header.length && $header.text()) {
-                    text = $header.text();
-                    return true;
-                }
-            })) { return text; }
+            if (['h1', 'h2', 'h3'].some(function(t) {
+                    var $header = $inner.find(t + ':first-of-type');
+                    if ($header.length && $header.text()) {
+                        text = $header.text();
+                        return true;
+                    }
+                })) { return text; }
         });
 
         var DD = new DiffDom(mkDiffOptions(cursor, framework.isReadOnly()));
 
         var cursorStopped = false;
         var cursorTo;
-        var updateCursor = function () {
+        var updateCursor = function() {
             if (cursorTo) { clearTimeout(cursorTo); }
 
             // If we're receiving content
             if (cursorStopped) { return void setTimeout(updateCursor, 100); }
 
-            cursorTo = setTimeout(function () {
+            cursorTo = setTimeout(function() {
                 framework.updateCursor();
             }, 500); // 500ms to make sure it is sent after chainpad sync
         };
 
         // apply patches, and try not to lose the cursor in the process!
-        framework.onContentUpdate(function (hjson) {
+        framework.onContentUpdate(function(hjson) {
             if (!Array.isArray(hjson)) { throw new Error(Messages.typeError); }
             var userDocStateDom = hjsonToDom(hjson);
             cursorStopped = true;
@@ -607,7 +624,7 @@ define([
             userDocStateDom.normalize();
             inner.normalize();
 
-            $(userDocStateDom).find('span[data-cke-display-name="media-tag"]:empty').each(function (i, el) {
+            $(userDocStateDom).find('span[data-cke-display-name="media-tag"]:empty').each(function(i, el) {
                 $(el).remove();
             });
 
@@ -626,15 +643,15 @@ define([
             var ops = ChainPad.Diff.diff(oldText, newText);
             cursor.restoreOffset(ops);
 
-            setTimeout(function () {
+            setTimeout(function() {
                 cursorStopped = false;
                 updateCursor();
             }, 200);
 
             // MEDIATAG: Migrate old mediatags to the widget system
-            $inner.find('media-tag:not(.cke_widget_element)').each(function (i, el) {
+            $inner.find('media-tag:not(.cke_widget_element)').each(function(i, el) {
                 var element = new window.CKEDITOR.dom.element(el);
-                editor.widgets.initOn( element, 'mediatag' );
+                editor.widgets.initOn(element, 'mediatag');
             });
 
             displayMediaTags(framework, inner, mediaTagMap);
@@ -647,27 +664,31 @@ define([
                 // off so that we don't end up with multiple identical handlers
                 $links.off('click', openLink).on('click', openLink);
             }
+
+            comments.onContentUpdate();
         });
 
-        framework.setTextContentGetter(function () {
+        framework.setTextContentGetter(function() {
             var innerCopy = inner.cloneNode(true);
             displayMediaTags(framework, innerCopy, mediaTagMap);
             innerCopy.normalize();
-            $(innerCopy).find('*').each(function (i, el) {
+            $(innerCopy).find('*').each(function(i, el) {
                 $(el).append(' ');
             });
             var str = $(innerCopy).text();
             str = str.replace(/\s\s+/g, ' ');
             return str;
         });
-        framework.setContentGetter(function () {
-            $inner.find('span[data-cke-display-name="media-tag"]:empty').each(function (i, el) {
+        framework.setContentGetter(function() {
+            $inner.find('span[data-cke-display-name="media-tag"]:empty').each(function(i, el) {
                 $(el).remove();
             });
 
             // We have to remove the cursors before getting the content because they split
             // the text nodes and OT/ChainPad would freak out
             cursors.removeCursors(inner);
+
+            comments.onContentUpdate();
 
             displayMediaTags(framework, inner, mediaTagMap);
             inner.normalize();
@@ -676,14 +697,13 @@ define([
             return hjson;
         });
 
-        $bar.find('#cke_1_toolbar_collapser').hide();
         if (!framework.isReadOnly()) {
-            addToolbarHideBtn(framework, $contentContainer);
+            addToolbarHideBtn(framework, $('.cke_toolbox_main'));
         } else {
             $('.cke_toolbox_main').hide();
         }
 
-        framework.onReady(function (newPad) {
+        framework.onReady(function(newPad) {
             editor.focus();
 
             if (!module.isMaximized) {
@@ -705,8 +725,9 @@ define([
 
             var fmConfig = {
                 ckeditor: editor,
+                dropArea: $inner,
                 body: $('body'),
-                onUploaded: function (ev, data) {
+                onUploaded: function(ev, data) {
                     var parsed = Hash.parsePadUrl(data.url);
                     var secret = Hash.getSecrets('file', parsed.hash, data.password);
                     var fileHost = privateData.fileHost || privateData.origin;
@@ -720,44 +741,56 @@ define([
                     } else {
                         editor.insertElement(element);
                     }
-                    editor.widgets.initOn( element, 'mediatag' );
+                    editor.widgets.initOn(element, 'mediatag');
                 }
             };
-            window.APP.FM = framework._.sfCommon.createFileManager(fmConfig);
+            var FM = window.APP.FM = framework._.sfCommon.createFileManager(fmConfig);
 
-            framework._.sfCommon.getAttribute(['pad', 'spellcheck'], function (err, data) {
+            editor.on('paste', function (ev) {
+                try {
+                    var files = ev.data.dataTransfer._.files;
+                    files.forEach(function (f) {
+                        FM.handleFile(f);
+                    });
+                    // If the paste data contains files, don't use the ckeditor default handlers
+                    // ==> they would try to include either a remote image URL or a base64 image
+                    if (files.length) {
+                        ev.cancel();
+                        ev.preventDefault();
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            });
+
+            framework._.sfCommon.getAttribute(['pad', 'spellcheck'], function(err, data) {
                 if (framework.isReadOnly()) { return; }
                 if (data) {
                     $iframe.find('body').attr('spellcheck', true);
                 }
             });
-            framework._.sfCommon.getAttribute(['pad', 'width'], function (err, data) {
-                if (data) {
-                    $iframe.find('html').addClass('cke_body_width');
-                }
-            });
 
-            framework._.sfCommon.isPadStored(function (err, val) {
+            framework._.sfCommon.isPadStored(function(err, val) {
                 if (!val) { return; }
                 var b64images = $inner.find('img[src^="data:image"]:not(.cke_reset)');
                 if (b64images.length && framework._.sfCommon.isLoggedIn()) {
                     var no = h('button.cp-corner-cancel', Messages.cancel);
                     var yes = h('button.cp-corner-primary', Messages.ok);
                     var actions = h('div', [no, yes]);
-                    var modal = UI.cornerPopup(Messages.pad_base64, actions, '', {big: true});
-                    $(no).click(function () {
+                    var modal = UI.cornerPopup(Messages.pad_base64, actions, '', { big: true });
+                    $(no).click(function() {
                         modal.delete();
                     });
-                    $(yes).click(function () {
+                    $(yes).click(function() {
                         modal.delete();
-                        b64images.each(function (i, el) {
+                        b64images.each(function(i, el) {
                             var src = $(el).attr('src');
                             var blob = Util.dataURIToBlob(src);
                             var ext = '.' + (blob.type.split('/')[1] || 'png');
-                            var name = (framework._.title.getTitle() || 'Pad')+'_image';
+                            var name = (framework._.title.getTitle() || 'Pad') + '_image';
                             blob.name = name + ext;
                             var ev = {
-                                insertElement: function (newEl) {
+                                insertElement: function(newEl) {
                                     var element = new window.CKEDITOR.dom.element(el);
                                     newEl.replace(element);
                                     setTimeout(framework.localChange);
@@ -768,6 +801,9 @@ define([
                     });
                 }
             });
+
+            comments.ready();
+
             /*setTimeout(function () {
                 $('iframe.cke_wysiwyg_frame').focus();
                 editor.focus();
@@ -777,34 +813,34 @@ define([
             });*/
         });
 
-        framework.onDefaultContentNeeded(function () {
+        framework.onDefaultContentNeeded(function() {
             inner.innerHTML = '<p></p>';
         });
 
-        var importMediaTags = function (dom, cb) {
+        var importMediaTags = function(dom, cb) {
             var $dom = $(dom);
-            $dom.find('media-tag').each(function (i, el) {
+            $dom.find('media-tag').each(function(i, el) {
                 $(el).empty();
             });
             cb($dom[0]);
         };
-        framework.setFileImporter({ accept: 'text/html' }, function (content, f, cb) {
-            importMediaTags(domFromHTML(content).body, function (dom) {
+        framework.setFileImporter({ accept: 'text/html' }, function(content, f, cb) {
+            importMediaTags(domFromHTML(content).body, function(dom) {
                 cb(Hyperjson.fromDOM(dom));
             });
         }, true);
 
-        framework.setFileExporter(Exporter.ext, function (cb) {
-            Exporter.main(inner, cb);
+        framework.setFileExporter(Exporter.exts, function(cb, ext) {
+            Exporter.main(inner, cb, ext);
         }, true);
 
-        framework.setNormalizer(function (hjson) {
+        framework.setNormalizer(function(hjson) {
             return [
                 'BODY',
                 {
                     "class": "cke_editable cke_editable_themed cke_contents_ltr cke_show_borders",
                     "contenteditable": "true",
-                    "spellcheck":"false"
+                    "spellcheck": "false"
                 },
                 hjson[2]
             ];
@@ -837,7 +873,7 @@ define([
             The solution is the "input" event, triggered by the browser as soon as the
             character is inserted.
         */
-        inner.addEventListener('input', function () {
+        inner.addEventListener('input', function() {
             framework.localChange();
             updateCursor();
             editor.fire('cp-wc'); // Update word count
@@ -846,8 +882,8 @@ define([
 
         var wordCount = h('span.cp-app-pad-wordCount');
         $('.cke_toolbox_main').append(wordCount);
-        editor.on('cp-wc-update', function () {
-            if (!editor.wordCount || typeof (editor.wordCount.wordCount) === "undefined") {
+        editor.on('cp-wc-update', function() {
+            if (!editor.wordCount || typeof(editor.wordCount.wordCount) === "undefined") {
                 wordCount.innerText = '';
                 return;
             }
@@ -857,7 +893,7 @@ define([
         // export the typing tests to the window.
         // call like `test = easyTest()`
         // terminate the test like `test.cancel()`
-        window.easyTest = function () {
+        window.easyTest = function() {
             cursor.update();
             //var start = cursor.Range.start;
             //var test = TypingTest.testInput(inner, start.el, start.offset, framework.localChange);
@@ -869,18 +905,18 @@ define([
 
         // Fix the scrollbar if it's reset when clicking on a button (firefox only?)
         var buttonScrollTop;
-        $('.cke_toolbox_main').find('.cke_button, .cke_combo_button').mousedown(function () {
+        $('.cke_toolbox_main').find('.cke_button, .cke_combo_button').mousedown(function() {
             buttonScrollTop = $('iframe').contents().scrollTop();
-            setTimeout(function () {
+            setTimeout(function() {
                 $('iframe').contents().scrollTop(buttonScrollTop);
             });
         });
 
 
-        $('.cke_toolbox_main').find('.cke_button').click(function () {
+        $('.cke_toolbox_main').find('.cke_button').click(function() {
             var e = this;
             var classString = e.getAttribute('class');
-            var classes = classString.split(' ').filter(function (c) {
+            var classes = classString.split(' ').filter(function(c) {
                 return /cke_button__/.test(c);
             });
 
@@ -893,15 +929,15 @@ define([
         framework.start();
     };
 
-    var main = function () {
+    var main = function() {
         var Ckeditor;
         var editor;
         var framework;
 
-        nThen(function (waitFor) {
+        nThen(function(waitFor) {
             Framework.create({
-                toolbarContainer: '#cke_1_toolbox',
-                contentContainer: '#cke_editor1 > .cke_inner',
+                toolbarContainer: '#cp-app-pad-toolbar',
+                contentContainer: '#cp-app-pad-editor',
                 patchTransformer: ChainPad.NaiveJSONTransformer,
                 /*thumbnail: {
                     getContainer: function () { return $('iframe').contents().find('html')[0]; },
@@ -925,15 +961,15 @@ define([
                         module.cursor.fixSelection(sel, range);
                     }
                 }*/
-            }, waitFor(function (fw) { window.APP.framework = framework = fw; }));
+            }, waitFor(function(fw) { window.APP.framework = framework = fw; }));
 
-            nThen(function (waitFor) {
-                ckEditorAvailable(waitFor(function (ck) {
+            nThen(function(waitFor) {
+                ckEditorAvailable(waitFor(function(ck) {
                     Ckeditor = ck;
                     require(['/pad/wysiwygarea-plugin.js'], waitFor());
                 }));
                 $(waitFor());
-            }).nThen(function (waitFor) {
+            }).nThen(function(waitFor) {
                 Ckeditor.config.toolbarCanCollapse = true;
                 if (screen.height < 800) {
                     Ckeditor.config.toolbarStartupExpanded = false;
@@ -945,14 +981,6 @@ define([
                 }
                 // Used in ckeditor-config.js
                 Ckeditor.CRYPTPAD_URLARGS = ApiConfig.requireConf.urlArgs;
-                var backColor = AppConfig.appBackgroundColor;
-                var newCss = '.cke_body_width { background: '+ backColor +'; height: 100%; overflow: auto;}' +
-                    '.cke_body_width body {' +
-                        'max-width: 50em; padding: 20px 30px; margin: 0 auto; min-height: 100%;'+
-                        'box-sizing: border-box; overflow: auto;'+
-                    '}' +
-                    '.cke_body_width body > *:first-child { margin-top: 0; }';
-                Ckeditor.addCss(newCss);
                 Ckeditor._mediatagTranslations = {
                     title: Messages.pad_mediatagTitle,
                     width: Messages.pad_mediatagWidth,
@@ -963,42 +991,111 @@ define([
                     'import': Messages.pad_mediatagImport,
                     options: Messages.pad_mediatagOptions
                 };
-                Ckeditor.plugins.addExternal('mediatag','/pad/', 'mediatag-plugin.js');
-                Ckeditor.plugins.addExternal('blockbase64','/pad/', 'disable-base64.js');
-                Ckeditor.plugins.addExternal('wordcount','/pad/wordcount/', 'plugin.js');
+                Ckeditor._commentsTranslations = {
+                    comment: Messages.comments_comment,
+                };
+                Ckeditor.plugins.addExternal('mediatag', '/pad/', 'mediatag-plugin.js');
+                Ckeditor.plugins.addExternal('blockbase64', '/pad/', 'disable-base64.js');
+                Ckeditor.plugins.addExternal('comments', '/pad/', 'comment.js');
+                Ckeditor.plugins.addExternal('wordcount', '/pad/wordcount/', 'plugin.js');
+
+/*  CKEditor4 is, by default, incompatible with strong CSP settings due to the
+    way it loads a variety of resources and event handlers by injecting HTML
+    via the innerHTML API.
+
+    In most cases those handlers just call a function with an id, so there's no
+    strong case for why it should be done this way except that lots of code depends
+    on this behaviour. These handlers all stop working when we enable our default CSP,
+    but fortunately the code is simple enough that we can use regex to grab the id
+    from the inline code and call the relevant function directly, preserving the
+    intended behaviour while preventing malicious code injection.
+
+    Unfortunately, as long as the original code is still present the console
+    fills up with CSP warnings saying that inline scripts were blocked.
+    The code below overrides CKEditor's default `setHtml` method to include
+    a string.replace call which will rewrite various inline event handlers from
+    onevent to oonevent.. rendering them invalid as scripts and preventing
+    some needless noise from showing up in the console.
+
+    YAY!
+*/
+                Ckeditor.dom.element.prototype.setHtml = function(a){
+                    if (/callFunction/.test(a)) {
+                        a = a.replace(/on(mousedown|blur|keydown|focus|click|dragstart)/g, function (value) {
+                            return 'o' + value;
+                        });
+                    }
+                    this.$.innerHTML = a;
+                    return a;
+                };
+
                 module.ckeditor = editor = Ckeditor.replace('editor1', {
                     customConfig: '/customize/ckeditor-config.js',
                 });
+
+                editor.addCommand('pagemode', {
+                    exec: function() {
+                        if (!framework) { return; }
+                        var $contentContainer = $('#cke_1_contents');
+                        var $button = $('.cke_button__pagemode');
+                        var isLarge = $button.hasClass('cke_button_on');
+                        if (isLarge) {
+                            $button.addClass('cke_button_off').removeClass('cke_button_on');
+                            $contentContainer.addClass('cke_body_width');
+                        } else {
+                            $button.addClass('cke_button_on').removeClass('cke_button_off');
+                            $contentContainer.removeClass('cke_body_width');
+                        }
+                        framework._.sfCommon.setAttribute(['pad', 'width'], isLarge);
+                    }
+                });
+                editor.ui.addButton('PageMode', {
+                    label: Messages.pad_useFullWidth,
+                    command: 'pagemode',
+                    icon: '/pad/icons/arrows-h.png',
+                    toolbar: 'document,60'
+                });
+
                 editor.on('instanceReady', waitFor());
-            }).nThen(function () {
-                editor.plugins.mediatag.import = function ($mt) {
+            }).nThen(function() {
+                var _getPath = Ckeditor.plugins.getPath;
+                Ckeditor.plugins.getPath = function (name) {
+                    if (name === 'preview') {
+                        return window.location.origin + "/bower_components/ckeditor/plugins/preview/";
+                    }
+                    return _getPath(name);
+                };
+                window.__defineGetter__('_cke_htmlToLoad', function() {});
+                editor.plugins.mediatag.import = function($mt) {
                     framework._.sfCommon.importMediaTag($mt);
                 };
-                Links.addSupportForOpeningLinksInNewTab(Ckeditor)({editor: editor});
-            }).nThen(function () {
+                Links.init(Ckeditor, editor);
+            }).nThen(function() {
                 // Move ckeditor parts to have a structure like the other apps
-                var $toolbarContainer = $('#cke_1_top');
                 var $contentContainer = $('#cke_1_contents');
-                var $mainContainer = $('#cke_editor1');
-                $contentContainer.prepend($toolbarContainer.find('.cke_toolbox_main'));
-                $mainContainer.prepend($toolbarContainer);
-                $contentContainer.find('.cke_toolbox_main').addClass('cke_reset_all');
-                $toolbarContainer.removeClass('cke_reset_all');
+                var $mainContainer = $('#cke_editor1 > .cke_inner');
+                var $ckeToolbar = $('#cke_1_top').find('.cke_toolbox_main');
+                $mainContainer.prepend($ckeToolbar.addClass('cke_reset_all'));
+                $contentContainer.append(h('div#cp-app-pad-comments'));
+                $ckeToolbar.find('.cke_button__image_icon').parent().hide();
             }).nThen(waitFor());
 
-        }).nThen(function (/*waitFor*/) {
+        }).nThen(function(waitFor) {
+            require(['/pad/csp.js'], waitFor());
+        }).nThen(function( /*waitFor*/ ) {
+
             function launchAnchorTest(test) {
                 // -------- anchor test: make sure the exported anchor contains <a name="...">  -------
                 console.log('---- anchor test: make sure the exported anchor contains <a name="...">  -----.');
 
                 function tryAndTestExport() {
                     console.log("Starting tryAndTestExport.");
-                    editor.on( 'dialogShow', function( evt ) {
+                    editor.on('dialogShow', function(evt) {
                         console.log("Anchor dialog detected.");
                         var dialog = evt.data;
-                        $(dialog.parts.contents.$).find("input").val('xx-' + Math.round(Math.random()*1000));
+                        $(dialog.parts.contents.$).find("input").val('xx-' + Math.round(Math.random() * 1000));
                         dialog.click(window.CKEDITOR.dialog.okButton(editor).id);
-                    } );
+                    });
                     var existingText = editor.getData();
                     editor.insertText("A bit of text");
                     console.log("Launching anchor command.");
@@ -1008,46 +1105,45 @@ define([
                     var waitH = window.setInterval(function() {
                         console.log("Waited 2s for the dialog to appear");
                         var anchors = window.CKEDITOR.plugins["link"].getEditorAnchors(editor);
-                        if(!anchors || anchors.length===0) {
+                        if (!anchors || anchors.length === 0) {
                             test.fail("No anchors found. Please adjust document");
                         } else {
                             console.log(anchors.length + " anchors found.");
                             var exported = Exporter.getHTML(window.inner);
                             console.log("Obtained exported: " + exported);
                             var allFound = true;
-                            for(var i=0; i<anchors.length; i++) {
+                            for (var i = 0; i < anchors.length; i++) {
                                 var anchor = anchors[i];
                                 console.log("Anchor " + anchor.name);
                                 var expected = "<a id=\"" + anchor.id + "\" name=\"" + anchor.name + "\" ";
-                                var found = exported.indexOf(expected)>=0;
+                                var found = exported.indexOf(expected) >= 0;
                                 console.log("Found " + expected + " " + found + ".");
                                 allFound = allFound && found;
                             }
 
                             console.log("Cleaning up.");
-                            if(allFound) {
+                            if (allFound) {
                                 // clean-up
                                 editor.execCommand('undo');
                                 editor.execCommand('undo');
-                                var nint = window.setInterval(function(){
+                                var nint = window.setInterval(function() {
                                     console.log("Waiting for undo to yield same result.");
-                                    if(existingText === editor.getData()) {
+                                    if (existingText === editor.getData()) {
                                         window.clearInterval(nint);
                                         test.pass();
                                     }
                                 }, 500);
-                                }  else
-                            {
+                            } else {
                                 test.fail("Not all expected a elements found for document at " + window.top.location + ".");
                             }
                         }
                         window.clearInterval(waitH);
-                    },2000);
+                    }, 2000);
 
 
                 }
                 var intervalHandle = window.setInterval(function() {
-                    if(editor.status==="ready") {
+                    if (editor.status === "ready") {
                         window.clearInterval(intervalHandle);
                         console.log("Editor is ready.");
                         tryAndTestExport();

@@ -61,6 +61,15 @@ define([
 
     var imprintUrl = AppConfig.imprint && (typeof(AppConfig.imprint) === "boolean" ?
                         '/imprint.html' : AppConfig.imprint);
+
+    Pages.versionString = "CryptPad v3.20.1 (UplandMoa's revenge)";
+
+    // used for the about menu
+    Pages.imprintLink = AppConfig.imprint ? footLink(imprintUrl, 'imprint') : undefined;
+    Pages.privacyLink = footLink(AppConfig.privacy, 'privacy');
+    Pages.githubLink = footLink('https://github.com/xwiki-labs/cryptpad', null, 'GitHub');
+    Pages.faqLink = footLink('/faq.html', 'faq_link');
+
     Pages.infopageFooter = function () {
         return h('footer', [
             h('div.container', [
@@ -71,24 +80,14 @@ define([
                             languageSelector()
                         ])
                     ], ''),
-                    /*footerCol('footer_applications', [
-                        footLink('/drive/', 'main_drive'),
-                        footLink('/pad/', 'main_richText'),
-                        footLink('/code/', 'main_code'),
-                        footLink('/slide/', 'main_slide'),
-                        footLink('/poll/', 'main_poll'),
-                        footLink('/kanban/', 'main_kanban'),
-                        footLink('/whiteboard/', null, Msg.type.whiteboard)
-                    ]),*/
                     footerCol('footer_product', [
-                        footLink('https://cryptpad.fr/what-is-cryptpad.html', 'topbar_whatIsCryptpad'),
-                        footLink('/faq.html', 'faq_link'),
-                        footLink('https://github.com/xwiki-labs/cryptpad', null, 'GitHub'),
+                        footLink('/what-is-cryptpad.html', 'topbar_whatIsCryptpad'),
+                        Pages.faqLink,
+                        Pages.githubLink,
                         footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate'),
                     ]),
                     footerCol('footer_aboutUs', [
-                        /*footLink('https://blog.cryptpad.fr', 'blog'),
-                        footLink('https://labs.xwiki.com', null, 'XWiki Labs'),*/
+                        /*footLink('https://blog.cryptpad.fr', 'blog'), */
                         footLink('http://www.xwiki.com', null, 'XWiki SAS'),
                         footLink('https://www.open-paas.org', null, 'OpenPaaS'),
                         footLink('/about.html', 'footer_team'),
@@ -96,18 +95,12 @@ define([
                     ]),
                     footerCol('footer_legal', [
                         footLink('/terms.html', 'footer_tos'),
-                        footLink('/privacy.html', 'privacy'),
-                        AppConfig.imprint ? footLink(imprintUrl, 'imprint') : undefined,
+                        Pages.privacyLink,
+                        Pages.imprintLink,
                     ]),
-                    /*footerCol('footer_contact', [
-                        footLink('https://riot.im/app/#/room/#cryptpad:matrix.org', null, 'Chat'),
-                        footLink('https://twitter.com/cryptpad', null, 'Twitter'),
-                        footLink('https://github.com/xwiki-labs/cryptpad', null, 'GitHub'),
-                        footLink('/contact.html', null, 'Email')
-                    ])*/
                 ])
             ]),
-            h('div.cp-version-footer', "CryptPad v3.15.0 (PigFootedBandicoot)")
+            h('div.cp-version-footer', Pages.versionString)
         ]);
     };
 
@@ -147,13 +140,9 @@ define([
             h('a.navbar-brand', { href: '/index.html'}),
             button,
             h('div.collapse.navbar-collapse.justify-content-end#menuCollapse', [
-                //h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.topbar_whatIsCryptpad), // Moved the FAQ
-                //h('a.nav-item.nav-link', { href: '/faq.html'}, Msg.faq_link),
                 h('a.nav-item.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.blog),
                 h('a.nav-item.nav-link', { href: '/features.html'}, Msg.pricing),
                 h('a.nav-item.nav-link', { href: '/privacy.html'}, Msg.privacy),
-                //h('a.nav-item.nav-link', { href: '/contact.html'}, Msg.contact),
-                //h('a.nav-item.nav-link', { href: '/about.html'}, Msg.about),
             ].concat(rightLinks))
         );
     };

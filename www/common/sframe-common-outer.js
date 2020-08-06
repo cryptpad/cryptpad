@@ -18,8 +18,7 @@ define([
         var Cryptget;
         var SFrameChannel;
         var sframeChan;
-        var FilePicker;
-        var Share;
+        var SecureIframe;
         var Messaging;
         var Notifier;
         var Utils = {
@@ -29,6 +28,7 @@ define([
         var Test;
         var password;
         var initialPathInDrive;
+        var burnAfterReading;
 
         var currentPad = window.CryptPad_location = {
             app: '',
@@ -44,8 +44,7 @@ define([
                 '/bower_components/chainpad-crypto/crypto.js',
                 '/common/cryptget.js',
                 '/common/outer/worker-channel.js',
-                '/filepicker/main.js',
-                '/share/main.js',
+                '/secureiframe/main.js',
                 '/common/common-messaging.js',
                 '/common/common-notifier.js',
                 '/common/common-hash.js',
@@ -58,15 +57,14 @@ define([
                 '/common/test.js',
                 '/common/userObject.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
-            _FilePicker, _Share, _Messaging, _Notifier, _Hash, _Util, _Realtime,
+            _SecureIframe, _Messaging, _Notifier, _Hash, _Util, _Realtime,
             _Constants, _Feedback, _LocalStore, _AppConfig, _Test, _UserObject) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = Utils.Crypto = _Crypto;
                 Cryptget = _Cryptget;
                 SFrameChannel = _SFrameChannel;
-                FilePicker = _FilePicker;
-                Share = _Share;
+                SecureIframe = _SecureIframe;
                 Messaging = _Messaging;
                 Notifier = _Notifier;
                 Utils.Hash = _Hash;
@@ -174,6 +172,8 @@ define([
             });
 
             var parsed = Utils.Hash.parsePadUrl(currentPad.href);
+            burnAfterReading = parsed && parsed.hashData && parsed.hashData.ownerKey;
+
             currentPad.app = parsed.type;
             if (cfg.getSecrets) {
                 var w = waitFor();
@@ -289,8 +289,17 @@ define([
                 };
 
                 var newHref;
+                var expire;
                 nThen(function (w) {
-                    if (parsed.hashData.key || !parsed.hashData.channel) { return; }
+                    // If we're using an unsafe link, get pad attribute
+                    if (parsed.hashData.key || !parsed.hashData.channel) {
+                        Cryptpad.getPadAttribute('expire', w(function (err, data) {
+                            if (err) { return; }
+                            expire = data;
+                        }));
+                        return;
+                    }
+                    // Otherwise, get pad data from channel id
                     var edit = parsed.hashData.mode === 'edit';
                     Cryptpad.getPadDataFromChannel({
                         channel: parsed.hashData.channel,
@@ -311,6 +320,7 @@ define([
                         if (edit && !res.href) {
                             newHref = res.roHref;
                         }
+                        expire = res.expire;
                         // We have good data, keep the hash in memory
                         newHref = edit ? res.href : (res.roHref || res.href);
                     }));
@@ -347,6 +357,11 @@ define([
                     }
                     // Not a file, so we can use `isNewChannel`
                     Cryptpad.isNewChannel(currentPad.href, password, w(function(e, isNew) {
+                        if (isNew && expire && expire < (+new Date())) {
+                            sframeChan.event("EV_EXPIRED_ERROR");
+                            waitFor.abort();
+                            return;
+                        }
                         if (!isNew) { return void todo(); }
                         if (parsed.hashData.mode === 'view' && (password || !parsed.hashData.password)) {
                             // Error, wrong password stored, the view seed has changed with the password
@@ -365,8 +380,26 @@ define([
                 }).nThen(done);
             }
         }).nThen(function (waitFor) {
+            if (!burnAfterReading) { return; }
+
+            // This is a burn after reading URL: make sure our owner key is still valid
+            try {
+                var publicKey = Utils.Hash.getSignPublicFromPrivate(burnAfterReading);
+                Cryptpad.getPadMetadata({
+                    channel: secret.channel
+                }, waitFor(function (md) {
+                    if (md && md.error) { return console.error(md.error); }
+                    // If our key is not valid anymore, don't show BAR warning
+                    if (!(md && Array.isArray(md.owners)) || md.owners.indexOf(publicKey) === -1) {
+                        burnAfterReading = null;
+                    }
+                }));
+            } catch (e) {
+                console.error(e);
+            }
+        }).nThen(function (waitFor) {
             if (cfg.afterSecrets) {
-                cfg.afterSecrets(Cryptpad, Utils, secret, waitFor());
+                cfg.afterSecrets(Cryptpad, Utils, secret, waitFor(), sframeChan);
             }
         }).nThen(function (waitFor) {
             // Check if the pad exists on server
@@ -390,7 +423,6 @@ define([
             }
             Utils.crypto = Utils.Crypto.createEncryptor(Utils.secret.keys);
             var parsed = Utils.Hash.parsePadUrl(currentPad.href);
-            var burnAfterReading = parsed && parsed.hashData && parsed.hashData.ownerKey;
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Utils.UserObject.getDefaultName(parsed);
             var edPublic, curvePublic, notifications, isTemplate;
@@ -398,6 +430,7 @@ define([
             var forceCreationScreen = cfg.useCreationScreen &&
                                       sessionStorage[Utils.Constants.displayPadCreationScreen];
             delete sessionStorage[Utils.Constants.displayPadCreationScreen];
+            var isSafe = ['debug', 'profile', 'drive', 'teams'].indexOf(currentPad.app) !== -1;
             var updateMeta = function () {
                 //console.log('EV_METADATA_UPDATE');
                 var metaObj;
@@ -462,7 +495,7 @@ define([
                         additionalPriv.registeredOnly = true;
                     }
 
-                    if (['debug', 'profile'].indexOf(currentPad.app) !== -1) {
+                    if (isSafe) {
                         additionalPriv.hashes = hashes;
                     }
 
@@ -491,7 +524,14 @@ define([
 
 
             // Put in the following function the RPC queries that should also work in filepicker
-            var addCommonRpc = function (sframeChan) {
+            var addCommonRpc = function (sframeChan, safe) {
+                Cryptpad.universal.onEvent.reg(function (data) {
+                    sframeChan.event('EV_UNIVERSAL_EVENT', data);
+                });
+                sframeChan.on('Q_UNIVERSAL_COMMAND', function (data, cb) {
+                    Cryptpad.universal.execCommand(data, cb);
+                });
+
                 sframeChan.on('Q_ANON_RPC_MESSAGE', function (data, cb) {
                     Cryptpad.anonRpcMsg(data.msg, data.content, function (err, response) {
                         cb({error: err, response: response});
@@ -598,6 +638,12 @@ define([
                     }
                     if (data.href) { href = data.href; }
                     Cryptpad.getPadAttribute(data.key, function (e, data) {
+                        if (!safe && data) {
+                            // Remove unsafe data for the unsafe iframe
+                            delete data.href;
+                            delete data.roHref;
+                            delete data.password;
+                        }
                         cb({
                             error: e,
                             data: data
@@ -616,8 +662,183 @@ define([
                     }, href);
                 });
 
+                // Add or remove our mailbox from the list if we're an owner
+                sframeChan.on('Q_UPDATE_MAILBOX', function (data, cb) {
+                    var metadata = data.metadata;
+                    var add = data.add;
+                    var _secret = secret;
+                    if (metadata && (metadata.href || metadata.roHref)) {
+                        var _parsed = Utils.Hash.parsePadUrl(metadata.href || metadata.roHref);
+                        _secret = Utils.Hash.getSecrets(_parsed.type, _parsed.hash, metadata.password);
+                    }
+                    if (_secret.channel.length !== 32) {
+                        return void cb({error: 'EINVAL'});
+                    }
+                    var crypto = Crypto.createEncryptor(_secret.keys);
+                    nThen(function (waitFor) {
+                        // If we already have metadata, use it, otherwise, try to get it
+                        if (metadata) { return; }
+
+                        Cryptpad.getPadMetadata({
+                            channel: secret.channel
+                        }, waitFor(function (obj) {
+                            obj = obj || {};
+                            if (obj.error) {
+                                waitFor.abort();
+                                return void cb(obj);
+                            }
+                            metadata = obj;
+                        }));
+                    }).nThen(function () {
+                        // Get and maybe migrate the existing mailbox object
+                        var owners = metadata.owners;
+                        if (!Array.isArray(owners) || owners.indexOf(edPublic) === -1) {
+                            return void cb({ error: 'INSUFFICIENT_PERMISSIONS' });
+                        }
+
+                        // Remove a mailbox
+                        if (!add) {
+                            // Old format: this is the mailbox of the first owner
+                            if (typeof (metadata.mailbox) === "string" && metadata.mailbox) {
+                                // Not our mailbox? abort
+                                if (owners[0] !== edPublic) {
+                                    return void cb({ error: 'INSUFFICIENT_PERMISSIONS' });
+                                }
+                                // Remove it
+                                return void Cryptpad.setPadMetadata({
+                                    channel: _secret.channel,
+                                    command: 'RM_MAILBOX',
+                                    value: []
+                                }, cb);
+                            } else if (metadata.mailbox) { // New format
+                                return void Cryptpad.setPadMetadata({
+                                    channel: _secret.channel,
+                                    command: 'RM_MAILBOX',
+                                    value: [edPublic]
+                                }, cb);
+                            }
+                            return void cb({
+                                error: 'NO_MAILBOX'
+                            });
+                        }
+                        // Add a mailbox
+                        var toAdd = {};
+                        toAdd[edPublic] = crypto.encrypt(JSON.stringify({
+                            notifications: notifications,
+                            curvePublic: curvePublic
+                        }));
+                        Cryptpad.setPadMetadata({
+                            channel: _secret.channel,
+                            command: 'ADD_MAILBOX',
+                            value: toAdd
+                        }, cb);
+                    });
+                });
+
+                // REQUEST_ACCESS is used both to check IF we can contact an owner (send === false)
+                // AND also to send the request if we want (send === true)
+                sframeChan.on('Q_REQUEST_ACCESS', function (data, cb) {
+                    if (readOnly && hashes.editHash) {
+                        return void cb({error: 'ALREADYKNOWN'});
+                    }
+                    var send = data.send;
+                    var metadata = data.metadata;
+                    var owner, owners;
+                    var _secret = secret;
+                    if (metadata && metadata.roHref) {
+                        var _parsed = Utils.Hash.parsePadUrl(metadata.roHref);
+                        _secret = Utils.Hash.getSecrets(_parsed.type, _parsed.hash, metadata.password);
+                    }
+                    if (_secret.channel.length !== 32) {
+                        return void cb({error: 'EINVAL'});
+                    }
+                    var crypto = Crypto.createEncryptor(_secret.keys);
+                    nThen(function (waitFor) {
+                        // Try to get the owner's mailbox from the pad metadata first.
+                        // If it's is an older owned pad, check if the owner is a friend
+                        // or an acquaintance (from async-store directly in requestAccess)
+                        var todo = function (obj) {
+                            owners = obj.owners;
+
+                            var mailbox;
+                            // Get the first available mailbox (the field can be an string or an object)
+                            // TODO maybe we should send the request to all the owners?
+                            if (typeof (obj.mailbox) === "string") {
+                                mailbox = obj.mailbox;
+                            } else if (obj.mailbox && obj.owners && obj.owners.length) {
+                                mailbox = obj.mailbox[obj.owners[0]];
+                            }
+                            if (mailbox) {
+                                try {
+                                    var dataStr = crypto.decrypt(mailbox, true, true);
+                                    var data = JSON.parse(dataStr);
+                                    if (!data.notifications || !data.curvePublic) { return; }
+                                    owner = data;
+                                } catch (e) { console.error(e); }
+                            }
+                        };
+
+                        // If we already have metadata, use it, otherwise, try to get it
+                        if (metadata) { return void todo(metadata); }
+
+                        Cryptpad.getPadMetadata({
+                            channel: _secret.channel
+                        }, waitFor(function (obj) {
+                            obj = obj || {};
+                            if (obj.error) { return; }
+                            todo(obj);
+                        }));
+                    }).nThen(function () {
+                        // If we are just checking (send === false) and there is a mailbox field, cb state true
+                        // If there is no mailbox, we'll have to check if an owner is a friend in the worker
+                        if (!send) { return void cb({state: Boolean(owner)}); }
+
+                        Cryptpad.padRpc.requestAccess({
+                            send: send,
+                            channel: _secret.channel,
+                            owner: owner,
+                            owners: owners
+                        }, cb);
+                    });
+                });
+
+                sframeChan.on('Q_BLOB_PASSWORD_CHANGE', function (data, cb) {
+                    data.href = data.href || currentPad.href;
+                    var onPending = function (cb) {
+                        sframeChan.query('Q_BLOB_PASSWORD_CHANGE_PENDING', null, function (err, obj) {
+                            if (obj && obj.cancel) { cb(); }
+                        });
+                    };
+                    var updateProgress = function (p) {
+                        sframeChan.event('EV_BLOB_PASSWORD_CHANGE_PROGRESS', p);
+                    };
+                    Cryptpad.changeBlobPassword(data, {
+                        onPending: onPending,
+                        updateProgress: updateProgress
+                    }, cb);
+                });
+
+                sframeChan.on('Q_OO_PASSWORD_CHANGE', function (data, cb) {
+                    data.href = data.href;
+                    Cryptpad.changeOOPassword(data, cb);
+                });
+
+                sframeChan.on('Q_PAD_PASSWORD_CHANGE', function (data, cb) {
+                    data.href = data.href;
+                    Cryptpad.changePadPassword(Cryptget, Crypto, data, cb);
+                });
+
+                sframeChan.on('Q_DELETE_OWNED', function (data, cb) {
+                    Cryptpad.userObjectCommand({
+                        cmd: 'deleteOwned',
+                        teamId: data.teamId,
+                        data: {
+                            channel: data.channel
+                        }
+                    }, cb);
+                });
             };
-            addCommonRpc(sframeChan);
+            addCommonRpc(sframeChan, isSafe);
 
             var currentTitle;
             var currentTabTitle;
@@ -629,6 +850,24 @@ define([
                 var title = currentTabTitle.replace(/\{title\}/g, currentTitle || 'CryptPad');
                 document.title = title;
             };
+
+            var setPadTitle = function (data, cb) {
+                Cryptpad.setPadTitle(data, function (err, obj) {
+                    if (!err && !(obj && obj.notStored)) {
+                        // No error and the pad was correctly stored
+                        // hide the hash
+                        var opts = parsed.getOptions();
+                        var hash = Utils.Hash.getHiddenHashFromKeys(parsed.type, secret, opts);
+                        var useUnsafe = Utils.Util.find(settings, ['security', 'unsafeLinks']);
+                        if (useUnsafe !== true && window.history && window.history.replaceState) {
+                            if (!/^#/.test(hash)) { hash = '#' + hash; }
+                            window.history.replaceState({}, window.document.title, hash);
+                        }
+                    }
+                    cb({error: err});
+                });
+            };
+
             sframeChan.on('Q_SET_PAD_TITLE_IN_DRIVE', function (newData, cb) {
                 var newTitle = newData.title || newData.defaultTitle;
                 currentTitle = newTitle;
@@ -639,20 +878,7 @@ define([
                     channel: secret.channel,
                     path: initialPathInDrive // Where to store the pad if we don't have it in our drive
                 };
-                Cryptpad.setPadTitle(data, function (err, obj) {
-                    if (!err && !(obj && obj.notStored)) {
-                        // No error and the pad was correctly stored
-                        // hide the hash
-                        var opts = parsed.getOptions();
-                        var hash = Utils.Hash.getHiddenHashFromKeys(parsed.type, secret, opts);
-                        var useUnsafe = Utils.Util.find(settings, ['security', 'unsafeLinks']);
-                        if (useUnsafe === false && window.history && window.history.replaceState) {
-                            if (!/^#/.test(hash)) { hash = '#' + hash; }
-                            window.history.replaceState({}, window.document.title, hash);
-                        }
-                    }
-                    cb({error: err});
-                });
+                setPadTitle(data, cb);
             });
             sframeChan.on('EV_SET_TAB_TITLE', function (newTabTitle) {
                 currentTabTitle = newTabTitle;
@@ -677,20 +903,7 @@ define([
                     path: initialPathInDrive, // Where to store the pad if we don't have it in our drive
                     forceSave: true
                 };
-                Cryptpad.setPadTitle(data, function (err) {
-                    if (!err && !(obj && obj.notStored)) {
-                        // No error and the pad was correctly stored
-                        // hide the hash
-                        var opts = parsed.getOptions();
-                        var hash = Utils.Hash.getHiddenHashFromKeys(parsed.type, secret, opts);
-                        var useUnsafe = Utils.Util.find(settings, ['security', 'unsafeLinks']);
-                        if (useUnsafe === false && window.history && window.history.replaceState) {
-                            if (!/^#/.test(hash)) { hash = '#' + hash; }
-                            window.history.replaceState({}, window.document.title, hash);
-                        }
-                    }
-                    cb({error: err});
-                });
+                setPadTitle(data, cb);
             });
             sframeChan.on('Q_IS_PAD_STORED', function (data, cb) {
                 Cryptpad.getPadAttribute('title', function (err, data) {
@@ -835,17 +1048,26 @@ define([
             sframeChan.on('Q_GET_FULL_HISTORY', function (data, cb) {
                 var crypto = Crypto.createEncryptor(secret.keys);
                 Cryptpad.getFullHistory({
+                    debug: data && data.debug,
                     channel: secret.channel,
                     validateKey: secret.keys.validateKey
                 }, function (encryptedMsgs) {
                     var nt = nThen;
                     var decryptedMsgs = [];
                     var total = encryptedMsgs.length;
-                    encryptedMsgs.forEach(function (msg, i) {
+                    encryptedMsgs.forEach(function (_msg, i) {
                         nt = nt(function (waitFor) {
                             // The 3rd parameter "true" means we're going to skip signature validation.
                             // We don't need it since the message is already validated serverside by hk
-                            decryptedMsgs.push(crypto.decrypt(msg, true, true));
+                            if (typeof(_msg) === "object") {
+                                decryptedMsgs.push({
+                                    author: _msg.author,
+                                    time: _msg.time,
+                                    msg: crypto.decrypt(_msg.msg, true, true)
+                                });
+                            } else {
+                                decryptedMsgs.push(crypto.decrypt(_msg, true, true));
+                            }
                             setTimeout(waitFor(function () {
                                 sframeChan.event('EV_FULL_HISTORY_STATUS', (i+1)/total);
                             }));
@@ -929,7 +1151,13 @@ define([
                 if (parsed.hashData) { currentPad.hash = parsed.hashData.getHash(opts); }
                 // Rendered (maybe hidden) hash
                 var hiddenParsed = Utils.Hash.parsePadUrl(window.location.href);
+
+                // Update the hash in the address bar
+                var ohc = window.onhashchange;
+                window.onhashchange = function () {};
                 window.location.href = hiddenParsed.getUrl(opts);
+                window.onhashchange = ohc;
+                ohc({reset: true});
             });
 
 
@@ -976,81 +1204,64 @@ define([
                 onFileUpload(sframeChan, data, cb);
             });
 
-            // File picker
-            var FP = {};
-            var initFilePicker = function (cfg) {
-                // cfg.hidden means pre-loading the filepicker while keeping it hidden.
+            // Secure modal
+            var SecureModal = {};
+            // Create or display the iframe and modal
+            var initSecureModal = function (type, cfg, cb) {
+                cfg.modal = type;
+                SecureModal.cb = cb;
+                // cfg.hidden means pre-loading the iframe while keeping it hidden.
                 // if cfg.hidden is true and the iframe already exists, do nothing
-                if (!FP.$iframe) {
+                if (!SecureModal.$iframe) {
                     var config = {};
-                    config.onFilePicked = function (data) {
-                        sframeChan.event('EV_FILE_PICKED', data);
-                    };
-                    config.onClose = function () {
-                        FP.$iframe.hide();
+                    config.onAction = function (data) {
+                        if (typeof(SecureModal.cb) !== "function") { return; }
+                        SecureModal.cb(data);
                     };
                     config.onFileUpload = onFileUpload;
-                    config.types = cfg;
+                    config.onClose = function () {
+                        SecureModal.$iframe.hide();
+                    };
+                    config.data = {
+                        app: parsed.type,
+                        hashes: hashes,
+                        password: password,
+                        isTemplate: isTemplate
+                    };
                     config.addCommonRpc = addCommonRpc;
                     config.modules = {
                         Cryptpad: Cryptpad,
                         SFrameChannel: SFrameChannel,
                         Utils: Utils
                     };
-                    FP.$iframe = $('<iframe>', {id: 'sbox-filePicker-iframe'}).appendTo($('body'));
-                    FP.picker = FilePicker.create(config);
-                } else if (!cfg.hidden) {
-                    FP.$iframe.show();
-                    FP.picker.refresh(cfg);
+                    SecureModal.$iframe = $('<iframe>', {id: 'sbox-secure-iframe'}).appendTo($('body'));
+                    SecureModal.modal = SecureIframe.create(config);
                 }
-                if (cfg.hidden) {
-                    FP.$iframe.hide();
+                if (!cfg.hidden) {
+                    SecureModal.modal.refresh(cfg, function () {
+                        SecureModal.$iframe.show();
+                    });
+                } else {
+                    SecureModal.$iframe.hide();
                     return;
                 }
-                FP.$iframe.focus();
+                SecureModal.$iframe.focus();
             };
-            sframeChan.on('EV_FILE_PICKER_OPEN', function (data) {
-                initFilePicker(data);
+
+            sframeChan.on('Q_FILE_PICKER_OPEN', function (data, cb) {
+                initSecureModal('filepicker', data || {}, cb);
             });
 
-            // Share modal
-            var ShareModal = {};
-            var initShareModal = function (cfg) {
-                cfg.hashes = hashes;
-                cfg.password = password;
-                cfg.isTemplate = isTemplate;
-                // cfg.hidden means pre-loading the filepicker while keeping it hidden.
-                // if cfg.hidden is true and the iframe already exists, do nothing
-                if (!ShareModal.$iframe) {
-                    var config = {};
-                    config.onShareAction = function (data) {
-                        sframeChan.event('EV_SHARE_ACTION', data);
-                    };
-                    config.onClose = function () {
-                        ShareModal.$iframe.hide();
-                    };
-                    config.data = cfg;
-                    config.addCommonRpc = addCommonRpc;
-                    config.modules = {
-                        Cryptpad: Cryptpad,
-                        SFrameChannel: SFrameChannel,
-                        Utils: Utils
-                    };
-                    ShareModal.$iframe = $('<iframe>', {id: 'sbox-share-iframe'}).appendTo($('body'));
-                    ShareModal.modal = Share.create(config);
-                } else if (!cfg.hidden) {
-                    ShareModal.modal.refresh(cfg, function () {
-                        ShareModal.$iframe.show();
-                    });
-                }
-                if (cfg.hidden) {
-                    ShareModal.$iframe.hide();
-                    return;
-                }
-                ShareModal.$iframe.focus();
-            };
+            sframeChan.on('EV_PROPERTIES_OPEN', function (data) {
+                initSecureModal('properties', data || {});
+            });
+
+            sframeChan.on('EV_ACCESS_OPEN', function (data) {
+                initSecureModal('access', data || {});
+            });
+
             sframeChan.on('EV_SHARE_OPEN', function (data) {
-                initShareModal(data || {});
+                initSecureModal('share', data || {});
             });
 
             sframeChan.on('Q_TEMPLATE_USE', function (data, cb) {
@@ -1128,32 +1339,6 @@ define([
                         tags: tags
                     });
                 });
-            });
-
-            sframeChan.on('Q_BLOB_PASSWORD_CHANGE', function (data, cb) {
-                data.href = data.href || currentPad.href;
-                var onPending = function (cb) {
-                    sframeChan.query('Q_BLOB_PASSWORD_CHANGE_PENDING', null, function (err, obj) {
-                        if (obj && obj.cancel) { cb(); }
-                    });
-                };
-                var updateProgress = function (p) {
-                    sframeChan.event('EV_BLOB_PASSWORD_CHANGE_PROGRESS', p);
-                };
-                Cryptpad.changeBlobPassword(data, {
-                    onPending: onPending,
-                    updateProgress: updateProgress
-                }, cb);
-            });
-
-            sframeChan.on('Q_OO_PASSWORD_CHANGE', function (data, cb) {
-                data.href = data.href;
-                Cryptpad.changeOOPassword(data, cb);
-            });
-
-            sframeChan.on('Q_PAD_PASSWORD_CHANGE', function (data, cb) {
-                data.href = data.href;
-                Cryptpad.changePadPassword(Cryptget, Crypto, data, cb);
             });
 
             sframeChan.on('Q_CHANGE_USER_PASSWORD', function (data, cb) {
@@ -1238,152 +1423,12 @@ define([
                 Cryptpad.cursor.execCommand(data, cb);
             });
 
-            Cryptpad.universal.onEvent.reg(function (data) {
-                sframeChan.event('EV_UNIVERSAL_EVENT', data);
-            });
-            sframeChan.on('Q_UNIVERSAL_COMMAND', function (data, cb) {
-                Cryptpad.universal.execCommand(data, cb);
-            });
-
             Cryptpad.onTimeoutEvent.reg(function () {
                 sframeChan.event('EV_WORKER_TIMEOUT');
             });
 
             sframeChan.on('EV_GIVE_ACCESS', function (data, cb) {
                 Cryptpad.padRpc.giveAccess(data, cb);
-            });
-            // REQUEST_ACCESS is used both to check IF we can contact an owner (send === false)
-            // AND also to send the request if we want (send === true)
-            sframeChan.on('Q_REQUEST_ACCESS', function (data, cb) {
-                if (readOnly && hashes.editHash) {
-                    return void cb({error: 'ALREADYKNOWN'});
-                }
-                var send = data.send;
-                var metadata = data.metadata;
-                var owner, owners;
-                var _secret = secret;
-                if (metadata && metadata.roHref) {
-                    var _parsed = Utils.Hash.parsePadUrl(metadata.roHref);
-                    _secret = Utils.Hash.getSecrets(_parsed.type, _parsed.hash, metadata.password);
-                }
-                var crypto = Crypto.createEncryptor(_secret.keys);
-                nThen(function (waitFor) {
-                    // Try to get the owner's mailbox from the pad metadata first.
-                    // If it's is an older owned pad, check if the owner is a friend
-                    // or an acquaintance (from async-store directly in requestAccess)
-                    var todo = function (obj) {
-                        owners = obj.owners;
-
-                        var mailbox;
-                        // Get the first available mailbox (the field can be an string or an object)
-                        // TODO maybe we should send the request to all the owners?
-                        if (typeof (obj.mailbox) === "string") {
-                            mailbox = obj.mailbox;
-                        } else if (obj.mailbox && obj.owners && obj.owners.length) {
-                            mailbox = obj.mailbox[obj.owners[0]];
-                        }
-                        if (mailbox) {
-                            try {
-                                var dataStr = crypto.decrypt(mailbox, true, true);
-                                var data = JSON.parse(dataStr);
-                                if (!data.notifications || !data.curvePublic) { return; }
-                                owner = data;
-                            } catch (e) { console.error(e); }
-                        }
-                    };
-
-                    // If we already have metadata, use it, otherwise, try to get it
-                    if (metadata) { return void todo(metadata); }
-
-                    Cryptpad.getPadMetadata({
-                        channel: _secret.channel
-                    }, waitFor(function (obj) {
-                        obj = obj || {};
-                        if (obj.error) { return; }
-                        todo(obj);
-                    }));
-                }).nThen(function () {
-                    // If we are just checking (send === false) and there is a mailbox field, cb state true
-                    // If there is no mailbox, we'll have to check if an owner is a friend in the worker
-                    if (!send) { return void cb({state: Boolean(owner)}); }
-
-                    Cryptpad.padRpc.requestAccess({
-                        send: send,
-                        channel: _secret.channel,
-                        owner: owner,
-                        owners: owners
-                    }, cb);
-                });
-            });
-
-            // Add or remove our mailbox from the list if we're an owner
-            sframeChan.on('Q_UPDATE_MAILBOX', function (data, cb) {
-                var metadata = data.metadata;
-                var add = data.add;
-                var _secret = secret;
-                if (metadata && (metadata.href || metadata.roHref)) {
-                    var _parsed = Utils.Hash.parsePadUrl(metadata.href || metadata.roHref);
-                    _secret = Utils.Hash.getSecrets(_parsed.type, _parsed.hash, metadata.password);
-                }
-                var crypto = Crypto.createEncryptor(_secret.keys);
-                nThen(function (waitFor) {
-                    // If we already have metadata, use it, otherwise, try to get it
-                    if (metadata) { return; }
-
-                    Cryptpad.getPadMetadata({
-                        channel: secret.channel
-                    }, waitFor(function (obj) {
-                        obj = obj || {};
-                        if (obj.error) {
-                            waitFor.abort();
-                            return void cb(obj);
-                        }
-                        metadata = obj;
-                    }));
-                }).nThen(function () {
-                    // Get and maybe migrate the existing mailbox object
-                    var owners = metadata.owners;
-                    if (!Array.isArray(owners) || owners.indexOf(edPublic) === -1) {
-                        return void cb({ error: 'INSUFFICIENT_PERMISSIONS' });
-                    }
-
-                    // Remove a mailbox
-                    if (!add) {
-                        // Old format: this is the mailbox of the first owner
-                        if (typeof (metadata.mailbox) === "string" && metadata.mailbox) {
-                            // Not our mailbox? abort
-                            if (owners[0] !== edPublic) {
-                                return void cb({ error: 'INSUFFICIENT_PERMISSIONS' });
-                            }
-                            // Remove it
-                            return void Cryptpad.setPadMetadata({
-                                channel: _secret.channel,
-                                command: 'RM_MAILBOX',
-                                value: []
-                            }, cb);
-                        } else if (metadata.mailbox) { // New format
-                            return void Cryptpad.setPadMetadata({
-                                channel: _secret.channel,
-                                command: 'RM_MAILBOX',
-                                value: [edPublic]
-                            }, cb);
-                        }
-                        return void cb({
-                            error: 'NO_MAILBOX'
-                        });
-                    }
-                    // Add a mailbox
-                    var toAdd = {};
-                    toAdd[edPublic] = crypto.encrypt(JSON.stringify({
-                        notifications: notifications,
-                        curvePublic: curvePublic
-                    }));
-                    Cryptpad.setPadMetadata({
-                        channel: _secret.channel,
-                        command: 'ADD_MAILBOX',
-                        value: toAdd
-                    }, cb);
-                });
             });
 
             sframeChan.on('EV_BURN_PAD', function (channel) {
@@ -1575,7 +1620,16 @@ define([
                         // server
                         Cryptpad.useTemplate({
                             href: data.template
-                        }, Cryptget, function () {
+                        }, Cryptget, function (err) {
+                            if (err) {
+                                // TODO: better messages in case of expired, deleted, etc.?
+                                if (err === 'ERESTRICTED') {
+                                    sframeChan.event('EV_RESTRICTED_ERROR');
+                                } else {
+                                    sframeChan.query("EV_LOADING_ERROR", "DELETED");
+                                }
+                                return;
+                            }
                             startRealtime();
                             cb();
                         }, cryptputCfg);
@@ -1583,7 +1637,16 @@ define([
                     }
                     // if we open a new code from a file
                     if (Cryptpad.fromFileData) {
-                        Cryptpad.useFile(Cryptget, function () {
+                        Cryptpad.useFile(Cryptget, function (err) {
+                            if (err) {
+                                // TODO: better messages in case of expired, deleted, etc.?
+                                if (err === 'ERESTRICTED') {
+                                    sframeChan.event('EV_RESTRICTED_ERROR');
+                                } else {
+                                    sframeChan.query("EV_LOADING_ERROR", "DELETED");
+                                }
+                                return;
+                            }
                             startRealtime();
                             cb();
                         }, cryptputCfg);

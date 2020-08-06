@@ -26,6 +26,17 @@ define([
     // Cache of the avatars outer html (including <media-tag>)
     var avatars = {};
 
+    MT.getMediaTag = function (common, data) {
+        var metadataMgr = common.getMetadataMgr();
+        var privateDat = metadataMgr.getPrivateData();
+        var origin = privateDat.fileHost || privateDat.origin;
+        var src = data.src = data.src.slice(0,1) === '/' ? origin + data.src : data.src;
+        return h('media-tag', {
+            src: src,
+            'data-crypto-key': 'cryptpad:'+data.key
+        });
+    };
+
     MT.getCursorAvatar = function (cursor) {
         var html = '<span class="cp-cursor-avatar">';
         html += (cursor.avatar && avatars[cursor.avatar]) || '';
@@ -245,40 +256,51 @@ define([
             }
 
             // Reset modal
-            $inner.find('media-tag, pre.mermaid').detach();
+            $inner.find('media-tag, pre[data-plugin]').detach();
             $spinner.show();
 
             // Check src and cryptkey
             var cfg = tags[i];
+            var tag;
 
             if (cfg.svg) {
-                $spinner.hide();
                 $inner.append(cfg.svg);
-                locked = false;
-                return;
+                if (!cfg.render) {
+                    $spinner.hide();
+                    locked = false;
+                    return;
+                }
+                setTimeout(cfg.render);
+                tag = cfg.svg;
+            } else {
+                var src = cfg.src;
+                var key = cfg.key;
+                if (cfg.href) {
+                    var parsed = Hash.parsePadUrl(cfg.href);
+                    var secret = Hash.getSecrets(parsed.type, parsed.hash, cfg.password);
+                    var host = priv.fileHost || priv.origin || '';
+                    src = host + Hash.getBlobPathFromHex(secret.channel);
+                    var _key = secret.keys && secret.keys.cryptKey;
+                    if (_key) { key = 'cryptpad:' + Nacl.util.encodeBase64(_key); }
+                }
+                if (!src || !key) {
+                    locked = false;
+                    $spinner.hide();
+                    return void UI.log(Messages.error);
+                }
+                tag = h('media-tag', {
+                    src: src,
+                    'data-crypto-key': key
+                });
+                $inner.append(tag);
+                setTimeout(function () {
+                    MediaTag(tag).on('error', function () {
+                        locked = false;
+                        $spinner.hide();
+                        UI.log(Messages.error);
+                    });
+                });
             }
-
-            var src = cfg.src;
-            var key = cfg.key;
-            if (cfg.href) {
-                var parsed = Hash.parsePadUrl(cfg.href);
-                var secret = Hash.getSecrets(parsed.type, parsed.hash, cfg.password);
-                var host = priv.fileHost || priv.origin || '';
-                src = host + Hash.getBlobPathFromHex(secret.channel);
-                var _key = secret.keys && secret.keys.cryptKey;
-                if (_key) { key = 'cryptpad:' + Nacl.util.encodeBase64(_key); }
-            }
-            if (!src || !key) {
-                locked = false;
-                $spinner.hide();
-                return void UI.log(Messages.error);
-            }
-
-            var tag = h('media-tag', {
-                src: src,
-                'data-crypto-key': key
-            });
-            $inner.append(tag);
 
             var observer = new MutationObserver(function(mutations) {
                 mutations.forEach(function() {
@@ -290,11 +312,6 @@ define([
                 attributes: false,
                 childList: true,
                 characterData: false
-            });
-            MediaTag(tag).on('error', function () {
-                locked = false;
-                $spinner.hide();
-                UI.log(Messages.error);
             });
         };
 
@@ -382,14 +399,16 @@ define([
             e.stopPropagation();
             m.hide();
             var $mt = $menu.data('mediatag');
-            if ($(this).hasClass("cp-app-code-context-saveindrive")) {
+            var $this = $(this);
+            if ($this.hasClass("cp-app-code-context-saveindrive")) {
                 common.importMediaTag($mt);
             }
-            else if ($(this).hasClass("cp-app-code-context-download")) {
-                var media = $mt[0]._mediaObject;
+            else if ($this.hasClass("cp-app-code-context-download")) {
+                var media = Util.find($mt, [0, '_mediaObject']);
+                if (!(media && media._blob)) { return void console.error($mt); }
                 window.saveAs(media._blob.content, media.name);
             }
-            else if ($(this).hasClass("cp-app-code-context-open")) {
+            else if ($this.hasClass("cp-app-code-context-open")) {
                 $mt.trigger('preview');
             }
         });

@@ -110,8 +110,11 @@ define([
         c2.height = D.dim;
 
         var ctx = c2.getContext('2d');
-        ctx.drawImage(canvas, D.x, D.y, D.w, D.h);
-
+        try {
+            ctx.drawImage(canvas, D.x, D.y, D.w, D.h);
+        } catch (e) {
+            return void cb('ERROR');
+        }
         cb(void 0, c2.toDataURL());
     };
 
@@ -157,6 +160,8 @@ define([
                     viewport: page.getViewport(scale)
                 }).promise.then(function () {
                     return canvas;
+                }).catch(function () {
+                    cb('ERROR');
                 });
             };
             PDFJS.getDocument(url).promise
@@ -190,17 +195,30 @@ define([
         });
         reader.readAsText(blob);
     };
-    Thumb.fromBlob = function (blob, cb) {
-        if (blob.type.indexOf('video/') !== -1) {
-            return void Thumb.fromVideoBlob(blob, cb);
+    Thumb.fromBlob = function (blob, _cb) {
+        var cb = Util.once(_cb);
+        // The blob is already in memory, it should be super-fast to make a thumbnail
+        // ==> 1s timeout
+        setTimeout(function () {
+            cb('TIMEOUT');
+        }, 1000);
+        try {
+            if (blob.type.indexOf('video/') !== -1) {
+                return void Thumb.fromVideoBlob(blob, cb);
+            }
+            if (blob.type.indexOf('application/pdf') !== -1) {
+                return void Thumb.fromPdfBlob(blob, cb);
+            }
+            if (Util.isPlainTextFile(blob.type, blob.name)) {
+                return void Thumb.fromPlainTextBlob(blob, cb);
+            }
+            if (blob.type.indexOf('image/') !== -1) {
+                return void Thumb.fromImageBlob(blob, cb);
+            }
+        } catch (e) {
+            return void cb('THUMBNAIL_ERROR');
         }
-        if (blob.type.indexOf('application/pdf') !== -1) {
-            return void Thumb.fromPdfBlob(blob, cb);
-        }
-        if (Util.isPlainTextFile(blob.type, blob.name)) {
-            return void Thumb.fromPlainTextBlob(blob, cb);
-        }
-        Thumb.fromImageBlob(blob, cb);
+        return void cb('NO_THUMBNAIL');
     };
 
     window.html2canvas = undefined;

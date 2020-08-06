@@ -1,6 +1,6 @@
 define([
     'jquery',
-    '/common/toolbar3.js',
+    '/common/toolbar.js',
     '/common/drive-ui.js',
     '/common/common-util.js',
     '/common/common-hash.js',
@@ -55,6 +55,7 @@ define([
         if (!drive || !drive.sharedFolders) {
             return void cb();
         }
+        var r = drive.restrictedFolders = drive.restrictedFolders || {};
         var oldIds = Object.keys(folders);
         nThen(function (waitFor) {
             Object.keys(drive.sharedFolders).forEach(function (fId) {
@@ -65,7 +66,11 @@ define([
                 sframeChan.query('Q_DRIVE_GETOBJECT', {
                     sharedFolder: fId
                 }, waitFor(function (err, newObj) {
-                    if (newObj && newObj.deprecated) {
+                    if (newObj && newObj.restricted) {
+                        r[fId] = drive.sharedFolders[fId];
+                        if (!r[fId].title) { r[fId].title = r[fId].lastTitle; }
+                    }
+                    if (newObj && (newObj.deprecated || newObj.restricted)) {
                         delete folders[fId];
                         delete drive.sharedFolders[fId];
                         if (manager && manager.folders) {
@@ -252,10 +257,7 @@ define([
         });
         if (active === 'drive') {
             APP.$rightside.addClass('cp-rightside-drive');
-            APP.$leftside.on('mouseover', function() {
-                APP.$leftside.addClass('cp-leftside-narrow');
-                APP.$leftside.off('mouseover');
-            });
+            APP.$leftside.addClass('cp-leftside-narrow');
         } else {
             APP.$rightside.removeClass('cp-rightside-drive');
             APP.$leftside.removeClass('cp-leftside-narrow');
@@ -319,6 +321,7 @@ define([
                 updateSharedFolders: updateSharedFolders,
 
                 $limit: APP.usageBar && APP.usageBar.$container,
+                toolbar: APP.toolbar,
                 APP: driveAPP,
                 edPublic: APP.teamEdPublic,
                 editKey: teamData.secondaryKey
@@ -417,6 +420,10 @@ define([
                 ]));
                 common.displayAvatar($(avatar), team.metadata.avatar, team.metadata.name);
                 $(btn).click(function () {
+                    if (team.error) {
+                        UI.warn(Messages.error); // XXX better error message - roster bug, can't load the team for now
+                        return;
+                    }
                     openTeam(common, id, team);
                 });
             });
@@ -509,7 +516,6 @@ define([
             h('div.cp-app-drive-container', {tabindex:0}, [
                 h('div#cp-app-drive-tree'),
                 h('div#cp-app-drive-content-container', [
-                    h('div#cp-app-drive-toolbar'),
                     h('div#cp-app-drive-connection-state', {style: "display: none;"}, Messages.disconnected),
                     h('div#cp-app-drive-content', {tabindex:2})
                 ])
@@ -906,7 +912,7 @@ define([
         var name = team.name;
         if (publicKey) {
             var $key = $('<div>', {'class': 'cp-sidebarlayout-element'}).appendTo($div);
-            var userHref = Hash.getUserHrefFromKeys(privateData.origin, name, publicKey);
+            var userHref = Hash.getPublicSigningKeyString(privateData.origin, name, publicKey);
             var $pubLabel = $('<span>', {'class': 'label'})
                 .text(Messages.settings_publicSigningKey);
             $key.append($pubLabel).append(UI.dialog.selectable(userHref));
@@ -987,6 +993,7 @@ define([
             });
         });
         var $upButton = common.createButton('upload', false, data);
+        $upButton.removeProp('title');
         $upButton.text(Messages.profile_upload);
         $upButton.prepend($('<span>', {'class': 'fa fa-upload'}));
 
@@ -1313,8 +1320,7 @@ define([
                 sfCommon: common,
                 $container: $bar
             };
-            var toolbar = Toolbar.create(configTb);
-            toolbar.$rightside.hide(); // hide the bottom part of the toolbar
+            var toolbar = APP.toolbar = Toolbar.create(configTb);
             // Update the name in the user menu
             var $displayName = $bar.find('.' + Toolbar.constants.username);
             metadataMgr.onChange(function () {

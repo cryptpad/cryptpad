@@ -1,5 +1,19 @@
 CKEDITOR.dialog.add('mediatag', function (editor) {
     var Messages = CKEDITOR._mediatagTranslations;
+    var isReadOnly = function (el) {
+        if (!el) { return; }
+        var parent = el;
+        while (parent) {
+            if (parent.nodeName.toUpperCase() === 'BODY') {
+                // I'm not sure why "false" is a string and not a boolean here
+                // but that's how it is and I'm scared to touch it
+                // --ansuz
+                return parent.getAttribute("contenteditable") === 'false';
+            }
+            parent = parent.parentElement;
+        }
+    };
+
     return {
         title: Messages.title,
         minWidth: 400,
@@ -117,6 +131,14 @@ CKEDITOR.dialog.add('mediatag', function (editor) {
             $(borderInput).on('keyup', function () {
                 update();
             });
+
+            // disable all of the dialog's inputs if it is opened while in read-only mode
+            if (isReadOnly(element && element.$)) {
+                Array.prototype.slice.call(inputs).forEach(function (node) {
+                    node.setAttribute('disabled', true);
+                });
+                return;
+            }
 
             setTimeout(update);
         },

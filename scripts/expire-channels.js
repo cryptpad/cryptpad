@@ -10,7 +10,7 @@ nThen(function (w) {
         config.log = _log;
     }));
 }).nThen(function (w) {
-    FileStorage.create(config, w(function (_store) {
+    FileStorage.create(config, w(function (err, _store) {
         config.store = _store;
 
         // config.taskPath

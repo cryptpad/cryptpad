@@ -21,6 +21,24 @@ define([
              Messages, AppConfig, Pages, NThen, InviteInner, Visible) {
     var UIElements = {};
 
+    UIElements.getSvgLogo = function () {
+        var svg = (function(){/*
+<svg width="45" height="50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <path d="m22.422 1.4356-14.641 2.7035c-0.51734-0.36799-1.1561-0.57696-1.8393-0.57696a3.1356 3.1339 0 0 0-3.1373 3.1355 3.1602 3.1585 0 0 0 1.6227 2.7575v21.103c0 1.9871 0.88906 4.1328 2.6508 6.3801 1.5602 1.9878 3.7668 4.027 6.5635 6.0547 1.9912 1.4389 3.9942 2.6545 5.6782 3.6005a3.1431 3.1413 0 0 0 5.9855 0.12499c1.7264-0.96163 3.8202-2.224 5.8986-3.7254 2.7979-2.0277 5.0033-4.0668 6.5635-6.0547 1.7624-2.2501 2.6508-4.393 2.6508-6.3801v-21.12c0.95814-0.53813 1.622-1.5642 1.622-2.74 0-1.733-1.4213-3.1355-3.1556-3.1355a3.1075 3.1059 0 0 0-1.8028 0.57696zm-0.03584 3.118 13.379 2.4687c0.01952 0.19629 0.03611 0.37448 0.08998 0.55867l-7.8432 5.1004c-1.4028-1.5215-3.4192-2.4877-5.6439-2.4877-2.2404 0-4.2687 0.98212-5.6797 2.5235l-7.7539-5.028c0.071056-0.21736 0.10472-0.44988 0.12659-0.68519zm14.426 4.4869c0.2616 0.22946 0.5738 0.4256 0.90137 0.55867v20.526c0 0.27043-0.02367 0.55955-0.07169 0.84677-0.31548 1.2546-1.0076 2.5682-2.0734 3.9289-1.3362 1.7018-3.231 3.4367-5.6264 5.172-1.9203 1.3873-3.8601 2.5452-5.3983 3.3932a3.1431 3.1413 0 0 0-4.3574-0.06325c-1.5186-0.84169-3.4128-1.979-5.2825-3.3299-2.3934-1.7353-4.2716-3.4702-5.6072-5.172-1.2729-1.6234-2.017-3.1789-2.2176-4.6492v-20.616c0.31859-0.12253 0.60591-0.30939 0.86477-0.52285l9.9357 6.3976a5.0789 5.0761 0 0 1 4.4893-2.685c1.9639 0 3.6499 1.0816 4.4901 2.7027zm-21.812 6.6849c-0.20732 0.69421-0.33324 1.4177-0.33324 2.1767 0 2.1872 0.94799 4.1262 2.4242 5.5287l-2.7125 5.4541c-0.01034-1.35e-4 -0.02017-0.0015-0.03051-0.0015-1.2807 0-2.3266 1.045-2.3266 2.3246 0 1.2799 1.046 2.3063 2.3266 2.3063a2.3009 2.2996 0 0 0 1.7349-0.78198h3.999v-2.6119h-3.3974l3.1938-6.4136c0.27643-0.55529 0.08702-1.2992-0.42094-1.6546-1.3154-0.91704-2.178-2.4154-2.178-4.1499 0-0.22399 0.03023-0.43738 0.05796-0.65318zm14.737 0.01524-2.3518 1.5372c0.02538 0.20682 0.04347 0.40998 0.04347 0.62422 0 1.7288-0.83863 3.2165-2.149 4.1356-0.50796 0.3555-0.69738 1.0994-0.42094 1.6546l3.1655 6.4281h-3.3829v2.6112h4.1363c0.42696 0.47986 1.0501 0.78274 1.744 0.78274a2.3009 2.2996 0 0 0 2.3076-2.3056c0-1.2799-1.0273-2.3253-2.3076-2.3253-0.05792 0-0.1147 0.0049-0.17158 0.0092l-2.7186-5.4769c1.4697-1.401 2.4106-3.3321 2.4106-5.5143 0-0.74898-0.10409-1.475-0.30503-2.1607zm-7.4398 0.2477a2.1129 2.1118 0 0 0-2.078 2.1111 2.1132 2.1119 0 1 0 4.2262 0 2.1129 2.1118 0 0 0-2.1482-2.1111z" style="stroke-width:1.2608"/>
+</svg>
+*/}).toString().slice(14,-3);
+        return svg;
+    };
+
     UIElements.prettySize = function (bytes) {
         var kB = Util.bytesToKilobytes(bytes);
         if (kB < 1024) { return kB + Messages.KB; }
@@ -28,28 +46,69 @@ define([
         return mB + Messages.MB;
     };
 
-    UIElements.updateTags = function (common, href) {
+    UIElements.updateTags = function (common, hrefs) {
         var existing, tags;
+        var allTags = {};
+        if (!hrefs || typeof (hrefs) === "string") {
+            hrefs = [hrefs];
+        }
         NThen(function(waitFor) {
             common.getSframeChannel().query("Q_GET_ALL_TAGS", null, waitFor(function(err, res) {
                 if (err || res.error) { return void console.error(err || res.error); }
                 existing = Object.keys(res.tags).sort();
             }));
         }).nThen(function (waitFor) {
-            common.getPadAttribute('tags', waitFor(function (err, res) {
-                if (err) {
-                    if (err === 'NO_ENTRY') {
-                        UI.alert(Messages.tags_noentry);
+            var _err;
+            hrefs.forEach(function (href) {
+                common.getPadAttribute('tags', waitFor(function (err, res) {
+                    if (err) {
+                        if (err === 'NO_ENTRY') {
+                            UI.alert(Messages.tags_noentry);
+                        }
+                        waitFor.abort();
+                        _err = err;
+                        return void console.error(err);
                     }
-                    waitFor.abort();
-                    return void console.error(err);
-                }
-                tags = res || [];
-            }), href);
+                    allTags[href] = res || [];
+
+                    if (tags) {
+                        // Intersect with tags from previous pads
+                        tags = (res || []).filter(function (tag) {
+                            return tags.indexOf(tag) !== -1;
+                        });
+                    } else {
+                        tags = res || [];
+                    }
+                }), href);
+            });
         }).nThen(function () {
             UI.dialog.tagPrompt(tags, existing, function (newTags) {
                 if (!Array.isArray(newTags)) { return; }
-                common.setPadAttribute('tags', newTags, null, href);
+                var added = [];
+                var removed = [];
+                newTags.forEach(function (tag) {
+                    if (tags.indexOf(tag) === -1) {
+                        added.push(tag);
+                    }
+                });
+                tags.forEach(function (tag) {
+                    if (newTags.indexOf(tag) === -1) {
+                        removed.push(tag);
+                    }
+                });
+                var update = function (oldTags) {
+                    Array.prototype.push.apply(oldTags, added);
+                    removed.forEach(function (tag) {
+                        var idx = oldTags.indexOf(tag);
+                        oldTags.splice(idx, 1);
+                    });
+                };
+
+                hrefs.forEach(function (href) {
+                    var oldTags = allTags[href] || [];
+                    update(oldTags);
+                    common.setPadAttribute('tags', Util.deduplicateString(oldTags), null, href);
+                });
             });
         });
     };
@@ -175,9 +234,9 @@ define([
         var common = config.common;
         var sframeChan = common.getSframeChannel();
         var title = config.title;
-        var friends = config.friends;
+        var friends = config.friends || {};
+        var teams = config.teams || {};
         var myName = common.getMetadataMgr().getUserData().name;
-        if (!friends) { return; }
         var order = [];
 
         var smallCurves = Object.keys(friends).map(function (c) {
@@ -206,40 +265,28 @@ define([
             delete friends[curve];
         });
 
-        var friendsList = UIElements.getUserGrid(Messages.share_linkFriends, {
-            common: common,
-            data: friends,
-            noFilter: false,
-            large: true
-        }, refreshButtons);
-        var friendDiv = friendsList.div;
-        $div.append(friendDiv);
-        var others = friendsList.icons;
+        var others = [];
+        if (Object.keys(friends).length) {
+            var friendsList = UIElements.getUserGrid(Messages.share_linkFriends, {
+                common: common,
+                data: friends,
+                noFilter: false,
+                large: true
+            }, refreshButtons);
+            var friendDiv = friendsList.div;
+            $div.append(friendDiv);
+            others = friendsList.icons;
+        }
 
-        var privateData = common.getMetadataMgr().getPrivateData();
-        var teamsData = Util.tryParse(JSON.stringify(privateData.teams)) || {};
-        var teams = {};
-        Object.keys(teamsData).forEach(function (id) {
-            // config.teamId only exists when we're trying to share a pad from a team drive
-            // In this case, we don't want to share the pad with the current team
-            if (config.teamId && config.teamId === id) { return; }
-            if (!teamsData[id].hasSecondaryKey) { return; }
-            var t = teamsData[id];
-            teams[t.edPublic] = {
-                notifications: true,
-                displayName: t.name,
-                edPublic: t.edPublic,
-                avatar: t.avatar,
-                id: id
-            };
-        });
-        var teamsList = UIElements.getUserGrid(Messages.share_linkTeam, {
-            common: common,
-            noFilter: true,
-            large: true,
-            data: teams
-        }, refreshButtons);
-        $div.append(teamsList.div);
+        if (Object.keys(teams).length) {
+            var teamsList = UIElements.getUserGrid(Messages.share_linkTeam, {
+                common: common,
+                noFilter: true,
+                large: true,
+                data: teams
+            }, refreshButtons);
+            $div.append(teamsList.div);
+        }
 
         var shareButton = {
             className: 'primary cp-share-with-friends',
@@ -266,26 +313,30 @@ define([
                     var $friends = $div.find('.cp-usergrid-user.cp-selected');
                     $friends.each(function (i, el) {
                         var curve = $(el).attr('data-curve');
-                        // Check if the selected element is a friend or a team
-                        if (curve) { // Friend
-                            if (!curve || !friends[curve]) { return; }
-                            var friend = friends[curve];
-                            if (!friend.notifications || !friend.curvePublic) { return; }
-                            common.mailbox.sendTo("SHARE_PAD", {
-                                href: href,
-                                password: config.password,
-                                isTemplate: config.isTemplate,
-                                name: myName,
-                                title: title
-                            }, {
-                                channel: friend.notifications,
-                                curvePublic: friend.curvePublic
-                            });
-                            return;
-                        }
-                        // Team
                         var ed = $(el).attr('data-ed');
+                        var friend = curve && friends[curve];
                         var team = teams[ed];
+                        // If the selected element is a friend or a team without edit right,
+                        // send a notification
+                        var mailbox = friend || ((team && team.viewer) ? team : undefined);
+                        if (mailbox) { // Friend
+                            if (friends[curve] && !mailbox.notifications) { return; }
+                            if (mailbox.notifications && mailbox.curvePublic) {
+                                common.mailbox.sendTo("SHARE_PAD", {
+                                    href: href,
+                                    password: config.password,
+                                    isTemplate: config.isTemplate,
+                                    name: myName,
+                                    title: title
+                                }, {
+                                    viewed: team && team.id,
+                                    channel: mailbox.notifications,
+                                    curvePublic: mailbox.curvePublic
+                                });
+                                return;
+                            }
+                        }
+                        // If it's a team with edit right, add the pad directly
                         if (!team) { return; }
                         sframeChan.query('Q_STORE_IN_TEAM', {
                             href: href,
@@ -395,6 +446,27 @@ define([
         }
     };
 
+    var getEditableTeams = function (common, config) {
+        var privateData = common.getMetadataMgr().getPrivateData();
+        var teamsData = Util.tryParse(JSON.stringify(privateData.teams)) || {};
+        var teams = {};
+        Object.keys(teamsData).forEach(function (id) {
+            // config.teamId only exists when we're trying to share a pad from a team drive
+            // In this case, we don't want to share the pad with the current team
+            if (config.teamId && config.teamId === id) { return; }
+            var t = teamsData[id];
+            teams[t.edPublic] = {
+                viewer: !teamsData[id].hasSecondaryKey,
+                notifications: t.notifications,
+                curvePublic: t.curvePublic,
+                displayName: t.name,
+                edPublic: t.edPublic,
+                avatar: t.avatar,
+                id: id
+            };
+        });
+        return teams;
+    };
     var makeBurnAfterReadingUrl = function (common, href, channel, cb) {
         var keyPair = Hash.generateSignPair();
         var parsed = Hash.parsePadUrl(href);
@@ -643,7 +715,10 @@ define([
 
         // Share with contacts tab
 
-        var hasFriends = Object.keys(config.friends || {}).length !== 0;
+        var teams = getEditableTeams(common, config);
+        config.teams = teams;
+        var hasFriends = Object.keys(config.friends || {}).length ||
+                         Object.keys(teams).length;
         var onFriendShare = Util.mkEvent();
 
 
@@ -926,7 +1001,10 @@ define([
         });
 
         // share with contacts tab
-        var hasFriends = Object.keys(config.friends || {}).length !== 0;
+        var teams = getEditableTeams(common, config);
+        config.teams = teams;
+        var hasFriends = Object.keys(config.friends || {}).length ||
+                         Object.keys(teams).length;
 
         var friendsObject = hasFriends ? createShareWithFriends(config, null, getLinkValue) : noContactsMessage(common);
         var friendsList = friendsObject.content;
@@ -1368,7 +1446,6 @@ define([
             case 'copy':
                 button = $('<button>', {
                     'class': 'fa fa-clone cp-toolbar-icon-import',
-                    title: Messages.makeACopy,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.makeACopy));
                 button
                 .click(common.prepareFeedback(type))
@@ -1381,7 +1458,6 @@ define([
                 if (!common.isLoggedIn()) { return; }
                 button = $('<button>', {
                     'class': 'fa fa-upload cp-toolbar-icon-import',
-                    title: Messages.template_import,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.template_import));
                 button
                 .click(common.prepareFeedback(type))
@@ -1393,9 +1469,8 @@ define([
                 if (!AppConfig.enableTemplates) { return; }
                 if (!common.isLoggedIn()) { return; }
                 button = $('<button>', {
-                    title: Messages.saveTemplateButton,
-                    class: 'fa fa-bookmark cp-toolbar-icon-template'
-                });
+                    'class': 'fa fa-bookmark cp-toolbar-icon-template',
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.saveTemplateButton));
                 if (data.rt) {
                     button
                     .click(function () {
@@ -1440,9 +1515,8 @@ define([
                 break;
             case 'forget':
                 button = $('<button>', {
-                    title: Messages.forgetButtonTitle,
                     'class': "fa fa-trash cp-toolbar-icon-forget"
-                });
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.fc_delete));
                 callback = typeof callback === "function" ? callback : function () {};
                 button
                 .click(common.prepareFeedback(type))
@@ -1481,16 +1555,20 @@ define([
                 });
                 break;
             case 'present':
-                button = $('<button>', {
-                    title: Messages.presentButtonTitle,
-                    'class': "fa fa-play-circle cp-toolbar-icon-present", // used in slide.js
-                });
+                button = $(h('button', {
+                    //title: Messages.presentButtonTitle, // TODO display if the label text is collapsed
+                }, [
+                    h('i.fa.fa-play-circle'),
+                    h('span.cp-toolbar-name', Messages.share_linkPresent)
+                ])).click(common.prepareFeedback(type));
                 break;
             case 'preview':
-                button = $('<button>', {
-                    title: Messages.previewButtonTitle,
-                    'class': "fa fa-eye cp-toolbar-icon-preview",
-                });
+                button = $(h('button', {
+                    //title: Messages.previewButtonTitle, // TODO display if the label text is collapsed
+                }, [
+                    h('i.fa.fa-eye'),
+                    h('span.cp-toolbar-name', Messages.share_linkOpen)
+                ])).click(common.prepareFeedback(type));
                 break;
             case 'print':
                 button = $('<button>', {
@@ -1522,32 +1600,28 @@ define([
                     }
                 }
                 break;
-            case 'more':
-                button = $('<button>', {
-                    title: Messages.moreActions,
-                    'class': "cp-toolbar-drawer-button fa fa-ellipsis-h",
-                });
-                break;
             case 'mediatag':
-                button = $('<button>', {
-                    'class': 'fa fa-picture-o cp-toolbar-icon-mediatag',
-                    title: Messages.filePickerButton,
-                })
-                .click(common.prepareFeedback(type));
+                button = $(h('button.cp-toolbar-mediatag', {
+                    //title: Messages.filePickerButton, // TODO display if the label text is collapsed
+                }, [
+                    h('i.fa.fa-picture-o'),
+                    h('span.cp-toolbar-name', Messages.toolbar_insert)
+                ])).click(common.prepareFeedback(type));
                 break;
             case 'savetodrive':
-                button = $('<button>', {
-                    'class': 'fa fa-cloud-upload cp-toolbar-icon-savetodrive',
+                button = $(h('button.cp-toolbar-savetodrive', {
                     title: Messages.canvas_saveToDrive,
-                })
-                .click(common.prepareFeedback(type));
+                }, [
+                    h('i.fa.fa-file-image-o'),
+                    h('span.cp-toolbar-name.cp-toolbar-drawer-element', Messages.toolbar_savetodrive)
+                ])).click(common.prepareFeedback(type));
                 break;
             case 'hashtag':
                 button = $('<button>', {
                     'class': 'fa fa-hashtag cp-toolbar-icon-hashtag',
                     title: Messages.tags_title,
-                })
-                .click(common.prepareFeedback(type))
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.fc_hashtag));
+                button.click(common.prepareFeedback(type))
                 .click(function () {
                     common.isPadStored(function (err, data) {
                         if (!data) {
@@ -1558,9 +1632,13 @@ define([
                 });
                 break;
             case 'toggle':
-                button = $('<button>', {
-                    'class': 'fa fa-caret-down cp-toolbar-icon-toggle',
-                });
+                button = $(h('button.cp-toolbar-tools', {
+                    //title: data.title || '', // TODO display if the label text is collapsed
+                }, [
+                    h('i.fa.fa-wrench'),
+                    h('span.cp-toolbar-name', Messages.toolbar_tools)
+                ])).click(common.prepareFeedback(type));
+                /*
                 window.setTimeout(function () {
                     button.attr('title', data.title);
                 });
@@ -1569,6 +1647,7 @@ define([
                     if (!isVisible) { button.addClass('fa-caret-down'); }
                     else { button.addClass('fa-caret-up'); }
                 };
+                */
                 button.click(function (e) {
                     data.element.toggle();
                     var isVisible = data.element.is(':visible');
@@ -1580,24 +1659,9 @@ define([
                         button.removeClass('cp-toolbar-button-active');
                         if (e.originalEvent) { Feedback.send('TOGGLE_HIDE_' + appType); }
                     }
-                    updateIcon(isVisible);
+                    //updateIcon(isVisible);
                 });
-                updateIcon(data.element.is(':visible'));
-                break;
-            case 'access':
-                button = $('<button>', {
-                    'class': 'fa fa-unlock-alt cp-toolbar-icon-access',
-                    title: Messages.accessButton,
-                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'})
-                .text(Messages.accessButton))
-                .click(common.prepareFeedback(type))
-                .click(function () {
-                    require(['/common/inner/access.js'], function (Access) {
-                        Access.getAccessModal(common, {}, function (e) {
-                            if (e) { console.error(e); }
-                        });
-                    });
-                });
+                //updateIcon(data.element.is(':visible'));
                 break;
             case 'properties':
                 button = $('<button>', {
@@ -1611,11 +1675,7 @@ define([
                         if (!data) {
                             return void UI.alert(Messages.autostore_notAvailable);
                         }
-                        require(['/common/inner/properties.js'], function (Properties) {
-                            Properties.getPropertiesModal(common, {}, function (e) {
-                                if (e) { console.error(e); }
-                            });
-                        });
+                        sframeChan.event('EV_PROPERTIES_OPEN');
                     });
                 });
                 break;
@@ -1628,28 +1688,36 @@ define([
                 .click(common.prepareFeedback(type));
                 if (callback) { button.click(callback); }
                 break;
+            case 'newpad':
+                button = $('<button>', {
+                    title: Messages.newButtonTitle,
+                    'class': 'fa fa-plus cp-toolbar-icon-newpad',
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.newButton));
+                button
+                .click(common.prepareFeedback(type))
+                .click(function () {
+                    common.createNewPadModal();
+                });
+                break;
             default:
                 data = data || {};
+                var drawerCls = data.drawer === false ? '' : '.cp-toolbar-drawer-element';
                 var icon = data.icon || "fa-question";
-                button = $('<button>', {
-                    'class': "fa " + icon,
-                })
-                .click(common.prepareFeedback(data.name || 'DEFAULT'));
-                //.click(common.prepareFeedback(type));
+                button = $(h('button', {
+                    title: data.tippy || ''
+                    //title: data.title || '',
+                }, [
+                    h('i.fa.' + icon),
+                    h('span.cp-toolbar-name'+drawerCls, data.text)
+                ])).click(common.prepareFeedback(data.name || 'DEFAULT'));
                 if (callback) {
                     button.click(callback);
                 }
-                if (data.title) { button.attr('title', data.title); }
                 if (data.style) { button.attr('style', data.style); }
                 if (data.id) { button.attr('id', data.id); }
                 if (data.hiddenReadOnly) { button.addClass('cp-hidden-if-readonly'); }
                 if (data.name) {
                     button.addClass('cp-toolbar-icon-'+data.name);
-                    button.click(common.prepareFeedback(data.name));
-                }
-                if (data.text) {
-                    $('<span>', {'class': 'cp-toolbar-drawer-element'}).text(data.text)
-                        .appendTo(button);
                 }
         }
         if (rightside) {
@@ -1860,7 +1928,7 @@ define([
 
         common.fixLinks(text);
 
-        var closeButton = h('span.cp-help-close.fa.fa-window-close');
+        var closeButton = h('span.cp-help-close.fa.fa-times');
         var $toolbarButton = common.createButton('', true, {
             title: Messages.hide_help_button,
             text: Messages.help_button,
@@ -2087,6 +2155,11 @@ define([
                 'class': 'fa fa-caret-down',
             }).prependTo($button);
         }
+        if (config.angleDown) {
+            $('<span>', {
+                'class': 'fa fa-angle-down',
+            }).prependTo($button);
+        }
 
         // Menu
         var $innerblock = $('<div>', {'class': 'cp-dropdown-content'});
@@ -2095,7 +2168,11 @@ define([
         config.options.forEach(function (o) {
             if (!isValidOption(o)) { return; }
             if (isElement(o)) { return $innerblock.append($(o)); }
-            $('<' + o.tag + '>', o.attributes || {}).html(o.content || '').appendTo($innerblock);
+            var $el = $('<' + o.tag + '>', o.attributes || {}).html(o.content || '');
+            $el.appendTo($innerblock);
+            if (typeof(o.action) === 'function') {
+                $el.click(o.action);
+            }
         });
 
         $container.append($button).append($innerblock);
@@ -2120,14 +2197,25 @@ define([
 
         var show = function () {
             var wh = $(window).height();
-            var topPos = $container[0].getBoundingClientRect().bottom;
-            $innerblock.css('max-height', Math.floor(wh - topPos - 1)+'px');
+            var button = $button[0].getBoundingClientRect();
+            var topPos = button.bottom;
+            $innerblock.css('bottom', '');
+            if (config.noscroll) {
+                var h = $innerblock.outerHeight();
+                if ((topPos + h) > wh) {
+                    $innerblock.css('bottom', button.height+'px');
+                }
+            } else {
+                $innerblock.css('max-height', Math.floor(wh - topPos - 1)+'px');
+            }
             $innerblock.show();
             $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
             if (config.isSelect && value) {
                 var $val = $innerblock.find('[data-value="'+value+'"]');
                 setActive($val);
-                $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
+                try {
+                    $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
+                } catch (e) {}
             }
             if (config.feedback) { Feedback.send(config.feedback); }
         };
@@ -2136,6 +2224,11 @@ define([
             e.stopPropagation();
             var state = $innerblock.is(':visible');
             $('.cp-dropdown-content').hide();
+
+            var $c = $container.closest('.cp-toolbar-drawer-content');
+            $c.removeClass('cp-dropdown-visible');
+            if (!state) { $c.addClass('cp-dropdown-visible'); }
+
             try {
                 $('iframe').each(function (idx, ifrw) {
                     $(ifrw).contents().find('.cp-dropdown-content').hide();
@@ -2206,7 +2299,9 @@ define([
                 value = val;
                 var $val = $innerblock.find('[data-value="'+val+'"]');
                 var textValue = name || $val.html() || val;
-                $button.find('.cp-dropdown-button-title').html(textValue);
+                setTimeout(function () {
+                    $button.find('.cp-dropdown-button-title').html(textValue);
+                });
             };
             $container.getValue = function () {
                 return value || '';
@@ -2214,6 +2309,58 @@ define([
         }
 
         return $container;
+    };
+
+    UIElements.displayInfoMenu = function (Common, metadataMgr) {
+        //var padType = metadataMgr.getMetadata().type;
+        var priv = metadataMgr.getPrivateData();
+        var origin = priv.origin;
+
+        // TODO link to the most recent changelog/release notes
+        // https://github.com/xwiki-labs/cryptpad/releases/latest/ ?
+
+        var template = function (line, link) {
+            if (!line || !link) { return; }
+            var p = $('<p>').html(line)[0];
+            var sub = link.cloneNode(true);
+
+/*  This is a hack to make relative URLs point to the main domain
+    instead of the sandbox domain. It will break if the admins have specified
+    some less common URL formats for their customizable links, such as if they've
+    used a protocal-relative absolute URL. The URL API isn't quite safe to use
+    because of IE (thanks, Bill).  */
+            var href = sub.getAttribute('href');
+            if (/^\//.test(href)) { sub.setAttribute('href', origin + href); }
+            var a = p.querySelector('a');
+            if (!a) { return; }
+            sub.innerText = a.innerText;
+            p.replaceChild(sub, a);
+            return p;
+        };
+
+        var legalLine = template(Messages.info_imprintFlavour, Pages.imprintLink);
+        var privacyLine = template(Messages.info_privacyFlavour, Pages.privacyLink);
+        var faqLine = template(Messages.help.generic.more, Pages.faqLink);
+
+        var content = h('div.cp-info-menu-container', [
+            h('h6', Pages.versionString),
+            h('hr'),
+            legalLine,
+            privacyLine,
+            faqLine,
+        ]);
+
+        var buttons = [
+            {
+                className: 'primary',
+                name: Messages.filePicker_close,
+                onClick: function () {},
+                keys: [27],
+            },
+        ];
+
+        var modal = UI.dialog.customModal(content, {buttons: buttons });
+        UI.openCustomModal(modal);
     };
 
     UIElements.createUserAdminMenu = function (Common, config) {
@@ -2248,15 +2395,21 @@ define([
                 content: $userAdminContent.html()
             });
         }
-        options.push({
-            tag: 'a',
-            attributes: {
-                'target': '_blank',
-                'href': origin+'/index.html',
-                'class': 'fa fa-home'
-            },
-            content: h('span', Messages.homePage)
-        });
+
+        if (accountName && !AppConfig.disableProfile) {
+            options.push({
+                tag: 'a',
+                attributes: {'class': 'cp-toolbar-menu-profile fa fa-user-circle'},
+                content: h('span', Messages.profileButton),
+                action: function () {
+                    if (padType) {
+                        window.open(origin+'/profile/');
+                    } else {
+                        window.parent.location = origin+'/profile/';
+                    }
+                },
+            });
+        }
         if (padType !== 'drive' || (!accountName && priv.newSharedFolder)) {
             options.push({
                 tag: 'a',
@@ -2279,45 +2432,106 @@ define([
                 content: h('span', Messages.type.teams)
             });
         }
-        options.push({ tag: 'hr' });
-        // Add the change display name button if not in read only mode
-        if (config.changeNameButtonCls && config.displayChangeName && !AppConfig.disableProfile) {
+        if (padType !== 'contacts' && accountName) {
             options.push({
                 tag: 'a',
-                attributes: {'class': config.changeNameButtonCls + ' fa fa-user'},
-                content: h('span', Messages.user_rename)
-            });
-        }
-        if (accountName && !AppConfig.disableProfile) {
-            options.push({
-                tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-profile fa fa-user-circle'},
-                content: h('span', Messages.profileButton)
+                attributes: {
+                    'target': '_blank',
+                    'href': origin+'/contacts/',
+                    'class': 'cptools cptools-contacts'
+                },
+                content: h('span', Messages.type.contacts)
             });
         }
         if (padType !== 'settings') {
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-settings fa fa-cog'},
-                content: h('span', Messages.settingsButton)
+                content: h('span', Messages.settingsButton),
+                action: function () {
+                    if (padType) {
+                        window.open(origin+'/settings/');
+                    } else {
+                        window.parent.location = origin+'/settings/';
+                    }
+                },
             });
         }
+
         options.push({ tag: 'hr' });
         // Add administration panel link if the user is an admin
         if (priv.edPublic && Array.isArray(Config.adminKeys) && Config.adminKeys.indexOf(priv.edPublic) !== -1) {
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-admin fa fa-cogs'},
-                content: h('span', Messages.adminPage || 'Admin')
+                content: h('span', Messages.adminPage || 'Admin'),
+                action: function () {
+                    if (padType) {
+                        window.open(origin+'/admin/');
+                    } else {
+                        window.parent.location = origin+'/admin/';
+                    }
+                },
             });
         }
         if (padType !== 'support' && accountName && Config.supportMailbox) {
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-support fa fa-life-ring'},
-                content: h('span', Messages.supportPage || 'Support')
+                content: h('span', Messages.supportPage || 'Support'),
+                action: function () {
+                    if (padType) {
+                        window.open(origin+'/support/');
+                    } else {
+                        window.parent.location = origin+'/support/';
+                    }
+                },
             });
         }
+        if (AppConfig.surveyURL) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'target': '_blank',
+                    'rel': 'noopener',
+                    'href': AppConfig.surveyURL,
+                    'class': 'cp-toolbar-survey fa fa-graduation-cap'
+                },
+                content: h('span', Messages.survey),
+                action: function () {
+                    Feedback.send('SURVEY_CLICKED');
+                },
+            });
+        }
+        options.push({
+            tag: 'a',
+            attributes: {
+                'class': 'cp-toolbar-about fa fa-info',
+            },
+            content: h('span', Messages.user_about),
+            action: function () {
+                UIElements.displayInfoMenu(Common, metadataMgr);
+            },
+        });
+
+        options.push({
+            tag: 'a',
+            attributes: {
+                'target': '_blank',
+                'href': origin+'/index.html',
+                'class': 'fa fa-home'
+            },
+            content: h('span', Messages.homePage)
+        });
+        // Add the change display name button if not in read only mode
+        /*
+        if (config.changeNameButtonCls && config.displayChangeName && !AppConfig.disableProfile) {
+            options.push({
+                tag: 'a',
+                attributes: {'class': config.changeNameButtonCls + ' fa fa-user'},
+                content: h('span', Messages.user_rename)
+            });
+        }*/
         options.push({ tag: 'hr' });
         if (Config.allowSubscriptions) {
             options.push({
@@ -2342,18 +2556,7 @@ define([
                 content: h('span', Messages.crowdfunding_button2)
             });
         }
-        if (AppConfig.surveyURL) {
-            options.push({
-                tag: 'a',
-                attributes: {
-                    'target': '_blank',
-                    'rel': 'noopener',
-                    'href': AppConfig.surveyURL,
-                    'class': 'cp-toolbar-survey fa fa-graduation-cap'
-                },
-                content: h('span', Messages.survey)
-            });
-        }
+
         options.push({ tag: 'hr' });
         // Add login or logout button depending on the current status
         if (priv.loggedIn) {
@@ -2362,23 +2565,43 @@ define([
                 attributes: {
                     'class': 'cp-toolbar-menu-logout-everywhere fa fa-plug',
                 },
-                content: h('span', Messages.logoutEverywhere)
+                content: h('span', Messages.logoutEverywhere),
+                action: function () {
+                    Common.getSframeChannel().query('Q_LOGOUT_EVERYWHERE', null, function () {
+                        window.parent.location = origin + '/';
+                    });
+                },
             });
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-logout fa fa-sign-out'},
-                content: h('span', Messages.logoutButton)
+                content: h('span', Messages.logoutButton),
+                action: function () {
+                    Common.logout(function () {
+                        window.parent.location = origin+'/';
+                    });
+                },
             });
         } else {
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-login fa fa-sign-in'},
-                content: h('span', Messages.login_login)
+                content: h('span', Messages.login_login),
+                action: function () {
+                    Common.setLoginRedirect(function () {
+                        window.parent.location = origin+'/login/';
+                    });
+                },
             });
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-register fa fa-user-plus'},
-                content: h('span', Messages.login_register)
+                content: h('span', Messages.login_register),
+                action: function () {
+                    Common.setLoginRedirect(function () {
+                        window.parent.location = origin+'/register/';
+                    });
+                },
             });
         }
         var $icon = $('<span>', {'class': 'fa fa-user-secret'});
@@ -2444,59 +2667,6 @@ define([
         };
         metadataMgr.onChange(updateButton);
         updateButton();
-
-        $userAdmin.find('a.cp-toolbar-menu-logout').click(function () {
-            Common.logout(function () {
-                window.parent.location = origin+'/';
-            });
-        });
-
-        $userAdmin.find('a.cp-toolbar-menu-logout-everywhere').click(function () {
-            Common.getSframeChannel().query('Q_LOGOUT_EVERYWHERE', null, function () {
-                window.parent.location = origin + '/';
-            });
-        });
-        $userAdmin.find('a.cp-toolbar-menu-settings').click(function () {
-            if (padType) {
-                window.open(origin+'/settings/');
-            } else {
-                window.parent.location = origin+'/settings/';
-            }
-        });
-        $userAdmin.find('a.cp-toolbar-menu-support').click(function () {
-            if (padType) {
-                window.open(origin+'/support/');
-            } else {
-                window.parent.location = origin+'/support/';
-            }
-        });
-        $userAdmin.find('a.cp-toolbar-menu-admin').click(function () {
-            if (padType) {
-                window.open(origin+'/admin/');
-            } else {
-                window.parent.location = origin+'/admin/';
-            }
-        });
-        $userAdmin.find('a.cp-toolbar-survey').click(function () {
-            Feedback.send('SURVEY_CLICKED');
-        });
-        $userAdmin.find('a.cp-toolbar-menu-profile').click(function () {
-            if (padType) {
-                window.open(origin+'/profile/');
-            } else {
-                window.parent.location = origin+'/profile/';
-            }
-        });
-        $userAdmin.find('a.cp-toolbar-menu-login').click(function () {
-            Common.setLoginRedirect(function () {
-                window.parent.location = origin+'/login/';
-            });
-        });
-        $userAdmin.find('a.cp-toolbar-menu-register').click(function () {
-            Common.setLoginRedirect(function () {
-                window.parent.location = origin+'/register/';
-            });
-        });
 
         return $userAdmin;
     };
@@ -2628,16 +2798,12 @@ define([
         });
     };
 
-    UIElements.initFilePicker = function (common, cfg) {
-        var onSelect = cfg.onSelect || $.noop;
+    UIElements.openFilePicker = function (common, types, cb) {
         var sframeChan = common.getSframeChannel();
-        sframeChan.on("EV_FILE_PICKED", function (data) {
-            onSelect(data);
+        sframeChan.query("Q_FILE_PICKER_OPEN", types, function (err, data) {
+            if (err) { return; }
+            cb(data);
         });
-    };
-    UIElements.openFilePicker = function (common, types) {
-        var sframeChan = common.getSframeChannel();
-        sframeChan.event("EV_FILE_PICKER_OPEN", types);
     };
 
     UIElements.openTemplatePicker = function (common, force) {
@@ -2661,29 +2827,25 @@ define([
                 return;
             }
             delete pickerCfg.hidden;
-            common.openFilePicker(pickerCfg);
             var first = true; // We can only pick a template once (for a new document)
-            var fileDialogCfg = {
-                onSelect: function (data) {
-                    if (data.type === type && first) {
-                        UI.addLoadingScreen({hideTips: true});
-                        var chatChan = common.getPadChat();
-                        var cursorChan = common.getCursorChannel();
-                        sframeChan.query('Q_TEMPLATE_USE', {
-                            href: data.href,
-                            chat: chatChan,
-                            cursor: cursorChan
-                        }, function () {
-                            first = false;
-                            UI.removeLoadingScreen();
-                            Feedback.send('TEMPLATE_USED');
-                        });
-                        if (focus) { focus.focus(); }
-                        return;
-                    }
+            common.openFilePicker(pickerCfg, function (data) {
+                if (data.type === type && first) {
+                    UI.addLoadingScreen({hideTips: true});
+                    var chatChan = common.getPadChat();
+                    var cursorChan = common.getCursorChannel();
+                    sframeChan.query('Q_TEMPLATE_USE', {
+                        href: data.href,
+                        chat: chatChan,
+                        cursor: cursorChan
+                    }, function () {
+                        first = false;
+                        UI.removeLoadingScreen();
+                        Feedback.send('TEMPLATE_USED');
+                    });
+                    if (focus) { focus.focus(); }
+                    return;
                 }
-            };
-            common.initFilePicker(fileDialogCfg);
+            });
         };
 
         sframeChan.query("Q_TEMPLATE_EXIST", type, function (err, data) {
@@ -2701,6 +2863,7 @@ define([
         });
     };
 
+    /*
     UIElements.setExpirationValue = function (val, $expire) {
         if (val && typeof (val) === "number") {
             $expire.find('#cp-creation-expire').attr('checked', true).trigger('change');
@@ -2724,6 +2887,7 @@ define([
             $expire.find('#cp-creation-expire-false').attr('checked', true);
         }
     };
+    */
     UIElements.getPadCreationScreen = function (common, cfg, appCfg, cb) {
         appCfg = appCfg || {};
         if (!common.isLoggedIn()) { return void cb(); }
@@ -2757,6 +2921,7 @@ define([
         var origin = privateData.origin;
         var createHelper = function (href, text) {
             var q = h('a.cp-creation-help.fa.fa-question-circle', {
+                'data-cptippy-html': true,
                 title: text,
                 href: origin + href,
                 target: "_blank",
@@ -3035,10 +3200,12 @@ define([
 
 
         // Initial values
+        /*
         if (!cfg.owned && typeof cfg.owned !== "undefined") {
             $creation.find('#cp-creation-owned').prop('checked', false);
         }
         UIElements.setExpirationValue(cfg.expire, $creation);
+        */
 
         // Create the pad
         var getFormValues = function () {
@@ -3388,6 +3555,11 @@ define([
             link
         ]);
 
+        var dismiss = function () {
+            common.mailbox.dismiss(data, function (err) {
+                console.log(err);
+            });
+        };
         var answer = function (yes) {
             common.mailbox.sendTo("ADD_OWNER_ANSWER", {
                 channel: msg.content.channel,
@@ -3399,9 +3571,7 @@ define([
                 channel: msg.content.user.notifications,
                 curvePublic: msg.content.user.curvePublic
             });
-            common.mailbox.dismiss(data, function (err) {
-                console.log(err);
-            });
+            dismiss();
         };
 
         var todo = function (yes) {
@@ -3416,6 +3586,8 @@ define([
                     if (err) {
                         var text = err === "INSUFFICIENT_PERMISSIONS" ? Messages.fm_forbidden
                                                                       : Messages.error;
+                        console.error(err);
+                        dismiss();
                         return void UI.warn(text);
                     }
                     UI.log(Messages.saved);
@@ -3667,6 +3839,269 @@ define([
         };
 
         UI.proposal(div, todo);
+    };
+
+    var insertTextAtCursor = function (text) {
+        var selection = window.getSelection();
+        var range = selection.getRangeAt(0);
+        range.deleteContents();
+        var node = document.createTextNode(text);
+        range.insertNode(node);
+
+        for (var position = 0; position !== text.length; position++) {
+            selection.modify("move", "right", "character");
+        }
+    };
+
+    var getSource = {};
+    getSource['contacts'] = function (common, sources) {
+        var priv = common.getMetadataMgr().getPrivateData();
+        Object.keys(priv.friends || {}).forEach(function (key) {
+            if (key === 'me') { return; }
+            var f = priv.friends[key];
+            if (!f.curvePublic || sources[f.curvePublic]) { return; }
+            sources[f.curvePublic] = {
+                avatar: f.avatar,
+                name: f.displayName,
+                curvePublic: f.curvePublic,
+                profile: f.profile,
+                notifications: f.notifications
+            };
+        });
+    };
+    UIElements.addMentions = function (common, options) {
+        if (!options.$input) { return; }
+        var $t = options.$input;
+
+        var getValue = function () { return $t.val(); };
+        var setValue = function (val) { $t.val(val); };
+
+        var div = false;
+        if (options.contenteditable) {
+            div = true;
+            getValue = function () { return $t.html(); };
+            setValue = function () {}; // Not used, we insert data at the node level
+            $t.on('paste', function (e) {
+                try {
+                    insertTextAtCursor(e.originalEvent.clipboardData.getData('text'));
+                    e.preventDefault();
+                } catch (err) { console.error(err); }
+            });
+
+            // Fix backspace with "contenteditable false" children
+            $t.on('keydown', function (e) {
+                if (e.which !== 8 && e.which !== 46) { return; } // Backspace or del
+                var sel = document.getSelection();
+                if (sel.anchorNode.nodeType !== Node.TEXT_NODE) { return; } // text nodes only
+
+                // Only fix node located after mentions
+                var n = sel.anchorNode;
+                var prev = n && n.previousSibling;
+                // Check if our caret is just after a mention
+                if (!prev || !prev.classList || !prev.classList.contains('cp-mentions')) { return; }
+
+                // Del: if we're at offset 0, make sure we won't delete the text node
+                if (e.which === 46) {
+                    if (!sel.anchorOffset && sel.anchorNode.length === 1) {
+                        sel.anchorNode.nodeValue = " ";
+                        e.preventDefault();
+                    }
+                    return;
+                }
+
+                // Backspace
+                // If we're not at offset 0, make sure we won't delete the text node
+                if (e.which === 8 && sel.anchorOffset) {
+                    if (sel.anchorNode.length === 1) {
+                        sel.anchorNode.nodeValue = " ";
+                        e.preventDefault();
+                    }
+                    return;
+                }
+                // If we're at offset 0, We're just after a mention: delete it
+                prev.parentElement.removeChild(prev);
+                e.preventDefault();
+            });
+        }
+
+        // Add the sources
+        // NOTE: Sources must have a "name". They can have an "avatar".
+        var sources = options.sources || {};
+        if (!getSource[options.type]) { return; }
+        getSource[options.type](common, sources);
+
+
+        // Sort autocomplete result by label
+        var sort = function (a, b) {
+            var _a = a.label.toLowerCase();
+            var _b = b.label.toLowerCase();
+            if (_a.label < _b.label) { return -1; }
+            if (_b.label < _a.label) { return 1; }
+            return 0;
+        };
+
+        // Get the text between the last @ before the cursor and the cursor
+        var extractLast = function (term, offset) {
+            offset = typeof(offset) !== "undefined" ? offset : $t[0].selectionStart;
+            var startOffset = term.slice(0,offset).lastIndexOf('@');
+            return term.slice(startOffset+1, offset);
+        };
+        // Insert the autocomplete value in the input field
+        var insertValue = function (value, offset, content) {
+            offset = typeof(offset) !== "undefined" ? offset : $t[0].selectionStart;
+            content = content || getValue();
+            var startOffset = content.slice(0,offset).lastIndexOf('@');
+            var length = offset - startOffset;
+            if (length <= 0) { return; }
+            var result = content.slice(0,startOffset) + value + content.slice(offset);
+            if (content) {
+                return {
+                    result: result,
+                    startOffset: startOffset
+                };
+            }
+            setValue(result);
+        };
+        // Set the value to receive from the autocomplete
+        var toInsert = function (data, key) {
+            var name = data.name.replace(/[^a-zA-Z0-9]+/g, "-");
+            return "[@"+name+"|"+key+"]";
+        };
+
+        // Fix the functions when suing a contenteditable div
+        if (div) {
+            var _extractLast = extractLast;
+            // Use getSelection to get the cursor position in contenteditable
+            extractLast = function () {
+                var sel = document.getSelection();
+                if (sel.anchorNode.nodeType !== Node.TEXT_NODE) { return; }
+                return _extractLast(sel.anchorNode.nodeValue, sel.anchorOffset);
+            };
+            var _insertValue = insertValue;
+            insertValue = function (value) {
+                // Get the selected node
+                var sel = document.getSelection();
+                if (sel.anchorNode.nodeType !== Node.TEXT_NODE) { return; }
+                var node = sel.anchorNode;
+
+                // Remove the "term"
+                var insert =_insertValue("", sel.anchorOffset, node.nodeValue);
+                if (insert) {
+                    node.nodeValue = insert.result;
+                }
+                var breakAt = insert ? insert.startOffset : sel.anchorOffset;
+
+                var el;
+                if (typeof(value) === "string") { el = document.createTextNode(value); }
+                else { el = value; }
+
+                node.parentNode.insertBefore(el, node.splitText(breakAt));
+                var next = el.nextSibling;
+                if (!next) {
+                    next = document.createTextNode(" ");
+                    el.parentNode.appendChild(next);
+                } else if (next.nodeType === Node.TEXT_NODE && !next.nodeValue) {
+                    next.nodeValue = " ";
+                }
+                var range = document.createRange();
+                range.setStart(next, 0);
+                range.setEnd(next, 0);
+                var newSel = window.getSelection();
+                newSel.removeAllRanges();
+                newSel.addRange(range);
+            };
+
+            // Inserting contacts into contenteditable: use mention UI
+            if (options.type === "contacts") {
+                toInsert = function (data) {
+                    var avatar = h('span.cp-avatar', {
+                        contenteditable: false
+                    });
+                    common.displayAvatar($(avatar), data.avatar, data.name);
+                    return h('span.cp-mentions', {
+                        'data-curve': data.curvePublic,
+                        'data-notifications': data.notifications,
+                        'data-profile': data.profile,
+                        'data-name': Util.fixHTML(data.name),
+                        'data-avatar': data.avatar || "",
+                    }, [
+                        avatar,
+                        h('span.cp-mentions-name', {
+                            contenteditable: false
+                        }, data.name)
+                    ]);
+                };
+            }
+        }
+
+
+        // don't navigate away from the field on tab when selecting an item
+        $t.on("keydown", function(e) {
+            // Tab or enter
+            if ((e.which === 13 || e.which === 9)) {
+                try {
+                    var visible = $t.autocomplete("instance").menu.activeMenu.is(':visible');
+                    if (visible) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                } catch (err) { console.error(err, $t); }
+            }
+        }).autocomplete({
+            minLength: 0,
+            source: function(data, cb) {
+                var term = data.term;
+                var results = [];
+                if (term.indexOf("@") >= 0) {
+                    term = extractLast(data.term) || '';
+                    results = Object.keys(sources).filter(function (key) {
+                        var data = sources[key];
+                        return data.name.toLowerCase().indexOf(term.toLowerCase()) !== -1;
+                    }).map(function (key) {
+                        var data = sources[key];
+                        return {
+                            label: data.name,
+                            value: key
+                        };
+                    });
+                    results.sort(sort);
+                }
+                cb(results);
+                // Set max-height to the autocomplete dropdown
+                try {
+                    var max = window.innerHeight;
+                    var pos = $t[0].getBoundingClientRect();
+                    var menu = $t.autocomplete("instance").menu.activeMenu;
+                    menu.css({
+                        'overflow-y': 'auto',
+                        'max-height': (max-pos.bottom)+'px'
+                    });
+                } catch (e) {}
+            },
+            focus: function() {
+                // prevent value inserted on focus
+                return false;
+            },
+            select: function(event, ui) {
+                // add the selected item
+                var key = ui.item.value;
+                var data = sources[key];
+                var value = toInsert(data, key);
+                insertValue(value);
+                return false;
+            }
+        }).autocomplete( "instance" )._renderItem = function( ul, item ) {
+            var key = item.value;
+            var obj = sources[key];
+            if (!obj) { return; }
+            var avatar = h('span.cp-avatar');
+            common.displayAvatar($(avatar), obj.avatar, obj.name);
+            var li = h('li.cp-autocomplete-value', [
+                avatar,
+                h('span', obj.name)
+            ]);
+            return $(li).appendTo(ul);
+        };
     };
 
     return UIElements;

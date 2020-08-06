@@ -3,6 +3,7 @@
 @import (reference) "./tools.less";
 @import (reference) "./limit-bar.less";
 @import (reference) "./tokenfield.less";
+@import (reference) "./dropdown.less";
 
 .drive_main() {
     --LessLoader_require: LessLoader_currentFile();
@@ -10,6 +11,10 @@
 &.cp-body-drive {
     .limit-bar_main();
     .tokenfield_main();
+
+    @colortheme_drive-bg-light: lighten(@colortheme_drive-bg, 30%);
+    @colortheme_drive-bg-active: lighten(@colortheme_drive-bg, 20%);
+    @colortheme_drive-color: @cryptpad_text_col;
 
     @drive_hover: #eee;
     @drive_hover-light: lighten(@drive_hover, 20%);
@@ -39,10 +44,11 @@
     }
 
     /* local mixins */
+    @drive_icon-margin: 10px;
     .drive_fileIcon {
         li {
             display: inline-block;
-            margin: 10px 10px;
+            margin: @drive_icon-margin;
             width: 140px;
             height: 140px;
             text-align: center;
@@ -102,12 +108,14 @@
 
     .cp-app-drive-container {
         flex: 1;
-        overflow-x: auto;
         width: 100%;
         display: flex;
         flex-flow: row;
+        min-height: 0;
+        min-width: 0;
         @media screen and (max-width: @browser_media-medium-screen) {
             display: block;
+            overflow-y: auto;
             #cp-app-drive-toolbar {
                 .path .element {
                     display: none;
@@ -151,6 +159,10 @@
         user-select: none;
     }
 
+    .cp-app-drive-element-restricted {
+        color: #939393;
+    }
+
     .cp-app-drive-element-droppable {
         background-color: @drive_droppable-bg;
         color: #222;
@@ -159,7 +171,6 @@
     .cp-app-drive-element-selected {
         background: @drive_selected-bg !important;
         color: #eee;
-        margin: -1px;
         .fa-minus-square-o, .fa-plus-square-o {
             color: @colortheme_sidebar-left-fg;
         }
@@ -169,7 +180,6 @@
         border: 1px dotted #bbb;
         background: #AAA;
         color: #ddd;
-        margin: -1px;
         .fa-minus-square-o, .fa-plus-square-o {
             color: @colortheme_sidebar-left-fg;
         }
@@ -211,7 +221,54 @@
     }
 
 
-
+    #cp-app-drive-search {
+        display: inline-flex;
+        align-items: center;
+        max-width: 400px;
+        font-size: 30px;
+        margin: 15px;
+        input {
+            background: transparent;
+            color: @colortheme_drive-color;
+            .tools_placeholder-color(@cryptpad_color_grey);
+            outline-width: 0px;
+            border-radius: 0;
+            width: 100%;
+            border: 0;
+            border-bottom: 3px solid @colortheme_drive-color;
+            margin: 0 5px;
+            flex: 1;
+            min-width: 0;
+            &:focus {
+                outline-width: 0px;
+            }
+            &.cp-app-drive-search-active {
+                & ~ .cp-app-drive-search-cancel {
+                    visibility: visible;
+                }
+            }
+        }
+        .cp-app-drive-search-cancel {
+            visibility: hidden;
+            cursor: pointer;
+        }
+        .cp-app-drive-tree-search-icon, .cp-app-drive-search-cancel {
+            color: @colortheme_drive-color;
+        }
+    }
+    .cp-app-drive-search-spinner {
+        display: inline-flex;
+        color: @colortheme_drive-color;
+        font-size: 40px;
+        align-items: center;
+        justify-content: center;
+    }
+    .cp-app-drive-search-noresult {
+        font-size: 30px;
+        padding: 15px;
+        font-style: italic;
+        color: @cryptpad_color_grey;
+    }
 
 
     /* TREE */
@@ -233,6 +290,22 @@
         display: flex;
         flex-flow: column;
         max-height: 100%;
+        position: relative;
+        .cp-close-button {
+            position: absolute;
+            cursor: pointer;
+            right: 5px;
+            top: 5px;
+            font-size: 18px;
+            padding: 3px;
+            margin: 0;
+            border: 0;
+            background-color: transparent;
+            outline: none;
+            &:hover {
+                color: #000;
+            }
+        }
         .cp-app-drive-tree-categories-container {
             flex: 1;
             overflow: auto;
@@ -256,6 +329,7 @@
                     padding: 0 10px;
                     border: 0;
                     color: lighten(@colortheme_sidebar-left-fg, 40%);
+                    height: auto;
                 }
                 & > span.cp-app-drive-element-row {
                     overflow: hidden;
@@ -304,51 +378,6 @@
         }
         .cp-limit-container {
             margin-top: 5px;
-        }
-        #cp-app-drive-tree-search {
-            text-align: center;
-            padding: 0;
-            position: relative;
-            display: flex;
-            background: lighten(@colortheme_drive-bg, 8%);
-            border-right: 1px solid lighten(@colortheme_drive-bg, 16%);
-            input {
-                background: transparent;
-                color: @colortheme_drive-color;
-                .tools_placeholder-color(@colortheme_drive-color);
-                outline-width: 0px;
-                border-radius: 0;
-                width: 100%;
-                //border: 1px solid #ccc;
-                border: 0;
-                //border-right: 0;
-                height: @variables_bar-height;
-                padding: 0 5px;
-                padding-left: 45px;
-                flex: 1;
-                min-width: 0;
-                &:focus {
-                    outline-width: 0px;
-                }
-                &.cp-app-drive-search-active {
-                    & ~ .cp-app-drive-tree-search-icon {
-                        display: none;
-                    }
-                    & ~ .cp-app-drive-search-cancel {
-                        display: inline-block;
-                    }
-                }
-            }
-            .cp-app-drive-search-cancel {
-                display: none;
-                cursor: pointer;
-            }
-            .cp-app-drive-tree-search-icon, .cp-app-drive-search-cancel {
-                color: @colortheme_drive-color;
-                position: absolute;
-                left: 20px; // TODO align with drive categories
-                top: 8px;
-            }
         }
         .fa.cp-app-drive-icon-expcol {
             margin-left: -10px;
@@ -434,10 +463,8 @@
     #cp-app-drive-content-container {
         display: flex;
         flex-flow: column;
-        flex: 1;
-        // Needed to avoid the folder's path to overflows
-        // https://stackoverflow.com/questions/38223879/white-space-nowrap-breaks-flexbox-layout
-        // min-width: 0;
+        flex: 1 1 100%;
+        min-width: 0;
     }
     #cp-app-drive-content {
         box-sizing: border-box;
@@ -462,6 +489,7 @@
             margin-top: 10px;
         }
         .cp-app-drive-content-info-box {
+            order: 10;
             line-height: 2em;
             padding: 0.25em 0.75em;
             margin: 1em;
@@ -484,69 +512,40 @@
             }
         }
         #cp-app-drive-content-folder {
+            order: 20;
             li {
                 &.cp-app-drive-search-result {
-                    border-bottom: 1px solid @drive_info-box-border;
-                    display: block;
-                    &:hover {
-                        background-color: initial;
-                    }
-                    table {
-                        width: 100%;
-                        .cp-app-drive-search-label2 {
-                            width: 150px;
-                            font-size: 15px;
-                            text-align: right;
-                            padding-right: 15px;
-                        }
-                        .cp-app-drive-search-opendir {
+                    display: flex;
+                    height: 2 * @variables_bar-height;
+                    .cp-app-drive-search-path {
+                        .cp-app-drive-path-inner {
                             display: flex;
-                            justify-content: space-between;
-                            a {
+                            flex-flow: row-reverse wrap-reverse;
+                            justify-content: flex-end;
+                            .cp-app-drive-path-element {
+                                flex-shrink: 0;
+                                display: inline-block;
+                                margin-right: 5px;
+                                white-space: normal;
+                                word-wrap: break-word;
+                                max-width: 100%;
+                            }
+                            .cp-app-drive-path-clickable {
                                 cursor: pointer;
-                                color: #41b7d8;
                                 &:hover {
-                                    color: #014c8c;
-                                    text-decoration: underline;
+                                    background-color: #eee;
                                 }
                             }
                         }
-                        .cp-app-drive-search-path {
-                            font-style: italic;
-                            .cp-app-drive-path-inner {
-                                display: flex;
-                                flex-flow: row-reverse wrap-reverse;
-                                justify-content: flex-end;
-                                .cp-app-drive-path-element {
-                                    flex-shrink: 0;
-                                    display: inline-block;
-                                    margin-right: 5px;
-                                    white-space: normal;
-                                    word-wrap: break-word;
-                                    max-width: 100%;
-                                }
-                            }
-                        }
-                        .cp-app-drive-search-title {
-                            font-weight: bold;
-                            cursor: pointer;
-                            &:hover {
-                                background-color: @drive_hover;
-                            }
-                        }
-                        .cp-app-drive-search-col2 {
-                            width: 250px;
-                        }
-                        td.cp-app-drive-search-icon {
-                            width: 50px;
-                            font-size: 40px;
-                        }
+                        font-size: 12px;
+                        line-height: 16px;
+                        color: @drive_table-header-fg;
                     }
                 }
                 &.cp-app-drive-tags-list {
                     width: 100%;
                     table {
-                        margin: 10px 50px;
+                        margin: 10px;
                         width: ~"calc(100% - 100px)";
                         table-layout: fixed;
                         td, th {
@@ -566,8 +565,26 @@
         .cp-app-drive-element {
             .cp-app-drive-element-truncated { display: none; }
         }
+
+        .cp-app-drive-new-ghost {
+            cursor: pointer;
+            opacity: 0.5;
+            padding: 0;
+            align-items: center;
+            justify-content: center;
+            display: inline-flex;
+            &:hover {
+                opacity: 0.7;
+            }
+            .fa, .cptools {
+                cursor: pointer;
+            }
+        }
         div.cp-app-drive-content-grid {
-            padding: 20px;
+            padding: 1em;
+            ul {
+                margin: -(@drive_icon-margin);
+            }
             .drive_fileIcon;
             li {
                 &.cp-app-drive-element {
@@ -586,6 +603,7 @@
                     border-radius: 0;
                     border: 1px solid #ddd;
                     font-size: 14px;
+                    height: auto;
                 }
                 .cp-app-drive-element-state {
                     position: absolute;
@@ -609,26 +627,16 @@
                     }
                 }
             }
-            .cp-app-drive-element-list {
-                display: none;
-            }
             .cp-app-drive-new-ghost {
-                cursor: pointer;
-                opacity: 0.5;
-                padding: 0;
                 flex-flow: column;
-                align-items: center;
-                justify-content: center;
-                display: inline-flex;
-                &:hover {
-                    opacity: 0.7;
-                }
                 .fa, .cptools {
-                    cursor: pointer;
                     font-size: 90px;
                     margin-top: 5px;
                     margin-bottom: 0;
                 }
+            }
+            .cp-app-drive-element-list {
+                display: none;
             }
         }
 
@@ -637,22 +645,77 @@
                 display: none;
             }
             // Make it act as a table!
-            padding-left: 20px;
+            .cp-app-drive-new-ghost {
+                padding: 0 5px;
+                margin-top: 20px;
+            }
+            padding-left: 10px;
             ul {
-                display: table;
                 width: 100%;
-                padding: 0px 10px;
             }
             li {
-                display: table-row;
+                display: flex;
                 input {
                     border: 1px solid #ddd;
                     margin: 0;
                     padding: 0 4px;
+                    flex: 1;
+                    min-width: 0;
+                    height: auto;
                 }
+
                 &> span {
                     padding: 0 5px;
-                    display: table-cell;
+                    display: inline-block;
+                    white-space: nowrap;
+                    &:first-child, &.cp-icon {
+                        min-width: 20px;
+                        text-align: center;
+                        font-size: 18px;
+                        line-height: 32px;
+                        padding: 0;
+                    }
+                    &.cp-app-drive-element-name {
+                        flex: 1;
+                        min-width: 0;
+                        text-align: left;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                    }
+                    &.cp-app-drive-element-state {
+                        min-width: 40px;
+                        text-align: right;
+                        display: flex;
+                        align-items: center;
+                        justify-content: end;
+                        height: @variables_bar-height;
+                        .fa, .cptools {
+                            &:not(:last-child) {
+                                margin-right: 2px;
+                            }
+                        }
+                    }
+                    &.cp-app-drive-element-list {
+                        width: 120px;
+                    }
+                    &.cp-app-drive-element-sort {
+                        display: none;
+                        .dropdown_main();
+                        .cp-dropdown-content a {
+                            display: block !important;
+                            .sortdesc {
+                                order: 2;
+                            }
+                        }
+                        button {
+                            color: inherit;
+                            background: none;
+                            border: none;
+                            .fa {
+                                margin-right: 5px;
+                            }
+                        }
+                    }
                 }
                 &:not(.cp-app-drive-element-header) {
                     height: @variables_bar-height;
@@ -663,6 +726,7 @@
                     height: 1.5 * @variables_bar-height;
                     line-height: 1.5 * @variables_bar-height;
                     span {
+                        line-height: 1.5 * @variables_bar-height;
                         position: absolute;
                     }
                 }
@@ -674,20 +738,20 @@
                             text-align: left;
                         }
                         &.sortasc, &.sortdesc {
-                            float: right;
+                            margin-right: 3px;
                         }
                     }
                     &> span {
-                        padding: 15px 5px;
-                        &.cp-app-drive-sort-active {
-                            font-weight: bold;
-                        }
+                        padding: 14px 5px;
                         &.cp-app-drive-sort-clickable {
                             cursor: pointer;
                             &:hover {
                                 background: @drive_table-header-bg;
                             }
                         }
+                    }
+                    .cp-app-drive-element-state {
+                        display: none !important;
                     }
                 }
             }
@@ -696,27 +760,98 @@
                     overflow: hidden;
                     white-space: nowrap;
                     box-sizing: border-box;
-                    &.cp-app-drive-element-state {
-                        .fa, .cptools {
-                            &:not(:last-child) {
-                                margin-right: 5px;
+                }
+            }
+            @media screen and (max-width: 840px) {
+                .cp-app-drive-element-type, .cp-app-drive-element-filler {
+                    display: none !important;
+                }
+                .cp-app-drive-element-sort {
+                    display: block !important;
+                }
+            }
+
+            @media screen and (max-width: 740px) {
+                .cp-app-drive-element-folders, .cp-app-drive-element-ctime {
+                    display: none !important;
+                }
+            }
+
+            @media screen and (max-width: 670px) {
+                .cp-app-drive-element-files, .cp-app-drive-element-atime {
+                    display: none !important;
+                }
+                .cp-app-drive-element-header .cp-app-drive-element-state {
+                    display: none !important;
+                }
+            }
+        }
+
+        & > .cp-app-drive-path {
+            order: 1;
+            width: 100%;
+            height: @variables_bar-height;
+            line-height: @variables_bar-height;
+            cursor: default;
+            width: auto;
+            overflow: hidden;
+            white-space: nowrap;
+            flex-shrink: 0;
+            min-width: 50px;
+            max-width: 100%;
+            text-align: left;
+            display: flex;
+            flex-direction: row;
+
+            .cp-app-drive-path-inner {
+                display: flex;
+                flex-flow: row-reverse;
+                flex-grow: 1;
+                justify-content: flex-end;
+                padding-left: 10px;
+                .cp-app-drive-path-element {
+                    .tools_unselectable();
+                    display: inline-block;
+                    flex-shrink: 0;
+                    max-width: 100%;
+                    height: @variables_bar-height;
+                    line-height: @variables_bar-height;
+                    font-size: @colortheme_app-font-size;
+                    padding: 0 5px;
+                    border: 0;
+                    //background: @colortheme_drive-bg-active;
+                    color: @colortheme_drive-color;
+                    box-sizing: border-box;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    transition: all 0.15s;
+
+                    &:first-child {
+                        flex-shrink: 1;
+                    }
+
+                    &.cp-app-drive-path-separator {
+                        color: #ccc;
+                        cursor: default;
+                    }
+
+                    &.cp-app-drive-path-collapse {
+                        position: relative;
+                    }
+
+                    &.cp-app-drive-element-droppable {
+                        background-color: @drive_droppable-bg;
+                    }
+                    &.cp-app-drive-path-clickable {
+                        cursor: pointer;
+                        &:hover {
+                            &:not(.cp-app-drive-path-separator) {
+                                text-decoration: underline;
+                            }
+                            & ~ .cp-app-drive-path-element:not(.cp-app-drive-path-separator) {
+                                text-decoration: underline;
                             }
                         }
-                    }
-                    &.cp-app-drive-content-icon, &.cp-app-drive-element-state, &.cp-icon {
-                        width: 30px;
-                    }
-                    &.cp-app-drive-element-type, &.cp-app-drive-element-atime, &.cp-app-drive-element-ctime {
-                        width: 175px;
-                    }
-                    &.cp-app-drive-element-title {
-                        width: 250px;
-                        @media screen and (max-width: 1200px) {
-                            display: none;
-                        }
-                    }
-                    &.cp-app-drive-element-folders, &.cp-app-drive-element-files {
-                        width: 150px;
                     }
                 }
             }
@@ -793,190 +928,19 @@
     }
 
 
-    /* Toolbar */
-
-    #cp-app-drive-toolbar {
-        background: lighten(@colortheme_drive-bg, 8%);
-        color: @colortheme_drive-color;
-        //height: 30px;
-        //display: flex;
-        //flex-flow: row;
-        z-index: 100;
-        box-sizing: border-box;
-        height: @variables_bar-height;
-        padding: 0;
-        display: flex;
-        flex-flow: row;
-
-        * {
-            outline-width: 0;
-            &:focus {
-                outline-width: 0;
-            }
-        }
-
-        .cp-toolbar-icon-history {
-            float: right;
-            &.active {
-                background-color: rgba(0, 0, 255, 0.2);
-            }
-            .cp-toolbar-drawer-element {
-                display: none;
-            }
-        }
-
-        .cp-app-drive-toolbar-rightside, .cp-app-drive-toolbar-leftside {
-            display: inline-block;
-            margin: 0;
-            padding: 0;
-            .fa, .cptools {
-                margin: 0;
-                vertical-align: top;
-            }
-            button {
-                height: @variables_bar-height !important;
-                padding: 0 10px;
-                border: none;
-                border-radius: 0;
-                box-sizing: border-box;
-                background: transparent;
-                font-size: @colortheme_app-font-size;
-                color: @colortheme_drive-color;
-                transition: all 0.15s;
-                display: inline-flex;
-                align-items: center;
-                .drawer {
-                    display: none;
-                }
-                .fa, .cptools, span {
-                    font-size: @colortheme_app-font-size;
-                }
-                &:hover {
-                    background: @colortheme_drive-bg;
-                }
-                &.cp-app-drive-toolbar-active {
-                    display: none;
-                }
-            }
-        }
-        .cp-app-drive-toolbar-rightside {
-            float: right;
-            flex-shrink: 0;
-            & > * {
-                float: right;
+    .cp-toolbar-bottom {
+        .cp-toolbar-bottom-right {
+            .fa-history { order: 50; }
+            .fa-list, .fa-th-large { order: 25; }
+            #cp-app-drive-toolbar-context-mobile, #cp-app-drive-toolbar-contextbuttons { order: 0; }
+            #cp-app-drive-toolbar-context-mobile {
+                .fa { margin: 0 !important; }
             }
             #cp-app-drive-toolbar-contextbuttons {
-                display: inline-block;
-                height: 100%;
-            }
-            padding-left: 10px;
-        }
-        .cp-app-drive-toolbar-leftside {
-            flex-shrink: 0;
-            & > span {
-                height: 100%;
-                margin: 0;
-            }
-            button {
-                padding: 0 10px;
-                .fa, .cptools {
-                    margin-right: 5px;
-                }
-                .cp-dropdown-button-title {
-                    display: inline-flex;
-                    height: @variables_bar-height;
-                    align-items: center;
-                    span:not(.fa):not(.cptools) {
-                        line-height: 23px;
-                    }
-                }
-            }
-        }
-
-        button {
-            font: @colortheme_app-font;
-            span {
-                font: @colortheme_app-font;
-            }
-            .fa, &.fa {
-                font-family: FontAwesome;
-            }
-            .cptools, &.cptools {
-                font-family: cptools;
-            }
-        }
-
-        .cp-app-drive-path {
-            width: 100%;
-            height: @variables_bar-height;
-            line-height: @variables_bar-height;
-            cursor: default;
-            width: auto;
-            overflow: hidden;
-            white-space: nowrap;
-            flex-shrink: 1;
-            min-width: 50px;
-            max-width: 100%;
-            text-align: left;
-            display: flex;
-            flex-direction: row;
-
-            .cp-app-drive-path-inner {
+                height: @variables_bar-height;
                 display: flex;
-                flex-flow: row-reverse;
-                flex-grow: 1;
-
-                .cp-app-drive-path-element {
-                    display: inline-block;
-                    flex-shrink: 0;
-                    max-width: 100%;
-                    height: @variables_bar-height;
-                    line-height: @variables_bar-height;
-                    font-size: @colortheme_app-font-size;
-                    padding: 0 5px;
-                    border: 0;
-                    background: darken(@colortheme_drive-bg, 7%);
-                    color: @colortheme_drive-color;
-                    box-sizing: border-box;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    transition: all 0.15s;
-                    cursor: pointer;
-
-                    &:first-child {
-                        flex-shrink: 1;
-                    }
-
-                    &.cp-app-drive-path-separator {
-                        color: #ccc;
-                        cursor: default;
-                    }
-
-                    &.cp-app-drive-path-collapse {
-                        position: relative;
-                    }
-
-                    &.cp-app-drive-element-droppable {
-                        background-color: @drive_droppable-bg;
-                    }
-                    &:not(.cp-app-drive-element-droppable):hover {
-                        &:not(.cp-app-drive-path-separator) {
-                            background-color: darken(@colortheme_drive-bg, 15%);
-                            text-decoration: underline;
-                        }
-                        & ~ .cp-app-drive-path-element {
-                            background-color: darken(@colortheme_drive-bg, 15%);
-                        }
-                        & ~ .cp-app-drive-path-element:not(.cp-app-drive-path-separator) {
-                            text-decoration: underline;
-                        }
-                    }
-                }
+                align-items: center;
             }
-        }
-
-        .cp-app-drive-toolbar-filler {
-            flex: 1;
         }
     }
 
@@ -985,7 +949,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: lighten(@colortheme_drive-bg, 32%);
+        background-color: @colortheme_drive-bg-active;
         color: black;
         font-weight: bold;
         text-transform: uppercase;
@@ -1002,5 +966,11 @@
         text-transform: uppercase;
         cursor: default;
     }
+
+    .cp-app-drive-button {
+        order: 15;
+        margin: 0 1em;
+    }
+
 }
 

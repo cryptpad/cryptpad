@@ -1,6 +1,5 @@
 @import (reference) '../../customize/src/less2/include/tools.less';
 @import (reference) "../../customize/src/less2/include/framework.less";
-@import (reference) "../../customize/src/less2/include/buttons.less";
 
 &.cp-app-whiteboard {
 
@@ -22,11 +21,9 @@
         display: none;
     }
 
-    .cp-toolbar-rightside {
-        .cp-toolbar-icon-savetodrive { order: 13; }
-        .cp-toolbar-icon-embedImage { order: 12; }
-        .cp-toolbar-icon-mediatag { order: 11; }
-        .cp-toolbar-icon-color { order: 10; }
+    .cp-toolbar-file {
+        .cp-toolbar-savetodrive { order: 31; }
+        .cp-toolbar-icon-embedImage { order: 21; }
     }
 
     #cp-app-whiteboard-media-hidden {
@@ -75,8 +72,6 @@
         background: white;
 
         padding: 10px;
-
-        .buttons_main();
 
         & > * + * {
             margin: 0;

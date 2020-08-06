@@ -175,8 +175,12 @@ nThen(function (w) {
             Log.error("EVICT_BLOB_LIST_BLOBS_ERROR", err);
             return void next();
         }
+        if (!item) {
+            next();
+            return void Log.error('EVICT_BLOB_LIST_BLOBS_NO_ITEM', item);
+        }
         if (pins[item.blobId]) { return void next(); }
-        if (item && getNewestTime(item) > retentionTime) { return void next(); }
+        if (getNewestTime(item) > inactiveTime) { return void next(); }
 
         blobs.archive.blob(item.blobId, function (err) {
             if (err) {
@@ -204,8 +208,12 @@ nThen(function (w) {
             next();
             return void Log.error("EVICT_BLOB_LIST_PROOFS_ERROR", err);
         }
+        if (!item) {
+            next();
+            return void Log.error('EVICT_BLOB_LIST_PROOFS_NO_ITEM', item);
+        }
         if (pins[item.blobId]) { return void next(); }
-        if (item && getNewestTime(item) > retentionTime) { return void next(); }
+        if (getNewestTime(item) > inactiveTime) { return void next(); }
         nThen(function (w) {
             blobs.size(item.blobId, w(function (err, size) {
                 if (err) {

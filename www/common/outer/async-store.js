@@ -38,6 +38,12 @@ define([
         drive: {
             hideDuplicate: true
         },
+        pad: {
+            width: true
+        },
+        security: {
+            unsafeLinks: false
+        },
         general: {
             allowUserFeedback: true
         }
@@ -525,7 +531,7 @@ define([
         /////////////////////// Store ////////////////////////////////////
         //////////////////////////////////////////////////////////////////
 
-        var getAllStores = function () {
+        var getAllStores = Store.getAllStores = function () {
             var stores = [store];
             var teamModule = store.modules['team'];
             if (teamModule) {
@@ -675,6 +681,8 @@ define([
                 sem.take(function (give) {
                     var otherOwners = false;
                     nThen(function (_w) {
+                        // Don't check server metadata for blobs
+                        if (c.length !== 32) { return; }
                         Store.anonRpcMsg(null, {
                             msg: 'GET_METADATA',
                             data: c
@@ -722,10 +730,13 @@ define([
                 // Owned drive
                 if (metadata && metadata.owners && metadata.owners.length === 1 &&
                     metadata.owners.indexOf(edPublic) !== -1) {
+                    var token;
                     nThen(function (waitFor) {
+                        self.accountDeletion = clientId;
+                        // Log out from other workers
                         var token = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
                         store.proxy[Constants.tokenKey] = token;
-                        postMessage(clientId, "DELETE_ACCOUNT", token, waitFor());
+                        onSync(null, waitFor());
                     }).nThen(function (waitFor) {
                         removeOwnedPads(waitFor);
                     }).nThen(function (waitFor) {
@@ -740,6 +751,9 @@ define([
                             force: true
                         }, waitFor());
                     }).nThen(function () {
+                        // TODO delete block
+                        // Log out current worker
+                        postMessage(clientId, "DELETE_ACCOUNT", token, function () {});
                         store.network.disconnect();
                         cb({
                             state: true
@@ -1807,6 +1821,7 @@ define([
             var cb = Util.once(Util.mkAsync(_cb));
 
             if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }
+            if (data.channel.length !== 32) { return void cb({ error: 'EINVAL'}); }
             store.anon_rpc.send('GET_METADATA', data.channel, function (err, obj) {
                 if (err) { return void cb({error: err}); }
                 var metadata = (obj && obj[0]) || {};
@@ -1884,7 +1899,15 @@ define([
                 if (msg) {
                     msg = msg.replace(/cp\|(([A-Za-z0-9+\/=]+)\|)?/, '');
                     //var decryptedMsg = crypto.decrypt(msg, true);
-                    msgs.push(msg);
+                    if (data.debug) {
+                        msgs.push({
+                            msg: msg,
+                            author: parsed[1][1],
+                            time: parsed[1][5]
+                        });
+                    } else {
+                        msgs.push(msg);
+                    }
                 }
             };
             network.on('message', onMsg);
@@ -2031,6 +2054,10 @@ define([
         var addSharedFolderHandler = function () {
             store.sharedFolders = {};
             store.handleSharedFolder = function (id, rt) {
+                if (!rt) {
+                    delete store.sharedFolders[id];
+                    return;
+                }
                 store.sharedFolders[id] = rt;
                 if (store.driveEvents) {
                     registerProxyEvents(rt.proxy, id);
@@ -2060,6 +2087,9 @@ define([
         Store.addSharedFolder = function (clientId, data, cb) {
             var s = getStore(data.teamId);
             s.manager.addSharedFolder(data, function (id) {
+                if (id && typeof(id) === "object" && id.error) {
+                    return void cb(id);
+                }
                 var send = data.teamId ? s.sendEvent : sendDriveEvent;
                 send('DRIVE_CHANGE', {
                     path: ['drive', UserObject.FILES_DATA]
@@ -2165,6 +2195,8 @@ define([
             });
         };
         registerProxyEvents = function (proxy, fId) {
+            if (!proxy) { return; }
+            if (proxy.deprecated || proxy.restricted) { return; }
             if (!fId) {
                 // Listen for shared folder password change
                 proxy.on('change', ['drive', UserObject.SHARED_FOLDERS], function (o, n, p) {
@@ -2293,6 +2325,7 @@ define([
                 return;
             }
             store.mailbox = Mailbox.init({
+                Store: Store,
                 store: store,
                 updateMetadata: function () {
                     broadcast([], "UPDATE_METADATA");
@@ -2358,10 +2391,10 @@ define([
                 unpin: unpin,
                 loadSharedFolder: loadSharedFolder,
                 settings: proxy.settings,
+                removeOwnedChannel: function (channel, cb) { Store.removeOwnedChannel('', channel, cb); },
                 Store: Store
             }, {
                 outer: true,
-                removeOwnedChannel: function (channel, cb) { Store.removeOwnedChannel('', channel, cb); },
                 edPublic: store.proxy.edPublic,
                 loggedIn: store.loggedIn,
                 log: function (msg) {
@@ -2401,7 +2434,6 @@ define([
                 loadUniversal(Profile, 'profile', waitFor);
                 loadUniversal(Team, 'team', waitFor);
                 loadUniversal(History, 'history', waitFor);
-                loadMailbox(waitFor);
                 cleanFriendRequests();
             }).nThen(function () {
                 var requestLogin = function () {
@@ -2492,6 +2524,8 @@ define([
                 proxy.on('change', [Constants.tokenKey], function () {
                     broadcast([], "UPDATE_TOKEN", { token: proxy[Constants.tokenKey] });
                 });
+
+                loadMailbox();
             });
         };
 
@@ -2647,6 +2681,7 @@ define([
         };
 
         Store.disconnect = function () {
+            if (self.accountDeletion) { return; }
             if (!store.network) { return; }
             store.network.disconnect();
         };

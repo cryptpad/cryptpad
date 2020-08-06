@@ -93,7 +93,11 @@ define([
         if (options.background && options.background.mt) {
             mediatagBg = options.background.mt;
         }
-        var m = '<span class="cp-app-slide-container">' + mediatagBg + '<span class="'+slideClass+'">'+DiffMd.render(c).replace(separatorReg, '</span></span><span class="cp-app-slide-container">' + mediatagBg + '<span class="'+slideClass+'">')+'</span></span>';
+        var bgColor = '';
+        if (options.bgColor && !mediatagBg) {
+            bgColor = 'style="background-color:'+options.bgColor+';"';
+        }
+        var m = '<span class="cp-app-slide-container">' + mediatagBg + '<span class="'+slideClass+'" '+bgColor+'>'+DiffMd.render(c).replace(separatorReg, '</span></span><span class="cp-app-slide-container">' + mediatagBg + '<span class="'+slideClass+'" '+bgColor+'>')+'</span></span>';
 
         try { DiffMd.apply(m, $content, Common); } catch (e) { return console.error(e); }
 
@@ -150,17 +154,21 @@ define([
         updateFontSize();
     };
 
-    Slide.update = function (content) {
+    Slide.update = function (content, force) {
         updateFontSize();
         if (!content) { content = ''; }
         var old = Slide.content;
         Slide.content = content.replace(/\n\s*\-\-\-\s*\n/g, '\n\n'+separator+'\n\n');
-        if (old !== Slide.content) {
+        if (force || old !== Slide.content) {
             draw(Slide.index);
             return;
         }
         change(Slide.lastIndex, Slide.index);
     };
+
+    DiffMd.onPluginLoaded(function () {
+        Slide.update(Slide.content, true);
+    });
 
     Slide.left = function () {
         console.log('left');

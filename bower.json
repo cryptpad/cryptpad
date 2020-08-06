@@ -21,10 +21,10 @@
     "jquery": "2.2.4",
     "tweetnacl": "0.12.2",
     "components-font-awesome": "^4.6.3",
-    "ckeditor": "4.7.3",
+    "ckeditor": "4.14.0",
     "codemirror": "^5.19.0",
     "requirejs": "2.3.5",
-    "marked": "0.5.0",
+    "marked": "1.1.0",
     "rangy": "rangy-release#~1.3.0",
     "json.sortify": "~2.1.0",
     "secure-fabric.js": "secure-v1.7.9",
@@ -49,7 +49,8 @@
     "saferphore": "^0.0.1",
     "jszip": "Stuk/jszip#^3.1.5",
     "requirejs-plugins": "^1.0.3",
-    "seiyria-bootstrap-slider": "^10.6.2"
+    "dragula.js": "3.7.2",
+    "MathJax": "3.0.5"
   },
   "resolutions": {
     "bootstrap": "^v4.0.0",

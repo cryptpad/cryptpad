@@ -22,7 +22,7 @@ The most recent version and all past release notes can be found [here](https://g
 
 ## Setup using Docker
 
-See [Cryptpad-Docker](docs/cryptpad-docker.md) and the community wiki's [Docker](https://github.com/xwiki-labs/cryptpad/wiki/Docker) page for details on how to get up-and-running with Cryptpad in Docker.
+See [Cryptpad-Docker](https://github.com/xwiki-labs/cryptpad-docker) repository for details on how to get up-and-running with Cryptpad in Docker. This repository is maintained by the community and not officially supported.
 
 ## Setup using Ansible
 

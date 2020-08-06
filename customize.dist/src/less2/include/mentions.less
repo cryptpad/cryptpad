@@ -1,0 +1,32 @@
+@import (reference) "./tools.less";
+@import (reference) "./avatar.less";
+
+.mentions_main() {
+    --LessLoader_require: LessLoader_currentFile();
+}
+
+& {
+    .cp-mentions {
+        .avatar_main(20px);
+        .tools_unselectable();
+        display: inline-flex;
+        align-items: center;
+        vertical-align: bottom;
+        background-color: #eee;
+
+        span.cp-mentions-name {
+            max-width: 150px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            padding: 0px 3px;
+        }
+        &.cp-mentions-clickable {
+            outline: none;
+            cursor: pointer;
+            &:hover {
+                background-color: #ddd;
+            }
+        }
+    }
+}

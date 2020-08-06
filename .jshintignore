@@ -1,5 +1,6 @@
 node_modules/
 www/bower_components/
+www/common/less.min.js
 www/common/pdfjs/
 www/common/tippy/
 www/common/textFit.min.js
@@ -14,6 +15,7 @@ www/common/onlyoffice/v2*
 server.js
 www/common/old-media-tag.js
 www/scratch
+www/lib
 
 www/common/toolbar.js
 www/common/hyperscript.js
@@ -35,3 +37,4 @@ www/debug/chainpad.dist.js
 
 www/pad/mathjax/
 www/code/mermaid*.js
+www/code/orgmode.js

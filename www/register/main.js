@@ -115,8 +115,11 @@ define([
             }, {
                 ok: Messages.register_writtenPassword,
                 cancel: Messages.register_cancel,
-                cancelClass: 'safe',
-                okClass: 'danger',
+/*  If we're certain that we aren't using these "*Class" APIs
+    anywhere else then we can deprecate them and make this a
+    custom modal in common-interface (or here).  */
+                cancelClass: 'btn.btn-safe',
+                okClass: 'btn.btn-danger',
                 reverseOrder: true,
                 done: function ($dialog) {
                     $dialog.find('> div').addClass('half');

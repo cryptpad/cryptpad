@@ -141,6 +141,8 @@
 
     .kanban-edit-item {
         padding: 5px;
+        border: 0;
+        background: transparent;
         align-self: flex-start;
     }
 
@@ -269,21 +271,32 @@
         footer {
             margin: 10px;
             margin-top: 0px;
+            display: flex;
             span {
                 .tools_unselectable();
                 outline: none;
-                width: 100%;
+                width: 50%;
                 border: 1px solid fade(@cryptpad_text_col, 70%);
                 color: fade(@cryptpad_text_col, 70%);
                 border-radius: 0px;
-                font-size: 40px;
+                font-size: 25px;
                 display: inline-flex;
                 justify-content: center;
                 align-items: center;
                 line-height: 1;
                 cursor: pointer;
+                height: 40px;
+                &:first-child {
+                    margin-right: 5px;
+                }
+                &:last-child {
+                    margin-left: 5px;
+                }
                 &:hover {
                     background-color: rgba(0,0,0,0.1);
+                }
+                .fa {
+                    margin-right: 5px;
                 }
             }
         }
@@ -299,27 +312,43 @@
         min-height: 50px;
         .cp-kanban-filterTags {
             display: inline-flex;
-            align-items: baseline;
+            align-items: center;
             flex: 1;
-            max-width: 80%;
+            //max-width: 80%;
             min-width: 150px;
-
-            .cp-kanban-filterTags-reset {
-                cursor: pointer;
-                margin-left: 10px;
+            .cp-kanban-filterTags-toggle {
+                min-width: 100px;
+                display: flex;
+                flex-flow: column;
                 flex-shrink: 0;
+                & > * {
+                    visibility: hidden;
+                }
+                & > span {
+                    display: inline-block;
+                    height: 38px;
+                    line-height: 38px;
+                }
+                & > button {
+                    margin-top: -38px;
+                }
+            }
+            button.cp-kanban-filterTags-reset {
+                cursor: pointer;
+                white-space: normal !important;
                 .tools_unselectable();
                 i {
                     margin-right: 5px;
                 }
             }
-            .cp-kanban-filterTags-name {
-                flex-shrink: 0;
-            }
             .cp-kanban-filterTags-list {
+                margin-right: 10px;
                 margin-left: 10px;
                 display: flex;
                 flex-wrap: wrap;
+                &:not(.cp-empty) {
+                    margin-top: -5px;
+                }
                 em {
                     font-size: 14px;
                     color: lighten(@cryptpad_text_col, 10%);
@@ -410,14 +439,28 @@
             }
         }
         #kanban-trash {
-            height: 60px;
-            font-size: 40px;
-            display: flex;
+            height: 1px;
+            font-size: 0px;
+/*  CSS transitions are nice to look at, but it seems some interaction of "display: flex" here
+    makes the horizontal scrollbar stop working, so we need "display: none" for this state, but
+    CSS transitions are disabled when one state has "display: none". We can accomplish this in
+    js, but js animations are more prone to bugs and I'd rather live with a slight jank than
+    have the trash get stuck in some intermediary animation state under heavy use. --ansuz
+*/
+            display: none; // flex;
+            //transition: opacity 400ms, height 400ms, font-size 400ms;
+
             align-items: center;
             justify-content: center;
             position: relative;
             width: 100%;
             //pointer-events: none;
+
+            &.kanban-trash-active, &.kanban-trash-suggest {
+                display: flex;
+                height: 60px;
+                font-size: 40px;
+            }
             i {
                 position: fixed;
             }
@@ -455,12 +498,14 @@
             width: 300px;
             margin: 10px 5px;
             border: 1px solid @cryptpad_text_col;
+            color: @cryptpad_text_col;
             height: 40px;
             display: inline-flex;
             justify-content: center;
             align-items: center;
             align-self: flex-start;
-            font-size: 40px;
+            font-size: 25px;
+            line-height: 100%;
             cursor: pointer;
             .tools_unselectable();
             &:hover {

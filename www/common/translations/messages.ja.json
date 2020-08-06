@@ -169,5 +169,13 @@
     "user_rename": "表示名を変更",
     "users": "ユーザー",
     "saved": "保存しました",
-    "error": "エラー"
+    "error": "エラー",
+    "deleted": "削除しました",
+    "notifications_title": "未読の通知があります",
+    "profile_editDescription": "説明を編集",
+    "profile_addDescription": "説明を追加",
+    "profileButton": "プロフィール",
+    "profile_urlPlaceholder": "URL",
+    "profile_avatar": "アバター",
+    "profile_upload": " 新しいアバターをアップロード"
 }

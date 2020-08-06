@@ -1,6 +1,6 @@
 define([
     'jquery',
-    '/common/toolbar3.js',
+    '/common/toolbar.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-interface.js',
@@ -11,6 +11,7 @@ define([
     '/common/hyperscript.js',
     '/support/ui.js',
     '/api/config',
+    '/customize/application_config.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -27,7 +28,8 @@ define([
     Messages,
     h,
     Support,
-    ApiConfig
+    ApiConfig,
+    AppConfig
     )
 {
     var APP = window.APP = {};
@@ -41,6 +43,7 @@ define([
             'cp-support-list',
         ],
         'new': [
+            'cp-support-language',
             'cp-support-form',
         ],
     };
@@ -132,14 +135,35 @@ define([
         return $div;
     };
 
+    create['language'] = function () {
+        if (!Array.isArray(AppConfig.supportLanguages)) { return $(h('div')); }
+        var languages = AppConfig.supportLanguages;
+
+        var list = h('span.cp-support-language-list', languages
+            .map(function (lang) {
+                return Messages._languages[lang];
+            })
+            .filter(Boolean)
+            .map(function (lang) {
+                return h('span.cp-support-language', lang);
+            })
+        );
+
+        var $div = $(
+            h('div.cp-support-language', [
+                Messages.support_languagesPreamble,
+                list,
+            ])
+        );
+        return $div;
+    };
+
     // Create a new tickets
     create['form'] = function () {
         var key = 'form';
         var $div = makeBlock(key, true);
 
         var form = APP.support.makeForm();
-
-        $div.find('button').before(form);
 
         var id = Util.uid();
 
@@ -156,6 +180,7 @@ define([
                 $('.cp-sidebarlayout-category[data-category="tickets"]').click();
             }
         });
+        $div.find('button').before(form);
         return $div;
     };
 

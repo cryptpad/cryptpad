@@ -105,11 +105,14 @@ define([
         });
 
         // Call the onMessage handlers
+        var isNotification = function (type) {
+            return type === "notifications" || /^team-/.test(type);
+        };
         var pushMessage = function (data, handler) {
             var todo = function (f) {
                 try {
                     var el;
-                    if (data.type === 'notifications') {
+                    if (isNotification(data.type)) {
                         Notifications.add(Common, data);
                         el = createElement(data);
                     }
@@ -129,7 +132,7 @@ define([
             onViewedHandlers.forEach(function (f) {
                 try {
                     f(data);
-                    if (data.type === 'notifications') {
+                    if (isNotification(data.type)) {
                         Notifications.remove(Common, data);
                     }
                 } catch (e) {
@@ -141,7 +144,6 @@ define([
 
         var onMessage = function (data, cb) {
             // data = { type: 'type', content: {msg: 'msg', hash: 'hash'} }
-            console.debug(data.type, data.content);
             pushMessage(data);
             if (data.content && typeof (data.content.getFormatText) === "function") {
                 var text = $('<div>').html(data.content.getFormatText()).text();
@@ -173,20 +175,23 @@ define([
                 execCommand('SUBSCRIBE', null, function () {});
                 subscribed = true;
             }
+            var teams = types.indexOf('team') !== -1;
             if (typeof(cfg.onViewed) === "function") {
                 onViewedHandlers.push(function (data) {
-                    if (types.indexOf(data.type) === -1) { return; }
+                    var type = data.type;
+                    if (types.indexOf(type) === -1 && !(teams && /^team-/.test(type))) { return; }
                     cfg.onViewed(data);
                 });
             }
             if (typeof(cfg.onMessage) === "function") {
                 onMessageHandlers.push(function (data, el) {
-                    if (types.indexOf(data.type) === -1) { return; }
+                    var type = data.type;
+                    if (types.indexOf(type) === -1 && !(teams && /^team-/.test(type))) { return; }
                     cfg.onMessage(data, el);
                 });
             }
             Object.keys(history).forEach(function (type) {
-                if (types.indexOf(type) === -1) { return; }
+                if (types.indexOf(type) === -1 && !(teams && /^team-/.test(type))) { return; }
                 history[type].forEach(function (data) {
                     pushMessage({
                         type: type,

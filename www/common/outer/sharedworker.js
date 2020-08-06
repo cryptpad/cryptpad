@@ -63,8 +63,11 @@ var init = function (client, cb) {
                             }
                             if (q === "DISCONNECT") {
                                 console.log('Deleting existing store!');
-                                delete self.Rpc;
-                                delete self.store;
+                                client.close();
+                                if (self.accountDeletion && self.accountDeletion === client.id) {
+                                    delete self.Rpc;
+                                    delete self.store;
+                                }
                             }
                         });
                     });

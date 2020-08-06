@@ -2,7 +2,7 @@ define([
     'jquery',
     '/api/config',
     '/bower_components/chainpad-crypto/crypto.js',
-    '/common/toolbar3.js',
+    '/common/toolbar.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/hyperscript.js',

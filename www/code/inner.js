@@ -3,15 +3,18 @@ define([
     '/common/diffMarked.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
+    '/common/hyperscript.js',
     '/common/sframe-app-framework.js',
     '/common/sframe-common-codemirror.js',
+    '/common/common-interface.js',
     '/common/common-util.js',
     '/common/common-hash.js',
-    '/common/modes.js',
+    '/code/markers.js',
     '/common/visible.js',
     '/common/TypingTests.js',
     '/customize/messages.js',
     'cm/lib/codemirror',
+
 
     'css!cm/lib/codemirror.css',
     'css!cm/addon/dialog/dialog.css',
@@ -46,11 +49,13 @@ define([
     DiffMd,
     nThen,
     SFCommon,
+    h,
     Framework,
     SFCodeMirror,
+    UI,
     Util,
     Hash,
-    Modes,
+    Markers,
     Visible,
     TypingTest,
     Messages,
@@ -70,6 +75,31 @@ define([
         'xml',
     ]);
 
+    var mkThemeButton = function (framework) {
+        var $theme = $(h('button.cp-toolbar-appmenu', [
+            h('i.cptools.cptools-palette'),
+            h('span.cp-button-name', Messages.toolbar_theme)
+        ]));
+        var $content = $(h('div.cp-toolbar-drawer-content', {
+            tabindex: 1
+        })).hide();
+
+        // set up all the necessary events
+        UI.createDrawer($theme, $content);
+
+        framework._.toolbar.$theme = $content;
+        framework._.toolbar.$bottomL.append($theme);
+    };
+
+    var mkCbaButton = function (framework, markers) {
+        var $showAuthorColorsButton = framework._.sfCommon.createButton('', true, {
+            text: Messages.cba_hide,
+            name: 'authormarks',
+            icon: 'fa-paint-brush',
+        }).hide();
+        framework._.toolbar.$theme.append($showAuthorColorsButton);
+        markers.setButton($showAuthorColorsButton);
+    };
     var mkPrintButton = function (framework, $content, $print) {
         var $printButton = framework._.sfCommon.createButton('print', true);
         $printButton.click(function () {
@@ -85,7 +115,7 @@ define([
         var markdownTb = framework._.sfCommon.createMarkdownToolbar(editor);
         $codeMirrorContainer.prepend(markdownTb.toolbar);
 
-        framework._.toolbar.$rightside.append(markdownTb.button);
+        framework._.toolbar.$bottomL.append(markdownTb.button);
 
         var modeChange = function (mode) {
             if (['markdown', 'gfm'].indexOf(mode) !== -1) { return void markdownTb.setState(true); }
@@ -161,7 +191,7 @@ define([
             }
         });
 
-        framework._.toolbar.$rightside.append($previewButton);
+        framework._.toolbar.$bottomM.append($previewButton);
 
         $preview.click(function (e) {
             if (!e.target) { return; }
@@ -265,6 +295,8 @@ define([
             }
         });
 
+        DiffMd.onPluginLoaded(drawPreview);
+
         return {
             forceDraw: forceDrawPreview,
             draw: drawPreview,
@@ -273,11 +305,60 @@ define([
         };
     };
 
+    var mkColorByAuthor = function (framework, markers) {
+        var common = framework._.sfCommon;
+        var $cbaButton = framework._.sfCommon.createButton(null, true, {
+            icon: 'fa-paint-brush',
+            text: Messages.cba_title,
+            name: 'cba'
+        }, function () {
+            var div = h('div');
+            var $div = $(div);
+            var content = h('div', [
+                h('h4', Messages.cba_properties),
+                h('p', Messages.cba_hint),
+                div
+            ]);
+            var setButton = function (state) {
+                var button = h('button.btn');
+                var $button = $(button);
+                $div.html('').append($button);
+                if (state) {
+                    // Add "enable" button
+                    $button.addClass('btn-secondary').text(Messages.cba_enable);
+                    UI.confirmButton(button, {
+                        classes: 'btn-primary'
+                    }, function () {
+                        $button.remove();
+                        markers.setState(true);
+                        common.setAttribute(['code', 'enableColors'], true);
+                        setButton(false);
+                    });
+                    return;
+                }
+                // Add "disable" button
+                $button.addClass('btn-danger-alt').text(Messages.cba_disable);
+                UI.confirmButton(button, {
+                    classes: 'btn-danger'
+                }, function () {
+                    $button.remove();
+                    markers.setState(false);
+                    common.setAttribute(['code', 'enableColors'], false);
+                    setButton(true);
+                });
+            };
+            setButton(!markers.getState());
+            UI.alert(content);
+        });
+        framework._.toolbar.$theme.append($cbaButton);
+    };
+
     var mkFilePicker = function (framework, editor, evModeChange) {
         evModeChange.reg(function (mode) {
             if (MEDIA_TAG_MODES.indexOf(mode) !== -1) {
                 // Embedding is endabled
                 framework.setMediaTagEmbedder(function (mt) {
+                    editor.focus();
                     editor.replaceSelection($(mt)[0].outerHTML);
                 });
             } else {
@@ -300,11 +381,24 @@ define([
         var previewPane = mkPreviewPane(editor, CodeMirror, framework, isPresentMode);
         var markdownTb = mkMarkdownTb(editor, framework);
 
+        mkThemeButton(framework);
+
+        var markers = Markers.create({
+            common: common,
+            framework: framework,
+            CodeMirror: CodeMirror,
+            devMode: privateData.devMode,
+            editor: editor
+        });
+        mkCbaButton(framework, markers);
+
         var $print = $('#cp-app-code-print');
         var $content = $('#cp-app-code-preview-content');
         mkPrintButton(framework, $content, $print);
 
-        mkHelpMenu(framework);
+        if (!privateData.isEmbed) {
+            mkHelpMenu(framework);
+        }
 
         var evModeChange = Util.mkEvent();
         evModeChange.reg(previewPane.modeChange);
@@ -322,15 +416,23 @@ define([
             CodeMirror.configureTheme(common);
         }
 
-        ////
-
         framework.onContentUpdate(function (newContent) {
             var highlightMode = newContent.highlightMode;
             if (highlightMode && highlightMode !== CodeMirror.highlightMode) {
                 CodeMirror.setMode(highlightMode, evModeChange.fire);
             }
+
+            // Fix the markers offsets
+            markers.checkMarks(newContent);
+
+            // Apply the text content
             CodeMirror.contentUpdate(newContent);
             previewPane.draw();
+
+            // Apply the markers
+            markers.setMarks();
+
+            framework.localChange();
         });
 
         framework.setContentGetter(function () {
@@ -338,6 +440,10 @@ define([
             var content = CodeMirror.getContent();
             content.highlightMode = CodeMirror.highlightMode;
             previewPane.draw();
+
+            markers.updateAuthorMarks();
+            content.authormarks = markers.getAuthorMarks();
+
             return content;
         });
 
@@ -367,6 +473,19 @@ define([
                 //console.log("%s => %s", CodeMirror.highlightMode, CodeMirror.$language.val());
             }
 
+            markers.ready();
+            common.getPadMetadata(null, function (md) {
+                if (md && md.error) { return; }
+                if (!Array.isArray(md.owners)) { return void markers.setState(false); }
+                if (!common.isOwned(md.owners)) { return; }
+                // We're the owner: add the button and enable the colors if needed
+                mkColorByAuthor(framework, markers);
+                if (newPad && Util.find(privateData, ['settings', 'code', 'enableColors'])) {
+                    markers.setState(true);
+                }
+            });
+
+
             var fmConfig = {
                 dropArea: $('.CodeMirror'),
                 body: $('body'),
@@ -384,7 +503,7 @@ define([
         });
 
         framework.onDefaultContentNeeded(function () {
-             editor.setValue(''); //Messages.codeInitialState);
+             editor.setValue('');
         });
 
         framework.setFileExporter(CodeMirror.getContentExtension, CodeMirror.fileExporter);
@@ -401,11 +520,14 @@ define([
         framework.setNormalizer(function (c) {
             return {
                 content: c.content,
-                highlightMode: c.highlightMode
+                highlightMode: c.highlightMode,
+                authormarks: c.authormarks
             };
         });
 
-        editor.on('change', framework.localChange);
+        editor.on('change', function( cm, change ) {
+            markers.localChange(change, framework.localChange);
+        });
 
         framework.start();
 

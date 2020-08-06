@@ -63,7 +63,10 @@ define([
     common.setLanguage = function (l, cb) {
         var LS_LANG = "CRYPTPAD_LANG";
         localStorage.setItem(LS_LANG, l);
-        cb();
+        postMessage("SET_ATTRIBUTE", {
+            attr: ['general', 'language'],
+            value: l
+        }, cb);
     };
 
     common.makeNetwork = function (cb) {
@@ -78,6 +81,40 @@ define([
                 cb(err);
             });
         });
+    };
+
+
+    common.getTeamsId = function () {
+        postMessage("GET", {
+            key: ['teams'],
+        }, function (obj) {
+            if (obj.error) { return; }
+            Object.keys(obj || {}).forEach(function (id) {
+                console.log(obj[id].metadata.name, ':', id);
+            });
+        });
+
+    };
+    common.fixFork = function (teamId) {
+        var i = 0;
+        var send = function () {
+            if (i >= 110) {
+                postMessage("SET", {
+                    teamId: teamId,
+                    key: ['fixFork'],
+                }, function () {});
+                return;
+            }
+            postMessage("SET", {
+                teamId: teamId,
+                key: ['fixFork'],
+                value: i
+            }, function () {
+                i++;
+                setTimeout(send, 500);
+            });
+        };
+        send();
     };
 
     // RESTRICTED
@@ -595,7 +632,12 @@ define([
             }
         }).nThen(function () {
             Crypt.get(parsed.hash, function (err, val) {
-                if (err) { throw new Error(err); }
+                if (err) {
+                    return void cb(err);
+                }
+                if (!val) {
+                    return void cb('ENOENT');
+                }
                 try {
                     // Try to fix the title before importing the template
                     var parsed = JSON.parse(val);
@@ -628,14 +670,14 @@ define([
                 Crypt.get(parsed.hash, _waitFor(function (err, _val) {
                     if (err) {
                         _waitFor.abort();
-                        return void cb();
+                        return void cb(err);
                     }
                     try {
                         val = JSON.parse(_val);
                         fixPadMetadata(val, true);
                     } catch (e) {
                         _waitFor.abort();
-                        return void cb();
+                        return void cb(e.message);
                     }
                 }), optsGet);
                 return;
@@ -654,7 +696,7 @@ define([
                 Util.fetch(src, waitFor(function (err, _u8) {
                     if (err) {
                         _waitFor.abort();
-                        return void waitFor.abort();
+                        return void cb(err);
                     }
                     u8 = _u8;
                 }));
@@ -663,7 +705,7 @@ define([
                     FileCrypto.decrypt(u8, key, waitFor(function (err, _res) {
                         if (err || !_res.content) {
                             _waitFor.abort();
-                            return void waitFor.abort();
+                            return void cb(err);
                         }
                         res = _res;
                     }));
@@ -1568,6 +1610,26 @@ define([
                 blockKeys = allocated.blockKeys;
             }));
         }).nThen(function (waitFor) {
+            var blockUrl = Block.getBlockUrl(blockKeys);
+            // Check whether there is a block at that location
+            Util.fetch(blockUrl, waitFor(function (err, block) {
+                // If there is no block or the block is invalid, continue.
+                if (err) {
+                    console.log("no block found");
+                    return;
+                }
+
+                var decryptedBlock = Block.decrypt(block, blockKeys);
+                if (!decryptedBlock) {
+                    console.error("Found a login block but failed to decrypt");
+                    return;
+                }
+
+                // If there is already a valid block, abort! We risk overriding another user's data
+                waitFor.abort();
+                cb({ error: 'EEXISTS' });
+            }));
+        }).nThen(function (waitFor) {
             // Write the new login block
             var temp = {
                 User_name: accountName,
@@ -1708,14 +1770,17 @@ define([
         var ver = arr[1];
         if (!ver) { return; }
         var verArr = ver.split('.');
-        verArr[2] = 0;
+        //verArr[2] = 0;
         if (verArr.length !== 3) { return; }
         var stored = currentVersion || '0.0.0';
         var storedArr = stored.split('.');
-        storedArr[2] = 0;
+        //storedArr[2] = 0;
+        var shouldUpdate = JSON.stringify(verArr) !== JSON.stringify(storedArr);
+/*
         var shouldUpdate = parseInt(verArr[0]) !== parseInt(storedArr[0]) ||
                            (parseInt(verArr[0]) === parseInt(storedArr[0]) &&
                             parseInt(verArr[1]) !== parseInt(storedArr[1]));
+*/
         if (!shouldUpdate) { return; }
         currentVersion = ver;
         localStorage[CRYPTPAD_VERSION] = ver;
@@ -1926,7 +1991,7 @@ define([
         }).nThen(function (waitFor) {
             var blockHash = LocalStore.getBlockHash();
             if (blockHash) {
-                console.log(blockHash);
+                console.debug("Block hash is present");
                 var parsed = Block.parseBlockHash(blockHash);
 
                 if (typeof(parsed) !== 'object') {

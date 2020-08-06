@@ -42,6 +42,7 @@ define([
                         // Access modal and the pad is not stored: we're not an owner
                         // so we don't need the correct href, just the type
                         var h = Hash.createRandomHash(priv.app, priv.password);
+                        data.fakeHref = true;
                         data.href = base + priv.pathname + '#' + h;
                     } else {
                         waitFor.abort();
@@ -59,7 +60,7 @@ define([
             }), opts.href);
 
             // If this is a file, don't try to look for metadata
-            if (opts.channel && opts.channel.length > 34) { return; }
+            if (opts.channel && opts.channel.length > 32) { return; }
             if (opts.channel) { data.channel = opts.channel; }
             Modal.loadMetadata(Env, data, waitFor);
         }).nThen(function () {
@@ -69,23 +70,7 @@ define([
     Modal.isOwned = function (Env, data) {
         var common = Env.common;
         data = data || {};
-        var priv = common.getMetadataMgr().getPrivateData();
-        var edPublic = priv.edPublic;
-        var owned = false;
-        if (Array.isArray(data.owners) && data.owners.length) {
-            if (data.owners.indexOf(edPublic) !== -1) {
-                owned = true;
-            } else {
-                Object.keys(priv.teams || {}).some(function (id) {
-                    var team = priv.teams[id] || {};
-                    if (team.viewer) { return; }
-                    if (data.owners.indexOf(team.edPublic) === -1) { return; }
-                    owned = Number(id);
-                    return true;
-                });
-            }
-        }
-        return owned;
+        return common.isOwned(data.owners);
     };
 
     var blocked = false;
@@ -129,7 +114,10 @@ define([
                     tabs[i] = {
                         content: c && UI.dialog.customModal(node, {
                             buttons: obj.buttons || button,
-                            onClose: function () { blocked = false; }
+                            onClose: function () {
+                                blocked = false;
+                                if (typeof(opts.onClose) === "function") { opts.onClose(); }
+                            }
                         }),
                         disabled: !c,
                         title: obj.title,

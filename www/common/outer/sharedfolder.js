@@ -211,6 +211,9 @@ define([
                             // We can only hide it
                             sf.teams.forEach(function (obj) {
                                 obj.store.manager.deprecateProxy(obj.id, secret.channel);
+                                if (obj.store.handleSharedFolder) {
+                                    obj.store.handleSharedFolder(obj.id, null);
+                                }
                             });
                         } catch (e) {}
                         delete allSharedFolders[secret.channel];
@@ -225,6 +228,7 @@ define([
                         sf.teams.forEach(function (obj) {
                             obj.store.manager.restrictedProxy(obj.id, secret.channel);
                         });
+                        delete allSharedFolders[secret.channel];
                         return void cb();
                     }
                 }
@@ -251,9 +255,14 @@ define([
         if (!sf) { return; }
         var clients = sf.teams;
         if (!Array.isArray(clients)) { return; }
+        // Remove the shared folder from the client's store and
+        // remove the client/team from our list
         var idx;
         clients.some(function (obj, i) {
             if (obj.store.id === teamId) {
+                if (obj.store.handleSharedFolder) {
+                    obj.store.handleSharedFolder(obj.id, null);
+                }
                 idx = i;
                 return true;
             }
