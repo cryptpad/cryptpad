@@ -440,7 +440,6 @@ define([
             } else {
                 $toc.hide();
             }
-            Messages.pad_tocHide = "Outline"; // XXX
             var $tocButton = framework._.sfCommon.createButton('', true, {
                 drawer: false,
                 text: Messages.pad_tocHide,
@@ -648,7 +647,7 @@ define([
             }, 500); // 500ms to make sure it is sent after chainpad sync
         };
 
-        var updateTOC = function () {
+        var updateTOC = Util.throttle(function () {
             var toc = [];
             $inner.find('h1, h2, h3').each(function (i, el) {
                 toc.push({
@@ -674,7 +673,7 @@ define([
                 content.push(h('p.cp-pad-toc-'+level, a));
             });
             $toc.html('').append(content);
-        };
+        });
 
         // apply patches, and try not to lose the cursor in the process!
         framework.onContentUpdate(function(hjson) {
@@ -948,11 +947,11 @@ define([
             framework.localChange();
             updateCursor();
             editor.fire('cp-wc'); // Update word count
-            updateTOC(); // XXX throttle
+            updateTOC();
         });
         editor.on('change', function () {
             framework.localChange();
-            updateTOC(); // XXX throttle
+            updateTOC();
         });
 
         var wordCount = h('span.cp-app-pad-wordCount');
