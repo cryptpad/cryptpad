@@ -1473,12 +1473,6 @@ define([
     };
 
 
-    Messages.settings_kanbanTagsTitle = "Kanban tags filter"; // XXX
-    Messages.settings_kanbanTagsHint = "Select how you want the tags filter to act when selecting multiple tags: only show cards containing all the selected tags (AND) or show cards containing any of the selected tags (OR)"; // XXX
-    Messages.settings_kanbanTagsAnd = "AND";
-    Messages.settings_kanbanTagsOr = "OR";
-    Messages.settings_cat_kanban = "Kanban";
-
     makeBlock('kanban-tags', function(cb) {
 
         var opt1 = UI.createRadio('cp-settings-kanban-tags', 'cp-settings-kanban-tags-and',
