@@ -673,7 +673,7 @@ define([
                 content.push(h('p.cp-pad-toc-'+level, a));
             });
             $toc.html('').append(content);
-        });
+        }, 400);
 
         // apply patches, and try not to lose the cursor in the process!
         framework.onContentUpdate(function(hjson) {
