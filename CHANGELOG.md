@@ -1,3 +1,39 @@
+# VietnameseRhinoceros (3.21.0)
+
+## Goals
+
+This release was developed over a longer period than usual due to holidays, our yearly company seminar, and generally working on some important software-adjacent projects. As such, we opted not to aim for any major features and instead introduce some minor improvements and address some users' complaints.
+
+## Update notes
+
+We've had a few disgruntled administrators contact us about our apparent _failure to provide a docker image_ or to otherwise support their preferred configuration. With that in mind, this is a periodic reminder that CryptPad is provided to the public under the terms of the AGPL (found within this repository in the [LICENSE file](./LICENSE)) which implies on our part no warranty, liability, or responsibility to configure your server for you. We do our best to provide the necessary information to correctly launch your own instance of the software given our limited budget, however, all such files are provided **AS IS** and are only intended to function under the narrow circumstances of usage which we recommend within the comments of the provided example configuration files.
+
+With that said, the vast majority of our community acts kindly and courteously towards us and each other. We really do appreciate it, and we'll continue to help you to the best of our ability. With that in mind, we're happy to announce that we've written and deployed a first version of our user guide, available at https://docs.cryptpad.fr. The work that went into this was funded by NLnet foundation as an NGI Zero PET (Privacy-Enhancing Technology) grant. We are currently working on two more guides intended for developers and administrators, and will deploy them to the same domain as they are completed. In the meantime we have begun to update our README, GitHub wiki, and other resources to reflect the current recommended practices and remove references to unsupported configurations.
+
+If you're only reading this for instructions on how to update your instance from 3.20.1 to 3.21.0:
+
+1. Stop your server
+2. Get the latest platform code with git
+3. Install client-side dependencies with `bower update`
+4. Install server-side dependencies with `npm install`
+4. Restart the CryptPad API server
+
+## Features
+
+* We spent a little bit of time during our company seminar and implemented a first version of an automatically generated  _table of contents_ in our rich text editor. It is populated using header styles applied with the editor's dropdown menus, and can be hidden by clicking the "Outline" button in the app toolbar.
+* We also made it possible to change the default behaviour of the Kanban tag filter via the settings page. You may choose to compound the selection of multiple tags as AND, resulting in the display of cards that have all the selected tags rather than the default OR behaviour which displays any card including any one of the selected tags.
+* We've integrated a third-party Org-mode library into our code editor which features some fancy click-handlers that toggle the state of certain org-mode classifications.
+* The search results interface which is present in individual and team drives has been improved such that it displays a spinner while a search is pending and that it indicates when there are no results for a given term.
+* We've added a Japanese font (Komorebi-gothic) for use within the spreadsheet editor and have received and integrated Japanese translations from a contributor via our weblate instance (https://weblate.cryptpad.fr).
+* Finally, we've modified some behaviour in individual and team drives, making it possible to move a shared folder to the trash where it was previously only possible to directly remove it from your drive.
+
+## Bug fixes
+
+* We've corrected a minor server issue in which it would respond to requests to destroy non-existent files with an E_NO_OWNERS error, rather than an ENOENT (doesn't exist) error. The client code interpreted this as the file existing without them having the rights to delete it, rather than realizing that it no longer existed. This made it more difficult to remove files from your drive since destruction would fail rather than be interpreted as unnecessary.
+* We now guard against race conditions in our internal _write-queue_ library, preventing a rare occurrence of a type error triggered by unknown circumstances.
+* We discovered that Firefox had enabled (by default) half of the functionality required to export sheets to an XLSX format. We interpreted the presence of this feature as sufficient cause to display XLSX as an export option, even though the export would fail if you tried to use it. The second half of the required functionality is available in Firefox, but requires specific HTTP headers to be sent by our server. We're currently testing the configuration parameters and expect to make XLSX export available on CryptPad.fr very soon, along with an update to our recommended configuration which would enable it on other instances.
+* Lastly, we discovered an incompatibility betweeen our "safe links" behaviour and the process of redirecting users to log in or register to access specific functionality. Users that were redirected from pads accessed with safe links were redirected to that safe link whether or not they had imported the pad's keys into their newly created drive. This could result in a temporary loss of access to the pad, even though its credentials were still stored within their browser. We've corrected the redirect process to preserve the full document credentials for after you have logged in.
+
 # UplandMoa's revenge (3.20.1)
 
 Once again we've decided to follow up our last major release with a minor "revenge" release that we wanted to make available as soon as possible.
