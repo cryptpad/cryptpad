@@ -1,6 +1,7 @@
 datastore
 tasks
 www/bower_components/*
+www/accounts
 node_modules
 /config.js
 customization
