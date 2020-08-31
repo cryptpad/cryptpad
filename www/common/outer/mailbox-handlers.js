@@ -449,7 +449,6 @@ define([
         }
 
         var userData = content.user || content;
-        console.log(1);
         box.sendMessage({
             type: 'INVITE_TO_TEAM_ANSWERED',
             content: {
@@ -458,7 +457,6 @@ define([
                 answer: content.answer
             }
         }, function () {});
-        console.log(2);
 
         cb(true);
     };
