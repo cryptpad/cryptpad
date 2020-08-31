@@ -312,7 +312,7 @@ define([
         }
     };
 
-    handlers['INVITE_TO_TEAM_ANSWER'] = function(common, data) {
+    handlers['INVITE_TO_TEAM_ANSWERED'] = function(common, data) {
         var content = data.content;
         var msg = content.msg;
 

@@ -444,11 +444,20 @@ define([
             // If they declined the invitation, remove them from the roster (as a pending member)
             try {
                 var module = ctx.store.modules['team'];
-                module.removeFromTeam(teamId, msg.author);
+                module.removeFromTeam(teamId, msg.author, true);
             } catch (e) { console.error(e); }
         }
 
-        cb(false);
+        box.sendMessage({
+            type: 'INVITE_TO_TEAM_ANSWERED',
+            content: {
+                user: userData,
+                team: team,
+                answer: content.answer
+            }
+        }, function () {});
+
+        cb(true);
     };
 
     handlers['TEAM_EDIT_RIGHTS'] = function (ctx, box, data, cb) {

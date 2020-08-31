@@ -1698,8 +1698,22 @@ define([
         team.getTeams = function () {
             return Object.keys(ctx.teams);
         };
-        team.removeFromTeam = function (teamId, curve) {
+
+        var isPending = function (teamId, curve) {
+            var team = ctx.teams[teamId];
+            if (!team) { return; }
+            var state = team.roster && team.roster.getState();
+            if (!state.members) { return; }
+            var m = state.members[curve] || {};
+            return m.pending;
+        };
+        team.removeFromTeam = function (teamId, curve, pendingOnly) {
             if (!teams[teamId]) { return; }
+
+            // When receiving a negative answer to a team invitation, remove
+            // the pending user from the roster.
+            if (pendingOnly && !isPending(teamId, curve) { return; }
+
             if (ctx.onReadyHandlers[teamId]) {
                 ctx.onReadyHandlers[teamId].push({cb : function () {
                     ctx.teams[teamId].roster.remove([curve], function (err) {
