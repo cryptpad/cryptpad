@@ -221,6 +221,11 @@ define([
         roster.on('change', function () {
             var state = roster.getState();
             var me = Util.find(ctx, ['store', 'proxy', 'curvePublic']);
+            if (!state.members || !Object.keys(state.members).length) {
+                // invalid roster, don't leave the team
+                console.error(JSON.stringify(state));
+                return;
+            }
             if (!state.members[me]) {
                 return void closeTeam(ctx, id);
             }
