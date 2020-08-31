@@ -448,6 +448,8 @@ define([
             } catch (e) { console.error(e); }
         }
 
+        var userData = content.user || content;
+        console.log(1);
         box.sendMessage({
             type: 'INVITE_TO_TEAM_ANSWERED',
             content: {
@@ -456,6 +458,7 @@ define([
                 answer: content.answer
             }
         }, function () {});
+        console.log(2);
 
         cb(true);
     };
@@ -657,9 +660,15 @@ define([
             if (!data.msg) { return void cb(true); }
 
             // Check if the request is valid (sent by the correct user)
+            var myCurve = Util.find(ctx, ['store', 'proxy', 'curvePublic']);
             var curve = Util.find(data, ['msg', 'content', 'user', 'curvePublic']) ||
                         Util.find(data, ['msg', 'content', 'curvePublic']);
-            if (curve && data.msg.author !== curve) { console.error('blocked'); return void cb(true); }
+            // Block messages that are not coming from the user described in the message
+            // except if the author is ourselves.
+            if (curve && data.msg.author !== curve && data.msg.author !== myCurve) {
+                console.error('blocked');
+                return void cb(true);
+            }
 
             var type = data.msg.type;
 
