@@ -1712,7 +1712,7 @@ define([
 
             // When receiving a negative answer to a team invitation, remove
             // the pending user from the roster.
-            if (pendingOnly && !isPending(teamId, curve) { return; }
+            if (pendingOnly && !isPending(teamId, curve)) { return; }
 
             if (ctx.onReadyHandlers[teamId]) {
                 ctx.onReadyHandlers[teamId].push({cb : function () {
