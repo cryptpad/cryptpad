@@ -2254,7 +2254,12 @@ define([
             });
             $container.keydown(function (e) {
                 var $value = $innerblock.find('[data-value].cp-dropdown-element-active:visible');
+                if (!$value.length) {
+                    $value = $innerblock.find('[data-value]').first();
+                }
                 if (e.which === 38) { // Up
+                    e.preventDefault();
+                    e.stopPropagation();
                     if ($value.length) {
                         $value.mouseleave();
                         var $prev = $value.prev();
@@ -2263,6 +2268,8 @@ define([
                     }
                 }
                 if (e.which === 40) { // Down
+                    e.preventDefault();
+                    e.stopPropagation();
                     if ($value.length) {
                         $value.mouseleave();
                         var $next = $value.next();
@@ -2271,12 +2278,16 @@ define([
                     }
                 }
                 if (e.which === 13) { //Enter
+                    e.preventDefault();
+                    e.stopPropagation();
                     if ($value.length) {
                         $value.click();
                         hide();
                     }
                 }
                 if (e.which === 27) { // Esc
+                    e.preventDefault();
+                    e.stopPropagation();
                     $value.mouseleave();
                     hide();
                 }
