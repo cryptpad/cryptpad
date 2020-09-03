@@ -2104,7 +2104,9 @@ define([
         cb(null, $container);
         return {
             $container: $container,
-            update: updateUsage,
+            update: function () {
+                common.getPinUsage(teamId, todo);
+            },
             stop: function () {
                 clearInterval(interval);
             }
