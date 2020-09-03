@@ -2104,6 +2104,7 @@ define([
         cb(null, $container);
         return {
             $container: $container,
+            update: updateUsage,
             stop: function () {
                 clearInterval(interval);
             }
