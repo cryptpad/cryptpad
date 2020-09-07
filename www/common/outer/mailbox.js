@@ -258,7 +258,6 @@ proxy.mailboxes = {
                 } catch (e) {
                     console.error(e);
                 }
-                console.error('test');
                 sendMessage(msg, function (err, hash) {
                     if (err) { return void console.error(err); }
                     box.history.push(hash);
