@@ -1247,7 +1247,7 @@ define([
             Env.pinPads = pin;
             Env.unpinPads = unpin;
         };
-        var removePin = function (pin, unpin) {
+        var removePin = function () {
             delete Env.pinPads;
             delete Env.unpinPads;
         };
