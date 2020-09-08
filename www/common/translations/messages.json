@@ -1293,7 +1293,7 @@
     "settings_cat_security": "Confidentiality",
     "settings_safeLinksTitle": "Safe Links",
     "settings_safeLinksCheckbox": "Enable safe links",
-    "safeLinks_error": "This link does not give you access to the document",
+    "safeLinks_error": "This link was copied from the browser's address bar and does not provide access to the document. Please use the <i class=\"fa fa-shhare-alt\"></i> <b>Share</b> menu to share directly with contacts or copy the link. <a href=\"https://docs.cryptpad.fr/en/user_guide/user_account.html#confidentiality\"> Read more about the Safe Links feature</a>.\n",
     "dontShowAgain": "Don't show again",
     "profile_login": "You need to log in to add this user to your contacts",
     "settings_safeLinksHint": "CryptPad includes the keys to decrypt your pads in their links. Anyone with access to your browsing history can potentially read your data. This includes intrusive browser extensions and browsers that sync your history across devices. Enabling \"safe links\" prevents the keys from entering your browsing history or being displayed in your address bar whenever possible. We strongly recommend that you enable this feature and use the {0} Share menu.",
