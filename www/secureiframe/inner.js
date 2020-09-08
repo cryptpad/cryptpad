@@ -45,32 +45,33 @@ define([
         // Share modal
         create['share'] = function (data) {
             var priv = metadataMgr.getPrivateData();
-            var f = (data && data.file) ? UIElements.createFileShareModal
-                                          : UIElements.createShareModal;
-
             var friends = common.getFriends();
 
-            var _modal;
-            var modal = f({
-                origin: priv.origin,
-                pathname: priv.pathname,
-                password: priv.password,
-                isTemplate: priv.isTemplate,
-                hashes: priv.hashes,
-                common: common,
-                title: data.title,
-                friends: friends,
-                onClose: function () {
-                    if (_modal && _modal.close) { _modal.close(); }
-                    hideIframe();
-                },
-                fileData: {
-                    hash: priv.hashes.fileHash,
-                    password: priv.password
-                }
+            require(['/common/inner/share.js'], function (Share) {
+                var f = (data && data.file) ? Share.getFileShareModal
+                                              : Share.getShareModal;
+                f(common, {
+                    origin: priv.origin,
+                    pathname: priv.pathname,
+                    password: priv.password,
+                    isTemplate: priv.isTemplate,
+                    hashes: priv.hashes,
+                    common: common,
+                    title: data.title,
+                    versionHash: data.versionHash,
+                    friends: friends,
+                    onClose: function () {
+                        hideIframe();
+                    },
+                    fileData: {
+                        hash: priv.hashes.fileHash,
+                        password: priv.password
+                    }
+                }, function (e, modal) {
+                    if (e) { console.error(e); }
+                    displayed = modal;
+                });
             });
-            _modal = UI.openCustomModal(modal);
-            displayed = modal;
         };
 
         // Properties modal
