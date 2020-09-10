@@ -48,12 +48,19 @@ define([
             titleUpdated = cb;
         };
 
+        var ret = {
+            updateTitle: exp.updateTitle,
+            suggestName: suggestTitle,
+            defaultName: exp.defaultTitle,
+            getTitle: exp.getTitle
+        };
+
         metadataMgr.onChange(function () {
             var md = metadataMgr.getMetadata();
             if ($title) {
                 $title.find('input').prop('placeholder', md.defaultTitle);
             }
-            exp.defaultTitle = md.defaultTitle;
+            ret.defaultName = exp.defaultTitle = md.defaultTitle;
         });
         metadataMgr.onTitleChange(function (title, defaultTitle) {
             if ($title) {
@@ -79,12 +86,7 @@ define([
         });
 
         exp.getTitleConfig = function () {
-            return {
-                updateTitle: exp.updateTitle,
-                suggestName: suggestTitle,
-                defaultName: exp.defaultTitle,
-                getTitle: exp.getTitle
-            };
+            return ret;
         };
 
         exp.onTitleChange = evTitleChange.reg;

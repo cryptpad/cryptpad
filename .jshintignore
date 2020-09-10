@@ -17,6 +17,7 @@ www/common/old-media-tag.js
 www/scratch
 www/accounts
 www/lib
+www/accounts
 
 www/common/toolbar.js
 www/common/hyperscript.js

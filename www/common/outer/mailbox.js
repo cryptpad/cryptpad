@@ -206,6 +206,10 @@ proxy.mailboxes = {
         if (!box) { return void cb(); }
         if (!box.cpNf || typeof(box.cpNf.stop) !== "function") { return void cb('EINVAL'); }
         box.cpNf.stop();
+        Object.keys(box.content).forEach(function (h) {
+            Handlers.remove(ctx, box, box.content[h], h);
+            hideMessage(ctx, type, h, ctx.clients);
+        });
         delete ctx.boxes[type];
     };
     var openChannel = function (ctx, type, m, onReady, opts) {
