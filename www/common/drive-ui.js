@@ -2341,8 +2341,6 @@ define([
                 msg = Messages._getKey('fm_info_sharedFolderHistory', [sfName]);
                 return $(common.fixLinks($box.html(msg)));
             }
-            Messages.fm_info_anonymous = "You are not logged in so your pads will expire after {0} days (<a href=\"https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/\" target=\"_blank\">find out more</a>). They are stored in your browser so clearing history may make them disappear.<br><a href=\"/register/\">Sign up</a> or <a href=\"/login/\">Log in</a> to keep them alive.<br>"; // XXX XXX
-            // XXX update this key to use "{0} days" instead of "3 months"
             if (!APP.loggedIn) {
                 msg = APP.newSharedFolder ? Messages.fm_info_sharedFolder : Messages._getKey('fm_info_anonymous', [ApiConfig.inactiveTime || 90]);
                 return $(common.fixLinks($box.html(msg)));
