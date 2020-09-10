@@ -152,7 +152,8 @@ define([
 
             var $div = $(h('div.cp-share-column'));
             var _friends = Util.clone(friends);
-            Object.keys(_friends).forEach(function (curve) {
+            var friendKeys = Object.keys(_friends);
+            friendKeys.forEach(function (curve) {
                 if (owners.indexOf(_friends[curve].edPublic) !== -1 ||
                     pending_owners.indexOf(_friends[curve].edPublic) !== -1 ||
                     !_friends[curve].notifications) {
@@ -160,10 +161,21 @@ define([
                 }
             });
             if (!Object.keys(_friends).length) {
+                var friendText;
+                if (!friendKeys.length) {
+                    console.error(UIElements.noContactsMessage(common));
+                    var findContacts = UIElements.noContactsMessage(common);
+                    friendText = h('span.cp-app-prop-content',
+                        findContacts.content // XXX display copy-link button too?
+                    );
+                } else {
+                    friendText = h('span.cp-app-prop-content', Messages.access_noContact);
+                }
+
                 $div.append(h('div.cp-app-prop', [
                     Messages.contacts,
                     h('br'),
-                    h('span.cp-app-prop-content', Messages.access_noContact)
+                    friendText
                 ]));
             } else {
                 var addCol = UIElements.getUserGrid(Messages.contacts, {
@@ -528,7 +540,7 @@ define([
             ]);
         };
 
-        // Add owners column
+        // Add allow list column
         var drawAdd = function () {
             var priv = metadataMgr.getPrivateData();
             var teamsData = Util.tryParse(JSON.stringify(priv.teams)) || {};
@@ -538,17 +550,28 @@ define([
             $div.addClass('cp-overlay-container').append(h('div.cp-overlay'));
 
             var _friends = Util.clone(friends);
-            Object.keys(_friends).forEach(function (curve) {
+            var friendKeys = Object.keys(_friends);
+            friendKeys.forEach(function (curve) {
                 if (owners.indexOf(_friends[curve].edPublic) !== -1 ||
                     allowed.indexOf(_friends[curve].edPublic) !== -1) {
                     delete _friends[curve];
                 }
             });
             if (!Object.keys(_friends).length) {
+                var friendText;
+                if (!friendKeys.length) {
+                    var findContacts = UIElements.noContactsMessage(common);
+                    friendText = h('span.cp-app-prop-content',
+                        findContacts.content // XXX display copy-link button too?
+                    );
+                } else {
+                    friendText = h('span.cp-app-prop-content', Messages.access_noContact);
+                }
+
                 $div.append(h('div.cp-app-prop', [
                     Messages.contacts,
                     h('br'),
-                    h('span.cp-app-prop-content', Messages.access_noContact)
+                    friendText
                 ]));
             } else {
                 var addCol = UIElements.getUserGrid(Messages.contacts, {
