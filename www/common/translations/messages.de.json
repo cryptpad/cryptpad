@@ -1398,5 +1398,11 @@
     "support_formCategoryError": "Fehler: Kategorie ist leer",
     "fm_restricted": "Du kannst auf dieses Element nicht zugreifen",
     "fm_emptyTrashOwned": "In deinem Papierkorb sind Dokumente gespeichert, deren Eigentümer du bist. Du kannst sie aus deinem CryptDrive <b>entfernen</b> oder für alle Benutzer <b>zerstören</b>.",
-    "fm_noResult": "Keine Ergebnisse gefunden"
+    "fm_noResult": "Keine Ergebnisse gefunden",
+    "pad_tocHide": "Gliederung",
+    "settings_kanbanTagsTitle": "Tag-Filter",
+    "settings_cat_kanban": "Kanban",
+    "settings_kanbanTagsOr": "ODER",
+    "settings_kanbanTagsAnd": "UND",
+    "settings_kanbanTagsHint": "Wähle aus, wie sich der Tag-Filter bei der Auswahl mehrerer Tags verhalten soll: nur Karten mit allen ausgewählten Tags anzeigen (UND) oder Karten mit irgendeinem der ausgewählten Tags anzeigen (ODER)"
 }

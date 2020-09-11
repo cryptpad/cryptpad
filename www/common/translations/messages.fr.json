@@ -1148,7 +1148,7 @@
     "owner_removeButton": "Supprimer les propriétaires sélectionnés",
     "owner_removePendingButton": "Annuler les offres sélectionnées",
     "owner_addButton": "Proposer d'être propriétaire",
-    "owner_removeConfirm": "Êtes-vous sûr de vouloir suppprimer les droits de propriétaire pour les utilisateurs sélectionnés ? Ils seront notifiés de cette action.",
+    "owner_removeConfirm": "Êtes-vous sûr de vouloir supprimer les droits de propriétaire pour les utilisateurs sélectionnés ? Ils seront notifiés de cette action.",
     "owner_removeMeConfirm": "Vous êtes sur le point de renoncer à vos droits de propriétaire. Vous ne serez pas en mesure d'annuler cette action. Continuer ?",
     "owner_addConfirm": "Les co-propriétaires seront en mesure de changer le contenu du document et pourront supprimer vos droits de propriétaire. Continuer ?",
     "owner_openModalButton": "Gérer les propriétaires",
@@ -1381,7 +1381,7 @@
     "support_languagesPreamble": "L'équipe de support parle les langues suivantes :",
     "info_privacyFlavour": "<a>Description de la confidentialité</a> de vos données.",
     "user_about": "À propos de CryptPad",
-    "info_imprintFlavour": "<a>Informations légales sur les administateurs de cette instance</a>.",
+    "info_imprintFlavour": "<a>Informations légales sur les administrateurs de cette instance</a>.",
     "support_cat_all": "Tout",
     "support_cat_other": "Autre",
     "support_cat_bug": "Rapport de bug",
@@ -1397,5 +1397,12 @@
     "support_category": "Choisir une catégorie",
     "fm_restricted": "Vous n'avez pas accès à cet élément",
     "fm_emptyTrashOwned": "Votre corbeille contient des documents dont vous êtes propriétaire. Vous pouvez les <b>supprimer</b> de votre drive uniquement, ou les <b>détruire</b> pour tous les utilisateurs.",
-    "fm_noResult": "Pas de résultat"
+    "fm_noResult": "Pas de résultat",
+    "support_formCategoryError": "Erreur : la catégorie est vide",
+    "pad_tocHide": "Plan",
+    "settings_cat_kanban": "Kanban",
+    "settings_kanbanTagsOr": "OU",
+    "settings_kanbanTagsAnd": "ET",
+    "settings_kanbanTagsHint": "Sélectionnez le fonctionnement du filtre lorsque vous sélectionnez plusieurs mots-clés : afficher uniquement les cartes contenant tous les mots-clés sélectionnés (ET) ou afficher les cartes contenant l'un des mots-clés sélectionnés (OU)",
+    "settings_kanbanTagsTitle": "Filtre par mot-clé"
 }

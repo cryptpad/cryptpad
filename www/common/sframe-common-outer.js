@@ -511,7 +511,19 @@ define([
             Cryptpad.onMetadataChanged(updateMeta);
             sframeChan.onReg('EV_METADATA_UPDATE', updateMeta);
 
+            Utils.LocalStore.onLogin(function () {
+                var ohc = window.onhashchange;
+                window.onhashchange = function () {};
+                window.location.hash = currentPad.hash;
+                window.onhashchange = ohc;
+                ohc({reset: true});
+            });
             Utils.LocalStore.onLogout(function () {
+                var ohc = window.onhashchange;
+                window.onhashchange = function () {};
+                window.location.hash = currentPad.hash;
+                window.onhashchange = ohc;
+                ohc({reset: true});
                 sframeChan.event('EV_LOGOUT');
             });
 

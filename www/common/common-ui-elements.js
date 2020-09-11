@@ -2438,7 +2438,7 @@ define([
                 attributes: {
                     'target': '_blank',
                     'href': origin+'/contacts/',
-                    'class': 'cptools cptools-contacts'
+                    'class': 'fa fa-address-book'
                 },
                 content: h('span', Messages.type.contacts)
             });
@@ -4102,6 +4102,12 @@ define([
             ]);
             return $(li).appendTo(ul);
         };
+    };
+
+    UIElements.isVisible = function (el, $container) {
+        var size = $container.outerHeight();
+        var pos = el.getBoundingClientRect();
+        return (pos.bottom < size) && (pos.y > 0);
     };
 
     return UIElements;

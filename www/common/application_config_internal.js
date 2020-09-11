@@ -113,7 +113,7 @@ define(function() {
         poll: 'cptools-poll',
         whiteboard: 'cptools-whiteboard',
         todo: 'cptools-todo',
-        contacts: 'cptools-contacts',
+        contacts: 'fa-address-book',
         kanban: 'cptools-kanban',
         oodoc: 'fa-file-word-o',
         ooslide: 'fa-file-powerpoint-o',

@@ -578,6 +578,12 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
             console.error("CHANNEL_ERROR", info);
         };
 
+        var onConnectionChange = function (info) {
+            if (info.state) { return; }
+            // Disconnect: don't send event anymore until ready
+            ready = false;
+        };
+
         var onConnect = function (/* wc, sendMessage */) {
             console.log("ROSTER CONNECTED");
         };
@@ -621,12 +627,12 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
 
             // if a checkpoint was successfully applied, emit an event
             if (parsed[0] === 'CHECKPOINT' && changed) {
-                events.checkpoint.fire(hash);
+                if (isReady()) { events.checkpoint.fire(hash); }
                 // reset the counter for messages since the last checkpoint
                 ref.internal.sinceLastCheckpoint = 0;
                 ref.internal.lastCheckpointHash = hash;
             } else if (changed) {
-                events.change.fire();
+                if (isReady()) { events.change.fire(); }
             }
 
             // CHECKPOINT logic...
@@ -833,7 +839,7 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
                 onChannelError: onChannelError,
                 onReady: onReady,
                 onConnect: onConnect,
-                onConnectionChange: function () {},
+                onConnectionChange: onConnectionChange,
                 onMessage: onMessage,
 
                 noChainPad: true,

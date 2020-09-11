@@ -1,6 +1,6 @@
 [![An XWiki Labs Project](https://raw.githubusercontent.com/xwiki-labs/xwiki-labs-logo/master/projects/xwikilabs/xlabs-project.png "XWiki labs")](https://labs.xwiki.com/xwiki/bin/view/Main/WebHome)
 
-![CryptPad screenshot](https://github.com/xwiki-labs/cryptpad/raw/master/screenshot.png "Pads are an easy way to collaborate")
+![CryptPad screenshot](screenshot.png "Private real-time collaboration on a Rich Text document.")
 
 CryptPad is the **Zero Knowledge** realtime collaborative editor.
 
@@ -24,9 +24,6 @@ The most recent version and all past release notes can be found [here](https://g
 
 See [Cryptpad-Docker](https://github.com/xwiki-labs/cryptpad-docker) repository for details on how to get up-and-running with Cryptpad in Docker. This repository is maintained by the community and not officially supported.
 
-## Setup using Ansible
-
-See [Ansible Role for Cryptpad](https://github.com/systemli/ansible-role-cryptpad).
 
 # Security
 

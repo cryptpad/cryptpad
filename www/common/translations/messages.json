@@ -1398,5 +1398,11 @@
     "support_formCategoryError": "Error: category is empty",
     "fm_emptyTrashOwned": "Your trash contains documents you own. You can <b>remove</b> them from your drive only, or <b>destroy</b> them for all users.",
     "fm_restricted": "You do not have access",
-    "fm_noResult": "No results found"
+    "fm_noResult": "No results found",
+    "pad_tocHide": "Outline",
+    "settings_kanbanTagsTitle": "Tag filter",
+    "settings_kanbanTagsHint": "Select how you want the tag filter to act when selecting multiple tags: only show cards containing all the selected tags (AND) or show cards containing any of the selected tags (OR)",
+    "settings_kanbanTagsAnd": "AND",
+    "settings_kanbanTagsOr": "OR",
+    "settings_cat_kanban": "Kanban"
 }

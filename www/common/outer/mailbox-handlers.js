@@ -444,11 +444,21 @@ define([
             // If they declined the invitation, remove them from the roster (as a pending member)
             try {
                 var module = ctx.store.modules['team'];
-                module.removeFromTeam(teamId, msg.author);
+                module.removeFromTeam(teamId, msg.author, true);
             } catch (e) { console.error(e); }
         }
 
-        cb(false);
+        var userData = content.user || content;
+        box.sendMessage({
+            type: 'INVITE_TO_TEAM_ANSWERED',
+            content: {
+                user: userData,
+                team: team,
+                answer: content.answer
+            }
+        }, function () {});
+
+        cb(true);
     };
 
     handlers['TEAM_EDIT_RIGHTS'] = function (ctx, box, data, cb) {
@@ -648,9 +658,15 @@ define([
             if (!data.msg) { return void cb(true); }
 
             // Check if the request is valid (sent by the correct user)
+            var myCurve = Util.find(ctx, ['store', 'proxy', 'curvePublic']);
             var curve = Util.find(data, ['msg', 'content', 'user', 'curvePublic']) ||
                         Util.find(data, ['msg', 'content', 'curvePublic']);
-            if (curve && data.msg.author !== curve) { console.error('blocked'); return void cb(true); }
+            // Block messages that are not coming from the user described in the message
+            // except if the author is ourselves.
+            if (curve && data.msg.author !== curve && data.msg.author !== myCurve) {
+                console.error('blocked');
+                return void cb(true);
+            }
 
             var type = data.msg.type;
 
