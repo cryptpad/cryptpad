@@ -1243,6 +1243,15 @@ define([
             };
         };
 
+        var addPin = function (pin, unpin) {
+            Env.pinPads = pin;
+            Env.unpinPads = unpin;
+        };
+        var removePin = function () {
+            delete Env.pinPads;
+            delete Env.unpinPads;
+        };
+
         return {
             // Manager
             addProxy: callWithEnv(addProxy),
@@ -1250,6 +1259,8 @@ define([
             deprecateProxy: callWithEnv(deprecateProxy),
             restrictedProxy: callWithEnv(restrictedProxy),
             addSharedFolder: callWithEnv(_addSharedFolder),
+            addPin: addPin,
+            removePin: removePin,
             // Drive
             command: callWithEnv(onCommand),
             getPadAttribute: callWithEnv(getPadAttribute),

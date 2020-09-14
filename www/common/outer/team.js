@@ -1138,10 +1138,15 @@ define([
             teamData.hash = data.hash;
             teamData.keys.drive.edPrivate = data.keys.drive.edPrivate;
             teamData.keys.chat.edit = data.keys.chat.edit;
-            initRpc(ctx, team, teamData.keys.drive, function () {});
+            initRpc(ctx, team, teamData.keys.drive, function () {
+                team.manager.addPin(team.pin, team.unpin);
+            });
 
             var secret = Hash.getSecrets('team', data.hash, teamData.password);
             team.secondaryKey = secret && secret.keys.secondaryKey;
+
+            var crypto = Crypto.createEncryptor(secret.keys);
+            team.listmap.setReadOnly(false, crypto);
         } else {
             delete teamData.hash;
             delete teamData.keys.drive.edPrivate;
@@ -1150,6 +1155,8 @@ define([
             if (team.rpc && team.rpc.destroy) {
                 team.rpc.destroy();
             }
+            team.manager.removePin();
+            team.listmap.setReadOnly(true);
         }
 
         updateMyRights(ctx, teamId, data.hash);
