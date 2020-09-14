@@ -87,6 +87,23 @@
     // Access modal
     .cp-overlay-container {
         position: relative;
+        button.btn-primary {
+            i {
+                margin-right: 0px !important;
+            }
+            i.fa-arrow-left {
+                display: inline;
+                @media (max-width: @browser_media-medium-screen) {
+                    display:none;
+                }
+            }
+            i.fa-arrow-up {
+                display: none;
+                @media (max-width: @browser_media-medium-screen) {
+                    display: inline;
+                }
+            }
+        }
         .cp-overlay {
             position: absolute;
             background-color: rgba(255,255,255,0.5);
