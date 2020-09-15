@@ -418,7 +418,7 @@ define([
         var localStore = window.cryptpadStore;
         localStore.get('hide-alert-teamInvite', function (val) {
             if (val === '1') { return; }
-            $(linkWarning).show();
+            $(linkWarning).css('display', 'flex');
 
             $(dismissButton).on('click', function () {
                 localStore.put('hide-alert-teamInvite', '1');
