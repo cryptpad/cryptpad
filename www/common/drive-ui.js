@@ -1,6 +1,6 @@
 define([
     'jquery',
-    '/api/config/',
+    '/api/config',
     '/common/toolbar.js',
     'json.sortify',
     '/common/common-util.js',
