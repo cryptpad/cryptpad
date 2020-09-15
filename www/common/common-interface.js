@@ -221,9 +221,9 @@ define([
         tabs.forEach(function (tab, i) {
             if (!(tab.content || tab.disabled) || !tab.title) { return; }
             var content = h('div.alertify-tabs-content', tab.content);
-            var title = h('span.alertify-tabs-title'+ (tab.disabled ? '.disabled' : ''), h('span.tab-title-text',{id: 'cp-tab-' + tab.title, 'aria-hidden':"true"}, tab.title));
+            var title = h('span.alertify-tabs-title'+ (tab.disabled ? '.disabled' : ''), h('span.tab-title-text',{id: 'cp-tab-' + tab.title.toLowerCase(), 'aria-hidden':"true"}, tab.title));
             if (tab.icon) {
-                var icon = h('i', {class: tab.icon, 'aria-labelledby': 'cp-tab-' + tab.title});
+                var icon = h('i', {class: tab.icon, 'aria-labelledby': 'cp-tab-' + tab.title.toLowerCase()});
                 $(title).prepend(' ').prepend(icon);
             }
             $(title).click(function () {
