@@ -1378,7 +1378,7 @@ define([
                 }
                 $button.show();
                 $button.css({
-                    background: '#000'
+                    background: '#63b1f7'
                 });
                 window.setTimeout(function () {
                     $button.css({
