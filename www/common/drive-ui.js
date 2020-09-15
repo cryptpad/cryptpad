@@ -3682,6 +3682,9 @@ define([
                         APP.hideMenu();
                         return;
                     }
+                    if (!$li.length) {
+                        return void $dirContent.contextmenu();
+                    }
                     // Open the menu
                     $li.contextmenu();
                 });
