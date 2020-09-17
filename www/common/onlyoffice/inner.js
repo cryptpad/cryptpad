@@ -404,6 +404,7 @@ define([
                 clearTimeout(pendingChanges[key]);
                 delete pendingChanges[key];
             });
+            if (APP.stopHistory) { APP.history = false; }
             startOO(blob, type, true);
         };
 
@@ -619,6 +620,7 @@ define([
                         removeClient(obj.data);
                         break;
                     case 'MESSAGE':
+                        if (APP.history) { return; }
                         if (ooChannel.ready) {
                             // In read-only mode, push the message to the queue and prompt
                             // the user to refresh OO (without reloading the page)
@@ -1041,7 +1043,7 @@ define([
         startOO = function (blob, file, force) {
             if (APP.ooconfig && !force) { return void console.error('already started'); }
             var url = URL.createObjectURL(blob);
-            var lock = readOnly || APP.migrate;
+            var lock = readOnly || APP.migrate || APP.history;
 
             // Starting from version 3, we can use the view mode again
             // defined but never used
@@ -1732,6 +1734,65 @@ define([
                     makeCheckpoint(true);
                 });
                 $save.appendTo(toolbar.$bottomM);
+
+                (function () {
+                    /* add a history button */
+                    // XXX move out of dev mode
+                    var commit = function () {
+                        // ~ Commit current version
+                        // XXX make checkpoint?
+                    };
+                    var loadCp = function (cp) {
+                        loadLastDocument(cp, function () {
+                            var file = getFileType();
+                            var type = common.getMetadataMgr().getPrivateData().ooType;
+                            var blob = loadInitDocument(type, true);
+                            resetData(blob, file);
+                        }, function (blob, file) {
+                            // XXX ?
+                            resetData(blob, file);
+                        });
+                    };
+                    var draw = function (cp, patch) {
+                        if (typeof(cp) === "undefined") {
+                            // Patch on the current cp
+                            // XXX send patch to oo
+                            return;
+                        }
+                        // We want to load a checkpoint:
+                        loadCp(cp);
+                        console.error('draw');
+                    };
+                    var setHistoryMode = function (bool, update) {
+                        if (bool) {
+                            APP.history = true;
+                            getEditor().setViewModeDisconnect();
+                            return;
+                        }
+                        APP.stopHistory = true;
+                        if (update) {
+                            // We want to commit the current version
+                            // Do nothing: we're going to create a cp
+                            return;
+                        }
+                        // Cancel button: redraw from lastCp
+                        var lastCp = getLastCp();
+                        loadCp(lastCp);
+
+                        //redraw();
+                    };
+                    var histConfig = {
+                        onLocal: draw,
+                        onRemote: function () {},
+                        setHistory: setHistoryMode,
+                        applyVal: draw,
+                        onlyoffice: content.hashes || {},
+                        $toolbar: $(toolbarContainer)
+                    };
+                    var $hist = common.createButton('history', true, {histConfig: histConfig});
+                    $hist.addClass('cp-hidden-if-readonly');
+                    toolbar.$drawer.append($hist);
+                })();
             }
             if (window.CP_DEV_MODE || DISPLAY_RESTORE_BUTTON) {
                 common.createButton('', true, {
