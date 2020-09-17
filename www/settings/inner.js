@@ -86,6 +86,9 @@ define([
             'cp-settings-code-font-size',
             'cp-settings-code-spellcheck',
         ],
+        'kanban': [
+            'cp-settings-kanban-tags',
+        ],
         'subscription': {
             onClick: function() {
                 var urls = common.getMetadataMgr().getPrivateData().accounts;
@@ -290,7 +293,7 @@ define([
                 input: { value: 1 },
                 label: { class: 'noTitle' }
             });
-        var $div2 = $(h('div.cp-settings-autostore-radio', [
+        var $div2 = $(h('div.cp-settings-radio-container', [
             opt3,
             opt2,
             opt1
@@ -1470,6 +1473,46 @@ define([
     };
 
 
+    makeBlock('kanban-tags', function(cb) {
+
+        var opt1 = UI.createRadio('cp-settings-kanban-tags', 'cp-settings-kanban-tags-and',
+            Messages.settings_kanbanTagsAnd, false, {
+                input: { value: 1 },
+                label: { class: 'noTitle' }
+            });
+        var opt2 = UI.createRadio('cp-settings-kanban-tags', 'cp-settings-kanban-tags-or',
+            Messages.settings_kanbanTagsOr, true, {
+                input: { value: 0 },
+                label: { class: 'noTitle' }
+            });
+        var div = h('div.cp-settings-radio-container', [
+            opt1,
+            opt2,
+        ]);
+        var $d = $(div);
+
+        var spinner = UI.makeSpinner($d);
+
+        $d.find('input[type="radio"]').on('change', function() {
+            spinner.spin();
+            var val = $('input:radio[name="cp-settings-kanban-tags"]:checked').val();
+            val = Number(val) || 0;
+            common.setAttribute(['kanban', 'tagsAnd'], val, function() {
+                spinner.done();
+            });
+        });
+
+
+        common.getAttribute(['kanban', 'tagsAnd'], function(e, val) {
+            if (e) { return void console.error(e); }
+            if (val) {
+                $(opt1).find('input').attr('checked', 'checked');
+            }
+        });
+
+        cb($d);
+    }, true);
+
     // Settings app
 
     var createUsageButton = function() {
@@ -1506,6 +1549,7 @@ define([
             if (key === 'pad') { $category.append($('<span>', { 'class': 'fa fa-file-word-o' })); }
             if (key === 'security') { $category.append($('<span>', { 'class': 'fa fa-lock' })); }
             if (key === 'subscription') { $category.append($('<span>', { 'class': 'fa fa-star-o' })); }
+            if (key === 'kanban') { $category.append($('<span>', { 'class': 'cptools cptools-kanban' })); }
 
             if (key === active) {
                 $category.addClass('cp-leftside-active');

@@ -109,6 +109,13 @@ define([
             delete localStorage[k];
             delete sessionStorage[k];
         });
+        try {
+            Object.keys(localStorage || {}).forEach(function (k) {
+                // Remvoe everything in localStorage except CACHE and FS_hash
+                if (/^CRYPTPAD_CACHE/.test(k) || /^LESS_CACHE/.test(k) || k === Constants.fileHashKey) { return; }
+                delete localStorage[k];
+            });
+        } catch (e) { console.error(e); }
         LocalStore.clearThumbnail();
         // Make sure we have an FS_hash in localStorage before reloading all the tabs
         // so that we don't end up with tabs using different anon hashes
@@ -128,6 +135,18 @@ define([
         }
 
         if (cb) { cb(); }
+    };
+    var loginHandlers = [];
+    LocalStore.loginReload = function () {
+        loginHandlers.forEach(function (h) {
+            if (typeof (h) === "function") { h(); }
+        });
+        document.location.reload();
+    };
+    LocalStore.onLogin = function (h) {
+        if (typeof (h) !== "function") { return; }
+        if (loginHandlers.indexOf(h) !== -1) { return; }
+        loginHandlers.push(h);
     };
     LocalStore.onLogout = function (h) {
         if (typeof (h) !== "function") { return; }

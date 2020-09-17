@@ -1,5 +1,6 @@
 define([
     'jquery',
+    '/api/config',
     '/common/toolbar.js',
     'json.sortify',
     '/common/common-util.js',
@@ -20,6 +21,7 @@ define([
     '/customize/messages.js',
 ], function (
     $,
+    ApiConfig,
     Toolbar,
     JSONSortify,
     Util,
@@ -236,9 +238,9 @@ define([
         return LS;
     };
 
-    var getViewModeClass = function () {
+    var getViewModeClass = function (forceList) {
         var mode = APP.store[LS_VIEWMODE];
-        if (mode === 'list') { return 'cp-app-drive-content-list'; }
+        if (mode === 'list' || forceList) { return 'cp-app-drive-content-list'; }
         return 'cp-app-drive-content-grid';
     };
     var getViewMode = function () {
@@ -1204,7 +1206,7 @@ define([
                         hide.push('collapseall');
                     }
                     if (path.length === 1) {
-                        // Can't rename, share, delete, or change the color of root elements
+                        // Can't rename, share, delete, or change the color of categories
                         hide.push('delete');
                         hide.push('rename');
                         hide.push('share');
@@ -1259,7 +1261,7 @@ define([
                         hide.push('openro');
                         hide.push('openincode');
                         hide.push('hashtag');
-                        hide.push('delete');
+                        //hide.push('delete');
                         hide.push('makeacopy');
                         //hide.push('deleteowned');
                     } else { // it's a folder
@@ -1661,7 +1663,6 @@ define([
             if (pathsList.length === 1) {
                 msg = Messages.fm_removePermanentlyDialog;
             }
-            // XXX update key to tell the user that these pads will still be avialble to other users
             UI.confirm(msg, function(res) {
                 $(window).focus();
                 if (!res) { return; }
@@ -1732,9 +1733,6 @@ define([
                     && $target.parents('#cp-app-drive-content')) {
                 newPath = currentPath;
             }
-            // XXX Why did we add the following line?
-            // https://github.com/xwiki-labs/cryptpad/commit/f103a0fb08d137901174ef7e15dbc2c9a2ec3ca1
-            //if (newPath[0] !== ROOT) { newPath = [ROOT]; }
             return newPath;
         };
         var onFileDrop = APP.onFileDrop = function (file, e) {
@@ -1774,25 +1772,15 @@ define([
             });
 
             if (sharedF && manager.isPathIn(newPath, [TRASH])) {
-                return void deletePaths(null, movedPaths);
+                // XXX create a key here?
+                // You can't move to YOUR trash documents stored in a shared folder
+                // XXX or keep deletePaths: trigger the "Remove from cryptdrive" modal
+                return void UI.warn(Messages.error);
+                //return void deletePaths(null, movedPaths);
             }
 
             var copy = false;
-            if (manager.isPathIn(newPath, [TRASH])) {
-                // Filter the selection to remove shared folders.
-                // Shared folders can't be moved to the trash!
-                var filteredPaths = movedPaths.filter(function (p) {
-                    var el = manager.find(p);
-                    return !manager.isSharedFolder(el);
-                });
-
-                if (!filteredPaths.length) {
-                    // We only have shared folder, delete them
-                    return void deletePaths(null, movedPaths);
-                }
-
-                movedPaths = filteredPaths;
-            } else if (ev.ctrlKey || (ev.metaKey && APP.isMac)) {
+            if (ev.ctrlKey || (ev.metaKey && APP.isMac)) {
                 copy = true;
             }
 
@@ -1860,7 +1848,7 @@ define([
 
         // In list mode, display metadata from the filesData object
         var _addOwnership = function ($span, $state, data) {
-            if (data.owners && data.owners.indexOf(edPublic) !== -1) {
+            if (data && Array.isArray(data.owners) && data.owners.indexOf(edPublic) !== -1) {
                 var $owned = $ownedIcon.clone().appendTo($state);
                 $owned.attr('title', Messages.fm_padIsOwned);
                 $span.addClass('cp-app-drive-element-owned');
@@ -2259,15 +2247,25 @@ define([
 
             var skipNext = false; // When encountering a shared folder, skip a key in the path
             path.forEach(function (p, idx) {
-                if (skipNext) { skipNext = false; return; }
                 if (isTrash && [2,3].indexOf(idx) !== -1) { return; }
+                if (skipNext) { skipNext = false; return; }
                 var name = p;
 
                 if (manager.isFile(el) && isInTrashRoot && idx === 1) {
                     idx = 3;
                 }
 
+                // Check if the current element is a shared folder. If it is, get its
+                // name and skip the next itme in the path (it will be "root")
                 var currentEl = isVirtual ? undefined : manager.find(path.slice(0, idx+1));
+
+                // If we're in trash root, check if the "element" is a shared folder
+                if (isTrash && idx === 1) {
+                    currentEl = manager.find(path.slice(0, idx+3));
+                }
+
+                // Name and skip next...
+                // "p === SHARED_FOLDER" for anonymous shared folders
                 if (p === SHARED_FOLDER || (currentEl && manager.isSharedFolder(currentEl))) {
                     name = manager.getSharedFolderData(currentEl || APP.newSharedFolder).title;
                     skipNext = true;
@@ -2345,7 +2343,7 @@ define([
                 return $(common.fixLinks($box.html(msg)));
             }
             if (!APP.loggedIn) {
-                msg = APP.newSharedFolder ? Messages.fm_info_sharedFolder : Messages.fm_info_anonymous;
+                msg = APP.newSharedFolder ? Messages.fm_info_sharedFolder : Messages._getKey('fm_info_anonymous', [ApiConfig.inactiveTime || 90]);
                 return $(common.fixLinks($box.html(msg)));
             }
             if (!msg || APP.store['hide-info-' + path[0]] === '1') {
@@ -2909,7 +2907,6 @@ define([
                     var title = sfData.title || sfData.lastTitle || el;
                     return String(title).toLowerCase();
                 } else if (folder) {
-                    console.log(el);
                     return String((el && el.key) || _el).toLowerCase();
                 }
                 var data = manager.getFileData(el);
@@ -2931,7 +2928,6 @@ define([
                 }
                 props[uid] = getProp(k);
             });
-            if (folder) { console.error(useId, props); }
             keys.sort(function(a, b) {
                 var _a = props[(a && a.uid) || a];
                 var _b = props[(b && b.uid) || b];
@@ -3035,7 +3031,7 @@ define([
             if (APP.$content.data('readOnlyFolder') || !APP.editable) { return; }
             var isInRoot = currentPath[0] === ROOT;
             var $element = $('<li>', {
-                'class': 'cp-app-drive-element-row cp-app-drive-element-grid cp-app-drive-new-ghost'
+                'class': 'cp-app-drive-element-row cp-app-drive-new-ghost'
             }).prepend($addIcon.clone()).appendTo($list);
             $element.append($('<span>', {'class': 'cp-app-drive-element-name'})
                 .text(Messages.fm_newFile));
@@ -3152,7 +3148,10 @@ define([
                 return;
             }
             var allfiles = files[FILES_DATA];
-            if (allfiles.length === 0) { return; }
+            if (Object.keys(allfiles || {}).length === 0) {
+                createGhostIcon($container);
+                return;
+            }
             var $fileHeader = getFileListHeader(true);
             $container.append($fileHeader);
             var keys = manager.getFiles([FILES_DATA]);
@@ -3232,18 +3231,26 @@ define([
 
             $searchIcon.clone().appendTo($div);
 
+            var $spinnerContainer = $(h('div.cp-app-drive-search-spinner'));
+            var spinner = UI.makeSpinner($spinnerContainer);
             var $input = APP.Search.$input = $('<input>', {
                 id: 'cp-app-drive-search-input',
+                placeholder: Messages.fm_searchName,
                 type: 'text',
                 draggable: false,
                 tabindex: 1,
             }).keyup(function (e) {
+                var lastValue = search.value;
+                search.value = $input.val().trim();
+                if (lastValue === search.value) { return; }
+
                 if (search.to) { window.clearTimeout(search.to); }
-                if ($input.val().trim() === "") {
+                if (search.value === "") {
                     search.cursor = 0;
                     APP.displayDirectory([SEARCH]);
                     return;
                 }
+                spinner.spin();
                 if (e.which === 13) {
                     var newLocation = [SEARCH, $input.val()];
                     search.cursor = $input[0].selectionStart;
@@ -3288,73 +3295,88 @@ define([
             $div.append(cancel);
 
             $list.append($div);
+            $spinnerContainer.appendTo($list);
             setTimeout(function () {
                 $input.focus();
             });
 
-            $list.closest('#cp-app-drive-content-folder').addClass('cp-app-drive-content-list');
-            var filesList = manager.search(value);
-            var sortable = {};
-            var sortableFolders = [];
-            filesList.forEach(function (r) {
-                // if r.id === null, then it's a folder, not a file
-                r.paths.forEach(function (path) {
-                    if (!r.inSharedFolder &&
-                        APP.hideDuplicateOwned && manager.isDuplicateOwned(path)) { return; }
-                    var _path = path.slice();
-                    var key = path.pop();
-                    var root = manager.find(path);
-                    var obj = {
-                        path: path,
-                        _path: _path,
-                        key: key,
-                        root: root,
-                        data: r.data
-                    };
-                    if (manager.isFolder(root[key])) {
-                        sortableFolders.push(obj);
-                        return;
-                    }
-                    sortable[root[key]] = obj;
+            if (typeof(value) === "string" && value.trim()) {
+                spinner.spin();
+            } else {
+                return;
+            }
+
+            setTimeout(function () {
+                //$list.closest('#cp-app-drive-content-folder').addClass('cp-app-drive-content-list');
+                var filesList = manager.search(value);
+                if (!filesList.length) {
+                    $list.append(h('div.cp-app-drive-search-noresult', Messages.fm_noResult));
+                    spinner.hide();
+                    return;
+                }
+                var sortable = {};
+                var sortableFolders = [];
+                filesList.forEach(function (r) {
+                    // if r.id === null, then it's a folder, not a file
+                    r.paths.forEach(function (path) {
+                        if (!r.inSharedFolder &&
+                            APP.hideDuplicateOwned && manager.isDuplicateOwned(path)) { return; }
+                        var _path = path.slice();
+                        var key = path.pop();
+                        var root = manager.find(path);
+                        var obj = {
+                            path: path,
+                            _path: _path,
+                            key: key,
+                            root: root,
+                            data: r.data
+                        };
+                        if (manager.isFolder(root[key])) {
+                            sortableFolders.push(obj);
+                            return;
+                        }
+                        sortable[root[key]] = obj;
+                    });
                 });
-            });
-            var _folders = sortElements(true, [ROOT], sortableFolders, null, !getSortFolderDesc(), true);
-            var sortableKeys = Object.keys(sortable).map(Number);
-            var _files = sortElements(false, [ROOT], sortableKeys, APP.store[SORT_FILE_BY], !getSortFileDesc(), true);
+                var _folders = sortElements(true, [ROOT], sortableFolders, null, !getSortFolderDesc(), true);
+                var sortableKeys = Object.keys(sortable).map(Number);
+                var _files = sortElements(false, [ROOT], sortableKeys, APP.store[SORT_FILE_BY], !getSortFileDesc(), true);
 
-            var addEl = function (obj, folder) {
-                var $element = createElement(obj.path, obj.key, obj.root, folder);
-                $element.addClass('cp-app-drive-element-notrash cp-app-drive-search-result');
-                $element.off('contextmenu');
-                $element.contextmenu(openContextMenu('default'));
-                $element.data('context', 'default');
-                if (folder) {
-                    $element.find('.cp-app-drive-element-list').css({
-                        visibility: 'hidden'
-                    }).text('');
-                }
-                if (manager.isPathIn(obj._path, ['hrefArray'])) {
-                    obj._path.pop();
-                    obj._path.push(obj.data.title);
-                }
-                var $path = $('<span>', {
-                    'class': 'cp-app-drive-search-path'
-                }).appendTo($element.find('.cp-app-drive-element-name'));
-                createTitle($path, obj._path);
+                var addEl = function (obj, folder) {
+                    var $element = createElement(obj.path, obj.key, obj.root, folder);
+                    $element.addClass('cp-app-drive-element-notrash cp-app-drive-search-result');
+                    $element.off('contextmenu');
+                    $element.contextmenu(openContextMenu('default'));
+                    $element.data('context', 'default');
+                    if (folder) {
+                        $element.find('.cp-app-drive-element-list').css({
+                            visibility: 'hidden'
+                        }).text('');
+                    }
+                    if (manager.isPathIn(obj._path, ['hrefArray'])) {
+                        obj._path.pop();
+                        obj._path.push(obj.data.title);
+                    }
+                    var $path = $('<span>', {
+                        'class': 'cp-app-drive-search-path'
+                    }).appendTo($element.find('.cp-app-drive-element-name'));
+                    createTitle($path, obj._path);
 
-                $list.append($element);
-            };
-            if (_folders.length) { getFolderListHeader(true, true).appendTo($list); }
-            _folders.forEach(function (el) {
-                var obj = el;
-                addEl(obj, true);
+                    $list.append($element);
+                };
+                if (_folders.length) { getFolderListHeader(true, true).appendTo($list); }
+                _folders.forEach(function (el) {
+                    var obj = el;
+                    addEl(obj, true);
+                });
+                if (_files.length) { getFileListHeader(true).appendTo($list); }
+                _files.forEach(function (el) {
+                    var obj = sortable[el];
+                    addEl(obj, false);
+                });
+                setTimeout(collapseDrivePath);
+                spinner.hide();
             });
-            if (_files.length) { getFileListHeader(true).appendTo($list); }
-            _files.forEach(function (el) {
-                var obj = sortable[el];
-                addEl(obj, false);
-            });
-            setTimeout(collapseDrivePath);
         };
 
         var displayRecent = function ($list) {
@@ -3610,12 +3632,11 @@ define([
 
             var $dirContent = $('<div>', {id: FOLDER_CONTENT_ID});
             $dirContent.data('path', path);
-            if (!isSearch && !isTags) {
-                var mode = getViewMode();
-                if (mode) {
-                    $dirContent.addClass(getViewModeClass());
+            if (!isTags) {
+                $dirContent.addClass(getViewModeClass(isSearch));
+                if (!isSearch) {
+                    createViewModeButton(APP.toolbar.$bottomR);
                 }
-                createViewModeButton(APP.toolbar.$bottomR);
             }
 
             var $list = $('<ul>').appendTo($dirContent);
@@ -4557,23 +4578,18 @@ define([
                     paths.push($(elmt).data('path'));
                 });
                 if (!paths.length) { return; }
-                // Remove shared folders from the selection (they can't be moved to the trash)
-                // unless the selection is only shared folders
-                var paths2 = paths.filter(function (p) {
-                    var el = manager.find(p);
-                    return !manager.isSharedFolder(el);
-                });
-                // If we are in the trash or anon pad or if we are holding the "shift" key,
+
+                // If we are in the trash or anon USER or if we are holding the "shift" key,
                 // delete permanently
                 // Or if we are in a shared folder
                 // Or if the selection is only shared folders
                 if (!APP.loggedIn || isTrash || manager.isInSharedFolder(currentPath)
-                        || e.shiftKey || !paths2.length) {
+                        || e.shiftKey) {
                     deletePaths(null, paths);
                     return;
                 }
                 // else move to trash
-                moveElements(paths2, [TRASH], false, refresh);
+                moveElements(paths, [TRASH], false, refresh);
                 return;
             }
         });
@@ -4708,7 +4724,10 @@ define([
                 var ok = manager.isValidDrive(obj.drive);
                 if (!ok) { return; }
 
+                var restricted  = files.restrictedFolders;
                 copyObjectValue(files, obj.drive);
+                files.restrictedFolders = restricted;
+
                 appStatus.isReady = true;
                 refresh();
             };

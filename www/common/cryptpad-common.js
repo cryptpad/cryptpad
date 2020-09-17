@@ -2273,7 +2273,7 @@ define([
                 var o = e.oldValue;
                 var n = e.newValue;
                 if (!o && n) {
-                    document.location.reload();
+                    LocalStore.loginReload();
                 } else if (o && !n) {
                     LocalStore.logout();
                 }

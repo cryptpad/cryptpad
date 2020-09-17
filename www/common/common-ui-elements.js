@@ -418,7 +418,7 @@ define([
         var localStore = window.cryptpadStore;
         localStore.get('hide-alert-teamInvite', function (val) {
             if (val === '1') { return; }
-            $(linkWarning).show();
+            $(linkWarning).css('display', 'flex');
 
             $(dismissButton).on('click', function () {
                 localStore.put('hide-alert-teamInvite', '1');
@@ -1431,7 +1431,12 @@ define([
             });
             $container.keydown(function (e) {
                 var $value = $innerblock.find('[data-value].cp-dropdown-element-active:visible');
+                if (!$value.length) {
+                    $value = $innerblock.find('[data-value]').first();
+                }
                 if (e.which === 38) { // Up
+                    e.preventDefault();
+                    e.stopPropagation();
                     if ($value.length) {
                         $value.mouseleave();
                         var $prev = $value.prev();
@@ -1440,6 +1445,8 @@ define([
                     }
                 }
                 if (e.which === 40) { // Down
+                    e.preventDefault();
+                    e.stopPropagation();
                     if ($value.length) {
                         $value.mouseleave();
                         var $next = $value.next();
@@ -1448,12 +1455,16 @@ define([
                     }
                 }
                 if (e.which === 13) { //Enter
+                    e.preventDefault();
+                    e.stopPropagation();
                     if ($value.length) {
                         $value.click();
                         hide();
                     }
                 }
                 if (e.which === 27) { // Esc
+                    e.preventDefault();
+                    e.stopPropagation();
                     $value.mouseleave();
                     hide();
                 }
@@ -1615,7 +1626,7 @@ define([
                 attributes: {
                     'target': '_blank',
                     'href': origin+'/contacts/',
-                    'class': 'cptools cptools-contacts'
+                    'class': 'fa fa-address-book'
                 },
                 content: h('span', Messages.type.contacts)
             });
@@ -3279,6 +3290,12 @@ define([
             ]);
             return $(li).appendTo(ul);
         };
+    };
+
+    UIElements.isVisible = function (el, $container) {
+        var size = $container.outerHeight();
+        var pos = el.getBoundingClientRect();
+        return (pos.bottom < size) && (pos.y > 0);
     };
 
     return UIElements;

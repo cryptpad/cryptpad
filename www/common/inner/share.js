@@ -350,7 +350,6 @@ define([
                     localStore.put('hide-alert-shareLinkWarning', '1');
                     $(shareLinkWarning).remove();
                 });
-
             });
         }
 
@@ -767,7 +766,7 @@ define([
 
         localStore.get('hide-alert-shareLinkWarning', function (val) {
             if (val === '1') { return; }
-            $(shareLinkWarning).show();
+            $(shareLinkWarning).css('display', 'flex');
 
             $(dismissButton).on('click', function () {
                 localStore.put('hide-alert-shareLinkWarning', '1');

@@ -506,10 +506,18 @@ define([
             nodeItem.appendChild(nodeItemText);
             // Check if this card is filtered out
             if (Array.isArray(self.options.tags) && self.options.tags.length) {
-                var hide = !Array.isArray(element.tags) ||
-                    !element.tags.some(function (tag) {
-                      return self.options.tags.indexOf(tag) !== -1;
-                });
+                var hide;
+                if (self.options.tagsAnd) {
+                    hide = !Array.isArray(element.tags) ||
+                        !self.options.tags.every(function (tag) {
+                          return element.tags.indexOf(tag) !== -1;
+                    });
+                } else {
+                    hide = !Array.isArray(element.tags) ||
+                        !element.tags.some(function (tag) {
+                          return self.options.tags.indexOf(tag) !== -1;
+                    });
+                }
                 if (hide) {
                     nodeItem.classList.add('kanban-item-hidden');
                 }

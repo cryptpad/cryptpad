@@ -221,6 +221,11 @@ define([
         roster.on('change', function () {
             var state = roster.getState();
             var me = Util.find(ctx, ['store', 'proxy', 'curvePublic']);
+            if (!state.members || !Object.keys(state.members).length) {
+                // invalid roster, don't leave the team
+                console.error(JSON.stringify(state));
+                return;
+            }
             if (!state.members[me]) {
                 return void closeTeam(ctx, id);
             }
@@ -1133,10 +1138,15 @@ define([
             teamData.hash = data.hash;
             teamData.keys.drive.edPrivate = data.keys.drive.edPrivate;
             teamData.keys.chat.edit = data.keys.chat.edit;
-            initRpc(ctx, team, teamData.keys.drive, function () {});
+            initRpc(ctx, team, teamData.keys.drive, function () {
+                team.manager.addPin(team.pin, team.unpin);
+            });
 
             var secret = Hash.getSecrets('team', data.hash, teamData.password);
             team.secondaryKey = secret && secret.keys.secondaryKey;
+
+            var crypto = Crypto.createEncryptor(secret.keys);
+            team.listmap.setReadOnly(false, crypto);
         } else {
             delete teamData.hash;
             delete teamData.keys.drive.edPrivate;
@@ -1145,6 +1155,8 @@ define([
             if (team.rpc && team.rpc.destroy) {
                 team.rpc.destroy();
             }
+            team.manager.removePin();
+            team.listmap.setReadOnly(true);
         }
 
         updateMyRights(ctx, teamId, data.hash);
@@ -1698,8 +1710,22 @@ define([
         team.getTeams = function () {
             return Object.keys(ctx.teams);
         };
-        team.removeFromTeam = function (teamId, curve) {
+
+        var isPending = function (teamId, curve) {
+            var team = ctx.teams[teamId];
+            if (!team) { return; }
+            var state = team.roster && team.roster.getState();
+            if (!state.members) { return; }
+            var m = state.members[curve] || {};
+            return m.pending;
+        };
+        team.removeFromTeam = function (teamId, curve, pendingOnly) {
             if (!teams[teamId]) { return; }
+
+            // When receiving a negative answer to a team invitation, remove
+            // the pending user from the roster.
+            if (pendingOnly && !isPending(teamId, curve)) { return; }
+
             if (ctx.onReadyHandlers[teamId]) {
                 ctx.onReadyHandlers[teamId].push({cb : function () {
                     ctx.teams[teamId].roster.remove([curve], function (err) {

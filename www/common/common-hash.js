@@ -28,6 +28,13 @@ var factory = function (Util, Crypto, Keys, Nacl) {
         };
     };
 
+    Hash.getSignPublicFromPrivate = function (edPrivateSafeStr) {
+        var edPrivateStr = Crypto.b64AddSlashes(edPrivateSafeStr);
+        var privateKey = Nacl.util.decodeBase64(edPrivateStr);
+        var keyPair = Nacl.sign.keyPair.fromSecretKey(privateKey);
+        return Nacl.util.encodeBase64(keyPair.publicKey);
+    };
+
     var getEditHashFromKeys = Hash.getEditHashFromKeys = function (secret) {
         var version = secret.version;
         var data = secret.keys;

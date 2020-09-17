@@ -191,6 +191,7 @@ define([
     var defaultCode = renderer.code;
 
     renderer.code = function (code, language) {
+        if (!code || typeof(code) !== 'string' || !code.trim()) { return defaultCode.apply(renderer, arguments); }
         if (language === 'mermaid' && code.match(/^(graph|pie|gantt|sequenceDiagram|classDiagram|gitGraph)/)) {
             return '<pre class="mermaid" data-plugin="mermaid">'+Util.fixHTML(code)+'</pre>';
         } else if (language === 'markmap') {
@@ -570,6 +571,7 @@ define([
         var MutationObserver = window.MutationObserver;
         var onPreview = function ($mt) {
             return function () {
+                if (window.event.ctrlKey) { return; }
                 var mts = [];
                 // Get all previewable elements from the doc
                 $content.find('media-tag, pre[data-plugin]').each(function (i, el) {

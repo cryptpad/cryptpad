@@ -310,6 +310,10 @@
             clearTimeout(to);
             to = setTimeout(Util.bake(f, Util.slice(arguments)), ms);
         };
+        g.clear = function () {
+            clearTimeout(to);
+            to = undefined;
+        };
         return g;
     };
 
@@ -345,10 +349,6 @@
             f.apply(this, Array.prototype.slice.call(arguments));
             f = g;
         };
-    };
-
-    Util.slice = function (A) {
-        return Array.prototype.slice.call(A);
     };
 
     Util.blobToImage = function (blob, cb) {
