@@ -7,14 +7,15 @@ define([
     '/common/hyperscript.js',
     '/common/inner/common-mediatag.js',
     '/common/media-tag.js',
-    '/common/highlight/highlight.pack.js',
     '/customize/messages.js',
+    '/common/highlight/highlight.pack.js',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/common/highlight/styles/github.css'
-],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Highlight, Messages) {
+],function ($, ApiConfig, Marked, Hash, Util, h, MT, MediaTag, Messages) {
     var DiffMd = {};
 
+    var Highlight = window.hljs;
     var DiffDOM = window.diffDOM;
     var renderer = new Marked.Renderer();
     var restrictedRenderer = new Marked.Renderer();
