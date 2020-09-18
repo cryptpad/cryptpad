@@ -54,29 +54,6 @@ define([
             });
         };
 
-        var cpIndex = 0;
-        var sortedCp;
-        if (config.onlyoffice) {
-            sortedCp = Object.keys(config.onlyoffice).map(Number).sort(function (a, b) {
-                return a-b;
-            });
-        }
-        var loadMoreOOHistory = function () {
-            if (!Array.isArray(sortedCp)) {
-                return void console.error("Wrong type");
-            }
-            var hashes = config.onlyoffice;
-            if (!sortedCp.length) {
-                // XXX no cp
-            }
-            var cp = {};
-            if (cpIndex < sortedCp.length) {
-                var idx = sortedCp[sortedCp.length - 1 - cpIndex];
-                cp = config.onlyoffice[idx];
-            }
-            config.onLocal(cp);
-        };
-
         var allMessages = [];
         var lastKnownHash;
         var isComplete = false;
@@ -355,10 +332,6 @@ define([
 
         if (config.onOpen) {
             config.onOpen();
-        }
-
-        if (config.onlyoffice) {
-            return void loadMoreOOHistory();
         }
 
         // Load all the history messages into a new chainpad object
