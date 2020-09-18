@@ -1106,7 +1106,7 @@ define([
                 var validate = nSecret.keys.validateKey;
                 var crypto = Crypto.createEncryptor(nSecret.keys);
                 Cryptpad.getHistoryRange({
-                    channel: channel,
+                    channel: data.channel || channel,
                     validateKey: validate,
                     toHash: data.toHash,
                     lastKnownHash: data.lastKnownHash

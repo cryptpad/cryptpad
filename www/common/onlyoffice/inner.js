@@ -14,6 +14,7 @@ define([
     '/customize/application_config.js',
     '/bower_components/chainpad/chainpad.dist.js',
     '/file/file-crypto.js',
+    '/common/onlyoffice/history.js',
     '/common/onlyoffice/oocell_base.js',
     '/common/onlyoffice/oodoc_base.js',
     '/common/onlyoffice/ooslide_base.js',
@@ -40,6 +41,7 @@ define([
     AppConfig,
     ChainPad,
     FileCrypto,
+    History,
     EmptyCell,
     EmptyDoc,
     EmptySlide,
@@ -243,7 +245,14 @@ define([
             ready: false,
             readyCb: undefined,
             sendCmd: function (data, cb) {
+                if (APP.history) { return; }
                 sframeChan.query('Q_OO_COMMAND', data, cb);
+            },
+            getHistory: function (cb) {
+                rtChannel.sendCmd({
+                    cmd: 'GET_HISTORY',
+                    data: {}
+                }, cb);
             },
             sendMsg: function (msg, cp, cb) {
                 rtChannel.sendCmd({
@@ -320,10 +329,14 @@ define([
             // Get the last cp idx
             var all = sortCpIndex(content.hashes || {});
             var current = all[all.length - 1] || 0;
+
+            // XXX Keep all cp now
             // Get the expected cp idx
-            var _i = Math.floor(ev.index / CHECKPOINT_INTERVAL);
+            //var _i = Math.floor(ev.index / CHECKPOINT_INTERVAL);
             // Take the max of both
-            var i = Math.max(_i, current);
+            //var i = Math.max(_i, current);
+
+            var i = current + 1;
             content.hashes[i] = {
                 file: data.url,
                 hash: ev.hash,
@@ -414,8 +427,8 @@ define([
             var file = getFileType();
             blob.name = (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
             var data = {
-                hash: ooChannel.lastHash,
-                index: ooChannel.cpIndex
+                hash: APP.history ? ooChannel.historyLastHash : ooChannel.lastHash,
+                index: APP.history ? ooChannel.currentIndex : ooChannel.cpIndex
             };
             fixSheets();
 
@@ -620,7 +633,11 @@ define([
                         removeClient(obj.data);
                         break;
                     case 'MESSAGE':
-                        if (APP.history) { return; }
+                        if (APP.history) {
+                            ooChannel.historyLastHash = obj.data.hash;
+                            ooChannel.currentIndex++;
+                            return;
+                        }
                         if (ooChannel.ready) {
                             // In read-only mode, push the message to the queue and prompt
                             // the user to refresh OO (without reloading the page)
@@ -814,6 +831,8 @@ define([
         };
 
         var handleLock = function (obj, send) {
+            if (APP.history) { return; }
+
             if (content.saveLock) {
                 if (!isLockedModal.modal) {
                     isLockedModal.modal = UI.openCustomModal(isLockedModal.content);
@@ -1043,7 +1062,7 @@ define([
         startOO = function (blob, file, force) {
             if (APP.ooconfig && !force) { return void console.error('already started'); }
             var url = URL.createObjectURL(blob);
-            var lock = readOnly || APP.migrate || APP.history;
+            var lock = readOnly || APP.migrate;
 
             // Starting from version 3, we can use the view mode again
             // defined but never used
@@ -1180,6 +1199,12 @@ define([
                             isLockedModal.modal.closeModal();
                             delete isLockedModal.modal;
                             $('#cp-app-oo-editor > iframe')[0].contentWindow.focus();
+                        }
+
+                        if (APP.history) {
+                            try {
+                                getEditor().asc_setRestriction(true);
+                            } catch (e) {}
                         }
 
                         if (APP.migrate && !readOnly) {
@@ -1739,59 +1764,75 @@ define([
                     /* add a history button */
                     // XXX move out of dev mode
                     var commit = function () {
+                        APP.stopHistory = true;
+                        makeCheckpoint(true);
                         // ~ Commit current version
                         // XXX make checkpoint?
+                        // APP.stopHistory = true;
                     };
                     var loadCp = function (cp) {
                         loadLastDocument(cp, function () {
                             var file = getFileType();
                             var type = common.getMetadataMgr().getPrivateData().ooType;
                             var blob = loadInitDocument(type, true);
+                            ooChannel.queue = [];
                             resetData(blob, file);
                         }, function (blob, file) {
                             // XXX ?
+                            ooChannel.queue = [];
                             resetData(blob, file);
                         });
                     };
-                    var draw = function (cp, patch) {
-                        if (typeof(cp) === "undefined") {
-                            // Patch on the current cp
-                            // XXX send patch to oo
-                            return;
-                        }
+                    var onPatch = function (patch) {
+                        // Patch on the current cp
+                        console.error(patch);
+                        ooChannel.send(JSON.parse(patch.msg));
+                        // XXX send patch to oo
+                    };
+                    var onCheckpoint = function (cp) {
+                        console.error(cp);
                         // We want to load a checkpoint:
                         loadCp(cp);
-                        console.error('draw');
                     };
-                    var setHistoryMode = function (bool, update) {
+                    var setHistoryMode = function (bool) {
                         if (bool) {
                             APP.history = true;
                             getEditor().setViewModeDisconnect();
                             return;
                         }
-                        APP.stopHistory = true;
-                        if (update) {
-                            // We want to commit the current version
-                            // Do nothing: we're going to create a cp
-                            return;
-                        }
                         // Cancel button: redraw from lastCp
-                        var lastCp = getLastCp();
-                        loadCp(lastCp);
+                        APP.history = false;
+                        ooChannel.queue = [];
+                        ooChannel.ready = false;
+                        rtChannel.getHistory(function () {
+                            var lastCp = getLastCp();
+                            loadCp(lastCp);
+                        });
+                    };
 
-                        //redraw();
-                    };
-                    var histConfig = {
-                        onLocal: draw,
-                        onRemote: function () {},
-                        setHistory: setHistoryMode,
-                        applyVal: draw,
-                        onlyoffice: content.hashes || {},
-                        $toolbar: $(toolbarContainer)
-                    };
-                    var $hist = common.createButton('history', true, {histConfig: histConfig});
-                    $hist.addClass('cp-hidden-if-readonly');
-                    toolbar.$drawer.append($hist);
+                    common.createButton('', true, {
+                        name: 'history',
+                        icon: 'fa-history',
+                        text: Messages.historyText,
+                        tippy: Messages.historyButton
+                    }).click(function () {
+                        ooChannel.historyLastHash = ooChannel.lastHash;
+                        ooChannel.currentIndex = ooChannel.cpIndex;
+                        //Feedback.send('OO_HISTORY'); // XXX pull Feedback from require
+                        var histConfig = {
+                            onPatch: onPatch,
+                            onCheckpoint: onCheckpoint,
+                            onRevert: commit,
+                            setHistory: setHistoryMode,
+                            onlyoffice: {
+                                hashes: content.hashes || {},
+                                channel: content.channel,
+                                lastHash: ooChannel.lastHash
+                            },
+                            $toolbar: $('.cp-toolbar-container')
+                        };
+                        History.create(common, histConfig);
+                    }).appendTo(toolbar.$drawer);
                 })();
             }
             if (window.CP_DEV_MODE || DISPLAY_RESTORE_BUTTON) {
