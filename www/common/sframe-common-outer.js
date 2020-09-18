@@ -1108,6 +1108,7 @@ define([
                 Cryptpad.getHistoryRange({
                     channel: channel,
                     validateKey: validate,
+                    toHash: data.toHash,
                     lastKnownHash: data.lastKnownHash
                 }, function (data) {
                     cb({
