@@ -50,6 +50,17 @@ define([
         allowFolderUpload: File.prototype.hasOwnProperty("webkitRelativePath"),
     };
 
+    $(window).keydown(function (e) {
+        if (e.which === 70 && e.ctrlKey) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (APP.displayDirectory) {
+                APP.displayDirectory([SEARCH]);
+            }
+            return;
+        }
+    });
+
     var stringify = function (obj) {
         return JSONSortify(obj);
     };
@@ -4590,12 +4601,6 @@ define([
                 }
                 // else move to trash
                 moveElements(paths, [TRASH], false, refresh);
-                return;
-            }
-            if (e.which === 70 && e.ctrlKey) {
-                e.preventDefault();
-                e.stopPropagation();
-                APP.displayDirectory([SEARCH]);
                 return;
             }
         });
