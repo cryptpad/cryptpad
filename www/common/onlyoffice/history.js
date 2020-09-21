@@ -125,10 +125,13 @@ define([
 
         var $loadMore, $version, get;
 
-        var showVersion = function () {
+        var showVersion = function (initial) {
             var major = sortedCp.length - cpIndex;
             var v = major + '.' + msgIndex;
-            $version.text("Version " + v); // XXX
+            if (initial) {
+                v = "Latest"; // XXX
+            }
+            $version.text("Version: " + v); // XXX
 
             var $pos = $hist.find('.cp-toolbar-history-pos');
             var cps = sortedCp.length;
@@ -351,7 +354,7 @@ define([
         if (config.onlyoffice.lastHash === hashes[sortedCp[sortedCp.length - 1]].hash) {
             cpIndex = 0;
         }
-        showVersion();
+        showVersion(true);
 
         //return void loadMoreOOHistory();
     };
