@@ -4592,6 +4592,12 @@ define([
                 moveElements(paths, [TRASH], false, refresh);
                 return;
             }
+            if (e.which === 70 && e.ctrlKey) {
+                e.preventDefault();
+                e.stopPropagation();
+                APP.displayDirectory([SEARCH]);
+                return;
+            }
         });
         $appContainer.contextmenu(function () {
             APP.hideMenu();
