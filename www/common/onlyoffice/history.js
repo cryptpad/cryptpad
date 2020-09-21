@@ -64,6 +64,8 @@ define([
             var fromHash = nextId ? hashes[nextId].hash : config.onlyoffice.lastHash;
 
             msgIndex = 0;
+
+            showVersion();
             if (ooMessages[id]) {
                 // Cp already loaded: reload OO
                 loading = false;
@@ -123,14 +125,28 @@ define([
 
         var $loadMore, $version, get;
 
+        var showVersion = function () {
+            var major = sortedCp.length - cpIndex;
+            var v = major + '.' + msgIndex;
+            $version.text("Version " + v); // XXX
+
+            var $pos = $hist.find('.cp-toolbar-history-pos');
+            var cps = sortedCp.length;
+            var id = sortedCp[cps - cpIndex -1] || -1;
+            if (!ooMessages[id]) { return; }
+            var msgs = ooMessages[id];
+            var p = 100*(msgIndex / (msgs.length-1));
+            $pos.css('margin-left', p+'%');
+        };
+
         var $fastPrev = $('<button>', {
             'class': 'cp-toolbar-history-fast-previous fa fa-fast-backward buttonPrimary',
             title: Messages.history_prev
         });
-        var $prev = $('<button>', {
+        /*var $prev = $('<button>', {
             'class': 'cp-toolbar-history-previous fa fa-step-backward buttonPrimary',
             title: Messages.history_prev
-        });
+        });*/
         var $next = $('<button>', {
             'class': 'cp-toolbar-history-next fa fa-step-forward buttonPrimary',
             title: Messages.history_next
@@ -142,7 +158,7 @@ define([
 
         update = function () {
             var cps = sortedCp.length;
-            $prev.show();
+            //$prev.show();
             $fastPrev.show();
             $next.show();
             $fastNext.show();
@@ -155,9 +171,9 @@ define([
             }
             var id = sortedCp[cps - cpIndex -1] || -1;
             var msgs = (ooMessages[id] || []).length;
-            if (msgIndex <= 0) {
+            /*if (msgIndex <= 0) {
                 $prev.hide();
-            }
+            }*/
             if (msgIndex >= (msgs - 1)) {
                 $next.hide();
             }
@@ -187,9 +203,6 @@ define([
                 $hist.find('.cp-toolbar-history-next').css('visibility', 'hidden');
                 $hist.find('.cp-toolbar-history-fast-next').css('visibility', 'hidden');
             }
-            var $pos = $hist.find('.cp-toolbar-history-pos');
-            var p = 100 * (1 - (-c / (states.length-2)));
-            $pos.css('margin-left', p+'%');
 
             // Display the version when the full history is loaded
             // Note: the first version is always empty and probably can't be displayed, so
@@ -216,6 +229,7 @@ define([
             config.onPatch(patch);
             loading = false;
             msgIndex++;
+            showVersion();
         };
 
         // Create the history toolbar
@@ -230,7 +244,7 @@ define([
             $('<span>', {'class': 'cp-history-filler'}).appendTo($hist);
 
             $fastPrev.appendTo($hist);
-            $prev.hide().appendTo($hist);
+            //$prev.hide().appendTo($hist);
             var $nav = $('<div>', {'class': 'cp-toolbar-history-goto'}).appendTo($hist);
             $next.hide().appendTo($hist);
             $fastNext.hide().appendTo($hist);
@@ -251,7 +265,7 @@ define([
 
             $version = $('<span>', {
                 'class': 'cp-toolbar-history-version'
-            }).prependTo($bar).hide();
+            }).prependTo($bar);
 
             /*
             $loadMore = $('<button>', {
@@ -296,12 +310,12 @@ define([
                 update();
             });
             // Reset current checkpoint
-            $prev.click(function () {
+            /*$prev.click(function () {
                 if (loading) { return; }
                 loading = true;
                 loadMoreOOHistory();
                 update();
-            });
+            });*/
             // Go to previous checkpoint
             $fastNext.click(function () {
                 if (loading) { return; }
@@ -314,7 +328,9 @@ define([
             $fastPrev.click(function () { 
                 if (loading) { return; }
                 loading = true;
-                cpIndex++;
+                if (msgIndex === 0) {
+                    cpIndex++;
+                }
                 loadMoreOOHistory();
                 update();
             });
@@ -331,6 +347,12 @@ define([
         };
 
         display();
+
+        if (config.onlyoffice.lastHash === hashes[sortedCp[sortedCp.length - 1]].hash) {
+            cpIndex = 0;
+        }
+        showVersion();
+
         //return void loadMoreOOHistory();
     };
 
