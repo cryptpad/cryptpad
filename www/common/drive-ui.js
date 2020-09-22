@@ -50,17 +50,6 @@ define([
         allowFolderUpload: File.prototype.hasOwnProperty("webkitRelativePath"),
     };
 
-    $(window).keydown(function (e) {
-        if (e.which === 70 && e.ctrlKey) {
-            e.preventDefault();
-            e.stopPropagation();
-            if (APP.displayDirectory) {
-                APP.displayDirectory([SEARCH]);
-            }
-            return;
-        }
-    });
-
     var stringify = function (obj) {
         return JSONSortify(obj);
     };
@@ -163,6 +152,17 @@ define([
 
     var localStore = window.cryptpadStore;
     APP.store = {};
+
+    $(window).keydown(function (e) {
+        if (e.which === 70 && e.ctrlKey) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (APP.displayDirectory) {
+                APP.displayDirectory([SEARCH]);
+            }
+            return;
+        }
+    });
 
     var makeLS = function (teamId) {
         var suffix = teamId ? ('-' + teamId) :  '';
