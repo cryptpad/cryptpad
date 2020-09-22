@@ -262,8 +262,12 @@ define([
         };
 
         var setHistoryMode = function (bool, update) {
+            cpNfInner.metadataMgr.setHistory(bool);
             stateChange((bool) ? STATE.HISTORY_MODE : STATE.READY);
             if (!bool && update) { onRemote(); }
+            else {
+                setTimeout(cpNfInner.metadataMgr.refresh);
+            }
         };
 
         /*
@@ -692,7 +696,10 @@ define([
                 onRemote: onRemote,
                 setHistory: setHistoryMode,
                 applyVal: function (val) {
-                    contentUpdate(JSON.parse(val) || ["BODY",{},[]], function (h) {
+                    var newContent = JSON.parse(val);
+                    var meta = extractMetadata(newContent);
+                    cpNfInner.metadataMgr.updateMetadata(meta);
+                    contentUpdate(normalize(newContent) || ["BODY",{},[]], function (h) {
                         return h;
                     });
                 },
