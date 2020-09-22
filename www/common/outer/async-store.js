@@ -1456,7 +1456,6 @@ define([
         var channels = Store.channels = store.channels = {};
 
         var getVersionHash = function (clientId, data) {
-            var validateKey;
             var fakeNetflux = Hash.createChannelId();
             Store.getHistoryRange(clientId, {
                 cpCount: 1,
