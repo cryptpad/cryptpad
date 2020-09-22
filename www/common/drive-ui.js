@@ -1,6 +1,6 @@
 define([
     'jquery',
-    '/api/config/',
+    '/api/config',
     '/common/toolbar.js',
     'json.sortify',
     '/common/common-util.js',
@@ -152,6 +152,17 @@ define([
 
     var localStore = window.cryptpadStore;
     APP.store = {};
+
+    $(window).keydown(function (e) {
+        if (e.which === 70 && e.ctrlKey) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (APP.displayDirectory) {
+                APP.displayDirectory([SEARCH]);
+            }
+            return;
+        }
+    });
 
     var makeLS = function (teamId) {
         var suffix = teamId ? ('-' + teamId) :  '';
