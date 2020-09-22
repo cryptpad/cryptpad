@@ -107,6 +107,7 @@ define([
 
         var states = [];
         var c = 0;//states.length - 1;
+        var semantic = false;
 
         var $hist = $toolbar.find('.cp-toolbar-history');
         var $bottom = $toolbar.find('.cp-toolbar-bottom');
@@ -157,6 +158,14 @@ define([
                 if (cb) { cb(); }
             });
         };
+
+        var getIndex = function (i) {
+            return states.length - 1 + i;
+        };
+        var getRank = function (idx) {
+            return idx - states.length + 1;
+        };
+
         get = function (i, blockOnly) {
             i = parseInt(i);
             if (isNaN(i)) { return; }
@@ -165,7 +174,20 @@ define([
             if (i <= -(states.length - 11)) {
                 loadMore();
             }
-            var idx = states.length - 1 + i;
+
+            var idx = getIndex(i);
+            if (semantic) {
+                // If semantic is truc, jump to the next patch from a different netflux ID
+                var author = states[idx].author;
+                for (j = idx; (j > 1 && j < (states.length - 1)); ((i > c) ? j++ : j--)) {
+                    if (author !== states[j].author) {
+                        idx = j;
+                        i = getRank(idx);
+                        break;
+                    }
+                }
+            }
+
             if (blockOnly) { return states[idx]; }
 
             var val = states[idx].getContent().doc;
@@ -218,6 +240,11 @@ define([
                 title: Messages.history_restoreTitle
             }).appendTo($hist);//.text(Messages.history_restore);
             if (History.readOnly) { $rev.css('visibility', 'hidden'); }
+
+            Messages.history_session = "Group by user"; // XXX
+            var $cbox = $(UI.createCheckbox('cp-history-session',
+                Messages.history_session,
+                false, { label: { class: 'noTitle' } })).appendTo($hist);
             $('<span>', {'class': 'cp-history-filler'}).appendTo($hist);
             var $fastPrev = $('<button>', {
                 'class': 'cp-toolbar-history-fast-previous fa fa-fast-backward buttonPrimary',
@@ -285,6 +312,17 @@ define([
                 $(window).off('keyup', onKeyUp);
             };
 
+            var $checkbox = $cbox.find('input').on('change', function () {
+                semantic = $checkbox.is(':checked');
+                if (semantic) {
+                    $fastPrev.hide();
+                    $fastNext.hide();
+                } else {
+                    $fastPrev.show();
+                    $fastNext.show();
+                }
+            });
+
             // Version buttons
             $prev.click(function () { render(getPrevious()); });
             $next.click(function () { render(getNext()); });
@@ -292,10 +330,10 @@ define([
             $fastNext.click(function () { render(getNext(10)); });
             onKeyDown = function (e) {
                 var p = function () { e.preventDefault(); };
-                if ([37, 40].indexOf(e.which) >= 0) { p(); return render(getPrevious()); } // Left
-                if ([38, 39].indexOf(e.which) >= 0) { p(); return render(getNext()); } // Right
-                if (e.which === 33) { p(); return render(getNext(10)); } // PageUp
-                if (e.which === 34) { p(); return render(getPrevious(10)); } // PageUp
+                if ([37, 40].indexOf(e.which) >= 0) { p(); return $prev.click(); } // Left
+                if ([38, 39].indexOf(e.which) >= 0) { p(); return $next.click(); } // Right
+                if (e.which === 33) { p(); return $fastNext.click(); } // PageUp
+                if (e.which === 34) { p(); return $fastPrev.click(); } // PageUp
                 if (e.which === 27) { p(); $close.click(); }
             };
             onKeyUp = function (e) { e.stopPropagation(); };
