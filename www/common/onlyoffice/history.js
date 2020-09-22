@@ -31,12 +31,16 @@ define([
             return hashes[a].index - hashes[b].index;
         });
 
+        var endWithCp = config.onlyoffice.lastHash === hashes[sortedCp[sortedCp.length - 1]].hash;
+
         var fillOO = function (id, messages) {
             if (!id) { return; }
             if (ooMessages[id]) { return; }
             ooMessages[id] = messages;
             update();
         };
+
+        if (endWithCp) { cpIndex = 0; }
 
         // We want to load a checkpoint (or initial state)
         var loadMoreOOHistory = function () {
@@ -138,7 +142,7 @@ define([
             var id = sortedCp[cps - cpIndex -1] || -1;
             if (!ooMessages[id]) { return; }
             var msgs = ooMessages[id];
-            var p = 100*(msgIndex / (msgs.length-1));
+            var p = 100*(msgIndex / (msgs.length));
             $pos.css('margin-left', p+'%');
         };
 
@@ -177,7 +181,7 @@ define([
             /*if (msgIndex <= 0) {
                 $prev.hide();
             }*/
-            if (msgIndex >= (msgs - 1)) {
+            if (msgIndex >= msgs) {
                 $next.hide();
             }
         };
@@ -283,6 +287,7 @@ define([
 
             var onKeyDown, onKeyUp;
             var close = function () {
+                History.loading = false;
                 $hist.hide();
                 $bottom.show();
                 $(window).trigger('resize');
@@ -300,6 +305,7 @@ define([
                 UI.confirm(Messages.history_restorePrompt, function (yes) {
                     if (!yes) { return; }
                     close();
+                    History.loading = false;
                     onRevert();
                     UI.log(Messages.history_restoreDone);
                 });
@@ -351,9 +357,6 @@ define([
 
         display();
 
-        if (config.onlyoffice.lastHash === hashes[sortedCp[sortedCp.length - 1]].hash) {
-            cpIndex = 0;
-        }
         showVersion(true);
 
         //return void loadMoreOOHistory();
