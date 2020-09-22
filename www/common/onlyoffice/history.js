@@ -1,9 +1,10 @@
 define([
     'jquery',
     '/common/common-interface.js',
+    '/common/hyperscript.js',
     '/bower_components/nthen/index.js',
     //'/bower_components/chainpad-json-validator/json-ot.js',
-], function ($, UI, nThen, /* JsonOT */) {
+], function ($, UI, h, nThen, /* JsonOT */) {
     //var ChainPad = window.ChainPad;
     var History = {};
 
@@ -41,6 +42,29 @@ define([
         };
 
         if (endWithCp) { cpIndex = 0; }
+
+        var $loadMore, $version, $time;
+
+        var showVersion = function (initial) {
+            var major = sortedCp.length - cpIndex;
+            var v = major + '.' + msgIndex;
+            if (initial) {
+                v = "Latest"; // XXX
+            }
+            $version.text("Version: " + v); // XXX
+
+            var $pos = $hist.find('.cp-toolbar-history-pos');
+            var cps = sortedCp.length;
+            var id = sortedCp[cps - cpIndex -1] || -1;
+            if (!ooMessages[id]) { return; }
+            var msgs = ooMessages[id];
+            var p = 100*(msgIndex / (msgs.length));
+            $pos.css('margin-left', p+'%');
+
+            var time = msgs[msgIndex].time;
+            if (time) { $time.text(new Date(time).toLocaleString()); }
+            else { $time.text(''); }
+        };
 
         // We want to load a checkpoint (or initial state)
         var loadMoreOOHistory = function () {
@@ -127,33 +151,10 @@ define([
 
         UI.spinner($hist).get().show();
 
-        var $loadMore, $version, get;
-
-        var showVersion = function (initial) {
-            var major = sortedCp.length - cpIndex;
-            var v = major + '.' + msgIndex;
-            if (initial) {
-                v = "Latest"; // XXX
-            }
-            $version.text("Version: " + v); // XXX
-
-            var $pos = $hist.find('.cp-toolbar-history-pos');
-            var cps = sortedCp.length;
-            var id = sortedCp[cps - cpIndex -1] || -1;
-            if (!ooMessages[id]) { return; }
-            var msgs = ooMessages[id];
-            var p = 100*(msgIndex / (msgs.length));
-            $pos.css('margin-left', p+'%');
-        };
-
         var $fastPrev = $('<button>', {
             'class': 'cp-toolbar-history-fast-previous fa fa-fast-backward buttonPrimary',
             title: Messages.history_prev
         });
-        /*var $prev = $('<button>', {
-            'class': 'cp-toolbar-history-previous fa fa-step-backward buttonPrimary',
-            title: Messages.history_prev
-        });*/
         var $next = $('<button>', {
             'class': 'cp-toolbar-history-next fa fa-step-forward buttonPrimary',
             title: Messages.history_next
@@ -163,73 +164,31 @@ define([
             title: Messages.history_next
         });
 
+        var getId = function () {
+            var cps = sortedCp.length;
+            return sortedCp[cps - cpIndex -1] || -1;
+        };
+
         update = function () {
             var cps = sortedCp.length;
-            //$prev.show();
             $fastPrev.show();
             $next.show();
             $fastNext.show();
-            console.error(cps, cpIndex);
             if (cpIndex >= cps) {
                 $fastPrev.hide();
             }
             if (cpIndex === 0) {
                 $fastNext.hide();
             }
-            var id = sortedCp[cps - cpIndex -1] || -1;
+            var id = getId();
             var msgs = (ooMessages[id] || []).length;
-            /*if (msgIndex <= 0) {
-                $prev.hide();
-            }*/
             if (msgIndex >= msgs) {
                 $next.hide();
             }
         };
 
-        get = function (i, blockOnly) {
-            i = parseInt(i);
-            if (isNaN(i)) { return; }
-            if (i > 0) { i = 0; }
-            if (i < -(states.length - 2)) { i = -(states.length - 2); }
-            if (i <= -(states.length - 11)) {
-                loadMore();
-            }
-            var idx = states.length - 1 + i;
-            if (blockOnly) { return states[idx]; }
-
-            var val = states[idx].getContent().doc;
-            c = i;
-            $hist.find('.cp-toolbar-history-next, .cp-toolbar-history-previous, ' +
-                       '.cp-toolbar-history-fast-next, .cp-toolbar-history-fast-previous')
-                .css('visibility', '');
-            if (c === -(states.length-1)) {
-                $hist.find('.cp-toolbar-history-previous').css('visibility', 'hidden');
-                $hist.find('.cp-toolbar-history-fast-previous').css('visibility', 'hidden');
-            }
-            if (c === 0) {
-                $hist.find('.cp-toolbar-history-next').css('visibility', 'hidden');
-                $hist.find('.cp-toolbar-history-fast-next').css('visibility', 'hidden');
-            }
-
-            // Display the version when the full history is loaded
-            // Note: the first version is always empty and probably can't be displayed, so
-            // we can consider we have only states.length - 1 versions
-            $version.text(idx + ' / ' + (states.length-1));
-
-            if (config.debug) {
-                console.log(states[idx]);
-                var ops = states[idx] && states[idx].getPatch() && states[idx].getPatch().operations;
-                if (Array.isArray(ops)) {
-                    ops.forEach(function (op) { console.log(op); });
-                }
-            }
-
-            return val || '';
-        };
-
         var next = function () {
-            var cps = sortedCp.length;
-            var id = sortedCp[cps - cpIndex -1] || -1;
+            var id = getId();
             if (!ooMessages[id]) { return; }
             var msgs = ooMessages[id];
             var patch = msgs[msgIndex];
@@ -237,6 +196,9 @@ define([
             loading = false;
             msgIndex++;
             showVersion();
+            setTimeout(function () {
+                $('iframe').blur();
+            }, 200);
         };
 
         // Create the history toolbar
@@ -261,6 +223,7 @@ define([
                 title: Messages.shareButton
             }).appendTo($hist);
             $('<span>', {'class': 'cp-history-filler'}).appendTo($hist);
+            $time = $(h('div')).appendTo($hist);
             var $close = $('<button>', {
                 'class':'cp-toolbar-history-close fa fa-window-close',
                 title: Messages.history_closeTitle
@@ -273,17 +236,6 @@ define([
             $version = $('<span>', {
                 'class': 'cp-toolbar-history-version'
             }).prependTo($bar);
-
-            /*
-            $loadMore = $('<button>', {
-                'class':'cp-toolbar-history-loadmore fa fa-ellipsis-h',
-                title: Messages.history_loadMore
-            }).click(function () {
-                loadMore(function () {
-                    get(c);
-                });
-            }).prependTo($container);
-            */
 
             var onKeyDown, onKeyUp;
             var close = function () {

@@ -863,7 +863,9 @@ define([
                         if (isLockedModal.modal) {
                             isLockedModal.modal.closeModal();
                             delete isLockedModal.modal;
-                            $('#cp-app-oo-editor > iframe')[0].contentWindow.focus();
+                            if (!APP.history) {
+                                $('#cp-app-oo-editor > iframe')[0].contentWindow.focus();
+                            }
                         }
                         send({
                             type: "getLock",
@@ -1198,7 +1200,9 @@ define([
                         if (isLockedModal.modal && force) {
                             isLockedModal.modal.closeModal();
                             delete isLockedModal.modal;
-                            $('#cp-app-oo-editor > iframe')[0].contentWindow.focus();
+                            if (!APP.history) {
+                                $('#cp-app-oo-editor > iframe')[0].contentWindow.focus();
+                            }
                         }
 
                         if (APP.history) {
@@ -1766,9 +1770,6 @@ define([
                     var commit = function () {
                         APP.stopHistory = true;
                         makeCheckpoint(true);
-                        // ~ Commit current version
-                        // XXX make checkpoint?
-                        // APP.stopHistory = true;
                     };
                     var loadCp = function (cp) {
                         loadLastDocument(cp, function () {
@@ -1778,19 +1779,15 @@ define([
                             ooChannel.queue = [];
                             resetData(blob, file);
                         }, function (blob, file) {
-                            // XXX ?
                             ooChannel.queue = [];
                             resetData(blob, file);
                         });
                     };
                     var onPatch = function (patch) {
                         // Patch on the current cp
-                        console.error(patch);
                         ooChannel.send(JSON.parse(patch.msg));
-                        // XXX send patch to oo
                     };
                     var onCheckpoint = function (cp) {
-                        console.error(cp);
                         // We want to load a checkpoint:
                         loadCp(cp);
                     };
