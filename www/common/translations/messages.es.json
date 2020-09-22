@@ -471,7 +471,7 @@
     "printBackgroundValue": "<b>Fondo de pantalla actual</b><em>{0</em>}",
     "printBackgroundRemove": "Eliminar este fondo de pantalla",
     "tags_title": "Etiquetas (sólo para tí)",
-    "tags_add": "Actualizar las etiquetas de esta página",
+    "tags_add": "Actualizar las etiquetas para los pads seleccionados",
     "tags_notShared": "Tus etiquetas no están compartidas con otros usuarios",
     "tags_duplicate": "Duplicar etiquetas:{0}",
     "tags_noentry": "No puedes etiquetar una nota eliminada!",

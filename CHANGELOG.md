@@ -16,6 +16,8 @@ To upgrade from 3.21.0 to 3.22.0:
 ## Features
 
 * Contributors have helped by translating more of CryptPad into Finnish and traditional Chinese via [our weblate instance](https://weblate.cryptpad.fr/projects/cryptpad/app/)
+* We've updated the syntax highlighting code that we use throughout the platform to include Rustlang (and possibly other languages that have been updated in the meantime).
+* You can now use _ctrl-f_ in user or team drives to jump immediately to the search interface instead of possibly scrolling up to click on its entry in the sidebar.
 
 ## Bug fixes
 
