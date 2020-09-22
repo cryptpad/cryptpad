@@ -362,7 +362,9 @@ define([
             }));
         });
 
-        Messages.share_bar = "Generate link"; // XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
+        //Messages.share_bar = "Generate link"; // XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
+        Messages.share_bar =  Messages.team_inviteLinkCreate; // XXX
+
         var linkButtons = [
             makeCancelButton(),
             !opts.sharedFolder && {
