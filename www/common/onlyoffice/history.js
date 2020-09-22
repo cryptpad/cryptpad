@@ -2,9 +2,7 @@ define([
     'jquery',
     '/common/common-interface.js',
     '/common/hyperscript.js',
-    '/bower_components/nthen/index.js',
-    //'/bower_components/chainpad-json-validator/json-ot.js',
-], function ($, UI, h, nThen, /* JsonOT */) {
+], function ($, UI, h) {
     //var ChainPad = window.ChainPad;
     var History = {};
 
@@ -21,7 +19,6 @@ define([
 
         var cpIndex = -1;
         var msgIndex = 0;
-        var sortedCp;
         var ooMessages = {};
         var loading = false;
         var update = function () {};
@@ -43,7 +40,9 @@ define([
 
         if (endWithCp) { cpIndex = 0; }
 
-        var $loadMore, $version, $time;
+        var $version, $time;
+        var $hist = $toolbar.find('.cp-toolbar-history');
+        var $bottom = $toolbar.find('.cp-toolbar-bottom');
 
         var showVersion = function (initial) {
             var major = sortedCp.length - cpIndex;
@@ -117,18 +116,6 @@ define([
             });
         };
 
-        // config.setHistory(bool, bool)
-        // - bool1: history value
-        // - bool2: reset old content?
-        var render = function (val) {
-            if (typeof val === "undefined") { return; }
-            try {
-                config.applyVal(val);
-            } catch (e) {
-                // Probably a parse error
-                console.error(e);
-            }
-        };
         var onClose = function () { config.setHistory(false); };
         var onRevert = function () {
             config.onRevert();
@@ -138,13 +125,7 @@ define([
 
         var Messages = common.Messages;
 
-        var realtime;
-
         var states = [];
-        var c = 0;//states.length - 1;
-
-        var $hist = $toolbar.find('.cp-toolbar-history');
-        var $bottom = $toolbar.find('.cp-toolbar-bottom');
 
         $hist.html('').css('display', 'flex');
         $bottom.hide();
@@ -263,6 +244,11 @@ define([
                 });
             });
 
+            // Versioned link
+            $share.click(function () {
+                // XXX
+            });
+
             // Push one patch
             $next.click(function () {
                 if (loading) { return; }
@@ -270,13 +256,6 @@ define([
                 next();
                 update();
             });
-            // Reset current checkpoint
-            /*$prev.click(function () {
-                if (loading) { return; }
-                loading = true;
-                loadMoreOOHistory();
-                update();
-            });*/
             // Go to previous checkpoint
             $fastNext.click(function () {
                 if (loading) { return; }
