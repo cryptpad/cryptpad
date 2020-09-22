@@ -341,7 +341,7 @@ define([
 
         localStore.get('hide-alert-shareLinkWarning', function (val) {
             if (val === '1') { return; }
-            $(shareLinkWarning).show();
+            $(shareLinkWarning).css('display', 'flex');
 
             $(dismissButton).on('click', function () {
                 localStore.put('hide-alert-shareLinkWarning', '1');
@@ -362,7 +362,9 @@ define([
             }));
         });
 
-        Messages.share_bar = "Generate link"; // XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
+        //Messages.share_bar = "Generate link"; // XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
+        Messages.share_bar =  Messages.team_inviteLinkCreate; // XXX
+
         var linkButtons = [
             makeCancelButton(),
             !opts.sharedFolder && {
@@ -737,7 +739,7 @@ define([
 
         localStore.get('hide-alert-shareLinkWarning', function (val) {
             if (val === '1') { return; }
-            $(shareLinkWarning).show();
+            $(shareLinkWarning).css('display', 'flex');
 
             $(dismissButton).on('click', function () {
                 localStore.put('hide-alert-shareLinkWarning', '1');

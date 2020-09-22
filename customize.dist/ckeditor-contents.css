@@ -205,3 +205,11 @@ a > img {
 .cp-link-clicked a {
     cursor: pointer;
 }
+
+media-tag {
+    display: inline-block;
+}
+media-tag * {
+    width: 100%;
+    height: 100%;
+}
