@@ -46,7 +46,7 @@ module.exports = {
  *  cryptpad/docs/example.nginx.conf (see the $main_domain variable)
  *
  */
-    httpUnsafeOrigin: 'http://127.0.0.1:3000/',
+    httpUnsafeOrigin: 'http://127.0.0.1:3000/ http://localhost:3000',
 
 /*  httpSafeOrigin is the URL that is used for the 'sandbox' described above.
  *  If you're testing or developing with CryptPad on your local machine then
