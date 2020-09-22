@@ -180,7 +180,7 @@ define([
             if (semantic) {
                 // If semantic is truc, jump to the next patch from a different netflux ID
                 var author = states[idx].author;
-                for (j = idx; (j > 1 && j < (states.length - 1)); ((i > c) ? j++ : j--)) {
+                for (var j = idx; (j > 1 && j < (states.length - 1)); ((i > c) ? j++ : j--)) {
                     idx = j;
                     i = getRank(idx);
                     if (author !== states[j].author) {
