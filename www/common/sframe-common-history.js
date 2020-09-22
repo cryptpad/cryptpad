@@ -1,11 +1,12 @@
 define([
     'jquery',
     '/common/common-interface.js',
+    '/common/hyperscript.js',
     '/bower_components/nthen/index.js',
     //'/bower_components/chainpad-json-validator/json-ot.js',
 
     '/bower_components/chainpad/chainpad.dist.js',
-], function ($, UI, nThen, ChainPad /* JsonOT */) {
+], function ($, UI, h, nThen, ChainPad /* JsonOT */) {
     //var ChainPad = window.ChainPad;
     var History = {};
 
@@ -129,7 +130,7 @@ define([
             return states;
         };
 
-        var $loadMore, $version, get;
+        var $loadMore, $version, $time, get;
 
         // Get the content of the selected version, and change the version number
         var loading = false;
@@ -180,9 +181,9 @@ define([
                 // If semantic is truc, jump to the next patch from a different netflux ID
                 var author = states[idx].author;
                 for (j = idx; (j > 1 && j < (states.length - 1)); ((i > c) ? j++ : j--)) {
+                    idx = j;
+                    i = getRank(idx);
                     if (author !== states[j].author) {
-                        idx = j;
-                        i = getRank(idx);
                         break;
                     }
                 }
@@ -212,6 +213,10 @@ define([
             // Note: the first version is always empty and probably can't be displayed, so
             // we can consider we have only states.length - 1 versions
             $version.text(idx + ' / ' + (states.length-1));
+            var time = states[idx].time;
+            if (time) {
+                $time.text(new Date(time).toLocaleString());
+            } else { $time.text(''); }
 
             if (config.debug) {
                 console.log(states[idx]);
@@ -268,6 +273,7 @@ define([
                 title: Messages.shareButton
             }).appendTo($hist);
             $('<span>', {'class': 'cp-history-filler'}).appendTo($hist);
+            $time = $(h('div')).appendTo($hist);
             var $close = $('<button>', {
                 'class':'cp-toolbar-history-close fa fa-window-close',
                 title: Messages.history_closeTitle
