@@ -6,6 +6,7 @@ define([
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-util.js',
+    '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
     '/common/common-realtime.js',
@@ -33,6 +34,7 @@ define([
     nThen,
     SFCommon,
     Util,
+    Hash,
     UI,
     UIElements,
     Realtime,
@@ -481,9 +483,7 @@ define([
         APP.getEdPublic = function () {
             var metadataMgr = APP.common.getMetadataMgr();
             var privateData = metadataMgr.getPrivateData();
-            var name = data.name.toLowerCase().replace(/[^a-zA-Z0-9]+/g, "-");
-            var ed = data.edPublic.replace(/\//g, '-');
-            var url = privateData.origin + '/user/#/1/' + name + '/' + ed;
+            var url = Hash.getPublicSigningKeyString(privateData.origin, data.name, data.edPublic);
             var success = Clipboard.copy(url);
             if (success) { UI.log(Messages.shareSuccess); }
         };

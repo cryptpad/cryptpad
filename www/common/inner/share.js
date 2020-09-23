@@ -656,7 +656,7 @@ define([
         var tabs = [{
             getTab: getContactsTab,
             title: Messages.share_contactCategory,
-            icon: "fa fa-addessèbook",
+            icon: "fa fa-address-book",
             active: hasFriends,
             onShow: onShowContacts,
             onHide: resetTab
@@ -836,7 +836,7 @@ define([
         var tabs = [{
             getTab: getFileContactsTab,
             title: Messages.share_contactCategory,
-            icon: "fa fa-addessèbook",
+            icon: "fa fa-address-book",
             active: hasFriends,
         }, {
             getTab: getFileLinkTab,
