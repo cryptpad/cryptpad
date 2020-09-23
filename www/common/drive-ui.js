@@ -1389,7 +1389,7 @@ define([
                 }
                 $button.show();
                 $button.css({
-                    background: '#000'
+                    background: '#63b1f7'
                 });
                 window.setTimeout(function () {
                     $button.css({
@@ -3692,6 +3692,9 @@ define([
                     if ($('.cp-contextmenu:visible').length) {
                         APP.hideMenu();
                         return;
+                    }
+                    if (!$li.length) {
+                        return void $dirContent.contextmenu();
                     }
                     // Open the menu
                     $li.contextmenu();

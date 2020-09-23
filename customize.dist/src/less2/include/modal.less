@@ -41,6 +41,7 @@
             box-shadow: @variables_shadow;
 
             padding: @variables_padding;
+            padding-top: @variables_padding * 2;
 
             position: relative;
             //top: 15vh; bottom: 15vh;
@@ -55,6 +56,11 @@
 
             & > p {
                 margin-bottom: 1em;
+            }
+
+            & > p:not(.cp-modal-form) {
+                text-align: left; // XXX needs testing
+                margin-right: 30px;
             }
 
             .cp-modal-form {
