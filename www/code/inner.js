@@ -134,6 +134,16 @@ define([
 
         framework._.toolbar.$drawer.append(helpMenu.button);
     };
+
+    var previews = {};
+    previews['gfm'] = function (val, $div, common) {
+        DiffMd.apply(DiffMd.render(val), $div, common);
+    };
+    previews['markdown'] = previews['gfm'];
+    previews['htmlmixed'] = function (val, $div, common) {
+        DiffMd.apply(val, $div, common);
+    };
+
     var mkPreviewPane = function (editor, CodeMirror, framework, isPresentMode) {
         var $previewContainer = $('#cp-app-code-preview');
         var $preview = $('#cp-app-code-preview-content');
@@ -149,17 +159,19 @@ define([
 
         var $previewButton = framework._.sfCommon.createButton('preview', true);
         var forceDrawPreview = function () {
+            var f = previews[CodeMirror.highlightMode];
+            if (!f) { return; }
             try {
                 if (editor.getValue() === '') {
                     $previewContainer.addClass('cp-app-code-preview-isempty');
                     return;
                 }
                 $previewContainer.removeClass('cp-app-code-preview-isempty');
-                DiffMd.apply(DiffMd.render(editor.getValue()), $preview, framework._.sfCommon);
+                f(editor.getValue(), $preview, framework._.sfCommon);
             } catch (e) { console.error(e); }
         };
         var drawPreview = Util.throttle(function () {
-            if (['markdown', 'gfm'].indexOf(CodeMirror.highlightMode) === -1) { return; }
+            if (!previews[CodeMirror.highlightMode]) { return; }
             if (!$previewButton.is('.cp-toolbar-button-active')) { return; }
             forceDrawPreview();
         }, 400);
@@ -171,7 +183,7 @@ define([
             previewTo = setTimeout(function () {
                 $codeMirror.removeClass('transition');
             }, 500);
-            if (['markdown', 'gfm'].indexOf(CodeMirror.highlightMode) === -1) {
+            if (!previews[CodeMirror.highlightMode]) {
                 $previewContainer.show();
             }
             $previewContainer.toggle();
@@ -213,7 +225,7 @@ define([
         });
 
         var modeChange = function (mode) {
-            if (['markdown', 'gfm'].indexOf(mode) !== -1) {
+            if (previews[mode]) {
                 $previewButton.show();
                 framework._.sfCommon.getPadAttribute('previewMode', function (e, data) {
                     if (e) { return void console.error(e); }
@@ -273,7 +285,7 @@ define([
             // keep trying to draw until you're confident it has been drawn
             previewInt = setInterval(function () {
                 // give up if it's not a valid preview mode
-                if (['markdown', 'gfm'].indexOf(CodeMirror.highlightMode) === -1) { return void clear(); }
+                if (!previews[CodeMirror.highlightMode]) { return void clear(); }
                 // give up if content has been drawn
                 if ($preview.text()) { return void clear(); }
                 // only draw if there is actually content to display
