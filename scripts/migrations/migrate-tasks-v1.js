@@ -8,14 +8,14 @@ var config = require("../../lib/load-config");
 // but the API requires it, and I don't feel like changing that
 // --ansuz
 var FileStorage = require("../../lib/storage/file");
-
 var tasks;
 nThen(function (w) {
     Logger.create(config, w(function (_log) {
         config.log = _log;
     }));
 }).nThen(function (w) {
-    FileStorage.create(config, w(function (_store) {
+    FileStorage.create(config, w(function (err, _store) {
+	if (err) { throw err; }
         config.store = _store;
     }));
 }).nThen(function (w) {
