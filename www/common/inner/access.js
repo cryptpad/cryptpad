@@ -166,7 +166,7 @@ define([
                     console.error(UIElements.noContactsMessage(common));
                     var findContacts = UIElements.noContactsMessage(common);
                     friendText = h('span.cp-app-prop-content',
-                        findContacts.content // XXX display copy-link button too?
+                        findContacts.content
                     );
                 } else {
                     friendText = h('span.cp-app-prop-content', Messages.access_noContact);
@@ -562,7 +562,7 @@ define([
                 if (!friendKeys.length) {
                     var findContacts = UIElements.noContactsMessage(common);
                     friendText = h('span.cp-app-prop-content',
-                        findContacts.content // XXX display copy-link button too?
+                        findContacts.content
                     );
                 } else {
                     friendText = h('span.cp-app-prop-content', Messages.access_noContact);
@@ -1071,6 +1071,16 @@ define([
         opts = opts || {};
         opts.wide = true;
         opts.access = true;
+
+        var hasFriends = Object.keys(common.getFriends()).length;
+        var buttons = hasFriends? []: UIElements.noContactsMessage(common).buttons;
+        buttons.unshift({
+            className: 'cancel',
+            name: Messages.filePicker_close,
+            onClick: function () {},
+            keys: [27],
+        });
+
         var tabs = [{
             getTab: getAccessTab,
             title: Messages.access_main,
@@ -1079,10 +1089,12 @@ define([
             getTab: getAllowTab,
             title: Messages.access_allow,
             icon: "fa fa-list",
+            buttons: buttons,
         }, {
             getTab: getOwnersTab,
             title: Messages.creation_owners,
             icon: "fa fa-id-badge",
+            buttons: buttons,
         }];
         Modal.getModal(common, opts, tabs, cb);
     };
