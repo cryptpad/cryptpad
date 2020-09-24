@@ -40,13 +40,16 @@ define([
 
         if (endWithCp) { cpIndex = 0; }
 
-        var $version, $time;
+        var $version, $time, $share;
         var $hist = $toolbar.find('.cp-toolbar-history');
         var $bottom = $toolbar.find('.cp-toolbar-bottom');
 
-        var showVersion = function (initial) {
+        var getVersion = function () {
             var major = sortedCp.length - cpIndex;
-            var v = major + '.' + msgIndex;
+            return major + '.' + msgIndex;
+        };
+        var showVersion = function (initial) {
+            var v = getVersion();
             if (initial) {
                 v = "Latest"; // XXX
             }
@@ -113,6 +116,7 @@ define([
                 fillOO(id, messages);
                 loading = false;
                 config.onCheckpoint(cp);
+                $share.show();
             });
         };
 
@@ -199,10 +203,10 @@ define([
             $next.hide().appendTo($hist);
             $fastNext.hide().appendTo($hist);
 
-            var $share = $('<button>', {
+            $share = $('<button>', {
                 'class': 'fa fa-shhare-alt buttonPrimary',
                 title: Messages.shareButton
-            }).appendTo($hist);
+            }).hide().appendTo($hist);
             $('<span>', {'class': 'cp-history-filler'}).appendTo($hist);
             $time = $(h('div')).appendTo($hist);
             var $close = $('<button>', {
@@ -247,6 +251,9 @@ define([
             // Versioned link
             $share.click(function () {
                 // XXX
+                common.getSframeChannel().event('EV_SHARE_OPEN', {
+                    versionHash: getVersion()
+                });
             });
 
             // Push one patch

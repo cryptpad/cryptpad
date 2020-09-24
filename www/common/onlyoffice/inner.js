@@ -409,7 +409,7 @@ define([
             }
             myUniqueOOId = undefined;
             setMyId();
-            APP.docEditor.destroyEditor(); // Kill the old editor
+            if (APP.docEditor) { APP.docEditor.destroyEditor(); } // Kill the old editor
             $('iframe[name="frameEditor"]').after(h('div#cp-app-oo-placeholder')).remove();
             ooLoaded = false;
             oldLocks = {};
@@ -546,6 +546,9 @@ define([
             return new Blob([newText], {type: 'text/plain'});
         };
         var loadLastDocument = function (lastCp, onCpError, cb) {
+            if (!lastCp || !lastCp.file) {
+                return void onCpError('EEMPTY');
+            }
             ooChannel.cpIndex = lastCp.index || 0;
             ooChannel.lastHash = lastCp.hash;
             var parsed = Hash.parsePadUrl(lastCp.file);
@@ -608,6 +611,52 @@ define([
             $(cancel).click(function () {
                 delete APP.refreshPopup;
                 m.delete();
+            });
+        };
+
+        var openVersionHash = function (version) {
+            readOnly = true;
+            var hashes = content.hashes || {};
+            var sortedCp = Object.keys(hashes).map(Number).sort(function (a, b) {
+                return hashes[a].index - hashes[b].index;
+            });
+            var s = version.split('.');
+            if (s.length !== 2) { return; }
+
+            var major = Number(s[0]);
+            var cpId = sortedCp[major - 1];
+            var nextCpId = sortedCp[major];
+            var cp = hashes[cpId] || {};
+
+            var minor = Number(s[1]) + 1;
+
+            var toHash = cp.hash || 'NONE';
+            var fromHash = nextCpId ? hashes[nextCpId].hash : 'NONE';
+
+            sframeChan.query('Q_GET_HISTORY_RANGE', {
+                channel: content.channel,
+                lastKnownHash: fromHash,
+                toHash: toHash,
+            }, function (err, data) {
+                if (err) { return void console.error(err); }
+                if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
+
+                var messages = (data.messages || []).slice(1, minor).forEach(function (obj) {
+                    try { obj.msg = JSON.parse(obj.msg); } catch (e) { console.error(e); }
+                });
+
+                loadLastDocument(cp, function () {
+                    var file = getFileType();
+                    var type = common.getMetadataMgr().getPrivateData().ooType;
+                    var blob = loadInitDocument(type, true);
+                    ooChannel.queue = messages;
+                    resetData(blob, file);
+                    UI.removeLoadingScreen();
+                }, function (blob, file) {
+                    ooChannel.queue = messages;
+                    resetData(blob, file);
+                    UI.removeLoadingScreen();
+                });
             });
         };
 
@@ -1763,75 +1812,75 @@ define([
                     makeCheckpoint(true);
                 });
                 $save.appendTo(toolbar.$bottomM);
-
-                (function () {
-                    /* add a history button */
-                    // XXX move out of dev mode
-                    var commit = function () {
-                        APP.stopHistory = true;
-                        makeCheckpoint(true);
-                    };
-                    var loadCp = function (cp) {
-                        loadLastDocument(cp, function () {
-                            var file = getFileType();
-                            var type = common.getMetadataMgr().getPrivateData().ooType;
-                            var blob = loadInitDocument(type, true);
-                            ooChannel.queue = [];
-                            resetData(blob, file);
-                        }, function (blob, file) {
-                            ooChannel.queue = [];
-                            resetData(blob, file);
-                        });
-                    };
-                    var onPatch = function (patch) {
-                        // Patch on the current cp
-                        ooChannel.send(JSON.parse(patch.msg));
-                    };
-                    var onCheckpoint = function (cp) {
-                        // We want to load a checkpoint:
-                        loadCp(cp);
-                    };
-                    var setHistoryMode = function (bool) {
-                        if (bool) {
-                            APP.history = true;
-                            getEditor().setViewModeDisconnect();
-                            return;
-                        }
-                        // Cancel button: redraw from lastCp
-                        APP.history = false;
-                        ooChannel.queue = [];
-                        ooChannel.ready = false;
-                        rtChannel.getHistory(function () {
-                            var lastCp = getLastCp();
-                            loadCp(lastCp);
-                        });
-                    };
-
-                    common.createButton('', true, {
-                        name: 'history',
-                        icon: 'fa-history',
-                        text: Messages.historyText,
-                        tippy: Messages.historyButton
-                    }).click(function () {
-                        ooChannel.historyLastHash = ooChannel.lastHash;
-                        ooChannel.currentIndex = ooChannel.cpIndex;
-                        //Feedback.send('OO_HISTORY'); // XXX pull Feedback from require
-                        var histConfig = {
-                            onPatch: onPatch,
-                            onCheckpoint: onCheckpoint,
-                            onRevert: commit,
-                            setHistory: setHistoryMode,
-                            onlyoffice: {
-                                hashes: content.hashes || {},
-                                channel: content.channel,
-                                lastHash: ooChannel.lastHash
-                            },
-                            $toolbar: $('.cp-toolbar-container')
-                        };
-                        History.create(common, histConfig);
-                    }).appendTo(toolbar.$drawer);
-                })();
             }
+
+            (function () {
+                /* add a history button */
+                var commit = function () {
+                    APP.stopHistory = true;
+                    makeCheckpoint(true);
+                };
+                var loadCp = function (cp) {
+                    loadLastDocument(cp, function () {
+                        var file = getFileType();
+                        var type = common.getMetadataMgr().getPrivateData().ooType;
+                        var blob = loadInitDocument(type, true);
+                        ooChannel.queue = [];
+                        resetData(blob, file);
+                    }, function (blob, file) {
+                        ooChannel.queue = [];
+                        resetData(blob, file);
+                    });
+                };
+                var onPatch = function (patch) {
+                    // Patch on the current cp
+                    ooChannel.send(JSON.parse(patch.msg));
+                };
+                var onCheckpoint = function (cp) {
+                    // We want to load a checkpoint:
+                    loadCp(cp);
+                };
+                var setHistoryMode = function (bool) {
+                    if (bool) {
+                        APP.history = true;
+                        getEditor().setViewModeDisconnect();
+                        return;
+                    }
+                    // Cancel button: redraw from lastCp
+                    APP.history = false;
+                    ooChannel.queue = [];
+                    ooChannel.ready = false;
+                    rtChannel.getHistory(function () {
+                        var lastCp = getLastCp();
+                        loadCp(lastCp);
+                    });
+                };
+
+                common.createButton('', true, {
+                    name: 'history',
+                    icon: 'fa-history',
+                    text: Messages.historyText,
+                    tippy: Messages.historyButton
+                }).click(function () {
+                    ooChannel.historyLastHash = ooChannel.lastHash;
+                    ooChannel.currentIndex = ooChannel.cpIndex;
+                    //Feedback.send('OO_HISTORY'); // XXX pull Feedback from require
+                    var histConfig = {
+                        onPatch: onPatch,
+                        onCheckpoint: onCheckpoint,
+                        onRevert: commit,
+                        setHistory: setHistoryMode,
+                        onlyoffice: {
+                            hashes: content.hashes || {},
+                            channel: content.channel,
+                            lastHash: ooChannel.lastHash
+                        },
+                        $toolbar: $('.cp-toolbar-container')
+                    };
+                    History.create(common, histConfig);
+                }).appendTo(toolbar.$drawer);
+            })();
+
             if (window.CP_DEV_MODE || DISPLAY_RESTORE_BUTTON) {
                 common.createButton('', true, {
                     name: 'delete',
@@ -1977,6 +2026,11 @@ define([
             if (metadataMgr.getPrivateData().burnAfterReading && content && content.channel) {
                 sframeChan.event('EV_BURN_PAD', content.channel);
             }
+
+            if (privateData.ooVersionHash) {
+                return void openVersionHash(privateData.ooVersionHash);
+            }
+
 
             var useNewDefault = content.version && content.version >= 2;
             openRtChannel(function () {

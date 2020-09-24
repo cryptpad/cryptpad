@@ -2035,8 +2035,6 @@ define([
             var lastKnownHash;
             var txid = Util.uid();
 
-console.error(data);
-
             var onMsg = function (msg) {
                 if (completed) { return; }
                 var parsed = parse(msg);
