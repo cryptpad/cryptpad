@@ -687,6 +687,7 @@ MessengerUI, Messages) {
             return true;
         });
         var save = function () {
+            if (toolbar.history) { return; }
             var name = $input.val().trim();
             if (name === "") {
                 name = $input.attr('placeholder');
@@ -717,6 +718,7 @@ MessengerUI, Messages) {
 
         var displayInput = function () {
             if (toolbar.connected === false) { return; }
+            if (toolbar.history) { return; }
             $input.width(Math.max(($text.width() + 10), 300)+'px');
             $text.hide();
             //$pencilIcon.css('display', 'none');
@@ -1273,12 +1275,14 @@ MessengerUI, Messages) {
             //checkLag(toolbar, config);
         };
         toolbar.initializing = function (/*userId*/) {
+            if (toolbar.history) { return; }
             toolbar.connected = false;
             if (toolbar.spinner) {
                 toolbar.spinner.text(Messages.initializing);
             }
         };
         toolbar.reconnecting = function (/*userId*/) {
+            if (toolbar.history) { return; }
             toolbar.connected = false;
             if (toolbar.spinner) {
                 var state = -1;
@@ -1339,6 +1343,13 @@ MessengerUI, Messages) {
                 config.realtime = chainpad;
                 config.realtime.onPatch(ks(toolbar, config));
                 config.realtime.onMessage(ks(toolbar, config, true));
+            }
+        };
+
+        toolbar.setHistory = function (bool) {
+            toolbar.history = bool;
+            if (bool && toolbar.spinner) {
+                toolbar.spinner.text("HISTORY"); // XXX
             }
         };
 

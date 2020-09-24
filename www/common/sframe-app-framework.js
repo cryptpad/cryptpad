@@ -263,6 +263,7 @@ define([
 
         var setHistoryMode = function (bool, update) {
             cpNfInner.metadataMgr.setHistory(bool);
+            toolbar.setHistory(bool);
             stateChange((bool) ? STATE.HISTORY_MODE : STATE.READY);
             if (!bool && update) { onRemote(); }
             else {
@@ -358,7 +359,9 @@ define([
                     }
                     cpNfInner.metadataMgr.updateMetadata(metadata);
                     newContent = normalize(newContent);
-                    contentUpdate(newContent, waitFor);
+                    if (state !== STATE.HISTORY_MODE) {
+                        contentUpdate(newContent, waitFor);
+                    }
                 } else {
                     if (!cpNfInner.metadataMgr.getPrivateData().isNewFile) {
                         // We're getting 'new pad' but there is an existing file
@@ -376,7 +379,9 @@ define([
                     evOnDefaultContentNeeded.fire();
                 }
             }).nThen(function () {
-                stateChange(STATE.READY);
+                if (state !== STATE.HISTORY_MODE) {
+                    stateChange(STATE.READY);
+                }
                 firstConnection = false;
 
                 oldContent = undefined;
@@ -414,6 +419,7 @@ define([
             });
         };
         var onConnectionChange = function (info) {
+            if (state === STATE.HISTORY_MODE) { return; }
             if (state === STATE.DELETED) { return; }
             stateChange(info.state ? STATE.INITIALIZING : STATE.DISCONNECTED, info.permanent);
             /*if (info.state) {
