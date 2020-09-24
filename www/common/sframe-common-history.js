@@ -108,7 +108,6 @@ define([
 
         var states = [];
         var c = 0;//states.length - 1;
-        var semantic = false;
 
         var $hist = $toolbar.find('.cp-toolbar-history');
         var $bottom = $toolbar.find('.cp-toolbar-bottom');
@@ -166,8 +165,24 @@ define([
         var getRank = function (idx) {
             return idx - states.length + 1;
         };
+        var getAuthor = function (idx, semantic) {
+            if (semantic === 1 || !config.extractMetadata) {
+                return states[idx].author;
+            }
+            try {
+                var val = JSON.parse(states[idx].getContent().doc);
+                var md = config.extractMetadata(val);
+                var users = Object.keys(md.users).sort();
+                return users.join();
+            } catch (e) {
+                console.error(e);
+                return states[idx].author;
+            }
+        };
 
-        get = function (i, blockOnly) {
+        // semantic === 1 : group by user
+        // semantic === 2 : group by "group of users"
+        get = function (i, blockOnly, semantic) {
             i = parseInt(i);
             if (isNaN(i)) { return; }
             if (i > 0) { i = 0; }
@@ -179,11 +194,11 @@ define([
             var idx = getIndex(i);
             if (semantic) {
                 // If semantic is truc, jump to the next patch from a different netflux ID
-                var author = states[idx].author;
+                var author = getAuthor(idx, semantic);
                 for (var j = idx; (j > 1 && j < (states.length - 1)); ((i > c) ? j++ : j--)) {
                     idx = j;
                     i = getRank(idx);
-                    if (author !== states[j].author) {
+                    if (author !== getAuthor(j, semantic)) {
                         break;
                     }
                 }
@@ -229,12 +244,14 @@ define([
             return val || '';
         };
 
+        /*
         var getNext = function (step) {
             return typeof step === "number" ? get(c + step) : get(c + 1);
         };
         var getPrevious = function (step) {
             return typeof step === "number" ? get(c - step) : get(c - 1);
         };
+        */
 
         // Create the history toolbar
         var display = function () {
@@ -247,12 +264,13 @@ define([
             if (History.readOnly) { $rev.css('visibility', 'hidden'); }
 
             Messages.history_session = "Group by user"; // XXX
-            var $cbox = $(UI.createCheckbox('cp-history-session',
-                Messages.history_session,
-                false, { label: { class: 'noTitle' } })).appendTo($hist);
             $('<span>', {'class': 'cp-history-filler'}).appendTo($hist);
             var $fastPrev = $('<button>', {
                 'class': 'cp-toolbar-history-fast-previous fa fa-fast-backward buttonPrimary',
+                title: Messages.history_prev
+            }).appendTo($hist);
+            var $userPrev =$('<button>', {
+                'class': 'cp-toolbar-history-previous fa fa-backward buttonPrimary',
                 title: Messages.history_prev
             }).appendTo($hist);
             var $prev =$('<button>', {
@@ -262,6 +280,10 @@ define([
             var $nav = $('<div>', {'class': 'cp-toolbar-history-goto'}).appendTo($hist);
             var $next = $('<button>', {
                 'class': 'cp-toolbar-history-next fa fa-step-forward buttonPrimary',
+                title: Messages.history_next
+            }).appendTo($hist);
+            var $userNext =$('<button>', {
+                'class': 'cp-toolbar-history-next fa fa-forward buttonPrimary',
                 title: Messages.history_next
             }).appendTo($hist);
             var $fastNext = $('<button>', {
@@ -318,26 +340,19 @@ define([
                 $(window).off('keyup', onKeyUp);
             };
 
-            var $checkbox = $cbox.find('input').on('change', function () {
-                semantic = $checkbox.is(':checked');
-                if (semantic) {
-                    $fastPrev.hide();
-                    $fastNext.hide();
-                } else {
-                    $fastPrev.show();
-                    $fastNext.show();
-                }
-            });
-
             // Version buttons
-            $prev.click(function () { render(getPrevious()); });
-            $next.click(function () { render(getNext()); });
-            $fastPrev.click(function () { render(getPrevious(10)); });
-            $fastNext.click(function () { render(getNext(10)); });
+            $prev.click(function () { render(get(c - 1)); });
+            $next.click(function () { render(get(c + 1)); });
+            $userPrev.click(function () { render(get(c - 1, false, 1)); });
+            $userNext.click(function () { render(get(c + 1, false, 1)); });
+            $fastPrev.click(function () { render(get(c - 1, false, 2)); });
+            $fastNext.click(function () { render(get(c + 1, false, 2)); });
             onKeyDown = function (e) {
                 var p = function () { e.preventDefault(); };
-                if ([37, 40].indexOf(e.which) >= 0) { p(); return $prev.click(); } // Left
-                if ([38, 39].indexOf(e.which) >= 0) { p(); return $next.click(); } // Right
+                if (e.which === 39) { p(); return $next.click(); } // Right
+                if (e.which === 37) { p(); return $prev.click(); } // Left
+                if (e.which === 38) { p(); return $userNext.click(); } // Up
+                if (e.which === 40) { p(); return $userPrev.click(); } // Down
                 if (e.which === 33) { p(); return $fastNext.click(); } // PageUp
                 if (e.which === 34) { p(); return $fastPrev.click(); } // PageUp
                 if (e.which === 27) { p(); $close.click(); }

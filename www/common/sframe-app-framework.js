@@ -695,6 +695,7 @@ define([
                 onLocal: onLocal,
                 onRemote: onRemote,
                 setHistory: setHistoryMode,
+                extractMetadata: extractMetadata,
                 applyVal: function (val) {
                     var newContent = JSON.parse(val);
                     var meta = extractMetadata(newContent);
