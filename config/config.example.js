@@ -192,6 +192,16 @@ module.exports = {
      */
     //archiveRetentionTime: 15,
 
+    /* XXX
+     *
+     *
+     *
+     *
+     *
+     */
+     //accountRetentionTime: 365,
+
+
     /*  Max Upload Size (bytes)
      *  this sets the maximum size of any one file uploaded to the server.
      *  anything larger than this size will be rejected

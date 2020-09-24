@@ -12,6 +12,7 @@
     "url": "https://opencollective.com/cryptpad"
   },
   "dependencies": {
+    "@mcrowe/minibloom": "^0.2.0",
     "chainpad-crypto": "^0.2.2",
     "chainpad-server": "^4.0.9",
     "express": "~4.16.0",
