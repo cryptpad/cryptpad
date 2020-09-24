@@ -33,7 +33,7 @@ define([
         opts = opts || {};
         var redrawAll = function () {};
 
-        var addBtn = h('button.btn.btn-primary.fa.fa-arrow-left');
+        var addBtn = h('button.btn.btn-primary.cp-access-add', [h('i.fa.fa-arrow-left'), h('i.fa.fa-arrow-up')]);
 
         var div1 = h('div.cp-share-column.cp-ownership');
         var divMid = h('div.cp-share-column-mid', addBtn);
@@ -400,7 +400,7 @@ define([
 
         var redrawAll = function () {};
 
-        var addBtn = h('button.btn.btn-primary.fa.fa-arrow-left');
+        var addBtn = h('button.btn.btn-primary.cp-access-add', [h('i.fa.fa-arrow-left'), h('i.fa.fa-arrow-up')]);
 
         var div1 = h('div.cp-share-column.cp-allowlist');
         var divMid = h('div.cp-share-column-mid.cp-overlay-container', [

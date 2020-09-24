@@ -1,6 +1,6 @@
 define([
     'jquery',
-    '/api/config/',
+    '/api/config',
     '/common/toolbar.js',
     'json.sortify',
     '/common/common-util.js',
@@ -152,6 +152,17 @@ define([
 
     var localStore = window.cryptpadStore;
     APP.store = {};
+
+    $(window).keydown(function (e) {
+        if (e.which === 70 && e.ctrlKey) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (APP.displayDirectory) {
+                APP.displayDirectory([SEARCH]);
+            }
+            return;
+        }
+    });
 
     var makeLS = function (teamId) {
         var suffix = teamId ? ('-' + teamId) :  '';
@@ -1378,7 +1389,7 @@ define([
                 }
                 $button.show();
                 $button.css({
-                    background: '#000'
+                    background: '#63b1f7'
                 });
                 window.setTimeout(function () {
                     $button.css({
@@ -2342,8 +2353,6 @@ define([
                 msg = Messages._getKey('fm_info_sharedFolderHistory', [sfName]);
                 return $(common.fixLinks($box.html(msg)));
             }
-            Messages.fm_info_anonymous = "You are not logged in so your pads will expire after {0} days (<a href=\"https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/\" target=\"_blank\">find out more</a>). They are stored in your browser so clearing history may make them disappear.<br><a href=\"/register/\">Sign up</a> or <a href=\"/login/\">Log in</a> to keep them alive.<br>"; // XXX XXX
-            // XXX update this key to use "{0} days" instead of "3 months"
             if (!APP.loggedIn) {
                 msg = APP.newSharedFolder ? Messages.fm_info_sharedFolder : Messages._getKey('fm_info_anonymous', [ApiConfig.inactiveTime || 90]);
                 return $(common.fixLinks($box.html(msg)));
@@ -3683,6 +3692,9 @@ define([
                     if ($('.cp-contextmenu:visible').length) {
                         APP.hideMenu();
                         return;
+                    }
+                    if (!$li.length) {
+                        return void $dirContent.contextmenu();
                     }
                     // Open the menu
                     $li.contextmenu();

@@ -341,7 +341,7 @@ define([
 
         localStore.get('hide-alert-shareLinkWarning', function (val) {
             if (val === '1') { return; }
-            $(shareLinkWarning).show();
+            $(shareLinkWarning).css('display', 'flex');
 
             $(dismissButton).on('click', function () {
                 localStore.put('hide-alert-shareLinkWarning', '1');
@@ -362,7 +362,9 @@ define([
             }));
         });
 
-        Messages.share_bar = "Generate link"; // XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
+        //Messages.share_bar = "Generate link"; // XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
+        Messages.share_bar =  Messages.team_inviteLinkCreate; // XXX
+
         var linkButtons = [
             makeCancelButton(),
             !opts.sharedFolder && {
@@ -654,7 +656,7 @@ define([
         var tabs = [{
             getTab: getContactsTab,
             title: Messages.share_contactCategory,
-            icon: "fa fa-addessèbook",
+            icon: "fa fa-address-book",
             active: hasFriends,
             onShow: onShowContacts,
             onHide: resetTab
@@ -737,7 +739,7 @@ define([
 
         localStore.get('hide-alert-shareLinkWarning', function (val) {
             if (val === '1') { return; }
-            $(shareLinkWarning).show();
+            $(shareLinkWarning).css('display', 'flex');
 
             $(dismissButton).on('click', function () {
                 localStore.put('hide-alert-shareLinkWarning', '1');
@@ -834,7 +836,7 @@ define([
         var tabs = [{
             getTab: getFileContactsTab,
             title: Messages.share_contactCategory,
-            icon: "fa fa-addessèbook",
+            icon: "fa fa-address-book",
             active: hasFriends,
         }, {
             getTab: getFileLinkTab,
