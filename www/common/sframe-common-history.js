@@ -2,11 +2,12 @@ define([
     'jquery',
     '/common/common-interface.js',
     '/common/hyperscript.js',
+    '/customize/messages.js',
     '/bower_components/nthen/index.js',
     //'/bower_components/chainpad-json-validator/json-ot.js',
 
     '/bower_components/chainpad/chainpad.dist.js',
-], function ($, UI, h, nThen, ChainPad /* JsonOT */) {
+], function ($, UI, h, Messages, nThen, ChainPad /* JsonOT */) {
     //var ChainPad = window.ChainPad;
     var History = {};
 
@@ -93,16 +94,22 @@ define([
                 console.error(e);
             }
         };
-        var onClose = function () { config.setHistory(false, true); };
+        var onClose = function () {
+            config.setHistory(false, true);
+        };
+
+        Messages.history_cantRestore = "Can't restore now. Disconnected."; // XXX
         var onRevert = function () {
-            config.setHistory(false, false);
+            var closed = config.setHistory(false, false);
+            if (!closed) {
+                return void UI.alert(Messages.history_cantRestore);
+            }
             config.onLocal();
             config.onRemote();
+            return true;
         };
 
         config.setHistory(true);
-
-        var Messages = common.Messages;
 
         var realtime;
 
@@ -372,15 +379,17 @@ define([
             // Close & restore buttons
             $close.click(function () {
                 states = [];
-                close();
                 onClose();
+                close();
             });
             $rev.click(function () {
                 UI.confirm(Messages.history_restorePrompt, function (yes) {
                     if (!yes) { return; }
-                    close();
-                    onRevert();
-                    UI.log(Messages.history_restoreDone);
+                    var done = onRevert();
+                    if (done) {
+                        close();
+                        UI.log(Messages.history_restoreDone);
+                    }
                 });
             });
 

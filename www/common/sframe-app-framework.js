@@ -291,7 +291,15 @@ define([
             evEditableStateChange.fire(state === STATE.READY && !unsyncMode);
             stateChange(state);
         };
+
+        // History mode:
+        // When "bool" is true, we're entering in history mode
+        // When "bool" is false and "update" is true, it means we're closing the history
+        // and should update the content
+        // When "bool" is false and "update" is false, it means we're restoring an old version,
+        // no need to refresh
         var setHistoryMode = function (bool, update) {
+            if (!bool && !update && state !== STATE.READY) { return false; }
             cpNfInner.metadataMgr.setHistory(bool);
             toolbar.setHistory(bool);
             setUnsyncMode(bool);
@@ -299,17 +307,19 @@ define([
             else {
                 setTimeout(cpNfInner.metadataMgr.refresh);
             }
+            return true;
         };
         var closeSnapshot = function (restore) {
-            setUnsyncMode(false);
-            if (restore) {
-                onLocal();
-            }
-            onRemote();
+            if (restore && state !== STATE.READY) { return false; }
+            setUnsyncMode(false); // Unlock onLocal and onRemote
+            if (restore) { onLocal(); } // Restore? commit the content
+            onRemote(); // Make sure we're back to the realtime content
+            return true;
         };
         var loadSnapshot = function (hash, data) {
             setUnsyncMode(true);
             Snapshots.create(common, {
+                readOnly: readOnly,
                 $toolbar: $(toolbarContainer),
                 hash: hash,
                 data: data,
@@ -436,9 +446,7 @@ define([
                     evOnDefaultContentNeeded.fire();
                 }
             }).nThen(function () {
-                if (!unsyncMode) {
-                    stateChange(STATE.READY);
-                }
+                stateChange(STATE.READY);
                 firstConnection = false;
 
                 oldContent = undefined;
