@@ -886,10 +886,18 @@
         }
     }
 
-    .cp-toolbar-history {
+    .cp-toolbar-history, .cp-toolbar-snapshots {
         background-color: @toolbar-bg-color-light;
         background-color: var(--toolbar-bg-color-light);
         color: @cryptpad_text_col;
+    }
+    .cp-toolbar-snapshots {
+        display: none;
+        text-align: center;
+        width: 100%;
+        padding: 10px 0;
+        align-items: center;
+        justify-content: center;
     }
     .cp-toolbar-bottom {
         background-color: @toolbar-bg-color-light;

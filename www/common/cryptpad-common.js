@@ -924,6 +924,12 @@ define([
         // -1 ==> no timeout, we may receive the callback only when we reconnect
         postMessage("SEND_PAD_MSG", data, cb, { timeout: -1 });
     };
+    pad.getLastHash = function (data, cb) {
+        postMessage("GET_LAST_HASH", data, cb);
+    };
+    pad.getSnapshot = function (data, cb) {
+        postMessage("GET_SNAPSHOT", data, cb);
+    };
     pad.onReadyEvent = Util.mkEvent();
     pad.onMessageEvent = Util.mkEvent();
     pad.onJoinEvent = Util.mkEvent();

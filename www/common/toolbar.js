@@ -33,6 +33,7 @@ MessengerUI, Messages) {
     var FILE_CLS = Bar.constants.file = 'cp-toolbar-file';
     var DRAWER_CLS = Bar.constants.drawer = 'cp-toolbar-drawer-content';
     var HISTORY_CLS = Bar.constants.history = 'cp-toolbar-history';
+    var SNAPSHOTS_CLS = Bar.constants.history = 'cp-toolbar-snapshots';
 
     // Userlist
     var USERLIST_CLS = Bar.constants.userlist = "cp-toolbar-users";
@@ -87,6 +88,7 @@ MessengerUI, Messages) {
             h('div.'+BOTTOM_RIGHT_CLS)
         ])).appendTo($toolbar);
         $toolbar.append(h('div.'+HISTORY_CLS));
+        $toolbar.append(h('div.'+SNAPSHOTS_CLS));
 
         var $file = $toolbar.find('.'+BOTTOM_LEFT_CLS);
 

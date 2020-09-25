@@ -1455,6 +1455,14 @@ define([
 
         var channels = Store.channels = store.channels = {};
 
+        Store.getSnapshot = function (clientId, data, cb) {
+            Store.getHistoryRange(clientId, {
+                cpCount: 1,
+                channel: data.channel,
+                lastKnownHash: data.hash
+            }, cb);
+        };
+
         var getVersionHash = function (clientId, data) {
             var fakeNetflux = Hash.createChannelId();
             Store.getHistoryRange(clientId, {
@@ -1558,7 +1566,8 @@ define([
                     }
                     postMessage(clientId, "PAD_READY");
                 },
-                onMessage: function (m, user, validateKey, isCp) {
+                onMessage: function (m, user, validateKey, isCp, hash) {
+                    channel.lastHash = hash;
                     channel.pushHistory(m, isCp);
                     channel.bcast("PAD_MESSAGE", {
                         user: user,
@@ -1644,6 +1653,7 @@ define([
                                 return void cb({ error: err });
                             }
                             // Broadcast to other tabs
+                            channel.lastHash = msg.slice(0,64);
                             channel.pushHistory(CpNetflux.removeCp(msg), /^cp\|/.test(msg));
                             channel.bcast("PAD_MESSAGE", {
                                 user: wc.myID,
@@ -1777,6 +1787,15 @@ define([
                 curvePublic: data.user.curvePublic
             });
             cb();
+        };
+
+        Store.getLastHash = function (clientId, data, cb) {
+            var chan = channels[data.channel];
+            if (!chan) { return void cb({error: 'ENOCHAN'}); }
+            if (!chan.lastHash) { return void cb({error: 'EINVAL'}); }
+            cb({
+                hash: chan.lastHash
+            });
         };
 
         // Delete a pad received with a burn after reading URL

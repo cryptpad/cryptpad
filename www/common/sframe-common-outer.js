@@ -1453,6 +1453,26 @@ define([
                 });
             });
 
+            sframeChan.on('Q_GET_LAST_HASH', function (data, cb) {
+                Cryptpad.padRpc.getLastHash({
+                    channel: secret.channel
+                }, cb);
+            });
+            sframeChan.on('Q_GET_SNAPSHOT', function (data, cb) {
+                var crypto = Crypto.createEncryptor(secret.keys);
+                Cryptpad.padRpc.getSnapshot({
+                    channel: secret.channel,
+                    hash: data.hash
+                }, function (obj) {
+                    if (obj && obj.error) { return void cb(obj); }
+                    var messages = obj.messages || [];
+                    messages.forEach(function (patch) {
+                        patch.msg = crypto.decrypt(patch.msg, true, true);
+                    });
+                    cb(messages);
+                });
+            });
+
             if (cfg.messaging) {
                 Notifier.getPermission();
 
