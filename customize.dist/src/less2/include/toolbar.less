@@ -663,6 +663,20 @@
                 display: inline-flex;
                 align-items: center;
             }
+            &.cp-toolbar-unsync {
+                .cp-toolbar-title-edit, .cp-toolbar-title-save {
+                    display: none !important;
+                }
+                .cp-toolbar-title-unsync {
+                    display: inline-flex;
+                }
+                .cp-toolbar-title-editable, .cp-toolbar-title-edit {
+                    border: none !important;
+                }
+            }
+            .cp-toolbar-title-unsync {
+                display: none;
+            }
             .cp-toolbar-title-hoverable {
                 display: inline-flex;
                 overflow: hidden;

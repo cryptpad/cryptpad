@@ -162,6 +162,8 @@ define([
                 } else {
                     state = newState;
                 }
+            } else if (state === STATE.READY) {
+                // Refreshing ready state
             }
             switch (state) {
                 case STATE.DISCONNECTED:
@@ -311,6 +313,7 @@ define([
         };
         var closeSnapshot = function (restore) {
             if (restore && state !== STATE.READY) { return false; }
+            toolbar.setSnapshot(false);
             setUnsyncMode(false); // Unlock onLocal and onRemote
             if (restore) { onLocal(); } // Restore? commit the content
             onRemote(); // Make sure we're back to the realtime content
@@ -318,6 +321,7 @@ define([
         };
         var loadSnapshot = function (hash, data) {
             setUnsyncMode(true);
+            toolbar.setSnapshot(true);
             Snapshots.create(common, {
                 readOnly: readOnly,
                 $toolbar: $(toolbarContainer),
@@ -326,10 +330,8 @@ define([
                 close: closeSnapshot,
                 applyVal: function (val) {
                     var newContent = JSON.parse(val);
-                    /*
                     var meta = extractMetadata(newContent);
                     cpNfInner.metadataMgr.updateMetadata(meta);
-                    */
                     contentUpdate(normalize(newContent) || ["BODY",{},[]], function (h) {
                         return h;
                     });

@@ -661,6 +661,8 @@ MessengerUI, Messages) {
                 .text('('+Messages.readonly+')'));
             return $titleContainer;
         }
+        $hoverable.append($('<span>', {'class': 'cp-toolbar-title-readonly cp-toolbar-title-unsync'})
+            .text('('+Messages.readonly+')'));
         var $input = $('<input>', {
             type: 'text',
             placeholder: placeholder
@@ -1348,10 +1350,22 @@ MessengerUI, Messages) {
             }
         };
 
+        toolbar.setSnapshot = function (bool) {
+            toolbar.history = bool;
+            toolbar.title.toggleClass('cp-toolbar-unsync', bool);
+            if (bool && toolbar.spinner) {
+                toolbar.spinner.text("SNAPSHOT"); // XXX
+            } else {
+                kickSpinner(toolbar, config);
+            }
+        };
         toolbar.setHistory = function (bool) {
             toolbar.history = bool;
+            toolbar.title.toggleClass('cp-toolbar-unsync', bool);
             if (bool && toolbar.spinner) {
                 toolbar.spinner.text("HISTORY"); // XXX
+            } else {
+                kickSpinner(toolbar, config);
             }
         };
 
