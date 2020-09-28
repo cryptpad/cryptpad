@@ -231,6 +231,7 @@ define([
             ]),
             h('div.cp-mediatag-control', right = h('span.fa.fa-chevron-right')),
         ]);
+        var $close = $modal.find('.cp-modal-close');
         var $left = $(left);
         var $right = $(right);
         var $inner = $container.find('.cp-mediatag-container');
@@ -330,6 +331,13 @@ define([
         $modal.on('keydown', function (e) {
             e.stopPropagation();
         });
+
+        var close = function () {
+            $inner.find('audio, video').trigger('pause');
+            $modal.hide();
+        };
+
+        $close.on('click', close);
         $modal.on('keyup', function (e) {
             //if (!Slide.shown) { return; }
             e.stopPropagation();
@@ -347,7 +355,7 @@ define([
                     next();
                     break;
                 case 27: // esc
-                    $modal.hide();
+                    close();
                     break;
                 default:
             }
