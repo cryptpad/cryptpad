@@ -123,7 +123,10 @@ define([
         };
     });
 
+    var init = false;
     CodeMirror.registerHelper("orgmode", "init", function (editor) {
+        if (init) { return; }
+
         editor.setOption("extraKeys", {
             "Tab": function(cm) { org_cycle(cm); },
             "Shift-Tab": function(cm){ org_shifttab(cm); },
@@ -139,6 +142,7 @@ define([
             "Shift-Right": function(cm){ org_shiftright(cm); }
         });
 
+        init = true;
         editor.on('mousedown', toggleHandler);
         editor.on('touchstart', toggleHandler);
         editor.on('gutterClick', foldLine);
@@ -155,6 +159,9 @@ define([
     });
 
     CodeMirror.registerHelper("orgmode", "destroy", function (editor) {
+        if (!init) { return; }
+
+        init = false;
         editor.off('mousedown', toggleHandler);
         editor.off('touchstart', toggleHandler);
         editor.off('gutterClick', foldLine);

@@ -1,3 +1,31 @@
+# WoollyMammoth (3.22.0)
+
+## Goals
+
+We've been working on some long-term projects that we hope to deliver over the course of the next few releases. In the meantime, this release includes a number of minor improvements.
+
+## Update notes
+
+To upgrade from 3.21.0 to 3.22.0:
+
+1. Stop your server
+2. Get the latest platform code with git
+3. Install client-side dependencies with `bower update`
+4. Restart the CryptPad API server
+
+## Features
+
+* Contributors have helped by translating more of CryptPad into Finnish and traditional Chinese via [our weblate instance](https://weblate.cryptpad.fr/projects/cryptpad/app/)
+* We've updated the syntax highlighting code that we use throughout the platform to include Rustlang (and possibly other languages that have been updated in the meantime).
+* You can now use _ctrl-f_ in user or team drives to jump immediately to the search interface instead of possibly scrolling up to click on its entry in the sidebar.
+
+## Bug fixes
+
+* Some of the special behaviour implemented for Org-mode in our code editor sometimes failed when the document was first changed into Org-mode.
+* We now clear some minor personal preferences like whether certain tooltips had been dismissed when you log out.
+* We identified and addressed a number of issues with teams that caused valid teams to not be displayed and team member rights to fail to upgrade until a full session reload.
+* We now display the number of days before an unregistered user's documents are considered inactive in their drive instead of hardcoding "3 months".
+
 # VietnameseRhinoceros (3.21.0)
 
 ## Goals

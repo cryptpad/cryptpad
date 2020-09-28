@@ -33,7 +33,7 @@ define([
         opts = opts || {};
         var redrawAll = function () {};
 
-        var addBtn = h('button.btn.btn-primary.fa.fa-arrow-left');
+        var addBtn = h('button.btn.btn-primary.cp-access-add', [h('i.fa.fa-arrow-left'), h('i.fa.fa-arrow-up')]);
 
         var div1 = h('div.cp-share-column.cp-ownership');
         var divMid = h('div.cp-share-column-mid', addBtn);
@@ -152,7 +152,8 @@ define([
 
             var $div = $(h('div.cp-share-column'));
             var _friends = Util.clone(friends);
-            Object.keys(_friends).forEach(function (curve) {
+            var friendKeys = Object.keys(_friends);
+            friendKeys.forEach(function (curve) {
                 if (owners.indexOf(_friends[curve].edPublic) !== -1 ||
                     pending_owners.indexOf(_friends[curve].edPublic) !== -1 ||
                     !_friends[curve].notifications) {
@@ -160,10 +161,21 @@ define([
                 }
             });
             if (!Object.keys(_friends).length) {
+                var friendText;
+                if (!friendKeys.length) {
+                    console.error(UIElements.noContactsMessage(common));
+                    var findContacts = UIElements.noContactsMessage(common);
+                    friendText = h('span.cp-app-prop-content',
+                        findContacts.content
+                    );
+                } else {
+                    friendText = h('span.cp-app-prop-content', Messages.access_noContact);
+                }
+
                 $div.append(h('div.cp-app-prop', [
                     Messages.contacts,
                     h('br'),
-                    h('span.cp-app-prop-content', Messages.access_noContact)
+                    friendText
                 ]));
             } else {
                 var addCol = UIElements.getUserGrid(Messages.contacts, {
@@ -388,7 +400,7 @@ define([
 
         var redrawAll = function () {};
 
-        var addBtn = h('button.btn.btn-primary.fa.fa-arrow-left');
+        var addBtn = h('button.btn.btn-primary.cp-access-add', [h('i.fa.fa-arrow-left'), h('i.fa.fa-arrow-up')]);
 
         var div1 = h('div.cp-share-column.cp-allowlist');
         var divMid = h('div.cp-share-column-mid.cp-overlay-container', [
@@ -528,7 +540,7 @@ define([
             ]);
         };
 
-        // Add owners column
+        // Add allow list column
         var drawAdd = function () {
             var priv = metadataMgr.getPrivateData();
             var teamsData = Util.tryParse(JSON.stringify(priv.teams)) || {};
@@ -538,17 +550,28 @@ define([
             $div.addClass('cp-overlay-container').append(h('div.cp-overlay'));
 
             var _friends = Util.clone(friends);
-            Object.keys(_friends).forEach(function (curve) {
+            var friendKeys = Object.keys(_friends);
+            friendKeys.forEach(function (curve) {
                 if (owners.indexOf(_friends[curve].edPublic) !== -1 ||
                     allowed.indexOf(_friends[curve].edPublic) !== -1) {
                     delete _friends[curve];
                 }
             });
             if (!Object.keys(_friends).length) {
+                var friendText;
+                if (!friendKeys.length) {
+                    var findContacts = UIElements.noContactsMessage(common);
+                    friendText = h('span.cp-app-prop-content',
+                        findContacts.content
+                    );
+                } else {
+                    friendText = h('span.cp-app-prop-content', Messages.access_noContact);
+                }
+
                 $div.append(h('div.cp-app-prop', [
                     Messages.contacts,
                     h('br'),
-                    h('span.cp-app-prop-content', Messages.access_noContact)
+                    friendText
                 ]));
             } else {
                 var addCol = UIElements.getUserGrid(Messages.contacts, {
@@ -1048,6 +1071,16 @@ define([
         opts = opts || {};
         opts.wide = true;
         opts.access = true;
+
+        var hasFriends = Object.keys(common.getFriends()).length;
+        var buttons = hasFriends? []: UIElements.noContactsMessage(common).buttons;
+        buttons.unshift({
+            className: 'cancel',
+            name: Messages.filePicker_close,
+            onClick: function () {},
+            keys: [27],
+        });
+
         var tabs = [{
             getTab: getAccessTab,
             title: Messages.access_main,
@@ -1056,10 +1089,12 @@ define([
             getTab: getAllowTab,
             title: Messages.access_allow,
             icon: "fa fa-list",
+            buttons: buttons,
         }, {
             getTab: getOwnersTab,
             title: Messages.creation_owners,
             icon: "fa fa-id-badge",
+            buttons: buttons,
         }];
         Modal.getModal(common, opts, tabs, cb);
     };
