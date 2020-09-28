@@ -49,6 +49,22 @@
             }
         }
 
+        &.cp-smallpatch {
+            .cp-history-snapshot {
+                border: none !important;
+                width: 2px !important;
+                background: @pos-color;
+            }
+            .cp-history-timeline-pos {
+                border: none !important;
+                width: 2px !important;
+                background: @pos-color;
+                &:after {
+                    margin-left: -8px !important;
+                    top: -8px !important;
+                }
+            }
+        }
         .cp-history-timeline-line {
             display: flex;
             .cp-history-timeline-legend {
@@ -105,6 +121,21 @@
                         }
                     }
                 }
+                .cp-history-snapshots {
+                    position: absolute;
+                    left: 1px;
+                    right: 1px;
+                    top: 1px;
+                    bottom: 1px;
+                    .cp-history-snapshot {
+                        position: absolute;
+                        border: 2px solid @cryptpad_text_col;
+                        height: 100%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                }
             }
         }
         .cp-history-timeline-actions {
@@ -119,30 +150,31 @@
                 }
             }
             .cp-history-timeline-next {
-                button:last-child {
+                button:last-child {
                     margin-right: 0;
                 }
             }
             .cp-history-timeline-prev {
-                button:first-child {
+                button:first-child {
                     margin-left: 0;
                 }
             }
         }
 
         .cp-history-timeline-pos {
-            width: 2px;
+            //width: 2px;
+            border: 2px solid @cryptpad_text_col;
             height: 37px;
-            top: 1px;
-            background: @pos-color;
+            //background: @pos-color;
             position: absolute;
             &:after {
                 content: '';
                 border: 9px solid transparent;
                 border-top-color: @pos-color;
-                margin-left: -8px;
                 position: absolute;
-                top: -8px;
+                top: -9px;
+                margin-left: -1px;
+                width: 100%;
             }
         }
 

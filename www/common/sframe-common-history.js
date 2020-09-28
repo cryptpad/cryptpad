@@ -14,8 +14,11 @@ define([
     History.create = function (common, config) {
         if (!config.$toolbar) { return void console.error("config.$toolbar is undefined");}
         if (History.loading) { return void console.error("History is already being loaded..."); }
+        if (History.state) { return void console.error("Already loaded"); }
         History.loading = true;
+        History.state = true;
         var $toolbar = config.$toolbar;
+        var $hist = $toolbar.find('.cp-toolbar-history');
 
         if (!config.applyVal || !config.setHistory || !config.onLocal || !config.onRemote) {
             throw new Error("Missing config element: applyVal, onLocal, onRemote, setHistory");
@@ -58,6 +61,7 @@ define([
 
         var realtime;
         var states = [];
+        var patchWidth = 0;
         var c = 0;//states.length - 1;
 
         var getIndex = function (i) {
@@ -82,9 +86,25 @@ define([
             }
         };
 
-        // Refresh the timeline UI with the block states
         var bar = h('span.cp-history-timeline-bar');
+        var onResize = function () {
+            var $bar = $(bar);
+            if (!$bar.width() || !$bar.length) { return; }
+            var widthPx = patchWidth * $bar.width() / 100;
+            $hist.removeClass('cp-smallpatch');
+            $bar.find('.cp-history-snapshot').css('margin-left', "");
+            var $pos = $hist.find('.cp-history-timeline-pos');
+            $pos.css('margin-left', "");
+            if (widthPx < 18) {
+                $hist.addClass('cp-smallpatch');
+                $bar.find('.cp-history-snapshot').css('margin-left', (widthPx/2-2)+"px");
+                $pos.css('margin-left', (widthPx/2-2)+"px");
+            }
+        };
+
+        // Refresh the timeline UI with the block states
         var refreshBar = function () {
+            var $pos = $hist.find('.cp-history-timeline-pos');
             var $bar = $(bar).html('');
             var users = {
                 list: [],
@@ -99,6 +119,20 @@ define([
                 i: 0
             };
 
+            var snapshotsData = {};
+            var snapshots = [];
+            try {
+                if (config.extractMetadata) {
+                    var idx = states.length - 1;
+                    var val = JSON.parse(states[idx].getContent().doc);
+                    var md = config.extractMetadata(val);
+                    if (md.snapshots) {
+                        snapshotsData = md.snapshots;
+                        snapshots = Object.keys(md.snapshots);
+                    }
+                }
+            } catch (e) { console.error(e); }
+
             var max = states.length - 1;
             var check = function (obj, author, i) {
                 if (obj.author !== author) {
@@ -112,7 +146,18 @@ define([
                 }
             };
 
+            var snapshotsEl = [];
+            patchWidth = 100 / max;
+
+            var hash;
             for (var i = 1; i < states.length; i++) {
+                hash = states[i].serverHash;
+                if (snapshots.indexOf(hash) !== -1) {
+                    snapshotsEl.push(h('div.cp-history-snapshot', {
+                        style: 'width:'+patchWidth+'%;left:'+(patchWidth * (i-1))+'%;',
+                        title: snapshotsData[hash].title
+                    }, h('i.fa.fa-camera')));
+                }
                 check(user, getAuthor(i, 1), i);
                 check(users, getAuthor(i, 2), i);
             }
@@ -122,8 +167,13 @@ define([
             $bar.append([
                 h('span.cp-history-timeline-users', users.list),
                 h('span.cp-history-timeline-user', user.list),
+                h('div.cp-history-snapshots', [
+                    $pos[0],
+                    snapshotsEl
+                ]),
             ]);
 
+            onResize();
         };
 
         var allMessages = [];
@@ -181,7 +231,6 @@ define([
 
         config.setHistory(true);
 
-        var $hist = $toolbar.find('.cp-toolbar-history');
         var $bottom = $toolbar.find('.cp-toolbar-bottom');
         var $cke = $toolbar.find('.cke_toolbox_main');
 
@@ -269,7 +318,8 @@ define([
             }
             var $pos = $hist.find('.cp-history-timeline-pos');
             var p = 100 * (1 - (-(c - 1) / (states.length-1)));
-            $pos.css('left', 'calc('+p+'% - 2px)');
+            $pos.css('left', p+'%');
+            $pos.css('width', patchWidth+'%');
 
             // Display the version when the full history is loaded
             // Note: the first version is always empty and probably can't be displayed, so
@@ -350,7 +400,6 @@ define([
                     ]),
                     h('span.cp-history-timeline-loadmore', _loadMore),
                     h('span.cp-history-timeline-container', [
-                        pos,
                         bar
                     ])
                 ]),
@@ -404,7 +453,8 @@ define([
             ]);
 
             $hist.append([timeline, actions]);
-
+            onResize();
+            $(window).on('resize', onResize);
             /*
             var $rev = $('<button>', {
                 'class':'cp-toolbar-history-revert buttonSuccess fa fa-check-circle-o',
@@ -475,18 +525,21 @@ define([
             });
             */
             var $bar = $(bar);
+            $bar.find('.cp-history-snapshots').append(pos);
             $bar.click(function (e) {
                 e.stopPropagation();
-                console.log(e);
                 var $t = $(e.target);
-                var isEl = $t.is('.cp-history-bar-el');
-                if (!$t.is('.cp-history-timeline-bar') && !isEl) { return; }
+                if ($t.closest('.cp-history-snapshot').length) {
+                    $t = $t.closest('.cp-history-snapshot');
+                }
+                var isEl = $t.is('.cp-history-snapshot');
+                if (!$t.is('.cp-history-snapshots') && !isEl) { return; }
                 var x = e.offsetX;
                 if (isEl) {
                     x += $t.position().left;
                 }
                 var p = x / $bar.width();
-                var v = -Math.floor((states.length - 1) * (1 - p));
+                var v = 1-Math.ceil((states.length - 1) * (1 - p));
                 render(get(v));
             });
             $loadMore = $(_loadMore).click(function () {
@@ -497,6 +550,7 @@ define([
 
             var onKeyDown, onKeyUp;
             var closeUI = function () {
+                History.state = false;
                 $hist.hide();
                 $bottom.show();
                 $cke.show();
