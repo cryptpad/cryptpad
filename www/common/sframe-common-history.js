@@ -567,7 +567,6 @@ define([
             if (err) { throw new Error(err); }
             update(newRt);
             display();
-            c = states.length - 1;
             if (isFull) {
                 $loadMore.off('click').hide();
                 $version.show();
