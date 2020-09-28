@@ -192,15 +192,15 @@ module.exports = {
      */
     //archiveRetentionTime: 15,
 
-    /* XXX
+    /*  It's possible to configure your instance to remove data
+     *  stored on behalf of inactive accounts. Set 'accountRetentionTime'
+     *  to the number of days an account can remain idle before its
+     *  documents and other account data is removed.
      *
-     *
-     *
-     *
-     *
+     *  Leave this value commented out to preserve all data stored
+     *  by user accounts regardless of inactivity.
      */
      //accountRetentionTime: 365,
-
 
     /*  Max Upload Size (bytes)
      *  this sets the maximum size of any one file uploaded to the server.

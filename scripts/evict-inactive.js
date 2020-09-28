@@ -273,7 +273,6 @@ var categorizeAccountsByActivity = function (w) {
     var inactive = 0;
 
     var accountRetentionTime;
-
     if (typeof(config.accountRetentionTime) === 'number' && config.accountRetentionTime > 0) {
         accountRetentionTime = +new Date() - (24 * 3600 * 1000 * config.accountRetentionTime);
     } else {
@@ -286,56 +285,59 @@ var categorizeAccountsByActivity = function (w) {
         });
     };
 
-    var handler;
-
-    if (accountRetentionTime < 0) {
-        // this means we'll retain all accounts
-        // so the pin log handler can be very simple
-        handler = function (content, id, next) {
-            pinAll(Object.keys(content.pins));
-            next();
-        };
-    } else {
-        // otherwise, we'll only retain data from active accounts
-        // so we need more heuristics
-        handler = function (content, id, next) {
-            accounts++;
-            //console.log(content, id);
-
-            var mtime = content.latest;
-
-            var pinList = Object.keys(content.pins);
+    var accountIsActive = function (mtime, pinList) {
         // if their pin log has changed recently then consider them active
-            if (mtime && mtime > accountRetentionTime) {
-                // the account is active
-                pinAll(pinList);
-                return void next();
-            }
-
+        if (mtime && mtime > accountRetentionTime) {
+            return true;
+        }
         // otherwise iterate over their pinned documents until you find one that has been active
-            if (Object.keys(content.pins).some(function (docId) {
-                return !activeDocs.test(docId);
-            })) {
+        return pinList.some(function (docId) {
+            return activeDocs.test(docId);
+        });
+    };
+
+    var PRESERVE_INACTIVE_ACCOUNTS = accountRetentionTime <= 0;
+
+    // otherwise, we'll only retain data from active accounts
+    // so we need more heuristics
+    var handler = function (content, id, next) {
+        accounts++;
+
+        var mtime = content.latest;
+        var pinList = Object.keys(content.pins);
+
+        if (accountIsActive(mtime, pinList)) {
         // add active accounts' pinned documents to a second bloom filter
-                pinAll(pinList);
+            pinAll(pinList);
+            return void next();
+        }
+
+        // Otherwise they are inactive.
+        // We keep track of how many accounts are inactive whether or not
+        // we plan to delete them, because it may be interesting information
+        inactive++;
+        if (PRESERVE_INACTIVE_ACCOUNTS) {
+            pinAll(pinList);
+            return void next();
+        }
+
+        // remove the pin logs of inactive accounts if inactive account removal is configured
+        pinStore.archiveChannel(id, function (err) {
+            if (err) {
+                Log.error('EVICT_INACTIVE_ACCOUNT_PIN_LOG', err);
                 return void next();
             }
-
-        // if none are active then archive the pin log
-            pinStore.archiveChannel(id, function (err) {
-                console.log(inactive++);
-                if (err) {
-                    Log.error('EVICT_INACTIVE_ACCOUNT_PIN_LOG', err);
-                    return void next();
-                }
-                Log.info('EVICT_INACTIVE_ACCOUNT_LOG', id);
-                next();
-            });
-        };
-    }
+            Log.info('EVICT_INACTIVE_ACCOUNT_LOG', id);
+            next();
+        });
+    };
 
     var done = function () {
-        Log.info('EVICT_INACTIVE_ACCOUNTS', {
+        var label = PRESERVE_INACTIVE_ACCOUNTS?
+            "EVICT_COUNT_ACCOUNTS":
+            "EVICT_INACTIVE_ACCOUNTS";
+
+        Log.info(label, {
             accounts: accounts,
             inactive: inactive,
         });
