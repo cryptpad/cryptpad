@@ -474,11 +474,19 @@ define([
                 render(get(v));
             });
             */
-            $(bar).click(function (e) {
+            var $bar = $(bar);
+            $bar.click(function (e) {
                 e.stopPropagation();
-                if (!$(e.target).is('.cp-history-timeline-bar')) { return; }
-                var p = e.offsetX / $bar.width();
-                var v = -Math.round((states.length - 1) * (1 - p));
+                console.log(e);
+                var $t = $(e.target);
+                var isEl = $t.is('.cp-history-bar-el');
+                if (!$t.is('.cp-history-timeline-bar') && !isEl) { return; }
+                var x = e.offsetX;
+                if (isEl) {
+                    x += $t.position().left;
+                }
+                var p = x / $bar.width();
+                var v = -Math.floor((states.length - 1) * (1 - p));
                 render(get(v));
             });
             $loadMore = $(_loadMore).click(function () {
