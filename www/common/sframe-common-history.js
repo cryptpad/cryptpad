@@ -56,6 +56,76 @@ define([
             });
         };
 
+        var realtime;
+        var states = [];
+        var c = 0;//states.length - 1;
+
+        var getIndex = function (i) {
+            return states.length - 1 + i;
+        };
+        var getRank = function (idx) {
+            return idx - states.length + 1;
+        };
+        // Get the author or group of author linked to a state
+        var getAuthor = function (idx, semantic) {
+            if (semantic === 1 || !config.extractMetadata) {
+                return states[idx].author;
+            }
+            try {
+                var val = JSON.parse(states[idx].getContent().doc);
+                var md = config.extractMetadata(val);
+                var users = Object.keys(md.users).sort();
+                return users.join();
+            } catch (e) {
+                console.error(e);
+                return states[idx].author;
+            }
+        };
+
+        // Refresh the timeline UI with the block states
+        var bar = h('span.cp-history-timeline-bar');
+        var refreshBar = function () {
+            var $bar = $(bar).html('');
+            var users = {
+                list: [],
+                author: '',
+                el: undefined,
+                i: 0
+            };
+            var user = {
+                list: [],
+                author: '',
+                el: undefined,
+                i: 0
+            };
+
+            var max = states.length - 1;
+            var check = function (obj, author, i) {
+                if (obj.author !== author) {
+                    obj.author = author;
+                    if (obj.el) {
+                        $(obj.el).css('width', (100*(i - obj.i)/max)+'%');
+                    }
+                    obj.el = h('span.cp-history-bar-el');
+                    obj.list.push(obj.el);
+                    obj.i = i;
+                }
+            };
+
+            for (var i = 1; i < states.length; i++) {
+                check(user, getAuthor(i, 1), i);
+                check(users, getAuthor(i, 2), i);
+            }
+            $(user.el).css('width', (100*(max + 1 - user.i)/max)+'%');
+            $(users.el).css('width', (100*(max + 1 - users.i)/max)+'%');
+
+            $bar.append([
+                h('span.cp-history-timeline-users', users.list),
+                h('span.cp-history-timeline-user', user.list),
+            ]);
+
+        };
+
         var allMessages = [];
         var lastKnownHash;
         var isComplete = false;
@@ -111,11 +181,6 @@ define([
 
         config.setHistory(true);
 
-        var realtime;
-
-        var states = [];
-        var c = 0;//states.length - 1;
-
         var $hist = $toolbar.find('.cp-toolbar-history');
         var $bottom = $toolbar.find('.cp-toolbar-bottom');
         var $cke = $toolbar.find('.cke_toolbox_main');
@@ -126,13 +191,11 @@ define([
 
         UI.spinner($hist).get().show();
 
-        var onUpdate;
-
         var update = function (newRt) {
             realtime = newRt;
             if (!realtime) { return []; }
             states = getStates(realtime);
-            if (typeof onUpdate === "function") { onUpdate(); }
+            refreshBar();
             return states;
         };
 
@@ -143,8 +206,8 @@ define([
         var loadMore = function (cb) {
             if (loading) { return; }
             loading = true;
-            $loadMore.removeClass('fa fa-ellipsis-h')
-                .append($('<span>', {'class': 'fa fa-refresh fa-spin fa-3x fa-fw'}));
+            $loadMore.find('.fa-ellipsis-h').hide();
+            $loadMore.find('.fa-refresh').show();
 
             loadMoreHistory(config, common, function (err, newRt, isFull) {
                 if (err === 'EFULL') {
@@ -156,7 +219,8 @@ define([
                 loading = false;
                 if (err) { return void console.error(err); }
                 update(newRt);
-                $loadMore.addClass('fa fa-ellipsis-h').html('');
+                $loadMore.find('.fa-ellipsis-h').show();
+                $loadMore.find('.fa-refresh').hide();
                 get(c);
                 if (isFull) {
                     $loadMore.off('click').hide();
@@ -164,27 +228,6 @@ define([
                 }
                 if (cb) { cb(); }
             });
-        };
-
-        var getIndex = function (i) {
-            return states.length - 1 + i;
-        };
-        var getRank = function (idx) {
-            return idx - states.length + 1;
-        };
-        var getAuthor = function (idx, semantic) {
-            if (semantic === 1 || !config.extractMetadata) {
-                return states[idx].author;
-            }
-            try {
-                var val = JSON.parse(states[idx].getContent().doc);
-                var md = config.extractMetadata(val);
-                var users = Object.keys(md.users).sort();
-                return users.join();
-            } catch (e) {
-                console.error(e);
-                return states[idx].author;
-            }
         };
 
         // semantic === 1 : group by user
@@ -199,15 +242,16 @@ define([
             }
 
             var idx = getIndex(i);
-            if (semantic) {
+            if (semantic && i !== c) {
                 // If semantic is truc, jump to the next patch from a different netflux ID
                 var author = getAuthor(idx, semantic);
-                for (var j = idx; (j > 1 && j < (states.length - 1)); ((i > c) ? j++ : j--)) {
-                    idx = j;
-                    i = getRank(idx);
+                var forward = i > c;
+                for (var j = idx; (j > 0 && j < states.length ); (forward ? j++ : j--)) {
                     if (author !== getAuthor(j, semantic)) {
                         break;
                     }
+                    idx = j;
+                    i = getRank(idx);
                 }
             }
 
@@ -215,21 +259,17 @@ define([
 
             var val = states[idx].getContent().doc;
             c = i;
-            if (typeof onUpdate === "function") { onUpdate(); }
-            $hist.find('.cp-toolbar-history-next, .cp-toolbar-history-previous, ' +
-                       '.cp-toolbar-history-fast-next, .cp-toolbar-history-fast-previous')
-                .css('visibility', '');
+            $hist.find('.cp-toolbar-history-next, .cp-toolbar-history-previous')
+                .prop('disabled', '');
             if (c === -(states.length-1)) {
-                $hist.find('.cp-toolbar-history-previous').css('visibility', 'hidden');
-                $hist.find('.cp-toolbar-history-fast-previous').css('visibility', 'hidden');
+                $hist.find('.cp-toolbar-history-previous').prop('disabled', 'disabled');
             }
             if (c === 0) {
-                $hist.find('.cp-toolbar-history-next').css('visibility', 'hidden');
-                $hist.find('.cp-toolbar-history-fast-next').css('visibility', 'hidden');
+                $hist.find('.cp-toolbar-history-next').prop('disabled', 'disabled');
             }
-            var $pos = $hist.find('.cp-toolbar-history-pos');
-            var p = 100 * (1 - (-c / (states.length-2)));
-            $pos.css('margin-left', p+'%');
+            var $pos = $hist.find('.cp-history-timeline-pos');
+            var p = 100 * (1 - (-(c - 1) / (states.length-1)));
+            $pos.css('left', 'calc('+p+'% - 2px)');
 
             // Display the version when the full history is loaded
             // Note: the first version is always empty and probably can't be displayed, so
@@ -264,13 +304,114 @@ define([
         var display = function () {
             $hist.html('');
 
+            var fastPrev = h('button.cp-toolbar-history-previous', { title: Messages.history_prev }, [
+                h('i.fa.fa-step-backward'),
+                h('i.fa.fa-users')
+            ]);
+            var userPrev = h('button.cp-toolbar-history-previous', { title: Messages.history_prev }, [
+                h('i.fa.fa-step-backward'),
+                h('i.fa.fa-user')
+            ]);
+            var prev = h('button.cp-toolbar-history-previous', { title: Messages.history_prev }, [
+                h('i.fa.fa-step-backward')
+            ]);
+            var fastNext = h('button.cp-toolbar-history-next', { title: Messages.history_next }, [
+                h('i.fa.fa-users'),
+                h('i.fa.fa-step-forward'),
+            ]);
+            var userNext = h('button.cp-toolbar-history-next', { title: Messages.history_next }, [
+                h('i.fa.fa-user'),
+                h('i.fa.fa-step-forward'),
+            ]);
+            var next = h('button.cp-toolbar-history-next', { title: Messages.history_next }, [
+                h('i.fa.fa-step-forward')
+            ]);
+            var $fastPrev = $(fastPrev);
+            var $userPrev = $(userPrev);
+            var $prev = $(prev);
+            var $fastNext = $(fastNext);
+            var $userNext = $(userNext);
+            var $next = $(next);
+
+            var _loadMore = h('button.cp-toolbar-history-loadmore', { title: Messages.history_loadMore }, [
+                h('i.fa.fa-ellipsis-h'),
+                h('i.fa.fa-refresh.fa-spin.fa-3x.fa-fw', { style: 'display: none;' })
+            ]);
+
+            var pos = h('span.cp-history-timeline-pos');
+            var time = h('div.cp-history-timeline-time');
+            $time = $(time);
+            $version = $(); // XXX
+            var timeline = h('div.cp-toolbar-history-timeline', [
+                h('div.cp-history-timeline-line', [
+                    h('span.cp-history-timeline-legend', [
+                        h('i.fa.fa-users'),
+                        h('i.fa.fa-user')
+                    ]),
+                    h('span.cp-history-timeline-loadmore', _loadMore),
+                    h('span.cp-history-timeline-container', [
+                        pos,
+                        bar
+                    ])
+                ]),
+                h('div.cp-history-timeline-actions', [
+                    h('span.cp-history-timeline-prev', [
+                        fastPrev,
+                        userPrev,
+                        prev,
+                    ]),
+                    time,
+                    h('span.cp-history-timeline-next', [
+                        next,
+                        userNext,
+                        fastNext
+                    ])
+                ])
+            ]);
+
+            Messages.history_restore = "Restore";// XXX
+            Messages.history_close = "Close";// XXX
+            var snapshot = h('button', {
+                title: Messages.snapshots_button,
+                disabled: History.readOnly ? 'disabled' : undefined
+            }, [
+                h('i.fa.fa-camera')
+            ]);
+            var share = h('button', { title: Messages.shareButton }, [
+                h('i.fa.fa-shhare-alt'),
+                h('span', Messages.shareButton)
+            ]);
+            var restore = h('button', {
+                title: Messages.history_restoreTitle,
+                disabled: History.readOnly ? 'disabled' : undefined
+            }, [
+                h('i.fa.fa-check'),
+                h('span', Messages.history_restore)
+            ]);
+            var close = h('button', { title: Messages.history_closeTitle }, [
+                h('i.fa.fa-times'),
+                h('span', Messages.history_close)
+            ]);
+            var actions = h('div.cp-toolbar-history-actions', [
+                h('span.cp-history-actions-first', [
+                    snapshot,
+                    share
+                ]),
+                h('span.cp-history-actions-last', [
+                    restore,
+                    close
+                ])
+            ]);
+
+            $hist.append([timeline, actions]);
+
+            /*
             var $rev = $('<button>', {
                 'class':'cp-toolbar-history-revert buttonSuccess fa fa-check-circle-o',
                 title: Messages.history_restoreTitle
             }).appendTo($hist);//.text(Messages.history_restore);
             if (History.readOnly) { $rev.css('visibility', 'hidden'); }
 
-            Messages.history_session = "Group by user"; // XXX
             $('<span>', {'class': 'cp-history-filler'}).appendTo($hist);
             var $fastPrev = $('<button>', {
                 'class': 'cp-toolbar-history-fast-previous fa fa-fast-backward buttonPrimary',
@@ -332,13 +473,22 @@ define([
                 var v = -Math.round((states.length - 1) * (1 - p));
                 render(get(v));
             });
-
-            onUpdate = function () {
-                // Called when a new version is loaded
-            };
+            */
+            $(bar).click(function (e) {
+                e.stopPropagation();
+                if (!$(e.target).is('.cp-history-timeline-bar')) { return; }
+                var p = e.offsetX / $bar.width();
+                var v = -Math.round((states.length - 1) * (1 - p));
+                render(get(v));
+            });
+            $loadMore = $(_loadMore).click(function () {
+                loadMore(function () {
+                    get(c);
+                });
+            });
 
             var onKeyDown, onKeyUp;
-            var close = function () {
+            var closeUI = function () {
                 $hist.hide();
                 $bottom.show();
                 $cke.show();
@@ -362,13 +512,13 @@ define([
                 if (e.which === 40) { p(); return $userPrev.click(); } // Down
                 if (e.which === 33) { p(); return $fastNext.click(); } // PageUp
                 if (e.which === 34) { p(); return $fastPrev.click(); } // PageUp
-                if (e.which === 27) { p(); $close.click(); }
+                if (e.which === 27) { p(); $(close).click(); }
             };
             onKeyUp = function (e) { e.stopPropagation(); };
             $(window).on('keydown', onKeyDown).on('keyup', onKeyUp).focus();
 
             // Share
-            $share.click(function () {
+            $(share).click(function () {
                 var block = get(c, true);
                 common.getSframeChannel().event('EV_SHARE_OPEN', {
                     versionHash: block.serverHash,
@@ -377,17 +527,17 @@ define([
             });
 
             // Close & restore buttons
-            $close.click(function () {
+            $(close).click(function () {
                 states = [];
                 onClose();
-                close();
+                closeUI();
             });
-            $rev.click(function () {
+            $(restore).click(function () {
                 UI.confirm(Messages.history_restorePrompt, function (yes) {
                     if (!yes) { return; }
                     var done = onRevert();
                     if (done) {
-                        close();
+                        closeUI();
                         UI.log(Messages.history_restoreDone);
                     }
                 });
@@ -408,8 +558,8 @@ define([
             History.loading = false;
             if (err) { throw new Error(err); }
             update(newRt);
-            c = states.length - 1;
             display();
+            c = states.length - 1;
             if (isFull) {
                 $loadMore.off('click').hide();
                 $version.show();

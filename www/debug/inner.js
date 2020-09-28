@@ -601,6 +601,19 @@ define([
             cpNfInner.chainpad.contentUpdate(toRestore);
         };
 
+        var extractMetadata = function (content) {
+            if (Array.isArray(content)) {
+                var m = content[content.length - 1];
+                if (typeof(m.metadata) === 'object') {
+                    // pad
+                    return m.metadata;
+                }
+            } else if (typeof(content.metadata) === 'object') {
+                return content.metadata;
+            }
+            return;
+        };
+
         config.onInit = function (info) {
             Title = common.createTitle({});
 
@@ -624,6 +637,7 @@ define([
                 },
                 onRemote: config.onRemote,
                 setHistory: setHistory,
+                extractMetadata: extractMetadata,
                 applyVal: function (val) {
                     toRestore = val;
                     displayDoc(JSON.parse(val) || {});

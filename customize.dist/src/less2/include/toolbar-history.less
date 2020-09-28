@@ -5,15 +5,148 @@
 }
 & {
     .cp-toolbar-history {
+
+        @history_lineBg: #FFFFFF;
+        @history_userBg1: #DDD;
+        @history_userBg2: #BBB;
+        @pos-color: @cryptpad_text_col;
+        @fill-width: 40px;
+
         display: none;
-        text-align: center;
         width: 100%;
-        padding: 10px 0;
+        padding: 10px 0 0;
         align-items: center;
         justify-content: center;
+        color: @cryptpad_text_col;
         * {
             font: @colortheme_app-font;
         }
+
+        .cp-toolbar-history-timeline {
+            display: flex;
+            flex-flow: column;
+            flex: 1;
+            margin-left: 10px;
+            margin-right: @fill-width;
+        }
+        .cp-toolbar-history-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 39px;
+            align-self: baseline;
+            margin-right: 5px;
+            .cp-history-actions-first {
+                margin-right: @fill-width;
+            }
+            button {
+                margin: 0 5px;
+                border: 1px solid @cryptpad_text_col;
+                text-transform: uppercase;
+                .fa:not(:last-child) {
+                    margin-right: 5px;
+                }
+            }
+        }
+
+        .cp-history-timeline-line {
+            display: flex;
+            .cp-history-timeline-legend {
+                display: flex;
+                flex-flow: column;
+                justify-content: space-around;
+                align-items: center;
+                margin-right: 4px;
+            }
+            .cp-history-timeline-loadmore {
+                width: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                button {
+                    padding: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: @history_lineBg;
+                    margin-right: 1px;
+                    .fa-refresh {
+                        font-size: 13px;
+                    }
+                }
+            }
+            .cp-history-timeline-container {
+                flex: 1;
+                position: relative;
+                background-color: @history_lineBg;
+                height: 39px;
+            }
+            .cp-history-timeline-bar {
+                display: flex;
+                flex-flow: column;
+                padding: 1px;
+                & > span {
+                    height: 18px;
+                    display: flex;
+                }
+                .cp-history-timeline-users {
+                    margin-bottom: 1px;
+                    .cp-history-bar-el {
+                        background-color: @history_userBg1;
+                        &:nth-child(2n) {
+                            background-color: @history_userBg2;
+                        }
+                    }
+                }
+                .cp-history-timeline-user {
+                    .cp-history-bar-el {
+                        background-color: @history_userBg2;
+                        &:nth-child(2n) {
+                            background-color: @history_userBg1;
+                        }
+                    }
+                }
+            }
+        }
+        .cp-history-timeline-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-left: 40px;
+            button {
+                width: 50px;
+                .fa:first-child:not(:last-child) {
+                    margin-right: 5px;
+                }
+            }
+            .cp-history-timeline-next {
+                button:last-child {
+                    margin-right: 0;
+                }
+            }
+            .cp-history-timeline-prev {
+                button:first-child {
+                    margin-left: 0;
+                }
+            }
+        }
+
+        .cp-history-timeline-pos {
+            width: 2px;
+            height: 37px;
+            top: 1px;
+            background: @pos-color;
+            position: absolute;
+            &:after {
+                content: '';
+                border: 9px solid transparent;
+                border-top-color: @pos-color;
+                margin-left: -8px;
+                position: absolute;
+                top: -8px;
+            }
+        }
+
+/*
         .cp-history-filler {
             flex: 1;
         }
@@ -91,6 +224,7 @@
         .fa-spinner {
             font-size: 66px;
         }
+*/
     }
 }
 
