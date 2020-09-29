@@ -128,6 +128,7 @@ define([
         if (!bool && update) {
             history.onLeaveHistory();
         }
+        return true;
     };
 
     var main = function () {
