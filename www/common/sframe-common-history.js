@@ -20,6 +20,7 @@ define([
         History.state = true;
         var $toolbar = config.$toolbar;
         var $hist = $toolbar.find('.cp-toolbar-history');
+        $hist.addClass('cp-history-init');
 
         if (!config.applyVal || !config.setHistory || !config.onLocal || !config.onRemote) {
             throw new Error("Missing config element: applyVal, onLocal, onRemote, setHistory");
@@ -159,19 +160,27 @@ define([
                         title: snapshotsData[hash].title
                     }, h('i.fa.fa-camera')));
                 }
-                check(user, getAuthor(i, 1), i);
-                check(users, getAuthor(i, 2), i);
+                if (config.drive) {
+                    // Display only one bar, split by patch
+                    check(user, i, i);
+                } else {
+                    // Display two bars, split by author(s)
+                    check(user, getAuthor(i, 1), i);
+                    check(users, getAuthor(i, 2), i);
+                }
             }
 
             if (snapshotsOnly) {
                 // We only want to redraw the snapshots
-                $bar.find('.cp-history-snapshotsi').html('').append([
+                $bar.find('.cp-history-snapshots').html('').append([
                     $pos,
                     snapshotsEl
                 ]);
             } else {
                 $(user.el).css('width', (100*(max + 1 - user.i)/max)+'%');
-                $(users.el).css('width', (100*(max + 1 - users.i)/max)+'%');
+                if (!config.drive) {
+                    $(users.el).css('width', (100*(max + 1 - users.i)/max)+'%');
+                }
 
                 $bar.html('').append([
                     h('span.cp-history-timeline-users', users.list),
@@ -403,6 +412,7 @@ define([
         // Create the history toolbar
         var display = function () {
             $hist.html('');
+            $hist.removeClass('cp-history-init');
 
             var fastPrev = h('button.cp-toolbar-history-previous', { title: Messages.history_fastPrev }, [
                 h('i.fa.fa-step-backward'),
@@ -415,7 +425,7 @@ define([
             var prev = h('button.cp-toolbar-history-previous', { title: Messages.history_prev }, [
                 h('i.fa.fa-step-backward')
             ]);
-            var fastNext = h('button.cp-toolbar-history-next', { title: Messages.history_next }, [
+            var fastNext = h('button.cp-toolbar-history-next', { title: Messages.history_fastNext }, [
                 h('i.fa.fa-users'),
                 h('i.fa.fa-step-forward'),
             ]);
@@ -423,9 +433,18 @@ define([
                 h('i.fa.fa-user'),
                 h('i.fa.fa-step-forward'),
             ]);
-            var next = h('button.cp-toolbar-history-next', { title: Messages.history_fastNext }, [
+            var next = h('button.cp-toolbar-history-next', { title: Messages.history_next }, [
                 h('i.fa.fa-step-forward')
             ]);
+            if (config.drive) {
+                fastNext = h('button.cp-toolbar-history-next', { title: Messages.history_next }, [
+                    h('i.fa.fa-fast-forward'),
+                ]);
+                fastPrev = h('button.cp-toolbar-history-previous', {title: Messages.history_prev}, [
+                    h('i.fa.fa-fast-backward'),
+                ]);
+            }
+
             var $fastPrev = $(fastPrev);
             var $userPrev = $(userPrev);
             var $prev = $(prev);
@@ -438,7 +457,7 @@ define([
                 h('i.fa.fa-refresh.fa-spin.fa-3x.fa-fw', { style: 'display: none;' })
             ]);
 
-            var pos = h('span.cp-history-timeline-pos');
+            var pos = h('span.cp-history-timeline-pos.fa.fa-caret-down');
             var time = h('div.cp-history-timeline-time');
             $time = $(time);
             $version = $(); // XXX
@@ -456,13 +475,13 @@ define([
                 h('div.cp-history-timeline-actions', [
                     h('span.cp-history-timeline-prev', [
                         fastPrev,
-                        userPrev,
+                        config.drive ? undefined : userPrev,
                         prev,
                     ]),
                     time,
                     h('span.cp-history-timeline-next', [
                         next,
-                        userNext,
+                        config.drive ? undefined : userNext,
                         fastNext
                     ])
                 ])
@@ -506,8 +525,9 @@ define([
                 restore.disabled = true;
             }
             if (config.drive) {
-                snapshot.disabled = true;
-                share.disabled = true;
+                $hist.addClass('cp-history-drive');
+                $(snapshot).hide();
+                $(share).hide();
             }
 
             $hist.append([timeline, actions]);
@@ -552,10 +572,17 @@ define([
             // Version buttons
             $prev.click(function () { render(get(c - 1)); });
             $next.click(function () { render(get(c + 1)); });
-            $userPrev.click(function () { render(get(c - 1, false, 1)); });
-            $userNext.click(function () { render(get(c + 1, false, 1)); });
-            $fastPrev.click(function () { render(get(c - 1, false, 2)); });
-            $fastNext.click(function () { render(get(c + 1, false, 2)); });
+            if (config.drive) {
+                $fastPrev.click(function () { render(get(c - 10)); });
+                $fastNext.click(function () { render(get(c + 10)); });
+                $userPrev.click(function () { render(get(c - 10)); });
+                $userNext.click(function () { render(get(c + 10)); });
+            } else {
+                $userPrev.click(function () { render(get(c - 1, false, 1)); });
+                $userNext.click(function () { render(get(c + 1, false, 1)); });
+                $fastPrev.click(function () { render(get(c - 1, false, 2)); });
+                $fastNext.click(function () { render(get(c + 1, false, 2)); });
+            }
             onKeyDown = function (e) {
                 var p = function () { e.preventDefault(); };
                 if (e.which === 39) { p(); return $next.click(); } // Right

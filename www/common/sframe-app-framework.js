@@ -883,7 +883,7 @@ define([
                 onEditableChange: evEditableStateChange.reg,
 
                 // Determine whether the UI should be locked for editing.
-                isLocked: function () { return state !== STATE.READY; },
+                isLocked: function () { return state !== STATE.READY || unsyncMode; },
 
                 // Determine whether the pad is a "read only" pad and cannot be changed.
                 isReadOnly: function () { return readOnly; },

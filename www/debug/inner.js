@@ -598,6 +598,19 @@ define([
             console.log(doc);
         };
 
+        var extractMetadata = function (content) {
+            if (Array.isArray(content)) {
+                var m = content[content.length - 1];
+                if (typeof(m.metadata) === 'object') {
+                    // pad
+                    return m.metadata;
+                }
+            } else if (typeof(content.metadata) === 'object') {
+                return content.metadata;
+            }
+            return;
+        };
+
         // Get the realtime metadata when in history mode
         var getLastMetadata = function () {
             var newContentStr = cpNfInner.chainpad.getUserDoc();
@@ -630,18 +643,6 @@ define([
             cpNfInner.chainpad.contentUpdate(toRestore);
         };
 
-        var extractMetadata = function (content) {
-            if (Array.isArray(content)) {
-                var m = content[content.length - 1];
-                if (typeof(m.metadata) === 'object') {
-                    // pad
-                    return m.metadata;
-                }
-            } else if (typeof(content.metadata) === 'object') {
-                return content.metadata;
-            }
-            return;
-        };
 
         config.onInit = function (info) {
             Title = common.createTitle({});
