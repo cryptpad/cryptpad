@@ -457,7 +457,7 @@ define([
                 h('i.fa.fa-refresh.fa-spin.fa-3x.fa-fw', { style: 'display: none;' })
             ]);
 
-            var pos = h('span.cp-history-timeline-pos');
+            var pos = h('span.cp-history-timeline-pos.fa.fa-caret-down');
             var time = h('div.cp-history-timeline-time');
             $time = $(time);
             $version = $(); // XXX

@@ -84,9 +84,8 @@
                 border: none !important;
                 width: 2px !important;
                 background: @pos-color;
-                &:after {
-                    margin-left: -8px !important;
-                    top: -8px !important;
+                &:before {
+                    left: -6px;
                 }
             }
         }
@@ -192,96 +191,14 @@
             height: 37px;
             //background: @pos-color;
             position: absolute;
-            &:after {
-                content: '';
-                border: 9px solid transparent;
-                border-top-color: @pos-color;
+            &:before {
+                margin-top: -17px;
+                font-size: 24px;
                 position: absolute;
-                top: -9px;
-                margin-left: -1px;
-                width: 100%;
+                left: ~"calc(50% - 6px)";
             }
         }
 
-/*
-        .cp-history-filler {
-            flex: 1;
-        }
-        .cp-toolbar-history-close,
-        .cp-toolbar-history-revert {
-            background: white;
-            color: black;
-            //margin-top: 5px;
-            &:hover {
-                background-color: #e6e6e6;
-            }
-        }
-        .cp-toolbar-history-loadmore {
-            height: 100%;
-            color: black;
-            width: 25px;
-            position: absolute;
-            left: 0;
-            padding: 0;
-        }
-        .cp-toolbar-history-version {
-            position: absolute;
-            height: 25px;
-            line-height: 25px;
-            width: 100%;
-            text-align: center;
-            color: black;
-        }
-        .cp-toolbar-history-goto {
-            display: inline-block;
-            vertical-align: middle;
-            text-align: center;
-            flex: 1;
-            flex-basis: 80%;
-            min-width: 0;
-            max-width: 600px;
-            input { width: 75px; }
-        }
-        .cp-toolbar-history-goto-input {
-            padding-left: 5px;
-            margin-left: 5px;
-            vertical-align: middle;
-        }
-        .cp-toolbar-history-bar {
-            width: 100%;
-            background: white;
-            height: 25px;
-            margin: auto;
-            position: relative;
-        }
-        .cp-toolbar-history-pos-container {
-            width: ~"calc(100% - 2px)";
-            height: 25px;
-            position: relative;
-        }
-        @pos-color: #55FF55;
-        .cp-toolbar-history-pos {
-            width: 2px;
-            height: 25px;
-            background: @pos-color;
-            &:after {
-                content: '';
-                border: 6px solid transparent;
-                border-top-color: @pos-color;
-                margin-left: -5px;
-            }
-        }
-        button {
-            color: @cryptpad_text_col;
-            background-color: rgba(0,0,0,0.2);
-            &:hover {
-                background-color: rgba(0,0,0,0.4);
-            }
-        }
-        .fa-spinner {
-            font-size: 66px;
-        }
-*/
     }
 }
 
