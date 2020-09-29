@@ -30,7 +30,8 @@ define([
             return hashes[a].index - hashes[b].index;
         });
 
-        var endWithCp = config.onlyoffice.lastHash === hashes[sortedCp[sortedCp.length - 1]].hash;
+        var endWithCp = sortedCp.length &&
+                        config.onlyoffice.lastHash === hashes[sortedCp[sortedCp.length - 1]].hash;
 
         var fillOO = function (id, messages) {
             if (!id) { return; }
