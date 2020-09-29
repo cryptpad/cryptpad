@@ -486,6 +486,9 @@ define([
             Messages.history_restore = "Restore";// XXX
             Messages.history_close = "Close";// XXX
             Messages.history_shareTitle = "Share a link to this version"; // XXX
+            Messages.history_restoreDriveTitle = "Restore the selected version of the DRIVE"; // XXX
+            Messages.history_restoreDrivePrompt = "Are you sure you want to replace the current version of the DRIVE by the displayed one?"; // XXX
+            Messages.history_restoreDriveDone = "DRIVE restored";
             var snapshot = h('button', {
                 title: Messages.snapshots_new,
             }, [
@@ -495,8 +498,10 @@ define([
                 h('i.fa.fa-shhare-alt'),
                 h('span', Messages.shareButton)
             ]);
+            var restoreTitle = config.drive ? Messages.history_restoreDriveTitle
+                                   : Messages.history_restoreTitle;
             var restore = h('button', {
-                title: Messages.history_restoreTitle,
+                title: restoreTitle,
             }, [
                 h('i.fa.fa-check'),
                 h('span', Messages.history_restore)
@@ -642,12 +647,16 @@ define([
                 closeUI();
             });
             $(restore).click(function () {
-                UI.confirm(Messages.history_restorePrompt, function (yes) {
+                var restorePrompt = config.drive ? Messages.history_restoreDrivePrompt
+                                                 : Messages.history_restorePrompt;
+                UI.confirm(restorePrompt, function (yes) {
                     if (!yes) { return; }
                     var done = onRevert();
                     if (done) {
                         closeUI();
-                        UI.log(Messages.history_restoreDone);
+                        var restoreDone = config.drive ? Messages.history_restoreDriveDone
+                                                       : Messages.history_restoreDone;
+                        UI.log(restoreDone);
                     }
                 });
             });
