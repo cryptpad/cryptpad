@@ -30,11 +30,13 @@ define([
         }
 
         var parsed = Hash.parsePadUrl(href);
-        var opts = parsed.getOptions();
-        version = opts.versionHash;
-        opts.versionHash = "";
-        href = parsed.getUrl(opts);
-        hash = parsed.hashData.getHash(opts);
+        if (parsed && parsed.hashData) {
+            var opts = parsed.getOptions();
+            version = opts.versionHash;
+            opts.versionHash = "";
+            href = parsed.getUrl(opts);
+            hash = parsed.hashData.getHash(opts);
+        }
 
         document.getElementById('sbox-iframe').setAttribute('src',
             ApiConfig.httpSafeOrigin + window.location.pathname + 'inner.html?' +

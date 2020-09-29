@@ -198,7 +198,7 @@ define([
             $fastNext = $(fastNext).hide();
             $next = $(_next).hide();
 
-            var pos = h('span.cp-history-timeline-pos');
+            var pos = h('span.cp-history-timeline-pos.fa.fa-caret-down');
             var time = h('div.cp-history-timeline-time');
             var version = h('div.cp-history-timeline-version');
             $time = $(time);
