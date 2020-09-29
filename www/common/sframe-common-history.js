@@ -20,6 +20,7 @@ define([
         History.state = true;
         var $toolbar = config.$toolbar;
         var $hist = $toolbar.find('.cp-toolbar-history');
+        $hist.addClass('cp-history-init');
 
         if (!config.applyVal || !config.setHistory || !config.onLocal || !config.onRemote) {
             throw new Error("Missing config element: applyVal, onLocal, onRemote, setHistory");
@@ -411,6 +412,7 @@ define([
         // Create the history toolbar
         var display = function () {
             $hist.html('');
+            $hist.removeClass('cp-history-init');
 
             var fastPrev = h('button.cp-toolbar-history-previous', { title: Messages.history_fastPrev }, [
                 h('i.fa.fa-step-backward'),
@@ -524,8 +526,8 @@ define([
             }
             if (config.drive) {
                 $hist.addClass('cp-history-drive');
-                snapshot.disabled = true;
-                share.disabled = true;
+                $(snapshot).hide();
+                $(share).hide();
             }
 
             $hist.append([timeline, actions]);
