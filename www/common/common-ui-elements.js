@@ -758,23 +758,16 @@ define([
                     button = $('<span>');
                     break;
                 }
-                var active = $(".cp-toolbar-history:visible").length !== 0;
                 button = $('<button>', {
-                    title: active ? Messages.history_closeTitle : Messages.historyButton,
+                    title: Messages.historyButton,
                     'class': "fa fa-history cp-toolbar-icon-history",
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.historyText));
-                button.toggleClass("active", active);
                 if (data.histConfig) {
-                    if (active) {
-                        button.click(function () { $(".cp-toolbar-history-close").trigger("click"); });
-                    }
-                    else {
-                        button
-                            .click(common.prepareFeedback(type))
-                            .on('click', function () {
-                            common.getHistory(data.histConfig);
-                        });
-                    }
+                    button
+                        .click(common.prepareFeedback(type))
+                        .on('click', function () {
+                        common.getHistory(data.histConfig);
+                    });
                 }
                 break;
             case 'mediatag':

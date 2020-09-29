@@ -281,7 +281,7 @@ define([
             return states;
         };
 
-        var $loadMore, $version, $time, get;
+        var $loadMore, $time, get;
 
         // Get the content of the selected version, and change the version number
         var loading = false;
@@ -295,7 +295,6 @@ define([
                 if (err === 'EFULL') {
                     $loadMore.off('click').hide();
                     get(c);
-                    $version.show();
                     return;
                 }
                 loading = false;
@@ -306,7 +305,6 @@ define([
                 get(c);
                 if (isFull) {
                     $loadMore.off('click').hide();
-                    $version.show();
                 }
                 if (cb) { cb(); }
             });
@@ -357,7 +355,6 @@ define([
             // Display the version when the full history is loaded
             // Note: the first version is always empty and probably can't be displayed, so
             // we can consider we have only states.length - 1 versions
-            $version.text(idx + ' / ' + (states.length-1));
             var time = states[idx].time;
             if (time) {
                 $time.text(new Date(time).toLocaleString());
@@ -460,7 +457,6 @@ define([
             var pos = h('span.cp-history-timeline-pos.fa.fa-caret-down');
             var time = h('div.cp-history-timeline-time');
             $time = $(time);
-            $version = $(); // XXX
             var timeline = h('div.cp-toolbar-history-timeline', [
                 h('div.cp-history-timeline-line', [
                     h('span.cp-history-timeline-legend', [
@@ -674,7 +670,6 @@ define([
             display();
             if (isFull) {
                 $loadMore.off('click').hide();
-                $version.show();
             }
         });
     };
