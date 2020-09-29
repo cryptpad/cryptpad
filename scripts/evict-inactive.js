@@ -3,12 +3,18 @@ var nThen = require("nthen");
 var Store = require("../lib/storage/file");
 var BlobStore = require("../lib/storage/blob");
 
+var Quota = require("../lib/commands/quota");
+
 var Env = {
     config: require("../lib/load-config"),
 };
 
 var prepareEnv = function (Env, cb) {
     var config = Env.config;
+
+    Env.customLimits = config.customLimits;
+    Quota.applyCustomLimits(Env);
+
     nThen(function (w) {
         /*  Database adaptors
          */
@@ -55,9 +61,9 @@ var prepareEnv = function (Env, cb) {
 
 var shutdown = function (Env) {
     // the store will keep this script running if you don't shut it down
-    Env.store.shutdown();
-    Env.Log.shutdown();
-    Env.pinStore.shutdown();
+    //Env.store.shutdown();
+    //Env.Log.shutdown();
+    //Env.pinStore.shutdown();
 };
 
 nThen(function (w) {
