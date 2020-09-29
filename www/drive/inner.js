@@ -251,6 +251,7 @@ define([
                     history.currentObj = obj;
                     history.onEnterHistory(obj);
                 },
+                drive: true,
                 $toolbar: APP.$bar,
             };
 

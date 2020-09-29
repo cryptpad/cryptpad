@@ -339,6 +339,34 @@ define([
             });
         };
 
+        // Get the realtime metadata when in history mode
+        var getLastMetadata = function () {
+            if (!unsyncMode) { return; }
+            var newContentStr = cpNfInner.chainpad.getUserDoc();
+            var newContent = JSON.parse(newContentStr);
+            var meta = extractMetadata(newContent);
+            return meta;
+        };
+        var setLastMetadata = function (md) {
+            if (!unsyncMode) { return; }
+            var newContentStr = cpNfInner.chainpad.getAuthDoc();
+            var newContent = JSON.parse(newContentStr);
+            if (Array.isArray(newContent)) {
+                newContent[3] = {
+                    metadata: md
+                };
+            } else {
+                newContent.metadata = md;
+            }
+            try {
+                cpNfInner.chainpad.contentUpdate(JSONSortify(newContent));
+                return true;
+            } catch (e) {
+                console.error(e);
+                return false;
+            }
+        };
+
         /*
         var hasChanged = function (content) {
             try {
@@ -767,7 +795,9 @@ define([
                 onLocal: onLocal,
                 onRemote: onRemote,
                 setHistory: setHistoryMode,
-                extractMetadata: extractMetadata,
+                extractMetadata: extractMetadata, // extract from current version
+                getLastMetadata: getLastMetadata, // get from authdoc
+                setLastMetadata: setLastMetadata, // set to userdoc/authdoc
                 applyVal: function (val) {
                     var newContent = JSON.parse(val);
                     var meta = extractMetadata(newContent);

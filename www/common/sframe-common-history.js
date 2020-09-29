@@ -1,13 +1,14 @@
 define([
     'jquery',
     '/common/common-interface.js',
+    '/common/common-util.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/bower_components/nthen/index.js',
     //'/bower_components/chainpad-json-validator/json-ot.js',
 
     '/bower_components/chainpad/chainpad.dist.js',
-], function ($, UI, h, Messages, nThen, ChainPad /* JsonOT */) {
+], function ($, UI, Util, h, Messages, nThen, ChainPad /* JsonOT */) {
     //var ChainPad = window.ChainPad;
     var History = {};
 
@@ -103,9 +104,9 @@ define([
         };
 
         // Refresh the timeline UI with the block states
-        var refreshBar = function () {
+        var refreshBar = function (snapshotsOnly) {
             var $pos = $hist.find('.cp-history-timeline-pos');
-            var $bar = $(bar).html('');
+            var $bar = $(bar);
             var users = {
                 list: [],
                 author: '',
@@ -121,20 +122,23 @@ define([
 
             var snapshotsData = {};
             var snapshots = [];
-            try {
-                if (config.extractMetadata) {
-                    var idx = states.length - 1;
-                    var val = JSON.parse(states[idx].getContent().doc);
-                    var md = config.extractMetadata(val);
+            if (config.getLastMetadata) {
+                try {
+                    var md = config.getLastMetadata();
                     if (md.snapshots) {
                         snapshotsData = md.snapshots;
                         snapshots = Object.keys(md.snapshots);
                     }
-                }
-            } catch (e) { console.error(e); }
+                } catch (e) { console.error(e); }
+            }
 
             var max = states.length - 1;
+            var snapshotsEl = [];
+            patchWidth = 100 / max;
+
+            // Check if we need a new block on the index i for the "obj" type (user or users)
             var check = function (obj, author, i) {
+                if (snapshotsOnly) { return; }
                 if (obj.author !== author) {
                     obj.author = author;
                     if (obj.el) {
@@ -145,9 +149,6 @@ define([
                     obj.i = i;
                 }
             };
-
-            var snapshotsEl = [];
-            patchWidth = 100 / max;
 
             var hash;
             for (var i = 1; i < states.length; i++) {
@@ -161,17 +162,26 @@ define([
                 check(user, getAuthor(i, 1), i);
                 check(users, getAuthor(i, 2), i);
             }
-            $(user.el).css('width', (100*(max + 1 - user.i)/max)+'%');
-            $(users.el).css('width', (100*(max + 1 - users.i)/max)+'%');
 
-            $bar.append([
-                h('span.cp-history-timeline-users', users.list),
-                h('span.cp-history-timeline-user', user.list),
-                h('div.cp-history-snapshots', [
-                    $pos[0],
+            if (snapshotsOnly) {
+                // We only want to redraw the snapshots
+                $bar.find('.cp-history-snapshotsi').html('').append([
+                    $pos,
                     snapshotsEl
-                ]),
-            ]);
+                ]);
+            } else {
+                $(user.el).css('width', (100*(max + 1 - user.i)/max)+'%');
+                $(users.el).css('width', (100*(max + 1 - users.i)/max)+'%');
+
+                $bar.html('').append([
+                    h('span.cp-history-timeline-users', users.list),
+                    h('span.cp-history-timeline-user', user.list),
+                    h('div.cp-history-snapshots', [
+                        $pos[0],
+                        snapshotsEl
+                    ]),
+                ]);
+            }
 
             onResize();
         };
@@ -220,6 +230,20 @@ define([
 
         Messages.history_cantRestore = "Can't restore now. Disconnected."; // XXX
         var onRevert = function () {
+            // Before we can restore the current version, we need to update metadataMgr
+            // so that it will uses the snapshots from the realtime version!
+            // Restoring the snapshots to their old version would go against the
+            // goal of having snapshots
+            if (config.getLastMetadata) {
+                var metadataMgr = common.getMetadataMgr();
+                var lastMd = config.getLastMetadata();
+                var _snapshots = lastMd.snapshots;
+                var md = Util.clone(metadataMgr.getMetadata());
+                md.snapshots = _snapshots;
+                metadataMgr.updateMetadata(md);
+            }
+
+            // And now we can properly restore the content
             var closed = config.setHistory(false, false);
             if (!closed) {
                 return void UI.alert(Messages.history_cantRestore);
@@ -350,6 +374,27 @@ define([
         };
         */
 
+        var makeSnapshot = function (title) {
+            var idx = getIndex(c);
+            if (!config.getLastMetadata || !config.setLastMetadata) { return; }
+            try {
+                var block = states[idx];
+                var hash = block.serverHash;
+                var md = config.getLastMetadata();
+                md.snapshots = md.snapshots || {};
+                if (md.snapshots[hash]) { return; }
+                md.snapshots[hash] = {
+                    title: title,
+                    time: block.time ? (+new Date(block.time)) : +new Date()
+                };
+                var sent = config.setLastMetadata(md);
+                if (!sent) { return void UI.warn(Messages.error); }
+                refreshBar();
+            } catch (e) {
+                console.error(e);
+            }
+        };
+
         Messages.history_fastPrev = "Previous editing session"; // XXX
         Messages.history_userPrev = "Previous user"; // XXX
         Messages.history_fastNext = "Next editing session"; // XXX
@@ -428,7 +473,6 @@ define([
             Messages.history_shareTitle = "Share a link to this version"; // XXX
             var snapshot = h('button', {
                 title: Messages.snapshots_new,
-                disabled: History.readOnly ? 'disabled' : undefined
             }, [
                 h('i.fa.fa-camera')
             ]);
@@ -438,7 +482,6 @@ define([
             ]);
             var restore = h('button', {
                 title: Messages.history_restoreTitle,
-                disabled: History.readOnly ? 'disabled' : undefined
             }, [
                 h('i.fa.fa-check'),
                 h('span', Messages.history_restore)
@@ -458,78 +501,19 @@ define([
                 ])
             ]);
 
+            if (History.readOnly) {
+                snapshot.disabled = true;
+                restore.disabled = true;
+            }
+            if (config.drive) {
+                snapshot.disabled = true;
+                share.disabled = true;
+            }
+
             $hist.append([timeline, actions]);
             onResize();
             $(window).on('resize', onResize);
-            /*
-            var $rev = $('<button>', {
-                'class':'cp-toolbar-history-revert buttonSuccess fa fa-check-circle-o',
-                title: Messages.history_restoreTitle
-            }).appendTo($hist);//.text(Messages.history_restore);
-            if (History.readOnly) { $rev.css('visibility', 'hidden'); }
 
-            $('<span>', {'class': 'cp-history-filler'}).appendTo($hist);
-            var $fastPrev = $('<button>', {
-                'class': 'cp-toolbar-history-fast-previous fa fa-fast-backward buttonPrimary',
-                title: Messages.history_prev
-            }).appendTo($hist);
-            var $userPrev =$('<button>', {
-                'class': 'cp-toolbar-history-previous fa fa-backward buttonPrimary',
-                title: Messages.history_prev
-            }).appendTo($hist);
-            var $prev =$('<button>', {
-                'class': 'cp-toolbar-history-previous fa fa-step-backward buttonPrimary',
-                title: Messages.history_prev
-            }).appendTo($hist);
-            var $nav = $('<div>', {'class': 'cp-toolbar-history-goto'}).appendTo($hist);
-            var $next = $('<button>', {
-                'class': 'cp-toolbar-history-next fa fa-step-forward buttonPrimary',
-                title: Messages.history_next
-            }).appendTo($hist);
-            var $userNext =$('<button>', {
-                'class': 'cp-toolbar-history-next fa fa-forward buttonPrimary',
-                title: Messages.history_next
-            }).appendTo($hist);
-            var $fastNext = $('<button>', {
-                'class': 'cp-toolbar-history-fast-next fa fa-fast-forward buttonPrimary',
-                title: Messages.history_next
-            }).appendTo($hist);
-            var $share = $('<button>', {
-                'class': 'fa fa-shhare-alt buttonPrimary',
-                title: Messages.shareButton
-            }).appendTo($hist);
-            $('<span>', {'class': 'cp-history-filler'}).appendTo($hist);
-            $time = $(h('div')).appendTo($hist);
-            var $close = $('<button>', {
-                'class':'cp-toolbar-history-close fa fa-window-close',
-                title: Messages.history_closeTitle
-            }).appendTo($hist);
-
-            var $bar = $('<div>', {'class': 'cp-toolbar-history-bar'}).appendTo($nav);
-            var $container = $('<div>', {'class':'cp-toolbar-history-pos-container'}).appendTo($bar);
-            $('<div>', {'class': 'cp-toolbar-history-pos'}).appendTo($container);
-
-            $version = $('<span>', {
-                'class': 'cp-toolbar-history-version'
-            }).prependTo($bar).hide();
-            $loadMore = $('<button>', {
-                'class':'cp-toolbar-history-loadmore fa fa-ellipsis-h',
-                title: Messages.history_loadMore
-            }).click(function () {
-                loadMore(function () {
-                    get(c);
-                });
-            }).prependTo($container);
-
-            // Load a version when clicking on the bar
-            $container.click(function (e) {
-                e.stopPropagation();
-                if (!$(e.target).is('.cp-toolbar-history-pos-container')) { return; }
-                var p = e.offsetX / $container.width();
-                var v = -Math.round((states.length - 1) * (1 - p));
-                render(get(v));
-            });
-            */
             var $bar = $(bar);
             $bar.find('.cp-history-snapshots').append(pos);
             $bar.click(function (e) {
@@ -584,6 +568,40 @@ define([
             };
             onKeyUp = function (e) { e.stopPropagation(); };
             $(window).on('keydown', onKeyDown).on('keyup', onKeyUp).focus();
+
+            // Snapshots
+            $(snapshot).click(function () {
+                var input = h('input', {
+                    placeholder: Messages.snapshots_placeholder
+                });
+                var $input = $(input);
+                var content = h('div', [
+                    h('h5', Messages.snapshots_new),
+                    input
+                ]);
+
+                var buttons = [{
+                    className: 'cancel',
+                    name: Messages.filePicker_close,
+                    onClick: function () {},
+                    keys: [27],
+                }, {
+                    className: 'primary',
+                    icon: 'fa-camera',
+                    name: Messages.snapshots_new,
+                    onClick: function () {
+                        var val = $input.val();
+                        if (!val) { return true; }
+                        makeSnapshot(val);
+                    },
+                    keys: [],
+                }];
+
+                UI.openCustomModal(UI.dialog.customModal(content, {buttons: buttons }));
+                setTimeout(function () {
+                    $input.focus();
+                });
+            });
 
             // Share
             $(share).click(function () {
