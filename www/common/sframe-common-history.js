@@ -415,7 +415,7 @@ define([
             var prev = h('button.cp-toolbar-history-previous', { title: Messages.history_prev }, [
                 h('i.fa.fa-step-backward')
             ]);
-            var fastNext = h('button.cp-toolbar-history-next', { title: Messages.history_next }, [
+            var fastNext = h('button.cp-toolbar-history-next', { title: Messages.history_fastNext }, [
                 h('i.fa.fa-users'),
                 h('i.fa.fa-step-forward'),
             ]);
@@ -423,7 +423,7 @@ define([
                 h('i.fa.fa-user'),
                 h('i.fa.fa-step-forward'),
             ]);
-            var next = h('button.cp-toolbar-history-next', { title: Messages.history_fastNext }, [
+            var next = h('button.cp-toolbar-history-next', { title: Messages.history_next }, [
                 h('i.fa.fa-step-forward')
             ]);
             var $fastPrev = $(fastPrev);
