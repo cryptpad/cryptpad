@@ -350,15 +350,20 @@ define([
         };
         */
 
+        Messages.history_fastPrev = "Previous editing session"; // XXX
+        Messages.history_userPrev = "Previous user"; // XXX
+        Messages.history_fastNext = "Next editing session"; // XXX
+        Messages.history_userNext = "Next user"; // XXX
+
         // Create the history toolbar
         var display = function () {
             $hist.html('');
 
-            var fastPrev = h('button.cp-toolbar-history-previous', { title: Messages.history_prev }, [
+            var fastPrev = h('button.cp-toolbar-history-previous', { title: Messages.history_fastPrev }, [
                 h('i.fa.fa-step-backward'),
                 h('i.fa.fa-users')
             ]);
-            var userPrev = h('button.cp-toolbar-history-previous', { title: Messages.history_prev }, [
+            var userPrev = h('button.cp-toolbar-history-previous', { title: Messages.history_userPrev }, [
                 h('i.fa.fa-step-backward'),
                 h('i.fa.fa-user')
             ]);
@@ -369,11 +374,11 @@ define([
                 h('i.fa.fa-users'),
                 h('i.fa.fa-step-forward'),
             ]);
-            var userNext = h('button.cp-toolbar-history-next', { title: Messages.history_next }, [
+            var userNext = h('button.cp-toolbar-history-next', { title: Messages.history_userNext }, [
                 h('i.fa.fa-user'),
                 h('i.fa.fa-step-forward'),
             ]);
-            var next = h('button.cp-toolbar-history-next', { title: Messages.history_next }, [
+            var next = h('button.cp-toolbar-history-next', { title: Messages.history_fastNext }, [
                 h('i.fa.fa-step-forward')
             ]);
             var $fastPrev = $(fastPrev);
@@ -420,13 +425,14 @@ define([
 
             Messages.history_restore = "Restore";// XXX
             Messages.history_close = "Close";// XXX
+            Messages.history_shareTitle = "Share a link to this version"; // XXX
             var snapshot = h('button', {
-                title: Messages.snapshots_button,
+                title: Messages.snapshots_new,
                 disabled: History.readOnly ? 'disabled' : undefined
             }, [
                 h('i.fa.fa-camera')
             ]);
-            var share = h('button', { title: Messages.shareButton }, [
+            var share = h('button', { title: Messages.history_shareTitle }, [
                 h('i.fa.fa-shhare-alt'),
                 h('span', Messages.shareButton)
             ]);
