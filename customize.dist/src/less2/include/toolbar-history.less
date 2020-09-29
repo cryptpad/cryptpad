@@ -65,6 +65,17 @@
                 }
             }
         }
+        &.cp-history-oo {
+            .cp-history-timeline-container {
+                height: 20px !important;
+                .cp-history-timeline-pos {
+                    height: 20px !important;
+                }
+            }
+            .cp-history-timeline-actions {
+                margin-left: 0 !important;
+            }
+        }
         .cp-history-timeline-line {
             display: flex;
             .cp-history-timeline-legend {
@@ -148,6 +159,12 @@
                 .fa:first-child:not(:last-child) {
                     margin-right: 5px;
                 }
+            }
+            .cp-history-timeline-version:empty {
+                display: none;
+            }
+            .cp-history-timeline-time:empty {
+                display: none;
             }
             .cp-history-timeline-next {
                 button:last-child {

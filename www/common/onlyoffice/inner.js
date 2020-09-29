@@ -1113,7 +1113,7 @@ define([
         startOO = function (blob, file, force) {
             if (APP.ooconfig && !force) { return void console.error('already started'); }
             var url = URL.createObjectURL(blob);
-            var lock = readOnly || APP.migrate;
+            var lock = !APP.history && (readOnly || APP.migrate);
 
             // Starting from version 3, we can use the view mode again
             // defined but never used
