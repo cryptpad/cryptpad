@@ -876,6 +876,21 @@ define([
                     common.createNewPadModal();
                 });
                 break;
+            case 'snapshots':
+                button = $('<button>', {
+                    title: Messages.snapshots_button,
+                    'class': 'fa fa-camera cp-toolbar-icon-snapshots',
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.snapshots_button));
+                button
+                .click(common.prepareFeedback(type))
+                .click(function () {
+                    data = data || {};
+                    if (typeof(data.load) !== "function" || typeof(data.make) !== "function") {
+                        return;
+                    }
+                    UIElements.openSnapshotsModal(common, data.load, data.make);
+                });
+                break;
             default:
                 data = data || {};
                 var drawerCls = data.drawer === false ? '' : '.cp-toolbar-drawer-element';
@@ -3299,6 +3314,68 @@ define([
         var size = $container.outerHeight();
         var pos = el.getBoundingClientRect();
         return (pos.bottom < size) && (pos.y > 0);
+    };
+
+    Messages.snapshots_button = "Snapshots";
+    Messages.snapshots_new = "New snapshot"; // XXX
+    Messages.snapshots_placeholder = "Snapshot title"; // XXX
+    Messages.snapshots_open = "Open";
+    UIElements.openSnapshotsModal = function (common, load, make) {
+        var metadataMgr = common.getMetadataMgr();
+        var md = metadataMgr.getMetadata();
+        var snapshots = md.snapshots || {};
+        var modal;
+
+        var list = Object.keys(snapshots).sort(function (h1, h2) {
+            var s1 = snapshots[h1];
+            var s2 = snapshots[h2];
+            return s1.time - s2.time;
+        }).map(function (hash) {
+            var s = snapshots[hash];
+            var button = h('button.btn.btn-secondary', Messages.snapshots_open);
+            $(button).click(function () {
+                load(hash, s);
+                if (modal && modal.closeModal) { modal.closeModal(); }
+            });
+            return h('span.cp-snapshot-element', [
+                h('i.fa.fa-camera'),
+                h('span.cp-snapshot-title', s.title),
+                button
+            ]);
+        });
+
+        var input = h('input', {
+            placeholder: Messages.snapshots_placeholder
+        });
+        var $input = $(input);
+        var content = h('div', [
+            h('h4', Messages.snapshots_button),
+            h('div.cp-snapshots-container', list),
+            h('h5', Messages.snapshots_new),
+            input
+        ]);
+
+        var buttons = [{
+            className: 'cancel',
+            name: Messages.filePicker_close,
+            onClick: function () {},
+            keys: [27],
+        }, {
+            className: 'primary',
+            icon: 'fa-camera',
+            name: Messages.snapshots_new,
+            onClick: function () {
+                var val = $input.val();
+                if (!val) { return true; }
+                make(val);
+            },
+            keys: [],
+        }];
+
+        modal = UI.openCustomModal(UI.dialog.customModal(content, {buttons: buttons }));
+        setTimeout(function () {
+            $input.focus();
+        });
     };
 
     return UIElements;

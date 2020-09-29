@@ -128,6 +128,7 @@ define([
         if (!bool && update) {
             history.onLeaveHistory();
         }
+        return true;
     };
 
     var main = function () {
@@ -251,6 +252,7 @@ define([
                     history.currentObj = obj;
                     history.onEnterHistory(obj);
                 },
+                drive: true,
                 $toolbar: APP.$bar,
             };
 

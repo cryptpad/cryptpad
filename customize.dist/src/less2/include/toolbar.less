@@ -663,6 +663,20 @@
                 display: inline-flex;
                 align-items: center;
             }
+            &.cp-toolbar-unsync {
+                .cp-toolbar-title-edit, .cp-toolbar-title-save {
+                    display: none !important;
+                }
+                .cp-toolbar-title-unsync {
+                    display: inline-flex;
+                }
+                .cp-toolbar-title-editable, .cp-toolbar-title-edit {
+                    border: none !important;
+                }
+            }
+            .cp-toolbar-title-unsync {
+                display: none;
+            }
             .cp-toolbar-title-hoverable {
                 display: inline-flex;
                 overflow: hidden;
@@ -886,10 +900,18 @@
         }
     }
 
-    .cp-toolbar-history {
+    .cp-toolbar-history, .cp-toolbar-snapshots {
         background-color: @toolbar-bg-color-light;
         background-color: var(--toolbar-bg-color-light);
         color: @cryptpad_text_col;
+    }
+    .cp-toolbar-snapshots {
+        display: none;
+        text-align: center;
+        width: 100%;
+        padding: 10px 0;
+        align-items: center;
+        justify-content: center;
     }
     .cp-toolbar-bottom {
         background-color: @toolbar-bg-color-light;
