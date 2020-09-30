@@ -707,7 +707,6 @@ define([
         var i = 1;
 
         var todo = function () {
-            if (i = 10) { return; }
             var p = 100 * ((TIMEOUT - (i * INTERVAL)) / TIMEOUT);
             if (i++ * INTERVAL >= TIMEOUT) {
                 done(false);
