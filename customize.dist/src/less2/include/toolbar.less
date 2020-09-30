@@ -914,8 +914,19 @@
         align-items: center;
         justify-content: space-between;
         .cp-toolbar-snapshots-info {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+            min-width: 0;
             i {
                 width: 30px;
+            }
+        }
+        @media screen and (max-width: @browser_media-medium-screen) {
+            flex-flow: column;
+            .cp-toolbar-snapshots-info {
+                max-width: 100%;
             }
         }
         .cp-toolbar-snapshots-actions {
