@@ -167,7 +167,7 @@
                 margin-bottom: @alertify_padding-base;
                 margin: 0;
                 overflow: auto;
-                :last-child {
+                &:last-child {
                     margin-bottom: 0;
                 }
             }
@@ -198,7 +198,7 @@
                             background-color: @alertify-light-bg;
                         }
                         &.disabled {
-                            color: #949494;
+                            color: @colortheme_alertify-cancel-border;
                             cursor: not-allowed;
                         }
                     }

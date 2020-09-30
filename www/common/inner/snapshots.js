@@ -64,6 +64,16 @@ Messages.snapshots_cantRestore = "Can't restore now. Disconnected...";
         var display = function () {
             var data = config.data || {};
 
+            var actions = h('span.cp-toolbar-snapshots-actions');
+            var $actions = $(actions);
+            var content = [
+                h('span.cp-toolbar-snapshots-info', [
+                    h('i.fa.fa-camera'),
+                    h('span.cp-toolbar-snapshots-title', data.title + ' - ' + new Date(data.time).toLocaleString()),
+                ]),
+                actions
+            ];
+
             if (!config.readOnly) {
                 $(h('button.cp-toolbar-snapshots-restore', [
                     h('i.fa.fa-check'),
@@ -77,10 +87,9 @@ Messages.snapshots_cantRestore = "Can't restore now. Disconnected...";
                     $bottom.show();
                     $cke.show();
                     Snapshots.loading = false;
-                }).appendTo($snap);
+                }).appendTo($actions);
             }
 
-            $(h('span.cp-toolbar-snapshots-title', data.title)).appendTo($snap);
 
             $(h('button.cp-toolbar-snapshots-close', [
                 h('i.fa.fa-times'),
@@ -91,7 +100,9 @@ Messages.snapshots_cantRestore = "Can't restore now. Disconnected...";
                 $cke.show();
                 Snapshots.loading = false;
                 config.close(false);
-            }).appendTo($snap);
+            }).appendTo($actions);
+
+            $snap.append(content);
         };
 
         display();

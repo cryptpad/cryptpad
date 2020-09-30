@@ -22,6 +22,35 @@
             font: @colortheme_app-font;
         }
 
+
+        @media screen and (max-width: 870px) {
+            flex-flow: column;
+            .cp-toolbar-history-actions {
+                width: 100%;
+                .cp-history-actions-first {
+                    margin-right: 0 !important;
+                }
+            }
+            .cp-toolbar-history-timeline {
+                width: ~"calc(100% - 20px)";
+                margin-right: 10px !important;
+            }
+        }
+
+        @media screen and (max-height: 500px) {
+            padding-top: 0px;
+            .cp-history-timeline-line {
+                display: none !important;
+            }
+            .cp-toolbar-history-timeline {
+                width: 100% !important;
+                margin: 0 !important;
+            }
+            .cp-history-timeline-actions {
+                margin-left: 0 !important;
+            }
+        }
+
         &.cp-history-init {
             padding: 0;
             height: 32px;
@@ -33,6 +62,15 @@
             flex: 1;
             margin-left: 10px;
             margin-right: @fill-width;
+            .cp-history-timeline-time {
+                font-size: 12px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                flex: 1;
+                min-width: 0;
+                text-align: center;
+            }
         }
         .cp-toolbar-history-actions {
             display: flex;
@@ -50,6 +88,13 @@
                 text-transform: uppercase;
                 .fa:not(:last-child) {
                     margin-right: 5px;
+                }
+                &:disabled {
+                    cursor: not-allowed !important;
+                    opacity: 0.6;
+                    &:hover, &:active {
+                        background-color: transparent;
+                    }
                 }
             }
         }
@@ -88,7 +133,7 @@
                 border-left: none;
                 width: 2px !important;
                 background: @pos-color;
-                &:before {
+                &:before {
                     left: -6px;
                 }
             }
@@ -166,6 +211,7 @@
                     right: 1px;
                     top: 1px;
                     bottom: 1px;
+                    cursor: pointer;
                     .cp-history-snapshot {
                         position: absolute;
                         border: 2px solid @cryptpad_text_col;

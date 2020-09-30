@@ -247,8 +247,10 @@ define([
                 var metadataMgr = common.getMetadataMgr();
                 var lastMd = config.getLastMetadata();
                 var _snapshots = lastMd.snapshots;
+                var _users = lastMd.users;
                 var md = Util.clone(metadataMgr.getMetadata());
                 md.snapshots = _snapshots;
+                md.users = _users;
                 metadataMgr.updateMetadata(md);
             }
 
@@ -281,7 +283,7 @@ define([
             return states;
         };
 
-        var $loadMore, $version, $time, get;
+        var $loadMore, $time, get;
 
         // Get the content of the selected version, and change the version number
         var loading = false;
@@ -295,7 +297,6 @@ define([
                 if (err === 'EFULL') {
                     $loadMore.off('click').hide();
                     get(c);
-                    $version.show();
                     return;
                 }
                 loading = false;
@@ -306,7 +307,6 @@ define([
                 get(c);
                 if (isFull) {
                     $loadMore.off('click').hide();
-                    $version.show();
                 }
                 if (cb) { cb(); }
             });
@@ -325,7 +325,7 @@ define([
 
             var idx = getIndex(i);
             if (semantic && i !== c) {
-                // If semantic is truc, jump to the next patch from a different netflux ID
+                // If semantic is true, jump to the next patch from a different netflux ID
                 var author = getAuthor(idx, semantic);
                 var forward = i > c;
                 for (var j = idx; (j > 0 && j < states.length ); (forward ? j++ : j--)) {
@@ -357,7 +357,6 @@ define([
             // Display the version when the full history is loaded
             // Note: the first version is always empty and probably can't be displayed, so
             // we can consider we have only states.length - 1 versions
-            $version.text(idx + ' / ' + (states.length-1));
             var time = states[idx].time;
             if (time) {
                 $time.text(new Date(time).toLocaleString());
@@ -397,7 +396,7 @@ define([
                     time: block.time ? (+new Date(block.time)) : +new Date()
                 };
                 var sent = config.setLastMetadata(md);
-                if (!sent) { return void UI.warn(Messages.error); }
+                if (!sent) { return void UI.alert(Messages.snapshots_cantMake); }
                 refreshBar();
             } catch (e) {
                 console.error(e);
@@ -460,7 +459,6 @@ define([
             var pos = h('span.cp-history-timeline-pos.fa.fa-caret-down');
             var time = h('div.cp-history-timeline-time');
             $time = $(time);
-            $version = $(); // XXX
             var timeline = h('div.cp-toolbar-history-timeline', [
                 h('div.cp-history-timeline-line', [
                     h('span.cp-history-timeline-legend', [
@@ -490,6 +488,9 @@ define([
             Messages.history_restore = "Restore";// XXX
             Messages.history_close = "Close";// XXX
             Messages.history_shareTitle = "Share a link to this version"; // XXX
+            Messages.history_restoreDriveTitle = "Restore the selected version of the DRIVE"; // XXX
+            Messages.history_restoreDrivePrompt = "Are you sure you want to replace the current version of the DRIVE by the displayed one?"; // XXX
+            Messages.history_restoreDriveDone = "DRIVE restored";
             var snapshot = h('button', {
                 title: Messages.snapshots_new,
             }, [
@@ -499,8 +500,10 @@ define([
                 h('i.fa.fa-shhare-alt'),
                 h('span', Messages.shareButton)
             ]);
+            var restoreTitle = config.drive ? Messages.history_restoreDriveTitle
+                                   : Messages.history_restoreTitle;
             var restore = h('button', {
-                title: Messages.history_restoreTitle,
+                title: restoreTitle,
             }, [
                 h('i.fa.fa-check'),
                 h('span', Messages.history_restore)
@@ -614,7 +617,7 @@ define([
                     keys: [27],
                 }, {
                     className: 'primary',
-                    icon: 'fa-camera',
+                    iconClass: '.fa.fa-camera',
                     name: Messages.snapshots_new,
                     onClick: function () {
                         var val = $input.val();
@@ -646,12 +649,16 @@ define([
                 closeUI();
             });
             $(restore).click(function () {
-                UI.confirm(Messages.history_restorePrompt, function (yes) {
+                var restorePrompt = config.drive ? Messages.history_restoreDrivePrompt
+                                                 : Messages.history_restorePrompt;
+                UI.confirm(restorePrompt, function (yes) {
                     if (!yes) { return; }
                     var done = onRevert();
                     if (done) {
                         closeUI();
-                        UI.log(Messages.history_restoreDone);
+                        var restoreDone = config.drive ? Messages.history_restoreDriveDone
+                                                       : Messages.history_restoreDone;
+                        UI.log(restoreDone);
                     }
                 });
             });
@@ -674,7 +681,6 @@ define([
             display();
             if (isFull) {
                 $loadMore.off('click').hide();
-                $version.show();
             }
         });
     };

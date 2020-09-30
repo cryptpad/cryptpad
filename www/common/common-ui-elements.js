@@ -758,23 +758,16 @@ define([
                     button = $('<span>');
                     break;
                 }
-                var active = $(".cp-toolbar-history:visible").length !== 0;
                 button = $('<button>', {
-                    title: active ? Messages.history_closeTitle : Messages.historyButton,
+                    title: Messages.historyButton,
                     'class': "fa fa-history cp-toolbar-icon-history",
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.historyText));
-                button.toggleClass("active", active);
                 if (data.histConfig) {
-                    if (active) {
-                        button.click(function () { $(".cp-toolbar-history-close").trigger("click"); });
-                    }
-                    else {
-                        button
-                            .click(common.prepareFeedback(type))
-                            .on('click', function () {
-                            common.getHistory(data.histConfig);
-                        });
-                    }
+                    button
+                        .click(common.prepareFeedback(type))
+                        .on('click', function () {
+                        common.getHistory(data.histConfig);
+                    });
                 }
                 break;
             case 'mediatag':
@@ -888,7 +881,7 @@ define([
                     if (typeof(data.load) !== "function" || typeof(data.make) !== "function") {
                         return;
                     }
-                    UIElements.openSnapshotsModal(common, data.load, data.make);
+                    UIElements.openSnapshotsModal(common, data.load, data.make, data.remove);
                 });
                 break;
             default:
@@ -3319,63 +3312,119 @@ define([
     Messages.snapshots_button = "Snapshots";
     Messages.snapshots_new = "New snapshot"; // XXX
     Messages.snapshots_placeholder = "Snapshot title"; // XXX
-    Messages.snapshots_open = "Open";
-    UIElements.openSnapshotsModal = function (common, load, make) {
-        var metadataMgr = common.getMetadataMgr();
-        var md = metadataMgr.getMetadata();
-        var snapshots = md.snapshots || {};
+    Messages.snapshots_open = "View";
+    Messages.snapshots_delete = "Delete";
+    Messages.snapshots_cantMake = "Disconnected. Can't create a new snapshot now.";
+    UIElements.openSnapshotsModal = function (common, load, make, remove) {
         var modal;
+        var readOnly = common.getMetadataMgr().getPrivateData().readOnly;
 
-        var list = Object.keys(snapshots).sort(function (h1, h2) {
-            var s1 = snapshots[h1];
-            var s2 = snapshots[h2];
-            return s1.time - s2.time;
-        }).map(function (hash) {
-            var s = snapshots[hash];
-            var button = h('button.btn.btn-secondary', Messages.snapshots_open);
-            $(button).click(function () {
-                load(hash, s);
-                if (modal && modal.closeModal) { modal.closeModal(); }
-            });
-            return h('span.cp-snapshot-element', [
-                h('i.fa.fa-camera'),
-                h('span.cp-snapshot-title', s.title),
-                button
-            ]);
-        });
+        var container = h('div.cp-snapshots-container', {tabindex:1});
+        var $container = $(container);
 
         var input = h('input', {
+            tabindex: 1,
             placeholder: Messages.snapshots_placeholder
         });
         var $input = $(input);
-        var content = h('div', [
-            h('h4', Messages.snapshots_button),
-            h('div.cp-snapshots-container', list),
-            h('h5', Messages.snapshots_new),
-            input
+        var content = h('div.cp-snapshots-modal', [
+            h('h5', Messages.snapshots_button),
+            container,
+            readOnly ? undefined : h('label', Messages.snapshots_new),
+            readOnly ? undefined : input
         ]);
+
+        var refresh = function () {
+            var metadataMgr = common.getMetadataMgr();
+            var md = metadataMgr.getMetadata();
+            var snapshots = md.snapshots || {};
+
+            var list = Object.keys(snapshots).sort(function (h1, h2) {
+                var s1 = snapshots[h1];
+                var s2 = snapshots[h2];
+                return s1.time - s2.time;
+            }).map(function (hash) {
+                var s = snapshots[hash];
+
+                var openButton = h('button.cp-snapshot-view.btn.btn-light', {
+                    tabindex: 1,
+                }, [
+                    h('i.fa.fa-eye'),
+                    h('span', Messages.snapshots_open)
+                ]);
+                $(openButton).click(function () {
+                    load(hash, s);
+                    if (modal && modal.closeModal) {
+                        modal.closeModal();
+                    }
+                });
+
+                var deleteButton = h('button.cp-snapshot-delete.btn.btn-light', {
+                    tabindex: 1,
+                }, [
+                    h('i.fa.fa-trash'),
+                    h('span', Messages.snapshots_delete)
+                ]);
+                UI.confirmButton(deleteButton, {
+                    classes: 'btn-danger'
+                }, function () {
+                    remove(hash, s);
+                    refresh();
+                });
+
+                return h('span.cp-snapshot-element', {tabindex:1}, [
+                    h('i.fa.fa-camera'),
+                    h('span.cp-snapshot-title', [
+                        h('span', s.title),
+                        h('span.cp-snapshot-time', new Date(s.time).toLocaleString())
+                    ]),
+                    h('span.cp-snapshot-buttons', [
+                        readOnly ? undefined : deleteButton,
+                        openButton,
+                    ])
+                ]);
+            });
+
+            $container.html('').append(list);
+            setTimeout(function () {
+                if (list.length) { return void $container.focus(); }
+                $input.focus();
+            });
+        };
+        refresh();
 
         var buttons = [{
             className: 'cancel',
             name: Messages.filePicker_close,
             onClick: function () {},
             keys: [27],
-        }, {
-            className: 'primary',
-            icon: 'fa-camera',
-            name: Messages.snapshots_new,
-            onClick: function () {
-                var val = $input.val();
-                if (!val) { return true; }
-                make(val);
-            },
-            keys: [],
         }];
+        if (!readOnly) {
+            buttons.push({
+                className: 'primary',
+                iconClass: '.fa.fa-camera',
+                name: Messages.snapshots_new,
+                onClick: function () {
+                    var val = $input.val();
+                    if (!val) { return true; }
+                    $container.html('').append(h('div.cp-snapshot-spinner'));
+                    var to = setTimeout(function () {
+                        UI.spinner($container.find('div')).get().show();
+                    });
+                    make(val, function (err) {
+                        clearTimeout(to);
+                        if (err) {
+                            return void UI.alert(Messages.snapshots_cantMake);
+                        }
+                        refresh();
+                    });
+                    return true;
+                },
+                keys: [],
+            });
+        }
 
         modal = UI.openCustomModal(UI.dialog.customModal(content, {buttons: buttons }));
-        setTimeout(function () {
-            $input.focus();
-        });
     };
 
     return UIElements;

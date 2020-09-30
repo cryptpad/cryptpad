@@ -130,21 +130,32 @@ define([
             return;
         };
 
-        var makeSnapshot = function (title) {
+        var deleteSnapshot = function (hash) {
+            var md = Util.clone(cpNfInner.metadataMgr.getMetadata());
+            var snapshots = md.snapshots = md.snapshots || {};
+            delete snapshots[hash];
+            cpNfInner.metadataMgr.updateMetadata(md);
+            onLocal();
+        };
+        var makeSnapshot = function (title, cb) {
+            if (state !== STATE.READY) {
+                return void cb('NOT_READY');
+            }
             var sframeChan = common.getSframeChannel();
             sframeChan.query("Q_GET_LAST_HASH", null, function (err, obj) {
                 if (err || (obj && obj.error)) { return void UI.warn(Messages.error); }
                 var hash = obj.hash;
-                if (!hash) { return void UI.warn(Messages.error); }
+                if (!hash) { cb('NO_HASH'); return void UI.warn(Messages.error); }
                 var md = Util.clone(cpNfInner.metadataMgr.getMetadata());
                 var snapshots = md.snapshots = md.snapshots || {};
-                if (snapshots[hash]) { return void UI.warn(Messages.error); } // XXX EEXISTS
+                if (snapshots[hash]) { cb('EEXISTS'); return void UI.warn(Messages.error); } // XXX
                 snapshots[hash] = {
                     title: title,
                     time: +new Date()
                 };
                 cpNfInner.metadataMgr.updateMetadata(md);
                 onLocal();
+                cpNfInner.chainpad.onSettle(cb);
             });
         };
 
@@ -349,6 +360,7 @@ define([
         };
         var setLastMetadata = function (md) {
             if (!unsyncMode) { return; }
+            if (state !== STATE.READY) { return; }
             var newContentStr = cpNfInner.chainpad.getAuthDoc();
             var newContent = JSON.parse(newContentStr);
             if (Array.isArray(newContent)) {
@@ -809,10 +821,10 @@ define([
                 $toolbar: $(toolbarContainer)
             };
             var $hist = common.createButton('history', true, {histConfig: histConfig});
-            $hist.addClass('cp-hidden-if-readonly');
             toolbar.$drawer.append($hist);
 
             var $snapshot = common.createButton('snapshots', true, {
+                remove: deleteSnapshot,
                 make: makeSnapshot,
                 load: loadSnapshot
             });
