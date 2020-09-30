@@ -5,13 +5,17 @@ var BlobStore = require("../lib/storage/blob");
 
 var Quota = require("../lib/commands/quota");
 
+var config = require("../lib/load-config");
 var Env = {
-    config: require("../lib/load-config"),
+    inactiveTime: config.inactiveTime,
+    archiveRetentionTime: config.archiveRetentionTime,
+    accountRetentionTime: config.accountRetentionTime,
+    paths: {
+        pin: config.pinPath,
+    },
 };
 
 var prepareEnv = function (Env, cb) {
-    var config = Env.config;
-
     Env.customLimits = config.customLimits;
     Quota.applyCustomLimits(Env);
 
