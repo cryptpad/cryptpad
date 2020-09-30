@@ -137,21 +137,22 @@ define([
             cpNfInner.metadataMgr.updateMetadata(md);
             onLocal();
         };
-        var makeSnapshot = function (title) {
+        var makeSnapshot = function (title, cb) {
             var sframeChan = common.getSframeChannel();
             sframeChan.query("Q_GET_LAST_HASH", null, function (err, obj) {
                 if (err || (obj && obj.error)) { return void UI.warn(Messages.error); }
                 var hash = obj.hash;
-                if (!hash) { return void UI.warn(Messages.error); }
+                if (!hash) { cb('NO_HASH'); return void UI.warn(Messages.error); }
                 var md = Util.clone(cpNfInner.metadataMgr.getMetadata());
                 var snapshots = md.snapshots = md.snapshots || {};
-                if (snapshots[hash]) { return void UI.warn(Messages.error); } // XXX EEXISTS
+                if (snapshots[hash]) { cb('EEXISTS'); return void UI.warn(Messages.error); } // XXX
                 snapshots[hash] = {
                     title: title,
                     time: +new Date()
                 };
                 cpNfInner.metadataMgr.updateMetadata(md);
                 onLocal();
+                cpNfInner.chainpad.onSettle(cb);
             });
         };
 

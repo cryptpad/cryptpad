@@ -3315,56 +3315,11 @@ define([
     Messages.snapshots_open = "View";
     Messages.snapshots_delete = "Delete";
     UIElements.openSnapshotsModal = function (common, load, make, remove) {
-        var metadataMgr = common.getMetadataMgr();
-        var md = metadataMgr.getMetadata();
-        var snapshots = md.snapshots || {};
         var modal;
         var readOnly = common.getMetadataMgr().getPrivateData().readOnly;
 
-        var list = Object.keys(snapshots).sort(function (h1, h2) {
-            var s1 = snapshots[h1];
-            var s2 = snapshots[h2];
-            return s1.time - s2.time;
-        }).map(function (hash) {
-            var s = snapshots[hash];
-
-            var openButton = h('button.cp-snapshot-view.btn.btn-light', [
-                h('i.fa.fa-eye'),
-                h('span', Messages.snapshots_open)
-            ]);
-            $(openButton).click(function () {
-                load(hash, s);
-                if (modal && modal.closeModal) {
-                    modal.closeModal();
-                }
-            });
-
-            var deleteButton = h('button.cp-snapshot-delete.btn.btn-light', [
-                h('i.fa.fa-trash'),
-                h('span', Messages.snapshots_delete)
-            ]);
-            UI.confirmButton(deleteButton, {
-                classes: 'btn-danger'
-            }, function () {
-                remove(hash, s);
-                if (modal && modal.closeModal) {
-                    modal.closeModal();
-                    UIElements.openSnapshotsModal(common, load, make, remove);
-                }
-            });
-
-            return h('span.cp-snapshot-element', {tabindex:0}, [
-                h('i.fa.fa-camera'),
-                h('span.cp-snapshot-title', [
-                    h('span', s.title),
-                    h('span.cp-snapshot-time', new Date(s.time).toLocaleString())
-                ]),
-                h('span.cp-snapshot-buttons', [
-                    readOnly ? undefined : deleteButton,
-                    openButton,
-                ])
-            ]);
-        });
+        var container = h('div.cp-snapshots-container', {tabindex:0});
+        var $container = $(container);
 
         var input = h('input', {
             placeholder: Messages.snapshots_placeholder
@@ -3372,10 +3327,65 @@ define([
         var $input = $(input);
         var content = h('div.cp-snapshots-modal', [
             h('h5', Messages.snapshots_button),
-            h('div.cp-snapshots-container', list),
+            container,
             readOnly ? undefined : h('h6', Messages.snapshots_new),
             readOnly ? undefined : input
         ]);
+
+        var refresh = function () {
+            var metadataMgr = common.getMetadataMgr();
+            var md = metadataMgr.getMetadata();
+            var snapshots = md.snapshots || {};
+
+            var list = Object.keys(snapshots).sort(function (h1, h2) {
+                var s1 = snapshots[h1];
+                var s2 = snapshots[h2];
+                return s1.time - s2.time;
+            }).map(function (hash) {
+                var s = snapshots[hash];
+
+                var openButton = h('button.cp-snapshot-view.btn.btn-light', [
+                    h('i.fa.fa-eye'),
+                    h('span', Messages.snapshots_open)
+                ]);
+                $(openButton).click(function () {
+                    load(hash, s);
+                    if (modal && modal.closeModal) {
+                        modal.closeModal();
+                    }
+                });
+
+                var deleteButton = h('button.cp-snapshot-delete.btn.btn-light', [
+                    h('i.fa.fa-trash'),
+                    h('span', Messages.snapshots_delete)
+                ]);
+                UI.confirmButton(deleteButton, {
+                    classes: 'btn-danger'
+                }, function () {
+                    remove(hash, s);
+                    refresh();
+                });
+
+                return h('span.cp-snapshot-element', {tabindex:0}, [
+                    h('i.fa.fa-camera'),
+                    h('span.cp-snapshot-title', [
+                        h('span', s.title),
+                        h('span.cp-snapshot-time', new Date(s.time).toLocaleString())
+                    ]),
+                    h('span.cp-snapshot-buttons', [
+                        readOnly ? undefined : deleteButton,
+                        openButton,
+                    ])
+                ]);
+            });
+
+            $container.html('').append(list);
+            setTimeout(function () {
+                if (list.length) { return void $container.focus(); }
+                $input.focus();
+            });
+        };
+        refresh();
 
         var buttons = [{
             className: 'cancel',
@@ -3391,23 +3401,19 @@ define([
                 onClick: function () {
                     var val = $input.val();
                     if (!val) { return true; }
-                    make(val);
-                    setTimeout(function () {
-                        UIElements.openSnapshotsModal(common, load, make, remove);
+                    $container.html('');
+                    UI.spinner($container).get().show();
+                    make(val, function (err) {
+                        if (err) { return; }
+                        refresh();
                     });
+                    return true;
                 },
                 keys: [],
             });
         }
 
         modal = UI.openCustomModal(UI.dialog.customModal(content, {buttons: buttons }));
-        setTimeout(function () {
-            if (list.length) {
-                $(list[0]).focus();
-                return;
-            }
-            $input.focus();
-        });
     };
 
     return UIElements;
