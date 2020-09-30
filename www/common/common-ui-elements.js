@@ -3336,7 +3336,6 @@ define([
                 load(hash, s);
                 if (modal && modal.closeModal) {
                     modal.closeModal();
-                    UIElements.openSnapshotsModal(common, load, make, remove);
                 }
             });
 
@@ -3393,6 +3392,9 @@ define([
                     var val = $input.val();
                     if (!val) { return true; }
                     make(val);
+                    setTimeout(function () {
+                        UIElements.openSnapshotsModal(common, load, make, remove);
+                    });
                 },
                 keys: [],
             });
