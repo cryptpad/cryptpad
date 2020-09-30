@@ -138,6 +138,9 @@ define([
             onLocal();
         };
         var makeSnapshot = function (title, cb) {
+            if (state !== STATE.READY) {
+                return void cb('NOT_READY');
+            }
             var sframeChan = common.getSframeChannel();
             sframeChan.query("Q_GET_LAST_HASH", null, function (err, obj) {
                 if (err || (obj && obj.error)) { return void UI.warn(Messages.error); }
@@ -357,6 +360,7 @@ define([
         };
         var setLastMetadata = function (md) {
             if (!unsyncMode) { return; }
+            if (state !== STATE.READY) { return; }
             var newContentStr = cpNfInner.chainpad.getAuthDoc();
             var newContent = JSON.parse(newContentStr);
             if (Array.isArray(newContent)) {

@@ -396,7 +396,7 @@ define([
                     time: block.time ? (+new Date(block.time)) : +new Date()
                 };
                 var sent = config.setLastMetadata(md);
-                if (!sent) { return void UI.warn(Messages.error); }
+                if (!sent) { return void UI.alert(Messages.snapshots_cantMake); }
                 refreshBar();
             } catch (e) {
                 console.error(e);

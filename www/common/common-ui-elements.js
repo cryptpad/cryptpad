@@ -3314,6 +3314,7 @@ define([
     Messages.snapshots_placeholder = "Snapshot title"; // XXX
     Messages.snapshots_open = "View";
     Messages.snapshots_delete = "Delete";
+    Messages.snapshots_cantMake = "Disconnected. Can't create a new snapshot now.";
     UIElements.openSnapshotsModal = function (common, load, make, remove) {
         var modal;
         var readOnly = common.getMetadataMgr().getPrivateData().readOnly;
@@ -3406,10 +3407,15 @@ define([
                 onClick: function () {
                     var val = $input.val();
                     if (!val) { return true; }
-                    $container.html('');
-                    UI.spinner($container).get().show();
+                    $container.html('').append(h('div.cp-snapshot-spinner'));
+                    var to = setTimeout(function () {
+                        UI.spinner($container.find('div')).get().show();
+                    });
                     make(val, function (err) {
-                        if (err) { return; }
+                        clearTimeout(to);
+                        if (err) {
+                            return void UI.alert(Messages.snapshots_cantMake);
+                        }
                         refresh();
                     });
                     return true;
