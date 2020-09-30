@@ -113,9 +113,6 @@
     }
 
     .cp-snapshots-modal {
-        h6 {
-            margin-bottom: 0;
-        }
         & > input:last-child {
             margin-bottom: 0 !important;
         }
@@ -129,10 +126,12 @@
         max-height: 245px;
         overflow: auto;
         min-height: 100px;
+        outline: none;
         .cp-snapshot-element {
             display: flex;
             align-items: center;
             padding: 5px 0;
+            outline: none;
             & > i {
                 margin-left: @snapshot_spacing;
                 text-align: center;

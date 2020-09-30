@@ -3318,17 +3318,18 @@ define([
         var modal;
         var readOnly = common.getMetadataMgr().getPrivateData().readOnly;
 
-        var container = h('div.cp-snapshots-container', {tabindex:0});
+        var container = h('div.cp-snapshots-container', {tabindex:1});
         var $container = $(container);
 
         var input = h('input', {
+            tabindex: 1,
             placeholder: Messages.snapshots_placeholder
         });
         var $input = $(input);
         var content = h('div.cp-snapshots-modal', [
             h('h5', Messages.snapshots_button),
             container,
-            readOnly ? undefined : h('h6', Messages.snapshots_new),
+            readOnly ? undefined : h('label', Messages.snapshots_new),
             readOnly ? undefined : input
         ]);
 
@@ -3344,7 +3345,9 @@ define([
             }).map(function (hash) {
                 var s = snapshots[hash];
 
-                var openButton = h('button.cp-snapshot-view.btn.btn-light', [
+                var openButton = h('button.cp-snapshot-view.btn.btn-light', {
+                    tabindex: 1,
+                }, [
                     h('i.fa.fa-eye'),
                     h('span', Messages.snapshots_open)
                 ]);
@@ -3355,7 +3358,9 @@ define([
                     }
                 });
 
-                var deleteButton = h('button.cp-snapshot-delete.btn.btn-light', [
+                var deleteButton = h('button.cp-snapshot-delete.btn.btn-light', {
+                    tabindex: 1,
+                }, [
                     h('i.fa.fa-trash'),
                     h('span', Messages.snapshots_delete)
                 ]);
@@ -3366,7 +3371,7 @@ define([
                     refresh();
                 });
 
-                return h('span.cp-snapshot-element', {tabindex:0}, [
+                return h('span.cp-snapshot-element', {tabindex:1}, [
                     h('i.fa.fa-camera'),
                     h('span.cp-snapshot-title', [
                         h('span', s.title),

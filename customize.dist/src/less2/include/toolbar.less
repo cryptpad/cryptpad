@@ -910,9 +910,24 @@
         display: none;
         text-align: center;
         width: 100%;
-        padding: 10px 0;
+        padding: 5px 0;
         align-items: center;
-        justify-content: center;
+        justify-content: space-between;
+        .cp-toolbar-snapshots-info {
+            i {
+                width: 30px;
+            }
+        }
+        .cp-toolbar-snapshots-actions {
+            button {
+                margin: 0 5px;
+                border: 1px solid @cryptpad_text_col;
+                text-transform: uppercase;
+                i:not(:last-child) {
+                    margin-right: 5px;
+                }
+            }
+        }
     }
     .cp-toolbar-bottom {
         background-color: @toolbar-bg-color-light;
