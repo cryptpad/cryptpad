@@ -3354,7 +3354,7 @@ define([
                 }
             });
 
-            return h('span.cp-snapshot-element', [
+            return h('span.cp-snapshot-element', {tabindex:0}, [
                 h('i.fa.fa-camera'),
                 h('span.cp-snapshot-title', [
                     h('span', s.title),
@@ -3400,6 +3400,10 @@ define([
 
         modal = UI.openCustomModal(UI.dialog.customModal(content, {buttons: buttons }));
         setTimeout(function () {
+            if (list.length) {
+                $(list[0]).focus();
+                return;
+            }
             $input.focus();
         });
     };
