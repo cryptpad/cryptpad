@@ -817,7 +817,6 @@ define([
                 $toolbar: $(toolbarContainer)
             };
             var $hist = common.createButton('history', true, {histConfig: histConfig});
-            $hist.addClass('cp-hidden-if-readonly');
             toolbar.$drawer.append($hist);
 
             var $snapshot = common.createButton('snapshots', true, {
