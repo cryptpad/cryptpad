@@ -247,8 +247,10 @@ define([
                 var metadataMgr = common.getMetadataMgr();
                 var lastMd = config.getLastMetadata();
                 var _snapshots = lastMd.snapshots;
+                var _users = lastMd.users;
                 var md = Util.clone(metadataMgr.getMetadata());
                 md.snapshots = _snapshots;
+                md.users = _users;
                 metadataMgr.updateMetadata(md);
             }
 
@@ -323,7 +325,7 @@ define([
 
             var idx = getIndex(i);
             if (semantic && i !== c) {
-                // If semantic is truc, jump to the next patch from a different netflux ID
+                // If semantic is true, jump to the next patch from a different netflux ID
                 var author = getAuthor(idx, semantic);
                 var forward = i > c;
                 for (var j = idx; (j > 0 && j < states.length ); (forward ? j++ : j--)) {
