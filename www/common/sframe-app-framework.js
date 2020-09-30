@@ -130,6 +130,13 @@ define([
             return;
         };
 
+        var deleteSnapshot = function (hash) {
+            var md = Util.clone(cpNfInner.metadataMgr.getMetadata());
+            var snapshots = md.snapshots = md.snapshots || {};
+            delete snapshots[hash];
+            cpNfInner.metadataMgr.updateMetadata(md);
+            onLocal();
+        };
         var makeSnapshot = function (title) {
             var sframeChan = common.getSframeChannel();
             sframeChan.query("Q_GET_LAST_HASH", null, function (err, obj) {
@@ -813,6 +820,7 @@ define([
             toolbar.$drawer.append($hist);
 
             var $snapshot = common.createButton('snapshots', true, {
+                remove: deleteSnapshot,
                 make: makeSnapshot,
                 load: loadSnapshot
             });

@@ -161,6 +161,15 @@
             }
         }
 
+        &.btn-light {
+            border-color: @cryptpad_text_col;
+            color: @cryptpad_text_col;
+            background-color: transparent;
+            &:hover, &:hover, &:focus {
+                background-color: fade(@cryptpad_text_col, 25%);
+            }
+        }
+
         &.cancel, &.btn-cancel {
             border-color: @colortheme_alertify-cancel-border;
             color: @colortheme_alertify-cancel-border;

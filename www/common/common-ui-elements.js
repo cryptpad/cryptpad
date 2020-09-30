@@ -881,7 +881,7 @@ define([
                     if (typeof(data.load) !== "function" || typeof(data.make) !== "function") {
                         return;
                     }
-                    UIElements.openSnapshotsModal(common, data.load, data.make);
+                    UIElements.openSnapshotsModal(common, data.load, data.make, data.remove);
                 });
                 break;
             default:
@@ -3312,12 +3312,14 @@ define([
     Messages.snapshots_button = "Snapshots";
     Messages.snapshots_new = "New snapshot"; // XXX
     Messages.snapshots_placeholder = "Snapshot title"; // XXX
-    Messages.snapshots_open = "Open";
-    UIElements.openSnapshotsModal = function (common, load, make) {
+    Messages.snapshots_open = "View";
+    Messages.snapshots_delete = "Delete";
+    UIElements.openSnapshotsModal = function (common, load, make, remove) {
         var metadataMgr = common.getMetadataMgr();
         var md = metadataMgr.getMetadata();
         var snapshots = md.snapshots || {};
         var modal;
+        var readOnly = common.getMetadataMgr().getPrivateData().readOnly;
 
         var list = Object.keys(snapshots).sort(function (h1, h2) {
             var s1 = snapshots[h1];
@@ -3325,15 +3327,43 @@ define([
             return s1.time - s2.time;
         }).map(function (hash) {
             var s = snapshots[hash];
-            var button = h('button.btn.btn-secondary', Messages.snapshots_open);
-            $(button).click(function () {
+
+            var openButton = h('button.cp-snapshot-view.btn.btn-light', [
+                h('i.fa.fa-eye'),
+                h('span', Messages.snapshots_open)
+            ]);
+            $(openButton).click(function () {
                 load(hash, s);
-                if (modal && modal.closeModal) { modal.closeModal(); }
+                if (modal && modal.closeModal) {
+                    modal.closeModal();
+                    UIElements.openSnapshotsModal(common, load, make, remove);
+                }
             });
+
+            var deleteButton = h('button.cp-snapshot-delete.btn.btn-light', [
+                h('i.fa.fa-trash'),
+                h('span', Messages.snapshots_delete)
+            ]);
+            UI.confirmButton(deleteButton, {
+                classes: 'btn-danger'
+            }, function () {
+                remove(hash, s);
+                if (modal && modal.closeModal) {
+                    modal.closeModal();
+                    UIElements.openSnapshotsModal(common, load, make, remove);
+                }
+            });
+
             return h('span.cp-snapshot-element', [
                 h('i.fa.fa-camera'),
-                h('span.cp-snapshot-title', s.title),
-                button
+                h('span.cp-snapshot-title', [
+                    h('span', s.title),
+                    h('span.cp-snapshot-time', new Date(s.time).toLocaleString())
+                ]),
+                h('span.cp-snapshot-buttons', [
+                    readOnly ? undefined : deleteButton,
+                    openButton,
+                ])
             ]);
         });
 
@@ -3341,11 +3371,11 @@ define([
             placeholder: Messages.snapshots_placeholder
         });
         var $input = $(input);
-        var content = h('div', [
-            h('h4', Messages.snapshots_button),
+        var content = h('div.cp-snapshots-modal', [
+            h('h5', Messages.snapshots_button),
             h('div.cp-snapshots-container', list),
-            h('h5', Messages.snapshots_new),
-            input
+            readOnly ? undefined : h('h6', Messages.snapshots_new),
+            readOnly ? undefined : input
         ]);
 
         var buttons = [{
@@ -3353,17 +3383,20 @@ define([
             name: Messages.filePicker_close,
             onClick: function () {},
             keys: [27],
-        }, {
-            className: 'primary',
-            icon: 'fa-camera',
-            name: Messages.snapshots_new,
-            onClick: function () {
-                var val = $input.val();
-                if (!val) { return true; }
-                make(val);
-            },
-            keys: [],
         }];
+        if (!readOnly) {
+            buttons.push({
+                className: 'primary',
+                iconClass: '.fa.fa-camera',
+                name: Messages.snapshots_new,
+                onClick: function () {
+                    var val = $input.val();
+                    if (!val) { return true; }
+                    make(val);
+                },
+                keys: [],
+            });
+        }
 
         modal = UI.openCustomModal(UI.dialog.customModal(content, {buttons: buttons }));
         setTimeout(function () {
