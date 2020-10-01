@@ -1,3 +1,21 @@
+# X (3.23.0)
+
+## Goals
+
+## Update notes
+
+## Features
+
+* responsive modals
+  * share
+  * access
+  * opencollective alert
+  * accessibility in alertify
+* remove inactive users
+
+## Bug fixes
+
+
 # WoollyMammoth (3.22.0)
 
 ## Goals
