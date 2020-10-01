@@ -128,7 +128,6 @@ define([
     };
     var mkHelpMenu = function (framework) {
         var $codeMirrorContainer = $('#cp-app-code-container');
-        $codeMirrorContainer.prepend(framework._.sfCommon.getBurnAfterReadingWarning());
         var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'code']);
         $codeMirrorContainer.prepend(helpMenu.menu);
 

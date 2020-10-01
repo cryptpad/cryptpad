@@ -438,6 +438,36 @@ define([
             window.dispatchEvent(evt);
         };
 
+        var versionHashEl;
+        var onInit = function () {
+            UI.updateLoadingProgress({
+                state: 2,
+                progress: 0.1
+            }, false);
+            stateChange(STATE.INITIALIZING);
+            if ($('.cp-help-container').length) {
+                var privateDat = cpNfInner.metadataMgr.getPrivateData();
+                // Burn after reading warning
+                $('.cp-help-container').before(common.getBurnAfterReadingWarning());
+                // Versioned link warning
+                if (privateDat.isHistoryVersion) {
+                    versionHashEl = h('div.alert.alert-warning.cp-burn-after-reading');
+                    $('.cp-help-container').before(versionHashEl);
+                }
+            }
+
+            common.getSframeChannel().on('EV_VERSION_TIME', function (time) {
+                if (!versionHashEl) { return; }
+                Messages.infobar_versionHash = "You're currently viewing an old version of this document ({0})."; // XXX
+                var vTime = time;
+                var vTimeStr = vTime ? new Date(vTime).toLocaleString()
+                                     : 'v' + privateDat.isHistoryVersion;
+                var vTxt = Messages._getKey('infobar_versionHash',  [vTimeStr]);
+                versionHashEl.innerText = vTxt;
+                versionHashEl = undefined;
+            });
+        };
+
         var onReady = function () {
             var newContentStr = cpNfInner.chainpad.getUserDoc();
             if (state === STATE.DELETED) { return; }
@@ -454,6 +484,7 @@ define([
 
             var privateDat = cpNfInner.metadataMgr.getPrivateData();
             var type = privateDat.app;
+
 
             // contentUpdate may be async so we need an nthen here
             nThen(function (waitFor) {
@@ -706,13 +737,7 @@ define([
                 },
                 onRemote: onRemote,
                 onLocal: onLocal,
-                onInit: function () {
-                    UI.updateLoadingProgress({
-                        state: 2,
-                        progress: 0.1
-                    }, false);
-                    stateChange(STATE.INITIALIZING);
-                },
+                onInit: onInit,
                 onReady: function () { evStart.reg(onReady); },
                 onConnectionChange: onConnectionChange,
                 onError: onError,

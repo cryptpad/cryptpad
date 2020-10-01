@@ -1464,28 +1464,41 @@ define([
         };
 
         var getVersionHash = function (clientId, data) {
+            var validateKey;
             var fakeNetflux = Hash.createChannelId();
-            Store.getHistoryRange(clientId, {
-                cpCount: 1,
-                channel: data.channel,
-                lastKnownHash: data.versionHash
-            }, function (obj) {
-                if (obj && obj.error) {
-                    postMessage(clientId, "PAD_ERROR", obj.error);
-                    return;
-                }
-                postMessage(clientId, "PAD_CONNECT", {
-                    myID: fakeNetflux,
-                    id: data.channel,
-                    members: [fakeNetflux]
-                });
-                (obj.messages || []).forEach(function (data) {
-                    postMessage(clientId, "PAD_MESSAGE", {
-                        msg: data.msg,
-                        user: fakeNetflux.slice(0,16), // fake history keeper to avoid validate
+            nThen(function (waitFor) {
+                Store.getPadMetadata(null, {
+                    channel: data.channel
+                }, waitFor(function (md) {
+                    validateKey = md.validateKey;
+                }));
+            }).nThen(function () {
+                Store.getHistoryRange(clientId, {
+                    cpCount: 1,
+                    channel: data.channel,
+                    lastKnownHash: data.versionHash
+                }, function (obj) {
+                    if (obj && obj.error) {
+                        postMessage(clientId, "PAD_ERROR", obj.error);
+                        return;
+                    }
+                    postMessage(clientId, "PAD_CONNECT", {
+                        myID: fakeNetflux,
+                        id: data.channel,
+                        members: [fakeNetflux]
                     });
+                    (obj.messages || []).forEach(function (data) {
+                        postMessage(clientId, "PAD_MESSAGE", {
+                            msg: data.msg,
+                            time: data.time,
+                            user: fakeNetflux.slice(0,16), // fake history keeper to avoid validate
+                        });
+                    });
+                    if (validateKey && store.messenger) {
+                        store.messenger.storeValidateKey(data.channel, validateKey);
+                    }
+                    postMessage(clientId, "PAD_READY");
                 });
-                postMessage(clientId, "PAD_READY");
             });
         };
 
