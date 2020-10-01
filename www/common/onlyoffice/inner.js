@@ -648,17 +648,41 @@ define([
                     try { obj.msg = JSON.parse(obj.msg); } catch (e) { console.error(e); }
                 });
 
+                // The version exists if we have results in the "messages" array
+                // or if we requested a x.0 version
+                var exists = !Number(s[1]) || messages.length;
+                var vHashEl;
+                Messages.oo_deletedVersion = "This version no longer exists in the history."; // XXX
+
                 if (!privateData.embed) {
                     Messages.infobar_versionHash = "You're currently viewing an old version of this document ({0})."; // XXX (duplicate from history branch)
                     var vTime = (messages[messages.length - 1] || {}).time;
                     var vTimeStr = vTime ? new Date(vTime).toLocaleString()
                                          : 'v' + privateData.ooVersionHash;
                     var vTxt = Messages._getKey('infobar_versionHash',  [vTimeStr]);
-                    var vHashEl = h('div.alert.alert-warning.cp-burn-after-reading', vTxt);
+
+                    // If we expected patched and we don't have any, it means this part
+                    // of the history has been deleted
+                    var vType = "warning";
+                    if (!exists) {
+                        vTxt = Messages.oo_deletedVersion
+                        vType = "danger";
+                    }
+
+                    vHashEl = h('div.alert.alert-'+vType+'.cp-burn-after-reading', vTxt);
                     $('#cp-app-oo-editor').prepend(vHashEl);
                 }
 
+                if (!exists) { return void UI.removeLoadingScreen(); }
+
                 loadLastDocument(cp, function () {
+                    if (cp.hash && vHashEl) {
+                        // We requested a checkpoint but we can't find it...
+                        UI.removeLoadingScreen();
+                        vHashEl.innerText = Messages.oo_deletedVersion;
+                        $(vHashEl).removeClass('alert-warning').addClass('alert-danger');
+                        return;
+                    }
                     var file = getFileType();
                     var type = common.getMetadataMgr().getPrivateData().ooType;
                     var blob = loadInitDocument(type, true);
