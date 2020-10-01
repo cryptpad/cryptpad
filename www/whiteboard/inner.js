@@ -250,7 +250,6 @@ define([
 
     var mkHelpMenu = function (framework) {
         var $appContainer = $('#cp-app-whiteboard-container');
-        $appContainer.prepend(framework._.sfCommon.getBurnAfterReadingWarning());
         var helpMenu = framework._.sfCommon.createHelpMenu(['whiteboard']);
         $appContainer.prepend(helpMenu.menu);
         framework._.toolbar.$drawer.append(helpMenu.button);
