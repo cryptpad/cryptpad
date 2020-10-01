@@ -46,6 +46,13 @@ define([
             sframeChan.query("Q_GET_SNAPSHOT", {hash: config.hash}, function (err, obj) {
                 if (err || (obj && obj.error)) { return void console.error(err || obj.error); }
                 if (!Array.isArray(obj)) { return void console.error("invalid type"); }
+                if (!obj.length) { return void console.error("Empty channel"); }
+                var checkLast = obj[obj.length - 1].serverHash === config.hash;
+                if (!checkLast) {
+                    $snap.find('.cp-toolbar-snapshots-close').click();
+                    return void UI.alert(Messages.snapshots_notFound);
+                }
+
                 var messages = obj;
                 var chainpad = createChainPad();
                 messages.forEach(function (m) {
@@ -57,6 +64,7 @@ define([
             });
         };
 
+Messages.snapshots_notFound = "This snapshot no longer exists. It has been deleted with the history of the pad.";
 Messages.snapshots_restore = "Restore"; // XXX
 Messages.snapshots_close = "Close";
 Messages.snapshots_cantRestore = "Can't restore now. Disconnected...";

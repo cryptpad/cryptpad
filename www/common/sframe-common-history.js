@@ -214,6 +214,16 @@ define([
                 var messages = (data.messages || []).map(function (obj) {
                     return obj;
                 });
+
+                // We're supposed to receive 2 checkpoints. If the result is only ONE message
+                // and this message is a checkpoint, it means it's the last message of the history
+                // (and this is a trimmed history)
+                if (messages.length === 1) {
+                    var parsed = JSON.parse(messages[0].msg);
+                    if (parsed[0] === 4) {
+                        isComplete = true;
+                    }
+                }
                 if (config.debug) { console.log(data.messages); }
                 Array.prototype.unshift.apply(allMessages, messages); // Destructive concat
                 fillChainPad(realtime, allMessages);
