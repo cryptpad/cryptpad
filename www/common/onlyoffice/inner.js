@@ -252,7 +252,9 @@ define([
                 rtChannel.sendCmd({
                     cmd: 'GET_HISTORY',
                     data: {}
-                }, cb);
+                }, function () {
+                    APP.onHistorySynced = cb;
+                });
             },
             sendMsg: function (msg, cp, cb) {
                 rtChannel.sendCmd({
@@ -718,6 +720,12 @@ define([
                             ooChannel.queue.push(obj.data);
                         }
                         break;
+                    case 'HISTORY_SYNCED':
+                        if (typeof(APP.onHistorySynced) !== "function") { return; }
+                        APP.onHistorySynced();
+                        delete APP.onHistorySynced;
+                        break;
+
                 }
             });
         };
@@ -1832,15 +1840,15 @@ define([
                     APP.stopHistory = true;
                     makeCheckpoint(true);
                 };
-                var loadCp = function (cp) {
+                var loadCp = function (cp, keepQueue) {
                     loadLastDocument(cp, function () {
                         var file = getFileType();
                         var type = common.getMetadataMgr().getPrivateData().ooType;
                         var blob = loadInitDocument(type, true);
-                        ooChannel.queue = [];
+                        if (!keepQueue) { ooChannel.queue = []; }
                         resetData(blob, file);
                     }, function (blob, file) {
-                        ooChannel.queue = [];
+                        if (!keepQueue) { ooChannel.queue = []; }
                         resetData(blob, file);
                     });
                 };
@@ -1862,9 +1870,10 @@ define([
                     APP.history = false;
                     ooChannel.queue = [];
                     ooChannel.ready = false;
+                    // Fill the queue and then load the last CP
                     rtChannel.getHistory(function () {
                         var lastCp = getLastCp();
-                        loadCp(lastCp);
+                        loadCp(lastCp, true);
                     });
                 };
 

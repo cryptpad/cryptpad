@@ -7,13 +7,14 @@ define([
         if (!c) { return void cb({error: 'ENOENT'}); }
         var chan = ctx.channels[c.channel];
         if (!chan) { return void cb({error: 'ENOCHAN'}); }
+        cb();
         chan.history.forEach(function (msg) {
             ctx.emit('MESSAGE', {
                 msg: msg,
                 validateKey: chan.validateKey
             }, [client]);
         });
-        cb();
+        ctx.emit('HISTORY_SYNCED', {}, [client]);
     };
 
     var openChannel = function (ctx, obj, client, cb) {

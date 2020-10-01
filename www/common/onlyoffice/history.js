@@ -116,7 +116,11 @@ define([
                 if (err) { return void console.error(err); }
                 if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
 
-                var messages = (data.messages || []).slice(1);
+                // The first "cp" in history is the empty doc. It doesn't include the first patch
+                // of the history
+                var initialCp = cpIndex === sortedCp.length;
+
+                var messages = (data.messages || []).slice(initialCp ? 0 : 1);
 
                 if (config.debug) { console.log(data.messages); }
                 fillOO(id, messages);
@@ -148,9 +152,7 @@ define([
         };
 
         update = function () {
-            console.log($fastPrev, $next, $fastNext);
             var cps = sortedCp.length;
-            console.log(cpIndex, msgIndex, cps);
             $fastPrev.show();
             $next.show();
             $fastNext.show();
