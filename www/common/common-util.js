@@ -18,6 +18,7 @@
     };
 
     Util.both = function (pre, post) {
+        if (typeof(pre) !== 'function') { throw new Error('INVALID_USAGE'); }
         if (typeof(post) !== 'function') { post = function (x) { return x; }; }
         return function () {
             pre.apply(null, arguments);
@@ -33,7 +34,7 @@
         try { return JSON.parse(s); } catch (e) { return;}
     };
 
-    Util.mkAsync = function (f) {
+    Util.mkAsync = function (f, ms) {
         if (typeof(f) !== 'function') {
             throw new Error('EXPECTED_FUNCTION');
         }
@@ -41,7 +42,7 @@
             var args = Array.prototype.slice.call(arguments);
             setTimeout(function () {
                 f.apply(null, args);
-            });
+            }, ms);
         };
     };
 
