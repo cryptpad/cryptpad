@@ -63,13 +63,6 @@ var prepareEnv = function (Env, cb) {
     });
 };
 
-var shutdown = function (Env) {
-    // the store will keep this script running if you don't shut it down
-    //Env.store.shutdown();
-    //Env.Log.shutdown();
-    //Env.pinStore.shutdown();
-};
-
 nThen(function (w) {
     // load database adaptors and configuration values into the environment
     prepareEnv(Env, w(function () {
@@ -80,7 +73,4 @@ nThen(function (w) {
     Eviction(Env, w(function () {
 
     }));
-}).nThen(function () {
-    // shut down database adaptors
-    shutdown(Env);
 });
