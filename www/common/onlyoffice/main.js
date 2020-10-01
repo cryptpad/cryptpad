@@ -147,6 +147,13 @@ define([
                 }
                 Cryptpad.onlyoffice.execCommand(obj, cb);
             });
+            sframeChan.on('EV_OO_OPENVERSION', function (obj, cb) {
+                if (!obj || !obj.hash) { return; }
+                var parsed = Hash.parsePadUrl(window.location.href);
+                var opts = parsed.getOptions();
+                opts.versionHash = obj.hash;
+                window.open(parsed.getUrl(opts));
+            });
             Cryptpad.onlyoffice.onEvent.reg(function (obj) {
                 if (obj.ev === 'MESSAGE' && !/^cp\|/.test(obj.data)) {
                     try {

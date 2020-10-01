@@ -14,7 +14,7 @@ define([
         var sframeChan = common.getSframeChannel();
         History.readOnly = common.getMetadataMgr().getPrivateData().readOnly || !common.isLoggedIn();
 
-        if (!config.onlyoffice || !config.setHistory || !config.onCheckpoint || !config.onPatch) {
+        if (!config.onlyoffice || !config.setHistory || !config.onCheckpoint || !config.onPatch || !config.makeSnapshot) {
             throw new Error("Missing config element");
         }
 
@@ -23,6 +23,7 @@ define([
         var ooMessages = {};
         var loading = false;
         var update = function () {};
+        var currentTime;
 
         // Get an array of the checkpoint IDs sorted their patch index
         var hashes = config.onlyoffice.hashes;
@@ -68,7 +69,7 @@ define([
             var p = 100*((msgIndex+1) / (msgs.length));
             $pos.css('margin-left', p+'%');
 
-            var time = msgs[msgIndex] && msgs[msgIndex].time;
+            var time = currentTime = msgs[msgIndex] && msgs[msgIndex].time;
             if (time) { $time.text(new Date(time).toLocaleString()); }
             else { $time.text(''); }
         };
@@ -221,13 +222,11 @@ define([
                     ])
                 ])
             ]);
-            /*
             var snapshot = h('button', {
                 title: Messages.snapshots_new,
             }, [
                 h('i.fa.fa-camera')
             ]);
-            */
             var share = h('button', { title: Messages.history_shareTitle }, [
                 h('i.fa.fa-shhare-alt'),
                 h('span', Messages.shareButton)
@@ -244,7 +243,7 @@ define([
             ]);
             var actions = h('div.cp-toolbar-history-actions', [
                 h('span.cp-history-actions-first', [
-                    //snapshot,
+                    snapshot,
                     share
                 ]),
                 h('span.cp-history-actions-last', [
@@ -254,7 +253,7 @@ define([
             ]);
 
             if (History.readOnly) {
-                //snapshot.disabled = true;
+                snapshot.disabled = true;
                 restore.disabled = true;
             }
 
@@ -310,6 +309,46 @@ define([
             $share.click(function () {
                 common.getSframeChannel().event('EV_SHARE_OPEN', {
                     versionHash: getVersion()
+                });
+            });
+            Messages.snapshots_ooPickVersion = "You must select a version before creating a snapshot"; // XXX
+            $(snapshot).click(function () {
+                if (cpIndex === -1 && msgIndex === -1) { return void UI.warn(Messages.snapshots_ooPickVersion); }
+                var input = h('input', {
+                    placeholder: Messages.snapshots_placeholder
+                });
+                var $input = $(input);
+                var content = h('div', [
+                    h('h5', Messages.snapshots_new),
+                    input
+                ]);
+
+                var buttons = [{
+                    className: 'cancel',
+                    name: Messages.filePicker_close,
+                    onClick: function () {},
+                    keys: [27],
+                }, {
+                    className: 'primary',
+                    iconClass: '.fa.fa-camera',
+                    name: Messages.snapshots_new,
+                    onClick: function () {
+                        var val = $input.val();
+                        if (!val) { return true; }
+                        config.makeSnapshot(val, function (err) {
+                            if (err) { return; }
+                            UI.log(Messages.saved);
+                        }, {
+                            hash: getVersion(),
+                            time: currentTime || 0
+                        });
+                    },
+                    keys: [13],
+                }];
+
+                UI.openCustomModal(UI.dialog.customModal(content, {buttons: buttons }));
+                setTimeout(function () {
+                    $input.focus();
                 });
             });
 

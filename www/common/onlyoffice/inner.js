@@ -641,9 +641,20 @@ define([
                 if (err) { return void console.error(err); }
                 if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
 
-                var messages = (data.messages || []).slice(1, minor).forEach(function (obj) {
+                var messages = (data.messages || []).slice(1, minor);
+                messages.forEach(function (obj) {
                     try { obj.msg = JSON.parse(obj.msg); } catch (e) { console.error(e); }
                 });
+
+                if (!privateData.embed) {
+                    Messages.infobar_versionHash = "You're currently viewing an old version of this document ({0})."; // XXX (duplicate from history branch)
+                    var vTime = (messages[messages.length - 1] || {}).time;
+                    var vTimeStr = vTime ? new Date(vTime).toLocaleString()
+                                         : 'v' + privateData.ooVersionHash;
+                    var vTxt = Messages._getKey('infobar_versionHash',  [vTimeStr]);
+                    var vHashEl = h('div.alert.alert-warning.cp-burn-after-reading', vTxt);
+                    $('#cp-app-oo-editor').prepend(vHashEl);
+                }
 
                 loadLastDocument(cp, function () {
                     var file = getFileType();
@@ -1814,6 +1825,7 @@ define([
                 $save.appendTo(toolbar.$bottomM);
             }
 
+            if (!privateData.ooVersionHash) {
             (function () {
                 /* add a history button */
                 var commit = function () {
@@ -1856,6 +1868,42 @@ define([
                     });
                 };
 
+                var deleteSnapshot = function (hash) {
+                    var md = Util.clone(cpNfInner.metadataMgr.getMetadata());
+                    var snapshots = md.snapshots = md.snapshots || {};
+                    delete snapshots[hash];
+                    metadataMgr.updateMetadata(md);
+                    APP.onLocal();
+                };
+                var makeSnapshot = function (title, cb, obj) {
+                    var hash, time;
+                    if (obj && obj.hash && obj.time) {
+                        hash = obj.hash;
+                        time = obj.time
+                    } else {
+                        var major = Object.keys(content.hashes).length;
+                        var cpIndex = getLastCp().index || 0;
+                        var minor = ooChannel.cpIndex - cpIndex;
+                        hash = major+'.'+minor;
+                        time = +new Date();
+                    }
+                    var md = Util.clone(metadataMgr.getMetadata());
+                    var snapshots = md.snapshots = md.snapshots || {};
+                    if (snapshots[hash]) { cb('EEXISTS'); return void UI.warn(Messages.error); } // XXX
+                    snapshots[hash] = {
+                        title: title,
+                        time: time
+                    };
+                    metadataMgr.updateMetadata(md);
+                    APP.onLocal();
+                    APP.realtime.onSettle(cb);
+                };
+                var loadSnapshot = function (hash) {
+                    sframeChan.event('EV_OO_OPENVERSION', {
+                        hash: hash
+                    });
+                };
+
                 common.createButton('', true, {
                     name: 'history',
                     icon: 'fa-history',
@@ -1870,6 +1918,7 @@ define([
                         onCheckpoint: onCheckpoint,
                         onRevert: commit,
                         setHistory: setHistoryMode,
+                        makeSnapshot: makeSnapshot,
                         onlyoffice: {
                             hashes: content.hashes || {},
                             channel: content.channel,
@@ -1879,7 +1928,16 @@ define([
                     };
                     History.create(common, histConfig);
                 }).appendTo(toolbar.$drawer);
+
+                // Snapshots
+                var $snapshot = common.createButton('snapshots', true, {
+                    remove: deleteSnapshot,
+                    make: makeSnapshot,
+                    load: loadSnapshot
+                });
+                toolbar.$drawer.append($snapshot);
             })();
+            }
 
             if (window.CP_DEV_MODE || DISPLAY_RESTORE_BUTTON) {
                 common.createButton('', true, {
