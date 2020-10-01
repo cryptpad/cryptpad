@@ -1350,11 +1350,13 @@ MessengerUI, Messages) {
             }
         };
 
+        Messages.snaphot_title = "Snapshot"; //XXX
+
         toolbar.setSnapshot = function (bool) {
             toolbar.history = bool;
             toolbar.title.toggleClass('cp-toolbar-unsync', bool);
             if (bool && toolbar.spinner) {
-                toolbar.spinner.text("SNAPSHOT"); // XXX
+                toolbar.spinner.text(Messages.snaphot_title);
             } else {
                 kickSpinner(toolbar, config);
             }
@@ -1363,7 +1365,7 @@ MessengerUI, Messages) {
             toolbar.history = bool;
             toolbar.title.toggleClass('cp-toolbar-unsync', bool);
             if (bool && toolbar.spinner) {
-                toolbar.spinner.text("HISTORY"); // XXX
+                toolbar.spinner.text(Messages.historyText);
             } else {
                 kickSpinner(toolbar, config);
             }
