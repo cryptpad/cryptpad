@@ -727,7 +727,7 @@ define([
                         if (ooChannel.ready) {
                             // In read-only mode, push the message to the queue and prompt
                             // the user to refresh OO (without reloading the page)
-                            if (readOnly) {
+                            /*if (readOnly) {
                                 ooChannel.queue.push(obj.data);
                                 if (APP.refreshPopup) { return; }
                                 APP.refreshPopup = true;
@@ -736,7 +736,7 @@ define([
                                 // 1 popup every 15s
                                 APP.refreshRoTo = setTimeout(refreshReadOnly, READONLY_REFRESH_TO);
                                 return;
-                            }
+                            }*/
                             ooChannel.send(obj.data.msg);
                             ooChannel.lastHash = obj.data.hash;
                             ooChannel.cpIndex++;
@@ -1156,7 +1156,7 @@ define([
         startOO = function (blob, file, force) {
             if (APP.ooconfig && !force) { return void console.error('already started'); }
             var url = URL.createObjectURL(blob);
-            var lock = !APP.history && (readOnly || APP.migrate);
+            var lock = !APP.history && (APP.migrate);
 
             // Starting from version 3, we can use the view mode again
             // defined but never used
@@ -1285,6 +1285,10 @@ define([
 
                         if (lock) {
                             getEditor().setViewModeDisconnect();
+                        } else if (readOnly) {
+                            try {
+                                getEditor().asc_setRestriction(true);
+                            } catch (e) {}
                         } else {
                             setEditable(true);
                         }
