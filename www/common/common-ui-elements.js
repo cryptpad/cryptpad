@@ -3309,12 +3309,6 @@ define([
         return (pos.bottom < size) && (pos.y > 0);
     };
 
-    Messages.snapshots_button = "Snapshots";
-    Messages.snapshots_new = "New snapshot"; // XXX
-    Messages.snapshots_placeholder = "Snapshot title"; // XXX
-    Messages.snapshots_open = "View";
-    Messages.snapshots_delete = "Delete";
-    Messages.snapshots_cantMake = "Disconnected. Can't create a new snapshot now.";
     UIElements.openSnapshotsModal = function (common, load, make, remove) {
         var modal;
         var readOnly = common.getMetadataMgr().getPrivateData().readOnly;

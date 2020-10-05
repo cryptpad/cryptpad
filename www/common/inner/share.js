@@ -365,9 +365,6 @@ define([
             }));
         });
 
-        //Messages.share_bar = "Generate link"; // XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX XXX
-        Messages.share_bar =  Messages.team_inviteLinkCreate; // XXX
-
         var linkButtons = [
             makeCancelButton(),
             !opts.sharedFolder && {
@@ -698,7 +695,6 @@ define([
 
             // Add the versionHash warning if needed
             if (opts.versionHash) {
-                Messages.share_versionHash = "You're going to share the selected history version of the document in read-only mode. This will also <b>give view access</b> to the recipients."; // XXX
                 $rights.after(h('div.alert.alert-warning', [
                     h('i.fa.fa-history'),
                     UI.setHTML(h('span'), Messages.share_versionHash)

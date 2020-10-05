@@ -458,7 +458,6 @@ define([
 
             common.getSframeChannel().on('EV_VERSION_TIME', function (time) {
                 if (!versionHashEl) { return; }
-                Messages.infobar_versionHash = "You're currently viewing an old version of this document ({0})."; // XXX
                 var vTime = time;
                 var vTimeStr = vTime ? new Date(vTime).toLocaleString()
                                      : 'v' + privateDat.isHistoryVersion;

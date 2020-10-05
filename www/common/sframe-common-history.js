@@ -247,7 +247,6 @@ define([
             config.setHistory(false, true);
         };
 
-        Messages.history_cantRestore = "Can't restore now. Disconnected."; // XXX
         var onRevert = function () {
             // Before we can restore the current version, we need to update metadataMgr
             // so that it will uses the snapshots from the realtime version!
@@ -413,11 +412,6 @@ define([
             }
         };
 
-        Messages.history_fastPrev = "Previous editing session"; // XXX
-        Messages.history_userPrev = "Previous user"; // XXX
-        Messages.history_fastNext = "Next editing session"; // XXX
-        Messages.history_userNext = "Next user"; // XXX
-
         // Create the history toolbar
         var display = function () {
             $hist.html('');
@@ -495,12 +489,6 @@ define([
                 ])
             ]);
 
-            Messages.history_restore = "Restore";// XXX
-            Messages.history_close = "Close";// XXX
-            Messages.history_shareTitle = "Share a link to this version"; // XXX
-            Messages.history_restoreDriveTitle = "Restore the selected version of the DRIVE"; // XXX
-            Messages.history_restoreDrivePrompt = "Are you sure you want to replace the current version of the DRIVE by the displayed one?"; // XXX
-            Messages.history_restoreDriveDone = "DRIVE restored";
             var snapshot = h('button', {
                 title: Messages.snapshots_new,
             }, [

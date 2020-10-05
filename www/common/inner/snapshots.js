@@ -64,11 +64,6 @@ define([
             });
         };
 
-Messages.snapshots_notFound = "This snapshot no longer exists. It has been deleted with the history of the pad.";
-Messages.snapshots_restore = "Restore"; // XXX
-Messages.snapshots_close = "Close";
-Messages.snapshots_cantRestore = "Can't restore now. Disconnected...";
-
         var display = function () {
             var data = config.data || {};
 
