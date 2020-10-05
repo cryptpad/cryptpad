@@ -313,7 +313,6 @@ define([
                     versionHash: getVersion()
                 });
             });
-            Messages.snapshots_ooPickVersion = "You must select a version before creating a snapshot"; // XXX
             $(snapshot).click(function () {
                 if (cpIndex === -1 && msgIndex === -1) { return void UI.warn(Messages.snapshots_ooPickVersion); }
                 var input = h('input', {
