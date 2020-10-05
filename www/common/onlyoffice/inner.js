@@ -661,10 +661,8 @@ define([
                 // or if we requested a x.0 version
                 var exists = !Number(s[1]) || messages.length;
                 var vHashEl;
-                Messages.oo_deletedVersion = "This version no longer exists in the history."; // XXX
 
                 if (!privateData.embed) {
-                    Messages.infobar_versionHash = "You're currently viewing an old version of this document ({0})."; // XXX (duplicate from history branch)
                     var vTime = (messages[messages.length - 1] || {}).time;
                     var vTimeStr = vTime ? new Date(vTime).toLocaleString()
                                          : 'v' + privateData.ooVersionHash;
@@ -1241,7 +1239,7 @@ define([
                         onMigrateRdy.reg(function () {
                             var div = h('div.cp-oo-x2tXls', [
                                 h('span.fa.fa-spin.fa-spinner'),
-                                h('span', Messages.oo_sheetMigration_loading) // XXX tell them that it will take ~ 1min)
+                                h('span', Messages.oo_sheetMigration_loading)
                             ]);
                             UI.openCustomModal(UI.dialog.customModal(div, {buttons: []}));
                             makeCheckpoint(true);
@@ -1938,7 +1936,7 @@ define([
                     }
                     var md = Util.clone(metadataMgr.getMetadata());
                     var snapshots = md.snapshots = md.snapshots || {};
-                    if (snapshots[hash]) { cb('EEXISTS'); return void UI.warn(Messages.error); } // XXX
+                    if (snapshots[hash]) { cb('EEXISTS'); return void UI.warn(Messages.snapshot_error_exists); }
                     snapshots[hash] = {
                         title: title,
                         time: time
@@ -2097,7 +2095,7 @@ define([
                     content.migration = true;
                     APP.onLocal();
                 } else {
-                    msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor); // XXX update: "anonymous users or viewers"
+                    msg = h('div.alert.alert-warning.cp-burn-after-reading', Messages.oo_sheetMigration_anonymousEditor);
                     $(APP.helpMenu.menu).after(msg);
                     readOnly = true;
                 }

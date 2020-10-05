@@ -56,9 +56,9 @@ define([
         var showVersion = function (initial) {
             var v = getVersion();
             if (initial) {
-                v = "Latest"; // XXX
+                v = Messages.oo_version_latest;
             }
-            $version.text("Version: " + v); // XXX
+            $version.text(Messages.oo_version + v);
 
             var $pos = $hist.find('.cp-history-timeline-pos');
             var cps = sortedCp.length;
