@@ -328,9 +328,6 @@ define([
             if (isNaN(i)) { return; }
             if (i > 0) { i = 0; }
             if (i < -(states.length - 2)) { i = -(states.length - 2); }
-            if (i <= -(states.length - 11)) {
-                loadMore();
-            }
 
             var idx = getIndex(i);
             if (semantic && i !== c) {
@@ -344,6 +341,10 @@ define([
                     idx = j;
                     i = getRank(idx);
                 }
+            }
+
+            if (i <= -(states.length - 11)) {
+                loadMore();
             }
 
             if (blockOnly) { return states[idx]; }
