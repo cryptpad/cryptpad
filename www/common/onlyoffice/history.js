@@ -65,11 +65,11 @@ define([
             var id = sortedCp[cps - cpIndex -1] || -1;
             if (!ooMessages[id]) { return; }
             var msgs = ooMessages[id];
-            console.log(ooMessages);
             var p = 100*((msgIndex+1) / (msgs.length));
             $pos.css('margin-left', p+'%');
 
-            var time = currentTime = msgs[msgIndex] && msgs[msgIndex].time;
+            var time = msgs[msgIndex] && msgs[msgIndex].time;
+            currentTime = time;
             if (time) { $time.text(new Date(time).toLocaleString()); }
             else { $time.text(''); }
         };

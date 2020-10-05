@@ -58,7 +58,7 @@ define([
     var DISPLAY_RESTORE_BUTTON = false;
     var NEW_VERSION = 3;
     var PENDING_TIMEOUT = 30000;
-    var READONLY_REFRESH_TO = 15000;
+    //var READONLY_REFRESH_TO = 15000;
 
     var debug = function (x) {
         if (!window.CP_DEV_MODE) { return; }
@@ -587,6 +587,7 @@ define([
             xhr.send(null);
         };
 
+        /*
         var refreshReadOnly = function () {
             var cancel = h('button.cp-corner-cancel', Messages.cancel);
             var reload = h('button.cp-corner-primary', [
@@ -615,6 +616,7 @@ define([
                 m.delete();
             });
         };
+        */
 
         var openVersionHash = function (version) {
             readOnly = true;
@@ -672,7 +674,7 @@ define([
                     // of the history has been deleted
                     var vType = "warning";
                     if (!exists) {
-                        vTxt = Messages.oo_deletedVersion
+                        vTxt = Messages.oo_deletedVersion;
                         vType = "danger";
                     }
 
@@ -1926,7 +1928,7 @@ define([
                     var hash, time;
                     if (obj && obj.hash && obj.time) {
                         hash = obj.hash;
-                        time = obj.time
+                        time = obj.time;
                     } else {
                         var major = Object.keys(content.hashes).length;
                         var cpIndex = getLastCp().index || 0;
