@@ -1428,5 +1428,9 @@
     "snapshots_close": "Close",
     "snapshots_cantRestore": "Restoration failed. You are disconnected.",
     "oo_deletedVersion": "This version no longer exists in the history.",
-    "snapshots_delete": "Delete"
+    "snapshots_delete": "Delete",
+    "oo_version_latest": "Latest",
+    "oo_version": "Version: ",
+    "snapshots_ooPickVersion": "You must select a version before creating a snapshot",
+    "snapshot_error_exists": "There is already a snapshot of this version"
 }
