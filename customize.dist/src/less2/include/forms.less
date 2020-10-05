@@ -98,6 +98,7 @@
         text-decoration: none;
         cursor: pointer;
         border-radius: 0;
+        transition: none;
 
         .fa, .cptools {
             margin-right: 0.2em;
@@ -157,6 +158,15 @@
             font-weight: bold;
             &:hover, &:active, &:focus {
                 background-color: contrast(@colortheme_modal-bg, darken(@colortheme_alertify-primary, 10%), lighten(@colortheme_alertify-primary, 10%));
+            }
+        }
+
+        &.btn-light {
+            border-color: @cryptpad_text_col;
+            color: @cryptpad_text_col;
+            background-color: transparent;
+            &:hover, &:hover, &:focus {
+                background-color: fade(@cryptpad_text_col, 25%);
             }
         }
 

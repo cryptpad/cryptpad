@@ -14,6 +14,7 @@ define(['json.sortify'], function (Sortify) {
         var metadataLazyObj = UNINIT;
         var priv = {};
         var dirty = true;
+        var history = false;
         var changeHandlers = [];
         var lazyChangeHandlers = [];
         var titleChangeHandlers = [];
@@ -60,7 +61,7 @@ define(['json.sortify'], function (Sortify) {
             var mdo = {};
             // We don't want to add our user data to the object multiple times.
             Object.keys(metadataObj.users).forEach(function (x) {
-                if (members.indexOf(x) === -1) { return; }
+                if (members.indexOf(x) === -1 && !history) { return; }
                 mdo[x] = metadataObj.users[x];
             });
             if (!priv.readOnly) {
@@ -161,6 +162,9 @@ define(['json.sortify'], function (Sortify) {
                 metadataLazyObj = JSON.parse(JSON.stringify(m));
                 change(false);
             },
+            refresh : function () {
+                change(true);
+            },
             updateTitle: function (t) {
                 metadataObj.title = t;
                 change(true);
@@ -207,6 +211,9 @@ define(['json.sortify'], function (Sortify) {
                 if (isReady) { return void f(); }
                 readyHandlers.push(f);
             },
+            setHistory: function (bool) {
+                history = bool;
+            }
         });
     };
     return Object.freeze({ create: create });

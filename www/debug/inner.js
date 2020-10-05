@@ -587,6 +587,10 @@ define([
         var setHistory = function (bool, update) {
             history = bool;
             if (!bool && update) { config.onRemote(); }
+            else {
+                setTimeout(cpNfInner.metadataMgr.refresh);
+            }
+            return true;
         };
 
         var displayDoc = function (doc) {
@@ -594,12 +598,51 @@ define([
             console.log(doc);
         };
 
-        var toRestore;
+        var extractMetadata = function (content) {
+            if (Array.isArray(content)) {
+                var m = content[content.length - 1];
+                if (typeof(m.metadata) === 'object') {
+                    // pad
+                    return m.metadata;
+                }
+            } else if (typeof(content.metadata) === 'object') {
+                return content.metadata;
+            }
+            return;
+        };
 
+        // Get the realtime metadata when in history mode
+        var getLastMetadata = function () {
+            var newContentStr = cpNfInner.chainpad.getUserDoc();
+            var newContent = JSON.parse(newContentStr);
+            var meta = extractMetadata(newContent);
+            return meta;
+        };
+        var setLastMetadata = function (md) {
+            var newContentStr = cpNfInner.chainpad.getAuthDoc();
+            var newContent = JSON.parse(newContentStr);
+            if (Array.isArray(newContent)) {
+                newContent[3] = {
+                    metadata: md
+                };
+            } else {
+                newContent.metadata = md;
+            }
+            try {
+                cpNfInner.chainpad.contentUpdate(JSONSortify(newContent));
+                return true;
+            } catch (e) {
+                console.error(e);
+                return false;
+            }
+        };
+
+        var toRestore;
         config.onLocal = function (a, restore) {
             if (!toRestore || !restore) { return; }
             cpNfInner.chainpad.contentUpdate(toRestore);
         };
+
 
         config.onInit = function (info) {
             Title = common.createTitle({});
@@ -620,12 +663,35 @@ define([
             /* add a history button */
             var histConfig = {
                 onLocal: function () {
+                    // The following lines allow us to restore an old version from the debug app
+                    // without affecting the snapshots.
+                    // It's parsing, updating and stringifying text data which is not a clean way
+                    // to change metadata, so we're disabling it by default.
+                    if (window.cp_snapshots) {
+                        var md = Util.clone(cpNfInner.metadataMgr.getMetadata());
+                        var _snapshots = md.snapshots;
+                        var newContent = JSON.parse(toRestore);
+                        try {
+                            if (Array.isArray(newContent)) {
+                                newContent[3].metadata.snapshots = _snapshots;
+                            } else {
+                                newContent.metadata.snapshots = _snapshots;
+                            }
+                        } catch (e) { console.error(e); }
+                        toRestore = JSONSortify(newContent);
+                    }
                     config.onLocal(null, true);
                 },
                 onRemote: config.onRemote,
                 setHistory: setHistory,
+                extractMetadata: extractMetadata,
+                getLastMetadata: getLastMetadata, // get from authdoc
+                setLastMetadata: setLastMetadata, // set to userdoc/authdoc
                 applyVal: function (val) {
                     toRestore = val;
+                    var newContent = JSON.parse(val);
+                    var meta = extractMetadata(newContent);
+                    cpNfInner.metadataMgr.updateMetadata(meta);
                     displayDoc(JSON.parse(val) || {});
                 },
                 $toolbar: $bar,

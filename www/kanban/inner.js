@@ -1013,7 +1013,6 @@ define([
 
     var mkHelpMenu = function (framework) {
         var $toolbarContainer = $('#cp-app-kanban-container');
-        $toolbarContainer.prepend(framework._.sfCommon.getBurnAfterReadingWarning());
 
         var helpMenu = framework._.sfCommon.createHelpMenu(['kanban']);
         $toolbarContainer.prepend(helpMenu.menu);

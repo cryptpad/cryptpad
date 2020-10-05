@@ -1455,7 +1455,57 @@ define([
 
         var channels = Store.channels = store.channels = {};
 
+        Store.getSnapshot = function (clientId, data, cb) {
+            Store.getHistoryRange(clientId, {
+                cpCount: 1,
+                channel: data.channel,
+                lastKnownHash: data.hash
+            }, cb);
+        };
+
+        var getVersionHash = function (clientId, data) {
+            var validateKey;
+            var fakeNetflux = Hash.createChannelId();
+            nThen(function (waitFor) {
+                Store.getPadMetadata(null, {
+                    channel: data.channel
+                }, waitFor(function (md) {
+                    validateKey = md.validateKey;
+                }));
+            }).nThen(function () {
+                Store.getHistoryRange(clientId, {
+                    cpCount: 1,
+                    channel: data.channel,
+                    lastKnownHash: data.versionHash
+                }, function (obj) {
+                    if (obj && obj.error) {
+                        postMessage(clientId, "PAD_ERROR", obj.error);
+                        return;
+                    }
+                    postMessage(clientId, "PAD_CONNECT", {
+                        myID: fakeNetflux,
+                        id: data.channel,
+                        members: [fakeNetflux]
+                    });
+                    (obj.messages || []).forEach(function (data) {
+                        postMessage(clientId, "PAD_MESSAGE", {
+                            msg: data.msg,
+                            time: data.time,
+                            user: fakeNetflux.slice(0,16), // fake history keeper to avoid validate
+                        });
+                    });
+                    if (validateKey && store.messenger) {
+                        store.messenger.storeValidateKey(data.channel, validateKey);
+                    }
+                    postMessage(clientId, "PAD_READY");
+                });
+            });
+        };
+
         Store.joinPad = function (clientId, data) {
+            if (data.versionHash) {
+                return void getVersionHash(clientId, data);
+            }
             var isNew = typeof channels[data.channel] === "undefined";
             var channel = channels[data.channel] = channels[data.channel] || {
                 queue: [],
@@ -1529,7 +1579,8 @@ define([
                     }
                     postMessage(clientId, "PAD_READY");
                 },
-                onMessage: function (m, user, validateKey, isCp) {
+                onMessage: function (m, user, validateKey, isCp, hash) {
+                    channel.lastHash = hash;
                     channel.pushHistory(m, isCp);
                     channel.bcast("PAD_MESSAGE", {
                         user: user,
@@ -1615,6 +1666,7 @@ define([
                                 return void cb({ error: err });
                             }
                             // Broadcast to other tabs
+                            channel.lastHash = msg.slice(0,64);
                             channel.pushHistory(CpNetflux.removeCp(msg), /^cp\|/.test(msg));
                             channel.bcast("PAD_MESSAGE", {
                                 user: wc.myID,
@@ -1748,6 +1800,15 @@ define([
                 curvePublic: data.user.curvePublic
             });
             cb();
+        };
+
+        Store.getLastHash = function (clientId, data, cb) {
+            var chan = channels[data.channel];
+            if (!chan) { return void cb({error: 'ENOCHAN'}); }
+            if (!chan.lastHash) { return void cb({error: 'EINVAL'}); }
+            cb({
+                hash: chan.lastHash
+            });
         };
 
         // Delete a pad received with a burn after reading URL
@@ -2035,6 +2096,7 @@ define([
                     }
                     msg = msg.replace(/cp\|(([A-Za-z0-9+\/=]+)\|)?/, '');
                     msgs.push({
+                        serverHash: msg.slice(0,64),
                         msg: msg,
                         author: parsed[2][1],
                         time: parsed[2][5]
@@ -2045,7 +2107,7 @@ define([
             network.on('message', onMsg);
             network.sendto(hk, JSON.stringify(['GET_HISTORY_RANGE', data.channel, {
                 from: data.lastKnownHash,
-                cpCount: 2,
+                cpCount: data.cpCount || 2,
                 txid: txid
             }]));
         };

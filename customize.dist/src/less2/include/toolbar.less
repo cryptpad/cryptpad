@@ -483,6 +483,7 @@
                         height: @toolbar_line-height;
                         box-sizing: border-box;
                         line-height: @toolbar_line-height;
+                        border: 1px solid transparent;
                     }
                     .cp-toolbar-title-readonly {
                         font-size: 14px;
@@ -490,7 +491,7 @@
                     .cp-toolbar-title-value {
                         padding: 5px;
                         line-height: @toolbar_line-height - 10px;
-                        border: 0;
+                        //border: 0;
                     }
                     .cp-toolbar-title-edit, .cp-toolbar-title-save {
                         box-sizing: border-box;
@@ -662,6 +663,20 @@
                 white-space: nowrap;
                 display: inline-flex;
                 align-items: center;
+            }
+            &.cp-toolbar-unsync {
+                .cp-toolbar-title-edit, .cp-toolbar-title-save {
+                    display: none !important;
+                }
+                .cp-toolbar-title-unsync {
+                    display: inline-flex;
+                }
+                .cp-toolbar-title-editable, .cp-toolbar-title-edit {
+                    border: none !important;
+                }
+            }
+            .cp-toolbar-title-unsync {
+                display: none;
             }
             .cp-toolbar-title-hoverable {
                 display: inline-flex;
@@ -886,10 +901,44 @@
         }
     }
 
-    .cp-toolbar-history {
+    .cp-toolbar-history, .cp-toolbar-snapshots {
         background-color: @toolbar-bg-color-light;
         background-color: var(--toolbar-bg-color-light);
         color: @cryptpad_text_col;
+    }
+    .cp-toolbar-snapshots {
+        display: none;
+        text-align: center;
+        width: 100%;
+        padding: 5px 0;
+        align-items: center;
+        justify-content: space-between;
+        .cp-toolbar-snapshots-info {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+            min-width: 0;
+            i {
+                width: 30px;
+            }
+        }
+        @media screen and (max-width: @browser_media-medium-screen) {
+            flex-flow: column;
+            .cp-toolbar-snapshots-info {
+                max-width: 100%;
+            }
+        }
+        .cp-toolbar-snapshots-actions {
+            button {
+                margin: 0 5px;
+                border: 1px solid @cryptpad_text_col;
+                text-transform: uppercase;
+                i:not(:last-child) {
+                    margin-right: 5px;
+                }
+            }
+        }
     }
     .cp-toolbar-bottom {
         background-color: @toolbar-bg-color-light;

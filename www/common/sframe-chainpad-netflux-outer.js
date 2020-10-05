@@ -28,12 +28,19 @@ define([], function () {
         var padRpc = conf.padRpc;
         var sframeChan = conf.sframeChan;
         var metadata= conf.metadata || {};
+        var versionHash = conf.versionHash;
         var validateKey = metadata.validateKey;
         var onConnect = conf.onConnect || function () { };
+        var lastTime; // Time of last patch (if versioned link);
         conf = undefined;
+
+        if (versionHash) { readOnly = true; }
 
         padRpc.onReadyEvent.reg(function () {
             sframeChan.event('EV_RT_READY', null);
+            if (lastTime && versionHash) {
+                sframeChan.event('EV_VERSION_TIME', lastTime);
+            }
         });
 
         // shim between chainpad and netflux
@@ -83,6 +90,7 @@ define([], function () {
             }
             var message = msgIn(msgObj.user, msgObj.msg);
             if (!message) { return; }
+            lastTime = msgObj.time;
 
             verbose(message);
 
@@ -132,6 +140,7 @@ define([], function () {
         padRpc.joinPad({
             channel: channel || null,
             readOnly: readOnly,
+            versionHash: versionHash,
             metadata: metadata
         });
     };

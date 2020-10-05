@@ -428,7 +428,6 @@ define([
 
     var mkHelpMenu = function (framework) {
         var $codeMirrorContainer = $('#cp-app-slide-editor-container');
-        $codeMirrorContainer.prepend(framework._.sfCommon.getBurnAfterReadingWarning());
         var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'slide']);
         $codeMirrorContainer.prepend(helpMenu.menu);
 

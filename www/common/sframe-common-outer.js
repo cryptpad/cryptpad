@@ -465,6 +465,7 @@ define([
                         feedbackAllowed: Utils.Feedback.state,
                         isPresent: parsed.hashData && parsed.hashData.present,
                         isEmbed: parsed.hashData && parsed.hashData.embed,
+                        isHistoryVersion: parsed.hashData && parsed.hashData.versionHash,
                         accounts: {
                             donateURL: Cryptpad.donateURL,
                             upgradeURL: Cryptpad.upgradeURL
@@ -1116,6 +1117,7 @@ define([
                             // We don't need it since the message is already validated serverside by hk
                             return {
                                 msg: crypto.decrypt(obj.msg, true, true),
+                                serverHash: obj.serverHash,
                                 author: obj.author,
                                 time: obj.time
                             };
@@ -1451,6 +1453,26 @@ define([
                 });
             });
 
+            sframeChan.on('Q_GET_LAST_HASH', function (data, cb) {
+                Cryptpad.padRpc.getLastHash({
+                    channel: secret.channel
+                }, cb);
+            });
+            sframeChan.on('Q_GET_SNAPSHOT', function (data, cb) {
+                var crypto = Crypto.createEncryptor(secret.keys);
+                Cryptpad.padRpc.getSnapshot({
+                    channel: secret.channel,
+                    hash: data.hash
+                }, function (obj) {
+                    if (obj && obj.error) { return void cb(obj); }
+                    var messages = obj.messages || [];
+                    messages.forEach(function (patch) {
+                        patch.msg = crypto.decrypt(patch.msg, true, true);
+                    });
+                    cb(messages);
+                });
+            });
+
             if (cfg.messaging) {
                 Notifier.getPermission();
 
@@ -1530,6 +1552,7 @@ define([
                 var cpNfCfg = {
                     sframeChan: sframeChan,
                     channel: secret.channel,
+                    versionHash: parsed.hashData && parsed.hashData.versionHash,
                     padRpc: Cryptpad.padRpc,
                     validateKey: secret.keys.validateKey || undefined,
                     isNewHash: isNewHash,

@@ -13,6 +13,7 @@ define([
     '/common/common-ui-elements.js',
     '/common/common-thumbnail.js',
     '/common/common-feedback.js',
+    '/common/inner/snapshots.js',
     '/customize/application_config.js',
     '/bower_components/chainpad/chainpad.dist.js',
     '/common/test.js',
@@ -35,6 +36,7 @@ define([
     UIElements,
     Thumb,
     Feedback,
+    Snapshots,
     AppConfig,
     ChainPad,
     Test)
@@ -43,6 +45,9 @@ define([
 
     var UNINITIALIZED = 'UNINITIALIZED';
 
+    // History and snapshots mode shouldn't receive realtime data or push to chainpad
+    var unsyncMode = false;
+
     var STATE = Object.freeze({
         DISCONNECTED: 'DISCONNECTED',
         FORGOTTEN: 'FORGOTTEN',
@@ -50,7 +55,6 @@ define([
         INFINITE_SPINNER: 'INFINITE_SPINNER',
         ERROR: 'ERROR',
         INITIALIZING: 'INITIALIZING',
-        HISTORY_MODE: 'HISTORY_MODE',
         READY: 'READY'
     });
 
@@ -93,6 +97,7 @@ define([
             });
         });
 
+        var onLocal;
         var textContentGetter;
         var titleRecommender = function () { return false; };
         var contentGetter = function () { return UNINITIALIZED; };
@@ -125,20 +130,51 @@ define([
             return;
         };
 
+        var deleteSnapshot = function (hash) {
+            var md = Util.clone(cpNfInner.metadataMgr.getMetadata());
+            var snapshots = md.snapshots = md.snapshots || {};
+            delete snapshots[hash];
+            cpNfInner.metadataMgr.updateMetadata(md);
+            onLocal();
+        };
+        var makeSnapshot = function (title, cb) {
+            if (state !== STATE.READY) {
+                return void cb('NOT_READY');
+            }
+            var sframeChan = common.getSframeChannel();
+            sframeChan.query("Q_GET_LAST_HASH", null, function (err, obj) {
+                if (err || (obj && obj.error)) { return void UI.warn(Messages.error); }
+                var hash = obj.hash;
+                if (!hash) { cb('NO_HASH'); return void UI.warn(Messages.error); }
+                var md = Util.clone(cpNfInner.metadataMgr.getMetadata());
+                var snapshots = md.snapshots = md.snapshots || {};
+                if (snapshots[hash]) { cb('EEXISTS'); return void UI.warn(Messages.error); } // XXX
+                snapshots[hash] = {
+                    title: title,
+                    time: +new Date()
+                };
+                cpNfInner.metadataMgr.updateMetadata(md);
+                onLocal();
+                cpNfInner.chainpad.onSettle(cb);
+            });
+        };
+
         var stateChange = function (newState, text) {
-            var wasEditable = (state === STATE.READY);
-            if (state === STATE.DELETED || state === STATE.ERROR) { return; }
-            if (state === STATE.INFINITE_SPINNER && newState !== STATE.READY) { return; }
-            if (newState === STATE.INFINITE_SPINNER || newState === STATE.DELETED) {
-                state = newState;
-            } else if (newState === STATE.ERROR) {
-                state = newState;
-            } else if (state === STATE.DISCONNECTED && newState !== STATE.INITIALIZING) {
-                throw new Error("Cannot transition from DISCONNECTED to " + newState); // FIXME we are getting "DISCONNECTED to READY" on prod
-            } else if (state !== STATE.READY && newState === STATE.HISTORY_MODE) {
-                throw new Error("Cannot transition from " + state + " to " + newState);
-            } else {
-                state = newState;
+            var wasEditable = (state === STATE.READY && !unsyncMode);
+            if (newState !== state) {
+                if (state === STATE.DELETED || state === STATE.ERROR) { return; }
+                if (state === STATE.INFINITE_SPINNER && newState !== STATE.READY) { return; }
+                if (newState === STATE.INFINITE_SPINNER || newState === STATE.DELETED) {
+                    state = newState;
+                } else if (newState === STATE.ERROR) {
+                    state = newState;
+                } else if (state === STATE.DISCONNECTED && newState !== STATE.INITIALIZING) {
+                    throw new Error("Cannot transition from DISCONNECTED to " + newState); // FIXME we are getting "DISCONNECTED to READY" on prod
+                } else {
+                    state = newState;
+                }
+            } else if (state === STATE.READY) {
+                // Refreshing ready state
             }
             switch (state) {
                 case STATE.DISCONNECTED:
@@ -187,8 +223,9 @@ define([
                 }
                 default:
             }
-            if (wasEditable !== (state === STATE.READY)) {
-                evEditableStateChange.fire(state === STATE.READY);
+            var isEditable = (state === STATE.READY && !unsyncMode);
+            if (wasEditable !== isEditable) {
+                evEditableStateChange.fire(isEditable);
             }
         };
 
@@ -205,8 +242,8 @@ define([
             }
         };
 
-        var onLocal;
         var onRemote = function () {
+            if (unsyncMode) { return; }
             if (state !== STATE.READY) { return; }
 
             var oldContent = normalize(contentGetter());
@@ -261,9 +298,85 @@ define([
             });
         };
 
+        var setUnsyncMode = function (bool) {
+            if (unsyncMode === bool) { return; }
+            unsyncMode = bool;
+            evEditableStateChange.fire(state === STATE.READY && !unsyncMode);
+            stateChange(state);
+        };
+
+        // History mode:
+        // When "bool" is true, we're entering in history mode
+        // When "bool" is false and "update" is true, it means we're closing the history
+        // and should update the content
+        // When "bool" is false and "update" is false, it means we're restoring an old version,
+        // no need to refresh
         var setHistoryMode = function (bool, update) {
-            stateChange((bool) ? STATE.HISTORY_MODE : STATE.READY);
+            if (!bool && !update && state !== STATE.READY) { return false; }
+            cpNfInner.metadataMgr.setHistory(bool);
+            toolbar.setHistory(bool);
+            setUnsyncMode(bool);
             if (!bool && update) { onRemote(); }
+            else {
+                setTimeout(cpNfInner.metadataMgr.refresh);
+            }
+            return true;
+        };
+        var closeSnapshot = function (restore) {
+            if (restore && state !== STATE.READY) { return false; }
+            toolbar.setSnapshot(false);
+            setUnsyncMode(false); // Unlock onLocal and onRemote
+            if (restore) { onLocal(); } // Restore? commit the content
+            onRemote(); // Make sure we're back to the realtime content
+            return true;
+        };
+        var loadSnapshot = function (hash, data) {
+            setUnsyncMode(true);
+            toolbar.setSnapshot(true);
+            Snapshots.create(common, {
+                readOnly: readOnly,
+                $toolbar: $(toolbarContainer),
+                hash: hash,
+                data: data,
+                close: closeSnapshot,
+                applyVal: function (val) {
+                    var newContent = JSON.parse(val);
+                    var meta = extractMetadata(newContent);
+                    cpNfInner.metadataMgr.updateMetadata(meta);
+                    contentUpdate(normalize(newContent) || ["BODY",{},[]], function (h) {
+                        return h;
+                    });
+                },
+            });
+        };
+
+        // Get the realtime metadata when in history mode
+        var getLastMetadata = function () {
+            if (!unsyncMode) { return; }
+            var newContentStr = cpNfInner.chainpad.getUserDoc();
+            var newContent = JSON.parse(newContentStr);
+            var meta = extractMetadata(newContent);
+            return meta;
+        };
+        var setLastMetadata = function (md) {
+            if (!unsyncMode) { return; }
+            if (state !== STATE.READY) { return; }
+            var newContentStr = cpNfInner.chainpad.getAuthDoc();
+            var newContent = JSON.parse(newContentStr);
+            if (Array.isArray(newContent)) {
+                newContent[3] = {
+                    metadata: md
+                };
+            } else {
+                newContent.metadata = md;
+            }
+            try {
+                cpNfInner.chainpad.contentUpdate(JSONSortify(newContent));
+                return true;
+            } catch (e) {
+                console.error(e);
+                return false;
+            }
         };
 
         /*
@@ -281,6 +394,7 @@ define([
         */
 
         onLocal = function (/*padChange*/) {
+            if (unsyncMode) { return; }
             if (state !== STATE.READY) { return; }
             if (readOnly) { return; }
 
@@ -324,6 +438,35 @@ define([
             window.dispatchEvent(evt);
         };
 
+        var versionHashEl;
+        var onInit = function () {
+            UI.updateLoadingProgress({
+                state: 2,
+                progress: 0.1
+            }, false);
+            stateChange(STATE.INITIALIZING);
+            if ($('.cp-help-container').length) {
+                var privateDat = cpNfInner.metadataMgr.getPrivateData();
+                // Burn after reading warning
+                $('.cp-help-container').before(common.getBurnAfterReadingWarning());
+                // Versioned link warning
+                if (privateDat.isHistoryVersion) {
+                    versionHashEl = h('div.alert.alert-warning.cp-burn-after-reading');
+                    $('.cp-help-container').before(versionHashEl);
+                }
+            }
+
+            common.getSframeChannel().on('EV_VERSION_TIME', function (time) {
+                if (!versionHashEl) { return; }
+                var vTime = time;
+                var vTimeStr = vTime ? new Date(vTime).toLocaleString()
+                                     : 'v' + privateDat.isHistoryVersion;
+                var vTxt = Messages._getKey('infobar_versionHash',  [vTimeStr]);
+                versionHashEl.innerText = vTxt;
+                versionHashEl = undefined;
+            });
+        };
+
         var onReady = function () {
             var newContentStr = cpNfInner.chainpad.getUserDoc();
             if (state === STATE.DELETED) { return; }
@@ -341,6 +484,7 @@ define([
             var privateDat = cpNfInner.metadataMgr.getPrivateData();
             var type = privateDat.app;
 
+
             // contentUpdate may be async so we need an nthen here
             nThen(function (waitFor) {
                 if (!newPad) {
@@ -354,7 +498,9 @@ define([
                     }
                     cpNfInner.metadataMgr.updateMetadata(metadata);
                     newContent = normalize(newContent);
-                    contentUpdate(newContent, waitFor);
+                    if (!unsyncMode) {
+                        contentUpdate(newContent, waitFor);
+                    }
                 } else {
                     if (!cpNfInner.metadataMgr.getPrivateData().isNewFile) {
                         // We're getting 'new pad' but there is an existing file
@@ -590,13 +736,7 @@ define([
                 },
                 onRemote: onRemote,
                 onLocal: onLocal,
-                onInit: function () {
-                    UI.updateLoadingProgress({
-                        state: 2,
-                        progress: 0.1
-                    }, false);
-                    stateChange(STATE.INITIALIZING);
-                },
+                onInit: onInit,
                 onReady: function () { evStart.reg(onReady); },
                 onConnectionChange: onConnectionChange,
                 onError: onError,
@@ -691,16 +831,28 @@ define([
                 onLocal: onLocal,
                 onRemote: onRemote,
                 setHistory: setHistoryMode,
+                extractMetadata: extractMetadata, // extract from current version
+                getLastMetadata: getLastMetadata, // get from authdoc
+                setLastMetadata: setLastMetadata, // set to userdoc/authdoc
                 applyVal: function (val) {
-                    contentUpdate(JSON.parse(val) || ["BODY",{},[]], function (h) {
+                    var newContent = JSON.parse(val);
+                    var meta = extractMetadata(newContent);
+                    cpNfInner.metadataMgr.updateMetadata(meta);
+                    contentUpdate(normalize(newContent) || ["BODY",{},[]], function (h) {
                         return h;
                     });
                 },
                 $toolbar: $(toolbarContainer)
             };
             var $hist = common.createButton('history', true, {histConfig: histConfig});
-            $hist.addClass('cp-hidden-if-readonly');
             toolbar.$drawer.append($hist);
+
+            var $snapshot = common.createButton('snapshots', true, {
+                remove: deleteSnapshot,
+                make: makeSnapshot,
+                load: loadSnapshot
+            });
+            toolbar.$drawer.append($snapshot);
 
             var $copy = common.createButton('copy', true);
             toolbar.$drawer.append($copy);
@@ -767,7 +919,7 @@ define([
                 onEditableChange: evEditableStateChange.reg,
 
                 // Determine whether the UI should be locked for editing.
-                isLocked: function () { return state !== STATE.READY; },
+                isLocked: function () { return state !== STATE.READY || unsyncMode; },
 
                 // Determine whether the pad is a "read only" pad and cannot be changed.
                 isReadOnly: function () { return readOnly; },
