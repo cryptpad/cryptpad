@@ -623,7 +623,7 @@ define([
                 return hashes[a].index - hashes[b].index;
             });
             var s = version.split('.');
-            if (s.length !== 2) { return; }
+            if (s.length !== 2) { return UI.errorLoadingScreen(Messages.error); }
 
             var major = Number(s[0]);
             var cpId = sortedCp[major - 1];
@@ -640,8 +640,11 @@ define([
                 lastKnownHash: fromHash,
                 toHash: toHash,
             }, function (err, data) {
-                if (err) { return void console.error(err); }
-                if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
+                if (err) { console.error(err); return void UI.errorLoadingScreen(Messages.error); }
+                if (!Array.isArray(data.messages)) {
+                    console.error('Not an array');
+                    return void UI.errorLoadingScreen(Messages.error);
+                }
 
                 // The first "cp" in history is the empty doc. It doesn't include the first patch
                 // of the history
@@ -1869,6 +1872,9 @@ define([
             (function () {
                 /* add a history button */
                 var commit = function () {
+                    // Wait for the checkpoint to be uploaded before leaving history mode
+                    // (race condition). We use "stopHistory" to remove the history
+                    // flag only when the checkpoint is ready.
                     APP.stopHistory = true;
                     makeCheckpoint(true);
                 };
