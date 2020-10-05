@@ -148,7 +148,7 @@ define([
                 if (!hash) { cb('NO_HASH'); return void UI.warn(Messages.error); }
                 var md = Util.clone(cpNfInner.metadataMgr.getMetadata());
                 var snapshots = md.snapshots = md.snapshots || {};
-                if (snapshots[hash]) { cb('EEXISTS'); return void UI.warn(Messages.error); } // XXX
+                if (snapshots[hash]) { cb('EEXISTS'); return void UI.warn(Messages.snapshot_error_exists); }
                 snapshots[hash] = {
                     title: title,
                     time: +new Date()
