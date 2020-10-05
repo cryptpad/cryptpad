@@ -643,7 +643,11 @@ define([
                 if (err) { return void console.error(err); }
                 if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
 
-                var messages = (data.messages || []).slice(1, minor);
+                // The first "cp" in history is the empty doc. It doesn't include the first patch
+                // of the history
+                var initialCp = major === 0;
+                var messages = (data.messages || []).slice(initialCp ? 0 : 1, minor);
+
                 messages.forEach(function (obj) {
                     try { obj.msg = JSON.parse(obj.msg); } catch (e) { console.error(e); }
                 });

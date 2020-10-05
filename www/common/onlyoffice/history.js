@@ -156,7 +156,7 @@ define([
             $fastPrev.show();
             $next.show();
             $fastNext.show();
-            if (cpIndex >= cps) {
+            if (cpIndex >= cps && msgIndex === 0) {
                 $fastPrev.hide();
             }
             if (cpIndex === 0) {
