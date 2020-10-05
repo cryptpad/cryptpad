@@ -156,16 +156,18 @@ define([
             $fastPrev.show();
             $next.show();
             $fastNext.show();
+            $hist.find('.cp-toolbar-history-next, .cp-toolbar-history-previous')
+                .prop('disabled', '');
             if (cpIndex >= cps && msgIndex === 0) {
-                $fastPrev.hide();
+                $fastPrev.prop('disabled', 'disabled');
             }
             if (cpIndex === 0) {
-                $fastNext.hide();
+                $fastNext.prop('disabled', 'disabled');
             }
             var id = getId();
             var msgs = (ooMessages[id] || []).length;
             if (msgIndex >= (msgs-1)) {
-                $next.hide();
+                $next.prop('disabled', 'disabled');
             }
         };
 
@@ -199,8 +201,8 @@ define([
                 h('i.fa.fa-step-forward')
             ]);
             $fastPrev = $(fastPrev);
-            $fastNext = $(fastNext).hide();
-            $next = $(_next).hide();
+            $fastNext = $(fastNext).prop('disabled', 'disabled');
+            $next = $(_next).prop('disabled', 'disabled');
 
             var pos = h('span.cp-history-timeline-pos.fa.fa-caret-down');
             var time = h('div.cp-history-timeline-time');
