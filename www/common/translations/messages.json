@@ -1427,5 +1427,6 @@
     "snapshots_restore": "Restore",
     "snapshots_close": "Close",
     "snapshots_cantRestore": "Restoration failed. You are disconnected.",
-    "oo_deletedVersion": "This version no longer exists in the history."
+    "oo_deletedVersion": "This version no longer exists in the history.",
+    "snapshots_delete": "Delete"
 }
