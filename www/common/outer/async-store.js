@@ -2090,7 +2090,7 @@ define([
                     if (first) {
                         // If the first message if not a checkpoint, it means it is the first
                         // message of the pad, so we have the full history!
-                        if (!/^cp\|/.test(msg)) { fullHistory = true; }
+                        if (!/^cp\|/.test(msg) && !data.toHash) { fullHistory = true; }
                         lastKnownHash = msg.slice(0,64);
                         first = false;
                     }
@@ -2107,7 +2107,8 @@ define([
             network.on('message', onMsg);
             network.sendto(hk, JSON.stringify(['GET_HISTORY_RANGE', data.channel, {
                 from: data.lastKnownHash,
-                cpCount: data.cpCount || 2,
+                to: data.toHash,
+                cpCount: data.cpCount || 2, // Ignored if "to" is provided
                 txid: txid
             }]));
         };

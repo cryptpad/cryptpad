@@ -2,6 +2,21 @@ define([
 ], function () {
     var OO = {};
 
+    var getHistory = function (ctx, client, cb) {
+        var c = ctx.clients[client];
+        if (!c) { return void cb({error: 'ENOENT'}); }
+        var chan = ctx.channels[c.channel];
+        if (!chan) { return void cb({error: 'ENOCHAN'}); }
+        cb();
+        chan.history.forEach(function (msg) {
+            ctx.emit('MESSAGE', {
+                msg: msg,
+                validateKey: chan.validateKey
+            }, [client]);
+        });
+        ctx.emit('HISTORY_SYNCED', {}, [client]);
+    };
+
     var openChannel = function (ctx, obj, client, cb) {
         var channel = obj.channel;
         var padChan = obj.padChan;
@@ -24,11 +39,8 @@ define([
             // ==> Use our netflux ID to create our client ID
             if (!c.id) { c.id = chan.wc.myID + '-' + client; }
 
-            chan.history.forEach(function (msg) {
-                ctx.emit('MESSAGE', {
-                    msg: msg,
-                    validateKey: chan.validateKey
-                }, [client]);
+            getHistory(ctx, client, function () {
+                ctx.emit('READY', '', [client]);
             });
 
             // ==> And push the new tab to the list
@@ -317,6 +329,9 @@ define([
             }
             if (cmd === 'OPEN_CHANNEL') {
                 return void openChannel(ctx, data, clientId, cb);
+            }
+            if (cmd === 'GET_HISTORY') {
+                return void getHistory(ctx, clientId, cb);
             }
             if (cmd === 'REENCRYPT') {
                 return void reencrypt(ctx, data, clientId, cb);

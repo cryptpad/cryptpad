@@ -4,12 +4,13 @@ define([
     '/api/config',
     '/common/dom-ready.js',
     '/common/requireconfig.js',
+    '/common/common-hash.js',
     '/common/sframe-common-outer.js'
-], function (nThen, ApiConfig, DomReady, RequireConfig, SFCommonO) {
+], function (nThen, ApiConfig, DomReady, RequireConfig, Hash, SFCommonO) {
     var requireConfig = RequireConfig();
 
     // Loaded in load #2
-    var hash, href;
+    var hash, href, version;
     nThen(function (waitFor) {
         DomReady.onReady(waitFor());
     }).nThen(function (waitFor) {
@@ -27,6 +28,13 @@ define([
         if (window.history && window.history.replaceState && hash) {
             window.history.replaceState({}, window.document.title, '#');
         }
+
+        var parsed = Hash.parsePadUrl(href);
+        if (parsed && parsed.hashData) {
+            var opts = parsed.getOptions();
+            version = opts.versionHash;
+        }
+
         document.getElementById('sbox-iframe').setAttribute('src',
             ApiConfig.httpSafeOrigin + window.location.pathname + 'inner.html?' +
                 requireConfig.urlArgs + '#' + encodeURIComponent(JSON.stringify(req)));
@@ -46,6 +54,7 @@ define([
     }).nThen(function (/*waitFor*/) {
         var addData = function (obj) {
             obj.ooType = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
+            obj.ooVersionHash = version;
             obj.ooForceVersion = localStorage.CryptPad_ooVersion || sessionStorage.CryptPad_ooVersion || "";
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
@@ -134,6 +143,13 @@ define([
                     };
                 }
                 Cryptpad.onlyoffice.execCommand(obj, cb);
+            });
+            sframeChan.on('EV_OO_OPENVERSION', function (obj, cb) {
+                if (!obj || !obj.hash) { return; }
+                var parsed = Hash.parsePadUrl(window.location.href);
+                var opts = parsed.getOptions();
+                opts.versionHash = obj.hash;
+                window.open(parsed.getUrl(opts));
             });
             Cryptpad.onlyoffice.onEvent.reg(function (obj) {
                 if (obj.ev === 'MESSAGE' && !/^cp\|/.test(obj.data)) {

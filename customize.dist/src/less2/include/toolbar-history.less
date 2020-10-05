@@ -71,6 +71,10 @@
                 min-width: 0;
                 text-align: center;
             }
+            .cp-history-timeline-version {
+                font-size: 12px;
+                margin-right: 10px;
+            }
         }
         .cp-toolbar-history-actions {
             display: flex;
@@ -120,6 +124,9 @@
             .cp-history-timeline-actions {
                 margin-left: 21px !important;
             }
+            .cp-toolbar-history-actions {
+                align-items: baseline !important;
+            }
         }
         &.cp-smallpatch {
             .cp-history-snapshot {
@@ -135,6 +142,17 @@
                 &:before {
                     left: -6px;
                 }
+            }
+        }
+        &.cp-history-oo {
+            .cp-history-timeline-container {
+                height: 20px !important;
+                .cp-history-timeline-pos {
+                    height: 20px !important;
+                }
+            }
+            .cp-history-timeline-actions {
+                margin-left: 0 !important;
             }
         }
         .cp-history-timeline-line {
@@ -229,6 +247,12 @@
                     }
                 }
             }
+            .cp-history-timeline-version:empty {
+                display: none;
+            }
+            .cp-history-timeline-time:empty {
+                display: none;
+            }
             .cp-history-timeline-next {
                 button:last-child {
                     margin-right: 0;
@@ -254,7 +278,6 @@
                 left: ~"calc(50% - 6px)";
             }
         }
-
     }
 }
 
