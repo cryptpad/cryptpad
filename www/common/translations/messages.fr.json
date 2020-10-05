@@ -1428,5 +1428,9 @@
     "history_close": "Fermer",
     "history_restore": "Restaurer",
     "share_bar": "Créer le lien",
-    "snapshots_delete": "Supprimer"
+    "snapshots_delete": "Supprimer",
+    "snapshot_error_exists": "Il existe déja une capture de cette version",
+    "snapshots_ooPickVersion": "Vous devez sélectionner une version avant de faire une capture",
+    "oo_version": "Version : ",
+    "oo_version_latest": "Dernière"
 }
