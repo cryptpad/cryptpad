@@ -221,6 +221,13 @@
                 .fa:first-child:not(:last-child) {
                     margin-right: 5px;
                 }
+                &:disabled {
+                    cursor: not-allowed !important;
+                    opacity: 0.6;
+                    &:hover, &:active {
+                        background-color: transparent;
+                    }
+                }
             }
             .cp-history-timeline-next {
                 button:last-child {
