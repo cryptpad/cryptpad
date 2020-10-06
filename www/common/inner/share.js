@@ -4,12 +4,13 @@ define([
     '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
+    '/common/common-feedback.js',
     '/common/inner/common-modal.js',
     '/common/hyperscript.js',
     '/common/clipboard.js',
     '/customize/messages.js',
     '/bower_components/nthen/index.js',
-], function ($, Util, Hash, UI, UIElements, Modal, h, Clipboard,
+], function ($, Util, Hash, UI, UIElements, Feedback, Modal, h, Clipboard,
              Messages, nThen) {
     var Share = {};
 
@@ -437,6 +438,7 @@ define([
                 className: 'primary',
                 name: Messages.share_linkCopy,
                 onClick: function () {
+                    Feedback.send('SHARE_EMBED');
                     var v = opts.getEmbedValue();
                     var success = Clipboard.copy(v);
                     if (success) { UI.log(Messages.shareSuccess); }
@@ -524,7 +526,6 @@ define([
             var burnAfterReading = Util.isChecked($rights.find('#cp-share-bar'));
             if (versionHash) {
                 edit = false;
-                embed = false;
                 present = false;
                 burnAfterReading = false;
             }
