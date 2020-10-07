@@ -490,8 +490,7 @@ define([
                     }, function(obj) {
                         UI.removeLoadingScreen();
                         if (obj && obj.error) {
-                            // TODO
-                            // XXX EEXISTS error message?
+                            // TODO more specific error message?
                             UI.alert(Messages.settings_changePasswordError);
                         }
                     });

@@ -1783,9 +1783,9 @@ define([
             });
 
             if (sharedF && manager.isPathIn(newPath, [TRASH])) {
-                // XXX create a key here?
+                // TODO create a key here?
                 // You can't move to YOUR trash documents stored in a shared folder
-                // XXX or keep deletePaths: trigger the "Remove from cryptdrive" modal
+                // TODO or keep deletePaths: trigger the "Remove from cryptdrive" modal
                 return void UI.warn(Messages.error);
                 //return void deletePaths(null, movedPaths);
             }

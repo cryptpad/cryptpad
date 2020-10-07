@@ -480,7 +480,7 @@ define([
             // Make sure we have not been kicked from the roster
             var state = roster.getState();
             var me = Util.find(ctx, ['store', 'proxy', 'curvePublic']);
-            // XXX FIXME roster history temporarily corrupted, don't leave the team
+            // FIXME roster history temporarily corrupted, don't leave the team
             if (!state.members || !Object.keys(state.members).length) {
                 lm.stop();
                 roster.stop();
@@ -488,6 +488,7 @@ define([
                 cb({error: 'EINVAL'});
                 waitFor.abort();
                 console.error(JSON.stringify(state));
+                Feedback.send("ROSTER_CORRUPTED");
                 return;
             }
             if (!state.members[me]) {

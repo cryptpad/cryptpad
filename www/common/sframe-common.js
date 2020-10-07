@@ -690,7 +690,7 @@ define([
             });
 
             ctx.sframeChan.on('EV_NEW_VERSION', function () {
-                // XXX lock the UI and do the same in non-framework apps
+                // TODO lock the UI and do the same in non-framework apps
                 var $err = $('<div>').append(Messages.newVersionError);
                 $err.find('a').click(function () {
                     funcs.gotoURL();
