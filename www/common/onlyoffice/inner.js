@@ -334,12 +334,6 @@ define([
             var all = sortCpIndex(content.hashes || {});
             var current = all[all.length - 1] || 0;
 
-            // XXX Keep all cp now
-            // Get the expected cp idx
-            //var _i = Math.floor(ev.index / CHECKPOINT_INTERVAL);
-            // Take the max of both
-            //var i = Math.max(_i, current);
-
             var i = current + 1;
             content.hashes[i] = {
                 file: data.url,
@@ -1028,10 +1022,6 @@ define([
                 return;
             }
 
-            // XXX
-            // If save lock, tell onlyoffice that it can't save now...
-            // if (content && content.saveLock] {}
-
             // Send the changes
             content.locks = content.locks || {};
             rtChannel.sendMsg({
@@ -1044,11 +1034,6 @@ define([
                 if (err) {
                     return void console.error(err);
                 }
-                // XXX
-                // If save lock, it means the sheet was locked for a checkpoint before
-                // our message was received!
-                // Add our message to our own queue to load it after the checkpoint reload
-
 
                 if (pendingChanges[uid]) {
                     clearTimeout(pendingChanges[uid]);
@@ -2164,7 +2149,7 @@ define([
             loadLastDocument(lastCp, function (err) {
                 console.error(err);
                 // On error, do nothing
-                // XXX lock the document or ask for a page reload?
+                // FIXME lock the document or ask for a page reload?
             }, function (blob, type) {
                 resetData(blob, type);
             });
