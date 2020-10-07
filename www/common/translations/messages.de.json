@@ -1427,5 +1427,7 @@
     "history_userPrev": "Vorheriger Autor",
     "history_fastPrev": "Vorherige Sitzung",
     "history_fastNext": "Nächste Sitzung",
-    "share_versionHash": "Du bist gerade dabei, die ausgewählte Version im Verlauf des Dokuments schreibgeschützt zu teilen. Dies beinhaltet <b>Lesezugriff</b> auf alle Versionen des Dokuments."
+    "share_versionHash": "Du bist gerade dabei, die ausgewählte Version im Verlauf des Dokuments schreibgeschützt zu teilen. Dies beinhaltet <b>Lesezugriff</b> auf alle Versionen des Dokuments.",
+    "oo_version": "Version: ",
+    "snapshots_delete": "Löschen"
 }
