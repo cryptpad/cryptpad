@@ -10,6 +10,7 @@ define([
     '/common/common-interface.js',
     '/common/common-util.js',
     '/common/common-hash.js',
+    '/common/common-signing-keys.js',
     '/support/ui.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -27,10 +28,13 @@ define([
     UI,
     Util,
     Hash,
+    Keys,
     Support
     )
 {
-    var APP = {};
+    var APP = {
+        'instanceStatus': {}
+    };
 
     var common;
     var sFrameChan;
@@ -38,7 +42,13 @@ define([
     var categories = {
         'general': [
             'cp-admin-flush-cache',
-            'cp-admin-update-limit'
+            'cp-admin-update-limit',
+            'cp-admin-registration'
+        ],
+        'quota': [
+            'cp-admin-defaultlimit',
+            'cp-admin-setlimit',
+            'cp-admin-getlimits',
         ],
         'stats': [
             'cp-admin-active-sessions',
@@ -97,6 +107,215 @@ define([
         });
         return $div;
     };
+    Messages.admin_registrationHint = "Restrict registration..."; // XXX
+    Messages.admin_registrationTitle = "Restrict registration"; // XXX
+    Messages.admin_registrationButton = "Restrict"; // XXX
+    Messages.admin_registrationAllow = "Allow"; // XXX
+    create['registration'] = function () {
+        var key = 'registration';
+        var $div = makeBlock(key, true);
+        var $button = $div.find('button');
+        var state = APP.instanceStatus.restrictRegistration;
+        if (state) {
+            $button.text(Messages.admin_registrationAllow);
+        } else {
+            $button.removeClass('btn-primary').addClass('btn-danger');
+        }
+        var called = false;
+        $div.find('button').click(function () {
+            called = true;
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['RESTRICT_REGISTRATION', [!state]]
+            }, function (e) {
+                if (e) { UI.warn(Messages.error); console.error(e); }
+                APP.updateStatus(function () {
+                    called = false;
+                    state = APP.instanceStatus.restrictRegistration;
+                    if (state) {
+                        console.log($button);
+                        $button.text(Messages.admin_registrationAllow);
+                        $button.addClass('btn-primary').removeClass('btn-danger');
+                    } else {
+                        $button.text(Messages.admin_registrationButton);
+                        $button.removeClass('btn-primary').addClass('btn-danger');
+                    }
+                });
+            });
+        });
+        return $div;
+    };
+
+    var getPrettySize = function (bytes) {
+        var unit = Util.magnitudeOfBytes(bytes);
+        var value = unit === 'GB' ? Util.bytesToGigabytes(bytes) : Util.bytesToMegabytes(bytes);
+        return unit === 'GB' ? Messages._getKey('formattedGB', [value])
+                             : Messages._getKey('formattedMB', [value])
+    };
+
+    Messages.admin_defaultlimitTitle = "Storage limit"; // XXX
+    Messages.admin_defaultlimitHint = "Maximum storage limit per user drive and team drive when no custom rule is applied"; // XXX
+    Messages.admin_limit = "Limit: {0}";
+    create['defaultlimit'] = function () {
+        var key = 'defaultlimit';
+        var $div = makeBlock(key);
+        var _limit = APP.instanceStatus.defaultStorageLimit;
+        var limit = getPrettySize(_limit);
+        $div.append(h('div', [
+            h('span', Messages._getKey('admin_limit', [limit]))
+        ]));
+        return $div;
+    };
+    Messages.admin_getlimitsHint = "List all the custom storage limits applied to your instance."; // XXX
+    Messages.admin_getlimitsTitle = "Custom limits"; // XXX
+    Messages.admin_limitPlan = "Plan: {0}";
+    Messages.admin_limitNote = "Note: {0}";
+    create['getlimits'] = function () {
+        var key = 'getlimits';
+        var $div = makeBlock(key);
+        APP.refreshLimits = function () {
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'GET_LIMITS',
+            }, function (e, data) {
+                if (e) { return; }
+                if (!Array.isArray(data) || !data[0]) { return; }
+
+                $div.find('.cp-admin-all-limits').remove();
+
+                var obj = data[0];
+                if (obj && (obj.message || obj.location)) {
+                    delete obj.message;
+                    delete obj.location;
+                }
+                var list = Object.keys(obj).sort(function (a, b) {
+                    return obj[a].limit > obj[b].limit;
+                });
+
+                var addClass = "";
+                if (list.length > 10) { addClass = ".cp-compact"; }
+
+                var content = list.map(function (key) {
+                    var user = obj[key];
+                    var limit = getPrettySize(user.limit);
+                    var title = Messages._getKey('admin_limit', [limit]) + ', ' +
+                                Messages._getKey('admin_limitPlan', [user.plan]) + ', ' +
+                                Messages._getKey('admin_limitNote', [user.note]);
+
+                    var keyEl = h('code.cp-limit-key', key);
+                    $(keyEl).click(function () {
+                        $('.cp-admin-setlimit-form').find('.cp-setlimit-key').val(key);
+                    });
+                    return h('li.cp-admin-limit', {
+                        title: addClass ? title : ''
+                    }, [
+                        keyEl,
+                        h('ul.cp-limit-data', [
+                            h('li.limit', Messages._getKey('admin_limit', [limit])),
+                            //h('li.plan', Messages._getKey('admin_limitPlan', [user.plan])),
+                            h('li.note', Messages._getKey('admin_limitNote', [user.note]))
+                        ])
+                    ]);
+                });
+                $div.append(h('ul.cp-admin-all-limits'+addClass, content));
+            });
+        };
+        APP.refreshLimits();
+        return $div;
+    };
+
+    Messages.admin_setlimitHint = "Get the public key of a user and give them a custom storage limit. You can update an existing limit or remove the custom limit."; // XXX
+    Messages.admin_setlimitTitle = "Apply a custom limit"; // XXX
+    Messages.admin_setlimitButton = "Set limit"; // XXX
+    Messages.admin_limitUser = "User's public key"; // XXX
+    Messages.admin_limitMB = "Limit (in MB)"; // XXX
+    Messages.admin_limitSetNote = "Custom Note"; // XXX
+    Messages.admin_invalKey = "Invalid public key";
+    Messages.admin_invalLimit = "Invalid limit value";
+    create['setlimit'] = function () {
+        var key = 'setlimit';
+        var $div = makeBlock(key);
+
+        var user = h('input.cp-setlimit-key');
+        var $key = $(user);
+        var limit = h('input', {type: 'number', min: 0, value: 0});
+        var note = h('input');
+        var remove = h('button.btn.btn-danger', Messages.fc_remove);
+        var set = h('button.btn.btn-primary', Messages.admin_setlimitButton);
+        var form = h('div.cp-admin-setlimit-form', [
+            h('label', Messages.admin_limitUser),
+            user,
+            h('label', Messages.admin_limitMB),
+            limit,
+            h('label', Messages.admin_limitSetNote),
+            note,
+            h('nav', [set, remove])
+        ]);
+
+        var getValues = function () {
+            var key = $key.val();
+            var _limit = parseInt($(limit).val());
+            var _note = $(note).val();
+            if (key.length !== 44) {
+                try {
+                    var u = Keys.parseUser(key);
+                    if (!u.domain || !u.user || !u.pubkey) {
+                        return void UI.warn(Messages.admin_invalKey);
+                    }
+                } catch (e) {
+                    return void UI.warn(Messages.admin_invalKey);
+                }
+            }
+            if (isNaN(_limit) || _limit < 0) {
+                return void UI.warn(Messages.admin_invalLimit);
+            }
+            return {
+                key: key,
+                data: {
+                    limit: _limit * 1024 * 1024,
+                    note: _note,
+                    plan: 'custom'
+                }
+            };
+        };
+
+        UI.confirmButton(remove, {
+            classes: 'btn-danger',
+            validate: function () {
+                var obj = getValues();
+                if (!obj || !obj.key) { return false; }
+                return true;
+            }
+        }, function () {
+            var obj = getValues();
+            var data = [obj.key];
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['RM_QUOTA', data]
+            }, function (e) {
+                if (e) { UI.warn(Messages.error); console.error(e); }
+                APP.refreshLimits();
+                $key.val('');
+            });
+        });
+
+        $(set).click(function () {
+            var obj = getValues();
+            if (!obj || !obj.key) { return; }
+            var data = [obj.key, obj.data];
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['SET_QUOTA', data]
+            }, function (e) {
+                if (e) { UI.warn(Messages.error); console.error(e); }
+                APP.refreshLimits();
+                $key.val('');
+            });
+        });
+
+        $div.append(form);
+        return $div;
+    };
+
     create['active-sessions'] = function () {
         var key = 'active-sessions';
         var $div = makeBlock(key);
@@ -409,6 +628,18 @@ define([
         APP.toolbar.$rightside.hide();
     };
 
+    var updateStatus = APP.updateStatus = function (cb) {
+        sFrameChan.query('Q_ADMIN_RPC', {
+            cmd: 'INSTANCE_STATUS',
+        }, function (e, data) {
+            if (e) { console.error(e); return void cb(e); }
+            if (!Array.isArray(data)) { return void cb('EINVAL'); }
+            APP.instanceStatus = data[0];
+            console.log("Status", APP.instanceStatus);
+            cb();
+        });
+    };
+
     nThen(function (waitFor) {
         $(waitFor(UI.addLoadingScreen));
         SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
@@ -419,6 +650,8 @@ define([
         APP.$rightside = $('<div>', {id: 'cp-sidebarlayout-rightside'}).appendTo(APP.$container);
         sFrameChan = common.getSframeChannel();
         sFrameChan.onReady(waitFor());
+    }).nThen(function (waitFor) {
+        updateStatus(waitFor());
     }).nThen(function (/*waitFor*/) {
         createToolbar();
         var metadataMgr = common.getMetadataMgr();
@@ -434,6 +667,7 @@ define([
         APP.origin = privateData.origin;
         APP.readOnly = privateData.readOnly;
         APP.support = Support.create(common, true);
+
 
         // Content
         var $rightside = APP.$rightside;

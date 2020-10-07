@@ -1203,7 +1203,7 @@ define([
                 Util.bytesToMegabytes(limit);
 
             var $limit = $('<span>', {'class': 'cp-limit-bar'}).appendTo($container);
-            var quota = usage/limit;
+            var quota = limit === 0 ? 1 : usage/limit;
             var $usage = $('<span>', {'class': 'cp-limit-usage'}).css('width', quota*100+'%');
             var $buttons = $(h('span.cp-limit-buttons')).appendTo($container);
 

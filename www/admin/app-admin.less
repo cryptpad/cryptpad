@@ -19,6 +19,48 @@
     display: flex;
     flex-flow: column;
 
+    .cp-admin-setlimit-form {
+        label {
+            font-weight: normal !important;
+        }
+        input {
+            max-width: 400px;
+        }
+        nav {
+            display: flex;
+            margin-top: 5px;
+        }
+    }
+    .cp-admin-getlimits {
+        code {
+            cursor: pointer;
+        }
+        ul.cp-compact {
+            .cp-admin-limit {
+                display: flex;
+                align-items: center;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                ul {
+                    display: inline;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    li {
+                        display: inline-block;
+                        &.limit {
+                            width: 130px;
+                        }
+                        &.plan {
+                            width: 140px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     .cp-support-container {
         display: flex;
         flex-flow: column;

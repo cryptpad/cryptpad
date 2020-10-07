@@ -717,6 +717,8 @@ define([
         };
 
         $(originalBtn).addClass('cp-button-confirm-placeholder').click(function () {
+            // If we have a validation function, continue only if it's true
+            if (config.validate && !config.validate()) { return; }
             i = 1;
             to = setTimeout(todo, INTERVAL);
             $(originalBtn).hide().after(content);
