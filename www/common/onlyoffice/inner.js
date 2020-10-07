@@ -8,6 +8,7 @@ define([
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/common-ui-elements.js',
+    '/common/common-feedback.js',
     '/common/hyperscript.js',
     '/api/config',
     '/customize/messages.js',
@@ -35,6 +36,7 @@ define([
     Hash,
     Util,
     UIElements,
+    Feedback,
     h,
     ApiConfig,
     Messages,
@@ -1959,7 +1961,7 @@ define([
                 }).click(function () {
                     ooChannel.historyLastHash = ooChannel.lastHash;
                     ooChannel.currentIndex = ooChannel.cpIndex;
-                    //Feedback.send('OO_HISTORY'); // XXX pull Feedback from require
+                    Feedback.send('OO_HISTORY');
                     var histConfig = {
                         onPatch: onPatch,
                         onCheckpoint: onCheckpoint,
