@@ -17,8 +17,10 @@ define([
     '/customize/application_config.js',
     '/common/messenger-ui.js',
     '/common/inner/invitation.js',
+    '/common/make-backup.js',
     '/customize/messages.js',
 
+    '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/teams/app-team.less',
@@ -41,10 +43,12 @@ define([
     AppConfig,
     MessengerUI,
     InviteInner,
+    Backup,
     Messages)
 {
     var APP = {};
     var driveAPP = {};
+    var saveAs = window.saveAs;
     //var SHARED_FOLDER_NAME = Messages.fm_sharedFolderName;
 
     var copyObjectValue = function (objRef, objToCopy) {
@@ -169,6 +173,7 @@ define([
             'cp-team-edpublic',
             'cp-team-name',
             'cp-team-avatar',
+            'cp-team-export',
             'cp-team-delete',
         ],
     };
@@ -1024,6 +1029,51 @@ define([
             ];
             cb(content);
         });
+    }, true);
+
+    Messages.team_exportTitle = "Download team drive";
+    Messages.team_exportHint = "Download all the pads frm this team's drive in a readable format (when available).";
+    Messages.team_exportButton = "Download";
+    makeBlock('export', function (common, cb) {
+        // Backup all the pads
+        var sframeChan = common.getSframeChannel();
+        var privateData = common.getMetadataMgr().getPrivateData();
+        var team = privateData.teams[APP.team] || {};
+        var teamName = team.name || Messages.anonymous;
+
+        var exportDrive = function() {
+            Feedback.send('FULL_TEAMDRIVE_EXPORT_START');
+            var todo = function(data, filename) {
+                var ui = Backup.createExportUI(privateData.origin);
+
+                var bu = Backup.create(data, common.getPad, privateData.fileHost, function(blob, errors) {
+                    saveAs(blob, filename);
+                    sframeChan.event('EV_CRYPTGET_DISCONNECT');
+                    ui.complete(function() {
+                        Feedback.send('FULL_TEAMDRIVE_EXPORT_COMPLETE');
+                        saveAs(blob, filename);
+                    }, errors);
+                }, ui.update);
+                ui.onCancel(function() {
+                    ui.close();
+                    bu.stop();
+                });
+            };
+            sframeChan.query("Q_SETTINGS_DRIVE_GET", "full", function(err, data) {
+                if (err) { return void console.error(err); }
+                if (data.error) { return void console.error(data.error); }
+                var filename = teamName + '-' + new Date().toDateString() + '.zip';
+                todo(data, filename);
+            });
+        };
+        var button = h('button.btn.btn-primary', Messages.team_exportButton);
+        UI.confirmButton(button, {
+            classes: 'btn-primary',
+            multiple: true
+        }, function () {
+            exportDrive();
+        });
+        cb(button);
     }, true);
 
     makeBlock('delete', function (common, cb) {

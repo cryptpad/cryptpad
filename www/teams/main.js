@@ -46,7 +46,7 @@ define([
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
         var teamId;
-        var addRpc = function (sframeChan, Cryptpad) {
+        var addRpc = function (sframeChan, Cryptpad, Utils) {
             sframeChan.on('Q_SET_TEAM', function (data, cb) {
                 teamId = data;
                 cb();
@@ -90,6 +90,35 @@ define([
                 if (obj.data.ev === 'NETWORK_DISCONNECT') {
                     sframeChan.event('EV_NETWORK_DISCONNECT');
                 }
+            });
+
+            sframeChan.on('Q_SETTINGS_DRIVE_GET', function (d, cb) {
+                Cryptpad.getUserObject(teamId, function (obj) {
+                    if (obj.error) { return void cb(obj); }
+                    if (d === "full") {
+                        // We want shared folders too
+                        var result = {
+                            uo: obj,
+                            sf: {}
+                        };
+                        if (!obj.drive || !obj.drive.sharedFolders) { return void cb(result); }
+                        Utils.nThen(function (waitFor) {
+                            Object.keys(obj.drive.sharedFolders).forEach(function (id) {
+                                Cryptpad.getSharedFolder({
+                                    id: id,
+                                    teamId: teamId
+                                }, waitFor(function (obj) {
+                                    result.sf[id] = obj;
+                                }));
+                            });
+                        }).nThen(function () {
+                            cb(result);
+                        });
+                        return;
+                    }
+                    // We want only the user object
+                    cb(obj);
+                });
             });
         };
         var getSecrets = function (Cryptpad, Utils, cb) {

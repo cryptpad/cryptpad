@@ -2,6 +2,7 @@
 @import (reference) "../../customize/src/less2/include/limit-bar.less";
 @import (reference) "../../customize/src/less2/include/creation.less";
 @import (reference) '../../customize/src/less2/include/framework.less';
+@import (reference) '../../customize/src/less2/include/export.less';
 
 &.cp-app-settings {
     .framework_min_main(
@@ -26,93 +27,7 @@
         padding: 10px;
     }
 
-    #cp-export-container {
-        font-size: 16px;
-        display: flex;
-        flex: 1;
-        min-height: 0;
-        align-items: center;
-        justify-content: center;
-        .cp-export-block {
-            width: 800px;
-            max-width: 90vw;
-            .cp-export-progress-bar-container {
-                height: 24px;
-                background: white;
-                border: 1px solid #DDD;
-                width: 80%;
-                margin: auto;
-                position: relative;
-                .cp-export-progress-bar {
-                    height: 100%;
-                    background: #5cb85c; // Same color as loading screen bar
-                    width: 0%;
-                    display: inline-block;
-                }
-                .cp-export-progress-text {
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                    left: 0;
-                    bottom: 0;
-                    text-align: center;
-                    font-weight: bold;
-                }
-            }
-            & > p {
-                color: #777;
-            }
-            .cp-export-progress {
-                margin-bottom: 1rem;
-                p {
-                    margin-bottom: 0;
-                    display: flex;
-                    align-items: center;
-                    padding: 5px 0;
-                    .fa {
-                        width: 25px;
-                    }
-                }
-            }
-            .cp-export-actions {
-                display: flex;
-                flex-flow: row-reverse;
-                .btn-default, .btn-primary {
-                    margin-left: 20px;
-                }
-            }
-            .cp-export-errors {
-                display: none;
-                overflow-x: auto;
-                max-height: 300px;
-                background: #ededed;
-                border: 1px solid #777;
-                padding: 5px 20px;
-                margin-top: 1rem;
-                & > p {
-                    margin: 0;
-                }
-                .cp-export-errors-list {
-                    & > div {
-                        padding: 5px 10px;
-                        margin: 5px 0;
-                        background: #dedede;
-                        .title {
-                            font-weight: bold;
-                        }
-                        .link {
-                            padding: 0 20px;
-                            font-size: 14px;
-                        }
-                        .reason {
-                            padding: 0 20px;
-                            color: #777;
-                        }
-                    }
-                }
-            }
-        }
-    }
+    .export_main();
 
     #cp-sidebarlayout-container {
         #cp-sidebarlayout-rightside {
