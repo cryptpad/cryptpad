@@ -340,6 +340,7 @@ define([
                         if (!val) { return true; }
                         config.makeSnapshot(val, function (err) {
                             if (err) { return; }
+                            $input.val('');
                             UI.log(Messages.saved);
                         }, {
                             hash: getVersion(),

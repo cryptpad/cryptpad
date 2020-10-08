@@ -1470,6 +1470,11 @@ define([
                 Store.getPadMetadata(null, {
                     channel: data.channel
                 }, waitFor(function (md) {
+                    if (md && md.rejected) {
+                        postMessage(clientId, "PAD_ERROR", {type: "ERESTRICTED"});
+                        waitFor.abort();
+                        return;
+                    }
                     validateKey = md.validateKey;
                 }));
             }).nThen(function () {
@@ -1480,6 +1485,11 @@ define([
                 }, function (obj) {
                     if (obj && obj.error) {
                         postMessage(clientId, "PAD_ERROR", obj.error);
+                        return;
+                    }
+                    var msgs = obj.messages || [];
+                    if (msgs.length && msgs[msgs.length - 1].serverHash !== data.versionHash) {
+                        postMessage(clientId, "PAD_ERROR", {type: "HASH_NOT_FOUND"});
                         return;
                     }
                     postMessage(clientId, "PAD_CONNECT", {

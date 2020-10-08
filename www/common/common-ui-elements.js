@@ -2505,6 +2505,9 @@ define([
         } else if (err.type === 'ERESTRICTED') {
             msg = Messages.restrictedError;
             if (toolbar && typeof toolbar.failed === "function") { toolbar.failed(true); }
+        } else if (err.type === 'HASH_NOT_FOUND' && priv.isHistoryVersion) {
+            msg = Messages.oo_deletedVersion;
+            if (toolbar && typeof toolbar.failed === "function") { toolbar.failed(true); }
         }
         var sframeChan = common.getSframeChannel();
         sframeChan.event('EV_SHARE_OPEN', {hidden: true});
@@ -3407,6 +3410,7 @@ define([
                     });
                     make(val, function (err) {
                         clearTimeout(to);
+                        $input.val('');
                         if (err) {
                             return void UI.alert(Messages.snapshots_cantMake);
                         }
