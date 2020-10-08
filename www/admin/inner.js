@@ -155,15 +155,47 @@ define([
 
     Messages.admin_defaultlimitTitle = "Storage limit"; // XXX
     Messages.admin_defaultlimitHint = "Maximum storage limit per user drive and team drive when no custom rule is applied"; // XXX
-    Messages.admin_limit = "Limit: {0}";
+    Messages.admin_defaultlimitTitle = "New default limit (MB)"; // XXX
+    Messages.admin_setlimitButton = "Set limit"; // XXX
+    Messages.admin_limit = "Current default limit: {0}";
     create['defaultlimit'] = function () {
         var key = 'defaultlimit';
         var $div = makeBlock(key);
         var _limit = APP.instanceStatus.defaultStorageLimit;
+        var _limitMB = Util.bytesToMegabytes(_limit);
         var limit = getPrettySize(_limit);
+        var newLimit = h('input', {type: 'number', min: 0, value: _limitMB});
+        var set = h('button.btn.btn-primary', Messages.admin_setlimitButton);
         $div.append(h('div', [
-            h('span', Messages._getKey('admin_limit', [limit]))
+            h('span.cp-admin-defaultlimit-value', Messages._getKey('admin_limit', [limit])),
+            h('div.cp-admin-setlimit-form', [
+                h('label', Messages.admin_defaultLimitMB),
+                newLimit,
+                h('nav', [set])
+            ])
         ]));
+
+        UI.confirmButton(set, {
+            classes: 'btn-primary',
+            multiple: true,
+            validate: function () {
+                var l = parseInt($(newLimit).val());
+                if (isNaN(l)) { return false; }
+                return true;
+            }
+        }, function () {
+            var lMB = parseInt($(newLimit).val()); // Megabytes
+            var l = lMB * 1024 * 1024; // Bytes
+            var data = [l];
+            sFrameChan.query('Q_ADMIN_RPC', {
+                cmd: 'ADMIN_DECREE',
+                data: ['UPDATE_DEFAULT_STORAGE', data]
+            }, function (e) {
+                if (e) { UI.warn(Messages.error); return void console.error(e); }
+                var limit = getPrettySize(l);
+                $div.find('.cp-admin-defaultlimit-value').text(Messages._getKey('admin_limit', [limit]));
+            });
+        });
         return $div;
     };
     Messages.admin_getlimitsHint = "List all the custom storage limits applied to your instance."; // XXX
@@ -225,7 +257,6 @@ define([
 
     Messages.admin_setlimitHint = "Get the public key of a user and give them a custom storage limit. You can update an existing limit or remove the custom limit."; // XXX
     Messages.admin_setlimitTitle = "Apply a custom limit"; // XXX
-    Messages.admin_setlimitButton = "Set limit"; // XXX
     Messages.admin_limitUser = "User's public key"; // XXX
     Messages.admin_limitMB = "Limit (in MB)"; // XXX
     Messages.admin_limitSetNote = "Custom Note"; // XXX
@@ -280,6 +311,7 @@ define([
 
         UI.confirmButton(remove, {
             classes: 'btn-danger',
+            multiple: true,
             validate: function () {
                 var obj = getValues();
                 if (!obj || !obj.key) { return false; }
