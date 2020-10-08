@@ -1031,9 +1031,9 @@ define([
         });
     }, true);
 
-    Messages.team_exportTitle = "Download team drive";
-    Messages.team_exportHint = "Download all the pads frm this team's drive in a readable format (when available).";
-    Messages.team_exportButton = "Download";
+    Messages.team_exportTitle = "Download team drive"; // XXX
+    Messages.team_exportHint = "Download all the pads frm this team's drive in a readable format (when available)."; // XXX
+    Messages.team_exportButton = "Download"; // XXX
     makeBlock('export', function (common, cb) {
         // Backup all the pads
         var sframeChan = common.getSframeChannel();
