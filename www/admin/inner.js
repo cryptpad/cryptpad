@@ -588,10 +588,12 @@ define([
             active = active.split('-')[0];
         }
         common.setHash(active);
+        Messages.admin_cat_quota = 'Quotas'; // XXX
         Object.keys(categories).forEach(function (key) {
             var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
             if (key === 'general') { $category.append($('<span>', {'class': 'fa fa-user-o'})); }
-            if (key === 'stats') { $category.append($('<span>', {'class': 'fa fa-hdd-o'})); }
+            if (key === 'stats') { $category.append($('<span>', {'class': 'fa fa-line-chart'})); }
+            if (key === 'quota') { $category.append($('<span>', {'class': 'fa fa-hdd-o'})); }
             if (key === 'support') { $category.append($('<span>', {'class': 'fa fa-life-ring'})); }
 
             if (key === active) {
