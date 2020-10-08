@@ -639,6 +639,7 @@ define([
                 button
                 .click(common.prepareFeedback(type))
                 .click(function () {
+                    if (callback) { return void callback(); }
                     UIElements.openTemplatePicker(common, true);
                 });
                 break;

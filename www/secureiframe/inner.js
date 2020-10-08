@@ -124,6 +124,7 @@ define([
             }
             sframeChan.event("EV_SECURE_ACTION", {
                 type: parsed.type,
+                password: data.password,
                 href: data.url,
                 name: data.name
             });
