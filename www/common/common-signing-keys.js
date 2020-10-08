@@ -2,6 +2,10 @@
 var factory = function () {
     var Keys = {};
 
+    var unescape = function (s) {
+        return s.replace(/-/g, '/');
+    };
+
 /*  Parse the new format of "Signing Public Keys".
     If anything about the input is found to be invalid, return;
     this will fall back to the old parsing method
@@ -15,7 +19,7 @@ var factory = function () {
 
         temp = temp
         .replace(/\/([a-zA-Z0-9+-]{43}=)$/, function (all, k) {
-            pubkey = k.replace(/-/g, '/');
+            pubkey = unescape(k);
             return '';
         });
         if (!pubkey) { return; }
@@ -48,7 +52,7 @@ var factory = function () {
                         function (a, d, u, k) {
             domain = d;
             username = u;
-            pubkey = k.replace(/-/g, '/');
+            pubkey = unescape(k);
             return '';
         });
         if (!domain) { throw new Error("Could not parse user id [" + user + "]"); }
@@ -76,6 +80,19 @@ var factory = function () {
             pubkey.replace(/\//g, '-') +
         ']';
         // return origin + '/user/#/1/' + username + '/' + pubkey.replace(/\//g, '-');
+    };
+
+    Keys.canonicalize = function (input) {
+        if (typeof(input) !== 'string') { return; }
+        // key is already in simple form. ensure that it is an 'unsafeKey'
+        if (input.length === 44) {
+            return unescape(input);
+        }
+        try {
+            return Keys.parseUser(input).pubkey;
+        } catch (err) {
+            return;
+        }
     };
 
     return Keys;
