@@ -392,7 +392,7 @@ define([
         };
         */
 
-        var makeSnapshot = function (title) {
+        var makeSnapshot = function (title, $input) {
             var idx = getIndex(c);
             if (!config.getLastMetadata || !config.setLastMetadata) { return; }
             try {
@@ -622,7 +622,7 @@ define([
                     onClick: function () {
                         var val = $input.val();
                         if (!val) { return true; }
-                        makeSnapshot(val);
+                        makeSnapshot(val, $input);
                     },
                     keys: [],
                 }];
