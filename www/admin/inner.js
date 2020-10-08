@@ -150,7 +150,7 @@ define([
         var unit = Util.magnitudeOfBytes(bytes);
         var value = unit === 'GB' ? Util.bytesToGigabytes(bytes) : Util.bytesToMegabytes(bytes);
         return unit === 'GB' ? Messages._getKey('formattedGB', [value])
-                             : Messages._getKey('formattedMB', [value])
+                             : Messages._getKey('formattedMB', [value]);
     };
 
     Messages.admin_defaultlimitTitle = "Storage limit"; // XXX
