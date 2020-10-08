@@ -1102,6 +1102,10 @@ define([
                         nSecret = Utils.Hash.getSecrets('drive', hash, password);
                     }
                 }
+                if (data.href) {
+                    var _parsed = Utils.Hash.parsePadUrl(data.href);
+                    nSecret = Utils.Hash.getSecrets(_parsed.type, _parsed.hash, data.password);
+                }
                 var channel = nSecret.channel;
                 var validate = nSecret.keys.validateKey;
                 var crypto = Crypto.createEncryptor(nSecret.keys);
@@ -1280,6 +1284,10 @@ define([
             });
 
             sframeChan.on('Q_TEMPLATE_USE', function (data, cb) {
+                Cryptpad.useTemplate(data, Cryptget, cb);
+            });
+            sframeChan.on('Q_OO_TEMPLATE_USE', function (data, cb) {
+                data.oo = true;
                 Cryptpad.useTemplate(data, Cryptget, cb);
             });
             sframeChan.on('Q_TEMPLATE_EXIST', function (type, cb) {
