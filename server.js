@@ -90,8 +90,6 @@ config.flushCache = function () {
     config.log.info("UPDATING_FRESH_KEY", FRESH_KEY);
 };
 
-const clone = (x) => (JSON.parse(JSON.stringify(x)));
-
 var setHeaders = (function () {
     // load the default http headers unless the admin has provided their own via the config file
     var headers;
@@ -99,7 +97,7 @@ var setHeaders = (function () {
     var custom = config.httpHeaders;
     // if the admin provided valid http headers then use them
     if (custom && typeof(custom) === 'object' && !Array.isArray(custom)) {
-        headers = clone(custom);
+        headers = Util.clone(custom);
     } else {
         // otherwise use the default
         headers = Default.httpHeaders();
@@ -120,7 +118,7 @@ var setHeaders = (function () {
         headers['Content-Security-Policy'] = Default.contentSecurity(config.httpUnsafeOrigin);
     }
 
-    const padHeaders = clone(headers);
+    const padHeaders = Util.clone(headers);
     if (typeof(config.padContentSecurity) === 'string') {
         padHeaders['Content-Security-Policy'] = config.padContentSecurity;
     } else {
@@ -202,6 +200,7 @@ app.use(/^\/[^\/]*$/, Express.static('customize.dist'));
 var admins = [];
 try {
     admins = (config.adminKeys || []).map(function (k) {
+        // XXX is there any reason not to use Keys.canonicalize ?
         // return each admin's "unsafeKey"
         // this might throw and invalidate all the other admin's keys
         // but we want to get the admin's attention anyway.
@@ -228,12 +227,12 @@ var serveConfig = (function () {
                 allowSubscriptions: (config.allowSubscriptions === true),
                 websocketPath: config.externalWebsocketURL,
                 httpUnsafeOrigin: config.httpUnsafeOrigin,
-                adminEmail: config.adminEmail,
+                adminEmail: config.adminEmail, // XXX mutable
                 adminKeys: admins,
-                inactiveTime: config.inactiveTime,
+                inactiveTime: config.inactiveTime, // XXX mutable
                 supportMailbox: config.supportMailboxPublicKey,
-                maxUploadSize: config.maxUploadSize,
-                premiumUploadSize: config.premiumUploadSize,
+                maxUploadSize: config.maxUploadSize, // XXX mutable
+                premiumUploadSize: config.premiumUploadSize, // XXX mutable
             }, null, '\t'),
             'obj.httpSafeOrigin = ' + (function () {
                 if (config.httpSafeOrigin) { return '"' + config.httpSafeOrigin + '"'; }
@@ -259,6 +258,8 @@ var serveConfig = (function () {
         }
         // generate a lookup key for the cache
         var cacheKey = host + ':' + cacheString();
+
+        // XXX we must be able to clear the cache when updating any mutable key
         // if there's nothing cached for that key...
         if (!configCache[cacheKey]) {
             // generate the response and cache it in memory
