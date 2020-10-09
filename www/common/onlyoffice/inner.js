@@ -1892,7 +1892,6 @@ define([
                 });
                 ooChannel.historyLastHash = ooChannel.lastHash;
                 ooChannel.currentIndex = ooChannel.cpIndex;
-                console.error(ooChannel.historyLastHash);
                 loadCp(lastCp, true);
             });
         };
