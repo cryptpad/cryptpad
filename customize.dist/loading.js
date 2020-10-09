@@ -260,6 +260,11 @@ button.primary:hover{
             '<p id="cp-loading-message"></p>',
         '</div>'
     ].join('');
+    window.CryptPad_loadingError = function (err) {
+        document.querySelector('.cp-loading-spinner-container').setAttribute('style', 'display:none;');
+        document.querySelector('#cp-loading-message').setAttribute('style', 'display:block;');
+        document.querySelector('#cp-loading-message').innerText = err;
+    };
     return function () {
         var intr;
         var append = function () {

@@ -167,7 +167,12 @@ define([
             if (css) { return void loadSubmodulesAndInject(css, url, done, stack); }
             console.debug('CACHE MISS ' + url);
             ((/\.less([\?\#].*)?$/.test(url)) ? loadLess : loadCSS)(url, function (err, css) {
-                if (!css) { return void console.error(err); }
+                if (!css) {
+                    if (window.CryptPad_loadingError) {
+                        window.CryptPad_loadingError('LESS: ' + (err && err.message));
+                    }
+                    return void console.error(err);
+                }
                 var output = fixAllURLs(css, url);
                 cachePut(url, output);
                 loadSubmodulesAndInject(output, url, done, stack);
