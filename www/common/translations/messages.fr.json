@@ -1406,7 +1406,6 @@
     "settings_kanbanTagsHint": "Sélectionnez le fonctionnement du filtre lorsque vous sélectionnez plusieurs mots-clés : afficher uniquement les cartes contenant tous les mots-clés sélectionnés (ET) ou afficher les cartes contenant l'un des mots-clés sélectionnés (OU)",
     "settings_kanbanTagsTitle": "Filtre par mot-clé",
     "oo_deletedVersion": "Cette version n'existe plus dans l'historique.",
-    "snapshots_cantRestore": "La restauration a échoué. Vous êtes déconnecté.",
     "snapshots_close": "Fermer",
     "snapshots_restore": "Restaurer",
     "snapshots_open": "Ouvrir",
