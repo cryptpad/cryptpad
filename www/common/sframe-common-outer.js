@@ -1646,6 +1646,7 @@ define([
                 rtConfig.metadata.validateKey = (secret.keys && secret.keys.validateKey) || undefined;
 
                 Utils.rtConfig = rtConfig;
+                var templatePw;
                 nThen(function(waitFor) {
                     if (data.templateId) {
                         if (data.templateId === -1) {
@@ -1654,11 +1655,34 @@ define([
                         }
                         Cryptpad.getPadData(data.templateId, waitFor(function (err, d) {
                             data.template = d.href;
+                            templatePw = d.password;
                         }));
                     }
                 }).nThen(function () {
                     var cryptputCfg = $.extend(true, {}, rtConfig, {password: password});
                     if (data.template) {
+                        // Start OO with a template...
+                        // Cryptget and give href, password and content to inner
+                        if (parsed.type === "sheet") {
+                            var then = function () {
+                                startRealtime(rtConfig);
+                                cb();
+                            };
+                            var _parsed = Utils.Hash.parsePadUrl(data.template);
+                            Cryptget.get(_parsed.hash, function (err, val) {
+                                if (err || !val) { return void then(); }
+                                try {
+                                    var parsed = JSON.parse(val);
+                                    sframeChan.event('EV_OO_TEMPLATE', {
+                                        href: data.template,
+                                        password: templatePw,
+                                        content: parsed
+                                    });
+                                } catch (e) { console.error(e); }
+                                then();
+                            }, {password: templatePw});
+                            return;
+                        }
                         // Pass rtConfig to useTemplate because Cryptput will create the file and
                         // we need to have the owners and expiration time in the first line on the
                         // server
