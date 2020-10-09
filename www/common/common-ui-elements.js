@@ -2094,7 +2094,7 @@ define([
         var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
-        var type = metadataMgr.getMetadataLazy().type;
+        var type = metadataMgr.getMetadataLazy().type || privateData.app;
         var fromFileData = privateData.fromFileData;
 
         var $body = $('body');

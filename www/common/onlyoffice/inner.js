@@ -113,6 +113,7 @@ define([
         };
 
         var getEditor = function () {
+            if (!window.frames || !window.frames[0]) { return; }
             return window.frames[0].editor || window.frames[0].editorCell;
         };
 
@@ -1852,14 +1853,15 @@ define([
         var loadTemplate = function (href, pw, parsed) {
             APP.history = true;
             APP.template = true;
-            getEditor().setViewModeDisconnect();
+            var editor = getEditor();
+            if (editor) { editor.setViewModeDisconnect(); }
             var content = parsed.content;
 
             // Get checkpoint
             var hashes = content.hashes || {};
             var idx = sortCpIndex(hashes);
             var lastIndex = idx[idx.length - 1];
-            var lastCp = hashes[lastIndex];
+            var lastCp = hashes[lastIndex] || {};
 
             // Current cp or initial hash (invalid hash ==> initial hash)
             var toHash = lastCp.hash || 'NONE';
@@ -2231,11 +2233,18 @@ define([
             openRtChannel(function () {
                 setMyId();
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
-                loadDocument(newDoc, useNewDefault);
                 initializing = false;
+                common.openPadChat(APP.onLocal);
+
+                if (APP.startWithTemplate) {
+                    var template = APP.startWithTemplate;
+                    loadTemplate(template.href, template.password, template.content);
+                    return;
+                }
+
+                loadDocument(newDoc, useNewDefault);
                 setEditable(!readOnly);
                 UI.removeLoadingScreen();
-                common.openPadChat(APP.onLocal);
             });
         };
 
@@ -2359,8 +2368,11 @@ define([
             }));
             SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
         }).nThen(function (waitFor) {
+            common.getSframeChannel().on('EV_OO_TEMPLATE', function (data) {
+                APP.startWithTemplate = data;
+            });
             common.handleNewFile(waitFor, {
-                noTemplates: true
+                //noTemplates: true
             });
         }).nThen(function (/*waitFor*/) {
             andThen(common);
