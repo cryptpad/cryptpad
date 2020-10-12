@@ -8,7 +8,7 @@ We also spent some time finalizing some major improvements to the history mode w
 
 ## Update notes
 
-This release requires introduces some behaviour which may require manual configuration on the part of the administrator. Read the following sections carefully or proceed at your own risk!
+This release introduces some behaviour which may require manual configuration on the part of the administrator. Read the following sections carefully or proceed at your own risk!
 
 ### Automatic database maintenance
 
