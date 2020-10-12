@@ -200,12 +200,13 @@ app.use(/^\/[^\/]*$/, Express.static('customize.dist'));
 var admins = [];
 try {
     admins = (config.adminKeys || []).map(function (k) {
-        // XXX is there any reason not to use Keys.canonicalize ?
+        var unsafeKey = Keys.canonicalize(k);
         // return each admin's "unsafeKey"
         // this might throw and invalidate all the other admin's keys
         // but we want to get the admin's attention anyway.
         // breaking everything is a good way to accomplish that.
-        return Keys.parseUser(k).pubkey;
+        if (!unsafeKey) { throw new Error(); }
+        return unsafeKey;
     });
 } catch (e) { console.error("Can't parse admin keys"); }
 
