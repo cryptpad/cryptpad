@@ -43,7 +43,7 @@ define([
         'general': [
             'cp-admin-flush-cache',
             'cp-admin-update-limit',
-            'cp-admin-registration'
+            // 'cp-admin-registration',
         ],
         'quota': [
             'cp-admin-defaultlimit',
