@@ -1,20 +1,70 @@
-# X (3.23.0)
+# XerusDaamsi (3.23.0)
 
 ## Goals
 
+We plan to produce an updated installation guide for CryptPad instance administrators to coincide with the release of our 4.0.0 release. As we get closer to the end of the alphabet we're working to simplify the process of configuring instances. This release features several new admin panel features intended to supersede the usage of the server configuration file and provide the ability to modify instance settings at runtime.
+
+We also spent some time finalizing some major improvements to the history mode which is available in most of our document editors. More on that in the _Features_ section.
+
 ## Update notes
+
+This release requires introduces some behaviour which may require manual configuration on the part of the administrator. Read the following sections carefully or proceed at your own risk!
+
+### Automatic database maintenance
+
+When a user employs the _destroy_ functionality to make a pad unavailable it isn't typically deleted. Instead it is made unavailable by moving it into the server's archive directory. Archived files are intended to be removed after another configurable amount of time (`archiveRetentionTime` in your config file). The deletion of old files from your archive is handled by `evict-inactive.js`, which can be found in `cryptpad/scripts/`. Up until now this script needed to be run manually (typically as a cron job) with `node ./scripts/evict-inactive.js`. Since this isn't widely known we decided to integrate it directly into the server by automatically running the script once per day.
+
+The same _eviction_ process is also responsible for scanning your server's database for inactive documents (defined as those which haven't been accessed in a number of days specified in your config under `inactiveTime`). Such inactive documents are archived unless they have been stored within a registered users drive. Starting with this release we have added the ability to specify the number of days before an account will be considered inactive (`accountRetentionTime`). This will take into account whether they added any new documents to their drive, or whether any of the existing documents were accessed or modified by other users.
+
+If you prefer to run the eviction script manually you can disable its integration into the server by adding `disableIntegratedEviction: true` to your config file. An example is given in `cryptpad/config/config.example.js`. If you want this process to run manually you may set the same value to `false`, or comment it out if you prefer. Likewise, if you prefer to never remove accounts and their data due to account inactivity, you may also comment it out.
+
+If you haven't been manually running the eviction scripts we recommend that you carefully review all of the values mentioned above to ensure that you will not be surprised by the sudden and unintended removal of any data. As a reminder, they are:
+
+* `inactiveTime` (number of days before a file is considered inactive)
+* `archiveRetentionTime` (number of days that an archived file will be retained before it is permanently deleted)
+* `accountRetentionTime` (number of days of inactivity before an account is considered inactive and eligible for deletion)
+* `disableIntegratedEviction` (true if you prefer to run the eviction process manually or not at all, false or nothing if you want the server to handle eviction)
+
+### NGINX Configuration update
+
+After some testing on our part we've included an update to the example NGINX config file available in `cryptpad/docs/example.nginx.conf` which will enable a relatively new browser API which is required for XLSX export from our sheet editor. The relevant lines can be found beneath the comment `# Enable SharedArrayBuffer in Firefox (for .xlsx export)`.
+
+### Quota management
+
+Up until now the configuration file found in `cryptpad/config/config.js` has been the primary means of configuring a CryptPad instance. Unfortunately, as the server's behaviour becomes increasingly complex due to interest in a broad variety of use-cases this config file tends to grow. The kinds of questions that administrators ask via email, GitHub issues, and via our Matrix channel often suggest that admins haven't read through the comments in these files. Additionally, changes to the server's configuration can only be applied by restarting the server, which is increasingly disruptive as the service becomes more popular. To address these issues we've decided to start improving the instance admin panel such that it becomes the predominant means of modifying common server behaviours.
+
+We've started by making it possible to update storage settings from the _Quotas_ section of the admin panel. Administrators can now update the default storage limit for users registered on the instance from the default quota of 50MB. It's also possible to allocate storage limits to particular users on the basis of their _Public Signing Key_, which can be found at the top of the _Accounts_ section on the settings page.
+
+Storage limits configured in this way will supercede those set via the server's config file, such that any modifications to a quota already set in the file will be ignored once you have modified or removed that user's quota via the admin panel. Admins are also able to view the parameters of all existing custom quotas loaded from either source.
+
+### How to update
+
+Once you've reviewed these settings and you're ready to update from 3.22.0 to 3.23.0:
+
+1. Modify your server's NGINX config file to include the new headers enabling XLSX export
+2. Stop CryptPad's nodejs server
+3. Get the latest platform code with git
+4. Install client-side dependencies with `bower update`
+5. Install server-side dependencies with `npm install`
+6. Reload NGINX with `service nginx reload` to apply its config changes
+7. Restart the CryptPad API server
 
 ## Features
 
-* responsive modals
-  * share
-  * access
-  * opencollective alert
-  * accessibility in alertify
-* remove inactive users
+
+* As mentioned in the update notes, this release features a server update which will enable XLSX export from our sheet editor in Firefox. XLSX files are generated entirely on the client, so all information will remain confidential, it only required a server update to enable a feature in Firefox which is required to perform the conversion.
+* We've also made some considerable improvements to the _history mode_ available in most of our document editors. We now display a more detailed timeline of changes according to who was present in the session, and group contiguous modifications made by a single user. Our intent is to provide an overview of the document's history which exposes the details which are most relevant to humans, rather than only allowing users to step through each individual change.
+* Another change which is related to our history mode improvements is support for "version links", which allow you to link to a specific historical version of a document while you scroll through the timeline of its modifications. You can also create _named snapshots_ of documents which will subsequently be displayed as highlights in the document's timeline.
+* Up until now we did not support _history mode_ for spreadsheets because our sheet integration is sufficiently different from our other editors that our existing history system could not be reused. That's still the case, but we've invested some time into creating a parallel history system with a slightly different user interface tailored to the display of sheet history.
+* Team owners and admins can now export team drives in the same manner as their own personal drives. The button to begin a full-drive export is available on the team's administration page.
+* During the summer we experimented with the idea of providing preview rendering options for more of the languages available in the code editor. We were particularly interested in providing LaTeX rendering in addition to Markdown. Unfortunately, it turned out to be a more complex feature than we have time for at the moment. In the process, however, we made it easier to integrate other rendering modes in addition to markdown. For the moment we've only added a simple rendering mode for displaying mixed HTML, but we'll consider using this framework to offer more options in the future.
+* While it might not be very noticeable depending on the size of the screen you use to view CryptPad we've spent some time making more of our interface responsive for mobile devices. You may notice this in particular on the modal menus used for sharing, setting access control parameters, and otherwise displaying alerts. In the process we also reviewed the code responsible for producing these menus and addressed many of the accessibility issues that were raised during the third-party accessibility audit performed several months ago. These updates add support for screen-readers throughout the platform, though there is still much to be done before this support can be considered comprehensive. These issues were raised as a part of the third-party accessibility audit performed on behalf of NLnet foundation (one of our major sponsors) as a part of their NGI Zero Privacy-Enhancing Technologies fund.
+* The _share modal_ from which users can generate shareable links already detects whether you have added any contacts on the platform and suggests how you can connect with them if you have not. We added this functionality some time late in 2019 since the same modal allowed users share documents directly with contacts and this mode became the subject of many support tickets. As it turns out, many users are now discovering _contact_ functionality via the _access modal_ through which you can add users to a document's allow list or delegate ownership. Since this has become a similar point of confusion we've added the same hints to make it a natural entry-point into CryptPad's social functionality.
 
 ## Bug fixes
 
+* We noticed that it was not possible for document owners to remove the extraneous history of old documents when those documents were protected by an _allow list_. This was due to the usage of an incorrect method for loading the document's metadata, leading to a false negative when testing if the user in question had sufficient access rights.
+* We also discovered an annoying bug in our filesystem storage APIs which caused the database adaptor to prevent scripts from terminating until several timeouts had finished running. These timeouts are now cancelled automatically so that the scripts stop running in a timely manner.
 
 # WoollyMammoth (3.22.0)
 
