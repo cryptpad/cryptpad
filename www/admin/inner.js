@@ -107,10 +107,6 @@ define([
         });
         return $div;
     };
-    Messages.admin_registrationHint = "Restrict registration..."; // XXX
-    Messages.admin_registrationTitle = "Restrict registration"; // XXX
-    Messages.admin_registrationButton = "Restrict"; // XXX
-    Messages.admin_registrationAllow = "Allow"; // XXX
     create['registration'] = function () {
         var key = 'registration';
         var $div = makeBlock(key, true);
@@ -153,11 +149,6 @@ define([
                              : Messages._getKey('formattedMB', [value]);
     };
 
-    Messages.admin_defaultlimitTitle = "Storage limit"; // XXX
-    Messages.admin_defaultlimitHint = "Maximum storage limit per user drive and team drive when no custom rule is applied"; // XXX
-    Messages.admin_defaultlimitTitle = "New default limit (MB)"; // XXX
-    Messages.admin_setlimitButton = "Set limit"; // XXX
-    Messages.admin_limit = "Current default limit: {0}";
     create['defaultlimit'] = function () {
         var key = 'defaultlimit';
         var $div = makeBlock(key);
@@ -198,10 +189,6 @@ define([
         });
         return $div;
     };
-    Messages.admin_getlimitsHint = "List all the custom storage limits applied to your instance."; // XXX
-    Messages.admin_getlimitsTitle = "Custom limits"; // XXX
-    Messages.admin_limitPlan = "Plan: {0}";
-    Messages.admin_limitNote = "Note: {0}";
     create['getlimits'] = function () {
         var key = 'getlimits';
         var $div = makeBlock(key);
@@ -255,13 +242,6 @@ define([
         return $div;
     };
 
-    Messages.admin_setlimitHint = "Get the public key of a user and give them a custom storage limit. You can update an existing limit or remove the custom limit."; // XXX
-    Messages.admin_setlimitTitle = "Apply a custom limit"; // XXX
-    Messages.admin_limitUser = "User's public key"; // XXX
-    Messages.admin_limitMB = "Limit (in MB)"; // XXX
-    Messages.admin_limitSetNote = "Custom Note"; // XXX
-    Messages.admin_invalKey = "Invalid public key";
-    Messages.admin_invalLimit = "Invalid limit value";
     create['setlimit'] = function () {
         var key = 'setlimit';
         var $div = makeBlock(key);
@@ -620,7 +600,6 @@ define([
             active = active.split('-')[0];
         }
         common.setHash(active);
-        Messages.admin_cat_quota = 'Quotas'; // XXX
         Object.keys(categories).forEach(function (key) {
             var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
             if (key === 'general') { $category.append($('<span>', {'class': 'fa fa-user-o'})); }
