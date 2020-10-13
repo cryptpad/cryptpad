@@ -408,7 +408,7 @@ define([
             myUniqueOOId = undefined;
             setMyId();
             if (APP.docEditor) { APP.docEditor.destroyEditor(); } // Kill the old editor
-            $('iframe[name="frameEditor"]').after(h('div#cp-app-oo-placeholder')).remove();
+            $('iframe[name="frameEditor"]').after(h('div#cp-app-oo-placeholder-a')).remove();
             ooLoaded = false;
             oldLocks = {};
             Object.keys(pendingChanges).forEach(function (key) {
@@ -1406,7 +1406,7 @@ define([
                 });
             };
 
-            APP.docEditor = new window.DocsAPI.DocEditor("cp-app-oo-placeholder", APP.ooconfig);
+            APP.docEditor = new window.DocsAPI.DocEditor("cp-app-oo-placeholder-a", APP.ooconfig);
             ooLoaded = true;
             makeChannel();
         };
