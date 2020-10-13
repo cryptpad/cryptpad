@@ -210,8 +210,7 @@ define([
                     return obj[a].limit > obj[b].limit;
                 });
 
-                var addClass = "";
-                if (list.length > 10) { addClass = ".cp-compact"; }
+                var compact = list.length > 10;
 
                 var content = list.map(function (key) {
                     var user = obj[key];
@@ -223,19 +222,30 @@ define([
                     var keyEl = h('code.cp-limit-key', key);
                     $(keyEl).click(function () {
                         $('.cp-admin-setlimit-form').find('.cp-setlimit-key').val(key);
+                        $('.cp-admin-setlimit-form').find('.cp-setlimit-quota').val(Math.floor(user.limit/1024));
+                        $('.cp-admin-setlimit-form').find('.cp-setlimit-note').val(user.note);
                     });
-                    return h('li.cp-admin-limit', {
-                        title: addClass ? title : ''
-                    }, [
+                    if (compact) {
+                        return h('tr.cp-admin-limit', {
+                            title: title
+                        }, [
+                            h('td', keyEl),
+                            h('td.limit', Messages._getKey('admin_limit', [limit])),
+                            h('td.plan', Messages._getKey('admin_limitPlan', [user.plan])),
+                            h('td.note', Messages._getKey('admin_limitNote', [user.note]))
+                        ]);
+                    }
+                    return h('li.cp-admin-limit', [
                         keyEl,
                         h('ul.cp-limit-data', [
                             h('li.limit', Messages._getKey('admin_limit', [limit])),
-                            //h('li.plan', Messages._getKey('admin_limitPlan', [user.plan])),
+                            h('li.plan', Messages._getKey('admin_limitPlan', [user.plan])),
                             h('li.note', Messages._getKey('admin_limitNote', [user.note]))
                         ])
                     ]);
                 });
-                $div.append(h('ul.cp-admin-all-limits'+addClass, content));
+                if (compact) { return $div.append(h('table.cp-admin-all-limits', content)); }
+                $div.append(h('ul.cp-admin-all-limits', content));
             });
         };
         APP.refreshLimits();
@@ -248,8 +258,8 @@ define([
 
         var user = h('input.cp-setlimit-key');
         var $key = $(user);
-        var limit = h('input', {type: 'number', min: 0, value: 0});
-        var note = h('input');
+        var limit = h('input.cp-setlimit-quota', {type: 'number', min: 0, value: 0});
+        var note = h('input.cp-setlimit-note');
         var remove = h('button.btn.btn-danger', Messages.fc_remove);
         var set = h('button.btn.btn-primary', Messages.admin_setlimitButton);
         var form = h('div.cp-admin-setlimit-form', [
