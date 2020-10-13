@@ -2067,7 +2067,7 @@ define([
                 Title.updateTitle(Title.defaultTitle);
             }
 
-            var version = 'v2a/';
+            var version = 'v2b/';
             var msg;
             // Old version detected: use the old OO and start the migration if we can
             if (privateData.ooForceVersion) {
