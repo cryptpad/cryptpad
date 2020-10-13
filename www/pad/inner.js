@@ -193,6 +193,7 @@ define([
         var intr;
         var check = function() {
             if (window.CKEDITOR) {
+                window.CKEDITOR.timestamp = 123456;
                 clearTimeout(intr);
                 cb(window.CKEDITOR);
             }
