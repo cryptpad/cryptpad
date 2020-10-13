@@ -582,7 +582,7 @@
     "fc_collapseAll": "Restrânge",
     "settings_creationSkip": "Omiteți ecranul de creare a fișierului",
     "settings_padSpellcheckLabel": "Activați verificarea ortografică",
-    "settings_padSpellcheckHint": "Această opțiune vă permite să activați verificarea ortografică în editorul de text. Erorile de ortografie vor fi subliniate în roșu și va trebui să țineți apăsată tasta Ctrl sau tasta Meta în timp ce faceți clic dreapta pentru a vedea opțiunile corecte.",
+    "settings_padSpellcheckHint": "Această opțiune vă permite să activați verificarea ortografică în editorul de text. Erorile de ortografie vor fi subliniate cu roșu și va trebui să țineți apăsată tasta Ctrl sau tasta Meta în timp ce faceți clic dreapta pentru a vedea opțiunile corecte.",
     "settings_padSpellcheckTitle": "Verificare a ortografiei",
     "settings_padWidthLabel": "Reduceți lățimea editorului",
     "settings_padWidthHint": "Comutați între modul pagină (implicit) care limitează lățimea editorului de text și utilizați întreaga lățime a ecranului.",
