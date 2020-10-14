@@ -896,6 +896,11 @@ define([
         }
     };
     UI.updateLoadingProgress = function (data, isDrive) {
+        if (window.CryptPad_updateLoadingProgress) {
+            window.CryptPad_updateLoadingProgress(data);
+        }
+        // XXX
+        /*
         var $loading = $('#' + LOADING);
         if (!$loading.length || loading.error) { return; }
         $loading.find('.cp-loading-progress').show();
@@ -947,6 +952,7 @@ define([
                 }
             }
         }
+        */
     };
     UI.removeLoadingScreen = function (cb) {
         // Release the test blocker, hopefully every test has been registered.

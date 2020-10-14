@@ -140,7 +140,7 @@ define([
             chainpad.message(content);
             if (isHistory && updateLoadingProgress) {
                 updateLoadingProgress({
-                    state: 2,
+                    type: 'pad',
                     progress: isHistory
                 }, false);
                 isHistory++;

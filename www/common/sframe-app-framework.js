@@ -441,9 +441,9 @@ define([
         var versionHashEl;
         var onInit = function () {
             UI.updateLoadingProgress({
-                state: 2,
+                type: 'pad',
                 progress: 0.1
-            }, false);
+            });
             stateChange(STATE.INITIALIZING);
             if ($('.cp-help-container').length) {
                 var privateDat = cpNfInner.metadataMgr.getPrivateData();
@@ -470,8 +470,6 @@ define([
         var onReady = function () {
             var newContentStr = cpNfInner.chainpad.getUserDoc();
             if (state === STATE.DELETED) { return; }
-
-            UI.updateLoadingProgress({ state: -1 }, false);
 
             if (toolbar) {
                 // Check if we have a new chainpad instance
@@ -708,9 +706,6 @@ define([
         nThen(function (waitFor) {
             UI.addLoadingScreen();
             SFCommon.create(waitFor(function (c) { common = c; }));
-            UI.updateLoadingProgress({
-                state: 1
-            }, false);
         }).nThen(function (waitFor) {
             common.getSframeChannel().onReady(waitFor());
         }).nThen(function (waitFor) {

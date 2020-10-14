@@ -131,13 +131,7 @@ define([
                     if (sframeChan) { sframeChan.event('EV_LOADING_INFO', data); }
                 });
 
-                Cryptpad.ready(waitFor(function () {
-                    if (sframeChan) {
-                        sframeChan.event('EV_LOADING_INFO', {
-                            state: -1
-                        });
-                    }
-                }), {
+                Cryptpad.ready(waitFor(), {
                     driveEvents: cfg.driveEvents,
                     currentPad: currentPad
                 });
