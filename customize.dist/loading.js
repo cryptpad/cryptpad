@@ -310,7 +310,8 @@ button.primary:hover{
         var getLi = function (i) {
             var check = (i < c || (i === c && data.progress === 100)) ? 'fa-check-square-o'
                                                                       : 'fa-square-o';
-            var percent = i < c ? '(100%)' : (i === c ? '('+Math.floor(data.progress)+'%)' : '(0%)');
+            var p = Math.min(Math.floor(data.progress), 100);
+            var percent = i < c ? '(100%)' : (i === c ? '('+p+'%)' : '(0%)');
             return '<li><i class="fa '+check+'"></i><span>'+Messages['loading_state_'+i]+'</span>' +
                    '<span>'+percent+'</span>';
         };
@@ -324,7 +325,8 @@ button.primary:hover{
     var makeBar = function (data) {
         var c = types.indexOf(data.type);
         var l = types.length;
-        var p = (data.progress / l) + (100 * c / l);
+        var progress = Math.min(data.progress, 100);
+        var p = (progress / l) + (100 * c / l);
         var bar = '<div class="cp-loading-progress-bar">'+
                     '<div class="cp-loading-progress-bar-value" style="width:'+p+'%"></div>'+
                   '</div>';
