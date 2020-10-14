@@ -2,6 +2,17 @@
 // light #4591c4
 define(['/customize/messages.js'], function (Messages) {
     var loadingStyle = (function(){/*
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.eot');
+  src: url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.eot?#iefix') format('embedded-opentype'),
+       url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.woff') format('woff'),
+       url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.ttf') format('truetype'),
+       url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.svg#OpenSansRegular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
 #cp-loading {
   visibility: visible;
   position: fixed;
@@ -19,6 +30,7 @@ define(['/customize/messages.js'], function (Messages) {
   flex-flow: column;
   justify-content: center;
   align-items: center;
+  font: 20px 'Open Sans', 'Helvetica Neue', sans-serif !important;
 }
 #cp-loading.cp-loading-hidden {
   opacity: 0;
@@ -198,6 +210,17 @@ p.cp-password-info{
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+.cp-loading-progress-list ul {
+    list-style: none;
+    padding-left: 0;
+}
+.cp-loading-progress-list li {
+    padding: 0px 5px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 .cp-loading-progress-list li i {
     width: 22px;
