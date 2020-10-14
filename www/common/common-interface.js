@@ -887,7 +887,7 @@ define([
             todo();
         }
     };
-    UI.updateLoadingProgress = function (data, isDrive) {
+    UI.updateLoadingProgress = function (data) {
         if (window.CryptPad_updateLoadingProgress) {
             window.CryptPad_updateLoadingProgress(data);
         }
