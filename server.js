@@ -12,30 +12,9 @@ var Default = require("./lib/defaults");
 var Keys = require("./lib/keys");
 
 var config = require("./lib/load-config");
+var Env = require("./lib/env").create(config);
 
 var app = Express();
-
-// mode can be FRESH (default), DEV, or PACKAGE
-
-var FRESH_KEY = '';
-var FRESH_MODE = true;
-var DEV_MODE = false;
-if (process.env.PACKAGE) {
-// `PACKAGE=1 node server` uses the version string from package.json as the cache string
-    console.log("PACKAGE MODE ENABLED");
-    FRESH_MODE = false;
-    DEV_MODE = false;
-} else if (process.env.DEV) {
-// `DEV=1 node server` will use a random cache string on every page reload
-    console.log("DEV MODE ENABLED");
-    FRESH_MODE = false;
-    DEV_MODE = true;
-} else {
-// `FRESH=1 node server` will set a random cache string when the server is launched
-// and use it for the process lifetime or until it is reset from the admin panel
-    console.log("FRESH MODE ENABLED");
-    FRESH_KEY = +new Date();
-}
 
 (function () {
     // you absolutely must provide an 'httpUnsafeOrigin'
@@ -64,7 +43,7 @@ if (process.env.PACKAGE) {
             config.httpSafePort = config.httpPort + 1;
         }
 
-        if (DEV_MODE) { return; }
+        if (Env.DEV_MODE) { return; }
         console.log(`
     m     m   mm   mmmmm  mm   m mmmmm  mm   m   mmm    m
     #  #  #   ##   #   "# #"m  #   #    #"m  # m"   "   #
@@ -80,15 +59,6 @@ if (process.env.PACKAGE) {
         console.log("Serving sandboxed content via port %s.\nThis is probably not what you want for a production instance!\n", config.httpSafePort);
     }
 }());
-
-var configCache = {};
-config.flushCache = function () {
-    configCache = {};
-    FRESH_KEY = +new Date();
-    if (!(DEV_MODE || FRESH_MODE)) { FRESH_MODE = true; }
-    if (!config.log) { return; }
-    config.log.info("UPDATING_FRESH_KEY", FRESH_KEY);
-};
 
 var setHeaders = (function () {
     // load the default http headers unless the admin has provided their own via the config file
@@ -144,6 +114,7 @@ if (!config.logFeedback) { return; }
 
 const logFeedback = function (url) {
     url.replace(/\?(.*?)=/, function (all, fb) {
+        if (!config.log) { return; }
         config.log.feedback(fb, '');
     });
 };
@@ -182,7 +153,7 @@ app.get(mainPagePattern, Express.static(__dirname + '/customize'));
 app.get(mainPagePattern, Express.static(__dirname + '/customize.dist'));
 
 app.use("/blob", Express.static(Path.join(__dirname, (config.blobPath || './blob')), {
-    maxAge: DEV_MODE? "0d": "365d"
+    maxAge: Env.DEV_MODE? "0d": "365d"
 }));
 app.use("/datastore", Express.static(Path.join(__dirname, (config.filePath || './datastore')), {
     maxAge: "0d"
@@ -197,22 +168,10 @@ app.use("/customize.dist", Express.static(__dirname + '/customize.dist'));
 app.use(/^\/[^\/]*$/, Express.static('customize'));
 app.use(/^\/[^\/]*$/, Express.static('customize.dist'));
 
-var admins = [];
-try {
-    admins = (config.adminKeys || []).map(function (k) {
-        // XXX is there any reason not to use Keys.canonicalize ?
-        // return each admin's "unsafeKey"
-        // this might throw and invalidate all the other admin's keys
-        // but we want to get the admin's attention anyway.
-        // breaking everything is a good way to accomplish that.
-        return Keys.parseUser(k).pubkey;
-    });
-} catch (e) { console.error("Can't parse admin keys"); }
-
 var serveConfig = (function () {
     // if dev mode: never cache
     var cacheString = function () {
-        return (FRESH_KEY? '-' + FRESH_KEY: '') + (DEV_MODE? '-' + (+new Date()): '');
+        return (Env.FRESH_KEY? '-' + Env.FRESH_KEY: '') + (Env.DEV_MODE? '-' + (+new Date()): '');
     };
 
     var template = function (host) {
@@ -227,12 +186,12 @@ var serveConfig = (function () {
                 allowSubscriptions: (config.allowSubscriptions === true),
                 websocketPath: config.externalWebsocketURL,
                 httpUnsafeOrigin: config.httpUnsafeOrigin,
-                adminEmail: config.adminEmail, // XXX mutable
-                adminKeys: admins,
-                inactiveTime: config.inactiveTime, // XXX mutable
-                supportMailbox: config.supportMailboxPublicKey,
-                maxUploadSize: config.maxUploadSize, // XXX mutable
-                premiumUploadSize: config.premiumUploadSize, // XXX mutable
+                adminEmail: Env.adminEmail,
+                adminKeys: Env.admins,
+                inactiveTime: Env.inactiveTime,
+                supportMailbox: Env.supportMailboxPublicKey,
+                maxUploadSize: Env.maxUploadSize,
+                premiumUploadSize: Env.premiumUploadSize,
             }, null, '\t'),
             'obj.httpSafeOrigin = ' + (function () {
                 if (config.httpSafeOrigin) { return '"' + config.httpSafeOrigin + '"'; }
@@ -253,28 +212,29 @@ var serveConfig = (function () {
         var host = req.headers.host.replace(/\:[0-9]+/, '');
         res.setHeader('Content-Type', 'text/javascript');
         // don't cache anything if you're in dev mode
-        if (DEV_MODE) {
+        if (Env.DEV_MODE) {
             return void res.send(template(host));
         }
         // generate a lookup key for the cache
         var cacheKey = host + ':' + cacheString();
 
-        // XXX we must be able to clear the cache when updating any mutable key
+        // FIXME mutable
+        // we must be able to clear the cache when updating any mutable key
         // if there's nothing cached for that key...
-        if (!configCache[cacheKey]) {
+        if (!Env.configCache[cacheKey]) {
             // generate the response and cache it in memory
-            configCache[cacheKey] = template(host);
+            Env.configCache[cacheKey] = template(host);
             // and create a function to conditionally evict cache entries
             // which have not been accessed in the last 20 seconds
             cleanUp[cacheKey] = Util.throttle(function () {
                 delete cleanUp[cacheKey];
-                delete configCache[cacheKey];
+                delete Env.configCache[cacheKey];
             }, 20000);
         }
 
         // successive calls to this function
         cleanUp[cacheKey]();
-        return void res.send(configCache[cacheKey]);
+        return void res.send(Env.configCache[cacheKey]);
     };
 }());
 
@@ -297,7 +257,7 @@ app.use(function (req, res, next) {
     send404(res, custom_four04_path);
 });
 
-var httpServer = Http.createServer(app);
+var httpServer = Env.httpServer = Http.createServer(app);
 
 nThen(function (w) {
     Fs.exists(__dirname + "/customize", w(function (e) {
@@ -323,11 +283,12 @@ nThen(function (w) {
 
     // Initialize logging then start the API server
     require("./lib/log").create(config, function (_log) {
+        Env.Log = _log;
         config.log = _log;
-        config.httpServer = httpServer;
 
         if (config.externalWebsocketURL) { return; }
-        require("./lib/api").create(config);
+
+        require("./lib/api").create(Env);
     });
 });
 

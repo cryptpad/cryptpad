@@ -43,7 +43,7 @@ define([
         'general': [
             'cp-admin-flush-cache',
             'cp-admin-update-limit',
-            'cp-admin-registration'
+            // 'cp-admin-registration',
         ],
         'quota': [
             'cp-admin-defaultlimit',
@@ -107,10 +107,6 @@ define([
         });
         return $div;
     };
-    Messages.admin_registrationHint = "Restrict registration..."; // XXX
-    Messages.admin_registrationTitle = "Restrict registration"; // XXX
-    Messages.admin_registrationButton = "Restrict"; // XXX
-    Messages.admin_registrationAllow = "Allow"; // XXX
     create['registration'] = function () {
         var key = 'registration';
         var $div = makeBlock(key, true);
@@ -153,11 +149,6 @@ define([
                              : Messages._getKey('formattedMB', [value]);
     };
 
-    Messages.admin_defaultlimitTitle = "Storage limit"; // XXX
-    Messages.admin_defaultlimitHint = "Maximum storage limit per user drive and team drive when no custom rule is applied"; // XXX
-    Messages.admin_defaultlimitTitle = "New default limit (MB)"; // XXX
-    Messages.admin_setlimitButton = "Set limit"; // XXX
-    Messages.admin_limit = "Current default limit: {0}";
     create['defaultlimit'] = function () {
         var key = 'defaultlimit';
         var $div = makeBlock(key);
@@ -198,10 +189,6 @@ define([
         });
         return $div;
     };
-    Messages.admin_getlimitsHint = "List all the custom storage limits applied to your instance."; // XXX
-    Messages.admin_getlimitsTitle = "Custom limits"; // XXX
-    Messages.admin_limitPlan = "Plan: {0}";
-    Messages.admin_limitNote = "Note: {0}";
     create['getlimits'] = function () {
         var key = 'getlimits';
         var $div = makeBlock(key);
@@ -223,8 +210,7 @@ define([
                     return obj[a].limit > obj[b].limit;
                 });
 
-                var addClass = "";
-                if (list.length > 10) { addClass = ".cp-compact"; }
+                var compact = list.length > 10;
 
                 var content = list.map(function (key) {
                     var user = obj[key];
@@ -236,40 +222,44 @@ define([
                     var keyEl = h('code.cp-limit-key', key);
                     $(keyEl).click(function () {
                         $('.cp-admin-setlimit-form').find('.cp-setlimit-key').val(key);
+                        $('.cp-admin-setlimit-form').find('.cp-setlimit-quota').val(Math.floor(user.limit/1024));
+                        $('.cp-admin-setlimit-form').find('.cp-setlimit-note').val(user.note);
                     });
-                    return h('li.cp-admin-limit', {
-                        title: addClass ? title : ''
-                    }, [
+                    if (compact) {
+                        return h('tr.cp-admin-limit', {
+                            title: title
+                        }, [
+                            h('td', keyEl),
+                            h('td.limit', Messages._getKey('admin_limit', [limit])),
+                            h('td.plan', Messages._getKey('admin_limitPlan', [user.plan])),
+                            h('td.note', Messages._getKey('admin_limitNote', [user.note]))
+                        ]);
+                    }
+                    return h('li.cp-admin-limit', [
                         keyEl,
                         h('ul.cp-limit-data', [
                             h('li.limit', Messages._getKey('admin_limit', [limit])),
-                            //h('li.plan', Messages._getKey('admin_limitPlan', [user.plan])),
+                            h('li.plan', Messages._getKey('admin_limitPlan', [user.plan])),
                             h('li.note', Messages._getKey('admin_limitNote', [user.note]))
                         ])
                     ]);
                 });
-                $div.append(h('ul.cp-admin-all-limits'+addClass, content));
+                if (compact) { return $div.append(h('table.cp-admin-all-limits', content)); }
+                $div.append(h('ul.cp-admin-all-limits', content));
             });
         };
         APP.refreshLimits();
         return $div;
     };
 
-    Messages.admin_setlimitHint = "Get the public key of a user and give them a custom storage limit. You can update an existing limit or remove the custom limit."; // XXX
-    Messages.admin_setlimitTitle = "Apply a custom limit"; // XXX
-    Messages.admin_limitUser = "User's public key"; // XXX
-    Messages.admin_limitMB = "Limit (in MB)"; // XXX
-    Messages.admin_limitSetNote = "Custom Note"; // XXX
-    Messages.admin_invalKey = "Invalid public key";
-    Messages.admin_invalLimit = "Invalid limit value";
     create['setlimit'] = function () {
         var key = 'setlimit';
         var $div = makeBlock(key);
 
         var user = h('input.cp-setlimit-key');
         var $key = $(user);
-        var limit = h('input', {type: 'number', min: 0, value: 0});
-        var note = h('input');
+        var limit = h('input.cp-setlimit-quota', {type: 'number', min: 0, value: 0});
+        var note = h('input.cp-setlimit-note');
         var remove = h('button.btn.btn-danger', Messages.fc_remove);
         var set = h('button.btn.btn-primary', Messages.admin_setlimitButton);
         var form = h('div.cp-admin-setlimit-form', [
@@ -620,7 +610,6 @@ define([
             active = active.split('-')[0];
         }
         common.setHash(active);
-        Messages.admin_cat_quota = 'Quotas'; // XXX
         Object.keys(categories).forEach(function (key) {
             var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
             if (key === 'general') { $category.append($('<span>', {'class': 'fa fa-user-o'})); }

@@ -35,27 +35,26 @@
         code {
             cursor: pointer;
         }
-        ul.cp-compact {
-            .cp-admin-limit {
-                display: flex;
-                align-items: center;
-                overflow: hidden;
+        table {
+            td:not(:last-child) {
+                padding-right: 20px;
                 white-space: nowrap;
+            }
+            td:last-child {
+                min-width: 0;
+                white-space: nowrap;
+                overflow: hidden;
                 text-overflow: ellipsis;
-                ul {
-                    display: inline;
-                    overflow: hidden;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
-                    li {
-                        display: inline-block;
-                        &.limit {
-                            width: 130px;
-                        }
-                        &.plan {
-                            width: 140px;
-                        }
-                    }
+                max-width: 500px;
+            }
+            @media screen and (max-width: 1200px) {
+                td.note {
+                    display: none;
+                }
+            }
+            @media screen and (max-width: 1400px) {
+                td.plan {
+                    display: none;
                 }
             }
         }

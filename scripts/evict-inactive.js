@@ -4,20 +4,41 @@ var Store = require("../lib/storage/file");
 var BlobStore = require("../lib/storage/blob");
 
 var Quota = require("../lib/commands/quota");
+var Environment = require("../lib/env");
+var Decrees = require("../lib/decrees");
 
 var config = require("../lib/load-config");
-var Env = {
-    inactiveTime: config.inactiveTime,
-    archiveRetentionTime: config.archiveRetentionTime,
-    accountRetentionTime: config.accountRetentionTime,
-    paths: {
-        pin: config.pinPath,
-    },
+
+var Env = Environment.create(config);
+
+var loadPremiumAccounts = function (Env, cb) {
+    nThen(function (w) {
+        // load premium accounts
+        Quota.updateCachedLimits(Env, w(function (err) {
+            if (err) {
+                Env.Log.error('EVICT_LOAD_PREMIUM_ACCOUNTS', {
+                    error: err,
+                });
+            }
+        }));
+    }).nThen(function (w) {
+        // load and apply decrees
+        Decrees.load(Env, w(function (err) {
+            if (err) {
+                Env.Log.error('EVICT_LOAD_DECREES', {
+                    error: err.code || err,
+                    message: err.message,
+                });
+            }
+        }));
+    }).nThen(function () {
+        //console.log(Env.limits);
+        cb();
+    });
 };
 
 var prepareEnv = function (Env, cb) {
-    Env.customLimits = config.customLimits;
-    Quota.applyCustomLimits(Env);
+    //Quota.applyCustomLimits(Env);
 
     nThen(function (w) {
         /*  Database adaptors
@@ -57,6 +78,10 @@ var prepareEnv = function (Env, cb) {
                 return console.error(err);
             }
             Env.blobStore = _;
+        }));
+    }).nThen(function (w) {
+        loadPremiumAccounts(Env, w(function (/* err */) {
+            //if (err) { }
         }));
     }).nThen(function () {
         cb();
