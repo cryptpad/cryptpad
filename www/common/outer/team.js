@@ -328,7 +328,13 @@ define([
             ctx.teams[id] = team;
             registerChangeEvents(ctx, team, proxy);
             SF.checkMigration(team.secondaryKey, proxy, team.userObject, waitFor());
-            SF.loadSharedFolders(ctx.Store, ctx.store.network, team, team.userObject, waitFor);
+            SF.loadSharedFolders(ctx.Store, ctx.store.network, team,
+                                team.userObject, waitFor, function (data) {
+                ctx.progress += 70/(ctx.numberOfTeams * data.max);
+                ctx.updateProgress({
+                    progress: ctx.progress
+                });
+            });
         }).nThen(function () {
             if (!team.rpc) { return; }
             var list = getTeamChannelList(ctx, id);
@@ -361,6 +367,9 @@ define([
 
     };
 
+    // Progress:
+    // One team = (30/(#teams))%
+    // One shared folder = (70/(#teams * #folders))%
     var openChannel = function (ctx, teamData, id, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
 
@@ -501,6 +510,10 @@ define([
                 waitFor.abort();
             }
         }).nThen(function () {
+            ctx.progress += 30/ctx.numberOfTeams;
+            ctx.updateProgress({
+                progress: ctx.progress
+            });
             onReady(ctx, id, lm, roster, keys, null, cb);
         });
     };
@@ -1653,10 +1666,13 @@ define([
             emit: emit,
             onReadyHandlers: {},
             teams: {},
-            updateMetadata: cfg.updateMetadata
+            updateMetadata: cfg.updateMetadata,
+            updateProgress: cfg.updateLoadingProgress,
+            progress: 0
         };
 
         var teams = store.proxy.teams = store.proxy.teams || {};
+        ctx.numberOfTeams = Object.keys(teams).length;
 
         // Listen for changes in our access rights (if another worker receives edit access)
         ctx.store.proxy.on('change', ['teams'], function (o, n, p) {

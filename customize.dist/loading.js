@@ -1,6 +1,6 @@
 // dark #326599
 // light #4591c4
-define([], function () {
+define(['/customize/messages.js'], function (Messages) {
     var loadingStyle = (function(){/*
 #cp-loading {
   visibility: visible;
@@ -199,6 +199,13 @@ p.cp-password-info{
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+.cp-loading-progress-list li i {
+    width: 22px;
+}
+.cp-loading-progress-list li span{
+    margin-left: 20px;
+}
+
 .cp-loading-progress-bar {
     height: 24px;
     background: white;
@@ -257,9 +264,57 @@ button.primary:hover{
             '<div class="cp-loading-spinner-container">',
                 '<span class="cp-spinner"></span>',
             '</div>',
+            '<div class="cp-loading-progress">',
+                '<div class="cp-loading-progress-list"></div>',
+                '<div class="cp-loading-progress-container"></div>',
+            '</div>',
             '<p id="cp-loading-message"></p>',
         '</div>'
     ].join('');
+
+    // XXX
+    var types = ['less', 'drive', 'migrate', 'sf', 'team', 'pad'];
+    Messages.loading_state_0 = "Less";
+    Messages.loading_state_1 = "Drive";
+    Messages.loading_state_2 = "Migrate";
+    Messages.loading_state_3 = "SF";
+    Messages.loading_state_4 = "Team";
+    Messages.loading_state_5 = "Pad";
+    var current;
+    var makeList = function (data) {
+        var c = types.indexOf(data.type);
+        current = c;
+        var getLi = function (i) {
+            var check = (i < c || (i === c && data.progress === 100)) ? 'fa-check-square-o'
+                                                                      : 'fa-square-o';
+            var percent = i < c ? '(100%)' : (i === c ? '('+Math.floor(data.progress)+'%)' : '(0%)');
+            return '<li><i class="fa '+check+'"></i><span>'+Messages['loading_state_'+i]+'</span>' +
+                   '<span>'+percent+'</span>';
+        };
+        var list = '<ul>';
+        types.forEach(function (el, i) {
+            list += getLi(i);
+        });
+        list += '</ul>';
+        return list;
+    };
+    var makeBar = function (data) {
+        var c = types.indexOf(data.type);
+        var l = types.length;
+        var p = (data.progress / l) + (100 * c / l);
+        var bar = '<div class="cp-loading-progress-bar">'+
+                    '<div class="cp-loading-progress-bar-value" style="width:'+p+'%"></div>'+
+                  '</div>';
+        return bar;
+    };
+
+    var updateLoadingProgress = function (data) {
+        var c = types.indexOf(data.type);
+        if (c < current) { return console.error(data); }
+        document.querySelector('.cp-loading-progress-list').innerHTML = makeList(data);
+        document.querySelector('.cp-loading-progress-container').innerHTML = makeBar(data);
+    };
+    window.CryptPad_updateLoadingProgress = updateLoadingProgress;
     window.CryptPad_loadingError = function (err) {
         document.querySelector('.cp-loading-spinner-container').setAttribute('style', 'display:none;');
         document.querySelector('#cp-loading-message').setAttribute('style', 'display:block;');

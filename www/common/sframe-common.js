@@ -686,7 +686,8 @@ define([
             });
 
             ctx.sframeChan.on('EV_LOADING_INFO', function (data) {
-                UI.updateLoadingProgress(data, 'drive');
+                //UI.updateLoadingProgress(data, 'drive');
+                UI.updateLoadingProgress(data);
             });
 
             ctx.sframeChan.on('EV_NEW_VERSION', function () {

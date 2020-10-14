@@ -150,6 +150,7 @@ define([
         }).nThen(function () { cb(); });
     };
 
+    var idx = 0;
     module.exports.load = function (url /*:string*/, cb /*:()=>void*/, stack /*:?Array<string>*/) {
         var btime = stack ? null : +new Date();
         stack = stack || [];
@@ -163,6 +164,12 @@ define([
             cb();
         };
         stack.push(url);
+        if (window.CryptPad_updateLoadingProgress) {
+            window.CryptPad_updateLoadingProgress({
+                type: 'less',
+                progress: idx++
+            });
+        }
         cacheGet(url, function (css) {
             if (css) { return void loadSubmodulesAndInject(css, url, done, stack); }
             console.debug('CACHE MISS ' + url);
