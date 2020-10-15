@@ -619,6 +619,13 @@ define([
         }
         window.CryptPad_sframe_common = true;
 
+        if (window.CryptPad_updateLoadingProgress) {
+            window.CryptPad_updateLoadingProgress({
+                type: 'drive',
+                progress: 0
+            });
+        }
+
         nThen(function (waitFor) {
             var msgEv = Util.mkEvent();
             var iframe = window.parent;
