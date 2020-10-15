@@ -167,7 +167,7 @@ define([
         if (window.CryptPad_updateLoadingProgress) {
             window.CryptPad_updateLoadingProgress({
                 type: 'less',
-                progress: idx++
+                progress: 4*idx++
             });
         }
         cacheGet(url, function (css) {

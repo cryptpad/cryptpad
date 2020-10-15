@@ -297,7 +297,7 @@ button.primary:hover{
     var built = false;
 
     // XXX
-    var types = ['less', 'drive', 'migrate', 'sf', 'team', 'pad'];
+    var types = ['less', 'drive', 'migrate', 'sf', 'team', 'pad', 'end'];
     Messages.loading_state_0 = "Less";
     Messages.loading_state_1 = "Drive";
     Messages.loading_state_2 = "Migrate";
@@ -309,7 +309,7 @@ button.primary:hover{
         var c = types.indexOf(data.type);
         current = c;
         var getLi = function (i) {
-            var check = (i < c || (i === c && data.progress === 100)) ? 'fa-check-square-o'
+            var check = (i < c || (i === c && data.progress >= 100)) ? 'fa-check-square-o'
                                                                       : 'fa-square-o';
             var p = Math.min(Math.floor(data.progress), 100);
             var percent = i < c ? '(100%)' : (i === c ? '('+p+'%)' : '(0%)');
@@ -318,6 +318,7 @@ button.primary:hover{
         };
         var list = '<ul>';
         types.forEach(function (el, i) {
+            if (i >= 6) { return; }
             list += getLi(i);
         });
         list += '</ul>';
