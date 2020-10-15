@@ -294,6 +294,7 @@ button.primary:hover{
             '<p id="cp-loading-message"></p>',
         '</div>'
     ].join('');
+    var built = false;
 
     // XXX
     var types = ['less', 'drive', 'migrate', 'sf', 'team', 'pad'];
@@ -334,18 +335,25 @@ button.primary:hover{
     };
 
     var updateLoadingProgress = function (data) {
+        if (!built) { return; }
         var c = types.indexOf(data.type);
         if (c < current) { return console.error(data); }
-        document.querySelector('.cp-loading-progress-list').innerHTML = makeList(data);
-        document.querySelector('.cp-loading-progress-container').innerHTML = makeBar(data);
+        try {
+            document.querySelector('.cp-loading-progress-list').innerHTML = makeList(data);
+            document.querySelector('.cp-loading-progress-container').innerHTML = makeBar(data);
+        } catch (e) { console.error(e); }
     };
     window.CryptPad_updateLoadingProgress = updateLoadingProgress;
     window.CryptPad_loadingError = function (err) {
-        document.querySelector('.cp-loading-spinner-container').setAttribute('style', 'display:none;');
-        document.querySelector('#cp-loading-message').setAttribute('style', 'display:block;');
-        document.querySelector('#cp-loading-message').innerText = err;
+        if (!built) { return; }
+        try {
+            document.querySelector('.cp-loading-spinner-container').setAttribute('style', 'display:none;');
+            document.querySelector('#cp-loading-message').setAttribute('style', 'display:block;');
+            document.querySelector('#cp-loading-message').innerText = err;
+        } catch (e) { console.error(e); }
     };
     return function () {
+        built = true;
         var intr;
         var append = function () {
             if (!document.body) { return; }

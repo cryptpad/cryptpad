@@ -2488,6 +2488,10 @@ define([
             }).nThen(function (waitFor) {
                 initAnonRpc(null, null, waitFor());
                 initRpc(null, null, waitFor());
+                postMessage(clientId, 'LOADING_DRIVE', {
+                    type: 'migrate',
+                    progress: 0
+                });
             }).nThen(function (waitFor) {
                 Migrate(proxy, waitFor(), function (version, progress) {
                     postMessage(clientId, 'LOADING_DRIVE', {
@@ -2496,6 +2500,10 @@ define([
                     });
                 }, store);
             }).nThen(function (waitFor) {
+                postMessage(clientId, 'LOADING_DRIVE', {
+                    type: 'sf',
+                    progress: 0
+                });
                 userObject.fixFiles();
                 SF.loadSharedFolders(Store, store.network, store, userObject, waitFor, function (obj) {
                     var data = {
