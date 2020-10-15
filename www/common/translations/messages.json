@@ -1456,5 +1456,8 @@
     "team_exportTitle": "Download team drive",
     "team_exportHint": "Download all the documents in this team's drive. Documents will be downloaded in formats readable by other applications when such a format is available. When such a format is not available, documents will be downloaded in a format readable by CryptPad.",
     "team_exportButton": "Download",
-    "admin_limitUser": "User's public key"
+    "admin_limitUser": "User's public key",
+    "fm_deletedFolder": "Deleted folder",
+    "access_destroyPad": "Destroy this document or folder permanently",
+    "fm_shareFolderPassword": "Protect this folder with a password (optional)"
 }
