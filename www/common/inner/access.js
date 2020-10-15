@@ -937,7 +937,10 @@ define([
                     });
                 });
                 $d.append(h('br'));
+                Messages.access_destroyPad = "Destroy permanently this document or folder"; // XXX
                 $d.append(h('div', [
+                    h('label', Messages.access_destroyPad),
+                    h('br'),
                     deleteOwned,
                     spinner.spinner
                 ]));

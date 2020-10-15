@@ -4372,10 +4372,14 @@ Messages.fm_deletedFolder = "Deleted folder"; // XXX
                     }
                     // if folder does not contains SF
                     else {
+                        Messages.fm_shareFolderPassword = "Add a password to this folder? (optional)"; // XXX
                         var convertContent = h('div', [
                             h('p', Messages.convertFolderToSF_confirm),
-                            h('label', {for: 'cp-upload-password'}, Messages.creation_passwordValue),
-                            UI.passwordInput({id: 'cp-upload-password'}),
+                            h('label', {for: 'cp-upload-password'}, Messages.fm_shareFolderPassword),
+                            UI.passwordInput({
+                                id: 'cp-upload-password',
+                                placeholder: Messages.creation_passwordValue
+                            }),
                             h('span', {
                                 style: 'display:flex;align-items:center;justify-content:space-between'
                             }, [
