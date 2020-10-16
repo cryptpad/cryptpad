@@ -1683,6 +1683,16 @@ define([
         team.getTeam = function (id) {
             return ctx.teams[id];
         };
+        var checkKeyPair = function (edPrivate, edPublic) {
+            if (!edPrivate || !edPublic) { return true; }
+            try {
+                var secretKey = Nacl.util.decodeBase64(edPrivate);
+                var pair = Nacl.sign.keyPair.fromSecretKey(secretKey);
+                return Nacl.util.encodeBase64(pair.publicKey) === edPublic;
+            } catch (e) {
+                return false;
+            }
+        };
         team.getTeamsData = function (app) {
             var t = {};
             var safe = false;
@@ -1697,7 +1707,7 @@ define([
                     viewer: !Util.find(teams[id], ['keys', 'drive', 'edPrivate']),
                     notifications: Util.find(teams[id], ['keys', 'mailbox', 'channel']),
                     curvePublic: Util.find(teams[id], ['keys', 'mailbox', 'keys', 'curvePublic']),
-
+                    validKeys: checkKeyPair(Util.find(teams[id], ['keys', 'drive', 'edPrivate']), Util.find(teams[id], ['keys', 'drive', 'edPublic']))
                 };
                 if (safe && ctx.teams[id]) {
                     t[id].secondaryKey = ctx.teams[id].secondaryKey;

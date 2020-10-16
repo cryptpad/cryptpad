@@ -46,7 +46,7 @@ define([
                 var team = teams[key];
                 if (!teams) { return; }
                 var ret = {};
-                ['edPublic', 'owner', 'viewer', 'hasSecondaryKey'].forEach(function (k) {
+                ['edPublic', 'owner', 'viewer', 'hasSecondaryKey', 'validKeys'].forEach(function (k) {
                     ret[k] = team[k];
                 });
                 return ret;
