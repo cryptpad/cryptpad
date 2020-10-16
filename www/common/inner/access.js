@@ -349,6 +349,12 @@ define([
                 if (!reload) { return; }
                 Modal.loadMetadata(Env, data, waitFor, "owner");
             }).nThen(function () {
+                var owned = Modal.isOwned(Env, data);
+                if (typeof(owned) !== "boolean") {
+                    teamOwner = Number(owned);
+                } else {
+                    teamOwner = undefined;
+                }
                 owners = data.owners || [];
                 pending_owners = data.pending_owners || [];
                 $div1.empty();
@@ -667,6 +673,12 @@ define([
                 if (!reload) { return; }
                 Modal.loadMetadata(Env, data, waitFor, "allow");
             }).nThen(function () {
+                var owned = Modal.isOwned(Env, data);
+                if (typeof(owned) !== "boolean") {
+                    teamOwner = Number(owned);
+                } else {
+                    teamOwner = undefined;
+                }
                 owners = data.owners || [];
                 restricted = data.restricted || false;
                 allowed = data.allowed || [];
