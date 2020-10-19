@@ -1668,7 +1668,33 @@ define([
             updateMyRights(ctx, p[1]);
         });
 
+        // Remove duplicate teams
+        var _teams = {};
+        Object.keys(teams).forEach(function (id) {
+            var t = teams[id];
+            var _t = _teams[t.channel];
 
+            // Not found yet? add to the list
+            if (!_t) {
+                _teams[t.channel] = { edit: Boolean(t.hash), id:id };
+                return;
+            }
+
+            // Team already found. If this one has better access rights, keep it.
+            // Otherwise, delete it
+
+            // No edit right or we already have edit rights? delete
+            if (!t.hash || _t.edit) {
+                delete teams[id];
+                return;
+            }
+
+            // We didn't have edit rights and now we have them: replace
+            delete teams[_t.id];
+            _teams[t.channel] = { edit: Boolean(t.hash), id:id };
+        });
+
+        // Load teams
         Object.keys(teams).forEach(function (id) {
             ctx.onReadyHandlers[id] = [];
             if (!Util.find(teams, [id, 'keys', 'mailbox'])) {
