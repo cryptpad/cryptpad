@@ -1676,22 +1676,22 @@ define([
 
             // Not found yet? add to the list
             if (!_t) {
-                _teams[t.channel] = { edit: Boolean(t.hash), id:id };
+                _teams[t.channel] = { edit: Boolean(t.hash), owner: t.owner, id:id };
                 return;
             }
 
             // Team already found. If this one has better access rights, keep it.
             // Otherwise, delete it
 
-            // No edit right or we already have edit rights? delete
-            if (!t.hash || _t.edit) {
+            // No edit right or we already had edit rights? delete
+            if (!t.hash || (!t.owner && _t.edit) || _t.owner) {
                 delete teams[id];
                 return;
             }
 
             // We didn't have edit rights and now we have them: replace
             delete teams[_t.id];
-            _teams[t.channel] = { edit: Boolean(t.hash), id:id };
+            _teams[t.channel] = { edit: Boolean(t.hash), owner: t.owner, id:id };
         });
 
         // Load teams
