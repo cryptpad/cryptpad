@@ -1122,6 +1122,20 @@ define([
         var onReady = ctx.onReadyHandlers[teamId];
         var team = ctx.teams[teamId];
 
+        if (teamData.channel !== data.channel || teamData.password !== data.password) { return void cb(false); }
+
+        // Update our proxy
+        if (state) {
+            teamData.hash = data.hash;
+            teamData.keys.drive.edPrivate = data.keys.drive.edPrivate;
+            teamData.keys.chat.edit = data.keys.chat.edit;
+        } else {
+            delete teamData.hash;
+            delete teamData.keys.drive.edPrivate;
+            delete teamData.keys.chat.edit;
+        }
+
+        // Team not ready yet: try again onReady
         if (!team && Array.isArray(onReady)) {
             onReady.push({
                 cb: function () {
@@ -1131,14 +1145,11 @@ define([
             return;
         }
 
+        // No team and not initialized at all...
         if (!team) { return void cb(false); }
 
-        if (teamData.channel !== data.channel || teamData.password !== data.password) { return void cb(false); }
-
+        // Team is initialized and ready: update the loaded elements
         if (state) {
-            teamData.hash = data.hash;
-            teamData.keys.drive.edPrivate = data.keys.drive.edPrivate;
-            teamData.keys.chat.edit = data.keys.chat.edit;
             initRpc(ctx, team, teamData.keys.drive, function () {
                 team.manager.addPin(team.pin, team.unpin);
             });
@@ -1149,9 +1160,6 @@ define([
             var crypto = Crypto.createEncryptor(secret.keys);
             team.listmap.setReadOnly(false, crypto);
         } else {
-            delete teamData.hash;
-            delete teamData.keys.drive.edPrivate;
-            delete teamData.keys.chat.edit;
             delete team.secondaryKey;
             if (team.rpc && team.rpc.destroy) {
                 team.rpc.destroy();
