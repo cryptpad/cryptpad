@@ -724,7 +724,6 @@ define([
                 title: Messages.team_rosterKick
             });
             $(remove).click(function () {
-                $(remove).hide();
                 UI.confirm(Messages._getKey('team_kickConfirm', [Util.fixHTML(data.displayName)]), function (yes) {
                     if (!yes) { return; }
                     APP.module.execCommand('REMOVE_USER', {

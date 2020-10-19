@@ -2095,7 +2095,7 @@ define([
                     UI.warn(Messages.fm_restricted);
                     return;
                 }
-                if (isSharedFolder && !manager.folders[isSharedFolder]) {
+                if (isSharedFolder && !manager.folders[element]) {
                     UI.warn(Messages.fm_deletedFolder);
                     return;
                 }
