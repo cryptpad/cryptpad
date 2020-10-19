@@ -3803,7 +3803,6 @@ define([
             });
         };
 
-Messages.fm_deletedFolder = "Deleted folder"; // XXX
         var createTreeElement = function (name, $icon, path, draggable, droppable, collapsable, active, isSharedFolder) {
             var $name = $('<span>', { 'class': 'cp-app-drive-element' }).text(name);
             $icon.css("color", isSharedFolder ? getFolderColor(path.slice(0, -1)) : getFolderColor(path));
@@ -4372,7 +4371,6 @@ Messages.fm_deletedFolder = "Deleted folder"; // XXX
                     }
                     // if folder does not contains SF
                     else {
-                        Messages.fm_shareFolderPassword = "Add a password to this folder? (optional)"; // XXX
                         var convertContent = h('div', [
                             h('p', Messages.convertFolderToSF_confirm),
                             h('label', {for: 'cp-upload-password'}, Messages.fm_shareFolderPassword),

@@ -1456,5 +1456,8 @@
     "admin_invalLimit": "Wert für Speicherplatzbegrenzung ist ungültig",
     "admin_limitSetNote": "Notiz",
     "admin_setlimitTitle": "Individuelle Begrenzung festlegen",
-    "admin_setlimitHint": "Lege individuelle Begrenzungen für Benutzer anhand ihrer öffentlichen Schlüssel fest. Du kannst bestehende Regeln aktualisieren oder entfernen."
+    "admin_setlimitHint": "Lege individuelle Begrenzungen für Benutzer anhand ihrer öffentlichen Schlüssel fest. Du kannst bestehende Regeln aktualisieren oder entfernen.",
+    "access_destroyPad": "Dokument oder Ordner endgültig zerstören",
+    "fm_shareFolderPassword": "Diesen Ordner mit einem Passwort schützen (optional)",
+    "fm_deletedFolder": "Gelöschter Ordner"
 }
