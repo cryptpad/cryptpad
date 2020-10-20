@@ -1,3 +1,32 @@
+# XerusDaamsi's revenge (3.23.1)
+
+We discovered a number of minor bugs after deploying 3.23.0. This minor release addresses them.
+
+Features
+
+* On instances with a lot of data (like our own) the background process responsible for evicting inactive data could time out. We've increased its permitted duration to a sufficient timeframe.
+  * This process also aggregates some statistics about your database while it runs. Upon its completion a report is now stored in memory until it is overwritten by the next eviction process. This report will most likely be displayed on the admin panel in a future release.
+  * We now introduce some artificial delays into this process to prevent it from interfering with instances' normal behaviour.
+* Instance administrators may have noticed that support tickets include some basic information about the user account which submitted them. We've been debugging some problems related to teams recently and have included a little bit of non-sensitive data to tickets to help us isolate these problems.
+* We've added some additional text to a few places to clarify some ambiguous behavior:
+  * When creating a shared folder we now indicate that the password field will be used to add a layer of protection to the folder.
+  * The "destroy" button on the access modal now indicates that it will completely destroy the file or folder in question, rather than its access list or other parameters.
+
+Bug fixes
+
+* We received a number of support tickets related to users being unable to open rich text pads and sheets. We determined the issue to have been caused by our deployment of new HTTP headers to enable XLSX export on Firefox. These headers conflicted with the those on some cached files. The issue seemed to affect users randomly and did not occur when we tested the new features. We deployed some one-time cache-busting code to force clients to load the latest versions of these files (and their headers).
+* We addressed a regression introduced in 3.23.0 which incorrectly disabled the support ticket panels for users and admins.
+* We also fixed some layout issues on the admin panel's new _User storage_ pane.
+* Finally, we added a few guards against type errors in the drive which were most commonly triggered when viewing ranges of your drive's history which contained shared folders that had since been deleted.
+
+To update from 3.23.0 to 3.23.1:
+
+0. Read the 3.23.0 release notes carefully and apply all configuration changes if you haven't already done so.
+1. Stop your server
+2. Get the latest code with `git checkout 3.20.1`
+3. Install the latest dependencies with `bower update` and `npm i`
+4. Restart your server
+
 # XerusDaamsi (3.23.0)
 
 ## Goals
