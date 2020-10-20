@@ -1239,8 +1239,8 @@ define([
                 } else if (!plan) {
                     // user is logged in and subscriptions are allowed
                     // and they don't have one. show upgrades
-                    makeDonateButton();
                     makeUpgradeButton();
+                    makeDonateButton();
                 } else {
                     // they have a plan. show nothing
                 }
@@ -1934,6 +1934,7 @@ define([
             if (p === 'contacts') { return; }
             if (p === 'todo') { return; }
             if (p === 'file') { return; }
+            if (p === 'accounts') { return; }
             if (!common.isLoggedIn() && AppConfig.registeredOnlyTypes &&
                 AppConfig.registeredOnlyTypes.indexOf(p) !== -1) { return; }
             return true;
