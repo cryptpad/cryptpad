@@ -1,0 +1,12 @@
+{
+    "short_name": "CryptPad",
+    "name": "CryptPad: the encrypted collaboration suite",
+    "description": "the encrypted collaboration suite",
+    "icons": [],
+    "background_color": "#ff0073",
+    "display": "browser",
+    "start_url": "/drive/?source=pwa",
+    "scope": "/",
+    "theme_color": "#ff0073",
+    "shortcuts": []
+}
