@@ -67,6 +67,8 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         if (authorRole === 'OWNER') { return true; }
         // admins can add other admins or members or viewers
         if (authorRole === "ADMIN") { return ['ADMIN', 'MEMBER', 'VIEWER'].indexOf(role) !== -1; }
+        // members can demote themselves to viewer (they can only describe themselves)
+        if (authorRole === "MEMBER") { return role === 'VIEWER'; }
         // (MEMBER, other) can't add anyone of any role
         return false;
     };

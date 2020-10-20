@@ -491,6 +491,7 @@ define([
                 Feedback.send("ROSTER_CORRUPTED");
                 return;
             }
+            // Kicked from the team
             if (!state.members[me]) {
                 lm.stop();
                 roster.stop();
@@ -499,6 +500,25 @@ define([
                 ctx.updateMetadata();
                 cb({error: 'EFORBIDDEN'});
                 waitFor.abort();
+                return;
+            }
+            // Check access rights
+            // If we're not a viewer, make sure we have edit rights
+            var s = state.members[me];
+            if (!teamData.hash && ['ADMIN', 'MEMBER'].indexOf(s.role) !== -1) {
+                console.warn("Missing edit rights: demote to viewer");
+                var data = {};
+                data[ctx.store.proxy.curvePublic] = {
+                    role: "VIEWER"
+                };
+                roster.describe(data, function (err) {
+                    Feedback.send("TEAM_RIGHTS_FIXED");
+                    if (!err) { return; }
+                    if (err === 'NO_CHANGE') { return; }
+                    console.error(err);
+                });
+            } else if (!teamData.hash && s.role === "OWNER") {
+                Feedback.send("TEAM_RIGHTS_OWNER");
             }
         }).nThen(function () {
             onReady(ctx, id, lm, roster, keys, null, cb);
@@ -1690,14 +1710,17 @@ define([
 
             // Team already found. If this one has better access rights, keep it.
             // Otherwise, delete it
+            ctx.store.proxy.duplicateTeams = ctx.store.proxy.duplicateTeams || {};
 
             // No edit right or we already had edit rights? delete
             if (!t.hash || (!t.owner && _t.edit) || _t.owner) {
+                ctx.store.proxy.duplicateTeams[id] = teams[id];
                 delete teams[id];
                 return;
             }
 
             // We didn't have edit rights and now we have them: replace
+            ctx.store.proxy.duplicateTeams[_t.id] = teams[_t.id];
             delete teams[_t.id];
             _teams[t.channel] = { edit: Boolean(t.hash), owner: t.owner, id:id };
         });
