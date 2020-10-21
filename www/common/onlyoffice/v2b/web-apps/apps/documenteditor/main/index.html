@@ -317,6 +317,12 @@
 
     <div id="viewport"></div>
     <script data-main="app" src="../../../vendor/requirejs/require.js"></script>
+    <script>
+    window.CP_urlArgs = (window.parent && window.parent.APP && window.parent.APP.urlArgs) || '';
+    require.config({
+        urlArgs: window.CP_urlArgs,
+    });
+    </script>
 
 </body>
 </html>
