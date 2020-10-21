@@ -23,7 +23,7 @@ To update from 3.23.0 to 3.23.1:
 
 0. Read the 3.23.0 release notes carefully and apply all configuration changes if you haven't already done so.
 1. Stop your server
-2. Get the latest code with `git checkout 3.20.1`
+2. Get the latest code with `git checkout 3.23.1`
 3. Install the latest dependencies with `bower update` and `npm i`
 4. Restart your server
 
