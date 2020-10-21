@@ -27,7 +27,7 @@ define(['jquery'], function ($) {
                 if (bgImg) {
                     $icon[0].style.setProperty('background-image', bgImg, 'important');
                 }
-            catch (e) { console.error(e); }
+            } catch (e) { console.error(e); }
         }
         $el.on('keydown blur focus click dragstart', function (e) {
             e.preventDefault();
