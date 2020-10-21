@@ -557,7 +557,7 @@ define([
     funcs.openURL = function (url) { ctx.sframeChan.event('EV_OPEN_URL', url); };
     funcs.openUnsafeURL = function (url) {
         var bounceHref = window.location.origin + '/bounce/#' + encodeURIComponent(url);
-        window.open(bounceHref);
+        Util.open(bounceHref);
     };
 
     funcs.fixLinks = function (domElement) {

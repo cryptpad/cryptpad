@@ -92,7 +92,7 @@ define([
         'subscription': {
             onClick: function() {
                 var urls = common.getMetadataMgr().getPrivateData().accounts;
-                window.open(urls.upgradeURL);
+                Util.open(urls.upgradeURL);
                 Feedback.send('SUBSCRIPTION_BUTTON');
             }
         }

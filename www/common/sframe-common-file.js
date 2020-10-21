@@ -142,7 +142,7 @@ define([
                 $link.attr('href', href)
                     .click(function (e) {
                         e.preventDefault();
-                        window.open(origin + $link.attr('href'), '_blank');
+                        Util.open(origin + $link.attr('href'), '_blank');
                     });
                 var title = metadata.name;
                 if (!config.noStore) {

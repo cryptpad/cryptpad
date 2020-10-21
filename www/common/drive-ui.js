@@ -1114,7 +1114,7 @@ define([
             var priv = metadataMgr.getPrivateData();
             var useUnsafe = Util.find(priv, ['settings', 'security', 'unsafeLinks']);
             if (useUnsafe === true) {
-                return void window.open(APP.origin + href);
+                return void Util.open(APP.origin + href);
             }
 
             // Get hidden hash
@@ -1123,7 +1123,7 @@ define([
             if (isRo) { opts.view = true; }
             var hash = Hash.getHiddenHashFromKeys(parsed.type, secret, opts);
             var hiddenHref = Hash.hashToHref(hash, parsed.type);
-            window.open(APP.origin + hiddenHref);
+            Util.open(APP.origin + hiddenHref);
         };
 
         var refresh = APP.refresh = function () {

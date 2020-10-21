@@ -558,7 +558,7 @@ define([
             var $room = $(roomEl).click(function () {
                 display(id);
             }).dblclick(function () {
-                if (friendData.profile) { window.open(origin + '/profile/#' + friendData.profile); }
+                if (friendData.profile) { Util.open(origin + '/profile/#' + friendData.profile); }
             });
 
             $(unmute).on('click dblclick', function (e) {
@@ -723,7 +723,7 @@ define([
             if (types.indexOf('profile') !== -1) {
                 // update dblclick event in friend list
                 $userlist.find(userQuery(curvePublic)).off('dblclick').dblclick(function () {
-                    if (info.profile) { window.open(origin + '/profile/#' + info.profile); }
+                    if (info.profile) { Util.open(origin + '/profile/#' + info.profile); }
                 });
             }
 

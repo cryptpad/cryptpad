@@ -627,7 +627,7 @@ define([
 
                 sframeChan.on('EV_OPEN_URL', function (url) {
                     if (url) {
-                        window.open(url);
+                        Utils.Util.open(url);
                     }
                 });
 
@@ -1039,7 +1039,7 @@ define([
                     title: currentTitle
                 };
                 sessionStorage[Utils.Constants.newPadFileData] = JSON.stringify(data);
-                window.open(window.location.pathname);
+                Utils.Util.open(window.location.pathname);
                 setTimeout(function () {
                     delete sessionStorage[Utils.Constants.newPadFileData];
                 }, 100);

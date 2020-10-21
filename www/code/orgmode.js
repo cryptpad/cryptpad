@@ -1,7 +1,9 @@
 define([
     'cm/lib/codemirror',
+    '/common/common-util.js',
+
     'cm/addon/mode/simple'
-], function (CodeMirror) {
+], function (CodeMirror, Util) {
     CodeMirror.__mode = 'orgmode';
 
     var isEmpty = function (el, idx) {
@@ -300,11 +302,11 @@ define([
             if(!link) return;
 
             if(/^https?\:\/\//.test(link)){
-                window.open(link);
+                Util.open(link);
             }else{
                 var root_path = dirname(window.location.pathname.replace(/^\/view/, ''));
                 var link_path = link;
-                window.open("/view"+pathBuilder(root_path, link_path));
+                Util.open("/view"+pathBuilder(root_path, link_path));
             }
         }
     }

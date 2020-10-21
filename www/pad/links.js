@@ -2,8 +2,9 @@ define([
     'jquery',
     '/common/hyperscript.js',
     '/common/common-ui-elements.js',
+    '/common/common-util.js',
     '/customize/messages.js'
-], function ($, h, UIElements, Messages) {
+], function ($, h, UIElements, Util, Messages) {
 
     var onLinkClicked = function (e, inner) {
         var $target = $(e.target);
@@ -46,7 +47,7 @@ define([
             ee.preventDefault();
             ee.stopPropagation();
             var bounceHref = window.location.origin + '/bounce/#' + encodeURIComponent(href);
-            window.open(bounceHref);
+            Util.open(bounceHref);
             $link.remove();
         });
         $link.on('mouseleave', function () {
@@ -93,7 +94,7 @@ define([
                         var href = anchor.getAttribute('href');
                         if (href) {
                             var bounceHref = window.location.origin + '/bounce/#' + encodeURIComponent(href);
-                            window.open(bounceHref);
+                            Util.open(bounceHref);
                         }
                     }
                 }

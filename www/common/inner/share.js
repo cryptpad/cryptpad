@@ -376,7 +376,7 @@ define([
                     var v = opts.getLinkValue({
                         embed: Util.isChecked($link.find('#cp-share-embed'))
                     });
-                    window.open(v);
+                    Util.open(v);
                     return true;
                 },
                 keys: [[13, 'ctrl']]

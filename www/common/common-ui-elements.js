@@ -1602,7 +1602,7 @@ define([
                 content: h('span', Messages.profileButton),
                 action: function () {
                     if (padType) {
-                        window.open(origin+'/profile/');
+                        Util.open(origin+'/profile/');
                     } else {
                         window.parent.location = origin+'/profile/';
                     }
@@ -1613,30 +1613,36 @@ define([
             options.push({
                 tag: 'a',
                 attributes: {
-                    'target': '_blank',
-                    'href': origin+'/drive/',
+                    //'target': '_blank',
+                    //'href': origin+'/drive/',
                     'class': 'fa fa-hdd-o'
                 },
-                content: h('span', Messages.type.drive)
+                content: h('span', Messages.type.drive),
+                action: function () {
+                    Util.open(origin + '/drive/', '_blank');
+                }
             });
         }
         if (padType !== 'teams' && accountName) {
             options.push({
                 tag: 'a',
                 attributes: {
-                    'target': '_blank',
-                    'href': origin+'/teams/',
+                    //'target': '_blank',
+                    //'href': origin+'/teams/',
                     'class': 'fa fa-users'
                 },
-                content: h('span', Messages.type.teams)
+                content: h('span', Messages.type.teams),
+                action: function () {
+                    Util.open(origin + '/teams/', '_blank');
+                },
             });
         }
         if (padType !== 'contacts' && accountName) {
             options.push({
                 tag: 'a',
                 attributes: {
-                    'target': '_blank',
-                    'href': origin+'/contacts/',
+                    //'target': '_blank',
+                    //'href': origin+'/contacts/',
                     'class': 'fa fa-address-book'
                 },
                 content: h('span', Messages.type.contacts)
@@ -1649,7 +1655,7 @@ define([
                 content: h('span', Messages.settingsButton),
                 action: function () {
                     if (padType) {
-                        window.open(origin+'/settings/');
+                        Util.open(origin+'/settings/');
                     } else {
                         window.parent.location = origin+'/settings/';
                     }
@@ -1666,7 +1672,7 @@ define([
                 content: h('span', Messages.adminPage || 'Admin'),
                 action: function () {
                     if (padType) {
-                        window.open(origin+'/admin/');
+                        Util.open(origin+'/admin/');
                     } else {
                         window.parent.location = origin+'/admin/';
                     }
@@ -1680,7 +1686,7 @@ define([
                 content: h('span', Messages.supportPage || 'Support'),
                 action: function () {
                     if (padType) {
-                        window.open(origin+'/support/');
+                        Util.open(origin+'/support/');
                     } else {
                         window.parent.location = origin+'/support/';
                     }
@@ -1717,10 +1723,13 @@ define([
             tag: 'a',
             attributes: {
                 'target': '_blank',
-                'href': origin+'/index.html',
+                //'href': origin+'/index.html',
                 'class': 'fa fa-home'
             },
-            content: h('span', Messages.homePage)
+            content: h('span', Messages.homePage),
+            action: function () {
+                Util.open(origin + '/index.html');
+            },
         });
         // Add the change display name button if not in read only mode
         /*
@@ -1737,7 +1746,7 @@ define([
                 tag: 'a',
                 attributes: {
                     'target': '_blank',
-                    'href': priv.plan ? priv.accounts.upgradeURL : origin+'/features.html',
+                    'href': priv.plan ? priv.accounts.upgradeURL : origin+'/features.html', // XXX
                     'class': 'fa fa-star-o'
                 },
                 content: h('span', priv.plan ? Messages.settings_cat_subscription : Messages.pricing)
@@ -1749,7 +1758,7 @@ define([
                 attributes: {
                     'target': '_blank',
                     'rel': 'noopener',
-                    'href': priv.accounts.donateURL,
+                    'href': priv.accounts.donateURL, // XXX
                     'class': 'fa fa-gift'
                 },
                 content: h('span', Messages.crowdfunding_button2)
@@ -1767,7 +1776,7 @@ define([
                 content: h('span', Messages.logoutEverywhere),
                 action: function () {
                     Common.getSframeChannel().query('Q_LOGOUT_EVERYWHERE', null, function () {
-                        window.parent.location = origin + '/';
+                        window.parent.location = origin + '/'; // XXX
                     });
                 },
             });
@@ -1777,7 +1786,7 @@ define([
                 content: h('span', Messages.logoutButton),
                 action: function () {
                     Common.logout(function () {
-                        window.parent.location = origin+'/';
+                        window.parent.location = origin+'/'; // XXX
                     });
                 },
             });
@@ -1788,7 +1797,7 @@ define([
                 content: h('span', Messages.login_login),
                 action: function () {
                     Common.setLoginRedirect(function () {
-                        window.parent.location = origin+'/login/';
+                        window.parent.location = origin+'/login/'; // XXX
                     });
                 },
             });
@@ -1798,7 +1807,7 @@ define([
                 content: h('span', Messages.login_register),
                 action: function () {
                     Common.setLoginRedirect(function () {
-                        window.parent.location = origin+'/register/';
+                        window.parent.location = origin+'/register/'; // XXX
                     });
                 },
             });

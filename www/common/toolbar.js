@@ -338,7 +338,7 @@ MessengerUI, Messages) {
             if (data.profile) {
                 $span.addClass('cp-userlist-clickable');
                 $span.click(function () {
-                    window.open(origin+'/profile/#' + data.profile);
+                    Util.open(origin+'/profile/#' + data.profile);
                 });
             }
             Common.displayAvatar($span, data.avatar, name, function () {
@@ -774,13 +774,13 @@ MessengerUI, Messages) {
             $msg.find('a.cp-pnp-login').click(function (ev) {
                 ev.preventDefault();
                 Common.setLoginRedirect(function () {
-                    window.parent.location = o + '/login/';
+                    window.parent.location = o + '/login/'; // XXX
                 });
             });
             $msg.find('a.cp-pnp-register').click(function (ev) {
                 ev.preventDefault();
                 Common.setLoginRedirect(function () {
-                    window.parent.location = o + '/register/';
+                    window.parent.location = o + '/register/'; // XXX
                 });
             });
             $('.cp-toolbar-top').append($msg);
@@ -841,11 +841,14 @@ MessengerUI, Messages) {
         }));*/
         var onClick = function (e) {
             e.preventDefault();
+
+            return void Util.open(href);
+
             if (e.ctrlKey) {
-                window.open(href);
+                Util.open(href);
                 return;
             }
-            window.parent.location = href;
+            window.parent.location = href; // XXX
         };
 
         var onContext = function (e) { e.stopPropagation(); };

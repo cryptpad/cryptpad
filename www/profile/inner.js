@@ -103,7 +103,7 @@ define([
         $('<button>', {
             'class': 'btn btn-success '+VIEW_PROFILE_BUTTON,
         }).text(Messages.profile_viewMyProfile).click(function () {
-            window.open(url, '_blank');
+            Util.open(url, '_blank');
         }).appendTo($container);
 
         $('<button>', {
@@ -129,7 +129,7 @@ define([
 
         APP.$link = $('<a>', {
             'class': LINK_ID,
-            target: '_blank',
+            target: '_blank', // XXX
             rel: 'noreferrer noopener'
         }).appendTo($block).hide();
 
