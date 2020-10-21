@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'cptools';
   src:
-    url('fonts/cptools.ttf?5ntnhs') format('truetype'),
-    url('fonts/cptools.woff?5ntnhs') format('woff'),
-    url('fonts/cptools.svg?5ntnhs#cptools') format('svg');
+    url('fonts/cptools.ttf?n9y2kz') format('truetype'),
+    url('fonts/cptools.woff?n9y2kz') format('woff'),
+    url('fonts/cptools.svg?n9y2kz#cptools') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,6 +25,39 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.cptools-sheet:before {
+  content: "\e908";
+}
+.cptools-slide:before {
+  content: "\e907";
+}
+.cptools-whiteboard:before {
+  content: "\e901";
+}
+.cptools-new-template:before {
+  content: "\e902";
+}
+.cptools-file-upload:before {
+  content: "\e904";
+}
+.cptools-template:before {
+  content: "\e905";
+}
+.cptools-poll:before {
+  content: "\e906";
+}
+.cptools-kanban:before {
+  content: "\e90a";
+}
+.cptools-code:before {
+  content: "\e90d";
+}
+.cptools-richtext:before {
+  content: "\e90e";
+}
+.cptools-file:before {
+  content: "\e90f";
+}
 .cptools-destroy:before {
   content: "\e915";
 }
@@ -40,53 +73,17 @@
 .cptools-folder-no-color:before {
   content: "\e900";
 }
-.cptools-slide:before {
-  content: "\e902";
-}
 .cptools-shared-folder:before {
   content: "\e903";
 }
-.cptools-poll:before {
-  content: "\e904";
-}
-.cptools-file-upload:before {
-  content: "\e905";
-}
-.cptools-whiteboard:before {
-  content: "\e906";
-}
-.cptools-todo:before {
-  content: "\e907";
-}
-.cptools-pad:before {
-  content: "\e908";
-}
 .cptools-folder-open:before {
   content: "\e909";
-}
-.cptools-kanban:before {
-  content: "\e90a";
 }
 .cptools-folder:before {
   content: "\e90b";
 }
 .cptools-shared-folder-open:before {
   content: "\e90c";
-}
-.cptools-file:before {
-  content: "\e90d";
-}
-.cptools-contacts:before {
-  content: "\e90e";
-}
-.cptools-code:before {
-  content: "\e90f";
-}
-.cptools-template:before {
-  content: "\e901";
-}
-.cptools-new-template:before {
-  content: "\e910";
 }
 .cptools-palette:before {
   content: "\e911";
