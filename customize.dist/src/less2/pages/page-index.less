@@ -8,7 +8,7 @@
     @background_darker: rgba(0,0,0,0.4);
     #cp-main {
         color: #FFF;
-        background: linear-gradient( @background_darker, @background_lighter ), url('/customize/bg14.jpg');
+        background: @colortheme_info-background;
         background-size: cover;
         background-position: center;
         min-height: 100vh;
@@ -31,6 +31,7 @@
     }
     body {
         font-family: "Open Sans", Helvetica;
+        color: @cryptpad_text_col;
     }
     .cp-right {
         .cp-register-btn {
@@ -51,22 +52,25 @@
     .cp-title {
         display: flex;
         align-items: center;
+        justify-content: center;
         flex-direction: column;
+        color: @colortheme_logo-2;
         margin-top: 1.5em;
         img {
-            height: 20vh;
+            max-width: 200px;
             margin-bottom: 1.5em;
         }
         margin-left: 0;
         h1 {
-            font-family: "Neuropolitical";
+            font-family: "IBM Plex Mono";
+            font-weight: 500;
             //font-family: Garamond, Baskerville, "Baskerville Old Face", "Hoefler Text", "Times New Roman", Times, serif;
             //font-family: "Raleway";
-            font-size: 45px;
+            font-size: 3.7rem;
         }
-        p {
-            //font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-            font-size: 20px;
+        .tag-line {
+            text-align: center;
+            font-size: 1.4em;
             //font-style: italic;
         }
     }
@@ -107,27 +111,28 @@
     .cp-app-grid {
         display: flex;
         flex-wrap: wrap;
+        justify-content: space-around;
         & > a {
-            margin: 20px;
+            margin: 10px;
         }
     }
     @icons-size: 120px;
-    @icons-text-size: 30px;
+    @icons-text-size: 24px;
     .bs-callout {
         display: flex;
         align-items: stretch;
         margin: 0;
-        background: rgba(255,255,255,0.6);
-        color: black;
-        transition: all .1s ease-in-out;
         box-sizing: border-box;
         position: relative;
         flex-flow: column;
         height: @icons-size;
         width: @icons-size;
         a {
-            color: black;
-            &:hover { text-decoration-line: none; }
+            color: @cryptpad_text_col;
+            &:hover {
+                color: @cryptpad_text_col;
+                text-decoration-line: none;
+            }
         }
         div h4 {
             @media only screen and (min-device-width: 576px) and (max-device-width: 767px) {
@@ -152,12 +157,13 @@
             justify-content: center;
             width: @icons-size;
             height: @icons-size - @icons-text-size;
-            transition: width 0.1s;
-            color: #fff;
         }
         &.cp-app-disabled {
             cursor: not-allowed !important;
             opacity: 0.5;
+        }
+        .pad-button-text {
+            color: @cryptpad_text_col;
         }
     }
     h4 {
@@ -171,21 +177,35 @@
     }
 
     .bs-callout:hover {
-        //color: white;
-        transform: scale(1.05);
         cursor: pointer;
     }
     .bs-callout:hover.cp-callout-more {
         transform: none !important;
     }
-    .cp-callout-pad .cptools { background-color: @colortheme_pad-bg; }
-    .cp-callout-code .cptools { background-color: @colortheme_code-bg; }
-    .cp-callout-slide .cptools { background-color: @colortheme_slide-bg; }
-    .cp-callout-poll .cptools { background-color: @colortheme_poll-bg; }
-    .cp-callout-kanban .cptools { background-color: @colortheme_kanban-bg; }
-    .cp-callout-whiteboard .cptools { background-color: @colortheme_whiteboard-bg; }
-    .cp-callout-drive .fa { background-color: @colortheme_drive-bg; }
-    .cp-callout-sheet .cptools { background-color: @colortheme_oocell-bg; }
+
+    .app-block(@app; @app-color) {
+        .cp-callout-@{app} {
+            i {
+                color: @app-color;
+            }
+            &:hover {
+                background-color: lighten(@app-color, 30%);
+                i {
+                    color: @cryptpad_text_col;
+                }
+            }
+        }
+    }
+    .app-block(code, @colortheme_code-bg);
+    .app-block(pad, @colortheme_pad-bg);
+    .app-block(slide, @colortheme_slide-bg);
+    .app-block(poll, @colortheme_poll-bg);
+    .app-block(kanban, @colortheme_kanban-bg);
+    .app-block(whiteboard, @colortheme_whiteboard-bg);
+    .app-block(sheet, @colortheme_oocell-bg);
+    .app-block(drive, @colortheme_drive-bg);
+
+
     .cp-hidden { display: none !important; }
     .cp-callout-more {
         display: inline-block;

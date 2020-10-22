@@ -58,9 +58,7 @@ define([
                     attr,
                     h(s, [
                         h('i.' + font + '.' + icon),
-                        h('div.pad-button-text', {
-                            style: 'width:120px;height:30px;'
-                        }, [ x[1] ])
+                        h('div.pad-button-text', [ x[1] ])
                     ])
                 ]);
             });
@@ -142,18 +140,18 @@ define([
                 ])),
             ])
         ]);
-
+        Msg.main_catch_phrase = "Collaboration suite,<br>encrypted and open-source"; // XXX
         return [
             h('div#cp-main', [
                 Pages.infopageTopbar(),
                 h('div.container.cp-container', [
                     h('div.row', [
-                        h('div.cp-title.col-12.col-sm-6', [
-                            h('img', { src: '/customize/cryptpad-new-logo-colors-logoonly.png?' + urlArgs }),
+                        h('div.cp-title.col-md-7', [
+                            h('img', { src: '/customize/CryptPad_logo.svg?' + urlArgs }),
                             h('h1', 'CryptPad'),
-                            h('p', Msg.main_catch_phrase)
+                            UI.setHTML(h('span.tag-line'), Msg.main_catch_phrase)
                         ]),
-                        h('div.col-12.col-sm-6.cp-app-grid', [
+                        h('div.col-md-5.cp-app-grid', [
                             icons,
                             //more
                         ])
