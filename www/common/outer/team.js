@@ -505,7 +505,8 @@ define([
             // Check access rights
             // If we're not a viewer, make sure we have edit rights
             var s = state.members[me];
-            if (!teamData.hash && ['ADMIN', 'MEMBER'].indexOf(s.role) !== -1) {
+            var teamEdPrivate = Util.find(teamData, ['keys', 'drive', 'edPrivate']);
+            if ((!teamData.hash || !teamEdPrivate) && ['ADMIN', 'MEMBER'].indexOf(s.role) !== -1) {
                 console.warn("Missing edit rights: demote to viewer");
                 var data = {};
                 data[ctx.store.proxy.curvePublic] = {
@@ -513,11 +514,15 @@ define([
                 };
                 roster.describe(data, function (err) {
                     Feedback.send("TEAM_RIGHTS_FIXED");
+                    // Make sure we've removed all the keys
+                    delete teamData.hash;
+                    delete teamData.keys.drive.edPrivate;
+                    delete teamData.keys.chat.edit;
                     if (!err) { return; }
                     if (err === 'NO_CHANGE') { return; }
                     console.error(err);
                 });
-            } else if (!teamData.hash && s.role === "OWNER") {
+            } else if ((!teamData.hash || !teamEdPrivate) && s.role === "OWNER") {
                 Feedback.send("TEAM_RIGHTS_OWNER");
             }
         }).nThen(function () {
@@ -1696,33 +1701,71 @@ define([
             updateMyRights(ctx, p[1]);
         });
 
+        var checkKeyPair = function (edPrivate, edPublic) {
+            if (!edPrivate || !edPublic) { return true; }
+            try {
+                var secretKey = Nacl.util.decodeBase64(edPrivate);
+                var pair = Nacl.sign.keyPair.fromSecretKey(secretKey);
+                return Nacl.util.encodeBase64(pair.publicKey) === edPublic;
+            } catch (e) {
+                return false;
+            }
+        };
+
         // Remove duplicate teams
         var _teams = {};
         Object.keys(teams).forEach(function (id) {
-            var t = teams[id];
-            var _t = _teams[t.channel];
+            try {
+                var t = teams[id];
+                var _t = _teams[t.channel];
 
-            // Not found yet? add to the list
-            if (!_t) {
-                _teams[t.channel] = { edit: Boolean(t.hash), owner: t.owner, id:id };
-                return;
-            }
+                var edPrivate = Util.find(t, ['keys', 'drive', 'edPrivate']);
+                var edPublic = Util.find(t, ['keys', 'drive', 'edPublic']);
 
-            // Team already found. If this one has better access rights, keep it.
-            // Otherwise, delete it
-            ctx.store.proxy.duplicateTeams = ctx.store.proxy.duplicateTeams || {};
+                // If the edPrivate is corrupted, remove it
+                if (!edPublic) {
+                    Feedback.send("TEAM_CORRUPTED_EDPUBLIC");
+                } else if (edPrivate && edPublic && !checkKeyPair(edPrivate, edPublic)) {
+                    Feedback.send("TEAM_CORRUPTED_EDPUBLIC");
+                    delete teams[id].keys.drive.edPrivate;
+                    edPrivate = undefined;
+                }
 
-            // No edit right or we already had edit rights? delete
-            if (!t.hash || (!t.owner && _t.edit) || _t.owner) {
+                // If the hash is corrupted, feedback
+                if (t.hash) {
+                    var parsed = Hash.parseTypeHash('drive', t.hash);
+                    if (parsed.version === 2 && t.hash.length !== 40) {
+                        Feedback.send("TEAM_CORRUPTED_HASH");
+                        // FIXME ?
+                    }
+                }
+
+                // Not found yet? add to the list
+                if (!_t) {
+                    _teams[t.channel] = id;
+                    return;
+                }
+
+                // Duplicate found: update our team to add missing data
+                var best = teams[_t]; // This is a proxy!
+                var bestPrivate = Util.find(best, ['keys', 'drive', 'edPrivate']);
+                var bestChat = Util.find(best, ['keys', 'chat', 'edit']);
+                var chat = Util.find(t, ['keys', 'chat', 'edit']);
+                if (!best.hash && t.hash) {
+                    best.hash = t.hash;
+                }
+                if (!bestPrivate && edPrivate) {
+                    best.keys.drive.edPrivate = edPrivate;
+                }
+                if (!bestChat && chat) {
+                    best.keys.chat.edit = chat;
+                }
+
+                // Deprecate the duplicate
+                ctx.store.proxy.duplicateTeams = ctx.store.proxy.duplicateTeams || {};
                 ctx.store.proxy.duplicateTeams[id] = teams[id];
                 delete teams[id];
-                return;
-            }
-
-            // We didn't have edit rights and now we have them: replace
-            ctx.store.proxy.duplicateTeams[_t.id] = teams[_t.id];
-            delete teams[_t.id];
-            _teams[t.channel] = { edit: Boolean(t.hash), owner: t.owner, id:id };
+            } catch (e) { console.error(e); }
         });
 
         // Load teams
@@ -1739,16 +1782,6 @@ define([
 
         team.getTeam = function (id) {
             return ctx.teams[id];
-        };
-        var checkKeyPair = function (edPrivate, edPublic) {
-            if (!edPrivate || !edPublic) { return true; }
-            try {
-                var secretKey = Nacl.util.decodeBase64(edPrivate);
-                var pair = Nacl.sign.keyPair.fromSecretKey(secretKey);
-                return Nacl.util.encodeBase64(pair.publicKey) === edPublic;
-            } catch (e) {
-                return false;
-            }
         };
         team.getTeamsData = function (app) {
             var t = {};
