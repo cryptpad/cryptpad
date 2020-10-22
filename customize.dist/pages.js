@@ -137,7 +137,9 @@ define([
         });
 
         return h('nav.navbar.navbar-expand-lg',
-            h('a.navbar-brand', { href: '/index.html'}),
+            h('a.navbar-brand', { href: '/index.html'}, [
+                h('img', { src: '/customize/CryptPad_logo.svg?', 'aria-hidden': true}), 'CryptPad'
+            ]),
             button,
             h('div.collapse.navbar-collapse.justify-content-end#menuCollapse', [
                 h('a.nav-item.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.blog),

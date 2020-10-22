@@ -22,8 +22,8 @@ body {
     // Basic setup for info pages, this should be used at the global level
     background-color: @colortheme_info-background;
     a {
-        color: @cryptpad_color_blue;
-        &:visited { color: darken(@cryptpad_color_blue, 5%); }
+        color: @colortheme_logo-2;
+        &:visited { color: darken(@colortheme_logo-2, 5%); }
     }
     a:hover {
         opacity: 1;
@@ -155,14 +155,18 @@ body {
 
     // navigation top bar
     .navbar {
-        background: #fff;
+        width: 100%;
+        color: @colortheme_logo-2;
         .navbar-brand {
             display: block;
-            background-image: url(/customize/CryptPad_logo_color.svg);
-            background-repeat: no-repeat;
-            background-size: contain;
             height: 50px;
             width: 250px;
+            font-family: "IBM Plex Mono";
+            font-size: 1.8em;
+            img {
+                max-width: 40px;
+                margin-right: 10px
+            }
             @media (max-width: 326px) {
                 width: 180px;
             }
@@ -171,15 +175,18 @@ body {
         a {
             border: 2px solid transparent;
             white-space: nowrap;
+            &:visited {
+                color: @colortheme_logo-2;
+            }
         }
         .nav-link {
             padding: 0.5em 0.7em;
             &:hover {
-                color: @cryptpad_color_light_blue;
+                color: @cryptpad_text_col;
             }
         }
         .cp-register-btn {
-            border: 2px solid #4591C4;
+            border: 2px solid @colortheme_logo-2;
             display: inline-block;
         }
         button:focus {
@@ -187,7 +194,7 @@ body {
         }
         .navbar-toggler {
             margin-top: 10px;
-            color: #4591C4;
+            color: @colortheme_logo-2;
         }
     }
     @media (max-width: 1000px) {
