@@ -395,7 +395,7 @@ define([
             if (obj.error === "OFFLINE") { return UI.alert(Messages.driveOfflineError); }
             if (obj.error) { return void console.error(obj.error); }
             var list = [];
-            var keys = Object.keys(obj).slice(0,3);
+            var keys = Object.keys(obj).slice(0,MAX_TEAMS_SLOTS);
             var slots = '('+Math.min(keys.length, MAX_TEAMS_SLOTS)+'/'+MAX_TEAMS_SLOTS+')';
             for (var i = keys.length; i < MAX_TEAMS_SLOTS; i++) {
                 obj[i] = {
