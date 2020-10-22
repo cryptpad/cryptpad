@@ -1726,7 +1726,7 @@ define([
                 if (!edPublic) {
                     Feedback.send("TEAM_CORRUPTED_EDPUBLIC");
                 } else if (edPrivate && edPublic && !checkKeyPair(edPrivate, edPublic)) {
-                    Feedback.send("TEAM_CORRUPTED_EDPUBLIC");
+                    Feedback.send("TEAM_CORRUPTED_EDPRIVATE");
                     delete teams[id].keys.drive.edPrivate;
                     edPrivate = undefined;
                 }
