@@ -491,6 +491,7 @@ define([
                 Feedback.send("ROSTER_CORRUPTED");
                 return;
             }
+            // Kicked from the team
             if (!state.members[me]) {
                 lm.stop();
                 roster.stop();
@@ -499,6 +500,30 @@ define([
                 ctx.updateMetadata();
                 cb({error: 'EFORBIDDEN'});
                 waitFor.abort();
+                return;
+            }
+            // Check access rights
+            // If we're not a viewer, make sure we have edit rights
+            var s = state.members[me];
+            var teamEdPrivate = Util.find(teamData, ['keys', 'drive', 'edPrivate']);
+            if ((!teamData.hash || !teamEdPrivate) && ['ADMIN', 'MEMBER'].indexOf(s.role) !== -1) {
+                console.warn("Missing edit rights: demote to viewer");
+                var data = {};
+                data[ctx.store.proxy.curvePublic] = {
+                    role: "VIEWER"
+                };
+                roster.describe(data, function (err) {
+                    Feedback.send("TEAM_RIGHTS_FIXED");
+                    // Make sure we've removed all the keys
+                    delete teamData.hash;
+                    delete teamData.keys.drive.edPrivate;
+                    delete teamData.keys.chat.edit;
+                    if (!err) { return; }
+                    if (err === 'NO_CHANGE') { return; }
+                    console.error(err);
+                });
+            } else if ((!teamData.hash || !teamEdPrivate) && s.role === "OWNER") {
+                Feedback.send("TEAM_RIGHTS_OWNER");
             }
         }).nThen(function () {
             onReady(ctx, id, lm, roster, keys, null, cb);
@@ -1122,6 +1147,20 @@ define([
         var onReady = ctx.onReadyHandlers[teamId];
         var team = ctx.teams[teamId];
 
+        if (teamData.channel !== data.channel || teamData.password !== data.password) { return void cb(false); }
+
+        // Update our proxy
+        if (state) {
+            teamData.hash = data.hash;
+            teamData.keys.drive.edPrivate = data.keys.drive.edPrivate;
+            teamData.keys.chat.edit = data.keys.chat.edit;
+        } else {
+            delete teamData.hash;
+            delete teamData.keys.drive.edPrivate;
+            delete teamData.keys.chat.edit;
+        }
+
+        // Team not ready yet: try again onReady
         if (!team && Array.isArray(onReady)) {
             onReady.push({
                 cb: function () {
@@ -1131,14 +1170,11 @@ define([
             return;
         }
 
+        // No team and not initialized at all...
         if (!team) { return void cb(false); }
 
-        if (teamData.channel !== data.channel || teamData.password !== data.password) { return void cb(false); }
-
+        // Team is initialized and ready: update the loaded elements
         if (state) {
-            teamData.hash = data.hash;
-            teamData.keys.drive.edPrivate = data.keys.drive.edPrivate;
-            teamData.keys.chat.edit = data.keys.chat.edit;
             initRpc(ctx, team, teamData.keys.drive, function () {
                 team.manager.addPin(team.pin, team.unpin);
             });
@@ -1149,9 +1185,6 @@ define([
             var crypto = Crypto.createEncryptor(secret.keys);
             team.listmap.setReadOnly(false, crypto);
         } else {
-            delete teamData.hash;
-            delete teamData.keys.drive.edPrivate;
-            delete teamData.keys.chat.edit;
             delete team.secondaryKey;
             if (team.rpc && team.rpc.destroy) {
                 team.rpc.destroy();
@@ -1668,7 +1701,74 @@ define([
             updateMyRights(ctx, p[1]);
         });
 
+        var checkKeyPair = function (edPrivate, edPublic) {
+            if (!edPrivate || !edPublic) { return true; }
+            try {
+                var secretKey = Nacl.util.decodeBase64(edPrivate);
+                var pair = Nacl.sign.keyPair.fromSecretKey(secretKey);
+                return Nacl.util.encodeBase64(pair.publicKey) === edPublic;
+            } catch (e) {
+                return false;
+            }
+        };
 
+        // Remove duplicate teams
+        var _teams = {};
+        Object.keys(teams).forEach(function (id) {
+            try {
+                var t = teams[id];
+                var _t = _teams[t.channel];
+
+                var edPrivate = Util.find(t, ['keys', 'drive', 'edPrivate']);
+                var edPublic = Util.find(t, ['keys', 'drive', 'edPublic']);
+
+                // If the edPrivate is corrupted, remove it
+                if (!edPublic) {
+                    Feedback.send("TEAM_CORRUPTED_EDPUBLIC");
+                } else if (edPrivate && edPublic && !checkKeyPair(edPrivate, edPublic)) {
+                    Feedback.send("TEAM_CORRUPTED_EDPRIVATE");
+                    delete teams[id].keys.drive.edPrivate;
+                    edPrivate = undefined;
+                }
+
+                // If the hash is corrupted, feedback
+                if (t.hash) {
+                    var parsed = Hash.parseTypeHash('drive', t.hash);
+                    if (parsed.version === 2 && t.hash.length !== 40) {
+                        Feedback.send("TEAM_CORRUPTED_HASH");
+                        // FIXME ?
+                    }
+                }
+
+                // Not found yet? add to the list
+                if (!_t) {
+                    _teams[t.channel] = id;
+                    return;
+                }
+
+                // Duplicate found: update our team to add missing data
+                var best = teams[_t]; // This is a proxy!
+                var bestPrivate = Util.find(best, ['keys', 'drive', 'edPrivate']);
+                var bestChat = Util.find(best, ['keys', 'chat', 'edit']);
+                var chat = Util.find(t, ['keys', 'chat', 'edit']);
+                if (!best.hash && t.hash) {
+                    best.hash = t.hash;
+                }
+                if (!bestPrivate && edPrivate) {
+                    best.keys.drive.edPrivate = edPrivate;
+                }
+                if (!bestChat && chat) {
+                    best.keys.chat.edit = chat;
+                }
+
+                // Deprecate the duplicate
+                ctx.store.proxy.duplicateTeams = ctx.store.proxy.duplicateTeams || {};
+                ctx.store.proxy.duplicateTeams[id] = teams[id];
+                delete teams[id];
+            } catch (e) { console.error(e); }
+        });
+
+        // Load teams
         Object.keys(teams).forEach(function (id) {
             ctx.onReadyHandlers[id] = [];
             if (!Util.find(teams, [id, 'keys', 'mailbox'])) {
@@ -1682,16 +1782,6 @@ define([
 
         team.getTeam = function (id) {
             return ctx.teams[id];
-        };
-        var checkKeyPair = function (edPrivate, edPublic) {
-            if (!edPrivate || !edPublic) { return true; }
-            try {
-                var secretKey = Nacl.util.decodeBase64(edPrivate);
-                var pair = Nacl.sign.keyPair.fromSecretKey(secretKey);
-                return Nacl.util.encodeBase64(pair.publicKey) === edPublic;
-            } catch (e) {
-                return false;
-            }
         };
         team.getTeamsData = function (app) {
             var t = {};
