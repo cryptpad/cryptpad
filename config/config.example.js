@@ -104,13 +104,13 @@ module.exports = {
     /*
      *  CryptPad contains an administration panel. Its access is restricted to specific
      *  users using the following list.
-     *  To give access to the admin panel to a user account, just add their user id,
-     *  which can be found on the settings page for registered users.
+     *  To give access to the admin panel to a user account, just add their public signing
+     *  key, which can be found on the settings page for registered users.
      *  Entries should be strings separated by a comma.
      */
 /*
     adminKeys: [
-        //"https://my.awesome.website/user/#/1/cryptpad-user1/YZgXQxKR0Rcb6r6CmxHPdAGLVludrAF2lEnkbx1vVOo=",
+        //"[cryptpad-user1@my.awesome.website/YZgXQxKR0Rcb6r6CmxHPdAGLVludrAF2lEnkbx1vVOo=]",
     ],
 */
 
