@@ -4,13 +4,7 @@
 &.cp-page-index {
     .infopages_main();
 
-    @background_lighter: rgba(0,0,0,0.1);
-    @background_darker: rgba(0,0,0,0.4);
     #cp-main {
-        color: #FFF;
-        background: @colortheme_info-background;
-        background-size: cover;
-        background-position: center;
         min-height: 100vh;
         display: flex;
         flex-direction: column;
@@ -200,44 +194,26 @@
             }
         }
     }
-
-    .cp-index-block-help {
-        button {
-            outline: none;
-            background-color: @colortheme_logo-2;
-            color: @colortheme_base;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 44px;
-            cursor: pointer;
-            &:hover {
-                background-color: lighten(@colortheme_logo-2, 3%);
-            }
-        }
-    }
-
-    .cp-index-block {
-        min-height: 100%;
-        & > div {
-            background: rgba(0,0,0,0.5);
-            margin: 0 5px;
-            padding: 15px 10px;
-            height: 100%;
-            display: flex;
-            flex-flow: column;
-            justify-content: space-evenly;
-        }
-        .cp-img-container {
-            display: flex;
-        }
-        img, a.img {
-            margin: auto;
-            background: white;
-            &.agpl {
-                max-height: 50px;
-            }
-            &.ngi {
-                max-height: 100px;
+    // XX not applied
+    #cp-main {
+        .cp-container {
+            .row.cp-index-section {
+                margin: 50px 0px;
+                .small-logo {
+                    max-width: 40%;
+                }
+                button {
+                    outline: none;
+                    background-color: @colortheme_logo-2;
+                    color: @colortheme_base;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 0px;
+                    cursor: pointer;
+                    &:hover {
+                        background-color: lighten(@colortheme_logo-2, 3%);
+                    }
+                }
             }
         }
     }

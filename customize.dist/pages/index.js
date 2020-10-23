@@ -70,7 +70,7 @@ define([
         });
         UI.addTooltips();
 
-        /*
+        /* // XXX remove this commented code?
         var more = icons.length < 4? undefined: h('div.bs-callout.cp-callout-more', [
                 h('div.cp-callout-more-lessmsg.cp-hidden', [
                     "see less ",
@@ -109,38 +109,52 @@ define([
             Feedback.send('HOME_SUPPORT_CRYPTPAD');
         });
 
-        var blocks = h('div.container',[
-            h('div.row.justify-content-sm-center',[
-                h('div.col-12.col-sm-4.cp-index-block.cp-index-block-host', h('div', [
-                    Pages.setHTML(h('span'), Msg.home_host),
-                    h('div.cp-img-container', [
-                        h('img.agpl', {
-                            src: "/customize/images/AGPL.png",
-                            title: Msg.home_host_agpl
-                        }),
-                        h('a.img', {
-                            href: 'https://blog.cryptpad.fr/2018/11/13/CryptPad-receives-NGI-Startup-Award/',
-                            target: '_blank'
-                        }, h('img.ngi', {
-                            src: "/customize/images/ngi.png",
-                            title: Msg.home_ngi
-                        }))
-                    ])
-                ])),
-                h('div.col-12.col-sm-4.cp-index-block.cp-index-block-product', h('div', [
-                    Msg.home_product
-                ])),
-                AppConfig.disableCrowdfundingMessages ? undefined : h('div.col-12.col-sm-4.cp-index-block.cp-index-block-help', h('div', [
-                    Msg.crowdfunding_home1,
-                    h('br'),
-                    Msg.crowdfunding_home2,
-                    h('br'),
-                    crowdFunding,
-                    _link
-                ])),
+        Msg.home_privacy_title = "Private by design"; // XXX
+        Msg.home_privacy_text = "CryptPad is built to enable collaboration while keeping data private. All information including documents, chats, and files is encrypted and decrypted by your browser. This means nothing is readable outside of the session where you are logged in. Even the service administrators do not have access to your information."; // XXX
+        Msg.home_host_title = "About this instance"; // XXX
+        // XXX adjust Msg.home_host, remove link to Github
+        Msg.home_opensource_title = "Open Source"; // XXX
+        Msg.home_opensource = 'Anyone can host CryptPad and offer the service in a personal or professional capacity. The source code is available on <a href="https://github.com/xwiki-labs/cryptpad">Github</a>.'; // XXX
+        Msg.home_support_title = "Support CryptPad"; // XXX
+        Msg.home_support = "<p>CryptPad does not profit from user's data. This is part of a vision for online services that respect privacy. Instead of pretending to be \"free\" like the big platforms, CryptPad aims to build a sustainable model: funded willingly by users instead of making profits from personal information.</p><p>You can support the project by making a one-time or recurring donation through our Open Collective. Our budget is transparent and updates are published regularly. There are also a number of <a href=\"https://docs.cryptpad.fr/en/how_to_contribute.html\" rel=\"noopener noreferrer\" target=\"_blank\">non-financial ways to contribute</a>.</p>" // XXX
+
+        var blocks = [
+            h('div.row.cp-index-section', [
+                h('div.col-sm-6',
+                    h('img.img-fluid', {
+                        src:'/customize/images/shredder.png',
+                        alt:'illustration, a shredder destroys a sheet of paper and antoher one reconstructs it'
+                    })
+                ),
+                h('div.col-sm-6', [
+                    h('h2', Msg.home_privacy_title),
+                    h('p', Msg.home_privacy_text)
+                ])
+            ]),
+            h('div.row.cp-index-section',
+                h('div.col-sm-12', [
+                    h('h2', Msg.home_host_title),
+                    Pages.setHTML(h('p'), Msg.home_host) // XXX remove link and .setHTML from this key
+                ])
+            ),
+            h('div.row.cp-index-section', [
+                h('div.col-sm-6', [
+                    h('h2', Msg.home_opensource_title),
+                    Pages.setHTML(h('p'), Msg.home_opensource),
+                    h('img.small-logo', {
+                        src: '/customize/images/AGPLv3_Logo.svg',
+                        alt: 'APGL3 License Logo'
+                    })
+                ]),
+                h('div.col-sm-6', [
+                    h('h2', Msg.home_support_title),
+                    Pages.setHTML(h('span'), Msg.home_support),
+                    crowdFunding
+                ])
             ])
-        ]);
-        Msg.main_catch_phrase = "Collaboration suite,<br>encrypted and open-source"; // XXX
+        ]
+
+        Msg.main_catch_phrase = "Collaboration suite,<br>encrypted and open-source"; // XXX existing key
         return [
             h('div#cp-main', [
                 Pages.infopageTopbar(),
@@ -153,10 +167,12 @@ define([
                         ]),
                         h('div.col-md-5.cp-app-grid', [
                             icons,
+                            // XXX remove this commented code?
                             //more
                         ])
                     ]),
                     blocks,
+                    // XXX remove this commented code?
                     /*h('div.row', [
                         h('div.cp-crowdfunding', [
                             crowdFunding
