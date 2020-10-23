@@ -330,7 +330,7 @@
 
                 // else run `f` with the most recently supplied arguments
                 f.apply(null, args);
-            }, ms);
+            }, delay);
         };
 
         var g = function () {
