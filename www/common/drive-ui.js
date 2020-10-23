@@ -1957,8 +1957,8 @@ define([
             if (manager.isSharedFolder(element)) {
                 var data = manager.getSharedFolderData(element);
                 var fId = element;
-                key = data.title || data.lastTitle;
-                element = manager.folders[element].proxy[manager.user.userObject.ROOT];
+                key = data.title || data.lastTitle || Messages.fm_deletedFolder;
+                element = Util.find(manager, ['folders', element, 'proxy', manager.user.userObject.ROOT]) || {};
                 $span.addClass('cp-app-drive-element-sharedf');
                 _addOwnership($span, $state, data);
 
@@ -2093,6 +2093,10 @@ define([
             $element.prepend($icon).dblclick(function () {
                 if (restricted) {
                     UI.warn(Messages.fm_restricted);
+                    return;
+                }
+                if (isSharedFolder && !manager.folders[element]) {
+                    UI.warn(Messages.fm_deletedFolder);
                     return;
                 }
                 if (isFolder) {
@@ -2516,6 +2520,7 @@ define([
                 if (type === 'contacts') { return; }
                 if (type === 'todo') { return; }
                 if (type === 'file') { return; }
+                if (type === 'accounts') { return; }
                 if (!APP.loggedIn && AppConfig.registeredOnlyTypes &&
                     AppConfig.registeredOnlyTypes.indexOf(type) !== -1) {
                     return;
@@ -3808,6 +3813,10 @@ define([
             }
             var $elementRow = $('<span>', {'class': 'cp-app-drive-element-row'}).append($collapse).append($icon).append($name).click(function (e) {
                 e.stopPropagation();
+                if (isSharedFolder && !manager.folders[isSharedFolder]) {
+                    UI.warn(Messages.fm_deletedFolder);
+                    return;
+                }
                 if (files.restrictedFolders[isSharedFolder]) {
                     UI.warn(Messages.fm_restricted);
                     return;
@@ -3907,10 +3916,10 @@ define([
                     newPath.push(manager.user.userObject.ROOT);
                     isCurrentFolder = manager.comparePath(newPath, currentPath);
                     // Subfolders?
-                    var newRoot = manager.folders[sfId].proxy[manager.user.userObject.ROOT];
+                    var newRoot = Util.find(manager, ['folders', sfId, 'proxy', manager.user.userObject.ROOT]) || {};
                     subfolder = manager.hasSubfolder(newRoot);
                     // Fix name
-                    key = manager.getSharedFolderData(sfId).title;
+                    key = manager.getSharedFolderData(sfId).title || Messages.fm_deletedFolder;
                     // Fix icon
                     $icon = isCurrentFolder ? $sharedFolderOpenedIcon : $sharedFolderIcon;
                     isSharedFolder = sfId;
@@ -3935,6 +3944,7 @@ define([
                 if (sfId && !editable) {
                     $element.attr('data-ro', true);
                 }
+                if (!subfolder) { return; }
                 createTree($element, newPath);
             });
         };
@@ -4364,8 +4374,11 @@ define([
                     else {
                         var convertContent = h('div', [
                             h('p', Messages.convertFolderToSF_confirm),
-                            h('label', {for: 'cp-upload-password'}, Messages.creation_passwordValue),
-                            UI.passwordInput({id: 'cp-upload-password'}),
+                            h('label', {for: 'cp-upload-password'}, Messages.fm_shareFolderPassword),
+                            UI.passwordInput({
+                                id: 'cp-upload-password',
+                                placeholder: Messages.creation_passwordValue
+                            }),
                             h('span', {
                                 style: 'display:flex;align-items:center;justify-content:space-between'
                             }, [

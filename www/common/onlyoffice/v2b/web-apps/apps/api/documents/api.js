@@ -756,6 +756,10 @@
             }
         }
 
+        if (window.APP && window.APP.urlArgs) {
+            params += "&"+ window.APP.urlArgs;
+        }
+
         if (config.frameEditorId)
             params += "&frameEditorId=" + config.frameEditorId;
         

@@ -26,7 +26,6 @@ define([
             curvePublic: user.curvePublic,
             edPublic: privateData.edPublic,
             notifications: user.notifications,
-            blockLocation: privateData.blockLocation || '',
         };
 
         if (typeof(ctx.pinUsage) === 'object') {
@@ -39,8 +38,19 @@ define([
         data.id = id;
         data.time = +new Date();
 
+        var teams = privateData.teams || {};
         if (!ctx.isAdmin) {
             data.sender.userAgent = window.navigator && window.navigator.userAgent;
+            data.sender.blockLocation = privateData.blockLocation || '';
+            data.sender.teams = Object.keys(teams).map(function (key) {
+                var team = teams[key];
+                if (!teams) { return; }
+                var ret = {};
+                ['edPublic', 'owner', 'viewer', 'hasSecondaryKey', 'validKeys'].forEach(function (k) {
+                    ret[k] = team[k];
+                });
+                return ret;
+            }).filter(Boolean);
         }
 
         // Send the message to the admin mailbox and to the user mailbox

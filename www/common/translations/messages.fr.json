@@ -1456,5 +1456,8 @@
     "admin_registrationHint": "Ne pas autoriser l'enregistrement de nouveaux utilisateurs",
     "snapshots_cantMake": "La capture n'a pas pu être effectuée. Vous êtes déconnecté.",
     "snapshots_notFound": "Cette capture n'existe plus car l'historique du document a été supprimé.",
-    "admin_limitUser": "Clé publique de l'utilisateur"
+    "admin_limitUser": "Clé publique de l'utilisateur",
+    "fm_shareFolderPassword": "Protéger ce dossier avec un mot de passe (optionnel)",
+    "access_destroyPad": "Détruire ce document ou dossier définitivement",
+    "fm_deletedFolder": "Dossier supprimé"
 }

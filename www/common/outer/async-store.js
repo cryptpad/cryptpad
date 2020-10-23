@@ -256,7 +256,7 @@ define([
 
         Store.getPinnedUsage = function (clientId, data, cb) {
             var s = getStore(data && data.teamId);
-            if (!s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+            if (!s || !s.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
             s.rpc.getFileListSize(function (err, bytes) {
                 if (!s.id && typeof(bytes) === 'number') {

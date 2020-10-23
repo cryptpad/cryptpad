@@ -8,9 +8,6 @@ require(['/api/config'], function(ApiConfig) {
         }
         if (resource[resource.length - 1] !== '/' && resource.indexOf('ver=') === -1) {
             var args = ApiConfig.requireConf.urlArgs;
-            if (resource.indexOf('/bower_components/') !== -1) {
-                args = 'ver=' + window.CKEDITOR.timestamp;
-            }
             resource += (resource.indexOf('?') >= 0 ? '&' : '?') + args;
         }
         return resource;
@@ -193,7 +190,6 @@ define([
         var intr;
         var check = function() {
             if (window.CKEDITOR) {
-                window.CKEDITOR.timestamp = 123456; // XXX cache-busting string for CkEditor
                 clearTimeout(intr);
                 cb(window.CKEDITOR);
             }

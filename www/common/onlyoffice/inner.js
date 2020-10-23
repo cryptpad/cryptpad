@@ -53,7 +53,8 @@ define([
     var Nacl = window.nacl;
 
     var APP = window.APP = {
-        $: $
+        $: $,
+        urlArgs: Util.find(ApiConfig, ['requireConf', 'urlArgs'])
     };
 
     var CHECKPOINT_INTERVAL = 100;

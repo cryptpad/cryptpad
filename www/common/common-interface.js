@@ -736,14 +736,20 @@ define([
 
 
     UI.proposal = function (content, cb) {
+        var clicked = false;
         var buttons = [{
             name: Messages.friendRequest_later,
-            onClick: function () {},
+            onClick: function () {
+                if (clicked) { return; }
+                clicked = true;
+            },
             keys: [27]
         }, {
             className: 'primary',
             name: Messages.friendRequest_accept,
             onClick: function () {
+                if (clicked) { return; }
+                clicked = true;
                 cb(true);
             },
             keys: [13]
@@ -751,6 +757,8 @@ define([
             className: 'primary',
             name: Messages.friendRequest_decline,
             onClick: function () {
+                if (clicked) { return; }
+                clicked = true;
                 cb(false);
             },
             keys: [[13, 'ctrl']]
