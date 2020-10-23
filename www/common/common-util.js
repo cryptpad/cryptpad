@@ -311,7 +311,6 @@
         var args;
 
         var defer = function (delay) {
-            console.log("setTimeout(stuff, %s)", delay);
             // no timeout: run function `f` in `ms` milliseconds
             // unless `g` is called again in the meantime
             to = setTimeout(function () {
