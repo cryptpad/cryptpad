@@ -112,7 +112,7 @@ define([
         Msg.home_privacy_title = "Private by design"; // XXX
         Msg.home_privacy_text = "CryptPad is built to enable collaboration while keeping data private. All information including documents, chats, and files is encrypted and decrypted by your browser. This means nothing is readable outside of the session where you are logged in. Even the service administrators do not have access to your information."; // XXX
         Msg.home_host_title = "About this instance"; // XXX
-        // XXX adjust Msg.home_host, remove link to Github
+        Msg.home_host = "This is an independent community instance of CryptPad." // XXX existing key
         Msg.home_opensource_title = "Open Source"; // XXX
         Msg.home_opensource = 'Anyone can host CryptPad and offer the service in a personal or professional capacity. The source code is available on <a href="https://github.com/xwiki-labs/cryptpad">Github</a>.'; // XXX
         Msg.home_support_title = "Support CryptPad"; // XXX
@@ -134,7 +134,7 @@ define([
             h('div.row.cp-index-section',
                 h('div.col-sm-12', [
                     h('h2', Msg.home_host_title),
-                    Pages.setHTML(h('p'), Msg.home_host) // XXX remove link and .setHTML from this key
+                    h('p'), Msg.home_host
                 ])
             ),
             h('div.row.cp-index-section', [
