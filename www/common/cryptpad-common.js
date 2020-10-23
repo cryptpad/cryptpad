@@ -68,6 +68,38 @@ define([
         }, cb);
     };
 
+    common.getAccessKeys = function (cb) {
+        var keys = [];
+        Nthen(function (waitFor) {
+            // Push account keys
+            postMessage("GET", {
+                key: ['edPrivate'],
+            }, waitFor(function (obj) {
+                if (obj.error) { return; }
+                try {
+                    keys.push({
+                        edPrivate: obj,
+                        edPublic: Hash.getSignPublicFromPrivate(obj)
+                    });
+                } catch (e) { console.error(e); }
+            }));
+            // Push teams keys
+            postMessage("GET", {
+                key: ['teams'],
+            }, waitFor(function (obj) {
+                if (obj.error) { return; }
+                Object.keys(obj || {}).forEach(function (id) {
+                    var t = obj[id];
+                    var _keys = t.keys.drive || {};
+                    if (!_keys.edPrivate) { return; }
+                    keys.push(t.keys.drive);
+                });
+            }));
+        }).nThen(function () {
+            cb(keys);
+        });
+    };
+
     common.makeNetwork = function (cb) {
         require([
             '/bower_components/netflux-websocket/netflux-client.js',
@@ -629,6 +661,10 @@ define([
                     optsPut.password = password;
                 }));
             }
+            common.getAccessKeys(waitFor(function (keys) {
+                optsGet.accessKeys = keys;
+                optsPut.accessKeys = keys;
+            }));
         }).nThen(function () {
             Crypt.get(parsed.hash, function (err, val) {
                 if (err) {
@@ -667,19 +703,28 @@ define([
                     password: data.password,
                     initialState: parsed.type === 'poll' ? '{}' : undefined
                 };
-                Crypt.get(parsed.hash, _waitFor(function (err, _val) {
-                    if (err) {
-                        _waitFor.abort();
-                        return void cb(err);
-                    }
-                    try {
-                        val = JSON.parse(_val);
-                        fixPadMetadata(val, true);
-                    } catch (e) {
-                        _waitFor.abort();
-                        return void cb(e.message);
-                    }
-                }), optsGet);
+                var next = _waitFor();
+                Nthen(function (waitFor) {
+                    // Authenticate in case the pad os restricted
+                    common.getAccessKeys(waitFor(function (keys) {
+                        optsGet.accessKeys = keys;
+                    }));
+                }).nThen(function () {
+                    Crypt.get(parsed.hash, function (err, _val) {
+                        if (err) {
+                            _waitFor.abort();
+                            return void cb(err);
+                        }
+                        try {
+                            val = JSON.parse(_val);
+                            fixPadMetadata(val, true);
+                            next();
+                        } catch (e) {
+                            _waitFor.abort();
+                            return void cb(e.message);
+                        }
+                    }, optsGet);
+                });
                 return;
             }
 
@@ -742,9 +787,6 @@ define([
         }).nThen(function () {
             Crypt.put(parsed2.hash, JSON.stringify(val), function () {
                 cb();
-                Crypt.get(parsed2.hash, function (err, val) {
-                    console.warn(val);
-                });
             }, optsPut);
         });
 
@@ -1007,7 +1049,7 @@ define([
             oldSecret = Hash.getSecrets(parsed.type, parsed.hash, optsGet.password);
             oldChannel = oldSecret.channel;
             common.getPadMetadata({channel: oldChannel}, waitFor(function (metadata) {
-                oldMetadata = metadata;
+                oldMetadata = metadata || {};
             }));
             common.getMetadata(waitFor(function (err, data) {
                 if (err) {
@@ -1060,6 +1102,11 @@ define([
                 optsPut.metadata.expire = (expire - (+new Date())) / 1000; // Lifetime in seconds
             }
         }).nThen(function (waitFor) {
+            common.getAccessKeys(waitFor(function (keys) {
+                optsGet.accessKeys = keys;
+                optsPut.accessKeys = keys;
+             }));
+        }).nThen(function (waitFor) {
             Crypt.get(parsed.hash, waitFor(function (err, val) {
                 if (err) {
                     waitFor.abort();
@@ -1075,6 +1122,8 @@ define([
                 }
             }), optsGet);
         }).nThen(function (waitFor) {
+            optsPut.metadata.restricted = oldMetadata.restricted;
+            optsPut.metadata.allowed = oldMetadata.allowed;
             Crypt.put(newHash, cryptgetVal, waitFor(function (err) {
                 if (err) {
                     waitFor.abort();
@@ -1310,11 +1359,17 @@ define([
                 validateKey: newSecret.keys.validateKey
             },
         };
+        var optsGet = {};
 
         Nthen(function (waitFor) {
             common.getPadAttribute('', waitFor(function (err, _data) {
                 padData = _data;
+                optsGet.password = padData.password;
             }), href);
+            common.getAccessKeys(waitFor(function (keys) {
+                optsGet.accessKeys = keys;
+                optsPut.accessKeys = keys;
+            }));
         }).nThen(function (waitFor) {
             oldSecret = Hash.getSecrets(parsed.type, parsed.hash, padData.password);
 
@@ -1393,9 +1448,7 @@ define([
                     waitFor.abort();
                     return void cb({ error: 'CANT_PARSE' });
                 }
-            }), {
-                password: padData.password
-            });
+            }), optsGet);
         }).nThen(function (waitFor) {
             // Re-encrypt rtchannel
             oldRtChannel = Util.find(cryptgetVal, ['content', 'channel']);
