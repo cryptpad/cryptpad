@@ -159,7 +159,7 @@ define([
             h('div#cp-main', [
                 Pages.infopageTopbar(),
                 h('div.container.cp-container', [
-                    h('div.row', [
+                    h('div.row.cp-home-hero', [
                         h('div.cp-title.col-md-7', [
                             h('img', { src: '/customize/CryptPad_logo.svg?' + urlArgs }),
                             h('h1', 'CryptPad'),
