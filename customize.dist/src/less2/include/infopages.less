@@ -80,40 +80,48 @@ body {
         }
     }
     footer {
-        background-color: @cryptpad_color_blue;
+        @footer-color: #d9d9d9; // XXX move this
+
+        background-color: @footer-color;
+        padding-top: 20px;
         .container {
-            .col {
-                margin-top: 1em;
-            }
-        a {
-            color: #fff;
-            &:visited {
-                color: darken(#fff, 5%);
-            };
-        }
-        margin-bottom: 1em;
-        ul.list-unstyled {
-                margin-top: 1em;
-                text-align: center;
+            margin-bottom: 20px;
+            a {
+                color: @colortheme_logo-2;
+                &:visited {
+                    color: @colortheme_logo-2;
+                };
             }
         }
-        .cp-bio-foot {
-            background-image: url(/customize/CryptPad-white-logo.svg);
-            background-size: 100%;
-            background-repeat: no-repeat;
-            p {
-                color: #fff;
-                padding-top: 30%;
-                margin-bottom: 0;
+        .cp-logo-foot {
+            display: flex;
+            flex-flow: column;
+            width: 100%;
+            align-items: center;
+            img {
+                max-width: 60px;
+                display: block;
+            }
+            .logo-font {
+                display: block;
+                font-family: "IBM Plex Mono";
+                font-size: 1.5rem;
+                color: @colortheme_logo-2;
+                margin-bottom: 10px;
             }
 
         }
         .cp-version-footer {
-            background-color: @cryptpad_color_blue;
-            color: #fff;
-            text-align: center;
+            background-color: @footer-color;
+            display: flex;
+            flex-flow: column;
+            align-items: center;
             padding: 0.5em;
-            border-top: 2px solid #fff;
+            border-top: 1px solid #fff;
+            select {
+                min-width: 0;
+                margin-bottom: 10px;
+            }
         }
     }
 
@@ -218,14 +226,6 @@ body {
             margin-right: 13px;
             text-align: center;
         }
-    }
-
-    //footer general styles
-
-    .footer-title {
-        font-weight: bold;
-        font-size: 1.2em;
-        color: #1E1F1F;
     }
 }
 

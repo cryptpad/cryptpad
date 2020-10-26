@@ -64,34 +64,43 @@ define([
 
     Pages.versionString = "CryptPad v3.23.1 (XerusDaamsi's revenge)";
 
+    Msg.docs_link = "Documentation"; // XXX breaks the about menu
+    // XXX Remove FAQ from translations and remove FAQ page
+    // XXX Add FAQ to docs
+    Msg.footer_team = "Contributors" // XXX existing key
+    Msg.footer_tos = "Terms of Service" // XXX existing key
+
     // used for the about menu
     Pages.imprintLink = AppConfig.imprint ? footLink(imprintUrl, 'imprint') : undefined;
     Pages.privacyLink = footLink(AppConfig.privacy, 'privacy');
     Pages.githubLink = footLink('https://github.com/xwiki-labs/cryptpad', null, 'GitHub');
-    Pages.faqLink = footLink('/faq.html', 'faq_link');
+    Pages.docsLink = footLink('https://docs.cryptpad.fr', 'docs_link');
 
     Pages.infopageFooter = function () {
         return h('footer', [
             h('div.container', [
                 h('div.row', [
-                    footerCol(null, [
-                        h('div.cp-bio-foot', [
-                            h('p', Msg.main_footerText),
-                            languageSelector()
+                    // XXX remove this footerCol and just make a h('div.col-6.col-sm-3',...
+                    h('div.col-6.col-sm-3', [
+                        h('div.cp-logo-foot', [
+                            h('img', {
+                                src: '/customize/CryptPad_logo.svg',
+                                "aria-hidden": true
+                            }),
+                            h('span.logo-font', 'CryptPad')
                         ])
                     ], ''),
                     footerCol('footer_product', [
                         footLink('/what-is-cryptpad.html', 'topbar_whatIsCryptpad'),
-                        Pages.faqLink,
+                        Pages.docsLink,
+                        footLink('/features.html', 'features'),
                         Pages.githubLink,
                         footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate'),
                     ]),
                     footerCol('footer_aboutUs', [
-                        /*footLink('https://blog.cryptpad.fr', 'blog'), */
-                        footLink('http://www.xwiki.com', null, 'XWiki SAS'),
-                        footLink('https://www.open-paas.org', null, 'OpenPaaS'),
-                        footLink('/about.html', 'footer_team'),
                         footLink('/contact.html', 'contact'),
+                        footLink('https://github.com/xwiki-labs/cryptpad/wiki/Contributors', 'footer_team'),
+                        footLink('http://www.xwiki.com', null, 'XWiki SAS'),
                     ]),
                     footerCol('footer_legal', [
                         footLink('/terms.html', 'footer_tos'),
@@ -100,7 +109,10 @@ define([
                     ]),
                 ])
             ]),
-            h('div.cp-version-footer', Pages.versionString)
+            h('div.cp-version-footer', [
+                languageSelector(),
+                h('span', Pages.versionString)
+            ])
         ]);
     };
 
