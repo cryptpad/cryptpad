@@ -42,6 +42,7 @@ define([
     'cm/addon/fold/comment-fold',
     'cm/addon/display/placeholder',
 
+    'css!/customize/src/print.css',
     'less!/code/app-code.less'
 
 ], function (

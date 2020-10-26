@@ -47,6 +47,7 @@ define([
 
     '/bower_components/diff-dom/diffDOM.js',
 
+    'css!/customize/src/print.css',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/pad/app-pad.less'
@@ -500,6 +501,12 @@ define([
     var mkPrintButton = function (framework, editor) {
         var $printButton = framework._.sfCommon.createButton('print', true);
         $printButton.click(function () {
+            /*
+            // NOTE: alternative print system in case we keep having more issues on Firefox
+            var $iframe = $('html').find('iframe');
+            var iframe = $iframe[0].contentWindow;
+            iframe.print();
+            */
             editor.execCommand('print');
             framework.feedback('PRINT_PAD');
         });
