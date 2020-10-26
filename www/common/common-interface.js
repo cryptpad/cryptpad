@@ -280,8 +280,82 @@ define([
         };
 
         var $root = $t.parent();
+
+        Messages.add = "Add"; // XXX
+        Messages.edit = "Edit"; // XXX
+        var $input = $root.find('.token-input');
+        var $button = $(h('button.btn.btn-primary', [
+            h('i.fa.fa-plus'),
+            h('span', Messages.add)
+        ]));
+
+
+        $button.click(function () {
+            $t.tokenfield('createToken', $input.val());
+        });
+
+        var $container = $(h('span.cp-tokenfield-container'));
+        var $form = $(h('span.cp-tokenfield-form'));
+        $container.insertAfter($input);
+
+        // Fix the UI to keep the "add" or "edit" button at the correct location
+        var isEdit = false;
+        var called = false;
+        var resetUI = function () {
+            called = true;
+            setTimeout(function () {
+                $container.find('.tokenfield-empty').remove();
+                var $tokens = $root.find('.token').prependTo($container);
+                if (!$tokens.length) {
+                    $container.prepend(h('span.tokenfield-empty', Messages.kanban_noTags));
+                }
+                $form.append($input);
+                $form.append($button);
+                if (isEdit) { $button.find('span').text(Messages.edit); }
+                else { $button.find('span').text(Messages.add); }
+                $container.append($form);
+                $input.focus();
+                isEdit = false;
+                called = false;
+            });
+        };
+        resetUI();
+
+        $t.on('tokenfield:removedtoken', function () {
+            resetUI();
+        });
+        $t.on('tokenfield:editedtoken', function () {
+            resetUI();
+        });
+        $t.on('tokenfield:createdtoken', function () {
+            $input.val('');
+            resetUI();
+        });
+        $t.on('tokenfield:edittoken', function () {
+            isEdit = true;
+        });
+
+        // Fix UI issue where the input could go outside of the container
+        var MutationObserver = window.MutationObserver;
+        var observer = new MutationObserver(function(mutations) {
+            if (called) { return; }
+            mutations.forEach(function(mutation) {
+                for (var i = 0; i < mutation.addedNodes.length; i++) {
+                    if (mutation.addedNodes[i].classList &&
+                        mutation.addedNodes[i].classList.contains('token-input')) {
+                        resetUI();
+                        break;
+                    }
+                }
+            });
+        });
+        observer.observe($root[0], {
+            childList: true,
+            subtree: false
+        });
+
         $t.on('tokenfield:removetoken', function () {
-            $root.find('.token-input').focus();
+            $input.focus();
         });
 
         t.preventDuplicates = function (cb) {
