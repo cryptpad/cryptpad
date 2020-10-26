@@ -155,8 +155,8 @@ define([
             button,
             h('div.collapse.navbar-collapse.justify-content-end#menuCollapse', [
                 h('a.nav-item.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.blog),
-                h('a.nav-item.nav-link', { href: '/features.html'}, Msg.pricing),
-                h('a.nav-item.nav-link', { href: '/privacy.html'}, Msg.privacy),
+                h('a.nav-item.nav-link', { href: '/features.html'}, Msg.features),
+                h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.about),
             ].concat(rightLinks))
         );
     };
