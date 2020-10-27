@@ -4549,6 +4549,9 @@ define([
                     var rEl = manager.find(restorePath);
                     if (manager.isFile(rEl)) {
                         restoreName = manager.getTitle(rEl);
+                    } else if (manager.isSharedFolder(rEl)) {
+                        var sfData = manager.getSharedFolderData(rEl);
+                        restoreName = sfData.title || sfData.lastTitle || Messages.fm_deletedFolder;
                     } else {
                         restoreName = restorePath[1];
                     }
