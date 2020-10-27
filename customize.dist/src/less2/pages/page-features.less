@@ -4,21 +4,6 @@
 &.cp-page-features {
     .infopages_main();
 
-    #cp-main {
-        background-color: #fff;
-    }
-    .cp_cont_features {
-        padding-top: 3em;
-        padding-bottom: 3em;
-        background-image: url('/customize/images/cover-features.jpg');
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-        h1 {
-            font-weight: 700;
-            color: #fff;
-        }
-    }
     .cp-features-register {
         text-align: center;
         padding: 20px;
@@ -26,31 +11,33 @@
     .cp-features-register-button {
         font-size: 20px;
         color: #fff;
-        background: @cryptpad_color_blue;
-        border: 2px solid @cryptpad_color_blue;
+        background: @colortheme_logo-2;
         border-radius: 0;
         &:hover {
-            transform: scale(1.05);
             cursor: pointer;
         }
-        padding: 0.5em 1em;
     }
     .cp-features-web {
         .card {
-            box-shadow: 0 5px 15px rgba(69, 145, 196, 0.3);
+            .cp-shadow();
             border: none;
-            .card-body {
+            .title-card {
+                background-color: @colortheme_logo-2;
+                padding: 20px;
+            }
+            .card-body, .title-card {
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 flex-flow: column;
+                padding: 12px;
                 h3 {
                     margin: 0;
                 }
                 &.cp-pricing {
                     div {
                         font-size: 1.2em;
-                        color: @cryptpad_color_blue;
+                        color: @colortheme_logo-2;
                         &:first-child {
                             font-weight: bold;
                         }
@@ -80,7 +67,7 @@
                         content: "\f00c";
                         font-family: "FontAwesome";
                         font-size: 14px;
-                        color: @cryptpad_color_blue;
+                        color: @colortheme_logo-2;
                     }
                 }
                 &.cp-content {
@@ -96,34 +83,21 @@
         div.cp-note {
             font-size: 0.8em;
         }
-        a.voted {
-            opacity: 0.6;
-            margin-left: 15px;
-            &:hover {
-                opacity: 1;
-            }
-        }
         .list-group-item {
-            border-color: rgba(69, 145, 196, 0.125);
-        }
-    }
-    .cp-anon-user {
-        .card-body {
-            &:first-of-type {
-                background-color: @cryptpad_color_blue;
+            border-bottom: 1px solid rgba(0,0,0,0.125);
+            &:first-child {
+                border-top:  1px solid rgba(0,0,0,0.125);
+            }
+            &:last-child {
+                border-bottom-right-radius: 0px;
+                border-bottom-left-radius: 0px;
             }
         }
     }
+
     .cp-regis-user {
         @media (max-width:575px) {
             margin-top: 3em;
-        }
-        .card-body {
-            &:first-of-type {
-                background: #4591C4;
-                background: -webkit-linear-gradient(to right, #FF7C4F, #4592C4); // lesshint duplicateProperty: false
-                background: linear-gradient(to right, #FF7C4F, #4592C4); // lesshint duplicateProperty: false
-            }
         }
     }
 }

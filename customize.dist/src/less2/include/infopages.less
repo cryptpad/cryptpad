@@ -10,6 +10,9 @@
         transform: scale(1.05);
     }
 }
+.cp-shadow() {
+    box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, 0.34);
+}
 
 .infopages_main () {
     --LessLoader_require: LessLoader_currentFile();
@@ -70,7 +73,7 @@ body {
             margin: 50px 0px;
         }
         img.cp-shadow {
-            box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, 0.34);
+            .cp-shadow();
         }
 
         button {
