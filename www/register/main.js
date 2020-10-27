@@ -99,8 +99,13 @@ define([
                 return void UI.alert(Messages.register_mustAcceptTerms);
             }
 
+            // XXX
+            Messages.register_warning = "<i class='fa fa-warning'></i> Warning"; // existing key
+            Messages.register_warning_note = "Due to the encrypted nature of CrytpPad even the the service administrators will not be able to recover data in case the username and/or password are forgotten. Please save them in a safe place.";
+            Messages.register_cancel = "Cancel"; // XXX existing key
+
             setTimeout(function () {
-            UI.confirm("<h2 class='bright msg'>" + Messages.register_warning + "</h2>",
+            UI.confirm("<h2 class='msg'>" + Messages.register_warning + "</h2>" + Messages.register_warning_note,
             function (yes) {
                 if (!yes) { return; }
 
@@ -118,8 +123,8 @@ define([
 /*  If we're certain that we aren't using these "*Class" APIs
     anywhere else then we can deprecate them and make this a
     custom modal in common-interface (or here).  */
-                cancelClass: 'btn.btn-safe',
-                okClass: 'btn.btn-danger',
+                cancelClass: 'btn.cancel',
+                okClass: 'btn.btn-danger.btn-register-confirm',
                 reverseOrder: true,
                 done: function ($dialog) {
                     $dialog.find('> div').addClass('half');

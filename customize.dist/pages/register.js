@@ -1,26 +1,32 @@
 define([
+    '/api/config',
     'jquery',
     '/common/hyperscript.js',
     '/common/common-interface.js',
     '/customize/messages.js',
     '/customize/pages.js'
-], function ($, h, UI, Msg, Pages) {
+], function (Config, $, h, UI, Msg, Pages) {
     return function () {
+        var urlArgs = Config.requireConf.urlArgs;
+
+        // XXX
+        Msg.register_header = "Register"; // existing key
+        Msg.register_notes_title = "Important notes";
+        Msg.register_notes = '<ul class="cp-notes-list"><li>Your password is your secret key which encrypts all of your pads. <span class="red">If you lose it there is no way we can recover your data.</span></li><li>If you are using a shared computer, <span class="red">remember to log out</span> when you are done. Only closing the browser window leaves your documents exposed. </li><li>To keep the documents you created and/or stored without being logged in, tick "Import documents from your anonymous session". </li></ul>';
+        Msg.register_importRecent = "Import documents from your anonymous session" // existing key
+        // XXX remove Msg.register_explanation
+
         return [h('div#cp-main', [
             Pages.infopageTopbar(),
-            h('div.container-fluid.cp-register-wel',[
-                h('div.container',[
-                    h('div.row',[
-                        h('div.col-12',[
-                            h('h1.text-center', Msg.register_header)
-                        ])
-                    ])
-                ])
-            ]),
             h('div.container.cp-container', [
+                h('div.row.cp-page-title', h('h1', Msg.register_header)),
                 h('div.row.cp-register-det', [
                 h('div#data.hidden.col-md-6', [
-                    Pages.setHTML(h('p.register-explanation'), Msg.register_explanation)
+                    h('img.img-fluid', {
+                        src: '/customize/images/illustration-swallow-the-key.png?' + urlArgs
+                    }),
+                    h('h2', Msg.register_notes_title),
+                    Pages.setHTML(h('div.cp-register-notes'), Msg.register_notes)
                 ]),
                 h('div#userForm.form-group.hidden.col-md-6', [
                     h('a', {
@@ -49,16 +55,9 @@ define([
                     h('div.checkbox-container', [
                         $(UI.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0]
                     ]),
-                    h('button#register.btn.cp-login-register', Msg.login_register)
+                    h('button#register', Msg.login_register)
                 ])
                 ]),
-                h('div.row.cp-register-test',[
-                    h('hr'),
-                    h('div.col-12', [
-                        Pages.setHTML(h('p.test-details'), " \"Tools like Etherpad and Google Docs [...] all share a weakness, which is that whomever owns the document server can see everything you're typing. Cryptpad is a free/open project that uses some of the ideas behind blockchain to implement a \"zero-knowledge\" version of a collaborative document editor, ensuring that only the people working on a document can see it.\" "),
-                        h('a.cp-test-source.pull-right', { href : 'http://boingboing.net/2016/09/26/cryptpad-a-freeopen-end-to.html'}, "Cory Doctorow")
-                    ])
-                ])
             ]),
 
             Pages.infopageFooter(),
