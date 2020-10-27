@@ -44,8 +44,8 @@ body {
             margin-bottom: 0.5em;
         }
         h2 {
-            font-size: 2em;
-            margin-top: 1em;
+            font-size: 1.8em;
+            margin-top: 0px;
             margin-bottom: 0.5em;
         }
         h3 {
@@ -59,6 +59,33 @@ body {
             }
             max-width: 100%;
         }
+        .cp-page-title {
+            h1 {
+                font-family: "IBM Plex Mono";
+                color: @colortheme_logo-2;
+                margin: 50px auto;
+            }
+        }
+        .row.cp-page-section {
+            margin: 50px 0px;
+        }
+        img.cp-shadow {
+            box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, 0.34);
+        }
+
+        button {
+            outline: none;
+            background-color: @colortheme_logo-2;
+            color: @colortheme_base;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 0px;
+            cursor: pointer;
+            &:hover {
+                background-color: lighten(@colortheme_logo-2, 3%);
+            }
+        }
+
         .form-group {
             & > * {
                 margin-top: 0.5em;

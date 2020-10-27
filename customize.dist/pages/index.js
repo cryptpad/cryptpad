@@ -94,6 +94,7 @@ define([
                 }
             ]);*/
 
+        // XXX move this button to pages.js to make it available to other pages
         var _link = h('a', {
             href: "https://opencollective.com/cryptpad/",
             target: '_blank',
@@ -142,7 +143,7 @@ define([
                     h('h2', Msg.home_opensource_title),
                     Pages.setHTML(h('p'), Msg.home_opensource),
                     h('img.small-logo', {
-                        src: '/customize/images/AGPLv3_Logo.svg',
+                        src: '/customize/images/logo_AGPLv3.svg',
                         alt: 'APGL3 License Logo'
                     })
                 ]),

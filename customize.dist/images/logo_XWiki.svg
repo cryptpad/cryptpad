@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 200 200"
+   version="1.1"
+   id="svg1039"
+   sodipodi:docname="logo_XWiki.svg"
+   width="200"
+   height="200"
+   inkscape:version="1.0.1 (1.0.1+r73)">
+  <metadata
+     id="metadata1043">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Logo_XWiki</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1900"
+     inkscape:window-height="1036"
+     id="namedview1041"
+     showgrid="false"
+     inkscape:zoom="0.91088486"
+     inkscape:cx="167.36695"
+     inkscape:cy="130.64123"
+     inkscape:window-x="10"
+     inkscape:window-y="10"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg1039" />
+  <defs
+     id="defs1015">
+    <style
+       id="style1013">.cls-1{fill:#f78d1e;}.cls-2{fill:#008fd4;}.cls-3{fill:#ed1c24;}.cls-4{fill:#8cc63f;}.cls-5{fill:#626366;}</style>
+  </defs>
+  <title
+     id="title1017">Logo_XWiki</title>
+  <g
+     id="Layer_2"
+     data-name="Layer 2"
+     transform="translate(4.045,3.625)">
+    <g
+       id="Layer_1-2"
+       data-name="Layer 1">
+      <path
+         class="cls-2"
+         d="m 36.1,103.1 a 6.75,6.75 0 0 0 6.74,-6.75 v 0 A 6.75,6.75 0 0 0 36.1,89.6 H 6.75 A 6.75,6.75 0 0 0 0,96.35 v 0 a 6.75,6.75 0 0 0 6.75,6.75 z"
+         id="path1027" />
+      <path
+         class="cls-3"
+         d="m 89.6,156.61 a 6.75,6.75 0 0 1 6.75,-6.75 v 0 a 6.75,6.75 0 0 1 6.75,6.75 V 186 a 6.75,6.75 0 0 1 -6.75,6.75 v 0 A 6.75,6.75 0 0 1 89.6,186 Z"
+         id="path1029" />
+      <path
+         class="cls-4"
+         d="M 89.6,6.74 A 6.75,6.75 0 0 1 96.35,0 v 0 a 6.75,6.75 0 0 1 6.75,6.74 v 29.35 a 6.75,6.75 0 0 1 -6.75,6.75 v 0 A 6.75,6.75 0 0 1 89.6,36.09 Z"
+         id="path1031" />
+      <path
+         class="cls-5"
+         d="M 112.36,96 169.08,30.09 A 12.044,12.044 0 1 0 150.82,14.38 L 96.47,77.5 42.12,14.34 A 12.044,12.044 0 1 0 23.86,30.05 L 80.58,96 23.86,161.87 a 12.047261,12.047261 0 1 0 18.26,15.72 l 54.35,-63.16 54.35,63.16 a 12.047261,12.047261 0 0 0 18.26,-15.72 z"
+         id="path1033" />
+      <path
+         class="cls-1"
+         d="m 185.17,103.25 a 6.75,6.75 0 0 0 6.74,-6.75 v 0 a 6.75,6.75 0 0 0 -6.74,-6.75 h -29.35 a 6.75,6.75 0 0 0 -6.75,6.75 v 0 a 6.75,6.75 0 0 0 6.75,6.75 z"
+         id="path1035" />
+    </g>
+  </g>
+</svg>
