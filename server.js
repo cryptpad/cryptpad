@@ -60,6 +60,10 @@ var app = Express();
     }
 }());
 
+var applyHeaderMap = function (res, map) {
+    for (let header in map) { res.setHeader(header, map[header]); }
+};
+
 var setHeaders = (function () {
     // load the default http headers unless the admin has provided their own via the config file
     var headers;
@@ -96,14 +100,21 @@ var setHeaders = (function () {
     }
     if (Object.keys(headers).length) {
         return function (req, res) {
+            // apply a bunch of cross-origin headers for XLSX export in FF and printing elsewhere
+            applyHeaderMap(res, {
+                "Cross-Origin-Resource-Policy": 'cross-origin',
+                "Cross-Origin-Opener-Policy": /^\/sheet\//.test(req.url)? 'same-origin': '',
+                "Cross-Origin-Embedder-Policy": 'require-corp',
+            });
+
+            // targeted CSP, generic policies, maybe custom headers
             const h = [
-                    ///^\/pad\/inner\.html.*/,
                     /^\/common\/onlyoffice\/.*\/index\.html.*/,
                     /^\/(sheet|ooslide|oodoc)\/inner\.html.*/,
                 ].some((regex) => {
                     return regex.test(req.url);
                 }) ? padHeaders : headers;
-            for (let header in h) { res.setHeader(header, h[header]); }
+            applyHeaderMap(res, h);
         };
     }
     return function () {};
@@ -139,6 +150,7 @@ app.use(function (req, res, next) {
 
     setHeaders(req, res);
     if (/[\?\&]ver=[^\/]+$/.test(req.url)) { res.setHeader("Cache-Control", "max-age=31536000"); }
+    else { res.setHeader("Cache-Control", "no-cache"); }
     next();
 });
 
