@@ -8,8 +8,9 @@ define([
         return [h('div#cp-main', [
             Pages.infopageTopbar(),
             h('div.container.cp-container', [
-                h('div.row.align-items-center', [
-                    h('div#data.hidden.col-md-6', Pages.setHTML(h('p.left'), Msg.main_info)),
+                h('div.row.cp-page-title', h('h1', Msg.login_login)),
+                h('div.row', [
+                    h('div.col-md-3'),
                     h('div#userForm.form-group.hidden.col-md-6', [
                         h('input.form-control#name', {
                             name: 'name',
@@ -30,10 +31,11 @@ define([
                             UI.createCheckbox('import-recent', Msg.register_importRecent),
                         ]),
                         h('div.extra', [
-                            h('button.login.first.btn', Msg.login_login),
-                            h('button#register.first.btn', Msg.login_register)
+                            h('button.login', Msg.login_login),
+                            h('button#register.cp-secondary', Msg.login_register)
                         ])
-                    ])
+                    ]),
+                    h('div.col-md-3')
                 ]),
             ]),
             Pages.infopageFooter(),

@@ -17,29 +17,16 @@
         }
     }
     .cp-container {
-        #data {
-            background: #4591C4;
-            padding-top: 3em;
-            padding-bottom: 7em;
-            padding-left: 30px;
-            padding-right: 30px;
-            p {
-                color: #fff;
-            }
-            h2 {
-                font-weight: 700;
-                color: @cryptpad_header_col;
-            }
-        }
         #userForm {
-            padding-top: 3em;
-            padding-bottom: 2em;
+            .cp-shadow();
+            background-color: white;
+            padding: 10px;
             .form-control {
                 border-radius: 0;
                 color: @cryptpad_text_col;
-                margin-top: 1em;
+                margin-bottom: 5px;
                 &:focus {
-                    border-color: @cryptpad_color_blue;
+                    border-color: @colortheme_logo-2;
                 }
             }
             .checkbox-container {
@@ -52,24 +39,13 @@
         }
         .extra {
             margin-top: 1em;
-            .login {
-                background: @cryptpad_color_blue;
-                color: #fff;
-                padding: 10px;
-                border-radius: 0;
-                &:hover {
-                    transform: scale(1.05);
-                }
-            }
+
             #register {
-                border-color: @cryptpad_color_blue;
+                border-color: @colortheme_logo-2;
                 background: #fff;
-                color: @cryptpad_color_blue;
+                color: @colortheme_logo-2;
                 padding: 10px;
                 border-radius: 0;
-                &:hover {
-                    transform: scale(1.05);
-                }
             }
         }
     }
