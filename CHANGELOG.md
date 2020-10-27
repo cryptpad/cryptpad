@@ -1,3 +1,36 @@
+# XerusDaamsi reloaded (3.23.2)
+
+A number of instance administrators reported issues following our 3.23.1 release. We suspect the issues were caused by applying the recommended update steps out of order which would result in the incorrect HTTP header values getting cached for the most recent version of a file. Since the most recently updated headers modified some security settings, this caused a catastrophic error on clients receiving the incorrect headers which caused them to fail to load under certain circumstances.
+
+Regardless of the reasons behind this, we want CryptPad to be resilient against misconfiguration. This minor release includes a number of measures to override the unruly caching mechanisms employed internally by two of our most stubborn dependencies (CKEditor and OnlyOffice). Deploying 3.23.2 should force these editors to load the most recent versions of these dependencies according to the same policies as the rest of CryptPad and instruct clients to ignore any incorrect server responses they might have cached over the last few updates.
+
+This release also includes a number of bug fixes which had been tested in the meantime.
+
+Other bug fixes
+
+* We removed a hardcoded translation pertaining to the recently introduced "snapshot" functionality.
+* Inspection of our server logs revealed a number of rare race conditions and type errors that have since been addressed. These included:
+  * multiple invocations of a callback when iterating over the list of all encrypted blobs
+  * a type error when recovering from the crash of one of the database worker processes
+  * premature closure of filesystem read-streams due to a timeout when the server was under heavy load
+* A thorough review of our teams functionality revealed the possibility of some similarly rare issues that have since been corrected:
+  * it was possible to click the buttons on the "team invitation response dialog" multiple times before the first action completed. In some cases this could result in attempting to join a single team multiple times.
+  * it was also possible to activate trigger several actions that would modify your access rights for a team when the team had not fully synchronized with the server. Some of the time this was recoverable, but it could occasionally result in your team membership getting stuck in a bad state.
+
+We've implemented some measures to correct any team data that might have become corrupted due to the issues described above. Access rights from duplicated teams should be merged back into one set of cryptographic keys wherever possible. In cases where this isn't possible your role in the team will be automatically downgraded to the rank conferred by the keys you still have. For instance, somebody listed as an administrator who only has the keys required to view the team will downgrade themself to be a viewer. Subsequent promotions back to your previous team role should restore your possession of the required keys.
+
+To update to 3.23.2 from 3.23.0 or 3.23.1:
+
+Perform the same upgrade steps listed for 3.23.0 including the most recent configuration changes listed in `cryptpad/docs/example.nginx.conf...
+
+1. Modify your server's NGINX config file (but don't apply its changes until step 6)
+2. Stop CryptPad's nodejs server
+3. Get the latest platform code with git
+4. Install client-side dependencies with `bower update`
+5. Install server-side dependencies with `npm install`
+6. Reload NGINX with `service nginx reload` to apply its config changes
+7. Restart the CryptPad API server
+
 # XerusDaamsi's revenge (3.23.1)
 
 We discovered a number of minor bugs after deploying 3.23.0. This minor release addresses them.
@@ -23,7 +56,7 @@ To update from 3.23.0 to 3.23.1:
 
 0. Read the 3.23.0 release notes carefully and apply all configuration changes if you haven't already done so.
 1. Stop your server
-2. Get the latest code with `git checkout 3.20.1`
+2. Get the latest code with `git checkout 3.23.1`
 3. Install the latest dependencies with `bower update` and `npm i`
 4. Restart your server
 

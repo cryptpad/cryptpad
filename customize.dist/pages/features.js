@@ -9,8 +9,8 @@ define([
 ], function ($, h, Msg, AppConfig, LocalStore, Pages, Config) {
     var origin = encodeURIComponent(window.location.hostname);
     var accounts = {
-        donateURL: 'https://accounts.cryptpad.fr/#/donate?on=' + origin,
-        upgradeURL: 'https://accounts.cryptpad.fr/#/?on=' + origin,
+        donateURL: AppConfig.donateURL || "https://opencollective.com/cryptpad/",
+        upgradeURL: AppConfig.upgradeURL || 'https://accounts.cryptpad.fr/#/?on=' + origin,
     };
     return function () {
         Msg.features_f_apps_note = AppConfig.availablePadTypes.map(function (app) {

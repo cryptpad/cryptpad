@@ -19,6 +19,16 @@ define(['jquery'], function ($) {
     var $a = $('.cke_toolbox_main').find('.cke_button, .cke_combo_button');
     $a.each(function (i, el) {
         var $el = $(el);
+        var $icon = $el.find('span.cke_button_icon');
+        if ($icon.length) {
+            try {
+                var url = $icon[0].style['background-image'];
+                var bgImg = url.replace(/ !important$/, '');
+                if (bgImg) {
+                    $icon[0].style.setProperty('background-image', bgImg, 'important');
+                }
+            } catch (e) { console.error(e); }
+        }
         $el.on('keydown blur focus click dragstart', function (e) {
             e.preventDefault();
             var attr = $(el).attr('oon'+e.type);

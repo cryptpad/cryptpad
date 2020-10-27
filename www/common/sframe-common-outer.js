@@ -1380,8 +1380,10 @@ define([
             };
             var i = 0;
             sframeChan.on('Q_CRYPTGET', function (data, cb) {
+                var keys;
                 var todo = function () {
                     data.opts.network = cgNetwork;
+                    data.opts.accessKeys = keys;
                     Cryptget.get(data.hash, function (err, val) {
                         cb({
                             error: err,
@@ -1400,17 +1402,21 @@ define([
                     cgNetwork = undefined;
                 }
                 i++;
-                if (!cgNetwork) {
-                    cgNetwork = true;
-                    return void Cryptpad.makeNetwork(function (err, nw) {
-                        console.log(nw);
-                        cgNetwork = nw;
-                        todo();
-                    });
-                } else if (cgNetwork === true) {
-                    return void whenCGReady(todo);
-                }
-                todo();
+
+                Cryptpad.getAccessKeys(function (_keys) {
+                    keys = _keys;
+                    if (!cgNetwork) {
+                        cgNetwork = true;
+                        return void Cryptpad.makeNetwork(function (err, nw) {
+                            console.log(nw);
+                            cgNetwork = nw;
+                            todo();
+                        });
+                    } else if (cgNetwork === true) {
+                        return void whenCGReady(todo);
+                    }
+                    todo();
+                });
             });
             sframeChan.on('EV_CRYPTGET_DISCONNECT', function () {
                 if (!cgNetwork) { return; }

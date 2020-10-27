@@ -190,7 +190,6 @@ define([
         var intr;
         var check = function() {
             if (window.CKEDITOR) {
-                window.CKEDITOR.timestamp = 123456; // XXX cache-busting string for CkEditor
                 clearTimeout(intr);
                 cb(window.CKEDITOR);
             }

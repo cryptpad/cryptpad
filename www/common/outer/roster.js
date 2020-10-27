@@ -56,6 +56,16 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
         return ['OWNER', 'ADMIN', 'MEMBER', 'VIEWER'].indexOf(role) !== -1;
     };
 
+    var isSelfDowngrade = function (author, curve, role, state) {
+        // Make sure you want to describe yourself
+        var selfDescribe = author === curve && state[curve];
+        if (!selfDescribe) { return false; }
+        // ADMIN and OWNER can always update roles
+        // we only need to allow MEMBER to downgrade themselves to VIEWER
+        var authorRole = Util.find(state, [author, 'role']);
+        if (authorRole === "MEMBER") { return role === 'VIEWER'; }
+    };
+
     var canAddRole = function (author, role, members) {
         var authorRole = Util.find(members, [author, 'role']);
         if (!authorRole) { return false; }
@@ -244,7 +254,10 @@ var factory = function (Util, Hash, CPNetflux, Sortify, nThen, Crypto) {
 
             if (typeof(data.role) === 'string') { // they're trying to change the role...
                 // throw if they're trying to upgrade to something greater
-                if (!canAddRole(author, data.role, members)) { throw new Error("INSUFFICIENT_PERMISSIONS"); }
+                if (!isSelfDowngrade(author, curve, data.role, members) &&
+                    !canAddRole(author, data.role, members)) {
+                    throw new Error("INSUFFICIENT_PERMISSIONS");
+                }
             }
             // DESCRIBE commands must initialize a displayName if it isn't already present
             if (typeof(current.displayName) !== 'string' && typeof(data.displayName) !== 'string') {

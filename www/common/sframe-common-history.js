@@ -254,7 +254,7 @@ define([
             // goal of having snapshots
             if (config.getLastMetadata) {
                 var metadataMgr = common.getMetadataMgr();
-                var lastMd = config.getLastMetadata();
+                var lastMd = config.getLastMetadata() || {};
                 var _snapshots = lastMd.snapshots;
                 var _users = lastMd.users;
                 var md = Util.clone(metadataMgr.getMetadata());

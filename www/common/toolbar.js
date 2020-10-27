@@ -1353,8 +1353,6 @@ MessengerUI, Messages) {
             }
         };
 
-        Messages.snaphot_title = "Snapshot"; //XXX
-
         toolbar.setSnapshot = function (bool) {
             toolbar.history = bool;
             toolbar.title.toggleClass('cp-toolbar-unsync', bool);
