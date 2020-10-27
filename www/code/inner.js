@@ -151,7 +151,7 @@ define([
         var $codeMirror = $('.CodeMirror');
 
         $('<img>', {
-            src: '/customize/main-favicon.png',
+            src: '/customize/CryptPad_logo.svg',
             alt: '',
             class: 'cp-app-code-preview-empty'
         }).appendTo($previewContainer);
