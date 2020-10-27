@@ -102,7 +102,7 @@ define([
             // XXX
             Messages.register_warning = "<i class='fa fa-warning'></i> Warning"; // existing key
             Messages.register_warning_note = "Due to the encrypted nature of CrytpPad even the the service administrators will not be able to recover data in case the username and/or password are forgotten. Please save them in a safe place.";
-            Messages.register_cancel = "Cancel"; // XXX existing key
+            Messages.register_cancel = "Cancel"; // existing key
 
             setTimeout(function () {
             UI.confirm("<h2 class='msg'>" + Messages.register_warning + "</h2>" + Messages.register_warning_note,

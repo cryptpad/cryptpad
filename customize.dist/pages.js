@@ -80,7 +80,6 @@ define([
         return h('footer', [
             h('div.container', [
                 h('div.row', [
-                    // XXX remove this footerCol and just make a h('div.col-6.col-sm-3',...
                     h('div.col-6.col-sm-3', [
                         h('div.cp-logo-foot', [
                             h('img', {
