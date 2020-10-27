@@ -306,11 +306,43 @@
     };
 
     Util.throttle = function (f, ms) {
+        var last = 0;
         var to;
-        var g = function () {
-            clearTimeout(to);
-            to = setTimeout(Util.bake(f, Util.slice(arguments)), ms);
+        var args;
+
+        var defer = function (delay) {
+            // no timeout: run function `f` in `ms` milliseconds
+            // unless `g` is called again in the meantime
+            to = setTimeout(function () {
+                // wipe the current timeout handler
+                to = undefined;
+
+                // take the current time
+                var now = +new Date();
+                // compute time passed since `last`
+                var diff = now - last;
+                if (diff < ms) {
+                    // don't run `f` if `g` was called since this timeout was set
+                    // instead calculate how much further in the future your next
+                    // timeout should be scheduled
+                    return void defer(ms - diff);
+                }
+
+                // else run `f` with the most recently supplied arguments
+                f.apply(null, args);
+            }, delay);
         };
+
+        var g = function () {
+            // every time you call this function store the time
+            last = +new Date();
+            // remember what arguments were passed
+            args = Util.slice(arguments);
+            // if there is a pending timeout then do nothing
+            if (to) { return; }
+            defer(ms);
+        };
+
         g.clear = function () {
             clearTimeout(to);
             to = undefined;
