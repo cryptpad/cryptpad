@@ -627,7 +627,6 @@
         }
         .cp-toolbar-title {
             color: @cryptpad_text_col;
-            font-family: "IBM Plex Mono";
             flex: 1;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -812,13 +811,8 @@
                 padding: 10px;
 
                 svg {
-                    #squares {
-                        fill: @toolbar-bg-color;
-                        fill: var(--toolbar-bg-color);
-                    }
-                    #outline, #keyhole {
-                        fill: @cryptpad_text_col;
-                    }
+                    fill: @toolbar-bg-color;
+                    fill: var(--toolbar-bg-color);
                 }
 
                 img {

@@ -834,7 +834,7 @@ MessengerUI, Messages) {
             title: buttonTitle,
             'class': "cp-toolbar-link-logo"
         }).append(UIElements.getSvgLogo());
-        
+
         /*.append($('<img>', {
             //src: '/customize/images/logo_white.png?' + ApiConfig.requireConf.urlArgs
             src: '/customize/main-favicon.png?' + ApiConfig.requireConf.urlArgs
