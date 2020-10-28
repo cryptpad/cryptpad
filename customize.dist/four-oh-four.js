@@ -9,7 +9,7 @@ define([
 ], function ($, Config, h, LocalStore, Messages) {
     var urlArgs = Config.requireConf.urlArgs;
     var img = h('img#cp-logo', {
-        src: '/customize/cryptpad-new-logo-colors-logoonly.png?' + urlArgs
+        src: '/customize/CryptPad_logo_grey.svg?' + urlArgs
     });
 
     var brand = h('h1#cp-brand', 'CryptPad');
