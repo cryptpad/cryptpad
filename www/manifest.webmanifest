@@ -5,7 +5,7 @@
     "icons": [],
     "background_color": "#ff0073",
     "display": "browser",
-    "start_url": "/drive/?source=pwa",
+    "start_url": "/",
     "scope": "/",
     "theme_color": "#ff0073",
     "shortcuts": []
