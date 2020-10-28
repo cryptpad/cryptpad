@@ -53,7 +53,7 @@ define(['/customize/messages.js'], function (Messages) {
 #cp-loading .cp-loading-container {
     width: 700px;
     max-width: 90vw;
-    height: 250px;
+    height: 236px;
     max-height: calc(100vh - 20px);
     margin: 50px;
     flex-shrink: 0;
@@ -61,25 +61,30 @@ define(['/customize/messages.js'], function (Messages) {
     flex-flow: column;
     align-items: center;
 }
-@media screen and (max-height: 800px) {
-    #cp-loading .cp-loading-container {
-        height: auto;
-    }
-}
-@media screen and (max-width: 600px) {
-    #cp-loading .cp-loading-container {
-        height: auto;
-    }
-}
 #cp-loading .cp-loading-cryptofist {
   margin-left: auto;
   margin-right: auto;
-  //height: 300px;
   max-width: 90vw;
   max-height: 300px;
   width: auto;
   height: auto;
   margin-bottom: 2em;
+}
+@media screen and (max-width: 500px) {
+  #cp-loading {
+      font-size: 16px !important;
+  }
+  #cp-loading .cp-loading-container {
+      height: 206px;
+  }
+}
+@media screen and (max-height: 700px) {
+  #cp-loading {
+      font-size: 16px !important;
+  }
+  #cp-loading .cp-loading-container {
+      height: 206px;
+  }
 }
 @media screen and (max-height: 500px) {
   #cp-loading .cp-loading-logo {
@@ -187,6 +192,7 @@ p.cp-password-info{
     text-align: left;
     display: inline-block;
     margin-bottom: 50px;
+    max-width: 100%;
 }
 .cp-loading-progress-list ul {
     list-style: none;
@@ -199,6 +205,9 @@ p.cp-password-info{
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .cp-loading-progress-list li i {
     width: 22px;
@@ -234,7 +243,7 @@ p.cp-password-info{
     box-sizing: border-box;
     width: 80px;
     height: 80px;
-    border: 11px solid #3F4141;
+    border: 11px solid #999999;
     border-radius: 50%;
     border-top-color: transparent;
     animation: spin infinite 3s;
