@@ -178,12 +178,17 @@ p.cp-password-info{
 .cp-loading-progress {
     width: 100%;
     margin: 20px;
+    text-align: center;
 }
 .cp-loading-progress p {
     margin: 5px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+.cp-loading-progress-list {
+    text-align: left;
+    display: inline-block;
 }
 .cp-loading-progress-list ul {
     list-style: none;
@@ -200,7 +205,10 @@ p.cp-password-info{
     width: 22px;
 }
 .cp-loading-progress-list li span{
-    margin-left: 20px;
+    margin-left: 10px;
+}
+.cp-loading-progress-list li span.percent {
+    position: absolute;
 }
 
 .cp-loading-progress-bar {
@@ -285,10 +293,12 @@ button.primary:hover{
         var getLi = function (i) {
             var check = (i < c || (i === c && data.progress >= 100)) ? 'fa-check-square-o'
                                                                       : 'fa-square-o';
-            var p = Math.min(Math.floor(data.progress), 100);
-            var percent = i < c ? '(100%)' : (i === c ? '('+p+'%)' : '(0%)');
-            return '<li><i class="fa '+check+'"></i><span>'+Messages['loading_state_'+i]+'</span>' +
-                   '<span>'+percent+'</span>';
+            var percentStr = '';
+            if (i === c) {
+                var p = Math.min(Math.floor(data.progress), 100);
+                percentStr = '<span class="percent">('+p+'%)</span>';
+            }
+            return '<li><i class="fa '+check+'"></i><span>'+Messages['loading_state_'+i]+'</span>' + percentStr;
         };
         var list = '<ul>';
         types.forEach(function (el, i) {
