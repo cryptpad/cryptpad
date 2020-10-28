@@ -1,5 +1,6 @@
-// dark #326599
-// light #4591c4
+// bg #e7e7e7
+// blue #0087FF
+// text #3F4141
 define(['/customize/messages.js'], function (Messages) {
     var loadingStyle = (function(){/*
 @font-face {
@@ -21,8 +22,8 @@ define(['/customize/messages.js'], function (Messages) {
   bottom: 0px;
   left: 0px;
   right: 0px;
-  background: linear-gradient(to right, #326599 0%, #326599 50%, #4591c4 50%, #4591c4 100%);
-  color: #fafafa;
+  background-color: #e7e7e7;
+  color: #3F4141;
   font-size: 1.3em;
   line-height: 120%;
   opacity: 1;
@@ -214,10 +215,11 @@ p.cp-password-info{
 .cp-loading-progress-bar {
     height: 24px;
     background: white;
+    border: 1px solid #0087FF;
 }
 .cp-loading-progress-bar-value {
     height: 100%;
-    background: #5cb85c;
+    background: #0087FF;
 }
 
 @keyframes spin {
@@ -234,7 +236,7 @@ p.cp-password-info{
     box-sizing: border-box;
     width: 80px;
     height: 80px;
-    border: 11px solid white;
+    border: 11px solid #3F4141;
     border-radius: 50%;
     border-top-color: transparent;
     animation: spin infinite 3s;
@@ -263,7 +265,7 @@ button.primary:hover{
         loadingStyle,
         '</style>',
         '<div class="cp-loading-logo">',
-            '<img class="cp-loading-cryptofist" src="/customize/loading-logo.png?' + urlArgs + '">',
+            '<img class="cp-loading-cryptofist" src="/customize/CryptPad_logo_grey.svg?' + urlArgs + '">',
         '</div>',
         '<div class="cp-loading-container">',
             '<div class="cp-loading-spinner-container">',
