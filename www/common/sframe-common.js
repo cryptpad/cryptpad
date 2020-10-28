@@ -345,7 +345,13 @@ define([
         }
         if (priv.burnAfterReading) {
             UIElements.displayBurnAfterReadingPage(funcs, waitFor(function () {
-                UI.addLoadingScreen();
+                UI.addLoadingScreen({newProgress: true});
+                if (window.CryptPad_updateLoadingProgress) {
+                    window.CryptPad_updateLoadingProgress({
+                        type: 'pad',
+                        progress: 0
+                    });
+                }
                 ctx.sframeChan.event('EV_BURN_AFTER_READING');
             }));
         }
