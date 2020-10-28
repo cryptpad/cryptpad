@@ -320,9 +320,12 @@ define([
         - userObject: userObject associated to the main drive
         - handler: a function (sfid, rt) called for each shared folder loaded
     */
-    SF.loadSharedFolders = function (Store, network, store, userObject, waitFor) {
+    SF.loadSharedFolders = function (Store, network, store, userObject, waitFor, progress) {
         var shared = Util.find(store.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
+        var steps = Object.keys(shared).length;
+        var i = 1;
         var w = waitFor();
+        progress = progress || function () {};
         nThen(function (waitFor) {
             Object.keys(shared).forEach(function (id) {
                 var sf = shared[id];
@@ -330,7 +333,13 @@ define([
                     network: network,
                     store: store,
                     isNewChannel: Store.isNewChannel
-                }, id, sf, waitFor());
+                }, id, sf, waitFor(function () {
+                    progress({
+                        progress: i,
+                        max: steps
+                    });
+                    i++;
+                }));
             });
         }).nThen(function () {
             setTimeout(w);

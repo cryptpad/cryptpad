@@ -52,13 +52,12 @@ require.config({
 });
 
 var req = [
-    '/common/common-util.js',
     '/customize/application_config.js',
     '/customize/translations/messages.js'
 ];
 if (language && map[language]) { req.push('/customize/translations/messages.' + language + '.js'); }
 
-define(req, function(Util, AppConfig, Default, Language) {
+define(req, function(AppConfig, Default, Language) {
     map.en = 'English';
     var defaultLanguage = 'en';
 
@@ -78,13 +77,13 @@ define(req, function(Util, AppConfig, Default, Language) {
 
     var extend = function (a, b) {
         for (var k in b) {
-            if (Util.isObject(b[k])) {
-                a[k] = Util.isObject(a[k]) ? a[k] : {};
-                extend(a[k], b[k]);
-                continue;
-            }
             if (Array.isArray(b[k])) {
                 a[k] = b[k].slice();
+                continue;
+            }
+            if (b[k] && typeof(b[k]) === "object") {
+                a[k] = (a[k] && typeof(a[k]) === "object" && !Array.isArray(a[k])) ? a[k] : {};
+                extend(a[k], b[k]);
                 continue;
             }
             a[k] = b[k] || a[k];

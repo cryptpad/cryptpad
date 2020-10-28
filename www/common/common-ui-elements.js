@@ -2524,10 +2524,16 @@ define([
 
         var submit = function () {
             var value = $password.find('.cp-password-input').val();
-            UI.addLoadingScreen();
+            UI.addLoadingScreen({newProgress: true});
+            if (window.CryptPad_updateLoadingProgress) {
+                window.CryptPad_updateLoadingProgress({
+                    type: 'pad',
+                    progress: 0
+                });
+            }
             common.getSframeChannel().query('Q_PAD_PASSWORD_VALUE', value, function (err, data) {
                 if (!data) {
-                    UIElements.displayPasswordPrompt(common, cfg, true);
+                    return void UIElements.displayPasswordPrompt(common, cfg, true);
                 }
             });
         };
