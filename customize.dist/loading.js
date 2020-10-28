@@ -53,13 +53,12 @@ define(['/customize/messages.js'], function (Messages) {
 #cp-loading .cp-loading-container {
     width: 700px;
     max-width: 90vw;
-    height: 500px;
+    height: 250px;
     max-height: calc(100vh - 20px);
     margin: 50px;
     flex-shrink: 0;
     display: flex;
     flex-flow: column;
-    justify-content: space-around;
     align-items: center;
 }
 @media screen and (max-height: 800px) {
@@ -171,14 +170,11 @@ p.cp-password-info{
 }
 #cp-loading .cp-loading-spinner-container {
   position: relative;
-  height: 100px;
-}
-#cp-loading .cp-loading-spinner-container > div {
-  height: 100px;
+  height: 80px;
+  margin-bottom: 50px;
 }
 .cp-loading-progress {
     width: 100%;
-    margin: 20px;
     text-align: center;
 }
 .cp-loading-progress p {
@@ -190,10 +186,12 @@ p.cp-password-info{
 .cp-loading-progress-list {
     text-align: left;
     display: inline-block;
+    margin-bottom: 50px;
 }
 .cp-loading-progress-list ul {
     list-style: none;
     padding-left: 0;
+    margin: 0;
 }
 .cp-loading-progress-list li {
     padding: 0px 5px;
