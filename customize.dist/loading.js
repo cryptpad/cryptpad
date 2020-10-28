@@ -33,6 +33,9 @@ define(['/customize/messages.js'], function (Messages) {
   align-items: center;
   font: 20px 'Open Sans', 'Helvetica Neue', sans-serif !important;
 }
+#cp-loading.cp-loading-transparent {
+    background-color: rgba(231, 231, 231, 0.7);
+}
 #cp-loading.cp-loading-hidden {
   opacity: 0;
   visibility: hidden;

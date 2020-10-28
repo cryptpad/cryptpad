@@ -866,6 +866,7 @@ define([
             // Show the loading screen
             $loading.css('display', '');
             $loading.removeClass('cp-loading-hidden');
+            $loading.removeClass('cp-loading-transparent');
             if (config.newProgress) {
                 // XXX re-add progress bar for step 6 after password prompt for PPP
                 // XXX also burn after reading
@@ -918,7 +919,8 @@ define([
         $loading.find('.cp-loading-progress').remove();
         // Hide the spinner
         $('.cp-loading-spinner-container').hide();
-        if (transparent) { $loading.css('opacity', 0.9); }
+        $loading.removeClass('cp-loading-transparent');
+        if (transparent) { $loading.addClass('cp-loading-transparent'); }
 
         // Add the error message
         var $error = $loading.find('#cp-loading-message').show();
