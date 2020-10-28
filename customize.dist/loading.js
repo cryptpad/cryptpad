@@ -175,32 +175,6 @@ p.cp-password-info{
 #cp-loading .cp-loading-spinner-container > div {
   height: 100px;
 }
-#cp-loading-tip {
-  position: fixed;
-  z-index: 10000000;
-  top: 80%;
-  left: 0;
-  right: 0;
-  text-align: center;
-  transition: opacity 750ms;
-  transition-delay: 3000ms;
-}
-@media screen and (max-height: 600px) {
-  #cp-loading-tip {
-    display: none;
-  }
-}
-#cp-loading-tip span {
-  background: #222;
-  color: #fafafa;
-  text-align: center;
-  font-size: 1.3em;
-  opacity: 0.7;
-  font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
-  padding: 15px;
-  max-width: 60%;
-  display: inline-block;
-}
 .cp-loading-progress {
     width: 100%;
     margin: 20px;
@@ -340,6 +314,7 @@ button.primary:hover{
         var c = types.indexOf(data.type);
         if (c < current) { return console.error(data); }
         try {
+            document.querySelector('.cp-loading-spinner-container').style.display = 'none';
             document.querySelector('.cp-loading-progress-list').innerHTML = makeList(data);
             document.querySelector('.cp-loading-progress-container').innerHTML = makeBar(data);
         } catch (e) { console.error(e); }
