@@ -20,6 +20,22 @@
         margin: 0 10px;
         padding: 0;
         width: ~"calc(100% - 20px)";
+        span.tokenfield-empty {
+            font-size: 14px;
+            font-style: italic;
+            color: lighten(@cryptpad_text_col, 10%);
+        }
+        .cp-tokenfield-container {
+            width: 100%;
+        }
+        .cp-tokenfield-form {
+            display: flex;
+            width: 100%;
+            input {
+                flex: 1;
+                min-width: 0 !important;
+            }
+        }
         .token {
             box-sizing: border-box;
             display: inline-flex;

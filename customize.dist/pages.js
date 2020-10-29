@@ -62,7 +62,7 @@ define([
     var imprintUrl = AppConfig.imprint && (typeof(AppConfig.imprint) === "boolean" ?
                         '/imprint.html' : AppConfig.imprint);
 
-    Pages.versionString = "v3.23.1 (XerusDaamsi's revenge)";
+    Pages.versionString = "v3.23.2 (XerusDaamsi reloaded)";
 
     Msg.docs_link = "Documentation"; // XXX breaks the about menu
     // XXX Remove FAQ from translations and remove FAQ page
