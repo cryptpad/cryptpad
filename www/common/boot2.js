@@ -46,6 +46,10 @@ define([
         throw e;
     };
 
+    window.addEventListener('unhandledrejection', function(event) {
+        console.error('Unhandled rejection (promise: ', event.promise, ', reason: ', event.reason, ').');
+    });
+
     try {
         var test_key = 'localStorage_test';
         var testval = Math.random().toString();
@@ -55,5 +59,34 @@ define([
         }
     } catch (e) { console.error(e); failStore(); }
 
-    require([document.querySelector('script[data-bootload]').getAttribute('data-bootload')]);
+    var called = false;
+    var load = function () {
+        if (called) { return; }
+        called = true;
+        require([document.querySelector('script[data-bootload]').getAttribute('data-bootload')]);
+    };
+
+    var sw = window.navigator.serviceWorker;
+
+    if (!sw) { return void load(); }
+
+    try {
+        //console.log(RequireConfig());
+        sw
+            .register('/sw.js?'
+            + RequireConfig().urlArgs
+            , { scope: '/' })
+            .then(function (reg) {
+                console.log("service-worker registered", reg);
+                load();
+            })
+            .catch(function (err) {
+                console.error(err);
+                load();
+            });
+    } catch (e) {
+        console.error(e);
+        load();
+    }
+
 });
