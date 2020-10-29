@@ -20,6 +20,7 @@ define([
 ], function ($, Config, Util, Hash, Language, UI, Constants, Feedback, h, Clipboard,
              Messages, AppConfig, Pages, NThen, InviteInner, Visible) {
     var UIElements = {};
+    var urlArgs = Config.requireConf.urlArgs;
 
     UIElements.getSvgLogo = function () {
         var svg = (function(){/*
@@ -1532,10 +1533,20 @@ define([
 
         var legalLine = template(Messages.info_imprintFlavour, Pages.imprintLink);
         var privacyLine = template(Messages.info_privacyFlavour, Pages.privacyLink);
-        var faqLine = template(Messages.help.generic.more, Pages.faqLink);
+
+        // XXX existing key
+        Messages.help.generic.more = "Learn more about how CryptPad can work for you by reading our <a href=\"https://docs.cryptpad.fr\" target=\"_blank\">Documentation</a>.";
+
+        var faqLine = template(Messages.help.generic.more, Pages.docsLink);
 
         var content = h('div.cp-info-menu-container', [
-            h('h6', Pages.versionString),
+            h('div.logo-block', [
+                h('img', {
+                    src: '/customize/CryptPad_logo.svg?' + urlArgs
+                }),
+                h('h6', "CryptPad"),
+                h('span', Pages.versionString)
+            ]),
             h('hr'),
             legalLine,
             privacyLine,
