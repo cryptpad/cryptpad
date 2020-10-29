@@ -140,7 +140,7 @@ define([
             chainpad.message(content);
             if (isHistory && updateLoadingProgress) {
                 updateLoadingProgress({
-                    state: 2,
+                    type: 'pad',
                     progress: isHistory
                 }, false);
                 isHistory++;
@@ -149,6 +149,13 @@ define([
         });
         sframeChan.on('EV_RT_READY', function () {
             if (isReady) { return; }
+            if (updateLoadingProgress) {
+                updateLoadingProgress({
+                    type: 'end',
+                    progress: 0
+                }, false);
+                isHistory++;
+            }
             isReady = true;
             isHistory = false;
             chainpad.start();

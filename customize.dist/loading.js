@@ -1,7 +1,18 @@
 // dark #326599
 // light #4591c4
-define([], function () {
+define(['/customize/messages.js'], function (Messages) {
     var loadingStyle = (function(){/*
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.eot');
+  src: url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.eot?#iefix') format('embedded-opentype'),
+       url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.woff') format('woff'),
+       url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.ttf') format('truetype'),
+       url('/bower_components/open-sans-fontface/fonts/Regular/OpenSans-Regular.svg#OpenSansRegular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
 #cp-loading {
   visibility: visible;
   position: fixed;
@@ -19,6 +30,7 @@ define([], function () {
   flex-flow: column;
   justify-content: center;
   align-items: center;
+  font: 20px 'Open Sans', 'Helvetica Neue', sans-serif !important;
 }
 #cp-loading.cp-loading-hidden {
   opacity: 0;
@@ -163,35 +175,10 @@ p.cp-password-info{
 #cp-loading .cp-loading-spinner-container > div {
   height: 100px;
 }
-#cp-loading-tip {
-  position: fixed;
-  z-index: 10000000;
-  top: 80%;
-  left: 0;
-  right: 0;
-  text-align: center;
-  transition: opacity 750ms;
-  transition-delay: 3000ms;
-}
-@media screen and (max-height: 600px) {
-  #cp-loading-tip {
-    display: none;
-  }
-}
-#cp-loading-tip span {
-  background: #222;
-  color: #fafafa;
-  text-align: center;
-  font-size: 1.3em;
-  opacity: 0.7;
-  font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
-  padding: 15px;
-  max-width: 60%;
-  display: inline-block;
-}
 .cp-loading-progress {
     width: 100%;
     margin: 20px;
+    text-align: center;
 }
 .cp-loading-progress p {
     margin: 5px;
@@ -199,6 +186,31 @@ p.cp-password-info{
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+.cp-loading-progress-list {
+    text-align: left;
+    display: inline-block;
+}
+.cp-loading-progress-list ul {
+    list-style: none;
+    padding-left: 0;
+}
+.cp-loading-progress-list li {
+    padding: 0px 5px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.cp-loading-progress-list li i {
+    width: 22px;
+}
+.cp-loading-progress-list li span{
+    margin-left: 10px;
+}
+.cp-loading-progress-list li span.percent {
+    position: absolute;
+}
+
 .cp-loading-progress-bar {
     height: 24px;
     background: white;
@@ -257,10 +269,77 @@ button.primary:hover{
             '<div class="cp-loading-spinner-container">',
                 '<span class="cp-spinner"></span>',
             '</div>',
+            '<div class="cp-loading-progress">',
+                '<div class="cp-loading-progress-list"></div>',
+                '<div class="cp-loading-progress-container"></div>',
+            '</div>',
             '<p id="cp-loading-message"></p>',
         '</div>'
     ].join('');
+    var built = false;
+
+    // XXX
+    var types = ['less', 'drive', 'migrate', 'sf', 'team', 'pad', 'end'];
+    Messages.loading_state_0 = "Less";
+    Messages.loading_state_1 = "Drive";
+    Messages.loading_state_2 = "Migrate";
+    Messages.loading_state_3 = "SF";
+    Messages.loading_state_4 = "Team";
+    Messages.loading_state_5 = "Pad";
+    var current;
+    var makeList = function (data) {
+        var c = types.indexOf(data.type);
+        current = c;
+        var getLi = function (i) {
+            var check = (i < c || (i === c && data.progress >= 100)) ? 'fa-check-square-o'
+                                                                      : 'fa-square-o';
+            var percentStr = '';
+            if (i === c) {
+                var p = Math.min(Math.floor(data.progress), 100);
+                percentStr = '<span class="percent">('+p+'%)</span>';
+            }
+            return '<li><i class="fa '+check+'"></i><span>'+Messages['loading_state_'+i]+'</span>' + percentStr;
+        };
+        var list = '<ul>';
+        types.forEach(function (el, i) {
+            if (i >= 6) { return; }
+            list += getLi(i);
+        });
+        list += '</ul>';
+        return list;
+    };
+    var makeBar = function (data) {
+        var c = types.indexOf(data.type);
+        var l = types.length;
+        var progress = Math.min(data.progress, 100);
+        var p = (progress / l) + (100 * c / l);
+        var bar = '<div class="cp-loading-progress-bar">'+
+                    '<div class="cp-loading-progress-bar-value" style="width:'+p+'%"></div>'+
+                  '</div>';
+        return bar;
+    };
+
+    var updateLoadingProgress = function (data) {
+        if (!built) { return; }
+        var c = types.indexOf(data.type);
+        if (c < current) { return console.error(data); }
+        try {
+            document.querySelector('.cp-loading-spinner-container').style.display = 'none';
+            document.querySelector('.cp-loading-progress-list').innerHTML = makeList(data);
+            document.querySelector('.cp-loading-progress-container').innerHTML = makeBar(data);
+        } catch (e) { console.error(e); }
+    };
+    window.CryptPad_updateLoadingProgress = updateLoadingProgress;
+    window.CryptPad_loadingError = function (err) {
+        if (!built) { return; }
+        try {
+            document.querySelector('.cp-loading-spinner-container').setAttribute('style', 'display:none;');
+            document.querySelector('#cp-loading-message').setAttribute('style', 'display:block;');
+            document.querySelector('#cp-loading-message').innerText = err;
+        } catch (e) { console.error(e); }
+    };
     return function () {
+        built = true;
         var intr;
         var append = function () {
             if (!document.body) { return; }
