@@ -74,6 +74,7 @@ define([
                 };
                 window.addEventListener('message', whenReady);
             }).nThen(function () {
+                var isTemplate = config.data.isTemplate;
                 var updateMeta = function () {
                     //console.log('EV_METADATA_UPDATE');
                     var metaObj;
@@ -85,6 +86,12 @@ define([
                             }
                             metaObj = n;
                         }));
+                    if (typeof(isTemplate) === "undefined") {
+                        Cryptpad.isTemplate(currentPad.href, waitFor(function (err, t) {
+                            if (err) { console.log(err); }
+                            isTemplate = t;
+                        }));
+                    }
                     }).nThen(function (/*waitFor*/) {
                         metaObj.doc = {};
                         var additionalPriv = {
@@ -96,7 +103,7 @@ define([
                             feedbackAllowed: Utils.Feedback.state,
                             hashes: config.data.hashes,
                             password: config.data.password,
-                            isTemplate: config.data.isTemplate,
+                            isTemplate: isTemplate,
                             file: config.data.file,
                         };
                         for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
