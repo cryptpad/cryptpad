@@ -169,6 +169,17 @@ Version 1
     /code/#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI
 */
 
+    var getNewPadOpts = function (hashArr) {
+        var k;
+        // Check if we have a ownerKey for this pad
+        hashArr.some(function (data) {
+            if (/^newpad=/.test(data)) {
+                k = data.slice(7);
+                return true;
+            }
+        });
+        return k || '';
+    };
     var getVersionHash = function (hashArr) {
         var k;
         // Check if we have a ownerKey for this pad
@@ -202,6 +213,7 @@ Version 1
             parsed.present = options.indexOf('present') !== -1;
             parsed.embed = options.indexOf('embed') !== -1;
             parsed.versionHash = getVersionHash(options);
+            parsed.newPadOpts = getNewPadOpts(options);
             parsed.ownerKey = getOwnerKey(options);
         };
 
@@ -217,6 +229,13 @@ Version 1
                     password: parsed.password
                 };
             };
+
+            if (/^\/newpad=/.test(hash)) {
+                return {
+                    newPadOpts: hash.slice(8, -1)
+                };
+            }
+
             if (hash.slice(0,1) !== '/' && hash.length >= 56) { // Version 0
                 // Old hash
                 parsed.channel = hash.slice(0, 32);
@@ -236,6 +255,9 @@ Version 1
                 var versionHash = typeof(opts.versionHash) !== "undefined" ? opts.versionHash : parsed.versionHash;
                 if (versionHash) {
                     hash += 'hash=' + Crypto.b64RemoveSlashes(versionHash) + '/';
+                }
+                if (opts.newPadOpts) {
+                    hash += 'newpad=' + opts.newPadOpts + '/';
                 }
                 return hash;
             };
@@ -372,6 +394,10 @@ Version 1
             var url = '/';
             if (!ret.type) { return url; }
             url += ret.type + '/';
+            // New pad with options: append the options to the hash
+            if (!ret.hashData && options.newPadOpts) {
+                return url + '#/newpad=' + options.newPadOpts + '/';
+            }
             if (!ret.hashData) { return url; }
             if (ret.hashData.type !== 'pad') { return url + '#' + ret.hash; }
             if (ret.hashData.version === 0) { return url + '#' + ret.hash; }
@@ -575,6 +601,9 @@ Version 1
         // Valid hash?
         if (parsed.hash) {
             if (!parsed.hashData) { return; }
+            // New pad: only newPadOpts allowed
+            if (Object.keys(parsed.hashData).length === 1 &&
+                    parsed.hashData.newPadOpts) { return true; }
             // Version should be a number
             if (typeof(parsed.hashData.version) === "undefined") { return; }
             // pads and files should have a base64 (or hex) key

@@ -26,7 +26,7 @@ define([
         };
         var AppConfig;
         var Test;
-        var password;
+        var password, newPadPassword;
         var initialPathInDrive;
         var burnAfterReading;
 
@@ -202,14 +202,46 @@ define([
                             }
                             // Rendered (maybe hidden) hash
                             var renderedParsed = Utils.Hash.parsePadUrl(window.location.href);
-                            var ohc = window.onhashchange;
-                            window.onhashchange = function () {};
-                            window.location.href = renderedParsed.getUrl(opts);
-                            window.onhashchange = ohc;
-                            ohc({reset: true});
+                            Cryptpad.setTabHref(renderedParsed.getUrl(opts));
                         }
                     }));
                 };
+
+                // New pad options
+                if (parsed.hashData && parsed.hashData.newPadOpts) {
+                    try {
+                        var newPad = JSON.parse(decodeURIComponent(parsed.hashData.newPadOpts));
+                        Cryptpad.initialTeam = newPad.t;
+                        Cryptpad.initialPath = newPad.p;
+                        newPadPassword = newPad.pw;
+                        if (newPad.d) {
+                            Cryptpad.fromFileData = newPad.d;
+                            var _parsed1 = Utils.Hash.parsePadUrl(Cryptpad.fromFileData.href);
+                            if (_parsed1.hashData.type === 'pad' &&  _parsed1.type !== parsed.type) {
+                                delete Cryptpad.fromFileData;
+                            }
+                        }
+                    } catch (e) {
+                        console.error(e, parsed.hashData.newPadOpts);
+                    }
+                    delete parsed.hashData.newPadOpts;
+
+                    // If it's a new pad, don't check password
+                    if (!Object.keys(parsed.hashData).length) {
+                        delete parsed.hashData;
+                        parsed.hash = '';
+                        currentPad.hash = '';
+                        Cryptpad.setTabHash('');
+                        return void todo();
+                    }
+                    // Otherwise, existing pad (new for us)
+                    var opts = parsed.getOptions();
+                    delete opts.newPadOpts;
+                    parsed = Utils.Hash.parsePadUrl(parsed.getUrl(opts));
+                    currentPad.hash = parsed.hash;
+                    Cryptpad.setTabHash(parsed.hash);
+                }
+
 
                 if (!parsed.hashData) { // No hash, no need to check for a password
                     return void todo();
@@ -340,9 +372,8 @@ define([
                         password = val;
                     }), parsed.getUrl());
                 }).nThen(function (w) {
-                    if (!password && !stored && sessionStorage.newPadPassword) {
-                        passwordCfg.value = sessionStorage.newPadPassword;
-                        delete sessionStorage.newPadPassword;
+                    if (!password && !stored && newPadPassword) {
+                        passwordCfg.value = newPadPassword;
                     }
 
                     if (parsed.type === "file") {
@@ -362,7 +393,7 @@ define([
                             waitFor.abort();
                             return;
                         }
-                        if (!isNew) { return void todo(); }
+                        if (!e && !isNew) { return void todo(); }
                         if (parsed.hashData.mode === 'view' && (password || !parsed.hashData.password)) {
                             // Error, wrong password stored, the view seed has changed with the password
                             // password will never work
@@ -513,18 +544,10 @@ define([
             sframeChan.onReg('EV_METADATA_UPDATE', updateMeta);
 
             Utils.LocalStore.onLogin(function () {
-                var ohc = window.onhashchange;
-                window.onhashchange = function () {};
-                window.location.hash = currentPad.hash;
-                window.onhashchange = ohc;
-                ohc({reset: true});
+                Cryptpad.setTabHash(currentPad.hash);
             });
             Utils.LocalStore.onLogout(function () {
-                var ohc = window.onhashchange;
-                window.onhashchange = function () {};
-                window.location.hash = currentPad.hash;
-                window.onhashchange = ohc;
-                ohc({reset: true});
+                Cryptpad.setTabHash(currentPad.hash);
                 sframeChan.event('EV_LOGOUT');
             });
 
@@ -1168,11 +1191,7 @@ define([
                 var hiddenParsed = Utils.Hash.parsePadUrl(window.location.href);
 
                 // Update the hash in the address bar
-                var ohc = window.onhashchange;
-                window.onhashchange = function () {};
-                window.location.href = hiddenParsed.getUrl(opts);
-                window.onhashchange = ohc;
-                ohc({reset: true});
+                Cryptpad.setTabHref(hiddenParsed.getUrl(opts));
             });
 
 
@@ -1519,11 +1538,7 @@ define([
             // in the address bar
             Cryptpad.padRpc.onChannelDeleted.reg(function (channel) {
                 if (channel !== secret.channel) { return; }
-                var ohc = window.onhashchange;
-                window.onhashchange = function () {};
-                window.location.href = currentPad.href;
-                window.onhashchange = ohc;
-                ohc({reset: true});
+                Cryptpad.setTabHref(currentPad.href);
             });
 
             // Join the netflux channel
@@ -1607,13 +1622,9 @@ define([
                 Utils.crypto = Utils.Crypto.createEncryptor(Utils.secret.keys);
 
                 // Update the hash in the address bar
-                var ohc = window.onhashchange;
-                window.onhashchange = function () {};
-                window.location.hash = newHash;
                 currentPad.hash = newHash;
                 currentPad.href = '/' + parsed.type + '/#' + newHash;
-                window.onhashchange = ohc;
-                ohc({reset: true});
+                Cryptpad.setTabHash(newHash);
 
                 // Update metadata values and send new metadata inside
                 parsed = Utils.Hash.parsePadUrl(currentPad.href);

@@ -148,6 +148,21 @@ define([
         send();
     };
 
+    common.setTabHref = function (href) {
+        var ohc = window.onhashchange;
+        window.onhashchange = function () {};
+        window.location.href = href;
+        window.onhashchange = ohc;
+        ohc({reset: true});
+    };
+    common.setTabHash = function (hash) {
+        var ohc = window.onhashchange;
+        window.onhashchange = function () {};
+        window.location.hash = hash;
+        window.onhashchange = ohc;
+        ohc({reset: true});
+    };
+
     // RESTRICTED
     // Settings only
     common.resetDrive = function (cb) {
@@ -2089,26 +2104,6 @@ define([
                 language: common.getLanguage(),
                 driveEvents: true //rdyCfg.driveEvents // Boolean
             };
-            // if a pad is created from a file
-            if (sessionStorage[Constants.newPadFileData]) {
-                common.fromFileData = JSON.parse(sessionStorage[Constants.newPadFileData]);
-                var _parsed1 = Hash.parsePadUrl(common.fromFileData.href);
-                var _parsed2 = Hash.parsePadUrl(window.location.href);
-                if (_parsed1.hashData.type === 'pad') {
-                    if (_parsed1.type !== _parsed2.type) { delete common.fromFileData; }
-                }
-                delete sessionStorage[Constants.newPadFileData];
-            }
-
-            if (sessionStorage[Constants.newPadPathKey]) {
-                common.initialPath = sessionStorage[Constants.newPadPathKey];
-                delete sessionStorage[Constants.newPadPathKey];
-            }
-
-            if (sessionStorage[Constants.newPadTeamKey]) {
-                common.initialTeam = sessionStorage[Constants.newPadTeamKey];
-                delete sessionStorage[Constants.newPadTeamKey];
-            }
 
             var channelIsReady = waitFor();
 

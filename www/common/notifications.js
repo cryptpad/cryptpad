@@ -108,21 +108,17 @@ define([
             return Messages._getKey(key, [name, title, teamName]);
         };
         content.handler = function() {
-            var todo = function() {
-                common.openURL(msg.content.href);
-                defaultDismiss(common, data)();
-            };
-            nThen(function(waitFor) {
-                if (msg.content.isTemplate) {
-                    common.sessionStorage.put(Constants.newPadPathKey, ['template'], waitFor());
-                }
-                if (teamNotification) {
-                    common.sessionStorage.put(Constants.newPadTeamKey, teamNotification, waitFor());
-                }
-                common.sessionStorage.put('newPadPassword', msg.content.password || '', waitFor());
-            }).nThen(function() {
-                todo();
+            var obj = JSON.stringify({
+                p: msg.content.isTemplate ? ['template'] : undefined,
+                t: teamNotification || undefined,
+                pw: msg.content.password || ''
             });
+            var str = encodeURIComponent(obj);
+            var parsed = Hash.parsePadUrl(msg.content.href);
+            var opts = parsed.getOptions();
+            opts.newPadOpts = str;
+            common.openURL(parsed.getUrl(opts));
+            defaultDismiss(common, data)();
         };
         if (!content.archived) {
             content.dismissHandler = defaultDismiss(common, data);

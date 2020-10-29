@@ -1125,6 +1125,18 @@ define([
             var hiddenHref = Hash.hashToHref(hash, parsed.type);
             window.open(APP.origin + hiddenHref);
         };
+        var openIn = function (type, path, team, fData) {
+            var obj = JSON.stringify({
+                p: path,
+                t: team,
+                d: fData
+            });
+            var str = encodeURIComponent(obj);
+            var parsed = Hash.parsePadUrl(Hash.hashToHref('', type));
+            var opts = parsed.getOptions();
+            opts.newPadOpts = str;
+            common.openURL(parsed.getUrl(opts));
+        };
 
         var refresh = APP.refresh = function () {
             APP.displayDirectory(currentPath);
@@ -2667,12 +2679,7 @@ define([
                 .click(function () {
                 var type = $(this).attr('data-type') || 'pad';
                 var path = manager.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
-                nThen(function (waitFor) {
-                    common.sessionStorage.put(Constants.newPadPathKey, path, waitFor());
-                    common.sessionStorage.put(Constants.newPadTeamKey, APP.team, waitFor());
-                }).nThen(function () {
-                    common.openURL('/' + type + '/');
-                });
+                openIn(type, path, APP.team);
             });
         };
         var createNewButton = function (isInRoot, $container) {
@@ -4227,31 +4234,19 @@ define([
             else if ($this.hasClass('cp-app-drive-context-makeacopy')) {
                 if (paths.length !== 1) { return; }
                 el = manager.find(paths[0].path);
-                var _metadata = manager.getFileData(el);
-                var _simpleData = {
-                    title: _metadata.filename || _metadata.title,
-                    href: _metadata.href || _metadata.roHref,
-                    password: _metadata.password,
-                    channel: _metadata.channel,
-                };
-                nThen(function (waitFor) {
+                (function () {
                     var path = currentPath;
                     if (path[0] !== ROOT) { path = [ROOT]; }
-                    common.sessionStorage.put(Constants.newPadFileData, JSON.stringify(_simpleData), waitFor());
-                    common.sessionStorage.put(Constants.newPadPathKey, path, waitFor());
-                    common.sessionStorage.put(Constants.newPadTeamKey, APP.team, waitFor());
-                }).nThen(function () {
+                    var _metadata = manager.getFileData(el);
+                    var _simpleData = {
+                        title: _metadata.filename || _metadata.title,
+                        href: _metadata.href || _metadata.roHref,
+                        password: _metadata.password,
+                        channel: _metadata.channel,
+                    };
                     var parsed = Hash.parsePadUrl(_metadata.href || _metadata.roHref);
-                    common.openURL(Hash.hashToHref('', parsed.type));
-                    // We need to restore sessionStorage for the next time we want to create a pad from this tab
-                    // NOTE: the 100ms timeout is to fix a race condition in firefox where sessionStorage
-                    //       would be deleted before the new tab was created
-                    setTimeout(function () {
-                        common.sessionStorage.put(Constants.newPadFileData, '', function () {});
-                        common.sessionStorage.put(Constants.newPadPathKey, '', function () {});
-                        common.sessionStorage.put(Constants.newPadTeamKey, '', function () {});
-                    }, 100);
-                });
+                    openIn(parsed.type, path, APP.team, _simpleData);
+                })();
             }
             else if ($this.hasClass('cp-app-drive-context-openincode')) {
                 if (paths.length !== 1) { return; }
@@ -4264,23 +4259,20 @@ define([
                     password: metadata.password,
                     channel: metadata.channel,
                 };
-                nThen(function (waitFor) {
-                    common.sessionStorage.put(Constants.newPadFileData, JSON.stringify(simpleData), waitFor());
-                    common.sessionStorage.put(Constants.newPadPathKey, currentPath, waitFor());
-                    common.sessionStorage.put(Constants.newPadTeamKey, APP.team, waitFor());
-                }).nThen(function () {
-                    common.openURL('/code/');
-                    // We need to restore sessionStorage for the next time we want to create a pad from this tab
-                    // NOTE: the 100ms timeout is to fix a race condition in firefox where sessionStorage
-                    //       would be deleted before the new tab was created
-                    setTimeout(function () {
-                        common.sessionStorage.put(Constants.newPadFileData, '', function () {});
-                        common.sessionStorage.put(Constants.newPadPathKey, '', function () {});
-                        common.sessionStorage.put(Constants.newPadTeamKey, '', function () {});
-                    }, 100);
-                });
+                (function () {
+                    var path = currentPath;
+                    if (path[0] !== ROOT) { path = [ROOT]; }
+                    var _metadata = manager.getFileData(el);
+                    var _simpleData = {
+                        title: _metadata.filename || _metadata.title,
+                        href: _metadata.href || _metadata.roHref,
+                        password: _metadata.password,
+                        channel: _metadata.channel,
+                    };
+                    var parsed = Hash.parsePadUrl(_metadata.href || _metadata.roHref);
+                    openIn('code', path, APP.team, _simpleData);
+                })();
             }
-
             else if ($this.hasClass('cp-app-drive-context-expandall') ||
                      $this.hasClass('cp-app-drive-context-collapseall')) {
                 if (paths.length !== 1) { return; }
@@ -4482,12 +4474,7 @@ define([
             else if ($this.hasClass("cp-app-drive-context-newdoc")) {
                 var ntype = $this.data('type') || 'pad';
                 var path2 = manager.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
-                nThen(function (waitFor) {
-                    common.sessionStorage.put(Constants.newPadPathKey, path2, waitFor());
-                    common.sessionStorage.put(Constants.newPadTeamKey, APP.team, waitFor());
-                }).nThen(function () {
-                    common.openURL('/' + ntype + '/');
-                });
+                openIn(ntype, path2, APP.team);
             }
             else if ($this.hasClass("cp-app-drive-context-properties")) {
                 if (type === 'trash') {
