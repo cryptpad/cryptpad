@@ -275,7 +275,7 @@ button.primary:hover{
         loadingStyle,
         '</style>',
         '<div class="cp-loading-logo">',
-            '<img class="cp-loading-cryptofist" src="/customize/CryptPad_logo_grey.svg?' + urlArgs + '">',
+            '<img class="cp-loading-cryptofist" src="/customize/CryptPad_logo.svg?' + urlArgs + '">',
         '</div>',
         '<div class="cp-loading-container">',
             '<div class="cp-loading-spinner-container">',
