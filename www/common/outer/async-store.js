@@ -1081,7 +1081,7 @@ define([
                 if (storeLocally && s.id) { return; }
 
                 // If this is an edit link but we don't have edit rights, this entry is not useful
-                if (h.mode === "edit" && !s.secondaryKey) {
+                if (h.mode === "edit" && s.id && !s.secondaryKey) {
                     return;
                 }
 
