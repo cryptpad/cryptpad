@@ -2628,6 +2628,7 @@ define([
                 classic: true,
             };
             var rt = window.rt = Listmap.create(listmapConfig);
+            store.driveSecret = secret;
             store.proxy = rt.proxy;
             store.loggedIn = typeof(data.userHash) !== "undefined";
 

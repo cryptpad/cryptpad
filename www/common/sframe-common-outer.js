@@ -213,7 +213,14 @@ define([
                         var newPad = JSON.parse(decodeURIComponent(parsed.hashData.newPadOpts));
                         Cryptpad.initialTeam = newPad.t;
                         Cryptpad.initialPath = newPad.p;
-                        newPadPassword = newPad.pw;
+                        if (newPad.pw) {
+                            try {
+                                var uHash = Utils.LocalStore.getUserHash();
+                                var uSecret = Utils.Hash.getSecrets('drive', uHash);
+                                var uKey = uSecret.keys.cryptKey;
+                                newPadPassword = Crypto.decrypt(newPad.pw, uKey);
+                            } catch (e) { console.error(e); }
+                        }
                         if (newPad.d) {
                             Cryptpad.fromFileData = newPad.d;
                             var _parsed1 = Utils.Hash.parsePadUrl(Cryptpad.fromFileData.href);
