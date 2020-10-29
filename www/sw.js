@@ -4,6 +4,7 @@ var version = self.location.search || "DEFAULT";
 
 var filesToCache = [
     '/common/sframe-app-outer.js',
+    '/common/offline.html',
 ];
 
 /*
