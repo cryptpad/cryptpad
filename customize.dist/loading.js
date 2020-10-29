@@ -333,6 +333,8 @@ button.primary:hover{
     window.CryptPad_loadingError = function (err) {
         if (!built) { return; }
         try {
+            var node = document.querySelector('.cp-loading-progress');
+            if (node.parentNode) { node.parentNode.removeChild(node); }
             document.querySelector('.cp-loading-spinner-container').setAttribute('style', 'display:none;');
             document.querySelector('#cp-loading-message').setAttribute('style', 'display:block;');
             document.querySelector('#cp-loading-message').innerText = err;
