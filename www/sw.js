@@ -145,12 +145,15 @@ var handleDefaultFetch = function (event) {
                         return response.clone();
                     }).catch(function (/*err*/) {
                         console.error('FAILED FETCH for url [%s]', new URL(event.request.url).pathname);
+                        return matchCache('/common/offline.html', {
+                            ignoreSearch: true,
+                        });
                         //console.error(err);
                     });
             });
         }).catch(error => {
             console.error(error);
-            return matchCache('/service/offline.html');
+            // unexpected error. allow default behaviour
         })
     );
 };
