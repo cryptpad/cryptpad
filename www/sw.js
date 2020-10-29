@@ -1,7 +1,86 @@
-window = self;
-
+/* jshint esversion: 6 */
 var version = self.location.search || "DEFAULT";
-var filesToCache = [];
+//console.log('worker location:', self.location);
+
+var filesToCache = [
+    '/common/sframe-app-outer.js',
+];
+
+/*
+[
+    'auth',
+    'bounce',
+    'code',
+    'contacts',
+    'drive',
+    'file',
+    'kanban',
+    'login',
+    'logout',
+    'notifications',
+    //'oodoc',
+    //'ooslide',
+    'pad',
+    'poll',
+    'profile',
+    'register',
+    //'secureiframe',
+    //'service',
+    'settings',
+    'sheet',
+    'slide',
+    'support',
+    'teams',
+    'todo',
+    'whiteboard',
+    //'worker',
+];
+.forEach(function (path) {
+    filesToCache.push('/' + path + '/');
+});
+*/
+
+/*
+[
+    '',
+    //'404.html',
+    'about.html',
+    'contact.html',
+    'faq.html',
+    'features.html',
+    'index.html',
+    //'maintenance.html',
+    'privacy.html',
+    'terms.html',
+    'what-is-cryptpad.html',
+].forEach(function (path) {
+    filesToCache.push('/' + path);
+});
+*/
+
+filesToCache.forEach(function (file, i) {
+    filesToCache[i] += ('?' + version);
+});
+
+var openCache = function (name) {
+    return caches.open(name); // jshint ignore:line
+};
+
+var deleteCache = function (name) {
+    return caches.delete(name); // jshint ignore:line
+};
+
+var cacheResponse = function (cache, request, response) {
+    cache.put(request.clone(), response.clone()); // jshint ignore:line
+};
+
+var listCaches = function () {
+    return caches.keys(); // jshint ignore:line
+};
+
+var matchCache = function (req, opt) {
+    return caches.match(req, opt); // jshint ignore:line
+};
 
 var handleApiConfig = function (event) {
     //console.log("API CONFIG");
@@ -11,50 +90,51 @@ var handleApiConfig = function (event) {
         .then(function (response) {
             //console.log("API CONFIG", request, response);
             if (!response.ok) {
-                return caches.match('/api/config', {
+                return matchCache('/api/config', {
                     ignoreSearch: true,
                 });
                 //throw new Error("oops");
             }
 
             // XXX always cache the latest /api/config
-            return caches.open(version).then(function (cache) {
+            return openCache(version).then(function (cache) {
                 //console.log('API CONFIG REQUEST', request.clone());
-                cache.put(event.request.clone(), response.clone());
+                cacheResponse(cache, event.request, response);
                 return response;
             }).catch(function (err) {
                 console.error(err);
             });
             //return response.clone();
         })
-        .catch(function (err) {
-            //console.error("failed /api/config fetch");
+        .catch(function (/* err */) {
+            //console.error(err);
+            console.error("failed /api/config fetch");
             //console.log(caches.match('/api/config'));
 
             // XXX respond with most recently cached /api/config
-            return caches.match(event.request.clone(), {
+            return matchCache(event.request.clone(), {
                 ignoreSearch: true,
             })
             //'api/config')
             .then(function (response) {
-                0 && response.clone().text().then(function (data) {
+             /* 0 && response.clone().text().then(function (data) {
                     console.log('response.text', data);
-                });
+                }); */
                 //console.log('response.text', response.clone().text());
 
                 //console.log("falling back to cached /api/config");
                 return response;
-            })
+            });
         })
     );
 };
 
 var handleDefaultFetch = function (event) {
     event.respondWith(
-        caches.match(event.request)
-        .then(response => {
+        matchCache(event.request)
+        .then(function (response) {
             if (response) { return response; }
-            return caches.open(version).then(function (cache) {
+            return openCache(version).then(function (cache) {
                 console.log('Network request for ', event.request.url);
                 return fetch(event.request.clone())
                     .then(function (response) {
@@ -62,14 +142,14 @@ var handleDefaultFetch = function (event) {
                             cache.put(event.request, response.clone());
                         }
                         return response.clone();
-                    }).catch(function (err) {
-                        console.error('FAILED FETCH for url [%s]', event.request.url);
-                        console.error(err);
+                    }).catch(function (/*err*/) {
+                        console.error('FAILED FETCH for url [%s]', new URL(event.request.url).pathname);
+                        //console.error(err);
                     });
             });
         }).catch(error => {
             console.error(error);
-            return caches.match('/service/offline.html');
+            return matchCache('/service/offline.html');
         })
     );
 };
@@ -77,6 +157,8 @@ var handleDefaultFetch = function (event) {
 var handleFetch = function (event) {
     if (event.request.method !== 'GET') { return; }
     var url = new URL(event.request.url);
+    if (url.pathname === '/sw.js') { return; }
+
     //console.log(url);
     //console.log('Fetch event for ', event.request.url, event.request);
     if (/^\/api\/config/.test(url.pathname)) {
@@ -87,38 +169,45 @@ var handleFetch = function (event) {
 
 self.addEventListener('fetch', handleFetch);
 
-window.addEventListener('unhandledrejection', function(event) {
+self.addEventListener('unhandledrejection', function(event) {
     console.error('Unhandled rejection (promise: ', event.promise, ', reason: ', event.reason, ').');
+    throw new Error();
 });
 
+var claimClients = function () {
+    clients.claim(); // jshint ignore:line
+};
+
 self.addEventListener('install', function (event) {
-    // XXX self.skipWaiting 
     event.waitUntil(
-        caches.open(version).then(function (cache) {
+        openCache(version).then(function (cache) {
             return cache.addAll(filesToCache);
+        })
+        .then(function () {
+            return self.skipWaiting();
+        }).catch(function (err) {
+            console.error(err);
         })
     );
 });
 
 self.addEventListener('activate', function (event) {
+    // evict older versions of files you've cached
+    console.log("activating %s", version);
 
-    // delete any caches that aren't in expectedCaches
-    // which will get rid of static-v1
     event.waitUntil(
-        caches.keys()
+        listCaches()
         .then(keys => Promise.all(
             keys.map(key => {
-                console.log(key);
                 if (key !== version) {
-                    return caches.delete(key);
+                    console.log('Evicting cache: [%s]', key);
+                    return deleteCache(key);
                 }
             })
         )).then(() => {
             console.log('version %s now ready to handle fetches!', version);
-            clients.claim();
+            claimClients();
         })
     );
 });
-
-
 
