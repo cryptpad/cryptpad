@@ -349,10 +349,11 @@ define([
                             return void noPadData('NO_RESULT');
                         }
                         // Data found but weaker? warn
+                        expire = res.expire;
                         if (edit && !res.href) {
                             newHref = res.roHref;
+                            return;
                         }
-                        expire = res.expire;
                         // We have good data, keep the hash in memory
                         newHref = edit ? res.href : (res.roHref || res.href);
                     }));
