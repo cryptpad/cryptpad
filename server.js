@@ -191,7 +191,7 @@ var serveConfig = (function () {
             'define(function(){',
             'var obj = ' + JSON.stringify({
                 requireConf: {
-                    waitSeconds: 600,
+                    waitSeconds: 0, //600,
                     urlArgs: 'ver=' + Package.version + cacheString(),
                 },
                 removeDonateButton: (config.removeDonateButton === true),
