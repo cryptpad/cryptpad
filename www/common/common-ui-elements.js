@@ -2270,12 +2270,14 @@ define([
                     icon: h('span.cptools.cptools-new-template')
                 });
             }
-            allData.unshift({
-                name: Messages.creation_noTemplate,
-                id: 0,
-                //icon: h('span.fa.fa-file')
-                icon: UI.getFileIcon({type: type})
-            });
+            if (!privateData.newTemplate) {
+                allData.unshift({
+                    name: Messages.creation_noTemplate,
+                    id: 0,
+                    //icon: h('span.fa.fa-file')
+                    icon: UI.getFileIcon({type: type})
+                });
+            }
             var redraw = function (index) {
                 if (index < 0) { i = 0; }
                 else if (index > allData.length - 1) { return; }

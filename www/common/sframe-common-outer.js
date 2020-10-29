@@ -488,6 +488,8 @@ define([
                         fileHost: ApiConfig.fileHost,
                         readOnly: readOnly,
                         isTemplate: isTemplate,
+                        newTemplate: Array.isArray(Cryptpad.initialPath)
+                                        && Cryptpad.initialPath[0] === "template",
                         feedbackAllowed: Utils.Feedback.state,
                         isPresent: parsed.hashData && parsed.hashData.present,
                         isEmbed: parsed.hashData && parsed.hashData.embed,
@@ -1662,6 +1664,7 @@ define([
                 nThen(function(waitFor) {
                     if (data.templateId) {
                         if (data.templateId === -1) {
+                            isTemplate = true;
                             initialPathInDrive = ['template'];
                             return;
                         }
