@@ -6,16 +6,16 @@
     window.btoa = window.btoa || function (str) { return Buffer.from(str, 'binary').toString('base64'); }; // jshint ignore:line
 
     var isPwa = function isPwa() {
-        return ["fullscreen", "standalone", "minimal-ui"].some(
-            (displayMode) => window.matchMedia('(display-mode: ' + displayMode + ')').matches
-        );
+        return ["fullscreen", "standalone", "minimal-ui"].some(function (displayMode) {
+            return window.matchMedia('(display-mode: ' + displayMode + ')').matches;
+        });
     };
 
     // XXX standardize noopener, etc.
     Util.open = function (url, name /*, features */) {
         if (navigator.standalone || isPwa()) {
             try {
-                return window.document.location = url;
+                return (window.document.location = url);
             } catch (err) {
                 // fall through to standard opening method
                 console.error(err);
