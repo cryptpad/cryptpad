@@ -1677,6 +1677,16 @@ define([
                 },
             });
         }
+        options.push({
+            tag: 'a',
+            attributes: {
+                'target': '_blank',
+                'rel': 'noopener',
+                'href': 'https://docs.cryptpad.fr',
+                'class': 'fa fa-book'
+            },
+            content: h('span', Messages.docs_link) // XXX
+        });
         if (padType !== 'support' && accountName && Config.supportMailbox) {
             options.push({
                 tag: 'a',
@@ -1691,21 +1701,22 @@ define([
                 },
             });
         }
-        if (AppConfig.surveyURL) {
-            options.push({
-                tag: 'a',
-                attributes: {
-                    'target': '_blank',
-                    'rel': 'noopener',
-                    'href': AppConfig.surveyURL,
-                    'class': 'cp-toolbar-survey fa fa-graduation-cap'
-                },
-                content: h('span', Messages.survey),
-                action: function () {
-                    Feedback.send('SURVEY_CLICKED');
-                },
-            });
-        }
+        // XXX Trade the survey for documentation
+        // if (AppConfig.surveyURL) {
+        //     options.push({
+        //         tag: 'a',
+        //         attributes: {
+        //             'target': '_blank',
+        //             'rel': 'noopener',
+        //             'href': AppConfig.surveyURL,
+        //             'class': 'cp-toolbar-survey fa fa-graduation-cap'
+        //         },
+        //         content: h('span', Messages.survey),
+        //         action: function () {
+        //             Feedback.send('SURVEY_CLICKED');
+        //         },
+        //     });
+        // }
         options.push({
             tag: 'a',
             attributes: {
