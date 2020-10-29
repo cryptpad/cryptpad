@@ -2,7 +2,8 @@ define([
     '/common/common-messaging.js',
     '/common/common-hash.js',
     '/common/common-util.js',
-], function (Messaging, Hash, Util) {
+    '/bower_components/chainpad-crypto/crypto.js',
+], function (Messaging, Hash, Util, Crypto) {
 
     // Random timeout between 10 and 30 times your sync time (lag + chainpad sync)
     var getRandomTimeout = function (ctx) {
@@ -219,6 +220,11 @@ define([
             }
             // New hash is not weaker, clear the old one
             toRemove = old.data;
+        }
+
+        if (content.password) {
+            var key = ctx.store.driveSecret.keys.cryptKey;
+            content.password = Crypto.encrypt(content.password, key);
         }
 
         // Update the data
