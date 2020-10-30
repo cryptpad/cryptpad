@@ -123,6 +123,9 @@ define([
                     });
                     SFrameChannel.create(msgEv, postMsg, waitFor(function (sfc) {
                         Utils.sframeChan = sframeChan = sfc;
+                        window.CryptPad_loadingError = function (e) {
+                            sfc.event('EV_LOADING_ERROR', e)
+                        };
                     }));
                 });
                 window.addEventListener('message', whenReady);
