@@ -290,14 +290,7 @@ button.primary:hover{
     ].join('');
     var built = false;
 
-    // XXX
     var types = ['less', 'drive', 'migrate', 'sf', 'team', 'pad', 'end'];
-    Messages.loading_state_0 = "Less";
-    Messages.loading_state_1 = "Drive";
-    Messages.loading_state_2 = "Migrate";
-    Messages.loading_state_3 = "SF";
-    Messages.loading_state_4 = "Team";
-    Messages.loading_state_5 = "Pad";
     var current;
     var makeList = function (data) {
         var c = types.indexOf(data.type);

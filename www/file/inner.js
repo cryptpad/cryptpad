@@ -231,9 +231,7 @@ define([
         if (!common.isLoggedIn()) {
             UI.removeLoadingScreen();
             return UI.alert(Messages.upload_mustLogin, function () {
-                common.setLoginRedirect(function () {
-                    common.gotoURL('/login/');
-                });
+                common.setLoginRedirect('login');
             });
         }
 

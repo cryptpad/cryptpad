@@ -7,8 +7,7 @@ define([
     '/common/common-util.js',
     '/common/common-constants.js',
     '/customize/messages.js',
-    '/bower_components/nthen/index.js'
-], function($, h, Hash, UI, UIElements, Util, Constants, Messages, nThen) {
+], function($, h, Hash, UI, UIElements, Util, Constants, Messages) {
 
     var handlers = {};
 
@@ -108,21 +107,13 @@ define([
             return Messages._getKey(key, [name, title, teamName]);
         };
         content.handler = function() {
-            var todo = function() {
-                common.openURL(msg.content.href);
-                defaultDismiss(common, data)();
+            var obj = {
+                p: msg.content.isTemplate ? ['template'] : undefined,
+                t: teamNotification || undefined,
+                pw: msg.content.password || ''
             };
-            nThen(function(waitFor) {
-                if (msg.content.isTemplate) {
-                    common.sessionStorage.put(Constants.newPadPathKey, ['template'], waitFor());
-                }
-                if (teamNotification) {
-                    common.sessionStorage.put(Constants.newPadTeamKey, teamNotification, waitFor());
-                }
-                common.sessionStorage.put('newPadPassword', msg.content.password || '', waitFor());
-            }).nThen(function() {
-                todo();
-            });
+            common.openURL(Hash.getNewPadURL(msg.content.href, obj));
+            defaultDismiss(common, data)();
         };
         if (!content.archived) {
             content.dismissHandler = defaultDismiss(common, data);

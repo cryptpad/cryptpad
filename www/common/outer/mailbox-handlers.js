@@ -2,7 +2,8 @@ define([
     '/common/common-messaging.js',
     '/common/common-hash.js',
     '/common/common-util.js',
-], function (Messaging, Hash, Util) {
+    '/bower_components/chainpad-crypto/crypto.js',
+], function (Messaging, Hash, Util, Crypto) {
 
     // Random timeout between 10 and 30 times your sync time (lag + chainpad sync)
     var getRandomTimeout = function (ctx) {
@@ -221,6 +222,11 @@ define([
             toRemove = old.data;
         }
 
+        if (content.password) {
+            var key = ctx.store.driveSecret.keys.cryptKey;
+            content.password = Crypto.encrypt(content.password, key);
+        }
+
         // Update the data
         channels[channel] = {
             mode: mode,
@@ -314,6 +320,11 @@ define([
         }
 
         var channel = content.channel || content.teamChannel;
+
+        if (content.password) {
+            var key = ctx.store.driveSecret.keys.cryptKey;
+            content.password = Crypto.encrypt(content.password, key);
+        }
 
         if (addOwners[channel]) { return void cb(true); }
         addOwners[channel] = {

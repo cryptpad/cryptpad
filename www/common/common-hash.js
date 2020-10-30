@@ -169,6 +169,28 @@ Version 1
     /code/#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI
 */
 
+    var getLoginOpts = function (hashArr) {
+        var k;
+        // Check if we have a ownerKey for this pad
+        hashArr.some(function (data) {
+            if (/^login=/.test(data)) {
+                k = data.slice(6);
+                return true;
+            }
+        });
+        return k || '';
+    };
+    var getNewPadOpts = function (hashArr) {
+        var k;
+        // Check if we have a ownerKey for this pad
+        hashArr.some(function (data) {
+            if (/^newpad=/.test(data)) {
+                k = data.slice(7);
+                return true;
+            }
+        });
+        return k || '';
+    };
     var getVersionHash = function (hashArr) {
         var k;
         // Check if we have a ownerKey for this pad
@@ -202,21 +224,52 @@ Version 1
             parsed.present = options.indexOf('present') !== -1;
             parsed.embed = options.indexOf('embed') !== -1;
             parsed.versionHash = getVersionHash(options);
+            parsed.newPadOpts = getNewPadOpts(options);
+            parsed.loginOpts = getLoginOpts(options);
             parsed.ownerKey = getOwnerKey(options);
         };
 
+        // Version 4: only login or newpad options, smae for all the apps
+        if (hashArr[1] && hashArr[1] === '4') {
+            parsed.getHash = function (opts) {
+                if (!opts || !Object.keys(opts).length) { return ''; }
+                var hash = '/4/';
+                if (opts.newPadOpts) { hash += 'newpad=' + opts.newPadOpts + '/'; }
+                if (opts.loginOpts) { hash += 'login=' + opts.loginOpts + '/'; }
+                return hash;
+            };
+            parsed.getOptions = function () {
+                var options = {};
+                if (parsed.newPadOpts) { options.newPadOpts = parsed.newPadOpts; }
+                if (parsed.loginOpts) { options.loginOpts = parsed.loginOpts; }
+                return options;
+            };
+
+            parsed.version = 4;
+            options = hashArr.slice(2);
+            addOptions();
+
+            return parsed;
+        }
+
+        // The other versions depends on the type
         if (['media', 'file', 'user', 'invite'].indexOf(type) === -1) {
             parsed.type = 'pad';
-            parsed.getHash = function () { return hash; };
+            parsed.getHash = function () {
+                return hash;
+            };
             parsed.getOptions = function () {
                 return {
                     embed: parsed.embed,
                     present: parsed.present,
                     ownerKey: parsed.ownerKey,
                     versionHash: parsed.versionHash,
+                    newPadOpts: parsed.newPadOpts,
+                    loginOpts: parsed.loginOpts,
                     password: parsed.password
                 };
             };
+
             if (hash.slice(0,1) !== '/' && hash.length >= 56) { // Version 0
                 // Old hash
                 parsed.channel = hash.slice(0, 32);
@@ -237,6 +290,8 @@ Version 1
                 if (versionHash) {
                     hash += 'hash=' + Crypto.b64RemoveSlashes(versionHash) + '/';
                 }
+                if (opts.newPadOpts) { hash += 'newpad=' + opts.newPadOpts + '/'; }
+                if (opts.loginOpts) { hash += 'login=' + opts.loginOpts + '/'; }
                 return hash;
             };
 
@@ -284,6 +339,8 @@ Version 1
                     embed: parsed.embed,
                     present: parsed.present,
                     ownerKey: parsed.ownerKey,
+                    newPadOpts: parsed.newPadOpts,
+                    loginOpts: parsed.loginOpts,
                     password: parsed.password
                 };
             };
@@ -295,6 +352,8 @@ Version 1
                 if (parsed.password || opts.password) { hash += 'p/'; }
                 if (opts.embed) { hash += 'embed/'; }
                 if (opts.present) { hash += 'present/'; }
+                if (opts.newPadOpts) { hash += 'newpad=' + opts.newPadOpts + '/'; }
+                if (opts.loginOpts) { hash += 'login=' + opts.loginOpts + '/'; }
                 return hash;
             };
 
@@ -367,14 +426,26 @@ Version 1
 
         var idx;
 
+        // When we start without a hash, use version 4 links to add login or newpad options
+        var getHash = function (opts) {
+            if (!opts || !Object.keys(opts).length) { return ''; }
+            var hash = '/4/';
+            if (opts.newPadOpts) { hash += 'newpad=' + opts.newPadOpts + '/'; }
+            if (opts.loginOpts) { hash += 'login=' + opts.loginOpts + '/'; }
+            return hash;
+        };
         ret.getUrl = function (options) {
             options = options || {};
             var url = '/';
             if (!ret.type) { return url; }
             url += ret.type + '/';
+            // New pad with options: append the options to the hash
+            if (!ret.hashData && options && Object.keys(options).length) {
+                return url + '#' + getHash(options);
+            }
             if (!ret.hashData) { return url; }
-            if (ret.hashData.type !== 'pad') { return url + '#' + ret.hash; }
-            if (ret.hashData.version === 0) { return url + '#' + ret.hash; }
+            //if (ret.hashData.version === 0) { return url + '#' + ret.hash; }
+            //if (ret.hashData.type !== 'pad') { return url + '#' + ret.hash; }
             var hash = ret.hashData.getHash(options);
             url += '#' + hash;
             return url;
@@ -523,7 +594,6 @@ Version 1
         secret = JSON.parse(JSON.stringify(secret));
 
         if (!secret.keys && !secret.key) {
-            console.error('e');
             return hashes;
         } else if (!secret.keys) {
             secret.keys = {};
@@ -575,6 +645,9 @@ Version 1
         // Valid hash?
         if (parsed.hash) {
             if (!parsed.hashData) { return; }
+            // New pad: only newPadOpts allowed
+            if (Object.keys(parsed.hashData).length === 1 &&
+                    parsed.hashData.newPadOpts) { return true; }
             // Version should be a number
             if (typeof(parsed.hashData.version) === "undefined") { return; }
             // pads and files should have a base64 (or hex) key
@@ -584,6 +657,29 @@ Version 1
             }
         }
         return true;
+    };
+
+    Hash.decodeDataOptions = function (opts) {
+        var b64 = decodeURIComponent(opts);
+        var str = Nacl.util.encodeUTF8(Nacl.util.decodeBase64(b64));
+        return JSON.parse(str);
+    };
+    Hash.encodeDataOptions = function (opts) {
+        var str = JSON.stringify(opts);
+        var b64 = Nacl.util.encodeBase64(Nacl.util.decodeUTF8(str));
+        return encodeURIComponent(b64);
+    };
+    Hash.getNewPadURL = function (href, opts) {
+        var parsed = Hash.parsePadUrl(href);
+        var options = parsed.getOptions();
+        options.newPadOpts = Hash.encodeDataOptions(opts);
+        return parsed.getUrl(options);
+    };
+    Hash.getLoginURL = function (href, opts) {
+        var parsed = Hash.parsePadUrl(href);
+        var options = parsed.getOptions();
+        options.loginOpts = Hash.encodeDataOptions(opts);
+        return parsed.getUrl(options);
     };
 
     return Hash;

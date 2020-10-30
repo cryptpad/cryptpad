@@ -4,12 +4,13 @@ define([
     '/common/hyperscript.js',
     '/common/common-feedback.js',
     '/common/common-interface.js',
+    '/common/common-hash.js',
     '/common/textFit.min.js',
     '/customize/messages.js',
     '/customize/application_config.js',
     '/common/outer/local-store.js',
     '/customize/pages.js'
-], function ($, Config, h, Feedback, UI, TextFit, Msg, AppConfig, LocalStore, Pages) {
+], function ($, Config, h, Feedback, UI, Hash, TextFit, Msg, AppConfig, LocalStore, Pages) {
     var urlArgs = Config.requireConf.urlArgs;
 
     var isAvailableType = function (x) {
@@ -46,8 +47,9 @@ define([
                 var href = '/'+ x[0] +'/';
                 var attr = isEnabled ? { href: href } : {
                     onclick: function () {
-                         sessionStorage.redirectTo = href;
-                         window.location.href = '/login/';
+                        var href = Hash.hashToHref('', 'login');
+                        var url = Hash.getNewPadURL(href, { href: href });
+                        window.location.href = url;
                     }
                 };
                 if (!isEnabled) {

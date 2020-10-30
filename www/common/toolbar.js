@@ -773,15 +773,11 @@ MessengerUI, Messages) {
             ]);
             $msg.find('a.cp-pnp-login').click(function (ev) {
                 ev.preventDefault();
-                Common.setLoginRedirect(function () {
-                    window.parent.location = o + '/login/';
-                });
+                Common.setLoginRedirect('login');
             });
             $msg.find('a.cp-pnp-register').click(function (ev) {
                 ev.preventDefault();
-                Common.setLoginRedirect(function () {
-                    window.parent.location = o + '/register/';
-                });
+                Common.setLoginRedirect('register');
             });
             $('.cp-toolbar-top').append($msg);
             //UI.addTooltips();

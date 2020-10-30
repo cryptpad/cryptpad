@@ -55,7 +55,7 @@ define([
         var addData = function (obj) {
             obj.ooType = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
             obj.ooVersionHash = version;
-            obj.ooForceVersion = localStorage.CryptPad_ooVersion || sessionStorage.CryptPad_ooVersion || "";
+            obj.ooForceVersion = localStorage.CryptPad_ooVersion || "";
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
             sframeChan.on('Q_OO_SAVE', function (data, cb) {

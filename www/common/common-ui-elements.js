@@ -248,20 +248,15 @@ define([
                     className: 'secondary',
                     name: Messages.login_register,
                     onClick: function () {
-                        common.setLoginRedirect(function () {
-                            common.gotoURL('/register/');
-                        });
+                        common.setLoginRedirect('register');
                     }
                   }, {
                     className: 'secondary',
                     name: Messages.login_login,
                     onClick: function () {
-                        common.setLoginRedirect(function () {
-                            common.gotoURL('/login/');
-                        });
+                        common.setLoginRedirect('login');
                     }
-                  }
-                  ]
+                  }]
             };
         }
     };
@@ -633,6 +628,7 @@ define([
                 button
                 .click(common.prepareFeedback(type))
                 .click(function () {
+                    if (callback) { return void callback(); }
                     UIElements.openTemplatePicker(common, true);
                 });
                 break;
@@ -1802,9 +1798,7 @@ define([
                 attributes: {'class': 'cp-toolbar-menu-login fa fa-sign-in'},
                 content: h('span', Messages.login_login),
                 action: function () {
-                    Common.setLoginRedirect(function () {
-                        window.parent.location = origin+'/login/';
-                    });
+                    Common.setLoginRedirect('login');
                 },
             });
             options.push({
@@ -1812,9 +1806,7 @@ define([
                 attributes: {'class': 'cp-toolbar-menu-register fa fa-user-plus'},
                 content: h('span', Messages.login_register),
                 action: function () {
-                    Common.setLoginRedirect(function () {
-                        window.parent.location = origin+'/register/';
-                    });
+                    Common.setLoginRedirect('register');
                 },
             });
         }
@@ -1939,8 +1931,6 @@ define([
         $modal.find('.cp-modal').append($title);
         $modal.find('.cp-modal').append($description);
 
-        var $advanced;
-
         var $container = $('<div>');
         var i = 0;
         var types = AppConfig.availablePadTypes.filter(function (p) {
@@ -1964,15 +1954,7 @@ define([
             $element.attr('data-type', p);
             $element.click(function () {
                 $modal.hide();
-                if ($advanced && Util.isChecked($advanced)) {
-                    common.sessionStorage.put(Constants.displayPadCreationScreen, true, function (){
-                        common.openURL('/' + p + '/');
-                    });
-                    return;
-                }
-                common.sessionStorage.put(Constants.displayPadCreationScreen, "", function () {
-                    common.openURL('/' + p + '/');
-                });
+                common.openURL('/' + p + '/');
             });
         });
 
@@ -1996,12 +1978,6 @@ define([
                     $container.find('.cp-icons-element-selected').click();
                 }
                 return;
-            }
-            if (e.which === 32 && $advanced) {
-                $advanced.prop('checked', !$advanced.prop('checked'));
-                $modal.focus();
-                e.stopPropagation();
-                e.preventDefault();
             }
         });
 
@@ -2109,7 +2085,7 @@ define([
         var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
-        var type = metadataMgr.getMetadataLazy().type;
+        var type = metadataMgr.getMetadataLazy().type || privateData.app;
         var fromFileData = privateData.fromFileData;
 
         var $body = $('body');
@@ -2284,12 +2260,14 @@ define([
                     icon: h('span.cptools.cptools-new-template')
                 });
             }
-            allData.unshift({
-                name: Messages.creation_noTemplate,
-                id: 0,
-                //icon: h('span.fa.fa-file')
-                icon: UI.getFileIcon({type: type})
-            });
+            if (!privateData.newTemplate) {
+                allData.unshift({
+                    name: Messages.creation_noTemplate,
+                    id: 0,
+                    //icon: h('span.fa.fa-file')
+                    icon: UI.getFileIcon({type: type})
+                });
+            }
             var redraw = function (index) {
                 if (index < 0) { i = 0; }
                 else if (index > allData.length - 1) { return; }
@@ -2765,13 +2743,8 @@ define([
         $(link).click(function (e) {
             e.preventDefault();
             e.stopPropagation();
-            if (msg.content.password) {
-                common.sessionStorage.put('newPadPassword', msg.content.password, function () {
-                    common.openURL(msg.content.href);
-                });
-                return;
-            }
-            common.openURL(msg.content.href);
+            var obj = { pw: msg.content.password || '' };
+            common.openURL(Hash.getNewPadURL(msg.content.href, obj));
         });
 
         var div = h('div', [

@@ -2647,6 +2647,7 @@ define([
                 classic: true,
             };
             var rt = window.rt = Listmap.create(listmapConfig);
+            store.driveSecret = secret;
             store.proxy = rt.proxy;
             store.loggedIn = typeof(data.userHash) !== "undefined";
 
@@ -2729,7 +2730,6 @@ define([
          *   - userHash or anonHash
          * Todo in cb
          *   - LocalStore.setFSHash if needed
-         *   - sessionStorage.User_Hash
          *   - stuff with tokenKey
          * Event to outer
          *   - requestLogin

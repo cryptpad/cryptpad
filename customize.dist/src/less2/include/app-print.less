@@ -9,10 +9,6 @@
             max-height: none;
             overflow: visible;
             display: block;
-            @page {
-                margin: 0;
-                size: landscape;
-            }
             // Slide app
             body.cp-app-slide {
                 display: block;
@@ -48,10 +44,14 @@
             // Code app
             body.cp-app-code {
                 display: block;
+                height: auto;
                 * {
                     visibility: hidden;
                     height: auto;
                     max-height: none;
+                }
+                .cp-toolbar-userlist-drawer {
+                    display: none;
                 }
                 #cme_toolbox {
                     display: none;
@@ -64,6 +64,7 @@
                     #cp-app-code-preview {
                         display: block;
                         #cp-app-code-print {
+                            font-size: 20px;
                             display: block;
                             overflow: visible !important;
                             width: 100%;
