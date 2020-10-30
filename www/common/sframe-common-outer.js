@@ -1181,15 +1181,6 @@ define([
                 });
             });
 
-            sframeChan.on('Q_SESSIONSTORAGE_PUT', function (data, cb) {
-                if (typeof (data.value) === "undefined") {
-                    delete sessionStorage[data.key];
-                } else {
-                    sessionStorage[data.key] = data.value;
-                }
-                cb();
-            });
-
             sframeChan.on('Q_IS_ONLY_IN_SHARED_FOLDER', function (data, cb) {
                 Cryptpad.isOnlyInSharedFolder(secret.channel, function (err, t) {
                     if (err) { return void cb({error: err}); }

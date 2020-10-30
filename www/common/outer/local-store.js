@@ -82,19 +82,6 @@ define([
         localStorage.setItem(Constants.userNameKey, name);
         if (cb) { cb(); }
     };
-    var eraseTempSessionValues = LocalStore.eraseTempSessionValues = function () {
-        // delete sessionStorage values that might have been left over
-        // from the main page's /user redirect
-        [
-            'login',
-            'login_user',
-            'login_pass',
-            'login_rmb',
-            'register'
-        ].forEach(function (k) {
-            delete sessionStorage[k];
-        });
-    };
     var logoutHandlers = [];
     LocalStore.logout = function (cb, isDeletion) {
         [
@@ -104,10 +91,8 @@ define([
             'loginToken',
             'plan',
         ].forEach(function (k) {
-            sessionStorage.removeItem(k);
             localStorage.removeItem(k);
             delete localStorage[k];
-            delete sessionStorage[k];
         });
         try {
             Object.keys(localStorage || {}).forEach(function (k) {
@@ -122,7 +107,6 @@ define([
         if (!LocalStore.getFSHash()) {
             LocalStore.setFSHash(Hash.createRandomHash('drive'));
         }
-        eraseTempSessionValues();
 
         if (!isDeletion) {
             logoutHandlers.forEach(function (h) {

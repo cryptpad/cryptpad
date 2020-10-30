@@ -462,15 +462,6 @@ define([
         });
     };
 
-    funcs.sessionStorage = {
-        put: function (key, value, cb) {
-            ctx.sframeChan.query('Q_SESSIONSTORAGE_PUT', {
-                key: key,
-                value: value
-            }, cb);
-        }
-    };
-
     funcs.setDisplayName = function (name, cb) {
         cb = cb || $.noop;
         ctx.sframeChan.query('Q_SETTINGS_SET_DISPLAY_NAME', name, cb);

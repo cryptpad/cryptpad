@@ -2730,7 +2730,6 @@ define([
          *   - userHash or anonHash
          * Todo in cb
          *   - LocalStore.setFSHash if needed
-         *   - sessionStorage.User_Hash
          *   - stuff with tokenKey
          * Event to outer
          *   - requestLogin
