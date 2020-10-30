@@ -1267,14 +1267,10 @@ define([
                 anonRegister = h('button.btn.btn-secondary', Messages.login_register),
             ]));
             $(anonLogin).click(function () {
-                common.setLoginRedirect(function () {
-                    common.gotoURL('/login/');
-                });
+                common.setLoginRedirect('login');
             });
             $(anonRegister).click(function () {
-                common.setLoginRedirect(function () {
-                    common.gotoURL('/register/');
-                });
+                common.setLoginRedirect('register');
             });
             waitFor.abort();
         }).nThen(function () {
@@ -1402,9 +1398,7 @@ define([
             var hash = privateData.teamInviteHash;
             if (!hash && !driveAPP.loggedIn) {
                 UI.alert(Messages.mustLogin, function () {
-                    common.setLoginRedirect(function () {
-                        common.gotoURL('/login/');
-                    });
+                    common.setLoginRedirect('login');
                 }, {forefront: true});
                 return;
             }

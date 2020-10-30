@@ -458,15 +458,11 @@ define([
                     var actions = h('div', [cancel, register, login]);
                     var modal = UI.cornerPopup(Messages.oo_login, actions, '', {alt: true});
                     $(register).click(function () {
-                        common.setLoginRedirect(function () {
-                            common.gotoURL('/register/');
-                        });
+                        common.setLoginRedirect('register');
                         modal.delete();
                     });
                     $(login).click(function () {
-                        common.setLoginRedirect(function () {
-                            common.gotoURL('/login/');
-                        });
+                        common.setLoginRedirect('login');
                         modal.delete();
                     });
                     $(cancel).click(function () {

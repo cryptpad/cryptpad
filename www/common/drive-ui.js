@@ -1126,16 +1126,13 @@ define([
             window.open(APP.origin + hiddenHref);
         };
         var openIn = function (type, path, team, fData) {
-            var obj = JSON.stringify({
+            var obj = {
                 p: path,
                 t: team,
                 d: fData
-            });
-            var str = encodeURIComponent(obj);
-            var parsed = Hash.parsePadUrl(Hash.hashToHref('', type));
-            var opts = parsed.getOptions();
-            opts.newPadOpts = str;
-            common.openURL(parsed.getUrl(opts));
+            };
+            var href = Hash.hashToHref('', type);
+            common.openURL(Hash.getNewPadURL(href, obj));
         };
 
         var refresh = APP.refresh = function () {
@@ -4252,13 +4249,6 @@ define([
                 if (paths.length !== 1) { return; }
                 var p = paths[0];
                 el = manager.find(p.path);
-                var metadata = manager.getFileData(el);
-                var simpleData = {
-                    title: metadata.filename || metadata.title,
-                    href: metadata.href,
-                    password: metadata.password,
-                    channel: metadata.channel,
-                };
                 (function () {
                     var path = currentPath;
                     if (path[0] !== ROOT) { path = [ROOT]; }
@@ -4269,7 +4259,6 @@ define([
                         password: _metadata.password,
                         channel: _metadata.channel,
                     };
-                    var parsed = Hash.parsePadUrl(_metadata.href || _metadata.roHref);
                     openIn('code', path, APP.team, _simpleData);
                 })();
             }

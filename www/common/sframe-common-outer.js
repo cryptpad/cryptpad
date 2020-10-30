@@ -131,12 +131,28 @@ define([
                     if (sframeChan) { sframeChan.event('EV_LOADING_INFO', data); }
                 });
 
+                try {
+                    var parsed = Utils.Hash.parsePadUrl(currentPad.href);
+                    var options = parsed.getOptions();
+                    if (options.loginOpts) {
+                        var loginOpts = Utils.Hash.decodeDataOptions(options.loginOpts);
+                        if (loginOpts.createReadme) { Cryptpad.createReadme = true; }
+                        if (loginOpts.mergeAnonDrive) { Cryptpad.migrateAnonDrive = true; }
+                        // Remove newPadOpts from the hash
+                        delete options.loginOpts;
+                        currentPad.href = parsed.getUrl(options);
+                        currentPad.hash = parsed.hashData.getHash ? parsed.hashData.getHash(options)
+                                                                  : '';
+                    }
+                } catch (e) { console.error(e); }
+
                 Cryptpad.ready(waitFor(), {
                     driveEvents: cfg.driveEvents,
                     currentPad: currentPad
                 });
 
-                if (window.history && window.history.replaceState && currentPad.hash) {
+                // Remove the login hash if needed
+                if (window.history && window.history.replaceState && (currentPad.hash || window.location.hash)) {
                     var nHash = currentPad.hash;
                     if (!/^#/.test(nHash)) { nHash = '#' + nHash; }
                     window.history.replaceState({}, window.document.title, nHash);
@@ -202,9 +218,10 @@ define([
                 };
 
                 // New pad options
-                if (parsed.hashData && parsed.hashData.newPadOpts) {
+                var options = parsed.getOptions();
+                if (options.newPadOpts) {
                     try {
-                        var newPad = JSON.parse(decodeURIComponent(parsed.hashData.newPadOpts));
+                        var newPad = Utils.Hash.decodeDataOptions(options.newPadOpts);
                         Cryptpad.initialTeam = newPad.t;
                         Cryptpad.initialPath = newPad.p;
                         if (newPad.pw) {
@@ -225,22 +242,20 @@ define([
                     } catch (e) {
                         console.error(e, parsed.hashData.newPadOpts);
                     }
-                    delete parsed.hashData.newPadOpts;
+                    delete options.newPadOpts;
+
+                    currentPad.href = parsed.getUrl(options);
+                    currentPad.hash = parsed.hashData.getHash ? parsed.hashData.getHash(options)
+                                                              : '';
+                    var version = parsed.hashData.version;
+                    parsed = Utils.Hash.parsePadUrl(currentPad.href);
+                    Cryptpad.setTabHash(currentPad.hash);
 
                     // If it's a new pad, don't check password
-                    if (!Object.keys(parsed.hashData).length) {
-                        delete parsed.hashData;
-                        parsed.hash = '';
-                        currentPad.hash = '';
-                        Cryptpad.setTabHash('');
+                    if (version === 4) {
                         return void todo();
                     }
-                    // Otherwise, existing pad (new for us)
-                    var opts = parsed.getOptions();
-                    delete opts.newPadOpts;
-                    parsed = Utils.Hash.parsePadUrl(parsed.getUrl(opts));
-                    currentPad.hash = parsed.hash;
-                    Cryptpad.setTabHash(parsed.hash);
+                    // Otherwise, continue
                 }
 
 
@@ -460,9 +475,6 @@ define([
             var defaultTitle = Utils.UserObject.getDefaultName(parsed);
             var edPublic, curvePublic, notifications, isTemplate;
             var settings = {};
-            var forceCreationScreen = cfg.useCreationScreen &&
-                                      sessionStorage[Utils.Constants.displayPadCreationScreen];
-            delete sessionStorage[Utils.Constants.displayPadCreationScreen];
             var isSafe = ['debug', 'profile', 'drive', 'teams'].indexOf(currentPad.app) !== -1;
             var updateMeta = function () {
                 //console.log('EV_METADATA_UPDATE');
@@ -507,7 +519,6 @@ define([
                         },
                         isNewFile: isNewFile,
                         isDeleted: isNewFile && currentPad.hash.length > 0,
-                        forceCreationScreen: forceCreationScreen,
                         password: password,
                         channel: secret.channel,
                         enableSF: localStorage.CryptPad_SF === "1", // TODO to remove when enabled by default
@@ -635,9 +646,10 @@ define([
                     Cryptpad.mailbox.execCommand(data, cb);
                 });
 
-                sframeChan.on('Q_SET_LOGIN_REDIRECT', function (data, cb) {
-                    sessionStorage.redirectTo = currentPad.href;
-                    cb();
+                sframeChan.on('EV_SET_LOGIN_REDIRECT', function (page) {
+                    var href = Utils.Hash.hashToHref('', page);
+                    var url = Utils.Hash.getNewPadURL(href, { href: currentPad.href });
+                    window.location.href = url;
                 });
 
                 sframeChan.on('Q_STORE_IN_TEAM', function (data, cb) {
@@ -1065,11 +1077,10 @@ define([
                     password: password,
                     title: currentTitle
                 };
-                sessionStorage[Utils.Constants.newPadFileData] = JSON.stringify(data);
-                window.open(window.location.pathname);
-                setTimeout(function () {
-                    delete sessionStorage[Utils.Constants.newPadFileData];
-                }, 100);
+                var obj = { d: data };
+                var href = window.location.pathname;
+                var url = Utils.Hash.getNewPadURL(href, obj);
+                window.open(url);
             });
 
             // Messaging

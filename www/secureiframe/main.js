@@ -86,12 +86,6 @@ define([
                             }
                             metaObj = n;
                         }));
-                    if (typeof(isTemplate) === "undefined") {
-                        Cryptpad.isTemplate(currentPad.href, waitFor(function (err, t) {
-                            if (err) { console.log(err); }
-                            isTemplate = t;
-                        }));
-                    }
                     }).nThen(function (/*waitFor*/) {
                         metaObj.doc = {};
                         var additionalPriv = {

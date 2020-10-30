@@ -1879,8 +1879,9 @@ define([
         LocalStore.logout();
 
         // redirect them to log in, and come back when they're done.
-        sessionStorage.redirectTo = currentPad.href;
-        window.location.href = '/login/';
+        var href = Hash.hashToHref('', 'login');
+        var url = Hash.getNewPadURL(href, { href: currentPad.href });
+        window.location.href = url;
     };
 
     common.startAccountDeletion = function (data, cb) {
@@ -2276,12 +2277,6 @@ define([
 
                         if (data.anonHash && !cfg.userHash) { LocalStore.setFSHash(data.anonHash); }
 
-                        /*if (cfg.userHash && sessionStorage) {
-                            // copy User_hash into sessionStorage because cross-domain iframes
-                            // on safari replaces localStorage with sessionStorage or something
-                            sessionStorage.setItem(Constants.userHashKey, cfg.userHash);
-                        }*/
-
                         if (cfg.userHash) {
                             var localToken = tryParsing(localStorage.getItem(Constants.tokenKey));
                             if (localToken === null) {
@@ -2336,21 +2331,18 @@ define([
                 postMessage("DISCONNECT");
             });
         }).nThen(function (waitFor) {
-            if (sessionStorage.createReadme) {
+            if (common.createReadme) {
                 var data = {
                     driveReadme: Messages.driveReadme,
                     driveReadmeTitle: Messages.driveReadmeTitle,
                 };
                 postMessage("CREATE_README", data, waitFor(function (e) {
                     if (e && e.error) { return void console.error(e.error); }
-                    delete sessionStorage.createReadme;
                 }));
             }
         }).nThen(function (waitFor) {
-            if (sessionStorage.migrateAnonDrive) {
-                common.mergeAnonDrive(waitFor(function() {
-                    delete sessionStorage.migrateAnonDrive;
-                }));
+            if (common.migrateAnonDrive) {
+                common.mergeAnonDrive(waitFor());
             }
         }).nThen(function (waitFor) {
             if (AppConfig.afterLogin) {
