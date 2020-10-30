@@ -673,6 +673,7 @@ define([
                 if (!val) {
                     return void cb('ENOENT');
                 }
+                if (data.oo) { return void cb(val); } // OnlyOffice template: are handled in inner
                 try {
                     // Try to fix the title before importing the template
                     var parsed = JSON.parse(val);
