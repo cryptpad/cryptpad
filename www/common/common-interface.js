@@ -281,12 +281,10 @@ define([
 
         var $root = $t.parent();
 
-        Messages.add = "Add"; // XXX
-        Messages.edit = "Edit"; // XXX
         var $input = $root.find('.token-input');
         var $button = $(h('button.btn.btn-primary', [
             h('i.fa.fa-plus'),
-            h('span', Messages.add)
+            h('span', Messages.tag_add)
         ]));
 
 
@@ -311,7 +309,7 @@ define([
                 }
                 $form.append($input);
                 $form.append($button);
-                if (isEdit) { $button.find('span').text(Messages.edit); }
+                if (isEdit) { $button.find('span').text(Messages.tag_edit); }
                 else { $button.find('span').text(Messages.add); }
                 $container.append($form);
                 $input.focus();
@@ -941,8 +939,6 @@ define([
             $loading.css('display', '');
             $loading.removeClass('cp-loading-hidden');
             if (config.newProgress) {
-                // XXX re-add progress bar for step 6 after password prompt for PPP
-                // XXX also burn after reading
                 var progress = h('div.cp-loading-progress', [
                     h('p.cp-loading-progress-list'),
                     h('p.cp-loading-progress-container')

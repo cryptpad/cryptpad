@@ -278,14 +278,7 @@ button.primary:hover{
     ].join('');
     var built = false;
 
-    // XXX
     var types = ['less', 'drive', 'migrate', 'sf', 'team', 'pad', 'end'];
-    Messages.loading_state_0 = "Less";
-    Messages.loading_state_1 = "Drive";
-    Messages.loading_state_2 = "Migrate";
-    Messages.loading_state_3 = "SF";
-    Messages.loading_state_4 = "Team";
-    Messages.loading_state_5 = "Pad";
     var current;
     var makeList = function (data) {
         var c = types.indexOf(data.type);
@@ -333,6 +326,8 @@ button.primary:hover{
     window.CryptPad_loadingError = function (err) {
         if (!built) { return; }
         try {
+            var node = document.querySelector('.cp-loading-progress');
+            if (node.parentNode) { node.parentNode.removeChild(node); }
             document.querySelector('.cp-loading-spinner-container').setAttribute('style', 'display:none;');
             document.querySelector('#cp-loading-message').setAttribute('style', 'display:block;');
             document.querySelector('#cp-loading-message').innerText = err;

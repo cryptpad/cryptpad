@@ -114,6 +114,7 @@ define([
         };
 
         var getEditor = function () {
+            if (!window.frames || !window.frames[0]) { return; }
             return window.frames[0].editor || window.frames[0].editorCell;
         };
 
@@ -416,7 +417,7 @@ define([
                 clearTimeout(pendingChanges[key]);
                 delete pendingChanges[key];
             });
-            if (APP.stopHistory) { APP.history = false; }
+            if (APP.stopHistory || APP.template) { APP.history = false; }
             startOO(blob, type, true);
         };
 
@@ -426,14 +427,15 @@ define([
             var file = getFileType();
             blob.name = (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
             var data = {
-                hash: APP.history ? ooChannel.historyLastHash : ooChannel.lastHash,
-                index: APP.history ? ooChannel.currentIndex : ooChannel.cpIndex
+                hash: (APP.history || APP.template) ? ooChannel.historyLastHash : ooChannel.lastHash,
+                index: (APP.history || APP.template) ? ooChannel.currentIndex : ooChannel.cpIndex
             };
             fixSheets();
 
             ooChannel.ready = false;
             ooChannel.queue = [];
             data.callback = function () {
+                if (APP.template) { APP.template = false; }
                 resetData(blob, file);
             };
 
@@ -1292,6 +1294,13 @@ define([
                             }
                         }
 
+                        if (APP.template) {
+                            getEditor().setViewModeDisconnect();
+                            UI.removeLoadingScreen();
+                            makeCheckpoint(true);
+                            return;
+                        }
+
                         if (APP.history) {
                             try {
                                 getEditor().asc_setRestriction(true);
@@ -1825,6 +1834,108 @@ define([
             pinImages();
         };
 
+        var loadCp = function (cp, keepQueue) {
+            loadLastDocument(cp, function () {
+                var file = getFileType();
+                var type = common.getMetadataMgr().getPrivateData().ooType;
+                var blob = loadInitDocument(type, true);
+                if (!keepQueue) { ooChannel.queue = []; }
+                resetData(blob, file);
+            }, function (blob, file) {
+                if (!keepQueue) { ooChannel.queue = []; }
+                resetData(blob, file);
+            });
+        };
+
+        var loadTemplate = function (href, pw, parsed) {
+            APP.history = true;
+            APP.template = true;
+            var editor = getEditor();
+            if (editor) { editor.setViewModeDisconnect(); }
+            var content = parsed.content;
+
+            // Get checkpoint
+            var hashes = content.hashes || {};
+            var idx = sortCpIndex(hashes);
+            var lastIndex = idx[idx.length - 1];
+            var lastCp = hashes[lastIndex] || {};
+
+            // Current cp or initial hash (invalid hash ==> initial hash)
+            var toHash = lastCp.hash || 'NONE';
+            // Last hash
+            var fromHash = 'NONE';
+
+            sframeChan.query('Q_GET_HISTORY_RANGE', {
+                href: href,
+                password: pw,
+                channel: content.channel,
+                lastKnownHash: fromHash,
+                toHash: toHash,
+            }, function (err, data) {
+                if (err) { return void console.error(err); }
+                if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
+
+                // The first "cp" in history is the empty doc. It doesn't include the first patch
+                // of the history
+                var initialCp = !lastCp.hash;
+
+                var messages = (data.messages || []).slice(initialCp ? 0 : 1);
+
+                ooChannel.queue = messages.map(function (obj) {
+                    return {
+                        hash: obj.serverHash,
+                        msg: JSON.parse(obj.msg)
+                    };
+                });
+                ooChannel.historyLastHash = ooChannel.lastHash;
+                ooChannel.currentIndex = ooChannel.cpIndex;
+                loadCp(lastCp, true);
+            });
+        };
+
+        var openTemplatePicker = function () {
+            var metadataMgr = common.getMetadataMgr();
+            var type = metadataMgr.getPrivateData().app;
+            var sframeChan = common.getSframeChannel();
+            var pickerCfgInit = {
+                types: [type],
+                where: ['template'],
+                hidden: true
+            };
+            var pickerCfg = {
+                types: [type],
+                where: ['template'],
+            };
+            var onConfirm = function () {
+                common.openFilePicker(pickerCfg, function (data) {
+                    if (data.type !== type) { return; }
+                    UI.addLoadingScreen({hideTips: true});
+                    sframeChan.query('Q_OO_TEMPLATE_USE', {
+                        href: data.href,
+                    }, function (err, val) {
+                        var parsed;
+                        try {
+                            parsed = JSON.parse(val);
+                        } catch (e) {
+                            console.error(e, val);
+                            UI.removeLoadingScreen();
+                            return void UI.warn(Messages.error);
+                        }
+                        console.error(data);
+                        loadTemplate(data.href, data.password, parsed);
+                    });
+                });
+            };
+            sframeChan.query("Q_TEMPLATE_EXIST", type, function (err, data) {
+                if (data) {
+                    common.openFilePicker(pickerCfgInit);
+                    onConfirm();
+                } else {
+                    UI.alert(Messages.template_empty);
+                }
+            });
+        };
+
         config.onInit = function (info) {
             var privateData = metadataMgr.getPrivateData();
 
@@ -1846,6 +1957,7 @@ define([
             Title.setToolbar(toolbar);
 
             if (window.CP_DEV_MODE) {
+
                 var $save = common.createButton('save', true, {}, function () {
                     makeCheckpoint(true);
                 });
@@ -1861,18 +1973,6 @@ define([
                     // flag only when the checkpoint is ready.
                     APP.stopHistory = true;
                     makeCheckpoint(true);
-                };
-                var loadCp = function (cp, keepQueue) {
-                    loadLastDocument(cp, function () {
-                        var file = getFileType();
-                        var type = common.getMetadataMgr().getPrivateData().ooType;
-                        var blob = loadInitDocument(type, true);
-                        if (!keepQueue) { ooChannel.queue = []; }
-                        resetData(blob, file);
-                    }, function (blob, file) {
-                        if (!keepQueue) { ooChannel.queue = []; }
-                        resetData(blob, file);
-                    });
                 };
                 var onPatch = function (patch) {
                     // Patch on the current cp
@@ -1967,6 +2067,10 @@ define([
                     load: loadSnapshot
                 });
                 toolbar.$drawer.append($snapshot);
+
+                // Import template
+                var $template = common.createButton('importtemplate', true, {}, openTemplatePicker);
+                $template.appendTo(toolbar.$drawer);
             })();
             }
 
@@ -2125,11 +2229,18 @@ define([
             openRtChannel(function () {
                 setMyId();
                 oldHashes = JSON.parse(JSON.stringify(content.hashes));
-                loadDocument(newDoc, useNewDefault);
                 initializing = false;
+                common.openPadChat(APP.onLocal);
+
+                if (APP.startWithTemplate) {
+                    var template = APP.startWithTemplate;
+                    loadTemplate(template.href, template.password, template.content);
+                    return;
+                }
+
+                loadDocument(newDoc, useNewDefault);
                 setEditable(!readOnly);
                 UI.removeLoadingScreen();
-                common.openPadChat(APP.onLocal);
             });
         };
 
@@ -2253,8 +2364,11 @@ define([
             }));
             SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
         }).nThen(function (waitFor) {
+            common.getSframeChannel().on('EV_OO_TEMPLATE', function (data) {
+                APP.startWithTemplate = data;
+            });
             common.handleNewFile(waitFor, {
-                noTemplates: true
+                //noTemplates: true
             });
         }).nThen(function (/*waitFor*/) {
             andThen(common);
