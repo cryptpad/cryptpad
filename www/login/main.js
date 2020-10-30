@@ -67,10 +67,8 @@ define([
             });
         });
         $('#register').on('click', function () {
-            if (sessionStorage) {
-                if ($uname.val()) {
-                    sessionStorage.login_user = $uname.val();
-                }
+            if ($uname.val()) {
+                localStorage.login_user = $uname.val();
             }
             window.location.href = '/register/';
         });
