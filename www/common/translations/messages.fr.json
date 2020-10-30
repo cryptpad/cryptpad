@@ -1459,5 +1459,11 @@
     "admin_limitUser": "Clé publique de l'utilisateur",
     "fm_shareFolderPassword": "Protéger ce dossier avec un mot de passe (optionnel)",
     "access_destroyPad": "Détruire ce document ou dossier définitivement",
-    "fm_deletedFolder": "Dossier supprimé"
+    "fm_deletedFolder": "Dossier supprimé",
+    "loading_state_5": "Reconstruction du document",
+    "loading_state_4": "Chargement des équipes",
+    "loading_state_3": "Chargement des dossiers partagés",
+    "loading_state_2": "Mise à jour du contenu",
+    "loading_state_1": "Chargement du drive",
+    "loading_state_0": "Construction de l'interface"
 }

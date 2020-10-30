@@ -131,13 +131,7 @@ define([
                     if (sframeChan) { sframeChan.event('EV_LOADING_INFO', data); }
                 });
 
-                Cryptpad.ready(waitFor(function () {
-                    if (sframeChan) {
-                        sframeChan.event('EV_LOADING_INFO', {
-                            state: -1
-                        });
-                    }
-                }), {
+                Cryptpad.ready(waitFor(), {
                     driveEvents: cfg.driveEvents,
                     currentPad: currentPad
                 });
@@ -317,10 +311,11 @@ define([
                             return void noPadData('NO_RESULT');
                         }
                         // Data found but weaker? warn
+                        expire = res.expire;
                         if (edit && !res.href) {
                             newHref = res.roHref;
+                            return;
                         }
-                        expire = res.expire;
                         // We have good data, keep the hash in memory
                         newHref = edit ? res.href : (res.roHref || res.href);
                     }));
@@ -1380,8 +1375,10 @@ define([
             };
             var i = 0;
             sframeChan.on('Q_CRYPTGET', function (data, cb) {
+                var keys;
                 var todo = function () {
                     data.opts.network = cgNetwork;
+                    data.opts.accessKeys = keys;
                     Cryptget.get(data.hash, function (err, val) {
                         cb({
                             error: err,
@@ -1400,17 +1397,21 @@ define([
                     cgNetwork = undefined;
                 }
                 i++;
-                if (!cgNetwork) {
-                    cgNetwork = true;
-                    return void Cryptpad.makeNetwork(function (err, nw) {
-                        console.log(nw);
-                        cgNetwork = nw;
-                        todo();
-                    });
-                } else if (cgNetwork === true) {
-                    return void whenCGReady(todo);
-                }
-                todo();
+
+                Cryptpad.getAccessKeys(function (_keys) {
+                    keys = _keys;
+                    if (!cgNetwork) {
+                        cgNetwork = true;
+                        return void Cryptpad.makeNetwork(function (err, nw) {
+                            console.log(nw);
+                            cgNetwork = nw;
+                            todo();
+                        });
+                    } else if (cgNetwork === true) {
+                        return void whenCGReady(todo);
+                    }
+                    todo();
+                });
             });
             sframeChan.on('EV_CRYPTGET_DISCONNECT', function () {
                 if (!cgNetwork) { return; }

@@ -1080,6 +1080,11 @@ define([
                 if (data.teamId && s.id !== data.teamId) { return; }
                 if (storeLocally && s.id) { return; }
 
+                // If this is an edit link but we don't have edit rights, this entry is not useful
+                if (h.mode === "edit" && s.id && !s.secondaryKey) {
+                    return;
+                }
+
                 var res = s.manager.findChannel(channel, true);
                 if (res.length) {
                     sendTo.push(s.id);
@@ -1373,11 +1378,15 @@ define([
                 }
             }
         };
-        var loadUniversal = function (Module, type, waitFor) {
+        var loadUniversal = function (Module, type, waitFor, clientId) {
             if (store.modules[type]) { return; }
             store.modules[type] = Module.init({
                 Store: Store,
                 store: store,
+                updateLoadingProgress: function (data) {
+                    data.type = "team";
+                    postMessage(clientId, 'LOADING_DRIVE', data);
+                },
                 updateMetadata: function () {
                     broadcast([], "UPDATE_METADATA");
                 },
@@ -2480,32 +2489,40 @@ define([
             addSharedFolderHandler();
 
             nThen(function (waitFor) {
-                postMessage(clientId, 'LOADING_DRIVE', {
-                    state: 2
-                });
                 userObject.migrate(waitFor());
             }).nThen(function (waitFor) {
                 initAnonRpc(null, null, waitFor());
                 initRpc(null, null, waitFor());
+                postMessage(clientId, 'LOADING_DRIVE', {
+                    type: 'migrate',
+                    progress: 0
+                });
             }).nThen(function (waitFor) {
                 Migrate(proxy, waitFor(), function (version, progress) {
                     postMessage(clientId, 'LOADING_DRIVE', {
-                        state: (2 + (version / 10)),
+                        type: 'migrate',
                         progress: progress
                     });
                 }, store);
             }).nThen(function (waitFor) {
                 postMessage(clientId, 'LOADING_DRIVE', {
-                    state: 3
+                    type: 'sf',
+                    progress: 0
                 });
                 userObject.fixFiles();
-                SF.loadSharedFolders(Store, store.network, store, userObject, waitFor);
+                SF.loadSharedFolders(Store, store.network, store, userObject, waitFor, function (obj) {
+                    var data = {
+                        type: 'sf',
+                        progress: 100*obj.progress/obj.max
+                    };
+                    postMessage(clientId, 'LOADING_DRIVE', data);
+                });
                 loadCursor();
                 loadOnlyOffice();
                 loadUniversal(Messenger, 'messenger', waitFor);
                 store.messenger = store.modules['messenger'];
                 loadUniversal(Profile, 'profile', waitFor);
-                loadUniversal(Team, 'team', waitFor);
+                loadUniversal(Team, 'team', waitFor, clientId);
                 loadUniversal(History, 'history', waitFor);
                 cleanFriendRequests();
             }).nThen(function () {
@@ -2607,6 +2624,12 @@ define([
             if (!hash) {
                 return void cb({error: '[Store.init] Unable to find or create a drive hash. Aborting...'});
             }
+
+            var updateProgress = function (data) {
+                data.type = 'drive';
+                postMessage(clientId, 'LOADING_DRIVE', data);
+            };
+
             // No password for drive
             var secret = Hash.getSecrets('drive', hash);
             store.driveChannel = secret.channel;
@@ -2620,6 +2643,7 @@ define([
                 userName: 'fs',
                 logLevel: 1,
                 ChainPad: ChainPad,
+                updateProgress: updateProgress,
                 classic: true,
             };
             var rt = window.rt = Listmap.create(listmapConfig);
@@ -2643,7 +2667,6 @@ define([
                     && !drive['filesData']) {
                     drive[Constants.oldStorageKey] = [];
                 }
-                postMessage(clientId, 'LOADING_DRIVE', { state: 1 });
                 // Drive already exist: return the existing drive, don't load data from legacy store
                 onReady(clientId, returned, cb);
             })
