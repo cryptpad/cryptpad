@@ -1465,5 +1465,7 @@
     "loading_state_2": "Update content",
     "loading_state_3": "Load shared folders",
     "loading_state_4": "Load Teams",
-    "loading_state_5": "Reconstruct document"
+    "loading_state_5": "Reconstruct document",
+    "tag_add": "Add",
+    "tag_edit": "Edit"
 }
