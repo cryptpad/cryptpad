@@ -22,14 +22,6 @@ define([
             target: '_blank',
             rel: 'noopener noreferrer'
         }, h('button.cp-features-register-button', Msg.features_f_subscribe));
-        /*$(premiumButton).click(function (e) {
-            if (LocalStore.isLoggedIn()) { return; }
-            // Not logged in: go to /login with a redirect to this page
-            e.preventDefault();
-            e.stopPropagation();
-            sessionStorage.redirectTo = '/features.html';
-            window.location.href = '/login/';
-        });*/
 
         var anonymousFeatures =
             h('div.col-12.col-sm-4.cp-anon-user',[

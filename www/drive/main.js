@@ -46,9 +46,12 @@ define([
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
         var afterSecrets = function (Cryptpad, Utils, secret, cb, sframeChan) {
-            var _hash = hash.slice(1);
-            if (_hash && Utils.LocalStore.isLoggedIn()) {
-                // Add a shared folder!
+            var parsed = Utils.Hash.parsePadUrl(href);
+            var isSf = parsed.hashData && parsed.hashData.type === 'pad';
+            if (!isSf) { return void cb(); }
+
+            // SF and logged in: add shared folder
+            if (Utils.LocalStore.isLoggedIn()) {
                 Cryptpad.addSharedFolder(null, secret, function (id) {
                     if (id && typeof(id) === "object" && id.error) {
                         sframeChan.event("EV_RESTRICTED_ERROR");
@@ -65,16 +68,16 @@ define([
                     cb();
                 });
                 return;
-            } else if (_hash) {
-                var id = Utils.Util.createRandomInteger();
-                window.CryptPad_newSharedFolder = id;
-                var data = {
-                    href: Utils.Hash.getRelativeHref(Cryptpad.currentPad.href),
-                    password: secret.password
-                };
-                return void Cryptpad.loadSharedFolder(id, data, cb);
             }
-            cb();
+
+            // Anon shared folder
+            var id = Utils.Util.createRandomInteger();
+            window.CryptPad_newSharedFolder = id;
+            var data = {
+                href: Utils.Hash.getRelativeHref(Cryptpad.currentPad.href),
+                password: secret.password
+            };
+            Cryptpad.loadSharedFolder(id, data, cb);
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
             sframeChan.on('EV_BURN_ANON_DRIVE', function () {

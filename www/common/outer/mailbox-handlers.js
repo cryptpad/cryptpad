@@ -321,6 +321,11 @@ define([
 
         var channel = content.channel || content.teamChannel;
 
+        if (content.password) {
+            var key = ctx.store.driveSecret.keys.cryptKey;
+            content.password = Crypto.encrypt(content.password, key);
+        }
+
         if (addOwners[channel]) { return void cb(true); }
         addOwners[channel] = {
             type: box.type,

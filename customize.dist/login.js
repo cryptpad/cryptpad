@@ -28,6 +28,19 @@ define([
     };
 
     var Nacl = window.nacl;
+
+    var redirectTo = '/drive/';
+    var setRedirectTo = function () {
+        var parsed = Hash.parsePadUrl(window.location.href);
+        if (parsed.hashData && parsed.hashData.newPadOpts) {
+            var newPad = Hash.decodeDataOptions(parsed.hashData.newPadOpts);
+            redirectTo = newPad.href;
+        }
+    };
+    if (window.location.hash) {
+        setRedirectTo();
+    }
+
     var allocateBytes = Exports.allocateBytes = function (bytes) {
         var dispense = Cred.dispenser(bytes);
 
@@ -118,11 +131,11 @@ define([
     };
 
     var setMergeAnonDrive = function () {
-        sessionStorage.migrateAnonDrive = 1;
+        Exports.mergeAnonDrive = 1;
     };
 
     var setCreateReadme = function () {
-        sessionStorage.createReadme = 1;
+        Exports.createReadme = 1;
     };
 
     Exports.loginOrRegister = function (uname, passwd, isRegister, shouldImport, cb) {
@@ -416,12 +429,20 @@ define([
         });
     };
     Exports.redirect = function () {
-        if (sessionStorage.redirectTo) {
-            var h = sessionStorage.redirectTo;
+        if (redirectTo) {
+            var h = redirectTo;
+            var loginOpts = {};
+            if (Exports.mergeAnonDrive) {
+                loginOpts.mergeAnonDrive = 1;
+            }
+            if (Exports.createReadme) {
+                loginOpts.createReadme = 1;
+            }
+            h = Hash.getLoginURL(h, loginOpts);
+
             var parser = document.createElement('a');
             parser.href = h;
             if (parser.origin === window.location.origin) {
-                delete sessionStorage.redirectTo;
                 window.location.href = h;
                 return;
             }

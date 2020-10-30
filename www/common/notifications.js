@@ -7,8 +7,7 @@ define([
     '/common/common-util.js',
     '/common/common-constants.js',
     '/customize/messages.js',
-    '/bower_components/nthen/index.js'
-], function($, h, Hash, UI, UIElements, Util, Constants, Messages, nThen) {
+], function($, h, Hash, UI, UIElements, Util, Constants, Messages) {
 
     var handlers = {};
 
@@ -108,16 +107,12 @@ define([
             return Messages._getKey(key, [name, title, teamName]);
         };
         content.handler = function() {
-            var obj = JSON.stringify({
+            var obj = {
                 p: msg.content.isTemplate ? ['template'] : undefined,
                 t: teamNotification || undefined,
                 pw: msg.content.password || ''
-            });
-            var str = encodeURIComponent(obj);
-            var parsed = Hash.parsePadUrl(msg.content.href);
-            var opts = parsed.getOptions();
-            opts.newPadOpts = str;
-            common.openURL(parsed.getUrl(opts));
+            };
+            common.openURL(Hash.getNewPadURL(msg.content.href, obj));
             defaultDismiss(common, data)();
         };
         if (!content.archived) {
