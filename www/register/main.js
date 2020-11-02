@@ -39,7 +39,7 @@ define([
 
         if (localStorage.login_user) {
             $uname.val(localStorage.login_user);
-            delete loginStorage.login_user;
+            delete localStorage.login_user;
         }
 
         [ $uname, $passwd, $confirm]
