@@ -2107,6 +2107,28 @@ define([
                 driveEvents: true //rdyCfg.driveEvents // Boolean
             };
 
+            // FIXME Backward compatibility
+            if (sessionStorage.newPadFileData) {
+                common.fromFileData = JSON.parse(sessionStorage.newPadFileData);
+                var _parsed1 = Hash.parsePadUrl(common.fromFileData.href);
+                var _parsed2 = Hash.parsePadUrl(window.location.href);
+                if (_parsed1.hashData.type === 'pad') {
+                    if (_parsed1.type !== _parsed2.type) { delete common.fromFileData; }
+                }
+                delete sessionStorage.newPadFileData;
+            }
+
+            if (sessionStorage.newPadPath) {
+                common.initialPath = sessionStorage.newPadPath;
+                delete sessionStorage.newPadPath;
+            }
+
+            if (sessionStorage.newPadTeam) {
+                common.initialTeam = sessionStorage.newPadTeam;
+                delete sessionStorage.newPadTeam;
+            }
+
+
             var channelIsReady = waitFor();
 
             var msgEv = Util.mkEvent();
@@ -2332,7 +2354,7 @@ define([
                 postMessage("DISCONNECT");
             });
         }).nThen(function (waitFor) {
-            if (common.createReadme) {
+            if (common.createReadme || sessionStorage.createReadme) {
                 var data = {
                     driveReadme: Messages.driveReadme,
                     driveReadmeTitle: Messages.driveReadmeTitle,
@@ -2342,7 +2364,7 @@ define([
                 }));
             }
         }).nThen(function (waitFor) {
-            if (common.migrateAnonDrive) {
+            if (common.migrateAnonDrive || sessionStorage.migrateAnonDrive) {
                 common.mergeAnonDrive(waitFor());
             }
         }).nThen(function (waitFor) {
