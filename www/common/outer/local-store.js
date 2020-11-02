@@ -94,6 +94,7 @@ define([
             localStorage.removeItem(k);
             delete localStorage[k];
         });
+        sessionStorage.clear();
         try {
             Object.keys(localStorage || {}).forEach(function (k) {
                 // Remvoe everything in localStorage except CACHE and FS_hash

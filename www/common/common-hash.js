@@ -236,7 +236,7 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
             parsed.ownerKey = getOwnerKey(options);
         };
 
-        // Version 4: only login or newpad options, smae for all the apps
+        // Version 4: only login or newpad options, same for all the apps
         if (hashArr[1] && hashArr[1] === '4') {
             parsed.getHash = function (opts) {
                 if (!opts || !Object.keys(opts).length) { return ''; }
@@ -653,9 +653,6 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
         // Valid hash?
         if (parsed.hash) {
             if (!parsed.hashData) { return; }
-            // New pad: only newPadOpts allowed
-            if (Object.keys(parsed.hashData).length === 1 &&
-                    parsed.hashData.newPadOpts) { return true; }
             // Version should be a number
             if (typeof(parsed.hashData.version) === "undefined") { return; }
             // pads and files should have a base64 (or hex) key
@@ -670,7 +667,7 @@ Version 4: Data URL when not a realtime link yet (new pad or "static" app)
     Hash.decodeDataOptions = function (opts) {
         var b64 = decodeURIComponent(opts);
         var str = Nacl.util.encodeUTF8(Nacl.util.decodeBase64(b64));
-        return JSON.parse(str);
+        return Util.tryParse(str) || {};
     };
     Hash.encodeDataOptions = function (opts) {
         var str = JSON.stringify(opts);
