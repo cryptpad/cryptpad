@@ -57,11 +57,11 @@ define([
             });
             proxy.on('disconnect', function () {
                 team.offline = true;
-                team.sendEvent('NETWORK_DISCONNECT');
+                team.sendEvent('NETWORK_DISCONNECT', team.id);
             });
             proxy.on('reconnect', function () {
                 team.offline = false;
-                team.sendEvent('NETWORK_RECONNECT');
+                team.sendEvent('NETWORK_RECONNECT', team.id);
             });
         }
         proxy.on('change', [], function (o, n, p) {
@@ -931,7 +931,9 @@ define([
         if (!team) { return void cb ({error: 'ENOENT'}); }
         if (!team.roster) { return void cb({error: 'NO_ROSTER'}); }
         var state = team.roster.getState() || {};
-        cb(state.metadata || {});
+        var md = state.metadata || {};
+        md.offline = team.offline;
+        cb(md);
     };
 
     var setTeamMetadata = function (ctx, data, cId, cb) {
@@ -1879,15 +1881,15 @@ define([
             var t = Util.clone(teams);
             Object.keys(t).forEach(function (id) {
                 // If failure to load the team, don't send it
-                if (ctx.teams[id]) { return; }
+                if (ctx.teams[id]) {
+                    t[id].offline = ctx.teams[id].offline;
+                    return;
+                }
                 t[id].error = true;
             });
             cb(t);
         };
         team.execCommand = function (clientId, obj, cb) {
-            if (ctx.store.offline) {
-                return void cb({ error: 'OFFLINE' });
-            }
 
             var cmd = obj.cmd;
             var data = obj.data;
@@ -1911,30 +1913,36 @@ define([
                 return void setTeamMetadata(ctx, data, clientId, cb);
             }
             if (cmd === 'OFFER_OWNERSHIP') {
+                if (ctx.store.offline) { return void cb({ error: 'OFFLINE' }); }
                 return void offerOwnership(ctx, data, clientId, cb);
             }
             if (cmd === 'ANSWER_OWNERSHIP') {
+                if (ctx.store.offline) { return void cb({ error: 'OFFLINE' }); }
                 return void answerOwnership(ctx, data, clientId, cb);
             }
             if (cmd === 'DESCRIBE_USER') {
                 return void describeUser(ctx, data, clientId, cb);
             }
             if (cmd === 'INVITE_TO_TEAM') {
+                if (ctx.store.offline) { return void cb({ error: 'OFFLINE' }); }
                 return void inviteToTeam(ctx, data, clientId, cb);
             }
             if (cmd === 'LEAVE_TEAM') {
                 return void leaveTeam(ctx, data, clientId, cb);
             }
             if (cmd === 'JOIN_TEAM') {
+                if (ctx.store.offline) { return void cb({ error: 'OFFLINE' }); }
                 return void joinTeam(ctx, data, clientId, cb);
             }
             if (cmd === 'REMOVE_USER') {
                 return void removeUser(ctx, data, clientId, cb);
             }
             if (cmd === 'DELETE_TEAM') {
+                if (ctx.store.offline) { return void cb({ error: 'OFFLINE' }); }
                 return void deleteTeam(ctx, data, clientId, cb);
             }
             if (cmd === 'CREATE_TEAM') {
+                if (ctx.store.offline) { return void cb({ error: 'OFFLINE' }); }
                 return void createTeam(ctx, data, clientId, cb);
             }
             if (cmd === 'GET_EDITABLE_FOLDERS') {
@@ -1947,6 +1955,7 @@ define([
                 return void getPreviewContent(ctx, data, clientId, cb);
             }
             if (cmd === 'ACCEPT_LINK_INVITATION') {
+                if (ctx.store.offline) { return void cb({ error: 'OFFLINE' }); }
                 return void acceptLinkInvitation(ctx, data, clientId, cb);
             }
         };

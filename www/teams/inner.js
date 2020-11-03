@@ -46,7 +46,9 @@ define([
     Backup,
     Messages)
 {
-    var APP = {};
+    var APP = {
+        teams: {}
+    };
     var driveAPP = {};
     var saveAs = window.saveAs;
     //var SHARED_FOLDER_NAME = Messages.fm_sharedFolderName;
@@ -211,6 +213,11 @@ define([
                 if (obj && obj.error) {
                     return void UI.warn(Messages.error);
                 }
+
+                // Refresh offline state
+                APP.teams[APP.team] = APP.teams[APP.team] || {};
+                APP.teams[APP.team].offline = obj.offline;
+
                 common.displayAvatar($avatar, obj.avatar, obj.name);
                 $category.append($avatar);
                 $avatar.append(h('span.cp-sidebarlayout-category-name', obj.name));
@@ -333,6 +340,11 @@ define([
             });
             APP.drive = drive;
             driveAPP.refresh = drive.refresh;
+
+            if (APP.teams[id] && APP.teams[id].offline) {
+                setEditable(false);
+                drive.refresh();
+            }
         });
     };
 
@@ -406,7 +418,18 @@ define([
 
             content.push(h('h3', Messages.team_listTitle + ' ' + slots));
 
+            var metadataMgr = common.getMetadataMgr();
+            var privateData = metadataMgr.getPrivateData();
+            var teams = privateData.teams || {};
+            APP.teams = {};
+
             keys.forEach(function (id) {
+                if (!obj[id].empty) {
+                    APP.teams[id] = {
+                        offline: obj[id] && obj[id].offline
+                    };
+                }
+
                 var team = obj[id];
                 if (team.empty) {
                     list.push(h('div.cp-team-list-team.empty', [
@@ -1433,27 +1456,37 @@ define([
                 }
             });
 
-            var onDisconnect = function (noAlert) {
+            var teams = privateData.teams || {};
+
+            var onDisconnect = function (teamId) {
+                if (APP.team && teamId && APP.team !== teamId) { return; }
                 setEditable(false);
                 if (APP.team && driveAPP.refresh) { driveAPP.refresh(); }
                 toolbar.failed();
-                if (!noAlert) { UIElements.disconnectAlert(); }
+                UIElements.disconnectAlert();
             };
-            var onReconnect = function () {
+            var onReconnect = function (teamId) {
+                if (APP.team && teamId && APP.team !== teamId) { return; }
                 setEditable(true);
                 if (APP.team && driveAPP.refresh) { driveAPP.refresh(); }
                 toolbar.reconnecting();
                 UIElements.reconnectAlert();
             };
 
-            sframeChan.on('EV_DRIVE_LOG', function (msg) {
-                UI.log(msg);
+            sframeChan.on('EV_DRIVE_LOG', function (data) {
+                UI.log(data.msg);
             });
-            sframeChan.on('EV_NETWORK_DISCONNECT', function () {
-                onDisconnect();
+            sframeChan.on('EV_NETWORK_DISCONNECT', function (teamId) {
+                onDisconnect(teamId);
+                if (teamId && APP.teams[teamId]) {
+                    APP.teams[teamId].offline = true;
+                }
             });
-            sframeChan.on('EV_NETWORK_RECONNECT', function () {
-                onReconnect();
+            sframeChan.on('EV_NETWORK_RECONNECT', function (teamId) {
+                onReconnect(teamId);
+                if (teamId && APP.teams[teamId]) {
+                    APP.teams[teamId].offline = false;
+                }
             });
             common.onLogout(function () { setEditable(false); });
         });
