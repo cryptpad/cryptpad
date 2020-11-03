@@ -2120,7 +2120,13 @@ define([
                 to: data.toHash,
                 cpCount: data.cpCount || 2, // Ignored if "to" is provided
                 txid: txid
-            }]));
+            }])).then(function () {
+                // nothing ?
+            }, function (err) {
+                cb({
+                    error: err,
+                });
+            });
         };
 
         // SHARED FOLDERS
