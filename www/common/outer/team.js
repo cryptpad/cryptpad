@@ -12,6 +12,7 @@ define([
     '/common/common-feedback.js',
     '/common/outer/invitation.js',
     '/common/cryptget.js',
+    '/common/outer/cache-store.js',
 
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
@@ -21,7 +22,7 @@ define([
     '/bower_components/saferphore/index.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
 ], function (Util, Hash, Constants, Realtime,
-             ProxyManager, UserObject, SF, Roster, Messaging, Feedback, Invite, Crypt,
+             ProxyManager, UserObject, SF, Roster, Messaging, Feedback, Invite, Crypt, Cache,
              Listmap, Crypto, CpNetflux, ChainPad, nThen, Saferphore) {
     var Team = {};
 
@@ -426,6 +427,7 @@ define([
                 channel: secret.channel,
                 crypto: crypto,
                 ChainPad: ChainPad,
+                Cache: Cache,
                 metadata: {
                     validateKey: secret.keys.validateKey || undefined,
                 },
@@ -573,6 +575,7 @@ define([
             logLevel: 1,
             classic: true,
             ChainPad: ChainPad,
+            Cache: Cache,
             owners: [ctx.store.proxy.edPublic]
         };
         nThen(function (waitFor) {

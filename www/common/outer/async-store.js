@@ -10,6 +10,7 @@ define([
     '/common/common-realtime.js',
     '/common/common-messaging.js',
     '/common/pinpad.js',
+    '/common/outer/cache-store.js',
     '/common/outer/sharedfolder.js',
     '/common/outer/cursor.js',
     '/common/outer/onlyoffice.js',
@@ -28,7 +29,7 @@ define([
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
 ], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
-             Realtime, Messaging, Pinpad,
+             Realtime, Messaging, Pinpad, Cache,
              SF, Cursor, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
              NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, nThen, Saferphore) {
@@ -1590,6 +1591,7 @@ define([
                 Store.leavePad(null, data, function () {});
             };
             var conf = {
+                Cache: Cache,
                 onReady: function (pad) {
                     var padData = pad.metadata || {};
                     channel.data = padData;
@@ -2640,6 +2642,7 @@ define([
                 readOnly: false,
                 validateKey: secret.keys.validateKey || undefined,
                 crypto: Crypto.createEncryptor(secret.keys),
+                Cache: Cache,
                 userName: 'fs',
                 logLevel: 1,
                 ChainPad: ChainPad,
