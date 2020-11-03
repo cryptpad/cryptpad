@@ -420,9 +420,6 @@ define([
 
             content.push(h('h3', Messages.team_listTitle + ' ' + slots));
 
-            var metadataMgr = common.getMetadataMgr();
-            var privateData = metadataMgr.getPrivateData();
-            var teams = privateData.teams || {};
             APP.teams = {};
 
             keys.forEach(function (id) {
@@ -1457,8 +1454,6 @@ define([
                     });
                 }
             });
-
-            var teams = privateData.teams || {};
 
             var onDisconnect = function (teamId) {
                 if (APP.team && teamId && APP.team !== teamId) { return; }
