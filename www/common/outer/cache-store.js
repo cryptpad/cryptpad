@@ -1,4 +1,5 @@
 define([
+    // XXX Load util and use mkAsync
     '/bower_components/localforage/dist/localforage.min.js',
 ], function (localForage) {
     var S = {};
@@ -21,6 +22,7 @@ define([
     var checkCheckpoints = function (array) {
         if (!Array.isArray(array)) { return; }
         var cp = 0;
+        // XXX check sliceCpIndex from hk-util: use the same logic for forks
         for (var i = array.length - 1; i >= 0; i--) {
             if (array[i].isCheckpoint) { cp++; }
             if (cp === 2) {
@@ -37,6 +39,8 @@ define([
         cache.setItem(id, {
             k: validateKey,
             c: val
+            // XXX add "time" here +new Date() ==> we want to store the time when it was updated in our indexeddb in case we want to remove inactive entries from indexeddb later
+            // XXX we would also need to update the time when we "getChannelCache"
         }, function (err) {
             cb(err);
         });
