@@ -120,10 +120,13 @@ define([
         Store.getSharedFolder = function (clientId, data, cb) {
             var s = getStore(data.teamId);
             var id = data.id;
+            var proxy;
             if (!s || !s.manager) { return void cb({ error: 'ENOTFOUND' }); }
             if (s.manager.folders[id]) {
+                proxy = Util.clone(s.manager.folders[id].proxy);
+                proxy.offline = Boolean(s.manager.folders[id].offline);
                 // If it is loaded, return the shared folder proxy
-                return void cb(s.manager.folders[id].proxy);
+                return void cb(proxy);
             } else {
                 // Otherwise, check if we know this shared folder
                 var shared = Util.find(s.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
