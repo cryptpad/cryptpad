@@ -1592,6 +1592,12 @@ define([
             };
             var conf = {
                 Cache: Cache,
+                onCacheStart: function () {
+                    postMessage(clientId, "PAD_CACHE");
+                },
+                onCacheReady: function (info) {
+                    postMessage(clientId, "PAD_CACHE_READY");
+                },
                 onReady: function (pad) {
                     var padData = pad.metadata || {};
                     channel.data = padData;

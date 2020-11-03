@@ -467,7 +467,44 @@ define([
             });
         };
 
+        var onCacheReady = function () {
+            stateChange(STATE.DISCONNECTED);
+            toolbar.offline(true);
+            var newContentStr = cpNfInner.chainpad.getUserDoc();
+            if (toolbar) {
+                // Check if we have a new chainpad instance
+                toolbar.resetChainpad(cpNfInner.chainpad);
+            }
+console.log(newContentStr);
+
+            // Invalid cache? abort
+            // XXX tell outer/worker to invalidate cache
+            if (newContentStr === '') { return; }
+
+            var privateDat = cpNfInner.metadataMgr.getPrivateData();
+            var type = privateDat.app;
+
+            var newContent = JSON.parse(newContentStr);
+            var metadata = extractMetadata(newContent);
+console.log('OKOK');
+
+            // Make sure we're using the correct app for this cache
+            if (metadata && typeof(metadata.type) !== 'undefined' && metadata.type !== type) {
+                console.error('return');
+                return;
+            }
+
+            cpNfInner.metadataMgr.updateMetadata(metadata);
+            newContent = normalize(newContent);
+            if (!unsyncMode) {
+                contentUpdate(newContent, function () { return function () {}});
+            }
+
+            UI.removeLoadingScreen(emitResize);
+        };
         var onReady = function () {
+            toolbar.offline(false);
+            console.error('READY');
             var newContentStr = cpNfInner.chainpad.getUserDoc();
             if (state === STATE.DELETED) { return; }
 
@@ -732,6 +769,7 @@ define([
                 onRemote: onRemote,
                 onLocal: onLocal,
                 onInit: onInit,
+                onCacheReady: onCacheReady,
                 onReady: function () { evStart.reg(onReady); },
                 onConnectionChange: onConnectionChange,
                 onError: onError,

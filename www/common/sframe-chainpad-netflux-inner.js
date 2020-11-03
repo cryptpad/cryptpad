@@ -34,6 +34,7 @@ define([
         var onLocal = config.onLocal || function () { };
         var setMyID = config.setMyID || function () { };
         var onReady = config.onReady || function () { };
+        var onCacheReady = config.onCacheReady || function () { };
         var onError = config.onError || function () { };
         var userName = config.userName;
         var initialState = config.initialState;
@@ -93,6 +94,14 @@ define([
             evInfiniteSpinner.fire();
         }, 2000);
 
+        sframeChan.on('EV_RT_CACHE', function (isPermanent) {
+            // XXX
+        });
+        sframeChan.on('EV_RT_CACHE_READY', function (isPermanent) {
+            // XXX
+            onCacheReady({realtime: chainpad});
+            console.error('PEWPEWPEW');
+        });
         sframeChan.on('EV_RT_DISCONNECT', function (isPermanent) {
             isReady = false;
             chainpad.abort();
@@ -134,6 +143,7 @@ define([
             evConnected.fire();
         });
         sframeChan.on('Q_RT_MESSAGE', function (content, cb) {
+            console.log(content);
             if (isReady) {
                 onLocal(true); // should be onBeforeMessage
             }

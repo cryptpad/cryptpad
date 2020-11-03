@@ -992,6 +992,8 @@ define([
     pad.onJoinEvent = Util.mkEvent();
     pad.onLeaveEvent = Util.mkEvent();
     pad.onDisconnectEvent = Util.mkEvent();
+    pad.onCacheEvent = Util.mkEvent();
+    pad.onCacheReadyEvent = Util.mkEvent();
     pad.onConnectEvent = Util.mkEvent();
     pad.onErrorEvent = Util.mkEvent();
     pad.onMetadataEvent = Util.mkEvent();
@@ -1957,6 +1959,8 @@ define([
         PAD_JOIN: common.padRpc.onJoinEvent.fire,
         PAD_LEAVE: common.padRpc.onLeaveEvent.fire,
         PAD_DISCONNECT: common.padRpc.onDisconnectEvent.fire,
+        PAD_CACHE: common.padRpc.onCacheEvent.fire,
+        PAD_CACHE_READY: common.padRpc.onCacheReadyEvent.fire,
         PAD_CONNECT: common.padRpc.onConnectEvent.fire,
         PAD_ERROR: common.padRpc.onErrorEvent.fire,
         PAD_METADATA: common.padRpc.onMetadataEvent.fire,
