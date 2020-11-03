@@ -1459,5 +1459,13 @@
     "admin_setlimitHint": "Lege individuelle Begrenzungen für Benutzer anhand ihrer öffentlichen Schlüssel fest. Du kannst bestehende Regeln aktualisieren oder entfernen.",
     "access_destroyPad": "Dokument oder Ordner endgültig zerstören",
     "fm_shareFolderPassword": "Diesen Ordner mit einem Passwort schützen (optional)",
-    "fm_deletedFolder": "Gelöschter Ordner"
+    "fm_deletedFolder": "Gelöschter Ordner",
+    "tag_edit": "Ändern",
+    "tag_add": "Hinzufügen",
+    "loading_state_4": "Teams laden",
+    "loading_state_3": "Geteilte Ordner laden",
+    "loading_state_2": "Inhalte aktualisieren",
+    "loading_state_1": "Drive laden",
+    "loading_state_0": "Oberfläche vorbereiten",
+    "loading_state_5": "Dokument rekonstruieren"
 }
