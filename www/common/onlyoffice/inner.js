@@ -2070,7 +2070,9 @@ define([
 
                 // Import template
                 var $template = common.createButton('importtemplate', true, {}, openTemplatePicker);
-                $template.appendTo(toolbar.$drawer);
+                if ($template && typeof($template.appendTo) === 'function') {
+                    $template.appendTo(toolbar.$drawer);
+                }
             })();
             }
 
