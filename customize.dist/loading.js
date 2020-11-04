@@ -317,9 +317,12 @@ button.primary:hover{
         var c = types.indexOf(data.type);
         if (c < current) { return console.error(data); }
         try {
-            document.querySelector('.cp-loading-spinner-container').style.display = 'none';
-            document.querySelector('.cp-loading-progress-list').innerHTML = makeList(data);
-            document.querySelector('.cp-loading-progress-container').innerHTML = makeBar(data);
+            var a = document.querySelector('.cp-loading-spinner-container');
+            if (a) { a.style.display = 'none'; }
+            var b = document.querySelector('.cp-loading-progress-list');
+            if (b) { b.innerHTML = makeList(data); }
+            var c = document.querySelector('.cp-loading-progress-container');
+            if (c) { c.innerHTML = makeBar(data); }
         } catch (e) { console.error(e); }
     };
     window.CryptPad_updateLoadingProgress = updateLoadingProgress;

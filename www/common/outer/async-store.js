@@ -89,7 +89,7 @@ define([
                         Realtime.whenRealtimeSyncs(s.sharedFolders[k].realtime, waitFor());
                     }
                 }
-            }).nThen(function () { cb(); });
+            }).nThen(function () { console.log('done');cb(); });
         };
 
         Store.get = function (clientId, data, cb) {
@@ -2162,7 +2162,7 @@ define([
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             SF.load({
                 isNew: isNew,
-                network: store.network,
+                network: store.network || store.networkPromise,
                 store: s,
                 isNewChannel: Store.isNewChannel
             }, id, data, cb);
@@ -2465,8 +2465,45 @@ define([
             });
         };
 
-        var onReady = function (clientId, returned, cb) {
+        var onCacheReady = function (clientId, cb) {
             var proxy = store.proxy;
+            if (!proxy.settings) { proxy.settings = NEW_USER_SETTINGS; }
+            if (!proxy.friends_pending) { proxy.friends_pending = {}; }
+            var unpin = function (data, cb) {
+                if (!store.loggedIn) { return void cb(); }
+                Store.unpinPads(null, data, cb);
+            };
+            var pin = function (data, cb) {
+                if (!store.loggedIn) { return void cb(); }
+                Store.pinPads(null, data, cb);
+            };
+            var manager = store.manager = ProxyManager.create(proxy.drive, {
+                onSync: function (cb) { onSync(null, cb); },
+                edPublic: proxy.edPublic,
+                pin: pin,
+                unpin: unpin,
+                loadSharedFolder: loadSharedFolder,
+                settings: proxy.settings,
+                removeOwnedChannel: function (channel, cb) { Store.removeOwnedChannel('', channel, cb); },
+                Store: Store
+            }, {
+                outer: true,
+                edPublic: store.proxy.edPublic,
+                loggedIn: store.loggedIn,
+                log: function (msg) {
+                    // broadcast to all drive apps
+                    sendDriveEvent("DRIVE_LOG", msg);
+                },
+                rt: store.realtime
+            });
+            var userObject = store.userObject = manager.user.userObject;
+            addSharedFolderHandler();
+            userObject.migrate(cb);
+        };
+        var onReady = function (clientId, returned, cb) {
+            console.error('READY');
+            var proxy = store.proxy;
+            /*
             var unpin = function (data, cb) {
                 if (!store.loggedIn) { return void cb(); }
                 Store.unpinPads(null, data, cb);
@@ -2498,9 +2535,16 @@ define([
             });
             var userObject = store.userObject = manager.user.userObject;
             addSharedFolderHandler();
+            */
+            store.ready = true;
+            var manager = store.manager;
+            var userObject = store.userObject;
 
             nThen(function (waitFor) {
-                userObject.migrate(waitFor());
+                if (manager) { return; }
+                onCacheReady(clientId, waitFor);
+                manager = store.manager;
+                userObject = store.userObject;
             }).nThen(function (waitFor) {
                 initAnonRpc(null, null, waitFor());
                 initRpc(null, null, waitFor());
@@ -2533,12 +2577,12 @@ define([
                 loadUniversal(Messenger, 'messenger', waitFor);
                 store.messenger = store.modules['messenger'];
                 loadUniversal(Profile, 'profile', waitFor);
-                loadUniversal(Team, 'team', waitFor, clientId);
+                loadUniversal(Team, 'team', waitFor, clientId); // XXX load teams offline?
                 loadUniversal(History, 'history', waitFor);
                 cleanFriendRequests();
             }).nThen(function () {
-                var requestLogin = function () {
-                    broadcast([], "REQUEST_LOGIN");
+            var requestLogin = function () {
+                broadcast([], "REQUEST_LOGIN");
                 };
 
                 if (store.loggedIn) {
@@ -2571,7 +2615,10 @@ define([
                 returned.feedback = Util.find(proxy, ['settings', 'general', 'allowUserFeedback']);
                 Feedback.init(returned.feedback);
 
-                if (typeof(cb) === 'function') { cb(returned); }
+                // XXX send feedback and logintoken to outer...
+                //if (typeof(cb) === 'function') { cb(returned); }
+                store.offline = false;
+                sendDriveEvent('NETWORK_RECONNECT');
 
                 if (typeof(proxy.uid) !== 'string' || proxy.uid.length !== 32) {
                     // even anonymous users should have a persistent, unique-ish id
@@ -2670,8 +2717,17 @@ define([
                 if (!data.userHash) {
                     returned.anonHash = Hash.getEditHashFromKeys(secret);
                 }
+                if (typeof(cb) === "function") { cb(returned); }
+            }).on('cacheready', function (info) {
+                store.offline = true;
+                store.realtime = info.realtime;
+                store.networkPromise = info.networkPromise;
+                // XXX make sure we have a valid drive available
+                onCacheReady(clientId, function () {
+                    if (typeof(cb) === "function") { cb(returned); }
+                });
             }).on('ready', function (info) {
-                if (store.userObject) { return; } // the store is already ready, it is a reconnection
+                if (store.ready) { return; } // the store is already ready, it is a reconnection
                 store.driveMetadata = info.metadata;
                 if (!rt.proxy.drive || typeof(rt.proxy.drive) !== 'object') { rt.proxy.drive = {}; }
                 var drive = rt.proxy.drive;
