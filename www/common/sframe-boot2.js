@@ -43,7 +43,7 @@ define([
             return void console.log();
         }
         if (window.CryptPad_loadingError) {
-            window.CryptPad_loadingError(e);
+            return void window.CryptPad_loadingError(e);
         }
         throw e;
     };
