@@ -1470,8 +1470,8 @@ define([
                 UIElements.reconnectAlert();
             };
 
-            sframeChan.on('EV_DRIVE_LOG', function (data) {
-                UI.log(data.msg);
+            sframeChan.on('EV_DRIVE_LOG', function (msg) {
+                UI.log(msg);
             });
             sframeChan.on('EV_NETWORK_DISCONNECT', function (teamId) {
                 onDisconnect(teamId);
