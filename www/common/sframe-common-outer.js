@@ -31,7 +31,7 @@ define([
         }
 
         document.getElementById('sbox-iframe').setAttribute('src',
-            ApiConfig.httpSafeOrigin + window.location.pathname + '/inner.html?' +
+            ApiConfig.httpSafeOrigin + window.location.pathname + 'inner.html?' +
                 requireConfig.urlArgs + '#' + encodeURIComponent(JSON.stringify(req)));
 
         // This is a cheap trick to avoid loading sframe-channel in parallel with the
