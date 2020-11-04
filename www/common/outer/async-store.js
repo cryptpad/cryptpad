@@ -1598,7 +1598,7 @@ define([
                 onCacheStart: function () {
                     postMessage(clientId, "PAD_CACHE");
                 },
-                onCacheReady: function (info) {
+                onCacheReady: function () {
                     postMessage(clientId, "PAD_CACHE_READY");
                 },
                 onReady: function (pad) {
@@ -2500,7 +2500,7 @@ define([
             addSharedFolderHandler();
             userObject.migrate(cb);
         };
-        var onReady = function (clientId, returned, cb) {
+        var onReady = function (clientId, returned/*, cb*/) {
             console.error('READY');
             var proxy = store.proxy;
             /*

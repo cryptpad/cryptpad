@@ -94,10 +94,10 @@ define([
             evInfiniteSpinner.fire();
         }, 2000);
 
-        sframeChan.on('EV_RT_CACHE', function (isPermanent) {
+        sframeChan.on('EV_RT_CACHE', function () {
             // XXX
         });
-        sframeChan.on('EV_RT_CACHE_READY', function (isPermanent) {
+        sframeChan.on('EV_RT_CACHE_READY', function () {
             // XXX
             onCacheReady({realtime: chainpad});
             console.error('PEWPEWPEW');

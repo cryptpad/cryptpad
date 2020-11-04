@@ -486,7 +486,6 @@ console.log(newContentStr);
 
             var newContent = JSON.parse(newContentStr);
             var metadata = extractMetadata(newContent);
-console.log('OKOK');
 
             // Make sure we're using the correct app for this cache
             if (metadata && typeof(metadata.type) !== 'undefined' && metadata.type !== type) {
@@ -497,7 +496,7 @@ console.log('OKOK');
             cpNfInner.metadataMgr.updateMetadata(metadata);
             newContent = normalize(newContent);
             if (!unsyncMode) {
-                contentUpdate(newContent, function () { return function () {}});
+                contentUpdate(newContent, function () { return function () {}; });
             }
 
             UI.removeLoadingScreen(emitResize);

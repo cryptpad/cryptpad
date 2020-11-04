@@ -182,7 +182,7 @@ define([
                 }
             };
             var rt = sf.rt = Listmap.create(listmapConfig);
-            rt.proxy.on('cacheready', function (info) {
+            rt.proxy.on('cacheready', function () {
                 if (isNew && !Object.keys(rt.proxy).length) {
                     // New Shared folder: no migration required
                     rt.proxy.version = 2;
@@ -202,7 +202,7 @@ define([
                 });
                 sf.ready = true;
             });
-            rt.proxy.on('ready', function (info) {
+            rt.proxy.on('ready', function () {
                 if (isNew && !Object.keys(rt.proxy).length) {
                     // New Shared folder: no migration required
                     rt.proxy.version = 2;
