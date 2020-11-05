@@ -18,11 +18,11 @@ define([
         var selected = Msg._languageUsed;
         var keys = Object.keys(languages).sort();
         keys.forEach(function (l) {
-            var attr = { value: l };
+            var attr = { value: l};
             if (selected === l) { attr.selected = 'selected'; }
             options.push(h('option', attr, languages[l]));
         });
-        var select = h('select', {}, options);
+        var select = h('select', {role: 'listbox', 'aria-label': 'language'}, options);
         $(select).change(function () {
             Language.setLanguage($(select).val() || '', null, function () {
                 window.location.reload();
@@ -84,7 +84,8 @@ define([
                         h('div.cp-logo-foot', [
                             h('img', {
                                 src: '/customize/CryptPad_logo.svg',
-                                "aria-hidden": true
+                                "aria-hidden": true,
+                                alt: ''
                             }),
                             h('span.logo-font', 'CryptPad')
                         ])
@@ -149,7 +150,11 @@ define([
 
         return h('nav.navbar.navbar-expand-lg',
             h('a.navbar-brand', { href: '/index.html'}, [
-                h('img', { src: '/customize/CryptPad_logo.svg?', 'aria-hidden': true}), 'CryptPad'
+                h('img', {
+                    src: '/customize/CryptPad_logo.svg?',
+                    'aria-hidden': true,
+                    alt: ''
+                }), 'CryptPad'
             ]),
             button,
             h('div.collapse.navbar-collapse.justify-content-end#menuCollapse', [
