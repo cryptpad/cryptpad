@@ -34,6 +34,8 @@ define([
              NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, nThen, Saferphore) {
 
+    var onReadyEvt = Util.mkEvent(true);
+
     // Default settings for new users
     var NEW_USER_SETTINGS = {
         drive: {
@@ -595,6 +597,7 @@ define([
                     pendingFriends: store.proxy.friends_pending || {},
                     supportPrivateKey: Util.find(store.proxy, ['mailboxes', 'supportadmin', 'keys', 'curvePrivate']),
                     accountName: store.proxy.login_name || '',
+                    offline: store.offline,
                     teams: teams,
                     plan: account.plan
                 }
@@ -2178,16 +2181,18 @@ define([
             });
         };
         Store.addSharedFolder = function (clientId, data, cb) {
-            var s = getStore(data.teamId);
-            s.manager.addSharedFolder(data, function (id) {
-                if (id && typeof(id) === "object" && id.error) {
-                    return void cb(id);
-                }
-                var send = data.teamId ? s.sendEvent : sendDriveEvent;
-                send('DRIVE_CHANGE', {
-                    path: ['drive', UserObject.FILES_DATA]
-                }, clientId);
-                cb(id);
+            onReadyEvt.reg(function () {
+                var s = getStore(data.teamId);
+                s.manager.addSharedFolder(data, function (id) {
+                    if (id && typeof(id) === "object" && id.error) {
+                        return void cb(id);
+                    }
+                    var send = data.teamId ? s.sendEvent : sendDriveEvent;
+                    send('DRIVE_CHANGE', {
+                        path: ['drive', UserObject.FILES_DATA]
+                    }, clientId);
+                    cb(id);
+                });
             });
         };
         Store.updateSharedFolderPassword = function (clientId, data, cb) {
@@ -2500,49 +2505,20 @@ define([
             addSharedFolderHandler();
             userObject.migrate(cb);
         };
-        var onReady = function (clientId, returned/*, cb*/) {
+
+        // onReady: called when the drive is synced (not using the cache anymore)
+        // "cb" is wrapped in Util.once() and may have already been called
+        // if we have a local cache
+        var onReady = function (clientId, returned, cb) {
             console.error('READY');
-            var proxy = store.proxy;
-            /*
-            var unpin = function (data, cb) {
-                if (!store.loggedIn) { return void cb(); }
-                Store.unpinPads(null, data, cb);
-            };
-            var pin = function (data, cb) {
-                if (!store.loggedIn) { return void cb(); }
-                Store.pinPads(null, data, cb);
-            };
-            if (!proxy.settings) { proxy.settings = NEW_USER_SETTINGS; }
-            if (!proxy.friends_pending) { proxy.friends_pending = {}; }
-            var manager = store.manager = ProxyManager.create(proxy.drive, {
-                onSync: function (cb) { onSync(null, cb); },
-                edPublic: proxy.edPublic,
-                pin: pin,
-                unpin: unpin,
-                loadSharedFolder: loadSharedFolder,
-                settings: proxy.settings,
-                removeOwnedChannel: function (channel, cb) { Store.removeOwnedChannel('', channel, cb); },
-                Store: Store
-            }, {
-                outer: true,
-                edPublic: store.proxy.edPublic,
-                loggedIn: store.loggedIn,
-                log: function (msg) {
-                    // broadcast to all drive apps
-                    sendDriveEvent("DRIVE_LOG", msg);
-                },
-                rt: store.realtime
-            });
-            var userObject = store.userObject = manager.user.userObject;
-            addSharedFolderHandler();
-            */
             store.ready = true;
+            var proxy = store.proxy;
             var manager = store.manager;
             var userObject = store.userObject;
 
             nThen(function (waitFor) {
                 if (manager) { return; }
-                onCacheReady(clientId, waitFor);
+                onCacheReady(clientId, waitFor());
                 manager = store.manager;
                 userObject = store.userObject;
             }).nThen(function (waitFor) {
@@ -2616,9 +2592,12 @@ define([
                 Feedback.init(returned.feedback);
 
                 // XXX send feedback and logintoken to outer...
-                //if (typeof(cb) === 'function') { cb(returned); }
-                store.offline = false;
+                // "cb" may have already been called by onCacheReady
+                if (typeof(cb) === 'function') { cb(returned); }
                 sendDriveEvent('NETWORK_RECONNECT');
+                store.offline = false;
+// XXX broadcast READY event with the missing data
+// XXX we can improve feedback to queue the queries and send them when coming back online
 
                 if (typeof(proxy.uid) !== 'string' || proxy.uid.length !== 32) {
                     // even anonymous users should have a persistent, unique-ish id
@@ -2673,6 +2652,8 @@ define([
                     broadcast([], "UPDATE_TOKEN", { token: proxy[Constants.tokenKey] });
                 });
 
+                onReadyEvt.fire();
+
                 loadMailbox();
             });
         };
@@ -2717,8 +2698,8 @@ define([
                 if (!data.userHash) {
                     returned.anonHash = Hash.getEditHashFromKeys(secret);
                 }
-                if (typeof(cb) === "function") { cb(returned); }
             }).on('cacheready', function (info) {
+                if (!data.cache) { return; }
                 store.offline = true;
                 store.realtime = info.realtime;
                 store.networkPromise = info.networkPromise;
@@ -2753,10 +2734,12 @@ define([
             rt.proxy.on('disconnect', function () {
                 store.offline = true;
                 sendDriveEvent('NETWORK_DISCONNECT');
+                broadcast([], "UPDATE_METADATA");
             });
             rt.proxy.on('reconnect', function () {
                 store.offline = false;
                 sendDriveEvent('NETWORK_RECONNECT');
+                broadcast([], "UPDATE_METADATA");
             });
 
             // Ping clients regularly to make sure one tab was not closed without sending a removeClient()

@@ -151,6 +151,7 @@ define([
 
                 Cryptpad.ready(waitFor(), {
                     driveEvents: cfg.driveEvents,
+                    cache: Boolean(cfg.cache),
                     currentPad: currentPad
                 });
 
