@@ -497,7 +497,7 @@ define([
             cpNfInner.metadataMgr.updateMetadata(metadata);
             newContent = normalize(newContent);
             if (!unsyncMode) {
-                contentUpdate(newContent, function () { return function () {}});
+                contentUpdate(newContent, function () { return function () {}; });
             }
 
             UI.removeLoadingScreen(emitResize);

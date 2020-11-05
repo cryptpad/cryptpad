@@ -94,7 +94,7 @@ define([
             evInfiniteSpinner.fire();
         }, 2000);
 
-        sframeChan.on('EV_RT_CACHE_READY', function (isPermanent) {
+        sframeChan.on('EV_RT_CACHE_READY', function () {
             onCacheReady({realtime: chainpad});
         });
         sframeChan.on('EV_RT_DISCONNECT', function (isPermanent) {

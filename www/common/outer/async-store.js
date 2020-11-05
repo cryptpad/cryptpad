@@ -1598,7 +1598,7 @@ define([
                 onCacheStart: function () {
                     postMessage(clientId, "PAD_CACHE");
                 },
-                onCacheReady: function (info) {
+                onCacheReady: function () {
                     postMessage(clientId, "PAD_CACHE_READY");
                 },
                 onReady: function (pad) {
