@@ -2473,15 +2473,7 @@ define([
         // Get the upload options
         var addSharedFolderModal = function (cb) {
             var createHelper = function (href, text) {
-                var q = h('a.fa.fa-question-circle', {
-                    style: 'text-decoration: none !important;',
-                    'data-cptippy-html': true,
-                    title: text,
-                    href: APP.origin + href,
-                    target: "_blank",
-                    'data-tippy-placement': "right"
-                });
-                return q;
+                return UI.createHelper(APP.origin + href, text);
             };
 
             // Ask for name, password and owner
