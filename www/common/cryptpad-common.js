@@ -1006,6 +1006,10 @@ define([
         postMessage("GIVE_PAD_ACCESS", data, cb);
     };
 
+    common.onCorruptedCache = function (channel) {
+        postMessage("CORRUPTED_CACHE", channel);
+    };
+
     common.setPadMetadata = function (data, cb) {
         postMessage('SET_PAD_METADATA', data, cb);
     };

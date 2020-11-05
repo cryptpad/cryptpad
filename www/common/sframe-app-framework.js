@@ -467,6 +467,10 @@ define([
             });
         };
 
+        var onCorruptedCache = function (cb) {
+            var sframeChan = common.getSframeChannel();
+            sframeChan.event("Q_CORRUPTED_CACHE", cb);
+        };
         var onCacheReady = function () {
             stateChange(STATE.DISCONNECTED);
             toolbar.offline(true);
@@ -475,23 +479,19 @@ define([
                 // Check if we have a new chainpad instance
                 toolbar.resetChainpad(cpNfInner.chainpad);
             }
-console.log(newContentStr);
 
-            // Invalid cache? abort
-            // XXX tell outer/worker to invalidate cache
-            if (newContentStr === '') { return; }
+            // Invalid cache
+            if (newContentStr === '') { return void onCorruptedCache(); }
 
             var privateDat = cpNfInner.metadataMgr.getPrivateData();
             var type = privateDat.app;
 
             var newContent = JSON.parse(newContentStr);
             var metadata = extractMetadata(newContent);
-console.log('OKOK');
 
             // Make sure we're using the correct app for this cache
             if (metadata && typeof(metadata.type) !== 'undefined' && metadata.type !== type) {
-                console.error('return');
-                return;
+                return void onCorruptedCache();
             }
 
             cpNfInner.metadataMgr.updateMetadata(metadata);
@@ -504,7 +504,7 @@ console.log('OKOK');
         };
         var onReady = function () {
             toolbar.offline(false);
-            console.error('READY');
+
             var newContentStr = cpNfInner.chainpad.getUserDoc();
             if (state === STATE.DELETED) { return; }
 
@@ -545,7 +545,12 @@ console.log('OKOK');
                         console.log("Either this is an empty document which has not been touched");
                         console.log("Or else something is terribly wrong, reloading.");
                         Feedback.send("NON_EMPTY_NEWDOC");
-                        setTimeout(function () { common.gotoURL(); }, 1000);
+                        // The cache may be wrong, empty it and reload after.
+                        waitFor.abort();
+                        UI.errorLoadingScreen("MAYBE CORRUPTED CACHE... RELOADING"); // XXX
+                        onCorruptedCache(function () {
+                            setTimeout(function () { common.gotoURL(); }, 1000);
+                        });
                         return;
                     }
                     console.log('updating title');

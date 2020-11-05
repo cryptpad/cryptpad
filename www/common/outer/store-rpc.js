@@ -88,6 +88,7 @@ define([
             CHANGE_PAD_PASSWORD_PIN: Store.changePadPasswordPin,
             GET_LAST_HASH: Store.getLastHash,
             GET_SNAPSHOT: Store.getSnapshot,
+            CORRUPTED_CACHE: Store.corruptedCache,
             // Drive
             DRIVE_USEROBJECT: Store.userObjectCommand,
             // Settings,

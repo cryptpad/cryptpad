@@ -1,7 +1,7 @@
 define([
-    // XXX Load util and use mkAsync
+    '/common/common-util.js',
     '/bower_components/localforage/dist/localforage.min.js',
-], function (localForage) {
+], function (Util, localForage) {
     var S = {};
 
     var cache = localForage.createInstance({
@@ -11,43 +11,50 @@ define([
     // id: channel ID or blob ID
     // returns array of messages
     S.getChannelCache = function (id, cb) {
+        cb = Util.once(Util.mkAsync(cb || function () {}));
         cache.getItem(id, function (err, obj) {
             if (err || !obj || !Array.isArray(obj.c)) {
                 return void cb(err || 'EINVAL');
             }
             cb(null, obj);
+            obj.t = +new Date();
+            cache.setItem(id, obj);
         });
     };
 
+    // Keep the last two checkpoint + any checkpoint that may exist in the last 100 messages
+    // FIXME: duplicate system with sliceCpIndex from lib/hk-util.js
     var checkCheckpoints = function (array) {
         if (!Array.isArray(array)) { return; }
-        var cp = 0;
-        // XXX check sliceCpIndex from hk-util: use the same logic for forks
-        for (var i = array.length - 1; i >= 0; i--) {
-            if (array[i].isCheckpoint) { cp++; }
-            if (cp === 2) {
-                array.splice(0, i);
-                break;
-            }
+        // Keep the last 100 messages
+        if (array.length > 100) {
+            array.splice(0, array.length - 100);
         }
+        // Remove every message before the first checkpoint
+        var firstCpIdx;
+        array.some(function (el, i) {
+            if (!el.isCheckpoint) { return; }
+            firstCpIdx = i;
+            return true;
+        });
+        array.splice(0, firstCpIdx);
     };
 
     S.storeCache = function (id, validateKey, val, cb) {
-        cb = cb || function () {};
+        cb = Util.once(Util.mkAsync(cb || function () {}));
         if (!Array.isArray(val) || !validateKey) { return void cb('EINVAL'); }
         checkCheckpoints(val);
         cache.setItem(id, {
             k: validateKey,
-            c: val
-            // XXX add "time" here +new Date() ==> we want to store the time when it was updated in our indexeddb in case we want to remove inactive entries from indexeddb later
-            // XXX we would also need to update the time when we "getChannelCache"
+            c: val,
+            t: (+new Date()) // 't' represent the "lastAccess" of this cache (get or set)
         }, function (err) {
             cb(err);
         });
     };
 
     S.clearChannel = function (id, cb) {
-        cb = cb || function () {};
+        cb = Util.once(Util.mkAsync(cb || function () {}));
         cache.removeItem(id, cb);
     };
 

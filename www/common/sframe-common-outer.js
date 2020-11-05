@@ -53,12 +53,13 @@ define([
                 '/common/common-constants.js',
                 '/common/common-feedback.js',
                 '/common/outer/local-store.js',
+                '/common/outer/cache-store.js',
                 '/customize/application_config.js',
                 '/common/test.js',
                 '/common/userObject.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
             _SecureIframe, _Messaging, _Notifier, _Hash, _Util, _Realtime,
-            _Constants, _Feedback, _LocalStore, _AppConfig, _Test, _UserObject) {
+            _Constants, _Feedback, _LocalStore, _Cache, _AppConfig, _Test, _UserObject) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = Utils.Crypto = _Crypto;
@@ -73,6 +74,7 @@ define([
                 Utils.Constants = _Constants;
                 Utils.Feedback = _Feedback;
                 Utils.LocalStore = _LocalStore;
+                Utils.Cache = _Cache;
                 Utils.UserObject = _UserObject;
                 AppConfig = _AppConfig;
                 Test = _Test;
@@ -1634,6 +1636,11 @@ define([
                     CpNfOuter.start(cpNfCfg);
                 });
             };
+
+            sframeChan.on('Q_CORRUPTED_CACHE', function (cb) {
+                Utils.Cache.clearChannel(secret.channel, cb);
+                Cryptpad.onCorruptedCache(secret.channel);
+            });
 
             sframeChan.on('Q_CREATE_PAD', function (data, cb) {
                 if (!isNewFile || rtStarted) { return; }

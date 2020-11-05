@@ -94,13 +94,8 @@ define([
             evInfiniteSpinner.fire();
         }, 2000);
 
-        sframeChan.on('EV_RT_CACHE', function (isPermanent) {
-            // XXX
-        });
         sframeChan.on('EV_RT_CACHE_READY', function (isPermanent) {
-            // XXX
             onCacheReady({realtime: chainpad});
-            console.error('PEWPEWPEW');
         });
         sframeChan.on('EV_RT_DISCONNECT', function (isPermanent) {
             isReady = false;
@@ -143,7 +138,6 @@ define([
             evConnected.fire();
         });
         sframeChan.on('Q_RT_MESSAGE', function (content, cb) {
-            console.log(content);
             if (isReady) {
                 onLocal(true); // should be onBeforeMessage
             }
