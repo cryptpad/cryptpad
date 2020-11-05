@@ -97,9 +97,12 @@ define([
             var secret = Hash.getSecrets('team', hash);
             cb(null, secret);
         };
-        var addData = function (meta) {
-            if (!hash) { return; }
-            meta.teamInviteHash = hash.slice(1);
+        var addData = function (meta, Cryptpad, user, Utils) {
+            if (!Utils.currentPad.hash) { return; }
+            var _hash = Utils.currentPad.hash.replace(/^#/, '');
+            var parsed = Utils.Hash.parseTypeHash('invite', _hash);
+            if (parsed.app !== 'invite') { return; }
+            meta.teamInviteHash = _hash;
         };
         SFCommonO.start({
             getSecrets: getSecrets,

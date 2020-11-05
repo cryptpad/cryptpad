@@ -121,6 +121,7 @@ define([
                 Utils.Feedback = _Feedback;
                 Utils.LocalStore = _LocalStore;
                 Utils.UserObject = _UserObject;
+                Utils.currentPad = currentPad;
                 AppConfig = _AppConfig;
                 Test = _Test;
 
@@ -604,7 +605,7 @@ define([
                     for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 
                     if (cfg.addData) {
-                        cfg.addData(metaObj.priv, Cryptpad, metaObj.user);
+                        cfg.addData(metaObj.priv, Cryptpad, metaObj.user, Utils);
                     }
 
                     sframeChan.event('EV_METADATA_UPDATE', metaObj);
