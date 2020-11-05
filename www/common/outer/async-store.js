@@ -1610,7 +1610,7 @@ define([
                     if (padData && padData.validateKey && store.messenger) {
                         store.messenger.storeValidateKey(data.channel, padData.validateKey);
                     }
-                    postMessage(clientId, "PAD_READY");
+                    postMessage(clientId, "PAD_READY", pad.noCache);
                 },
                 onMessage: function (m, user, validateKey, isCp, hash) {
                     channel.lastHash = hash;
@@ -1739,6 +1739,14 @@ define([
                 return void cb();
             }
             channel.sendMessage(msg, clientId, cb);
+        };
+
+        Store.corruptedCache = function (clientId, channel) {
+            var chan = channels[channel];
+            if (!chan || !chan.cpNf) { return; }
+            Cache.clearChannel(channel);
+            if (!chan.cpNf.resetCache) { return; }
+            chan.cpNf.resetCache();
         };
 
         // Unpin and pin the new channel in all team when changing a pad password

@@ -89,7 +89,6 @@ define([], function () {
                 validateKey = msgObj.validateKey;
             }
             var message = msgIn(msgObj.user, msgObj.msg);
-            console.log(message);
             if (!message) { return; }
             lastTime = msgObj.time;
 
@@ -127,7 +126,6 @@ define([], function () {
         });
 
         padRpc.onCacheReadyEvent.reg(function () {
-            console.log('ONCACHEREADY');
             sframeChan.event('EV_RT_CACHE_READY');
         });
 
