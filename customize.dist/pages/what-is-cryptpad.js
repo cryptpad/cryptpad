@@ -34,7 +34,9 @@ define([
                     ]),
                     h('div.col-md-6', [
                         h('img', {
-                            src: '/customize/images/collaboration.png?' + urlArgs
+                            src: '/customize/images/collaboration.png?' + urlArgs,
+                            alt: '',
+                            'aria-hidden': 'true'
                         }),
                     ]),
                 ]),
@@ -45,7 +47,9 @@ define([
                     ]),
                     h('div.col-md-6.order-md-1', [
                         h('img', {
-                            src: '/customize/images/apps-preview.png?' + urlArgs
+                            src: '/customize/images/apps-preview.png?' + urlArgs,
+                            alt: '',
+                            'aria-hidden': 'true'
                         }),
                     ]),
                 ]),
@@ -56,7 +60,9 @@ define([
                     ]),
                     h('div.col-md-6', [
                         h('img.cp-shadow', {
-                            src: '/customize/images/drive-grid.png?' + urlArgs
+                            src: '/customize/images/drive-grid.png?' + urlArgs,
+                            alt: '',
+                            'aria-hidden': 'true'
                         }),
                     ]),
                 ]),
@@ -71,16 +77,20 @@ define([
                     ]),
                     h('div.col-md-6.order-md-1.small-logos', [
                         h('img', {
-                            src: '/customize/images/logo_ngi.png?' + urlArgs
+                            src: '/customize/images/logo_ngi.png?' + urlArgs,
+                            alt: 'Logo NGI Trust'
                         }),
                         h('img', {
-                            src: '/customize/images/logo_nlnet.svg?' + urlArgs
+                            src: '/customize/images/logo_nlnet.svg?' + urlArgs,
+                            alt: 'Logo NLNet Foundation'
                         }),
                         h('img', {
-                            src: '/customize/images/logo_bpifrance.svg?' + urlArgs
+                            src: '/customize/images/logo_bpifrance.svg?' + urlArgs,
+                            alt: 'Logo BPI France'
                         }),
                         h('img', {
-                            src: '/customize/images/logo_moss.jpg?' + urlArgs
+                            src: '/customize/images/logo_moss.jpg?' + urlArgs,
+                            alt: 'Logo Mozilla Open Source Support'
                         }),
                     ]),
                 ]),
@@ -91,7 +101,8 @@ define([
                     ]),
                     h('div.col-md-6.small-logos', [
                         h('img', {
-                            src: '/customize/images/logo_XWiki.svg?' + urlArgs
+                            src: '/customize/images/logo_XWiki.svg?' + urlArgs,
+                            alt: 'Logo XWiki'
                         }),
                     ]),
                 ]),

@@ -18,11 +18,11 @@ define([
         var selected = Msg._languageUsed;
         var keys = Object.keys(languages).sort();
         keys.forEach(function (l) {
-            var attr = { value: l};
+            var attr = { value: l, role: 'option'};
             if (selected === l) { attr.selected = 'selected'; }
             options.push(h('option', attr, languages[l]));
         });
-        var select = h('select', {role: 'listbox', 'aria-label': 'language'}, options);
+        var select = h('select', {role: 'listbox', 'label': 'language'}, options);
         $(select).change(function () {
             Language.setLanguage($(select).val() || '', null, function () {
                 window.location.reload();

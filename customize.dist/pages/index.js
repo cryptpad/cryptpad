@@ -59,7 +59,7 @@ define([
                 return h('a', [
                     attr,
                     h(s, [
-                        h('i.' + font + '.' + icon),
+                        h('i.' + font + '.' + icon, {'aria-hidden': 'true'}),
                         h('div.pad-button-text', [ x[1] ])
                     ])
                 ]);
@@ -127,7 +127,8 @@ define([
                 h('div.col-sm-6',
                     h('img.img-fluid', {
                         src:'/customize/images/shredder.png',
-                        alt:'illustration, a shredder destroys a sheet of paper and antoher one reconstructs it'
+                        alt:'',
+                        'aria-hidden': 'true'
                     })
                 ),
                 h('div.col-sm-6', [
@@ -165,7 +166,11 @@ define([
                 h('div.container.cp-container', [
                     h('div.row.cp-home-hero', [
                         h('div.cp-title.col-md-7', [
-                            h('img', { src: '/customize/CryptPad_logo.svg?' + urlArgs }),
+                            h('img', {
+                                src: '/customize/CryptPad_logo.svg?' + urlArgs,
+                                'aria-hidden': 'true',
+                                alt: ''
+                            }),
                             h('h1', 'CryptPad'),
                             UI.setHTML(h('span.tag-line'), Msg.main_catch_phrase)
                         ]),
