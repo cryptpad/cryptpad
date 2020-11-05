@@ -555,7 +555,7 @@ define([
         return window.location.origin + '/bounce/#' + encodeURIComponent(url);
     };
     funcs.openUnsafeURL = function (url) {
-        var bounceHref = getBounceURL(url);
+        var bounceHref = funcs.getBounceURL(url);
         window.open(bounceHref);
     };
 
