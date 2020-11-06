@@ -312,15 +312,24 @@ button.primary:hover{
         return bar;
     };
 
+    var hideSpinner = function () {
+        try {
+            document.querySelector('.cp-loading-spinner-container').style.display = 'none';
+            document.querySelector('.cp-loading-spinner-container').setAttribute('style', 'display:none;');
+        } catch (err) { return; }
+    };
+
     var hasErrored = false;
     var updateLoadingProgress = function (data) {
         if (!built || !data) { return; }
         var c = types.indexOf(data.type);
         if (c < current) { return console.error(data); }
         try {
-            document.querySelector('.cp-loading-spinner-container').style.display = 'none';
-            document.querySelector('.cp-loading-progress-list').innerHTML = makeList(data);
-            document.querySelector('.cp-loading-progress-container').innerHTML = makeBar(data);
+            hideSpinner();
+            var list = document.querySelector('.cp-loading-progress-list');
+            list && (list.innerHTML = makeList(data));
+            var container = document.querySelector('.cp-loading-progress-container');
+            container && (container.innerHTML = makeBar(data));
         } catch (e) {
             if (!hasErrored) { console.error(e); }
         }
@@ -329,6 +338,7 @@ button.primary:hover{
 
     window.CryptPad_loadingError = function (err) {
         if (!built) { return; }
+        console.error(err);
         hasErrored = true;
         var err2;
         if (err === 'Script error.') {
@@ -339,10 +349,12 @@ button.primary:hover{
             var node = document.querySelector('.cp-loading-progress');
             if (!node) { return; }
             if (node.parentNode) { node.parentNode.removeChild(node); }
-            document.querySelector('.cp-loading-spinner-container').setAttribute('style', 'display:none;');
+            hideSpinner();
             document.querySelector('#cp-loading-message').setAttribute('style', 'display:block;');
             document.querySelector('#cp-loading-message').innerText = err2 || err;
-        } catch (e) { console.error(e); }
+        } catch (e) {
+            console.error(e);
+        }
     };
     return function () {
         built = true;
