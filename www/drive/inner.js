@@ -82,6 +82,8 @@ define([
                     var readOnly = !secret.keys.editKeyStr;
                     if (!manager || !manager.folders[fId]) { return; }
                     manager.folders[fId].userObject.setReadOnly(readOnly, secret.keys.secondaryKey);
+
+                    manager.folders[fId].offline = newObj.offline;
                 }));
             });
             // Remove from memory folders that have been deleted from the drive remotely
@@ -276,6 +278,7 @@ define([
             if (!proxy.drive || typeof(proxy.drive) !== 'object') {
                 throw new Error("Corrupted drive");
             }
+            APP.online = !privateData.offline;
             var drive = DriveUI.create(common, {
                 $limit: usageBar && usageBar.$container,
                 proxy: proxy,
@@ -307,6 +310,7 @@ define([
                 onDisconnect();
             });
             sframeChan.on('EV_NETWORK_RECONNECT', function () {
+                console.log('here');
                 onReconnect();
             });
             common.onLogout(function () { setEditable(false); });

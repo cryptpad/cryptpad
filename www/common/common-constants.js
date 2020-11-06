@@ -5,10 +5,6 @@ define(['/customize/application_config.js'], function (AppConfig) {
         userNameKey: 'User_name',
         blockHashKey: 'Block_hash',
         fileHashKey: 'FS_hash',
-        // sessionStorage
-        newPadPathKey: "newPadPath",
-        newPadTeamKey: "newPadTeam",
-        newPadFileData: "newPadFileData",
         // Store
         displayNameKey: 'cryptpad.username',
         oldStorageKey: 'CryptPad_RECENTPADS',

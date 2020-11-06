@@ -148,6 +148,21 @@ define([
         send();
     };
 
+    common.setTabHref = function (href) {
+        var ohc = window.onhashchange;
+        window.onhashchange = function () {};
+        window.location.href = href;
+        window.onhashchange = ohc;
+        ohc({reset: true});
+    };
+    common.setTabHash = function (hash) {
+        var ohc = window.onhashchange;
+        window.onhashchange = function () {};
+        window.location.hash = hash;
+        window.onhashchange = ohc;
+        ohc({reset: true});
+    };
+
     // RESTRICTED
     // Settings only
     common.resetDrive = function (cb) {
@@ -673,6 +688,7 @@ define([
                 if (!val) {
                     return void cb('ENOENT');
                 }
+                if (data.oo) { return void cb(val); } // OnlyOffice template: are handled in inner
                 try {
                     // Try to fix the title before importing the template
                     var parsed = JSON.parse(val);
@@ -976,6 +992,8 @@ define([
     pad.onJoinEvent = Util.mkEvent();
     pad.onLeaveEvent = Util.mkEvent();
     pad.onDisconnectEvent = Util.mkEvent();
+    pad.onCacheEvent = Util.mkEvent();
+    pad.onCacheReadyEvent = Util.mkEvent();
     pad.onConnectEvent = Util.mkEvent();
     pad.onErrorEvent = Util.mkEvent();
     pad.onMetadataEvent = Util.mkEvent();
@@ -986,6 +1004,10 @@ define([
     };
     pad.giveAccess = function (data, cb) {
         postMessage("GIVE_PAD_ACCESS", data, cb);
+    };
+
+    common.onCorruptedCache = function (channel) {
+        postMessage("CORRUPTED_CACHE", channel);
     };
 
     common.setPadMetadata = function (data, cb) {
@@ -1864,8 +1886,9 @@ define([
         LocalStore.logout();
 
         // redirect them to log in, and come back when they're done.
-        sessionStorage.redirectTo = currentPad.href;
-        window.location.href = '/login/';
+        var href = Hash.hashToHref('', 'login');
+        var url = Hash.getNewPadURL(href, { href: currentPad.href });
+        window.location.href = url;
     };
 
     common.startAccountDeletion = function (data, cb) {
@@ -1940,6 +1963,8 @@ define([
         PAD_JOIN: common.padRpc.onJoinEvent.fire,
         PAD_LEAVE: common.padRpc.onLeaveEvent.fire,
         PAD_DISCONNECT: common.padRpc.onDisconnectEvent.fire,
+        PAD_CACHE: common.padRpc.onCacheEvent.fire,
+        PAD_CACHE_READY: common.padRpc.onCacheReadyEvent.fire,
         PAD_CONNECT: common.padRpc.onConnectEvent.fire,
         PAD_ERROR: common.padRpc.onErrorEvent.fire,
         PAD_METADATA: common.padRpc.onMetadataEvent.fire,
@@ -2087,28 +2112,31 @@ define([
                 anonHash: LocalStore.getFSHash(),
                 localToken: tryParsing(localStorage.getItem(Constants.tokenKey)), // TODO move this to LocalStore ?
                 language: common.getLanguage(),
+                cache: rdyCfg.cache,
                 driveEvents: true //rdyCfg.driveEvents // Boolean
             };
-            // if a pad is created from a file
-            if (sessionStorage[Constants.newPadFileData]) {
-                common.fromFileData = JSON.parse(sessionStorage[Constants.newPadFileData]);
+
+            // FIXME Backward compatibility
+            if (sessionStorage.newPadFileData) {
+                common.fromFileData = JSON.parse(sessionStorage.newPadFileData);
                 var _parsed1 = Hash.parsePadUrl(common.fromFileData.href);
                 var _parsed2 = Hash.parsePadUrl(window.location.href);
                 if (_parsed1.hashData.type === 'pad') {
                     if (_parsed1.type !== _parsed2.type) { delete common.fromFileData; }
                 }
-                delete sessionStorage[Constants.newPadFileData];
+                delete sessionStorage.newPadFileData;
             }
 
-            if (sessionStorage[Constants.newPadPathKey]) {
-                common.initialPath = sessionStorage[Constants.newPadPathKey];
-                delete sessionStorage[Constants.newPadPathKey];
+            if (sessionStorage.newPadPath) {
+                common.initialPath = sessionStorage.newPadPath;
+                delete sessionStorage.newPadPath;
             }
 
-            if (sessionStorage[Constants.newPadTeamKey]) {
-                common.initialTeam = sessionStorage[Constants.newPadTeamKey];
-                delete sessionStorage[Constants.newPadTeamKey];
+            if (sessionStorage.newPadTeam) {
+                common.initialTeam = sessionStorage.newPadTeam;
+                delete sessionStorage.newPadTeam;
             }
+
 
             var channelIsReady = waitFor();
 
@@ -2281,12 +2309,6 @@ define([
 
                         if (data.anonHash && !cfg.userHash) { LocalStore.setFSHash(data.anonHash); }
 
-                        /*if (cfg.userHash && sessionStorage) {
-                            // copy User_hash into sessionStorage because cross-domain iframes
-                            // on safari replaces localStorage with sessionStorage or something
-                            sessionStorage.setItem(Constants.userHashKey, cfg.userHash);
-                        }*/
-
                         if (cfg.userHash) {
                             var localToken = tryParsing(localStorage.getItem(Constants.tokenKey));
                             if (localToken === null) {
@@ -2341,21 +2363,18 @@ define([
                 postMessage("DISCONNECT");
             });
         }).nThen(function (waitFor) {
-            if (sessionStorage.createReadme) {
+            if (common.createReadme || sessionStorage.createReadme) {
                 var data = {
                     driveReadme: Messages.driveReadme,
                     driveReadmeTitle: Messages.driveReadmeTitle,
                 };
                 postMessage("CREATE_README", data, waitFor(function (e) {
                     if (e && e.error) { return void console.error(e.error); }
-                    delete sessionStorage.createReadme;
                 }));
             }
         }).nThen(function (waitFor) {
-            if (sessionStorage.migrateAnonDrive) {
-                common.mergeAnonDrive(waitFor(function() {
-                    delete sessionStorage.migrateAnonDrive;
-                }));
+            if (common.migrateAnonDrive || sessionStorage.migrateAnonDrive) {
+                common.mergeAnonDrive(waitFor());
             }
         }).nThen(function (waitFor) {
             if (AppConfig.afterLogin) {

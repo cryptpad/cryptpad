@@ -441,9 +441,9 @@ define([
         var versionHashEl;
         var onInit = function () {
             UI.updateLoadingProgress({
-                state: 2,
+                type: 'pad',
                 progress: 0.1
-            }, false);
+            });
             stateChange(STATE.INITIALIZING);
             if ($('.cp-help-container').length) {
                 var privateDat = cpNfInner.metadataMgr.getPrivateData();
@@ -467,11 +467,46 @@ define([
             });
         };
 
+        var onCorruptedCache = function (cb) {
+            var sframeChan = common.getSframeChannel();
+            sframeChan.event("Q_CORRUPTED_CACHE", cb);
+        };
+        var onCacheReady = function () {
+            stateChange(STATE.DISCONNECTED);
+            toolbar.offline(true);
+            var newContentStr = cpNfInner.chainpad.getUserDoc();
+            if (toolbar) {
+                // Check if we have a new chainpad instance
+                toolbar.resetChainpad(cpNfInner.chainpad);
+            }
+
+            // Invalid cache
+            if (newContentStr === '') { return void onCorruptedCache(); }
+
+            var privateDat = cpNfInner.metadataMgr.getPrivateData();
+            var type = privateDat.app;
+
+            var newContent = JSON.parse(newContentStr);
+            var metadata = extractMetadata(newContent);
+
+            // Make sure we're using the correct app for this cache
+            if (metadata && typeof(metadata.type) !== 'undefined' && metadata.type !== type) {
+                return void onCorruptedCache();
+            }
+
+            cpNfInner.metadataMgr.updateMetadata(metadata);
+            newContent = normalize(newContent);
+            if (!unsyncMode) {
+                contentUpdate(newContent, function () { return function () {}; });
+            }
+
+            UI.removeLoadingScreen(emitResize);
+        };
         var onReady = function () {
+            toolbar.offline(false);
+
             var newContentStr = cpNfInner.chainpad.getUserDoc();
             if (state === STATE.DELETED) { return; }
-
-            UI.updateLoadingProgress({ state: -1 }, false);
 
             if (toolbar) {
                 // Check if we have a new chainpad instance
@@ -510,7 +545,12 @@ define([
                         console.log("Either this is an empty document which has not been touched");
                         console.log("Or else something is terribly wrong, reloading.");
                         Feedback.send("NON_EMPTY_NEWDOC");
-                        setTimeout(function () { common.gotoURL(); }, 1000);
+                        // The cache may be wrong, empty it and reload after.
+                        waitFor.abort();
+                        UI.errorLoadingScreen("MAYBE CORRUPTED CACHE... RELOADING"); // XXX
+                        onCorruptedCache(function () {
+                            setTimeout(function () { common.gotoURL(); }, 1000);
+                        });
                         return;
                     }
                     console.log('updating title');
@@ -708,9 +748,6 @@ define([
         nThen(function (waitFor) {
             UI.addLoadingScreen();
             SFCommon.create(waitFor(function (c) { common = c; }));
-            UI.updateLoadingProgress({
-                state: 1
-            }, false);
         }).nThen(function (waitFor) {
             common.getSframeChannel().onReady(waitFor());
         }).nThen(function (waitFor) {
@@ -737,6 +774,7 @@ define([
                 onRemote: onRemote,
                 onLocal: onLocal,
                 onInit: onInit,
+                onCacheReady: onCacheReady,
                 onReady: function () { evStart.reg(onReady); },
                 onConnectionChange: onConnectionChange,
                 onError: onError,

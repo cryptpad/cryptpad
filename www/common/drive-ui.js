@@ -42,6 +42,7 @@ define([
 
     var APP = window.APP = {
         editable: false,
+        online: false,
         mobile: function () {
             if (window.matchMedia) { return !window.matchMedia('(any-pointer:fine)').matches; }
             else { return $('body').width() <= 600; }
@@ -267,13 +268,25 @@ define([
     };
 
     // Handle disconnect/reconnect
-    var setEditable = function (state, isHistory) {
+    // If isHistory and isSf are both false, update the "APP.online" flag
+    // If isHistory is true, update the "APP.history" flag
+    // isSf is used to detect offline shared folders: setEditable is called on displayDirectory
+    var setEditable = function (state, isHistory, isSf) {
         if (APP.closed || !APP.$content || !$.contains(document.documentElement, APP.$content[0])) { return; }
+        if (isHistory) {
+            APP.history = !state;
+        } else if (!isSf) {
+            APP.online = state;
+        }
+        state = APP.online && !APP.history && state;
         APP.editable = !APP.readOnly && state;
+
         if (!state) {
             APP.$content.addClass('cp-app-drive-readonly');
-            if (!isHistory) {
+            if (!APP.history || !APP.online) {
                 $('#cp-app-drive-connection-state').show();
+            } else {
+                $('#cp-app-drive-connection-state').hide();
             }
             $('[draggable="true"]').attr('draggable', false);
         }
@@ -1124,6 +1137,15 @@ define([
             var hash = Hash.getHiddenHashFromKeys(parsed.type, secret, opts);
             var hiddenHref = Hash.hashToHref(hash, parsed.type);
             Util.open(APP.origin + hiddenHref);
+        };
+        var openIn = function (type, path, team, fData) {
+            var obj = {
+                p: path,
+                t: team,
+                d: fData
+            };
+            var href = Hash.hashToHref('', type);
+            common.openURL(Hash.getNewPadURL(href, obj));
         };
 
         var refresh = APP.refresh = function () {
@@ -2667,12 +2689,7 @@ define([
                 .click(function () {
                 var type = $(this).attr('data-type') || 'pad';
                 var path = manager.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
-                nThen(function (waitFor) {
-                    common.sessionStorage.put(Constants.newPadPathKey, path, waitFor());
-                    common.sessionStorage.put(Constants.newPadTeamKey, APP.team, waitFor());
-                }).nThen(function () {
-                    common.openURL('/' + type + '/');
-                });
+                openIn(type, path, APP.team);
             });
         };
         var createNewButton = function (isInRoot, $container) {
@@ -3666,6 +3683,15 @@ define([
             }
 
             var readOnlyFolder = false;
+
+            // If the shared folder is offline, add the "DISCONNECTED" banner, otherwise
+            // use the normal "editable" behavior (based on drive offline or history mode)
+            if (sfId && manager.folders[sfId].offline) {
+                setEditable(false, false, true);
+            } else {
+                setEditable(true, false, true);
+            }
+
             if (APP.readOnly) {
                 // Read-only drive (team?)
                 $content.prepend($readOnly.clone());
@@ -4227,60 +4253,37 @@ define([
             else if ($this.hasClass('cp-app-drive-context-makeacopy')) {
                 if (paths.length !== 1) { return; }
                 el = manager.find(paths[0].path);
-                var _metadata = manager.getFileData(el);
-                var _simpleData = {
-                    title: _metadata.filename || _metadata.title,
-                    href: _metadata.href || _metadata.roHref,
-                    password: _metadata.password,
-                    channel: _metadata.channel,
-                };
-                nThen(function (waitFor) {
+                (function () {
                     var path = currentPath;
                     if (path[0] !== ROOT) { path = [ROOT]; }
-                    common.sessionStorage.put(Constants.newPadFileData, JSON.stringify(_simpleData), waitFor());
-                    common.sessionStorage.put(Constants.newPadPathKey, path, waitFor());
-                    common.sessionStorage.put(Constants.newPadTeamKey, APP.team, waitFor());
-                }).nThen(function () {
+                    var _metadata = manager.getFileData(el);
+                    var _simpleData = {
+                        title: _metadata.filename || _metadata.title,
+                        href: _metadata.href || _metadata.roHref,
+                        password: _metadata.password,
+                        channel: _metadata.channel,
+                    };
                     var parsed = Hash.parsePadUrl(_metadata.href || _metadata.roHref);
-                    common.openURL(Hash.hashToHref('', parsed.type));
-                    // We need to restore sessionStorage for the next time we want to create a pad from this tab
-                    // NOTE: the 100ms timeout is to fix a race condition in firefox where sessionStorage
-                    //       would be deleted before the new tab was created
-                    setTimeout(function () {
-                        common.sessionStorage.put(Constants.newPadFileData, '', function () {});
-                        common.sessionStorage.put(Constants.newPadPathKey, '', function () {});
-                        common.sessionStorage.put(Constants.newPadTeamKey, '', function () {});
-                    }, 100);
-                });
+                    openIn(parsed.type, path, APP.team, _simpleData);
+                })();
             }
             else if ($this.hasClass('cp-app-drive-context-openincode')) {
                 if (paths.length !== 1) { return; }
                 var p = paths[0];
                 el = manager.find(p.path);
-                var metadata = manager.getFileData(el);
-                var simpleData = {
-                    title: metadata.filename || metadata.title,
-                    href: metadata.href,
-                    password: metadata.password,
-                    channel: metadata.channel,
-                };
-                nThen(function (waitFor) {
-                    common.sessionStorage.put(Constants.newPadFileData, JSON.stringify(simpleData), waitFor());
-                    common.sessionStorage.put(Constants.newPadPathKey, currentPath, waitFor());
-                    common.sessionStorage.put(Constants.newPadTeamKey, APP.team, waitFor());
-                }).nThen(function () {
-                    common.openURL('/code/');
-                    // We need to restore sessionStorage for the next time we want to create a pad from this tab
-                    // NOTE: the 100ms timeout is to fix a race condition in firefox where sessionStorage
-                    //       would be deleted before the new tab was created
-                    setTimeout(function () {
-                        common.sessionStorage.put(Constants.newPadFileData, '', function () {});
-                        common.sessionStorage.put(Constants.newPadPathKey, '', function () {});
-                        common.sessionStorage.put(Constants.newPadTeamKey, '', function () {});
-                    }, 100);
-                });
+                (function () {
+                    var path = currentPath;
+                    if (path[0] !== ROOT) { path = [ROOT]; }
+                    var _metadata = manager.getFileData(el);
+                    var _simpleData = {
+                        title: _metadata.filename || _metadata.title,
+                        href: _metadata.href || _metadata.roHref,
+                        password: _metadata.password,
+                        channel: _metadata.channel,
+                    };
+                    openIn('code', path, APP.team, _simpleData);
+                })();
             }
-
             else if ($this.hasClass('cp-app-drive-context-expandall') ||
                      $this.hasClass('cp-app-drive-context-collapseall')) {
                 if (paths.length !== 1) { return; }
@@ -4358,8 +4361,12 @@ define([
                 var anonDrive = manager.isPathIn(currentPath, [FILES_DATA]) && !APP.loggedIn;
 
                 if (manager.isFolder(el) && !manager.isSharedFolder(el) && !anonDrive) { // Folder
+                    // disconnected
+                    if (!APP.editable) {
+                        return void UI.warn(Messages.error); // XXX
+                    }
                     // if folder is inside SF
-                    if (manager.isInSharedFolder(paths[0].path)) {
+                    else if (manager.isInSharedFolder(paths[0].path)) {
                         return void UI.alert(Messages.convertFolderToSF_SFParent);
                     }
                     // if folder already contains SF
@@ -4482,12 +4489,7 @@ define([
             else if ($this.hasClass("cp-app-drive-context-newdoc")) {
                 var ntype = $this.data('type') || 'pad';
                 var path2 = manager.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
-                nThen(function (waitFor) {
-                    common.sessionStorage.put(Constants.newPadPathKey, path2, waitFor());
-                    common.sessionStorage.put(Constants.newPadTeamKey, APP.team, waitFor());
-                }).nThen(function () {
-                    common.openURL('/' + ntype + '/');
-                });
+                openIn(ntype, path2, APP.team);
             }
             else if ($this.hasClass("cp-app-drive-context-properties")) {
                 if (type === 'trash') {
@@ -4549,6 +4551,9 @@ define([
                     var rEl = manager.find(restorePath);
                     if (manager.isFile(rEl)) {
                         restoreName = manager.getTitle(rEl);
+                    } else if (manager.isSharedFolder(rEl)) {
+                        var sfData = manager.getSharedFolderData(rEl);
+                        restoreName = sfData.title || sfData.lastTitle || Messages.fm_deletedFolder;
                     } else {
                         restoreName = restorePath[1];
                     }

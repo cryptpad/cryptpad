@@ -10,6 +10,7 @@ define([
     '/common/common-realtime.js',
     '/common/common-messaging.js',
     '/common/pinpad.js',
+    '/common/outer/cache-store.js',
     '/common/outer/sharedfolder.js',
     '/common/outer/cursor.js',
     '/common/outer/onlyoffice.js',
@@ -28,10 +29,12 @@ define([
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
 ], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
-             Realtime, Messaging, Pinpad,
+             Realtime, Messaging, Pinpad, Cache,
              SF, Cursor, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
              NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, nThen, Saferphore) {
+
+    var onReadyEvt = Util.mkEvent(true);
 
     // Default settings for new users
     var NEW_USER_SETTINGS = {
@@ -88,7 +91,7 @@ define([
                         Realtime.whenRealtimeSyncs(s.sharedFolders[k].realtime, waitFor());
                     }
                 }
-            }).nThen(function () { cb(); });
+            }).nThen(function () { console.log('done');cb(); });
         };
 
         Store.get = function (clientId, data, cb) {
@@ -120,10 +123,13 @@ define([
         Store.getSharedFolder = function (clientId, data, cb) {
             var s = getStore(data.teamId);
             var id = data.id;
+            var proxy;
             if (!s || !s.manager) { return void cb({ error: 'ENOTFOUND' }); }
             if (s.manager.folders[id]) {
+                proxy = Util.clone(s.manager.folders[id].proxy);
+                proxy.offline = Boolean(s.manager.folders[id].offline);
                 // If it is loaded, return the shared folder proxy
-                return void cb(s.manager.folders[id].proxy);
+                return void cb(proxy);
             } else {
                 // Otherwise, check if we know this shared folder
                 var shared = Util.find(s.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
@@ -591,6 +597,7 @@ define([
                     pendingFriends: store.proxy.friends_pending || {},
                     supportPrivateKey: Util.find(store.proxy, ['mailboxes', 'supportadmin', 'keys', 'curvePrivate']),
                     accountName: store.proxy.login_name || '',
+                    offline: store.offline,
                     teams: teams,
                     plan: account.plan
                 }
@@ -1080,6 +1087,11 @@ define([
                 if (data.teamId && s.id !== data.teamId) { return; }
                 if (storeLocally && s.id) { return; }
 
+                // If this is an edit link but we don't have edit rights, this entry is not useful
+                if (h.mode === "edit" && s.id && !s.secondaryKey) {
+                    return;
+                }
+
                 var res = s.manager.findChannel(channel, true);
                 if (res.length) {
                     sendTo.push(s.id);
@@ -1373,11 +1385,15 @@ define([
                 }
             }
         };
-        var loadUniversal = function (Module, type, waitFor) {
+        var loadUniversal = function (Module, type, waitFor, clientId) {
             if (store.modules[type]) { return; }
             store.modules[type] = Module.init({
                 Store: Store,
                 store: store,
+                updateLoadingProgress: function (data) {
+                    data.type = "team";
+                    postMessage(clientId, 'LOADING_DRIVE', data);
+                },
                 updateMetadata: function () {
                     broadcast([], "UPDATE_METADATA");
                 },
@@ -1581,13 +1597,20 @@ define([
                 Store.leavePad(null, data, function () {});
             };
             var conf = {
+                Cache: Cache,
+                onCacheStart: function () {
+                    postMessage(clientId, "PAD_CACHE");
+                },
+                onCacheReady: function () {
+                    postMessage(clientId, "PAD_CACHE_READY");
+                },
                 onReady: function (pad) {
                     var padData = pad.metadata || {};
                     channel.data = padData;
                     if (padData && padData.validateKey && store.messenger) {
                         store.messenger.storeValidateKey(data.channel, padData.validateKey);
                     }
-                    postMessage(clientId, "PAD_READY");
+                    postMessage(clientId, "PAD_READY", pad.noCache);
                 },
                 onMessage: function (m, user, validateKey, isCp, hash) {
                     channel.lastHash = hash;
@@ -1716,6 +1739,14 @@ define([
                 return void cb();
             }
             channel.sendMessage(msg, clientId, cb);
+        };
+
+        Store.corruptedCache = function (clientId, channel) {
+            var chan = channels[channel];
+            if (!chan || !chan.cpNf) { return; }
+            Cache.clearChannel(channel);
+            if (!chan.cpNf.resetCache) { return; }
+            chan.cpNf.resetCache();
         };
 
         // Unpin and pin the new channel in all team when changing a pad password
@@ -2142,7 +2173,7 @@ define([
             if (!s) { return void cb({ error: 'ENOTFOUND' }); }
             SF.load({
                 isNew: isNew,
-                network: store.network,
+                network: store.network || store.networkPromise,
                 store: s,
                 isNewChannel: Store.isNewChannel
             }, id, data, cb);
@@ -2158,16 +2189,18 @@ define([
             });
         };
         Store.addSharedFolder = function (clientId, data, cb) {
-            var s = getStore(data.teamId);
-            s.manager.addSharedFolder(data, function (id) {
-                if (id && typeof(id) === "object" && id.error) {
-                    return void cb(id);
-                }
-                var send = data.teamId ? s.sendEvent : sendDriveEvent;
-                send('DRIVE_CHANGE', {
-                    path: ['drive', UserObject.FILES_DATA]
-                }, clientId);
-                cb(id);
+            onReadyEvt.reg(function () {
+                var s = getStore(data.teamId);
+                s.manager.addSharedFolder(data, function (id) {
+                    if (id && typeof(id) === "object" && id.error) {
+                        return void cb(id);
+                    }
+                    var send = data.teamId ? s.sendEvent : sendDriveEvent;
+                    send('DRIVE_CHANGE', {
+                        path: ['drive', UserObject.FILES_DATA]
+                    }, clientId);
+                    cb(id);
+                });
             });
         };
         Store.updateSharedFolderPassword = function (clientId, data, cb) {
@@ -2445,8 +2478,10 @@ define([
             });
         };
 
-        var onReady = function (clientId, returned, cb) {
+        var onCacheReady = function (clientId, cb) {
             var proxy = store.proxy;
+            if (!proxy.settings) { proxy.settings = NEW_USER_SETTINGS; }
+            if (!proxy.friends_pending) { proxy.friends_pending = {}; }
             var unpin = function (data, cb) {
                 if (!store.loggedIn) { return void cb(); }
                 Store.unpinPads(null, data, cb);
@@ -2455,8 +2490,6 @@ define([
                 if (!store.loggedIn) { return void cb(); }
                 Store.pinPads(null, data, cb);
             };
-            if (!proxy.settings) { proxy.settings = NEW_USER_SETTINGS; }
-            if (!proxy.friends_pending) { proxy.friends_pending = {}; }
             var manager = store.manager = ProxyManager.create(proxy.drive, {
                 onSync: function (cb) { onSync(null, cb); },
                 edPublic: proxy.edPublic,
@@ -2478,39 +2511,62 @@ define([
             });
             var userObject = store.userObject = manager.user.userObject;
             addSharedFolderHandler();
+            userObject.migrate(cb);
+        };
+
+        // onReady: called when the drive is synced (not using the cache anymore)
+        // "cb" is wrapped in Util.once() and may have already been called
+        // if we have a local cache
+        var onReady = function (clientId, returned, cb) {
+            console.error('READY');
+            store.ready = true;
+            var proxy = store.proxy;
+            var manager = store.manager;
+            var userObject = store.userObject;
 
             nThen(function (waitFor) {
-                postMessage(clientId, 'LOADING_DRIVE', {
-                    state: 2
-                });
-                userObject.migrate(waitFor());
+                if (manager) { return; }
+                onCacheReady(clientId, waitFor());
+                manager = store.manager;
+                userObject = store.userObject;
             }).nThen(function (waitFor) {
                 initAnonRpc(null, null, waitFor());
                 initRpc(null, null, waitFor());
+                postMessage(clientId, 'LOADING_DRIVE', {
+                    type: 'migrate',
+                    progress: 0
+                });
             }).nThen(function (waitFor) {
                 Migrate(proxy, waitFor(), function (version, progress) {
                     postMessage(clientId, 'LOADING_DRIVE', {
-                        state: (2 + (version / 10)),
+                        type: 'migrate',
                         progress: progress
                     });
                 }, store);
             }).nThen(function (waitFor) {
                 postMessage(clientId, 'LOADING_DRIVE', {
-                    state: 3
+                    type: 'sf',
+                    progress: 0
                 });
                 userObject.fixFiles();
-                SF.loadSharedFolders(Store, store.network, store, userObject, waitFor);
+                SF.loadSharedFolders(Store, store.network, store, userObject, waitFor, function (obj) {
+                    var data = {
+                        type: 'sf',
+                        progress: 100*obj.progress/obj.max
+                    };
+                    postMessage(clientId, 'LOADING_DRIVE', data);
+                });
                 loadCursor();
                 loadOnlyOffice();
                 loadUniversal(Messenger, 'messenger', waitFor);
                 store.messenger = store.modules['messenger'];
                 loadUniversal(Profile, 'profile', waitFor);
-                loadUniversal(Team, 'team', waitFor);
+                loadUniversal(Team, 'team', waitFor, clientId); // XXX load teams offline?
                 loadUniversal(History, 'history', waitFor);
                 cleanFriendRequests();
             }).nThen(function () {
-                var requestLogin = function () {
-                    broadcast([], "REQUEST_LOGIN");
+            var requestLogin = function () {
+                broadcast([], "REQUEST_LOGIN");
                 };
 
                 if (store.loggedIn) {
@@ -2543,7 +2599,13 @@ define([
                 returned.feedback = Util.find(proxy, ['settings', 'general', 'allowUserFeedback']);
                 Feedback.init(returned.feedback);
 
+                // XXX send feedback and logintoken to outer...
+                // "cb" may have already been called by onCacheReady
                 if (typeof(cb) === 'function') { cb(returned); }
+                sendDriveEvent('NETWORK_RECONNECT');
+                store.offline = false;
+// XXX broadcast READY event with the missing data
+// XXX we can improve feedback to queue the queries and send them when coming back online
 
                 if (typeof(proxy.uid) !== 'string' || proxy.uid.length !== 32) {
                     // even anonymous users should have a persistent, unique-ish id
@@ -2598,6 +2660,8 @@ define([
                     broadcast([], "UPDATE_TOKEN", { token: proxy[Constants.tokenKey] });
                 });
 
+                onReadyEvt.fire();
+
                 loadMailbox();
             });
         };
@@ -2607,6 +2671,12 @@ define([
             if (!hash) {
                 return void cb({error: '[Store.init] Unable to find or create a drive hash. Aborting...'});
             }
+
+            var updateProgress = function (data) {
+                data.type = 'drive';
+                postMessage(clientId, 'LOADING_DRIVE', data);
+            };
+
             // No password for drive
             var secret = Hash.getSecrets('drive', hash);
             store.driveChannel = secret.channel;
@@ -2617,12 +2687,15 @@ define([
                 readOnly: false,
                 validateKey: secret.keys.validateKey || undefined,
                 crypto: Crypto.createEncryptor(secret.keys),
+                Cache: Cache,
                 userName: 'fs',
                 logLevel: 1,
                 ChainPad: ChainPad,
+                updateProgress: updateProgress,
                 classic: true,
             };
             var rt = window.rt = Listmap.create(listmapConfig);
+            store.driveSecret = secret;
             store.proxy = rt.proxy;
             store.loggedIn = typeof(data.userHash) !== "undefined";
 
@@ -2633,8 +2706,17 @@ define([
                 if (!data.userHash) {
                     returned.anonHash = Hash.getEditHashFromKeys(secret);
                 }
+            }).on('cacheready', function (info) {
+                if (!data.cache) { return; }
+                store.offline = true;
+                store.realtime = info.realtime;
+                store.networkPromise = info.networkPromise;
+                // XXX make sure we have a valid drive available
+                onCacheReady(clientId, function () {
+                    if (typeof(cb) === "function") { cb(returned); }
+                });
             }).on('ready', function (info) {
-                if (store.userObject) { return; } // the store is already ready, it is a reconnection
+                if (store.ready) { return; } // the store is already ready, it is a reconnection
                 store.driveMetadata = info.metadata;
                 if (!rt.proxy.drive || typeof(rt.proxy.drive) !== 'object') { rt.proxy.drive = {}; }
                 var drive = rt.proxy.drive;
@@ -2643,7 +2725,6 @@ define([
                     && !drive['filesData']) {
                     drive[Constants.oldStorageKey] = [];
                 }
-                postMessage(clientId, 'LOADING_DRIVE', { state: 1 });
                 // Drive already exist: return the existing drive, don't load data from legacy store
                 onReady(clientId, returned, cb);
             })
@@ -2661,10 +2742,12 @@ define([
             rt.proxy.on('disconnect', function () {
                 store.offline = true;
                 sendDriveEvent('NETWORK_DISCONNECT');
+                broadcast([], "UPDATE_METADATA");
             });
             rt.proxy.on('reconnect', function () {
                 store.offline = false;
                 sendDriveEvent('NETWORK_RECONNECT');
+                broadcast([], "UPDATE_METADATA");
             });
 
             // Ping clients regularly to make sure one tab was not closed without sending a removeClient()
@@ -2706,7 +2789,6 @@ define([
          *   - userHash or anonHash
          * Todo in cb
          *   - LocalStore.setFSHash if needed
-         *   - sessionStorage.User_Hash
          *   - stuff with tokenKey
          * Event to outer
          *   - requestLogin

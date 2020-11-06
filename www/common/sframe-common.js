@@ -307,9 +307,8 @@ define([
         ctx.sframeChan.event('EV_SET_HASH', hash);
     };
 
-    funcs.setLoginRedirect = function (cb) {
-        cb = cb || $.noop;
-        ctx.sframeChan.query('Q_SET_LOGIN_REDIRECT', null, cb);
+    funcs.setLoginRedirect = function (page) {
+        ctx.sframeChan.query('EV_SET_LOGIN_REDIRECT', page);
     };
 
     funcs.isPresentUrl = function (cb) {
@@ -345,7 +344,13 @@ define([
         }
         if (priv.burnAfterReading) {
             UIElements.displayBurnAfterReadingPage(funcs, waitFor(function () {
-                UI.addLoadingScreen();
+                UI.addLoadingScreen({newProgress: true});
+                if (window.CryptPad_updateLoadingProgress) {
+                    window.CryptPad_updateLoadingProgress({
+                        type: 'pad',
+                        progress: 0
+                    });
+                }
                 ctx.sframeChan.event('EV_BURN_AFTER_READING');
             }));
         }
@@ -455,15 +460,6 @@ define([
         }, function (err, res) {
             cb (err || res.error, res.data);
         });
-    };
-
-    funcs.sessionStorage = {
-        put: function (key, value, cb) {
-            ctx.sframeChan.query('Q_SESSIONSTORAGE_PUT', {
-                key: key,
-                value: value
-            }, cb);
-        }
     };
 
     funcs.setDisplayName = function (name, cb) {
@@ -619,6 +615,13 @@ define([
         }
         window.CryptPad_sframe_common = true;
 
+        if (window.CryptPad_updateLoadingProgress) {
+            window.CryptPad_updateLoadingProgress({
+                type: 'drive',
+                progress: 0
+            });
+        }
+
         nThen(function (waitFor) {
             var msgEv = Util.mkEvent();
             var iframe = window.parent;
@@ -686,7 +689,8 @@ define([
             });
 
             ctx.sframeChan.on('EV_LOADING_INFO', function (data) {
-                UI.updateLoadingProgress(data, 'drive');
+                //UI.updateLoadingProgress(data, 'drive');
+                UI.updateLoadingProgress(data);
             });
 
             ctx.sframeChan.on('EV_NEW_VERSION', function () {
@@ -744,9 +748,7 @@ define([
                 var mustLogin = privateData.registeredOnly;
                 if (mustLogin) {
                     UI.alert(Messages.mustLogin, function () {
-                        funcs.setLoginRedirect(function () {
-                            funcs.gotoURL('/login/');
-                        });
+                        funcs.setLoginRedirect('login');
                     }, {forefront: true});
                     return;
                 }
