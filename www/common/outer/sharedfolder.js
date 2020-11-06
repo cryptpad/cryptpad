@@ -2,12 +2,13 @@ define([
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/userObject.js',
+    '/common/outer/cache-store.js',
 
     '/bower_components/nthen/index.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad/chainpad.dist.js',
-], function (Hash, Util, UserObject,
+], function (Hash, Util, UserObject, Cache,
              nThen, Crypto, Listmap, ChainPad) {
     var SF = {};
 
@@ -174,6 +175,7 @@ define([
                 ChainPad: ChainPad,
                 classic: true,
                 network: network,
+                Cache: Cache,
                 metadata: {
                     validateKey: secret.keys.validateKey || undefined,
                     owners: owners
@@ -320,9 +322,12 @@ define([
         - userObject: userObject associated to the main drive
         - handler: a function (sfid, rt) called for each shared folder loaded
     */
-    SF.loadSharedFolders = function (Store, network, store, userObject, waitFor) {
+    SF.loadSharedFolders = function (Store, network, store, userObject, waitFor, progress) {
         var shared = Util.find(store.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
+        var steps = Object.keys(shared).length;
+        var i = 1;
         var w = waitFor();
+        progress = progress || function () {};
         nThen(function (waitFor) {
             Object.keys(shared).forEach(function (id) {
                 var sf = shared[id];
@@ -330,7 +335,13 @@ define([
                     network: network,
                     store: store,
                     isNewChannel: Store.isNewChannel
-                }, id, sf, waitFor());
+                }, id, sf, waitFor(function () {
+                    progress({
+                        progress: i,
+                        max: steps
+                    });
+                    i++;
+                }));
             });
         }).nThen(function () {
             setTimeout(w);

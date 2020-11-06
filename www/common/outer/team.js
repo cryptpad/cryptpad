@@ -12,6 +12,7 @@ define([
     '/common/common-feedback.js',
     '/common/outer/invitation.js',
     '/common/cryptget.js',
+    '/common/outer/cache-store.js',
 
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
@@ -21,7 +22,7 @@ define([
     '/bower_components/saferphore/index.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
 ], function (Util, Hash, Constants, Realtime,
-             ProxyManager, UserObject, SF, Roster, Messaging, Feedback, Invite, Crypt,
+             ProxyManager, UserObject, SF, Roster, Messaging, Feedback, Invite, Crypt, Cache,
              Listmap, Crypto, CpNetflux, ChainPad, nThen, Saferphore) {
     var Team = {};
 
@@ -57,11 +58,11 @@ define([
             });
             proxy.on('disconnect', function () {
                 team.offline = true;
-                team.sendEvent('NETWORK_DISCONNECT');
+                team.sendEvent('NETWORK_DISCONNECT', team.id);
             });
             proxy.on('reconnect', function () {
                 team.offline = false;
-                team.sendEvent('NETWORK_RECONNECT');
+                team.sendEvent('NETWORK_RECONNECT', team.id);
             });
         }
         proxy.on('change', [], function (o, n, p) {
@@ -328,7 +329,13 @@ define([
             ctx.teams[id] = team;
             registerChangeEvents(ctx, team, proxy);
             SF.checkMigration(team.secondaryKey, proxy, team.userObject, waitFor());
-            SF.loadSharedFolders(ctx.Store, ctx.store.network, team, team.userObject, waitFor);
+            SF.loadSharedFolders(ctx.Store, ctx.store.network, team,
+                                team.userObject, waitFor, function (data) {
+                ctx.progress += 70/(ctx.numberOfTeams * data.max);
+                ctx.updateProgress({
+                    progress: ctx.progress
+                });
+            });
         }).nThen(function () {
             if (!team.rpc) { return; }
             var list = getTeamChannelList(ctx, id);
@@ -361,6 +368,9 @@ define([
 
     };
 
+    // Progress:
+    // One team = (30/(#teams))%
+    // One shared folder = (70/(#teams * #folders))%
     var openChannel = function (ctx, teamData, id, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
 
@@ -417,6 +427,7 @@ define([
                 channel: secret.channel,
                 crypto: crypto,
                 ChainPad: ChainPad,
+                Cache: Cache,
                 metadata: {
                     validateKey: secret.keys.validateKey || undefined,
                 },
@@ -526,6 +537,10 @@ define([
                 Feedback.send("TEAM_RIGHTS_OWNER");
             }
         }).nThen(function () {
+            ctx.progress += 30/ctx.numberOfTeams;
+            ctx.updateProgress({
+                progress: ctx.progress
+            });
             onReady(ctx, id, lm, roster, keys, null, cb);
         });
     };
@@ -560,6 +575,7 @@ define([
             logLevel: 1,
             classic: true,
             ChainPad: ChainPad,
+            Cache: Cache,
             owners: [ctx.store.proxy.edPublic]
         };
         nThen(function (waitFor) {
@@ -918,7 +934,9 @@ define([
         if (!team) { return void cb ({error: 'ENOENT'}); }
         if (!team.roster) { return void cb({error: 'NO_ROSTER'}); }
         var state = team.roster.getState() || {};
-        cb(state.metadata || {});
+        var md = state.metadata || {};
+        md.offline = team.offline;
+        cb(md);
     };
 
     var setTeamMetadata = function (ctx, data, cId, cb) {
@@ -1686,10 +1704,13 @@ define([
             emit: emit,
             onReadyHandlers: {},
             teams: {},
-            updateMetadata: cfg.updateMetadata
+            updateMetadata: cfg.updateMetadata,
+            updateProgress: cfg.updateLoadingProgress,
+            progress: 0
         };
 
         var teams = store.proxy.teams = store.proxy.teams || {};
+        ctx.numberOfTeams = Object.keys(teams).length;
 
         // Listen for changes in our access rights (if another worker receives edit access)
         ctx.store.proxy.on('change', ['teams'], function (o, n, p) {
@@ -1863,15 +1884,15 @@ define([
             var t = Util.clone(teams);
             Object.keys(t).forEach(function (id) {
                 // If failure to load the team, don't send it
-                if (ctx.teams[id]) { return; }
+                if (ctx.teams[id]) {
+                    t[id].offline = ctx.teams[id].offline;
+                    return;
+                }
                 t[id].error = true;
             });
             cb(t);
         };
         team.execCommand = function (clientId, obj, cb) {
-            if (ctx.store.offline) {
-                return void cb({ error: 'OFFLINE' });
-            }
 
             var cmd = obj.cmd;
             var data = obj.data;
@@ -1895,30 +1916,36 @@ define([
                 return void setTeamMetadata(ctx, data, clientId, cb);
             }
             if (cmd === 'OFFER_OWNERSHIP') {
+                if (ctx.store.offline) { return void cb({ error: 'OFFLINE' }); }
                 return void offerOwnership(ctx, data, clientId, cb);
             }
             if (cmd === 'ANSWER_OWNERSHIP') {
+                if (ctx.store.offline) { return void cb({ error: 'OFFLINE' }); }
                 return void answerOwnership(ctx, data, clientId, cb);
             }
             if (cmd === 'DESCRIBE_USER') {
                 return void describeUser(ctx, data, clientId, cb);
             }
             if (cmd === 'INVITE_TO_TEAM') {
+                if (ctx.store.offline) { return void cb({ error: 'OFFLINE' }); }
                 return void inviteToTeam(ctx, data, clientId, cb);
             }
             if (cmd === 'LEAVE_TEAM') {
                 return void leaveTeam(ctx, data, clientId, cb);
             }
             if (cmd === 'JOIN_TEAM') {
+                if (ctx.store.offline) { return void cb({ error: 'OFFLINE' }); }
                 return void joinTeam(ctx, data, clientId, cb);
             }
             if (cmd === 'REMOVE_USER') {
                 return void removeUser(ctx, data, clientId, cb);
             }
             if (cmd === 'DELETE_TEAM') {
+                if (ctx.store.offline) { return void cb({ error: 'OFFLINE' }); }
                 return void deleteTeam(ctx, data, clientId, cb);
             }
             if (cmd === 'CREATE_TEAM') {
+                if (ctx.store.offline) { return void cb({ error: 'OFFLINE' }); }
                 return void createTeam(ctx, data, clientId, cb);
             }
             if (cmd === 'GET_EDITABLE_FOLDERS') {
@@ -1931,6 +1958,7 @@ define([
                 return void getPreviewContent(ctx, data, clientId, cb);
             }
             if (cmd === 'ACCEPT_LINK_INVITATION') {
+                if (ctx.store.offline) { return void cb({ error: 'OFFLINE' }); }
                 return void acceptLinkInvitation(ctx, data, clientId, cb);
             }
         };

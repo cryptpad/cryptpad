@@ -846,7 +846,8 @@ define([
         };
         exp.ownedInTrash = function (isOwned) {
             return getFiles([TRASH]).map(function (id) {
-                var data = exp.getFileData(id);
+                var data = isSharedFolder(id) ? files[SHARED_FOLDERS][id] : exp.getFileData(id);
+                if (!data) { return; }
                 return isOwned(data.owners) ? data.channel : undefined;
             }).filter(Boolean);
         };

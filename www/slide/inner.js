@@ -15,6 +15,7 @@ define([
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/customize/src/print-landscape.css',
     'less!/slide/app-slide.less',
 
     'css!cm/lib/codemirror.css',

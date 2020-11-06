@@ -10,6 +10,7 @@ define([
     '/common/common-realtime.js',
     '/common/common-messaging.js',
     '/common/pinpad.js',
+    '/common/outer/cache-store.js',
     '/common/outer/sharedfolder.js',
     '/common/outer/cursor.js',
     '/common/outer/onlyoffice.js',
@@ -28,7 +29,7 @@ define([
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
 ], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback,
-             Realtime, Messaging, Pinpad,
+             Realtime, Messaging, Pinpad, Cache,
              SF, Cursor, OnlyOffice, Mailbox, Profile, Team, Messenger, History,
              NetConfig, AppConfig,
              Crypto, ChainPad, CpNetflux, Listmap, nThen, Saferphore) {
@@ -120,10 +121,13 @@ define([
         Store.getSharedFolder = function (clientId, data, cb) {
             var s = getStore(data.teamId);
             var id = data.id;
+            var proxy;
             if (!s || !s.manager) { return void cb({ error: 'ENOTFOUND' }); }
             if (s.manager.folders[id]) {
+                proxy = Util.clone(s.manager.folders[id].proxy);
+                proxy.offline = Boolean(s.manager.folders[id].offline);
                 // If it is loaded, return the shared folder proxy
-                return void cb(s.manager.folders[id].proxy);
+                return void cb(proxy);
             } else {
                 // Otherwise, check if we know this shared folder
                 var shared = Util.find(s.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
@@ -1080,6 +1084,11 @@ define([
                 if (data.teamId && s.id !== data.teamId) { return; }
                 if (storeLocally && s.id) { return; }
 
+                // If this is an edit link but we don't have edit rights, this entry is not useful
+                if (h.mode === "edit" && s.id && !s.secondaryKey) {
+                    return;
+                }
+
                 var res = s.manager.findChannel(channel, true);
                 if (res.length) {
                     sendTo.push(s.id);
@@ -1373,11 +1382,15 @@ define([
                 }
             }
         };
-        var loadUniversal = function (Module, type, waitFor) {
+        var loadUniversal = function (Module, type, waitFor, clientId) {
             if (store.modules[type]) { return; }
             store.modules[type] = Module.init({
                 Store: Store,
                 store: store,
+                updateLoadingProgress: function (data) {
+                    data.type = "team";
+                    postMessage(clientId, 'LOADING_DRIVE', data);
+                },
                 updateMetadata: function () {
                     broadcast([], "UPDATE_METADATA");
                 },
@@ -1581,13 +1594,20 @@ define([
                 Store.leavePad(null, data, function () {});
             };
             var conf = {
+                Cache: Cache,
+                onCacheStart: function () {
+                    postMessage(clientId, "PAD_CACHE");
+                },
+                onCacheReady: function () {
+                    postMessage(clientId, "PAD_CACHE_READY");
+                },
                 onReady: function (pad) {
                     var padData = pad.metadata || {};
                     channel.data = padData;
                     if (padData && padData.validateKey && store.messenger) {
                         store.messenger.storeValidateKey(data.channel, padData.validateKey);
                     }
-                    postMessage(clientId, "PAD_READY");
+                    postMessage(clientId, "PAD_READY", pad.noCache);
                 },
                 onMessage: function (m, user, validateKey, isCp, hash) {
                     channel.lastHash = hash;
@@ -1716,6 +1736,14 @@ define([
                 return void cb();
             }
             channel.sendMessage(msg, clientId, cb);
+        };
+
+        Store.corruptedCache = function (clientId, channel) {
+            var chan = channels[channel];
+            if (!chan || !chan.cpNf) { return; }
+            Cache.clearChannel(channel);
+            if (!chan.cpNf.resetCache) { return; }
+            chan.cpNf.resetCache();
         };
 
         // Unpin and pin the new channel in all team when changing a pad password
@@ -2480,32 +2508,40 @@ define([
             addSharedFolderHandler();
 
             nThen(function (waitFor) {
-                postMessage(clientId, 'LOADING_DRIVE', {
-                    state: 2
-                });
                 userObject.migrate(waitFor());
             }).nThen(function (waitFor) {
                 initAnonRpc(null, null, waitFor());
                 initRpc(null, null, waitFor());
+                postMessage(clientId, 'LOADING_DRIVE', {
+                    type: 'migrate',
+                    progress: 0
+                });
             }).nThen(function (waitFor) {
                 Migrate(proxy, waitFor(), function (version, progress) {
                     postMessage(clientId, 'LOADING_DRIVE', {
-                        state: (2 + (version / 10)),
+                        type: 'migrate',
                         progress: progress
                     });
                 }, store);
             }).nThen(function (waitFor) {
                 postMessage(clientId, 'LOADING_DRIVE', {
-                    state: 3
+                    type: 'sf',
+                    progress: 0
                 });
                 userObject.fixFiles();
-                SF.loadSharedFolders(Store, store.network, store, userObject, waitFor);
+                SF.loadSharedFolders(Store, store.network, store, userObject, waitFor, function (obj) {
+                    var data = {
+                        type: 'sf',
+                        progress: 100*obj.progress/obj.max
+                    };
+                    postMessage(clientId, 'LOADING_DRIVE', data);
+                });
                 loadCursor();
                 loadOnlyOffice();
                 loadUniversal(Messenger, 'messenger', waitFor);
                 store.messenger = store.modules['messenger'];
                 loadUniversal(Profile, 'profile', waitFor);
-                loadUniversal(Team, 'team', waitFor);
+                loadUniversal(Team, 'team', waitFor, clientId);
                 loadUniversal(History, 'history', waitFor);
                 cleanFriendRequests();
             }).nThen(function () {
@@ -2607,6 +2643,12 @@ define([
             if (!hash) {
                 return void cb({error: '[Store.init] Unable to find or create a drive hash. Aborting...'});
             }
+
+            var updateProgress = function (data) {
+                data.type = 'drive';
+                postMessage(clientId, 'LOADING_DRIVE', data);
+            };
+
             // No password for drive
             var secret = Hash.getSecrets('drive', hash);
             store.driveChannel = secret.channel;
@@ -2617,12 +2659,15 @@ define([
                 readOnly: false,
                 validateKey: secret.keys.validateKey || undefined,
                 crypto: Crypto.createEncryptor(secret.keys),
+                Cache: Cache,
                 userName: 'fs',
                 logLevel: 1,
                 ChainPad: ChainPad,
+                updateProgress: updateProgress,
                 classic: true,
             };
             var rt = window.rt = Listmap.create(listmapConfig);
+            store.driveSecret = secret;
             store.proxy = rt.proxy;
             store.loggedIn = typeof(data.userHash) !== "undefined";
 
@@ -2643,7 +2688,6 @@ define([
                     && !drive['filesData']) {
                     drive[Constants.oldStorageKey] = [];
                 }
-                postMessage(clientId, 'LOADING_DRIVE', { state: 1 });
                 // Drive already exist: return the existing drive, don't load data from legacy store
                 onReady(clientId, returned, cb);
             })
@@ -2706,7 +2750,6 @@ define([
          *   - userHash or anonHash
          * Todo in cb
          *   - LocalStore.setFSHash if needed
-         *   - sessionStorage.User_Hash
          *   - stuff with tokenKey
          * Event to outer
          *   - requestLogin
