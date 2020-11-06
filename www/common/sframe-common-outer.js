@@ -1637,8 +1637,7 @@ define([
                 });
             };
 
-            sframeChan.on('Q_CORRUPTED_CACHE', function (data, cb) {
-                Utils.Cache.clearChannel(secret.channel, cb);
+            sframeChan.on('EV_CORRUPTED_CACHE', function () {
                 Cryptpad.onCorruptedCache(secret.channel);
             });
 
