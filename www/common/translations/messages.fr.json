@@ -1465,5 +1465,7 @@
     "loading_state_3": "Chargement des dossiers partagés",
     "loading_state_2": "Mise à jour du contenu",
     "loading_state_1": "Chargement du drive",
-    "loading_state_0": "Construction de l'interface"
+    "loading_state_0": "Construction de l'interface",
+    "tag_edit": "Modifier",
+    "tag_add": "Ajouter"
 }
