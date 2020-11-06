@@ -2472,9 +2472,8 @@ define([
 
         // Get the upload options
         var addSharedFolderModal = function (cb) {
-            var createHelper = function (href, text) {
-                return UI.createHelper(APP.origin + href, text);
-            };
+
+        var docsHref = common.getBounceURL("https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners");
 
             // Ask for name, password and owner
             var content = h('div', [
@@ -2487,7 +2486,7 @@ define([
                     style: 'display:flex;align-items:center;justify-content:space-between'
                 }, [
                     UI.createCheckbox('cp-app-drive-sf-owned', Messages.sharedFolders_create_owned, true),
-                    createHelper('/faq.html#keywords-owned', Messages.creation_owned1) // TODO
+                    UI.createHelper(docsHref, Messages.creation_owned1) // TODO
                 ]),
             ]);
 
@@ -4344,6 +4343,9 @@ define([
                         return void UI.warn(Messages.error);
                     }
                     // if folder does not contains SF
+
+                    // XXX rewrite "creation_owned1": "An <b>owned</b> pad can be deleted from the server whenever the owner wants. Deleting an owned pad removes it from other users' CryptDrives."
+                    // tipy used in dialog to create a shared folder
                     else {
                         var convertContent = h('div', [
                             h('p', Messages.convertFolderToSF_confirm),
@@ -4356,7 +4358,7 @@ define([
                                 style: 'display:flex;align-items:center;justify-content:space-between'
                             }, [
                                 UI.createCheckbox('cp-upload-owned', Messages.sharedFolders_create_owned, true),
-                                UI.createHelper(APP.origin + '/faq.html#keywords-owned', Messages.creation_owned1)
+                                UI.createHelper('https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners', Messages.creation_owned1)
                             ]),
                         ]);
                         return void UI.confirm(convertContent, function(res) {

@@ -364,7 +364,7 @@ define([
                 h('div.cp-teams-invite-block', [
                     h('span', Messages.team_inviteLinkSetPassword),
                     h('a.cp-teams-help.fa.fa-question-circle', {
-                        href: origin + '/faq.html#security-pad_password',
+                        href: origin + 'https://docs.cryptpad.fr/en/user_guide/security.html#passwords-for-documents-and-folders',
                         target: "_blank",
                         'data-tippy-placement': "right"
                     })
@@ -2168,12 +2168,16 @@ define([
 
         // Owned pads
         // Default is Owned pad
+        // XXX Remove creation_owned1 and creation_owned2 keys
         var owned = h('div.cp-creation-owned', [
             UI.createCheckbox('cp-creation-owned', Messages.creation_owned, true),
-            createHelper('/faq.html#keywords-owned', Messages.creation_owned1)
+            createHelper('https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners', Messages.creation_owned1)
         ]);
 
         // Life time
+
+        // XXX rewrite "creation_expire2": "An <b>expiring</b> pad has a set lifetime, after which it will be automatically removed from the server and other users' CryptDrives."
+
         var expire = h('div.cp-creation-expire', [
             UI.createCheckbox('cp-creation-expire', Messages.creation_expire, false),
             h('span.cp-creation-expire-picker.cp-creation-slider', [
@@ -2192,7 +2196,7 @@ define([
                     }, Messages.creation_expireMonths)
                 ])
             ]),
-            createHelper('/faq.html#keywords-expiring', Messages.creation_expire2),
+            createHelper('https://docs.cryptpad.fr/en/user_guide/apps/general.html#new-document', Messages.creation_expire2),
         ]);
 
         // Password
