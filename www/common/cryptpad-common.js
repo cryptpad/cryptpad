@@ -2056,6 +2056,8 @@ define([
         };
 
         var userHash;
+        console.error("pewpew");
+        //console.error('pewpew');
 
         Nthen(function (waitFor) {
             if (AppConfig.beforeLogin) {
@@ -2108,6 +2110,7 @@ define([
 
             // FIXME Backward compatibility
             if (sessionStorage.newPadFileData) {
+                /*
                 common.fromFileData = JSON.parse(sessionStorage.newPadFileData);
                 var _parsed1 = Hash.parsePadUrl(common.fromFileData.href);
                 var _parsed2 = Hash.parsePadUrl(window.location.href);
@@ -2115,6 +2118,7 @@ define([
                     if (_parsed1.type !== _parsed2.type) { delete common.fromFileData; }
                 }
                 delete sessionStorage.newPadFileData;
+                */
             }
 
             if (sessionStorage.newPadPath) {
@@ -2134,11 +2138,12 @@ define([
             var postMsg, worker;
             var noWorker = AppConfig.disableWorkers || false;
             var noSharedWorker = false;
-            if (localStorage.CryptPad_noWorkers) {
+            if (localStorage.CryptPad_noWorkers || true) {
                 noWorker = localStorage.CryptPad_noWorkers === '1';
-                console.error('WebWorker/SharedWorker state forced to ' + !noWorker);
+                //console.error('WebWorker/SharedWorker state forced to ' + !noWorker);
             }
             Nthen(function (waitFor2) {
+                return;
                 if (Worker) {
                     var w = waitFor2();
                     try {
@@ -2161,6 +2166,7 @@ define([
                         w();
                     }
                 }
+                return;
                 if (typeof(SharedWorker) !== "undefined") {
                     try {
                         new SharedWorker('');
@@ -2170,6 +2176,18 @@ define([
                     }
                 }
             }).nThen(function (waitFor2) {
+                    // Use the async store in the main thread if workers are not available
+                    require(['/common/outer/noworker.js'], waitFor2(function (NoWorker) {
+                        NoWorker.onMessage(function (data) {
+                            msgEv.fire({data: data});
+                        });
+                        postMsg = function (d) { setTimeout(function () { NoWorker.query(d); }); };
+                        NoWorker.create();
+                    }));
+                    return;
+
+
+
                 if (!noWorker && !noSharedWorker && typeof(SharedWorker) !== "undefined") {
                     worker = new SharedWorker('/common/outer/sharedworker.js?' + urlArgs);
                     worker.onerror = function (e) {
@@ -2337,6 +2355,8 @@ define([
                 }
                 if (parsedNew.hashData) { oldHref = newHref; }
             };
+
+            /*
             // Listen for login/logout in other tabs
             window.addEventListener('storage', function (e) {
                 if (e.key !== Constants.userHashKey) { return; }
@@ -2347,7 +2367,7 @@ define([
                 } else if (o && !n) {
                     LocalStore.logout();
                 }
-            });
+            });*/
             LocalStore.onLogout(function () {
                 console.log('onLogout: disconnect');
                 postMessage("DISCONNECT");
@@ -2367,6 +2387,7 @@ define([
                 common.mergeAnonDrive(waitFor());
             }
         }).nThen(function (waitFor) {
+            return;
             if (AppConfig.afterLogin) {
                 AppConfig.afterLogin(common, waitFor());
             }
