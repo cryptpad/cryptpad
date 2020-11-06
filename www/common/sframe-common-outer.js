@@ -431,6 +431,10 @@ define([
                         }
                         if (!stored && !parsed.hashData.password) {
                             // We've received a link without /p/ and it doesn't work without a password: abort
+                            if (e === "ANON_RPC_NOT_READY") {
+                                // We're currently offline and the pad is not in our cache
+                                sframeChan.event('EV_OFFLINE');
+                            }
                             return void todo();
                         }
                         // Wrong password or deleted file?

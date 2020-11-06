@@ -15,6 +15,7 @@ define([
     '/common/metadata-manager.js',
 
     '/customize/application_config.js',
+    '/common/outer/cache-store.js',
     '/common/common-realtime.js',
     '/common/common-util.js',
     '/common/common-hash.js',
@@ -39,6 +40,7 @@ define([
     MT,
     MetadataMgr,
     AppConfig,
+    Cache,
     CommonRealtime,
     Util,
     Hash,
@@ -167,14 +169,22 @@ define([
     };
 
     funcs.getFileSize = function (channelId, cb) {
-        funcs.sendAnonRpcMsg("GET_FILE_SIZE", channelId, function (data) {
-            if (!data) { return void cb("No response"); }
-            if (data.error) { return void cb(data.error); }
-            if (data.response && data.response.length && typeof(data.response[0]) === 'number') {
-                return void cb(void 0, data.response[0]);
-            } else {
-                cb('INVALID_RESPONSE');
-            }
+        nThen(function (waitFor) {
+            Cache.getBlobCache(channelId, waitFor(function(err, blob) {
+                if (err) { return; }
+                waitFor.abort();
+                cb(null, blob.length);
+            }));
+        }).nThen(function () {
+            funcs.sendAnonRpcMsg("GET_FILE_SIZE", channelId, function (data) {
+                if (!data) { return void cb("No response"); }
+                if (data.error) { return void cb(data.error); }
+                if (data.response && data.response.length && typeof(data.response[0]) === 'number') {
+                    return void cb(void 0, data.response[0]);
+                } else {
+                    cb('INVALID_RESPONSE');
+                }
+            });
         });
     };
 
@@ -676,6 +686,10 @@ define([
 
             ctx.sframeChan.on("EV_RESTRICTED_ERROR", function () {
                 UI.errorLoadingScreen(Messages.restrictedError);
+            });
+
+            ctx.sframeChan.on("EV_OFFLINE", function () {
+                UI.errorLoadingScreen("OFFLINE AND NO CACHE"); // XXX
             });
 
             ctx.sframeChan.on("EV_PAD_PASSWORD_ERROR", function () {
