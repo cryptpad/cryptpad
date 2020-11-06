@@ -278,6 +278,7 @@ define([
             if (!proxy.drive || typeof(proxy.drive) !== 'object') {
                 throw new Error("Corrupted drive");
             }
+            APP.online = !privateData.offline;
             var drive = DriveUI.create(common, {
                 $limit: usageBar && usageBar.$container,
                 proxy: proxy,
@@ -309,6 +310,7 @@ define([
                 onDisconnect();
             });
             sframeChan.on('EV_NETWORK_RECONNECT', function () {
+                console.log('here');
                 onReconnect();
             });
             common.onLogout(function () { setEditable(false); });

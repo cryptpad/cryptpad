@@ -54,7 +54,7 @@ define([
     };
 
     S.clearChannel = function (id, _cb) {
-        cb = Util.once(Util.mkAsync(_cb || function () {}));
+        var cb = Util.once(Util.mkAsync(_cb || function () {}));
         cache.removeItem(id, cb);
     };
 

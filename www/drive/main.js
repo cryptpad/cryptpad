@@ -129,6 +129,7 @@ define([
             hash: hash,
             href: href,
             afterSecrets: afterSecrets,
+            cache: true,
             noHash: true,
             noRealtime: true,
             driveEvents: true,

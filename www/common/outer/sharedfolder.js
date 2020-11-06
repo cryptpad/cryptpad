@@ -128,11 +128,11 @@ define([
                     var uo = store.manager.addProxy(id, sf.rt, leave, secondaryKey);
                     // NOTE: Shared folder migration, disable for now
                     SF.checkMigration(secondaryKey, sf.rt.proxy, uo, function () {
-                        cb(sf.rt, sf.metadata);
+                        cb(sf.rt);
                     });
                     */
                     store.manager.addProxy(id, sf.rt, leave, secondaryKey);
-                    cb(sf.rt, sf.metadata);
+                    cb(sf.rt);
                 });
                 sf.teams.push({
                     cb: cb,
@@ -182,7 +182,27 @@ define([
                 }
             };
             var rt = sf.rt = Listmap.create(listmapConfig);
-            rt.proxy.on('ready', function (info) {
+            rt.proxy.on('cacheready', function () {
+                if (isNew && !Object.keys(rt.proxy).length) {
+                    // New Shared folder: no migration required
+                    rt.proxy.version = 2;
+                }
+                if (!sf.teams) {
+                    return;
+                }
+                sf.teams.forEach(function (obj) {
+                    var leave = function () { SF.leave(secret.channel, obj.store.id); };
+
+                    // We can safely call addProxy and obj.cb here because
+                    // 1. addProxy won't re-add the same folder twice on 'ready'
+                    // 2. obj.cb is using Util.once
+                    rt.cache = true;
+                    obj.store.manager.addProxy(obj.id, rt, leave, obj.secondaryKey);
+                    obj.cb(sf.rt);
+                });
+                sf.ready = true;
+            });
+            rt.proxy.on('ready', function () {
                 if (isNew && !Object.keys(rt.proxy).length) {
                     // New Shared folder: no migration required
                     rt.proxy.version = 2;
@@ -196,13 +216,13 @@ define([
                     var uo = obj.store.manager.addProxy(obj.id, rt, leave, obj.secondaryKey);
                     // NOTE: Shared folder migration, disable for now
                     SF.checkMigration(secondaryKey, rt.proxy, uo, function () {
-                        obj.cb(sf.rt, info.metadata);
+                        obj.cb(sf.rt);
                     });
                     */
+                    rt.cache = false;
                     obj.store.manager.addProxy(obj.id, rt, leave, obj.secondaryKey);
-                    obj.cb(sf.rt, info.metadata);
+                    obj.cb(sf.rt);
                 });
-                sf.metadata = info.metadata;
                 sf.ready = true;
             });
             rt.proxy.on('error', function (info) {
