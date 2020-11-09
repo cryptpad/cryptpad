@@ -1,8 +1,5 @@
-(function(name, definition) {
-    if (typeof module !== 'undefined') { module.exports = definition(); }
-    else if (typeof define === 'function' && typeof define.amd === 'object') { define(definition); }
-    else  { this[name] = definition(); }
-}('MediaTag', function() {
+(function (window) {
+var factory = function (Cache) {
     var cache;
     var cypherChunkLength = 131088;
 
@@ -133,20 +130,49 @@
             cb = function () {};
         };
 
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', src, true);
-        xhr.responseType = 'arraybuffer';
+        var _src = src.replace(/(\/)*$/, ''); // Remove trailing slashes
+        var idx = _src.lastIndexOf('/');
+        var cacheKey = _src.slice(idx+1);
+        if (!/^[a-f0-9]{48}$/.test(cacheKey)) { cacheKey = undefined; }
 
-        xhr.onerror = function () { return void cb("XHR_ERROR"); };
-        xhr.onload = function () {
-            // Error?
-            if (/^4/.test('' + this.status)) { return void cb("XHR_ERROR " + this.status); }
+        var fetch = function () {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', src, true);
+            xhr.responseType = 'arraybuffer';
 
-            var arrayBuffer = xhr.response;
-            if (arrayBuffer) { cb(null, new Uint8Array(arrayBuffer)); }
+            xhr.onerror = function () { return void cb("XHR_ERROR"); };
+            xhr.onload = function () {
+                // Error?
+                if (/^4/.test('' + this.status)) { return void cb("XHR_ERROR " + this.status); }
+
+                var arrayBuffer = xhr.response;
+                if (arrayBuffer) {
+                    var u8 = new Uint8Array(arrayBuffer);
+                    if (cacheKey) {
+                        return void Cache.setBlobCache(cacheKey, u8, function (err) {
+                            if (err) {
+                                console.error(err); // XXX
+                            }
+                            cb(null, u8);
+                        });
+                    }
+                    cb(null, u8);
+                } else {
+                    // XXX cb ?
+                }
+            };
+
+            xhr.send(null);
         };
 
-        xhr.send(null);
+        if (!cacheKey) { return void fetch(); }
+
+        Cache.getBlobCache(cacheKey, function (err, u8) {
+            if (err || !u8) { return void fetch(); }
+            console.error('using cache', cacheKey);
+            cb(null, u8);
+        });
+
     };
 
     // Decryption tools
@@ -469,4 +495,19 @@
     };
 
     return init;
-}));
+};
+
+    if (typeof(module) !== 'undefined' && module.exports) {
+        module.exports = factory(
+            require("./outer/cache-store.js")
+        );
+    } else if ((typeof(define) !== 'undefined' && define !== null) && (define.amd !== null)) {
+        define([
+            '/common/outer/cache-store.js',
+        ], function (Cache) {
+            return factory(Cache);
+        });
+    } else {
+        // unsupported initialization
+    }
+}(typeof(window) !== 'undefined'? window : {}));

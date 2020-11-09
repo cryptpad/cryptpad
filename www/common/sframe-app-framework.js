@@ -467,9 +467,15 @@ define([
             });
         };
 
-        var onCorruptedCache = function (cb) {
+        var noCache = false; // Prevent reload loops
+        var onCorruptedCache = function () {
+            if (noCache) {
+                // XXX translation key
+                return UI.errorLoadingScreen("Reload loop: empty chainpad for a non-empty channel");
+            }
+            noCache = true;
             var sframeChan = common.getSframeChannel();
-            sframeChan.event("Q_CORRUPTED_CACHE", cb);
+            sframeChan.event("Q_CORRUPTED_CACHE"); // XXX
         };
         var onCacheReady = function () {
             stateChange(STATE.DISCONNECTED);
@@ -547,17 +553,17 @@ define([
                         Feedback.send("NON_EMPTY_NEWDOC");
                         // The cache may be wrong, empty it and reload after.
                         waitFor.abort();
-                        UI.errorLoadingScreen("MAYBE CORRUPTED CACHE... RELOADING"); // XXX
-                        onCorruptedCache(function () {
-                            setTimeout(function () { common.gotoURL(); }, 1000);
-                        });
+                        onCorruptedCache();
                         return;
                     }
-                    console.log('updating title');
                     title.updateTitle(title.defaultTitle);
                     evOnDefaultContentNeeded.fire();
                 }
             }).nThen(function () {
+                // We have a valid chainpad, reenable cache fix in case with reconnect with
+                // a corrupted cache
+                noCache = false;
+
                 stateChange(STATE.READY);
                 firstConnection = false;
 

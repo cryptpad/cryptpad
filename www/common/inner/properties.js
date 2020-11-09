@@ -47,6 +47,9 @@ define([
 
         if (!common.isLoggedIn()) { return void cb(void 0, $d); }
 
+        var privateData = common.getMetadataMgr().getPrivateData();
+        if (privateData.offline) { return void cb(void 0, $d); }
+
         // File and history size...
         var owned = Modal.isOwned(Env, data);
 

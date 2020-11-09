@@ -8,6 +8,28 @@ define([
         name: "cp_cache"
     });
 
+    S.getBlobCache = function (id, cb) {
+        cb = Util.once(Util.mkAsync(cb || function () {}));
+        cache.getItem(id, function (err, obj) {
+            if (err || !obj || !obj.c) {
+                return void cb(err || 'EINVAL');
+            }
+            cb(null, obj.c);
+            obj.t = +new Date();
+            cache.setItem(id, obj);
+        });
+    };
+    S.setBlobCache = function (id, u8, cb) {
+        cb = Util.once(Util.mkAsync(cb || function () {}));
+        if (!u8) { return void cb('EINVAL'); }
+        cache.setItem(id, {
+            c: u8,
+            t: (+new Date()) // 't' represent the "lastAccess" of this cache (get or set)
+        }, function (err) {
+            cb(err);
+        });
+    };
+
     // id: channel ID or blob ID
     // returns array of messages
     S.getChannelCache = function (id, cb) {
@@ -55,7 +77,9 @@ define([
 
     S.clearChannel = function (id, _cb) {
         var cb = Util.once(Util.mkAsync(_cb || function () {}));
-        cache.removeItem(id, cb);
+        cache.removeItem(id, function () {
+            cb();
+        });
     };
 
     S.clear = function () {

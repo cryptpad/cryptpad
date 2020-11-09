@@ -1037,6 +1037,7 @@ define([
         //});
 
         execCommand('GET_MY_INFO', null, function (e, info) {
+            if (e) { return; }
             contactsData[info.curvePublic] = info;
         });
 

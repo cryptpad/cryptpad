@@ -438,6 +438,11 @@ define([
                             // We've received a link without /p/ and it doesn't work without a password: abort
                             return void todo();
                         }
+                        if (e === "ANON_RPC_NOT_READY") {
+                            // We're currently offline and the pad is not in our cache
+                            w.abort();
+                            return void sframeChan.event('EV_OFFLINE');
+                        }
                         // Wrong password or deleted file?
                         askPassword(true, passwordCfg);
                     }));
@@ -1643,8 +1648,7 @@ define([
                 });
             };
 
-            sframeChan.on('Q_CORRUPTED_CACHE', function (data, cb) {
-                Utils.Cache.clearChannel(secret.channel, cb);
+            sframeChan.on('EV_CORRUPTED_CACHE', function () {
                 Cryptpad.onCorruptedCache(secret.channel);
             });
 
