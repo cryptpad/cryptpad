@@ -2188,8 +2188,13 @@ define([
 
         // XXX rewrite "creation_expire2": "An <b>expiring</b> pad has a set lifetime, after which it will be automatically removed from the server and other users' CryptDrives."
 
+
+        Messages.creation_expiration = "Expiration date"; // XXX
+        Messages.creation_expiresIn = "Expires in"; // XXX
         var expire = h('div.cp-creation-expire', [
-            UI.createCheckbox('cp-creation-expire', Messages.creation_expire, false),
+            UI.createCheckbox('cp-creation-expire', Messages.creation_expiration, false, {
+                labelAlt: Messages.creation_expiresIn
+            }),
             h('span.cp-creation-expire-picker.cp-creation-slider', [
                 h('input#cp-creation-expire-val', {
                     type: "number",
@@ -2209,6 +2214,7 @@ define([
         ]);
 
         // Password
+        Messages.creation_password = "Password"; // XXX
         var password = h('div.cp-creation-password', [
             UI.createCheckbox('cp-creation-password', Messages.creation_password, false),
             h('span.cp-creation-password-picker.cp-creation-slider', [
@@ -2220,8 +2226,15 @@ define([
             //createHelper('#', "TODO: password protection adds another layer of security ........") // TODO
         ]);
 
+        var $w = $(window);
+        var big = $w.width() > 800;
+
         var right = h('span.fa.fa-chevron-right.cp-creation-template-more');
         var left = h('span.fa.fa-chevron-left.cp-creation-template-more');
+        if (!big) {
+            $(left).removeClass('fa-chevron-left').addClass('fa-chevron-up');
+            $(right).removeClass('fa-chevron-right').addClass('fa-chevron-down');
+        }
         var templates = h('div.cp-creation-template', [
             left,
             h('div.cp-creation-template-container', [
@@ -2245,7 +2258,7 @@ define([
         // Display templates
 
         var selected = 0; // Selected template in the list (highlighted)
-        var TEMPLATES_DISPLAYED = 4; // Max templates displayed per page
+        var TEMPLATES_DISPLAYED = big ? 6 : 3; // Max templates displayed per page
         var next = function () {}; // Function called when pressing tab to highlight the next template
         var i = 0; // Index of the first template displayed in the current page
         sframeChan.query("Q_CREATE_TEMPLATES", type, function (err, res) {
@@ -2359,6 +2372,20 @@ define([
                     .addClass('cp-creation-template-selected');
             };
 
+            $w.on('resize', function () {
+                var _big = $w.width() > 800;
+                if (big === _big) { return; }
+                big = _big;
+                if (!big) {
+                    $(left).removeClass('fa-chevron-left').addClass('fa-chevron-up');
+                    $(right).removeClass('fa-chevron-right').addClass('fa-chevron-down');
+                } else {
+                    $(left).removeClass('fa-chevron-up').addClass('fa-chevron-left');
+                    $(right).removeClass('fa-chevron-down').addClass('fa-chevron-right');
+                }
+                TEMPLATES_DISPLAYED = big ? 6 : 3;
+                redraw(0);
+            });
         });
 
         // Display expiration form when checkbox checked
