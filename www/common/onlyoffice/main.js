@@ -3,54 +3,23 @@ define([
     '/bower_components/nthen/index.js',
     '/api/config',
     '/common/dom-ready.js',
-    '/common/requireconfig.js',
     '/common/common-hash.js',
     '/common/sframe-common-outer.js'
-], function (nThen, ApiConfig, DomReady, RequireConfig, Hash, SFCommonO) {
-    var requireConfig = RequireConfig();
+], function (nThen, ApiConfig, DomReady, Hash, SFCommonO) {
 
     // Loaded in load #2
     var hash, href, version;
     nThen(function (waitFor) {
         DomReady.onReady(waitFor());
     }).nThen(function (waitFor) {
-        var req = {
-            cfg: requireConfig,
-            req: [ '/common/loading.js' ],
-            pfx: window.location.origin
-        };
-        window.rc = requireConfig;
-        window.apiconf = ApiConfig;
-
-        // Hidden hash
-        hash = window.location.hash;
-        href = window.location.href;
-        if (window.history && window.history.replaceState && hash) {
-            window.history.replaceState({}, window.document.title, '#');
-        }
-
+        var obj = SFCommonO.initIframe(waitFor, true, true);
+        href = obj.href;
+        hash = obj.hash;
         var parsed = Hash.parsePadUrl(href);
         if (parsed && parsed.hashData) {
             var opts = parsed.getOptions();
             version = opts.versionHash;
         }
-
-        document.getElementById('sbox-iframe').setAttribute('src',
-            ApiConfig.httpSafeOrigin + window.location.pathname + 'inner.html?' +
-                requireConfig.urlArgs + '#' + encodeURIComponent(JSON.stringify(req)));
-
-        // This is a cheap trick to avoid loading sframe-channel in parallel with the
-        // loading screen setup.
-        var done = waitFor();
-        var onMsg = function (msg) {
-            var data = JSON.parse(msg.data);
-            if (data.q !== 'READY') { return; }
-            window.removeEventListener('message', onMsg);
-            var _done = done;
-            done = function () { };
-            _done();
-        };
-        window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
         var addData = function (obj) {
             obj.ooType = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
