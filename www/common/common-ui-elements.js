@@ -2091,15 +2091,33 @@ define([
         var $body = $('body');
         var $creationContainer = $('<div>', { id: 'cp-creation-container' }).appendTo($body);
         var urlArgs = (Config.requireConf && Config.requireConf.urlArgs) || '';
-        var l = h('div.cp-creation-logo', h('img', { src: '/customize/loading-logo.png?' + urlArgs }));
-        $(l).appendTo($creationContainer);
-        var $creation = $('<div>', { id: 'cp-creation', tabindex: 1 }).appendTo($creationContainer);
+
+        var logo = h('img', { src: '/customize/CryptPad_logo.svg?' + urlArgs });
+        var fill1 = h('div.cp-creation-fill.cp-creation-logo', logo);
+        var fill2 = h('div.cp-creation-fill');
+        var $creation = $('<div>', { id: 'cp-creation', tabindex:1 });
+        $creationContainer.append([fill1, $creation, fill2]);
+
+        var createHelper = function (href, text) {
+            var q = UI.createHelper(href, text);
+            $(q).addClass('cp-creation-help');
+            return q;
+        };
 
         // Title
-        //var colorClass = 'cp-icon-color-'+type;
+        var colorClass = 'cp-icon-color-'+type;
         //$creation.append(h('h2.cp-creation-title', Messages.newButtonTitle));
         var newPadH3Title = Messages['button_new' + type];
-        $creation.append(h('h3.cp-creation-title', newPadH3Title));
+
+        Messages.creation_helperText = "Learn more..."; // XXX
+        var title = h('div.cp-creation-title', [
+            UI.getFileIcon({type: type})[0],
+            h('div.cp-creation-title-text', [
+                h('span', newPadH3Title),
+                createHelper('https://docs.cryptpad.fr/en/user_guide/apps/general.html#new-document', Messages.creation_helperText)
+            ])
+        ]);
+        $creation.append(title);
         //$creation.append(h('h2.cp-creation-title.'+colorClass, Messages.newButtonTitle));
 
         // Deleted pad warning
@@ -2108,13 +2126,6 @@ define([
                 h('div.cp-creation-deleted', Messages.creation_404)
             ));
         }
-
-        var origin = privateData.origin;
-        var createHelper = function (href, text) {
-            var q = UI.createHelper(origin + href, text);
-            $(q).addClass('cp-creation-help');
-            return q;
-        };
 
         // Team pad
         var team;
@@ -2171,7 +2182,6 @@ define([
         // XXX Remove creation_owned1 and creation_owned2 keys
         var owned = h('div.cp-creation-owned', [
             UI.createCheckbox('cp-creation-owned', Messages.creation_owned, true),
-            createHelper('https://docs.cryptpad.fr/en/user_guide/share_and_access.html#owners', Messages.creation_owned1)
         ]);
 
         // Life time
@@ -2196,7 +2206,6 @@ define([
                     }, Messages.creation_expireMonths)
                 ])
             ]),
-            createHelper('https://docs.cryptpad.fr/en/user_guide/apps/general.html#new-document', Messages.creation_expire2),
         ]);
 
         // Password

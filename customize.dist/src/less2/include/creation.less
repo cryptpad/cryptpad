@@ -32,7 +32,7 @@
         z-index: 100000000; // #loading * 10
         top: 0px;
         //background: @colortheme_loading-bg;
-        background: linear-gradient(to right, @colortheme_loading-bg 0%, @colortheme_loading-bg 50%, @colortheme_loading-bg-alt 50%, @colortheme_loading-bg-alt 100%);
+        background: @colortheme_loading_bg;
         color: @colortheme_loading-color;
         display: flex;
         flex-flow: column; /* we need column so that the child can shrink vertically */
@@ -41,16 +41,19 @@
         width: 100%;
         height: 100%;
         overflow: auto;
+        .cp-creation-fill {
+            flex: 1 1 50%;
+        }
         .cp-creation-logo {
             height: 300px;
             width: 300px;
-            margin-top: 50px;
-            flex: 0 1 auto; /* allows shrink */
             min-height: 0;
             text-align: center;
             img {
+                margin-top: 50px;
+                margin-bottom: 50px;
                 max-width: 100%;
-                max-height: 100%;
+                max-height: ~"calc(100% - 100px)";
             }
         }
     }
@@ -63,9 +66,9 @@
         outline: none;
         width: 700px;
         max-width: 90vw;
-        height: 550px;
-        max-height: calc(~"100vh - 20px");
-        margin: 50px;
+        height: 500px;
+        max-height: ~"calc(100vh - 20px)";
+        margin: 0px;
         flex-shrink: 0;
         display: flex;
         flex-flow: column;
@@ -78,39 +81,46 @@
         }
 
         .cp-creation-title {
-            color: @colortheme_creation-modal-title;
-            font-weight: bold;
-            margin: 15px;
+            font-size: 20px;
+            display: flex;
+            flex-flow: column;
+            align-items: center;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            .cp-icon {
+                margin-bottom: 5px;
+                font-size: 50px;
+            }
+            .cp-creation-title-text {
+                position: relative;
+                a {
+                    position: absolute;
+                    top: 7px;
+                    margin-left: 10px;
+                    font-size: 16px;
+                    color: inherit;
+                }
+            }
         }
 
         .cp-creation-create {
-            margin-top: 0px;
+            justify-content: center;
+            margin-top: 10px;
+            margin-bottom: 15px;
             button {
                 .tools_unselectable();
-                padding: 15px;
-                background: linear-gradient(to right, @colortheme_logo-2, @colortheme_logo-1);
+                padding: 6px;
+                background: @colortheme_logo-2;
+                font-size: 20px;
                 color: #FFF;
-                font-weight: bold;
                 margin: 3px 10px;
                 border: none;
                 cursor: pointer;
                 outline: none;
-                width: 100%;
+                text-transform: uppercase;
                 &:hover {
-                    background: linear-gradient(to right, lighten(@colortheme_logo-2, 5%), lighten(@colortheme_logo-1, 5%));
-                    //background: darken(@creation-button, 5%);
-                    //background: lighten(@creation-button, 5%);
+                    background: lighten(@colortheme_logo-2, 5%);
                 }
-            }
-        }
-        .cp-creation-create {
-            text-align: center;
-            //margin: auto;
-            //margin-top: 20px;
-            width: 400px;
-            max-width: 100%;
-            button {
-                margin: 0;
             }
         }
 
@@ -121,7 +131,7 @@
             flex: 1 0 auto;
             justify-content: space-around;
             & > div {
-                width: 400px;
+                width: 300px;
                 max-width: 100%;
                 display: flex;
                 align-items: center;
@@ -384,10 +394,9 @@
         }
     }
 
-        @media screen and (max-height: 700px) {
+        @media screen and (max-height: 850px) {
             #cp-creation-container {
-                .cp-creation-logo {
-                    //flex-shrink: 0;
+                .cp-creation-logo img {
                     display: none;
                 }
             }
