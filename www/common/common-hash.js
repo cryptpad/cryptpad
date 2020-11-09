@@ -165,8 +165,15 @@ var factory = function (Util, Crypto, Keys, Nacl) {
 /*
 Version 0
     /pad/#67b8385b07352be53e40746d2be6ccd7XAYSuJYYqa9NfmInyHci7LNy
-Version 1
+Version 1: Add support for read-only access
     /code/#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI
+Version 2: Add support for password-protection
+    /code/#/2/code/edit/u5ACvxAYmhvG0FtrNn9FJQcf/p/
+Version 3: Safe links
+    /code/#/3/code/edit/f0d8055aa640a97e7fd25020ca4e93b3/
+Version 4: Data URL when not a realtime link yet (new pad or "static" app)
+    /login/#/4/login/newpad=eyJocmVmIjoiaHR0cDovL2xvY2FsaG9zdDozMDAwL2NvZGUvIy8yL2NvZGUvZWRpdC91NUFDdnhBWW1odkcwRnRyTm45RklRY2YvIn0%3D/
+    /drive/#/4/drive/login=e30%3D/
 */
 
     var getLoginOpts = function (hashArr) {
@@ -229,11 +236,11 @@ Version 1
             parsed.ownerKey = getOwnerKey(options);
         };
 
-        // Version 4: only login or newpad options, smae for all the apps
+        // Version 4: only login or newpad options, same for all the apps
         if (hashArr[1] && hashArr[1] === '4') {
             parsed.getHash = function (opts) {
                 if (!opts || !Object.keys(opts).length) { return ''; }
-                var hash = '/4/';
+                var hash = '/4/' + type + '/';
                 if (opts.newPadOpts) { hash += 'newpad=' + opts.newPadOpts + '/'; }
                 if (opts.loginOpts) { hash += 'login=' + opts.loginOpts + '/'; }
                 return hash;
@@ -246,7 +253,8 @@ Version 1
             };
 
             parsed.version = 4;
-            options = hashArr.slice(2);
+            parsed.app = hashArr[2];
+            options = hashArr.slice(3);
             addOptions();
 
             return parsed;
@@ -429,7 +437,7 @@ Version 1
         // When we start without a hash, use version 4 links to add login or newpad options
         var getHash = function (opts) {
             if (!opts || !Object.keys(opts).length) { return ''; }
-            var hash = '/4/';
+            var hash = '/4/' + ret.type + '/';
             if (opts.newPadOpts) { hash += 'newpad=' + opts.newPadOpts + '/'; }
             if (opts.loginOpts) { hash += 'login=' + opts.loginOpts + '/'; }
             return hash;
@@ -645,9 +653,6 @@ Version 1
         // Valid hash?
         if (parsed.hash) {
             if (!parsed.hashData) { return; }
-            // New pad: only newPadOpts allowed
-            if (Object.keys(parsed.hashData).length === 1 &&
-                    parsed.hashData.newPadOpts) { return true; }
             // Version should be a number
             if (typeof(parsed.hashData.version) === "undefined") { return; }
             // pads and files should have a base64 (or hex) key
@@ -662,7 +667,7 @@ Version 1
     Hash.decodeDataOptions = function (opts) {
         var b64 = decodeURIComponent(opts);
         var str = Nacl.util.encodeUTF8(Nacl.util.decodeBase64(b64));
-        return JSON.parse(str);
+        return Util.tryParse(str) || {};
     };
     Hash.encodeDataOptions = function (opts) {
         var str = JSON.stringify(opts);

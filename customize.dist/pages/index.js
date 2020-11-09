@@ -47,8 +47,8 @@ define([
                 var href = '/'+ x[0] +'/';
                 var attr = isEnabled ? { href: href } : {
                     onclick: function () {
-                        var href = Hash.hashToHref('', 'login');
-                        var url = Hash.getNewPadURL(href, { href: href });
+                        var loginURL = Hash.hashToHref('', 'login');
+                        var url = Hash.getNewPadURL(loginURL, { href: href });
                         window.location.href = url;
                     }
                 };

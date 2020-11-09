@@ -124,7 +124,7 @@ define([
                     SFrameChannel.create(msgEv, postMsg, waitFor(function (sfc) {
                         Utils.sframeChan = sframeChan = sfc;
                         window.CryptPad_loadingError = function (e) {
-                            sfc.event('EV_LOADING_ERROR', e)
+                            sfc.event('EV_LOADING_ERROR', e);
                         };
                     }));
                 });
@@ -259,6 +259,11 @@ define([
                         return void todo();
                     }
                     // Otherwise, continue
+                }
+                // FIXME Backward compatibility
+                if (sessionStorage.newPadPassword && !newPadPassword) {
+                    newPadPassword = sessionStorage.newPadPassword;
+                    delete sessionStorage.newPadPassword;
                 }
 
 
