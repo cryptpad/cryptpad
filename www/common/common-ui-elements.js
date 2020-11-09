@@ -229,6 +229,7 @@ define([
         };
     };
 
+
     UIElements.noContactsMessage = function (common) {
         var metadataMgr = common.getMetadataMgr();
         var data = metadataMgr.getUserData();
