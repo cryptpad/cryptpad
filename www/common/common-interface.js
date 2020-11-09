@@ -1163,7 +1163,14 @@ define([
             }
         });
 
-        $input.change(function () { $mark.focus(); });
+        $input.change(function () {
+            if (!opts.labelAlt) { return; }
+            if ($input.is(':checked') !== checked) {
+                $(label).text(opts.labelAlt);
+            } else {
+                $(label).text(labelTxt);
+            }
+        });
 
         return h('label.cp-checkmark', labelOpts, [
             input,
