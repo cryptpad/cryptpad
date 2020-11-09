@@ -21,6 +21,7 @@ var afterLoaded = function (req) {
             window.parent.postMessage(JSON.stringify({ q: 'READY', txid: txid }), '*');
         }, 1);
     };
+    window.cryptpadLanguage = req.lang;
     if (req.req) { require(req.req, ready); } else { ready(); }
     var onReply = function (msg) {
         var data = JSON.parse(msg.data);
@@ -61,7 +62,6 @@ var afterLoaded = function (req) {
             updated: lsUpdated,
             store: data.localStore
         };
-        window.cryptpadLanguage = data.language;
         require(['/common/sframe-boot2.js'], function () { });
     };
     window.addEventListener('message', onReply);

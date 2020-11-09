@@ -324,25 +324,36 @@ button.primary:hover{
         return bar;
     };
 
+    var hasErrored = false;
     var updateLoadingProgress = function (data) {
-        if (!built) { return; }
+        if (!built || !data) { return; }
         var c = types.indexOf(data.type);
         if (c < current) { return console.error(data); }
         try {
             document.querySelector('.cp-loading-spinner-container').style.display = 'none';
             document.querySelector('.cp-loading-progress-list').innerHTML = makeList(data);
             document.querySelector('.cp-loading-progress-container').innerHTML = makeBar(data);
-        } catch (e) { console.error(e); }
+        } catch (e) {
+            if (!hasErrored) { console.error(e); }
+        }
     };
     window.CryptPad_updateLoadingProgress = updateLoadingProgress;
+
     window.CryptPad_loadingError = function (err) {
         if (!built) { return; }
+        hasErrored = true;
+        var err2;
+        if (err === 'Script error.') {
+            err2 = Messages.error_unhelpfulScriptError;
+        }
+
         try {
             var node = document.querySelector('.cp-loading-progress');
+            if (!node) { return; }
             if (node.parentNode) { node.parentNode.removeChild(node); }
             document.querySelector('.cp-loading-spinner-container').setAttribute('style', 'display:none;');
             document.querySelector('#cp-loading-message').setAttribute('style', 'display:block;');
-            document.querySelector('#cp-loading-message').innerText = err;
+            document.querySelector('#cp-loading-message').innerText = err2 || err;
         } catch (e) { console.error(e); }
     };
     return function () {
