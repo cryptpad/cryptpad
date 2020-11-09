@@ -91,7 +91,7 @@ define([
                         Realtime.whenRealtimeSyncs(s.sharedFolders[k].realtime, waitFor());
                     }
                 }
-            }).nThen(function () { console.log('done');cb(); });
+            }).nThen(function () { cb(); });
         };
 
         Store.get = function (clientId, data, cb) {
@@ -1035,9 +1035,6 @@ define([
             });
         };
         Store.setPadTitle = function (clientId, data, cb) {
-            if (store.offline) {
-                return void cb({ error: 'OFFLINE' });
-            }
             var title = data.title;
             var href = data.href;
             var channel = data.channel;
@@ -1110,6 +1107,11 @@ define([
                 Array.prototype.push.apply(allData, res);
             });
             var contains = allData.length !== 0;
+            if (store.offline && !contains) {
+                return void cb({ error: 'OFFLINE' });
+            } else if (store.offline) {
+                return void cb();
+            }
             allData.forEach(function (obj) {
                 var pad = obj.data;
                 pad.atime = +new Date();
@@ -1689,7 +1691,7 @@ define([
                 noChainPad: true,
                 channel: data.channel,
                 metadata: data.metadata,
-                network: store.network,
+                network: store.network || store.networkPromise,
                 //readOnly: data.readOnly,
                 onConnect: function (wc, sendMessage) {
                     channel.sendMessage = function (msg, cId, cb) {
@@ -1922,6 +1924,7 @@ define([
         Store.getPadMetadata = function (clientId, data, _cb) {
             var cb = Util.once(Util.mkAsync(_cb));
 
+            if (store.offline || !store.anon_rpc) { return void cb({ error: 'OFFLINE' }); }
             if (!data.channel) { return void cb({ error: 'ENOTFOUND'}); }
             if (data.channel.length !== 32) { return void cb({ error: 'EINVAL'}); }
             store.anon_rpc.send('GET_METADATA', data.channel, function (err, obj) {
@@ -2603,6 +2606,7 @@ define([
                 // "cb" may have already been called by onCacheReady
                 if (typeof(cb) === 'function') { cb(returned); }
                 sendDriveEvent('NETWORK_RECONNECT');
+                broadcast([], "UPDATE_METADATA");
                 store.offline = false;
 // XXX broadcast READY event with the missing data
 // XXX we can improve feedback to queue the queries and send them when coming back online

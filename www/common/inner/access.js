@@ -769,6 +769,7 @@ define([
         }, function () {});
     };
 
+    Messages.access_offline = "You're currently offline. Access management is not available"; // XXX
     var getAccessTab = function (Env, data, opts, _cb) {
         var cb = Util.once(Util.mkAsync(_cb));
         var common = Env.common;
@@ -776,8 +777,14 @@ define([
 
         var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
+        var priv = metadataMgr.getPrivateData();
 
         var $div = $(h('div.cp-share-columns'));
+
+        if (priv.offline) {
+            $div.append(h('p', Messages.access_offline));
+            return void cb(void 0, $div);
+        }
         if (!data) { return void cb(void 0, $div); }
 
         var div1 = h('div.cp-usergrid-user.cp-share-column.cp-access');
