@@ -64,23 +64,23 @@ filesToCache.forEach(function (file, i) {
 });
 
 var openCache = function (name) {
-    return caches.open(name); // jshint ignore:line
+    return self.caches.open(name);
 };
 
 var deleteCache = function (name) {
-    return caches.delete(name); // jshint ignore:line
+    return self.caches.delete(name);
 };
 
 var cacheResponse = function (cache, request, response) {
-    cache.put(request.clone(), response.clone()); // jshint ignore:line
+    cache.put(request.clone(), response.clone());
 };
 
 var listCaches = function () {
-    return caches.keys(); // jshint ignore:line
+    return self.caches.keys();
 };
 
 var matchCache = function (req, opt) {
-    return caches.match(req, opt); // jshint ignore:line
+    return self.caches.match(req, opt);
 };
 
 var handleApiConfig = function (event) {
