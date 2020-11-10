@@ -8,8 +8,9 @@
     @color: @colortheme_default-color,
     @bg-color: @colortheme_default-bg
 ) {
-    @creation-color: @color;
+    @creation-color: @cryptpad_text_col;
     @creation-bg-color: @bg-color;
+    @creation-bg-color-light: lighten(@bg-color, 30%);
 };
 
 .creation_main(
@@ -18,8 +19,9 @@
 ) {
     --LessLoader_require: LessLoader_currentFile();
     .creation_vars(@color, @bg-color);
-    --creation-color: @color;
+    --creation-color: @cryptpad_text_col;
     --creation-bg-color: @bg-color;
+    --creation-bg-color-light: @creation-bg-color-light;
 }
 & {
     .creation_vars();
@@ -179,11 +181,11 @@
 
             input, select {
                 font-size: 14px;
-                border: 1px solid @colortheme_form-border;
+                border: 1px solid @colortheme_form-bg;
                 height: 26px;
                 line-height: 26px;
-                background-color: @colortheme_form-bg;
-                color: @colortheme_form-color;
+                //background-color: @colortheme_form-bg;
+                color: @cryptpad_text_col;
             }
 
             .cp-creation-teams {
@@ -234,7 +236,10 @@
                 .cp-creation-expire-picker {
                     text-align: center;
                     input {
-                        width: 50px;
+                        width: 45px;
+                        margin: 0 5px;
+                        padding: 0;
+                        padding-left: 3px;
                         margin: 0 5px;
                     }
                     select {
@@ -317,13 +322,13 @@
                 display: flex;
                 flex-flow: column wrap;
                 //overflow-y: auto;
-                max-height: 156px;
+                max-height: 159px;
                 align-items: center;
                 .cp-creation-template-element {
                     box-shadow: 2px 2px 7px @colortheme_form-border;
                     width: 300px;
                     max-width: calc(100% - 10px);
-                    padding: 5px;
+                    padding: 2px;
                     margin: 5px;
                     display: inline-flex;
 
@@ -333,14 +338,13 @@
                     line-height: 1em;
                     cursor: pointer;
 
-                    color: black;
+                    color: @creation-color;
+                    color: var(--creation-color);
                     border: 1px solid transparent;
 
                     &.cp-creation-template-selected, &:hover {
-                        color: @creation-color !important;
-                        color: var(--creation-color) !important;
-                        background-color: @creation-bg-color !important;
-                        background-color: var(--creation-bg-color) !important;
+                        background-color: @creation-bg-color-light;
+                        background-color: var(--creation-bg-color-light);
                         .fa, .cptools {
                             color: @creation-color;
                             color: var(--creation-color);
