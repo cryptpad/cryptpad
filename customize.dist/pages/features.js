@@ -30,7 +30,7 @@ define([
         // Msg.features_f_storage0 = "";
         Msg.features_f_storage0_note = "Documents are deleted after 3 months of inactivity";
         // Registered column
-        Msg.features_registered = "Registered" //
+        Msg.features_registered = "Registered"; //
         // Msg.features_f_anon = "";
         Msg.features_f_anon_note = "With additional functionality";
         Msg.features_f_social = "Social Features";

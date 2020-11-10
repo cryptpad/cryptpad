@@ -65,8 +65,8 @@ define([
     Msg.docs_link = "Documentation"; // XXX breaks the about menu
     // XXX Remove FAQ from translations and remove FAQ page
     // XXX Add FAQ to docs
-    Msg.footer_team = "Contributors" // XXX existing key
-    Msg.footer_tos = "Terms of Service" // XXX existing key
+    Msg.footer_team = "Contributors"; // XXX existing key
+    Msg.footer_tos = "Terms of Service"; // XXX existing key
 
     Pages.versionString = "v3.24.0 (YunnanLakeNewt)";
 

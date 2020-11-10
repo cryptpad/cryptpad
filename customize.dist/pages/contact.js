@@ -7,7 +7,7 @@ define([
 ], function (Config, h, Msg, Pages, LocalStore) {
 
     // XXX
-    Msg.contact_adminHint = "For any issues related to your account, storage limit, or availability of the service." // existing key
+    Msg.contact_adminHint = "For any issues related to your account, storage limit, or availability of the service."; // existing key
 
 
     return function () {
