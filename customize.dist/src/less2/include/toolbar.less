@@ -271,8 +271,11 @@
             border: 1px solid @colortheme_modal-fg;
             &:hover {
                 //border: 1px solid @colortheme_modal-fg;
-                background: @colortheme_modal-fg;
-                color: @colortheme_modal-bg;
+                background: @colortheme_logo_2_light;
+                color: @cryptpad_text_col;
+                .cptools {
+                    color: @cryptpad_text_col;
+                }
             }
         }
         .cp-modal {
@@ -282,7 +285,7 @@
                 cursor: pointer;
             }
             &> p {
-                margin: 50px;
+                margin: 20px;
             }
             &> div {
                 flex: 1;
@@ -293,7 +296,7 @@
             }
             &> div:last-child {
                 flex: unset;
-                margin: 50px 0;
+                margin: 20px 0;
             }
         }
 

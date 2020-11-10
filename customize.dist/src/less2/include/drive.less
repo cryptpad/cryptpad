@@ -868,8 +868,11 @@
 
         border: 1px solid @colortheme_modal-fg;
         li:not(.cp-app-drive-element-selected):hover {
-            background: @colortheme_modal-fg;
-            color: @colortheme_modal-bg;
+            background: @colortheme_logo_2_light;
+            color: @cryptpad_text_col;
+            .cptools {
+                color: @cryptpad_text_col;
+            }
         }
         .cp-modal {
             display: flex;
@@ -896,6 +899,7 @@
         }
 
         .cp-app-drive-new-name {
+            color: @cryptpad_text_col;
             white-space: nowrap;
         }
 
