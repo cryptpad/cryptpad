@@ -148,20 +148,19 @@ define([
         send();
     };
 
-    common.setTabHref = function (href) {
-        var ohc = window.onhashchange;
-        window.onhashchange = function () {};
-        window.location.href = href;
-        window.onhashchange = ohc;
-        ohc({reset: true});
-    };
-    common.setTabHash = function (hash) {
-        var ohc = window.onhashchange;
-        window.onhashchange = function () {};
-        window.location.hash = hash;
-        window.onhashchange = ohc;
-        ohc({reset: true});
-    };
+    (function () {
+        var bypassHashChange = function (key) {
+            return function (value) {
+                var ohc = window.onhashchange;
+                window.onhashchange = function () {};
+                window.location[key] = value;
+                window.onhashchange = ohc;
+                ohc({reset: true});
+            };
+        };
+        common.setTabHref = bypassHashChange('href');
+        common.setTabHash = bypassHashChange('hash');
+    }());
 
     // RESTRICTED
     // Settings only
