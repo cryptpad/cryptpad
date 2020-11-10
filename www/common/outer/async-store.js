@@ -1378,13 +1378,16 @@ define([
         // Universal
         Store.universal = {
             execCommand: function (clientId, obj, cb) {
-                var type = obj.type;
-                var data = obj.data;
-                if (store.modules[type]) {
-                    store.modules[type].execCommand(clientId, data, cb);
-                } else {
-                    return void cb({error: type + ' is disabled'});
-                }
+                onReadyEvt.reg(function () {
+                    var type = obj.type;
+                    var data = obj.data;
+                    if (store.modules[type]) {
+                        console.error(obj);
+                        store.modules[type].execCommand(clientId, data, cb);
+                    } else {
+                        return void cb({error: type + ' is disabled'});
+                    }
+                });
             }
         };
         var loadUniversal = function (Module, type, waitFor, clientId) {
@@ -1424,17 +1427,23 @@ define([
         // Cursor
         Store.cursor = {
             execCommand: function (clientId, data, cb) {
-                if (!store.cursor) { return void cb ({error: 'Cursor channel is disabled'}); }
-                store.cursor.execCommand(clientId, data, cb);
+                // The cursor module can only be used when the store is ready
+                onReadyEvt.reg(function () {
+                    if (!store.cursor) { return void cb ({error: 'Cursor channel is disabled'}); }
+                    store.cursor.execCommand(clientId, data, cb);
+                });
             }
         };
 
         // Mailbox
         Store.mailbox = {
             execCommand: function (clientId, data, cb) {
-                if (!store.loggedIn) { return void cb(); }
-                if (!store.mailbox) { return void cb ({error: 'Mailbox is disabled'}); }
-                store.mailbox.execCommand(clientId, data, cb);
+                // The mailbox can only be used when the store is ready
+                onReadyEvt.reg(function () {
+                    if (!store.loggedIn) { return void cb(); }
+                    if (!store.mailbox) { return void cb ({error: 'Mailbox is disabled'}); }
+                    store.mailbox.execCommand(clientId, data, cb);
+                });
             }
         };
 
@@ -2568,8 +2577,8 @@ define([
                 loadUniversal(History, 'history', waitFor);
                 cleanFriendRequests();
             }).nThen(function () {
-            var requestLogin = function () {
-                broadcast([], "REQUEST_LOGIN");
+                var requestLogin = function () {
+                    broadcast([], "REQUEST_LOGIN");
                 };
 
                 if (store.loggedIn) {
@@ -2664,9 +2673,9 @@ define([
                     broadcast([], "UPDATE_TOKEN", { token: proxy[Constants.tokenKey] });
                 });
 
-                onReadyEvt.fire();
-
                 loadMailbox();
+
+                onReadyEvt.fire();
             });
         };
 

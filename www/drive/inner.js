@@ -310,7 +310,6 @@ define([
                 onDisconnect();
             });
             sframeChan.on('EV_NETWORK_RECONNECT', function () {
-                console.log('here');
                 onReconnect();
             });
             common.onLogout(function () { setEditable(false); });
