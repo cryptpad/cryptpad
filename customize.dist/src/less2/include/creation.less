@@ -82,6 +82,23 @@
             text-align: left;
         }
 
+        .cp-creation-checkboxes {
+            flex-flow: column;
+            align-items: baseline !important;
+            max-height: 150px;
+            min-height: 120px !important;
+            justify-content: space-evenly;
+            flex: 1;
+            & > div {
+                display: flex;
+                width: 100%;
+                max-width: 100%;
+                margin: auto;
+                text-align: left;
+            }
+        }
+
+
         .cp-creation-title {
             font-size: 20px;
             display: flex;
@@ -256,6 +273,7 @@
                 }
             }
             .cp-creation-password {
+                flex-flow: column;
                 .cp-creation-password-picker {
                     text-align: center;
                     width: 100%;

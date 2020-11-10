@@ -2247,10 +2247,12 @@ define([
         var $create = $(createDiv);
 
         $(h('div#cp-creation-form', [
-            team,
-            owned,
-            expire,
-            password,
+            h('div.cp-creation-checkboxes', [
+                team,
+                owned,
+                expire,
+                password,
+            ]),
             templates,
             createDiv
         ])).appendTo($creation);
