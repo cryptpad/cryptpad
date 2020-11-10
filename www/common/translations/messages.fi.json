@@ -1459,5 +1459,14 @@
     "history_cantRestore": "Palauttaminen epäonnistui. Yhteytesi on katkennut.",
     "history_close": "Sulje",
     "history_restore": "Palauta",
-    "share_bar": "Luo linkki"
+    "share_bar": "Luo linkki",
+    "error_unhelpfulScriptError": "Skriptivirhe: Lisätietoja selaimen kehittäjäkonsolissa",
+    "tag_edit": "Muokkaa",
+    "tag_add": "Lisää",
+    "loading_state_5": "Uudelleenrakenna asiakirja",
+    "loading_state_4": "Lataa Teams",
+    "loading_state_3": "Lataa jaetut kansiot",
+    "loading_state_2": "Päivitä sisältö",
+    "loading_state_1": "Lataa Drive",
+    "loading_state_0": "Rakenna käyttöliittymä"
 }
