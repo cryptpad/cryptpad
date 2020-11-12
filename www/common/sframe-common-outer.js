@@ -569,6 +569,7 @@ define([
                         isPresent: parsed.hashData && parsed.hashData.present,
                         isEmbed: parsed.hashData && parsed.hashData.embed,
                         isHistoryVersion: parsed.hashData && parsed.hashData.versionHash,
+                        notifications: Notification && Notification.permission === "granted",
                         accounts: {
                             donateURL: Cryptpad.donateURL,
                             upgradeURL: Cryptpad.upgradeURL
@@ -1569,9 +1570,13 @@ define([
                 });
             });
 
-            if (cfg.messaging) {
-                Notifier.getPermission();
+            sframeChan.on('Q_ASK_NOTIFICATION', function (data, cb) {
+                Notification.requestPermission(function (s) {
+                    cb(s === "granted");
+                });
+            });
 
+            if (cfg.messaging) {
                 sframeChan.on('Q_CHAT_OPENPADCHAT', function (data, cb) {
                     Cryptpad.universal.execCommand({
                         type: 'messenger',
