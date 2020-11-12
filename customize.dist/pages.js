@@ -32,7 +32,7 @@ define([
     };
 
     var footerCol = function (title, L, literal) {
-        return h('div.col-6.col-sm-3', [
+        return h('div.col-sm-3', [
             h('ul.list-unstyled', [
                 h('li.footer-title', {
                     'data-localization': title,
@@ -80,7 +80,7 @@ define([
         return h('footer', [
             h('div.container', [
                 h('div.row', [
-                    h('div.col-6.col-sm-3', [
+                    h('div.col-sm-3', [
                         h('div.cp-logo-foot', [
                             h('img', {
                                 src: '/customize/CryptPad_logo.svg',
