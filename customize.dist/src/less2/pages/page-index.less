@@ -81,7 +81,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: space-around;
-        & > a {
+        a {
             margin: 10px;
         }
     }
@@ -94,15 +94,9 @@
         box-sizing: border-box;
         position: relative;
         flex-flow: column;
-        height: @icons-size;
+        //height: @icons-size;
         width: @icons-size;
-        a {
-            color: @cryptpad_text_col;
-            &:hover {
-                color: @cryptpad_text_col;
-                text-decoration-line: none;
-            }
-        }
+
         div h4 {
             @media only screen and (min-device-width: 576px) and (max-device-width: 767px) {
                 font-size: 1.3em;
@@ -122,10 +116,11 @@
         .fa, .cptools {
             display: flex;
             align-items: center;
-            font-size: @icons-size - 60px;
+            font-size: 3.5em;
             justify-content: center;
             width: @icons-size;
-            height: @icons-size - @icons-text-size;
+            padding:10px 10px 0px 10px;
+            //height: @icons-size - @icons-text-size;
         }
         &.cp-app-disabled {
             cursor: not-allowed !important;
@@ -133,6 +128,7 @@
         }
         .pad-button-text {
             color: @cryptpad_text_col;
+            padding:5px;
         }
     }
     h4 {
