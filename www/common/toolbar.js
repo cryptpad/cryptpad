@@ -999,16 +999,18 @@ MessengerUI, Messages) {
             pads_options.unshift(h("hr"));
             pads_options.unshift(allowNotif);
             var $allow = $(allowNotif).click(function () {
-                Common.getSframeChannel().event('Q_ASK_NOTIFICATION', null, function (granted) {
-                    if (!granted) { return; }
+                Common.getSframeChannel().event('Q_ASK_NOTIFICATION', null, function (e, allow) {
+                    if (!allow) { return; }
                     $(allowNotif).remove();
                 });
             });
-            metadataMgr.onChange(function () {
+            var onChange = function () {
                 var privateData = metadataMgr.getPrivateData();
                 if (!privateData.notifications) { return; }
                 $allow.remove();
-            });
+                metadataMgr.off('change', onChange);
+            };
+            metadataMgr.onChange(onChange);
         }
 
 
