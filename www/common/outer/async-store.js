@@ -1382,7 +1382,6 @@ define([
                     var type = obj.type;
                     var data = obj.data;
                     if (store.modules[type]) {
-                        console.error(obj);
                         store.modules[type].execCommand(clientId, data, cb);
                     } else {
                         return void cb({error: type + ' is disabled'});

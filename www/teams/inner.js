@@ -328,6 +328,7 @@ define([
                 }, true);
             }
 
+            driveAPP.online = !teamData.offline;
             var drive = DriveUI.create(common, {
                 proxy: proxy,
                 folders: folders,
