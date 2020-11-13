@@ -12,9 +12,7 @@
 @import (reference) "./notifications.less";
 
 .toolbar_vars (
-    @color: @colortheme_default-color, // Color of the text for the toolbar
-    @bg-color: @colortheme_default-bg, // color of the toolbar background
-    @warn-color: @colortheme_default-warn // color of the warning text in the toolbar
+    @bg-color: @colortheme_apps[default], // color of the toolbar background
 ) {
     @toolbar-bg-color: @bg-color;
     @toolbar-bg-color-light: lighten(@bg-color, 30%);
@@ -22,13 +20,10 @@
 };
 
 .toolbar_main (
-    @color: @colortheme_default-color, // Color of the text for the toolbar
-    @bg-color: @colortheme_default-bg, // color of the toolbar background
-    @warn-color: @colortheme_default-warn, // color of the warning text in the toolbar
-    @barWidth: 600px // width of the toolbar
+    @bg-color: @colortheme_apps[default], // color of the toolbar background
 ) {
     --LessLoader_require: LessLoader_currentFile();
-    .toolbar_vars(@color, @bg-color, @warn-color);
+    .toolbar_vars(@bg-color);
 
     --toolbar-bg-color: @toolbar-bg-color;
     --toolbar-bg-color-light: @toolbar-bg-color-light;

@@ -12,8 +12,7 @@
     .limit-bar_main();
     .tokenfield_main();
 
-    @colortheme_drive-bg-light: lighten(@colortheme_drive-bg, 30%);
-    @colortheme_drive-bg-active: lighten(@colortheme_drive-bg, 20%);
+    @colortheme_drive-bg-active: lighten(@colortheme_static_apps[default], 20%);
     @colortheme_drive-color: @cryptpad_text_col;
 
     @drive_hover: #eee;
@@ -819,7 +818,6 @@
                     font-size: @colortheme_app-font-size;
                     padding: 0 5px;
                     border: 0;
-                    //background: @colortheme_drive-bg-active;
                     color: @colortheme_drive-color;
                     box-sizing: border-box;
                     overflow: hidden;

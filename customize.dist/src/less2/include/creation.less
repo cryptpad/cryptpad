@@ -5,8 +5,7 @@
 @import (reference) "./avatar.less";
 
 .creation_vars(
-    @color: @colortheme_default-color,
-    @bg-color: @colortheme_default-bg
+    @bg-color: @colortheme_apps[default]
 ) {
     @creation-color: @cryptpad_text_col;
     @creation-bg-color: @bg-color;
@@ -14,11 +13,10 @@
 };
 
 .creation_main(
-    @color: @colortheme_default-color,
-    @bg-color: @colortheme_default-bg
+    @bg-color: @colortheme_apps[default]
 ) {
     --LessLoader_require: LessLoader_currentFile();
-    .creation_vars(@color, @bg-color);
+    .creation_vars(@bg-color);
     --creation-color: @cryptpad_text_col;
     --creation-bg-color: @bg-color;
     --creation-bg-color-light: @creation-bg-color-light;

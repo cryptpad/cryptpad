@@ -148,28 +148,15 @@
         transform: none !important;
     }
 
-    .app-block(@app; @app-color) {
-        .cp-callout-@{app} {
-            i {
-                color: @app-color;
-            }
+    each(@colortheme_apps, {
+        .cp-callout-@{key} {
+            i { color: @value; }
             &:hover {
-                background-color: lighten(@app-color, 30%);
-                i {
-                    color: @cryptpad_text_col;
-                }
+                background-color: lighten(@value, 30%);
+                i { color: @cryptpad_text_col; }
             }
         }
-    }
-    .app-block(code, @colortheme_code-bg);
-    .app-block(pad, @colortheme_pad-bg);
-    .app-block(slide, @colortheme_slide-bg);
-    .app-block(poll, @colortheme_poll-bg);
-    .app-block(kanban, @colortheme_kanban-bg);
-    .app-block(whiteboard, @colortheme_whiteboard-bg);
-    .app-block(sheet, @colortheme_oocell-bg);
-    .app-block(drive, @colortheme_drive-bg);
-
+    });
 
     .cp-hidden { display: none !important; }
     .cp-callout-more {
