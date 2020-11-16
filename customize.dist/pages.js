@@ -62,8 +62,8 @@ define([
     var imprintUrl = AppConfig.imprint && (typeof(AppConfig.imprint) === "boolean" ?
                         '/imprint.html' : AppConfig.imprint);
 
-    Msg.docs_link = "Documentation"; // XXX breaks the about menu
-    // XXX Remove FAQ from translations and remove FAQ page
+    Msg.docs_link = "Documentation";
+    // XXX Remove FAQ from translations
     // XXX Add FAQ to docs
     Msg.footer_team = "Contributors"; // XXX existing key
     Msg.footer_tos = "Terms of Service"; // XXX existing key
